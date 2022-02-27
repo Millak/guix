@@ -443,6 +443,27 @@ Chez Scheme.")
 ;; Packages:
 ;;
 
+;; Help function for Chez Scheme to add the current path to
+;; CHEZSCHEMELIBDIRS.
+(define chez-configure
+  #~(lambda _
+      (let ((chez-env (getenv "CHEZSCHEMELIBDIRS")))
+        (setenv "CHEZSCHEMELIBDIRS"
+                (if chez-env
+                    (string-append ".:" chez-env)
+                    ".")))))
+
+;; Help function to define make flags for some Chez Scheme custom make
+;; files.
+(define (chez-make-flags name version)
+  #~(let ((out #$output))
+      (list
+       ;; Set 'chezversion' so that libraries are installed in
+       ;; 'lib/csvX.Y.Z-site' like Chez's 'native-search-paths' expects.
+       (string-append "chezversion=" #$(package-version chez-scheme))
+       (string-append "PREFIX=" out)
+       (string-append "DOCDIR=" out "/share/doc/" #$name "-" #$version))))
+
 (define-public chez-srfi
   (package
     (name "chez-srfi")
@@ -460,13 +481,11 @@ Chez Scheme.")
     (native-inputs
      (list chez-scheme))
     (arguments
-     `(#:make-flags (let ((out (assoc-ref %outputs "out")))
-                      (list (string-append "PREFIX=" out)
-                            "CHEZ=chez-scheme --libdirs ./"
-                            (string-append "chezversion=" ,(package-version chez-scheme))))
-       #:test-target "test"
-       #:phases (modify-phases %standard-phases
-                  (delete 'configure))))
+     (list #:make-flags (chez-make-flags name version)
+           #:test-target "test"
+           #:phases #~(modify-phases %standard-phases
+                        (replace 'configure
+                          #$chez-configure))))
     (home-page "https://github.com/fedeinthemix/chez-srfi")
     (synopsis "SRFI libraries for Chez Scheme")
     (description
@@ -491,42 +510,48 @@ Chez Scheme.")
           (base32 "1dq25qygyncbfq4kwwqqgyyakfqjwhp5q23vrf3bff1p66nyfl3b"))))
       (build-system gnu-build-system)
       (native-inputs
-       `(("chez-scheme" ,chez-scheme)
-         ("ghostscript" ,ghostscript)
-         ("texlive" ,(texlive-updmap.cfg (list texlive-oberdiek
-                                          texlive-epsf
-                                          texlive-metapost
-                                          texlive-charter
-                                          texlive-pdftex
-                                          texlive-context
-                                          texlive-cm
-                                          texlive-tex-plain)))))
+       (list chez-scheme
+             ghostscript
+             ;; FIXME: This package fails to build with the error:
+             ;;     mktexpk: don't know how to create bitmap font for bchr8r
+             ;; Replacing the following with `texlive` fixes it.
+             ;; What is missing?
+             (texlive-updmap.cfg (list texlive-oberdiek
+                                       texlive-epsf
+                                       texlive-metapost
+                                       texlive-charter
+                                       texlive-pdftex
+                                       texlive-context
+                                       texlive-cm
+                                       texlive-tex-plain))))
       (arguments
-       `(#:make-flags (list (string-append "PREFIX=" %output)
-                            (string-append "DOCDIR=" %output "/share/doc/"
-                                           ,name "-" ,version)
-                            (string-append "LIBDIR=" %output "/lib/chezweb")
-                            (string-append "TEXDIR=" %output "/share/texmf-local"))
-                      #:tests? #f        ; no tests
-                      #:phases
-                      (modify-phases %standard-phases
-                        ;; This package has a custom "bootstrap" script that
-                        ;; is meant to be run from the Makefile.
-                        (delete 'bootstrap)
-                        (replace 'configure
-                          (lambda* _
-                            (copy-file "config.mk.template" "config.mk")
-                            (substitute* "tangleit"
-                              (("\\./cheztangle\\.ss" all)
-                               (string-append "chez-scheme --program " all)))
-                            (substitute* "weaveit"
-                              (("mpost chezweb\\.mp")
-                               "mpost --tex=tex chezweb.mp")
-                              (("\\./chezweave" all)
-                               (string-append "chez-scheme --program " all)))
-                            (substitute* "installit"
-                              (("-g \\$GROUP -o \\$OWNER") ""))
-                            #t)))))
+       (list
+        #:make-flags
+        #~(list (string-append "PREFIX=" #$output)
+                (string-append "DOCDIR=" #$output "/share/doc/"
+                               #$name "-" #$version)
+                ;; lib/chez-scheme/chezweb ???
+                (string-append "LIBDIR=" #$output "/lib/chezweb")
+                (string-append "TEXDIR=" #$output "/share/texmf-local"))
+        #:tests? #f ; no tests
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; This package has a custom "bootstrap" script that
+            ;; is meant to be run from the Makefile.
+            (delete 'bootstrap)
+            (replace 'configure
+              (lambda* _
+                (copy-file "config.mk.template" "config.mk")
+                (substitute* "tangleit"
+                  (("\\./cheztangle\\.ss" all)
+                   (string-append "scheme --program " all)))
+                (substitute* "weaveit"
+                  (("mpost chezweb\\.mp")
+                   "mpost --tex=tex chezweb.mp")
+                  (("\\./chezweave" all)
+                   (string-append "scheme --program " all)))
+                (substitute* "installit"
+                  (("-g \\$GROUP -o \\$OWNER") "")))))))
       (home-page "https://github.com/arcfide/ChezWEB")
       (synopsis "Hygienic Literate Programming for Chez Scheme")
       (description "ChezWEB is a system for doing Knuthian style WEB
@@ -550,94 +575,77 @@ programming in Scheme.")
           (base32 "1n5fbwwz51fdzvjackgmnsgh363g9inyxv7kmzi0469cwavwcx5m"))))
       (build-system gnu-build-system)
       (native-inputs
-       `(("chez-scheme" ,chez-scheme)
-         ("chez-web" ,chez-web)
-         ("texlive" ,(texlive-updmap.cfg (list texlive-pdftex)))))
+       (list chez-scheme
+             chez-web
+             (texlive-updmap.cfg (list texlive-pdftex))))
       (arguments
-       `(#:tests? #f              ; no tests
-         #:phases
-         (modify-phases %standard-phases
-           (replace 'configure
-             (lambda* (#:key outputs inputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (chez-web (assoc-ref inputs "chez-web"))
-                      (chez (assoc-ref inputs "chez-scheme"))
-                      (chez-h (dirname (car (find-files chez "scheme\\.h")))))
-                 (substitute* "Makefile"
-                   (("(SCHEMEH=).*$" all var)
-                    (string-append var chez-h)))
-                 #t)))
-           (add-before 'build 'tangle
-             (lambda* (#:key inputs #:allow-other-keys)
-               (setenv "TEXINPUTS"
-                       (string-append
-                        (getcwd) ":"
-                        (assoc-ref inputs "chez-web") "/share/texmf-local/tex/generic:"
-                        ":"))
-               ;; just using "make" tries to build the .c files before
-               ;; they are created.
-               (and (invoke "make" "sockets")
-                    (invoke "make"))))
-           (replace 'build
-             (lambda* (#:key outputs inputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (chez-site (string-append out "/lib/csv"
-                                                ,(package-version chez-scheme)
+       (list
+        #:tests? #f ; no tests
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'configure
+              (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                (let* ((scheme (search-input-file (or native-inputs inputs)
+                                                  "/bin/scheme"))
+                       (lib (string-append (dirname scheme) "/../lib"))
+                       (header-file (car (find-files lib "scheme\\.h")))
+                       (include-dir (dirname header-file)))
+                  (substitute* "Makefile"
+                    (("(SCHEMEH=).*$" _ var)
+                     (string-append var include-dir))))))
+            (add-before 'build 'tangle
+              (lambda* (#:key inputs #:allow-other-keys)
+                (setenv "TEXINPUTS"
+                        (string-append
+                         (getcwd) ":"
+                         (assoc-ref inputs "chez-web")
+                         "/share/texmf-local/tex/generic:"
+                         ":"))
+                ;; just using "make" tries to build the .c files before
+                ;; they are created.
+                (and (invoke "make" "sockets")
+                     (invoke "make"))))
+            (replace 'build
+              (lambda args
+                (let ((chez-site (string-append #$output
+                                                "/lib/csv"
+                                                (package-version chez-scheme)
                                                 "-site/arcfide")))
-                 ;; make sure Chez Scheme can find the shared libraries.
-                 (substitute* "sockets.ss"
-                   (("(load-shared-object) \"(socket-ffi-values\\.[sd][oy].*)\""
-                     all cmd so)
-                    (string-append cmd " \"" chez-site "/" so "\""))
-                   (("sockets-stub\\.[sd][oy].*" all)
-                    (string-append chez-site "/" all)))
-                 ;; to compile chez-sockets, the .so files must be
-                 ;; installed (because of the absolute path we
-                 ;; inserted above).
-                 (for-each (lambda (f d) (install-file f d))
-                           '("socket-ffi-values.so" "sockets-stub.so")
-                           (list chez-site chez-site))
-                 (zero? (system "echo '(compile-file \"sockets.sls\")' | scheme -q")))))
-           (replace 'install
-             (lambda* (#:key outputs inputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (lib (string-append out "/lib/chez-sockets"))
-                      (doc (string-append out "/share/doc/" ,name "-" ,version))
-                      (chez-site (string-append out "/lib/csv"
-                                                ,(package-version chez-scheme)
-                                                "-site/arcfide")))
-                 (for-each (lambda (f d) (install-file f d))
-                           '("sockets.pdf" "sockets.so")
-                           (list doc chez-site))
-                 #t))))))
+                  ;; make sure Chez Scheme can find the shared libraries.
+                  (substitute* "sockets.ss"
+                    (("(object \")(socket-ffi-values\\.[sd][oy][^\"]*)(\")"
+                      _ pre file post)
+                     (string-append pre chez-site "/" file post))
+                    (("(\")(sockets-stub\\.[sd][oy][^\"]*)(\")"
+                      _ pre file post)
+                     (string-append pre chez-site "/" file post)))
+                  ;; to compile chez-sockets, the .so files must be
+                  ;; installed (because of the absolute path we
+                  ;; inserted above).
+                  (for-each (lambda (f)
+                              (install-file f chez-site))
+                            '("socket-ffi-values.so"
+                              "sockets-stub.so"))
+                  (invoke "bash"
+                          "-c"
+                          (format #f "echo '~s' | scheme -q"
+                                  '(compile-file "sockets.sls"))))))
+            (replace 'install
+              (lambda args
+                (install-file "sockets.so"
+                              (string-append #$output
+                                             "/lib/csv"
+                                             #$(package-version chez-scheme)
+                                             "-site/arcfide"))
+                (install-file "sockets.pdf"
+                              (string-append #$output
+                                             "/share/doc/"
+                                             #$name "-" #$version)))))))
       (home-page "https://github.com/arcfide/chez-sockets")
       (synopsis "Extensible sockets library for Chez Scheme")
       (description "Chez-sockets is an extensible sockets library for
 Chez Scheme.")
       (license expat))))
-
-;; Help function for Chez Scheme to add the current path to
-;; CHEZSCHEMELIBDIRS.
-(define chez-configure
-  '(lambda _
-     (let ((chez-env (getenv "CHEZSCHEMELIBDIRS")))
-       (setenv "CHEZSCHEMELIBDIRS"
-               (if chez-env
-                   (string-append ".:" chez-env)
-                   "."))
-       #t)))
-
-;; Help function to define make flags for some Chez Scheme custom make
-;; files.
-(define (chez-make-flags name version)
-  `(let ((out (assoc-ref %outputs "out")))
-     (list
-      ;; Set 'chezversion' so that libraries are installed in
-      ;; 'lib/csvX.Y.Z-site' like Chez's 'native-search-paths' expects.
-      (string-append "chezversion=" ,(package-version chez-scheme))
-      (string-append "PREFIX=" out)
-      (string-append "DOCDIR=" out "/share/doc/"
-                     ,name "-" ,version))))
 
 (define-public chez-matchable
   (package
@@ -659,10 +667,11 @@ Chez Scheme.")
     (native-inputs
      (list chez-scheme))
     (arguments
-     `(#:make-flags ,(chez-make-flags name version)
-       #:test-target "test"
-       #:phases (modify-phases %standard-phases
-                  (replace 'configure ,chez-configure))))
+     (list #:make-flags (chez-make-flags name version)
+           #:test-target "test"
+           #:phases #~(modify-phases %standard-phases
+                        (replace 'configure
+                          #$chez-configure))))
     (synopsis "Portable hygienic pattern matcher for Scheme")
     (description "This package provides a superset of the popular Scheme
 @code{match} package by Andrew Wright, written in fully portable
@@ -690,10 +699,11 @@ Chez Scheme.")
     (native-inputs
      (list chez-scheme))
     (arguments
-     `(#:make-flags ,(chez-make-flags name version)
-       #:test-target "test"
-       #:phases (modify-phases %standard-phases
-                  (replace 'configure ,chez-configure))))
+     (list #:make-flags (chez-make-flags name version)
+           #:test-target "test"
+           #:phases #~(modify-phases %standard-phases
+                        (replace 'configure
+                          #$chez-configure))))
     (home-page "https://github.com/fedeinthemix/chez-irregex")
     (synopsis "Portable regular expression library for Scheme")
     (description "This package provides a portable and efficient
@@ -720,17 +730,18 @@ syntax, with various aliases for commonly used patterns.")
     (native-inputs
      (list chez-scheme))
     (arguments
-     `(#:make-flags ,(chez-make-flags name version)
-       #:test-target "chez-check"
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure ,chez-configure)
-         (replace 'build
-           (lambda* (#:key (make-flags '()) #:allow-other-keys)
-             (apply invoke "make" "chez-build" make-flags)))
-         (replace 'install
-           (lambda* (#:key (make-flags '()) #:allow-other-keys)
-             (apply invoke "make" "chez-install" make-flags))))))
+     (list #:make-flags (chez-make-flags name version)
+           #:test-target "chez-check"
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'configure
+                 #$chez-configure)
+               (replace 'build
+                 (lambda* (#:key (make-flags '()) #:allow-other-keys)
+                   (apply invoke "make" "chez-build" make-flags)))
+               (replace 'install
+                 (lambda* (#:key (make-flags '()) #:allow-other-keys)
+                   (apply invoke "make" "chez-install" make-flags))))))
     (home-page "http://synthcode.com/scheme/fmt")
     (synopsis "Combinator formatting library for Chez Scheme")
     (description "This package provides a library of procedures for
@@ -760,10 +771,11 @@ strings.")
     (native-inputs
      (list chez-scheme))
     (arguments
-     `(#:make-flags ,(chez-make-flags name version)
-       #:test-target "test"
-       #:phases (modify-phases %standard-phases
-                  (replace 'configure ,chez-configure))))
+     (list #:make-flags (chez-make-flags name version)
+           #:test-target "test"
+           #:phases #~(modify-phases %standard-phases
+                        (replace 'configure
+                          #$chez-configure))))
     (synopsis "MIT/GNU Scheme compatibility library for Chez Scheme")
     (description "This package provides a set of MIT/GNU Scheme compatibility
 libraries for Chez Scheme.  The main goal was to provide the functionality
@@ -792,46 +804,44 @@ required to port the program @code{Scmutils} to Chez Scheme.")
     (propagated-inputs
      (list chez-mit chez-srfi))
     (arguments
-     `(#:make-flags ,(chez-make-flags name version)
-       #:tests? #f                      ; no test suite
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure ,chez-configure)
-         ;; Since the documentation is lacking, we install the source
-         ;; code.  For things to work correctly we have to replace
-         ;; relative paths by absolute ones in 'include' forms.  This
-         ;; in turn requires us to compile the files in the final
-         ;; destination.
-         (delete 'build)
-         (add-after 'install 'install-src
-           (lambda* (#:key (make-flags '()) #:allow-other-keys)
-             (apply invoke "make" "install-src" make-flags)))
-         (add-after 'install-src 'absolute-path-in-scm-files
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (for-each (lambda (file)
-                           (substitute* file
-                             (("include +\"\\./scmutils")
-                              (string-append "include \"" (dirname file)))))
-                         (find-files out "\\.sls"))
-               (for-each (lambda (file)
-                           (substitute* file
-                             (("include +\"\\./scmutils/simplify")
-                              (string-append "include \"" (dirname file)))))
-                         (find-files out "fbe-syntax\\.scm"))
-               #t)))
-         (add-after 'absolute-path-in-scm-files 'build
-           (lambda* (#:key outputs (make-flags '()) #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (mk-file (car (find-files out "Makefile"))))
-               (with-directory-excursion (dirname mk-file)
-                 (apply invoke "make" "build" make-flags)))))
-         (add-after 'build 'clean-up
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out")))
-               (for-each delete-file
-                         (find-files out "Makefile|compile-all\\.ss"))
-               #t))))))
+     (list
+      #:make-flags (chez-make-flags name version)
+      #:tests? #f  ; no test suite
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            #$chez-configure)
+          ;; Since the documentation is lacking, we install the source
+          ;; code.  For things to work correctly we have to replace
+          ;; relative paths by absolute ones in 'include' forms.  This
+          ;; in turn requires us to compile the files in the final
+          ;; destination.
+          (delete 'build)
+          (add-after 'install 'install-src
+            (lambda* (#:key (make-flags '()) #:allow-other-keys)
+              (apply invoke "make" "install-src" make-flags)))
+          (add-after 'install-src 'absolute-path-in-scm-files
+            (lambda* (#:key #:allow-other-keys)
+              (for-each (lambda (file)
+                          (substitute* file
+                            (("include +\"\\./scmutils")
+                             (string-append "include \"" (dirname file)))))
+                        (find-files #$output "\\.sls"))
+              (for-each (lambda (file)
+                          (substitute* file
+                            (("include +\"\\./scmutils/simplify")
+                             (string-append "include \"" (dirname file)))))
+                        (find-files #$output "fbe-syntax\\.scm"))))
+          (add-after 'absolute-path-in-scm-files 'build
+            (lambda* (#:key (make-flags '()) #:allow-other-keys)
+              (let ((mk-file (car (find-files #$output "Makefile"))))
+                (with-directory-excursion (dirname mk-file)
+                  (apply invoke "make" "build" make-flags)))))
+          (add-after 'build 'clean-up
+            (lambda args
+              (for-each delete-file
+                        (find-files #$output
+                                    "Makefile|compile-all\\.ss")))))))
     (synopsis "Port of MIT/GNU Scheme Scmutils to Chez Scheme")
     (description "This package provides a port of the MIT/GNU Scheme
 Scmutils program to Chez Scheme.  The port consists of a set of
