@@ -9,6 +9,7 @@
 ;;; Copyright © 2020, 2021, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Luis Felipe López Acevedo <luis.felipe.la@protonmail.com>
+;;; Copyright © 2022 Pradana Aumars <paumars@courrier.dev>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -150,6 +151,22 @@ to the @dfn{don't repeat yourself} (DRY) principle.")
     (native-search-paths '())           ;no need for TZDIR
     (propagated-inputs
      (modify-inputs (package-propagated-inputs python-django-4.0)
+       ;; Django 4.0 deprecated pytz in favor of Pythons built-in zoneinfo.
+       (append python-pytz)))))
+
+;; archivebox requires django>=3.1.3,<3.2
+(define-public python-django-3.1.14
+  (package
+    (inherit python-django-3.2)
+    (version "3.1.14")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "Django" version))
+              (sha256
+               (base32
+                "0ix3v2wlnplv78zxjrlw8z3hiap2d5mxvk0ny2fc65526shsb93j"))))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs python-django-3.2)
        ;; Django 4.0 deprecated pytz in favor of Pythons built-in zoneinfo.
        (append python-pytz)))))
 
