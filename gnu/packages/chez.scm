@@ -211,9 +211,7 @@ If native threads are supported, the returned list will include
     (inputs
      `(("libuuid" ,util-linux "lib")
        ("zlib" ,zlib)
-       ("zlib:static" ,zlib "static")
        ("lz4" ,lz4)
-       ("lz4:static" ,lz4 "static")
        ;; for expeditor:
        ("ncurses" ,ncurses)
        ;; for X11 clipboard support in expeditor:
@@ -266,14 +264,14 @@ If native threads are supported, the returned list will include
                     (lz4-static (assoc-ref inputs "lz4:static"))
                     (out (assoc-ref outputs "out"))
                     ;; add flags which are always required:
-                    (flags (cons*
-                            (string-append "--installprefix=" out)
-                            (string-append "ZLIB=" zlib-static "/lib/libz.a")
-                            (string-append "LZ4=" lz4-static "/lib/liblz4.a")
-                            ;; Guix will do compress man pages,
-                            ;; and letting Chez try causes an error
-                            "--nogzip-man-pages"
-                            configure-flags)))
+                    (flags (cons* (string-append "--installprefix=" out)
+                                  "ZLIB=-lz"
+                                  "LZ4=-llz4"
+                                  "--libkernel"
+                                  ;; Guix will do compress-man-pages,
+                                  ;; and letting Chez try causes an error
+                                  "--nogzip-man-pages"
+                                  configure-flags)))
                (format #t "configure flags: ~s~%" flags)
                ;; Some makefiles (for tests) don't seem to propagate CC
                ;; properly, so we take it out of their hands:
