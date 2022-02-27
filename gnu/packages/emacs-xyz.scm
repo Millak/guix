@@ -451,7 +451,7 @@ a generic Scheme interaction mode for the GNU Emacs editor.")
                 (string-append
                  "(eval-after-load 'geiser-impl '" all ")"))))))))
     (inputs
-     (list chez-scheme))
+     (list (chez-scheme-for-system)))
     (propagated-inputs
      (list emacs-geiser))
     (home-page "https://nongnu.org/geiser/")

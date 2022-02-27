@@ -47,7 +47,8 @@
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
-  #:export (nix-system->chez-machine
+  #:export (chez-scheme-for-system
+            nix-system->chez-machine
             chez-machine->nonthreaded
             chez-machine->threaded
             unpack-nanopass+stex))
@@ -66,6 +67,20 @@
 ;; source.
 ;;
 ;; Code:
+
+(define* (chez-scheme-for-system #:optional
+                                 (system (or (%current-target-system)
+                                             (%current-system))))
+  "Return 'chez-scheme' unless only 'chez-scheme-for-racket' supports SYSTEM,
+including support for native threads."
+  (if (or
+       ;; full support upstream
+       (and=> (chez-upstream-features-for-system system)
+              (cut memq 'threads <>))
+       ;; no support anywhere
+       (not (nix-system->chez-machine system)))
+      chez-scheme
+      chez-scheme-for-racket))
 
 (define (chez-machine->nonthreaded machine)
   "Given a string MACHINE naming a Chez Scheme machine type, returns a string
@@ -751,7 +766,7 @@ create compilers, making them easier to understand and maintain.")
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (native-inputs
-     (list chez-scheme))
+     (list (chez-scheme-for-system)))
     (arguments
      (list #:make-flags (chez-make-flags name version)
            #:test-target "test"
@@ -782,7 +797,7 @@ create compilers, making them easier to understand and maintain.")
           (base32 "1dq25qygyncbfq4kwwqqgyyakfqjwhp5q23vrf3bff1p66nyfl3b"))))
       (build-system gnu-build-system)
       (native-inputs
-       (list chez-scheme
+       (list (chez-scheme-for-system)
              ghostscript
              ;; FIXME: This package fails to build with the error:
              ;;     mktexpk: don't know how to create bitmap font for bchr8r
@@ -847,7 +862,7 @@ programming in Scheme.")
           (base32 "1n5fbwwz51fdzvjackgmnsgh363g9inyxv7kmzi0469cwavwcx5m"))))
       (build-system gnu-build-system)
       (native-inputs
-       (list chez-scheme
+       (list (chez-scheme-for-system)
              chez-web
              (texlive-updmap.cfg (list texlive-pdftex))))
       (arguments
@@ -933,7 +948,7 @@ Chez Scheme.")
     (inputs
      (list chez-srfi)) ; for tests
     (native-inputs
-     (list chez-scheme))
+     (list (chez-scheme-for-system)))
     (arguments
      (list #:make-flags (chez-make-flags name version)
            #:test-target "test"
@@ -965,7 +980,7 @@ Chez Scheme.")
     (propagated-inputs
      (list chez-srfi)) ; for irregex-utils
     (native-inputs
-     (list chez-scheme))
+     (list (chez-scheme-for-system)))
     (arguments
      (list #:make-flags (chez-make-flags name version)
            #:test-target "test"
@@ -996,7 +1011,7 @@ syntax, with various aliases for commonly used patterns.")
     (propagated-inputs
      (list chez-srfi)) ; for irregex-utils
     (native-inputs
-     (list chez-scheme))
+     (list (chez-scheme-for-system)))
     (arguments
      (list #:make-flags (chez-make-flags name version)
            #:test-target "chez-check"
@@ -1059,7 +1074,7 @@ strings.")
     (inputs
      (list chez-srfi))       ; for tests
     (native-inputs
-     (list chez-scheme))
+     (list (chez-scheme-for-system)))
     (arguments
      (list #:make-flags (chez-make-flags name version)
            #:test-target "test"
@@ -1090,7 +1105,7 @@ required to port the program @code{Scmutils} to Chez Scheme.")
     (inputs
      (list chez-srfi))       ; for tests
     (native-inputs
-     (list chez-scheme))
+     (list (chez-scheme-for-system)))
     (propagated-inputs
      (list chez-mit chez-srfi))
     (arguments

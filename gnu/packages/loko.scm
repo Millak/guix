@@ -71,7 +71,7 @@
              #t)))))
     (native-inputs
      `(("akku" ,akku)
-       ("chez-scheme" ,chez-scheme)
+       ("chez-scheme" ,(chez-scheme-for-system))
        ("struct" ,guile-struct-pack)
        ("laesare" ,guile-laesare)
        ("pfds" ,guile-pfds)
