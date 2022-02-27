@@ -54,7 +54,91 @@
 
 ;; Commentary:
 ;;
-;; Here's how bootstrapping minimal Racket works:
+;; Anatomy of Racket:
+;; ------------------
+;;
+;; The main Racket Git repository (<https://github.com/racket/racket>) is
+;; organized broadly like this:
+;;
+;;     .
+;;     ├── Makefile
+;;     ├── pkgs/
+;;     └── racket/
+;;         ├── collects/
+;;         └── src/
+;;             ├── configure
+;;             ├── Makefile.in
+;;             ├── bc/
+;;             ├── cs/
+;;             ├── ChezScheme/
+;;             └── ...
+;;
+;; The 'racket/src/' directory contains the source of the runtime system, core
+;; compiler, and primitives for the major Racket implementations: this layer
+;; is called the ``Racket VM''. It is basically a normal autotools
+;; project. (Even when Racket VM implementations use components implemented in
+;; Racket, they are compiled in special modes to produce VM primitives.)
+;; (There are or have been experimental Racket VM implementations elsewhere,
+;; e.g. <https://github.com/pycket/pycket>.)
+;;
+;; The 'racket/collects/' directory contains ``built in'' Racket libraries
+;; that are not part of any package, including the implementation of
+;; 'racket/base': in particular, it must contain enough to implement `raco pkg
+;; install'. It is theoretically possible to use the Racket VM layer without
+;; the main collections, but it is not stable or useful.
+;;
+;; The 'pkgs/' directory contains Racket packages that are especially closely
+;; tied to the implementation of the Racket VM, including 'compiler-lib',
+;; 'racket-doc', and 'racket-test'. Some of these packages depend on Racket
+;; packages that are developed in other Git repositories, predominantly but
+;; not exclusively under the 'racket' GitHub organization. Conversely, not all
+;; of the packages developed in the main Git repository are part of the main
+;; Racket distribution.  (Additionally, components of the Racket VM that are
+;; implemented in Racket can be installed as packages, mostly for ease of
+;; development.)
+;;
+;; The top-level 'Makefile' is more like a directory of scripts: it has
+;; convienience targets for developing Racket, and it cooperates with the
+;; 'distro-build' package to assemble custom Racket distributions. It is not
+;; part of Racket source distributions: the root of a source distribution is
+;; basically 'racket/src' with some extra package sources and configuration
+;; added.
+;;
+;; A ''minimal Racket'' installation includes two packages: 'base', which is a
+;; sort of bridge between the current ``built-in'' collections and the package
+;; system's model of dependencies, and 'racket-lib', which, for installations
+;; that can not rely on a system package manager, pulls in the SQLite and
+;; OpenSSL shared libraries as platform-specific dependencies for use by the
+;; ``built-in'' collections.
+;;
+;; The main Racket distribution consists of installing the 'main-distribution'
+;; package and all of its dependencies.
+;;
+;; The default mode when building Racket (or installing it with the released
+;; installers) is an ``in-place build'', which produces a self-contained,
+;; relocatable, roughly FHS-like directory. (Racket also supports
+;; ``Unix-style'' installations, which rearrange the parts of an in-place
+;; build into Racket-specific subdirectories and generally tries to work for
+;; installation into an FHS-based system.) Certain tools, e.g. 'distro-build'
+;; and 'raco cross', are able to work with an in-place Racket build.
+;;
+;; This file defines the packages 'racket-vm-cgc', 'racket-vm-bc', and
+;; 'racket-vm-cs'. All three are in-place builds of 'racket/src/' and
+;; 'racket/collects/' and are installed to 'opt/racket-vm/' in the store
+;; output. The function 'racket-vm-for-system' returns the recomended Racket
+;; VM package for a given system.
+;;
+;; The file 'racket.scm' builds on these packages to define 'racket-minimal'
+;; and 'racket' packages. These use Racket's support for ``layered
+;; installations'', which allow an immutable base layer to be extended with
+;; additional packages. They use the layer configuration directly provide
+;; ready-to-install FHS-like trees, rather than relying on the built in
+;; ``Unix-style install'' mechanism.
+;;
+;; Bootstrapping Racket:
+;; ---------------------
+;;
+;; Here's how bootstrapping Racket works:
 ;;
 ;;   - Racket BC [CGC] can be built with only a C compiler (except for
 ;;     one caveat discussed below).
@@ -71,6 +155,10 @@
 ;;     Any variant of Racket since version 7.1 can run the simulation.
 ;;
 ;; So, we build CGC to build 3M to build bootfiles and CS.
+;;
+;; (Note: since the CGC variant is basically only for bootstrapping, we
+;; often use "BC" to mean "3M", consistent with `(banner)` and the
+;; suffixes used on executables when more than one variant co-exists.)
 ;;
 ;; One remaining bootstrapping limitation is that Racket's reader, module
 ;; system, and macro expander are implemented in Racket. For Racket CS,
@@ -145,14 +233,18 @@
           '()))
       ,@(cond
          ((false-if-exception
-           (search-input-file %build-inputs "/bin/racket"))
+           (search-input-file %build-inputs "/opt/racket-vm/bin/racket"))
           => (lambda (racket)
                (list (string-append "--enable-racket=" racket))))
          (else
           '()))
       ,(string-append "CPPFLAGS=-DGUIX_RKTIO_PATCH_BIN_SH="
                       #$(file-append bash-minimal "/bin/sh"))
-      "--disable-strip"))
+      "--disable-strip"
+      ;; XXX: origtree layout is required by some other packages down the
+      ;; bootstrap chain.  Remove these flags as soon as we can do without them.
+      "--enable-origtree"
+      ,(string-append "--prefix=" #$output "/opt/racket-vm")))
 
 (define (make-unpack-nanopass+stex)
   ;; Adapted from chez-scheme.
@@ -173,31 +265,25 @@
           (display "# to placate ../configure")))))
 
 
-(define-public racket-minimal-bc-cgc
+(define-public racket-vm-cgc
   ;; Eventually, it may make sense for some vm packages to not be hidden,
   ;; but this one is especially likely to remain hidden.
   (hidden-package
    (package
-     (name "racket-minimal-bc-cgc")
+     (name "racket-vm-cgc")
      (version %racket-version)
      (source %racket-origin)
-     (inputs
-      (list
-       ;; common to all racket-minimal variants:
-       openssl
-       sqlite
-       bash-minimal ;; <- for `system`
-       ncurses ;; <- for #%terminal
-       ;; only for BC variants:
-       libffi))
+     (inputs (list ncurses ;; <- common to all variants (for #%terminal)
+                   bash-minimal ;; <- common to all variants (for `system`)
+                   libffi)) ;; <- only for BC variants
      (native-inputs (list libtool)) ;; <- only for BC variants
      (outputs '("out" "debug"))
      (build-system gnu-build-system)
      (arguments
       (list
        #:configure-flags
-       #~(cons* "--enable-cgcdefault"
-                #$(racket-vm-common-configure-flags))
+       #~(cons "--enable-cgcdefault"
+               #$(racket-vm-common-configure-flags))
        ;; Tests are in packages like racket-test-core and
        ;; main-distribution-test that aren't part of the main
        ;; distribution.
@@ -208,6 +294,8 @@
                    (ice-9 regex)
                    (guix build gnu-build-system)
                    (guix build utils))
+       #:strip-directories #~'("opt/racket-vm/bin"
+                               "opt/racket-vm/lib")
        #:phases
        #~(modify-phases %standard-phases
            (add-before 'configure 'initialize-config.rktd
@@ -233,26 +321,12 @@
                (with-output-to-file "racket/etc/config.rktd"
                  (lambda ()
                    (write-racket-hash
-                    `((lib-search-dirs
-                       . (#f #$(file-append (this-package-input "openssl") "/lib")
-                             #$(file-append (this-package-input "sqlite") "/lib")))
-                      (build-stamp . "")
+                    `((build-stamp . "")
                       (catalogs ,@maybe-release-catalog
                                 #f)))))))
            (add-before 'configure 'chdir
              (lambda _
-               (chdir "racket/src")))
-           (add-after 'install 'remove-pkgs-directory
-             ;; If the configured pkgs-dir exists, "pkgs.rktd" does not
-             ;; exist, and a lock file does not exist, commands like
-             ;; `raco pkg show` will try to create a lock file and fail
-             ;; due to the read-only store.
-             ;; Arguably this may be a bug in `pkg/private/lock`:
-             ;; see <https://github.com/racket/racket/issues/3851>.
-             ;; As a workaround, remove the directory.
-             (lambda args
-               ;; rmdir because we want an error if it isn't empty
-               (rmdir (string-append #$output "/share/racket/pkgs")))))))
+               (chdir "racket/src"))))))
      (home-page "https://racket-lang.org")
      (synopsis "Old Racket implementation used for bootstrapping")
      (description "This variant of the Racket BC (``before Chez'' or
@@ -262,32 +336,33 @@ PLT Scheme version 370 (which translates to 3.7 in the current versioning
 scheme) by the 3M variant, which in turn was succeeded in version 8.0 by the
 Racket CS implementation.
 
-Racket BC [CGC] is primarily used for bootstrapping Racket BC [3M].  It may
+Racket CGC is primarily used for bootstrapping Racket BC [3M].  It may
 also be used for embedding applications without the annotations needed in C
 code to use the 3M garbage collector.")
      ;; https://download.racket-lang.org/license.html
      ;; The LGPL components are only used by Racket BC.
      (license (list license:lgpl3+ license:asl2.0 license:expat)))))
 
-(define-public racket-minimal-bc-3m
+(define-public racket-vm-bc
   (package
-    (inherit racket-minimal-bc-cgc)
-    (name "racket-minimal-bc-3m")
+    (inherit racket-vm-cgc)
+    (name "racket-vm-bc")
     (native-inputs
-     (modify-inputs (package-native-inputs racket-minimal-bc-cgc)
-       (prepend racket-minimal-bc-cgc)))
+     (modify-inputs (package-native-inputs racket-vm-cgc)
+       (prepend racket-vm-cgc)))
     (arguments
-     (substitute-keyword-arguments (package-arguments racket-minimal-bc-cgc)
+     (substitute-keyword-arguments (package-arguments racket-vm-cgc)
        ((#:configure-flags _ '())
         #~(cons "--enable-bconly"
                 #$(racket-vm-common-configure-flags)))))
-    (synopsis "Minimal Racket with the BC [3M] runtime system")
+    (synopsis "Racket BC [3M] implementation")
     (description "The Racket BC (``before Chez'' or ``bytecode'')
 implementation was the default before Racket 8.0.  It uses a compiler written
 in C targeting architecture-independent bytecode, plus a JIT compiler on most
 platforms.  Racket BC has a different C API and supports a slightly different
 set of architectures than the current default runtime system, Racket CS (based
-on ``Chez Scheme'').
+on ``Chez Scheme'').  It is the recommended implementation for architectures
+that Racket CS doesn't support.
 
 This package is the normal implementation of Racket BC with a precise garbage
 collector, 3M (``Moving Memory Manager'').")
@@ -295,23 +370,23 @@ collector, 3M (``Moving Memory Manager'').")
     ;; The LGPL components are only used by Racket BC.
     (license (list license:lgpl3+ license:asl2.0 license:expat))))
 
-(define-public racket-minimal
+(define-public racket-vm-cs
   (package
-    (inherit racket-minimal-bc-3m)
-    (name "racket-minimal")
+    (inherit racket-vm-bc)
+    (name "racket-vm-cs")
     (inputs
-     (modify-inputs (package-inputs racket-minimal-bc-cgc)
+     (modify-inputs (package-inputs racket-vm-cgc)
        (prepend zlib lz4)
        (delete "libffi")))
     (native-inputs
-     (modify-inputs (package-native-inputs racket-minimal-bc-cgc)
+     (modify-inputs (package-native-inputs racket-vm-cgc)
        (delete "libtool")
        (prepend chez-scheme-for-racket-bootstrap-bootfiles
-                racket-minimal-bc-3m)))
+                racket-vm-bc)))
     (arguments
-     (substitute-keyword-arguments (package-arguments racket-minimal-bc-3m)
-       ((#:phases bc-phases)
-        #~(modify-phases #$bc-phases
+     (substitute-keyword-arguments (package-arguments racket-vm-cgc)
+       ((#:phases those-phases #~%standard-phases)
+        #~(modify-phases #$those-phases
             (add-after 'unpack 'unpack-nanopass+stex
               (lambda args
                 (with-directory-excursion "racket/src/ChezScheme"
@@ -328,17 +403,14 @@ collector, 3M (``Moving Memory Manager'').")
                  "--enable-libz"
                  "--enable-lz4"
                  #$(racket-vm-common-configure-flags)))))
-    (synopsis "Racket without bundled packages such as DrRacket")
-    (description
-     "Racket is a general-purpose programming language in the Scheme family,
-with a large set of libraries and a compiler based on Chez Scheme.  Racket is
-also a platform for language-oriented programming, from small domain-specific
-languages to complete language implementations.
+    (synopsis "Racket CS implementation")
+    (description "The Racket CS implementation, which uses ``Chez Scheme'' as
+its core compiler and runtime system, has been the default Racket VM
+implemetation since Racket 8.0.  It performs better than the Racket BC
+implementation for most programs.
 
-The ``minimal Racket'' distribution includes just enough of Racket for you to
-use @command{raco pkg} to install more.  Bundled packages, such as the
-DrRacket IDE, are not included.")
-    (properties `())
+Using the Racket VM packages directly is not recommended: instead, install the
+@code{racket-minimal} or @code{racket} packages.")
     ;; https://download.racket-lang.org/license.html
     ;; The LGPL components are only used by Racket BC.
     (license (list license:asl2.0 license:expat))))
@@ -353,7 +425,7 @@ DrRacket IDE, are not included.")
     ;; When updating, remember to also update %racket-version in racket.scm.
     (source %racket-origin)
     (inputs `())
-    (native-inputs (list racket-minimal-bc-3m))
+    (native-inputs (list racket-vm-bc))
     (build-system copy-build-system)
     ;; TODO: cross compilation
     (arguments
@@ -371,7 +443,7 @@ DrRacket IDE, are not included.")
           (add-before 'install 'build
             (lambda* (#:key native-inputs inputs #:allow-other-keys)
               (invoke (search-input-file (or native-inputs inputs)
-                                         "/bin/racket")
+                                         "/opt/racket-vm/bin/racket")
                       "rktboot/main.rkt"))))))
     (home-page "https://github.com/racket/ChezScheme")
     ;; ^ This is downstream of https://github.com/racket/racket,
@@ -452,10 +524,116 @@ used to build the name of the resulting store item."
                                %racket-version)))
    specs))
 
+(define-public racket-minimal
+  (package
+    (name "racket-minimal")
+    (version %racket-version)
+    (source #f)
+    ;; For cross-compilation, Matthew Flatt recommends reusing
+    ;; as much of `raco cross` as possible. So, put that off until
+    ;; we have a build system for Racket packages.
+    (inputs
+     (list openssl
+           sqlite
+           racket-vm-cs ;; TODO (racket-vm-for-system)
+           (racket-packages-origin
+            "base" %racket-origin
+            '(("base" "pkgs/base")
+              ("racket-lib" "pkgs/racket-lib")))))
+    (build-system gnu-build-system)
+    (arguments
+     ;; Here and for the `racket` package, we're using #:configure-flags
+     ;; to pass flags for `configure-layer.rkt` and #:make-flags
+     ;; to pass arguments for `raco pkg install`.
+     (list
+      #:configure-flags
+      #~`("--tethered"
+          "--extra-foreign-lib-search-dirs"
+          ,(format
+            #f "~s"
+            (list #$(file-append (this-package-input "openssl") "/lib")
+                  #$(file-append (this-package-input "sqlite") "/lib"))))
+      #:make-flags #~`("racket-lib")
+      #:tests? #f ;; packaged separately
+      #:modules '((guix build gnu-build-system)
+                  (guix build utils)
+                  (guix build union)
+                  (ice-9 match))
+      #:imported-modules `((guix build union)
+                           ,@%gnu-build-system-modules)
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'unpack)
+          (replace 'configure
+            (lambda* (#:key inputs configure-flags #:allow-other-keys)
+              (let* ((vm-dir (search-input-directory inputs "opt/racket-vm"))
+                     (racket (string-append vm-dir "/bin/racket")))
+                (apply invoke
+                       racket
+                       #$configure-layer.rkt
+                       `(,@(cond
+                            ((false-if-exception
+                              (search-input-file
+                               inputs "etc/racket/config.rktd"))
+                             => (lambda (file)
+                                  `("--parent"
+                                    ,(dirname (dirname (dirname file))))))
+                            (else
+                             '()))
+                         ,@configure-flags
+                         ,vm-dir
+                         ,#$output))
+                (invoke racket
+                        "--config" (string-append #$output "/etc/racket")
+                        "-l" "raco" "setup"
+                        "--no-user"))))
+          (replace 'build
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; We use "share/racket/pkgs" for sources to distinguish them
+              ;; from the "lib/racket/pkgs" of a potential parent layer.
+              (union-build (string-append #$output "/lib/racket/pkgs")
+                           (search-path-as-list '("share/racket/pkgs")
+                                                (map cdr inputs))
+                           #:create-all-directories? #t)))
+          (replace 'install
+            (lambda* (#:key inputs make-flags #:allow-other-keys)
+              (let ((racket
+                     (search-input-file inputs "/opt/racket-vm/bin/racket")))
+                (unless (null? make-flags)
+                  (invoke racket
+                          "-l-"
+                          "pkg/dirs-catalog"
+                          "--link"
+                          "local-catalog"
+                          (string-append #$output "/lib/racket/pkgs"))
+                  (apply invoke
+                         racket
+                         "--config" (string-append #$output "/etc/racket")
+                         "-l" "raco"
+                         "pkg" "install"
+                         "--installation"
+                         "--auto"
+                         "--catalog" "local-catalog"
+                         make-flags))))))))
+    (home-page "https://racket-lang.org")
+    (synopsis "Racket without bundled packages such as DrRacket")
+    (description
+     "Racket is a general-purpose programming language in the Scheme family,
+with a large set of libraries and a compiler based on Chez Scheme.  Racket is
+also a platform for language-oriented programming, from small domain-specific
+languages to complete language implementations.
+
+The ``minimal Racket'' distribution includes just enough of Racket for you to
+use @command{raco pkg} to install more.  Bundled packages, such as the
+DrRacket IDE, are not included.")
+    ;; https://download.racket-lang.org/license.html
+    ;; The LGPL components are only used by Racket BC.
+    (license (list license:asl2.0 license:expat))))
+
 (define-public racket
   (package
+    (inherit racket-minimal)
     (name "racket")
-    (version %racket-version)
     (source #f)
     (native-inputs (list racket-minimal)) ; XXX: conservative estimate, untested
     (inputs
@@ -475,6 +653,7 @@ used to build the name of the resulting store item."
       unixodbc
       libedit ;; TODO reconsider in light of expeditor and readline-gpl
       racket-minimal ;; <-- TODO non-tethered layer
+      racket-vm-cs ;; TODO (racket-vm-for-system)
       (simple-racket-origin
        "2d" (base32 "1zzcz5qyjv7syi41vb8jkxjp1rqgj61zbsdrg0nlc4qy9qsafzgr")
        '("2d" "2d-doc" "2d-lib"))
@@ -483,9 +662,7 @@ used to build the name of the resulting store item."
        '(("algol60" ".")))
       (racket-packages-origin
        "racket" %racket-origin
-       '(("base" "pkgs/base") ;; FIXME belongs in racket-minimal
-         ("racket-lib" "pkgs/racket-lib") ;; FIXME belongs in racket-minimal
-         ("at-exp-lib" "pkgs/at-exp-lib")
+       '(("at-exp-lib" "pkgs/at-exp-lib")
          ("compiler" "pkgs/compiler")
          ("compiler-lib" "pkgs/compiler-lib")
          ("net" "pkgs/net")
@@ -809,91 +986,39 @@ used to build the name of the resulting store item."
        '("xrepl" "xrepl-doc" "xrepl-lib"))))
     (build-system gnu-build-system)
     (arguments
-     ;; We're using #:configure-flags to pass flags for
-     ;; `configure-layer.rkt` and #:make-flags to pass arguments for
-     ;; `raco pkg install`.
-     (list
-      #:configure-flags
-      #~`("--extra-foreign-lib-search-dirs"
-          ,(format #f "~s"
-                   '(#$@(map (lambda (name)
-                               (cond
-                                ((this-package-input name)
-                                 => (cut file-append <> "/lib"))
-                                (else
-                                 (raise-exception
-                                  (make-exception
-                                   (make-assertion-failure)
-                                   (make-exception-with-message
-                                    "missing input to the 'racket' package")
-                                   (make-exception-with-irritants
-                                    (list name)))))))
-                             '("cairo"
-                               "fontconfig-minimal" ;; aka fontconfig
-                               "glib"
-                               "glu"
-                               "gmp"
-                               "gtk+"
-                               "libjpeg-turbo"
-                               "libpng"
-                               "libx11"
-                               "mesa"
-                               "mpfr"
-                               "pango"
-                               "unixodbc"
-                               "libedit")))))
-      #:make-flags #~`("main-distribution")
-      #:tests? #f ;; packaged separately
-      #:modules '((guix build gnu-build-system)
-                  (guix build utils)
-                  (guix build union)
-                  (ice-9 match))
-      #:imported-modules `((guix build union)
-                           ,@%gnu-build-system-modules)
-      #:phases
-      #~(modify-phases %standard-phases
-          (delete 'unpack)
-          (replace 'configure
-            (lambda* (#:key inputs configure-flags #:allow-other-keys)
-              (let* ((racket (search-input-file inputs "bin/racket")))
-                (apply invoke
-                       racket
-                       #$configure-layer.rkt
-                       `(,@configure-flags
-                         ,(dirname (dirname racket))
-                         ,#$output))
-                (invoke racket
-                        "--config" (string-append #$output "/etc/racket")
-                        "-l" "raco" "setup"
-                        "--no-user"))))
-          (replace 'build
-            (lambda* (#:key inputs #:allow-other-keys)
-              ;; We use "share/racket/pkgs" for sources to distinguish them
-              ;; from the "lib/racket/pkgs" of a potential parent layer.
-              (union-build (string-append #$output "/lib/racket/pkgs")
-                           (search-path-as-list '("share/racket/pkgs")
-                                                (map cdr inputs))
-                           #:create-all-directories? #t)))
-          (replace 'install
-            (lambda* (#:key inputs make-flags #:allow-other-keys)
-              (let ((racket (search-input-file inputs "/bin/racket")))
-                (unless (null? make-flags)
-                  (invoke racket
-                          "-l-"
-                          "pkg/dirs-catalog"
-                          "--link"
-                          "local-catalog"
-                          (string-append #$output "/lib/racket/pkgs"))
-                  (apply invoke
-                         racket
-                         "--config" (string-append #$output "/etc/racket")
-                         "-l" "raco"
-                         "pkg" "install"
-                         "--installation"
-                         "--auto"
-                         "--catalog" "local-catalog"
-                         make-flags))))))))
-    (home-page "https://racket-lang.org")
+     (substitute-keyword-arguments (package-arguments racket-minimal)
+       ((#:make-flags _ '())
+        #~`("main-distribution"))
+       ((#:configure-flags _ '())
+        #~`("--tethered"
+            "--extra-foreign-lib-search-dirs"
+            ,(format #f "~s"
+                     '(#$@(map (lambda (name)
+                                 (cond
+                                  ((this-package-input name)
+                                   => (cut file-append <> "/lib"))
+                                  (else
+                                   (raise-exception
+                                    (make-exception
+                                     (make-assertion-failure)
+                                     (make-exception-with-message
+                                      "missing input to the 'racket' package")
+                                     (make-exception-with-irritants
+                                      (list name)))))))
+                               '("cairo"
+                                 "fontconfig-minimal" ;; aka fontconfig
+                                 "glib"
+                                 "glu"
+                                 "gmp"
+                                 "gtk+"
+                                 "libjpeg-turbo"
+                                 "libpng"
+                                 "libx11"
+                                 "mesa"
+                                 "mpfr"
+                                 "pango"
+                                 "unixodbc"
+                                 "libedit"))))))))
     (synopsis "Programmable programming language in the Scheme family")
     (description
      "Racket is a general-purpose programming language in the Scheme family,
@@ -903,10 +1028,7 @@ languages to complete language implementations.
 
 The main Racket distribution comes with many bundled packages, including the
 DrRacket IDE, libraries for GUI and web programming, and implementations of
-languages such as Typed Racket, R5RS and R6RS Scheme, Algol 60, and Datalog.")
-    ;; https://download.racket-lang.org/license.html
-    ;; The LGPL components are only used by Racket BC.
-    (license (list license:asl2.0 license:expat))))
+languages such as Typed Racket, R5RS and R6RS Scheme, Algol 60, and Datalog.")))
 
 (define configure-layer.rkt
   (scheme-file
@@ -919,41 +1041,53 @@ languages such as Typed Racket, R5RS and R6RS Scheme, Algol 60, and Datalog.")
               racket/port
               racket/list
               racket/pretty)
-     (define config-file-pth
-       "etc/racket/config.rktd")
      (define (build-path-string . args)
        (path->string (apply build-path args)))
      (define rx:racket
        ;; Guile's reader doesn't support #rx"racket"
        (regexp "racket"))
+     (define tethered? #f)
+     (define parent #f)
      (define extra-foreign-lib-search-dirs '())
-     (define-values [parent-layer prefix]
+     (define-values [vm-dir prefix]
        (command-line
         #:once-each
+        [("--tethered") "create a tethered layer"
+         (set! tethered? #t)]
+        [("--parent") dir "path of parent layer, if any"
+         (set! parent dir)]
         [("--extra-foreign-lib-search-dirs") dir-list
          "foreign library directories, as a list of strings in `read` syntax"
          (set! extra-foreign-lib-search-dirs
                (call-with-input-string dir-list read))]
-        #:args (parent-layer prefix)
-        (values parent-layer prefix)))
+        #:args (vm-dir prefix)
+        (values vm-dir prefix)))
      (let* ([config
              (for/fold
-              ([config (file->value (build-path parent-layer
-                                                config-file-pth))])
-              ([spec (in-list
-                      '((lib-dir lib-search-dirs "lib/racket")
-                        (share-dir share-search-dirs "share/racket")
-                        (links-file
-                         links-search-files
-                         "share/racket/links.rktd")
-                        (pkgs-dir pkgs-search-dirs "share/racket/pkgs")
-                        (bin-dir bin-search-dirs "bin")
-                        (man-dir man-search-dirs "share/man")
-                        (doc-dir doc-search-dirs "share/doc/racket")
-                        (include-dir
-                         include-search-dirs
-                         "include/racket")))])
-              (match-define (list main-key search-key pth) spec)
+              ([config (file->value
+                        (if parent
+                            (build-path parent "etc/racket/config.rktd")
+                            (build-path vm-dir "etc/config.rktd")))])
+              ([spec
+                (in-list
+                 '((lib-dir lib-search-dirs "lib/racket" "lib")
+                   (share-dir share-search-dirs "share/racket" "share")
+                   (links-file links-search-files
+                               "lib/racket/links.rktd"
+                               "share/links.rktd")
+                   (pkgs-dir pkgs-search-dirs "lib/racket/pkgs" "share/pkgs")
+                   ;; Partial workaround for:
+                   ;; https://github.com/racket/racket/issues/4133
+                   #;(bin-dir bin-search-dirs "bin" "bin")
+                   (bin-dir bin-search-dirs
+                            "lib/racket/bogus-untethered-bin"
+                            "bin")
+                   (man-dir man-search-dirs "share/man" "share/man")
+                   (doc-dir doc-search-dirs "share/doc/racket" "doc")
+                   (include-dir include-search-dirs
+                                "include/racket"
+                                "include")))])
+              (match-define (list main-key search-key pth vm-pth) spec)
               (hash-set*
                config
                main-key
@@ -962,7 +1096,10 @@ languages such as Typed Racket, R5RS and R6RS Scheme, Algol 60, and Datalog.")
                (list* #f
                       (hash-ref config
                                 main-key
-                                (build-path-string parent-layer pth))
+                                (lambda ()
+                                  (if parent
+                                      (build-path-string parent pth)
+                                      (build-path-string vm-dir vm-pth))))
                       (filter values (hash-ref config search-key null)))))]
             [config
              (hash-update config
@@ -996,15 +1133,21 @@ languages such as Typed Racket, R5RS and R6RS Scheme, Algol 60, and Datalog.")
                                          ;; workaround Guile reader/printer:
                                          ['|3m| "-bc"]
                                          [_ ""])))]
-            [bin-dir
-             (hash-ref config 'bin-dir)]
             [config
-             (hash-set* config
-                        'config-tethered-apps-dir (hash-ref config 'apps-dir)
-                        'config-tethered-console-bin-dir bin-dir
-                        'config-tethered-gui-bin-dir bin-dir)]
-            [new-config-pth
-             (build-path prefix config-file-pth)])
+             (cond
+              [tethered?
+               ;; Partial workaround for:
+               ;; https://github.com/racket/racket/issues/4133
+               #;(define bin-dir (hash-ref config 'bin-dir))
+               (define bin-dir (build-path-string prefix "bin"))
+               (hash-set* config
+                          'config-tethered-apps-dir (hash-ref config 'apps-dir)
+                          'config-tethered-console-bin-dir bin-dir
+                          'config-tethered-gui-bin-dir bin-dir)]
+              [else
+               config])])
+       (define new-config-pth
+         (build-path prefix "etc/racket/config.rktd"))
        (make-parent-directory* new-config-pth)
        (call-with-output-file*
         new-config-pth
