@@ -233,7 +233,7 @@ If native threads are supported, the returned list will include
     (native-search-paths
      (list (search-path-specification
             (variable "CHEZSCHEMELIBDIRS")
-            (files (list (string-append "lib/csv" version "-site"))))))
+            (files '("lib/chez-scheme")))))
     (outputs '("out" "doc"))
     (arguments
      `(#:modules
@@ -458,9 +458,9 @@ Chez Scheme.")
 (define (chez-make-flags name version)
   #~(let ((out #$output))
       (list
-       ;; Set 'chezversion' so that libraries are installed in
-       ;; 'lib/csvX.Y.Z-site' like Chez's 'native-search-paths' expects.
-       (string-append "chezversion=" #$(package-version chez-scheme))
+       ;; Set 'schemedir' so that libraries are installed in
+       ;; 'lib/chez-scheme' like Chez's 'native-search-paths' expects.
+       (string-append "schemedir=" out "/lib/chez-scheme")
        (string-append "PREFIX=" out)
        (string-append "DOCDIR=" out "/share/doc/" #$name "-" #$version))))
 
@@ -608,9 +608,7 @@ programming in Scheme.")
             (replace 'build
               (lambda args
                 (let ((chez-site (string-append #$output
-                                                "/lib/csv"
-                                                (package-version chez-scheme)
-                                                "-site/arcfide")))
+                                                "/lib/chez-scheme/arcfide")))
                   ;; make sure Chez Scheme can find the shared libraries.
                   (substitute* "sockets.ss"
                     (("(object \")(socket-ffi-values\\.[sd][oy][^\"]*)(\")"
@@ -634,9 +632,7 @@ programming in Scheme.")
               (lambda args
                 (install-file "sockets.so"
                               (string-append #$output
-                                             "/lib/csv"
-                                             #$(package-version chez-scheme)
-                                             "-site/arcfide"))
+                                             "/lib/chez-scheme/arcfide"))
                 (install-file "sockets.pdf"
                               (string-append #$output
                                              "/share/doc/"
