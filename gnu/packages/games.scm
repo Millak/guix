@@ -9174,8 +9174,7 @@ and also provides the base for the FlightGear Flight Simulator.")
            ;; There are some bundled libraries.
            (for-each delete-file-recursively
                      '("3rdparty/sqlite3/"
-                       "3rdparty/cppunit/"))
-           #t))))
+                       "3rdparty/cppunit/"))))))
     (build-system qt-build-system)
     (arguments
      (list #:configure-flags
@@ -9209,8 +9208,7 @@ and also provides the base for the FlightGear Flight Simulator.")
                      (with-directory-excursion share
                        (invoke "tar" "xf"
                                #$(this-package-native-input "flightgear-data")
-                               "--strip-components=1")))
-                   #t)))))
+                               "--strip-components=1"))))))))
     (inputs
      (list boost
            dbus
