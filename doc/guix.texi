@@ -1867,8 +1867,24 @@ $ export GUIX_LOCPATH=$HOME/.guix-profile/lib/locale
 
 Note that the @code{glibc-locales} package contains data for all the
 locales supported by the GNU@tie{}libc and weighs in at around
-917@tie{}MiB@.  Alternatively, the @code{glibc-utf8-locales} is smaller but
-limited to a few UTF-8 locales.
+930@tie{}MiB@footnote{The size of the @code{glibc-locales} package is
+reduced down to about 213@tie{}MiB with store deduplication and further
+down to about 67@tie{}MiB when using a zstd-compressed Btrfs file
+system.}.  If you only need a few locales, you can define your custom
+locales package via the @code{make-glibc-utf8-locales} procedure from
+the @code{(gnu packages base)} module.  The following example defines a
+package containing the various Canadian UTF-8 locales known to the
+GNU@tie{}libc, that weighs around 14@tie{}MiB:
+
+@lisp
+(use-modules (gnu packages base))
+
+(define my-glibc-locales
+  (make-glibc-utf8-locales
+   glibc
+   #:locales (list "en_CA" "fr_CA" "ik_CA" "iu_CA" "shs_CA")
+   #:name "glibc-canadian-utf8-locales"))
+@end lisp
 
 The @env{GUIX_LOCPATH} variable plays a role similar to @env{LOCPATH}
 (@pxref{Locale Names, @env{LOCPATH},, libc, The GNU C Library Reference
