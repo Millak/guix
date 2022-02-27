@@ -33,6 +33,7 @@
   #:use-module (guix gexp)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system copy)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages ghostscript)
@@ -158,30 +159,6 @@ If native threads are supported, the returned list will include
 ;; Chez Scheme:
 ;;
 
-(define-public nanopass
-  (let ((version "1.9.2"))
-    (origin
-      (method git-fetch)
-      (uri (git-reference
-            (url "https://github.com/nanopass/nanopass-framework-scheme")
-            (commit (string-append "v" version))))
-      (sha256 (base32 "16vjsik9rrzbabbhbxbaha51ppi3f9n8rk59pc6zdyffs0vziy4i"))
-      (file-name (git-file-name "nanopass" version)))))
-
-(define stex
-  ;; This commit includes a fix, which we would otherwise want to use as
-  ;; patch.  Let's revert to tagged releases as soon as one becomes available.
-  (let* ((commit "54051494434a197772bf6ca5b4e6cf6be55f39a5")
-         (version "1.2.2")
-         (version (git-version version "1" commit)))
-    (origin
-      (method git-fetch)
-      (uri (git-reference
-            (url "https://github.com/dybvig/stex")
-            (commit commit)))
-      (sha256 (base32 "01jnvw8qw33gnpzwrakwhsr05h6b609lm180jnspcrb7lds2p23d"))
-      (file-name (git-file-name "stex" version)))))
-
 (define-public chez-scheme
   (package
     (name "chez-scheme")
@@ -218,15 +195,7 @@ If native threads are supported, the returned list will include
       libx11))
     (native-inputs
      (list nanopass ; source only
-           ;; for docs
-           stex
-           xorg-rgb
-           (texlive-updmap.cfg (list texlive-dvips-l3backend
-                                     texlive-epsf
-                                     texlive-fonts-ec
-                                     texlive-oberdiek))
-           ghostscript
-           netpbm))
+           stex-bootstrap))
     (native-search-paths
      (list (search-path-specification
             (variable "CHEZSCHEMELIBDIRS")
@@ -249,9 +218,11 @@ If native threads are supported, the returned list will include
               (copy-recursively #$nanopass
                                 "nanopass"
                                 #:keep-mtime? #t)
-              (copy-recursively #$stex
-                                "stex"
-                                #:keep-mtime? #t)))
+              (mkdir-p "stex")
+              (with-output-to-file "stex/Mf-stex"
+                (lambda ()
+                  ;; otherwise, it will try to download submodules
+                  (display "# to placate ../configure")))))
           ;; NOTE: the custom Chez 'configure' script doesn't allow
           ;; unrecognized flags, such as those automatically added
           ;; by `gnu-build-system`.
@@ -287,32 +258,9 @@ If native threads are supported, the returned list will include
                    (symlink scheme.boot
                             (string-append (dirname scheme.boot)
                                            "/chez-scheme.boot")))))))
-          ;; Building explicitly lets us avoid using substitute*
-          ;; to re-write makefiles.
-          (add-after 'install-symlink 'prepare-stex
-            (lambda* (#:key native-inputs inputs outputs #:allow-other-keys)
-              ;; Eventually we want to install stex as a real
-              ;; package so it's reusable. For now:
-              (let* ((stex-output "/tmp")
-                     (doc-dir (string-append stex-output "/share/doc/stex")))
-                (with-directory-excursion "stex"
-                  (invoke "make"
-                          "install"
-                          (string-append "LIB="
-                                         stex-output
-                                         "/lib/stex")
-                          (string-append "Scheme="
-                                         (search-input-file outputs
-                                                            "/bin/scheme")))
-                  (for-each (lambda (pth)
-                              (install-file pth doc-dir))
-                            '("ReadMe" ; includes the license
-                              "doc/stex.html"
-                              "doc/stex.css"
-                              "doc/stex.pdf"))))))
           ;; Building the documentation requires stex and a running scheme.
           ;; FIXME: this is probably wrong for cross-compilation
-          (add-after 'prepare-stex 'install-doc
+          (add-after 'install-symlink 'install-doc
             (lambda* (#:key native-inputs inputs outputs #:allow-other-keys)
               (match (assoc-ref outputs "doc")
                 (#f
@@ -320,7 +268,9 @@ If native threads are supported, the returned list will include
                 (doc-prefix
                  (let* ((chez+version (strip-store-file-name #$output))
                         (scheme (search-input-file outputs "/bin/scheme"))
-                        (stexlib "/tmp/lib/stex")
+                        (stexlib (search-input-directory (or native-inputs
+                                                             inputs)
+                                                         "/lib/stex"))
                         (doc-dir (string-append doc-prefix
                                                 "/share/doc/"
                                                 chez+version)))
@@ -420,7 +370,150 @@ Chez Scheme.")
     (license (list asl2.0))))
 
 ;;
-;; Packages:
+;; Chez's bootstrap dependencies:
+;;
+
+(define-public stex-bootstrap
+  ;; This commit includes a fix which we would otherwise want to use as
+  ;; patch.  Let's revert to tagged releases as soon as one becomes available.
+  (let ((commit "54051494434a197772bf6ca5b4e6cf6be55f39a5")
+        (revision "1"))
+    (hidden-package
+     (package
+       (name "stex")
+       ;; ^ Debian calls this "stex", not "chez-stex". It is a set of
+       ;; command-line tools, and there isn't a Scheme API, let alone a
+       ;; Chez-specific one, except perhaps that the Scheme examples are
+       ;; assumed to be Chez-compatible.
+       (version (git-version "1.2.2" revision commit))
+       (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                (url "https://github.com/dybvig/stex")
+                (commit commit)))
+          (sha256
+           (base32 "01jnvw8qw33gnpzwrakwhsr05h6b609lm180jnspcrb7lds2p23d"))
+          (file-name (git-file-name name version))
+          (snippet
+           #~(for-each delete-file
+                       '("sbin/install" "doc/stex.pdf" "doc/stex.html")))))
+       (outputs '("out"))
+       (build-system copy-build-system)
+       ;; N.B. Upstream does not seem to support cross-compilation,
+       ;; though it would probably be easy to add.
+       (propagated-inputs
+        (list xorg-rgb
+              (texlive-updmap.cfg
+               (list texlive-dvips-l3backend
+                     texlive-hyperref
+                     texlive-bibtex
+                     texlive-epsf
+                     texlive-fonts-ec
+                     texlive-oberdiek))
+              ghostscript
+              netpbm))
+       ;; Debian uses a versionless path for STEXLIB,
+       ;; which is much more convienient.
+       (arguments
+        (list
+         #:install-plan #~`(("inputs" "lib/stex/")
+                            ("gifs" "lib/stex/")
+                            ("math" "lib/stex/")
+                            ("src" "lib/stex/")
+                            ("Mf-stex" "lib/stex/")
+                            ("Makefile.template" "lib/stex/"))
+         #:phases
+         #~(modify-phases %standard-phases
+             (add-before 'install 'patch-sources
+               (lambda* (#:key native-inputs inputs outputs #:allow-other-keys)
+                 (define scheme
+                   (false-if-exception
+                    (search-input-file inputs "/bin/scheme")))
+                 (when scheme
+                   (setenv "Scheme" scheme))
+                 (substitute* '("Makefile.template"
+                                "doc/Makefile")
+                   (("STEXLIB=[^\n]*")
+                    (string-append "STEXLIB=" #$output "/lib/stex"))
+                   (("Scheme=[^\n]*")
+                    (string-append "Scheme=" (or scheme "scheme"))))
+                 (substitute* '("Mf-stex"
+                                "math/Makefile")
+                   (("/bin/rm")
+                    "rm"))
+                 (substitute* "Mf-stex"
+                   (("SHELL=bash")
+                    ;; avoid Solaris workaround
+                    "#SHELL=bash"))))
+             (add-after 'install 'maybe-compile
+               (lambda* (#:key native-inputs inputs outputs #:allow-other-keys)
+                 (cond
+                  ((getenv "Scheme")
+                   => (lambda (scheme)
+                        (define makefile
+                          (string-append (getcwd) "/Makefile"))
+                        (define machine
+                          #$(chez-machine->threaded
+                             (nix-system->chez-machine)))
+                        (with-directory-excursion
+                            (search-input-directory outputs "/lib/stex")
+                          (invoke "make"
+                                  "-f" makefile
+                                  (string-append "Scheme=" scheme))
+                          (for-each delete-file
+                                    (find-files machine "\\.")))))
+                  (else
+                   ;; for bootstrapping, can run without ahead-of-time
+                   ;; compilation
+                   (format #t "not compiling~%")))))
+             (add-after 'maybe-compile 'maybe-make-docs
+               (lambda* (#:key native-inputs inputs outputs #:allow-other-keys)
+                 (cond
+                  ((assoc-ref outputs "doc")
+                   => (lambda (doc-prefix)
+                        (define doc-dir
+                          (string-append doc-prefix "/share/doc/stex"))
+                        ;; the Makefile is referenced in the documentation
+                        (copy-recursively "doc" doc-dir)
+                        (install-file "ReadMe" doc-dir)
+                        (with-directory-excursion "doc"
+                          (invoke "make")
+                          (install-file "stex.html" doc-dir)
+                          (install-file "stex.pdf" doc-dir))))
+                  (else
+                   (format #t "not making docs~%"))))))))
+       (home-page "https://github.com/dybvig/stex")
+       (synopsis "LaTeX with embeded Scheme code and HTML generation")
+       (description "The @code{stex} package extends LaTeX with a handful of
+commands for including Scheme code (or pretty much any other kind of code, as
+long as you don't plan to use the Scheme-specific transcript support) in a
+document.  It provides the programs @code{scheme-prep} and @code{html-prep} to
+convert @code{stex} documents to LaTeX and HTML, respectively, plus makefile
+templates, style files, and other resources.  The @code{stex} system is used
+to typeset @cite{The Scheme Programming Language} and the @cite{Chez Scheme
+User's Guix}, among other documents.")
+       (license expat)))))
+
+(define-public stex
+  (package/inherit stex-bootstrap
+    (inputs (modify-inputs (package-inputs stex-bootstrap)
+              (prepend chez-scheme)))
+    (outputs '("out" "doc"))
+    (properties '())))
+
+(define-public nanopass
+  (let ((version "1.9.2"))
+    (origin
+      (method git-fetch)
+      (uri (git-reference
+            (url "https://github.com/nanopass/nanopass-framework-scheme")
+            (commit (string-append "v" version))))
+      (sha256 (base32 "16vjsik9rrzbabbhbxbaha51ppi3f9n8rk59pc6zdyffs0vziy4i"))
+      (file-name (git-file-name "nanopass" version)))))
+
+;;
+;; Other Chez packages:
 ;;
 
 ;; Help function for Chez Scheme to add the current path to
