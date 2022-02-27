@@ -415,58 +415,6 @@ Using the Racket VM packages directly is not recommended: instead, install the
     ;; The LGPL components are only used by Racket BC.
     (license (list license:asl2.0 license:expat))))
 
-(define-public chez-scheme-for-racket-bootstrap-bootfiles
-  (package
-    (name "chez-scheme-for-racket-bootstrap-bootfiles")
-    (version "9.5.7.3")
-    ;; The version should match `(scheme-fork-version-number)`.
-    ;; See racket/src/ChezScheme/s/cmacros.ss c. line 360.
-    ;; It will always be different than the upstream version!
-    ;; When updating, remember to also update %racket-version in racket.scm.
-    (source %racket-origin)
-    (inputs `())
-    (native-inputs (list racket-vm-bc))
-    (build-system copy-build-system)
-    ;; TODO: cross compilation
-    (arguments
-     (list
-      #:install-plan
-      #~`(("boot/" "lib/chez-scheme-bootfiles"))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'chdir
-            (lambda args
-              (chdir "racket/src/ChezScheme")))
-          (add-after 'chdir 'unpack-nanopass+stex
-            (lambda args
-              #$(make-unpack-nanopass+stex)))
-          (add-before 'install 'build
-            (lambda* (#:key native-inputs inputs #:allow-other-keys)
-              (invoke (search-input-file (or native-inputs inputs)
-                                         "/opt/racket-vm/bin/racket")
-                      "rktboot/main.rkt"))))))
-    (home-page "https://github.com/racket/ChezScheme")
-    ;; ^ This is downstream of https://github.com/racket/racket,
-    ;; but it's designed to be a friendly landing place for people
-    ;; who want a ChezScheme-shaped repositroy.
-    (synopsis "Chez Scheme bootfiles bootstrapped by Racket")
-    (description "Chez Scheme is a self-hosting compiler: building it
-requires ``bootfiles'' containing the Scheme-implemented portions compiled for
-the current platform.  (Chez can then cross-compile bootfiles for all other
-supported platforms.)
-
-The Racket package @code{cs-bootstrap} (part of the main Racket Git
-repository) implements enough of a Chez Scheme simulation to load the Chez
-Scheme compiler purely from source into Racket and apply the compiler to
-itself, thus bootstrapping Chez Scheme.  Bootstrapping takes about 10 times as
-long as using an existing Chez Scheme, but @code{cs-bootstrap} supports Racket
-7.1 and later, including the Racket BC variant.
-
-Note that the generated bootfiles are specific to Racket's fork of Chez
-Scheme, and @code{cs-bootstrap} does not currently support building upstream
-Chez Scheme.")
-    (license (list license:asl2.0))))
-
 (define (racket-packages-origin name origin specs)
   "Extract from ORIGIN the sources for the Racket packages specified by SPECS,
 a non-empty list of package specifications.  In the resulting file-like

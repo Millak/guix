@@ -31,12 +31,14 @@
   #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module (guix gexp)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages netpbm)
+  #:use-module (gnu packages racket)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages image)
@@ -259,6 +261,66 @@ Revised^6 Report on Scheme (R6RS), with numerous extensions.  The compiler
 generates native code for each target processor, with support for x86, x86_64,
 and 32-bit PowerPC architectures.")
     (license asl2.0)))
+
+(define-public chez-scheme-for-racket-bootstrap-bootfiles
+  (package
+    (name "chez-scheme-for-racket-bootstrap-bootfiles")
+    (version "9.5.7.3")
+    ;; The version should match `(scheme-fork-version-number)`.
+    ;; See racket/src/ChezScheme/s/cmacros.ss c. line 360.
+    ;; It will always be different than the upstream version!
+    ;; When updating, remember to also update %racket-version in racket.scm.
+    (source #f) ; avoid problematic cycle with racket.scm
+    (inputs `())
+    (native-inputs (list racket-vm-bc))
+    (build-system copy-build-system)
+    ;; TODO: cross compilation
+    (arguments
+     (list
+      #:install-plan
+      #~`(("boot/" "lib/chez-scheme-bootfiles"))
+      #:phases
+      #~(let ((unpack (assoc-ref %standard-phases 'unpack)))
+          (modify-phases %standard-phases
+            (replace 'unpack
+              (lambda args
+                (unpack #:source #$(or (package-source this-package)
+                                       (package-source racket-vm-bc)))))
+            (add-after 'unpack 'chdir
+              (lambda args
+                (chdir "racket/src/ChezScheme")))
+            (add-after 'chdir 'unpack-nanopass+stex
+              (lambda args
+                (copy-recursively
+                 #$nanopass
+                 "nanopass"
+                 #:keep-mtime? #t)))
+            (add-before 'install 'build
+              (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                (invoke (search-input-file (or native-inputs inputs)
+                                           "/opt/racket-vm/bin/racket")
+                        "rktboot/main.rkt")))))))
+    (home-page "https://github.com/racket/ChezScheme")
+    ;; ^ This is downstream of https://github.com/racket/racket,
+    ;; but it's designed to be a friendly landing place for people
+    ;; who want a ChezScheme-shaped repositroy.
+    (synopsis "Chez Scheme bootfiles bootstrapped by Racket")
+    (description "Chez Scheme is a self-hosting compiler: building it
+requires ``bootfiles'' containing the Scheme-implemented portions compiled for
+the current platform.  (Chez can then cross-compile bootfiles for all other
+supported platforms.)
+
+The Racket package @code{cs-bootstrap} (part of the main Racket Git
+repository) implements enough of a Chez Scheme simulation to load the Chez
+Scheme compiler purely from source into Racket and apply the compiler to
+itself, thus bootstrapping Chez Scheme.  Bootstrapping takes about 10 times as
+long as using an existing Chez Scheme, but @code{cs-bootstrap} supports Racket
+7.1 and later, including the Racket BC variant.
+
+Note that the generated bootfiles are specific to Racket's fork of Chez
+Scheme, and @code{cs-bootstrap} does not currently support building upstream
+Chez Scheme.")
+    (license (list asl2.0))))
 
 (define-public chez-srfi
   (package
