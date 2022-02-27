@@ -48,7 +48,8 @@
   #:use-module (srfi srfi-1)
   #:export (nix-system->chez-machine
             chez-machine->nonthreaded
-            chez-machine->threaded))
+            chez-machine->threaded
+            unpack-nanopass+stex))
 
 (define (chez-machine->nonthreaded machine)
   "Given a string MACHINE naming a Chez Scheme machine type, returns a string
@@ -159,6 +160,20 @@ If native threads are supported, the returned list will include
 ;; Chez Scheme:
 ;;
 
+
+(define unpack-nanopass+stex
+  #~(begin
+      (copy-recursively
+       (dirname (search-input-file %build-inputs
+                                   "lib/chez-scheme/nanopass.ss"))
+       "nanopass"
+       #:keep-mtime? #t)
+      (mkdir-p "stex")
+      (with-output-to-file "stex/Mf-stex"
+        (lambda ()
+          ;; otherwise, it will try to download submodules
+          (display "# to placate ../configure")))))
+
 (define-public chez-scheme
   (package
     (name "chez-scheme")
@@ -176,6 +191,9 @@ If native threads are supported, the returned list will include
               (file-name (git-file-name name version))
               (snippet #~(begin
                            (use-modules (guix build utils))
+                           ;; TODO: consider putting this in a (guix ...) or
+                           ;; (guix build ...)  module so it can be shared
+                           ;; with the Racket origin without cyclic issues.
                            (for-each (lambda (dir)
                                        (when (directory-exists? dir)
                                          (delete-file-recursively dir)))
@@ -193,9 +211,7 @@ If native threads are supported, the returned list will include
       ;; for X11 clipboard support in expeditor:
       ;; https://github.com/cisco/ChezScheme/issues/9#issuecomment-222057232
       libx11))
-    (native-inputs
-     (list nanopass ; source only
-           stex-bootstrap))
+    (native-inputs (list chez-nanopass-bootstrap stex-bootstrap))
     (native-search-paths
      (list (search-path-specification
             (variable "CHEZSCHEMELIBDIRS")
@@ -215,14 +231,7 @@ If native threads are supported, the returned list will include
       #~(modify-phases %standard-phases
           (add-after 'unpack 'unpack-nanopass+stex
             (lambda args
-              (copy-recursively #$nanopass
-                                "nanopass"
-                                #:keep-mtime? #t)
-              (mkdir-p "stex")
-              (with-output-to-file "stex/Mf-stex"
-                (lambda ()
-                  ;; otherwise, it will try to download submodules
-                  (display "# to placate ../configure")))))
+              #$unpack-nanopass+stex))
           ;; NOTE: the custom Chez 'configure' script doesn't allow
           ;; unrecognized flags, such as those automatically added
           ;; by `gnu-build-system`.
@@ -317,7 +326,7 @@ and 32-bit PowerPC architectures.")
     ;; When updating, remember to also update %racket-version in racket.scm.
     (source #f) ; avoid problematic cycle with racket.scm
     (inputs `())
-    (native-inputs (list racket-vm-bc))
+    (native-inputs (list chez-nanopass-bootstrap racket-vm-bc))
     (build-system copy-build-system)
     ;; TODO: cross compilation
     (arguments
@@ -336,10 +345,7 @@ and 32-bit PowerPC architectures.")
                 (chdir "racket/src/ChezScheme")))
             (add-after 'chdir 'unpack-nanopass+stex
               (lambda args
-                (copy-recursively
-                 #$nanopass
-                 "nanopass"
-                 #:keep-mtime? #t)))
+                #$unpack-nanopass+stex))
             (add-before 'install 'build
               (lambda* (#:key native-inputs inputs #:allow-other-keys)
                 (invoke (search-input-file (or native-inputs inputs)
@@ -502,15 +508,79 @@ User's Guix}, among other documents.")
     (outputs '("out" "doc"))
     (properties '())))
 
-(define-public nanopass
-  (let ((version "1.9.2"))
-    (origin
-      (method git-fetch)
-      (uri (git-reference
-            (url "https://github.com/nanopass/nanopass-framework-scheme")
-            (commit (string-append "v" version))))
-      (sha256 (base32 "16vjsik9rrzbabbhbxbaha51ppi3f9n8rk59pc6zdyffs0vziy4i"))
-      (file-name (git-file-name "nanopass" version)))))
+(define-public chez-nanopass-bootstrap
+  (hidden-package
+   (package
+     (name "chez-nanopass")
+     (version "1.9.2")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://github.com/nanopass/nanopass-framework-scheme")
+              (commit (string-append "v" version))))
+        (sha256
+         (base32 "16vjsik9rrzbabbhbxbaha51ppi3f9n8rk59pc6zdyffs0vziy4i"))
+        (file-name (git-file-name "nanopass-framework-scheme" version))
+        (snippet
+         #~(begin
+             (use-modules (guix build utils))
+             (when (file-exists? "doc/user-guide.pdf")
+               (delete-file "doc/user-guide.pdf"))
+             (substitute* "doc/Makefile"
+               (("include ~/stex/Mf-stex")
+                "include $(STEXLIB)/Mf-stex"))))))
+     (build-system copy-build-system)
+     (arguments
+      (list #:install-plan
+            #~`(("nanopass.ss" "lib/chez-scheme/")
+                ("nanopass" "lib/chez-scheme/"))))
+     (home-page "https://nanopass.org")
+     (synopsis "DSL for compiler development")
+     (description "The Nanopass framework is an embedded domain-specific
+language for writing compilers composed of several simple passes that
+operate over well-defined intermediate languages.  The goal of this
+organization is both to simplify the understanding of each pass, because it
+is responsible for a single task, and to simplify the addition of new passes
+anywhere in the compiler.  Nanopass reduces the boilerplate required to
+create compilers, making them easier to understand and maintain.")
+     (license expat))))
+
+(define-public chez-nanopass
+  (package/inherit chez-nanopass-bootstrap
+    (properties '())
+    ;; TODO: cross-compilation
+    (native-inputs (list chez-scheme stex))
+    (arguments
+     (substitute-keyword-arguments (package-arguments chez-nanopass-bootstrap)
+       ((#:install-plan base-plan)
+        #~`(("nanopass.so" "lib/chez-scheme/")
+            ("doc/user-guide.pdf" #$(string-append
+                                     "share/doc/"
+                                     (package-name this-package)
+                                     "-"
+                                     (package-version this-package)
+                                     "/"))
+            ,@#$base-plan))
+       ((#:phases base-phases #~%standard-phases)
+        #~(modify-phases #$base-phases
+            (add-before 'install 'compile-and-test
+              (lambda args
+                (invoke "scheme"
+                        "--compile-imported-libraries"
+                        "--program" "test-all.ss")))
+            (add-after 'compile-and-test 'build-doc
+              (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                (with-directory-excursion "doc"
+                  (invoke "make"
+                          (string-append "Scheme="
+                                         (search-input-file
+                                          (or native-inputs inputs)
+                                          "/bin/scheme"))
+                          (string-append "STEXLIB="
+                                         (search-input-directory
+                                          (or native-inputs inputs)
+                                          "/lib/stex"))))))))))))
 
 ;;
 ;; Other Chez packages:

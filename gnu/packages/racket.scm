@@ -254,22 +254,6 @@
       "--enable-origtree"
       ,(string-append "--prefix=" #$output "/opt/racket-vm")))
 
-(define (make-unpack-nanopass+stex)
-  ;; Adapted from chez-scheme.
-  ;; Thunked to avoid evaluating 'chez-scheme' too early.
-  ;; TODO: Refactor enough to share this directly.
-  #~(begin
-      (copy-recursively
-       #$nanopass
-       "nanopass"
-       #:keep-mtime? #t)
-      (mkdir-p "stex")
-      (with-output-to-file "stex/Mf-stex"
-        (lambda ()
-          ;; otherwise, it will try to download submodules
-          (display "# to placate ../configure")))))
-
-
 (define-public racket-vm-cgc
   ;; Eventually, it may make sense for some vm packages to not be hidden,
   ;; but this one is especially likely to remain hidden.
@@ -387,6 +371,7 @@ collector, 3M (``Moving Memory Manager'').")
      (modify-inputs (package-native-inputs racket-vm-cgc)
        (delete "libtool")
        (prepend chez-scheme-for-racket-bootstrap-bootfiles
+                chez-nanopass-bootstrap
                 racket-vm-bc)))
     (arguments
      (substitute-keyword-arguments (package-arguments racket-vm-cgc)
@@ -395,7 +380,7 @@ collector, 3M (``Moving Memory Manager'').")
             (add-after 'unpack 'unpack-nanopass+stex
               (lambda args
                 (with-directory-excursion "racket/src/ChezScheme"
-                  #$(make-unpack-nanopass+stex))))
+                  #$unpack-nanopass+stex)))
             (add-after 'unpack-nanopass+stex 'unpack-bootfiles
               (lambda* (#:key native-inputs inputs #:allow-other-keys)
                 (with-directory-excursion "racket/src/ChezScheme"
