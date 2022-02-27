@@ -9178,39 +9178,39 @@ and also provides the base for the FlightGear Flight Simulator.")
            #t))))
     (build-system qt-build-system)
     (arguments
-     `(#:configure-flags
-       (list "-DSYSTEM_SQLITE=ON"
-             "-DSYSTEM_CPPUNIT=ON"
-             (string-append "-DFG_DATA_DIR="
-                            (assoc-ref %outputs "out")
-                            "/share/flightgear"))
-       ;; TODO: test suite segfaults.
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-some-tests
-           (lambda _
-             (substitute* "test_suite/unit_tests/Instrumentation/test_gps.hxx"
-               (("CPPUNIT_TEST\\(testLongLegWestbound\\);" all)
-                (string-append "// " all))
-               (("CPPUNIT_TEST\\(testFinalLegCourse\\);" all)
-                (string-append "// " all)))))
-         (add-after 'build 'build-test-suite
-           (lambda* args
-             ((assoc-ref %standard-phases 'build)
-              #:make-flags (list "fgfs_test_suite"))))
-         ;; Test suite needs access to FGData so run it after 'install.
-         (delete 'check)
-         (add-after 'install-data 'check
-           (assoc-ref %standard-phases 'check))
-         (add-after 'install 'install-data
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((share (string-append (assoc-ref outputs "out") "/share/flightgear")))
-               (mkdir-p share)
-               (with-directory-excursion share
-                 (invoke "tar" "xf" (assoc-ref inputs "flightgear-data")
-                         "--strip-components=1")))
-             #t)))))
+     (list #:configure-flags
+           #~(list "-DSYSTEM_SQLITE=ON"
+                   "-DSYSTEM_CPPUNIT=ON"
+                   (string-append "-DFG_DATA_DIR=" #$output "/share/flightgear"))
+           ;; TODO: test suite segfaults.
+           #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'skip-some-tests
+                 (lambda _
+                   (substitute*
+                       "test_suite/unit_tests/Instrumentation/test_gps.hxx"
+                     (("CPPUNIT_TEST\\(testLongLegWestbound\\);" all)
+                      (string-append "// " all))
+                     (("CPPUNIT_TEST\\(testFinalLegCourse\\);" all)
+                      (string-append "// " all)))))
+               (add-after 'build 'build-test-suite
+                 (lambda* args
+                   ((assoc-ref %standard-phases 'build)
+                    #:make-flags (list "fgfs_test_suite"))))
+               ;; Test suite needs access to FGData so run it after 'install.
+               (delete 'check)
+               (add-after 'install-data 'check
+                 (assoc-ref %standard-phases 'check))
+               (add-after 'install 'install-data
+                 (lambda _
+                   (let ((share (string-append #$output "/share/flightgear")))
+                     (mkdir-p share)
+                     (with-directory-excursion share
+                       (invoke "tar" "xf"
+                               #$(this-package-native-input "flightgear-data")
+                               "--strip-components=1")))
+                   #t)))))
     (inputs
      (list boost
            dbus
