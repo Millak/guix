@@ -43,6 +43,7 @@
   #:use-module (gnu packages libedit)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages multiprecision)
+  #:use-module (gnu packages ncurses)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages xorg)
@@ -95,6 +96,41 @@
 ;;
 ;; Code:
 
+(define %racket-version "8.4")
+;; ^ Remember to update racket-bootstrap-chez-bootfiles!
+(define %racket-commit
+  (string-append "v" %racket-version))
+(define %racket-origin
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://github.com/racket/racket")
+          (commit %racket-commit)))
+    (sha256
+     (base32 "1vpl66gdgc8rnldmn8rmb7ar9l057jqjvgpfn29k57i3c5skr8s6"))
+    (file-name (git-file-name "racket" %racket-version))
+    (patches (search-patches "racket-minimal-sh-via-rktio.patch"
+                             ;; Remove by Racket 8.5:
+                             "racket-enable-scheme-backport.patch"))
+    (modules '((guix build utils)))
+    (snippet
+     #~(begin
+         (use-modules (guix build utils))
+         ;; Unbundle Chez submodules.
+         (with-directory-excursion "racket/src/ChezScheme"
+           ;; TODO: consider putting this in a (guix ...) or (guix build ...)
+           ;; module so it can be shared with the upstream Chez Scheme origin
+           ;; without cyclic issues.
+           (for-each (lambda (dir)
+                       (when (directory-exists? dir)
+                         (delete-file-recursively dir)))
+                     '("stex"
+                       "nanopass"
+                       "lz4"
+                       "zlib")))
+         ;; Unbundle libffi.
+         (delete-file-recursively "racket/src/bc/foreign/libffi")))))
+
 (define cfg-flag:sh-for-rktio
   `(string-append "CPPFLAGS=-DGUIX_RKTIO_PATCH_BIN_SH="
                   (assoc-ref %build-inputs "sh")
@@ -128,41 +164,17 @@
 (define-public racket-minimal
   (package
     (name "racket-minimal")
-    (version "8.3")            ; note: remember to also update racket!
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/racket/racket")
-             (commit (string-append "v" version))))
-       (sha256
-        "1i1jnv1wb0kanfg47hniafx2vhwjc33qqx66lq7wkf5hbmgsyws3")
-       (file-name (git-file-name name version))
-       (patches (search-patches "racket-minimal-sh-via-rktio.patch"))
-       (modules '((guix build utils)))
-       (snippet
-        (with-imported-modules '((guix build utils))
-          #~(begin
-              ;; Unbundle Chez submodules.
-              (with-directory-excursion "racket/src/ChezScheme"
-                ;; Remove bundled libraries (copied from 'chez-scheme').
-                (for-each delete-file-recursively
-                          '("stex"
-                            "nanopass"
-                            "lz4"
-                            "zlib")))
-              ;; Unbundle libffi.
-              (delete-file-recursively "racket/src/bc/foreign/libffi"))))))
+    (version %racket-version)
+    (source %racket-origin)
     (inputs
      `(;; common to all racket-minimal variants:
        ("openssl" ,openssl)
        ("sqlite" ,sqlite)
-       ("sh" ,bash-minimal)
+       ("sh" ,bash-minimal) ;; <- for `system`
+       ("ncurses" ,ncurses) ;; <- for #%terminal
        ;; only for CS
        ("zlib" ,zlib)
-       ("zlib:static" ,zlib "static")
-       ("lz4" ,lz4)
-       ("lz4:static" ,lz4 "static")))
+       ("lz4" ,lz4)))
     (native-inputs
      `(("bootfiles" ,racket-bootstrap-chez-bootfiles)
        ,@(package-native-inputs racket-bootstrap-chez-bootfiles)))
@@ -263,9 +275,8 @@ DrRacket IDE, are not included.")
      (name "racket-minimal-bc-3m")
      (inputs
       (modify-inputs (package-inputs racket-minimal)
-        (delete "zlib" "zlib:static" "lz4" "lz4:static")
-        (prepend libffi ;; <- only for BC variants
-                 )))
+        (prepend libffi) ;; <- only for BC variants
+        (delete "zlib" "lz4")))
      (native-inputs
       `(("libtool" ,libtool)
         ("racket" ,(if (%current-target-system)
@@ -327,6 +338,11 @@ code to use the 3M garbage collector.")))
    (package
      (inherit racket-minimal)
      (name "racket-bootstrap-chez-bootfiles")
+     (version "9.5.7.3")
+     ;; The version should match `(scheme-fork-version-number)`.
+     ;; See racket/src/ChezScheme/s/cmacros.ss c. line 360.
+     ;; It will always be different than the upstream version!
+     ;; When updating, remember to also update %racket-version in racket.scm.
      (inputs `())
      (native-inputs
       `(("racket" ,(if (%current-target-system)
@@ -416,7 +432,7 @@ Chez Scheme.")
   (package
     (inherit racket-minimal)
     (name "racket")
-    (version (package-version racket-minimal)) ; needed for origin uri to work
+    (version %racket-version)
     (source
      (origin
        (method url-fetch)
@@ -425,7 +441,11 @@ Chez Scheme.")
                  %installer-mirrors))
        (sha256
         (base32
-         "0jdr0y7scvv2a3sq456ifrgq0yfsbiwavdf2m86zmrapp481mby4"))
+         "0dsv7br85nvh5gjfihznq9jb1dzas0f6gnv5qwc9zmb7yn75nrp5"))
+       (patches
+        ;; remove in Racket 8.5
+        ;; see https://github.com/racket/racket/issues/4133
+        (search-patches "racket-gui-tethered-launcher-backport.patch"))
        (snippet
         #~(begin
             (use-modules (guix build utils)
@@ -442,7 +462,13 @@ Chez Scheme.")
             (with-directory-excursion "share/pkgs"
               (for-each delete-file-recursively
                         '#+%main-repo-main-distribution-pkgs))
-            #t))))
+            ;; Minimal workaround for FSDG issue:
+            ;; see <https://github.com/racket/srfi/pull/15>.
+            ;; We will backport a better fix once we use Git
+            ;; origins for Racket packages.
+            (delete-file-recursively "share/pkgs/srfi-doc-nonfree")
+            (substitute* "share/pkgs/srfi/info.rkt"
+              (("\"srfi-doc-nonfree\"") ""))))))
     (inputs
      `(("cairo" ,cairo)
        ("fontconfig" ,fontconfig)
@@ -461,7 +487,7 @@ Chez Scheme.")
     (native-inputs
      `(("racket" ,racket-minimal)
        ("extend-layer" ,extend-layer)
-       ("main-repo" ,(package-source racket-minimal))))
+       ("main-repo" ,%racket-origin)))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
