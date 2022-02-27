@@ -26,6 +26,7 @@
   #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module (guix gexp)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
@@ -99,7 +100,7 @@
 ;; Code:
 
 (define %racket-version "8.4")
-;; ^ Remember to update racket-bootstrap-chez-bootfiles!
+;; ^ Remember to update chez-scheme-for-racket-bootstrap-bootfiles!
 (define %racket-commit
   (string-append "v" %racket-version))
 (define %racket-origin
@@ -133,34 +134,42 @@
          ;; Unbundle libffi.
          (delete-file-recursively "racket/src/bc/foreign/libffi")))))
 
-(define cfg-flag:sh-for-rktio
-  `(string-append "CPPFLAGS=-DGUIX_RKTIO_PATCH_BIN_SH="
-                  (assoc-ref %build-inputs "sh")
-                  "/bin/sh"))
-(define cfg-flag:enable-lt
-  `(string-append "--enable-lt="
-                  (assoc-ref %build-inputs "libtool")
-                  "/bin/libtool"))
-(define cfg-flag:enable-racket
-  `(let ((racket (assoc-ref %build-inputs "racket")))
-     (string-append "--enable-racket="
-                    racket
-                    "/bin/racket")))
+(define (racket-vm-common-configure-flags)
+  ;; under a lambda abstraction to avoid evaluating bash-minimal too early.
+  #~`(,@(cond
+         ((false-if-exception
+           (search-input-file %build-inputs "/bin/libtool"))
+          => (lambda (libtool)
+               (list (string-append "--enable-lt=" libtool))))
+         (else
+          '()))
+      ,@(cond
+         ((false-if-exception
+           (search-input-file %build-inputs "/bin/racket"))
+          => (lambda (racket)
+               (list (string-append "--enable-racket=" racket))))
+         (else
+          '()))
+      ,(string-append "CPPFLAGS=-DGUIX_RKTIO_PATCH_BIN_SH="
+                      #$(file-append bash-minimal "/bin/sh"))))
 
-(define unpack-nanopass+stex
-  ;; Copied from chez-scheme.
-  ;; TODO: Eventually, we should refactor Chez Scheme
-  ;; enough to share more directly, so that we can make
-  ;; Racket's version of Chez avalable as a Guix package,
-  ;; e.g. for architectures not supported upstream.
-  ;; For now, we let Racket drive the Chez build process
-  ;; other than this step.
-  `(for-each (lambda (dep)
-               (define src
-                 (assoc-ref (or native-inputs inputs) dep))
-               (copy-recursively src dep
-                                 #:keep-mtime? #t))
-             '("nanopass" "stex")))
+(define (make-unpack-nanopass+stex)
+  ;; Adapted from chez-scheme.
+  ;; Thunked to avoid evaluating 'chez-scheme' too early.
+  ;; TODO: Refactor enough to share this directly.
+  #~(begin
+      (copy-recursively
+       #$(match (assoc-ref (package-native-inputs chez-scheme)
+                           "nanopass")
+           ((src)
+            src))
+       "nanopass"
+       #:keep-mtime? #t)
+      (mkdir-p "stex")
+      (with-output-to-file "stex/Mf-stex"
+        (lambda ()
+          ;; otherwise, it will try to download submodules
+          (display "# to placate ../configure")))))
 
 
 (define-public racket-minimal
@@ -169,91 +178,87 @@
     (version %racket-version)
     (source %racket-origin)
     (inputs
-     `(;; common to all racket-minimal variants:
-       ("openssl" ,openssl)
-       ("sqlite" ,sqlite)
-       ("sh" ,bash-minimal) ;; <- for `system`
-       ("ncurses" ,ncurses) ;; <- for #%terminal
-       ;; only for CS
-       ("zlib" ,zlib)
-       ("lz4" ,lz4)))
+     (list
+      ;; common to all racket-minimal variants:
+      openssl
+      sqlite
+      bash-minimal ;; <- for `system`
+      ncurses ;; <- for #%terminal
+      ;; only for CS
+      zlib
+      lz4))
     (native-inputs
-     `(("bootfiles" ,racket-bootstrap-chez-bootfiles)
-       ,@(package-native-inputs racket-bootstrap-chez-bootfiles)))
+     (list chez-scheme-for-racket-bootstrap-bootfiles
+           racket-minimal-bc-3m))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list "--enable-csonly"
-             "--enable-libz"
-             "--enable-liblz4"
-             ,cfg-flag:enable-racket
-             ,cfg-flag:sh-for-rktio)
-       #:out-of-source? #true
-       ;; Tests are in packages like racket-test-core and
-       ;; main-distribution-test that aren't part of the main distribution.
-       #:tests? #f
-       #:modules ((ice-9 match)
+     (list
+      #:configure-flags
+      #~(cons* "--enable-csonly"
+               "--enable-libz"
+               "--enable-lz4"
+               #$(racket-vm-common-configure-flags))
+      ;; Tests are in packages like racket-test-core and
+      ;; main-distribution-test that aren't part of the main
+      ;; distribution.
+      #:tests? #f
+      ;; Upstream recommends #:out-of-source?, and it does
+      ;; help with debugging, but it confuses `install-license-files`.
+      #:modules '((ice-9 match)
+                  (ice-9 regex)
                   (guix build gnu-build-system)
                   (guix build utils))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'unpack-nanopass+stex
-           (lambda* (#:key inputs native-inputs #:allow-other-keys)
-             (with-directory-excursion "racket/src/ChezScheme"
-               ,unpack-nanopass+stex)
-             #t))
-         (add-after 'unpack-nanopass+stex 'unpack-bootfiles
-           (lambda* (#:key inputs #:allow-other-keys)
-             (with-directory-excursion "racket/src/ChezScheme"
-               (copy-recursively
-                (string-append (assoc-ref inputs "bootfiles") "/boot")
-                "boot"))
-             #t))
-         (add-before 'configure 'initialize-config.rktd
-           (lambda* (#:key inputs #:allow-other-keys)
-             (define (write-racket-hash alist)
-               ;; inside must use dotted pair notation
-               (display "#hash(")
-               (for-each (match-lambda
-                           ((k . v)
-                            (format #t "(~s . ~s)" k v)))
-                         alist)
-               (display ")\n"))
-             (mkdir-p "racket/etc")
-             (with-output-to-file "racket/etc/config.rktd"
-               (lambda ()
-                 (write-racket-hash
-                  `((lib-search-dirs
-                     . (#f ,@(map (lambda (lib)
-                                    (string-append (assoc-ref inputs lib)
-                                                   "/lib"))
-                                  '("openssl"
-                                    "sqlite"))))
-                    (build-stamp . "")
-                    (catalogs
-                     . (,(string-append
-                          "https://download.racket-lang.org/releases/"
-                          ,version
-                          "/catalog/")
-                        #f))))))
-             #t))
-         (add-before 'configure 'change-directory
-           (lambda _
-             (chdir "racket/src")
-             #t))
-         (add-after 'install 'remove-pkgs-directory
-           ;; If the configured pkgs-dir exists, "pkgs.rktd" does not
-           ;; exist, and a lock file does not exist, commands like
-           ;; `raco pkg show` will try to create a lock file and fail
-           ;; due to the read-only store.
-           ;; Arguably this may be a bug in `pkg/private/lock`:
-           ;; see <https://github.com/racket/racket/issues/3851>.
-           ;; As a workaround, remove the directory.
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; rmdir because we want an error if it isn't empty
-             (rmdir (string-append (assoc-ref outputs "out")
-                                   "/share/racket/pkgs"))
-             #t)))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'unpack-nanopass+stex
+            (lambda args
+              (with-directory-excursion "racket/src/ChezScheme"
+                #$(make-unpack-nanopass+stex))))
+          (add-after 'unpack-nanopass+stex 'unpack-bootfiles
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              (with-directory-excursion "racket/src/ChezScheme"
+                (copy-recursively
+                 (search-input-directory (or native-inputs inputs)
+                                         "lib/chez-scheme-bootfiles")
+                 "boot"))))
+          (add-before 'configure 'initialize-config.rktd
+            (lambda* (#:key inputs #:allow-other-keys)
+              (define (write-racket-hash alist)
+                ;; inside must use dotted pair notation
+                (display "#hash(")
+                (for-each (match-lambda
+                            ((k . v)
+                             (format #t "(~s . ~s)" k v)))
+                          alist)
+                (display ")\n"))
+              (mkdir-p "racket/etc")
+              (with-output-to-file "racket/etc/config.rktd"
+                (lambda ()
+                  (write-racket-hash
+                   `((lib-search-dirs
+                      . (#f #$(file-append (this-package-input "openssl") "/lib")
+                            #$(file-append (this-package-input "sqlite") "/lib")))
+                     (build-stamp . "")
+                     (catalogs
+                      . (,(string-append
+                           "https://download.racket-lang.org/releases/"
+                           #$(package-version this-package)
+                           "/catalog/")
+                         #f))))))))
+          (add-before 'configure 'chdir
+            (lambda _
+              (chdir "racket/src")))
+          (add-after 'install 'remove-pkgs-directory
+            ;; If the configured pkgs-dir exists, "pkgs.rktd" does not
+            ;; exist, and a lock file does not exist, commands like
+            ;; `raco pkg show` will try to create a lock file and fail
+            ;; due to the read-only store.
+            ;; Arguably this may be a bug in `pkg/private/lock`:
+            ;; see <https://github.com/racket/racket/issues/3851>.
+            ;; As a workaround, remove the directory.
+            (lambda args
+              ;; rmdir because we want an error if it isn't empty
+              (rmdir (string-append #$output "/share/racket/pkgs")))))))
     (home-page "https://racket-lang.org")
     (synopsis "Racket without bundled packages such as DrRacket")
     (description
@@ -269,7 +274,6 @@ DrRacket IDE, are not included.")
     ;; The LGPL components are only used by Racket BC.
     (license (list license:asl2.0 license:expat))))
 
-
 (define-public racket-minimal-bc-3m
   (hidden-package
    (package
@@ -280,21 +284,19 @@ DrRacket IDE, are not included.")
         (prepend libffi) ;; <- only for BC variants
         (delete "zlib" "lz4")))
      (native-inputs
-      `(("libtool" ,libtool)
-        ("racket" ,(if (%current-target-system)
-                       racket-minimal
-                       racket-minimal-bc-cgc))))
+      (list libtool
+            (if (%current-target-system)
+                racket-minimal
+                racket-minimal-bc-cgc)))
      (arguments
       (substitute-keyword-arguments (package-arguments racket-minimal)
         ((#:configure-flags _ '())
-         `(list "--enable-bconly"
-                ,cfg-flag:enable-racket
-                ,cfg-flag:enable-lt
-                ,cfg-flag:sh-for-rktio))
-        ((#:phases usual-phases)
-         `(modify-phases ,usual-phases
-            (delete 'unpack-nanopass+stex)
-            (delete 'unpack-bootfiles)))))
+         #~(cons "--enable-bconly"
+                 #$(racket-vm-common-configure-flags)))
+        ((#:phases cs-phases)
+         #~(modify-phases #$cs-phases
+             (delete 'unpack-nanopass+stex)
+             (delete 'unpack-bootfiles)))))
      (synopsis "Minimal Racket with the BC [3M] runtime system")
      (description "The Racket BC (``before Chez'' or ``bytecode'')
 implementation was the default before Racket 8.0.  It uses a compiler written
@@ -309,19 +311,16 @@ collector, 3M (``Moving Memory Manager'').")
      ;; The LGPL components are only used by Racket BC.
      (license (list license:lgpl3+ license:asl2.0 license:expat)))))
 
-
 (define-public racket-minimal-bc-cgc
   (package
     (inherit racket-minimal-bc-3m)
     (name "racket-minimal-bc-cgc")
-    (native-inputs
-     (alist-delete "racket" (package-native-inputs racket-minimal-bc-3m)))
+    (native-inputs (list libtool))
     (arguments
      (substitute-keyword-arguments (package-arguments racket-minimal-bc-3m)
        ((#:configure-flags _ '())
-        `(list "--enable-cgcdefault"
-               ,cfg-flag:enable-lt
-               ,cfg-flag:sh-for-rktio))))
+        #~(cons "--enable-cgcdefault"
+                #$(racket-vm-common-configure-flags)))))
     (synopsis "Old Racket implementation used for bootstrapping")
     (description "This variant of the Racket BC (``before Chez'' or
 ``bytecode'') implementation is not recommended for general use.  It uses
@@ -334,47 +333,42 @@ Racket BC [CGC] is primarily used for bootstrapping Racket BC [3M].  It may
 also be used for embedding applications without the annotations needed in C
 code to use the 3M garbage collector.")))
 
-
-(define-public racket-bootstrap-chez-bootfiles
-  (hidden-package
-   (package
-     (inherit racket-minimal)
-     (name "racket-bootstrap-chez-bootfiles")
-     (version "9.5.7.3")
-     ;; The version should match `(scheme-fork-version-number)`.
-     ;; See racket/src/ChezScheme/s/cmacros.ss c. line 360.
-     ;; It will always be different than the upstream version!
-     ;; When updating, remember to also update %racket-version in racket.scm.
-     (inputs `())
-     (native-inputs
-      `(("racket" ,(if (%current-target-system)
-                       racket-minimal
-                       racket-minimal-bc-3m))
-        ("stex" ,@(assoc-ref (package-native-inputs chez-scheme) "stex"))
-        ("nanopass" ,@(assoc-ref (package-native-inputs chez-scheme)
-                                 "nanopass"))))
-     (arguments
-      `(#:phases
-        (modify-phases %standard-phases
-          (add-after 'unpack 'unpack-nanopass+stex
-            (lambda* (#:key inputs native-inputs #:allow-other-keys)
-              (with-directory-excursion "racket/src/ChezScheme"
-                ,unpack-nanopass+stex)
-              #t))
-          (delete 'configure)
-          (delete 'patch-generated-file-shebangs)
-          (replace 'build
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (with-directory-excursion "racket/src/ChezScheme"
-                (invoke (string-append (assoc-ref inputs "racket")
-                                       "/bin/racket")
-                        "rktboot/main.rkt"
-                        "--dest" (assoc-ref outputs "out")))
-              #t))
-          (delete 'check)
-          (delete 'install))))
-     (synopsis "Chez Scheme bootfiles bootstrapped by Racket")
-     (description "Chez Scheme is a self-hosting compiler: building it
+(define-public chez-scheme-for-racket-bootstrap-bootfiles
+  (package
+    (name "chez-scheme-for-racket-bootstrap-bootfiles")
+    (version "9.5.7.3")
+    ;; The version should match `(scheme-fork-version-number)`.
+    ;; See racket/src/ChezScheme/s/cmacros.ss c. line 360.
+    ;; It will always be different than the upstream version!
+    ;; When updating, remember to also update %racket-version in racket.scm.
+    (source %racket-origin)
+    (inputs `())
+    (native-inputs (list racket-minimal-bc-3m))
+    (build-system copy-build-system)
+    ;; TODO: cross compilation
+    (arguments
+     (list
+      #:install-plan
+      #~`(("boot/" "lib/chez-scheme-bootfiles"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda args
+              (chdir "racket/src/ChezScheme")))
+          (add-after 'chdir 'unpack-nanopass+stex
+            (lambda args
+              #$(make-unpack-nanopass+stex)))
+          (add-before 'install 'build
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              (invoke (search-input-file (or native-inputs inputs)
+                                         "/bin/racket")
+                      "rktboot/main.rkt"))))))
+    (home-page "https://github.com/racket/ChezScheme")
+    ;; ^ This is downstream of https://github.com/racket/racket,
+    ;; but it's designed to be a friendly landing place for people
+    ;; who want a ChezScheme-shaped repositroy.
+    (synopsis "Chez Scheme bootfiles bootstrapped by Racket")
+    (description "Chez Scheme is a self-hosting compiler: building it
 requires ``bootfiles'' containing the Scheme-implemented portions compiled for
 the current platform.  (Chez can then cross-compile bootfiles for all other
 supported platforms.)
@@ -389,7 +383,7 @@ long as using an existing Chez Scheme, but @code{cs-bootstrap} supports Racket
 Note that the generated bootfiles are specific to Racket's fork of Chez
 Scheme, and @code{cs-bootstrap} does not currently support building upstream
 Chez Scheme.")
-     (license (list license:asl2.0)))))
+    (license (list license:asl2.0))))
 
 (define (racket-packages-origin name origin specs)
   "Extract from ORIGIN the sources for the Racket packages specified by SPECS,
