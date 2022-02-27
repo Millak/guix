@@ -173,84 +173,87 @@
 
 
 (define-public racket-minimal-bc-cgc
-  (package
-    (name "racket-minimal-bc-cgc")
-    (version %racket-version)
-    (source %racket-origin)
-    (inputs
-     (list
-      ;; common to all racket-minimal variants:
-      openssl
-      sqlite
-      bash-minimal ;; <- for `system`
-      ncurses ;; <- for #%terminal
-      ;; only for BC variants:
-      libffi))
-    (native-inputs (list libtool)) ;; <- only for BC variants
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:configure-flags
-      #~(cons* "--enable-cgcdefault"
-               #$(racket-vm-common-configure-flags))
-      ;; Tests are in packages like racket-test-core and
-      ;; main-distribution-test that aren't part of the main
-      ;; distribution.
-      #:tests? #f
-      ;; Upstream recommends #:out-of-source?, and it does
-      ;; help with debugging, but it confuses `install-license-files`.
-      #:modules '((ice-9 match)
-                  (ice-9 regex)
-                  (guix build gnu-build-system)
-                  (guix build utils))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'configure 'initialize-config.rktd
-            (lambda* (#:key inputs #:allow-other-keys)
-              (define (write-racket-hash alist)
-                ;; inside must use dotted pair notation
-                (display "#hash(")
-                (for-each (match-lambda
-                            ((k . v)
-                             (format #t "(~s . ~s)" k v)))
-                          alist)
-                (display ")\n"))
-              (define maybe-release-catalog
-                (let ((v #$(package-version this-package)))
-                  (if (string-match "^[0-9]+\\.[0-9]+($|\\.[0-8][0-9]*$)"
-                                    v)
-                      `(,(string-append
-                          "https://download.racket-lang.org/releases/"
-                          v
-                          "/catalog/"))
-                      '())))
-              (mkdir-p "racket/etc")
-              (with-output-to-file "racket/etc/config.rktd"
-                (lambda ()
-                  (write-racket-hash
-                   `((lib-search-dirs
-                      . (#f #$(file-append (this-package-input "openssl") "/lib")
-                            #$(file-append (this-package-input "sqlite") "/lib")))
-                     (build-stamp . "")
-                     (catalogs ,@maybe-release-catalog
-                               #f)))))))
-          (add-before 'configure 'chdir
-            (lambda _
-              (chdir "racket/src")))
-          (add-after 'install 'remove-pkgs-directory
-            ;; If the configured pkgs-dir exists, "pkgs.rktd" does not
-            ;; exist, and a lock file does not exist, commands like
-            ;; `raco pkg show` will try to create a lock file and fail
-            ;; due to the read-only store.
-            ;; Arguably this may be a bug in `pkg/private/lock`:
-            ;; see <https://github.com/racket/racket/issues/3851>.
-            ;; As a workaround, remove the directory.
-            (lambda args
-              ;; rmdir because we want an error if it isn't empty
-              (rmdir (string-append #$output "/share/racket/pkgs")))))))
-    (home-page "https://racket-lang.org")
-    (synopsis "Old Racket implementation used for bootstrapping")
-    (description "This variant of the Racket BC (``before Chez'' or
+  ;; Eventually, it may make sense for some vm packages to not be hidden,
+  ;; but this one is especially likely to remain hidden.
+  (hidden-package
+   (package
+     (name "racket-minimal-bc-cgc")
+     (version %racket-version)
+     (source %racket-origin)
+     (inputs
+      (list
+       ;; common to all racket-minimal variants:
+       openssl
+       sqlite
+       bash-minimal ;; <- for `system`
+       ncurses ;; <- for #%terminal
+       ;; only for BC variants:
+       libffi))
+     (native-inputs (list libtool)) ;; <- only for BC variants
+     (build-system gnu-build-system)
+     (arguments
+      (list
+       #:configure-flags
+       #~(cons* "--enable-cgcdefault"
+                #$(racket-vm-common-configure-flags))
+       ;; Tests are in packages like racket-test-core and
+       ;; main-distribution-test that aren't part of the main
+       ;; distribution.
+       #:tests? #f
+       ;; Upstream recommends #:out-of-source?, and it does
+       ;; help with debugging, but it confuses `install-license-files`.
+       #:modules '((ice-9 match)
+                   (ice-9 regex)
+                   (guix build gnu-build-system)
+                   (guix build utils))
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-before 'configure 'initialize-config.rktd
+             (lambda* (#:key inputs #:allow-other-keys)
+               (define (write-racket-hash alist)
+                 ;; inside must use dotted pair notation
+                 (display "#hash(")
+                 (for-each (match-lambda
+                             ((k . v)
+                              (format #t "(~s . ~s)" k v)))
+                           alist)
+                 (display ")\n"))
+               (define maybe-release-catalog
+                 (let ((v #$(package-version this-package)))
+                   (if (string-match "^[0-9]+\\.[0-9]+($|\\.[0-8][0-9]*$)"
+                                     v)
+                       `(,(string-append
+                           "https://download.racket-lang.org/releases/"
+                           v
+                           "/catalog/"))
+                       '())))
+               (mkdir-p "racket/etc")
+               (with-output-to-file "racket/etc/config.rktd"
+                 (lambda ()
+                   (write-racket-hash
+                    `((lib-search-dirs
+                       . (#f #$(file-append (this-package-input "openssl") "/lib")
+                             #$(file-append (this-package-input "sqlite") "/lib")))
+                      (build-stamp . "")
+                      (catalogs ,@maybe-release-catalog
+                                #f)))))))
+           (add-before 'configure 'chdir
+             (lambda _
+               (chdir "racket/src")))
+           (add-after 'install 'remove-pkgs-directory
+             ;; If the configured pkgs-dir exists, "pkgs.rktd" does not
+             ;; exist, and a lock file does not exist, commands like
+             ;; `raco pkg show` will try to create a lock file and fail
+             ;; due to the read-only store.
+             ;; Arguably this may be a bug in `pkg/private/lock`:
+             ;; see <https://github.com/racket/racket/issues/3851>.
+             ;; As a workaround, remove the directory.
+             (lambda args
+               ;; rmdir because we want an error if it isn't empty
+               (rmdir (string-append #$output "/share/racket/pkgs")))))))
+     (home-page "https://racket-lang.org")
+     (synopsis "Old Racket implementation used for bootstrapping")
+     (description "This variant of the Racket BC (``before Chez'' or
 ``bytecode'') implementation is not recommended for general use.  It uses
 CGC (a ``Conservative Garbage Collector''), which was succeeded as default in
 PLT Scheme version 370 (which translates to 3.7 in the current versioning
@@ -260,28 +263,24 @@ Racket CS implementation.
 Racket BC [CGC] is primarily used for bootstrapping Racket BC [3M].  It may
 also be used for embedding applications without the annotations needed in C
 code to use the 3M garbage collector.")
-    ;; https://download.racket-lang.org/license.html
-    ;; The LGPL components are only used by Racket BC.
-    (license (list license:lgpl3+ license:asl2.0 license:expat))
-    ;; Eventually, it may make sense for some vm packages to not be hidden,
-    ;; but this one is especially likely to remain hidden.
-    (properties `((hidden? . #t)))))
+     ;; https://download.racket-lang.org/license.html
+     ;; The LGPL components are only used by Racket BC.
+     (license (list license:lgpl3+ license:asl2.0 license:expat)))))
 
 (define-public racket-minimal-bc-3m
-  (hidden-package
-   (package
-     (inherit racket-minimal-bc-cgc)
-     (name "racket-minimal-bc-3m")
-     (native-inputs
-      (modify-inputs (package-native-inputs racket-minimal-bc-cgc)
-        (prepend racket-minimal-bc-cgc)))
-     (arguments
-      (substitute-keyword-arguments (package-arguments racket-minimal-bc-cgc)
-        ((#:configure-flags _ '())
-         #~(cons "--enable-bconly"
-                 #$(racket-vm-common-configure-flags)))))
-     (synopsis "Minimal Racket with the BC [3M] runtime system")
-     (description "The Racket BC (``before Chez'' or ``bytecode'')
+  (package
+    (inherit racket-minimal-bc-cgc)
+    (name "racket-minimal-bc-3m")
+    (native-inputs
+     (modify-inputs (package-native-inputs racket-minimal-bc-cgc)
+       (prepend racket-minimal-bc-cgc)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments racket-minimal-bc-cgc)
+       ((#:configure-flags _ '())
+        #~(cons "--enable-bconly"
+                #$(racket-vm-common-configure-flags)))))
+    (synopsis "Minimal Racket with the BC [3M] runtime system")
+    (description "The Racket BC (``before Chez'' or ``bytecode'')
 implementation was the default before Racket 8.0.  It uses a compiler written
 in C targeting architecture-independent bytecode, plus a JIT compiler on most
 platforms.  Racket BC has a different C API and supports a slightly different
@@ -290,9 +289,9 @@ on ``Chez Scheme'').
 
 This package is the normal implementation of Racket BC with a precise garbage
 collector, 3M (``Moving Memory Manager'').")
-     ;; https://download.racket-lang.org/license.html
-     ;; The LGPL components are only used by Racket BC.
-     (license (list license:lgpl3+ license:asl2.0 license:expat)))))
+    ;; https://download.racket-lang.org/license.html
+    ;; The LGPL components are only used by Racket BC.
+    (license (list license:lgpl3+ license:asl2.0 license:expat))))
 
 (define-public racket-minimal
   (package
