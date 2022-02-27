@@ -231,6 +231,15 @@
                              (format #t "(~s . ~s)" k v)))
                           alist)
                 (display ")\n"))
+              (define maybe-release-catalog
+                (let ((v #$(package-version this-package)))
+                  (if (string-match "^[0-9]+\\.[0-9]+($|\\.[0-8][0-9]*$)"
+                                    v)
+                      `(,(string-append
+                          "https://download.racket-lang.org/releases/"
+                          v
+                          "/catalog/"))
+                      '())))
               (mkdir-p "racket/etc")
               (with-output-to-file "racket/etc/config.rktd"
                 (lambda ()
@@ -239,12 +248,8 @@
                       . (#f #$(file-append (this-package-input "openssl") "/lib")
                             #$(file-append (this-package-input "sqlite") "/lib")))
                      (build-stamp . "")
-                     (catalogs
-                      . (,(string-append
-                           "https://download.racket-lang.org/releases/"
-                           #$(package-version this-package)
-                           "/catalog/")
-                         #f))))))))
+                     (catalogs ,@maybe-release-catalog
+                               #f)))))))
           (add-before 'configure 'chdir
             (lambda _
               (chdir "racket/src")))
