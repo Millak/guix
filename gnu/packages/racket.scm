@@ -369,7 +369,7 @@ collector, 3M (``Moving Memory Manager'').")
     (native-inputs
      (modify-inputs (package-native-inputs racket-vm-cgc)
        (delete "libtool")
-       (prepend chez-scheme-for-racket-bootstrap-bootfiles
+       (prepend chez-scheme-for-racket
                 chez-nanopass-bootstrap
                 racket-vm-bc)))
     (arguments
@@ -379,18 +379,15 @@ collector, 3M (``Moving Memory Manager'').")
             (add-after 'unpack 'unpack-nanopass+stex
               (lambda args
                 (with-directory-excursion "racket/src/ChezScheme"
-                  #$unpack-nanopass+stex)))
-            (add-after 'unpack-nanopass+stex 'unpack-bootfiles
-              (lambda* (#:key native-inputs inputs #:allow-other-keys)
-                (with-directory-excursion "racket/src/ChezScheme"
-                  (copy-recursively
-                   (search-input-directory (or native-inputs inputs)
-                                           "lib/chez-scheme-bootfiles")
-                   "boot"))))))
+                  #$unpack-nanopass+stex)))))
        ((#:configure-flags _ '())
         #~(cons* "--enable-csonly"
                  "--enable-libz"
                  "--enable-lz4"
+                 (string-append "--enable-scheme="
+                                #$(this-package-native-input
+                                   "chez-scheme-for-racket")
+                                "/bin/scheme")
                  #$(racket-vm-common-configure-flags)))))
     (synopsis "Racket CS implementation")
     (description "The Racket CS implementation, which uses ``Chez Scheme'' as
