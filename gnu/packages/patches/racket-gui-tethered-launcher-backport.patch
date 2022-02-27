@@ -7,13 +7,13 @@ Related to racket/racket#4133
 
 (cherry picked from commit 563c68432f127729592f234ef30c31e92618b517)
 ---
- share/pkgs/gui-lib/mred/installer.rkt | 3 ++-
+ gui-lib/mred/installer.rkt | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/gui-lib/mred/installer.rkt b/gui-lib/mred/installer.rkt
 index b1691472..9ef06c53 100644
---- a/share/pkgs/gui-lib/mred/installer.rkt
-+++ b/share/pkgs/gui-lib/mred/installer.rkt
+--- a/gui-lib/mred/installer.rkt
++++ b/gui-lib/mred/installer.rkt
 @@ -72,4 +72,5 @@
     (list "-A" (path->string (find-system-path 'addon-dir)))))
  
