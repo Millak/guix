@@ -949,7 +949,29 @@ strings.")
              (commit (string-append "v" version))))
        (sha256
         (base32 "0c7i3b6i90xk96nmxn1pc9272a4yal4v40dm1a4ybdi87x53zkk0"))
-       (file-name (git-file-name name version))))
+       (file-name (git-file-name name version))
+       (snippet
+        ;; Workaround for chez-scheme-for-racket.
+        ;; See: https://github.com/racket/racket/issues/4151
+        #~(begin
+            (use-modules (guix build utils))
+            (substitute* "mit/core.sls"
+              (("[(]import ")
+               "(import (only (chezscheme) import)\n")
+              (("[(]define string->uninterned-symbol gensym[)]")
+               (format #f "~s"
+                       '(begin
+                          (import (only (chezscheme)
+                                        meta-cond
+                                        library-exports))
+                          (meta-cond
+                           ((memq 'string->uninterned-symbol
+                                  (library-exports '(chezscheme)))
+                            (import (only (chezscheme)
+                                          string->uninterned-symbol)))
+                           (else
+                            (define string->uninterned-symbol
+                              gensym)))))))))))
     (build-system gnu-build-system)
     (inputs
      (list chez-srfi))       ; for tests
