@@ -46,6 +46,7 @@
   #:use-module (gnu packages xorg)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-26)
   #:export (nix-system->chez-machine
             chez-machine->nonthreaded
             chez-machine->threaded
@@ -211,7 +212,9 @@ If native threads are supported, the returned list will include
       ;; for X11 clipboard support in expeditor:
       ;; https://github.com/cisco/ChezScheme/issues/9#issuecomment-222057232
       libx11))
-    (native-inputs (list chez-nanopass-bootstrap stex-bootstrap))
+    (native-inputs (list chez-scheme-bootstrap-bootfiles
+                         chez-nanopass-bootstrap
+                         stex-bootstrap))
     (native-search-paths
      (list (search-path-specification
             (variable "CHEZSCHEMELIBDIRS")
@@ -232,6 +235,14 @@ If native threads are supported, the returned list will include
           (add-after 'unpack 'unpack-nanopass+stex
             (lambda args
               #$unpack-nanopass+stex))
+          (add-after 'unpack-nanopass+stex 'unpack-bootfiles
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              (when (directory-exists? "boot")
+                (delete-file-recursively "boot"))
+              (copy-recursively
+               (search-input-directory (or native-inputs inputs)
+                                       "lib/chez-scheme-bootfiles")
+               "boot")))
           ;; NOTE: the custom Chez 'configure' script doesn't allow
           ;; unrecognized flags, such as those automatically added
           ;; by `gnu-build-system`.
@@ -316,8 +327,46 @@ generates native code for each target processor, with support for x86, x86_64,
 and 32-bit PowerPC architectures.")
     (license asl2.0)))
 
+(define-public chez-scheme-bootstrap-bootfiles
+  (package
+    (inherit chez-scheme)
+    (name "chez-scheme-bootstrap-bootfiles")
+    (inputs '())
+    (native-inputs '())
+    (outputs '("out"))
+    (build-system copy-build-system)
+    ;; TODO: cross compilation
+    (arguments
+     (list #:install-plan
+           #~`(("boot/" "lib/chez-scheme-bootfiles"))))
+    (supported-systems
+     ;; Upstream only distributes pre-built bootfiles for
+     ;; arm32le and t?(i3|a6)(le|nt|osx)
+     (filter (lambda (system)
+               (let ((machine (and=> (nix-system->chez-machine system)
+                                     chez-machine->nonthreaded)))
+                 (or (equal? "arm32le" machine)
+                     (and machine
+                          (member (substring machine 0 2) '("i3" "a6"))
+                          (or-map (cut string-suffix? <> machine)
+                                  '("le" "nt" "osx"))))))
+             %supported-systems))
+    (synopsis "Chez Scheme bootfiles (binary seed)")
+    (description
+     "Chez Scheme is a self-hosting compiler: building it requires
+``bootfiles'' containing the Scheme-implemented portions compiled for the
+current platform.  (Chez can then cross-compile bootfiles for all other
+supported platforms.)
+
+This package provides bootstrap bootfiles for upstream Chez Scheme.
+Currently, it simply packages the binaries checked in to the upsream
+repository.  Hopefully we can eventually adapt Racket's @code{cs-bootstrap} to
+work with upstream Chez Scheme so that we can bootstrap these files from
+source.")))
+
 (define-public chez-scheme-for-racket-bootstrap-bootfiles
   (package
+    (inherit chez-scheme-bootstrap-bootfiles)
     (name "chez-scheme-for-racket-bootstrap-bootfiles")
     (version "9.5.7.3")
     ;; The version should match `(scheme-fork-version-number)`.
@@ -325,32 +374,30 @@ and 32-bit PowerPC architectures.")
     ;; It will always be different than the upstream version!
     ;; When updating, remember to also update %racket-version in racket.scm.
     (source #f) ; avoid problematic cycle with racket.scm
-    (inputs `())
     (native-inputs (list chez-nanopass-bootstrap racket-vm-bc))
-    (build-system copy-build-system)
     ;; TODO: cross compilation
     (arguments
-     (list
-      #:install-plan
-      #~`(("boot/" "lib/chez-scheme-bootfiles"))
-      #:phases
-      #~(let ((unpack (assoc-ref %standard-phases 'unpack)))
-          (modify-phases %standard-phases
-            (replace 'unpack
-              (lambda args
-                (unpack #:source #$(or (package-source this-package)
-                                       (package-source racket-vm-bc)))))
-            (add-after 'unpack 'chdir
-              (lambda args
-                (chdir "racket/src/ChezScheme")))
-            (add-after 'chdir 'unpack-nanopass+stex
-              (lambda args
-                #$unpack-nanopass+stex))
-            (add-before 'install 'build
-              (lambda* (#:key native-inputs inputs #:allow-other-keys)
-                (invoke (search-input-file (or native-inputs inputs)
-                                           "/opt/racket-vm/bin/racket")
-                        "rktboot/main.rkt")))))))
+     (substitute-keyword-arguments
+         (package-arguments chez-scheme-bootstrap-bootfiles)
+       ((#:phases those-phases #~%standard-phases)
+        #~(let* ((those-phases #$those-phases)
+                 (unpack (assoc-ref those-phases 'unpack)))
+            (modify-phases those-phases
+              (replace 'unpack
+                (lambda args
+                  (unpack #:source #$(or (package-source this-package)
+                                         (package-source racket-vm-bc)))))
+              (add-after 'unpack 'chdir
+                (lambda args
+                  (chdir "racket/src/ChezScheme")))
+              (add-after 'chdir 'unpack-nanopass+stex
+                (lambda args
+                  #$unpack-nanopass+stex))
+              (add-before 'install 'build
+                (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                  (invoke (search-input-file (or native-inputs inputs)
+                                             "/opt/racket-vm/bin/racket")
+                          "rktboot/main.rkt"))))))))
     (supported-systems (filter nix-system->chez-machine
                                %supported-systems))
     (home-page "https://github.com/racket/ChezScheme")
@@ -372,8 +419,7 @@ long as using an existing Chez Scheme, but @code{cs-bootstrap} supports Racket
 
 Note that the generated bootfiles are specific to Racket's fork of Chez
 Scheme, and @code{cs-bootstrap} does not currently support building upstream
-Chez Scheme.")
-    (license (list asl2.0))))
+Chez Scheme.")))
 
 ;;
 ;; Chez's bootstrap dependencies:
