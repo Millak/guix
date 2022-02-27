@@ -4,7 +4,7 @@
 ;;; Copyright © 2015, 2016, 2018, 2019, 2020 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016, 2020, 2021 Roel Janssen <roel@gnu.org>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2016, 2018 Raoul Bonnal <ilpuccio.febo@gmail.com>
 ;;; Copyright © 2017, 2018 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -11409,7 +11409,7 @@ version does count multisplits.")
 (define-public minimap2
   (package
     (name "minimap2")
-    (version "2.23")
+    (version "2.24")
     (source
      (origin
        (method url-fetch)
@@ -11418,7 +11418,7 @@ version does count multisplits.")
                            "minimap2-" version ".tar.bz2"))
        (sha256
         (base32
-         "00ngbz1swcgxk5apx9dz5xkh1z8abdpysx5lc7w8fbrfxp41w0j0"))))
+         "05d6h2c1h95s5vblf1fijn9g0r4g69nsvkabji42j642y0gw7m4x"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; there are none
