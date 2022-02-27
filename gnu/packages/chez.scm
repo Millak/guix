@@ -52,6 +52,21 @@
             chez-machine->threaded
             unpack-nanopass+stex))
 
+;; Commentary:
+;;
+;; The bootstrapping paths for Chez Scheme and Racket are closely
+;; entwined. Racket CS (the default Racket implementation) is based on (a fork
+;; of) Chez Scheme. Racket's variant of Chez Scheme shares sources for
+;; nanopass and stex with upstream Chez Scheme.
+;;
+;; Racket's variant of Chez Scheme can be bootstrapped by an older Racket
+;; implementation, Racket BC, which can be bootstrapped from C. Porting that
+;; code to work with upstream Chez Scheme (or finding an old version that
+;; does) is our best hope for some day bootstrapping upstream Chez Scheme from
+;; source.
+;;
+;; Code:
+
 (define (chez-machine->nonthreaded machine)
   "Given a string MACHINE naming a Chez Scheme machine type, returns a string
 naming the nonthreaded machine type for the same architecture and OS as
@@ -327,6 +342,78 @@ generates native code for each target processor, with support for x86, x86_64,
 and 32-bit PowerPC architectures.")
     (license asl2.0)))
 
+(define-public chez-scheme-for-racket
+  (package
+    (inherit chez-scheme)
+    (name "chez-scheme-for-racket")
+    (version "9.5.7.3")
+    ;; The version should match `(scheme-fork-version-number)`.
+    ;; See racket/src/ChezScheme/s/cmacros.ss c. line 360.
+    ;; It will always be different than the upstream version!
+    ;; When updating, remember to also update %racket-version in racket.scm.
+    (source #f) ; avoid problematic cycle with racket.scm
+    (inputs
+     (modify-inputs (package-inputs chez-scheme)
+       (delete "libx11" "util-linux:lib")))
+    (native-inputs
+     (modify-inputs (package-native-inputs chez-scheme)
+       (replace "chez-scheme-bootstrap-bootfiles"
+         chez-scheme-for-racket-bootstrap-bootfiles)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments chez-scheme)
+       ((#:configure-flags cfg-flags #~'())
+        #~(cons "--disable-x11" #$cfg-flags))
+       ((#:phases those-phases #~%standard-phases)
+        #~(let* ((those-phases #$those-phases)
+                 (unpack (assoc-ref those-phases 'unpack)))
+            (modify-phases those-phases
+              (replace 'unpack
+                (lambda args
+                  (unpack #:source #$(or (package-source this-package)
+                                         (package-source racket-vm-bc)))))
+              (add-after 'unpack 'chdir
+                (lambda args
+                  (chdir "racket/src/ChezScheme"))))))))
+    (supported-systems (filter nix-system->chez-machine
+                               %supported-systems))
+    (home-page "https://github.com/racket/ChezScheme")
+    ;; ^ This is downstream of https://github.com/racket/racket,
+    ;; but it's designed to be a friendly landing place for people
+    ;; who want a ChezScheme-shaped repositroy.
+    (synopsis "Variant of Chez Scheme extended for Racket")
+    (description "This variant of Chez Scheme is extended to support the
+implementation of Racket.  It may be useful on platforms that are not yet
+supported by upstream Chez Scheme.
+
+Main additions to Chez Scheme in the Racket variant:
+@itemize @bullet
+@item
+AArch64 support
+@item
+Portable bytes (@code{pb}) support, which is mainly useful for bootstrapping
+a build on any supported platform
+@item
+Unboxed floating-point arithmetic and flvectors
+@item
+Type reconstruction during optimization (especially for safe code)
+@item
+Continuation attachments
+@item
+Parallel garbage collection, in-place garbage collection for old-generation
+objects (instead of always copying), and reachability-based memory
+accounting
+@item
+Ordered finalization, immobile (but collectable) objects, weak/ephemeron
+generic hash tables, and reference bytevectors
+@item
+Faster multiplication and division for large exact numbers
+@end itemize")
+    (license asl2.0)))
+
+;;
+;; Bootfiles:
+;;
+
 (define-public chez-scheme-bootstrap-bootfiles
   (package
     (inherit chez-scheme)
@@ -368,11 +455,7 @@ source.")))
   (package
     (inherit chez-scheme-bootstrap-bootfiles)
     (name "chez-scheme-for-racket-bootstrap-bootfiles")
-    (version "9.5.7.3")
-    ;; The version should match `(scheme-fork-version-number)`.
-    ;; See racket/src/ChezScheme/s/cmacros.ss c. line 360.
-    ;; It will always be different than the upstream version!
-    ;; When updating, remember to also update %racket-version in racket.scm.
+    (version (package-version chez-scheme-for-racket))
     (source #f) ; avoid problematic cycle with racket.scm
     (native-inputs (list chez-nanopass-bootstrap racket-vm-bc))
     ;; TODO: cross compilation
@@ -398,8 +481,8 @@ source.")))
                   (invoke (search-input-file (or native-inputs inputs)
                                              "/opt/racket-vm/bin/racket")
                           "rktboot/main.rkt"))))))))
-    (supported-systems (filter nix-system->chez-machine
-                               %supported-systems))
+    (supported-systems
+     (package-supported-systems chez-scheme-for-racket))
     (home-page "https://github.com/racket/ChezScheme")
     ;; ^ This is downstream of https://github.com/racket/racket,
     ;; but it's designed to be a friendly landing place for people

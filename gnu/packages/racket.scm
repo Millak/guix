@@ -195,8 +195,7 @@
       racket-vm-cs
       racket-vm-bc))
 
-(define %racket-version "8.4")
-;; ^ Remember to update chez-scheme-for-racket-bootstrap-bootfiles!
+(define %racket-version "8.4") ; Remember to update chez-scheme-for-racket!
 (define %racket-commit
   (string-append "v" %racket-version))
 (define %racket-origin
