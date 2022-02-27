@@ -333,6 +333,7 @@ exec smbd $@")))
            libjpeg-turbo
            libpng
            libseccomp
+           liburing
            libusb                       ;USB pass-through support
            mesa
            ncurses
