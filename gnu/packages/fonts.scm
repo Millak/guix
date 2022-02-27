@@ -45,6 +45,7 @@
 ;;; Copyright © 2021 Taiju HIGASHI <higashi@taiju.info>
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2022 Kitzman <kitzman@disroot.org>
+;;; Copyright © 2021 Wamm K. D. <jaft.r@outlook.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2534,3 +2535,28 @@ This package contains the following outputs:
 @end enumerate
 ")
     (license license:gpl2)))
+
+(define-public font-atui-feather
+  (let ((version "0")
+        (commit "c51fe7cedbcf2cbf4f1b993cef5d8def612dec1d")
+        (revision "1"))
+    (package
+      (name "font-atui-feather")
+      (version (git-version version revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (commit commit)
+                      (url "https://github.com/AT-UI/feather-font/")))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0hk12bjlsh0j6kd0sz3nwax259afdi6dxws4x88yz5ssxic1ng2j"))))
+      (build-system font-build-system)
+      (home-page "https://at-ui.github.io/feather-font/")
+      (synopsis "Iconfont version of Feather")
+      (description
+       "Feather is a collection of simply beautiful icons.  Each
+icon is designed on a 24x24 grid with an emphasis on simplicity, consistency,
+and readability.  This package bundles those icons into a font.")
+      (license license:expat))))
