@@ -25,6 +25,26 @@
 (channel-news
  (version 0)
 
+ (entry (commit "f1d18adbed39a3bacae93be29346fd4c86b480ef")
+        (title
+         (en "More compact @samp{guix pull --news}")
+         (nl "Meer beknopte @samp{guix pull --news}"))
+        (body
+         (en "The output of @samp{guix pull --news} has been shortened to
+display only fresh news items such as this one.  It no longer includes the
+partial selection of new and updated packages, which was often long enough to
+be distracting whilst being too short to be useful.
+
+The complete list of new and updated packages can now be obtained separately
+using @samp{guix pull --news --details}.")
+         (nl "De uitvoer van @samp{guix pull --news} is vanaf nu beperkt tot
+verse nieuwsberichten zoals dit, zonder de onvolledige bloemlezing van nieuwe
+en bijgewerkte pakketten.  Die was vaak lang genoeg om de lezer af te leiden
+maar te kort om nuttig te zijn.
+
+De volledige list van nieuwe en bijgewerkte pakketten is nu afzonderlijk
+beschikbaar met @samp{guix pull --news --details}.")))
+
  (entry (commit "96d7535b030c65b2d8cb0bea52c4bd96cbdefaf0")
         (title
          (en "ci.guix.gnu.org to stop offering Gzip substitutes")
