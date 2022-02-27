@@ -1790,14 +1790,14 @@ the boot loader configuration.")
 (define-public flatpak
   (package
    (name "flatpak")
-   (version "1.12.5")
+   (version "1.12.6")
    (source
     (origin
      (method url-fetch)
      (uri (string-append "https://github.com/flatpak/flatpak/releases/download/"
                          version "/flatpak-" version ".tar.xz"))
      (sha256
-      (base32 "0v0n0s134gqv27n88hqxq8bljys3gv8yh7h18kkgzgf1n2qa1d0w"))
+      (base32 "09qnh4x1cm22gj1dz7pkpjg8kwgfd1blidcr60bybk4ibd8cn0pg"))
      (patches (search-patches "flatpak-fix-path.patch"))))
 
    ;; Wrap 'flatpak' so that GIO_EXTRA_MODULES is set, thereby allowing GIO to
