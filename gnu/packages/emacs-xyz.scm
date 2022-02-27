@@ -24627,6 +24627,28 @@ files in Elisp.")
     (description "Emacs Java IDE using Eclipse JDT Language Server.")
     (license license:gpl3+)))
 
+(define-public emacs-lsp-metals
+  (package
+    (name "emacs-lsp-metals")
+    (version "1.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/emacs-lsp/lsp-metals")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ca5xq1l3lscx36pcdnpy2axgyikjrl18naqr140kr1y500sy37s"))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     (list emacs-dap-mode emacs-lsp-treemacs emacs-scala-mode))
+    (home-page "https://github.com/emacs-lsp/lsp-metals")
+    (synopsis "Scala support for LSP mode")
+    (description "This package is an Emacs Scala IDE using LSP mode to connect
+to Metals.")
+    (license license:gpl3+)))
+
 (define-public emacs-lsp-ui
   (package
     (name "emacs-lsp-ui")
