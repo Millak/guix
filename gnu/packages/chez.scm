@@ -44,7 +44,119 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages xorg)
   #:use-module (ice-9 match)
-  #:use-module (srfi srfi-1))
+  #:use-module (srfi srfi-1)
+  #:export (nix-system->chez-machine
+            chez-machine->nonthreaded
+            chez-machine->threaded))
+
+(define (chez-machine->nonthreaded machine)
+  "Given a string MACHINE naming a Chez Scheme machine type, returns a string
+naming the nonthreaded machine type for the same architecture and OS as
+MACHINE.  The returned string may share storage with MACHINE."
+  ;; Chez Scheme documentation consistently uses "nonthreaded" rather than
+  ;; e.g. "unthreaded"
+  (if (eqv? #\t (string-ref machine 0))
+      (substring machine 1)
+      machine))
+(define (chez-machine->threaded machine)
+  "Like @code{chez-machine->nonthreaded}, but returns the threaded machine
+type."
+  (if (eqv? #\t (string-ref machine 0))
+      machine
+      (string-append "t" machine)))
+
+;; Based on the implementation from raco-cross-lib/private/cross/platform.rkt
+;; in https://github.com/racket/raco-cross.
+;; For supported platforms, refer to release_notes/release_notes.stex in the
+;; upstream Chez Scheme repository or to racket/src/ChezScheme/README.md
+;; in https://github.com/racket/racket.
+(define %nix-arch-to-chez-alist
+  `(("x86_64" . "a6")
+    ("i386" . "i3")
+    ("aarch64" . "arm64")
+    ("armhf" . "arm32") ;; Chez supports ARM v6+
+    ("ppc" . "ppc32")))
+(define %nix-os-to-chez-alist
+  `(("w64-mingw32" . "nt")
+    ("darwin" . "osx")
+    ("linux" . "le")
+    ("freebsd" . "fb")
+    ("openbsd" . "ob")
+    ("netbsd" . "nb")
+    ("solaris" . "s2")))
+
+(define (chez-machine->nix-system machine)
+  "Return the Nix system type corresponding to the Chez Scheme machine type
+MACHINE.  If MACHINE is not a string representing a known machine type, an
+exception is raised.  This function does not distinguish between threaded and
+nonthreaded variants of MACHINE.
+
+Note that this function only handles Chez Scheme machine types in the
+strictest sense, not other kinds of descriptors sometimes used in place of a
+Chez Scheme machine type by Racket, such as @code{\"pb\"}, @code{#f}, or
+@code{\"racket\"}.  (When using such extensions, the Chez Scheme machine type
+for the host system is often still relevant.)"
+  (let ((machine (chez-machine->nonthreaded machine)))
+    (let find-arch ((alist %nix-arch-to-chez-alist))
+      (match alist
+        (((nix . chez) . alist)
+         (if (string-prefix? chez machine)
+             (string-append
+              nix "-" (let ((machine-os
+                             (substring machine (string-length chez))))
+                        (let find-os ((alist %nix-os-to-chez-alist))
+                          (match alist
+                            (((nix . chez) . alist)
+                             (if (equal? chez machine-os)
+                                 nix
+                                 (find-os alist)))))))
+             (find-arch alist)))))))
+
+(define* (nix-system->chez-machine #:optional
+                                   (system (or (%current-target-system)
+                                               (%current-system))))
+  "Return the Chez Scheme machine type corresponding to the Nix system
+identifier SYSTEM, or @code{#f} if the translation of SYSTEM to a Chez Scheme
+machine type is undefined.
+
+It is unspecified whether the resulting string will name a threaded or a
+nonthreaded machine type: when the distinction is relevant, use
+@code{chez-machine->nonthreaded} or @code{chez-machine->threaded} to adjust
+the result."
+  (let* ((hyphen (string-index system #\-))
+         (nix-arch (substring system 0 hyphen))
+         (nix-os (substring system (+ 1 hyphen)))
+         (chez-arch (assoc-ref %nix-arch-to-chez-alist nix-arch))
+         (chez-os (assoc-ref %nix-os-to-chez-alist nix-os)))
+    (and chez-arch chez-os (string-append chez-arch chez-os))))
+
+(define* (chez-upstream-features-for-system #:optional
+                                            (system
+                                             (or (%current-target-system)
+                                                 (%current-system))))
+  "Return a list of symbols naming features supported by upstream Chez Scheme
+for the Nix system identifier SYSTEM, or @code{#f} if upstream Chez Scheme
+does not support SYSTEM at all.
+
+If native threads are supported, the returned list will include
+@code{'threads}.  Other feature symbols may be added in the future."
+  (cond
+   ((not (nix-system->chez-machine system))
+    #f)
+   ((target-aarch64? system)
+    #f)
+   ((target-arm32? system)
+    (and (target-linux? system)
+         '()))
+   ((target-ppc32? system)
+    (and (target-linux? system)
+         '(threads)))
+   (else
+    '(threads))))
+
+;;
+;; Chez Scheme:
+;;
 
 (define nanopass
   (let ((version "1.9.2"))
@@ -251,8 +363,11 @@
     ;; We should too. It is the Chez machine type arm32le
     ;; (no threaded version upstream yet, though there is in
     ;; Racket's fork), more specifically (per the release notes) ARMv6.
-    (supported-systems (fold delete %supported-systems
-                             '("mips64el-linux" "armhf-linux")))
+    (supported-systems
+     (delete
+      "armhf-linux" ;; <-- should work, but reportedly broken
+      (filter chez-upstream-features-for-system
+              %supported-systems)))
     (home-page "https://cisco.github.io/ChezScheme/")
     (synopsis "R6RS Scheme compiler and run-time")
     (description
@@ -300,6 +415,8 @@ and 32-bit PowerPC architectures.")
                 (invoke (search-input-file (or native-inputs inputs)
                                            "/opt/racket-vm/bin/racket")
                         "rktboot/main.rkt")))))))
+    (supported-systems (filter nix-system->chez-machine
+                               %supported-systems))
     (home-page "https://github.com/racket/ChezScheme")
     ;; ^ This is downstream of https://github.com/racket/racket,
     ;; but it's designed to be a friendly landing place for people
@@ -321,6 +438,10 @@ Note that the generated bootfiles are specific to Racket's fork of Chez
 Scheme, and @code{cs-bootstrap} does not currently support building upstream
 Chez Scheme.")
     (license (list asl2.0))))
+
+;;
+;; Packages:
+;;
 
 (define-public chez-srfi
   (package
