@@ -2,6 +2,7 @@
 ;;; Copyright © 2019 Amin Bandali <bandali@gnu.org>
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2022 Pradana Aumars <paumars@courrier.dev>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -22,9 +23,17 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages multiprecision)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system python)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
-  #:use-module (guix git-download))
+  #:use-module (guix git-download)
+  #:use-module (guix download)
+  #:use-module (gnu packages graphviz)
+  #:use-module (gnu packages version-control)
+  #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-crypto)
+  #:use-module (gnu packages python-web)
+  #:use-module (gnu packages python-xyz))
 
 (define-public lean
   (package
@@ -71,4 +80,38 @@
      "Lean is a theorem prover and programming language with a small trusted
 core based on dependent typed theory, aiming to bridge the gap between
 interactive and automated theorem proving.")
+    (license license:asl2.0)))
+
+(define-public python-mathlibtools
+  (package
+    (name "python-mathlibtools")
+    (version "1.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "mathlibtools" version))
+              (sha256
+               (base32
+                "089pql105imx8z7ar1wiz9fn000jp6xqdfixw4jf2vric94vn9fj"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (add-before 'check 'fix-home-directory
+                    (lambda _
+                      (setenv "HOME" "/tmp"))))))
+    (inputs (list python-toml
+                  python-pygithub
+                  python-certifi
+                  python-gitpython
+                  python-requests
+                  python-click
+                  python-tqdm
+                  python-networkx
+                  python-pydot
+                  python-pyyaml
+                  python-atomicwrites))
+    (home-page "https://github.com/leanprover-community/mathlib-tools")
+    (synopsis "Development tools for Lean mathlib")
+    (description
+     "This package contains @command{leanproject}, a supporting tool for Lean
+mathlib, a mathematical library for the Lean theorem prover.")
     (license license:asl2.0)))
