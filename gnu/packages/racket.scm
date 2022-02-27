@@ -187,6 +187,14 @@
 ;;
 ;; Code:
 
+(define* (racket-vm-for-system #:optional
+                               (system (or (%current-target-system)
+                                           (%current-system))))
+  "Return 'racket-vm-cs' if it supports SYSTEM; 'racket-vm-bc' otherwise."
+  (if (nix-system->chez-machine system)
+      racket-vm-cs
+      racket-vm-bc))
+
 (define %racket-version "8.4")
 ;; ^ Remember to update chez-scheme-for-racket-bootstrap-bootfiles!
 (define %racket-commit
@@ -483,7 +491,7 @@ used to build the name of the resulting store item."
     (inputs
      (list openssl
            sqlite
-           racket-vm-cs ;; TODO (racket-vm-for-system)
+           (racket-vm-for-system)
            (racket-packages-origin
             "base" %racket-origin
             '(("base" "pkgs/base")
@@ -601,7 +609,7 @@ DrRacket IDE, are not included.")
       unixodbc
       libedit ;; TODO reconsider in light of expeditor and readline-gpl
       racket-minimal ;; <-- TODO non-tethered layer
-      racket-vm-cs ;; TODO (racket-vm-for-system)
+      (racket-vm-for-system)
       (simple-racket-origin
        "2d" (base32 "1zzcz5qyjv7syi41vb8jkxjp1rqgj61zbsdrg0nlc4qy9qsafzgr")
        '("2d" "2d-doc" "2d-lib"))
