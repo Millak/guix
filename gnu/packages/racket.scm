@@ -151,7 +151,8 @@
          (else
           '()))
       ,(string-append "CPPFLAGS=-DGUIX_RKTIO_PATCH_BIN_SH="
-                      #$(file-append bash-minimal "/bin/sh"))))
+                      #$(file-append bash-minimal "/bin/sh"))
+      "--disable-strip"))
 
 (define (make-unpack-nanopass+stex)
   ;; Adapted from chez-scheme.
@@ -190,6 +191,7 @@
        ;; only for BC variants:
        libffi))
      (native-inputs (list libtool)) ;; <- only for BC variants
+     (outputs '("out" "debug"))
      (build-system gnu-build-system)
      (arguments
       (list
