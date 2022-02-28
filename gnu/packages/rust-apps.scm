@@ -6,7 +6,7 @@
 ;;; Copyright © 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2020 Gabriel Arazas <foo.dogsquared@gmail.com>
-;;; Copyright © 2020–2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2020-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.ccom>
 ;;; Copyright © 2021, 2022 Zheng Junjie <873216071@qq.com>
@@ -181,14 +181,14 @@ alternative zones.")
 (define-public bat
   (package
     (name "bat")
-    (version "0.19.0")
+    (version "0.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "bat" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0bvlgh2yf6f1ski86hd13lda4cr51wyyg1ycsxwjpn0dbb0a8wqq"))))
+        (base32 "05sj0chxpai26fhk1k7p5m54v3j7n1x64ayx53mcimsj1skdr77m"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -197,6 +197,7 @@ alternative zones.")
         ("rust-atty" ,rust-atty-0.2)
         ("rust-bincode" ,rust-bincode-1)
         ("rust-bugreport" ,rust-bugreport-0.4)
+        ("rust-bytesize" ,rust-bytesize-1)
         ("rust-clap" ,rust-clap-2)
         ("rust-clap" ,rust-clap-2)
         ("rust-clircle" ,rust-clircle-0.3)
