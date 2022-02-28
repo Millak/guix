@@ -12358,8 +12358,38 @@ harness.")
 everywhere.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-concolor-0.0.8
+  (package
+    (name "rust-concolor")
+    (version "0.0.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "concolor" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1bs03868bywgz2f8x4h41akvxpxiax9b036hrpf0mwhx7db6flh1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-atty" ,rust-atty-0.2)
+        ("rust-bitflags" ,rust-bitflags-1)
+        ("rust-concolor-query" ,rust-concolor-query-0.0.5))))
+    (home-page "https://github.com/rust-cli/concolor")
+    (synopsis "Control console coloring across all dependencies")
+    (description "Concolor is a terminal styling library that can be used to:
+@itemize
+@item Detect interactive @samp{stdout} or @samp{stderr}
+@item Detect terminal capabilities via @samp{TERM}
+@item Support @url{https://bixense.com/clicolors/, CLICOLOR} and
+@url{https://no-color.org/, NO_COLOR}.
+@end itemize")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-concolor-control-0.0.7
   (package
+    (inherit rust-concolor-0.0.8)
     (name "rust-concolor-control")
     (version "0.0.7")
     (source
@@ -12369,24 +12399,12 @@ everywhere.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1nplakbdb9sbd3h62d9zkan0xm1w0c7cbl3rk0iqgn405yf1213i"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-atty" ,rust-atty-0.2)
         ("rust-bitflags" ,rust-bitflags-1)
-        ("rust-concolor-query" ,rust-concolor-query-0.0.4))))
-    (home-page "https://github.com/rust-cli/concolor")
-    (synopsis "Control console coloring across all dependencies")
-    (description "@code{concolor-control} is a terminal styling library that
-can be used to:
-@itemize
-@item Detect interactive @samp{stdout} or @samp{stderr}
-@item Detect terminal capabilities via @samp{TERM}
-@item Support @url{https://bixense.com/clicolors/, CLICOLOR} and
-@url{https://no-color.org/, NO_COLOR}.
-@end itemize")
-    (license (list license:expat license:asl2.0))))
+        ("rust-concolor-query" ,rust-concolor-query-0.0.4))))))
 
 (define-public rust-concolor-query-0.0.5
   (package
