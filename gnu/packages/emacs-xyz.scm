@@ -23939,11 +23939,12 @@ indentation and a command to plot the file.")
     (license license:gpl3+)))
 
 (define-public emacs-cmake-font-lock
-  (let ((commit "e0ceaaae19c13b66f781512e3295bfc6707b56f4")
-        (revision "1"))
+  ;; Upstream does not tag commits.  The commit hash below matches version
+  ;; bump.
+  (let ((commit "0d6111b36a66013aa9b452e664c93308df3b07e1"))
     (package
       (name "emacs-cmake-font-lock")
-      (version (git-version "0.1.5" revision commit))
+      (version "0.1.12")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -23952,7 +23953,7 @@ indentation and a command to plot the file.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "03gsyn95dlmsn15bl353bphi3qy7ccn5bss3f7n97kf38bllh0yf"))))
+                  "12ga8ri7v9r5y46pghk80ww27i7nhbrg0r3s2ina42drlkkliqj4"))))
       (build-system emacs-build-system)
       (native-inputs
        (list emacs-faceup))
