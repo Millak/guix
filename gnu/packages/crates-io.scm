@@ -9171,7 +9171,7 @@ exposed as Reader/Writer streams.")
 (define-public rust-bytesize-1
   (package
     (name "rust-bytesize")
-    (version "1.0.1")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
@@ -9180,7 +9180,7 @@ exposed as Reader/Writer streams.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1nl2j2bi9nk3q564jhyb77947wdv5ch54r14gjv4c59s563qd8c1"))))
+         "0w7wmmbcirxp5isza0i1lxq5d7r7f0z1pxbxl5f6s1n5m8vfqn3c"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
