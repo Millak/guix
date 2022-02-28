@@ -6,7 +6,7 @@
 ;;; Copyright © 2016, 2017, 2018, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2016, 2017 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2016, 2017 David Craven <david@craven.ch>
-;;; Copyright © 2017, 2018, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2018, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2019, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 nee <nee@cock.li>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -454,12 +454,15 @@ menu to select one of the installed operating systems.")
                 "0wrl43rvd8nnm1v1wyfdr17vk8q7ymib62vli6da8n9ni4lwbkk5"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list bison
-           flex
-           libyaml
-           pkg-config
-           swig
-           valgrind))
+     (append
+       (list bison
+             flex
+             libyaml
+             pkg-config
+             swig)
+       (if (member (%current-system) (package-supported-systems valgrind))
+           (list valgrind)
+           '())))
     (inputs
      (list python))
     (arguments
