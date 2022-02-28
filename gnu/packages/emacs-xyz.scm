@@ -25792,7 +25792,7 @@ through Dash docsets.")
 (define-public emacs-devdocs
   (package
     (name "emacs-devdocs")
-    (version "0.3")
+    (version "0.4")
     (source
      (origin
        (method url-fetch)
@@ -25800,7 +25800,7 @@ through Dash docsets.")
              "https://elpa.gnu.org/packages/"
              "devdocs-" version ".tar"))
        (sha256
-        (base32 "03asw26nsnnx7hmyqhksq165vpii0h8y6qjjn0x4sdkyyns16yp7"))))
+        (base32 "05xmxqpp1cpf03y7idpqdsmbj30cissscy80ng5hqc3028kr2jqm"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/astoff/devdocs.el")
     (synopsis "Emacs viewer for DevDocs")
