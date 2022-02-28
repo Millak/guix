@@ -12388,8 +12388,28 @@ can be used to:
 @end itemize")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-concolor-query-0.0.5
+  (package
+    (name "rust-concolor-query")
+    (version "0.0.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "concolor-query" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0jcll1lnnkbdr6xcgppf6dr0ra9rxcp78xr1zlrvba03zkk7yhfn"))))
+    (build-system cargo-build-system)
+    (arguments `(#:skip-build? #t))
+    (home-page "https://github.com/rust-cli/concolor")
+    (synopsis "Look up colored console capabilities")
+    (description "@code{concolor-query} can be used to query a terminal
+capabilities, for example to find out about its colored console abilities.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-concolor-query-0.0.4
   (package
+    (inherit rust-concolor-query-0.0.5)
     (name "rust-concolor-query")
     (version "0.0.4")
     (source
@@ -12398,14 +12418,7 @@ can be used to:
        (uri (crate-uri "concolor-query" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1isbqpyiwblp0rglnaqzai5hav23095s82mwgi09v3xcck4rq5dd"))))
-    (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
-    (home-page "https://github.com/rust-cli/concolor")
-    (synopsis "Look up colored console capabilities")
-    (description "@code{concolor-query} can be used to query a terminal
-capabilities, for example to find out about its colored console abilities.")
-    (license (list license:expat license:asl2.0))))
+        (base32 "1isbqpyiwblp0rglnaqzai5hav23095s82mwgi09v3xcck4rq5dd"))))))
 
 (define-public rust-concurrent-queue-1
   (package
