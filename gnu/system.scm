@@ -1454,7 +1454,10 @@ a list of <menu-entry>, to populate the \"old entries\" menu."
                                            #:key system-kernel-arguments?)
   "Return a monadic <boot-parameters> record that describes the boot
 parameters of OS.  When SYSTEM-KERNEL-ARGUMENTS? is true, add kernel arguments
-such as '--root' and '--load' to <boot-parameters>."
+such as '--root' and '--load' to <boot-parameters>.  The
+SYSTEM-KERNEL-ARGUMENTS? should only be used in necessity, as the '--load' and
+'--system' values are self-referential (they refer to the system), thus
+susceptible to introduce a cyclic dependency."
   (let* ((initrd          (and (not (operating-system-hurd os))
                                (operating-system-initrd-file os)))
          (store           (operating-system-store-file-system os))
@@ -1495,22 +1498,13 @@ such as '--root' and '--load' to <boot-parameters>."
     (_
      device)))
 
-(define* (operating-system-boot-parameters-file os
-                                                #:key system-kernel-arguments?)
-   "Return a file that describes the boot parameters of OS.  The primary use of
-this file is the reconstruction of GRUB menu entries for old configurations.
-
-When SYSTEM-KERNEL-ARGUMENTS? is true, add kernel arguments such as '--root'
-and '--load' to the returned file (since the returned file is then usually
-stored into the content-addressed \"system\" directory, it's usually not a
-good idea to give it because the content hash would change by the content hash
-being stored into the \"parameters\" file)."
+(define* (operating-system-boot-parameters-file os)
+   "Return a file that describes the boot parameters of OS.  The primary use
+of this file is the reconstruction of GRUB menu entries for old
+configurations."
    (let* ((root   (operating-system-root-file-system os))
           (device (file-system-device root))
-          (params (operating-system-boot-parameters
-                   os device
-                   #:system-kernel-arguments?
-                   system-kernel-arguments?)))
+          (params (operating-system-boot-parameters os device)))
      (scheme-file "parameters"
                   #~(boot-parameters
                      (version #$(boot-parameters-version params))
