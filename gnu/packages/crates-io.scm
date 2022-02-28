@@ -47540,14 +47540,14 @@ owned memory.")
 (define-public rust-redox-syscall-0.2
   (package
     (name "rust-redox-syscall")
-    (version "0.2.5")
+    (version "0.2.10")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "redox_syscall" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1n878lpw577avdr5dzbkil02xwbx0a57mr2r3dcnnkz28i71wd4l"))))
+        (base32 "1zq36bhw4c6xig340ja1jmr36iy0d3djp8smsabxx71676bg70w3"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
