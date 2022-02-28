@@ -23958,7 +23958,7 @@ indentation and a command to plot the file.")
       (native-inputs
        (list emacs-faceup))
       (arguments
-       `(#:include (cons "^admin\\/" %default-include)))
+       (list #:include #~(cons "^admin\\/" %default-include)))
       (home-page "https://github.com/Lindydancer/cmake-font-lock")
       (synopsis "Advanced type-aware syntax-highlighting for CMake")
       (description "This package highlights function arguments in CMake
