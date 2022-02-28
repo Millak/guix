@@ -3986,20 +3986,20 @@ approximately equal.")
 (define-public rust-assert-cmd-2
   (package
     (name "rust-assert-cmd")
-    (version "2.0.2")
+    (version "2.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "assert_cmd" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1qhzr8p3iv8rpa6xqg247ad198rhxhljx23b17qpx2w381wxr5p9"))))
+        (base32 "0gpqwasl690zimy13rn614mpzgykpa09v5xivs4pdmpg77fivblk"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-bstr" ,rust-bstr-0.2)
-        ("rust-concolor-control" ,rust-concolor-control-0.0.7)
+        ("rust-concolor" ,rust-concolor-0.0.8)
         ("rust-doc-comment" ,rust-doc-comment-0.3)
         ("rust-predicates" ,rust-predicates-2)
         ("rust-predicates-core" ,rust-predicates-core-1)
