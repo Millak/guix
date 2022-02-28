@@ -13905,6 +13905,25 @@ final xor value.  It has many built-in CRC functions.")
      "Fast, SIMD-accelerated CRC32 (IEEE) checksum computation.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-crc64-1
+  (package
+    (name "rust-crc64")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "crc64" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0469vp0q9431pqx1236g60if5q3xyxpv4h14smkd45dfzsa6aqjm"))))
+    (build-system cargo-build-system)
+    (arguments `(#:skip-build? #t))
+    (home-page "https://github.com/badboy/crc64-rs")
+    (synopsis "Rust CRC64 checksum implementation")
+    (description "This package provides a CRC64 checksum implementation in
+Rust.")
+    (license license:bsd-3)))
+
 (define-public rust-criterion-0.3
   (package
     (name "rust-criterion")
