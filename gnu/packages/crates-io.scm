@@ -11942,54 +11942,6 @@ diagnostics easy and relatively painless for everyone!")
          ("rust-backtrace" ,rust-backtrace-0.3)
          ("rust-termcolor" ,rust-termcolor-1))))))
 
-(define-public rust-concolor-query
-  (package
-    (name "rust-concolor-query")
-    (version "0.0.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "concolor-query" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1isbqpyiwblp0rglnaqzai5hav23095s82mwgi09v3xcck4rq5dd"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/rust-cli/concolor")
-    (synopsis "Rust library to query low level terminal capabilities")
-    (description "@code{concolor-query} can be used to query a terminal
-capabilities, for example to find out about its colored console abilities.")
-    (license (list license:expat license:asl2.0))))
-
-(define-public rust-concolor-control
-  (package
-    (name "rust-concolor-control")
-    (version "0.0.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "concolor-control" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1nplakbdb9sbd3h62d9zkan0xm1w0c7cbl3rk0iqgn405yf1213i"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:tests? #f          ;see https://github.com/rust-cli/concolor/issues/4
-       #:cargo-inputs
-       (("rust-atty" ,rust-atty-0.2)
-        ("rust-bitflags" ,rust-bitflags-1)
-        ("rust-concolor-query" ,rust-concolor-query))))
-    (home-page "https://github.com/rust-cli/concolor")
-    (synopsis "Rust library for managing terminal styling")
-    (description "@code{concolor-control} is a terminal styling library that
-can be used to:
-@itemize
-@item Detect interactive @samp{stdout} or @samp{stderr}
-@item Detect terminal capabilities via @samp{TERM}
-@item Support @url{https://bixense.com/clicolors/, CLICOLOR} and
-@url{https://no-color.org/, NO_COLOR}.
-@end itemize")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-color-quant-1
   (package
     (name "rust-color-quant")
@@ -12426,8 +12378,14 @@ everywhere.")
         ("rust-concolor-query" ,rust-concolor-query-0.0.4))))
     (home-page "https://github.com/rust-cli/concolor")
     (synopsis "Control console coloring across all dependencies")
-    (description "This crate provides control console coloring across all
-dependencies.")
+    (description "@code{concolor-control} is a terminal styling library that
+can be used to:
+@itemize
+@item Detect interactive @samp{stdout} or @samp{stderr}
+@item Detect terminal capabilities via @samp{TERM}
+@item Support @url{https://bixense.com/clicolors/, CLICOLOR} and
+@url{https://no-color.org/, NO_COLOR}.
+@end itemize")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-concolor-query-0.0.4
@@ -12445,7 +12403,8 @@ dependencies.")
     (arguments `(#:skip-build? #t))
     (home-page "https://github.com/rust-cli/concolor")
     (synopsis "Look up colored console capabilities")
-    (description "This crate provides low level terminal capability lookups.")
+    (description "@code{concolor-query} can be used to query a terminal
+capabilities, for example to find out about its colored console abilities.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-concurrent-queue-1
