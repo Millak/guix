@@ -1158,6 +1158,28 @@ terminals.")
 proxy protocol.")
     (license license:asl2.0)))
 
+(define-public go-github-com-schachmat-ingo
+  (package
+    (name "go-github-com-schachmat-ingo")
+    (version "0.0.0-20170403011506-a4bdc0729a3f")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/schachmat/ingo")
+               (commit (go-version->git-ref version))))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32 "1gw0kddy7jh3467imsqni86cf9yq7k6vpfc0ywkbwj0zsjsdgd49"))))
+    (build-system go-build-system)
+    (arguments '(#:import-path "github.com/schachmat/ingo"))
+    (home-page "https://github.com/schachmat/ingo")
+    (synopsis "Go library to persist flags in a INI-like configuration file")
+    (description
+      "Ingo is a Go library helping you to persist flags in a INI-like
+configuration file.")
+    (license license:isc)))
+
 (define-public go-github-com-riobard-go-bloom
   (let ((commit "cdc8013cb5b3eb0efebec85f0e904efccac42df9")
         (revision "0"))
