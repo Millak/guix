@@ -53,6 +53,8 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages ibus)
+  #:use-module (gnu packages icu4c)
+  #:use-module (gnu packages image)
   #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages kde)
   #:use-module (gnu packages linux)
@@ -1048,14 +1050,14 @@ of the project is to be runnable on untrusted networks without crashing.")
 (define-public tectonic
   (package
     (name "tectonic")
-    (version "0.8.0")
+    (version "0.8.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0hzyqpjxya6g1ifb3hvjvj0zl2aigx898pz7h5pl46z50jp2pdc8"))))
+        (base32 "036cgbnw4mykhprfvfh97gcgrlkbjrgv58fwqy8l6s0vwam66sdh"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-build-flags '("--release" "--features" "external-harfbuzz")
@@ -1078,13 +1080,14 @@ of the project is to be runnable on untrusted networks without crashing.")
         ("rust-tectonic-bundles" ,rust-tectonic-bundles-0.2)
         ("rust-tectonic-docmodel" ,rust-tectonic-docmodel-0.1)
         ("rust-tectonic-engine-bibtex" ,rust-tectonic-engine-bibtex-0.1)
+        ("rust-tectonic-engine-spx2html" ,rust-tectonic-engine-spx2html-0.1)
         ("rust-tectonic-engine-xdvipdfmx" ,rust-tectonic-engine-xdvipdfmx-0.1)
-        ("rust-tectonic-engine-xetex" ,rust-tectonic-engine-xetex-0.1)
+        ("rust-tectonic-engine-xetex" ,rust-tectonic-engine-xetex-0.2)
         ("rust-tectonic-errors" ,rust-tectonic-errors-0.2)
         ("rust-tectonic-geturl" ,rust-tectonic-geturl-0.3)
         ("rust-tectonic-io-base" ,rust-tectonic-io-base-0.3)
         ("rust-tectonic-status-base" ,rust-tectonic-status-base-0.2)
-        ("rust-tectonic-xdv" ,rust-tectonic-xdv-0.1)
+        ("rust-tectonic-xdv" ,rust-tectonic-xdv-0.2)
         ("rust-tectonic-xetex-layout" ,rust-tectonic-xetex-layout-0.1)
         ("rust-tempfile" ,rust-tempfile-3)
         ("rust-termcolor" ,rust-termcolor-1)
@@ -1109,10 +1112,14 @@ of the project is to be runnable on untrusted networks without crashing.")
     (native-inputs
      (list pkg-config))
     (inputs
-     `(("fontconfig" ,fontconfig)
-       ("harfbuzz" ,harfbuzz)
-       ("openssl" ,openssl)
-       ("zlib" ,zlib)))
+     (list fontconfig
+           freetype
+           graphite2
+           harfbuzz
+           icu4c
+           libpng
+           openssl
+           zlib))
     (home-page "https://tectonic-typesetting.github.io/")
     (synopsis "Complete, embeddable TeX/LaTeX engine")
     (description

@@ -42442,7 +42442,9 @@ written with declarative macros.")
        (uri (crate-uri "pinot" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "153di76kx7xb4mp2i14zg1wkz3mclivv4c77mbhh7af553yqnsnh"))))
+        (base32 "153di76kx7xb4mp2i14zg1wkz3mclivv4c77mbhh7af553yqnsnh"))
+       ;; XXX: This patch is needed by Tectonic.
+       (patches (search-patches "rust-pinot-0.1-implement-math-table.patch"))))
     (build-system cargo-build-system)
     (arguments `(#:skip-build? #t))
     (home-page "https://github.com/dfrg/pinot")
@@ -60925,14 +60927,14 @@ process.")
 (define-public rust-tectonic-docmodel-0.1
   (package
     (name "rust-tectonic-docmodel")
-    (version "0.1.0")
+    (version "0.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic_docmodel" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "041hbp5rjrnnf6pbi7b9039jx5vn5f0d9fwhk0vshwjn69jmknkm"))))
+        (base32 "1b5vdqcnjbbda6am0mb7qyxyc6pn8v0pqz0w10xia87ycyyfflxw"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
@@ -60974,25 +60976,55 @@ document model, including the @file{Tectonic.toml} file.")
 @code{bibtex} program as a reusable crate.")
     (license license:expat)))
 
-(define-public rust-tectonic-engine-xetex-0.1
+(define-public rust-tectonic-engine-spx2html-0.1
+  (package
+    (name "rust-tectonic-engine-spx2html")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tectonic_engine_spx2html" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ydn2j4359fzd9dik4lpw68jwngcbgvlpwig9np50cb40dssvy09"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-byteorder" ,rust-byteorder-1)
+        ("rust-percent-encoding" ,rust-percent-encoding-2)
+        ("rust-pinot" ,rust-pinot-0.1)
+        ("rust-tectonic-bridge-core" ,rust-tectonic-bridge-core-0.3)
+        ("rust-tectonic-errors" ,rust-tectonic-errors-0.2)
+        ("rust-tectonic-io-base" ,rust-tectonic-io-base-0.4)
+        ("rust-tectonic-status-base" ,rust-tectonic-status-base-0.2)
+        ("rust-tectonic-xdv" ,rust-tectonic-xdv-0.2)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-tera" ,rust-tera-1))))
+    (home-page "https://tectonic-typesetting.github.io/")
+    (synopsis "Tectonic engine that converts SPX output to HTML")
+    (description "This crate implements the Tectonic engine that converts SPX
+output to HTML.")
+    (license license:expat)))
+
+(define-public rust-tectonic-engine-xetex-0.2
   (package
     (name "rust-tectonic-engine-xetex")
-    (version "0.1.1")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic_engine_xetex" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0ki06fsqx7rb683gz4d5xz248gwvpzf137zqrg8whsrazaqgzmfq"))))
+        (base32 "1kn9gxkgf3jbwif14n1kmp869s4b69khhc7iwm78qqpmy79lrhkw"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
-       (("rust-cbindgen" ,rust-cbindgen-0.16)
-        ("rust-cc" ,rust-cc-1)
+       (("rust-cc" ,rust-cc-1)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-tectonic-bridge-core" ,rust-tectonic-bridge-core-0.1)
+        ("rust-tectonic-bridge-core" ,rust-tectonic-bridge-core-0.3)
         ("rust-tectonic-bridge-flate" ,rust-tectonic-bridge-flate-0.1)
         ("rust-tectonic-bridge-graphite2" ,rust-tectonic-bridge-graphite2-0.2)
         ("rust-tectonic-bridge-harfbuzz" ,rust-tectonic-bridge-harfbuzz-0.2)
@@ -61104,17 +61136,17 @@ error type and utilities.")
 interface for fetching URLs using one of several HTTP backends.")
     (license license:expat)))
 
-(define-public rust-tectonic-io-base-0.3
+(define-public rust-tectonic-io-base-0.4
   (package
     (name "rust-tectonic-io-base")
-    (version "0.3.0")
+    (version "0.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic_io_base" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0xpcavx3chld8d5qa24ikf5v4l5slzkakqr4ylibx0f91ssy3bsm"))))
+        (base32 "0x1r4m5bkqqvz24sql9q8ycnjczlqjlhzfyaylzhxi2xx4flqdfn"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
@@ -61124,7 +61156,7 @@ interface for fetching URLs using one of several HTTP backends.")
         ("rust-libc" ,rust-libc-0.2)
         ("rust-sha2" ,rust-sha2-0.9)
         ("rust-tectonic-errors" ,rust-tectonic-errors-0.2)
-        ("rust-tectonic-status-base" ,rust-tectonic-status-base-0.1)
+        ("rust-tectonic-status-base" ,rust-tectonic-status-base-0.2)
         ("rust-thiserror" ,rust-thiserror-1))))
     (home-page "https://tectonic-typesetting.github.io/")
     (synopsis "Basic types for Tectonic's pluggable I/O backend system")
@@ -61134,6 +61166,29 @@ types for Tectonic's pluggable I/O backend system, with
 implementations for @code{std} I/O types as well as @code{flate2} gzip
 streams.")
     (license license:expat)))
+
+(define-public rust-tectonic-io-base-0.3
+  (package
+    (inherit rust-tectonic-io-base-0.4)
+    (name "rust-tectonic-io-base")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tectonic_io_base" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xpcavx3chld8d5qa24ikf5v4l5slzkakqr4ylibx0f91ssy3bsm"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-app-dirs2" ,rust-app-dirs2-2)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-sha2" ,rust-sha2-0.9)
+        ("rust-tectonic-errors" ,rust-tectonic-errors-0.2)
+        ("rust-tectonic-status-base" ,rust-tectonic-status-base-0.1)
+        ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-tectonic-io-base-0.2
   (package
@@ -61229,17 +61284,17 @@ types for reporting status messages to a user.")
        #:cargo-inputs
        (("rust-tectonic-errors" ,rust-tectonic-errors-0.1))))))
 
-(define-public rust-tectonic-xdv-0.1
+(define-public rust-tectonic-xdv-0.2
   (package
     (name "rust-tectonic-xdv")
-    (version "0.1.11")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic_xdv" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1ibxv32i7dla3iw6s01cagzgdgzhm1mmxwqjv841m6m4r7g57gxj"))))
+        (base32 "1fcys9v5zcdavfkq72h5ajkz2pxjpc6km6wqajk29qc65870xd5k"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
