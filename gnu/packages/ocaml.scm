@@ -4559,30 +4559,20 @@ collection.")
 (define-public ocaml-bindlib
   (package
     (name "ocaml-bindlib")
-    (version "5.0.1")
+    (version "6.0.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/rlepigre/ocaml-bindlib")
-             (commit (string-append "ocaml-bindlib_" version))))
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1f8kr81w8vsi4gv61xn1qbc6zrzkjp8l9ix0942vjh4gjxc74v75"))))
-    (build-system ocaml-build-system)
+         "1viyws3igy49hfaj4jaiwm4iggck9zdn7r3g6kh1n4zxphqk57yk"))))
+    (build-system dune-build-system)
     (arguments
-     `(#:tests? #f                      ;no tests
-       #:use-make? #t
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (replace 'build
-           (lambda _
-             (invoke "make")))
-         (replace 'install
-           (lambda _
-             (invoke "make" "install"))))))
+     `(#:test-target "."))
     (native-inputs
      (list ocamlbuild ocaml-findlib))
     (home-page "https://rlepigre.github.io/ocaml-bindlib/")
