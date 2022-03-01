@@ -403,8 +403,10 @@ without requiring the source code to be rewritten.")
     (arguments
      (substitute-keyword-arguments (package-arguments guile-3.0)
        ;; Guile 3.0.8 is bit-reproducible when built in parallel, thanks to
-       ;; its multi-stage build process for cross-module inlining.
-       ((#:parallel-build? _ #f) #t)))))
+       ;; its multi-stage build process for cross-module inlining, except when
+       ;; cross-compiling.
+       ((#:parallel-build? _ #f)
+        (not (%current-target-system)))))))
 
 (define-public guile-3.0/fixed
   ;; A package of Guile that's rarely changed.  It is the one used in the
