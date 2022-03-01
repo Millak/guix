@@ -2445,7 +2445,7 @@ through Transport Layer Security (@dfn{TLS}) encrypted connections.")
 (define-public ocaml-mmap
   (package
     (name "ocaml-mmap")
-    (version "1.1.0")
+    (version "1.2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2454,8 +2454,9 @@ through Transport Layer Security (@dfn{TLS}) encrypted connections.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1jaismy5d1bhbbanysmr2k79px0yv6ya265dri3949nha1l23i60"))))
+                "1a7w7l682cbksn2zlmz24gb519x7wb65ivr5vndm9x5pi9fw5pfb"))))
     (build-system dune-build-system)
+    (propagated-inputs (list ocaml-bigarray-compat))
     (home-page "https://github.com/mirage/mmap")
     (synopsis "File mapping for OCaml")
     (description "This project provides a @command{Mmap.map_file} function
