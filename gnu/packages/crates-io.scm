@@ -42432,6 +42432,28 @@ written with declarative macros.")
     (description "This crate provides utilities for pinning values on the stack.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-pinot-0.1
+  (package
+    (name "rust-pinot")
+    (version "0.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pinot" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "153di76kx7xb4mp2i14zg1wkz3mclivv4c77mbhh7af553yqnsnh"))))
+    (build-system cargo-build-system)
+    (arguments `(#:skip-build? #t))
+    (home-page "https://github.com/dfrg/pinot")
+    (synopsis "High-fidelity OpenType parser in Rust")
+    (description "This crate aims to parse OpenType fonts with a level
+of detail that is amenable to modeling, analysis and transformation.
+The current focus is specifically on OpenType layout and the crate
+provides comprehensive coverage of that portion of the specification
+along with strong support for variations and the core header tables.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-pkcs1-0.2
   (package
     (name "rust-pkcs1")
