@@ -200,6 +200,20 @@ a focus on simplicity and productivity.")
         (base32
          "0h2w2ms4gx2s96v3lzdr3add94bd2qqkhdjzaycmaqhg21rpf3jp"))))))
 
+(define-public ruby-3.1
+  (package
+    (inherit ruby-2.7)
+    (version "3.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://cache.ruby-lang.org/pub/ruby/"
+                           (version-major+minor version)
+                           "/ruby-" version ".tar.xz"))
+       (sha256
+        (base32
+         "1akcl7vhmwfm6ybj7493kzy58ykh2r39ri9f4xfm2xmhg1msmvvs"))))))
+
 (define-public ruby-2.5
   (package
     (inherit ruby-2.6)
