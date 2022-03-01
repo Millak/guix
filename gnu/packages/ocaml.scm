@@ -4082,7 +4082,7 @@ capabilities, Zed provides macro recording and cursor management facilities.")
 (define-public ocaml-lambda-term
   (package
     (name "ocaml-lambda-term")
-    (version "3.1.0")
+    (version "3.2.0")
     (home-page "https://github.com/ocaml-community/lambda-term")
     (source (origin
               (method git-fetch)
@@ -4092,7 +4092,7 @@ capabilities, Zed provides macro recording and cursor management facilities.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1k0ykiz0vhpyyj9fkss29ajas4fh1xh449j702xkvayqipzj1mkg"))))
+                "048k26644wq5wlwk0j179dxrxyz9nxqqq4vvhyh6pqpgxdajd44i"))))
     (build-system dune-build-system)
     (arguments
      `(#:test-target "."))
