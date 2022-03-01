@@ -61392,20 +61392,20 @@ directories.")
 (define-public rust-tera-1
   (package
     (name "rust-tera")
-    (version "1.6.1")
+    (version "1.15.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tera" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1p7qzd8akd4xk4b23dmdrqw9q8061xkl1mar34j3f2glmizapipa"))))
+        (base32 "13dmx1qfn66v55l54gddp89mi82ghszwml9jyv75phhmnqqwijnk"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-chrono" ,rust-chrono-0.4)
-        ("rust-chrono-tz" ,rust-chrono-tz-0.5)
+        ("rust-chrono-tz" ,rust-chrono-tz-0.6)
         ("rust-globwalk" ,rust-globwalk-0.8)
         ("rust-humansize" ,rust-humansize-1)
         ("rust-lazy-static" ,rust-lazy-static-1)
