@@ -2114,14 +2114,14 @@ manipulate such data.")
 (define-public ocaml-mtime
   (package
     (name "ocaml-mtime")
-    (version "1.3.0")
+    (version "1.4.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://erratique.ch/software/mtime/releases/"
                                   "mtime-" version ".tbz"))
               (sha256
                (base32
-                "0syilgk4nzscacsswnvgwqlf0n0lhs221jss8gc8z9igw2x4sgsq"))))
+                "1xy6lg52n2zynp4p164ym9j0f1b95j5n4bi5y4mbdrry9w99h32m"))))
     (build-system ocaml-build-system)
     (native-inputs
      (list ocamlbuild opam))
@@ -2129,7 +2129,7 @@ manipulate such data.")
      `(("topkg" ,ocaml-topkg)))
     (arguments
      `(#:tests? #f
-       #:build-flags (list "build" "--with-js_of_ocaml" "false")
+       #:build-flags (list "build")
        #:phases
        (modify-phases %standard-phases
          (delete 'configure))))
