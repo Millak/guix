@@ -465,7 +465,7 @@ depend: $(STDLIB_MLIS) $(STDLIB_DEPS)"))
 (define-public ocamlbuild
   (package
     (name "ocamlbuild")
-    (version "0.14.0")
+    (version "0.14.1")
     (source
      (origin
        (method git-fetch)
@@ -474,7 +474,7 @@ depend: $(STDLIB_MLIS) $(STDLIB_DEPS)"))
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hb5mcdz4wv7sh1pj7dq9q4fgz5h3zg7frpiya6s8zd3ypwzq0kh"))))
+        (base32 "00ma0g6ajll9awp2bp303bawac8ync4k9w2a6vix0k4nw3003gb4"))))
     (build-system ocaml-build-system)
     (arguments
      `(#:make-flags
