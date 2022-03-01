@@ -374,7 +374,7 @@ configuration."
             "=" val "\n")))
 
   (define (serialize-alist config)
-    (generic-serialize-alist identity format-config config))
+    (generic-serialize-alist append format-config config))
 
   (define (serialize-xdg-desktop-action action)
     (match action
