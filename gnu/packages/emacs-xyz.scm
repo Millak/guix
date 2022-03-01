@@ -12035,6 +12035,26 @@ Emacs that Evil does not cover properly by default, such as @code{help-mode},
 being deleted, changed, yanked, or pasted when using evil commands")
       (license license:gpl3+))))
 
+(define-public emacs-goggles
+  (package
+    (name "emacs-goggles")
+    (version "0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/minad/goggles")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15bqjmwfdqp2np6fln6xjyw59c5iddvzsyga0lvb8raa753cdh2k"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/minad/goggles")
+    (synopsis "Pulse modified region")
+    (description "Goggles highlights the modified region using pulse.
+Currently the commands undo, yank, kill and delete are supported.")
+    (license license:gpl3+)))
+
 (define-public emacs-goto-chg
   (package
     (name "emacs-goto-chg")
