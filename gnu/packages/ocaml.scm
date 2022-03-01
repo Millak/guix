@@ -1338,7 +1338,7 @@ compilers that can directly deal with packages.")
 (define-public ocaml-ounit2
   (package
     (name "ocaml-ounit2")
-    (version "2.2.5")
+    (version "2.2.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1347,7 +1347,7 @@ compilers that can directly deal with packages.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1frdfnal6zl46dq5vlxz1ks28bf9x57zgik2cc65izji0ymr7pis"))))
+                "04c841hpk2yij370w30w3pis8nibnr28v74mpq2qz7z5gb8l07p1"))))
     (build-system dune-build-system)
     (propagated-inputs
      (list ocaml-lwt ocaml-stdlib-shims))
