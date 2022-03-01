@@ -1367,7 +1367,7 @@ made by suckless.")
 (define-public tio
   (package
     (name "tio")
-    (version "1.32")
+    (version "1.35")
     (source
      (origin
        (method url-fetch)
@@ -1375,8 +1375,8 @@ made by suckless.")
              "https://github.com/tio/tio/releases/download/v"
              version "/tio-" version ".tar.xz"))
        (sha256
-        (base32 "0i5fhi4xdk4yznj8wahniizddmx6wlcnnhda1dw9djyajilyvxd8"))))
-    (build-system gnu-build-system)
+        (base32 "02cx3hjk2rv2dmds2xi17ymi93k6zybapa33ydyfkx3mfvgfq28k"))))
+    (build-system meson-build-system)
     (home-page "https://tio.github.io/")
     (synopsis "Simple TTY terminal I/O application")
     (description "tio is a simple TTY terminal application which features a
