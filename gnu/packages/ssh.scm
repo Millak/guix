@@ -310,7 +310,7 @@ Additionally, various channel-specific options can be negotiated.")
 (define-public guile-ssh
   (package
     (name "guile-ssh")
-    (version "0.13.1")
+    (version "0.15.1")
     (home-page "https://github.com/artyom-poptsov/guile-ssh")
     (source (origin
               (method git-fetch)
@@ -320,9 +320,7 @@ Additionally, various channel-specific options can be negotiated.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1xpxkvgj7wgcl450djkcrmrf957mcy2f36hfs5g6kpla1gax2d1g"))
-              (patches (search-patches "guile-ssh-fix-test-suite.patch"
-                                       "guile-ssh-read-error.patch"))))
+                "0zzn5hsf97b35gixyg4z14sspl15qwnp52y4h89wra4y31l7467q"))))
     (build-system gnu-build-system)
     (outputs '("out" "debug"))
     (arguments
@@ -382,28 +380,10 @@ programs written in GNU Guile interpreter.  It is a wrapper to the underlying
 libssh library.")
     (license license:gpl3+)))
 
-(define-public guile2.0-ssh
-  (package
-    (inherit guile-ssh)
-    (name "guile2.0-ssh")
-    (source (origin
-              (inherit (package-source guile-ssh))
-              (patches (search-patches "guile-ssh-fix-test-suite.patch"))))
-    (native-inputs
-     (modify-inputs (package-native-inputs guile-ssh)
-       (delete "guile")
-       (prepend guile-2.0 ;needed when cross-compiling.
-                )))
-    (inputs (modify-inputs (package-inputs guile-ssh)
-              (replace "guile" guile-2.0)))))
-
 (define-public guile2.2-ssh
   (package
     (inherit guile-ssh)
     (name "guile2.2-ssh")
-    (source (origin
-              (inherit (package-source guile-ssh))
-              (patches (search-patches "guile-ssh-fix-test-suite.patch"))))
     (native-inputs
      (modify-inputs (package-native-inputs guile-ssh)
        (delete "guile")
