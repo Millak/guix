@@ -15,7 +15,7 @@
 ;;; Copyright © 2018 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2018 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2019 Taylan Kammer <taylan.kammer@gmail.com>
-;;; Copyright © 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Timothy Sample <samplet@ngyro.com>
 ;;;
@@ -406,7 +406,19 @@ without requiring the source code to be rewritten.")
        ;; its multi-stage build process for cross-module inlining, except when
        ;; cross-compiling.
        ((#:parallel-build? _ #f)
-        (not (%current-target-system)))))))
+        (not (%current-target-system)))
+       ((#:phases phases)
+        `(modify-phases ,phases
+           ,@(if (target-ppc32?)
+               `((replace 'adjust-bootstrap-flags
+                   (lambda _
+                     ;; Upstream knows about suggested solution.
+                     ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=45214
+                     ;; https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=977223#46
+                     (substitute* "stage0/Makefile.in"
+                       (("^GUILE_OPTIMIZATIONS.*")
+                        "GUILE_OPTIMIZATIONS = -O1 -Oresolve-primitives -Ocps\n")))))
+               '())))))))
 
 (define-public guile-3.0/fixed
   ;; A package of Guile that's rarely changed.  It is the one used in the
