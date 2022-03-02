@@ -372,6 +372,10 @@ return #f and #f."
        ;; least depending on external state (with-source, with-commit, etc.),
        ;; so do not cache anything when they're used.
        (values #f #f))
+      ((('profile . _) . _)
+       ;; If the user already specified a profile, there's nothing more to
+       ;; cache.
+       (values #f #f))
       ((('system . system) . rest)
        (loop rest system file specs))
       ((_ . rest) (loop rest system file specs)))))
