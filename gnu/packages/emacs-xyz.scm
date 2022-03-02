@@ -19129,11 +19129,7 @@ you see exactly what happens at each step of the expansion process by
 pretty-printing the expanded forms inline in the source buffer, which is
 temporarily read-only while macro expansions are visible.  You can expand and
 collapse macro forms one step at a time, and evaluate or instrument the
-expansions for debugging with Edebug as normal (but see “Bugs and known
-limitations”, below).  Single-stepping through the expansion is particularly
-useful for debugging macros that expand into another macro form.  These can be
-difficult to debug with Emacs’ built-in macroexpand, which continues expansion
-until the top-level form is no longer a macro call.")
+expansions for debugging with Edebug as normal.")
       (license license:gpl3+))))
 
 (define-public emacs-parent-mode
