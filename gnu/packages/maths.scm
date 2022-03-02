@@ -5371,53 +5371,52 @@ set.")
     (outputs '("out"                    ;5.3 MiB of headers and libraries
                "doc"))                  ;12 MiB of documentation
     (native-inputs
-     `(("doc++" ,doc++)
-       ("doxygen" ,doxygen)
-       ("python" ,python)
-       ("python-breathe" ,python-breathe)
-       ("python-sphinx" ,python-sphinx)
-       ("texlive" ,(texlive-updmap.cfg (list texlive-adjustbox
-                                             texlive-amsfonts
-                                             texlive-bibtex
-                                             texlive-capt-of
-                                             texlive-caption
-                                             texlive-cm
-                                             texlive-etoolbox
-                                             texlive-jknappen
-                                             texlive-sectsty
-                                             texlive-tex-gyre
-                                             texlive-wasy
-                                             texlive-xcolor
-                                             texlive-xypic
-                                             texlive-generic-listofitems
-                                             texlive-latex-cmap
-                                             texlive-latex-colortbl
-                                             texlive-latex-etoc
-                                             texlive-latex-fancyhdr
-                                             texlive-latex-fancyvrb
-                                             texlive-latex-float
-                                             texlive-latex-fncychap
-                                             texlive-latex-framed
-                                             texlive-latex-geometry
-                                             texlive-latex-hanging
-                                             texlive-hyperref
-                                             texlive-latex-multirow
-                                             texlive-latex-natbib
-                                             texlive-latex-needspace
-                                             texlive-latex-newunicodechar
-                                             texlive-latex-parskip
-                                             texlive-latex-stackengine
-                                             texlive-latex-tabulary
-                                             texlive-latex-titlesec
-                                             texlive-latex-tocloft
-                                             texlive-latex-upquote
-                                             texlive-latex-varwidth
-                                             texlive-ulem
-                                             texlive-wasysym
-                                             texlive-wrapfig)))))
+     (list doc++
+           doxygen
+           python
+           python-breathe
+           python-sphinx
+           (texlive-updmap.cfg (list texlive-adjustbox
+                                     texlive-amsfonts
+                                     texlive-bibtex
+                                     texlive-capt-of
+                                     texlive-caption
+                                     texlive-cm
+                                     texlive-etoolbox
+                                     texlive-jknappen
+                                     texlive-sectsty
+                                     texlive-tex-gyre
+                                     texlive-wasy
+                                     texlive-xcolor
+                                     texlive-xypic
+                                     texlive-generic-listofitems
+                                     texlive-latex-cmap
+                                     texlive-latex-colortbl
+                                     texlive-latex-etoc
+                                     texlive-latex-fancyhdr
+                                     texlive-latex-fancyvrb
+                                     texlive-latex-float
+                                     texlive-latex-fncychap
+                                     texlive-latex-framed
+                                     texlive-latex-geometry
+                                     texlive-latex-hanging
+                                     texlive-hyperref
+                                     texlive-latex-multirow
+                                     texlive-latex-natbib
+                                     texlive-latex-needspace
+                                     texlive-latex-newunicodechar
+                                     texlive-latex-parskip
+                                     texlive-latex-stackengine
+                                     texlive-latex-tabulary
+                                     texlive-latex-titlesec
+                                     texlive-latex-tocloft
+                                     texlive-latex-upquote
+                                     texlive-latex-varwidth
+                                     texlive-ulem
+                                     texlive-wasysym
+                                     texlive-wrapfig))))
     (inputs
-     `(("blas" ,openblas)
-       ("lapack" ,lapack)))
+     (list openblas lapack))
     (arguments
      `(#:modules ((srfi srfi-1)
                   ,@%gnu-build-system-modules)
@@ -5478,11 +5477,11 @@ problems.")
     (license license:lgpl2.1)))
 
 (define-public hypre-openmpi
-  (package (inherit hypre)
+  (package
+    (inherit hypre)
     (name "hypre-openmpi")
-    (inputs
-     `(("mpi" ,openmpi)
-       ,@(package-inputs hypre)))
+    (inputs (modify-inputs (package-inputs hypre)
+              (prepend openmpi)))
     (arguments
      (substitute-keyword-arguments (package-arguments hypre)
        ((#:configure-flags flags)
