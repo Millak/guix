@@ -18872,22 +18872,23 @@ mode.")
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url "https://github.com/phillord/m-buffer-el")
-              (commit (string-append "v" version))))
+             (url "https://github.com/phillord/m-buffer-el")
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
          "1sx76i59razwccvn6x7rx5a124bfyjw9fcbxf4gj7nsg33qiq809"))))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'install 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "emacs" "--batch" "-L" "."
-                       "-l" "test/m-buffer-test.el"
-                       "-l" "test/m-buffer-at-test.el"
-                       "-f" "ert-run-tests-batch-and-exit")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "emacs" "--batch" "-L" "."
+                        "-l" "test/m-buffer-test.el"
+                        "-l" "test/m-buffer-at-test.el"
+                        "-f" "ert-run-tests-batch-and-exit")))))))
     (build-system emacs-build-system)
     (home-page "https://github.com/phillord/m-buffer-el")
     (synopsis "List oriented buffer operations for Emacs")
