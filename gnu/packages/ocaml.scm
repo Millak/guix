@@ -3174,7 +3174,7 @@ is used to determine whether the results truly differ.")
 (define-public ocaml-batteries
   (package
     (name "ocaml-batteries")
-    (version "3.5.0")
+    (version "3.5.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3183,7 +3183,7 @@ is used to determine whether the results truly differ.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1w2fb47vgifj4iws0s8r531n0p9khq92n7gwcs7caj5bbzfc5zdx"))))
+                "07387jp93civ9p1q2ixmq8qkzzyssp94ssxd4w2ndvkg1nr6kfcl"))))
     (build-system ocaml-build-system)
     (propagated-inputs (list ocaml-num))
     (native-inputs
