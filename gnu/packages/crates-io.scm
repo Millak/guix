@@ -60977,14 +60977,14 @@ document model, including the @file{Tectonic.toml} file.")
 (define-public rust-tectonic-engine-spx2html-0.1
   (package
     (name "rust-tectonic-engine-spx2html")
-    (version "0.1.0")
+    (version "0.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic_engine_spx2html" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0ydn2j4359fzd9dik4lpw68jwngcbgvlpwig9np50cb40dssvy09"))))
+        (base32 "15nxgx20x3ii9ksdj2w9jis1qm1rd451kw3jh87ydvwqnzg88f3m"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t

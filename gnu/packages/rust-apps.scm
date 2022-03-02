@@ -1050,14 +1050,14 @@ of the project is to be runnable on untrusted networks without crashing.")
 (define-public tectonic
   (package
     (name "tectonic")
-    (version "0.8.1")
+    (version "0.8.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "036cgbnw4mykhprfvfh97gcgrlkbjrgv58fwqy8l6s0vwam66sdh"))))
+        (base32 "041v887a3aybrkn5fnrjwy95wxfk4npl6lj8ar8dnidjmfh92bka"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-build-flags '("--release" "--features" "external-harfbuzz")
@@ -1085,7 +1085,7 @@ of the project is to be runnable on untrusted networks without crashing.")
         ("rust-tectonic-engine-xetex" ,rust-tectonic-engine-xetex-0.2)
         ("rust-tectonic-errors" ,rust-tectonic-errors-0.2)
         ("rust-tectonic-geturl" ,rust-tectonic-geturl-0.3)
-        ("rust-tectonic-io-base" ,rust-tectonic-io-base-0.3)
+        ("rust-tectonic-io-base" ,rust-tectonic-io-base-0.4)
         ("rust-tectonic-status-base" ,rust-tectonic-status-base-0.2)
         ("rust-tectonic-xdv" ,rust-tectonic-xdv-0.2)
         ("rust-tectonic-xetex-layout" ,rust-tectonic-xetex-layout-0.1)
