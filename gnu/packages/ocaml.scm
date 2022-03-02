@@ -2391,14 +2391,14 @@ syntactic tools.")
 (define-public ocaml-react
   (package
     (name "ocaml-react")
-    (version "1.2.1")
+    (version "1.2.2")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "http://erratique.ch/software/react/releases/react-"
                             version ".tbz"))
         (sha256 (base32
-                  "1aj8w79gdd9xnrbz7s5p8glcb4pmimi8jp9f439dqnf6ih3mqb3v"))))
+                  "16cg4byj8lfbbw96dhh8sks5y9n1c3fshz7f2p8m7wgisqax7bf4"))))
     (build-system ocaml-build-system)
     (native-inputs
      (list ocamlbuild opam ocaml-topkg))
