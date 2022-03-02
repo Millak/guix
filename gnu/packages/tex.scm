@@ -436,6 +436,18 @@ files from LOCATIONS with expected checksum HASH.  CODE is not currently in use.
            (lambda _
              (substitute* "texk/kpathsea/config.h"
                (("#define ST_NLINK_TRICK") ""))))
+
+         ,@(if (target-arm32?)
+               `((add-after 'unpack 'skip-faulty-test
+                   (lambda _
+                     ;; Skip this faulty test on armhf-linux:
+                     ;;   https://issues.guix.gnu.org/54055
+                     (substitute* '("texk/mendexk/tests/mendex.test"
+                                    "texk/upmendex/tests/upmendex.test")
+                       (("^TEXMFCNF=" all)
+                        (string-append "exit 77 # skip\n" all))))))
+               '())
+
          (add-after 'check 'customize-texmf.cnf
            ;; The default texmf.cnf is provided by this package, texlive-bin.
            ;; Every variable of interest is set relatively to the GUIX_TEXMF
