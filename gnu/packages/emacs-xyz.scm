@@ -18882,11 +18882,12 @@ mode.")
      `(#:phases
        (modify-phases %standard-phases
          (add-before 'install 'check
-           (lambda* (#:key inputs #:allow-other-keys)
-             (invoke "emacs" "--batch" "-L" "."
-                     "-l" "test/m-buffer-test.el"
-                     "-l" "test/m-buffer-at-test.el"
-                     "-f" "ert-run-tests-batch-and-exit"))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "emacs" "--batch" "-L" "."
+                       "-l" "test/m-buffer-test.el"
+                       "-l" "test/m-buffer-at-test.el"
+                       "-f" "ert-run-tests-batch-and-exit")))))))
     (build-system emacs-build-system)
     (home-page "https://github.com/phillord/m-buffer-el")
     (synopsis "List oriented buffer operations for Emacs")
