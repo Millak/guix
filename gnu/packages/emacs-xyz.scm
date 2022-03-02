@@ -19099,27 +19099,28 @@ without disturbing alignment.")
                   "1fm40mxdn289cyzgw992223dgrjmwxn4q8svyyxfaxjrpb38jhjz"))))
       (build-system emacs-build-system)
       (arguments
-       '(#:tests? #t
-         #:phases
-         (modify-phases %standard-phases
-           (add-before 'check 'remove-test
-             ;; Fails because of requirement ‘/bin/sh’.
-             (lambda _
-               (let ((file "macrostep-test.el"))
-                 (chmod file #o644)
-                 (emacs-batch-edit-file file
-                   `(progn (progn (goto-char (point-min))
-                                  (re-search-forward
-                                   "(ert-deftest macrostep-expand-c-macros")
-                                  (beginning-of-line)
-                                  (kill-sexp))
-                           (basic-save-buffer))))))
-           (replace 'check
-             (lambda* (#:key tests? #:allow-other-keys)
-               (when tests?
-                 (invoke "emacs" "--batch" "-L" "."
-                         "-l" "macrostep-test.el"
-                         "-f" "ert-run-tests-batch-and-exit")))))))
+       (list
+        #:tests? #t
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'check 'remove-test
+              ;; Fails because of requirement ‘/bin/sh’.
+              (lambda _
+                (let ((file "macrostep-test.el"))
+                  (make-file-writable file)
+                  (emacs-batch-edit-file file
+                    `(progn (progn (goto-char (point-min))
+                                   (re-search-forward
+                                    "(ert-deftest macrostep-expand-c-macros")
+                                   (beginning-of-line)
+                                   (kill-sexp))
+                            (basic-save-buffer))))))
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (invoke "emacs" "--batch" "-L" "."
+                          "-l" "macrostep-test.el"
+                          "-f" "ert-run-tests-batch-and-exit")))))))
       (home-page "https://github.com/joddie/macrostep")
       (synopsis "Interactive macro-expander for Emacs")
       (description "@code{macrostep} is an Emacs minor mode for interactively
