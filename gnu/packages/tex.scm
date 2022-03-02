@@ -7108,9 +7108,9 @@ implements an easy to use interface for these symbols.")
 
 (define-deprecated-package texlive-latex-wasysym texlive-wasysym)
 
-(define-public texlive-latex-wrapfig
+(define-public texlive-wrapfig
   (package
-    (name "texlive-latex-wrapfig")
+    (name "texlive-wrapfig")
     (version (number->string %texlive-revision))
     (source (origin
               (method svn-fetch)
@@ -7141,6 +7141,8 @@ implements an easy to use interface for these symbols.")
 It does not work in combination with list environments, but can be used in a
 @code{parbox} or @code{minipage}, and in two-column format.")
     (license license:lppl)))
+
+(define-deprecated-package texlive-latex-wrapfig texlive-wrapfig)
 
 (define-public texlive-latex-ucs
   (package

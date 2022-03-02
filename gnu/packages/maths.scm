@@ -5414,7 +5414,7 @@ set.")
                                              texlive-latex-varwidth
                                              texlive-ulem
                                              texlive-wasysym
-                                             texlive-latex-wrapfig)))))
+                                             texlive-wrapfig)))))
     (inputs
      `(("blas" ,openblas)
        ("lapack" ,lapack)))

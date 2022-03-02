@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2014, 2015, 2016, 2019 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014, 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2017, 2021 Eric Bavier <bavier@posteo.net>
@@ -5899,7 +5899,7 @@ readable format.")
                                         texlive-latex-upquote
                                         texlive-url
                                         texlive-latex-varwidth
-                                        texlive-latex-wrapfig)))
+                                        texlive-wrapfig)))
        ("texinfo" ,texinfo)
        ("perl" ,perl)
        ("scipy-sphinx-theme"
@@ -9001,7 +9001,7 @@ computing.")
                                         texlive-latex-upquote
                                         texlive-url
                                         texlive-latex-varwidth
-                                        texlive-latex-wrapfig)))
+                                        texlive-wrapfig)))
        ("texinfo" ,texinfo)))))
 
 (define-public python-urwid
