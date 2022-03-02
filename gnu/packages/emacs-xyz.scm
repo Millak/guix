@@ -19099,7 +19099,8 @@ without disturbing alignment.")
                   "1fm40mxdn289cyzgw992223dgrjmwxn4q8svyyxfaxjrpb38jhjz"))))
       (build-system emacs-build-system)
       (arguments
-       '(#:phases
+       '(#:tests? #t
+         #:phases
          (modify-phases %standard-phases
            (add-before 'check 'remove-test
              ;; Fails because of requirement ‘/bin/sh’.
@@ -19113,11 +19114,12 @@ without disturbing alignment.")
                                   (beginning-of-line)
                                   (kill-sexp))
                            (basic-save-buffer))))))
-           (add-before 'install 'check
-             (lambda _
-               (invoke "emacs" "--batch" "-L" "."
-                       "-l" "macrostep-test.el"
-                       "-f" "ert-run-tests-batch-and-exit"))))))
+           (replace 'check
+             (lambda* (#:key tests? #:allow-other-keys)
+               (when tests?
+                 (invoke "emacs" "--batch" "-L" "."
+                         "-l" "macrostep-test.el"
+                         "-f" "ert-run-tests-batch-and-exit")))))))
       (home-page "https://github.com/joddie/macrostep")
       (synopsis "Interactive macro-expander for Emacs")
       (description "@code{macrostep} is an Emacs minor mode for interactively
