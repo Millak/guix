@@ -7996,9 +7996,9 @@ striking out (line through words) and crossing out (/// over words).")
 
 (define-deprecated-package texlive-generic-ulem texlive-ulem)
 
-(define-public texlive-latex-pgf
+(define-public texlive-pgf
   (package
-    (name "texlive-latex-pgf")
+    (name "texlive-pgf")
     (version (number->string %texlive-revision))
     (source
      (origin
@@ -8054,6 +8054,8 @@ Its usage is similar to pstricks and the standard picture environment.  PGF
 works with plain (pdf-)TeX, (pdf-)LaTeX, and ConTeXt.  Unlike pstricks, it can
 produce either PostScript or PDF output.")
     (license license:lppl1.3c+)))
+
+(define-deprecated-package texlive-latex-pgf texlive-pgf)
 
 (define-public texlive-latex-koma-script
   (package
@@ -8679,7 +8681,7 @@ for a wealth of support information.")
               #:trivial? #t))
     (propagated-inputs
      (list texlive-hyperref texlive-oberdiek texlive-etoolbox
-           texlive-latex-pgf))
+           texlive-pgf))
     (home-page "https://www.ctan.org/pkg/beamer")
     (synopsis "LaTeX class for producing presentations and slides")
     (description "The beamer LaTeX class can be used for producing slides.
@@ -9038,6 +9040,8 @@ are part of the LaTeX required tools distribution, comprising the packages:
            texlive-pstricks
            texlive-pst-text
            texlive-tools
+
+           ;; TODO: Use non-deprecated name on next rebuild cycle.
            texlive-latex-pgf))
     (home-page "http://www.ctan.org/pkg/xkeyval")
     (synopsis "Extension of the keyval package")
@@ -9247,7 +9251,7 @@ section.
     (package
       (inherit template)
       (propagated-inputs
-       (list texlive-latex-pgf texlive-latex-xkeyval))
+       (list texlive-pgf texlive-latex-xkeyval))
       (home-page "http://www.ctan.org/pkg/todonotes")
       (synopsis "Marking things to do in a LaTeX document")
       (description "The @code{todonotes} package lets the user mark
@@ -9974,7 +9978,7 @@ the list of graphics file extensions recognised by package graphics.")
       (native-inputs
        (list texlive-ydoc))
       (propagated-inputs
-       (list texlive-latex-pgf
+       (list texlive-pgf
              texlive-latex-varwidth
              texlive-latex-xkeyval
              texlive-collectbox
@@ -10004,7 +10008,7 @@ provided box macros are @code{\\lapbox}, @code{\\marginbox},
     (package
       (inherit template)
       (propagated-inputs
-       (list texlive-etoolbox texlive-latex-environ texlive-latex-pgf
+       (list texlive-etoolbox texlive-latex-environ texlive-pgf
              texlive-latex-tools))
       (home-page "https://www.ctan.org/pkg/tcolorbox")
       (synopsis "Colored boxes, for LaTeX examples and theorems, etc")
