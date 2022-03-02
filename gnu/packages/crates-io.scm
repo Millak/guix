@@ -42435,16 +42435,14 @@ written with declarative macros.")
 (define-public rust-pinot-0.1
   (package
     (name "rust-pinot")
-    (version "0.1.3")
+    (version "0.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pinot" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "153di76kx7xb4mp2i14zg1wkz3mclivv4c77mbhh7af553yqnsnh"))
-       ;; XXX: This patch is needed by Tectonic.
-       (patches (search-patches "rust-pinot-0.1-implement-math-table.patch"))))
+        (base32 "13zh0g7d47a3szi2z4q2p3q8yph2ipw7q5gnsxvk34l44h6yjfpy"))))
     (build-system cargo-build-system)
     (arguments `(#:skip-build? #t))
     (home-page "https://github.com/dfrg/pinot")
