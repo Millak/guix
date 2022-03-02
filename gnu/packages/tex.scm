@@ -5836,14 +5836,16 @@ optional arguments, or for macros that are defined as robust macros by
 that also takes care of the involved internal macros.")
     (license license:lppl1.3c+)))
 
-(define-public texlive-latex-listings
+(define-public texlive-listings
   (package
-    (name "texlive-latex-listings")
+    (name "texlive-listings")
     (version (number->string %texlive-revision))
     (source (origin
               (method svn-fetch)
               (uri (texlive-ref "latex" "listings"))
-              (file-name (string-append name "-" version "-checkout"))
+              (file-name
+               ;; TODO: Drop "latex-" on next rebuild cycle.
+               (string-append "texlive-latex-listings-" version "-checkout"))
               (sha256
                (base32
                 "082zri3gp8s6p2difhk1pbix2vzmvsf6fmld2z78v35xwk3fiya0"))))
@@ -5859,6 +5861,8 @@ within LaTeX; the source code is read directly by TeX---no front-end processor
 is needed.  Keywords, comments and strings can be typeset using different
 styles.  Support for @code{hyperref} is provided.")
     (license license:lppl1.3+)))
+
+(define-deprecated-package texlive-latex-listings texlive-listings)
 
 (define-public texlive-latex-jknapltx
   (package
@@ -9035,7 +9039,10 @@ are part of the LaTeX required tools distribution, comprising the packages:
            texlive-graphics-def
            texlive-xcolor
            texlive-latex-footmisc
+
+           ;; TODO: Use non-deprecated name on next rebuild cycle.
            texlive-latex-listings
+
            texlive-generic-iftex
            texlive-pstricks
            texlive-pst-text
