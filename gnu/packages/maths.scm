@@ -7136,7 +7136,7 @@ numeric differences and differences in numeric formats.")
 (define-public why3
   (package
     (name "why3")
-    (version "1.4.0")
+    (version "1.4.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7145,7 +7145,7 @@ numeric differences and differences in numeric formats.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0pfsiddnk26f384wbazfpgzh1n1ibf3xq101q74mxvczi7z0a791"))))
+                "1yca6mx8bjm8x0i594ivh31aw45s6fbimmwfj8g2v9zwrgmr1i4s"))))
     (build-system ocaml-build-system)
     (native-inputs
      (list autoconf automake coq ocaml which))
