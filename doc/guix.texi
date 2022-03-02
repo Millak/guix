@@ -175,6 +175,7 @@ Weblate} (@pxref{Translating Guix}).
 * Home Configuration::          Configuring the home environment.
 * Documentation::               Browsing software user manuals.
 * Installing Debugging Files::  Feeding the debugger.
+* Using TeX and LaTeX::         Typesetting.
 * Security Updates::            Deploying security fixes quickly.
 * Bootstrapping::               GNU/Linux built from scratch.
 * Porting::                     Targeting another platform or kernel.
@@ -38631,6 +38632,147 @@ Much better!
 Note that there can be packages for which @option{--with-debug-info}
 will not have the desired effect.  @xref{Package Transformation Options,
 @option{--with-debug-info}}, for more information.
+
+@node Using TeX and LaTeX
+@chapter Using @TeX{} and @LaTeX{}
+
+@cindex @TeX{} packages
+@cindex @LaTeX{} packages
+Guix provides packages for the @TeX{}, @LaTeX{}, ConTeXt, LuaTeX, and
+related typesetting systems, taken from the
+@uref{https://www.tug.org/texlive/, @TeX{} Live distribution}.  However,
+because @TeX{} Live is so huge and because finding your way in this maze
+is tricky, we thought that you, dear user, would welcome guidance on how
+to deploy the relevant packages so you can compile your @TeX{} and
+@LaTeX{} documents.
+
+@TeX{} Live currently comes in two flavors in Guix:
+
+@itemize
+@item
+The ``monolithic'' @code{texlive} package: it comes with @emph{every
+single @TeX{} Live package} (more than 7,000 of them), but it is huge
+(more than 4@tie{}GiB for a single package!).
+
+@item
+The ``modular'' @code{texlive-} packages: you install
+@code{texlive-base}, which provides core functionality and the main
+commands---@command{pdflatex}, @command{dvips}, @command{luatex},
+@command{mf}, etc.---together with individual packages that provide just
+the features you need---@code{texlive-listings} for the
+@code{listings} package, @code{texlive-hyperref} for @code{hyperref},
+@code{texlive-beamer} for Beamer, @code{texlive-pgf} for PGF/TikZ,
+and so on.
+@end itemize
+
+We recommend using the modular package set because it is much less
+resource-hungry.  To build your documents, you would use commands such
+as:
+
+@example
+guix shell texlive-base texlive-wrapfig \
+  texlive-hyperref texlive-cm-super -- pdflatex doc.tex
+@end example
+
+You can quickly end up with unreasonably long command lines though.  The
+solution is to instead write a manifest, for example like this one:
+
+@lisp
+(specifications->manifest
+ '("rubber"
+
+   "texlive-base"
+   "texlive-wrapfig"
+
+   "texlive-microtype"
+   "texlive-listings" "texlive-hyperref"
+
+   ;; PGF/TikZ
+   "texlive-pgf"
+
+   ;; Additional fonts.
+   "texlive-cm-super" "texlive-amsfonts"
+   "texlive-times" "texlive-helvetic" "texlive-courier"))
+@end lisp
+
+You can then pass it to any command with the @option{-m} option:
+
+@example
+guix shell -m manifest.scm -- pdflatex doc.tex
+@end example
+
+@xref{Invoking guix package, @option{--manifest}}, for more on
+manifests.  In the future, we plan to provide packages for @TeX{} Live
+@dfn{collections}---``meta-packages'' such as @code{fontsrecommended},
+@code{humanities}, or @code{langarabic} that provide the set of packages
+needed in this particular domain.  That will allow you to list fewer
+packages.
+
+The main difficulty here is that using the modular package set forces
+you to select precisely the packages that you need.  You can use
+@command{guix search}, but finding the right package can prove to be
+tedious.  When a package is missing, @command{pdflatex} and similar
+commands fail with an obscure message along the lines of:
+
+@example
+doc.tex: File `tikz.sty' not found.
+doc.tex:7: Emergency stop.
+@end example
+
+@noindent
+or, for a missing font:
+
+@example
+kpathsea: Running mktexmf phvr7t
+! I can't find file `phvr7t'.
+@end example
+
+How do you determine what the missing package is?  In the first case,
+you'll find the answer by running:
+
+@example
+$ guix search texlive tikz
+name: texlive-pgf
+version: 59745
+@dots{}
+@end example
+
+In the second case, @command{guix search} turns up nothing.  Instead,
+you can search the @TeX{} Live package database using the @command{tlmgr}
+command:
+
+@example
+$ guix shell texlive-base -- tlmgr info phvr7t
+tlmgr: cannot find package phvr7t, searching for other matches:
+
+Packages containing `phvr7t' in their title/description:
+
+Packages containing files matching `phvr7t':
+helvetic:
+        texmf-dist/fonts/tfm/adobe/helvetic/phvr7t.tfm
+        texmf-dist/fonts/tfm/adobe/helvetic/phvr7tn.tfm
+        texmf-dist/fonts/vf/adobe/helvetic/phvr7t.vf
+        texmf-dist/fonts/vf/adobe/helvetic/phvr7tn.vf
+tex4ht:
+        texmf-dist/tex4ht/ht-fonts/alias/adobe/helvetic/phvr7t.htf
+@end example
+
+The file is available in the @TeX{} Live @code{helvetic} package, which is
+known in Guix as @code{texlive-helvetic}.  Quite a ride, but we found
+it!
+
+There is one important limitation though: Guix currently provides a
+subset of the @TeX{} Live packages.  If you stumble upon a missing
+package, you can try and import it (@pxref{Invoking guix import}):
+
+@example
+guix import texlive @var{package}
+@end example
+
+@quotation Note
+@TeX{} Live packaging is still very much work in progress, but you can
+help!  @xref{Contributing}, for more information.
+@end quotation
 
 @node Security Updates
 @chapter Security Updates
