@@ -884,22 +884,23 @@ spatially-extended data.")
 
 (define-public sbcl-flexichain
   ;; There are no releases.
-  (let ((commit "13d2a6c505ed0abfcd4c4ec7d7145059b06855d6")
-        (revision "1"))
+  (let ((commit "9af644a6323f303a936a391b956babcbfe7b0c67")
+        (revision "2"))
     (package
       (name "sbcl-flexichain")
-      (version "1.5.1")
+      (version (git-version "1.5.1" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/robert-strandh/Flexichain")
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-flexichain" version))
          (sha256
-          (base32
-           "0pfyvhsfbjd2sjb30grfs52r51a428xglv7bwydvpg2lc117qimg"))))
+          (base32 "1ivkffnkc1iqmpl1p1rgyfbbgjmjcid4iszvdql1jjz324lq94g6"))))
       (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-trivial-garbage))
       (home-page "https://github.com/robert-strandh/Flexichain.git")
       (synopsis "Dynamically add elements to or remove them from sequences")
       (description
