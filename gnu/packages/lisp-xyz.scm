@@ -11753,8 +11753,8 @@ functions.")
   (sbcl-package->ecl-package sbcl-cl-dejavu))
 
 (define-public sbcl-mcclim
-  (let ((commit "04cc542dd4b461b9d56406e40681d1a8f080730f")
-        (revision "1"))
+  (let ((commit "292343f9e30c7ef54a3d9b4b045495387c51585e")
+        (revision "2"))
     (package
       (name "sbcl-mcclim")
       (version (git-version "0.9.7" revision commit))
@@ -11764,37 +11764,37 @@ functions.")
          (uri (git-reference
                (url "https://github.com/mcclim/mcclim")
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-mcclim" version))
          (sha256
-          (base32 "1xjly8i62z72hfhlnz5kjd9i8xhrwckc7avyizxvhih67pkjmsx0"))))
+          (base32 "10sq34rk11p2lrpqg5hr4721y2yqpmz9yk88mgdmwn7iyga5f2fp"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-fiveam pkg-config))
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("babel" ,sbcl-babel)
-         ("bordeaux-threads" ,sbcl-bordeaux-threads)
-         ("cl-freetype2" ,sbcl-cl-freetype2)
-         ("cl-pdf" ,sbcl-cl-pdf)
-         ("cffi" ,sbcl-cffi)
-         ("cl-unicode" ,sbcl-cl-unicode)
-         ("cl-vectors" ,sbcl-cl-vectors)
-         ("closer-mop" ,sbcl-closer-mop)
-         ("clx" ,sbcl-clx)
-         ("flexi-streams" ,sbcl-flexi-streams)
-         ("flexichain" ,sbcl-flexichain)
-         ("font-dejavu" ,font-dejavu)
-         ("fontconfig" ,fontconfig)
-         ("freetype" ,freetype)
-         ("harfbuzz" ,harfbuzz)
-         ("log4cl" ,sbcl-log4cl)
-         ("opticl" ,sbcl-opticl)
-         ("spatial-trees" ,sbcl-spatial-trees)
-         ("swank" ,sbcl-slime-swank)
-         ("trivial-features" ,sbcl-trivial-features)
-         ("trivial-garbage" ,sbcl-trivial-garbage)
-         ("trivial-gray-streams" ,sbcl-trivial-gray-streams)
-         ("zpb-ttf" ,sbcl-zpb-ttf)))
+       (list fontconfig
+             freetype
+             harfbuzz
+             sbcl-alexandria
+             sbcl-babel
+             sbcl-bordeaux-threads
+             sbcl-cl-dejavu
+             sbcl-cl-freetype2
+             sbcl-cl-pdf
+             sbcl-cffi
+             sbcl-cl-unicode
+             sbcl-cl-vectors
+             sbcl-closer-mop
+             sbcl-clx
+             sbcl-flexi-streams
+             sbcl-flexichain
+             sbcl-log4cl
+             sbcl-opticl
+             sbcl-spatial-trees
+             sbcl-slime-swank
+             sbcl-trivial-features
+             sbcl-trivial-garbage
+             sbcl-trivial-gray-streams
+             sbcl-zpb-ttf))
       (arguments
        '(#:asd-systems '("mcclim"
                          "clim-examples")
@@ -11802,12 +11802,6 @@ functions.")
          (modify-phases %standard-phases
            (add-after 'unpack 'fix-paths
              (lambda* (#:key inputs #:allow-other-keys)
-               ;; mcclim-truetype uses DejaVu as default font and
-               ;; sets the path at build time.
-               (substitute* "Extensions/fonts/fontconfig.lisp"
-                 (("/usr/share/fonts/truetype/dejavu/")
-                  (string-append (assoc-ref inputs "font-dejavu")
-                                 "/share/fonts/truetype/")))
                (substitute* "Extensions/fontconfig/src/functions.lisp"
                  (("libfontconfig\\.so")
                   (search-input-file inputs "/lib/libfontconfig.so")))
@@ -11823,8 +11817,7 @@ functions.")
                   (string-append "(asdf:load-system :cffi-grovel)\n" all)))
                (substitute* "Extensions/harfbuzz/mcclim-harfbuzz.asd"
                  (("\\(asdf:defsystem #:mcclim-harfbuzz" all)
-                  (string-append "(asdf:load-system :cffi-grovel)\n" all)))
-               #t)))))
+                  (string-append "(asdf:load-system :cffi-grovel)\n" all))))))))
       (home-page "https://common-lisp.net/project/mcclim/")
       (synopsis "Common Lisp GUI toolkit")
       (description
