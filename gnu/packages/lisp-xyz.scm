@@ -1088,14 +1088,14 @@ multiple inspectors with independent history.")
         (revision "1"))
     (package
       (name "sbcl-parse-js")
-      (version (string-append "0.0.0-" revision "." (string-take commit 9)))
+      (version (git-version "0.0.0" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "http://marijn.haverbeke.nl/git/parse-js")
                (commit commit)))
-         (file-name (string-append name "-" commit "-checkout"))
+         (file-name (git-file-name "cl-parse-js" version))
          (sha256
           (base32
            "1wddrnr5kiya5s3gp4cdq6crbfy9fqcz7fr44p81502sj3bvdv39"))))
