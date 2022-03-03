@@ -11498,8 +11498,8 @@ macros for the Opticl image processing library.")
   (sbcl-package->ecl-package sbcl-opticl-core))
 
 (define-public sbcl-retrospectiff
-  (let ((commit "c2a69d77d5010f8cdd9045b3e36a08a73da5d321")
-        (revision "0"))
+  (let ((commit "2fbf8c687799487654d988c7036d19d75a7fc67d")
+        (revision "1"))
     (package
       (name "sbcl-retrospectiff")
       (version (git-version "0.2" revision commit))
@@ -11509,9 +11509,9 @@ macros for the Opticl image processing library.")
          (uri (git-reference
                (url "https://github.com/slyrus/retrospectiff")
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-retrospectiff" version))
          (sha256
-          (base32 "0qsn9hpd8j2kp43dk05j8dczz9zppdff5rrclbp45n3ksk9inw8i"))))
+          (base32 "1vfcbfzhkm2wkxnjg7y6gg93wlib9cqpbdbhyqcm5kc7170ci3vz"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-fiveam))
