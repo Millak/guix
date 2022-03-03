@@ -2106,7 +2106,7 @@ writing code that contains string literals that contain code themselves.")
 (define-public sbcl-slime-swank
   (package
     (name "sbcl-slime-swank")
-    (version "2.26.1")
+    (version "2.27")
     (source
      (origin
        (file-name (git-file-name "slime-swank" version))
@@ -2115,8 +2115,7 @@ writing code that contains string literals that contain code themselves.")
              (url "https://github.com/slime/slime/")
              (commit (string-append "v" version))))
        (sha256
-        (base32
-         "1a25ixb7q4svqabxnhwkk43v47mbsh13qwm7qlazkd3zkr8j3cli"))))
+        (base32 "1s5mbljlz22pb90gwbd380nighkz6gdxl77hc08gri7wwr5gy5n2"))))
     (build-system asdf-build-system/sbcl)
     (arguments
      '(#:asd-systems '("swank")))
