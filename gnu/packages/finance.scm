@@ -1156,6 +1156,9 @@ the KeepKey Hardware Wallet.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         ;; This package only has a Python script, not a Python module, so the
+         ;; sanity-check phase can't work.
+         (delete 'sanity-check)
          (add-after 'wrap 'fixup-agent-py
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out")))
