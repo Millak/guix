@@ -3971,8 +3971,8 @@ as good or bad as the next one.")
 
 (define-public sbcl-chipz
   (let ((version "0.8")
-        (commit "75dfbc660a5a28161c57f115adf74c8a926bfc4d")
-        (revision "1"))
+        (commit "82a17d39c78d91f6ea63a03aca8f9aa6069a5e11")
+        (revision "2"))
     (package
       (name "sbcl-chipz")
       (version (git-version version revision commit))
@@ -3980,12 +3980,11 @@ as good or bad as the next one.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/froydnj/chipz")
+               (url "https://github.com/sharplispers/chipz")
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-chipz" version))
          (sha256
-          (base32
-           "0plx4rs39zbs4gjk77h4a2q11zpy75fh9v8hnxrvsf8fnakajhwg"))))
+          (base32 "1n4f22i9j8iapjd6yx1z348rggcybvg9h794kx9libjgz4bs371h"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-flexi-streams))
