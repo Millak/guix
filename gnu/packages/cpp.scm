@@ -26,6 +26,8 @@
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2021 Disseminate Dissent <disseminatedissent@protonmail.com>
 ;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2022 muradm <mail@muradm.net>
+;;; Copyright © 2022 Attila Lendvai <attila@lendvai.name>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -226,6 +228,53 @@ range-v3 ranges are an abstraction layer on top of iterators.")
 use by the C++ Core Guidelines maintained by the Standard C++ Foundation.")
     (home-page "https://github.com/microsoft/GSL/")
     (license license:expat)))
+
+(define-public c2ffi
+  (package
+    (name "c2ffi")
+    ;; As per the c2ffi README: the first three elements are encoding the
+    ;; required Clang/LLVM version, and the last one is the c2ffi revision.
+    (version "12.0.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rpav/c2ffi")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qq8dfismd20d9kfxpfvwz07v9mfvd0y7p5r3c92mk2pm4xnmzfy"))
+       (modules '((guix build utils)))
+       (snippet
+        '(substitute* "CMakeLists.txt"
+           ;; Guix seems to be packaging LLVM libs separately thus -lLLVM
+           ;; won't work, every used library must be specified explicitly.
+           (("c2ffi PUBLIC clang-cpp LLVM")
+            "c2ffi PUBLIC clang-cpp LLVMCore LLVMSupport LLVMMCParser \
+LLVMOption LLVMBitReader LLVMProfileData")))))
+    (build-system cmake-build-system)
+    (arguments
+     '(;; If LLVM was built without RTTI, we need to also be built without
+       ;; it.  See: https://stackoverflow.com/q/11904519
+       #:configure-flags '("-DCMAKE_CXX_FLAGS=-fno-rtti")
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "./bin/c2ffi" "--help")))))))
+    (native-inputs
+     (list clang-12)) ; CMakeLists.txt invokes `clang -print-resource-dir`
+    (inputs
+     (list clang-12)) ; Compiled with gcc, but links against libclang-cpp.so
+    (home-page "https://github.com/rpav/c2ffi")
+    (synopsis "Clang-based FFI wrapper generator")
+    (description
+     "@code{c2ffi} is a tool for extracting definitions from C, C++, and
+Objective C headers for use with foreign function call interfaces.  It uses
+the @code{Clang/LLVM} infrastructure to extract the data, and emits it in
+various formats, including @code{json}.")
+    (license license:gpl2+)))
 
 (define-public libzen
   (package
