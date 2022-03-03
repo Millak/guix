@@ -28,6 +28,7 @@
   #:use-module (guix ftp-client)
   #:use-module (guix build utils)
   #:use-module (guix progress)
+  #:use-module (guix memoization)
   #:use-module (rnrs io ports)
   #:use-module (rnrs bytevectors)
   #:use-module (srfi srfi-1)
@@ -177,27 +178,30 @@ name decoding bug described at
   (let ((data (call-with-input-file file get-bytevector-all)))
     (set-certificate-credentials-x509-trust-data! cred data format)))
 
-(define (make-credendials-with-ca-trust-files directory)
-  "Return certificate credentials with X.509 authority certificates read from
+(define make-credendials-with-ca-trust-files
+  (mlambda (directory)
+    "Return certificate credentials with X.509 authority certificates read from
 DIRECTORY.  Those authority certificates are checked when
 'peer-certificate-status' is later called."
-  (let ((cred  (make-certificate-credentials))
-        (files (match (scandir directory (cut string-suffix? ".pem" <>))
-                 ((or #f ())
-                  ;; Some distros provide nothing but bundles (*.crt) under
-                  ;; /etc/ssl/certs, so look for them.
-                  (or (scandir directory (cut string-suffix? ".crt" <>))
-                      '()))
-                 (pem pem))))
-    (for-each (lambda (file)
-                (let ((file (string-append directory "/" file)))
-                  ;; Protect against dangling symlinks.
-                  (when (file-exists? file)
-                    (set-certificate-credentials-x509-trust-file!*
-                     cred file
-                     x509-certificate-format/pem))))
-              files)
-    cred))
+    ;; Memoize the result to avoid scanning all the certificates every time a
+    ;; connection is made.
+    (let ((cred  (make-certificate-credentials))
+          (files (match (scandir directory (cut string-suffix? ".pem" <>))
+                   ((or #f ())
+                    ;; Some distros provide nothing but bundles (*.crt) under
+                    ;; /etc/ssl/certs, so look for them.
+                    (or (scandir directory (cut string-suffix? ".crt" <>))
+                        '()))
+                   (pem pem))))
+      (for-each (lambda (file)
+                  (let ((file (string-append directory "/" file)))
+                    ;; Protect against dangling symlinks.
+                    (when (file-exists? file)
+                      (set-certificate-credentials-x509-trust-file!*
+                       cred file
+                       x509-certificate-format/pem))))
+                files)
+      cred)))
 
 (define (peer-certificate session)
   "Return the certificate of the remote peer in SESSION."
