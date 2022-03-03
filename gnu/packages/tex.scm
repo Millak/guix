@@ -7110,31 +7110,13 @@ implements an easy to use interface for these symbols.")
 
 (define-public texlive-wrapfig
   (package
-    (name "texlive-wrapfig")
-    (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (svn-reference
-                    (url (string-append "svn://www.tug.org/texlive/tags/"
-                                        %texlive-tag "/Master/texmf-dist/"
-                                        "/tex/latex/wrapfig"))
-                    (revision %texlive-revision)))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "16xpyl0csmmwndz1xhzqfg9l0zcsnqxslsixsqkwd4zsvfj30sv4"))))
-    (build-system trivial-build-system)
-    (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let ((target (string-append (assoc-ref %outputs "out")
-                                      "/share/texmf-dist/tex/latex/wrapfig")))
-           (mkdir-p target)
-           (copy-recursively (assoc-ref %build-inputs "source") target)
-           #t))))
-    (home-page "https://www.ctan.org/pkg/wrapfig")
+    (inherit
+     (simple-texlive-package
+      "texlive-wrapfig"
+      (list "doc/latex/wrapfig/" "tex/latex/wrapfig/")
+      (base32 "0wk1vp0dqsp597xzsqbwj8xk80v7d77qmpjir84n54f920rf9ka9")
+      #:trivial? #t))
+    (home-page "https://ctan.org/macros/latex/contrib/wrapfig")
     (synopsis "Produces figures which text can flow around")
     (description
      "This package allows figures or tables to have text wrapped around them.
