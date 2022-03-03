@@ -30171,14 +30171,14 @@ work on alists, hash-table and arrays.  All functions are prefixed with
 (define-public emacs-xref
   (package
     (name "emacs-xref")
-    (version "1.4.0")
+    (version "1.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/xref-"
                            version ".tar"))
        (sha256
-        (base32 "1ng03fyhpisa1v99sc96mpr7hna1pmg4gdc61p86r8lka9m5gqfx"))))
+        (base32 "1vbpplw0sngymmawi940nlqmncqznb5vp7zi0ib8v66g3y33ijrf"))))
     (build-system emacs-build-system)
     (home-page "http://elpa.gnu.org/packages/xref.html")
     (synopsis "Cross-referencing commands")
