@@ -5755,29 +5755,47 @@ optional arguments, or for macros that are defined as robust macros by
 that also takes care of the involved internal macros.")
     (license license:lppl1.3c+)))
 
-(define-public texlive-latex-listings
-  (package
-    (name "texlive-latex-listings")
-    (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "listings"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "082zri3gp8s6p2difhk1pbix2vzmvsf6fmld2z78v35xwk3fiya0"))))
-    (build-system texlive-build-system)
-    (arguments
-     '(#:tex-directory "latex/listings"
-       #:build-targets '("listings.ins")))
-    (home-page "https://www.ctan.org/pkg/listings")
-    (synopsis "Typeset source code listings using LaTeX")
-    (description
-     "The package enables the user to typeset programs (programming code)
+(define-public texlive-listings
+  (let ((template
+         (simple-texlive-package
+          "texlive-listings"
+          (list "doc/latex/listings/"
+                "source/latex/listings/"
+                "tex/latex/listings/")
+          (base32 "15dnm0j86305x84ss3ymhhcczcw45b2liq01vrab6fj204wzsahk"))))
+    (package
+      (inherit template)
+      (outputs '("out" "doc"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ '())
+          "latex/listings")
+         ((#:build-targets _ '())
+          #~(list "listings.ins"))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _
+                  (chdir "source/latex/listings")))
+              (replace 'copy-files
+                (lambda* (#:key inputs outputs #:allow-other-keys)
+                  (let ((origin (assoc-ref inputs "source"))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc))))))))
+      (home-page "https://www.ctan.org/pkg/listings")
+      (synopsis "Typeset source code listings using LaTeX")
+      (description
+       "The package enables the user to typeset programs (programming code)
 within LaTeX; the source code is read directly by TeX---no front-end processor
 is needed.  Keywords, comments and strings can be typeset using different
 styles.  Support for @code{hyperref} is provided.")
-    (license license:lppl1.3+)))
+      (license license:lppl1.3+))))
+
+(define-deprecated-package texlive-latex-listings texlive-listings)
 
 (define-public texlive-latex-jknapltx
   (package
@@ -8889,8 +8907,8 @@ are part of the LaTeX required tools distribution, comprising the packages:
            texlive-graphics-def
            texlive-xcolor
            texlive-latex-footmisc
-           texlive-latex-listings
            texlive-generic-iftex
+           texlive-listings
            texlive-pstricks
            texlive-pst-text
            texlive-tools

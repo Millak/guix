@@ -473,7 +473,7 @@ the in DocBook SGML DTDs.")
                                         texlive-latex-footmisc
                                         texlive-hyperref
                                         texlive-latex-jknapltx
-                                        texlive-latex-listings
+                                        texlive-listings
                                         texlive-latex-multirow
                                         texlive-latex-overpic
                                         texlive-latex-pdfpages
