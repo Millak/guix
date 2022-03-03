@@ -1686,8 +1686,8 @@ libraries such as Bordeaux-Threads and Eager Future.")
   (sbcl-package->ecl-package sbcl-calispel))
 
 (define-public sbcl-esrap
-  (let ((commit "866f28fa7a2c1d3fb6d0d0423850d1f9d955750f")
-        (revision "2"))
+  (let ((commit "4c82a863871e117f0041b9ef37e61c0b62318aa7")
+        (revision "3"))
     (package
       (name "sbcl-esrap")
       (version (git-version "0.18" revision commit))
@@ -1698,8 +1698,8 @@ libraries such as Bordeaux-Threads and Eager Future.")
                (url "https://github.com/scymtym/esrap")
                (commit commit)))
          (sha256
-          (base32 "19rb3dmpw3csqqagmrf80dpk5d2qn0l7fpfmxx5zwdnjk367kbwg"))
-         (file-name (git-file-name "esrap" version))))
+          (base32 "16nc3rhxd61xabja1h9akqqva0cmz2gxk0bkaqy10h492wx93d81"))
+         (file-name (git-file-name "cl-esrap" version))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-fiveam))
