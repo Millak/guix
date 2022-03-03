@@ -28,6 +28,7 @@
  (entry (commit "f1d18adbed39a3bacae93be29346fd4c86b480ef")
         (title
          (en "More compact @samp{guix pull --news}")
+         (de "@samp{guix pull --news} wird knapper")
          (nl "Meer beknopte @samp{guix pull --news}"))
         (body
          (en "The output of @samp{guix pull --news} has been shortened to
@@ -37,6 +38,14 @@ be distracting whilst being too short to be useful.
 
 The complete list of new and updated packages can now be obtained separately
 using @samp{guix pull --news --details}.")
+         (de "Die Ausgabe von @samp{guix pull --news} wurde gekürzt
+und informiert nur mehr über ungezeigte Neuigkeiten wie diese. Es
+fehlt der unvollständige Bericht über neue und aktualisierte Pakete,
+der oft so lang war, dass er gestört hat, doch zu kurz war, um
+nützlich zu sein.
+
+Die vollständige Liste neuer und aktualisierter Pakete bekommen Sie
+jetzt mit @samp{guix pull --news --details}.")
          (nl "De uitvoer van @samp{guix pull --news} is vanaf nu beperkt tot
 verse nieuwsberichten zoals dit, zonder de onvolledige bloemlezing van nieuwe
 en bijgewerkte pakketten.  Die was vaak lang genoeg om de lezer af te leiden
