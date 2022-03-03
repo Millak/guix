@@ -178,7 +178,7 @@ name decoding bug described at
   (let ((data (call-with-input-file file get-bytevector-all)))
     (set-certificate-credentials-x509-trust-data! cred data format)))
 
-(define make-credendials-with-ca-trust-files
+(define make-credentials-with-ca-trust-files
   (mlambda (directory)
     "Return certificate credentials with X.509 authority certificates read from
 DIRECTORY.  Those authority certificates are checked when
@@ -277,7 +277,7 @@ host name without trailing dot."
 
     (set-session-credentials! session
                               (if (and verify-certificate? ca-certs)
-                                  (make-credendials-with-ca-trust-files
+                                  (make-credentials-with-ca-trust-files
                                    ca-certs)
                                   (make-certificate-credentials)))
 
