@@ -1274,10 +1274,10 @@ compressor.  It works on data produced by @code{parse-js} to generate a
 
 (define-public sbcl-cl-strings
   (let ((revision "1")
-        (commit "c5c5cbafbf3e6181d03c354d66e41a4f063f00ae"))
+        (commit "93ec4177fc51f403a9f1ef0a8933f36d917f2140"))
     (package
       (name "sbcl-cl-strings")
-      (version (git-version "0.0.0" revision commit))
+      (version (git-version "0.0.1" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -1285,11 +1285,10 @@ compressor.  It works on data produced by @code{parse-js} to generate a
                (url "https://github.com/diogoalexandrefranco/cl-strings")
                (commit commit)))
          (sha256
-          (base32
-           "00754mfaqallj480lwd346nkfb6ra8pa8xcxcylf4baqn604zlmv"))
-         (file-name (string-append "cl-strings-" version "-checkout"))))
+          (base32 "1j8hs54fn0wsf5zfzhhgiva47n9hsmfa74iinahz6nmcs8iy75aj"))
+         (file-name (git-file-name "cl-strings" version))))
       (build-system asdf-build-system/sbcl)
-      (synopsis "Portable, dependency-free set of utilities to manipulate strings in Common Lisp")
+      (synopsis "Set of utilities to manipulate strings in Common Lisp")
       (description
        "@command{cl-strings} is a small, portable, dependency-free set of
 utilities that make it even easier to manipulate text in Common Lisp.  It has
