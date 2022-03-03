@@ -5862,7 +5862,8 @@ is needed.  Keywords, comments and strings can be typeset using different
 styles.  Support for @code{hyperref} is provided.")
     (license license:lppl1.3+)))
 
-(define-deprecated-package texlive-latex-listings texlive-listings)
+(define-public texlive-latex-listings
+  (deprecated-package "texlive-latex-listings" texlive-listings))
 
 (define-public texlive-latex-jknapltx
   (package
@@ -8043,7 +8044,8 @@ works with plain (pdf-)TeX, (pdf-)LaTeX, and ConTeXt.  Unlike pstricks, it can
 produce either PostScript or PDF output.")
     (license license:lppl1.3c+)))
 
-(define-deprecated-package texlive-latex-pgf texlive-pgf)
+(define-public texlive-latex-pgf
+  (deprecated-package "texlive-latex-pgf" texlive-pgf))
 
 (define-public texlive-latex-koma-script
   (package
