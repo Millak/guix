@@ -1365,19 +1365,20 @@ documentation system, explicit development support, etc.")
 
 (define-public sbcl-babel
   ;; No release since 2014.
-  (let ((commit "aeed2d1b76358db48e6b70a64399c05678a6b9ea"))
+  (let ((commit "f892d0587c7f3a1e6c0899425921b48008c29ee3")
+        (revision "2"))
     (package
       (name "sbcl-babel")
-      (version (git-version "0.5.0" "1" commit))
+      (version (git-version "0.5.0" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/cl-babel/babel")
                (commit commit)))
-         (file-name (git-file-name "babel" version))
+         (file-name (git-file-name "cl-babel" version))
          (sha256
-          (base32 "0lkvv4xdpv4cv1y2bqillmabx8sdb2y4l6pbinq6mjh33w2brpvb"))))
+          (base32 "04frn19mngvsh8bh7fb1rfjm8mqk8bgzx5c43dg7z02nfsxkqqak"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-hu.dwim.stefil))
@@ -1387,7 +1388,7 @@ documentation system, explicit development support, etc.")
       (synopsis "Charset encoding and decoding library")
       (description "Babel is a charset encoding and decoding library, not unlike
 GNU libiconv, but completely written in Common Lisp.")
-      (license license:expat))))
+      (license (list license:bsd-2 license:expat)))))
 
 (define-public cl-babel
   (sbcl-package->cl-source-package sbcl-babel))
