@@ -2135,11 +2135,11 @@ processes that doesn't run under Emacs.  Lisp processes created by
   (sbcl-package->ecl-package sbcl-slime-swank))
 
 (define-public sbcl-mgl-pax
-  (let ((commit "a7f904784ae59bbeeeb15a14348cda46ed9bdeb3")
+  (let ((commit "ed82a80207b70801fab061f6592cf7d7355294a6")
         (revision "0"))
     (package
       (name "sbcl-mgl-pax")
-      (version (git-version "0.0.4" revision commit))
+      (version (git-version "0.1.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -2147,22 +2147,29 @@ processes that doesn't run under Emacs.  Lisp processes created by
                (url "https://github.com/melisgl/mgl-pax")
                (commit commit)))
          (sha256
-          (base32 "119pb3485m6hqsqsaqpaq2x8xh5lrbqapw7zaqyq425n75vd1mc8"))
-         (file-name (git-file-name "mgl-pax" version))))
+          (base32 "008wfa70q68cj6npi4107mfjhjzfjmvrhm1x51jpndsn2165c5bx"))
+         (file-name (git-file-name "cl-mgl-pax" version))))
       (build-system asdf-build-system/sbcl)
+      ;; (native-inputs
+      ;;  (list sbcl-try))
       (inputs
-       `(("3bmd" ,sbcl-3bmd)
-         ("alexandria" ,sbcl-alexandria)
-         ("colorize" ,sbcl-colorize)
-         ("md5" ,sbcl-md5)
-         ("named-readtables" ,sbcl-named-readtables)
-         ("pythonic-string-reader" ,sbcl-pythonic-string-reader)
-         ("swank" ,sbcl-slime-swank)))
+       (list sbcl-3bmd
+             sbcl-alexandria
+             sbcl-colorize
+             sbcl-md5
+             sbcl-named-readtables
+             sbcl-pythonic-string-reader
+             sbcl-slime-swank))
       (arguments
-       `(#:asd-systems '("mgl-pax"
+       `(#:asd-files '("mgl-pax.asdf.asd"
+                       "mgl-pax.asd")
+         #:asd-systems '("mgl-pax"
                          "mgl-pax/navigate"
                          "mgl-pax/document"
-                         "mgl-pax/transcribe")))
+                         "mgl-pax/transcribe")
+         ;; Tests disabled because of a circular dependency
+         ;;   try -> mgl-pax -> try
+         #:tests? #f))
       (synopsis "Exploratory programming environment and documentation generator")
       (description
        "PAX provides an extremely poor man's Explorable Programming
