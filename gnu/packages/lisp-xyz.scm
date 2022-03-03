@@ -14,7 +14,7 @@
 ;;; Copyright © 2018, 2019 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2019, 2020 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2019 Jesse Gildersleve <jessejohngildersleve@protonmail.com>
-;;; Copyright © 2019, 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019, 2020, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;;; Copyright © 2020 Dimakis Dimakakos <me@bendersteed.tech>
@@ -459,10 +459,10 @@ support.")
 
 (define-public sbcl-trivial-gray-streams
   (let ((revision "1")
-        (commit "ebd59b1afed03b9dc8544320f8f432fdf92ab010"))
+        (commit "2b3823edbc78a450db4891fd2b566ca0316a7876"))
     (package
       (name "sbcl-trivial-gray-streams")
-      (version (string-append "0.0.0-" revision "." (string-take commit 7)))
+      (version (git-version "2.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -471,9 +471,8 @@ support.")
            (url "https://github.com/trivial-gray-streams/trivial-gray-streams")
            (commit commit)))
          (sha256
-          (base32 "0b1pxlccmnagk9cbh4cy8s5k66g3x0gwib5shjwr24xvrji6lp94"))
-         (file-name
-          (string-append "trivial-gray-streams-" version "-checkout"))))
+          (base32 "1hipqwwd5ylskybd173rvlsk7ds4w4nq1cmh9952ivm6dgh7pwzn"))
+         (file-name (git-file-name "cl-trivial-gray-streams" version))))
       (build-system asdf-build-system/sbcl)
       (synopsis "Compatibility layer for Gray streams implementations")
       (description "Gray streams is an interface proposed for inclusion with
