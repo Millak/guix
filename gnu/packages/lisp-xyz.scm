@@ -11613,16 +11613,16 @@ vectors and streams.")
 (define-public sbcl-zpb-exif
   (package
     (name "sbcl-zpb-exif")
-    (version "1.2.4")
+    (version "1.2.5")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/xach/zpb-exif")
              (commit (string-append "release-" version))))
-       (file-name (git-file-name name version))
+       (file-name (git-file-name "cl-zpb-exif" version))
        (sha256
-        (base32 "15s227jhby55cisz14xafb0p1ws2jmrg2rrbbd00lrb97im84hy6"))))
+        (base32 "0h1n36lfl8xn8rfyl5jxz9m8zlg0if2avmryas79f684yczrvdnd"))))
     (build-system asdf-build-system/sbcl)
     (home-page "https://xach.com/lisp/zpb-exif/")
     (synopsis "EXIF information extractor for Common Lisp")
