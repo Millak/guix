@@ -122,6 +122,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/axoloti.scm			\
   %D%/packages/backup.scm			\
   %D%/packages/base.scm				\
+  %D%/packages/barrier.scm			\
   %D%/packages/bash.scm				\
   %D%/packages/batik.scm			\
   %D%/packages/bdw-gc.scm			\
