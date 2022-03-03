@@ -916,8 +916,8 @@ a sequence (or chain) of such elements.")
   (sbcl-package->cl-source-package sbcl-flexichain))
 
 (define-public sbcl-cl-pdf
-  (let ((commit "dbafd62afcb2d2e9164054c72612763721297d59")
-        (revision "1"))
+  (let ((commit "f57905e0b5adb365d611a912613cee70d78d20d8")
+        (revision "2"))
     (package
       (name "sbcl-cl-pdf")
       (version (git-version "2.0.0" revision commit))
@@ -929,10 +929,12 @@ a sequence (or chain) of such elements.")
                (commit commit)))
          (file-name (git-file-name "cl-pdf" version))
          (sha256
-          (base32 "0w6igiav35a65h6r4p1g6dw2i7mw0s06mviw31768r6z62l1ny1v"))))
+          (base32 "0ir9xyj10lyp8mwb3n2pbhnwv0jx0ph1xlhh32sfgalk3bz0ms58"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-iterate sbcl-zpb-ttf))
+      (arguments
+       `(#:asd-systems '("cl-pdf" "cl-pdf-parser")))
       (home-page "https://github.com/mbattyani/cl-pdf")
       (synopsis "Common Lisp library for generating PDF files")
       (description
