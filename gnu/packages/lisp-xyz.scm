@@ -1183,14 +1183,14 @@ It is similar to the @code{CL:LOOP} macro, with these distinguishing marks:
         (revision "1"))
     (package
       (name "sbcl-cl-uglify-js")
-      (version (string-append "0.1-" revision "." (string-take commit 9)))
+      (version (git-version "0.1" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/mishoo/cl-uglify-js")
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-uglify-js" version))
          (sha256
           (base32
            "0k39y3c93jgxpr7gwz7w0d8yknn1fdnxrjhd03057lvk5w8js27a"))))
