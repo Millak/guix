@@ -100,14 +100,15 @@ TIMEOUT is #f, connection establishment never times out.
 Write information about redirects to LOG-PORT.
 
 Raise an '&http-get-error' condition if downloading fails."
-  (let loop ((uri (if (string? uri)
-                      (string->uri uri)
-                      uri)))
-    (let ((port (or port (open-connection uri
-                                          #:verify-certificate?
-                                          verify-certificate?
-                                          #:timeout timeout)))
-          (headers (match (uri-userinfo uri)
+  (define uri*
+    (if (string? uri) (string->uri uri) uri))
+
+  (let loop ((uri uri*)
+             (port (or port (open-connection uri*
+                                             #:verify-certificate?
+                                             verify-certificate?
+                                             #:timeout timeout))))
+    (let ((headers (match (uri-userinfo uri)
                      ((? string? str)
                       (cons (cons 'Authorization
                                   (string-append "Basic "
@@ -131,11 +132,23 @@ Raise an '&http-get-error' condition if downloading fails."
             303                                   ; see other
             307                                   ; temporary redirection
             308)                                  ; permanent redirection
-           (let ((uri (resolve-uri-reference (response-location resp) uri)))
-             (close-port port)
+           (let ((host (uri-host uri))
+                 (uri  (resolve-uri-reference (response-location resp) uri)))
+             (if keep-alive?
+                 (dump-port data (%make-void-port "w0")
+                            (response-content-length resp))
+                 (close-port port))
              (format log-port (G_ "following redirection to `~a'...~%")
                      (uri->string uri))
-             (loop uri)))
+             (loop uri
+                   (or (and keep-alive?
+                            (or (not (uri-host uri))
+                                (string=? host (uri-host uri)))
+                            port)
+                       (open-connection uri*
+                                        #:verify-certificate?
+                                        verify-certificate?
+                                        #:timeout timeout)))))
           (else
            (raise (condition (&http-get-error
                               (uri uri)
