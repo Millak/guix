@@ -4,7 +4,7 @@
 ;;; Copyright © 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Andrew Whatson <whatson@gmail.com>
@@ -153,7 +153,8 @@ by no means limited to these applications.)  This package provides XML DTDs.")
                 "18hgwvmywh6a5jh38szjmg3hg2r4v5lb6r3ydc3rd8cp9wg61i5c"))))))
 
 (define-public docbook-xml-4.1.2
-  (package (inherit docbook-xml)
+  (package
+    (inherit docbook-xml)
     (version "4.1.2")
     (source (origin
               (method url-fetch)
@@ -167,13 +168,22 @@ by no means limited to these applications.)  This package provides XML DTDs.")
        #:builder
        (begin
          (use-modules (guix build utils))
-         (let ((source (assoc-ref %build-inputs "source"))
-               (unzip  (string-append (assoc-ref %build-inputs "unzip")
-                                      "/bin/unzip"))
-               (dtd    (string-append (assoc-ref %outputs "out")
-                                      "/xml/dtd/docbook")))
+         (let* ((source (assoc-ref %build-inputs "source"))
+                (unzip  (string-append (assoc-ref %build-inputs "unzip")
+                                       "/bin/unzip"))
+                (xmlcatalog  (string-append (assoc-ref %build-inputs "libxml2")
+                                            "/bin/xmlcatalog"))
+                (dtd    (string-append (assoc-ref %outputs "out")
+                                       "/xml/dtd/docbook"))
+                (catalog.xml (string-append dtd "/catalog.xml")))
            (mkdir-p dtd)
-           (invoke unzip source "-d" dtd)))))))
+           (invoke unzip source "-d" dtd)
+           ;; Create a minimal XML catalog, to use with libxml2 tools.
+           (invoke xmlcatalog "--noout" "--create" catalog.xml)
+           (invoke xmlcatalog "--noout" "--add" "public"
+                   "-//OASIS//DTD DocBook XML V4.1.2//EN"
+                   (string-append dtd "/docbookx.dtd") catalog.xml)))))
+    (native-inputs (list libxml2 unzip))))
 
 (define-public docbook-xsl
   (package
