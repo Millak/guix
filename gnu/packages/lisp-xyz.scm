@@ -1861,31 +1861,35 @@ for parsing, and grammar based on @command{peg-markdown}.")
   (sbcl-package->ecl-package sbcl-3bmd))
 
 (define-public sbcl-cl-fad
-  (package
-    (name "sbcl-cl-fad")
-    (version "0.7.6")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/edicl/cl-fad/")
-             (commit (string-append "v" version))))
-       (sha256
-        (base32
-         "1gc8i82v6gks7g0lnm54r4prk2mklidv2flm5fvbr0a7rsys0vpa"))
-       (file-name (string-append "cl-fad" version "-checkout"))))
-    (build-system asdf-build-system/sbcl)
-    (inputs
-     (list sbcl-bordeaux-threads))
-    (synopsis "Portable pathname library for Common Lisp")
-    (description
-     "CL-FAD (for \"Files and Directories\") is a thin layer atop Common
+  ;; No release since 2019
+  (let ((commit "3f4d32d3aa1093966046d001411a852eb8f4b535")
+        (revision "1"))
+    (package
+      (name "sbcl-cl-fad")
+      (version (git-version "0.7.6" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/edicl/cl-fad/")
+               (commit commit)))
+         (sha256
+          (base32 "0a1xqldrq170lflnns3xp6swpnvsvllf5vq0h7sz8jqh4riqlny6"))
+         (file-name (git-file-name "cl-fad" version))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-cl-ppcre sbcl-unit-test))
+      (inputs
+       (list sbcl-alexandria sbcl-bordeaux-threads))
+      (synopsis "Portable pathname library for Common Lisp")
+      (description
+       "CL-FAD (for \"Files and Directories\") is a thin layer atop Common
 Lisp's standard pathname functions.  It is intended to provide some
 unification between current CL implementations on Windows, OS X, Linux, and
 Unix.  Most of the code was written by Peter Seibel for his book Practical
 Common Lisp.")
-    (home-page "https://edicl.github.io/cl-fad/")
-    (license license:bsd-2)))
+      (home-page "https://edicl.github.io/cl-fad/")
+      (license license:bsd-2))))
 
 (define-public cl-fad
   (sbcl-package->cl-source-package sbcl-cl-fad))
