@@ -10546,10 +10546,11 @@ MOP easier to use.")
   (sbcl-package->cl-source-package sbcl-moptilities))
 
 (define-public sbcl-osicat
-  (let ((commit "eab6b8cabd71b59e894b51dc555e171683ec3387"))
+  (let ((commit "a45eb3b5826e9175f7c94ba97a00d6b4932f3163")
+        (revision "3"))
     (package
       (name "sbcl-osicat")
-      (version (git-version "0.7.0" "2" commit))
+      (version (git-version "0.7.0" revision commit))
       (home-page "http://www.common-lisp.net/project/osicat/")
       (source
        (origin
@@ -10557,9 +10558,9 @@ MOP easier to use.")
          (uri (git-reference
                (url "https://github.com/osicat/osicat")
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-osicat" version))
          (sha256
-          (base32 "18g137iqf86i247c9cg7d86b8k9cfq3yv272l73fsv734qpnv0g9"))))
+          (base32 "1ilag0b0xn97acc0m1q93vwp2y3md9a586858zfx04d8wpbvk8sz"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-alexandria sbcl-cffi sbcl-trivial-features))
