@@ -181,7 +181,8 @@ As a result, the S-expression will be approximate if GEXP has references."
                          (#true
                           ;; Simply returning 'thing' won't work in some
                           ;; situations; see 'write-gexp' below.
-                          '(*approximate*))))))
+                          '(*approximate*))))
+                  (($ <gexp-output>) '(*approximate*))))
               (gexp-references gexp))))
 
 (define (write-gexp gexp port)

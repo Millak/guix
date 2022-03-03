@@ -148,6 +148,11 @@
          (null? (gexp-inputs exp))
          (gexp->sexp* exp))))
 
+(test-equal "gexp->approximate-sexp, outputs"
+  '(list 'out:foo (*approximate*) 'out:bar (*approximate*))
+  (gexp->approximate-sexp
+   #~(list 'out:foo #$output:foo 'out:bar #$output:bar)))
+
 (test-equal "unquote"
   '(display `(foo ,(+ 2 3)))
   (let ((exp (gexp (display `(foo ,(+ 2 3))))))
