@@ -3788,8 +3788,8 @@ RFC 1321 by R. Rivest, published April 1992.")
      (list ecl-flexi-streams))))
 
 (define-public sbcl-cl+ssl
-  (let ((commit "09e896b04c112e7eb0f9d443a5801d557fbcd3ea")
-        (revision "2"))
+  (let ((commit "046d698cf65539faf9aba0a5ccd086a9d6f53eef")
+        (revision "3"))
     (package
       (name "sbcl-cl+ssl")
       (version (git-version "0.0.0" revision commit))
@@ -3801,7 +3801,7 @@ RFC 1321 by R. Rivest, published April 1992.")
                (commit commit)))
          (file-name (git-file-name "cl+ssl" version))
          (sha256
-          (base32 "1ynvk8rbd5zvbdrl8mr49jwmg9fh94clzkagkza9jmpj0p1qvynd"))))
+          (base32 "110yhb0f1c8yilqsgza2xhv3675i41iizylibgy5qc5fa2lnaxbv"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        '(#:phases
@@ -3814,7 +3814,18 @@ RFC 1321 by R. Rivest, published April 1992.")
                    (assoc-ref inputs "openssl") "/lib/" all))
                  (("libcrypto.so" all)
                   (string-append
-                   (assoc-ref inputs "openssl") "/lib/" all))))))))
+                   (assoc-ref inputs "openssl") "/lib/" all)))))
+           (add-after 'fix-paths 'fix-tests
+             (lambda _
+               ;; Disable coverall support in tests because of a circular
+               ;; dependency: cl+ssl -> cl-coverall -> dexador
+               ;;          -> clack -> hunchentoot -> cl+ssl
+               (substitute* "cl+ssl.test.asd"
+                 (("\\(:feature \\(:or :sbcl :ccl\\) :cl-coveralls\\)")
+                  "")))))))
+      (native-inputs
+       (list ;sbcl-cl-coveralls
+             sbcl-fiveam))
       (inputs
        (list openssl
              sbcl-cffi
