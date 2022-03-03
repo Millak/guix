@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014-2022 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2021-2022 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -120,6 +120,19 @@
   '(display '(*approximate*))
   (let ((inside (file-append coreutils "/bin/hello")))
     (gexp->approximate-sexp #~(display '#$inside))))
+
+;; See <https://issues.guix.gnu.org/54236>.
+(test-equal "unquoted sexp (not a gexp!)"
+  '(list #(foo) (foo) () "foo" foo #xf00)
+  (let ((inside/vector #(foo))
+        (inside/list '(foo))
+        (inside/empty '())
+        (inside/string "foo")
+        (inside/symbol 'foo)
+        (inside/number #xf00))
+    (gexp->approximate-sexp
+     #~(list #$inside/vector #$inside/list #$inside/empty #$inside/string
+             #$inside/symbol #$inside/number))))
 
 (test-equal "no refs"
   '(display "hello!")

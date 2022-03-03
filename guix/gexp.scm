@@ -4,7 +4,7 @@
 ;;; Copyright © 2018 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2019, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2021, 2022 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -174,12 +174,14 @@ As a result, the S-expression will be approximate if GEXP has references."
          (map (lambda (reference)
                 (match reference
                   (($ <gexp-input> thing output native)
-                   (if (gexp-like? thing)
-                       (gexp->approximate-sexp thing)
-                       ;; Simply returning 'thing' won't work in some
-                       ;; situations; see 'write-gexp' below.
-                       '(*approximate*)))
-                  (_ '(*approximate*))))
+                   (cond ((gexp-like? thing)
+                          (gexp->approximate-sexp thing))
+                         ((not (record? thing)) ; a S-exp
+                          thing)
+                         (#true
+                          ;; Simply returning 'thing' won't work in some
+                          ;; situations; see 'write-gexp' below.
+                          '(*approximate*))))))
               (gexp-references gexp))))
 
 (define (write-gexp gexp port)
