@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2018, 2020-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2012, 2015 Free Software Foundation, Inc.
 ;;; Copyright © 2017 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -52,6 +52,7 @@
             http-get-error-uri
             http-get-error-code
             http-get-error-reason
+            http-get-error-headers
 
             http-fetch
             http-multiple-get
@@ -69,9 +70,10 @@
 ;; HTTP GET error.
 (define-condition-type &http-get-error &error
   http-get-error?
-  (uri    http-get-error-uri)                     ; URI
-  (code   http-get-error-code)                    ; integer
-  (reason http-get-error-reason))                 ; string
+  (uri      http-get-error-uri)                   ;URI
+  (code     http-get-error-code)                  ;integer
+  (reason   http-get-error-reason)                ;string
+  (headers  http-get-error-headers))              ;alist
 
 
 (define* (http-fetch uri #:key port (text? #f) (buffered? #t)
@@ -138,7 +140,8 @@ Raise an '&http-get-error' condition if downloading fails."
            (raise (condition (&http-get-error
                               (uri uri)
                               (code code)
-                              (reason (response-reason-phrase resp)))
+                              (reason (response-reason-phrase resp))
+                              (headers (response-headers resp)))
                              (&message
                               (message
                                (format
