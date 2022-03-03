@@ -11722,6 +11722,36 @@ and saving 2-dimensional pixel-based images.")
 (define-public ecl-opticl
   (sbcl-package->ecl-package sbcl-opticl))
 
+(define-public sbcl-cl-dejavu
+  (let ((commit "9d68ced4edee6f96fead42cb4835d0ff4a158373")
+        (revision "1"))
+    (package
+      (name "sbcl-cl-dejavu")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/dkochmanski/cl-dejavu")
+               (commit commit)))
+         (file-name (git-file-name "cl-dejavu" version))
+         (sha256
+          (base32 "1lbxiq21bxj8r11c58cqskgn8gnl2p8q1ydkhdsv7i7xnhv2y7r0"))))
+      (build-system asdf-build-system/sbcl)
+      (home-page "https://github.com/dkochmanski/cl-dejavu")
+      (synopsis "DejaVu fonts for Common Lisp")
+      (description
+       "This is a repackage of the original DejaVu Fonts with some convenience
+functions.")
+      (license (list license:cc0
+                     (license:x11-style "http://dejavu-fonts.org/"))))))
+
+(define-public cl-dejavu
+  (sbcl-package->cl-source-package sbcl-cl-dejavu))
+
+(define-public ecl-dejavu
+  (sbcl-package->ecl-package sbcl-cl-dejavu))
+
 (define-public sbcl-mcclim
   (let ((commit "04cc542dd4b461b9d56406e40681d1a8f080730f")
         (revision "1"))
