@@ -1262,6 +1262,29 @@ and verifies that it matches the intended target hostname.")
 for working with bidirectional mappings in Python.")
     (license license:mpl2.0)))
 
+(define-public python-bip39
+  (package
+    (name "python-bip39")
+    (version "0.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "bip39" version))
+       (sha256
+        (base32 "18m7d3gi7vj2zi0bl1z7m0nhcj6i8j9vj4vil276siagnpkv64ry"))))
+    (build-system python-build-system)
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/de-centralized-systems/python-bip39/")
+    (synopsis "Self-contained and simple BIP39 implementation in Python")
+    (description
+     "This package provides a self-contained and simple BIP39
+implementation written in Python.  It includes a @code{bip39.py} executable.
+
+BIP39 is a standardized mapping between binary data (the @emph{entropy}),
+and a list of words that are easier to remember for humans (the
+@emph{mnemonic}).")
+    (license license:expat)))
+
 (define-public python-bitarray
   (package
     (name "python-bitarray")
