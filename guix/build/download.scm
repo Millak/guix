@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2017 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Timothy Sample <samplet@ngyro.com>
@@ -431,8 +431,7 @@ ETIMEDOUT error is raised."
                                   #:key
                                   timeout
                                   (verify-certificate? #t))
-  "Like 'open-socket-for-uri', but also handle HTTPS connections.  The
-resulting port must be closed with 'close-connection'.  When
+  "Like 'open-socket-for-uri', but also handle HTTPS connections.  When
 VERIFY-CERTIFICATE? is true, verify HTTPS server certificates."
   ;; Note: Guile 2.2.0's (web client) has a same-named export that's actually
   ;; undefined.  See Guile commit 011669af3b428e5626f7bbf66b11d57d9768c047.
