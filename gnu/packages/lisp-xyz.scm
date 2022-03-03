@@ -11680,8 +11680,8 @@ both from files on disk, or streams in memory.")
   (sbcl-package->ecl-package sbcl-pngload))
 
 (define-public sbcl-opticl
-  (let ((commit "e8684416eca2e78e82a7b436d436ef2ea24c019d")
-        (revision "0"))
+  (let ((commit "f6fc4dc5fa61ae3f2527b77e4bda99001ba37dcb")
+        (revision "1"))
     (package
       (name "sbcl-opticl")
       (version (git-version "0.0.0" revision commit))
@@ -11691,21 +11691,22 @@ both from files on disk, or streams in memory.")
          (uri (git-reference
                (url "https://github.com/slyrus/opticl")
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-opticl" version))
          (sha256
-          (base32 "03rirnnhhisjbimlmpi725h1d3x0cfv00r57988am873dyzawmm1"))))
+          (base32 "1jx9n78d4lf53iz24yid34l92zrpqxfihv6049ixcy0xigf7j4ac"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-fiveam))
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("cl-jpeg" ,sbcl-cl-jpeg)
-         ("cl-tga" ,sbcl-cl-tga)
-         ("png-read" ,sbcl-png-read)
-         ("pngload" ,sbcl-pngload)
-         ("retrospectiff" ,sbcl-retrospectiff)
-         ("skippy" ,sbcl-skippy)
-         ("zpng" ,sbcl-zpng)))
+       (list sbcl-alexandria
+             sbcl-cl-jpeg
+             sbcl-cl-tga
+             sbcl-opticl-core
+             sbcl-png-read
+             sbcl-pngload
+             sbcl-retrospectiff
+             sbcl-skippy
+             sbcl-zpng))
       (arguments
        '(#:asd-files '("opticl.asd")))
       (home-page "https://github.com/slyrus/opticl")
