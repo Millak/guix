@@ -8,7 +8,7 @@
 ;;; Copyright © 2019, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 malte Frank Gerdes <malte.f.gerdes@gmail.com>
-;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
@@ -31,6 +31,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
@@ -38,6 +39,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mpi)
@@ -47,6 +49,7 @@
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages qt)
   #:use-module (ice-9 match))
 
 (define-public fio
@@ -383,3 +386,47 @@ and options.  With careful benchmarking, different hardware can be compared.")
         devices.  It only measures the peak metrics that can be achieved using
         vector operations and does not represent a real-world use case.")
         (license license:unlicense))))
+
+(define-public kdiskmark
+  (package
+    (name "kdiskmark")
+    (version "2.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/JonMagon/KDiskMark")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1l4sw05yx70pcnaa64arjc414mgvyz05pn3gz9nc9hga8v2d3rzn"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      ;; Drop runtime dependency on KDE's KFAuth.
+      #~(list "-DPERFORM_PAGECACHE_CLEARING_USING_KF5AUTH=no")
+      #:tests? #f                       ;no test suite
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/benchmark.cpp"
+                (("\"fio\"")
+                 (format #f "~s" (search-input-file inputs "bin/fio")))))))))
+    (native-inputs (list extra-cmake-modules qttools))
+    (inputs (list fio qtbase-5))
+    (home-page "https://github.com/JonMagon/KDiskMark")
+    (synopsis "Simple disk benchmark tool")
+    (description "KDiskMark is an HDD and SSD benchmark tool.  KDiskMark
+abstracts away the complexity of the Flexible I/O Tester (@command{fio})
+command via a convenient graphical user interface (GUI) and handles its output
+to provide an easy to view and interpret benchmark result.  The application is
+written in C++ with Qt and doesn't have any runtime KDE dependencies.  Among
+its features are:
+@itemize
+@item Configurable block size, queues, and threads count for each test
+@item Many languages support
+@item Report generation.
+@end itemize")
+    (license license:gpl3+)))
