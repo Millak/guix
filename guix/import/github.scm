@@ -33,6 +33,7 @@
   #:use-module ((guix ui) #:select (display-hint))
   #:use-module ((guix download) #:prefix download:)
   #:use-module ((guix git-download) #:prefix download:)
+  #:autoload   (guix build download) (open-connection-for-uri)
   #:use-module (guix import utils)
   #:use-module (json)
   #:use-module (guix packages)
@@ -229,18 +230,23 @@ Alternatively, you can wait until your rate limit is reset, or use the
                     (_
                      (raise c)))))
 
-         (let* ((port   (http-fetch release-url #:headers headers))
-                (result (json->scm port)))
-           (close-port port)
-           (match result
-             (#()
-              ;; We got the empty list, presumably because the user didn't use GitHub's
-              ;; "release" mechanism, but hopefully they did use Git tags.
-              (let* ((port (http-fetch tag-url #:headers headers))
-                     (json (json->scm port)))
-                (close-port port)
-                json))
-             (x x))))))
+         (let ((release-uri (string->uri release-url)))
+           (call-with-port (open-connection-for-uri release-uri)
+             (lambda (connection)
+               (let* ((result (json->scm
+                               (http-fetch release-uri
+                                           #:port connection
+                                           #:keep-alive? #t
+                                           #:headers headers))))
+                 (match result
+                   (#()
+                    ;; We got the empty list, presumably because the user didn't use GitHub's
+                    ;; "release" mechanism, but hopefully they did use Git tags.
+                    (json->scm (http-fetch tag-url
+                                           #:port connection
+                                           #:keep-alive? #t
+                                           #:headers headers)))
+                   (x x)))))))))
 
 (define (latest-released-version url package-name)
   "Return the newest released version and its tag given a string URL like
