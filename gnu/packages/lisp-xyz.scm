@@ -1145,15 +1145,16 @@ else @code{parse-number} signals an error of type @code{invalid-number}.")
 (define-public sbcl-iterate
   (package
     (name "sbcl-iterate")
-    (version "1.5")
+    (version "1.5.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://common-lisp.net/project/iterate/releases/"
-                           "iterate-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.common-lisp.net/iterate/iterate.git")
+             (commit version)))
+       (file-name (git-file-name "cl-iterate" version))
        (sha256
-        (base32
-         "1lqsbhrkfl0yif46aymvb7l3nb9wdcmj4jyw485blj32jb4famzn"))))
+        (base32 "0l6l8fpgcpwpmi00jwmamxbspbqa8fil6dv11bf9gaxxbw41f8c2"))))
     (build-system asdf-build-system/sbcl)
     (native-inputs
      (list sbcl-rt))
