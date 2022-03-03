@@ -3,7 +3,7 @@
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Fis Trivial <ybbs.daans@hotmail.com>
 ;;; Copyright © 2018, 2021 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2019, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
+;;; Copyright © 2019, 2020, 2022 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
 ;;; Copyright © 2020, 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
@@ -1721,3 +1721,24 @@ concepts (like dates and times), and building blocks for developing
 multi-threaded applications and network applications.")
       (home-page "https://github.com/bloomberg/bde")
       (license license:asl2.0))))
+
+(define-public gulrak-filesystem
+  (package
+    (name "gulrak-filesystem")
+    (version "1.5.10")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/gulrak/filesystem")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0dx1yvbz5rnisymkqap7z0b06ag9fcs6q6l82vgi8caylhkwsqs7"))))
+    (build-system cmake-build-system)
+    (synopsis "Header only C++ std::filesystem compatible library")
+    (description "This package provides a header-only single-file
+std::filesystem compatible helper library, based on the C++17 and C++20 specs,
+but implemented for C++11, C++14, C++17 or C++20.")
+    (home-page "https://github.com/gulrak/filesystem")
+    (license license:expat)))
