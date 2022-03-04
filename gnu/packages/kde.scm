@@ -244,14 +244,17 @@ browser for easy news reading.")
          (add-after 'install 'wrap-executable
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
-                    (qtbase (assoc-ref inputs "qtbase"))
+                    (ffmpeg (assoc-ref inputs "ffmpeg"))
                     (frei0r (assoc-ref inputs "frei0r-plugins"))
-                    (ffmpeg (assoc-ref inputs "ffmpeg")))
+                    (ladspa (assoc-ref inputs "ladspa"))
+                    (qtbase (assoc-ref inputs "qtbase")))
                (wrap-program (string-append out "/bin/kdenlive")
                  `("PATH" ":" prefix
                    ,(list (string-append ffmpeg "/bin")))
                  `("FREI0R_PATH" ":" =
-                   (,(string-append frei0r "/lib/frei0r-1/")))
+                   (,(string-append frei0r "/lib/frei0r-1")))
+                 `("LADSPA_PATH" ":" =
+                   (,(string-append ladspa "/lib/ladspa")))
                  `("QT_QPA_PLATFORM_PLUGIN_PATH" ":" =
                    (,(string-append qtbase "/lib/qt5/plugins/platforms")))
                  `("MLT_PREFIX" ":" =
@@ -277,6 +280,7 @@ browser for easy news reading.")
            knotifyconfig
            kparts
            kplotting
+           ladspa
            mlt
            purpose
            qtbase-5
