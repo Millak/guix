@@ -5556,7 +5556,7 @@ set.")
                                              texlive-latex-colortbl
                                              texlive-latex-etoc
                                              texlive-fancyhdr
-                                             texlive-latex-fancyvrb
+                                             texlive-fancyvrb
                                              texlive-latex-float
                                              texlive-latex-fncychap
                                              texlive-latex-framed

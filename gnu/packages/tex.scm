@@ -3189,10 +3189,10 @@ users, via its Plain TeX version.)")
 
 (define-deprecated-package texlive-generic-epsf texlive-epsf)
 
-(define-public texlive-latex-fancyvrb
+(define-public texlive-fancyvrb
   (package
     (inherit (simple-texlive-package
-              "texlive-latex-fancyvrb"
+              "texlive-fancyvrb"
               (list "/doc/latex/fancyvrb/README"
                     "/tex/latex/fancyvrb/")
               (base32
@@ -3208,6 +3208,8 @@ save and restore verbatim text and environments; write and read files in
 verbatim mode; build \"example\" environments (showing both result and
 verbatim source).")
     (license license:lppl1.0+)))
+
+(define-deprecated-package texlive-latex-fancyvrb texlive-fancyvrb)
 
 (define-public texlive-graphics-def
   (package

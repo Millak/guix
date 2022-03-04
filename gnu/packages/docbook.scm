@@ -468,7 +468,7 @@ the in DocBook SGML DTDs.")
                                         texlive-latex-colortbl
                                         texlive-latex-fancybox
                                         texlive-fancyhdr
-                                        texlive-latex-fancyvrb
+                                        texlive-fancyvrb
                                         texlive-latex-float
                                         texlive-latex-footmisc
                                         texlive-hyperref

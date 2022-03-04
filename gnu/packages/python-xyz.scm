@@ -5841,7 +5841,7 @@ readable format.")
                                         texlive-etoolbox
                                         texlive-latex-expdlist
                                         texlive-fancyhdr
-                                        texlive-latex-fancyvrb
+                                        texlive-fancyvrb
                                         texlive-latex-fncychap
                                         texlive-latex-float
                                         texlive-latex-framed
@@ -8926,7 +8926,7 @@ computing.")
                                         texlive-etoolbox
                                         texlive-latex-expdlist
                                         texlive-fancyhdr
-                                        texlive-latex-fancyvrb
+                                        texlive-fancyvrb
                                         texlive-latex-fncychap
                                         texlive-latex-float
                                         texlive-latex-framed
@@ -12618,7 +12618,7 @@ time.")
                                         texlive-jknappen
                                         texlive-latex-amsmath
                                         texlive-latex-enumitem
-                                        texlive-latex-fancyvrb
+                                        texlive-fancyvrb
                                         texlive-latex-float
                                         texlive-fontspec
                                         texlive-latex-geometry
