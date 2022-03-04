@@ -478,8 +478,8 @@ in the style of communicating sequential processes (@dfn{CSP}).")
         (base32
          "16pn7avzmlw28sldx6yv38a1afdwj7jz3x7kjvlagysqrsh5lwwl"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments go-1.14)
-       ((#:tests? _) #t)
+     (substitute-keyword-arguments
+         (strip-keyword-arguments '(#:tests?) (package-arguments go-1.14))
        ((#:phases phases)
         `(modify-phases ,phases
            (add-after 'unpack 'remove-unused-sourcecode-generators
