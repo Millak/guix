@@ -13332,8 +13332,8 @@ latitude/longitude and MGRS.")
   (sbcl-package->ecl-package sbcl-mgrs))
 
 (define-public sbcl-maidenhead
-  (let ((commit "b756d235c27b5d6798867aa240318af1a8f35d6d")
-        (revision "0"))
+  (let ((commit "202671f39a4c90c18016123685705533d43ccde6")
+        (revision "1"))
     (package
       (name "sbcl-maidenhead")
       (version (git-version "1.0" revision commit))
@@ -13343,9 +13343,9 @@ latitude/longitude and MGRS.")
          (uri (git-reference
                (url "https://github.com/glv2/maidenhead")
                (commit commit)))
-         (file-name (git-file-name "maidenhead" version))
+         (file-name (git-file-name "cl-maidenhead" version))
          (sha256
-          (base32 "02p990zprhjvifmsfk8yh3frvz6xyw26ikzxvzglqdixbal36nr3"))))
+          (base32 "0bkw31jibx4sh2086jgsw4rvaz3i1dmycbwp203rjj78x7wz9743"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-fiveam))
