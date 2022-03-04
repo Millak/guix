@@ -26,19 +26,34 @@
   #:use-module (guix search-paths)
   #:use-module (guix build-system)
   #:use-module (guix build-system gnu)
-  #:use-module ((guix hexpm-download) #:select (hexpm-uri) #:prefix dl:)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-26)
   #:export (hexpm-uri
+            hexpm-package-url
             %rebar-build-system-modules
             rebar-build
             rebar-build-system))
 
+;;;
+;;; Definitions for the hex.pm repository,
+;;;
+
+;; URL and paths from
+;; https://github.com/hexpm/specifications/blob/master/endpoints.md
+(define %hexpm-repo-url
+  (make-parameter "https://repo.hex.pm"))
+
+(define hexpm-package-url
+  (string-append (%hexpm-repo-url) "/tarballs/"))
+
+(define (hexpm-uri name version)
+  "Return a URI string for the package hosted at hex.pm corresponding to NAME
+and VERSION."
+  (string-append hexpm-package-url name "-" version ".tar"))
+
 ;;
 ;; Standard build procedure for Erlang packages using Rebar.
 ;;
-
-(define hexpm-uri dl:hexpm-uri)
 
 (define %rebar-build-system-modules
   ;; Build-side modules imported by default.

@@ -464,6 +464,7 @@ SOURCE, an <upstream-source>."
                                         #:key-download key-download)))
          (values version tarball source))))))
 
+
 (define* (package-update/git-fetch store package source #:key key-download)
   "Return the version, checkout, and SOURCE, to update PACKAGE to
 SOURCE, an <upstream-source>."

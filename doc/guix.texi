@@ -48,7 +48,7 @@ Copyright @copyright{} 2017 Thomas Danckaert@*
 Copyright @copyright{} 2017 humanitiesNerd@*
 Copyright @copyright{} 2017, 2021 Christine Lemmer-Webber@*
 Copyright @copyright{} 2017, 2018, 2019, 2020, 2021, 2022 Marius Bakke@*
-Copyright @copyright{} 2017, 2019, 2020 Hartmut Goebel@*
+Copyright @copyright{} 2017, 2019, 2020, 2022 Hartmut Goebel@*
 Copyright @copyright{} 2017, 2019, 2020, 2021 Maxim Cournoyer@*
 Copyright @copyright{} 2017–2022 Tobias Geerinckx-Rice@*
 Copyright @copyright{} 2017 George Clemmer@*
@@ -13453,6 +13453,33 @@ guix import egg arrays@@1.0
 @end example
 
 Additional options include:
+@table @code
+@item --recursive
+@itemx -r
+Traverse the dependency graph of the given upstream package recursively
+and generate package expressions for all those packages that are not yet
+in Guix.
+@end table
+
+@item hexpm
+@cindex hexpm
+Import metadata from the hex.pm Erlang and Elixir package repository
+@uref{https://hex.pm, hex.pm}, as in this example:
+
+@example
+guix import hexpm stun
+@end example
+
+The importer tries to determine the build system used by the package.
+
+The hexpm importer also allows you to specify a version string:
+
+@example
+guix import hexpm cf@@0.3.0
+@end example
+
+Additional options include:
+
 @table @code
 @item --recursive
 @itemx -r
