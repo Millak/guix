@@ -22,6 +22,7 @@
 ;;; Copyright © 2021 Ellis Kenyő <me@elken.dev>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2022 Allan Adair <allan@adair.no>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -73,6 +74,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages python-check)
+  #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages search)
   #:use-module (gnu packages serialization)
@@ -1607,3 +1609,37 @@ checksum tool based on the BLAKE3 cryptographic hash function.")
     ;; Users may choose between these two licenses when redistributing the
     ;; program provided by this package.
     (license (list license:cc0 license:asl2.0))))
+
+(define-public libxcrypt
+  (package
+    (name "libxcrypt")
+    (version "4.4.28")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/besser82/libxcrypt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0pacj0s1hlv22iz0k2bkysjslc6rbrgmvmsr02qq17lp4d2gw5rs"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf
+           automake
+           libtool
+           perl
+           pkg-config
+           python-3
+           python-passlib))
+    (synopsis
+     "Extended crypt library for descrypt, md5crypt, bcrypt, and others")
+    (description
+     "libxcrypt is a modern library for one-way hashing of
+passwords. It supports a wide variety of both modern and historical
+hashing methods: yescrypt, gost-yescrypt, scrypt, bcrypt, sha512crypt,
+sha256crypt, md5crypt, SunMD5, sha1crypt, NT, bsdicrypt, bigcrypt, and
+descrypt.")
+    (home-page "https://github.com/besser82/libxcrypt")
+    (license license:lgpl2.1)))
