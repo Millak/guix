@@ -30,7 +30,7 @@
 ;;; Copyright © 2018 Eric Brown <brown@fastmail.com>
 ;;; Copyright © 2018, 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2018 Amin Bandali <bandali@gnu.org>
-;;; Copyright © 2019, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2019, 2021, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2019 Steve Sprang <scs@stevesprang.com>
 ;;; Copyright © 2019 Robert Smith <robertsmith@posteo.net>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
@@ -5555,7 +5555,7 @@ set.")
                                              texlive-latex-cmap
                                              texlive-latex-colortbl
                                              texlive-latex-etoc
-                                             texlive-latex-fancyhdr
+                                             texlive-fancyhdr
                                              texlive-latex-fancyvrb
                                              texlive-latex-float
                                              texlive-latex-fncychap

@@ -5840,7 +5840,7 @@ readable format.")
                                         texlive-latex-eqparbox
                                         texlive-etoolbox
                                         texlive-latex-expdlist
-                                        texlive-latex-fancyhdr
+                                        texlive-fancyhdr
                                         texlive-latex-fancyvrb
                                         texlive-latex-fncychap
                                         texlive-latex-float
@@ -8925,7 +8925,7 @@ computing.")
                                         texlive-latex-eqparbox
                                         texlive-etoolbox
                                         texlive-latex-expdlist
-                                        texlive-latex-fancyhdr
+                                        texlive-fancyhdr
                                         texlive-latex-fancyvrb
                                         texlive-latex-fncychap
                                         texlive-latex-float

@@ -5655,39 +5655,45 @@ using box macros and flexible verbatim macros.  You can box mathematics,
 floats, center, flushleft, and flushright, lists, and pages.")
     (license license:lppl1.2+)))
 
-(define-public texlive-latex-fancyhdr
-  (package
-    (name "texlive-latex-fancyhdr")
-    (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (svn-reference
-                    (url (string-append "svn://www.tug.org/texlive/tags/"
-                                        %texlive-tag "/Master/texmf-dist/"
-                                        "/tex/latex/fancyhdr"))
-                    (revision %texlive-revision)))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "1h2zv7cps0pknqhy2dyfclyi002lmsfshm0rn6ywfl9p4fnvh0bc"))))
-    (build-system trivial-build-system)
-    (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let ((target (string-append (assoc-ref %outputs "out")
-                                      "/share/texmf-dist/tex/latex/fancyhdr")))
-           (mkdir-p target)
-           (copy-recursively (assoc-ref %build-inputs "source") target)
-           #t))))
-    (home-page "https://www.ctan.org/pkg/fancyhdr")
-    (synopsis "Extensive control of page headers and footers in LaTeX2e")
-    (description
-     "The package provides extensive facilities, both for constructing headers
-and footers, and for controlling their use (for example, at times when LaTeX
-would automatically change the heading style in use).")
-    (license license:lppl)))
+(define-public texlive-fancyhdr
+  (let ((template (simple-texlive-package
+                   "texlive-fancyhdr"
+                   (list "doc/latex/fancyhdr/"
+                         "source/latex/fancyhdr/"
+                         "tex/latex/fancyhdr/")
+                   (base32
+                    "15fainwxs22gg4xhwsv1vmjgdhg34dbkir26nnk4pb6jprpwb83f"))))
+    (package
+      (inherit template)
+      (outputs '("out" "doc"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ '())
+          "latex/fancyhdr")
+         ((#:build-targets _ '())
+          #~(list "fancyhdr.ins"))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _ (chdir "source/latex/fancyhdr")))
+              (replace 'copy-files
+                (lambda* (#:key inputs outputs #:allow-other-keys)
+                  (let ((origin (assoc-ref inputs "source"))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc))))))))
+      (home-page "https://www.ctan.org/pkg/fancyhdr")
+      (synopsis "Extensive control of page headers and footers in LaTeX2e")
+      (description
+       "This package provides extensive facilities, both for constructing
+headers and footers, and for controlling their use (for example, at times when
+LaTeX would automatically change the heading style in use).")
+      (license license:lppl))))
+
+(define-deprecated-package texlive-latex-fancyhdr texlive-fancyhdr)
 
 (define-public texlive-latex-float
   (package
@@ -6670,7 +6676,7 @@ Simple Young tableaux.
              texlive-generic-ulem
              texlive-hyperref
              texlive-latex-colortbl
-             texlive-latex-fancyhdr
+             texlive-fancyhdr
              texlive-graphics ;for color.sty
              texlive-latex-tools ;for array.sty
              texlive-marvosym
