@@ -8279,8 +8279,8 @@ definitions.")
     (inherit ruby-yard)
     (name "ruby-yard-with-tests")
     (arguments
-     (substitute-keyword-arguments (package-arguments ruby-yard)
-       ((#:tests? _ #t) #t)
+     (substitute-keyword-arguments
+         (strip-keyword-arguments '(#:tests?) (package-arguments ruby-yard))
        ((#:test-target _ "default") "default")
        ((#:phases phases '%standard-phases)
         `(modify-phases ,phases
@@ -8293,13 +8293,8 @@ definitions.")
                  (delete-file "Gemfile")
                  ;; $HOME needs to be set to somewhere writeable for tests to
                  ;; run.
-                 (setenv "HOME" "/tmp"))
-               #t))))))
-    (native-inputs
-     `(("ruby-rspec" ,ruby-rspec)
-       ("ruby-rack" ,ruby-rack)
-       ("ruby-redcloth" ,ruby-redcloth)
-       ("ruby-asciidoc" ,ruby-asciidoctor)))))
+                 (setenv "HOME" "/tmp"))))))))
+    (native-inputs (list ruby-rspec ruby-rack ruby-redcloth ruby-asciidoctor))))
 
 (define-public ruby-spectroscope
   (package
