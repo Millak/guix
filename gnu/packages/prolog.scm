@@ -3,6 +3,7 @@
 ;;; Copyright © 2013 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -21,12 +22,15 @@
 
 (define-module (gnu packages prolog)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
+  #:use-module (guix utils)
   #:use-module (gnu packages backup)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages image)
@@ -97,36 +101,68 @@ manner.  It also features an interactive interpreter.")
     (build-system cmake-build-system)
     (arguments
      `(#:parallel-build? #t
-       #:tests? #t
        #:configure-flags
-       (list "-DINSTALL_DOCUMENTATION=ON"
-             "-DSWIPL_INSTALL_IN_LIB=OFF") ; FIXME: Breaks RUNPATH validation.
+       ,#~(list
+           #$@(if (%current-target-system)
+                  ;; Set this manually, otherwise CMake would need to
+                  ;; run a cross-compiled binary, which it can't do.
+                  ;; These values were found on a Linux system.
+                  #~("-DBSD_SIGNALS=1" "-DQSORT_R_GNU=1"
+                     ;; If absent, the non-existent 'cc' is used.
+                     "-DCMAKE_HOST_CC=gcc"
+                     ;; swi-prolog needs a native copy of itself for
+                     ;; cross-compilation.
+                     "-DSWIPL_NATIVE_FRIEND=/nowhere"
+                     (string-append "-DPROG_SWIPL="
+                                    #+(this-package-native-input "swi-prolog")
+                                    "/bin/swipl"))
+                  #~())
+           "-DINSTALL_DOCUMENTATION=ON"
+           "-DSWIPL_INSTALL_IN_LIB=OFF") ; FIXME: Breaks RUNPATH validation.
        #:phases
-       (modify-phases %standard-phases
-         ;; XXX: Delete the test phase that attempts to write to the
-         ;; immutable store.
-         (add-after 'unpack 'delete-failing-tests
-           (lambda _
-             (substitute* "src/CMakeLists.txt"
-               ((" save") ""))
-             (substitute* "src/test.pl"
-               (("testdir\\('Tests/save'\\).") ""))
-             (with-directory-excursion "src/Tests"
-               (for-each delete-file-recursively
-                         '("save")))
-             #t)))))
+       ,#~(modify-phases %standard-phases
+            ;; XXX: Delete the test phase that attempts to write to the
+            ;; immutable store.
+            (add-after 'unpack 'delete-failing-tests
+              (lambda _
+                (substitute* "src/CMakeLists.txt"
+                  ((" save") ""))
+                (substitute* "src/test.pl"
+                  (("testdir\\('Tests/save'\\).") ""))
+                (delete-file-recursively "src/Tests/save")))
+            #$@(if (%current-target-system)
+                   ;; Prevent man_server.pl and swipl-lfr.pl from keeping a
+                   ;; reference to the native swi-prolog.
+                   ;; FIXME: libswipl.so and swipl-ld keep a reference to the
+                   ;; cross-compiler.
+                   #~((add-after 'install 'fix-cross-references
+                        (lambda _
+                          (define bin `(,(string-append #$output "/bin")))
+                          (for-each (lambda (file) (patch-shebang file bin))
+                                    (find-files #$output ".pl$")))))
+                   #~()))))
     (native-inputs
-     `(("zlib" ,zlib)
+     `(,@(if (%current-target-system)
+             (begin
+               (unless (equal? (target-64bit?)
+                               (target-64bit? (%current-system)))
+                 (error "swi-prolog requires --system and --target to have \
+the same word size"))
+               `(("swi-prolog" ,this-package)))
+             '())
+       ("texinfo" ,texinfo)
+       ("perl" ,perl)
+       ("pkg-config" ,pkg-config)))
+    (inputs
+     `(("bash-minimal" ,bash-minimal)   ;for some scripts in 'lib'
+       ("zlib" ,zlib)
        ("gmp" ,gmp)
        ("readline" ,readline)
-       ("texinfo" ,texinfo)
        ("libarchive" ,libarchive)
        ("libunwind" ,libunwind)
        ("libjpeg" ,libjpeg-turbo)
        ("libxft" ,libxft)
        ("fontconfig" ,fontconfig)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
        ("openssl" ,openssl)))
     (home-page "https://www.swi-prolog.org/")
     (synopsis "ISO/Edinburgh-style Prolog interpreter")
