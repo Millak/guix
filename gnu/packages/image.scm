@@ -564,9 +564,7 @@ maximum quality factor.")
     (build-system gnu-build-system)
     (inputs
      (list libpng jasper))
-    (arguments
-     `(#:tests? #t)) ; No tests.
-    (home-page "http://icns.sourceforge.net/")
+    (home-page "https://icns.sourceforge.io/")
     (synopsis "Library for handling Mac OS icns resource files")
     (description
      "Libicns is a library for the manipulation of Mac OS IconFamily resource
