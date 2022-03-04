@@ -13364,8 +13364,8 @@ latitude/longitude and Maidenhead locator system.")
   (sbcl-package->ecl-package sbcl-maidenhead))
 
 (define-public sbcl-olc
-  (let ((commit "517e27fa57d9a119b00a29c4b6b31e553deff309")
-        (revision "0"))
+  (let ((commit "0269ed747477d967f7d9331964906b6a0f18a9c4")
+        (revision "1"))
     (package
       (name "sbcl-olc")
       (version (git-version "1.0" revision commit))
@@ -13375,9 +13375,9 @@ latitude/longitude and Maidenhead locator system.")
          (uri (git-reference
                (url "https://github.com/glv2/olc")
                (commit commit)))
-         (file-name (git-file-name "olc" version))
+         (file-name (git-file-name "cl-olc" version))
          (sha256
-          (base32 "1lnfhp6z6kc8l605zp4siyjiw74y1h4bdq3jfizi084v505wxhgr"))))
+          (base32 "02r6w9kfa6v4a12y2azmyjkxbn54r1y18c6a024vq4y6zp20fqnz"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-fiveam))
