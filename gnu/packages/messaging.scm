@@ -2625,8 +2625,7 @@ replacement.")
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #t
-       #:configure-flags
+     `(#:configure-flags
        (list "-DCMAKE_BUILD_TYPE=Release"
              "-DTD_ENABLE_LTO=OFF")     ; FIXME: Get LTO to work.
        #:phases
