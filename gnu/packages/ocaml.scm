@@ -7108,8 +7108,7 @@ support for Mparser.")))
                 "11qfc39cmwfwfpwmjh6wh98zwdv6p73bv8hqwcsss869vs1r7gmn"))))
     (build-system dune-build-system)
     (arguments
-     `(#:tests? #t
-       #:test-target "."
+     `(#:test-target "."
        #:phases
        (modify-phases %standard-phases
          (add-before 'build 'make-writable
@@ -7125,10 +7124,7 @@ support for Mparser.")))
     (propagated-inputs
      (list ocaml-cairo2))
     (inputs
-     `(("camlp5" ,camlp5)
-       ("gtk+" ,gtk+)
-       ("gtksourceview-3" ,gtksourceview-3)
-       ("gtkspell3" ,gtkspell3)))
+     (list camlp5 gtk+ gtksourceview-3 gtkspell3))
     (native-inputs
      (list pkg-config))
     (home-page "https://github.com/garrigue/lablgtk")
