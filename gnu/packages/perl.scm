@@ -11007,7 +11007,8 @@ defined by Annex #11 is used to determine breaking positions.")
     (build-system perl-build-system)
     ;; FIXME: Tests fail on 32-bit architectures:
     ;; <https://rt.cpan.org/Public/Bug/Display.html?id=127007>.
-    (arguments `(#:tests? ,(target-64bit?)))
+    (arguments `(#:tests? ,(and (not (%current-target-system))
+                                (target-64bit?))))
     (native-inputs
      (list perl-test-fatal perl-test-leaktrace perl-variable-magic
            perl-test-pod))
