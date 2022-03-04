@@ -36,6 +36,7 @@
   #:use-module (guix build-system qt)
   #:use-module (guix deprecation)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
@@ -237,34 +238,34 @@ browser for easy news reading.")
      ;; XXX: there is a single test that spawns other tests and
      ;; 1/3 tests failed and 1/327 assertions failed.  It seems
      ;; that individual tests can't be skipped.
-     `(#:configure-flags (list "-DBUILD_TESTING=off")
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-executable
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (ffmpeg (assoc-ref inputs "ffmpeg"))
-                    (frei0r (assoc-ref inputs "frei0r-plugins"))
-                    (ladspa (assoc-ref inputs "ladspa"))
-                    (qtbase (assoc-ref inputs "qtbase")))
-               (wrap-program (string-append out "/bin/kdenlive")
-                 `("PATH" ":" prefix
-                   ,(list (string-append ffmpeg "/bin")))
-                 `("FREI0R_PATH" ":" =
-                   (,(string-append frei0r "/lib/frei0r-1")))
-                 `("LADSPA_PATH" ":" =
-                   (,(string-append ladspa "/lib/ladspa")))
-                 `("QT_QPA_PLATFORM_PLUGIN_PATH" ":" =
-                   (,(string-append qtbase "/lib/qt5/plugins/platforms")))
-                 `("MLT_PREFIX" ":" =
-                   (,(assoc-ref inputs "mlt"))))))))))
+     (list
+      #:configure-flags #~(list "-DBUILD_TESTING=off")
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-executable
+            (lambda _
+              (let* ((ffmpeg #$(this-package-input "ffmpeg"))
+                     (frei0r #$(this-package-input "frei0r-plugins"))
+                     (ladspa #$(this-package-input "ladspa"))
+                     (qtbase #$(this-package-input "qtbase")))
+                (wrap-program (string-append #$output "/bin/kdenlive")
+                  `("PATH" ":" prefix
+                    ,(list (string-append ffmpeg "/bin")))
+                  `("FREI0R_PATH" ":" =
+                    (,(string-append frei0r "/lib/frei0r-1")))
+                  `("LADSPA_PATH" ":" =
+                    (,(string-append ladspa "/lib/ladspa")))
+                  `("QT_QPA_PLATFORM_PLUGIN_PATH" ":" =
+                    (,(string-append qtbase "/lib/qt5/plugins/platforms")))
+                  `("MLT_PREFIX" ":" =
+                    (,#$(this-package-input "mlt"))))))))))
     (native-inputs
      (list extra-cmake-modules pkg-config qttools))
     (inputs
      (list bash-minimal
-           breeze ; make dark them available easily
-           breeze-icons ; recommended icon set
+           breeze                       ; make dark them available easily
+           breeze-icons                 ; recommended icon set
            ffmpeg
            frei0r-plugins
            karchive
