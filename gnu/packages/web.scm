@@ -4668,8 +4668,8 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
                    license:freebsd-doc)))) ; documentation
 
 (define-public guix-data-service
-  (let ((commit "4a1088c21687531de0b4e062e1bf9ec491e5d4da")
-        (revision "29"))
+  (let ((commit "27c34a9ca5ea010f207a4acad597ce98e84d3567")
+        (revision "30"))
     (package
       (name "guix-data-service")
       (version (string-append "0.0.1-" revision "." (string-take commit 7)))
@@ -4681,7 +4681,7 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1k9hnpx47l91l0x3gvjrzx4772lnkb55lk66axgl3a8g1fhaji4l"))))
+                  "1jjdvld3gp711dp8qd4rnhicbl7322jjzx4plizkg89k7j4x0xhx"))))
       (build-system gnu-build-system)
       (arguments
        '(#:modules ((guix build utils)
@@ -4740,16 +4740,18 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
                  #t)))
            (delete 'strip))))           ; As the .go files aren't compatible
       (inputs
+       (list ephemeralpg
+             util-linux
+             postgresql-13
+             sqitch
+             bash-minimal))
+      (propagated-inputs
        (list guix
              guile-fibers-1.1
              guile-json-4
              guile-email
              guile-prometheus
-             guile-squee
-             ephemeralpg
-             util-linux
-             postgresql-13
-             sqitch))
+             guile-squee))
       (native-inputs
        (list (car (assoc-ref (package-native-inputs guix) "guile"))
              autoconf
