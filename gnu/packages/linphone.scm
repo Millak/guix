@@ -259,8 +259,7 @@ IETF.")
     (build-system cmake-build-system)
     (outputs '("out" "debug" "tester"))
     (arguments
-     `(#:tests? #t
-       #:configure-flags '("-DENABLE_STATIC=OFF")
+     `(#:configure-flags '("-DENABLE_STATIC=OFF")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-vcard-grammar-location
