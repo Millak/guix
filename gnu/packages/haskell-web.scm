@@ -603,8 +603,9 @@ Haskell's Web Application Interface (WAI).")
     (arguments
      `(;; XXX: As of 0.0.4, one property test ("Identical output as Blaze")
        ;; fails on i686-linux.
-       #:tests? ,(not (string-prefix? "i686" (or (%current-target-system)
-                                                 (%current-system))))
+       #:tests? ,(and (not (%current-target-system))
+                      (not (string-prefix? "i686" (or (%current-target-system)
+                                                      (%current-system)))))
        #:cabal-revision
        ("3" "15hg352id2f4x0dnvv47bdiz6gv5hp5a2mki9yzmhc7ajpk31mdd")))
     (native-inputs
