@@ -7372,11 +7372,11 @@ library.")
         (base32
          "14a5kxfnf8l3ngyk8hgmk30z07aj1324ll8i48z67ps6pz2kpsrg"))))
     (build-system ruby-build-system)
-    (arguments '(#:tests? #t
-                 #:phases (modify-phases %standard-phases
+    (arguments '(#:phases (modify-phases %standard-phases
                             (replace 'check
-                              (lambda _
-                                (invoke "rspec"))))))
+                              (lambda* (#:key tests? #:allow-other-keys)
+                                (when tests?
+                                  (invoke "rspec")))))))
     (native-inputs
      (list ruby-rspec))
     (propagated-inputs
