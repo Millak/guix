@@ -13298,8 +13298,8 @@ Polar Stereographic).")
   (sbcl-package->ecl-package sbcl-utm-ups))
 
 (define-public sbcl-mgrs
-  (let ((commit "00455460407b7e5509d1be3da09bf6152956761f")
-        (revision "0"))
+  (let ((commit "c06f268f9ccb00dfc94c8a07771ce1ca82df26a2")
+        (revision "1"))
     (package
       (name "sbcl-mgrs")
       (version (git-version "1.0" revision commit))
@@ -13309,9 +13309,9 @@ Polar Stereographic).")
          (uri (git-reference
                (url "https://github.com/glv2/mgrs")
                (commit commit)))
-         (file-name (git-file-name "mgrs" version))
+         (file-name (git-file-name "cl-mgrs" version))
          (sha256
-          (base32 "0ckvn4hg3wwivzavhfashb6fap4a1q10l8krhbng8bdb54ac10sz"))))
+          (base32 "1n4kd734qjj7mrcg0q28hml3npam1rm067iwljwc87zshnxh5gmn"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-fiveam))
