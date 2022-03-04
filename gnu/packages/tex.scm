@@ -3458,7 +3458,7 @@ XML, using UTF-8 or a suitable 8-bit encoding.")
              texlive-generic-bitset
              texlive-generic-etexcmds
              texlive-generic-gettitlestring
-             texlive-generic-iftex
+             texlive-iftex
              texlive-generic-infwarerr
              texlive-generic-intcalc
              texlive-generic-kvdefinekeys
@@ -3512,7 +3512,7 @@ pdf and HTML backends.  The package is distributed with the @code{backref} and
                (("ifpdf.ins") "ifpdf.dtx"))
              #t)))))
     (propagated-inputs
-     (list texlive-generic-iftex))
+     (list texlive-iftex))
     (home-page "https://www.ctan.org/pkg/oberdiek")
     (synopsis "Bundle of packages submitted by Heiko Oberdiek")
     (description
@@ -4909,7 +4909,7 @@ Unicode option of @code{inputenc} or @code{inputenx}, or by XeLaTeX/LuaLaTeX.")
                     (copy-recursively (string-append origin "/source") source)
                     (copy-recursively (string-append origin "/doc") doc))))))))
       (propagated-inputs
-       (list texlive-generic-iftex texlive-generic-infwarerr
+       (list texlive-iftex texlive-generic-infwarerr
              texlive-generic-ltxcmds))
       (home-page "https://www.ctan.org/pkg/pdftexcmds")
       (synopsis "LuaTeX support for pdfTeX utility functions")
@@ -8098,7 +8098,7 @@ can be manipulated.")
                "11y6pnlq13bp0ybi7c82g8ds8085zv1zaslgqv3dzhgi3dklpc0c")
               #:trivial? #t))
     (propagated-inputs
-     (list texlive-generic-infwarerr texlive-generic-iftex))
+     (list texlive-generic-infwarerr texlive-iftex))
     (home-page "https://www.ctan.org/pkg/etexcmds")
     (synopsis "Avoid name clashes with e-TeX commands")
     (description
@@ -8790,9 +8790,9 @@ may be used instead of @code{\\marginpar} at almost every place where
 frames made with the @code{framed} package.")
       (license license:lppl1.3c+))))
 
-(define-public texlive-generic-iftex
+(define-public texlive-iftex
   (let ((template (simple-texlive-package
-                   "texlive-generic-iftex"
+                   "texlive-iftex"
                    (list "/doc/generic/iftex/"
                          "/tex/generic/iftex/")
                    (base32
@@ -8810,9 +8810,9 @@ package also provides the @code{\\RequirePDFTeX}, @code{\\RequireXeTeX}, and
 LuaTeX (respectively) is not the engine in use.")
       (license license:lppl1.3+))))
 
-(define-deprecated-package texlive-iftex texlive-generic-iftex)
+(define-deprecated-package texlive-generic-iftex texlive-iftex)
 
-(define-deprecated-package texlive-generic-ifxetex texlive-generic-iftex)
+(define-deprecated-package texlive-generic-ifxetex texlive-iftex)
 
 (define-public texlive-tools
   (let ((template (simple-texlive-package
@@ -8907,7 +8907,7 @@ are part of the LaTeX required tools distribution, comprising the packages:
            texlive-graphics-def
            texlive-xcolor
            texlive-latex-footmisc
-           texlive-generic-iftex
+           texlive-iftex
            texlive-listings
            texlive-pstricks
            texlive-pst-text

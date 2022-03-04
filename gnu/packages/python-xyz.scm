@@ -5831,7 +5831,7 @@ readable format.")
        ("python-numpydoc" ,python-numpydoc)
        ("texlive" ,(texlive-updmap.cfg (list texlive-cm-super
                                         texlive-fonts-ec
-                                        texlive-generic-iftex
+                                        texlive-iftex
                                         texlive-pdftex
                                         texlive-amsfonts
                                         texlive-latex-capt-of
@@ -8917,7 +8917,7 @@ computing.")
        ;; FIXME: It's possible that a smaller union would work just as well.
        ("texlive" ,(texlive-updmap.cfg (list texlive-amsfonts
                                         texlive-fonts-ec
-                                        texlive-generic-iftex
+                                        texlive-iftex
                                         texlive-pdftex
                                         texlive-latex-capt-of
                                         texlive-latex-cmap
@@ -12614,7 +12614,7 @@ time.")
                                         texlive-eurosym
                                         texlive-fonts-rsfs
                                         texlive-generic-ulem
-                                        texlive-generic-iftex
+                                        texlive-iftex
                                         texlive-jknappen
                                         texlive-latex-amsmath
                                         texlive-latex-enumitem
@@ -26474,7 +26474,7 @@ By default it uses the open Python vulnerability database Safety DB.")
     (native-inputs
      `(("texlive" ,(texlive-updmap.cfg (list texlive-amsfonts
                                         texlive-fonts-ec
-                                        texlive-generic-iftex
+                                        texlive-iftex
                                         texlive-hyperref
                                         texlive-oberdiek
                                         texlive-lm

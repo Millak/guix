@@ -485,7 +485,7 @@ the in DocBook SGML DTDs.")
                                         texlive-fonts-rsfs
                                         texlive-stmaryrd
 
-                                        texlive-generic-iftex)))
+                                        texlive-iftex)))
        ("imagemagick" ,imagemagick)     ;for convert
        ("inkscape" ,inkscape)           ;for svg conversion
        ("docbook" ,docbook-xml)
