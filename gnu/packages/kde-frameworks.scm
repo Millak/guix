@@ -106,7 +106,8 @@
          '()
          `(("qtbase" ,qtbase-5))))                ;for tests (needs qmake)
     (arguments
-     `(#:tests? ,(not (null? (package-native-inputs this-package)))
+     `(#:tests? ,(and (not (%current-target-system))
+                      (not (null? (package-native-inputs this-package))))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-lib-path
