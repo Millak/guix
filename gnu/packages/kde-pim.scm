@@ -1302,7 +1302,6 @@ using a Qt/KMime C++ API.")
            qtdeclarative-5
            qtwebchannel-5
            qtwebengine-5
-           qtwebkit
            sonnet))
     (arguments
      `(#:tests? #f     ;TODO many test fail for quite different reasons
