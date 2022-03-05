@@ -492,7 +492,7 @@ X11 (yet).")
 (define-public xdotool
   (package
     (name "xdotool")
-    (version "3.20160805.1")
+    (version "3.20211022.1")
     (source
       (origin
         (method url-fetch)
@@ -501,7 +501,7 @@ X11 (yet).")
               version "/xdotool-" version ".tar.gz"))
         (sha256
           (base32
-           "1a6c1zr86zb53352yxv104l76l8x21gfl2bgw6h21iphxpv5zgim"))))
+           "1nlsbwsdsgys607f00sc8xgb7l7cdzsb14avsg5fly3dvv7zmw4n"))))
     (build-system gnu-build-system)
     (arguments
      '(#:tests? #f ; Test suite requires a lot of black magic
