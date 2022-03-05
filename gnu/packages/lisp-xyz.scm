@@ -31,6 +31,7 @@
 ;;; Copyright © 2021, 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2021 Jacob MacDonald <jaccarmac@gmail.com>
+;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3769,7 +3770,7 @@ process form data posted with HTTP POST method using enctype
 (define-public sbcl-md5
   (package
     (name "sbcl-md5")
-    (version "2.0.4")
+    (version "2.0.5")
     (source
      (origin
        (method git-fetch)
@@ -3778,7 +3779,7 @@ process form data posted with HTTP POST method using enctype
               (commit (string-append "release-" version))))
        (file-name (git-file-name "md5" version))
        (sha256
-        (base32 "1waqxzm7vlc22n92hv8r27anlvvjkkh9slhrky1ww7mdx4mmxwb8"))))
+        (base32 "1g20np6rhn3y08z8mlmlk721mw2207s52v2pwp4smm3lz25sx3q5"))))
     (build-system asdf-build-system/sbcl)
     (home-page "https://github.com/pmai/md5")
     (synopsis
@@ -3893,7 +3894,6 @@ Rosenberg's Common Lisp packages.")
   (sbcl-package->ecl-package sbcl-kmrcl))
 
 (define-public sbcl-cl-base64
-  ;; 3.3.4 tests are broken, upstream fixes them.
   (let ((commit "577683b18fd880b82274d99fc96a18a710e3987a"))
     (package
       (name "sbcl-cl-base64")
