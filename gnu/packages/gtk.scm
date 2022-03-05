@@ -29,6 +29,7 @@
 ;;; Copyright © 2021 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Wamm K. D. <jaft.r@outlook.com>
+;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -408,6 +409,22 @@ context of the GTK+ widget toolkit.  Pango forms the core of text and font
 handling for GTK+-2.x.")
     (home-page "https://pango.gnome.org/")
     (license license:lgpl2.0+)))
+
+;; TODO: Make this the default package in next release cycle.
+(define-public pango-next
+  (package
+    (inherit pango)
+    (name "pango")
+    (version "1.50.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/pango/"
+                                  (version-major+minor version) "/"
+                                  name "-" version ".tar.xz"))
+              (patches (search-patches "pango-skip-libthai-test.patch"))
+              (sha256
+               (base32
+                "0qn1a7ccs3p5vc6swbqm6hdzka879l0gp9220lq4bcf2gpl67bgl"))))))
 
 (define-public pango-1.42
   (package
