@@ -972,7 +972,7 @@ to find buttons, etc, on the screen to click on.")
 (define-public xbanish
   (package
     (name "xbanish")
-    (version "1.7")
+    (version "1.8")
     (home-page "https://github.com/jcs/xbanish")
     (source (origin
               (method git-fetch)
@@ -981,7 +981,7 @@ to find buttons, etc, on the screen to click on.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ic5f7zgc32p5g1wxas9y5h8dhik0pvsa8wmn6skdry56gw9vg9q"))))
+                "12mjwn8hvrrhwyg3wi20bqr6k8d57xf9m5qr3s4nn511dcksh04g"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
