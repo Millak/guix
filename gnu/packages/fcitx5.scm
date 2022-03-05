@@ -205,7 +205,8 @@ editors.")
       #~(list (string-append "-DGOBJECT_INTROSPECTION_GIRDIR="
                              #$output "/share/gir-1.0")
               (string-append "-DGOBJECT_INTROSPECTION_TYPELIBDIR="
-                             #$output "/lib/girepository-1.0"))
+                             #$output "/lib/girepository-1.0")
+              "-DENABLE_GTK4_IM_MODULE=OFF")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'configure 'patch-install-prefix
@@ -218,11 +219,10 @@ editors.")
                    (string-append output "/lib"))))
 
               (let ((gtk2 #$output:gtk2)
-                    (gtk3 #$output:gtk3)
-                    (gtk4 #$output:gtk4))
+                    (gtk3 #$output:gtk3))
                 (for-each split-immodule
-                          '("gtk2" "gtk3" "gtk4")
-                          (list gtk2 gtk3 gtk4))))))))
+                          '("gtk2" "gtk3")
+                          (list gtk2 gtk3))))))))
     (inputs
      (list fcitx5
            fmt
@@ -232,12 +232,11 @@ editors.")
            gobject-introspection
            gtk+-2
            gtk+
-           gtk
            glib))
     (native-inputs
      (list extra-cmake-modules pkg-config
            `(,glib "bin")))           ;for glib-genmarshal
-    (outputs '("out" "gtk2" "gtk3" "gtk4"))
+    (outputs '("out" "gtk2" "gtk3"))
     (home-page "https://github.com/fcitx/fcitx5-gtk")
     (synopsis "GLib-based D-Bus client and GTK IM module for Fcitx 5")
     (description "Fcitx5-gtk provides the following functionality in the
@@ -250,8 +249,6 @@ GLib-based D-Bus client of Fcitx5.
 IM module for GTK+2 applications.
 @item gtk3
 IM module for GTK+3 applications.
-@item gtk4
-IM module for GTK4 applications.
 @end table")
     (license license:lgpl2.1+)))
 

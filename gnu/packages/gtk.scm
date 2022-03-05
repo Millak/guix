@@ -1076,7 +1076,7 @@ application suites.")
 (define-public gtk
   (package
     (name "gtk")
-    (version "4.4.1")
+    (version "4.6.1")
     (source
      (origin
        (method url-fetch)
@@ -1084,10 +1084,9 @@ application suites.")
                            (version-major+minor version)  "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "1x6xlc063nqp7cg6py4kq1kpw9pkq49ifk5kki0brc667ncdmahg"))
+        (base32 "0pzcs24j67f90kjcp6apgn6rffynxksjm1m7d3an7kdv3k90hmfq"))
        (patches
-        (search-patches "gtk4-respect-GUIX_GTK4_PATH.patch"
-                        "gtk-introspection-test.patch"))))
+        (search-patches "gtk4-respect-GUIX_GTK4_PATH.patch"))))
     (build-system meson-build-system)
     (outputs '("out" "bin" "doc"))
     (arguments
@@ -1117,6 +1116,10 @@ application suites.")
          (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
            (assoc-ref glib-or-gtk:%standard-phases
                       'generate-gdk-pixbuf-loaders-cache-file))
+         (add-after 'unpack 'patch-rst2man
+           (lambda _
+             (substitute* "docs/reference/gtk/meson.build"
+               (("find_program\\('rst2man'") "find_program('rst2man.py'"))))
          (add-after 'unpack 'patch
            (lambda* (#:key inputs native-inputs outputs #:allow-other-keys)
              ;; Correct DTD resources of docbook.
@@ -1194,6 +1197,7 @@ application suites.")
        ("pkg-config" ,pkg-config)
        ("python-pygobject" ,python-pygobject)
        ;; These python modules are required for building documentation.
+       ("python-docutils" ,python-docutils)
        ("python-jinja2" ,python-jinja2)
        ("python-markdown" ,python-markdown)
        ("python-markupsafe" ,python-markupsafe)
@@ -1216,7 +1220,10 @@ application suites.")
            iso-codes
            json-glib
            libcloudproviders ;for cloud-providers support
+           libjpeg-turbo
+           libpng
            librsvg
+           libtiff
            python
            rest
            tracker))          ;for filechooser search support
@@ -1239,7 +1246,7 @@ application suites.")
        ("libxkbcommon" ,libxkbcommon)
        ("libxrandr" ,libxrandr)
        ("libxrender" ,libxrender)
-       ("pango" ,pango)
+       ("pango" ,pango-next)
        ("vulkan-headers" ,vulkan-headers)
        ("vulkan-loader" ,vulkan-loader) ;for vulkan graphics API support
        ("wayland" ,wayland)             ;for wayland display-backend
