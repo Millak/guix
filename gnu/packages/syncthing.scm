@@ -46,7 +46,7 @@
 (define-public syncthing
   (package
     (name "syncthing")
-    (version "1.19.0")
+    (version "1.19.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/syncthing/syncthing"
@@ -54,7 +54,7 @@
                                   "/syncthing-source-v" version ".tar.gz"))
               (sha256
                (base32
-                "13b8dsvqgah13w5sfbwv1fpwj6sfqj2lv0d0x9433ljjq92lxkbg"))))
+                "09silpbpciqzpr4y4ycpkxrwi9zf90xgd13844m145134cpyrigz"))))
     (build-system go-build-system)
     ;; The primary Syncthing executable goes to "out", while the auxiliary
     ;; server programs and utility tools go to "utils".  This reduces the size
