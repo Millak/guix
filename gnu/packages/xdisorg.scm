@@ -1000,7 +1000,7 @@ shows it again when the mouse cursor moves or a mouse button is pressed.")
 (define-public xlockmore
   (package
     (name "xlockmore")
-    (version "5.67")
+    (version "5.68")
     (source (origin
              (method url-fetch)
              (uri (list (string-append "http://sillycycle.com/xlock/"
@@ -1011,7 +1011,7 @@ shows it again when the mouse cursor moves or a mouse button is pressed.")
                                        "xlockmore-" version ".tar.xz")))
              (sha256
               (base32
-               "0k13gxgnk4i041g1fzixfwlf3l5hrvvkhfvxf27szx0d1qbpwq58"))))
+               "0vndfwccnvkaaraprjam8pmx0aj55va0ag64q6snxw83nbf1ywrh"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags (list (string-append "--enable-appdefaultdir="
