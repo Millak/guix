@@ -46,6 +46,7 @@
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2022 Kitzman <kitzman@disroot.org>
 ;;; Copyright © 2021 Wamm K. D. <jaft.r@outlook.com>
+;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1498,7 +1499,7 @@ programming.  Iosevka is completely generated from its source code.")
 (define-public font-sarasa-gothic
   (package
     (name "font-sarasa-gothic")
-    (version "0.31.2")
+    (version "0.36.0")
     (source
      (origin
        (method url-fetch)
@@ -1506,7 +1507,7 @@ programming.  Iosevka is completely generated from its source code.")
                            "/releases/download/v" version
                            "/sarasa-gothic-ttc-" version ".7z"))
        (sha256
-        (base32 "0p67qyhm266s6q17islqvwch807fy5slgp2symrl0z665vp6hycj"))))
+        (base32 "0rr6qrf49zx3cl1pv7063l12nnj2nm9p4di3frp0p4ci9l7b4xmw"))))
     (build-system font-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
