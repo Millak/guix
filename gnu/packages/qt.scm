@@ -25,6 +25,7 @@
 ;;; Copyright © 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4283,6 +4284,47 @@ and import their menus over DBus.")
 services using the XML based SOAP protocol and without the need for a dedicated
 web server.")
     (license (list license:gpl2 license:gpl3))))
+
+(define-public libaccounts-qt
+  (package
+    (name "libaccounts-qt")
+    (version "1.16")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/accounts-sso/libaccounts-qt")
+                    (commit (string-append "VERSION_" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1vmpjvysm0ld8dqnx8msa15hlhrkny02cqycsh4k2azrnijg0xjz"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f                  ;TODO
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'configure
+                 (lambda _
+                   (substitute* "tests/tst_libaccounts.pro"
+                     (("QMAKE_RPATHDIR = \\$\\$\\{QMAKE_LIBDIR\\}")
+                      (string-append "QMAKE_RPATHDIR ="
+                                     #$output "/lib")))
+                   (invoke "qmake"
+                           (string-append "PREFIX=" #$output)
+                           (string-append "LIBDIR=" #$output "/lib")))))))
+    ;; * SignOnQt5 (required version >= 8.55), D-Bus service which performs
+    ;; user authentication on behalf of its clients,
+    ;; <https://gitlab.com/accounts-sso/signond>
+    (native-inputs (list doxygen pkg-config qtbase-5 qttools-5))
+    (inputs (list glib signond libaccounts-glib))
+    (home-page "https://accounts-sso.gitlab.io/")
+    (synopsis "Qt5 bindings for libaccounts-glib")
+    (description
+     "Accounts SSO is a framework for application developers who
+wish to acquire, use and store web account details and credentials.  It
+handles the authentication process of an account and securely stores the
+credentials and service-specific settings.")
+    (license license:lgpl2.1+)))
 
 (define-public signond
   (package
