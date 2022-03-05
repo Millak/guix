@@ -2247,41 +2247,39 @@ PNG files.")
     (license license:gpl3+)))
 
 (define-public lemonbar
-  (let ((commit "35183ab81d2128dbb7b6d8e119cc57846bcefdb4")
-        (revision "1"))
-    (package
-      (name "lemonbar")
-      (version (git-version "1.3" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/LemonBoy/bar")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1wwqbph392iwz8skaqxb0xpklb1l6yganqz80g4x1fhrnz7idmlh"))))
-      (build-system gnu-build-system)
-      (arguments
-       `(#:tests? #f                    ; no test suite
-         #:make-flags
-         (list ,(string-append "CC=" (cc-for-target))
-               (string-append "PREFIX=" %output))
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure))))
-      (inputs
-       (list libxcb))
-      (native-inputs
-       (list perl))
-      (home-page "https://github.com/LemonBoy/bar")
-      (synopsis "Featherweight status bar")
-      (description
-       "@code{lemonbar} (formerly known as @code{bar}) is a lightweight
+  (package
+    (name "lemonbar")
+    (version "1.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/LemonBoy/bar")
+                    (commit (string-append "v" version))))
+            (file-name (git-file-name name version))
+            (sha256
+             (base32
+              "0sm1lxxf0y2n87nvc8mz6i6mzb32f4qab80ppb28ibrwfir6jsln"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f                    ; no test suite
+                #:make-flags
+                (list ,(string-append "CC=" (cc-for-target))
+                      (string-append "PREFIX=" %output))
+                #:phases
+                (modify-phases %standard-phases
+                  (delete 'configure))))
+    (inputs
+     (list libxcb))
+    (native-inputs
+     (list perl))
+    (home-page "https://github.com/LemonBoy/bar")
+    (synopsis "Featherweight status bar")
+    (description
+     "@code{lemonbar} (formerly known as @code{bar}) is a lightweight
 bar entirely based on XCB.  Provides full UTF-8 support, basic
 formatting, RandR and Xinerama support and EWMH compliance without
 wasting your precious memory.")
-      (license license:x11))))
+    (license license:x11)))
 
 (define-public lemonbar-xft
   ;; Upstream v2.0 tag is several years behind HEAD
