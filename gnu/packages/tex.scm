@@ -3555,37 +3555,69 @@ pdf and HTML backends.  The package is distributed with the @code{backref} and
 (define-deprecated-package texlive-latex-hyperref texlive-hyperref)
 
 (define-public texlive-oberdiek
-  (package
-    (name "texlive-oberdiek")
-    (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "oberdiek"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "1cadrkpdqs65gxsaszfgfd8wqp8pvpik2sjmlyq3hz5p9yna3p9m"))))
-    (build-system texlive-build-system)
-    (arguments
-     '(#:tex-directory "latex/oberdiek"
-       #:build-targets '("oberdiek.ins")
-       #:phases
-       (modify-phases %standard-phases
-         ;; "ifpdf.ins" is not generated, so we need to process the dtx file.
-         (add-after 'unpack 'do-not-process-ifpdf.ins
-           (lambda _
-             (substitute* "oberdiek.ins"
-               (("ifpdf.ins") "ifpdf.dtx"))
-             #t)))))
-    (propagated-inputs
-     (list texlive-iftex))
-    (home-page "https://www.ctan.org/pkg/oberdiek")
-    (synopsis "Bundle of packages submitted by Heiko Oberdiek")
-    (description
-     "The bundle comprises various LaTeX packages, providing among others:
+  (let ((template (simple-texlive-package
+                   "texlive-oberdiek"
+                   (list "bibtex/bib/oberdiek/"
+                         "doc/latex/oberdiek/"
+                         "source/latex/oberdiek/"
+                         "tex/generic/oberdiek/"
+                         "tex/latex/oberdiek/")
+                   (base32
+                    "00lp24fckawpy997j7zagsxv89jif40wgjq8fw502v06d225ikp3"))))
+    (package
+      (inherit template)
+      (outputs '("out" "doc"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ '())
+          "latex/oberdiek")
+         ((#:build-targets _ '())
+          #~(list "oberdiek.ins"))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _
+                  (chdir "source/latex/oberdiek")))
+              (replace 'copy-files
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((origin (assoc-ref inputs "source"))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc)
+                    ;; XXX: `#:tex-directory' is limited to one location, but
+                    ;; the package needs to install files elsewhere, so we do
+                    ;; that manually here.
+                    (with-directory-excursion origin
+                      (let ((extra '("bibtex/bib/oberdiek"
+                                     "tex/generic/oberdiek")))
+                        (for-each
+                         (lambda (d)
+                           (for-each (lambda (f)
+                                       (install-file
+                                        f
+                                        (string-append #$output
+                                                       "/share/texmf-dist/"
+                                                       d)))
+                                     (find-files d)))
+                         extra))))))))))
+      (propagated-inputs
+       (list texlive-auxhook
+             texlive-grfext
+             texlive-grffile
+             texlive-iftex
+             texlive-infwarerr
+             texlive-kvoptions
+             texlive-pdftexcmds))
+      (home-page "https://www.ctan.org/pkg/oberdiek")
+      (synopsis "Bundle of packages submitted by Heiko Oberdiek")
+      (description
+       "The bundle comprises various LaTeX packages, providing among others:
 better accessibility support for PDF files; extensible chemists reaction
 arrows; record information about document class(es) used; and many more.")
-    (license license:lppl1.3+)))
+      (license license:lppl1.3+))))
 
 (define-deprecated-package texlive-latex-oberdiek texlive-oberdiek)
 
