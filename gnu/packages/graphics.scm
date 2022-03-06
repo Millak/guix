@@ -496,6 +496,7 @@ typically encountered in feature film production.")
        ("libtiff" ,libtiff)
        ("ffmpeg" ,ffmpeg)
        ("fftw" ,fftw)
+       ("gmp" ,gmp) ;; needed for boolean operations on meshes
        ("jack" ,jack-1)
        ("libsndfile" ,libsndfile)
        ("freetype" ,freetype)
