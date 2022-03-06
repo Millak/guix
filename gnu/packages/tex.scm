@@ -3322,21 +3322,45 @@ keyval, and lscape.")
 
 (define-deprecated-package texlive-latex-graphics texlive-graphics)
 
-(define-public texlive-latex-hycolor
-  (package
-    (inherit (simple-texlive-package
-              "texlive-latex-hycolor"
-              (list "/doc/latex/hycolor/README.md"
-                    "/tex/latex/hycolor/")
-              (base32
-               "026lfb4l7b3q8g6zc68siqandhb1x98cbycn7njknqva6s99aiqn")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/latex-graphics")
-    (synopsis "Color for hyperref and bookmark")
-    (description
-     "This package provides the code for the @code{color} option that is
+(define-public texlive-hycolor
+  (let ((template  (simple-texlive-package
+                    "texlive-hycolor"
+                    (list "doc/latex/hycolor/"
+                          "source/latex/hycolor/"
+                          "tex/latex/hycolor/")
+                    (base32
+                     "0hmkx37wwmznxjqqnca87shy7qrgqrh2cn5r941ddgivnym31xbh"))))
+    (package
+      (inherit template)
+      (outputs '("out" "doc"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ '())
+          "latex/hycolor")
+         ((#:build-targets _ '())
+          #~(list "hycolor.dtx"))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _
+                  (chdir "source/latex/hycolor")))
+              (replace 'copy-files
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((origin (assoc-ref inputs "source"))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc))))))))
+      (home-page "https://www.ctan.org/pkg/latex-graphics")
+      (synopsis "Color for hyperref and bookmark")
+      (description
+       "This package provides the code for the @code{color} option that is
 used by @code{hyperref} and @code{bookmark}.")
-    (license license:lppl1.3c+)))
+      (license license:lppl1.3c+))))
+
+(define-deprecated-package texlive-latex-hycolor texlive-hycolor)
 
 (define-public texlive-xcolor
   (let ((template (simple-texlive-package
@@ -3492,7 +3516,7 @@ XML, using UTF-8 or a suitable 8-bit encoding.")
              texlive-ltxcmds
              texlive-pdfescape
              texlive-auxhook
-             texlive-latex-hycolor
+             texlive-hycolor
              texlive-latex-kvoptions
              texlive-latex-letltxmacro
              texlive-pdftexcmds
