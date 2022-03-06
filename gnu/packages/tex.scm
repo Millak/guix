@@ -3108,21 +3108,45 @@ the @file{.aux} file.")
 
 (define-deprecated-package texlive-latex-atveryend texlive-atveryend)
 
-(define-public texlive-latex-auxhook
-  (package
-    (inherit (simple-texlive-package
-              "texlive-latex-auxhook"
-              '("/doc/latex/auxhook/README.md"
-                "/tex/latex/auxhook/")
-              (base32
-               "1xh445shr00rh43nnz03xh8k2mdrxgsr03lllqpgvwhm6yzsydkf")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/auxhook")
-    (synopsis "Hooks for auxiliary files")
-    (description
-     "This package provides hooks for adding code at the beginning of
+(define-public texlive-auxhook
+  (let ((template (simple-texlive-package
+                   "texlive-auxhook"
+                   (list "doc/latex/auxhook/"
+                         "source/latex/auxhook/"
+                         "tex/latex/auxhook/")
+                   (base32
+                    "1qfs7bz8ryp4prr2fw4hwypnfc6yr4rc4wd8qy4rpmab0hab0vdy"))))
+    (package
+      (inherit template)
+      (outputs '("out" "doc"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ '())
+          "latex/auxhook")
+         ((#:build-targets _ '())
+          #~(list "auxhook.dtx"))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _
+                  (chdir "source/latex/auxhook")))
+              (replace 'copy-files
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((origin (assoc-ref inputs "source"))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc))))))))
+      (home-page "https://www.ctan.org/pkg/auxhook")
+      (synopsis "Hooks for auxiliary files")
+      (description
+       "This package provides hooks for adding code at the beginning of
 @file{.aux} files.")
-    (license license:lppl1.3c+)))
+      (license license:lppl1.3c+))))
+
+(define-deprecated-package texlive-latex-auxhook texlive-auxhook)
 
 (define-public texlive-latex-epstopdf-pkg
   (package
@@ -3467,7 +3491,7 @@ XML, using UTF-8 or a suitable 8-bit encoding.")
              texlive-kvsetkeys
              texlive-ltxcmds
              texlive-pdfescape
-             texlive-latex-auxhook
+             texlive-auxhook
              texlive-latex-hycolor
              texlive-latex-kvoptions
              texlive-latex-letltxmacro
