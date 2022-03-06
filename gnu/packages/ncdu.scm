@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -23,7 +24,11 @@
   #:use-module (guix licenses)
   #:use-module (guix packages)
   #:use-module (guix download)
-  #:use-module (guix build-system gnu))
+  #:use-module (guix utils)
+  #:use-module (guix gexp)
+  #:use-module (guix build-system gnu)
+  #:use-module (gnu packages perl)
+  #:use-module (gnu packages zig))
 
 (define-public ncdu
   (package
@@ -49,3 +54,38 @@ ncurses installed.")
               (string-append "https://g.blicky.net/ncdu.git/plain/COPYING?id=v"
                              version)))
     (home-page "https://dev.yorhel.nl/ncdu")))
+
+(define-public ncdu-2
+  (package
+    (inherit ncdu)
+    (name "ncdu2")      ; To destinguish it from the C based version.
+    (version "2.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://dev.yorhel.nl/download/ncdu-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "0j3w8xixz1zkzcpk0xrh6y3r7sii3h3y31lbvs5iqc5q7q6day9g"))))
+    (arguments
+     (list
+       #:make-flags
+       #~(list (string-append "PREFIX=" #$output)
+               (string-append "CC=" #$(cc-for-target)))
+       #:phases
+       #~(modify-phases %standard-phases
+           (delete 'configure)      ; No configure script.
+           (add-before 'build 'pre-build
+             (lambda _
+               (setenv "ZIG_GLOBAL_CACHE_DIR"
+                       (mkdtemp "/tmp/zig-cache-XXXXXX"))))
+           (add-after 'build 'build-manpage
+             (lambda _
+               (delete-file "ncdu.1")
+               (invoke "make" "doc")))
+           (replace 'check
+             (lambda* (#:key tests? #:allow-other-keys)
+               (when tests?
+                 (invoke "zig" "test" "build.zig")))))))
+    (native-inputs
+     (list perl zig))))
