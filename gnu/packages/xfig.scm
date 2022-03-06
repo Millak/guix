@@ -3,6 +3,7 @@
 ;;; Copyright © 2014 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2017, 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2022 Ivan Vilata i Balaguer <ivan@selidor.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -123,6 +124,7 @@ selected in various ways.  For text, 35 fonts are available.")
                (invoke "xmkmf" "-a")
                (substitute* '("Makefile"
                               "fig2dev/Makefile"
+                              "fig2dev/dev/Makefile"
                               "transfig/Makefile")
                  ;; These imake variables somehow remain undefined
                  (("DefaultGcc2[[:graph:]]*Opt") "-O2")
@@ -131,7 +133,12 @@ selected in various ways.  For text, 35 fonts are available.")
                  (("(MANPATH = )[[:graph:]]*" _ front)
                   (string-append front out "/share/man"))
                  (("(CONFDIR = )([[:graph:]]*)" _ front default)
-                  (string-append front out default)))
+                  (string-append front out default))
+                 ;; The "l" option was silently ignored until binutils 2.36,
+                 ;; where it got a different purpose.  So remove it to avoid
+                 ;; "ar: libdeps specified more than once".
+                 (("((AR|MODAR) = ar )clq" _ front)
+                  (string-append front "cq")))
                #t)))
          (add-after 'install 'install/doc
            (lambda _
