@@ -3536,7 +3536,7 @@ arrows; record information about document class(es) used; and many more.")
               #:trivial? #t))
     (propagated-inputs
      (list texlive-atveryend texlive-infwarerr
-           texlive-generic-uniquecounter texlive-latex-kvoptions
+           texlive-uniquecounter texlive-latex-kvoptions
            texlive-pdftexcmds))
     (home-page "https://www.ctan.org/pkg/rerunfilecheck")
     (synopsis "Checksum based rerun checks on auxiliary files")
@@ -8531,24 +8531,48 @@ using TeX or e-TeX.")
 
 (define-deprecated-package texlive-generic-pdfescape texlive-pdfescape)
 
-(define-public texlive-generic-uniquecounter
-  (package
-    (inherit (simple-texlive-package
-              "texlive-generic-uniquecounter"
-              '("/doc/latex/uniquecounter/"
-                "/tex/generic/uniquecounter/")
-              (base32
-               "1bjh8vwiqlkmjqndnh4xp116524x4m3hdcyq2s231jiqy8il8dcc")
-              #:trivial? #t))
-    (propagated-inputs
-     (list texlive-bigintcalc texlive-infwarerr))
-    (home-page "https://www.ctan.org/pkg/uniquecounter")
-    (synopsis "Unlimited unique counter")
-    (description
-     "This package provides a kind of counter that provides unique number
+(define-public texlive-uniquecounter
+  (let ((template (simple-texlive-package
+                   "texlive-uniquecounter"
+                   (list "doc/latex/uniquecounter/"
+                         "source/latex/uniquecounter/"
+                         "tex/generic/uniquecounter/")
+                   (base32
+                    "1ll3iwk8x44l3qx1dhna399ngg66vbllivv8i3lwzriwkx22xbf3"))))
+    (package
+      (inherit template)
+      (outputs '("out" "doc"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ '())
+          "generic/uniquecounter")
+         ((#:build-targets _ '())
+          #~(list "uniquecounter.dtx"))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _
+                  (chdir "source/latex/uniquecounter")))
+              (replace 'copy-files
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((origin (assoc-ref inputs "source"))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc))))))))
+      (propagated-inputs
+       (list texlive-bigintcalc texlive-infwarerr))
+      (home-page "https://www.ctan.org/pkg/uniquecounter")
+      (synopsis "Unlimited unique counter")
+      (description
+       "This package provides a kind of counter that provides unique number
 values.  Several counters can be created with different names.  The numeric
 values are not limited.")
-    (license license:lppl1.3c+)))
+      (license license:lppl1.3c+))))
+
+(define-deprecated-package texlive-generic-uniquecounter texlive-uniquecounter)
 
 (define-public texlive-latex-readarray
   (package
