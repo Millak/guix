@@ -11353,41 +11353,38 @@ higher level porcelain stuff.")
                 "0npg4kqpwl992fgjd2cn3fh84aiwpdp9kd8z7rw2xaj2iazsm914"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-post-install-partially
-           (lambda _
-             (substitute* "meson_post_install.py"
-               (("'python'") ; there are no python sources to compile
-                (string-append "'" (which "true") "'"))
-               (("gtk-update-icon-cache") (which "true")))
-             #t))
-         (add-after 'unpack 'fix-test-sources
-           (lambda _
-             (substitute* "tests/libgitg/test-commit.vala"
-               (("/bin/bash") (which "bash")))
-             #t))
-         ;; XXX: Remove upon next version bump
-         (add-after 'unpack 'harden
-           (lambda _
-             ;; See <https://gitlab.gnome.org/GNOME/gitg/-/issues/337>
-             (substitute* "libgitg/gitg-date.vala"
-               (("(val\|tzs) == null" all val)
-                (string-append val " == null || " val " == \"\""))
-               (("(val\|tzs) != null" all val)
-                (string-append val " != null && " val " != \"\"")))
-             ;; See <https://gitlab.gnome.org/GNOME/gitg/-/merge_requests/159>
-             (substitute* "gitg/gitg-action-support.vala"
-               (("stash_if_needed\\((.*), Gitg.Ref head" all other)
-                (string-append "stash_if_needed(" other ", Gitg.Ref? head")))))
-         (add-after 'glib-or-gtk-wrap 'wrap-typelib
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((prog (string-append (assoc-ref outputs "out")
-                                        "/bin/gitg")))
-               (wrap-program prog
-                 `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))
-               #t))))))
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-post-install-partially
+            (lambda _
+              (substitute* "meson_post_install.py"
+                (("'python'") ; there are no python sources to compile
+                 (string-append "'" (which "true") "'"))
+                (("gtk-update-icon-cache") (which "true")))))
+          (add-after 'unpack 'fix-test-sources
+            (lambda _
+              (substitute* "tests/libgitg/test-commit.vala"
+                (("/bin/bash") (which "bash")))))
+          ;; XXX: Remove upon next version bump
+          (add-after 'unpack 'harden
+            (lambda _
+              ;; See <https://gitlab.gnome.org/GNOME/gitg/-/issues/337>
+              (substitute* "libgitg/gitg-date.vala"
+                (("(val\|tzs) == null" all val)
+                 (string-append val " == null || " val " == \"\""))
+                (("(val\|tzs) != null" all val)
+                 (string-append val " != null && " val " != \"\"")))
+              ;; See <https://gitlab.gnome.org/GNOME/gitg/-/merge_requests/159>
+              (substitute* "gitg/gitg-action-support.vala"
+                (("stash_if_needed\\((.*), Gitg.Ref head" all other)
+                 (string-append "stash_if_needed(" other ", Gitg.Ref? head")))))
+          (add-after 'glib-or-gtk-wrap 'wrap-typelib
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((prog (string-append #$output "/bin/gitg")))
+                (wrap-program prog
+                  `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))))))))
     (inputs
      (list glib
            gsettings-desktop-schemas
@@ -11403,12 +11400,12 @@ higher level porcelain stuff.")
            libsoup-minimal-2
            libxml2))
     (native-inputs
-     `(("glib:bin" ,glib "bin")
-       ("gtk+:bin" ,gtk+ "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)
-       ("vala" ,vala)))
+     (list `(,glib "bin")
+           `(,gtk+ "bin")
+           gobject-introspection
+           intltool
+           pkg-config
+           vala))
     (synopsis "Graphical user interface for git")
     (description
      "gitg is a graphical user interface for git.  It aims at being a small,
