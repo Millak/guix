@@ -3520,7 +3520,7 @@ XML, using UTF-8 or a suitable 8-bit encoding.")
              texlive-latex-kvoptions
              texlive-letltxmacro
              texlive-pdftexcmds
-             texlive-latex-refcount
+             texlive-refcount
              texlive-latex-rerunfilecheck
              texlive-url))
       (home-page "https://www.ctan.org/pkg/hyperref")
@@ -5025,24 +5025,48 @@ re-processing.")
 
 (define-deprecated-package texlive-latex-pstool texlive-pstool)
 
-(define-public texlive-latex-refcount
-  (package
-    (inherit (simple-texlive-package
-              "texlive-latex-refcount"
-              (list "/doc/latex/refcount/"
-                    "/tex/latex/refcount/")
-              (base32
-               "0pkmqj2qihndlv3ks33xzqw91q46jx79r3aygj68d8dflyddi583")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/refcount")
-    (synopsis "Counter operations with label references")
-    (description
-     "This package provides the @code{\\setcounterref} and
+(define-public texlive-refcount
+  (let ((template (simple-texlive-package
+                   "texlive-refcount"
+                   (list "doc/latex/refcount/"
+                         "source/latex/refcount/"
+                         "tex/latex/refcount/")
+                   (base32
+                    "128cvwdl4wcdshvs59yn5iljdxxdrc5jircbxav77y7kc3l33z7z"))))
+    (package
+      (inherit template)
+      (outputs '("out" "doc"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ '())
+          "latex/refcount")
+         ((#:build-targets _ '())
+          #~(list "refcount.dtx"))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _
+                  (chdir "source/latex/refcount")))
+              (replace 'copy-files
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((origin (assoc-ref inputs "source"))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc))))))))
+      (home-page "https://www.ctan.org/pkg/refcount")
+      (synopsis "Counter operations with label references")
+      (description
+       "This package provides the @code{\\setcounterref} and
 @code{\\addtocounterref} commands which use the section (or other) number
 from the reference as the value to put into the counter.  It also provides
 @code{\\setcounterpageref} and @code{\\addtocounterpageref} that do the
 corresponding thing with the page reference of the label.")
-    (license license:lppl1.3c+)))
+      (license license:lppl1.3c+))))
+
+(define-deprecated-package texlive-latex-refcount texlive-refcount)
 
 (define-public texlive-seminar
   (package
