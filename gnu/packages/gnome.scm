@@ -11342,15 +11342,15 @@ higher level porcelain stuff.")
 (define-public gitg
   (package
     (name "gitg")
-    (version "3.32.1")
+    (version "41")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
-                                  (version-major+minor version) "/"
+                                  (version-major version) "/"
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0npg4kqpwl992fgjd2cn3fh84aiwpdp9kd8z7rw2xaj2iazsm914"))))
+                "0aa6djcf7rjw0q688mfy47k67bbjpnx6aw1xs94abfhgn6gipdkz"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -11367,19 +11367,6 @@ higher level porcelain stuff.")
             (lambda _
               (substitute* "tests/libgitg/test-commit.vala"
                 (("/bin/bash") (which "bash")))))
-          ;; XXX: Remove upon next version bump
-          (add-after 'unpack 'harden
-            (lambda _
-              ;; See <https://gitlab.gnome.org/GNOME/gitg/-/issues/337>
-              (substitute* "libgitg/gitg-date.vala"
-                (("(val\|tzs) == null" all val)
-                 (string-append val " == null || " val " == \"\""))
-                (("(val\|tzs) != null" all val)
-                 (string-append val " != null && " val " != \"\"")))
-              ;; See <https://gitlab.gnome.org/GNOME/gitg/-/merge_requests/159>
-              (substitute* "gitg/gitg-action-support.vala"
-                (("stash_if_needed\\((.*), Gitg.Ref head" all other)
-                 (string-append "stash_if_needed(" other ", Gitg.Ref? head")))))
           (add-after 'glib-or-gtk-wrap 'wrap-typelib
             (lambda* (#:key outputs #:allow-other-keys)
               (let ((prog (string-append #$output "/bin/gitg")))
@@ -11388,9 +11375,9 @@ higher level porcelain stuff.")
     (inputs
      (list glib
            gsettings-desktop-schemas
+           gspell
            gtk+
-           gtkspell3
-           gtksourceview-3
+           gtksourceview
            json-glib
            libdazzle
            libgee
@@ -11405,6 +11392,7 @@ higher level porcelain stuff.")
            gobject-introspection
            intltool
            pkg-config
+           python
            vala))
     (synopsis "Graphical user interface for git")
     (description
