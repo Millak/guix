@@ -302,7 +302,7 @@ colors, styles, options and details.")
                   texlive-latex-base
                   texlive-latex-geometry
                   texlive-graphics
-                  texlive-latex-kvoptions
+                  texlive-kvoptions
                   texlive-latex-media9
                   texlive-oberdiek      ;for ifluatex
                   texlive-latex-ocgx2

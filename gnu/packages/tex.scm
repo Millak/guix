@@ -3517,7 +3517,7 @@ XML, using UTF-8 or a suitable 8-bit encoding.")
              texlive-pdfescape
              texlive-auxhook
              texlive-hycolor
-             texlive-latex-kvoptions
+             texlive-kvoptions
              texlive-letltxmacro
              texlive-pdftexcmds
              texlive-refcount
@@ -3584,7 +3584,7 @@ arrows; record information about document class(es) used; and many more.")
               #:trivial? #t))
     (propagated-inputs
      (list texlive-atveryend texlive-infwarerr
-           texlive-uniquecounter texlive-latex-kvoptions
+           texlive-uniquecounter texlive-kvoptions
            texlive-pdftexcmds))
     (home-page "https://www.ctan.org/pkg/rerunfilecheck")
     (synopsis "Checksum based rerun checks on auxiliary files")
@@ -5939,23 +5939,47 @@ transliterate semitic languages; patches to make (La)TeX formulae embeddable
 in SGML; use maths minus in text as appropriate; simple Young tableaux.")
     (license license:gpl2)))
 
-(define-public texlive-latex-kvoptions
-  (package
-    (inherit (simple-texlive-package
-              "texlive-latex-kvoptions"
-              (list "/doc/latex/kvoptions/"
-                    "/tex/latex/kvoptions/")
-              (base32
-               "02i4n2n3j4lg68d3nam08m63kb4irc99wfhyc2z51r02lm1wwmvw")
-              #:trivial? #t))
-    (propagated-inputs
-     (list texlive-kvsetkeys texlive-ltxcmds))
-    (home-page "https://www.ctan.org/pkg/kvoptions")
-    (synopsis "Key/value format for package options")
-    (description
-     "This package provides facilities for using key-value format in
+(define-public texlive-kvoptions
+  (let ((template (simple-texlive-package
+                   "texlive-kvoptions"
+                   (list "doc/latex/kvoptions/"
+                         "source/latex/kvoptions/"
+                         "tex/latex/kvoptions/")
+                   (base32
+                    "1b8q93l54160b8gn3fq484n15n6cylrhmf2xk7p42czg2rqw7w3l"))))
+    (package
+      (inherit template)
+      (outputs '("out" "doc"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ '())
+          "latex/kvoptions")
+         ((#:build-targets _ '())
+          #~(list "kvoptions.dtx"))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _
+                  (chdir "source/latex/kvoptions")))
+              (replace 'copy-files
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((origin (assoc-ref inputs "source"))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc))))))))
+      (propagated-inputs
+       (list texlive-kvsetkeys texlive-ltxcmds))
+      (home-page "https://www.ctan.org/pkg/kvoptions")
+      (synopsis "Key/value format for package options")
+      (description
+       "This package provides facilities for using key-value format in
 package options.")
-    (license license:lppl1.3c+)))
+      (license license:lppl1.3c+))))
+
+(define-deprecated-package texlive-latex-kvoptions texlive-kvoptions)
 
 (define-public texlive-fonts-ec
   (package
