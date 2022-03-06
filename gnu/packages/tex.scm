@@ -3462,7 +3462,7 @@ XML, using UTF-8 or a suitable 8-bit encoding.")
              texlive-gettitlestring
              texlive-iftex
              texlive-infwarerr
-             texlive-generic-intcalc
+             texlive-intcalc
              texlive-generic-kvdefinekeys
              texlive-generic-kvsetkeys
              texlive-generic-ltxcmds
@@ -8155,7 +8155,7 @@ integers that can exceed TeX's number limits.")
                     (copy-recursively (string-append origin "/source") source)
                     (copy-recursively (string-append origin "/doc") doc))))))))
       (propagated-inputs
-       (list texlive-bigintcalc texlive-infwarerr texlive-generic-intcalc))
+       (list texlive-bigintcalc texlive-infwarerr texlive-intcalc))
       (home-page "https://www.ctan.org/pkg/bitset")
       (synopsis "Handle bit-vector datatype")
       (description
@@ -8293,20 +8293,45 @@ complete implementations.")
 
 (define-deprecated-package texlive-generic-infwarerr texlive-infwarerr)
 
-(define-public texlive-generic-intcalc
-  (package
-    (inherit (simple-texlive-package
-              "texlive-generic-intcalc"
-              '("/tex/generic/intcalc/")
-              (base32
-               "0llrnayqwdqxi91yh7panbbiljina3bynv2hxhi6sssaw3pyd92l")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/intcalc")
-    (synopsis "Expandable arithmetic operations with integers")
-    (description
-     "This package provides expandable arithmetic operations with integers,
+(define-public texlive-intcalc
+  (let ((template (simple-texlive-package
+                   "texlive-intcalc"
+                   (list "doc/latex/intcalc/"
+                         "source/latex/intcalc/"
+                         "tex/generic/intcalc/")
+                   (base32
+                    "15alwp9cr8wasfajs3p201p7nqml37vly9mpg1j5l6xv95javk7x"))))
+    (package
+      (inherit template)
+      (outputs '("out" "doc"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ '())
+          "generic/intcalc")
+         ((#:build-targets _ '())
+          #~(list "intcalc.dtx"))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _
+                  (chdir "source/latex/intcalc")))
+              (replace 'copy-files
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((origin (assoc-ref inputs "source"))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc))))))))
+      (home-page "https://www.ctan.org/pkg/intcalc")
+      (synopsis "Expandable arithmetic operations with integers")
+      (description
+       "This package provides expandable arithmetic operations with integers,
 using the e-TeX extension @code{\\numexpr} if it is available.")
-    (license license:lppl1.3c+)))
+      (license license:lppl1.3c+))))
+
+(define-deprecated-package texlive-generic-intcalc texlive-intcalc)
 
 (define-public texlive-generic-kvdefinekeys
   (package
