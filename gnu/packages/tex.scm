@@ -3465,7 +3465,7 @@ XML, using UTF-8 or a suitable 8-bit encoding.")
              texlive-intcalc
              texlive-kvdefinekeys
              texlive-kvsetkeys
-             texlive-generic-ltxcmds
+             texlive-ltxcmds
              texlive-generic-pdfescape
              texlive-latex-auxhook
              texlive-latex-hycolor
@@ -4911,7 +4911,7 @@ Unicode option of @code{inputenc} or @code{inputenx}, or by XeLaTeX/LuaLaTeX.")
                     (copy-recursively (string-append origin "/source") source)
                     (copy-recursively (string-append origin "/doc") doc))))))))
       (propagated-inputs
-       (list texlive-iftex texlive-infwarerr texlive-generic-ltxcmds))
+       (list texlive-iftex texlive-infwarerr texlive-ltxcmds))
       (home-page "https://www.ctan.org/pkg/pdftexcmds")
       (synopsis "LuaTeX support for pdfTeX utility functions")
       (description
@@ -5853,7 +5853,7 @@ in SGML; use maths minus in text as appropriate; simple Young tableaux.")
                "02i4n2n3j4lg68d3nam08m63kb4irc99wfhyc2z51r02lm1wwmvw")
               #:trivial? #t))
     (propagated-inputs
-     (list texlive-kvsetkeys texlive-generic-ltxcmds))
+     (list texlive-kvsetkeys texlive-ltxcmds))
     (home-page "https://www.ctan.org/pkg/kvoptions")
     (synopsis "Key/value format for package options")
     (description
@@ -8449,21 +8449,46 @@ the parsing character has been selected by the user, and to access any of
 these items with a simple syntax.")
     (license license:lppl1.3c+)))
 
-(define-public texlive-generic-ltxcmds
-  (package
-    (inherit (simple-texlive-package
-              "texlive-generic-ltxcmds"
-              '("/tex/generic/ltxcmds/")
-              (base32
-               "1lr77yai2qivlx26s5094czpfxmg96bhxps5wbm8xn7cpsw0zbd9")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/ltxcmds")
-    (synopsis "LaTeX kernel commands extracted for general use")
-    (description
-     "This package exports some utility macros from the LaTeX kernel into
+(define-public texlive-ltxcmds
+  (let ((template (simple-texlive-package
+                   "texlive-ltxcmds"
+                   (list "doc/generic/ltxcmds/"
+                         "source/generic/ltxcmds/"
+                         "tex/generic/ltxcmds/")
+                   (base32
+                    "1izcw9jl64iij541183hc156sjwamvxm7q9fkpfnz8sppyg31fkb"))))
+    (package
+      (inherit template)
+      (outputs '("out" "doc"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ '())
+          "generic/ltxcmds")
+         ((#:build-targets _ '())
+          #~(list "ltxcmds.dtx"))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _
+                  (chdir "source/generic/ltxcmds")))
+              (replace 'copy-files
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((origin (assoc-ref inputs "source"))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc))))))))
+      (home-page "https://www.ctan.org/pkg/ltxcmds")
+      (synopsis "LaTeX kernel commands extracted for general use")
+      (description
+       "This package exports some utility macros from the LaTeX kernel into
 a separate namespace and also makes them available for other formats such
 as plain TeX.")
-    (license license:lppl1.3c+)))
+      (license license:lppl1.3c+))))
+
+(define-deprecated-package texlive-generic-ltxcmds texlive-ltxcmds)
 
 (define-public texlive-generic-pdfescape
   (package
