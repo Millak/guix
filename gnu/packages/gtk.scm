@@ -2893,3 +2893,29 @@ excellent pavucontrol.")
      "Gromit-MPX is an on-screen annotation tool that works with any
 Unix desktop environment under X11 as well as Wayland.")
     (license license:gpl2+)))
+
+(define-public webp-pixbuf-loader
+  (package
+    (name "webp-pixbuf-loader")
+    (version "0.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aruiz/webp-pixbuf-loader")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kshsz91mirjmnmv796nba1r8jg8a613anhgd38dhh2zmnladcwn"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list (string-append "-Dgdk_pixbuf_moduledir="
+                             #$output "/lib/gdk-pixbuf-2.0/2.10.0/loaders"))))
+    (inputs (list gdk-pixbuf glib gtk+ libwebp))
+    (native-inputs (list pkg-config))
+    (home-page "https://github.com/aruiz/webp-pixbuf-loader")
+    (synopsis "WebP GdkPixbuf loader library")
+    (description "Webp-pixbuf-loader is a WebP format loader of GdkPixbuf.")
+    (license license:lgpl2.0+)))
