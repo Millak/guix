@@ -3484,45 +3484,61 @@ XML, using UTF-8 or a suitable 8-bit encoding.")
 (define-public texlive-hyperref
   (let ((template (simple-texlive-package
                    "texlive-hyperref"
-                   (list "/doc/latex/hyperref/"
-                         "/source/latex/hyperref/"
-                         ;; These files are not generated from the sources
-                         "/tex/latex/hyperref/minitoc-hyper.sty"
-                         "/tex/latex/hyperref/ntheorem-hyper.sty"
-                         "/tex/latex/hyperref/xr-hyper.sty")
-                   (base32
-                    "0nmbxaq676m2y9fgdji0bxqchmrli4hwhspijaszx51b3ki6bj2h"))))
+                   (list "doc/latex/hyperref/"
+                         "source/latex/hyperref/"
+                         "tex/latex/hyperref/")
+                   (base32 "052k1nygm4msaivn8245n86km4h41knivigw80q58b7rc13s6hrk"))))
     (package
       (inherit template)
       (arguments
        (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ #t)
+         ((#:tex-directory _ '())
           "latex/hyperref")
+         ((#:build-targets _ '())
+          #~(list "hyperref.ins"))
          ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'chdir
-               (lambda _ (chdir "source/latex/hyperref") #t))))))
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _
+                  (chdir "source/latex/hyperref")))
+              (replace 'copy-files
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((origin (assoc-ref inputs "source"))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc)
+                    ;; XXX: These files are not auto-generated from the
+                    ;; sources.
+                    (for-each (lambda (f)
+                                (install-file
+                                 (string-append origin "/tex/latex/hyperref/" f)
+                                 (string-append
+                                  #$output
+                                  "/share/texmf-dist/tex/latex/hyperref")))
+                              '("minitoc-hyper.sty"
+                                "ntheorem-hyper.sty"
+                                "xr-hyper.sty")))))))))
       (propagated-inputs
-       (list texlive-atveryend
-             texlive-atbegshi
+       (list texlive-atbegshi
+             texlive-auxhook
              texlive-bitset
              texlive-etexcmds
              texlive-gettitlestring
-             texlive-iftex
-             texlive-infwarerr
+             texlive-hycolor
              texlive-intcalc
              texlive-kvdefinekeys
              texlive-kvsetkeys
+             texlive-letltxmacro
              texlive-ltxcmds
              texlive-pdfescape
-             texlive-auxhook
-             texlive-hycolor
-             texlive-kvoptions
-             texlive-letltxmacro
-             texlive-pdftexcmds
              texlive-refcount
              texlive-rerunfilecheck
-             texlive-url))
+             texlive-stringenc
+             texlive-url
+             texlive-zapfding))
       (home-page "https://www.ctan.org/pkg/hyperref")
       (synopsis "Extensive support for hypertext in LaTeX")
       (description
