@@ -3458,7 +3458,7 @@ XML, using UTF-8 or a suitable 8-bit encoding.")
        (list texlive-atveryend
              texlive-atbegshi
              texlive-bitset
-             texlive-generic-etexcmds
+             texlive-etexcmds
              texlive-generic-gettitlestring
              texlive-iftex
              texlive-generic-infwarerr
@@ -8167,25 +8167,49 @@ can be manipulated.")
 
 (define-deprecated-package texlive-generic-bitset texlive-bitset)
 
-(define-public texlive-generic-etexcmds
-  (package
-    (inherit (simple-texlive-package
-              "texlive-generic-etexcmds"
-              '("/doc/latex/etexcmds/README.md"
-                "/tex/generic/etexcmds/")
-              (base32
-               "11y6pnlq13bp0ybi7c82g8ds8085zv1zaslgqv3dzhgi3dklpc0c")
-              #:trivial? #t))
-    (propagated-inputs
-     (list texlive-generic-infwarerr texlive-iftex))
-    (home-page "https://www.ctan.org/pkg/etexcmds")
-    (synopsis "Avoid name clashes with e-TeX commands")
-    (description
-     "New primitive commands are introduced in e-TeX; sometimes the names
+(define-public texlive-etexcmds
+  (let ((template (simple-texlive-package
+                   "texlive-etexcmds"
+                   (list "doc/latex/etexcmds/"
+                         "source/latex/etexcmds/"
+                         "tex/generic/etexcmds/")
+                   (base32
+                    "13cf1fs5x9d8749b2jgxmgnkrx0r4hwpl389r15kq3ldz9jfl627"))))
+    (package
+      (inherit template)
+      (outputs '("out" "doc"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ '())
+          "generic/etexcmds")
+         ((#:build-targets _ '())
+          #~(list "etexcmds.dtx"))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _
+                  (chdir "source/latex/etexcmds")))
+              (replace 'copy-files
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((origin (assoc-ref inputs "source"))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc))))))))
+      (propagated-inputs
+       (list texlive-iftex texlive-generic-infwarerr))
+      (home-page "https://www.ctan.org/pkg/etexcmds")
+      (synopsis "Avoid name clashes with e-TeX commands")
+      (description
+       "New primitive commands are introduced in e-TeX; sometimes the names
 collide with existing macros.  This package solves the name clashes by
 adding a prefix to e-TeX’s commands.  For example, ε-TeX’s
 @code{\\unexpanded} is provided as @code{\\etex@@unexpanded}.")
-    (license license:lppl1.3c+)))
+      (license license:lppl1.3c+))))
+
+(define-deprecated-package texlive-generic-etexcmds texlive-etexcmds)
 
 (define-public texlive-generic-gettitlestring
   (package
