@@ -20778,3 +20778,33 @@ Common Lisp objects.  It is mostly ported from Node.js @code{events} module.")
 
 (define-public ecl-event-emitter
   (sbcl-package->ecl-package sbcl-event-emitter))
+
+(define-public sbcl-sha1
+  (let ((commit "be8b1b155c3a6ad3eb9b200212af6ff52f5611de")
+        (revision "0"))
+    (package
+     (name "sbcl-sha1")
+     (version (git-version "1.0" revision commit))
+     (home-page "https://github.com/massung/sha1")
+     (source
+      (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/massung/sha1")
+             (commit commit)))
+       (file-name (git-file-name "cl-sha1" version))
+       (sha256
+        (base32 "1cfn0j5yfwqkwr2dm73wr9hz8dmws3ngxlbk9886ahxkg544qx4z"))))
+     (build-system asdf-build-system/sbcl)
+     (synopsis "SHA1 Digest and HMAC for Common Lisp")
+     (description
+      "This is a very simple implementation of SHA1 and HMAC-SHA1 for
+Common Lisp.  The code is intended to be easy to follow and is therefore a
+little slower than it could be.")
+     (license license:asl2.0))))
+
+(define-public cl-sha1
+  (sbcl-package->cl-source-package sbcl-sha1))
+
+(define-public ecl-sha1
+  (sbcl-package->ecl-package sbcl-sha1))
