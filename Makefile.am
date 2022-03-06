@@ -1,5 +1,5 @@
 # GNU Guix --- Functional package management for GNU
-# Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+# Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
 # Copyright © 2013 Andreas Enge <andreas@enge.fr>
 # Copyright © 2015, 2017 Alex Kost <alezost@gmail.com>
 # Copyright © 2016, 2018 Mathieu Lirzin <mthl@gnu.org>
@@ -486,6 +486,7 @@ SCM_TESTS =					\
   tests/gremlin.scm				\
   tests/hackage.scm				\
   tests/home-import.scm				\
+  tests/http-client.scm				\
   tests/import-git.scm				\
   tests/import-github.scm			\
   tests/import-utils.scm			\
