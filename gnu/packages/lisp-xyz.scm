@@ -20705,3 +20705,46 @@ taking inspiration from Ruby's ERb module.")
 
 (define-public ecl-cl-template
   (sbcl-package->ecl-package sbcl-cl-template))
+
+(define-public sbcl-fast-websocket
+  (let ((commit "24c0217e7c0d25b6ef6ab799452cba0b9fb58f44")
+        (revision "0"))
+    (package
+     (name "sbcl-fast-websocket")
+     (version (git-version "0.1" revision commit))
+     (home-page "https://github.com/fukamachi/fast-websocket")
+     (source
+      (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/fukamachi/fast-websocket")
+             (commit commit)))
+       (file-name (git-file-name "cl-fast-websoclet" version))
+       (sha256
+        (base32
+         "04sacrhpdp3ixvp6wjwxls5mv47g0q6542pd16yn199xjg0drw8a"))))
+     (build-system asdf-build-system/sbcl)
+     (arguments
+      ;; Test system must be loaded before, otherwise tests fail with:
+      ;; Component FAST-WEBSOCKET-ASD::FAST-WEBSOCKET-TEST not found,
+      ;; required by #<SYSTEM "fast-websocket">.
+      '(#:asd-systems '("fast-websocket-test"
+                        "fast-websocket")))
+     (inputs
+      (list sbcl-fast-io
+            sbcl-babel
+            sbcl-alexandria))
+     (native-inputs
+      (list sbcl-prove
+            sbcl-trivial-utf-8))
+     (synopsis "WebSocket protocol parser for Common Lisp")
+     (description
+      "@code{fast-websocket} is an optimized low-level WebSocket protocol
+parser/composer.")
+     (license license:bsd-2))))
+
+(define-public cl-fast-websocket
+  (sbcl-package->cl-source-package sbcl-fast-websocket))
+
+(define-public ecl-fast-websocket
+  (sbcl-package->ecl-package sbcl-fast-websocket))
