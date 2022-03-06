@@ -10313,22 +10313,39 @@ The macros were designed for use within other macros.")
 (define-public texlive-grfext
   (let ((template (simple-texlive-package
                    "texlive-grfext"
-                   (list "/doc/latex/grfext/README.md"
-                         "/source/latex/grfext/grfext.dtx")
+                   (list "doc/latex/grfext/"
+                         "source/latex/grfext/"
+                         "tex/latex/grfext/")
                    (base32
-                    "1cdvjp9gcnixxlbl8ibwz1yr799gwax5hm686hwmwsigdgafhzgq"))))
+                    "1x35r10mkjg8dzx7aj99y4dwyf69jgs41qwapdx523lbglywmgxp"))))
     (package
       (inherit template)
+      (outputs '("out" "doc"))
       (arguments
        (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
+         ((#:tex-directory _ #t)
           "latex/grfext")
-         ((#:build-targets _ '())
-          ''("grfext.dtx"))
+         ((#:build-targets _ #t)
+          #~(list "grfext.dtx"))
          ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'chdir
-               (lambda _ (chdir "source/latex/grfext")))))))
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _
+                  (chdir "source/latex/grfext")))
+              (replace 'copy-files
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((origin (assoc-ref inputs "source"))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc))))
+              (add-after 'copy-files 'remove-generated-file
+                (lambda* (#:key outputs #:allow-other-keys)
+                  (with-directory-excursion #$output
+                    (for-each delete-file
+                              (find-files "." "\\.(drv|ins)$")))))))))
       (home-page "https://github.com/ho-tex/grfext")
       (synopsis "Manipulate the graphics package's list of extensions")
       (description "This package provides macros for adding to, and reordering
