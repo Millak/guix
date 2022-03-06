@@ -20808,3 +20808,43 @@ little slower than it could be.")
 
 (define-public ecl-sha1
   (sbcl-package->ecl-package sbcl-sha1))
+
+(define-public sbcl-websocket-driver
+  (let ((commit "df94496ecb525d086eeada4f5875975515b7212e")
+        (revision "0"))
+    (package
+     (name "sbcl-websocket-driver")
+     (version (git-version "0.2.0" revision commit))
+     (home-page "https://github.com/fukamachi/websocket-driver")
+     (source
+      (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/fukamachi/websocket-driver")
+             (commit commit)))
+       (file-name (git-file-name "cl-websocket-driver" version))
+       (sha256
+        (base32 "0y852sqdnxfma6kw833by4wkgbgbv4ppzawjk8pk3y1pmh6is83y"))))
+     (build-system asdf-build-system/sbcl)
+     (inputs
+      (list sbcl-babel
+            sbcl-clack
+            sbcl-fast-http
+            sbcl-fast-io
+            sbcl-fast-websocket
+            sbcl-event-emitter
+            sbcl-sha1
+            sbcl-cl-base64
+            sbcl-split-sequence
+            sbcl-bordeaux-threads
+            sbcl-quri))
+     (synopsis "WebSocket server/client for Common Lisp")
+     (description "This library provides a WebSocket server and client
+implementation for Common Lisp.")
+     (license license:bsd-2))))
+
+(define-public cl-websocket-driver
+  (sbcl-package->cl-source-package sbcl-websocket-driver))
+
+(define-public ecl-websocket-driver
+  (sbcl-package->ecl-package sbcl-websocket-driver))
