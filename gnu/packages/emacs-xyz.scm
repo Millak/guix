@@ -3253,7 +3253,23 @@ current match, total matches and exit status.
                 (sha256
                  (base32
                   "00qzn136d8cl3szbi44xf3iiv75r6n1m7wwgldmzn4i5mpz8dbq7"))))
+      (arguments
+       (list
+        #:tests? #t
+        #:test-command #~(list "ert-runner")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'check 'fix-tests
+              ;; Two tests fail because they (wrongly) assume we run them from
+              ;; the "test" sub-directory.  Fix their expectations.
+              (lambda _
+                (let ((test-file "test/go-indentation-test.el"))
+                  (make-file-writable test-file)
+                  (substitute* test-file
+                    (("testdata/indentation_tests/" all)
+                     (string-append "test/" all)))))))))
       (build-system emacs-build-system)
+      (native-inputs (list emacs-ert-runner))
       (home-page "https://github.com/dominikh/go-mode.el")
       (synopsis "Go mode for Emacs")
       (description
