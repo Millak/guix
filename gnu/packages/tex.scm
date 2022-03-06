@@ -3459,7 +3459,7 @@ XML, using UTF-8 or a suitable 8-bit encoding.")
              texlive-atbegshi
              texlive-bitset
              texlive-etexcmds
-             texlive-generic-gettitlestring
+             texlive-gettitlestring
              texlive-iftex
              texlive-generic-infwarerr
              texlive-generic-intcalc
@@ -8211,22 +8211,46 @@ adding a prefix to e-TeX’s commands.  For example, ε-TeX’s
 
 (define-deprecated-package texlive-generic-etexcmds texlive-etexcmds)
 
-(define-public texlive-generic-gettitlestring
-  (package
-    (inherit (simple-texlive-package
-              "texlive-generic-gettitlestring"
-              '("/doc/latex/gettitlestring/"
-                "/tex/generic/gettitlestring/")
-              (base32
-               "1p4hg9mac03rzvj9dw0ws3zdh55fy1ns954f912algw9f2aq4xgp")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/gettitlestring")
-    (synopsis "Clean up title references")
-    (description
-     "This package provides commands for cleaning up the title string
+(define-public texlive-gettitlestring
+  (let ((template (simple-texlive-package
+                   "texlive-gettitlestring"
+                   (list "doc/latex/gettitlestring/"
+                         "source/latex/gettitlestring/"
+                         "tex/generic/gettitlestring/")
+                   (base32
+                    "1vbvmwrpsvy37gbwdmsqbbsicjiww3i0bh1yqnb75jiya9an0sjb"))))
+    (package
+      (inherit template)
+      (outputs '("out" "doc"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ '())
+          "generic/gettitlestring")
+         ((#:build-targets _ '())
+          #~(list "gettitlestring.dtx"))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _
+                  (chdir "source/latex/gettitlestring")))
+              (replace 'copy-files
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((origin (assoc-ref inputs "source"))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc))))))))
+      (home-page "https://www.ctan.org/pkg/gettitlestring")
+      (synopsis "Clean up title references")
+      (description
+       "This package provides commands for cleaning up the title string
 (such as removing @code{\\label} commands) for packages that typeset such
 strings.")
-    (license license:lppl1.3c+)))
+      (license license:lppl1.3c+))))
+
+(define-deprecated-package texlive-generic-gettitlestring texlive-gettitlestring)
 
 (define-public texlive-generic-infwarerr
   (package
