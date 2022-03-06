@@ -3521,7 +3521,7 @@ XML, using UTF-8 or a suitable 8-bit encoding.")
              texlive-letltxmacro
              texlive-pdftexcmds
              texlive-refcount
-             texlive-latex-rerunfilecheck
+             texlive-rerunfilecheck
              texlive-url))
       (home-page "https://www.ctan.org/pkg/hyperref")
       (synopsis "Extensive support for hypertext in LaTeX")
@@ -3573,25 +3573,51 @@ arrows; record information about document class(es) used; and many more.")
 
 (define-deprecated-package texlive-latex-oberdiek texlive-oberdiek)
 
-(define-public texlive-latex-rerunfilecheck
-  (package
-    (inherit (simple-texlive-package
-              "texlive-latex-rerunfilecheck"
-              '("/doc/latex/rerunfilecheck/"
-                "/tex/latex/rerunfilecheck/")
-              (base32
-               "1myz0d5bxhxvl4220ikywh921qld8n324kk9kscqbc5iw4063g56")
-              #:trivial? #t))
-    (propagated-inputs
-     (list texlive-atveryend texlive-infwarerr
-           texlive-uniquecounter texlive-kvoptions
-           texlive-pdftexcmds))
-    (home-page "https://www.ctan.org/pkg/rerunfilecheck")
-    (synopsis "Checksum based rerun checks on auxiliary files")
-    (description
-     "This package provides additional rerun warnings if some auxiliary
+(define-public texlive-rerunfilecheck
+  (let ((template (simple-texlive-package
+                   "texlive-rerunfilecheck"
+                   (list "doc/latex/rerunfilecheck/"
+                         "source/latex/rerunfilecheck/"
+                         "tex/latex/rerunfilecheck/")
+                   (base32
+                    "0f53b6dlnlrxkzj7h7x750p0489i2gg3isfqn0dlpncpq23w1r36"))))
+    (package
+      (inherit template)
+      (outputs '("out" "doc"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ '())
+          "latex/rerunfilecheck")
+         ((#:build-targets _ '())
+          #~(list "rerunfilecheck.dtx"))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _
+                  (chdir "source/latex/rerunfilecheck")))
+              (replace 'copy-files
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((origin (assoc-ref inputs "source"))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc))))))))
+      (propagated-inputs
+       (list texlive-atveryend
+             texlive-infwarerr
+             texlive-kvoptions
+             texlive-pdftexcmds
+             texlive-uniquecounter))
+      (home-page "https://www.ctan.org/pkg/rerunfilecheck")
+      (synopsis "Checksum based rerun checks on auxiliary files")
+      (description
+       "This package provides additional rerun warnings if some auxiliary
 files have changed.  It is based on MD5 checksum, provided by pdfTeX.")
-    (license license:lppl1.3c+)))
+      (license license:lppl1.3c+))))
+
+(define-deprecated-package texlive-latex-rerunfilecheck texlive-rerunfilecheck)
 
 (define-public texlive-latex-tools
   (package
