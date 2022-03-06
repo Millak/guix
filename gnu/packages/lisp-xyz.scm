@@ -21,7 +21,7 @@
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020, 2021 Adam Kandur <rndd@tuta.io>
 ;;; Copyright © 2020, 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
-;;; Copyright © 2021 Aurora <rind38@disroot.org>
+;;; Copyright © 2021, 2022 Aurora <rind38@disroot.org>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2021 André A. Gomes <andremegafone@gmail.com>
 ;;; Copyright © 2021 Cage <cage-dev@twistfold.it>
@@ -20675,3 +20675,33 @@ change since last write.
     (inputs
      (cons (list "iolib" cl-iolib)
            (package-inputs sbcl-nfiles)))))
+
+(define-public sbcl-cl-template
+  (let ((commit "46193a9a389bb950530e579eae7e6e5a18184832")
+        (revision "0"))
+    (package
+     (name "sbcl-cl-template")
+     (version (git-version "0.0.1" revision commit))
+     (home-page "https://github.com/alpha123/cl-template")
+     (source
+      (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/alpha123/cl-template")
+             (commit commit)))
+       (file-name (git-file-name "cl-template" version))
+       (sha256
+        (base32 "1rhg023a2nxsk5x6abd6i0a8sh36aj0bgsh80w60m3b7xlsva2x2"))))
+     (build-system asdf-build-system/sbcl)
+     (native-inputs
+      (list sbcl-fiveam))
+     (synopsis "Template engine for Common Lisp")
+     (description "@code{cl-template} is a template engine for Common Lisp,
+taking inspiration from Ruby's ERb module.")
+     (license license:expat))))
+
+(define-public cl-template
+  (sbcl-package->cl-source-package sbcl-cl-template))
+
+(define-public ecl-cl-template
+  (sbcl-package->ecl-package sbcl-cl-template))
