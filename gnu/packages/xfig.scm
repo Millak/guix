@@ -86,7 +86,10 @@ selected in various ways.  For text, 35 fonts are available.")
                            version ".tar.gz"))
        (sha256
         (base32
-         "0i3p7qmg2w8qrad3pn42b0miwarql7yy0gpd49b1bpal6bqsiicf"))))
+         "0i3p7qmg2w8qrad3pn42b0miwarql7yy0gpd49b1bpal6bqsiicf"))
+       (patches
+        (search-patches
+         "transfig-gcc10-fno-common.patch")))) ; fix GCC10 build
     (build-system gnu-build-system)
     (native-inputs
      (list imake makedepend))

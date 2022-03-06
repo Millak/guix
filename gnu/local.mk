@@ -1855,6 +1855,7 @@ dist_patch_DATA =						\
   gnu/packages/patches/tootle-reason-phrase.patch		\
   %D%/packages/patches/tor-sandbox-i686.patch			\
   %D%/packages/patches/transcode-ffmpeg.patch	\
+  %D%/packages/patches/transfig-gcc10-fno-common.patch		\
   %D%/packages/patches/transmission-honor-localedir.patch	\
   %D%/packages/patches/tremc-fix-decodestring.patch		\
   %D%/packages/patches/trytond-add-egg-modules-to-path.patch	\
