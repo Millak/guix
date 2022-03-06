@@ -8082,23 +8082,47 @@ be used either with LaTeX or with plain TeX.")
 
 (define-deprecated-package texlive-generic-atbegshi texlive-atbegshi)
 
-(define-public texlive-generic-bigintcalc
-  (package
-    (inherit (simple-texlive-package
-              "texlive-generic-bigintcalc"
-              '("/doc/latex/bigintcalc/README.md"
-                "/tex/generic/bigintcalc/")
-              (base32
-               "19grk4p1dh566hgpzhnjyjnrw57hpjijcpr7ci401n9jszcc1xkz")
-              #:trivial? #t))
-    (propagated-inputs
-     (list texlive-pdftexcmds))
-    (home-page "https://www.ctan.org/pkg/bigintcalc")
-    (synopsis "Integer calculations on very large numbers")
-    (description
-     "This package provides expandable arithmetic operations with big
+(define-public texlive-bigintcalc
+  (let ((template (simple-texlive-package
+                   "texlive-bigintcalc"
+                   (list "doc/latex/bigintcalc/"
+                         "source/latex/bigintcalc/"
+                         "tex/generic/bigintcalc/")
+                   (base32
+                    "1cyv4mcvx83ab782l6h2f86a63ipm845r7hv1m6f1z2336vy7rc5"))))
+    (package
+      (inherit template)
+      (outputs '("out" "doc"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ '())
+          "generic/bigintcalc")
+         ((#:build-targets _ '())
+          #~(list "bigintcalc.dtx"))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _
+                  (chdir "source/latex/bigintcalc")))
+              (replace 'copy-files
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((origin (assoc-ref inputs "source"))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc))))))))
+      (propagated-inputs
+       (list texlive-pdftexcmds))
+      (home-page "https://www.ctan.org/pkg/bigintcalc")
+      (synopsis "Integer calculations on very large numbers")
+      (description
+       "This package provides expandable arithmetic operations with big
 integers that can exceed TeX's number limits.")
-    (license license:lppl1.3c+)))
+      (license license:lppl1.3c+))))
+
+(define-deprecated-package texlive-generic-bigintcalc texlive-bigintcalc)
 
 (define-public texlive-generic-bitset
   (package
@@ -8110,8 +8134,8 @@ integers that can exceed TeX's number limits.")
                "0inj6qpzizvsbxdfsaijnl4iq976kyrnchnm3gc1kc2w389zrn1l")
               #:trivial? #t))
     (propagated-inputs
-     (list texlive-generic-infwarerr texlive-generic-intcalc
-           texlive-generic-bigintcalc))
+     (list texlive-bigintcalc texlive-generic-infwarerr
+           texlive-generic-intcalc))
     (home-page "https://www.ctan.org/pkg/bitset")
     (synopsis "Handle bit-vector datatype")
     (description
@@ -8297,7 +8321,7 @@ using TeX or e-TeX.")
                "1bjh8vwiqlkmjqndnh4xp116524x4m3hdcyq2s231jiqy8il8dcc")
               #:trivial? #t))
     (propagated-inputs
-     (list texlive-generic-bigintcalc texlive-generic-infwarerr))
+     (list texlive-bigintcalc texlive-generic-infwarerr))
     (home-page "https://www.ctan.org/pkg/uniquecounter")
     (synopsis "Unlimited unique counter")
     (description
