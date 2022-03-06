@@ -3457,7 +3457,7 @@ XML, using UTF-8 or a suitable 8-bit encoding.")
       (propagated-inputs
        (list texlive-atveryend
              texlive-atbegshi
-             texlive-generic-bitset
+             texlive-bitset
              texlive-generic-etexcmds
              texlive-generic-gettitlestring
              texlive-iftex
@@ -8124,25 +8124,48 @@ integers that can exceed TeX's number limits.")
 
 (define-deprecated-package texlive-generic-bigintcalc texlive-bigintcalc)
 
-(define-public texlive-generic-bitset
-  (package
-    (inherit (simple-texlive-package
-              "texlive-generic-bitset"
-              '("/doc/latex/bitset/README.md"
-                "/tex/generic/bitset/")
-              (base32
-               "0inj6qpzizvsbxdfsaijnl4iq976kyrnchnm3gc1kc2w389zrn1l")
-              #:trivial? #t))
-    (propagated-inputs
-     (list texlive-bigintcalc texlive-generic-infwarerr
-           texlive-generic-intcalc))
-    (home-page "https://www.ctan.org/pkg/bitset")
-    (synopsis "Handle bit-vector datatype")
-    (description
-     "This package defines and implements the data type bit set, a vector
+(define-public texlive-bitset
+  (let ((template (simple-texlive-package
+                   "texlive-bitset"
+                   (list "doc/latex/bitset/"
+                         "source/latex/bitset/"
+                         "tex/generic/bitset/")
+                   (base32
+                    "1q7vk5gr5a4vaa3l20j178cg2q7a99rxdiyxhzpx9a6lfqfkjddz"))))
+    (package
+      (inherit template)
+      (outputs '("out" "doc"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ '())
+          "generic/bitset")
+         ((#:build-targets _ '())
+          #~(list "bitset.dtx"))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _
+                  (chdir "source/latex/bitset")))
+              (replace 'copy-files
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((origin (assoc-ref inputs "source"))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc))))))))
+      (propagated-inputs
+       (list texlive-bigintcalc texlive-generic-infwarerr texlive-generic-intcalc))
+      (home-page "https://www.ctan.org/pkg/bitset")
+      (synopsis "Handle bit-vector datatype")
+      (description
+       "This package defines and implements the data type bit set, a vector
 of bits.  The size of the vector may grow dynamically.  Individual bits
 can be manipulated.")
-    (license license:lppl1.3c+)))
+      (license license:lppl1.3c+))))
+
+(define-deprecated-package texlive-generic-bitset texlive-bitset)
 
 (define-public texlive-generic-etexcmds
   (package
