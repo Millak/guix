@@ -20748,3 +20748,33 @@ parser/composer.")
 
 (define-public ecl-fast-websocket
   (sbcl-package->ecl-package sbcl-fast-websocket))
+
+(define-public sbcl-event-emitter
+  (let ((commit "cb0e15f9de4c617cef3f5d5a22a41e28f9613d0b")
+        (revision "0"))
+    (package
+     (name "sbcl-event-emitter")
+     (version (git-version "0.0.1" revision commit))
+     (home-page "https://github.com/fukamachi/event-emitter")
+     (source
+      (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/fukamachi/event-emitter")
+             (commit commit)))
+       (file-name (git-file-name "cl-event-emitter" version))
+       (sha256
+        (base32 "1i18xzfr6334db9dzj0lsl7wxw1r1l0ixvn883mjbyqw0czp21h6"))))
+     (build-system asdf-build-system/sbcl)
+     (native-inputs
+      (list sbcl-prove))
+     (synopsis "Event mechanism for Common Lisp objects")
+     (description "Event Emitter provides an event mechanism like Node.js for
+Common Lisp objects.  It is mostly ported from Node.js @code{events} module.")
+     (license license:bsd-2))))
+
+(define-public cl-event-emitter
+  (sbcl-package->cl-source-package sbcl-event-emitter))
+
+(define-public ecl-event-emitter
+  (sbcl-package->ecl-package sbcl-event-emitter))
