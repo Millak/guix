@@ -3461,7 +3461,7 @@ XML, using UTF-8 or a suitable 8-bit encoding.")
              texlive-etexcmds
              texlive-gettitlestring
              texlive-iftex
-             texlive-generic-infwarerr
+             texlive-infwarerr
              texlive-generic-intcalc
              texlive-generic-kvdefinekeys
              texlive-generic-kvsetkeys
@@ -3535,7 +3535,7 @@ arrows; record information about document class(es) used; and many more.")
                "1myz0d5bxhxvl4220ikywh921qld8n324kk9kscqbc5iw4063g56")
               #:trivial? #t))
     (propagated-inputs
-     (list texlive-atveryend texlive-generic-infwarerr
+     (list texlive-atveryend texlive-infwarerr
            texlive-generic-uniquecounter texlive-latex-kvoptions
            texlive-pdftexcmds))
     (home-page "https://www.ctan.org/pkg/rerunfilecheck")
@@ -4911,8 +4911,7 @@ Unicode option of @code{inputenc} or @code{inputenx}, or by XeLaTeX/LuaLaTeX.")
                     (copy-recursively (string-append origin "/source") source)
                     (copy-recursively (string-append origin "/doc") doc))))))))
       (propagated-inputs
-       (list texlive-iftex texlive-generic-infwarerr
-             texlive-generic-ltxcmds))
+       (list texlive-iftex texlive-infwarerr texlive-generic-ltxcmds))
       (home-page "https://www.ctan.org/pkg/pdftexcmds")
       (synopsis "LuaTeX support for pdfTeX utility functions")
       (description
@@ -8156,7 +8155,7 @@ integers that can exceed TeX's number limits.")
                     (copy-recursively (string-append origin "/source") source)
                     (copy-recursively (string-append origin "/doc") doc))))))))
       (propagated-inputs
-       (list texlive-bigintcalc texlive-generic-infwarerr texlive-generic-intcalc))
+       (list texlive-bigintcalc texlive-infwarerr texlive-generic-intcalc))
       (home-page "https://www.ctan.org/pkg/bitset")
       (synopsis "Handle bit-vector datatype")
       (description
@@ -8199,7 +8198,7 @@ can be manipulated.")
                     (copy-recursively (string-append origin "/source") source)
                     (copy-recursively (string-append origin "/doc") doc))))))))
       (propagated-inputs
-       (list texlive-iftex texlive-generic-infwarerr))
+       (list texlive-iftex texlive-infwarerr))
       (home-page "https://www.ctan.org/pkg/etexcmds")
       (synopsis "Avoid name clashes with e-TeX commands")
       (description
@@ -8252,22 +8251,47 @@ strings.")
 
 (define-deprecated-package texlive-generic-gettitlestring texlive-gettitlestring)
 
-(define-public texlive-generic-infwarerr
-  (package
-    (inherit (simple-texlive-package
-              "texlive-generic-infwarerr"
-              '("/tex/generic/infwarerr/")
-              (base32
-               "19nlrbfmqbkjrrx9x75s9nd6crg1lzimb2fr3hfblaivj6lx8p4r")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/infwarerr")
-    (synopsis "Information/warning/error macros")
-    (description
-     "This package provides a complete set of macros for information,
+(define-public texlive-infwarerr
+  (let ((template (simple-texlive-package
+                   "texlive-infwarerr"
+                   (list "doc/latex/infwarerr/"
+                         "source/latex/infwarerr/"
+                         "tex/generic/infwarerr/")
+                   (base32
+                    "0lpcrpf3d6xfdp68ri22126x57mvmq5dpj9np68ph8p8lhvhqdjd"))))
+    (package
+      (inherit template)
+      (outputs '("out" "doc"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ '())
+          "generic/infwarerr")
+         ((#:build-targets _ '())
+          #~(list "infwarerr.dtx"))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _
+                  (chdir "source/latex/infwarerr")))
+              (replace 'copy-files
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((origin (assoc-ref inputs "source"))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc))))))))
+      (home-page "https://www.ctan.org/pkg/infwarerr")
+      (synopsis "Information/warning/error macros")
+      (description
+       "This package provides a complete set of macros for information,
 warning and error messages.  Under LaTeX, the commands are wrappers for
 the corresponding LaTeX commands; under Plain TeX they are available as
 complete implementations.")
-    (license license:lppl1.3c+)))
+      (license license:lppl1.3c+))))
+
+(define-deprecated-package texlive-generic-infwarerr texlive-infwarerr)
 
 (define-public texlive-generic-intcalc
   (package
@@ -8392,7 +8416,7 @@ using TeX or e-TeX.")
                "1bjh8vwiqlkmjqndnh4xp116524x4m3hdcyq2s231jiqy8il8dcc")
               #:trivial? #t))
     (propagated-inputs
-     (list texlive-bigintcalc texlive-generic-infwarerr))
+     (list texlive-bigintcalc texlive-infwarerr))
     (home-page "https://www.ctan.org/pkg/uniquecounter")
     (synopsis "Unlimited unique counter")
     (description

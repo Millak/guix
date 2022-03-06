@@ -295,7 +295,7 @@ colors, styles, options and details.")
                   texlive-epsf
                   texlive-etoolbox
                   texlive-fonts-ec
-                  texlive-generic-infwarerr
+                  texlive-infwarerr
                   texlive-generic-kvdefinekeys
                   texlive-grfext
                   texlive-hyperref
