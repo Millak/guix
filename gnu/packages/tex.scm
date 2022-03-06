@@ -3463,7 +3463,7 @@ XML, using UTF-8 or a suitable 8-bit encoding.")
              texlive-iftex
              texlive-infwarerr
              texlive-intcalc
-             texlive-generic-kvdefinekeys
+             texlive-kvdefinekeys
              texlive-generic-kvsetkeys
              texlive-generic-ltxcmds
              texlive-generic-pdfescape
@@ -8333,20 +8333,45 @@ using the e-TeX extension @code{\\numexpr} if it is available.")
 
 (define-deprecated-package texlive-generic-intcalc texlive-intcalc)
 
-(define-public texlive-generic-kvdefinekeys
-  (package
-    (inherit (simple-texlive-package
-              "texlive-generic-kvdefinekeys"
-              '("/tex/generic/kvdefinekeys/")
-              (base32
-               "12nn74skhwiszbdhawqds31caz6d59a5pjmwar0r8lmk4f1jr3xh")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/kvdefinekeys")
-    (synopsis "Define keys for use in the @code{kvsetkeys} package")
-    (description
-     "This package provides the @code{\\kv@@define@@key} (analogous to
+(define-public texlive-kvdefinekeys
+  (let ((template (simple-texlive-package
+                   "texlive-kvdefinekeys"
+                   (list "doc/latex/kvdefinekeys/"
+                         "source/latex/kvdefinekeys/"
+                         "tex/generic/kvdefinekeys/")
+                   (base32
+                    "1026h223ph3nzhs6jqbasa0bzsrdg3zgllfcwwcavfzb5i6p9jdf"))))
+    (package
+      (inherit template)
+      (outputs '("out" "doc"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ '())
+          "generic/kvdefinekeys")
+         ((#:build-targets _ '())
+          #~(list "kvdefinekeys.dtx"))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _
+                  (chdir "source/latex/kvdefinekeys")))
+              (replace 'copy-files
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((origin (assoc-ref inputs "source"))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc))))))))
+      (home-page "https://www.ctan.org/pkg/kvdefinekeys")
+      (synopsis "Define keys for use in the @code{kvsetkeys} package")
+      (description
+       "This package provides the @code{\\kv@@define@@key} (analogous to
 keyval’s @code{\\define@@key}, to define keys for use by @code{kvsetkeys}.")
-    (license license:lppl1.3c+)))
+      (license license:lppl1.3c+))))
+
+(define-deprecated-package texlive-generic-kvdefinekeys texlive-kvdefinekeys)
 
 (define-public texlive-generic-kvsetkeys
   (package
