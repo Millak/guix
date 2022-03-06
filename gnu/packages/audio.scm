@@ -422,13 +422,13 @@ Sega Master System/Mark III, Sega Genesis/Mega Drive, BBC Micro
     (inputs
      `(("alsa" ,alsa-lib)
        ("flac" ,flac)
-       ("mpg123" ,mpg123)
        ("portaudio" ,portaudio)
        ("pulseaudio" ,pulseaudio)
        ("sdl2" ,sdl2)
-       ("sndfile" ,libsndfile)
-       ("vorbis" ,libvorbis)
-       ("zlib" ,zlib)))
+       ("sndfile" ,libsndfile)))
+    (propagated-inputs
+     ;; In Requires.private
+     (list libogg libvorbis mpg123 zlib))
     (synopsis "Audio tracking library")
     (description "LibOpenMPT is a cross-platform C++ and C module playback
 library.  It is based on the player code of the Open ModPlug Tracker project.")
