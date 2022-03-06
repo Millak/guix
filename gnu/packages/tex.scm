@@ -3518,7 +3518,7 @@ XML, using UTF-8 or a suitable 8-bit encoding.")
              texlive-auxhook
              texlive-hycolor
              texlive-latex-kvoptions
-             texlive-latex-letltxmacro
+             texlive-letltxmacro
              texlive-pdftexcmds
              texlive-latex-refcount
              texlive-latex-rerunfilecheck
@@ -5792,23 +5792,47 @@ the same place.  The package also has a range of techniques for labelling
 footnotes with symbols rather than numbers.")
     (license license:lppl1.3+)))
 
-(define-public texlive-latex-letltxmacro
-  (package
-    (inherit (simple-texlive-package
-              "texlive-latex-letltxmacro"
-              (list "/doc/latex/letltxmacro/"
-                    "/tex/latex/letltxmacro/")
-              (base32
-               "0yy1m1jiyxq2pssp0pidaa2swx6lyxw3zwpm2r8m0v2r3lvsyyxx")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/letltxmacro")
-    (synopsis "Let assignment for macros")
-    (description
-     "TeX’s @code{\\let} assignment does not work for LaTeX macros with
+(define-public texlive-letltxmacro
+  (let ((template (simple-texlive-package
+                   "texlive-letltxmacro"
+                   (list "doc/latex/letltxmacro/"
+                         "source/latex/letltxmacro/"
+                         "tex/latex/letltxmacro/")
+                   (base32
+                    "16bmwsng9p80jf78sdmib24apwnw3raw306cs1ms50z5s9dsfdby"))))
+    (package
+      (inherit template)
+      (outputs '("out" "doc"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ '())
+          "latex/letltxmacro")
+         ((#:build-targets _ '())
+          #~(list "letltxmacro.dtx"))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _
+                  (chdir "source/latex/letltxmacro")))
+              (replace 'copy-files
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((origin (assoc-ref inputs "source"))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc))))))))
+      (home-page "https://www.ctan.org/pkg/letltxmacro")
+      (synopsis "Let assignment for macros")
+      (description
+       "TeX’s @code{\\let} assignment does not work for LaTeX macros with
 optional arguments, or for macros that are defined as robust macros by
 @code{\\DeclareRobustCommand}.  This package defines @code{\\LetLtxMacro}
 that also takes care of the involved internal macros.")
-    (license license:lppl1.3c+)))
+      (license license:lppl1.3c+))))
+
+(define-deprecated-package texlive-latex-letltxmacro texlive-letltxmacro)
 
 (define-public texlive-listings
   (let ((template
