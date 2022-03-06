@@ -3466,7 +3466,7 @@ XML, using UTF-8 or a suitable 8-bit encoding.")
              texlive-kvdefinekeys
              texlive-kvsetkeys
              texlive-ltxcmds
-             texlive-generic-pdfescape
+             texlive-pdfescape
              texlive-latex-auxhook
              texlive-latex-hycolor
              texlive-latex-kvoptions
@@ -8490,21 +8490,46 @@ as plain TeX.")
 
 (define-deprecated-package texlive-generic-ltxcmds texlive-ltxcmds)
 
-(define-public texlive-generic-pdfescape
-  (package
-    (inherit (simple-texlive-package
-              "texlive-generic-pdfescape"
-              '("/tex/generic/pdfescape/")
-              (base32
-               "1vbdjmm9bi9ngzz2z1b8jnf6nzf9xsaj5pvyswg13y4dr00mnz6n")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/pdfescape")
-    (synopsis "pdfTeX's escape features for plain TeX")
-    (description
-     "This package implements pdfTeX's escape features (@code{\\pdfescapehex},
+(define-public texlive-pdfescape
+  (let ((template (simple-texlive-package
+                   "texlive-pdfescape"
+                   (list "doc/latex/pdfescape/"
+                         "source/latex/pdfescape/"
+                         "tex/generic/pdfescape/")
+                   (base32
+                    "16a0rdmpa4wxh6gyf46qwfgyh399rwdind2wc89phqd50ky9b5m4"))))
+    (package
+      (inherit template)
+      (outputs '("out" "doc"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ '())
+          "generic/pdfescape")
+         ((#:build-targets _ '())
+          #~(list "pdfescape.dtx"))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _
+                  (chdir "source/latex/pdfescape")))
+              (replace 'copy-files
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((origin (assoc-ref inputs "source"))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc))))))))
+      (home-page "https://www.ctan.org/pkg/pdfescape")
+      (synopsis "pdfTeX's escape features for plain TeX")
+      (description
+       "This package implements pdfTeX's escape features (@code{\\pdfescapehex},
 @code{\\pdfunescapehex}, @code{\\pdfescapename}, @code{\\pdfescapestring})
 using TeX or e-TeX.")
-    (license license:lppl1.3c+)))
+      (license license:lppl1.3c+))))
+
+(define-deprecated-package texlive-generic-pdfescape texlive-pdfescape)
 
 (define-public texlive-generic-uniquecounter
   (package
