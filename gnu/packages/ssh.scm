@@ -328,6 +328,13 @@ Additionally, various channel-specific options can be negotiated.")
        #:configure-flags '("--disable-static")
 
        #:phases (modify-phases %standard-phases
+                  (add-before 'bootstrap 'support-cross-compilation
+                    (lambda _
+                      ;; Support cross-compilation:
+                      ;; <https://github.com/artyom-poptsov/guile-ssh/issues/30>.
+                      (substitute* "libguile-ssh/Makefile.am"
+                        (("\\$\\(guile_snarf\\)")
+                         "CPP=\"$(CPP)\" $(guile_snarf)"))))
                   (add-before 'build 'fix-libguile-ssh-file-name
                     (lambda* (#:key outputs #:allow-other-keys)
                       ;; Build and install libguile-ssh.so so that we can use
