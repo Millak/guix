@@ -6610,7 +6610,10 @@ exceeded.")
                (base32
                 "1mp9fqgnz5r69s8ly98ry6k2blqnaqpllwi8m930dm0n8zrwbm4a"))))
     (arguments
-     '(#:configure-flags '("--enable-unit-tests")))
+     (list #:configure-flags
+           (if (%current-target-system) ; When cross-compiling.
+             #~(list)
+             #~(list "--enable-unit-tests"))))
     (native-inputs
      (list cmocka pkg-config))
     (inputs
