@@ -6,7 +6,7 @@
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2015 Cyrill Schenkel <cyrill.schenkel@gmail.com>
-;;; Copyright © 2016, 2017, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
@@ -4754,13 +4754,29 @@ cannot be adequately worked around on the client side of the wire.")
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
-       (list "--disable-static" ,@(malloc0-flags))))
+       (list "--disable-static" ,@(malloc0-flags))
+       ,@(if (and (%current-target-system)
+                  (target-riscv64?))
+           `(#:phases
+             (modify-phases %standard-phases
+               (add-after 'unpack 'update-config
+                 (lambda* (#:key native-inputs #:allow-other-keys)
+                   (install-file
+                     (search-input-file native-inputs "/bin/config.sub") ".")
+                   (install-file
+                     (search-input-file native-inputs "/bin/config.guess") ".")))))
+           '())))
     (propagated-inputs
       (list xorgproto))
     (inputs
       (list libx11))
     (native-inputs
-      (list pkg-config))
+     (append
+       (if (and (%current-target-system)
+                (target-riscv64?))
+         (list config)
+         '())
+       (list pkg-config)))
     (home-page "https://www.x.org/wiki/")
     (synopsis "Xorg Render Extension library")
     (description "Library for the Render Extension to the X11 protocol.")
