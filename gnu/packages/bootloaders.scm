@@ -448,10 +448,10 @@ menu to select one of the installed operating systems.")
               (method url-fetch)
               (uri (string-append
                     "mirror://kernel.org/software/utils/dtc/"
-                    "dtc-" version ".tar.xz"))
+                    "dtc-" version ".tar.gz"))
               (sha256
                (base32
-                "0wrl43rvd8nnm1v1wyfdr17vk8q7ymib62vli6da8n9ni4lwbkk5"))))
+                "0xm38h31jb29xfh2sfyk48d8wdfq4b8lmb412zx9vjr35izjb9iq"))))
     (build-system gnu-build-system)
     (native-inputs
      (append
