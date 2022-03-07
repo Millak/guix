@@ -15171,7 +15171,7 @@ a @url{http://json.org/, JSON} file.")
         (base32 "0r0k56q58kb133l9x9nbisz9p2kbphfgw1l4g2xp0pjqsc9wvq8z"))))
     (build-system emacs-build-system)
     (propagated-inputs
-     (list emacs-json-reformat emacs-json-snatcher))
+     (list emacs-json-snatcher))
     (home-page "https://github.com/joshwnj/json-mode")
     (synopsis "Major mode for editing JSON files")
     (description "@code{json-mode} extends the builtin js-mode syntax
