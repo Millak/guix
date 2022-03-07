@@ -3,6 +3,7 @@
 ;;; Copyright © 2018, 2019 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -58,6 +59,7 @@ for TRIPLET."
                           (if (target-64bit? triplet)
                               "ppc64"
                               "ppc"))
+                         ((target-riscv64? triplet) "riscv64")
                          (#t (error "meson: unknown architecture"))))
     (cpu . ,(cond ((target-x86-32? triplet) ; i386, ..., i686
                    (substring triplet 0 4))
@@ -78,6 +80,8 @@ for TRIPLET."
                      ;; At least in Guix.  Aarch64 and 32-bit arm
                      ;; have a big-endian mode as well.
                      ((target-arm? triplet) "little")
+                     ((target-ppc32? triplet) "big")
+                     ((target-riscv64? triplet) "little")
                      (#t (error "meson: unknown architecture"))))))
 
 (define (make-binaries-alist triplet)
