@@ -7883,6 +7883,36 @@ in mind.  It has features such as:
 @end itemize")
     (license license:isc)))
 
+(define-public siege
+  (package
+    (name "siege")
+    (version "4.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "http://download.joedog.org/siege/siege-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "1a74py0ib1gr3znv9ah5acw67ngl08b14dbc90ww9clvgdr2ag0l"))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:configure-flags (list (string-append "--with-zlib="
+                                              (assoc-ref %build-inputs "zlib"))
+                               (string-append "--with-ssl="
+                                              (assoc-ref %build-inputs
+                                                         "openssl")))))
+    (inputs (list openssl zlib))
+    (home-page "https://www.joedog.org/siege-home/")
+    (synopsis "HTTP/FTP load tester and benchmarking utility")
+    (description
+     "Siege is a multi-threaded HTTP/FTP load tester and benchmarking utility.  It
+can stress test a single URL with a user defined number of simulated users, or
+it can read many URLs into memory and stress them simultaneously.  The program
+reports the total number of hits recorded, bytes transferred, response time,
+concurrency, and return status.")
+    ;; GPLv3+ with OpenSSL linking exception.
+    (license license:gpl3+)))
+
 (define-public gmnisrv
   (package
     (name "gmnisrv")
