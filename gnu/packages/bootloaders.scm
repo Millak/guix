@@ -483,10 +483,7 @@ menu to select one of the installed operating systems.")
              (substitute* '("Makefile"
                             "tests/run_tests.sh")
                (("pkg-config")
-                (or (which "pkg-config")
-                    (string-append ,(%current-target-system)
-                                   "-pkg-config"))))
-             #t))
+                ,(pkg-config-for-target)))))
          (delete 'configure))))         ; no configure script
     (home-page "https://www.devicetree.org")
     (synopsis "Compiles device tree source files")
