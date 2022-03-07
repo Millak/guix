@@ -249,23 +249,18 @@ the hash of the Cabal file."
     (hackage-source-url name version))
 
   (define hackage-dependencies
-    ((compose (cut filter-dependencies <>
-                   (cabal-package-name cabal))
-              (cut cabal-dependencies->names <>))
-     cabal))
+    (filter-dependencies (cabal-dependencies->names cabal)
+                         (cabal-package-name cabal)))
 
   (define hackage-native-dependencies
     (lset-difference
      equal?
-     ((compose (cut filter-dependencies <>
-                    (cabal-package-name cabal))
-               ;; FIXME: Check include-test-dependencies?
-               (lambda (cabal)
-                 (append (if include-test-dependencies?
-                             (cabal-test-dependencies->names cabal)
-                             '())
-                         (cabal-custom-setup-dependencies->names cabal))))
-      cabal)
+     (filter-dependencies
+      (append (if include-test-dependencies?
+                  (cabal-test-dependencies->names cabal)
+                  '())
+              (cabal-custom-setup-dependencies->names cabal))
+      (cabal-package-name cabal))
      hackage-dependencies))
 
   (define dependencies
@@ -339,11 +334,10 @@ respectively."
                     (read-cabal-and-hash port)
                     (hackage-fetch-and-hash package-name))))
     (if cabal-meta
-        ((compose (cut hackage-module->sexp <> cabal-hash
-                       #:include-test-dependencies?
-                       include-test-dependencies?)
-                  (cut eval-cabal <> cabal-environment))
-         cabal-meta)
+        (hackage-module->sexp (eval-cabal cabal-meta cabal-environment)
+                              cabal-hash
+                              #:include-test-dependencies?
+                              include-test-dependencies?)
         (values #f '()))))
 
 (define hackage->guix-package/m                   ;memoized variant
