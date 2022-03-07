@@ -3889,7 +3889,7 @@ implemented in ANSI C, and MPI for communications.")
      (list flex bison gfortran))
     (outputs '("out" "metis"))
     (arguments
-     `(#:configure-flags '("-DBUILD_SHARED_LIBS=YES"
+     `(#:configure-flags '("-DBUILD_SHARED_LIBS=YES" "-DINTSIZE=64"
                            "-DBUILD_PTSCOTCH=OFF")
        #:phases
        (modify-phases %standard-phases
@@ -3930,7 +3930,7 @@ bio-chemistry.")
      (substitute-keyword-arguments (package-arguments scotch)
        ((#:configure-flags flags ''())
         ''("-DBUILD_SHARED_LIBS=YES" "-DBUILD_PTSCOTCH=OFF"
-           "-DCMAKE_C_FLAGS=-DINTSIZE32=1"))))
+           "-DINTSIZE=32"))))
     (synopsis
      "Programs and libraries for graph algorithms (32-bit integers)")))
 
@@ -3943,7 +3943,8 @@ bio-chemistry.")
     (arguments
      (substitute-keyword-arguments (package-arguments scotch)
        ((#:configure-flags flags ''())
-        ''("-DBUILD_SHARED_LIBS=YES" "-DBUILD_PTSCOTCH=ON"))
+        ''("-DBUILD_SHARED_LIBS=YES" "-DBUILD_PTSCOTCH=ON"
+           "-DINTSIZE=64"))
        ((#:phases phases '%standard-phases)
         `(modify-phases ,phases
            (add-before 'check 'mpi-setup
@@ -3960,7 +3961,7 @@ bio-chemistry.")
      (substitute-keyword-arguments (package-arguments pt-scotch)
        ((#:configure-flags flags ''())
         ''("-DBUILD_SHARED_LIBS=YES" "-DBUILD_PTSCOTCH=ON"
-           "-DCMAKE_C_FLAGS=-DINTSIZE32=1"))))
+           "-DINTSIZE=32"))))
     (synopsis
      "Programs and libraries for graph algorithms (with MPI and 32-bit integers)")))
 
