@@ -4582,6 +4582,40 @@ images, etc.)")
     ;; regarding assets.
     (license license:gpl3+)))
 
+(define-public openriichi
+  (package
+    (name "openriichi")
+    (version "0.2.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/FluffyStuff/OpenRiichi")
+                    (commit (string-append "v" version))
+                    (recursive? #t)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1x6m4mli92chns5dky9aq9w4r4pnycvlpa2q0giydapm5q9fkslf"))))
+    (build-system meson-build-system)
+    (arguments
+     '(#:configure-flags (list "--buildtype=release")
+       #:glib-or-gtk? #t))
+    (inputs (list glew
+                  gtk+
+                  libgee
+                  sdl2
+                  sdl2-image
+                  sdl2-mixer))
+    (native-inputs (list pkg-config vala))
+    (home-page "https://github.com/FluffyStuff/OpenRiichi")
+    (synopsis "Japanese Mahjong client")
+    (description
+     "OpenRiichi is a client for playing Japanese Mahjong, and it supports
+singleplayer and multiplayer, with or without bots.  It features all the
+standard riichi rules, as well as some optional ones.  It also supports game
+logging, so games can be viewed again.")
+    (license license:gpl3)))
+
 (define-public pinball
   (package
     (name "pinball")
