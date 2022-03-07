@@ -500,19 +500,22 @@ VERSION, SOURCE-URL, HOME-PAGE, SYNOPSIS, DESCRIPTION, and LICENSE."
             (guard (c ((missing-source-error? c)
                        (let ((package (missing-source-error-package c)))
                          (raise
-                          (make-compound-condition
+                          (apply
+                           make-compound-condition
                            (formatted-message
                             (G_ "no source release for pypi package ~a ~a~%")
                             (project-info-name info) version)
-                           (condition
-                            (&fix-hint
-                             (hint (format #f (G_ "This indicates that the
+                           (match (project-info-home-page info)
+                             ((or #f "") '())
+                             (url
+                              (list
+                               (condition
+                                (&fix-hint
+                                 (hint (format #f (G_ "This indicates that the
 package is available on PyPI, but only as a \"wheel\" containing binaries, not
 source.  To build it from source, refer to the upstream repository at
 @uref{~a}.")
-                                           (or (project-info-home-page info)
-                                               (project-info-url info)
-                                               "?"))))))))))
+                                               url))))))))))))
               (make-pypi-sexp (project-info-name info) version
                               (and=> (source-release project version)
                                      distribution-url)
