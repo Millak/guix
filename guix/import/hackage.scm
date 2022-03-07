@@ -26,9 +26,9 @@
 (define-module (guix import hackage)
   #:use-module (ice-9 match)
   #:use-module (ice-9 regex)
+  #:use-module (srfi srfi-71)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-26)
-  #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-1)
   #:use-module ((guix download) #:select (download-to-store url-fetch))
   #:use-module ((guix utils) #:select (package-name->name+version
@@ -137,7 +137,7 @@ version is returned."
 (define (read-cabal-and-hash port)
   "Read a Cabal file from PORT and return it and its hash in nix-base32
 format as two values."
-  (let-values (((port get-hash) (open-sha256-input-port port)))
+  (let ((port get-hash (open-sha256-input-port port)))
     (values (read-cabal (canonical-newline-port port))
             (bytevector->nix-base32-string (get-hash)))))
 
@@ -149,10 +149,10 @@ version.  On failure, both return values will be #f."
   (guard (c ((and (http-get-error? c)
                   (= 404 (http-get-error-code c)))
              (values #f #f)))           ;"expected" if package is unknown
-    (let*-values (((name version) (package-name->name+version name-version))
-                  ((url)          (hackage-cabal-url name version))
-                  ((port _)       (http-fetch url))
-                  ((cabal hash)   (read-cabal-and-hash port)))
+    (let* ((name version (package-name->name+version name-version))
+           (url          (hackage-cabal-url name version))
+           (port _       (http-fetch url))
+           (cabal hash   (read-cabal-and-hash port)))
       (close-port port)
       (values cabal hash))))
 
@@ -160,7 +160,7 @@ version.  On failure, both return values will be #f."
   "Return the Cabal file for the package NAME-VERSION, or #f on failure.  If
 the version part is omitted from the package name, then return the latest
 version."
-  (let-values (((cabal hash) (hackage-fetch-and-hash name-version)))
+  (let ((cabal hash (hackage-fetch-and-hash name-version)))
     cabal))
 
 (define string->license
@@ -329,10 +329,10 @@ symbol 'true' or 'false'.  The value associated with other keys has to conform
 to the Cabal file format definition.  The default value associated with the
 keys \"os\", \"arch\" and \"impl\" is \"linux\", \"x86_64\" and \"ghc\"
 respectively."
-  (let-values (((cabal-meta cabal-hash)
-                (if port
-                    (read-cabal-and-hash port)
-                    (hackage-fetch-and-hash package-name))))
+  (let ((cabal-meta cabal-hash
+                    (if port
+                        (read-cabal-and-hash port)
+                        (hackage-fetch-and-hash package-name))))
     (if cabal-meta
         (hackage-module->sexp (eval-cabal cabal-meta cabal-environment)
                               cabal-hash
