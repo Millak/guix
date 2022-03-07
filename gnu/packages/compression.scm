@@ -876,7 +876,7 @@ time for compression ratio.")
              "LZO_SUPPORT=1"
              "LZ4_SUPPORT=1"
              "ZSTD_SUPPORT=1"
-             (string-append "INSTALL_DIR=" %output "/bin"))
+             (string-append "INSTALL_DIR=" (assoc-ref %outputs "out") "/bin"))
        #:phases
        (modify-phases %standard-phases
          (replace 'configure
