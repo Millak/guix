@@ -2945,9 +2945,9 @@ configuration (iptunnel, ipmaddr).")
                    ;; Tell the makefile to use TARGET-gcc and friends
                    ;; when cross-compiling.
                    #$@(if (%current-target-system)
-                          `((list (string-append "CROSS_COMPILE="
-                                                 ,(%current-target-system) "-")
-                                  "BUILD_CC=gcc"))
+                          `((string-append "CROSS_COMPILE="
+                                           ,(%current-target-system) "-")
+                            "BUILD_CC=gcc")
                           '()))))
     (native-inputs (list perl))
     (supported-systems (delete "i586-gnu" %supported-systems))
