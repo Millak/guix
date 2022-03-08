@@ -9,7 +9,7 @@
 ;;; Copyright © 2017, 2018 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
-;;; Copyright © 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;;
@@ -271,11 +271,16 @@ by managing a queue of pending work.")
                     version ".tar.bz2"))
               (sha256
                (base32
-                "0qj4blfymrd2ry2qmb58l3jbr4jwygc3adcfw7my27rippcijlyc"))))))
+                "0qj4blfymrd2ry2qmb58l3jbr4jwygc3adcfw7my27rippcijlyc"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments slurm)
+       ((#:configure-flags flags ''())
+        `(append '("CFLAGS=-O2 -g -fcommon" "LDFLAGS=-fcommon")
+                 ,flags))))))
 
 (define-public slurm-19.05
   (package
-    (inherit slurm)
+    (inherit slurm-20.02)
     (version "19.05.8")
     (source (origin
               (inherit (package-source slurm))
@@ -290,7 +295,7 @@ by managing a queue of pending work.")
 ;; Same as Debian 10
 (define-public slurm-18.08
   (package
-    (inherit slurm)
+    (inherit slurm-20.02)
     (version "18.08.9")
     (source
       (origin
