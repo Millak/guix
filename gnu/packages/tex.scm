@@ -9342,22 +9342,46 @@ LuaTeX (respectively) is not the engine in use.")
 (define-public texlive-tools
   (let ((template (simple-texlive-package
                    "texlive-tools"
-                   (list "/doc/latex/tools/"
-                         "/source/latex/tools/")
+                   (list "doc/latex/tools/"
+                         "source/latex/tools/"
+                         "tex/latex/tools/")
                    (base32
-                    "1xas0b69r3d5x4zhcqysgybyqaikd9avv6r1bdckb947id3iaz58"))))
+                    "0c0ixkcvrlzx6sdj25ak3bx0j65qghf51w66yg5wlnpg08d3awrs"))))
     (package
       (inherit template)
+      (outputs '("out" "doc"))
       (arguments
        (substitute-keyword-arguments (package-arguments template)
          ((#:tex-directory _ '())
           "latex/tools")
          ((#:build-targets _ '())
-          ''("tools.ins"))
+          #~(list "tools.ins"))
          ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'chdir
-               (lambda _ (chdir "source/latex/tools") #t))))))
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _
+                  (chdir "source/latex/tools")))
+              (replace 'copy-files
+                (lambda _
+                  (let ((origin #$(package-source this-package))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc)
+                    ;; These files are not generated.
+                    (let ((directory "/tex/latex/tools"))
+                      (with-directory-excursion (string-append origin directory)
+                        (for-each
+                         (lambda (f)
+                           (install-file f (string-append #$output
+                                                          "/share/texmf-dist"
+                                                          directory)))
+                         '("array-2016-10-06.sty"
+                           "array-2020-02-10.sty"
+                           "multicol-2017-04-11.sty"
+                           "varioref-2016-02-16.sty")))))))))))
       (home-page "https://www.ctan.org/tex-archive/macros/latex/required/tools/")
       (synopsis "LaTeX standard tools bundle")
       (description "This package provides a collection of simple tools that
