@@ -436,6 +436,28 @@ easier.")
 for authoring journal articles and conference submissions.")
     (license license:gpl3)))
 
+(define-public r-babelwhale
+  (package
+    (name "r-babelwhale")
+    (version "1.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "babelwhale" version))
+       (sha256
+        (base32 "0ph825dwvr48fhamy1l5564linz7cj7b9sj511as77f1yqycv4a2"))))
+    (properties `((upstream-name . "babelwhale")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-crayon r-dplyr r-dynutils r-processx r-purrr))
+    (home-page "https://github.com/dynverse/babelwhale")
+    (synopsis "Talking to Docker and Singularity containers")
+    (description
+     "This package provides a unified interface to interact with Docker and
+Singularity containers.  You can execute a command inside a container, mount a
+volume or copy a file.")
+    (license license:expat)))
+
 (define-public r-benchmarkmedata
   (package
     (name "r-benchmarkmedata")
