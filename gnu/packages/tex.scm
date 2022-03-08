@@ -6340,26 +6340,53 @@ format.  LaTeX support, for using these fonts in mathematics, is available via
 one of the packages @code{calrsfs} and @code{mathrsfs}.")
     (license (license:fsf-free "http://mirrors.ctan.org/fonts/rsfs/README"))))
 
-(define-public texlive-latex-eso-pic
-  (package
-    (name "texlive-latex-eso-pic")
-    (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "eso-pic"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "12f7pbhiav4iz3rra5vq85v9f14h8j1ybi42kvnkzgjsay87p7gf"))))
-    (build-system texlive-build-system)
-    (arguments '(#:tex-directory "latex/eso-pic"))
-    (home-page "https://www.ctan.org/pkg/eso-pic")
-    (synopsis "Add picture commands (or backgrounds) to every page")
-    (description
-     "The package adds one or more user commands to LaTeX's @code{shipout}
+(define-public texlive-eso-pic
+  (let ((template (simple-texlive-package
+                   "texlive-eso-pic"
+                   (list "doc/latex/eso-pic/"
+                         "source/latex/eso-pic/"
+                         "tex/latex/eso-pic/")
+                   (base32
+                    "05bqm4x209wji0q6xk1jrjp0nzqafp44dlq30hlpcagrggjb3d9s"))))
+    (package
+      (inherit template)
+      (outputs '("out" "doc"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ '())
+          "latex/eso-pic")
+         ((#:build-targets _ '())
+          #~(list "eso-pic.ins"))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _
+                  (chdir "source/latex/eso-pic")))
+              (replace 'copy-files
+                (lambda _
+                  (let ((origin #$(package-source this-package))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc)
+                    ;; This file is not generated.
+                    (install-file
+                     (string-append origin
+                                    "/tex/latex/eso-pic/showframe.sty")
+                     (string-append
+                      #$output
+                      "/share/texmf-dist/tex/latex/eso-pic")))))))))
+      (home-page "https://ctan.org/macros/latex/contrib/eso-pic")
+      (synopsis "Add picture commands (or backgrounds) to every page")
+      (description
+       "The package adds one or more user commands to LaTeX's @code{shipout}
 routine, which may be used to place the output at fixed positions.  The
 @code{grid} option may be used to find the correct places.")
-    (license license:lppl1.3+)))
+      (license license:lppl1.3+))))
+
+(define-deprecated-package texlive-latex-eso-pic texlive-eso-pic)
 
 (define-public texlive-latex-eepic
   (package
