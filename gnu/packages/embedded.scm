@@ -56,6 +56,7 @@
   #:use-module (gnu packages libftdi)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages messaging)
+  #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
@@ -1487,39 +1488,39 @@ handling communication with eBUS devices connected to a 2-wire bus system
 (define-public ucsim
   (package
     (name "ucsim")
-    (version "0.6-pre68")
+    (version "0.7.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "http://mazsola.iit.uni-miskolc.hu/ucsim/download/unix/"
-                    "devel/ucsim-" version ".tar.gz"))
+                    "source/v" (version-major+minor version) ".x/"
+                    "ucsim-" version ".tar.gz"))
               (sha256
                (base32
-                "1bfj21f5pcfcg1xqqynlcfr8mn6qj5705cgc2lfr2s3n97qsd9df"))))
+                "080471wvkjdzxz5j3zdaq1apjcj84ql50kn26b7p4ansixnimml4"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags '("--enable-avr-port"
-                           "--enable-m6809-port"
-                           "--enable-p1516-port"
-                           "--enable-st7-port")
-       #:phases
+     `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-makefiles
            (lambda _
              (substitute* (find-files "." "(\\.mk$|\\.in$)")
-               (("/bin/sh") (which "sh")))))
-         (add-after 'install 'remove-empty-directory
-           (lambda* (#:key outputs #:allow-other-keys)
-             (delete-file-recursively
-              (string-append (assoc-ref outputs "out") "/share/man")))))))
+               (("/bin/sh") (which "sh"))))))))
+    (inputs
+     (list ncurses))
     (native-inputs
-     (list bison flex))
+     (append (list bison flex)
+             ;; Certain tests use assemblers provided by SDCC.
+             (if (not (%current-target-system))
+                 (list sdcc)
+                 '())))
     (home-page "http://mazsola.iit.uni-miskolc.hu/ucsim/")
     (synopsis "Simulators for various microcontroller families")
     (description "μCsim is a collection of software simulators for
-microcontrollers in the Atmel AVR; Intel MCS-51 (8051); Motorola 68HC08 and
-6809; P1516; Padauk PDK13, PDK14 and PDK15; STMicroelectronics ST7 and STM8;
-and Zilog Z80 families, plus many of their variants.")
+microcontrollers in the Atmel AVR; Intel MCS-51 (8051); MOS Technology 6502;
+Motorola 6800, 68HC08 and 6809; P1516; Padauk PDK13, PDK14 and PDK15;
+STMicroelectronics ST7 and STM8; Xilinx PicoBlaze; and Zilog Z80 families,
+plus many of their variants.")
     (license license:gpl2+)))
 
 (define-public sdcc
