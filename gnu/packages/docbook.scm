@@ -479,7 +479,7 @@ the in DocBook SGML DTDs.")
                                         texlive-latex-pdfpages
                                         texlive-refcount
                                         texlive-subfigure
-                                        texlive-latex-titlesec
+                                        texlive-titlesec
                                         texlive-wasysym
 
                                         texlive-fonts-rsfs

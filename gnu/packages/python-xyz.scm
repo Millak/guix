@@ -5856,7 +5856,7 @@ readable format.")
                                         texlive-latex-preview
                                         texlive-latex-tabulary
                                         texlive-latex-threeparttable
-                                        texlive-latex-titlesec
+                                        texlive-titlesec
                                         texlive-latex-trimspaces
                                         texlive-latex-ucs
                                         texlive-latex-upquote
@@ -8941,7 +8941,7 @@ computing.")
                                         texlive-latex-preview
                                         texlive-latex-tabulary
                                         texlive-latex-threeparttable
-                                        texlive-latex-titlesec
+                                        texlive-titlesec
                                         texlive-latex-trimspaces
                                         texlive-latex-ucs
                                         texlive-latex-upquote

@@ -6967,33 +6967,15 @@ The (currently) supported encodings are: OT1, T1, IL2, TS1, T2*, X2, QX, and
 LGR.  The package doesn't (currently) support mathematics.")
     (license license:lppl)))
 
-(define-public texlive-latex-titlesec
+(define-public texlive-titlesec
   (package
-    (name "texlive-latex-titlesec")
-    (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (svn-reference
-                    (url (string-append "svn://www.tug.org/texlive/tags/"
-                                        %texlive-tag "/Master/texmf-dist/"
-                                        "/tex/latex/titlesec"))
-                    (revision %texlive-revision)))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "1kw7dvxvdfbf31zw0n8r0g5xak3vcdf25n33fqw93j59zpc5nvbl"))))
-    (build-system trivial-build-system)
-    (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let ((target (string-append (assoc-ref %outputs "out")
-                                      "/share/texmf-dist/tex/latex/titlesec")))
-           (mkdir-p target)
-           (copy-recursively (assoc-ref %build-inputs "source") target)
-           #t))))
-    (home-page "https://www.ctan.org/pkg/titlesec")
+    (inherit
+     (simple-texlive-package
+      "texlive-titlesec"
+      (list "doc/latex/titlesec/" "tex/latex/titlesec/")
+      (base32 "01nwh4p15xblc3kgivjliihy9kr8yr2cqsf9wn2iwqv1njx0i2zw")
+      #:trivial? #t))
+    (home-page "https://ctan.org/macros/latex/contrib/titlesec")
     (synopsis "Select alternative section titles")
     (description
      "This package provides an interface to sectioning commands for selection
@@ -7002,6 +6984,8 @@ all headings with a single command, also providing simple one-step page
 styles.  It also includes a package to change the page styles when there are
 floats in a page.  You may assign headers/footers to individual floats, too.")
     (license license:lppl)))
+
+(define-deprecated-package texlive-latex-titlesec texlive-titlesec)
 
 (define-public texlive-latex-type1cm
   (package
