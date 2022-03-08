@@ -1507,13 +1507,11 @@ handling communication with eBUS devices connected to a 2-wire bus system
          (add-after 'unpack 'patch-makefiles
            (lambda _
              (substitute* (find-files "." "(\\.mk$|\\.in$)")
-               (("/bin/sh") (which "sh")))
-             #t))
+               (("/bin/sh") (which "sh")))))
          (add-after 'install 'remove-empty-directory
            (lambda* (#:key outputs #:allow-other-keys)
              (delete-file-recursively
-              (string-append (assoc-ref outputs "out") "/share/man"))
-             #t)))))
+              (string-append (assoc-ref outputs "out") "/share/man")))))))
     (native-inputs
      (list bison flex))
     (home-page "http://mazsola.iit.uni-miskolc.hu/ucsim/")
