@@ -99,8 +99,10 @@
             target-powerpc?
             target-riscv64?
             target-64bit?
+            ar-for-target
             cc-for-target
             cxx-for-target
+            ld-for-target
             pkg-config-for-target
 
             version-compare
@@ -715,6 +717,11 @@ architecture (x86_64)?"
   (any (cut string-prefix? <> system) '("x86_64" "aarch64" "mips64"
                                         "powerpc64" "riscv64")))
 
+(define* (ar-for-target #:optional (target (%current-target-system)))
+  (if target
+      (string-append target "-ar")
+      "ar"))
+
 (define* (cc-for-target #:optional (target (%current-target-system)))
   (if target
       (string-append target "-gcc")
@@ -724,6 +731,11 @@ architecture (x86_64)?"
   (if target
       (string-append target "-g++")
       "g++"))
+
+(define* (ld-for-target #:optional (target (%current-target-system)))
+  (if target
+      (string-append target "-ld")
+      "ld"))
 
 (define* (pkg-config-for-target #:optional (target (%current-target-system)))
   (if target
