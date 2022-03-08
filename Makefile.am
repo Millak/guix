@@ -1072,20 +1072,34 @@ WEBLATE_REPO = https://framagit.org/tyreunom/guix-translations
 # form.
 download-po:
 	dir=$$(mktemp -d); \
-	git clone --depth 1 "$(WEBLATE_REPO)" "$$dir/translations"; \
+	git clone --depth 1 "$(WEBLATE_REPO)" "$$dir/translations" && \
 	for domain in po/doc po/guix po/packages; do \
 	    for po in "$$dir/translations/$$domain"/*.po; do \
 	        translated=$$(LANG=en_US.UTF-8 msgfmt --statistics "$$po" 2>&1 | cut -f1 -d' '); \
+	        untranslated=$$(LANG=en_US.UTF-8 msgfmt --statistics "$$po" 2>&1 | rev | cut -f3 -d' ' | rev); \
+	        untranslated=$${untranslated:-0}; \
+	        total=$$(($$translated+$$untranslated)); \
 	        target=$$(basename "$$po"); \
 	        target="$$domain/$$target"; \
-	        if msgfmt -c "$$po" && [ "$$translated" != "0" ]; then \
+	        msgfmt -c "$$po"; \
+	        if msgfmt -c "$$po" && [ "$$translated" != "0" ] && ([ "$$domain" != "po/doc" ] || [ "$$translated" -gt $$(($$total/10)) ] || [ -f $$target ]); then \
 	            msgfilter --no-wrap -i "$$po" cat > "$$po".tmp; \
 	            mv "$$po".tmp "$$target"; \
 	            echo "copied $$target."; \
 	        else \
-	            echo "WARN: $$target ($$translated translated messages) was not added/updated."; \
+	            echo "WARN: $$target ($$translated translated messages ($$((translated/total*100))%)) was not added/updated."; \
 	        fi; \
 	    done; \
+	done; \
+	for po in po/doc/*.po; do \
+	    translated=$$(LANG=en_US.UTF-8 msgfmt --statistics "$$po" 2>&1 | cut -f1 -d' '); \
+	    untranslated=$$(LANG=en_US.UTF-8 msgfmt --statistics "$$po" 2>&1 | rev | cut -f3 -d' ' | rev); \
+	    untranslated=$${untranslated:-0}; \
+	    total=$$(($$translated + $$untranslated)); \
+	    if [ "$$translated" -lt "$$(($$total/20))" ]; then \
+	        echo "WARN: $$po was removed because it is below the 5% threshold: $$((translated/total*100))%"; \
+	        rm $$po; \
+	    fi; \
 	done; \
 	rm -rf "$$dir"
 .PHONY: download-po
