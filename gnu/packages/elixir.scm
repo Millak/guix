@@ -60,11 +60,9 @@
               (for-each make-file-writable (find-files "."))))
           (add-after 'make-git-checkout-writable 'replace-paths
             (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* '("lib/elixir/lib/system.ex"
-                             "lib/mix/lib/mix/scm/git.ex")
-                (("(cmd\\(['\"])git" _ prefix)
-                 (string-append prefix
-                                (search-input-file inputs "/bin/git"))))
+              ;; Note: references end up obfuscated in binary BEAM files where
+              ;; they may be invisible to the GC and graft code:
+              ;; <https://issues.guix.gnu.org/54304#11>.
               (substitute* '("lib/mix/lib/mix/release.ex"
                              "lib/mix/lib/mix/tasks/release.init.ex")
                 (("#!/bin/sh")
