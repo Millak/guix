@@ -9734,16 +9734,16 @@ allowing unprefixed keys to insert their respective characters as expected.")
 (define-public emacs-clojure-mode
   (package
     (name "emacs-clojure-mode")
-    (version "5.13.0")
+    (version "5.14.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/clojure-emacs/clojure-mode")
-             (commit version)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ikl29rygr1habcsglz07m4ihd4ivi732kkzg8q676ihf367wa9i"))))
+        (base32 "0n7v6hx21f8x37gj388wnff38aqpzxxv5g8vxavp74vr3cbagsnn"))))
     (build-system emacs-build-system)
     (native-inputs
      (list emacs-buttercup emacs-dash emacs-paredit emacs-s))
