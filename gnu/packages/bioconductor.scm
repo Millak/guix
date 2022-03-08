@@ -3004,6 +3004,44 @@ testing.  The package also provides functions for the visualization and
 exploration of the results.")
     (license license:gpl3+)))
 
+(define-public r-diffcyt
+  (package
+    (name "r-diffcyt")
+    (version "1.14.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "diffcyt" version))
+       (sha256
+        (base32 "1yc9mlc0ifb7h6rzskq97bsdq1kwdp5qq9l9mciwyxf6yjkmv5ni"))))
+    (properties `((upstream-name . "diffcyt")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-circlize
+           r-complexheatmap
+           r-dplyr
+           r-edger
+           r-flowcore
+           r-flowsom
+           r-limma
+           r-lme4
+           r-magrittr
+           r-multcomp
+           r-reshape2
+           r-s4vectors
+           r-summarizedexperiment
+           r-tidyr))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/lmweber/diffcyt")
+    (synopsis "Differential discovery in high-dimensional cytometry")
+    (description
+     "This package provides statistical methods for differential discovery
+analyses in high-dimensional cytometry data (including flow cytometry, mass
+cytometry or CyTOF, and oligonucleotide-tagged cytometry), based on a
+combination of high-resolution clustering and empirical Bayes moderated tests
+adapted from transcriptomics.")
+    (license license:expat)))
+
 (define-public r-dirichletmultinomial
   (package
     (name "r-dirichletmultinomial")
