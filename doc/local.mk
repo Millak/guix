@@ -22,8 +22,8 @@
 # along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 # If adding a language, update the following variables, and info_TEXINFOS.
-MANUAL_LANGUAGES = de es fa fi fr it ko pt_BR ru sk zh_CN
-COOKBOOK_LANGUAGES = de es fa fi fr ko pt_BR ru sk uk zh_Hans
+MANUAL_LANGUAGES = de es fr pt_BR ru zh_CN
+COOKBOOK_LANGUAGES = de fr ko sk
 
 # Arg1: A list of languages codes.
 # Arg2: The file name stem.
@@ -34,27 +34,15 @@ lang_to_texinfo = $(foreach lang,$(1),%D%/$(2).$(lang).texi)
 info_TEXINFOS = %D%/guix.texi			\
   %D%/guix.de.texi				\
   %D%/guix.es.texi				\
-  %D%/guix.fa.texi				\
-  %D%/guix.fi.texi				\
   %D%/guix.fr.texi				\
-  %D%/guix.it.texi				\
-  %D%/guix.ko.texi				\
   %D%/guix.pt_BR.texi				\
   %D%/guix.ru.texi				\
-  %D%/guix.sk.texi				\
   %D%/guix.zh_CN.texi				\
   %D%/guix-cookbook.texi			\
   %D%/guix-cookbook.de.texi			\
-  %D%/guix-cookbook.es.texi			\
-  %D%/guix-cookbook.fa.texi			\
-  %D%/guix-cookbook.fi.texi			\
   %D%/guix-cookbook.fr.texi			\
   %D%/guix-cookbook.ko.texi			\
-  %D%/guix-cookbook.pt_BR.texi			\
-  %D%/guix-cookbook.ru.texi			\
-  %D%/guix-cookbook.sk.texi			\
-  %D%/guix-cookbook.uk.texi			\
-  %D%/guix-cookbook.zh_Hans.texi
+  %D%/guix-cookbook.sk.texi
 
 %C%_guix_TEXINFOS = \
   %D%/contributing.texi \
