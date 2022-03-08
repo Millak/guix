@@ -604,8 +604,8 @@ Chez Scheme.")))
                         (define makefile
                           (string-append (getcwd) "/Makefile"))
                         (define machine
-                          #$(chez-machine->threaded
-                             (nix-system->chez-machine)))
+                          #$(and=> (nix-system->chez-machine)
+                                   chez-machine->threaded))
                         (with-directory-excursion
                             (search-input-directory outputs "/lib/stex")
                           (invoke "make"
