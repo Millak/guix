@@ -1097,6 +1097,30 @@ does not use formula input or special syntax, but can be used in combination
 with default R plot functions.")
     (license license:gpl2+)))
 
+(define-public r-polychrome
+  (package
+    (name "r-polychrome")
+    (version "1.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "Polychrome" version))
+       (sha256
+        (base32 "044vbylgbqf0ccv4r15nmbw1vz0j95g67i6blw73hvbvbm6w5x4d"))))
+    (properties `((upstream-name . "Polychrome")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-colorspace r-scatterplot3d))
+    (native-inputs
+     (list r-knitr))
+    (home-page "http://oompa.r-forge.r-project.org/")
+    (synopsis "Qualitative palettes with many colors")
+    (description
+     "This package provides tools for creating, viewing, and assessing
+qualitative palettes with many (20-30 or more) colors.  See Coombes and
+colleagues (2019) @url{https://doi:10.18637/jss.v090.c01}.")
+    (license license:asl2.0)))
+
 (define-public r-ecp
   (package
     (name "r-ecp")
