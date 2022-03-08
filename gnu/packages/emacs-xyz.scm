@@ -3077,7 +3077,7 @@ overlay below or above the point.  Corfu can be considered the minimalistic
 (define-public emacs-cape
   (package
     (name "emacs-cape")
-    (version "0.6")
+    (version "0.7")
     (source
      (origin
        (method git-fetch)
@@ -3086,7 +3086,7 @@ overlay below or above the point.  Corfu can be considered the minimalistic
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bmxpfp0zs24lbp1mlcc66f4s5gxgrj78001h241mzndc3kaiqfk"))))
+        (base32 "0731c55bb1vxdh8k7312z1bvf7g8jwr2n04q3ffpqp0fan6ra025"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/minad/cape")
     (synopsis "Completion at point extensions for Emacs")
