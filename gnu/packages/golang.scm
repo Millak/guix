@@ -5533,35 +5533,6 @@ format in Go.")
     (home-page "https://github.com/kr/pretty")
     (license license:expat)))
 
-(define-public go-github-com-niemeyer-pretty
-  (package
-    (name "go-github-com-niemeyer-pretty")
-    (version "0.0.0-20200227124842-a10e7caefd8e")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/niemeyer/pretty")
-               (commit (go-version->git-ref version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "1jmazh4xzaa3v6g46hz60q2z7nmqs9l9cxdzmmscn3kbcs2znq4v"))
-        (modules '((guix build utils)))
-        (snippet
-         '(begin
-            ;; https://github.com/kr/pretty/pull/66
-            (substitute* "formatter.go"
-              (("string\\(i\\)") "string(rune(i))"))))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/niemeyer/pretty"))
-    (propagated-inputs
-     (list go-github-com-kr-text))
-    (home-page "https://github.com/niemeyer/pretty")
-    (synopsis "Pretty printer for Go values")
-    (description "This package provides a pretty printer for Go values.")
-    (license license:expat)))
-
 (define-public go-github-com-kylelemons-godebug
   (package
     (name "go-github-com-kylelemons-godebug")
