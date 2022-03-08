@@ -4387,6 +4387,43 @@ differential expression analysis, RNAseq data and related problems.")
     ;; Any version of the LGPL
     (license license:lgpl3+)))
 
+(define-public r-scannotatr
+  (package
+    (name "r-scannotatr")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "scAnnotatR" version))
+       (sha256
+        (base32 "08jq04ckjw8a5y753almc5bl8vnn4j6qp2zb7bb9w3ql3ddy7b21"))))
+    (properties `((upstream-name . "scAnnotatR")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-annotationhub
+           r-ape
+           r-caret
+           r-data-tree
+           r-dplyr
+           r-e1071
+           r-ggplot2
+           r-kernlab
+           r-proc
+           r-rocr
+           r-seurat
+           r-singlecellexperiment
+           r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/grisslab/scAnnotatR")
+    (synopsis "Pretrained models for prediction on single cell RNA-sequencing data")
+    (description
+     "This package comprises a set of pretrained machine learning models to
+predict basic immune cell types.  This enables to quickly get a first
+annotation of the cell types present in the dataset without requiring prior
+knowledge.  The package also lets you train using own models to predict new
+cell types based on specific research needs.")
+    (license license:expat)))
+
 (define-public r-scdblfinder
   (package
     (name "r-scdblfinder")
