@@ -614,6 +614,30 @@ SVG (Scalable Vector Graphics) formats.  In addition, it supports literate
 programming packages such as @code{knitr} and @code{rmarkdown}.")
     (license license:expat)))
 
+(define-public r-carrier
+  (package
+    (name "r-carrier")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "carrier" version))
+       (sha256
+        (base32 "0bqnwnnjqjk9q0lxq6kkz9s75ss10lfyyywyyi24m8wppxpw1vqc"))))
+    (properties `((upstream-name . "carrier")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-pryr r-rlang))
+    (home-page "https://github.com/r-lib/carrier")
+    (synopsis "Isolate functions for remote execution")
+    (description
+     "Sending functions to remote processes can be wasteful of resources
+because they carry their environments with them.  With this package, it is
+easy to create functions that are isolated from their environment.  These
+isolated functions, also called crates, print to the console with their total
+size and can be easily tested locally before being sent to a remote.")
+    (license license:gpl3)))
+
 (define-public r-clipr
   (package
     (name "r-clipr")
