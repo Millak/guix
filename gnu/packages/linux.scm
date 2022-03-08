@@ -4001,13 +4001,22 @@ one to send arbitrary keycodes when a given key is tapped or held.")
               (patches (search-patches "lvm2-static-link.patch"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list pkg-config procps))                       ;tests use 'pgrep'
+     (list config
+           pkg-config procps))                       ;tests use 'pgrep'
     (inputs
      `(("libaio" ,libaio)
        ("udev" ,eudev)))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'update-config
+           (lambda* (#:key inputs native-inputs #:allow-other-keys)
+             (install-file (search-input-file
+                             (or native-inputs inputs) "/bin/config.sub")
+                           "autoconf")
+             (install-file (search-input-file
+                             (or native-inputs inputs) "/bin/config.guess")
+                           "autoconf")))
          (add-after 'configure 'set-makefile-shell
            (lambda _
              ;; Use 'sh', not 'bash', so that '. lib/utils.sh' works as
