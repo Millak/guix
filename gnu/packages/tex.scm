@@ -6591,23 +6591,41 @@ the whole font.")
 
 (define-deprecated-package texlive-fonts-stmaryrd texlive-stmaryrd)
 
-(define-public texlive-latex-subfigure
-  (package
-    (name "texlive-latex-subfigure")
-    (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "subfigure"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "15spcl5wb7w269qd6y596vp4yi8sa5ppcx8w4z2i9kyp02r3a0yb"))))
-    (build-system texlive-build-system)
-    (arguments '(#:tex-directory "latex/subfigure"))
-    (home-page "https://www.ctan.org/pkg/subfigure")
-    (synopsis "Figures divided into subfigures")
-    (description
-     "This (deprecated) package provides support for the manipulation and
+(define-public texlive-subfigure
+  (let ((template (simple-texlive-package
+                   "texlive-subfigure"
+                   (list "doc/latex/subfigure/"
+                         "source/latex/subfigure/"
+                         "tex/latex/subfigure/")
+                   (base32
+                    "1327ygajf6gza5msvhfjjnk6r3sw7vb7rxg23v4gx4dmyxqfqrbi"))))
+    (package
+      (inherit template)
+      (outputs '("out" "doc"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ '())
+          "latex/subfigure")
+         ((#:build-targets _ '())
+          #~(list "subfigure.ins"))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _
+                  (chdir "source/latex/subfigure")))
+              (replace 'copy-files
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((origin (assoc-ref inputs "source"))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc))))))))
+      (home-page "https://www.ctan.org/pkg/subfigure")
+      (synopsis "Figures divided into subfigures")
+      (description
+       "This (deprecated) package provides support for the manipulation and
 reference of small or \"sub\" figures and tables within a single figure or
 table environment.  It is convenient to use this package when your subfigures
 are to be separately captioned, referenced, or are to be included in the
@@ -6616,7 +6634,9 @@ used inside a figure environment for each subfigure.  An optional first
 argument is used as the caption for that subfigure.  The package is now
 considered obsolete: it was superseded by @code{subfig}, but users may find
 the more recent @code{subcaption} package more satisfactory.")
-    (license license:lppl)))
+      (license license:lppl))))
+
+(define-deprecated-package texlive-latex-subfigure texlive-subfigure)
 
 (define-public texlive-latex-tabulary
   (package

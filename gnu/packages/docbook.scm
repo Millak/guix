@@ -478,7 +478,7 @@ the in DocBook SGML DTDs.")
                                         texlive-latex-overpic
                                         texlive-latex-pdfpages
                                         texlive-refcount
-                                        texlive-latex-subfigure
+                                        texlive-subfigure
                                         texlive-latex-titlesec
                                         texlive-wasysym
 
