@@ -4677,7 +4677,7 @@ ecosystem, but can naturally be used also by other projects.")
 (define-public python-robotframework
   (package
     (name "python-robotframework")
-    (version "4.1.2")
+    (version "4.1.3")
     ;; There are no tests in the PyPI archive.
     (source
      (origin
@@ -4687,7 +4687,7 @@ ecosystem, but can naturally be used also by other projects.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0s6lakbd8h1pa4lfdj18sm13gpywszgpcns4hz026a4kam787kby"))
+        (base32 "0j71awmfkwk7prz82kr1zbcl3nrih3396sshrygnqlrdjmgivd3p"))
        (patches (search-patches
                  "python-robotframework-source-date-epoch.patch"))))
     (build-system python-build-system)
@@ -4703,23 +4703,25 @@ ecosystem, but can naturally be used also by other projects.")
                         (copy-recursively "doc/libraries"
                                           (string-append doc "/libraries")))))
                   (replace 'check
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      ;; Some tests require timezone data.  Otherwise, they
-                      ;; look up /etc/localtime, which doesn't exist, and fail
-                      ;; with:
-                      ;;
-                      ;; OverflowError: mktime argument out of range
-                      (setenv "TZDIR"
-                              (search-input-directory inputs "share/zoneinfo"))
-                      (setenv "TZ" "Europe/Paris")
-
-                      (invoke "python" "utest/run.py"))))))
+                    (lambda* (#:key native-inputs inputs tests?
+                              #:allow-other-keys)
+                      (when tests?
+                        ;; Some tests require timezone data.  Otherwise, they
+                        ;; look up /etc/localtime, which doesn't exist, and
+                        ;; fail with:
+                        ;;
+                        ;; OverflowError: mktime argument out of range
+                        (setenv "TZDIR"
+                                (search-input-directory
+                                 (or native-inputs inputs) "share/zoneinfo"))
+                        (setenv "TZ" "Europe/Paris")
+                        (invoke "python" "utest/run.py")))))))
     (native-inputs
      `(("python-docutils" ,python-docutils)
        ("python-jsonschema" ,python-jsonschema)
        ("python-invoke" ,python-invoke)
        ("python-rellu" ,python-rellu)
-       ("python:tk" ,python "tk")             ;used when building the HTML doc
+       ("python:tk" ,python "tk")       ;used when building the HTML doc
        ("tzdata" ,tzdata-for-tests)))
     (outputs '("out" "doc"))
     (home-page "https://robotframework.org")
