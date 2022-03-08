@@ -1215,6 +1215,42 @@ experiment that allows a generic to warn if any arguments passed in @code{...}
 are not used.")
     (license license:gpl3)))
 
+(define-public r-ga
+  (package
+    (name "r-ga")
+    (version "3.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "GA" version))
+       (sha256
+        (base32 "135z03lnbj44jihnk6dii5a684jmc666ncpdwyyi910vl4sccib2"))))
+    (properties `((upstream-name . "GA")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-cli
+           r-crayon
+           r-foreach
+           r-iterators
+           r-rcpp
+           r-rcpparmadillo))
+    (native-inputs
+     (list r-knitr))
+    (home-page "https://luca-scr.github.io/GA/")
+    (synopsis "Genetic algorithms for stochastic optimisation")
+    (description
+     "Flexible general-purpose toolbox implementing genetic algorithms (GAs)
+for stochastic optimisation.  Binary, real-valued, and permutation
+representations are available to optimize a fitness function, i.e., a function
+provided by users depending on their objective function.  Several genetic
+operators are available and can be combined to explore the best settings for
+the current task.  Furthermore, users can define new genetic operators and
+easily evaluate their performances.  Local search using general-purpose
+optimisation algorithms can be applied stochastically to exploit interesting
+regions.  GAs can be run sequentially or in parallel, using an explicit
+master-slave parallelisation or a coarse-grain islands approach.")
+    (license license:gpl2+)))
+
 (define-public r-grr
   (package
     (name "r-grr")
