@@ -4839,7 +4839,7 @@ trace directly to the terminal to ease debugging.")
 (define-public python-robotframework-sshlibrary
   (package
     (name "python-robotframework-sshlibrary")
-    (version "3.7.0")
+    (version "3.8.0")
     ;; There are no tests in the PyPI archive.
     (source
      (origin
@@ -4850,7 +4850,7 @@ trace directly to the terminal to ease debugging.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "09ak22rh9qa9wlpvhkliyybcp4xafjhxsps28wz0pf0030771xav"))))
+         "1fn72hw7xacjjpl4dd6wynh2x63i9rk8iqhj3v640db21qpcnbkw"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
