@@ -1041,21 +1041,28 @@ summary, and level 0 shows nothing."
                     (map colorized-store-item build)))
           (cond ((>= verbosity 2)
                  (if display-download-size?
-                     (format (current-error-port)
-                             ;; TRANSLATORS: "MB" is for "megabyte"; it should be
-                             ;; translated to the corresponding abbreviation.
-                             (G_ "~:[~,1h MB would be downloaded:~%~{   ~a~%~}~;~]")
-                             (null? download)
-                             download-size
-                             (map (compose colorized-store-item substitutable-path)
-                                  download))
-                     (format (current-error-port)
-                             (N_ "~:[The following file would be downloaded:~%~{   ~a~%~}~;~]"
-                                 "~:[The following files would be downloaded:~%~{   ~a~%~}~;~]"
-                                 (length download))
-                             (null? download)
-                             (map (compose colorized-store-item substitutable-path)
-                                  download)))
+                     (begin
+                       (format (current-error-port)
+                               (highlight
+                                ;; TRANSLATORS: "MB" is for "megabyte"; it
+                                ;; should be translated to the corresponding
+                                ;; abbreviation.
+                                (G_ "~:[~,1h MB would be downloaded:~%~;~]"))
+                               (null? download)
+                               download-size)
+                       (format (current-error-port) "~{  ~a~%~}"
+                               (map (compose colorized-store-item substitutable-path)
+                                    download)))
+                     (begin
+                       (format (current-error-port)
+                               (highlight
+                                (N_ "~:[The following file would be downloaded:~%~;~]"
+                                    "~:[The following files would be downloaded:~%~;~]"
+                                    (length download)))
+                               (null? download))
+                       (format (current-error-port) "~{  ~a~%~}"
+                               (map (compose colorized-store-item substitutable-path)
+                                    download))))
                  (format (current-error-port)
                          (N_ "~:[The following graft would be made:~%~{   ~a~%~}~;~]"
                              "~:[The following grafts would be made:~%~{   ~a~%~}~;~]"
@@ -1094,21 +1101,28 @@ summary, and level 0 shows nothing."
                     (map colorized-store-item build)))
           (cond ((>= verbosity 2)
                  (if display-download-size?
-                     (format (current-error-port)
-                             ;; TRANSLATORS: "MB" is for "megabyte"; it should be
-                             ;; translated to the corresponding abbreviation.
-                             (G_ "~:[~,1h MB will be downloaded:~%~{   ~a~%~}~;~]")
-                             (null? download)
-                             download-size
-                             (map (compose colorized-store-item substitutable-path)
-                                  download))
-                     (format (current-error-port)
-                             (N_ "~:[The following file will be downloaded:~%~{   ~a~%~}~;~]"
-                                 "~:[The following files will be downloaded:~%~{   ~a~%~}~;~]"
-                                 (length download))
-                             (null? download)
-                             (map (compose colorized-store-item substitutable-path)
-                                  download)))
+                     (begin
+                       (format (current-error-port)
+                               (highlight
+                                ;; TRANSLATORS: "MB" is for "megabyte"; it
+                                ;; should be translated to the corresponding
+                                ;; abbreviation.
+                                (G_ "~:[~,1h MB will be downloaded:~%~;~]"))
+                               (null? download)
+                               download-size)
+                       (format (current-error-port) "~{  ~a~%~}"
+                               (map (compose colorized-store-item substitutable-path)
+                                    download)))
+                     (begin
+                       (format (current-error-port)
+                               (highlight
+                                (N_ "~:[The following file will be downloaded:~%~;~]"
+                                    "~:[The following files will be downloaded:~%~;~]"
+                                    (length download)))
+                               (null? download))
+                       (format (current-error-port) "~{  ~a~%~}"
+                               (map (compose colorized-store-item substitutable-path)
+                                    download))))
                  (format (current-error-port)
                          (N_ "~:[The following graft will be made:~%~{   ~a~%~}~;~]"
                              "~:[The following grafts will be made:~%~{   ~a~%~}~;~]"
