@@ -831,27 +831,27 @@ Quizzes: arithmetic and quiz.")
         (base32 "1i73ijlnxsz52fhqgkj2qcvibfgav3byq1is68gab2zwnyz330az"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-desktop-file-and-icons
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((share (string-append (assoc-ref outputs "out") "/share"))
-                    (data (string-append share "/bzflag"))
-                    (hicolor (string-append share "/icons/hicolor"))
-                    (applications (string-append share "/applications")))
-               ;; Move desktop file.
-               (install-file (string-append data "/bzflag.desktop")
-                             applications)
-               ;; Install icons.
-               (for-each (lambda (size)
-                           (let* ((dim (string-append size "x" size))
-                                  (dir (string-append hicolor "/" dim "/apps")))
-                             (mkdir-p dir)
-                             (copy-file
-                              (string-append data "/bzflag-" dim ".png")
-                              (string-append dir "/bzflag.png"))))
-                         '("48" "256")))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-desktop-file-and-icons
+            (lambda _
+              (let* ((share (string-append #$output "/share"))
+                     (data (string-append share "/bzflag"))
+                     (hicolor (string-append share "/icons/hicolor"))
+                     (applications (string-append share "/applications")))
+                ;; Move desktop file.
+                (install-file (string-append data "/bzflag.desktop")
+                              applications)
+                ;; Install icons.
+                (for-each (lambda (size)
+                            (let* ((dim (string-append size "x" size))
+                                   (dir (string-append hicolor "/" dim "/apps")))
+                              (mkdir-p dir)
+                              (copy-file
+                               (string-append data "/bzflag-" dim ".png")
+                               (string-append dir "/bzflag.png"))))
+                          '("48" "256"))))))))
     (native-inputs
      (list pkg-config))
     (inputs
