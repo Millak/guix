@@ -2726,8 +2726,7 @@ converts them to maildir format directories.")
     (native-inputs
      (list perl))
     (arguments
-     `(#:tests? #f                   ; XXX: Upstream tests appear to be broken
-       #:make-flags (list (string-append "CC=" ,(cc-for-target))
+     `(#:make-flags (list (string-append "CC=" ,(cc-for-target))
                           "PREFIX="
                           (string-append "DESTDIR=" %output))
        #:phases
