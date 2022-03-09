@@ -8558,7 +8558,7 @@ them easier to distinguish from other, less important buffers.")
 (define-public emacs-embark
   (package
     (name "emacs-embark")
-    (version "0.15")
+    (version "0.16")
     (source
      (origin
        (method git-fetch)
@@ -8566,7 +8566,7 @@ them easier to distinguish from other, less important buffers.")
              (url "https://github.com/oantolin/embark")
              (commit version)))
        (sha256
-        (base32 "08wj0p3plvblbmfmn4vsanhldr2csrnm1lhk3g1nic5v26yi5l64"))
+        (base32 "04xxwhh577aam0fqfmprxqaw0v1l6yidikr6chajcf16mf1wd2gv"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (propagated-inputs
