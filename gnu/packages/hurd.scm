@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2015, 2016, 2017 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
-;;; Copyright © 2018, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018, 2020-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020, 2022 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
@@ -409,8 +409,8 @@ settrans --create /servers/socket/1 /hurd/pflocal
 # parse multiboot arguments
 for i in \"$@\"; do
     case $i in
-        (--system=*)
-            system=${i#--system=}
+        (gnu.system=*)
+            system=${i#gnu.system=}
             ;;
     esac
 done
