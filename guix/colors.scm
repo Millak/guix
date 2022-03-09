@@ -2,7 +2,7 @@
 ;;; Copyright © 2013, 2014 Free Software Foundation, Inc.
 ;;; Copyright © 2018 Sahithi Yarlagadda <sahi@swecha.net>
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2017, 2018, 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2017, 2018, 2019, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -31,6 +31,7 @@
 
             colorize-string
             highlight
+            highlight/warn
             dim
 
             color-rules
@@ -143,6 +144,7 @@ that subsequent output will not have any colors in effect."
         str)))
 
 (define highlight (coloring-procedure (color BOLD)))
+(define highlight/warn (coloring-procedure (color BOLD MAGENTA)))
 (define dim (coloring-procedure (color DARK)))
 
 (define (colorize-matches rules)

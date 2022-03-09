@@ -1031,12 +1031,14 @@ summary, and level 0 shows nothing."
     ;; Unfortunately, this is hardly avoidable for proper i18n.
     (if dry-run?
         (begin
-          (unless (zero? verbosity)
+          (unless (or (zero? verbosity) (null? build))
             (format (current-error-port)
-                    (N_ "~:[The following derivation would be built:~%~{   ~a~%~}~;~]"
-                        "~:[The following derivations would be built:~%~{   ~a~%~}~;~]"
-                        (length build))
-                    (null? build) (map colorized-store-item build)))
+                    (highlight/warn
+                     (N_ "The following derivation would be built:~%"
+                         "The following derivations would be built:~%"
+                         (length build))))
+            (format (current-error-port) "~{  ~a~%~}"
+                    (map colorized-store-item build)))
           (cond ((>= verbosity 2)
                  (if display-download-size?
                      (format (current-error-port)
@@ -1082,12 +1084,14 @@ summary, and level 0 shows nothing."
                              (null? download) (length download))))))
 
         (begin
-          (unless (zero? verbosity)
+          (unless (or (zero? verbosity) (null? build))
             (format (current-error-port)
-                    (N_ "~:[The following derivation will be built:~%~{   ~a~%~}~;~]"
-                        "~:[The following derivations will be built:~%~{   ~a~%~}~;~]"
-                        (length build))
-                    (null? build) (map colorized-store-item build)))
+                    (highlight/warn
+                     (N_ "The following derivation will be built:~%"
+                         "The following derivations will be built:~%"
+                         (length build))))
+            (format (current-error-port) "~{  ~a~%~}"
+                    (map colorized-store-item build)))
           (cond ((>= verbosity 2)
                  (if display-download-size?
                      (format (current-error-port)
