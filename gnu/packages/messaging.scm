@@ -2347,7 +2347,7 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
 (define-public nheko
   (package
     (name "nheko")
-    (version "0.9.0")
+    (version "0.9.2")
     (source
      (origin
        (method git-fetch)
@@ -2356,7 +2356,7 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1akhnngxkxbjwjkg5ispl6j5s2ylbcj92r3zxqqry4gbfxbjpx8k"))
+        (base32 "0q9yzzl7mvlixm1c2f55lksxgh9q11zb8k80mkwnhmmli8wbb05f"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -2430,7 +2430,7 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
            xcb-util-wm
            zlib))
     (native-inputs
-     (list doxygen graphviz pkg-config qttools))
+     (list asciidoc doxygen graphviz pkg-config qttools))
     (home-page "https://github.com/Nheko-Reborn/nheko")
     (synopsis "Desktop client for Matrix using Qt and C++14")
     (description "@code{Nheko} want to provide a native desktop app for the
