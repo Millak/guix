@@ -4333,9 +4333,7 @@ Lisp. It is intended to be a replacement of PURI.")
         (base32 "0briia9bk3lbr0frnx39d1qg6i38dm4j6z9w3yga3d40k6df4a90"))))
      (build-system asdf-build-system/sbcl)
      (arguments
-      ;; Tests fail with: Component MYWAY-ASD::MYWAY-TEST not found, required
-      ;; by #<SYSTEM "myway">. Why?
-      '(#:tests? #f))
+      '(#:asd-systems '("myway-test" "myway")))
      (native-inputs
       (list sbcl-prove))
      (inputs
