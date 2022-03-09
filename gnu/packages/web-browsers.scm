@@ -773,7 +773,7 @@ history, and page outlines.")
 (define-public bombadillo
   (package
     (name "bombadillo")
-    (version "2.3.3")
+    (version "2.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -781,7 +781,7 @@ history, and page outlines.")
                     (commit version)))
               (sha256
                (base32
-                "02w6h44sxzmk3bkdidl8xla0i9rwwpdqljnvcbydx5kyixycmg0q"))
+                "03gcd813bmiy7ad179zg4p61nfa9z5l94sdmsmmn2x204h1ksd8n"))
               (file-name (git-file-name name version))))
     (build-system go-build-system)
     (arguments
