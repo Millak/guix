@@ -2410,8 +2410,8 @@ named color.")
       (native-inputs
        (list sbcl-prove))
       (arguments
-       ;; TODO: Tests don't find "proc-parse-test", why?
-       `(#:tests? #f))
+       '(#:asd-systems '("proc-parse-test"
+			 "proc-parse")))
       (synopsis "Procedural vector parser")
       (description
        "This is a string/octets parser library for Common Lisp with speed and
