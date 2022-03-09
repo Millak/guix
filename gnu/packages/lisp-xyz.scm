@@ -5841,8 +5841,7 @@ cookie headers, cookie creation, cookie jar creation and more.")
       (native-inputs
        (list sbcl-prove))
       (arguments
-       ;; TODO: Tests fail because cl-cookie depends on cl-cookie-test.
-       `(#:tests? #f))
+       '(#:asd-systems '("cl-cookie-test" "cl-cookie")))
       (synopsis "HTTP cookie manager for Common Lisp")
       (description "cl-cookie is a Common Lisp library featuring parsing of
 cookie headers, cookie creation, cookie jar creation and more.")
