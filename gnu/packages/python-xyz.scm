@@ -4850,7 +4850,9 @@ trace directly to the terminal to ease debugging.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1fn72hw7xacjjpl4dd6wynh2x63i9rk8iqhj3v640db21qpcnbkw"))))
+         "1fn72hw7xacjjpl4dd6wynh2x63i9rk8iqhj3v640db21qpcnbkw"))
+       (patches (search-patches
+                 "python-robotframework-sshlibrary-rf5-compat.patch"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
