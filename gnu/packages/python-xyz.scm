@@ -4872,9 +4872,9 @@ trace directly to the terminal to ease debugging.")
        (modify-phases %standard-phases
          (add-before 'build 'build-and-install-doc
            (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((doc-output (assoc-ref outputs "doc"))
-                    (doc (string-append doc-output "/share/"
-                                        ,name "-" ,version "/")))
+             (let ((doc (string-append
+                         (assoc-ref outputs "doc")
+                         "/share/doc/robotframework-sshlibrary")))
                (invoke "chmod" "-R" "+w" "docs")
                (invoke "invoke" "kw-docs" "project-docs")
                (mkdir-p doc)
