@@ -4435,9 +4435,7 @@ depending on content size.")
           (base32 "0al2g7g219jjljsf7b23pbilpgacxy5as5gs2nqf76b5qni396mi"))))
       (build-system asdf-build-system/sbcl)
       (arguments
-       ;; Tests fail with: Component FAST-HTTP-ASD::FAST-HTTP-TEST not found,
-       ;; required by #<SYSTEM "fast-http">. Why?
-       `(#:tests? #f))
+       '(#:asd-systems '("fast-http-test" "fast-http")))
       (native-inputs
        `(("sbcl-prove" ,sbcl-prove)
          ("cl-syntax" ,sbcl-cl-syntax)))
