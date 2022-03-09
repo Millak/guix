@@ -25507,29 +25507,26 @@ files.")
     (license license:gpl3+)))
 
 (define-public emacs-add-node-modules-path
-  (let ((commit "f31e69ccb681f882aebb806ce6e9478e3ac39708")
-        (version "1.2.0")
-        (revision "10"))
-    (package
-      (name "emacs-add-node-modules-path")
-      (version (git-version version revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/codesuki/add-node-modules-path")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0p106bqmvdr8by5iv02bshm339qbrjcch2d15mrm4h3nav03v306"))))
-      (build-system emacs-build-system)
-      (home-page "https://github.com/codesuki/add-node-modules-path")
-      (synopsis "Add @file{node_modules} to the buffer-local @file{exec-path}")
-      (description "This package searches the parent directories of the
+  (package
+    (name "emacs-add-node-modules-path")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/codesuki/add-node-modules-path")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "039rfgwzmavgfa9gc7mh7hiw46gmgrhndsjib5kixynvcpl1y42l"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/codesuki/add-node-modules-path")
+    (synopsis "Add @file{node_modules} to the buffer-local @file{exec-path}")
+    (description "This package searches the parent directories of the
 current file for the project's @file{node_modules/.bin/} directory, allowing
 Emacs to find project-specific installations of packages.")
-      (license license:expat))))
+    (license license:expat)))
 
 (define-public emacs-flow-minor-mode
   (let ((commit "d1b32a7dd0d33c6a00a106da5f4b2323602cbd3e")
