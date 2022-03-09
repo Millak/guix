@@ -821,14 +821,14 @@ Quizzes: arithmetic and quiz.")
 (define-public bzflag
   (package
     (name "bzflag")
-    (version "2.4.22")
+    (version "2.4.24")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.bzflag.org/bzflag/source/"
                            version "/bzflag-" version ".tar.bz2"))
        (sha256
-        (base32 "0kba0011nswc2csqlzkd7bas307zm5813zlnby5vsmxn08rnar4y"))))
+        (base32 "1i73ijlnxsz52fhqgkj2qcvibfgav3byq1is68gab2zwnyz330az"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
