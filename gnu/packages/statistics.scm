@@ -355,7 +355,7 @@ as.POSIXct(if (\"\" != Sys.getenv(\"SOURCE_DATE_EPOCH\")) {\
                                         texlive-graphics
                                         texlive-hyperref
                                         texlive-oberdiek
-                                        texlive-latex-tools
+                                        texlive-tools
                                         texlive-latex-upquote
                                         texlive-url
                                         texlive-latex-xkeyval)))

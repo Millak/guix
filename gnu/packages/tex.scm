@@ -3667,43 +3667,62 @@ files have changed.  It is based on MD5 checksum, provided by pdfTeX.")
 
 (define-deprecated-package texlive-latex-rerunfilecheck texlive-rerunfilecheck)
 
-(define-public texlive-latex-tools
-  (package
-    (name "texlive-latex-tools")
-    (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "tools"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "1vm5wfyd0vbmv31a29fc7k8y14xiw00msvdx9n7dzsn9zpfjflqs"))))
-    (build-system texlive-build-system)
-    (arguments
-     '(#:tex-directory "latex/tools"
-       #:build-targets '("tools.ins")
-       #:phases (modify-phases %standard-phases
-                  (add-after 'install 'provide-array-2016-10-06.sty
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      ;; XXX: array.sty does:
-                      ;;  "DeclareRelease{}{2016-10-06}{array-2016-10-06.sty}"
-                      ;; ...which causes some users (hypre) to look for that
-                      ;; file specifically.  Provide it.
-                      (with-directory-excursion (string-append
-                                                 (assoc-ref outputs "out")
-                                                 "/share/texmf-dist/tex"
-                                                 "/latex/tools")
-                        (symlink "array.sty" "array-2016-10-06.sty")))))))
-    (home-page "https://www.ctan.org/pkg/latex-tools")
-    (synopsis "LaTeX standard tools bundle")
-    (description
-     "This package is a collection of (variously) simple tools provided as
-part of the LaTeX required tools distribution, comprising the following
-packages: afterpage, array, bm, calc, dcolumn, delarray, enumerate, fileerr,
-fontsmpl, ftnright, hhline, indentfirst, layout, longtable, multicol,
-rawfonts, showkeys, somedefs, tabularx, theorem, trace, varioref, verbatim,
-xr, and xspace.")
-    (license license:lppl1.3+)))
+(define-public texlive-tools
+  (let ((template (simple-texlive-package
+                   "texlive-tools"
+                   (list "doc/latex/tools/"
+                         "source/latex/tools/"
+                         "tex/latex/tools/")
+                   (base32
+                    "0c0ixkcvrlzx6sdj25ak3bx0j65qghf51w66yg5wlnpg08d3awrs"))))
+    (package
+      (inherit template)
+      (outputs '("out" "doc"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ '())
+          "latex/tools")
+         ((#:build-targets _ '())
+          #~(list "tools.ins"))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _
+                  (chdir "source/latex/tools")))
+              (replace 'copy-files
+                (lambda _
+                  (let ((origin #$(package-source this-package))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc)
+                    ;; These files are not generated.
+                    (let ((directory "/tex/latex/tools"))
+                      (with-directory-excursion (string-append origin directory)
+                        (for-each
+                         (lambda (f)
+                           (install-file f (string-append #$output
+                                                          "/share/texmf-dist"
+                                                          directory)))
+                         '("array-2016-10-06.sty"
+                           "array-2020-02-10.sty"
+                           "multicol-2017-04-11.sty"
+                           "varioref-2016-02-16.sty")))))))))))
+      (home-page "https://www.ctan.org/tex-archive/macros/latex/required/tools/")
+      (synopsis "LaTeX standard tools bundle")
+      (description "This package provides a collection of simple tools that
+are part of the LaTeX required tools distribution, comprising the packages:
+@code{afterpage}, @code{array}, @code{bm}, @code{calc}, @code{dcolumn},
+@code{delarray}, @code{enumerate}, @code{fileerr}, @code{fontsmpl},
+@code{ftnright}, @code{hhline}, @code{indentfirst}, @code{layout},
+@code{longtable}, @code{multicol}, @code{rawfonts}, @code{showkeys},
+@code{somedefs}, @code{tabularx}, @code{theorem}, @code{trace},
+@code{varioref}, @code{verbatim}, @code{xr}, and @code{xspace}.")
+      (license license:lppl1.3+))))
+
+(define-deprecated-package texlive-latex-tools texlive-tools)
 
 (define-public texlive-url
   (package
@@ -4478,7 +4497,7 @@ part of the LaTeX required set of packages.")
                 texlive-generic-babel-english
                 texlive-latex-cyrillic
                 texlive-psnfss
-                texlive-latex-tools
+                texlive-tools
                 texlive-tetex)))
     (package
       (name "texlive-base")
@@ -5085,7 +5104,7 @@ rotated.")
            texlive-latex-l3kernel ; for expl3
            texlive-oberdiek
            texlive-latex-psfrag
-           texlive-latex-tools ; for shellesc
+           texlive-tools ; for shellesc
            texlive-latex-trimspaces
            texlive-latex-xkeyval))
     (home-page "https://www.ctan.org/pkg/pstool")
@@ -6920,7 +6939,7 @@ Simple Young tableaux.
              texlive-latex-colortbl
              texlive-fancyhdr
              texlive-graphics ;for color.sty
-             texlive-latex-tools ;for array.sty
+             texlive-tools ;for array.sty
              texlive-marvosym
              texlive-tex-ini-files)) ;for pdftexconfig
       (home-page "https://www.ctan.org/pkg/jadetex/")
@@ -9339,61 +9358,6 @@ LuaTeX (respectively) is not the engine in use.")
 
 (define-deprecated-package texlive-generic-ifxetex texlive-iftex)
 
-(define-public texlive-tools
-  (let ((template (simple-texlive-package
-                   "texlive-tools"
-                   (list "doc/latex/tools/"
-                         "source/latex/tools/"
-                         "tex/latex/tools/")
-                   (base32
-                    "0c0ixkcvrlzx6sdj25ak3bx0j65qghf51w66yg5wlnpg08d3awrs"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "latex/tools")
-         ((#:build-targets _ '())
-          #~(list "tools.ins"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _
-                  (chdir "source/latex/tools")))
-              (replace 'copy-files
-                (lambda _
-                  (let ((origin #$(package-source this-package))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc)
-                    ;; These files are not generated.
-                    (let ((directory "/tex/latex/tools"))
-                      (with-directory-excursion (string-append origin directory)
-                        (for-each
-                         (lambda (f)
-                           (install-file f (string-append #$output
-                                                          "/share/texmf-dist"
-                                                          directory)))
-                         '("array-2016-10-06.sty"
-                           "array-2020-02-10.sty"
-                           "multicol-2017-04-11.sty"
-                           "varioref-2016-02-16.sty")))))))))))
-      (home-page "https://www.ctan.org/tex-archive/macros/latex/required/tools/")
-      (synopsis "LaTeX standard tools bundle")
-      (description "This package provides a collection of simple tools that
-are part of the LaTeX required tools distribution, comprising the packages:
-@code{afterpage}, @code{array}, @code{bm}, @code{calc}, @code{dcolumn},
-@code{delarray}, @code{enumerate}, @code{fileerr}, @code{fontsmpl},
-@code{ftnright}, @code{hhline}, @code{indentfirst}, @code{layout},
-@code{longtable}, @code{multicol}, @code{rawfonts}, @code{showkeys},
-@code{somedefs}, @code{tabularx}, @code{theorem}, @code{trace},
-@code{varioref}, @code{verbatim}, @code{xr}, and @code{xspace}.")
-      (license license:lppl1.3+))))
-
 (define-public texlive-latex-xkeyval
   (package
     (name "texlive-latex-xkeyval")
@@ -10459,8 +10423,7 @@ provided box macros are @code{\\lapbox}, @code{\\marginbox},
     (package
       (inherit template)
       (propagated-inputs
-       (list texlive-etoolbox texlive-latex-environ texlive-pgf
-             texlive-latex-tools))
+       (list texlive-etoolbox texlive-latex-environ texlive-pgf texlive-tools))
       (home-page "https://www.ctan.org/pkg/tcolorbox")
       (synopsis "Colored boxes, for LaTeX examples and theorems, etc")
       (description "This package provides an environment for colored and
