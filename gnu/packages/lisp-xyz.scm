@@ -4399,11 +4399,10 @@ effieiently.")
           (base32 "0qz1zzxx0wm5ff7gpgsq550a59p0qj594zfmm2rglj97dahj54l7"))))
       (build-system asdf-build-system/sbcl)
       (arguments
-       ;; Tests fail with: Component SMART-BUFFER-ASD::SMART-BUFFER-TEST not
-       ;; found, required by #<SYSTEM "smart-buffer">. Why?
-       `(#:tests? #f))
+       '(#:asd-systems '("smart-buffer-test" "smart-buffer")))
       (native-inputs
-       (list sbcl-prove))
+       (list sbcl-prove
+             sbcl-babel))
       (inputs
        (list sbcl-xsubseq sbcl-flexi-streams))
       (home-page "https://github.com/fukamachi/smart-buffer")
