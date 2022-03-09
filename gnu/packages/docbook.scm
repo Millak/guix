@@ -476,7 +476,7 @@ the in DocBook SGML DTDs.")
                                         texlive-listings
                                         texlive-latex-multirow
                                         texlive-latex-overpic
-                                        texlive-latex-pdfpages
+                                        texlive-pdfpages
                                         texlive-refcount
                                         texlive-subfigure
                                         texlive-titlesec

@@ -6571,29 +6571,51 @@ that is untidy; this package (though it is no substitute for a properly
 designed class) helps alleviate this untidiness.")
     (license license:lppl)))
 
-(define-public texlive-latex-pdfpages
-  (package
-    (name "texlive-latex-pdfpages")
-    (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "pdfpages"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "140kl8r7g2ak2frjn5pmwiwibfynyfwp897r9vk8pypmn390lzr2"))))
-    (build-system texlive-build-system)
-    (arguments '(#:tex-directory "latex/pdfpages"))
-    (home-page "https://www.ctan.org/pkg/pdfpages")
-    (synopsis "Include PDF documents in LaTeX")
-    (description
-     "This package simplifies the inclusion of external multi-page PDF
+(define-public texlive-pdfpages
+  (let ((template (simple-texlive-package
+                   "texlive-pdfpages"
+                   (list "doc/latex/pdfpages/"
+                         "source/latex/pdfpages/"
+                         "tex/latex/pdfpages/")
+                   (base32
+                    "0a68vxkygk20fp51fkp7nvs8mc7h6irdvxal8qsnn9zrgr965d76"))))
+    (package
+      (inherit template)
+      (outputs '("out" "doc"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ '())
+          "latex/pdfpages")
+         ((#:build-targets _ '())
+          #~(list "pdfpages.ins"))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _
+                  (chdir "source/latex/pdfpages")))
+              (replace 'copy-files
+                (lambda _
+                  (let ((origin #$(package-source this-package))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc))))))))
+      (propagated-inputs
+       (list texlive-tools texlive-oberdiek texlive-graphics texlive-eso-pic))
+      (home-page "https://ctan.org/macros/latex/contrib/pdfpages")
+      (synopsis "Include PDF documents in LaTeX")
+      (description
+       "This package simplifies the inclusion of external multi-page PDF
 documents in LaTeX documents.  Pages may be freely selected and it is possible
 to put several logical pages onto each sheet of paper.  Furthermore a lot of
 hypertext features like hyperlinks and article threads are provided.  The
 package supports pdfTeX (pdfLaTeX) and VTeX.  With VTeX it is even possible to
 use this package to insert PostScript files, in addition to PDF files.")
-    (license license:lppl1.3+)))
+      (license license:lppl1.3+))))
+
+(define-deprecated-package texlive-latex-pdfpages texlive-pdfpages)
 
 (define-public texlive-stmaryrd
   (let ((template (simple-texlive-package
