@@ -4366,9 +4366,7 @@ Lisp. It is intended to be a replacement of PURI.")
         (base32 "1xz79q0p2mclf3sqjiwf6izdpb6xrsr350bv4mlmdlm6rg5r99px"))))
      (build-system asdf-build-system/sbcl)
      (arguments
-      ;; Tests fail with: Component XSUBSEQ-ASD::XSUBSEQ-TEST not found,
-      ;; required by #<SYSTEM "xsubseq">. Why?
-      '(#:tests? #f))
+      '(#:asd-systems '("xsubseq-test" "xsubseq")))
      (native-inputs
       (list sbcl-prove))
      (home-page "https://github.com/fukamachi/xsubseq")
