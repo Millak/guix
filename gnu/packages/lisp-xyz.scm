@@ -16581,17 +16581,7 @@ combinators in Common Lisp, similar in concept to Haskell Parsec system.")
           (base32 "1rhannhpsw1yg1fpflam483a3w9qb1izgyvmnmiddv3dn4qsmn9p"))))
       (build-system asdf-build-system/sbcl)
       (arguments
-       ;; FIXME: (Sharlatan-20210523T190658+0100): All tests passed ok but
-       ;; successfully failed in the end:
-       ;;
-       ;; Summary:
-       ;;   All 1 file passed.
-       ;; Unhandled ASDF/FIND-COMPONENT:MISSING-DEPENDENCY
-       ;; in thread #<SB-THREAD:THREAD "main thread" RUNNING {100B6C8253}>:
-       ;;   Component CL-LOCALE-ASD::CL-LOCALE-TEST not found, required by
-       ;;   #<SYSTEM "cl-locale">
-       ;;
-       `(#:tests? #f))
+       '(#:asd-systems '("cl-locale-test" "cl-locale")))
       (native-inputs
        `(("prove" ,sbcl-prove)
          ("flexi-streams" ,sbcl-flexi-streams)))
