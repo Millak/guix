@@ -785,24 +785,24 @@ history, and page outlines.")
               (file-name (git-file-name name version))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "tildegit.org/sloum/bombadillo"
-       #:install-source? #f
-       #:phases (modify-phases %standard-phases
-                  (add-after 'install 'install-data
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let* ((builddir "src/tildegit.org/sloum/bombadillo")
-                             (out (assoc-ref outputs "out"))
-                             (pkg (strip-store-file-name out))
-                             (sharedir (string-append out "/share"))
-                             (appdir (string-append sharedir "/applications"))
-                             (docdir (string-append sharedir "/doc/" pkg))
-                             (mandir (string-append sharedir "/man/man1"))
-                             (pixdir (string-append sharedir "/pixmaps")))
-                        (with-directory-excursion builddir
-                          (install-file "bombadillo.desktop" appdir)
-                          (install-file "bombadillo.1" mandir)
-                          (install-file "bombadillo-icon.png" pixdir)
-                          #t)))))))
+     (list
+      #:import-path "tildegit.org/sloum/bombadillo"
+      #:install-source? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-data
+            (lambda _
+              (let* ((builddir "src/tildegit.org/sloum/bombadillo")
+                     (pkg (strip-store-file-name #$output))
+                     (sharedir (string-append #$output "/share"))
+                     (appdir (string-append sharedir "/applications"))
+                     (docdir (string-append sharedir "/doc/" pkg))
+                     (mandir (string-append sharedir "/man/man1"))
+                     (pixdir (string-append sharedir "/pixmaps")))
+                (with-directory-excursion builddir
+                  (install-file "bombadillo.desktop" appdir)
+                  (install-file "bombadillo.1" mandir)
+                  (install-file "bombadillo-icon.png" pixdir))))))))
     (home-page "https://bombadillo.colorfield.space")
     (synopsis "Terminal browser for the gopher, gemini, and finger protocols")
     (description "Bombadillo is a non-web browser for the terminal with
