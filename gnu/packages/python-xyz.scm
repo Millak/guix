@@ -23801,6 +23801,40 @@ a mypy plugin that smooths over some limitations in the basic type hints.
     ;; Either license applies.
     (license (list license:expat license:asl2.0))))
 
+(define-public python-trio-websocket
+  (package
+    (name "python-trio-websocket")
+    (version "0.9.2")
+    (source
+     (origin
+       (method git-fetch)               ;no tests in pypi archive
+       (uri (git-reference
+             (url "https://github.com/HyperionGray/trio-websocket")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1yk2ak991kbl30xg8ldpggack1lwkizd7s5cpr28ir34z8iyjnpi"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests? (invoke "pytest" "-vv")))))))
+    (native-inputs (list python-pytest python-pytest-trio python-trustme))
+    (propagated-inputs (list python-async-generator python-trio python-wsproto))
+    (home-page "https://github.com/HyperionGray/trio-websocket")
+    (synopsis "WebSocket library for Trio")
+    (description "This library implements both server and client aspects of
+the @url{https://tools.ietf.org/html/rfc6455, the WebSocket protocol},
+striving for safety, correctness, and ergonomics.  It is based on the
+@url{https://wsproto.readthedocs.io/en/latest/, wsproto project}, which is a
+@url{https://sans-io.readthedocs.io/, Sans-IO} state machine that implements
+the majority of the WebSocket protocol, including framing, codecs, and events.
+This library handles I/O using @url{https://trio.readthedocs.io/en/latest/,
+the Trio framework}.")
+    (license license:expat)))
+
 (define-public python-humanize
   (package
     (name "python-humanize")
