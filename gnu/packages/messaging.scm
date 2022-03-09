@@ -2302,7 +2302,7 @@ QMatrixClient project.")
 (define-public mtxclient
   (package
     (name "mtxclient")
-    (version "0.6.1")
+    (version "0.7.0")
     (source
      (origin
        (method git-fetch)
@@ -2311,7 +2311,7 @@ QMatrixClient project.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1a3ki45rf1fm7y4b74li76aqd4qc4y5ga5r163s0cwcpj9mp8c45"))))
+        (base32 "0kgz9i3xgyk1a82sv48a1m8gdxg0cl5pgd5imgwy519vvjlkwv48"))))
     (arguments
      `(#:configure-flags
        (list
