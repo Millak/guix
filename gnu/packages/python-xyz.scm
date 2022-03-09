@@ -4689,37 +4689,50 @@ ecosystem, but can naturally be used also by other projects.")
        (sha256
         (base32 "0j71awmfkwk7prz82kr1zbcl3nrih3396sshrygnqlrdjmgivd3p"))
        (patches (search-patches
-                 "python-robotframework-source-date-epoch.patch"))))
+                 "python-robotframework-source-date-epoch.patch"
+                 "python-robotframework-ug2html.patch"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-before 'build 'build-and-install-doc
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let* ((doc-output (assoc-ref outputs "doc"))
-                             (doc (string-append doc-output "/share/"
-                                                 ,name "-" ,version "/")))
-                        (invoke "invoke" "library-docs" "all")
-                        (mkdir-p doc)
-                        (copy-recursively "doc/libraries"
-                                          (string-append doc "/libraries")))))
-                  (replace 'check
-                    (lambda* (#:key native-inputs inputs tests?
-                              #:allow-other-keys)
-                      (when tests?
-                        ;; Some tests require timezone data.  Otherwise, they
-                        ;; look up /etc/localtime, which doesn't exist, and
-                        ;; fail with:
-                        ;;
-                        ;; OverflowError: mktime argument out of range
-                        (setenv "TZDIR"
-                                (search-input-directory
-                                 (or native-inputs inputs) "share/zoneinfo"))
-                        (setenv "TZ" "Europe/Paris")
-                        (invoke "python" "utest/run.py")))))))
+     `(#:modules ((guix build python-build-system)
+                  (guix build utils)
+                  (ice-9 ftw)
+                  (ice-9 match)
+                  (srfi srfi-26))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'build-and-install-doc
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((doc (string-append (assoc-ref outputs "doc")
+                                       "/share/doc/robotframework")))
+               (invoke "invoke" "library-docs" "all")
+               (invoke "doc/userguide/ug2html.py" "dist") ;user guide
+               (mkdir-p doc)
+               (with-directory-excursion "dist"
+                 (define user-guide-dir
+                   (match (scandir "." (cut string-prefix?
+                                            "robotframework-userguide-" <>))
+                     ((dir) dir)
+                     (_ (error "could not find the user guide directory"))))
+                 (copy-recursively user-guide-dir doc)))))
+         (replace 'check
+           (lambda* (#:key native-inputs inputs tests?
+                     #:allow-other-keys)
+             (when tests?
+               ;; Some tests require timezone data.  Otherwise, they
+               ;; look up /etc/localtime, which doesn't exist, and
+               ;; fail with:
+               ;;
+               ;; OverflowError: mktime argument out of range
+               (setenv "TZDIR"
+                       (search-input-directory
+                        (or native-inputs inputs) "share/zoneinfo"))
+               (setenv "TZ" "Europe/Paris")
+               (invoke "python" "utest/run.py")))))))
     (native-inputs
      `(("python-docutils" ,python-docutils)
        ("python-jsonschema" ,python-jsonschema)
        ("python-invoke" ,python-invoke)
+       ("python-pygments" ,python-pygments)
        ("python-rellu" ,python-rellu)
        ("python:tk" ,python "tk")       ;used when building the HTML doc
        ("tzdata" ,tzdata-for-tests)))
