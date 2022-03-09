@@ -17015,7 +17015,7 @@ characters, mouse support, and auto suggestions.")
                (invoke "python" "-m" "pytest" "-vv"))
              #t)))))
     (native-inputs
-     (list python-colorama python-docopt python-django-2.2 python-pytest))
+     (list python-colorama python-docopt python-pytest))
     (propagated-inputs
      (list python-parso))
     (home-page "https://github.com/davidhalter/jedi")
