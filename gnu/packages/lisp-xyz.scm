@@ -12226,9 +12226,7 @@ can separate configuration system from an implementation.")
                  (("\\(:test-file \"postgres-types\"\\)") "")
                  (("\\(:test-file \"mixin\"\\)") ""))
                #t)))
-         ;; TODO: While all enabled tests pass, the phase fails with:
-         ;; Component MITO-ASD::MITO-TEST not found, required by #<SYSTEM "mito">
-         #:tests? #f))
+         #:asd-systems '("mito-test" "mito")))
       (synopsis "ORM for Common Lisp with migrations and relationships support")
       (description "Mito is yet another object relational mapper, and it aims
 to be a successor of Integral.
