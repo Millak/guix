@@ -157,6 +157,11 @@ parsers to allow execution with Guile as extension languages.")))
               (sha256
                (base32
                 "065ksalfllbdrzl12dz9d9dcxrv97wqxblslngsc6kajvnvlyvpk"))))
+
+    ;; XXX: Remove GUILE-BYTESTRUCTURES, an optional dependency needed to
+    ;; build the FFI helper, because it fails to build.
+    (propagated-inputs '())
+
     (inputs (list guile-3.0))))
 
 (define-public mes
