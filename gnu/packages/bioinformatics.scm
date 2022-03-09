@@ -13883,6 +13883,35 @@ vast-tools, an RNA-Seq pipeline for alternative splicing analysis.  The plots
 are generated using @code{ggplot2}.")
     (license license:expat)))
 
+(define-public r-scopeloomr
+  (let ((commit "99726f5f7da794042036b73924b6a10d6e7b4d5d")
+        (revision "1"))
+    (package
+      (name "r-scopeloomr")
+      (version (git-version "0.13.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/aertslab/SCopeLoomR")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1ci17ms0c0hf7yfp9ckcg7a2y1s0nm19jj3cifsd55hwc0gdglmz"))))
+      (properties `((upstream-name . "SCopeLoomR")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-base64enc r-hdf5r r-igraph r-matrix r-plyr r-rjson r-rlist))
+      (home-page "https://github.com/aertslab/SCopeLoomR")
+      (synopsis "Build .loom files and extract data from them")
+      (description
+       "This is an R package to build generic @code{.loom} files aligning with
+the default naming convention of the @code{.loom} format and to integrate
+other data types e.g.: regulons (SCENIC), clusters from Seurat, trajectory
+information...  The package can also be used to extract data from @code{.loom}
+files.")
+      (license license:expat))))
+
 (define-public vbz-compression
   (package
     (name "vbz-compression")
