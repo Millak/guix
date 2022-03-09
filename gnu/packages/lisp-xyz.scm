@@ -17255,15 +17255,7 @@ computing and event based message handling.")
           (base32 "1yac1v7zmdxj0p6rvwrrhyqvy7yjfhmqbchkwqhhr89gpjvvaick"))))
       (build-system asdf-build-system/sbcl)
       (arguments
-       ;; All test cases pass, but tests successfully fail at the end:
-       ;;
-       ;; Summary:
-       ;;   All 1 file passed.
-       ;; Unhandled ASDF/FIND-COMPONENT:MISSING-DEPENDENCY in thread
-       ;; #<SB-THREAD:THREAD "main thread" RUNNING {1001858103}>:
-       ;;   Component ASSOC-UTILS-ASD::ASSOC-UTILS-TEST not found, required by
-       ;;   #<SYSTEM "assoc-utils">
-       `(#:tests? #f))
+       '(#:asd-systems '("assoc-utils-test" "assoc-utils")))
       (native-inputs
        (list sbcl-prove))
       (home-page "https://github.com/fukamachi/assoc-utils")
