@@ -4612,11 +4612,9 @@ CCL.")
         (base32 "1jd06snjvxcprhapgfq8sx0y5lrldkvhf206ix6d5a23dd6zcmr0"))))
      (build-system asdf-build-system/sbcl)
      (arguments
-      ;; Tests fail with: Component HTTP-BODY-ASD::HTTP-BODY-TEST not
-      ;; found, required by #<SYSTEM "http-body">. Why?
-      `(#:tests? #f))
+      '(#:asd-systems '("http-body-test" "http-body")))
      (native-inputs
-      (list sbcl-prove))
+      (list sbcl-prove sbcl-trivial-utf-8))
      (inputs
       (list sbcl-fast-http sbcl-jonathan sbcl-quri))
      (home-page "https://github.com/fukamachi/http-body")
