@@ -348,7 +348,7 @@ The other options should be self-descriptive."
                          (default ""))
 
   ;; list of user-name/file-like tuples
-  (authorized-keys       openssh-authorized-keys
+  (authorized-keys       openssh-configuration-authorized-keys
                          (default '()))
 
   ;; Boolean
@@ -396,7 +396,7 @@ The other options should be self-descriptive."
             (unless (= ENOENT (system-error-errno args))
               (apply throw args))))
         (copy-recursively #$(authorized-key-directory
-                             (openssh-authorized-keys config))
+                             (openssh-configuration-authorized-keys config))
                           "/etc/ssh/authorized_keys.d")
 
         (chmod "/etc/ssh/authorized_keys.d" #o555)
@@ -541,10 +541,11 @@ of user-name/file-like tuples."
   (openssh-configuration
    (inherit config)
    (authorized-keys
-    (match (openssh-authorized-keys config)
+    (match (openssh-configuration-authorized-keys config)
       (((users _ ...) ...)
        ;; Build a user/key-list mapping.
-       (let ((user-keys (alist->vhash (openssh-authorized-keys config))))
+       (let ((user-keys (alist->vhash
+                         (openssh-configuration-authorized-keys config))))
          ;; Coalesce the key lists associated with each user.
          (map (lambda (user)
                 `(,user
