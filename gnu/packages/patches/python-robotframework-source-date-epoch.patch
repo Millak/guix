@@ -1,62 +1,64 @@
-From 3cc41c05fad5601c0dd1832f64a6e9efca017727 Mon Sep 17 00:00:00 2001
-From: Maxim Cournoyer <maxim.cournoyer@gmail.com>
-Date: Mon, 1 Apr 2019 11:36:04 -0400
-Subject: [PATCH] robottime: Honor the SOURCE_DATE_EPOCH environment variable.
+Do not embed any timestamp in the built documentation.
 
-Honoring the SOURCE_DATE_EPOCH environment variable allows building
-the documentation using libdoc reproducibly, by setting the generated
-timestamp to a fixed value.
+Upstream issue: https://github.com/robotframework/robotframework/issues/4262.
 
-For more background on reproducible builds and the SOURCE_DATE_EPOCH
-environment variable, see:
-https://reproducible-builds.org/specs/source-date-epoch/.
-
-* src/robot/utils/robottime.py: import `os'.
-(TimestampCache._get_epoch): Retrieve date from SOURCE_DATE_EPOCH if
-it is defined, otherwise from time.time().
-* utest/output/test_logger.py (TestLogger.test_write_to_one_logger):
-Check for the existance of a timestamp attribute instead of checking
-for its content as the later is easy to break when using the
-SOURCE_DATE_EPOCH environment variable.
----
- src/robot/utils/robottime.py | 3 +++
- utest/output/test_logger.py  | 2 +-
- 2 files changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/src/robot/utils/robottime.py b/src/robot/utils/robottime.py
-index 06432a4a6..91526f826 100644
---- a/src/robot/utils/robottime.py
-+++ b/src/robot/utils/robottime.py
+diff --git a/doc/userguide/ug2html.py b/doc/userguide/ug2html.py
+index 43cdb31bd..550e74a79 100755
+--- a/doc/userguide/ug2html.py
++++ b/doc/userguide/ug2html.py
+@@ -158,8 +158,7 @@ def create_userguide():
+     install_file = _copy_installation_instructions()
+ 
+     description = 'HTML generator for Robot Framework User Guide.'
+-    arguments = ['--time',
+-                 '--stylesheet-path', ['src/userguide.css'],
++    arguments = ['--stylesheet-path', ['src/userguide.css'],
+                  'src/RobotFrameworkUserGuide.rst',
+                  'RobotFrameworkUserGuide.html']
+     os.chdir(CURDIR)
+diff --git a/src/robot/libdocpkg/model.py b/src/robot/libdocpkg/model.py
+index 4d9ffd70b..5c276d1d6 100644
+--- a/src/robot/libdocpkg/model.py
++++ b/src/robot/libdocpkg/model.py
 @@ -14,6 +14,7 @@
  #  limitations under the License.
  
- import datetime
+ import json
 +import os
- import time
  import re
+ from itertools import chain
  
-@@ -395,6 +396,8 @@ class TimestampCache(object):
+@@ -113,7 +114,8 @@ class LibraryDoc(object):
+             'name': self.name,
+             'doc': self.doc,
+             'version': self.version,
+-            'generated': get_timestamp(daysep='-', millissep=None),
++            'generated': ('' if os.environ['SOURCE_DATE_EPOCH']
++                          else get_timestamp(daysep='-', millissep=None)),
+             'type': self.type,
+             'scope': self.scope,
+             'docFormat': self.doc_format,
+diff --git a/src/robot/libdocpkg/xmlwriter.py b/src/robot/libdocpkg/xmlwriter.py
+index 3882e1219..4a84fb42e 100644
+--- a/src/robot/libdocpkg/xmlwriter.py
++++ b/src/robot/libdocpkg/xmlwriter.py
+@@ -14,6 +14,8 @@
+ #  limitations under the License.
  
-     # Seam for mocking
-     def _get_epoch(self):
-+        if os.getenv('SOURCE_DATE_EPOCH'):
-+            return float(os.getenv('SOURCE_DATE_EPOCH'))
-         return time.time()
+ import os.path
++import os
++
+ from datetime import datetime
  
-     def _use_cache(self, secs, *separators):
-diff --git a/utest/output/test_logger.py b/utest/output/test_logger.py
-index 92fe6d77d..e980227aa 100644
---- a/utest/output/test_logger.py
-+++ b/utest/output/test_logger.py
-@@ -46,7 +46,7 @@ class TestLogger(unittest.TestCase):
-         logger = LoggerMock(('Hello, world!', 'INFO'))
-         self.logger.register_logger(logger)
-         self.logger.write('Hello, world!', 'INFO')
--        assert_true(logger.msg.timestamp.startswith('20'))
-+        assert_true(hasattr(logger.msg, 'timestamp'))
+ from robot.utils import WINDOWS, XmlWriter, unicode
+@@ -30,7 +32,9 @@ class LibdocXmlWriter(object):
+         self._write_end(writer)
  
-     def test_write_to_one_logger_with_trace_level(self):
-         logger = LoggerMock(('expected message', 'TRACE'))
--- 
-2.20.1
-
+     def _write_start(self, libdoc, writer):
+-        generated = datetime.utcnow().replace(microsecond=0).isoformat() + 'Z'
++        generated = (
++            '' if os.environ['SOURCE_DATE_EPOCH']
++            else datetime.utcnow().replace(microsecond=0).isoformat() + 'Z')
+         attrs = {'name': libdoc.name,
+                  'type': libdoc.type,
+                  'format': libdoc.doc_format,
