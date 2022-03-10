@@ -14056,21 +14056,36 @@ files for use with Python.")
     (license license:bsd-2)))
 
 (define-public python-args
-  (package
-    (name "python-args")
-    (version "0.1.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "args" version))
-              (sha256
-               (base32
-                "057qzi46h5dmxdqknsbrssn78lmqjlnm624iqdhrnpk26zcbi1d7"))))
-    (build-system python-build-system)
-    (home-page "https://github.com/kennethreitz/args")
-    (synopsis "Command-line argument parser")
-    (description
-     "This library provides a Python module to parse command-line arguments.")
-    (license license:bsd-3)))
+  (let ((commit "9460f1a35eb3055e9e4de1f0a6932e0883c72d65") (revision "0"))
+    (package
+      (name "python-args")
+      (version (git-version "0.1.0" revision commit))
+      (home-page "https://github.com/kennethreitz-archive/args")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url home-page)
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1zfxpbp9vldqdrjmd0c6y3wisl35mx5v8zlyp3nhwpy1730wrc9j"))))
+      (build-system python-build-system)
+      (arguments
+       `(#:phases (modify-phases %standard-phases
+                    (add-after 'unpack 'patch-args.py
+                      (lambda _
+                        (substitute* "args.py"
+                          (("basestring") "str"))))
+                    (replace 'check
+                      (lambda* (#:key tests? #:allow-other-keys)
+                        (when tests?
+                          (invoke "nosetests" "-v")))))))
+      (native-inputs (list python-nose))
+      (synopsis "Command-line argument parser")
+      (description
+       "This library provides a Python module to parse command-line arguments.")
+      (license license:bsd-3))))
 
 (define-public python-clint
   (package
