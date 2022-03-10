@@ -6353,14 +6353,14 @@ src blocks.")
 (define-public emacs-debbugs
   (package
     (name "emacs-debbugs")
-    (version "0.30")
+    (version "0.31")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/debbugs-"
                            version ".tar"))
        (sha256
-        (base32 "05yy1hhxd59rhricb14iai71w681222sv0i703yrgg868mphl7sb"))))
+        (base32 "11vdjrn5m5g6pirw8jv0602fbwwgdhazfrrwxxplii8x02gqk0sr"))))
     (build-system emacs-build-system)
     (arguments '(#:include '("\\.el$" "\\.wsdl$" "\\.info$")))
     (propagated-inputs
