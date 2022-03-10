@@ -93,6 +93,11 @@ Each database is contained in a specific package output, such as the
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'unbundle-pci.ids
+           (lambda* (#:key native-inputs inputs #:allow-other-keys)
+             (copy-file (search-input-file (or native-inputs inputs)
+                                           "share/hwdata/pci.ids")
+                        "pci.ids")))
          (replace 'configure
            (lambda* (#:key outputs #:allow-other-keys)
              ;; There's no 'configure' script, just a raw makefile.
@@ -115,22 +120,29 @@ Each database is contained in a specific package output, such as the
                 (string-append "PREFIX := " (assoc-ref outputs "out")
                                "\n"))
                (("^MANDIR:=.*$")
-                 ;; By default the thing tries to automatically
-                 ;; determine whether to use $prefix/man or
-                 ;; $prefix/share/man, and wrongly so.
+                ;; By default the thing tries to automatically
+                ;; determine whether to use $prefix/man or
+                ;; $prefix/share/man, and wrongly so.
                 (string-append "MANDIR := " (assoc-ref outputs "out")
                                "/share/man\n"))
 
                (("^SHARED=.*$")
                 ;; Build libpciutils.so.
                 "SHARED := yes\n")
+
                (("^ZLIB=.*$")
                 ;; Ask for zlib support, for 'pci.ids.gz' decompression.
                 "ZLIB := yes\n")
 
                (("^IDSDIR=.*$")
                 ;; Installation directory of 'pci.ids.gz'.
-                "IDSDIR = $(SHAREDIR)/hwdata\n"))))
+                "IDSDIR = $(SHAREDIR)/hwdata\n")
+
+               ;; Do not install the update script nor its man page.
+               ((".*INSTALL.*update-pciids .*") "")
+               (("update-pciids update-pciids.8 ") "")
+               (("(.*INSTALL.*)update-pciids.8(.*)" _ head tail)
+                (string-append head tail)))))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
              ;; Install the commands, library, and .pc files.
@@ -151,7 +163,7 @@ Each database is contained in a specific package output, such as the
        ;; No test suite.
        #:tests? #f))
     (native-inputs
-     (list which pkg-config))
+     (list `(,hwdata "pci") pkg-config which))
     (inputs
      `(,@(if (not (hurd-target?))
              `(("kmod" ,kmod))
