@@ -7232,8 +7232,9 @@ used by nftables.")
     (build-system gnu-build-system)
     (arguments `(#:configure-flags
                  '("--disable-static"
-                   "--with-cli=readline")))
-    (inputs (list gmp libmnl libnftnl readline))
+                   "--with-cli=readline"
+                   "--with-json")))
+    (inputs (list gmp libmnl libnftnl readline jansson))
     (native-inputs (list pkg-config bison flex docbook2x))
     (home-page "https://www.nftables.org")
     (synopsis "Userspace utility for Linux packet filtering")
