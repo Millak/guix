@@ -946,12 +946,20 @@ can only be accessed by their host.")))
 that will be listening to receive secret keys on port 1004, TCP."
   (operating-system
     (inherit os)
-    ;; Arrange so that the secret service activation snippet shows up before
-    ;; the OpenSSH and Guix activation snippets.  That way, we receive OpenSSH
-    ;; and Guix keys before the activation snippets try to generate fresh keys
-    ;; for nothing.
-    (services (append (operating-system-user-services os)
-                      (list (service secret-service-type 1004))))))
+    (services
+     ;; Turn off SSH and Guix key generation that normally happens during
+     ;; activation: that requires entropy and thus takes time during boot, and
+     ;; those keys are going to be overwritten by secrets received from the
+     ;; host anyway.
+     (cons (service secret-service-type 1004)
+           (modify-services (operating-system-user-services os)
+             (openssh-service-type
+              config => (openssh-configuration
+                         (inherit config)
+                         (generate-host-keys? #f)))
+             (guix-service-type
+              config => (guix-configuration
+                         (generate-substitute-key? #f))))))))
 
 
 ;;;
