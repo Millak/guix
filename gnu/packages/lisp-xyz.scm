@@ -5792,20 +5792,22 @@ XSD type library.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url home-page)
+               (url "https://github.com/takagi/cl-reexport")
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-reexport" version))
          (sha256
           (base32
            "1cwpn1m3wrl0fl9plznn7p464db646gnfc8zkyk97dyxski2aq0x"))))
       (inputs
-       `(("alexandria" ,sbcl-alexandria)))
+       (list sbcl-alexandria))
       (arguments
        ;; TODO: Tests fail because cl-test-more is missing, but I can't find it online.
        `(#:tests? #f))
-      (synopsis "HTTP cookie manager for Common Lisp")
-      (description "cl-cookie is a Common Lisp library featuring parsing of
-cookie headers, cookie creation, cookie jar creation and more.")
+      (synopsis "Reexport external symbols in other Common Lisp packages")
+      (description
+       "Cl-reexport makes a package reexport symbols which are external
+symbols in other Common Lisp packages.  This fanctionality is intended to be
+used with (virtual) hierarchical packages.")
       (license license:llgpl))))
 
 (define-public cl-reexport
