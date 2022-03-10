@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Ian Denhardt <ian@zenhack.net>
 ;;; Copyright © 2014, 2016, 2020 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2014, 2015 Federico Beffa <beffa@fbengineering.ch>
@@ -5180,6 +5180,7 @@ once.")
                (("gtk-update-icon-cache") (which "true"))))))))
     (native-inputs
      `(("pkg-config" ,pkg-config)
+       ("python" ,python)                     ;for 'build-aux/post_install.py'
        ("desktop-file-utils" ,desktop-file-utils)
        ("glib:bin" ,glib "bin") ; for glib-compile-resources
        ("intltool" ,intltool)
