@@ -17030,6 +17030,18 @@ This example assumes that the file @file{./guix.example.org-key.pub}
 contains the public key that @code{guix.example.org} uses to sign
 substitutes.
 
+@item @code{generate-substitute-key?} (default: @code{#t})
+Whether to generate a @dfn{substitute key pair} under
+@file{/etc/guix/signing-key.pub} and @file{/etc/guix/signing-key.sec} if
+there is not already one.
+
+This key pair is used when exporting store items, for instance with
+@command{guix publish} (@pxref{Invoking guix publish}) or @command{guix
+archive} (@pxref{Invoking guix archive}).  Generating a key pair takes a
+few seconds when enough entropy is available and is only done once; you
+might want to turn it off for instance in a virtual machine that does
+not need it and where the extra boot time is a problem.
+
 @item @code{max-silent-time} (default: @code{0})
 @itemx @code{timeout} (default: @code{0})
 The number of seconds of silence and the number of seconds of activity,

@@ -183,6 +183,7 @@
             guix-configuration-authorized-keys
             guix-configuration-use-substitutes?
             guix-configuration-substitute-urls
+            guix-configuration-generate-substitute-key?
             guix-configuration-extra-options
             guix-configuration-log-file
 
@@ -1565,6 +1566,8 @@ archive' public keys, with GUIX."
                     (default #t))
   (substitute-urls  guix-configuration-substitute-urls ;list of strings
                     (default %default-substitute-urls))
+  (generate-substitute-key? guix-configuration-generate-substitute-key?
+                            (default #t))         ;Boolean
   (chroot-directories guix-configuration-chroot-directories ;list of file-like/strings
                       (default '()))
   (max-silent-time  guix-configuration-max-silent-time ;integer
@@ -1749,14 +1752,15 @@ proxy of 'guix-daemon'...~%")
 (define (guix-activation config)
   "Return the activation gexp for CONFIG."
   (match-record config <guix-configuration>
-    (guix authorize-key? authorized-keys)
+    (guix generate-substitute-key? authorize-key? authorized-keys)
     #~(begin
         ;; Assume that the store has BUILD-GROUP as its group.  We could
         ;; otherwise call 'chown' here, but the problem is that on a COW overlayfs,
         ;; chown leads to an entire copy of the tree, which is a bad idea.
 
         ;; Generate a key pair and optionally authorize substitute server keys.
-        (unless (file-exists? "/etc/guix/signing-key.pub")
+        (unless (or #$(not generate-substitute-key?)
+                    (file-exists? "/etc/guix/signing-key.pub"))
           (system* #$(file-append guix "/bin/guix") "archive"
                    "--generate-key"))
 
