@@ -737,6 +737,25 @@ as provided by UCSC (hg38, Dec. 2013) and stored in Biostrings objects.")
      "This package exposes an annotation database generated from Ensembl.")
     (license license:artistic2.0)))
 
+(define-public r-ensdb-hsapiens-v86
+  (package
+    (name "r-ensdb-hsapiens-v86")
+    (version "2.99.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "EnsDb.Hsapiens.v86" version 'annotation))
+       (sha256
+        (base32 "1gp7xrzddpvmh2vrcp571wyy00skxgxfl39ksj4h0hm1qay0fb2m"))))
+    (properties `((upstream-name . "EnsDb.Hsapiens.v86")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ensembldb))
+    (home-page "https://bioconductor.org/packages/EnsDb.Hsapiens.v86")
+    (synopsis "Ensembl based annotation package")
+    (description "This package exposes an annotation database generated from
+Ensembl.")
+    (license license:artistic2.0)))
+
 (define-public r-ensdb-mmusculus-v79
   (package
     (name "r-ensdb-mmusculus-v79")
