@@ -18857,7 +18857,7 @@ This is the configuration record for OpenSSH's @command{sshd}.
 
 @table @asis
 @item @code{openssh} (default @var{openssh})
-The Openssh package to use.
+The OpenSSH package to use.
 
 @item @code{pid-file} (default: @code{"/var/run/sshd.pid"})
 Name of the file where @command{sshd} writes its PID.
@@ -18977,6 +18977,16 @@ Additional authorized keys can be specified @i{via}
 
 Note that this does @emph{not} interfere with the use of
 @file{~/.ssh/authorized_keys}.
+
+@item @code{generate-host-keys?} (default: @code{#t})
+Whether to generate host key pairs with @command{ssh-keygen -A} under
+@file{/etc/ssh} if there are none.
+
+Generating key pairs takes a few seconds when enough entropy is
+available and is only done once.  You might want to turn it off for
+instance in a virtual machine that does not need it because host keys
+are provided in some other way, and where the extra boot time is a
+problem.
 
 @item @code{log-level} (default: @code{'info})
 This is a symbol specifying the logging level: @code{quiet}, @code{fatal},

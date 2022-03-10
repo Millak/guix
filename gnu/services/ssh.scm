@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2019, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2016 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
@@ -352,6 +352,10 @@ The other options should be self-descriptive."
                          (default '()))
 
   ;; Boolean
+  (generate-host-keys?   openssh-configuration-generate-host-keys?
+                         (default #t))
+
+  ;; Boolean
   ;; XXX: This should really be handled in an orthogonal way, for instance as
   ;; proposed in <https://bugs.gnu.org/27155>.  Keep it internal/undocumented
   ;; for now.
@@ -402,9 +406,10 @@ The other options should be self-descriptive."
             (unless (file-exists? lastlog)
               (touch lastlog))))
 
-        ;; Generate missing host keys.
-        (system* (string-append #$(openssh-configuration-openssh config)
-                                "/bin/ssh-keygen") "-A"))))
+        (when #$(openssh-configuration-generate-host-keys? config)
+          ;; Generate missing host keys.
+          (system* (string-append #$(openssh-configuration-openssh config)
+                                  "/bin/ssh-keygen") "-A")))))
 
 (define (authorized-key-directory keys)
   "Return a directory containing the authorized keys specified in KEYS, a list
