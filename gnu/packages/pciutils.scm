@@ -56,6 +56,8 @@
      ;; Tests require pciutils, python, podman. Disable to avoid recursive dep.
      (list
       #:tests? #f
+      ;; Do not cross-compile, since the package only contains data.
+      #:target #f
       #:configure-flags #~(list (string-append "--datadir=" #$output "/share"))
       #:phases
       #~(modify-phases %standard-phases
