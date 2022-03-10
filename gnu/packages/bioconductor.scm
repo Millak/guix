@@ -737,6 +737,25 @@ as provided by UCSC (hg38, Dec. 2013) and stored in Biostrings objects.")
      "This package exposes an annotation database generated from Ensembl.")
     (license license:artistic2.0)))
 
+(define-public r-ensdb-mmusculus-v79
+  (package
+    (name "r-ensdb-mmusculus-v79")
+    (version "2.99.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "EnsDb.Mmusculus.v79" version 'annotation))
+       (sha256
+        (base32 "1zpmq7v55if6q9r0h883q9k8l70ym20b01m9hxf121wb256rl9f7"))))
+    (properties `((upstream-name . "EnsDb.Mmusculus.v79")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ensembldb))
+    (home-page "https://bioconductor.org/packages/EnsDb.Mmusculus.v79")
+    (synopsis "Ensembl based annotation package")
+    (description "This package exposes an annotation database generated from
+Ensembl.")
+    (license license:artistic2.0)))
+
 (define-public r-txdb-dmelanogaster-ucsc-dm6-ensgene
   (package
     (name "r-txdb-dmelanogaster-ucsc-dm6-ensgene")
