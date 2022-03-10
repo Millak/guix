@@ -7231,11 +7231,10 @@ used by nftables.")
         (base32 "08x4xw0s5sap3q7jfr91v7mrkxrydi4dvsckw85ims0qb1ibmviw"))))
     (build-system gnu-build-system)
     (arguments `(#:configure-flags
-                 '("--disable-man-doc"  ; FIXME: needs docbook2x
-                   "--disable-static"
+                 '("--disable-static"
                    "--with-cli=readline")))
     (inputs (list gmp libmnl libnftnl readline))
-    (native-inputs (list pkg-config bison flex))
+    (native-inputs (list pkg-config bison flex docbook2x))
     (home-page "https://www.nftables.org")
     (synopsis "Userspace utility for Linux packet filtering")
     (description "nftables is the project that aims to replace the existing
