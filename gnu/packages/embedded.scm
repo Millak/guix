@@ -8,7 +8,7 @@
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
-;;; Copyright © 2020, 2021 Simon South <simon@simonsouth.net>
+;;; Copyright © 2020, 2021, 2022 Simon South <simon@simonsouth.net>
 ;;; Copyright © 2021 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2022 Mathieu Othacehe <othacehe@gnu.org>
 ;;;
@@ -1527,7 +1527,7 @@ and Zilog Z80 families, plus many of their variants.")
 (define-public sdcc
   (package
     (name "sdcc")
-    (version "4.1.0")
+    (version "4.2.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1535,7 +1535,7 @@ and Zilog Z80 families, plus many of their variants.")
                     "/" version "/sdcc-src-" version ".tar.bz2"))
               (sha256
                (base32
-                "0gskzli17ghnn5qllvn4d56qf9bvvclqjh63nnj63p52smvggvc1"))
+                "0ly0m3q9vzjb9kcfjh79s77wpl4w7xhybzy4h9x0bmmw4cfsx6xl"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -1573,9 +1573,9 @@ and Zilog Z80 families, plus many of their variants.")
     (home-page "http://sdcc.sourceforge.net")
     (synopsis "C compiler suite for 8-bit microcontrollers")
     (description "SDCC is a retargetable, optimizing Standard C compiler suite
-that targets 8-bit microcontrollers in the Intel MCS-51 (8051); Motorola
-68HC08; Padauk PDK13, PDK14 and PDK15; STMicroelectronics STM8; and Zilog Z80
-families, plus many of their variants.")
+that targets 8-bit microcontrollers in the Intel MCS-51 (8051); MOS Technology
+6502; Motorola 68HC08; Padauk PDK13, PDK14 and PDK15; STMicroelectronics STM8;
+and Zilog Z80 families, plus many of their variants.")
     (license (list license:gpl2+
                    license:gpl3+
                    license:lgpl2.0+
