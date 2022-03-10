@@ -4,7 +4,7 @@
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -70,6 +70,8 @@
             %test-btrfs-root-os
             %test-btrfs-root-on-subvolume-os
             %test-btrfs-raid-root-os
+            %test-btrfs-raid10-root-os
+            %test-btrfs-raid10-root-os-degraded
             %test-jfs-root-os
             %test-f2fs-root-os
             %test-xfs-root-os
@@ -1253,6 +1255,115 @@ build (current-guix) and then store a couple of full system images.")
          (command (qemu-command* images)))
       (run-basic-test %btrfs-root-on-subvolume-os command
                       "btrfs-root-on-subvolume-os")))))
+
+
+;;;
+;;; Btrfs RAID10 root file system.
+;;;
+
+(define-os-with-source (%btrfs-raid10-root-os
+                        %btrfs-raid10-root-os-source)
+  ;; The OS we want to install.
+  (use-modules (gnu) (gnu tests) (srfi srfi-1))
+
+  (operating-system
+    (host-name "hurd")
+    (timezone "Europe/Paris")
+    (locale "en_US.UTF-8")
+    (bootloader (bootloader-configuration
+                 (bootloader grub-bootloader)
+                 (targets (list "/dev/vdb" "/dev/vdc" "/dev/vdd" "/dev/vde"))))
+    (kernel-arguments '("console=ttyS0"))
+    (file-systems (cons* (file-system
+                           (device (uuid "16ff18e2-eb41-4324-8df5-80d3b53c411b"))
+                           (mount-point "/")
+                           (options "compress-force=zstd,degraded")
+                           (type "btrfs"))
+                         %base-file-systems))
+    (users (cons (user-account
+                  (name "charlie")
+                  (group "users")
+                  (supplementary-groups '("wheel" "audio" "video")))
+                 %base-user-accounts))
+    (services (cons (service marionette-service-type
+                             (marionette-configuration
+                              (imported-modules '((gnu services herd)
+                                                  (guix combinators)))))
+                    %base-services))))
+
+(define %btrfs-raid10-root-installation-script
+  ;; Shell script of a simple installation.
+  "\
+. /etc/profile
+set -e -x
+guix --version
+
+export GUIX_BUILD_OPTIONS=--no-grafts
+ls -l /run/current-system/gc-roots
+for d in vdb vdc vdd vde; do
+    parted --script /dev/$d mklabel gpt \\
+      mkpart primary ext2 1M 2M \\
+      mkpart primary ext2 2M 100% \\
+      set 1 boot on \\
+      set 1 bios_grub on
+done
+
+# Create the RAID10 Btrfs array.
+mkfs.btrfs -d raid10 -m raid1c4 /dev/{vdb2,vdc2,vdd2,vde2} \\
+    --uuid 16ff18e2-eb41-4324-8df5-80d3b53c411b
+
+# Mount it, ready for installation.
+mount UUID=16ff18e2-eb41-4324-8df5-80d3b53c411b -o compress-force=zstd /mnt
+
+herd start cow-store /mnt
+mkdir /mnt/etc
+cp /etc/target-config.scm /mnt/etc/config.scm
+guix system build /mnt/etc/config.scm
+guix system init /mnt/etc/config.scm /mnt --no-substitutes
+sync
+reboot\n")
+
+(define %test-btrfs-raid10-root-images
+  (mlet %store-monad
+      ((images (run-install %btrfs-raid10-root-os
+                            %btrfs-raid10-root-os-source
+                            #:script
+                            %btrfs-raid10-root-installation-script
+                            #:number-of-disks 4
+                            #:target-size (* 1100 MiB))))
+    (return images)))
+
+(define %test-btrfs-raid10-root-os
+  (system-test
+   (name "btrfs-raid10-root-os")
+   (description
+    "Test basic functionality of an OS installed on top of a Btrfs RAID10 file
+system spanning 4 disks.  This test is expensive in terms of CPU and storage
+usage since we need to build (current-guix) and then store a couple of full
+system images.")
+   (value
+    (mlet* %store-monad
+        ((images %test-btrfs-raid10-root-images)
+         (command (qemu-command* images)))
+      (run-basic-test %btrfs-raid10-root-os command
+                      "btrfs-raid10-root-os")))))
+
+(define %test-btrfs-raid10-root-os-degraded
+  (system-test
+   (name "btrfs-raid10-root-os-degraded")
+   (description
+    "Test basic functionality of an OS installed on top of a Btrfs RAID10 file
+system spanning 6 disks, degraded to 5 disks.  This test is expensive in terms
+of CPU and storage usage since we need to build (current-guix) and then store
+a couple of full system images.")
+   (value
+    (mlet* %store-monad
+        ;; Drop the first image; this boots because the root file system uses
+        ;; the Btrfs "degraded" mount option.
+        ((images %test-btrfs-raid10-root-images)
+         (command (qemu-command* #~(cdr #$images))))
+      (run-basic-test %btrfs-raid10-root-os command
+                      "btrfs-raid10-root-os")))))
 
 
 ;;;
