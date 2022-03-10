@@ -99,8 +99,9 @@
   #:use-module (gnu packages ninja)
   #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages package-management)
-  #:use-module (gnu packages perl)
+  #:use-module (gnu packages pciutils)
   #:use-module (gnu packages pcre)
+  #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages polkit)
   #:use-module (gnu packages protobuf)
@@ -1056,46 +1057,33 @@ of one or more RISC-V harts.")
          "0nd360c9ampw8hb6xh5g45q858df2r4jj9q88bcl6gzgaj0l3wxl"))))
     (build-system meson-build-system)
     (arguments
-     `(#:configure-flags
-       (list (string-append "-Dwith-usb-ids-path="
-                            (assoc-ref %build-inputs "usb.ids"))
-             (string-append "-Dwith-pci-ids-path="
-                            (assoc-ref %build-inputs "pci.ids")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-osinfo-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "osinfo/osinfo_loader.c"
-               (("path = DATA_DIR.*")
-                (string-append "path = \"" (assoc-ref inputs "osinfo-db")
-                               "/share/osinfo\";"))))))))
-    (inputs
-     `(("libsoup" ,libsoup-minimal-2)
-       ("libxml2" ,libxml2)
-       ("libxslt" ,libxslt)
-       ("osinfo-db" ,osinfo-db)))
+     (list
+      #:configure-flags
+      #~(list (string-append "-Dwith-usb-ids-path="
+                             (search-input-file %build-inputs
+                                                "share/hwdata/usb.ids"))
+              (string-append "-Dwith-pci-ids-path="
+                             (search-input-file %build-inputs
+                                                "share/hwdata/pci.ids")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-osinfo-path
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              (substitute* "osinfo/osinfo_loader.c"
+                (("path = DATA_DIR.*")
+                 (format #f "path = ~s;"
+                         (search-input-directory (or native-inputs inputs)
+                                                 "share/osinfo")))))))))
+    (inputs (list libsoup-minimal-2 libxml2 libxslt osinfo-db))
     (native-inputs
-     `(("glib" ,glib "bin")  ; glib-mkenums, etc.
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk-doc" ,gtk-doc/stable)
-       ("vala" ,vala)
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)
-       ("pci.ids"
-        ,(origin
-           (method url-fetch)
-           (uri "https://github.com/pciutils/pciids/raw/ad02084f0bc143e3c15e31a6152a3dfb1d7a3156/pci.ids")
-           (sha256
-            (base32
-             "0kfhpj5rnh24hz2714qhfmxk281vwc2w50sm73ggw5d15af7zfsw"))))
-       ("usb.ids"
-        ,(origin
-           (method url-fetch)
-           (uri "https://svn.code.sf.net/p/linux-usb/repo/trunk/htdocs/usb.ids?r=2681")
-           (file-name "usb.ids")
-           (sha256
-            (base32
-             "1m6yhvz5k8aqzxgk7xj3jkk8frl1hbv0h3vgj4wbnvnx79qnvz3r"))))))
+     (list `(,glib "bin")                ;glib-mkenums, etc.
+           gobject-introspection
+           gtk-doc/stable
+           `(,hwdata "pci")
+           `(,hwdata "usb")
+           vala
+           intltool
+           pkg-config))
     (home-page "https://libosinfo.org/")
     (synopsis "Operating system information database")
     (description "libosinfo is a GObject based library API for managing
