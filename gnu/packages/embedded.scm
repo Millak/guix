@@ -62,6 +62,7 @@
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages readline)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages version-control)
@@ -1545,6 +1546,8 @@ and Zilog Z80 families, plus many of their variants.")
                   #t))
               (patches (search-patches "sdcc-disable-non-free-code.patch"))))
     (build-system gnu-build-system)
+    (inputs
+     (list readline))
     (native-inputs
      (list bison boost flex python-2 texinfo zlib))
     (arguments
