@@ -1027,10 +1027,12 @@ assert-no-store-file-names:
 	  exit 1 ;								\
 	fi
 
-# Make sure important substitutes are available.
+# Make sure important substitutes are available.  Check only the primary
+# server so that '--display-missing' doesn't print two lists.
 assert-binaries-available: $(GOBJECTS)
 	$(AM_V_at)$(top_builddir)/pre-inst-env				\
 	  guix weather -m "$(top_srcdir)/etc/release-manifest.scm"	\
+	                --substitute-urls="https://ci.guix.gnu.org"	\
 	                --display-missing
 
 # Make sure the final inputs don't refer to bootstrap tools.
