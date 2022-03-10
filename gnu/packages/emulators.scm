@@ -1891,7 +1891,7 @@ functions.  The source code to MAME serves as this documentation.")
 (define-public gnome-arcade
   (package
     (name "gnome-arcade")
-    (version "0.218.2")
+    (version "0.240")
     (source
      (origin
        (method git-fetch)
@@ -1901,7 +1901,7 @@ functions.  The source code to MAME serves as this documentation.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1qc01a62p65qb6mwjfmxqsd6n3rglsfwrjhsp25nr7q54107n55l"))))
+         "110dpbbcj73s3i2zcnay0kdpsngcpq8mif88279pdc2967ld0a6r"))))
     (build-system cmake-build-system)
     (arguments
      (list
