@@ -1546,12 +1546,7 @@ and Zilog Z80 families, plus many of their variants.")
               (patches (search-patches "sdcc-disable-non-free-code.patch"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("bison" ,bison)
-       ("boost" ,boost)
-       ("flex" ,flex)
-       ("python-2" ,python-2)
-       ("texinfo" ,texinfo)
-       ("zlib" ,zlib)))
+     (list bison boost flex python-2 texinfo zlib))
     (arguments
      `(;; GPUTILS is required for the PIC ports, but the licensing status of
        ;; some of the files contained in its distribution is unclear (see
