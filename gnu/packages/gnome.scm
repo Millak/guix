@@ -5179,14 +5179,14 @@ once.")
              (substitute* "build-aux/post_install.py"
                (("gtk-update-icon-cache") (which "true"))))))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("python" ,python)                     ;for 'build-aux/post_install.py'
-       ("desktop-file-utils" ,desktop-file-utils)
-       ("glib:bin" ,glib "bin") ; for glib-compile-resources
-       ("intltool" ,intltool)
-       ("itstool" ,itstool)
-       ("vala" ,vala)
-       ("xmllint" ,libxml2)))
+     (list pkg-config
+           python                             ;for 'build-aux/post_install.py'
+           desktop-file-utils
+           `(,glib "bin")                         ;for glib-compile-resources
+           intltool
+           itstool
+           vala
+           libxml2))
     (inputs
      (list gtk+ json-glib libgee librsvg qqwing))
     (home-page "https://wiki.gnome.org/Apps/Sudoku")
