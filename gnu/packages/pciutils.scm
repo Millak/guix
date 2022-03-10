@@ -51,7 +51,6 @@
                 "0m04d93dwiplwp9v74nhnc0hyi2n007mylkg8f0frb46z5qjrpl3"))))
     (build-system gnu-build-system)
     (outputs '("out" "iab" "oui" "pci" "pnp" "usb"))
-    (native-inputs (list gzip))
     (arguments
      ;; Tests require pciutils, python, podman. Disable to avoid recursive dep.
      (list
