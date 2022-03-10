@@ -11132,7 +11132,8 @@ functionality.")
        ("gtk+:bin" ,gtk+ "bin")                   ; for gtk-update-icon-cache
        ("intltool" ,intltool)
        ("itstool" ,itstool)
-       ("pkg-config" ,pkg-config)))
+       ("pkg-config" ,pkg-config)
+       ("python" ,python)))
     (inputs
      `(("clutter" ,clutter)
        ("clutter-gst" ,clutter-gst)
