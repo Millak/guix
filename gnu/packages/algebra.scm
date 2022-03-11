@@ -328,7 +328,7 @@ precision.")
 (define-public giac
   (package
     (name "giac")
-    (version "1.7.0-47")
+    (version "1.7.0-51")
     (source
      (origin
        (method url-fetch)
@@ -340,7 +340,7 @@ precision.")
                            "~parisse/debian/dists/stable/main/source/"
                            "giac_" version ".tar.gz"))
        (sha256
-        (base32 "1cbc0vm79q9z3ajn4m5sjg9931ah1wq3icj0m16jsxp52km1h7jx"))))
+        (base32 "0wgqa2nxpv652348fxpchx5zvaj6ssc403jxwsdp5ky9pdpap2zs"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((ice-9 ftw)
