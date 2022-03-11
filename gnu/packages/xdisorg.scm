@@ -1002,27 +1002,26 @@ shows it again when the mouse cursor moves or a mouse button is pressed.")
     (name "xlockmore")
     (version "5.68")
     (source (origin
-             (method url-fetch)
-             (uri (list (string-append "http://sillycycle.com/xlock/"
-                                       "xlockmore-" version ".tar.xz")
-                        ;; Previous releases are moved to a subdirectory.
-                        (string-append "http://sillycycle.com/xlock/"
-                                       "recent-releases/"
-                                       "xlockmore-" version ".tar.xz")))
-             (sha256
-              (base32
-               "0vndfwccnvkaaraprjam8pmx0aj55va0ag64q6snxw83nbf1ywrh"))))
+              (method url-fetch)
+              (uri (list (string-append "http://sillycycle.com/xlock/"
+                                        "xlockmore-" version ".tar.xz")
+                         ;; Previous releases are moved to a subdirectory.
+                         (string-append "http://sillycycle.com/xlock/"
+                                        "recent-releases/"
+                                        "xlockmore-" version ".tar.xz")))
+              (sha256
+               (base32
+                "0vndfwccnvkaaraprjam8pmx0aj55va0ag64q6snxw83nbf1ywrh"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags (list (string-append "--enable-appdefaultdir="
-                                              (assoc-ref %outputs "out")
-                                              "/lib/X11/app-defaults"))
-       #:tests? #f))                            ;no such thing as a test suite
+     (list
+      #:configure-flags
+      #~(list (string-append "--enable-appdefaultdir="
+                             #$output
+                             "/lib/X11/app-defaults"))
+      #:tests? #f))                     ;no such thing as a test suite
     (inputs
-     `(("libX11" ,libx11)
-       ("libXext" ,libxext)
-       ("libXt" ,libxt)
-       ("linux-pam" ,linux-pam)))
+     (list libx11 libxext libxt linux-pam))
     (home-page "https://sillycycle.com/xlockmore.html")
     (synopsis "Screen locker for the X Window System")
     (description
