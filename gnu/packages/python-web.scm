@@ -48,6 +48,7 @@
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Alice Brenon <alice.brenon@ens-lyon.fr>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4910,21 +4911,18 @@ is part of the Weblate translation platform.")
 (define-public python-gitlab
   (package
     (name "python-gitlab")
-    (version "1.15.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "python-gitlab" version))
-        (sha256
-         (base32
-          "0zl6kz8v8cg1bcy2r78b2snb0lpw0b573gdx2x1ps0nhsh75l4j5"))))
+    (version "3.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "python-gitlab" version))
+              (sha256
+               (base32
+                "1gi4lp2g4k99zqcx2bgqx940bpmpbc1w9qkl5gy33hpy148yhvlg"))))
     (build-system python-build-system)
-    (propagated-inputs
-     (list python-requests python-six))
-    (native-inputs
-     (list python-httmock python-mock))
-    (home-page
-      "https://github.com/python-gitlab/python-gitlab")
+    (arguments
+     `(#:tests? #f))                             ;tests require network access
+    (propagated-inputs (list python-requests python-requests-toolbelt))
+    (home-page "https://github.com/python-gitlab/python-gitlab")
     (synopsis "Interact with GitLab API")
     (description "This package provides an extended library for interacting
 with GitLab instances through their API.")
