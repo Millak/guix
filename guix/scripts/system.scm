@@ -51,7 +51,7 @@
                                        delete-matching-generations)
   #:autoload   (guix scripts pull) (channel-commit-hyperlink)
   #:autoload   (guix graph) (export-graph node-type
-                             graph-backend-name %graph-backends)
+                             graph-backend-name lookup-backend)
   #:use-module (guix scripts graph)
   #:use-module (guix scripts system reconfigure)
   #:use-module (guix build utils)
@@ -886,13 +886,6 @@ Run 'herd status' to view the list of services on your system.\n"))))))
                  (mwhen gc-root
                    (register-root* (list output) gc-root))
                  (return output)))))))))
-
-(define (lookup-backend name)                     ;TODO: factorize
-  "Return the graph backend called NAME.  Raise an error if it is not found."
-  (or (find (lambda (backend)
-              (string=? (graph-backend-name backend) name))
-            %graph-backends)
-      (leave (G_ "~a: unknown backend~%") name)))
 
 (define* (export-extension-graph os port
                                  #:key (backend (lookup-backend "graphviz")))
