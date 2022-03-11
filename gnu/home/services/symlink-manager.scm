@@ -50,14 +50,29 @@
          (define home-directory
            (getenv "HOME"))
 
+         (define xdg-config-home
+           (or (getenv "XDG_CONFIG_HOME")
+               (string-append (getenv "HOME") "/.config")))
+
          (define backup-directory
            (string-append home-directory "/" (number->string (current-time))
                           "-guix-home-legacy-configs-backup"))
 
+         (define (preprocess-file file)
+           "If file is in XDG-CONFIGURATION-FILES-DIRECTORY use
+subdirectory from XDG_CONFIG_HOME to generate a target path."
+           (if (string-prefix? #$xdg-configuration-files-directory file)
+               (string-append
+                (substring xdg-config-home
+                           (1+ (string-length home-directory)))
+                (substring file
+                           (string-length #$xdg-configuration-files-directory)))
+               (string-append "." file)))
+
          (define (target-file file)
            ;; Return the target of FILE, a config file name sans leading dot
            ;; such as "config/fontconfig/fonts.conf" or "bashrc".
-           (string-append home-directory "/." file))
+           (string-append home-directory "/" (preprocess-file file)))
 
          (define (symlink-to-store? file)
            (catch 'system-error
@@ -70,7 +85,7 @@
 
          (define (backup-file file)
            (define backup
-             (string-append backup-directory "/." file))
+             (string-append backup-directory "/" (preprocess-file file)))
 
            (mkdir-p backup-directory)
            (format #t (G_ "Backing up ~a...") (target-file file))
