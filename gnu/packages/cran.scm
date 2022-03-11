@@ -32987,3 +32987,23 @@ setting individual scales per panel, resizing panels and providing nested
 facets.  It also allows multiple colour, fill scales per plot and hosts a
 smaller collection of stats, geoms and axis guides.")
     (license license:expat)))
+
+(define-public r-zoeppritz
+  (package
+    (name "r-zoeppritz")
+    (version "1.0-8")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "zoeppritz" version))
+              (sha256
+               (base32
+                "1711szx9zz17q6pfinyzlyrw7m9772c8ywlixqar2l165bkjalgm"))))
+    (properties `((upstream-name . "zoeppritz")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/package=zoeppritz")
+    (synopsis "Seismic reflection and scattering coefficients for waves")
+    (description
+     "The @code{r-zoeppritz} package calculates and plots scattering matrix
+coefficients or scattering amplitudes, for seismological P and S-waves at an
+interface.")
+    (license license:gpl2+)))
