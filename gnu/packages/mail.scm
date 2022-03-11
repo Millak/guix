@@ -2726,12 +2726,14 @@ converts them to maildir format directories.")
     (native-inputs
      (list perl))
     (arguments
-     `(#:make-flags (list (string-append "CC=" ,(cc-for-target))
-                          "PREFIX="
-                          (string-append "DESTDIR=" %output))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))
+     (list
+      #:make-flags
+      #~(list #$(string-append "CC=" (cc-for-target))
+              "PREFIX="
+              (string-append "DESTDIR=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))
     (home-page "https://github.com/leahneukirchen/mblaze")
     (synopsis "Unix utilities to deal with Maildir")
     (description
