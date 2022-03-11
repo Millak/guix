@@ -28,7 +28,7 @@
 ;;; Copyright © 2017, 2018 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2017 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2017, 2018, 2019 Pierre Langlois <pierre.langlois@gmx.com>
-;;; Copyright © 2015, 2017, 2018, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2017, 2018, 2019, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Kristofer Buffington <kristoferbuffington@gmail.com>
 ;;; Copyright © 2018 Amirouche Boubekki <amirouche@hypermove.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
@@ -4153,7 +4153,7 @@ the SQL language using a syntax that reflects the resulting query.")
 (define-public apache-arrow
   (package
     (name "apache-arrow")
-    (version "6.0.1")
+    (version "7.0.0")
     (source
      (origin
        (method git-fetch)
@@ -4163,7 +4163,7 @@ the SQL language using a syntax that reflects the resulting query.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0mcw361akqw4sxnnpnr9c9v1zk4hphk6gcq763pcb19yzljh88ig"))))
+         "19xx6mlddca79q6d3wga574m4y32ixmxx2rmk6j3f22i5c37mjzw"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f
