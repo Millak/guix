@@ -107,9 +107,10 @@
                         (format #t (G_ "Removing ~a...") file)
                         (delete-file file)
                         (display (G_ " done\n")))
-                      (format #t
-                              (G_ "Skipping ~a (not a symlink to store)... done\n")
-                              file)))))
+                      (format
+                       #t
+                       (G_ "Skipping ~a (not a symlink to store)... done\n")
+                       file)))))
 
             (const #t)                            ;down
             (lambda (directory stat _)            ;up
@@ -121,14 +122,15 @@
                       (format #t (G_ "Removed ~a.\n") directory))
                     (lambda args
                       (let ((errno (system-error-errno args)))
-                        (cond ((= ENOTEMPTY errno)
-                               (format
-                                #t
-                                (G_ "Skipping ~a (not an empty directory)...\n")
-                                directory))
-                              ((= ENOTDIR errno) #t)
-                              (else
-                               (apply throw args)))))))))
+                        (cond
+                         ((= ENOTEMPTY errno)
+                          (format
+                           #t
+                           (G_ "Skipping ~a (not an empty directory)... done\n")
+                           directory))
+                         ((= ENOTDIR errno) #t)
+                         (else
+                          (apply throw args)))))))))
             (const #t)                            ;skip
             (const #t)                            ;error
             #t                                    ;init
