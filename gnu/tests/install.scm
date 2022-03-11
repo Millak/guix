@@ -341,29 +341,16 @@ packages defined in installation-os."
     (gexp->derivation "installation" install
                       #:substitutable? #f)))      ;too big
 
-(define* (qemu-command/writable-image image
-                                      #:key
-                                      (uefi-support? #f)
-                                      (memory-size 256))
-  "Return as a monadic value the command to run QEMU on a writable copy of
-IMAGE, a disk image.  The QEMU VM has access to MEMORY-SIZE MiB of RAM."
+(define* (qemu-command* image #:key (uefi-support? #f) (memory-size 256))
+  "Return as a monadic value the command to run QEMU with a writable overlay
+above IMAGE, a disk image.  The QEMU VM has access to MEMORY-SIZE MiB of RAM."
   (mlet* %store-monad ((system (current-system))
                        (uefi-firmware -> (and uefi-support?
                                               (uefi-firmware system))))
-    (return #~(let ((image #$image))
-                ;; First we need a writable copy of the image.
-                (format #t "creating writable image from '~a'...~%" image)
-                (unless (zero? (system* #+(file-append qemu-minimal
-                                                       "/bin/qemu-img")
-                                        "create" "-f" "qcow2" "-F" "qcow2"
-                                        "-o"
-                                        (string-append "backing_file=" image)
-                                        "disk.img"))
-                  (error "failed to create writable QEMU image" image))
-
-                (chmod "disk.img" #o644)
+    (return #~(begin
                 `(,(string-append #$qemu-minimal "/bin/"
                                   #$(qemu-command system))
+                  "-snapshot"           ;for the volatile, writable overlay
                   ,@(if (file-exists? "/dev/kvm")
                         '("-enable-kvm")
                         '())
@@ -371,7 +358,7 @@ IMAGE, a disk image.  The QEMU VM has access to MEMORY-SIZE MiB of RAM."
                         '("-bios" #$uefi-firmware)
                         '())
                   "-no-reboot" "-m" #$(number->string memory-size)
-                  "-drive" "file=disk.img,if=virtio")))))
+                  "-drive" (format #f "file=~a,if=virtio" #$image))))))
 
 (define %test-installed-os
   (system-test
@@ -382,7 +369,7 @@ This test is expensive in terms of CPU and storage usage since we need to
 build (current-guix) and then store a couple of full system images.")
    (value
     (mlet* %store-monad ((image   (run-install %minimal-os %minimal-os-source))
-                         (command (qemu-command/writable-image image)))
+                         (command (qemu-command* image)))
       (run-basic-test %minimal-os command
                       "installed-os")))))
 
@@ -399,7 +386,7 @@ per %test-installed-os, this test is expensive in terms of CPU and storage.")
                                              (list syslinux)
                                              #:script
                                              %extlinux-gpt-installation-script))
-                         (command (qemu-command/writable-image image)))
+                         (command (qemu-command* image)))
       (run-basic-test %minimal-extlinux-os command
                       "installed-extlinux-os")))))
 
@@ -476,7 +463,7 @@ reboot\n")
                                    %simple-installation-script-for-/dev/vda
                                    #:installation-image-type
                                    'uncompressed-iso9660))
-                         (command (qemu-command/writable-image image)))
+                         (command (qemu-command* image)))
       (run-basic-test %minimal-os-on-vda command name)))))
 
 
@@ -531,7 +518,7 @@ partition.  In particular, home directories must be correctly created (see
                                                %separate-home-os-source
                                                #:script
                                                %simple-installation-script))
-                         (command (qemu-command/writable-image image)))
+                         (command (qemu-command* image)))
       (run-basic-test %separate-home-os command "separate-home-os")))))
 
 
@@ -608,7 +595,7 @@ where /gnu lives on a separate partition.")
                                                %separate-store-os-source
                                                #:script
                                                %separate-store-installation-script))
-                         (command (qemu-command/writable-image image)))
+                         (command (qemu-command* image)))
       (run-basic-test %separate-store-os command "separate-store-os")))))
 
 
@@ -690,7 +677,7 @@ by 'mdadm'.")
                                                #:script
                                                %raid-root-installation-script
                                                #:target-size (* 3200 MiB)))
-                         (command (qemu-command/writable-image image)))
+                         (command (qemu-command* image)))
       (run-basic-test %raid-root-os
                       `(,@command) "raid-root-os")))))
 
@@ -823,7 +810,7 @@ build (current-guix) and then store a couple of full system images.")
                                                %encrypted-root-os-source
                                                #:script
                                                %encrypted-root-installation-script))
-                         (command (qemu-command/writable-image image)))
+                         (command (qemu-command* image)))
       (run-basic-test %encrypted-root-os command "encrypted-root-os"
                       #:initialization enter-luks-passphrase)))))
 
@@ -909,7 +896,7 @@ reboot\n")
                                                %lvm-separate-home-installation-script
                                                #:packages (list lvm2-static)
                                                #:target-size (* 3200 MiB)))
-                         (command (qemu-command/writable-image image)))
+                         (command (qemu-command* image)))
       (run-basic-test %lvm-separate-home-os
                       `(,@command) "lvm-separate-home-os")))))
 
@@ -1009,7 +996,7 @@ store a couple of full system images.")
                              %encrypted-root-not-boot-os-source
                              #:script
                              %encrypted-root-not-boot-installation-script))
-         (command (qemu-command/writable-image image)))
+         (command (qemu-command* image)))
       (run-basic-test %encrypted-root-not-boot-os command
                       "encrypted-root-not-boot-os"
                       #:initialization enter-luks-passphrase)))))
@@ -1085,7 +1072,7 @@ build (current-guix) and then store a couple of full system images.")
                                                %btrfs-root-os-source
                                                #:script
                                                %btrfs-root-installation-script))
-                         (command (qemu-command/writable-image image)))
+                         (command (qemu-command* image)))
       (run-basic-test %btrfs-root-os command "btrfs-root-os")))))
 
 
@@ -1153,7 +1140,7 @@ RAID-0 (stripe) root partition.")
                              %btrfs-raid-root-os-source
                              #:script %btrfs-raid-root-installation-script
                              #:target-size (* 2800 MiB)))
-         (command (qemu-command/writable-image image)))
+         (command (qemu-command* image)))
       (run-basic-test %btrfs-raid-root-os `(,@command) "btrfs-raid-root-os")))))
 
 
@@ -1245,7 +1232,7 @@ build (current-guix) and then store a couple of full system images.")
                        %btrfs-root-on-subvolume-os-source
                        #:script
                        %btrfs-root-on-subvolume-installation-script))
-         (command (qemu-command/writable-image image)))
+         (command (qemu-command* image)))
       (run-basic-test %btrfs-root-on-subvolume-os command
                       "btrfs-root-on-subvolume-os")))))
 
@@ -1319,7 +1306,7 @@ build (current-guix) and then store a couple of full system images.")
                                                %jfs-root-os-source
                                                #:script
                                                %jfs-root-installation-script))
-                         (command (qemu-command/writable-image image)))
+                         (command (qemu-command* image)))
       (run-basic-test %jfs-root-os command "jfs-root-os")))))
 
 
@@ -1392,7 +1379,7 @@ build (current-guix) and then store a couple of full system images.")
                                                %f2fs-root-os-source
                                                #:script
                                                %f2fs-root-installation-script))
-                         (command (qemu-command/writable-image image)))
+                         (command (qemu-command* image)))
       (run-basic-test %f2fs-root-os command "f2fs-root-os")))))
 
 
@@ -1465,7 +1452,7 @@ build (current-guix) and then store a couple of full system images.")
                                                %xfs-root-os-source
                                                #:script
                                                %xfs-root-installation-script))
-                         (command (qemu-command/writable-image image)))
+                         (command (qemu-command* image)))
       (run-basic-test %xfs-root-os command "xfs-root-os")))))
 
 
@@ -1748,9 +1735,9 @@ build (current-guix) and then store a couple of full system images.")
                                   #:desktop? desktop?
                                   #:encrypted? encrypted?
                                   #:uefi-support? uefi-support?))))
-         (command (qemu-command/writable-image image
-                                               #:uefi-support? uefi-support?
-                                               #:memory-size 512)))
+         (command (qemu-command* image
+                                 #:uefi-support? uefi-support?
+                                 #:memory-size 512)))
       (run-basic-test target-os command name
                       #:initialization (and encrypted? enter-luks-passphrase)
                       #:root-password %root-password
