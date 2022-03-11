@@ -21,7 +21,7 @@
 ;;; Copyright © 2020 pukkamustard <pukkamustard@posteo.net>
 ;;; Copyright © 2021 Ellis Kenyő <me@elken.dev>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
-;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2021, 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2022 Allan Adair <allan@adair.no>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -733,7 +733,7 @@ data on your platform, so the seed itself will be as random as possible.
 (define-public crypto++
   (package
     (name "crypto++")
-    (version "8.5.0")
+    (version "8.6.0")
     (source (origin
               (method git-fetch)
               (uri
@@ -745,7 +745,7 @@ data on your platform, so the seed itself will be as random as possible.
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0in7rlazq91vfi519g9wr7bh87hii47cimxv7fmj0f88vhjaidq3"))))
+                "1vm821wpx59ccz6gr4xplqpxj3f1qq3jijyybj2g4npqmmldhx3b"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
