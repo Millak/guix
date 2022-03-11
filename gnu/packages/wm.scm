@@ -2255,19 +2255,20 @@ PNG files.")
               (uri (git-reference
                     (url "https://github.com/LemonBoy/bar")
                     (commit (string-append "v" version))))
-            (file-name (git-file-name name version))
-            (sha256
-             (base32
-              "0sm1lxxf0y2n87nvc8mz6i6mzb32f4qab80ppb28ibrwfir6jsln"))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0sm1lxxf0y2n87nvc8mz6i6mzb32f4qab80ppb28ibrwfir6jsln"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                    ; no test suite
-                #:make-flags
-                (list ,(string-append "CC=" (cc-for-target))
-                      (string-append "PREFIX=" %output))
-                #:phases
-                (modify-phases %standard-phases
-                  (delete 'configure))))
+     (list
+      #:tests? #f                       ;no test suite
+      #:make-flags
+      #~(list #$(string-append "CC=" (cc-for-target))
+              (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))
     (inputs
      (list libxcb))
     (native-inputs
