@@ -69,6 +69,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system r)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix hg-download)
   #:use-module ((guix licenses) #:prefix license:)
@@ -343,39 +344,39 @@ precision.")
         (base32 "0wgqa2nxpv652348fxpchx5zvaj6ssc403jxwsdp5ky9pdpap2zs"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:modules ((ice-9 ftw)
+     (list
+      #:modules '((ice-9 ftw)
                   (guix build utils)
                   (guix build gnu-build-system))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-bin-cp
-           ;; Some Makefiles contain hard-coded "/bin/cp".
-           (lambda _
-             (substitute* (cons "micropython-1.12/xcas/Makefile"
-                                (find-files "doc" "^Makefile"))
-               (("/bin/cp") (which "cp")))))
-         (add-after 'unpack 'disable-failing-test
-           ;; FIXME: Test failing.  Not sure why.
-           (lambda _
-             (substitute* "check/Makefile.in"
-               (("chk_fhan11") ""))))
-         (add-after 'install 'fix-doc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               ;; Most French documentation has a non-commercial
-               ;; license, so we need to remove it.
-               (with-directory-excursion (string-append out "/share/giac/doc/fr")
-                 (for-each delete-file-recursively
-                           '("cascas" "casexo" "casgeo" "casrouge" "cassim"
-                             "castor")))
-               ;; Remove duplicate documentation in
-               ;; "%out/share/doc/giac/", where Xcas does not expect
-               ;; to find it.
-               (delete-file-recursively (string-append out "/share/doc/giac")))))
-         (add-after 'install 'remove-unnecessary-executable
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (delete-file (string-append out "/bin/xcasnew"))))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-bin-cp
+            ;; Some Makefiles contain hard-coded "/bin/cp".
+            (lambda _
+              (substitute* (cons "micropython-1.12/xcas/Makefile"
+                                 (find-files "doc" "^Makefile"))
+                (("/bin/cp") (which "cp")))))
+          (add-after 'unpack 'disable-failing-test
+            ;; FIXME: Test failing.  Not sure why.
+            (lambda _
+              (substitute* "check/Makefile.in"
+                (("chk_fhan11") ""))))
+          (add-after 'install 'fix-doc
+            (lambda _
+              ;; Most French documentation has a non-commercial license, so we
+              ;; need to remove it.
+              (with-directory-excursion
+                  (string-append #$output "/share/giac/doc/fr")
+                (for-each delete-file-recursively
+                          '("cascas" "casexo" "casgeo" "casrouge" "cassim"
+                            "castor")))
+              ;; Remove duplicate documentation in "%out/share/doc/giac/",
+              ;; where Xcas does not expect to find it.
+              (delete-file-recursively
+               (string-append #$output "/share/doc/giac"))))
+          (add-after 'install 'remove-unnecessary-executable
+            (lambda _
+              (delete-file (string-append #$output "/bin/xcasnew")))))))
     (inputs
      ;; TODO: Add libnauty, unbundle "libmicropython.a".
      (list ao
