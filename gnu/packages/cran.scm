@@ -15613,17 +15613,18 @@ several common set, element and attribute related tasks.")
 (define-public r-shinyjqui
   (package
     (name "r-shinyjqui")
-    (version "0.4.0")
+    (version "0.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "shinyjqui" version))
        (sha256
         (base32
-         "0ins0pmfis34jr0rimsp1k1aw856r3xjdnsvv8lkwqhvp58nzqah"))
+         "135gwz7syyb6pbn0lkvmq0v1c6r1zivavnqhi1rnzbbzlysi27v1"))
        (snippet
-        '(begin
-           (delete-file "inst/www/shinyjqui.min.js")))))
+        '(for-each delete-file
+                   (list "inst/www/shinyjqui.min.js"
+                         "inst/www/jquery.ui.touch-punch.min.js")))))
     (properties `((upstream-name . "shinyjqui")))
     (build-system r-build-system)
     (arguments
@@ -15631,17 +15632,34 @@ several common set, element and attribute related tasks.")
        (modify-phases %standard-phases
          (add-after 'unpack 'process-javascript
            (lambda* (#:key inputs #:allow-other-keys)
-             (with-directory-excursion "inst/www/"
-               (let ((source "shinyjqui.js")
-                     (target "shinyjqui.min.js"))
-                 (format #true "Processing ~a --> ~a~%"
-                         source target)
-                 (invoke "esbuild" source "--minify"
-                         (string-append "--outfile=" target)))))))))
+             (with-directory-excursion "inst/www"
+               (let ((mapping
+                      `((,(string-append (assoc-ref inputs "js-jquery.ui.touch-punch")
+                                         "/jquery.ui.touch-punch.js")
+                         . "jquery.ui.touch-punch.min.js")
+                        ("shinyjqui.js"
+                         . "shinyjqui.min.js"))))
+                 (for-each (lambda (source target)
+                             (format #true "Processing ~a --> ~a~%"
+                                     source target)
+                             (invoke "esbuild" source "--minify"
+                                     (string-append "--outfile=" target)))
+                           (map car mapping)
+                           (map cdr mapping)))))))))
     (propagated-inputs
-     (list r-htmltools r-htmlwidgets r-jsonlite r-shiny))
+     (list r-htmltools r-htmlwidgets r-jsonlite r-rlang r-shiny))
     (native-inputs
-     (list r-knitr esbuild))
+     `(("r-knitr" ,r-knitr)
+       ("esbuild" ,esbuild)
+       ("js-jquery.ui.touch-punch"
+        ,(origin
+           (method git-fetch)
+           (uri (git-reference
+                 (url "https://github.com/furf/jquery-ui-touch-punch")
+                 (commit "8f7559b6e65cdc3ee3648d5fe76d38c653f87ff5")))
+           (sha256
+            (base32
+             "1lzywp2q9hwx6d5fqjla95vp7ra2lahr5dam7lsqjmch9d98r48q"))))))
     (home-page "https://github.com/yang-tang/shinyjqui")
     (synopsis "jQuery UI interactions and effects for Shiny")
     (description
