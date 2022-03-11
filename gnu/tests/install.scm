@@ -229,10 +229,8 @@ reboot\n")
                              ;; Since the image has no network access, use the
                              ;; current Guix so the store items we need are in
                              ;; the image and add packages provided.
-                             (inherit (operating-system-add-packages
-                                       (operating-system-with-current-guix
-                                        installation-os)
-                                       packages))
+                             (inherit (operating-system-with-current-guix
+                                       installation-os))
                              (kernel-arguments '("console=ttyS0")))
                            #:imported-modules '((gnu services herd)
                                                 (gnu installer tests)
@@ -240,12 +238,13 @@ reboot\n")
                       (uefi-support? #f)
                       (installation-image-type 'efi-raw)
                       (install-size 'guess)
-                      (target-size (* 2200 MiB)))
+                      (target-size (* 2200 MiB))
+                      (number-of-disks 1))
   "Run SCRIPT (a shell script following the system installation procedure) in
-OS to install TARGET-OS.  Return a VM image of TARGET-SIZE bytes containing
-the installed system.  The packages specified in PACKAGES will be appended to
-packages defined in installation-os."
-
+OS to install TARGET-OS.  Return the VM disk images of TARGET-SIZE bytes
+containing the installed system.  PACKAGES is a list of packages added to OS.
+NUMBER-OF-DISKS can be used to specify a number of disks different than one,
+such as for RAID systems."
   (mlet* %store-monad ((_      (set-grafting #f))
                        (system (current-system))
 
@@ -257,12 +256,13 @@ packages defined in installation-os."
                        ;; succeed.  Also add guile-final, which is pulled in
                        ;; through provenance.drv and may not always be present.
                        (target (operating-system-derivation target-os))
-                       (base-image ->
-                                   (os->image
-                                    (operating-system-with-gc-roots
-                                     os (list target guile-final))
-                                    #:type (lookup-image-type-by-name
-                                            installation-image-type)))
+                       (base-image -> (os->image
+                                       (operating-system-with-gc-roots
+                                        (operating-system-add-packages
+                                         os packages)
+                                        (list target guile-final))
+                                       #:type (lookup-image-type-by-name
+                                               installation-image-type)))
                        (image ->
                               (system-image
                                (image
@@ -276,13 +276,18 @@ packages defined in installation-os."
                                (gnu build marionette))
         #~(begin
             (use-modules (guix build utils)
-                         (gnu build marionette))
+                         (gnu build marionette)
+                         (srfi srfi-1))
 
             (set-path-environment-variable "PATH" '("bin")
                                            (list #$qemu-minimal))
 
-            (system* "qemu-img" "create" "-f" "qcow2"
-                     #$output #$(number->string target-size))
+            (mkdir-p #$output)
+            (for-each (lambda (n)
+                        (system* "qemu-img" "create" "-f" "qcow2"
+                                 (format #f "~a/disk~a.qcow2" #$output n)
+                                 #$(number->string target-size)))
+                      (iota #$number-of-disks))
 
             (define marionette
               (make-marionette
@@ -303,8 +308,12 @@ packages defined in installation-os."
                       (error
                        "unsupported installation-image-type:"
                        installation-image-type)))
-                 "-drive"
-                 ,(string-append "file=" #$output ",if=virtio")
+                 ,@(append-map
+                    (lambda (n)
+                      (list "-drive"
+                            (format #f "file=~a/disk~a.qcow2,if=virtio"
+                                    #$output n)))
+                    (iota #$number-of-disks))
                  ,@(if (file-exists? "/dev/kvm")
                        '("-enable-kvm")
                        '()))))
@@ -338,16 +347,23 @@ packages defined in installation-os."
               (exit #$(and gui-test
                            (gui-test #~marionette)))))))
 
-    (gexp->derivation "installation" install
-                      #:substitutable? #f)))      ;too big
+    (mlet %store-monad ((images-dir (gexp->derivation "installation"
+                                      install
+                                      #:substitutable? #f))) ;too big
+      (return (with-imported-modules '((guix build utils))
+                #~(begin
+                    (use-modules (guix build utils))
+                    (find-files #$images-dir)))))))
 
-(define* (qemu-command* image #:key (uefi-support? #f) (memory-size 256))
+(define* (qemu-command* images #:key (uefi-support? #f) (memory-size 256))
   "Return as a monadic value the command to run QEMU with a writable overlay
-above IMAGE, a disk image.  The QEMU VM has access to MEMORY-SIZE MiB of RAM."
+on top of IMAGES, a list of disk images.  The QEMU VM has access to MEMORY-SIZE
+MiB of RAM."
   (mlet* %store-monad ((system (current-system))
                        (uefi-firmware -> (and uefi-support?
                                               (uefi-firmware system))))
     (return #~(begin
+                (use-modules (srfi srfi-1))
                 `(,(string-append #$qemu-minimal "/bin/"
                                   #$(qemu-command system))
                   "-snapshot"           ;for the volatile, writable overlay
@@ -358,7 +374,10 @@ above IMAGE, a disk image.  The QEMU VM has access to MEMORY-SIZE MiB of RAM."
                         '("-bios" #$uefi-firmware)
                         '())
                   "-no-reboot" "-m" #$(number->string memory-size)
-                  "-drive" (format #f "file=~a,if=virtio" #$image))))))
+                  ,@(append-map (lambda (image)
+                                  (list "-drive" (format #f "file=~a,if=virtio"
+                                                         image)))
+                                #$images))))))
 
 (define %test-installed-os
   (system-test
@@ -368,8 +387,8 @@ above IMAGE, a disk image.  The QEMU VM has access to MEMORY-SIZE MiB of RAM."
 This test is expensive in terms of CPU and storage usage since we need to
 build (current-guix) and then store a couple of full system images.")
    (value
-    (mlet* %store-monad ((image   (run-install %minimal-os %minimal-os-source))
-                         (command (qemu-command* image)))
+    (mlet* %store-monad ((images   (run-install %minimal-os %minimal-os-source))
+                         (command (qemu-command* images)))
       (run-basic-test %minimal-os command
                       "installed-os")))))
 
@@ -380,13 +399,13 @@ build (current-guix) and then store a couple of full system images.")
     "Test basic functionality of an OS booted with an extlinux bootloader.  As
 per %test-installed-os, this test is expensive in terms of CPU and storage.")
    (value
-    (mlet* %store-monad ((image (run-install %minimal-extlinux-os
-                                             %minimal-extlinux-os-source
-                                             #:packages
-                                             (list syslinux)
-                                             #:script
-                                             %extlinux-gpt-installation-script))
-                         (command (qemu-command* image)))
+    (mlet* %store-monad ((images (run-install %minimal-extlinux-os
+                                              %minimal-extlinux-os-source
+                                              #:packages
+                                              (list syslinux)
+                                              #:script
+                                              %extlinux-gpt-installation-script))
+                         (command (qemu-command* images)))
       (run-basic-test %minimal-extlinux-os command
                       "installed-extlinux-os")))))
 
@@ -456,14 +475,14 @@ reboot\n")
    (description
     "")
    (value
-    (mlet* %store-monad ((image   (run-install
-                                   %minimal-os-on-vda
-                                   %minimal-os-on-vda-source
-                                   #:script
-                                   %simple-installation-script-for-/dev/vda
-                                   #:installation-image-type
-                                   'uncompressed-iso9660))
-                         (command (qemu-command* image)))
+    (mlet* %store-monad ((images (run-install
+                                  %minimal-os-on-vda
+                                  %minimal-os-on-vda-source
+                                  #:script
+                                  %simple-installation-script-for-/dev/vda
+                                  #:installation-image-type
+                                  'uncompressed-iso9660))
+                         (command (qemu-command* images)))
       (run-basic-test %minimal-os-on-vda command name)))))
 
 
@@ -514,11 +533,11 @@ reboot\n")
 partition.  In particular, home directories must be correctly created (see
 <https://bugs.gnu.org/21108>).")
    (value
-    (mlet* %store-monad ((image   (run-install %separate-home-os
-                                               %separate-home-os-source
-                                               #:script
-                                               %simple-installation-script))
-                         (command (qemu-command* image)))
+    (mlet* %store-monad ((images (run-install %separate-home-os
+                                              %separate-home-os-source
+                                              #:script
+                                              %simple-installation-script))
+                         (command (qemu-command* images)))
       (run-basic-test %separate-home-os command "separate-home-os")))))
 
 
@@ -591,11 +610,11 @@ reboot\n")
     "Test basic functionality of an OS installed like one would do by hand,
 where /gnu lives on a separate partition.")
    (value
-    (mlet* %store-monad ((image   (run-install %separate-store-os
-                                               %separate-store-os-source
-                                               #:script
-                                               %separate-store-installation-script))
-                         (command (qemu-command* image)))
+    (mlet* %store-monad ((images (run-install %separate-store-os
+                                              %separate-store-os-source
+                                              #:script
+                                              %separate-store-installation-script))
+                         (command (qemu-command* images)))
       (run-basic-test %separate-store-os command "separate-store-os")))))
 
 
@@ -672,12 +691,12 @@ reboot\n")
     "Test functionality of an OS installed with a RAID root partition managed
 by 'mdadm'.")
    (value
-    (mlet* %store-monad ((image   (run-install %raid-root-os
-                                               %raid-root-os-source
-                                               #:script
-                                               %raid-root-installation-script
-                                               #:target-size (* 3200 MiB)))
-                         (command (qemu-command* image)))
+    (mlet* %store-monad ((images (run-install %raid-root-os
+                                              %raid-root-os-source
+                                              #:script
+                                              %raid-root-installation-script
+                                              #:target-size (* 3200 MiB)))
+                         (command (qemu-command* images)))
       (run-basic-test %raid-root-os
                       `(,@command) "raid-root-os")))))
 
@@ -806,11 +825,11 @@ to enter the LUKS passphrase."
 This test is expensive in terms of CPU and storage usage since we need to
 build (current-guix) and then store a couple of full system images.")
    (value
-    (mlet* %store-monad ((image   (run-install %encrypted-root-os
-                                               %encrypted-root-os-source
-                                               #:script
-                                               %encrypted-root-installation-script))
-                         (command (qemu-command* image)))
+    (mlet* %store-monad ((images (run-install %encrypted-root-os
+                                              %encrypted-root-os-source
+                                              #:script
+                                              %encrypted-root-installation-script))
+                         (command (qemu-command* images)))
       (run-basic-test %encrypted-root-os command "encrypted-root-os"
                       #:initialization enter-luks-passphrase)))))
 
@@ -890,13 +909,13 @@ reboot\n")
    (description
     "Test functionality of an OS installed with a LVM /home partition")
    (value
-    (mlet* %store-monad ((image   (run-install %lvm-separate-home-os
-                                               %lvm-separate-home-os-source
-                                               #:script
-                                               %lvm-separate-home-installation-script
-                                               #:packages (list lvm2-static)
-                                               #:target-size (* 3200 MiB)))
-                         (command (qemu-command* image)))
+    (mlet* %store-monad ((images (run-install %lvm-separate-home-os
+                                              %lvm-separate-home-os-source
+                                              #:script
+                                              %lvm-separate-home-installation-script
+                                              #:packages (list lvm2-static)
+                                              #:target-size (* 3200 MiB)))
+                         (command (qemu-command* images)))
       (run-basic-test %lvm-separate-home-os
                       `(,@command) "lvm-separate-home-os")))))
 
@@ -992,11 +1011,11 @@ terms of CPU and storage usage since we need to build (current-guix) and then
 store a couple of full system images.")
    (value
     (mlet* %store-monad
-        ((image (run-install %encrypted-root-not-boot-os
-                             %encrypted-root-not-boot-os-source
-                             #:script
-                             %encrypted-root-not-boot-installation-script))
-         (command (qemu-command* image)))
+        ((images (run-install %encrypted-root-not-boot-os
+                              %encrypted-root-not-boot-os-source
+                              #:script
+                              %encrypted-root-not-boot-installation-script))
+         (command (qemu-command* images)))
       (run-basic-test %encrypted-root-not-boot-os command
                       "encrypted-root-not-boot-os"
                       #:initialization enter-luks-passphrase)))))
@@ -1068,11 +1087,11 @@ reboot\n")
 This test is expensive in terms of CPU and storage usage since we need to
 build (current-guix) and then store a couple of full system images.")
    (value
-    (mlet* %store-monad ((image   (run-install %btrfs-root-os
-                                               %btrfs-root-os-source
-                                               #:script
-                                               %btrfs-root-installation-script))
-                         (command (qemu-command* image)))
+    (mlet* %store-monad ((images (run-install %btrfs-root-os
+                                              %btrfs-root-os-source
+                                              #:script
+                                              %btrfs-root-installation-script))
+                         (command (qemu-command* images)))
       (run-basic-test %btrfs-root-os command "btrfs-root-os")))))
 
 
@@ -1136,11 +1155,11 @@ reboot\n")
 RAID-0 (stripe) root partition.")
    (value
     (mlet* %store-monad
-        ((image (run-install %btrfs-raid-root-os
-                             %btrfs-raid-root-os-source
-                             #:script %btrfs-raid-root-installation-script
-                             #:target-size (* 2800 MiB)))
-         (command (qemu-command* image)))
+        ((images (run-install %btrfs-raid-root-os
+                              %btrfs-raid-root-os-source
+                              #:script %btrfs-raid-root-installation-script
+                              #:target-size (* 2800 MiB)))
+         (command (qemu-command* images)))
       (run-basic-test %btrfs-raid-root-os `(,@command) "btrfs-raid-root-os")))))
 
 
@@ -1227,12 +1246,11 @@ This test is expensive in terms of CPU and storage usage since we need to
 build (current-guix) and then store a couple of full system images.")
    (value
     (mlet* %store-monad
-        ((image
-          (run-install %btrfs-root-on-subvolume-os
-                       %btrfs-root-on-subvolume-os-source
-                       #:script
-                       %btrfs-root-on-subvolume-installation-script))
-         (command (qemu-command* image)))
+        ((images (run-install %btrfs-root-on-subvolume-os
+                              %btrfs-root-on-subvolume-os-source
+                              #:script
+                              %btrfs-root-on-subvolume-installation-script))
+         (command (qemu-command* images)))
       (run-basic-test %btrfs-root-on-subvolume-os command
                       "btrfs-root-on-subvolume-os")))))
 
@@ -1302,11 +1320,11 @@ reboot\n")
 This test is expensive in terms of CPU and storage usage since we need to
 build (current-guix) and then store a couple of full system images.")
    (value
-    (mlet* %store-monad ((image   (run-install %jfs-root-os
-                                               %jfs-root-os-source
-                                               #:script
-                                               %jfs-root-installation-script))
-                         (command (qemu-command* image)))
+    (mlet* %store-monad ((images (run-install %jfs-root-os
+                                              %jfs-root-os-source
+                                              #:script
+                                              %jfs-root-installation-script))
+                         (command (qemu-command* images)))
       (run-basic-test %jfs-root-os command "jfs-root-os")))))
 
 
@@ -1375,11 +1393,11 @@ reboot\n")
 This test is expensive in terms of CPU and storage usage since we need to
 build (current-guix) and then store a couple of full system images.")
    (value
-    (mlet* %store-monad ((image   (run-install %f2fs-root-os
-                                               %f2fs-root-os-source
-                                               #:script
-                                               %f2fs-root-installation-script))
-                         (command (qemu-command* image)))
+    (mlet* %store-monad ((images (run-install %f2fs-root-os
+                                              %f2fs-root-os-source
+                                              #:script
+                                              %f2fs-root-installation-script))
+                         (command (qemu-command* images)))
       (run-basic-test %f2fs-root-os command "f2fs-root-os")))))
 
 
@@ -1448,11 +1466,11 @@ reboot\n")
 This test is expensive in terms of CPU and storage usage since we need to
 build (current-guix) and then store a couple of full system images.")
    (value
-    (mlet* %store-monad ((image   (run-install %xfs-root-os
-                                               %xfs-root-os-source
-                                               #:script
-                                               %xfs-root-installation-script))
-                         (command (qemu-command* image)))
+    (mlet* %store-monad ((images (run-install %xfs-root-os
+                                              %xfs-root-os-source
+                                              #:script
+                                              %xfs-root-installation-script))
+                         (command (qemu-command* images)))
       (run-basic-test %xfs-root-os command "xfs-root-os")))))
 
 
@@ -1720,22 +1738,22 @@ build (current-guix) and then store a couple of full system images.")
     "Install an OS using the graphical installer and test it.")
    (value
     (mlet* %store-monad
-        ((image   (run-install target-os '(this is unused)
-                               #:script #f
-                               #:os installation-os-for-gui-tests
-                               #:uefi-support? uefi-support?
-                               #:install-size install-size
-                               #:target-size target-size
-                               #:installation-image-type
-                               'uncompressed-iso9660
-                               #:gui-test
-                               (lambda (marionette)
-                                 (gui-test-program
-                                  marionette
-                                  #:desktop? desktop?
-                                  #:encrypted? encrypted?
-                                  #:uefi-support? uefi-support?))))
-         (command (qemu-command* image
+        ((images (run-install target-os '(this is unused)
+                              #:script #f
+                              #:os installation-os-for-gui-tests
+                              #:uefi-support? uefi-support?
+                              #:install-size install-size
+                              #:target-size target-size
+                              #:installation-image-type
+                              'uncompressed-iso9660
+                              #:gui-test
+                              (lambda (marionette)
+                                (gui-test-program
+                                 marionette
+                                 #:desktop? desktop?
+                                 #:encrypted? encrypted?
+                                 #:uefi-support? uefi-support?))))
+         (command (qemu-command* images
                                  #:uefi-support? uefi-support?
                                  #:memory-size 512)))
       (run-basic-test target-os command name
