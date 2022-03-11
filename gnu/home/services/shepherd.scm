@@ -24,12 +24,27 @@
   #:use-module (guix sets)
   #:use-module (guix gexp)
   #:use-module (guix records)
-
   #:use-module (srfi srfi-1)
-
   #:export (home-shepherd-service-type
-            home-shepherd-configuration)
+
+            home-shepherd-configuration
+            home-shepherd-configuration?
+            home-shepherd-configuration-shepherd
+            home-shepherd-configuration-auto-start?
+            home-shepherd-configuration-services)
   #:re-export (shepherd-service
+               shepherd-service?
+               shepherd-service-documentation
+               shepherd-service-provision
+               shepherd-service-canonical-name
+               shepherd-service-requirement
+               shepherd-service-one-shot?
+               shepherd-service-respawn?
+               shepherd-service-start
+               shepherd-service-stop
+               shepherd-service-auto-start?
+               shepherd-service-modules
+
                shepherd-action))
 
 (define-record-type* <home-shepherd-configuration>
