@@ -185,7 +185,7 @@
 
          #$%initialize-gettext
 
-         (let* ((home     (string-append (getenv "HOME") "/.guix-home"))
+         (let* ((home     (string-append home-directory "/.guix-home"))
                 (pivot    (string-append home ".new"))
                 (new-home (getenv "GUIX_NEW_HOME"))
                 (old-home (getenv "GUIX_OLD_HOME")))
