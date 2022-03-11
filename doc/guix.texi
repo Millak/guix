@@ -38848,7 +38848,38 @@ environment.  Note that not every home service that exists is supported
 $ guix home import ~/guix-config
 guix home: '/home/alice/guix-config' populated with all the Home configuration files
 @end example
+@end table
 
+And there's more!  @command{guix home} also provides the following
+sub-commands to visualize how the services of your home environment
+relate to one another:
+
+@table @code
+@cindex service extension graph, of a home environment
+@item extension-graph
+Emit to standard output the @dfn{service extension graph} of the home
+environment defined in @var{file} (@pxref{Service Composition}, for more
+information on service extensions).  By default the output is in
+Dot/Graphviz format, but you can choose a different format with
+@option{--graph-backend}, as with @command{guix graph} (@pxref{Invoking
+guix graph, @option{--backend}}):
+
+The command:
+
+@example
+guix home extension-graph @var{file} | xdot -
+@end example
+
+shows the extension relations among services.
+
+@cindex Shepherd dependency graph, for a home environment
+@item shepherd-graph
+Emit to standard output the @dfn{dependency graph} of shepherd services
+of the home environment defined in @var{file}.  @xref{Shepherd
+Services}, for more information and for an example graph.
+
+Again, the default output format is Dot/Graphviz, but you can pass
+@option{--graph-backend} to select a different one.
 @end table
 
 @var{options} can contain any of the common build options (@pxref{Common

@@ -88,7 +88,10 @@
   #:use-module (ice-9 match)
   #:use-module (rnrs bytevectors)
   #:export (guix-system
-            read-operating-system))
+            read-operating-system
+
+            service-node-type
+            shepherd-service-node-type))
 
 
 ;;;

@@ -3,6 +3,7 @@
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2021 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25,6 +26,9 @@
   #:use-module (gnu packages)
   #:use-module (gnu home)
   #:use-module (gnu home services)
+  #:autoload   (gnu home services shepherd) (home-shepherd-service-type
+                                             home-shepherd-configuration-services
+                                             shepherd-service-requirement)
   #:use-module (guix channels)
   #:use-module (guix derivations)
   #:use-module (guix ui)
@@ -33,13 +37,16 @@
   #:use-module (guix profiles)
   #:use-module (guix store)
   #:use-module (guix utils)
+  #:autoload   (guix graph) (lookup-backend export-graph)
   #:use-module (guix scripts)
   #:use-module (guix scripts package)
   #:use-module (guix scripts build)
   #:autoload   (guix scripts system search) (service-type->recutils)
   #:use-module (guix scripts system reconfigure)
   #:autoload   (guix scripts pull) (channel-commit-hyperlink)
-  #:use-module (guix scripts home import)
+  #:autoload   (guix scripts system) (service-node-type
+                                      shepherd-service-node-type)
+  #:autoload   (guix scripts home import) (import-manifest)
   #:use-module ((guix status) #:select (with-status-verbosity))
   #:use-module ((guix build utils) #:select (mkdir-p))
   #:use-module (guix gexp)
@@ -87,6 +94,10 @@ Some ACTIONS support additional ARGS.\n"))
    build              build the home environment without installing anything\n"))
   (display (G_ "\
    import             generates a home environment definition from dotfiles\n"))
+  (display (G_ "\
+   extension-graph    emit the service extension graph\n"))
+  (display (G_ "\
+   shepherd-graph     emit the graph of shepherd services\n"))
 
   (show-build-options-help)
   (display (G_ "
@@ -97,6 +108,9 @@ Some ACTIONS support additional ARGS.\n"))
                          channel revisions"))
   (display (G_ "
   -v, --verbosity=LEVEL  use the given verbosity LEVEL"))
+  (display (G_ "
+      --graph-backend=BACKEND
+                         use BACKEND for 'extension-graph' and 'shepherd-graph'"))
   (newline)
   (display (G_ "
   -h, --help             display this help and exit"))
@@ -136,6 +150,10 @@ Some ACTIONS support additional ARGS.\n"))
                    (alist-cons 'validate-reconfigure
                                warn-about-backward-reconfigure
                                result)))
+         (option '("graph-backend") #t #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'graph-backend arg result)))
+
          %standard-build-options))
 
 (define %default-options
@@ -147,18 +165,49 @@ Some ACTIONS support additional ARGS.\n"))
     (multiplexed-build-output? . #t)
     (verbosity . #f)                              ;default
     (debug . 0)
-    (validate-reconfigure . ,ensure-forward-reconfigure)))
+    (validate-reconfigure . ,ensure-forward-reconfigure)
+    (graph-backend . "graphviz")))
 
 
 ;;;
 ;;; Actions.
 ;;;
 
+(define* (export-extension-graph home port
+                                 #:key (backend (lookup-backend "graphviz")))
+  "Export the service extension graph of HOME to PORT using BACKEND."
+  (let* ((services (home-environment-services home))
+         (home     (find (lambda (service)
+                           (eq? (service-kind service) home-service-type))
+                         services)))
+    (export-graph (list home) port
+                  #:backend backend
+                  #:node-type (service-node-type services)
+                  #:reverse-edges? #t)))
+
+(define* (export-shepherd-graph home port
+                                #:key (backend (lookup-backend "graphviz")))
+  "Export the graph of shepherd services of HOME to PORT using BACKEND."
+  (let* ((services  (home-environment-services home))
+         (root      (fold-services services
+                                   #:target-type home-shepherd-service-type))
+         ;; Get the list of <shepherd-service>.
+         (shepherds (home-shepherd-configuration-services
+                     (service-value root)))
+         (sinks     (filter (lambda (service)
+                              (null? (shepherd-service-requirement service)))
+                            shepherds)))
+    (export-graph sinks port
+                  #:backend backend
+                  #:node-type (shepherd-service-node-type shepherds)
+                  #:reverse-edges? #t)))
+
 (define* (perform-action action he
                          #:key
                          dry-run?
                          derivations-only?
                          use-substitutes?
+                         (graph-backend "graphviz")
                          (validate-reconfigure ensure-forward-reconfigure))
   "Perform ACTION for home environment. "
 
@@ -169,35 +218,43 @@ Some ACTIONS support additional ARGS.\n"))
     (check-forward-update validate-reconfigure
                           #:current-channels (home-provenance %guix-home)))
 
-  (mlet* %store-monad
-      ((he-drv   (home-environment-derivation he))
-       (drvs     (mapm/accumulate-builds lower-object (list he-drv)))
-       (%        (if derivations-only?
-                     (return
-                      (for-each (compose println derivation-file-name) drvs))
-                     (built-derivations drvs)))
+  (case action
+    ((extension-graph)
+     (export-extension-graph he (current-output-port)
+                             #:backend (lookup-backend graph-backend)))
+    ((shepherd-graph)
+     (export-shepherd-graph he (current-output-port)
+                            #:backend (lookup-backend graph-backend)))
+    (else
+     (mlet* %store-monad
+         ((he-drv   (home-environment-derivation he))
+          (drvs     (mapm/accumulate-builds lower-object (list he-drv)))
+          (%        (if derivations-only?
+                        (return
+                         (for-each (compose println derivation-file-name) drvs))
+                        (built-derivations drvs)))
 
-       (he-out-path -> (derivation->output-path he-drv)))
-    (if (or dry-run? derivations-only?)
-        (return #f)
-        (begin
-          (for-each (compose println derivation->output-path) drvs)
+          (he-out-path -> (derivation->output-path he-drv)))
+       (if (or dry-run? derivations-only?)
+           (return #f)
+           (begin
+             (for-each (compose println derivation->output-path) drvs)
 
-          (case action
-            ((reconfigure)
-             (let* ((number (generation-number %guix-home))
-                    (generation (generation-file-name
-                                 %guix-home (+ 1 number))))
+             (case action
+               ((reconfigure)
+                (let* ((number (generation-number %guix-home))
+                       (generation (generation-file-name
+                                    %guix-home (+ 1 number))))
 
-               (switch-symlinks generation he-out-path)
-               (switch-symlinks %guix-home generation)
-               (setenv "GUIX_NEW_HOME" he-out-path)
-               (primitive-load (string-append he-out-path "/activate"))
-               (setenv "GUIX_NEW_HOME" #f)
-               (return he-out-path)))
-            (else
-             (newline)
-             (return he-out-path)))))))
+                  (switch-symlinks generation he-out-path)
+                  (switch-symlinks %guix-home generation)
+                  (setenv "GUIX_NEW_HOME" he-out-path)
+                  (primitive-load (string-append he-out-path "/activate"))
+                  (setenv "GUIX_NEW_HOME" #f)
+                  (return he-out-path)))
+               (else
+                (newline)
+                (return he-out-path)))))))))
 
 (define (process-action action args opts)
   "Process ACTION, a sub-command, with the arguments are listed in ARGS.
@@ -256,7 +313,9 @@ resulting from command-line parsing."
                             #:derivations-only? (assoc-ref opts 'derivations-only?)
                             #:use-substitutes? (assoc-ref opts 'substitutes?)
                             #:validate-reconfigure
-                            (assoc-ref opts 'validate-reconfigure))))))
+                            (assoc-ref opts 'validate-reconfigure)
+                            #:graph-backend
+                            (assoc-ref opts 'graph-backend))))))
     (warn-about-disk-space)))
 
 

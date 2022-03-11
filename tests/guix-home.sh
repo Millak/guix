@@ -93,6 +93,14 @@ trap 'chmod -Rf +w "$test_directory"; rm -rf "$test_directory"' EXIT
                        "# the content of bashrc-test-config.sh"))))))))
 EOF
 
+    # Check whether the graph commands work as expected.
+    guix home extension-graph "home.scm" | grep 'label = "home-activation"'
+    guix home extension-graph "home.scm" | grep 'label = "home-symlink-manager"'
+    guix home extension-graph "home.scm" | grep 'label = "home"'
+
+    # There are no Shepherd services so the one below must fail.
+    ! guix home shepherd-graph "home.scm"
+
     guix home reconfigure "${test_directory}/home.scm"
     test -d "${HOME}/.guix-home"
     test -h "${HOME}/.bash_profile"
