@@ -632,16 +632,17 @@ many input formats and provides a customisable Vi-style user interface.")
       #:phases
       #~(modify-phases %standard-phases
           (replace 'check
-            (lambda* (#:key inputs #:allow-other-keys)
+            (lambda* (#:key inputs tests? #:allow-other-keys)
               ;; Tests require to write $HOME.
-              (setenv "HOME" (getcwd))
-              ;; Replace hard-coded diff file name.
-              (substitute* "tests/integration.c"
-                (("/usr/bin/diff")
-                 (search-input-file inputs "/bin/diff")))
-              ;; Denemo's documentation says to use this command to run its
-              ;; test suite.
-              (invoke "make" "-C" "tests" "check")))
+              (when tests?
+                (setenv "HOME" (getcwd))
+                ;; Replace hard-coded diff file name.
+                (substitute* "tests/integration.c"
+                  (("/usr/bin/diff")
+                   (search-input-file inputs "/bin/diff")))
+                ;; Denemo's documentation says to use this command to run its
+                ;; test suite.
+                (invoke "make" "-C" "tests" "check"))))
           (add-before 'build 'set-lilypond
             ;; This phase sets the default path for lilypond to its current
             ;; location in the store.
