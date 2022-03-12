@@ -5120,12 +5120,12 @@ by either a symbol or a keyword.")
   (sbcl-package->cl-source-package sbcl-verbose))
 
 (define-public sbcl-find-port
-  (let ((commit "00c96a25af93a0f8681d34ec548861f2d7485478")
-        (revision "1"))
+  (let ((commit "811727f88d7f000623bf92fdb0e64678a7112a28")
+        (revision "2"))
     (package
       (name "sbcl-find-port")
       (build-system asdf-build-system/sbcl)
-      (version "0.1")
+      (version (git-version "0.1" revision commit))
       (home-page "https://github.com/eudoxia0/find-port")
       (source
        (origin
@@ -5136,7 +5136,7 @@ by either a symbol or a keyword.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0d6dzbb45jh0rx90wgs6v020k2xa87mvzas3mvfzvivjvqqlpryq"))))
+           "1fw6q7d2bxxb7fqk548ylq8mx4sz95yc0q5h0rwd0mnqjrbwbari"))))
       (native-inputs
        (list sbcl-fiveam))
       (inputs
