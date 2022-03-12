@@ -6167,14 +6167,14 @@ to variables on the left-hand side of the assignment.")
 (define-public r-pillar
   (package
     (name "r-pillar")
-    (version "1.6.5")
+    (version "1.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pillar" version))
        (sha256
         (base32
-         "1nqv86zb51jgd6jbhgnyq6j53dzsjx7gwaapndfd3yvp0sxg3yr2"))))
+         "1fqk18vc9ashf12gdqkdi6n1nj5lh324vwhgiib3b2fcb2bghhbq"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
