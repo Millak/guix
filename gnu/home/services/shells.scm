@@ -324,7 +324,7 @@ source ~/.profile
   (guix-defaults?
    (boolean #t)
    "Add sane defaults like reading @file{/etc/bashrc} and coloring the output of
-@command{ls} to the end of the @file{.bashrc} file.")
+@command{ls} to the top of the @file{.bashrc} file.")
   (environment-variables
    (alist '())
    "Association list of environment variables to set for the Bash session.  The
@@ -448,7 +448,7 @@ if [ -f ~/.bashrc ]; then source ~/.bashrc; fi
               'bashrc
               (if (home-bash-configuration-guix-defaults? config)
                   (list (serialize-field 'aliases) guix-bashrc)
-                  (list (serialize-field 'alises))))
+                  (list (serialize-field 'aliases))))
              (file-if-not-empty 'bash-logout)))))
 
 (define (add-bash-packages config)
