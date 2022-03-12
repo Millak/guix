@@ -3137,13 +3137,13 @@ XML.  To learn more about the Abbyy OCR API, see @url{http://ocrsdk.com/}.")
 (define-public r-colorspace
   (package
     (name "r-colorspace")
-    (version "2.0-2")
+    (version "2.0-3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "colorspace" version))
        (sha256
-        (base32 "0fhq2aykdkxh3r90i8aqjyb37p5api3mjd19ch8mzv99q4pcv4dq"))))
+        (base32 "0zw52s8g2gxp8i1ax96azxmxqrbhb7aad5px0c1vgr6n9p682mp7"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
