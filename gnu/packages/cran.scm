@@ -24259,14 +24259,14 @@ be constant or piecewise-constant in time.")
 (define-public r-ltm
   (package
     (name "r-ltm")
-    (version "1.1-1")
+    (version "1.2-0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ltm" version))
        (sha256
         (base32
-         "1qrgzwx5l58qf5rfp1knxc84r0g943q5sdr3ky74zzwpnmrf2vf7"))))
+         "0vhgbk6j0z3limsrbjkjkpfn2whiaij5j4jf1gg66mjs9dlylap1"))))
     (properties `((upstream-name . "ltm")))
     (build-system r-build-system)
     (propagated-inputs
