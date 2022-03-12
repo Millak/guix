@@ -6424,7 +6424,8 @@ supports playlists, song ratings, and any codecs installed through gstreamer.")
             (patches (search-patches "eog-update-libportal-usage.patch"))))
    (build-system meson-build-system)
    (arguments
-    `(#:configure-flags
+    `(#:glib-or-gtk? #t
+      #:configure-flags
       ;; Otherwise, the RUNPATH will lack the final 'eog' path component.
       (list (string-append "-Dc_link_args=-Wl,-rpath="
                            (assoc-ref %outputs "out") "/lib/eog"))
