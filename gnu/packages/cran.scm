@@ -7793,17 +7793,15 @@ and Eclat.")
 (define-public r-parsedate
   (package
     (name "r-parsedate")
-    (version "1.2.1")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "parsedate" version))
        (sha256
         (base32
-         "05l6f1n3dsm383w7jfg3j38klvmzzfvc7qi9zr5ij13rljj8s1vb"))))
+         "1c2cpsvma3fkx6zp191bpfvf5rmpsr13g8rzqk6ycyb0n7b9k4qy"))))
     (build-system r-build-system)
-    (propagated-inputs
-     (list r-rematch2))
     (home-page "https://github.com/gaborcsardi/parsedate")
     (synopsis
      "Recognize and parse dates in various formats")
