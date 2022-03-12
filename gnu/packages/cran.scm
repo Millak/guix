@@ -32569,14 +32569,14 @@ R-squared values.")
 (define-public r-mockery
   (package
     (name "r-mockery")
-    (version "0.4.2")
+    (version "0.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mockery" version))
        (sha256
         (base32
-         "16zayzi2qdmiy513hvlci9f4p8jwry24006yfzrgmrvf6sf293lq"))))
+         "0sj77m9vgn4bzb8c8nq93xb9lm8ih8rcb7sfccripraibibg3jcz"))))
     (properties `((upstream-name . "mockery")))
     (build-system r-build-system)
     (propagated-inputs
