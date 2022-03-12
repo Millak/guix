@@ -6472,7 +6472,7 @@ supports image conversion, rotation, and slideshows.")
 
 (define-public eog-plugins
   ;; Note: EOG looks for its plugins (via libpeas) in ~/.local as well as
-  ;; $DATA/lib/eog/plugins, where DATA is one of the entries in
+  ;; $DATA/eog/plugins, where DATA is one of the entries in
   ;; $XDG_DATA_DIRS.  Thus, for EOG to find these, you have to have
   ;; 'XDG_DATA_DIRS' appropriately set.
   (package
@@ -6487,6 +6487,17 @@ supports image conversion, rotation, and slideshows.")
                (base32
                 "1dcxdjp7x092wn0iq7975f9b05ksb5kl5mxmyiqmydrja91ryw40"))))
     (build-system gnu-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'fix-plugins-path
+           ;; XXX: EOG looks its plugins in "share/eog/plugins", not in
+           ;; "lib/eog/plugins".
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (plugins (string-append out "/share/eog/plugins")))
+               (mkdir (dirname plugins))
+               (symlink (string-append out "/lib/eog/plugins") plugins)))))))
     (home-page "https://wiki.gnome.org/Apps/EyeOfGnome/Plugins")
     (synopsis "Extensions for the Eye of GNOME image viewer")
     (native-inputs
