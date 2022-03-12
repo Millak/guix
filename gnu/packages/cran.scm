@@ -27017,6 +27017,34 @@ user-level code from spatstat, except for the code for linear networks.")
 for spatial data on a linear network.")
     (license license:gpl2+)))
 
+(define-public r-spatstat-random
+  (package
+    (name "r-spatstat-random")
+    (version "2.1-0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "spatstat.random" version))
+       (sha256
+        (base32 "0ggzl64iqf7b6n81ga66wb01sm4rmzrbimv2pmgy047mjnqsnpq4"))))
+    (properties `((upstream-name . "spatstat.random")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-spatstat-data r-spatstat-geom r-spatstat-utils))
+    (home-page "http://spatstat.org/")
+    (synopsis "Random Generation Functionality for the 'spatstat' Family")
+    (description
+     "This package provides functionality for random generation of spatial
+data in the spatstat family of packages.  It generates random spatial patterns
+of points according to many simple rules (complete spatial randomness,
+Poisson, binomial, random grid, systematic, cell), randomised alteration of
+patterns (thinning, random shift, jittering), simulated realisations of random
+point processes (simple sequential inhibition, Matern inhibition models,
+Matern cluster process, Neyman-Scott cluster processes, log-Gaussian Cox
+processes, product shot noise cluster processes) and simulation of Gibbs point
+processes (Metropolis-Hastings birth-death-shift algorithm, alternating Gibbs
+sampler).")
+    (license license:gpl2+)))
+
 (define-public r-spatstat
   (package
     (name "r-spatstat")
