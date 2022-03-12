@@ -5862,14 +5862,14 @@ plots in @code{ggplot2}.")
 (define-public r-cli
   (package
     (name "r-cli")
-    (version "3.1.1")
+    (version "3.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "cli" version))
        (sha256
         (base32
-         "1kslrx22djrs3wnf5xyligwy7h4hzsn5awl946x961fn980ydcy8"))))
+         "0qp8k1afrn6ppwi6d9n05fjgj02196qcsppji3q37ph99msinnnd"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-glue))
