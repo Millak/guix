@@ -1740,13 +1740,13 @@ particularly easy to create complete web applications using httpuv alone.")
 (define-public r-jsonlite
   (package
     (name "r-jsonlite")
-    (version "1.7.3")
+    (version "1.8.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "jsonlite" version))
               (sha256
                (base32
-                "0n65x9ifxjssb000g7psgh9pgl374ax2ni1if9kp3sx56rg0n2kj"))))
+                "0k6dal7gmm19jl5sjsry5gwbnhsbrnn00q3iixig8k6bxgpr463v"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
