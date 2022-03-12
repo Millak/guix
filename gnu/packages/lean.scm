@@ -19,6 +19,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages lean)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages multiprecision)
   #:use-module (guix build-system cmake)
   #:use-module ((guix licenses) #:prefix license:)
@@ -28,7 +29,7 @@
 (define-public lean
   (package
     (name "lean")
-    (version "3.23.0")
+    (version "3.41.0")
     (home-page "https://github.com/leanprover-community/lean")
     (source (origin
               (method git-fetch)
@@ -37,19 +38,19 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "09mklc1p6ms1jayg2f89hqfmhca3h5744lli936l38ypn1d00sxx"))))
+                "0mpxlfjq460x1vi3v6qzgjv74asg0qlhykd51pj347795x5b1hf1"))))
     (build-system cmake-build-system)
     (inputs
-     (list gmp))
+     (list bash-minimal gmp))
     (arguments
      `(#:build-type "Release"           ; default upstream build type
        ;; XXX: Test phases currently fail on 32-bit sytems.
        ;; Tests for those architectures have been temporarily
        ;; disabled, pending further investigation.
-       #:tests? ,(let ((arch (or (%current-target-system)
-                              (%current-system))))
-                   (not (or (string-prefix? "i686" arch)
-                            (string-prefix? "armhf" arch))))
+       #:tests? ,(and (not (%current-target-system))
+                      (let ((arch (%current-system)))
+                        (not (or (string-prefix? "i686" arch)
+                                 (string-prefix? "armhf" arch)))))
        #:phases
        (modify-phases %standard-phases
          (add-after 'patch-source-shebangs 'patch-tests-shebangs
@@ -62,10 +63,9 @@
                  (("#![[:blank:]]?/bin/bash")
                   (string-append "#!" bash))
                  (("#![[:blank:]]?usr/bin/env bash")
-                  (string-append "#!" bash)))
-               #t)))
+                  (string-append "#!" bash))))))
          (add-before 'configure 'chdir-to-src
-           (lambda _ (chdir "src") #t)))))
+           (lambda _ (chdir "src"))))))
     (synopsis "Theorem prover and programming language")
     (description
      "Lean is a theorem prover and programming language with a small trusted
