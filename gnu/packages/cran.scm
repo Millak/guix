@@ -12586,14 +12586,14 @@ the interfaces between R and C++.")
 (define-public r-mvabund
   (package
     (name "r-mvabund")
-    (version "4.1.12")
+    (version "4.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mvabund" version))
        (sha256
         (base32
-         "107pwv2bwird1a98chcnbld2wqj9prkf4pkncyrrp304zpdkkby1"))))
+         "01kss9dx4an1ir5zs46jypvhj8sdc8wcs00i1223ai09av4lcsgd"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-mass r-rcpp r-rcppgsl r-statmod r-tweedie))
