@@ -8018,14 +8018,14 @@ promises, but with a syntax that is idiomatic R.")
 (define-public r-dosnow
   (package
     (name "r-dosnow")
-    (version "1.0.19")
+    (version "1.0.20")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "doSNOW" version))
        (sha256
         (base32
-         "0f07b38cl7s61vwzkyqkzzsic9g4sw9k6ndbxk3g90l4ca0d1ljc"))))
+         "1f5v0k2w0b2478p6iqa3hn2lwd1x3rzc348n57nd38ka2vnsnz4i"))))
     (properties `((upstream-name . "doSNOW")))
     (build-system r-build-system)
     (propagated-inputs
