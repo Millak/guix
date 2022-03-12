@@ -8038,6 +8038,27 @@ promises, but with a syntax that is idiomatic R.")
 using the @code{snow} package.")
     (license license:gpl2)))
 
+(define-public r-fstcore
+  (package
+    (name "r-fstcore")
+    (version "0.9.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "fstcore" version))
+       (sha256
+        (base32 "1qicjwsm87wgjm5mxrsgi697fmcfz6wyqcxfgngwxrf8kq4awjsf"))))
+    (properties `((upstream-name . "fstcore")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcpp))
+    (home-page "https://www.fstpackage.org/fstcore/")
+    (synopsis "R bindings to the fstlib library")
+    (description
+     "The fstlib library provides multithreaded serialization of compressed
+data frames using the fst format.  The fst format allows for random access of
+stored data and compression with the LZ4 and ZSTD compressors.")
+    (license license:mpl2.0)))
+
 (define-public r-fst
   (package
     (name "r-fst")
