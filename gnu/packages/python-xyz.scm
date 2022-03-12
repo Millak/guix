@@ -13944,19 +13944,7 @@ concurrent.futures package from Python 3.2")
     (synopsis "Promises/A+ implementation for Python")
     (description
      "Promises/A+ implementation for Python")
-    (properties `((python2-variant . ,(delay python2-promise))))
     (license license:expat)))
-
-(define-public python2-promise
-  (let ((promise (package-with-python2
-                   (strip-python2-variant python-promise))))
-    (package/inherit promise
-      (arguments (substitute-keyword-arguments (package-arguments promise)
-                   ((#:tests? _) #t)))
-      (native-inputs
-       `(("python2-futures" ,python2-futures)
-         ("python2-pytest" ,python2-pytest)
-         ,@(package-native-inputs promise))))))
 
 (define-public python-progressbar2
   (package
