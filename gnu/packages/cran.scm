@@ -5062,14 +5062,14 @@ provides a one-row summary of model-level statistics.")
 (define-public r-recipes
   (package
     (name "r-recipes")
-    (version "0.1.17")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "recipes" version))
        (sha256
         (base32
-         "0gbdc5kvbn14s5zrf4vrdjvkfajs00p7vvb433ii0lqnl07bl87d"))))
+         "1950rvva19ms6xy9d3jx94gzy589qprk115zjjd0ib4qxgip601x"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-dplyr
@@ -5077,6 +5077,7 @@ provides a one-row summary of model-level statistics.")
            r-generics
            r-glue
            r-gower
+           r-hardhat
            r-ipred
            r-lifecycle
            r-lubridate
