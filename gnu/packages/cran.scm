@@ -9744,19 +9744,18 @@ the work.")
 (define-public r-doby
   (package
     (name "r-doby")
-    (version "4.6.11")
+    (version "4.6.12")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "doBy" version))
        (sha256
         (base32
-         "1xhjh2d7zfgw8wbcj5yfscvmwbjar1w544ika13da69dydm44j81"))))
+         "1m60ya4cdickqsj0dc90bv4n47df6qg6n82fikxrkl4yhg7yyn1i"))))
     (properties `((upstream-name . "doBy")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-broom
-           r-curry
            r-deriv
            r-dplyr
            r-ggplot2
