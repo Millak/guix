@@ -30323,30 +30323,26 @@ data you need the @code{pdftools} package.")
 (define-public r-pdftools
   (package
     (name "r-pdftools")
-    (version "3.0.1")
+    (version "3.1.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (cran-uri "pdftools" version))
-        (sha256
-          (base32
-            "1dcbs5n5y8zi7bbyx491m9ik8kkmjr301x8ms85fmwdfb5a97m8k"))))
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "pdftools" version))
+       (sha256
+        (base32
+         "062nwivd03151wbs2cj51cw7gjmdyx4ccwa3b2x90kg8xpck4iai"))))
     (properties `((upstream-name . "pdftools")))
     (build-system r-build-system)
-    (inputs
-      (list zlib poppler))
-    (propagated-inputs
-      (list r-qpdf r-rcpp))
+    (inputs (list zlib poppler))
+    (propagated-inputs (list r-qpdf r-rcpp))
     (native-inputs (list pkg-config))
-    (home-page
-      "https://docs.ropensci.org/pdftools/")
-    (synopsis
-      "Text Extraction, Rendering and Converting of PDF Documents")
+    (home-page "https://docs.ropensci.org/pdftools/")
+    (synopsis "Text Extraction, Rendering and Converting of PDF Documents")
     (description
-      "Utilities based on @code{libpoppler} for extracting text, fonts,
-attachments and metadata from a PDF file.  Also supports high quality rendering
-of PDF documents into PNG, JPEG, TIFF format, or into raw bitmap vectors for
-further processing in R.")
+     "This package provides utilities based on @code{libpoppler} for
+extracting text, fonts, attachments and metadata from a PDF file.  It also
+supports high quality rendering of PDF documents into PNG, JPEG, TIFF format,
+or into raw bitmap vectors for further processing in R.")
     (license license:expat)))
 
 (define-public r-antiword
