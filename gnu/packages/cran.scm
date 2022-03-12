@@ -595,14 +595,14 @@ programming packages such as @code{knitr} and @code{rmarkdown}.")
 (define-public r-clipr
   (package
     (name "r-clipr")
-    (version "0.7.1")
+    (version "0.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "clipr" version))
        (sha256
         (base32
-         "1ywa4kipwc2d7na6iiz3wzdah99h6aynnh74yxl3nzl40xxlgbgz"))))
+         "1s9vvv3cxnz8w11gsi8z9ddv9jzib5qf5qqxnwqrrv7vj8cr7hij"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
