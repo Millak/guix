@@ -26704,18 +26704,18 @@ you can automate browsers locally or remotely.")
 (define-public r-conquer
   (package
     (name "r-conquer")
-    (version "1.2.1")
+    (version "1.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "conquer" version))
        (sha256
         (base32
-         "0i9g27f52zl2kb2392g0y614drf6s87dqz12aphj889ajq7zjm0k"))))
+         "1z07p4xcrxvnicwgga7hqvqzcxavwirw828285i0xlnz54rqhsc8"))))
     (properties `((upstream-name . "conquer")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-caret r-matrix r-matrixstats r-rcpp r-rcpparmadillo))
+     (list r-matrix r-matrixstats r-rcpp r-rcpparmadillo))
     (home-page "https://github.com/XiaoouPan/conquer")
     (synopsis "Convolution-type smoothed quantile regression")
     (description
