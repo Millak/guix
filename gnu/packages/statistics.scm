@@ -3206,14 +3206,14 @@ data.")
 (define-public r-foreach
   (package
     (name "r-foreach")
-    (version "1.5.1")
+    (version "1.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "foreach" version))
        (sha256
         (base32
-         "1qb83b1jvpmk8d6kfibkm5q2hiki0x5gipy758mwa62n56gdcnpv"))))
+         "1r5gdf9fp3rprvrhf0gzl9qmmqhgdn5gscpm5hk8zxpraf3qscsn"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-codetools r-iterators))
