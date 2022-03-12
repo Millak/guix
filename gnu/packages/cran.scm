@@ -13230,13 +13230,13 @@ Anderson-Darling Distribution\".")
 (define-public r-admisc
   (package
     (name "r-admisc")
-    (version "0.23")
+    (version "0.24")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "admisc" version))
        (sha256
-        (base32 "0md0sygwdglyw7ss0dw6h235n70vpf25npp1q5b5nmb4db0fq80c"))))
+        (base32 "069hgbjbagn91k33c4ghnz5sxjd12qbipdk6l2vha4kgh6dppvmh"))))
     (properties `((upstream-name . "admisc")))
     (build-system r-build-system)
     (home-page "https://github.com/dusadrian/admisc")
