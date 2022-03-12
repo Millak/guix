@@ -30687,6 +30687,10 @@ of processors and preventing overheating.
 Data type representing the configuration of @code{thermald-service-type}.
 
 @table @asis
+@item @code{adaptive?} (default: @code{#f})
+Use @acronym{DPTF, Dynamic Power and Thermal Framework} adaptive tables
+when present.
+
 @item @code{ignore-cpuid-check?} (default: @code{#f})
 Ignore cpuid check for supported CPU models.
 
