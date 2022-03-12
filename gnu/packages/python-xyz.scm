@@ -2785,12 +2785,6 @@ system is highly configurable via command line options and embedded
 commands.")
     (license license:lgpl2.1+)))
 
-(define-public python2-empy
-  (let ((base (package-with-python2 (strip-python2-variant python-empy))))
-    (package/inherit base
-      (arguments `(,@(package-arguments base)
-                   #:tests? #t)))))
-
 (define-public python2-element-tree
   (package
     (name "python2-element-tree")
