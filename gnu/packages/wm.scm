@@ -2304,17 +2304,12 @@ wasting your precious memory.")
       (arguments
        (substitute-keyword-arguments (package-arguments lemonbar)
          ((#:make-flags make-flags)
-          `(append
-            ,make-flags
-            (list (string-append
-                   "CFLAGS="
-                   (string-join
-                    (list (string-append
-                           "-I" (assoc-ref %build-inputs "freetype")
-                           "/include/freetype2")
-                          (string-append
-                           "-D" "VERSION="
-                           (format #f "'~s'" ,version))))))))))
+          #~(#$@make-flags
+             (format #f "CFLAGS=~a -DVERSION='~s'"
+                     (string-append
+                      "-I" #$(this-package-input "freetype")
+                      "/include/freetype2")
+                     #$version)))))
       (home-page "https://github.com/drscream/lemonbar-xft")
       (synopsis
        (string-append
