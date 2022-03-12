@@ -16645,14 +16645,14 @@ partition functions are also given.")
 (define-public r-brobdingnag
   (package
     (name "r-brobdingnag")
-    (version "1.2-6")
+    (version "1.2-7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Brobdingnag" version))
        (sha256
         (base32
-         "1m3ajvcksqfck5l5hj5xiflj4ry6d896ybv4f0xxks8chgnwmv0r"))))
+         "0hnp5nrpnscykvgrrbgp7987660hcbv92zc2q8lmpnin4ws399vk"))))
     (properties `((upstream-name . "Brobdingnag")))
     (build-system r-build-system)
     (home-page "https://github.com/RobinHankin/Brobdingnag.git")
