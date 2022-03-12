@@ -10837,13 +10837,13 @@ distributed on a compute cluster.")
 (define-public r-abjutils
   (package
     (name "r-abjutils")
-    (version "0.3.1")
+    (version "0.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "abjutils" version))
        (sha256
-        (base32 "18mmlkqsrjfclk8islfjdsp8sbw6dpjj5x45kqilxdiss69gg5zd"))))
+        (base32 "0lmf4va8qnzwg698i2h4fcwvd6dhsgdkqsfh41aa3wg1flimhsr7"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-dplyr
