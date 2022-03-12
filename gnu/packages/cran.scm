@@ -13896,13 +13896,13 @@ methods, incorporating one or more trees and trait data.")
 (define-public r-rnexml
   (package
     (name "r-rnexml")
-    (version "2.4.5")
+    (version "2.4.6")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RNeXML" version))
               (sha256
                (base32
-                "1wsl4xq9w5bp3wk69dw57bg0qcw1vs6ajwya4p0w1r00ck5pwrib"))))
+                "0k56brcg80mvx35hgc5gj8arwba4k7q0075g38qp0qgq9d1b87cs"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ape
@@ -13911,6 +13911,7 @@ methods, incorporating one or more trees and trait data.")
            r-lazyeval
            r-plyr
            r-reshape2
+           r-rlang
            r-stringi
            r-stringr
            r-tidyr
