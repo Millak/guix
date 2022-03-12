@@ -12746,14 +12746,14 @@ parallel calculations across cluster nodes.")
 (define-public r-chk
   (package
     (name "r-chk")
-    (version "0.7.0")
+    (version "0.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "chk" version))
        (sha256
         (base32
-         "1fxsxgvd08lkb6amjgs4x48dhqr046mmjngjfgy2ya9cl2shd7ls"))))
+         "10gcv00mgi88vgxr9jrs0ar67crmdcdi4m9g86cm6pg3ly0v097y"))))
     (properties `((upstream-name . "chk")))
     (build-system r-build-system)
     (propagated-inputs
