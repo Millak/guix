@@ -628,37 +628,37 @@ many input formats and provides a customisable Vi-style user interface.")
         (base32 "0pdmjij2635jbw2a24ivk1y4w0z58jbmq9vnz3qrfzw4d469grab"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Tests require to write $HOME.
-             (setenv "HOME" (getcwd))
-             ;; Replace hard-coded diff file name.
-             (substitute* "tests/integration.c"
-               (("/usr/bin/diff")
-                (search-input-file inputs "/bin/diff")))
-             ;; Denemo's documentation says to use this command to run its
-             ;; test suite.
-             (invoke "make" "-C" "tests" "check")))
-         (add-before 'build 'set-lilypond
-           ;; This phase sets the default path for lilypond to its current
-           ;; location in the store.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let* ((lilypond (search-input-file inputs "/bin/lilypond")))
-               (substitute* "src/core/prefops.c"
-                 (("g_string_new \\(\"lilypond\"\\);")
-                  (string-append "g_string_new (\""
-                                 lilypond
-                                 "\");"))))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Tests require to write $HOME.
+              (setenv "HOME" (getcwd))
+              ;; Replace hard-coded diff file name.
+              (substitute* "tests/integration.c"
+                (("/usr/bin/diff")
+                 (search-input-file inputs "/bin/diff")))
+              ;; Denemo's documentation says to use this command to run its
+              ;; test suite.
+              (invoke "make" "-C" "tests" "check")))
+          (add-before 'build 'set-lilypond
+            ;; This phase sets the default path for lilypond to its current
+            ;; location in the store.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((lilypond (search-input-file inputs "/bin/lilypond")))
+                (substitute* "src/core/prefops.c"
+                  (("g_string_new \\(\"lilypond\"\\);")
+                   (string-append "g_string_new (\""
+                                  lilypond
+                                  "\");")))))))))
     (native-inputs
-     `(("diffutils" ,diffutils)
-       ("glib:bin" ,glib "bin")         ; for gtester
-       ("gtk-doc" ,gtk-doc)
-       ("intltool" ,intltool)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)))
+     (list diffutils
+           `(,glib "bin")               ; for gtester
+           gtk-doc
+           intltool
+           libtool
+           pkg-config))
     (inputs
      (list alsa-lib
            aubio
