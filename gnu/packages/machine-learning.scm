@@ -3073,7 +3073,7 @@ of Hidden Markov Models.")
 (define-public liblantern
   (package
     (name "liblantern")
-    (version "0.6.0")
+    (version "0.7.0")
     (source
      (origin
        (method git-fetch)
@@ -3082,7 +3082,7 @@ of Hidden Markov Models.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gabwic46m4m7qld1yi4brw05n9jx58ri3y0pi6jf9jndfi1qnfp"))))
+        (base32 "03hv82vwg8qa0157rymyswz9z64i8z6gjw2gf0g2xald65jdlfsm"))))
     (build-system cmake-build-system)
     (arguments
      (list
