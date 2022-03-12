@@ -3427,14 +3427,14 @@ and Francois (2011, JSS), and the book by Eddelbuettel (2013, Springer); see
 (define-public r-rcppthread
   (package
     (name "r-rcppthread")
-    (version "2.0.1")
+    (version "2.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RcppThread" version))
        (sha256
         (base32
-         "1hcxdk9mhsnrgg2bp7ls165abwb7b5grgh1gvf2i7sqrf9ggwa09"))))
+         "1hkv4074b1lm60rgryhl6167axbc54ci2qxlsan079ak6vzlx31b"))))
     (properties `((upstream-name . "RcppThread")))
     (build-system r-build-system)
     (home-page
