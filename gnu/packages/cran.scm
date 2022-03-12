@@ -5324,17 +5324,17 @@ Laplace approximation and adaptive Gauss-Hermite quadrature.")
 (define-public r-jomo
   (package
     (name "r-jomo")
-    (version "2.7-2")
+    (version "2.7-3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "jomo" version))
        (sha256
         (base32
-         "1sbcpacxnxbzwa8rr9x2bq7hh0s3sw6yznr90dkp43n6xk5xaqir"))))
+         "0qq03zspmh8x2c8w882ynsw7wshr9b0fyrpwnqx5yc1xlzrqffcx"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-lme4 r-mass r-ordinal r-survival))
+     (list r-lme4 r-mass r-ordinal r-survival r-tibble))
     (home-page "https://cran.r-project.org/web/packages/jomo/")
     (synopsis "Multilevel Joint Modelling Multiple Imputation")
     (description
