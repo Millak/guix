@@ -1269,13 +1269,13 @@ mechanism.")
 (define-public r-ashr
   (package
    (name "r-ashr")
-   (version "2.2-47")
+   (version "2.2-54")
    (source (origin
             (method url-fetch)
             (uri (cran-uri "ashr" version))
             (sha256
              (base32
-              "1rqb5j30ylaf1h4l66x4jxyn5inrvhc42d90qd5mgkxsq0ghdlr4"))))
+              "177xs3apnc6yy6737qqv4z8snf0hkpbghab63hrplbyb9wfssfga"))))
    (properties `((upstream-name . "ashr")))
    (build-system r-build-system)
    (propagated-inputs
