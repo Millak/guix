@@ -8061,17 +8061,17 @@ stored data and compression with the LZ4 and ZSTD compressors.")
 (define-public r-fst
   (package
     (name "r-fst")
-    (version "0.9.4")
+    (version "0.9.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fst" version))
        (sha256
         (base32
-         "0vwclzxww8mw9nnpyj29bn71mrr8jjg7ka03979h9rbzw6d9bjrr"))))
+         "0r96inwrr960m7wmc80603bw2vvvwab225bh9dq3lalwhy4yiis4"))))
     (properties `((upstream-name . "fst")))
     (build-system r-build-system)
-    (propagated-inputs (list r-rcpp))
+    (propagated-inputs (list r-fstcore r-rcpp))
     (home-page "http://www.fstpackage.org")
     (synopsis "Fast serialization of data frames")
     (description
