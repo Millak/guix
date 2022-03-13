@@ -323,6 +323,7 @@ format, commonly used for VCDs or disks with subchannel data.")
        (list "RM=rm" "LN=ln" "SYMLINK=ln -s"
              "CONFIG_SHELL=sh"
              (string-append "CCOM=" ,(cc-for-target))
+             "LINKMODE=dynamic"
              (string-append "INS_BASE=" (assoc-ref %outputs "out"))
              (string-append "INS_RBASE=" (assoc-ref %outputs "out")))
        ;; Parallel builds appear to be unsafe, see
