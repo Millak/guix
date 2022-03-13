@@ -438,6 +438,16 @@ other projects as their parent pom.")
 tool.  This package contains the Maven parent POM.")
       (license license:asl2.0))))
 
+(define-public maven-parent-pom-35
+  (make-maven-parent-pom
+    "35" "0pg9k7l5pcbghmc89i11g900pbzznvf5sfdfzlqfwpihqb2g8iab"
+    apache-parent-pom-25
+    #:replacements
+    (delay
+      `(("org.codehaus.plexus"
+         ("plexus-component-annotations" .
+          ,(package-version java-plexus-component-annotations)))))))
+
 (define-public maven-parent-pom-34
   (make-maven-parent-pom
     "34" "1vkmrfwva76k6maf1ljbja5ga4kzav4xc73ymbaf42xaiaknglbc"
