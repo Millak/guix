@@ -321,7 +321,8 @@ format, commonly used for VCDs or disks with subchannel data.")
     (arguments
      `(#:make-flags
        (list "RM=rm" "LN=ln" "SYMLINK=ln -s"
-             "CONFIG_SHELL=sh" "CCOM=gcc"
+             "CONFIG_SHELL=sh"
+             (string-append "CCOM=" ,(cc-for-target))
              (string-append "INS_BASE=" (assoc-ref %outputs "out"))
              (string-append "INS_RBASE=" (assoc-ref %outputs "out")))
        ;; Parallel builds appear to be unsafe, see
