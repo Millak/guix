@@ -25,6 +25,7 @@
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2022 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2022 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -52,6 +53,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
+  #:use-module (gnu packages bootloaders)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cluster)
@@ -1016,6 +1018,29 @@ Guix to build virtual machines.")
      "This package provides a guest OS definition for Ganeti.  It installs
 Debian or a derivative using @command{debootstrap}.")
     (license license:gpl2+)))
+
+(define-public spike
+  (package
+    (name "spike")
+    (version "1.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/riscv-software-src/riscv-isa-sim")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "0cik2m0byfp9ppq0hpg3xyrlp5ag1i4dww7a7872mlm36xxqagg0"))))
+    (build-system gnu-build-system)
+    (inputs
+     (list dtc))
+    (native-inputs
+     (list python-wrapper))
+    (home-page "https://github.com/riscv-software-src/riscv-isa-sim")
+    (synopsis "RISC-V ISA Simulator")
+    (description "Spike, the RISC-V ISA Simulator, implements a functional model
+of one or more RISC-V harts.")
+    (license license:bsd-3)))
 
 (define-public libosinfo
   (package
