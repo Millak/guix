@@ -38364,13 +38364,13 @@ put in the @file{.bashrc} file.  The alias will automatically be quoted,
 so something line this:
 
 @lisp
-'((\"ls\" . \"ls -alF\"))
+'(("ls" . "ls -alF"))
 @end lisp
 
 turns into
 
 @example
-alias ls=\"ls -alF\"
+alias ls="ls -alF"
 @end example
 
 @item @code{bash-profile} (default: @code{()}) (type: text-config)
