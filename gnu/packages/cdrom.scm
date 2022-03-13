@@ -313,8 +313,7 @@ format, commonly used for VCDs or disks with subchannel data.")
                      (string-append
                       "actual_os := $(shell uname -o)\n"
                       "actual_arch := $(shell uname -m)\n"
-                      "VERSION_OS = _$(actual_os)_$(actual_arch)\n")))
-                  #t))
+                      "VERSION_OS = _$(actual_os)_$(actual_arch)\n")))))
               (patches (search-patches "cdrtools-3.01-mkisofs-isoinfo.patch"))))
     (build-system gnu-build-system)
     ;; XXX cdrtools bundles a modified, relicensed early version of cdparanoia.
