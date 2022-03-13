@@ -2370,7 +2370,7 @@ simple (yet expressive) query language to select the tests to run.")
 (define-public ocaml-ppx-tools
   (package
     (name "ocaml-ppx-tools")
-    (version "6.4")
+    (version "6.5")
     (source
      (origin
        (method git-fetch)
@@ -2380,7 +2380,7 @@ simple (yet expressive) query language to select the tests to run.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "15v7yfv6gyp8lzlgwi9garz10wpg34dk4072jdv19n6v20zfg7n1"))))
+         "0fwibah2hgllrnbdrmfqil5gr5raf6pb5h2zx6zs1h3d4ykvy8k8"))))
     (build-system dune-build-system)
     (arguments
      ;; No tests
