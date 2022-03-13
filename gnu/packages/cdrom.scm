@@ -319,33 +319,32 @@ format, commonly used for VCDs or disks with subchannel data.")
     (build-system gnu-build-system)
     ;; XXX cdrtools bundles a modified, relicensed early version of cdparanoia.
     (arguments
-     `(#:make-flags
-       (list "RM=rm" "LN=ln" "SYMLINK=ln -s"
-             "CONFIG_SHELL=sh"
-             (string-append "CCOM=" ,(cc-for-target))
-             "LINKMODE=dynamic"
-             (string-append "INS_BASE=" (assoc-ref %outputs "out"))
-             (string-append "INS_RBASE=" (assoc-ref %outputs "out")))
-       ;; Parallel builds appear to be unsafe, see
-       ;; https://hydra.gnu.org/build/3346840/log/raw
-       #:parallel-build? #f
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-before 'build 'set-linux-headers
-           (lambda _
-             (substitute* "autoconf/configure"
-               (("/usr/src/linux")
-                (assoc-ref %build-inputs "kernel-headers")))
-             #t))
-         (add-before 'build 'substitute-dirs
-           (lambda _
-             (substitute* (append (find-files "DEFAULTS" "^Defaults\\.")
-                                  (find-files "DEFAULTS_ENG" "^Defaults\\.")
-                                  (find-files "TEMPLATES" "^Defaults\\."))
-               (("/opt/schily") (assoc-ref %outputs "out")))
-             #t)))
-       #:tests? #f))  ; no tests
+     (list #:make-flags
+        #~(list "RM=rm" "LN=ln" "SYMLINK=ln -s"
+                "CONFIG_SHELL=sh"
+                (string-append "CCOM=" #$(cc-for-target))
+                "LINKMODE=dynamic"
+                (string-append "INS_BASE=" #$output)
+                (string-append "INS_RBASE=" #$output))
+        ;; Parallel builds appear to be unsafe, see
+        ;; https://hydra.gnu.org/build/3346840/log/raw
+        #:parallel-build? #f
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            (add-before 'build 'set-linux-headers
+              (lambda _
+                (substitute* "autoconf/configure"
+                  (("/usr/src/linux")
+                   (assoc-ref %build-inputs "kernel-headers")))))
+            (add-before 'build 'avoid-bogus-RPATH-entry
+              (lambda _
+                (substitute* (append (find-files "DEFAULTS" "^Defaults\\.")
+                                     (find-files "DEFAULTS_ENG" "^Defaults\\.")
+                                     (find-files "TEMPLATES" "^Defaults\\."))
+                  (("/opt/schily")
+                   #$output)))))
+        #:tests? #f))  ; no tests
    (synopsis "Command line utilities to manipulate and burn CD/DVD/BD images")
    (description "cdrtools is a collection of command line utilities to create
 CD's, DVD's or Blue Ray discs.  The most important components are
