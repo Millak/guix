@@ -1658,7 +1658,9 @@ supported by the MyPy typechecker.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1v83flrdxh8grcp40qw04q4hzjflih9xwib64078vsxv2w36f817"))))
+         "1v83flrdxh8grcp40qw04q4hzjflih9xwib64078vsxv2w36f817"))
+       (patches
+        (search-patches "python-mypy-12332.patch"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
