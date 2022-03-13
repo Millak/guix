@@ -1648,7 +1648,7 @@ full_split, cut, rcut, etc..")
 (define dune-bootstrap
   (package
     (name "dune")
-    (version "2.9.3")
+    (version "3.0.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1657,7 +1657,7 @@ full_split, cut, rcut, etc..")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1b4rsqn6gf3cv46jgvrsq0xh9zfsaif810zpbvm0mv2bhphqfjk7"))))
+                "1ndn560fg0fg8n3wplmkg5px69h0g38pyma9wik85cmmqfxry14k"))))
     (build-system ocaml-build-system)
     (arguments
      `(#:tests? #f; require odoc
@@ -1691,7 +1691,15 @@ following a very simple s-expression syntax.")
      `(#:package "dune-configurator"
        #:dune ,dune-bootstrap
        ; require ppx_expect
-       #:tests? #f))
+       #:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         ;; When building dune, these directories are normally removed after
+         ;; the bootstrap.
+         (add-before 'build 'remove-vendor
+           (lambda _
+             (delete-file-recursively "vendor/csexp")
+             (delete-file-recursively "vendor/pp"))))))
     (propagated-inputs
      (list ocaml-csexp))
     (properties `((ocaml4.09-variant . ,(delay ocaml4.09-dune-configurator))))
@@ -1712,8 +1720,7 @@ config.h files for instance.  Among other things, dune-configurator allows one t
     (inherit dune-configurator)
     (name "ocaml4.09-dune-configurator")
     (arguments
-     `(#:package "dune-configurator"
-       #:tests? #f
+     `(,@(package-arguments dune-configurator)
        #:dune ,ocaml4.09-dune-bootstrap
        #:ocaml ,ocaml-4.09
        #:findlib ,ocaml4.09-findlib))
