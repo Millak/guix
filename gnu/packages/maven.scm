@@ -1117,13 +1117,13 @@ gets and puts artifacts through HTTP(S) using Apache HttpClient-4.x.")))
 (define maven-pom
   (package
     (name "maven-pom")
-    (version "3.8.4")
+    (version "3.8.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://apache/maven/"
                                   "maven-3/" version "/source/"
                                   "apache-maven-" version "-src.tar.gz"))
-              (sha256 (base32 "16xbhkhhp05gskgbhrf1ia8riivvkhpk822n9xgnad61f9hzp2r9"))
+              (sha256 (base32 "01y0fjvlvgy1bl3mdhbjll2xhzpli6aklqb3w29xpbgk6frxn3d6"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -1197,7 +1197,7 @@ gets and puts artifacts through HTTP(S) using Apache HttpClient-4.x.")))
          (replace 'install
            (install-pom-file "pom.xml")))))
     (propagated-inputs
-     `(("maven-parent-pom-34" ,maven-parent-pom-34)))
+     (list maven-parent-pom-35))
     (home-page "https://maven.apache.org/")
     (synopsis "Build system")
     (description "Apache Maven is a software project management and comprehension
@@ -1389,29 +1389,29 @@ inheritance, interpolation, @dots{}")))
     (name "maven-model-builder")
     (arguments
      `(#:jar-name "maven-model-builder.jar"
-       #:source-dir "maven-model-builder/src/main/java"
+       #:source-dir "src/main/java"
        #:jdk ,icedtea-8
-       #:test-dir "maven-model-builder/src/test"
+       #:test-dir "src/test"
        #:phases
        (modify-phases %standard-phases
+         (add-before 'configure 'chdir
+           (lambda _
+             ;; Required for tests that rely on the package's default
+             ;; locations, that reference ${basedir}/src/test.
+             (chdir "maven-model-builder")))
          (add-before 'build 'copy-resources
            (lambda _
-             (copy-recursively "maven-model-builder/src/main/resources"
+             (copy-recursively "src/main/resources"
                                "build/classes")
              #t))
          (add-before 'build 'generate-sisu-named
            (lambda _
              (mkdir-p "build/classes/META-INF/sisu")
-             (chmod "sisu.sh" #o755)
-             (invoke "./sisu.sh" "maven-model-builder/src/main/java"
+             (chmod "../sisu.sh" #o755)
+             (invoke "../sisu.sh" "src/main/java"
                      "build/classes/META-INF/sisu/javax.inject.Named")))
-         (add-before 'check 'fix-paths
-           (lambda _
-             (substitute* (find-files "maven-model-builder/src/test/java" ".*.java")
-               (("src/test") "maven-model-builder/src/test"))
-             #t))
          (replace 'install
-           (install-from-pom "maven-model-builder/pom.xml")))))
+           (install-from-pom "pom.xml")))))
     (propagated-inputs
      (list java-plexus-interpolation
            java-plexus-utils
@@ -2403,12 +2403,12 @@ reporting or the build process.")))
             (add-before 'build 'generate-components.xml
               (lambda _
                 (mkdir-p "build/classes/META-INF/plexus")
-                (chmod "components.sh" #o755)
-                (invoke "./components.sh" "maven-model-builder/src/main/java"
+                (chmod "../components.sh" #o755)
+                (invoke "../components.sh" "src/main/java"
                         "build/classes/META-INF/plexus/components.xml")))
             (add-before 'check 'remove-failing-test
               (lambda _
-                (delete-file "maven-model-builder/src/test/java/org/apache/maven/model/interpolation/StringSearchModelInterpolatorTest.java")))))))
+                (delete-file "src/test/java/org/apache/maven/model/interpolation/StringSearchModelInterpolatorTest.java")))))))
     (propagated-inputs
      `(("java-plexus-component-annotations" ,java-plexus-component-annotations)
        ,@(filter
