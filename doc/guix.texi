@@ -38071,6 +38071,21 @@ be confused with Shepherd services (@pxref{Shepherd Services}).  Using this exte
 mechanism and some Scheme code that glues things together gives the user
 the freedom to declare their own, very custom, home environments.
 
+@cindex container, for @command{guix home}
+Once the configuration looks good, you can first test it in a throw-away
+``container'':
+
+@example
+guix home container config.scm
+@end example
+
+The command above spawns a shell where your home environment is running.
+The shell runs in a container, meaning it's isolated from the rest of
+the system, so it's a good way to try out your configuration---you can
+see if configuration bits are missing or misbehaving, if daemons get
+started, and so on.  Once you exit that shell, you're back to the prompt
+of your original shell ``in the real world''.
+
 Once you have a configuration file that suits your needs, you can
 reconfigure your home by running:
 
@@ -38698,6 +38713,49 @@ relevance: 1
 As for @command{guix search}, the result is written in
 @code{recutils} format, which makes it easy to filter the output
 (@pxref{Top, GNU recutils databases,, recutils, GNU recutils manual}).
+
+@cindex container, for @command{guix home}
+@item container
+Spawn a shell in an isolated environment---a
+@dfn{container}---containing your home as specified by @var{file}.
+
+For example, this is how you would start an interactive shell in a
+container with your home:
+
+@example
+guix home container config.scm
+@end example
+
+This is a throw-away container where you can lightheartedly fiddle with
+files; any changes made within the container, any process started---all
+this disappears as soon as you exit that shell.
+
+As with @command{guix shell}, several options control that container:
+
+@table @option
+@item --network
+@itemx -N
+Enable networking within the container (it is disabled by default).
+
+@item --expose=@var{source}[=@var{target}]
+@itemx --share=@var{source}[=@var{target}]
+As with @command{guix shell}, make directory @var{source} of the host
+system available as @var{target} inside the container---read-only if you
+pass @option{--expose}, and writable if you pass @option{--share}
+(@pxref{Invoking guix shell, @option{--expose} and @option{--share}}).
+@end table
+
+Additionally, you can run a command in that container, instead of
+spawning an interactive shell.  For instance, here is how you would
+check which Shepherd services are started in a throw-away home
+container:
+
+@example
+guix home container config.scm -- herd status
+@end example
+
+The command to run in the container must come after @code{--} (double
+hyphen).
 
 @item reconfigure
 Build the home environment described in @var{file}, and switch to it.

@@ -26,6 +26,16 @@ set -e
 
 guix home --version
 
+container_supported ()
+{
+    if guile -c '((@ (guix scripts environment) assert-container-features))'
+    then
+	return 0
+    else
+	return 1
+    fi
+}
+
 NIX_STORE_DIR="$(guile -c '(use-modules (guix config))(display %storedir)')"
 localstatedir="$(guile -c '(use-modules (guix config))(display %localstatedir)')"
 GUIX_DAEMON_SOCKET="$localstatedir/guix/daemon-socket/socket"
@@ -46,20 +56,6 @@ trap 'chmod -Rf +w "$test_directory"; rm -rf "$test_directory"' EXIT
 
 (
     cd "$test_directory" || exit 77
-
-    HOME="$test_directory"
-    export HOME
-
-    #
-    # Test 'guix home reconfigure'.
-    #
-
-    echo "# This file will be overridden and backed up." > "$HOME/.bashrc"
-    mkdir "$HOME/.config"
-    echo "This file will be overridden too." > "$HOME/.config/test.conf"
-    echo "This file will stay around." > "$HOME/.config/random-file"
-
-    echo -n "# dot-bashrc test file for guix home" > "dot-bashrc"
 
     cat > "home.scm" <<'EOF'
 (use-modules (guix gexp)
@@ -93,6 +89,8 @@ trap 'chmod -Rf +w "$test_directory"; rm -rf "$test_directory"' EXIT
                        "# the content of bashrc-test-config.sh"))))))))
 EOF
 
+    echo -n "# dot-bashrc test file for guix home" > "dot-bashrc"
+
     # Check whether the graph commands work as expected.
     guix home extension-graph "home.scm" | grep 'label = "home-activation"'
     guix home extension-graph "home.scm" | grep 'label = "home-symlink-manager"'
@@ -100,6 +98,37 @@ EOF
 
     # There are no Shepherd services so the one below must fail.
     ! guix home shepherd-graph "home.scm"
+
+    if container_supported
+    then
+	# Run the home in a container.
+	guix home container home.scm -- true
+	! guix home container home.scm -- false
+	test "$(guix home container home.scm -- echo '$HOME')" = "$HOME"
+	guix home container home.scm -- cat '~/.config/test.conf' | \
+	    grep "the content of"
+	guix home container home.scm -- test -h '~/.bashrc'
+	test "$(guix home container home.scm -- id -u)" = 1000
+	! guix home container home.scm -- test -f '$HOME/sample/home.scm'
+	guix home container home.scm --expose="$PWD=$HOME/sample" -- \
+	     test -f '$HOME/sample/home.scm'
+	! guix home container home.scm --expose="$PWD=$HOME/sample" -- \
+	     rm -v '$HOME/sample/home.scm'
+    else
+	echo "'guix home container' test SKIPPED" >&2
+    fi
+
+    HOME="$test_directory"
+    export HOME
+
+    #
+    # Test 'guix home reconfigure'.
+    #
+
+    echo "# This file will be overridden and backed up." > "$HOME/.bashrc"
+    mkdir "$HOME/.config"
+    echo "This file will be overridden too." > "$HOME/.config/test.conf"
+    echo "This file will stay around." > "$HOME/.config/random-file"
 
     guix home reconfigure "${test_directory}/home.scm"
     test -d "${HOME}/.guix-home"
