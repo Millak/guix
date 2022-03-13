@@ -291,4 +291,5 @@ effects."
                                                 lowered))
                                    (list "-c"
                                          (object->string
-                                          (lowered-gexp-sexp lowered))))))))))))
+                                          (lowered-gexp-sexp lowered))))))
+                  #:namespaces namespaces))))))
