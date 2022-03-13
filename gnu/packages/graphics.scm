@@ -29,6 +29,7 @@
 ;;; Copyright © 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -555,7 +556,7 @@ and export to various formats including the format used by Magicavoxel.")
 (define-public assimp
   (package
     (name "assimp")
-    (version "4.1.0")
+    (version "5.2.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -564,7 +565,7 @@ and export to various formats including the format used by Magicavoxel.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1rhyqfhzifdj7yibyanph3rh13ykw3i98dnn8mz65j780472hw28"))))
+                "1kjifakjnpm89410pw27wq21fn975gfq46kn9zs3h8bryldvvlgk"))))
     (build-system cmake-build-system)
     (inputs
      (list zlib))
