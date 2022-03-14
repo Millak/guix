@@ -1819,8 +1819,8 @@ C, C++, Java, Python, Erlang, Haskell, Objective-C, Diff, Webkit.")
   (sbcl-package->ecl-package sbcl-colorize))
 
 (define-public sbcl-3bmd
-  (let ((commit "6fc5759448f6f6df6f6df556e020a289a2643288")
-        (revision "2"))
+  (let ((commit "4e08d82d7c8fb1b8fc708c87f4d9d13a1ab490cb")
+        (revision "3"))
     (package
       (name "sbcl-3bmd")
       (version (git-version "0.0.0" revision commit))
@@ -1831,8 +1831,8 @@ C, C++, Java, Python, Erlang, Haskell, Objective-C, Diff, Webkit.")
                (url "https://github.com/3b/3bmd")
                (commit commit)))
          (sha256
-          (base32 "1avmbp8xdjlbqpqk7p3vmj7abiw5p3vb5mrxp4wlvgql4sf6z3p4"))
-         (file-name (git-file-name "3bmd" version))))
+          (base32 "1j885ykg2yds0l7dmw21lrhs7pd66lf541pf9lb677nkhc2f62jz"))
+         (file-name (git-file-name "cl-3bmd" version))))
       (build-system asdf-build-system/sbcl)
       (arguments
        `(#:asd-systems
@@ -1842,12 +1842,22 @@ C, C++, Java, Python, Erlang, Haskell, Objective-C, Diff, Webkit.")
            "3bmd-ext-tables"
            "3bmd-ext-wiki-links"
            "3bmd-youtube"
-           "3bmd-ext-code-blocks")))
+           "3bmd-ext-code-blocks")
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-python3-path
+             (lambda _
+               (substitute* "code-blocks.lisp"
+                 (("python3") (which "python3"))))))))
+      (native-inputs
+       (list sbcl-fiasco))
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("colorize" ,sbcl-colorize)
-         ("esrap" ,sbcl-esrap)
-         ("split-sequence" ,sbcl-split-sequence)))
+       (list python
+             python-pygments
+             sbcl-alexandria
+             sbcl-colorize
+             sbcl-split-sequence
+             sbcl-esrap))
       (home-page "https://github.com/3b/3bmd")
       (synopsis "Markdown processor in Command Lisp using esrap parser")
       (description
