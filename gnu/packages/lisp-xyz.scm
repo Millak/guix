@@ -12135,8 +12135,8 @@ carrys on from the end of the body.")
   (sbcl-package->ecl-package sbcl-livesupport))
 
 (define-public sbcl-envy
-  (let ((commit "956321b2852d58ba71c6fe621f5c2924178e9f88")
-	(revision "1"))
+  (let ((commit "26a7faadc981f2a047daa36f715a44faec5dd00c")
+	(revision "2"))
     (package
       (name "sbcl-envy")
       (version (git-version "0.1" revision commit))
@@ -12145,26 +12145,19 @@ carrys on from the end of the body.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url home-page)
+               (url "https://github.com/fukamachi/envy")
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-envy" version))
          (sha256
-          (base32 "17iwrfxcdinjbb2h6l09qf40s7xkbhrpmnljlwpjy8l8rll8h3vg"))))
+          (base32 "1r0wgimd7z57x8cv69sw76w3y5l70hq50882a9nq5l4v64lg55fq"))))
       (build-system asdf-build-system/sbcl)
-      ;; (native-inputs ; Only for tests.
-      ;;  `(("prove" ,sbcl-prove)
-      ;;    ("osicat" ,sbcl-osicat)))
+      (native-inputs
+       (list sbcl-osicat sbcl-prove))
       (arguments
-       '(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'fix-tests
-             (lambda _
-               (substitute* "envy-test.asd"
-                 (("cl-test-more") "prove"))
-               #t)))
-         ;; Tests fail with
+       `(#:asd-systems '("envy-test" "envy")
+         ;; FIXME: Tests fail with
          ;;   Component ENVY-ASD::ENVY-TEST not found, required by #<SYSTEM "envy">
-         ;; like xsubseq.  Why?
+         ;; https://github.com/fukamachi/envy/issues/10
          #:tests? #f))
       (synopsis "Common Lisp configuration switcher inspired by Perl's Config::ENV")
       (description "Envy is a configuration manager for various applications.
