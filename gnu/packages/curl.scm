@@ -348,6 +348,7 @@ curl to obtain exactly that HTTP request.")
        (uri (git-reference
              (url "https://nheko.im/nheko-reborn/coeurl")
              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
          "0kbazvrb4hzc9jr7yywd36ack1yy7bh8sh1kc4jzv6jfzvxjb0i0"))))
