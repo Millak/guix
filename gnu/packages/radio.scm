@@ -171,41 +171,42 @@ mathematical operations, and much more.")
     (license license:expat)))
 
 (define-public rtl-sdr
-  (package
-    (name "rtl-sdr")
-    (version "0.6.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://git.osmocom.org/rtl-sdr/")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0lmvsnb4xw4hmz6zs0z5ilsah5hjz29g1s0050n59fllskqr3b8k"))))
-    (build-system cmake-build-system)
-    (inputs
-     (list libusb))
-    (native-inputs
-     (list pkg-config))
-    (arguments
-     `(#:configure-flags '("-DDETACH_KERNEL_DRIVER=ON"
-                           "-DINSTALL_UDEV_RULES=ON")
-       #:tests? #f ; No tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-paths
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "CMakeLists.txt"
-               (("DESTINATION \"/etc/udev/")
-                (string-append "DESTINATION \""
-                               (assoc-ref outputs "out")
-                               "/lib/udev/")))
-             #t)))))
-    (home-page "https://osmocom.org/projects/sdr/wiki/rtl-sdr")
-    (synopsis "Software defined radio driver for Realtek RTL2832U")
-    (description "DVB-T dongles based on the Realtek RTL2832U can be used as a
+  ;; No tagged release since 2018
+  (let ((commit "5e73f90f1d85d8db2e583f3dbf1cff052d71d59b")
+        (revision "1"))
+    (package
+      (name "rtl-sdr")
+      (version (git-version "0.6.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.osmocom.org/rtl-sdr/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "106fwzyr7cba952f3p3wm3hdqzm9zvm0v3gcz4aks2n7fnvrgrvn"))))
+      (build-system cmake-build-system)
+      (inputs
+       (list libusb))
+      (native-inputs
+       (list pkg-config))
+      (arguments
+       `(#:configure-flags '("-DDETACH_KERNEL_DRIVER=ON"
+                             "-DINSTALL_UDEV_RULES=ON")
+         #:tests? #f ; No tests
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-paths
+             (lambda* (#:key outputs #:allow-other-keys)
+               (substitute* "CMakeLists.txt"
+                 (("DESTINATION \"/etc/udev/")
+                  (string-append "DESTINATION \""
+                                 (assoc-ref outputs "out")
+                                 "/lib/udev/"))))))))
+      (home-page "https://osmocom.org/projects/sdr/wiki/rtl-sdr")
+      (synopsis "Software defined radio driver for Realtek RTL2832U")
+      (description "DVB-T dongles based on the Realtek RTL2832U can be used as a
 cheap software defined radio, since the chip allows transferring the raw I/Q
 samples to the host.  @code{rtl-sdr} provides drivers for this purpose.
 
@@ -220,7 +221,7 @@ system configuration:
 
 To install the rtl-sdr udev rules, you must extend 'udev-service-type' with
 this package.  E.g.: @code{(udev-rules-service 'rtl-sdr rtl-sdr)}")
-    (license license:gpl2+)))
+      (license license:gpl2+))))
 
 (define-public airspyhf
   (package
