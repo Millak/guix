@@ -12616,10 +12616,17 @@ analysing multivariate abundance data in community ecology.")
         (base32
          "1k04n6gwk2n8kg0l3yk5j3wrqgkv5f6w04yjpif9y451hx5w7svg"))))
     (build-system r-build-system)
+    ;; This is needed for the vignette builder
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list r-car r-lme4 r-lmertest r-pbkrtest r-reshape2))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr
+           r-r-rsp)) ;vignette builder
     (home-page "https://afex.singmann.science/")
     (synopsis "Analysis of factorial experiments")
     (description
