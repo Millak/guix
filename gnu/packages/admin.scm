@@ -1297,7 +1297,7 @@ connection alive.")
                            (list inetutils net-tools coreutils sed))))))))))
 
       (native-inputs
-       (list perl file))
+       (list config perl file))
 
       (inputs `(("inetutils" ,inetutils)
                 ("bash" ,(canonical-package bash-minimal)) ;for wrap-program
@@ -1317,7 +1317,6 @@ connection alive.")
                      (base32
                       "108nh7hha4r0lb5hf1fn7lqaascvhsrghpz6afm5lf9vf2vgqly9"))))
 
-                ("config" ,config)
                 ("coreutils*" ,coreutils)
                 ("sed*" ,sed)))
 
