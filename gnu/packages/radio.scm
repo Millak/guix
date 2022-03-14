@@ -203,7 +203,14 @@ mathematical operations, and much more.")
                  (("DESTINATION \"/etc/udev/")
                   (string-append "DESTINATION \""
                                  (assoc-ref outputs "out")
-                                 "/lib/udev/"))))))))
+                                 "/lib/udev/")))))
+           (add-after 'fix-paths 'fix-udev-rules
+             (lambda _
+               (substitute* "rtl-sdr.rules"
+                 ;; The plugdev group does not exist; use dialout as in
+                 ;; the hackrf package.
+                 (("GROUP=\"plugdev\"")
+                  "GROUP=\"dialout\"")))))))
       (home-page "https://osmocom.org/projects/sdr/wiki/rtl-sdr")
       (synopsis "Software defined radio driver for Realtek RTL2832U")
       (description "DVB-T dongles based on the Realtek RTL2832U can be used as a
