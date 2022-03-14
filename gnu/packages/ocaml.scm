@@ -6925,7 +6925,11 @@ library FFTW.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "115535kphchh2a434b48b408x9794j8zzrsdmacsgqdsrgy3rck4"))))
+         "115535kphchh2a434b48b408x9794j8zzrsdmacsgqdsrgy3rck4"))
+       (modules '((guix build utils)))
+       (snippet '(substitute* '("src/dune" "src/config/dune")
+                   (("-march=native") "")))))
+    (properties '((tunable? . #t)))
     (build-system dune-build-system)
     (arguments
      `(#:tests? #f)) ; No test target.
