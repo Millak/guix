@@ -31,7 +31,7 @@
 ;;; Copyright © 2017 Peter Mikkelsen <petermikkelsen10@gmail.com>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Mike Gerwitz <mtg@gnu.org>
-;;; Copyright © 2017, 2018, 2019, 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2017, 2018, 2019, 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2018 Sohom Bhattacharjee <soham.bhattacharjee15@gmail.com>
 ;;; Copyright © 2018, 2019 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2018, 2019, 2020, 2021 Pierre Neidhardt <mail@ambrevar.xyz>
@@ -157,6 +157,7 @@
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages games)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages gtk)
@@ -14752,20 +14753,23 @@ on mouse-control.")
          "138gzdyi8scqimvs49da66j8f5a43bhgpasn1bxzdj2zffwlwp6g"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'configure-default-gnugo-xpms-variable
-                    (lambda _
-                      (substitute* "gnugo.el"
-                        (("defvar gnugo-xpms nil")
-                         "defvar gnugo-xpms #'gnugo-imgen-create-xpms"))
-                      #t)))))
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'configure
+           (lambda* (#:key inputs #:allow-other-keys)
+             (emacs-substitute-variables "gnugo.el"
+               ("gnugo-xpms" "#'gnugo-imgen-create-xpms" (as-display))
+               ("gnugo-program" (search-input-file inputs "/bin/gnugo"))))))))
+    (inputs (list gnugo))
     (propagated-inputs
      (list emacs-ascii-art-to-unicode emacs-xpm))
     (home-page "https://elpa.gnu.org/packages/gnugo.html")
     (synopsis "Emacs major mode for playing GNU Go")
-    (description "This package provides an Emacs based interface for GNU Go.
-It has a graphical mode where the board and stones are drawn using XPM images
-and supports the use of a mouse.")
+    (description "This package provides an Emacs based interface for GNU Go,
+which can be started via @samp{M-x gnugo}.  It has a graphical mode where the
+board and stones are drawn using XPM images and supports the use of a mouse.
+You can switch to the graphical mode by running @samp{M-x
+gnugo-image-display-mode}.")
     (license license:gpl3+)))
 
 (define-public emacs-gnuplot
