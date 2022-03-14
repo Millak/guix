@@ -46,6 +46,7 @@
   #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
+  #:use-module (srfi srfi-35)
   #:use-module (srfi srfi-37)
   #:use-module (ice-9 match)
   #:use-module (ice-9 vlist)
@@ -526,10 +527,29 @@ system that builds code for MICRO-ARCHITECTURE; otherwise raise an error."
                   micro-architecture)))
         (unless (member micro-architecture
                         (or (assoc-ref lst architecture) '()))
-          (raise (formatted-message
-                  (G_ "compiler ~a does not support micro-architecture ~a")
-                  (package-full-name compiler)
-                  micro-architecture))))
+          (raise
+           (make-compound-condition
+            (formatted-message
+             (G_ "compiler ~a does not support micro-architecture ~a")
+             (package-full-name compiler)
+             micro-architecture)
+            (condition
+             (&fix-hint
+              (hint (match (assoc-ref lst architecture)
+                      (#f (format #f (G_ "Compiler ~a does not support
+micro-architectures of ~a.")
+                                  (package-full-name compiler "@@")
+                                  architecture))
+                      (lst
+                       (format #f (G_ "Compiler ~a supports the following ~a
+micro-architectures:
+
+@quotation
+~a
+@end quotation")
+                               (package-full-name compiler "@@")
+                               architecture
+                               (string-join lst ", ")))))))))))
 
       (bag
         (inherit lowered)
