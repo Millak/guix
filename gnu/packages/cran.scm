@@ -28399,19 +28399,21 @@ analysis using @code{dplyr}, @code{ggplot2}, and other Tidy tools.")
 (define-public r-parsnip
   (package
     (name "r-parsnip")
-    (version "0.1.7")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "parsnip" version))
        (sha256
         (base32
-         "12chngdzplwkk1c9k8y7cwaqlyy72yamlknp7ksg7g9p3b58f1fb"))))
+         "0g213c91lzwq9hd22yxkj3igqw04czncnbc4jddnpghp4gpfn1kn"))))
     (properties `((upstream-name . "parsnip")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-dplyr
+     (list r-cli
+           r-dplyr
            r-generics
+           r-ggplot2
            r-globals
            r-glue
            r-hardhat
@@ -28422,7 +28424,8 @@ analysis using @code{dplyr}, @code{ggplot2}, and other Tidy tools.")
            r-rlang
            r-tibble
            r-tidyr
-           r-vctrs))
+           r-vctrs
+           r-withr))
     (native-inputs
      (list r-knitr))
     (home-page "https://parsnip.tidymodels.org")
