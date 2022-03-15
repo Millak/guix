@@ -16817,14 +16817,14 @@ classes.")
 (define-public r-udunits2
   (package
     (name "r-udunits2")
-    (version "0.13.2")
+    (version "0.13.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "udunits2" version))
        (sha256
         (base32
-         "0sarkw5ciafiaq1haam8d8w0cmai63wrw2m4rcbjfa5k0648j07f"))))
+         "00prsy8m41v1camcsz94d7gm8qab2mdnwl3x0dyhz4r49b02jm4z"))))
     (properties `((upstream-name . "udunits2")))
     (build-system r-build-system)
     (inputs
