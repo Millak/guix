@@ -12179,8 +12179,8 @@ can separate configuration system from an implementation.")
   (sbcl-package->ecl-package sbcl-envy))
 
 (define-public sbcl-mito
-  (let ((commit "2fbfc8aa6f9e3e8029bf09888c74b9af98dad341")
-	(revision "2"))
+  (let ((commit "47ba4865ca4bb2894b53703a49a299e973f8eb86")
+	(revision "3"))
     (package
       (name "sbcl-mito")
       (version (git-version "0.1" revision commit))
@@ -12193,7 +12193,7 @@ can separate configuration system from an implementation.")
                (commit commit)))
          (file-name (git-file-name "mito" version))
          (sha256
-          (base32 "1a9kivpy9j2grf1c6gdjk7fwcdlvvq67p3m98jyfhiyzj7axjymd"))))
+          (base32 "0313nxlj1zqw6zyc23xpf85v0jk32sg0543ql8363jki0pmg7yhs"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-prove))
