@@ -2267,18 +2267,18 @@ worries about execution time overhead.")
 (define-public r-bbmisc
   (package
     (name "r-bbmisc")
-    (version "1.11")
+    (version "1.12")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "BBmisc" version))
        (sha256
         (base32
-         "1lh1n4bvxzivb5rbz69mvd8xdgr3gr2bnqd68a39sd1530l8r90y"))))
+         "0gh5f342rwra79i7imv50x8vrhd2zkifm7khb0yv3ndpd4zn62lh"))))
     (properties `((upstream-name . "BBmisc")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-checkmate))
+     (list r-checkmate r-data-table))
     (home-page "https://github.com/berndbischl/BBmisc")
     (synopsis "Miscellaneous functions for R package development")
     (description
