@@ -1956,6 +1956,32 @@
    (dummy-package "a"
      (arguments (this-package-native-input "hello")))))
 
+(test-eq "modify-inputs, replace"
+  coreutils
+  ;; Replace an input; notice that the label in unchanged.
+  (let* ((p1 (dummy-package "p"
+               (inputs (list hello))))
+         (p2 (package
+               (inherit p1)
+               (version "1")
+               (inputs (modify-inputs (package-inputs p1)
+                         (replace "hello" coreutils))))))
+    (lookup-package-input p2 "hello")))
+
+(test-eq "modify-inputs, replace, change output"
+  guile-3.0
+  ;; Replace an input and choose a different output.
+  (let* ((p1 (dummy-package "p"
+               (inputs (list `(,coreutils "debug")))))
+         (p2 (package
+               (inherit p1)
+               (version "1")
+               (inputs (modify-inputs (package-inputs p1)
+                         (replace "coreutils" `(,guile-3.0 "out")))))))
+    (match (package-inputs p2)
+      ((("coreutils" input "out"))
+       input))))
+
 (test-end "packages")
 
 ;;; Local Variables:
