@@ -22869,14 +22869,14 @@ number embedded in the file rather than the file extension.")
 (define-public r-imager
   (package
     (name "r-imager")
-    (version "0.42.11")
+    (version "0.42.13")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "imager" version))
        (sha256
         (base32
-         "1a1jhmgrpv1d0fk14axj88qvxgb25bqnj65d60g1k985ipzvgy27"))))
+         "0zygnmxwbbmj5i2l2affzdz90xvsa7b5pbkzkhjbm40is69rh2nr"))))
     (properties `((upstream-name . "imager")))
     (build-system r-build-system)
     (inputs
