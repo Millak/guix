@@ -7033,34 +7033,35 @@ experiment via several parameterizations")
 (define-public r-simr
   (package
     (name "r-simr")
-    (version "1.0.5")
+    (version "1.0.6")
     (source
-      (origin
-        (method url-fetch)
-        (uri (cran-uri "simr" version))
-        (sha256
-          (base32 "1j5w93iliykfnpxl9kzh1rp6d3iy26ksj3j7yjl348yvplh0iyjl"))))
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "simr" version))
+       (sha256
+        (base32 "1q8ip54c5pc7pjf8127jpk56nr3f8rmwqdcrr84faj4lfbr27wqb"))))
     (properties `((upstream-name . "simr")))
     (build-system r-build-system)
     (propagated-inputs
-      (list r-binom
-            r-car
-            r-iterators
-            r-lme4
-            r-pbkrtest
-            r-plotrix
-            r-plyr
-            r-rlrsim
-            r-stringr))
+     (list r-binom
+           r-car
+           r-iterators
+           r-lme4
+           r-lmertest
+           r-pbkrtest
+           r-plotrix
+           r-plyr
+           r-rlrsim
+           r-stringr))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/pitakakariki/simr")
     (synopsis
-      "Power Analysis for Generalised Linear Mixed Models by Simulation")
+     "Power analysis for generalized linear mixed models by simulation")
     (description
-      "Calculate power for generalised linear mixed models, using
-simulation.  Designed to work with models fit using the
-@code{lme4} package.  Described in @url{doi:10.1111/2041-210X.12504,
-Green and MacLeod (2016)}.")
+     "This package lets you calculate power for generalized linear mixed
+models, using simulation.  It was designed to work with models fit using the
+@code{lme4} package.  The package is described in
+@url{doi:10.1111/2041-210X.12504, Green and MacLeod (2016)}.")
     (license license:gpl2+)))
 
 (define-public r-mixedpower
