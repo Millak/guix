@@ -15900,13 +15900,13 @@ such software by imputing dropout events.")
 (define-public r-gamlss-dist
   (package
     (name "r-gamlss-dist")
-    (version "6.0-1")
+    (version "6.0-3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gamlss.dist" version))
        (sha256
-        (base32 "0m41n7zf7m0mh1w9ql70wqnzsf2f013ql699im7zmp6fdggb8qxm"))))
+        (base32 "1gqjr419v8z2ygh0h1xz7bipnsbp820njzwq7z3r9f41rn1ym47c"))))
     (properties `((upstream-name . "gamlss.dist")))
     (build-system r-build-system)
     (propagated-inputs (list r-mass))
