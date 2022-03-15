@@ -2361,17 +2361,17 @@ module, Java Server Pages, and Python's psp module.")
 (define-public r-desc
   (package
     (name "r-desc")
-    (version "1.4.0")
+    (version "1.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "desc" version))
        (sha256
         (base32
-         "0jfnwn1kpiill8v4hmzdk90yz4gk2ha0prr2p0hq36s40v3y8842"))))
+         "0m3g5m0g08k674zh4lq0ihmqiwz8jpsfqrdwfqp5p4ngxi8vp7lg"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-crayon r-r6 r-rprojroot))
+     (list r-cli r-r6 r-rprojroot))
     (home-page "https://github.com/r-pkgs/desc")
     (synopsis "Manipulate DESCRIPTION Files")
     (description
