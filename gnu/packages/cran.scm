@@ -23067,13 +23067,13 @@ Visualizations are also available for most of these settings.")
 (define-public r-torch
   (package
     (name "r-torch")
-    (version "0.7.0")
+    (version "0.7.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "torch" version))
        (sha256
-        (base32 "10my6mmzh5z4vamrrlvkwmli2qap975v71fkjnccxl99isb9n66k"))))
+        (base32 "163pvl3gyz7l2fmqhgg4k6pw4dmvfir71yp9l5ra2k4zc32lz166"))))
     (properties `((upstream-name . "torch")))
     (build-system r-build-system)
     (arguments
