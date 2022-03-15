@@ -1287,7 +1287,7 @@ additions:
          ("syntax" "share/vim/vimfiles/"))
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'link-univerisal-ctags
+         (add-after 'unpack 'link-universal-ctags
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((ctags (assoc-ref inputs "universal-ctags")))
                (substitute* "autoload/tagbar.vim"
