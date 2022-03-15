@@ -531,7 +531,7 @@ Texinfo.  Otherwise, return the string."
   (name   package-name)                   ; string
   (version package-version)               ; string
   (source package-source)                 ; <origin> instance
-  (build-system package-build-system)     ; build system
+  (build-system package-build-system)     ; <build-system> instance
   (arguments package-arguments            ; arguments for the build method
              (default '()) (thunked))
 
