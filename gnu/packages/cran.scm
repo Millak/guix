@@ -13596,14 +13596,14 @@ linear models to large data sets by updating algorithms.")
 (define-public r-densityclust
   (package
     (name "r-densityclust")
-    (version "0.3.1")
+    (version "0.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "densityClust" version))
        (sha256
         (base32
-         "04f3p5q88xb0g4c7vznwvl6zwq5s1kdapb2q7d5y6g17x9ag10n0"))))
+         "05x2fi1zdnkrg2nimf8k904j3lpyw0f7nmk6ax5p7x7a98wb2iqs"))))
     (properties `((upstream-name . "densityClust")))
     (build-system r-build-system)
     (propagated-inputs
