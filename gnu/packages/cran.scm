@@ -20270,14 +20270,14 @@ in pipelines.")
 (define-public r-parameters
   (package
     (name "r-parameters")
-    (version "0.16.0")
+    (version "0.17.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "parameters" version))
        (sha256
         (base32
-         "1i295d5nqjr3pvp9vz59wiasrxy9n78q518phcd15sxcjzcj0l27"))))
+         "0wrhs3rhr62441cghg4nsrlp6r41nf7x5nclzz71v5c0rfn8jh79"))))
     (properties `((upstream-name . "parameters")))
     (build-system r-build-system)
     (propagated-inputs
