@@ -59,14 +59,14 @@ ncurses installed.")
   (package
     (inherit ncdu)
     (name "ncdu2")      ; To destinguish it from the C based version.
-    (version "2.0.1")
+    (version "2.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://dev.yorhel.nl/download/ncdu-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0j3w8xixz1zkzcpk0xrh6y3r7sii3h3y31lbvs5iqc5q7q6day9g"))))
+                "1zlml62j57nb8k2simjy1bj2bp69zj517injy85c0p55ch5d5a2b"))))
     (arguments
      (list
        #:make-flags
