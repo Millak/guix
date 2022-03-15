@@ -11846,14 +11846,14 @@ models.")
 (define-public r-glmmtmb
   (package
     (name "r-glmmtmb")
-    (version "1.1.2.3")
+    (version "1.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "glmmTMB" version))
        (sha256
         (base32
-         "1yfwwz2dhd34vgagg8hi7irkqw8padavbc7337jdiwgk3w01wqsm"))))
+         "0xdjc3gx0cj098rrjzlsy9cccxzfvn029xh4ycpya4xjhxsykldr"))))
     (properties `((upstream-name . "glmmTMB")))
     (build-system r-build-system)
     (propagated-inputs
@@ -11864,7 +11864,7 @@ models.")
            r-rcppeigen
            r-tmb))
     (native-inputs
-     (list r-knitr)) ; for vignettes
+     (list r-knitr r-rmarkdown)) ; for vignettes
     (home-page "https://github.com/glmmTMB")
     (synopsis "Generalized linear mixed models")
     (description
