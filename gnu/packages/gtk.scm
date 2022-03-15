@@ -1627,7 +1627,7 @@ library.")
 (define-public pangomm
   (package
     (name "pangomm")
-    (version "2.48.0")
+    (version "2.50.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -1635,7 +1635,7 @@ library.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0y2vyp6azvhrii6rzs89kr08wg8z1p562awyr812131zqdsd83ly"))))
+                "0nrvvf1fyzlimh7rvxcblnrvn2l9rz8mpn2iwzlzr6kv05zafym2"))))
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
@@ -1664,7 +1664,7 @@ library.")
        ("python" ,python)
        ("xsltproc" ,libxslt)))
     (propagated-inputs
-     (list cairo cairomm glibmm pango))
+     (list cairo cairomm glibmm pango-next))
     (home-page "https://pango.gnome.org//")
     (synopsis "C++ interface to the Pango text rendering library")
     (description
@@ -1760,7 +1760,7 @@ library.")
 (define-public gtkmm
   (package
     (name "gtkmm")
-    (version "4.4.0")
+    (version "4.6.1")
     (source
      (origin
        (method url-fetch)
@@ -1769,7 +1769,7 @@ library.")
                        (version-major+minor version)  "/"
                        name "-" version ".tar.xz"))
        (sha256
-        (base32 "1nhdf1s437k41af6frbqw2sky46qci0hgkg9h86a9rlnc0r69d1f"))))
+        (base32 "1q6iycd7jfbn6rp4sq6r7ndm96dc21inq8mq1d9xsky6kv5gwphd"))))
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
@@ -1809,7 +1809,7 @@ library.")
        ("xsltproc" ,libxslt)
        ("xorg-server" ,xorg-server-for-tests)))
     (propagated-inputs
-     (list atkmm cairomm glibmm gtk pangomm))
+     (list cairomm glibmm gtk pangomm))
     (synopsis "C++ Interfaces for GTK+ and GNOME")
     (description "GTKmm is the official C++ interface for the popular GUI
 library GTK+.  Highlights include typesafe callbacks, and a comprehensive set
