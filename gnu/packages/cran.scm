@@ -19050,14 +19050,14 @@ multicore machines.")
 (define-public r-mcmcpack
   (package
     (name "r-mcmcpack")
-    (version "1.6-0")
+    (version "1.6-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "MCMCpack" version))
        (sha256
         (base32
-         "16zjx8yz29ii75wfxj3p562l657bng8jnwzp2b54s7fiaws4kfdm"))))
+         "1skanp6czfk83s13dnjrb699m9z6a0r59q0f79fv0k560jc8vbrj"))))
     (properties `((upstream-name . "MCMCpack")))
     (build-system r-build-system)
     (propagated-inputs
