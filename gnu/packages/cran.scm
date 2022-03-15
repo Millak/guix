@@ -25033,14 +25033,14 @@ series/point highlighting.")
 (define-public r-shinystan
   (package
     (name "r-shinystan")
-    (version "2.5.0")
+    (version "2.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "shinystan" version))
        (sha256
         (base32
-         "18alf5kiqw7y2l6m5nxxizwc2znsf9frxfsqhvgcad8hld9cbya5"))))
+         "0afm703zriyqprz1zvypir80lq2ylfff3qvj5i7p9n365mm8b150"))))
     (properties `((upstream-name . "shinystan")))
     (build-system r-build-system)
     (propagated-inputs
@@ -25053,7 +25053,6 @@ series/point highlighting.")
            r-gtools
            r-markdown
            r-reshape2
-           r-rsconnect
            r-rstan
            r-shiny
            r-shinyjs
