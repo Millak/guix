@@ -3565,13 +3565,13 @@ using the multicore functionality of the parallel package.")
             "datatables-extensions/Select"))))
     (package
       (name "r-dt")
-      (version "0.20")
+      (version "0.21")
       (source (origin
                 (method url-fetch)
                 (uri (cran-uri "DT" version))
                 (sha256
                  (base32
-                  "17xs18i439p15agyk7z2xyyrwgrpn5pw09kd3jwxn7qhxi4pyvf6"))
+                  "1yhlph9h8z78wqjddv598l2xrqpp605d70cxfb69m53hanw4hmzn"))
                 (modules '((guix build utils)))
                 (snippet
                  '(for-each delete-file
