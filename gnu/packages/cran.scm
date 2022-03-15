@@ -32082,14 +32082,14 @@ internally managed by a zoolog thesaurus.")
 (define-public r-filehash
   (package
     (name "r-filehash")
-    (version "2.4-2")
+    (version "2.4-3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "filehash" version))
        (sha256
         (base32
-         "14zv7h5195dmfksgk8qvjgc2qq8253vga6267aa1bqs5bpvmdl5n"))))
+         "1ga17smgjd4qsnf5a7qk0giwhpc5969ylqj520favs1k6b4y557k"))))
     (properties `((upstream-name . "filehash")))
     (build-system r-build-system)
     (home-page "http://github.com/rdpeng/filehash")
