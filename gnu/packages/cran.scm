@@ -273,14 +273,14 @@ visualization of their differences.")
 (define-public r-emdist
   (package
     (name "r-emdist")
-    (version "0.3-1")
+    (version "0.3-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "emdist" version))
        (sha256
         (base32
-         "1z14pb9z9nkd0f2c8pln4hzkfqa9dk9n3vg8czc8jiv0ndnqi7rq"))))
+         "05mv6xhm15b0mq9kzyiblkb14bdqmjrwl64ghdk66il0w8i7p6nh"))))
     (properties `((upstream-name . "emdist")))
     (build-system r-build-system)
     (home-page "http://www.rforge.net/emd")
