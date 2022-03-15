@@ -11740,14 +11740,14 @@ correlation, censored, ordered and multivariate problems.")
 (define-public r-bayesplot
   (package
     (name "r-bayesplot")
-    (version "1.8.1")
+    (version "1.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bayesplot" version))
        (sha256
         (base32
-         "0aman4273i8hy3z0qay1nrsr7v27m4icm1j6f4w59ylix80l5myq"))))
+         "0hqy597ang53phxnl084hak35ffqz9lw9hygax7370gpkjws908a"))))
     (build-system r-build-system)
     (inputs
      (list pandoc))
@@ -11758,6 +11758,7 @@ correlation, censored, ordered and multivariate problems.")
            r-ggplot2
            r-ggridges
            r-glue
+           r-posterior
            r-reshape2
            r-rlang
            r-tibble
