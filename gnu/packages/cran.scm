@@ -24382,14 +24382,14 @@ package by providing:
 (define-public r-sem
   (package
     (name "r-sem")
-    (version "3.1-13")
+    (version "3.1-14")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sem" version))
        (sha256
         (base32
-         "0r9g4j0w6q4qy9jl9gkjkihml4109ymg3y6zmhyg806q19qryx07"))))
+         "18m54hjl3w57n4ygnkcy80w0dc9dz1zvavjqh9sl6nqs52f9m246"))))
     (properties `((upstream-name . "sem")))
     (build-system r-build-system)
     (propagated-inputs
