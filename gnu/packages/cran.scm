@@ -30332,14 +30332,14 @@ data you need the @code{pdftools} package.")
 (define-public r-pdftools
   (package
     (name "r-pdftools")
-    (version "3.1.0")
+    (version "3.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pdftools" version))
        (sha256
         (base32
-         "062nwivd03151wbs2cj51cw7gjmdyx4ccwa3b2x90kg8xpck4iai"))))
+         "1lflqf2ypdm4w033vyjykmsy8cl34sp42fzkfgfdhvl2d0xjhl96"))))
     (properties `((upstream-name . "pdftools")))
     (build-system r-build-system)
     (inputs (list zlib poppler))
