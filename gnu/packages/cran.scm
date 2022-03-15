@@ -19192,24 +19192,23 @@ batch correction, and data correction.")
 (define-public r-styler
   (package
     (name "r-styler")
-    (version "1.6.2")
+    (version "1.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "styler" version))
        (sha256
         (base32
-         "0p7p2mh4f469drfn5z4wc4xrg06mpnm9wkw76fghclf8m9vcqbx6"))))
+         "1ki260ga0jrmayhdlx2sl788yp5kkmi4wyl32nmvvyb55sng6j9y"))))
     (build-system r-build-system)
+    ;; This is needed by R.cache.
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'set-HOME
            (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
-     (list r-backports
-           r-cli
-           r-glue
+     (list r-cli
            r-magrittr
            r-purrr
            r-r-cache
@@ -19217,8 +19216,7 @@ batch correction, and data correction.")
            r-rlang
            r-rprojroot
            r-tibble
-           r-withr
-           r-xfun))
+           r-withr))
     (native-inputs
      (list r-knitr))
     (home-page "https://github.com/r-lib/styler")
