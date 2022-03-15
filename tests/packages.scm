@@ -1982,6 +1982,21 @@
       ((("coreutils" input "out"))
        input))))
 
+(test-eq "modify-inputs, replace, extra output"
+  guile-3.0
+  ;; Replace an input; notice that its output is preserved.
+  ;; See <https://issues.guix.gnu.org/53915>.
+  (let* ((p1 (dummy-package "p"
+               (inputs (list `(,coreutils "debug")))))
+         (p2 (package
+               (inherit p1)
+               (version "1")
+               (inputs (modify-inputs (package-inputs p1)
+                         (replace "coreutils" guile-3.0))))))
+    (match (package-inputs p2)
+      ((("coreutils" input "debug"))
+       input))))
+
 (test-end "packages")
 
 ;;; Local Variables:

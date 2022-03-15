@@ -1091,11 +1091,11 @@ otherwise."
   "Replace input NAME by REPLACEMENT within INPUTS."
   (map (lambda (input)
          (match input
-           (((? string? label) . _)
+           (((? string? label) _ . outputs)
             (if (string=? label name)
                 (match replacement        ;does REPLACEMENT specify an output?
                   ((_ _) (cons label replacement))
-                  (_     (list label replacement)))
+                  (_     (cons* label replacement outputs)))
                 input))))
        inputs))
 
