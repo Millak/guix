@@ -991,6 +991,14 @@ Language.")
        #:parallel-tests? ,(target-x86-64?)
        #:phases
        (modify-phases %standard-phases
+         ,@(if (target-ppc32?)
+             `((add-after 'unpack 'apply-libatomics-patch
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (let ((patch-file
+                           (assoc-ref inputs 
+                                               "mariadb-link-libatomic.patch")))
+                     (invoke "patch" "-p1" "-i" patch-file)))))
+             '())
          (add-after 'unpack 'adjust-output-references
            (lambda _
              ;; The build system invariably prepends $CMAKE_INSTALL_PREFIX
@@ -1141,7 +1149,13 @@ Language.")
                 (("-lssl -lcrypto" all)
                  (string-append "-L" openssl "/lib " all)))))))))
     (native-inputs
-     (list bison perl))
+     (if (target-ppc32?)
+       `(("mariadb-link-libatomic.patch"
+          ,(search-patch "mariadb-link-libatomic.patch"))
+         ("patch" ,patch)
+         ("bison" ,bison)
+         ("perl" ,perl))
+       (list bison perl)))
     (inputs
      `(("jemalloc" ,jemalloc)
        ("libaio" ,libaio)
