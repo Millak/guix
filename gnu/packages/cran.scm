@@ -4814,14 +4814,14 @@ to access PostgreSQL database systems.")
 (define-public r-linprog
   (package
     (name "r-linprog")
-    (version "0.9-2")
+    (version "0.9-4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "linprog" version))
        (sha256
         (base32
-         "1ki14an0pmhs2mnmfjjvdzd76pshiyvi659zf7hqvqwj0viv4dw9"))))
+         "1d34m2nyk7m6j2dci69bhy5mlw479xax1517j7f14pq7vhpsm9l1"))))
     (build-system r-build-system)
     (propagated-inputs (list r-lpsolve))
     (home-page "http://linprog.r-forge.r-project.org/")
