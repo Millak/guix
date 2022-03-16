@@ -294,6 +294,16 @@ where the OS part is overloaded to denote a specific ABI---into GCC
                     (substitute* "gcc/config/aarch64/t-aarch64-linux"
                       (("lib64") "lib")))
 
+                  ;; TODO: Make this unconditional in core-updates.
+                  ;; The STARTFILE_PREFIX_SPEC prevents gcc from finding the
+                  ;; gcc:lib output, which causes ld to not find -lgcc_s.
+                  ,@(if (target-riscv64?)
+                     `((when (file-exists? "gcc/config/riscv")
+                         (substitute* "gcc/config/riscv/linux.h"
+                           (("define STARTFILE_PREFIX_SPEC")
+                           "define __STARTFILE_PREFIX_SPEC"))))
+                     '())
+
                   (when (file-exists? "libbacktrace")
                     ;; GCC 4.8+ comes with libbacktrace.  By default it builds
                     ;; with -Werror, which fails with a -Wcast-qual error in glibc
