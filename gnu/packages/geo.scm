@@ -88,6 +88,8 @@
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages java)
   #:use-module (gnu packages kde)
+  #:use-module (gnu packages libusb)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages multiprecision)
@@ -2012,30 +2014,35 @@ exchanged form one Spatial DBMS and the other.")
 (define-public opencpn
   (package
     (name "opencpn")
-    (version "5.2.4")
+    (version "5.6.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/OpenCPN/OpenCPN")
-             (commit (string-append "v" version))))
+             (commit (string-append "Release_" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ffx0lmz1mp5433zqyxigy4qqav32xprpagd66krvihkyvqp2y6y"))))
+        (base32 "0g5x45wv3djfjmigk6kgs0i63yp8rs1fbmm4pb15wb3z6dml624y"))))
     (build-system cmake-build-system)
     (native-inputs
      `(("gettext" ,gettext-minimal)
        ("pkg-config" ,pkg-config)))
     (inputs
-     (list bzip2
+     (list alsa-utils
+           bzip2
            cairo
            curl
+           eudev
            glu
            gtk+
+           jasper
            libarchive
            libelf
            libexif
+           libjpeg-turbo
            libsndfile
+           libusb
            lz4
            mesa
            pango
