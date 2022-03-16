@@ -30803,3 +30803,23 @@ audio volume via amixer.")
      "Fennel mode provides font-lock, indentation, navigation, and REPL for
  Fennel code within Emacs.")
     (license license:gpl3+)))
+
+(define-public emacs-osm
+  (package
+    (name "emacs-osm")
+    (version "0.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://elpa.gnu.org/packages/osm-"
+                           version ".tar"))
+       (sha256
+        (base32 "0p19qyx4gw1rn2f5hlxa7gx1sph2z5vjw7cnxwpjhbbr0430zzwb"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/minad/osm")
+    (synopsis "OpenStreetMap viewer for Emacs")
+    (description
+     "This package provides an OpenStreetMap viewer for Emacs, featuring
+zoomable and moveable map display, display of tracks and POIs from GPX files,
+parallel fetching of tiles with cURL, and more.")
+    (license license:gpl3+)))
