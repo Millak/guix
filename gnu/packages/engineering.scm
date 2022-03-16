@@ -28,6 +28,7 @@
 ;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 Evgeny Pisemsky <evgeny@pisemsky.com>
+;;; Copyright © 2022 Olivier Dion <olivier.dion@polymtl.ca>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1550,16 +1551,16 @@ language, ADMS transforms Verilog-AMS code into other target languages.")
 (define-public capstone
   (package
     (name "capstone")
-    (version "3.0.5")
+    (version "4.0.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/aquynh/capstone")
-                     (commit version)))
+                    (url "https://github.com/capstone-engine/capstone")
+                    (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0dgf82kxj4rs45d6s8sr984c38sll1n5scpypjlyh21gh2yl4qfw"))))
+                "0y5g74yjyliciawpn16zhdwya7bd3d7b1cccpcccc2wg8vni1k2w"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f
@@ -1571,10 +1572,10 @@ language, ADMS transforms Verilog-AMS code into other target languages.")
          ;; cstool's Makefile ‘+=’s LDFLAGS, so we cannot pass it as a make flag.
          (add-before 'build 'fix-cstool-ldflags
            (lambda* (#:key outputs #:allow-other-keys)
-             (setenv "LDFLAGS"  (string-append "-Wl,-rpath="
-                                               (assoc-ref outputs "out") "/lib"))
-             #t)))))
-    (home-page "https://www.capstone-engine.org")
+             (setenv "LDFLAGS"
+                     (string-append "-Wl,-rpath="
+                                    (assoc-ref outputs "out") "/lib")))))))
+    (home-page "https://github.com/capstone-engine/capstone")
     (synopsis "Lightweight multi-platform, multi-architecture disassembly framework")
     (description
      "Capstone is a lightweight multi-platform, multi-architecture disassembly
