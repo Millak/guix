@@ -3,7 +3,7 @@
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016-2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -35,6 +35,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bioinformatics)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cpp)
@@ -303,6 +304,54 @@ logic, also known as grey logic.")
     (description
      "Scikit-image is a collection of algorithms for image processing.")
     (license license:bsd-3)))
+
+(define-public python-scikit-allel
+  (package
+    (name "python-scikit-allel")
+    (version "1.3.5")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "scikit-allel" version))
+        (sha256
+         (base32 "1vg88ng6gd175gzk39iz1drxig5l91dyx398w2kbw3w8036zv8gj"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (replace 'check
+             (lambda* (#:key tests? #:allow-other-keys)
+               (when tests?
+                 (invoke "python" "setup.py" "build_ext" "--inplace")
+                 (invoke "python" "-m" "pytest" "-v" "allel"
+                         ;; AttributeError: 'Dataset' object has no attribute 'asstr'
+                         "-k" (string-append
+                                "not test_vcf_to_hdf5"
+                                " and not test_vcf_to_hdf5_exclude"
+                                " and not test_vcf_to_hdf5_rename"
+                                " and not test_vcf_to_hdf5_group"
+                                " and not test_vcf_to_hdf5_ann"))))))))
+    (propagated-inputs
+     (list python-dask
+           python-numpy))
+    (native-inputs
+     (list python-cython
+           ;; The following are all needed for the tests
+           htslib
+           python-h5py
+           python-hmmlearn
+           python-numexpr
+           python-pytest
+           python-scipy
+           python-setuptools-scm
+           python-zarr))
+    (home-page "https://github.com/cggh/scikit-allel")
+    (synopsis "Explore and analyze genetic variation data")
+    (description
+     "This package provides utilities for exploratory analysis of large scale
+genetic variation data.")
+    (license license:expat)))
 
 (define-public python-sgp4
   (package
