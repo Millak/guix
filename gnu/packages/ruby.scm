@@ -7500,7 +7500,8 @@ navigation capabilities to @code{pry}, using @code{byebug}.")
        (modify-phases %standard-phases
          (add-before 'check 'skip-dubious-test
            (lambda _
-             ,@(if (target-riscv64?)
+             ,@(if (or (target-riscv64?)
+                       (target-ppc32?))
                  ;; This unreliable test can fail with "Expected 32 to be <= 25."
                  '((substitute* "test/test_stackprof.rb"
                      ((".*assert_operator profile\\[:missed_samples.*") "")))
