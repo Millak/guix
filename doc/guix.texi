@@ -23822,7 +23822,7 @@ Data type representing the configuration of opensmtpd.
 @item @code{package} (default: @var{opensmtpd})
 Package object of the OpenSMTPD SMTP server.
 
-@item @code{config-file} (default: @code{%default-opensmtpd-file})
+@item @code{config-file} (default: @code{%default-opensmtpd-config-file})
 File-like object of the OpenSMTPD configuration file to use.  By default
 it listens on the loopback network interface, and allows for mail from
 users and daemons on the local machine, as well as permitting email to
