@@ -28,9 +28,11 @@
   #:use-module (gnu system)
   #:use-module (gnu system file-systems)
   #:use-module (gnu system uuid)
+  #:use-module ((guix diagnostics) #:select (formatted-message?))
   #:use-module (guix gexp)
   #:use-module (guix store)
   #:use-module (guix tests)
+  #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-64)
   #:use-module (rnrs bytevectors))
 
@@ -151,13 +153,18 @@
 
 ;; XXX: <warning: unrecognized boot parameters at '#f'>
 (test-assert "read, construction, mandatory fields"
-  (not (or (test-read-boot-parameters #:version #false)
-           (test-read-boot-parameters #:version 'false)
-           (test-read-boot-parameters #:version -1)
-           (test-read-boot-parameters #:version "0")
-           (test-read-boot-parameters #:root-device #false)
-           (test-read-boot-parameters #:kernel #false)
-           (test-read-boot-parameters #:label #false))))
+  (let-syntax ((test-read-boot-parameters
+                (syntax-rules ()
+                  ((_ args ...)
+                   (guard (c ((formatted-message? c) #f))
+                     (test-read-boot-parameters args ...))))))
+    (not (or (test-read-boot-parameters #:version #false)
+             (test-read-boot-parameters #:version 'false)
+             (test-read-boot-parameters #:version -1)
+             (test-read-boot-parameters #:version "0")
+             (test-read-boot-parameters #:root-device #false)
+             (test-read-boot-parameters #:kernel #false)
+             (test-read-boot-parameters #:label #false)))))
 
 (test-assert "read, construction, optional fields"
   (and (test-read-boot-parameters #:bootloader-name #false)

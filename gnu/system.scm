@@ -354,7 +354,7 @@ file system labels."
 
 (define (read-boot-parameters port)
   "Read boot parameters from PORT and return the corresponding
-<boot-parameters> object or #f if the format is unrecognized."
+<boot-parameters> object.  Raise an error if the format is unrecognized."
   (define device-sexp->device
     (match-lambda
       (('uuid (? symbol? type) (? bytevector? bv))
@@ -481,9 +481,20 @@ file system labels."
          (_                                       ;the old format
           "/")))))
     (x                                            ;unsupported format
-     (warning (G_ "unrecognized boot parameters at '~a'~%")
-              (port-filename port))
-     #f)))
+     (raise
+      (make-compound-condition
+       (formatted-message
+        (G_ "unrecognized boot parameters at '~a'~%")
+        (port-filename port))
+       (condition
+        (&fix-hint (hint (format #f (G_ "This probably means that this version
+of Guix is older than the one that created @file{~a}.  To address this, you
+need to update Guix:
+
+@example
+guix pull
+@end example")
+                                 (port-filename port))))))))))
 
 (define (read-boot-parameters-file system)
   "Read boot parameters from SYSTEM's (system or generation) \"parameters\"
