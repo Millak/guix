@@ -3737,19 +3737,6 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
       ("libc:static" ,glibc-final "static")
       ("locales" ,glibc-utf8-locales-final))))
 
-(define-public %final-inputs-riscv64
-  ;; This is similar to the added (list gcc "lib") elsewhere in this file, but
-  ;; due to how (%current-system) is re-defined when performing builds with the
-  ;; 'gnu.system' flag, %final-inputs is too early in the evaulation pipeline to
-  ;; correctly identify the system for which a derivation will be built. Thus,
-  ;; since (%current-system) is re-determined by (guix build-system gnu) after
-  ;; loading %final-inputs but before taking into account the 'gnu.system' flag,
-  ;; the test for (target-riscv64?) needs to be in (guix build-system gnu),
-  ;; with %final-inputs-riscv64 already available at the same time that
-  ;; %final-inputs is available.
-  `(("gcc:lib" ,gcc-final "lib")
-    ,@%final-inputs))
-
 (define-public canonical-package
   (let ((name->package (fold (lambda (input result)
                                (match input
