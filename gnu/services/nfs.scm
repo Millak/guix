@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2018, 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -62,35 +62,37 @@
   (warm-start?         rpcbind-configuration-warm-start?
                        (default #t)))
 
-(define (rpcbind-shepherd-service config)
-  (let ((rpcbind (file-append (rpcbind-configuration-rpcbind config)
-                              "/sbin/rpcbind")))
-    (shepherd-service
-     (documentation "Start the RPC bind daemon.")
-     (requirement '(networking))
-     (provision '(rpcbind-daemon))
-     (start #~(make-forkexec-constructor
-               (list #$rpcbind "-f"
-                     #$@(if (rpcbind-configuration-warm-start? config)
-                            '("-w")
-                            '()))))
-     (stop #~(make-kill-destructor)))))
-
 (define rpcbind-service-type
-  (service-type
-   (name 'rpcbind)
-   (extensions
-    (list (service-extension shepherd-root-service-type
-                             (compose list rpcbind-shepherd-service))))
-   ;; We use the extensions feature to allow other services to automatically
-   ;; configure and start this service.  Only one value can be provided.  We
-   ;; override it with the value returned by the extending service.
-   (compose identity)
-   (extend (lambda (config values)
-             (match values
-               ((first . rest) first)
-               (_ config))))
-   (default-value (rpcbind-configuration))))
+  (let ((proc
+         (lambda (config)
+           (define rpcbind
+             (rpcbind-configuration-rpcbind config))
+
+           (define rpcbind-command
+             #~(list (string-append #$rpcbind "/sbin/rpcbind") "-f"
+                     #$@(if (rpcbind-configuration-warm-start? config) '("-w") '())))
+
+           (shepherd-service
+            (documentation "Start the RPC bind daemon.")
+            (requirement '(networking))
+            (provision '(rpcbind-daemon))
+
+            (start #~(make-forkexec-constructor #$rpcbind-command))
+            (stop #~(make-kill-destructor))))))
+    (service-type
+     (name 'rpcbind)
+     (extensions
+      (list (service-extension shepherd-root-service-type
+                               (compose list proc))))
+     ;; We use the extensions feature to allow other services to automatically
+     ;; configure and start this service.  Only one value can be provided.  We
+     ;; override it with the value returned by the extending service.
+     (compose identity)
+     (extend (lambda (config values)
+               (match values
+                 ((first . rest) first)
+                 (_ config))))
+     (default-value (rpcbind-configuration)))))
 
 
 
