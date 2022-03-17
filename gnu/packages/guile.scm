@@ -820,7 +820,16 @@ type system, elevating types to first-class status.")
                         "guile-git-adjust-for-libgit2-1.2.0.patch"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags '("GUILE_AUTO_COMPILE=0")))     ; to prevent guild warnings
+     `(#:make-flags '("GUILE_AUTO_COMPILE=0")       ; to prevent guild warnings
+       ;; https://gitlab.com/guile-git/guile-git/-/issues/20
+       ,@(if (target-ppc32?)
+           `(#:phases
+             (modify-phases %standard-phases
+               (add-after 'unpack 'skip-failing-test
+                 (lambda _
+                   (substitute* "Makefile.am"
+                     ((".*tests/blob\\.scm.*") ""))))))
+           '())))
     (native-inputs
      (list pkg-config autoconf automake texinfo guile-3.0 guile-bytestructures))
     (inputs
