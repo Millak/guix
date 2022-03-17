@@ -8401,34 +8401,19 @@ from the xfsprogs package.  It is meant to be used in initrds.")
 (define-public genext2fs
   (package
     (name "genext2fs")
-    (version "1.4.1-4")
+    (version "1.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/jeremie-koenig/genext2fs")
-                    ;; 1.4.1-3 had a VCS tag but 1.4.1-4 doesn't.
-                    (commit "9ee43894634998b0b2b309d636f25c64314c9421")))
+                    (url "https://github.com/bestouff/genext2fs")
+                    (commit "474111097321f03de9e009aa9f7d4a8948e310b2")))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "0ib5icn78ciz00zhc1bgdlrwaxvsdz7wnplwblng0jirwi9ml7sq"))))
+               (base32 "14lgvml5zz99845ja47jpf4iirjzfqv36ffzachh3hw2ggji9c7l"))))
     (build-system gnu-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'apply-debian-patches
-           ;; Debian changes (the revision after ‘-’ in VERSION) are
-           ;; maintained as separate patches.  Apply those relevant to us.
-           (lambda _
-             (for-each
-              (lambda (file-name)
-                (invoke "patch" "-p1" "-i"
-                        (string-append "debian/patches/" file-name)))
-              (list "blocksize+creator.diff" ; add -B/-o options
-                    "byteswap_fix.diff"))
-             #t)))))
     (native-inputs
      (list autoconf automake))
-    (home-page "https://github.com/jeremie-koenig/genext2fs")
+    (home-page "https://github.com/bestouff/genext2fs")
     (synopsis "Generate ext2 file system as a normal user")
     (description "This package provides a program to generate an ext2
 file system as a normal (non-root) user.  It does not require you to mount
