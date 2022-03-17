@@ -2790,6 +2790,37 @@ from Wes Anderson movies.")
 in a ggplot2 plot.")
     (license license:gpl3)))
 
+(define-public r-mbess
+  (package
+    (name "r-mbess")
+    (version "4.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "MBESS" version))
+       (sha256
+        (base32 "0qmyvjx2zn5hlzdbz8c94g8l4707swhn7sq9mxkdqiydmflzv0b5"))))
+    (properties `((upstream-name . "MBESS")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-boot r-lavaan r-mass r-mnormt r-nlme r-openmx r-sem r-semtools))
+    (home-page "https://www3.nd.edu/~kkelley/site/MBESS.html")
+    (synopsis "Methods for designing research studies")
+    (description
+     "This package implements methods that are useful in designing research
+studies and analyzing data, with particular emphasis on methods that are
+developed for or used within the behavioral, educational, and social
+sciences (broadly defined).  That being said, many of the methods implemented
+within MBESS are applicable to a wide variety of disciplines.  MBESS has a
+suite of functions for a variety of related topics, such as effect sizes,
+confidence intervals for effect sizes (including standardized effect sizes and
+noncentral effect sizes), sample size planning (from the @dfn{accuracy in
+parameter estimation} (AIPE), power analytic, equivalence, and minimum-risk
+point estimation perspectives), mediation analysis, various properties of
+distributions, and a variety of utility functions.")
+    ;; Either version of the GPL.
+    (license (list license:gpl2 license:gpl3))))
+
 (define-public r-ggtern
   (package
     (name "r-ggtern")
