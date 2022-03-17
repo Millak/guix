@@ -2790,6 +2790,39 @@ from Wes Anderson movies.")
 in a ggplot2 plot.")
     (license license:gpl3)))
 
+(define-public r-ggtern
+  (package
+    (name "r-ggtern")
+    (version "3.3.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "ggtern" version))
+       (sha256
+        (base32 "15hhn8msy0l8zbq8ms0zvg1iajn1c28gd77v3hp6dvwwsla8zzbd"))))
+    (properties `((upstream-name . "ggtern")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-compositions
+           r-ggplot2
+           r-gridextra
+           r-gtable
+           r-hexbin
+           r-latex2exp
+           r-lattice
+           r-mass
+           r-plyr
+           r-proto
+           r-scales))
+    (home-page "http://www.ggtern.com")
+    (synopsis "Extension to ggplot2 for ternary diagrams")
+    (description
+     "This package extends the functionality of ggplot2, providing the
+capability to plot ternary diagrams for (a subset of) the ggplot2 geometries.
+Additionally, ggtern has implemented several new geometries which are
+unavailable to the standard ggplot2 release.")
+    (license license:gpl2)))
+
 (define-public r-tablerdash
   (package
     (name "r-tablerdash")
