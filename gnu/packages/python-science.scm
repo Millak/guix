@@ -157,10 +157,7 @@ atlas_libs = openblas
                                       (tgt-dir (string-append html "/" dir)))
                                  (install-file file html)))
                              (find-files ".")))))))
-         ;; Tests can only be run after the library has been installed and not
-         ;; within the source directory.
-         (delete 'check)
-         (add-after 'install 'check
+         (replace 'check
            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
              (when tests?
                (add-installed-pythonpath inputs outputs)
