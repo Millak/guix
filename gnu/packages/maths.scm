@@ -3085,15 +3085,15 @@ scientific applications modeled by partial differential equations.")
     (inherit petsc)
     (name "petsc-openmpi")
     (inputs
-     `(("hdf5" ,hdf5-parallel-openmpi)
-       ("hypre" ,hypre-openmpi)
-       ("metis" ,metis)
-       ("mumps" ,mumps-openmpi)
-       ("openmpi" ,openmpi)
-       ("scalapack" ,scalapack)
-       ("scotch" ,pt-scotch32)
-       ("scotch" ,pt-scotch32 "metis")
-       ,@(package-inputs petsc)))
+     (modify-inputs (package-inputs petsc)
+       (prepend hdf5-parallel-openmpi
+                hypre-openmpi
+                metis
+                mumps-openmpi
+                openmpi
+                scalapack
+                pt-scotch32
+                `(,pt-scotch32 "metis"))))
     (arguments
      (substitute-keyword-arguments (package-arguments petsc)
        ((#:configure-flags cf)
@@ -3106,9 +3106,11 @@ scientific applications modeled by partial differential equations.")
             ,(string-append "--with-mpi-dir="
                             #$(this-package-input "openmpi"))
             ,(string-append "--with-hdf5-include="
-                            #$(this-package-input "hdf5") "/include")
+                            #$(this-package-input "hdf5-parallel-openmpi")
+                            "/include")
             ,(string-append "--with-hdf5-lib="
-                            #$(this-package-input "hdf5") "/lib/libhdf5.a")
+                            #$(this-package-input "hdf5-parallel-openmpi")
+                            "/lib/libhdf5.a")
             ,@(delete "--with-mpi=0" #$cf)))
        ((#:phases phases)
         #~(modify-phases #$phases
