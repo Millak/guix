@@ -873,6 +873,11 @@ BLAKE.")
            (add-before 'build 'change-directory
                        (lambda _
                          (chdir "b2sum")))
+           ;; Produce generic binaries
+           (add-after 'change-directory 'de-tune
+                       (lambda _
+                         (substitute* "makefile"
+                           ((" -march=native") ""))))
            (delete 'configure)))) ; No ./configure script
       (home-page "https://www.blake2.net/")
       (synopsis "BLAKE2 checksum tool")
@@ -880,7 +885,11 @@ BLAKE.")
 SHA-1, SHA-2, and SHA-3, yet is at least as secure as SHA-3.")
       ;; You may also choose to redistribute this program as Apache 2.0 or the
       ;; OpenSSL license. See 'b2sum/b2sum.c' in the source distribution.
-      (license license:cc0))))
+      (license license:cc0)
+      ;; There is a significant speedup when the compiler generates
+      ;; instructions tuned to the CPU of the running machine:
+      ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=51198#22
+      (properties '((tunable? . #true))))))
 
 (define-public rhash
   (package
