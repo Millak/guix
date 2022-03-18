@@ -2605,7 +2605,7 @@ is subjective.")
 (define-public tuxguitar
   (package
     (name "tuxguitar")
-    (version "1.5.4")
+    (version "1.5.5")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2613,7 +2613,7 @@ is subjective.")
                     version "/tuxguitar-" version "-src.tar.gz"))
               (sha256
                (base32
-                "0fjhf56lhlhm84v08917xp4yw8y6d0qajm4qiy1gfp8dm74whwwg"))))
+                "1613aiq3x48l2nx1zxqh1cif6i5izkixfld8c9wri9nfv405b19f"))))
     (build-system ant-build-system)
     (arguments
      `(#:build-target "build"
@@ -2651,8 +2651,7 @@ is subjective.")
                                 "TuxGuitar-gm-utils"
                                 "TuxGuitar-alsa"
                                 "TuxGuitar-midi"
-                                "TuxGuitar-midi-ui"))
-               #t)))
+                                "TuxGuitar-midi-ui")))))
          (add-after 'build 'build-jni
            (lambda _
              (setenv "CC" "gcc")
@@ -2711,8 +2710,7 @@ is subjective.")
                                      " -Djava.library.path=" out "/lib"
                                      " org.herac.tuxguitar.app.TGMainSingleton"
                                      " \"$1\" \"$2\"")))))
-               (chmod (string-append bin "/tuxguitar") #o555)
-               #t))))))
+               (chmod (string-append bin "/tuxguitar") #o555)))))))
     (inputs
      (list alsa-lib java-swt))
     (home-page "http://tuxguitar.com.ar/")
