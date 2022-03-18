@@ -30817,6 +30817,16 @@ audio volume via amixer.")
        (sha256
         (base32 "0aiq2z9vv4jsl0s0x9vpjgp0mnn27wanhirzj3h80ivgiphzs7l5"))))
     (build-system emacs-build-system)
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'set-curl-file-name
+                    (lambda* (#:key inputs #:allow-other-keys)
+                      (substitute* "osm.el"
+                        (("\"curl( ?)\"" _ space)
+                         (string-append "\""
+                                        (search-input-file inputs "/bin/curl")
+                                        space "\""))))))))
+    (inputs (list curl))
     (synopsis "OpenStreetMap viewer for Emacs")
     (description
      "This package provides an OpenStreetMap viewer for Emacs, featuring
