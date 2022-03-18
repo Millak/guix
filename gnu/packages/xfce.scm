@@ -1049,6 +1049,7 @@ for and start applications.")
            thunar-volman
            tumbler
            xfce4-appfinder
+           xfce4-notifyd                          ;for pop-up notifications
            xfce4-panel
            xfce4-power-manager
            xfce4-session
