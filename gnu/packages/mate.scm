@@ -1464,9 +1464,9 @@ MATE Desktop to monitor your system resources and usage.")
            gdk-pixbuf
            polkit))
     (home-page "https://mate-desktop.org/")
-    (synopsis "DBus specific service for MATE")
+    (synopsis "Polkit authentication agent for MATE")
     (description
-     "MATE Polkit is a MATE specific DBUS service that is
+     "MATE Polkit is a MATE specific D-Bus service that is
 used to bring up authentication dialogs.")
     (license license:lgpl2.1)))
 
