@@ -30808,15 +30808,15 @@ audio volume via amixer.")
   (package
     (name "emacs-osm")
     (version "0.6")
+    (home-page "https://github.com/minad/osm")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://elpa.gnu.org/packages/osm-"
-                           version ".tar"))
+       (method git-fetch)
+       (uri (git-reference (url home-page) (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0p19qyx4gw1rn2f5hlxa7gx1sph2z5vjw7cnxwpjhbbr0430zzwb"))))
+        (base32 "0aiq2z9vv4jsl0s0x9vpjgp0mnn27wanhirzj3h80ivgiphzs7l5"))))
     (build-system emacs-build-system)
-    (home-page "https://github.com/minad/osm")
     (synopsis "OpenStreetMap viewer for Emacs")
     (description
      "This package provides an OpenStreetMap viewer for Emacs, featuring
