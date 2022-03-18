@@ -76,7 +76,7 @@
 (define-public vim
   (package
     (name "vim")
-    (version "8.2.4306")
+    (version "8.2.4564")
     (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -85,7 +85,7 @@
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "1jppzgmngcdd7jfb5rnkkvf5d47svnjbn7qj4mvjacd9az3c7s9r"))))
+               "1ggvmvd6xsj9xvknjcvpj52na2km2wxvxfj8l29mqp03g4wwyzrr"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -97,10 +97,11 @@
              (substitute* "runtime/tools/mve.awk"
                (("/usr/bin/nawk") (which "gawk")))
              (substitute* '("src/testdir/Makefile"
+                            "src/testdir/test_filetype.vim"
                             "src/testdir/test_normal.vim"
                             "src/testdir/test_popupwin.vim"
                             "src/testdir/test_shell.vim"
-                            "src/testdir/test_system.vim"
+                            "src/testdir/test_suspend.vim"
                             "src/testdir/test_terminal.vim"
                             "src/testdir/test_terminal2.vim")
                (("/bin/sh") (which "sh")))
