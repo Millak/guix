@@ -897,7 +897,7 @@ Run 'herd status' to view the list of services on your system.\n"))))))
          (system   (find (lambda (service)
                            (eq? (service-kind service) system-service-type))
                          services)))
-    (export-graph (list system) (current-output-port)
+    (export-graph (list system) port
                   #:backend backend
                   #:node-type (service-node-type services)
                   #:reverse-edges? #t)))
@@ -913,7 +913,7 @@ Run 'herd status' to view the list of services on your system.\n"))))))
          (sinks     (filter (lambda (service)
                               (null? (shepherd-service-requirement service)))
                             shepherds)))
-    (export-graph sinks (current-output-port)
+    (export-graph sinks port
                   #:backend backend
                   #:node-type (shepherd-service-node-type shepherds)
                   #:reverse-edges? #t)))
