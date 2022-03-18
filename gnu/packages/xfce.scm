@@ -164,12 +164,12 @@ Xfce Desktop Environment.")
                                (string-append etc "/bash_completion.d"))))))
          (delete 'check))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("intltool" ,intltool)
-       ("glib:bin" ,glib "bin") ;; for gdbus-codegen
-       ("gobject-introspection" ,gobject-introspection)
-       ("vala" ,vala)
-       ("dbus" ,dbus)))
+     (list pkg-config
+           intltool
+           `(,glib "bin") ;; for gdbus-codegen
+           gobject-introspection
+           vala
+           dbus))
     (propagated-inputs
      ;; libxfconf-0.pc refers to all these.
      (list glib))
@@ -201,10 +201,10 @@ storage system.")
     (native-inputs
      (list pkg-config intltool gobject-introspection))
     (propagated-inputs
-     `(("gtk+-3" ,gtk+)    ; required by libxfce4ui-2.pc
-       ;; libxfce4kbd-private-3.pc refers to all these.
-       ("libxfce4util" ,libxfce4util)
-       ("xfconf" ,xfconf)))
+     (list gtk+    ; required by libxfce4ui-2.pc
+           ;; libxfce4kbd-private-3.pc refers to all these.
+           libxfce4util
+           xfconf))
     (inputs (list libsm libice startup-notification))
     (home-page "https://www.xfce.org/")
     (synopsis "Widgets library for Xfce")
@@ -415,20 +415,20 @@ management D-Bus specification.")
                (("/usr/share/zoneinfo")
                 (search-input-directory inputs "share/zoneinfo"))))))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("intltool" ,intltool)
-       ("glib:bin" ,glib "bin")))
+     (list pkg-config
+           intltool
+           `(,glib "bin")))
     (propagated-inputs
-     `(("gtk+-3" ,gtk+)                 ; required by libxfce4panel-2.0.pc
-       ("libxfce4util" ,libxfce4util))) ; required by libxfce4panel-2.0.pc
+     (list gtk+ ; required by libxfce4panel-2.0.pc
+           libxfce4util)) ; required by libxfce4panel-2.0.pc
     (inputs
-     `(("tzdata" ,tzdata) ;; For fix-tzdata-path phase only.
-       ("exo" ,exo)
-       ("gtk+-2" ,gtk+-2)
-       ("xfconf" ,xfconf)
-       ("garcon" ,garcon)
-       ("libwnck" ,libwnck)
-       ("libxfce4ui" ,libxfce4ui)))
+     (list tzdata ;; For fix-tzdata-path phase only.
+           exo
+           gtk+-2
+           xfconf
+           garcon
+           libwnck
+           libxfce4ui))
     (native-search-paths
      (list (search-path-specification
             (variable "X_XFCE4_LIB_DIRS")
@@ -548,12 +548,12 @@ keys for controlling the audio volume.")
     (native-inputs
      (list pkg-config intltool))
     (inputs
-     `(("xfce4-panel" ,xfce4-panel)
-       ("garcon" ,garcon)
-       ("gettext" ,gettext-minimal)
-       ("exo" ,exo)
-       ("gtk+" ,gtk+)
-       ("libxfce4ui" ,libxfce4ui)))
+     (list xfce4-panel
+           garcon
+           gettext-minimal
+           exo
+           gtk
+           libxfce4ui))
     (arguments
      `(#:tests? #f                      ; no tests
        #:phases
@@ -1037,31 +1037,31 @@ for and start applications.")
                          directories)
             #t)))))
     (inputs
-     `(("exo"                  ,exo)
-       ("garcon"               ,garcon)
-       ("gnome-icon-theme"     ,gnome-icon-theme)
-       ("gtk-xfce-engine"      ,gtk-xfce-engine)
-       ("hicolor-icon-theme"   ,hicolor-icon-theme)
-       ("mate-polkit-for-xfce" ,mate-polkit-for-xfce)
-       ("ristretto"            ,ristretto)
-       ("shared-mime-info"     ,shared-mime-info)
-       ("thunar"               ,thunar)
-       ("thunar-volman"        ,thunar-volman)
-       ("tumbler"              ,tumbler)
-       ("xfce4-appfinder"      ,xfce4-appfinder)
-       ("xfce4-panel"          ,xfce4-panel)
-       ("xfce4-power-manager"  ,xfce4-power-manager)
-       ("xfce4-session"        ,xfce4-session)
-       ("xfce4-settings"       ,xfce4-settings)
-       ("xfce4-terminal"       ,xfce4-terminal)
-       ("xfconf"               ,xfconf)
-       ("xfdesktop"            ,xfdesktop)
-       ("xfwm4"                ,xfwm4)
-       ;; Panel plugins.
-       ("xfce4-battery-plugin"    ,xfce4-battery-plugin)
-       ("xfce4-clipman-plugin"    ,xfce4-clipman-plugin)
-       ("xfce4-pulseaudio-plugin" ,xfce4-pulseaudio-plugin)
-       ("xfce4-xkb-plugin"        ,xfce4-xkb-plugin)))
+     (list exo
+           garcon
+           gnome-icon-theme
+           gtk-xfce-engine
+           hicolor-icon-theme
+           mate-polkit-for-xfce
+           ristretto
+           shared-mime-info
+           thunar
+           thunar-volman
+           tumbler
+           xfce4-appfinder
+           xfce4-panel
+           xfce4-power-manager
+           xfce4-session
+           xfce4-settings
+           xfce4-terminal
+           xfconf
+           xfdesktop
+           xfwm4
+           ;; Panel plugins.
+           xfce4-battery-plugin
+           xfce4-clipman-plugin
+           xfce4-pulseaudio-plugin
+           xfce4-xkb-plugin))
     (propagated-inputs
      ;; Default font that applications such as IceCat require.
      (list font-dejavu))
@@ -1354,19 +1354,19 @@ A plugin for the Xfce panel is also available.")
                   (string-append "DBUS_SESSION_SERVICE_DIR="
                                  dbus-dir)))))))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("intltool" ,intltool)
-       ("glib" ,glib)                             ; glib-compile-schemas
-       ("glib:bin" ,glib "bin")))                 ; glib-compile-schemas
+     (list pkg-config
+           intltool
+           glib ; glib-compile-schemas
+           `(,glib "bin")))                 ; glib-compile-schemas
     (inputs
-     `(("dbus-glib" ,dbus-glib)
-       ("libux-pam" ,linux-pam)
-       ("elogind" ,elogind)
-       ("garcon" ,garcon)
-       ("libxklavier" ,libxklavier)
-       ("libwnxk" ,libwnck)
-       ("libxscrnsaver" ,libxscrnsaver)
-       ("xfconf" ,xfconf)))
+     (list dbus-glib
+           linux-pam
+           elogind
+           garcon
+           libxklavier
+           libwnck
+           libxscrnsaver
+           xfconf))
     (home-page "https://docs.xfce.org/apps/screensaver/start")
     (synopsis "Screensaver for the Xfce desktop")
     (description
