@@ -1341,18 +1341,6 @@ pictures, sounds, or video.")
                (base32
                 "009qpb02bq0rx0aaw5ck70gk07xwparhfxvlfimgihw2vhp7qisp"))))))
 
-(define-public postgresql-9.6
-  (package
-    (inherit postgresql-10)
-    (version "9.6.23")
-    (source (origin
-              (inherit (package-source postgresql-10))
-              (uri (string-append "https://ftp.postgresql.org/pub/source/v"
-                                  version "/postgresql-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "1fa735lrmv2vrfiixg73nh024gxlagcbrssklvgwdf0s82cgfjd8"))))))
-
 (define-public postgresql postgresql-13)
 
 (define-public timescaledb
