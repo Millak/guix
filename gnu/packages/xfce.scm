@@ -535,7 +535,7 @@ keys for controlling the audio volume.")
 (define-public xfce4-whiskermenu-plugin
   (package
     (name "xfce4-whiskermenu-plugin")
-    (version "2.6.1")
+    (version "2.6.2")
     (source
      (origin
        (method url-fetch)
@@ -543,7 +543,7 @@ keys for controlling the audio volume.")
                            "xfce4-whiskermenu-plugin/" (version-major+minor version) "/"
                            "xfce4-whiskermenu-plugin-" version ".tar.bz2"))
        (sha256
-        (base32 "0wpcc9i505mh6vphg27ph43dw4n3z59mwy39416yzmw325q04kl5"))))
+        (base32 "0vppm85pvhsigg5d74nx7cixlsrsyfjagw6avrdclfjr30nf483d"))))
     (build-system cmake-build-system)
     (native-inputs
      (list pkg-config intltool))
