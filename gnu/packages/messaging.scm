@@ -700,6 +700,13 @@ identi.ca and status.net).")
     (synopsis "IRC to instant messaging gateway (using Pidgin's libpurple)")
     (inputs `(("purple" ,pidgin)
               ,@(package-inputs bitlbee)))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "PURPLE_PLUGIN_PATH")
+            ;; XXX: Should be (version-major (package-version pidgin)) but
+            ;; can't due to circular references.
+            (files (list (string-append "lib/purple-2")
+                         "lib/pidgin")))))
     (arguments
      (substitute-keyword-arguments (package-arguments bitlbee)
        ((#:phases phases '%standard-phases)
