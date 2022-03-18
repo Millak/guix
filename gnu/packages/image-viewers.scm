@@ -287,7 +287,11 @@ YouTube videos without requiring API and opens/downloads them using mpv/ytdl.")
     (native-search-paths
      ;; Feh allows overriding the libcurl builtin CA path (unset in Guix)
      ;; with the same variable as the `curl` command line HTTP tool.
-     (package-native-search-paths curl))
+     (list (search-path-specification
+            (variable "CURL_CA_BUNDLE")
+            (file-type 'regular)
+            (separator #f)                             ;single entry
+            (files '("etc/ssl/certs/ca-certificates.crt")))))
     (synopsis "Fast and light imlib2-based image viewer")
     (description
       "feh is an X11 image viewer aimed mostly at console users.

@@ -291,7 +291,11 @@ cards.")
            (assoc-ref gnu:%standard-phases 'install)))))
     (native-search-paths
      ;; Newsboat respects CURL_CA_BUNDLE.
-     (package-native-search-paths curl))
+     (list (search-path-specification
+            (variable "CURL_CA_BUNDLE")
+            (file-type 'regular)
+            (separator #f)                        ;single entry
+            (files '("etc/ssl/certs/ca-certificates.crt")))))
     (home-page "https://newsboat.org/")
     (synopsis "Text-mode RSS and Atom feed reader with podcast support")
     (description "Newsboat is a feed reader for @dfn{RSS} and @dfn{Atom}, XML
