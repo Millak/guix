@@ -24,7 +24,7 @@
 ;;; Copyright © 2021, 2022 Aurora <rind38@disroot.org>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2021 André A. Gomes <andremegafone@gmail.com>
-;;; Copyright © 2021 Cage <cage-dev@twistfold.it>
+;;; Copyright © 2021, 2022 Cage <cage-dev@twistfold.it>
 ;;; Copyright © 2021 Cameron Chaparro <cameron@cameronchaparro.com>
 ;;; Copyright © 2021 Charles Jackson <charles.b.jackson@protonmail.com>
 ;;; Copyright © 2021, 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
@@ -20823,3 +20823,37 @@ implementation for Common Lisp.")
 
 (define-public ecl-websocket-driver
   (sbcl-package->ecl-package sbcl-websocket-driver))
+
+(define-public sbcl-purgatory
+  (let ((commit "ade0d60a14a1067b9cc8cf06d1f1a1ca8cecdb03")
+        (revision "1"))
+    (package
+      (name "sbcl-purgatory")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://notabug.org/cage/purgatory")
+               (commit commit)))
+         (file-name (git-file-name "cl-purgatory" version))
+         (sha256
+          (base32 "1mwlalymmfbx1jx5wzqcnpg5h8d0ylllm1p3f4lwaawfv05lk82s"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria
+             sbcl-babel
+             sbcl-bordeaux-threads
+             sbcl-cl-ppcre-unicode
+             sbcl-usocket))
+      (synopsis "Common Lisp implementation of the 9p protocol")
+      (description "This is a Common Lisp library that implements
+the 9p network filesystem protocol.")
+      (home-page "https://notabug.org/cage/purgatory/")
+      (license license:llgpl))))
+
+(define-public ecl-purgatory
+  (sbcl-package->ecl-package sbcl-purgatory))
+
+(define-public cl-purgatory
+  (sbcl-package->cl-source-package sbcl-purgatory))
