@@ -28,6 +28,7 @@
  (entry (commit "094a2cfbe45c104d0da30ff9d975d052ca0c118c")
         (title
          (en "New @command{guix home container} command")
+         (de "Neuer Befehl @command{guix home container}")
          (fr "Nouvelle commande @command{guix home container}"))
         (body
          (en "The new @command{guix home} tool, which lets you to manage
@@ -43,6 +44,19 @@ guix home container config.scm
 This provides a simple and safe way to test your configuration before
 deploying it with @command{guix home reconfigure}.  Run @code{info \"(guix)
 Invoking guix home\"} for more information.")
+         (de "Das neue Werkzeug @command{guix home}, womit Sie vollständige
+„Persönliche Umgebungen“ deklarativ verwalten können, hat einen neuen
+Unterbefehl @command{container} hinzubekommen.  Mit dem neuen Befehl
+@command{guix home container} können Sie Ihre Konfiguration in einem isolierten
+@dfn{Container} ausprobieren, ohne Ihr Persönliches Verzeichnis anzutasten.
+
+@example
+guix home container config.scm
+@end example
+
+So ist es ein Leichtes, Ihre Konfiguration in einer sicheren Umgebung zu testen,
+bevor Sie mit @command{guix home reconfigure} auf sie umsteigen.  Führen Sie
+@code{info \"(guix.de) Aufruf von guix home\"} aus, um mehr zu erfahren.")
          (fr "La nouvelle commande @command{guix home}, qui sert à gérer son
 « environnement d'accueil » de manière déclarative, dispose maintenant d'une
 sous-commande @command{container}.  La nouvelle commande @command{guix home
