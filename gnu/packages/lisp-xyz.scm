@@ -69,6 +69,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages enchant)
+  #:use-module (gnu packages figlet)
   #:use-module (gnu packages file)
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
@@ -5039,8 +5040,8 @@ and mix text with expressions.")
   (sbcl-package->ecl-package sbcl-log4cl))
 
 (define-public sbcl-printv
-  (let ((commit "646d31978dbbb460fffb160fd65bb2be9a5a434e")
-        (revision "1"))
+  (let ((commit "e717a7fe076dae861a96117b2f9af29db8d2294d")
+        (revision "2"))
     (package
       (name "sbcl-printv")
       (version (git-version "0.1.0" revision commit))
@@ -5050,10 +5051,21 @@ and mix text with expressions.")
          (uri (git-reference
                (url "https://github.com/danlentz/printv")
                (commit commit)))
-         (file-name (git-file-name "printv" version))
+         (file-name (git-file-name "cl-printv" version))
          (sha256
-          (base32 "08jvy82abm7qi3wrxh6gvmwg9gy0zzhg4cfqajdwrggbah8mj5a6"))))
+          (base32 "07agyzkwp3w2r4d2anrmr8h00yngpr5dq9mjd3m4kzhn1jcmilfb"))))
       (build-system asdf-build-system/sbcl)
+      (inputs
+       (list figlet))
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'patch-figlet-executable
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "printv.lisp"
+                 (("\"figlet")
+                  (string-append "\"" (search-input-file inputs
+                                                         "/bin/figlet")))))))))
       (home-page "https://github.com/danlentz/printv")
       (synopsis "Common Lisp tracing and debug-logging macro")
       (description
