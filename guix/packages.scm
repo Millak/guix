@@ -7,6 +7,7 @@
 ;;; Copyright © 2019 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
+;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -182,8 +183,16 @@
 
 ;; The 'source-module-closure' procedure ca. 1.2.0 did not recognize
 ;; #:re-export-and-replace: <https://issues.guix.gnu.org/52694>.
-;; Work around it.
-(module-re-export! (current-module) '(delete) #:replace? #t)
+;; Work around it.  The #:replace? argument is only supported by
+;; Guile 2.2.7 and later, work-around it if necessary to allow
+;; time-travel from 1.1.0, see <https://issues.guix.gnu.org/53765>.
+(let ((major (string->number (major-version))))
+  (if (or (>= major 3)
+          (and (= major 2)
+               (= (string->number (minor-version)) 2) ; there is no Guile 2.3.X
+               (>= (string->number (micro-version)) 7)))
+      (module-re-export! (current-module) '(delete) #:replace? #t)
+      (module-re-export! (current-module) '(delete))))
 
 ;;; Commentary:
 ;;;
