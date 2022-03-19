@@ -3082,6 +3082,41 @@ to mark some tests as dependent from other tests.  These tests will then be
 skipped if any of the dependencies did fail or has been skipped.")
     (license license:asl2.0)))
 
+(define-public python-pytest-pudb
+  ;; PyPi does not include tests
+  (let ((commit "a6b3d2f4d35e558d72bccff472ecde9c9d9c69e5"))
+    (package
+      (name "python-pytest-pudb")
+      ;; Version mentioned in setup.py version field.
+      (version "0.7.0")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/wronglink/pytest-pudb")
+                      (commit commit)))
+                (file-name (git-file-name name commit))
+                (sha256
+                 (base32
+                  "1c0pypxx3y8w7s5bz9iy3w3aablnhn81rnhmb0is8hf2qpm6k3w0"))))
+      (build-system python-build-system)
+      (propagated-inputs (list pudb))
+      (native-inputs (list python-pytest))
+      (arguments
+       `(#:phases (modify-phases %standard-phases
+                    (replace 'check
+                      (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+                        (when tests?
+                          (add-installed-pythonpath inputs outputs)
+                          (invoke "pytest" "-v")))))))
+      (home-page "https://github.com/wronglink/pytest-pudb")
+      (synopsis "Pytest PuDB debugger integration")
+      (description
+       "@code{python-pytest-pudb} provides PuDB debugger integration based
+on pytest PDB integration.  For example, the software developer can
+call pudb by running @code{py.test --pudb} from the command line or by
+including @code{pudb.set_trace} in their test file(s).")
+      (license license:expat))))
+
 (define-public python-pytest-datadir
   (package
     (name "python-pytest-datadir")
