@@ -1171,12 +1171,11 @@ provides the GNU compiler for the Go programming language."))
     (version "0.23")
     (source (origin
              (method url-fetch)
-             (uri (list (string-append
-                         "http://isl.gforge.inria.fr/isl-"
-                         version
-                         ".tar.bz2")
+             ;; Used to be at isl.gforge.inria.fr.
+             (uri (list (string-append "mirror://sourceforge/libisl/isl-"
+                                       version ".tar.bz2")
                         (string-append %gcc-infrastructure
-                                       name "-" version ".tar.bz2")))
+                                       "isl-" version ".tar.bz2")))
              (sha256
               (base32
                "0k91zck10zxs9sk3yrbb92y1j3w981w3fbwkfwd7kl779b0j52f5"))))
@@ -1200,7 +1199,7 @@ provides the GNU compiler for the Go programming language."))
                           (("^old_library=.*")
                            "old_library=''\n"))))))))
     (inputs (list gmp))
-    (home-page "http://isl.gforge.inria.fr/")
+    (home-page "https://libisl.sourceforge.io/") ;https://repo.or.cz/w/isl.git
     (synopsis
      "Manipulating sets and relations of integer points \
 bounded by linear constraints")
@@ -1221,7 +1220,7 @@ dependence analysis and bounds on piecewise step-polynomials.")
     (version "0.18")
     (source (origin
               (method url-fetch)
-              (uri (list (string-append "http://isl.gforge.inria.fr/isl-"
+              (uri (list (string-append "mirror://sourceforge/libisl/isl-"
                                         version ".tar.bz2")
                          (string-append %gcc-infrastructure
                                         "isl-" version ".tar.bz2")))
@@ -1236,12 +1235,10 @@ dependence analysis and bounds on piecewise step-polynomials.")
     (version "0.11.1")
     (source (origin
              (method url-fetch)
-             (uri (list (string-append
-                         "http://isl.gforge.inria.fr/isl-"
-                         version
-                         ".tar.bz2")
+             (uri (list (string-append "mirror://sourceforge/libisl/isl-"
+                                       version ".tar.bz2")
                         (string-append %gcc-infrastructure
-                                       name "-" version ".tar.bz2")))
+                                       "isl-" version ".tar.bz2")))
              (sha256
               (base32
                "13d9cqa5rzhbjq0xf0b2dyxag7pqa72xj9dhsa03m8ccr1a4npq9"))
