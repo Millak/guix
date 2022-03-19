@@ -14787,8 +14787,8 @@ protocol for Mastodon.")
   (sbcl-package->cl-source-package sbcl-tooter))
 
 (define-public sbcl-croatoan
-  (let ((commit "cf875137a23ed4efbfde63e52691f1b544d55d17")
-        (revision "4"))
+  (let ((commit "5d0949d57a12e7fece8828e089daa339b260da96")
+        (revision "5"))
     (package
       (name "sbcl-croatoan")
       (version (git-version "0.0.1" revision commit))
@@ -14798,9 +14798,9 @@ protocol for Mastodon.")
          (uri (git-reference
                (url "https://github.com/McParen/croatoan")
                (commit commit)))
-         (file-name (git-file-name "croatoan" version))
+         (file-name (git-file-name "cl-croatoan" version))
          (sha256
-          (base32 "0dvp8irimlnnvz2m4lnmxp19xbam1yfri3d1i9qqml968i08xcwb"))))
+          (base32 "0qsnz10hri95al73vhpqrs7mapz2px0dbwgfn52sbi93gwk5aki9"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        '(#:phases
@@ -14813,10 +14813,10 @@ protocol for Mastodon.")
                                  "/lib/"
                                  all))))))))
       (inputs
-       `(("bordeaux-threads" ,sbcl-bordeaux-threads)
-         ("cffi" ,sbcl-cffi)
-         ("ncurses" ,ncurses)
-         ("trivial-gray-streams" ,sbcl-trivial-gray-streams)))
+       (list ncurses
+             sbcl-cffi
+             sbcl-trivial-gray-streams
+             sbcl-bordeaux-threads))
       (synopsis "Common Lisp bindings for the ncurses terminal library")
       (description "Croatoan provides high-level Common Lisp CLOS bindings for
 the ncurses terminal library.")
