@@ -1200,6 +1200,7 @@ provides the GNU compiler for the Go programming language."))
                            "old_library=''\n"))))))))
     (inputs (list gmp))
     (home-page "https://libisl.sourceforge.io/") ;https://repo.or.cz/w/isl.git
+    (properties `((release-monitoring-url . ,home-page)))
     (synopsis
      "Manipulating sets and relations of integer points \
 bounded by linear constraints")
