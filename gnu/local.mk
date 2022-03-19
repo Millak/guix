@@ -49,6 +49,7 @@
 # Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 # Copyright © 2022 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
 # Copyright © 2022 Remco van 't Veer <remco@remworks.net>
+# Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 #
 # This file is part of GNU Guix.
 #
@@ -119,6 +120,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/autotools.scm			\
   %D%/packages/avahi.scm			\
   %D%/packages/avr.scm				\
+  %D%/packages/avr-xyz.scm			\
   %D%/packages/axoloti.scm			\
   %D%/packages/backup.scm			\
   %D%/packages/base.scm				\
