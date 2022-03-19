@@ -92,6 +92,8 @@ Some ACTIONS support additional ARGS.\n"))
   (newline)
   (display (G_ "\
    search             search for existing service types\n"))
+  (display (G_ "
+   container          run the home environment configuration in a container\n"))
   (display (G_ "\
    reconfigure        switch to a new home environment configuration\n"))
   (display (G_ "\
