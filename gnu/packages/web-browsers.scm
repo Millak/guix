@@ -15,7 +15,7 @@
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2020 Alexandru-Sergiu Marton <brown121407@posteo.ro>
-;;; Copyright © 2021 Cage <cage-dev@twistfold.it>
+;;; Copyright © 2021, 2022 Cage <cage-dev@twistfold.it>
 ;;; Copyright © 2021 Benoit Joly <benoit@benoitj.ca>
 ;;; Copyright © 2021 Alexander Krotov <krotov@iitp.ru>
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -815,7 +815,7 @@ http, and https via third-party applications.")
 (define-public tinmop
   (package
     (name "tinmop")
-    (version "0.9.2")
+    (version "0.9.6")
     (source
      (origin
        (method git-fetch)
@@ -824,47 +824,52 @@ http, and https via third-party applications.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1cgx2g2kryfmcwqzzjzcpbdc6zzj10xc52gz0cj2dx5ylc0yg7k3"))))
+        (base32 "19rr1wcadm4698q5gyq0pxv81220l5g8zfnp61s43a4q7kn4mi1z"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("automake" ,automake)
-       ("autoreconf" ,autoconf)
-       ("gettext" ,gnu-gettext)
-       ("mandoc" , mandoc)
-       ("nano" ,nano)
-       ("openssl" ,openssl)
-       ("sbcl" ,sbcl)
-       ("xdg-utils" ,xdg-utils)))
+     (list autoconf
+           automake
+           gnu-gettext
+           mandoc
+           nano
+           openssl
+           sbcl
+           unzip
+           xdg-utils))
     (inputs
-     `(("access" ,sbcl-access)
-       ("alexandria" ,sbcl-alexandria)
-       ("babel" ,sbcl-babel)
-       ("bordeaux-threads" ,sbcl-bordeaux-threads)
-       ("cl-base64" ,sbcl-cl-base64)
-       ("cl-colors2" ,sbcl-cl-colors2)
-       ("cl-html5-parser" ,sbcl-cl-html5-parser)
-       ("cl-i18n" ,sbcl-cl-i18n)
-       ("cl-ppcre" ,sbcl-cl-ppcre)
-       ("cl-spark" ,sbcl-cl-spark)
-       ("cl-sqlite" ,sbcl-cl-sqlite)
-       ("cl+ssl" ,sbcl-cl+ssl)
-       ("clunit2" ,sbcl-clunit2)
-       ("croatoan" ,sbcl-croatoan)
-       ("crypto-shortcuts" ,sbcl-crypto-shortcuts)
-       ("drakma" ,sbcl-drakma)
-       ("esrap" ,sbcl-esrap)
-       ("ieee-floats" ,sbcl-ieee-floats)
-       ("local-time" ,sbcl-local-time)
-       ("log4cl" ,sbcl-log4cl)
-       ("marshal" ,sbcl-marshal)
-       ("osicat" ,sbcl-osicat)
-       ("parse-number" ,sbcl-parse-number)
-       ("percent-encoding" ,sbcl-percent-encoding)
-       ("sxql" ,sbcl-sxql)
-       ("sxql-composer" ,sbcl-sxql-composer)
-       ("tooter" ,sbcl-tooter)
-       ("unix-opts" ,sbcl-unix-opts)
-       ("usocket" ,sbcl-usocket)))
+     (list ncurses
+           sbcl-access
+           sbcl-alexandria
+           sbcl-babel
+           sbcl-bordeaux-threads
+           sbcl-cl+ssl
+           sbcl-cl-base64
+           sbcl-cl-colors2
+           sbcl-cl-html5-parser
+           sbcl-cl-i18n
+           sbcl-cl-ppcre
+           sbcl-cl-spark
+           sbcl-cl-sqlite
+           sbcl-clunit2
+           sbcl-croatoan
+           sbcl-crypto-shortcuts
+           sbcl-drakma
+           sbcl-esrap
+           sbcl-ieee-floats
+           sbcl-local-time
+           sbcl-log4cl
+           sbcl-marshal
+           sbcl-osicat
+           sbcl-parse-number
+           sbcl-percent-encoding
+           sbcl-purgatory
+           sbcl-sxql
+           sbcl-sxql-composer
+           sbcl-tooter
+           sbcl-trivial-clipboard
+           sbcl-unix-opts
+           sbcl-usocket
+           sqlite))
     (arguments
      `(#:tests? #f
        #:strip-binaries? #f
@@ -893,9 +898,9 @@ http, and https via third-party applications.")
                  '("LISP_COMPILER) --eval \"(require 'asdf)\" "
                    "--eval \"(push \\\"$$(pwd)/\\\" asdf:*central-registry*)\"  "))))
              #t)))))
-    (synopsis "Gemini and pleroma client with a terminal interface")
+    (synopsis "Gemini, kami and pleroma client with a terminal interface")
     (description
-     "This package provides a Gemini and pleroma client with a terminal
+     "This package provides a Gemini, kami and pleroma client with a terminal
 interface.")
     (home-page "https://www.autistici.org/interzona/tinmop.html")
     (license license:gpl3+)))
