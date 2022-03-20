@@ -310,14 +310,14 @@ astronomical image-processing packages like Drizzle, Swarp or SExtractor.")
     (arguments
      '(#:configure-flags '("--disable-static")))
     (inputs
-     `(("cfitsio" ,cfitsio)
-       ("curl" ,curl-minimal)
-       ("gsl" ,gsl)
-       ("libgit2" ,libgit2)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libtiff" ,libtiff)
-       ("wcslib" ,wcslib)
-       ("zlib" ,zlib)))
+     (list cfitsio
+           curl-minimal
+           gsl
+           libgit2
+           libjpeg-turbo
+           libtiff
+           wcslib
+           zlib))
     (native-inputs
      (list libtool lzip))
     (home-page "https://www.gnu.org/software/gnuastro/")
