@@ -2929,7 +2929,7 @@ database is translated at Transifex.")
 (define-public system-config-printer
   (package
     (name "system-config-printer")
-    (version "1.5.15")
+    (version "1.5.16")
     (source
      (origin
        (method url-fetch)
@@ -2938,15 +2938,20 @@ database is translated at Transifex.")
              "download/v" version
              "/system-config-printer-" version ".tar.xz"))
        (sha256
-        (base32 "12d6xx51vizc476zfnsga9q09nflp51ipn6y7lhi9w2v4772dlpv"))))
+        (base32 "1z9pvgifj5c87csnqz10qybbcayh3ak9m606f63ifkvyjh4q9jnb"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:imported-modules ((guix build python-build-system)
                            ,@%glib-or-gtk-build-system-modules)
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'patch-Makefile.am
+         (add-after 'unpack 'patch-build-files
            (lambda _
+             (substitute* "configure.ac"
+               (("AC_INIT.*" all)
+                (string-append all "\nAC_CONFIG_MACRO_DIR([m4])\n"))
+               ;; XXX: AX macros appear unavailable
+               (("AX_REQUIRE_DEFINED.*") ""))
              ;; The Makefile generates some scripts, so set a valid shebang
              (substitute* "Makefile.am"
                (("/bin/bash") (which "bash")))
@@ -2998,7 +3003,7 @@ database is translated at Transifex.")
            glib
            autoconf
            automake
-           intltool
+           gettext-minimal
            xmlto
            docbook-xml-4.1.2
            docbook-xsl
