@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2016 Chris Marusich <cmmarusich@gmail.com>
@@ -837,7 +837,7 @@ of PROVENANCE-SERVICE-TYPE to its services."
 (define %base-packages-utils
   ;; Default set of  utilities packages.
  (cons* procps psmisc which
-        (@ (gnu packages admin) shadow) ;for 'passwd'
+        (@ (gnu packages admin) shadow-with-man-pages) ;for 'passwd'
 
         guile-3.0-latest
 
