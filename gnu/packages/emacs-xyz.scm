@@ -18090,7 +18090,7 @@ interactive commands and functions, such as @code{completing-read}.")
 (define-public emacs-org-ql
   (package
     (name "emacs-org-ql")
-    (version "0.6")
+    (version "0.6.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -18098,7 +18098,7 @@ interactive commands and functions, such as @code{completing-read}.")
                     (commit version)))
               (sha256
                (base32
-                "1jfm4ahh58x3a3njigrbfzd86fnbyybbcgca2mgmxddcy6bszfp1"))
+                "1mpq3v8lxqllnb4afqh7p9av0p9bha8ld7741zaw4hxb1252xgm2"))
               (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (propagated-inputs
