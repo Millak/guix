@@ -627,9 +627,8 @@ address of one of the participants.")
                   (format #t "#!~a~%" (search-input-file inputs "/bin/bash"))
                   (format #t "export LD_PRELOAD=\"~a $LD_PRELOAD\"~%"
                           (string-append (assoc-ref outputs "out")
-                                         "/lib/mumble/libmumble.so.1"))
-                  (format #t "exec \"${@}\"")))
-              #t))
+                                         "/lib/mumble/libmumbleoverlay.so"))
+                  (format #t "exec \"${@}\"")))))
           (add-after 'unpack 'hardcode-pulseaudio
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "src/mumble/PulseAudio.cpp"
