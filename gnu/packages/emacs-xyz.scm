@@ -7846,6 +7846,15 @@ front-ends.  Company comes with many back-ends, e.g., @code{company-elisp}.
 These are distributed in separate files and can be used individually.")
     (license license:gpl3+)))
 
+(define* (%emacs-company-box-upstream-source #:key commit version hash)
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://github.com/sebastiencs/company-box")
+          (commit commit)))
+    (file-name (git-file-name "emacs-company-box" version))
+    (hash hash)))
+
 (define-public emacs-company-box
   ;; There is no release yet.  Version is extracted from the main
   ;; file.
@@ -7857,13 +7866,74 @@ These are distributed in separate files and can be used individually.")
       (version (git-version version revision commit))
       (source
        (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/sebastiencs/company-box")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "13fgmdy51gqdwijqfvb784pirx4lgva0y7ysi0c3fcx8f82cdj59"))))
+         (method (@@ (guix packages) computed-origin-method))
+         (file-name (string-append name "-" version ".tar.gz"))
+         (sha256 #f)
+         (uri
+          (delay
+            (with-imported-modules '((guix build emacs-utils)
+                                     (guix build utils))
+              #~(begin
+                  (use-modules (guix build utils)
+                               (guix build emacs-utils))
+                  (let* ((dir (string-append "emacs-company-box-" #$version)))
+
+                    (set-path-environment-variable
+                     "PATH" '("bin")
+                     (list #+emacs-minimal
+                           #+(canonical-package bash)
+                           #+(canonical-package coreutils)
+                           #+(canonical-package gzip)
+                           #+(canonical-package tar)))
+
+                    ;; Copy the upstream source
+                    (copy-recursively
+                     #+(%emacs-lsp-treemacs-upstream-source
+                        #:commit commit #:version version
+                        #:hash
+                        (content-hash
+                         "13fgmdy51gqdwijqfvb784pirx4lgva0y7ysi0c3fcx8f82cdj59"))
+                     dir)
+
+                    (with-directory-excursion dir
+                      ;; The icons are unclearly licensed and possibly non-free,
+                      ;; see <https://github.com/emacs-lsp/lsp-treemacs/issues/123>
+                      (with-directory-excursion "images"
+                        (for-each delete-file-recursively
+                                  '("eclipse" "idea" "netbeans")))
+
+                      ;; Also remove any mentions in the source code.
+                      (make-file-writable "company-box-icons.el")
+                      (emacs-batch-edit-file "company-box-icons.el"
+                        '(progn
+                          (while (search-forward-regexp
+                                  "(defvar company-box-icons-\\([a-z-]*\\)"
+                                  nil t)
+                            (pcase (match-string 1)
+                                   ((or "images"
+                                        "all-the-icons"
+                                        "icons-in-terminal") nil)
+                                   (_ (beginning-of-line)
+                                      (kill-sexp)))
+                            (basic-save-buffer))))
+
+                      ;; Also patch source to not show broken icons as configuration
+                      ;; option.
+                      (substitute* "company-box-icons.el"
+                        (("- .*, from.*editor.*") "")
+                        (("\\(const :tag \"([a-z]*)\".*\\)" all tag)
+                         (if (member tag
+                                     '("images" "all-the-icons" "icons-in-terminal"))
+                             all
+                             ""))))
+
+                    (invoke "tar" "cvfa" #$output
+                            "--mtime=@0"
+                            "--owner=root:0"
+                            "--group=root:0"
+                            "--sort=name"
+                            "--hard-dereference"
+                            dir))))))))
       (build-system emacs-build-system)
       (propagated-inputs
        (list emacs-company emacs-dash emacs-frame-local))
