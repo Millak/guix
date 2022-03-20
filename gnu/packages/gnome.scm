@@ -2941,49 +2941,47 @@ database is translated at Transifex.")
         (base32 "1z9pvgifj5c87csnqz10qybbcayh3ak9m606f63ifkvyjh4q9jnb"))))
     (build-system glib-or-gtk-build-system)
     (arguments
-     `(#:imported-modules ((guix build python-build-system)
+     (list
+      #:imported-modules `((guix build python-build-system)
                            ,@%glib-or-gtk-build-system-modules)
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-build-files
-           (lambda _
-             (substitute* "configure.ac"
-               (("AC_INIT.*" all)
-                (string-append all "\nAC_CONFIG_MACRO_DIR([m4])\n"))
-               ;; XXX: AX macros appear unavailable
-               (("AX_REQUIRE_DEFINED.*") ""))
-             ;; The Makefile generates some scripts, so set a valid shebang
-             (substitute* "Makefile.am"
-               (("/bin/bash") (which "bash")))
-             (delete-file "configure")
-             #t))
-         (add-after 'unpack 'patch-docbook-xml
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Modify the man XML otherwise xmlto tries to access the network
-             (substitute* "man/system-config-printer.xml"
-               (("http://www.oasis-open.org/docbook/xml/4.1.2/")
-                (string-append (assoc-ref inputs "docbook-xml")
-                               "/xml/dtd/docbook/")))
-             #t))
-         (add-after 'install 'add-install-to-pythonpath
-           (@@ (guix build python-build-system) add-install-to-pythonpath))
-         (add-after 'add-install-to-pythonpath 'wrap-for-python
-           (@@ (guix build python-build-system) wrap))
-         (add-after 'install 'wrap
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out               (assoc-ref outputs "out"))
-                   (gi-typelib-path   (getenv "GI_TYPELIB_PATH")))
-               (for-each
-                (lambda (program)
-                  (wrap-program program
-                    `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))))
-                (map (lambda (name)
-                       (string-append out "/bin/" name))
-                     '("system-config-printer"
-                       "system-config-printer-applet"
-                       "install-printerdriver"
-                       "scp-dbus-service"))))
-             #t)))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-build-files
+            (lambda _
+              (substitute* "configure.ac"
+                (("AC_INIT.*" all)
+                 (string-append all "\nAC_CONFIG_MACRO_DIR([m4])\n"))
+                ;; XXX: AX macros appear unavailable
+                (("AX_REQUIRE_DEFINED.*") ""))
+              ;; The Makefile generates some scripts, so set a valid shebang
+              (substitute* "Makefile.am"
+                (("/bin/bash") (which "bash")))
+              (delete-file "configure")))
+          (add-after 'unpack 'patch-docbook-xml
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Modify the man XML otherwise xmlto tries to access the network
+              (substitute* "man/system-config-printer.xml"
+                (("http://www.oasis-open.org/docbook/xml/4.1.2/")
+                 (string-append (assoc-ref inputs "docbook-xml")
+                                "/xml/dtd/docbook/")))))
+          (add-after 'install 'add-install-to-pythonpath
+            (@@ (guix build python-build-system) add-install-to-pythonpath))
+          (add-after 'add-install-to-pythonpath 'wrap-for-python
+            (@@ (guix build python-build-system) wrap))
+          (add-after 'install 'wrap
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((out               (assoc-ref outputs "out"))
+                    (gi-typelib-path   (getenv "GI_TYPELIB_PATH")))
+                (for-each
+                 (lambda (program)
+                   (wrap-program program
+                     `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))))
+                 (map (lambda (name)
+                        (string-append out "/bin/" name))
+                      '("system-config-printer"
+                        "system-config-printer-applet"
+                        "install-printerdriver"
+                        "scp-dbus-service")))))))))
     (inputs
      (list gsettings-desktop-schemas
            gobject-introspection
