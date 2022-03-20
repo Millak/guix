@@ -29314,7 +29314,7 @@ snippets for Emacs.")
 (define-public emacs-org-roam
   (package
     (name "emacs-org-roam")
-    (version "2.2.0")
+    (version "2.2.1")
     (source
      (origin
        (method git-fetch)
@@ -29323,7 +29323,7 @@ snippets for Emacs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0q3nhw05wnqh1qgggxsj8wki4ihciqlkic2x7qbcsskjqm73j1r7"))))
+        (base32 "0c5vxz423lz386dxa9nqyf396jmyb36q79paxf27is1dhq1vwd5w"))))
     (build-system emacs-build-system)
     (arguments
      (list
