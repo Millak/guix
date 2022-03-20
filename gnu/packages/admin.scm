@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014, 2015, 2016, 2018, 2019, 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2020, 2021, 2022 Eric Bavier <bavier@posteo.net>
@@ -876,9 +876,26 @@ hostname.")
      "Shadow provides a number of authentication-related tools, including:
 login, passwd, su, groupadd, and useradd.")
 
+    (properties '((hidden? . #t)))                ;see below
+
     ;; The `vipw' program is GPLv2+.
     ;; libmisc/salt.c is public domain.
     (license license:bsd-3)))
+
+(define-public shadow-with-man-pages
+  ;; TODO: Merge with 'shadow' on the next core-updates cycle.
+  (package/inherit shadow
+    (properties '())                              ;not hidden
+    (arguments
+     (substitute-keyword-arguments (package-arguments shadow)
+       ((#:phases phases '%standard-phases)
+        `(modify-phases ,phases
+           (add-after 'install 'install-man-pages
+             (lambda _
+               ;; The top-level Makefile.am wrongfully has "SUBDIRS += man"
+               ;; under "if ENABLE_REGENERATE_MAN", even though prebuilt man
+               ;; pages are available.  Thus, install them manually.
+               (invoke "make" "-C" "man" "install")))))))))
 
 (define-public mingetty
   (package
