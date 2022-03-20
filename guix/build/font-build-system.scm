@@ -41,8 +41,7 @@ archive, or a font file."
       (begin
         (mkdir "source")
         (chdir "source")
-        (copy-file source (strip-store-file-name source))
-        #t)
+        (copy-file source (strip-store-file-name source)))
       (gnu:unpack #:source source)))
 
 (define* (install #:key outputs #:allow-other-keys)
@@ -55,8 +54,7 @@ archive, or a font file."
     (for-each (cut install-file <> (string-append fonts "/opentype"))
               (find-files source "\\.(otf|otc)$"))
     (for-each (cut install-file <> (string-append fonts "/web"))
-              (find-files source "\\.(woff|woff2)$"))
-    #t))
+              (find-files source "\\.(woff|woff2)$"))))
 
 (define %standard-phases
   (modify-phases gnu:%standard-phases
