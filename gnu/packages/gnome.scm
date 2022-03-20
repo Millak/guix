@@ -2960,7 +2960,9 @@ database is translated at Transifex.")
                 (string-append (assoc-ref inputs "docbook-xml")
                                "/xml/dtd/docbook/")))
              #t))
-         (add-after 'install 'wrap-for-python
+         (add-after 'install 'add-install-to-pythonpath
+           (@@ (guix build python-build-system) add-install-to-pythonpath))
+         (add-after 'add-install-to-pythonpath 'wrap-for-python
            (@@ (guix build python-build-system) wrap))
          (add-after 'install 'wrap
            (lambda* (#:key outputs #:allow-other-keys)
