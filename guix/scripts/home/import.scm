@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
-;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2022 Arjan Adriaanse <arjan@adriaan.se>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -60,12 +60,15 @@ FILE-NAME with \"-\", and return the basename of it."
   (define (destination-append path)
     (string-append destination-directory "/" path))
 
+  (define alias-rx
+    (make-regexp "^alias ([^=]+)=[\"'](.+)[\"']$"))
+
   (define (bash-alias->pair line)
-    (if (string-prefix? "alias" line)
-        (let ((matched (string-match "alias (.+)=\"?'?([^\"']+)\"?'?" line)))
-          `(,(match:substring matched 1) . ,(match:substring matched 2)))
-        '()))
-  
+    (match (regexp-exec alias-rx line)
+      (#f '())
+      (matched
+       `(,(match:substring matched 1) . ,(match:substring matched 2)))))
+
   (define (parse-aliases input)
     (let loop ((line (read-line input))
                (result '()))

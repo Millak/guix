@@ -158,6 +158,29 @@ corresponding file."
                 ('list ('local-file "/tmp/guix-config/.bashrc"
                                     "bashrc"))))))))))
 
+(define-home-environment-matcher match-home-environment-bash-service-with-alias
+  ('begin
+    ('use-modules
+     ('gnu 'home)
+     ('gnu 'packages)
+     ('gnu 'services)
+     ('guix 'gexp)
+     ('gnu 'home 'services 'shells))
+    ('home-environment
+     ('packages
+      ('map ('compose 'list 'specification->package+output)
+            ('list)))
+     ('services
+      ('list ('service
+              'home-bash-service-type
+              ('home-bash-configuration
+               ('aliases
+                ('quote (("grep" . "grep --exclude-from=\"$HOME/.grep-exclude\"")
+                         ("ls" . "ls -p"))))
+               ('bashrc
+                ('list ('local-file "/tmp/guix-config/.bashrc"
+                                    "bashrc"))))))))))
+
 
 (test-assert "manifest->code: No services"
   (eval-test-with-home-environment
@@ -186,5 +209,13 @@ corresponding file."
    '((".bashrc" . "echo 'hello guix'"))
    (make-manifest '())
    match-home-environment-bash-service))
+
+(test-assert "manifest->code: Bash service with aliases"
+  (eval-test-with-home-environment
+   '((".bashrc"
+      . "# Aliases
+alias ls=\"ls -p\"; alias grep='grep --exclude-from=\"$HOME/.grep-exclude\"'\n"))
+   (make-manifest '())
+   match-home-environment-bash-service-with-alias))
 
 (test-end "home-import")
