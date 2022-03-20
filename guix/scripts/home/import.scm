@@ -65,17 +65,19 @@ FILE-NAME with \"-\", and return the basename of it."
 
   (define (bash-alias->pair line)
     (match (regexp-exec alias-rx line)
-      (#f '())
+      (#f #f)
       (matched
        `(,(match:substring matched 1) . ,(match:substring matched 2)))))
 
   (define (parse-aliases input)
-    (let loop ((line (read-line input))
-               (result '()))
-      (if (eof-object? line)
-          (reverse result)
-          (loop (read-line input)
-                (cons (bash-alias->pair line) result)))))
+    (let loop ((result '()))
+      (match (read-line input)
+        ((? eof-object?)
+         (reverse result))
+        (line
+         (match (bash-alias->pair line)
+           (#f    (loop result))
+           (alias (loop (cons alias result))))))))
 
   (let ((rc (destination-append ".bashrc"))
         (profile (destination-append ".bash_profile"))
@@ -85,9 +87,9 @@ FILE-NAME with \"-\", and return the basename of it."
                 ,@(if (file-exists? rc)
                       `((aliases
                          ',(let* ((port (open-pipe* OPEN_READ "bash" "-i" "-c" "alias"))
-                               (alist (parse-aliases port)))
+                                  (alist (parse-aliases port)))
                            (close-port port)
-                           (filter (negate null?) alist))))
+                           alist)))
                       '())
                 ,@(if (file-exists? rc)
                       `((bashrc
