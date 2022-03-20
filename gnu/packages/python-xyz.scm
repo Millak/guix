@@ -26054,7 +26054,7 @@ dictionaries.")
 (define-public pyzo
   (package
     (name "pyzo")
-    (version "4.12.0")
+    (version "4.12.3")
     (source
      (origin
        (method git-fetch)
@@ -26064,7 +26064,7 @@ dictionaries.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0ndiplnz2d5qc6ppjhfwl4zswn79q6732s4vlkaw8xwc3kjrql5b"))))
+         "0v6rgp52bf9za2spxx9c1yc6wmskvlsj81iw0gipjy7y8vpypgn2"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
