@@ -1706,6 +1706,9 @@ the entries in MANIFEST."
   (define guile-zlib
     (module-ref (resolve-interface '(gnu packages guile)) 'guile-zlib))
 
+  (define guile-zstd
+    (module-ref (resolve-interface '(gnu packages guile)) 'guile-zstd))
+
   (define modules
     (delete '(guix config)
             (source-module-closure `((guix build utils)
@@ -1714,7 +1717,8 @@ the entries in MANIFEST."
   (define build
     (with-imported-modules modules
       (with-extensions (list gdbm-ffi           ;for (guix man-db)
-                             guile-zlib)
+                             guile-zlib
+                             guile-zstd)
         #~(begin
             (use-modules (guix man-db)
                          (guix build utils)
