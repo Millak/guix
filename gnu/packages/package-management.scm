@@ -239,6 +239,12 @@ $(prefix)/etc/init.d\n")))
 $(prefix)/etc/openrc\n")))
 
                         (invoke "sh" "bootstrap")))
+                    ,@(if (target-riscv64?)
+                        `((add-after 'unpack 'use-correct-guile-version-for-tests
+                            (lambda _
+                              (substitute* "tests/gexp.scm"
+                                (("2\\.0") "3.0")))))
+                        '())
                     (add-before 'build 'use-host-compressors
                       (lambda* (#:key inputs target #:allow-other-keys)
                         (when target
