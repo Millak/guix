@@ -10066,6 +10066,49 @@ and to both short and long sequence reads.")
 cluster count and membership by stability evidence in unsupervised analysis.")
     (license license:gpl2)))
 
+;; This is the latest commit and it solves a bug from the latest release.
+(define-public r-cycombine
+  (let ((commit "f18504bc83ff5daee2b5eb4b28f09abdaaa66698") (revision "1"))
+    (package
+      (name "r-cycombine")
+      (version (git-version "0.2.6" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/biosurf/cyCombine")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1fiwnik8iahg01732fik85xhz359x32f1xc59h443pdf7jancskm"))))
+      (properties `((upstream-name . "cyCombine")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-biobase
+             r-cytolib
+             r-dplyr
+             r-flowcore
+             r-ggplot2
+             r-knitr
+             r-kohonen
+             r-magrittr
+             r-purrr
+             r-rcolorbrewer
+             r-readr
+             r-readxl
+             r-stringr
+             r-sva
+             r-tibble
+             r-tidyr))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/biosurf/cyCombine")
+      (synopsis "Integration of single-cell cytometry datasets")
+      (description
+       "This package provides a method for combining single-cell cytometry
+datasets, which increases the analytical flexibility and the statistical power
+of the analyses while minimizing technical noise.")
+      (license license:expat))))
+
 (define-public r-cytolib
   (package
     (name "r-cytolib")
