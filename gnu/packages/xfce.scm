@@ -781,6 +781,27 @@ digital camera, it will automatically spawn your preferred photo application
 and import the new pictures from your camera.")
     (license gpl2+)))
 
+(define-public thunar-archive-plugin
+  (package
+    (name "thunar-archive-plugin")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://archive.xfce.org/src/thunar-plugins/"
+                           name "/" (version-major+minor version)
+                           "/" name "-" version ".tar.bz2"))
+       (sha256
+        (base32 "1ykg6qj65l5wywpbiiabidjxzvrhv6q4v63jxb6mlai8b2iqijlf"))))
+    (build-system gnu-build-system)
+    (native-inputs (list pkg-config intltool))
+    (inputs (list exo thunar gtk+))
+    (home-page "https://www.xfce.org/")
+    (synopsis "Archive plugin for Thunar file manager")
+    (description "The Thunar Archive Plugin allows you to create and extract
+archive files using the file context menus in the Thunar file manager.")
+    (license gpl2+)))
+
 (define-public xfwm4
   (package
     (name "xfwm4")
