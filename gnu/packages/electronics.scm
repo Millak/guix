@@ -56,7 +56,8 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages sqlite)
-  #:use-module (gnu packages stb))
+  #:use-module (gnu packages stb)
+  #:use-module (gnu packages toolkits))
 
 (define-public libserialport
   (package
@@ -264,14 +265,14 @@ supported devices, as well as input/output file format support.")
                          (guix build utils)))
               (snippet
                '(with-directory-excursion "src"
-                  ;; TODO: Unbundle ImGui.
-                  (define keep (list "." ".." "imgui" "openboardview"))
+                  (define keep (list "." ".." "openboardview"))
                   (for-each (lambda (f)
                               (when (eq? 'directory (stat:type (lstat f)))
                                 (delete-file-recursively f)))
                             (scandir "." (negate (cut member <> keep))))))
               (patches
-               (search-patches "openboardview-use-system-utf8.patch"))
+               (search-patches "openboardview-use-system-imgui.patch"
+                               "openboardview-use-system-utf8.patch"))
               (sha256
                (base32
                 "1n2yfi8wpky0y231kq2zdgwn7f7kff8m53m904hxi5ppmwhx1d6q"))))
@@ -327,6 +328,7 @@ supported devices, as well as input/output file format support.")
     (inputs
      (list fontconfig
            gtk+
+           imgui
            sdl2
            sqlite
            zlib))
