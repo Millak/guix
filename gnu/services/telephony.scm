@@ -936,7 +936,7 @@ Or set public-registration to #f"))))))))
         (format #t "murmur: to set the SuperUser password run:
     `~a -ini ~a -readsupw`\n"
                 #$(file-append (murmur-configuration-package config)
-                               "/bin/murmurd") ini)
+                               "/bin/mumble-server") ini)
         #t)))
 
 (define murmur-accounts
@@ -961,7 +961,7 @@ Or set public-registration to #f"))))))))
          (requirement '(networking))
          (start #~(make-forkexec-constructor
                    '(#$(file-append (murmur-configuration-package config)
-                                    "/bin/murmurd")
+                                    "/bin/mumble-server")
                      "-ini"
                      #$(or (murmur-configuration-file config)
                            (default-murmur-config config)))
