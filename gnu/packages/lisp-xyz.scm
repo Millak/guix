@@ -4826,8 +4826,8 @@ mime-type of a file.")
   (sbcl-package->ecl-package sbcl-trivial-mimes))
 
 (define-public sbcl-ningle
-  (let ((commit "50bd4f09b5a03a7249bd4d78265d6451563b25ad")
-        (revision "1"))
+  (let ((commit "2e85675bbb668d6ef341514fc9f22391a0f506b1")
+        (revision "2"))
     (package
       (name "sbcl-ningle")
       (version (git-version "0.3.0" revision commit))
@@ -4837,36 +4837,12 @@ mime-type of a file.")
          (uri (git-reference
                (url "https://github.com/fukamachi/ningle")
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-ningle" version))
          (sha256
-          (base32 "1bsl8cnxhacb8p92z9n89vhk1ikmij5zavk0m2zvmj7iqm79jzgw"))))
+          (base32 "0s9nn8ml1j4839rycvdjcbsynkqnhxw1zmrgpjz48smscwdf1f8p"))))
       (build-system asdf-build-system/sbcl)
       (arguments
-       ;; TODO: pull in clack-test
-       '(#:tests? #f
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'cleanup-files)
-           (delete 'cleanup)
-           (add-before 'cleanup 'combine-fasls
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (lib (string-append out "/lib/sbcl"))
-                      (ningle-path (string-append lib "/ningle"))
-                      (fasl-files (find-files out "\\.fasl$")))
-                 (mkdir-p ningle-path)
-                 (let ((fasl-path (lambda (name)
-                                    (string-append ningle-path
-                                                   "/"
-                                                   (basename name)
-                                                   "--system.fasl"))))
-                   (for-each (lambda (file)
-                               (rename-file file
-                                            (fasl-path
-                                             (basename file ".fasl"))))
-                             fasl-files))
-                 fasl-files)
-               #t)))))
+       '(#:tests? #f)) ; TODO: pull in clack-test
       (native-inputs
        (list sbcl-prove))
       (inputs
