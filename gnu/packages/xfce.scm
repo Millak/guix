@@ -802,6 +802,28 @@ and import the new pictures from your camera.")
 archive files using the file context menus in the Thunar file manager.")
     (license gpl2+)))
 
+(define-public thunar-shares-plugin
+  (package
+    (name "thunar-shares-plugin")
+    (version "0.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://archive.xfce.org/src/thunar-plugins/"
+                           name "/" (version-major+minor version)
+                           "/" name "-" version ".tar.bz2"))
+       (sha256
+        (base32 "01rzmjj673sjhzkdh24d8bha57dbahycb44hlr4zld0mr7kda28h"))))
+    (build-system gnu-build-system)
+    (native-inputs (list pkg-config intltool))
+    (inputs (list thunar gtk+))
+    (home-page "https://www.xfce.org/")
+    (synopsis "Folder share plugin for Thunar file manager")
+    (description
+     "The Thunar Shares Plugin allows you to quickly share a folder using
+Samba from Thunar (the Xfce file manager) without requiring root access.")
+    (license gpl2+)))
+
 (define-public xfwm4
   (package
     (name "xfwm4")
