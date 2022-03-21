@@ -1724,7 +1724,9 @@ that allows you to run services and through them access the Bitcoin Cash network
            (lambda _
              (substitute* "setup.py"
                (("'google-api-python-client',") ""))
-             #t)))))
+             #t))
+         ;; No module named 'google_auth_oauthlib'
+         (delete 'sanity-check))))
     (inputs
      (list python-beautifulsoup4
            python-bottle
