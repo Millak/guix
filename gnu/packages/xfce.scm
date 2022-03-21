@@ -54,6 +54,7 @@
   #:use-module (gnu packages libcanberra)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages mate)
+  #:use-module (gnu packages mp3)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages photo)
@@ -822,6 +823,28 @@ archive files using the file context menus in the Thunar file manager.")
     (description
      "The Thunar Shares Plugin allows you to quickly share a folder using
 Samba from Thunar (the Xfce file manager) without requiring root access.")
+    (license gpl2+)))
+
+(define-public thunar-media-tags-plugin
+  (package
+    (name "thunar-media-tags-plugin")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://archive.xfce.org/src/thunar-plugins/"
+                           name "/" (version-major+minor version)
+                           "/" name "-" version ".tar.bz2"))
+       (sha256
+        (base32 "06sr7b4p9f585gian8vpx7j0pkzg0vvwcrjmrhvh7i5sb90w8rg2"))))
+    (build-system gnu-build-system)
+    (native-inputs (list pkg-config intltool))
+    (inputs (list exo gtk+ thunar taglib))
+    (home-page "https://www.xfce.org/")
+    (synopsis "Media tags plugin for Thunar file manager")
+    (description
+     "Media tags plugin allows tags editing from Thunar file manager and
+tags-based file renaming from inside Thunar Bulk Renamer.")
     (license gpl2+)))
 
 (define-public xfwm4
