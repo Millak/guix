@@ -10,6 +10,7 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -125,14 +126,14 @@ a flexible and convenient way.")
 (define-public man-db
   (package
     (name "man-db")
-    (version "2.9.4")
+    (version "2.10.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://savannah/man-db/man-db-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0mk7n7yn6scy785jhg1j14b3q9l0cgvpry49r0ldjsnizbnrjv5n"))))
+                "0kaiymd5lh4dnp6z15fnvfg0ir81kdxp5l690ccp64ra956rb5zf"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases
@@ -146,8 +147,7 @@ a flexible and convenient way.")
                                    (("#! /bin/sh")
                                     (string-append "#!" (which "sh")))))
                                (remove file-is-directory?
-                                       (find-files "src/tests" ".*")))
-                     #t)))
+                                       (find-files "src/tests" ".*"))))))
                (add-after 'unpack 'patch-absolute-paths
                  (lambda* (#:key inputs #:allow-other-keys)
                    (substitute* "src/man.c"
@@ -160,64 +160,56 @@ a flexible and convenient way.")
                      (("groff_preconv = NULL")
                       (string-append "groff_preconv = \""
                                      (assoc-ref inputs "groff-minimal")
-                                     "/bin/preconv\"")))
-                   #t)))
+                                     "/bin/preconv\""))))))
            #:configure-flags
-           #~(let ((groff (assoc-ref %build-inputs "groff"))
-                   (groff-minimal (assoc-ref %build-inputs "groff-minimal"))
-                   (less  (assoc-ref %build-inputs "less"))
-                   (gzip  (assoc-ref %build-inputs "gzip"))
-                   (bzip2 (assoc-ref %build-inputs "bzip2"))
-                   (xz    (assoc-ref %build-inputs "xz"))
-                   (util  (assoc-ref %build-inputs "util-linux")))
-               ;; Invoke groff, less, gzip, bzip2, & xz directly from the store.
-               (append (list ;; Disable setuid man user.
-                        "--disable-setuid"
-                        ;; Don't constrain ownership of system-wide cache files.
-                        ;; Otherwise creating the manpage database fails with
-                        ;; man-db > 2.7.5.
-                        "--disable-cache-owner"
-                        (string-append "--with-pager=" less "/bin/less")
-                        (string-append "--with-gzip=" gzip "/bin/gzip")
-                        (string-append "--with-bzip2=" bzip2 "/bin/gzip")
-                        (string-append "--with-xz=" xz "/bin/xz")
-                        (string-append "--with-col=" util "/bin/col")
-                        ;; The default systemd directories ignore --prefix.
-                        ;; XXX TODO: Replace with simply #$OUTPUT on staging.
-                        (string-append "--with-systemdsystemunitdir="
-                                       #$(if (%current-target-system)
-                                             #~#$output
-                                             #~%output)
-                                       "/lib/systemd/system")
-                        (string-append "--with-systemdtmpfilesdir="
-                                       #$(if (%current-target-system)
-                                             #~#$output
-                                             #~%output)
-                                       "/lib/tmpfiles.d"))
-                   (map (lambda (prog)
-                          (string-append "--with-" prog "=" groff-minimal
-                                         "/bin/" prog))
-                        '("nroff" "eqn" "neqn" "tbl" "refer" "pic"))))
-
+           #~(cons*
+              ;; Disable setuid man user.
+              "--disable-setuid"
+              ;; Don't constrain ownership of system-wide cache files.
+              ;; Otherwise creating the manpage database fails with
+              ;; man-db > 2.7.5.
+              "--disable-cache-owner"
+              (string-append "--with-pager="
+                             (search-input-file %build-inputs "bin/less"))
+              (string-append "--with-gzip="
+                             (search-input-file %build-inputs "bin/gzip"))
+              (string-append "--with-bzip2="
+                             (search-input-file %build-inputs "bin/bzip2"))
+              (string-append "--with-xz="
+                             (search-input-file %build-inputs "bin/xz"))
+              (string-append "--with-zstd="
+                             (search-input-file %build-inputs "bin/zstd"))
+              (string-append "--with-col="
+                             (search-input-file %build-inputs "bin/col"))
+              ;; The default systemd directories ignore --prefix.
+              (string-append "--with-systemdsystemunitdir="
+                             #$output "/lib/systemd/system")
+              (string-append "--with-systemdtmpfilesdir="
+                             #$output "/lib/tmpfiles.d")
+              (map (lambda (prog)
+                     (string-append
+                      "--with-" prog "="
+                      #$(this-package-input "groff-minimal")
+                      (string-append "/bin/" prog)))
+                   '("nroff" "eqn" "neqn" "tbl" "refer" "pic")))
            ;; At run time we should refer to GROFF-MINIMAL, not GROFF (the latter
            ;; pulls in Perl.)
-           #:disallowed-references
-           (list groff)
-
+           #:disallowed-references (list groff)
            #:modules '((guix build gnu-build-system)
                        (guix build utils)
                        (srfi srfi-1))))
     (native-inputs
-     (list pkg-config flex groff))   ;needed at build time (troff, grops, soelim, etc.)
+     (list pkg-config flex
+           ;; Groff is needed at build time for troff, grops, soelim, etc.
+           groff))
     (inputs
      (list gdbm
            groff-minimal
            less
            libpipeline
-           ;; FIXME: 4.8 and later can use libseccomp, but it causes test
-           ;; failures in the build chroot.
-           ;;("libseccomp" ,libseccomp)
-           util-linux))
+           libseccomp
+           util-linux
+           zstd))
     (native-search-paths
      (list (search-path-specification
             (variable "MANPATH")
