@@ -35,6 +35,7 @@
 (define-module (gnu packages xfce)
   #:use-module (gnu artwork)
   #:use-module (gnu packages)
+  #:use-module (gnu packages apr)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages calendar)
@@ -65,6 +66,8 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages search)
+  #:use-module (gnu packages textutils)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages web)
   #:use-module (gnu packages wm)
   #:use-module (gnu packages xml)
@@ -845,6 +848,42 @@ Samba from Thunar (the Xfce file manager) without requiring root access.")
     (description
      "Media tags plugin allows tags editing from Thunar file manager and
 tags-based file renaming from inside Thunar Bulk Renamer.")
+    (license gpl2+)))
+
+(define-public thunar-vcs-plugin
+  (package
+    (name "thunar-vcs-plugin")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://archive.xfce.org/src/thunar-plugins/"
+                           name "/" (version-major+minor version)
+                           "/" name "-" version ".tar.bz2"))
+       (sha256
+        (base32 "1f2d1dwfyi6xv3qkd8l8xh0vhz8wh0601cyigjzn426lqga1d29n"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list (string-append "CPPFLAGS=-I"
+                                  #$(this-package-input "apr-util")
+                                  "/include/apr-1"))))
+    (native-inputs (list pkg-config intltool utf8proc))
+    (inputs
+     (list exo
+           gtk+
+           thunar
+           libxfce4util
+           apr
+           apr-util
+           subversion
+           git))
+    (home-page "https://www.xfce.org/")
+    (synopsis "VCS plugin for Thunar file manager")
+    (description
+     "Thunar VCS Plugin (formerly known as Thunar SVN Plugin) gives SVN and
+GIT integration to Thunar, it adds Subversion and GIT actions to the context
+menu.")
     (license gpl2+)))
 
 (define-public xfwm4
