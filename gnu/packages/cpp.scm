@@ -28,6 +28,7 @@
 ;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2022 Attila Lendvai <attila@lendvai.name>
+;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -53,6 +54,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module (guix modules)
   #:use-module (guix gexp)
@@ -1273,6 +1275,44 @@ code will be mixed in with the actual programming logic.  This implementation
 provides a number of utilities to make coding with expected cleaner.")
     (home-page "https://tl.tartanllama.xyz/")
     (license license:cc0)))
+
+(define-public atomic-queue
+  (package
+    (name "atomic-queue")
+    (version "1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/max0x7ba/atomic_queue")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ssff73wlvrsk2nma99dmvm0ijyzfr54jk37kxgpb694r7ajc90l"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:configure-flags '("-Dbenchmarks=false")
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (lambda _
+                 (invoke "make" "run_tests")))))
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (copy-recursively "../source/include/atomic_queue"
+                               (string-append (assoc-ref outputs "out")
+                                              "/include/atomic_queue")))))))
+     (native-inputs
+      (list boost
+            pkg-config))
+    (home-page "https://github.com/max0x7ba/atomic_queue")
+    (synopsis "C++ lockless queue")
+    (description
+     "This package contains a C++11 multiple-producer-multiple-consumer lockless
+queues header library based on circular buffer with @code{std::atomic}.")
+    (license license:expat)))
 
 (define-public magic-enum
   (package
