@@ -5023,8 +5023,7 @@ without requiring a page refresh.")
          (add-after 'unpack 'use-urllib3
            (lambda _
              (substitute* "port_for/_download_ranges.py"
-               (("urllib2") "urllib3"))
-             #t)))))
+               (("urllib2") "urllib3")))))))
     (propagated-inputs
      (list python-urllib3))
     (native-inputs
