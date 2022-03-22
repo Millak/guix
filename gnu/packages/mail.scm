@@ -28,7 +28,7 @@
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2018 Gábor Boskovits <boskovits@gmail.com>
 ;;; Copyright © 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2019, 2020, 2021 Tanguy Le Carrour <tanguy@bioneland.org>
+;;; Copyright © 2019–2022 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Justus Winter <justus@sequoia-pgp.org>
 ;;; Copyright © 2020 Eric Brown <ecbrown@ericcbrown.com>
@@ -1493,7 +1493,27 @@ and search library.")
          ;; This python package lives in a subdirectory of the notmuch source
          ;; tree, so chdir into it before building.
          (add-after 'unpack 'enter-python-dir
-           (lambda _ (chdir "bindings/python-cffi"))))))
+           (lambda _ (chdir "bindings/python-cffi")))
+         ;; python-build-system does not invoke the configure script
+         ;; so _notmuch_config.py is missing
+         (add-after 'enter-python-dir 'create-notmuch-config
+           (lambda* (#:key inputs #:allow-other-keys)
+             (with-output-to-file "_notmuch_config.py"
+               (lambda _
+                 (display
+                  (string-append
+                   "NOTMUCH_INCLUDE_DIR="
+                   "'" (dirname (search-input-file inputs "include/notmuch.h")) "'\n"
+                   "NOTMUCH_LIB_DIR="
+                   "'" (dirname (search-input-file inputs "lib/libnotmuch.so")) "'"))))))
+         ;; version.txt is not included in notmuch, so we patch in the version number
+         (add-after 'create-notmuch-config 'patch-setup.py
+           (lambda _
+             (substitute* "setup.py"
+               (("NOTMUCH_VERSION_FILE")
+                "'/dev/null'")
+               (("version=VERSION,")
+                (string-append "version='" ,(package-version this-package) "',"))))))))
     (synopsis "Pythonic bindings for the notmuch mail database using CFFI")
     (license license:gpl3+)))
 
