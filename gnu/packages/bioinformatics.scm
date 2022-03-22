@@ -11813,6 +11813,47 @@ distributions.  Homotypic doublet proportion estimation is achieved by finding
 the sum of squared cell annotation frequencies.")
       (license license:cc0))))
 
+;; There have been no releases.
+(define-public r-cytobackbone
+  (let ((commit "4c1a0a35cc5ae1f8f516127cec92351d96fe26e7")
+        (revision "1"))
+    (package
+      (name "r-cytobackbone")
+      (version (git-version "1.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/tchitchek-lab/CytoBackBone")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0ahiad14zcgdk42xzw5xryic2ibn2l8lkrcdvl2b5sz2js028yb3"))))
+      (properties `((upstream-name . "CytoBackBone")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-flowcore
+             r-flowutils
+             r-fnn
+             r-ggplot2
+             r-preprocesscore))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/tchitchek-lab/CytoBackBone")
+      (synopsis "Merge phenotype information from different cytometric profiles")
+      (description
+       "This package implements an algorithm which increases the number of
+simultaneously measurable markers and in this way helps with study of the
+immune responses.  Thus, the present algorithm, named @code{CytoBackBone},
+allows combining phenotypic information of cells from different cytometric
+profiles obtained from different cytometry panels.  This computational
+approach is based on the principle that each cell has its own phenotypic and
+functional characteristics that can be used as an identification card.
+@code{CytoBackBone} uses a set of predefined markers, that we call the
+backbone, to define this identification card.  The phenotypic information of
+cells with similar identification cards in the different cytometric profiles
+is then merged.")
+      (license license:gpl2))))
+
 (define-public gffread
   ;; We cannot use the tagged release because it is not in sync with gclib.
   ;; See https://github.com/gpertea/gffread/issues/26
