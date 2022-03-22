@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2015, 2017, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2017, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Muriithi Frederick Muriuki <fredmanglis@gmail.com>
 ;;; Copyright © 2017, 2018 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2017 Roel Janssen <roel@gnu.org>
@@ -9,7 +9,7 @@
 ;;; Copyright © 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018 Sou Bunnbu <iyzsong@member.fsf.org>
 ;;; Copyright © 2018, 2019 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
@@ -156,8 +156,8 @@
   ;; Note: the 'update-guix-package.scm' script expects this definition to
   ;; start precisely like this.
   (let ((version "1.3.0")
-        (commit "a27e47f9d1e22dc32bb250cfeef88cfacb930e23")
-        (revision 23))
+        (commit "2fb4304ee7eb7d17d48bee345677ef1f288a0b86")
+        (revision 24))
     (package
       (name "guix")
 
@@ -173,7 +173,7 @@
                       (commit commit)))
                 (sha256
                  (base32
-                  "12jmvagbw05hmmlrb82i0qazhlv7mcfnl4dmknwx3a9hd760g9y1"))
+                  "0pwizj76n9wpzcb4a631gj8yfxfpzq11p5kmmvmv6j4cqhn61dr0"))
                 (file-name (string-append "guix-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -239,6 +239,12 @@ $(prefix)/etc/init.d\n")))
 $(prefix)/etc/openrc\n")))
 
                         (invoke "sh" "bootstrap")))
+                    ,@(if (target-riscv64?)
+                        `((add-after 'unpack 'use-correct-guile-version-for-tests
+                            (lambda _
+                              (substitute* "tests/gexp.scm"
+                                (("2\\.0") "3.0")))))
+                        '())
                     (add-before 'build 'use-host-compressors
                       (lambda* (#:key inputs target #:allow-other-keys)
                         (when target
@@ -1221,13 +1227,13 @@ allow for great power and flexibility.
 (define-public gwl
   (package
     (name "gwl")
-    (version "0.3.0")
+    (version "0.4.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/gwl/gwl-" version ".tar.gz"))
               (sha256
                (base32
-                "1lqif00mq7fsaknbc2gvvcv1j89k311sm44jp9jklbrv0v2lc83n"))))
+                "0sgaaq430l3dqmqqiikfb0ilxnd2cq28626y18kxx5c781qwpys9"))))
     (build-system gnu-build-system)
     (arguments
      `(#:parallel-build? #false ; for reproducibility
@@ -1239,14 +1245,15 @@ allow for great power and flexibility.
      (let ((p (package-input-rewriting
                `((,guile-3.0 . ,guile-3.0-latest))
                #:deep? #false)))
-       `(("guix" ,guix)
-         ("guile" ,guile-3.0-latest)
-         ("guile-commonmark" ,(p guile-commonmark))
-         ("guile-config" ,(p guile-config))
-         ("guile-gcrypt" ,(p guile-gcrypt))
-         ("guile-pfds" ,(p guile-pfds))
-         ("guile-syntax-highlight" ,(p guile-syntax-highlight))
-         ("guile-wisp" ,(p guile-wisp)))))
+       (list guix
+             guile-3.0-latest
+             (p guile-commonmark)
+             (p guile-config)
+             (p guile-drmaa)
+             (p guile-gcrypt)
+             (p guile-pfds)
+             (p guile-syntax-highlight)
+             (p guile-wisp))))
     (home-page "https://workflows.guix.info")
     (synopsis "Workflow management extension for GNU Guix")
     (description "The @dfn{Guix Workflow Language} (GWL) provides an
@@ -1260,8 +1267,8 @@ environments.")
     (license (list license:gpl3+ license:agpl3+ license:silofl1.1))))
 
 (define-public guix-build-coordinator
-  (let ((commit "048c609667f1690fe0a8d8c9b772f9bc6dd412e0")
-        (revision "47"))
+  (let ((commit "f1223225144b866951f13ece7f0583fd826a5705")
+        (revision "50"))
     (package
       (name "guix-build-coordinator")
       (version (git-version "0" revision commit))
@@ -1272,7 +1279,7 @@ environments.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "13sf3gv1jdaq6ncyw4s58zw0l2xjnksqjynlbqzx08i45xpj5yv8"))
+                  "1yw5hzmkhgb2s29wv7bsi3w50ps9zi0zd1n0faxbcfyglsryvgbs"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1359,7 +1366,7 @@ environments.")
              guile-gcrypt
              guix
              guile-prometheus
-             guile-fibers
+             guile-fibers-1.1
              guile-lib
              (first (assoc-ref (package-native-inputs guix) "guile"))))
       (inputs
@@ -1383,7 +1390,7 @@ environments.")
               gnutls)
         (if (hurd-target?)
             '()
-            (list guile-fibers))))
+            (list guile-fibers-1.1))))
       (home-page "https://git.cbaines.net/guix/build-coordinator/")
       (synopsis "Tool to help build derivations")
       (description
@@ -1568,8 +1575,8 @@ in an isolated environment, in separate namespaces.")
     (license license:gpl3+)))
 
 (define-public nar-herder
-  (let ((commit "049dfec287fa948cac6682d0a047bc0ed356f0bf")
-        (revision "1"))
+  (let ((commit "f69da3686583d53974e720a9e66103126631cb69")
+        (revision "4"))
     (package
       (name "nar-herder")
       (version (git-version "0" revision commit))
@@ -1580,7 +1587,7 @@ in an isolated environment, in separate namespaces.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1bkn6avcyp2rcrqaync65b8yn9dvxlkjpk3mdk5nsy527dzhs5ws"))
+                  "0glcmma6gkxna45bv0yki3l13r34ha7v0jrli3vmh4ysnhsnc4ii"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1642,21 +1649,21 @@ in an isolated environment, in separate namespaces.")
              gnutls
 
              ;; Guile libraries are needed here for cross-compilation.
-             guile-3.0
+             (car (assoc-ref (package-native-inputs guix) "guile"))
              guile-json-4
              guile-gcrypt
              guix
-             guile-fibers
+             guile-fibers-1.1
              guile-lib
              guile-sqlite3))
       (inputs
        (list bash-minimal
-             guile-3.0))
+             (car (assoc-ref (package-native-inputs guix) "guile"))))
       (propagated-inputs
        (list guile-json-4
              guile-gcrypt
              guix
-             guile-fibers
+             guile-fibers-1.1
              guile-lib
              guile-sqlite3
              gnutls))
@@ -1789,14 +1796,14 @@ the boot loader configuration.")
 (define-public flatpak
   (package
    (name "flatpak")
-   (version "1.12.3")
+   (version "1.12.7")
    (source
     (origin
      (method url-fetch)
      (uri (string-append "https://github.com/flatpak/flatpak/releases/download/"
                          version "/flatpak-" version ".tar.xz"))
      (sha256
-      (base32 "0sbvywfc57sb58maxins4sg7rfwrm1wcgw68069qbsyp8wrz45fp"))
+      (base32 "05lkpbjiwp69q924i1jfyk5frcqbdbv9kyzbqwm2hy723i9jmdbd"))
      (patches (search-patches "flatpak-fix-path.patch"))))
 
    ;; Wrap 'flatpak' so that GIO_EXTRA_MODULES is set, thereby allowing GIO to

@@ -15,6 +15,7 @@
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
+;;; Copyright © 2022 Felipe Balbi <balbi@kernel.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -835,7 +836,7 @@ maintain the Noto Fonts project.")
 (define-public fcft
   (package
     (name "fcft")
-    (version "2.5.1")
+    (version "3.0.1")
     (home-page "https://codeberg.org/dnkl/fcft")
     (source (origin
               (method git-fetch)
@@ -843,7 +844,7 @@ maintain the Noto Fonts project.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0dn0ic2ddi5qz6nqscsn7nlih67ad8vpclppbqwas6xavdfq6va2"))))
+                "0jxy92ny8b7s7yvz1mr8zpf7l2zsn506fi9f98pvh9k25jprg0cx"))))
     (build-system meson-build-system)
     (native-inputs
      (list check pkg-config scdoc))
@@ -898,11 +899,13 @@ generated list of fallback fonts are checked.")
       ("glib" ,glib "bin")
       ("gobject-introspection" ,gobject-introspection)
       ("pkg-config" ,pkg-config)
+      ("python-wrapper" ,python-wrapper)
       ("vala" ,vala-0.52)
       ("yelp-tools" ,yelp-tools)))
    (inputs
     `(("fonconfig" ,fontconfig)
       ("freetype" ,freetype)
+      ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
       ("gtk+" ,gtk+)
       ("json-glib" ,json-glib)
       ("libsoup" ,libsoup-minimal-2)

@@ -9,6 +9,8 @@
 ;;; Copyright © 2021 Noisytoot <noisytoot@disroot.org>
 ;;; Copyright © 2021 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2022 Vinicius Monego <monego@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -267,6 +269,13 @@ implementation.
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
+               (add-after 'unpack 'relax-requirements
+                 (lambda _
+                   ;; Don't depend on bleeding-edge CFFI, as it is
+                   ;; apparently only needed for Python >= 3.10.
+                   (substitute* "setup.py"
+                     (("cffi>=1\\.15\\.0")
+                      "cffi>=1.0"))))
                (add-after 'unpack 'copy-cmark-gfm
                  (lambda _
                    ;; This package needs the cmark-gfm source files
@@ -289,7 +298,7 @@ implementation.
                    (when tests? (invoke "pytest" "-vv" "tests")))))))
     (native-inputs (list python-pytest))
     (inputs (list cmark-gfm))
-    (propagated-inputs (list python-cffi-1.15))
+    (propagated-inputs (list python-cffi))
     (home-page "https://github.com/theacodes/cmarkgfm")
     (synopsis "Python bindings for GitHub's fork of cmark")
     (description
@@ -439,14 +448,21 @@ with a few extensions.")
 (define-public python-mistletoe
   (package
     (name "python-mistletoe")
-    (version "0.7.2")
+    (version "0.8.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "mistletoe" version))
        (sha256
-        (base32 "18z6hqfnfjqnrcgfgl5pkj9ggf9yx0yyy94azcn1qf7hqn6g3l14"))))
+        (base32 "0h8ydzxlfzmspiz8lcm13qp720kfsxiky0qqnc2mxf4qzm16m326"))))
     (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "python" "-m" "unittest" "discover" "test")))))))
     (home-page "https://github.com/miyuchina/mistletoe")
     (synopsis "Extensible Markdown parser in pure Python")
     (description

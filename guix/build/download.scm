@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2017 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Timothy Sample <samplet@ngyro.com>
@@ -28,6 +28,7 @@
   #:use-module (guix ftp-client)
   #:use-module (guix build utils)
   #:use-module (guix progress)
+  #:use-module (guix memoization)
   #:use-module (rnrs io ports)
   #:use-module (rnrs bytevectors)
   #:use-module (srfi srfi-1)
@@ -177,27 +178,30 @@ name decoding bug described at
   (let ((data (call-with-input-file file get-bytevector-all)))
     (set-certificate-credentials-x509-trust-data! cred data format)))
 
-(define (make-credendials-with-ca-trust-files directory)
-  "Return certificate credentials with X.509 authority certificates read from
+(define make-credentials-with-ca-trust-files
+  (mlambda (directory)
+    "Return certificate credentials with X.509 authority certificates read from
 DIRECTORY.  Those authority certificates are checked when
 'peer-certificate-status' is later called."
-  (let ((cred  (make-certificate-credentials))
-        (files (match (scandir directory (cut string-suffix? ".pem" <>))
-                 ((or #f ())
-                  ;; Some distros provide nothing but bundles (*.crt) under
-                  ;; /etc/ssl/certs, so look for them.
-                  (or (scandir directory (cut string-suffix? ".crt" <>))
-                      '()))
-                 (pem pem))))
-    (for-each (lambda (file)
-                (let ((file (string-append directory "/" file)))
-                  ;; Protect against dangling symlinks.
-                  (when (file-exists? file)
-                    (set-certificate-credentials-x509-trust-file!*
-                     cred file
-                     x509-certificate-format/pem))))
-              files)
-    cred))
+    ;; Memoize the result to avoid scanning all the certificates every time a
+    ;; connection is made.
+    (let ((cred  (make-certificate-credentials))
+          (files (match (scandir directory (cut string-suffix? ".pem" <>))
+                   ((or #f ())
+                    ;; Some distros provide nothing but bundles (*.crt) under
+                    ;; /etc/ssl/certs, so look for them.
+                    (or (scandir directory (cut string-suffix? ".crt" <>))
+                        '()))
+                   (pem pem))))
+      (for-each (lambda (file)
+                  (let ((file (string-append directory "/" file)))
+                    ;; Protect against dangling symlinks.
+                    (when (file-exists? file)
+                      (set-certificate-credentials-x509-trust-file!*
+                       cred file
+                       x509-certificate-format/pem))))
+                files)
+      cred)))
 
 (define (peer-certificate session)
   "Return the certificate of the remote peer in SESSION."
@@ -273,7 +277,7 @@ host name without trailing dot."
 
     (set-session-credentials! session
                               (if (and verify-certificate? ca-certs)
-                                  (make-credendials-with-ca-trust-files
+                                  (make-credentials-with-ca-trust-files
                                    ca-certs)
                                   (make-certificate-credentials)))
 
@@ -431,8 +435,7 @@ ETIMEDOUT error is raised."
                                   #:key
                                   timeout
                                   (verify-certificate? #t))
-  "Like 'open-socket-for-uri', but also handle HTTPS connections.  The
-resulting port must be closed with 'close-connection'.  When
+  "Like 'open-socket-for-uri', but also handle HTTPS connections.  When
 VERIFY-CERTIFICATE? is true, verify HTTPS server certificates."
   ;; Note: Guile 2.2.0's (web client) has a same-named export that's actually
   ;; undefined.  See Guile commit 011669af3b428e5626f7bbf66b11d57d9768c047.

@@ -82,9 +82,6 @@
     "base/third_party/symbolize" ;BSD-3
     "base/third_party/xdg_mime" ;LGPL2.0+ or Academic 2.0
     "base/third_party/xdg_user_dirs" ;Expat
-    ;; XXX: Chromium requires a newer C++ standard library.  Remove this when
-    ;; the default GCC is 9 or later.
-    "buildtools/third_party/libc++" ;ASL2.0, with LLVM exceptions
     "chrome/third_party/mozilla_security_manager" ;MPL-1.1/GPL2+/LGPL2.1+
     "courgette/third_party/bsdiff" ;BSD-2, BSD protection license
     "courgette/third_party/divsufsort" ;Expat
@@ -170,8 +167,6 @@
     "third_party/iccjpeg" ;IJG
     "third_party/inspector_protocol" ;BSD-3
     "third_party/jinja2" ;BSD-3
-    ;; XXX: Unbundle this when switching back to libstdc++.
-    "third_party/jsoncpp" ;Public Domain or Expat
     "third_party/jstemplate" ;ASL2.0
     "third_party/khronos" ;Expat, SGI
     "third_party/leveldatabase" ;BSD-3
@@ -237,9 +232,6 @@
     "third_party/protobuf/third_party/six" ;Expat
     "third_party/pyjson5" ;ASL2.0
     "third_party/qcms" ;Expat
-    ;; XXX: System re2 cannot be used when Chromium uses libc++ because the re2
-    ;; ABI relies on libstdc++ internals.  See build/linux/unbundle/re2.gn.
-    "third_party/re2" ;BSD-3
     "third_party/rnnoise" ;BSD-3
     "third_party/ruy" ;ASL2.0
     "third_party/s2cellid" ;ASL2.0
@@ -318,13 +310,19 @@
   ;; run the Blink performance tests, just remove everything to save ~70MiB.
   '("third_party/blink/perf_tests"))
 
-(define* (arch-patch name hash #:optional (revision %arch-revision))
+(define %chromium-version "98.0.4758.102")
+(define %ungoogled-revision (string-append %chromium-version "-1"))
+(define %debian-revision "debian/90.0.4430.85-1")
+
+(define %ungoogled-origin
   (origin
-    (method url-fetch)
-    (uri (string-append "https://raw.githubusercontent.com/archlinux"
-                        "/svntogit-packages/" revision "/trunk/" name))
-    (file-name (string-append "ungoogled-chromium-" name))
-    (sha256 (base32 hash))))
+    (method git-fetch)
+    (uri (git-reference (url "https://github.com/Eloston/ungoogled-chromium")
+                        (commit %ungoogled-revision)))
+    (file-name (git-file-name "ungoogled-chromium" %ungoogled-revision))
+    (sha256
+     (base32
+      "0baz90fnzpldw0wwibhmh4pmki7vlpci9b9vvifa0rj5cwckl8a0"))))
 
 (define* (debian-patch name hash #:optional (revision %debian-revision))
   (origin
@@ -336,32 +334,15 @@
                   (string-append "ungoogled-chromium-" category "-" name))))
     (sha256 (base32 hash))))
 
-(define %chromium-version "97.0.4692.99")
-(define %ungoogled-revision (string-append %chromium-version "-1"))
-(define %arch-revision "db2157b84924ce84201a8245e68a02f7d55f6491")
-(define %debian-revision "debian/90.0.4430.85-1")
-
-(define %arch-patches
-  (list (arch-patch "chromium-94-ffmpeg-roll.patch"
-                    "1kiskdjr9v3d491sq0wdjxliflh2vq5700gbygcixayj8gkvdb2n")))
-
 (define %debian-patches
   (list (debian-patch "fixes/nomerge.patch"
                       "0lybs2b5gk08j8cr6vjrs9d3drd7qfw013z2r0y00by8dnpm74i3")
+        (debian-patch "system/jsoncpp.patch"
+                      "16lvhci10hz0q9axc6p921b95a76kbzcla5cl81czxzfwnynr1w5")
         (debian-patch "system/zlib.patch"
                       "0j313bd3q8qc065j60x97dckrfgbwl4qxc8jhz33iihvv4lwziwv")
         (debian-patch "system/openjpeg.patch"
                       "048405xh84pys0kky81vlqhaxjyxvcql4py217z01qxiv991zxaj")))
-
-(define %ungoogled-origin
-  (origin
-    (method git-fetch)
-    (uri (git-reference (url "https://github.com/Eloston/ungoogled-chromium")
-                        (commit %ungoogled-revision)))
-    (file-name (git-file-name "ungoogled-chromium" %ungoogled-revision))
-    (sha256
-     (base32
-      "1jgxpp3wl24hq39291mgmdwcxbarxg4rpa6il53k8z3rf6gd2s4i"))))
 
 (define %guix-patches
   (list (local-file
@@ -370,9 +351,6 @@
         (local-file
          (assume-valid-file-name
           (search-patch "ungoogled-chromium-RUNPATH.patch")))
-        (local-file
-         (assume-valid-file-name
-          (search-patch "ungoogled-chromium-accelerated-video-decode.patch")))
         (local-file
          (assume-valid-file-name
           (search-patch "ungoogled-chromium-ffmpeg-compat.patch")))
@@ -405,13 +383,6 @@
                       (invoke "patch" "-p1" "--force" "--input"
                               patch "--no-backup-if-mismatch"))
                     (append '#+%debian-patches '#+%guix-patches))
-
-          ;; These patches are "reversed"; i.e. they represent changes
-          ;; already present in the source, but which should be reverted.
-          (for-each (lambda (patch)
-                      (invoke "patch" "-Rp1" "--force" "--input"
-                              patch "--no-backup-if-mismatch"))
-                    '#$%arch-patches)
 
           (with-directory-excursion #+%ungoogled-origin
             (format #t "Ungooglifying...~%")
@@ -449,7 +420,7 @@
                   "--system-libraries" "ffmpeg" "flac" "fontconfig"
                   "freetype" "harfbuzz-ng" "icu" "libdrm" "libevent"
                   "libjpeg" "libpng" "libwebp" "libxml" "libxslt"
-                  "openh264" "opus" "zlib")))))
+                  "openh264" "opus" "re2" "zlib")))))
 
 (define opus+custom
   (package/inherit opus
@@ -480,7 +451,7 @@
                                   %chromium-version ".tar.xz"))
               (sha256
                (base32
-                "1fpc07zvashaqqalwn7wxnswxclrxvhjrxy1rzr6gcq5awhaw6y9"))
+                "0gpk13k8pfk65vinlmkg3p7mm0qb8z35psajkxzx0v3n2bllfns1"))
               (modules '((guix build utils)))
               (snippet (force ungoogled-chromium-snippet))))
     (build-system gnu-build-system)
@@ -501,13 +472,11 @@
               ;; a developer build.
               "is_official_build=true"
               "clang_use_chrome_plugins=false"
-              "is_cfi=false"            ;requires ThinLTO
-              "use_thin_lto=false"      ;XXX lld segfaults
+              "use_custom_libcxx=false"
               "chrome_pgo_phase=0"
               "use_sysroot=false"
               "goma_dir=\"\""
               "enable_nacl=false"
-              "enable_nacl_nonsfi=false"
               "use_unofficial_version_number=false"
               "treat_warnings_as_errors=false"
               "use_official_google_api_keys=false"
@@ -577,7 +546,11 @@
               "rtc_use_pipewire=true"
               "rtc_link_pipewire=true"
               ;; Don't use bundled sources.
-              "rtc_build_json=true"  ;FIXME: libc++ std::string ABI difference
+              "rtc_build_json=false"
+              (string-append "rtc_jsoncpp_root=\""
+                             (search-input-directory %build-inputs
+                                                     "include/json")
+                             "\"")
               "rtc_build_libevent=false"
               ;; XXX: Use the bundled libvpx for WebRTC because unbundling
               ;; currently fails (see above), and the versions must match.
@@ -622,6 +595,15 @@
                                "#include \"opus/opus_types.h\"")))
                           (find-files (string-append "third_party/webrtc/modules"
                                                      "/audio_coding/codecs/opus")))
+
+                (substitute* "third_party/webrtc/rtc_base/strings/json.h"
+                  (("#include \"third_party/jsoncpp/")
+                   "#include \"json/"))
+
+                ;; This can be removed for M99.
+                (substitute* "media/gpu/chromeos/video_decoder_pipeline.cc"
+                  (("third_party/libdrm/src/include/drm/drm_fourcc\\.h")
+                   "libdrm/drm_fourcc.h"))
 
                 ;; Many files try to include ICU headers from "third_party/icu/...".
                 ;; Remove the "third_party/" prefix to use system headers instead.
@@ -668,7 +650,6 @@
                 (substitute*
                     '("ui/ozone/platform/x11/gl_ozone_glx.cc"
                       "ui/ozone/common/egl_util.cc"
-                      "ui/gl/init/gl_initializer_linux_x11.cc"
                       "third_party/angle/src/libANGLE/renderer/gl/glx\
 /FunctionsGLX.cpp")
                   (("libGL\\.so\\.1")
@@ -683,18 +664,6 @@
                                                  "include/c++"))
                     (node (search-input-file (or native-inputs inputs)
                                              "/bin/node")))
-                ;; Remove the default compiler from CPLUS_INCLUDE_PATH to
-                ;; prevent header conflict with the bundled libcxx.
-                (setenv "CPLUS_INCLUDE_PATH"
-                        (string-join
-                         (delete c++
-                                 (string-split (getenv "CPLUS_INCLUDE_PATH")
-                                               #\:))
-                         ":"))
-                (format #t
-                        "environment variable `CPLUS_INCLUDE_PATH' changed to ~a~%"
-                        (getenv "CPLUS_INCLUDE_PATH"))
-
                 ;; Define the GN toolchain.
                 (setenv "AR" "llvm-ar") (setenv "NM" "llvm-nm")
                 (setenv "CC" "clang") (setenv "CXX" "clang++")
@@ -766,7 +735,9 @@
                      (resources      (string-append lib "/resources"))
                      (preferences
                       ;; This file contains defaults for new user profiles.
-                      #$(local-file "aux-files/chromium/master-preferences.json"))
+                      #$(local-file
+                         (search-auxiliary-file
+                          "chromium/master-preferences.json")))
                      (gtk+           (assoc-ref inputs "gtk+"))
                      (xdg-utils      (assoc-ref inputs "xdg-utils")))
 
@@ -846,6 +817,7 @@
            gtk+
            harfbuzz-3.0
            icu4c
+           jsoncpp
            lcms
            libevent
            libffi
@@ -879,6 +851,7 @@
            pciutils
            pipewire-0.3
            pulseaudio
+           re2
            snappy
            speech-dispatcher
            eudev

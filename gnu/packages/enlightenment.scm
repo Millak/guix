@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Tomáš Čech <sleep_walker@suse.cz>
 ;;; Copyright © 2015 Daniel Pimentel <d4n1@member.fsf.org>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Timo Eisenmann <eisenmann@fn.de>
@@ -48,6 +48,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages hardware)
   #:use-module (gnu packages ibus)
   #:use-module (gnu packages image)
   #:use-module (gnu packages libunwind)
@@ -70,7 +71,7 @@
 (define-public efl
   (package
     (name "efl")
-    (version "1.26.1")
+    (version "1.26.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -78,7 +79,7 @@
                     version ".tar.xz"))
               (sha256
                (base32
-                "0hm6i1f2g4mwj726rc6na38xhys1plbv9swrlc9hrpa87mz6gac6"))))
+                "071h0pscbd8g341yy5rz9mk1xn8yhryldhl6mmr1y6lafaycyy99"))))
     (build-system meson-build-system)
     (native-inputs
      `(("check" ,check)
@@ -93,11 +94,7 @@
        ("ibus" ,ibus)
        ("mesa" ,mesa)
        ("libraw" ,libraw)
-       ;; Only enable the optional SVG support on x86_64, as this is the only
-       ;; architecture where librsvg can be built.
-       ,@(if (target-x86-64?)
-             `(("librsvg" ,librsvg))
-             '())
+       ("librsvg" ,(librsvg-for-system))
        ("libspectre" ,libspectre)
        ("libtiff" ,libtiff)
        ("libxau" ,libxau)
@@ -151,11 +148,6 @@
          "-Dmount-path=/run/setuid-programs/mount"
          "-Dunmount-path=/run/setuid-programs/umount"
          "-Dnetwork-backend=connman"
-         ;; Add 'rsvg' to the default list (json, avif, heif) of disabled loaders
-         ;; unless librsvg is available.
-         ,,@(if (target-x86-64?)
-                '()
-                (list "-Devas-loaders-disabler=json,avif,heif,rsvg"))
          ;; For Wayland.
          "-Dwl=true"
          "-Ddrm=true")
@@ -297,7 +289,7 @@ Libraries with some extra bells and whistles.")
 (define-public enlightenment
   (package
     (name "enlightenment")
-    (version "0.25.1")
+    (version "0.25.3")
     (source (origin
               (method url-fetch)
               (uri
@@ -305,7 +297,7 @@ Libraries with some extra bells and whistles.")
                               "enlightenment/enlightenment-" version ".tar.xz"))
               (sha256
                (base32
-                "0i1424vsc929h36hx04646pbrjiya6nc1nqr6s15xwvfv7imzw1c"))
+                "1xngwixp0cckfq3jhrdmmk6zj67125amr7g6xwc6l89pnpmlkz9p"))
               (patches (search-patches "enlightenment-fix-setuid-path.patch"))))
     (build-system meson-build-system)
     (arguments
@@ -322,6 +314,7 @@ Libraries with some extra bells and whistles.")
                    (setxkbmap (assoc-ref inputs "setxkbmap"))
                    (libc      (assoc-ref inputs "libc"))
                    (bc        (assoc-ref inputs "bc"))
+                   (ddcutil   (assoc-ref inputs "ddcutil"))
                    (efl       (assoc-ref inputs "efl")))
                ;; We need to patch the path to 'base.lst' to be able
                ;; to switch the keyboard layout in E.
@@ -347,6 +340,9 @@ Libraries with some extra bells and whistles.")
                                  "/run/current-system/profile/sbin")))
                (substitute* "src/modules/everything/evry_plug_calc.c"
                  (("bc -l") (string-append bc "/bin/bc -l")))
+               (substitute* "src/bin/system/e_system_ddc.c"
+                 (("libddcutil\\.so\\.?" libddcutil)
+                  (string-append ddcutil "/lib/" libddcutil)))
                (substitute* "data/etc/meson.build"
                  (("/bin/mount") "/run/setuid-programs/mount")
                  (("/bin/umount") "/run/setuid-programs/umount")
@@ -361,6 +357,7 @@ Libraries with some extra bells and whistles.")
        ("bc" ,bc)
        ("bluez" ,bluez)
        ("dbus" ,dbus)
+       ("ddcutil" ,ddcutil)
        ("freetype" ,freetype)
        ("libdrm" ,libdrm)
        ("libexif" ,libexif)

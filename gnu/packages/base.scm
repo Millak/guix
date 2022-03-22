@@ -13,7 +13,7 @@
 ;;; Copyright © 2017, 2018, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2018, 2019, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Vitaliy Shatrov <D0dyBo0D0dyBo0@protonmail.com>
 ;;; Copyright © 2020 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2021 Leo Le Bouter <lle-bout@zaclys.net>
@@ -46,6 +46,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages ed)
+  #:use-module (gnu packages gawk)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages multiprecision)
@@ -84,14 +85,14 @@
 (define-public hello
   (package
     (name "hello")
-    (version "2.11")
+    (version "2.12")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/hello/hello-" version
                                   ".tar.gz"))
               (sha256
                (base32
-                "1g84a3hqs4pgx3yzs99cysv3iq440ncdw77bf03fsi1w5mby174c"))))
+                "1ayhp9v4m4rdhjmnl2bq3cibrbqqkgjbl3s7yk2nhlh8vj3ay16g"))))
     (build-system gnu-build-system)
     (synopsis "Hello, GNU world: An example GNU package")
     (description
@@ -1170,7 +1171,8 @@ test environments.")
 (define-public glibc-locales
   (make-glibc-locales glibc))
 (define-public glibc-utf8-locales
-  (make-glibc-utf8-locales glibc))
+  (hidden-package
+   (make-glibc-utf8-locales glibc)))
 
 ;; Packages provided to ease use of binaries linked against the previous libc.
 (define-public glibc-locales-2.29

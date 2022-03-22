@@ -33,6 +33,7 @@
   #:use-module (gnu packages admin)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages connman)
   #:use-module (gnu packages cryptsetup)
   #:use-module (gnu packages disk)
@@ -42,6 +43,7 @@
   #:autoload   (gnu packages gnupg) (guile-gcrypt)
   #:use-module (gnu packages iso-codes)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages nano)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages package-management)
   #:use-module (gnu packages tls)
@@ -333,9 +335,11 @@ selected keymap."
                        ntfs-3g ;mkfs.ntfs
                        xfsprogs ;mkfs.xfs
                        kbd ;chvt
-                       guix ;guix system init call
                        util-linux ;mkwap
+                       nano
                        shadow
+                       tar ;dump
+                       gzip ;dump
                        coreutils)))
         (with-output-to-port (%make-void-port "w")
           (lambda ()
@@ -352,7 +356,8 @@ selected keymap."
     ;; packages …), etc. modules.
     (with-extensions (list guile-gcrypt guile-newt
                            guile-parted guile-bytestructures
-                           guile-json-3 guile-git guix gnutls)
+                           guile-json-3 guile-git guile-webutils
+                           guix gnutls)
       (with-imported-modules `(,@(source-module-closure
                                   `(,@modules
                                     (gnu services herd)
@@ -363,6 +368,7 @@ selected keymap."
             (use-modules (gnu installer record)
                          (gnu installer keymap)
                          (gnu installer steps)
+                         (gnu installer dump)
                          (gnu installer final)
                          (gnu installer hostname)
                          (gnu installer locale)
@@ -379,7 +385,8 @@ selected keymap."
                          (guix build utils)
                          ((system repl debug)
                           #:select (terminal-width))
-                         (ice-9 match))
+                         (ice-9 match)
+                         (ice-9 textual-ports))
 
             ;; Initialize gettext support so that installers can use
             ;; (guix i18n) module.
@@ -407,43 +414,56 @@ selected keymap."
             ;; verbose.
             (terminal-width 200)
 
-            (let* ((current-installer newt-installer)
-                   (steps (#$steps current-installer)))
-              ((installer-init current-installer))
+            (define current-installer newt-installer)
+            (define steps (#$steps current-installer))
 
-              (catch #t
-                (lambda ()
-                  (define results
-                    (run-installer-steps
-                     #:rewind-strategy 'menu
-                     #:menu-proc (installer-menu-page current-installer)
-                     #:steps steps))
+            (dynamic-wind
+              (installer-init current-installer)
+              (lambda ()
+                (parameterize
+                    ((run-command-in-installer
+                      (installer-run-command current-installer)))
+                  (catch #t
+                    (lambda ()
+                      (define results
+                        (run-installer-steps
+                         #:rewind-strategy 'menu
+                         #:menu-proc (installer-menu-page current-installer)
+                         #:steps steps))
 
-                  (match (result-step results 'final)
-                    ('success
-                     ;; We did it!  Let's reboot!
-                     (sync)
-                     (stop-service 'root))
-                    (_
-                     ;; The installation failed, exit so that it is restarted
-                     ;; by login.
-                     #f)))
-                (const #f)
-                (lambda (key . args)
-                  (syslog "crashing due to uncaught exception: ~s ~s~%"
-                          key args)
-                  (let ((error-file "/tmp/last-installer-error"))
-                    (call-with-output-file error-file
-                      (lambda (port)
-                        (display-backtrace (make-stack #t) port)
-                        (print-exception port
-                                         (stack-ref (make-stack #t) 1)
-                                         key args)))
-                    ((installer-exit-error current-installer)
-                     error-file key args))
-                  (primitive-exit 1)))
+                      (match (result-step results 'final)
+                        ('success
+                         ;; We did it!  Let's reboot!
+                         (sync)
+                         (stop-service 'root))
+                        (_
+                         ;; The installation failed, exit so that it is
+                         ;; restarted by login.
+                         #f)))
+                    (const #f)
+                    (lambda (key . args)
+                      (installer-log-line "crashing due to uncaught exception: ~s ~s"
+                                          key args)
+                      (define dump-dir
+                        (prepare-dump key args #:result %current-result))
+                      (define action
+                        ((installer-exit-error current-installer)
+                         (get-string-all
+                          (open-input-file
+                           (string-append dump-dir "/installer-backtrace")))))
+                      (match action
+                        ('dump
+                         (let* ((dump-files
+                                 ((installer-dump-page current-installer)
+                                  dump-dir))
+                                (dump-archive
+                                 (make-dump dump-dir dump-files)))
+                           ((installer-report-page current-installer)
+                            dump-archive)))
+                        (_ #f))
+                      (exit 1)))))
 
-              ((installer-exit current-installer)))))))
+              (installer-exit current-installer))))))
 
   (program-file
    "installer"

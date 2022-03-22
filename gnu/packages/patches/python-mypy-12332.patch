@@ -1,0 +1,68 @@
+From 518c864805dd93e62d59439e665a0ce9d6778419 Mon Sep 17 00:00:00 2001
+From: Ekin Dursun <ekindursun@gmail.com>
+Date: Thu, 10 Mar 2022 22:06:48 +0300
+Subject: [PATCH] mypyc: Fix overflow in id function (CPyTagged_Id)
+
+In CPython, the id of an object is its address. It's computed by
+converting the pointer to an unsigned integer (PyLong_FromVoidPtr). A
+similar logic is present here, pointer is converted to a Py_ssize_t and
+CPyTagged_FromSsize_t is called with that integer.
+
+There is a problem with that approach: Py_ssize_t cannot hold every
+pointer value. Sometimes overflow happens and CPyTagged_FromSsize_t is
+called with a negative integer.
+
+With the new approach, the number is checked: If it fits in a
+Py_ssize_t, CPyTagged_FromSsize_t is called. If not, it is directly
+converted to a PyObject using PyLong_FromVoidPtr.
+---
+ mypyc/lib-rt/CPy.h      | 1 +
+ mypyc/lib-rt/int_ops.c  | 9 +++++++++
+ mypyc/lib-rt/misc_ops.c | 2 +-
+ 3 files changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/mypyc/lib-rt/CPy.h b/mypyc/lib-rt/CPy.h
+index 987819154ab..9f5ae52d4e4 100644
+--- a/mypyc/lib-rt/CPy.h
++++ b/mypyc/lib-rt/CPy.h
+@@ -121,6 +121,7 @@ static inline size_t CPy_FindAttrOffset(PyTypeObject *trait, CPyVTableItem *vtab
+ 
+ 
+ CPyTagged CPyTagged_FromSsize_t(Py_ssize_t value);
++CPyTagged CPyTagged_FromVoidPtr(void *ptr);
+ CPyTagged CPyTagged_FromObject(PyObject *object);
+ CPyTagged CPyTagged_StealFromObject(PyObject *object);
+ CPyTagged CPyTagged_BorrowFromObject(PyObject *object);
+diff --git a/mypyc/lib-rt/int_ops.c b/mypyc/lib-rt/int_ops.c
+index 1275f2c1057..edf06314161 100644
+--- a/mypyc/lib-rt/int_ops.c
++++ b/mypyc/lib-rt/int_ops.c
+@@ -26,6 +26,15 @@ CPyTagged CPyTagged_FromSsize_t(Py_ssize_t value) {
+     }
+ }
+ 
++CPyTagged CPyTagged_FromVoidPtr(void *ptr) {
++    if ((uintptr_t)ptr > PY_SSIZE_T_MAX) {
++        PyObject *object = PyLong_FromVoidPtr(ptr);
++        return ((CPyTagged)object) | CPY_INT_TAG;
++    } else {
++        return CPyTagged_FromSsize_t((Py_ssize_t)ptr);
++    }
++}
++
+ CPyTagged CPyTagged_FromObject(PyObject *object) {
+     int overflow;
+     // The overflow check knows about CPyTagged's width
+diff --git a/mypyc/lib-rt/misc_ops.c b/mypyc/lib-rt/misc_ops.c
+index cebd1cf997f..dcce89d9072 100644
+--- a/mypyc/lib-rt/misc_ops.c
++++ b/mypyc/lib-rt/misc_ops.c
+@@ -437,7 +437,7 @@ CPyPickle_GetState(PyObject *obj)
+ }
+ 
+ CPyTagged CPyTagged_Id(PyObject *o) {
+-    return CPyTagged_FromSsize_t((Py_ssize_t)o);
++    return CPyTagged_FromVoidPtr(o);
+ }
+ 
+ #define MAX_INT_CHARS 22

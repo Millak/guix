@@ -1106,7 +1106,7 @@ several different time zones.")
 (define-public xfce4-notifyd
   (package
     (name "xfce4-notifyd")
-    (version "0.6.2")
+    (version "0.6.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/"
@@ -1114,7 +1114,7 @@ several different time zones.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "0ib5s7kjbr9sy8nh89nfcc4w6qplacnk4s92iycijy2wcv389aqr"))))
+                "17w5j3cwxlza7p3clvm7sp3vfacyi4dbn2dy58ph8q6lmsaziaan"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list intltool pkg-config))
@@ -1308,7 +1308,7 @@ A plugin for the Xfce panel is also available.")
 (define-public xfce4-cpugraph-plugin
   (package
    (name "xfce4-cpugraph-plugin")
-   (version "1.2.5")
+   (version "1.2.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
@@ -1317,7 +1317,7 @@ A plugin for the Xfce panel is also available.")
                                   "/xfce4-cpugraph-plugin-" version ".tar.bz2"))
               (sha256
                (base32
-                "1c51qf93lr6kr2g4nil21rj1h3h5kp3k50n9hcxvcy9wz3bxpxn2"))))
+                "16dg8xdwzyy70sj8zkms3vnp0wdhmqbrq4fld1aah90qgkslcckp"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool pkg-config))
@@ -1441,7 +1441,7 @@ precedence rules, and the following functions and common constants.")
 (define-public xfce4-cpufreq-plugin
   (package
    (name "xfce4-cpufreq-plugin")
-   (version "1.2.4")
+   (version "1.2.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
@@ -1450,7 +1450,7 @@ precedence rules, and the following functions and common constants.")
                                   "/xfce4-cpufreq-plugin-" version ".tar.bz2"))
               (sha256
                (base32
-                "17kzy156xqnbk4apskg005p7r09q7zb8crifad5mbawc7ysihll1"))))
+                "1365pj6viij492hq4mw34w4390sfdrn94rdgm2r1f6gma1hzpm2s"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool pkg-config))

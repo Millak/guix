@@ -1,5 +1,5 @@
 # GNU Guix --- Functional package management for GNU
-# Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+# Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
 # Copyright © 2013 Andreas Enge <andreas@enge.fr>
 # Copyright © 2015, 2017 Alex Kost <alezost@gmail.com>
 # Copyright © 2016, 2018 Mathieu Lirzin <mthl@gnu.org>
@@ -380,6 +380,10 @@ AUX_FILES =						\
   gnu/packages/aux-files/chromium/master-preferences.json		\
   gnu/packages/aux-files/emacs/guix-emacs.el		\
   gnu/packages/aux-files/guix.vim			\
+  gnu/packages/aux-files/linux-libre/5.16-arm.conf	\
+  gnu/packages/aux-files/linux-libre/5.16-arm64.conf	\
+  gnu/packages/aux-files/linux-libre/5.16-i686.conf	\
+  gnu/packages/aux-files/linux-libre/5.16-x86_64.conf	\
   gnu/packages/aux-files/linux-libre/5.15-arm.conf	\
   gnu/packages/aux-files/linux-libre/5.15-arm64.conf	\
   gnu/packages/aux-files/linux-libre/5.15-i686.conf	\
@@ -483,6 +487,7 @@ SCM_TESTS =					\
   tests/gremlin.scm				\
   tests/hackage.scm				\
   tests/home-import.scm				\
+  tests/http-client.scm				\
   tests/import-git.scm				\
   tests/import-github.scm			\
   tests/import-utils.scm			\
@@ -1023,10 +1028,12 @@ assert-no-store-file-names:
 	  exit 1 ;								\
 	fi
 
-# Make sure important substitutes are available.
+# Make sure important substitutes are available.  Check only the primary
+# server so that '--display-missing' doesn't print two lists.
 assert-binaries-available: $(GOBJECTS)
 	$(AM_V_at)$(top_builddir)/pre-inst-env				\
 	  guix weather -m "$(top_srcdir)/etc/release-manifest.scm"	\
+	                --substitute-urls="https://ci.guix.gnu.org"	\
 	                --display-missing
 
 # Make sure the final inputs don't refer to bootstrap tools.

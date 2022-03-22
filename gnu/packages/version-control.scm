@@ -15,7 +15,7 @@
 ;;; Copyright © 2017 Vasile Dumitrascu <va511e@yahoo.com>
 ;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017, 2020 EuAndreh <eu@euandre.org>
-;;; Copyright © 2017, 2018, 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2017, 2018, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2017, 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018 Sou Bunnbu <iyzsong@member.fsf.org>
@@ -29,7 +29,7 @@
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 John D. Boy <jboy@bius.moe>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
@@ -43,6 +43,7 @@
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
+;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -63,6 +64,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix utils)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix hg-download)
@@ -1560,7 +1562,7 @@ control to Git repositories.")
 (define-public gitile
   (package
     (name "gitile")
-    (version "0.1.3")
+    (version "0.1.4")
     (source
      (origin
        (method git-fetch)
@@ -1569,7 +1571,7 @@ control to Git repositories.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fnmgrrsdc24mvicj2gkv3vasag7h5x27xc12w55i0id9vw7k9sw"))))
+        (base32 "1wb1rajcrzdqjncv40s7hjsnvlh1gq4z9pn9gf210g1iy35vimmz"))))
     (build-system gnu-build-system)
     (arguments
      `(#:imported-modules ((guix build guile-build-system)
@@ -1626,7 +1628,7 @@ visualize your public Git repositories on a web interface.")
 (define-public pre-commit
   (package
     (name "pre-commit")
-    (version "2.16.0")
+    (version "2.17.0")
     (source
      (origin
        (method git-fetch)               ; no tests in PyPI release
@@ -1635,7 +1637,7 @@ visualize your public Git repositories on a web interface.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1sf9mqpiv3pgzi6aar7xfna9v7n63lgm7d7b24fhni0jxn56384b"))))
+        (base32 "1y4h6zrypxgm9j8q66hcx5cs4q2dkh9schzn2nsdmdqad19356s9"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1878,14 +1880,14 @@ can be used for signing.")
 (define-public neon
   (package
     (name "neon")
-    (version "0.31.2")
+    (version "0.32.2")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://notroj.github.io/neon/neon-"
                                  version ".tar.gz"))
              (sha256
               (base32
-               "0y46dbhiblcvg8k41bdydr3fivghwk73z040ki5825d24ynf67ng"))))
+               "11mj5zpp317dmds874wfwcpgij9i3scaahdi1xfzr5b2ii36crcq"))))
     (build-system gnu-build-system)
     (native-inputs
      (list perl pkg-config))
@@ -2010,15 +2012,14 @@ projects, from individuals to large-scale enterprise operations.")
 (define-public rcs
   (package
     (name "rcs")
-    (version "5.10.0")
+    (version "5.10.1")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnu/rcs/rcs-"
-                                 version ".tar.xz"))
+                                 version ".tar.lz"))
              (sha256
               (base32
-               "1if5pa4iip2p70gljm54nggfdnsfjxa4cqz8fpj07lvsijary39s"))
-             (patches (search-patches "rcs-5.10.0-no-stdin.patch"))))
+               "1iac4d1dhsfy5zb0n3p605pihdq702v06r4g8vi8b2saf88gxpa3"))))
     (build-system gnu-build-system)
     (arguments `(#:phases
                  (modify-phases %standard-phases
@@ -2030,7 +2031,7 @@ projects, from individuals to large-scale enterprise operations.")
                          (chmod "src/rcsfreeze" #o755)
                          (install-file "src/rcsfreeze" bin)
                          (install-file "man/rcsfreeze.1" man1)))))))
-    (native-inputs (list ed))
+    (native-inputs (list ed lzip))
     (home-page "https://www.gnu.org/software/rcs/")
     (synopsis "Per-file local revision control system")
     (description
@@ -2572,7 +2573,14 @@ based on a manifest file published by servers.")
              (("~=") ">="))
            #t))))
     (build-system python-build-system)
-    (arguments '(#:tests? #f))          ; No tests.
+    (arguments
+     (list #:tests? #f                  ;no tests
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; XXX: dnspython attempts to read /etc/resolv.conf when loading
+               ;; resolver.py, which breaks the sanity check in dependent
+               ;; packages.  This should rather be fixed in dnspython.
+               (delete 'sanity-check))))
     (inputs
      (list python-dkimpy python-dnspython python-requests))
     (home-page "https://git.kernel.org/pub/scm/utils/b4/b4.git")

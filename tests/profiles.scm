@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Alex Kost <alezost@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -302,7 +302,8 @@
                                 (call-with-output-file
                                     (string-append #$output "/bin/guile")
                                   (lambda (port)
-                                    (display "Fake!\n" port))))))))
+                                    (display "Fake!\n" port))))
+                            #:guile %bootstrap-guile))))
        (guile      (package->derivation %bootstrap-guile))
        (drv        (profile-derivation (manifest (list entry1 entry2))
                                        #:hooks '()

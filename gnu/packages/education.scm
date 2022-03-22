@@ -142,7 +142,7 @@ of categories with some of the activities available in that category.
 (define-public gcompris-qt
   (package
     (name "gcompris-qt")
-    (version "2.1")
+    (version "2.3")
     (source
      (origin
        (method url-fetch)
@@ -150,7 +150,7 @@ of categories with some of the activities available in that category.
              "https://download.kde.org/stable/gcompris/qt/src/gcompris-qt-"
              version ".tar.xz"))
        (sha256
-        (base32 "02j3xv8sa3s5g50zs15wy2giabmhg1q0b8ar73q3fpwvxkz9hcwn"))))
+        (base32 "0qncknaaf168anh4cjp7dqz6qzgx948kvgr32j2vga8mjakqn1aj"))))
     (build-system qt-build-system)
     (arguments
      `(#:phases
@@ -869,7 +869,7 @@ stored and user can review his performance in any time.")
        ("python-pyaudio" ,python-pyaudio)
        ;; `python-pyqtwebengine' must precede `python-pyqt' in PYTHONPATH.
        ("python-pyqtwebengine" ,python-pyqtwebengine)
-       ("python-pyqt" ,python-pyqt)
+       ("python-pyqt" ,python-pyqt-without-qtwebkit)
        ("python-requests" ,python-requests)
        ("python-send2trash" ,python-send2trash)
        ("python-sip" ,python-sip)

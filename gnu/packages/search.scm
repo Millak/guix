@@ -9,6 +9,7 @@
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Alexandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2021, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -243,16 +244,15 @@ command line tool for interacting with libtocc.")
        (modify-phases %standard-phases
          (add-after 'unpack 'relax-requirements
            (lambda _
-             ;; These packages are outdated in Guix at the time of packaging.
-             ;; When they are updated, remove corresponding substitutions.
              ;; Tests can run after build with 'searx-checker' tool in /bin.
+             ;; allow using a higher dependency version
              (substitute* "requirements.txt"
-               (("flask-babel==2.0.0") "flask-babel>=1.0.0")
-               (("jinja2==2.11.3") "jinja2>=2.11.2")
-               (("lxml==4.6.3") "lxml>=4.4.2")
-               (("pygments==2.8.0") "pygments>=2.7.3")
-               (("requests\\[socks\\]==2.25.1") "requests>=2.25")
-               (("==") ">=")))))))
+               (("==") ">="))))
+         (add-before 'sanity-check 'set-debug
+           (lambda _
+             ;; the user will need to change the secret key
+             ;; https://github.com/searx/searx/issues/2278
+             (setenv "SEARX_DEBUG" "1"))))))
     (propagated-inputs
      (list python-babel
            python-certifi
@@ -299,7 +299,7 @@ for parsing HTML files.")
 (define-public fsearch
   (package
     (name "fsearch")
-    (version "0.1.1")
+    (version "0.1.2")
     (source
      (origin
        (method git-fetch)
@@ -308,7 +308,7 @@ for parsing HTML files.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vfwnx83zs0jymmzjww1k597sj3wvc9xq0nbslwci58rjpk3d0lg"))))
+        (base32 "1qbayssdj5pgc4s3ncf7snncp003g8yklirzj1bjc2kxp5y0igv7"))))
     (build-system meson-build-system)
     (native-inputs
      (list autoconf
@@ -475,14 +475,14 @@ conflict with slocate compatibility.")
 (define-public plocate
   (package
     (name "plocate")
-    (version "1.1.13")
+    (version "1.1.15")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://plocate.sesse.net/download/"
                            "plocate-" version ".tar.gz"))
        (sha256
-        (base32 "16lpiirjmj4mrdj5kkjv7rikkgjx3i64ac0sl3lz1rshflhxgqww"))))
+        (base32 "0l7igd81acsha5l5mv2rv7n9j1bc4f6ys4hfvs3ii0cbv9a5k1fi"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags

@@ -46,9 +46,7 @@
 (define-public syncthing
   (package
     (name "syncthing")
-    (version "1.18.6")
-    ; XXX After the go-build-system can use "Go modules", stop using bundled
-    ; dependencies for Syncthing.
+    (version "1.19.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/syncthing/syncthing"
@@ -56,7 +54,7 @@
                                   "/syncthing-source-v" version ".tar.gz"))
               (sha256
                (base32
-                "0hlyk2nvsnf4am1vqc4zl91acf2rhpr1gy4gppk2aa5x85h9qisc"))))
+                "09silpbpciqzpr4y4ycpkxrwi9zf90xgd13844m145134cpyrigz"))))
     (build-system go-build-system)
     ;; The primary Syncthing executable goes to "out", while the auxiliary
     ;; server programs and utility tools go to "utils".  This reduces the size
@@ -137,6 +135,9 @@
 supports a wide variety of computing platforms.  It uses the Block Exchange
 Protocol.")
     (home-page "https://github.com/syncthing/syncthing")
+    (properties
+     '((release-monitoring-url . "https://github.com/syncthing/syncthing/releases")
+       (upstream-name . "syncthing-source")))
     (license mpl2.0)))
 
 (define-public syncthing-gtk
@@ -216,6 +217,9 @@ notification area icon for Syncthing.  Supported Syncthing features:
 @item Editing daemon settings
 @end itemize\n")
       (license gpl2))))
+
+(define-public qsyncthingtray
+  (deprecated-package "qsyncthingtray" syncthing-gtk))
 
 (define-public go-github-com-jackpal-go-nat-pmp
   (package

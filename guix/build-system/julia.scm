@@ -2,7 +2,8 @@
 ;;; Copyright © 2019 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Jean-Baptiste Volatier <jbv@pm.me>
-;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2021, 2022 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -88,6 +89,7 @@
                       (guile #f)
                       (julia-package-name #f)
                       (julia-package-uuid #f)
+                      (julia-package-dependencies ''())
                       (imported-modules %julia-build-system-modules)
                       (modules '((guix build julia-build-system)
                                  (guix build utils))))
@@ -108,7 +110,8 @@
                                                search-paths))
                        #:inputs #$(input-tuples->gexp inputs)
                        #:julia-package-name #$julia-package-name
-                       #:julia-package-uuid #$julia-package-uuid))))
+                       #:julia-package-uuid #$julia-package-uuid
+                       #:julia-package-dependencies #$julia-package-dependencies))))
 
   (mlet %store-monad ((guile (package->derivation (or guile (default-guile))
                                                   system #:graft? #f)))

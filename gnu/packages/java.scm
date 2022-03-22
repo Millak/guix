@@ -3949,8 +3949,7 @@ provides much easier and readable parametrised tests for JUnit.")
 (define-public java-plexus-utils
   (package
     (name "java-plexus-utils")
-    ;; sisu-build-api needs this version, later versions don't work
-    (version "3.2.1")
+    (version "3.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3959,7 +3958,7 @@ provides much easier and readable parametrised tests for JUnit.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1w169glixyk94jbczj8jzg897lsab46jihiaa3dhw0p06g35va8b"))))
+                "0d0fq21rzjy0j55kcp8w9k1rbq9rwr0r7cc8239p9jbz54vihp0g"))))
     (build-system ant-build-system)
     ;; FIXME: The default build.xml does not include a target to install
     ;; javadoc files.
@@ -4010,10 +4009,11 @@ Plexus framework to ease working with strings, files, command lines, XML and
 more.")
     (license license:asl2.0)))
 
-(define-public java-plexus-utils-3.3.0
+(define-public java-plexus-utils-3.2.1
   (package
     (inherit java-plexus-utils)
-    (version "3.3.0")
+    ;; plexus-build-api needs this version, later versions don't work
+    (version "3.2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4022,7 +4022,7 @@ more.")
               (file-name (git-file-name "java-plexus-utils" version))
               (sha256
                (base32
-                "0d0fq21rzjy0j55kcp8w9k1rbq9rwr0r7cc8239p9jbz54vihp0g"))))))
+                "1w169glixyk94jbczj8jzg897lsab46jihiaa3dhw0p06g35va8b"))))))
 
 (define-public java-plexus-interpolation
   (package
@@ -4094,7 +4094,7 @@ components.")
 (define java-plexus-container-default-bootstrap
   (package
     (name "java-plexus-container-default-bootstrap")
-    (version "1.7.1")
+    (version "2.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4103,7 +4103,7 @@ components.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1316hrp5vqfv0aw7miq2fp0wwy833h66h502h29vnh5sxj27x228"))))
+                "0r9yq67c1hvi1pz5wmx6x6hk5fmavp8a7yal3j5hkaad757firn1"))))
     (build-system ant-build-system)
     (arguments
      `(#:jar-name "container-default.jar"
@@ -4185,7 +4185,7 @@ implementation.")
              #t))
          (replace 'install (install-from-pom "pom.xml")))))
     (propagated-inputs
-     (list java-plexus-utils-3.3.0 java-commons-io plexus-parent-pom-5.1))
+     (list java-plexus-utils java-commons-io plexus-parent-pom-5.1))
     (inputs
      (list java-jsr305))
     (native-inputs
@@ -4241,7 +4241,7 @@ reusing it in maven.")
              #t))
          (replace 'install (install-from-pom "pom.xml")))))
     (propagated-inputs
-     (list java-plexus-utils-3.3.0 java-plexus-io java-iq80-snappy
+     (list java-plexus-utils java-plexus-io java-iq80-snappy
            java-commons-compress plexus-parent-pom-6.1))
     (inputs
      `(("java-jsr305" ,java-jsr305)
@@ -4350,7 +4350,82 @@ from source tags and class annotations.")))
            (lambda _
              (copy-recursively "src/main/resources"
                                "build/classes/")
-             #t)))))
+             #t))
+         (add-before 'build 'reinstate-cli
+           ;; The CLI was removed in 2.1.0, but we still need it to build some
+           ;; maven dependencies, and some parts of maven itself. We can't use
+           ;; the maven plugin for that yet.
+           (lambda _
+             (with-output-to-file "src/main/java/org/codehaus/plexus/metadata/PlexusMetadataGeneratorCli.java"
+               (lambda _
+                 ;; Copied from a previous version of this package.
+                 (display "package org.codehaus.plexus.metadata;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.Collections;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.Options;
+import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.tools.cli.AbstractCli;
+
+public class PlexusMetadataGeneratorCli
+    extends AbstractCli
+{
+    public static final char SOURCE_DIRECTORY = 's';
+    public static final char SOURCE_ENCODING = 'e';
+    public static final char CLASSES_DIRECTORY = 'c';
+    public static final char OUTPUT_FILE = 'o';
+    public static final char DESCRIPTORS_DIRECTORY = 'm';
+
+    public static void main( String[] args )
+        throws Exception
+    {
+        new PlexusMetadataGeneratorCli().execute( args );
+    }
+
+    @Override
+    public String getPomPropertiesPath()
+    {
+        return \"META-INF/maven/org.codehaus.plexus/plexus-metadata-generator/pom.properties\";
+    }
+
+    @Override
+    @SuppressWarnings(\"static-access\")
+    public Options buildCliOptions( Options options )
+    {
+        options.addOption( OptionBuilder.withLongOpt( \"source\" ).hasArg().withDescription( \"Source directory.\" ).create( SOURCE_DIRECTORY ) );
+        options.addOption( OptionBuilder.withLongOpt( \"encoding\" ).hasArg().withDescription( \"Source file encoding.\" ).create( SOURCE_ENCODING ) );
+        options.addOption( OptionBuilder.withLongOpt( \"classes\" ).hasArg().withDescription( \"Classes directory.\" ).create( CLASSES_DIRECTORY ) );
+        options.addOption( OptionBuilder.withLongOpt( \"output\" ).hasArg().withDescription( \"Output directory.\" ).create( OUTPUT_FILE ) );
+        options.addOption( OptionBuilder.withLongOpt( \"descriptors\" ).hasArg().withDescription( \"Descriptors directory.\" ).create( DESCRIPTORS_DIRECTORY ) );
+        return options;
+    }
+
+    public void invokePlexusComponent( CommandLine cli, PlexusContainer plexus )
+        throws Exception
+    {
+        MetadataGenerator metadataGenerator = plexus.lookup( MetadataGenerator.class );
+
+        MetadataGenerationRequest request = new MetadataGenerationRequest();
+        request.classesDirectory = new File( cli.getOptionValue( CLASSES_DIRECTORY ) );
+        request.classpath = Collections.emptyList();
+        request.sourceDirectories = Arrays.asList( new String[]{ new File( cli.getOptionValue( SOURCE_DIRECTORY ) ).getAbsolutePath() } );
+        request.sourceEncoding = cli.getOptionValue( SOURCE_ENCODING );
+        request.useContextClassLoader = true;
+        request.outputFile = new File( cli.getOptionValue( OUTPUT_FILE ) );
+        request.componentDescriptorDirectory = new File( cli.getOptionValue( DESCRIPTORS_DIRECTORY ) );
+
+        metadataGenerator.generateDescriptor( request );
+    }
+}")))))
+         (add-before 'check 'fix-test-location
+           (lambda _
+             (substitute* '("src/test/java/org/codehaus/plexus/metadata/DefaultComponentDescriptorWriterTest.java"
+                            "src/test/java/org/codehaus/plexus/metadata/merge/ComponentsXmlMergerTest.java")
+               (("target") "build")))))))
     (propagated-inputs
      `(("java-plexus-container-default" ,java-plexus-container-default)
        ("java-plexu-component-annotations" ,java-plexus-component-annotations)
@@ -4364,7 +4439,104 @@ from source tags and class annotations.")))
        ("java-commons-cli" ,java-commons-cli)
        ("java-qdox" ,java-qdox)
        ("java-jdom2" ,java-jdom2)
-       ("java-asm" ,java-asm)))
+       ("java-asm-8" ,java-asm-8)))
+    (native-inputs
+     (list java-junit java-guava java-geronimo-xbean-reflect))
+    (synopsis "Inversion-of-control container for Maven")
+    (description "The Plexus project provides a full software stack for creating
+and executing software projects.  Based on the Plexus container, the
+applications can utilise component-oriented programming to build modular,
+reusable components that can easily be assembled and reused.  This package
+provides the Maven plugin generating the component metadata.")))
+
+(define-public java-plexus-container-default-1.7
+  (package
+    (inherit java-plexus-container-default)
+    (version "1.7.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/codehaus-plexus/plexus-containers")
+                     (commit (string-append "plexus-containers-" version))))
+              (file-name (git-file-name "java-plexus-container-default" version))
+              (sha256
+               (base32
+                "1316hrp5vqfv0aw7miq2fp0wwy833h66h502h29vnh5sxj27x228"))))))
+
+(define java-plexus-containers-parent-pom-1.7
+  (package
+    (inherit java-plexus-container-default-1.7)
+    (name "java-plexus-containers-parent-pom")
+    (arguments
+     `(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure)
+         (delete 'build)
+         (replace 'install
+           (install-pom-file "pom.xml")))))
+    (propagated-inputs
+     `(("plexus-parent-pom" ,plexus-parent-pom-4.0)))))
+
+(define-public java-plexus-component-annotations-1.7
+  (package
+    (inherit java-plexus-container-default-1.7)
+    (name "java-plexus-component-annotations")
+    (arguments
+     `(#:jar-name "plexus-component-annotations.jar"
+       #:source-dir "plexus-component-annotations/src/main/java"
+       #:tests? #f; no tests
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'install
+           (install-from-pom "plexus-component-annotations/pom.xml")))))
+    (propagated-inputs
+     `(("java-plexus-containers-parent-pom-1.7" ,java-plexus-containers-parent-pom-1.7)))
+    (inputs '())
+    (native-inputs '())
+    (synopsis "Plexus descriptors generator")
+    (description "This package is a Maven plugin to generate Plexus descriptors
+from source tags and class annotations.")))
+
+(define-public java-plexus-component-metadata-1.7
+  (package
+    (inherit java-plexus-container-default-1.7)
+    (name "java-plexus-component-metadata")
+    (arguments
+     `(#:jar-name "plexus-component-metadata.jar"
+       #:source-dir "src/main/java"
+       #:test-dir "src/test"
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'chdir
+           (lambda _
+             (chdir "plexus-component-metadata")
+             #t))
+         (add-before 'build 'copy-resources
+           (lambda _
+             (copy-recursively "src/main/resources"
+                               "build/classes/")
+             #t))
+         (add-before 'check 'fix-test-location
+           (lambda _
+             (substitute* '("src/test/java/org/codehaus/plexus/metadata/DefaultComponentDescriptorWriterTest.java"
+                            "src/test/java/org/codehaus/plexus/metadata/merge/ComponentsXmlMergerTest.java")
+               (("target") "build")))))))
+    (propagated-inputs
+     (list java-plexus-container-default-1.7
+           java-plexus-component-annotations-1.7
+           java-plexus-utils
+           java-plexus-cli
+           java-plexus-cli
+           java-plexus-classworlds
+           maven-plugin-api
+           maven-plugin-annotations
+           maven-core-bootstrap
+           maven-model
+           java-commons-cli
+           java-qdox
+           java-jdom2
+           java-asm))
     (native-inputs
      (list java-junit java-guava java-geronimo-xbean-reflect))
     (synopsis "Inversion-of-control container for Maven")
@@ -4377,7 +4549,7 @@ provides the Maven plugin generating the component metadata.")))
 (define-public java-plexus-cipher
   (package
     (name "java-plexus-cipher")
-    (version "1.7")
+    (version "2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4386,8 +4558,49 @@ provides the Maven plugin generating the component metadata.")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0m638nzlxbmnbcj5cwdpgs326ab584yv0k803zlx37r6iqwvf6b0"))))
+                "01fipdsm090n8j4207fl8kbxznkgkmkkgyazf53hm1nwn6na5aai"))))
     (build-system ant-build-system)
+    (arguments
+     `(#:jar-name "plexus-cipher.jar"
+       #:source-dir "src/main/java"
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'generate-javax.inject.Named
+           (lambda _
+             (mkdir-p "build/classes/META-INF/sisu")
+             (with-output-to-file "build/classes/META-INF/sisu/javax.inject.Named"
+               (lambda _
+                 (display
+                   "org.sonatype.plexus.components.cipher.DefaultPlexusCipher\n")))
+             #t))
+         (replace 'install (install-from-pom "pom.xml")))))
+    (inputs
+     `(("java-cdi-api" ,java-cdi-api)
+       ("java-javax-inject" ,java-javax-inject)))
+    (propagated-inputs
+     `(("java-sonatype-spice-parent-pom" ,java-sonatype-spice-parent-pom-15)
+       ("java-eclipse-sisu-inject" ,java-eclipse-sisu-inject)))
+    (native-inputs
+     `(("java-junit" ,java-junit)))
+    (home-page "https://github.com/sonatype/plexus-cipher")
+    (synopsis "Encryption/decryption Component")
+    (description "Plexus-cipher contains a component to deal with encryption
+and decryption.")
+    (license license:asl2.0)))
+
+(define-public java-plexus-cipher-1.7
+  (package
+    (inherit java-plexus-cipher)
+    (version "1.7")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/codehaus-plexus/plexus-cipher")
+                     (commit (string-append "plexus-cipher-" version))))
+              (file-name (git-file-name "java-plexus-cipher" version))
+              (sha256
+               (base32
+                "0m638nzlxbmnbcj5cwdpgs326ab584yv0k803zlx37r6iqwvf6b0"))))
     (arguments
      `(#:jar-name "plexus-cipher.jar"
        #:source-dir "src/main/java"
@@ -4409,17 +4622,8 @@ provides the Maven plugin generating the component metadata.")))
                (("provided") "test"))
              #t))
          (replace 'install (install-from-pom "pom.xml")))))
-    (inputs
-     (list java-cdi-api java-javax-inject))
     (propagated-inputs
-     (list java-sonatype-spice-parent-pom-15))
-    (native-inputs
-     (list java-junit))
-    (home-page "https://github.com/sonatype/plexus-cipher")
-    (synopsis "Encryption/decryption Component")
-    (description "Plexus-cipher contains a component to deal with encryption
-and decryption.")
-    (license license:asl2.0)))
+     (list java-sonatype-spice-parent-pom-15))))
 
 (define-public java-plexus-java
   (package
@@ -4465,9 +4669,9 @@ and decryption.")
      (list java-asm java-qdox-2-M9 java-javax-inject
            plexus-parent-pom-4.0))
     (inputs
-     (list java-plexus-component-annotations))
+     (list java-plexus-component-annotations-1.7))
     (native-inputs
-     (list java-plexus-component-metadata java-junit))
+     (list java-plexus-component-metadata-1.7 java-junit))
     (home-page "https://codehaus-plexus.github.io/plexus-languages/plexus-java")
     (synopsis "Shared language features for Java")
     (description "This package contains shared language features of the Java
@@ -4584,9 +4788,9 @@ compilers.")
            (install-from-pom "plexus-compiler-manager/pom.xml")))))
     (propagated-inputs
      (list java-plexus-compiler-api java-plexus-compiler-pom
-           java-plexus-container-default))
+           java-plexus-container-default-1.7))
     (native-inputs
-     (list unzip java-plexus-component-metadata))
+     (list unzip java-plexus-component-metadata-1.7))
     (synopsis "Compiler management for Plexus Compiler component")
     (description "Plexus Compiler is a Plexus component to use different
 compilers through a uniform API.  This component chooses the compiler
@@ -4701,17 +4905,15 @@ function utilities.")
 (define-public java-plexus-sec-dispatcher
   (package
     (name "java-plexus-sec-dispatcher")
-    (version "1.4") ;; Newest release listed at the Maven Central Repository.
+    (version "2.0")
     (source (origin
-              ;; This project doesn't tag releases or publish tarballs, so we take
-              ;; the "prepare release plexus-sec-dispatcher-1.4" git commit.
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/sonatype/plexus-sec-dispatcher/")
-                     (commit "7db8f880486e192a1c5ea9544e01e756c3d49d0f")))
+                     (url "https://github.com/codehaus-plexus/plexus-sec-dispatcher")
+                     (commit (string-append "plexus-sec-dispatcher-" version))))
               (sha256
                (base32
-                "1ng4yliy4cqpjr4fxxjbpwyk1wkch5f8vblm1kvwf328s4gibszs"))
+                "0665zcyxkv2knydxgv2dn64zvy1dx9j9af12ds9s64qmzd1rk6pk"))
               (file-name (git-file-name name version))))
     (arguments
      `(#:jar-name "plexus-sec-dispatcher.jar"
@@ -4730,6 +4932,61 @@ function utilities.")
                (modello-single-mode file "1.0.0" "xpp3-reader")
                (modello-single-mode file "1.0.0" "xpp3-writer"))
              #t))
+         (add-before 'build 'generate-javax.inject.Named
+           (lambda _
+             (mkdir-p "build/classes/META-INF/sisu")
+             (with-output-to-file "build/classes/META-INF/sisu/javax.inject.Named"
+               (lambda _
+                 (display
+                   "org.sonatype.plexus.components.sec.dispatcher.DefaultSecDispatcher\n")))
+             #t))
+         (add-before 'check 'fix-paths
+           (lambda _
+             (copy-recursively "src/test/resources" "target")
+             #t))
+         (replace 'install (install-from-pom "pom.xml")))))
+    (propagated-inputs
+     (list java-plexus-utils java-plexus-cipher plexus-parent-pom-8))
+    (native-inputs
+     (list java-javax-inject
+           java-modello-core
+           ;; for modello
+           java-plexus-container-default
+           java-plexus-classworlds
+           java-plexus-utils
+           java-guava
+           java-geronimo-xbean-reflect
+           ;; modello plugins
+           java-modello-plugins-java
+           java-modello-plugins-xml
+           java-modello-plugins-xpp3
+           ;; for tests
+           java-junit))
+    (build-system ant-build-system)
+    (home-page "https://github.com/sonatype/plexus-sec-dispatcher")
+    (synopsis "Plexus Security Dispatcher Component")
+    (description "This package is the Plexus Security Dispatcher Component.
+This component decrypts a string passed to it.")
+    (license license:asl2.0)))
+
+(define-public java-plexus-sec-dispatcher-1.4
+  (package
+    (inherit java-plexus-sec-dispatcher)
+    (version "1.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/codehaus-plexus/plexus-sec-dispatcher")
+                     (commit (string-append "sec-dispatcher-" version))))
+              (sha256
+               (base32
+                "1ng4yliy4cqpjr4fxxjbpwyk1wkch5f8vblm1kvwf328s4gibszs"))
+              (file-name (git-file-name "java-plexus-sec-dispatcher" version))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments java-plexus-sec-dispatcher)
+      ((#:phases phases)
+       `(modify-phases ,phases
+         (delete 'generate-javax.inject.Named)
          (add-before 'build 'generate-components.xml
            (lambda _
              (mkdir-p "build/classes/META-INF/plexus")
@@ -4758,37 +5015,10 @@ function utilities.")
       </configuration>\n
     </component>\n
   </components>\n
-</component-set>\n")))
-             #t))
-         (add-before 'check 'fix-paths
-           (lambda _
-             (copy-recursively "src/test/resources" "target")
-             #t))
-         (replace 'install (install-from-pom "pom.xml")))))
+</component-set>\n")))))))))
     (propagated-inputs
-     (list java-plexus-utils java-plexus-cipher
-           java-sonatype-spice-parent-pom-12))
-    (native-inputs
-     `(("java-modello-core" ,java-modello-core)
-       ;; for modello:
-       ("java-plexus-container-default" ,java-plexus-container-default)
-       ("java-plexus-classworlds" ,java-plexus-classworlds)
-       ("java-plexus-utils" ,java-plexus-utils)
-       ("java-guava" ,java-guava)
-       ("java-geronimo-xbean-reflect" ,java-geronimo-xbean-reflect)
-       ("java-sisu-build-api" ,java-sisu-build-api)
-       ;; modello plugins:
-       ("java-modellop-plugins-java" ,java-modello-plugins-java)
-       ("java-modellop-plugins-xml" ,java-modello-plugins-xml)
-       ("java-modellop-plugins-xpp3" ,java-modello-plugins-xpp3)
-       ;; for tests
-       ("java-junit" ,java-junit)))
-    (build-system ant-build-system)
-    (home-page "https://github.com/sonatype/plexus-sec-dispatcher")
-    (synopsis "Plexus Security Dispatcher Component")
-    (description "This package is the Plexus Security Dispatcher Component.
-This component decrypts a string passed to it.")
-    (license license:asl2.0)))
+     (list java-plexus-utils java-plexus-cipher-1.7
+           java-sonatype-spice-parent-pom-12))))
 
 (define-public java-plexus-cli
   (package
@@ -4820,14 +5050,14 @@ This component decrypts a string passed to it.")
 Plexus components.")
     (license license:asl2.0)))
 
-(define-public java-sisu-build-api
+(define-public java-plexus-build-api
   (package
-    (name "java-sisu-build-api")
+    (name "java-plexus-build-api")
     (version "0.0.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/sonatype/sisu-build-api")
+                     (url "https://github.com/codehaus-plexus/plexus-build-api")
                      (commit (string-append "plexus-build-api-" version))))
               (file-name (git-file-name name version))
               (sha256
@@ -4835,7 +5065,7 @@ Plexus components.")
                 "1d5w6c58gkx30d51v7qwv1xrhc0ly76848gihmgshj19yf6yhca0"))))
     (build-system ant-build-system)
     (arguments
-     `(#:jar-name "sisu-build-api.jar"
+     `(#:jar-name "plexus-build-api.jar"
        #:source-dir "src/main/java"
        #:jdk ,icedtea-8
        #:tests? #f; FIXME: how to run the tests?
@@ -4870,8 +5100,8 @@ which behaves as if all files were just created.</description>\n
          (replace 'install
            (install-from-pom "pom.xml")))))
     (inputs
-     (list java-plexus-utils java-plexus-container-default))
-    (home-page "https://github.com/sonatype/sisu-build-api/")
+     (list java-plexus-utils-3.2.1 java-plexus-container-default))
+    (home-page "https://github.com/codehaus-plexus/plexus-build-api/")
     (synopsis "Base build API for maven")
     (description "This package contains the base build API for maven and
 a default implementation of it.  This API is about scanning files in a
@@ -4881,7 +5111,7 @@ project and determining what files need to be rebuilt.")
 (define-public java-modello-core
   (package
     (name "java-modello-core")
-    (version "1.9.1")
+    (version "1.11")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4890,7 +5120,7 @@ project and determining what files need to be rebuilt.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1di6ni42aqllpdvkpyfcw70352vr2i8wf6hd5nhd9kmqjb5dj5j4"))))
+                "18885sim7z9j3wy19i9083y9kc8l9xxl2px823a96q4rnqj5z8s2"))))
     (build-system ant-build-system)
     (arguments
      `(#:jar-name "modello-core.jar"
@@ -4915,7 +5145,7 @@ project and determining what files need to be rebuilt.")
              #t)))))
     (propagated-inputs
      (list java-plexus-utils java-plexus-container-default
-           java-sisu-build-api))
+           java-plexus-build-api))
     (native-inputs
      (list java-junit java-plexus-classworlds java-geronimo-xbean-reflect
            java-guava))
@@ -6183,14 +6413,14 @@ bottlenecks move away from the database in an effectively cached system.")
     (name "java-jsr250")
     (version "1.3")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://repo1.maven.org/maven2/"
-                                  "javax/annotation/javax.annotation-api/"
-                                  version "/javax.annotation-api-"
-                                  version "-sources.jar"))
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/javaee/javax.annotation")
+                     (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "08clh8n4n9wfglf75qsqfjs6yf79f7x6hqx38cn856pksszv50kz"))))
+                "1g22a9d75g01s9yxgdig0ss7i30j4ysnnp08gn4krn0wly4lpqq0"))))
     (build-system ant-build-system)
     (arguments
      `(#:tests? #f ; no tests included
@@ -6198,11 +6428,9 @@ bottlenecks move away from the database in an effectively cached system.")
        #:jar-name "jsr250.jar"
        #:phases
        (modify-phases %standard-phases
-         (add-before 'install 'create-pom
-           (generate-pom.xml "pom.xml" "javax.annotation" "jsr250-api" ,version
-                             #:name "jsr250"))
          (replace 'install
            (install-from-pom "pom.xml")))))
+    (propagated-inputs (list java-jvnet-parent-pom-3))
     (home-page "https://jcp.org/en/jsr/detail?id=250")
     (synopsis "Security-related annotations")
     (description "This package provides annotations for security.  It provides
@@ -7489,14 +7717,14 @@ JavaMail API.")
 (define-public java-log4j-api
   (package
     (name "java-log4j-api")
-    (version "2.17.0")
+    (version "2.17.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://apache/logging/log4j/" version
                                   "/apache-log4j-" version "-src.tar.gz"))
               (sha256
                (base32
-                "1bn9hrxyvw2d29z7mcd0frcqa8mbxmq59zb6b930zibkq68n1g01"))))
+                "05xssljdgxfv8ql42db8ydjfsvvbdqmsgip75phybm259ydzbsd6"))))
     (build-system ant-build-system)
     (arguments
      `(#:tests? #f ; tests require unpackaged software
@@ -7668,7 +7896,7 @@ This is a part of the Apache Commons Project.")
     (native-inputs
      (list java-commons-lang3 java-junit))
     (propagated-inputs
-      (list apache-commons-parent-pom-50))
+      (list apache-commons-parent-pom-52))
     (home-page "https://commons.apache.org/codec/")
     (synopsis "Common encoders and decoders such as Base64, Hex, Phonetic and URLs")
     (description "The codec package contains simple encoder and decoders for
@@ -10518,11 +10746,6 @@ annotations.")
        #:make-flags (list "-DDATE" "(no date for reproducibility)")
        #:phases
        (modify-phases %standard-phases
-         (add-before 'install 'fix-pom
-           (lambda _
-             (substitute* "pom.xml"
-               (("org.apache-extras.beanshell") "org.beanshell"))
-             #t))
          (replace 'install
            (install-from-pom "pom.xml")))))
     (inputs
@@ -12980,7 +13203,7 @@ and reporting) project dependencies.  It is characterized by the following:
 (define-public java-eclipse-sisu-inject
   (package
     (name "java-eclipse-sisu-inject")
-    (version "0.3.4")
+    (version "0.3.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -12989,7 +13212,7 @@ and reporting) project dependencies.  It is characterized by the following:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "16044sizdb0rjbhlfbmcnpds5y7by7dyn9b0c11606aikqi8k3x6"))))
+                "1yh434b8pi8cwmpk825fbvbnkkk2cwd4gxxjaygg8i9j0q3l9zp3"))))
     (build-system ant-build-system)
     (arguments
      `(#:jar-name "eclipse-sisu-inject.jar"
@@ -13040,7 +13263,7 @@ OSGi Service Registry is a goal of this project.")
 (define-public java-eclipse-sisu-plexus
   (package
     (name "java-eclipse-sisu-plexus")
-    (version "0.3.4")
+    (version "0.3.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -13049,7 +13272,7 @@ OSGi Service Registry is a goal of this project.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "17mjlajnsqnk07cc58h1qpxrif85yb2m2y0pyba48yjjgikk8r9f"))
+                "0lm5h0dmh41ffcwd32qnk3a87d360am36yq7168ikkyqa8jxkx28"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -13102,7 +13325,8 @@ OSGi Service Registry is a goal of this project.")
          (replace 'install
            (install-from-pom "org.eclipse.sisu.plexus/pom.xml")))))
     (propagated-inputs
-     (list java-plexus-classworlds
+     (list java-jsr250
+           java-plexus-classworlds
            java-plexus-utils
            java-plexus-component-annotations
            java-cdi-api

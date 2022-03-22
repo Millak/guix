@@ -2,6 +2,7 @@
 ;;; Copyright © 2018, 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25,14 +26,17 @@
   #:use-module (gnu services)
   #:use-module (gnu system pam)
   #:use-module (gnu system shadow)
+  #:use-module (guix diagnostics)
   #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix records)
   #:use-module (guix store)
+  #:use-module (guix ui)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages pulseaudio)
   #:use-module (ice-9 match)
+  #:use-module (srfi srfi-1)
   #:export (alsa-configuration
             alsa-service-type
 
@@ -115,16 +119,18 @@ ctl.!default {
 (define-record-type* <pulseaudio-configuration>
   pulseaudio-configuration make-pulseaudio-configuration
   pulseaudio-configuration?
-  (client-conf pulseaudio-client-conf
+  (client-conf pulseaudio-configuration-client-conf
                (default '()))
-  (daemon-conf pulseaudio-daemon-conf
+  (daemon-conf pulseaudio-configuration-daemon-conf
                ;; Flat volumes may cause unpleasant experiences to users
                ;; when applications inadvertently max out the system volume
                ;; (see e.g. <https://bugs.gnu.org/38172>).
                (default '((flat-volumes . no))))
-  (script-file pulseaudio-script-file
+  (script-file pulseaudio-configuration-script-file
                (default (file-append pulseaudio "/etc/pulse/default.pa")))
-  (system-script-file pulseaudio-system-script-file
+  (extra-script-files pulseaudio-configuration-extra-script-files
+                      (default '()))
+  (system-script-file pulseaudio-configuration-system-script-file
                       (default
                         (file-append pulseaudio "/etc/pulse/system.pa"))))
 
@@ -138,20 +144,77 @@ ctl.!default {
 (define pulseaudio-environment
   (match-lambda
     (($ <pulseaudio-configuration> client-conf daemon-conf default-script-file)
-     `(("PULSE_CONFIG" . ,(apply mixed-text-file "daemon.conf"
-                                 "default-script-file = " default-script-file "\n"
-                                 (map pulseaudio-conf-entry daemon-conf)))
-       ("PULSE_CLIENTCONFIG" . ,(apply mixed-text-file "client.conf"
-                                       (map pulseaudio-conf-entry client-conf)))))))
+     ;; These config files kept at a fixed location, so that the following
+     ;; environment values are stable and do not require the user to reboot to
+     ;; effect their PulseAudio configuration changes.
+     '(("PULSE_CONFIG" . "/etc/pulse/daemon.conf")
+       ("PULSE_CLIENTCONFIG" . "/etc/pulse/client.conf")))))
+
+(define (extra-script-files->file-union extra-script-files)
+  "Return a G-exp obtained by processing EXTRA-SCRIPT-FILES with FILE-UNION."
+
+  (define (file-like->name file)
+    (match file
+      ((? local-file?)
+       (local-file-name file))
+      ((? plain-file?)
+       (plain-file-name file))
+      ((? computed-file?)
+       (computed-file-name file))
+      (_ (leave (G_ "~a is not a local-file, plain-file or \
+computed-file object~%") file))))
+
+  (define (assert-pulseaudio-script-file-name name)
+    (unless (string-suffix? ".pa" name)
+      (leave (G_ "`~a' lacks the required `.pa' file name extension~%") name))
+    name)
+
+  (let ((labels (map (compose assert-pulseaudio-script-file-name
+                              file-like->name)
+                     extra-script-files)))
+    (file-union "default.pa.d" (zip labels extra-script-files))))
+
+(define (append-include-directive script-file)
+  "Append an include directive to source scripts under /etc/pulse/default.pa.d."
+  (computed-file "default.pa"
+                 #~(begin
+                     (use-modules (ice-9 textual-ports))
+                     (define script-text
+                       (call-with-input-file #$script-file get-string-all))
+                     (call-with-output-file #$output
+                       (lambda (port)
+                         (format port (string-append script-text "
+### Added by Guix to include scripts specified in extra-script-files.
+.nofail
+.include /etc/pulse/default.pa.d~%")))))))
 
 (define pulseaudio-etc
   (match-lambda
-    (($ <pulseaudio-configuration> _ _ default-script-file system-script-file)
+    (($ <pulseaudio-configuration> client-conf daemon-conf default-script-file
+                                   extra-script-files system-script-file)
      `(("pulse"
         ,(file-union
           "pulse"
-          `(("default.pa" ,default-script-file)
-            ("system.pa" ,system-script-file))))))))
+          `(("default.pa"
+             ,(if (null? extra-script-files)
+                  default-script-file
+                  (append-include-directive default-script-file)))
+            ("system.pa" ,system-script-file)
+            ,@(if (null? extra-script-files)
+                  '()
+                  `(("default.pa.d" ,(extra-script-files->file-union
+                                      extra-script-files))))
+            ,@(if (null? daemon-conf)
+                  '()
+                  `(("daemon.conf"
+                     ,(apply mixed-text-file "daemon.conf"
+                             "default-script-file = " default-script-file "\n"
+                             (map pulseaudio-conf-entry daemon-conf)))))
+            ,@(if (null? client-conf)
+                  '()
+                  `(("client.conf"
+                     ,(apply mixed-text-file "client.conf"
+                             (map pulseaudio-conf-entry client-conf))))))))))))
 
 (define pulseaudio-service-type
   (service-type
@@ -159,7 +222,8 @@ ctl.!default {
    (extensions
     (list (service-extension session-environment-service-type
                              pulseaudio-environment)
-          (service-extension etc-service-type pulseaudio-etc)))
+          (service-extension etc-service-type pulseaudio-etc)
+          (service-extension udev-service-type (const (list pulseaudio)))))
    (default-value (pulseaudio-configuration))
    (description "Configure PulseAudio sound support.")))
 

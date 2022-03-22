@@ -2,6 +2,7 @@
 ;;; Copyright © 2019, 2020 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2021 Jean-Baptiste Volatier <jbv@pm.me>
 ;;; Copyright © 2021, 2022 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -111,9 +112,9 @@ Project.toml)."
            (job-count (if parallel-tests?
                           (parallel-job-count)
                           1))
-           ;; The --proc argument of Julia *adds* extra processors rather than
-           ;; specify the exact count to use, so zero must be specified to
-           ;; disable parallel processing...
+           ;; The --procs argument of Julia *adds* extra processors rather
+           ;; than specify the exact count to use, so zero must be specified
+           ;; to disable parallel processing...
            (additional-procs (max 0 (1- job-count))))
       ;; With a patch, SOURCE_DATE_EPOCH is honored
       (setenv "SOURCE_DATE_EPOCH" "1")
@@ -126,7 +127,7 @@ Project.toml)."
       (setenv "HOME" "/tmp")
       (apply invoke "julia"
              `("--depwarn=yes"
-               ,@(if parallel-tests?
+               ,@(if (and parallel-tests? (< 0 additional-procs))
                      ;; XXX: ... but '--procs' doesn't accept 0 as a valid
                      ;; value, so just omit the argument entirely.
                      (list (string-append  "--procs="
@@ -136,7 +137,8 @@ Project.toml)."
                                package "/test/runtests.jl"))))))
 
 (define* (link-depot #:key source inputs outputs
-                     julia-package-name julia-package-uuid  #:allow-other-keys)
+                     julia-package-name julia-package-uuid
+                     julia-package-dependencies #:allow-other-keys)
   (let* ((out (assoc-ref outputs "out"))
          (name+version (strip-store-file-name out))
          (version (last (string-split name+version #\-)))
@@ -156,6 +158,7 @@ println(Base.version_slug(Base.UUID(\"~a\"),
         (julia-create-package-toml (getcwd)
                                    julia-package-name julia-package-uuid
                                    version
+                                   julia-package-dependencies
                                    #:file "Project.toml"))
 
     ;; When installing a package, julia looks first at in the JULIA_DEPOT_PATH
@@ -186,9 +189,10 @@ version = \"" version "\"
 ") f)
     (when (not (null? deps))
       (display "[deps]\n" f)
-      (for-each (lambda dep
-                  (display (string-append (car (car dep)) " = \"" (cdr (car dep)) "\"\n")
-                           f))
+      (for-each (match-lambda
+                  ((name . uuid)
+                   (display (string-append name " = \"" uuid "\"\n")
+                            f)))
                 deps))
     (close-port f)))
 
@@ -207,6 +211,7 @@ version = \"" version "\"
     (delete 'build)))
 
 (define* (julia-build #:key inputs julia-package-name julia-package-uuid
+                      julia-package-dependencies
                       (phases %standard-phases)
                       #:allow-other-keys #:rest args)
   "Build the given Julia package, applying all of PHASES in order."
@@ -214,4 +219,5 @@ version = \"" version "\"
          #:inputs inputs #:phases phases
          #:julia-package-name julia-package-name
          #:julia-package-uuid julia-package-uuid
+         #:julia-package-dependencies julia-package-dependencies
          args))

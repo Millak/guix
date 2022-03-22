@@ -459,13 +459,13 @@ for example, for recording or replaying web content.")
 (define-public python-certifi
   (package
     (name "python-certifi")
-    (version "2020.12.5")
+    (version "2021.10.8")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "certifi" version))
               (sha256
                (base32
-                "177mdbw0livdjvp17sz6wsfrc32838m9y59v871gpgv2888raj8s"))))
+                "0wl8ln7acd797i1q7mmb430l6hqwhmk4bd37x8ycw02b3my4x23q"))))
     (build-system python-build-system)
     (arguments '(#:tests? #f))          ;no tests
     (home-page "https://certifi.io/")
@@ -481,14 +481,14 @@ is used by the Requests library to verify HTTPS requests.")
 (define-public python-cryptography-vectors
   (package
     (name "python-cryptography-vectors")
-    (version "3.3.1")
+    (version "36.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cryptography_vectors" version))
        (sha256
         (base32
-         "192wix3sr678x21brav5hgc6j93l7ab1kh69p2scr3fsblq9qy03"))))
+         "166mvhhmgglqai1sjkkb76mpdkad2yykam11d2w44hs2snpr117w"))))
     (build-system python-build-system)
     (home-page "https://github.com/pyca/cryptography")
     (synopsis "Test vectors for the cryptography package")
@@ -497,75 +497,9 @@ is used by the Requests library to verify HTTPS requests.")
     ;; Distributed under either BSD-3 or ASL2.0
     (license (list license:bsd-3 license:asl2.0))))
 
-(define-public python2-cryptography-vectors
-  (package-with-python2 python-cryptography-vectors))
-
 (define-public python-cryptography
   (package
     (name "python-cryptography")
-    (version "3.3.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "cryptography" version))
-       (sha256
-        (base32
-         "1ribd1vxq9wwz564mg60dzcy699gng54admihjjkgs9dx95pw5vy"))))
-    (build-system python-build-system)
-    (inputs
-     (list openssl))
-    (propagated-inputs
-     (list python-asn1crypto python-cffi python-six python-idna
-           python-iso8601))
-    (native-inputs
-     (list python-cryptography-vectors python-hypothesis python-pretend
-           python-pytz python-pytest))
-    (home-page "https://github.com/pyca/cryptography")
-    (synopsis "Cryptographic recipes and primitives for Python")
-    (description
-      "cryptography is a package which provides cryptographic recipes and
-primitives to Python developers.  It aims to be the “cryptographic standard
-library” for Python.  The package includes both high level recipes, and low
-level interfaces to common cryptographic algorithms such as symmetric ciphers,
-message digests and key derivation functions.")
-    ;; Distributed under either BSD-3 or ASL2.0
-    (license (list license:bsd-3 license:asl2.0))
-    (properties `((python2-variant . ,(delay python2-cryptography))))))
-
-(define-public python2-cryptography
-  (let ((crypto (package-with-python2
-                 (strip-python2-variant python-cryptography))))
-    (package/inherit crypto
-      (arguments
-       `(#:python ,python-2
-         #:phases
-         (modify-phases %standard-phases
-           ;; The sanity-check attempts attempts to import the non-existent
-           ;; modules "_openssl" and "_padding".
-           (delete 'sanity-check))))
-      (propagated-inputs
-       `(("python2-ipaddress" ,python2-ipaddress)
-         ("python2-backport-ssl-match-hostname"
-          ,python2-backport-ssl-match-hostname)
-         ("python2-enum34" ,python2-enum34)
-         ,@(package-propagated-inputs crypto))))))
-
-;; TODO: Make this the default in the next staging cycle.
-(define-public python-cryptography-vectors-next
-  (package
-    (inherit python-cryptography-vectors)
-    (version "36.0.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "cryptography_vectors" version))
-       (sha256
-        (base32
-         "166mvhhmgglqai1sjkkb76mpdkad2yykam11d2w44hs2snpr117w"))))))
-
-(define-public python-cryptography-next
-  (package
-    (inherit python-cryptography)
     (version "36.0.1")
     (source
      (origin
@@ -663,50 +597,103 @@ message digests and key derivation functions.")
      (list python-asn1crypto python-cffi python-six python-idna
            python-iso8601))
     (native-inputs
-     (list python-cryptography-vectors-next
+     (list python-cryptography-vectors
            python-hypothesis
            python-pretend
            python-pytz
            python-pytest
            python-pytest-subtests
            python-setuptools-rust
-           rust `(,rust "cargo")))
-    (properties '())))
+           rust
+           `(,rust "cargo")))
+    (home-page "https://github.com/pyca/cryptography")
+    (synopsis "Cryptographic recipes and primitives for Python")
+    (description
+      "cryptography is a package which provides cryptographic recipes and
+primitives to Python developers.  It aims to be the “cryptographic standard
+library” for Python.  The package includes both high level recipes, and low
+level interfaces to common cryptographic algorithms such as symmetric ciphers,
+message digests and key derivation functions.")
+    ;; Distributed under either BSD-3 or ASL2.0
+    (license (list license:bsd-3 license:asl2.0))
+    (properties `((python2-variant . ,(delay python2-cryptography))))))
+
+(define-public python2-cryptography-vectors
+  (package
+    (inherit python-cryptography-vectors)
+    (version "3.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "cryptography_vectors" version))
+              (sha256
+               (base32
+                "192wix3sr678x21brav5hgc6j93l7ab1kh69p2scr3fsblq9qy03"))))
+    (arguments
+     (list #:python python-2))))
+
+(define-public python2-cryptography
+  (let ((crypto (package-with-python2
+                 (strip-python2-variant python-cryptography))))
+    (package
+      (inherit crypto)
+      (version "3.3.1")
+      (source (origin
+                (method url-fetch)
+                (uri (pypi-uri "cryptography" version))
+                (sha256
+                 (base32
+                  "1ribd1vxq9wwz564mg60dzcy699gng54admihjjkgs9dx95pw5vy"))))
+      (arguments
+       `(#:python ,python-2
+         #:phases
+         (modify-phases %standard-phases
+           ;; The sanity-check attempts attempts to import the non-existent
+           ;; modules "_openssl" and "_padding".
+           (delete 'sanity-check))))
+      (native-inputs
+       (list python2-cryptography-vectors python2-hypothesis python2-pretend
+             python2-pytz python2-pytest))
+      (inputs (list openssl))
+      (propagated-inputs
+       (modify-inputs (package-propagated-inputs crypto)
+         (prepend python2-ipaddress
+                  python2-backport-ssl-match-hostname
+                  python2-enum34))))))
 
 (define-public python-pyopenssl
   (package
     (name "python-pyopenssl")
-    (version "20.0.1")
+    (version "22.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyOpenSSL" version))
        (sha256
         (base32
-         "0labcbh2g0jhgisd79wx9kixmi6fip28096d1xb05fj3jmsiq8sc"))))
+         "1gzihw09sqi71lwx97c69hab7w4rbnl6hhfrl6za3i5a4la1n2v6"))))
     (build-system python-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (delete 'check)
-         (add-after 'install 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             ;; PyOpenSSL runs tests against a certificate with a fixed
-             ;; expiry time.  To ensure successful builds in the future,
-             ;; set the time to roughly the release date.
-             (invoke "faketime" "2021-05-01" "py.test" "-v" "-k"
-                     (string-append
-                      ;; This test tries to look up certificates from
-                      ;; the compiled-in default path in OpenSSL, which
-                      ;; does not exist in the build environment.
-                      "not test_fallback_default_verify_paths "
-                      ;; This test attempts to make a connection to
-                      ;; an external web service.
-                      "and not test_set_default_verify_paths "
-                      ;; Fails on i686-linux and possibly other 32-bit platforms
-                      ;; https://github.com/pyca/pyopenssl/issues/974
-                      "and not test_verify_with_time")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; PyOpenSSL runs tests against a certificate with a fixed
+                ;; expiry time.  To ensure successful builds in the future,
+                ;; set the time to roughly the release date.
+                (invoke "faketime" "2022-02-01" "py.test" "-v" "-k"
+                        (string-append
+                         ;; This test tries to look up certificates from
+                         ;; the compiled-in default path in OpenSSL, which
+                         ;; does not exist in the build environment.
+                         "not test_fallback_default_verify_paths "
+                         ;; This test attempts to make a connection to
+                         ;; an external web service.
+                         "and not test_set_default_verify_paths "
+                         ;; Fails on i686-linux and possibly other 32-bit platforms
+                         ;; https://github.com/pyca/pyopenssl/issues/974
+                         "and not test_verify_with_time"))))))))
     (propagated-inputs
      (list python-cryptography python-six))
     (inputs
@@ -718,10 +705,22 @@ message digests and key derivation functions.")
     (description
       "PyOpenSSL is a high-level wrapper around a subset of the OpenSSL
 library.")
+    (properties `((python2-variant . ,(delay python2-pyopenssl))))
     (license license:asl2.0)))
 
 (define-public python2-pyopenssl
-  (package-with-python2 python-pyopenssl))
+  (let ((base (package-with-python2 (strip-python2-variant python-pyopenssl))))
+    (package
+      (inherit base)
+      (version "21.0.0")
+      (source
+       (origin
+         (method url-fetch)
+         (uri (pypi-uri "pyOpenSSL" version))
+         (patches (search-patches "python2-pyopenssl-openssl-compat.patch"))
+         (sha256
+          (base32
+           "1cqcc20fwl521z3fxsc1c98gbnhb14q55vrvjfp6bn6h8rg8qbay")))))))
 
 (define-public python-ed25519
   (package
@@ -1711,12 +1710,10 @@ signatures.")
              (when tests?
                (invoke "pytest")))))))
     (native-inputs
-     (list python-cryptography
-           python-pyasn1
-           python-pytest
-           python-singledispatch
-           python-six
+     (list python-pytest
            python-wheel))
+    (propagated-inputs (list python-cryptography python-pyasn1
+                             python-singledispatch python-six))
     (home-page "https://github.com/SecurityInnovation/PGPy")
     (synopsis "Python implementation of OpenPGP")
     (description

@@ -3,13 +3,13 @@
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016-2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlois@gmx.com>
-;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
@@ -35,7 +35,10 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bioinformatics)
+  #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages image-processing)
@@ -58,6 +61,7 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix utils)
@@ -154,10 +158,7 @@ atlas_libs = openblas
                                       (tgt-dir (string-append html "/" dir)))
                                  (install-file file html)))
                              (find-files ".")))))))
-         ;; Tests can only be run after the library has been installed and not
-         ;; within the source directory.
-         (delete 'check)
-         (add-after 'install 'check
+         (replace 'check
            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
              (when tests?
                (add-installed-pythonpath inputs outputs)
@@ -254,13 +255,13 @@ logic, also known as grey logic.")
 (define-public python-scikit-image
   (package
     (name "python-scikit-image")
-    (version "0.18.1")
+    (version "0.19.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "scikit-image" version))
        (sha256
-        (base32 "0wgisa03smhrphcjnhq7waa5vyyd32b67hblapjbqrqqj751idpv"))))
+        (base32 "0vc6c78780jivsg79ja0cncn1ma2wysy9fyz97kik0kg59jb8cyl"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -290,22 +291,67 @@ logic, also known as grey logic.")
            python-networkx
            python-numpy
            python-pillow
+           python-pythran
            python-pywavelets
            python-scipy
            python-tifffile))
     (native-inputs
-     (list python-codecov
-           python-cython
-           python-flake8
+     (list python-cython
            python-pytest
-           python-pytest-cov
-           python-pytest-localserver
-           python-wheel))
+           python-pytest-localserver))
     (home-page "https://scikit-image.org/")
     (synopsis "Image processing in Python")
     (description
      "Scikit-image is a collection of algorithms for image processing.")
     (license license:bsd-3)))
+
+(define-public python-scikit-allel
+  (package
+    (name "python-scikit-allel")
+    (version "1.3.5")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "scikit-allel" version))
+        (sha256
+         (base32 "1vg88ng6gd175gzk39iz1drxig5l91dyx398w2kbw3w8036zv8gj"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (replace 'check
+             (lambda* (#:key tests? #:allow-other-keys)
+               (when tests?
+                 (invoke "python" "setup.py" "build_ext" "--inplace")
+                 (invoke "python" "-m" "pytest" "-v" "allel"
+                         ;; AttributeError: 'Dataset' object has no attribute 'asstr'
+                         "-k" (string-append
+                                "not test_vcf_to_hdf5"
+                                " and not test_vcf_to_hdf5_exclude"
+                                " and not test_vcf_to_hdf5_rename"
+                                " and not test_vcf_to_hdf5_group"
+                                " and not test_vcf_to_hdf5_ann"))))))))
+    (propagated-inputs
+     (list python-dask
+           python-numpy))
+    (native-inputs
+     (list python-cython
+           ;; The following are all needed for the tests
+           htslib
+           python-h5py
+           python-hmmlearn
+           python-numexpr
+           python-pytest
+           python-scipy
+           python-setuptools-scm
+           python-zarr))
+    (home-page "https://github.com/cggh/scikit-allel")
+    (synopsis "Explore and analyze genetic variation data")
+    (description
+     "This package provides utilities for exploratory analysis of large scale
+genetic variation data.")
+    (license license:expat)))
 
 (define-public python-sgp4
   (package
@@ -508,6 +554,63 @@ doing practical, real world data analysis in Python.")
     (description "This package is a Python module to manage tasks in the
 context of a task dependency graph.  It has some similarities to make.")
     (license license:bsd-2)))
+
+(define-public python-pythran
+  (package
+    (name "python-pythran")
+    (version "0.11.0")
+    (home-page "https://github.com/serge-sans-paille/pythran")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference (url home-page) (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "0cm7wfcyvkp1wmq7n1lyf2d3sj6158jf63bagjpjmfnjwij19n0p"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; Remove bundled Boost and xsimd.
+                  (delete-file-recursively "third_party")))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'do-not-install-third-parties
+                 (lambda _
+                   (substitute* "setup.py"
+                     (("third_parties = .*")
+                      "third_parties = []\n"))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     ;; Remove compiler flag that trips newer GCC:
+                     ;; https://github.com/serge-sans-paille/pythran/issues/908
+                     (substitute* "pythran/tests/__init__.py"
+                       (("'-Wno-absolute-value',")
+                        ""))
+                     (setenv "HOME" (getcwd))
+                     ;; This setup is modelled after the upstream CI system.
+                     (call-with-output-file ".pythranrc"
+                       (lambda (port)
+                         (format port "[compiler]\nblas=openblas~%")))
+                     (invoke "pytest" "-vv"
+                             (string-append "--numprocesses="
+                                            (number->string
+                                             (parallel-job-count)))
+                             "pythran/tests/test_cases.py")))))))
+    (native-inputs
+     ;; For tests.
+     (list openblas python-pytest python-pytest-xdist))
+    (propagated-inputs
+     (list boost xsimd                  ;headers need to be available
+           python-beniget python-gast python-numpy python-ply))
+    (synopsis "Ahead of Time compiler for numeric kernels")
+    (description
+     "Pythran is an ahead of time compiler for a subset of the Python
+language, with a focus on scientific computing.  It takes a Python module
+annotated with a few interface descriptions and turns it into a native
+Python module with the same interface, but (hopefully) faster.")
+    (license license:bsd-3)))
 
 (define-public python-bottleneck
   (package

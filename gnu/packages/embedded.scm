@@ -8,7 +8,7 @@
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
-;;; Copyright © 2020, 2021 Simon South <simon@simonsouth.net>
+;;; Copyright © 2020, 2021, 2022 Simon South <simon@simonsouth.net>
 ;;; Copyright © 2021 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2022 Mathieu Othacehe <othacehe@gnu.org>
 ;;;
@@ -56,12 +56,14 @@
   #:use-module (gnu packages libftdi)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages messaging)
+  #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages readline)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages version-control)
@@ -1486,47 +1488,45 @@ handling communication with eBUS devices connected to a 2-wire bus system
 (define-public ucsim
   (package
     (name "ucsim")
-    (version "0.6-pre68")
+    (version "0.7.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "http://mazsola.iit.uni-miskolc.hu/ucsim/download/unix/"
-                    "devel/ucsim-" version ".tar.gz"))
+                    "source/v" (version-major+minor version) ".x/"
+                    "ucsim-" version ".tar.gz"))
               (sha256
                (base32
-                "1bfj21f5pcfcg1xqqynlcfr8mn6qj5705cgc2lfr2s3n97qsd9df"))))
+                "080471wvkjdzxz5j3zdaq1apjcj84ql50kn26b7p4ansixnimml4"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags '("--enable-avr-port"
-                           "--enable-m6809-port"
-                           "--enable-p1516-port"
-                           "--enable-st7-port")
-       #:phases
+     `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-makefiles
            (lambda _
              (substitute* (find-files "." "(\\.mk$|\\.in$)")
-               (("/bin/sh") (which "sh")))
-             #t))
-         (add-after 'install 'remove-empty-directory
-           (lambda* (#:key outputs #:allow-other-keys)
-             (delete-file-recursively
-              (string-append (assoc-ref outputs "out") "/share/man"))
-             #t)))))
+               (("/bin/sh") (which "sh"))))))))
+    (inputs
+     (list ncurses))
     (native-inputs
-     (list bison flex))
+     (append (list bison flex)
+             ;; Certain tests use assemblers provided by SDCC.
+             (if (not (%current-target-system))
+                 (list sdcc)
+                 '())))
     (home-page "http://mazsola.iit.uni-miskolc.hu/ucsim/")
     (synopsis "Simulators for various microcontroller families")
     (description "μCsim is a collection of software simulators for
-microcontrollers in the Atmel AVR; Intel MCS-51 (8051); Motorola 68HC08 and
-6809; P1516; Padauk PDK13, PDK14 and PDK15; STMicroelectronics ST7 and STM8;
-and Zilog Z80 families, plus many of their variants.")
+microcontrollers in the Atmel AVR; Intel MCS-51 (8051); MOS Technology 6502;
+Motorola 6800, 68HC08 and 6809; P1516; Padauk PDK13, PDK14 and PDK15;
+STMicroelectronics ST7 and STM8; Xilinx PicoBlaze; and Zilog Z80 families,
+plus many of their variants.")
     (license license:gpl2+)))
 
 (define-public sdcc
   (package
     (name "sdcc")
-    (version "4.1.0")
+    (version "4.2.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1534,7 +1534,7 @@ and Zilog Z80 families, plus many of their variants.")
                     "/" version "/sdcc-src-" version ".tar.bz2"))
               (sha256
                (base32
-                "0gskzli17ghnn5qllvn4d56qf9bvvclqjh63nnj63p52smvggvc1"))
+                "0ly0m3q9vzjb9kcfjh79s77wpl4w7xhybzy4h9x0bmmw4cfsx6xl"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -1545,13 +1545,10 @@ and Zilog Z80 families, plus many of their variants.")
                   #t))
               (patches (search-patches "sdcc-disable-non-free-code.patch"))))
     (build-system gnu-build-system)
+    (inputs
+     (list readline))
     (native-inputs
-     `(("bison" ,bison)
-       ("boost" ,boost)
-       ("flex" ,flex)
-       ("python-2" ,python-2)
-       ("texinfo" ,texinfo)
-       ("zlib" ,zlib)))
+     (list bison boost flex python-2 texinfo zlib))
     (arguments
      `(;; GPUTILS is required for the PIC ports, but the licensing status of
        ;; some of the files contained in its distribution is unclear (see
@@ -1575,9 +1572,9 @@ and Zilog Z80 families, plus many of their variants.")
     (home-page "http://sdcc.sourceforge.net")
     (synopsis "C compiler suite for 8-bit microcontrollers")
     (description "SDCC is a retargetable, optimizing Standard C compiler suite
-that targets 8-bit microcontrollers in the Intel MCS-51 (8051); Motorola
-68HC08; Padauk PDK13, PDK14 and PDK15; STMicroelectronics STM8; and Zilog Z80
-families, plus many of their variants.")
+that targets 8-bit microcontrollers in the Intel MCS-51 (8051); MOS Technology
+6502; Motorola 68HC08; Padauk PDK13, PDK14 and PDK15; STMicroelectronics STM8;
+and Zilog Z80 families, plus many of their variants.")
     (license (list license:gpl2+
                    license:gpl3+
                    license:lgpl2.0+

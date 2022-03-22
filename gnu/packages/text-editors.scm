@@ -8,8 +8,8 @@
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2019, 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
-;;; Copyright © 2020, 2021 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2019, 2020, 2021, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2020-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Tom Zander <tomz@freedommail.ch>
 ;;; Copyright © 2020 Mark Meyer <mark@ofosos.org>
 ;;; Copyright © 2020 Maxime Devos <maximedevos@telenet.be>
@@ -52,6 +52,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages code)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages fontutils)
@@ -308,7 +309,7 @@ bindings and many of the powerful features of GNU Emacs.")
 (define-public jucipp
   (package
     (name "jucipp")
-    (version "1.6.3")
+    (version "1.7.1")
     (home-page "https://gitlab.com/cppit/jucipp")
     (source (origin
               (method git-fetch)
@@ -320,77 +321,75 @@ bindings and many of the powerful features of GNU Emacs.")
                                   (recursive? #t)))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1gy2xb5rm7q4zx9rl23h96b1i46fz27v25nklj50fvqp8ax2gxqy"))))
+               (base32 "0xyf1fa7jvxzvg1dxh5vc50fbwjjsar4fmlvbfhicdd1f8bhz1ii"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; Delete bundled copy of nlohmann/json.
+                  (delete-file-recursively "lib/json")))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags '("-DBUILD_TESTING=ON"
+     (list #:configure-flags #~(list "-DBUILD_TESTING=ON")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-tiny-process-library
+                 (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                   (with-directory-excursion "lib/tiny-process-library"
+                     (substitute* '("process_unix.cpp"
+                                    "tests/io_test.cpp")
+                       (("/bin/sh") (search-input-file (or native-inputs inputs)
+                                                       "bin/sh"))))))
+               (add-after 'unpack 'disable-some-tests
+                 (lambda _
+                   (substitute* "tests/CMakeLists.txt"
+                     ;; Disable the CMake build test, as it does not test
+                     ;; functionality of the package, and requires doing
+                     ;; an "in-source" build.
+                     (("add_test\\(cmake_build_test.*\\)")
+                      "")
+                     ;; Disable the git test, as it requires the full checkout.
+                     (("add_test\\(git_test.*\\)")
+                      ""))))
+               (add-before 'check 'pre-check
+                 (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                   ;; Tests do not expect HOME to be empty.
+                   (setenv "HOME" "/etc")
 
-                           ;; These arguments are here to facilitate an "in-source"
-                           ;; build using "./build" instead of the default "../build".
-                           ;; The test suite expects that to be the case.
-                           "..")
-       #:out-of-source? #f
-       #:phases (modify-phases %standard-phases
-                  (add-before 'configure 'enter-build-directory
-                    (lambda _
-                      (mkdir "build")
-                      (chdir "build")
-                      #t))
-
-                  (add-after 'unpack 'patch-tiny-process-library
-                    (lambda _
-                      (with-directory-excursion "lib/tiny-process-library"
-                        (substitute* '("process_unix.cpp"
-                                       "tests/io_test.cpp")
-                          (("/bin/sh") (which "sh"))))
-                      #t))
-                  (add-after 'unpack 'disable-git-test
-                    (lambda _
-                      (substitute* "tests/CMakeLists.txt"
-                        ;; Disable the git test, as it requires the full checkout.
-                        (("add_test\\(git_test.*\\)") ""))
-                      #t))
-                  (add-before 'check 'pre-check
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      ;; Tests do not expect HOME to be empty.
-                      (setenv "HOME" "/etc")
-
-                      ;; Most tests require an X server.
-                      (let ((xorg-server (assoc-ref inputs "xorg-server"))
-                            (display ":1"))
-                        (setenv "DISPLAY" display)
-                        (system (string-append xorg-server "/bin/Xvfb "
-                                               display " &")))
-                      #t))
-                  (add-after 'install 'wrap
-                    (lambda* (#:key inputs outputs #:allow-other-keys)
-                      ;; The package needs GTK+ and GtkSourceView on XDG_DATA_DIRS
-                      ;; for syntax highlighting to work.  shared-mime-info is
-                      ;; necessary for MIME handling.
-                      ;; XXX: Ideally we'd reuse glib-or-gtk-wrap here, but it
-                      ;; does not pick up $gtksourceview/share/gtksourceview-3.0.
-                      (let ((out (assoc-ref outputs "out"))
-                            (gtk+ (assoc-ref inputs "gtk+"))
-                            (gtksourceview (assoc-ref inputs "gtksourceview"))
-                            (shared-mime-info (assoc-ref inputs "shared-mime-info")))
-                        (wrap-program (string-append out "/bin/juci")
-                          `("XDG_DATA_DIRS" ":" prefix
-                            (,(string-join
-                               (map (lambda (pkg)
-                                      (string-append pkg "/share"))
-                                    (list out gtk+ gtksourceview shared-mime-info))
-                               ":"))))
-                        #t))))))
+                   ;; Most tests require an X server.
+                   (let ((xvfb (search-input-file (or native-inputs inputs)
+                                                  "bin/Xvfb"))
+                         (display ":1"))
+                     (setenv "DISPLAY" display)
+                     (system (string-append xvfb " " display " &")))))
+               (add-after 'install 'wrap
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   ;; The package needs GTK+ and GtkSourceView on XDG_DATA_DIRS
+                   ;; for syntax highlighting to work.  shared-mime-info is
+                   ;; necessary for MIME handling.
+                   ;; XXX: Ideally we'd reuse glib-or-gtk-wrap here, but it
+                   ;; does not pick up "share/gtksourceview-3.0".
+                   (wrap-program (string-append #$output "/bin/juci")
+                     `("XDG_DATA_DIRS" ":" prefix
+                       (,(string-join
+                          (cons (string-append #$output "/share")
+                                (map (lambda (directory)
+                                       (dirname (search-input-directory
+                                                 inputs
+                                                 (string-append "share/"
+                                                                directory))))
+                                     '("gtk-3.0" "gtksourceview-3.0" "mime")))
+                          ":")))))))))
     (native-inputs
      (list pkg-config xorg-server-for-tests))
     (inputs
-     `(("aspell" ,aspell)
-       ("boost" ,boost)
-       ("ctags" ,universal-ctags)
-       ("gtkmm" ,gtkmm-3)
-       ("gtksourceviewmm" ,gtksourceviewmm)
-       ("libclang" ,clang-11)     ;XXX: must be the same version as Mesas LLVM
-       ("libgit2" ,libgit2)))
+     (list aspell
+           boost
+           clang-11               ;XXX: must be the same version as Mesas LLVM
+           gtkmm-3
+           gtksourceviewmm
+           json-modern-cxx
+           libgit2
+           universal-ctags))
     (synopsis "Lightweight C++ IDE")
     (description
      "juCi++ is a small @acronym{IDE, Integrated Development Environment}
@@ -901,33 +900,34 @@ Octave.  TeXmacs is completely extensible via Guile.")
 (define-public scintilla
   (package
     (name "scintilla")
-    (version "5.1.5")
+    (version "5.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (let ((v (apply string-append (string-split version #\.))))
               (string-append "https://www.scintilla.org/scintilla" v ".tgz")))
        (sha256
-        (base32 "0mwyhjvmvxyip9z169bgpkz4k9la802z438m8bb0f4gyqfbif999"))))
+        (base32 "1q6z8v2anbdwcxqfqjs0mwl2z4cdzarj0hqxj86fvvdxsr25649r"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags (list "GTK3=1"
-                          ,(string-append "CC=" (cc-for-target))
-                          "-Cgtk")
-       #:tests? #f                      ;require un-packaged Pyside
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ;no configure script
-         (replace 'install
-           ;; Upstream provides no install script.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (lib (string-append out "/lib"))
-                    (include (string-append out "/include")))
-               (for-each (lambda (f) (install-file f lib))
-                         (find-files "bin/" "\\.so$"))
-               (for-each (lambda (f) (install-file f include))
-                         (find-files "include/" "."))))))))
+     (list
+      #:make-flags
+      #~(list "GTK3=1"
+              (string-append "CC=" #$(cc-for-target))
+              "-Cgtk")
+      #:tests? #f                       ;require un-packaged Pyside
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)           ;no configure script
+          (replace 'install
+            ;; Upstream provides no install script.
+            (lambda _
+              (let ((lib (string-append #$output "/lib"))
+                    (inc (string-append #$output "/include")))
+                (for-each (lambda (f) (install-file f lib))
+                          (find-files "bin/" "\\.so$"))
+                (for-each (lambda (f) (install-file f inc))
+                          (find-files "include/" "."))))))))
     (native-inputs
      (list pkg-config python-wrapper))
     (inputs

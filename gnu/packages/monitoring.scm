@@ -7,7 +7,7 @@
 ;;; Copyright © 2018, 2019, 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Alex ter Weele <alex.ter.weele@gmail.com>
 ;;; Copyright © 2020 Lars-Dominik Braun <ldb@leibniz-psychology.org>
-;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2021, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021 Raphaël Mélotte <raphael.melotte@mind.be>
 ;;;
@@ -164,7 +164,7 @@ etc. via a Web interface.  Features include:
 (define-public zabbix-agentd
   (package
     (name "zabbix-agentd")
-    (version "5.2.6")
+    (version "6.0.0")
     (source
      (origin
        (method url-fetch)
@@ -172,23 +172,28 @@ etc. via a Web interface.  Features include:
              "https://cdn.zabbix.com/zabbix/sources/stable/"
              (version-major+minor version) "/zabbix-" version ".tar.gz"))
        (sha256
-        (base32 "100n1rv7r4pqagxxifzpcza5bhrr2fklzx7gndxwiyq4597p1jvn"))))
+        (base32 "0dlb5c34lwd3j754pgaddsvpqad5c5yqbh25y4qxfpiy4fzqmw2y"))
+       (modules '((guix build utils)))
+       (snippet
+        '(substitute* '("src/zabbix_proxy/proxy.c"
+                        "src/zabbix_server/server.c")
+           ;; 'fping' must be setuid, so look for it in the usual location.
+           (("/usr/sbin/fping6?")
+            "/run/setuid-programs/fping")))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list "--enable-agent"
-             "--enable-ipv6"
-             (string-append "--with-iconv="
-                            (assoc-ref %build-inputs "libiconv"))
-             (string-append "--with-libpcre="
-                            (assoc-ref %build-inputs "pcre")))))
+     '(#:configure-flags
+       '("--enable-agent" "--enable-ipv6" "--with-libpcre2")))
     (inputs
-     (list libiconv pcre))
+     (list pcre2))
     (home-page "https://www.zabbix.com/")
     (synopsis "Distributed monitoring solution (client-side agent)")
     (description "This package provides a distributed monitoring
 solution (client-side agent)")
-    (license license:gpl2)))
+    (license license:gpl2+)
+    (properties
+     '((release-monitoring-url . "https://www.zabbix.com/download_sources")
+       (upstream-name . "zabbix")))))
 
 (define-public zabbix-server
   (package
@@ -196,10 +201,10 @@ solution (client-side agent)")
     (name "zabbix-server")
     (outputs '("out" "front-end" "schema"))
     (arguments
-     (substitute-keyword-arguments
-         `(#:phases
-           (modify-phases %standard-phases
-             (add-after 'install 'install-front-end
+     (substitute-keyword-arguments (package-arguments zabbix-agentd)
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'install 'install-front-end
                (lambda* (#:key outputs #:allow-other-keys)
                  (let* ((php (string-append (assoc-ref outputs "front-end")
                                             "/share/zabbix/php"))
@@ -207,11 +212,10 @@ solution (client-side agent)")
                         (etc (string-append php "/etc")))
                    (mkdir-p php)
                    (copy-recursively "ui" php)
-                   ;; Make front-end write config to ‘/etc/zabbix’ directory.
+                   ;; Make front-end read config from ‘/etc/zabbix’ directory.
                    (rename-file front-end-conf
                                 (string-append front-end-conf "-example"))
-                   (symlink "/etc/zabbix" front-end-conf))
-                 #t))
+                   (symlink "/etc/zabbix" front-end-conf))))
              (add-after 'install 'install-schema
                (lambda* (#:key outputs #:allow-other-keys)
                  (let ((database-directory
@@ -220,30 +224,27 @@ solution (client-side agent)")
                    (for-each delete-file
                              (find-files "database" "Makefile\\.in|\\.am$"))
                    (mkdir-p database-directory)
-                   (copy-recursively "database" database-directory))
-                 #t)))
-           ,@(package-arguments zabbix-agentd))
-       ((#:configure-flags flags)
-        `(cons* "--enable-server"
-                "--with-postgresql"
-                (string-append "--with-libevent="
-                               (assoc-ref %build-inputs "libevent"))
-                "--with-net-snmp"
-                (string-append "--with-gnutls="
-                               (assoc-ref %build-inputs "gnutls"))
-                "--with-libcurl"
-                (string-append "--with-zlib="
-                               (assoc-ref %build-inputs "zlib"))
-                ,flags))))
+                   (copy-recursively "database" database-directory))))))
+       ((#:configure-flags flags ''())
+        #~(append (list "--enable-server"
+                        "--with-postgresql"
+                        (string-append "--with-libevent="
+                                       (assoc-ref %build-inputs "libevent"))
+                        "--with-net-snmp"
+                        (string-append "--with-gnutls="
+                                       (assoc-ref %build-inputs "gnutls"))
+                        "--with-libcurl"
+                        (string-append "--with-zlib="
+                                       (assoc-ref %build-inputs "zlib")))
+                  (delete "--enable-agent" #$flags)))))
     (inputs
      (modify-inputs (package-inputs zabbix-agentd)
        (prepend curl
                 libevent
                 gnutls
-                postgresql
-                zlib
                 net-snmp
-                curl)))
+                postgresql
+                zlib)))
     (synopsis "Distributed monitoring solution (server-side)")
     (description "This package provides a distributed monitoring
 solution (server-side)")))

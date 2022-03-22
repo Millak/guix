@@ -158,7 +158,7 @@ things the parser might find in the XML document (like start tags).")
 (define expat/fixed
   (package
     (inherit expat)
-    (version "2.4.3")
+    (version "2.4.7")
     (source (let ((dot->underscore (lambda (c) (if (char=? #\. c) #\_ c))))
               (origin
                 (method url-fetch)
@@ -170,7 +170,7 @@ things the parser might find in the XML document (like start tags).")
                             "/expat-" version ".tar.xz")))
                 (sha256
                  (base32
-                  "12kp4h40cpyqqpjqaldag0xq4ig1ljzpkzy9i2marc7blnqz3ydi")))))))
+                  "0zbss0dssn17mjmvk17qfi5cmvm0lcyzs62cwvqr219hhl864xcq")))))))
 
 (define-public libebml
   (package
@@ -1467,9 +1467,6 @@ files.  It is designed to be fast and to handle large input files.")
     (description
      "Defusedxml provides XML bomb protection for Python stdlib modules.")
     (license license:psfl)))
-
-(define-public python2-defusedxml
-  (package-with-python2 python-defusedxml))
 
 (define-public freexl
   (package

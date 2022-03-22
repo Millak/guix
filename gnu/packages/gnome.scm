@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Ian Denhardt <ian@zenhack.net>
 ;;; Copyright © 2014, 2016, 2020 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2014, 2015 Federico Beffa <beffa@fbengineering.ch>
@@ -51,10 +51,10 @@
 ;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Naga Malleswari <nagamalli@riseup.net>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
-;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
 ;;; Copyright © 2020, 2021 Andy Tai <atai@atai.org>
 ;;; Copyright © 2020, 2021 Sébastien Lerique <sl@eauchat.org>
@@ -62,7 +62,7 @@
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
 ;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
-;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2021, 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Josselin Poiret <josselin.poiret@protonmail.ch>
 ;;; Copyright © 2021 Mathieu Othacehe <othacehe@gnu.org>
 ;;; Copyright © 2022 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
@@ -158,6 +158,7 @@
   #:use-module (gnu packages mail)
   #:use-module (gnu packages man)
   #:use-module (gnu packages markup)
+  #:use-module (gnu packages messaging)
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages music)
@@ -688,23 +689,20 @@ of writing test cases for asynchronous interactions.")
                (substitute* "dee-1.0-docs.sgml"
                  (("http://www.oasis-open.org/docbook/xml/4.3/")
                   (string-append (assoc-ref inputs "docbook-xml")
-                                 "/xml/dtd/docbook/"))))
-             #t))
+                                 "/xml/dtd/docbook/"))))))
          (add-after 'patch-docbook-xml 'disable-failing-tests
            (lambda _
              (substitute* "tests/test-icu.c"
                (("g_test_add \\(DOMAIN\"/Default/AsciiFolder\", Fixture, 0,")
                 "")
                (("setup, test_ascii_folder, teardown\\);")
-                ""))
-             #t))
+                ""))))
          (add-before 'check 'pre-check
            (lambda _
              ;; Tests require a running dbus-daemon.
              (system "dbus-daemon &")
              ;; For missing '/etc/machine-id'.
-             (setenv "DBUS_FATAL_WARNINGS" "0")
-             #t)))))
+             (setenv "DBUS_FATAL_WARNINGS" "0"))))))
     (native-inputs
      `(("dbus" ,dbus)
        ("dbus-test-runner" ,dbus-test-runner)
@@ -716,7 +714,7 @@ of writing test cases for asynchronous interactions.")
        ("pkg-config" ,pkg-config)
        ("pygobject" ,python-pygobject)
        ("python" ,python-wrapper)
-       ("vala" ,vala)))
+       ("vala" ,vala-0.52)))
     (inputs
      `(("icu" ,icu4c)))
     (propagated-inputs
@@ -736,7 +734,7 @@ of known objects without needing a central registrar.")
 (define-public zeitgeist
   (package
     (name "zeitgeist")
-    (version "1.0.3")
+    (version "1.0.4")
     (source
      (origin
        (method git-fetch)
@@ -748,7 +746,7 @@ of known objects without needing a central registrar.")
        (file-name
         (git-file-name name version))
        (sha256
-        (base32 "0y6fyzxl5np4yskcxibd0p03h619w9ir907nhf40h02y0pk1kgkp"))))
+        (base32 "07b1ahj3vd3m8srwkrh7dl3ymr7d55xiiszny44q13g06pq4svch"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:configure-flags
@@ -764,8 +762,7 @@ of known objects without needing a central registrar.")
                (substitute* "zeitgeist-gtkdoc-index.sgml"
                  (("http://www.oasis-open.org/docbook/xml/4.3/")
                   (string-append (assoc-ref inputs "docbook-xml")
-                                 "/xml/dtd/docbook/"))))
-             #t))
+                                 "/xml/dtd/docbook/"))))))
          (add-after 'patch-docbook-xml 'disable-failing-tests
            (lambda _
              (substitute* "test/direct/Makefile.am"
@@ -773,13 +770,11 @@ of known objects without needing a central registrar.")
                 ""))
              (substitute* "test/c/Makefile.am"
                (("	test-log ")
-                ""))
-             #t))
+                ""))))
          (add-before 'bootstrap 'remove-autogen-script
            (lambda _
              ;; To honor `autoreconf -vif` by build-system.
-             (delete-file "autogen.sh")
-             #t)))))
+             (delete-file "autogen.sh"))))))
     (native-inputs
      `(("autoconf" ,autoconf)
        ("automake" ,automake)
@@ -1855,7 +1850,7 @@ either on a local, or remote machine via a number of methods.")
 (define-public gnome-commander
   (package
     (name "gnome-commander")
-    (version "1.12.3.1")
+    (version "1.14.0")
     (source
      (origin
        (method url-fetch)
@@ -1863,10 +1858,11 @@ either on a local, or remote machine via a number of methods.")
                            (version-major+minor version)  "/"
                            "gnome-commander-" version ".tar.xz"))
        (sha256
-        (base32 "0fhmfxh6kbchggvpbin7d4g4fq5vc49y0w48wdkyxln5dswidss2"))))
+        (base32 "1zdz82j7vpxiqa188zmsxliqk60g331ycaxfbhx5bzyqfjgrh7gd"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list desktop-file-utils
+           flex
            gettext-minimal
            `(,glib "bin")
            gobject-introspection
@@ -1876,7 +1872,7 @@ either on a local, or remote machine via a number of methods.")
            libtool
            pkg-config))
     (inputs
-     (list gconf gnome-vfs gtk+-2 libxml2))
+     (list gconf glib gtk+-2 libxml2))
     (home-page "https://gcmd.github.io/")
     (synopsis "Two-pane graphical file manager for the GNOME desktop")
     (description
@@ -1914,8 +1910,8 @@ and system administrators.")
   ;; recent versions of the build tools.  The latest activity on the
   ;; pre-GNOME version has been in 2014, while GNOME has continued applying
   ;; fixes since.
-  (let ((commit "3cf7ec4c2e5bca139a7f3e17f9fc9009c237fcc5")
-        (revision "2"))
+  (let ((commit "0997887d97f01be28bf3886dfd3e2002de437930")
+        (revision "3"))
     (package
       (name "dia")
       (version (git-version "0.97.3" revision commit))
@@ -1927,9 +1923,11 @@ and system administrators.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "04r8dspa6nmicrifhi3sh46hqvyy88hzq37xx99q3q1mwsrpmwy8"))))
+                  "199b4n1jydg1g9lnz0r8xx67h7s2ac2lfj89zp015lbs0qqfkmsh"))))
       (build-system meson-build-system)
-      (arguments `(#:meson ,meson-0.59))
+      ;; XXX: Parallel builds may cause: [74/566] [...]
+      ;; fatal error: dia-lib-enums.h: No such file or directory
+      (arguments '(#:parallel-build? #f))
       (inputs
        (list graphene
              gtk+-2
@@ -1939,12 +1937,10 @@ and system administrators.")
              ;; XXX: PDF plugin fails to build with poppler 21.07.0.
              ;; poppler
 
-             ;; Without Python 2, build fails: plug-ins/python/meson.build:4:0:
-             ;; ERROR: Unknown method "dependency" in object.
-             python-2))
+             python))
       (native-inputs
        (list appstream-glib docbook-xsl
-             `(,glib "bin") intltool pkg-config))
+             `(,glib "bin") gettext-minimal pkg-config))
       (home-page "https://wiki.gnome.org/Apps/Dia")
       (synopsis "Diagram creation for GNOME")
       (description "Dia can be used to draw different types of diagrams, and
@@ -2933,7 +2929,7 @@ database is translated at Transifex.")
 (define-public system-config-printer
   (package
     (name "system-config-printer")
-    (version "1.5.15")
+    (version "1.5.16")
     (source
      (origin
        (method url-fetch)
@@ -2942,45 +2938,50 @@ database is translated at Transifex.")
              "download/v" version
              "/system-config-printer-" version ".tar.xz"))
        (sha256
-        (base32 "12d6xx51vizc476zfnsga9q09nflp51ipn6y7lhi9w2v4772dlpv"))))
+        (base32 "1z9pvgifj5c87csnqz10qybbcayh3ak9m606f63ifkvyjh4q9jnb"))))
     (build-system glib-or-gtk-build-system)
     (arguments
-     `(#:imported-modules ((guix build python-build-system)
+     (list
+      #:imported-modules `((guix build python-build-system)
                            ,@%glib-or-gtk-build-system-modules)
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-Makefile.am
-           (lambda _
-             ;; The Makefile generates some scripts, so set a valid shebang
-             (substitute* "Makefile.am"
-               (("/bin/bash") (which "bash")))
-             (delete-file "configure")
-             #t))
-         (add-after 'unpack 'patch-docbook-xml
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Modify the man XML otherwise xmlto tries to access the network
-             (substitute* "man/system-config-printer.xml"
-               (("http://www.oasis-open.org/docbook/xml/4.1.2/")
-                (string-append (assoc-ref inputs "docbook-xml")
-                               "/xml/dtd/docbook/")))
-             #t))
-         (add-after 'install 'wrap-for-python
-           (@@ (guix build python-build-system) wrap))
-         (add-after 'install 'wrap
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out               (assoc-ref outputs "out"))
-                   (gi-typelib-path   (getenv "GI_TYPELIB_PATH")))
-               (for-each
-                (lambda (program)
-                  (wrap-program program
-                    `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))))
-                (map (lambda (name)
-                       (string-append out "/bin/" name))
-                     '("system-config-printer"
-                       "system-config-printer-applet"
-                       "install-printerdriver"
-                       "scp-dbus-service"))))
-             #t)))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-build-files
+            (lambda _
+              (substitute* "configure.ac"
+                (("AC_INIT.*" all)
+                 (string-append all "\nAC_CONFIG_MACRO_DIR([m4])\n"))
+                ;; XXX: AX macros appear unavailable
+                (("AX_REQUIRE_DEFINED.*") ""))
+              ;; The Makefile generates some scripts, so set a valid shebang
+              (substitute* "Makefile.am"
+                (("/bin/bash") (which "bash")))
+              (delete-file "configure")))
+          (add-after 'unpack 'patch-docbook-xml
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Modify the man XML otherwise xmlto tries to access the network
+              (substitute* "man/system-config-printer.xml"
+                (("http://www.oasis-open.org/docbook/xml/4.1.2/")
+                 (string-append (assoc-ref inputs "docbook-xml")
+                                "/xml/dtd/docbook/")))))
+          (add-after 'install 'add-install-to-pythonpath
+            (@@ (guix build python-build-system) add-install-to-pythonpath))
+          (add-after 'add-install-to-pythonpath 'wrap-for-python
+            (@@ (guix build python-build-system) wrap))
+          (add-after 'install 'wrap
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((out               (assoc-ref outputs "out"))
+                    (gi-typelib-path   (getenv "GI_TYPELIB_PATH")))
+                (for-each
+                 (lambda (program)
+                   (wrap-program program
+                     `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))))
+                 (map (lambda (name)
+                        (string-append out "/bin/" name))
+                      '("system-config-printer"
+                        "system-config-printer-applet"
+                        "install-printerdriver"
+                        "scp-dbus-service")))))))))
     (inputs
      (list gsettings-desktop-schemas
            gobject-introspection
@@ -3000,7 +3001,7 @@ database is translated at Transifex.")
            glib
            autoconf
            automake
-           intltool
+           gettext-minimal
            xmlto
            docbook-xml-4.1.2
            docbook-xsl
@@ -3507,18 +3508,9 @@ for dealing with different structured file formats.")
            `(,glib "bin")
            gobject-introspection
            pkg-config
-           python-wrapper
-           ruby
            vala))
     (inputs
-     (list bzip2
-           fontconfig
-           freetype
-           harfbuzz
-           libcroco
-           libgsf
-           libxml2
-           pango))
+     (list freetype harfbuzz libxml2 pango))
     (propagated-inputs
      (list cairo gdk-pixbuf glib))
     (synopsis "SVG rendering library")
@@ -3609,7 +3601,7 @@ diagrams.")
            `(,glib "bin") ; glib-mkenums, etc.
            gobject-introspection)) ; g-ir-compiler, etc.
     (inputs
-     (list pango libcroco bzip2 libgsf libxml2))
+     (list pango libcroco libxml2))
     (propagated-inputs
      ;; librsvg-2.0.pc refers to all of that.
      (list cairo gdk-pixbuf glib))
@@ -5106,6 +5098,7 @@ and other secrets.  It communicates with the \"Secret Service\" using DBus.")
        ("desktop-file-utils" ,desktop-file-utils)
        ("intltool" ,intltool)
        ("itstool" ,itstool)
+       ("python" ,python-wrapper)       ; for meson_post_install.py
        ("vala" ,vala)
        ("yelp" ,yelp)
        ("appstream-glib" ,appstream-glib)))
@@ -5182,13 +5175,14 @@ once.")
              (substitute* "build-aux/post_install.py"
                (("gtk-update-icon-cache") (which "true"))))))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("desktop-file-utils" ,desktop-file-utils)
-       ("glib:bin" ,glib "bin") ; for glib-compile-resources
-       ("intltool" ,intltool)
-       ("itstool" ,itstool)
-       ("vala" ,vala)
-       ("xmllint" ,libxml2)))
+     (list pkg-config
+           python                             ;for 'build-aux/post_install.py'
+           desktop-file-utils
+           `(,glib "bin")                         ;for glib-compile-resources
+           intltool
+           itstool
+           vala
+           libxml2))
     (inputs
      (list gtk+ json-glib libgee librsvg qqwing))
     (home-page "https://wiki.gnome.org/Apps/Sudoku")
@@ -5440,55 +5434,47 @@ faster results and to avoid unnecessary server load.")
 (define-public upower
   (package
     (name "upower")
-    (version "0.99.13")
+    (version "0.99.15")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://gitlab.freedesktop.org/upower/upower")
-             (commit (string-append "UPOWER_"
-                                    (string-map (match-lambda (#\. #\_)
-                                                              (chr chr))
-                                                version)))))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0khwg6jpq81dcylkpi7cn75bjzif0q9qscwvirrk41krma23iddj"))
-       (patches (search-patches "upower-builddir.patch"))
+        (base32 "1zk7w7pw8dhlnxhxzcbk33gmxmg8f32mppd67556v9z2qgcg4lhs"))
        (modules '((guix build utils)))
        (snippet
-        '(begin
-           ;; Upstream commit
-           ;; <https://cgit.freedesktop.org/upower/commit/?id=18457c99b68786cd729b315723d680e6860d9cfa>
-           ;; moved 'dbus-1/system.d' from etc/ to share/.  However,
-           ;; 'dbus-configuration-directory' in (gnu services dbus)
-           ;; expects it in etc/.  Thus, move it back to its previous
-           ;; location.
-           (substitute* "src/Makefile.am"
-             (("^dbusconfdir =.*$")
-              "dbusconfdir = $(sysconfdir)/dbus-1/system.d\n"))))))
-    (build-system glib-or-gtk-build-system)
+         ;; Upstream commit
+         ;; <https://cgit.freedesktop.org/upower/commit/?id=18457c99b68786cd729b315723d680e6860d9cfa>
+         ;; moved 'dbus-1/system.d' from etc/ to share/.  However,
+         ;; 'dbus-configuration-directory' in (gnu services dbus)
+         ;; expects it in etc/.  Thus, move it back to its previous
+         ;; location.
+         #~(substitute* "src/meson.build"
+            (("dbusdir / 'system.d'")
+              "get_option('sysconfdir') / 'dbus-1/system.d'")
+            ;; Avoid writing to /var during the build, this is
+            ;; not possible in Guix!
+            (("^install_subdir\\('does-not-exist'.*$") "")))))
+    (build-system meson-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'pre-check
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((umockdev (string-append (assoc-ref inputs "umockdev")
-                                            "/lib")))
-               (setenv "LD_LIBRARY_PATH" umockdev)))))
-       #:configure-flags (list "--localstatedir=/var"
-                               (string-append "--with-udevrulesdir="
-                                              (assoc-ref %outputs "out")
-                                              "/lib/udev/rules.d"))))
+      (list
+       #:glib-or-gtk? #t
+       #:configure-flags
+       #~(list "-Dsystemdsystemunitdir=no"
+               ;; If not specified, udev will try putting history information
+               ;; in /gnu/store.
+               "-Dhistorydir=/var/lib/upower"
+               (string-append "-Dudevrulesdir=" #$output "/bin/udev/rules.d"))))
     (native-inputs
-     (list autoconf
-           automake
+     (list `(,glib "bin") ; for gdbus-codegen
            gobject-introspection
            gtk-doc
            intltool
-           libtool
            pkg-config
            python
-           which ; for ./autogen.sh
            ;; For tests.
            python-dbus
            python-dbusmock
@@ -5511,7 +5497,11 @@ faster results and to avoid unnecessary server load.")
 listening to device events and querying history and statistics.  Any
 application or service on the system can access the org.freedesktop.UPower
 service via the system message bus.")
-    (license license:gpl2+)))
+    (license license:gpl2+)
+    ;; Old versions of upower are tagged as UPOWER_0_99_13, which confuses
+    ;; the 'generic-git' updater.  Give it a little help.
+    (properties '((release-tag-prefix . "v")
+                  (release-tag-version-delimiter . ".")))))
 
 (define-public libgweather
   (package
@@ -6430,7 +6420,8 @@ supports playlists, song ratings, and any codecs installed through gstreamer.")
             (patches (search-patches "eog-update-libportal-usage.patch"))))
    (build-system meson-build-system)
    (arguments
-    `(#:configure-flags
+    `(#:glib-or-gtk? #t
+      #:configure-flags
       ;; Otherwise, the RUNPATH will lack the final 'eog' path component.
       (list (string-append "-Dc_link_args=-Wl,-rpath="
                            (assoc-ref %outputs "out") "/lib/eog"))
@@ -6477,7 +6468,7 @@ supports image conversion, rotation, and slideshows.")
 
 (define-public eog-plugins
   ;; Note: EOG looks for its plugins (via libpeas) in ~/.local as well as
-  ;; $DATA/lib/eog/plugins, where DATA is one of the entries in
+  ;; $DATA/eog/plugins, where DATA is one of the entries in
   ;; $XDG_DATA_DIRS.  Thus, for EOG to find these, you have to have
   ;; 'XDG_DATA_DIRS' appropriately set.
   (package
@@ -6492,6 +6483,17 @@ supports image conversion, rotation, and slideshows.")
                (base32
                 "1dcxdjp7x092wn0iq7975f9b05ksb5kl5mxmyiqmydrja91ryw40"))))
     (build-system gnu-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'fix-plugins-path
+           ;; XXX: EOG looks its plugins in "share/eog/plugins", not in
+           ;; "lib/eog/plugins".
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (plugins (string-append out "/share/eog/plugins")))
+               (mkdir (dirname plugins))
+               (symlink (string-append out "/lib/eog/plugins") plugins)))))))
     (home-page "https://wiki.gnome.org/Apps/EyeOfGnome/Plugins")
     (synopsis "Extensions for the Eye of GNOME image viewer")
     (native-inputs
@@ -7476,7 +7478,12 @@ to display dialog boxes from the commandline and shell scripts.")
              ;; expression paragraph.  For an explanation, see: info '(sed)
              ;; Multiline techniques'.
              (invoke "sed" "/./{H;$!d} ; x ; s/^.*native-headless.*$//"
-                     "-i" "src/tests/meson.build")))
+                     "-i" "src/tests/meson.build")
+             ;; Timeline tests may unexpectedly fail on missed frames, so
+             ;; let's disable them as well.
+             ;; See <https://gitlab.gnome.org/GNOME/mutter/-/issues/2125>
+             (substitute* "src/tests/clutter/conform/meson.build"
+               (("'timeline.*',") ""))))
          (replace 'check
            (lambda* (#:key tests? test-options parallel-tests?
                      #:allow-other-keys)
@@ -7679,14 +7686,13 @@ Microsoft Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
                              '("addressbook-backends" "calendar-backends"
                                "camel-providers" "credential-modules"
                                "registry-modules"))))
-         (list "-DENABLE_UOA=OFF"             ;disable Ubuntu Online Accounts support
-               "-DENABLE_GOOGLE=OFF"          ;disable Google Contacts support
-               "-DENABLE_GOOGLE_AUTH=OFF"     ;disable Google authentication
+         (list "-DENABLE_GOOGLE=OFF"          ;disable Google Contacts support
                "-DENABLE_VALA_BINDINGS=ON"
                (string-append "-DCMAKE_INSTALL_RPATH=" lib ";"
                               (string-append lib "/evolution-data-server;")
                               (string-join runpaths ";"))
-               "-DENABLE_INTROSPECTION=ON"))  ;required for Vala bindings
+               "-DENABLE_INTROSPECTION=ON" ;required for Vala bindings
+               "-DWITH_PHONENUMBER=ON"))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'disable-failing-tests
@@ -7716,6 +7722,7 @@ Microsoft Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
        ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
        ("intltool" ,intltool)
        ("pkg-config" ,pkg-config)
+       ("protobuf" ,protobuf)
        ("vala" ,vala)
        ("python" ,python-wrapper)))
     (propagated-inputs
@@ -7728,11 +7735,13 @@ Microsoft Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
        ("sqlite" ,sqlite)))
     (inputs
      `(("bdb" ,bdb)
+       ("boost" ,boost)
        ("gcr" ,gcr)
        ("gnome-online-accounts:lib" ,gnome-online-accounts "lib")
        ("json-glib" ,json-glib)
        ("libcanberra" ,libcanberra)
        ("libgweather" ,libgweather)
+       ("libphonenumber" ,libphonenumber)
        ("mit-krb5" ,mit-krb5)
        ("openldap" ,openldap)
        ("webkitgtk" ,webkitgtk-with-libsoup2)))
@@ -11132,7 +11141,8 @@ functionality.")
        ("gtk+:bin" ,gtk+ "bin")                   ; for gtk-update-icon-cache
        ("intltool" ,intltool)
        ("itstool" ,itstool)
-       ("pkg-config" ,pkg-config)))
+       ("pkg-config" ,pkg-config)
+       ("python" ,python)))
     (inputs
      `(("clutter" ,clutter)
        ("clutter-gst" ,clutter-gst)
@@ -11342,58 +11352,42 @@ higher level porcelain stuff.")
 (define-public gitg
   (package
     (name "gitg")
-    (version "3.32.1")
+    (version "41")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
-                                  (version-major+minor version) "/"
+                                  (version-major version) "/"
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0npg4kqpwl992fgjd2cn3fh84aiwpdp9kd8z7rw2xaj2iazsm914"))))
+                "0aa6djcf7rjw0q688mfy47k67bbjpnx6aw1xs94abfhgn6gipdkz"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-post-install-partially
-           (lambda _
-             (substitute* "meson_post_install.py"
-               (("'python'") ; there are no python sources to compile
-                (string-append "'" (which "true") "'"))
-               (("gtk-update-icon-cache") (which "true")))
-             #t))
-         (add-after 'unpack 'fix-test-sources
-           (lambda _
-             (substitute* "tests/libgitg/test-commit.vala"
-               (("/bin/bash") (which "bash")))
-             #t))
-         ;; XXX: Remove upon next version bump
-         (add-after 'unpack 'harden
-           (lambda _
-             ;; See <https://gitlab.gnome.org/GNOME/gitg/-/issues/337>
-             (substitute* "libgitg/gitg-date.vala"
-               (("(val\|tzs) == null" all val)
-                (string-append val " == null || " val " == \"\""))
-               (("(val\|tzs) != null" all val)
-                (string-append val " != null && " val " != \"\"")))
-             ;; See <https://gitlab.gnome.org/GNOME/gitg/-/merge_requests/159>
-             (substitute* "gitg/gitg-action-support.vala"
-               (("stash_if_needed\\((.*), Gitg.Ref head" all other)
-                (string-append "stash_if_needed(" other ", Gitg.Ref? head")))))
-         (add-after 'glib-or-gtk-wrap 'wrap-typelib
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((prog (string-append (assoc-ref outputs "out")
-                                        "/bin/gitg")))
-               (wrap-program prog
-                 `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))
-               #t))))))
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-post-install-partially
+            (lambda _
+              (substitute* "meson_post_install.py"
+                (("'python'") ; there are no python sources to compile
+                 (string-append "'" (which "true") "'"))
+                (("gtk-update-icon-cache") (which "true")))))
+          (add-after 'unpack 'fix-test-sources
+            (lambda _
+              (substitute* "tests/libgitg/test-commit.vala"
+                (("/bin/bash") (which "bash")))))
+          (add-after 'glib-or-gtk-wrap 'wrap-typelib
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((prog (string-append #$output "/bin/gitg")))
+                (wrap-program prog
+                  `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))))))))
     (inputs
      (list glib
            gsettings-desktop-schemas
+           gspell
            gtk+
-           gtkspell3
-           gtksourceview-3
+           gtksourceview
            json-glib
            libdazzle
            libgee
@@ -11403,12 +11397,13 @@ higher level porcelain stuff.")
            libsoup-minimal-2
            libxml2))
     (native-inputs
-     `(("glib:bin" ,glib "bin")
-       ("gtk+:bin" ,gtk+ "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)
-       ("vala" ,vala)))
+     (list `(,glib "bin")
+           `(,gtk+ "bin")
+           gobject-introspection
+           intltool
+           pkg-config
+           python
+           vala))
     (synopsis "Graphical user interface for git")
     (description
      "gitg is a graphical user interface for git.  It aims at being a small,
@@ -12411,7 +12406,7 @@ profiler via Sysprof, debugging support, and more.")
 (define-public komikku
   (package
     (name "komikku")
-    (version "0.36.1")
+    (version "0.37.0")
     (source
      (origin
        (method git-fetch)
@@ -12421,7 +12416,7 @@ profiler via Sysprof, debugging support, and more.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0iqis1b248gj1jb1yzw5dcs99bm078hixg9ir0vb961ymwzv2mmc"))))
+         "1ab17xjpfy9ks6dzgcnh2p5n9hl82mi6f8zbaz7s36115dmp4fbf"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t

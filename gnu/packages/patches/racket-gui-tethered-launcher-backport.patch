@@ -1,0 +1,26 @@
+From aa792e707b1fbc5cc33691bfaee5828dc3fbebaa Mon Sep 17 00:00:00 2001
+From: Matthew Flatt <mflatt@racket-lang.org>
+Date: Mon, 31 Jan 2022 15:31:22 -0700
+Subject: [PATCH] fix creation of tethered launchers
+
+Related to racket/racket#4133
+
+(cherry picked from commit 563c68432f127729592f234ef30c31e92618b517)
+---
+ gui-lib/mred/installer.rkt | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/gui-lib/mred/installer.rkt b/gui-lib/mred/installer.rkt
+index b1691472..9ef06c53 100644
+--- a/gui-lib/mred/installer.rkt
++++ b/gui-lib/mred/installer.rkt
+@@ -72,4 +72,5 @@
+    (list "-A" (path->string (find-system-path 'addon-dir)))))
+ 
+ (define (config-flags)
+-  (list "-G" (path->string (find-config-dir))))
++  (list "-X" (path->string (find-collects-dir))
++        "-G" (path->string (find-config-dir))))
+-- 
+2.32.0
+

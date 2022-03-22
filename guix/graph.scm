@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2016, 2020-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -22,10 +22,13 @@
   #:use-module (guix monads)
   #:use-module (guix records)
   #:use-module (guix sets)
+  #:autoload   (guix diagnostics) (formatted-message)
+  #:autoload   (guix i18n) (G_)
   #:use-module (rnrs io ports)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-26)
+  #:use-module (srfi srfi-34)
   #:use-module (ice-9 match)
   #:use-module (ice-9 vlist)
   #:export (node-type
@@ -47,6 +50,8 @@
             %graph-backends
             %d3js-backend
             %graphviz-backend
+            lookup-backend
+
             graph-backend?
             graph-backend
             graph-backend-name
@@ -334,6 +339,13 @@ nodeArray.push(nodes[\"~a\"]);~%"
   (list %graphviz-backend
         %d3js-backend
         %cypher-backend))
+
+(define (lookup-backend name)
+  "Return the graph backend called NAME.  Raise an error if it is not found."
+  (or (find (lambda (backend)
+              (string=? (graph-backend-name backend) name))
+            %graph-backends)
+      (raise (formatted-message (G_ "~a: unknown graph backend") name))))
 
 (define* (export-graph sinks port
                        #:key

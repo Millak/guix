@@ -15,7 +15,7 @@
 ;;; Copyright © 2018 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2018 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2019 Taylan Kammer <taylan.kammer@gmail.com>
-;;; Copyright © 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Timothy Sample <samplet@ngyro.com>
 ;;;
@@ -389,18 +389,36 @@ without requiring the source code to be rewritten.")
                      "share/guile/site/3.0")))))))
 
 (define-public guile-3.0-latest
-  guile-3.0)
-
-(define-public guile-3.0/libgc-7
-  ;; Using libgc-7 avoid crashes that can occur, particularly when loading
-  ;; data in to the Guix Data Service:
-  ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=40525
-  (hidden-package
-   (package
-     (inherit guile-3.0-latest)
-     (propagated-inputs
-      (modify-inputs (package-propagated-inputs guile-3.0)
-        (replace "bdw-gc" libgc-7))))))
+  (package
+    (inherit guile-3.0)
+    (version "3.0.8")
+    (source (origin
+              (inherit (package-source guile-3.0))
+              (uri (string-append "mirror://gnu/guile/guile-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "04wagg0zr0sib0w9ly5jm91jplgfigzfgmy8fjdlx07jaq50d9ys"))
+              (patches (search-patches "guile-cross-compilation.patch"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments guile-3.0)
+       ;; Guile 3.0.8 is bit-reproducible when built in parallel, thanks to
+       ;; its multi-stage build process for cross-module inlining, except when
+       ;; cross-compiling.
+       ((#:parallel-build? _ #f)
+        (not (%current-target-system)))
+       ((#:phases phases)
+        `(modify-phases ,phases
+           ,@(if (target-ppc32?)
+               `((replace 'adjust-bootstrap-flags
+                   (lambda _
+                     ;; Upstream knows about suggested solution.
+                     ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=45214
+                     ;; https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=977223#46
+                     (substitute* "stage0/Makefile.in"
+                       (("^GUILE_OPTIMIZATIONS.*")
+                        "GUILE_OPTIMIZATIONS = -O1 -Oresolve-primitives -Ocps\n")))))
+               '())))))))
 
 (define-public guile-3.0/fixed
   ;; A package of Guile that's rarely changed.  It is the one used in the
@@ -802,7 +820,16 @@ type system, elevating types to first-class status.")
                         "guile-git-adjust-for-libgit2-1.2.0.patch"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags '("GUILE_AUTO_COMPILE=0")))     ; to prevent guild warnings
+     `(#:make-flags '("GUILE_AUTO_COMPILE=0")       ; to prevent guild warnings
+       ;; https://gitlab.com/guile-git/guile-git/-/issues/20
+       ,@(if (target-ppc32?)
+           `(#:phases
+             (modify-phases %standard-phases
+               (add-after 'unpack 'skip-failing-test
+                 (lambda _
+                   (substitute* "Makefile.am"
+                     ((".*tests/blob\\.scm.*") ""))))))
+           '())))
     (native-inputs
      (list pkg-config autoconf automake texinfo guile-3.0 guile-bytestructures))
     (inputs

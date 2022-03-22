@@ -1,5 +1,5 @@
 # GNU Guix --- Functional package management for GNU
-# Copyright © 2020 Ludovic Courtès <ludo@gnu.org>
+# Copyright © 2020, 2022 Ludovic Courtès <ludo@gnu.org>
 #
 # This file is part of GNU Guix.
 #
@@ -34,9 +34,17 @@ intro_signer="BBB0 2DDF 2CEA F6A8 0D1D  E643 A2A0 6DF2 A33A 54FA"
 
 cache_key="test-$$"
 
-guix git authenticate "$intro_commit" "$intro_signer"	\
+# This must fail because the end commit is not a descendant of $intro_commit.
+! guix git authenticate "$intro_commit" "$intro_signer"	\
      --cache-key="$cache_key" --stats			\
      --end=9549f0283a78fe36f2d4ff2a04ef8ad6b0c02604
+
+# The v1.2.0 commit is a descendant of $intro_commit and it satisfies the
+# authorization invariant.
+v1_2_0_commit="a099685659b4bfa6b3218f84953cbb7ff9e88063"
+guix git authenticate "$intro_commit" "$intro_signer"	\
+     --cache-key="$cache_key" --stats			\
+     --end="$v1_2_0_commit"
 
 rm "$XDG_CACHE_HOME/guix/authentication/$cache_key"
 
@@ -44,6 +52,11 @@ rm "$XDG_CACHE_HOME/guix/authentication/$cache_key"
 v1_0_0_commit="6298c3ffd9654d3231a6f25390b056483e8f407c"
 v1_0_0_signer="3CE4 6455 8A84 FDC6 9DB4  0CFB 090B 1199 3D9A EBB5" # civodul
 v1_0_1_commit="d68de958b60426798ed62797ff7c96c327a672ac"
+
+# This should succeed because v1.0.0 is an ancestor of $intro_commit.
+guix git authenticate "$intro_commit" "$intro_signer"	\
+     --cache-key="$cache_key" --stats			\
+     --end="$v1_0_0_commit"
 
 # This should fail because these commits lack '.guix-authorizations'.
 ! guix git authenticate "$v1_0_0_commit" "$v1_0_0_signer" \

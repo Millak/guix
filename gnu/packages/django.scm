@@ -53,13 +53,13 @@
 (define-public python-django-4.0
   (package
     (name "python-django")
-    (version "4.0.1")
+    (version "4.0.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Django" version))
               (sha256
                (base32
-                "11pg33ib43pvkflgvs5gs6c9zflhpxp8dvhd109swfscrjiyx194"))))
+                "0jlmxylag7dah9jl3wm2swnn9kbisx1gqnddfbh5kjifn67va3qi"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -140,13 +140,13 @@ to the @dfn{don't repeat yourself} (DRY) principle.")
 (define-public python-django-3.2
   (package
     (inherit python-django-4.0)
-    (version "3.2.11")
+    (version "3.2.12")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Django" version))
               (sha256
                (base32
-                "0xbyl9fh9lk5hiwpw46s6hz98gs0fixrpq3myj5hh6vbbnz4mjb9"))))
+                "1qj1kvb6mk2f4b33n4n5l4rh5kqllrk2v0v076crxr83ay9ycwlp"))))
     (native-search-paths '())           ;no need for TZDIR
     (propagated-inputs
      (modify-inputs (package-propagated-inputs python-django-4.0)
@@ -156,13 +156,13 @@ to the @dfn{don't repeat yourself} (DRY) principle.")
 (define-public python-django-2.2
   (package
     (inherit python-django-3.2)
-    (version "2.2.26")
+    (version "2.2.27")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Django" version))
               (sha256
                (base32
-                "13siv3bcb2yrpzzsq2k0f1yc70ya8jkmaa5kc8x29ijjglk3g9fz"))))
+                "04y9knxd8v9jn54ws5rbdwxyq5im69kx009s7gl62axzn1371qqy"))))
     (native-inputs
      (modify-inputs (package-native-inputs python-django-3.2)
        (prepend ;; 2.2 requires Selenium for the test suite.

@@ -74,6 +74,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pulseaudio)
+  #:use-module (gnu packages ruby)
   #:use-module (gnu packages syncthing)
   #:use-module (gnu packages terminals)
   #:use-module (gnu packages textutils)
@@ -459,13 +460,13 @@ in the style of communicating sequential processes (@dfn{CSP}).")
             `(("gold" ,binutils-gold)))
            (_ `()))
        ,@(package-native-inputs go-1.4)))
-    (supported-systems %supported-systems)))
+    (supported-systems (delete "powerpc-linux" %supported-systems))))
 
 (define-public go-1.16
   (package
     (inherit go-1.14)
     (name "go")
-    (version "1.16.13")
+    (version "1.16.14")
     (source
      (origin
        (method git-fetch)
@@ -475,10 +476,10 @@ in the style of communicating sequential processes (@dfn{CSP}).")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "03f37dspn4h5kqf0nqwmnl858wx6hngnlvbnrjl1ll6ihc5j66jz"))))
+         "16pn7avzmlw28sldx6yv38a1afdwj7jz3x7kjvlagysqrsh5lwwl"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments go-1.14)
-       ((#:tests? _) #t)
+     (substitute-keyword-arguments
+         (strip-keyword-arguments '(#:tests?) (package-arguments go-1.14))
        ((#:phases phases)
         `(modify-phases ,phases
            (add-after 'unpack 'remove-unused-sourcecode-generators
@@ -624,7 +625,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
   (package
     (inherit go-1.16)
     (name "go")
-    (version "1.17.6")
+    (version "1.17.7")
     (source
      (origin
        (method git-fetch)
@@ -634,7 +635,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "05k292i9qayfy5wh96z4kjmx1mfd5birnr25vb0blzaam72mcsgw"))))
+         "0d0xybn7sy4za3f0s2ffb6yfv6pjabnk4jyvz7dn3hjqhd5lks7m"))))
     (outputs '("out" "tests")) ; 'tests' contains distribution tests.
     (arguments
      `(#:modules ((ice-9 match)
@@ -899,6 +900,66 @@ network traffic so that it is not identified and subsequently blocked by network
 filtering devices.")
       (license license:bsd-2))))
 
+(define-public go-github-com-agext-levenshtein
+  (package
+    (name "go-github-com-agext-levenshtein")
+    (version "1.2.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/agext/levenshtein")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0a26c8pp9h5w66bhd9vb6lpvmhp30mz46pnh3a8vrjx50givb2lw"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/agext/levenshtein"))
+    (home-page "https://github.com/agext/levenshtein")
+    (synopsis "Calculating the Levenshtein distance between two strings in Go")
+    (description
+     "Package levenshtein implements distance and similarity metrics for
+strings, based on the Levenshtein measure.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-apparentlymart-go-textseg-v13
+  (package
+    (name "go-github-com-apparentlymart-go-textseg-v13")
+    (version "13.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/apparentlymart/go-textseg")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gdgi0d52rq1xsdn9icc8lghn0f2q927cifmrlfxflf7bf21vism"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:unpack-path "github.com/apparentlymart/go-textseg/v13"
+       #:import-path "github.com/apparentlymart/go-textseg/v13/textseg"))
+    (native-inputs
+     (list ruby))
+    (home-page "https://github.com/apparentlymart/go-textseg")
+    (synopsis "Go implementation of Unicode Text Segmentation")
+    (description
+     "This package provides an implementation of the Unicode Text Segmentation
+specification for Go.  Specifically, it currently includes only the grapheme
+cluster segmentation algorithm.")
+    ;; Project is released under Expat terms.  Some parts use Unicode and
+    ;; ASL2.0 licenses.
+    (license (list license:expat license:unicode license:asl2.0))))
+
+(define-public go-github-com-apparentlymart-go-textseg-autoversion
+  (package
+    (inherit go-github-com-apparentlymart-go-textseg-v13)
+    (name "go-github-com-apparentlymart-go-textseg-autoversion")
+    (arguments
+     '(#:unpack-path "github.com/apparentlymart/go-textseg/autoversion"
+       #:import-path "github.com/apparentlymart/go-textseg/autoversion/textseg"))))
+
 (define-public go-github-com-operatorfoundation-shapeshifter-transports
   (package
     (name "go-github-com-operatorfoundation-shapeshifter-transports")
@@ -1096,6 +1157,28 @@ terminals.")
     (description "Go-ShadowSocks is a Go implementation of the Shadowsocks tunnel
 proxy protocol.")
     (license license:asl2.0)))
+
+(define-public go-github-com-schachmat-ingo
+  (package
+    (name "go-github-com-schachmat-ingo")
+    (version "0.0.0-20170403011506-a4bdc0729a3f")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/schachmat/ingo")
+               (commit (go-version->git-ref version))))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32 "1gw0kddy7jh3467imsqni86cf9yq7k6vpfc0ywkbwj0zsjsdgd49"))))
+    (build-system go-build-system)
+    (arguments '(#:import-path "github.com/schachmat/ingo"))
+    (home-page "https://github.com/schachmat/ingo")
+    (synopsis "Go library to persist flags in a INI-like configuration file")
+    (description
+      "Ingo is a Go library helping you to persist flags in a INI-like
+configuration file.")
+    (license license:isc)))
 
 (define-public go-github-com-riobard-go-bloom
   (let ((commit "cdc8013cb5b3eb0efebec85f0e904efccac42df9")
@@ -2046,7 +2129,7 @@ specified by @uref{https://tools.ietf.org/html/rfc2141, IETF RFC 2141}.")
 (define-public go-github.com-jessevdk-go-flags
   (package
     (name "go-github.com-jessevdk-go-flags")
-    (version "1.3.0")
+    (version "1.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2054,11 +2137,19 @@ specified by @uref{https://tools.ietf.org/html/rfc2141, IETF RFC 2141}.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32
-                "1jk2k2l10lwrn1r3nxdvbs0yz656830j4khzirw8p4ahs7c5zz36"))))
+               (base32 "13ixw1yx4bvcj66lkc8zgwf9j7gkvj686g991gycdsafvdvca0lj"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/jessevdk/go-flags"))
+     '(#:import-path "github.com/jessevdk/go-flags"
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-tests
+           (lambda _
+             ;; SOURCE_DATE_EPOCH messes with the date on the man page test.
+             (substitute* "src/github.com/jessevdk/go-flags/help_test.go"
+               (("TestMan") "DisabledTestMan")))))))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
     (synopsis "Go library for parsing command line arguments")
     (description
      "The @code{flags} package provides a command line option parser.  The
@@ -2389,6 +2480,37 @@ command-line parsers.")
     (native-inputs
      (list go-github-com-davecgh-go-spew))
     (synopsis "Go implementation of HashiCorp Configuration Language V1")
+    (description
+     "This package contains the main implementation of the @acronym{HCL,
+HashiCorp Configuration Language}.  HCL is designed to be a language for
+expressing configuration which is easy for both humans and machines to read.")
+    (home-page "https://github.com/hashicorp/hcl")
+    (license license:mpl2.0)))
+
+(define-public go-github-com-hashicorp-hcl-v2
+  (package
+    (name "go-github-com-hashicorp-hcl-v2")
+    (version "2.11.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hashicorp/hcl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0f9flmmkj7fr1337fc56cqy73faq87ix375hnz3id4wc023przv1"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/hashicorp/hcl/v2"))
+    (native-inputs
+     (list go-github-com-davecgh-go-spew))
+    (inputs
+     (list go-github-com-agext-levenshtein go-github-com-mitchellh-go-wordwrap
+           go-github-com-zclconf-go-cty
+           go-github-com-apparentlymart-go-textseg-v13))
+    (synopsis "Go implementation of HashiCorp Configuration Language V2")
     (description
      "This package contains the main implementation of the @acronym{HCL,
 HashiCorp Configuration Language}.  HCL is designed to be a language for
@@ -3205,6 +3327,32 @@ values for the purpose of fuzz testing.")
 incoming requests with their respective handler.")
     (license license:bsd-3)))
 
+(define-public go-github-com-andybalholm-brotli
+  (package
+    (name "go-github-com-andybalholm-brotli")
+    (version "1.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/andybalholm/brotli")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zvmj7gbnkq9xwv1bvcxk9acxl06y902148qwbd2kqwgs52wy2c0"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/andybalholm/brotli"))
+    (home-page "https://github.com/andybalholm/brotli")
+    (synopsis "Pure Go Brotli encoder and decoder")
+    (description
+     "This package is a brotli compressor and decompressor implemented in Go.
+It was translated from the reference implementation
+(@url{https://github.com/google/brotli,https://github.com/google/brotli}) with
+the @code{c2go} tool at
+@url{https://github.com/andybalholm/c2go,https://github.com/andybalholm/c2go}.")
+    (license license:expat)))
+
 (define-public go-github-com-gorilla-handlers
   (package
     (name "go-github-com-gorilla-handlers")
@@ -3765,6 +3913,28 @@ to interact with distribution components.")
 the Go language.  In particular it provides tools to deal with network address
 translation (NAT), proxies, sockets, and transport layer security (TLS).")
       (license license:asl2.0))))
+
+(define-public go-github-com-docker-go-units
+  (package
+    (name "go-github-com-docker-go-units")
+    (version "0.4.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/docker/go-units")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "0k8gja8ql4pqg5rzmqvka42vjfs6rzablak87whcnqba6qxpimvz"))))
+    (build-system go-build-system)
+    (arguments '(#:import-path "github.com/docker/go-units"))
+    (home-page "https://github.com/docker/go-units")
+    (synopsis "Parse and print size and time units in human-readable format")
+    (description
+     "@code{go-units} is a library to transform human friendly measurements into
+machine friendly values.")
+    (license license:asl2.0)))
 
 (define-public go-github-com-docker-machine
   (let ((commit "7b7a141da84480342357c51838be142bf183b095")
@@ -7741,6 +7911,80 @@ and @code{ioutil} packages that is easy to test.")
 @uref{freedesktop.org}.")
     (license license:expat)))
 
+(define-public go-github-com-xdg-go-stringprep
+  (package
+    (name "go-github-com-xdg-go-stringprep")
+    (version "1.0.2")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/xdg-go/stringprep")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "1df0l5n3c520y9filzz83j42wa5c056jcygmfwhjyf1pq8f6jkv9"))))
+    (build-system go-build-system)
+    (arguments '(#:import-path "github.com/xdg-go/stringprep"))
+    (propagated-inputs
+     (list go-golang-org-x-text))
+    (home-page "https://github.com/xdg-go/stringprep")
+    (synopsis "Go implementation of RFC-3454 stringprep and RFC-4013 SASLprep")
+    (description
+     "Package stringprep provides data tables and algorithms for RFC-3454,
+including errata.  It also provides a profile for SASLprep as defined in
+RFC-4013.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-xdg-go-pbkdf2
+  (package
+    (name "go-github-com-xdg-go-pbkdf2")
+    (version "1.0.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/xdg-go/pbkdf2")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "1nipijy5xkdnfyhkp5ryrjzm14si1i2v2xyfmblf84binwkbr8jh"))))
+    (build-system go-build-system)
+    (arguments '(#:import-path "github.com/xdg-go/pbkdf2"))
+    (home-page "https://github.com/xdg-go/pbkdf2")
+    (synopsis "Go implementation of PBKDF2")
+    (description
+     "Package pbkdf2 implements password-based key derivation using the PBKDF2
+algorithm described in @url{https://rfc-editor.org/rfc/rfc2898.html,RFC 2898}
+and @url{https://rfc-editor.org/rfc/rfc8018.html,RFC 8018}.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-xdg-go-scram
+  (package
+    (name "go-github-com-xdg-go-scram")
+    (version "1.0.2")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/xdg-go/scram")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "1jyv4qgc1dgh3v96pazmgljpp9ij25k8hwn0v4fck18g16i0nccm"))))
+    (build-system go-build-system)
+    (arguments '(#:import-path "github.com/xdg-go/scram"))
+    (propagated-inputs
+     (list go-github-com-xdg-go-stringprep
+           go-github-com-xdg-go-pbkdf2))
+    (home-page "https://github.com/xdg-go/scram")
+    (synopsis "Go implementation of RFC-5802")
+    (description
+     "Package scram provides client and server implementations of the
+@acronym{Salted Challenge Response Authentication Mechanism, SCRAM} described in
+RFC-5802 and RFC-7677.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-godbus-dbus
   (package
     (name "go-github-com-godbus-dbus")
@@ -7789,6 +8033,38 @@ bindings for the D-Bus message bus system.")
     (synopsis "Library for working with system keyring")
     (description "@code{go-keyring} is a library for setting, getting and
 deleting secrets from the system keyring.")
+    (license license:expat)))
+
+(define-public go-github-com-zclconf-go-cty
+  (package
+    (name "go-github-com-zclconf-go-cty")
+    (version "1.10.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zclconf/go-cty")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0f9a6vy45gcx5pg5bnfs63manaqw80h7xzvmj3b80af38304zr71"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:unpack-path "github.com/zclconf/go-cty"
+       #:import-path "github.com/zclconf/go-cty/cty"))
+    (native-inputs
+     (list go-github-com-google-go-cmp-cmp))
+    (propagated-inputs
+     (list go-golang-org-x-text
+           go-github-com-vmihailenco-msgpack-v4
+           go-github-com-apparentlymart-go-textseg-v13))
+    (home-page "https://github.com/zclconf/go-cty")
+    (synopsis "Type system for dynamic values in Go applications")
+    (description
+     "@code{cty} (pronounced \"see-tie\") is a dynamic type system for
+applications written in Go that need to represent user-supplied values without
+losing type information.  The primary intended use is for implementing
+configuration languages, but other uses may be possible too.")
     (license license:expat)))
 
 (define-public go-etcd-io-bbolt
@@ -8756,6 +9032,140 @@ non-cryptographic hash algorithm, working at speeds close to RAM limits.")
      "Provides a platform-independent way to get atime, mtime, ctime and btime for files.")
     (license license:expat)))
 
+(define-public go-github-com-valyala-bytebufferpool
+  (package
+    (name "go-github-com-valyala-bytebufferpool")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/valyala/bytebufferpool")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01lqzjddq6kz9v41nkky7wbgk7f1cw036sa7ldz10d82g5klzl93"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/valyala/bytebufferpool"))
+    (home-page "https://github.com/valyala/bytebufferpool")
+    (synopsis "Anti-memory-waste byte buffer pool for Golang")
+    (description
+     "@code{bytebufferpool} implements a pool of byte buffers with
+anti-fragmentation protection.")
+    (license license:expat)))
+
+(define-public go-github-com-valyala-fasthttp
+  (package
+    (name "go-github-com-valyala-fasthttp")
+    (version "1.31.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/valyala/fasthttp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ra0n2shcp11736xv37cjnsqn32gvqfm3dkf9v8j98xmch2wqxqg"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/valyala/fasthttp"))
+    (propagated-inputs
+     (list go-golang-org-x-sys
+           go-golang-org-x-net
+           go-golang-org-x-crypto
+           go-github-com-valyala-tcplisten
+           go-github-com-valyala-bytebufferpool
+           go-github-com-klauspost-compress
+           go-github-com-andybalholm-brotli))
+    (home-page "https://github.com/valyala/fasthttp")
+    (synopsis "Provides fast HTTP server and client API")
+    (description
+     "This package provides a Go module @code{fasthttp} which may be used as
+replacement for native @code{net/http} module.")
+    (license license:expat)))
+
+(define-public go-github-com-valyala-tcplisten
+  (package
+    (name "go-github-com-valyala-tcplisten")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/valyala/tcplisten")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fv5hxmq1jwrjn1rdjvbmjrrkb601zcdh01qhx6d8l7ss6n05zb8"))))
+    (build-system go-build-system)
+    (arguments
+     ;; NOTE: (Sharlatan-20211218T165504+0000): Tests failing:
+     ;;
+     ;;   tcplisten_test.go:56: cannot create listener 0 using Config
+     ;;   &tcplisten.Config{ReusePort:false, DeferAccept:false, FastOpen:false,
+     ;;   Backlog:32}: lookup ip6-localhost on [::1]:53: read udp
+     ;;   [::1]:33932->[::1]:53: read: connection refused
+     ;;
+     '(#:tests? #f
+       #:import-path "github.com/valyala/tcplisten"))
+    (home-page "https://github.com/valyala/tcplisten")
+    (synopsis "Customizable TCP net.Listener for Go")
+    (description
+     "@code{tcplisten} provides customizable TCP net.Listener with various
+performance-related options.")
+    (license license:expat)))
+
+(define-public go-github-com-vmihailenco-msgpack-v4
+  (package
+    (name "go-github-com-vmihailenco-msgpack-v4")
+    (version "4.3.12")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/vmihailenco/msgpack")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0aiavk7b5fn050bbc0naldk2bsl60f8wil5i6a1cfp3lxxnvmvng"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/vmihailenco/msgpack/v4"))
+    (native-inputs
+     (list go-gopkg-in-check-v1))
+    (propagated-inputs
+     (list go-github-com-vmihailenco-tagparser))
+    (home-page "https://github.com/vmihailenco/msgpack")
+    (synopsis "MessagePack encoding for Golang")
+    (description
+     "This package provides implementation of MessagePack encoding for Go
+programming language.")
+    (license license:bsd-2)))
+
+(define-public go-github-com-vmihailenco-tagparser
+  (package
+    (name "go-github-com-vmihailenco-tagparser")
+    (version "2.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/vmihailenco/tagparser")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13arliaz3b4bja9jj7cr5ax4zvxaxm484fwrn0q6d6jjm1l35m1k"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/vmihailenco/tagparser"))
+    (home-page "https://github.com/vmihailenco/tagparser")
+    (synopsis "Tag parser for Golang")
+    (description "This package is a simple Golang implementation of tag
+parser.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-vividcortex-ewma
   (package
     (name "go-github-com-vividcortex-ewma")
@@ -9341,3 +9751,26 @@ Features:
 @item TCP tunneling (e.g. benchmark with iperf3)
 @end itemize")
     (license license:asl2.0)))
+
+(define-public go-github-com-go-chi-chi-v5
+  (package
+    (name "go-github-com-go-chi-chi-v5")
+    (version "5.0.7")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/go-chi/chi")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0rzrsxz4xj0973c6nxklvq2vmg2m795snhk25836i0gnd1jnx79k"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/go-chi/chi/v5"))
+    (home-page "https://github.com/go-chi/chi")
+    (synopsis "Composable router for HTTP services written in Go")
+    (description
+     "@code{go-github-com-go-chi-chi-v5} is an HTTP router that lets the user
+decompose request handling into many smaller layers.")
+    (license license:expat)))

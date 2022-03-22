@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
-;;; Copyright © 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2017-2020, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2019 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2019 Efraim Flashner <efraim@flashner.co.il>
@@ -30,15 +30,17 @@
   #:use-module (guix utils)
   #:use-module (guix i18n)
   #:use-module (guix diagnostics)
+  #:use-module ((guix ui) #:select (display-hint))
   #:use-module ((guix download) #:prefix download:)
   #:use-module ((guix git-download) #:prefix download:)
+  #:autoload   (guix build download) (open-connection-for-uri)
   #:use-module (guix import utils)
-  #:use-module (guix import json)
   #:use-module (json)
   #:use-module (guix packages)
   #:use-module (guix upstream)
   #:use-module (guix http-client)
   #:use-module (web uri)
+  #:use-module (web response)
   #:export (%github-api %github-updater))
 
 ;; For tests.
@@ -140,6 +142,33 @@ repository separated by a forward slash, from a string URL of the form
   ;; limit, or #f.
   (make-parameter (getenv "GUIX_GITHUB_TOKEN")))
 
+(define %rate-limit-reset-time
+  ;; Time (seconds since the Epoch, UTC) when the rate limit for GitHub
+  ;; requests will be reset, or #f if the rate limit hasn't been reached.
+  #f)
+
+(define (update-rate-limit-reset-time! headers)
+  "Update the rate limit reset time based on HEADERS, the HTTP response
+headers."
+  (match (assq-ref headers 'x-ratelimit-reset)
+    ((= string->number (? number? reset))
+     (set! %rate-limit-reset-time reset)
+     reset)
+    (_
+     ;; This shouldn't happen.
+     (warning
+      (G_ "GitHub HTTP response lacks 'X-RateLimit-Reset' header~%"))
+     0)))
+
+(define (request-rate-limit-reached?)
+  "Return true if the rate limit has been reached."
+  (and %rate-limit-reset-time
+       (match (< (car (gettimeofday)) %rate-limit-reset-time)
+         (#t #t)
+         (#f
+          (set! %rate-limit-reset-time #f)
+          #f))))
+
 (define (fetch-releases-or-tags url)
   "Fetch the list of \"releases\" or, if it's empty, the list of tags for the
 repository at URL.  Return the corresponding JSON dictionaries (alists),
@@ -170,20 +199,54 @@ empty list."
             `((Authorization . ,(string-append "token " (%github-token))))
             '())))
 
-  (guard (c ((and (http-get-error? c)
-                  (= 404 (http-get-error-code c)))
-             (warning (G_ "~a is unreachable (~a)~%")
-                      release-url (http-get-error-code c))
-             '#()))                               ;return an empty release set
-    (let* ((port   (http-fetch release-url #:headers headers))
-           (result (json->scm port)))
-      (close-port port)
-      (match result
-        (#()
-         ;; We got the empty list, presumably because the user didn't use GitHub's
-         ;; "release" mechanism, but hopefully they did use Git tags.
-         (json-fetch tag-url #:headers headers))
-        (x x)))))
+  (and (not (request-rate-limit-reached?))
+       (guard (c ((and (http-get-error? c)
+                       (= 404 (http-get-error-code c)))
+                  (warning (G_ "~a is unreachable (~a)~%")
+                           (uri->string (http-get-error-uri c))
+                           (http-get-error-code c))
+                  '#())                           ;return an empty release set
+                 ((and (http-get-error? c)
+                       (= 403 (http-get-error-code c)))
+                  ;; See
+                  ;; <https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting>.
+                  (match (assq-ref (http-get-error-headers c)
+                                   'x-ratelimit-remaining)
+                    (#f
+                     (raise c))
+                    ((? (compose zero? string->number))
+                     (let ((reset (update-rate-limit-reset-time!
+                                   (http-get-error-headers c))))
+                       (warning (G_ "GitHub rate limit exceeded; \
+disallowing requests for ~a seconds~%")
+                                (- reset (car (gettimeofday))))
+                       (display-hint (G_ "You can raise the rate limit by
+setting the @env{GUIX_GITHUB_TOKEN} environment variable to a token obtained
+from @url{https://github.com/settings/tokens} with your GitHub account.
+
+Alternatively, you can wait until your rate limit is reset, or use the
+@code{generic-git} updater instead."))
+                       #f))                       ;bail out
+                    (_
+                     (raise c)))))
+
+         (let ((release-uri (string->uri release-url)))
+           (call-with-port (open-connection-for-uri release-uri)
+             (lambda (connection)
+               (let* ((result (json->scm
+                               (http-fetch release-uri
+                                           #:port connection
+                                           #:keep-alive? #t
+                                           #:headers headers))))
+                 (match result
+                   (#()
+                    ;; We got the empty list, presumably because the user didn't use GitHub's
+                    ;; "release" mechanism, but hopefully they did use Git tags.
+                    (json->scm (http-fetch tag-url
+                                           #:port connection
+                                           #:keep-alive? #t
+                                           #:headers headers)))
+                   (x x)))))))))
 
 (define (latest-released-version url package-name)
   "Return the newest released version and its tag given a string URL like
@@ -223,23 +286,16 @@ releases."
         (cons tag tag))
        (else #f))))
 
-  (let* ((json (and=> (fetch-releases-or-tags url)
-                      vector->list)))
-    (if (eq? json #f)
-        (if (%github-token)
-            (error "Error downloading release information through the GitHub
-API when using a GitHub token")
-            (error "Error downloading release information through the GitHub
-API. This may be fixed by using an access token and setting the environment
-variable GUIX_GITHUB_TOKEN, for instance one procured from
-https://github.com/settings/tokens"))
-        (match (sort (filter-map release->version
-                                 (match (remove pre-release? json)
-                                   (() json) ; keep everything
-                                   (releases releases)))
-                     (lambda (x y) (version>? (car x) (car y))))
-          (((latest-version . tag) . _) (values latest-version tag))
-          (() (values #f #f))))))
+  (match (and=> (fetch-releases-or-tags url) vector->list)
+    (#f (values #f #f))
+    (json
+     (match (sort (filter-map release->version
+                              (match (remove pre-release? json)
+                                (() json)         ; keep everything
+                                (releases releases)))
+                  (lambda (x y) (version>? (car x) (car y))))
+       (((latest-version . tag) . _) (values latest-version tag))
+       (() (values #f #f))))))
 
 (define (latest-release pkg)
   "Return an <upstream-source> for the latest release of PKG."

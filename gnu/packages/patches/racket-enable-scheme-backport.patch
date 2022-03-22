@@ -1,0 +1,465 @@
+From 8d7687842f099e3e7e60d3a83fed58b2c6a92863 Mon Sep 17 00:00:00 2001
+From: Matthew Flatt <mflatt@racket-lang.org>
+Date: Sun, 6 Feb 2022 10:36:09 -0700
+Subject: [PATCH 1/2] Chez Scheme: adapt bootfile build for supplied `Scheme=`
+
+(cherry picked from commit fca1e02349664060e10278ca2ce6577a949bebf5)
+
+(Fixed conflicts by dropping pbchunks and pbarch changes.)
+---
+ racket/src/ChezScheme/configure  | 15 ++++++++++++++-
+ racket/src/ChezScheme/s/Mf-base  |  4 ++--
+ racket/src/ChezScheme/s/Mf-cross |  4 +++-
+ 3 files changed, 19 insertions(+), 4 deletions(-)
+
+diff --git a/racket/src/ChezScheme/configure b/racket/src/ChezScheme/configure
+index 4515ffc105..0098829091 100755
+--- a/racket/src/ChezScheme/configure
++++ b/racket/src/ChezScheme/configure
+@@ -45,6 +45,7 @@ threads=yes
+ nothreads=no
+ temproot=""
+ help=no
++forceworkarea=no
+ gzipmanpages=yes
+ installowner=""
+ installgroup=""
+@@ -205,6 +206,9 @@ while [ $# != 0 ] ; do
+     --pb)
+       pb=yes
+       ;;
++    --force)
++      forceworkarea=yes
++      ;;
+     --installprefix=*)
+       installprefix=`echo $1 | sed -e 's/^--installprefix=//'`
+       ;;
+@@ -439,6 +443,7 @@ if [ "$help" = "yes" ]; then
+   echo "  --toolprefix=<prefix>             prefix tool (compiler, linker, ...) names"
+   echo "  --[no]gzip-man-pages              compress manual pages ($gzipmanpages)"
+   echo "  --workarea=<pathname>             build directory ($w)"
++  echo "  --force                           configure even without boot files"
+   echo "  CC=<C compiler>                   C compiler"
+   echo "  CPPFLAGS=<C preprocessor flags>   C preprocessor flags"
+   echo "  CFLAGS=<C compiler flags>         C compiler flags"
+@@ -721,8 +726,16 @@ case "${flagsmuni}" in
+         ;;
+ esac
+ 
++if [ "$w" = "$m" ] ; then
++    configuringin=""
++else
++    configuringin=" in $w"
++fi
++
+ if [ -f boot/$m/scheme.boot -o -f "$srcdir"/boot/$m/scheme.boot ] ; then
+-  echo "Configuring for $m"
++    echo "Configuring for $m$configuringin"
++elif [ "$forceworkarea" = yes ] ; then
++    echo "Configuring for $m$configuringin despite missing boot files"
+ else
+   if [ "$m" = "" ] ; then
+       maybem="<machine type>"
+diff --git a/racket/src/ChezScheme/s/Mf-base b/racket/src/ChezScheme/s/Mf-base
+index cc6178c973..1f4a967998 100644
+--- a/racket/src/ChezScheme/s/Mf-base
++++ b/racket/src/ChezScheme/s/Mf-base
+@@ -94,7 +94,7 @@ endif
+ # that Scheme and SCHEMEHEAPDIRS are set by Mf-cross to point to the host Scheme
+ # implementation
+ Scheme = ../bin/$m/scheme${ExeSuffix}
+-export SCHEMEHEAPDIRS=../boot/%m
++export SCHEMEHEAPDIRS=../boot/$m
+ export CHEZSCHEMELIBDIRS=.
+ 
+ # Define the libdirs separator character
+@@ -691,4 +691,4 @@ reset-one:
+ 
+ .PHONY: run
+ run:
+-	env SCHEMEHEAPDIRS=../boot/$m/ ../bin/$m/scheme $(ARGS)
++	env SCHEMEHEAPDIRS=${SCHEMEHEAPDIRS} ${Scheme} $(ARGS)
+diff --git a/racket/src/ChezScheme/s/Mf-cross b/racket/src/ChezScheme/s/Mf-cross
+index d796cbb459..397af59a28 100644
+--- a/racket/src/ChezScheme/s/Mf-cross
++++ b/racket/src/ChezScheme/s/Mf-cross
+@@ -43,5 +43,7 @@ x$(xm).$(m):
+ 	$(MAKE) -f Mf-cross m=$(m) xm=$(xm) i=f o=3 d=0 xpatch
+ 	mv xpatch x$(xm).$(m)
+ 
++ifneq ($(SCHEMEHEAPDIRS),:)
+ # Ensure that cross-compiling "nanopass.so" is rebuilt if the host compiler changed
+-nanopass.so: ${SCHEME} ${SCHEMEHEAPDIRS}/petite.boot ${SCHEMEHEAPDIRS}/scheme.boot
++nanopass.so: ${Scheme} ${SCHEMEHEAPDIRS}/petite.boot ${SCHEMEHEAPDIRS}/scheme.boot
++endif
+-- 
+2.32.0
+
+
+From 26c8e2c1d9b02ad85acef8bda40d92154cf0b699 Mon Sep 17 00:00:00 2001
+From: Matthew Flatt <mflatt@racket-lang.org>
+Date: Sun, 6 Feb 2022 11:03:30 -0700
+Subject: [PATCH 2/2] configure: make `--enable-scheme` work with an executable
+
+When the same Chez Scheme version as used by Racket is already
+available, then `--enable-scheme=...` can supply an executable. For
+cross builds, `--enable-scheme=...` can still supply a build
+directory, instead, as before.
+
+(cherry picked from commit 4f0e76855ce7e86107de495292a553469daf0b3f)
+---
+ racket/src/ChezScheme/makefiles/Makefile.in |  3 ++
+ racket/src/README.txt                       | 30 +++++++++++---
+ racket/src/configure                        |  8 +++-
+ racket/src/cs/README.txt                    |  6 ++-
+ racket/src/cs/c/Makefile.in                 | 44 ++++++++++++++++-----
+ racket/src/cs/c/configure                   | 24 +++++++++--
+ racket/src/cs/c/configure.ac                | 21 ++++++++--
+ 7 files changed, 112 insertions(+), 24 deletions(-)
+
+diff --git a/racket/src/ChezScheme/makefiles/Makefile.in b/racket/src/ChezScheme/makefiles/Makefile.in
+index c396efc851..3998ef9ccd 100644
+--- a/racket/src/ChezScheme/makefiles/Makefile.in
++++ b/racket/src/ChezScheme/makefiles/Makefile.in
+@@ -59,6 +59,9 @@ reset:
+ %.boot:
+ 	(cd $(workarea) && $(MAKE) $*.boot)
+ 
++auto.boot:
++	(cd $(workarea) && $(MAKE) $(defaultm).boot)
++
+ # <machine>.bootquick to build boot files for <machine>
+ # with o=3 d=0 for the cross compiler, and only after
+ # building the kernel for the configured machine
+diff --git a/racket/src/README.txt b/racket/src/README.txt
+index 98647aebce..d77310b4a4 100644
+--- a/racket/src/README.txt
++++ b/racket/src/README.txt
+@@ -354,6 +354,10 @@ variant of MinGW without "libdelayimp.a", get the implementation of
+ ========================================================================
+ 
+ Cross-compilation requires at least two flags to `configure`:
++`--host=OS` and either `--enable-racket=RACKET` or (for Racket CS)
++`--enable-scheme-SCHEME`.
++
++More information:
+ 
+  * `--host=OS`, where OS is something like `i386-gnu-linux` to
+    indicate the target platform.
+@@ -374,11 +378,27 @@ Cross-compilation requires at least two flags to `configure`:
+    run `configure` again (with no arguments) in a "local" subdirectory
+    to create a build for the current platform.
+ 
+-An additional flag is needed for building Racket CS, unless the flag
+-`--enable-racket=auto` is used:
+-
+- * `--enable-scheme=DIR`, where DIR is a path that has a "ChezScheme"
+-   directory where Chez Scheme is built for the host system.
++ * `--enable-scheme=SCHEME`, where SCHEME is a Chez Scheme executable
++   executable that runs on the build platform; the executable must be
++   the same version as used in Racket built for the target platform.
++ 
++   Supplying `--enable-scheme=DIR` is also supported in cross-build
++   mode, where DIR is a path that has a "ChezScheme" directory where
++   Chez Scheme is built for the host system.
++
++The `--enable-racket=RACKET` and `--enable-scheme=SCHEME` flags are
++allowed for non-cross builds, too:
++
++ * For Racket CS, supplying either selects a Racket or Chez Scheme
++   implementation used to create boot files to the build platform.
++   Suppling Chez Scheme is a much more direct path, but when Racket is
++   supplied, its version does not have to match the version being
++   built.
++
++ * For Racket BC, `--enable-racket=RACKET` selects a Racket for
++   prepare C sources to cooperate with garbage collection. Its version
++   needs to be close to the one being built, and potentially exactly
++   the same version.
+ 
+ Some less commonly needed `configure` flags are for Racket BC:
+ 
+diff --git a/racket/src/configure b/racket/src/configure
+index c9f3ba4419..1b53ec7ce2 100755
+--- a/racket/src/configure
++++ b/racket/src/configure
+@@ -9,6 +9,7 @@ pb_dir="$dir/ChezScheme/boot/pb"
+ use_cs=maybe
+ use_bc=maybe
+ supplied_racket=no
++supplied_scheme=no
+ enable_boothelp=
+ 
+ # We don't have to detect conflicts like `--enable-csdefault --enable-bcdefault`,
+@@ -34,6 +35,9 @@ for arg in $*; do
+         --enable-racket=*)
+             supplied_racket=yes
+             ;;
++        --enable-scheme=*)
++            supplied_scheme=yes
++            ;;
+         --help | -h)
+             echo $0:
+             echo see --help-bc or --help-cs, since the Racket CS build and the
+@@ -70,8 +74,8 @@ elif test "$use_cs" = "maybe" ; then
+ fi
+ 
+ if test "$use_cs" = "yes" ; then
+-    if test $use_bc = no  -a $supplied_racket = no -a ! -d "$pb_dir" ; then
+-        echo $0: must have $pb_dir or --enable-racket=... for --enable-csonly
++    if test $use_bc = no  -a $supplied_racket = no  -a $supplied_scheme = no  -a ! -d "$pb_dir" ; then
++        echo $0: must have $pb_dir, --enable-racket=... or --enable-scheme=... for --enable-csonly
+         exit 1
+     fi
+ 
+diff --git a/racket/src/cs/README.txt b/racket/src/cs/README.txt
+index 2ece417b78..8e6fc57b74 100644
+--- a/racket/src/cs/README.txt
++++ b/racket/src/cs/README.txt
+@@ -39,6 +39,11 @@ build:
+    installed in the "../ChezScheme/boot/pb" directory as described by
+    "../ChezScheme/BUILDING".
+ 
++   Supplying `--enable-scheme=...` is also an option if you alerady
++   have the same version of Chez Scheme built on the current platform.
++   Another build will be created, anyway, but more quickly than
++   without Chez Scheme.
++
+  * Racket is needed to generate the files in the "schemified"
+    directory from the sources in sibling directories like "../io". The
+    Racket version must be practically the same as the current Racket
+@@ -48,7 +53,6 @@ build:
+    Unlike Chez Scheme boot files, the files generated in "schemified"
+    are human-readable and -editable Scheme code. That provides a way
+    out of bootstrapping black holes, even without BC.
+-   
+ 
+ 
+ ========================================================================
+diff --git a/racket/src/cs/c/Makefile.in b/racket/src/cs/c/Makefile.in
+index 54a644a1d9..d73993f0fc 100644
+--- a/racket/src/cs/c/Makefile.in
++++ b/racket/src/cs/c/Makefile.in
+@@ -12,7 +12,9 @@ CS_HOST_WORKAREA_PREFIX = @CS_HOST_WORKAREA_PREFIX@
+ SCHEME_HOST_WORKAREA = $(CS_HOST_WORKAREA_PREFIX)$(SCHEME_WORKAREA)
+ SCHEME_BIN = $(SCHEME_HOST_WORKAREA)/$(MACH)/bin/$(MACH)/scheme
+ SCHEME_INC = $(SCHEME_HOST_WORKAREA)/$(MACH)/boot/$(MACH)
+-SCHEME = $(SCHEME_BIN) -B $(SCHEME_INC)/petite.boot -B $(SCHEME_INC)/scheme.boot
++SCHEME_built = $(SCHEME_BIN) -B $(SCHEME_INC)/petite.boot -B $(SCHEME_INC)/scheme.boot
++SCHEME_existing = @MAKE_SCHEME_SCHEME@
++SCHEME = $(SCHEME@USE_SCHEME_MODE@)
+ 
+ TARGET_MACH = @TARGET_MACH@
+ SCHEME_TARGET_INC = $(SCHEME_WORKAREA)/$(TARGET_MACH)/boot/$(TARGET_MACH)
+@@ -88,7 +90,7 @@ mainsrcdir = @srcdir@/../..
+ @INCLUDEDEP@ @srcdir@/../../version/version.mak
+ 
+ cs:
+-	$(MAKE) scheme@T_CROSS_MODE@
++	$(MAKE) scheme@MAKE_SCHEME_MODE@
+ 	$(MAKE) racket-so
+ 	cd rktio; $(MAKE)
+ 	$(MAKE) racketcs
+@@ -121,9 +123,13 @@ racket-so:
+ 
+ RACKET_SO_ENV = @CONFIGURE_RACKET_SO_COMPILE@
+ 
++TARGET_MACH_built = $(TARGET_MACH)
++TARGET_MACH_existing = xc-$(TARGET_MACH)
++XPATCH_FILE = $(SCHEME_WORKAREA)/$(TARGET_MACH@USE_SCHEME_MODE@)/s/xpatch
++
+ CS_PROGS = SCHEME="$(SCHEME)"
+ CS_OPTS = COMPRESS_COMP=@COMPRESS_COMP@ @ENABLE_OR_DISABLE_WPO@
+-CS_OPTScross = $(CS_OPTS) CSO=$(MACH) CROSS_COMP="--xpatch $(SCHEME_WORKAREA)/$(TARGET_MACH)/s/xpatch"
++CS_OPTScross = $(CS_OPTS) CSO=$(MACH) CROSS_COMP="--xpatch $(XPATCH_FILE)"
+ PASS_COMPILE_DEPS = EXTRA_COMPILE_DEPS="$(SCHEME_INC)/petite.boot $(SCHEME_INC)/scheme.boot"
+ 
+ build-racket-so:
+@@ -163,6 +169,15 @@ pb-bootquick:
+ 	cd $(SCHEME_WORKAREA) && $(MAKE) reset
+ 	$(SHELL) $(srcdir)/ready_boot.sh $(MACH) $(SCHEME_WORKAREA)
+ 
++scheme-via-scheme:
++	$(MAKE) $(SCHEME_WORKAREA)/boot/$(MACH)/scheme.boot
++	$(MAKE) mach-make
++
++$(SCHEME_WORKAREA)/boot/$(MACH)/scheme.boot:
++	mkdir -p $(SCHEME_WORKAREA)
++	$(MAKE) config-scheme CONFIG_SCHEME_MODE="$(CONFIG_SCHEME_MODE) --force"
++	cd $(SCHEME_WORKAREA) && $(MAKE) $(MACH).boot Scheme="$(SCHEME)" SCHEMEHEAPDIRS=: o=3 d=0 what=all
++
+ mach-make:
+ 	$(MAKE) config-scheme
+ 	cd $(SCHEME_WORKAREA) && $(MAKE)
+@@ -182,24 +197,33 @@ config-scheme:
+ 
+ scheme-cross:
+ 	env MAKE_BOOT_FOR_CROSS=yes SCHEME_SRC="$(SCHEME_DIR)" SCHEME_WORKAREA=$(SCHEME_WORKAREA) MACH="$(TARGET_MACH)" $(BOOTSTRAP_RACKET) "$(SCHEME_DIR)"/rktboot/make-boot.rkt
++	$(MAKE) finish-scheme-cross
++
++finish-scheme-cross:
+ 	$(SHELL) $(srcdir)/reset_boot.sh $(TARGET_MACH) $(SCHEME_WORKAREA)
+ 	cd $(SCHEME_WORKAREA) && "$(UP_SCHEME_DIR)"/configure @SCHEME_CROSS_CONFIG_ARGS@ $(SCHEME_CONFIG_VARS)
+ 	cd $(SCHEME_WORKAREA)/$(TARGET_MACH)/c && $(CHOST_HACK@T_CROSS_MODE@) $(MAKE) o=o cross=t
+-	$(MAKE) $(SCHEME_WORKAREA)/$(TARGET_MACH)/s/xpatch
++	$(MAKE) $(XPATCH_FILE)
++
++scheme-cross-via-scheme:
++	$(MAKE) $(SCHEME_WORKAREA)/boot/$(TARGET_MACH)/scheme.boot MACH=$(TARGET_MACH)
++	$(MAKE) finish-scheme-cross
+ 
+ # Rebuild patch file and cross "petite.boot" and "scheme.boot" when older
+-# than the build-host "scheme.boot" or when "make-boot.rkt" touchs dummy boot files
+-XPATCH_DEPS = $(SCHEME_HOST_WORKAREA)/$(MACH)/boot/$(MACH)/scheme.boot \
+-              $(SCHEME_WORKAREA)/boot/$(TARGET_MACH)/scheme.boot
++# than the build-<host "scheme.boot" or when "make-boot.rkt" touchs dummy boot files
++XPATCH_DEPS_built = $(SCHEME_HOST_WORKAREA)/$(MACH)/boot/$(MACH)/scheme.boot \
++                    $(SCHEME_WORKAREA)/boot/$(TARGET_MACH)/scheme.boot
++XPATCH_DEPS_existing = 
++XPATCH_DEPS = $(XPATCH_DEPS@USE_SCHEME_MODE@)
+ 
+-$(SCHEME_WORKAREA)/$(TARGET_MACH)/s/xpatch: $(XPATCH_DEPS)
++$(XPATCH_FILE): $(XPATCH_DEPS)
+ 	$(MAKE) bounce TARGET=build-xpatch-using-host
+ 
+ build-xpatch-using-host:
+ 	cd $(SCHEME_WORKAREA)/$(TARGET_MACH)/s && $(MAKE) -f Mf-cross m=$(MACH) xm=$(TARGET_MACH) Scheme="$(SCHEME_BIN)" SCHEMEHEAPDIRS="$(SCHEME_INC)"
+ 
+ XPATCH =
+-XPATCHcross = --xpatch $(SCHEME_WORKAREA)/$(TARGET_MACH)/s/xpatch
++XPATCHcross = --xpatch $(XPATCH_FILE)
+ 
+ racket.boot: racket.so
+ 	$(SCHEME) --script $(srcdir)/convert-to-boot.ss @BOOT_COMPRESS_COMP@ $(XPATCH@CROSS_MODE@) racket.so racket.boot $(TARGET_MACH)
+@@ -410,7 +434,7 @@ install-cross:
+ 	$(MAKE) compile-xpatch.$(TARGET_MACH)
+ 	$(MAKE) library-xpatch.$(TARGET_MACH)
+ 
+-SCHEME_XPATCH = $(SCHEME_WORKAREA)/$(TARGET_MACH)/s/xpatch
++SCHEME_XPATCH = $(XPATCH_FILE)
+ 
+ CROSS_SERVE_DEPS = $(srcdir)/mk-cross-serve.ss $(srcdir)/cross-serve.ss \
+                    $(srcdir)/../expander/env.ss $(srcdir)/../linklet/config.ss
+diff --git a/racket/src/cs/c/configure b/racket/src/cs/c/configure
+index 21695a431a..1eeef57753 100755
+--- a/racket/src/cs/c/configure
++++ b/racket/src/cs/c/configure
+@@ -654,6 +654,9 @@ MINGW
+ NOT_OSX
+ OSX
+ SETUP_BOOT_MODE
++USE_SCHEME_MODE
++MAKE_SCHEME_SCHEME
++MAKE_SCHEME_MODE
+ TT_CROSS_MODE
+ T_CROSS_MODE
+ CROSS_MODE
+@@ -1448,7 +1451,7 @@ Optional Features:
+   --enable-docs           build docs on install (enabled by default)
+   --enable-usersetup      setup user-specific files on install
+   --enable-racket=<path>  use <path> as Racket for build; or "auto" to create
+-  --enable-scheme=<path>  use <path> as host's build directory for cross
++  --enable-scheme=<path>  use <path> as host build for cross
+   --enable-mach=<mach>    use Chez Scheme machine type <mach>
+   --enable-target=<mach>  cross-build for Chez Scheme machine type <mach>
+   --enable-portable       prefer portable to host-specific
+@@ -2867,7 +2870,7 @@ show_explicitly_enabled "${enable_xonx}" "Unix style"
+ show_explicitly_enabled "${enable_libzo}" 'Compiled ".zo" files moved to lib'
+ 
+ show_explicitly_set "${enable_racket}" "Racket"
+-show_explicitly_set "${enable_scheme}" "Chez Scheme build directory"
++show_explicitly_set "${enable_scheme}" "Chez Scheme for build"
+ show_explicitly_set "${enable_mach}" "machine type"
+ show_explicitly_set "${enable_target}" "cross-build machine type"
+ show_explicitly_enabled "${enable_portable}" "portable"
+@@ -4745,9 +4748,21 @@ esac
+ 
+ SCHEME_DIR=${srcdir}/../../ChezScheme
+ MAKE_BUILD_SCHEME=checkout
++USE_SCHEME_MODE="_built"
++MAKE_SCHEME_MODE="${T_CROSS_MODE}"
+ 
+ if test "${enable_scheme}" != "" ; then
+-  CS_HOST_WORKAREA_PREFIX="${enable_scheme}/"
++   if test -d "${enable_scheme}" ; then
++     # Directory exists, so use it as a build directory
++     echo "Using supplied Scheme path as a build directory"
++     CS_HOST_WORKAREA_PREFIX="${enable_scheme}/"
++   else
++     # Directory does not exist, so assume it's an executable
++     echo "Using supplied Scheme path as an executable"
++     MAKE_SCHEME_MODE="${T_CROSS_MODE}-via-scheme"
++     MAKE_SCHEME_SCHEME="${enable_scheme}"
++     USE_SCHEME_MODE="_existing"
++   fi
+ fi
+ 
+ if test "${enable_racket}" != "" ; then
+@@ -6012,6 +6027,9 @@ SCHEME_CROSS_CONFIG_ARGS="--machine=${TARGET_MACH} --disable-x11 ${cs_auto_flags
+ 
+ 
+ 
++
++
++
+ 
+ 
+ 
+diff --git a/racket/src/cs/c/configure.ac b/racket/src/cs/c/configure.ac
+index 464ebe1760..aaee88156d 100644
+--- a/racket/src/cs/c/configure.ac
++++ b/racket/src/cs/c/configure.ac
+@@ -23,7 +23,7 @@ AC_ARG_ENABLE(compressmore, [  --enable-compressmore   compress compiled code ev
+ AC_ARG_ENABLE(compressboot, [  --enable-compressboot   compress boot files])
+ m4_include(../ac/path_arg.m4)
+ AC_ARG_ENABLE(racket,     [  --enable-racket=<path>  use <path> as Racket for build; or "auto" to create])
+-AC_ARG_ENABLE(scheme,     [  --enable-scheme=<path>  use <path> as host's build directory for cross])
++AC_ARG_ENABLE(scheme,     [  --enable-scheme=<path>  use <path> as host build for cross])
+ AC_ARG_ENABLE(mach,       [  --enable-mach=<mach>    use Chez Scheme machine type <mach>])
+ AC_ARG_ENABLE(target,     [  --enable-target=<mach>  cross-build for Chez Scheme machine type <mach>])
+ m4_include(../ac/portable_arg.m4)
+@@ -81,7 +81,7 @@ show_explicitly_disabled "${enable_compressboot}" "Compressed boot files"
+ show_explicitly_enabled "${enable_xonx}" "Unix style"
+ m4_include(../ac/path_show.m4)
+ show_explicitly_set "${enable_racket}" "Racket"
+-show_explicitly_set "${enable_scheme}" "Chez Scheme build directory"
++show_explicitly_set "${enable_scheme}" "Chez Scheme for build"
+ show_explicitly_set "${enable_mach}" "machine type"
+ show_explicitly_set "${enable_target}" "cross-build machine type"
+ m4_include(../ac/portable_show.m4)
+@@ -504,9 +504,21 @@ esac
+ 
+ SCHEME_DIR=${srcdir}/../../ChezScheme
+ MAKE_BUILD_SCHEME=checkout
++USE_SCHEME_MODE="_built"
++MAKE_SCHEME_MODE="${T_CROSS_MODE}"
+ 
+ if test "${enable_scheme}" != "" ; then
+-  CS_HOST_WORKAREA_PREFIX="${enable_scheme}/"
++   if test -d "${enable_scheme}" ; then
++     # Directory exists, so use it as a build directory
++     echo "Using supplied Scheme path as a build directory"
++     CS_HOST_WORKAREA_PREFIX="${enable_scheme}/"
++   else
++     # Directory does not exist, so assume it's an executable
++     echo "Using supplied Scheme path as an executable"
++     MAKE_SCHEME_MODE="${T_CROSS_MODE}-via-scheme"
++     MAKE_SCHEME_SCHEME="${enable_scheme}"
++     USE_SCHEME_MODE="_existing"
++   fi     
+ fi
+ 
+ if test "${enable_racket}" != "" ; then
+@@ -821,6 +833,9 @@ AC_SUBST(DIFF_MACH)
+ AC_SUBST(CROSS_MODE)
+ AC_SUBST(T_CROSS_MODE)
+ AC_SUBST(TT_CROSS_MODE)
++AC_SUBST(MAKE_SCHEME_MODE)
++AC_SUBST(MAKE_SCHEME_SCHEME)
++AC_SUBST(USE_SCHEME_MODE)
+ AC_SUBST(SETUP_BOOT_MODE)
+ AC_SUBST(OSX)
+ AC_SUBST(NOT_OSX)
+-- 
+2.32.0
+

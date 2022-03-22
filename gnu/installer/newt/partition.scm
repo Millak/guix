@@ -36,10 +36,8 @@
   #:export (run-partitioning-page))
 
 (define (button-exit-action)
-  "Raise the &installer-step-abort condition."
-  (raise
-   (condition
-    (&installer-step-abort))))
+  "Abort the installer step."
+  (abort-to-prompt 'installer-step 'abort))
 
 (define (run-scheme-page)
   "Run a page asking the user for a partitioning scheme."
@@ -801,9 +799,9 @@ by pressing the Exit button.~%~%")))
     ;; Make sure the disks are not in use before proceeding to formatting.
     (free-parted eligible-devices)
     (format-user-partitions user-partitions-with-pass)
-    (syslog "formatted ~a user partitions~%"
+    (installer-log-line "formatted ~a user partitions"
             (length user-partitions-with-pass))
-    (syslog "user-partitions: ~a~%" user-partitions)
+    (installer-log-line "user-partitions: ~a" user-partitions)
 
     (destroy-form-and-pop form)
     user-partitions))

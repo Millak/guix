@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2015 Siniša Biđin <sinisa@bidin.eu>
-;;; Copyright © 2015, 2016 Eric Bavier <bavier@member.fsf.org>
+;;; Copyright © 2015, 2016, 2022 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2015 xd1le <elisp.vim@gmail.com>
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym@scratchpost.org>
@@ -49,6 +49,8 @@
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Disseminate Dissent <disseminatedissent@protonmail.com>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022 Gabriel Wicki <gabriel@erlikon.ch>
+;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -69,9 +71,11 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system asdf)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system haskell)
   #:use-module (guix build-system meson)
@@ -290,22 +294,17 @@ commands would.")
 (define-public i3-wm
   (package
     (name "i3-wm")
-    (version "4.18.3")
+    (version "4.20.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://i3wm.org/downloads/i3-"
-                                  version ".tar.bz2"))
+                                  version ".tar.xz"))
               (sha256
                (base32
-                "03dijnwv2n8ak9jq59fhq0rc80m5wjc9d54fslqaivnnz81pkbjk"))))
-    (build-system gnu-build-system)
+                "1rpwdgykcvmrmdz244f0wm7446ih1dcw8rlc1hm1c7cc42pyrq93"))))
+    (build-system meson-build-system)
     (arguments
-     `(#:configure-flags
-       ;; The build system tries to build in a separate directory, but that
-       ;; seems to be unnecessary.
-       (list "--disable-builddir")
-
-       ;; The test suite requires the unpackaged Xephyr X server.
+     `(;; The test suite requires the unpackaged Xephyr X server.
        #:tests? #f
        #:phases
        (modify-phases %standard-phases
@@ -355,23 +354,28 @@ resized.
 
 i3 uses a plain-text configuration file, and can be extended and controlled from
 many programming languages.")
+    (properties
+     `((upstream-name . "i3")
+       (release-monitoring-url . "https://i3wm.org/downloads")))
     (license license:bsd-3)))
 
 (define-public i3-gaps
-  (package (inherit i3-wm)
-           (name "i3-gaps")
-           (version "4.18.3")
-           (source (origin
-                     (method url-fetch)
-                     (uri (string-append
-                           "https://github.com/Airblader/i3/releases/download/"
-                           version "/i3-" version ".tar.bz2"))
-                     (sha256
-                      (base32
-                       "1hcakwyz78lgp8mhqv7pw86jlb3m415pfql1q19rkijnhm3fn3ci"))))
-           (home-page "https://github.com/Airblader/i3")
-           (synopsis "Tiling window manager with gaps")
-           (description "i3-gaps is a fork of i3wm, a tiling window manager
+  (package
+    (inherit i3-wm)
+    (name "i3-gaps")
+    (version "4.20.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Airblader/i3")
+                    (commit version)))
+              (sha256
+               (base32
+                "0g0qmv2gpv9qbhj9h5f4c4vfs6ndzq2rblgx9md85iharwp5sbb9"))))
+    (home-page "https://github.com/Airblader/i3")
+    (synopsis "Tiling window manager with gaps")
+    (description
+     "i3-gaps is a fork of i3wm, a tiling window manager
 for X11.  It is kept up to date with upstream, adding a few additional
 features such as gaps between windows.
 
@@ -384,7 +388,7 @@ and optionally resized.
 
 i3 uses a plain-text configuration file, and can be extended and controlled
 from many programming languages.")
-           (license license:bsd-3)))
+    (license license:bsd-3)))
 
 (define-public i3lock
   (package
@@ -933,16 +937,15 @@ tiling window manager for X.")
 (define-public evilwm
   (package
     (name "evilwm")
-    (version "1.1.1")
+    (version "1.3.1")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "http://www.6809.org.uk/evilwm/evilwm-"
+       (uri (string-append "http://www.6809.org.uk/evilwm/dl/evilwm-"
                            version ".tar.gz"))
        (sha256
         (base32
-         "0ak0yajzk3v4dg5wmaghv6acf7v02a4iw8qxmq5yw5ard8lrqn3r"))
-       (patches (search-patches "evilwm-lost-focus-bug.patch"))))
+         "1jry36qkg2l02v37zvzszxvxm2d8c62z25gks5gdqqjl9ifbpv1j"))))
     (build-system gnu-build-system)
     (inputs
      (list libx11 libxext libxrandr))
@@ -1031,7 +1034,7 @@ experience.")
 (define-public fnott
   (package
     (name "fnott")
-    (version "1.1.2")
+    (version "1.2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1040,7 +1043,7 @@ experience.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0vkwyci4z4jj2aczxkrmj0861j5jczjr8isasa7gml93nlvyw7gv"))))
+                "1770p5hfswbaa15zmjh10n7fskch00d3y03ij3gfb1v4q314nb9n"))))
     (build-system meson-build-system)
     (arguments `(#:build-type "release"))
     (native-inputs
@@ -1722,7 +1725,7 @@ display a clock or apply image manipulation techniques to the background image."
 (define-public waybar
   (package
     (name "waybar")
-    (version "0.9.8")
+    (version "0.9.9")
     (source
      (origin
        (method git-fetch)
@@ -1731,7 +1734,7 @@ display a clock or apply image manipulation techniques to the background image."
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "109a49f064ma5js2d7maribmfalswbmmhq2fraa7hfz5pf2jxs2w"))))
+        (base32 "0bp9ygqv3kawwxf53j1r98r0xxg81cx00jsmymmlrd8psgsd6yy9"))))
     (build-system meson-build-system)
     (inputs (list date
                   fmt
@@ -2244,41 +2247,40 @@ PNG files.")
     (license license:gpl3+)))
 
 (define-public lemonbar
-  (let ((commit "35183ab81d2128dbb7b6d8e119cc57846bcefdb4")
-        (revision "1"))
-    (package
-      (name "lemonbar")
-      (version (git-version "1.3" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/LemonBoy/bar")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1wwqbph392iwz8skaqxb0xpklb1l6yganqz80g4x1fhrnz7idmlh"))))
-      (build-system gnu-build-system)
-      (arguments
-       `(#:tests? #f                    ; no test suite
-         #:make-flags
-         (list ,(string-append "CC=" (cc-for-target))
-               (string-append "PREFIX=" %output))
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure))))
-      (inputs
-       (list libxcb))
-      (native-inputs
-       (list perl))
-      (home-page "https://github.com/LemonBoy/bar")
-      (synopsis "Featherweight status bar")
-      (description
-       "@code{lemonbar} (formerly known as @code{bar}) is a lightweight
+  (package
+    (name "lemonbar")
+    (version "1.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/LemonBoy/bar")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0sm1lxxf0y2n87nvc8mz6i6mzb32f4qab80ppb28ibrwfir6jsln"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no test suite
+      #:make-flags
+      #~(list #$(string-append "CC=" (cc-for-target))
+              (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))
+    (inputs
+     (list libxcb))
+    (native-inputs
+     (list perl))
+    (home-page "https://github.com/LemonBoy/bar")
+    (synopsis "Featherweight status bar")
+    (description
+     "@code{lemonbar} (formerly known as @code{bar}) is a lightweight
 bar entirely based on XCB.  Provides full UTF-8 support, basic
 formatting, RandR and Xinerama support and EWMH compliance without
 wasting your precious memory.")
-      (license license:x11))))
+    (license license:x11)))
 
 (define-public lemonbar-xft
   ;; Upstream v2.0 tag is several years behind HEAD
@@ -2302,17 +2304,12 @@ wasting your precious memory.")
       (arguments
        (substitute-keyword-arguments (package-arguments lemonbar)
          ((#:make-flags make-flags)
-          `(append
-            ,make-flags
-            (list (string-append
-                   "CFLAGS="
-                   (string-join
-                    (list (string-append
-                           "-I" (assoc-ref %build-inputs "freetype")
-                           "/include/freetype2")
-                          (string-append
-                           "-D" "VERSION="
-                           (format #f "'~s'" ,version))))))))))
+          #~(#$@make-flags
+             (format #f "CFLAGS=~a -DVERSION='~s'"
+                     (string-append
+                      "-I" #$(this-package-input "freetype")
+                      "/include/freetype2")
+                     #$version)))))
       (home-page "https://github.com/drscream/lemonbar-xft")
       (synopsis
        (string-append
@@ -2353,6 +2350,47 @@ support, for easier unicode usage.")))))
     (description "@code{xclickroot} runs a command every time a given mouse
 button is pressed on the root window.")
     (license license:public-domain)))
+
+(define-public xinitrc-xsession
+  (let ((commit "cbfc77a1ccaf07b7d8a35f4d8007c7102f365374")
+        (revision "0"))
+    (package
+      (name "xinitrc-xsession")
+      (version (git-version "1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://aur.archlinux.org/xinit-xsession.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "12nv3qyjhy2l9mcb547f414d8bj79mhdhsra0g8x7x71b1xxl15b"))))
+      (build-system copy-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'install 'patch-xsession-file
+              (lambda _
+                (let* ((xinitrc-desktop
+                        (string-append #$output "/share/xsessions/xinitrc.desktop"))
+                       (xinitrc-helper
+                        (string-append #$output "/bin/xinitrcsession-helper")))
+                  (substitute* xinitrc-desktop
+                    (("Exec=xinitrcsession-helper")
+                     (string-append "Exec=" xinitrc-helper)))))))
+        #:install-plan
+        #~(list '("xinitrcsession-helper" "bin/")
+                '("xinitrc.desktop" "share/xsessions/"))))
+      (home-page "https://aur.archlinux.org/packages/xinit-xsession/")
+      (synopsis "Use ~/.xinitrc as an xsession from your display manager")
+      (description
+       "Xinitrc-xsession allows @code{~/.xinitrc} to be run as a session from
+your display manager.  Make @code{~/.xinitrc} executable and use this package
+in your system configuration have this xsession available to your display
+manager.")
+      (license license:gpl3))))
 
 (define-public xmenu
   (package

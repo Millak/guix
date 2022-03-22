@@ -4,7 +4,7 @@
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2021 Andy Tai <atai@atai.org>
-;;; Copyright © 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2021, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25,6 +25,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
@@ -142,7 +143,7 @@ monospaced or proportional.")
 (define-public gimagereader
   (package
     (name "gimagereader")
-    (version "3.3.1")
+    (version "3.4.0")
     (source
      (origin
        (method url-fetch)
@@ -151,39 +152,25 @@ monospaced or proportional.")
              "/download/v" version "/"
              "gimagereader-" version ".tar.xz"))
        (sha256
-        (base32 "1pghffb55k3wq33nbn9fi0lmjbldpmvqs2msnvss8bxz1k1ck23n"))))
+        (base32 "09glxh7b4ivrd4samm67b8k2p0aljiagr83wb8nvy5ps2a9gwp5m"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f                      ;no test
-       #:configure-flags (list "-DENABLE_VERSIONCHECK=0")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-build
-           ;; XXX: Prevent compilation error: "incomplete type ‘QUrl’ used in
-           ;; nested name specifier".  Fixed upstream as
-           ;; 6209e25dab20b233e399ff36fabe4252db0f9e44.  It can be removed in
-           ;; release 3.3.2+.
-           (lambda _
-             (with-directory-excursion "qt/src/hocr"
-               (substitute* '("HOCROdtExporter.cc" "HOCRTextExporter.cc")
-                 (("#include <QMessageBox>\n" all)
-                  (string-append all "#include <QUrl>\n"))))
-             #t)))))
+     (list
+      #:tests? #f                       ;no test
+      #:configure-flags #~(list "-DENABLE_VERSIONCHECK=0")))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)))
+     (list gettext-minimal intltool pkg-config))
     (inputs
-     `(("enchant" ,enchant)
-       ("djvulibre" ,djvulibre)
-       ("leptonica" ,leptonica)
-       ("podofo" ,podofo)
-       ("poppler-qt5" ,poppler-qt5)
-       ("sane-backends" ,sane-backends)
-       ("qtbase" ,qtbase-5)
-       ("qtspell" ,qtspell)
-       ("quazip" ,quazip-0)
-       ("tesseract" ,tesseract-ocr)))
+     (list enchant
+           djvulibre
+           leptonica
+           podofo
+           poppler-qt5
+           sane-backends
+           qtbase-5
+           qtspell
+           quazip-0
+           tesseract-ocr))
     (home-page "https://github.com/manisandro/gImageReader")
     (synopsis "Qt front-end to tesseract-ocr")
     (description

@@ -6,6 +6,7 @@
 ;;; Copyright © 2019 Robert Vollmert <rob@vllmrt.net>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
+;;; Copyright © 2019 Simon Tournier <zimon.toutoune@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25,9 +26,9 @@
 (define-module (guix import hackage)
   #:use-module (ice-9 match)
   #:use-module (ice-9 regex)
+  #:use-module (srfi srfi-71)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-26)
-  #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-1)
   #:use-module ((guix download) #:select (download-to-store url-fetch))
   #:use-module ((guix utils) #:select (package-name->name+version
@@ -136,7 +137,7 @@ version is returned."
 (define (read-cabal-and-hash port)
   "Read a Cabal file from PORT and return it and its hash in nix-base32
 format as two values."
-  (let-values (((port get-hash) (open-sha256-input-port port)))
+  (let ((port get-hash (open-sha256-input-port port)))
     (values (read-cabal (canonical-newline-port port))
             (bytevector->nix-base32-string (get-hash)))))
 
@@ -148,10 +149,10 @@ version.  On failure, both return values will be #f."
   (guard (c ((and (http-get-error? c)
                   (= 404 (http-get-error-code c)))
              (values #f #f)))           ;"expected" if package is unknown
-    (let*-values (((name version) (package-name->name+version name-version))
-                  ((url)          (hackage-cabal-url name version))
-                  ((port _)       (http-fetch url))
-                  ((cabal hash)   (read-cabal-and-hash port)))
+    (let* ((name version (package-name->name+version name-version))
+           (url          (hackage-cabal-url name version))
+           (port _       (http-fetch url))
+           (cabal hash   (read-cabal-and-hash port)))
       (close-port port)
       (values cabal hash))))
 
@@ -159,7 +160,7 @@ version.  On failure, both return values will be #f."
   "Return the Cabal file for the package NAME-VERSION, or #f on failure.  If
 the version part is omitted from the package name, then return the latest
 version."
-  (let-values (((cabal hash) (hackage-fetch-and-hash name-version)))
+  (let ((cabal hash (hackage-fetch-and-hash name-version)))
     cabal))
 
 (define string->license
@@ -248,23 +249,18 @@ the hash of the Cabal file."
     (hackage-source-url name version))
 
   (define hackage-dependencies
-    ((compose (cut filter-dependencies <>
-                   (cabal-package-name cabal))
-              (cut cabal-dependencies->names <>))
-     cabal))
+    (filter-dependencies (cabal-dependencies->names cabal)
+                         (cabal-package-name cabal)))
 
   (define hackage-native-dependencies
     (lset-difference
      equal?
-     ((compose (cut filter-dependencies <>
-                    (cabal-package-name cabal))
-               ;; FIXME: Check include-test-dependencies?
-               (lambda (cabal)
-                 (append (if include-test-dependencies?
-                             (cabal-test-dependencies->names cabal)
-                             '())
-                         (cabal-custom-setup-dependencies->names cabal))))
-      cabal)
+     (filter-dependencies
+      (append (if include-test-dependencies?
+                  (cabal-test-dependencies->names cabal)
+                  '())
+              (cabal-custom-setup-dependencies->names cabal))
+      (cabal-package-name cabal))
      hackage-dependencies))
 
   (define dependencies
@@ -333,14 +329,16 @@ symbol 'true' or 'false'.  The value associated with other keys has to conform
 to the Cabal file format definition.  The default value associated with the
 keys \"os\", \"arch\" and \"impl\" is \"linux\", \"x86_64\" and \"ghc\"
 respectively."
-  (let-values (((cabal-meta cabal-hash)
-                (if port
-                    (read-cabal-and-hash port)
-                    (hackage-fetch-and-hash package-name))))
-    (and=> cabal-meta (compose (cut hackage-module->sexp <> cabal-hash
-                                    #:include-test-dependencies?
-                                    include-test-dependencies?)
-                               (cut eval-cabal <> cabal-environment)))))
+  (let ((cabal-meta cabal-hash
+                    (if port
+                        (read-cabal-and-hash port)
+                        (hackage-fetch-and-hash package-name))))
+    (if cabal-meta
+        (hackage-module->sexp (eval-cabal cabal-meta cabal-environment)
+                              cabal-hash
+                              #:include-test-dependencies?
+                              include-test-dependencies?)
+        (values #f '()))))
 
 (define hackage->guix-package/m                   ;memoized variant
   (memoize hackage->guix-package))

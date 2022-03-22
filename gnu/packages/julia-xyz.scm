@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020, 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2021, 2022 Simon Tournier <zimon.toutoune@gmail.com>
-;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;;
@@ -23,6 +23,7 @@
 (define-module (gnu packages julia-xyz)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix packages)
   #:use-module (guix git-download)
@@ -138,7 +139,7 @@ ANSI escape codes to another format.")
          (base32 "1g0kyzcdykgs247j72jpc2qqall696jwgb3hnn4cxmbi8bkf7wpk"))))
     (build-system julia-build-system)
     (arguments
-     `(#:parallel-tests? #f))
+     (list #:parallel-tests? #f))
     (home-page "https://github.com/JuliaTesting/Aqua.jl")
     (synopsis "Automated quality assurance for Julia packages")
     (description "@acronym{Aqua.jl, Auto QUality Assurance for Julia packages},
@@ -164,7 +165,7 @@ provides functions to run a few automatable checks for Julia packages.")
      ;; Expression: @inferred(ArrayInterface.size(Rnr)) === (StaticInt(4),)
      ;; Evaluated: (static(2),) === (static(4),)
      ;; Disable as stopgap.
-     `(#:tests? ,(not (target-x86-32?))))
+     (list #:tests? (not (target-x86-32?))))
     (propagated-inputs
      (list julia-ifelse
            julia-requires
@@ -334,24 +335,25 @@ the entries on the bands.")
         (base32 "1xz3kdrphp4b158pg7dwkiry49phs2fjjpdvk1hjpww5ykxacks8"))))
     (build-system julia-build-system)
     (arguments
-     `(#:phases
-       ,@(if (target-x86-32?)
-           '((modify-phases %standard-phases
-               (add-after 'unpack 'remove-failing-tests-i686
-                 (lambda _
-                   (substitute* "test/GroupsTests.jl"
-                     (("@test sprint\\(show, g1\\)")
-                      "@test_broken sprint(show, g1)")
-                     (("@test sprint\\(show, g1; context = :boundto => 1\\)")
-                      "@test_broken sprint(show, g1; context = :boundto => 1)")
-                     (("@test sprint\\(show, g1; context = :limit => false\\)")
-                      "@test_broken sprint(show, g1; context = :limit => false)")
-                     (("@test @test_deprecated") "@test_broken"))
-                   (substitute* "test/ExecutionTests.jl"
-                     ;; Evaluated: 12 == 8
-                     (("@test @ballocated\\(Ref\\(1\\)\\)")
-                      "@test_broken @ballocated(Ref(1))"))))))
-           '(%standard-phases))))
+     (list
+      #:phases
+      (if (target-x86-32?)
+          #~(modify-phases %standard-phases
+              (add-after 'unpack 'remove-failing-tests-i686
+                (lambda _
+                  (substitute* "test/GroupsTests.jl"
+                    (("@test sprint\\(show, g1\\)")
+                     "@test_broken sprint(show, g1)")
+                    (("@test sprint\\(show, g1; context = :boundto => 1\\)")
+                     "@test_broken sprint(show, g1; context = :boundto => 1)")
+                    (("@test sprint\\(show, g1; context = :limit => false\\)")
+                     "@test_broken sprint(show, g1; context = :limit => false)")
+                    (("@test @test_deprecated") "@test_broken"))
+                  (substitute* "test/ExecutionTests.jl"
+                    ;; Evaluated: 12 == 8
+                    (("@test @ballocated\\(Ref\\(1\\)\\)")
+                     "@test_broken @ballocated(Ref(1))")))))
+          #~%standard-phases)))
     (propagated-inputs
      (list julia-json))
     (home-page "https://github.com/JuliaCI/BenchmarkTools.jl")
@@ -360,6 +362,34 @@ the entries on the bands.")
 code easy by supplying a framework for writing and running groups of
 benchmarks as well as comparing benchmark results.")
     (license license:expat)))
+
+(define-public julia-bfloat16s
+  ;; Not tagged upstream
+  (let ((commit "ef6051e4308ed0c02f10168b99d226237e0ae33c")
+        (version "0.2.0"))
+    (package
+      (name "julia-bfloat16s")
+      (version version)
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/JuliaMath/BFloat16s.jl")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "16sr578k4i47lhziri47nvspdrsni2wc1qjhs6hzffh9si6a7jfq"))))
+      (build-system julia-build-system)
+      (home-page "https://github.com/JuliaMath/BFloat16s.jl")
+      (synopsis "Define BFloat16 data type")
+      (description "This package defines the @code{BFloat16} data type.  The
+only currently available hardware implementation of this datatype are Google's
+Cloud TPUs.  As such, this package is suitable to evaluate whether using TPUs
+would cause precision problems for any particular algorithm, even without
+access to TPU hardware.  Note that this package is designed for functionality,
+not performance, so this package should be used for precision experiments
+only, not performance experiments.")
+      (license license:expat))))
 
 (define-public julia-bioalignments
   (package
@@ -376,15 +406,16 @@ benchmarks as well as comparing benchmark results.")
         (base32 "1wf6qgsada59r2fykxfj9hcr635wl8maqxbd3w8qpa01k9glxa0k"))))
     (build-system julia-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-test
-           (lambda _
-             ;; Test fails because an unexpected type representation from
-             ;; BioSequences.  The aligned value is correct though.
-             (substitute* "test/runtests.jl"
-               (("@test sprint\\(show, aln\\)")
-                "@test_broken sprint(show, aln)")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-test
+            (lambda _
+              ;; Test fails because an unexpected type representation from
+              ;; BioSequences.  The aligned value is correct though.
+              (substitute* "test/runtests.jl"
+                (("@test sprint\\(show, aln\\)")
+                 "@test_broken sprint(show, aln)")))))))
     (propagated-inputs
      (list julia-biogenerics
            julia-biosequences
@@ -469,13 +500,14 @@ sequences.")
         (base32 "1222rwdndi777lai8a6dwrh35i5rgmj75kcrhn8si72sxgz0syjm"))))
     (build-system julia-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'adjust-tests
-           (lambda _
-             (substitute* "test/runtests.jl"
-               (("\\@testset \\\"Range.*" all)
-                (string-append all " return\n"))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+        (add-after 'unpack 'adjust-tests
+          (lambda _
+            (substitute* "test/runtests.jl"
+              (("\\@testset \\\"Range.*" all)
+               (string-append all " return\n"))))))))
     (propagated-inputs
      (list julia-automa))
     (home-page "https://github.com/BioJulia/BioSymbols.jl")
@@ -499,14 +531,15 @@ and amino acids that are used ny otherBioJulia packages.")
          (base32 "1by26036fk9mawmcgqxpwizgbs398v9p6vrbsgg7h6llqn3q9iw1"))))
     (build-system julia-build-system)
     (arguments
-     `(#:phases
-       ,@(if (target-64bit?)
-           '(%standard-phases)
-           '((modify-phases %standard-phases
-               (add-after 'unpack 'fix-tests-int32-i686
-                 (lambda _
-                   (substitute* "test/test_blockarrays.jl"
-                     (("Int64") "Int32")))))))))
+     (list
+      #:phases
+      (if (target-64bit?)
+          #~%standard-phases
+          #~(modify-phases %standard-phases
+              (add-after 'unpack 'fix-tests-int32-i686
+                (lambda _
+                  (substitute* "test/test_blockarrays.jl"
+                    (("Int64") "Int32"))))))))
     (propagated-inputs
      (list julia-arraylayouts
            julia-fillarrays))
@@ -598,9 +631,10 @@ structures.")
     ;; freeze, see
     ;; https://travis-ci.org/BioJulia/BufferedStreams.jl/jobs/491050182
     (arguments
-     '(#:tests? #f
-       #:julia-package-name "BufferedStreams"
-       #:julia-package-uuid "e1450e63-4bb3-523b-b2a4-4ffa8c0fd77d"))
+     (list
+      #:tests? #f
+      #:julia-package-name "BufferedStreams"
+      #:julia-package-uuid "e1450e63-4bb3-523b-b2a4-4ffa8c0fd77d"))
     (propagated-inputs
      (list julia-compat))
     (home-page "https://github.com/BioJulia/BufferedStreams.jl")
@@ -662,6 +696,25 @@ methods.")
     (description "This package provides tools for working with categorical
 variables, both with unordered (nominal variables) and ordered categories
 (ordinal variables), optionally with missing values.")
+    (license license:expat)))
+
+(define-public julia-cenum
+  (package
+    (name "julia-cenum")
+    (version "0.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaInterop/CEnum.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0h079mggvv420bw87j8s3hsgk7vavjgm4j1cvk0pnzrrh8ib1381"))))
+    (build-system julia-build-system)
+    (home-page "https://github.com/JuliaInterop/CEnum.jl")
+    (synopsis "C-compatible enum for Julia")
+    (description "This package provides a C-compatible enum for Julia.")
     (license license:expat)))
 
 (define-public julia-chainrules
@@ -766,15 +819,6 @@ dependencies, while keeping @code{ChainRulesCore.jl} as light-weight as possible
        (sha256
         (base32 "0xm603nylkwk4bzx66zv1g3syzrvn3jh9spdx7kvcvgszzyrrgh4"))))
     (build-system julia-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'reset-gzip-timestamps 'make-files-writable
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (for-each make-file-writable
-                         (find-files out "\\.gz$"))
-               #t))))))
     (propagated-inputs
      (list julia-transcodingstreams
            julia-zlib-jll))
@@ -967,27 +1011,28 @@ way.")
          (base32 "1b23p0zk8dx2sf01cnw177mqci7qd81b9s32ixz9clsh0r0icl1b"))))
     (build-system julia-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'link-depot 'fix-tests
-           (lambda _
-             (substitute* "test/runtests.jl"
-               (("option.toml") "test/option.toml"))))
-         (add-after 'link-depot 'dont-use-exproniconlite
-           (lambda _
-             (substitute* '("Project.toml"
-                            "src/Configurations.jl"
-                            "test/runtests.jl")
-               (("ExproniconLite") "Expronicon"))
-             (substitute* "Project.toml"
-               (("55351af7-c7e9-48d6-89ff-24e801d99491")
-                "6b7a57c9-7cc1-4fdf-b7f5-e857abae3636"))))
-         ,@(if (target-64bit?)
-             '()
-             '((add-after 'unpack 'fix-tests-int32-i686
-                 (lambda _
-                   (substitute* "test/runtests.jl"
-                     (("Int64") "Int32")))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'link-depot 'fix-tests
+            (lambda _
+              (substitute* "test/runtests.jl"
+                (("option.toml") "test/option.toml"))))
+          (add-after 'link-depot 'dont-use-exproniconlite
+            (lambda _
+              (substitute* '("Project.toml"
+                             "src/Configurations.jl"
+                             "test/runtests.jl")
+                (("ExproniconLite") "Expronicon"))
+              (substitute* "Project.toml"
+                (("55351af7-c7e9-48d6-89ff-24e801d99491")
+                 "6b7a57c9-7cc1-4fdf-b7f5-e857abae3636"))))
+          #$@(if (target-64bit?)
+                 '()
+                 '((add-after 'unpack 'fix-tests-int32-i686
+                     (lambda _
+                       (substitute* "test/runtests.jl"
+                         (("Int64") "Int32")))))))))
     (propagated-inputs
      (list julia-crayons
            julia-expronicon
@@ -1112,21 +1157,21 @@ dependency on it.")
          (base32 "1bk0amrghgjrkyn1mm4ac23swwbgszl1d0qyl9137qj5zvv9dasp"))))
     (build-system julia-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'link-depot 'skip-failing-test
-           (lambda _
-             ;; Tests with non-standard colors.
-             (substitute* "test/show.jl"
-               (("test (sprint\\(show, df, context=:color=>true)" _ test)
-                (string-append "test_nowarn " test)))
-             (substitute* "test/io.jl"
-               (("testset \\\"improved.*" all)
-                (string-append all "return\n")))
-             (substitute* "test/join.jl"
-               (("test (levels\\(outerjoin\\(B)" _ test)
-                (string-append "test_nowarn " test)))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'link-depot 'skip-failing-test
+            (lambda _
+              ;; Tests with non-standard colors.
+              (substitute* "test/show.jl"
+                (("test (sprint\\(show, df, context=:color=>true)" _ test)
+                 (string-append "test_nowarn " test)))
+              (substitute* "test/io.jl"
+                (("testset \\\"improved.*" all)
+                 (string-append all "return\n")))
+              (substitute* "test/join.jl"
+                (("test (levels\\(outerjoin\\(B)" _ test)
+                 (string-append "test_nowarn " test))))))))
     (propagated-inputs
      (list julia-dataapi
            julia-invertedindices
@@ -1172,18 +1217,19 @@ Julia from R or Python.")
            julia-orderedcollections))
     (build-system julia-build-system)
     (arguments
-     `(#:phases
-       ,@(if (target-x86-32?)
-           '((modify-phases %standard-phases
-               (add-after 'unpack 'remove-failing-test-i686
-                 (lambda _
-                   ;; The evaluation returns the correct value,
-                   ;; Evaluated: "Accumulator(1 => 3, 3 => 4)"
-                   ;; but, for some reasons, is considered as failed.
-                   (substitute* "test/test_accumulator.jl"
-                     (("@test sprint\\(show,Accumulator\\(1 => 3, 3 => 4\\)\\)")
-                      "@test_broken sprint(show, Accumulator(1 => 3, 3 => 4))"))))))
-           '(%standard-phases))))
+     (list
+      #:phases
+      (if (target-x86-32?)
+          #~(modify-phases %standard-phases
+              (add-after 'unpack 'remove-failing-test-i686
+                (lambda _
+                  ;; The evaluation returns the correct value,
+                  ;; Evaluated: "Accumulator(1 => 3, 3 => 4)"
+                  ;; but, for some reasons, is considered as failed.
+                  (substitute* "test/test_accumulator.jl"
+                    (("@test sprint\\(show,Accumulator\\(1 => 3, 3 => 4\\)\\)")
+                     "@test_broken sprint(show, Accumulator(1 => 3, 3 => 4))")))))
+          #~%standard-phases)))
     (home-page "https://github.com/JuliaCollections/DataStructures.jl")
     (synopsis "Julia module providing different data structures")
     (description "This package implements a variety of data structures,
@@ -1227,17 +1273,17 @@ without having to take direct dependencies.")
          (base32 "15j3hrqq6nazn533bfsvg32xznacbzsl303j1qs48av59ppnvhhv"))))
     (build-system julia-build-system)
     (arguments
-     `(#:tests? #f      ; Tests need upgrading with newer Julia version.
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'link-depot 'skip-known-failing-tests
-           (lambda _
-             ;; See upstream report:
-             ;; https://github.com/queryverse/DataValues.jl/issues/83
-             (substitute* "test/array/test_reduce.jl"
-               ((".*DataValue\\(mapreduce.*") "")
-               ((".*DataValue\\(method\\(f.*") ""))
-             #t)))))
+     (list
+      #:tests? #f      ; Tests need upgrading with newer Julia version.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'link-depot 'skip-known-failing-tests
+            (lambda _
+              ;; See upstream report:
+              ;; https://github.com/queryverse/DataValues.jl/issues/83
+              (substitute* "test/array/test_reduce.jl"
+                ((".*DataValue\\(mapreduce.*") "")
+                ((".*DataValue\\(method\\(f.*") "")))))))
     (propagated-inputs
      (list julia-datavalueinterfaces))
     (home-page "https://github.com/queryverse/DataValues.jl")
@@ -1306,17 +1352,18 @@ dictionaries in Julia, for improved productivity and performance.")
          (base32 "1yqd9wg4z15k42mrp4y14j2x0sq7yrjhm5zpqklrw6w6j1c367ig"))))
     (build-system julia-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'link-depot 'skip-flakey-tests
-           (lambda _
-             ;; Some combination of these tests fail nondeterministically
-             ;; each of the times this package is built.
-             (substitute* "test/test_dists.jl"
-               (("test dyz ≥") "test_nowarn dyz ≥")
-               (("test dist\\(y, x") "test_nowarn dist(y, x")
-               (("test dist\\(z, x") "test_nowarn dist(z, x")
-               (("test dist\\(z, y") "test_nowarn dist(z, y")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'link-depot 'skip-flakey-tests
+            (lambda _
+              ;; Some combination of these tests fail nondeterministically
+              ;; each of the times this package is built.
+              (substitute* "test/test_dists.jl"
+                (("test dyz ≥") "test_nowarn dyz ≥")
+                (("test dist\\(y, x") "test_nowarn dist(y, x")
+                (("test dist\\(z, x") "test_nowarn dist(z, x")
+                (("test dist\\(z, y") "test_nowarn dist(z, y")))))))
     (propagated-inputs
      (list julia-statsapi))
     (native-inputs
@@ -1345,7 +1392,7 @@ straightforward loop implementation.")
          (base32 "0fy4kfnfacyfmlly6nqxn77dk2gqw80b69zb4m1i0i39zv3cpqfb"))))
     (build-system julia-build-system)
     (arguments
-     `(#:tests? #f))        ; Tests try to read SSL certificates.
+     (list #:tests? #f))        ; Tests try to read SSL certificates.
     (home-page "https://juliadocs.github.io/DocStringExtensions.jl/latest/")
     (synopsis "Extensions for Julia's docsystem")
     (description "This package provides a collection of useful extensions for
@@ -1372,22 +1419,23 @@ valuable enough at this time.")
          (base32 "00ai3c24i3fkn5plmavampcxm0ijhwk0v5cn9xwm7rvbjnnvaaam"))))
     (build-system julia-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'link-depot 'patch-source
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "src/Deps.jl"
-               (("pip install")
-                (string-append (search-input-file inputs "bin/pip")
-                               " install")))))
-         (add-after 'link-depot 'remove-javascript-downloads
-           (lambda _
-             (substitute* "src/Writers/HTMLWriter.jl"
-               (("cdnjs.cloudflare.com") "example.com"))
-             ;; Removing the javascript downloads causes these tests fail.
-             (substitute* "test/examples/tests.jl"
-               ((".*Main\\.examples_html_doc.*") "")
-               ((".*Main\\.examples_html_mathjax3_doc.*") "")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'link-depot 'patch-source
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/Deps.jl"
+                (("pip install")
+                 (string-append (search-input-file inputs "bin/pip")
+                                " install")))))
+          (add-after 'link-depot 'remove-javascript-downloads
+            (lambda _
+              (substitute* "src/Writers/HTMLWriter.jl"
+                (("cdnjs.cloudflare.com") "example.com"))
+              ;; Removing the javascript downloads causes these tests fail.
+              (substitute* "test/examples/tests.jl"
+                ((".*Main\\.examples_html_doc.*") "")
+                ((".*Main\\.examples_html_mathjax3_doc.*") "")))))))
     (propagated-inputs
      (list julia-ansicoloredprinters
            julia-docstringextensions
@@ -1457,7 +1505,7 @@ valuable enough at this time.")
          (base32 "05p57p8xlkn42m1lv9gq4hl96vp7hpj19d51p828ai1rbpcpi3a6"))))
     (build-system julia-build-system)
     (arguments
-     `(#:tests? #f))    ; Tests require network.
+     (list #:tests? #f))    ; Tests require network.
     (inputs
      ;; We don't want to propagate the bootstrap version.
      ;; Cycle with Documenter.jl in later versions.
@@ -1556,13 +1604,14 @@ stressing the robustness of differentiation tools.")
          (base32 "05vr5wbzqpchnb96b3pmn67x196mbfnkv7r9bdlz3gm56if4awk5"))))
     (build-system julia-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'link-depot 'adjust-test-suite
-           (lambda _
-             (substitute* "test/runtests.jl"
-               ;; Seems to not play nicely with SpecialFunctions
-               ((".*isempty.*") "")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'link-depot 'adjust-test-suite
+            (lambda _
+              (substitute* "test/runtests.jl"
+                ;; Seems to not play nicely with SpecialFunctions
+                ((".*isempty.*") "")))))))
     (propagated-inputs
      (list julia-calculus
            julia-nanmath
@@ -1590,13 +1639,14 @@ combinations of dual numbers with predefined Julia numeric types.")
          (base32 "0py46kxl702r8pw3v7x4cqllf7yc91b0dr7vb60xh2qi7d6y3jc7"))))
     (build-system julia-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'link-depot 'adjust-test-suite
-           (lambda _
-             (substitute* "test/runtests.jl"
-               ;; Seems to not play nicely with Julia-1.6.
-               ((".*basic.jl.*") "")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'link-depot 'adjust-test-suite
+            (lambda _
+              (substitute* "test/runtests.jl"
+                ;; Seems to not play nicely with Julia-1.6.
+                ((".*basic.jl.*") "")))))))
     (propagated-inputs
      (list julia-arrayinterface))
     (home-page "https://github.com/ChrisRackauckas/EllipsisNotation.jl")
@@ -1642,13 +1692,14 @@ before (or after)\".")
          (base32 "0h8aaynqlxrkn8575k5vqmhzil4vvxchhf0bcxa6zwawp558gj2y"))))
     (build-system julia-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'link-depot 'skip-network-tests
-           (lambda _
-             (substitute* "test/runtests.jl"
-               ;; This test tries to access the Julia package registry.
-               ((".*expand\\.jl.*") "")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'link-depot 'skip-network-tests
+            (lambda _
+              (substitute* "test/runtests.jl"
+                ;; This test tries to access the Julia package registry.
+                ((".*expand\\.jl.*") "")))))))
     (propagated-inputs
      (list julia-mlstyle))
     (native-inputs
@@ -1720,26 +1771,27 @@ need the ffmpeg binaries + executables, and don't want the overhead of
          (base32 "1b18x43i737g5q41n9818xbnc2pgd98q1m6yw3h29yri0clg4gfx"))))
     (build-system julia-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'reset-gzip-timestamps)
-         (add-after 'link-depot 'skip-network-tests
-           (lambda _
-             ;; These tests try to download audio/video files.
-             (substitute* "test/query.jl"
-               (("testset.*(MP4|OGG|MATROSKA).*" all)
-                (string-append all "return\n")))
-             (substitute* "test/loadsave.jl"
-               (("testset.*CSVFiles.*" all)
-                (string-append all "return\n")))
-             ;; This test tries to download a Julia package.
-             (substitute* "test/error_handling.jl"
-               (("testset.*Not installed.*" all)
-                (string-append all "return\n")))
-             ;; This test tries to write to the store.
-             ;; (Error says can't find User 0)
-             (substitute* "test/runtests.jl"
-               ((".*test_mimesave.*") "")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'reset-gzip-timestamps)
+          (add-after 'link-depot 'skip-network-tests
+            (lambda _
+              ;; These tests try to download audio/video files.
+              (substitute* "test/query.jl"
+                (("testset.*(MP4|OGG|MATROSKA).*" all)
+                 (string-append all "return\n")))
+              (substitute* "test/loadsave.jl"
+                (("testset.*CSVFiles.*" all)
+                 (string-append all "return\n")))
+              ;; This test tries to download a Julia package.
+              (substitute* "test/error_handling.jl"
+                (("testset.*Not installed.*" all)
+                 (string-append all "return\n")))
+              ;; This test tries to write to the store.
+              ;; (Error says can't find User 0)
+              (substitute* "test/runtests.jl"
+                ((".*test_mimesave.*") "")))))))
     (propagated-inputs
      (list julia-requires))
     (native-inputs
@@ -1770,7 +1822,7 @@ high-level support for formatted files (in contrast with Julia's low-level
          (base32 "136wm4ik6isrdanmpi4gdr1qw0qhr15i925qzjxbawk5hnyzwng9"))))
     (build-system julia-build-system)
     (arguments
-     `(#:tests? #f))    ; Cycle with JLSO.jl
+     (list #:tests? #f))    ; Cycle with JLSO.jl
     (home-page "https://github.com/rofinn/FilePathsBase.jl")
     (synopsis "Filesystem path types in Julia")
     (description "@code{FilePathsBase.jl} provides a type based approach to
@@ -1816,14 +1868,14 @@ following types: @code{Eye}, @code{Fill}, @code{Ones}, @code{Zeros},
          (base32 "105f6r0hq97n9mxf1nacmz94dpca66vzqj5p3zh4h0brshmggqnq"))))
     (build-system julia-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'pre-check
-           (lambda _
-             ;; We don't want to run all the tests; the Downstream tests
-             ;; try to download the package registry.
-             (setenv "GROUP" "Core")
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; We don't want to run all the tests; the Downstream tests
+              ;; try to download the package registry.
+              (setenv "GROUP" "Core"))))))
     (propagated-inputs
      (list julia-arrayinterface
            julia-requires
@@ -1855,16 +1907,17 @@ types and sparsity.")
         (base32 "09nsf9cgk49yrvprflnhd9h5rrgs280rgj8sad3csghxdx6jqk5c"))))
     (build-system julia-build-system)
     (arguments
-     `(#:phases
-       ,@(if (target-x86-32?)
-           '((modify-phases %standard-phases
-               (add-after 'unpack 'remove-failing-test-i686
-                 (lambda _
-                   ;; Machine Precision incorrectly handled
-                   (substitute* "test/methods.jl"
-                     (("@test central_fdm\\(15, 5, adapt=2\\)\\(exp, 1.0\\)")
-                      "@test_broken central_fdm(15, 5, adapt=2)(exp, 1.0)"))))))
-           '(%standard-phases))))
+     (list
+      #:phases
+      (if (target-x86-32?)
+          #~(modify-phases %standard-phases
+              (add-after 'unpack 'remove-failing-test-i686
+                (lambda _
+                  ;; Machine Precision incorrectly handled
+                  (substitute* "test/methods.jl"
+                    (("@test central_fdm\\(15, 5, adapt=2\\)\\(exp, 1.0\\)")
+                     "@test_broken central_fdm(15, 5, adapt=2)(exp, 1.0)")))))
+          #~%standard-phases)))
     (inputs
      (list julia-benchmarktools))
     (propagated-inputs
@@ -1892,14 +1945,14 @@ using finite difference.")
         (base32 "0j0n40n04q9sk68wh9jq90m6c67k4ws02k41djjzkrqmpzv4rcdi"))))
     (build-system julia-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'link-depot 'disable-failing-test
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "test/fixed.jl"
-               ;; A deprecation warning is not thrown
-               (("@test_logs.*:warn" all) (string-append "# " all)))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'link-depot 'disable-failing-test
+            (lambda* (#:key outputs #:allow-other-keys)
+              (substitute* "test/fixed.jl"
+                ;; A deprecation warning is not thrown
+                (("@test_logs.*:warn" all) (string-append "# " all))))))))
     (propagated-inputs
      (list julia-compat))
     (home-page "https://github.com/JuliaMath/FixedPointNumbers.jl")
@@ -1952,7 +2005,7 @@ c-style numerical formatting.")
      ;; Expression: dual_isapprox(FDNUM ^ PRIMAL, exp(PRIMAL * log(FDNUM)))
      ;; ERROR: LoadError: LoadError: There was an error during testing
      ;; Disable as stopgap.
-     `(#:tests? ,(not (target-x86-32?))))
+     (list #:tests? (not (target-x86-32?))))
     (inputs                             ;required for tests
      (list julia-calculus
            julia-difftests))
@@ -1986,13 +2039,14 @@ differentiation (AD).")
          (base32 "02jilpjr7px6138dx2w7ixricvfgsxqdk84d9dgviranibhnjcxa"))))
     (build-system julia-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'link-depot 'adjust-tests
-           (lambda _
-             (substitute* "test/runtests.jl"
-               (("testset \\\"Abstract.*" all)
-                (string-append all "return\n"))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'link-depot 'adjust-tests
+            (lambda _
+              (substitute* "test/runtests.jl"
+                (("testset \\\"Abstract.*" all)
+                 (string-append all "return\n"))))))))
     (home-page "https://github.com/yuyichao/FunctionWrappers.jl")
     (synopsis "Type stable and efficient wrapper of arbitrary functions")
     (description "This package provides a type stable and efficient wrapper of
@@ -2039,12 +2093,13 @@ update step.")
          (base32 "07sv88c472n6w4x7diy952igbcfm1s104ysnnvprld83312siw06"))))
     (build-system julia-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'link-depot 'skip-failing-test
-           (lambda _
-             (substitute* "test/runtests.jl"
-               ((".*RPLE.*") "")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'link-depot 'skip-failing-test
+            (lambda _
+              (substitute* "test/runtests.jl"
+                ((".*RPLE.*") "")))))))
     (home-page "https://github.com/JunoLab/FuzzyCompletions.jl")
     (synopsis "Fuzzy completion provider for Julia")
     (description
@@ -2066,12 +2121,13 @@ update step.")
          (base32 "0ndwypa397z3pwzdgc3s9plaqlqf63g3d4px5pvym5psgr6lnm3l"))))
     (build-system julia-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'link-depot 'adjust-test-suite
-           (lambda _
-             (substitute* "test/runtests.jl"
-               ((".*lapack.*") "")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'link-depot 'adjust-test-suite
+            (lambda _
+              (substitute* "test/runtests.jl"
+                ((".*lapack.*") "")))))))
     (native-inputs
      (list julia-quaternions))
     (home-page "https://github.com/JuliaLinearAlgebra/GenericLinearAlgebra.jl")
@@ -2097,20 +2153,21 @@ algebra routines written in Julia (except for optimized BLAS).")
          (base32 "12x6lxzxm91y3k6s9dam46dq5hrby5sr0gy0fdfnp0xhjzdy2j0d"))))
     (build-system julia-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'link-depot 'adjust-test-suite
-           (lambda _
-             (substitute* "test/complex.jl"
-               ;; expected Array{Int32,1}, got a value of type Array{Int64,1}
-               (("A = _example") "#A = _example")
-               (("schurtest\\(A,20\\)") ""))
-             (substitute* "test/runtests.jl"
-               ;; Test errors relating to liblapack.so
-               ((".*complex\\.jl.*") "")
-               ((".*real\\.jl.*") "")
-               ;; GenericSVD is deprecated upstream
-               ((".*gordschur\\.jl.*") "")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'link-depot 'adjust-test-suite
+            (lambda _
+              (substitute* "test/complex.jl"
+                ;; expected Array{Int32,1}, got a value of type Array{Int64,1}
+                (("A = _example") "#A = _example")
+                (("schurtest\\(A,20\\)") ""))
+              (substitute* "test/runtests.jl"
+                ;; Test errors relating to liblapack.so
+                ((".*complex\\.jl.*") "")
+                ((".*real\\.jl.*") "")
+                ;; GenericSVD is deprecated upstream
+                ((".*gordschur\\.jl.*") "")))))))
     (home-page "https://github.com/RalphAS/GenericSchur.jl")
     (synopsis "Schur decomposition of matrices with generic element types")
     (description "The Schur decomposition is the workhorse for eigensystem
@@ -2134,24 +2191,25 @@ matrices the Schur form is often more useful.")
          (base32 "057j3hjpli3q5b98cqkpi4p10x2k9pyksrz62hjmv1kb5qzdvhsj"))))
     (build-system julia-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'link-depot 'remove-earcut
-           (lambda _
-             (substitute* '("Project.toml"
-                            "src/GeometryBasics.jl")
-               ((".*EarCut.*") ""))))
-         (add-after 'link-depot 'skip-incompatible-test
-           (lambda _
-             (substitute* "test/runtests.jl"
-               (("@testset.*MetaT and heterogeneous data.*" all)
-                (string-append all "return\n")))))
-         ,@(if (target-64bit?)
-             '()
-             '((add-after 'unpack 'fix-tests-int32-i686
-                 (lambda _
-                   (substitute* "test/runtests.jl"
-                     (("Int64") "Int32")))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'link-depot 'remove-earcut
+            (lambda _
+              (substitute* '("Project.toml"
+                             "src/GeometryBasics.jl")
+                ((".*EarCut.*") ""))))
+          (add-after 'link-depot 'skip-incompatible-test
+            (lambda _
+              (substitute* "test/runtests.jl"
+                (("@testset.*MetaT and heterogeneous data.*" all)
+                 (string-append all "return\n")))))
+          #$@(if (target-64bit?)
+                 '()
+                 '((add-after 'unpack 'fix-tests-int32-i686
+                     (lambda _
+                       (substitute* "test/runtests.jl"
+                         (("Int64") "Int32")))))))))
     (propagated-inputs
      (list julia-itertools
            julia-staticarrays
@@ -2166,6 +2224,32 @@ which easily work with metadata, query frameworks on geometries and different
 memory layouts.  The aim is to create a solid basis for Graphics/Plotting,
 finite elements analysis, Geo applications, and general geometry manipulations
 - while offering a Julian API, that still allows performant C-interop.")
+    (license license:expat)))
+
+(define-public julia-gpuarrays
+  (package
+    (name "julia-gpuarrays")
+    (version "8.1.3")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/JuliaGPU/GPUArrays.jl")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "129q8m94b2xq3vij28pkb7dry3r7qbiqrz72a26ma9kilcr35gk4"))))
+    (build-system julia-build-system)
+    (inputs
+     (list julia-adapt))
+    (home-page "https://github.com/JuliaGPU/GPUArrays.jl")
+    (synopsis "Reusable GPU array functionality for various GPU backends")
+    (description "This package is the counterpart of AbstractArray interface,
+but for GPU array types.  It provides functionality and tooling to speed-up
+development of new GPU array types.  This package is not intended for end
+users; instead, you should use one of the packages that builds on
+@code{GPUArrays.jl}, such as @code{CUDA.jl}, @code{oneAPI.jl} or
+@code{AMDGPU.jl}.")
     (license license:expat)))
 
 (define-public julia-gr
@@ -2251,35 +2335,35 @@ library for parsing HTML.")
         (base32 "1jsyk3mhnwj4h19cxclx26igdqdrw51fd3k1hgav0nm67dy4cxyk"))))
     (build-system julia-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'install 'disable-network-tests
-           (lambda _
-             (substitute* "test/runtests.jl"
-               (("\"async.jl") "# \"async.jl")
-               (("\"client.jl") "# \"client.jl"))
-             (substitute* "test/aws4.jl"
-               (("@testset.*HTTP.request with AWS authentication.*" all)
-                (string-append all "return\n")))
-             (substitute* "test/insert_layers.jl"
-               (("@testset.*Inserted final layer runs handler.*" all)
-                (string-append all "return\n")))
-             (substitute* "test/multipart.jl"
-               (("@testset \"Setting of Content-Type.*" all)
-                (string-append all "return\n"))
-               (("@testset \"Deprecation of .*" all)
-                (string-append all "return\n")))
-             (substitute* "test/websockets.jl"
-               (("@testset.*External Host.*" all)
-                (string-append all "return\n")))
-             (substitute* "test/messages.jl"
-               (("@testset.*Read methods.*" all)
-                (string-append all "return\n"))
-               (("@testset.*Body - .*" all)
-                (string-append all "return\n"))
-               (("@testset.*Write to file.*" all)
-                (string-append all "return\n")))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'disable-network-tests
+            (lambda _
+              (substitute* "test/runtests.jl"
+                (("\"async.jl") "# \"async.jl")
+                (("\"client.jl") "# \"client.jl"))
+              (substitute* "test/aws4.jl"
+                (("@testset.*HTTP.request with AWS authentication.*" all)
+                 (string-append all "return\n")))
+              (substitute* "test/insert_layers.jl"
+                (("@testset.*Inserted final layer runs handler.*" all)
+                 (string-append all "return\n")))
+              (substitute* "test/multipart.jl"
+                (("@testset \"Setting of Content-Type.*" all)
+                 (string-append all "return\n"))
+                (("@testset \"Deprecation of .*" all)
+                 (string-append all "return\n")))
+              (substitute* "test/websockets.jl"
+                (("@testset.*External Host.*" all)
+                 (string-append all "return\n")))
+              (substitute* "test/messages.jl"
+                (("@testset.*Read methods.*" all)
+                 (string-append all "return\n"))
+                (("@testset.*Body - .*" all)
+                 (string-append all "return\n"))
+                (("@testset.*Write to file.*" all)
+                 (string-append all "return\n"))))))))
     (propagated-inputs
      (list julia-inifile
            julia-mbedtls
@@ -2383,7 +2467,7 @@ such arrays easy via traits.")
          (base32 "1n63f2zs6ail9pcl7rzgv3l0z8v1idjsaza3zgvgy7iacxsdpcj2"))))
     (build-system julia-build-system)
     (arguments
-     `(#:tests? #f))    ; Cycle with ImageMagick.jl.
+     (list #:tests? #f))    ; Cycle with ImageMagick.jl.
     (propagated-inputs
      (list julia-imagecore
            julia-reexport))
@@ -2414,7 +2498,7 @@ dependencies.")
          (base32 "0h9m3pl3wic1jrgaqkdifz24cya5vxd3m6qdmm37pxg2y2ii2vcq"))))
     (build-system julia-build-system)
     (arguments
-     `(#:tests? #f))    ; Cycle with ImageMagick.jl.
+     (list #:tests? #f))    ; Cycle with ImageMagick.jl.
     (propagated-inputs
      (list julia-abstractffts
            julia-colors
@@ -2456,7 +2540,7 @@ of packages designed to support image processing and computer vision.")
          (base32 "0bbpzi7bv8jdiggq1wmcn67vnf96qagvwg0fk95s125wy5980xsl"))))
     (build-system julia-build-system)
     (arguments
-     `(#:tests? #f))    ; Cycle with ReferenceTests.jl.
+     (list #:tests? #f))    ; Cycle with ReferenceTests.jl.
     (propagated-inputs
      (list julia-crayons
            julia-imagebase
@@ -2494,18 +2578,18 @@ be downscaled to fit into the size of your active terminal session.")
          (base32 "05vzv4jsj3l9pv6yrix28hlw7wnag0mqdfjwv8shn4x71hcfxl1p"))))
     (build-system julia-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'link-depot 'skip-failing-test
-           (lambda _
-             ;; These tests try to download from the imagemagick.org
-             (substitute* "test/runtests.jl"
-               ((".*readremote\\.jl.*") ""))
-             ;; Tests with the color gray are hard.
-             (substitute* "test/constructed_images.jl"
-               (("test (b == aa)" _ test) (string-append "test_nowarn " test))
-               (("test (B == map)" _ test) (string-append "test_nowarn " test)))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'link-depot 'skip-failing-test
+            (lambda _
+              ;; These tests try to download from the imagemagick.org
+              (substitute* "test/runtests.jl"
+                ((".*readremote\\.jl.*") ""))
+              ;; Tests with the color gray are hard.
+              (substitute* "test/constructed_images.jl"
+                (("test (b == aa)" _ test) (string-append "test_nowarn " test))
+                (("test (B == map)" _ test) (string-append "test_nowarn " test))))))))
     (propagated-inputs
      (list julia-fileio
            julia-imagecore
@@ -2572,7 +2656,7 @@ information about the detector used to acquire the image.")
          (base32 "00wq3ab8y6nyhxwc5lpz9dnslsmcr1vg3cjdkh7wb7k6a8bw98mh"))))
     (build-system julia-build-system)
     (arguments
-     `(#:tests? #f))    ; cycle with ImageMagick.jl.
+     (list #:tests? #f))    ; cycle with ImageMagick.jl.
     (propagated-inputs
      (list julia-fileio
            julia-imagebase
@@ -2607,7 +2691,7 @@ inline presentation of greyscale or color images.")
          (base32 "0i8gw68hljshsy9wdl5mrpbb31irhmayqyglsxi7jwm88iy9pxhm"))))
     (build-system julia-build-system)
     (arguments
-     `(#:tests? #f))    ; Cycle with ImageMagick.jl.
+     (list #:tests? #f))    ; Cycle with ImageMagick.jl.
     (propagated-inputs
      (list julia-axisalgorithms
            julia-colorvectorspace
@@ -2644,8 +2728,9 @@ rotation, and other spatial transformations of arrays.")
     (build-system julia-build-system)
     ;; Package without Project.toml
     (arguments
-     '(#:julia-package-name "IndexableBitVectors"
-       #:julia-package-uuid "1cb3b9ac-1ffd-5777-9e6b-a3d42300664d"))
+     (list
+      #:julia-package-name "IndexableBitVectors"
+      #:julia-package-uuid "1cb3b9ac-1ffd-5777-9e6b-a3d42300664d"))
     (home-page "https://github.com/BioJulia/IndexableBitVectors.jl")
     (synopsis "Bit vectors operations with extremely fast speed")
     (description "This package exports following operations over bit vectors
@@ -2724,14 +2809,14 @@ indexed images, sometimes called \"colormap images\" or \"paletted images.\"")
          (base32 "1941lwvrdjnrynigzixxin3chpg1ba6xplvcwc89x0f6z658hwmm"))))
     (build-system julia-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'link-depot 'remove-timezones.jl
-           (lambda _
-             (substitute* "test/runtests.jl"
-               (("using TimeZones.*") "")
-               ((".*infextendedtime.*") ""))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'link-depot 'remove-timezones.jl
+            (lambda _
+              (substitute* "test/runtests.jl"
+                (("using TimeZones.*") "")
+                ((".*infextendedtime.*") "")))))))
     (propagated-inputs
      (list julia-requires))
     (native-inputs
@@ -2777,12 +2862,13 @@ interfaces with @file{.ini} files.")
          (base32 "1236c20k388qlh7k74mhf7hkbn0vf7ss8b1rgh1a6aj0234ayfnc"))))
     (build-system julia-build-system)
     (arguments
-     `(#:parallel-tests? #f
-       ;; XXXX: Unexpected failures for i686, e.g.,
-       ;; Got exception outside of a @test
-       ;; OverflowError: 96908232 * 106943408 overflowed for type Int32
-       ;; Disable as stopgap.
-       #:tests? ,(not (target-x86-32?))))
+     (list
+      #:parallel-tests? #f
+      ;; XXXX: Unexpected failures for i686, e.g.,
+      ;; Got exception outside of a @test
+      ;; OverflowError: 96908232 * 106943408 overflowed for type Int32
+      ;; Disable as stopgap.
+      #:tests? (not (target-x86-32?))))
     (propagated-inputs
      (list julia-axisalgorithms
            julia-offsetarrays
@@ -2817,19 +2903,20 @@ and exceptional performance.")
          (base32 "0gsz89cd3iygbl5qr389k9vwpg7w1nk0s90g25nsmk34y9hifxag"))))
     (build-system julia-build-system)
     (arguments
-     `(#:phases
-       ,@(if (target-x86-32?)
-           '((modify-phases %standard-phases
-               (add-after 'unpack 'remove-failing-test-i686
-                 (lambda _
-                   (substitute* "test/runtests.jl"
-                     ;; For some reason, the output is correct but the test
-                     ;; is considered as failed:
-                     ;; Expression: duration(ClosedInterval(A, B)) ≡ 60
-                     ;; Evaluated: 60 ≡ 60
-                     (("@test duration\\(ClosedInterval")
-                      "@test_broken duration(ClosedInterval"))))))
-           '(%standard-phases))))
+     (list
+      #:phases
+      (if (target-x86-32?)
+          #~(modify-phases %standard-phases
+              (add-after 'unpack 'remove-failing-test-i686
+                (lambda _
+                  (substitute* "test/runtests.jl"
+                    ;; For some reason, the output is correct but the test
+                    ;; is considered as failed:
+                    ;; Expression: duration(ClosedInterval(A, B)) ≡ 60
+                    ;; Evaluated: 60 ≡ 60
+                    (("@test duration\\(ClosedInterval")
+                     "@test_broken duration(ClosedInterval")))))
+          #~%standard-phases)))
     (propagated-inputs
      (list julia-ellipsisnotation))
     (native-inputs
@@ -3044,6 +3131,34 @@ and printing JSON documents.")
 focus on speed and slick struct mapping.")
     (license license:expat)))
 
+(define-public julia-juno
+  (package
+    (name "julia-juno")
+    (version "0.8.4")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/JunoLab/Juno.jl")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "02ryj5blnrmck3jisrpwn1x563i7rsg65d7zms52njsvv499gygk"))))
+    (build-system julia-build-system)
+    (inputs
+     (list julia-media))
+    (home-page "https://github.com/JunoLab/Juno.jl")
+    (synopsis "Integrated Development Environment (IDE) for Julia")
+    (description "This package provides tools to help you develop code.  Juno
+is built on the Atom text editor.  Juno consists of both Julia and Atom
+packages in order to add Julia-specific enhancements, such as syntax
+highlighting, a plot pane, integration with Julia's debugger, a console for
+running code, and much more.
+
+Consider that the package is “maintenance-only mode” and only receives bug
+fixes.  The Julia IDE effort is pointed to extension for VSCode.")
+    (license license:expat)))
+
 (define-public julia-latexstrings
   (package
     (name "julia-latexstrings")
@@ -3081,14 +3196,15 @@ equations in string literals in the Julia language.")
          (base32 "17rhlrmgfvdw8w62pg32ikr9j4xy2ylr7mx7ar0hnpzryv929rp5"))))
     (build-system julia-build-system)
     (arguments
-     `(#:phases
-       ,@(if (target-64bit?)
-           '(%standard-phases)
-           '((modify-phases %standard-phases
-               (add-after 'unpack 'fix-tests-int32-i686
-                 (lambda _
-                   (substitute* "test/multests.jl"
-                     (("Int64") "Int32")))))))))
+     (list
+      #:phases
+      (if (target-64bit?)
+          #~%standard-phases
+          #~(modify-phases %standard-phases
+              (add-after 'unpack 'fix-tests-int32-i686
+                (lambda _
+                  (substitute* "test/multests.jl"
+                    (("Int64") "Int32"))))))))
     (propagated-inputs
      (list julia-arraylayouts
            julia-fillarrays
@@ -3102,6 +3218,50 @@ equations in string literals in the Julia language.")
     (description "This package supports lazy analogues of array operations like
 @code{vcat}, @code{hcat}, and multiplication.  This helps with the
 implementation of matrix-free methods for iterative solvers.")
+    (license license:expat)))
+
+(define-public julia-linesearches
+  (package
+    (name "julia-linesearches")
+    (version "7.1.1")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/JuliaNLSolvers/LineSearches.jl")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "1qc4la07w6s1xhcyd0hvbnpr31zc1a2ssgyybc8biv5m00g0dnr0"))))
+    (build-system julia-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'link-depot 'skip-optim-tests
+            (lambda _
+              (substitute* "test/examples.jl"
+                ;; Prevent a cycle with Optim.jl.
+                (("^    SKIPFILE.*") "")
+                (("^    #SKIPFILE") "    SKIPFILE"))))
+          (add-after 'link-depot 'skip-doublefloats-tests
+            (lambda _
+              (substitute* "test/runtests.jl"
+                (("using DoubleFloats.*") "")
+                ((".*arbitrary_precision\\.jl.*") "")))))))
+    (propagated-inputs
+     (list julia-nlsolversbase
+           julia-nanmath
+           julia-parameters))
+    (native-inputs
+     ;; DoubleFloats.jl transitively depends on TimeZones.jl, which is currently
+     ;; unpackageable due to its oversized Artifacts.toml.
+     (list ;julia-doublefloats
+           julia-optimtestproblems))
+    (home-page "https://github.com/JuliaNLSolvers/LineSearches.jl")
+    (synopsis "Line search methods for optimization and root-finding")
+    (description "This package provides an interface to line search algorithms
+implemented in Julia.")
     (license license:expat)))
 
 (define-public julia-logexpfunctions
@@ -3166,14 +3326,15 @@ that let you do deep transformations of code.")
          (base32 "0l5adird8m1cmnsxwhzi5hcr7q9bm1rf7a6018zc7kcn2yxdshy3"))))
     (build-system julia-build-system)
     (arguments
-     `(#:phases
-       ,@(if (target-64bit?)
-           '(%standard-phases)
-           '((modify-phases %standard-phases
-               (add-after 'unpack 'fix-tests-int32-i686
-                 (lambda _
-                   (substitute* "test/runtests.jl"
-                     (("Int64") "Int32")))))))))
+     (list
+      #:phases
+      (if (target-64bit?)
+          #~%standard-phases
+          #~(modify-phases %standard-phases
+              (add-after 'unpack 'fix-tests-int32-i686
+                (lambda _
+                  (substitute* "test/runtests.jl"
+                    (("Int64") "Int32"))))))))
     (propagated-inputs
      (list julia-fixedpointnumbers))
     (native-inputs
@@ -3205,16 +3366,16 @@ comes from the fact that @code{M == map(f, A)}.")
          (base32 "15zvcv2l4iqmjpnqjyx2kry7a85p652nbjy9pj3wq0piksqcz4jb"))))
     (build-system julia-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'link-depot 'skip-failing-test
-           (lambda _
-             ;; Tests with math functions are hard.
-             (substitute* "test/test_ul.jl"
-               (("@test @inferred\\(logdet") "@test @test_nowarn(logdet")
-               ;; Also skip the REPL test.
-               (("test String") "test_nowarn String"))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'link-depot 'skip-failing-test
+            (lambda _
+              ;; Tests with math functions are hard.
+              (substitute* "test/test_ul.jl"
+                (("@test @inferred\\(logdet") "@test @test_nowarn(logdet")
+                ;; Also skip the REPL test.
+                (("test String") "test_nowarn String")))))))
     (propagated-inputs
      (list julia-arraylayouts))
     (home-page "https://github.com/JuliaMatrices/MatrixFactorizations.jl")
@@ -3240,14 +3401,14 @@ may include other factorizations such as the LQ factorization.")
         (base32 "0zjzf2r57l24n3k0gcqkvx3izwn5827iv9ak0lqix0aa5967wvfb"))))
     (build-system julia-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'install 'disable-network-tests
-           ;; Tries to connect to httpbin.org
-           (lambda _
-             (substitute* "test/runtests.jl"
-               (("testhost =") "return #"))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'disable-network-tests
+            ;; Tries to connect to httpbin.org
+            (lambda _
+              (substitute* "test/runtests.jl"
+                (("testhost =") "return #")))))))
     (propagated-inputs
      (list julia-mbedtls-jll))
     (home-page "https://github.com/JuliaLang/MbedTLS.jl")
@@ -3325,8 +3486,11 @@ resolving them into absolute units.")
     (build-system julia-build-system)
     ;; Package without Project.toml
     (arguments
-     '(#:julia-package-name "Media"
-       #:julia-package-uuid "e89f7d12-3494-54d1-8411-f7d8b9ae1f27"))
+     (list
+      #:julia-package-name "Media"
+      #:julia-package-uuid "e89f7d12-3494-54d1-8411-f7d8b9ae1f27"
+      #:julia-package-dependencies
+      #~(list '("MacroTools" . "1914dd2f-81c6-5fcd-8719-6d5c9610ff09"))))
     (propagated-inputs
      (list julia-macrotools))
     (home-page "https://github.com/JunoLab/Media.jl")
@@ -3441,7 +3605,7 @@ to be temporarily overloaded for the purpose of testing.")
          (base32 "04fgxghyb7n2ji76xkb1r1fjhzsdbgmp5wsfyyn3yjcsdqbyp8pz"))))
     (build-system julia-build-system)
     (arguments
-     `(#:tests? #f))    ; Cycle with ImageCore.jl
+     (list #:tests? #f))    ; Cycle with ImageCore.jl
     (propagated-inputs
      (list julia-mappedarrays
            julia-paddedviews
@@ -3493,21 +3657,22 @@ Julia, with type-driven, overloadable packing/unpacking functionality.")
          (base32 "1isyj8h4nx96cr6892d154v8pw1nhr7mjyz5bd6ffr2mkzb2bq4f"))))
     (build-system julia-build-system)
     (arguments
-     `(#:phases
-       ,@(if (target-x86-32?)
-           '((modify-phases %standard-phases
-               (add-after 'unpack 'remove-failing-test-i686
-                 (lambda _
-                   (substitute* "test/utilities.jl"
-                     ;; Non-deterministic returned value, e.g.,
-                     ;;    Expression: n == @allocated(f())
-                     ;;    Evaluated: 240 == 120
-                     ;; and for some other values:
-                     ;;    Got correct result, please change to @test
-                     ;; so @test_broken is not enough.
-                     (("@test n == @allocated f\\(\\)")
-                      " "))))))
-           '(%standard-phases))))
+     (list
+      #:phases
+      (if (target-x86-32?)
+          #~(modify-phases %standard-phases
+              (add-after 'unpack 'remove-failing-test-i686
+                (lambda _
+                  (substitute* "test/utilities.jl"
+                    ;; Non-deterministic returned value, e.g.,
+                    ;;    Expression: n == @allocated(f())
+                    ;;    Evaluated: 240 == 120
+                    ;; and for some other values:
+                    ;;    Got correct result, please change to @test
+                    ;; so @test_broken is not enough.
+                    (("@test n == @allocated f\\(\\)")
+                     " ")))))
+          #~%standard-phases)))
     (propagated-inputs
      (list julia-offsetarrays))
     (home-page "https://github.com/jump-dev/MutableArithmetics.jl")
@@ -3584,14 +3749,15 @@ interface to interact with these types.")
          (base32 "16vn5w5274kcywh1xp0zqjk5q10xrk125aznz5av6wifwrvghk8s"))))
     (build-system julia-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'link-depot 'skip-cuda-tests
-           (lambda _
-             (substitute* "test/runtests.jl"
-               (("using CUDA") "")
-               (("&& CUDA\\.functional\\(\\)") ""))
-             (setenv "NNLIB_TEST_CUDA" "false"))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'link-depot 'skip-cuda-tests
+            (lambda _
+              (substitute* "test/runtests.jl"
+                (("using CUDA") "")
+                (("&& CUDA\\.functional\\(\\)") ""))
+              (setenv "NNLIB_TEST_CUDA" "false"))))))
     (propagated-inputs
      (list julia-adapt
            julia-chainrulescore
@@ -3605,6 +3771,53 @@ interface to interact with these types.")
     (description "This package will provide a library of functions useful for
 machine learning, such as softmax, sigmoid, convolutions and pooling.  It
 doesn't provide any other \"high-level\" functionality like layers or AD.")
+    (license license:expat)))
+
+(define-public julia-optim
+  (package
+    (name "julia-optim")
+    (version "1.6.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/JuliaNLSolvers/Optim.jl")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "0nvl3xp9c6r80y9n7fic4zyq2443apfmbcpnx0wvgkv4vsy08x5j"))))
+    (build-system julia-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'adjust-tests
+             (lambda _
+               ;; TODO: Figure out why this test fails.
+               (substitute* "test/runtests.jl"
+                 ((".*l_bfgs.*") "")))))))
+    (propagated-inputs
+     (list julia-compat
+           julia-fillarrays
+           julia-forwarddiff
+           julia-linesearches
+           julia-nanmath
+           julia-nlsolversbase
+           julia-parameters
+           julia-positivefactorizations
+           julia-statsbase))
+    (native-inputs
+     (list julia-linesearches
+           julia-measurements
+           julia-nlsolversbase
+           julia-optimtestproblems
+           julia-positivefactorizations
+           julia-recursivearraytools
+           julia-stablerngs))
+    (home-page "https://github.com/JuliaNLSolvers/Optim.jl")
+    (synopsis "Optimization functions for Julia")
+    (description "@code{Optim.jl} is a package for univariate and multivariate
+optimization of functions.")
     (license license:expat)))
 
 (define-public julia-optimtestproblems
@@ -3622,8 +3835,9 @@ doesn't provide any other \"high-level\" functionality like layers or AD.")
          (base32 "10h47x5ws42pkqjccimaz0yxfvz41w0yazq6inamfk4lg5g2g3d9"))))
     (build-system julia-build-system)
     (arguments
-     `(#:julia-package-name "OptimTestProblems"
-       #:julia-package-uuid "cec144fc-5a64-5bc6-99fb-dde8f63e154c"))
+     (list
+      #:julia-package-name "OptimTestProblems"
+      #:julia-package-uuid "cec144fc-5a64-5bc6-99fb-dde8f63e154c"))
     (home-page "https://github.com/JuliaNLSolvers/OptimTestProblems.jl")
     (synopsis "Collection of optimization test problems")
     (description "The purpose of this package is to provide test problems for
@@ -3669,7 +3883,7 @@ which they were added to the collection.")
     (propagated-inputs
      (list julia-adapt))
     ;; CatIndices depends on OffsetArrays, introducing a recursive dependency
-    (arguments '(#:tests? #f))
+    (arguments (list #:tests? #f))
     (home-page "https://juliaarrays.github.io/OffsetArrays.jl/stable/")
     (synopsis "Fortran-like arrays with arbitrary, zero or negative indices")
     (description "@code{OffsetArrays.jl} provides Julia users with arrays that
@@ -3886,7 +4100,7 @@ definite.")
          (base32 "1cail43iqzbi6m9v6981rhz47zf2lcvhs5ds5gdqvc9nx5frghxq"))))
     (build-system julia-build-system)
     (arguments
-     `(#:tests? #f))        ; Tests try to mkdir /.julia
+     (list #:tests? #f))        ; Tests try to mkdir /.julia
     (home-page "https://github.com/JuliaPackaging/Preferences.jl")
     (synopsis "Store configuration switches to TOML files")
     (description "The @code{Preferences} package provides an integrated way for
@@ -3911,13 +4125,13 @@ everything from run time algorithm choice to code generation at compile time.")
          (base32 "1d1sd87kkwbar3l608h0adzws42cwdrmp1idxx7an6mfqcsdrijw"))))
     (build-system julia-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'link-depot 'skip-color-tests
-           (lambda _
-             (substitute* "test/text_backend.jl"
-               ((".*colors\\.jl.*") ""))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'link-depot 'skip-color-tests
+            (lambda _
+              (substitute* "test/text_backend.jl"
+                ((".*colors\\.jl.*") "")))))))
     (propagated-inputs
      (list julia-crayons
            julia-formatting
@@ -3945,49 +4159,47 @@ human-readable format.")
           "1fj5d1ihnhnm0pl4hbx6hcd2bpdyhm8jiaqah2axsbd069j70saf"))))
     (build-system julia-build-system)
     (arguments
-     `(#:imported-modules ((guix build python-build-system)
+     (list
+      #:imported-modules `((guix build python-build-system)
                            ,@%julia-build-system-modules)
-       #:modules ((guix build julia-build-system)
+      #:modules '((guix build julia-build-system)
                   (guix build utils)
                   ((guix build python-build-system) #:prefix python:))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'link-depot 'remove-conda
-           (lambda _
-             (substitute* "Project.toml"
-               ((".*Conda.*") ""))
-             (substitute* (list "src/PyCall.jl"
-                                "test/runtests.jl")
-               (("import Conda") ""))
-             (substitute* "deps/depsutils.jl"
-               (("Conda.PYTHONDIR") "\"/\""))
-             #t))
-         (add-after 'link-depot 'set-python
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((python (assoc-ref inputs "python")))
-               (setenv "PYCALL_JL_RUNTIME_PYTHON"
-                       (string-append python "/bin/python3"))
-               (with-output-to-file "deps/deps.jl"
-                 (lambda _
-                   (format #t
-                           "const python = \"~a/bin/python3\"~@
+      #:phases
+      #~(modify-phases %standard-phases
+        (add-after 'link-depot 'remove-conda
+          (lambda _
+            (substitute* "Project.toml"
+              ((".*Conda.*") ""))
+            (substitute* (list "src/PyCall.jl"
+                               "test/runtests.jl")
+              (("import Conda") ""))
+            (substitute* "deps/depsutils.jl"
+              (("Conda.PYTHONDIR") "\"/\""))))
+        (add-after 'link-depot 'set-python
+          (lambda* (#:key inputs outputs #:allow-other-keys)
+            (let ((python (assoc-ref inputs "python")))
+              (setenv "PYCALL_JL_RUNTIME_PYTHON"
+                      (string-append python "/bin/python3"))
+              (with-output-to-file "deps/deps.jl"
+                (lambda _
+                  (format #t
+                          "const python = \"~a/bin/python3\"~@
                            const pyprogramname = \"~a/bin/python3\"~@
                            const libpython = \"~a/lib/libpython~a.so.1.0\"~@
                            const PYTHONHOME = \"~a\"~@
                            const pyversion_build = v\"~a\"~@
                            const conda = false~%"
-                           python
-                           python
-                           python
-                           (python:python-version python)
-                           python
-                           ,(package-version python))))
-               #t)))
-         (add-before 'check 'pre-check
-           (lambda _
-             (setenv "CI" "true")
-             (setenv "JULIA_PKGEVAL" "true")
-             #t)))))
+                          python
+                          python
+                          python
+                          (python:python-version python)
+                          python
+                          #$(package-version python)))))))
+        (add-before 'check 'pre-check
+          (lambda _
+            (setenv "CI" "true")
+            (setenv "JULIA_PKGEVAL" "true"))))))
     (propagated-inputs
      (list julia-macrotools
            julia-versionparsing))
@@ -4073,15 +4285,15 @@ arbitrary normed vector spaces (e.g. matrix-valued integrands).")
          (base32 "051biw4b9zni7cmh2f1yzifp1v8wazlfxrdz4p44lyd1wba6379w"))))
     (build-system julia-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'link-depot 'hardcode-libmath-location
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((gcclib (assoc-ref inputs "gcc:lib")))
-               (substitute* "src/Quadmath.jl"
-                 (("libgcc_s.so.1" lib) (string-append gcclib "/lib/" lib))
-                 (("libquadmath.so.0" lib) (string-append gcclib "/lib/" lib)))
-               #t))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'link-depot 'hardcode-libmath-location
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((gcclib (assoc-ref inputs "gcc:lib")))
+                (substitute* "src/Quadmath.jl"
+                  (("libgcc_s.so.1" lib) (string-append gcclib "/lib/" lib))
+                  (("libquadmath.so.0" lib) (string-append gcclib "/lib/" lib)))))))))
     (propagated-inputs
      (list julia-requires))
     (inputs
@@ -4222,7 +4434,7 @@ more complex visualizations.")
          (base32 "0zq4bzxvq36zr0va6iip3x97mgq5b4fwza8avszx1ryfqm3lg1f7"))))
     (build-system julia-build-system)
     (arguments
-     `(#:tests? #f))    ; Cycle with Plots.jl.
+     (list #:tests? #f))    ; Cycle with Plots.jl.
     (propagated-inputs
      (list julia-nanmath
            julia-plotutils
@@ -4252,7 +4464,7 @@ recipes to full specifications for a plot.")
          (base32 "0vx8ndxrii53na7jsc2lki47wfpi77rn3y2r6xhiysx1qwr14msf"))))
     (build-system julia-build-system)
     (arguments
-     `(#:tests? #f))    ; Cycle with OrdinaryDiffEq.jl.
+     (list #:tests? #f))    ; Cycle with OrdinaryDiffEq.jl.
     (propagated-inputs
      (list julia-arrayinterface
            julia-chainrulescore
@@ -4307,7 +4519,7 @@ recursive arrays like arrays of arrays.")
          (base32 "0mm6bjhs8a21pippww6b08b5frmnb9m6k8xrszrwq9zhc879zpc9"))))
     (build-system julia-build-system)
     (arguments
-     `(#:tests? #f))    ; Cycle with ImageCore.jl through ImageMagick.jl.
+     (list #:tests? #f))    ; Cycle with ImageCore.jl through ImageMagick.jl.
     (propagated-inputs
      (list julia-deepdiffs
            julia-distances
@@ -4345,7 +4557,7 @@ package can help create and update if need be.")
         (base32 "03hyfy7c0ma45b0y756j76awi3az2ii4bz4s8cxm3xw9yy1z7b01"))))
     (build-system julia-build-system)
     (arguments
-     `(#:parallel-tests? #f))
+     (list #:parallel-tests? #f))
     (inputs                             ;required for test
      (list julia-example))
     (propagated-inputs
@@ -4377,7 +4589,7 @@ can be avoided.")
      ;; Expression: hash(tr_float, hash(1)) === hash(v_float, hash(1))
      ;; MethodError: no method matching decompose(::ReverseDiff.TrackedReal{Float64, Float64, Nothing})
      ;; Disable as stopgap.
-     `(#:tests? ,(not (target-x86-32?))))
+     (list #:tests? (not (target-x86-32?))))
     (propagated-inputs
      (list julia-diffresults
            julia-diffrules
@@ -4475,8 +4687,9 @@ through matrix-vector multiplication.")
            (base32 "1fb1dfdmiw2ggx60hf70954xlps0r48fcb3k3dvxynlz7ylphp96"))))
       (build-system julia-build-system)
       (arguments
-       `(#:julia-package-name "SafeTestsets"
-         #:julia-package-uuid "1bc83da4-3b8d-516f-aca4-4fe02f6d838f"))
+       (list
+        #:julia-package-name "SafeTestsets"
+        #:julia-package-uuid "1bc83da4-3b8d-516f-aca4-4fe02f6d838f"))
       (native-inputs
        (list julia-staticarrays))
       (home-page "https://github.com/YingboMa/SafeTestsets.jl")
@@ -4546,7 +4759,7 @@ bytes in a chunk of memory.  Think of it like a much faster version of
           "09xni9rrrax17fxjz04j1b48mk9ffww5rcbagh66jklr89mrkqhx"))))
     (build-system julia-build-system)
     (arguments
-     `(#:tests? #f))    ; Test suite tries to access the Julia package registry.
+     (list #:tests? #f)) ; Test suite tries to access the Julia package registry.
     (home-page "https://github.com/JuliaPackaging/Scratch.jl")
     (synopsis "Scratch spaces for all your persistent mutable data needs")
     (description "This repository implements the scratch spaces API for
@@ -4667,7 +4880,7 @@ beginners.")
          (base32 "173x77a80xnh99viqa3r7rgdaksvxaw8xyfqw09gwvp4p2zrxivb"))))
     (build-system julia-build-system)
     (arguments
-     `(#:tests? #f))    ; cycle with StatsBase.jl
+     (list #:tests? #f))    ; cycle with StatsBase.jl
     (propagated-inputs
      (list julia-datastructures))
     ;(native-inputs
@@ -4771,13 +4984,13 @@ some performance improvements).")
          (base32 "1fwiaxdpx1z9dli3jr8kyraych0jbdiny3qklynf0r13px25r6i7"))))
     (build-system julia-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'link-depot 'skip-doctest
-           (lambda _
-             (substitute* "test/runtests.jl"
-               ((".*doctest.*") ""))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'link-depot 'skip-doctest
+            (lambda _
+              (substitute* "test/runtests.jl"
+                ((".*doctest.*") "")))))))
     (propagated-inputs
      (list julia-offsetarrays))
     (native-inputs
@@ -4936,14 +5149,15 @@ applied to any distance.")
          (base32 "1qwc5ll68ng80b5921ww6fvifxbsmiylakfgsbsjbzg7lzyb5i67"))))
     (build-system julia-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-failing-test
-           (lambda _
-             ;; https://github.com/JuliaStrings/StringEncodings.jl/issues/49
-             (substitute* "test/runtests.jl"
-               (("\"SHIFT_JIS\", \"SHIFT_JISX0213\"")
-                " ")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-failing-test
+            (lambda _
+              ;; https://github.com/JuliaStrings/StringEncodings.jl/issues/49
+              (substitute* "test/runtests.jl"
+                (("\"SHIFT_JIS\", \"SHIFT_JISX0213\"")
+                 " ")))))))
     (propagated-inputs
      (list julia-libiconv-jll))
     (home-page "https://github.com/JuliaStrings/StringEncodings.jl")
@@ -4968,15 +5182,16 @@ texts between multiple character encodings.  It is currently based on the
          (base32 "0rjcpyjwzg70n87q5r9c5i1qzigavncslxssm3rk5a3y549py56v"))))
     (build-system julia-build-system)
     (arguments
-     `(#:phases
-       ,@(if (target-64bit?)
-           '(%standard-phases)
-           '((modify-phases %standard-phases
-               (add-after 'unpack 'fix-tests-int32-i686
-                 (lambda _
-                   (substitute* '("src/utils.jl"
-                                  "test/runtests.jl")
-                     (("Int64") "Int32")))))))))
+     (list
+      #:phases
+      (if (target-64bit?)
+          #~%standard-phases
+          #~(modify-phases %standard-phases
+              (add-after 'unpack 'fix-tests-int32-i686
+                (lambda _
+                  (substitute* '("src/utils.jl"
+                                 "test/runtests.jl")
+                    (("Int64") "Int32"))))))))
     (propagated-inputs
      (list julia-dataapi
            julia-staticarrays
@@ -5174,7 +5389,7 @@ dimensions}.")
          (base32 "1lnfsmx33qspyvxw0cykwh7il8xykjpcw1080sisn95ngz2qhdmy"))))
     (build-system julia-build-system)
     (arguments
-     `(#:tests? #f))    ; cycle with ImageMagick.jl
+     (list #:tests? #f))    ; cycle with ImageMagick.jl
     (propagated-inputs
      (list julia-axisarrays
            julia-colortypes
@@ -5243,7 +5458,7 @@ automatic differentiation for its machine learning platform.")
          (base32 "1w3klii293caqiclfh28jggv7f53xclm9fr6xmw38brwrn1hjb48"))))
     (build-system julia-build-system)
     (arguments
-     `(#:tests? #f))                ; Circular dependency with various codecs.
+     (list #:tests? #f))                ; Circular dependency with various codecs.
     (home-page "https://github.com/JuliaIO/TranscodingStreams.jl")
     (synopsis "Fast I/O transcoding data streams")
     (description "This package provides tools for transcoding data streams
@@ -5338,17 +5553,17 @@ types, modules, and dictionaries.")
         (base32 "0kp4hg3kknkm2smlcizqfd33l9x4vkahc2714gnbjp39fj285b92"))))
     (build-system julia-build-system)
     (arguments
-     '(#:julia-package-name "URIs"      ;required to run tests
-       #:julia-package-uuid "5c2747f8-b7ea-4ff2-ba2e-563bfd36b1d4"
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'change-dir
-           ;; Tests must be run from the testdir
-           (lambda* (#:key source outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (chdir
-                (string-append out "/share/julia/loadpath/URIs/test")))
-             #t)))))
+     (list
+      #:julia-package-name "URIs"       ;required to run tests
+      #:julia-package-uuid "5c2747f8-b7ea-4ff2-ba2e-563bfd36b1d4"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'change-dir
+            ;; Tests must be run from the testdir
+            (lambda* (#:key source outputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out")))
+                (chdir
+                 (string-append out "/share/julia/loadpath/URIs/test"))))))))
     ;; required for tests
     (inputs (list julia-json))
     (home-page "https://github.com/JuliaWeb/URIs.jl")
@@ -5373,7 +5588,7 @@ working with @acronym{URIs,Uniform Resource Identifiers}, as defined in RFC
         (base32 "10qwscd15dnmvx116dwvg99m7kmwgmj5ahdkq7psiq48lcc554gq"))))
     (build-system julia-build-system)
     (arguments
-     `(#:parallel-tests? #f))
+     (list #:parallel-tests? #f))
     (propagated-inputs
      (list julia-constructionbase))
     (home-page "https://painterqubits.github.io/Unitful.jl/stable/")
@@ -5445,15 +5660,16 @@ allows for efficient string representation and transfer")
          (base32 "04yykivi8zrbryxlmb0p5xa6lma8iq22r5s863117dnnqj5gaffd"))))
     (build-system julia-build-system)
     (arguments
-     `(#:phases
-       ,@(if (target-x86-32?)
-           '((modify-phases %standard-phases
-               (add-after 'unpack 'remove-failing-test-i686
-                 (lambda _
-                   (substitute* "test/woodbury.jl"
-                     (("@test logdet\\(W\\)")
-                      "@test_broken logdet(W)"))))))
-           '(%standard-phases))))
+     (list
+      #:phases
+      (if (target-x86-32?)
+          #~(modify-phases %standard-phases
+              (add-after 'unpack 'remove-failing-test-i686
+                (lambda _
+                  (substitute* "test/woodbury.jl"
+                    (("@test logdet\\(W\\)")
+                     "@test_broken logdet(W)")))))
+          #~%standard-phases)))
     (home-page "https://github.com/timholy/WoodburyMatrices.jl")
     (synopsis "Support for the Woodbury matrix identity for Julia")
     (description "This package provides support for the Woodbury matrix identity
@@ -5548,7 +5764,7 @@ Zygote, without depending on Zygote itself.")
         (base32 "1cx66sp30s34ln6p0fpqk1ggjxfxg2gp8791zz3cl85dmk4dl14b"))))
     (build-system julia-build-system)
     (arguments
-     `(#:tests? #f))                    ;require CUDA, not packaged yet
+     (list #:tests? #f))                    ;require CUDA, not packaged yet
     (propagated-inputs
      (list julia-abstractffts
            julia-chainrules

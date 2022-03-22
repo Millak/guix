@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
+;;; Copyright © 2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20,219 +21,199 @@
 (define-module (gnu home services symlink-manager)
   #:use-module (gnu home services)
   #:use-module (guix gexp)
-
+  #:use-module (guix modules)
   #:export (home-symlink-manager-service-type))
 
 ;;; Comment:
 ;;;
-;;; symlink-manager cares about configuration files: it backs up files
-;;; created by user, removes symlinks and directories created by a
-;;; previous generation, and creates new directories and symlinks to
-;;; configuration files according to the content of files/ directory
-;;; (created by home-files-service) of the current home environment
-;;; generation.
+;;; symlink-manager cares about xdg configurations and other files: it backs
+;;; up files created by user, removes symlinks and directories created by a
+;;; previous generation, and creates new directories and symlinks to files
+;;; according to the content of directories (created by home-files-service) of
+;;; the current home environment generation.
 ;;;
 ;;; Code:
 
 (define (update-symlinks-script)
   (program-file
    "update-symlinks"
-   #~(begin
-       (use-modules (ice-9 ftw)
-                    (ice-9 curried-definitions)
-                    (ice-9 match)
-                    (srfi srfi-1)
-                    (guix i18n))
-       #$%initialize-gettext
-       (define ((simplify-file-tree parent) file)
-         "Convert the result produced by `file-system-tree' to less
-verbose and more suitable for further processing format.
+   (with-imported-modules (source-module-closure
+                           '((guix build utils)
+                             (guix i18n)))
+     #~(begin
+         (use-modules (ice-9 ftw)
+                      (ice-9 match)
+                      (srfi srfi-1)
+                      (guix i18n)
+                      (guix build utils))
 
-Extract dir/file info from stat and compose a relative path to the
-root of the file tree.
+         (define home-directory
+           (getenv "HOME"))
 
-Sample output:
+         (define xdg-config-home
+           (or (getenv "XDG_CONFIG_HOME")
+               (string-append (getenv "HOME") "/.config")))
 
-((dir . \".\")
- ((dir . \"config\")
-  ((dir . \"config/fontconfig\")
-   (file . \"config/fontconfig/fonts.conf\"))
-  ((dir . \"config/isync\")
-   (file . \"config/isync/mbsyncrc\"))))
-"
-         (match file
-           ((name stat) `(file . ,(string-append parent name)))
-           ((name stat children ...)
-            (cons `(dir . ,(string-append parent name))
-                  (map (simplify-file-tree
-                        (if (equal? name ".")
-                            ""
-                            (string-append parent name "/")))
-                       children)))))
+         (define backup-directory
+           (string-append home-directory "/" (number->string (current-time))
+                          "-guix-home-legacy-configs-backup"))
 
-       (define ((file-tree-traverse preordering) node)
-         "Traverses the file tree in different orders, depending on PREORDERING.
+         (define (preprocess-file file)
+           "If file is in XDG-CONFIGURATION-FILES-DIRECTORY use
+subdirectory from XDG_CONFIG_HOME to generate a target path."
+           (if (string-prefix? #$xdg-configuration-files-directory file)
+               (string-append
+                (substring xdg-config-home
+                           (1+ (string-length home-directory)))
+                (substring file
+                           (string-length #$xdg-configuration-files-directory)))
+               (string-append "." file)))
 
-if PREORDERING is @code{#t} resulting list will contain directories
-before files located in those directories, otherwise directory will
-appear only after all nested items already listed."
-         (let ((prepend (lambda (a b) (append b a))))
-           (match node
-             (('file . path) (list node))
-             ((('dir . path) . rest)
-              ((if preordering append prepend)
-               (list (cons 'dir path))
-               (append-map (file-tree-traverse preordering) rest))))))
+         (define (target-file file)
+           ;; Return the target of FILE, a config file name sans leading dot
+           ;; such as "config/fontconfig/fonts.conf" or "bashrc".
+           (string-append home-directory "/" (preprocess-file file)))
 
-       (use-modules (guix build utils))
+         (define (symlink-to-store? file)
+           (catch 'system-error
+             (lambda ()
+               (store-file-name? (readlink file)))
+             (lambda args
+               (if (= EINVAL (system-error-errno args))
+                   #f
+                   (apply throw args)))))
 
-       (let* ((config-home    (or (getenv "XDG_CONFIG_HOME")
-                                  (string-append (getenv "HOME") "/.config")))
+         (define (backup-file file)
+           (define backup
+             (string-append backup-directory "/" (preprocess-file file)))
 
-              (he-path (string-append (getenv "HOME") "/.guix-home"))
-              (new-he-path (string-append he-path ".new"))
-              (new-home (getenv "GUIX_NEW_HOME"))
-              (old-home (getenv "GUIX_OLD_HOME"))
+           (mkdir-p backup-directory)
+           (format #t (G_ "Backing up ~a...") (target-file file))
+           (mkdir-p (dirname backup))
+           (rename-file (target-file file) backup)
+           (display (G_ " done\n")))
 
-              (new-files-path (string-append new-home "/files"))
-              ;; Trailing dot is required, because files itself is symlink and
-              ;; to make file-system-tree works it should be a directory.
-              (new-files-dir-path (string-append new-files-path "/."))
+         (define (cleanup-symlinks home-generation)
+           ;; Delete from $HOME files that originate in HOME-GENERATION, the
+           ;; store item containing a home generation.
+           (define config-file-directory
+             ;; Note: Trailing slash is needed because "files" is a symlink.
+             (string-append home-generation "/" #$home-files-directory "/"))
 
-              (home-path (getenv "HOME"))
-              (backup-dir (string-append home-path "/"
-                                         (number->string (current-time))
-                                         "-guix-home-legacy-configs-backup"))
+           (define (strip file)
+             (string-drop file
+                          (+ 1 (string-length config-file-directory))))
 
-              (old-tree (if old-home
-                          ((simplify-file-tree "")
-                           (file-system-tree
-                            (string-append old-home "/files/.")))
-                          #f))
-              (new-tree ((simplify-file-tree "")
-                         (file-system-tree new-files-dir-path)))
+           (format #t (G_ "Cleaning up symlinks from previous home at ~a.~%")
+                   home-generation)
+           (newline)
 
-              (get-source-path
-               (lambda (path)
-                 (readlink (string-append new-files-path "/" path))))
+           (file-system-fold
+            (const #t)
+            (lambda (file stat _)                 ;leaf
+              (let ((file (target-file (strip file))))
+                (when (file-exists? file)
+                  ;; DO NOT remove the file if it is no longer a symlink to
+                  ;; the store, it will be backed up later during
+                  ;; create-symlinks phase.
+                  (if (symlink-to-store? file)
+                      (begin
+                        (format #t (G_ "Removing ~a...") file)
+                        (delete-file file)
+                        (display (G_ " done\n")))
+                      (format
+                       #t
+                       (G_ "Skipping ~a (not a symlink to store)... done\n")
+                       file)))))
 
-              (get-target-path
-               (lambda (path)
-                 (string-append home-path "/." path)))
+            (const #t)                            ;down
+            (lambda (directory stat _)            ;up
+              (unless (string=? directory config-file-directory)
+                (let ((directory (target-file (strip directory))))
+                  (catch 'system-error
+                    (lambda ()
+                      (rmdir directory)
+                      (format #t (G_ "Removed ~a.\n") directory))
+                    (lambda args
+                      (let ((errno (system-error-errno args)))
+                        (cond
+                         ((= ENOTEMPTY errno)
+                          (format
+                           #t
+                           (G_ "Skipping ~a (not an empty directory)... done\n")
+                           directory))
+                         ((= ENOTDIR errno) #t)
+                         (else
+                          (apply throw args)))))))))
+            (const #t)                            ;skip
+            (const #t)                            ;error
+            #t                                    ;init
+            config-file-directory
+            lstat)
 
-              (get-backup-path
-               (lambda (path)
-                 (string-append backup-dir "/." path)))
+           (display (G_ "Cleanup finished.\n\n")))
 
-              (directory?
-               (lambda (path)
-                 (equal? (stat:type (stat path)) 'directory)))
+         (define (create-symlinks home-generation)
+           ;; Create in $HOME symlinks for the files in HOME-GENERATION.
+           (define config-file-directory
+             ;; Note: Trailing slash is needed because "files" is a symlink.
+             (string-append home-generation "/" #$home-files-directory "/"))
 
-              (empty-directory?
-               (lambda (dir)
-                 (equal? (scandir dir) '("." ".."))))
+           (define (strip file)
+             (string-drop file
+                          (+ 1 (string-length config-file-directory))))
 
-              (symlink-to-store?
-               (lambda (path)
-                 (and
-                  (equal? (stat:type (lstat path)) 'symlink)
-                  (store-file-name? (readlink path)))))
+           (define (source-file file)
+             (readlink (string-append config-file-directory file)))
 
-              (backup-file
-               (lambda (path)
-                 (mkdir-p backup-dir)
-                 (format #t (G_ "Backing up ~a...") (get-target-path path))
-                 (mkdir-p (dirname (get-backup-path path)))
-                 (rename-file (get-target-path path) (get-backup-path path))
-                 (display (G_ " done\n"))))
+           (file-system-fold
+            (const #t)                            ;enter?
+            (lambda (file stat result)            ;leaf
+              (let ((source (source-file (strip file)))
+                    (target (target-file (strip file))))
+                (when (file-exists? target)
+                  (backup-file (strip file)))
+                (format #t (G_ "Symlinking ~a -> ~a...")
+                        target source)
+                (symlink source target)
+                (display (G_ " done\n"))))
+            (lambda (directory stat result)       ;down
+              (unless (string=? directory config-file-directory)
+                (let ((target (target-file (strip directory))))
+                  (when (and (file-exists? target)
+                             (not (file-is-directory? target)))
+                    (backup-file (strip directory)))
 
-              (cleanup-symlinks
-               (lambda ()
-                 (let ((to-delete ((file-tree-traverse #f) old-tree)))
-                   (display
-                    (G_
-                    "Cleaning up symlinks from previous home-environment.\n\n"))
-                   (map
-                    (match-lambda
-                      (('dir . ".")
-                       (display (G_ "Cleanup finished.\n\n")))
+                  (catch 'system-error
+                    (lambda ()
+                      (mkdir target))
+                    (lambda args
+                      (let ((errno (system-error-errno args)))
+                        (unless (= EEXIST errno)
+                          (format #t (G_ "failed to create directory ~a: ~s~%")
+                                  target (strerror errno))
+                          (apply throw args))))))))
+            (const #t)                            ;up
+            (const #t)                            ;skip
+            (const #t)                            ;error
+            #t                                    ;init
+            config-file-directory))
 
-                      (('dir . path)
-                       (if (and
-                            (file-exists? (get-target-path path))
-                            (directory? (get-target-path path))
-                            (empty-directory? (get-target-path path)))
-                           (begin
-                             (format #t (G_ "Removing ~a...")
-                                     (get-target-path path))
-                             (rmdir (get-target-path path))
-                             (display (G_ " done\n")))
-                           (format
-                            #t
-                            (G_ "Skipping ~a (not an empty directory)... done\n")
-                            (get-target-path path))))
+         #$%initialize-gettext
 
-                      (('file . path)
-                       (when (file-exists? (get-target-path path))
-                         ;; DO NOT remove the file if it is no longer
-                         ;; a symlink to the store, it will be backed
-                         ;; up later during create-symlinks phase.
-                         (if (symlink-to-store? (get-target-path path))
-                             (begin
-                               (format #t (G_ "Removing ~a...") (get-target-path path))
-                               (delete-file (get-target-path path))
-                               (display (G_ " done\n")))
-                             (format
-                              #t
-                              (G_ "Skipping ~a (not a symlink to store)... done\n")
-                              (get-target-path path))))))
-                    to-delete))))
+         (let* ((home     (string-append home-directory "/.guix-home"))
+                (pivot    (string-append home ".new"))
+                (new-home (getenv "GUIX_NEW_HOME"))
+                (old-home (getenv "GUIX_OLD_HOME")))
+           (when old-home
+             (cleanup-symlinks old-home))
 
-              (create-symlinks
-               (lambda ()
-                 (let ((to-create ((file-tree-traverse #t) new-tree)))
-                   (map
-                    (match-lambda
-                      (('dir . ".")
-                       (display
-                        (G_ "New symlinks to home-environment will be created soon.\n"))
-                       (format
-                        #t (G_ "All conflicting files will go to ~a.\n\n") backup-dir))
+           (create-symlinks new-home)
 
-                      (('dir . path)
-                       (let ((target-path (get-target-path path)))
-                         (when (and (file-exists? target-path)
-                                    (not (directory? target-path)))
-                           (backup-file path))
+           (symlink new-home pivot)
+           (rename-file pivot home)
 
-                         (if (file-exists? target-path)
-                             (format
-                              #t (G_ "Skipping   ~a (directory already exists)... done\n")
-                              target-path)
-                             (begin
-                               (format #t (G_ "Creating   ~a...") target-path)
-                               (mkdir target-path)
-                               (display (G_ " done\n"))))))
-
-                      (('file . path)
-                       (when (file-exists? (get-target-path path))
-                         (backup-file path))
-                       (format #t (G_ "Symlinking ~a -> ~a...")
-                               (get-target-path path) (get-source-path path))
-                       (symlink (get-source-path path) (get-target-path path))
-                       (display (G_ " done\n"))))
-                    to-create)))))
-
-         (when old-tree
-           (cleanup-symlinks))
-
-         (create-symlinks)
-
-         (symlink new-home new-he-path)
-         (rename-file new-he-path he-path)
-
-         (display (G_" done\nFinished updating symlinks.\n\n"))))))
-
+           (display (G_" done\nFinished updating symlinks.\n\n")))))))
 
 (define (update-symlinks-gexp _)
   #~(primitive-load #$(update-symlinks-script)))

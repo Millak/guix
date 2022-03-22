@@ -30,7 +30,6 @@
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (gnu packages)
   #:use-module (gnu packages lisp)
-  #:use-module (gnu packages base)
   #:use-module (gnu packages ocaml)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages polkit)
@@ -174,7 +173,6 @@ terminals.")
            flite
            glib
            gpm
-           libiconv
            icu4c
            libbraille
            pcre2

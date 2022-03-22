@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
@@ -508,6 +508,16 @@
     (and (supported-package? p "x86_64-linux")
          (supported-package? p "armhf-linux"))))
 
+(test-assert "supported-package? vs. %current-target-system"
+  ;; The %CURRENT-TARGET-SYSTEM value should have no influence.
+  (parameterize ((%current-target-system "arm-linux-gnueabihf"))
+    (let ((p (dummy-package "foo"
+               (build-system gnu-build-system)
+               (supported-systems '("x86_64-linux" "armhf-linux")))))
+      (and (supported-package? p "x86_64-linux")
+           (not (supported-package? p "i686-linux"))
+           (supported-package? p "armhf-linux")))))
+
 (test-skip (if (not %store) 8 0))
 
 (test-assert "package-source-derivation, file"
@@ -716,7 +726,8 @@
                                   (use-modules (guix build utils))
                                   (setenv "PATH" #+bin)
                                   (invoke "tar" "xvf" #+out)
-                                  (copy-file #+name #$output)))))
+                                  (copy-file #+name #$output)))
+                            #:guile %bootstrap-guile))
                         (drv (run-with-store %store (lower-object f)))
                         (_ (build-derivations %store (list drv))))
                    (call-with-input-file (derivation->output-path drv)
@@ -1944,6 +1955,47 @@
   (package-arguments
    (dummy-package "a"
      (arguments (this-package-native-input "hello")))))
+
+(test-eq "modify-inputs, replace"
+  coreutils
+  ;; Replace an input; notice that the label in unchanged.
+  (let* ((p1 (dummy-package "p"
+               (inputs (list hello))))
+         (p2 (package
+               (inherit p1)
+               (version "1")
+               (inputs (modify-inputs (package-inputs p1)
+                         (replace "hello" coreutils))))))
+    (lookup-package-input p2 "hello")))
+
+(test-eq "modify-inputs, replace, change output"
+  guile-3.0
+  ;; Replace an input and choose a different output.
+  (let* ((p1 (dummy-package "p"
+               (inputs (list `(,coreutils "debug")))))
+         (p2 (package
+               (inherit p1)
+               (version "1")
+               (inputs (modify-inputs (package-inputs p1)
+                         (replace "coreutils" `(,guile-3.0 "out")))))))
+    (match (package-inputs p2)
+      ((("coreutils" input "out"))
+       input))))
+
+(test-eq "modify-inputs, replace, extra output"
+  guile-3.0
+  ;; Replace an input; notice that its output is preserved.
+  ;; See <https://issues.guix.gnu.org/53915>.
+  (let* ((p1 (dummy-package "p"
+               (inputs (list `(,coreutils "debug")))))
+         (p2 (package
+               (inherit p1)
+               (version "1")
+               (inputs (modify-inputs (package-inputs p1)
+                         (replace "coreutils" guile-3.0))))))
+    (match (package-inputs p2)
+      ((("coreutils" input "debug"))
+       input))))
 
 (test-end "packages")
 

@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Christopher Baines <mail@cbaines.net>
+;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -33,7 +34,7 @@
 (define-public plover
   (package
     (name "plover")
-    (version "4.0.0.dev8")
+    (version "4.0.0.dev10")
     (source
      (origin
        (method git-fetch)
@@ -42,10 +43,10 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1b2ys77bkjsdmyg97i7lq3lj45q56bycvsm06d4rs656kxhvc0a3"))))
+        (base32 "1nyllqv4jq4idgn4cp5mypransw3rh3x8c1h9p6ld1anfr3zx7m0"))))
     (build-system python-build-system)
     (native-inputs
-     (list python-mock python-pytest python-setuptools-scm))
+     (list python-pytest))
     (inputs
      (list python-appdirs
            python-pyqt
@@ -53,7 +54,6 @@
            python-dbus
            python-hidapi
            python-pyserial
-           python-wxpython
            python-xlib))
     (home-page "https://www.openstenoproject.org/plover/")
     (synopsis "Stenography engine")

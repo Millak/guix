@@ -181,7 +181,7 @@ MODULES and taken from LINUX."
   "Return as a file-like object a raw initrd, with kernel
 modules taken from LINUX.  FILE-SYSTEMS is a list of file-systems to be
 mounted by the initrd, possibly in addition to the root file system specified
-on the kernel command line via '--root'. LINUX-MODULES is a list of kernel
+on the kernel command line via 'root'.  LINUX-MODULES is a list of kernel
 modules to be loaded at boot time. MAPPED-DEVICES is a list of device
 mappings to realize before FILE-SYSTEMS are mounted.
 HELPER-PACKAGES is a list of packages to be copied in the initrd. It may include
@@ -352,8 +352,7 @@ FILE-SYSTEMS."
     "dm-crypt" "xts" "serpent_generic" "wp512" ;for encrypted root partitions
     "nls_iso8859-1"                            ;for `mkfs.fat`, et.al
     ,@(if (string-match "^(x86_64|i[3-6]86)-" system)
-          '("framebuffer_coreboot"       ;for display during early (Core)boot
-            "pata_acpi" "pata_atiixp"    ;for ATA controllers
+          '("pata_acpi" "pata_atiixp"    ;for ATA controllers
             "isci")                      ;for SAS controllers like Intel C602
           '())
 
@@ -376,7 +375,7 @@ FILE-SYSTEMS."
   "Return as a file-like object a generic initrd, with kernel
 modules taken from LINUX.  FILE-SYSTEMS is a list of file-systems to be
 mounted by the initrd, possibly in addition to the root file system specified
-on the kernel command line via '--root'.  MAPPED-DEVICES is a list of device
+on the kernel command line via 'root'.  MAPPED-DEVICES is a list of device
 mappings to realize before FILE-SYSTEMS are mounted.
 
 When true, KEYBOARD-LAYOUT is a <keyboard-layout> record denoting the desired

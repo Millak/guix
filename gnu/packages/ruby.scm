@@ -1,13 +1,13 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2015 Pjotr Prins <pjotr.guix@thebird.nl>
-;;; Copyright © 2014, 2015, 2016, 2017, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2017, 2021-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2015, 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017, 2019, 2020, 2021 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017, 2018, 2019 Christopher Baines <mail@cbaines.net>
@@ -199,6 +199,20 @@ a focus on simplicity and productivity.")
        (sha256
         (base32
          "0h2w2ms4gx2s96v3lzdr3add94bd2qqkhdjzaycmaqhg21rpf3jp"))))))
+
+(define-public ruby-3.1
+  (package
+    (inherit ruby-2.7)
+    (version "3.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://cache.ruby-lang.org/pub/ruby/"
+                           (version-major+minor version)
+                           "/ruby-" version ".tar.xz"))
+       (sha256
+        (base32
+         "1akcl7vhmwfm6ybj7493kzy58ykh2r39ri9f4xfm2xmhg1msmvvs"))))))
 
 (define-public ruby-2.5
   (package
@@ -5717,7 +5731,14 @@ aware transformations between times in different time zones.")
                  (uri "https://data.iana.org/time-zones/releases/tzcode2021a.tar.gz.asc")
                  (sha256
                   (base32
-                   "1qhlj4lr810s47s1lwcvv1sgvg2sflf98w4sbg1lc8wzv5qxxv7g")))))))))
+                   "1qhlj4lr810s47s1lwcvv1sgvg2sflf98w4sbg1lc8wzv5qxxv7g")))))
+
+           ;; XXX: Explicitly depend on 'guile-final', which was previously
+           ;; implied via the '%guile-for-build' fluid but not explicit.
+           ;; TODO: Remove this argument on the next rebuild cycle.
+           #:guile (module-ref (resolve-interface
+                                '(gnu packages commencement))
+                               'guile-final)))))
     (synopsis "Data from the IANA Time Zone database")
     (description
      "This library provides @code{TZInfo::Data}, which contains data from the
@@ -7139,7 +7160,9 @@ run.")
          "0wjw9vpzr4f3nf1zf010bag71w4hdi0haybdn7r5rlmw45pmim29"))))
     (build-system ruby-build-system)
     (arguments
-     '(#:test-target "default"
+     `(#:test-target "default"
+       ;; TODO: Figure out why test hangs.
+       #:tests? ,(not (target-riscv64?))
        #:phases
        (modify-phases %standard-phases
          (add-before 'check 'set-home
@@ -7349,11 +7372,11 @@ library.")
         (base32
          "14a5kxfnf8l3ngyk8hgmk30z07aj1324ll8i48z67ps6pz2kpsrg"))))
     (build-system ruby-build-system)
-    (arguments '(#:tests? #t
-                 #:phases (modify-phases %standard-phases
+    (arguments '(#:phases (modify-phases %standard-phases
                             (replace 'check
-                              (lambda _
-                                (invoke "rspec"))))))
+                              (lambda* (#:key tests? #:allow-other-keys)
+                                (when tests?
+                                  (invoke "rspec")))))))
     (native-inputs
      (list ruby-rspec))
     (propagated-inputs
@@ -7476,11 +7499,16 @@ navigation capabilities to @code{pry}, using @code{byebug}.")
      `(#:phases
        (modify-phases %standard-phases
          (add-before 'check 'skip-dubious-test
-           ;; This unreliable test can fail with "Expected 0 to be >= 1."
            (lambda _
-             (substitute* "test/test_stackprof.rb"
-               (("def test_(cputime)" _ name)
-                (string-append "def skip_" name)))))
+             ,@(if (or (target-riscv64?)
+                       (target-ppc32?))
+                 ;; This unreliable test can fail with "Expected 32 to be <= 25."
+                 '((substitute* "test/test_stackprof.rb"
+                     ((".*assert_operator profile\\[:missed_samples.*") "")))
+                 ;; This unreliable test can fail with "Expected 0 to be >= 1."
+                 '((substitute* "test/test_stackprof.rb"
+                     (("def test_(cputime)" _ name)
+                      (string-append "def skip_" name)))))))
          (add-before 'check 'build-tests
            (lambda _
              (invoke "rake" "compile"))))))
@@ -8252,8 +8280,8 @@ definitions.")
     (inherit ruby-yard)
     (name "ruby-yard-with-tests")
     (arguments
-     (substitute-keyword-arguments (package-arguments ruby-yard)
-       ((#:tests? _ #t) #t)
+     (substitute-keyword-arguments
+         (strip-keyword-arguments '(#:tests?) (package-arguments ruby-yard))
        ((#:test-target _ "default") "default")
        ((#:phases phases '%standard-phases)
         `(modify-phases ,phases
@@ -8266,13 +8294,8 @@ definitions.")
                  (delete-file "Gemfile")
                  ;; $HOME needs to be set to somewhere writeable for tests to
                  ;; run.
-                 (setenv "HOME" "/tmp"))
-               #t))))))
-    (native-inputs
-     `(("ruby-rspec" ,ruby-rspec)
-       ("ruby-rack" ,ruby-rack)
-       ("ruby-redcloth" ,ruby-redcloth)
-       ("ruby-asciidoc" ,ruby-asciidoctor)))))
+                 (setenv "HOME" "/tmp"))))))))
+    (native-inputs (list ruby-rspec ruby-rack ruby-redcloth ruby-asciidoctor))))
 
 (define-public ruby-spectroscope
   (package
@@ -11386,7 +11409,16 @@ serves JavaScript, CoffeeScript, CSS, LESS, Sass, and SCSS.")
         (base32 "1l0p4wx15mi3wnamfv92ipkia4nsx8qi132c6g51jfdma3fiz2ch"))))
     (build-system ruby-build-system)
     (native-inputs
-     (list ruby-simplecov))
+     `(("ruby-simplecov" ,ruby-simplecov)
+       ("test-patch"
+        ,(search-patch "ruby-mustache-1.1.1-fix-race-condition-tests.patch"))))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-tests
+           (lambda* (#:key inputs #:allow-other-keys)
+             (invoke "patch" "-p1" "--batch" "-i"
+                     (assoc-ref inputs "test-patch")))))))
     (synopsis "framework-agnostic way to render logic-free views")
     (description
      "Mustache is a framework-agnostic way to render logic-free views.

@@ -1,11 +1,12 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2017, 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2019, 2020, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017, 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Frank Pursel <frank.pursel@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -26,7 +27,9 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages java)
   #:use-module (gnu packages node)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages uglifyjs)
@@ -34,10 +37,11 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
-  #:use-module (guix build-system gnu)
+  #:use-module (guix build-system ant)
   #:use-module (guix build-system cmake)
-  #:use-module (guix build-system trivial)
+  #:use-module (guix build-system gnu)
   #:use-module (guix build-system minify)
+  #:use-module (guix build-system trivial)
   #:use-module (guix utils))
 
 (define-public cjson
@@ -592,7 +596,10 @@ Worker, but it can be used in other JavaScript environments.")
                (base32
                 "15gichl8wi6yxag2ps723nxrgyan15976dzsnvw9h9py8sbyyzjn"))))
     (build-system minify-build-system)
-    (arguments `(#:javascript-files '("src/selectize.js")))
+    ;; We use the standalone file instead of src/selectize.js because the
+    ;; former includes the source code for MicroEvent and other modules that
+    ;; Selectize refers to.
+    (arguments `(#:javascript-files '("dist/js/standalone/selectize.js")))
     (home-page "https://selectize.github.io/selectize.js/")
     (synopsis "Hybrid widget between a textbox and <select> box")
     (description "Selectize is the hybrid of a textbox and @code{<select>}
@@ -788,3 +795,98 @@ project: add @file{duktape.c}, @file{duktape.h}, and @file{duk_config.h} to
 your build, and use the Duktape API to call ECMAScript functions from C code
 and vice versa.")
     (license license:expat)))
+
+(define-public rhino
+    (package
+      (name "rhino")
+      (version "1.7.7.2")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/mozilla/rhino.git")
+                      (commit "935942527ff434b205e797df4185518e5369466e")))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "09i4yr98hs6855fs7fhgmrpiwpr90lhxdv2bvfj97nn4rv1d7wl8"))
+                (modules '((guix build utils)))
+                (snippet '(begin
+                            ;; Remove benchmark testing
+                            (delete-file-recursively "testsrc/benchmarks")
+                            (delete-file-recursively
+                             "testsrc/org/mozilla/javascript/benchmarks")
+                            ;; Identify bundled jars
+                            (format #t "~%~a~%" "Sourced jars")
+                            (for-each (lambda (f)
+                                        (format #t "~/Deleting: ~a~%" f)
+                                        (delete-file f))
+                                      (find-files "." "\\.jar$"))))))
+      (build-system ant-build-system)
+      (inputs (list bash-minimal))
+      (native-inputs (list java-junit java-hamcrest-core java-snakeyaml))
+      (arguments
+       `(#:phases
+         (modify-phases
+             %standard-phases
+           (replace 'check
+             (lambda* (#:key tests? inputs native-inputs
+                       #:allow-other-keys)
+               (when tests?
+                 (setenv "ANT_OPTS" "-Doffline=true")
+                 (let ((junit-lib
+                        (assoc-ref inputs "java-junit"))
+                       (hamcrest-lib
+                        (assoc-ref inputs "java-hamcrest-core"))
+                       (snakeyaml-lib
+                        (assoc-ref inputs "java-snakeyaml")))
+                   (with-directory-excursion "testsrc"
+                     (substitute* "build.xml"
+                       (("<pathelement location=\"\\$\\{xbean.jar\\}\" */>" all)
+                        (string-append "<!-- " all " -->"))
+                       (("<pathelement location=\"\\$\\{jsr173.jar\\}\" */>" all)
+                        (string-append "<!-- " all " -->"))
+                       (("<pathelement path=\"\\$\\{coverage.classes.dir\\}\" */>"
+                         all)
+                        (string-append "<!-- " all " -->"))
+                       (("<pathelement path=\"lib/emma.jar\"/>" all)
+                        (string-append "<!-- " all " -->"))
+                       (("<pathelement path=\"lib/junit.jar\" ?/>")
+                        (string-append
+                         "<fileset dir=\"" junit-lib "\" includes=\"**/*.jar\"/>"))
+                       (("<pathelement path=\"lib/hamcrest.jar\" ?/>")
+                        (string-append "<fileset dir=\"" hamcrest-lib
+                                       "\" includes=\"**/*.jar\"/>"))
+                       (("<pathelement path=\"lib/snakeyaml.jar\" ?/>")
+                        (string-append "<fileset dir=\"" snakeyaml-lib
+                         "\" includes=\"**/*.jar\"/>"))
+                       ;; Disabling instrumentation.
+                       (("(<target name=\"junit\" depends=\"junit-compile),.*"
+                         all pre)
+                        (string-append pre "\">"))))
+                   (invoke "ant" "junit")))))
+           (replace 'install
+                      (lambda* (#:key inputs outputs #:allow-other-keys)
+                        (let* ((out (assoc-ref outputs "out"))
+                               (pkg+ver (string-append ,name ,version))
+                               (bin (string-append out "/bin"))
+                               (rhino (string-append bin "/rhino"))
+                               (man (string-append out "/share/man/man1")))
+                          (mkdir-p bin)
+                          (install-file "man/rhino.1" man)
+                          (install-file (string-append "build/" pkg+ver
+                                                       "/js.jar")
+                                        (string-append out "/share/java"))
+                          (with-output-to-file rhino
+                            (lambda _
+                              (format #t "#!~a~%~a -jar ~a $@~%"
+                                      (search-input-file inputs "/bin/bash")
+                                      (search-input-file inputs "/bin/java")
+                                      (string-append out "/share/java/js.jar"))))
+                          (chmod rhino #o755)))))))
+      (home-page "https://mozilla.github.io/rhino")
+      (synopsis "Javascript implemented in Java")
+      (description
+       "Rhino implements ECMAScript, also known as JavaScript, in Java as
+specified in the fifth edition of ECMA-262.")
+      (license license:mpl2.0)))
+

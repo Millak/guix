@@ -9,7 +9,7 @@
 ;;; Copyright © 2017, 2018 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
-;;; Copyright © 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;;
@@ -38,6 +38,7 @@
   #:use-module ((guix utils) #:select (target-64bit?))
   #:use-module (guix packages)
   #:use-module (guix utils)
+  #:use-module (guix gexp)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages autotools)
@@ -61,14 +62,14 @@
 (define-public parallel
   (package
     (name "parallel")
-    (version "20220122")
+    (version "20220222")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "mirror://gnu/parallel/parallel-"
                           version ".tar.bz2"))
       (sha256
-       (base32 "003y6f3bidfzd2jcswl7sk3a69fnvy0pjns4v0m5gjib84hil8mq"))))
+       (base32 "0id4lr3q0fh0r4vcz8sp19am9yc6j8g00m2726dgpmzacfw845pq"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -164,93 +165,88 @@ when jobs finish.")
 
 (define-public slurm
   (package
-   (name "slurm")
-   (version "20.11.7")
-   (source (origin
-            (method url-fetch)
-            (uri (string-append
-                  "https://download.schedmd.com/slurm/slurm-"
-                  version ".tar.bz2"))
-            (sha256
-             (base32
-              "1fdjihg1x7ks5l77yjv14a4mg6r0v8c3zk1dcxkhrhq3n4dc9nbs"))
-            (modules '((guix build utils)))
-            (snippet
-             '(begin
-                ;; According to
-                ;; <https://lists.gnu.org/archive/html/guix-devel/2016-02/msg00534.html>
-                ;; there are non-free bits under contribs/, though it's not
-                ;; clear which ones.  libpmi is clearly free (it used to be
-                ;; under src/api/), so remove all of contribs/ except
-                ;; contribs/pmi/.
-                (substitute* "configure.ac"
-                  (("^[[:space:]]+contribs/(.*)$" all directory)
-                   (if (and (string-prefix? "pmi" directory)
-                            (not (string-prefix? "pmi2" directory)))
-                       all
-                       "")))
+    (name "slurm")
+    (version "20.11.7")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://download.schedmd.com/slurm/slurm-"
+                    version ".tar.bz2"))
+              (sha256
+               (base32
+                "1fdjihg1x7ks5l77yjv14a4mg6r0v8c3zk1dcxkhrhq3n4dc9nbs"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; According to
+                  ;; <https://lists.gnu.org/archive/html/guix-devel/2016-02/msg00534.html>
+                  ;; there are non-free bits under contribs/, though it's not
+                  ;; clear which ones.  libpmi is clearly free (it used to be
+                  ;; under src/api/), so remove all of contribs/ except
+                  ;; contribs/pmi/.
+                  (substitute* "configure.ac"
+                    (("^[[:space:]]+contribs/(.*)$" all directory)
+                     (if (and (string-prefix? "pmi" directory)
+                              (not (string-prefix? "pmi2" directory)))
+                         all
+                         "")))
 
-                (rename-file "contribs/pmi" "tmp-pmi")
-                (delete-file-recursively "contribs")
-                (mkdir "contribs")
-                (rename-file "tmp-pmi" "contribs/pmi")
-                #t))))
-   ;; FIXME: More optional inputs could be added,
-   ;; in particular mysql and gtk+.
-   (inputs (list freeipmi
-                 `(,hwloc-2 "lib")
-                 json-c
-                 linux-pam
-                 munge
-                 numactl
-                 readline))
-   (native-inputs
-    `(("autoconf" ,autoconf)
-      ("expect" ,expect)
-      ("perl" ,perl)
-      ("pkg-config" ,pkg-config)
-      ("python" ,python-wrapper)))
-   (build-system gnu-build-system)
-   (arguments
-    `(#:configure-flags
-      (list "--enable-pam" "--sysconfdir=/etc/slurm"
-            "--disable-static"
-            (string-append "--with-freeipmi=" (assoc-ref %build-inputs "freeipmi"))
-            (string-append "--with-hwloc=" (assoc-ref %build-inputs "hwloc"))
-            (string-append "--with-json=" (assoc-ref %build-inputs "json-c"))
-            (string-append "--with-munge=" (assoc-ref %build-inputs "munge"))
+                  (rename-file "contribs/pmi" "tmp-pmi")
+                  (delete-file-recursively "contribs")
+                  (mkdir "contribs")
+                  (rename-file "tmp-pmi" "contribs/pmi")))))
+    ;; FIXME: More optional inputs could be added,
+    ;; in particular mysql and gtk+.
+    (inputs (list freeipmi
+                  `(,hwloc-2 "lib")
+                  json-c
+                  linux-pam
+                  munge
+                  numactl
+                  readline))
+    (native-inputs
+     (list autoconf expect perl pkg-config python-wrapper))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "--enable-pam" "--sysconfdir=/etc/slurm"
+                   "--disable-static"
+                   (string-append "--with-freeipmi=" #$(this-package-input "freeipmi"))
+                   (string-append "--with-hwloc=" #$(this-package-input "hwloc"))
+                   (string-append "--with-json=" #$(this-package-input "json-c"))
+                   (string-append "--with-munge=" #$(this-package-input "munge"))
 
-            ;; 32-bit support is marked as deprecated and needs to be
-            ;; explicitly enabled.
-            ,@(if (target-64bit?) '() '("--enable-deprecated")))
-      #:phases
-      (modify-phases %standard-phases
-        (add-after 'unpack 'patch-plugin-linker-flags
-          (lambda _
-            (substitute* (find-files "src/plugins/" "Makefile.in")
-              (("_la_LDFLAGS = ")
-               "_la_LDFLAGS = ../../../api/libslurm.la "))))
-        (add-after 'patch-plugin-linker-flags 'autoconf
-          (lambda _ (invoke "autoconf")))         ;configure.ac was patched
-        (add-after 'install 'install-libpmi
-          (lambda _
-            ;; Open MPI expects libpmi to be provided by Slurm so install it.
-            (invoke "make" "install" "-C" "contribs/pmi"))))))
-   (home-page "https://slurm.schedmd.com/")
-   (synopsis "Workload manager for cluster computing")
-   (description
-    "SLURM is a fault-tolerant and highly scalable cluster management and job
+                   ;; 32-bit support is marked as deprecated and needs to be
+                   ;; explicitly enabled.
+                   #$@(if (target-64bit?) '() '("--enable-deprecated")))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-plugin-linker-flags
+                 (lambda _
+                   (substitute* (find-files "src/plugins/" "Makefile.in")
+                     (("_la_LDFLAGS = ")
+                      "_la_LDFLAGS = ../../../api/libslurm.la "))))
+               (add-after 'patch-plugin-linker-flags 'autoconf
+                 (lambda _ (invoke "autoconf")))  ;configure.ac was patched
+               (add-after 'install 'install-libpmi
+                 (lambda _
+                   ;; Open MPI expects libpmi to be provided by Slurm so install it.
+                   (invoke "make" "install" "-C" "contribs/pmi"))))))
+    (home-page "https://slurm.schedmd.com/")
+    (synopsis "Workload manager for cluster computing")
+    (description
+     "SLURM is a fault-tolerant and highly scalable cluster management and job
 scheduling system for large and small clusters.  It allocates access to
 resources (computer nodes) to users for some duration of time, provides a
 framework for starting, executing, and monitoring work (typically a parallel
 job) on a set of allocated nodes, and arbitrates contention for resources
 by managing a queue of pending work.")
-   (license (list license:bsd-2       ; src/common/log.[ch], src/common/uthash
-                  license:expat       ; slurm/pmi.h
-                  license:isc         ; src/common/strlcpy.c
-                  license:lgpl2.1+    ; hilbert.[ch], src/common/slurm_time.h
-                  license:zlib        ; src/common/strnatcmp.c
-                  license:gpl2+))))   ; the rest, often with OpenSSL exception
+    (license (list license:bsd-2      ; src/common/log.[ch], src/common/uthash
+                   license:expat      ; slurm/pmi.h
+                   license:isc        ; src/common/strlcpy.c
+                   license:lgpl2.1+   ; hilbert.[ch], src/common/slurm_time.h
+                   license:zlib       ; src/common/strnatcmp.c
+                   license:gpl2+))))   ; the rest, often with OpenSSL exception
 
 ;; The SLURM client/daemon protocol and file format changes from time to time
 ;; in incompatible ways, as noted in
@@ -271,11 +267,16 @@ by managing a queue of pending work.")
                     version ".tar.bz2"))
               (sha256
                (base32
-                "0qj4blfymrd2ry2qmb58l3jbr4jwygc3adcfw7my27rippcijlyc"))))))
+                "0qj4blfymrd2ry2qmb58l3jbr4jwygc3adcfw7my27rippcijlyc"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments slurm)
+       ((#:configure-flags flags ''())
+        #~(append '("CFLAGS=-O2 -g -fcommon" "LDFLAGS=-fcommon")
+                  #$flags))))))
 
 (define-public slurm-19.05
   (package
-    (inherit slurm)
+    (inherit slurm-20.02)
     (version "19.05.8")
     (source (origin
               (inherit (package-source slurm))
@@ -290,7 +291,7 @@ by managing a queue of pending work.")
 ;; Same as Debian 10
 (define-public slurm-18.08
   (package
-    (inherit slurm)
+    (inherit slurm-20.02)
     (version "18.08.9")
     (source
       (origin

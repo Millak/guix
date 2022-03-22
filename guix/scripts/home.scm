@@ -3,6 +3,7 @@
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2021 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -23,8 +24,24 @@
   #:use-module (gnu packages admin)
   #:use-module ((gnu services) #:hide (delete))
   #:use-module (gnu packages)
+  #:autoload   (gnu packages base) (coreutils)
+  #:autoload   (gnu packages bash) (bash)
+  #:autoload   (gnu packages gnupg) (guile-gcrypt)
+  #:autoload   (gnu packages shells) (fish gash zsh)
   #:use-module (gnu home)
   #:use-module (gnu home services)
+  #:autoload   (gnu home services shepherd) (home-shepherd-service-type
+                                             home-shepherd-configuration-services
+                                             shepherd-service-requirement)
+  #:autoload   (guix modules) (source-module-closure)
+  #:autoload   (gnu build linux-container) (call-with-container %namespaces)
+  #:autoload   (gnu system linux-container) (eval/container)
+  #:autoload   (gnu system file-systems) (file-system-mapping
+                                          file-system-mapping-source
+                                          file-system-mapping->bind-mount
+                                          specification->file-system-mapping
+                                          %network-file-mappings)
+  #:autoload   (guix self) (make-config.scm)
   #:use-module (guix channels)
   #:use-module (guix derivations)
   #:use-module (guix ui)
@@ -33,12 +50,16 @@
   #:use-module (guix profiles)
   #:use-module (guix store)
   #:use-module (guix utils)
+  #:autoload   (guix graph) (lookup-backend export-graph)
   #:use-module (guix scripts)
   #:use-module (guix scripts package)
   #:use-module (guix scripts build)
-  #:use-module (guix scripts system search)
+  #:autoload   (guix scripts system search) (service-type->recutils)
+  #:use-module (guix scripts system reconfigure)
   #:autoload   (guix scripts pull) (channel-commit-hyperlink)
-  #:use-module (guix scripts home import)
+  #:autoload   (guix scripts system) (service-node-type
+                                      shepherd-service-node-type)
+  #:autoload   (guix scripts home import) (import-manifest)
   #:use-module ((guix status) #:select (with-status-verbosity))
   #:use-module ((guix build utils) #:select (mkdir-p))
   #:use-module (guix gexp)
@@ -47,6 +68,7 @@
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-35)
   #:use-module (srfi srfi-37)
+  #:use-module (srfi srfi-71)
   #:use-module (ice-9 match)
   #:export (guix-home))
 
@@ -70,6 +92,8 @@ Some ACTIONS support additional ARGS.\n"))
   (newline)
   (display (G_ "\
    search             search for existing service types\n"))
+  (display (G_ "
+   container          run the home environment configuration in a container\n"))
   (display (G_ "\
    reconfigure        switch to a new home environment configuration\n"))
   (display (G_ "\
@@ -86,13 +110,33 @@ Some ACTIONS support additional ARGS.\n"))
    build              build the home environment without installing anything\n"))
   (display (G_ "\
    import             generates a home environment definition from dotfiles\n"))
+  (display (G_ "\
+   extension-graph    emit the service extension graph\n"))
+  (display (G_ "\
+   shepherd-graph     emit the graph of shepherd services\n"))
 
   (show-build-options-help)
   (display (G_ "
   -e, --expression=EXPR  consider the home-environment EXPR evaluates to
                          instead of reading FILE, when applicable"))
   (display (G_ "
+      --allow-downgrades for 'reconfigure', allow downgrades to earlier
+                         channel revisions"))
+  (newline)
+  (display (G_ "
+  -N, --network          allow containers to access the network"))
+  (display (G_ "
+      --share=SPEC       for containers, share writable host file system
+                         according to SPEC"))
+  (display (G_ "
+      --expose=SPEC      for containers, expose read-only host file system
+                         according to SPEC"))
+  (newline)
+  (display (G_ "
   -v, --verbosity=LEVEL  use the given verbosity LEVEL"))
+  (display (G_ "
+      --graph-backend=BACKEND
+                         use BACKEND for 'extension-graph' and 'shepherd-graph'"))
   (newline)
   (display (G_ "
   -h, --help             display this help and exit"))
@@ -127,63 +171,289 @@ Some ACTIONS support additional ARGS.\n"))
          (option '(#\e "expression") #t #f
                  (lambda (opt name arg result)
                    (alist-cons 'expression arg result)))
+         (option '("allow-downgrades") #f #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'validate-reconfigure
+                               warn-about-backward-reconfigure
+                               result)))
+         (option '("graph-backend") #t #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'graph-backend arg result)))
+
+         ;; Container options.
+         (option '(#\N "network") #f #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'network? #t result)))
+         (option '("share") #t #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'file-system-mapping
+                               (specification->file-system-mapping arg #t)
+                               result)))
+         (option '("expose") #t #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'file-system-mapping
+                               (specification->file-system-mapping arg #f)
+                               result)))
+
          %standard-build-options))
 
 (define %default-options
-  `((build-mode . ,(build-mode normal))
-    (graft? . #t)
+  `((graft? . #t)
     (substitutes? . #t)
     (offload? . #t)
     (print-build-trace? . #t)
     (print-extended-build-trace? . #t)
     (multiplexed-build-output? . #t)
     (verbosity . #f)                              ;default
-    (debug . 0)))
+    (debug . 0)
+    (validate-reconfigure . ,ensure-forward-reconfigure)
+    (graph-backend . "graphviz")))
+
+
+;;;
+;;; Container.
+;;;
+
+(define not-config?
+  ;; Select (guix …) and (gnu …) modules, except (guix config).
+  (match-lambda
+    (('guix 'config) #f)
+    (('guix _ ...) #t)
+    (('gnu _ ...) #t)
+    (_ #f)))
+
+(define (user-shell)
+  (match (and=> (or (getenv "SHELL")
+                    (passwd:shell (getpwuid (getuid))))
+                basename)
+    ("zsh"  (file-append zsh "/bin/zsh"))
+    ("fish" (file-append fish "/bin/fish"))
+    ("gash" (file-append gash "/bin/gash"))
+    (_      (file-append bash "/bin/bash"))))
+
+(define %default-system-profile
+  ;; The "system" profile available when running 'guix home container'.  The
+  ;; activation script currently expects to run "env -0" (XXX), so provide
+  ;; Coreutils by default.
+  (delay (profile
+          (name "home-system-profile")
+          (content (packages->manifest (list coreutils))))))
+
+(define* (spawn-home-container home
+                               #:key
+                               network?
+                               (command '())
+                               (mappings '())
+                               (system-profile
+                                (force %default-system-profile)))
+  "Spawn a login shell within a container running HOME, a home environment.
+When COMMAND is a non-empty list, execute it in the container and exit
+immediately.  Return the exit status of the process in the container."
+  (define passwd (getpwuid (getuid)))
+  (define home-directory (or (getenv "HOME") (passwd:dir passwd)))
+  (define host (gethostname))
+  (define uid 1000)
+  (define gid 1000)
+  (define user-name (passwd:name passwd))
+  (define user-real-name (passwd:gecos passwd))
+
+  (define (optional-mapping mapping)
+    (and (file-exists? (file-system-mapping-source mapping))
+         mapping))
+
+  (define network-mappings
+    (if network?
+        (filter-map optional-mapping %network-file-mappings)
+        '()))
+
+  (eval/container
+   (with-extensions (list guile-gcrypt)
+     (with-imported-modules `(((guix config) => ,(make-config.scm))
+                              ,@(source-module-closure
+                                 '((gnu build accounts)
+                                   (guix profiles)
+                                   (guix build utils)
+                                   (guix build syscalls))
+                                 #:select? not-config?))
+       #~(begin
+           (use-modules (guix build utils)
+                        (gnu build accounts)
+                        ((guix build syscalls)
+                         #:select (set-network-interface-up)))
+
+           (define shell
+             #$(user-shell))
+
+           (define term
+             #$(getenv "TERM"))
+
+           (define passwd
+             (password-entry
+              (name #$user-name)
+              (real-name #$user-real-name)
+              (uid #$uid) (gid #$gid) (shell shell)
+              (directory #$home-directory)))
+
+           (define groups
+             (list (group-entry (name "users") (gid #$gid))
+                   (group-entry (gid 65534)       ;the overflow GID
+                                (name "overflow"))))
+
+           ;; (guix profiles) loads (guix utils), which calls 'getpw' from the
+           ;; top level.  Thus, arrange so that it's loaded after /etc/passwd
+           ;; has been created.
+           (module-autoload! (current-module)
+                             '(guix profiles) '(load-profile))
+
+           ;; Create /etc/passwd for applications that need it, such as mcron.
+           (mkdir-p "/etc")
+           (write-passwd (list passwd))
+           (write-group groups)
+
+           (unless #$network?
+             ;; When isolated from the network, provide a minimal /etc/hosts
+             ;; to resolve "localhost".
+             (call-with-output-file "/etc/hosts"
+               (lambda (port)
+                 (display "127.0.0.1 localhost\n" port)
+                 (chmod port #o444))))
+
+           ;; Set PATH for things that the activation script might expect, such
+           ;; as "env".
+           (load-profile #$system-profile)
+
+           (mkdir-p #$home-directory)
+           (setenv "HOME" #$home-directory)
+           (setenv "GUIX_NEW_HOME" #$home)
+           (primitive-load (string-append #$home "/activate"))
+           (setenv "GUIX_NEW_HOME" #f)
+
+           (when term
+             ;; Preserve TERM for proper interactive use.
+             (setenv "TERM" term))
+
+           (chdir #$home-directory)
+
+           ;; Invoke SHELL with argv[0] starting with "-": that's how shells
+           ;; figure out that they are login shells!
+           (execl shell (string-append "-" (basename shell))
+                  #$@(match command
+                       (() #~())
+                       ((_ ...)
+                        #~("-c" #$(string-join command))))))))
+
+   #:namespaces (if network?
+                    (delq 'net %namespaces)       ; share host network
+                    %namespaces)
+   #:mappings (append network-mappings mappings)
+   #:guest-uid uid
+   #:guest-gid gid))
 
 
 ;;;
 ;;; Actions.
 ;;;
 
+(define* (export-extension-graph home port
+                                 #:key (backend (lookup-backend "graphviz")))
+  "Export the service extension graph of HOME to PORT using BACKEND."
+  (let* ((services (home-environment-services home))
+         (home     (find (lambda (service)
+                           (eq? (service-kind service) home-service-type))
+                         services)))
+    (export-graph (list home) port
+                  #:backend backend
+                  #:node-type (service-node-type services)
+                  #:reverse-edges? #t)))
+
+(define* (export-shepherd-graph home port
+                                #:key (backend (lookup-backend "graphviz")))
+  "Export the graph of shepherd services of HOME to PORT using BACKEND."
+  (let* ((services  (home-environment-services home))
+         (root      (fold-services services
+                                   #:target-type home-shepherd-service-type))
+         ;; Get the list of <shepherd-service>.
+         (shepherds (home-shepherd-configuration-services
+                     (service-value root)))
+         (sinks     (filter (lambda (service)
+                              (null? (shepherd-service-requirement service)))
+                            shepherds)))
+    (export-graph sinks port
+                  #:backend backend
+                  #:node-type (shepherd-service-node-type shepherds)
+                  #:reverse-edges? #t)))
+
 (define* (perform-action action he
                          #:key
                          dry-run?
                          derivations-only?
-                         use-substitutes?)
+                         use-substitutes?
+                         (graph-backend "graphviz")
+                         (validate-reconfigure ensure-forward-reconfigure)
+
+                         ;; Container options.
+                         (file-system-mappings '())
+                         (container-command '())
+                         network?)
   "Perform ACTION for home environment. "
 
   (define println
     (cut format #t "~a~%" <>))
 
-  (mlet* %store-monad
-      ((he-drv   (home-environment-derivation he))
-       (drvs     (mapm/accumulate-builds lower-object (list he-drv)))
-       (%        (if derivations-only?
-                     (return
-                      (for-each (compose println derivation-file-name) drvs))
-                     (built-derivations drvs)))
+  (when (eq? action 'reconfigure)
+    (check-forward-update validate-reconfigure
+                          #:current-channels (home-provenance %guix-home)))
 
-       (he-out-path -> (derivation->output-path he-drv)))
-    (if (or dry-run? derivations-only?)
-        (return #f)
-        (begin
-          (for-each (compose println derivation->output-path) drvs)
+  (case action
+    ((extension-graph)
+     (export-extension-graph he (current-output-port)
+                             #:backend (lookup-backend graph-backend)))
+    ((shepherd-graph)
+     (export-shepherd-graph he (current-output-port)
+                            #:backend (lookup-backend graph-backend)))
+    (else
+     (mlet* %store-monad
+         ((he-drv   (home-environment-derivation he))
+          (drvs     (mapm/accumulate-builds lower-object (list he-drv)))
+          (%        (if derivations-only?
+                        (return
+                         (for-each (compose println derivation-file-name) drvs))
+                        (built-derivations drvs)))
 
-          (case action
-            ((reconfigure)
-             (let* ((number (generation-number %guix-home))
-                    (generation (generation-file-name
-                                 %guix-home (+ 1 number))))
+          (he-out-path -> (derivation->output-path he-drv)))
+       (if (or dry-run? derivations-only?)
+           (return #f)
+           (case action
+             ((reconfigure)
+              (let* ((number (generation-number %guix-home))
+                     (generation (generation-file-name
+                                  %guix-home (+ 1 number))))
 
-               (switch-symlinks generation he-out-path)
-               (switch-symlinks %guix-home generation)
-               (setenv "GUIX_NEW_HOME" he-out-path)
-               (primitive-load (string-append he-out-path "/activate"))
-               (setenv "GUIX_NEW_HOME" #f)
-               (return he-out-path)))
-            (else
-             (newline)
-             (return he-out-path)))))))
+                (switch-symlinks generation he-out-path)
+                (switch-symlinks %guix-home generation)
+                (setenv "GUIX_NEW_HOME" he-out-path)
+                (primitive-load (string-append he-out-path "/activate"))
+                (setenv "GUIX_NEW_HOME" #f)
+                (return he-out-path)))
+             ((container)
+              (mlet %store-monad ((status (spawn-home-container
+                                           he
+                                           #:network? network?
+                                           #:mappings file-system-mappings
+                                           #:command
+                                           container-command)))
+                (match (status:exit-val status)
+                  (0 (return #t))
+                  ((? integer? n) (return (exit n)))
+                  (#f
+                   (if (status:term-sig status)
+                       (leave (G_ "process terminated with signal ~a~%")
+                              (status:term-sig status))
+                       (leave (G_ "process stopped with signal ~a~%")
+                              (status:stop-sig status)))))))
+             (else
+              (for-each (compose println derivation->output-path) drvs)
+              (return he-out-path))))))))
 
 (define (process-action action args opts)
   "Process ACTION, a sub-command, with the arguments are listed in ARGS.
@@ -222,6 +492,10 @@ resulting from command-line parsing."
              (else
               (leave (G_ "no configuration specified~%")))))))
 
+         (mappings    (filter-map (match-lambda
+                                    (('file-system-mapping . mapping) mapping)
+                                    (_ #f))
+                                  opts))
          (dry?        (assoc-ref opts 'dry-run?)))
 
     (with-store store
@@ -237,13 +511,18 @@ resulting from command-line parsing."
           (mbegin %store-monad
             (set-guile-for-build (default-guile))
 
-            (case action
-              (else
-               (perform-action action home-environment
-                               #:dry-run? dry?
-                               #:derivations-only? (assoc-ref opts 'derivations-only?)
-                               #:use-substitutes? (assoc-ref opts 'substitutes?))
-               ))))))
+            (perform-action action home-environment
+                            #:dry-run? dry?
+                            #:derivations-only? (assoc-ref opts 'derivations-only?)
+                            #:use-substitutes? (assoc-ref opts 'substitutes?)
+                            #:validate-reconfigure
+                            (assoc-ref opts 'validate-reconfigure)
+                            #:graph-backend
+                            (assoc-ref opts 'graph-backend)
+                            #:network? (assoc-ref opts 'network?)
+                            #:file-system-mappings mappings
+                            #:container-command
+                            (or (assoc-ref opts 'container-command) '()))))))
     (warn-about-disk-space)))
 
 
@@ -332,7 +611,7 @@ deploy the home environment described by these files.\n")
               list-generations describe
               delete-generations roll-back
               switch-generation search
-              import)
+              import container)
              (alist-cons 'action action result))
             (else (leave (G_ "~a: unknown action~%") action))))))
 
@@ -370,11 +649,28 @@ deploy the home environment described by these files.\n")
            (fail))))
       args))
 
+  (define (parse-args args)
+    ;; Parse the list of command line arguments ARGS.
+
+    ;; The '--' token is used to separate the command to run from the rest of
+    ;; the operands.
+    (let* ((args rest (break (cut string=? "--" <>) args))
+           (opts (parse-command-line args %options (list %default-options)
+                                     #:argument-handler
+                                     parse-sub-command)))
+      (match rest
+        (() opts)
+        (("--") opts)
+        (("--" command ...)
+         (match (assoc-ref opts 'action)
+           ('container
+            (alist-cons 'container-command command opts))
+           (_
+            (leave (G_ "~a: extraneous command~%")
+                   (string-join command))))))))
+
   (with-error-handling
-    (let* ((opts     (parse-command-line args %options
-                                         (list %default-options)
-                                         #:argument-handler
-                                         parse-sub-command))
+    (let* ((opts     (parse-args args))
            (args     (option-arguments opts))
            (command  (assoc-ref opts 'action)))
       (parameterize ((%graft? (assoc-ref opts 'graft?)))

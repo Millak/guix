@@ -22,6 +22,8 @@
 ;;; Copyright © 2021 Mathieu Othacehe <othacehe@gnu.org>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Justin Veilleux <terramorpha@cock.li>
+;;; Copyright © 2014 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -63,6 +65,7 @@
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
+  #:use-module (gnu packages image)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages nss)
@@ -81,6 +84,7 @@
   #:use-module (gnu packages swig)
   #:use-module (gnu packages terminals)
   #:use-module (gnu packages textutils)
+  #:use-module (gnu packages tls)
   #:use-module (gnu packages vim)
   #:use-module (gnu packages w3m)
   #:use-module (gnu packages web)
@@ -584,6 +588,62 @@ reorganizing, and deleting disk partitions.  It uses libparted from the parted
 project to detect and manipulate partition tables.  Optional file system tools
 permit managing file systems not included in libparted.")
     ;; The home page says GPLv2, but the source code says GPLv2+.
+    (license license:gpl2+)))
+
+(define-public testdisk
+  (package
+    (name "testdisk")
+    (version "7.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://www.cgsecurity.org/testdisk-"
+                                  version ".tar.bz2"))
+              (sha256
+               (base32
+                "1zlh44w67py416hkvw6nrfmjickc2d43v51vcli5p374d5sw84ql"))))
+    (build-system gnu-build-system)
+    (inputs
+     (list ntfs-3g
+           `(,util-linux "lib")
+           openssl
+           ;; FIXME: add reiserfs.
+           zlib
+           e2fsprogs
+           libjpeg-turbo
+           ncurses))
+    (home-page "https://www.cgsecurity.org/wiki/TestDisk")
+    (synopsis "Data recovery tool")
+    (description "TestDisk is primarily designed to help recover lost
+partitions and/or make non-booting disks bootable again when these symptoms
+were caused by faulty software or human error (such as accidentally deleting a
+partition table).  TestDisk can:
+@enumerate
+@item Fix partition table, recover deleted partition
+@item Recover FAT32 boot sector from its backup
+@item Rebuild FAT12/FAT16/FAT32 boot sector
+@item Fix FAT tables
+@item Rebuild NTFS boot sector
+@item Recover NTFS boot sector from its backup
+@item Fix MFT using MFT mirror
+@item Locate ext2/ext3/ext4 Backup SuperBlock
+@item Un-delete files from FAT, exFAT, NTFS and ext2 file systems
+@item Copy files from deleted FAT, exFAT, NTFS and ext2/ext3/ext4 partitions.
+@end enumerate
+This package also includes the @command{photorec} command, described below.
+
+PhotoRec is file data recovery software designed to recover lost files
+including video, documents and archives from hard disks, CD-ROMs, and lost
+pictures (thus the Photo Recovery name) from digital camera memory.  PhotoRec
+ignores the file system and goes after the underlying data, so it will still
+work even if your media's file system has been severely damaged or
+reformatted.  It can recover lost files from at least:
+@enumerate
+@item FAT
+@item NTFS
+@item exFAT
+@item ext2/ext3/ext4 file system
+@item HFS+
+@end enumerate")
     (license license:gpl2+)))
 
 (define-public pydf

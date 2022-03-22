@@ -1519,6 +1519,8 @@ ALLOWED_HOSTS = [
           allowed-hosts))
 "]
 
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
 DEFAULT_FROM_EMAIL = '" #$default-from-email "'
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
 NOTIFICATION_FROM_EMAIL = DEFAULT_FROM_EMAIL
@@ -1780,6 +1782,12 @@ WSGIPassAuthorization On
          (home-directory "/var/empty")
          (shell (file-append shadow "/sbin/nologin")))))
 
+(define %mumi-log "/var/log/mumi.log")
+
+(define %mumi-mailer-log "/var/log/mumi.mailer.log")
+
+(define %mumi-worker-log "/var/log/mumi.worker.log")
+
 (define (mumi-shepherd-services config)
   (define environment
     #~(list "LC_ALL=en_US.utf8"
@@ -1797,7 +1805,7 @@ WSGIPassAuthorization On
                         ,@(if #$mailer? '() '("--disable-mailer")))
                       #:environment-variables #$environment
                       #:user "mumi" #:group "mumi"
-                      #:log-file "/var/log/mumi.log"))
+                      #:log-file #$%mumi-log))
             (stop #~(make-kill-destructor)))
            (shepherd-service
             (provision '(mumi-worker))
@@ -1807,7 +1815,7 @@ WSGIPassAuthorization On
                       '(#$(file-append mumi "/bin/mumi") "worker")
                       #:environment-variables #$environment
                       #:user "mumi" #:group "mumi"
-                      #:log-file "/var/log/mumi.worker.log"))
+                      #:log-file #$%mumi-worker-log))
             (stop #~(make-kill-destructor)))
            (shepherd-service
             (provision '(mumi-mailer))
@@ -1823,8 +1831,14 @@ WSGIPassAuthorization On
                               '()))
                       #:environment-variables #$environment
                       #:user "mumi" #:group "mumi"
-                      #:log-file "/var/log/mumi.mailer.log"))
+                      #:log-file #$%mumi-mailer-log))
             (stop #~(make-kill-destructor)))))))
+
+(define %mumi-log-rotations
+  (list (log-rotation
+         (files (list %mumi-log
+                      %mumi-mailer-log
+                      %mumi-worker-log)))))
 
 (define mumi-service-type
   (service-type
@@ -1835,7 +1849,9 @@ WSGIPassAuthorization On
           (service-extension account-service-type
                              (const %mumi-accounts))
           (service-extension shepherd-root-service-type
-                             mumi-shepherd-services)))
+                             mumi-shepherd-services)
+          (service-extension rottlog-service-type
+                             (const %mumi-log-rotations))))
    (description
     "Run Mumi, a Web interface to the Debbugs bug-tracking server.")
    (default-value

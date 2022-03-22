@@ -5,7 +5,7 @@
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2016 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2016, 2017, 2019 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Julien Lepiller <julien@lepiller.eu>
@@ -615,7 +615,7 @@ by using the poppler rendering engine.")
 (define-public zathura
   (package
     (name "zathura")
-    (version "0.4.8")
+    (version "0.4.9")
     (source (origin
               (method url-fetch)
               (uri
@@ -623,7 +623,7 @@ by using the poppler rendering engine.")
                               version ".tar.xz"))
               (sha256
                (base32
-                "1nr0ym1mi2afk4ycdf1ppmkcv7i7hyzwn4p3r4m0j2qm3nvaiami"))))
+                "0msy7s57mlx0wya99qpia4fpcy40pbj253kmx2y97nb0sqnc8c7w"))))
     (native-inputs `(("pkg-config" ,pkg-config)
                      ("gettext" ,gettext-minimal)
                      ("glib:bin" ,glib "bin")
@@ -632,7 +632,7 @@ by using the poppler rendering engine.")
                      ("python-sphinx" ,python-sphinx)
 
                      ;; For building icons.
-                     ("librsvg" ,librsvg)
+                     ("librsvg" ,(librsvg-for-system))
 
                      ;; For tests.
                      ("check" ,check)
@@ -899,45 +899,40 @@ using a stylus.")
 (define-public xournalpp
   (package
     (name "xournalpp")
-    (version "1.1.0")
+    (version "1.1.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/xournalpp/xournalpp")
-             (commit version)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ldf58l5sqy52x5dqfpdjdh7ldjilj9mw42jzsl5paxg0md2k0hl"))))
+        (base32 "16pf50x1ps8dcynnvw5lz7ggl0jg7qvzv6gkd30xg3hkcxff8ch3"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags (list "-DENABLE_CPPUNIT=ON") ;enable tests
-       #:imported-modules ((guix build glib-or-gtk-build-system)
+     (list
+      #:configure-flags #~(list "-DENABLE_CPPUNIT=ON") ;enable tests
+      #:imported-modules `((guix build glib-or-gtk-build-system)
                            ,@%cmake-build-system-modules)
-       #:modules (((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
+      #:modules '(((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
                   (guix build cmake-build-system)
                   (guix build utils))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-permissions-on-po-files
-           (lambda _
-             ;; Make sure 'msgmerge' can modify the PO files.
-             (for-each make-file-writable
-                       (find-files "." "\\.po$"))))
-         ;; Fix path to addr2line utility, which the crash reporter uses.
-         (add-after 'unpack 'fix-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "src/util/Stacktrace.cpp"
-               ;; Match only the commandline.
-               (("\"addr2line ")
-                (string-append "\"" (which "addr2line") " ")))))
-         (add-after 'install 'glib-or-gtk-wrap
-           (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Fix path to addr2line utility, which the crash reporter uses.
+          (add-after 'unpack 'fix-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/util/Stacktrace.cpp"
+                ;; Match only the commandline.
+                (("\"addr2line ")
+                 (string-append "\""
+                                (search-input-file inputs "/bin/addr2line")
+                                " ")))))
+          (add-after 'install 'glib-or-gtk-wrap
+            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
     (native-inputs
-     `(("cppunit" ,cppunit)
-       ("gettext" ,gettext-minimal)
-       ("help2man" ,help2man)
-       ("pkg-config" ,pkg-config)))
+     (list cppunit gettext-minimal help2man pkg-config))
     (inputs
      (list alsa-lib
            gtk+

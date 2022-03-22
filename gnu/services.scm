@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
@@ -735,7 +735,9 @@ directory."
   (service-type (name 'startup)
                 (extensions
                  (list (service-extension system-service-type hurd-rc-entry)))
-                (default-value %hurd-rc-script)))
+                (default-value %hurd-rc-script)
+                (description "This service creates an @file{rc} script in the
+system; that script is responsible for booting the Hurd.")))
 
 (define %hurd-startup-service
   ;; The service that produces the RC script.

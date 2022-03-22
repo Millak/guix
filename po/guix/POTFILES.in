@@ -66,6 +66,7 @@ guix/ci.scm
 guix/cve.scm
 guix/git-authenticate.scm
 guix/gnupg.scm
+guix/graph.scm
 guix/lint.scm
 guix/scripts/download.scm
 guix/scripts/package.scm

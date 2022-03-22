@@ -10,7 +10,7 @@
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2016 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2016 Jelle Licht <jlicht@fsfe.org>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Rene Saavedra <rennes@openmailbox.org>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2016 Clément Lassieur <clement@lassieur.org>
@@ -43,7 +43,7 @@
 ;;; Copyright © 2020, 2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2018, 2019, 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2020, 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
-;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020, 2021 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2020 Alexandru-Sergiu Marton <brown121407@posteo.ro>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -55,6 +55,7 @@
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2022 cage <cage-dev@twistfold.it>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4667,8 +4668,8 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
                    license:freebsd-doc)))) ; documentation
 
 (define-public guix-data-service
-  (let ((commit "f1d8d76c4d685bc5e938f495c762984fe2564371")
-        (revision "28"))
+  (let ((commit "27c34a9ca5ea010f207a4acad597ce98e84d3567")
+        (revision "30"))
     (package
       (name "guix-data-service")
       (version (string-append "0.0.1-" revision "." (string-take commit 7)))
@@ -4680,7 +4681,7 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "16ys402pvrzxm8kvhss4fhgfzbcxh70jndi50cpgz80qb510x3iq"))))
+                  "1jjdvld3gp711dp8qd4rnhicbl7322jjzx4plizkg89k7j4x0xhx"))))
       (build-system gnu-build-system)
       (arguments
        '(#:modules ((guix build utils)
@@ -4739,16 +4740,18 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
                  #t)))
            (delete 'strip))))           ; As the .go files aren't compatible
       (inputs
+       (list ephemeralpg
+             util-linux
+             postgresql-13
+             sqitch
+             bash-minimal))
+      (propagated-inputs
        (list guix
-             guile-fibers
+             guile-fibers-1.1
              guile-json-4
              guile-email
              guile-prometheus
-             guile-squee
-             ephemeralpg
-             util-linux
-             postgresql-13
-             sqitch))
+             guile-squee))
       (native-inputs
        (list (car (assoc-ref (package-native-inputs guix) "guile"))
              autoconf
@@ -7836,6 +7839,82 @@ solution for any project's interface needs:
 @end itemize\n")
     (license license:expat)))
 
+(define-public gmid
+  (package
+    (name "gmid")
+    (version "1.8.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/omar-polo/gmid/releases/download/"
+                    version "/gmid-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0m4809mwy888bqsacmyck68grqfvynq74kswm109al6wjbvd61bn"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:test-target "regress"
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'configure
+                 (lambda _
+                   (setenv "CC" #$(cc-for-target))
+                   (invoke "./configure"
+                           (string-append "PREFIX=" #$output)))))))
+    (native-inputs (list bison
+                         coreutils
+                         flex
+                         pkg-config
+                         procps
+                         which))
+    (inputs (list libevent libressl))
+    (home-page "https://git.omarpolo.com/gmid/about/")
+    (synopsis "Simple and secure Gemini server")
+    (description "@command{gmid} is a fast Gemini server written with security
+in mind.  It has features such as:
+@itemize
+@item reload the running configuration without interruption
+@item automatic redirect/error pages
+@item IRI support (RFC3987)
+@item reverse proxying
+@item CGI and FastCGI support
+@item virtual hosts
+@item location rules
+@item event-based asynchronous I/O model
+@item low memory footprint.
+@end itemize")
+    (license license:isc)))
+
+(define-public siege
+  (package
+    (name "siege")
+    (version "4.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "http://download.joedog.org/siege/siege-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "1a74py0ib1gr3znv9ah5acw67ngl08b14dbc90ww9clvgdr2ag0l"))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:configure-flags (list (string-append "--with-zlib="
+                                              (assoc-ref %build-inputs "zlib"))
+                               (string-append "--with-ssl="
+                                              (assoc-ref %build-inputs
+                                                         "openssl")))))
+    (inputs (list openssl zlib))
+    (home-page "https://www.joedog.org/siege-home/")
+    (synopsis "HTTP/FTP load tester and benchmarking utility")
+    (description
+     "Siege is a multi-threaded HTTP/FTP load tester and benchmarking utility.  It
+can stress test a single URL with a user defined number of simulated users, or
+it can read many URLs into memory and stress them simultaneously.  The program
+reports the total number of hits recorded, bytes transferred, response time,
+concurrency, and return status.")
+    ;; GPLv3+ with OpenSSL linking exception.
+    (license license:gpl3+)))
+
 (define-public gmnisrv
   (package
     (name "gmnisrv")
@@ -7888,6 +7967,7 @@ solution for any project's interface needs:
      `(("icu4c" ,icu4c)
        ("liblzma" ,xz)
        ("libuuid" ,util-linux "lib")
+       ("python" ,python-wrapper)       ;for libzim-compile-resources
        ("xapian" ,xapian)
        ("zstd" ,zstd "lib")))
     (native-inputs
@@ -7948,7 +8028,9 @@ for ZIM files.")
                       (sha256
                        (base32
                         "0r9rbk6v1wpld2ismfsk2lkhbyv3dkf0p03hkjivbj05qkfhvlbb"))))
-       ("pkg-config" ,pkg-config)))
+       ("pkg-config" ,pkg-config)
+       ;; for kiwix-compile-resources
+       ("python" ,python-wrapper)))
     (synopsis "Common code base for all Kiwix ports")
     (description "The Kiwix library provides the Kiwix software suite core.
 It contains the code shared by all Kiwix ports.")
@@ -8058,28 +8140,25 @@ tools:
     (license license:gpl3+)))
 
 (define-public uriparser
-  (let ((commit "25dddb16cf044a7df27884e7ad3911baaaca3d7c")
-        (revision "1"))
-    (package
-      (name "uriparser")
-      (version (git-version "0.9.4" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/uriparser/uriparser")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1ffzia679axcsccx2fxjpxhb0i5xc42zxn446x6c1170w6v69qf6"))))
-      (build-system cmake-build-system)
-      (native-inputs (list googletest doxygen graphviz))
-      (synopsis "Strictly RFC 3986 compliant URI parsing and handling library")
-      (description "uriparser is a strictly RFC 3986 compliant URI parsing and
+  (package
+    (name "uriparser")
+    (version "0.9.6")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/uriparser/uriparser"
+                                  "/releases/download/uriparser-"
+                                  version "/uriparser-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0i7nxgy36i8v81r213sbvmpxxq9qb4rhii9qbvl1k32jd1ka1252"))))
+    (build-system cmake-build-system)
+    (native-inputs (list googletest doxygen graphviz))
+    (synopsis "Strictly RFC 3986 compliant URI parsing and handling library")
+    (description "uriparser is a strictly RFC 3986 compliant URI parsing and
 handling library written in C89 (\"ANSI C\").  uriparser is fast and supports
 Unicode.")
-      (home-page "https://uriparser.github.io/")
-      (license license:bsd-3))))
+    (home-page "https://uriparser.github.io/")
+    (license license:bsd-3)))
 
 (define-public quark
   ;; No releases yet

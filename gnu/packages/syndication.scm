@@ -291,7 +291,11 @@ cards.")
            (assoc-ref gnu:%standard-phases 'install)))))
     (native-search-paths
      ;; Newsboat respects CURL_CA_BUNDLE.
-     (package-native-search-paths curl))
+     (list (search-path-specification
+            (variable "CURL_CA_BUNDLE")
+            (file-type 'regular)
+            (separator #f)                        ;single entry
+            (files '("etc/ssl/certs/ca-certificates.crt")))))
     (home-page "https://newsboat.org/")
     (synopsis "Text-mode RSS and Atom feed reader with podcast support")
     (description "Newsboat is a feed reader for @dfn{RSS} and @dfn{Atom}, XML
@@ -510,56 +514,6 @@ a simple interface that makes it easy to organize and browse feeds.")
 \"river of news\" or a public \"planet\" page.  It supports all common feed
 formats, including all versions of RSS and Atom.")
     (license license:gpl2+)))
-
-(define-public quiterss
-  (package
-    (name "quiterss")
-    (version "0.19.4")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/QuiteRSS/quiterss")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1cgvl67vhn5y7bj5gbjbgk26bhb0196bgrgsp3r5fmrislarj8s6"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  (substitute* (find-files "." "\\.cpp$")
-                    ;; Disable Google Analytics spyware by default,
-                    ;; removing completely is not trivial.
-                    (("settings\\.value\\(\"Settings/statisticsEnabled2\", true\\)")
-                     "settings.value(\"Settings/statisticsEnabled2\", false)")
-                    ;; Disable update check spyware by default, otherwise runs
-                    ;; at every startup, nasty. Not needed on GNU Guix as a
-                    ;; feature either way.
-                    (("settings\\.value\\(\"Settings/updateCheckEnabled\", true\\)")
-                     "settings.value(\"Settings/updateCheckEnabled\", false)"))
-                  #t))))
-    (build-system qt-build-system)
-    (arguments
-     `(#:tests? #f ;; no test suite
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (invoke "qmake" "CONFIG+=release"
-                     (string-append "PREFIX="
-                                    (assoc-ref outputs "out"))
-                     (string-append "QMAKE_LRELEASE="
-                                    (assoc-ref inputs "qttools")
-                                    "/bin/lrelease")))))))
-    (native-inputs
-     (list pkg-config qttools))
-    (inputs
-     (list qtwebkit qtbase-5 qtmultimedia phonon sqlite))
-    (home-page "https://quiterss.org/")
-    (synopsis "RSS/Atom news feeds reader written on Qt/C++")
-    (description "QuiteRSS is an RSS/Atom news feeds reader written on Qt/C++
-that aims to be quite fast and comfortable to its user.")
-    (license license:gpl3+)))
 
 (define-public gfeeds
   (package

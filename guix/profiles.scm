@@ -1,10 +1,10 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
-;;; Copyright © 2016, 2018, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016, 2017, 2018, 2019, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2017 Huang Ying <huang.ying.caritas@gmail.com>
 ;;; Copyright © 2017, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -33,7 +33,7 @@
   #:use-module ((guix utils) #:hide (package-name->name+version))
   #:use-module ((guix build utils)
                 #:select (package-name->name+version mkdir-p))
-  #:use-module ((guix diagnostics) #:select (&fix-hint))
+  #:use-module ((guix diagnostics) #:select (&fix-hint formatted-message))
   #:use-module (guix i18n)
   #:use-module (guix records)
   #:use-module (guix packages)
@@ -1738,8 +1738,8 @@ MANIFEST contains the \"man-db\" package.  Otherwise, return #f."
         (manual-database manifest)
         (return #f))))
 
-(define (texlive-configuration manifest)
-  "Return a derivation that builds a TeXlive configuration for the entries in
+(define (texlive-font-maps manifest)
+  "Return a derivation that builds the TeX Live font maps for the entries in
 MANIFEST."
   (define entry->texlive-input
     (match-lambda
@@ -1752,6 +1752,8 @@ MANIFEST."
     (module-ref (resolve-interface '(gnu packages tex)) 'texlive-bin))
   (define coreutils
     (module-ref (resolve-interface '(gnu packages base)) 'coreutils))
+  (define grep
+    (module-ref (resolve-interface '(gnu packages base)) 'grep))
   (define sed
     (module-ref (resolve-interface '(gnu packages base)) 'sed))
   (define updmap.cfg
@@ -1768,72 +1770,72 @@ MANIFEST."
           ;; Build a modifiable union of all texlive inputs.  We do this so
           ;; that TeX live can resolve the parent and grandparent directories
           ;; correctly.  There might be a more elegant way to accomplish this.
-          (union-build #$output
+          (union-build "/tmp/texlive"
                        '#$(append-map entry->texlive-input
                                       (manifest-entries manifest))
                        #:create-all-directories? #t
                        #:log-port (%make-void-port "w"))
-          (let ((texmf.cnf (string-append
-                            #$output
-                            "/share/texmf-dist/web2c/texmf.cnf")))
-            (when (file-exists? texmf.cnf)
-              (substitute* texmf.cnf
-                (("^TEXMFROOT = .*")
-                 (string-append "TEXMFROOT = " #$output "/share\n"))
-                (("^TEXMF = .*")
-                 "TEXMF = $TEXMFROOT/share/texmf-dist\n"))
 
-              ;; XXX: This is annoying, but it's necessary because texlive-bin
-              ;; does not provide wrapped executables.
-              (setenv "PATH"
-                      (string-append #$(file-append coreutils "/bin")
-                                     ":"
-                                     #$(file-append sed "/bin")))
-              (setenv "PERL5LIB" #$(file-append texlive-bin "/share/tlpkg"))
-              (setenv "TEXMF" (string-append #$output "/share/texmf-dist"))
+          ;; XXX: This is annoying, but it's necessary because texlive-bin
+          ;; does not provide wrapped executables.
+          (setenv "PATH"
+                  (string-append #$(file-append coreutils "/bin")
+                                 ":"
+                                 #$(file-append grep "/bin")
+                                 ":"
+                                 #$(file-append sed "/bin")))
+          (setenv "PERL5LIB" #$(file-append texlive-bin "/share/tlpkg"))
+          (setenv "GUIX_TEXMF" "/tmp/texlive/share/texmf-dist")
 
-              ;; Remove invalid maps from config file.
-              (let* ((web2c (string-append #$output "/share/texmf-config/web2c/"))
-                     (maproot (string-append #$output "/share/texmf-dist/fonts/map/"))
-                     (updmap.cfg (string-append web2c "updmap.cfg")))
-                (mkdir-p web2c)
+          ;; Remove invalid maps from config file.
+          (let* ((web2c (string-append #$output "/share/texmf-dist/web2c/"))
+                 (maproot (string-append #$output "/share/texmf-dist/fonts/map/"))
+                 (updmap.cfg (string-append web2c "updmap.cfg")))
+            (mkdir-p web2c)
+            (copy-file #$updmap.cfg updmap.cfg)
+            (make-file-writable updmap.cfg)
+            (let* ((port (open-pipe* OPEN_WRITE
+                                     #$(file-append texlive-bin "/bin/updmap-sys")
+                                     "--syncwithtrees"
+                                     "--nohash"
+                                     "--force"
+                                     (string-append "--cnffile=" updmap.cfg))))
+              (display "Y\n" port)
+              (when (not (zero? (status:exit-val (close-pipe port))))
+                (error "failed to filter updmap.cfg")))
 
-                ;; Some profiles may already have this file, which prevents us
-                ;; from copying it.  Since we need to generate it from scratch
-                ;; anyway, we delete it here.
-                (when (file-exists? updmap.cfg)
-                  (delete-file updmap.cfg))
-                (copy-file #$updmap.cfg updmap.cfg)
-                (make-file-writable updmap.cfg)
-                (let* ((port (open-pipe* OPEN_WRITE
-                                         #$(file-append texlive-bin "/bin/updmap-sys")
-                                         "--syncwithtrees"
-                                         "--nohash"
-                                         "--force"
-                                         (string-append "--cnffile=" web2c "updmap.cfg"))))
-                  (display "Y\n" port)
-                  (when (not (zero? (status:exit-val (close-pipe port))))
-                    (error "failed to filter updmap.cfg")))
+            ;; Generate font maps.
+            (invoke #$(file-append texlive-bin "/bin/updmap-sys")
+                    (string-append "--cnffile=" updmap.cfg)
+                    (string-append "--dvipdfmxoutputdir="
+                                   maproot "dvipdfmx/updmap")
+                    (string-append "--dvipsoutputdir="
+                                   maproot "dvips/updmap")
+                    (string-append "--pdftexoutputdir="
+                                   maproot "pdftex/updmap"))
 
-                ;; Generate font maps.
-                (invoke #$(file-append texlive-bin "/bin/updmap-sys")
-                        (string-append "--cnffile=" web2c "updmap.cfg")
-                        (string-append "--dvipdfmxoutputdir="
-                                       maproot "updmap/dvipdfmx/")
-                        (string-append "--dvipsoutputdir="
-                                       maproot "updmap/dvips/")
-                        (string-append "--pdftexoutputdir="
-                                       maproot "updmap/pdftex/")))))
-          #t)))
+            ;; Create ls-R file.  I know, that's not *just* for font maps, but
+            ;; we've generated new files, so there's no point in running it
+            ;; any earlier.  The ls-R file must act on a full TeX Live tree,
+            ;; but we have two: the one in /tmp containing all packages and
+            ;; the one in #$output containing the generated font maps.  To
+            ;; avoid having to merge ls-R files, we copy the generated stuff
+            ;; to /tmp and run mktexlsr only once.
+            (let ((a (string-append #$output "/share/texmf-dist"))
+                  (b "/tmp/texlive/share/texmf-dist")
+                  (mktexlsr #$(file-append texlive-bin "/bin/mktexlsr")))
+              (copy-recursively a b)
+              (invoke mktexlsr b)
+              (install-file (string-append b "/ls-R") a))))))
 
   (mlet %store-monad ((texlive-base (manifest-lookup-package manifest "texlive-base")))
     (if texlive-base
-        (gexp->derivation "texlive-configuration" build
+        (gexp->derivation "texlive-font-maps" build
                           #:substitutable? #f
                           #:local-build? #t
                           #:properties
                           `((type . profile-hook)
-                            (hook . texlive-configuration)))
+                            (hook . texlive-font-maps)))
         (return #f))))
 
 (define %default-profile-hooks
@@ -1849,6 +1851,7 @@ MANIFEST."
         glib-schemas
         gtk-icon-themes
         gtk-im-modules
+        texlive-font-maps
         xdg-desktop-database
         xdg-mime-database))
 
@@ -1857,6 +1860,7 @@ MANIFEST."
                              (name "profile")
                              (hooks %default-profile-hooks)
                              (locales? #t)
+                             (allow-unsupported-packages? #f)
                              (allow-collisions? #f)
                              (relative-symlinks? #f)
                              system target)
@@ -1865,7 +1869,9 @@ the given MANIFEST.  The profile includes additional derivations returned by
 the monadic procedures listed in HOOKS--such as an Info 'dir' file, etc.
 Unless ALLOW-COLLISIONS? is true, a '&profile-collision-error' is raised if
 entries in MANIFEST collide (for instance if there are two same-name packages
-with a different version number.)
+with a different version number.)  Unless ALLOW-UNSUPPORTED-PACKAGES? is true
+or TARGET is set, raise an error if MANIFEST contains a package that does not
+support SYSTEM.
 
 When LOCALES? is true, the build is performed under a UTF-8 locale; this adds
 a dependency on the 'glibc-utf8-locales' package.
@@ -1875,12 +1881,27 @@ This is one of the things to do for the result to be relocatable.
 
 When TARGET is true, it must be a GNU triplet, and the packages in MANIFEST
 are cross-built for TARGET."
+  (define (check-supported-packages system)
+    ;; Raise an error if a package in MANIFEST does not support SYSTEM.
+    (map-manifest-entries
+     (lambda (entry)
+
+       (match (manifest-entry-item entry)
+         ((? package? package)
+          (unless (supported-package? package system)
+            (raise (formatted-message (G_ "package ~a does not support ~a")
+                                      (package-full-name package) system))))
+         (_ #t)))
+     manifest))
+
   (mlet* %store-monad ((system (if system
                                    (return system)
                                    (current-system)))
                        (target (if target
                                    (return target)
                                    (current-target-system)))
+                       (ok? -> (or allow-unsupported-packages? target
+                                   (check-supported-packages system)))
                        (ok?    (if allow-collisions?
                                    (return #t)
                                    (check-for-collisions manifest system
@@ -2037,9 +2058,14 @@ paths."
   (make-regexp (string-append "^" (regexp-quote (basename profile))
                               "-([0-9]+)")))
 
-(define (generation-number profile)
-  "Return PROFILE's number or 0.  An absolute file name must be used."
-  (or (and=> (false-if-exception (regexp-exec (profile-regexp profile)
+(define* (generation-number profile
+                            #:optional (base-profile profile))
+  "Return PROFILE's number or 0.  An absolute file name must be used.
+
+Optionally, if BASE-PROFILE is provided, use it instead of PROFILE to
+construct the regexp matching generations.  This is useful in special cases
+like: (generation-number \"/run/current-system\" %system-profile)."
+  (or (and=> (false-if-exception (regexp-exec (profile-regexp base-profile)
                                               (basename (readlink profile))))
              (compose string->number (cut match:substring <> 1)))
       0))

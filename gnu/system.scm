@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2016 Chris Marusich <cmmarusich@gmail.com>
@@ -9,9 +9,9 @@
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Florian Pelz <pelzflorian@pelzflorian.de>
-;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <jannek@gnu.org>
-;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 raid5atemyhomework <raid5atemyhomework@protonmail.com>
 ;;;
@@ -161,6 +161,8 @@
             boot-parameters-kernel-arguments
             boot-parameters-initrd
             boot-parameters-multiboot-modules
+            boot-parameters-version
+            %boot-parameters-version
             read-boot-parameters
             read-boot-parameters-file
             boot-parameters->menu-entry
@@ -185,16 +187,23 @@
 ;;;
 ;;; Code:
 
-(define (bootable-kernel-arguments system root-device)
-  "Return a list of kernel arguments (gexps) to boot SYSTEM from ROOT-DEVICE."
-  (list (string-append "--root="
+(define* (bootable-kernel-arguments system root-device version)
+  "Return a list of kernel arguments (gexps) to boot SYSTEM from ROOT-DEVICE.
+VERSION is the target version of the boot-parameters record."
+  ;; If the version is newer than 0, we use the new style initrd parameter
+  ;; names, otherwise we use the legacy ones.  This is to maintain backward
+  ;; compatibility when producing bootloader configurations for older
+  ;; generations.
+  (define version>0? (> version 0))
+  (list (string-append (if version>0? "root=" "--root=")
                        ;; Note: Always use the DCE format because that's what
-                       ;; (gnu build linux-boot) expects for the '--root'
+                       ;; (gnu build linux-boot) expects for the 'root'
                        ;; kernel command-line option.
                        (file-system-device->string root-device
                                                    #:uuid-type 'dce))
-        #~(string-append "--system=" #$system)
-        #~(string-append "--load=" #$system "/boot")))
+        #~(string-append (if #$version>0? "gnu.system=" "--system=") #$system)
+        #~(string-append (if #$version>0? "gnu.load=" "--load=")
+                         #$system "/boot")))
 
 ;; System-wide configuration.
 ;; TODO: Add per-field docstrings/stexi.
@@ -284,16 +293,25 @@
                             source-properties->location))
             (innate)))
 
-(define (operating-system-kernel-arguments os root-device)
-  "Return all the kernel arguments, including the ones not specified
-directly by the user."
-  (append (bootable-kernel-arguments os root-device)
+(define* (operating-system-kernel-arguments
+          os root-device #:key (version %boot-parameters-version))
+  "Return all the kernel arguments, including the ones not specified directly
+by the user.  VERSION should match that of the target <boot-parameter> record
+object that will contain the kernel parameters."
+  (append (bootable-kernel-arguments os root-device version)
           (operating-system-user-kernel-arguments os)))
 
 
 ;;;
 ;;; Boot parameters
 ;;;
+
+;;; Version 1 was introduced early 2022 to mark the departure from long option
+;;; names such as '--load' to the more conventional initrd option names like
+;;; 'gnu.load'.
+;;;
+;;; When bumping the boot-parameters version, increment it by one (1).
+(define %boot-parameters-version 1)
 
 (define-record-type* <boot-parameters>
   boot-parameters make-boot-parameters boot-parameters?
@@ -322,7 +340,9 @@ directly by the user."
   (kernel           boot-parameters-kernel)
   (kernel-arguments boot-parameters-kernel-arguments)
   (initrd           boot-parameters-initrd)
-  (multiboot-modules boot-parameters-multiboot-modules))
+  (multiboot-modules boot-parameters-multiboot-modules)
+  (version          boot-parameters-version  ;positive integer
+                    (default %boot-parameters-version)))
 
 (define (ensure-not-/dev device)
   "If DEVICE starts with a slash, return #f.  This is meant to filter out
@@ -334,7 +354,7 @@ file system labels."
 
 (define (read-boot-parameters port)
   "Read boot parameters from PORT and return the corresponding
-<boot-parameters> object or #f if the format is unrecognized."
+<boot-parameters> object.  Raise an error if the format is unrecognized."
   (define device-sexp->device
     (match-lambda
       (('uuid (? symbol? type) (? bytevector? bv))
@@ -359,12 +379,18 @@ file system labels."
        (warning (G_ "unrecognized uuid ~a at '~a'~%") x (port-filename port))
        #f)))
 
+  ;; New versions are not backward-compatible, so only accept past and current
+  ;; versions, not future ones.
+  (define (version? n)
+    (member n (iota (1+ %boot-parameters-version))))
+
   (match (read port)
-    (('boot-parameters ('version 0)
+    (('boot-parameters ('version (? version? version))
                        ('label label) ('root-device root)
                        ('kernel kernel)
                        rest ...)
      (boot-parameters
+      (version version)
       (label label)
       (root-device (device-sexp->device root))
 
@@ -455,9 +481,20 @@ file system labels."
          (_                                       ;the old format
           "/")))))
     (x                                            ;unsupported format
-     (warning (G_ "unrecognized boot parameters at '~a'~%")
-              (port-filename port))
-     #f)))
+     (raise
+      (make-compound-condition
+       (formatted-message
+        (G_ "unrecognized boot parameters at '~a'~%")
+        (port-filename port))
+       (condition
+        (&fix-hint (hint (format #f (G_ "This probably means that this version
+of Guix is older than the one that created @file{~a}.  To address this, you
+need to update Guix:
+
+@example
+guix pull
+@end example")
+                                 (port-filename port))))))))))
 
 (define (read-boot-parameters-file system)
   "Read boot parameters from SYSTEM's (system or generation) \"parameters\"
@@ -466,10 +503,11 @@ format is unrecognized.
 The object has its kernel-arguments extended in order to make it bootable."
   (let* ((file (string-append system "/parameters"))
          (params (call-with-input-file file read-boot-parameters))
-         (root (boot-parameters-root-device params)))
+         (root (boot-parameters-root-device params))
+         (version (boot-parameters-version params)))
     (boot-parameters
      (inherit params)
-     (kernel-arguments (append (bootable-kernel-arguments system root)
+     (kernel-arguments (append (bootable-kernel-arguments system root version)
                                (boot-parameters-kernel-arguments params))))))
 
 (define (boot-parameters->menu-entry conf)
@@ -631,6 +669,7 @@ See \"(guix) operating-system Reference\" for more details.~%")))
    ((string-prefix? "arm" target) "zImage")
    ((string-prefix? "mips" target) "vmlinuz")
    ((string-prefix? "aarch64" target) "Image")
+   ((string-prefix? "riscv64" target) "Image")
    (else "bzImage")))
 
 (define (operating-system-kernel-file os)
@@ -798,7 +837,7 @@ of PROVENANCE-SERVICE-TYPE to its services."
 (define %base-packages-utils
   ;; Default set of  utilities packages.
  (cons* procps psmisc which
-        (@ (gnu packages admin) shadow) ;for 'passwd'
+        (@ (gnu packages admin) shadow-with-man-pages) ;for 'passwd'
 
         guile-3.0-latest
 
@@ -1440,8 +1479,11 @@ a list of <menu-entry>, to populate the \"old entries\" menu."
 (define* (operating-system-boot-parameters os root-device
                                            #:key system-kernel-arguments?)
   "Return a monadic <boot-parameters> record that describes the boot
-parameters of OS.  When SYSTEM-KERNEL-ARGUMENTS? is true, add kernel arguments
-such as '--root' and '--load' to <boot-parameters>."
+parameters of OS.  When SYSTEM-KERNEL-ARGUMENTS? is true, add the kernel
+arguments 'root', 'gnu.load' and 'gnu.system' to <boot-parameters>.  The
+SYSTEM-KERNEL-ARGUMENTS? should only be used in necessity, as the 'gnu.load'
+and 'gnu.system' values are self-referential (they refer to the system), thus
+susceptible to introduce a cyclic dependency."
   (let* ((initrd          (and (not (operating-system-hurd os))
                                (operating-system-initrd-file os)))
          (store           (operating-system-store-file-system os))
@@ -1482,25 +1524,16 @@ such as '--root' and '--load' to <boot-parameters>."
     (_
      device)))
 
-(define* (operating-system-boot-parameters-file os
-                                                #:key system-kernel-arguments?)
-   "Return a file that describes the boot parameters of OS.  The primary use of
-this file is the reconstruction of GRUB menu entries for old configurations.
-
-When SYSTEM-KERNEL-ARGUMENTS? is true, add kernel arguments such as '--root'
-and '--load' to the returned file (since the returned file is then usually
-stored into the content-addressed \"system\" directory, it's usually not a
-good idea to give it because the content hash would change by the content hash
-being stored into the \"parameters\" file)."
+(define* (operating-system-boot-parameters-file os)
+   "Return a file that describes the boot parameters of OS.  The primary use
+of this file is the reconstruction of GRUB menu entries for old
+configurations."
    (let* ((root   (operating-system-root-file-system os))
           (device (file-system-device root))
-          (params (operating-system-boot-parameters
-                   os device
-                   #:system-kernel-arguments?
-                   system-kernel-arguments?)))
+          (params (operating-system-boot-parameters os device)))
      (scheme-file "parameters"
                   #~(boot-parameters
-                     (version 0)
+                     (version #$(boot-parameters-version params))
                      (label #$(boot-parameters-label params))
                      (root-device
                       #$(device->sexp

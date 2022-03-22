@@ -1,0 +1,83 @@
+https://github.com/MariaDB/server/commit/f502ccbcb5dfce29067434885a23db8d1bd5f134.patch
+This was apparently merged in 10.8.2.
+
+From f502ccbcb5dfce29067434885a23db8d1bd5f134 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Vicen=C8=9Biu=20Ciorbaru?= <cvicentiu@gmail.com>
+Date: Fri, 15 Oct 2021 16:51:05 +0300
+Subject: [PATCH] Link with libatomic to enable C11 atomics support
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Some architectures (mips) require libatomic to support proper
+atomic operations. Check first if support is available without
+linking, otherwise use the library.
+
+Contributors:
+James Cowgill <jcowgill@debian.org>
+Jessica Clarke <jrtc27@debian.org>
+Vicențiu Ciorbaru <vicentiu@mariadb.org>
+---
+ configure.cmake      | 20 +++++++++++++++++++-
+ mysys/CMakeLists.txt |  4 ++++
+ sql/CMakeLists.txt   |  1 -
+ 3 files changed, 23 insertions(+), 2 deletions(-)
+
+diff --git a/configure.cmake b/configure.cmake
+index 7a1369d77703f..db8742bb93b5a 100644
+--- a/configure.cmake
++++ b/configure.cmake
+@@ -895,7 +895,25 @@ int main()
+   long long int *ptr= &var;
+   return (int)__atomic_load_n(ptr, __ATOMIC_SEQ_CST);
+ }"
+-HAVE_GCC_C11_ATOMICS)
++HAVE_GCC_C11_ATOMICS_WITHOUT_LIBATOMIC)
++IF (HAVE_GCC_C11_ATOMICS_WITHOUT_LIBATOMIC)
++  SET(HAVE_GCC_C11_ATOMICS True)
++ELSE()
++  SET(OLD_CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES})
++  LIST(APPEND CMAKE_REQUIRED_LIBRARIES "atomic")
++  CHECK_CXX_SOURCE_COMPILES("
++  int main()
++  {
++    long long int var= 1;
++    long long int *ptr= &var;
++    return (int)__atomic_load_n(ptr, __ATOMIC_SEQ_CST);
++  }"
++  HAVE_GCC_C11_ATOMICS_WITH_LIBATOMIC)
++  IF(HAVE_GCC_C11_ATOMICS_WITH_LIBATOMIC)
++    SET(HAVE_GCC_C11_ATOMICS True)
++  ENDIF()
++  SET(CMAKE_REQUIRED_LIBRARIES ${OLD_CMAKE_REQUIRED_LIBRARIES})
++ENDIF()
+ 
+ IF(WITH_VALGRIND)
+   SET(HAVE_valgrind 1)
+diff --git a/mysys/CMakeLists.txt b/mysys/CMakeLists.txt
+index f97e3b4d3904c..09d3f726ffc74 100644
+--- a/mysys/CMakeLists.txt
++++ b/mysys/CMakeLists.txt
+@@ -78,6 +78,10 @@ TARGET_LINK_LIBRARIES(mysys dbug strings ${ZLIB_LIBRARY}
+  ${LIBNSL} ${LIBM} ${LIBRT} ${CMAKE_DL_LIBS} ${LIBSOCKET} ${LIBEXECINFO} ${CRC32_LIBRARY})
+ DTRACE_INSTRUMENT(mysys)
+ 
++IF (HAVE_GCC_C11_ATOMICS_WITH_LIBATOMIC)
++  TARGET_LINK_LIBRARIES(mysys atomic)
++ENDIF()
++
+ IF(HAVE_BFD_H)
+   TARGET_LINK_LIBRARIES(mysys bfd)  
+ ENDIF(HAVE_BFD_H)
+diff --git a/sql/CMakeLists.txt b/sql/CMakeLists.txt
+index 5f5d7daf1a5bc..f574f1f20295d 100644
+--- a/sql/CMakeLists.txt
++++ b/sql/CMakeLists.txt
+@@ -307,7 +307,6 @@ IF(WITH_MYSQLD_LDFLAGS)
+      "${MYSQLD_LINK_FLAGS} ${WITH_MYSQLD_LDFLAGS}")
+ ENDIF()
+ 
+-
+ FIND_PACKAGE(BISON 2.0)
+ 
+ 

@@ -8,7 +8,7 @@
 ;;; Copyright © 2019, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 malte Frank Gerdes <malte.f.gerdes@gmail.com>
-;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
@@ -31,22 +31,33 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
   #:use-module (gnu packages)
+  #:use-module (gnu packages autotools)
+  #:use-module (gnu packages base)
+  #:use-module (gnu packages c)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages kde-frameworks)
+  #:use-module (gnu packages databases)
+  #:use-module (gnu packages docbook)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages lua)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages opencl)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages qt)
+  #:use-module (gnu packages xml)
   #:use-module (ice-9 match))
 
 (define-public fio
@@ -383,3 +394,178 @@ and options.  With careful benchmarking, different hardware can be compared.")
         devices.  It only measures the peak metrics that can be achieved using
         vector operations and does not represent a real-world use case.")
         (license license:unlicense))))
+
+(define-public kdiskmark
+  (package
+    (name "kdiskmark")
+    (version "2.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/JonMagon/KDiskMark")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1l4sw05yx70pcnaa64arjc414mgvyz05pn3gz9nc9hga8v2d3rzn"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      ;; Drop runtime dependency on KDE's KFAuth.
+      #~(list "-DPERFORM_PAGECACHE_CLEARING_USING_KF5AUTH=no")
+      #:tests? #f                       ;no test suite
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/benchmark.cpp"
+                (("\"fio\"")
+                 (format #f "~s" (search-input-file inputs "bin/fio")))))))))
+    (native-inputs (list extra-cmake-modules qttools))
+    (inputs (list fio qtbase-5))
+    (home-page "https://github.com/JonMagon/KDiskMark")
+    (synopsis "Simple disk benchmark tool")
+    (description "KDiskMark is an HDD and SSD benchmark tool.  KDiskMark
+abstracts away the complexity of the Flexible I/O Tester (@command{fio})
+command via a convenient graphical user interface (GUI) and handles its output
+to provide an easy to view and interpret benchmark result.  The application is
+written in C++ with Qt and doesn't have any runtime KDE dependencies.  Among
+its features are:
+@itemize
+@item Configurable block size, queues, and threads count for each test
+@item Many languages support
+@item Report generation.
+@end itemize")
+    (license license:gpl3+)))
+
+(define-public sysbench
+  (package
+    (name "sysbench")
+    (version "1.0.20")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/akopytov/sysbench")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (modules '((guix build utils)))
+              (snippet '(begin
+                          ;; Ensure no bundled libraries get used.
+                          (delete-file-recursively "third_party")
+                          (substitute* "configure.ac"
+                            (("^third_party/.*")
+                             ""))
+                          (substitute* "Makefile.am"
+                            ((".*(LUAJIT|CK)_DIR =.*")
+                             ""))))
+              (sha256
+               (base32
+                "1sanvl2a52ff4shj62nw395zzgdgywplqvwip74ky8q7s6qjf5qy"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "--with-pgsql"
+                                ;; Explicitly specify the library directory of
+                                ;; MySQL, otherwise `mysql_config` gets
+                                ;; consulted and adds unnecessary link
+                                ;; directives.
+                                (string-append "--with-mysql-libs="
+                                               #$(this-package-input "mysql")
+                                               "/lib")
+                                "--with-system-luajit"
+                                "--with-system-ck"
+                                ;; If we let the build tool select the most
+                                ;; optimal compiler architecture flag, the
+                                ;; build is not reproducible.
+                                "--without-gcc-arch")
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'patch-test-runner
+                     (lambda _
+                       (substitute* "tests/test_run.sh"
+                         (("/bin/bash")
+                          (which "bash"))
+                         ;; Do not attempt to invoke the cram command via
+                         ;; Python, as on Guix it is a shell script (wrapper).
+                         (("\\$\\(command -v cram\\)")
+                          "-m cram"))))
+                   (add-after 'unpack 'disable-test-installation
+                     (lambda _
+                       (substitute* "tests/Makefile.am"
+                         (("install-data-local")
+                          "do-not-install-data-local")
+                         (("^test_SCRIPTS.*")
+                          ""))))
+                   (add-after 'unpack 'fix-docbook
+                     (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                       (substitute* "m4/ax_check_docbook.m4"
+                         (("DOCBOOK_ROOT=.*" all)
+                          (string-append
+                           all "XML_CATALOG="
+                           (search-input-file (or native-inputs inputs)
+                                              "xml/dtd/docbook/catalog.xml")
+                           "\n")))
+                       (substitute* "doc/xsl/xhtml.xsl"
+                         (("http://docbook.sourceforge.net/release/xsl\
+/current/xhtml/docbook.xsl")
+                          (search-input-file
+                           (or native-inputs inputs)
+                           (string-append "xml/xsl/docbook-xsl-"
+                                          #$(package-version docbook-xsl)
+                                          "/xhtml/docbook.xsl"))))
+                       (substitute* "doc/xsl/xhtml-chunk.xsl"
+                         (("http://docbook.sourceforge.net/release/xsl\
+/current/xhtml/chunk.xsl")
+                          (search-input-file
+                           (or native-inputs inputs)
+                           (string-append "xml/xsl/docbook-xsl-"
+                                          #$(package-version docbook-xsl)
+                                          "/xhtml/chunk.xsl")))))))))
+    (native-inputs (list autoconf
+                         automake
+                         libtool
+                         pkg-config
+                         python-cram
+                         python-wrapper
+                         which
+                         ;; For documentation
+                         libxml2        ;for XML_CATALOG_FILES
+                         libxslt
+                         docbook-xml
+                         docbook-xsl))
+    (inputs (list ck libaio luajit mysql postgresql))
+    (home-page "https://github.com/akopytov/sysbench/")
+    (synopsis "Scriptable database and system performance benchmark")
+    (description "@command{sysbench} is a scriptable multi-threaded benchmark
+tool based on LuaJIT.  It is most frequently used for database benchmarks, but
+can also be used to create arbitrarily complex workloads that do not involve a
+database server.  @command{sysbench} comes with the following bundled
+benchmarks:
+@table @file
+@item oltp_*.lua
+A collection of OLTP-like database benchmarks.
+@item fileio
+A filesystem-level benchmark.
+@item cpu
+A simple CPU benchmark.
+@item memory
+A memory access benchmark.
+@item threads
+A thread-based scheduler benchmark.
+@item mutex
+A POSIX mutex benchmark.
+@end table
+It includes features such as:
+@itemize
+@item
+Extensive statistics about rate and latency is available, including latency
+percentiles and histograms.
+@item
+Low overhead even with thousands of concurrent threads.  @command{sysbench} is
+capable of generating and tracking hundreds of millions of events per second.
+@item
+New benchmarks can be easily created by implementing pre-defined hooks in
+user-provided Lua scripts.
+@item
+@end itemize")
+    (license license:gpl2+)))

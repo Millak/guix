@@ -9,7 +9,7 @@
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Katherine Cox-Buday <cox.katherine.e@gmail.com>
-;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020, 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 David Dashyan <mail@davie.li>
 ;;;
@@ -38,6 +38,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
+  #:use-module (guix store)
   #:use-module (gnu packages)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bootstrap)
@@ -895,3 +896,119 @@ Service (S3) protocol for object storage.")
 Telemetry Transport (MQTT) publish-subscribe messaging protocol.")
     (home-page "https://github.com/awslabs/aws-c-mqtt")
     (license license:asl2.0)))
+
+;;; Factored out of the ck package so that it can be adjusted and called on
+;;; the host side easily, without impacting the package definition.
+(define (gnu-triplet->ck-machine target)
+  (letrec-syntax
+      ((matches (syntax-rules (=>)
+                  ((_ (target-prefix => machine) rest ...)
+                   (if (string-prefix? target-prefix target)
+                       machine
+                       (matches rest ...)))
+                  ((_)
+                   (error "unsupported target" target)))))
+    ;; This basically reproduces the logic handling the
+    ;; PLATFORM variable in the configure script of ck.
+    (matches ("x86_64"      => "x86_64")
+             ("i586"        => "x86")
+             ("i686"        => "x86")
+             ("aarch64"     => "aarch64")
+             ("arm"         => "arm")
+             ("ppc64"       => "ppc64")
+             ("ppc"         => "ppc")
+             ("s390x"       => "s390x")
+             ("sparc64"     => "sparcv9"))))
+
+(define-public ck
+  (package
+    (name "ck")
+    (version "0.7.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/concurrencykit/ck")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "020yzfpvymdc8lc44znlnxmxb8mvp42g4nb4p8k814klazqvwh0x"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            ;; ck uses a custom configure script that stumbles on
+            ;; '--enable-fast-install', among other things.
+            (lambda* (#:key parallel-build? #:allow-other-keys)
+              (define target-machine #$(and=> (%current-target-system)
+                                              gnu-triplet->ck-machine))
+              (when target-machine
+                ;; The configure script doesn't currently work for
+                ;; cross-compiling (see:
+                ;; https://github.com/concurrencykit/ck/issues/191).
+                (error "ck cannot currently be cross-compiled"))
+              ;; The custom configure script doesn't make cross-compilation
+              ;; adjustments itself, so manually set the archiver, compiler
+              ;; and linker.
+              (setenv "AR" #$(ar-for-target))
+              (setenv "CC" #$(cc-for-target))
+              (setenv "LD" #$(ld-for-target))
+              (apply invoke "./configure"
+                     `(,@(if target-machine
+                             (list (string-append "--profile=" target-machine))
+                             '())
+                       ,(string-append "--prefix=" #$output)
+                       ,(string-append "--mandir=" #$output "/share/man")
+                       ,(string-append "--cores="
+                                       (if parallel-build?
+                                           (number->string (parallel-job-count))
+                                           "1")))))))))
+    (home-page "https://github.com/concurrencykit/ck")
+    (synopsis "C library for concurrent systems")
+    (description "Concurrency Kit (@code{ck}) provides concurrency primitives,
+safe memory reclamation mechanisms and non-blocking (including lock-free) data
+structures designed to aid in the research, design and implementation of high
+performance concurrent systems developed in C99+.")
+    (license (list license:bsd-2        ;everything except...
+                   license:asl2.0))))   ;src/ck_hp.c
+
+(define-public utf8-h
+  ;; The latest tag is used as there is no release.
+  (let ((commit "500d4ea9f4c3449e5243c088d8af8700f7189734")
+        (revision "0"))
+    (package
+      (name "utf8-h")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/sheredom/utf8.h")
+                      (commit commit)))
+                (file-name (git-file-name "utf8.h" version))
+                (sha256
+                 (base32
+                  "0x9f7ivww8c7cigf4ck0hfx2bm79qgx6q4ccwzqbzkrmcrl9shfb"))))
+      (build-system cmake-build-system)
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (delete 'build)
+           (delete 'configure)
+           (replace 'check
+             (lambda* (#:key tests? #:allow-other-keys)
+               (when tests?
+                 (with-directory-excursion "test"
+                   (invoke "cmake" ".")
+                   (invoke "make")))))
+           (replace 'install
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((out (assoc-ref outputs "out")))
+                 (install-file "utf8.h" (string-append out "/include"))))))))
+      (home-page "https://github.com/sheredom/utf8.h")
+      (synopsis "Single header UTF-8 string functions for C and C++")
+      (description "A simple one header solution to supporting UTF-8 strings in
+C and C++.  The functions it provides are like those from the C header
+string.h, but with a utf8* prefix instead of the str* prefix.")
+      (license license:unlicense))))

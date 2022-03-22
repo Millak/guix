@@ -48,6 +48,7 @@
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Alice Brenon <alice.brenon@ens-lyon.fr>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -268,27 +269,34 @@ for adding, removing and dropping callbacks.")
                 (find-files "." "_.*\\.pyx$")))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; This tests requires the 'proxy.py' module, not yet
-               ;; packaged.
-               (delete-file "tests/test_proxy_functional.py")
-               (invoke "pytest" "-vv"
-                       ;; Disable loading the aiohttp coverage plugin
-                       ;; to avoid a circular dependency (code coverage
-                       ;; is not very interesting to us anyway).
-                       "-o" "addopts=''" "--ignore=aiohttp"
-                       "-n" (number->string (parallel-job-count))
-                       "-k" (string-append
-                             ;; This test probably requires to be run with the
-                             ;; library loaded from the the build directory.
-                             "not test_c_parser_loaded and "
-                             ;; Disable the following tests as they require
-                             ;; networking.
-                             "not TestDeflateBuffer and "
-                             "not test_client_session_timeout_zero and "
-                             "not test_empty_body and "
-                             "not test_mark_formdata_as_processed[pyloop] and "
-                             "not test_receive_runtime_err[pyloop]"))))))))
+             (let ((skipped-tests
+                     (string-append
+                       ;; This test probably requires to be run with the
+                       ;; library loaded from the the build directory.
+                       "not test_c_parser_loaded and "
+                       ;; Disable the following tests as they require
+                       ;; networking.
+                       "not TestDeflateBuffer and "
+                       "not test_client_session_timeout_zero and "
+                       "not test_empty_body and "
+                       "not test_mark_formdata_as_processed[pyloop] and "
+                       "not test_receive_runtime_err[pyloop]")))
+               (when tests?
+                 ;; This tests requires the 'proxy.py' module, not yet
+                 ;; packaged.
+                 (delete-file "tests/test_proxy_functional.py")
+                 ;; Sometimes tests fail when run in parallel.
+                 (or
+                   (invoke "pytest" "-vv"
+                           ;; Disable loading the aiohttp coverage plugin
+                           ;; to avoid a circular dependency (code coverage
+                           ;; is not very interesting to us anyway).
+                           "-o" "addopts=''" "--ignore=aiohttp"
+                           "-n" (number->string (parallel-job-count))
+                           "-k" skipped-tests)
+                   (invoke "pytest" "-vv"
+                           "-o" "addopts=''" "--ignore=aiohttp"
+                           "-k" skipped-tests)))))))))
     (propagated-inputs
      (list python-aiodns
            python-aiosignal
@@ -741,21 +749,27 @@ other HTTP libraries.")
 (define-public httpie
   (package
     (name "httpie")
-    (version "2.3.0")
+    (version "3.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "httpie" version))
        (sha256
         (base32
-         "15ngl3yc186gkgqdx8iav9bpj8gxjpzz26y32z92jwyhj4cmfh6m"))))
+         "1npyfvrq0l56bil8rnpj78mav378mxx4zcqzq1jjx4aap1020jif"))))
     (build-system python-build-system)
     (arguments
      ;; The tests attempt to access external web servers, so we cannot run them.
      '(#:tests? #f))
     (propagated-inputs
-     (list python-colorama python-pygments python-requests
-           python-requests-toolbelt))
+     (list python-colorama
+           python-pygments
+           python-requests
+           python-requests-toolbelt
+           python-pysocks
+           python-charset-normalizer
+           python-defusedxml
+           python-multidict))
     (home-page "https://httpie.io")
     (synopsis "cURL-like tool for humans")
     (description
@@ -1106,21 +1120,15 @@ support for merging, minifying and compiling CSS and Javascript files.")
 (define-public python-flask-babel
   (package
     (name "python-flask-babel")
-    (version "1.0.0")
+    (version "2.0.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "Flask-Babel" version))
         (sha256
           (base32
-            "0gmb165vkwv5v7dxsxa2i3zhafns0fh938m2zdcrv4d8z5l099yn"))))
+            "0z95v77vib5il8hphyh16n7i15a2gmc06i615vm346ifvdfg9ypr"))))
     (build-system python-build-system)
-    (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _
-                      (with-directory-excursion "tests"
-                        (invoke "python" "tests.py")))))))
     (propagated-inputs
      (list python-flask python-babel python-jinja2 python-pytz))
     (home-page "https://github.com/python-babel/flask-babel")
@@ -1273,13 +1281,13 @@ and written in Python.")
 (define-public python-html5-parser
   (package
     (name "python-html5-parser")
-    (version "0.4.9")
+    (version "0.4.10")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "html5-parser" version))
               (sha256
                (base32
-                "13yl3vnf3sxl05m0nhpngnrz3g1jvyahd33lys3m3hfb91l8zzi5"))))
+                "195wgxls3df7djry9cz3p2k9644l6bfd66fczbaw55fsq0c48agr"))))
     (build-system python-build-system)
     (native-inputs
      (list pkg-config))
@@ -1466,13 +1474,13 @@ options.")
   (package
     (inherit python-cssutils)
     (name "python-css-parser")
-    (version "1.0.6")
+    (version "1.0.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "css-parser" version ".tar.gz"))
        (sha256
-        (base32 "0bmg4kiiir6pj9x3sd12x4dz2c1xpp2bn5nn60fxnbk2lnl4im2f"))))
+        (base32 "1ldv9s3an4pgk7b5x6z07rw9b5fdrasdldnf22829pb26b39dq15"))))
     (home-page "https://github.com/ebook-utils/css-parser")
     (synopsis "Fork of cssutils modified for parsing ebooks")
     (description
@@ -2532,17 +2540,19 @@ APIs.")
 (define-public python-requests
   (package
     (name "python-requests")
-    (version "2.26.0")
+    (version "2.27.1")
     (source (origin
              (method url-fetch)
              (uri (pypi-uri "requests" version))
              (sha256
               (base32
-               "19q73fq7hip7b74fwls3p9x6zwvfwqcwpn6kha3zsgvrrzw5iamq"))))
+               "0qcsbi919d689xqlgyhw9zkppp1fs6k09wwffa3ri6d8smpwbmv8"))))
     (build-system python-build-system)
     (propagated-inputs
-     (list python-certifi python-chardet python-charset-normalizer
-           python-idna python-urllib3))
+     (list python-certifi
+           python-charset-normalizer
+           python-idna
+           python-urllib3))
     (arguments
      ;; FIXME: Some tests require network access.
      '(#:tests? #f))
@@ -2561,6 +2571,7 @@ than Python’s urllib2 library.")
       ;; The python-charset-normalizer dependency is necessary on Python 3
       ;; only.
       (propagated-inputs (modify-inputs (package-propagated-inputs base)
+                           (append python2-chardet)
                            (delete "python-charset-normalizer"))))))
 
 (define-public python-requests-unixsocket
@@ -2778,17 +2789,47 @@ authenticated session objects providing things like keep-alive.")
       (native-inputs `(("python2-unittest2" ,python2-unittest2)
                        ,@(package-native-inputs base))))))
 
+(define-public python-unalix
+  (package
+    (name "python-unalix")
+    (version "0.9")
+    (source
+     (origin
+       ;; There's only a wheel on PyPI.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/AmanoTeam/Unalix")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0h8wc1axv26h753a8brc6dccqndx005c2bhr09gwg5c1hj9zsfml"))))
+    (build-system python-build-system)
+    (native-inputs (list python-pytest))
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest")))))))
+    (home-page "https://pypi.org/project/Unalix/")
+    (synopsis "Python library for removing tracking fields from URLs")
+    (description "Unalix is a library written in Python implementing the
+specification used by the @url{https://github.com/ClearURLs/Addon, ClearURLs}
+addon for removing tracking fields from URLs.")
+    (license license:lgpl3+)))
+
 (define-public python-urllib3
   (package
     (name "python-urllib3")
-    (version "1.26.7")
+    (version "1.26.8")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "urllib3" version))
         (sha256
          (base32
-          "1kkf6gi8a1fs0dqkf6kpmdpsy97iirvliz8q1krxp8ppaiawd1s9"))))
+          "0g18xk7gfm88gr4bp3f58vgvsbzwps3sq2kqhv5xyz9ylvck6z0f"))))
     (build-system python-build-system)
     (arguments `(#:tests? #f))
     (propagated-inputs
@@ -4873,21 +4914,18 @@ is part of the Weblate translation platform.")
 (define-public python-gitlab
   (package
     (name "python-gitlab")
-    (version "1.15.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "python-gitlab" version))
-        (sha256
-         (base32
-          "0zl6kz8v8cg1bcy2r78b2snb0lpw0b573gdx2x1ps0nhsh75l4j5"))))
+    (version "3.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "python-gitlab" version))
+              (sha256
+               (base32
+                "1gi4lp2g4k99zqcx2bgqx940bpmpbc1w9qkl5gy33hpy148yhvlg"))))
     (build-system python-build-system)
-    (propagated-inputs
-     (list python-requests python-six))
-    (native-inputs
-     (list python-httmock python-mock))
-    (home-page
-      "https://github.com/python-gitlab/python-gitlab")
+    (arguments
+     `(#:tests? #f))                             ;tests require network access
+    (propagated-inputs (list python-requests python-requests-toolbelt))
+    (home-page "https://github.com/python-gitlab/python-gitlab")
     (synopsis "Interact with GitLab API")
     (description "This package provides an extended library for interacting
 with GitLab instances through their API.")
@@ -5254,16 +5292,22 @@ them to a designated prefix.")
            "11afr6zy3r6rda81010iq496dazg4xid0izg3smg6ighpmvsnzf2"))))
       (build-system python-build-system)
       (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'skip-problematic-tests
-             (lambda _
-               ;; These tests fail due to networking requirements.
-               (substitute* "setup.py"
-                 (("pytest.main\\(\\[" all)
-                  (string-append all "'-k', '"
-                                 (string-append "not test_post_chunked and "
-                                                "not test_remote") "'"))))))))
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (invoke "pytest" "-vv"
+                          ;; These tests fail due to networking requirements.
+                          "-k" (format #f "not ~a"
+                                       (string-join
+                                        '("test_post_chunked"
+                                          "test_remote"
+                                          "test_capture_http_proxy"
+                                          "test_capture_https_proxy"
+                                          "test_capture_https_proxy_same_session")
+                                        " and not ")))))))))
       (native-inputs
        ;; These inputs are required for the test suite.
        (list python-httpbin python-pytest-cov python-requests
@@ -5506,6 +5550,24 @@ according to the standard set by PasteDeploy")
      "Hupper is an integrated process monitor that will track changes to any
 imported Python files in sys.modules as well as custom paths.  When files are
 changed the process is restarted.")
+    (license license:expat)))
+
+(define-public python-pyowm
+  (package
+    (name "python-pyowm")
+    (version "3.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyowm" version))
+       (sha256
+        (base32 "1pm8w6phr4m3xayndfndid366vhf1fpvdgjsp2zicxarmgc0pm53"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-geojson python-pysocks python-requests))
+    (home-page "https://github.com/csparpa/pyowm")
+    (synopsis "Python wrapper around OpenWeatherMap web APIs")
+    (description
+     "This package provides a Python wrapper around OpenWeatherMap web APIs.")
     (license license:expat)))
 
 (define-public python-pyramid

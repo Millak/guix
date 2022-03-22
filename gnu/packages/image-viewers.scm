@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013, 2017-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Ian Denhardt <ian@zenhack.net>
 ;;; Copyright © 2015, 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
@@ -9,7 +9,7 @@
 ;;; Copyright © 2017 nee <nee-git@hidamari.blue>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2019 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2019, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2019, 2020, 2022 Guy Fleury Iteriteka <gfleury@disroot.org>
 ;;; Copyright © 2019 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2020 Peng Mei Yu <pengmeiyu@riseup.net>
@@ -42,6 +42,7 @@
 (define-module (gnu packages image-viewers)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (guix utils)
@@ -49,6 +50,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system qt)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages backup)
@@ -255,7 +257,7 @@ YouTube videos without requiring API and opens/downloads them using mpv/ytdl.")
 (define-public feh
   (package
     (name "feh")
-    (version "3.7.2")
+    (version "3.8")
     (home-page "https://feh.finalrewind.org/")
     (source (origin
               (method url-fetch)
@@ -263,7 +265,7 @@ YouTube videos without requiring API and opens/downloads them using mpv/ytdl.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "0n42kj18ldlcmrmk5qir9gs9irdl1vz9913n8p941x8cfb98ywc4"))))
+                "1a9bsq5j9sl2drzkab0hdhnamalpaszw9mz2prz6scrr5dak8g3z"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases (delete 'configure))
@@ -275,17 +277,21 @@ YouTube videos without requiring API and opens/downloads them using mpv/ytdl.")
              "inotify=1")))
     (native-inputs
      (list perl perl-test-command))
-    (inputs (list imlib2
-                  curl
+    (inputs (list curl
+                  imlib2
                   libexif
                   libpng
-                  libxt
                   libx11
-                  libxinerama))
+                  libxinerama
+                  libxt))
     (native-search-paths
      ;; Feh allows overriding the libcurl builtin CA path (unset in Guix)
      ;; with the same variable as the `curl` command line HTTP tool.
-     (package-native-search-paths curl))
+     (list (search-path-specification
+            (variable "CURL_CA_BUNDLE")
+            (file-type 'regular)
+            (separator #f)                             ;single entry
+            (files '("etc/ssl/certs/ca-certificates.crt")))))
     (synopsis "Fast and light imlib2-based image viewer")
     (description
       "feh is an X11 image viewer aimed mostly at console users.
@@ -604,23 +610,25 @@ It supports JPEG, PNG and GIF formats.")
     (native-inputs
      (list pkg-config qttools))
     (inputs
-     `(("qtbase" ,qtbase-5)
-       ("qtdeclarative" ,qtdeclarative)
-       ("qtsvg" ,qtsvg)
-       ("qtwebkit" ,qtwebkit)
-       ("boost" ,boost)
-       ("eigen" ,eigen)
-       ;; ("gtest" ,gtest)
-       ("libraw" ,libraw)
-       ("zlib" ,zlib)
-       ("exiv2" ,exiv2)
-       ("libpng" ,libpng)
-       ("libjpeg" ,libjpeg-turbo)
-       ("lcms" ,lcms)
-       ("openexr" ,openexr-2)
-       ("fftw" ,fftwf)
-       ("gsl" ,gsl)
-       ("libtiff" ,libtiff)))
+     (list qtbase-5
+           qtdeclarative
+           qtsvg
+           boost
+           eigen
+           ;; gtest
+           libraw
+           zlib
+           exiv2
+           libpng
+           libjpeg-turbo
+           lcms
+           openexr-2
+           qtwebengine
+           qtdeclarative
+           qtwebchannel
+           fftwf
+           gsl
+           libtiff))
     (arguments
      '(#:tests? #f  ;XXX: some tests fail to compile
        #:phases
@@ -629,11 +637,12 @@ It supports JPEG, PNG and GIF formats.")
            (lambda* (#:key inputs #:allow-other-keys)
              ;; 'OpenEXR.pc' has a -I for IlmBase but 'FindOpenEXR.cmake' does
              ;; not use 'OpenEXR.pc'.  Thus, we need to add
-             ;; "$ilmbase/include/OpenEXR/" to the CPATH.
-             (setenv "CPATH"
+             ;; "$ilmbase/include/OpenEXR/" to the CPLUS_INCLUDE_PATH.
+             (setenv "CPLUS_INCLUDE_PATH"
                      (string-append
-                      (search-input-directory inputs "include/OpenEXR")
-                      ":" (or (getenv "CPATH") ""))))))))
+                      (dirname
+                       (search-input-file inputs "include/OpenEXR/ImathInt64.h"))
+                      ":" (or (getenv "CPLUS_INCLUDE_PATH") ""))))))))
     (home-page "http://qtpfsgui.sourceforge.net")
     (synopsis "High dynamic range (HDR) imaging application")
     (description
@@ -742,7 +751,7 @@ For PDF support, install the @emph{mupdf} package.")
 (define-public qview
   (package
     (name "qview")
-    (version "4.0")
+    (version "5.0")
     (source
      (origin
        (method git-fetch)
@@ -751,25 +760,32 @@ For PDF support, install the @emph{mupdf} package.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15n9cq7w3ckinnx38hvncxrbkv4qm4k51sal41q4y0pkvhmafhnr"))))
-    (build-system gnu-build-system)
+        (base32 "1ck4mvhzc4m72n010n43d8ipjczzk6ya637rgfyi7bzb4gv0f3am"))))
+    (build-system qt-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (invoke "qmake" (string-append "PREFIX=" out)))))
-         ;; Don't phone home or show "Checking for updates..." in the About
-         ;; menu.
-         (add-before 'build 'disable-auto-update
-           (lambda _
-             (substitute* "src/qvaboutdialog.cpp"
-               (("qvApp->checkUpdates\\(\\);") "")
-               (("updateText\\(\\);") ""))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda* (#:key outputs #:allow-other-keys)
+              (invoke "qmake" (string-append "PREFIX=" #$output))))
+          ;; Don't phone home or show "Checking for updates..." in the About
+          ;; menu.
+          (add-before 'build 'disable-auto-update
+            (lambda _
+              (substitute* "src/qvaboutdialog.cpp"
+                (("qvApp->checkUpdates\\(\\);") "")
+                (("updateText\\(\\);") ""))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "tests"
+                  (invoke "qmake" "tests.pro")
+                  (invoke "make" "tests"))))))))
+    (native-inputs
+     (list qttools))
     (inputs
-     (list qtbase-5 qtsvg qtimageformats))
+     (list qtbase-5 qtimageformats qtsvg))
     (home-page "https://interversehq.com/qview/")
     (synopsis "Convenient and minimal image viewer")
     (description "qView is a Qt image viewer designed with visually

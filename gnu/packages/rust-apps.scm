@@ -6,7 +6,7 @@
 ;;; Copyright © 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2020 Gabriel Arazas <foo.dogsquared@gmail.com>
-;;; Copyright © 2020–2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2020-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.ccom>
 ;;; Copyright © 2021, 2022 Zheng Junjie <873216071@qq.com>
@@ -53,6 +53,8 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages ibus)
+  #:use-module (gnu packages icu4c)
+  #:use-module (gnu packages image)
   #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages kde)
   #:use-module (gnu packages linux)
@@ -122,13 +124,6 @@ low-end hardware and serving many concurrent requests.")
        '("--release" "--"
          "--skip=dns::client::tests::test_tcp_client"
          "--skip=dns::client::tests::test_udp_client")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'configure 'relax-requirements
-           (lambda _
-             (substitute*
-                 "guix-vendor/rust-x25519-dalek-1.2.0.tar.gz/Cargo.toml"
-               (("version = \"=1.3\"") "version = \"^1.3\"")))))
        #:cargo-inputs
        (("rust-getopts" ,rust-getopts-0.2)
         ("rust-log" ,rust-log-0.4)
@@ -188,14 +183,14 @@ alternative zones.")
 (define-public bat
   (package
     (name "bat")
-    (version "0.19.0")
+    (version "0.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "bat" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0bvlgh2yf6f1ski86hd13lda4cr51wyyg1ycsxwjpn0dbb0a8wqq"))))
+        (base32 "05sj0chxpai26fhk1k7p5m54v3j7n1x64ayx53mcimsj1skdr77m"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -204,6 +199,7 @@ alternative zones.")
         ("rust-atty" ,rust-atty-0.2)
         ("rust-bincode" ,rust-bincode-1)
         ("rust-bugreport" ,rust-bugreport-0.4)
+        ("rust-bytesize" ,rust-bytesize-1)
         ("rust-clap" ,rust-clap-2)
         ("rust-clap" ,rust-clap-2)
         ("rust-clircle" ,rust-clircle-0.3)
@@ -1054,14 +1050,14 @@ of the project is to be runnable on untrusted networks without crashing.")
 (define-public tectonic
   (package
     (name "tectonic")
-    (version "0.8.0")
+    (version "0.8.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0hzyqpjxya6g1ifb3hvjvj0zl2aigx898pz7h5pl46z50jp2pdc8"))))
+        (base32 "041v887a3aybrkn5fnrjwy95wxfk4npl6lj8ar8dnidjmfh92bka"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-build-flags '("--release" "--features" "external-harfbuzz")
@@ -1084,13 +1080,14 @@ of the project is to be runnable on untrusted networks without crashing.")
         ("rust-tectonic-bundles" ,rust-tectonic-bundles-0.2)
         ("rust-tectonic-docmodel" ,rust-tectonic-docmodel-0.1)
         ("rust-tectonic-engine-bibtex" ,rust-tectonic-engine-bibtex-0.1)
+        ("rust-tectonic-engine-spx2html" ,rust-tectonic-engine-spx2html-0.1)
         ("rust-tectonic-engine-xdvipdfmx" ,rust-tectonic-engine-xdvipdfmx-0.1)
-        ("rust-tectonic-engine-xetex" ,rust-tectonic-engine-xetex-0.1)
+        ("rust-tectonic-engine-xetex" ,rust-tectonic-engine-xetex-0.2)
         ("rust-tectonic-errors" ,rust-tectonic-errors-0.2)
         ("rust-tectonic-geturl" ,rust-tectonic-geturl-0.3)
-        ("rust-tectonic-io-base" ,rust-tectonic-io-base-0.3)
+        ("rust-tectonic-io-base" ,rust-tectonic-io-base-0.4)
         ("rust-tectonic-status-base" ,rust-tectonic-status-base-0.2)
-        ("rust-tectonic-xdv" ,rust-tectonic-xdv-0.1)
+        ("rust-tectonic-xdv" ,rust-tectonic-xdv-0.2)
         ("rust-tectonic-xetex-layout" ,rust-tectonic-xetex-layout-0.1)
         ("rust-tempfile" ,rust-tempfile-3)
         ("rust-termcolor" ,rust-termcolor-1)
@@ -1115,10 +1112,14 @@ of the project is to be runnable on untrusted networks without crashing.")
     (native-inputs
      (list pkg-config))
     (inputs
-     `(("fontconfig" ,fontconfig)
-       ("harfbuzz" ,harfbuzz)
-       ("openssl" ,openssl)
-       ("zlib" ,zlib)))
+     (list fontconfig
+           freetype
+           graphite2
+           harfbuzz
+           icu4c
+           libpng
+           openssl
+           zlib))
     (home-page "https://tectonic-typesetting.github.io/")
     (synopsis "Complete, embeddable TeX/LaTeX engine")
     (description
@@ -1307,7 +1308,13 @@ runs a command whenever it detects modifications.")
            (lambda _
              (substitute*
                  "guix-vendor/rust-password-hash-0.3.2.tar.gz/Cargo.toml"
-               (("version = \">=1, <1.1.0\"") "version = \">=1\"")))))
+               (("version = \">=1, <1.1.0\"") "version = \">=1\""))
+             (substitute*
+                 "guix-vendor/rust-rsa-0.5.0.tar.gz/Cargo.toml"
+               (("version = \">=1, <1.5\"") "version = \"^1\""))
+             (substitute*
+                 "Cargo.toml"
+               (("version = \"1.4\"") "version = \"^1\"")))))
        #:cargo-inputs
        (("rust-aes" ,rust-aes-0.7)
         ("rust-anyhow" ,rust-anyhow-1)
@@ -1352,9 +1359,9 @@ runs a command whenever it detects modifications.")
     (home-page "https://git.tozt.net/rbw")
     (synopsis "Unofficial Bitwarden CLI")
     (description "This package is an unofficial command line client for
-Bitwarden. Although it does come with its own command line client, this client
-is limited by being stateless, which makes it very difficult to use.  This
-client avoids this problem by maintaining a background process which is able
+Bitwarden.  Although Bitwarden ships with a command line client, but
+it's limited by being stateless, which makes it very difficult to use.  This
+client avoids that problem by maintaining a background process which is able
 to hold the keys in memory, similar to the way that ssh-agent or gpg-agent
 work.  This allows the client to be used in a much simpler way, with the
 background agent taking care of maintaining the necessary state.")
@@ -1571,6 +1578,28 @@ support for Rust.")
      "This package produces and installs a correct pkg-config file, a static
 library and a dynamic library, and a C header to be used by any C (and
 C-compatible) software.")
+    (license license:expat)))
+
+(define-public rtss
+  (package
+    (name "rtss")
+    (version "0.6.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rtss" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1r1b6fynkjnpj5p3k209sa13mjvh4k0ghzwnribm48dh9v7lfnnv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-memchr" ,rust-memchr-2))))
+    (home-page "https://github.com/Freaky/rtss")
+    (synopsis "Annotate stdout/stderr with elapsed times")
+    (description "@code{rtss} annotates its output with relative durations between
+consecutive lines and since program start.")
     (license license:expat)))
 
 (define-public swayhide

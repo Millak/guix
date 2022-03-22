@@ -85,8 +85,9 @@ USERS."
                              (uid (if root? 0 #f))
                              (home-directory
                               (user-home-directory user))
-                             (password (crypt (user-password user)
-                                              (salt)))
+                             (password (crypt
+                                        (secret-content (user-password user))
+                                        (salt)))
 
                              ;; We need a string here, not a file-like, hence
                              ;; this choice.
@@ -125,15 +126,15 @@ it can interact with the rest of the system."
                      (setlocale LC_ALL locale))))
     (if supported?
         (begin
-          (syslog "install supported locale ~a~%." locale)
+          (installer-log-line "install supported locale ~a." locale)
           (setenv "LC_ALL" locale))
         (begin
           ;; If the selected locale is not supported, install a default UTF-8
           ;; locale. This is required to copy some files with UTF-8
           ;; characters, in the nss-certs package notably. Set LANGUAGE
           ;; anyways, to have translated messages if possible.
-          (syslog "~a locale is not supported, installating en_US.utf8 \
-locale instead.~%" locale)
+          (installer-log-line "~a locale is not supported, installing \
+en_US.utf8 locale instead." locale)
           (setlocale LC_ALL "en_US.utf8")
           (setenv "LC_ALL" "en_US.utf8")
           (setenv "LANGUAGE"
@@ -208,17 +209,9 @@ or #f.  Return #t on success and #f on failure."
              (setvbuf (current-output-port) 'none)
              (setvbuf (current-error-port) 'none)
 
-             ;; If there are any connected clients, assume that we are running
-             ;; installation tests. In that case, dump the standard and error
-             ;; outputs to syslog.
-             (set! ret
-                   (if (not (null? (current-clients)))
-                       (with-output-to-file "/dev/console"
-                         (lambda ()
-                           (with-error-to-file "/dev/console"
-                             (lambda ()
-                               (run-command install-command)))))
-                       (run-command install-command))))
+             (setenv "PATH" "/run/current-system/profile/bin/")
+
+             (set! ret (run-command install-command)))
            (lambda ()
              ;; Restart guix-daemon so that it does no keep the MNT namespace
              ;; alive.

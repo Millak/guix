@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2014, 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2014 Ian Denhardt <ian@zenhack.net>
@@ -99,8 +99,10 @@
             target-powerpc?
             target-riscv64?
             target-64bit?
+            ar-for-target
             cc-for-target
             cxx-for-target
+            ld-for-target
             pkg-config-for-target
 
             version-compare
@@ -454,27 +456,27 @@ This procedure returns #t on success."
                  (str     (iconv:bytevector->string
                            (get-bytevector-n in (- end start))
                            (port-encoding in)))
-                 (post-bv (get-bytevector-all in))
                  (str*    (proc str)))
             ;; Modify FILE only if there are changes.
             (unless (string=? str* str)
               ;; Verify the edited expression is still a scheme expression.
               (call-with-input-string str* read)
-              ;; Update the file with edited expression.
-              (with-atomic-file-output file
-                (lambda (out)
-                  (put-bytevector out pre-bv)
-                  (display str* out)
-                  ;; post-bv maybe the end-of-file object.
-                  (when (not (eof-object? post-bv))
-                    (put-bytevector out post-bv))
-                  #t))
 
-              ;; Due to 'with-atomic-file-output', IN and FILE no longer share
-              ;; the same inode, but we can reassign the source map up to LINE
-              ;; to the new file.
-              (move-source-location-map! (stat in) (stat file)
-                                         (+ 1 line)))))))))
+              (let ((post-bv (get-bytevector-all in)))
+                ;; Update the file with edited expression.
+                (with-atomic-file-output file
+                  (lambda (out)
+                    (put-bytevector out pre-bv)
+                    (display str* out)
+                    (unless (eof-object? post-bv)
+                      ;; Copy everything that came after STR.
+                      (put-bytevector out post-bv))))
+
+                ;; Due to 'with-atomic-file-output', IN and FILE no longer
+                ;; share the same inode, but we can reassign the source map up
+                ;; to LINE to the new file.
+                (move-source-location-map! (stat in) (stat file)
+                                           (+ 1 line))))))))))
 
 
 ;;;
@@ -715,6 +717,11 @@ architecture (x86_64)?"
   (any (cut string-prefix? <> system) '("x86_64" "aarch64" "mips64"
                                         "powerpc64" "riscv64")))
 
+(define* (ar-for-target #:optional (target (%current-target-system)))
+  (if target
+      (string-append target "-ar")
+      "ar"))
+
 (define* (cc-for-target #:optional (target (%current-target-system)))
   (if target
       (string-append target "-gcc")
@@ -724,6 +731,11 @@ architecture (x86_64)?"
   (if target
       (string-append target "-g++")
       "g++"))
+
+(define* (ld-for-target #:optional (target (%current-target-system)))
+  (if target
+      (string-append target "-ld")
+      "ld"))
 
 (define* (pkg-config-for-target #:optional (target (%current-target-system)))
   (if target

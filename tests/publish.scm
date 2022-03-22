@@ -142,15 +142,10 @@
          (unsigned-info
           (format #f
                   "StorePath: ~a
-URL: nar/~a
-Compression: none
-FileSize: ~a
 NarHash: sha256:~a
 NarSize: ~d
 References: ~a~%"
                   %item
-                  (basename %item)
-                  (path-info-nar-size info)
                   (bytevector->nix-base32-string
                    (path-info-hash info))
                   (path-info-nar-size info)
@@ -159,8 +154,13 @@ References: ~a~%"
                      (string->utf8
                       (canonical-sexp->string
                        (signed-string unsigned-info))))))
-    (format #f "~aSignature: 1;~a;~a~%"
-            unsigned-info (gethostname) signature))
+    (format #f "~aSignature: 1;~a;~a
+URL: nar/~a
+Compression: none
+FileSize: ~a\n"
+            unsigned-info (gethostname) signature
+            (basename %item)
+            (path-info-nar-size info)))
   (utf8->string
    (http-get-body
     (publish-uri
@@ -173,15 +173,10 @@ References: ~a~%"
          (unsigned-info
           (format #f
                   "StorePath: ~a
-URL: nar/~a
-Compression: none
-FileSize: ~a
 NarHash: sha256:~a
 NarSize: ~d
 References: ~%"
                   item
-                  (uri-encode (basename item))
-                  (path-info-nar-size info)
                   (bytevector->nix-base32-string
                    (path-info-hash info))
                   (path-info-nar-size info)))
@@ -189,8 +184,13 @@ References: ~%"
                      (string->utf8
                       (canonical-sexp->string
                        (signed-string unsigned-info))))))
-    (format #f "~aSignature: 1;~a;~a~%"
-            unsigned-info (gethostname) signature))
+    (format #f "~aSignature: 1;~a;~a
+URL: nar/~a
+Compression: none
+FileSize: ~a~%"
+            unsigned-info (gethostname) signature
+            (uri-encode (basename item))
+            (path-info-nar-size info)))
 
   (let ((item (add-text-to-store %store "fake-gtk+" "Congrats!")))
     (utf8->string
@@ -324,7 +324,12 @@ References: ~%"
               (part (store-path-hash-part %item))
               (url  (string-append base part ".narinfo"))
               (body (http-get-port url)))
-         (list (take (recutils->alist body) 5)
+         (list (filter (match-lambda
+                         (("StorePath" . _) #t)
+                         (("URL" . _) #t)
+                         (("Compression" . _) #t)
+                         (_ #f))
+                       (recutils->alist body))
                (response-code
                 (http-get (string-append base "nar/gzip/"
                                          (basename %item))))
@@ -504,16 +509,22 @@ References: ~%"
                                              (basename %item))))
            (and (file-exists? (nar "gzip"))
                 (file-exists? (nar "lzip"))
-                (equal? (take (pk 'narinfo/gzip+lzip narinfo) 7)
-                        `(("StorePath" . ,%item)
-                          ("URL" . ,(nar-url "gzip"))
-                          ("Compression" . "gzip")
-                          ("FileSize" . ,(number->string
-                                          (stat:size (stat (nar "gzip")))))
-                          ("URL" . ,(nar-url "lzip"))
-                          ("Compression" . "lzip")
-                          ("FileSize" . ,(number->string
-                                          (stat:size (stat (nar "lzip")))))))
+                (match (pk 'narinfo/gzip+lzip narinfo)
+                  ((("StorePath" . path)
+                    _ ...
+                    ("Signature" . _)
+                    ("URL" . gzip-url)
+                    ("Compression" . "gzip")
+                    ("FileSize" . (= string->number gzip-size))
+                    ("URL" . lzip-url)
+                    ("Compression" . "lzip")
+                    ("FileSize" . (= string->number lzip-size)))
+                   (and (string=? gzip-url (nar-url "gzip"))
+                        (string=? lzip-url (nar-url "lzip"))
+                        (= gzip-size
+                           (stat:size (stat (nar "gzip"))))
+                        (= lzip-size
+                           (stat:size (stat (nar "lzip")))))))
                 (list (response-code
                        (http-get (string-append base (nar-url "gzip"))))
                       (response-code

@@ -3,7 +3,7 @@
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Fis Trivial <ybbs.daans@hotmail.com>
 ;;; Copyright © 2018, 2021 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2019, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
+;;; Copyright © 2019, 2020, 2022 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
 ;;; Copyright © 2020, 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
@@ -11,10 +11,10 @@
 ;;; Copyright © 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
-;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Alexandros Theodotou <alex@zrythm.org>
-;;; Copyright © 2020, 2021 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2020-2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Milkey Mouse <milkeymouse@meme.institute>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
@@ -25,6 +25,10 @@
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2021 Disseminate Dissent <disseminatedissent@protonmail.com>
+;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2022 muradm <mail@muradm.net>
+;;; Copyright © 2022 Attila Lendvai <attila@lendvai.name>
+;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -48,7 +52,9 @@
   #:use-module (guix utils)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module (guix modules)
   #:use-module (guix gexp)
@@ -73,13 +79,15 @@
   #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
-  #:use-module (gnu packages xml))
+  #:use-module (gnu packages xml)
+  #:use-module (ice-9 match))
 
 (define-public argagg
   (let ((commit "79e4adfa2c6e2bfbe63da05cc668eb9ad5596748") (revision "0"))
@@ -168,6 +176,10 @@ development effort.")
        (sha256
         (base32 "18230bg4rq9pmm5f8f65j444jpq56rld4fhmpham8q3vr1c1bdjh"))))
     (build-system cmake-build-system)
+    (arguments
+     (list
+       #:configure-flags
+       #~(list "-DRANGES_NATIVE=OFF")))
     (native-inputs
      (list doxygen gcc-9 perl))
     (inputs
@@ -218,6 +230,53 @@ range-v3 ranges are an abstraction layer on top of iterators.")
 use by the C++ Core Guidelines maintained by the Standard C++ Foundation.")
     (home-page "https://github.com/microsoft/GSL/")
     (license license:expat)))
+
+(define-public c2ffi
+  (package
+    (name "c2ffi")
+    ;; As per the c2ffi README: the first three elements are encoding the
+    ;; required Clang/LLVM version, and the last one is the c2ffi revision.
+    (version "12.0.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rpav/c2ffi")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qq8dfismd20d9kfxpfvwz07v9mfvd0y7p5r3c92mk2pm4xnmzfy"))
+       (modules '((guix build utils)))
+       (snippet
+        '(substitute* "CMakeLists.txt"
+           ;; Guix seems to be packaging LLVM libs separately thus -lLLVM
+           ;; won't work, every used library must be specified explicitly.
+           (("c2ffi PUBLIC clang-cpp LLVM")
+            "c2ffi PUBLIC clang-cpp LLVMCore LLVMSupport LLVMMCParser \
+LLVMOption LLVMBitReader LLVMProfileData")))))
+    (build-system cmake-build-system)
+    (arguments
+     '(;; If LLVM was built without RTTI, we need to also be built without
+       ;; it.  See: https://stackoverflow.com/q/11904519
+       #:configure-flags '("-DCMAKE_CXX_FLAGS=-fno-rtti")
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "./bin/c2ffi" "--help")))))))
+    (native-inputs
+     (list clang-12)) ; CMakeLists.txt invokes `clang -print-resource-dir`
+    (inputs
+     (list clang-12)) ; Compiled with gcc, but links against libclang-cpp.so
+    (home-page "https://github.com/rpav/c2ffi")
+    (synopsis "Clang-based FFI wrapper generator")
+    (description
+     "@code{c2ffi} is a tool for extracting definitions from C, C++, and
+Objective C headers for use with foreign function call interfaces.  It uses
+the @code{Clang/LLVM} infrastructure to extract the data, and emits it in
+various formats, including @code{json}.")
+    (license license:gpl2+)))
 
 (define-public libzen
   (package
@@ -347,7 +406,7 @@ combination of these streams.")
 (define-public xsimd
   (package
     (name "xsimd")
-    (version "7.5.0")
+    (version "8.0.5")
     (source
      (origin
        (method git-fetch)
@@ -355,7 +414,7 @@ combination of these streams.")
              (url "https://github.com/QuantStack/xsimd")
              (commit version)))
        (sha256
-        (base32 "0c9pq5vz43j99z83w3b9qylfi66mn749k1afpv5cwfxggbxvy63f"))
+        (base32 "0fph1gzrj13knfkl3fvg098ccvqkbzs0jb8n323m7pnxajpzhzij"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -452,51 +511,48 @@ functions, class methods, and stl containers.
     (license license:bsd-3)))
 
 (define-public fifo-map
-  (let* ((commit "0dfbf5dacbb15a32c43f912a7e66a54aae39d0f9")
-         (revision "0")
-         (version (git-version "1.1.1" revision commit)))
-    (package
-      (name "fifo-map")
-      (version version)
-      (home-page "https://github.com/nlohmann/fifo_map")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url home-page)
-                      (commit commit)))
-                (sha256
-                 (base32
-                  "0pi77b75kp0l7z454ihcd14nzpi3nc5m4nyjbsgy5f9bw3676196"))
-                (patches (search-patches "fifo-map-remove-catch.hpp.patch"
-                                         "fifo-map-fix-flags-for-gcc.patch"))
-                (file-name (git-file-name name version))
-                (modules '((guix build utils)))
-                (snippet '(delete-file-recursively "./test/thirdparty"))))
-      (native-inputs
-       (list catch-framework2-1))
-      (build-system cmake-build-system)
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (replace 'check
-             (lambda _
-               (invoke "./unit")))
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (inc (string-append out "/include/fifo_map")))
-                 (with-directory-excursion "../source"
-                   (install-file "src/fifo_map.hpp" inc))))))))
-      (synopsis "FIFO-ordered associative container for C++")
-      (description "Fifo_map is a C++ header only library for associative
+  (package
+    (name "fifo-map")
+    (version "1.0.0")
+    (home-page "https://github.com/nlohmann/fifo_map")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "0y59fk6ycrgjln9liwcja3l5j1vxpa5i671bynpbsjlyq5f2560q"))
+              (patches (search-patches "fifo-map-remove-catch.hpp.patch"
+                                       "fifo-map-fix-flags-for-gcc.patch"))
+              (file-name (git-file-name name version))
+              (modules '((guix build utils)))
+              (snippet '(delete-file-recursively "./test/thirdparty"))))
+    (inputs
+     (list catch-framework2-1))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests? (invoke "./unit"))))
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (inc (string-append out "/include/fifo_map")))
+               (with-directory-excursion "../source"
+                 (install-file "src/fifo_map.hpp" inc))))))))
+    (synopsis "FIFO-ordered associative container for C++")
+    (description "Fifo_map is a C++ header only library for associative
 container which uses the order in which keys were inserted to the container
 as ordering relation.")
-      (license license:expat))))
+    (license license:expat)))
 
 (define-public json-modern-cxx
   (package
     (name "json-modern-cxx")
-    (version "3.9.1")
+    (version "3.10.5")
     (home-page "https://github.com/nlohmann/json")
     (source
      (origin
@@ -504,7 +560,7 @@ as ordering relation.")
        (uri (git-reference (url home-page)
                            (commit (string-append "v" version))))
        (sha256
-        (base32 "0ar4mzp53lskxw3vdzw07f47njcshl3lwid9jfq6l7yx6ds2nyjc"))
+        (base32 "1f9mi45ilwjc2w92grjc53sw038840bjpn8yjf6wc6bxs2nijfqd"))
        (file-name (git-file-name name version))
        (modules '((guix build utils)))
        (snippet
@@ -513,7 +569,7 @@ as ordering relation.")
            ;; is a wrapper library added by this package.
            (install-file "./test/thirdparty/doctest/doctest_compatibility.h" "/tmp")
            (for-each delete-file-recursively
-                     '("./third_party" "./test/thirdparty" "./benchmarks/thirdparty"))
+                     '("./third_party" "./test/thirdparty"))
            (install-file "/tmp/doctest_compatibility.h" "./test/thirdparty/doctest")
 
            ;; Adjust for the unbundled fifo_map and doctest.
@@ -525,43 +581,39 @@ as ordering relation.")
                (substitute* files
                  (("#include ?\"(fifo_map.hpp)\"" all fifo-map-hpp)
                   (string-append
-                   "#include <fifo_map/" fifo-map-hpp ">")))))
-           #t))))
+                   "#include <fifo_map/" fifo-map-hpp ">")))))))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
        (list "-DJSON_MultipleHeaders=ON" ; For json_fwd.hpp.
              (string-append "-DJSON_TestDataDirectory="
-                            (assoc-ref %build-inputs "json_test_data")))
+                            (dirname
+                             (search-input-directory %build-inputs
+                                                     "json_nlohmann_tests"))))
        #:phases (modify-phases %standard-phases
-                  ;; XXX: When tests are enabled, the install phase will cause
-                  ;; a needless rebuild without the given configure flags,
-                  ;; ultimately creating both $out/lib and $out/lib64.  Move
-                  ;; the check phase after install to work around it.
-                  (delete 'check)
-                  (add-after 'install 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
+                  (replace 'check
+                    (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
                       (if tests?
                           ;; Some tests need git and a full checkout, skip those.
-                          (invoke "ctest" "-LE" "git_required")
-                          (format #t "test suite not run~%"))
-                      #t)))))
+                          (invoke "ctest" "-LE" "git_required"
+                                  "-j" (if parallel-tests?
+                                           (number->string (parallel-job-count))
+                                           "1"))
+                          (format #t "test suite not run~%")))))))
     (native-inputs
-     `(("amalgamate" ,amalgamate)
-       ("doctest" ,doctest)
-       ("json_test_data"
-        ,(let ((version "3.0.0"))
-           (origin
-             (method git-fetch)
-             (uri (git-reference
-                   (url "https://github.com/nlohmann/json_test_data")
-                   (commit (string-append "v" version))))
-             (file-name (git-file-name "json_test_data" version))
-             (sha256
-              (base32
-               "0nzsjzlvk14dazwh7k2jb1dinb0pv9jbx5jsyn264wvva0y7daiv")))))))
+     (list amalgamate
+           (let ((version "3.0.0"))
+             (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url "https://github.com/nlohmann/json_test_data")
+                     (commit (string-append "v" version))))
+               (file-name (git-file-name "json_test_data" version))
+               (sha256
+                (base32
+                 "0nzsjzlvk14dazwh7k2jb1dinb0pv9jbx5jsyn264wvva0y7daiv"))))))
     (inputs
-     (list fifo-map))
+     (list doctest fifo-map))
     (synopsis "JSON parser and printer library for C++")
     (description "JSON for Modern C++ is a C++ JSON library that provides
 intuitive syntax and trivial integration.")
@@ -570,7 +622,7 @@ intuitive syntax and trivial integration.")
 (define-public xtl
   (package
     (name "xtl")
-    (version "0.6.23")
+    (version "0.7.4")
     (source (origin
               (method git-fetch)
               (uri
@@ -579,20 +631,19 @@ intuitive syntax and trivial integration.")
                 (commit version)))
               (sha256
                (base32
-                "1kd9zl4h6nrsg29hq13vwp4zhfj8sa90vj40726lpw6vxz48k4di"))
+                "134pgvmf9cx5dxs0m0m3qhp3m3r1gl86ic3xax21zc4sdj8sdq46"))
               (file-name (git-file-name name version))))
     (native-inputs
-     (list googletest json-modern-cxx))
+     (list doctest googletest json-modern-cxx))
     (arguments
-     `(#:configure-flags
+     '(#:configure-flags
        '("-DBUILD_TESTS=ON")
        #:phases
        (modify-phases %standard-phases
          (replace 'check
            (lambda* _
              (with-directory-excursion "test"
-               (invoke "./test_xtl")
-               #t))))))
+               (invoke "./test_xtl")))))))
     (home-page "https://github.com/QuantStack/xtl")
     (build-system cmake-build-system)
     (synopsis "C++ template library providing some basic tools")
@@ -771,7 +822,7 @@ library.")
 (define-public cpplint
   (package
     (name "cpplint")
-    (version "1.4.5")
+    (version "1.5.5")
     (source
      (origin
        (method git-fetch)
@@ -781,19 +832,49 @@ library.")
              (url "https://github.com/cpplint/cpplint")
              (commit version)))
        (sha256
-        (base32 "1yzcxqx0186sh80p0ydl9z0ld51fn2cdpz9hmhrp15j53g9ira7c"))
+        (base32 "13l86aq0h1jga949k79k9x3hw2xqchjc162sclg2f99vz98zcz15"))
        (file-name (git-file-name name version))))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'use-later-pytest
-           (lambda _
-             (substitute* "test-requirements"
-               (("pytest.*") "pytest\n"))
-             #t)))))
+     (list #:modules `((srfi srfi-1)
+                       (srfi srfi-26)
+                       ,@%python-build-system-modules)
+           #:phases
+           #~(modify-phases (@ (guix build python-build-system) %standard-phases)
+               (add-before 'wrap 'reduce-GUIX_PYTHONPATH
+                 (lambda _
+                   ;; Hide the transitive native inputs from GUIX_PYTHONPATH
+                   ;; to prevent them from ending up in the run-time closure.
+                   ;; See also <https://bugs.gnu.org/25235>.
+                   (let ((transitive-native-inputs
+                          '#$(match (package-transitive-native-inputs
+                                     this-package)
+                               (((labels packages) ...) packages))))
+                     ;; Save the original PYTHONPATH because we need it for
+                     ;; tests later.
+                     (setenv "TMP_PYTHONPATH" (getenv "GUIX_PYTHONPATH"))
+                     (setenv "GUIX_PYTHONPATH"
+                             (string-join
+                              (filter (lambda (path)
+                                        (not (any (cut string-prefix? <> path)
+                                                  transitive-native-inputs)))
+                                      (search-path-as-string->list
+                                       (getenv "GUIX_PYTHONPATH")))
+                              ":")))))
+               (add-after 'wrap 'reset-GUIX_PYTHONPATH
+                 (lambda _
+                   (setenv "GUIX_PYTHONPATH"
+                           (getenv "TMP_PYTHONPATH"))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "pytest" "-vv")))))))
     (build-system python-build-system)
     (native-inputs
-     (list python-pytest python-pytest-cov python-pytest-runner))
+     (list python-coverage
+           python-pytest
+           python-pytest-cov
+           python-pytest-runner
+           python-testfixtures))
     (home-page "https://github.com/cpplint/cpplint")
     (synopsis "Static code checker for C++")
     (description "@code{cpplint} is a command-line tool to check C/C++ files
@@ -962,7 +1043,7 @@ Google's C++ code base.")
 (define-public pegtl
   (package
     (name "pegtl")
-    (version "2.8.3")
+    (version "3.2.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -971,7 +1052,7 @@ Google's C++ code base.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "17crgjfdx55imi2dqnz6xpvsxq07390yfgkz5nd2g77ydkvq9db3"))))
+                "1viwrlsw5nwvbv8d88mf5r77syapgxx3xm1kv5kmn6drw8jgsmzf"))))
     (build-system cmake-build-system)
     (home-page "https://github.com/taocpp/PEGTL")
     (synopsis "Parsing Expression Grammar template library")
@@ -1046,6 +1127,39 @@ of C++14 components that complements @code{std} and Boost.")
     ;; 32-bit is not supported: https://github.com/facebook/folly/issues/103
     (supported-systems '("aarch64-linux" "x86_64-linux"))
     (license license:asl2.0)))
+
+(define-public poco
+  (package
+    (name "poco")
+    (version "1.11.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pocoproject/poco")
+                    (commit (string-append "poco-" version "-release"))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0qkf8vb4qwds6idk9fkw6wjvcdk5k8h77x3gv47l0i4jfl5hwn8b"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "-DENABLE_TESTS=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-problematic-tests
+            (lambda _
+              (substitute* (list "Foundation/CMakeLists.txt" ; XXX: fails.
+                                 ;; Require network access
+                                 "Net/CMakeLists.txt"
+                                 "MongoDB/CMakeLists.txt"
+                                 "Redis/CMakeLists.txt")
+                (("ENABLE_TESTS") "FALSE")))))))
+    (home-page "https://pocoproject.org/")
+    (synopsis "Portable C++ components")
+    (description "A collection of libraries intended to be useful for building
+network-based applications.")
+    (license license:boost1.0)))
 
 (define-public aws-crt-cpp
   (let* ((commit "b6d311d76b504bf8ace5134d3fca0e672c36c9c3")
@@ -1161,6 +1275,44 @@ code will be mixed in with the actual programming logic.  This implementation
 provides a number of utilities to make coding with expected cleaner.")
     (home-page "https://tl.tartanllama.xyz/")
     (license license:cc0)))
+
+(define-public atomic-queue
+  (package
+    (name "atomic-queue")
+    (version "1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/max0x7ba/atomic_queue")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ssff73wlvrsk2nma99dmvm0ijyzfr54jk37kxgpb694r7ajc90l"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:configure-flags '("-Dbenchmarks=false")
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (lambda _
+                 (invoke "make" "run_tests")))))
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (copy-recursively "../source/include/atomic_queue"
+                               (string-append (assoc-ref outputs "out")
+                                              "/include/atomic_queue")))))))
+     (native-inputs
+      (list boost
+            pkg-config))
+    (home-page "https://github.com/max0x7ba/atomic_queue")
+    (synopsis "C++ lockless queue")
+    (description
+     "This package contains a C++11 multiple-producer-multiple-consumer lockless
+queues header library based on circular buffer with @code{std::atomic}.")
+    (license license:expat)))
 
 (define-public magic-enum
   (package
@@ -1592,3 +1744,123 @@ microparallel algorithms to implement a strict JSON parser with UTF-8
 validation.")
     (home-page "https://github.com/simdjson/simdjson")
     (license license:asl2.0)))
+
+(define-public bloomberg-bde-tools
+  (let ((commit "094885bd177e0159232d4e6a060a04edb1edd786"))
+    (package
+      (name "bloomberg-bde-tools")
+      ;; Recent releases are not tagged so commit must be used for checkout.
+      (version "3.97.0.0")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/bloomberg/bde-tools")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0mbbai73z8amh23ah3wy35kmy612380yr5wg89mic60qwqmpqb02"))
+                (patches
+                 (search-patches
+                  "bloomberg-bde-tools-fix-install-path.patch"))))
+      (build-system copy-build-system)
+      ;; Unable to be an inline dependency of bloomberg-bde due to patch.
+      (properties '((hidden? . #t)))
+      (synopsis "Tools for developing and building libraries modeled on BDE")
+      (description
+       "This package provides the cmake imports needed to build bloomberg-bde.")
+      (home-page "https://github.com/bloomberg/bde-tools")
+      (license license:asl2.0))))
+
+(define-public bloomberg-bde
+  (let ((commit "b6bcc0e24a5862bf77aea7edd831dedf50e21d64"))
+    (package
+      (name "bloomberg-bde")
+      ;; Recent releases are not tagged so commit must be used for checkout.
+      (version "3.98.0.0")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/bloomberg/bde")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0y3lipi1lj9qazgc935851r2qsx5aq3vvc4y52jq57riyz8wg3ma"))
+                (patches
+                 (search-patches
+                  "bloomberg-bde-cmake-module-path.patch"))
+                ;;(modules '((guix build utils)))
+                (snippet
+                 `(begin
+                    ;; FIXME: Delete bundled software. The third-party packages
+                    ;; may be patched or modified from upstream sources.
+                    ;;(for-each delete-file-recursively
+                    ;; (list "thirdparty"))
+                    ;; Delete failing tests.
+                    (for-each
+                     delete-file
+                     (list "groups/bal/ball/ball_asyncfileobserver.t.cpp"
+                           "groups/bal/ball/ball_fileobserver2.t.cpp"
+                           "groups/bal/ball/ball_recordstringformatter.t.cpp"
+                           "groups/bal/balst/balst_stacktraceutil.t.cpp"
+                           "groups/bdl/bdlmt/bdlmt_eventscheduler.t.cpp"
+                           "groups/bdl/bdlmt/bdlmt_timereventscheduler.t.cpp"
+                           "groups/bdl/bdls/bdls_filesystemutil.t.cpp"
+                           "groups/bsl/bslh/bslh_hashpair.t.cpp"
+                           "groups/bsl/bsls/bsls_platform.t.cpp"
+                           "groups/bsl/bsls/bsls_stackaddressutil.t.cpp"
+                           "groups/bsl/bsls/bsls_stopwatch.t.cpp"
+                           "groups/bsl/bslstl/bslstl_function_invokerutil.t.cpp"))
+                    #t))))
+      (build-system cmake-build-system)
+      (arguments
+       `(#:parallel-tests? #f           ; Test parallelism may fail inconsistently.
+         ;; Set UFID to build shared libraries. Flag descriptions can be found at
+         ;; https://bloomberg.github.io/bde-tools/reference/bde_repo.html#ufid
+         #:configure-flags ,(match %current-system
+            ((or "i686-linux" "armhf-linux")
+             ''("-DUFID=opt_dbg_exc_mt_32_shr_cpp17"))
+            (_
+             ''("-DUFID=opt_dbg_exc_mt_64_shr_cpp17")))
+         #:phases
+         (modify-phases %standard-phases
+           ;; Explicitly build tests separate from the main build.
+           (add-after 'build 'build-tests
+             (lambda* (#:key make-flags #:allow-other-keys)
+               (apply invoke "make" "all.t"
+                 `(,@(if #:parallel-build?
+                         `("-j" ,(number->string (parallel-job-count)))
+                         '())
+                 ,@make-flags)))))))
+      (native-inputs
+       (list bloomberg-bde-tools pkg-config python))
+      (synopsis "Foundational C++ libraries used at Bloomberg")
+      (description
+       "The BDE Development Environment libraries provide an enhanced
+implementation of STL containers, vocabulary types for representing common
+concepts (like dates and times), and building blocks for developing
+multi-threaded applications and network applications.")
+      (home-page "https://github.com/bloomberg/bde")
+      (license license:asl2.0))))
+
+(define-public gulrak-filesystem
+  (package
+    (name "gulrak-filesystem")
+    (version "1.5.10")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/gulrak/filesystem")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0dx1yvbz5rnisymkqap7z0b06ag9fcs6q6l82vgi8caylhkwsqs7"))))
+    (build-system cmake-build-system)
+    (synopsis "Header only C++ std::filesystem compatible library")
+    (description "This package provides a header-only single-file
+std::filesystem compatible helper library, based on the C++17 and C++20 specs,
+but implemented for C++11, C++14, C++17 or C++20.")
+    (home-page "https://github.com/gulrak/filesystem")
+    (license license:expat)))

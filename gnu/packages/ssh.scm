@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2014 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2016, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
@@ -184,7 +184,7 @@ a server that supports the SSH-2 protocol.")
 (define-public openssh
   (package
    (name "openssh")
-   (version "8.8p1")
+   (version "8.9p1")
    (source (origin
              (method url-fetch)
              (uri (string-append "mirror://openbsd/OpenSSH/portable/"
@@ -192,7 +192,7 @@ a server that supports the SSH-2 protocol.")
              (patches (search-patches "openssh-hurd.patch"))
              (sha256
               (base32
-               "1s8z6f7mi1pwsl79cqai8cr350m5lf2ifcxff57wx6mvm478k425"))))
+               "1ry5prcax0134v6srkgznpl9ch5snkgq7yvjqvd8c5mbnxa7cjgx"))))
    (build-system gnu-build-system)
    (native-inputs (list groff pkg-config))
    (inputs `(("libedit" ,libedit)
@@ -310,7 +310,7 @@ Additionally, various channel-specific options can be negotiated.")
 (define-public guile-ssh
   (package
     (name "guile-ssh")
-    (version "0.13.1")
+    (version "0.15.1")
     (home-page "https://github.com/artyom-poptsov/guile-ssh")
     (source (origin
               (method git-fetch)
@@ -320,9 +320,7 @@ Additionally, various channel-specific options can be negotiated.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1xpxkvgj7wgcl450djkcrmrf957mcy2f36hfs5g6kpla1gax2d1g"))
-              (patches (search-patches "guile-ssh-fix-test-suite.patch"
-                                       "guile-ssh-read-error.patch"))))
+                "0zzn5hsf97b35gixyg4z14sspl15qwnp52y4h89wra4y31l7467q"))))
     (build-system gnu-build-system)
     (outputs '("out" "debug"))
     (arguments
@@ -330,6 +328,13 @@ Additionally, various channel-specific options can be negotiated.")
        #:configure-flags '("--disable-static")
 
        #:phases (modify-phases %standard-phases
+                  (add-before 'bootstrap 'support-cross-compilation
+                    (lambda _
+                      ;; Support cross-compilation:
+                      ;; <https://github.com/artyom-poptsov/guile-ssh/issues/30>.
+                      (substitute* "libguile-ssh/Makefile.am"
+                        (("\\$\\(guile_snarf\\)")
+                         "CPP=\"$(CPP)\" $(guile_snarf)"))))
                   (add-before 'build 'fix-libguile-ssh-file-name
                     (lambda* (#:key outputs #:allow-other-keys)
                       ;; Build and install libguile-ssh.so so that we can use
@@ -382,28 +387,10 @@ programs written in GNU Guile interpreter.  It is a wrapper to the underlying
 libssh library.")
     (license license:gpl3+)))
 
-(define-public guile2.0-ssh
-  (package
-    (inherit guile-ssh)
-    (name "guile2.0-ssh")
-    (source (origin
-              (inherit (package-source guile-ssh))
-              (patches (search-patches "guile-ssh-fix-test-suite.patch"))))
-    (native-inputs
-     (modify-inputs (package-native-inputs guile-ssh)
-       (delete "guile")
-       (prepend guile-2.0 ;needed when cross-compiling.
-                )))
-    (inputs (modify-inputs (package-inputs guile-ssh)
-              (replace "guile" guile-2.0)))))
-
 (define-public guile2.2-ssh
   (package
     (inherit guile-ssh)
     (name "guile2.2-ssh")
-    (source (origin
-              (inherit (package-source guile-ssh))
-              (patches (search-patches "guile-ssh-fix-test-suite.patch"))))
     (native-inputs
      (modify-inputs (package-native-inputs guile-ssh)
        (delete "guile")
@@ -594,8 +581,7 @@ basis for almost any application.")
                     (("localhost") "127.0.0.1"))
 
                   (substitute* "src/testsuite/login-auth-test"
-                    (("/bin/cat") "cat"))
-                  #t))
+                    (("/bin/cat") "cat"))))
               (patches (search-patches "lsh-fix-x11-forwarding.patch"))))
     (build-system gnu-build-system)
     (native-inputs
@@ -629,7 +615,10 @@ basis for almost any application.")
 
                            ;; 'lsh_argp.h' checks HAVE_ARGP_PARSE but nothing
                            ;; defines it.
-                           "CPPFLAGS=-DHAVE_ARGP_PARSE")
+                           "CPPFLAGS=-DHAVE_ARGP_PARSE"
+
+                           ;; Fix the build of lsh@2.1 with GCC 10.
+                           "CFLAGS=-O2 -g -fcommon")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'disable-failing-tests
@@ -642,8 +631,7 @@ basis for almost any application.")
                (("seed-test \\\\")        ;prevent trailing slash
                 "seed-test")
                (("^\t(lsh|daemon|tcpip|socks|lshg|lcp|rapid7|lshd).*test.*")
-                ""))
-             #t))
+                ""))))
          (add-before 'configure 'pre-configure
            (lambda* (#:key inputs #:allow-other-keys)
              (let* ((nettle    (assoc-ref inputs "nettle"))

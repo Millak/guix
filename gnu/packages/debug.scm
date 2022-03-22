@@ -9,6 +9,7 @@
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
+;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -132,8 +133,8 @@ program to exhibit a bug.")
     (native-inputs (list flex))
     (inputs
      `(("astyle"          ,astyle)
-       ("llvm"            ,llvm)
-       ("clang"           ,clang)
+       ("llvm"            ,llvm-9)
+       ("clang"           ,clang-9)
        ("indent"          ,indent)
        ("perl"            ,perl)
        ("exporter-lite"   ,perl-exporter-lite)
@@ -198,6 +199,11 @@ tools that process C/C++ code.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'fix-linkage
+           (lambda _
+            (substitute* "clang_delta/CMakeLists.txt"
+              (("\\$\\{LLVM_LINK_LLVM_DYLIB\\}") "True")
+              (("  LLVM") "  LLVMSupport"))))
          (add-before 'build 'hardcode-paths
            (lambda _
             (substitute* "cvise.py"
@@ -615,7 +621,7 @@ error reporting, better tracing, profiling, and a debugger.")
 (define-public rr
   (package
     (name "rr")
-    (version "5.4.0")
+    (version "5.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -623,7 +629,7 @@ error reporting, better tracing, profiling, and a debugger.")
                     (commit version)))
               (sha256
                (base32
-                "1sfldgkkmsdyaqa28i5agcykc63gwm3zjihd64g86i852w8al2w6"))
+                "079x891axkiy8qbvjar9vbaldlx7pm9p0i3nq6infdc66nc69635"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -745,18 +751,34 @@ use than similar tools like @command{mtrace}.")
 (define-public cgdb
   (package
     (name "cgdb")
-    (version "0.7.1")
+    (version "0.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://cgdb.me/files/cgdb-" version ".tar.gz"))
        (sha256
-        (base32 "1671gpz5gx5j0zga8xy2x7h33vqh3nij93lbb6dbb366ivjknwmv"))))
+        (base32 "1w8ib2vg3pg68d9hh97fw5042c73i9nqavdddc87n9bpscjbaf0d"))))
     (build-system gnu-build-system)
     (inputs
-     (list ncurses readline))
+     (list bash-minimal ncurses readline gdb))
     (native-inputs
      (list flex texinfo))
+    (arguments
+     `(#:configure-flags
+        (list
+          (string-append "ac_cv_rl_version=" ,(package-version readline))
+          "ac_cv_file__dev_ptmx=no"
+          "ac_cv_file__proc_self_status=no"
+          "ac_cv_func_setpgrp_void=no")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-paths
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((gdb (search-input-file inputs "bin/gdb"))
+                   (sh (search-input-file inputs "bin/sh")))
+               (substitute* "lib/util/fork_util.cpp"
+                 (("GDB = \"gdb\"") (string-append "GDB = \"" gdb "\"")))
+               (substitute* "cgdb/cgdb.cpp" (("/bin/sh") sh))))))))
     (home-page "https://cgdb.github.io")
     (synopsis "Console front-end to the GNU debugger")
     (description

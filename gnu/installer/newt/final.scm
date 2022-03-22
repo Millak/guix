@@ -59,9 +59,7 @@ This will take a few minutes.")
      #:file-textbox-height height
      #:exit-button-callback-procedure
      (lambda ()
-       (raise
-        (condition
-         (&installer-step-abort)))))))
+       (abort-to-prompt 'installer-step 'abort)))))
 
 (define (run-install-success-page)
   (match (current-clients)
@@ -88,9 +86,7 @@ press the button to reboot.")))
              (G_ "Restart the installer")
              (G_ "The final system installation step failed.  You can resume from \
 a specific step, or restart the installer."))
-       (1 (raise
-           (condition
-            (&installer-step-abort))))
+       (1 (abort-to-prompt 'installer-step 'abort))
        (2
         ;; Keep going, the installer will be restarted later on.
         #t)))
@@ -109,7 +105,7 @@ a specific step, or restart the installer."))
 (define (run-final-page result prev-steps)
   (define (wait-for-clients)
     (unless (null? (current-clients))
-      (syslog "waiting with clients before starting final step~%")
+      (installer-log-line "waiting with clients before starting final step")
       (send-to-clients '(starting-final-step))
       (match (select (current-clients) '() '())
         (((port _ ...) _ _)
@@ -119,7 +115,7 @@ a specific step, or restart the installer."))
   ;; things such as changing the swap partition label.
   (wait-for-clients)
 
-  (syslog "proceeding with final step~%")
+  (installer-log-line "proceeding with final step")
   (let* ((configuration   (format-configuration prev-steps result))
          (user-partitions (result-step result 'partition))
          (locale          (result-step result 'locale))

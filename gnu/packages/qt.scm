@@ -21,8 +21,9 @@
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
-;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
+;;; Copyright © 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -146,14 +147,14 @@
 (define-public qt5ct
   (package
     (name "qt5ct")
-    (version "1.2")
+    (version "1.5")
     (source
      (origin
        (method url-fetch)
        (uri
         (string-append "mirror://sourceforge/qt5ct/qt5ct-" version ".tar.bz2"))
        (sha256
-        (base32 "0bl7dc03b7vm435khkr932ybslsbq1nfajd936zlc1sxdmpg1qqx"))))
+        (base32 "14742vs32m98nbfb5mad0i8ciff5f45gfcb5v03p4hh2dvhhqgfn"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; No target
@@ -178,8 +179,7 @@
                        (string-append "PREFIX=" out)
                        (string-append "BINDIR=" out "/bin")
                        (string-append "DATADIR=" out "/share")
-                       (string-append "PLUGINDIR=" out "/lib/qt5/plugins")))
-             #t))
+                       (string-append "PLUGINDIR=" out "/lib/qt5/plugins")))))
          (add-after 'install 'qt-wrap
            (assoc-ref qt:%standard-phases 'qt-wrap)))))
     (native-inputs
@@ -2173,7 +2173,7 @@ contain over 620 classes.")
     (inputs
      `(("python" ,python-wrapper)
        ("python-sip" ,python-sip)
-       ("python-pyqt" ,python-pyqt)
+       ("python-pyqt" ,python-pyqt-without-qtwebkit)
        ("qtbase" ,qtbase-5)
        ("qtsvg" ,qtsvg)
        ("qtdeclarative" ,qtdeclarative)
@@ -2232,7 +2232,9 @@ set of three modules.  Prior to v5.12 these bindings were part of PyQt
 itself.")
     (license license:gpl3)))
 
-;; XXX: This is useful because qtwebkit does not build reliably at this time.
+;; XXX: This is useful for removing qtwebkit from other packages' dependency
+;; graphs, as well as for preventing python-pyqtwebengine from transitively
+;; depending on qtwebkit.
 ;; Ultimately, it would be nicer to have a more modular set of python-pyqt-*
 ;; packages that could be used together.
 (define-public python-pyqt-without-qtwebkit
@@ -2877,15 +2879,18 @@ color-related widgets.")
            clang-toolchain
            qtbase-5
            qtdatavis3d
+           qtdeclarative
            qtlocation
            qtmultimedia
            qtquickcontrols
+           qtquickcontrols2
            qtscript
            qtscxml
            qtsensors
            qtspeech
            qtsvg
            qtwebchannel
+           qtwebengine
            qtwebsockets
            qtx11extras
            qtxmlpatterns))
@@ -2904,10 +2909,51 @@ color-related widgets.")
              (string-append "-DPYTHON_EXECUTABLE="
                             (assoc-ref %build-inputs "python")
                             "/bin/python"))
+       #:modules ((guix build cmake-build-system)
+                  (guix build utils)
+                  (srfi srfi-1))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'go-to-source-dir
            (lambda _ (chdir "sources/pyside2") #t))
+         (add-after 'go-to-source-dir 'fix-qt-module-detection
+           (lambda* (#:key inputs #:allow-other-keys)
+             ;; Activate qt module support even if it not in the same
+             ;; directory as qtbase.
+             (substitute* "../cmake_helpers/helpers.cmake"
+               (("\\(\"\\$\\{found_basepath\\}\" GREATER \"0\"\\)")
+                "true"))
+             ;; Add include directories for qt modules.
+             (let ((dirs (map (lambda (name)
+                                (string-append (assoc-ref inputs name)
+                                               "/include/qt5"))
+                              '("qtdatavis3d"
+                                "qtdeclarative"
+                                "qtlocation"
+                                "qtmultimedia"
+                                "qtquickcontrols"
+                                "qtquickcontrols2"
+                                "qtscript"
+                                "qtscxml"
+                                "qtsensors"
+                                "qtspeech"
+                                "qtsvg"
+                                "qttools"
+                                "qtwebchannel"
+                                "qtwebengine"
+                                "qtwebsockets"
+                                "qtx11extras"
+                                "qtxmlpatterns"))))
+               (substitute* "cmake/Macros/PySideModules.cmake"
+                 (("\\$\\{PATH_SEP\\}\\$\\{core_includes\\}" all)
+                  (fold (lambda (dir paths)
+                          (string-append paths "${PATH_SEP}" dir))
+                        all
+                        dirs)))
+               (setenv "CXXFLAGS" (fold (lambda (dir paths)
+                                          (string-append paths " -I" dir))
+                                        ""
+                                        dirs)))))
          (add-before 'configure 'set-clang-dir
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((clang (assoc-ref inputs "clang-toolchain")))
@@ -3004,6 +3050,50 @@ being fully customizable and easy to extend.")
     ;; be used.
     (license (list license:gpl2 license:gpl3))))
 
+(define-public qhexedit
+  (package
+    (name "qhexedit")
+    (version "0.8.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Simsys/qhexedit2")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1j333kiwhbidphdx86yilkaivgl632spfh6fqx93bc80gk4is3xa"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-path
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* "src/qhexedit.pro"
+               (("^unix:DESTDIR = /usr/lib")
+                (string-append "unix:DESTDIR = "
+                               (assoc-ref outputs "out") "/lib")))))
+         (replace 'configure
+           (lambda _
+             (chdir "src")
+             (invoke "qmake" "qhexedit.pro")))
+         (add-after 'install 'install-headers
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (include-dir (string-append out "/include")))
+               (mkdir-p include-dir)
+               (for-each (lambda (file)
+                           (install-file file include-dir))
+                         (find-files "." "\\.h$"))))))))
+    (inputs (list qtbase-5))
+    (native-inputs (list qttools))
+    (home-page "https://simsys.github.io")
+    (synopsis "Binary editor widget for Qt")
+    (description
+     "@code{QHexEdit} is a hex editor widget for the Qt framework.  It is a
+simple editor for binary data, just like @code{QPlainTextEdit} is for text
+data.")
+    (license license:lgpl2.1)))
 
 (define-public soqt
   (let ((commit-ref "fb8f655632bb9c9c60e0ff9fa69a5ba22d3ff99d")

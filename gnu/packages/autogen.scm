@@ -40,7 +40,13 @@
        (uri (string-append "mirror://gnu/autogen/rel" version
                            "/autogen-" version ".tar.xz"))
        (sha256
-        (base32 "16mlbdys8q4ckxlvxyhwkdnh1ay9f6g0cyp1kylkpalgnik398gq"))))
+        (base32 "16mlbdys8q4ckxlvxyhwkdnh1ay9f6g0cyp1kylkpalgnik398gq"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Address '-Werror=format-overflow' error.
+        '(substitute* "getdefs/getdefs.c"
+           (("def_bf\\[[[:space:]]*MAXNAMELEN[[:space:]]*\\]")
+            "def_bf[MAXNAMELEN + 10]")))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config which))
     (inputs (list guile-2.2 perl))          ; for doc generator mdoc

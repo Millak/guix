@@ -34,7 +34,7 @@
 ;;; Code:
 
 (define (add-fontconfig-config-file he-symlink-path)
-  `(("config/fontconfig/fonts.conf"
+  `(("fontconfig/fonts.conf"
      ,(mixed-text-file
        "fonts.conf"
        "<?xml version='1.0'?>
@@ -51,7 +51,7 @@
   (service-type (name 'home-fontconfig)
                 (extensions
                  (list (service-extension
-                        home-files-service-type
+                        home-xdg-configuration-files-service-type
                         add-fontconfig-config-file)
                        (service-extension
                         home-run-on-change-service-type

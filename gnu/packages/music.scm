@@ -3,7 +3,7 @@
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2016 Al McElrath <hello@yrns.org>
-;;; Copyright © 2016, 2017, 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2018, 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2017, 2019 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2016 John J. Foerch <jjfoerch@earthlink.net>
@@ -34,7 +34,7 @@
 ;;; Copyright © 2019 Riku Viitanen <riku.viitanen0@gmail.com>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2021 Liliana Marie Prikler <liliana.prikler@gmail.com>
-;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021 Bonface Munyoki Kilyungi <me@bonfacemunyoki.com>
 ;;; Copyright © 2021 Frank Pursel <frank.pursel@gmail.com>
@@ -44,6 +44,7 @@
 ;;; Copyright © 2021 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Thomas Albers Raviola <thomas@thomaslabs.org>
+;;; Copyright © 2022 Sughosha <sughosha@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -618,46 +619,47 @@ many input formats and provides a customisable Vi-style user interface.")
 (define-public denemo
   (package
     (name "denemo")
-    (version "2.5.0")
+    (version "2.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://gnu/denemo/denemo-" version ".tar.gz"))
        (sha256
-        (base32 "05kwy8894hsxr6123hc854j2qq2sxyjw721zk4g3vzz8pw29p887"))))
+        (base32 "0pdmjij2635jbw2a24ivk1y4w0z58jbmq9vnz3qrfzw4d469grab"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Tests require to write $HOME.
-             (setenv "HOME" (getcwd))
-             ;; Replace hard-coded diff file name.
-             (substitute* "tests/integration.c"
-               (("/usr/bin/diff")
-                (search-input-file inputs "/bin/diff")))
-             ;; Denemo's documentation says to use this command to run its
-             ;; test suite.
-             (invoke "make" "-C" "tests" "check")))
-         (add-before 'build 'set-lilypond
-           ;; This phase sets the default path for lilypond to its current
-           ;; location in the store.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let* ((lilypond (search-input-file inputs "/bin/lilypond")))
-               (substitute* "src/core/prefops.c"
-                 (("g_string_new \\(\"lilypond\"\\);")
-                  (string-append "g_string_new (\""
-                                 lilypond
-                                 "\");"))))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key inputs tests? #:allow-other-keys)
+              ;; Tests require to write $HOME.
+              (when tests?
+                (setenv "HOME" (getcwd))
+                ;; Replace hard-coded diff file name.
+                (substitute* "tests/integration.c"
+                  (("/usr/bin/diff")
+                   (search-input-file inputs "/bin/diff")))
+                ;; Denemo's documentation says to use this command to run its
+                ;; test suite.
+                (invoke "make" "-C" "tests" "check"))))
+          (add-before 'build 'set-lilypond
+            ;; This phase sets the default path for lilypond to its current
+            ;; location in the store.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((lilypond (search-input-file inputs "/bin/lilypond")))
+                (substitute* "src/core/prefops.c"
+                  (("g_string_new \\(\"lilypond\"\\);")
+                   (string-append "g_string_new (\""
+                                  lilypond
+                                  "\");")))))))))
     (native-inputs
-     `(("diffutils" ,diffutils)
-       ("glib:bin" ,glib "bin")         ; for gtester
-       ("gtk-doc" ,gtk-doc)
-       ("intltool" ,intltool)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)))
+     (list diffutils
+           `(,glib "bin")               ; for gtester
+           gtk-doc
+           intltool
+           libtool
+           pkg-config))
     (inputs
      (list alsa-lib
            aubio
@@ -1773,7 +1775,7 @@ music theorist Paul Nauert's quantization grids or Q-Grids, for short.")
                      '()))
          #:python ,python-2))
       (inputs
-       (list jack-1 libsigc++ liblo ntk))
+       (list jack-1 libsigc++-2 liblo ntk))
       (native-inputs
        (list pkg-config))
       (home-page "https://non.tuxfamily.org/wiki/Non%20Sequencer")
@@ -2176,7 +2178,7 @@ users to select LV2 plugins and run them with jalv.")
 (define-public mixxx
   (package
     (name "mixxx")
-    (version "2.3.1")
+    (version "2.3.2")
     (source
      (origin
        (method git-fetch)
@@ -2188,7 +2190,7 @@ users to select LV2 plugins and run them with jalv.")
         (search-patches "mixxx-link-qtscriptbytearray-qtscript.patch"
                         "mixxx-system-googletest-benchmark.patch"))
        (sha256
-        (base32 "04781s4ajdlwgvf12v2mvh6ia5grhc5pn9d75b468qci3ilnmkg8"))
+        (base32 "1h26vpf60rk56fsw1nvmxihg7ammlj8q4zgim49q4s4ww7j8wwqj"))
        (modules '((guix build utils)))
        (snippet
         ;; Delete libraries that we already have or don't need.
@@ -2210,11 +2212,6 @@ users to select LV2 plugins and run them with jalv.")
            (lambda _
              (system "Xvfb &")
              (setenv "DISPLAY" ":0")))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; This test fails.  I don't know why.
-               (invoke "ctest" "-E" "TagLibTest.WriteID3v2Tag"))))
          (add-after 'install 'wrap-executable
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -2223,56 +2220,56 @@ users to select LV2 plugins and run them with jalv.")
                  `("LD_LIBRARY_PATH" ":" prefix
                    ,(list (string-append faad2 "/lib"))))))))))
     (native-inputs
-     `(("benchmark" ,benchmark)
-       ("googletest" ,googletest)
-       ("python" ,python-wrapper)
-       ("qttools" ,qttools)
-       ("xorg-server" ,xorg-server-for-tests)))
+     (list benchmark
+           googletest
+           python-wrapper
+           qttools
+           xorg-server-for-tests))
     (inputs
-     `(("bash" ,bash-minimal)
-       ("chromaprint" ,chromaprint)
-       ("faad2" ,faad2)
-       ("ffmpeg" ,ffmpeg)
-       ("fftw" ,fftw)
-       ("flac" ,flac)
-       ("glu" ,glu)
-       ("hidapi" ,hidapi)
-       ("jack" ,jack-1)
-       ("lame" ,lame)
-       ("libdjinterop" ,libdjinterop)
-       ("libebur128" ,libebur128)
-       ("libid3tag" ,libid3tag)
-       ("libkeyfinder" ,libkeyfinder)
-       ("libmad" ,libmad)
-       ("libmp4v2" ,libmp4v2)
-       ("libmodplug" ,libmodplug)
-       ("libsndfile" ,libsndfile)
-       ("libshout" ,libshout)
-       ;; XXX: Mixxx complains the libshout-idjc package suffers from bug
-       ;; lp1833225 and refuses to use it.  Use the bundle for now.
-       ;; ("libshout-idjc" ,libshout-idjc)
-       ("libusb" ,libusb)
-       ("libvorbis" ,libvorbis)
-       ("lilv" ,lilv)
-       ("mp3guessenc" ,mp3guessenc)
-       ("openssl" ,openssl)
-       ("opusfile" ,opusfile)
-       ("portaudio" ,portaudio)
-       ("portmidi" ,portmidi)
-       ("protobuf" ,protobuf)
-       ("qtbase" ,qtbase-5)
-       ("qtdeclarative" ,qtdeclarative)
-       ("qtkeychain" ,qtkeychain)
-       ("qtscript" ,qtscript)
-       ("qtsvg" ,qtsvg)
-       ("qtx11extras" ,qtx11extras)
-       ("rubberband" ,rubberband)
-       ("soundtouch" ,soundtouch)
-       ("sqlite" ,sqlite)
-       ("taglib" ,taglib)
-       ("upower" ,upower)
-       ("vamp" ,vamp)
-       ("wavpack" ,wavpack)))
+     (list bash-minimal
+           chromaprint
+           faad2
+           ffmpeg
+           fftw
+           flac
+           glu
+           hidapi
+           jack-1
+           lame
+           libdjinterop
+           libebur128
+           libid3tag
+           libkeyfinder
+           libmad
+           libmp4v2
+           libmodplug
+           libsndfile
+           libshout
+           ;; XXX: Mixxx complains the libshout-idjc package suffers from bug
+           ;; lp1833225 and refuses to use it.  Use the bundle for now.
+           ;; libshout-idjc
+           libusb
+           libvorbis
+           lilv
+           mp3guessenc
+           openssl
+           opusfile
+           portaudio
+           portmidi
+           protobuf
+           qtbase-5
+           qtdeclarative
+           qtkeychain
+           qtscript
+           qtsvg
+           qtx11extras
+           rubberband
+           soundtouch
+           sqlite
+           taglib
+           upower
+           vamp
+           wavpack))
     (home-page "https://mixxx.org/")
     (synopsis "DJ software to perform live mixes")
     (description "Mixxx is a DJ software.  It integrates the tools DJs need to
@@ -3612,6 +3609,17 @@ formats, looking up tracks through metadata and audio fingerprints.")
                (base32
                 "1qdk6i8gyhbi1c4j5jmbfpac3q8sff2ysri1pnp7nb9wzcp615v3"))))
     (build-system python-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-before 'check 'remove-hypothesis-deadlines
+             ;; These tests can timeout on slower architectures.
+             (lambda _
+               (substitute* "tests/test___init__.py"
+                 (("import given") "import given, settings")
+                 (("( +)@given" all spaces)
+                  (string-append spaces "@settings(deadline=None)\n" all))))))))
     (native-inputs
      (list python-pytest python-hypothesis python-flake8))
     (home-page "https://mutagen.readthedocs.io/")
@@ -4044,7 +4052,7 @@ with a number of bugfixes and changes to improve IT playback.")
        ("liblo" ,liblo)
        ("rubberband" ,rubberband)
        ("libxml2" ,libxml2)
-       ("libsigc++" ,libsigc++)
+       ("libsigc++" ,libsigc++-2)
        ("ncurses" ,ncurses)))
     (native-inputs
      (list pkg-config))

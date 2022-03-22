@@ -1,10 +1,10 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2019, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2021, 2022 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -174,12 +174,15 @@ As a result, the S-expression will be approximate if GEXP has references."
          (map (lambda (reference)
                 (match reference
                   (($ <gexp-input> thing output native)
-                   (if (gexp-like? thing)
-                       (gexp->approximate-sexp thing)
-                       ;; Simply returning 'thing' won't work in some
-                       ;; situations; see 'write-gexp' below.
-                       '(*approximate*)))
-                  (_ '(*approximate*))))
+                   (cond ((gexp-like? thing)
+                          (gexp->approximate-sexp thing))
+                         ((not (record? thing)) ; a S-exp
+                          thing)
+                         (#true
+                          ;; Simply returning 'thing' won't work in some
+                          ;; situations; see 'write-gexp' below.
+                          '(*approximate*))))
+                  (($ <gexp-output>) '(*approximate*))))
               (gexp-references gexp))))
 
 (define (write-gexp gexp port)
@@ -597,13 +600,10 @@ This is the declarative counterpart of 'gexp->derivation'."
   ;; gexp.
   (match file
     (($ <computed-file> name gexp guile options)
-     (if guile
-         (mlet %store-monad ((guile (lower-object guile system
-                                                  #:target target)))
-           (apply gexp->derivation name gexp #:guile-for-build guile
-                  #:system system #:target target options))
-         (apply gexp->derivation name gexp
-                #:system system #:target target options)))))
+     (mlet %store-monad ((guile (lower-object (or guile (default-guile))
+                                              system #:target #f)))
+       (apply gexp->derivation name gexp #:guile-for-build guile
+              #:system system #:target target options)))))
 
 (define-record-type <program-file>
   (%program-file name gexp guile path)
@@ -2071,7 +2071,7 @@ resulting store file holds references to all these."
                     #:local-build? #t
                     #:substitutable? #f))
 
-(define* (mixed-text-file name #:rest text)
+(define* (mixed-text-file name #:key guile #:rest text)
   "Return an object representing store file NAME containing TEXT.  TEXT is a
 sequence of strings and file-like objects, as in:
 
@@ -2080,14 +2080,15 @@ sequence of strings and file-like objects, as in:
 
 This is the declarative counterpart of 'text-file*'."
   (define build
-    (gexp (call-with-output-file (ungexp output "out")
-            (lambda (port)
-              (set-port-encoding! port "UTF-8")
-              (display (string-append (ungexp-splicing text)) port)))))
+    (let ((text (if guile (drop text 2) text)))
+      (gexp (call-with-output-file (ungexp output "out")
+              (lambda (port)
+                (set-port-encoding! port "UTF-8")
+                (display (string-append (ungexp-splicing text)) port))))))
 
-  (computed-file name build))
+  (computed-file name build #:guile guile))
 
-(define (file-union name files)
+(define* (file-union name files #:key guile)
   "Return a <computed-file> that builds a directory containing all of FILES.
 Each item in FILES must be a two-element list where the first element is the
 file name to use in the new directory, and the second element is a gexp
@@ -2121,7 +2122,8 @@ This yields an 'etc' directory containing these two files."
                                   (mkdir-p (dirname (ungexp target)))
                                   (symlink (ungexp source)
                                            (ungexp target))))))
-                            files)))))))
+                            files)))))
+                 #:guile guile))
 
 (define* (directory-union name things
                           #:key (copy? #f) (quiet? #f)
@@ -2177,6 +2179,29 @@ is true, the derivation will not print anything."
 ;;;
 
 (eval-when (expand load eval)
+  (define-once read-syntax-redefined?
+    ;; Have we already redefined 'read-syntax'?  This needs to be done on
+    ;; 3.0.8 only to work around <https://issues.guix.gnu.org/54003>.
+    (or (not (module-variable the-scm-module 'read-syntax))
+        (not (guile-version>? "3.0.7"))))
+
+  (define read-procedure
+    ;; The current read procedure being called: either 'read' or
+    ;; 'read-syntax'.
+    (make-parameter read))
+
+  (define read-syntax*
+    ;; Replacement for 'read-syntax'.
+    (let ((read-syntax (and=> (module-variable the-scm-module 'read-syntax)
+                              variable-ref)))
+      (lambda (port . rest)
+        (parameterize ((read-procedure read-syntax))
+          (apply read-syntax port rest)))))
+
+  (unless read-syntax-redefined?
+    (set! (@ (guile) read-syntax) read-syntax*)
+    (set! read-syntax-redefined? #t))
+
   (define* (read-ungexp chr port #:optional native?)
     "Read an 'ungexp' or 'ungexp-splicing' form from PORT.  When NATIVE? is
 true, use 'ungexp-native' and 'ungexp-native-splicing' instead."
@@ -2192,22 +2217,39 @@ true, use 'ungexp-native' and 'ungexp-native-splicing' instead."
              'ungexp-native
              'ungexp))))
 
-    (match (read port)
-      ((? symbol? symbol)
-       (let ((str (symbol->string symbol)))
+    (define symbolic?
+      ;; Depending on whether (read-procedure) is 'read' or 'read-syntax', we
+      ;; might get either sexps or syntax objects.  Adjust accordingly.
+      (if (eq? (read-procedure) read)
+          symbol?
+          (compose symbol? syntax->datum)))
+
+    (define symbolic->string
+      (if (eq? (read-procedure) read)
+          symbol->string
+          (compose symbol->string syntax->datum)))
+
+    (define wrapped-symbol
+      (if (eq? (read-procedure) read)
+          (lambda (_ symbol) symbol)
+          datum->syntax))
+
+    (match ((read-procedure) port)
+      ((? symbolic? symbol)
+       (let ((str (symbolic->string symbol)))
          (match (string-index-right str #\:)
            (#f
             `(,unquote-symbol ,symbol))
            (colon
             (let ((name   (string->symbol (substring str 0 colon)))
                   (output (substring str (+ colon 1))))
-              `(,unquote-symbol ,name ,output))))))
+              `(,unquote-symbol ,(wrapped-symbol symbol name) ,output))))))
       (x
        `(,unquote-symbol ,x))))
 
   (define (read-gexp chr port)
     "Read a 'gexp' form from PORT."
-    `(gexp ,(read port)))
+    `(gexp ,((read-procedure) port)))
 
   ;; Extend the reader
   (read-hash-extend #\~ read-gexp)

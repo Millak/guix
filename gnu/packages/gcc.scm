@@ -1,9 +1,9 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2015, 2016, 2017, 2018, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015, 2016, 2017, 2018, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Carlos Sánchez de La Lama <csanchezdll@gmail.com>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2020 Marius Bakke <mbakke@fastmail.com>
@@ -50,6 +50,7 @@
   #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (srfi srfi-1)
+  #:use-module (ice-9 match)
   #:use-module (ice-9 regex))
 
 (define %gcc-infrastructure
@@ -293,6 +294,16 @@ where the OS part is overloaded to denote a specific ABI---into GCC
                     (substitute* "gcc/config/aarch64/t-aarch64-linux"
                       (("lib64") "lib")))
 
+                  ;; TODO: Make this unconditional in core-updates.
+                  ;; The STARTFILE_PREFIX_SPEC prevents gcc from finding the
+                  ;; gcc:lib output, which causes ld to not find -lgcc_s.
+                  ,@(if (target-riscv64?)
+                     `((when (file-exists? "gcc/config/riscv")
+                         (substitute* "gcc/config/riscv/linux.h"
+                           (("define STARTFILE_PREFIX_SPEC")
+                           "define __STARTFILE_PREFIX_SPEC"))))
+                     '())
+
                   (when (file-exists? "libbacktrace")
                     ;; GCC 4.8+ comes with libbacktrace.  By default it builds
                     ;; with -Werror, which fails with a -Wcast-qual error in glibc
@@ -525,6 +536,19 @@ Go.  It also includes runtime support libraries for these languages.")
 
        ,@(package-inputs gcc-4.7)))))
 
+(define %gcc-7.5-aarch64-micro-architectures
+  ;; Suitable '-march' values for GCC 7.5.
+  ;; TODO: Allow dynamically adding feature flags.
+  '("armv8-a" "armv8.1-a" "armv8.2-a" "armv8.3-a"))
+
+(define %gcc-7.5-armhf-micro-architectures
+  ;; Suitable '-march' values for GCC 7.5.
+  ;; TODO: Allow dynamically adding feature flags.
+  '("armv7" "armv7-a" "armv7-m" "armv7-r" "armv7e-m" "armv7ve"
+    "armv8-a" "armv8-a+crc" "armv8.1-a" "armv8.1-a+crc"
+    "armv8-m.base" "armv8-m.main" "armv8-m.main+dsp"
+    "iwmmxt" "iwmmxt2"))
+
 (define %gcc-7.5-x86_64-micro-architectures
   ;; Suitable '-march' values for GCC 7.5 (info "(gcc) x86 Options").
   '("core2" "nehalem" "westmere" "sandybridge" "ivybridge"
@@ -536,6 +560,19 @@ Go.  It also includes runtime support libraries for these languages.")
     "znver1"
     "btver1" "btver2" "geode"))
 
+(define %gcc-10-aarch64-micro-architectures
+  ;; Suitable '-march' values for GCC 10.
+  ;; TODO: Allow dynamically adding feature flags.
+  (append %gcc-7.5-aarch64-micro-architectures
+          '("armv8.4-a" "armv8.5-a" "armv8.6-a")))
+
+(define %gcc-10-armhf-micro-architectures
+  ;; Suitable '-march' values for GCC 10.
+  ;; TODO: Allow dynamically adding feature flags.
+  (append %gcc-7.5-armhf-micro-architectures
+          '("armv8.2-a" "armv8.3-a" "armv8.4-a" "armv8.5-a" "armv8.6-a"
+            "armv8-r" "armv8.1-m.main")))
+
 (define %gcc-10-x86_64-micro-architectures
   ;; Suitable '-march' values for GCC 10.
   (append %gcc-7.5-x86_64-micro-architectures
@@ -544,7 +581,6 @@ Go.  It also includes runtime support libraries for these languages.")
         "cascadelake" "cooperlake" "tigerlake"
 
         "znver2" "znver3")))
-
 
 (define-public gcc-7
   (package
@@ -566,6 +602,8 @@ for several languages, including C, C++, Objective-C, Fortran, Ada, and Go.
 It also includes runtime support libraries for these languages.")
     (properties
      `((compiler-cpu-architectures
+        ("aarch64" ,@%gcc-7.5-aarch64-micro-architectures)
+        ("armhf" ,@%gcc-7.5-armhf-micro-architectures)
         ("x86_64" ,@%gcc-7.5-x86_64-micro-architectures))))))
 
 (define-public gcc-8
@@ -619,6 +657,8 @@ It also includes runtime support libraries for these languages.")
             (snippet gcc-canadian-cross-objdump-snippet)))
    (properties
     `((compiler-cpu-architectures
+       ("aarch64" ,@%gcc-10-aarch64-micro-architectures)
+       ("armhf" ,@%gcc-10-armhf-micro-architectures)
        ("x86_64" ,@%gcc-10-x86_64-micro-architectures))))))
 
 (define-public gcc-11
@@ -635,12 +675,108 @@ It also includes runtime support libraries for these languages.")
             (patches (search-patches "gcc-9-strmov-store-file-names.patch"
                                      "gcc-5.0-libvtv-runpath.patch"))
             (modules '((guix build utils)))
-            (snippet gcc-canadian-cross-objdump-snippet)))))
+            (snippet gcc-canadian-cross-objdump-snippet)))
+
+   ;; TODO: Add newly supported micro-architectures.
+   (properties (package-properties gcc-10))))
 
 ;; Note: When changing the default gcc version, update
 ;;       the gcc-toolchain-* definitions.
 (define-public gcc gcc-10)
 
+
+;;;
+;;; Historical version.
+;;;
+
+(define-public gcc-2.95
+  ;; Note: 'gcc-core-mesboot0' in commencement.scm provides 2.95 as well, but
+  ;; with additional tricks to support compilation with TinyCC and Mes-libc.
+  (package
+    (inherit gcc)
+    (version "2.95.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/gcc/gcc-2.95.3/gcc-core-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "1xvfy4pqhrd5v2cv8lzf63iqg92k09g6z9n2ah6ndd4h17k1x0an"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; Do not build the bundled Texinfo.
+                  (delete-file-recursively "texinfo")
+                  (substitute* "configure"
+                    (("host_tools=(.*)texinfo" _ before)
+                     (string-append "host_tools=" before)))))))
+    (supported-systems (fold delete %supported-systems
+                             '("powerpc64le-linux" "riscv64-linux")))
+    (native-inputs (list texinfo dejagnu))
+    (inputs '())
+    (propagated-inputs '())
+    (outputs '("out"))
+    (arguments
+     (let ((matching-system
+             (match (%current-system)
+               ;; This package predates our 64-bit architectures.
+               ;; Force a 32-bit build targeting a similar architecture.
+               ("aarch64-linux"
+                "armhf-linux")
+               ("x86_64-linux"
+                "i686-linux")
+               (_
+                (%current-system)))))
+       (list #:system matching-system
+             #:configure-flags #~'("--disable-werror")
+
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-before 'configure 'set-dynamic-linker-file-name
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     ;; Tell GCC what the real loader file name is.
+                     (substitute* '("gcc/config/alpha/linux-elf.h"
+                                    "gcc/config/m68k/linux.h"
+                                    "gcc/config/mips/linux.h"
+                                    "gcc/config/rs6000/linux.h")
+                       (("/lib/ld\\.so\\.1")
+                        (search-input-file
+                          inputs #$(glibc-dynamic-linker matching-system))))
+                     (substitute* '("gcc/config/alpha/linux-elf.h"
+                                    "gcc/config/arm/linux-elf.h"
+                                    "gcc/config/i386/linux.h"
+                                    "gcc/config/m68k/linux.h"
+                                    "gcc/config/sparc/linux.h"
+                                    "gcc/config/sparc/linux64.h")
+                       (("/lib(64)?/ld-linux\\.so\\.[12]")
+                        (search-input-file
+                          inputs #$(glibc-dynamic-linker matching-system))))))
+                 (replace 'configure
+                   (lambda* (#:key outputs build configure-flags
+                             #:allow-other-keys)
+                     ;; It's an old 'configure' script so it needs some help.
+                     (setenv "CONFIG_SHELL" (which "sh"))
+                     (apply invoke "./configure"
+                            (string-append "--prefix=" #$output)
+                            (string-append "--build=" build)
+                            (string-append "--host=" build)
+                            configure-flags)))
+                 (add-before 'configure 'remove-bundled-texinfo
+                   (lambda _
+                     ;; Go ahead despite the many warnings.
+                     (substitute* '("Makefile.in" "gcc/Makefile.in")
+                       (("^MAKEINFOFLAGS =.*")
+                        "MAKEINFOFLAGS = --force\n"))))))))
+    (native-search-paths
+     ;; This package supports nothing but the C language.
+     (list (search-path-specification
+            (variable "C_INCLUDE_PATH")
+            (files '("include")))
+           (search-path-specification
+            (variable "LIBRARY_PATH")
+            (files '("lib")))))))
+
+
 (define-public (make-libstdc++ gcc)
   "Return a libstdc++ package based on GCC.  The primary use case is when
 using compilers other than GCC."
@@ -762,42 +898,6 @@ as the 'native-search-paths' field."
                 (find-files (string-append (assoc-ref outputs "out") "/bin")
                             ".*(c\\+\\+|cpp|g\\+\\+|gcov|gcc|lto)(-.*)?$"))))))))))
 
-(define* (custom-gcc-gccgo gcc name languages
-                           #:optional
-                           (search-paths (package-native-search-paths gcc))
-                           #:key (separate-lib-output? #t))
-  ;; TODO: remove CUSTOM-GCC-GCCGO when regex changes for CUSTOM-GCC are
-  ;; merged into master <https://issues.guix.gnu.org/49010>
-  "Return a custom version of GCC that supports LANGUAGES.  Use SEARCH-PATHS
-as the 'native-search-paths' field."
-  (package (inherit gcc)
-    (name name)
-    (outputs (if separate-lib-output?
-                 (package-outputs gcc)
-                 (delete "lib" (package-outputs gcc))))
-    (native-search-paths search-paths)
-    (properties (alist-delete 'hidden? (package-properties gcc)))
-    (arguments
-     (substitute-keyword-arguments (package-arguments gcc)
-       ((#:modules modules %gnu-build-system-modules)
-        `(,@modules
-          (srfi srfi-1)
-          (srfi srfi-26)
-          (ice-9 regex)))
-       ((#:configure-flags flags)
-        `(cons (string-append "--enable-languages="
-                              ,(string-join languages ","))
-               (remove (cut string-match "--enable-languages.*" <>)
-                       ,flags)))
-       ((#:phases phases)
-        `(modify-phases ,phases
-           (add-after 'install 'remove-broken-or-conflicting-files
-             (lambda* (#:key outputs #:allow-other-keys)
-               (for-each
-                delete-file
-                (find-files (string-append (assoc-ref outputs "out") "/bin")
-                            ".*(c\\+\\+|cpp|g\\+\\+|gcov|gcc|lto)(-.*)?$"))))))))))
-
 (define %generic-search-paths
   ;; This is the language-neutral search path for GCC.  Entries in $CPATH are
   ;; not considered "system headers", which means GCC can raise warnings for
@@ -869,7 +969,7 @@ misnomer.")))
 
 (define (make-gccgo gcc)
   "Return a gccgo package based on GCC."
-  (let ((gccgo (custom-gcc-gccgo gcc "gccgo" '("go") %generic-search-paths)))
+  (let ((gccgo (custom-gcc gcc "gccgo" '("go") %generic-search-paths)))
     (package
       (inherit gccgo)
       (synopsis "Go frontend to GCC")
@@ -921,6 +1021,9 @@ provides the GNU compiler for the Go programming language."))
 
 (define-public gccgo-10
   (make-gccgo gcc-10))
+
+(define-public gccgo-11
+  (make-gccgo gcc-11))
 
 (define %objc-search-paths
   (list (search-path-specification
@@ -1068,12 +1171,11 @@ provides the GNU compiler for the Go programming language."))
     (version "0.23")
     (source (origin
              (method url-fetch)
-             (uri (list (string-append
-                         "http://isl.gforge.inria.fr/isl-"
-                         version
-                         ".tar.bz2")
+             ;; Used to be at isl.gforge.inria.fr.
+             (uri (list (string-append "mirror://sourceforge/libisl/isl-"
+                                       version ".tar.bz2")
                         (string-append %gcc-infrastructure
-                                       name "-" version ".tar.bz2")))
+                                       "isl-" version ".tar.bz2")))
              (sha256
               (base32
                "0k91zck10zxs9sk3yrbb92y1j3w981w3fbwkfwd7kl779b0j52f5"))))
@@ -1097,7 +1199,8 @@ provides the GNU compiler for the Go programming language."))
                           (("^old_library=.*")
                            "old_library=''\n"))))))))
     (inputs (list gmp))
-    (home-page "http://isl.gforge.inria.fr/")
+    (home-page "https://libisl.sourceforge.io/") ;https://repo.or.cz/w/isl.git
+    (properties `((release-monitoring-url . ,home-page)))
     (synopsis
      "Manipulating sets and relations of integer points \
 bounded by linear constraints")
@@ -1118,7 +1221,7 @@ dependence analysis and bounds on piecewise step-polynomials.")
     (version "0.18")
     (source (origin
               (method url-fetch)
-              (uri (list (string-append "http://isl.gforge.inria.fr/isl-"
+              (uri (list (string-append "mirror://sourceforge/libisl/isl-"
                                         version ".tar.bz2")
                          (string-append %gcc-infrastructure
                                         "isl-" version ".tar.bz2")))
@@ -1133,12 +1236,10 @@ dependence analysis and bounds on piecewise step-polynomials.")
     (version "0.11.1")
     (source (origin
              (method url-fetch)
-             (uri (list (string-append
-                         "http://isl.gforge.inria.fr/isl-"
-                         version
-                         ".tar.bz2")
+             (uri (list (string-append "mirror://sourceforge/libisl/isl-"
+                                       version ".tar.bz2")
                         (string-append %gcc-infrastructure
-                                       name "-" version ".tar.bz2")))
+                                       "isl-" version ".tar.bz2")))
              (sha256
               (base32
                "13d9cqa5rzhbjq0xf0b2dyxag7pqa72xj9dhsa03m8ccr1a4npq9"))

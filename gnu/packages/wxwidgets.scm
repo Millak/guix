@@ -341,14 +341,14 @@ provide a 100% native look and feel for the application.")
 (define-public wxsvg
   (package
     (name "wxsvg")
-    (version "1.5.22")
+    (version "1.5.23")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/wxsvg/wxsvg/"
                             version "/wxsvg-" version ".tar.bz2"))
        (sha256
-        (base32 "0agmmwg0zlsw1idygvqjpj1nk41akzlbdha0hsdk1k8ckz6niq8d"))))
+        (base32 "1fdbvihw1w2vm29xj54cqgpdabhlg0ydf3clkb0qrlf7mhgkc1rz"))))
     (build-system glib-or-gtk-build-system)
     (inputs
      (list wxwidgets-3.1 cairo ffmpeg))

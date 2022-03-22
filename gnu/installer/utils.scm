@@ -25,7 +25,10 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-19)
   #:use-module (srfi srfi-34)
+  #:use-module (srfi srfi-35)
+  #:use-module (ice-9 control)
   #:use-module (ice-9 match)
+  #:use-module (ice-9 popen)
   #:use-module (ice-9 rdelim)
   #:use-module (ice-9 regex)
   #:use-module (ice-9 format)
@@ -34,10 +37,17 @@
             read-all
             nearest-exact-integer
             read-percentage
+            run-external-command-with-handler
+            run-external-command-with-line-hooks
             run-command
+            run-command-in-installer
 
             syslog-port
-            syslog
+            %syslog-line-hook
+            installer-log-port
+            %installer-log-line-hook
+            %default-installer-line-hooks
+            installer-log-line
             call-with-time
             let/time
 
@@ -74,37 +84,99 @@ number. If no percentage is found, return #f"
     (and result
          (string->number (match:substring result 1)))))
 
+(define* (run-external-command-with-handler handler command)
+  "Run command specified by the list COMMAND in a child with output handler
+HANDLER.  HANDLER is a procedure taking an input port, to which the command
+will write its standard output and error.  Returns the integer status value of
+the child process as returned by waitpid."
+  (match-let (((input . output) (pipe)))
+    ;; Hack to work around Guile bug 52835
+    (define dup-output (duplicate-port output "w"))
+    ;; Void pipe, but holds the pid for close-pipe.
+    (define dummy-pipe
+      (with-input-from-file "/dev/null"
+        (lambda ()
+          (with-output-to-port output
+            (lambda ()
+              (with-error-to-port dup-output
+                (lambda ()
+                  (apply open-pipe* (cons "" command)))))))))
+    (close-port output)
+    (close-port dup-output)
+    (handler input)
+    (close-port input)
+    (close-pipe dummy-pipe)))
+
+(define (run-external-command-with-line-hooks line-hooks command)
+  "Run command specified by the list COMMAND in a child, processing each
+output line with the procedures in LINE-HOOKS.  Returns the integer status
+value of the child process as returned by waitpid."
+  (define (handler input)
+    (and
+     (and=> (get-line input)
+            (lambda (line)
+              (if (eof-object? line)
+                  #f
+                  (begin (for-each (lambda (f) (f line))
+                                   (append line-hooks
+                                       %default-installer-line-hooks))
+                         #t))))
+     (handler input)))
+  (run-external-command-with-handler handler command))
+
 (define* (run-command command)
   "Run COMMAND, a list of strings.  Return true if COMMAND exited
 successfully, #f otherwise."
-  (define env (environ))
-
   (define (pause)
     (format #t (G_ "Press Enter to continue.~%"))
     (send-to-clients '(pause))
-    (environ env)                               ;restore environment variables
     (match (select (cons (current-input-port) (current-clients))
              '() '())
       (((port _ ...) _ _)
        (read-line port))))
 
-  (setenv "PATH" "/run/current-system/profile/bin")
+  (installer-log-line "running command ~s" command)
+  (define result (run-external-command-with-line-hooks
+                  (list %display-line-hook)
+                  command))
+  (define exit-val (status:exit-val result))
+  (define term-sig (status:term-sig result))
+  (define stop-sig (status:stop-sig result))
+  (define succeeded?
+    (cond
+     ((and exit-val (not (zero? exit-val)))
+      (installer-log-line "command ~s exited with value ~a"
+                          command exit-val)
+      (format #t (G_ "Command ~s exited with value ~a")
+              command exit-val)
+      #f)
+     (term-sig
+      (installer-log-line "command ~s killed by signal ~a"
+                          command term-sig)
+      (format #t (G_ "Command ~s killed by signal ~a")
+              command term-sig)
+      #f)
+     (stop-sig
+      (installer-log-line "command ~s stopped by signal ~a"
+                          command stop-sig)
+      (format #t (G_ "Command ~s stopped by signal ~a")
+              command stop-sig)
+      #f)
+     (else
+      (installer-log-line "command ~s succeeded" command)
+      (format #t (G_ "Command ~s succeeded") command)
+      #t)))
+  (newline)
+  (pause)
+  succeeded?)
 
-  (guard (c ((invoke-error? c)
-             (newline)
-             (format (current-error-port)
-                     (G_ "Command failed with exit code ~a.~%")
-                     (invoke-error-exit-status c))
-             (syslog "command ~s failed with exit code ~a"
-                     command (invoke-error-exit-status c))
-             (pause)
-             #f))
-    (syslog "running command ~s~%" command)
-    (apply invoke command)
-    (syslog "command ~s succeeded~%" command)
-    (newline)
-    (pause)
-    #t))
+(define run-command-in-installer
+  (make-parameter
+   (lambda (. args)
+     (raise
+      (condition
+       (&serious)
+       (&message (message "run-command-in-installer not set")))))))
 
 
 ;;;
@@ -142,6 +214,9 @@ values."
         (set! port (open-syslog-port)))
       (or port (%make-void-port "w")))))
 
+(define (%syslog-line-hook line)
+  (format (syslog-port) "installer[~d]: ~a~%" (getpid) line))
+
 (define-syntax syslog
   (lambda (s)
     "Like 'format', but write to syslog."
@@ -151,6 +226,43 @@ values."
        (with-syntax ((fmt (string-append "installer[~d]: "
                                          (syntax->datum #'fmt))))
          #'(format (syslog-port) fmt (getpid) args ...))))))
+
+(define (open-new-log-port)
+  (define now (localtime (time-second (current-time))))
+  (define filename
+    (format #f "/tmp/installer.~a.log"
+            (strftime "%F.%T" now)))
+  (open filename (logior O_RDWR
+                         O_CREAT)))
+
+(define installer-log-port
+  (let ((port #f))
+    (lambda ()
+      "Return an input and output port to the installer log."
+      (unless port
+        (set! port (open-new-log-port)))
+      port)))
+
+(define (%installer-log-line-hook line)
+  (format (installer-log-port) "~a~%" line))
+
+(define (%display-line-hook line)
+  (display line)
+  (newline))
+
+(define %default-installer-line-hooks
+  (list %syslog-line-hook
+        %installer-log-line-hook))
+
+(define-syntax installer-log-line
+  (lambda (s)
+    "Like 'format', but uses the default line hooks, and only formats one line."
+    (syntax-case s ()
+      ((_ fmt args ...)
+       (string? (syntax->datum #'fmt))
+       #'(let ((formatted (format #f fmt args ...)))
+               (for-each (lambda (f) (f formatted))
+                         %default-installer-line-hooks))))))
 
 
 ;;;
@@ -214,8 +326,9 @@ accepting socket."
                 (let ((errno (system-error-errno args)))
                   (if (memv errno (list EPIPE ECONNRESET ECONNABORTED))
                       (begin
-                        (syslog "removing client ~s due to ~s while replying~%"
-                                (fileno client) (strerror errno))
+                        (installer-log-line
+                         "removing client ~s due to ~s while replying"
+                         (fileno client) (strerror errno))
                         (false-if-exception (close-port client))
                         remainder)
                       (cons client remainder))))))

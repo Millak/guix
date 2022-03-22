@@ -32,6 +32,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bdw-gc)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages image)
@@ -268,14 +269,19 @@ colors, styles, options and details.")
 (define-public asymptote
   (package
     (name "asymptote")
-    (version "2.77")
+    (version "2.79")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/asymptote/"
                            version "/asymptote-" version ".src.tgz"))
        (sha256
-        (base32 "0v5r8g3b7f2dxsiba4f3yrgfkigr5nsdhg6jrdsnqrmf6y7dqgdf"))))
+        (base32 "060gy2h1wa3ivjn51g21g7vh79jn74zbkz5ha5pq45bxqn4xs5cs"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Remove bundled RapidJSON.
+        #~(begin
+            (delete-file-recursively "LspCpp/third_party/rapidjson")))))
     (build-system gnu-build-system)
     ;; Note: The 'asy' binary retains a reference to docdir for use with its
     ;; "help" command in interactive mode, so adding a "doc" output is not
@@ -284,6 +290,7 @@ colors, styles, options and details.")
      (list autoconf
            automake
            boost
+           cmake
            emacs-minimal
            ghostscript                  ;for tests
            perl
@@ -338,63 +345,68 @@ colors, styles, options and details.")
                              #$output
                              "/share/texmf/tex/context/third"))
       #:phases
-      `(modify-phases %standard-phases
-         (add-after 'unpack 'locate-tirpc
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* (list "configure.ac")
-               (("/usr/include/tirpc")
-                (search-input-directory inputs "include/tirpc")))))
-         (add-after 'unpack 'fix-includes
-           (lambda _
-             (substitute* (find-files "." "\\.in$")
-               (("#include <primitives.h>") "#include \"primitives.h\""))
-             (substitute* (find-files "prc" "\\.h$")
-               (("#include \"config.h\"") "#include \"../config.h\""))
-             (substitute* "prc/oPRCFile.h"
-               (("#include \"xstream.h\"") "#include \"../xstream.h\""))
-             (substitute* "v3dfile.h"
-               (("#include <prc/oPRCFile.h>") "#include \"prc/oPRCFile.h\""))
-             (substitute* "LspCpp/LibLsp/lsp/ParentProcessWatcher.cpp"
-               (("#include <boost/process.hpp>" all)
-                (string-append "#include <algorithm>\n" all)))))
-         (replace 'bootstrap
-           (lambda _
-             (invoke "autoreconf" "-vfi")))
-         (add-after 'unpack 'move-info-location
-           ;; Build process installs info file in the unusual
-           ;; "%out/share/info/asymptote/" location.  Move it to
-           ;; "%out/share/info/" so it appears in the top-level directory.
-           (lambda _
-             (substitute* "doc/png/Makefile.in"
-               (("(\\$\\(infodir\\))/asymptote" _ infodir) infodir))
-             (substitute* "doc/asymptote.texi"
-               (("asymptote/asymptote") "asymptote"))))
-         (add-before 'build 'patch-pdf-viewer
-           (lambda _
-             ;; Default to a free pdf viewer.
-             (substitute* "settings.cc"
-               (("defaultPDFViewer=\"acroread\"")
-                "defaultPDFViewer=\"gv\""))))
-         (add-before 'check 'set-HOME
-           ;; Some tests require write access to $HOME, otherwise leading to
-           ;; "failed to create directory /homeless-shelter/.asy" error.
-           (lambda _
-             (setenv "HOME" "/tmp")))
-         (add-after 'install 'install-Emacs-data
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Install related Emacs libraries into an appropriate location.
-             (let* ((out (assoc-ref outputs "out"))
-                    (lisp-dir (string-append out "/share/emacs/site-lisp")))
-               (for-each (cut install-file <> lisp-dir)
-                         (find-files "." "\\.el$"))
-               (emacs-generate-autoloads ,name lisp-dir))))
-         (add-after 'install-Emacs-data 'wrap-python-script
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; Make sure 'xasy' runs with the correct PYTHONPATH.
-             (let* ((out (assoc-ref outputs "out"))
-                    (path (getenv "GUIX_PYTHONPATH")))
-               (wrap-program (string-append out "/share/asymptote/GUI/xasy.py")
-                 `("GUIX_PYTHONPATH" ":" prefix (,path)))))))))
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'locate-tirpc
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* (list "configure.ac")
+                (("/usr/include/tirpc")
+                 (search-input-directory inputs "include/tirpc")))))
+          (add-after 'unpack 'unbundle-rapidjson
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* (list "Makefile.in")
+                (("\\$\\(CMAKE\\)" all)
+                 (string-append all " -DUSE_SYSTEM_RAPIDJSON=ON")))))
+          (add-after 'unpack 'fix-includes
+            (lambda _
+              (substitute* (find-files "." "\\.in$")
+                (("#include <primitives.h>") "#include \"primitives.h\""))
+              (substitute* (find-files "prc" "\\.h$")
+                (("#include \"config.h\"") "#include \"../config.h\""))
+              (substitute* "prc/oPRCFile.h"
+                (("#include \"xstream.h\"") "#include \"../xstream.h\""))
+              (substitute* "v3dfile.h"
+                (("#include <prc/oPRCFile.h>") "#include \"prc/oPRCFile.h\""))
+              (substitute* "LspCpp/src/lsp/ParentProcessWatcher.cpp"
+                (("#include <boost/process.hpp>" all)
+                 (string-append "#include <algorithm>\n" all)))))
+          (replace 'bootstrap
+            (lambda _
+              (invoke "autoreconf" "-vfi")))
+          (add-after 'unpack 'move-info-location
+            ;; Build process installs info file in the unusual
+            ;; "%out/share/info/asymptote/" location.  Move it to
+            ;; "%out/share/info/" so it appears in the top-level directory.
+            (lambda _
+              (substitute* "doc/png/Makefile.in"
+                (("(\\$\\(infodir\\))/asymptote" _ infodir) infodir))
+              (substitute* "doc/asymptote.texi"
+                (("asymptote/asymptote") "asymptote"))))
+          (add-before 'build 'patch-pdf-viewer
+            (lambda _
+              ;; Default to a free pdf viewer.
+              (substitute* "settings.cc"
+                (("defaultPDFViewer=\"acroread\"")
+                 "defaultPDFViewer=\"gv\""))))
+          (add-before 'check 'set-HOME
+            ;; Some tests require write access to $HOME, otherwise leading to
+            ;; "failed to create directory /homeless-shelter/.asy" error.
+            (lambda _
+              (setenv "HOME" "/tmp")))
+          (add-after 'install 'install-Emacs-data
+            (lambda* (#:key outputs #:allow-other-keys)
+              ;; Install related Emacs libraries into an appropriate location.
+              (let ((lisp-dir
+                     (string-append #$output "/share/emacs/site-lisp")))
+                (for-each (cut install-file <> lisp-dir)
+                          (find-files "." "\\.el$"))
+                (emacs-generate-autoloads #$name lisp-dir))))
+          (add-after 'install-Emacs-data 'wrap-python-script
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              ;; Make sure 'xasy' runs with the correct PYTHONPATH.
+              (let ((path (getenv "GUIX_PYTHONPATH")))
+                (wrap-program
+                    (string-append #$output "/share/asymptote/GUI/xasy.py")
+                  `("GUIX_PYTHONPATH" ":" prefix (,path)))))))))
     (home-page "http://asymptote.sourceforge.net")
     (synopsis "Script-based vector graphics language")
     (description

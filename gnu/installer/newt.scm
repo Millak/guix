@@ -19,6 +19,7 @@
 (define-module (gnu installer newt)
   #:use-module (gnu installer record)
   #:use-module (gnu installer utils)
+  #:use-module (gnu installer dump)
   #:use-module (gnu installer newt ethernet)
   #:use-module (gnu installer newt final)
   #:use-module (gnu installer newt parameters)
@@ -39,7 +40,12 @@
   #:use-module (guix config)
   #:use-module (guix discovery)
   #:use-module (guix i18n)
+  #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
+  #:use-module (srfi srfi-34)
+  #:use-module (srfi srfi-35)
+  #:use-module (ice-9 ftw)
+  #:use-module (ice-9 match)
   #:use-module (newt)
   #:export (newt-installer))
 
@@ -47,7 +53,7 @@
   (newt-init)
   (clear-screen)
   (set-screen-size!)
-  (syslog "Display is ~ax~a.~%" (screen-columns) (screen-rows))
+  (installer-log-line "Display is ~ax~a." (screen-columns) (screen-rows))
   (push-help-line
    (format #f (G_ "Press <F1> for installation parameters."))))
 
@@ -55,25 +61,102 @@
   (newt-finish)
   (clear-screen))
 
-(define (exit-error file key args)
+(define (exit-error error)
   (newt-set-color COLORSET-ROOT "white" "red")
-  (let ((width (nearest-exact-integer
-                (* (screen-columns) 0.8)))
-        (height (nearest-exact-integer
-                 (* (screen-rows) 0.7))))
-    (run-file-textbox-page
-     #:info-text (format #f (G_ "The installer has encountered an unexpected \
-problem. The backtrace is displayed below. Please report it by email to \
-<~a>.") %guix-bug-report-address)
+  (define action
+    (run-textbox-page
+     #:info-text (G_ "The installer has encountered an unexpected problem. \
+The backtrace is displayed below. You may choose to exit or create a dump \
+archive.")
      #:title (G_ "Unexpected problem")
-     #:file file
-     #:exit-button? #f
-     #:info-textbox-width width
-     #:file-textbox-width width
-     #:file-textbox-height height))
+     #:content error
+     #:buttons-spec
+     (list
+      (cons (G_ "Dump") (const 'dump))
+      (cons (G_ "Exit") (const 'exit)))))
   (newt-set-color COLORSET-ROOT "white" "blue")
-  (newt-finish)
-  (clear-screen))
+  action)
+
+(define (report-page dump-archive)
+  (define text
+    (format #f (G_ "The dump archive was created as ~a.  Would you like to \
+send this archive to the Guix servers?") dump-archive))
+  (define title (G_ "Dump archive created"))
+  (when (run-confirmation-page text title)
+    (let* ((uploaded-name (send-dump-report dump-archive))
+           (text (if uploaded-name
+                     (format #f (G_ "The dump was uploaded as ~a.  Please \
+report it by email to ~a.") uploaded-name %guix-bug-report-address)
+                     (G_ "The dump could not be uploaded."))))
+      (run-error-page
+       text
+       (G_ "Dump upload result")))))
+
+(define (dump-page dump-dir)
+  (define files
+    (scandir dump-dir (lambda (x)
+                        (not (or (string=? x ".")
+                                 (string=? x ".."))))))
+  (fold (match-lambda*
+          (((file . enable?) acc)
+           (if enable?
+               (cons file acc)
+               acc)))
+        '()
+        (run-dump-page
+         dump-dir
+         (map (lambda (x)
+                (cons x #f))
+              files))))
+
+(define (newt-run-command . args)
+  (define command-output "")
+  (define (line-accumulator line)
+    (set! command-output
+          (string-append/shared command-output line "\n")))
+  (define displayed-command
+    (string-join
+     (map (lambda (s) (string-append "\"" s "\"")) args)
+     " "))
+  (define result (run-external-command-with-line-hooks (list line-accumulator)
+                                                       args))
+  (define exit-val (status:exit-val result))
+  (define term-sig (status:term-sig result))
+  (define stop-sig (status:stop-sig result))
+
+  (if (and exit-val (zero? exit-val))
+      #t
+      (let ((info-text
+             (cond
+              (exit-val
+               (format #f (G_ "External command ~s exited with code ~a")
+                       args exit-val))
+              (term-sig
+               (format #f (G_ "External command ~s terminated by signal ~a")
+                       args term-sig))
+              (stop-sig
+               (format #f (G_ "External command ~s stopped by signal ~a")
+                       args stop-sig)))))
+        (run-textbox-page #:title (G_ "External command error")
+                          #:info-text info-text
+                          #:content command-output
+                          #:buttons-spec
+                          (list
+                           (cons "Ignore" (const #t))
+                           (cons "Abort"
+                                 (lambda ()
+                                   (abort-to-prompt 'installer-step 'abort)))
+                           (cons "Report"
+                                 (lambda ()
+                                   (raise
+                                    (condition
+                                     ((@@ (guix build utils)
+                                          &invoke-error)
+                                      (program (car args))
+                                      (arguments (cdr args))
+                                      (exit-status exit-val)
+                                      (term-signal term-sig)
+                                      (stop-signal stop-sig)))))))))))
 
 (define (final-page result prev-steps)
   (run-final-page result prev-steps))
@@ -142,4 +225,7 @@ problem. The backtrace is displayed below. Please report it by email to \
    (services-page services-page)
    (welcome-page welcome-page)
    (parameters-menu parameters-menu)
-   (parameters-page parameters-page)))
+   (parameters-page parameters-page)
+   (dump-page dump-page)
+   (run-command newt-run-command)
+   (report-page report-page)))

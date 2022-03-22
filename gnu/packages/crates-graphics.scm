@@ -8,7 +8,7 @@
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2020-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Antoine Côté <antoine.cote@posteo.net>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Zheng Junjie <873216071@qq.com>
@@ -102,23 +102,25 @@ shapes, lines and text to buffers.")
 (define-public rust-ansi-colours-1
   (package
     (name "rust-ansi-colours")
-    (version "1.0.1")
+    (version "1.1.1")
     (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "ansi_colours" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1dnqmpk68mzvncj37jlv0362kdgsgjxg010c6psagimgh4m303qx"))))
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ansi_colours" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "03b2365y0ffkvqw61bc4imz6661jvi39vcs4q6q5d43znqrq4rrj"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-cc" ,rust-cc-1))
+       (("rust-rgb" ,rust-rgb-0.8))
        #:cargo-development-inputs
-       (("rust-delta-e" ,rust-delta-e-0.2)
-        ("rust-lab" ,rust-lab-0.4))))
+       (("rust-crc64" ,rust-crc64-1)
+        ("rust-criterion" ,rust-criterion-0.3)
+        ("rust-empfindung" ,rust-empfindung-0.2)
+        ("rust-lab" ,rust-lab-0.11))))
     (home-page "https://github.com/mina86/ansi_colours")
     (synopsis "Palette converter between true-colour and ANSI terminal")
     (description

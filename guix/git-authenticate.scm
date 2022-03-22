@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019, 2020, 2021, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -22,7 +22,9 @@
   #:use-module (guix base16)
   #:autoload   (guix base64) (base64-encode)
   #:use-module ((guix git)
-                #:select (commit-difference false-if-git-not-found))
+                #:select (commit-difference
+                          commit-descendant?
+                          false-if-git-not-found))
   #:use-module (guix i18n)
   #:use-module ((guix diagnostics) #:select (formatted-message))
   #:use-module (guix openpgp)
@@ -425,6 +427,17 @@ denoting the authorized keys for commits whose parent lack the
         (when (null? authenticated-commits)
           (verify-introductory-commit repository keyring
                                       start-commit signer))
+
+        ;; Make sure END-COMMIT is a descendant of START-COMMIT or of one of
+        ;; AUTHENTICATED-COMMITS, which are known to be descendants of
+        ;; START-COMMIT.
+        (unless (commit-descendant? end-commit
+                                    (cons start-commit
+                                          authenticated-commits))
+          (raise (formatted-message
+                  (G_ "commit ~a is not a descendant of introductory commit ~a")
+                  (oid->string (commit-id end-commit))
+                  (oid->string (commit-id start-commit)))))
 
         (let ((stats (call-with-progress-reporter reporter
                        (lambda (report)

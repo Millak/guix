@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019, 2020, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz
 ;;;
 ;;; This file is part of GNU Guix.
@@ -161,6 +161,56 @@
               (commit-relation merge branch1)
               (commit-relation master1 merge)
               (commit-relation merge master1))))))
+
+(unless (which (git-command)) (test-skip 1))
+(test-equal "commit-descendant?"
+  '((master3 master3 => #t)
+    (master1 master3 => #f)
+    (master3 master1 => #t)
+    (master2 branch1 => #f)
+    (master2 branch1 master1 => #t)
+    (branch1 master2 => #f)
+    (branch1 merge   => #f)
+    (merge branch1   => #t)
+    (master1 merge   => #f)
+    (merge master1   => #t))
+  (with-temporary-git-repository directory
+      '((add "a.txt" "A")
+        (commit "first commit")
+        (branch "hack")
+        (checkout "hack")
+        (add "1.txt" "1")
+        (commit "branch commit")
+        (checkout "master")
+        (add "b.txt" "B")
+        (commit "second commit")
+        (add "c.txt" "C")
+        (commit "third commit")
+        (merge "hack" "merge"))
+    (with-repository directory repository
+      (let ((master1 (find-commit repository "first"))
+            (master2 (find-commit repository "second"))
+            (master3 (find-commit repository "third"))
+            (branch1 (find-commit repository "branch"))
+            (merge   (find-commit repository "merge")))
+        (letrec-syntax ((verify
+                         (syntax-rules ()
+                           ((_) '())
+                           ((_ (new old ...) rest ...)
+                            (cons `(new old ... =>
+                                        ,(commit-descendant? new
+                                                             (list old ...)))
+                                  (verify rest ...))))))
+          (verify (master3 master3)
+                  (master1 master3)
+                  (master3 master1)
+                  (master2 branch1)
+                  (master2 branch1 master1)
+                  (branch1 master2)
+                  (branch1 merge)
+                  (merge branch1)
+                  (master1 merge)
+                  (merge master1)))))))
 
 (unless (which (git-command)) (test-skip 1))
 (test-equal "remote-refs"

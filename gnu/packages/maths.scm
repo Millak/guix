@@ -2,7 +2,7 @@
 ;;; Copyright © 2013, 2014, 2015, 2016, 2019, 2020 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2016, 2017 John Darrington <jmd@gnu.org>
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2014-2022 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2014 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2014 Mathieu Lirzin <mathieu.lirzin@openmailbox.org>
 ;;; Copyright © 2015–2021 Ricardo Wurmus <rekado@elephly.net>
@@ -2708,7 +2708,7 @@ Open CASCADE library.")
 (define-public opencascade-occt
   (package
     (name "opencascade-occt")
-    (version "7.3.0p3")
+    (version "7.6.0")
     (source
       (origin
         (method git-fetch)
@@ -2720,7 +2720,7 @@ Open CASCADE library.")
                                           version)))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0bdywwxb6mk0ykbiajlvsb37295akqjp0a60y672qjfa67k0ljv4"))
+         (base32 "1rcwm9fkx0j4wrsyikb6g7qd611kpry7dand5dzdjvs5vzd13zvd"))
         (modules '((guix build utils)))
         (snippet
          '(begin
@@ -2757,6 +2757,7 @@ Open CASCADE library.")
               "-DCMAKE_EXPORT_NO_PACKAGE_REGISTRY=ON"
               "-DCMAKE_FIND_PACKAGE_NO_PACKAGE_REGISTRY=ON"
               "-UCMAKE_INSTALL_LIBDIR")))
+    (native-inputs (list fontconfig))
     (inputs
      (list doxygen
            ;("freeimage" ,freeimage)
@@ -3084,14 +3085,15 @@ scientific applications modeled by partial differential equations.")
     (inherit petsc)
     (name "petsc-openmpi")
     (inputs
-     `(("hdf5" ,hdf5-parallel-openmpi)
-       ("hypre" ,hypre-openmpi)
-       ("metis" ,metis)
-       ("mumps" ,mumps-openmpi)
-       ("openmpi" ,openmpi)
-       ("scalapack" ,scalapack)
-       ("scotch" ,pt-scotch32)
-       ,@(package-inputs petsc)))
+     (modify-inputs (package-inputs petsc)
+       (prepend hdf5-parallel-openmpi
+                hypre-openmpi
+                metis
+                mumps-openmpi
+                openmpi
+                scalapack
+                pt-scotch32
+                `(,pt-scotch32 "metis"))))
     (arguments
      (substitute-keyword-arguments (package-arguments petsc)
        ((#:configure-flags cf)
@@ -3104,12 +3106,20 @@ scientific applications modeled by partial differential equations.")
             ,(string-append "--with-mpi-dir="
                             #$(this-package-input "openmpi"))
             ,(string-append "--with-hdf5-include="
-                            #$(this-package-input "hdf5") "/include")
+                            #$(this-package-input "hdf5-parallel-openmpi")
+                            "/include")
             ,(string-append "--with-hdf5-lib="
-                            #$(this-package-input "hdf5") "/lib/libhdf5.a")
+                            #$(this-package-input "hdf5-parallel-openmpi")
+                            "/lib/libhdf5.a")
             ,@(delete "--with-mpi=0" #$cf)))
        ((#:phases phases)
         #~(modify-phases #$phases
+            (add-before 'configure 'adjust-pt-scotch-library-names
+              (lambda _
+                ;; Adjust to the library name changes in Scotch 7.0.
+                (substitute* "config/BuildSystem/config/packages/PTScotch.py"
+                  (("libptesmumps") "libesmumps")
+                  (("libptscotchparmetis") "libptscotchparmetisv3"))))
             (add-before 'configure 'mpi-setup
               #$%openmpi-setup)))))
     (synopsis "Library to solve PDEs (with MUMPS and MPI support)")))
@@ -3531,12 +3541,12 @@ language understood by many solvers.")
                                 "mumps-shared-pord.patch"))))
     (build-system gnu-build-system)
     (inputs
-     `(("fortran" ,gfortran)
-       ;; These are required for linking against mumps, but we let the user
-       ;; declare the dependency.
-       ("blas" ,openblas)
-       ("metis" ,metis)
-       ("scotch" ,scotch)))
+     (list gfortran
+           ;; These are required for linking against mumps, but we let the user
+           ;; declare the dependency.
+           openblas
+           metis
+           scotch))
     (arguments
      `(#:modules ((ice-9 match)
                   (ice-9 popen)
@@ -3593,8 +3603,9 @@ ORDERINGSC   = $(ORDERINGSF)
 LORDERINGS   = $(LPORD) $(LMETIS) $(LSCOTCH) $(LIBSEQ)
 IORDERINGSF  = $(ISCOTCH)
 IORDERINGSC  = $(IPORD) $(IMETIS) $(ISCOTCH)"
-                        (assoc-ref inputs "mpi")
-                        (assoc-ref inputs "blas")
+                        (->bool (which "mpicc"))  ;MPI support enabled?
+                        (dirname
+                         (dirname (search-input-file inputs "/include/cblas.h")))
                         (assoc-ref inputs "scalapack")
                         (assoc-ref inputs "metis")
                         (match (list (assoc-ref inputs "pt-scotch")
@@ -3605,7 +3616,7 @@ IORDERINGSC  = $(IPORD) $(IMETIS) $(ISCOTCH)"
                            `((,scotch "" "-Dscotch")))
                           ((ptscotch _)
                            `((,ptscotch
-                              "-lptesmumps -lptscotch -lptscotcherr "
+                              "-lesmumps -lptscotch -lptscotcherr "
                               "-Dptscotch")))))))))
          (replace 'build
           ;; By default only the d-precision library is built.  Make with "all"
@@ -3655,19 +3666,20 @@ sparse system of linear equations A x = b using Gaussian elimination.")
     (license license:cecill-c)))
 
 (define-public mumps-metis
-  (package (inherit mumps)
+  (package
+    (inherit mumps)
     (name "mumps-metis")
-    (inputs
-     (alist-delete "scotch" (package-inputs mumps)))))
+    (inputs (modify-inputs (package-inputs mumps)
+              (delete "scotch")))))
 
 (define-public mumps-openmpi
-  (package (inherit mumps)
+  (package
+    (inherit mumps)
     (name "mumps-openmpi")
     (inputs
-     `(("mpi" ,openmpi)
-       ("scalapack" ,scalapack)
-       ("pt-scotch" ,pt-scotch)
-       ,@(alist-delete "scotch" (package-inputs mumps))))
+     (modify-inputs (package-inputs mumps)
+       (delete "scotch")
+       (prepend openmpi scalapack pt-scotch)))
     (arguments
      (substitute-keyword-arguments (package-arguments mumps)
        ((#:phases phases)
@@ -3681,10 +3693,11 @@ sparse system of linear equations A x = b using Gaussian elimination.")
     (synopsis "Multifrontal sparse direct solver (with MPI)")))
 
 (define-public mumps-metis-openmpi
-  (package (inherit mumps-openmpi)
+  (package
+    (inherit mumps-openmpi)
     (name "mumps-metis-openmpi")
-    (inputs
-     (alist-delete "pt-scotch" (package-inputs mumps-openmpi)))))
+    (inputs (modify-inputs (package-inputs mumps-openmpi)
+              (delete "pt-scotch")))))
 
 (define-public ruby-asciimath
   (package
@@ -3710,14 +3723,14 @@ easy-to-write markup language for mathematics.")
 (define-public superlu
   (package
     (name "superlu")
-    (version "5.2.2")
+    (version "5.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://portal.nersc.gov/project/sparse/superlu/"
-                           "superlu_" version ".tar.gz"))
+                           "superlu-" version ".tar.gz"))
        (sha256
-        (base32 "13520vk6fqspyl22cq4ak2jh3rlmhja4czq56j75fdx65fkk80s7"))
+        (base32 "0xvib7nk2rlbsiv1iwkwl9kxppkalkciv628bsyiiv0pv754n48q"))
        (modules '((guix build utils)))
        (snippet
         ;; Replace the non-free implementation of MC64 with a stub adapted
@@ -3868,91 +3881,43 @@ implemented in ANSI C, and MPI for communications.")
 (define-public scotch
   (package
     (name "scotch")
-    (version "6.1.1")
+    (version "7.0.1")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "https://gforge.inria.fr/frs/download.php/"
-                          "latestfile/298/scotch_" version ".tar.gz"))
-      (sha256
-       (base32 "04dkz24a2g20wq703fnyi4440ac4mwycy9gwrrllljj7zxcjy19r"))
-      (patches (search-patches "scotch-build-parallelism.patch"
-                               "scotch-integer-declarations.patch"))))
-    (build-system gnu-build-system)
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.inria.fr/scotch/scotch")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fvgxd3ipl5xswswyadvxvlcgv6an8c229ispnlksgnlwphg10ig"))))
+    (build-system cmake-build-system)
     (inputs
      (list zlib))
     (native-inputs
      (list flex bison gfortran))
     (outputs '("out" "metis"))
     (arguments
-     `(#:make-flags (list (string-append "prefix=" %output))
+     `(#:configure-flags '("-DBUILD_SHARED_LIBS=YES" "-DINTSIZE=64"
+                           "-DBUILD_PTSCOTCH=OFF")
        #:phases
        (modify-phases %standard-phases
-         (add-after
-          'unpack 'chdir-to-src
-          (lambda _ (chdir "src") #t))
-         (replace
-          'configure
-          (lambda _
-            (call-with-output-file "Makefile.inc"
-              (lambda (port)
-                (format port "
-EXE =
-LIB = .a
-OBJ = .o
-MAKE = make
-AR = ar
-ARFLAGS = -ruv
-CAT = cat
-CCS = gcc
-CCP = mpicc
-CCD = gcc
-FC = gfortran
-CPPFLAGS =~{ -D~a~}
-CFLAGS = -O2 -g -fPIC $(CPPFLAGS)
-LDFLAGS = -lz -lm -lrt -lpthread
-CP = cp
-LEX = flex -Pscotchyy -olex.yy.c
-LN = ln
-MKDIR = mkdir
-MV = mv
-RANLIB = ranlib
-YACC = bison -pscotchyy -y -b y
-"
-                        '("COMMON_FILE_COMPRESS_GZ"
-                          "COMMON_PTHREAD"
-                          "COMMON_RANDOM_FIXED_SEED"
-                          "INTSIZE64"             ;use 'int64_t'
-                          ;; Prevents symbol clashes with libesmumps
-                          "SCOTCH_RENAME"
-                          ;; XXX: Causes invalid frees in superlu-dist tests
-                          ;; "SCOTCH_PTHREAD"
-                          ;; "SCOTCH_PTHREAD_NUMBER=2"
-                          "restrict=__restrict"))))
-            #t))
-         (add-after 'build 'build-esmumps
-          (lambda _
-            (invoke "make"
-                    (format #f "-j~a" (parallel-job-count))
-                    "esmumps")))
-         (add-before 'install 'make-install-dirs
-           (lambda* (#:key outputs #:allow-other-keys)
-             (mkdir (assoc-ref outputs "out"))))
          (add-after 'install 'install-metis
            (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "metis")))
-               (mkdir out)
-               ;; metis files are not installed with 'make install'
-               (for-each (lambda (f)
-                           (install-file f (string-append out "/include")))
-                         (find-files "../include/" ".*metis\\.h"))
-               (for-each (lambda (f)
-                           (install-file f (string-append out "/lib")))
-                         (find-files "../lib/" ".*metis\\..*"))
-               #t))))))
+             (let* ((out    (assoc-ref outputs "out"))
+                    (metis  (assoc-ref outputs "metis"))
+                    (prefix (string-length out)))
+               (for-each (lambda (file)
+                           (let ((target (string-append
+                                          metis
+                                          (string-drop file prefix))))
+                             (mkdir-p (dirname target))
+                             (rename-file file target)))
+                         (find-files out "metis"))))))))
     (home-page "https://www.labri.fr/perso/pelegrin/scotch/")
     (properties
-     `((release-monitoring-url . "https://gforge.inria.fr/frs/?group_id=248")))
+     `((release-monitoring-url
+        . "https://gitlab.inria.fr/scotch/scotch/-/releases")))
     (synopsis "Programs and libraries for graph algorithms")
     (description "SCOTCH is a set of programs and libraries which implement
 the static mapping and sparse matrix reordering algorithms developed within
@@ -3967,176 +3932,58 @@ bio-chemistry.")
 (define-public scotch32
   ;; This is the 'INTSIZE32' variant, which uses 32-bit integers, as needed by
   ;; some applications.
-  (package (inherit scotch)
+  (package
+    (inherit scotch)
     (name "scotch32")
     (arguments
      (substitute-keyword-arguments (package-arguments scotch)
-       ((#:phases scotch-phases)
-        `(modify-phases ,scotch-phases
-          (replace
-           'configure
-           (lambda _
-             (call-with-output-file "Makefile.inc"
-               (lambda (port)
-                 (format port "
-EXE =
-LIB = .a
-OBJ = .o
-MAKE = make
-AR = ar
-ARFLAGS = -ruv
-CAT = cat
-CCS = gcc
-CCP = mpicc
-CCD = gcc
-FC = gfortran
-CPPFLAGS =~{ -D~a~}
-CFLAGS = -O2 -g -fPIC $(CPPFLAGS)
-LDFLAGS = -lz -lm -lrt -lpthread
-CP = cp
-LEX = flex -Pscotchyy -olex.yy.c
-LN = ln
-MKDIR = mkdir
-MV = mv
-RANLIB = ranlib
-YACC = bison -pscotchyy -y -b y
-"
-                        '("COMMON_FILE_COMPRESS_GZ"
-                          "COMMON_PTHREAD"
-                          "COMMON_RANDOM_FIXED_SEED"
-                          "INTSIZE32"   ;use 32-bit integers.  See INSTALL.txt
-                          ;; Prevents symbolc clashes with libesmumps
-                          "SCOTCH_RENAME"
-                          ;; XXX: Causes invalid frees in superlu-dist tests
-                          ;; "SCOTCH_PTHREAD"
-                          ;; "SCOTCH_PTHREAD_NUMBER=2"
-                          "restrict=__restrict"))))))))))
+       ((#:configure-flags flags ''())
+        ''("-DBUILD_SHARED_LIBS=YES" "-DBUILD_PTSCOTCH=OFF"
+           "-DINTSIZE=32"))))
     (synopsis
      "Programs and libraries for graph algorithms (32-bit integers)")))
 
-(define-public scotch-shared
-  (package (inherit scotch)
-    (name "scotch-shared")
-    (native-inputs
-     (list gcc flex bison))
-    (arguments
-     (substitute-keyword-arguments (package-arguments scotch)
-       ((#:phases scotch-shared-phases)
-        `(modify-phases ,scotch-shared-phases
-           (replace
-            'configure
-           (lambda _
-             ;; Otherwise, the RUNPATH will lack the final path component.
-             (setenv "RPATHFLAGS" (string-append "-Wl,-rpath="
-                                              (assoc-ref %outputs "out") "/lib"))
-            (call-with-output-file "Makefile.inc"
-              (lambda (port)
-                (format port "
-EXE =
-LIB = .so
-OBJ = .o
-MAKE = make
-AR = gcc
-ARFLAGS = -shared -o
-CAT = cat
-CCS = gcc
-CCP = mpicc
-CCD = gcc
-FC = gfortran
-CPPFLAGS =~{ -D~a~}
-CFLAGS = -O2 -g -fPIC $(CPPFLAGS) $(RPATHFLAGS)
-CLIBFLAGS = -shared -fPIC
-LDFLAGS = -lz -lm -lrt -lpthread -Xlinker --no-as-needed
-CP = cp
-LEX = flex -Pscotchyy -olex.yy.c
-LN = ln
-MKDIR = mkdir
-MV = mv
-RANLIB = echo
-YACC = bison -pscotchyy -y -b y
-"
-                        '("COMMON_FILE_COMPRESS_GZ"
-                          "COMMON_PTHREAD"
-                          "COMMON_RANDOM_FIXED_SEED"
-                          "INTSIZE64"             ;use 'int64_t'
-                          ;; Prevents symbolc clashes with libesmumps
-                          "SCOTCH_RENAME"
-                          ;; XXX: Causes invalid frees in superlu-dist tests
-                          ;; "SCOTCH_PTHREAD"
-                          ;; "SCOTCH_PTHREAD_NUMBER=2"
-                          "restrict=__restrict"
-                          ))))#t))
-           (delete 'check)))))
-     (synopsis
-      "Programs and libraries for graph algorithms (shared libraries version)")))
-
 (define-public pt-scotch
-  (package (inherit scotch)
+  (package
+    (inherit scotch)
     (name "pt-scotch")
     (propagated-inputs
-     (list openmpi))           ;Headers include MPI headers
+     (list openmpi))                              ;headers include MPI headers
     (arguments
      (substitute-keyword-arguments (package-arguments scotch)
-       ((#:phases scotch-phases)
-        `(modify-phases ,scotch-phases
-           (replace
-            'build
-            (lambda _
-              (invoke "make" (format #f "-j~a" (parallel-job-count))
-                      "ptscotch" "ptesmumps")
-
-              ;; Install the serial metis compatibility library
-              (invoke "make" "-C" "libscotchmetis" "install")))
+       ((#:configure-flags flags ''())
+        ''("-DBUILD_SHARED_LIBS=YES" "-DBUILD_PTSCOTCH=ON"
+           "-DINTSIZE=64"))
+       ((#:phases phases '%standard-phases)
+        `(modify-phases ,phases
            (add-before 'check 'mpi-setup
-	     ,%openmpi-setup)
-           (replace 'check
-             (lambda _
-               (invoke "make" "ptcheck")))))))
+             ,%openmpi-setup)))))
     (synopsis "Programs and libraries for graph algorithms (with MPI)")))
 
 (define-public pt-scotch32
-  (package (inherit scotch32)
+  (package
+    (inherit pt-scotch)
     (name "pt-scotch32")
     (propagated-inputs
      (list openmpi))                     ;headers include MPI headers
     (arguments
-     (substitute-keyword-arguments (package-arguments scotch32)
-       ((#:phases scotch32-phases)
-        `(modify-phases ,scotch32-phases
-           (replace 'build
-             (lambda _
-               (invoke "make" (format #f "-j~a" (parallel-job-count))
-                       "ptscotch" "ptesmumps")
-               ;; Install the serial metis compatibility library
-               (invoke "make" "-C" "libscotchmetis" "install")))
-           (add-before 'check 'mpi-setup
-	     ,%openmpi-setup)
-           (replace 'check
-             (lambda _
-               (invoke "make" "ptcheck")))))))
+     (substitute-keyword-arguments (package-arguments pt-scotch)
+       ((#:configure-flags flags ''())
+        ''("-DBUILD_SHARED_LIBS=YES" "-DBUILD_PTSCOTCH=ON"
+           "-DINTSIZE=32"))))
     (synopsis
      "Programs and libraries for graph algorithms (with MPI and 32-bit integers)")))
 
-(define-public pt-scotch-shared
-  (package (inherit scotch-shared)
-    (name "pt-scotch-shared")
-    (propagated-inputs
-     (list openmpi))           ;Headers include MPI headers
-    (arguments
-     (substitute-keyword-arguments (package-arguments scotch-shared)
-       ((#:phases scotch-shared-phases)
-        `(modify-phases ,scotch-shared-phases
-           (replace
-            'build
-            (lambda _
-              (invoke "make" (format #f "-j~a" (parallel-job-count))
-                      "ptscotch" "ptesmumps")
+(define-public scotch-shared
+  ;; There used to be separate shared library variants while the default would
+  ;; provide .a files including PIC objects.  With the switch to CMake, .a
+  ;; files contain non-PIC objects, which breaks some users, and switching to
+  ;; shared libraries by default seems to make more sense, as discussed here:
+  ;; <https://issues.guix.gnu.org/47619#2>.
+  (deprecated-package "scotch-shared" scotch))
 
-              ;; Install the serial metis compatibility library
-              (invoke "make" "-C" "libscotchmetis" "install")))
-           (add-before 'check 'mpi-setup
-             ,%openmpi-setup)))))
-    (synopsis "Graph algorithms (shared libraries version, with MPI)")))
+(define-public pt-scotch-shared
+  (deprecated-package "pt-scotch-shared" pt-scotch))
 
 
 (define-public metis
@@ -4554,6 +4401,8 @@ parts of it.")
                   ;; Failed to detect CPU.
                   ((string-prefix? "armhf" system)
                    '("TARGET=ARMV7"))
+                  ((string-prefix? "riscv64" system)
+                   '("TARGET=RISCV64_GENERIC"))
                   (else '()))))
        ;; no configure script
        #:phases
@@ -5532,53 +5381,53 @@ set.")
     (outputs '("out"                    ;5.3 MiB of headers and libraries
                "doc"))                  ;12 MiB of documentation
     (native-inputs
-     `(("doc++" ,doc++)
-       ("doxygen" ,doxygen)
-       ("python" ,python)
-       ("python-breathe" ,python-breathe)
-       ("python-sphinx" ,python-sphinx)
-       ("texlive" ,(texlive-updmap.cfg (list texlive-adjustbox
-                                             texlive-amsfonts
-                                             texlive-bibtex
-                                             texlive-caption
-                                             texlive-cm
-                                             texlive-etoolbox
-                                             texlive-jknappen
-                                             texlive-sectsty
-                                             texlive-tex-gyre
-                                             texlive-wasy
-                                             texlive-xcolor
-                                             texlive-xypic
-                                             texlive-generic-listofitems
-                                             texlive-generic-ulem
-                                             texlive-latex-capt-of
-                                             texlive-latex-cmap
-                                             texlive-latex-colortbl
-                                             texlive-latex-etoc
-                                             texlive-fancyhdr
-                                             texlive-fancyvrb
-                                             texlive-latex-float
-                                             texlive-latex-fncychap
-                                             texlive-latex-framed
-                                             texlive-latex-geometry
-                                             texlive-latex-hanging
-                                             texlive-hyperref
-                                             texlive-latex-multirow
-                                             texlive-latex-natbib
-                                             texlive-latex-needspace
-                                             texlive-latex-newunicodechar
-                                             texlive-latex-parskip
-                                             texlive-latex-stackengine
-                                             texlive-latex-tabulary
-                                             texlive-titlesec
-                                             texlive-latex-tocloft
-                                             texlive-latex-upquote
-                                             texlive-latex-varwidth
-                                             texlive-wasysym
-                                             texlive-latex-wrapfig)))))
+     (list doc++
+           doxygen
+           python
+           python-breathe
+           python-sphinx
+           (texlive-updmap.cfg (list texlive-adjustbox
+                                     texlive-amsfonts
+                                     texlive-bibtex
+                                     texlive-capt-of
+                                     texlive-caption
+                                     texlive-cm
+                                     texlive-etoolbox
+                                     texlive-fancyhdr
+                                     texlive-fancyvrb
+                                     texlive-jknappen
+                                     texlive-sectsty
+                                     texlive-tex-gyre
+                                     texlive-wasy
+                                     texlive-xcolor
+                                     texlive-xypic
+                                     texlive-generic-listofitems
+                                     texlive-latex-cmap
+                                     texlive-latex-colortbl
+                                     texlive-latex-etoc
+                                     texlive-latex-float
+                                     texlive-latex-fncychap
+                                     texlive-latex-framed
+                                     texlive-latex-geometry
+                                     texlive-latex-hanging
+                                     texlive-hyperref
+                                     texlive-latex-multirow
+                                     texlive-latex-natbib
+                                     texlive-latex-needspace
+                                     texlive-latex-newunicodechar
+                                     texlive-latex-parskip
+                                     texlive-latex-stackengine
+                                     texlive-latex-tabulary
+                                     texlive-latex-titlesec
+                                     texlive-latex-tocloft
+                                     texlive-latex-upquote
+                                     texlive-latex-varwidth
+                                     texlive-titlesec
+                                     texlive-ulem
+                                     texlive-wasysym
+                                     texlive-wrapfig))))
     (inputs
-     `(("blas" ,openblas)
-       ("lapack" ,lapack)))
+     (list openblas lapack))
     (arguments
      `(#:modules ((srfi srfi-1)
                   ,@%gnu-build-system-modules)
@@ -5639,11 +5488,11 @@ problems.")
     (license license:lgpl2.1)))
 
 (define-public hypre-openmpi
-  (package (inherit hypre)
+  (package
+    (inherit hypre)
     (name "hypre-openmpi")
-    (inputs
-     `(("mpi" ,openmpi)
-       ,@(package-inputs hypre)))
+    (inputs (modify-inputs (package-inputs hypre)
+              (prepend openmpi)))
     (arguments
      (substitute-keyword-arguments (package-arguments hypre)
        ((#:configure-flags flags)
@@ -7196,8 +7045,7 @@ researchers and developers alike to get started on SAT.")
            curl
            icu4c
            gnuplot
-           readline
-           libiconv))
+           readline))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -7298,7 +7146,7 @@ numeric differences and differences in numeric formats.")
 (define-public why3
   (package
     (name "why3")
-    (version "1.4.0")
+    (version "1.4.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7307,7 +7155,7 @@ numeric differences and differences in numeric formats.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0pfsiddnk26f384wbazfpgzh1n1ibf3xq101q74mxvczi7z0a791"))))
+                "1yca6mx8bjm8x0i594ivh31aw45s6fbimmwfj8g2v9zwrgmr1i4s"))))
     (build-system ocaml-build-system)
     (native-inputs
      (list autoconf automake coq ocaml which))

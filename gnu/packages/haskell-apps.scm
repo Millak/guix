@@ -41,7 +41,6 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system haskell)
   #:use-module (gnu packages)
-  #:use-module (gnu packages base)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages haskell)
@@ -252,7 +251,6 @@ unlit literate code files; and an option to turn off macro-expansion.")
            ghc
            ncurses
            perl
-           libiconv
            ghc-network
            ghc-network-uri))
     (native-inputs
@@ -306,14 +304,14 @@ to @code{cabal repl}).")
 (define-public git-annex
   (package
     (name "git-annex")
-    (version "8.20211231")
+    (version "10.20220222")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://hackage.haskell.org/package/"
                            "git-annex/git-annex-" version ".tar.gz"))
        (sha256
-        (base32 "0cpa3rl8vcm0arima8x9m5q0a9r05z0851ibr1vcria2z0mmwmi7"))))
+        (base32 "119c7l2vqv19ja3pg3adaivsmrmbyg03a88j2msnzcgyhddggf8z"))))
     (build-system haskell-build-system)
     (arguments
      `(#:configure-flags

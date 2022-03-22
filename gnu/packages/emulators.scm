@@ -73,6 +73,7 @@
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages libedit)
@@ -1711,7 +1712,7 @@ This is a part of the TiLP project.")
 (define-public mame
   (package
     (name "mame")
-    (version "0.239")
+    (version "0.241")
     (source
      (origin
        (method git-fetch)
@@ -1720,7 +1721,7 @@ This is a part of the TiLP project.")
              (commit (apply string-append "mame" (string-split version #\.)))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02by0pq0j8pi5dllk90g94nbszynp9wqg75bl5x8bqrc7h80a0dq"))
+        (base32 "13bm81qyzvpllzmrak5nb87cdyyvsv4hcnznnrz4jyx1bd8ky6ap"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove bundled libraries.
@@ -1745,50 +1746,47 @@ This is a part of the TiLP project.")
                 "pugixml" "rapidjson" "sqlite3" "utf8proc" "zlib")))
       #:tests? #f                       ;no test in regular release
       #:phases
-      `(modify-phases %standard-phases
-         (delete 'configure)
-         (add-after 'build 'build-documentation
-           (lambda _ (invoke "make" "-C" "docs" "man" "info")))
-         (replace 'install
-           ;; Upstream does not provide an installation phase.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (share (string-append out "/share/mame")))
-               ;; Install data.
-               (for-each (lambda (dir)
-                           (copy-recursively dir (string-append share "/" dir)))
-                         '("artwork" "bgfx" "ctrlr" "hash" "ini" "language"
-                           "plugins" "samples"))
-               (let ((keymaps (string-append share "/keymaps")))
-                 (for-each (lambda (file) (install-file file keymaps))
-                           (find-files "keymaps" ".*LINUX\\.map")))
-               (let ((fonts (string-append share "/fonts")))
-                 (install-file "uismall.bdf" fonts))
-               (when (file-exists? "mame64")
-                 (rename-file "mame64" "mame"))
-               (install-file "mame" (string-append out "/bin")))))
-         (add-after 'install 'install-documentation
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (man (string-append out "/share/man/man1"))
-                    (info (string-append out "/share/info")))
-               (install-file "docs/build/man/MAME.1" man)
-               (install-file "docs/build/texinfo/MAME.info" info))))
-         (add-after 'install 'install-ini-file
-           ;; Generate an ini file so as to set some directories (e.g., roms)
-           ;; to a writable location, i.e., "$HOME/.mame/" and "$HOME/mame/".
-           ;;
-           ;; XXX: We need to insert absolute references to the store.  It can
-           ;; be an issue if they leak into user's home directory, e.g., with
-           ;; "mame -createconfig" and the package is later GC'ed.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (share (string-append out "/share/mame"))
-                    (ini (string-append share "/ini")))
-               (with-output-to-file (string-append ini "/mame.ini")
-                 (lambda _
-                   (format #t
-                           "inipath              $HOME/.mame;~a/ini~@
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'build 'build-documentation
+            (lambda _ (invoke "make" "-C" "docs" "man" "info")))
+          (replace 'install
+            ;; Upstream does not provide an installation phase.
+            (lambda _
+              (let ((share (string-append #$output "/share/mame")))
+                ;; Install data.
+                (for-each (lambda (dir)
+                            (copy-recursively dir (string-append share "/" dir)))
+                          '("artwork" "bgfx" "ctrlr" "hash" "ini" "language"
+                            "plugins" "samples"))
+                (let ((keymaps (string-append share "/keymaps")))
+                  (for-each (lambda (file) (install-file file keymaps))
+                            (find-files "keymaps" ".*LINUX\\.map")))
+                (let ((fonts (string-append share "/fonts")))
+                  (install-file "uismall.bdf" fonts))
+                (when (file-exists? "mame64")
+                  (rename-file "mame64" "mame"))
+                (install-file "mame" (string-append #$output "/bin")))))
+          (add-after 'install 'install-documentation
+            (lambda _
+              (let ((man (string-append #$output "/share/man/man1"))
+                    (info (string-append #$output "/share/info")))
+                (install-file "docs/build/man/MAME.1" man)
+                (install-file "docs/build/texinfo/MAME.info" info))))
+          (add-after 'install 'install-ini-file
+            ;; Generate an ini file so as to set some directories (e.g., roms)
+            ;; to a writable location, i.e., "$HOME/.mame/" and "$HOME/mame/".
+            ;;
+            ;; XXX: We need to insert absolute references to the store.  It can
+            ;; be an issue if they leak into user's home directory, e.g., with
+            ;; "mame -createconfig" and the package is later GC'ed.
+            (lambda _
+              (let* ((share (string-append #$output "/share/mame"))
+                     (ini (string-append share "/ini")))
+                (with-output-to-file (string-append ini "/mame.ini")
+                  (lambda _
+                    (format #t
+                            "inipath              $HOME/.mame;~a/ini~@
                             homepath             $HOME/mame~@
                             rompath              $HOME/mame/roms~@
                             samplepath           $HOME/mame/samples;~a/samples~@
@@ -1808,12 +1806,12 @@ This is a part of the TiLP project.")
                             state_directory      $HOME/.mame/sta~@
                             diff_directory       $HOME/.mame/diff~@
                             comment_directory    $HOME/.mame/comments~%"
-                           share share share share share share share share
-                           share)))
-               (with-output-to-file (string-append ini "/ui.ini")
-                 (lambda _
-                   (format #t
-                           "historypath          $HOME/mame/history~@
+                            share share share share share share share share
+                            share)))
+                (with-output-to-file (string-append ini "/ui.ini")
+                  (lambda _
+                    (format #t
+                            "historypath          $HOME/mame/history~@
                             categorypath         $HOME/mame/folders~@
                             cabinets_directory   $HOME/mame/cabinets~@
                             cpanels_directory    $HOME/mame/cpanel~@
@@ -1833,16 +1831,15 @@ This is a part of the TiLP project.")
                             icons_directory      $HOME/mame/icons~@
                             covers_directory     $HOME/mame/covers~@
                             ui_path              $HOME/.mame/ui~%"))))))
-         (add-after 'install 'install-desktop-file
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (desktop (string-append out "/share/applications"))
-                    (executable (string-append out "/bin/mame")))
-               (mkdir-p desktop)
-               (with-output-to-file (string-append desktop "/mame.desktop")
-                 (lambda _
-                   (format #t
-                           "[Desktop Entry]~@
+          (add-after 'install 'install-desktop-file
+            (lambda _
+              (let ((desktop (string-append #$output "/share/applications"))
+                    (executable (string-append #$output "/bin/mame")))
+                (mkdir-p desktop)
+                (with-output-to-file (string-append desktop "/mame.desktop")
+                  (lambda _
+                    (format #t
+                            "[Desktop Entry]~@
                            Name=mame~@
                            Comment=Multi-purpose emulation framework~@
                            Exec=~a~@
@@ -1851,7 +1848,7 @@ This is a part of the TiLP project.")
                            Type=Application~@
                            Categories=Game;Emulator;~@
                            Keywords=Game;Emulator;Arcade;~%"
-                           executable)))))))))
+                            executable)))))))))
     (native-inputs
      (list pkg-config
            python-sphinx
@@ -1894,7 +1891,7 @@ functions.  The source code to MAME serves as this documentation.")
 (define-public gnome-arcade
   (package
     (name "gnome-arcade")
-    (version "0.218.2")
+    (version "0.240")
     (source
      (origin
        (method git-fetch)
@@ -1904,55 +1901,85 @@ functions.  The source code to MAME serves as this documentation.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1qc01a62p65qb6mwjfmxqsd6n3rglsfwrjhsp25nr7q54107n55l"))))
+         "110dpbbcj73s3i2zcnay0kdpsngcpq8mif88279pdc2967ld0a6r"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f                      ; No tests.
-       #:configure-flags (list
-                          (string-append "-DMAME_BIN=\""
-                                         (assoc-ref %build-inputs "mame")
-                                         "/bin/mame\"")
-                          (string-append "-DAPP_RES=\""
-                                         (assoc-ref %outputs "out")
-                                         "/share/gnome-arcade/\""))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'fix-paths
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (pk 'cwd (getcwd))
-               (substitute* "../source/src/config.c"
-                 (("/usr/share") (string-append out "/share"))))
-             #t))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (rom (string-append out "/share/gnome-arcade/data/rom"))
-                    (tile (string-append out "/share/gnome-arcade/data/tile")))
-               (mkdir-p bin)
-               (install-file "../gnome-arcade" bin)
-               (copy-recursively "../source/res"
-                                 (string-append out "/share/gnome-arcade/res"))
-               (mkdir-p rom)
-               (install-file "../source/data/rom/ROM.TXT" rom)
-               (mkdir-p tile)
-               (install-file "../source/data/tile/TILE.TXT" tile))
-             #t)))))
+     (list
+      #:tests? #f                       ; No tests.
+      #:configure-flags
+      #~(list
+         (string-append "-DMAME_BIN=\""
+                        #$(this-package-input "mame")
+                        "/bin/mame\"")
+         (string-append "-DAPP_RES=\"" #$output "/share/gnome-arcade/\""))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'fix-paths
+            (lambda _
+              (substitute* "../source/src/config.c"
+                (("/usr/share") (string-append #$output "/share")))))
+          (replace 'install
+            (lambda _
+              (let ((bin (string-append #$output "/bin"))
+                    (rom (string-append #$output
+                                        "/share/gnome-arcade/data/rom"))
+                    (tile (string-append #$output
+                                         "/share/gnome-arcade/data/tile")))
+                (mkdir-p bin)
+                (install-file "../gnome-arcade" bin)
+                (copy-recursively "../source/res"
+                                  (string-append #$output
+                                                 "/share/gnome-arcade/res"))
+                (mkdir-p rom)
+                (install-file "../source/data/rom/ROM.TXT" rom)
+                (mkdir-p tile)
+                (install-file "../source/data/tile/TILE.TXT" tile)))))))
     (native-inputs
      (list pkg-config))
     (inputs
-     `(("mame" ,mame)
-       ("gtk" ,gtk+)
-       ("libevdev" ,libevdev)
-       ("libvlc" ,vlc)
-       ("libarchive" ,libarchive)))
+     (list gtk+ libarchive libevdev mame vlc))
     (home-page "https://github.com/strippato/gnome-arcade")
     (synopsis "Minimal MAME frontend")
     (description
-     "A minimal GTK+ frontend for MAME, the multi-purpose arcade and console
-emulator.")
+     "Gnome Arcade is a minimal GTK+ frontend for MAME, the multi-purpose
+arcade and console emulator.")
     (license license:gpl3+)))
+
+(define-public gnusim8085
+  (package
+    (name "gnusim8085")
+    (version "1.4.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/srid/GNUSim8085/releases/download/"
+                    version "/gnusim8085-" version ".tar.gz"))
+              (sha256
+               (base32
+                "05x0is0ckagb3r74p6lw9b8nqrrh7q2v4jvc4cnhljchz9x7kw2a"))))
+    (native-inputs (list pkg-config))
+    (inputs (list gtksourceview-3 adwaita-icon-theme))
+    (build-system glib-or-gtk-build-system)
+    (home-page "https://gnusim8085.srid.ca")
+    (synopsis "Graphical simulator for the Intel 8085 microprocessor")
+    (description
+     "GNUSim8085 is a graphical simulator,
+assembler, and debugger for the Intel 8085 microprocessor.
+
+@itemize
+@item A simple editor component with syntax highlighting.
+@item A keypad to input assembly language instructions with appropriate arguments.
+@item Easy view of register contents.
+@item Easy view of flag contents.
+@item Hexadecimal/decimal converter.
+@item View of stack, memory and I/O contents.
+@item Support for breakpoints for program debugging.
+@item Stepwise program execution.
+@item One click conversion of assembly program to opcode listing.
+@item Printing support.
+@item UI translated in various languages.
+@end itemize")
+    (license license:gpl2+)))
 
 (define-public pcsxr
   ;; No release since 2017.

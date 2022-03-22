@@ -11,6 +11,8 @@
 ;;; Copyright © 2021, 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2022 Marcel Kupiec <formbi@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -45,6 +47,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages lxqt)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages openldap)
   #:use-module (gnu packages pciutils)
@@ -52,6 +55,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages polkit)
   #:use-module (gnu packages protobuf)
+  #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -179,23 +183,81 @@ It can be used to generate a system overview log which can be later used for
 support.")
     (license license:gpl2+)))
 
+(define-public ckb-next
+  (let ((commit "967f44018a9d46efa7203fad38518e9381eba0f3")
+        (revision "0"))
+    (package
+      (name "ckb-next")
+      (version (git-version "0.4.4" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/ckb-next/ckb-next")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "0bfpah0zgmyhbi6payymr3p98nfnwqr2xqxgkyzvccz72z246316"))
+                (file-name (git-file-name name version))))
+      (build-system cmake-build-system)
+      (arguments
+       `(#:modules ((guix build cmake-build-system) (guix build qt-utils)
+                    (guix build utils))
+         #:imported-modules (,@%cmake-build-system-modules
+                             (guix build qt-utils))
+         #:tests? #f
+         #:phases
+         (modify-phases %standard-phases
+           (add-before 'build 'patch-lib-udev
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (substitute* "src/daemon/cmake_install.cmake"
+                 (("/lib/udev")
+                  (string-append (assoc-ref outputs "out")
+                                 "/lib/udev")))))
+           (add-after 'install 'wrap-qt
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (let ((out (assoc-ref outputs "out")))
+                 (wrap-qt-program "ckb-next"
+                                  #:output out
+                                  #:inputs inputs)))))))
+      (native-inputs (list qttools pkg-config))
+      (inputs (list qtbase-5
+                    zlib
+                    libdbusmenu-qt
+                    quazip
+                    pulseaudio
+                    libxcb
+                    xcb-util-wm
+                    qtx11extras
+                    eudev
+                    bash-minimal))
+      (home-page "https://github.com/ckb-next/ckb-next")
+      (synopsis "Driver for Corsair keyboards and mice")
+      (description
+       "ckb-next is a driver for Corsair keyboards and mice.  It aims to bring
+the features of Corsair's proprietary software to Linux-based operating
+systems.  It already supports much of the same functionality, including full
+RGB animations.")
+      (license license:gpl2))))
+
 (define-public ddcutil
   (package
     (name "ddcutil")
-    (version "1.1.0")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.ddcutil.com/tarballs/"
                            "ddcutil-" version ".tar.gz"))
        (sha256
-        (base32 "19kkwb9ijzn6ya3mvjanggh1c96fcc0lkbk7xnyi2qp6wsr4nhxp"))))
+        (base32 "0fp7ffjn21p0bsc5b1ipf3dbpzwn9g6j5dpnwdnca052ifzk2w7i"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
     (inputs
      (list eudev
            glib
+           kmod
+           i2c-tools
            libdrm ; enhanced diagnostics
            libusb ; support USB monitors
            libx11 ; enhanced diagnostics
@@ -823,36 +885,42 @@ applications.")
 (define-public usbguard
   (package
     (name "usbguard")
-    (version "0.7.8")
+    ;; Note: Use a recent snapshot to get compatibility with newer system
+    ;; libraries.
+    (version "1.0.0-55-g466f1f0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/USBGuard/usbguard/releases/download/usbguard-"
-                    version "/usbguard-" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/USBGuard/usbguard")
+                    (commit (string-append "usbguard-" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1il5immqfxh2cj8wn1bfk7l42inflzgjf07yqprpz7r3lalbxc25"))))
+               (base32 "0rc0213qsfap3sgx9m3m1kppxbjl2fdwmzlbn5rbmn1i33125dfi"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
+     '(#:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'patch-build-scripts
+         (add-after 'unpack 'patch-bootstrap-script
+           (lambda _
+             ;; Don't attempt to fetch git submodules.
+             (substitute* "autogen.sh"
+               (("^git submodule.*")
+                ""))))
+         (add-after 'bootstrap 'patch-build-scripts
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "configure"
                (("/usr/include/catch")
-                (string-append (assoc-ref inputs "catch") "/include")))
+                (dirname (search-input-file inputs "include/catch.hpp"))))
              ;; Do not create log directory.
              (substitute* "Makefile.in" ((".*/log/usbguard.*") ""))
              ;; Disable LDAP tests: they use 'sudo'.
              (substitute* "src/Tests/Makefile.in"
-               (("\\$\\(am__append_2\\)") ""))
-             #t))
+               (("\\$\\(am__append_2\\)") ""))))
          (add-after 'install 'delete-static-library
            (lambda* (#:key outputs #:allow-other-keys)
              ;; It can't be direclty disabled since it's needed for the tests.
              (delete-file (string-append (assoc-ref outputs "out")
-                                         "/lib/libusbguard.a"))
-             #t))
+                                         "/lib/libusbguard.a"))))
          (add-after 'install 'install-zsh-completion
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -860,8 +928,7 @@ applications.")
                      (string-append out "/share/zsh/site-functions")))
                (mkdir-p site-functions)
                (copy-file "scripts/usbguard-zsh-completion"
-                          (string-append site-functions "/_usbguard"))
-               #t))))
+                          (string-append site-functions "/_usbguard"))))))
        #:make-flags
        (list (string-append "BASH_COMPLETION_DIR="
                             (assoc-ref %outputs "out")
@@ -874,25 +941,28 @@ applications.")
         "--with-dbus"
         "--with-polkit")))
     (inputs
-     `(("audit" ,audit)
-       ("catch" ,catch-framework)
-       ("dbus-glib" ,dbus-glib)
-       ("ldap" ,openldap)
-       ("libcap-ng" ,libcap-ng)
-       ("libseccomp" ,libseccomp)
-       ("libsodium" ,libsodium)
-       ("pegtl" ,pegtl)
-       ("polkit" ,polkit)
-       ("protobuf" ,protobuf)
-       ("libqb" ,libqb)))
+     (list audit
+           catch-framework
+           dbus-glib
+           openldap
+           libcap-ng
+           libseccomp
+           libsodium
+           pegtl
+           polkit
+           protobuf
+           libqb))
     (native-inputs
-     `(("asciidoc" ,asciidoc)
-       ("bash-completion" ,bash-completion)
-       ("gdbus-codegen" ,glib "bin")
-       ("umockdev" ,umockdev)
-       ("xmllint" ,libxml2)
-       ("xsltproc" ,libxslt)
-       ("pkg-config" ,pkg-config)))
+     (list asciidoc
+           autoconf
+           automake
+           libtool
+           bash-completion
+           `(,glib "bin")
+           umockdev
+           libxml2
+           libxslt
+           pkg-config))
     (home-page "https://usbguard.github.io")
     (synopsis "Helps to protect your computer against rogue USB devices (a.k.a. BadUSB)")
     (description "USBGuard is a software framework for implementing USB device

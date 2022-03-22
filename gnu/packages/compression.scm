@@ -811,8 +811,11 @@ decompression of some loosely related file formats used by Microsoft.")
     (build-system gnu-build-system)
     (outputs (list "out" "static"))
     (native-inputs
-     (list ;; For tests.
-           python valgrind))
+     (append
+       (list python)    ;; For tests.
+       (if (member (%current-system) (package-supported-systems valgrind))
+         (list valgrind)
+         '())))
     (arguments
      `(;; Not designed for parallel testing.
        ;; See https://github.com/lz4/lz4/issues/957#issuecomment-737419821
@@ -871,7 +874,7 @@ time for compression ratio.")
              "LZO_SUPPORT=1"
              "LZ4_SUPPORT=1"
              "ZSTD_SUPPORT=1"
-             (string-append "INSTALL_DIR=" %output "/bin"))
+             (string-append "INSTALL_DIR=" (assoc-ref %outputs "out") "/bin"))
        #:phases
        (modify-phases %standard-phases
          (replace 'configure
@@ -2091,7 +2094,7 @@ single-member files which can't be decompressed in parallel.")
    (build-system cmake-build-system)
    (arguments
     `(#:tests? #f))
-   (inputs (list boost libiconv xz))
+   (inputs (list boost xz))
    (native-inputs (list pkg-config))
    (home-page "https://constexpr.org/innoextract/")
    (synopsis "Tool for extracting Inno Setup installers")

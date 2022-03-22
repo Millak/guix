@@ -6,7 +6,7 @@
 ;;; Copyright © 2016 Raimon Grau <raimonster@gmail.com>
 ;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016 John Darrington <jmd@gnu.org>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2016-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2017, 2018 Arun Isaac <arunisaac@systemreboot.net>
@@ -47,6 +47,7 @@
 ;;; Copyright © 2021 Milkey Mouse <milkeymouse@meme.institute>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2022 Simon South <simon@simonsouth.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1152,7 +1153,7 @@ between different versions of ØMQ.")
 (define-public cppzmq
   (package
     (name "cppzmq")
-    (version "4.6.0")
+    (version "4.8.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1160,19 +1161,15 @@ between different versions of ØMQ.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "19acx2bzi4n6fdnfgkja1nds7m1bwg8lw5vfcijrx9fv75pa7m8h"))
+                "0zzq20wzk5grshxfqhqgqqfwb38w3k83r821isvyaxghsglpwks3"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
-     '(;; FIXME: The test suite requires downloading Catch and custom
-       ;; CMake targets, and refuses to use the system version.
-       ;; See <https://github.com/zeromq/cppzmq/issues/334>.
-       #:tests? #f
-       #:configure-flags '("-DCPPZMQ_BUILD_TESTS=OFF")))
+     `(#:tests? ,(not (%current-target-system)))) ; run unless cross-compiling
     (native-inputs
      (list pkg-config))
     (inputs
-     (list zeromq))
+     (list catch-framework2 zeromq))
     (home-page "https://zeromq.org")
     (synopsis "C++ bindings for the ØMQ messaging library")
     (description
@@ -1522,14 +1519,14 @@ of the same name.")
 (define-public wireshark
   (package
     (name "wireshark")
-    (version "3.6.1")
+    (version "3.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.wireshark.org/download/src/wireshark-"
                            version ".tar.xz"))
        (sha256
-        (base32 "0f2sjbbwmmz9zr8vphxy0panfji5vv8vazm688mqxy3bzflfsd04"))))
+        (base32 "03n34jh4318y3q14jclxfxi4r7b9l393w9fw9bq57ydff9aim42x"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
@@ -1597,15 +1594,16 @@ network frames.")
 (define-public fping
   (package
     (name "fping")
-    (version "5.0")
+    (version "5.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://fping.org/dist/fping-"
                            version ".tar.gz"))
        (sha256
-        (base32 "1f2prmii4fyl44cfykp40hp4jjhicrhddh9v3dfs11j6nsww0f7d"))))
+        (base32 "1zh9fkyn0bixgn77v9z6ayv446nqwx960hmly9m68xix0s62dr8y"))))
     (build-system gnu-build-system)
+    (arguments '(#:configure-flags '("--enable-ipv6")))
     (home-page "https://fping.org/")
     (synopsis "Send ICMP ECHO_REQUEST packets to network hosts")
     (description
@@ -2423,7 +2421,7 @@ that block port 22.")
 (define-public iperf
   (package
     (name "iperf")
-    (version "3.10.1")
+    (version "3.11")
     (source
      (origin
        (method git-fetch)
@@ -2432,7 +2430,7 @@ that block port 22.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0svkrmxki6ckn2a8xysh5x0bw68mqnvl3w64j6d45fxs97dca2vq"))))
+        (base32 "064sb8f9jxi5ii43swd73c0mm50lvk51v7awhgbj6p129c1a4nn5"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -3398,92 +3396,87 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
     (license license:bsd-3)))
 
 (define-public opendht
-  ;; The version/commit is kept in sync with what Jami uses in its daemon
-  ;; contrib build system (see:
-  ;; https://review.jami.net/plugins/gitiles/jami-daemon/+/refs/heads/master/contrib/src/opendht/rules.mak).
-  (let ((commit "dbbfdaab0f4119abf79646313e0dbc52881dcd56")
-        (revision "0"))
-    (package
-      (name "opendht")
-      (version (git-version "2.3.1" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/savoirfairelinux/opendht")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "07x8vw999qpfl6qwj5k5l2mcjy1vp32sd567f6imbsnh9vlx2bdv"))))
-      (outputs '("out" "tools" "debug"))
-      (build-system gnu-build-system)
-      (arguments
-       (list
-        #:imported-modules `((guix build python-build-system) ;for site-packages
-                             ,@%gnu-build-system-modules)
-        #:modules '(((guix build python-build-system) #:prefix python:)
-                    (guix build gnu-build-system)
-                    (guix build utils))
-        #:tests? #f                     ;tests require networking
-        #:configure-flags
-        #~(list "--enable-tests"
-                "--enable-proxy-server"
-                "--enable-push-notifications"
-                "--enable-proxy-server-identity"
-                "--enable-proxy-client")
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'fix-python-installation-prefix
-              ;; Specify the installation prefix for the compiled Python module
-              ;; that would otherwise attempt to installs itself to Python's own
-              ;; site-packages directory.
-              (lambda _
-                (substitute* "python/Makefile.am"
-                  (("--root=\\$\\(DESTDIR)/")
-                   (string-append "--root=/ --single-version-externally-managed "
-                                  "--prefix=" #$output)))))
-            (add-after 'unpack 'specify-runpath-for-python-module
-              (lambda _
-                (substitute* "python/setup.py.in"
-                  (("extra_link_args=\\[(.*)\\]" _ args)
-                   (string-append "extra_link_args=[" args
-                                  ", '-Wl,-rpath=" #$output "/lib']")))))
-            (add-after 'install 'move-and-wrap-tools
-              (lambda* (#:key inputs outputs #:allow-other-keys)
-                (let* ((tools (assoc-ref outputs "tools"))
-                       (dhtcluster (string-append tools "/bin/dhtcluster"))
-                       (site-packages (python:site-packages inputs outputs)))
-                  (mkdir tools)
-                  (rename-file (string-append #$output "/bin")
-                               (string-append tools "/bin"))
-                  ;; TODO: Contribute a patch to python/Makefile.am to
-                  ;; automate this.
-                  (copy-file "python/tools/dhtcluster.py" dhtcluster)
-                  (chmod dhtcluster #o555)
-                  (wrap-program dhtcluster
-                    `("GUIX_PYTHONPATH" prefix (,site-packages)))))))))
-      (inputs (list bash-minimal fmt readline))
-      (propagated-inputs
-       (list msgpack                    ;included in several installed headers
-             restinio                   ;included in opendht/http.h
-             ;; The following are listed in the 'Requires.private' field of
-             ;; opendht.pc:
-             argon2
-             gnutls
-             jsoncpp
-             nettle
-             openssl))                  ;required for the DHT proxy
-      (native-inputs
-       (list autoconf
-             automake
-             pkg-config
-             python
-             python-cython
-             libtool
-             cppunit))
-      (home-page "https://github.com/savoirfairelinux/opendht/")
-      (synopsis "Lightweight Distributed Hash Table (DHT) library")
-      (description "OpenDHT provides an easy to use distributed in-memory data
+  (package
+    (name "opendht")
+    (version "2.3.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/savoirfairelinux/opendht")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0gp1wdpk50y0pcvlhqfw9vpms8lsrjvv63x4dh40axsvf2ix9lkj"))))
+    (outputs '("out" "tools" "debug"))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:imported-modules `((guix build python-build-system) ;for site-packages
+                           ,@%gnu-build-system-modules)
+      #:modules '(((guix build python-build-system) #:prefix python:)
+                  (guix build gnu-build-system)
+                  (guix build utils))
+      #:tests? #f                     ;tests require networking
+      #:configure-flags
+      #~(list "--enable-tests"
+              "--enable-proxy-server"
+              "--enable-push-notifications"
+              "--enable-proxy-server-identity"
+              "--enable-proxy-client")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-python-installation-prefix
+            ;; Specify the installation prefix for the compiled Python module
+            ;; that would otherwise attempt to installs itself to Python's own
+            ;; site-packages directory.
+            (lambda _
+              (substitute* "python/Makefile.am"
+                (("--root=\\$\\(DESTDIR)/")
+                 (string-append "--root=/ --single-version-externally-managed "
+                                "--prefix=" #$output)))))
+          (add-after 'unpack 'specify-runpath-for-python-module
+            (lambda _
+              (substitute* "python/setup.py.in"
+                (("extra_link_args=\\[(.*)\\]" _ args)
+                 (string-append "extra_link_args=[" args
+                                ", '-Wl,-rpath=" #$output "/lib']")))))
+          (add-after 'install 'move-and-wrap-tools
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((tools (assoc-ref outputs "tools"))
+                     (dhtcluster (string-append tools "/bin/dhtcluster"))
+                     (site-packages (python:site-packages inputs outputs)))
+                (mkdir tools)
+                (rename-file (string-append #$output "/bin")
+                             (string-append tools "/bin"))
+                ;; TODO: Contribute a patch to python/Makefile.am to
+                ;; automate this.
+                (copy-file "python/tools/dhtcluster.py" dhtcluster)
+                (chmod dhtcluster #o555)
+                (wrap-program dhtcluster
+                  `("GUIX_PYTHONPATH" prefix (,site-packages)))))))))
+    (inputs (list bash-minimal fmt readline))
+    (propagated-inputs
+     (list msgpack                    ;included in several installed headers
+           restinio                   ;included in opendht/http.h
+           ;; The following are listed in the 'Requires.private' field of
+           ;; opendht.pc:
+           argon2
+           gnutls
+           jsoncpp
+           nettle
+           openssl))                  ;required for the DHT proxy
+    (native-inputs
+     (list autoconf
+           automake
+           pkg-config
+           python
+           python-cython
+           libtool
+           cppunit))
+    (home-page "https://github.com/savoirfairelinux/opendht/")
+    (synopsis "Lightweight Distributed Hash Table (DHT) library")
+    (description "OpenDHT provides an easy to use distributed in-memory data
 store.  Every node in the network can read and write values to the store.
 Values are distributed over the network, with redundancy.  It includes the
 following features:
@@ -3506,7 +3499,7 @@ library (get, put, etc.) with text values.
 @item dhtchat
 A very simple IM client working over the DHT.
 @end table")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public frrouting
   (package
@@ -3565,39 +3558,54 @@ powerful route filtering syntax and an easy-to-use configuration interface.")
 (define-public iwd
   (package
     (name "iwd")
-    (version "1.20")
+    (version "1.24")
     (source (origin
-              ;; FIXME: We're using the bootstrapped sources because
-              ;; otherwise using an external ell library is impossible.
-              ;; How to bootstrap with Guix?
-              (method url-fetch)
-              (uri (string-append "https://www.kernel.org/pub/linux/network"
-                                  "/wireless/iwd-" version ".tar.xz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.kernel.org/pub/scm/network/wireless/iwd.git")
+                    (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "03q5scahyg86h4bdxqxm32shyssgpmfp5b3183j01ig7mg6f4lbx"))))
+                "1sdi7008j5jhlg2rqpczh1pzb8zay6mc9dpnjjsmdnsmrcr3v7wi"))))
     (build-system gnu-build-system)
     (inputs
-     (list dbus ell readline))
+     (list dbus ell (package-source ell) readline))
     (native-inputs
-     `(("pkgconfig" ,pkg-config)
-       ("python" ,python)
-       ("rst2man" ,python-docutils)
-       ("openssl" ,openssl)))
+     (list autoconf
+           automake
+           libtool
+           pkg-config
+           python
+           python-docutils
+           openssl))
     (arguments
      `(#:configure-flags
-       (let ((dbus (assoc-ref %outputs "out")))
-         (list "--disable-systemd-service"
-               "--enable-external-ell"
-               "--enable-hwsim"
-               "--enable-tools"
-               "--enable-wired"
-               "--localstatedir=/var"
-               (string-append "--with-dbus-datadir=" dbus "/share/")
-               (string-append "--with-dbus-busdir="
-                              dbus "/share/dbus-1/system-services")))
+       ,#~(list "--disable-systemd-service"
+                "--enable-external-ell"
+                "--enable-hwsim"
+                "--enable-tools"
+                "--enable-wired"
+                "--localstatedir=/var"
+                (string-append "--with-dbus-datadir=" #$output "/share/")
+                (string-append "--with-dbus-busdir="
+                               #$output "/share/dbus-1/system-services"))
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'copy-ell-header-files
+           ;; Copy into the source tree two of ell's private header files that
+           ;; it shares with iwd, as is required to build with the
+           ;; "--enable-external-ell" configure option.
+           ;; See the definition of "ell_shared" in iwd's Makefile.am.
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((ell-header-dir (search-input-directory inputs "/ell"))
+                   (target-dir "ell"))
+               (mkdir target-dir)
+               (for-each
+                (lambda (file-name)
+                  (copy-file (string-append ell-header-dir "/" file-name)
+                             (string-append target-dir "/" file-name)))
+                '("asn1-private.h" "useful.h")))))
          (add-after 'configure 'patch-Makefile
            (lambda _
              (substitute* "Makefile"
@@ -4040,7 +4048,7 @@ network.")
 (define-public yggdrasil
   (package
     (name "yggdrasil")
-    (version "0.4.1")
+    (version "0.4.3")
     (source
      (origin
        (method git-fetch)
@@ -4051,7 +4059,7 @@ network.")
          (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ajhn0z58ap9jldip7mqj78drmgg4645zfsxsy004cfkm60fasnx"))
+        (base32 "0jp6998a45xi8pbi8p84chvpm1mhhcvcxm1avi1c1gjjp4jqm3vl"))
        (patches (search-patches "yggdrasil-extra-config.patch"))))
     (build-system go-build-system)
     (arguments

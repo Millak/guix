@@ -42,7 +42,6 @@
   #:export (cross-binutils
             cross-libc
             cross-gcc
-            cross-newlib?
             cross-kernel-headers))
 
 (define-syntax %xgcc
@@ -101,7 +100,16 @@
                                          "ath9k-htc-firmware-binutils.patch")))
                  ((target-mingw? target)
                   (package-with-extra-patches
-                   binutils
+                   (package-with-extra-configure-variable
+                    ;; mingw binutils does not work correctly when configured
+                    ;; with `--enable-compressed-debug-sections`. An error
+                    ;; like the following will occur whenever you try to link:
+                    ;;
+                    ;;   x86_64-w64-mingw32-ld: final link failed: bad value
+                    ;;
+                    ;; TODO: This seems like a deeper problem that warrants
+                    ;; deeper investigation.
+                    binutils "--enable-compressed-debug-sections" "no")
                    (search-patches "binutils-mingw-w64-timestamp.patch"
                                    "binutils-mingw-w64-deterministic.patch")))
                  (else binutils))
@@ -168,10 +176,6 @@ base compiler and using LIBC (which may be either a libc package or #f.)"
                              `((string-append "--with-toolexeclibdir="
                                               (assoc-ref %outputs "lib")
                                               "/" ,target "/lib"))
-                             '())
-                       ;; For a newlib (non-glibc) target
-                       ,@(if (cross-newlib? target)
-                             '("--with-newlib")
                              '()))
 
                  ,(if libc
@@ -480,10 +484,11 @@ target that libc."
                      (xheaders (cross-kernel-headers target)))
   "Return LIBC cross-built for TARGET, a GNU triplet. Use XGCC and XBINUTILS
 and the cross tool chain."
-  (if (cross-newlib? target libc)
-      (native-libc target libc
-                   #:xgcc xgcc
-                   #:xbinutils xbinutils)
+  (if (target-mingw? target)
+      (let ((machine (substring target 0 (string-index target #\-))))
+        (make-mingw-w64 machine
+                        #:xgcc xgcc
+                        #:xbinutils xbinutils))
       (package
         (inherit libc)
         (name (string-append "glibc-cross-" target))
@@ -543,24 +548,6 @@ and the cross tool chain."
                                '())
                          ,@(package-inputs libc)  ;FIXME: static-bash
                          ,@(package-native-inputs libc))))))
-
-(define* (native-libc target
-                     #:optional
-                     (libc glibc)
-                     #:key
-                     xgcc
-                     xbinutils)
-  (if (target-mingw? target)
-      (let ((machine (substring target 0 (string-index target #\-))))
-        (make-mingw-w64 machine
-                        #:xgcc xgcc
-                        #:xbinutils xbinutils))
-      libc))
-
-(define* (cross-newlib? target
-                       #:optional
-                       (libc glibc))
-  (not (eq? (native-libc target libc) libc)))
 
 
 ;;; Concrete cross tool chains are instantiated like this:
