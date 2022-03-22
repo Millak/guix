@@ -3,7 +3,7 @@
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Fis Trivial <ybbs.daans@hotmail.com>
 ;;; Copyright © 2018, 2021 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2019, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
+;;; Copyright © 2019, 2020, 2022 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
 ;;; Copyright © 2020, 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
@@ -25,6 +25,10 @@
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2021 Disseminate Dissent <disseminatedissent@protonmail.com>
+;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2022 muradm <mail@muradm.net>
+;;; Copyright © 2022 Attila Lendvai <attila@lendvai.name>
+;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -50,6 +54,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module (guix modules)
   #:use-module (guix gexp)
@@ -171,6 +176,10 @@ development effort.")
        (sha256
         (base32 "18230bg4rq9pmm5f8f65j444jpq56rld4fhmpham8q3vr1c1bdjh"))))
     (build-system cmake-build-system)
+    (arguments
+     (list
+       #:configure-flags
+       #~(list "-DRANGES_NATIVE=OFF")))
     (native-inputs
      (list doxygen gcc-9 perl))
     (inputs
@@ -221,6 +230,53 @@ range-v3 ranges are an abstraction layer on top of iterators.")
 use by the C++ Core Guidelines maintained by the Standard C++ Foundation.")
     (home-page "https://github.com/microsoft/GSL/")
     (license license:expat)))
+
+(define-public c2ffi
+  (package
+    (name "c2ffi")
+    ;; As per the c2ffi README: the first three elements are encoding the
+    ;; required Clang/LLVM version, and the last one is the c2ffi revision.
+    (version "12.0.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rpav/c2ffi")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qq8dfismd20d9kfxpfvwz07v9mfvd0y7p5r3c92mk2pm4xnmzfy"))
+       (modules '((guix build utils)))
+       (snippet
+        '(substitute* "CMakeLists.txt"
+           ;; Guix seems to be packaging LLVM libs separately thus -lLLVM
+           ;; won't work, every used library must be specified explicitly.
+           (("c2ffi PUBLIC clang-cpp LLVM")
+            "c2ffi PUBLIC clang-cpp LLVMCore LLVMSupport LLVMMCParser \
+LLVMOption LLVMBitReader LLVMProfileData")))))
+    (build-system cmake-build-system)
+    (arguments
+     '(;; If LLVM was built without RTTI, we need to also be built without
+       ;; it.  See: https://stackoverflow.com/q/11904519
+       #:configure-flags '("-DCMAKE_CXX_FLAGS=-fno-rtti")
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "./bin/c2ffi" "--help")))))))
+    (native-inputs
+     (list clang-12)) ; CMakeLists.txt invokes `clang -print-resource-dir`
+    (inputs
+     (list clang-12)) ; Compiled with gcc, but links against libclang-cpp.so
+    (home-page "https://github.com/rpav/c2ffi")
+    (synopsis "Clang-based FFI wrapper generator")
+    (description
+     "@code{c2ffi} is a tool for extracting definitions from C, C++, and
+Objective C headers for use with foreign function call interfaces.  It uses
+the @code{Clang/LLVM} infrastructure to extract the data, and emits it in
+various formats, including @code{json}.")
+    (license license:gpl2+)))
 
 (define-public libzen
   (package
@@ -350,7 +406,7 @@ combination of these streams.")
 (define-public xsimd
   (package
     (name "xsimd")
-    (version "7.5.0")
+    (version "8.0.5")
     (source
      (origin
        (method git-fetch)
@@ -358,7 +414,7 @@ combination of these streams.")
              (url "https://github.com/QuantStack/xsimd")
              (commit version)))
        (sha256
-        (base32 "0c9pq5vz43j99z83w3b9qylfi66mn749k1afpv5cwfxggbxvy63f"))
+        (base32 "0fph1gzrj13knfkl3fvg098ccvqkbzs0jb8n323m7pnxajpzhzij"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -566,7 +622,7 @@ intuitive syntax and trivial integration.")
 (define-public xtl
   (package
     (name "xtl")
-    (version "0.6.23")
+    (version "0.7.4")
     (source (origin
               (method git-fetch)
               (uri
@@ -575,20 +631,19 @@ intuitive syntax and trivial integration.")
                 (commit version)))
               (sha256
                (base32
-                "1kd9zl4h6nrsg29hq13vwp4zhfj8sa90vj40726lpw6vxz48k4di"))
+                "134pgvmf9cx5dxs0m0m3qhp3m3r1gl86ic3xax21zc4sdj8sdq46"))
               (file-name (git-file-name name version))))
     (native-inputs
-     (list googletest json-modern-cxx))
+     (list doctest googletest json-modern-cxx))
     (arguments
-     `(#:configure-flags
+     '(#:configure-flags
        '("-DBUILD_TESTS=ON")
        #:phases
        (modify-phases %standard-phases
          (replace 'check
            (lambda* _
              (with-directory-excursion "test"
-               (invoke "./test_xtl")
-               #t))))))
+               (invoke "./test_xtl")))))))
     (home-page "https://github.com/QuantStack/xtl")
     (build-system cmake-build-system)
     (synopsis "C++ template library providing some basic tools")
@@ -1073,6 +1128,39 @@ of C++14 components that complements @code{std} and Boost.")
     (supported-systems '("aarch64-linux" "x86_64-linux"))
     (license license:asl2.0)))
 
+(define-public poco
+  (package
+    (name "poco")
+    (version "1.11.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pocoproject/poco")
+                    (commit (string-append "poco-" version "-release"))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0qkf8vb4qwds6idk9fkw6wjvcdk5k8h77x3gv47l0i4jfl5hwn8b"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "-DENABLE_TESTS=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-problematic-tests
+            (lambda _
+              (substitute* (list "Foundation/CMakeLists.txt" ; XXX: fails.
+                                 ;; Require network access
+                                 "Net/CMakeLists.txt"
+                                 "MongoDB/CMakeLists.txt"
+                                 "Redis/CMakeLists.txt")
+                (("ENABLE_TESTS") "FALSE")))))))
+    (home-page "https://pocoproject.org/")
+    (synopsis "Portable C++ components")
+    (description "A collection of libraries intended to be useful for building
+network-based applications.")
+    (license license:boost1.0)))
+
 (define-public aws-crt-cpp
   (let* ((commit "b6d311d76b504bf8ace5134d3fca0e672c36c9c3")
          (revision "1"))
@@ -1187,6 +1275,44 @@ code will be mixed in with the actual programming logic.  This implementation
 provides a number of utilities to make coding with expected cleaner.")
     (home-page "https://tl.tartanllama.xyz/")
     (license license:cc0)))
+
+(define-public atomic-queue
+  (package
+    (name "atomic-queue")
+    (version "1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/max0x7ba/atomic_queue")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ssff73wlvrsk2nma99dmvm0ijyzfr54jk37kxgpb694r7ajc90l"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:configure-flags '("-Dbenchmarks=false")
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (lambda _
+                 (invoke "make" "run_tests")))))
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (copy-recursively "../source/include/atomic_queue"
+                               (string-append (assoc-ref outputs "out")
+                                              "/include/atomic_queue")))))))
+     (native-inputs
+      (list boost
+            pkg-config))
+    (home-page "https://github.com/max0x7ba/atomic_queue")
+    (synopsis "C++ lockless queue")
+    (description
+     "This package contains a C++11 multiple-producer-multiple-consumer lockless
+queues header library based on circular buffer with @code{std::atomic}.")
+    (license license:expat)))
 
 (define-public magic-enum
   (package
@@ -1717,3 +1843,24 @@ concepts (like dates and times), and building blocks for developing
 multi-threaded applications and network applications.")
       (home-page "https://github.com/bloomberg/bde")
       (license license:asl2.0))))
+
+(define-public gulrak-filesystem
+  (package
+    (name "gulrak-filesystem")
+    (version "1.5.10")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/gulrak/filesystem")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0dx1yvbz5rnisymkqap7z0b06ag9fcs6q6l82vgi8caylhkwsqs7"))))
+    (build-system cmake-build-system)
+    (synopsis "Header only C++ std::filesystem compatible library")
+    (description "This package provides a header-only single-file
+std::filesystem compatible helper library, based on the C++17 and C++20 specs,
+but implemented for C++11, C++14, C++17 or C++20.")
+    (home-page "https://github.com/gulrak/filesystem")
+    (license license:expat)))

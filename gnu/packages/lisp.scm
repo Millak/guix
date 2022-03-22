@@ -14,7 +14,7 @@
 ;;; Copyright © 2018, 2019 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2019, 2020 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2019 Jesse Gildersleve <jessejohngildersleve@protonmail.com>
-;;; Copyright © 2019, 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019, 2020, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
@@ -251,7 +251,7 @@ interface to the Tk widget system.")
      (origin
        (method url-fetch)
        (uri (string-append
-             "https://common-lisp.net/project/ecl/static/files/release/"
+             "https://ecl.common-lisp.dev/static/files/release/"
              name "-" version ".tgz"))
        (sha256
         (base32 "000906nnq25177bgsfndiw3iqqgrjc9spk10hzk653sbz3f7anmi"))))
@@ -259,6 +259,7 @@ interface to the Tk widget system.")
     ;; src/configure uses 'which' to confirm the existence of 'gzip'.
     (native-inputs
      (list cl-asdf which texinfo))
+    (inputs (list bash-minimal))
     ;; When ECL is embedded in a program that wants to use Common Lisp as an
     ;; extension language, libgmp, libatomic-ops, libgc and libffi must be
     ;; present when compiling the program because they are required by ECL's
@@ -269,12 +270,11 @@ interface to the Tk widget system.")
      (list gmp libatomic-ops libgc libffi))
     (arguments
      `(#:configure-flags '("--without-rt")
-       ;; FIXME: As of version 20.4.24, we pass 17995 tests and fail 7.
-       ;; 2-3 tests may be due to FHS assumptions.
-       #:tests? #t
        #:parallel-tests? #f
        #:phases
        (modify-phases %standard-phases
+         ;; FIXME: As of version 20.4.24, we pass 17995 tests and fail 7.
+         ;; 2-3 tests may be due to FHS assumptions.
          (delete 'check)
          (add-after 'unpack 'replace-asdf
            ;; Use system ASDF instead of bundled one.
@@ -284,13 +284,11 @@ interface to the Tk widget system.")
                                 cl-asdf
                                 "/share/common-lisp/source/asdf/asdf.lisp"))
                     (contrib-asdf "contrib/asdf/asdf.lisp"))
-               (copy-file guix-asdf contrib-asdf))
-             #t))
+               (copy-file guix-asdf contrib-asdf))))
          (add-after 'install 'remove-build-stamp
            (lambda* (#:key outputs #:allow-other-keys)
              (delete-file (string-append (assoc-ref outputs "out")
-                                         "/lib/ecl-" ,version "/build-stamp"))
-             #t))
+                                         "/lib/ecl-" ,version "/build-stamp"))))
          (add-after 'remove-build-stamp 'wrap
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((ecl (assoc-ref outputs "out"))
@@ -313,14 +311,12 @@ interface to the Tk widget system.")
                            (input-path lib "/include"))
                          `("kernel-headers" ,@libraries)))
                  `("LIBRARY_PATH" suffix ,library-directories)
-                 `("LD_LIBRARY_PATH" suffix ,library-directories))
-               #t)))
+                 `("LD_LIBRARY_PATH" suffix ,library-directories)))))
          (add-after 'wrap 'check (assoc-ref %standard-phases 'check))
          (add-before 'check 'fix-path-to-ecl
            (lambda _
              (substitute* "build/tests/Makefile"
-               (("\\$\\{exec_prefix\\}/") ""))
-             #t)))))
+               (("\\$\\{exec_prefix\\}/") "")))))))
     (native-search-paths
      (list (search-path-specification
             (variable "XDG_DATA_DIRS")
@@ -328,7 +324,7 @@ interface to the Tk widget system.")
            (search-path-specification
             (variable "XDG_CONFIG_DIRS")
             (files '("etc")))))
-    (home-page "http://ecls.sourceforge.net/")
+    (home-page "https://ecl.common-lisp.dev/")
     (synopsis "Embeddable Common Lisp")
     (description "ECL is an implementation of the Common Lisp language as
 defined by the ANSI X3J13 specification.  Its most relevant features are: a
@@ -417,14 +413,14 @@ an interpreter, a compiler, a debugger, and much more.")
 (define-public sbcl
   (package
     (name "sbcl")
-    (version "2.1.9")
+    (version "2.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/sbcl/sbcl/" version "/sbcl-"
                            version "-source.tar.bz2"))
        (sha256
-        (base32 "189gjqzdz10xh3ybiy4ch1r98bsmkcb4hpnrmggd4y2g5kqnyx4y"))))
+        (base32 "1xjhg473ibfiplvvyg1grxrh0nqqbg72acc2pcacw7bijyzdp447"))))
     (build-system gnu-build-system)
     (outputs '("out" "doc"))
     (native-inputs
@@ -1156,7 +1152,7 @@ including a built-in database engine and a GUI system.")
 (define-public janet
   (package
     (name "janet")
-    (version "1.19.2")
+    (version "1.20.0")
     (source
      (origin
        (method git-fetch)
@@ -1165,7 +1161,7 @@ including a built-in database engine and a GUI system.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0waj22rzxmc0yx1yr0pzw9lwp6my5abfpfi6vq932bmli8y9prpd"))))
+        (base32 "0983jp22nnfpsc77nhsjgp7zp7m2n47pxg9nagwfhhff6rlqw9wq"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags

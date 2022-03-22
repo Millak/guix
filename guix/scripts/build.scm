@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Ricardo Wurmus <rekado@elephly.net>
@@ -559,11 +559,29 @@ build."
   (define things-to-build
     (map transform (options->things-to-build opts)))
 
+  (define warn-if-unsupported
+    (let ((target (assoc-ref opts 'target)))
+      (if target
+          (lambda (package system)
+            ;; We cannot tell whether PACKAGE supports TARGET.
+            package)
+          (lambda (package system)
+            (match package
+              ((? package? package)
+               (unless (supported-package? package system)
+                 (warning (package-location package)
+                          (G_ "package ~a does not support ~a~%")
+                          (package-full-name package) system))
+               package)
+              (x x))))))
+
   (define (compute-derivation obj system)
     ;; Compute the derivation of OBJ for SYSTEM.
     (match obj
       ((? package? p)
-       (let ((p (or (and graft? (package-replacement p)) p)))
+       (let ((p (warn-if-unsupported
+                 (or (and graft? (package-replacement p)) p)
+                 system)))
          (match src
            (#f
             (list (package->derivation store p system)))

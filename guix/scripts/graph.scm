@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019 Simon Tournier <zimon.toutoune@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -428,13 +428,6 @@ package modules, while attempting to retain user package modules."
               (string=? (node-type-name type) name))
             %node-types)
       (leave (G_ "~a: unknown node type~%") name)))
-
-(define (lookup-backend name)
-  "Return the graph backend called NAME.  Raise an error if it is not found."
-  (or (find (lambda (backend)
-              (string=? (graph-backend-name backend) name))
-            %graph-backends)
-      (leave (G_ "~a: unknown backend~%") name)))
 
 (define (list-node-types)
   "Print the available node types along with their synopsis."

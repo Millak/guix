@@ -124,6 +124,7 @@
             file-hyperlink
             location->hyperlink
 
+            pager-wrapped-port
             with-paginated-output-port
             relevance
             package-relevance
@@ -1030,29 +1031,38 @@ summary, and level 0 shows nothing."
     ;; Unfortunately, this is hardly avoidable for proper i18n.
     (if dry-run?
         (begin
-          (unless (zero? verbosity)
+          (unless (or (zero? verbosity) (null? build))
             (format (current-error-port)
-                    (N_ "~:[The following derivation would be built:~%~{   ~a~%~}~;~]"
-                        "~:[The following derivations would be built:~%~{   ~a~%~}~;~]"
-                        (length build))
-                    (null? build) (map colorized-store-item build)))
+                    (highlight/warn
+                     (N_ "The following derivation would be built:~%"
+                         "The following derivations would be built:~%"
+                         (length build))))
+            (format (current-error-port) "~{  ~a~%~}"
+                    (map colorized-store-item build)))
           (cond ((>= verbosity 2)
                  (if display-download-size?
-                     (format (current-error-port)
-                             ;; TRANSLATORS: "MB" is for "megabyte"; it should be
-                             ;; translated to the corresponding abbreviation.
-                             (G_ "~:[~,1h MB would be downloaded:~%~{   ~a~%~}~;~]")
-                             (null? download)
-                             download-size
-                             (map (compose colorized-store-item substitutable-path)
-                                  download))
-                     (format (current-error-port)
-                             (N_ "~:[The following file would be downloaded:~%~{   ~a~%~}~;~]"
-                                 "~:[The following files would be downloaded:~%~{   ~a~%~}~;~]"
-                                 (length download))
-                             (null? download)
-                             (map (compose colorized-store-item substitutable-path)
-                                  download)))
+                     (begin
+                       (format (current-error-port)
+                               (highlight
+                                ;; TRANSLATORS: "MB" is for "megabyte"; it
+                                ;; should be translated to the corresponding
+                                ;; abbreviation.
+                                (G_ "~:[~,1h MB would be downloaded:~%~;~]"))
+                               (null? download)
+                               download-size)
+                       (format (current-error-port) "~{  ~a~%~}"
+                               (map (compose colorized-store-item substitutable-path)
+                                    download)))
+                     (begin
+                       (format (current-error-port)
+                               (highlight
+                                (N_ "~:[The following file would be downloaded:~%~;~]"
+                                    "~:[The following files would be downloaded:~%~;~]"
+                                    (length download)))
+                               (null? download))
+                       (format (current-error-port) "~{  ~a~%~}"
+                               (map (compose colorized-store-item substitutable-path)
+                                    download))))
                  (format (current-error-port)
                          (N_ "~:[The following graft would be made:~%~{   ~a~%~}~;~]"
                              "~:[The following grafts would be made:~%~{   ~a~%~}~;~]"
@@ -1081,29 +1091,38 @@ summary, and level 0 shows nothing."
                              (null? download) (length download))))))
 
         (begin
-          (unless (zero? verbosity)
+          (unless (or (zero? verbosity) (null? build))
             (format (current-error-port)
-                    (N_ "~:[The following derivation will be built:~%~{   ~a~%~}~;~]"
-                        "~:[The following derivations will be built:~%~{   ~a~%~}~;~]"
-                        (length build))
-                    (null? build) (map colorized-store-item build)))
+                    (highlight/warn
+                     (N_ "The following derivation will be built:~%"
+                         "The following derivations will be built:~%"
+                         (length build))))
+            (format (current-error-port) "~{  ~a~%~}"
+                    (map colorized-store-item build)))
           (cond ((>= verbosity 2)
                  (if display-download-size?
-                     (format (current-error-port)
-                             ;; TRANSLATORS: "MB" is for "megabyte"; it should be
-                             ;; translated to the corresponding abbreviation.
-                             (G_ "~:[~,1h MB will be downloaded:~%~{   ~a~%~}~;~]")
-                             (null? download)
-                             download-size
-                             (map (compose colorized-store-item substitutable-path)
-                                  download))
-                     (format (current-error-port)
-                             (N_ "~:[The following file will be downloaded:~%~{   ~a~%~}~;~]"
-                                 "~:[The following files will be downloaded:~%~{   ~a~%~}~;~]"
-                                 (length download))
-                             (null? download)
-                             (map (compose colorized-store-item substitutable-path)
-                                  download)))
+                     (begin
+                       (format (current-error-port)
+                               (highlight
+                                ;; TRANSLATORS: "MB" is for "megabyte"; it
+                                ;; should be translated to the corresponding
+                                ;; abbreviation.
+                                (G_ "~:[~,1h MB will be downloaded:~%~;~]"))
+                               (null? download)
+                               download-size)
+                       (format (current-error-port) "~{  ~a~%~}"
+                               (map (compose colorized-store-item substitutable-path)
+                                    download)))
+                     (begin
+                       (format (current-error-port)
+                               (highlight
+                                (N_ "~:[The following file will be downloaded:~%~;~]"
+                                    "~:[The following files will be downloaded:~%~;~]"
+                                    (length download)))
+                               (null? download))
+                       (format (current-error-port) "~{  ~a~%~}"
+                               (map (compose colorized-store-item substitutable-path)
+                                    download))))
                  (format (current-error-port)
                          (N_ "~:[The following graft will be made:~%~{   ~a~%~}~;~]"
                              "~:[The following grafts will be made:~%~{   ~a~%~}~;~]"
@@ -1665,6 +1684,20 @@ score, the more relevant OBJ is to REGEXPS."
 zero means that PACKAGE does not match any of REGEXPS."
   (relevance package regexps %package-metrics))
 
+(define pager-port-mapping
+  ;; If a pager is being used, via 'with-paginated-output-port', this maps the
+  ;; pager port (pipe) to the underlying output port.
+  (make-parameter #f))
+
+(define* (pager-wrapped-port #:optional (port (current-output-port)))
+  "If PORT is a pipe to a pager created by 'with-paginated-output-port',
+return the underlying port.  Otherwise return #f."
+  (match (pager-port-mapping)
+    ((pager . wrapped)
+     (and (eq? pager port) wrapped))
+    (_
+     #f)))
+
 (define* (call-with-paginated-output-port proc
                                           #:key (less-options "FrX"))
   (let ((pager-command-line (or (getenv "GUIX_PAGER")
@@ -1691,7 +1724,10 @@ zero means that PACKAGE does not match any of REGEXPS."
                                                      char-set:whitespace))))))
           (dynamic-wind
             (const #t)
-            (lambda () (proc pager))
+            (lambda ()
+              (parameterize ((pager-port-mapping
+                              (cons pager (current-output-port))))
+                (proc pager)))
             (lambda () (close-pipe pager))))
         (proc (current-output-port)))))
 
@@ -1882,7 +1918,9 @@ DURATION-RELATION with the current time."
            (link   (if (supports-hyperlinks?)
                        (cut file-hyperlink file <>)
                        identity))
-           (header (format #f (link (highlight (G_ "Generation ~a\t~a")))
+           (header (format #f (link (highlight (G_ "Generation ~a\t~a")
+                                               (or (pager-wrapped-port)
+                                                   (current-output-port))))
                            number
                            (date->string
                             (time-utc->date

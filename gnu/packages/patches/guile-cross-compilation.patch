@@ -1,0 +1,55 @@
+When cross-compiling, get type sizes of the host system, not the build system.
+
+This is Guile commit 24b30130ca75653bdbacea84ce0443608379d630, which
+fixes <https://issues.guix.gnu.org/54198>, with one difference: it uses
+8 instead of SIZEOF_INTMAX_T, such that we do not need to modify
+'configure.ac' to check for the size of 'intmax_t' and to run 'autoreconf'
+(libguile/numbers.c expects SCM_SIZEOF_INTMAX_T = 8).
+
+diff --git a/libguile/gen-scmconfig.c b/libguile/gen-scmconfig.c
+index 01b14f14d..691ebd0af 100644
+--- a/libguile/gen-scmconfig.c
++++ b/libguile/gen-scmconfig.c
+@@ -1,4 +1,4 @@
+-/* Copyright 2003-2013,2018,2020,2021
++/* Copyright 2003-2013, 2018, 2020-2022
+      Free Software Foundation, Inc.
+ 
+    This file is part of Guile.
+@@ -238,21 +238,21 @@ main (int argc, char *argv[])
+   pf ("\n");
+   pf ("/* Standard types. */\n");
+ 
+-  pf ("#define SCM_SIZEOF_CHAR %zu\n", sizeof (char));
+-  pf ("#define SCM_SIZEOF_UNSIGNED_CHAR %zu\n", sizeof (unsigned char));
+-  pf ("#define SCM_SIZEOF_SHORT %zu\n", sizeof (short));
+-  pf ("#define SCM_SIZEOF_UNSIGNED_SHORT %zu\n", sizeof (unsigned short));
+-  pf ("#define SCM_SIZEOF_LONG %zu\n", sizeof (long));
+-  pf ("#define SCM_SIZEOF_UNSIGNED_LONG %zu\n", sizeof (unsigned long));
+-  pf ("#define SCM_SIZEOF_INT %zu\n", sizeof (int));
+-  pf ("#define SCM_SIZEOF_UNSIGNED_INT %zu\n", sizeof (unsigned int));
+-  pf ("#define SCM_SIZEOF_SIZE_T %zu\n", sizeof (size_t));
+-  pf ("#define SCM_SIZEOF_LONG_LONG %zu\n", sizeof (long long));
+-  pf ("#define SCM_SIZEOF_UNSIGNED_LONG_LONG %zu\n", sizeof (unsigned long long));
+-  pf ("#define SCM_SIZEOF_INTMAX %zu\n", sizeof (intmax_t));
+-  pf ("#define SCM_SIZEOF_SCM_T_PTRDIFF %zu\n", sizeof (ptrdiff_t));
+-  pf ("#define SCM_SIZEOF_INTPTR_T %zu\n", sizeof (intptr_t));
+-  pf ("#define SCM_SIZEOF_UINTPTR_T %zu\n", sizeof (uintptr_t));
++  pf ("#define SCM_SIZEOF_CHAR %d\n", SIZEOF_CHAR);
++  pf ("#define SCM_SIZEOF_UNSIGNED_CHAR %d\n", SIZEOF_UNSIGNED_CHAR);
++  pf ("#define SCM_SIZEOF_SHORT %d\n", SIZEOF_SHORT);
++  pf ("#define SCM_SIZEOF_UNSIGNED_SHORT %d\n", SIZEOF_UNSIGNED_SHORT);
++  pf ("#define SCM_SIZEOF_LONG %d\n", SIZEOF_LONG);
++  pf ("#define SCM_SIZEOF_UNSIGNED_LONG %d\n", SIZEOF_UNSIGNED_LONG);
++  pf ("#define SCM_SIZEOF_INT %d\n", SIZEOF_INT);
++  pf ("#define SCM_SIZEOF_UNSIGNED_INT %d\n", SIZEOF_UNSIGNED_INT);
++  pf ("#define SCM_SIZEOF_SIZE_T %d\n", SIZEOF_SIZE_T);
++  pf ("#define SCM_SIZEOF_LONG_LONG %d\n", SIZEOF_LONG_LONG);
++  pf ("#define SCM_SIZEOF_UNSIGNED_LONG_LONG %d\n", SIZEOF_UNSIGNED_LONG_LONG);
++  pf ("#define SCM_SIZEOF_INTMAX %d\n", 8); /* like SIZEOF_INTMAX_T */
++  pf ("#define SCM_SIZEOF_SCM_T_PTRDIFF %d\n", SIZEOF_PTRDIFF_T);
++  pf ("#define SCM_SIZEOF_INTPTR_T %d\n", SIZEOF_INTPTR_T);
++  pf ("#define SCM_SIZEOF_UINTPTR_T %d\n", SIZEOF_UINTPTR_T);
+ 
+   pf ("\n");
+   pf ("/* same as POSIX \"struct timespec\" -- always defined */\n");

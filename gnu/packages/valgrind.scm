@@ -2,7 +2,7 @@
 ;;; Copyright © 2013, 2014, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;;
@@ -82,6 +82,8 @@
 tools.  There are Valgrind tools that can automatically detect many memory
 management and threading bugs, and profile your programs in detail.  You can
 also use Valgrind to build new tools.")
+    ;; https://valgrind.org/info/platforms.html
+    (supported-systems (delete "riscv64-linux" %supported-systems))
     (license gpl2+)
 
     ;; Hide this variant so end users get the "interactive" Valgrind below.

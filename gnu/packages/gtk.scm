@@ -9,7 +9,7 @@
 ;;; Copyright © 2015 Andy Wingo <wingo@igalia.com>
 ;;; Copyright © 2015 David Hashe <david.hashe@dhashe.com>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2016, 2017, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Fabian Harfert <fhmgufs@web.de>
 ;;; Copyright © 2016 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2016 Patrick Hetu <patrick.hetu@auf.org>
@@ -2144,7 +2144,7 @@ and routines to assist in editing internationalized text.")
 (define-public girara
   (package
     (name "girara")
-    (version "0.3.6")
+    (version "0.3.7")
     (source
      (origin
        (method git-fetch)
@@ -2153,9 +2153,9 @@ and routines to assist in editing internationalized text.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0whwwj31fxfaf4r4qvxb4kl3mj05xj3n9c6nzdn46r30bkg9z4dw"))))
+        (base32 "0k93pi0lkf941vanvh1habm6n5wl1n63726j5kqxh34wdlv4mv4s"))))
     (native-inputs `(("pkg-config" ,pkg-config)
-                     ("check" ,check-0.14)
+                     ("check" ,check)
                      ("gettext" ,gettext-minimal)
                      ("glib:bin" ,glib "bin")
                      ("xorg-server" ,xorg-server-for-tests)))
@@ -2869,3 +2869,53 @@ excellent pavucontrol.")
     ;; XXX: 'setup.py' says "GPLv2" but nothing says "version 2 only".  Is
     ;; GPLv2+ intended?
     (license license:gpl2)))
+
+(define-public gromit-mpx
+  (package
+    (name "gromit-mpx")
+    (version "1.4.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/bk138/gromit-mpx.git")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0p3jivard85cvand9c5ksy1qwp8zcaczfd55b4xppg4xliqfcafs"))))
+    (build-system cmake-build-system)
+    (arguments `(#:tests? #f)) ; No tests.
+    (native-inputs (list pkg-config))
+    (inputs (list gtk+ libappindicator))
+    (home-page "https://github.com/bk138/gromit-mpx")
+    (synopsis "On-screen annotation tool")
+    (description
+     "Gromit-MPX is an on-screen annotation tool that works with any
+Unix desktop environment under X11 as well as Wayland.")
+    (license license:gpl2+)))
+
+(define-public webp-pixbuf-loader
+  (package
+    (name "webp-pixbuf-loader")
+    (version "0.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aruiz/webp-pixbuf-loader")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kshsz91mirjmnmv796nba1r8jg8a613anhgd38dhh2zmnladcwn"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list (string-append "-Dgdk_pixbuf_moduledir="
+                             #$output "/lib/gdk-pixbuf-2.0/2.10.0/loaders"))))
+    (inputs (list gdk-pixbuf glib gtk+ libwebp))
+    (native-inputs (list pkg-config))
+    (home-page "https://github.com/aruiz/webp-pixbuf-loader")
+    (synopsis "WebP GdkPixbuf loader library")
+    (description "Webp-pixbuf-loader is a WebP format loader of GdkPixbuf.")
+    (license license:lgpl2.0+)))

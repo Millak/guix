@@ -35,6 +35,8 @@
   #:use-module (guix tests http)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix build-system texlive)
+  #:use-module (guix build-system emacs)
   #:use-module (guix build-system gnu)
   #:use-module (guix packages)
   #:use-module (guix lint)
@@ -336,6 +338,25 @@
   (let ((pkg (dummy-package "x"
                             (arguments
                              `(#:tests? ,(not (%current-target-system)))))))
+    (check-tests-true pkg)))
+
+;; The emacs-build-system sets #:tests? #f by default.
+(test-equal "tests-true: #:tests? #t acceptable for emacs packages"
+  '()
+  (let ((pkg (dummy-package "x"
+                            (build-system emacs-build-system)
+                            (arguments
+                             `(#:tests? #t)))))
+    (check-tests-true pkg)))
+
+;; Likewise, though the 'check' phase is deleted by default,
+;; so #:tests? #t won't be useful by itself.
+(test-equal "tests-true: #:tests? #t acceptable for texlive packages"
+  '()
+  (let ((pkg (dummy-package "x"
+                            (build-system texlive-build-system)
+                            (arguments
+                             `(#:tests? #t)))))
     (check-tests-true pkg)))
 
 (test-equal "inputs: pkg-config is probably a native input"

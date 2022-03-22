@@ -25,6 +25,7 @@
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2022 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2022 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -52,6 +53,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
+  #:use-module (gnu packages bootloaders)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cluster)
@@ -215,6 +217,18 @@
                ;; fails within the build environment.
                ((".*'test-char':.*" all)
                 (string-append "# " all)))))
+         ,@(if (target-riscv64?)
+             `((add-after 'unpack 'disable-some-tests
+                 (lambda _
+                   ;; qemu.qmp.QMPConnectError: Unexpected empty reply from server
+                   (delete-file "tests/qemu-iotests/040")
+                   (delete-file "tests/qemu-iotests/041")
+                   (delete-file "tests/qemu-iotests/256")
+
+                   ;; No 'PCI' bus found for device 'virtio-scsi-pci'
+                   (delete-file "tests/qemu-iotests/127")
+                   (delete-file "tests/qemu-iotests/267"))))
+             '())
          (add-after 'patch-source-shebangs 'patch-embedded-shebangs
            (lambda* (#:key native-inputs inputs #:allow-other-keys)
              ;; Ensure the executables created by these source files reference
@@ -321,6 +335,7 @@ exec smbd $@")))
            libjpeg-turbo
            libpng
            libseccomp
+           liburing
            libusb                       ;USB pass-through support
            mesa
            ncurses
@@ -333,7 +348,10 @@ exec smbd $@")))
            util-linux
            vde2
            virglrenderer
-           zlib))
+
+           ;; Formats to support for .qcow2 (and possibly other) compression.
+           zlib
+           `(,zstd "lib")))
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")               ;gtester, etc.
@@ -1001,6 +1019,29 @@ Guix to build virtual machines.")
 Debian or a derivative using @command{debootstrap}.")
     (license license:gpl2+)))
 
+(define-public spike
+  (package
+    (name "spike")
+    (version "1.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/riscv-software-src/riscv-isa-sim")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "0cik2m0byfp9ppq0hpg3xyrlp5ag1i4dww7a7872mlm36xxqagg0"))))
+    (build-system gnu-build-system)
+    (inputs
+     (list dtc))
+    (native-inputs
+     (list python-wrapper))
+    (home-page "https://github.com/riscv-software-src/riscv-isa-sim")
+    (synopsis "RISC-V ISA Simulator")
+    (description "Spike, the RISC-V ISA Simulator, implements a functional model
+of one or more RISC-V harts.")
+    (license license:bsd-3)))
+
 (define-public libosinfo
   (package
     (name "libosinfo")
@@ -1605,11 +1646,13 @@ domains, their live performance and resource utilization statistics.")
     (native-inputs
      (list pkg-config
            perl
-           protobuf-c
            asciidoc
            xmlto
            docbook-xml
            docbook-xsl))
+    (propagated-inputs
+     ;; included by 'rpc.pb-c.h'
+     (list protobuf-c))
     (home-page "https://criu.org")
     (synopsis "Checkpoint and restore in user space")
     (description "Using this tool, you can freeze a running application (or

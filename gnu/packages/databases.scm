@@ -28,7 +28,7 @@
 ;;; Copyright © 2017, 2018 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2017 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2017, 2018, 2019 Pierre Langlois <pierre.langlois@gmx.com>
-;;; Copyright © 2015, 2017, 2018, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2017, 2018, 2019, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Kristofer Buffington <kristoferbuffington@gmail.com>
 ;;; Copyright © 2018 Amirouche Boubekki <amirouche@hypermove.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
@@ -36,7 +36,7 @@
 ;;; Copyright © 2019 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2019 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2019 Gábor Boskovits <boskovits@gmail.com>
-;;; Copyright © 2019, 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2020, 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
@@ -993,6 +993,14 @@ Language.")
        #:parallel-tests? ,(target-x86-64?)
        #:phases
        (modify-phases %standard-phases
+         ,@(if (target-ppc32?)
+             `((add-after 'unpack 'apply-libatomics-patch
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (let ((patch-file
+                           (assoc-ref inputs 
+                                               "mariadb-link-libatomic.patch")))
+                     (invoke "patch" "-p1" "-i" patch-file)))))
+             '())
          (add-after 'unpack 'adjust-output-references
            (lambda _
              ;; The build system invariably prepends $CMAKE_INSTALL_PREFIX
@@ -1143,7 +1151,13 @@ Language.")
                 (("-lssl -lcrypto" all)
                  (string-append "-L" openssl "/lib " all)))))))))
     (native-inputs
-     (list bison perl))
+     (if (target-ppc32?)
+       `(("mariadb-link-libatomic.patch"
+          ,(search-patch "mariadb-link-libatomic.patch"))
+         ("patch" ,patch)
+         ("bison" ,bison)
+         ("perl" ,perl))
+       (list bison perl)))
     (inputs
      `(("jemalloc" ,jemalloc)
        ("libaio" ,libaio)
@@ -1216,14 +1230,14 @@ and high-availability (HA).")
 (define-public postgresql-14
   (package
     (name "postgresql")
-    (version "14.1")
+    (version "14.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://ftp.postgresql.org/pub/source/v"
                                   version "/postgresql-" version ".tar.bz2"))
               (sha256
                (base32
-                "07x45iycqpps0qh3ingc09jgn9rpnmc3gixx0qprhf5flwg10g2d"))
+                "0ylpka64wli72jvjyqcayvlw44zk1hsbapb93l8gh4l98qp8pxrc"))
               (patches (search-patches "postgresql-disable-resolve_symlinks.patch"))))
     (build-system gnu-build-system)
     (arguments
@@ -1285,44 +1299,33 @@ pictures, sounds, or video.")
                                   version "/postgresql-" version ".tar.bz2"))
               (sha256
                (base32
-                "1z37ix80hb2bqa2smh1hbj9r507ypnl3pil43gkqznnlv6ipzz5s"))))))
+                "1z37ix80hb2bqa2smh1hbj9r507ypnl3pil43gkqznnlv6ipzz5s"))
+              (patches (search-patches "postgresql-riscv-spinlocks.patch"))))))
 
 (define-public postgresql-11
   (package
     (inherit postgresql-13)
     (name "postgresql")
-    (version "11.13")
+    (version "11.15")
     (source (origin
               (inherit (package-source postgresql-13))
               (uri (string-append "https://ftp.postgresql.org/pub/source/v"
                                   version "/postgresql-" version ".tar.bz2"))
               (sha256
                (base32
-                "0j5wnscnxa3sx8d39s55654df8aikmvkihfb0a02hrgmyygnihx0"))))))
+                "1qvrm0vhwnc5nijfbqybhwfjbq4r7vmk445sz7s6fiagpn78xxf8"))))))
 
 (define-public postgresql-10
   (package
     (inherit postgresql-11)
-    (version "10.18")
+    (version "10.20")
     (source (origin
               (inherit (package-source postgresql-11))
               (uri (string-append "https://ftp.postgresql.org/pub/source/v"
                                   version "/postgresql-" version ".tar.bz2"))
               (sha256
                (base32
-                "009qpb02bq0rx0aaw5ck70gk07xwparhfxvlfimgihw2vhp7qisp"))))))
-
-(define-public postgresql-9.6
-  (package
-    (inherit postgresql-10)
-    (version "9.6.23")
-    (source (origin
-              (inherit (package-source postgresql-10))
-              (uri (string-append "https://ftp.postgresql.org/pub/source/v"
-                                  version "/postgresql-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "1fa735lrmv2vrfiixg73nh024gxlagcbrssklvgwdf0s82cgfjd8"))))))
+                "17v51a9vnz6lgbfmbdmcwsiyi572wndwa4n30nk2zr6gkgaidpl7"))))))
 
 (define-public postgresql postgresql-13)
 
@@ -2646,7 +2649,7 @@ trees (LSM), for sustained throughput under random insert workloads.")
     (inputs
      (list wiredtiger-3 guile-2.2))
     (propagated-inputs
-     (list guile-bytestructures))
+     (list guile2.2-bytestructures))
     (synopsis "WiredTiger bindings for GNU Guile")
     (description
      "This package provides Guile bindings to the WiredTiger ``NoSQL''
@@ -3561,7 +3564,8 @@ PickleShare.")
        (modify-phases %standard-phases
          (replace 'build
            (lambda _
-             (invoke "python" "setup.py" "build" "--enable-all-extensions")
+             (invoke "python" "setup.py" "build" "--enable-all-extensions"
+                     "--enable=load_extension")
              #t))
          (add-after 'build 'build-test-helper
            (lambda _
@@ -4137,7 +4141,7 @@ the SQL language using a syntax that reflects the resulting query.")
 (define-public apache-arrow
   (package
     (name "apache-arrow")
-    (version "6.0.1")
+    (version "7.0.0")
     (source
      (origin
        (method git-fetch)
@@ -4147,7 +4151,7 @@ the SQL language using a syntax that reflects the resulting query.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0mcw361akqw4sxnnpnr9c9v1zk4hphk6gcq763pcb19yzljh88ig"))))
+         "19xx6mlddca79q6d3wga574m4y32ixmxx2rmk6j3f22i5c37mjzw"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f
@@ -4580,18 +4584,21 @@ a Gtk.Grid Widget.")
        (snippet
         '(begin
            (delete-file-recursively "libs/qcustomplot-source/")
+           (delete-file-recursively "libs/qhexedit/")
            (delete-file-recursively "libs/qscintilla")))))
     (build-system qt-build-system)
     (arguments
      (list #:configure-flags
-           ;; TODO: Unbundle QHexEdit.
+           ;; TODO: Unbundle json (json-modern-cxx).
            #~(list (string-append "-DQSCINTILLA_INCLUDE_DIR="
                                   #$(this-package-input "qscintilla")
                                   "/include/Qsci")
                    "-DFORCE_INTERNAL_QCUSTOMPLOT=OFF"
+                   "-DFORCE_INTERNAL_QHEXEDIT=OFF"
                    "-DENABLE_TESTING=ON")))
     (inputs
      (list qcustomplot
+           qhexedit
            qscintilla
            qtbase-5
            sqlite))

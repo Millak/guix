@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014, 2015, 2016, 2018, 2019, 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2020, 2021, 2022 Eric Bavier <bavier@posteo.net>
@@ -28,11 +28,11 @@
 ;;; Copyright © 2019 Jakob L. Kreuze <zerodaysfordays@sdf.org>
 ;;; Copyright © 2019 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2019 Alex Griffin <a@ajgrf.com>
-;;; Copyright © 2019, 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019, 2020, 2021 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -876,9 +876,26 @@ hostname.")
      "Shadow provides a number of authentication-related tools, including:
 login, passwd, su, groupadd, and useradd.")
 
+    (properties '((hidden? . #t)))                ;see below
+
     ;; The `vipw' program is GPLv2+.
     ;; libmisc/salt.c is public domain.
     (license license:bsd-3)))
+
+(define-public shadow-with-man-pages
+  ;; TODO: Merge with 'shadow' on the next core-updates cycle.
+  (package/inherit shadow
+    (properties '())                              ;not hidden
+    (arguments
+     (substitute-keyword-arguments (package-arguments shadow)
+       ((#:phases phases '%standard-phases)
+        `(modify-phases ,phases
+           (add-after 'install 'install-man-pages
+             (lambda _
+               ;; The top-level Makefile.am wrongfully has "SUBDIRS += man"
+               ;; under "if ENABLE_REGENERATE_MAN", even though prebuilt man
+               ;; pages are available.  Thus, install them manually.
+               (invoke "make" "-C" "man" "install")))))))))
 
 (define-public mingetty
   (package
@@ -1166,7 +1183,7 @@ connection alive.")
 (define-public isc-dhcp
   (let* ((bind-major-version "9")
          (bind-minor-version "11")
-         (bind-patch-version "36")
+         (bind-patch-version "37")
          (bind-release-type "")         ; for patch release, use "-P"
          (bind-release-version "")      ; for patch release, e.g. "6"
          (bind-version (string-append bind-major-version
@@ -1297,7 +1314,7 @@ connection alive.")
                            (list inetutils net-tools coreutils sed))))))))))
 
       (native-inputs
-       (list perl file))
+       (list config perl file))
 
       (inputs `(("inetutils" ,inetutils)
                 ("bash" ,(canonical-package bash-minimal)) ;for wrap-program
@@ -1315,9 +1332,8 @@ connection alive.")
                                         "/bind-" bind-version ".tar.gz"))
                     (sha256
                      (base32
-                      "108nh7hha4r0lb5hf1fn7lqaascvhsrghpz6afm5lf9vf2vgqly9"))))
+                      "1zsszgxs9043dfpxb6xs1iwk9jg7nxkl5pbawj8dlshnxkkzp3hd"))))
 
-                ("config" ,config)
                 ("coreutils*" ,coreutils)
                 ("sed*" ,sed)))
 
@@ -1708,7 +1724,7 @@ system administrator.")
 (define-public sudo
   (package
     (name "sudo")
-    (version "1.9.8p2")
+    (version "1.9.10")
     (source (origin
               (method url-fetch)
               (uri
@@ -1718,7 +1734,7 @@ system administrator.")
                                     version ".tar.gz")))
               (sha256
                (base32
-                "0b8gd15l2g22w4fhhz0gzmq5c8370klanmy2c1p3px6yly6qnfwy"))
+                "1x34k8sd2msfjjsahff1q143gr5j9z19jx2rmkkbiiz7k084d8a4"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -1802,7 +1818,7 @@ commands and their arguments.")
 (define-public opendoas
   (package
     (name "opendoas")
-    (version "6.8.1")
+    (version "6.8.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1811,7 +1827,7 @@ commands and their arguments.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0gfcssm21vdfg6kcrcc7hz1h4jmhy2zv29rfqyrrj3a6r9b5ah8p"))))
+                "1qrin7x9vcprk5pwjbr3w8z2qj8hk6xbvxicdhlk27xr6vcr1qzn"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -1820,7 +1836,7 @@ commands and their arguments.")
            (lambda* (#:key outputs #:allow-other-keys)
              (substitute* "GNUmakefile"
                (("^\tchown.*$") ""))
-             ;; OpenDoas look for binaries in safepath when a rule specify a
+             ;; OpenDoas looks for binaries in safepath when a rule specifies a
              ;; relative command, such as “permit keepenv :wheel cmd guix”.
              (substitute* "doas.c"
                (("safepath =" match)
@@ -1828,8 +1844,7 @@ commands and their arguments.")
                                "/run/setuid-programs:"
                                "/run/current-system/profile/bin:"
                                "/run/current-system/profile/sbin:"
-                               "\" ")))
-             #t))
+                               "\" ")))))
          (replace 'configure
            ;; The configure script doesn't accept most of the default flags.
            (lambda* (#:key configure-flags #:allow-other-keys)
@@ -2343,45 +2358,17 @@ characters (such as \"$\") get replaced with \"_\".  ISO 8859-1 (Latin-1)
 characters can be replaced as well, as can UTF-8 characters.")
     (license license:bsd-3)))
 
-(define-public testdisk
-  (package
-    (name "testdisk")
-    (version "7.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://www.cgsecurity.org/testdisk-"
-                                  version ".tar.bz2"))
-              (sha256
-               (base32
-                "1zlh44w67py416hkvw6nrfmjickc2d43v51vcli5p374d5sw84ql"))))
-    (build-system gnu-build-system)
-    (inputs
-     (list ntfs-3g
-           `(,util-linux "lib")
-           openssl
-           ;; FIXME: add reiserfs.
-           zlib
-           e2fsprogs
-           libjpeg-turbo
-           ncurses))
-    (home-page "https://www.cgsecurity.org/wiki/TestDisk")
-    (synopsis "Data recovery tool")
-    (description
-     "TestDisk is a program for data recovery, primarily designed to help
-recover lost partitions and/or make non-booting disks bootable again.")
-    (license license:gpl2+)))
-
 (define-public tree
   (package
     (name "tree")
-    (version "2.0.1")
+    (version "2.0.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "http://mama.indstate.edu/users/ice/tree/src/tree-"
                     version ".tgz"))
               (sha256
-               (base32 "0f92vx6gpz7v29wi9clklzah57v7lgx5kv0m1w4b9xjc35d9qcz3"))))
+               (base32 "1bzfkr3kmn2v5x7ljir691fr9hhjvjxqsfz0fc5fgi6ki0fklsbx"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -3069,13 +3056,13 @@ platform-specific methods.")
   (package
     (name "audit")
     (home-page "https://people.redhat.com/sgrubb/audit/")
-    (version "3.0.6")
+    (version "3.0.7")
     (source (origin
               (method url-fetch)
               (uri (string-append home-page "audit-" version ".tar.gz"))
               (sha256
                (base32
-                "0pnc9wzslks9p6kxw0llp1n8h8yg0frcxl3x84fl0hisa5vlvr63"))))
+                "15r5lrrkv2zj3dvpqssd46w61hmrq27y7c2rz33s20ck59iphk4b"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags (list "--with-python=no"
@@ -3898,7 +3885,8 @@ hard-coded.")
        (let ((out (assoc-ref %outputs "out")))
          (list (string-append "--with-dbus-sys-dir="
                               out "/etc/dbus-1/system.d")
-               "--localstatedir=/var"))
+               "--localstatedir=/var"
+               "--disable-werror"))
        #:make-flags
        (list "V=1")                     ; log build commands
        #:phases
@@ -4912,23 +4900,20 @@ exit code reports successful or failed execution to
 (define-public udpcast
   (package
     (name "udpcast")
-    (version "20200328")
+    (version "20211207")
     (source
      (origin
        (method url-fetch)
        ;; XXX: Original server is at https://www.udpcast.linux.lu is not
        ;; reliable.
        (uri (list (string-append
-                   "http://sources.buildroot.net/udpcast/udpcast-"
-                   version ".tar.gz")
-                  (string-append
                    "https://fossies.org/linux/privat/udpcast-"
                    version ".tar.gz")
                   (string-append
                    "https://www.udpcast.linux.lu/download/udpcast-"
                    version ".tar.gz")))
        (sha256
-        (base32 "06pj86nbi9hx7abbb0z2c5ynhfq0rv89b7nmy0kq3xz2lsxfw6cw"))))
+        (base32 "0l6hck694szrrvz85nm48rwb7mzvg2z2bwa50v51pkvym3kvxkm3"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake m4 perl))

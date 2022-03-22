@@ -245,11 +245,19 @@ Nix itself keeps only one of them."
     (make-hash-table 25))
 
   (for-each (lambda (input)
-              (let* ((drv (derivation-input-path input))
+              ;; If DRV1 and DRV2 are fixed-output derivations with the same
+              ;; output path, they must be coalesced.  Thus, TABLE is keyed by
+              ;; output paths.
+              (let* ((drv (derivation-input-derivation input))
+                     (key (string-join
+                           (map (match-lambda
+                                  ((_ . output)
+                                   (derivation-output-path output)))
+                                (derivation-outputs drv))))
                      (sub-drvs (derivation-input-sub-derivations input)))
-                (match (hash-get-handle table drv)
+                (match (hash-get-handle table key)
                   (#f
-                   (hash-set! table drv input))
+                   (hash-set! table key input))
                   ((and handle (key . ($ <derivation-input> drv sub-drvs2)))
                    ;; Merge DUP with INPUT.
                    (let* ((sub-drvs (delete-duplicates

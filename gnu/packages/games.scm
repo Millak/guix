@@ -821,37 +821,37 @@ Quizzes: arithmetic and quiz.")
 (define-public bzflag
   (package
     (name "bzflag")
-    (version "2.4.22")
+    (version "2.4.24")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.bzflag.org/bzflag/source/"
                            version "/bzflag-" version ".tar.bz2"))
        (sha256
-        (base32 "0kba0011nswc2csqlzkd7bas307zm5813zlnby5vsmxn08rnar4y"))))
+        (base32 "1i73ijlnxsz52fhqgkj2qcvibfgav3byq1is68gab2zwnyz330az"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-desktop-file-and-icons
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((share (string-append (assoc-ref outputs "out") "/share"))
-                    (data (string-append share "/bzflag"))
-                    (hicolor (string-append share "/icons/hicolor"))
-                    (applications (string-append share "/applications")))
-               ;; Move desktop file.
-               (install-file (string-append data "/bzflag.desktop")
-                             applications)
-               ;; Install icons.
-               (for-each (lambda (size)
-                           (let* ((dim (string-append size "x" size))
-                                  (dir (string-append hicolor "/" dim "/apps")))
-                             (mkdir-p dir)
-                             (copy-file
-                              (string-append data "/bzflag-" dim ".png")
-                              (string-append dir "/bzflag.png"))))
-                         '("48" "256")))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-desktop-file-and-icons
+            (lambda _
+              (let* ((share (string-append #$output "/share"))
+                     (data (string-append share "/bzflag"))
+                     (hicolor (string-append share "/icons/hicolor"))
+                     (applications (string-append share "/applications")))
+                ;; Move desktop file.
+                (install-file (string-append data "/bzflag.desktop")
+                              applications)
+                ;; Install icons.
+                (for-each (lambda (size)
+                            (let* ((dim (string-append size "x" size))
+                                   (dir (string-append hicolor "/" dim "/apps")))
+                              (mkdir-p dir)
+                              (copy-file
+                               (string-append data "/bzflag-" dim ".png")
+                               (string-append dir "/bzflag.png"))))
+                          '("48" "256"))))))))
     (native-inputs
      (list pkg-config))
     (inputs
@@ -4582,6 +4582,40 @@ images, etc.)")
     ;; regarding assets.
     (license license:gpl3+)))
 
+(define-public openriichi
+  (package
+    (name "openriichi")
+    (version "0.2.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/FluffyStuff/OpenRiichi")
+                    (commit (string-append "v" version))
+                    (recursive? #t)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1x6m4mli92chns5dky9aq9w4r4pnycvlpa2q0giydapm5q9fkslf"))))
+    (build-system meson-build-system)
+    (arguments
+     '(#:configure-flags (list "--buildtype=release")
+       #:glib-or-gtk? #t))
+    (inputs (list glew
+                  gtk+
+                  libgee
+                  sdl2
+                  sdl2-image
+                  sdl2-mixer))
+    (native-inputs (list pkg-config vala))
+    (home-page "https://github.com/FluffyStuff/OpenRiichi")
+    (synopsis "Japanese Mahjong client")
+    (description
+     "OpenRiichi is a client for playing Japanese Mahjong, and it supports
+singleplayer and multiplayer, with or without bots.  It features all the
+standard riichi rules, as well as some optional ones.  It also supports game
+logging, so games can be viewed again.")
+    (license license:gpl3)))
+
 (define-public pinball
   (package
     (name "pinball")
@@ -5821,7 +5855,7 @@ for Un*x systems with X11.")
 (define-public freeciv
   (package
    (name "freeciv")
-   (version "2.6.6")
+   (version "3.0.0")
    (source
     (origin
      (method url-fetch)
@@ -5831,9 +5865,9 @@ for Un*x systems with X11.")
                 (string-append
                   "mirror://sourceforge/freeciv/Freeciv%20"
                   (version-major+minor version) "/" version
-                  "/freeciv-" version ".tar.bz2")))
+                  "/freeciv-" version ".tar.xz")))
      (sha256
-      (base32 "04aq2v1ima87sap6yjb7jrm1ss63ax7v5kg7rpkj44887kfybkvv"))))
+      (base32 "1cm0530xmbqdhqkr89xb845cd756nillbdq53r3z5zpxsj18fapa"))))
    (build-system gnu-build-system)
    (inputs
     (list curl cyrus-sasl gtk+ sdl-mixer zlib))
@@ -9174,43 +9208,41 @@ and also provides the base for the FlightGear Flight Simulator.")
            ;; There are some bundled libraries.
            (for-each delete-file-recursively
                      '("3rdparty/sqlite3/"
-                       "3rdparty/cppunit/"))
-           #t))))
+                       "3rdparty/cppunit/"))))))
     (build-system qt-build-system)
     (arguments
-     `(#:configure-flags
-       (list "-DSYSTEM_SQLITE=ON"
-             "-DSYSTEM_CPPUNIT=ON"
-             (string-append "-DFG_DATA_DIR="
-                            (assoc-ref %outputs "out")
-                            "/share/flightgear"))
-       ;; TODO: test suite segfaults.
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-some-tests
-           (lambda _
-             (substitute* "test_suite/unit_tests/Instrumentation/test_gps.hxx"
-               (("CPPUNIT_TEST\\(testLongLegWestbound\\);" all)
-                (string-append "// " all))
-               (("CPPUNIT_TEST\\(testFinalLegCourse\\);" all)
-                (string-append "// " all)))))
-         (add-after 'build 'build-test-suite
-           (lambda* args
-             ((assoc-ref %standard-phases 'build)
-              #:make-flags (list "fgfs_test_suite"))))
-         ;; Test suite needs access to FGData so run it after 'install.
-         (delete 'check)
-         (add-after 'install-data 'check
-           (assoc-ref %standard-phases 'check))
-         (add-after 'install 'install-data
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((share (string-append (assoc-ref outputs "out") "/share/flightgear")))
-               (mkdir-p share)
-               (with-directory-excursion share
-                 (invoke "tar" "xf" (assoc-ref inputs "flightgear-data")
-                         "--strip-components=1")))
-             #t)))))
+     (list #:configure-flags
+           #~(list "-DSYSTEM_SQLITE=ON"
+                   "-DSYSTEM_CPPUNIT=ON"
+                   (string-append "-DFG_DATA_DIR=" #$output "/share/flightgear"))
+           ;; TODO: test suite segfaults.
+           #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'skip-some-tests
+                 (lambda _
+                   (substitute*
+                       "test_suite/unit_tests/Instrumentation/test_gps.hxx"
+                     (("CPPUNIT_TEST\\(testLongLegWestbound\\);" all)
+                      (string-append "// " all))
+                     (("CPPUNIT_TEST\\(testFinalLegCourse\\);" all)
+                      (string-append "// " all)))))
+               (add-after 'build 'build-test-suite
+                 (lambda* args
+                   ((assoc-ref %standard-phases 'build)
+                    #:make-flags (list "fgfs_test_suite"))))
+               ;; Test suite needs access to FGData so run it after 'install.
+               (delete 'check)
+               (add-after 'install-data 'check
+                 (assoc-ref %standard-phases 'check))
+               (add-after 'install 'install-data
+                 (lambda _
+                   (let ((share (string-append #$output "/share/flightgear")))
+                     (mkdir-p share)
+                     (with-directory-excursion share
+                       (invoke "tar" "xf"
+                               #$(this-package-native-input "flightgear-data")
+                               "--strip-components=1"))))))))
     (inputs
      (list boost
            dbus

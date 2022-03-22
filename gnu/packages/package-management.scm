@@ -9,7 +9,7 @@
 ;;; Copyright © 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018 Sou Bunnbu <iyzsong@member.fsf.org>
 ;;; Copyright © 2018, 2019 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
@@ -156,8 +156,8 @@
   ;; Note: the 'update-guix-package.scm' script expects this definition to
   ;; start precisely like this.
   (let ((version "1.3.0")
-        (commit "a27e47f9d1e22dc32bb250cfeef88cfacb930e23")
-        (revision 23))
+        (commit "2fb4304ee7eb7d17d48bee345677ef1f288a0b86")
+        (revision 24))
     (package
       (name "guix")
 
@@ -173,7 +173,7 @@
                       (commit commit)))
                 (sha256
                  (base32
-                  "12jmvagbw05hmmlrb82i0qazhlv7mcfnl4dmknwx3a9hd760g9y1"))
+                  "0pwizj76n9wpzcb4a631gj8yfxfpzq11p5kmmvmv6j4cqhn61dr0"))
                 (file-name (string-append "guix-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -239,6 +239,12 @@ $(prefix)/etc/init.d\n")))
 $(prefix)/etc/openrc\n")))
 
                         (invoke "sh" "bootstrap")))
+                    ,@(if (target-riscv64?)
+                        `((add-after 'unpack 'use-correct-guile-version-for-tests
+                            (lambda _
+                              (substitute* "tests/gexp.scm"
+                                (("2\\.0") "3.0")))))
+                        '())
                     (add-before 'build 'use-host-compressors
                       (lambda* (#:key inputs target #:allow-other-keys)
                         (when target
@@ -1569,8 +1575,8 @@ in an isolated environment, in separate namespaces.")
     (license license:gpl3+)))
 
 (define-public nar-herder
-  (let ((commit "b0263314f56cc6558e4941f64c89d9fd85aaa260")
-        (revision "3"))
+  (let ((commit "f69da3686583d53974e720a9e66103126631cb69")
+        (revision "4"))
     (package
       (name "nar-herder")
       (version (git-version "0" revision commit))
@@ -1581,7 +1587,7 @@ in an isolated environment, in separate namespaces.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "05rpjs8c6m23knh0wx9sjf3417nrbi489vbisr5d9ijfhg78l7i3"))
+                  "0glcmma6gkxna45bv0yki3l13r34ha7v0jrli3vmh4ysnhsnc4ii"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1643,7 +1649,7 @@ in an isolated environment, in separate namespaces.")
              gnutls
 
              ;; Guile libraries are needed here for cross-compilation.
-             guile-3.0
+             (car (assoc-ref (package-native-inputs guix) "guile"))
              guile-json-4
              guile-gcrypt
              guix
@@ -1652,7 +1658,7 @@ in an isolated environment, in separate namespaces.")
              guile-sqlite3))
       (inputs
        (list bash-minimal
-             guile-3.0))
+             (car (assoc-ref (package-native-inputs guix) "guile"))))
       (propagated-inputs
        (list guile-json-4
              guile-gcrypt
@@ -1790,14 +1796,14 @@ the boot loader configuration.")
 (define-public flatpak
   (package
    (name "flatpak")
-   (version "1.12.3")
+   (version "1.12.7")
    (source
     (origin
      (method url-fetch)
      (uri (string-append "https://github.com/flatpak/flatpak/releases/download/"
                          version "/flatpak-" version ".tar.xz"))
      (sha256
-      (base32 "0sbvywfc57sb58maxins4sg7rfwrm1wcgw68069qbsyp8wrz45fp"))
+      (base32 "05lkpbjiwp69q924i1jfyk5frcqbdbv9kyzbqwm2hy723i9jmdbd"))
      (patches (search-patches "flatpak-fix-path.patch"))))
 
    ;; Wrap 'flatpak' so that GIO_EXTRA_MODULES is set, thereby allowing GIO to

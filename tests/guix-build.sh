@@ -1,5 +1,5 @@
 # GNU Guix --- Functional package management for GNU
-# Copyright © 2012, 2013, 2014, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+# Copyright © 2012-2014, 2016-2022 Ludovic Courtès <ludo@gnu.org>
 # Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 # Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 #
@@ -30,6 +30,16 @@ guix build --version
 # Source-less packages are accepted; they just return nothing.
 guix build -e '(@ (gnu packages bootstrap) %bootstrap-glibc)' -S
 test "`guix build -e '(@ (gnu packages bootstrap) %bootstrap-glibc)' -S`" = ""
+
+# Warn when attempting to build an unsupported package.
+case "$(guix build intelmetool -s armhf-linux -v0 -n 2>&1)" in
+    *warning:*intelmetool*support*armhf*)
+	true
+	break;;
+    *)
+	false;
+	break;;
+esac
 
 # Should pass.
 guix build -e '(@@ (gnu packages bootstrap) %bootstrap-guile)' |	\

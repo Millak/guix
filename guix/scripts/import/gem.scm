@@ -3,6 +3,7 @@
 ;;; Copyright © 2018 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -80,24 +81,26 @@ Import and convert the RubyGems package for PACKAGE-NAME.\n"))
 
   (let* ((opts (parse-options))
          (args (filter-map (match-lambda
-                            (('argument . value)
-                             value)
-                            (_ #f))
+                             (('argument . value)
+                              value)
+                             (_ #f))
                            (reverse opts))))
     (match args
       ((package-name)
-       (if (assoc-ref opts 'recursive)
-           (map (match-lambda
-                  ((and ('package ('name name) . rest) pkg)
-                   `(define-public ,(string->symbol name)
-                      ,pkg))
-                  (_ #f))
-                (gem-recursive-import package-name 'rubygems))
-           (let ((sexp (gem->guix-package package-name)))
-             (unless sexp
-               (leave (G_ "failed to download meta-data for package '~a'~%")
-                      package-name))
-             sexp)))
+       (let ((code (if (assoc-ref opts 'recursive)
+                       (map (match-lambda
+                              ((and ('package ('name name) . rest) pkg)
+                               `(define-public ,(string->symbol name)
+                                  ,pkg))
+                              (_ #f))
+                            (gem-recursive-import package-name 'rubygems))
+                       (let ((sexp (gem->guix-package package-name)))
+                         (if sexp sexp #f)))))
+         (match code
+           ((or #f '(#f))
+            (leave (G_ "failed to download meta-data for package '~a'~%")
+                   package-name))
+           (_ code))))
       (()
        (leave (G_ "too few arguments~%")))
       ((many ...)

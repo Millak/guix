@@ -25,6 +25,81 @@
 (channel-news
  (version 0)
 
+ (entry (commit "094a2cfbe45c104d0da30ff9d975d052ca0c118c")
+        (title
+         (en "New @command{guix home container} command")
+         (de "Neuer Befehl @command{guix home container}")
+         (fr "Nouvelle commande @command{guix home container}"))
+        (body
+         (en "The new @command{guix home} tool, which lets you to manage
+entire \"home environments\" in a declarative fashion, has gained a
+@command{container} sub-command.  The new @command{guix home container}
+command allows you to test your configuration in an isolated @dfn{container},
+without touching your home directory:
+
+@example
+guix home container config.scm
+@end example
+
+This provides a simple and safe way to test your configuration before
+deploying it with @command{guix home reconfigure}.  Run @code{info \"(guix)
+Invoking guix home\"} for more information.")
+         (de "Das neue Werkzeug @command{guix home}, womit Sie vollständige
+„Persönliche Umgebungen“ deklarativ verwalten können, hat einen neuen
+Unterbefehl @command{container} hinzubekommen.  Mit dem neuen Befehl
+@command{guix home container} können Sie Ihre Konfiguration in einem isolierten
+@dfn{Container} ausprobieren, ohne Ihr Persönliches Verzeichnis anzutasten.
+
+@example
+guix home container config.scm
+@end example
+
+So ist es ein Leichtes, Ihre Konfiguration in einer sicheren Umgebung zu testen,
+bevor Sie mit @command{guix home reconfigure} auf sie umsteigen.  Führen Sie
+@code{info \"(guix.de) Aufruf von guix home\"} aus, um mehr zu erfahren.")
+         (fr "La nouvelle commande @command{guix home}, qui sert à gérer son
+« environnement d'accueil » de manière déclarative, dispose maintenant d'une
+sous-commande @command{container}.  La nouvelle commande @command{guix home
+container} permet de tester sa configuration dans un @dfn{conteneur} isolé,
+sans toucher à son répertoire d'accueil :
+
+@example
+guix home container config.scm
+@end example
+
+C'est un moyen simple et sûr de tester sa configuration avant de la déployer
+avec @command{guix home reconfigure}.  Lancer @code{info \"(guix.fr) Invoquer
+guix home\"} pour plus d'informations.")))
+
+ (entry (commit "f1d18adbed39a3bacae93be29346fd4c86b480ef")
+        (title
+         (en "More compact @samp{guix pull --news}")
+         (de "@samp{guix pull --news} wird knapper")
+         (nl "Meer beknopte @samp{guix pull --news}"))
+        (body
+         (en "The output of @samp{guix pull --news} has been shortened to
+display only fresh news items such as this one.  It no longer includes the
+partial selection of new and updated packages, which was often long enough to
+be distracting whilst being too short to be useful.
+
+The complete list of new and updated packages can now be obtained separately
+using @samp{guix pull --news --details}.")
+         (de "Die Ausgabe von @samp{guix pull --news} wurde gekürzt
+und informiert nur mehr über ungezeigte Neuigkeiten wie diese. Es
+fehlt der unvollständige Bericht über neue und aktualisierte Pakete,
+der oft so lang war, dass er gestört hat, doch zu kurz war, um
+nützlich zu sein.
+
+Die vollständige Liste neuer und aktualisierter Pakete bekommen Sie
+jetzt mit @samp{guix pull --news --details}.")
+         (nl "De uitvoer van @samp{guix pull --news} is vanaf nu beperkt tot
+verse nieuwsberichten zoals dit, zonder de onvolledige bloemlezing van nieuwe
+en bijgewerkte pakketten.  Die was vaak lang genoeg om de lezer af te leiden
+maar te kort om nuttig te zijn.
+
+De volledige list van nieuwe en bijgewerkte pakketten is nu afzonderlijk
+beschikbaar met @samp{guix pull --news --details}.")))
+
  (entry (commit "96d7535b030c65b2d8cb0bea52c4bd96cbdefaf0")
         (title
          (en "ci.guix.gnu.org to stop offering Gzip substitutes")

@@ -11,6 +11,7 @@
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Alexandru-Sergiu Marton <brown121407@posteo.ro>
 ;;; Copyright © 2021 Nikolay Korotkiy <sikmir@disroot.org>
+;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -273,14 +274,14 @@ optimising the environment for the application in use and the task performed.")
 (define-public dmenu
   (package
     (name "dmenu")
-    (version "5.0")
+    (version "5.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://dl.suckless.org/tools/dmenu-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1lvfxzg3chsgcqbc2vr0zic7vimijgmbvnspayx73kyvqi1f267y"))))
+                "1mcg6i5g2c4wsyq9ap739si4zghk1xg6c3msdqrbfzm3pfg70k8z"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no tests

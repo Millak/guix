@@ -348,7 +348,7 @@ fail. See rereadpt function in wipefs.c of util-linux for an explanation."
 (define (installer-root-partition-path)
   "Return the root partition path, or #f if it could not be detected."
   (let* ((cmdline (linux-command-line))
-         (root (find-long-option "--root" cmdline)))
+         (root (find-long-option "root" cmdline)))
     (and root
          (or (and (access? root F_OK) root)
              (find-partition-by-label root)

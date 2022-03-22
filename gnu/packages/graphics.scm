@@ -21,13 +21,15 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Raghav Gururajan <raghavgururajan@disroot.org>
-;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Gabriel Arazas <foo.dogsquared@gmail.com>
 ;;; Copyright © 2021 Antoine Côté <antoine.cote@posteo.net>
 ;;; Copyright © 2021 Andy Tai <atai@atai.org>
 ;;; Copyright © 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
-;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -80,11 +82,13 @@
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages logging)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages multiprecision)
+  #:use-module (gnu packages pciutils)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages photo)
@@ -102,6 +106,7 @@
   #:use-module (gnu packages stb)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages tbb)
+  #:use-module (gnu packages toolkits)
   #:use-module (gnu packages upnp)
   #:use-module (gnu packages video)
   #:use-module (gnu packages vulkan)
@@ -116,6 +121,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix hg-download)
   #:use-module ((guix licenses) #:prefix license:)
@@ -491,6 +497,7 @@ typically encountered in feature film production.")
        ("libtiff" ,libtiff)
        ("ffmpeg" ,ffmpeg)
        ("fftw" ,fftw)
+       ("gmp" ,gmp) ;; needed for boolean operations on meshes
        ("jack" ,jack-1)
        ("libsndfile" ,libsndfile)
        ("freetype" ,freetype)
@@ -549,7 +556,7 @@ and export to various formats including the format used by Magicavoxel.")
 (define-public assimp
   (package
     (name "assimp")
-    (version "4.1.0")
+    (version "5.2.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -558,7 +565,7 @@ and export to various formats including the format used by Magicavoxel.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1rhyqfhzifdj7yibyanph3rh13ykw3i98dnn8mz65j780472hw28"))))
+                "1kjifakjnpm89410pw27wq21fn975gfq46kn9zs3h8bryldvvlgk"))))
     (build-system cmake-build-system)
     (inputs
      (list zlib))
@@ -838,76 +845,6 @@ other vector formats such as:
 @end itemize")
     (license license:gpl2+)))
 
-(define-public dear-imgui
-  (package
-    (name "dear-imgui")
-    (version "1.79")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/ocornut/imgui")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0x26igynxp6rlpp2wfc5dr7x6yh583ajb7p23pgycn9vqikn318q"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             (string-append "PREFIX=" (assoc-ref %outputs "out"))
-             (string-append "VERSION=" ,version))
-       #:tests? #f                      ; no test suite
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'unpack-debian-files
-           (lambda* (#:key inputs #:allow-other-keys)
-             (invoke "tar" "xvf" (assoc-ref inputs "debian-files"))
-             (apply invoke "patch" "-Np1" "-i"
-                    (find-files "debian/patches" "\\.patch$"))
-             (substitute* "Makefile"
-               (("<stb/") "<")          ; Guix doesn't use this subdirectory
-               ;; Don't build or install the static library.
-               (("^all: .*") "all: $(SHLIB) $(PCFILE)"))
-             (substitute* (list "imgui.pc.in"
-                                "Makefile")
-               ;; Don't link against a non-existent library.
-               (("-lstb") ""))
-             #t))
-         (delete 'configure)            ; no configure script
-         (replace 'install
-           ;; The default ‘install’ target installs the static library.  Don't.
-           (lambda* (#:key make-flags #:allow-other-keys)
-             (apply invoke "make" "install-shared" "install-header"
-                    make-flags))))))
-    (native-inputs
-     `(("debian-files"
-        ;; Upstream doesn't provide a build system.  Use Debian's.
-        ,(origin
-           (method url-fetch)
-           (uri (string-append "mirror://debian/pool/main/i/imgui/imgui_"
-                               version "+ds-1.debian.tar.xz"))
-           (sha256
-            (base32 "1xhk34pzpha6k5l2j150capq66y8czhmsi04ib09wvb34ahqxpby"))))
-       ("pkg-config" ,pkg-config)))
-    (inputs
-     (list freetype stb-rect-pack stb-truetype))
-    (home-page "https://github.com/ocornut/imgui")
-    (synopsis "Immediate-mode C++ GUI library with minimal dependencies")
-    (description
-     "Dear ImGui is a @acronym{GUI, graphical user interface} library for C++.
-It creates optimized vertex buffers that you can render anytime in your
-3D-pipeline-enabled application.  It's portable, renderer-agnostic, and
-self-contained, without external dependencies.
-
-Dear ImGui is aimed at content creation, visualization, and debugging tools as
-opposed to average end-user interfaces.  Hence it favors simplicity and
-productivity but lacks certain features often found in higher-level libraries.
-It is particularly suited to integration in game engine tooling, real-time 3D
-applications, full-screen applications, and embedded platforms without standard
-operating system features.")
-    (license license:expat)))           ; some examples/ use the zlib licence
-
 (define-public alembic
   (package
     (name "alembic")
@@ -932,10 +869,90 @@ operating system features.")
 distills complex, animated scenes into a set of baked geometric results.")
     (license license:bsd-3)))
 
+(define-public mangohud
+  (package
+    (name "mangohud")
+    (version "0.6.6-1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/flightlessmango/MangoHud/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ka004wxkajmvs5vy60r4ckm7f169c61rrd46w6gywkaqf5yp1ab"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:build-type "release"
+      #:configure-flags
+      #~(list "-Duse_system_vulkan=enabled"
+              "-Duse_system_spdlog=enabled"
+              "-Dwith_xnvctrl=disabled"
+              "-Dappend_libdir_mangohud=false"
+              (string-append "-Dvulkan_datadir="
+                             #$(this-package-input "vulkan-headers") "/share"))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Mangohud tries to build the imgui library as a meson submodule,
+          ;; so we change the dependency to the imgui input instead.
+          (add-after 'unpack 'unbundle-imgui
+            (lambda _
+              (substitute* "meson.build"
+                (("dearimgui_sp = .*")
+                 "")
+                (("dearimgui_sp.get_variable\\('imgui_dep'\\)")
+                 (string-append
+                  "declare_dependency(dependencies: "
+                  "cpp.find_library('imgui'), include_directories: '"
+                  #$(this-package-input "imgui") "/include/imgui')")))))
+          (add-after 'unpack 'patch-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/meson.build"
+                (("\\\\\\$LIB")
+                 "lib"))
+              (substitute* "src/loaders/loader_libdrm.cpp"
+                (("libdrm.so.2")
+                 (search-input-file inputs "lib/libdrm.so.2"))
+                (("libdrm_amdgpu.so.1")
+                 (search-input-file inputs "lib/libdrm_amdgpu.so.1")))
+              (substitute* "src/overlay.cpp"
+                (("glxinfo")
+                 (search-input-file inputs "bin/glxinfo")))
+              (substitute* "src/loaders/loader_x11.cpp"
+                (("libX11.so.6")
+                 (search-input-file inputs "lib/libX11.so.6")))
+              (substitute* "src/pci_ids.cpp"
+                (("/usr/share/hwdata/pci.ids")
+                 (search-input-file inputs "share/hwdata/pci.ids")))
+              (substitute* "src/dbus.cpp"
+                (("libdbus-1.so.3")
+                 (search-input-file inputs "lib/libdbus-1.so.3"))))))))
+    (inputs
+     (list dbus
+           glslang
+           `(,hwdata "pci")
+           imgui-1.86
+           libdrm
+           libx11
+           mesa
+           mesa-utils
+           python-mako
+           spdlog
+           vulkan-headers
+           vulkan-loader))
+    (native-inputs (list pkg-config python))
+    (home-page "https://github.com/flightlessmango/MangoHud/")
+    (synopsis "Vulkan and OpenGL overlay for monitoring performance and hardware")
+    (description "MangoHud is a Vulkan and OpenGL overlay for monitoring
+frames per second (FPS), temperatures, CPU/GPU load and more.")
+    (license license:expat)))
+
 (define-public ogre
   (package
     (name "ogre")
-    (version "1.12.9")
+    (version "13.3.1")
     (source
      (origin
        (method git-fetch)
@@ -944,24 +961,22 @@ distills complex, animated scenes into a set of baked geometric results.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0b0pwh31nykrfhka6jqwclfx1pxzhj11vkl91951d63kwr5bbzms"))))
+        (base32 "157vpfzivg2wf349glyd0cpbyaw1j3fm4nggban70pghql3x48kb"))))
     (build-system cmake-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
-         (add-before 'configure 'unpack-dear-imgui
+         (add-before 'configure 'unpack-imgui
            (lambda* (#:key inputs #:allow-other-keys)
-             (copy-recursively (assoc-ref inputs "dear-imgui-source")
-                               "../dear-imgui-source")
-             #t))
+             (copy-recursively (assoc-ref inputs "imgui-source")
+                               "../imgui-source")))
          (add-before 'configure 'pre-configure
            ;; CMakeLists.txt forces a CMAKE_INSTALL_RPATH value.  As
            ;; a consequence, we cannot suggest ours in configure flags.  Fix
            ;; it.
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (substitute* "CMakeLists.txt"
-               (("set\\(CMAKE_INSTALL_RPATH .*") ""))
-             #t)))
+               (("set\\(CMAKE_INSTALL_RPATH .*") "")))))
        #:configure-flags
        (let* ((out (assoc-ref %outputs "out"))
               (runpath
@@ -969,29 +984,26 @@ distills complex, animated scenes into a set of baked geometric results.")
                                   (string-append out "/lib/OGRE"))
                             ";")))
          (list (string-append "-DCMAKE_INSTALL_RPATH=" runpath)
-               "-DIMGUI_DIR=../dear-imgui-source"
+               "-DIMGUI_DIR=../imgui-source"
                "-DOGRE_BUILD_DEPENDENCIES=OFF"
                "-DOGRE_BUILD_TESTS=TRUE"
                "-DOGRE_INSTALL_DOCS=TRUE"
                "-DOGRE_INSTALL_SAMPLES=TRUE"
                "-DOGRE_INSTALL_SAMPLES_SOURCE=TRUE"))))
-    (native-inputs
-     `(("boost" ,boost)
-       ("dear-imgui-source" ,(package-source dear-imgui))
-       ("doxygen" ,doxygen)
-       ("googletest" ,googletest-1.8)
-       ("pkg-config" ,pkg-config)))
-    (inputs
-     (list font-dejavu
-           freeimage
-           freetype
-           glu
-           libxaw
-           libxrandr
-           pugixml
-           sdl2
-           tinyxml
-           zziplib))
+    (native-inputs `(("doxygen" ,doxygen)
+                     ("imgui-source" ,(package-source imgui-1.86))
+                     ("googletest" ,googletest)
+                     ("pkg-config" ,pkg-config)
+                     ("python" ,python)))
+    (inputs (list freeimage
+                  freetype
+                  libxaw
+                  libxrandr
+                  libxt
+                  mesa
+                  pugixml
+                  sdl2
+                  zlib))
     (synopsis "Scene-oriented, flexible 3D engine written in C++")
     (description
      "OGRE (Object-Oriented Graphics Rendering Engine) is a scene-oriented,
@@ -1919,7 +1931,7 @@ Some feature highlights:
 (define-public openxr
   (package
     (name "openxr")
-    (version "1.0.20")
+    (version "1.0.22")
     (source
      (origin
        (method git-fetch)
@@ -1933,7 +1945,7 @@ Some feature highlights:
            ;; Delete bundled jsoncpp.
            (delete-file-recursively "src/external/jsoncpp")))
        (sha256
-        (base32 "1jd7jjxlrdi8kjnmn3sad7dgb4h48dbxryfb9snf0kifn47bi20m"))))
+        (base32 "1l6wygazgvd8lbhqk60iim2l2h35gxpsn0y9a9f8q72sqpfianky"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests

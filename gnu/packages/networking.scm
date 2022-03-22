@@ -2421,7 +2421,7 @@ that block port 22.")
 (define-public iperf
   (package
     (name "iperf")
-    (version "3.10.1")
+    (version "3.11")
     (source
      (origin
        (method git-fetch)
@@ -2430,7 +2430,7 @@ that block port 22.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0svkrmxki6ckn2a8xysh5x0bw68mqnvl3w64j6d45fxs97dca2vq"))))
+        (base32 "064sb8f9jxi5ii43swd73c0mm50lvk51v7awhgbj6p129c1a4nn5"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -3396,92 +3396,87 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
     (license license:bsd-3)))
 
 (define-public opendht
-  ;; The version/commit is kept in sync with what Jami uses in its daemon
-  ;; contrib build system (see:
-  ;; https://review.jami.net/plugins/gitiles/jami-daemon/+/refs/heads/master/contrib/src/opendht/rules.mak).
-  (let ((commit "dbbfdaab0f4119abf79646313e0dbc52881dcd56")
-        (revision "0"))
-    (package
-      (name "opendht")
-      (version (git-version "2.3.1" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/savoirfairelinux/opendht")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "07x8vw999qpfl6qwj5k5l2mcjy1vp32sd567f6imbsnh9vlx2bdv"))))
-      (outputs '("out" "tools" "debug"))
-      (build-system gnu-build-system)
-      (arguments
-       (list
-        #:imported-modules `((guix build python-build-system) ;for site-packages
-                             ,@%gnu-build-system-modules)
-        #:modules '(((guix build python-build-system) #:prefix python:)
-                    (guix build gnu-build-system)
-                    (guix build utils))
-        #:tests? #f                     ;tests require networking
-        #:configure-flags
-        #~(list "--enable-tests"
-                "--enable-proxy-server"
-                "--enable-push-notifications"
-                "--enable-proxy-server-identity"
-                "--enable-proxy-client")
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'fix-python-installation-prefix
-              ;; Specify the installation prefix for the compiled Python module
-              ;; that would otherwise attempt to installs itself to Python's own
-              ;; site-packages directory.
-              (lambda _
-                (substitute* "python/Makefile.am"
-                  (("--root=\\$\\(DESTDIR)/")
-                   (string-append "--root=/ --single-version-externally-managed "
-                                  "--prefix=" #$output)))))
-            (add-after 'unpack 'specify-runpath-for-python-module
-              (lambda _
-                (substitute* "python/setup.py.in"
-                  (("extra_link_args=\\[(.*)\\]" _ args)
-                   (string-append "extra_link_args=[" args
-                                  ", '-Wl,-rpath=" #$output "/lib']")))))
-            (add-after 'install 'move-and-wrap-tools
-              (lambda* (#:key inputs outputs #:allow-other-keys)
-                (let* ((tools (assoc-ref outputs "tools"))
-                       (dhtcluster (string-append tools "/bin/dhtcluster"))
-                       (site-packages (python:site-packages inputs outputs)))
-                  (mkdir tools)
-                  (rename-file (string-append #$output "/bin")
-                               (string-append tools "/bin"))
-                  ;; TODO: Contribute a patch to python/Makefile.am to
-                  ;; automate this.
-                  (copy-file "python/tools/dhtcluster.py" dhtcluster)
-                  (chmod dhtcluster #o555)
-                  (wrap-program dhtcluster
-                    `("GUIX_PYTHONPATH" prefix (,site-packages)))))))))
-      (inputs (list bash-minimal fmt readline))
-      (propagated-inputs
-       (list msgpack                    ;included in several installed headers
-             restinio                   ;included in opendht/http.h
-             ;; The following are listed in the 'Requires.private' field of
-             ;; opendht.pc:
-             argon2
-             gnutls
-             jsoncpp
-             nettle
-             openssl))                  ;required for the DHT proxy
-      (native-inputs
-       (list autoconf
-             automake
-             pkg-config
-             python
-             python-cython
-             libtool
-             cppunit))
-      (home-page "https://github.com/savoirfairelinux/opendht/")
-      (synopsis "Lightweight Distributed Hash Table (DHT) library")
-      (description "OpenDHT provides an easy to use distributed in-memory data
+  (package
+    (name "opendht")
+    (version "2.3.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/savoirfairelinux/opendht")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0gp1wdpk50y0pcvlhqfw9vpms8lsrjvv63x4dh40axsvf2ix9lkj"))))
+    (outputs '("out" "tools" "debug"))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:imported-modules `((guix build python-build-system) ;for site-packages
+                           ,@%gnu-build-system-modules)
+      #:modules '(((guix build python-build-system) #:prefix python:)
+                  (guix build gnu-build-system)
+                  (guix build utils))
+      #:tests? #f                     ;tests require networking
+      #:configure-flags
+      #~(list "--enable-tests"
+              "--enable-proxy-server"
+              "--enable-push-notifications"
+              "--enable-proxy-server-identity"
+              "--enable-proxy-client")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-python-installation-prefix
+            ;; Specify the installation prefix for the compiled Python module
+            ;; that would otherwise attempt to installs itself to Python's own
+            ;; site-packages directory.
+            (lambda _
+              (substitute* "python/Makefile.am"
+                (("--root=\\$\\(DESTDIR)/")
+                 (string-append "--root=/ --single-version-externally-managed "
+                                "--prefix=" #$output)))))
+          (add-after 'unpack 'specify-runpath-for-python-module
+            (lambda _
+              (substitute* "python/setup.py.in"
+                (("extra_link_args=\\[(.*)\\]" _ args)
+                 (string-append "extra_link_args=[" args
+                                ", '-Wl,-rpath=" #$output "/lib']")))))
+          (add-after 'install 'move-and-wrap-tools
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((tools (assoc-ref outputs "tools"))
+                     (dhtcluster (string-append tools "/bin/dhtcluster"))
+                     (site-packages (python:site-packages inputs outputs)))
+                (mkdir tools)
+                (rename-file (string-append #$output "/bin")
+                             (string-append tools "/bin"))
+                ;; TODO: Contribute a patch to python/Makefile.am to
+                ;; automate this.
+                (copy-file "python/tools/dhtcluster.py" dhtcluster)
+                (chmod dhtcluster #o555)
+                (wrap-program dhtcluster
+                  `("GUIX_PYTHONPATH" prefix (,site-packages)))))))))
+    (inputs (list bash-minimal fmt readline))
+    (propagated-inputs
+     (list msgpack                    ;included in several installed headers
+           restinio                   ;included in opendht/http.h
+           ;; The following are listed in the 'Requires.private' field of
+           ;; opendht.pc:
+           argon2
+           gnutls
+           jsoncpp
+           nettle
+           openssl))                  ;required for the DHT proxy
+    (native-inputs
+     (list autoconf
+           automake
+           pkg-config
+           python
+           python-cython
+           libtool
+           cppunit))
+    (home-page "https://github.com/savoirfairelinux/opendht/")
+    (synopsis "Lightweight Distributed Hash Table (DHT) library")
+    (description "OpenDHT provides an easy to use distributed in-memory data
 store.  Every node in the network can read and write values to the store.
 Values are distributed over the network, with redundancy.  It includes the
 following features:
@@ -3504,7 +3499,7 @@ library (get, put, etc.) with text values.
 @item dhtchat
 A very simple IM client working over the DHT.
 @end table")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public frrouting
   (package
@@ -4053,7 +4048,7 @@ network.")
 (define-public yggdrasil
   (package
     (name "yggdrasil")
-    (version "0.4.1")
+    (version "0.4.3")
     (source
      (origin
        (method git-fetch)
@@ -4064,7 +4059,7 @@ network.")
          (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ajhn0z58ap9jldip7mqj78drmgg4645zfsxsy004cfkm60fasnx"))
+        (base32 "0jp6998a45xi8pbi8p84chvpm1mhhcvcxm1avi1c1gjjp4jqm3vl"))
        (patches (search-patches "yggdrasil-extra-config.patch"))))
     (build-system go-build-system)
     (arguments

@@ -302,7 +302,8 @@
 (define (cuirass-log-rotations config)
   "Return the list of log rotations that corresponds to CONFIG."
   (list (log-rotation
-         (files (list (cuirass-configuration-log-file config)))
+         (files (list (cuirass-configuration-log-file config)
+                      (cuirass-configuration-web-log-file config)))
          (frequency 'weekly)
          (options '("rotate 40")))))              ;worth keeping
 

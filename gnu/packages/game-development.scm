@@ -26,6 +26,7 @@
 ;;; Copyright © 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2021 Andy Tai <atai@atai.org>
 ;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -513,7 +514,7 @@ formats such as PNG.")
 (define-public tiled
   (package
     (name "tiled")
-    (version "1.7.2")
+    (version "1.8.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -522,7 +523,7 @@ formats such as PNG.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ifxh3sv6gz32gahgi7ba0ivcw5mfgwnrw6iycpav150w9xla43i"))))
+                "05gczsywkk45bh0z1vv8l6cmrlncc2qj8agavj5ryxpnxkzy69r1"))))
     (build-system gnu-build-system)
     (inputs
      (list qtbase-5 qtdeclarative qtsvg zlib))

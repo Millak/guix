@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2020 by Amar M. Singh <nly@disroot.org>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Mathieu Othacehe <othacehe@gnu.org>
@@ -345,20 +345,10 @@ much needs to be downloaded."
          (base-info  (format #f
                              "\
 StorePath: ~a
-~{~a~}\
 NarHash: sha256:~a
 NarSize: ~d
 References: ~a~%"
                              store-path
-                             (map (lambda (compression)
-                                    (let ((size (assoc-ref file-sizes
-                                                           compression)))
-                                      (store-item->recutils store-path
-                                                            #:file-size size
-                                                            #:nar-path nar-path
-                                                            #:compression
-                                                            compression)))
-                                  compressions)
                              hash size references))
          ;; Do not render a "Deriver" line if we are rendering info for a
          ;; derivation.  Also do not render a "System" line that would be
@@ -369,7 +359,22 @@ References: ~a~%"
                                  base-info (basename deriver))))
          (signature  (base64-encode-string
                       (canonical-sexp->string (signed-string info)))))
-    (format #f "~aSignature: 1;~a;~a~%" info (gethostname) signature)))
+    (format #f "~aSignature: 1;~a;~a~%~{~a~}"
+            info (gethostname) signature
+
+            ;; Move information about the actual nars
+            ;; (URL/Compression/FileSize) *after* the normative part that is
+            ;; signed.  That makes it possible to alter these bits of the
+            ;; narinfo without having to resign them.
+            (map (lambda (compression)
+                   (let ((size (assoc-ref file-sizes
+                                          compression)))
+                     (store-item->recutils store-path
+                                           #:file-size size
+                                           #:nar-path nar-path
+                                           #:compression
+                                           compression)))
+                 compressions))))
 
 (define* (not-found request
                     #:key (phrase "Resource not found")

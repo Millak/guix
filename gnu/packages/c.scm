@@ -38,6 +38,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
+  #:use-module (guix store)
   #:use-module (gnu packages)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bootstrap)
@@ -895,6 +896,83 @@ Service (S3) protocol for object storage.")
 Telemetry Transport (MQTT) publish-subscribe messaging protocol.")
     (home-page "https://github.com/awslabs/aws-c-mqtt")
     (license license:asl2.0)))
+
+;;; Factored out of the ck package so that it can be adjusted and called on
+;;; the host side easily, without impacting the package definition.
+(define (gnu-triplet->ck-machine target)
+  (letrec-syntax
+      ((matches (syntax-rules (=>)
+                  ((_ (target-prefix => machine) rest ...)
+                   (if (string-prefix? target-prefix target)
+                       machine
+                       (matches rest ...)))
+                  ((_)
+                   (error "unsupported target" target)))))
+    ;; This basically reproduces the logic handling the
+    ;; PLATFORM variable in the configure script of ck.
+    (matches ("x86_64"      => "x86_64")
+             ("i586"        => "x86")
+             ("i686"        => "x86")
+             ("aarch64"     => "aarch64")
+             ("arm"         => "arm")
+             ("ppc64"       => "ppc64")
+             ("ppc"         => "ppc")
+             ("s390x"       => "s390x")
+             ("sparc64"     => "sparcv9"))))
+
+(define-public ck
+  (package
+    (name "ck")
+    (version "0.7.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/concurrencykit/ck")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "020yzfpvymdc8lc44znlnxmxb8mvp42g4nb4p8k814klazqvwh0x"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            ;; ck uses a custom configure script that stumbles on
+            ;; '--enable-fast-install', among other things.
+            (lambda* (#:key parallel-build? #:allow-other-keys)
+              (define target-machine #$(and=> (%current-target-system)
+                                              gnu-triplet->ck-machine))
+              (when target-machine
+                ;; The configure script doesn't currently work for
+                ;; cross-compiling (see:
+                ;; https://github.com/concurrencykit/ck/issues/191).
+                (error "ck cannot currently be cross-compiled"))
+              ;; The custom configure script doesn't make cross-compilation
+              ;; adjustments itself, so manually set the archiver, compiler
+              ;; and linker.
+              (setenv "AR" #$(ar-for-target))
+              (setenv "CC" #$(cc-for-target))
+              (setenv "LD" #$(ld-for-target))
+              (apply invoke "./configure"
+                     `(,@(if target-machine
+                             (list (string-append "--profile=" target-machine))
+                             '())
+                       ,(string-append "--prefix=" #$output)
+                       ,(string-append "--mandir=" #$output "/share/man")
+                       ,(string-append "--cores="
+                                       (if parallel-build?
+                                           (number->string (parallel-job-count))
+                                           "1")))))))))
+    (home-page "https://github.com/concurrencykit/ck")
+    (synopsis "C library for concurrent systems")
+    (description "Concurrency Kit (@code{ck}) provides concurrency primitives,
+safe memory reclamation mechanisms and non-blocking (including lock-free) data
+structures designed to aid in the research, design and implementation of high
+performance concurrent systems developed in C99+.")
+    (license (list license:bsd-2        ;everything except...
+                   license:asl2.0))))   ;src/ck_hp.c
 
 (define-public utf8-h
   ;; The latest tag is used as there is no release.

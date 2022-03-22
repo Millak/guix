@@ -24,7 +24,7 @@
 ;;; Copyright © 2017 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017, 2018, 2020 Rene Saavedra <pacoon@protonmail.com>
-;;; Copyright © 2018, 2019, 2020, 2021 Pierre Langlois <pierre.langlois@gmx.com>
+;;; Copyright © 2018, 2019, 2020, 2021, 2022 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2018 Gábor Boskovits <boskovits@gmail.com>
 ;;; Copyright © 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
@@ -365,7 +365,6 @@ example, modify the message headers or body, or encrypt or sign the message.")
            libltdl
            gdbm
            ;; Required for SEARCH CHARSET.
-           libiconv
            libunistring))
     (home-page "https://mailutils.org")
     (synopsis "Utilities and library for reading and serving mail")
@@ -553,7 +552,7 @@ aliasing facilities to work just as they would on normal mail.")
 (define-public mutt
   (package
     (name "mutt")
-    (version "2.1.5")
+    (version "2.2.1")
     (source (origin
              (method url-fetch)
              (uri (list
@@ -563,7 +562,7 @@ aliasing facilities to work just as they would on normal mail.")
                                    version ".tar.gz")))
              (sha256
               (base32
-               "1q1bq5qfv67s6ynbqga19ifaprgavhdbgg154kb9ffingvj0k8wj"))
+               "1ddbhwsycfpf430k52l5gggywd09h10hwcwzpydam43c5ga30vdp"))
              (patches (search-patches "mutt-store-references.patch"))))
     (build-system gnu-build-system)
     (inputs
@@ -1056,52 +1055,47 @@ and corrections.  It is based on a Bayesian filter.")
     (license license:gpl3+)))
 
 (define-public offlineimap3
-  ;; The OfflineIMAP3 fork does not yet have a release, but it's likely to be
-  ;; 8.0.0 but the source still reports 7.3.0, see
-  ;; https://github.com/OfflineIMAP/offlineimap3/issues/10.
-  (let ((commit "4ca9c75c6f9a0cc8dc7b69dd6abf073e494cc0e5")
-        (revision "0"))
-    (package
-      (name "offlineimap3")
-      (version (git-version "7.3.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/OfflineIMAP/offlineimap3")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0nzh5dcc559jfw4yy12gc98s17w82b15zxikspc6apd8filmk9xg"))))
-      (build-system python-build-system)
-      (native-inputs
-       (list asciidoc))
-      (inputs
-       (list python-distro python-imaplib2 python-rfc6555))
-      (arguments
-       `(;; Tests require a modifiable IMAP account.
-         #:tests? #f
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'build 'build-documentation
-             (lambda _
-               (substitute* "docs/Makefile"
-                 ;; Prevent xmllint and xsltproc from downloading a DTD file.
-                 (("a2x -v") "a2x --no-xmllint --xsltproc-opts=--nonet -v"))
-               (invoke "make" "-C" "docs" "man")))
-           (add-after 'install 'install-documentation
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (man (string-append out "/share/man")))
-                 (install-file "docs/offlineimap.1" (string-append man "/man1"))
-                 (install-file "docs/offlineimapui.7" (string-append man "/man7"))))))))
-      (home-page "https://www.offlineimap.org")
-      (synopsis "Sync emails between two repositories")
-      (description
-       "OfflineImap synchronizes emails between two repositories, so that you
+  (package
+    (name "offlineimap3")
+    (version "8.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/OfflineIMAP/offlineimap3")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0y3giaz9i8vvczlxkbwymfkn3vi9fv599dy4pc2pn2afxsl4mg2w"))))
+    (build-system python-build-system)
+    (native-inputs
+     (list asciidoc))
+    (inputs
+     (list python-distro python-imaplib2 python-rfc6555))
+    (arguments
+     `(;; Tests require a modifiable IMAP account.
+       #:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'build 'build-documentation
+           (lambda _
+             (substitute* "docs/Makefile"
+               ;; Prevent xmllint and xsltproc from downloading a DTD file.
+               (("a2x -v") "a2x --no-xmllint --xsltproc-opts=--nonet -v"))
+             (invoke "make" "-C" "docs" "man")))
+         (add-after 'install 'install-documentation
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (man (string-append out "/share/man")))
+               (install-file "docs/offlineimap.1" (string-append man "/man1"))
+               (install-file "docs/offlineimapui.7" (string-append man "/man7"))))))))
+    (home-page "https://www.offlineimap.org")
+    (synopsis "Sync emails between two repositories")
+    (description
+     "OfflineImap synchronizes emails between two repositories, so that you
 can read the same mailbox from multiple computers.  It supports IMAP as REMOTE
 repository and Maildir/IMAP as LOCAL repository.")
-      (license license:gpl2+))))
+    (license license:gpl2+)))
 
 (define-public offlineimap
   (deprecated-package "offlineimap" offlineimap3))
@@ -1871,7 +1865,7 @@ facilities for checking incoming mail.")
   (package
     (name "dovecot")
     ;; Also update dovecot-pigeonhole when updating to a new minor version.
-    (version "2.3.17.1")
+    (version "2.3.18")
     (source
      (origin
        (method url-fetch)
@@ -1879,7 +1873,7 @@ facilities for checking incoming mail.")
                            (version-major+minor version) "/"
                            "dovecot-" version ".tar.gz"))
        (sha256
-        (base32 "1f525bvpjvi4rnwqjsqaqrbdii08sqmc1v8xq03m19w1vk6cqrqw"))))
+        (base32 "0cvcbp6f5i8sg2sz8d3j654xrf4a74h7rszfpm2kq2bciik3zrq6"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
@@ -1901,6 +1895,10 @@ facilities for checking incoming mail.")
                            "--localstatedir=/var"
                            "--with-sqlite"  ; not auto-detected
                            "--with-lucene") ; not auto-detected
+       ;; The -rdynamic linker flag is needed for the backtrace() function to
+       ;; have symbol names rather than just addresses.  Dovecot's tests rely
+       ;; on this, see https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=962630.
+       #:make-flags (list "LDFLAGS=-rdynamic")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-file-names
@@ -1935,7 +1933,7 @@ It supports mbox/Maildir and its own dbox/mdbox formats.")
   (let ((dovecot-version (version-major+minor (package-version dovecot))))
     (package
       (name "dovecot-pigeonhole")
-      (version "0.5.17.1")
+      (version "0.5.18")
       (source
        (origin
          (method url-fetch)
@@ -1943,7 +1941,7 @@ It supports mbox/Maildir and its own dbox/mdbox formats.")
                "https://pigeonhole.dovecot.org/releases/" dovecot-version "/"
                "dovecot-" dovecot-version "-pigeonhole-" version ".tar.gz"))
          (sha256
-          (base32 "04j5z3y8yyci4ni9j9i7cy0zg1qj2sm9zfarmjcvs9vydpga7i1w"))
+          (base32 "198865a9fv9a8gj8lsp4jjylalm6qzjyqhsk22jwpppjsvw2in56"))
          (modules '((guix build utils)))
          (snippet
           '(begin
@@ -2728,13 +2726,14 @@ converts them to maildir format directories.")
     (native-inputs
      (list perl))
     (arguments
-     `(#:tests? #f                   ; XXX: Upstream tests appear to be broken
-       #:make-flags (list (string-append "CC=" ,(cc-for-target))
-                          "PREFIX="
-                          (string-append "DESTDIR=" %output))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))
+     (list
+      #:make-flags
+      #~(list #$(string-append "CC=" (cc-for-target))
+              "PREFIX="
+              (string-append "DESTDIR=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))
     (home-page "https://github.com/leahneukirchen/mblaze")
     (synopsis "Unix utilities to deal with Maildir")
     (description

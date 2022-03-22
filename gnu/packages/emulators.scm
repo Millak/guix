@@ -73,6 +73,7 @@
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages libedit)
@@ -1711,7 +1712,7 @@ This is a part of the TiLP project.")
 (define-public mame
   (package
     (name "mame")
-    (version "0.240")
+    (version "0.241")
     (source
      (origin
        (method git-fetch)
@@ -1720,7 +1721,7 @@ This is a part of the TiLP project.")
              (commit (apply string-append "mame" (string-split version #\.)))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "141mj5kzafnbw6nqlc3ariwxqn8lq3s13dzypax6igpy4wfy75rm"))
+        (base32 "13bm81qyzvpllzmrak5nb87cdyyvsv4hcnznnrz4jyx1bd8ky6ap"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove bundled libraries.
@@ -1890,7 +1891,7 @@ functions.  The source code to MAME serves as this documentation.")
 (define-public gnome-arcade
   (package
     (name "gnome-arcade")
-    (version "0.218.2")
+    (version "0.240")
     (source
      (origin
        (method git-fetch)
@@ -1900,7 +1901,7 @@ functions.  The source code to MAME serves as this documentation.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1qc01a62p65qb6mwjfmxqsd6n3rglsfwrjhsp25nr7q54107n55l"))))
+         "110dpbbcj73s3i2zcnay0kdpsngcpq8mif88279pdc2967ld0a6r"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -1943,6 +1944,42 @@ functions.  The source code to MAME serves as this documentation.")
      "Gnome Arcade is a minimal GTK+ frontend for MAME, the multi-purpose
 arcade and console emulator.")
     (license license:gpl3+)))
+
+(define-public gnusim8085
+  (package
+    (name "gnusim8085")
+    (version "1.4.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/srid/GNUSim8085/releases/download/"
+                    version "/gnusim8085-" version ".tar.gz"))
+              (sha256
+               (base32
+                "05x0is0ckagb3r74p6lw9b8nqrrh7q2v4jvc4cnhljchz9x7kw2a"))))
+    (native-inputs (list pkg-config))
+    (inputs (list gtksourceview-3 adwaita-icon-theme))
+    (build-system glib-or-gtk-build-system)
+    (home-page "https://gnusim8085.srid.ca")
+    (synopsis "Graphical simulator for the Intel 8085 microprocessor")
+    (description
+     "GNUSim8085 is a graphical simulator,
+assembler, and debugger for the Intel 8085 microprocessor.
+
+@itemize
+@item A simple editor component with syntax highlighting.
+@item A keypad to input assembly language instructions with appropriate arguments.
+@item Easy view of register contents.
+@item Easy view of flag contents.
+@item Hexadecimal/decimal converter.
+@item View of stack, memory and I/O contents.
+@item Support for breakpoints for program debugging.
+@item Stepwise program execution.
+@item One click conversion of assembly program to opcode listing.
+@item Printing support.
+@item UI translated in various languages.
+@end itemize")
+    (license license:gpl2+)))
 
 (define-public pcsxr
   ;; No release since 2017.

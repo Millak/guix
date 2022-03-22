@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2017, 2018, 2019 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016 Alex Kost <alezost@gmail.com>
@@ -7,6 +7,7 @@
 ;;; Copyright © 2019 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
+;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -182,8 +183,16 @@
 
 ;; The 'source-module-closure' procedure ca. 1.2.0 did not recognize
 ;; #:re-export-and-replace: <https://issues.guix.gnu.org/52694>.
-;; Work around it.
-(module-re-export! (current-module) '(delete) #:replace? #t)
+;; Work around it.  The #:replace? argument is only supported by
+;; Guile 2.2.7 and later, work-around it if necessary to allow
+;; time-travel from 1.1.0, see <https://issues.guix.gnu.org/53765>.
+(let ((major (string->number (major-version))))
+  (if (or (>= major 3)
+          (and (= major 2)
+               (= (string->number (minor-version)) 2) ; there is no Guile 2.3.X
+               (>= (string->number (micro-version)) 7)))
+      (module-re-export! (current-module) '(delete) #:replace? #t)
+      (module-re-export! (current-module) '(delete))))
 
 ;;; Commentary:
 ;;;
@@ -1091,11 +1100,11 @@ otherwise."
   "Replace input NAME by REPLACEMENT within INPUTS."
   (map (lambda (input)
          (match input
-           (((? string? label) . _)
+           (((? string? label) _ . outputs)
             (if (string=? label name)
                 (match replacement        ;does REPLACEMENT specify an output?
                   ((_ _) (cons label replacement))
-                  (_     (list label replacement)))
+                  (_     (cons* label replacement outputs)))
                 input))))
        inputs))
 
@@ -1235,7 +1244,7 @@ in INPUTS and their transitive propagated inputs."
                       (_
                        systems)))
                   (package-supported-systems package)
-                  (bag-direct-inputs (package->bag package))))))
+                  (bag-direct-inputs (package->bag package system #f))))))
 
       supported-systems)
 

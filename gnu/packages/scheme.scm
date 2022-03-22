@@ -18,6 +18,7 @@
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 Morgan Smith <Morgan.J.Smith@outlook.com>
+;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -470,10 +471,11 @@ threads.")
     (license bsd-3)))
 
 (define-public sicp
-  (let ((commit "225c172f9b859902a64a3c5dd5e1f9ac1a7382de"))
+  (let ((commit "bda03f79d6e2e8899ac2b5ca6a3732210e290a79")
+        (revision "2"))
     (package
       (name "sicp")
-      (version (string-append "20170703-1." (string-take commit 7)))
+      (version (git-version "20180718" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -481,8 +483,8 @@ threads.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "0bhdrdc1mgdjdsg4jksq9z6x129f3346jbf3zir2a0dfmsj6m10n"))
-                (file-name (string-append name "-" version "-checkout"))))
+                  "0mng7qrj2dvssyffr9ycnf4a5k0kadp4dslq7mc5bhzq1qxyjs2w"))
+                (file-name (git-file-name name version))))
       (build-system trivial-build-system)
       (native-inputs `(("gzip" ,gzip)
                        ("source" ,source)
@@ -506,8 +508,7 @@ threads.")
                      (string-append info-dir "/sicp.info")
                      (string-append source "/sicp-pocket.texi"))
              (for-each (cut invoke "gzip" "-9n" <>)
-                       (find-files info-dir))
-             #t))))
+                       (find-files info-dir))))))
       (home-page "https://sarabander.github.io/sicp")
       (synopsis "Structure and Interpretation of Computer Programs")
       (description "Structure and Interpretation of Computer Programs (SICP) is

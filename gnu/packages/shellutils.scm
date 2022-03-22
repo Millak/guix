@@ -341,7 +341,14 @@ between various shells or commands.")
                (mkdir-p bin)
                (substitute* "setup.py"
                  (("add_script\\('")
-                  (string-append "add_script('" bin "/" )))))))))
+                  (string-append "add_script('" bin "/" ))))))
+         ;; Whenever setup.py is invoked, scripts in out/bin/ are
+         ;; replaced. Thus we cannot invoke setup.py for testing.
+         ;; Upstream also uses pytest.
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest")))))))
     (native-inputs
      (list python-pytest
            python-mock

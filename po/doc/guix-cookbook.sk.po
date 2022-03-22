@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: guix manual checkout\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2021-12-31 15:18+0000\n"
-"PO-Revision-Date: 2022-01-25 15:16+0000\n"
+"PO-Revision-Date: 2022-02-08 17:16+0000\n"
 "Last-Translator: Marek Felšöci <marek@felsoci.sk>\n"
 "Language-Team: Slovak <https://translate.fedoraproject.org/projects/guix/documentation-cookbook/sk/>\n"
 "Language: sk\n"
@@ -2524,7 +2524,7 @@ msgstr "Nastavenie web-servera NGINX na načítavanie Lua modulov."
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1372
 msgid "While the Guix manual explains auto-login one user to @emph{all} TTYs ( @pxref{auto-login to TTY,,, guix, GNU Guix Reference Manual}), some might prefer a situation, in which one user is logged into one TTY with the other TTYs either configured to login different users or no one at all.  Note that one can auto-login one user to any TTY, but it is usually advisable to avoid @code{tty1}, which, by default, is used to log warnings and errors."
-msgstr "Zatiaľ čo príručka pre Guix popisuje automatické prihlásenie jedného používateľa ku @emph{všetkým} TTY (@pxref{auto-login to TTY,,, guix, GNU Guix Reference Manual}), mohli by ste uprednostňovať stav, keď je jeden používateľ pripojený k jednému TTY a ostatné TTY sú nastavené na prihlasovanie ďalších používateľov alebo nikoho.  Všimnite si, že jedného používateľa je možné automaticky prihlásiť k akémukoľvek TTY. Avšak, je lepšie vynechať @code{tty1}, ktorý je predvolene využívaný na zobrazovanie varovaných a chybových hlásení."
+msgstr "Zatiaľ čo príručka pre Guix popisuje automatické prihlásenie jedného používateľa ku @emph{všetkým} TTY (@pxref{auto-login to TTY,,, guix, GNU Guix Reference Manual}), mohol by vám viac vyhovovať stav, keď je jeden používateľ pripojený k jednému TTY a ostatné TTY sú nastavené na prihlasovanie ďalších používateľov alebo nikoho.  Všimnite si, že jedného používateľa je možné automaticky prihlásiť k akémukoľvek TTY. Avšak, je lepšie vynechať @code{tty1}, ktorý je predvolene využívaný na zobrazovanie varovaných a chybových hlásení."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1374

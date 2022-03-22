@@ -165,24 +165,3 @@ expressive types, inspired by Haskell and compiling to JavaScript.")
     (description
      "This package implements parser for the PureScript programming language.")
     (license license:bsd-3)))
-
-(define-public ghc-optparse-applicative-0.15.1.0
-  (package
-    (inherit ghc-optparse-applicative)
-    (name "ghc-optparse-applicative")
-    (version "0.15.1.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (string-append
-               "https://hackage.haskell.org/package/optparse-applicative/optparse-applicative-"
-               version
-               ".tar.gz"))
-        (sha256
-          (base32 "1ws6y3b3f6hsgv0ff0yp6lw4hba1rps4dnvry3yllng0s5gngcsd"))))
-    (inputs
-      (list ghc-transformers-compat ghc-ansi-wl-pprint))
-    (native-inputs (list ghc-quickcheck))
-    (arguments
-      `(#:cabal-revision
-        ("1" "0zmhqkd96v2z1ilhqdkd9z4jgsnsxb8yi2479ind8m5zm9363zr9")))))

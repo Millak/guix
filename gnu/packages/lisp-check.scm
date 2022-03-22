@@ -5,7 +5,7 @@
 ;;; Copyright © 2018 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2020 Katherine Cox-Buday <cox.katherine.e@gmail.com>
-;;; Copyright © 2019, 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019, 2020, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 Charles Jackson <charles.b.jackson@protonmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
@@ -843,6 +843,49 @@ interactive development.")
 
 (define-public ecl-stefil
   (sbcl-package->ecl-package sbcl-stefil))
+
+(define-public sbcl-try
+  (let ((commit "a1fffad2ca328b3855f629b633ab1daaeec929c2")
+        (revision "1"))
+    (package
+      (name "sbcl-try")
+      (version (git-version "0.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/melisgl/try")
+               (commit commit)))
+         (file-name (git-file-name "cl-try" version))
+         (sha256
+          (base32 "03dm2i2y4wiyzz9d25zdxm6gdglnvwali0ylp0rfwpk6wf29sj09"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-cl-ppcre))
+      (inputs
+       (list sbcl-alexandria
+             sbcl-closer-mop
+             sbcl-ieee-floats
+             sbcl-mgl-pax
+             sbcl-trivial-gray-streams))
+      (arguments
+       `(#:asd-files '("try.asdf.asd" "try.asd")
+         ;; FIXME: Get tests to work
+         #:tests? #f))
+      (home-page "https://github.com/melisgl/try")
+      (synopsis "Common Lisp test framework")
+      (description
+       "@code{Try} is a library for unit testing with equal support for
+interactive and non-interactive workflows.  Tests are functions, and almost
+everything else is a condition, whose types feature prominently in
+parameterization.")
+      (license license:expat))))
+
+(define-public cl-try
+  (sbcl-package->cl-source-package sbcl-try))
+
+(define-public ecl-try
+  (sbcl-package->ecl-package sbcl-try))
 
 (define-public sbcl-unit-test
   (let ((commit "266afaf4ac091fe0e8803bac2ae72d238144e735")

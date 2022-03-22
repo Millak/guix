@@ -175,6 +175,7 @@ Weblate} (@pxref{Translating Guix}).
 * Home Configuration::          Configuring the home environment.
 * Documentation::               Browsing software user manuals.
 * Installing Debugging Files::  Feeding the debugger.
+* Using TeX and LaTeX::         Typesetting.
 * Security Updates::            Deploying security fixes quickly.
 * Bootstrapping::               GNU/Linux built from scratch.
 * Porting::                     Targeting another platform or kernel.
@@ -1867,8 +1868,24 @@ $ export GUIX_LOCPATH=$HOME/.guix-profile/lib/locale
 
 Note that the @code{glibc-locales} package contains data for all the
 locales supported by the GNU@tie{}libc and weighs in at around
-917@tie{}MiB@.  Alternatively, the @code{glibc-utf8-locales} is smaller but
-limited to a few UTF-8 locales.
+930@tie{}MiB@footnote{The size of the @code{glibc-locales} package is
+reduced down to about 213@tie{}MiB with store deduplication and further
+down to about 67@tie{}MiB when using a zstd-compressed Btrfs file
+system.}.  If you only need a few locales, you can define your custom
+locales package via the @code{make-glibc-utf8-locales} procedure from
+the @code{(gnu packages base)} module.  The following example defines a
+package containing the various Canadian UTF-8 locales known to the
+GNU@tie{}libc, that weighs around 14@tie{}MiB:
+
+@lisp
+(use-modules (gnu packages base))
+
+(define my-glibc-locales
+  (make-glibc-utf8-locales
+   glibc
+   #:locales (list "en_CA" "fr_CA" "ik_CA" "iu_CA" "shs_CA")
+   #:name "glibc-canadian-utf8-locales"))
+@end lisp
 
 The @env{GUIX_LOCPATH} variable plays a role similar to @env{LOCPATH}
 (@pxref{Locale Names, @env{LOCPATH},, libc, The GNU C Library Reference
@@ -4426,18 +4443,12 @@ Generation 2	Jun 11 2018 11:02:49
     repository URL: https://git.savannah.gnu.org/git/guix.git
     branch: origin/master
     commit: e0cc7f669bec22c37481dd03a7941c7d11a64f1d
-  2 new packages: keepalived, libnfnetlink
-  6 packages upgraded: emacs-nix-mode@@2.0.4,
-    guile2.0-guix@@0.14.0-12.77a1aac, guix@@0.14.0-12.77a1aac,
-    heimdal@@7.5.0, milkytracker@@1.02.00, nix@@2.0.4
 
 Generation 3	Jun 13 2018 23:31:07	(current)
   guix 844cc1c
     repository URL: https://git.savannah.gnu.org/git/guix.git
     branch: origin/master
     commit: 844cc1c8f394f03b404c5bb3aee086922373490c
-  28 new packages: emacs-helm-ls-git, emacs-helm-mu, @dots{}
-  69 packages upgraded: borg@@1.1.6, cheese@@3.28.0, @dots{}
 @end example
 
 @xref{Invoking guix describe, @command{guix describe}}, for other ways to
@@ -4492,13 +4503,13 @@ information.
 @cindex channel news
 @item --news
 @itemx -N
-Display the list of packages added or upgraded since the previous
-generation, as well as, occasionally, news written by channel authors
-for their users (@pxref{Channels, Writing Channel News}).
+Display news written by channel authors for their users for changes made
+since the previous generation (@pxref{Channels, Writing Channel News}).
+When @option{--details} is passed, additionally display new and upgraded
+packages.
 
-The package information is the same as displayed upon @command{guix
-pull} completion, but without ellipses; it is also similar to the output
-of @command{guix pull -l} for the last generation (see below).
+You can view that information for previous generations with
+@command{guix pull -l}.
 
 @item --list-generations[=@var{pattern}]
 @itemx -l [@var{pattern}]
@@ -4506,6 +4517,16 @@ List all the generations of @file{~/.config/guix/current} or, if @var{pattern}
 is provided, the subset of generations that match @var{pattern}.
 The syntax of @var{pattern} is the same as with @code{guix package
 --list-generations} (@pxref{Invoking guix package}).
+
+By default, this prints information about the channels used in each
+revision as well as the corresponding news entries.  If you pass
+@option{--details}, it will also print the list of packages added and
+upgraded in each generation compared to the previous one.
+
+@item --details
+Instruct @option{--list-generations} or @option{--news} to display more
+information about the differences between subsequent generations---see
+above.
 
 @item --roll-back
 @cindex rolling back
@@ -5448,7 +5469,9 @@ commit of a channel that should be authenticated.  The first time a
 channel is fetched with @command{guix pull} or @command{guix
 time-machine}, the command looks up the introductory commit and verifies
 that it is signed by the specified OpenPGP key.  From then on, it
-authenticates commits according to the rule above.
+authenticates commits according to the rule above.  Authentication fails
+if the target commit is neither a descendant nor an ancestor of the
+introductory commit.
 
 Additionally, your channel must provide all the OpenPGP keys that were
 ever mentioned in @file{.guix-authorizations}, stored as @file{.key}
@@ -9475,8 +9498,7 @@ scripts so that they refer to @code{grep} by its absolute file name:
         (substitute* (list (string-append bin "/egrep")
                            (string-append bin "/fgrep"))
           (("^exec grep")
-           (string-append "exec " bin "/grep")))
-        #t))))
+           (string-append "exec " bin "/grep")))))))
 @end lisp
 
 In the example below, phases are modified in two ways: the standard
@@ -9495,11 +9517,94 @@ executable files to be installed:
       (let ((bin (string-append (assoc-ref outputs "out")
                                 "/bin")))
         (install-file "footswitch" bin)
-        (install-file "scythe" bin)
-        #t))))
+        (install-file "scythe" bin)))))
 @end lisp
 
 @c TODO: Add more examples.
+
+@subsection Wrappers
+
+@cindex program wrappers
+@cindex wrapping programs
+It is not unusual for a command to require certain environment variables
+to be set for proper functioning, typically search paths (@pxref{Search
+Paths}).  Failing to do that, the command might fail to find files or
+other commands it relies on, or it might pick the ``wrong''
+ones---depending on the environment in which it runs.  Examples include:
+
+@itemize
+@item
+a shell script that assumes all the commands it uses are in @env{PATH};
+
+@item
+a Guile program that assumes all its modules are in @env{GUILE_LOAD_PATH}
+and @env{GUILE_LOAD_COMPILED_PATH};
+
+@item
+a Qt application that expects to find certain plugins in
+@env{QT_PLUGIN_PATH}.
+@end itemize
+
+For a package writer, the goal is to make sure commands always work the
+same rather than depend on some external settings.  One way to achieve
+that is to @dfn{wrap} commands in a thin script that sets those
+environment variables, thereby ensuring that those run-time dependencies
+are always found.  The wrapper would be used to set @env{PATH},
+@env{GUILE_LOAD_PATH}, or @env{QT_PLUGIN_PATH} in the examples above.
+
+To ease that task, the @code{(guix build utils)} module provides a
+couple of helpers to wrap commands.
+
+@deffn {Scheme Procedure} wrap-program @var{program} @
+  [#:sh @var{sh}] [#:rest @var{variables}]
+Make a wrapper for @var{program}.  @var{variables} should look like this:
+
+@lisp
+'(@var{variable} @var{delimiter} @var{position} @var{list-of-directories})
+@end lisp
+
+where @var{delimiter} is optional.  @code{:} will be used if
+@var{delimiter} is not given.
+
+For example, this call:
+
+@lisp
+(wrap-program "foo"
+              '("PATH" ":" = ("/gnu/.../bar/bin"))
+              '("CERT_PATH" suffix ("/gnu/.../baz/certs"
+                                    "/qux/certs")))
+@end lisp
+
+will copy @file{foo} to @file{.foo-real} and create the file @file{foo}
+with the following contents:
+
+@example
+#!location/of/bin/bash
+export PATH="/gnu/.../bar/bin"
+export CERT_PATH="$CERT_PATH$@{CERT_PATH:+:@}/gnu/.../baz/certs:/qux/certs"
+exec -a $0 location/of/.foo-real "$@@"
+@end example
+
+If @var{program} has previously been wrapped by @code{wrap-program}, the
+wrapper is extended with definitions for @var{variables}.  If it is not,
+@var{sh} will be used as the interpreter.
+@end deffn
+
+@deffn {Scheme Procedure} wrap-script @var{program} @
+  [#:guile @var{guile}] [#:rest @var{variables}]
+Wrap the script @var{program} such that @var{variables} are set first.
+The format of @var{variables} is the same as in the @code{wrap-program}
+procedure.  This procedure differs from @code{wrap-program} in that it
+does not create a separate shell script.  Instead, @var{program} is
+modified directly by prepending a Guile script, which is interpreted as
+a comment in the script's language.
+
+Special encoding comments as supported by Python are recreated on the
+second line.
+
+Note that this procedure can only be used once per file as Guile scripts are
+not supported.
+@end deffn
 
 @node Search Paths
 @section Search Paths
@@ -15737,22 +15842,39 @@ Linux swap partition by running @command{swaplabel @var{device}}, where
 @lisp
 (swap-space
   (target (file-system-label "swap"))
-  (dependencies (list lvm-device)))
+  (dependencies mapped-devices))
 @end lisp
 
-Use the partition with label @code{swap}, which can be found after the
-@var{lvm-device} mapped device has been opened.  Again, the
+Use the partition with label @code{swap}, which can be found after all
+the @var{mapped-devices} mapped devices have been opened.  Again, the
 @command{swaplabel} command allows you to view and change the label of a
 Linux swap partition.
 
+Here's a more involved example with the corresponding @code{file-systems} part
+of an @code{operating-system} declaration.
+
 @lisp
-(swap-space
-  (target "/btrfs/swapfile")
-  (dependencies (list btrfs-fs)))
+(file-systems
+  (list (file-system
+          (device (file-system-label "root"))
+          (mount-point "/")
+          (type "ext4"))
+        (file-system
+          (device (file-system-label "btrfs"))
+          (mount-point "/btrfs")
+          (type "btrfs"))))
+
+(swap-devices
+  (list
+    (swap-space
+      (target "/btrfs/swapfile")
+      (dependencies (filter (file-system-mount-point-predicate "/btrfs")
+                            file-systems)))))
 @end lisp
 
-Use the file @file{/btrfs/swapfile} as swap space, which is present on the
-@var{btrfs-fs} filesystem.
+Use the file @file{/btrfs/swapfile} as swap space, which depends on the
+file system mounted at @file{/btrfs}.  Note how we use Guile's filter to
+select the file system in an elegant fashion!
 
 @node User Accounts
 @section User Accounts
@@ -16634,6 +16756,10 @@ This option accepts, as an integer, the nice value with which to run the
 This option provides an ``escape hatch'' for the user to provide arbitrary
 command-line arguments to @command{agetty} as a list of strings.
 
+@item @code{shepherd-requirement} (default: @code{'()})
+The option can be used to provides extra shepherd requirements (for example
+@code{'syslogd}) to the respective @code{'term-}* shepherd service.
+
 @end table
 @end deftp
 
@@ -16903,6 +17029,18 @@ exactly that:
 This example assumes that the file @file{./guix.example.org-key.pub}
 contains the public key that @code{guix.example.org} uses to sign
 substitutes.
+
+@item @code{generate-substitute-key?} (default: @code{#t})
+Whether to generate a @dfn{substitute key pair} under
+@file{/etc/guix/signing-key.pub} and @file{/etc/guix/signing-key.sec} if
+there is not already one.
+
+This key pair is used when exporting store items, for instance with
+@command{guix publish} (@pxref{Invoking guix publish}) or @command{guix
+archive} (@pxref{Invoking guix archive}).  Generating a key pair takes a
+few seconds when enough entropy is available and is only done once; you
+might want to turn it off for instance in a virtual machine that does
+not need it and where the extra boot time is a problem.
 
 @item @code{max-silent-time} (default: @code{0})
 @itemx @code{timeout} (default: @code{0})
@@ -18719,7 +18857,7 @@ This is the configuration record for OpenSSH's @command{sshd}.
 
 @table @asis
 @item @code{openssh} (default @var{openssh})
-The Openssh package to use.
+The OpenSSH package to use.
 
 @item @code{pid-file} (default: @code{"/var/run/sshd.pid"})
 Name of the file where @command{sshd} writes its PID.
@@ -18839,6 +18977,16 @@ Additional authorized keys can be specified @i{via}
 
 Note that this does @emph{not} interfere with the use of
 @file{~/.ssh/authorized_keys}.
+
+@item @code{generate-host-keys?} (default: @code{#t})
+Whether to generate host key pairs with @command{ssh-keygen -A} under
+@file{/etc/ssh} if there are none.
+
+Generating key pairs takes a few seconds when enough entropy is
+available and is only done once.  You might want to turn it off for
+instance in a virtual machine that does not need it because host keys
+are provided in some other way, and where the extra boot time is a
+problem.
 
 @item @code{log-level} (default: @code{'info})
 This is a symbol specifying the logging level: @code{quiet}, @code{fatal},
@@ -21252,6 +21400,448 @@ bluetooth keyboard or mouse.
 Users need to be in the @code{lp} group to access the D-Bus service.
 @end deffn
 
+@deffn {Scheme Variable} bluetooth-service-type
+This is the type for the @uref{https://bluez.org/, Linux Bluetooth Protocol
+Stack} (BlueZ) system, which generates the @file{/etc/bluetooth/main.conf}
+configuration file.  The value for this type is a @command{bluetooth-configuration}
+record as in this example:
+
+@lisp
+(service bluetooth-service-type)
+@end lisp
+
+See below for details about @code{bluetooth-configuration}.
+@end deffn
+
+@deftp {Data Type} bluetooth-configuration
+Data type representing the configuration for @code{bluetooth-service}.
+
+@table @asis
+@item @code{bluez} (default: @code{bluez})
+@code{bluez} package to use.
+
+@item @code{name} (default: @code{"BlueZ"})
+Default adapter name.
+
+@item @code{class} (default: @code{#x000000})
+Default device class. Only the major and minor device class bits are considered.
+
+@item @code{discoverable-timeout} (default: @code{180})
+How long to stay in discoverable mode before going back to non-discoverable. The
+value is in seconds.
+
+@item @code{always-pairable?} (default: @code{#f})
+Always allow pairing even if there are no agents registered.
+
+@item @code{pairable-timeout} (default: @code{0})
+How long to stay in pairable mode before going back to non-discoverable. The
+value is in seconds.
+
+@item @code{device-id} (default: @code{#f})
+Use vendor id source (assigner), vendor, product and version information for
+DID profile support. The values are separated by ":" and @var{assigner}, @var{VID},
+@var{PID} and @var{version}.
+
+Possible values are:
+
+@itemize @bullet
+@item
+@code{#f} to disable it,
+
+@item
+@code{"assigner:1234:5678:abcd"}, where @var{assigner} is either @code{usb} (default)
+or @code{bluetooth}.
+
+@end itemize
+
+@item @code{reverse-service-discovery?} (default: @code{#t})
+Do reverse service discovery for previously unknown devices that connect to
+us. For BR/EDR this option is really only needed for qualification since the
+BITE tester doesn't like us doing reverse SDP for some test cases, for LE
+this disables the GATT client functionally so it can be used in system which
+can only operate as peripheral.
+
+@item @code{name-resolving?} (default: @code{#t})
+Enable name resolving after inquiry. Set it to @code{#f} if you don't need
+remote devices name and want shorter discovery cycle.
+
+@item @code{debug-keys?} (default: @code{#f})
+Enable runtime persistency of debug link keys. Default is false which makes
+debug link keys valid only for the duration of the connection that they were
+created for.
+
+@item @code{controller-mode} (default: @code{'dual})
+Restricts all controllers to the specified transport. @code{'dual} means both
+BR/EDR and LE are enabled (if supported by the hardware).
+
+Possible values are: 
+
+@itemize @bullet
+@item
+@code{'dual}
+
+@item
+@code{'bredr}
+
+@item
+@code{'le}
+
+@end itemize
+
+@item @code{multi-profile} (default: @code{'off})
+Enables Multi Profile Specification support. This allows to specify if system
+supports only Multiple Profiles Single Device (MPSD) configuration or both
+Multiple Profiles Single Device (MPSD) and Multiple Profiles Multiple Devices
+(MPMD) configurations.
+
+Possible values are:
+
+@itemize @bullet
+@item
+@code{'off}
+
+@item
+@code{'single}
+
+@item
+@code{'multiple}
+
+@end itemize
+
+@item @code{fast-connectable?} (default: @code{#f})
+Permanently enables the Fast Connectable setting for adapters that support
+it. When enabled other devices can connect faster to us, however the
+tradeoff is increased power consumptions. This feature will fully work only
+on kernel version 4.1 and newer.
+
+@item @code{privacy} (default: @code{'off})
+Default privacy settings.
+
+@itemize @bullet
+@item
+@code{'off}: Disable local privacy
+
+@item
+@code{'network/on}: A device will only accept advertising packets from peer
+devices that contain private addresses. It may not be compatible with some
+legacy devices since it requires the use of RPA(s) all the time
+
+@item
+@code{'device}: A device in device privacy mode is only concerned about the
+privacy of the device and will accept advertising packets from peer devices
+that contain their Identity Address as well as ones that contain a private
+address, even if the peer device has distributed its IRK in the past
+
+@end itemize
+
+and additionally, if @var{controller-mode} is set to @code{'dual}:
+
+@itemize @bullet
+@item
+@code{'limited-network}: Apply Limited Discoverable Mode to advertising, which
+follows the same policy as to BR/EDR that publishes the identity address when
+discoverable, and Network Privacy Mode for scanning
+
+@item
+@code{'limited-device}: Apply Limited Discoverable Mode to advertising, which
+follows the same policy as to BR/EDR that publishes the identity address when
+discoverable, and Device Privacy Mode for scanning.
+
+@end itemize
+
+@item @code{just-works-repairing} (default: @code{'never})
+Specify the policy to the JUST-WORKS repairing initiated by peer.
+
+Possible values:
+@itemize @bullet
+@item
+@code{'never}
+
+@item
+@code{'confirm}
+
+@item
+@code{'always}
+
+@end itemize
+
+@item @code{temporary-timeout} (default: @code{30})
+How long to keep temporary devices around. The value is in seconds. @code{0}
+disables the timer completely.
+
+@item @code{refresh-discovery?} (default: @code{#t})
+Enables the device to issue an SDP request to update known services when
+profile is connected.
+
+@item @code{experimental} (default: @code{#f})
+Enables experimental features and interfaces, alternatively a list of UUIDs
+can be given.
+
+Possible values:
+
+@itemize @bullet
+@item
+@code{#t}
+
+@item
+@code{#f}
+
+@item
+@code{(list (uuid <uuid-1>) (uuid <uuid-2>) ...)}.
+@end itemize
+
+List of possible UUIDs:
+@itemize @bullet
+@item
+@code{d4992530-b9ec-469f-ab01-6c481c47da1c}: BlueZ Experimental Debug,
+
+@item
+@code{671b10b5-42c0-4696-9227-eb28d1b049d6}: BlueZ Experimental Simultaneous Central and Peripheral,
+
+@item
+@code{"15c0a148-c273-11ea-b3de-0242ac130004}: BlueZ Experimental LL privacy,
+
+@item
+@code{330859bc-7506-492d-9370-9a6f0614037f}: BlueZ Experimental Bluetooth Quality Report,
+
+@item
+@code{a6695ace-ee7f-4fb9-881a-5fac66c629af}: BlueZ Experimental Offload Codecs.
+@end itemize
+
+@item @code{remote-name-request-retry-delay} (default: @code{300})
+The duration to avoid retrying to resolve a peer's name, if the previous
+try failed.
+
+@item @code{page-scan-type} (default: @code{#f})
+BR/EDR Page scan activity type.
+
+@item @code{page-scan-interval} (default: @code{#f})
+BR/EDR Page scan activity interval.
+
+@item @code{page-scan-window} (default: @code{#f})
+BR/EDR Page scan activity window.
+
+@item @code{inquiry-scan-type} (default: @code{#f})
+BR/EDR Inquiry scan activity type.
+
+@item @code{inquiry-scan-interval} (default: @code{#f})
+BR/EDR Inquiry scan activity interval.
+
+@item @code{inquiry-scan-window} (default: @code{#f})
+BR/EDR Inquiry scan activity window.
+
+@item @code{link-supervision-timeout} (default: @code{#f})
+BR/EDR Link supervision timeout.
+
+@item @code{page-timeout} (default: @code{#f})
+BR/EDR Page timeout.
+
+@item @code{min-sniff-interval} (default: @code{#f})
+BR/EDR minimum sniff interval.
+
+@item @code{max-sniff-interval} (default: @code{#f})
+BR/EDR maximum sniff interval.
+
+@item @code{min-advertisement-interval} (default: @code{#f})
+LE minimum advertisement interval (used for legacy advertisement only).
+
+@item @code{max-advertisement-interval} (default: @code{#f})
+LE maximum advertisement interval (used for legacy advertisement only).
+
+@item @code{multi-advertisement-rotation-interval} (default: @code{#f})
+LE multiple advertisement rotation interval.
+
+@item @code{scan-interval-auto-connect} (default: @code{#f})
+LE scanning interval used for passive scanning supporting auto connect.
+
+@item @code{scan-window-auto-connect} (default: @code{#f})
+LE scanning window used for passive scanning supporting auto connect.
+
+@item @code{scan-interval-suspend} (default: @code{#f})
+LE scanning interval used for active scanning supporting wake from suspend.
+
+@item @code{scan-window-suspend} (default: @code{#f})
+LE scanning window used for active scanning supporting wake from suspend.
+
+@item @code{scan-interval-discovery} (default: @code{#f})
+LE scanning interval used for active scanning supporting discovery.
+
+@item @code{scan-window-discovery} (default: @code{#f})
+LE scanning window used for active scanning supporting discovery.
+
+@item @code{scan-interval-adv-monitor} (default: @code{#f})
+LE scanning interval used for passive scanning supporting the advertisement monitor APIs.
+
+@item @code{scan-window-adv-monitor} (default: @code{#f})
+LE scanning window used for passive scanning supporting the advertisement monitor APIs.
+
+@item @code{scan-interval-connect} (default: @code{#f})
+LE scanning interval used for connection establishment.
+
+@item @code{scan-window-connect} (default: @code{#f})
+LE scanning window used for connection establishment.
+
+@item @code{min-connection-interval} (default: @code{#f})
+LE default minimum connection interval. This value is superceeded by any specific
+value provided via the Load Connection Parameters interface.
+
+@item @code{max-connection-interval} (default: @code{#f})
+LE default maximum connection interval. This value is superceeded by any specific
+value provided via the Load Connection Parameters interface.
+
+@item @code{connection-latency} (default: @code{#f})
+LE default connection latency. This value is superceeded by any specific
+value provided via the Load Connection Parameters interface.
+
+@item @code{connection-supervision-timeout} (default: @code{#f})
+LE default connection supervision timeout. This value is superceeded by any specific
+value provided via the Load Connection Parameters interface.
+
+@item @code{autoconnect-timeout} (default: @code{#f})
+LE default autoconnect timeout. This value is superceeded by any specific
+value provided via the Load Connection Parameters interface.
+
+@item @code{adv-mon-allowlist-scan-duration} (default: @code{300})
+Allowlist scan duration during interleaving scan. Only used when scanning for ADV
+monitors. The units are msec.
+
+@item @code{adv-mon-no-filter-scan-duration} (default: @code{500})
+No filter scan duration during interleaving scan. Only used when scanning for ADV
+monitors. The units are msec.
+
+@item @code{enable-adv-mon-interleave-scan?} (default: @code{#t})
+Enable/Disable Advertisement Monitor interleave scan for power saving.
+
+@item @code{cache} (default: @code{'always})
+GATT attribute cache.
+
+Possible values are:
+@itemize @bullet
+@item
+@code{'always}: Always cache attributes even for devices not paired, this is
+recommended as it is best for interoperability, with more consistent
+reconnection times and enables proper tracking of notifications for all
+devices
+
+@item
+@code{'yes}: Only cache attributes of paired devices
+
+@item
+@code{'no}: Never cache attributes.
+@end itemize
+
+@item @code{key-size} (default: @code{0})
+Minimum required Encryption Key Size for accessing secured characteristics.
+
+Possible values are:
+@itemize @bullet
+@item
+@code{0}: Don't care
+
+@item
+@code{7 <= N <= 16}
+@end itemize
+
+@item @code{exchange-mtu} (default: @code{517})
+Exchange MTU size. Possible values are:
+
+@itemize @bullet
+@item
+@code{23 <= N <= 517}
+@end itemize
+
+@item @code{att-channels} (default: @code{3})
+Number of ATT channels. Possible values are:
+
+@itemize @bullet
+@item
+@code{1}: Disables EATT
+
+@item
+@code{2 <= N <= 5}
+@end itemize
+
+@item @code{session-mode} (default: @code{'basic})
+AVDTP L2CAP signalling channel mode.
+
+Possible values are:
+
+@itemize @bullet
+@item
+@code{'basic}: Use L2CAP basic mode
+
+@item
+@code{'ertm}: Use L2CAP enhanced retransmission mode.
+@end itemize
+
+@item @code{stream-mode} (default: @code{'basic})
+AVDTP L2CAP transport channel mode.
+
+Possible values are:
+
+@itemize @bullet
+@item
+@code{'basic}: Use L2CAP basic mode
+
+@item
+@code{'streaming}: Use L2CAP streaming mode.
+@end itemize
+
+@item @code{reconnect-uuids} (default: @code{'()})
+The ReconnectUUIDs defines the set of remote services that should try
+to be reconnected to in case of a link loss (link supervision
+timeout). The policy plugin should contain a sane set of values by
+default, but this list can be overridden here. By setting the list to
+empty the reconnection feature gets disabled.
+
+Possible values:
+
+@itemize @bullet
+@item
+@code{'()}
+
+@item
+@code{(list (uuid <uuid-1>) (uuid <uuid-2>) ...)}.
+@end itemize
+
+@item @code{reconnect-attempts} (default: @code{7})
+Defines the number of attempts to reconnect after a link lost. Setting
+the value to 0 disables reconnecting feature.
+
+@item @code{reconnect-intervals} (default: @code{'(1 2 4 8 16 32 64)})
+Defines a list of intervals in seconds to use in between attempts. If
+the number of attempts defined in @var{reconnect-attempts} is bigger than
+the list of intervals the last interval is repeated until the last attempt.
+
+@item @code{auto-enable?} (default: @code{#f})
+Defines option to enable all controllers when they are found. This includes
+adapters present on start as well as adapters that are plugged in later on.
+
+@item @code{resume-delay} (default: @code{2})
+Audio devices that were disconnected due to suspend will be reconnected on
+resume. @var{resume-delay} determines the delay between when the controller
+resumes from suspend and a connection attempt is made. A longer delay is
+better for better co-existence with Wi-Fi. The value is in seconds.
+
+@item @code{rssi-sampling-period} (default: @code{#xFF})
+Default RSSI Sampling Period. This is used when a client registers an
+advertisement monitor and leaves the RSSISamplingPeriod unset.
+
+Possible values are:
+@itemize @bullet
+@item
+@code{#x0}: Report all advertisements
+
+@item
+@code{N = #xXX}: Report advertisements every N x 100 msec (range: #x01 to #xFE)
+
+@item
+@code{#xFF}: Report only one advertisement per device during monitoring period.
+@end itemize
+
+@end table
+@end deftp
+
 @defvr {Scheme Variable} gnome-keyring-service-type
 This is the type of the service that adds the
 @uref{https://wiki.gnome.org/Projects/GnomeKeyring, GNOME Keyring}.  Its
@@ -21285,7 +21875,6 @@ By default, this field contains ``gdm-password'' with the value @code{login}
 and ``passwd'' is with the value @code{passwd}.
 @end table
 @end deftp
-
 
 @node Sound Services
 @subsection Sound Services
@@ -21403,11 +21992,44 @@ List of settings to set in @file{daemon.conf}, formatted just like
 @var{client-conf}.
 
 @item @code{script-file} (default: @code{(file-append pulseaudio "/etc/pulse/default.pa")})
-Script file to use as @file{default.pa}.
+Script file to use as @file{default.pa}.  In case the
+@code{extra-script-files} field below is used, an @code{.include}
+directive pointing to @file{/etc/pulse/default.pa.d} is appended to the
+provided script.
+
+@item @code{extra-script-files} (default: @code{'())})
+A list of file-like objects defining extra PulseAudio scripts to run at
+the initialization of the @command{pulseaudio} daemon, after the main
+@code{script-file}.  The scripts are deployed to the
+@file{/etc/pulse/default.pa.d} directory; they should have the
+@samp{.pa} file name extension.  For a reference of the available
+commands, refer to @command{man pulse-cli-syntax}.
 
 @item @code{system-script-file} (default: @code{(file-append pulseaudio "/etc/pulse/system.pa")})
 Script file to use as @file{system.pa}.
 @end table
+
+The example below sets the default PulseAudio card profile, the default
+sink and the default source to use for a old SoundBlaster Audigy sound
+card:
+@lisp
+(pulseaudio-configuration
+ (extra-script-files
+  (list (plain-file "audigy.pa"
+                    (string-append "\
+set-card-profile alsa_card.pci-0000_01_01.0 \
+  output:analog-surround-40+input:analog-mono
+set-default-source alsa_input.pci-0000_01_01.0.analog-mono
+set-default-sink alsa_output.pci-0000_01_01.0.analog-surround-40\n")))))
+@end lisp
+
+Note that @code{pulseaudio-service-type} is part of
+@code{%desktop-services}; if your operating system declaration was
+derived from one of the desktop templates, you'll want to adjust the
+above example to modify the existing @code{pulseaudio-service-type} via
+@code{modify-services} (@pxref{Service Reference,
+@code{modify-services}}), instead of defining a new one.
+
 @end deftp
 
 @deffn {Scheme Variable} ladspa-service-type
@@ -23200,7 +23822,7 @@ Data type representing the configuration of opensmtpd.
 @item @code{package} (default: @var{opensmtpd})
 Package object of the OpenSMTPD SMTP server.
 
-@item @code{config-file} (default: @code{%default-opensmtpd-file})
+@item @code{config-file} (default: @code{%default-opensmtpd-config-file})
 File-like object of the OpenSMTPD configuration file to use.  By default
 it listens on the loopback network interface, and allows for mail from
 users and daemons on the local machine, as well as permitting email to
@@ -30065,6 +30687,10 @@ of processors and preventing overheating.
 Data type representing the configuration of @code{thermald-service-type}.
 
 @table @asis
+@item @code{adaptive?} (default: @code{#f})
+Use @acronym{DPTF, Dynamic Power and Thermal Framework} adaptive tables
+when present.
+
 @item @code{ignore-cpuid-check?} (default: @code{#f})
 Ignore cpuid check for supported CPU models.
 
@@ -30783,6 +31409,10 @@ Its value must be a @code{virtlog-configuration}.
           (max-clients 1000)))
 @end lisp
 @end deffn
+
+@deftypevar {@code{libvirt} parameter} package libvirt
+Libvirt package.
+@end deftypevar
 
 @deftypevr {@code{virtlog-configuration} parameter} integer log-level
 Logging level.  4 errors, 3 warnings, 2 information, 1 debug.
@@ -34484,8 +35114,8 @@ previous example to your operating system declaration by appending it to
   ;; Some fields omitted...
   (setuid-programs
     (append (list (setuid-program
-                    (program (file-append nfs-utils "/sbin/mount.nfs")))
-                  %setuid-programs))))
+                    (program (file-append nfs-utils "/sbin/mount.nfs"))))
+            %setuid-programs)))
 @end lisp
 
 @deftp {Data Type} setuid-program
@@ -34797,7 +35427,7 @@ honors several options passed on the Linux kernel command line
 @code{-append} option of QEMU), notably:
 
 @table @code
-@item --load=@var{boot}
+@item gnu.load=@var{boot}
 Tell the initial RAM disk to load @var{boot}, a file containing a Scheme
 program, once it has mounted the root file system.
 
@@ -34805,11 +35435,21 @@ Guix uses this option to yield control to a boot program that runs the
 service activation programs and then spawns the GNU@tie{}Shepherd, the
 initialization system.
 
-@item --root=@var{root}
+@item root=@var{root}
 Mount @var{root} as the root file system.  @var{root} can be a device
 name like @code{/dev/sda1}, a file system label, or a file system UUID.
 When unspecified, the device name from the root file system of the
 operating system declaration is used.
+
+@item rootfstype=@var{type}
+Set the type of the root file system.  It overrides the @code{type}
+field of the root file system specified via the @code{operating-system}
+declaration, if any.
+
+@item rootflags=@var{options}
+Set the mount @emph{options} of the root file system.  It overrides the
+@code{options} field of the root file system specified via the
+@code{operating-system} declaration, if any.
 
 @item fsck.mode=@var{mode}
 Whether to check the @var{root} file system for errors before mounting
@@ -34830,7 +35470,7 @@ or @code{preen} to repair problems considered safe to repair automatically.
 @code{preen} is the default if this option is not present or if @var{level}
 is not one of the above.
 
-@item --system=@var{system}
+@item gnu.system=@var{system}
 Have @file{/run/booted-system} and @file{/run/current-system} point to
 @var{system}.
 
@@ -34842,7 +35482,7 @@ Instruct the initial RAM disk as well as the @command{modprobe} command
 must be a comma-separated list of module names---e.g.,
 @code{usbkbd,9pnet}.
 
-@item --repl
+@item gnu.repl
 Start a read-eval-print loop (REPL) from the initial RAM disk before it
 tries to load kernel modules and to mount the root file system.  Our
 marketing team calls it @dfn{boot-to-Guile}.  The Schemer in you will
@@ -34863,7 +35503,7 @@ here is how to use it and customize it further.
        [#:helper-packages '()] [#:qemu-networking? #f] [#:volatile-root? #f]
 Return a derivation that builds a raw initrd.  @var{file-systems} is
 a list of file systems to be mounted by the initrd, possibly in addition to
-the root file system specified on the kernel command line via @option{--root}.
+the root file system specified on the kernel command line via @option{root}.
 @var{linux-modules} is a list of kernel modules to be loaded at boot time.
 @var{mapped-devices} is a list of device mappings to realize before
 @var{file-systems} are mounted (@pxref{Mapped Devices}).
@@ -34893,7 +35533,7 @@ to it are lost.
 Return as a file-like object a generic initrd, with kernel
 modules taken from @var{linux}.  @var{file-systems} is a list of file-systems to be
 mounted by the initrd, possibly in addition to the root file system specified
-on the kernel command line via @option{--root}.  @var{mapped-devices} is a list of device
+on the kernel command line via @option{root}.  @var{mapped-devices} is a list of device
 mappings to realize before @var{file-systems} are mounted.
 
 When true, @var{keyboard-layout} is a @code{<keyboard-layout>} record denoting
@@ -37435,6 +38075,21 @@ be confused with Shepherd services (@pxref{Shepherd Services}).  Using this exte
 mechanism and some Scheme code that glues things together gives the user
 the freedom to declare their own, very custom, home environments.
 
+@cindex container, for @command{guix home}
+Once the configuration looks good, you can first test it in a throw-away
+``container'':
+
+@example
+guix home container config.scm
+@end example
+
+The command above spawns a shell where your home environment is running.
+The shell runs in a container, meaning it's isolated from the rest of
+the system, so it's a good way to try out your configuration---you can
+see if configuration bits are missing or misbehaving, if daemons get
+started, and so on.  Once you exit that shell, you're back to the prompt
+of your original shell ``in the real world''.
+
 Once you have a configuration file that suits your needs, you can
 reconfigure your home by running:
 
@@ -37713,7 +38368,7 @@ The Bash package to use.
 
 @item @code{guix-defaults?} (default: @code{#t}) (type: boolean)
 Add sane defaults like reading @file{/etc/bashrc} and coloring the output of
-@command{ls} to the end of the @file{.bashrc} file.
+@command{ls} to the top of the @file{.bashrc} file.
 
 @item @code{environment-variables} (default: @code{()}) (type: alist)
 Association list of environment variables to set for the Bash session.  The
@@ -37728,13 +38383,13 @@ put in the @file{.bashrc} file.  The alias will automatically be quoted,
 so something line this:
 
 @lisp
-'((\"ls\" . \"ls -alF\"))
+'(("ls" . "ls -alF"))
 @end lisp
 
 turns into
 
 @example
-alias ls=\"ls -alF\"
+alias ls="ls -alF"
 @end example
 
 @item @code{bash-profile} (default: @code{()}) (type: text-config)
@@ -38063,6 +38718,49 @@ As for @command{guix search}, the result is written in
 @code{recutils} format, which makes it easy to filter the output
 (@pxref{Top, GNU recutils databases,, recutils, GNU recutils manual}).
 
+@cindex container, for @command{guix home}
+@item container
+Spawn a shell in an isolated environment---a
+@dfn{container}---containing your home as specified by @var{file}.
+
+For example, this is how you would start an interactive shell in a
+container with your home:
+
+@example
+guix home container config.scm
+@end example
+
+This is a throw-away container where you can lightheartedly fiddle with
+files; any changes made within the container, any process started---all
+this disappears as soon as you exit that shell.
+
+As with @command{guix shell}, several options control that container:
+
+@table @option
+@item --network
+@itemx -N
+Enable networking within the container (it is disabled by default).
+
+@item --expose=@var{source}[=@var{target}]
+@itemx --share=@var{source}[=@var{target}]
+As with @command{guix shell}, make directory @var{source} of the host
+system available as @var{target} inside the container---read-only if you
+pass @option{--expose}, and writable if you pass @option{--share}
+(@pxref{Invoking guix shell, @option{--expose} and @option{--share}}).
+@end table
+
+Additionally, you can run a command in that container, instead of
+spawning an interactive shell.  For instance, here is how you would
+check which Shepherd services are started in a throw-away home
+container:
+
+@example
+guix home container config.scm -- herd status
+@end example
+
+The command to run in the container must come after @code{--} (double
+hyphen).
+
 @item reconfigure
 Build the home environment described in @var{file}, and switch to it.
 Switching means that the activation script will be evaluated and (in
@@ -38212,7 +38910,38 @@ environment.  Note that not every home service that exists is supported
 $ guix home import ~/guix-config
 guix home: '/home/alice/guix-config' populated with all the Home configuration files
 @end example
+@end table
 
+And there's more!  @command{guix home} also provides the following
+sub-commands to visualize how the services of your home environment
+relate to one another:
+
+@table @code
+@cindex service extension graph, of a home environment
+@item extension-graph
+Emit to standard output the @dfn{service extension graph} of the home
+environment defined in @var{file} (@pxref{Service Composition}, for more
+information on service extensions).  By default the output is in
+Dot/Graphviz format, but you can choose a different format with
+@option{--graph-backend}, as with @command{guix graph} (@pxref{Invoking
+guix graph, @option{--backend}}):
+
+The command:
+
+@example
+guix home extension-graph @var{file} | xdot -
+@end example
+
+shows the extension relations among services.
+
+@cindex Shepherd dependency graph, for a home environment
+@item shepherd-graph
+Emit to standard output the @dfn{dependency graph} of shepherd services
+of the home environment defined in @var{file}.  @xref{Shepherd
+Services}, for more information and for an example graph.
+
+Again, the default output format is Dot/Graphviz, but you can pass
+@option{--graph-backend} to select a different one.
 @end table
 
 @var{options} can contain any of the common build options (@pxref{Common
@@ -38459,6 +39188,147 @@ Much better!
 Note that there can be packages for which @option{--with-debug-info}
 will not have the desired effect.  @xref{Package Transformation Options,
 @option{--with-debug-info}}, for more information.
+
+@node Using TeX and LaTeX
+@chapter Using @TeX{} and @LaTeX{}
+
+@cindex @TeX{} packages
+@cindex @LaTeX{} packages
+Guix provides packages for the @TeX{}, @LaTeX{}, ConTeXt, LuaTeX, and
+related typesetting systems, taken from the
+@uref{https://www.tug.org/texlive/, @TeX{} Live distribution}.  However,
+because @TeX{} Live is so huge and because finding your way in this maze
+is tricky, we thought that you, dear user, would welcome guidance on how
+to deploy the relevant packages so you can compile your @TeX{} and
+@LaTeX{} documents.
+
+@TeX{} Live currently comes in two flavors in Guix:
+
+@itemize
+@item
+The ``monolithic'' @code{texlive} package: it comes with @emph{every
+single @TeX{} Live package} (more than 7,000 of them), but it is huge
+(more than 4@tie{}GiB for a single package!).
+
+@item
+The ``modular'' @code{texlive-} packages: you install
+@code{texlive-base}, which provides core functionality and the main
+commands---@command{pdflatex}, @command{dvips}, @command{luatex},
+@command{mf}, etc.---together with individual packages that provide just
+the features you need---@code{texlive-listings} for the
+@code{listings} package, @code{texlive-hyperref} for @code{hyperref},
+@code{texlive-beamer} for Beamer, @code{texlive-pgf} for PGF/TikZ,
+and so on.
+@end itemize
+
+We recommend using the modular package set because it is much less
+resource-hungry.  To build your documents, you would use commands such
+as:
+
+@example
+guix shell texlive-base texlive-wrapfig \
+  texlive-hyperref texlive-cm-super -- pdflatex doc.tex
+@end example
+
+You can quickly end up with unreasonably long command lines though.  The
+solution is to instead write a manifest, for example like this one:
+
+@lisp
+(specifications->manifest
+ '("rubber"
+
+   "texlive-base"
+   "texlive-wrapfig"
+
+   "texlive-microtype"
+   "texlive-listings" "texlive-hyperref"
+
+   ;; PGF/TikZ
+   "texlive-pgf"
+
+   ;; Additional fonts.
+   "texlive-cm-super" "texlive-amsfonts"
+   "texlive-times" "texlive-helvetic" "texlive-courier"))
+@end lisp
+
+You can then pass it to any command with the @option{-m} option:
+
+@example
+guix shell -m manifest.scm -- pdflatex doc.tex
+@end example
+
+@xref{Invoking guix package, @option{--manifest}}, for more on
+manifests.  In the future, we plan to provide packages for @TeX{} Live
+@dfn{collections}---``meta-packages'' such as @code{fontsrecommended},
+@code{humanities}, or @code{langarabic} that provide the set of packages
+needed in this particular domain.  That will allow you to list fewer
+packages.
+
+The main difficulty here is that using the modular package set forces
+you to select precisely the packages that you need.  You can use
+@command{guix search}, but finding the right package can prove to be
+tedious.  When a package is missing, @command{pdflatex} and similar
+commands fail with an obscure message along the lines of:
+
+@example
+doc.tex: File `tikz.sty' not found.
+doc.tex:7: Emergency stop.
+@end example
+
+@noindent
+or, for a missing font:
+
+@example
+kpathsea: Running mktexmf phvr7t
+! I can't find file `phvr7t'.
+@end example
+
+How do you determine what the missing package is?  In the first case,
+you'll find the answer by running:
+
+@example
+$ guix search texlive tikz
+name: texlive-pgf
+version: 59745
+@dots{}
+@end example
+
+In the second case, @command{guix search} turns up nothing.  Instead,
+you can search the @TeX{} Live package database using the @command{tlmgr}
+command:
+
+@example
+$ guix shell texlive-base -- tlmgr info phvr7t
+tlmgr: cannot find package phvr7t, searching for other matches:
+
+Packages containing `phvr7t' in their title/description:
+
+Packages containing files matching `phvr7t':
+helvetic:
+        texmf-dist/fonts/tfm/adobe/helvetic/phvr7t.tfm
+        texmf-dist/fonts/tfm/adobe/helvetic/phvr7tn.tfm
+        texmf-dist/fonts/vf/adobe/helvetic/phvr7t.vf
+        texmf-dist/fonts/vf/adobe/helvetic/phvr7tn.vf
+tex4ht:
+        texmf-dist/tex4ht/ht-fonts/alias/adobe/helvetic/phvr7t.htf
+@end example
+
+The file is available in the @TeX{} Live @code{helvetic} package, which is
+known in Guix as @code{texlive-helvetic}.  Quite a ride, but we found
+it!
+
+There is one important limitation though: Guix currently provides a
+subset of the @TeX{} Live packages.  If you stumble upon a missing
+package, you can try and import it (@pxref{Invoking guix import}):
+
+@example
+guix import texlive @var{package}
+@end example
+
+@quotation Note
+@TeX{} Live packaging is still very much work in progress, but you can
+help!  @xref{Contributing}, for more information.
+@end quotation
 
 @node Security Updates
 @chapter Security Updates

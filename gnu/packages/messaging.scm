@@ -33,6 +33,7 @@
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -697,8 +698,15 @@ identi.ca and status.net).")
   (package/inherit bitlbee
     (name "bitlbee-purple")
     (synopsis "IRC to instant messaging gateway (using Pidgin's libpurple)")
-    (inputs `(("purple" ,pidgin)
-              ,@(package-inputs bitlbee)))
+    (inputs (modify-inputs (package-inputs bitlbee)
+              (prepend pidgin)))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "PURPLE_PLUGIN_PATH")
+            ;; XXX: Should be (version-major (package-version pidgin)) but
+            ;; can't due to circular references.
+            (files (list (string-append "lib/purple-2")
+                         "lib/pidgin")))))
     (arguments
      (substitute-keyword-arguments (package-arguments bitlbee)
        ((#:phases phases '%standard-phases)
@@ -814,14 +822,14 @@ used by Pidgin and Bitlbee, among others, to access
 (define-public hexchat
   (package
     (name "hexchat")
-    (version "2.16.0")
+    (version "2.16.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://dl.hexchat.net/hexchat/hexchat-"
                            version ".tar.xz"))
        (sha256
-        (base32 "0dnwhb2gi08i5v79vq0y2izs89wyk3by96jv99kgkidjic3k2bj1"))))
+        (base32 "1iy4ln6yfgy3xysrfpjxw8fn38i3qx8jsn2mk2prshfzf7d9gr57"))))
     (build-system meson-build-system)
     (native-inputs `(("gettext" ,gettext-minimal)
                      ("glib:bin" ,glib "bin")       ;need glib-genmarshal
@@ -2301,7 +2309,7 @@ QMatrixClient project.")
 (define-public mtxclient
   (package
     (name "mtxclient")
-    (version "0.6.1")
+    (version "0.7.0")
     (source
      (origin
        (method git-fetch)
@@ -2310,7 +2318,7 @@ QMatrixClient project.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1a3ki45rf1fm7y4b74li76aqd4qc4y5ga5r163s0cwcpj9mp8c45"))))
+        (base32 "0kgz9i3xgyk1a82sv48a1m8gdxg0cl5pgd5imgwy519vvjlkwv48"))))
     (arguments
      `(#:configure-flags
        (list
@@ -2346,7 +2354,7 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
 (define-public nheko
   (package
     (name "nheko")
-    (version "0.9.0")
+    (version "0.9.2")
     (source
      (origin
        (method git-fetch)
@@ -2355,7 +2363,7 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1akhnngxkxbjwjkg5ispl6j5s2ylbcj92r3zxqqry4gbfxbjpx8k"))
+        (base32 "0q9yzzl7mvlixm1c2f55lksxgh9q11zb8k80mkwnhmmli8wbb05f"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -2429,7 +2437,7 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
            xcb-util-wm
            zlib))
     (native-inputs
-     (list doxygen graphviz pkg-config qttools))
+     (list asciidoc doxygen graphviz pkg-config qttools))
     (home-page "https://github.com/Nheko-Reborn/nheko")
     (synopsis "Desktop client for Matrix using Qt and C++14")
     (description "@code{Nheko} want to provide a native desktop app for the
@@ -2624,8 +2632,7 @@ replacement.")
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #t
-       #:configure-flags
+     `(#:configure-flags
        (list "-DCMAKE_BUILD_TYPE=Release"
              "-DTD_ENABLE_LTO=OFF")     ; FIXME: Get LTO to work.
        #:phases
@@ -3108,29 +3115,93 @@ designed for experienced users.")
 (define-public matterbridge
   (package
     (name "matterbridge")
-    (version "1.22.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/42wim/matterbridge")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "07rgdc4v043fhzsalmlhickqizk6xjlpjkzn6l5v9ryp5gmv580z"))))
-    (build-system go-build-system)
+    (version "1.24.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/42wim/matterbridge")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0cd70x9685162c0imdici1ipl9lziq700wzyb5bsg610wfak3ms7"))))
+    ;; Using the go-build-system results in the same error message
+    ;; than in the bug 1551[1]. So we fix it by running go build
+    ;; manually in the git repository as-is as this is the solution
+    ;; given to that bug by the matterbridge developers.
+    ;; [1]https://github.com/42wim/matterbridge/issues/1551
+    (build-system gnu-build-system)
     (arguments
-     `(#:import-path "github.com/42wim/matterbridge"
-       #:unpack-path "github.com/42wim/matterbridge"))
+     `(#:phases (modify-phases %standard-phases
+                  (delete 'configure)
+                  (replace 'build
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (setenv "GOCACHE"
+                              (string-append (getcwd) "/go-build"))
+                      (setenv "GOBIN"
+                              (string-append (assoc-ref outputs "out") "/bin"))
+                      (invoke "go" "build" "-v" "-x")))
+                  (replace 'check
+                    (lambda* (#:key outputs tests? #:allow-other-keys)
+                      (when tests?
+                        (setenv "GOCACHE"
+                                (string-append (getcwd) "/go-build"))
+                        (setenv "GOBIN"
+                                (string-append (assoc-ref outputs "out")
+                                               "/bin"))
+                        (invoke "go" "test" "-v" "-x"))))
+                  (replace 'install
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (setenv "GOCACHE"
+                              (string-append (getcwd) "/go-build"))
+                      (setenv "GOBIN"
+                              (string-append (assoc-ref outputs "out") "/bin"))
+                      (invoke "go" "install" "-v" "-x"))))))
+    (native-inputs (list go))
     (synopsis "Bridge together various messaging networks and protocols")
-    (description "Relays messages between different channels from various
+    (description
+     "Relays messages between different channels from various
 messaging networks and protocols.  So far it supports mattermost, IRC, gitter,
 xmpp, slack, discord, telegram, rocketchat, twitch, ssh-chat, zulip, whatsapp,
 keybase, matrix, microsoft teams, nextcloud, mumble, vk and more with REST
 API.  Mattermost is not required.")
     (home-page "https://github.com/42wim/matterbridge")
     (license license:asl2.0)))
+
+(define-public jj
+  (package
+    (name "jj")
+    (version "2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://23.fi/jj/jj-" version ".tar.gz"))
+              (sha256
+               (base32
+                "02xz2ci93bccvil5iff804mh3zr5iqkf6zx5mxgraz17xg0azlgh"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f                            ;There are no tests.
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (replace 'install
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out"))
+                          (bin (string-append out "/bin")))
+                     (install-file "jj" bin)))))))
+    (native-inputs (list pkg-config))
+    (inputs (list glib loudmouth))
+    (home-page "https://23.fi/jj/")
+    (synopsis "FIFO based Jabber client")
+    (description
+     "jj is a simple file-system-based Jabber client, inspired by ii IRC
+client.  Interaction with jj is done by writing and reading files from the
+server directory which jj creates.  It is perfect for bots and
+notifications.")
+    (license license:expat)))
 
 (define-public pounce
   (package
@@ -3276,5 +3347,50 @@ clients such as synchronizing read markers, typing notification, threads (and
 more)!  It connects via the Slack API, and maintains a persistent websocket
 for notification of events.")
     (license license:expat)))
+
+(define-public python-librecaptcha
+  (package
+    (name "python-librecaptcha")
+    (version "0.7.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/taylordotfish/librecaptcha")
+                     (commit version)))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "0r35ws6vdf31j01kpacvpjplddm254r0cgy0npmhgnfxd5kpjf3s"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-pillow python-requests python-esprima python-pygobject gobject-introspection gtk+))
+    (synopsis "Show CAPTCHA without running proprietary code.")
+    (description "This package shows CAPTCHA without running proprietary code.")
+    (home-page "https://github.com/taylordotfish/librecaptcha")
+    (license license:gpl3+)))
+
+(define-public python-harmony
+  (package
+    (name "python-harmony")
+    (version "0.7.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/taylordotfish/harmony.git")
+                     (commit version)))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "1bm9xcnzpnpj6rlhbrnl2abwclzl7ivgh1vb5644y9mnhcs489js"))))
+    (build-system python-build-system)
+    (native-inputs
+     (list python-tox))
+    (inputs
+     (list python-librecaptcha python-keyring python-requests))
+    (synopsis "Discord account management")
+    (description "This package provides account management tools for
+Discord.")
+    (home-page "https://github.com/taylordotfish/harmony")
+    (license license:gpl3+)))
 
 ;;; messaging.scm ends here

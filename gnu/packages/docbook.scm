@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014, 2021-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -473,7 +473,11 @@ the in DocBook SGML DTDs.")
                                         texlive-latex-footmisc
                                         texlive-hyperref
                                         texlive-latex-jknapltx
+
+                                        ;; TODO: Use non-deprecated name on
+                                        ;; next rebuild cycle.
                                         texlive-latex-listings
+
                                         texlive-latex-multirow
                                         texlive-latex-overpic
                                         texlive-latex-pdfpages

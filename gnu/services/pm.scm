@@ -435,6 +435,8 @@ shutdown on system startup."))
 (define-record-type* <thermald-configuration>
   thermald-configuration make-thermald-configuration
   thermald-configuration?
+  (adaptive?           thermald-adaptive?              ;boolean
+                       (default #f))
   (ignore-cpuid-check? thermald-ignore-cpuid-check?    ;boolean
                        (default #f))
   (thermald            thermald-thermald               ;file-like
@@ -448,6 +450,9 @@ shutdown on system startup."))
     (start #~(make-forkexec-constructor
               '(#$(file-append (thermald-thermald config) "/sbin/thermald")
                 "--no-daemon"
+                #$@(if (thermald-adaptive? config)
+                       '("--adaptive")
+                       '())
                 #$@(if (thermald-ignore-cpuid-check? config)
                        '("--ignore-cpuid-check")
                        '()))))

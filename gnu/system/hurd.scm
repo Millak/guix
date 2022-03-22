@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2020-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -65,10 +65,13 @@
         gnumach)))
 
 (define %base-packages/hurd
-  (list hurd bash coreutils file findutils grep sed
+  ;; Note: the Shepherd comes before the Hurd, not just because its duty is to
+  ;; shepherd the herd, but also because we want its 'halt' and 'reboot'
+  ;; commands to take precedence.
+  (list shepherd hurd bash coreutils file findutils grep sed
         diffutils patch gawk tar gzip bzip2 xz lzip
         guile-3.0-latest guile-colorized guile-readline
-        net-base inetutils less shadow shepherd sudo which
+        net-base inetutils less shadow sudo which
         info-reader))
 
 (define %base-services/hurd

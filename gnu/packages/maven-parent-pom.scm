@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2020, 2021 Julien Lepiller <julien@lepiller.eu>
+;;; Copyright © 2020, 2021, 2022 Julien Lepiller <julien@lepiller.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -87,6 +87,10 @@
 (define-public apache-parent-pom-23
   (make-apache-parent-pom
     "23" "05c8i741f0m4311q264zvq0lc6srsyz2x95ga4d7qfd89swkzg9d"))
+
+(define-public apache-parent-pom-25
+  (make-apache-parent-pom
+    "25" "1vwx2fpgk7cn2pnlnx26df26vndiwwn5l7ngakj0vwal5pmp6115"))
 
 (define* (make-apache-commons-parent-pom version hash parent
                                          #:key (tag-prefix "commons-parent-"))
@@ -433,6 +437,16 @@ other projects as their parent pom.")
       (description "Apache Maven is a software project management and comprehension
 tool.  This package contains the Maven parent POM.")
       (license license:asl2.0))))
+
+(define-public maven-parent-pom-35
+  (make-maven-parent-pom
+    "35" "0pg9k7l5pcbghmc89i11g900pbzznvf5sfdfzlqfwpihqb2g8iab"
+    apache-parent-pom-25
+    #:replacements
+    (delay
+      `(("org.codehaus.plexus"
+         ("plexus-component-annotations" .
+          ,(package-version java-plexus-component-annotations)))))))
 
 (define-public maven-parent-pom-34
   (make-maven-parent-pom

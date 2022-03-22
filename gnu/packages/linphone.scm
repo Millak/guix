@@ -24,7 +24,6 @@
   #:use-module (gnu packages admin)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages avahi)
-  #:use-module (gnu packages base)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crypto)
@@ -260,8 +259,7 @@ IETF.")
     (build-system cmake-build-system)
     (outputs '("out" "debug" "tester"))
     (arguments
-     `(#:tests? #t
-       #:configure-flags '("-DENABLE_STATIC=OFF")
+     `(#:configure-flags '("-DENABLE_STATIC=OFF")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-vcard-grammar-location
@@ -764,31 +762,30 @@ device.")
                (rename-file (string-append out "/share/" tester-name)
                             (string-append tester "/share/" tester-name))))))))
     (native-inputs
-     `(("dot" ,graphviz)
-       ("doxygen" ,doxygen)
-       ("gettext" ,gettext-minimal)
-       ("perl" ,perl)
-       ("python" ,python-wrapper)
-       ("pystache" ,python-pystache)
-       ("six" ,python-six)
-       ("udev" ,eudev)))
+     (list graphviz
+           doxygen
+           gettext-minimal
+           perl
+           python-wrapper
+           python-pystache
+           python-six
+           eudev))
     (inputs
-     `(("bctoolbox" ,bctoolbox)
-       ("belcard" ,belcard)
-       ("bellesip" ,belle-sip)
-       ("belr" ,belr)
-       ("bzrtp" ,bzrtp)
-       ("iconv" ,libiconv)
-       ("ldap" ,openldap)
-       ("libxsd" ,xsd)
-       ("lime" ,lime)
-       ("mediastreamer2" ,mediastreamer2)
-       ("notify" ,libnotify)
-       ("ortp" ,ortp)
-       ("soci" ,soci)
-       ("sqlite" ,sqlite)
-       ("xml2" ,libxml2)
-       ("zlib" ,zlib)))
+     (list bctoolbox
+           belcard
+           belle-sip
+           belr
+           bzrtp
+           openldap
+           xsd
+           lime
+           mediastreamer2
+           libnotify
+           ortp
+           soci
+           sqlite
+           libxml2
+           zlib))
     (synopsis "Belledonne Communications Softphone Library")
     (description "Liblinphone is a high-level SIP library integrating
 all calling and instant messaging features into an unified

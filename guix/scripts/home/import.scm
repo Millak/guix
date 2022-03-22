@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
-;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2022 Arjan Adriaanse <arjan@adriaan.se>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -60,19 +60,24 @@ FILE-NAME with \"-\", and return the basename of it."
   (define (destination-append path)
     (string-append destination-directory "/" path))
 
+  (define alias-rx
+    (make-regexp "^alias ([^=]+)=[\"'](.+)[\"']$"))
+
   (define (bash-alias->pair line)
-    (if (string-prefix? "alias" line)
-        (let ((matched (string-match "alias (.+)=\"?'?([^\"']+)\"?'?" line)))
-          `(,(match:substring matched 1) . ,(match:substring matched 2)))
-        '()))
-  
+    (match (regexp-exec alias-rx line)
+      (#f #f)
+      (matched
+       `(,(match:substring matched 1) . ,(match:substring matched 2)))))
+
   (define (parse-aliases input)
-    (let loop ((line (read-line input))
-               (result '()))
-      (if (eof-object? line)
-          (reverse result)
-          (loop (read-line input)
-                (cons (bash-alias->pair line) result)))))
+    (let loop ((result '()))
+      (match (read-line input)
+        ((? eof-object?)
+         (reverse result))
+        (line
+         (match (bash-alias->pair line)
+           (#f    (loop result))
+           (alias (loop (cons alias result))))))))
 
   (let ((rc (destination-append ".bashrc"))
         (profile (destination-append ".bash_profile"))
@@ -82,9 +87,9 @@ FILE-NAME with \"-\", and return the basename of it."
                 ,@(if (file-exists? rc)
                       `((aliases
                          ',(let* ((port (open-pipe* OPEN_READ "bash" "-i" "-c" "alias"))
-                               (alist (parse-aliases port)))
+                                  (alist (parse-aliases port)))
                            (close-port port)
-                           (filter (negate null?) alist))))
+                           alist)))
                       '())
                 ,@(if (file-exists? rc)
                       `((bashrc

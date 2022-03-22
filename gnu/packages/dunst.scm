@@ -5,6 +5,7 @@
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Alexandru-Sergiu Marton <brown121407@posteo.ro>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -40,7 +41,7 @@
 (define-public dunst
   (package
     (name "dunst")
-    (version "1.7.3")
+    (version "1.8.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -49,8 +50,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ra0ii805w3rrs0qqbjxzl6i79ksz42lnvbglw18h4igkza21kzj"))
-              (patches (search-patches "dunst-1.7.3-fix-crash.patch"))))
+                "19bh5789whlc0n5wbyx3yx8px93hccn42f1p6i1dz96hdkk5mjb8"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no check target

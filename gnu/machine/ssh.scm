@@ -422,7 +422,8 @@ of MACHINE's system profile, ordered from most recent to oldest."
                (let* ((params (call-with-input-string serialized-params
                                 read-boot-parameters))
                       (root (boot-parameters-root-device params))
-                      (label (boot-parameters-label params)))
+                      (label (boot-parameters-label params))
+                      (version (boot-parameters-version params)))
                  (boot-parameters
                   (inherit params)
                   (label
@@ -433,7 +434,7 @@ of MACHINE's system profile, ordered from most recent to oldest."
                                                   "~Y-~m-~d ~H:~M"))
                                   ")"))
                   (kernel-arguments
-                   (append (bootable-kernel-arguments system-path root)
+                   (append (bootable-kernel-arguments system-path root version)
                            (boot-parameters-kernel-arguments params))))))))
           generations))))
 

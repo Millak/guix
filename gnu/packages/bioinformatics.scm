@@ -4,8 +4,8 @@
 ;;; Copyright © 2015, 2016, 2018, 2019, 2020 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016, 2020, 2021 Roel Janssen <roel@gnu.org>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2016, 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2016, 2018 Raoul Bonnal <ilpuccio.febo@gmail.com>
 ;;; Copyright © 2017, 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017, 2021 Arun Isaac <arunisaac@systemreboot.net>
@@ -3340,7 +3340,7 @@ data and settings.")
                                              texlive-latex-ms
                                              texlive-latex-natbib
                                              texlive-bibtex ; style files used by natbib
-                                             texlive-latex-pgf ; tikz
+                                             texlive-pgf    ; tikz
                                              texlive-latex-verbatimbox)))
        ("imagemagick" ,imagemagick)))
     (home-page "https://dorina.mdc-berlin.de/public/rajewsky/discrover/")
@@ -11409,7 +11409,7 @@ version does count multisplits.")
 (define-public minimap2
   (package
     (name "minimap2")
-    (version "2.23")
+    (version "2.24")
     (source
      (origin
        (method url-fetch)
@@ -11418,7 +11418,7 @@ version does count multisplits.")
                            "minimap2-" version ".tar.bz2"))
        (sha256
         (base32
-         "00ngbz1swcgxk5apx9dz5xkh1z8abdpysx5lc7w8fbrfxp41w0j0"))))
+         "05d6h2c1h95s5vblf1fijn9g0r4g69nsvkabji42j642y0gw7m4x"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; there are none
@@ -11694,6 +11694,49 @@ including:
     ;; The COPYING file states that the code is distributed under version 3 of
     ;; the GPL, but the license headers include the "or later" clause.
     (license license:gpl3+)))
+
+(define-public r-dyngen
+  (let ((commit "37fd1798fcbd41093fb3d7775bb2d268e2fc82b6")
+        (revision "1"))
+    (package
+      (name "r-dyngen")
+      (version (git-version "1.0.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/dynverse/dyngen")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "05pr6v1b8yji1jnj3fwx0crmg8ay6yy6lp9qjmcyvhkwbmf3kvc7"))))
+      (properties `((upstream-name . "dyngen")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-assertthat
+             r-dplyr
+             r-dynutils
+             r-ggplot2
+             r-ggraph
+             r-ggrepel
+             r-gillespiessa2
+             r-igraph
+             r-lmds
+             r-matrix
+             r-patchwork
+             r-pbapply
+             r-purrr
+             r-rlang
+             r-tibble
+             r-tidygraph
+             r-tidyr
+             r-viridis))
+      (home-page "https://github.com/dynverse/dyngen")
+      (synopsis "Multi-Modal simulator for single-cell omics analyses")
+      (description
+       "This package provides a multi-modal simulation engine for studying
+dynamic cellular processes at single-cell resolution.")
+      (license license:expat))))
 
 (define-public r-circus
   (package
@@ -13840,6 +13883,35 @@ vast-tools, an RNA-Seq pipeline for alternative splicing analysis.  The plots
 are generated using @code{ggplot2}.")
     (license license:expat)))
 
+(define-public r-scopeloomr
+  (let ((commit "99726f5f7da794042036b73924b6a10d6e7b4d5d")
+        (revision "1"))
+    (package
+      (name "r-scopeloomr")
+      (version (git-version "0.13.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/aertslab/SCopeLoomR")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1ci17ms0c0hf7yfp9ckcg7a2y1s0nm19jj3cifsd55hwc0gdglmz"))))
+      (properties `((upstream-name . "SCopeLoomR")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-base64enc r-hdf5r r-igraph r-matrix r-plyr r-rjson r-rlist))
+      (home-page "https://github.com/aertslab/SCopeLoomR")
+      (synopsis "Build .loom files and extract data from them")
+      (description
+       "This is an R package to build generic @code{.loom} files aligning with
+the default naming convention of the @code{.loom} format and to integrate
+other data types e.g.: regulons (SCENIC), clusters from Seurat, trajectory
+information...  The package can also be used to extract data from @code{.loom}
+files.")
+      (license license:expat))))
+
 (define-public vbz-compression
   (package
     (name "vbz-compression")
@@ -14620,55 +14692,48 @@ alignments, trees and genomic annotations.")
     (license license:bsd-3)))
 
 (define-public python-gffutils
-  ;; The latest release is older more than a year than the latest commit
-  (let ((commit "4034c54600813b1402945e12faa91b3a53162cf1")
-        (revision "1"))
-    (package
-      (name "python-gffutils")
-      (version (git-version "0.9" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/daler/gffutils")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "1rwafjdnbir5wnk0ap06ww4lra3p5frhy7mfs03rlldgfnwxymsn"))))
-      (build-system python-build-system)
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (replace 'check
-             (lambda _
+  (package
+    (name "python-gffutils")
+    (version "0.10.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/daler/gffutils")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1gkzk7ps6w3ai2r81js9s9bzpba0jmxychnd2da6n9ggdnf2xzqz"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
                ;; Tests need to access the HOME directory
                (setenv "HOME" "/tmp")
-               (invoke "nosetests" "-a" "!slow")))
-           (add-after 'unpack 'make-gz-files-writable
-             (lambda _
-               (for-each make-file-writable
-                         (find-files "." "\\.gz"))
-               #t)))))
-      (propagated-inputs
-       (list python-argcomplete
-             python-argh
-             python-biopython
-             python-pybedtools
-             python-pyfaidx
-             python-simplejson
-             python-six))
-      (native-inputs
-       (list python-nose))
-      (home-page "https://github.com/daler/gffutils")
-      (synopsis "Tool for manipulation of GFF and GTF files")
-      (description
-       "python-gffutils is a Python package for working with and manipulating
+               (invoke "nosetests" "-a" "!slow")))))))
+    (propagated-inputs
+     (list python-argcomplete
+           python-argh
+           python-biopython
+           python-pybedtools
+           python-pyfaidx
+           python-simplejson
+           python-six))
+    (native-inputs
+     (list python-nose))
+    (home-page "https://github.com/daler/gffutils")
+    (synopsis "Tool for manipulation of GFF and GTF files")
+    (description
+     "python-gffutils is a Python package for working with and manipulating
 the GFF and GTF format files typically used for genomic annotations.  The
 files are loaded into a SQLite database, allowing much more complex
 manipulation of hierarchical features (e.g., genes, transcripts, and exons)
 than is possible with plain-text methods alone.")
-      (license license:expat))))
+    (license license:expat)))
 
 (define-public indelfixer
   (package

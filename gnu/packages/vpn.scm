@@ -19,6 +19,7 @@
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2022 Josselin Poiret <josselin.poiret@protonmail.ch>
+;;; Copyright © 2022 Lu hui <luhux76@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -39,6 +40,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
@@ -292,6 +294,47 @@ Networks and The Calyx Institute, where the former is default.")
 with multiple nodes using a variety of transport protocols.  It works
 by creating encrypted host-to-host tunnels between multiple
 endpoints.")
+    (license license:gpl3+)))
+
+(define-public n2n
+  (package
+    (name "n2n")
+    (version "2.8")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ntop/n2n")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1ph2npvnqh1xnmkp96pdzpxm033jkb8zznd3nc59l9arhn0pq4nv"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output)
+              (string-append "CC=" #$(cc-for-target)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'bootstrap 'move-configure
+            ;; Don't execute configure script in bootstrap.
+            (lambda _
+              (substitute* "autogen.sh"
+                (("./configure") ""))))
+          (add-before 'configure 'fix-configure
+            (lambda* (#:key inputs native-inputs #:allow-other-keys)
+              (substitute* "configure"
+                (("/bin/sh")
+                 (search-input-file (or native-inputs inputs) "/bin/sh"))))))
+      #:tests? #f))                     ;there is no check target
+    (native-inputs
+     (list autoconf automake bash-minimal pkg-config))
+    (home-page "https://github.com/ntop/n2n")
+    (synopsis "Peer-to-peer VPN client and server")
+    (description
+     "n2n is a light VPN software which makes it easy to create virtual
+networks bypassing intermediate firewalls.")
     (license license:gpl3+)))
 
 (define-public strongswan

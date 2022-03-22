@@ -5,7 +5,7 @@
 ;;; Copyright © 2015-2017, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2017, 2018, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 David Hashe <david.hashe@dhashe.com>
-;;; Copyright © 2016, 2017, 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017, 2018 Mark H Weaver <mhw@netris.org>
@@ -585,11 +585,15 @@ the freedesktop.org XDG Base Directory specification.")
                  (sysconf (string-append out "/etc"))
                  (libexec (string-append out "/libexec/elogind"))
                  (dbuspolicy (string-append out "/etc/dbus-1/system.d"))
-                 (kexec-tools #$(this-package-input "kexec-tools"))
+                 #$@(if (not (target-riscv64?))
+                      #~((kexec-tools #$(this-package-input "kexec-tools")))
+                      #~())
                  (shadow #$(this-package-input "shadow"))
                  (shepherd #$(this-package-input "shepherd"))
                  (halt-path (string-append shepherd "/sbin/halt"))
-                 (kexec-path (string-append kexec-tools "/sbin/kexec"))
+                 #$@(if (not (target-riscv64?))
+                      #~((kexec-path (string-append kexec-tools "/sbin/kexec")))
+                      #~())
                  (nologin-path (string-append shadow "/sbin/nologin"))
                  (poweroff-path (string-append shepherd "/sbin/shutdown"))
                  (reboot-path (string-append shepherd "/sbin/reboot")))
@@ -601,7 +605,9 @@ the freedesktop.org XDG Base Directory specification.")
              (string-append "-Dc_link_args=-Wl,-rpath=" libexec)
              (string-append "-Dcpp_link_args=-Wl,-rpath=" libexec)
              (string-append "-Dhalt-path=" halt-path)
-             (string-append "-Dkexec-path=" kexec-path)
+             #$@(if (not (target-riscv64?))
+                  #~((string-append "-Dkexec-path=" kexec-path))
+                  #~())
              (string-append "-Dpoweroff-path=" poweroff-path)
              (string-append "-Dreboot-path=" reboot-path)
              (string-append "-Dnologin-path=" nologin-path)
@@ -675,15 +681,18 @@ the freedesktop.org XDG Base Directory specification.")
        ("python" ,python)
        ("xsltproc" ,libxslt)))
     (inputs
-     (list kexec-tools
-           linux-pam
-           libcap
-           shadow ;for 'nologin'
-           shepherd ;for 'halt' and 'reboot', invoked
-           ;when pressing the power button
-           dbus
-           eudev
-           acl))           ;to add individual users to ACLs on /dev nodes
+     (append
+       (if (not (target-riscv64?))
+         (list kexec-tools)
+         '())
+       (list linux-pam
+             libcap
+             shadow         ; for 'nologin'
+             shepherd       ; for 'halt' and 'reboot', invoked
+                            ; when pressing the power button
+             dbus
+             eudev
+             acl)))         ; to add individual users to ACLs on /dev nodes
     (home-page "https://github.com/elogind/elogind")
     (synopsis "User, seat, and session management service")
     (description "Elogind is the systemd project's \"logind\" service,
@@ -1199,6 +1208,29 @@ multiplexer to the KMS/DRM Linux kernel devices.")
     (description "Wev is a tool that opens a window, printing all events
 sent to a Wayland window, such as key presses.  It is analogous to the X11 tool
 XEv.")
+    (license license:expat)))
+
+(define-public wtype
+  (package
+    (name "wtype")
+    (version "0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/atx/wtype.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bpix92vzip9vlhzihj3k8h9flrlna231x3y8ah7p4965l177yjd"))))
+    (build-system meson-build-system)
+    (native-inputs
+     (list pkg-config wayland libxkbcommon))
+    (synopsis "Xdotool type for Wayland")
+    (description "Wtype lets you simulate keyboard input and mouse activity,
+move and resize windows, etc.")
+    (home-page "https://github.com/atx/wtype")
+    ;; MIT License
     (license license:expat)))
 
 (define-public exempi

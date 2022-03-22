@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -436,12 +436,48 @@
                                                 (derivation-input fixed2)))))
     (and (derivation? final)
          (match (derivation-inputs final)
-           (((= derivation-input-derivation one)
-             (= derivation-input-derivation two))
-            (and (not (string=? (derivation-file-name one)
-                                (derivation-file-name two)))
-                 (string=? (derivation->output-path one)
-                           (derivation->output-path two))))))))
+           (((= derivation-input-derivation drv))
+            (memq drv (list fixed1 fixed2)))))))
+
+(test-assert "derivation with equivalent fixed-output inputs"
+  ;; Similar as the test above, but indirectly: DRV3A and DRV3B below are
+  ;; equivalent derivations (same output paths) but they depend on
+  ;; different-but-equivalent fixed-output derivations.  Thus, DRV3A and DRV3B
+  ;; must be coalesced as inputs of DRV4.  See <https://bugs.gnu.org/54209>.
+  (let* ((builder1 (add-text-to-store %store "fixed-builder1.sh"
+                                      "echo -n hello > $out"
+                                      '()))
+         (builder2 (add-text-to-store %store "fixed-builder2.sh"
+                                      "echo -n hello    > $out"
+                                      '()))
+         (builder3 (add-text-to-store %store "user-builder.sh"
+                                      "echo 1 > $one; echo 2 > $two"
+                                      '()))
+         (hash     (gcrypt:sha256 (string->utf8 "hello")))
+         (drv1     (derivation %store "fixed" %bash (list builder1)
+                               #:sources (list builder1)
+                               #:hash hash #:hash-algo 'sha256))
+         (drv2     (derivation %store "fixed" %bash (list builder2)
+                               #:sources (list builder2)
+                               #:hash hash #:hash-algo 'sha256))
+         (drv3a    (derivation %store "fixed-user" %bash (list builder3)
+                               #:outputs '("one" "two")
+                               #:sources (list builder3)
+                               #:inputs (list (derivation-input drv1))))
+         (drv3b    (derivation %store "fixed-user" %bash (list builder3)
+                               #:outputs '("one" "two")
+                               #:sources (list builder3)
+                               #:inputs (list (derivation-input drv2))))
+         (drv4     (derivation %store "fixed-user-user" %bash (list builder1)
+                               #:sources (list builder1)
+                               #:inputs (list (derivation-input drv3a '("one"))
+                                              (derivation-input drv3b '("two"))))))
+    (match (derivation-inputs drv4)
+      ((input)
+       (and (memq (derivation-input-derivation input)
+                  (list drv3a drv3b))
+            (lset= string=? (derivation-input-sub-derivations input)
+                   '("one" "two")))))))
 
 (test-assert "multiple-output derivation"
   (let* ((builder    (add-text-to-store %store "my-fixed-builder.sh"

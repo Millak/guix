@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 Nikita Karetnikov <nikita@karetnikov.org>
-;;; Copyright © 2014, 2015, 2017, 2018, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2015, 2017-2019, 2021-2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -260,6 +260,29 @@ NarSize: 42
 References: bar baz
 Deriver: " (%store-prefix) "/foo.drv
 System: mips64el-linux\n")
+      (string-trim-both
+       (with-output-to-string
+         (lambda ()
+           (with-input-from-string (string-append "have " (%store-prefix)
+                                                  "/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-foo")
+             (lambda ()
+               (guix-substitute "--query")))))))))
+
+(test-equal "query narinfo with signature over relevant subset"
+  ;; The signature covers the StorePath/NarHash/References tuple, so it is
+  ;; valid; it does not cover non-normative fields, which is fine.
+  (string-append (%store-prefix) "/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-foo")
+
+  (let ((prefix (string-append "StorePath: " (%store-prefix)
+                               "/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-foo
+NarHash: sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+References: bar baz\n")))
+    (with-narinfo (string-append prefix
+                                 "Signature: " (signature-field prefix) "
+URL: example.nar
+Compression: none
+NarSize: 42
+Deriver: " (%store-prefix) "/foo.drv")
       (string-trim-both
        (with-output-to-string
          (lambda ()

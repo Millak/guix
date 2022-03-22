@@ -346,7 +346,8 @@ info --version")
               ;; It can take a while before the shell commands are executed.
               (marionette-eval '(use-modules (rnrs io ports)) marionette)
               (wait-for-file "/root/logged-in" marionette
-                             #:read 'get-string-all)))
+                             #:read 'get-string-all
+                             #:timeout 30)))
 
           (test-equal "getlogin on tty1"
             "\"root\""
@@ -360,7 +361,8 @@ info --version")
               ;; It can take a while before the shell commands are executed.
               (marionette-eval '(use-modules (rnrs io ports)) marionette)
               (wait-for-file "/root/login-id" marionette
-                             #:read 'get-string-all)))
+                             #:read 'get-string-all
+                             #:timeout 30)))
 
           ;; There should be one utmpx entry for the user logged in on tty1.
           (test-equal "utmpx entry"

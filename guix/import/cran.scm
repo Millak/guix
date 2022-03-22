@@ -4,6 +4,7 @@
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
+;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -606,9 +607,7 @@ s-expression corresponding to that package, or #f on failure."
               ;; Retry import from CRAN
               (cran->guix-package package-name #:repo 'cran))
              (else
-              (raise (condition
-                      (&message
-                       (message "couldn't find meta-data for R package")))))))))))
+              (values #f '()))))))))
 
 (define* (cran-recursive-import package-name #:key (repo 'cran) version)
   (recursive-import package-name

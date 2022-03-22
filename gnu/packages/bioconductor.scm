@@ -737,6 +737,44 @@ as provided by UCSC (hg38, Dec. 2013) and stored in Biostrings objects.")
      "This package exposes an annotation database generated from Ensembl.")
     (license license:artistic2.0)))
 
+(define-public r-ensdb-hsapiens-v86
+  (package
+    (name "r-ensdb-hsapiens-v86")
+    (version "2.99.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "EnsDb.Hsapiens.v86" version 'annotation))
+       (sha256
+        (base32 "1gp7xrzddpvmh2vrcp571wyy00skxgxfl39ksj4h0hm1qay0fb2m"))))
+    (properties `((upstream-name . "EnsDb.Hsapiens.v86")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ensembldb))
+    (home-page "https://bioconductor.org/packages/EnsDb.Hsapiens.v86")
+    (synopsis "Ensembl based annotation package")
+    (description "This package exposes an annotation database generated from
+Ensembl.")
+    (license license:artistic2.0)))
+
+(define-public r-ensdb-mmusculus-v79
+  (package
+    (name "r-ensdb-mmusculus-v79")
+    (version "2.99.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "EnsDb.Mmusculus.v79" version 'annotation))
+       (sha256
+        (base32 "1zpmq7v55if6q9r0h883q9k8l70ym20b01m9hxf121wb256rl9f7"))))
+    (properties `((upstream-name . "EnsDb.Mmusculus.v79")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ensembldb))
+    (home-page "https://bioconductor.org/packages/EnsDb.Mmusculus.v79")
+    (synopsis "Ensembl based annotation package")
+    (description "This package exposes an annotation database generated from
+Ensembl.")
+    (license license:artistic2.0)))
+
 (define-public r-txdb-dmelanogaster-ucsc-dm6-ensgene
   (package
     (name "r-txdb-dmelanogaster-ucsc-dm6-ensgene")
@@ -2966,6 +3004,44 @@ testing.  The package also provides functions for the visualization and
 exploration of the results.")
     (license license:gpl3+)))
 
+(define-public r-diffcyt
+  (package
+    (name "r-diffcyt")
+    (version "1.14.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "diffcyt" version))
+       (sha256
+        (base32 "1yc9mlc0ifb7h6rzskq97bsdq1kwdp5qq9l9mciwyxf6yjkmv5ni"))))
+    (properties `((upstream-name . "diffcyt")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-circlize
+           r-complexheatmap
+           r-dplyr
+           r-edger
+           r-flowcore
+           r-flowsom
+           r-limma
+           r-lme4
+           r-magrittr
+           r-multcomp
+           r-reshape2
+           r-s4vectors
+           r-summarizedexperiment
+           r-tidyr))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/lmweber/diffcyt")
+    (synopsis "Differential discovery in high-dimensional cytometry")
+    (description
+     "This package provides statistical methods for differential discovery
+analyses in high-dimensional cytometry data (including flow cytometry, mass
+cytometry or CyTOF, and oligonucleotide-tagged cytometry), based on a
+combination of high-resolution clustering and empirical Bayes moderated tests
+adapted from transcriptomics.")
+    (license license:expat)))
+
 (define-public r-dirichletmultinomial
   (package
     (name "r-dirichletmultinomial")
@@ -4348,6 +4424,43 @@ as well as query and modify the browser state, such as the current viewport.")
 differential expression analysis, RNAseq data and related problems.")
     ;; Any version of the LGPL
     (license license:lgpl3+)))
+
+(define-public r-scannotatr
+  (package
+    (name "r-scannotatr")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "scAnnotatR" version))
+       (sha256
+        (base32 "08jq04ckjw8a5y753almc5bl8vnn4j6qp2zb7bb9w3ql3ddy7b21"))))
+    (properties `((upstream-name . "scAnnotatR")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-annotationhub
+           r-ape
+           r-caret
+           r-data-tree
+           r-dplyr
+           r-e1071
+           r-ggplot2
+           r-kernlab
+           r-proc
+           r-rocr
+           r-seurat
+           r-singlecellexperiment
+           r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/grisslab/scAnnotatR")
+    (synopsis "Pretrained models for prediction on single cell RNA-sequencing data")
+    (description
+     "This package comprises a set of pretrained machine learning models to
+predict basic immune cell types.  This enables to quickly get a first
+annotation of the cell types present in the dataset without requiring prior
+knowledge.  The package also lets you train using own models to predict new
+cell types based on specific research needs.")
+    (license license:expat)))
 
 (define-public r-scdblfinder
   (package

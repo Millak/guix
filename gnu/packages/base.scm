@@ -85,14 +85,14 @@
 (define-public hello
   (package
     (name "hello")
-    (version "2.11")
+    (version "2.12")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/hello/hello-" version
                                   ".tar.gz"))
               (sha256
                (base32
-                "1g84a3hqs4pgx3yzs99cysv3iq440ncdw77bf03fsi1w5mby174c"))))
+                "1ayhp9v4m4rdhjmnl2bq3cibrbqqkgjbl3s7yk2nhlh8vj3ay16g"))))
     (build-system gnu-build-system)
     (synopsis "Hello, GNU world: An example GNU package")
     (description
@@ -1015,105 +1015,6 @@ with the Linux kernel.")
                                        "glibc-reinstate-prlimit64-fallback.patch"
                                        "glibc-2.29-supported-locales.patch"))))))
 
-
-(define-public glibc-2.2.5
-  (package
-    (inherit glibc)
-    (version "2.2.5")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnu/glibc/glibc-" version ".tar.gz"))
-              (patches (search-patches "glibc-boot-2.2.5.patch"
-                                       "glibc-bootstrap-system-2.2.5.patch"))
-              (sha256
-               (base32
-                "1vl48i16gx6h68whjyhgnn1s57vqq32f9ygfa2fls7pdkbsqvp2q"))))
-    (arguments
-     (list #:system "i686-linux"
-           #:implicit-inputs? #f
-           #:tests? #f
-           #:strip-binaries? #f
-           #:validate-runpath? #f
-           #:parallel-build? #f ; gcc-2.95.3 ICEs on massively parallel builds
-           #:make-flags
-           #~(list (string-append
-                    "SHELL=" #$(this-package-native-input "bash") "/bin/sh"))
-           #:configure-flags
-           #~(list "--enable-shared"
-                   "--enable-static"
-                   "--disable-sanity-checks"
-                   "--build=i686-unknown-linux-gnu"
-                   "--host=i686-unknown-linux-gnu"
-                   (string-append "--with-headers="
-                                  #$(this-package-native-input "kernel-headers")
-                                  "/include")
-                   "--enable-static-nss"
-                   "--without-__thread"
-                   "--without-cvs"
-                   "--without-gd"
-                   "--without-tls"
-                   (string-append "--prefix=" #$output))
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-before 'configure 'setenv
-                 (lambda* (#:key inputs outputs #:allow-other-keys)
-                   (let* ((out (assoc-ref outputs "out"))
-                          (bash (assoc-ref inputs "bash"))
-                          (shell (string-append bash "/bin/bash"))
-                          (gcc (assoc-ref inputs "gcc"))
-                          (cppflags (string-append
-                                     " -D MES_BOOTSTRAP=1"
-                                     " -D BOOTSTRAP_GLIBC=1"))
-                          (cflags (string-append " -L " (getcwd))))
-                     (setenv "CONFIG_SHELL" shell)
-                     (setenv "SHELL" shell)
-                     (setenv "CPP" (string-append gcc "/bin/gcc -E " cppflags))
-                     (setenv "CC" (string-append gcc "/bin/gcc " cppflags cflags)))))
-               (replace 'configure   ; needs classic invocation of configure
-                 (lambda* (#:key configure-flags #:allow-other-keys)
-                   (format (current-error-port)
-                           "running ./configure ~a\n" (string-join configure-flags))
-                   (apply invoke "./configure" configure-flags)))
-               (add-after 'configure 'fixup-configure
-                 (lambda* (#:key inputs outputs #:allow-other-keys)
-                   (let* ((out (assoc-ref outputs "out"))
-                          (bash (assoc-ref inputs "bash"))
-                          (shell (string-append bash "/bin/bash")))
-                     (substitute* "config.make"
-                       (("INSTALL = scripts/") "INSTALL = $(..)./scripts/"))
-                     (substitute* "config.make"
-                       (("INSTALL = scripts/") "INSTALL = $(..)./scripts/")
-                       (("BASH = ") (string-append
-                                     "SHELL = " shell "
-         BASH = ")))))))))
-    (supported-systems '("i686-linux" "x86_64-linux"))
-    (outputs '("out"))
-    (inputs '())
-    (propagated-inputs '())
-    (native-inputs
-     ;; Lazily resolve NAME in (gnu packages commencement) to avoid a cycle.
-     (let ((c (lambda (name)
-                (module-ref (resolve-interface
-                             '(gnu packages commencement))
-                            name))))
-       `(("bash" ,bash-minimal)
-         ("coreutils" ,coreutils)
-         ("gawk" ,gawk)
-         ("grep" ,grep)
-         ("make" ,gnu-make)
-         ("sed" ,sed)
-         ("tar" ,tar)
-         ("bzip2" ,bzip2)
-         ("gzip" ,gzip)
-         ("patch" ,patch)
-         ("xz" ,xz)
-         ("kernel-headers" ,linux-libre-headers)
-
-         ;; Old toolchain
-         ("gcc" ,(c 'gcc-mesboot0))
-         ("binutils" ,(c 'binutils-mesboot))
-         ("libc" ,(c 'glibc-mesboot0)))))))
-
 (define-public (make-gcc-libc base-gcc libc)
   "Return a GCC that targets LIBC."
   (package (inherit base-gcc)
@@ -1270,7 +1171,8 @@ test environments.")
 (define-public glibc-locales
   (make-glibc-locales glibc))
 (define-public glibc-utf8-locales
-  (make-glibc-utf8-locales glibc))
+  (hidden-package
+   (make-glibc-utf8-locales glibc)))
 
 ;; Packages provided to ease use of binaries linked against the previous libc.
 (define-public glibc-locales-2.29

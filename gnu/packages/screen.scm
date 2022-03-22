@@ -2,7 +2,7 @@
 ;;; Copyright © 2013 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2017 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2016, 2017, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -29,6 +29,7 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages hurd)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
@@ -39,18 +40,17 @@
 (define-public screen
   (package
     (name "screen")
-    (version "4.8.0")
+    (version "4.9.0")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnu/screen/screen-"
                                  version ".tar.gz"))
-             (patches (search-patches "screen-hurd-path-max.patch"
-                                      "screen-CVE-2021-26937.patch"))
+             (patches (search-patches "screen-hurd-path-max.patch"))
              (sha256
-              (base32 "18ascpjzsy70h6hk7wpg8zmzjwgdyrdr7c6z4pg5z4l9hhyv24bf"))))
+              (base32 "1x1hqy4h47i7hk85f779lkwkm7gkq8h8mxwd0znkh5adpf0m4czr"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("makeinfo" ,texinfo)))
+     (list autoconf automake texinfo))
     (inputs
      (list ncurses perl))
     (arguments

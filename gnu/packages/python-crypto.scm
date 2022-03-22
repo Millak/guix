@@ -1710,12 +1710,10 @@ signatures.")
              (when tests?
                (invoke "pytest")))))))
     (native-inputs
-     (list python-cryptography
-           python-pyasn1
-           python-pytest
-           python-singledispatch
-           python-six
+     (list python-pytest
            python-wheel))
+    (propagated-inputs (list python-cryptography python-pyasn1
+                             python-singledispatch python-six))
     (home-page "https://github.com/SecurityInnovation/PGPy")
     (synopsis "Python implementation of OpenPGP")
     (description

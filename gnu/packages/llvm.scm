@@ -188,7 +188,6 @@ given PATCHES.  When TOOLS-EXTRA is given, it must point to the
     ;; doesn't seem to be any way to do this with clang's autotools-based
     ;; build system.
     (build-system cmake-build-system)
-    (outputs (if tools-extra '("out" "extra") '("out")))
     (native-inputs (package-native-inputs llvm))
     (inputs
      `(("libxml2" ,libxml2)
@@ -229,56 +228,9 @@ given PATCHES.  When TOOLS-EXTRA is given, it must point to the
                                                (string-delete #\- (package-version llvm))
                                                ".src")
                                              "tools/extra")
-                                #t)))
-                          (add-after 'install 'move-extra-tools
-                            (lambda* (#:key outputs #:allow-other-keys)
-                              ;; Move the extra tools to the "extra" output.
-                              ;; These programs alone weigh in at 296 MiB,
-                              ;; because they statically-link a whole bunch of
-                              ;; Clang libraries.
-                              (let* ((out   (assoc-ref outputs "out"))
-                                     (extra (assoc-ref outputs "extra"))
-                                     (bin   (string-append out "/bin"))
-                                     (bin*  (string-append extra "/bin"))
-                                     (lib   (string-append out "/lib")))
-                                (define (move program)
-                                  (rename-file (string-append bin "/" program)
-                                               (string-append bin* "/"
-                                                              program)))
-
-                                (mkdir-p bin*)
-                                (for-each move
-                                          '("clang-apply-replacements"
-                                            "clang-change-namespace"
-                                            "clangd"
-                                            "clang-doc"
-                                            "clang-include-fixer"
-                                            "clang-move"
-                                            "clang-query"
-                                            "clang-reorder-fields"
-                                            "clang-tidy"
-                                            "find-all-symbols"
-                                            "modularize"
-                                            "pp-trace"))
-
-                                ;; Remove MiBs of .a files coming from
-                                ;; 'clang-tools-extra'.
-                                (for-each (lambda (component)
-                                            (delete-file
-                                             (string-append lib "/libclang"
-                                                            component ".a")))
-                                          '("ApplyReplacements"
-                                            "ChangeNamespace"
-                                            "Daemon"
-                                            "DaemonTweaks"
-                                            "Doc"
-                                            "IncludeFixer"
-                                            "IncludeFixerPlugin"
-                                            "Move"))
-                                (for-each delete-file
-                                          (find-files
-                                           lib
-                                           "^(libfindAllSymbols|libclangTidy)"))
+                                ;; Build and link to shared libraries.
+                                (substitute* "cmake/modules/AddClang.cmake"
+                                  (("BUILD_SHARED_LIBS") "True"))
                                 #t))))
                         '())
                   (add-after 'unpack 'add-missing-triplets

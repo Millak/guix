@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2015 Siniša Biđin <sinisa@bidin.eu>
-;;; Copyright © 2015, 2016 Eric Bavier <bavier@member.fsf.org>
+;;; Copyright © 2015, 2016, 2022 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2015 xd1le <elisp.vim@gmail.com>
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym@scratchpost.org>
@@ -50,6 +50,7 @@
 ;;; Copyright © 2021 Disseminate Dissent <disseminatedissent@protonmail.com>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Gabriel Wicki <gabriel@erlikon.ch>
+;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -936,16 +937,15 @@ tiling window manager for X.")
 (define-public evilwm
   (package
     (name "evilwm")
-    (version "1.1.1")
+    (version "1.3.1")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "http://www.6809.org.uk/evilwm/evilwm-"
+       (uri (string-append "http://www.6809.org.uk/evilwm/dl/evilwm-"
                            version ".tar.gz"))
        (sha256
         (base32
-         "0ak0yajzk3v4dg5wmaghv6acf7v02a4iw8qxmq5yw5ard8lrqn3r"))
-       (patches (search-patches "evilwm-lost-focus-bug.patch"))))
+         "1jry36qkg2l02v37zvzszxvxm2d8c62z25gks5gdqqjl9ifbpv1j"))))
     (build-system gnu-build-system)
     (inputs
      (list libx11 libxext libxrandr))
@@ -1034,7 +1034,7 @@ experience.")
 (define-public fnott
   (package
     (name "fnott")
-    (version "1.1.2")
+    (version "1.2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1043,7 +1043,7 @@ experience.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0vkwyci4z4jj2aczxkrmj0861j5jczjr8isasa7gml93nlvyw7gv"))))
+                "1770p5hfswbaa15zmjh10n7fskch00d3y03ij3gfb1v4q314nb9n"))))
     (build-system meson-build-system)
     (arguments `(#:build-type "release"))
     (native-inputs
@@ -2247,41 +2247,40 @@ PNG files.")
     (license license:gpl3+)))
 
 (define-public lemonbar
-  (let ((commit "35183ab81d2128dbb7b6d8e119cc57846bcefdb4")
-        (revision "1"))
-    (package
-      (name "lemonbar")
-      (version (git-version "1.3" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/LemonBoy/bar")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1wwqbph392iwz8skaqxb0xpklb1l6yganqz80g4x1fhrnz7idmlh"))))
-      (build-system gnu-build-system)
-      (arguments
-       `(#:tests? #f                    ; no test suite
-         #:make-flags
-         (list ,(string-append "CC=" (cc-for-target))
-               (string-append "PREFIX=" %output))
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure))))
-      (inputs
-       (list libxcb))
-      (native-inputs
-       (list perl))
-      (home-page "https://github.com/LemonBoy/bar")
-      (synopsis "Featherweight status bar")
-      (description
-       "@code{lemonbar} (formerly known as @code{bar}) is a lightweight
+  (package
+    (name "lemonbar")
+    (version "1.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/LemonBoy/bar")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0sm1lxxf0y2n87nvc8mz6i6mzb32f4qab80ppb28ibrwfir6jsln"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no test suite
+      #:make-flags
+      #~(list #$(string-append "CC=" (cc-for-target))
+              (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))
+    (inputs
+     (list libxcb))
+    (native-inputs
+     (list perl))
+    (home-page "https://github.com/LemonBoy/bar")
+    (synopsis "Featherweight status bar")
+    (description
+     "@code{lemonbar} (formerly known as @code{bar}) is a lightweight
 bar entirely based on XCB.  Provides full UTF-8 support, basic
 formatting, RandR and Xinerama support and EWMH compliance without
 wasting your precious memory.")
-      (license license:x11))))
+    (license license:x11)))
 
 (define-public lemonbar-xft
   ;; Upstream v2.0 tag is several years behind HEAD
@@ -2305,17 +2304,12 @@ wasting your precious memory.")
       (arguments
        (substitute-keyword-arguments (package-arguments lemonbar)
          ((#:make-flags make-flags)
-          `(append
-            ,make-flags
-            (list (string-append
-                   "CFLAGS="
-                   (string-join
-                    (list (string-append
-                           "-I" (assoc-ref %build-inputs "freetype")
-                           "/include/freetype2")
-                          (string-append
-                           "-D" "VERSION="
-                           (format #f "'~s'" ,version))))))))))
+          #~(#$@make-flags
+             (format #f "CFLAGS=~a -DVERSION='~s'"
+                     (string-append
+                      "-I" #$(this-package-input "freetype")
+                      "/include/freetype2")
+                     #$version)))))
       (home-page "https://github.com/drscream/lemonbar-xft")
       (synopsis
        (string-append

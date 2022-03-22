@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2015, 2017-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
@@ -105,6 +105,8 @@ Download and deploy the latest version of Guix.\n"))
   -l, --list-generations[=PATTERN]
                          list generations matching PATTERN"))
   (display (G_ "
+      --details          show details when listing generations"))
+  (display (G_ "
       --roll-back        roll back to the previous generation"))
   (display (G_ "
   -d, --delete-generations[=PATTERN]
@@ -138,6 +140,13 @@ Download and deploy the latest version of Guix.\n"))
                  (lambda (opt name arg result)
                    (cons `(query list-generations ,arg)
                          result)))
+         (option '("details") #f #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'details? #t
+                               (if (assoc-ref result 'query)
+                                   result
+                                   (cons `(query list-generations #f)
+                                         result)))))
          (option '("roll-back") #f #f
                  (lambda (opt name arg result)
                    (cons '(generation roll-back)
@@ -152,7 +161,8 @@ Download and deploy the latest version of Guix.\n"))
                          result)))
          (option '(#\N "news") #f #f
                  (lambda (opt name arg result)
-                   (cons '(query display-news) result)))
+                   (cons '(query display-news)
+                         (alist-delete 'query result))))
          (option '("url") #t #f
                  (lambda (opt name arg result)
                    (alist-cons 'repository-url arg
@@ -274,7 +284,8 @@ purposes."
                   (texi->plain-text title))
 
                 ;; When Texinfo markup is invalid, display it as-is.
-                (const title)))))))
+                (const title)))
+             (or (pager-wrapped-port port) port)))))
 
 (define (display-news-entry entry channel language port)
   "Display ENTRY, a <channel-news-entry> from CHANNEL, in LANGUAGE, a language
@@ -286,7 +297,8 @@ code, to PORT."
     (channel-news-entry-commit entry))
 
   (display-news-entry-title entry language port)
-  (format port (dim (G_ "    commit ~a~%"))
+  (format port (dim (G_ "    commit ~a~%")
+                    (or (pager-wrapped-port port) port))
           (if (supports-hyperlinks?)
               (channel-commit-hyperlink channel commit)
               commit))
@@ -337,45 +349,48 @@ to display."
                                (previous
                                 (and=> (relative-generation profile -1)
                                        (cut generation-file-name profile <>))))
-  "Display news about the channels of PROFILE compared to PREVIOUS."
-  (when previous
-    (let ((old-channels (profile-channels previous))
-          (new-channels (profile-channels profile)))
-      (and (pair? old-channels) (pair? new-channels)
-           (begin
-             (match (lset-difference channel=? new-channels old-channels)
-               (()
-                #t)
-               (new
-                (let ((count (length new)))
-                  (format (current-error-port)
-                          (N_ "  ~a new channel:~%"
-                              "  ~a new channels:~%" count)
-                          count)
-                  (for-each display-channel new))))
-             (match (lset-difference channel=? old-channels new-channels)
-               (()
-                #t)
-               (removed
-                (let ((count (length removed)))
-                  (format (current-error-port)
-                          (N_ "  ~a channel removed:~%"
-                              "  ~a channels removed:~%" count)
-                          count)
-                  (for-each display-channel removed))))
+  "Display news about the channels of PROFILE compared to PREVIOUS.  Return
+true if news were displayed, false otherwise."
+  (and previous
+       (let ((old-channels (profile-channels previous))
+             (new-channels (profile-channels profile)))
+         (and (pair? old-channels) (pair? new-channels)
+              (begin
+                (match (lset-difference channel=? new-channels old-channels)
+                  (()
+                   #t)
+                  (new
+                   (let ((count (length new)))
+                     (format (current-error-port)
+                             (N_ "  ~a new channel:~%"
+                                 "  ~a new channels:~%" count)
+                             count)
+                     (for-each display-channel new))))
+                (match (lset-difference channel=? old-channels new-channels)
+                  (()
+                   #t)
+                  (removed
+                   (let ((count (length removed)))
+                     (format (current-error-port)
+                             (N_ "  ~a channel removed:~%"
+                                 "  ~a channels removed:~%" count)
+                             count)
+                     (for-each display-channel removed))))
 
-             ;; Display channel-specific news for those channels that were
-             ;; here before and are still around afterwards.
-             (for-each (match-lambda
-                         ((new old)
-                          (display-channel-specific-news new old)))
-                       (filter-map (lambda (new)
-                                     (define old
-                                       (find (cut channel=? new <>)
-                                             old-channels))
+                ;; Display channel-specific news for those channels that were
+                ;; here before and are still around afterwards.
+                (fold (match-lambda*
+                        (((new old) news?)
+                         (or (display-channel-specific-news new old)
+                             news?)))
+                      #f
+                      (filter-map (lambda (new)
+                                    (define old
+                                      (find (cut channel=? new <>)
+                                            old-channels))
 
-                                     (and old (list new old)))
-                                   new-channels)))))))
+                                    (and old (list new old)))
+                                  new-channels)))))))
 
 (define* (display-channel-news-headlines profile)
   "Display the titles of news about the channels of PROFILE compared to its
@@ -406,13 +421,26 @@ previous generation.  Return true if there are news to display."
 
              (any ->bool more?))))))
 
-(define (display-news profile)
-  ;; Display profile news, with the understanding that this process represents
-  ;; the newest generation.
-  (display-profile-news profile
-                        #:current-is-newer? #t)
+(define* (display-news profile #:key (profile-news? #f))
+  "Display channel news for PROFILE compared to its previous generation.  When
+PROFILE-NEWS? is true, display the list of added/upgraded packages since the
+previous generation."
+  (define previous
+    (relative-generation profile -1))
 
-  (display-channel-news profile))
+  (if previous
+      (begin
+        (when profile-news?
+          (display-profile-news profile
+                                #:current-is-newer? #t))
+
+        (unless (display-channel-news profile
+                                      (generation-file-name profile previous))
+          (info (G_ "no channel news since generation ~a~%") previous)
+          (display-hint (G_ "Run @command{guix pull -l} to view the
+news for earlier generations."))))
+      (leave (G_ "profile ~a does not have a previous generation~%")
+             profile)))
 
 (define* (build-and-install instances profile)
   "Build the tool from SOURCE, and install it in PROFILE.  When DRY-RUN? is
@@ -430,10 +458,9 @@ true, display what would be built without actually building it."
                       #:hooks %channel-profile-hooks)
 
       (return
-       (let ((more? (list (display-profile-news profile #:concise? #t)
-                          (display-channel-news-headlines profile))))
+       (let ((more? (display-channel-news-headlines profile)))
          (newline)
-         (when (any ->bool more?)
+         (when more?
            (display-hint
             (G_ "Run @command{guix pull --news} to read all the news.")))))
       (if guix-command
@@ -640,17 +667,23 @@ Return true when there is more package info to display."
 
 (define (process-query opts profile)
   "Process any query on PROFILE specified by OPTS."
+  (define details?
+    (assoc-ref opts 'details?))
+
   (match (assoc-ref opts 'query)
     (('list-generations pattern)
      (define (list-generations profile numbers)
        (match numbers
          ((first rest ...)
           (display-profile-content profile first)
+
           (let loop ((numbers numbers))
             (match numbers
               ((first second rest ...)
-               (display-profile-content-diff profile
-                                             first second)
+               (if details?
+                   (display-profile-content-diff profile
+                                                 first second)
+                   (display-profile-content profile second))
                (display-channel-news (generation-file-name profile second)
                                      (generation-file-name profile first))
                (loop (cons second rest)))
@@ -662,16 +695,23 @@ Return true when there is more package info to display."
              (raise (condition (&profile-not-found-error
                                 (profile profile)))))
             ((not pattern)
-             (list-generations profile (profile-generations profile)))
+             (with-paginated-output-port port
+               (with-output-to-port port
+                 (lambda ()
+                   (list-generations profile (profile-generations profile))))))
             ((matching-generations pattern profile)
              =>
              (match-lambda
                (()
                 (exit 1))
                ((numbers ...)
-                (list-generations profile numbers)))))))
+                (with-paginated-output-port port
+                  (with-output-to-port port
+                    (lambda ()
+                      (list-generations profile numbers))))))))))
     (('display-news)
-     (display-news profile))))
+     (display-news profile
+                   #:profile-news? (assoc-ref opts 'details?)))))
 
 (define (process-generation-change opts profile)
   "Process a request to change the current generation (roll-back, switch, delete)."
@@ -754,7 +794,7 @@ Use '~/.config/guix/channels.scm' instead."))
 (define-command (guix-pull . args)
   (synopsis "pull the latest revision of Guix")
 
-  (define (no-arguments arg _‌)
+  (define (no-arguments arg _)
     (leave (G_ "~A: extraneous argument~%") arg))
 
   (with-error-handling

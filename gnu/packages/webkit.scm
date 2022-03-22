@@ -239,16 +239,17 @@ acceleration in mind, leveraging common 3D graphics APIs for best performance.")
 (define-public webkitgtk
   (package
     (name "webkitgtk")
-    (version "2.34.4")
+    (version "2.34.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.webkitgtk.org/releases/"
                                   "webkitgtk-" version ".tar.xz"))
               (sha256
                (base32
-                "01m4mfqxqkcx72kps46hpkir92x105ggfp43j68nk9wv34cm0pwp"))
-              (patches (search-patches "webkitgtk-share-store.patch"
-                                       "webkitgtk-bind-all-fonts.patch"))))
+                "1xn1hhd0qaxmjf6vy6664i4mmmjsw9zgrr4w8ni3415d981zvj3b"))
+              (patches (search-patches "webkitgtk-bind-all-fonts.patch"
+                                       "webkitgtk-adjust-bubblewrap-paths.patch"
+                                       "webkitgtk-canonicalize-paths.patch"))))
     (build-system cmake-build-system)
     (outputs '("out" "doc" "debug"))
     (arguments

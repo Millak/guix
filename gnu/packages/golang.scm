@@ -460,13 +460,13 @@ in the style of communicating sequential processes (@dfn{CSP}).")
             `(("gold" ,binutils-gold)))
            (_ `()))
        ,@(package-native-inputs go-1.4)))
-    (supported-systems %supported-systems)))
+    (supported-systems (delete "powerpc-linux" %supported-systems))))
 
 (define-public go-1.16
   (package
     (inherit go-1.14)
     (name "go")
-    (version "1.16.13")
+    (version "1.16.14")
     (source
      (origin
        (method git-fetch)
@@ -476,10 +476,10 @@ in the style of communicating sequential processes (@dfn{CSP}).")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "03f37dspn4h5kqf0nqwmnl858wx6hngnlvbnrjl1ll6ihc5j66jz"))))
+         "16pn7avzmlw28sldx6yv38a1afdwj7jz3x7kjvlagysqrsh5lwwl"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments go-1.14)
-       ((#:tests? _) #t)
+     (substitute-keyword-arguments
+         (strip-keyword-arguments '(#:tests?) (package-arguments go-1.14))
        ((#:phases phases)
         `(modify-phases ,phases
            (add-after 'unpack 'remove-unused-sourcecode-generators
@@ -625,7 +625,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
   (package
     (inherit go-1.16)
     (name "go")
-    (version "1.17.6")
+    (version "1.17.7")
     (source
      (origin
        (method git-fetch)
@@ -635,7 +635,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "05k292i9qayfy5wh96z4kjmx1mfd5birnr25vb0blzaam72mcsgw"))))
+         "0d0xybn7sy4za3f0s2ffb6yfv6pjabnk4jyvz7dn3hjqhd5lks7m"))))
     (outputs '("out" "tests")) ; 'tests' contains distribution tests.
     (arguments
      `(#:modules ((ice-9 match)
@@ -1157,6 +1157,28 @@ terminals.")
     (description "Go-ShadowSocks is a Go implementation of the Shadowsocks tunnel
 proxy protocol.")
     (license license:asl2.0)))
+
+(define-public go-github-com-schachmat-ingo
+  (package
+    (name "go-github-com-schachmat-ingo")
+    (version "0.0.0-20170403011506-a4bdc0729a3f")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/schachmat/ingo")
+               (commit (go-version->git-ref version))))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32 "1gw0kddy7jh3467imsqni86cf9yq7k6vpfc0ywkbwj0zsjsdgd49"))))
+    (build-system go-build-system)
+    (arguments '(#:import-path "github.com/schachmat/ingo"))
+    (home-page "https://github.com/schachmat/ingo")
+    (synopsis "Go library to persist flags in a INI-like configuration file")
+    (description
+      "Ingo is a Go library helping you to persist flags in a INI-like
+configuration file.")
+    (license license:isc)))
 
 (define-public go-github-com-riobard-go-bloom
   (let ((commit "cdc8013cb5b3eb0efebec85f0e904efccac42df9")
@@ -2107,7 +2129,7 @@ specified by @uref{https://tools.ietf.org/html/rfc2141, IETF RFC 2141}.")
 (define-public go-github.com-jessevdk-go-flags
   (package
     (name "go-github.com-jessevdk-go-flags")
-    (version "1.3.0")
+    (version "1.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2115,11 +2137,19 @@ specified by @uref{https://tools.ietf.org/html/rfc2141, IETF RFC 2141}.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32
-                "1jk2k2l10lwrn1r3nxdvbs0yz656830j4khzirw8p4ahs7c5zz36"))))
+               (base32 "13ixw1yx4bvcj66lkc8zgwf9j7gkvj686g991gycdsafvdvca0lj"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/jessevdk/go-flags"))
+     '(#:import-path "github.com/jessevdk/go-flags"
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-tests
+           (lambda _
+             ;; SOURCE_DATE_EPOCH messes with the date on the man page test.
+             (substitute* "src/github.com/jessevdk/go-flags/help_test.go"
+               (("TestMan") "DisabledTestMan")))))))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
     (synopsis "Go library for parsing command line arguments")
     (description
      "The @code{flags} package provides a command line option parser.  The
@@ -3883,6 +3913,28 @@ to interact with distribution components.")
 the Go language.  In particular it provides tools to deal with network address
 translation (NAT), proxies, sockets, and transport layer security (TLS).")
       (license license:asl2.0))))
+
+(define-public go-github-com-docker-go-units
+  (package
+    (name "go-github-com-docker-go-units")
+    (version "0.4.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/docker/go-units")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "0k8gja8ql4pqg5rzmqvka42vjfs6rzablak87whcnqba6qxpimvz"))))
+    (build-system go-build-system)
+    (arguments '(#:import-path "github.com/docker/go-units"))
+    (home-page "https://github.com/docker/go-units")
+    (synopsis "Parse and print size and time units in human-readable format")
+    (description
+     "@code{go-units} is a library to transform human friendly measurements into
+machine friendly values.")
+    (license license:asl2.0)))
 
 (define-public go-github-com-docker-machine
   (let ((commit "7b7a141da84480342357c51838be142bf183b095")
@@ -7858,6 +7910,80 @@ and @code{ioutil} packages that is easy to test.")
     (description "Package @code{xdg} provides functions related to
 @uref{freedesktop.org}.")
     (license license:expat)))
+
+(define-public go-github-com-xdg-go-stringprep
+  (package
+    (name "go-github-com-xdg-go-stringprep")
+    (version "1.0.2")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/xdg-go/stringprep")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "1df0l5n3c520y9filzz83j42wa5c056jcygmfwhjyf1pq8f6jkv9"))))
+    (build-system go-build-system)
+    (arguments '(#:import-path "github.com/xdg-go/stringprep"))
+    (propagated-inputs
+     (list go-golang-org-x-text))
+    (home-page "https://github.com/xdg-go/stringprep")
+    (synopsis "Go implementation of RFC-3454 stringprep and RFC-4013 SASLprep")
+    (description
+     "Package stringprep provides data tables and algorithms for RFC-3454,
+including errata.  It also provides a profile for SASLprep as defined in
+RFC-4013.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-xdg-go-pbkdf2
+  (package
+    (name "go-github-com-xdg-go-pbkdf2")
+    (version "1.0.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/xdg-go/pbkdf2")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "1nipijy5xkdnfyhkp5ryrjzm14si1i2v2xyfmblf84binwkbr8jh"))))
+    (build-system go-build-system)
+    (arguments '(#:import-path "github.com/xdg-go/pbkdf2"))
+    (home-page "https://github.com/xdg-go/pbkdf2")
+    (synopsis "Go implementation of PBKDF2")
+    (description
+     "Package pbkdf2 implements password-based key derivation using the PBKDF2
+algorithm described in @url{https://rfc-editor.org/rfc/rfc2898.html,RFC 2898}
+and @url{https://rfc-editor.org/rfc/rfc8018.html,RFC 8018}.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-xdg-go-scram
+  (package
+    (name "go-github-com-xdg-go-scram")
+    (version "1.0.2")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/xdg-go/scram")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "1jyv4qgc1dgh3v96pazmgljpp9ij25k8hwn0v4fck18g16i0nccm"))))
+    (build-system go-build-system)
+    (arguments '(#:import-path "github.com/xdg-go/scram"))
+    (propagated-inputs
+     (list go-github-com-xdg-go-stringprep
+           go-github-com-xdg-go-pbkdf2))
+    (home-page "https://github.com/xdg-go/scram")
+    (synopsis "Go implementation of RFC-5802")
+    (description
+     "Package scram provides client and server implementations of the
+@acronym{Salted Challenge Response Authentication Mechanism, SCRAM} described in
+RFC-5802 and RFC-7677.")
+    (license license:asl2.0)))
 
 (define-public go-github-com-godbus-dbus
   (package

@@ -1,5 +1,5 @@
 # GNU Guix --- Functional package management for GNU
-# Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+# Copyright © 2014-2022 Ludovic Courtès <ludo@gnu.org>
 # Copyright © 2017 Tobias Geerinckx-Rice <me@tobias.gr>
 # Copyright © 2018 Chris Marusich <cmmarusich@gmail.com>
 #
@@ -336,11 +336,15 @@ rm "$tmpdir/search"
 # Verify that the examples can be built.
 for example in gnu/system/examples/*.tmpl; do
     if echo "$example" | grep hurd; then
-        target="--target=i586-pc-gnu"
+        options="--target=i586-pc-gnu"
+    elif echo "$example" | grep asus; then
+	# 'asus-c201.tmpl' uses 'linux-libre-arm-generic', which is an
+	# ARM-only package.
+        options="--system=armhf-linux"
     else
-        target=
+	options=""
     fi
-    guix system -n disk-image $target "$example"
+    guix system -n disk-image $options "$example"
 done
 
 # Verify that the images can be built.

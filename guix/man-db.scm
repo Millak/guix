@@ -110,7 +110,12 @@
     ;; Write ENTRIES in sorted order so we get deterministic output.
     (for-each (lambda (entry)
                 (gdbm-set! db
-                           (string-append (mandb-entry-file-name entry)
+                           ;; For the 'whatis' tool to find anything, the key
+                           ;; should match the name of the software,
+                           ;; e.g. 'cat'.  Derive it from the file name, as
+                           ;; the name could technically be #f.
+                           (string-append (abbreviate-file-name
+                                           (mandb-entry-file-name entry))
                                           "\x00")
                            (entry->string entry)))
               (sort entries mandb-entry<?))

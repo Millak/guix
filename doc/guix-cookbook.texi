@@ -7,6 +7,9 @@
 @settitle GNU Guix Cookbook
 @c %**end of header
 
+@c Onion service for ci.guix.gnu.org.
+@set SUBSTITUTE-TOR-URL https://4zwzi66wwdaalbhgnix55ea3ab4pvvw66ll2ow53kjub6se4q2bclcyd.onion
+
 @copying
 Copyright @copyright{} 2019 Ricardo Wurmus@*
 Copyright @copyright{} 2019 Efraim Flashner@*
@@ -2354,7 +2357,8 @@ follow:
           config => (guix-configuration
                       (inherit config)
                       ;; ci.guix.gnu.org's Onion service
-                      (substitute-urls "https://bp7o7ckwlewr4slm.onion")
+                      (substitute-urls
+                       "@value{SUBSTITUTE-TOR-URL}")
                       (http-proxy "http://localhost:9250")))))))
 @end lisp
 
@@ -2372,7 +2376,8 @@ want to get a substitute from the Tor tunnel run:
 
 @example
 sudo herd set-http-proxy guix-daemon http://localhost:9250
-guix build --substitute-urls=https://bp7o7ckwlewr4slm.onion …
+guix build \
+  --substitute-urls=@value{SUBSTITUTE-TOR-URL} @dots{}
 @end example
 
 @node Setting up NGINX with Lua

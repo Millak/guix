@@ -1,0 +1,33 @@
+Fixes "multiple definition" errors when building with GCC 10+.
+
+Based on <https://bugs.gentoo.org/show_bug.cgi?id=706706>.
+--- a/fig2dev/dev/gensvg.c	2010-07-01 22:41:16.000000000 +0200
++++ b/fig2dev/dev/gensvg.c	2022-02-27 20:02:33.379945500 +0100
+@@ -230,10 +230,12 @@
+ };
+ 
+ /* arrowhead arrays */
+-Point   points[50], fillpoints[50], clippoints[50];
+-int     npoints, nfillpoints, nclippoints;
+-int     arrowx1, arrowy1;	/* first point of object */
+-int     arrowx2, arrowy2;	/* second point of object */
++Point   fillpoints[50];
++int     nfillpoints;
++extern Point   points[50], clippoints[50];
++extern int     npoints, nclippoints;
++extern int     arrowx1, arrowy1;	/* first point of object */
++extern int     arrowx2, arrowy2;	/* second point of object */
+ 
+ static int tileno=0; /* number of current tile */ 
+ 
+--- a/fig2dev/fig2dev.h	2010-03-16 19:53:20.000000000 +0100
++++ b/fig2dev/fig2dev.h	2022-02-27 19:56:06.072253991 +0100
+@@ -126,7 +126,7 @@
+ extern char	*prog, *from, *to;
+ extern char	*name;
+ extern double	font_size;
+-Boolean	correct_font_size;	/* use correct font size */
++extern Boolean	correct_font_size;	/* use correct font size */
+ extern double	mag, fontmag;
+ extern FILE	*tfp;
+ 

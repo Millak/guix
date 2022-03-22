@@ -55,6 +55,7 @@
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2022 cage <cage-dev@twistfold.it>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4667,8 +4668,8 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
                    license:freebsd-doc)))) ; documentation
 
 (define-public guix-data-service
-  (let ((commit "4a1088c21687531de0b4e062e1bf9ec491e5d4da")
-        (revision "29"))
+  (let ((commit "27c34a9ca5ea010f207a4acad597ce98e84d3567")
+        (revision "30"))
     (package
       (name "guix-data-service")
       (version (string-append "0.0.1-" revision "." (string-take commit 7)))
@@ -4680,7 +4681,7 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1k9hnpx47l91l0x3gvjrzx4772lnkb55lk66axgl3a8g1fhaji4l"))))
+                  "1jjdvld3gp711dp8qd4rnhicbl7322jjzx4plizkg89k7j4x0xhx"))))
       (build-system gnu-build-system)
       (arguments
        '(#:modules ((guix build utils)
@@ -4739,16 +4740,18 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
                  #t)))
            (delete 'strip))))           ; As the .go files aren't compatible
       (inputs
+       (list ephemeralpg
+             util-linux
+             postgresql-13
+             sqitch
+             bash-minimal))
+      (propagated-inputs
        (list guix
              guile-fibers-1.1
              guile-json-4
              guile-email
              guile-prometheus
-             guile-squee
-             ephemeralpg
-             util-linux
-             postgresql-13
-             sqitch))
+             guile-squee))
       (native-inputs
        (list (car (assoc-ref (package-native-inputs guix) "guile"))
              autoconf
@@ -7835,6 +7838,82 @@ solution for any project's interface needs:
 @item Easily integrated and extensible with Python or Lua scripting.
 @end itemize\n")
     (license license:expat)))
+
+(define-public gmid
+  (package
+    (name "gmid")
+    (version "1.8.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/omar-polo/gmid/releases/download/"
+                    version "/gmid-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0m4809mwy888bqsacmyck68grqfvynq74kswm109al6wjbvd61bn"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:test-target "regress"
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'configure
+                 (lambda _
+                   (setenv "CC" #$(cc-for-target))
+                   (invoke "./configure"
+                           (string-append "PREFIX=" #$output)))))))
+    (native-inputs (list bison
+                         coreutils
+                         flex
+                         pkg-config
+                         procps
+                         which))
+    (inputs (list libevent libressl))
+    (home-page "https://git.omarpolo.com/gmid/about/")
+    (synopsis "Simple and secure Gemini server")
+    (description "@command{gmid} is a fast Gemini server written with security
+in mind.  It has features such as:
+@itemize
+@item reload the running configuration without interruption
+@item automatic redirect/error pages
+@item IRI support (RFC3987)
+@item reverse proxying
+@item CGI and FastCGI support
+@item virtual hosts
+@item location rules
+@item event-based asynchronous I/O model
+@item low memory footprint.
+@end itemize")
+    (license license:isc)))
+
+(define-public siege
+  (package
+    (name "siege")
+    (version "4.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "http://download.joedog.org/siege/siege-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "1a74py0ib1gr3znv9ah5acw67ngl08b14dbc90ww9clvgdr2ag0l"))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:configure-flags (list (string-append "--with-zlib="
+                                              (assoc-ref %build-inputs "zlib"))
+                               (string-append "--with-ssl="
+                                              (assoc-ref %build-inputs
+                                                         "openssl")))))
+    (inputs (list openssl zlib))
+    (home-page "https://www.joedog.org/siege-home/")
+    (synopsis "HTTP/FTP load tester and benchmarking utility")
+    (description
+     "Siege is a multi-threaded HTTP/FTP load tester and benchmarking utility.  It
+can stress test a single URL with a user defined number of simulated users, or
+it can read many URLs into memory and stress them simultaneously.  The program
+reports the total number of hits recorded, bytes transferred, response time,
+concurrency, and return status.")
+    ;; GPLv3+ with OpenSSL linking exception.
+    (license license:gpl3+)))
 
 (define-public gmnisrv
   (package

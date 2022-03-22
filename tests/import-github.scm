@@ -26,28 +26,37 @@
   #:use-module (guix packages)
   #:use-module (guix tests)
   #:use-module (guix upstream)
+  #:use-module (web uri)
   #:use-module (ice-9 match))
 
 (test-begin "github")
 
 (define (call-with-releases thunk tags releases)
-  (mock ((guix http-client) http-fetch
-         (lambda* (uri #:key headers)
-           (unless (string-prefix? "mock://" uri)
-             (error "the URI ~a should not be used" uri))
-           (define components
-             (string-split (substring uri 8) #\/))
-           (pk 'stuff components headers)
-           (define (scm->json-port scm)
-             (open-input-string (scm->json-string scm)))
-           (match components
-             (("repos" "foo" "foomatics" "releases")
-              (scm->json-port releases))
-             (("repos" "foo" "foomatics" "tags")
-              (scm->json-port tags))
-             (rest (error "TODO ~a" rest)))))
-        (parameterize ((%github-api "mock://"))
-          (thunk))))
+  (mock ((guix build download) open-connection-for-uri
+         (lambda _
+           ;; Return a fake socket.
+           (%make-void-port "w+0")))
+        (mock ((guix http-client) http-fetch
+               (lambda* (uri #:key headers #:allow-other-keys)
+                 (let ((uri (if (string? uri)
+                                (string->uri uri)
+                                uri)))
+                   (unless (eq? 'mock (uri-scheme uri))
+                     (error "the URI ~a should not be used" uri))
+                   (define components
+                     (string-tokenize (uri-path uri)
+                                      (char-set-complement (char-set #\/))))
+                   (pk 'stuff components headers)
+                   (define (scm->json-port scm)
+                     (open-input-string (scm->json-string scm)))
+                   (match components
+                     (("repos" "foo" "foomatics" "releases")
+                      (scm->json-port releases))
+                     (("repos" "foo" "foomatics" "tags")
+                      (scm->json-port tags))
+                     (rest (error "TODO ~a" rest))))))
+              (parameterize ((%github-api "mock://"))
+                (thunk)))))
 
 ;; Copied from tests/minetest.scm
 (define (upstream-source->sexp upstream-source)

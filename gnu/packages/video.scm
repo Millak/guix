@@ -261,42 +261,41 @@
         ;"--enable-pv3"
         ;"--enable-nuv"
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("iconv" ,libiconv)
-       ("libtool" ,libtool)
-       ("libxml2" ,libxml2)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)))
+     (list autoconf
+           automake
+           libtool
+           libxml2
+           perl
+           pkg-config
+           python-wrapper))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("faac" ,faac)
-       ("ffmpeg" ,ffmpeg)
-       ("freetype" ,freetype)
-       ("imagemagick" ,imagemagick)
-       ("lame" ,lame)
-       ("liba52" ,liba52)
-       ("libdv" ,libdv)
-       ("libdvdread" ,libdvdread)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libmpeg2" ,libmpeg2)
-       ("libogg" ,libogg)
-       ("libquicktime" ,libquicktime)
-       ("libtheora" ,libtheora)
-       ("libvorbis" ,libvorbis)
-       ("lzo" ,lzo)
-       ("mjepgtools" ,mjpegtools)
-       ("sdl" ,sdl)
-       ;; ("v4l-utils" ,v4l-utils)
-       ("x11" ,libx11)
-       ("x264" ,libx264)
-       ("xaw" ,libxaw)
-       ("xext" ,libxext)
-       ("xpm" ,libxpm)
-       ("xv" ,libxv)
-       ("xvid" ,xvid)
-       ("zlib" ,zlib)))
+     (list alsa-lib
+           faac
+           ffmpeg
+           freetype
+           imagemagick
+           lame
+           liba52
+           libdv
+           libdvdread
+           libjpeg-turbo
+           libmpeg2
+           libogg
+           libquicktime
+           libtheora
+           libvorbis
+           lzo
+           mjpegtools
+           sdl
+           ;; ("v4l-utils" ,v4l-utils)
+           libx11
+           libx264
+           libxaw
+           libxext
+           libxpm
+           libxv
+           xvid
+           zlib))
     (synopsis "Audio/Video Transcoder")
     (description "Transcode is a fast, versatile and command-line based
 audio/video everything to everything converter primarily focused on producing
@@ -2265,7 +2264,7 @@ the last played position, etc.")
 (define-public gallery-dl
   (package
     (name "gallery-dl")
-    (version "1.20.3")
+    (version "1.20.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/mikf/gallery-dl"
@@ -2273,15 +2272,15 @@ the last played position, etc.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0mh57fbq9xkkhqiy7cq5ahwjp464hgxmkrvq0pxxr85212yrf7bd"))))
+                "0149hd4nh7bk2yqjdnvrkvag5mwgsb6gxrgfcd88q4cv3k2ji42h"))))
     (build-system python-build-system)
     (inputs (list python-requests ffmpeg))
     (home-page "https://github.com/mikf/gallery-dl")
     (synopsis "Command-line program to download images from several sites")
-    (description "Command-line program to download image galleries
-and collections from several image hosting sites
-While this package can use youtube-dl or yt-dlp packages to download videos,
-the focus is more on images and image hosting sites.")
+    (description "Gallery-dl is a command-line program that downloads image
+galleries and collections from several image hosting sites.  While this package
+can use youtube-dl or yt-dlp packages to download videos, the focus is more on
+images and image hosting sites.")
     (license license:gpl2)))
 
 (define-public gnome-mpv
@@ -2454,7 +2453,7 @@ YouTube.com and many more sites.")
 (define-public yt-dlp
   (package/inherit youtube-dl
     (name "yt-dlp")
-    (version "2021.10.22")
+    (version "2022.02.04")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/yt-dlp/yt-dlp/"
@@ -2462,7 +2461,7 @@ YouTube.com and many more sites.")
                                   version "/yt-dlp.tar.gz"))
               (sha256
                (base32
-                "0xh4cwmvx49pxn8x07wj2dy8ynj6xg8977l5493vv0l8zc27wp87"))
+                "1qx8sx47lzyrcl00r2657zjaq0mwfbzjyfnv5lr5dlm552f13pf8"))
               (snippet
                '(begin
                   ;; Delete the pre-generated files, except for the man page
@@ -3211,7 +3210,7 @@ from sites like Twitch.tv and pipes them into a video player of choice.")
 (define-public mlt
   (package
     (name "mlt")
-    (version "7.2.0")
+    (version "7.4.0")
     (source
      (origin
        (method git-fetch)
@@ -3220,21 +3219,37 @@ from sites like Twitch.tv and pipes them into a video player of choice.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17d4gs46ca3n0qg6z69hl6mmllnqj2id8ccrv8fyz8c5zm55ghqm"))))
+        (base32 "132y3niv9p1pwms1d5dr0w1jifvr52yfjy6zza3g7qaha0yzfh0c"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f ;requires "Kwalify"
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'override-LDFLAGS
-           (lambda* (#:key outputs #:allow-other-keys)
-             (setenv "LDFLAGS"
-                     (string-append
-                      "-Wl,-rpath="
-                      (assoc-ref outputs "out") "/lib")))))))
+     (list
+      #:tests? #f                       ;requires "Kwalify"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'override-LDFLAGS
+            (lambda _
+              (setenv "LDFLAGS"
+                      (string-append "-Wl,-rpath=" #$output "/lib"))))
+          (add-after 'install 'wrap-executable
+            (lambda _
+              (let* ((frei0r #$(this-package-input "frei0r-plugins"))
+                     (ladspa #$(this-package-input "ladspa"))
+                     ;; In MLT 7, 'melt' symlinks to 'melt-7'.  Try to keep
+                     ;; compatibility with MLT 6 where it's only 'melt'.
+                     (major #$(version-major version))
+                     (exec (if (file-exists?
+                                (string-append #$output "/bin/melt-" major))
+                               (string-append "melt-" major)
+                               "melt")))
+                (wrap-program (string-append #$output "/bin/" exec)
+                  `("FREI0R_PATH" ":" =
+                    (,(string-append frei0r "/lib/frei0r-1")))
+                  `("LADSPA_PATH" ":" =
+                    (,(string-append ladspa "/lib/ladspa"))))))))))
     (inputs
      (list alsa-lib
            `(,alsa-plugins "pulseaudio")
+           bash-minimal
            ffmpeg
            fftw
            frei0r-plugins

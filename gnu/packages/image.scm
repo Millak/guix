@@ -8,7 +8,7 @@
 ;;; Copyright © 2015 Amirouche Boubekki <amirouche@hypermove.net>
 ;;; Copyright © 2014, 2017 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2016, 2017, 2018, 2020 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016, 2017, 2020, 2021 Arun Isaac <arunisaac@systemreboot.net>
@@ -564,9 +564,7 @@ maximum quality factor.")
     (build-system gnu-build-system)
     (inputs
      (list libpng jasper))
-    (arguments
-     `(#:tests? #t)) ; No tests.
-    (home-page "http://icns.sourceforge.net/")
+    (home-page "https://icns.sourceforge.io/")
     (synopsis "Library for handling Mac OS icns resource files")
     (description
      "Libicns is a library for the manipulation of Mac OS IconFamily resource
@@ -1361,7 +1359,10 @@ channels.")
     (build-system cmake-build-system)
     (arguments
      '(#:test-target "tests"
-       #:configure-flags (list "-DEXIV2_BUILD_UNIT_TESTS=ON")
+       #:configure-flags (list "-DEXIV2_BUILD_UNIT_TESTS=ON"
+                               ;; darktable needs BMFF to support
+                               ;; CR3 files.
+                               "-DEXIV2_ENABLE_BMFF=ON")
        #:phases
        (modify-phases %standard-phases
          (add-after 'install 'delete-static-libraries
@@ -1688,6 +1689,8 @@ is hereby granted."))))
                                     ;; 32-bit and 64-bit
                                     ((string-prefix? "powerpc" target)
                                      `("-DCMAKE_SYSTEM_PROCESSOR=powerpc"))
+                                    ((string-prefix? "riscv64" target)
+                                     `("-DCMAKE_SYSTEM_PROCESSOR=riscv64"))
                                     (else '()))
                                    '())))
        ,@(if (%current-target-system)

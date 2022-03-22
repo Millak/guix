@@ -15,6 +15,7 @@
 ;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Josselin Poiret <josselin.poiret@protonmail.ch>
 ;;; Copyright © 2022 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2022 Jacob Hart <hartja1@yahoo.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -477,7 +478,7 @@ desktops.")
 (define-public qbittorrent
   (package
     (name "qbittorrent")
-    (version "4.4.0")
+    (version "4.4.1")
     (source
      (origin
        (method git-fetch)
@@ -486,7 +487,7 @@ desktops.")
              (commit (string-append "release-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0aqrcwxi3s2alila3fa7fjs4hifkq7055wa4xvz17hajchs3l567"))))
+        (base32 "00whc4p209g2krsggxyq4sna01djbk1rbzkyjbq4qczvya01xn0w"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags

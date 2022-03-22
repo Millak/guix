@@ -15,7 +15,7 @@
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021 Hui Lu <luhuins@163.com>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -183,6 +183,7 @@
             guix-configuration-authorized-keys
             guix-configuration-use-substitutes?
             guix-configuration-substitute-urls
+            guix-configuration-generate-substitute-key?
             guix-configuration-extra-options
             guix-configuration-log-file
 
@@ -876,6 +877,8 @@ the message of the day, among other things."
   ;; "Escape hatch" for passing arbitrary command-line arguments.
   (extra-options    agetty-extra-options          ;list of strings
                     (default '()))
+  (shepherd-requirement agetty-shepherd-requirement  ;list of SHEPHERD requirements
+                    (default '()))
 ;;; XXX Unimplemented for now!
 ;;; (issue-file     agetty-issue-file             ;file-like
 ;;;                 (default #f))
@@ -924,17 +927,19 @@ to use as the tty.  This is primarily useful for headless systems."
         host no-issue? init-string no-clear? local-line extract-baud?
         skip-login? no-newline? login-options chroot hangup? keep-baud? timeout
         detect-case? wait-cr? no-hints? no-hostname? long-hostname?
-        erase-characters kill-characters chdir delay nice extra-options)
+        erase-characters kill-characters chdir delay nice extra-options
+        shepherd-requirement)
      (list
        (shepherd-service
          (documentation "Run agetty on a tty.")
-         (provision (list (symbol-append 'term- (string->symbol (or tty "auto")))))
+         (provision (list (symbol-append 'term- (string->symbol (or tty "console")))))
 
          ;; Since the login prompt shows the host name, wait for the 'host-name'
          ;; service to be done.  Also wait for udev essentially so that the tty
          ;; text is not lost in the middle of kernel messages (see also
          ;; mingetty-shepherd-service).
-         (requirement '(user-processes host-name udev))
+         (requirement (cons* 'user-processes 'host-name 'udev
+                             shepherd-requirement))
 
          (modules '((ice-9 match) (gnu build linux-boot)))
          (start
@@ -1561,6 +1566,8 @@ archive' public keys, with GUIX."
                     (default #t))
   (substitute-urls  guix-configuration-substitute-urls ;list of strings
                     (default %default-substitute-urls))
+  (generate-substitute-key? guix-configuration-generate-substitute-key?
+                            (default #t))         ;Boolean
   (chroot-directories guix-configuration-chroot-directories ;list of file-like/strings
                       (default '()))
   (max-silent-time  guix-configuration-max-silent-time ;integer
@@ -1745,14 +1752,15 @@ proxy of 'guix-daemon'...~%")
 (define (guix-activation config)
   "Return the activation gexp for CONFIG."
   (match-record config <guix-configuration>
-    (guix authorize-key? authorized-keys)
+    (guix generate-substitute-key? authorize-key? authorized-keys)
     #~(begin
         ;; Assume that the store has BUILD-GROUP as its group.  We could
         ;; otherwise call 'chown' here, but the problem is that on a COW overlayfs,
         ;; chown leads to an entire copy of the tree, which is a bad idea.
 
         ;; Generate a key pair and optionally authorize substitute server keys.
-        (unless (file-exists? "/etc/guix/signing-key.pub")
+        (unless (or #$(not generate-substitute-key?)
+                    (file-exists? "/etc/guix/signing-key.pub"))
           (system* #$(file-append guix "/bin/guix") "archive"
                    "--generate-key"))
 
@@ -1995,8 +2003,7 @@ item of @var{packages}."
             (find directory-exists?
                   (map (cut string-append directory <>) %standard-locations)))
 
-          (mkdir-p (string-append #$output "/lib/udev"))
-          (union-build (string-append #$output "/lib/udev/rules.d")
+          (union-build #$output
                        (filter-map rules-sub-directory '#$packages)))))
 
   (computed-file "udev-rules" build))
@@ -2046,115 +2053,114 @@ item of @var{packages}."
 (define udev-shepherd-service
   ;; Return a <shepherd-service> for UDEV with RULES.
   (match-lambda
+    (($ <udev-configuration> udev)
+     (list
+      (shepherd-service
+       (provision '(udev))
+
+       ;; Udev needs /dev to be a 'devtmpfs' mount so that new device nodes can
+       ;; be added: see
+       ;; <http://www.linuxfromscratch.org/lfs/view/development/chapter07/udev.html>.
+       (requirement '(root-file-system))
+
+       (documentation "Populate the /dev directory, dynamically.")
+       (start
+        (with-imported-modules (source-module-closure
+                                '((gnu build linux-boot)))
+          #~(lambda ()
+              (define udevd
+                ;; 'udevd' from eudev.
+                #$(file-append udev "/sbin/udevd"))
+
+              (define (wait-for-udevd)
+                ;; Wait until someone's listening on udevd's control
+                ;; socket.
+                (let ((sock (socket AF_UNIX SOCK_SEQPACKET 0)))
+                  (let try ()
+                    (catch 'system-error
+                      (lambda ()
+                        (connect sock PF_UNIX "/run/udev/control")
+                        (close-port sock))
+                      (lambda args
+                        (format #t "waiting for udevd...~%")
+                        (usleep 500000)
+                        (try))))))
+
+              ;; Allow udev to find the modules.
+              (setenv "LINUX_MODULE_DIRECTORY"
+                      "/run/booted-system/kernel/lib/modules")
+
+              (let* ((kernel-release
+                      (utsname:release (uname)))
+                     (linux-module-directory
+                      (getenv "LINUX_MODULE_DIRECTORY"))
+                     (directory
+                      (string-append linux-module-directory "/"
+                                     kernel-release))
+                     (old-umask (umask #o022)))
+                ;; If we're in a container, DIRECTORY might not exist,
+                ;; for instance because the host runs a different
+                ;; kernel.  In that case, skip it; we'll just miss a few
+                ;; nodes like /dev/fuse.
+                (when (file-exists? directory)
+                  (make-static-device-nodes directory))
+                (umask old-umask))
+
+              (let ((pid (fork+exec-command
+                          (list udevd)
+                          #:environment-variables
+                          (cons*
+                           ;; The first one is for udev, the second one for
+                           ;; eudev.
+                           "UDEV_CONFIG_FILE=/etc/udev/udev.conf"
+                           "EUDEV_RULES_DIRECTORY=/etc/udev/rules.d"
+                           (string-append "LINUX_MODULE_DIRECTORY="
+                                          (getenv "LINUX_MODULE_DIRECTORY"))
+                           (default-environment-variables)))))
+                ;; Wait until udevd is up and running.  This appears to
+                ;; be needed so that the events triggered below are
+                ;; actually handled.
+                (wait-for-udevd)
+
+                ;; Trigger device node creation.
+                (system* #$(file-append udev "/bin/udevadm")
+                         "trigger" "--action=add")
+
+                ;; Wait for things to settle down.
+                (system* #$(file-append udev "/bin/udevadm")
+                         "settle")
+                pid))))
+       (stop #~(make-kill-destructor))
+
+       ;; When halting the system, 'udev' is actually killed by
+       ;; 'user-processes', i.e., before its own 'stop' method was called.
+       ;; Thus, make sure it is not respawned.
+       (respawn? #f)
+       ;; We need additional modules.
+       (modules `((gnu build linux-boot)        ;'make-static-device-nodes'
+                  ,@%default-modules)))))))
+
+(define udev.conf
+  (computed-file "udev.conf"
+                 #~(call-with-output-file #$output
+                     (lambda (port)
+                       (format port "udev_rules=\"/etc/udev/rules.d\"~%")))))
+
+(define udev-etc
+  (match-lambda
     (($ <udev-configuration> udev rules)
-     (let* ((rules     (udev-rules-union (cons* udev kvm-udev-rule rules)))
-            (udev.conf (computed-file "udev.conf"
-                                      #~(call-with-output-file #$output
-                                          (lambda (port)
-                                            (format port
-                                                    "udev_rules=\"~a/lib/udev/rules.d\"\n"
-                                                    #$rules))))))
-       (list
-        (shepherd-service
-         (provision '(udev))
-
-         ;; Udev needs /dev to be a 'devtmpfs' mount so that new device nodes can
-         ;; be added: see
-         ;; <http://www.linuxfromscratch.org/lfs/view/development/chapter07/udev.html>.
-         (requirement '(root-file-system))
-
-         (documentation "Populate the /dev directory, dynamically.")
-         (start
-          (with-imported-modules (source-module-closure
-                                  '((gnu build linux-boot)))
-            #~(lambda ()
-                (define udevd
-                  ;; 'udevd' from eudev.
-                  #$(file-append udev "/sbin/udevd"))
-
-                (define (wait-for-udevd)
-                  ;; Wait until someone's listening on udevd's control
-                  ;; socket.
-                  (let ((sock (socket AF_UNIX SOCK_SEQPACKET 0)))
-                    (let try ()
-                      (catch 'system-error
-                        (lambda ()
-                          (connect sock PF_UNIX "/run/udev/control")
-                          (close-port sock))
-                        (lambda args
-                          (format #t "waiting for udevd...~%")
-                          (usleep 500000)
-                          (try))))))
-
-                ;; Allow udev to find the modules.
-                (setenv "LINUX_MODULE_DIRECTORY"
-                        "/run/booted-system/kernel/lib/modules")
-
-                (let* ((kernel-release
-                        (utsname:release (uname)))
-                       (linux-module-directory
-                        (getenv "LINUX_MODULE_DIRECTORY"))
-                       (directory
-                        (string-append linux-module-directory "/"
-                                       kernel-release))
-                       (old-umask (umask #o022)))
-                  ;; If we're in a container, DIRECTORY might not exist,
-                  ;; for instance because the host runs a different
-                  ;; kernel.  In that case, skip it; we'll just miss a few
-                  ;; nodes like /dev/fuse.
-                  (when (file-exists? directory)
-                    (make-static-device-nodes directory))
-                  (umask old-umask))
-
-                (let ((pid (fork+exec-command (list udevd)
-                            #:environment-variables
-                            (cons*
-                             ;; The first one is for udev, the second one for
-                             ;; eudev.
-                             (string-append "UDEV_CONFIG_FILE=" #$udev.conf)
-                             (string-append "EUDEV_RULES_DIRECTORY="
-                                            #$(file-append
-                                               rules "/lib/udev/rules.d"))
-                             (string-append "LINUX_MODULE_DIRECTORY="
-                                            (getenv "LINUX_MODULE_DIRECTORY"))
-                             (default-environment-variables)))))
-                  ;; Wait until udevd is up and running.  This appears to
-                  ;; be needed so that the events triggered below are
-                  ;; actually handled.
-                  (wait-for-udevd)
-
-                  ;; Trigger device node creation.
-                  (system* #$(file-append udev "/bin/udevadm")
-                           "trigger" "--action=add")
-
-                  ;; Wait for things to settle down.
-                  (system* #$(file-append udev "/bin/udevadm")
-                           "settle")
-                  pid))))
-         (stop #~(make-kill-destructor))
-
-         ;; When halting the system, 'udev' is actually killed by
-         ;; 'user-processes', i.e., before its own 'stop' method was called.
-         ;; Thus, make sure it is not respawned.
-         (respawn? #f)
-         ;; We need additional modules.
-         (modules `((gnu build linux-boot)        ;'make-static-device-nodes'
-                    ,@%default-modules))
-
-         (actions (list (shepherd-action
-                         (name 'rules)
-                         (documentation "Display the directory containing
-the udev rules in use.")
-                         (procedure #~(lambda (_)
-                                        (display #$rules)
-                                        (newline))))))))))))
+     `(("udev"
+        ,(file-union
+          "udev" `(("udev.conf" ,udev.conf)
+                   ("rules.d" ,(udev-rules-union (cons* udev kvm-udev-rule
+                                                        rules))))))))))
 
 (define udev-service-type
   (service-type (name 'udev)
                 (extensions
                  (list (service-extension shepherd-root-service-type
-                                          udev-shepherd-service)))
-
+                                          udev-shepherd-service)
+                       (service-extension etc-service-type udev-etc)))
                 (compose concatenate)           ;concatenate the list of rules
                 (extend (lambda (config rules)
                           (match config
@@ -2783,10 +2789,12 @@ to handle."
                         (cons tty %default-console-font))
                       '("tty1" "tty2" "tty3" "tty4" "tty5" "tty6")))
 
+        (syslog-service)
         (service agetty-service-type (agetty-configuration
                                        (extra-options '("-L")) ; no carrier detect
                                        (term "vt100")
-                                       (tty #f))) ; automatic
+                                       (tty #f) ; automatic
+                                       (shepherd-requirement '(syslogd))))
 
         (service mingetty-service-type (mingetty-configuration
                                          (tty "tty1")))
@@ -2803,7 +2811,6 @@ to handle."
 
         (service static-networking-service-type
                  (list %loopback-static-networking))
-        (syslog-service)
         (service urandom-seed-service-type)
         (service guix-service-type)
         (service nscd-service-type)

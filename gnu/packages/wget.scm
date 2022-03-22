@@ -25,7 +25,6 @@
 (define-module (gnu packages wget)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
-  #:use-module (gnu packages base)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages gnunet)
@@ -158,15 +157,14 @@ online pastebin services.")
             #t)))
       #:configure-flags '("--enable-static=no")))
    (inputs
-    `(("bzip2" ,bzip2)
-      ("gnutls" ,gnutls/dane)
-      ("gpgme" ,gpgme)
-      ("libiconv" ,libiconv)
-      ("libidn2" ,libidn2)
-      ("libmicrohttpd" ,libmicrohttpd)
-      ("libpsl" ,libpsl)
-      ("pcre2" ,pcre2)
-      ("zlib" ,zlib)))
+    (list bzip2
+          gnutls/dane
+          gpgme
+          libidn2
+          libmicrohttpd
+          libpsl
+          pcre2
+          zlib))
    ;; TODO: Add libbrotlidec, libnghttp2.
    (native-inputs
     (list pkg-config))

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2019, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2016 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
@@ -348,8 +348,12 @@ The other options should be self-descriptive."
                          (default ""))
 
   ;; list of user-name/file-like tuples
-  (authorized-keys       openssh-authorized-keys
+  (authorized-keys       openssh-configuration-authorized-keys
                          (default '()))
+
+  ;; Boolean
+  (generate-host-keys?   openssh-configuration-generate-host-keys?
+                         (default #t))
 
   ;; Boolean
   ;; XXX: This should really be handled in an orthogonal way, for instance as
@@ -392,7 +396,7 @@ The other options should be self-descriptive."
             (unless (= ENOENT (system-error-errno args))
               (apply throw args))))
         (copy-recursively #$(authorized-key-directory
-                             (openssh-authorized-keys config))
+                             (openssh-configuration-authorized-keys config))
                           "/etc/ssh/authorized_keys.d")
 
         (chmod "/etc/ssh/authorized_keys.d" #o555)
@@ -402,9 +406,10 @@ The other options should be self-descriptive."
             (unless (file-exists? lastlog)
               (touch lastlog))))
 
-        ;; Generate missing host keys.
-        (system* (string-append #$(openssh-configuration-openssh config)
-                                "/bin/ssh-keygen") "-A"))))
+        (when #$(openssh-configuration-generate-host-keys? config)
+          ;; Generate missing host keys.
+          (system* (string-append #$(openssh-configuration-openssh config)
+                                  "/bin/ssh-keygen") "-A")))))
 
 (define (authorized-key-directory keys)
   "Return a directory containing the authorized keys specified in KEYS, a list
@@ -536,10 +541,11 @@ of user-name/file-like tuples."
   (openssh-configuration
    (inherit config)
    (authorized-keys
-    (match (openssh-authorized-keys config)
+    (match (openssh-configuration-authorized-keys config)
       (((users _ ...) ...)
        ;; Build a user/key-list mapping.
-       (let ((user-keys (alist->vhash (openssh-authorized-keys config))))
+       (let ((user-keys (alist->vhash
+                         (openssh-configuration-authorized-keys config))))
          ;; Coalesce the key lists associated with each user.
          (map (lambda (user)
                 `(,user

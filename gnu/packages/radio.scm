@@ -8,6 +8,8 @@
 ;;; Copyright © 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 João Pedro Simas <jpsimas@gmail.com>
 ;;; Copyright © 2021 Jack Hill <jackhill@jackhill.us>
+;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
+;;; Copyright © 2022 Sheng Yang <styang@fastmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -133,7 +135,7 @@ useful in modems implemented with @dfn{digital signal processing} (DSP).")
 (define-public liquid-dsp
   (package
     (name "liquid-dsp")
-    (version "1.3.2")
+    (version "1.4.0")
     (source
      (origin (method git-fetch)
              (uri (git-reference
@@ -141,7 +143,7 @@ useful in modems implemented with @dfn{digital signal processing} (DSP).")
                    (commit (string-append "v" version))))
              (file-name (git-file-name name version))
              (sha256
-              (base32 "1n6dbg13q8ga5qhg1yiszwly4jj0rxqr6f1xwm9waaly5z493xsd"))))
+              (base32 "0mr86z37yycrqwbrmsiayi1vqrgpjq0pn1c3p1qrngipkw45jnn0"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake))
@@ -169,41 +171,49 @@ mathematical operations, and much more.")
     (license license:expat)))
 
 (define-public rtl-sdr
-  (package
-    (name "rtl-sdr")
-    (version "0.6.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://git.osmocom.org/rtl-sdr/")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0lmvsnb4xw4hmz6zs0z5ilsah5hjz29g1s0050n59fllskqr3b8k"))))
-    (build-system cmake-build-system)
-    (inputs
-     (list libusb))
-    (native-inputs
-     (list pkg-config))
-    (arguments
-     `(#:configure-flags '("-DDETACH_KERNEL_DRIVER=ON"
-                           "-DINSTALL_UDEV_RULES=ON")
-       #:tests? #f ; No tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-paths
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "CMakeLists.txt"
-               (("DESTINATION \"/etc/udev/")
-                (string-append "DESTINATION \""
-                               (assoc-ref outputs "out")
-                               "/lib/udev/")))
-             #t)))))
-    (home-page "https://osmocom.org/projects/sdr/wiki/rtl-sdr")
-    (synopsis "Software defined radio driver for Realtek RTL2832U")
-    (description "DVB-T dongles based on the Realtek RTL2832U can be used as a
+  ;; No tagged release since 2018
+  (let ((commit "5e73f90f1d85d8db2e583f3dbf1cff052d71d59b")
+        (revision "1"))
+    (package
+      (name "rtl-sdr")
+      (version (git-version "0.6.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.osmocom.org/rtl-sdr/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "106fwzyr7cba952f3p3wm3hdqzm9zvm0v3gcz4aks2n7fnvrgrvn"))))
+      (build-system cmake-build-system)
+      (inputs
+       (list libusb))
+      (native-inputs
+       (list pkg-config))
+      (arguments
+       `(#:configure-flags '("-DDETACH_KERNEL_DRIVER=ON"
+                             "-DINSTALL_UDEV_RULES=ON")
+         #:tests? #f ; No tests
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-paths
+             (lambda* (#:key outputs #:allow-other-keys)
+               (substitute* "CMakeLists.txt"
+                 (("DESTINATION \"/etc/udev/")
+                  (string-append "DESTINATION \""
+                                 (assoc-ref outputs "out")
+                                 "/lib/udev/")))))
+           (add-after 'fix-paths 'fix-udev-rules
+             (lambda _
+               (substitute* "rtl-sdr.rules"
+                 ;; The plugdev group does not exist; use dialout as in
+                 ;; the hackrf package.
+                 (("GROUP=\"plugdev\"")
+                  "GROUP=\"dialout\"")))))))
+      (home-page "https://osmocom.org/projects/sdr/wiki/rtl-sdr")
+      (synopsis "Software defined radio driver for Realtek RTL2832U")
+      (description "DVB-T dongles based on the Realtek RTL2832U can be used as a
 cheap software defined radio, since the chip allows transferring the raw I/Q
 samples to the host.  @code{rtl-sdr} provides drivers for this purpose.
 
@@ -218,7 +228,7 @@ system configuration:
 
 To install the rtl-sdr udev rules, you must extend 'udev-service-type' with
 this package.  E.g.: @code{(udev-rules-service 'rtl-sdr rtl-sdr)}")
-    (license license:gpl2+)))
+      (license license:gpl2+))))
 
 (define-public airspyhf
   (package
@@ -1113,6 +1123,30 @@ users.")
                            "--with-tcl-binding"
                            "--with-xml-support")))))
 
+(define-public jtdx-hamlib
+  ;; Fork of hamlib with custom patches used by jtdx.
+  (package
+    (inherit hamlib)
+    (name "jtdx-hamlib")
+    (version "2.2.158")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jtdx-project/jtdxhamlib.git")
+             (commit "158")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0m9i5k1n6j0nvmsqcy12x2ngqzjvxxlc3jg29igh93hb7lprlkjv"))))
+    (native-inputs
+     (modify-inputs (package-native-inputs hamlib)
+       (prepend autoconf automake libtool texinfo)))
+    (arguments
+     `(#:configure-flags '("--disable-shared"
+                           "--enable-static"
+                           "--without-cxx-binding"
+                           "--disable-winradio")))))
+
 (define-public tlf
   (package
     (name "tlf")
@@ -1204,6 +1238,47 @@ detecting and measuring your own radio signals reflected from the Moon.  These
 modes were all designed for making reliable, confirmed QSOs under extreme
 weak-signal conditions.")
     (home-page "https://www.physics.princeton.edu/pulsar/k1jt/wsjtx.html")
+    (license license:gpl3)))
+
+(define-public jtdx
+  (package
+    (name "jtdx")
+    (version "2.2.158")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jtdx-project/jtdx")
+             (commit "158")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1lw9q7ggh2jlasipl3v5pkbabysjr6baw15lnmg664ah3fwdrvnx"))))
+    (build-system qt-build-system)
+    (native-inputs
+     (list asciidoc gfortran pkg-config qttools ruby-asciidoctor))
+    (inputs
+     (list
+      boost
+      fftw
+      fftwf
+      jtdx-hamlib
+      libusb
+      qtbase-5
+      qtwebsockets
+      qtmultimedia
+      qtserialport))
+    (arguments
+     `(#:tests? #f)) ; No test suite
+    (synopsis "Weak-signal ham radio communication program, forked from WSJTX")
+    (description
+     "JTDX means \"JT,T10 and FT8 and FT4 modes for DXing\", it is being
+developed with main focus on the sensitivity and decoding efficiency, both, in
+overcrowded and half empty HF band conditions.
+
+It is modified WSJT-X software forked from WSJT-X r6462.  JTDX supports JT9,
+JT65, T10, FT8 and FT4 © digital modes for HF amateur radio communication,
+focused on DXing and being shaped by community of DXers.JTDX")
+    (home-page "https://www.jtdx.tech/en/")
     (license license:gpl3)))
 
 (define-public js8call
@@ -1758,7 +1833,7 @@ receiver.")
 (define-public welle-io
   (package
     (name "welle-io")
-    (version "2.3")
+    (version "2.4")
     (source
      (origin
        (method git-fetch)
@@ -1767,7 +1842,7 @@ receiver.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xl1lanw0xgmgks67dbfb2h52jxnrd1i2zik56v0q8dwsr7f0daw"))))
+        (base32 "0vl98pciw6xzcxyprcb4613rxn0i202f104lmy900jrny0pq4y65"))))
     (build-system qt-build-system)
     (native-inputs
      (list pkg-config))

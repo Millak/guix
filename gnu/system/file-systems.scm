@@ -60,6 +60,7 @@
             file-system-location
 
             file-system-type-predicate
+            file-system-mount-point-predicate
             btrfs-subvolume?
             btrfs-store-subvolume-file-name
 
@@ -670,6 +671,12 @@ a bind mount."
 system has the given TYPE."
   (lambda (fs)
     (string=? (file-system-type fs) type)))
+
+(define (file-system-mount-point-predicate mount-point)
+  "Return a predicate that, when passed a file system, returns #t if that file
+system has the given MOUNT-POINT."
+  (lambda (fs)
+    (string=? (file-system-mount-point fs) mount-point)))
 
 
 ;;;

@@ -181,7 +181,7 @@ MODULES and taken from LINUX."
   "Return as a file-like object a raw initrd, with kernel
 modules taken from LINUX.  FILE-SYSTEMS is a list of file-systems to be
 mounted by the initrd, possibly in addition to the root file system specified
-on the kernel command line via '--root'. LINUX-MODULES is a list of kernel
+on the kernel command line via 'root'.  LINUX-MODULES is a list of kernel
 modules to be loaded at boot time. MAPPED-DEVICES is a list of device
 mappings to realize before FILE-SYSTEMS are mounted.
 HELPER-PACKAGES is a list of packages to be copied in the initrd. It may include
@@ -375,7 +375,7 @@ FILE-SYSTEMS."
   "Return as a file-like object a generic initrd, with kernel
 modules taken from LINUX.  FILE-SYSTEMS is a list of file-systems to be
 mounted by the initrd, possibly in addition to the root file system specified
-on the kernel command line via '--root'.  MAPPED-DEVICES is a list of device
+on the kernel command line via 'root'.  MAPPED-DEVICES is a list of device
 mappings to realize before FILE-SYSTEMS are mounted.
 
 When true, KEYBOARD-LAYOUT is a <keyboard-layout> record denoting the desired

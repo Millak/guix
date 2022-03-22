@@ -287,7 +287,7 @@ list so that each keys of a given technology are gathered in a separate list."
 
 (define (connman-online?)
   (let ((state (connman-state)))
-    (eq? state 'online)))
+    (memq state '(ready online))))
 
 (define (connman-connect-with-auth service password-proc)
   "Connect to the given SERVICE with the password returned by calling

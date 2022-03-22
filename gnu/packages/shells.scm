@@ -16,7 +16,7 @@
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;;
@@ -115,7 +115,7 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
 (define-public fish
   (package
     (name "fish")
-    (version "3.2.2")
+    (version "3.3.1")
     (source
      (origin
        (method url-fetch)
@@ -123,7 +123,7 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
                            "releases/download/" version "/"
                            "fish-" version ".tar.xz"))
        (sha256
-        (base32 "02a0dgz5cy4iv3ysvl5kzzd4ji8pxqv93zd45041plcki0ddli2r"))
+        (base32 "12dfkyqv5vm52i1fifz91h8f8xg60xjvv94kx6xjqxk9a8dfxd5m"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -148,6 +148,12 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((coreutils (assoc-ref inputs "coreutils"))
                    (bash (assoc-ref inputs "bash")))
+               ;; This test sporadically fails in the build container
+               ;; because of leftover zombie processes, which are not
+               ;; reaped automatically:
+;; "Found existing zombie processes. Clean up zombies before running this test."
+               ;; Disabling parallel tests does not reliably prevent it.
+               (delete-file "tests/checks/jobs.fish")
                ;; This test fails.
                (delete-file "tests/checks/pipeline-pgroup.fish")
                ;; This one tries to open a terminal & can't simply be deleted.
@@ -463,7 +469,7 @@ history mechanism, job control and a C-like syntax.")
 (define-public zsh
   (package
     (name "zsh")
-    (version "5.8")
+    (version "5.8.1")
     (source (origin
               (method url-fetch)
               (uri (list (string-append
@@ -474,7 +480,7 @@ history mechanism, job control and a C-like syntax.")
                            ".tar.xz")))
               (sha256
                (base32
-                "09yyaadq738zlrnlh1hd3ycj1mv3q5hh4xl1ank70mjnqm6bbi6w"))))
+                "06crvpqbpm8sq5c215f4b985z7npwnqnj0i0g53hnq6fp8h3b5xn"))))
     (build-system gnu-build-system)
     (arguments `(#:configure-flags
                  `("--with-tcsetpgrp"

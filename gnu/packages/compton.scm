@@ -111,7 +111,7 @@ performance).
 (define-public picom
   (package
     (name "picom")
-    (version "9")
+    (version "9.1")
     (source
      (origin
        (method git-fetch)
@@ -120,7 +120,7 @@ performance).
              (commit (string-append "v" version))))
        (sha256
         (base32
-         "0s3rf0lmkhhprx6vd5wsz1n0n55nprq6l1245pj525hrwxc1yvna"))
+         "0q7j6kh9k7i201cwhnfc3bmp0hqrx7ngk3v4qsp8k0qfy1n3ma8n"))
        (file-name (string-append "picom-" version))))
     (build-system meson-build-system)
     (inputs

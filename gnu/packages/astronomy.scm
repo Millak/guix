@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 by Amar Singh <nly@disroot.org>
 ;;; Copyright © 2020 R Veera Kumar <vkor@vkten.in>
 ;;; Copyright © 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
@@ -297,7 +297,7 @@ astronomical image-processing packages like Drizzle, Swarp or SExtractor.")
 (define-public gnuastro
   (package
     (name "gnuastro")
-    (version "0.16")
+    (version "0.17")
     (source
      (origin
        (method url-fetch)
@@ -305,19 +305,19 @@ astronomical image-processing packages like Drizzle, Swarp or SExtractor.")
                            version ".tar.lz"))
        (sha256
         (base32
-         "07xr0r5dmjpnrz7ylf7k3vmjjna2jafi16lfvkqwxj9fyssmz207"))))
+         "1gq37axs9l556pxxmnh47h088gbmp7sk3xjg59qzk2bsycg3dkgh"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")))
     (inputs
-     `(("cfitsio" ,cfitsio)
-       ("curl" ,curl-minimal)
-       ("gsl" ,gsl)
-       ("libgit2" ,libgit2)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libtiff" ,libtiff)
-       ("wcslib" ,wcslib)
-       ("zlib" ,zlib)))
+     (list cfitsio
+           curl-minimal
+           gsl
+           libgit2
+           libjpeg-turbo
+           libtiff
+           wcslib
+           zlib))
     (native-inputs
      (list libtool lzip))
     (home-page "https://www.gnu.org/software/gnuastro/")
@@ -614,13 +614,13 @@ accurately in real time at any rate desired.")
 (define-public python-astropy
   (package
     (name "python-astropy")
-    (version "5.0")
+    (version "5.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astropy" version))
        (sha256
-        (base32 "09rr9z2kn5qw34fqpwxgcwsn9m5aw6f0dd0pm232aa8k3qakw83h"))
+        (base32 "09wh589ywjsgjvi76v2d2zqd9sri0461rrnml0b0pah5lbkcv0k3"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -826,21 +826,20 @@ of astronomical sources.")
 (define-public python-pyvo
   (package
     (name "python-pyvo")
-    (version "1.2")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyvo" version))
        (sha256
-        (base32 "1lap703wxbyxqlbk85myirp4pkdnc6cg10xhfajfsvz5k0hm5ffw"))))
+        (base32 "1ri5yp6903386lkn79mdcmlax7zsfrrrjbcvb91wxydcc9yasc1n"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
+     '(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+           (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (add-installed-pythonpath inputs outputs)
                (invoke "python" "-m" "pytest" "--pyargs" "pyvo" "-k"
                        (string-append   ; these tests use the network
                         "not test_access_with_string"

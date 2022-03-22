@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 Ryan Moe <ryan.moe@gmail.com>
-;;; Copyright © 2018, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018, 2020-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020,2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Timotej Lazar <timotej.lazar@araneo.si>
 ;;;
@@ -866,23 +866,23 @@ functionality of the kernel Linux.")))
    "Path to device or socket used to communicate with the host.  If not
 specified, the QEMU default path is used."))
 
-(define qemu-guest-agent-shepherd-service
-  (match-lambda
-    (($ <qemu-guest-agent-configuration> qemu device)
-     (list
-      (shepherd-service
-       (provision '(qemu-guest-agent))
-       (documentation "Run the QEMU guest agent.")
-       (start #~(make-forkexec-constructor
-                 `(,(string-append #$qemu "/bin/qemu-ga") "--daemon"
-                   "--pidfile=/var/run/qemu-ga.pid"
-                   "--statedir=/var/run"
-                   ,@(if #$device
-                         (list (string-append "--path=" #$device))
-                         '()))
-                 #:pid-file "/var/run/qemu-ga.pid"
-                 #:log-file "/var/log/qemu-ga.log"))
-       (stop #~(make-kill-destructor)))))))
+(define (qemu-guest-agent-shepherd-service config)
+  (let ((qemu   (qemu-guest-agent-configuration-qemu config))
+        (device (qemu-guest-agent-configuration-device config)))
+    (list
+     (shepherd-service
+      (provision '(qemu-guest-agent))
+      (documentation "Run the QEMU guest agent.")
+      (start #~(make-forkexec-constructor
+                `(,(string-append #$qemu "/bin/qemu-ga") "--daemon"
+                  "--pidfile=/var/run/qemu-ga.pid"
+                  "--statedir=/var/run"
+                  ,@(if #$device
+                        (list (string-append "--path=" #$device))
+                        '()))
+                #:pid-file "/var/run/qemu-ga.pid"
+                #:log-file "/var/log/qemu-ga.log"))
+      (stop #~(make-kill-destructor))))))
 
 (define qemu-guest-agent-service-type
   (service-type
@@ -946,12 +946,20 @@ can only be accessed by their host.")))
 that will be listening to receive secret keys on port 1004, TCP."
   (operating-system
     (inherit os)
-    ;; Arrange so that the secret service activation snippet shows up before
-    ;; the OpenSSH and Guix activation snippets.  That way, we receive OpenSSH
-    ;; and Guix keys before the activation snippets try to generate fresh keys
-    ;; for nothing.
-    (services (append (operating-system-user-services os)
-                      (list (service secret-service-type 1004))))))
+    (services
+     ;; Turn off SSH and Guix key generation that normally happens during
+     ;; activation: that requires entropy and thus takes time during boot, and
+     ;; those keys are going to be overwritten by secrets received from the
+     ;; host anyway.
+     (cons (service secret-service-type 1004)
+           (modify-services (operating-system-user-services os)
+             (openssh-service-type
+              config => (openssh-configuration
+                         (inherit config)
+                         (generate-host-keys? #f)))
+             (guix-service-type
+              config => (guix-configuration
+                         (generate-substitute-key? #f))))))))
 
 
 ;;;

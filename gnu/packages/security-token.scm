@@ -15,6 +15,7 @@
 ;;; Copyright © 2021 Dhruvin Gandhi <contact@dhruvin.dev>
 ;;; Copyright © 2021 Ahmad Jarara <git@ajarara.io>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -722,6 +723,84 @@ that after installing this package, you might still need to add appropriate
 udev rules to your system configuration to be able to configure the YubiKey as
 an unprivileged user.")
     (license license:bsd-2)))
+
+(define-public libnitrokey
+  (package
+    (name "libnitrokey")
+    (version "3.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Nitrokey/libnitrokey")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ngrvv61d36vvfwrfg0qxmp2wg18v4aaldwvwzgxvwaysjswhn9r"))))
+    (build-system cmake-build-system)
+    (arguments
+     ;; These tests do not require any device to be connected
+     '(#:configure-flags (list "-DCOMPILE_OFFLINE_TESTS=ON")))
+    (native-inputs (list catch-framework2 doxygen graphviz pkg-config))
+    (inputs (list hidapi libusb))
+    (home-page "https://github.com/Nitrokey/libnitrokey")
+    (synopsis "Communication library for Nitrokey")
+    (description "This packate provides communication library for Nitrokey.")
+    (license license:lgpl3+)))
+
+(define-public cppcodec
+  (package
+    (name "cppcodec")
+    (version "0.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/tplgy/cppcodec")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0z39f8w0zvra874az0f67ck1al9kbpaidpilggbl8jnfs05010ck"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:configure-flags (list "-DBUILD_TESTING=on")))
+    (native-inputs (list pkg-config qttools))
+    (inputs (list catch-framework2))
+    (home-page "https://github.com/tplgy/cppcodec")
+    (synopsis "Header library to encode/decode base64, base64url, etc.")
+    (description "This package provides library to encode/decode base64,
+base64url, base32, base32hex and hex.")
+    (license license:expat)))
+
+(define-public nitrokey-app
+  (package
+    (name "nitrokey-app")
+    (version "1.4.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Nitrokey/nitrokey-app")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1imbvaf0yncz36ckjr99x94jwg2hnid49hsiqlxsv7ccxgk058bk"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f)) ;no test suite
+    (native-inputs (list pkg-config qttools))
+    (inputs (list cppcodec
+                  hidapi
+                  libnitrokey
+                  libusb
+                  qtbase-5
+                  qtsvg))
+    (home-page "https://github.com/Nitrokey/nitrokey-app")
+    (synopsis "GUI tool for Nitrokey devices")
+    (description
+     "This package provides GUI tool that interfaces with Nitrokey Pro
+v0.7/v0.8 and Nitrokey Storage devices.")
+    (license license:gpl3+)))
 
 (define-public nitrocli
   (package

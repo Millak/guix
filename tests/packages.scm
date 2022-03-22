@@ -508,6 +508,16 @@
     (and (supported-package? p "x86_64-linux")
          (supported-package? p "armhf-linux"))))
 
+(test-assert "supported-package? vs. %current-target-system"
+  ;; The %CURRENT-TARGET-SYSTEM value should have no influence.
+  (parameterize ((%current-target-system "arm-linux-gnueabihf"))
+    (let ((p (dummy-package "foo"
+               (build-system gnu-build-system)
+               (supported-systems '("x86_64-linux" "armhf-linux")))))
+      (and (supported-package? p "x86_64-linux")
+           (not (supported-package? p "i686-linux"))
+           (supported-package? p "armhf-linux")))))
+
 (test-skip (if (not %store) 8 0))
 
 (test-assert "package-source-derivation, file"
@@ -1945,6 +1955,47 @@
   (package-arguments
    (dummy-package "a"
      (arguments (this-package-native-input "hello")))))
+
+(test-eq "modify-inputs, replace"
+  coreutils
+  ;; Replace an input; notice that the label in unchanged.
+  (let* ((p1 (dummy-package "p"
+               (inputs (list hello))))
+         (p2 (package
+               (inherit p1)
+               (version "1")
+               (inputs (modify-inputs (package-inputs p1)
+                         (replace "hello" coreutils))))))
+    (lookup-package-input p2 "hello")))
+
+(test-eq "modify-inputs, replace, change output"
+  guile-3.0
+  ;; Replace an input and choose a different output.
+  (let* ((p1 (dummy-package "p"
+               (inputs (list `(,coreutils "debug")))))
+         (p2 (package
+               (inherit p1)
+               (version "1")
+               (inputs (modify-inputs (package-inputs p1)
+                         (replace "coreutils" `(,guile-3.0 "out")))))))
+    (match (package-inputs p2)
+      ((("coreutils" input "out"))
+       input))))
+
+(test-eq "modify-inputs, replace, extra output"
+  guile-3.0
+  ;; Replace an input; notice that its output is preserved.
+  ;; See <https://issues.guix.gnu.org/53915>.
+  (let* ((p1 (dummy-package "p"
+               (inputs (list `(,coreutils "debug")))))
+         (p2 (package
+               (inherit p1)
+               (version "1")
+               (inputs (modify-inputs (package-inputs p1)
+                         (replace "coreutils" guile-3.0))))))
+    (match (package-inputs p2)
+      ((("coreutils" input "debug"))
+       input))))
 
 (test-end "packages")
 

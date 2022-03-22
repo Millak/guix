@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014-2022 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2021-2022 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,6 +28,7 @@
   #:use-module (guix tests)
   #:use-module ((guix build utils) #:select (with-directory-excursion))
   #:use-module ((guix utils) #:select (call-with-temporary-directory))
+  #:use-module ((guix ui) #:select (load*))
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bootstrap)
@@ -120,6 +121,19 @@
   (let ((inside (file-append coreutils "/bin/hello")))
     (gexp->approximate-sexp #~(display '#$inside))))
 
+;; See <https://issues.guix.gnu.org/54236>.
+(test-equal "unquoted sexp (not a gexp!)"
+  '(list #(foo) (foo) () "foo" foo #xf00)
+  (let ((inside/vector #(foo))
+        (inside/list '(foo))
+        (inside/empty '())
+        (inside/string "foo")
+        (inside/symbol 'foo)
+        (inside/number #xf00))
+    (gexp->approximate-sexp
+     #~(list #$inside/vector #$inside/list #$inside/empty #$inside/string
+             #$inside/symbol #$inside/number))))
+
 (test-equal "no refs"
   '(display "hello!")
   (let ((exp (gexp (display "hello!"))))
@@ -133,6 +147,11 @@
     (and (gexp? exp)
          (null? (gexp-inputs exp))
          (gexp->sexp* exp))))
+
+(test-equal "gexp->approximate-sexp, outputs"
+  '(list 'out:foo (*approximate*) 'out:bar (*approximate*))
+  (gexp->approximate-sexp
+   #~(list 'out:foo #$output:foo 'out:bar #$output:bar)))
 
 (test-equal "unquote"
   '(display `(foo ,(+ 2 3)))
@@ -221,6 +240,32 @@
     (with-directory-excursion directory
       (let ((file (local-file (string-copy "../base32.scm"))))
         (local-file-absolute-file-name file)))))
+
+(test-assert "local-file, relative file name, within gexp"
+  (let* ((file     (search-path %load-path "guix/base32.scm"))
+         (interned (add-to-store %store "base32.scm" #f "sha256" file)))
+    (equal? `(the file is ,interned)
+            (gexp->sexp*
+             #~(the file is #$(local-file "../guix/base32.scm"))))))
+
+(test-assert "local-file, relative file name, within gexp, compiled"
+  ;; In Guile 3.0.8, everything read by the #~ and #$ read hash extensions
+  ;; would lack source location info, which in turn would lead
+  ;; (current-source-directory), called by 'local-file', to return #f, thereby
+  ;; breaking 'local-file' resolution.  See
+  ;; <https://issues.guix.gnu.org/54003>.
+  (let ((file (tmpnam)))
+    (call-with-output-file file
+      (lambda (port)
+        (display (string-append "#~(this file is #$(local-file \""
+                                (basename file) "\" \"t.scm\"))")
+                 port)))
+
+    (let* ((interned (add-to-store %store "t.scm" #f "sha256" file))
+           (module   (make-fresh-user-module)))
+      (module-use! module (resolve-interface '(guix gexp)))
+      (equal? `(this file is ,interned)
+              (gexp->sexp* (load* file module))))))
 
 (test-assertm "local-file, #:select?"
   (mlet* %store-monad ((select? -> (lambda (file stat)
@@ -1538,6 +1583,28 @@ importing.* \\(guix config\\) from the host"
                                       (derivation-system drv))))
                              (cons (derivation-file-name drv)
                                    refs))))))))
+
+(test-assertm "lower-object, computed-file, #:target"
+  (let* ((target   "i586-pc-gnu")
+         (computed (computed-file "computed-cross"
+                                  #~(symlink #$coreutils output)
+                                  #:guile (default-guile))))
+    ;; When lowered to TARGET, the derivation of COMPUTED should run natively,
+    ;; using a native Guile, but it should refer to the target COREUTILS.
+    (mlet* %store-monad ((drv    (lower-object computed (%current-system)
+                                               #:target target))
+                         (refs   (references* (derivation-file-name drv)))
+                         (guile  (lower-object (default-guile)
+                                               (%current-system)
+                                               #:target #f))
+                         (cross  (lower-object coreutils #:target target))
+                         (native (lower-object coreutils #:target #f)))
+      (return (and (string=? (derivation-system (pk 'drv drv)) (%current-system))
+                   (string=? (derivation-builder drv)
+                             (string-append (derivation->output-path guile)
+                                            "/bin/guile"))
+                   (not (member (derivation-file-name native) refs))
+                   (member (derivation-file-name cross) refs))))))
 
 (test-assert "lower-object & gexp-input-error?"
   (guard (c ((gexp-input-error? c)

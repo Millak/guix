@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016, 2017, 2018 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2017 Ben Woodcroft <donttrustben@gmail.com>
-;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021-2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -216,13 +216,13 @@ pre-defined variants."
          (host-inputs `(,@(if source
                               `(("source" ,source))
                               '())
-                        ,@inputs
-
-                        ;; Keep the standard inputs of 'gnu-build-system'.
-                        ,@(standard-packages)))
+                        ,@inputs))
          (build-inputs `(("ocaml" ,ocaml)
                          ("findlib" ,findlib)
-                         ,@native-inputs))
+                         ,@native-inputs
+
+                         ;; Keep the standard inputs of 'gnu-build-system'.
+                         ,@(standard-packages)))
          (outputs outputs)
          (build ocaml-build)
          (arguments (strip-keyword-arguments private-keywords arguments)))))

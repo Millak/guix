@@ -34,6 +34,7 @@
   #:use-module (guix store)
   #:autoload   (guix base16) (bytevector->base16-string)
   #:use-module (guix base32)
+  #:use-module (guix build-system)
   #:use-module (guix diagnostics)
   #:use-module (guix download)
   #:use-module (guix ftp-client)
@@ -279,6 +280,16 @@ superfluous when building natively and incorrect when cross-compiling."
              (eq? tests? #t))
            (package-arguments package)))
   (if (and (tests-explicitly-enabled?)
+           ;; emacs-build-system sets #:tests? #f by default, therefore
+           ;; writing #:tests? #t in package definitions using
+           ;; emacs-build-system is reasonable.  Likewise for
+           ;; texlive-build-system.
+           ;;
+           ;; Compare the name of the build system instead of the build system
+           ;; itself to avoid loading unnecessary modules when only a few
+           ;; modules are linted.
+           (not (memq (build-system-name (package-build-system package))
+                      '(emacs texlive)))
            ;; Some packages, e.g. gnutls, set #:tests?
            ;; differently depending on whether it is being
            ;; cross-compiled.

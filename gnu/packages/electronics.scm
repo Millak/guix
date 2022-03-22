@@ -56,7 +56,8 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages sqlite)
-  #:use-module (gnu packages stb))
+  #:use-module (gnu packages stb)
+  #:use-module (gnu packages toolkits))
 
 (define-public libserialport
   (package
@@ -251,7 +252,7 @@ supported devices, as well as input/output file format support.")
 (define-public openboardview
   (package
     (name "openboardview")
-    (version "8.95.1")
+    (version "8.95.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -264,19 +265,17 @@ supported devices, as well as input/output file format support.")
                          (guix build utils)))
               (snippet
                '(with-directory-excursion "src"
-                  ;; Keep the bundled ImGui for now, as in the current version
-                  ;; (~1.79), it requires the glad loader generated at build
-                  ;; time as an input.
-                  (define keep (list "." ".." "imgui" "openboardview"))
+                  (define keep (list "." ".." "openboardview"))
                   (for-each (lambda (f)
                               (when (eq? 'directory (stat:type (lstat f)))
                                 (delete-file-recursively f)))
                             (scandir "." (negate (cut member <> keep))))))
               (patches
-               (search-patches "openboardview-use-system-utf8.patch"))
+               (search-patches "openboardview-use-system-imgui.patch"
+                               "openboardview-use-system-utf8.patch"))
               (sha256
                (base32
-                "16mrs7bimwp8a8lb2wqhfisy6j0hl9574l4h9yb66v46aglvmd3h"))))
+                "1n2yfi8wpky0y231kq2zdgwn7f7kff8m53m904hxi5ppmwhx1d6q"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -288,17 +287,6 @@ supported devices, as well as input/output file format support.")
                   ((guix build glib-or-gtk-build-system) #:prefix gtk:))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'remove-timestamps
-            (lambda _
-              ;; The __TIMESTAMP__ CPP macro does apparently not honor
-              ;; SOURCE_EPOCH_DATE.  Patch it to use __DATE__ instead, which
-              ;; does (see:
-              ;; https://github.com/OpenBoardView/OpenBoardView/issues/229 and
-              ;; https://issues.guix.gnu.org/53647).
-              (substitute* '("src/openboardview/BoardView.cpp"
-                             "src/openboardview/main_opengl.cpp")
-                (("__TIMESTAMP__")
-                 "__DATE__"))))
           (add-before 'configure 'configure-glad
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "src/CMakeLists.txt"
@@ -340,6 +328,7 @@ supported devices, as well as input/output file format support.")
     (inputs
      (list fontconfig
            gtk+
+           imgui
            sdl2
            sqlite
            zlib))

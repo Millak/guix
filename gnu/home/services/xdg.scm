@@ -190,11 +190,11 @@ pre-populated content.")
    "Default directory for videos."))
 
 (define (home-xdg-user-directories-files-service config)
-  `(("config/user-dirs.conf"
+  `(("user-dirs.conf"
      ,(mixed-text-file
        "user-dirs.conf"
        "enabled=False\n"))
-    ("config/user-dirs.dirs"
+    ("user-dirs.dirs"
      ,(mixed-text-file
        "user-dirs.dirs"
       (serialize-configuration
@@ -218,7 +218,7 @@ pre-populated content.")
   (service-type (name 'home-xdg-user-directories)
                 (extensions
                  (list (service-extension
-                        home-files-service-type
+                        home-xdg-configuration-files-service-type
                         home-xdg-user-directories-files-service)
                        (service-extension
                         home-activation-service-type
@@ -374,7 +374,7 @@ configuration."
             "=" val "\n")))
 
   (define (serialize-alist config)
-    (generic-serialize-alist identity format-config config))
+    (generic-serialize-alist append format-config config))
 
   (define (serialize-xdg-desktop-action action)
     (match action
@@ -417,7 +417,7 @@ that the application cannot open the specified MIME type.")
    "A list of XDG desktop entries to create.  See
 @code{xdg-desktop-entry}."))
 
-(define (home-xdg-mime-applications-files-service config)
+(define (home-xdg-mime-applications-files config)
   (define (add-xdg-desktop-entry-file entry)
     (let ((file (first entry))
           (config (second entry)))
@@ -425,16 +425,16 @@ that the application cannot open the specified MIME type.")
           (apply mixed-text-file
                  (format #f "xdg-desktop-~a-entry" file)
                  config))))
+  (map (compose add-xdg-desktop-entry-file serialize-xdg-desktop-entry)
+       (home-xdg-mime-applications-configuration-desktop-entries config)))
 
-  (append
-   `(("config/mimeapps.list"
-      ,(mixed-text-file
-        "xdg-mime-appplications"
-        (serialize-configuration
-         config
-         home-xdg-mime-applications-configuration-fields))))
-   (map (compose add-xdg-desktop-entry-file serialize-xdg-desktop-entry)
-        (home-xdg-mime-applications-configuration-desktop-entries config))))
+(define (home-xdg-mime-applications-xdg-files config)
+  `(("mimeapps.list"
+     ,(mixed-text-file
+       "xdg-mime-appplications"
+       (serialize-configuration
+        config
+        home-xdg-mime-applications-configuration-fields)))))
 
 (define (home-xdg-mime-applications-extension old-config extension-configs)
   (define (extract-fields config)
@@ -469,7 +469,10 @@ that the application cannot open the specified MIME type.")
                 (extensions
                  (list (service-extension
                         home-files-service-type
-                        home-xdg-mime-applications-files-service)))
+                        home-xdg-mime-applications-files)
+                       (service-extension
+                        home-xdg-configuration-files-service-type
+                        home-xdg-mime-applications-xdg-files)))
                 (compose identity)
                 (extend home-xdg-mime-applications-extension)
                 (default-value (home-xdg-mime-applications-configuration))

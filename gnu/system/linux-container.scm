@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
-;;; Copyright © 2016, 2017, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2017, 2019-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Google LLC
@@ -248,11 +248,13 @@ that will be shared with the host system."
 (define* (eval/container exp
                          #:key
                          (mappings '())
-                         (namespaces %namespaces))
+                         (namespaces %namespaces)
+                         (guest-uid 0) (guest-gid 0))
   "Evaluate EXP, a gexp, in a new process executing in separate namespaces as
 listed in NAMESPACES.  Add MAPPINGS, a list of <file-system-mapping>, to the
-set of directories visible in the process's mount namespace.  Return the
-process' exit status as a monadic value.
+set of directories visible in the process's mount namespace.  Inside the
+namespaces, run code as GUEST-UID and GUEST-GID.  Return the process' exit
+status as a monadic value.
 
 This is useful to implement processes that, unlike derivations, are not
 entirely pure and need to access the outside world or to perform side
@@ -291,4 +293,7 @@ effects."
                                                 lowered))
                                    (list "-c"
                                          (object->string
-                                          (lowered-gexp-sexp lowered))))))))))))
+                                          (lowered-gexp-sexp lowered))))))
+                  #:namespaces namespaces
+                  #:guest-uid guest-uid
+                  #:guest-gid guest-gid))))))

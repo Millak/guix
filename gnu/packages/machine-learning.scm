@@ -3034,52 +3034,7 @@ PyTorch when needed.
 Note: currently this package does not provide GPU support.")
     (license license:bsd-3)))
 
-(define-public python-pytorch-for-r-torch
-  (package
-    (inherit python-pytorch)
-    (name "python-pytorch")
-    (version "1.9.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/pytorch/pytorch")
-                    (commit (string-append "v" version))
-                    (recursive? #t)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0cznsh68hwk5761gv7iijb4g6jgjpvs3bbixwpzzmkbkbn2q96c1"))
-              (patches (search-patches "python-pytorch-1.9.0-system-libraries.patch"
-                                       "python-pytorch-runpath.patch"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; XXX: Let's be clear: this package is a bundling fest.  We
-                  ;; delete as much as we can, but there's still a lot left.
-                  (for-each (lambda (directory)
-                              (delete-file-recursively
-                               (string-append "third_party/" directory)))
-                            '("benchmark" "cpuinfo" "eigen"
-
-                              ;; FIXME: QNNPACK (of which XNNPACK is a fork)
-                              ;; needs these.
-                              ;; "FP16" "FXdiv" "gemmlowp" "psimd"
-
-                              "gloo" "googletest" "ios-cmake" "NNPACK"
-                              "onnx" "protobuf" "pthreadpool"
-                              "pybind11" "python-enum" "python-peachpy"
-                              "python-six" "tbb" "XNNPACK" "zstd"))
-
-                  ;; Adjust references to the onnx-optimizer headers.
-                  (substitute* "caffe2/onnx/backend.cc"
-                    (("onnx/optimizer/")
-                     "onnxoptimizer/"))))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments python-pytorch)
-       ((#:phases phases '%standard-phases)
-        `(modify-phases ,phases
-           ;; No module named 'onnx.optimizer'
-           (delete 'sanity-check)))))))
+(define-public python-pytorch-for-r-torch python-pytorch)
 
 (define-public python-hmmlearn
   (package
@@ -3118,7 +3073,7 @@ of Hidden Markov Models.")
 (define-public liblantern
   (package
     (name "liblantern")
-    (version "0.6.0")
+    (version "0.7.2")
     (source
      (origin
        (method git-fetch)
@@ -3127,7 +3082,7 @@ of Hidden Markov Models.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gabwic46m4m7qld1yi4brw05n9jx58ri3y0pi6jf9jndfi1qnfp"))))
+        (base32 "1nam375ych4nr7gk2dpbnzlanr2jc7akqjhmfs0ar9l34zmzz9m9"))))
     (build-system cmake-build-system)
     (arguments
      (list

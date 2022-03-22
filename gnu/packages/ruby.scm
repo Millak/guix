@@ -200,6 +200,20 @@ a focus on simplicity and productivity.")
         (base32
          "0h2w2ms4gx2s96v3lzdr3add94bd2qqkhdjzaycmaqhg21rpf3jp"))))))
 
+(define-public ruby-3.1
+  (package
+    (inherit ruby-2.7)
+    (version "3.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://cache.ruby-lang.org/pub/ruby/"
+                           (version-major+minor version)
+                           "/ruby-" version ".tar.xz"))
+       (sha256
+        (base32
+         "1akcl7vhmwfm6ybj7493kzy58ykh2r39ri9f4xfm2xmhg1msmvvs"))))))
+
 (define-public ruby-2.5
   (package
     (inherit ruby-2.6)
@@ -7358,11 +7372,11 @@ library.")
         (base32
          "14a5kxfnf8l3ngyk8hgmk30z07aj1324ll8i48z67ps6pz2kpsrg"))))
     (build-system ruby-build-system)
-    (arguments '(#:tests? #t
-                 #:phases (modify-phases %standard-phases
+    (arguments '(#:phases (modify-phases %standard-phases
                             (replace 'check
-                              (lambda _
-                                (invoke "rspec"))))))
+                              (lambda* (#:key tests? #:allow-other-keys)
+                                (when tests?
+                                  (invoke "rspec")))))))
     (native-inputs
      (list ruby-rspec))
     (propagated-inputs
@@ -7486,7 +7500,8 @@ navigation capabilities to @code{pry}, using @code{byebug}.")
        (modify-phases %standard-phases
          (add-before 'check 'skip-dubious-test
            (lambda _
-             ,@(if (target-riscv64?)
+             ,@(if (or (target-riscv64?)
+                       (target-ppc32?))
                  ;; This unreliable test can fail with "Expected 32 to be <= 25."
                  '((substitute* "test/test_stackprof.rb"
                      ((".*assert_operator profile\\[:missed_samples.*") "")))
@@ -8265,8 +8280,8 @@ definitions.")
     (inherit ruby-yard)
     (name "ruby-yard-with-tests")
     (arguments
-     (substitute-keyword-arguments (package-arguments ruby-yard)
-       ((#:tests? _ #t) #t)
+     (substitute-keyword-arguments
+         (strip-keyword-arguments '(#:tests?) (package-arguments ruby-yard))
        ((#:test-target _ "default") "default")
        ((#:phases phases '%standard-phases)
         `(modify-phases ,phases
@@ -8279,13 +8294,8 @@ definitions.")
                  (delete-file "Gemfile")
                  ;; $HOME needs to be set to somewhere writeable for tests to
                  ;; run.
-                 (setenv "HOME" "/tmp"))
-               #t))))))
-    (native-inputs
-     `(("ruby-rspec" ,ruby-rspec)
-       ("ruby-rack" ,ruby-rack)
-       ("ruby-redcloth" ,ruby-redcloth)
-       ("ruby-asciidoc" ,ruby-asciidoctor)))))
+                 (setenv "HOME" "/tmp"))))))))
+    (native-inputs (list ruby-rspec ruby-rack ruby-redcloth ruby-asciidoctor))))
 
 (define-public ruby-spectroscope
   (package

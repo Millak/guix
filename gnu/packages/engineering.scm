@@ -19,7 +19,7 @@
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020, 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
-;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020, 2021 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021 Gerd Heber <gerd.heber@gmail.com>
@@ -28,6 +28,7 @@
 ;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 Evgeny Pisemsky <evgeny@pisemsky.com>
+;;; Copyright © 2022 Olivier Dion <olivier.dion@polymtl.ca>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1270,24 +1271,24 @@ use on a given system.")
 (define-public libredwg
   (package
     (name "libredwg")
-    (version "0.12.4")
+    (version "0.12.5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://gnu/libredwg/libredwg-"
-             version ".tar.xz"))
+                           version ".tar.xz"))
        (sha256
-        (base32 "05v5k8fkx4z1p81x9kna7nlzmyx09dn686rj2zprnkf337qmg24i"))))
+        (base32 "1gginbl76vmpccjwx93cmg8ibap8l40swly3bjv7rhmdwv6ikpnk"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--disable-bindings")))
     (native-inputs
-     `(("libxml2" ,libxml2)
-       ("parallel" ,parallel)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
-       ("python-libxml2" ,python-libxml2)))
+     (list libxml2
+           parallel
+           perl
+           pkg-config
+           python-wrapper
+           python-libxml2))
     (inputs
      (list pcre2))
     (home-page "https://www.gnu.org/software/libredwg/")
@@ -1550,16 +1551,16 @@ language, ADMS transforms Verilog-AMS code into other target languages.")
 (define-public capstone
   (package
     (name "capstone")
-    (version "3.0.5")
+    (version "4.0.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/aquynh/capstone")
-                     (commit version)))
+                    (url "https://github.com/capstone-engine/capstone")
+                    (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0dgf82kxj4rs45d6s8sr984c38sll1n5scpypjlyh21gh2yl4qfw"))))
+                "0y5g74yjyliciawpn16zhdwya7bd3d7b1cccpcccc2wg8vni1k2w"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f
@@ -1571,10 +1572,10 @@ language, ADMS transforms Verilog-AMS code into other target languages.")
          ;; cstool's Makefile ‘+=’s LDFLAGS, so we cannot pass it as a make flag.
          (add-before 'build 'fix-cstool-ldflags
            (lambda* (#:key outputs #:allow-other-keys)
-             (setenv "LDFLAGS"  (string-append "-Wl,-rpath="
-                                               (assoc-ref outputs "out") "/lib"))
-             #t)))))
-    (home-page "https://www.capstone-engine.org")
+             (setenv "LDFLAGS"
+                     (string-append "-Wl,-rpath="
+                                    (assoc-ref outputs "out") "/lib")))))))
+    (home-page "https://github.com/capstone-engine/capstone")
     (synopsis "Lightweight multi-platform, multi-architecture disassembly framework")
     (description
      "Capstone is a lightweight multi-platform, multi-architecture disassembly
@@ -1744,7 +1745,7 @@ high-performance parallel differential evolution (DE) optimization algorithm.")
   ;; See <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=27344#236>.
   (package
     (name "libngspice")
-    (version "35")
+    (version "36")
     (source
      (origin
        (method url-fetch)
@@ -1755,7 +1756,7 @@ high-performance parallel differential evolution (DE) optimization algorithm.")
                             "old-releases/" version
                             "/ngspice-" version ".tar.gz")))
        (sha256
-        (base32 "1v3ra9p2sc6ash1bbjm6i4i3dd6ymxjgnyha7z5rlmyvfv1gbdy1"))))
+        (base32 "133za6m9grpnnlb46sijkda7ky41mrbvfdb60i0m695sxy3q50ag"))))
     (build-system gnu-build-system)
     (arguments
      `(;; No tests for libngspice exist.
@@ -1788,8 +1789,7 @@ high-performance parallel differential evolution (DE) optimization algorithm.")
     (native-inputs
      (list bison flex))
     (inputs
-     `(("libxaw" ,libxaw)
-       ("mpi" ,openmpi)))
+     (list libxaw openmpi))
     (home-page "http://ngspice.sourceforge.net/")
     (synopsis "Mixed-level/mixed-signal circuit simulator")
     (description
@@ -2399,127 +2399,110 @@ OpenSCAD code.  It supports syntax highlighting, indenting and refilling of
 comments.")))
 
 (define-public freecad
-  (package
-    (name "freecad")
-    (version "0.19.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/FreeCAD/FreeCAD")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1dkiwnqr6bhi2d90hz7ijqd872144c9n9xxpd1vbrmxr2x8cfl88"))
-       (patches (search-patches "freecad-vtk9.patch"
-                                "freecad-boost-serialization.patch"))))
-    (build-system qt-build-system)
-    (native-inputs
-     (list doxygen
-           graphviz
-           qttools
-           pkg-config
-           python-pyside-2-tools
-           swig))
-    (inputs
-     (list boost
-           coin3D
-           double-conversion
-           eigen
-           freetype
-           gl2ps
-           glew
-           hdf5-1.10
-           jsoncpp
-           libarea
-           libjpeg-turbo
-           libmedfile
-           libspnav
-           libtheora
-           libtiff
-           libxi
-           libxml++
-           libxmu
-           lz4
-           netcdf
-           opencascade-occt
-           openmpi
-           proj
-           python-gitpython
-           python-matplotlib
-           python-pivy
-           python-ply
-           python-pyside-2
-           python-pyyaml
-           python-shiboken-2
-           python-wrapper
-           qtbase-5
-           qtdeclarative
-           qtsvg
-           qtwebchannel
-           qtwebengine
-           qtx11extras
-           qtxmlpatterns
-           sqlite
-           tbb
-           vtk
-           xerces-c
-           zlib))
-    (arguments
-     `(#:tests? #f          ; Project has no tests
-       #:configure-flags
-       ,#~(list
-           "-DBUILD_QT5=ON"
-           "-DBUILD_FLAT_MESH:BOOL=ON"
-           "-DBUILD_ENABLE_CXX_STD:STRING=C++17"
-           (string-append "-DCMAKE_INSTALL_LIBDIR=" #$output "/lib")
-           (string-append "-DPYSIDE2UICBINARY="
-                          #$(this-package-native-input
-                             "python-pyside-2-tools")
-                          "/bin/uic")
-           (string-append "-DPYSIDE2RCCBINARY="
-                          #$(this-package-native-input
-                             "python-pyside-2-tools")
-                          "/bin/rcc")
-           "-DPYSIDE_LIBRARY=PySide2::pyside2"
-           (string-append
-            "-DPYSIDE_INCLUDE_DIR="
-            #$(this-package-input "python-pyside-2") "/include;"
-            #$(this-package-input "python-pyside-2") "/include/PySide2;"
-            #$(this-package-input "python-pyside-2") "/include/PySide2/QtCore;"
-            #$(this-package-input "python-pyside-2") "/include/PySide2/QtWidgets;"
-            #$(this-package-input "python-pyside-2") "/include/PySide2/QtGui;")
-           "-DSHIBOKEN_LIBRARY=Shiboken2::libshiboken"
-           (string-append "-DSHIBOKEN_INCLUDE_DIR="
-                          #$(this-package-input "python-shiboken-2")
-                          "/include/shiboken2"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'restore-pythonpath
-           (lambda _
-             (substitute* "src/Main/MainGui.cpp"
-               (("_?putenv\\(\"PYTHONPATH=\"\\);") ""))))
-         (add-after 'install 'wrap-pythonpath
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (wrap-program (string-append out "/bin/FreeCAD")
-                 (list "GUIX_PYTHONPATH"
-                       'prefix (list (getenv "GUIX_PYTHONPATH"))))))))))
-    (home-page "https://www.freecadweb.org/")
-    (synopsis "Your Own 3D Parametric Modeler")
-    (description
-     "FreeCAD is a general purpose feature-based, parametric 3D modeler for
+  ;; FIXME: We use a commit directly because upstream has compatibility fixes
+  ;; that are not in a release yet for boost, opencascade-occt-7.6 and vtk-9.
+  ;; Switch back to a regular version (probably 0.20) when it is released.
+  (let ((commit "09a05a9cd0c4692a57a3e038268b4389b4657fc6")
+        (revision "0"))
+    (package
+      (name "freecad")
+      (version (git-version "0.19.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/FreeCAD/FreeCAD")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0818basym0n44dsgix0yv1l00xgv9igrr7wkszd8x74lh1rr591r"))))
+      (build-system qt-build-system)
+      (native-inputs
+       (list doxygen
+             graphviz
+             qttools
+             pkg-config
+             python-pyside-2-tools
+             swig))
+      (inputs
+       (list boost
+             coin3D
+             double-conversion
+             eigen
+             freetype
+             gl2ps
+             glew
+             hdf5-1.10
+             jsoncpp
+             libarea
+             libjpeg-turbo
+             libmedfile
+             libspnav
+             libtheora
+             libtiff
+             libxi
+             libxml++
+             libxmu
+             lz4
+             netcdf
+             opencascade-occt
+             openmpi
+             proj
+             python-gitpython
+             python-matplotlib
+             python-pivy
+             python-ply
+             python-pyside-2
+             python-pyyaml
+             python-shiboken-2
+             python-wrapper
+             qtbase-5
+             qtdeclarative
+             qtsvg
+             qtwebchannel
+             qtwebengine
+             qtx11extras
+             qtxmlpatterns
+             sqlite
+             tbb-2020 ; Same version as opencascade-occt
+             vtk
+             xerces-c
+             zlib))
+      (arguments
+       `(#:tests? #f          ; Project has no tests
+         #:configure-flags
+         ,#~(list
+             "-DBUILD_QT5=ON"
+             "-DBUILD_FLAT_MESH:BOOL=ON"
+             "-DBUILD_ENABLE_CXX_STD:STRING=C++17"
+             (string-append "-DCMAKE_INSTALL_LIBDIR=" #$output "/lib"))
+         #:phases
+         (modify-phases %standard-phases
+           (add-before 'configure 'restore-pythonpath
+             (lambda _
+               (substitute* "src/Main/MainGui.cpp"
+                 (("_?putenv\\(\"PYTHONPATH=\"\\);") ""))))
+           (add-after 'install 'wrap-pythonpath
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((out (assoc-ref outputs "out")))
+                 (wrap-program (string-append out "/bin/FreeCAD")
+                   (list "GUIX_PYTHONPATH"
+                         'prefix (list (getenv "GUIX_PYTHONPATH"))))))))))
+      (home-page "https://www.freecadweb.org/")
+      (synopsis "Your Own 3D Parametric Modeler")
+      (description
+       "FreeCAD is a general purpose feature-based, parametric 3D modeler for
 CAD, MCAD, CAx, CAE and PLM, aimed directly at mechanical engineering and
 product design but also fits a wider range of uses in engineering, such as
 architecture or other engineering specialties.  It is 100% Open Source (LGPL2+
 license) and extremely modular, allowing for very advanced extension and
 customization.")
-    (license
-     (list
-      license:lgpl2.1+
-      license:lgpl2.0+
-      license:gpl3+
-      license:bsd-3))))
+      (license
+       (list
+        license:lgpl2.1+
+        license:lgpl2.0+
+        license:gpl3+
+        license:bsd-3)))))
 
 (define-public libmedfile
   (package

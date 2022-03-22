@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018-2021 Julien Lepiller <julien@lepiller.eu>
+;;; Copyright © 2018-2022 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
@@ -1088,6 +1088,7 @@ wagon providers supporting HTTP.")))
        ("java-plexus-cli" ,java-plexus-cli)
        ("maven-plugin-api" ,maven-plugin-api)
        ("maven-plugin-annotations" ,maven-plugin-annotations)
+       ("maven-slf4j-provider" ,maven-slf4j-provider)
        ("maven-core" ,maven-core)
        ("maven-model" ,maven-model)
        ("java-commons-cli" ,java-commons-cli)
@@ -1106,7 +1107,6 @@ wagon providers supporting HTTP.")))
        ("java-commons-codec" ,java-commons-codec)
        ("java-commons-io" ,java-commons-io)
        ("java-jsoup" ,java-jsoup)
-       ("java-slf4j-simple" ,java-slf4j-simple)
        ,@(package-native-inputs maven-wagon-provider-api)))
     (synopsis "Wagon provider that gets and puts artifacts through HTTP(S)")
     (description "Maven Wagon is a transport abstraction that is used in Maven's
@@ -1117,13 +1117,13 @@ gets and puts artifacts through HTTP(S) using Apache HttpClient-4.x.")))
 (define maven-pom
   (package
     (name "maven-pom")
-    (version "3.8.4")
+    (version "3.8.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://apache/maven/"
                                   "maven-3/" version "/source/"
                                   "apache-maven-" version "-src.tar.gz"))
-              (sha256 (base32 "16xbhkhhp05gskgbhrf1ia8riivvkhpk822n9xgnad61f9hzp2r9"))
+              (sha256 (base32 "01y0fjvlvgy1bl3mdhbjll2xhzpli6aklqb3w29xpbgk6frxn3d6"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -1197,7 +1197,7 @@ gets and puts artifacts through HTTP(S) using Apache HttpClient-4.x.")))
          (replace 'install
            (install-pom-file "pom.xml")))))
     (propagated-inputs
-     `(("maven-parent-pom-34" ,maven-parent-pom-34)))
+     (list maven-parent-pom-35))
     (home-page "https://maven.apache.org/")
     (synopsis "Build system")
     (description "Apache Maven is a software project management and comprehension
@@ -1389,29 +1389,29 @@ inheritance, interpolation, @dots{}")))
     (name "maven-model-builder")
     (arguments
      `(#:jar-name "maven-model-builder.jar"
-       #:source-dir "maven-model-builder/src/main/java"
+       #:source-dir "src/main/java"
        #:jdk ,icedtea-8
-       #:test-dir "maven-model-builder/src/test"
+       #:test-dir "src/test"
        #:phases
        (modify-phases %standard-phases
+         (add-before 'configure 'chdir
+           (lambda _
+             ;; Required for tests that rely on the package's default
+             ;; locations, that reference ${basedir}/src/test.
+             (chdir "maven-model-builder")))
          (add-before 'build 'copy-resources
            (lambda _
-             (copy-recursively "maven-model-builder/src/main/resources"
+             (copy-recursively "src/main/resources"
                                "build/classes")
              #t))
          (add-before 'build 'generate-sisu-named
            (lambda _
              (mkdir-p "build/classes/META-INF/sisu")
-             (chmod "sisu.sh" #o755)
-             (invoke "./sisu.sh" "maven-model-builder/src/main/java"
+             (chmod "../sisu.sh" #o755)
+             (invoke "../sisu.sh" "src/main/java"
                      "build/classes/META-INF/sisu/javax.inject.Named")))
-         (add-before 'check 'fix-paths
-           (lambda _
-             (substitute* (find-files "maven-model-builder/src/test/java" ".*.java")
-               (("src/test") "maven-model-builder/src/test"))
-             #t))
          (replace 'install
-           (install-from-pom "maven-model-builder/pom.xml")))))
+           (install-from-pom "pom.xml")))))
     (propagated-inputs
      (list java-plexus-interpolation
            java-plexus-utils
@@ -1772,6 +1772,40 @@ artifactId=maven-core" ,(package-version maven-core-bootstrap))))
        ("maven-core-boot" ,maven-core-bootstrap)
        ,@(package-native-inputs maven-core-bootstrap)))))
 
+(define-public maven-slf4j-provider
+  (package
+    (inherit maven-artifact)
+    (name "maven-slf4j-provider")
+    (arguments
+     `(#:jar-name "maven-slf4j-provider.jar"
+       #:source-dir "maven-slf4j-provider/src/main/java"
+       #:tests? #f; no tests
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'unpack-slf4j
+           (lambda* (#:key inputs #:allow-other-keys)
+             (mkdir-p "generated-sources")
+             (with-directory-excursion "generated-sources"
+               (invoke "tar" "xf" (assoc-ref inputs "java-slf4j-simple-source"))
+               (for-each delete-file (find-files "." "StaticLoggerBinder.java")))
+             (for-each
+               (lambda (simple)
+                 (for-each
+                   (lambda (java)
+                     (copy-file java
+                                (string-append
+                                  "maven-slf4j-provider/src/main/java/org/slf4j/impl/"
+                                  (basename java))))
+                   (find-files (string-append simple "/src/main/java/") "\\.java$")))
+               (find-files "generated-sources" "slf4j-simple" #:directories? #t))))
+         (replace 'install
+           (install-from-pom "maven-slf4j-provider/pom.xml")))))
+    (inputs
+     `(("java-slf4j-api" ,java-slf4j-api)
+       ("java-slf4j-simple-source" ,(package-source java-slf4j-simple))
+       ("maven-shared-utils" ,maven-shared-utils)))
+    (native-inputs (list unzip))))
+
 (define-public maven-embedder
   (package
     (inherit maven-artifact)
@@ -1791,6 +1825,10 @@ artifactId=maven-core" ,(package-version maven-core-bootstrap))))
              (invoke "./sisu.sh" "maven-embedder/src/main/java"
                      "build/classes/META-INF/sisu/javax.inject.Named")
              #t))
+         (add-before 'build 'copy-resources
+           (lambda _
+             (mkdir-p "build/classes/")
+             (copy-recursively "maven-embedder/src/main/resources" "build/classes")))
          (add-before 'build 'generate-models
            (lambda* (#:key inputs #:allow-other-keys)
              (define (modello-single-mode file version mode)
@@ -1836,6 +1874,7 @@ artifactId=maven-core" ,(package-version maven-core-bootstrap))))
        ("maven-settings" ,maven-settings)
        ("maven-settings-builder" ,maven-settings-builder)
        ("maven-shared-utils" ,maven-shared-utils)
+       ("maven-slf4j-provider" ,maven-slf4j-provider)
        ("java-plexus-classworlds" ,java-plexus-classworlds)
        ("java-plexus-util" ,java-plexus-utils)
        ("java-eclipse-sisu-plexus" ,java-eclipse-sisu-plexus)
@@ -1853,7 +1892,6 @@ artifactId=maven-core" ,(package-version maven-core-bootstrap))))
        ("java-guice" ,java-guice)
        ("java-javax-inject" ,java-javax-inject)
        ("java-slf4j-api" ,java-slf4j-api)
-       ("java-slf4j-simple" ,java-slf4j-simple)
        ("java-jsr250" ,java-jsr250)))
     (native-inputs
      `(("java-asm-8" ,java-asm-8)
@@ -1996,6 +2034,10 @@ logging support.")))
                (modello-single-mode file "1.0.0" "xpp3-reader")
                (modello-single-mode file "1.0.0" "xpp3-writer"))
              #t))
+         (add-before 'build 'copy-resources
+           (lambda _
+             (mkdir-p "build/classes/")
+             (copy-recursively "src/main/resources" "build/classes")))
          (add-after 'build 'generate-metadata
            (lambda _
              (invoke "java" "-cp" (string-append (getenv "CLASSPATH") ":build/classes")
@@ -2080,8 +2122,8 @@ logging support.")))
        ("java-commons-lang3" ,java-commons-lang3)
        ("java-aop" ,java-aopalliance)
        ("maven-resolver-provider" ,maven-resolver-provider)
+       ("maven-slf4j-provider" ,maven-slf4j-provider)
        ("java-slf4j-api" ,java-slf4j-api)
-       ("java-slf4j-simple" ,java-slf4j-simple)
        ,@(package-inputs java-slf4j-api)))
     (description "Apache Maven is a software project management and comprehension
 tool.  This package contains Maven2 classes maintained as compatibility
@@ -2119,7 +2161,8 @@ layer for plugins that need to keep Maven2 compatibility.")))
                      "maven-repository-metadata" "maven-shared-utils" "maven-resolver-api"
                      "maven-resolver-spi" "maven-resolver-util" "maven-resolver-impl"
                      "maven-resolver-connector-basic" "maven-resolver-provider"
-                     "maven-resolver-transport-wagon" "maven-wagon-provider-api"
+                     "maven-resolver-transport-wagon" "maven-slf4j-provider"
+                     "maven-wagon-provider-api"
                      "maven-wagon-file" "maven-wagon-http" "java-commons-logging-minimal"
                      "java-httpcomponents-httpclient" "java-httpcomponents-httpcore"
                      "maven-wagon-http-shared" "maven-wagon-tck-http"
@@ -2129,8 +2172,7 @@ layer for plugins that need to keep Maven2 compatibility.")))
                      "java-plexus-utils" "java-plexus-interpolation"
                      "java-plexus-sec-dispatcher" "java-plexus-cipher" "java-guava"
                      "java-jansi" "java-jsr250" "java-cdi-api" "java-commons-cli"
-                     "java-commons-io" "java-commons-lang3" "java-slf4j-api"
-                     "java-slf4j-simple"))))
+                     "java-commons-io" "java-commons-lang3" "java-slf4j-api"))))
              (substitute* "apache-maven/src/bin/mvn"
                (("cygwin=false;")
                 (string-append
@@ -2176,6 +2218,7 @@ layer for plugins that need to keep Maven2 compatibility.")))
            maven-resolver-connector-basic
            maven-resolver-provider
            maven-resolver-transport-wagon
+           maven-slf4j-provider
            maven-wagon-provider-api
            maven-wagon-file
            maven-wagon-http
@@ -2203,9 +2246,7 @@ layer for plugins that need to keep Maven2 compatibility.")))
            java-commons-cli
            java-commons-io
            java-commons-lang3
-           java-slf4j-api
-           ;; TODO: replace with maven-slf4j-provider
-           java-slf4j-simple))
+           java-slf4j-api))
     (propagated-inputs
      (list coreutils which))
     (description "Apache Maven is a software project management and comprehension
@@ -2362,12 +2403,12 @@ reporting or the build process.")))
             (add-before 'build 'generate-components.xml
               (lambda _
                 (mkdir-p "build/classes/META-INF/plexus")
-                (chmod "components.sh" #o755)
-                (invoke "./components.sh" "maven-model-builder/src/main/java"
+                (chmod "../components.sh" #o755)
+                (invoke "../components.sh" "src/main/java"
                         "build/classes/META-INF/plexus/components.xml")))
             (add-before 'check 'remove-failing-test
               (lambda _
-                (delete-file "maven-model-builder/src/test/java/org/apache/maven/model/interpolation/StringSearchModelInterpolatorTest.java")))))))
+                (delete-file "src/test/java/org/apache/maven/model/interpolation/StringSearchModelInterpolatorTest.java")))))))
     (propagated-inputs
      `(("java-plexus-component-annotations" ,java-plexus-component-annotations)
        ,@(filter

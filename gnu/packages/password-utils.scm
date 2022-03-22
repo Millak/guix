@@ -23,7 +23,7 @@
 ;;; Copyright © 2018 Amirouche Boubekki <amirouche@hypermove.net>
 ;;; Copyright © 2018, 2019, 2020 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
 ;;; Copyright © 2019 Jens Mølgaard <jens@zete.tk>
-;;; Copyright © 2019 Tanguy Le Carrour <tanguy@bioneland.org>
+;;; Copyright © 2019,2022 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2020 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Jean-Baptiste Note <jean-baptiste.note@m4x.org>
@@ -57,6 +57,7 @@
   #:use-module (guix build-system go)
   #:use-module (guix build-system trivial)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (gnu packages)
@@ -736,6 +737,41 @@ using password-store through rofi interface:
 @item bookmarks mode (open stored URLs in browser, default: Alt+x).
 @end enumerate")
     (license license:gpl3)))
+
+(define-public tessen
+  (package
+    (name "tessen")
+    (version "2.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ayushnix/tessen/")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1ddsjhzp1qy3jfhxlrzcxgp0gza234yc0sdlngwa3xdj0wr40zs0"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests?
+           #f ;no tests
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-wtype-path
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "tessen"
+                     (("wtype") (search-input-file inputs "/bin/wtype")))))
+               (delete 'configure)) ;no configure script
+           #:make-flags
+           #~(list (string-append "PREFIX="
+                                  #$output))))
+    (native-inputs (list scdoc))
+    (inputs (list wtype))
+    (home-page "https://github.com/ayushnix/tessen")
+    (synopsis "Frontend for password-store and gopass")
+    (description "Tessen is a bash script that can autotype and copy data
+from password-store and gopass files.")
+    (license license:gpl2+)))
 
 (define-public browserpass-native
   (package

@@ -29,7 +29,7 @@
 (define-public zig
   (package
     (name "zig")
-    (version "0.9.0")
+    (version "0.9.1")
     (source
      (origin
        (method git-fetch)
@@ -38,7 +38,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zdz5s434c48z3y0c8l9wm2z1gxa7yyzd53zmr68lwj6mcl7by8x"))
+        (base32 "0nfvgg23sw50ksy0z0ml6lkdsvmd0278mq29m23dbb2jsirkhry7"))
        (patches
         (search-patches
          "zig-disable-libc-note-test.patch"

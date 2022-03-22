@@ -51,7 +51,7 @@
                                        delete-matching-generations)
   #:autoload   (guix scripts pull) (channel-commit-hyperlink)
   #:autoload   (guix graph) (export-graph node-type
-                             graph-backend-name %graph-backends)
+                             graph-backend-name lookup-backend)
   #:use-module (guix scripts graph)
   #:use-module (guix scripts system reconfigure)
   #:use-module (guix build utils)
@@ -88,7 +88,10 @@
   #:use-module (ice-9 match)
   #:use-module (rnrs bytevectors)
   #:export (guix-system
-            read-operating-system))
+            read-operating-system
+
+            service-node-type
+            shepherd-service-node-type))
 
 
 ;;;
@@ -887,13 +890,6 @@ Run 'herd status' to view the list of services on your system.\n"))))))
                    (register-root* (list output) gc-root))
                  (return output)))))))))
 
-(define (lookup-backend name)                     ;TODO: factorize
-  "Return the graph backend called NAME.  Raise an error if it is not found."
-  (or (find (lambda (backend)
-              (string=? (graph-backend-name backend) name))
-            %graph-backends)
-      (leave (G_ "~a: unknown backend~%") name)))
-
 (define* (export-extension-graph os port
                                  #:key (backend (lookup-backend "graphviz")))
   "Export the service extension graph of OS to PORT using BACKEND."
@@ -901,7 +897,7 @@ Run 'herd status' to view the list of services on your system.\n"))))))
          (system   (find (lambda (service)
                            (eq? (service-kind service) system-service-type))
                          services)))
-    (export-graph (list system) (current-output-port)
+    (export-graph (list system) port
                   #:backend backend
                   #:node-type (service-node-type services)
                   #:reverse-edges? #t)))
@@ -917,7 +913,7 @@ Run 'herd status' to view the list of services on your system.\n"))))))
          (sinks     (filter (lambda (service)
                               (null? (shepherd-service-requirement service)))
                             shepherds)))
-    (export-graph sinks (current-output-port)
+    (export-graph sinks port
                   #:backend backend
                   #:node-type (shepherd-service-node-type shepherds)
                   #:reverse-edges? #t)))
@@ -1328,9 +1324,17 @@ argument list and OPTS is the option alist."
                       (x (leave (G_ "wrong number of arguments~%"))))))
        (list-generations pattern)))
     ((describe)
+     ;; Describe the running system, which is not necessarily the current
+     ;; generation.  /run/current-system might point to
+     ;; /var/guix/profiles/system-N-link, or it might point directly to
+     ;; /gnu/store/…-system.  Try both.
      (match (generation-number "/run/current-system" %system-profile)
        (0
-        (leave (G_ "no system generation, nothing to describe~%")))
+        (match (generation-number %system-profile)
+          (0
+           (leave (G_ "no system generation, nothing to describe~%")))
+          (generation
+           (display-system-generation generation))))
        (generation
         (display-system-generation generation))))
     ((search)

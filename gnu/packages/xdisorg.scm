@@ -43,7 +43,7 @@
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
 ;;; Copyright © 2020, 2021 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2021, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Renzo Poddighe <renzo@poddighe.nl>
 ;;; Copyright © 2021 Paul A. Patience <paul@apatience.com>
@@ -492,7 +492,7 @@ X11 (yet).")
 (define-public xdotool
   (package
     (name "xdotool")
-    (version "3.20160805.1")
+    (version "3.20211022.1")
     (source
       (origin
         (method url-fetch)
@@ -501,7 +501,7 @@ X11 (yet).")
               version "/xdotool-" version ".tar.gz"))
         (sha256
           (base32
-           "1a6c1zr86zb53352yxv104l76l8x21gfl2bgw6h21iphxpv5zgim"))))
+           "1nlsbwsdsgys607f00sc8xgb7l7cdzsb14avsg5fly3dvv7zmw4n"))))
     (build-system gnu-build-system)
     (arguments
      '(#:tests? #f ; Test suite requires a lot of black magic
@@ -972,7 +972,7 @@ to find buttons, etc, on the screen to click on.")
 (define-public xbanish
   (package
     (name "xbanish")
-    (version "1.7")
+    (version "1.8")
     (home-page "https://github.com/jcs/xbanish")
     (source (origin
               (method git-fetch)
@@ -981,7 +981,7 @@ to find buttons, etc, on the screen to click on.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ic5f7zgc32p5g1wxas9y5h8dhik0pvsa8wmn6skdry56gw9vg9q"))))
+                "12mjwn8hvrrhwyg3wi20bqr6k8d57xf9m5qr3s4nn511dcksh04g"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
@@ -1000,29 +1000,28 @@ shows it again when the mouse cursor moves or a mouse button is pressed.")
 (define-public xlockmore
   (package
     (name "xlockmore")
-    (version "5.67")
+    (version "5.68")
     (source (origin
-             (method url-fetch)
-             (uri (list (string-append "http://sillycycle.com/xlock/"
-                                       "xlockmore-" version ".tar.xz")
-                        ;; Previous releases are moved to a subdirectory.
-                        (string-append "http://sillycycle.com/xlock/"
-                                       "recent-releases/"
-                                       "xlockmore-" version ".tar.xz")))
-             (sha256
-              (base32
-               "0k13gxgnk4i041g1fzixfwlf3l5hrvvkhfvxf27szx0d1qbpwq58"))))
+              (method url-fetch)
+              (uri (list (string-append "http://sillycycle.com/xlock/"
+                                        "xlockmore-" version ".tar.xz")
+                         ;; Previous releases are moved to a subdirectory.
+                         (string-append "http://sillycycle.com/xlock/"
+                                        "recent-releases/"
+                                        "xlockmore-" version ".tar.xz")))
+              (sha256
+               (base32
+                "0vndfwccnvkaaraprjam8pmx0aj55va0ag64q6snxw83nbf1ywrh"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags (list (string-append "--enable-appdefaultdir="
-                                              (assoc-ref %outputs "out")
-                                              "/lib/X11/app-defaults"))
-       #:tests? #f))                            ;no such thing as a test suite
+     (list
+      #:configure-flags
+      #~(list (string-append "--enable-appdefaultdir="
+                             #$output
+                             "/lib/X11/app-defaults"))
+      #:tests? #f))                     ;no such thing as a test suite
     (inputs
-     `(("libX11" ,libx11)
-       ("libXext" ,libxext)
-       ("libXt" ,libxt)
-       ("linux-pam" ,linux-pam)))
+     (list libx11 libxext libxt linux-pam))
     (home-page "https://sillycycle.com/xlockmore.html")
     (synopsis "Screen locker for the X Window System")
     (description
@@ -1059,14 +1058,14 @@ transparent text on your screen.")
 (define-public wob
   (package
     (name "wob")
-    (version "0.12")
+    (version "0.13")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/francma/wob/releases/download/"
                            version "/wob-" version ".tar.gz"))
        (sha256
-        (base32 "080pwz8pvqqq068lavzz48dl350iszpdswjd86bjk6zra5h5d10q"))))
+        (base32 "0i8y6kq37qcgdq85ll4rapisjl7zw6aa11yx2f2xw2d3j93kdxh8"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config scdoc))

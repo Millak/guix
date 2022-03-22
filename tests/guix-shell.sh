@@ -1,5 +1,5 @@
 # GNU Guix --- Functional package management for GNU
-# Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
+# Copyright © 2021-2022 Ludovic Courtès <ludo@gnu.org>
 #
 # This file is part of GNU Guix.
 #
@@ -34,6 +34,9 @@ guix shell --bootstrap --pure guile-bootstrap -- guile --version
 
 # '--ad-hoc' is a thing of the past.
 ! guix shell --ad-hoc guile-bootstrap
+
+# Rejecting unsupported packages.
+! guix shell -s armhf-linux intelmetool -n
 
 # Ignoring unauthorized files.
 cat > "$tmpdir/guix.scm" <<EOF

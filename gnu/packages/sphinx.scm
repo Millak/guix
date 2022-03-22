@@ -9,7 +9,7 @@
 ;;; Copyright © 2017 Frederick M. Muriithi <fredmanglis@gmail.com>
 ;;; Copyright © 2017 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2017 Julien Lepiller <julien@lepiller.eu>
-;;; Copyright © 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2019 Alexandros Theodotou <alex@zrythm.org>
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
@@ -38,6 +38,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix build-system python)
   #:use-module ((guix licenses) #:prefix license:)
@@ -911,17 +912,29 @@ executed during the Sphinx build process.")
     (version "0.3.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "jupyter_sphinx" version))
+       ;; Pypi tarball doesn't contain tests.
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jupyter/jupyter-sphinx")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "1wma60787m2451nn4bc4jw7bzqksplplb84wqxm34iaw70499z1p"))))
+         "0bsb17vzbgvrzvh87pi88b157hyigdwnf1lhrgvan03i2300h15c"))))
     (build-system python-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (replace 'check
+             (lambda* (#:key tests? #:allow-other-keys)
+               (when tests?
+                 (invoke "pytest")))))))
     (propagated-inputs
      (list python-ipython python-ipywidgets python-nbconvert
            python-nbformat))
     (native-inputs
-     (list python-sphinx))
+     (list python-pytest python-sphinx))
     (home-page "https://github.com/jupyter/jupyter-sphinx/")
     (synopsis "Jupyter Sphinx Extensions")
     (description

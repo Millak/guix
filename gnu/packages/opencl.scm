@@ -139,7 +139,9 @@
     (native-search-paths
      (list (search-path-specification
             (variable "OCL_ICD_VENDORS")
-            (files '("etc/OpenCL/vendors")))))
+            (files '("etc/OpenCL/vendors"))
+            ;; Only supports a single directory.
+            (separator #f))))
     (home-page "https://github.com/KhronosGroup/OpenCL-ICD-Loader")
     (inputs (list opencl-headers))
     (synopsis "OpenCL Installable Client Driver")

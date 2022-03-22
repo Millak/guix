@@ -37,6 +37,7 @@
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
+;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -93,7 +94,7 @@
 (define-public pict
   (package
     (name "pict")
-    (version "3.7.2")
+    (version "3.7.3")
     (source
      (origin
        (method git-fetch)
@@ -103,7 +104,7 @@
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1hpff8x49ixlh71sbyhj1rircf0mg95v5q9y0ys52rhiph99wy3n"))))
+         "0bpyl0zklw2fyxgynrc7shg0xamw8rr68zmh528niscrpavsmfpi"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -2885,13 +2886,27 @@ provides a simple way to achieve this.")
                 "0xmi24ckpps32k7hc139psgbsnsf4g106sv4l9m445m46amkxggd"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-test
-           (lambda _
-             (substitute* "tests/test-umockdev.c"
-               (("/run") "/tmp"))
-             #t)))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-test
+                 (lambda _
+                   (substitute* "tests/test-umockdev.c"
+                     (("/run") "/tmp"))))
+               ;; Avoid having to set 'LD_LIBRARY_PATH' to use umockdev
+               ;; via introspection.
+               (add-after 'unpack 'absolute-introspection-library
+                 (lambda _
+                   (substitute* "Makefile.in"
+                     (("g-ir-compiler -l libumockdev")
+                      (string-append "g-ir-compiler -l " #$output
+                                     "/lib/libumockdev")))))
+               (add-after 'install 'absolute-filenames
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   ;; 'patch-shebangs' will take care of the shebang.
+                   (substitute* (string-append #$output "/bin/umockdev-wrapper")
+                     (("env") (search-input-file inputs "bin/env"))
+                     (("libumockdev")
+                      (string-append #$output "/lib/libumockdev"))))))))
     (native-inputs
      (list vala
            gobject-introspection
@@ -2901,7 +2916,9 @@ provides a simple way to achieve this.")
            python
            which))
     (inputs
-     (list glib eudev libgudev))
+     (list bash-minimal ;for umockdev-wrapper
+           coreutils-minimal ;for bin/env
+           glib eudev libgudev))
     (home-page "https://github.com/martinpitt/umockdev/")
     (synopsis "Mock hardware devices for creating unit tests")
     (description "umockdev mocks hardware devices for creating integration
@@ -3064,6 +3081,41 @@ asynchronous code in Python (asyncio).")
 to mark some tests as dependent from other tests.  These tests will then be
 skipped if any of the dependencies did fail or has been skipped.")
     (license license:asl2.0)))
+
+(define-public python-pytest-pudb
+  ;; PyPi does not include tests
+  (let ((commit "a6b3d2f4d35e558d72bccff472ecde9c9d9c69e5"))
+    (package
+      (name "python-pytest-pudb")
+      ;; Version mentioned in setup.py version field.
+      (version "0.7.0")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/wronglink/pytest-pudb")
+                      (commit commit)))
+                (file-name (git-file-name name commit))
+                (sha256
+                 (base32
+                  "1c0pypxx3y8w7s5bz9iy3w3aablnhn81rnhmb0is8hf2qpm6k3w0"))))
+      (build-system python-build-system)
+      (propagated-inputs (list pudb))
+      (native-inputs (list python-pytest))
+      (arguments
+       `(#:phases (modify-phases %standard-phases
+                    (replace 'check
+                      (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+                        (when tests?
+                          (add-installed-pythonpath inputs outputs)
+                          (invoke "pytest" "-v")))))))
+      (home-page "https://github.com/wronglink/pytest-pudb")
+      (synopsis "Pytest PuDB debugger integration")
+      (description
+       "@code{python-pytest-pudb} provides PuDB debugger integration based
+on pytest PDB integration.  For example, the software developer can
+call pudb by running @code{py.test --pudb} from the command line or by
+including @code{pudb.set_trace} in their test file(s).")
+      (license license:expat))))
 
 (define-public python-pytest-datadir
   (package

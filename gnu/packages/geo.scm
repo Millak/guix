@@ -82,11 +82,14 @@
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages haskell-apps)
+  #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages image)
   #:use-module (gnu packages image-processing)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages java)
   #:use-module (gnu packages kde)
+  #:use-module (gnu packages libusb)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages multiprecision)
@@ -1178,7 +1181,7 @@ to create databases that are optimized for rendering/tile/map-services.")
 (define-public libosmium
   (package
     (name "libosmium")
-    (version "2.17.2")
+    (version "2.18.0")
     (source
      (origin
        (method git-fetch)
@@ -1187,7 +1190,7 @@ to create databases that are optimized for rendering/tile/map-services.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xgwicnzlyr8pcpgx528xrzh7g6rjfd7f80bi30478fnp8mq8rzr"))))
+        (base32 "0fh57mpii1ksacwfx5rz213j896aklib53jbybld2i517q2mmxr0"))))
     (build-system cmake-build-system)
     (propagated-inputs
      (list boost
@@ -1208,6 +1211,35 @@ to create databases that are optimized for rendering/tile/map-services.")
     (description "Libosmium is a fast and flexible C++ library for working with
 OpenStreetMap data.")
     (license license:boost1.0)))
+
+(define-public osmium-tool
+  (package
+    (name "osmium-tool")
+    (version "1.14.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/osmcode/osmium-tool")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zgyqyrs89vch0qnkh9m5xq079sr2wmydy5zz4l8xbysbjf6xry5"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Remove bundled libraries.
+        '(delete-file-recursively "include/rapidjson"))))
+    (build-system cmake-build-system)
+    (inputs
+     (list libosmium
+           rapidjson))
+    (native-inputs
+     (list pandoc))
+    (home-page "https://osmcode.org/osmium-tool/")
+    (synopsis "Osmium command-line tool")
+    (description "Command line tool for working with OpenStreetMap data
+based on the Osmium library.")
+    (license license:gpl3+)))
 
 (define-public osm2pgsql
   (package
@@ -1982,30 +2014,35 @@ exchanged form one Spatial DBMS and the other.")
 (define-public opencpn
   (package
     (name "opencpn")
-    (version "5.2.4")
+    (version "5.6.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/OpenCPN/OpenCPN")
-             (commit (string-append "v" version))))
+             (commit (string-append "Release_" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ffx0lmz1mp5433zqyxigy4qqav32xprpagd66krvihkyvqp2y6y"))))
+        (base32 "0g5x45wv3djfjmigk6kgs0i63yp8rs1fbmm4pb15wb3z6dml624y"))))
     (build-system cmake-build-system)
     (native-inputs
      `(("gettext" ,gettext-minimal)
        ("pkg-config" ,pkg-config)))
     (inputs
-     (list bzip2
+     (list alsa-utils
+           bzip2
            cairo
            curl
+           eudev
            glu
            gtk+
+           jasper
            libarchive
            libelf
            libexif
+           libjpeg-turbo
            libsndfile
+           libusb
            lz4
            mesa
            pango

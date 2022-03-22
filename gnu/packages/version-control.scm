@@ -43,6 +43,7 @@
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
+;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1561,7 +1562,7 @@ control to Git repositories.")
 (define-public gitile
   (package
     (name "gitile")
-    (version "0.1.3")
+    (version "0.1.4")
     (source
      (origin
        (method git-fetch)
@@ -1570,7 +1571,7 @@ control to Git repositories.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fnmgrrsdc24mvicj2gkv3vasag7h5x27xc12w55i0id9vw7k9sw"))))
+        (base32 "1wb1rajcrzdqjncv40s7hjsnvlh1gq4z9pn9gf210g1iy35vimmz"))))
     (build-system gnu-build-system)
     (arguments
      `(#:imported-modules ((guix build guile-build-system)
@@ -1879,14 +1880,14 @@ can be used for signing.")
 (define-public neon
   (package
     (name "neon")
-    (version "0.31.2")
+    (version "0.32.2")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://notroj.github.io/neon/neon-"
                                  version ".tar.gz"))
              (sha256
               (base32
-               "0y46dbhiblcvg8k41bdydr3fivghwk73z040ki5825d24ynf67ng"))))
+               "11mj5zpp317dmds874wfwcpgij9i3scaahdi1xfzr5b2ii36crcq"))))
     (build-system gnu-build-system)
     (native-inputs
      (list perl pkg-config))

@@ -12,6 +12,7 @@
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2022 Marcel Kupiec <formbi@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -46,6 +47,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages lxqt)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages openldap)
   #:use-module (gnu packages pciutils)
@@ -53,6 +55,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages polkit)
   #:use-module (gnu packages protobuf)
+  #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -179,6 +182,62 @@
 It can be used to generate a system overview log which can be later used for
 support.")
     (license license:gpl2+)))
+
+(define-public ckb-next
+  (let ((commit "967f44018a9d46efa7203fad38518e9381eba0f3")
+        (revision "0"))
+    (package
+      (name "ckb-next")
+      (version (git-version "0.4.4" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/ckb-next/ckb-next")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "0bfpah0zgmyhbi6payymr3p98nfnwqr2xqxgkyzvccz72z246316"))
+                (file-name (git-file-name name version))))
+      (build-system cmake-build-system)
+      (arguments
+       `(#:modules ((guix build cmake-build-system) (guix build qt-utils)
+                    (guix build utils))
+         #:imported-modules (,@%cmake-build-system-modules
+                             (guix build qt-utils))
+         #:tests? #f
+         #:phases
+         (modify-phases %standard-phases
+           (add-before 'build 'patch-lib-udev
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (substitute* "src/daemon/cmake_install.cmake"
+                 (("/lib/udev")
+                  (string-append (assoc-ref outputs "out")
+                                 "/lib/udev")))))
+           (add-after 'install 'wrap-qt
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (let ((out (assoc-ref outputs "out")))
+                 (wrap-qt-program "ckb-next"
+                                  #:output out
+                                  #:inputs inputs)))))))
+      (native-inputs (list qttools pkg-config))
+      (inputs (list qtbase-5
+                    zlib
+                    libdbusmenu-qt
+                    quazip
+                    pulseaudio
+                    libxcb
+                    xcb-util-wm
+                    qtx11extras
+                    eudev
+                    bash-minimal))
+      (home-page "https://github.com/ckb-next/ckb-next")
+      (synopsis "Driver for Corsair keyboards and mice")
+      (description
+       "ckb-next is a driver for Corsair keyboards and mice.  It aims to bring
+the features of Corsair's proprietary software to Linux-based operating
+systems.  It already supports much of the same functionality, including full
+RGB animations.")
+      (license license:gpl2))))
 
 (define-public ddcutil
   (package

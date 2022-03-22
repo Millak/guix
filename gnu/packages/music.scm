@@ -3,7 +3,7 @@
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2016 Al McElrath <hello@yrns.org>
-;;; Copyright © 2016, 2017, 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2018, 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2017, 2019 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2016 John J. Foerch <jjfoerch@earthlink.net>
@@ -44,6 +44,7 @@
 ;;; Copyright © 2021 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Thomas Albers Raviola <thomas@thomaslabs.org>
+;;; Copyright © 2022 Sughosha <sughosha@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -618,46 +619,47 @@ many input formats and provides a customisable Vi-style user interface.")
 (define-public denemo
   (package
     (name "denemo")
-    (version "2.5.0")
+    (version "2.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://gnu/denemo/denemo-" version ".tar.gz"))
        (sha256
-        (base32 "05kwy8894hsxr6123hc854j2qq2sxyjw721zk4g3vzz8pw29p887"))))
+        (base32 "0pdmjij2635jbw2a24ivk1y4w0z58jbmq9vnz3qrfzw4d469grab"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Tests require to write $HOME.
-             (setenv "HOME" (getcwd))
-             ;; Replace hard-coded diff file name.
-             (substitute* "tests/integration.c"
-               (("/usr/bin/diff")
-                (search-input-file inputs "/bin/diff")))
-             ;; Denemo's documentation says to use this command to run its
-             ;; test suite.
-             (invoke "make" "-C" "tests" "check")))
-         (add-before 'build 'set-lilypond
-           ;; This phase sets the default path for lilypond to its current
-           ;; location in the store.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let* ((lilypond (search-input-file inputs "/bin/lilypond")))
-               (substitute* "src/core/prefops.c"
-                 (("g_string_new \\(\"lilypond\"\\);")
-                  (string-append "g_string_new (\""
-                                 lilypond
-                                 "\");"))))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key inputs tests? #:allow-other-keys)
+              ;; Tests require to write $HOME.
+              (when tests?
+                (setenv "HOME" (getcwd))
+                ;; Replace hard-coded diff file name.
+                (substitute* "tests/integration.c"
+                  (("/usr/bin/diff")
+                   (search-input-file inputs "/bin/diff")))
+                ;; Denemo's documentation says to use this command to run its
+                ;; test suite.
+                (invoke "make" "-C" "tests" "check"))))
+          (add-before 'build 'set-lilypond
+            ;; This phase sets the default path for lilypond to its current
+            ;; location in the store.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((lilypond (search-input-file inputs "/bin/lilypond")))
+                (substitute* "src/core/prefops.c"
+                  (("g_string_new \\(\"lilypond\"\\);")
+                   (string-append "g_string_new (\""
+                                  lilypond
+                                  "\");")))))))))
     (native-inputs
-     `(("diffutils" ,diffutils)
-       ("glib:bin" ,glib "bin")         ; for gtester
-       ("gtk-doc" ,gtk-doc)
-       ("intltool" ,intltool)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)))
+     (list diffutils
+           `(,glib "bin")               ; for gtester
+           gtk-doc
+           intltool
+           libtool
+           pkg-config))
     (inputs
      (list alsa-lib
            aubio
@@ -1773,7 +1775,7 @@ music theorist Paul Nauert's quantization grids or Q-Grids, for short.")
                      '()))
          #:python ,python-2))
       (inputs
-       (list jack-1 libsigc++ liblo ntk))
+       (list jack-1 libsigc++-2 liblo ntk))
       (native-inputs
        (list pkg-config))
       (home-page "https://non.tuxfamily.org/wiki/Non%20Sequencer")
@@ -3607,6 +3609,17 @@ formats, looking up tracks through metadata and audio fingerprints.")
                (base32
                 "1qdk6i8gyhbi1c4j5jmbfpac3q8sff2ysri1pnp7nb9wzcp615v3"))))
     (build-system python-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-before 'check 'remove-hypothesis-deadlines
+             ;; These tests can timeout on slower architectures.
+             (lambda _
+               (substitute* "tests/test___init__.py"
+                 (("import given") "import given, settings")
+                 (("( +)@given" all spaces)
+                  (string-append spaces "@settings(deadline=None)\n" all))))))))
     (native-inputs
      (list python-pytest python-hypothesis python-flake8))
     (home-page "https://mutagen.readthedocs.io/")

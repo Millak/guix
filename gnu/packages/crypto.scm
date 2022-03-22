@@ -21,7 +21,8 @@
 ;;; Copyright © 2020 pukkamustard <pukkamustard@posteo.net>
 ;;; Copyright © 2021 Ellis Kenyő <me@elken.dev>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
-;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2021, 2022 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2022 Allan Adair <allan@adair.no>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -73,6 +74,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages python-check)
+  #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages search)
   #:use-module (gnu packages serialization)
@@ -731,7 +733,7 @@ data on your platform, so the seed itself will be as random as possible.
 (define-public crypto++
   (package
     (name "crypto++")
-    (version "8.5.0")
+    (version "8.6.0")
     (source (origin
               (method git-fetch)
               (uri
@@ -743,7 +745,7 @@ data on your platform, so the seed itself will be as random as possible.
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0in7rlazq91vfi519g9wr7bh87hii47cimxv7fmj0f88vhjaidq3"))))
+                "1vm821wpx59ccz6gr4xplqpxj3f1qq3jijyybj2g4npqmmldhx3b"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
@@ -871,6 +873,11 @@ BLAKE.")
            (add-before 'build 'change-directory
                        (lambda _
                          (chdir "b2sum")))
+           ;; Produce generic binaries
+           (add-after 'change-directory 'de-tune
+                       (lambda _
+                         (substitute* "makefile"
+                           ((" -march=native") ""))))
            (delete 'configure)))) ; No ./configure script
       (home-page "https://www.blake2.net/")
       (synopsis "BLAKE2 checksum tool")
@@ -878,7 +885,11 @@ BLAKE.")
 SHA-1, SHA-2, and SHA-3, yet is at least as secure as SHA-3.")
       ;; You may also choose to redistribute this program as Apache 2.0 or the
       ;; OpenSSL license. See 'b2sum/b2sum.c' in the source distribution.
-      (license license:cc0))))
+      (license license:cc0)
+      ;; There is a significant speedup when the compiler generates
+      ;; instructions tuned to the CPU of the running machine:
+      ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=51198#22
+      (properties '((tunable? . #true))))))
 
 (define-public rhash
   (package
@@ -1459,7 +1470,7 @@ non-encrypted files.")
 (define-public cryfs
   (package
     (name "cryfs")
-    (version "0.11.0")
+    (version "0.11.2")
     (source
      (origin
        (method url-fetch)
@@ -1467,7 +1478,7 @@ non-encrypted files.")
              "https://github.com/cryfs/cryfs/releases/download/"
              version "/cryfs-" version ".tar.xz"))
        (sha256
-        (base32 "0dxphbj5sssm82rkkdb71algrcki16qlpzlvrjyvvm6b7x7zi0sm"))))
+        (base32 "1ggizlacm4fccsw9syy2763ihxnby6cdh3mhhraxy8bmsdjza7lm"))))
     (build-system cmake-build-system)
     (arguments
      '(#:modules ((guix build cmake-build-system)
@@ -1483,7 +1494,7 @@ non-encrypted files.")
                          "/cmake-utils/DependenciesFromLocalSystem.cmake"))
        #:phases
        (modify-phases %standard-phases
-         (add-before 'configure 'fix-configure
+         (add-before 'configure 'fix-up
            (lambda* (#:key tests? #:allow-other-keys)
              ;; Remove junk directory that breaks the build
              (chdir "..") (delete-file-recursively ".circleci")
@@ -1494,7 +1505,14 @@ non-encrypted files.")
              (when tests?
                (substitute* "CMakeLists.txt"
                  (("option.BUILD_TESTING .build test cases. OFF.")
-                  "option(BUILD_TESTING \"build test cases\" ON)")))))
+                  "option(BUILD_TESTING \"build test cases\" ON)")))
+             ;; work around a missing import fixed upstream in boost 1.78
+             ;; See https://github.com/boostorg/process/issues/213
+             (substitute* (find-files "." "subprocess.cpp$")
+               (("#include <boost/process.hpp>.*" line)
+                (string-append
+                 "#include <algorithm>\n"
+                 line)))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
@@ -1607,3 +1625,37 @@ checksum tool based on the BLAKE3 cryptographic hash function.")
     ;; Users may choose between these two licenses when redistributing the
     ;; program provided by this package.
     (license (list license:cc0 license:asl2.0))))
+
+(define-public libxcrypt
+  (package
+    (name "libxcrypt")
+    (version "4.4.28")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/besser82/libxcrypt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0pacj0s1hlv22iz0k2bkysjslc6rbrgmvmsr02qq17lp4d2gw5rs"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf
+           automake
+           libtool
+           perl
+           pkg-config
+           python-3
+           python-passlib))
+    (synopsis
+     "Extended crypt library for descrypt, md5crypt, bcrypt, and others")
+    (description
+     "libxcrypt is a modern library for one-way hashing of
+passwords. It supports a wide variety of both modern and historical
+hashing methods: yescrypt, gost-yescrypt, scrypt, bcrypt, sha512crypt,
+sha256crypt, md5crypt, SunMD5, sha1crypt, NT, bsdicrypt, bigcrypt, and
+descrypt.")
+    (home-page "https://github.com/besser82/libxcrypt")
+    (license license:lgpl2.1)))

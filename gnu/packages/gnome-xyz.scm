@@ -13,7 +13,7 @@
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Songlin Jiang <hollowman@hollowman.ml>
-;;; Copyright © 2021 Justin Veilleux <terramorpha@cock.li>
+;;; Copyright © 2021, 2022 Justin Veilleux <terramorpha@cock.li>
 ;;; Copyright © 2021 Attila Lendvai <attila@lendvai.name>
 ;;; Copyright © 2021 Charles Jackson <charles.b.jackson@protonmail.com>
 ;;;
@@ -291,7 +291,7 @@ that caches clipboard history.")
 (define-public gnome-shell-extension-customize-ibus
   (package
     (name "gnome-shell-extension-customize-ibus")
-    (version "78")
+    (version "82")
     (source
      (origin
        (method git-fetch)
@@ -300,7 +300,7 @@ that caches clipboard history.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hnnsjriq7xaakk8biwz55mn077lnm9nsmi4wz5zk7clgxmasvq9"))))
+        (base32 "00brnyahphl4ql9yh74wpb9kmzyb4b5k4rkw40hvxvqw4qwgs24r"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
@@ -403,8 +403,7 @@ faster window switching.")
 (define-public gnome-shell-extension-gsconnect
   (package
     (name "gnome-shell-extension-gsconnect")
-    ;; v33 is the last version to support GNOME 3.34
-    (version "33")
+    (version "48")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -414,10 +413,11 @@ faster window switching.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1q03axhn75i864vgmd6myhmgwrmnpf01gsd1wl0di5x9q8mic2zn"))))
+                "15agblnm7k1wqnnz6gwhwym992fzqkdz8mkm04805783bx60b8bh"))))
     (build-system meson-build-system)
     (arguments
-     `(#:configure-flags
+     `(#:tests? #f ;; every test fails
+       #:configure-flags
        (let* ((out (assoc-ref %outputs "out"))
               (name+version (strip-store-file-name out))
               (gschema-dir (string-append out
@@ -442,7 +442,7 @@ faster window switching.")
              (let* ((glib (assoc-ref inputs "glib:bin"))
                     (gapplication (string-append glib "/bin/gapplication"))
                     (gi-typelib-path (getenv "GI_TYPELIB_PATH")))
-               (substitute* "data/org.gnome.Shell.Extensions.GSConnect.desktop"
+               (substitute* "data/org.gnome.Shell.Extensions.GSConnect.desktop.in"
                  (("gapplication") gapplication))
                (for-each
                 (lambda (file)
