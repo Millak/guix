@@ -12808,7 +12808,6 @@ time.")
                           texlive-fancyvrb
                           texlive-fonts-rsfs
                           texlive-fontspec
-                          texlive-generic-ulem
                           texlive-grffile
                           texlive-hyperref
                           texlive-iftex
@@ -12830,6 +12829,7 @@ time.")
                           texlive-tcolorbox
                           texlive-titling
                           texlive-tools
+                          texlive-ulem
                           texlive-xcolor
                           texlive-zapfding)))))
     (propagated-inputs
