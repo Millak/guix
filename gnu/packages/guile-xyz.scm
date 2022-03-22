@@ -129,7 +129,8 @@
   #:use-module (guix utils)
   #:use-module ((guix build utils) #:select (alist-replace))
   #:use-module (ice-9 match)
-  #:use-module ((srfi srfi-1) #:select (alist-delete)))
+  #:use-module ((srfi srfi-1) #:select (alist-delete))
+  #:use-module (srfi srfi-26))
 
 (define-public artanis
   (package
@@ -645,6 +646,11 @@ Unix-style DSV format and RFC 4180 format.")
            gettext-minimal))
     (inputs
      (list guile-3.0))                            ;for libguile-3.0.so
+    (supported-systems
+     ;; This version requires 'epoll' and is thus limited to Linux-based
+     ;; systems, but this may change soon:
+     ;; <https://github.com/wingo/fibers/pull/53>.
+     (filter (cut string-suffix? "-linux" <>) %supported-systems))
     (synopsis "Lightweight concurrency facility for Guile")
     (description
      "Fibers is a Guile library that implements a a lightweight concurrency
