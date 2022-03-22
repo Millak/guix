@@ -428,6 +428,7 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
              "-DWITH_ITT=OFF"
              "-DWITH_CAROTENE=OFF" ; only visible on arm/aarch64
              "-DENABLE_PRECOMPILED_HEADERS=OFF"
+             "-DOPENCV_GENERATE_PKGCONFIG=ON"
 
              ;; CPU-Features:
              ;; See cmake/OpenCVCompilerOptimizations.cmake
