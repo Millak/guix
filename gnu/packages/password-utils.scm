@@ -141,36 +141,36 @@ human.")
         (base32 "19va0a9r5px7cbx1ixawaaxrkpfgigb9g81z6h1ngk84164pdgl3"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:modules ((guix build cmake-build-system)
+     (list
+      #:modules '((guix build cmake-build-system)
                   (guix build qt-utils)
                   (guix build utils))
-       #:imported-modules (,@%cmake-build-system-modules
-                            (guix build qt-utils))
-       #:configure-flags '("-DWITH_XC_ALL=YES"
-                           "-DWITH_XC_UPDATECHECK=NO")
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
+      #:imported-modules `(,@%cmake-build-system-modules
+                           (guix build qt-utils))
+      #:configure-flags
+      #~(list "-DWITH_XC_ALL=YES"
+              "-DWITH_XC_UPDATECHECK=NO")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                 ;; Fails with "TestCli::testClip() Compared values are not the
                 ;; same".  That test also requires a phase with (setenv
                 ;; "QT_QPA_PLATFORM" "offscreen") in order to work.
                 (invoke "ctest" "--exclude-regex" "testcli"))))
-         (add-after 'install 'wrap-qt
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (wrap-qt-program "keepassxc" #:output out #:inputs inputs)))))))
+          (add-after 'install 'wrap-qt
+            (lambda* (#:key inputs #:allow-other-keys)
+              (wrap-qt-program "keepassxc" #:output #$output #:inputs inputs))))))
     (native-inputs
-     `(("asciidoctor" ,ruby-asciidoctor)
-       ("qttools" ,qttools)))
+     (list qttools ruby-asciidoctor))
     (inputs
      (list argon2
            botan
            libgcrypt
-           libsodium ; XC_BROWSER
+           libsodium                    ; XC_BROWSER
            libusb
-           libyubikey ; XC_YUBIKEY
+           libyubikey                   ; XC_YUBIKEY
            libxi
            libxtst
            minizip
@@ -179,9 +179,9 @@ human.")
            qtbase-5
            qtsvg
            qtx11extras
-           quazip-0 ; XC_KEESHARE
+           quazip-0                     ; XC_KEESHARE
            readline
-           yubikey-personalization ; XC_YUBIKEY
+           yubikey-personalization      ; XC_YUBIKEY
            zlib))
     (home-page "https://www.keepassxc.org")
     (synopsis "Password manager")
