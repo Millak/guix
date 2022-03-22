@@ -881,6 +881,29 @@ optional application menu or icons for minimized applications or launchers,
 devices and folders.")
     (license gpl2+)))
 
+(define-public gigolo
+  (package
+    (name "gigolo")
+    (version "0.5.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://archive.xfce.org/src/apps/"
+                                  name "/" (version-major+minor version)
+                                  "/" name "-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "1hxv3lla567nnqxxly8xfi8fzmpcdhxb493x9hinr7szfnh1ljp3"))))
+    (build-system gnu-build-system)
+    (native-inputs (list pkg-config intltool))
+    (inputs (list gtk+))
+    (home-page "https://www.xfce.org/")
+    (synopsis "Manage connections to remote file systems")
+    (description
+     "Gigolo is a graphical user interface to easily manage connections to
+remote file systems using GIO/GVfs.  It allows you to quickly connect/mount
+local and remote file systems and manage bookmarks of such.")
+    (license gpl2)))                              ;version 2 only
+
 (define-public xfce4-terminal
   (package
     (name "xfce4-terminal")
