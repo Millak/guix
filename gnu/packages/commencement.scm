@@ -3492,7 +3492,8 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
                               (native-inputs
                                (list (if (target-hurd?)
                                          glibc-utf8-locales-final/hurd
-                                         glibc-utf8-locales-final)))))))
+                                         glibc-utf8-locales-final)))))
+                   ("zstd" ,zstd)))
           ("sed" ,sed-final)
           ("grep" ,grep-final)
           ("xz" ,xz-final)

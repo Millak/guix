@@ -2,7 +2,7 @@
 ;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2020 Brendan Tildesley <mail@brendan.scot>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -644,21 +644,36 @@ and 'man/'.  This phase moves directories to the right place if needed."
     (((names . directories) ...)
      (for-each process-directory directories))))
 
-(define* (compress-documentation #:key outputs
+(define* (compress-documentation #:key
+                                 outputs
                                  (compress-documentation? #t)
-                                 (documentation-compressor "gzip")
-                                 (documentation-compressor-flags
+                                 (info-compressor "gzip")
+                                 (info-compressor-flags
                                   '("--best" "--no-name"))
-                                 (compressed-documentation-extension ".gz")
+                                 (info-compressor-file-extension ".gz")
+                                 (man-compressor (if (which "zstd")
+                                                     "zstd"
+                                                     info-compressor))
+                                 (man-compressor-flags
+                                  (if (which "zstd")
+                                      (list "-19" "--rm"
+                                            "--threads" (number->string
+                                                         (parallel-job-count)))
+                                      info-compressor-flags))
+                                 (man-compressor-file-extension
+                                  (if (which "zstd")
+                                      ".zst"
+                                      info-compressor-file-extension))
                                  #:allow-other-keys)
-  "When COMPRESS-DOCUMENTATION? is true, compress man pages and Info files
-found in OUTPUTS using DOCUMENTATION-COMPRESSOR, called with
-DOCUMENTATION-COMPRESSOR-FLAGS."
-  (define (retarget-symlink link)
+  "When COMPRESS-INFO-MANUALS? is true, compress Info files found in OUTPUTS
+using INFO-COMPRESSOR, called with INFO-COMPRESSOR-FLAGS.  Similarly, when
+COMPRESS-MAN-PAGES? is true, compress man pages files found in OUTPUTS using
+MAN-COMPRESSOR, using MAN-COMPRESSOR-FLAGS."
+  (define (retarget-symlink link extension)
     (let ((target (readlink link)))
       (delete-file link)
-      (symlink (string-append target compressed-documentation-extension)
-               (string-append link compressed-documentation-extension))))
+      (symlink (string-append target extension)
+               (string-append link extension))))
 
   (define (has-links? file)
     ;; Return #t if FILE has hard links.
@@ -676,23 +691,23 @@ DOCUMENTATION-COMPRESSOR-FLAGS."
           (symbolic-link? target-absolute))
         (lambda args
           (if (= ENOENT (system-error-errno args))
-              (begin
-                (format (current-error-port)
-                        "The symbolic link '~a' target is missing: '~a'\n"
-                        symlink target-absolute)
-                #f)
+              (format (current-error-port)
+                      "The symbolic link '~a' target is missing: '~a'\n"
+                      symlink target-absolute)
               (apply throw args))))))
 
-  (define (maybe-compress-directory directory regexp)
+  (define (maybe-compress-directory directory regexp
+                                    compressor
+                                    compressor-flags
+                                    compressor-extension)
     (when (directory-exists? directory)
       (match (find-files directory regexp)
-        (()                                     ;nothing to compress
+        (()                             ;nothing to compress
          #t)
-        ((files ...)                            ;one or more files
+        ((files ...)                    ;one or more files
          (format #t
                  "compressing documentation in '~a' with ~s and flags ~s~%"
-                 directory documentation-compressor
-                 documentation-compressor-flags)
+                 directory compressor compressor-flags)
          (call-with-values
              (lambda ()
                (partition symbolic-link? files))
@@ -702,20 +717,26 @@ DOCUMENTATION-COMPRESSOR-FLAGS."
              ;; unchanged ('gzip' would refuse to compress them anyway.)
              ;; Also, do not retarget symbolic links pointing to other
              ;; symbolic links, since these are not compressed.
-             (for-each retarget-symlink
+             (for-each (cut retarget-symlink <> compressor-extension)
                        (filter (lambda (symlink)
                                  (and (not (points-to-symlink? symlink))
                                       (string-match regexp symlink)))
                                symlinks))
-             (apply invoke documentation-compressor
-                    (append documentation-compressor-flags
+             (apply invoke compressor
+                    (append compressor-flags
                             (remove has-links? regular-files)))))))))
 
   (define (maybe-compress output)
     (maybe-compress-directory (string-append output "/share/man")
-                              "\\.[0-9]+$")
+                              "\\.[0-9]+$"
+                              man-compressor
+                              man-compressor-flags
+                              man-compressor-file-extension)
     (maybe-compress-directory (string-append output "/share/info")
-                              "\\.info(-[0-9]+)?$"))
+                              "\\.info(-[0-9]+)?$"
+                              info-compressor
+                              info-compressor-flags
+                              info-compressor-file-extension))
 
   (if compress-documentation?
       (match outputs
