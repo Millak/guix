@@ -640,10 +640,11 @@ Unix-style DSV format and RFC 4180 format.")
                         #t))))))
     (native-inputs
      (list texinfo pkg-config autoconf automake libtool
+           guile-3.0            ;for 'guild compile
            ;; Gettext brings 'AC_LIB_LINKFLAGS_FROM_LIBS'
            gettext-minimal))
     (inputs
-     (list guile-3.0))
+     (list guile-3.0))                            ;for libguile-3.0.so
     (synopsis "Lightweight concurrency facility for Guile")
     (description
      "Fibers is a Guile library that implements a a lightweight concurrency
@@ -716,7 +717,12 @@ is not available for Guile 2.0.")
   (package
     (inherit guile-fibers-1.1)
     (name "guile2.2-fibers")
-    (inputs (list guile-2.2))))
+    (inputs
+     (modify-inputs (package-inputs guile-fibers-1.1)
+       (replace "guile" guile-2.2)))
+    (native-inputs
+     (modify-inputs (package-native-inputs guile-fibers-1.1)
+       (replace "guile" guile-2.2)))))
 
 (define-public guile-filesystem
   (package
