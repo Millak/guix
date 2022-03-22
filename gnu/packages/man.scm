@@ -146,8 +146,7 @@ a flexible and convenient way.")
                                  (substitute* file
                                    (("#! /bin/sh")
                                     (string-append "#!" (which "sh")))))
-                               (remove file-is-directory?
-                                       (find-files "src/tests" ".*"))))))
+                               (find-files "src/tests")))))
                (add-after 'unpack 'patch-absolute-paths
                  (lambda* (#:key inputs #:allow-other-keys)
                    (substitute* "src/man.c"
@@ -194,10 +193,7 @@ a flexible and convenient way.")
                    '("nroff" "eqn" "neqn" "tbl" "refer" "pic")))
            ;; At run time we should refer to GROFF-MINIMAL, not GROFF (the latter
            ;; pulls in Perl.)
-           #:disallowed-references (list groff)
-           #:modules '((guix build gnu-build-system)
-                       (guix build utils)
-                       (srfi srfi-1))))
+           #:disallowed-references (list groff)))
     (native-inputs
      (list pkg-config flex
            ;; Groff is needed at build time for troff, grops, soelim, etc.
