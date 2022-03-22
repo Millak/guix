@@ -5039,14 +5039,14 @@ association.")
 (define-public python-livereload
   (package
     (name "python-livereload")
-    (version "2.6.1")
+    (version "2.6.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "livereload" version))
        (sha256
         (base32
-         "0rhggz185bxc3zjnfpmhcvibyzi86i624za1lfh7x7ajsxw4y9c9"))))
+         "0scqjnhg3ap81v36ghp0pik774dnfdkwqsx5j1jfbzarbs32yvvp"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-six python-tornado))
