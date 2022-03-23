@@ -1033,8 +1033,21 @@ Debian or a derivative using @command{debootstrap}.")
               (sha256
                (base32 "0cik2m0byfp9ppq0hpg3xyrlp5ag1i4dww7a7872mlm36xxqagg0"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'install 'wrap-binary
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (let ((out (assoc-ref outputs "out")))
+                 (for-each
+                   (lambda (file)
+                     (wrap-program file
+                       `("PATH" ":" prefix
+                         (,(dirname (search-input-file inputs "/bin/dtc"))))))
+                   (find-files (string-append out "/bin")))))))))
     (inputs
-     (list dtc))
+     (list bash-minimal dtc))
     (native-inputs
      (list python-wrapper))
     (home-page "https://github.com/riscv-software-src/riscv-isa-sim")
