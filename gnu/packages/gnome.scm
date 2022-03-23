@@ -5852,17 +5852,17 @@ throughout GNOME for API documentation).")
                 (string-append all "\n#include <EGL/eglmesaext.h>\n")))
              #t))
          (add-before 'check 'start-xorg-server
-                     (lambda* (#:key tests? inputs #:allow-other-keys)
-                       (if tests?
-                           (begin
-                             ;; The test suite requires a running X server.
-                             (system (format #f "~a/bin/Xvfb :1 +extension GLX &"
-                                             (assoc-ref inputs "xorg-server")))
-                             (setenv "DISPLAY" ":1")
-                             #t)
-                           (format #t "test suite not run~%"))
-                       #t)))))
-    (home-page "https://www.cogl3d.org")
+           (lambda* (#:key tests? inputs #:allow-other-keys)
+             (if tests?
+                 (begin
+                   ;; The test suite requires a running X server.
+                   (system (format #f "~a/bin/Xvfb :1 +extension GLX &"
+                                   (assoc-ref inputs "xorg-server")))
+                   (setenv "DISPLAY" ":1")
+                   #t)
+                 (format #t "test suite not run~%"))
+             #t)))))
+    (home-page "http://www.clutter-project.org")
     (synopsis "Object oriented GL/GLES Abstraction/Utility Layer")
     (description
      "Cogl is a small library for using 3D graphics hardware to draw pretty
