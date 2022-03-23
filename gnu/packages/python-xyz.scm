@@ -9026,34 +9026,6 @@ callback signature using a prototype function.")
        (sha256
         (base32 "04xgymypnbfgf2q0d5b0hanjbjsp53f055sh1p8xlq52vyzmxdaq"))))
     (build-system python-build-system)
-    (propagated-inputs
-     (list python-backcall
-           python-decorator
-           python-pyzmq
-           python-prompt-toolkit-2
-           python-terminado
-           python-matplotlib
-           python-matplotlib-inline
-           python-numpy
-           python-numpydoc
-           python-jedi
-           python-jinja2
-           python-mistune
-           python-pexpect
-           python-pickleshare
-           python-simplegeneric
-           python-jsonschema
-           python-traitlets
-           python-nbformat
-           python-pygments))
-    (inputs
-     (list readline which))
-    (native-inputs
-     (list graphviz
-           pkg-config
-           python-requests ;; for tests
-           python-testpath
-           python-nose))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -9063,20 +9035,6 @@ callback signature using a prototype function.")
                ((".*import datetime") "")
                ((".*datetime.datetime.now\\(\\)") "")
                (("%timeit") "# %timeit"))))
-         ;; Tests can only be run after the library has been installed and not
-         ;; within the source directory.
-         (delete 'check)
-         (add-after 'install 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (if tests?
-                 (begin
-                   ;; Make installed package available for running the tests
-                   (add-installed-pythonpath inputs outputs)
-                   (setenv "HOME" "/tmp/") ;; required by a test
-                   ;; We only test the core because one of the other tests
-                   ;; tries to import ipykernel.
-                   (invoke "python" "IPython/testing/iptest.py"
-                           "-v" "IPython/core/tests")))))
          (add-before 'check 'fix-tests
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "./IPython/utils/_process_posix.py"
@@ -9091,7 +9049,43 @@ callback signature using a prototype function.")
              (delete-file "IPython/core/tests/test_interactiveshell.py")
              ;; AttributeError: module 'matplotlib_inline' has no
              ;; attribute 'backend_inline'
-             (delete-file "IPython/core/tests/test_pylabtools.py"))))))
+             (delete-file "IPython/core/tests/test_pylabtools.py")))
+         (replace 'check
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               ;; Make installed package available for running the tests
+               (add-installed-pythonpath inputs outputs)
+               (setenv "HOME" "/tmp/") ;; required by a test
+               ;; We only test the core because one of the other tests
+               ;; tries to import ipykernel.
+               (invoke "python" "IPython/testing/iptest.py"
+                       "-v" "IPython/core/tests")))))))
+    (inputs (list readline which))
+    (propagated-inputs
+     (list python-backcall
+           python-jedi
+           python-jinja2
+           python-jsonschema
+           python-matplotlib
+           python-matplotlib-inline
+           python-mistune
+           python-nbformat
+           python-numpy
+           python-numpydoc
+           python-pexpect
+           python-pickleshare
+           python-prompt-toolkit-2
+           python-pygments
+           python-pyzmq
+           python-simplegeneric
+           python-terminado
+           python-traitlets))
+    (native-inputs
+     (list graphviz
+           pkg-config
+           python-requests              ;for tests
+           python-testpath
+           python-nose))
     (home-page "https://ipython.org")
     (synopsis "IPython is a tool for interactive computing in Python")
     (description
