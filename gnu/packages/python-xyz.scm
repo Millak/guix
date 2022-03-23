@@ -9072,6 +9072,32 @@ for automated refactoring or highlighting.")
 functions, useful in the context of writing unit tests among other uses.")
     (license license:expat)))
 
+(define-public python-stack-data
+  (package
+    (name "python-stack-data")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "stack_data" version))
+       (sha256
+        (base32 "04lfcj5qrn4qikjw89qbdzqwm0xm4bgm4m8rll1rafk3pm0jssa5"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-asttokens python-executing python-pure-eval))
+    (native-inputs
+     (list python-cython
+           python-littleutils
+           python-pygments
+           python-pytest
+           python-setuptools-scm
+           python-typeguard))
+    (home-page "https://github.com/alexmojaki/stack_data")
+    (synopsis "Python stack frame and traceback manipulation library")
+    (description "The @code{stack_data} Python library extracts data from
+stack frames and tracebacks.  Is can be used to display more useful tracebacks
+than the default.")
+    (license license:expat)))
+
 (define-public python-ipython
   (package
     (name "python-ipython")
