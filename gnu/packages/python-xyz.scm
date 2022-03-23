@@ -9033,6 +9033,28 @@ callback signature using a prototype function.")
 abstract syntax tree (AST) nodes without side effects.")
     (license license:expat)))
 
+(define-public python-asttokens
+  (package
+    (name "python-asttokens")
+    (version "2.0.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "asttokens" version))
+       (sha256
+        (base32 "1mglbkikxvnhrk3inbx0v1qzxwd38qjr6l35sn098yicy0ac2m4s"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-six))
+    (native-inputs (list python-astroid python-pytest python-setuptools-scm))
+    (home-page "https://github.com/gristlabs/asttokens")
+    (synopsis "Python library to annotate abstract syntax trees")
+    (description "The @code{asttokens} module annotates Python abstract syntax
+trees (ASTs) with the positions of tokens and text in the source code that
+generated them.  It makes it possible for tools that work with logical AST
+nodes to find the particular text that resulted in those nodes, for example
+for automated refactoring or highlighting.")
+    (license license:asl2.0)))
+
 (define-public python-ipython
   (package
     (name "python-ipython")
