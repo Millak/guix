@@ -570,15 +570,16 @@ sample proximities between pairs of cases.")
 (define-public openfst
   (package
     (name "openfst")
-    (version "1.7.9")
+    (version "1.8.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://www.openfst.org/twiki/pub/FST/"
                                   "FstDownload/openfst-" version ".tar.gz"))
               (sha256
                (base32
-                "1pmx1yhn2gknj0an0zwqmzgwjaycapi896244np50a8y3nrsw6ck"))))
+                "0hlbdmjjf1jgsvi3d2hwni5lz3l9a5bzj6ijpbawa8a7cbrpp66y"))))
     (build-system gnu-build-system)
+    (arguments '(#:configure-flags '("--enable-ngram-fsts")))
     (home-page "http://www.openfst.org")
     (synopsis "Library for weighted finite-state transducers")
     (description "OpenFst is a library for constructing, combining,
