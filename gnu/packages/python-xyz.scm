@@ -9101,13 +9101,13 @@ than the default.")
 (define-public python-ipython
   (package
     (name "python-ipython")
-    (version "7.27.0")
+    (version "8.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ipython" version ".tar.gz"))
        (sha256
-        (base32 "04xgymypnbfgf2q0d5b0hanjbjsp53f055sh1p8xlq52vyzmxdaq"))))
+        (base32 "1hcxa713wh3axa57412iy02rj0494ljvv6gpnls4lndc5h9yprbh"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -9118,34 +9118,15 @@ than the default.")
                ((".*import datetime") "")
                ((".*datetime.datetime.now\\(\\)") "")
                (("%timeit") "# %timeit"))))
-         (add-before 'check 'fix-tests
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "./IPython/utils/_process_posix.py"
-               (("/usr/bin/env', 'which") (which "which")))
-             (substitute* "./IPython/core/tests/test_inputtransformer.py"
-               (("#!/usr/bin/env python")
-                (string-append "#!" (which "python"))))
-             ;; This test introduces a circular dependency on ipykernel
-             ;; (which depends on ipython).
-             (delete-file "IPython/core/tests/test_display.py")
-             ;; AttributeError: module 'IPython.core' has no attribute 'formatters'
-             (delete-file "IPython/core/tests/test_interactiveshell.py")
-             ;; AttributeError: module 'matplotlib_inline' has no
-             ;; attribute 'backend_inline'
-             (delete-file "IPython/core/tests/test_pylabtools.py")))
          (replace 'check
            (lambda* (#:key inputs outputs tests? #:allow-other-keys)
              (when tests?
-               ;; Make installed package available for running the tests
-               (add-installed-pythonpath inputs outputs)
-               (setenv "HOME" "/tmp/") ;; required by a test
-               ;; We only test the core because one of the other tests
-               ;; tries to import ipykernel.
-               (invoke "python" "IPython/testing/iptest.py"
-                       "-v" "IPython/core/tests")))))))
+               (setenv "HOME" "/tmp/")  ;required by some tests
+               (invoke "python" "-m" "pytest" "-vv")))))))
     (inputs (list readline which))
     (propagated-inputs
      (list python-backcall
+           python-decorator
            python-jedi
            python-jinja2
            python-jsonschema
@@ -9157,18 +9138,20 @@ than the default.")
            python-numpydoc
            python-pexpect
            python-pickleshare
-           python-prompt-toolkit-2
+           python-prompt-toolkit
            python-pygments
            python-pyzmq
            python-simplegeneric
+           python-stack-data
            python-terminado
            python-traitlets))
     (native-inputs
      (list graphviz
            pkg-config
-           python-requests              ;for tests
-           python-testpath
-           python-nose))
+           ;; For tests.
+           python-pytest
+           python-requests
+           python-testpath))
     (home-page "https://ipython.org")
     (synopsis "IPython is a tool for interactive computing in Python")
     (description
@@ -9215,14 +9198,14 @@ computing.")
                (mkdir-p info)
                ;; (copy-file "docs/build/texinfo/ipython.info"
                ;;            (string-append info "/ipython.info"))
-               (copy-file "COPYING.rst" (string-append doc "/COPYING.rst")))
-             #t)))))
+               (copy-file "COPYING.rst" (string-append doc "/COPYING.rst"))))))))
     (inputs
      (list python-ipython python-ipykernel))
     (native-inputs
      `(("python-sphinx" ,python-sphinx)
        ("python-sphinx-rtd-theme" ,python-sphinx-rtd-theme)
-       ;; FIXME: It's possible that a smaller union would work just as well.
+       ;; FIXME: It's possible that a smaller updmap.cfg would work just as
+       ;; well.
        ("texlive" ,(texlive-updmap.cfg (list texlive-amsfonts
                                         texlive-capt-of
                                         texlive-fonts-ec
