@@ -3,6 +3,7 @@
 ;;; Copyright © 2018 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2022 Remco van 't Veer <remco@remworks.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -745,6 +746,12 @@ cache.size = 100 * MB
                     (default "/etc/resolv.conf")) ;string
   (no-resolv?       dnsmasq-configuration-no-resolv?
                     (default #f))       ;boolean
+  (forward-private-reverse-lookup?
+                    dnsmasq-configuration-forward-private-reverse-lookup?
+                    (default #t))       ;boolean
+  (query-servers-in-order?
+                    dnsmasq-configuration-query-servers-in-order?
+                    (default #f))       ;boolean
   (servers          dnsmasq-configuration-servers
                     (default '()))      ;list of string
   (addresses        dnsmasq-configuration-addresses
@@ -752,7 +759,9 @@ cache.size = 100 * MB
   (cache-size       dnsmasq-configuration-cache-size
                     (default 150))      ;integer
   (negative-cache?  dnsmasq-configuration-negative-cache?
-                    (default #t))      ;boolean
+                    (default #t))       ;boolean
+  (cpe-id           dnsmasq-configuration-cpe-id
+                    (default #t))       ;string
   (tftp-enable?     dnsmasq-configuration-tftp-enable?
                     (default #f))       ;boolean
   (tftp-no-fail?    dnsmasq-configuration-tftp-no-fail?
@@ -776,86 +785,98 @@ cache.size = 100 * MB
   (tftp-unique-root dnsmasq-tftp-unique-root
                     (default #f)))      ;"" or "ip" or "mac"
 
-(define dnsmasq-shepherd-service
-  (match-lambda
-    (($ <dnsmasq-configuration> package
-                                no-hosts?
-                                port local-service? listen-addresses
-                                resolv-file no-resolv? servers
-                                addresses cache-size negative-cache?
-                                tftp-enable? tftp-no-fail?
-                                tftp-single-port? tftp-secure?
-                                tftp-max tftp-mtu tftp-no-blocksize?
-                                tftp-lowercase? tftp-port-range
-                                tftp-root tftp-unique-root)
-     (shepherd-service
-      (provision '(dnsmasq))
-      (requirement '(networking))
-      (documentation "Run the dnsmasq DNS server.")
-      (start #~(make-forkexec-constructor
-                '(#$(file-append package "/sbin/dnsmasq")
-                  "--keep-in-foreground"
-                  "--pid-file=/run/dnsmasq.pid"
-                  #$@(if no-hosts?
-                         '("--no-hosts")
-                         '())
-                  #$(format #f "--port=~a" port)
-                  #$@(if local-service?
-                         '("--local-service")
-                         '())
-                  #$@(map (cut format #f "--listen-address=~a" <>)
-                          listen-addresses)
-                  #$(format #f "--resolv-file=~a" resolv-file)
-                  #$@(if no-resolv?
-                         '("--no-resolv")
-                         '())
-                  #$@(map (cut format #f "--server=~a" <>)
-                          servers)
-                  #$@(map (cut format #f "--address=~a" <>)
-                          addresses)
-                  #$(format #f "--cache-size=~a" cache-size)
-                  #$@(if negative-cache?
-                         '()
-                         '("--no-negcache"))
-                  #$@(if tftp-enable?
-                         '("--enable-tftp")
-                         '())
-                  #$@(if tftp-no-fail?
-                         '("--tftp-no-fail")
-                         '())
-                  #$@(if tftp-single-port?
-                         '("--tftp-single-port")
-                         '())
-                  #$@(if tftp-secure?
-                         '("--tftp-secure?")
-                         '())
-                  #$@(if tftp-max
-                         (list (format #f "--tftp-max=~a" tftp-max))
-                         '())
-                  #$@(if tftp-mtu
-                         (list (format #f "--tftp-mtu=~a" tftp-mtu))
-                         '())
-                  #$@(if tftp-no-blocksize?
-                         '("--tftp-no-blocksize")
-                         '())
-                  #$@(if tftp-lowercase?
-                         '("--tftp-lowercase")
-                         '())
-                  #$@(if tftp-port-range
-                         (list (format #f "--tftp-port-range=~a"
-                                          tftp-port-range))
-                         '())
-                  #$@(if tftp-root
-                         (list (format #f "--tftp-root=~a" tftp-root))
-                         '())
-                  #$@(if tftp-unique-root
-                         (list
-                          (if (> (length tftp-unique-root) 0)
-                              (format #f "--tftp-unique-root=~a" tftp-unique-root)
-                              (format #f "--tftp-unique-root")))
-                         '()))
-                #:pid-file "/run/dnsmasq.pid"))
-      (stop #~(make-kill-destructor))))))
+(define (dnsmasq-shepherd-service config)
+  (match-record config <dnsmasq-configuration>
+    (package
+     no-hosts?
+     port local-service? listen-addresses
+     resolv-file no-resolv?
+     forward-private-reverse-lookup? query-servers-in-order?
+     servers addresses
+     cache-size negative-cache?
+     cpe-id
+     tftp-enable? tftp-no-fail?
+     tftp-single-port? tftp-secure?
+     tftp-max tftp-mtu tftp-no-blocksize?
+     tftp-lowercase? tftp-port-range
+     tftp-root tftp-unique-root)
+    (shepherd-service
+     (provision '(dnsmasq))
+     (requirement '(networking))
+     (documentation "Run the dnsmasq DNS server.")
+     (start #~(make-forkexec-constructor
+               '(#$(file-append package "/sbin/dnsmasq")
+                 "--keep-in-foreground"
+                 "--pid-file=/run/dnsmasq.pid"
+                 #$@(if no-hosts?
+                        '("--no-hosts")
+                        '())
+                 #$(format #f "--port=~a" port)
+                 #$@(if local-service?
+                        '("--local-service")
+                        '())
+                 #$@(map (cut format #f "--listen-address=~a" <>)
+                         listen-addresses)
+                 #$(format #f "--resolv-file=~a" resolv-file)
+                 #$@(if no-resolv?
+                        '("--no-resolv")
+                        '())
+                 #$@(if forward-private-reverse-lookup?
+                        '()
+                        '("--bogus-priv"))
+                 #$@(if query-servers-in-order?
+                        '("--strict-order")
+                        '())
+                 #$@(map (cut format #f "--server=~a" <>)
+                         servers)
+                 #$@(map (cut format #f "--address=~a" <>)
+                         addresses)
+                 #$(format #f "--cache-size=~a" cache-size)
+                 #$@(if negative-cache?
+                        '()
+                        '("--no-negcache"))
+                 #$@(if cpe-id
+                        (list (format #f "--add-cpe-id=~a" cpe-id))
+                        '())
+                 #$@(if tftp-enable?
+                        '("--enable-tftp")
+                        '())
+                 #$@(if tftp-no-fail?
+                        '("--tftp-no-fail")
+                        '())
+                 #$@(if tftp-single-port?
+                        '("--tftp-single-port")
+                        '())
+                 #$@(if tftp-secure?
+                        '("--tftp-secure?")
+                        '())
+                 #$@(if tftp-max
+                        (list (format #f "--tftp-max=~a" tftp-max))
+                        '())
+                 #$@(if tftp-mtu
+                        (list (format #f "--tftp-mtu=~a" tftp-mtu))
+                        '())
+                 #$@(if tftp-no-blocksize?
+                        '("--tftp-no-blocksize")
+                        '())
+                 #$@(if tftp-lowercase?
+                        '("--tftp-lowercase")
+                        '())
+                 #$@(if tftp-port-range
+                        (list (format #f "--tftp-port-range=~a"
+                                      tftp-port-range))
+                        '())
+                 #$@(if tftp-root
+                        (list (format #f "--tftp-root=~a" tftp-root))
+                        '())
+                 #$@(if tftp-unique-root
+                        (list
+                         (if (> (length tftp-unique-root) 0)
+                             (format #f "--tftp-unique-root=~a" tftp-unique-root)
+                             (format #f "--tftp-unique-root")))
+                        '()))
+               #:pid-file "/run/dnsmasq.pid"))
+     (stop #~(make-kill-destructor)))))
 
 (define (dnsmasq-activation config)
   #~(begin
