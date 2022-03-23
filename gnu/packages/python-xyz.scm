@@ -9055,6 +9055,23 @@ nodes to find the particular text that resulted in those nodes, for example
 for automated refactoring or highlighting.")
     (license license:asl2.0)))
 
+(define-public python-littleutils
+  (package
+    (name "python-littleutils")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "littleutils" version))
+       (sha256
+        (base32 "0vwijrylppmk0nbddqvn527r9cg3zw8d6zk6r58hslry42jf7jp6"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/alexmojaki/littleutils")
+    (synopsis "Python utility function collection")
+    (description "@code{littleutils} is a small collection of Python utility
+functions, useful in the context of writing unit tests among other uses.")
+    (license license:expat)))
+
 (define-public python-ipython
   (package
     (name "python-ipython")
