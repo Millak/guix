@@ -7250,7 +7250,7 @@ a general image processing tool.")
   (package
     (inherit python-pillow)
     (name "python-pillow-simd")
-    (version "9.0.0")
+    (version "v9.0.0.post1")
     ;; The PyPI tarball does not include test files.
     (source
      (origin
@@ -7260,7 +7260,7 @@ a general image processing tool.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pxvfyzxzgk18mhm7xh5n19s88bpwaah5cm60p4c239phspzprdb"))))
+        (base32 "1dnvsln451aw3qy2cxg2ndd5mcanf5nrhxw9l7mcam730635hdm9"))))
     (inputs
      (modify-inputs (package-inputs python-pillow)
        (prepend libraqm libimagequant)))
