@@ -15316,11 +15316,11 @@ translates between different variant encodings.")
       (license license:asl2.0))))
 
 (define-public r-signac
-  (let ((commit "e0512d348adeda4a3f23a2e8f56d1fe09840e03c")
-        (revision "1"))
+  (let ((commit "458e647b503c3472b0b98c0aeca934f452e039ee")
+        (revision "2"))
     (package
       (name "r-signac")
-      (version (git-version "1.1.1" revision commit))
+      (version (git-version "1.6.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -15329,16 +15329,12 @@ translates between different variant encodings.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32
-           "1yihhrv7zs87ax61la1nb4y12lg3knraw4b20k5digbcwm8488lb"))))
+          (base32 "1hgwpgighkvfkai80n4d2252s4sdpa4faag4ncdiylicl5wa7lbj"))))
       (properties `((upstream-name . "Signac")))
       (build-system r-build-system)
       (inputs (list zlib))
       (propagated-inputs
-       (list r-annotationfilter
-             r-biocgenerics
-             r-biostrings
-             r-biovizbase
+       (list r-biocgenerics
              r-data-table
              r-dplyr
              r-fastmatch
@@ -15346,7 +15342,6 @@ translates between different variant encodings.")
              r-future-apply
              r-genomeinfodb
              r-genomicranges
-             r-ggbio
              r-ggforce
              r-ggplot2
              r-ggrepel
@@ -15357,6 +15352,7 @@ translates between different variant encodings.")
              r-matrix
              r-patchwork
              r-pbapply
+             r-qlcmatrix
              r-rcpp
              r-rcpproll
              r-rsamtools
@@ -15365,7 +15361,8 @@ translates between different variant encodings.")
              r-seurat
              r-seuratobject
              r-stringi
-             r-tidyr))
+             r-tidyr
+             r-tidyselect))
       (home-page "https://github.com/timoast/signac/")
       (synopsis "Analysis of single-cell chromatin data")
       (description
