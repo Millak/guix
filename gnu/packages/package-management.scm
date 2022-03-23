@@ -1896,14 +1896,14 @@ sandboxed desktop applications on GNU/Linux.")
 (define-public akku
   (package
     (name "akku")
-    (version "1.0.1")
+    (version "1.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://gitlab.com/akkuscm/akku.git")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
-              (sha256 (base32 "1dm32ws3nshnnscd7k75zswxxs1pp25y2q4k8j5ms241hz47by3c"))))
+              (sha256 (base32 "1pi18aamg1fd6f9ynfl7zx92052xzf0zwmhi2pwcwjs1kbah19f5"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
