@@ -22,6 +22,7 @@
   #:use-module (guix licenses)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages compression))
 
@@ -39,7 +40,7 @@
     (build-system gnu-build-system)
     (native-inputs (list lzip))
     (arguments
-     '(#:configure-flags '("CC=gcc")
+     `(#:configure-flags (list ,(string-append "CC=" (cc-for-target)))
        #:phases
        (modify-phases %standard-phases
          (add-before 'patch-source-shebangs 'patch-test-suite
