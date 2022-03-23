@@ -1486,34 +1486,36 @@ and search library.")
   (package
     (inherit python-notmuch)
     (name "python-notmuch2")
+    (version (package-version notmuch))
     (propagated-inputs (list python-cffi))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; This python package lives in a subdirectory of the notmuch source
-         ;; tree, so chdir into it before building.
-         (add-after 'unpack 'enter-python-dir
-           (lambda _ (chdir "bindings/python-cffi")))
-         ;; python-build-system does not invoke the configure script
-         ;; so _notmuch_config.py is missing
-         (add-after 'enter-python-dir 'create-notmuch-config
-           (lambda* (#:key inputs #:allow-other-keys)
-             (with-output-to-file "_notmuch_config.py"
-               (lambda _
-                 (display
-                  (string-append
-                   "NOTMUCH_INCLUDE_DIR="
-                   "'" (dirname (search-input-file inputs "include/notmuch.h")) "'\n"
-                   "NOTMUCH_LIB_DIR="
-                   "'" (dirname (search-input-file inputs "lib/libnotmuch.so")) "'"))))))
-         ;; version.txt is not included in notmuch, so we patch in the version number
-         (add-after 'create-notmuch-config 'patch-setup.py
-           (lambda _
-             (substitute* "setup.py"
-               (("NOTMUCH_VERSION_FILE")
-                "'/dev/null'")
-               (("version=VERSION,")
-                (string-append "version='" ,(package-version this-package) "',"))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; This python package lives in a subdirectory of the notmuch source
+          ;; tree, so chdir into it before building.
+          (add-after 'unpack 'enter-python-dir
+            (lambda _ (chdir "bindings/python-cffi")))
+          ;; python-build-system does not invoke the configure script
+          ;; so _notmuch_config.py is missing
+          (add-after 'enter-python-dir 'create-notmuch-config
+            (lambda* (#:key inputs #:allow-other-keys)
+              (with-output-to-file "_notmuch_config.py"
+                (lambda _
+                  (display
+                   (string-append
+                    "NOTMUCH_INCLUDE_DIR="
+                    "'" (dirname (search-input-file inputs "include/notmuch.h")) "'\n"
+                    "NOTMUCH_LIB_DIR="
+                    "'" (dirname (search-input-file inputs "lib/libnotmuch.so")) "'"))))))
+          ;; version.txt is not included in notmuch, so we patch in the version number
+          (add-after 'create-notmuch-config 'patch-setup.py
+            (lambda _
+              (substitute* "setup.py"
+                (("NOTMUCH_VERSION_FILE")
+                 "'/dev/null'")
+                (("version=VERSION,")
+                 (string-append "version='" #$version "',"))))))))
     (synopsis "Pythonic bindings for the notmuch mail database using CFFI")
     (license license:gpl3+)))
 
