@@ -9015,6 +9015,24 @@ you're careful.  The @code{backcall} package provides a way of specifying the
 callback signature using a prototype function.")
     (license license:bsd-3)))
 
+(define-public python-pure-eval
+  (package
+    (name "python-pure-eval")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pure_eval" version))
+       (sha256
+        (base32 "1hwsm85cwqwh6d6x4vzcimla2865s6v19ms3ym81ganzyq534i9b"))))
+    (build-system python-build-system)
+    (native-inputs (list python-pytest python-setuptools-scm))
+    (home-page "https://github.com/alexmojaki/pure_eval")
+    (synopsis "Python library to evaluate abstract syntax tree nodes")
+    (description "The @code{pure_eval} Python library can safely evaluate
+abstract syntax tree (AST) nodes without side effects.")
+    (license license:expat)))
+
 (define-public python-ipython
   (package
     (name "python-ipython")
