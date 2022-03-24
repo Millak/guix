@@ -18512,14 +18512,14 @@ multitouch applications.")
 (define-public python-pycountry
   (package
     (name "python-pycountry")
-    (version "18.5.26")
+    (version "22.3.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pycountry" version))
        (sha256
         (base32
-         "15q9j047s3yc9cfcxq1ch8b71f81na44cr6dydd5gxk0ki9a4akz"))))
+         "0ihnkh86zz01vi46gcwgq6h71jrpj7hq71zi13c98n2qdhj3l5mj"))))
     (build-system python-build-system)
     (home-page "https://bitbucket.org/flyingcircus/pycountry")
     (synopsis "ISO databases for languages, countries, currencies, etc.")
