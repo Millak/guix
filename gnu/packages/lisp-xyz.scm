@@ -4904,8 +4904,8 @@ mostly Common Lisp implementation.")
   (sbcl-package->ecl-package sbcl-cl-fastcgi))
 
 (define-public sbcl-clack
-  (let ((commit "e3e032843bb1220ab96263c411aa7f2feb4746e0")
-        (revision "1"))
+  (let ((commit "6fd0279424f7ba5fd4f92d69a1970846b0b11222")
+        (revision "2"))
     (package
       (name "sbcl-clack")
       (version (git-version "2.0.0" revision commit))
@@ -4915,9 +4915,9 @@ mostly Common Lisp implementation.")
          (uri (git-reference
                (url "https://github.com/fukamachi/clack")
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-clack" version))
          (sha256
-          (base32 "1ymzs6qyrwhlj6cgqsnpyn6g5cbp7a3s1vgxwna20y2q7y4iacy0"))))
+          (base32 "0sfmvqmsg9z13x0v77448rpdqgyprdq739nsbrjw9a28hv9jmkg9"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        `(("alexandria" ,sbcl-alexandria)
