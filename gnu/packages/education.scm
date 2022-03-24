@@ -152,7 +152,7 @@ of categories with some of the activities available in that category.
      (origin
        (method url-fetch)
        (uri (string-append
-             "https://download.kde.org/stable/gcompris/qt/src/gcompris-qt-"
+             "mirror://kde/stable/gcompris/qt/src/gcompris-qt-"
              version ".tar.xz"))
        (sha256
         (base32 "0qncknaaf168anh4cjp7dqz6qzgx948kvgr32j2vga8mjakqn1aj"))))
