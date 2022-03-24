@@ -4671,7 +4671,7 @@ ecosystem, but can naturally be used also by other projects.")
 (define-public python-robotframework
   (package
     (name "python-robotframework")
-    (version "4.1.3")
+    (version "5.0")
     ;; There are no tests in the PyPI archive.
     (source
      (origin
@@ -4681,55 +4681,80 @@ ecosystem, but can naturally be used also by other projects.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0j71awmfkwk7prz82kr1zbcl3nrih3396sshrygnqlrdjmgivd3p"))
+        (base32 "0qcm36c8hachbv3bc05ky7cf63i3sj0y8dw3bwjvcln28i543f81"))
        (patches (search-patches
-                 "python-robotframework-source-date-epoch.patch"
-                 "python-robotframework-ug2html.patch"))))
+                 "python-robotframework-atest.patch"
+                 "python-robotframework-source-date-epoch.patch"))))
     (build-system python-build-system)
     (arguments
-     `(#:modules ((guix build python-build-system)
+     (list
+      #:modules '((guix build python-build-system)
                   (guix build utils)
                   (ice-9 ftw)
                   (ice-9 match)
                   (srfi srfi-26))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'build-and-install-doc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((doc (string-append (assoc-ref outputs "doc")
-                                       "/share/doc/robotframework")))
-               (invoke "invoke" "library-docs" "all")
-               (invoke "doc/userguide/ug2html.py" "dist") ;user guide
-               (mkdir-p doc)
-               (with-directory-excursion "dist"
-                 (define user-guide-dir
-                   (match (scandir "." (cut string-prefix?
-                                            "robotframework-userguide-" <>))
-                     ((dir) dir)
-                     (_ (error "could not find the user guide directory"))))
-                 (copy-recursively user-guide-dir doc)))))
-         (replace 'check
-           (lambda* (#:key native-inputs inputs tests?
-                     #:allow-other-keys)
-             (when tests?
-               ;; Some tests require timezone data.  Otherwise, they
-               ;; look up /etc/localtime, which doesn't exist, and
-               ;; fail with:
-               ;;
-               ;; OverflowError: mktime argument out of range
-               (setenv "TZDIR"
-                       (search-input-directory
-                        (or native-inputs inputs) "share/zoneinfo"))
-               (setenv "TZ" "Europe/Paris")
-               (invoke "python" "utest/run.py")))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'delete-problematic-tests
+            (lambda _
+              ;; Tests such as 'Tilde and username in path' rely on HOME and
+              ;; USER being set, on top of the user's /etc/passwd home
+              ;; directory not being '/', as is the case in the Guix build
+              ;; container.
+              (delete-file "atest/robot/standard_libraries/\
+operating_system/path_expansion.robot")
+              ;; FIXME: The test 'Process.Sending Signal.By default signal
+              ;; is not sent to process running in shell' fails for unknown
+              ;; reason (see:
+              ;; https://github.com/robotframework/robotframework/issues/4292).
+              (delete-file "atest/robot/standard_libraries/\
+process/sending_signal.robot")))
+          (add-before 'build 'build-and-install-doc
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((doc (string-append (assoc-ref outputs "doc")
+                                        "/share/doc/robotframework")))
+                (invoke "invoke" "library-docs" "all")
+                (invoke "doc/userguide/ug2html.py" "dist") ;user guide
+                (mkdir-p doc)
+                (with-directory-excursion "dist"
+                  (define user-guide-dir
+                    (match (scandir "." (cut string-prefix?
+                                             "robotframework-userguide-" <>))
+                      ((dir) dir)
+                      (_ (error "could not find the user guide directory"))))
+                  (copy-recursively user-guide-dir doc)))))
+          (replace 'check
+            (lambda* (#:key native-inputs inputs tests?
+                      #:allow-other-keys)
+              (when tests?
+                ;; Some tests require timezone data.  Otherwise, they
+                ;; look up /etc/localtime, which doesn't exist, and
+                ;; fail with:
+                ;;
+                ;; OverflowError: mktime argument out of range
+                (setenv "TZDIR"
+                        (search-input-directory
+                         (or native-inputs inputs) "share/zoneinfo"))
+                (setenv "TZ" "Europe/Paris")
+
+                (format #t "Running unit tests...~%")
+                (invoke "utest/run.py")
+
+                (format #t "Running acceptance tests...~%")
+                (invoke "xvfb-run" "atest/run.py")))))))
     (native-inputs
-     `(("python-docutils" ,python-docutils)
-       ("python-jsonschema" ,python-jsonschema)
-       ("python-invoke" ,python-invoke)
-       ("python-pygments" ,python-pygments)
-       ("python-rellu" ,python-rellu)
-       ("python:tk" ,python "tk")       ;used when building the HTML doc
-       ("tzdata" ,tzdata-for-tests)))
+     (list python-docutils
+           python-jsonschema
+           python-invoke
+           python-lxml
+           python-pygments
+           python-pyyaml
+           python-rellu
+           `(,python "tk")              ;used when building the HTML doc
+           python-xmlschema
+           scrot                        ;for taking screenshots
+           tzdata-for-tests
+           xvfb-run))
     (outputs '("out" "doc"))
     (home-page "https://robotframework.org")
     (synopsis "Generic automation framework")

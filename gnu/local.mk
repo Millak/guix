@@ -1709,8 +1709,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-pytorch-runpath.patch		\
   %D%/packages/patches/python-pytorch-system-libraries.patch	\
   %D%/packages/patches/python-pytorch-1.9.0-system-libraries.patch \
+  %D%/packages/patches/python-robotframework-atest.patch	\
   %D%/packages/patches/python-robotframework-source-date-epoch.patch \
-  %D%/packages/patches/python-robotframework-ug2html.patch	\
   %D%/packages/patches/python-robotframework-sshlibrary-rf5-compat.patch \
   %D%/packages/patches/python-seaborn-kde-test.patch		\
   %D%/packages/patches/python-seaborn-2690.patch		\
