@@ -585,6 +585,19 @@ sample proximities between pairs of cases.")
 optimizing, and searching weighted finite-state transducers (FSTs).")
     (license license:asl2.0)))
 
+;; This is a temporary addition to bypass upstream issues with the kaldi
+;; package.
+(define-public openfst-1.7.3
+  (package (inherit openfst)
+    (version "1.7.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "http://www.openfst.org/twiki/pub/FST/"
+                                  "FstDownload/openfst-" version ".tar.gz"))
+              (sha256
+               (base32
+                "038a60w7y8qnbxmcrsim9rafz9mihsny8xv50jpzlr7rl166pp5q"))))))
+
 (define-public shogun
   (package
     (name "shogun")
