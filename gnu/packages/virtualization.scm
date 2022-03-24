@@ -2152,7 +2152,12 @@ override CC = " (assoc-ref inputs "cross-gcc") "/bin/i686-linux-gnu-gcc"))
               (string-append "runtime_library_dirs = ['"
                              (assoc-ref outputs "out")
                              "/lib'],\nlibrary_dirs =")))
-            #t))
+
+            ;; This needs to be quoted:
+            ;; <https://lists.gnu.org/archive/html/guix-devel/2022-03/msg00113.html>.
+            (substitute* "xen/arch/x86/xen.lds.S"
+              ((".note.gnu.build-id")
+               "\".note.gnu.build-id\""))))
         (add-before 'configure 'patch-xen-script-directory
           (lambda* (#:key outputs #:allow-other-keys)
             (substitute* '("configure"
