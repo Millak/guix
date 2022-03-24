@@ -3148,7 +3148,7 @@ visualization, matrix manipulation.")
 (define-public prusa-slicer
   (package
     (name "prusa-slicer")
-    (version "2.4.0")
+    (version "2.4.1")
     (source
      (origin
        (method git-fetch)
@@ -3157,7 +3157,7 @@ visualization, matrix manipulation.")
          (url "https://github.com/prusa3d/PrusaSlicer")
          (commit (string-append "version_" version))))
        (file-name (git-file-name name version))
-       (sha256 (base32 "1mb7v0khrmsgy3inmh4mjn709jlhx422kvbnrhsqziph2wwak9bz"))
+       (sha256 (base32 "0q1m8fcz39s03r9csq411ss8vbbpjx45icj8vgkysy8hqgqz3gz0"))
        (modules '((guix build utils)))
        (snippet
         '(begin
