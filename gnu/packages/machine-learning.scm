@@ -596,7 +596,9 @@ optimizing, and searching weighted finite-state transducers (FSTs).")
                                   "FstDownload/openfst-" version ".tar.gz"))
               (sha256
                (base32
-                "038a60w7y8qnbxmcrsim9rafz9mihsny8xv50jpzlr7rl166pp5q"))))))
+                "038a60w7y8qnbxmcrsim9rafz9mihsny8xv50jpzlr7rl166pp5q"))))
+    (arguments '(#:configure-flags '("--enable-ngram-fsts" "CXXFLAGS=-std=c++14")
+                 #:make-flags '("CXXFLAGS=-std=c++14")))))
 
 (define-public shogun
   (package
