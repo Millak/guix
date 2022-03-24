@@ -4839,6 +4839,38 @@ data files in the CSV, XLS or XLSX formats.")
 utility, a static analysis tool (linter) for Robot Framework source files.")
       (license license:asl2.0))))
 
+(define-public python-robotframework-pabot
+  (package
+    (name "python-robotframework-pabot")
+    (version "2.5.2")
+    (source
+     (origin
+       ;; There are no tests in the PyPI archive.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mkorpela/pabot")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "14a8isq1f4lgfwjb84hhzg6jm7ns18dxa9bg6dy8k2ml8zl0qknk"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (replace 'check
+                     (lambda* (#:key tests? #:allow-other-keys)
+                       (when tests?
+                         (invoke "pytest" "-vv" "tests")))))))
+    (propagated-inputs
+     (list python-robotframework python-robotframework-stacktrace))
+    (native-inputs
+     (list python-pytest))
+    (home-page "https://pabot.org")
+    (synopsis "Parallel test runner for Robot Framework")
+    (description "Pabot is a parallel executor for Robot Framework tests.")
+    (license license:asl2.0)))
+
 (define-public python-robotframework-stacktrace
   (package
     (name "python-robotframework-stacktrace")
