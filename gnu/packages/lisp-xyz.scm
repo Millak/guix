@@ -11952,10 +11952,11 @@ LispWorks library that are used in software such as ContextL.")
 
 (define-public sbcl-contextl
   ;; No release since 2013.
-  (let ((commit "5d18a71a85824f6c25a9f35a21052f967b8b6bb9"))
+  (let ((commit "f4fb3f59b0844788613fc4d1cc0d2b08df9488bb")
+        (revision "2"))
     (package
       (name "sbcl-contextl")
-      (version (git-version "1.0.0" "1" commit))
+      (version (git-version "1.0.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -11964,7 +11965,7 @@ LispWorks library that are used in software such as ContextL.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0gk1izx6l6g48nypmnm9r6mzjx0jixqjj2kc6klf8a88rr5xd226"))))
+          (base32 "0apgznz4g6lpmd86lq7w0xddfjgnirk83ig7p0j6i93xadhy9wh0"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-closer-mop sbcl-lw-compat))
