@@ -60,6 +60,7 @@
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2022 Bird <birdsite@airmail.cc>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
+;;; Copyright © 2022 Chadwain Holness <chadwainholness@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3135,28 +3136,34 @@ and custom quantization matrices.")
 (define-public streamlink
   (package
     (name "streamlink")
-    (version "2.0.0")
+    (version "3.2.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "streamlink" version))
         (sha256
          (base32
-          "1nv2kj1k42a1b20ws8sdzlxk3wh1qz6pg5mxp75433b3c7lxksn0"))))
+          "09nrspga15svzi0hmakcarbciav0nzf30hg1ff53gia473cd4w4p"))))
     (build-system python-build-system)
-    (home-page "https://github.com/streamlink/streamlink")
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+         (replace 'check
+          (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                  (invoke "python" "-m" "pytest")))))))
     (native-inputs
-     (list python-freezegun python-pytest python-mock
+     (list python-freezegun python-mock python-pytest
            python-requests-mock))
     (propagated-inputs
      (list python-pysocks
            python-websocket-client
-           python-iso3166
-           python-iso639
            python-isodate
+           python-lxml-4.7
+           python-pycountry
            python-pycryptodome
            python-requests
            python-urllib3))
+    (home-page "https://github.com/streamlink/streamlink")
     (synopsis "Extract streams from various services")
     (description "Streamlink is command-line utility that extracts streams
 from sites like Twitch.tv and pipes them into a video player of choice.")
