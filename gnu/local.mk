@@ -1862,7 +1862,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/transcode-ffmpeg.patch	\
   %D%/packages/patches/transfig-gcc10-fno-common.patch		\
   %D%/packages/patches/transmission-honor-localedir.patch	\
-  %D%/packages/patches/tremc-fix-decodestring.patch		\
   %D%/packages/patches/trytond-add-egg-modules-to-path.patch	\
   %D%/packages/patches/trytond-add-guix_trytond_path.patch	\
   %D%/packages/patches/ttf2eot-cstddef.patch			\

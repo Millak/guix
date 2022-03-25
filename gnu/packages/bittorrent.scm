@@ -226,7 +226,7 @@ XML-RPC over SCGI.")
 (define-public tremc
   (package
     (name "tremc")
-    (version "0.9.2")
+    (version "0.9.3")
     (source
      (origin
        (method git-fetch)
@@ -236,8 +236,7 @@ XML-RPC over SCGI.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1fqspp2ckafplahgba54xmx0sjidx1pdzyjaqjhz0ivh98dkx2n5"))
-       (patches (search-patches "tremc-fix-decodestring.patch"))))
+         "11izsgwj435skkgvw96an6ddcm1hk3ff1gji4ksnidlyv6g6npyv"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no test suite
