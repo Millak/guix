@@ -675,9 +675,14 @@ imaging.  It supports several HDR and LDR image formats, and it can:
          "187ca815vxb2in1ryvfiaf1zapi0bc9jxdac3c1bky0kr6x7xyap"))))
     (build-system python-build-system)
     (inputs
-     (list p7zip python python-pillow python-pygobject python-pycairo))
+     (list p7zip python python-pillow python-pygobject python-pycairo gtk+))
     (arguments
      (list
+      #:imported-modules `(,@%python-build-system-modules
+                           (guix build glib-or-gtk-build-system))
+      #:modules '((guix build python-build-system)
+                  ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
+                  (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-source
@@ -698,7 +703,17 @@ imaging.  It supports several HDR and LDR image formats, and it can:
                              "/lib/python"
                              #$(version-major+minor
                                 (package-version (this-package-input "python")))
-                             "/site-packages/mcomix/images")))))))
+                             "/site-packages/mcomix/images"))))
+         (add-after 'glib-or-gtk-compile-schemas 'glib-or-gtk-wrap
+           (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
+         (add-after 'wrap 'gi-wrap
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
+               (for-each
+                (lambda (prog)
+                  (wrap-program prog
+                    `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))
+                (list (string-append bin "/mcomix")))))))))
     (home-page "https://sourceforge.net/p/mcomix/wiki/Home/")
     (synopsis "Image viewer for comics")
     (description "MComix is a customizable image viewer that specializes as
