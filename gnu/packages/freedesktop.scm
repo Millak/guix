@@ -78,6 +78,7 @@
   #:use-module (gnu packages disk)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages fcitx)
   #:use-module (gnu packages file)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gawk)
@@ -91,9 +92,12 @@
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages ibus)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages language)
   #:use-module (gnu packages libffi)
+  #:use-module (gnu packages libreoffice)
   #:use-module (gnu packages libunwind)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
@@ -385,6 +389,40 @@ inappropriate content.")
      (list
       license:gpl2+
       license:lgpl2.1+))))
+
+(define-public maliit-framework
+  (package
+    (name "maliit-framework")
+    (version "2.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/maliit/framework")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1dkjxvfxg56hfy70j6ibfklfyv57jiha4vgc3ggl60r5kjx65s5b"))))
+    (build-system cmake-build-system)
+    (native-inputs (list extra-cmake-modules
+                         wayland-protocols
+                         pkg-config
+                         doxygen
+                         graphviz
+                         `(,glib "bin"))) ;for gdbus-codegen))
+    (inputs (list qtbase-5
+                  qtdeclarative-5
+                  qtwayland-5
+                  wayland
+                  libxkbcommon
+                  dbus
+                  eudev
+                  glib))
+    (home-page "https://github.com/maliit/framework")
+    (synopsis "Core libraries of Maliit")
+    (description "This package provides Maliit provides a flexible input
+method framework.")
+    (license license:lgpl2.1+)))
 
 (define-public xdg-utils
   (package
