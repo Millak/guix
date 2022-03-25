@@ -36,6 +36,7 @@
   #:use-module (gnu artwork)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages calendar)
   #:use-module (gnu packages cdrom)
   #:use-module (gnu packages fonts)
@@ -903,6 +904,52 @@ devices and folders.")
 remote file systems using GIO/GVfs.  It allows you to quickly connect/mount
 local and remote file systems and manage bookmarks of such.")
     (license gpl2)))                              ;version 2 only
+
+(define-public parole
+  (package
+    (name "parole")
+    (version "4.16.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://archive.xfce.org/src/apps/"
+                                  name "/" (version-major+minor version) "/"
+                                  name "-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "1rx7apylqb7mf1dl0sswj1630fca3ddk4x1gcdmlv5ykrkc5lc0d"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list (string-append "CPPFLAGS=-I"
+                             #$(this-package-input "gst-plugins-base")
+                             "/include/gstreamer-1.0"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-parole
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
+                (wrap-program (string-append #$output "/bin/parole")
+                  #:sh (search-input-file inputs "bin/bash")
+                  `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path)))))))))
+    (native-inputs
+     (list pkg-config intltool gobject-introspection))
+    (inputs
+     (list bash-minimal                           ;for 'wrap-program'
+           dbus-glib
+           (list glib "bin")
+           gstreamer
+           gst-plugins-base
+           gst-plugins-good
+           libnotify
+           libxfce4ui
+           libxfce4util))
+    (home-page "https://www.xfce.org/")
+    (synopsis "Media player based on the GStreamer framework")
+    (description "Parole is a modern simple media player based on the
+GStreamer framework and written to fit well in the Xfce desktop.  Parole
+features playback of local media files, DVD/CD and live streams.")
+    (license gpl2)))                    ;version 2 only
 
 (define-public xfce4-terminal
   (package
