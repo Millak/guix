@@ -1829,6 +1829,34 @@ connections.")
 customizable platform for mobile devices.")
     (license (list license:gpl3+ license:lgpl2.1+))))
 
+(define-public plasma-mobile-settings
+  (package
+    (name "plasma-mobile-settings")
+    (version "22.02")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma-mobile/" version
+                                  "/plasma-settings-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0b7lj3r9z9cz2vr0h15sqqxdaa7m07hsk8i2p8nf4a3yh02ywsxy"))))
+    (build-system cmake-build-system)
+    (native-inputs (list extra-cmake-modules pkg-config))
+    (inputs (list qtbase-5
+                  qtdeclarative-5
+                  kio
+                  modemmanager-qt
+                  networkmanager-qt
+                  ki18n
+                  plasma-framework
+                  kdeclarative
+                  kdbusaddons))
+    (home-page "https://plasma-mobile.org/")
+    (synopsis "Settings application for Plasma Mobile")
+    (description
+     "This package provides Settings application for Plasma Mobile.")
+    (license license:gpl2+)))
+
 (define-public plasma-pa
   (package
     (name "plasma-pa")
