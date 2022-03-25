@@ -10739,6 +10739,34 @@ lints.")
 TODO notes checker plugin for flake8.")
     (license license:expat)))
 
+(define-public python-flake8-isort
+  (package
+    (name "python-flake8-isort")
+    (version "4.1.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "flake8-isort" version))
+        (sha256
+          (base32 "05r7z0j9rqgy0a9261bhisairrz6w8hy5hy5kf2mhvhfnx53056q"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv")))))))
+    (propagated-inputs (list python-flake8 python-isort python-testfixtures))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/gforcada/flake8-isort")
+    (synopsis "Flake8 plugin integrating isort")
+    (description "This package provides a flake8 plugin that integrates isort,
+extending flake8 so that it can warn about badly sorted Python import
+directives.")
+    (license license:gpl2+)))
+
 (define-public python-autoflake
   (package
     (name "python-autoflake")
