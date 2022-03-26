@@ -128,6 +128,7 @@
   #:use-module (gnu packages networking)
   #:use-module (gnu packages ninja)
   #:use-module (gnu packages nss)
+  #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pciutils)
   #:use-module (gnu packages pkg-config)
@@ -7400,6 +7401,44 @@ list existing registered user-space connection tracking helpers
 to packets that have been queued by the kernel packet filter.  It is is part
 of a system that deprecates the old ip_queue/libipq mechanism.")
     (home-page "https://netfilter.org/projects/libnetfilter_queue/index.html")
+    (supported-systems (filter target-linux? %supported-systems))
+    (license license:gpl2+)))
+
+(define-public conntrack-tools
+  (package
+    (name "conntrack-tools")
+    (version "1.4.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://netfilter.org/projects/"
+                           "conntrack-tools/files/"
+                           "conntrack-tools-" version ".tar.bz2"))
+       (sha256
+        (base32
+         "0psx41bclqrh4514yzq03rvs3cq3scfpd1v4kkyxnic2hk65j22r"))))
+    (build-system gnu-build-system)
+    (native-inputs (list bison flex pkg-config))
+    (inputs (list libtirpc
+                  libnetfilter-conntrack
+                  libnetfilter-cttimeout
+                  libnetfilter-cthelper
+                  libnetfilter-queue
+                  libnfnetlink
+                  libmnl))
+    (synopsis "Set of tools targeting the conntrack kernel subsystem")
+    (description "The tool conntrack provides a full featured interface that
+is intended to replace the old @file{/proc/net/ip_conntrack} interface.  Using
+conntrack, you can view and manage the in-kernel connection tracking state
+table from userspace.  On the other hand, conntrackd covers the specific
+aspects of stateful firewalls to enable highly available scenarios, and can be
+used as statistics collector as well.
+
+Since 1.2.0, the conntrack-tools includes the @command{nfct} command line
+utility.  This utility only supports the nfnetlink_cttimeout by now.  In the
+long run, we expect that it will replace conntrack by providing a syntax
+similar to nftables.")
+    (home-page "https://netfilter.org/projects/conntrack-tools/index.html")
     (supported-systems (filter target-linux? %supported-systems))
     (license license:gpl2+)))
 
