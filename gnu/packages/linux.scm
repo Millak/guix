@@ -7322,6 +7322,32 @@ conntrack-tools among many other applications.")
     (supported-systems (filter target-linux? %supported-systems))
     (license license:gpl2+)))
 
+(define-public libnetfilter-cttimeout
+  (package
+    (name "libnetfilter-cttimeout")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://netfilter.org/projects/"
+                           "libnetfilter_cttimeout/files/"
+                           "libnetfilter_cttimeout-" version ".tar.bz2"))
+       (sha256
+        (base32
+         "1fpyz1zlvcq80244knvyvy87909xjqlj02lmw8yblz2m9xsi5axf"))))
+    (build-system gnu-build-system)
+    (native-inputs (list pkg-config))
+    (inputs (list libmnl))
+    (synopsis "Library for kernel connection tracking timeout infrastructure")
+    (description "libnetfilter_cttimeout is the userspace library that
+provides the programming interface to the fine-grain connection tracking
+timeout infrastructure.  With this library, you can create, update and delete
+timeout policies that can be attached to traffic flows.  This library is used
+by conntrack-tools.")
+    (home-page "https://netfilter.org/projects/libnetfilter_cttimeout/index.html")
+    (supported-systems (filter target-linux? %supported-systems))
+    (license license:gpl2)))
+
 (define-public proot
   (package
     (name "proot")
