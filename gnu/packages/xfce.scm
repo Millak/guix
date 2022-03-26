@@ -932,6 +932,47 @@ menubar and the window decorations are hidden) that helps you to save space
 on your desktop.")
     (license gpl2+)))
 
+(define-public xfdashboard
+  (package
+    (name "xfdashboard")
+    (version "0.8.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://archive.xfce.org/src/apps/"
+                                  name
+                                  "/"
+                                  (version-major+minor version)
+                                  "/"
+                                  name
+                                  "-"
+                                  version
+                                  ".tar.bz2"))
+              (sha256
+               (base32
+                "1xfyli91gpw7bn9gjk6gp8lnn50qsjd5lh5mzypz9kx3l88wbas4"))))
+    (build-system gnu-build-system)
+    (native-inputs (list intltool pkg-config `(,glib "bin")))
+    (inputs (list clutter
+                  garcon
+                  gtk+
+                  libwnck
+                  libxcomposite
+                  libxdamage
+                  libxfce4util
+                  libxfce4ui
+                  libxinerama
+                  xfconf))
+    (home-page "https://www.xfce.org/")
+    (synopsis "Gnome shell like dashboard for Xfce")
+    (description
+     "Xfdashboard provides a GNOME shell dashboard and MacOS Mission Control
+like interface for Xfce desktop.  It can be configured to run with any
+keyboard shortcut, when executed it provides an overview of applications
+currently opened which let user to switch between different applications.  Its
+search feature works like Xfce's app finder and makes it convenient to search
+for and start applications.")
+    (license gpl2+)))
+
 (define-public mate-polkit-for-xfce
   (package/inherit mate-polkit
     (arguments
