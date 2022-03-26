@@ -7475,6 +7475,38 @@ For the nfnetlink_acct subsystem.")
     (supported-systems (filter target-linux? %supported-systems))
     (license license:lgpl2.1+)))
 
+(define-public nfacct
+  (package
+    (name "nfacct")
+    (version "1.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://netfilter.org/projects/" name
+                           "/files/nfacct-" version ".tar.bz2"))
+       (sha256
+        (base32
+         "0sdxbxjyapbqcp2ami5jd10vz4xbbdvx39f3wfy1iqsbflc25zzc"))))
+    (build-system gnu-build-system)
+    (native-inputs (list pkg-config))
+    (inputs (list libmnl libnetfilter-acct))
+    (synopsis "Command line tool to create/retrieve/delete accounting objects")
+    (description "nfacct is the command line tool to create/retrieve/delete
+accounting objects
+@enumerate
+@item
+listing the objects of the nfacct table in plain text/XML
+@item
+atomically get and reset objects of the nfacct table
+@item
+adding new objects to the nfacct table
+@item
+deleting objects from the nfacct table
+@end enumerate")
+    (home-page "https://netfilter.org/projects/nfacct/index.html")
+    (supported-systems (filter target-linux? %supported-systems))
+    (license license:gpl2+)))
+
 (define-public proot
   (package
     (name "proot")
