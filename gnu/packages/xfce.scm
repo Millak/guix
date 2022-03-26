@@ -932,6 +932,35 @@ menubar and the window decorations are hidden) that helps you to save space
 on your desktop.")
     (license gpl2+)))
 
+(define-public xfce4-dict
+  (package
+    (name "xfce4-dict")
+    (version "0.8.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://archive.xfce.org/src/apps/" name "/"
+                                  (version-major+minor version) "/"
+                                  name "-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "1qriyvii50v8a8dx7aw6nlm888mf5cjrb9nwm3r0dcs2yzxzx1fb"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list intltool pkg-config))
+    (inputs
+     (list libxfce4ui xfce4-panel))
+    (home-page "https://www.xfce.org/")
+    (synopsis "Dictionary of Xfce desktop")
+    (description
+     "Xfce4-dict allows you to search different kinds of dictionary services
+for words or phrases and shows you the result.  Currently you can query a Dict
+server (RFC 2229), any online dictionary service by opening a web browser or
+search for words using the aspell/ispell program.
+
+xfce4-dict contains a stand-alone application called “xfce4-dict” and a panel
+plugin for the Xfce panel.")
+    (license gpl2+)))
+
 (define-public xfdashboard
   (package
     (name "xfdashboard")
