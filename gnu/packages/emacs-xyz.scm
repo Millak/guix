@@ -6233,6 +6233,64 @@ and retrieving information using the SQLite program through Elisp programming.
 It is not intended as a user interface.")
       (license license:gpl3+))))
 
+(define-public emacs-sqlite3-api
+  (package
+    (name "emacs-sqlite3-api")
+    (version "0.16")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pekingduck/emacs-sqlite3-api")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0yrfwb3yvhp1ib4izxh1ds68b3zw8gjkjhlk1kivarxnfjnjnly2"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? (not (%current-target-system))
+      #:test-command #~(list "make" "test" "EMACS=emacs")
+      #:modules '((guix build emacs-build-system)
+                  (guix build emacs-utils)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-module-load
+            (lambda _
+              (make-file-writable "sqlite3.el")
+              (emacs-substitute-sexps "sqlite3.el"
+                ("(require 'sqlite3-api nil t)"
+                 (string-append
+                  "(module-load \"" #$output "/lib/sqlite3-api.so\")")))))
+          (add-before 'check 'build-emacs-module
+            (lambda _
+              ;; Remove code that fetches constants from the SQLite website
+              ;; and the call to generate a timestamp.
+              (invoke "sed" "--in-place" "3,4d;24,28d;31d" "tools/gen-consts.sh")
+              ;; Remove filter logic from the script that generates the constants.
+              (invoke "sed" "--in-place" "7,11d;18,22d" "tools/gen-consts.py")
+              ;; Generate the consts.c file.
+              (invoke "make" "--directory=tools")
+              ;; Remove the SQLITE_STATIC and SQLITE_TRANSIENT
+              ;; constants. They cause a compilation warning and would have
+              ;; been removed by the original script.
+              (invoke "sed" "--in-place" "/ifdef SQLITE_STATIC/,+2d" "consts.c")
+              (invoke "sed" "--in-place" "/ifdef SQLITE_TRANSIENT/,+2d" "consts.c")
+              ;; Compile the shared object file.
+              (invoke "make" #$(string-append "CC=" (cc-for-target)))
+              ;; Move the shared object file into /lib.
+              (install-file "sqlite3-api.so"
+                            (string-append #$output "/lib")))))))
+    (native-inputs (list python sed))
+    (inputs (list sqlite))
+    (home-page "https://github.com/pekingduck/emacs-sqlite3-api")
+    (synopsis "Dynamic module for Emacs to access the SQLite C interface")
+    (description "This package provides a dynamic module for Emacs that allows
+direct access to the SQLite C interface.  It only exposes a subset of the full
+SQLite C interface, but should satisfy most user's needs.")
+    (license license:gpl3+)))
+
 (define-public emacs-sr-speedbar
   (let ((commit "77a83fb50f763a465c021eca7343243f465b4a47")
         (revision "0"))
