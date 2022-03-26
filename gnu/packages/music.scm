@@ -2040,16 +2040,14 @@ Key features include:
                (("/usr/bin/aplay") "aplay")
                (("/usr/bin/timidity") "timidity")
                (("/usr/bin/mpg123") "mpg123")
-               (("/usr/bin/ogg123") "ogg123"))
-             #t))
+               (("/usr/bin/ogg123") "ogg123"))))
          (add-before 'build 'patch-python-shebangs
            (lambda _
              ;; Two python scripts begin with a Unicode BOM, so patch-shebang
              ;; has no effect.
              (substitute* '("solfege/parsetree.py"
                             "solfege/presetup.py")
-               (("#!/usr/bin/python") (string-append "#!" (which "python"))))
-             #t))
+               (("#!/usr/bin/python") (string-append "#!" (which "python"))))))
          (add-before 'build 'add-sitedirs
            ;; .pth files are not automatically interpreted unless the
            ;; directories containing them are added as "sites".  The directories
