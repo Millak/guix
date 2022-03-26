@@ -97,8 +97,9 @@
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages cryptsetup)
   #:use-module (gnu packages compression)
-  #:use-module (gnu packages dbm)
+  #:use-module (gnu packages databases)
   #:use-module (gnu packages datastructures)
+  #:use-module (gnu packages dbm)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages elf)
@@ -7536,6 +7537,89 @@ receiving to-be-logged packets from the kernel nfnetlink_log subsystem
     (home-page "https://netfilter.org/projects/libnetfilter_log/index.html")
     (supported-systems (filter target-linux? %supported-systems))
     (license license:gpl2+)))
+
+(define-public ulogd
+  (package
+    (name "ulogd")
+    (version "2.0.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://netfilter.org/projects/" name
+                           "/files/ulogd-" version ".tar.bz2"))
+       (sha256
+        (base32
+         "0ax9959c4bapq78n13bbaibcf1gwjir3ngx8l2dh45lw9m4ha2lr"))))
+    (build-system gnu-build-system)
+    (outputs '("out"
+               ;; additonal non-default output plugins
+               "json" "pcap" "sqlite3" "pgsql" "mysql"))
+    (native-inputs (list pkg-config))
+    (inputs (list libnfnetlink
+                  libmnl
+                  libnetfilter-log
+                  libnetfilter-conntrack
+                  libnetfilter-acct
+                  sqlite
+                  libpcap
+                  jansson
+                  postgresql
+                  mysql
+                  zlib
+                  openssl))
+    (arguments
+     (list #:configure-flags
+           #~(list (string-append "--with-pgsql="
+                                  (assoc-ref %build-inputs "postgresql"))
+                   (string-append "--with-mysql="
+                                  (assoc-ref %build-inputs "mysql")))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'install-doc
+                 (lambda _
+                   (let ((out-etc (string-append #$output "/etc"))
+                         (ulogd.conf "ulogd.conf"))
+                     (mkdir-p out-etc)
+                     (copy-file ulogd.conf (string-append out-etc "/"
+                                                          ulogd.conf)))))
+               (add-after 'install 'setup-plugin-outputs
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (with-directory-excursion
+                       (string-append #$output "/lib/ulogd/")
+                     (for-each
+                      (lambda (output-name)
+                        (let ((output-dir (string-append
+                                           (assoc-ref outputs output-name)
+                                           "/lib/ulogd/")))
+                          (mkdir-p output-dir)
+                          (for-each
+                           (lambda (plugin)
+                             (copy-file plugin (string-append output-dir plugin))
+                             (delete-file plugin))
+                           (find-files "."
+                                       (string-append "ulogd_output_"
+                                                      (string-upcase output-name)
+                                                      ".*$")))))
+                      (list "json" "pcap" "sqlite3" "pgsql" "mysql"))))))))
+    (synopsis "Logging daemon for netfilter and iptables")
+    (description "ulogd is a userspace logging daemon for netfilter/iptables
+related logging.  This includes per-packet logging of security violations,
+per-packet logging for accounting, per-flow logging and flexible user-defined
+accounting.
+
+@enumerate
+@item
+Packet and flow-based traffic accounting
+@item
+Flexible user-defined traffic accounting via nfacct infrastructure
+@item
+SQL database back-end support: SQLite3, PostgreSQL, MySQL
+@item
+Text-based output formats: CSV, XML, Netfilter's LOG, Netfilter's conntrack
+@end enumerate")
+    (home-page "https://netfilter.org/projects/nfacct/index.html")
+    (supported-systems (filter target-linux? %supported-systems))
+    (license license:gpl2)))
 
 (define-public proot
   (package
