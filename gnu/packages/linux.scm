@@ -7442,6 +7442,39 @@ similar to nftables.")
     (supported-systems (filter target-linux? %supported-systems))
     (license license:gpl2+)))
 
+(define-public libnetfilter-acct
+  (package
+    (name "libnetfilter-acct")
+    (version "1.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://netfilter.org/projects/"
+                           "libnetfilter_acct/files/"
+                           "libnetfilter_acct-" version ".tar.bz2"))
+       (sha256
+        (base32
+         "06lsjndgfjsgfjr43px2n2wk3nr7whz6r405mks3887y7vpwwl22"))))
+    (build-system gnu-build-system)
+    (native-inputs (list pkg-config))
+    (inputs (list libmnl))
+    (synopsis "Library providing interface to extended accounting infrastructure")
+    (description "libnetfilter_acct is the userspace library providing interface
+to extended accounting infrastructure.
+
+@enumerate
+@item
+creating accounting objects
+@item
+retrieving accounting objects (and atomically set to zero)
+@item
+deleting accounting objects
+@end enumerate
+For the nfnetlink_acct subsystem.")
+    (home-page "https://netfilter.org/projects/libnetfilter_acct/index.html")
+    (supported-systems (filter target-linux? %supported-systems))
+    (license license:lgpl2.1+)))
+
 (define-public proot
   (package
     (name "proot")
