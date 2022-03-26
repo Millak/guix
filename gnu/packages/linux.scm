@@ -7348,6 +7348,37 @@ by conntrack-tools.")
     (supported-systems (filter target-linux? %supported-systems))
     (license license:gpl2)))
 
+(define-public libnetfilter-cthelper
+  (package
+    (name "libnetfilter-cthelper")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://netfilter.org/projects/"
+                           "libnetfilter_cthelper/files/"
+                           "libnetfilter_cthelper-" version ".tar.bz2"))
+       (sha256
+        (base32
+         "0gfgzkc1fjniqwk4jxds72c0lcgfhq2591hrvjrvd9nrqiqqwq87"))))
+    (build-system gnu-build-system)
+    (native-inputs (list pkg-config))
+    (inputs (list libmnl))
+    (synopsis "Library for user-space connection tracking helpers")
+    (description "libnetfilter_cthelper is a userspace library that provides a
+programming interface to user-space connection tracking helpers.
+@enumerate
+@item
+register new user-space connection tracking helpers
+@item
+unregister user-space connection tracking helpers
+@item
+list existing registered user-space connection tracking helpers
+@end enumerate")
+    (home-page "https://netfilter.org/projects/libnetfilter_cthelper/index.html")
+    (supported-systems (filter target-linux? %supported-systems))
+    (license license:gpl2+)))
+
 (define-public proot
   (package
     (name "proot")
