@@ -466,7 +466,7 @@ TCP sessions from existing clients.")
 (define-public poezio
   (package
     (name "poezio")
-    (version "0.13.1")
+    (version "0.13.2")
     (source
      (origin
        (method git-fetch)
@@ -478,17 +478,16 @@ TCP sessions from existing clients.")
        (file-name
         (git-file-name name version))
        (sha256
-        (base32 "041y61pcbdb86s04qwp8s1g6bp84yskc7vdizwpi2hz18y01x5fy"))))
+        (base32 "0p92k8ssjsgavyfv1fd5cgzyw87dmdd84vaz7zvfsf5crvpr1mkf"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch
-           (lambda _
-             (substitute* "setup.py"
-               (("'CC', 'cc'")
-                "'CC', 'gcc'"))
-             #t)))))
+      (list #:phases
+            #~(modify-phases %standard-phases
+                (add-after 'unpack 'patch
+                  (lambda _
+                    (substitute* "setup.py"
+                      (("'CC', 'cc'")
+                       "'CC', 'gcc'")))))))
     (native-inputs
      (list pkg-config python-setuptools python-sphinx))
     (inputs
@@ -498,7 +497,6 @@ TCP sessions from existing clients.")
            python-pyasn1-modules
            python-pygments
            python-pyinotify
-           ;("python" ,python)
            python-qrcode
            python-slixmpp))
     (synopsis "Console Jabber/XMPP Client")
