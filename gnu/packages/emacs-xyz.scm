@@ -272,7 +272,7 @@
     (native-inputs
      (list texinfo))
     (propagated-inputs
-     (list emacs-transient))
+     (list emacs-project emacs-transient))
     (home-page "https://nongnu.org/geiser/")
     (synopsis "Collection of Emacs modes for Scheme hacking")
     (description
