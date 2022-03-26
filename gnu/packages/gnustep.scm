@@ -22,15 +22,21 @@
 
 (define-module (gnu packages gnustep)
   #:use-module (guix download)
+  #:use-module (guix git-download)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system cmake)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages datastructures)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages libffcall)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages llvm)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages glib)
@@ -64,6 +70,47 @@ project without having to deal with the complex issues associated with
 configuration, building, installation, and packaging.  It also allows the user
 to easily create cross-compiled binaries.")
     (license license:gpl3+)))
+
+(define-public libobjc2
+  (package
+    (name "libobjc2")
+    (version "2.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/gnustep/libobjc2")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "1zjryzvy06gjf36gz6zrkg9icwz6wsf80mp94x6bq1109vkl40b5"))
+              (file-name (git-file-name name version))
+              (patches
+               (search-patches "libobjc2-unbundle-robin-map.patch"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      ;; XXX: Cannot use GCC to compile ObjC code due to
+      ;; https://issues.guix.gnu.org/29644.
+      #:configure-flags #~(list "-DCMAKE_C_COMPILER=clang"
+                                "-DCMAKE_CXX_COMPILER=clang++")))
+    (inputs
+     (list clang robin-map))
+    (home-page "http://www.gnustep.org/")
+    (synopsis "Objective-C runtime library for Clang")
+    (description "Libobjc2 is an Objective-C runtime library designed as a
+drop-in replacment for GCC runtime.  It supports following features beyond
+GCC runtime.
+
+@itemize
+@item Modern Objective-C runtime APIs.
+@item Blocks (Closures).
+@item Synthesised property accessors.
+@item Efficient support for @code{@@synchronized()}.
+@item Type-dependent dispatch.
+@item Associated reference API.
+@item Automatic Reference Counting.
+@end itemize")
+    (license license:expat)))
 
 (define-public windowmaker
   (package
