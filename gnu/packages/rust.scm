@@ -121,12 +121,10 @@
                                    (package-native-inputs base-rust))))))
 
 ;;; Note: mrustc's only purpose is to be able to bootstap Rust; it's designed
-;;; to be used in source form.  The latest support for bootstrapping from
-;;; 1.39.0 is not yet released so use the latest commit (see:
-;;; https://github.com/thepowersgang/mrustc/issues/185).
-(define %mrustc-commit "c7066542f8e93d320323749216bf3c82aecb67c2")
+;;; to be used in source form.
+(define %mrustc-commit "b364724f15fd6fce8234ad8add68107c23a22151")
 (define %mrustc-source
-  (let* ((version "0.9")
+  (let* ((version "0.10")
          (commit %mrustc-commit)
          (revision "1")
          (name "mrustc"))
@@ -138,7 +136,7 @@
       (file-name (git-file-name name (git-version version revision commit)))
       (sha256
        (base32
-        "0zv1x6601s5fnnkcdlqkc4bknisqz569qb0iyb9rjsmaf1kh0na3")))))
+        "0f7kh4n2663sn0z3xib8gzw0s97qpvwag40g2vs3bfjlrbpgi9z0")))))
 
 ;;; Rust 1.39 is special in that it is built with mrustc, which shortens the
 ;;; bootstrap path.
@@ -237,10 +235,11 @@
                      ,(string-take %mrustc-commit 7) "\\\""
                      " -D VERSION_BUILDTIME="
                      "\"\\\"Thu, 01 Jan 1970 00:00:01 +0000\\\"\""
-                     " -D VERSION_GIT_ISDIRTY=0\n"))
+                     " -D VERSION_GIT_ISDIRTY=0\n")))
+                 (substitute* "minicargo.mk"
                    ;; Do not try to fetch sources from the Internet.
-                   ((": \\$\\(RUSTC_SRC_DL\\)")
-                    ":"))
+                   (("\\$\\(MINICARGO\\) \\$\\(RUSTC_SRC_DL\\)")
+                    "$(MINICARGO)"))
                  (substitute* "run_rustc/Makefile"
                    (("[$]Vtime ")
                     "$V ")
@@ -248,6 +247,9 @@
                    (("-j [[:digit:]]+ ")
                     "")
                    ;; Patch the shebang of a generated wrapper for rustc
+                   (("#!/bin/sh")
+                    (string-append "#!" (which "sh"))))
+                 (substitute* "run_rustc/rustc_proxy.sh"
                    (("#!/bin/sh")
                     (string-append "#!" (which "sh"))))))))
          (add-after 'patch-generated-file-shebangs 'patch-cargo-checksums
@@ -322,9 +324,9 @@
 safety and thread safety guarantees.")
     (home-page "https://github.com/thepowersgang/mrustc")
 
-    ;; So far mrustc is x86_64-only.  It may support i686 soon:
+    ;; So far mrustc is (x86_64|aarch64)-only.  It may support i686 soon:
     ;; <https://github.com/thepowersgang/mrustc/issues/78>.
-    (supported-systems '("x86_64-linux"))
+    (supported-systems '("x86_64-linux" "aarch64-linux"))
 
     ;; Dual licensed.
     (license (list license:asl2.0 license:expat))))
