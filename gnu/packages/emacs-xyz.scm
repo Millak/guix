@@ -17969,8 +17969,8 @@ and can be consulted and modified.")
 (define-public emacs-psc-ide
   ;; There is no proper release.  The base version is extracted from the
   ;; "Version" keyword in the main file.
-  (let ((commit "7fc2b841be25f5bc5e1eb7d0634436181c38b3fe")
-        (revision "1"))
+  (let ((commit "ce97d719458ea099b40c02f05b6609601c727e66")
+        (revision "2"))
     (package
       (name "emacs-psc-ide")
       (version (git-version "0.1.0" revision commit))
@@ -17983,7 +17983,7 @@ and can be consulted and modified.")
            (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0r0fymyai30jimm34z1cmav4wgij8ci6s1d9y7qigygfbbfrdsmj"))))
+          (base32 "0xfw93pdf744h2yswc53qwyawfzkc31rv8dmha3irq7k1nklhq6y"))))
       (build-system emacs-build-system)
       (propagated-inputs
        (list emacs-company emacs-dash emacs-flycheck emacs-let-alist
