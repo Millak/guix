@@ -7295,6 +7295,33 @@ infrastructure such as the existing hooks, the connection tracking system, the
 userspace queueing component and the logging subsystem.")
     (license license:gpl2)))
 
+(define-public libnetfilter-conntrack
+  (package
+    (name "libnetfilter-conntrack")
+    (version "1.0.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://netfilter.org/projects/"
+                           "libnetfilter_conntrack/files/"
+                           "libnetfilter_conntrack-"
+                           version ".tar.bz2"))
+       (sha256
+        (base32
+         "1ky1mqgnplw2h9jf0kn0a69d94jkydhbiipng9l2hdcj13h3pl8c"))))
+    (build-system gnu-build-system)
+    (native-inputs (list pkg-config))
+    (inputs (list libnfnetlink libmnl))
+    (synopsis "Library for kernel connection tracking state table")
+    (description "libnetfilter_conntrack is a userspace library providing a
+programming interface (API) to the in-kernel connection tracking state table.
+The library libnetfilter_conntrack has been previously known as
+libnfnetlink_conntrack and libctnetlink.  This library is currently used by
+conntrack-tools among many other applications.")
+    (home-page "https://netfilter.org/projects/libnetfilter_conntrack/index.html")
+    (supported-systems (filter target-linux? %supported-systems))
+    (license license:gpl2+)))
+
 (define-public proot
   (package
     (name "proot")
