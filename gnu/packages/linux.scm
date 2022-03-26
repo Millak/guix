@@ -7507,6 +7507,36 @@ deleting objects from the nfacct table
     (supported-systems (filter target-linux? %supported-systems))
     (license license:gpl2+)))
 
+(define-public libnetfilter-log
+  (package
+    (name "libnetfilter-log")
+    (version "1.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://netfilter.org/projects/"
+                           "libnetfilter_log/files/"
+                           "libnetfilter_log-" version ".tar.bz2"))
+       (sha256
+        (base32
+         "1spy9xs41v76kid5ana8n126f3mvgq6fjibbfbj4kn0larbhix73"))))
+    (build-system gnu-build-system)
+    (native-inputs (list pkg-config))
+    (inputs (list libnfnetlink libmnl))
+    (synopsis "Library providing interface to packets logged by netfilter")
+    (description "libnetfilter_log is a userspace library providing interface to
+packets that have been logged by the kernel packet filter.  It is is part of a
+system that deprecates the old syslog/dmesg based packet logging.  This library
+has been previously known as libnfnetlink_log.
+
+@enumerate
+@item
+receiving to-be-logged packets from the kernel nfnetlink_log subsystem
+@end enumerate")
+    (home-page "https://netfilter.org/projects/libnetfilter_log/index.html")
+    (supported-systems (filter target-linux? %supported-systems))
+    (license license:gpl2+)))
+
 (define-public proot
   (package
     (name "proot")
