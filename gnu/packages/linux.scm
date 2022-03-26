@@ -7379,6 +7379,30 @@ list existing registered user-space connection tracking helpers
     (supported-systems (filter target-linux? %supported-systems))
     (license license:gpl2+)))
 
+(define-public libnetfilter-queue
+  (package
+    (name "libnetfilter-queue")
+    (version "1.0.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://netfilter.org/projects/"
+                           "libnetfilter_queue/files/"
+                           "libnetfilter_queue-" version ".tar.bz2"))
+       (sha256
+        (base32
+         "1xdra6i4p8jkv943ygjw646qx8df27f7p5852kc06vjx608krzzr"))))
+    (build-system gnu-build-system)
+    (native-inputs (list pkg-config))
+    (inputs (list libmnl libnfnetlink))
+    (synopsis "Library for kernel netfilter infrastructure and state")
+    (description "libnetfilter_queue is a userspace library providing an API
+to packets that have been queued by the kernel packet filter.  It is is part
+of a system that deprecates the old ip_queue/libipq mechanism.")
+    (home-page "https://netfilter.org/projects/libnetfilter_queue/index.html")
+    (supported-systems (filter target-linux? %supported-systems))
+    (license license:gpl2+)))
+
 (define-public proot
   (package
     (name "proot")
