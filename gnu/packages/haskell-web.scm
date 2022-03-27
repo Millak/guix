@@ -9,7 +9,7 @@
 ;;; Copyright © 2019 John Soo <jsoo1@asu.edu>
 ;;; Copyright © 2020 Alexandru-Sergiu Marton <brown121407@gmail.com>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2020 Kyle Meyer <kyle@kyleam.com>
+;;; Copyright © 2020, 2022 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2020 Alexandru-Sergiu Marton <brown121407@member.fsf.org>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;;
@@ -290,6 +290,34 @@ for more user-friendly packages.")
      "This package provides a backend for the http-client package using the
 connection and TLS libraries.  It is intended for use by higher-level
 libraries, such as http-conduit.")
+    (license license:expat)))
+
+(define-public ghc-http-client-restricted
+  (package
+    (name "ghc-http-client-restricted")
+    (version "0.0.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "http-client-restricted" version))
+       (sha256
+        (base32 "1vfm9qc3zr0rmq2ddgyg13i67020cdk8xqhyzfc2zcn1km2p6r85"))))
+    (build-system haskell-build-system)
+    (inputs
+     (list ghc-http-client
+           ghc-http-client-tls
+           ghc-connection
+           ghc-data-default
+           ghc-network
+           ghc-network-bsd
+           ghc-utf8-string))
+    (home-page "http://hackage.haskell.org/package/http-client-restricted")
+    (synopsis "Restrict the servers used by http-client")
+    (description
+     "This library makes it possible to restrict the HTTP servers that can be
+used by the @code{http-client} and @code{http-client-tls} libraries.  This is
+useful when a security policy needs to, e.g., prevent connections to HTTP
+servers on localhost or only allow connections to a specific server.")
     (license license:expat)))
 
 (define-public ghc-http-date
