@@ -697,13 +697,18 @@ imaging.  It supports several HDR and LDR image formats, and it can:
                  "if name in supported_formats_gdk: continue"))))
          (add-after 'install 'install-data
            (lambda* (#:key outputs #:allow-other-keys)
-             (copy-recursively
-              "mcomix/images"
-              (string-append (assoc-ref outputs "out")
-                             "/lib/python"
-                             #$(version-major+minor
-                                (package-version (this-package-input "python")))
-                             "/site-packages/mcomix/images"))))
+             (with-directory-excursion "mcomix"
+               (for-each
+                (lambda (subdir)
+                  (copy-recursively
+                   subdir
+                   (string-append
+                    (assoc-ref outputs "out")
+                    "/lib/python"
+                    #$(version-major+minor
+                       (package-version (this-package-input "python")))
+                    "/site-packages/mcomix/" subdir)))
+                '("images" "messages")))))
          (add-after 'glib-or-gtk-compile-schemas 'glib-or-gtk-wrap
            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
          (add-after 'wrap 'gi-wrap
