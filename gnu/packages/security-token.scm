@@ -38,6 +38,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix gexp)
+  #:use-module (guix utils)
   #:use-module (guix git-download)
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
@@ -906,7 +907,13 @@ phone is required.")
     (inputs (list eudev libcbor openssl zlib))
     (build-system cmake-build-system)
     (arguments
-     '(#:phases
+     `(#:configure-flags
+       (list (string-append
+               "-DPKG_CONFIG_EXECUTABLE="
+               (search-input-file %build-inputs
+                                  (string-append
+                                    "/bin/" ,(pkg-config-for-target)))))
+       #:phases
        (modify-phases %standard-phases
          ;; regress tests enabled only for debug builds
          (delete 'check))))
