@@ -12,6 +12,7 @@
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Tissevert <tissevert+guix@marvid.fr>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
+;;; Copyright © 2022 Luis Henrique Gomes Higino <luishenriquegh2701@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -662,7 +663,7 @@ are detected, the user is notified.")))
 (define-public neovim
   (package
     (name "neovim")
-    (version "0.4.4")
+    (version "0.6.1")
     (source
      (origin
        (method git-fetch)
@@ -671,13 +672,19 @@ are detected, the user is notified.")))
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11zyj6jvkwas3n6w1ckj3pk6jf81z1g7ngg4smmwm7c27y2a6f2m"))))
+        (base32 "10p6lg5yv9n6wcwdprwvvi56dfcm4wsj54nm0invyx3mhf7374lx"))))
     (build-system cmake-build-system)
     (arguments
      `(#:modules ((srfi srfi-26)
                   (guix build cmake-build-system)
                   (guix build utils))
-       #:configure-flags '("-DPREFER_LUA:BOOL=YES")
+       #:configure-flags
+       (list ,@(if (member (if (%current-target-system)
+                               (gnu-triplet->nix-system (%current-target-system))
+                               (%current-system))
+                           (package-supported-systems luajit))
+                   '()
+                   '("-DPREFER_LUA:BOOL=YES")))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'set-lua-paths
@@ -717,11 +724,17 @@ are detected, the user is notified.")))
        ("libvterm" ,libvterm)
        ("unibilium" ,unibilium)
        ("jemalloc" ,jemalloc)
-       ("lua" ,lua-5.1)
+       ("lua" ,(if (member (if (%current-target-system)
+                               (gnu-triplet->nix-system (%current-target-system))
+                               (%current-system))
+                           (package-supported-systems luajit))
+                   luajit
+                   lua-5.1))
        ("lua-luv" ,lua5.1-luv)
        ("lua-lpeg" ,lua5.1-lpeg)
        ("lua-bitop" ,lua5.1-bitop)
-       ("lua-libmpack" ,lua5.1-libmpack)))
+       ("lua-libmpack" ,lua5.1-libmpack)
+       ("tree-sitter" ,tree-sitter)))
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("gettext" ,gettext-minimal)
