@@ -33,6 +33,7 @@
 ;;; Copyright © 2021 Chadwain Holness <chadwainholness@gmail.com>
 ;;; Copyright © 2021 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2021 Lu Hui <luhux76@gmail.com>
+;;; Copyright © 2022 Pier-Hugues Pellerin <phpellerin@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -466,7 +467,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
   (package
     (inherit go-1.14)
     (name "go")
-    (version "1.16.14")
+    (version "1.16.15")
     (source
      (origin
        (method git-fetch)
@@ -476,7 +477,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "16pn7avzmlw28sldx6yv38a1afdwj7jz3x7kjvlagysqrsh5lwwl"))))
+         "0vlk0r4600ah9fg5apdd93g7i369k0rkzcgn7cs8h6qq2k6hpxjl"))))
     (arguments
      (substitute-keyword-arguments
          (strip-keyword-arguments '(#:tests?) (package-arguments go-1.14))
