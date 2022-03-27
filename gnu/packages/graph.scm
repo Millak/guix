@@ -212,7 +212,7 @@ lines.")
 (define-public python-plotly
   (package
     (name "python-plotly")
-    (version "4.14.3")
+    (version "5.6.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -221,11 +221,15 @@ lines.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "02wlgy7gf3v5ckiq9ab3prm53cckxkavlghqgkk9xw2sfmmrn61q"))))
+                "0kc9v5ampq2paw6sls6zdchvqvis7b1z8xhdvlhz5xxdr1vj5xnn"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+          (add-before 'build 'skip-npm
+            ;; npm is not packaged so build without it
+            (lambda _
+              (setenv "SKIP_NPM" "T")))
          (add-after 'unpack 'chdir
            (lambda _
              (chdir "packages/python/plotly")
@@ -247,6 +251,7 @@ lines.")
            python-requests
            python-retrying
            python-six
+           python-tenacity
            python-statsmodels))
     (home-page "https://plotly.com/python/")
     (synopsis "Interactive plotting library for Python")
