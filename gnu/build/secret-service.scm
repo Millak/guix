@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2020-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -47,6 +47,13 @@
          ;; to syslog.
          #'(format (current-output-port) fmt args ...))))))
 
+(define (wait-for-readable-fd port timeout)
+  "Wait until PORT has data available for reading or TIMEOUT has expired.
+Return #t in the former case and #f in the latter case."
+  (match (select (list port) '() '() timeout)
+    (((_) () ()) #t)
+    ((() () ())  #f)))
+
 (define* (secret-service-send-secrets port secret-root
                                       #:key (retry 60)
                                       (handshake-timeout 120))
@@ -93,23 +100,22 @@ wait for at most HANDSHAKE-TIMEOUT seconds for handshake to complete.  Return
 
     ;; Wait for "hello" message from the server.  This is the only way to know
     ;; that we're really connected to the server inside the guest.
-    (match (select (list sock) '() '() handshake-timeout)
-      (((_) () ())
-       (match (read sock)
-         (('secret-service-server ('version version ...))
-          (log "sending files from ~s...~%" secret-root)
-          (send-files sock)
-          (log "done sending files to port ~a~%" port)
-          (close-port sock)
-          secret-root)
-         (x
-          (log "invalid handshake ~s~%" x)
-          (close-port sock)
-          #f)))
-      ((() () ())                                 ;timeout
-       (log "timeout while sending files to ~a~%" port)
-       (close-port sock)
-       #f))))
+    (if (wait-for-readable-fd sock handshake-timeout)
+        (match (read sock)
+          (('secret-service-server ('version version ...))
+           (log "sending files from ~s...~%" secret-root)
+           (send-files sock)
+           (log "done sending files to port ~a~%" port)
+           (close-port sock)
+           secret-root)
+          (x
+           (log "invalid handshake ~s~%" x)
+           (close-port sock)
+           #f))
+        (begin                                    ;timeout
+         (log "timeout while sending files to ~a~%" port)
+         (close-port sock)
+         #f))))
 
 (define (delete-file* file)
   "Ensure FILE does not exist."
