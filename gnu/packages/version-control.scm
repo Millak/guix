@@ -1475,7 +1475,7 @@ also walk each side of a merge and test those changes individually.")
                       (let ((perl (search-input-file inputs "/bin/perl")))
                         ;; This seems to take care of every shell script that
                         ;; invokes Perl.
-                        (substitute* (find-files "." ".*")
+                        (substitute* (find-files ".")
                           ((" perl -")
                            (string-append " " perl " -")))
 
@@ -1494,8 +1494,7 @@ also walk each side of a merge and test those changes individually.")
                         ;; This works because gitolite-shell is in the PATH.
                         (substitute* "src/triggers/post-compile/ssh-authkeys"
                           (("\\$glshell \\$user")
-                           "gitolite-shell $user"))
-                        #t)))
+                           "gitolite-shell $user")))))
                   (add-before 'install 'patch-source
                     (lambda* (#:key inputs #:allow-other-keys)
                       ;; Gitolite uses cat to test the readability of the
@@ -1520,8 +1519,7 @@ also walk each side of a merge and test those changes individually.")
                                         "/bin/logger\"")))
 
                       (substitute* "src/commands/svnserve"
-                        (("/usr/bin/svnserve") "svnserve"))
-                      #t))
+                        (("/usr/bin/svnserve") "svnserve"))))
                   (replace 'install
                     (lambda* (#:key outputs #:allow-other-keys)
                       (let* ((output (assoc-ref outputs "out"))
@@ -1534,8 +1532,7 @@ also walk each side of a merge and test those changes individually.")
                         (for-each (lambda (script)
                                     (symlink (string-append sharedir "/" script)
                                              (string-append bindir "/" script)))
-                                  '("gitolite" "gitolite-shell"))
-                        #t)))
+                                  '("gitolite" "gitolite-shell")))))
                   (add-after 'install 'wrap-scripts
                     (lambda* (#:key inputs outputs #:allow-other-keys)
                       (let ((out (assoc-ref outputs "out"))
@@ -1546,10 +1543,9 @@ also walk each side of a merge and test those changes individually.")
                           `("PATH" ":" prefix
                             ,(map (lambda (dir)
                                     (string-append dir "/bin"))
-                                  (list out coreutils findutils git))))
-                        #t))))))
+                                  (list out coreutils findutils git))))))))))
     (inputs
-     (list perl coreutils findutils inetutils))
+     (list bash-minimal perl coreutils findutils inetutils))
     ;; git and openssh are propagated because trying to patch the source via
     ;; regexp matching is too brittle and prone to false positives.
     (propagated-inputs
