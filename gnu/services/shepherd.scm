@@ -26,6 +26,7 @@
   #:use-module (guix gexp)
   #:use-module (guix store)
   #:use-module (guix records)
+  #:use-module (guix packages)
   #:use-module (guix derivations)                 ;imported-modules, etc.
   #:use-module (guix utils)
   #:use-module (gnu services)
@@ -88,7 +89,7 @@
   shepherd-configuration make-shepherd-configuration
   shepherd-configuration?
   (shepherd shepherd-configuration-shepherd
-            (default shepherd)) ; file-like
+            (default shepherd-0.9)) ; file-like
   (services shepherd-configuration-services
             (default '()))) ; list of <shepherd-service>
 
@@ -304,8 +305,14 @@ stored."
 (define (scm->go file shepherd)
   "Compile FILE, which contains code to be loaded by shepherd's config file,
 and return the resulting '.go' file. SHEPHERD is used as shepherd package."
+  (define shepherd&co
+    (cons shepherd
+          (match (lookup-package-input shepherd "guile-fibers")
+            (#f '())
+            (fibers (list fibers)))))
+
   (let-system (system target)
-    (with-extensions (list shepherd)
+    (with-extensions shepherd&co
       (computed-file (string-append (basename (scheme-file-name file) ".scm")
                                     ".go")
                      #~(begin
@@ -359,29 +366,29 @@ as shepherd package."
                        (map load-compiled '#$(map scm->go files))))))
 
           (format #t "starting services...~%")
-          (for-each (lambda (service)
-                      ;; In the Shepherd 0.3 the 'start' method can raise
-                      ;; '&action-runtime-error' if it fails, so protect
-                      ;; against it.  (XXX: 'action-runtime-error?' is not
-                      ;; exported is 0.3, hence 'service-error?'.)
-                      (guard (c ((service-error? c)
-                                 (format (current-error-port)
-                                         "failed to start service '~a'~%"
-                                         service)))
-                        (start service)))
-                    '#$(append-map shepherd-service-provision
-                                   (filter shepherd-service-auto-start?
-                                           services)))
+          (let ((services-to-start
+                 '#$(append-map shepherd-service-provision
+                                (filter shepherd-service-auto-start?
+                                        services))))
+            (if (defined? 'start-in-the-background)
+                (start-in-the-background services-to-start)
+                (for-each (lambda (service)       ;pre-0.9.0 compatibility
+                            (guard (c ((service-error? c)
+                                       (format (current-error-port)
+                                               "failed to start service '~a'~%"
+                                               service)))
+                              (start service)))
+                          services-to-start))
 
-          ;; Hang up stdin.  At this point, we assume that 'start' methods
-          ;; that required user interaction on the console (e.g.,
-          ;; 'cryptsetup open' invocations, post-fsck emergency REPL) have
-          ;; completed.  User interaction becomes impossible after this
-          ;; call; this avoids situations where services wrongfully lead
-          ;; PID 1 to read from stdin (the console), which users may not
-          ;; have access to (see <https://bugs.gnu.org/23697>).
-          (redirect-port (open-input-file "/dev/null")
-                         (current-input-port))))
+            ;; Hang up stdin.  At this point, we assume that 'start' methods
+            ;; that required user interaction on the console (e.g.,
+            ;; 'cryptsetup open' invocations, post-fsck emergency REPL) have
+            ;; completed.  User interaction becomes impossible after this
+            ;; call; this avoids situations where services wrongfully lead
+            ;; PID 1 to read from stdin (the console), which users may not
+            ;; have access to (see <https://bugs.gnu.org/23697>).
+            (redirect-port (open-input-file "/dev/null")
+                           (current-input-port)))))
 
     (scheme-file "shepherd.conf" config)))
 
