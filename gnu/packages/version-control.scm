@@ -1519,6 +1519,8 @@ also walk each side of a merge and test those changes individually.")
                                         (assoc-ref inputs "inetutils")
                                         "/bin/logger\"")))
 
+                      (substitute* "src/commands/svnserve"
+                        (("/usr/bin/svnserve") "svnserve"))
                       #t))
                   (replace 'install
                     (lambda* (#:key outputs #:allow-other-keys)
