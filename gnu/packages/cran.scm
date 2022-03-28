@@ -2821,6 +2821,31 @@ distributions, and a variety of utility functions.")
     ;; Either version of the GPL.
     (license (list license:gpl2 license:gpl3))))
 
+(define-public r-homologene
+  (package
+    (name "r-homologene")
+    (version "1.4.68.19.3.27")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "homologene" version))
+       (sha256
+        (base32 "0d7wxisk0vqk1n165v1i19bc02zv78h5r5d3jqai5y6nkmwn01sh"))))
+    (properties `((upstream-name . "homologene")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-dplyr r-magrittr r-purrr r-r-utils r-readr))
+    (home-page "https://github.com/oganm/homologene")
+    (synopsis "Quick access to homologene and gene annotation updates")
+    (description
+     "This package provides a wrapper for the homologene database by the
+National Center for Biotechnology Information (NCBI).  It allows searching for
+gene homologs across species.  The package also includes an updated version of
+the homologene database where gene identifiers and symbols are replaced with
+their latest (at the time of submission) version and functions to fetch latest
+annotation data to keep updated.")
+    (license license:expat)))
+
 (define-public r-ggtern
   (package
     (name "r-ggtern")
