@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2017, 2019-2020, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2022 Efraim Flashner <efraim@flashner.co.il>
@@ -117,7 +117,8 @@ number/base32-hash tuples, directly usable in the 'patch-series' form."
                                   "-DSSH_SOURCE_BASHRC")
                                 " "))
          (configure-flags
-          ``("--with-installed-readline"
+          ``("--without-bash-malloc"
+             "--with-installed-readline"
              ,,(string-append "CPPFLAGS=" cppflags)
              ,(string-append
                "LDFLAGS=-Wl,-rpath -Wl,"
