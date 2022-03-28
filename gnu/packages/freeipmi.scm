@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2015, 2016, 2017, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015, 2016, 2017, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -38,7 +38,13 @@
                "0w8af1i57szmxl9vfifwwyal7xh8aixz2l9487wvy6yckqk6m92a"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags '("--disable-static")))
+     `(#:configure-flags '("--disable-static"
+                           ,@(if (%current-target-system)
+                               ;; We cannot check for these devices
+                               ;; when cross compiling.
+                               `("ac_cv_file__dev_random=yes"
+                                 "ac_cv_file__dev_urandom=yes")
+                               '()))))
     (inputs
      (list libgcrypt))
     (home-page "https://www.gnu.org/software/freeipmi/")
