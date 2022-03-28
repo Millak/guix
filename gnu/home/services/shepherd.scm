@@ -51,7 +51,7 @@
   home-shepherd-configuration make-home-shepherd-configuration
   home-shepherd-configuration?
   (shepherd home-shepherd-configuration-shepherd
-            (default shepherd)) ; package
+            (default shepherd-0.9)) ; package
   (auto-start? home-shepherd-configuration-auto-start?
                (default #t))
   (services home-shepherd-configuration-services
@@ -78,12 +78,13 @@ as shepherd package."
             '#$files))
           (action 'root 'daemonize)
           (format #t "Starting services...~%")
-          (for-each
-           (lambda (service) (start service))
-           '#$(append-map shepherd-service-provision
-                          (filter shepherd-service-auto-start?
-                                  services)))
-          (newline)))
+          (let ((services-to-start
+                 '#$(append-map shepherd-service-provision
+                                (filter shepherd-service-auto-start?
+                                        services))))
+            (if (defined? 'start-in-the-background)
+                (start-in-the-background services-to-start)
+                (for-each start services-to-start)))))
 
     (scheme-file "shepherd.conf" config)))
 
