@@ -3017,10 +3017,17 @@ displays a table of current bandwidth usage by pairs of hosts.")
      (list openssl libgcrypt))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags
+     `(#:configure-flags
        (list "--localstatedir=/var"
              (string-append "--with-pkgconfigdir="
-                            (assoc-ref %outputs "out") "/lib/pkgconfig"))
+                            (assoc-ref %outputs "out") "/lib/pkgconfig")
+             (string-append "--with-libgcrypt-prefix="
+                            (assoc-ref %build-inputs "libgcrypt"))
+             ,@(if (%current-target-system)
+                 ;; Assume yes on pipes when cross compiling.
+                 `("ac_cv_file__dev_spx=yes"
+                   "x_ac_cv_check_fifo_recvfd=yes")
+                 '()))
        #:phases
        (modify-phases %standard-phases
          ;; XXX Many test series fail.  Some might be fixable, others do no-no
