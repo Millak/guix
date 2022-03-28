@@ -1982,7 +1982,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/ytfzf-updates.patch        \
   %D%/packages/patches/ytnef-CVE-2021-3403.patch	\
   %D%/packages/patches/ytnef-CVE-2021-3404.patch	\
-  %D%/packages/patches/zig-disable-libc-note-test.patch         \
   %D%/packages/patches/zig-use-system-paths.patch
 
 MISC_DISTRO_FILES =				\
