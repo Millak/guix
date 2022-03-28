@@ -4,6 +4,7 @@
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
+;;; Copyright © 2016, 2017, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Guy Fleury Iteriteka <hoonandon@gmail.com>
 ;;;
@@ -261,8 +262,8 @@
        "http://ftp.debian.org/debian/"
        "http://archive.debian.org/debian/")
       (kde
-       "http://download.kde.org"
-       "http://download.kde.org/Attic" ; for when it gets archived.
+       "https://download.kde.org/"
+       "https://download.kde.org/Attic/"    ; for when it gets archived.
        ;; Mirrors from http://files.kde.org/extra/mirrors.html
        ;; Europe
        "http://mirror.easyname.at/kde"
