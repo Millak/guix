@@ -292,6 +292,9 @@ The other options should be self-descriptive."
   ;; integer
   (port-number           openssh-configuration-port-number
                          (default 22))
+  ;; integer
+  (max-connections       openssh-configuration-max-connections
+                         (default 200))
   ;; Boolean | 'prohibit-password
   (permit-root-login     openssh-configuration-permit-root-login
                          (default #f))
@@ -515,6 +518,12 @@ of user-name/file-like tuples."
   (define pid-file
     (openssh-configuration-pid-file config))
 
+  (define port-number
+    (openssh-configuration-port-number config))
+
+  (define max-connections
+    (openssh-configuration-max-connections config))
+
   (define openssh-command
     #~(list (string-append #$(openssh-configuration-openssh config) "/sbin/sshd")
             "-D" "-f" #$(openssh-config-file config)))
@@ -523,9 +532,17 @@ of user-name/file-like tuples."
          (documentation "OpenSSH server.")
          (requirement '(syslogd loopback))
          (provision '(ssh-daemon ssh sshd))
-         (start #~(make-forkexec-constructor #$openssh-command
-                                             #:pid-file #$pid-file))
-         (stop #~(make-kill-destructor))
+         (start #~(if (defined? 'make-inetd-constructor)
+                      (make-inetd-constructor
+                       (append #$openssh-command '("-i"))
+                       (make-socket-address AF_INET INADDR_ANY
+                                            #$port-number)
+                       #:max-connections #$max-connections)
+                      (make-forkexec-constructor #$openssh-command
+                                                 #:pid-file #$pid-file)))
+         (stop #~(if (defined? 'make-inetd-destructor)
+                     (make-inetd-destructor)
+                     (make-kill-destructor)))
          (auto-start? (openssh-auto-start? config)))))
 
 (define (openssh-pam-services config)

@@ -18962,6 +18962,12 @@ Name of the file where @command{sshd} writes its PID.
 @item @code{port-number} (default: @code{22})
 TCP port on which @command{sshd} listens for incoming connections.
 
+@item @code{max-connections} (default: @code{200})
+Hard limit on the maximum number of simultaneous client connections,
+enforced by the inetd-style Shepherd service (@pxref{Service De- and
+Constructors, @code{make-inetd-constructor},, shepherd, The GNU Shepherd
+Manual}).
+
 @item @code{permit-root-login} (default: @code{#f})
 This field determines whether and when to allow logins as root.  If
 @code{#f}, root logins are disallowed; if @code{#t}, they are allowed.
