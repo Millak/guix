@@ -2706,15 +2706,15 @@ provides the following commands:
     (build-system python-build-system)
     (propagated-inputs
      (list ansible-core))
-    ;; The Ansible collections are found by ansible-core via PYTHONPATH; the
-    ;; following search path ensures that they are found even when Python is
-    ;; not present in the profile.
+    ;; The Ansible collections are found by ansible-core via the Python search
+    ;; path; the following search path ensures that they are found even when
+    ;; Python is not present in the profile.
     (native-search-paths
      ;; XXX: Attempting to use (package-native-search-paths python)
      ;; here would cause an error about python being an unbound
      ;; variable in the tests/cpan.scm test.
      (list (search-path-specification
-            (variable "PYTHONPATH")
+            (variable "GUIX_PYTHONPATH")
             (files (list "lib/python3.9/site-packages")))))
     (home-page "https://www.ansible.com/")
     (synopsis "Radically simple IT automation")
