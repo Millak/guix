@@ -45,6 +45,7 @@
 ;;; Copyright © 2021 Benoit Joly <benoit@benoitj.ca>
 ;;; Copyright © 2021 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2021 Philip McGrath <philip@philipmcgrath.com>
+;;; Copyright © 2022 Andrew Tropin <andrew@trop.in>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4006,8 +4007,8 @@ related tools to process winmail.dat files.")
 
 (define-public l2md
   ;; No official release.
-  (let ((commit "f7286b49bb5fce25c898c143712fe34ad4d7864e")
-        (revision "1"))
+  (let ((commit "9db252bc1716ebaf0abd3a47a59ea78e4e6253d6")
+        (revision "2"))
     (package
       (name "l2md")
       (version (git-version "0.1.0" revision commit))
@@ -4019,7 +4020,7 @@ related tools to process winmail.dat files.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0hxz8i70v1xgv30zjclfvmjqszn073c7i8nwmswi2lr6vd7cklvp"))))
+          (base32 "1hfbngwdavdhw5ghnadmi0djg2yrr0wrkv15jdd9wcqh9h6mxy8z"))))
       (build-system gnu-build-system)
       (inputs
        (list libgit2))
