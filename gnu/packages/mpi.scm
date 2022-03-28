@@ -193,7 +193,7 @@ bind processes, and much more.")
 (define-public openmpi
   (package
     (name "openmpi")
-    (version "4.1.1")
+    (version "4.1.2")
     (source
      (origin
       (method url-fetch)
@@ -201,7 +201,7 @@ bind processes, and much more.")
                           (version-major+minor version)
                           "/downloads/openmpi-" version ".tar.bz2"))
       (sha256
-       (base32 "1nkwq123vvmggcay48snm9qqmrh0bdzpln0l1jnp26niidvplkz2"))
+       (base32 "09xmlr4mfs02kwcf5cmdgkcdjj81fjwjmpa3rz2k28f3gz7wfy4v"))
       (patches (search-patches "openmpi-mtl-priorities.patch"))))
 
     (properties
