@@ -6219,6 +6219,14 @@ from the ntfs-3g package.  It is meant to be used in initrds.")
        ;; to do the same for consistency.
        #:configure-flags (list "-GNinja"
 
+                               ,@(if (%current-target-system)
+                                   `((string-append
+                                       "-DPKG_CONFIG_EXECUTABLE="
+                                       (search-input-file
+                                         %build-inputs
+                                         (string-append "/bin/"
+                                                        ,(pkg-config-for-target)))))
+                                   '())
                                (string-append "-DRST2MAN_EXECUTABLE="
                                               (assoc-ref %build-inputs
                                                          "python-docutils")
