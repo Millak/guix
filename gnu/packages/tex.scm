@@ -6195,9 +6195,6 @@ styles.  Support for @code{hyperref} is provided.")
 
 (define-deprecated-package texlive-latex-listings texlive-listings)
 
-(define-public texlive-latex-listings
-  (deprecated-package "texlive-latex-listings" texlive-listings))
-
 (define-public texlive-latex-jknapltx
   (package
     (name "texlive-latex-jknapltx")
@@ -8454,9 +8451,6 @@ pstricks, it can produce either PostScript or PDF output.")
     (license (list license:gpl2 license:lppl1.3c+ license:fdl1.2+))))
 
 (define-deprecated-package texlive-latex-pgf texlive-pgf)
-
-(define-public texlive-latex-pgf
-  (deprecated-package "texlive-latex-pgf" texlive-pgf))
 
 (define-public texlive-latex-koma-script
   (package
