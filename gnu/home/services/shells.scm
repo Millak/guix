@@ -212,8 +212,8 @@ source ~/.profile
 
 (define (zsh-get-configuration-files config)
   `(("zprofile" ,(zsh-file-by-field config 'zprofile)) ;; Always non-empty
-    ,@(if (and (zsh-field-not-empty? config 'zshenv)
-               (zsh-field-not-empty? config 'environment-variables))
+    ,@(if (or (zsh-field-not-empty? config 'zshenv)
+              (zsh-field-not-empty? config 'environment-variables))
           `(("zshenv" ,(zsh-file-by-field config 'zshenv))) '())
     ,@(if (zsh-field-not-empty? config 'zshrc)
           `(("zshrc" ,(zsh-file-by-field config 'zshrc))) '())
