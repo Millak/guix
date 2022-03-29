@@ -9009,6 +9009,43 @@ for analyzing gene-level association tests in meta-analyses for binary
 trait.")
     (license license:gpl3)))
 
+(define-public r-rnaseqdtu
+  (let ((commit "5bee1e769d2e1dc6a3f1cecb78078050eeb5b9ac")
+        (revision "1"))
+    (package
+      (name "r-rnaseqdtu")
+      (version (git-version "2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/mikelove/rnaseqDTU/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0jfi1ydsk8m5nadwnih48v87nnxdc7s3f0pny4axmnj40dd42as0"))))
+      (properties `((upstream-name . "rnaseqDTU")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-deseq2
+             r-devtools
+             r-dexseq
+             r-drimseq
+             r-edger
+             r-rafalib
+             r-stager))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/mikelove/rnaseqDTU/")
+      (synopsis "RNA-seq workflow for differential transcript usage")
+      (description
+       "This package provides an RNA-seq workflow for differential transcript
+usage (DTU) following Salmon quantification.  This workflow performs a DTU
+analysis on simulated data.  It also shows how to use stageR to perform
+two-stage testing of DTU, a statistical framework to screen at the gene level
+and then confirm which transcripts within the significant genes show evidence
+of DTU.")
+      (license license:artistic2.0))))
+
 (define-public r-dropbead
   (let ((commit "d746c6f3b32110428ea56d6a0001ce52a251c247")
         (revision "2"))
