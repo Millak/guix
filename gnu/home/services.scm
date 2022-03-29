@@ -39,6 +39,7 @@
             home-environment-variables-service-type
             home-files-service-type
             home-xdg-configuration-files-service-type
+            home-xdg-data-files-service-type
             home-run-on-first-login-service-type
             home-activation-service-type
             home-run-on-change-service-type
@@ -46,6 +47,7 @@
 
             home-files-directory
             xdg-configuration-files-directory
+            xdg-data-files-directory
 
             fold-home-service-types
             home-provenance
@@ -305,6 +307,29 @@ directory containing FILES."
                 (default-value '())
                 (description "Files that will be put in
 @file{~~/.guix-home/files/.config}, and further processed during activation.")))
+
+(define xdg-data-files-directory ".local/share")
+
+(define (xdg-data-files files)
+  "Add .local/share prefix to each file-path in FILES."
+  (map (match-lambda
+         ((file-path . rest)
+          (cons (string-append xdg-data-files-directory "/" file-path)
+                rest)))
+         files))
+
+(define home-xdg-data-files-service-type
+  (service-type (name 'home-xdg-data)
+                (extensions
+                 (list (service-extension home-files-service-type
+                                          xdg-data-files)))
+                (compose concatenate)
+                (extend append)
+                (default-value '())
+                (description "Files that will be put in
+@file{~~/.guix-home/files/.local/share}, and further processed during
+activation.")))
+
 
 (define %initialize-gettext
   #~(begin

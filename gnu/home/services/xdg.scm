@@ -421,7 +421,8 @@ that the application cannot open the specified MIME type.")
   (define (add-xdg-desktop-entry-file entry)
     (let ((file (first entry))
           (config (second entry)))
-      (list (format #f ".local/share/applications/~a" file)
+      ;; TODO: Use xdg-data-files instead of home-files here
+      (list (format #f "applications/~a" file)
           (apply mixed-text-file
                  (format #f "xdg-desktop-~a-entry" file)
                  config))))
@@ -468,7 +469,7 @@ that the application cannot open the specified MIME type.")
   (service-type (name 'home-xdg-mime-applications)
                 (extensions
                  (list (service-extension
-                        home-files-service-type
+                        home-xdg-data-files-service-type
                         home-xdg-mime-applications-files)
                        (service-extension
                         home-xdg-configuration-files-service-type
