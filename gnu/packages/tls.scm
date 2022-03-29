@@ -610,14 +610,14 @@ kilobytes of RAM.")
 (define-public libressl
   (package
     (name "libressl")
-    (version "3.3.3")
+    (version "3.3.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://openbsd/LibreSSL/"
                                   "libressl-" version ".tar.gz"))
               (sha256
                (base32
-                "0rihprcgxsydsbcqgd1952k2cfn4jmp7rlyp1c6sglfc6rdmcwd4"))))
+                "16jbzqj9wy2z10x8ppx63idw44k0d3wly0grpar0s6g1cn9q8a1z"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
