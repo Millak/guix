@@ -2365,3 +2365,42 @@ use with virtualization provisioning tools")
      "@code{transient} is a wrapper for QEMU allowing the creation of virtual
 machines with shared folder, ssh, and disk creation support.")
     (license license:expat)))
+
+(define-public riscv-pk
+  (package
+    (name "riscv-pk")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/riscv-software-src/riscv-pk")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1cc0rz4q3a1zw8756b8yysw8lb5g4xbjajh5lvqbjix41hbdx6xz"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:out-of-source? #t
+           ;; riscv-pk can only be built for riscv64.
+           #:target "riscv64-linux-gnu"
+           #:make-flags #~(list (string-append "INSTALLDIR=" #$output))
+           ;; Add flags to keep symbols fromhost and tohost. These symbols are
+           ;; required for the correct functioning of pk.
+           #:strip-flags #~(list "--strip-unneeded"
+                                 "--keep-symbol=fromhost"
+                                 "--keep-symbol=tohost"
+                                 "--enable-deterministic-archives")))
+    (home-page "https://github.com/riscv-software-src/riscv-pk")
+    (synopsis "RISC-V Proxy Kernel")
+    (description "The RISC-V Proxy Kernel, @command{pk}, is a lightweight
+application execution environment that can host statically-linked RISC-V ELF
+binaries.  It is designed to support tethered RISC-V implementations with
+limited I/O capability and thus handles I/O-related system calls by proxying
+them to a host computer.
+
+This package also contains the Berkeley Boot Loader, @command{bbl}, which is a
+supervisor execution environment for tethered RISC-V systems.  It is designed
+to host the RISC-V Linux port.")
+    (license license:bsd-3)))
