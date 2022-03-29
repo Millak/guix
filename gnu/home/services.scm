@@ -285,10 +285,10 @@ directory containing FILES."
                 (description "Files that will be put in
 @file{~~/.guix-home/files}, and further processed during activation.")))
 
-(define xdg-configuration-files-directory "config")
+(define xdg-configuration-files-directory ".config")
 
 (define (xdg-configuration-files files)
-  "Add config/ prefix to each file-path in FILES."
+  "Add .config/ prefix to each file-path in FILES."
   (map (match-lambda
          ((file-path . rest)
           (cons (string-append xdg-configuration-files-directory "/" file-path)
@@ -296,7 +296,7 @@ directory containing FILES."
          files))
 
 (define home-xdg-configuration-files-service-type
-  (service-type (name 'home-files)
+  (service-type (name 'home-xdg-configuration)
                 (extensions
                  (list (service-extension home-files-service-type
                                           xdg-configuration-files)))
@@ -304,7 +304,7 @@ directory containing FILES."
                 (extend append)
                 (default-value '())
                 (description "Files that will be put in
-@file{~~/.guix-home/files/config}, and further processed during activation.")))
+@file{~~/.guix-home/files/.config}, and further processed during activation.")))
 
 (define %initialize-gettext
   #~(begin

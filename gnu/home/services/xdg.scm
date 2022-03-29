@@ -421,7 +421,7 @@ that the application cannot open the specified MIME type.")
   (define (add-xdg-desktop-entry-file entry)
     (let ((file (first entry))
           (config (second entry)))
-      (list (format #f "local/share/applications/~a" file)
+      (list (format #f ".local/share/applications/~a" file)
           (apply mixed-text-file
                  (format #f "xdg-desktop-~a-entry" file)
                  config))))

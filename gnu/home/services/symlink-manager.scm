@@ -67,7 +67,7 @@ subdirectory from XDG_CONFIG_HOME to generate a target path."
                            (1+ (string-length home-directory)))
                 (substring file
                            (string-length #$xdg-configuration-files-directory)))
-               (string-append "." file)))
+               file))
 
          (define (target-file file)
            ;; Return the target of FILE, a config file name sans leading dot
