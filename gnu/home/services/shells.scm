@@ -222,7 +222,7 @@ source ~/.profile
     ,@(if (zsh-field-not-empty? config 'zlogout)
           `((".zlogout" ,(zsh-file-by-field config 'zlogout))) '())))
 
-(define (zsh-home-files config)
+(define (add-zsh-dot-configuration config)
   (define zshenv-auxiliary-file
     (mixed-text-file
      "zshenv-auxiliary"
@@ -233,7 +233,7 @@ source ~/.profile
       `((".zshenv" ,zshenv-auxiliary-file))
       (zsh-get-configuration-files config)))
 
-(define (zsh-xdg-configuration-files config)
+(define (add-zsh-xdg-configuration config)
   (if (home-zsh-configuration-xdg-flavor? config)
       (map
        (lambda (lst)
@@ -298,10 +298,10 @@ source ~/.profile
                 (extensions
                  (list (service-extension
                         home-files-service-type
-                        zsh-home-files)
+                        add-zsh-dot-configuration)
                        (service-extension
                         home-xdg-configuration-files-service-type
-                        zsh-xdg-configuration-files)
+                        add-zsh-xdg-configuration)
                        (service-extension
                         home-profile-service-type
                         add-zsh-packages)))
