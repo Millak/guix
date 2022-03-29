@@ -11192,7 +11192,7 @@ based methods.")
 (define-public pigx-sars-cov2-ww
   (package
     (name "pigx-sars-cov2-ww")
-    (version "0.0.4")
+    (version "0.0.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/BIMSBbioinfo/pigx_sarscov2_ww/"
@@ -11200,11 +11200,11 @@ based methods.")
                                   "/pigx_sars-cov2-ww-" version ".tar.gz"))
               (sha256
                (base32
-                "0axnmz4d8zgir888mc0cilcq4m3v41xmjmpp3w3444lciwnxydvs"))
-              (patches (search-patches "pigx-sars-cov2-ww-no-citeproc.patch"))))
+                "1fkr9gp09zl5n7kdqmy9lrnq28k2z97wg74wgkyfssfyxvmq9cr2"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
+     `(#:tests? #f ;requires huge kraken database
+       #:phases
        (modify-phases %standard-phases
          (add-before 'bootstrap 'autoreconf
            (lambda _
