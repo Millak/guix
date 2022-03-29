@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2022 Luis Henrique Gomes Higino <luishenriquegh2701@gmail.com>
-;;; Copyright © 2022 Pierre Langlois <pierre.langlois@gmx.com>
+;;; Copyright © 2022, 2023 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2023 Andrew Tropin <andrew@trop.in>
@@ -24,7 +24,9 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages crates-graphics)
   #:use-module (gnu packages crates-io)
+  #:use-module (gnu packages graphviz)
   #:use-module (gnu packages icu4c)
+  #:use-module (gnu packages node)
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system gnu)
   #:use-module (guix gexp)
@@ -63,8 +65,8 @@
     (synopsis "Incremental parsing system for programming tools")
     (description
      "Tree-sitter is a parser generator tool and an incremental parsing
-library.  It can build a concrete syntax tree for a source file and efficiently
-update the syntax tree as the source file is edited.
+library.  It can build a concrete syntax tree for a source file and
+efficiently update the syntax tree as the source file is edited.
 
 Tree-sitter aims to be:
 
@@ -80,7 +82,8 @@ This package includes the @code{libtree-sitter} runtime library.")
     (license license:expat)))
 
 (define-public tree-sitter-cli
-  (package (inherit tree-sitter)
+  (package
+    (inherit tree-sitter)
     (name "tree-sitter-cli")
     (source (origin
               (inherit (package-source tree-sitter))
@@ -96,13 +99,30 @@ This package includes the @code{libtree-sitter} runtime library.")
                               println!(\"cargo:rustc-link-lib=tree-sitter\");~@
                               }~%")))))))
     (build-system cargo-build-system)
-    (inputs (list tree-sitter))
+    (inputs
+     (list tree-sitter graphviz node-lts))
     (arguments
      (list
-      ;; Running test requires downloading fixtures, see the
-      ;; script/fetch-fixtures script, which fetches grammars.  Maybe it make
-      ;; sence to run tests in the grammar's packages?
-      #:tests? #f
+      #:cargo-test-flags
+      ''("--release" "--"
+         ;; Skip tests which rely on downloading grammar fixtures.  It is
+         ;; difficult to support such tests given upstream does not encode
+         ;; which version of the grammars are expected.
+         ;; Instead, we do run some tests for each grammar in the tree-sitter
+         ;; build-system, by running `tree-sitter test'.  This isn't as
+         ;; complete as running all tests from tree-sitter-cli, but it's a
+         ;; good compromise compared to maintaining two different sets of
+         ;; grammars (Guix packages vs test fixtures).
+         "--skip=tests::corpus_test"
+         "--skip=tests::highlight_test"
+         "--skip=tests::node_test"
+         "--skip=tests::parser_test"
+         "--skip=tests::pathological_test"
+         "--skip=tests::query_test"
+         "--skip=tests::tags_test"
+         "--skip=tests::test_highlight_test"
+         "--skip=tests::test_tags_test"
+         "--skip=tests::tree_test")
       ;; We're only packaging the CLI program so we do not need to install
       ;; sources.
       #:install-source? #f
@@ -132,8 +152,20 @@ This package includes the @code{libtree-sitter} runtime library.")
           (add-after 'unpack 'delete-cargo-lock
             (lambda _
               (delete-file "Cargo.lock")))
+          (add-after 'unpack 'patch-node
+            (lambda _
+              (substitute* "cli/src/generate/mod.rs"
+                (("Command::new\\(\"node\"\\)")
+                 (string-append
+                  "Command::new(\"" #$node-lts "/bin/node\")")))))
+          (add-after 'unpack 'patch-dot
+            (lambda _
+              (substitute* "cli/src/util.rs"
+                (("Command::new\\(\"dot\"\\)")
+                 (string-append
+                  "Command::new(\"" #$graphviz "/bin/dot\")")))))
           (replace 'install
-            (lambda* (#:key outputs #:allow-other-keys)
+            (lambda _
               (let ((bin (string-append #$output "/bin")))
                 (mkdir-p bin)
                 (install-file "target/release/tree-sitter" bin)))))))
