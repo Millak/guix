@@ -157,6 +157,7 @@ subdirectory from XDG_CONFIG_HOME to generate a target path."
                            #t
                            (G_ "Skipping ~a (not an empty directory)... done\n")
                            directory))
+                         ((= ENOENT errno) #t)
                          ((= ENOTDIR errno) #t)
                          (else
                           (apply throw args)))))))))
