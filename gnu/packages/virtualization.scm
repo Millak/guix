@@ -26,6 +26,7 @@
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2022 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2022 Ekaitz Zarraga <ekaitz@elenq.tech>
+;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1037,15 +1038,12 @@ Debian or a derivative using @command{debootstrap}.")
      (list
        #:phases
        #~(modify-phases %standard-phases
-           (add-after 'install 'wrap-binary
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out")))
-                 (for-each
-                   (lambda (file)
-                     (wrap-program file
-                       `("PATH" ":" prefix
-                         (,(dirname (search-input-file inputs "/bin/dtc"))))))
-                   (find-files (string-append out "/bin")))))))))
+           (add-before 'configure 'configure-dtc-path
+             (lambda* (#:key inputs #:allow-other-keys)
+               ;; Reference dtc by its absolute store path.
+               (substitute* "riscv/dts.cc"
+                 (("DTC")
+                  (string-append "\"" (search-input-file inputs "/bin/dtc") "\""))))))))
     (inputs
      (list bash-minimal dtc))
     (native-inputs
