@@ -4739,6 +4739,29 @@ events and allows for the incorporation of prior knowledge through supervised
 graph construction.")
    (license license:artistic2.0)))
 
+(define-public r-stager
+  (package
+    (name "r-stager")
+    (version "1.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "stageR" version))
+       (sha256
+        (base32 "0vpx0v04hgkhzi0bm7ipnb9xr37n5wvnnr45lljgni8pwabfkf6y"))))
+    (properties `((upstream-name . "stageR")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/stageR")
+    (synopsis "Stage-wise analysis of high throughput gene expression data")
+    (description
+     "The stageR package allows automated stage-wise analysis of
+high-throughput gene expression data.  The method is published in Genome
+Biology at
+@url{https://genomebiology.biomedcentral.com/articles/10.1186/s13059-017-1277-0}.")
+    (license license:gpl3)))
+
 (define-public r-stringdb
   (package
     (name "r-stringdb")
