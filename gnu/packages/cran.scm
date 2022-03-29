@@ -7489,6 +7489,26 @@ files.")
 environment within Shiny.")
     (license license:expat)))
 
+(define-public r-rafalib
+  (package
+    (name "r-rafalib")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "rafalib" version))
+       (sha256
+        (base32 "1dmxjl66bfdgrybhwyaa8d4i460liqcdw8b29a6w7shgksh29m0k"))))
+    (properties `((upstream-name . "rafalib")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcolorbrewer))
+    (home-page "https://cran.r-project.org/package=rafalib")
+    (synopsis "Convenience functions for routine data exploration")
+    (description
+     "This package provides a series of shortcuts for routine tasks to
+facilitate data exploration.")
+    (license license:artistic2.0)))
+
 (define-public r-randomizr
   (package
     (name "r-randomizr")
