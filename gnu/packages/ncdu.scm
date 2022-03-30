@@ -88,4 +88,5 @@ ncurses installed.")
                (when tests?
                  (invoke "zig" "test" "build.zig")))))))
     (native-inputs
-     (list perl zig))))
+     (list perl zig))
+    (properties `((upstream-name . "ncdu")))))
