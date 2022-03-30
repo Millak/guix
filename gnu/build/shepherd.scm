@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2017, 2018, 2019, 2020, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Mathieu Othacehe <othacehe@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -103,8 +103,13 @@
 separate mount and PID name space.  Return the \"outer\" PID. "
   (match (container-excursion* pid
            (lambda ()
-             (read-pid-file pid-file
-                            #:max-delay max-delay)))
+             ;; XXX: Trick for Shepherd 0.9: prevent 'read-pid-file' from
+             ;; using (@ (fibers) sleep), which would try to suspend the
+             ;; current task, which doesn't work in this extra process.
+             (with-continuation-barrier
+              (lambda ()
+                (read-pid-file pid-file
+                               #:max-delay max-delay)))))
     (#f
      ;; Send SIGTERM to the whole process group.
      (catch-system-error (kill (- pid) SIGTERM))
@@ -113,6 +118,26 @@ separate mount and PID name space.  Return the \"outer\" PID. "
      ;; XXX: When COMMAND is started in a separate PID namespace, its
      ;; PID is always 1, but that's not what Shepherd needs to know.
      pid)))
+
+(define* (exec-command* command #:key user group log-file pid-file
+                        directory (environment-variables (environ)))
+  "Like 'exec-command', but first restore signal handles modified by
+shepherd (PID 1)."
+  ;; First restore the default handlers.
+  (for-each (cut sigaction <> SIG_DFL) %precious-signals)
+
+  ;; Unblock any signals that have been blocked by the parent process.
+  (unblock-signals %precious-signals)
+
+  (mkdir-p "/var/run")
+  (clean-up pid-file)
+
+  (exec-command command
+                #:user user
+                #:group group
+                #:log-file log-file
+                #:directory directory
+                #:environment-variables environment-variables))
 
 (define* (make-forkexec-constructor/container command
                                               #:key
@@ -164,24 +189,14 @@ namespace, in addition to essential bind-mounts such /proc."
     (let ((pid (run-container container-directory
                               mounts namespaces 1
                               (lambda ()
-                                ;; First restore the default handlers.
-                                (for-each (cut sigaction <> SIG_DFL)
-                                          %precious-signals)
-
-                                ;; Unblock any signals that have been blocked
-                                ;; by the parent process.
-                                (unblock-signals %precious-signals)
-
-                                (mkdir-p "/var/run")
-                                (clean-up pid-file)
-
-                                (exec-command command
-                                              #:user user
-                                              #:group group
-                                              #:log-file log-file
-                                              #:directory directory
-                                              #:environment-variables
-                                              environment-variables)))))
+                                (exec-command* command
+                                               #:user user
+                                               #:group group
+                                               #:pid-file pid-file
+                                               #:log-file log-file
+                                               #:directory directory
+                                               #:environment-variables
+                                               environment-variables)))))
       (if pid-file
           (if (or (memq 'mnt namespaces) (memq 'pid namespaces))
               (read-pid-file/container pid pid-file
@@ -209,14 +224,24 @@ on Hurd systems for instance, fallback to direct forking."
         ((head . rest)
          (loop rest (cons head result))))))
 
-  (let ((container-support?
-         (file-exists? "/proc/self/ns"))
-        (fork-proc (lambda ()
-                     (apply fork+exec-command command
-                            (strip-pid args)))))
-    (if container-support?
-        (container-excursion* pid fork-proc)
-        (fork-proc))))
+  (let ((container-support? (file-exists? "/proc/self/ns")))
+    (if (and container-support?
+             (not (and pid (= pid (getpid)))))
+        (container-excursion* pid
+          (lambda ()
+            ;; Note: In the Shepherd 0.9, 'fork+exec-command' expects to be
+            ;; called from the shepherd process (because it creates a pipe to
+            ;; capture stdout/stderr and spawns a logging fiber) so we cannot
+            ;; use it here.
+            (match (primitive-fork)
+              (0 (dynamic-wind
+                   (const #t)
+                   (lambda ()
+                     (apply exec-command* command (strip-pid args)))
+                   (lambda ()
+                     (primitive-_exit 127))))
+              (pid #t))))
+        (apply fork+exec-command command (strip-pid args)))))
 
 ;; Local Variables:
 ;; eval: (put 'container-excursion* 'scheme-indent-function 1)
