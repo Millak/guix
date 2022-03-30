@@ -109,6 +109,7 @@
   #:use-module (gnu packages groff)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
+  #:use-module (gnu packages guile-xyz)
   #:use-module (gnu packages hurd)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
@@ -266,7 +267,7 @@ the percentage of copied data.  It can also show estimated time and throughput,
 and provides a \"top-like\" mode (monitoring).")
     (license license:gpl3+)))
 
-(define-public shepherd
+(define-public shepherd-0.8
   (package
     (name "shepherd")
     (version "0.8.1")
@@ -307,14 +308,29 @@ interface and is based on GNU Guile.")
     (license license:gpl3+)
     (home-page "https://www.gnu.org/software/shepherd/")))
 
-(define-public guile2.2-shepherd
+;; Update on the next rebuild cycle.
+(define-public shepherd shepherd-0.8)
+
+(define-public shepherd-0.9
   (package
     (inherit shepherd)
+    (version "0.9.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/shepherd/shepherd-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "1rdwhrcibs2ly4hjwwb5kmzb133ccjmrfvb0a70cqkv9jy1pg061"))))
+    (native-inputs (list pkg-config guile-3.0))
+    (inputs (list guile-3.0 guile-fibers-1.1))))
+
+(define-public guile2.2-shepherd
+  (package
+    (inherit shepherd-0.9)
     (name "guile2.2-shepherd")
-    (native-inputs
-     (list pkg-config guile-2.2))
-    (inputs
-     (list guile-2.2 guile2.2-readline))))
+    (native-inputs (list pkg-config guile-2.2))
+    (inputs (list guile-2.2 guile2.2-fibers))))
 
 (define-public guile2.0-shepherd
   (package
