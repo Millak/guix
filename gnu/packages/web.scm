@@ -3,7 +3,7 @@
 ;;; Copyright © 2013 Aljosha Papsch <misc@rpapsch.de>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Raoul Jean Pierre Bonnal <ilpuccio.febo@gmail.com>
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020 Eric Bavier <bavier@posteo.net>
@@ -7710,14 +7710,27 @@ bookmarks directly.  It can also present them in a web interface with
 (define-public anonip
   (package
     (name "anonip")
-    (version "1.0.0")
+    (version "1.1.0")
+    ;; The version on PyPi does not include fixture definitions for tests.
     (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "anonip" version))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/DigitaleGesellschaft/Anonip")
+                    (commit "beab328945547b0147a53655f32c5cc76ab4488b")))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ckn9nnfhpdnz8b92q8pkysdqj6pdh71ckfqvfj0z01cq0hzbhd2"))))
+                "0cssdcridadjzichz1vv1ng7jwphqkn8ihh83hpz9mcjmxyb94qc"))))
     (build-system python-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-vv" "tests.py" "anonip.py")))))))
+    (native-inputs
+     (list python-pytest python-pytest-cov))
     (home-page "https://github.com/DigitaleGesellschaft/Anonip")
     (synopsis "Anonymize IP addresses in log files")
     (description
