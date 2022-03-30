@@ -10100,8 +10100,9 @@ state and will work even without lispy being enabled.")
       (license license:gpl3+))))
 
 (define-public emacs-lpy
-  (let ((commit "43b401fe15f0f0d01edb189378b9498121e9f766")
-        (revision "3"))
+  ;; There is no proper release/tag.
+  (let ((commit "076ce9acb68f6ac1b39127b634a91ffd865d13d8")
+        (revision "4"))
     (package
       (name "emacs-lpy")
       (version (git-version "0.1.0" revision commit))
@@ -10113,7 +10114,7 @@ state and will work even without lispy being enabled.")
                (commit commit)))
          (sha256
           (base32
-           "0xj1r7cn1rivaxhvawvmgx9fg3xilpfw4lkf2x2aqplr4s85ijas"))
+           "10sab50wmr3zn7jgzx93201ymhmacqacn3m2qllsqkfw2gpsi6dn"))
          (file-name (git-file-name name version))))
       (propagated-inputs
        (list emacs-zoutline emacs-lispy))
