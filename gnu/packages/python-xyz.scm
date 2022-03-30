@@ -3907,14 +3907,14 @@ environments and back.")
 (define-public python-pyyaml
   (package
     (name "python-pyyaml")
-    (version "5.4.1")
+    (version "6.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "PyYAML" version))
        (sha256
         (base32
-         "0pm440pmpvgv5rbbnm8hk4qga5a292kvlm1bh3x2nwr8pb5p8xv0"))))
+         "18imkjacvpxfgg1lbpraqywx3j7hr5dv99d242byqvrh2jf53yv8"))))
     (build-system python-build-system)
     (inputs
      (list libyaml python-cython))
