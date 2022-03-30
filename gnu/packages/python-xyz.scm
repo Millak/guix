@@ -8776,7 +8776,9 @@ connect strings, then issue SQL commands within IPython or IPython Notebook.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (replace 'check (lambda _ (invoke "pytest" "-vv" "traitlets"))))))
+         (replace 'check (lambda* (#:key tests? #:allow-other-keys)
+                           (when tests?
+                             (invoke "pytest" "-vv" "traitlets")))))))
     (native-inputs
      (list python-pytest))
     (home-page "https://ipython.org")
