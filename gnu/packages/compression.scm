@@ -411,8 +411,10 @@ decompression.")
        `(#:phases
          (modify-phases %standard-phases
            (add-after 'unpack 'unpack-gnulib
-             (lambda* (#:key inputs #:allow-other-keys)
-               (let ((gnulib (assoc-ref inputs "gnulib")))
+             (lambda* (#:key inputs native-inputs #:allow-other-keys)
+               (let ((gnulib
+                      (dirname (search-input-file (or native-inputs inputs)
+                                                  "gnulib-tool.py"))))
                  (copy-recursively gnulib "lib")
                  (setenv "PATH" (string-append "lib:" (getenv "PATH")))
                  #t)))
