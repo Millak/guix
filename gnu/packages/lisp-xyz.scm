@@ -3522,23 +3522,22 @@ Lisp (from GBBopen project).")
 (define-public sbcl-usocket
   (package
     (name "sbcl-usocket")
-    (version "0.8.3")
+    (version "0.8.4")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/usocket/usocket/")
              (commit (string-append "v" version))))
-       (file-name (git-file-name "usocket" version))
+       (file-name (git-file-name "cl-usocket" version))
        (sha256
         (base32
-         "0x746wr2324l6bn7skqzgkzcbj5kd0zp2ck0c8rldrw0rzabg826"))))
+         "0l5alk6nph6kxgd84pxq8d56pz3ywnpp0kpnlg4cadaics3hycg7"))))
     (build-system asdf-build-system/sbcl)
     (native-inputs
      (list sbcl-rt))
     (inputs
-     `(("bordeaux-threads" ,sbcl-bordeaux-threads)
-       ("split-sequence" ,sbcl-split-sequence)))
+     (list sbcl-bordeaux-threads sbcl-split-sequence))
     (arguments
      `(#:tests? #f ; FIXME: Tests need network access?
        #:asd-systems '("usocket"
