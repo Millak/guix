@@ -16154,13 +16154,120 @@ language.")
               (("!__x86_64__") "0"))))))
     (build-system cmake-build-system)
     (arguments
-     (list #:tests? #f))                ; no tests
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (replace 'check
+             ;; Adapted from .github/workflows/test_on_push.yml
+             (lambda* (#:key tests? inputs #:allow-other-keys)
+               (when tests?
+                 (let ((samtools (search-input-file inputs "/bin/samtools")))
+                   ;; This is the easiest way to access the data
+                   ;; needed for the test suite.
+                   (symlink (string-append "../wfmash-v" #$version "/data")
+                            "data")
+                   (and
+                     ;; This test takes 60 minutes on riscv64-linux.
+                     #$@(if (not (target-riscv64?))
+                          #~((begin
+                               ;; Test with a subset of the LPA dataset (PAF output)
+                               (setenv "ASAN_OPTIONS" "detect_leaks=1:symbolize=1")
+                               (setenv "LSAN_OPTIONS" "verbosity=0:log_threads=1")
+                               (with-output-to-file "LPA.subset.paf"
+                                 (lambda _
+                                   (invoke "bin/wfmash"
+                                           "data/LPA.subset.fa.gz"
+                                           "data/LPA.subset.fa.gz"
+                                           "-X" "-n" "10" "-T" "wflign_info."
+                                           "-u" "./")))
+                               (invoke "head" "LPA.subset.paf")))
+                          #~())
+                     ;; This test takes about 5 hours on riscv64-linux.
+                     #$@(if (not (target-riscv64?))
+                          #~((begin
+                               ;; Test with a subset of the LPA dataset (SAM output)
+                               (setenv "ASAN_OPTIONS" "detect_leaks=1:symbolize=1")
+                               (setenv "LSAN_OPTIONS" "verbosity=0:log_threads=1")
+                               (with-output-to-file "LPA.subset.sam"
+                                 (lambda _
+                                   (invoke "bin/wfmash"
+                                           "data/LPA.subset.fa.gz"
+                                           "data/LPA.subset.fa.gz"
+                                           "-X" "-N" "-a" "-T" "wflign_info.")))
+                               (with-output-to-file "LPA.subset.sam-view"
+                                 (lambda _
+                                   (invoke samtools "view" "LPA.subset.sam" "-bS")))
+                               (with-output-to-file "LPA.subset.bam"
+                                 (lambda _
+                                   (invoke samtools "sort" "LPA.subset.sam-view")))
+                               (invoke samtools "index" "LPA.subset.bam")
+                               ;; samtools view LPA.subset.bam | head | cut -f 1-9
+                               ;(invoke samtools "view" "LPA.subset.bam")
+                               ;; There should be an easier way to do this with pipes.
+                               (with-output-to-file "LPA.subset.bam-incr1"
+                                 (lambda _
+                                   (invoke samtools "view" "LPA.subset.bam")))
+                               (with-output-to-file "LPA.subset.bam-incr2"
+                                 (lambda _
+                                   (invoke "head" "LPA.subset.bam-incr1")))
+                               (invoke "cut" "-f" "1-9" "LPA.subset.bam-incr2")))
+                          #~())
+                     ;; This test takes 60 minutes on riscv64-linux.
+                     #$@(if (not (target-riscv64?))
+                          #~((begin
+                               ;; Test with a subset of the LPA dataset,
+                               ;; setting a lower identity threshold (PAF output)
+                               (setenv "ASAN_OPTIONS" "detect_leaks=1:symbolize=1")
+                               (setenv "LSAN_OPTIONS" "verbosity=0:log_threads=1")
+                               (with-output-to-file "LPA.subset.p90.paf"
+                                 (lambda _
+                                   (invoke "bin/wfmash"
+                                           "data/LPA.subset.fa.gz"
+                                           "data/LPA.subset.fa.gz"
+                                           "-X" "-p" "90" "-n" "10"
+                                           "-T" "wflign_info.")))
+                               (invoke "head" "LPA.subset.p90.paf")))
+                          #~())
+                     (begin
+                       ;; Test aligning short reads (500 bps) to a reference (SAM output)
+                       (setenv "ASAN_OPTIONS" "detect_leaks=1:symbolize=1")
+                       (setenv "LSAN_OPTIONS" "verbosity=0:log_threads=1")
+                       (with-output-to-file "reads.500bps.sam"
+                         (lambda _
+                           (invoke "bin/wfmash"
+                                   "data/reference.fa.gz"
+                                   "data/reads.500bps.fa.gz"
+                                   "-s" "0.5k" "-N" "-a")))
+                       (with-output-to-file "reads.500bps.sam-view"
+                         (lambda _
+                           (invoke samtools "view" "reads.500bps.sam" "-bS")))
+                       (with-output-to-file "reads.500bps.bam"
+                         (lambda _
+                           (invoke samtools "sort" "reads.500bps.sam-view")))
+                       (invoke samtools "index" "reads.500bps.bam")
+                       (with-output-to-file "reads.500bps.bam-view"
+                         (lambda _
+                           (invoke samtools "view" "reads.500bps.bam")))
+                       (invoke "head" "reads.500bps.bam-view"))
+                     (begin
+                       ;; Test with few very short reads (255bps) (PAF output)
+                       (setenv "ASAN_OPTIONS" "detect_leaks=1:symbolize=1")
+                       (setenv "LSAN_OPTIONS" "verbosity=0:log_threads=1")
+                       (with-output-to-file "reads.255bps.paf"
+                         (lambda _
+                           (invoke "bin/wfmash"
+                                   "data/reads.255bps.fa.gz"
+                                   "data/reads.255bps.fa.gz"
+                                   "-X" "-w" "16")))
+                       (invoke "head" "reads.255bps.paf"))))))))))
     (inputs
      (list atomic-queue
            gsl
            htslib
            jemalloc
            zlib))
+    (native-inputs
+     (list samtools))
     (synopsis "Base-accurate DNA sequence aligner")
     (description "@code{wfmash} is a DNA sequence read mapper based on mash
 distances and the wavefront alignment algorithm.  It is a fork of MashMap that
