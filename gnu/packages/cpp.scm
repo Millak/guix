@@ -1297,8 +1297,7 @@ provides a number of utilities to make coding with expected cleaner.")
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (lambda _
-                 (invoke "make" "run_tests")))))
+               (invoke "./tests"))))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (copy-recursively "../source/include/atomic_queue"
