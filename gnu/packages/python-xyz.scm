@@ -1349,14 +1349,14 @@ NetCDF files can also be read and modified.  Python-HDF4 is a fork of
 (define-public python-h5py
   (package
     (name "python-h5py")
-    (version "2.10.0")
+    (version "3.6.0")
     (source
      (origin
       (method url-fetch)
       (uri (pypi-uri "h5py" version))
       (sha256
        (base32
-        "0baipzv8n93m0dq0riyi8rfhzrjrfrfh8zqhszzp1j2xjac2fhc4"))))
+        "0afv805vqrm5071g7alwv41920nhh8kjv4m5nbia9awj9a0x4ll7"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f ; no test target
@@ -1364,16 +1364,7 @@ NetCDF files can also be read and modified.  Python-HDF4 is a fork of
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-hdf5-paths
           (lambda* (#:key inputs #:allow-other-keys)
-            (let ((prefix (assoc-ref inputs "hdf5")))
-              (substitute* "setup_build.py"
-                (("\\['/opt/local/lib', '/usr/local/lib'\\]")
-                 (string-append "['" prefix "/lib" "']"))
-                (("'/opt/local/include', '/usr/local/include'")
-                 (string-append "'" prefix "/include" "'")))
-              (substitute* "setup_configure.py"
-                (("\\['/usr/local/lib', '/opt/local/lib'\\]")
-                 (string-append "['" prefix "/lib" "']")))
-              #t))))))
+            (setenv "HDF5_DIR" (assoc-ref inputs "hdf5")))))))
     (propagated-inputs
      (list python-six python-numpy))
     (inputs
