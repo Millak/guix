@@ -1294,6 +1294,15 @@ provides a number of utilities to make coding with expected cleaner.")
      `(#:configure-flags '("-Dbenchmarks=false")
        #:phases
        (modify-phases %standard-phases
+         ,@(if (%current-target-system)
+               `(;; boost is a test dependency. We don't run tests when
+                 ;; cross-compiling. Disable all targets that depend on it.
+                 (add-after 'unpack 'do-not-check-for-boost
+                   (lambda _
+                     (substitute* "meson.build"
+                       (("unit_test_framework = [^\n]*" all)
+                        "unit_test_framework = disabler()")))))
+               '())
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
