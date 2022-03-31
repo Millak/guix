@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -1120,3 +1120,26 @@ pandas notebooks, scripts, and libraries.  Unlike other distributed DataFrame
 libraries, Modin provides seamless integration and compatibility with existing
 pandas code.")
     (license license:asl2.0)))
+
+(define-public python-numpy-groupies
+  (package
+    (name "python-numpy-groupies")
+    (version "0.9.14")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "numpy_groupies" version))
+       (sha256
+        (base32 "000qz0z78rs3l6y0dd2vzvd2lx3mczm2762whwsdnhz6c35axdq1"))))
+    (build-system python-build-system)
+    (native-inputs
+     (list python-pytest
+           python-pytest-runner
+           python-numba
+           python-numpy))
+    (home-page "https://github.com/ml31415/numpy-groupies")
+    (synopsis "Tools for group-indexing operations: aggregated sum and more")
+    (description
+     "This package provides optimized tools for group-indexing operations:
+aggregated sum and more.")
+    (license license:bsd-3)))
