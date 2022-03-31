@@ -10266,7 +10266,7 @@ variational inference.")
 (define-public python-loompy
   (package
     (name "python-loompy")
-    (version "2.0.17")
+    (version "3.0.7")
     ;; The tarball on Pypi does not include the tests.
     (source (origin
               (method git-fetch)
@@ -10276,16 +10276,33 @@ variational inference.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "12a5kjgiikapv93wahfw0frszx1lblnppyz3vs5gy8fgmgngra07"))))
+                "0xmw2yv1y3y7vh5jcbrmlkn43nmfs0pf6z78k1yxqs3qy248m9b0"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (replace 'check
+         ;; See https://github.com/linnarsson-lab/loompy/issues/169
+         (add-after 'unpack 'fix-h5py-error
            (lambda _
-             (invoke "pytest" "tests"))))))
+             (substitute* "tests/test_file_attribute_manager.py"
+               (("h5py.File\\(f.name\\)")
+                "h5py.File(f.name, 'a')"))))
+         ;; Numba needs a writable dir to cache functions.
+         (add-before 'check 'set-numba-cache-dir
+           (lambda _
+             (setenv "NUMBA_CACHE_DIR" "/tmp")))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "tests")))))))
     (propagated-inputs
-     (list python-h5py python-numpy python-pandas python-scipy))
+     (list python-click
+           python-h5py
+           python-numba
+           python-numpy
+           python-numpy-groupies
+           python-pandas
+           python-scipy))
     (native-inputs
      (list python-pytest))
     (home-page "https://github.com/linnarsson-lab/loompy")
