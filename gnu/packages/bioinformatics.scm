@@ -8,7 +8,7 @@
 ;;; Copyright © 2016, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2016, 2018 Raoul Bonnal <ilpuccio.febo@gmail.com>
 ;;; Copyright © 2017, 2018 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2017, 2021 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2017, 2021, 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018 Gábor Boskovits <boskovits@gmail.com>
 ;;; Copyright © 2018, 2019, 2020, 2021 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
@@ -4788,7 +4788,7 @@ performance.")
                            "--enable-libcurl"
                            "--enable-s3")))
     (inputs
-     (list curl openssl))
+     (list bzip2 curl openssl xz))
     ;; This is referred to in the pkg-config file as a required library.
     (propagated-inputs
      (list zlib))
