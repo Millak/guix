@@ -5417,6 +5417,50 @@ which adds some minor changes to LaTeX maths; a rewrite of LaTeX's tabular and
 array environments; verbatim handling; and syntax diagrams.")
     (license license:gpl3+)))
 
+(define-public texlive-makecmds
+  (package
+    (inherit (simple-texlive-package
+              "texlive-makecmds"
+              (list "doc/latex/makecmds/README"
+                    "source/latex/makecmds/makecmds.dtx"
+                    "source/latex/makecmds/makecmds.ins")
+              (base32 "0znx80x6ic7a25v9dw8yjibq7lx65wangcyii18kk5x5z4jljba9")))
+    (outputs '("out" "doc"))
+    (arguments
+     (list
+      #:tex-directory "latex/makecmds"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'chdir
+            (lambda _
+              (setenv "ROOT_DIR" (getcwd))
+              (chdir "source/latex/makecmds")))
+          (add-after 'build 'build-doc
+            (lambda _
+              (copy-file "makecmds.dtx" "build/makecmds.dtx")
+              (chdir "build")
+              (invoke "pdflatex" "makecmds.dtx"))) ;generate makecmds.pdf
+          (replace 'install
+            (lambda* (#:key outputs tex-directory #:allow-other-keys)
+              (let ((doc (string-append (assoc-ref outputs "doc")
+                                        "/share/doc/" tex-directory))
+                    (out (string-append #$output "/share/texmf-dist/tex/"
+                                        tex-directory)))
+                (install-file "makecmds.pdf" doc)
+                (install-file (car (find-files (getenv "ROOT_DIR") "README"))
+                              doc)
+                (install-file "makecmds.sty" out)))))))
+    (native-inputs (list (texlive-updmap.cfg
+                          (list texlive-amsfonts
+                                texlive-cm))))
+    (home-page "https://www.ctan.org/pkg/makecmds")
+    (synopsis "TeX macro to define or redefine a command")
+    (description "The package provides a @code{\\makecommand} command, which
+is like @code{\\newcommand} or @code{\\renewcommand} except it
+always (re)defines a command.  There is also @code{\\makeenvironment} and
+@code{\\provideenvironment} for environments.")
+    (license license:lppl1.3c+)))
+
 (define-public texlive-metalogo
   (package
     (inherit (simple-texlive-package
