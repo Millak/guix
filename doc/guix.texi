@@ -17641,6 +17641,34 @@ The list of syslog-controlled files to be rotated.  By default it is:
 "/var/log/maillog")}.
 @end defvr
 
+Some log files just need to be deleted periodically once they are old,
+without any other criterion and without any archival step.  This is the
+case of build logs stored by @command{guix-daemon} under
+@file{/var/log/guix/drvs} (@pxref{Invoking guix-daemon}).  The
+@code{log-cleanup} service addresses this use case.
+
+@defvr {Scheme Variable} log-cleanup-service-type
+This is the type of the service to delete old logs.  Its value must be a
+@code{log-cleanup-configuration} record as described below.
+@end defvr
+
+@deftp {Data Type} log-cleanup-configuration
+Data type representing the log cleanup configuration
+
+@table @asis
+@item @code{directory}
+Name of the directory containing log files.
+
+@item @code{expiry} (default: @code{(* 6 30 24 3600)})
+Age in seconds after which a file is subject to deletion (six months by
+default).
+
+@item @code{schedule} (default: @code{"30 12 01,08,15,22 * *"})
+String or gexp denoting the corresponding mcron job schedule
+(@pxref{Scheduled Job Execution}).
+@end table
+@end deftp
+
 @node Networking Setup
 @subsection Networking Setup
 
