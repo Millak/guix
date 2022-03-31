@@ -16124,3 +16124,48 @@ workflows from concise descriptions in ccwl.  It is implemented as an
 @acronym{EDSL, Embedded Domain Specific Language} in the Scheme programming
 language.")
     (license license:gpl3+)))
+
+(define-public wfmash
+  (package
+    (name "wfmash")
+    (version "0.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/ekg/wfmash/releases/download/v"
+                           version "/wfmash-v" version ".tar.gz"))
+       (sha256
+        (base32
+         "031cm1arpfckvihb28vlk69mirpnmlag81zcscfba1bac58wvr7c"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            ;; Unbundle atomic-queue.
+            (delete-file-recursively "src/common/atomic_queue")
+            (substitute* "src/align/include/computeAlignments.hpp"
+              (("\"common/atomic_queue/atomic_queue.h\"")
+               "<atomic_queue/atomic_queue.h>"))
+            ;; Remove compiler optimizations.
+            (substitute* (find-files "." "CMakeLists\\.txt")
+              (("-mcx16 ") "")
+              (("-march=native ") ""))
+            ;; Allow building on architectures other than x86_64.
+            (substitute* "src/common/dset64.hpp"
+              (("!__x86_64__") "0"))))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f))                ; no tests
+    (inputs
+     (list atomic-queue
+           gsl
+           htslib
+           jemalloc
+           zlib))
+    (synopsis "Base-accurate DNA sequence aligner")
+    (description "@code{wfmash} is a DNA sequence read mapper based on mash
+distances and the wavefront alignment algorithm.  It is a fork of MashMap that
+implements base-level alignment via the wflign tiled wavefront global
+alignment algorithm.  It completes MashMap with a high-performance alignment
+module capable of computing base-level alignments for very large sequences.")
+    (home-page "https://github.com/ekg/wfmash")
+    (license license:expat)))
