@@ -7,7 +7,7 @@
 ;;; Copyright © 2014, 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2015 Omar Radwan <toxemicsquire4@gmail.com>
 ;;; Copyright © 2015 Pierre-Antoine Rault <par@rigelk.eu>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2020 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2015, 2016 David Thompson <davet@gnu.org>
@@ -22921,7 +22921,7 @@ N-dimensional arrays for Python.")
 (define-public python-anndata
   (package
     (name "python-anndata")
-    (version "0.7.8")
+    (version "0.8.0")
     (source
      (origin
        ;; The tarball from PyPi doesn't include tests.
@@ -22932,18 +22932,12 @@ N-dimensional arrays for Python.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1rrr9xfdaf00ixj5gyym75bl78gkaj55yfw3wjhvx0pdwqpwp9py"))))
+         "0v7npqrg1rdm8jzw22a45c0mqrmsv05r3k88i3lhzi0pzzxca1i1"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (delete 'check)
-         (add-before 'build 'relax-dependency-requirements
-           (lambda _
-             ;; We need to upgrade python-pandas to avoid
-             ;; https://github.com/pandas-dev/pandas/issues/35446
-             (substitute* "pyproject.toml"
-               (("pandas>=1.1.1") "pandas>=1.0.5"))))
          (replace 'build
            (lambda _
              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" ,version)
