@@ -8270,8 +8270,8 @@ package provides a light and a dark variant.")
     (license license:gpl3+)))
 
 (define-public emacs-poet-theme
-  (let ((commit "d84f7b259cc9b6ff8d442cf4c38bd6c7065ff8f4")
-        (revision "0"))
+  (let ((commit "16eb694f0755c04c4db98614d0eca1199fddad70")
+        (revision "1"))
     (package
       (name "emacs-poet-theme")
       (version (git-version "0" revision commit))
@@ -8284,7 +8284,7 @@ package provides a light and a dark variant.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0a84jdaj619mb59a46dmkk2sfs42rylqk9ryl1drgs8d3lia79mz"))))
+           "0zm8jbviddyj7jnyssh77jx43jghbpjwr77n9s3cjp3bmadwkrv5"))))
       (build-system emacs-build-system)
       (home-page "https://github.com/kunalb/poet/")
       (synopsis "Emacs theme for prose")
