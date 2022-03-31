@@ -17645,7 +17645,17 @@ Some log files just need to be deleted periodically once they are old,
 without any other criterion and without any archival step.  This is the
 case of build logs stored by @command{guix-daemon} under
 @file{/var/log/guix/drvs} (@pxref{Invoking guix-daemon}).  The
-@code{log-cleanup} service addresses this use case.
+@code{log-cleanup} service addresses this use case.  For example,
+@code{%base-services} (@pxref{Base Services}) includes the following:
+
+@lisp
+;; Periodically delete old build logs.
+(service log-cleanup-service-type
+         (log-cleanup-configuration
+          (directory "/var/log/guix/drvs")))
+@end lisp
+
+That ensures build logs do not accumulate endlessly.
 
 @defvr {Scheme Variable} log-cleanup-service-type
 This is the type of the service to delete old logs.  Its value must be a
