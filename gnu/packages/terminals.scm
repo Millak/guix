@@ -25,7 +25,7 @@
 ;;; Copyright © 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright @ 2020 luhux <luhux@outlook.com>
 ;;; Copyright © 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
-;;; Copyright © 2021 Raphaël Mélotte <raphael.melotte@mind.be>
+;;; Copyright © 2021, 2022 Raphaël Mélotte <raphael.melotte@mind.be>
 ;;; Copyright © 2021 ikasero <ahmed@ikasero.com>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
@@ -1367,7 +1367,7 @@ made by suckless.")
 (define-public tio
   (package
     (name "tio")
-    (version "1.35")
+    (version "1.36")
     (source
      (origin
        (method url-fetch)
@@ -1375,8 +1375,10 @@ made by suckless.")
              "https://github.com/tio/tio/releases/download/v"
              version "/tio-" version ".tar.xz"))
        (sha256
-        (base32 "02cx3hjk2rv2dmds2xi17ymi93k6zybapa33ydyfkx3mfvgfq28k"))))
+        (base32 "0z27ghxjiw7y587l49jsb0anylm08m7imqjiwr21k1frxvydswsa"))))
     (build-system meson-build-system)
+    (native-inputs (list pkg-config))
+    (inputs (list libinih))
     (home-page "https://tio.github.io/")
     (synopsis "Simple TTY terminal I/O application")
     (description "tio is a simple TTY terminal application which features a
