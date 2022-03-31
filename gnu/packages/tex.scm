@@ -14,7 +14,7 @@
 ;;; Copyright © 2018, 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020, 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Leo Le Bouter <lle-bout@zaclys.net>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
@@ -5416,6 +5416,51 @@ starting with @code{@@}, macros to sanitize the OT1 encoding of the
 which adds some minor changes to LaTeX maths; a rewrite of LaTeX's tabular and
 array environments; verbatim handling; and syntax diagrams.")
     (license license:gpl3+)))
+
+(define-public texlive-paralist
+  (package
+    (inherit (simple-texlive-package
+              "texlive-paralist"
+              (list "doc/latex/paralist/README"
+                    "source/latex/paralist/paralist.dtx"
+                    "source/latex/paralist/paralist.ins")
+              (base32 "1lz8yds2i64wkb89a9amydwkzsdbc09s1kbgn7vgh2qsxqrrgwam")))
+    (outputs '("out" "doc"))
+    (arguments
+     (list
+      #:tex-directory "latex/paralist"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'chdir
+            (lambda _
+              (setenv "ROOT_DIR" (getcwd))
+              (chdir "source/latex/paralist")))
+          (add-after 'build 'build-doc
+            (lambda* (#:key outputs tex-directory #:allow-other-keys)
+              (copy-file "paralist.dtx" "build/paralist.dtx")
+              (chdir "build")
+              (invoke "pdflatex" "paralist.dtx")))
+          (replace 'install
+            (lambda* (#:key outputs tex-directory #:allow-other-keys)
+              (let ((doc (string-append (assoc-ref outputs "doc")
+                                        "/share/doc/" tex-directory))
+                    (out (string-append #$output "/share/texmf-dist/tex/"
+                                        tex-directory)))
+                (install-file "paralist.pdf" doc)
+                (install-file (car (find-files (getenv "ROOT_DIR") "README"))
+                              doc)
+                (install-file "paralist.sty" out)))))))
+    (native-inputs (list texlive-latex-base
+                         (texlive-updmap.cfg
+                          (list texlive-cm
+                                texlive-jknappen))))
+    (home-page "https://ctan.org/pkg/paralist")
+    (synopsis "Enumerate and itemize within paragraphs")
+    (description "The @code{paralist} package provides enumerate and itemize
+environments that can be used within paragraphs to format the items either as
+running text or as separate paragraphs with a preceding number or symbol.  It
+also provides compacted versions of enumerate and itemize.")
+    (license license:lppl1.0+)))
 
 (define-public texlive-latex-polyglossia
   (package
