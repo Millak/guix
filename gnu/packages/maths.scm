@@ -19,7 +19,7 @@
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2017 Theodoros Foradis <theodoros@foradis.org>
-;;; Copyright © 2017, 2019 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2017, 2019, 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Dave Love <me@fx@gnu.org>
 ;;; Copyright © 2018, 2019, 2020, 2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
@@ -533,6 +533,14 @@ precision floating point numbers.")
          #:phases
          (modify-phases %standard-phases
            ,@(cond
+              ((and (target-riscv64?)
+                    (%current-target-system))
+               '((add-after 'unpack 'force-bootstrap
+                   (lambda _
+                     ;; gsl ships with an old configure script that does not
+                     ;; support riscv64. Regenerate it.
+                     (delete-file "configure")))))
+
               ((or (string-prefix? "aarch64" system)
                    (string-prefix? "powerpc" system))
                ;; Some sparse matrix tests are failing on AArch64 and PowerPC:
@@ -568,6 +576,11 @@ precision floating point numbers.")
                         (string-append "exit (77);\n" all)))))))
 
               (else '()))))))
+    (native-inputs
+     (if (and (target-riscv64?)
+              (%current-target-system))
+         (list autoconf automake libtool)
+         '()))
     (home-page "https://www.gnu.org/software/gsl/")
     (synopsis "Numerical library for C and C++")
     (description
