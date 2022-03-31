@@ -10848,10 +10848,12 @@ indentation guides in Emacs:
       (license license:gpl2+))))
 
 (define-public emacs-elpy
-  ;; Use the latest commit, as it contains unreleased fixes for Python 3.9 and
-  ;; Jedi 0.18.
-  (let ((commit "8d0de310d41ebf06b22321a8534546447456870c")
-        (revision "0"))
+  ;; Using the latest commit fixes outstanding bugs such as the following:
+  ;; https://github.com/jorgenschaefer/elpy/issues/1824
+  ;; https://github.com/jorgenschaefer/elpy/pull/1951
+  ;; https://github.com/jorgenschaefer/elpy/issues/1940.
+  (let ((commit "1746e7009000b7635c0ea6f1559018143aa61642")
+        (revision "1"))
     (package
       (name "emacs-elpy")
       (version (git-version "1.35.0" revision commit))
@@ -10863,7 +10865,7 @@ indentation guides in Emacs:
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0hg6yk0wkfh2rwcc4h0bb6m2p3dg62ja22mjpa94khq52lv1piwf"))))
+                  "120xzzaa8jxls3lri6d53zq6gafnkc6d9mlg09an334kkmh8k2fc"))))
       (build-system emacs-build-system)
       (arguments
        `(#:include (cons* "^elpy/[^/]+\\.py$" "^snippets\\/" %default-include)
