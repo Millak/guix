@@ -6445,6 +6445,41 @@ package supports pdfTeX (pdfLaTeX) and VTeX.  With VTeX it is even possible to
 use this package to insert PostScript files, in addition to PDF files.")
     (license license:lppl1.3+)))
 
+(define-public texlive-stix2-otf
+  (let ((base (simple-texlive-package
+               "texlive-stix2-otf"
+               (list "/doc/fonts/stix2-otf/"
+                     "/fonts/opentype/public/stix2-otf/")
+               (base32 "0i7rd1wn5jgm3gbi779gy78apz63w034ck4pn73xw6s10zgjzmgl")
+               ;; Building these fonts requires FontLab, which is nonfree.
+               #:trivial? #t)))
+    (package
+      (inherit base)
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'install 'symlink-fonts-to-system-fonts-prefix
+                ;; This is so that fontconfig can locate the fonts, such as
+                ;; when using xetex or xelatex.
+                (lambda _
+                  (let ((system-fonts-prefix (string-append #$output
+                                                            "/share/fonts")))
+                    (mkdir-p system-fonts-prefix)
+                    (symlink (string-append
+                              #$output "/share/texmf-dist/fonts/opentype"
+                              "/public/stix2-otf")
+                             (string-append system-fonts-prefix
+                                            "/stix2-otf")))))))))
+      (home-page "https://www.stixfonts.org/")
+      (synopsis "OpenType Unicode text and maths fonts")
+      (description "The Scientific and Technical Information eXchange (STIX)
+fonts are intended to satisfy the demanding needs of authors, publishers,
+printers, and others working in the scientific, medical, and technical fields.
+They combine a comprehensive Unicode-based collection of mathematical symbols
+and alphabets with a set of text faces suitable for professional publishing.")
+      (license license:silofl1.1))))
+
 (define-public texlive-stmaryrd
   (let ((template (simple-texlive-package
                    "texlive-stmaryrd"
