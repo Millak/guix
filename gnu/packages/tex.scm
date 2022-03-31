@@ -5417,6 +5417,86 @@ which adds some minor changes to LaTeX maths; a rewrite of LaTeX's tabular and
 array environments; verbatim handling; and syntax diagrams.")
     (license license:gpl3+)))
 
+(define-public texlive-metalogo
+  (package
+    (inherit (simple-texlive-package
+              "texlive-metalogo"
+              (list "doc/latex/metalogo/README"
+                    ;; These PDFs are apparently used as graphic files, not
+                    ;; built.
+                    "doc/latex/metalogo/TeXoutline.pdf"
+                    "doc/latex/metalogo/eLaToutline.pdf"
+                    "source/latex/metalogo/metalogo.dtx"
+                    "source/latex/metalogo/metalogo.ins")
+              (base32 "0v1jwp8xhzwn0a4apiyya17s4r1kpn6q9nmv38jj1wwdvgia0jpi")))
+    (outputs '("out" "doc"))
+    (arguments
+     (list
+      #:tex-directory "latex/metalogo"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'chdir
+            (lambda _
+              (setenv "ROOT_DIR" (getcwd))
+              (chdir "source/latex/metalogo")))
+          (add-after 'chdir 'patch-metalogo.dtx
+            (lambda _
+              (substitute* "metalogo.dtx"
+                ;; Prevent embedding a build time date, for reproducibility.
+                (("^% \\\\date.*") "")
+                ;; These fonts are not free.
+                (("^\\\\setmainfont.*") "")
+                (("^\\\\DeclareSymbolFont\\{SabonMaths}.*") "")
+                (("^\\\\AtBeginDocument\\{.*") "")
+                ((".*\\\\expandafter.*\\\\symSabonMaths.*") "")
+                (("^\\\\setsansfont.*MgOpen Cosmetica.*") "")
+                (("^\\\\setmonofont.*Consolas.*") "")
+                ;; The 'stix' texlive font package has been obsoleted by
+                ;; stix2.
+                (("^\\\\newfontfamily\\\\stixgeneral\\{STIXGeneral}")
+                 "\\newfontfamily\\stixgeneral{STIX Two Text}"))))
+          (add-after 'build 'build-doc
+            (lambda* (#:key outputs tex-directory #:allow-other-keys)
+              (define doc-sources (string-append (getenv "ROOT_DIR")
+                                                 "/doc/latex/metalogo"))
+              (copy-file "metalogo.dtx" "build/metalogo.dtx")
+              (mkdir "build/graphics")
+              (copy-file (string-append doc-sources "/TeXoutline.pdf")
+                         "build/graphics/TeXoutline.pdf")
+              (copy-file (string-append doc-sources "/eLaToutline.pdf")
+                         "build/graphics/eLaToutline.pdf")
+              (chdir "build")
+              (invoke "xelatex" "metalogo.dtx"))) ;generate metalogo.pdf
+          (replace 'install
+            (lambda* (#:key outputs tex-directory #:allow-other-keys)
+              (let ((doc (string-append (assoc-ref outputs "doc")
+                                        "/share/doc/" tex-directory))
+                    (out (string-append #$output "/share/texmf-dist/tex/"
+                                        tex-directory)))
+                (install-file "metalogo.pdf" doc)
+                (install-file (car (find-files (getenv "ROOT_DIR") "README"))
+                              doc)
+                (install-file "metalogo.sty" out)))))))
+    (native-inputs (list fontconfig     ;for XDG_DATA_DIRS, to locate OTF fonts
+                         texlive-booktabs
+                         texlive-cm
+                         texlive-fontspec
+                         texlive-generic-iftex
+                         texlive-latex-base
+                         texlive-latex-eukdate
+                         texlive-latex-graphics
+                         texlive-latex-multirow
+                         texlive-lm     ;for lmroman10-regular
+                         texlive-stix2-otf))
+    (propagated-inputs (list texlive-fontspec texlive-generic-iftex
+                             texlive-latex-graphics))
+    (home-page "https://ctan.org/pkg/metalogo")
+    (synopsis "Extended TeX logo macros")
+    (description "This package exposes spacing parameters for various TeX
+logos to the end user, to optimise the logos for different fonts.  It is
+written especially for XeLaTeX users.")
+    (license license:lppl1.3c+)))
+
 (define-public texlive-paralist
   (package
     (inherit (simple-texlive-package
