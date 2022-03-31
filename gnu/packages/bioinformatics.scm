@@ -13519,6 +13519,13 @@ repeated areas between contigs.")
        (snippet
         '(for-each delete-file (find-files "." "\\.c")))))
     (build-system python-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         ;; Numba needs a writable dir to cache functions.
+         (add-before 'check 'set-numba-cache-dir
+           (lambda _
+             (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
     (native-inputs
      (list python-joblib))
     (propagated-inputs
