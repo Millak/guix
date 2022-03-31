@@ -6137,7 +6137,7 @@ readable format.")
     (arguments
      '(#:tests? #f))            ; tests don't run correctly in our environment
     (propagated-inputs
-     (list python-cached-property python-cffi libgit2))
+     (list python-cached-property python-cffi libgit2-1.3))
     (native-inputs
      (list python-pytest))
     (home-page "https://github.com/libgit2/pygit2")
