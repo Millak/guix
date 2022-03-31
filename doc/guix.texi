@@ -5848,6 +5848,55 @@ This is similar to the same-named option in @command{guix package}
 (@pxref{profile-manifest, @option{--manifest}}) and uses the same
 manifest files.
 
+See @option{--export-manifest} below on how to obtain a first manifest.
+
+@cindex manifest, exporting
+@anchor{shell-export-manifest}
+@item --export-manifest
+Write to standard output a manifest suitable for @option{--manifest}
+corresponding to given command-line options.
+
+This is a way to ``convert'' command-line arguments into a manifest.
+For example, imagine you are tired of typing long lines and would like
+to get a manifest equivalent to this command line:
+
+@example
+guix shell -D guile git emacs emacs-geiser emacs-geiser-guile
+@end example
+
+Just add @option{--export-manifest} to the command line above:
+
+@example
+guix shell --export-manifest \
+  -D guile git emacs emacs-geiser emacs-geiser-guile
+@end example
+
+@noindent
+... and you get a manifest along these lines:
+
+@lisp
+(concatenate-manifests
+  (list (specifications->manifest
+          (list "git"
+                "emacs"
+                "emacs-geiser"
+                "emacs-geiser-guile"))
+        (package->development-manifest
+          (specification->package "guile"))))
+@end lisp
+
+You can store it into a file, say @file{manifest.scm}, and from there
+pass it to @command{guix shell} or indeed pretty much any @command{guix}
+command:
+
+@example
+guix shell -m manifest.scm
+@end example
+
+Voilà, you've converted a long command line into a manifest!  That
+conversion process honors package transformation options (@pxref{Package
+Transformation Options}) so it should be lossless.
+
 @item --profile=@var{profile}
 @itemx -p @var{profile}
 Create an environment containing the packages installed in @var{profile}. 
@@ -6234,6 +6283,10 @@ several times, in which case the manifests are concatenated.
 This is similar to the same-named option in @command{guix package}
 (@pxref{profile-manifest, @option{--manifest}}) and uses the same
 manifest files.
+
+@xref{shell-export-manifest, @command{guix shell --export-manifest}},
+for information on how to ``convert'' command-line options into a
+manifest.
 
 @item --ad-hoc
 Include all specified packages in the resulting environment, as if an
@@ -6692,6 +6745,10 @@ once and use it both for creating profiles and for creating archives
 for use on machines that do not have Guix installed.  Note that you can
 specify @emph{either} a manifest file @emph{or} a list of packages,
 but not both.
+
+@xref{shell-export-manifest, @command{guix shell --export-manifest}},
+for information on how to ``convert'' command-line options into a
+manifest.
 
 @item --system=@var{system}
 @itemx -s @var{system}

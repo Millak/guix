@@ -572,6 +572,7 @@ SH_TESTS =					\
   tests/guix-environment.sh			\
   tests/guix-environment-container.sh		\
   tests/guix-shell.sh				\
+  tests/guix-shell-export-manifest.sh		\
   tests/guix-graph.sh				\
   tests/guix-describe.sh			\
   tests/guix-repl.sh     			\
