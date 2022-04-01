@@ -131,6 +131,43 @@ files (OTF, TTF) and WOFF and WOFF2 font files, validating them and sanitizing
 them as it goes.")
     (license license:bsd-3)))
 
+(define-public python-opentype-sanitizer
+  (package
+    (name "python-opentype-sanitizer")
+    (version "8.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "opentype-sanitizer" version))
+       (sha256
+        (base32 "1wjy6chbnj9ic5yjxal6spln5jfzr8cigqs6ab0gj7q60dndrl5k"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'unbundle-opentype-sanitizer
+            (lambda* (#:key inputs #:allow-other-keys)
+              (delete-file-recursively "src/c")
+              (substitute* "setup.py"
+                (("^cmdclass\\[\"download\"].*") "")
+                (("^cmdclass\\[\"build_ext\"].*") "")
+                (("^cmdclass\\[\"egg_info\"].*") ""))
+              (substitute* "src/python/ots/__init__.py"
+                (("^OTS_SANITIZE = .*")
+                 (format #f "OTS_SANITIZE = ~s~%"
+                         (search-input-file inputs "bin/ots-sanitize"))))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv")))))))
+    (native-inputs (list python-pytest python-setuptools-scm))
+    (inputs (list opentype-sanitizer))
+    (home-page "https://github.com/googlefonts/ots-python")
+    (synopsis "Python wrapper for OpenType Sanitizer")
+    (description "Python wrapper for the OpenType Sanitizer library.")
+    (license license:bsd-3)))
+
 (define-public ttfautohint
   (package
     (name "ttfautohint")
