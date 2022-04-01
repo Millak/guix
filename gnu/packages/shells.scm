@@ -18,7 +18,7 @@
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
-;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2021, 2022 Felix Gruber <felgru@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -834,14 +834,20 @@ Shell (pdksh).")
 (define-public oil
   (package
     (name "oil")
-    (version "0.9.7")
+    (version "0.9.9")
     (source
+     ;; oil's sources contain a modified version of CPython 2.7.13.
+     ;; According to https://www.oilshell.org/blog/2017/05/05.html
+     ;; this bundles version of CPython had certain unused parts removed
+     ;; and its build system has been replaced by a custom one.
+     ;; This would probably make it quite complicated to replace the
+     ;; bundled CPython with the one from the python2 package.
      (origin
        (method url-fetch)
        (uri (string-append "https://www.oilshell.org/download/oil-"
                            version ".tar.gz"))
        (sha256
-        (base32 "09ill1wks8gmixfc648wx25wx0wzlgkjj34bbpglx496i6yp81aw"))))
+        (base32 "1ymszq0wy7sy709yqx8dpmv7b37fkc57bdg02ah2gnjbvbk6s2z1"))))
     (build-system gnu-build-system)
     (arguments
      (list #:strip-binaries? #f         ; strip breaks the binary
