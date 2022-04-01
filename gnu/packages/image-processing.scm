@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2017, 2019 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2014, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014, 2021-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -370,7 +370,8 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
                 "0pla1r5mvkgl4sl213gfdhzrypdgai0h3z5mfgm6p9jz9hsr794j"))))
     (inputs
      (modify-inputs (package-inputs vtk)
-       (replace "jsoncpp" jsoncpp-for-tensorflow)))))
+       (replace "jsoncpp" jsoncpp-for-tensorflow)
+       (replace "python" python-2)))))         ;fails to build with Python 3.9
 
 (define-public opencv
   (package
