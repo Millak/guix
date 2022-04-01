@@ -314,31 +314,31 @@ many popular formats.")
                  (("fenv.h") "cfenv")))))
        #:tests? #f))        ;XXX: test data not included
     (inputs
-     `(("double-conversion" ,double-conversion)
-       ("eigen" ,eigen)
-       ("expat" ,expat)
-       ("freetype" ,freetype)
-       ("gl2ps" ,gl2ps)
-       ("glew" ,glew)
-       ("glu" ,glu)
-       ("hdf5" ,hdf5)
-       ("jpeg" ,libjpeg-turbo)
-       ("jsoncpp" ,jsoncpp)
-       ("libtheora" ,libtheora)
-       ("libX11" ,libx11)
-       ("libxml2" ,libxml2)
-       ("libXt" ,libxt)
-       ("lz4" ,lz4)
-       ("mesa" ,mesa)
-       ("netcdf" ,netcdf)
-       ("png" ,libpng)
-       ("proj" ,proj)
-       ("python", python)
-       ;("pugixml" ,pugixml)
-       ("sqlite" ,sqlite)
-       ("tiff" ,libtiff)
-       ("xorgproto" ,xorgproto)
-       ("zlib" ,zlib)))
+     (list double-conversion
+           eigen
+           expat
+           freetype
+           gl2ps
+           glew
+           glu
+           hdf5
+           libjpeg-turbo
+           jsoncpp
+           libtheora
+           libx11
+           libxml2
+           libxt
+           lz4
+           mesa
+           netcdf
+           libpng
+           proj
+           python
+           ;("pugixml" ,pugixml)
+           sqlite
+           libtiff
+           xorgproto
+           zlib))
     (propagated-inputs
      ;; VTK's 'VTK-vtk-module-find-packages.cmake' calls
      ;; 'find_package(THEORA)', which in turns looks for libogg.
