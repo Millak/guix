@@ -51,6 +51,7 @@
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Gabriel Wicki <gabriel@erlikon.ch>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
+;;; Copyright © 2022 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -758,22 +759,21 @@ desktop environment.")
     (inputs (list ghc-data-default-class ghc-setlocale ghc-x11))
     (native-inputs (list ghc-quickcheck ghc-quickcheck-classes))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after
-          'install 'install-xsession
-          (lambda _
-            (let* ((xsessions (string-append %output "/share/xsessions")))
-              (mkdir-p xsessions)
-              (call-with-output-file
-                  (string-append xsessions "/xmonad.desktop")
-                (lambda (port)
-                  (format port "~
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'install-xsession
+                 (lambda _
+                   (let ((xsessions (string-append #$output "/share/xsessions")))
+                     (mkdir-p xsessions)
+                     (call-with-output-file (string-append xsessions
+                                                           "/xmonad.desktop")
+                       (lambda (port)
+                         (format port "~
                     [Desktop Entry]~@
                     Name=~a~@
                     Comment=~a~@
                     Exec=~a/bin/xmonad~@
-                    Type=Application~%" ,name ,synopsis %output)))))))))
+                    Type=Application~%" #$name #$synopsis #$output)))))))))
     (home-page "https://xmonad.org")
     (description
      "Xmonad is a tiling window manager for X.  Windows are arranged
