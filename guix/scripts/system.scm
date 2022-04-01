@@ -29,6 +29,7 @@
 (define-module (guix scripts system)
   #:use-module (guix config)
   #:use-module (guix ui)
+  #:autoload   (guix colors) (supports-hyperlinks? file-hyperlink)
   #:use-module ((guix status) #:select (with-status-verbosity))
   #:use-module (guix store)
   #:autoload   (guix base16) (bytevector->base16-string)

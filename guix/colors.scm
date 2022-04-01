@@ -26,6 +26,7 @@
   #:use-module (srfi srfi-9 gnu)
   #:use-module (ice-9 match)
   #:use-module (ice-9 regex)
+  #:autoload   (web uri) (encode-and-join-uri-path)
   #:export (color
             color?
 
@@ -37,7 +38,11 @@
 
             color-rules
             color-output?
-            isatty?*))
+            isatty?*
+
+            supports-hyperlinks?
+            file-hyperlink
+            hyperlink))
 
 ;;; Commentary:
 ;;;
@@ -192,3 +197,31 @@ on."
     ((_ (regexp colors ...) ...)
      (colorize-matches `((,(make-regexp regexp) ,(color colors) ...)
                          ...)))))
+
+
+;;;
+;;; Hyperlinks.
+;;;
+
+(define (hyperlink uri text)
+  "Return a string that denotes a hyperlink using an OSC escape sequence as
+documented at
+<https://gist.github.com/egmontkob/eb114294efbcd5adb1944c9f3cb5feda>."
+  (string-append "\x1b]8;;" uri "\x1b\\"
+                 text "\x1b]8;;\x1b\\"))
+
+(define* (supports-hyperlinks? #:optional (port (current-output-port)))
+  "Return true if PORT is a terminal that supports hyperlink escapes."
+  ;; Note that terminals are supposed to ignore OSC escapes they don't
+  ;; understand (this is the case of xterm as of version 349, for instance.)
+  ;; However, Emacs comint as of 26.3 does not ignore it and instead lets it
+  ;; through, hence the 'INSIDE_EMACS' special case below.
+  (and (isatty?* port)
+       (not (getenv "INSIDE_EMACS"))))
+
+(define* (file-hyperlink file #:optional (text file))
+  "Return TEXT with escapes for a hyperlink to FILE."
+  (hyperlink (string-append "file://" (gethostname)
+                            (encode-and-join-uri-path
+                             (string-split file #\/)))
+             text))

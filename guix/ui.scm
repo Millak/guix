@@ -76,7 +76,6 @@
   #:autoload   (ice-9 popen) (open-pipe* close-pipe)
   #:autoload   (system repl repl)  (start-repl)
   #:autoload   (system repl debug) (make-debug stack->vector)
-  #:autoload   (web uri) (encode-and-join-uri-path)
   #:use-module (texinfo)
   #:use-module (texinfo plain-text)
   #:use-module (texinfo string-utils)
@@ -119,9 +118,6 @@
             package->recutils
             package-specification->name+version+output
 
-            supports-hyperlinks?
-            hyperlink
-            file-hyperlink
             location->hyperlink
 
             pager-wrapped-port
@@ -1487,29 +1483,6 @@ followed by \"+ \", which makes for a valid multi-line field value in the
                             (cons chr result)))
                       '()
                       str)))
-
-(define (hyperlink uri text)
-  "Return a string that denotes a hyperlink using an OSC escape sequence as
-documented at
-<https://gist.github.com/egmontkob/eb114294efbcd5adb1944c9f3cb5feda>."
-  (string-append "\x1b]8;;" uri "\x1b\\"
-                 text "\x1b]8;;\x1b\\"))
-
-(define* (supports-hyperlinks? #:optional (port (current-output-port)))
-  "Return true if PORT is a terminal that supports hyperlink escapes."
-  ;; Note that terminals are supposed to ignore OSC escapes they don't
-  ;; understand (this is the case of xterm as of version 349, for instance.)
-  ;; However, Emacs comint as of 26.3 does not ignore it and instead lets it
-  ;; through, hence the 'INSIDE_EMACS' special case below.
-  (and (isatty?* port)
-       (not (getenv "INSIDE_EMACS"))))
-
-(define* (file-hyperlink file #:optional (text file))
-  "Return TEXT with escapes for a hyperlink to FILE."
-  (hyperlink (string-append "file://" (gethostname)
-                            (encode-and-join-uri-path
-                             (string-split file #\/)))
-             text))
 
 (define (location->hyperlink location)
   "Return a string corresponding to LOCATION, with escapes for a hyperlink."

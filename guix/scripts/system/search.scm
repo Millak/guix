@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017, 2018, 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2017-2019, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -20,6 +20,7 @@
 (define-module (guix scripts system search)
   #:use-module (guix ui)
   #:use-module (guix utils)
+  #:autoload   (guix colors) (supports-hyperlinks?)
   #:use-module (gnu services)
   #:use-module (gnu services shepherd)
   #:use-module (srfi srfi-1)
