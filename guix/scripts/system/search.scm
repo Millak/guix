@@ -21,6 +21,7 @@
   #:use-module (guix ui)
   #:use-module (guix utils)
   #:autoload   (guix colors) (supports-hyperlinks?)
+  #:autoload   (guix diagnostics) (location->hyperlink)
   #:use-module (gnu services)
   #:use-module (gnu services shepherd)
   #:use-module (srfi srfi-1)

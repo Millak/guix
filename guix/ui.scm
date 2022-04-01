@@ -118,8 +118,6 @@
             package->recutils
             package-specification->name+version+output
 
-            location->hyperlink
-
             pager-wrapped-port
             with-paginated-output-port
             relevance
@@ -1483,16 +1481,6 @@ followed by \"+ \", which makes for a valid multi-line field value in the
                             (cons chr result)))
                       '()
                       str)))
-
-(define (location->hyperlink location)
-  "Return a string corresponding to LOCATION, with escapes for a hyperlink."
-  (let ((str  (location->string location))
-        (file (if (string-prefix? "/" (location-file location))
-                  (location-file location)
-                  (search-path %load-path (location-file location)))))
-    (if file
-        (file-hyperlink file str)
-        str)))
 
 (define* (package->recutils p port #:optional (width (%text-width))
                             #:key
