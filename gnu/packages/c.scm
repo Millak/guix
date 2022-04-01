@@ -38,6 +38,7 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
   #:use-module (guix store)
   #:use-module (gnu packages)
@@ -143,6 +144,37 @@ compiler while still keeping it small, simple, fast and understandable.")
     ;; PCC incorporates code under various BSD licenses; for new code bsd-2 is
     ;; preferred.  See http://pcc.ludd.ltu.se/licenses/ for more details.
     (license (list license:bsd-2 license:bsd-3))))
+
+(define-public python-pcpp
+  (package
+    (name "python-pcpp")
+    (version "1.30")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ned14/pcpp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1rihvlg11nzk70kfzz4i3gi5izcy46w05ismcx04p5j1hlim0brb"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'unbundle-ply
+                     (lambda _
+                       (rmdir "pcpp/ply")
+                       (substitute* "setup.py"
+                         (("'pcpp/ply/ply'") "")))))))
+    (native-inputs (list python-pytest))
+    (propagated-inputs (list python-ply))
+    (home-page "https://github.com/ned14/pcpp")
+    (synopsis "C99 preprocessor written in Python")
+    (description "This package provides a C99 preprocessor written in pure
+Python.")
+    (license license:bsd-3)))
 
 (define-public libbytesize
   (package
