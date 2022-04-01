@@ -57,6 +57,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages webkit)
@@ -130,6 +131,30 @@ anti-aliased glyph bitmap generation with 256 gray levels.")
 files (OTF, TTF) and WOFF and WOFF2 font files, validating them and sanitizing
 them as it goes.")
     (license license:bsd-3)))
+
+(define-public python-fontmath
+  (package
+    (name "python-fontmath")
+    (version "0.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "fontMath" version ".zip"))
+       (sha256
+        (base32 "001756zxn2386dm4svgqjgw5026hvyacxl09b2qlk7s06phpcphw"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-fonttools))
+    (native-inputs
+     (list python-setuptools-scm
+           python-pytest
+           python-pytest-runner
+           python-wheel
+           unzip))
+    (home-page "https://github.com/robotools/fontMath")
+    (synopsis "Fast font mathematical operations library")
+    (description "This package provides a set of objects for performing fast
+font, glyph, etc. mathematical operations on font data.")
+    (license license:expat)))
 
 (define-public python-opentype-sanitizer
   (package
