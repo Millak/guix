@@ -30811,6 +30811,28 @@ audio volume via amixer.")
  Fennel code within Emacs.")
     (license license:gpl3+)))
 
+(define-public emacs-org-modern
+  (package
+   (name "emacs-org-modern")
+   (version "0.3")
+   (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/minad/org-modern")
+             (commit version)))
+       (sha256
+        (base32 "187fxw2rg0kw1d2binpa32ckp67r4v10j6ypr077g9qn6nkmyvvn"))
+       (file-name (git-file-name name version))))
+   (build-system emacs-build-system)
+   (home-page "https://github.com/minad/org-modern")
+   (synopsis "Modern Org Style")
+   (description
+"@code{emacs-org-modern} implements a modern style for your Org
+buffers using font locking and text properties.  The package styles
+headlines, keywords, tables and source blocks.")
+   (license license:gpl3+)))
+
 (define-public emacs-osm
   (package
     (name "emacs-osm")
