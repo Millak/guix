@@ -12,7 +12,7 @@
 ;;; Copyright © 2019, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Felipe Balbi <balbi@kernel.org>
@@ -65,6 +65,7 @@
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages tex)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix svn-download)
@@ -107,6 +108,28 @@ Type1, CID, CFF, Windows FON/FNT, X11 PCF, and others.  It supports high-speed
 anti-aliased glyph bitmap generation with 256 gray levels.")
    (license license:freetype)           ; some files have other licenses
    (home-page "https://www.freetype.org/")))
+
+(define-public opentype-sanitizer
+  (package
+    (name "opentype-sanitizer")
+    (version "8.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/khaledhosny/ots"
+                                  "/releases/download/v" version
+                                  "/ots-" version ".tar.xz"))
+              (sha256
+               (base32
+                "17z8cxv48rfig5k7j3xk3bmbf7rm3kxsc3bazix96l0wws58r569"))))
+    (build-system meson-build-system)
+    (native-inputs (list googletest pkg-config))
+    (inputs (list freetype lz4 woff2 zlib))
+    (home-page "https://github.com/khaledhosny/ots")
+    (synopsis "Sanitizer for OpenType fonts")
+    (description "The OpenType Sanitizer (OTS) parses and serializes OpenType
+files (OTF, TTF) and WOFF and WOFF2 font files, validating them and sanitizing
+them as it goes.")
+    (license license:bsd-3)))
 
 (define-public ttfautohint
   (package
