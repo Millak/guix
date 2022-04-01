@@ -25,6 +25,7 @@
 ;;; Copyright © 2021 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2022 Evgenii Lepikhin <e.lepikhin@corp.mail.ru>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -37547,6 +37548,30 @@ combinators library.")
     (synopsis "Custom derive nom parsers from struct")
     (description "This package derives custom nom parsers from structs.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-nom-locate-4
+  (package
+    (name "rust-nom-locate")
+    (version "4.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "nom_locate" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0186n5qbpiyhpas3nk8y4ynnbdghl4nx958bkq4a6a9hr8v48y9p"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bytecount" ,rust-bytecount-0.6)
+        ("rust-memchr" ,rust-memchr-2)
+        ("rust-nom" ,rust-nom-7)
+        ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))))
+    (home-page "https://github.com/fflorent/nom_locate")
+    (synopsis "Special input type for nom to locate tokens")
+    (description "This crate provides the @code{LocatedSpan} struct that
+encapsulates the data.")
+    (license (list license:expat))))
 
 (define-public rust-noop-proc-macro-0.3
   (package
