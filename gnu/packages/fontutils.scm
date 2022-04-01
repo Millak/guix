@@ -821,6 +821,36 @@ generate bitmaps.")
 files.  UFO is a file format that stores fonts source files.")
     (license license:bsd-3)))
 
+;;; A variant used to break a cycle between python-fontpens and
+;;; python-fontparts.
+(define-public python-defcon-bootstrap
+  (package
+    (name "python-defcon-bootstrap")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "defcon" version ".zip"))
+       (sha256
+        (base32 "0g0bjwzdj6sskyh8snbxsxza3czdmvb807qv38mizx631cm8c2d0"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-fontpens-bootstrap python-fonttools-full))
+    (native-inputs
+     (list python-pytest
+           python-pytest-runner
+           python-setuptools-scm
+           unzip))
+    (home-page "https://github.com/robotools/defcon")
+    (synopsis "Flexible objects for representing @acronym{UFO, unified font object} data")
+    (description "Defcon is a set of @acronym{UFO, unified font object} based
+objects optimized for use in font editing applications.  The objects are built
+to be lightweight, fast and flexible.  The objects are very bare-bones and
+they are not meant to be end-all, be-all objects.  Rather, they are meant to
+provide base functionality so that you can focus on your application’s
+behavior, not object observing or maintaining cached data.  Defcon implements
+UFO3 as described by the UFO font format.")
+    (license license:expat)))
+
 (define-public python2-defcon
   (package
     (name "python2-defcon")
