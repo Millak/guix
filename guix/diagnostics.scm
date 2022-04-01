@@ -204,7 +204,10 @@ macro-expansion time."
                     (gettext prefix %gettext-domain))))
     (if location
         (format (guix-warning-port) "~a: ~a"
-                (location-color (location->string location))
+                (location-color
+                 (if (supports-hyperlinks? (guix-warning-port))
+                     (location->hyperlink location)
+                     (location->string location)))
                 (prefix-color prefix))
         (format (guix-warning-port) "~:[~*~;guix ~a: ~]~a"
                 (program-name) (program-name)
