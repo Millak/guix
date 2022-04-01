@@ -457,9 +457,7 @@ VERSION, SOURCE-URL, HOME-PAGE, SYNOPSIS, DESCRIPTION, and LICENSE."
             (match guix-dependencies
               ((required-inputs native-inputs)
                (when (string-suffix? ".zip" source-url)
-                 (set! native-inputs (cons
-                                     '("unzip" ,unzip)
-                                     native-inputs)))
+                 (set! native-inputs (cons 'unzip native-inputs)))
                (values
                 `(package
                    (name ,(python->package-name name))
