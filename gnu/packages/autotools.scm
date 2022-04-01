@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012 Nikita Karetnikov <nikita@karetnikov.org>
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2018, 2020-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Mathieu Lirzin <mthl@openmailbox.org>
 ;;; Copyright © 2014 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
 ;;; Copyright © 2015, 2017, 2018 Mark H Weaver <mhw@netris.org>
@@ -518,6 +518,18 @@ presenting a single consistent, portable interface that hides the usual
 complexity of working with shared libraries across platforms.")
     (license gpl3+)
     (home-page "https://www.gnu.org/software/libtool/")))
+
+(define-public libtool-2.4.7
+  (package
+    (inherit libtool)
+    (version "2.4.7")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/libtool/libtool-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "0pb3l4x37k6fj1lwnpzws55gi3pxl0hx56jm4bzmbrkw0mzj2zsg"))))))
 
 (define-public config
   (let ((revision "1")
