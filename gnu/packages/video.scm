@@ -4157,7 +4157,7 @@ MPEG-2, MPEG-4, DVD (VOB)...
 (define-public mediainfo
   (package
     (name "mediainfo")
-    (version "21.03")
+    (version "22.03")
     (source (origin
               (method url-fetch)
               ;; Warning: This source has proved unreliable 1 time at least.
@@ -4168,7 +4168,7 @@ MPEG-2, MPEG-4, DVD (VOB)...
                                   name "_" version ".tar.xz"))
               (sha256
                (base32
-                "07h2a1lbw5ak6c9bcn8qydchl0wpgk945rf9sfcqjyv05h5wll6y"))))
+                "1r1bh1lk2dsiv0j84whgca7qslxbibg6vsih7x5iga2p3lmgjdk2"))))
     (native-inputs
      (list autoconf automake libtool pkg-config))
     (inputs
