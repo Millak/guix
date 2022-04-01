@@ -29,6 +29,7 @@
   #:export (color
             color?
 
+            coloring-procedure
             colorize-string
             highlight
             highlight/warn
