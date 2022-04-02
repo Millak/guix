@@ -69,6 +69,7 @@
 ;;; Copyright © 2022 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
+;;; Copyright © 2022 Leo Nikkilä <hello@lnikki.la>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1191,12 +1192,10 @@ Library reference documentation.")
               (substitute* "data/meson.build"
                 (("udev\\.get_pkgconfig_variable\\('udevdir'\\)")
                  (format #f "'~a'" rules))))))
-        (add-before 'check 'start-virtual-dir-server
-          ;; The same server when started by tests/virtual-dir returns an
-          ;; unexpected status (4 instead of 200) and fails a test.  It is
-          ;; unclear why starting it manually here makes it pass.
+        (add-before 'check 'set-temporary-home
+          ;; Tests want to write into HOME.
           (lambda _
-            (system "tests/virtual-dir-server &"))))))
+            (setenv "HOME" "/tmp"))))))
    (native-inputs
     `(("docbook-xml" ,docbook-xml-4.3)
       ("gettext" ,gettext-minimal)
@@ -1205,7 +1204,7 @@ Library reference documentation.")
       ("gtk-doc" ,gtk-doc/stable)
       ("pkg-config" ,pkg-config)))
    (inputs
-    (list avahi libgudev libsoup))
+    (list avahi libgudev libsoup-minimal-2))
    (synopsis "WebDav server implementation using libsoup")
    (description "PhoDav was initially developed as a file-sharing mechanism for Spice,
 but it is generic enough to be reused in other projects,
