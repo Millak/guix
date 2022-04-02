@@ -1,21 +1,21 @@
-# Serbian translation of guix-packages.
-# Copyright (C) 2014 the authors of Guix (msgids) and the following authors (msgstr)
-# This file is distributed under the same license as the guix package.
-# Мирослав Николић <miroslavnikolic@rocketmail.com>, 2013—2014.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR the authors of Guix (msgids) and the following authors (msgstr)
+# This file is distributed under the same license as the GNU guix package.
+# Jan Kuparinen <copper_fin@hotmail.com>, 2021, 2022.
 msgid ""
 msgstr ""
-"Project-Id-Version: guix-packages-0.7-pre1\n"
+"Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2022-04-01 15:18+0000\n"
-"PO-Revision-Date: 2014-09-13 11:01+0200\n"
-"Last-Translator: Мирослав Николић <miroslavnikolic@rocketmail.com>\n"
-"Language-Team: Serbian <(nothing)>\n"
-"Language: sr\n"
+"PO-Revision-Date: 2022-03-03 20:16+0000\n"
+"Last-Translator: Jan Kuparinen <copper_fin@hotmail.com>\n"
+"Language-Team: Finnish <https://translate.fedoraproject.org/projects/guix/packages/fi/>\n"
+"Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Bugs: Report translation errors to the Language-Team address.\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.11\n"
 
 #. TRANSLATORS: Dear translator, We would like to inform you that package
 #. descriptions may occasionally include Texinfo markup.  Texinfo markup
@@ -38,7 +38,7 @@ msgstr ""
 
 #: gnu/packages/aspell.scm:137
 msgid "This package provides a dictionary for the GNU Aspell spell checker."
-msgstr ""
+msgstr "Tämä paketti sisältää sanakirjan GNU Aspell oikolukua varten."
 
 #: gnu/packages/aspell.scm:450 gnu/packages/libreoffice.scm:845
 #: gnu/packages/libreoffice.scm:918
@@ -1413,9 +1413,6 @@ msgid ""
 "serves as an example of standard GNU coding practices.  As such, it supports\n"
 "command-line arguments, multiple languages, and so on."
 msgstr ""
-"Гнуов Поздравник исписује поруку „Поздрав, народе!“ и излази.  Служи\n"
-"као пример стандардног увежбавања Гнуовог кодирања.  Као такав, подржава\n"
-"аргументе линије наредби, вишеструке језике, и тако редом."
 
 #: gnu/packages/base.scm:135
 msgid ""
@@ -1427,13 +1424,6 @@ msgid ""
 "numbers.  GNU grep offers many extensions over the standard utility,\n"
 "including, for example, recursive directory searching."
 msgstr ""
-"греп је алат за проналажење текста унутар датотека.  Текст се проналази\n"
-"упоређивањем са обрасцем који достави корисник у једној или више датотека.\n"
-"Образац може бити достављен као основни или проширени регуларни израз, или\n"
-"као стална ниска.  По основи, одговарајући текст се једноставно исписује\n"
-"на екрану, међутим излаз може бити прилагођен да садржи, рецимо бројеве\n"
-"редова.  Гнуов греп нуди многа проширења преко уобичајеног помагала,\n"
-"укључујући, на пример, дубинско претраживање директоријума."
 
 #: gnu/packages/base.scm:174
 msgid ""
@@ -1443,11 +1433,6 @@ msgid ""
 "is often used for substituting text patterns in a stream.  The GNU\n"
 "implementation offers several extensions over the standard utility."
 msgstr ""
-"Сед је не-међудејствени, уређивач тока текста.  Он прихвата текстуални\n"
-"улаз из датотеке или са стандардног улаза и затим примењује низ наредби\n"
-"за уређивање текста над токим и исписује његов излаз на стандардни излаз.\n"
-"Често се користи за замену текстуалних образаца у току.  Гнуова примена\n"
-"нуди неколико проширења поред уобичајеног помагала."
 
 #: gnu/packages/base.scm:230
 msgid ""
@@ -1458,12 +1443,6 @@ msgid ""
 "creation/modification dates.  GNU tar offers many extensions over the\n"
 "standard utility."
 msgstr ""
-"Тар обезбеђује способност за стварање тар архива, као и способност\n"
-"за извлачење, освежавање или исписивање датотека у постојећој архиви.\n"
-"Користан је за обједињавање више датотека у једну већу датотеку, док\n"
-"задржава структуру директоријума и податке о датотеци као што су\n"
-"овлашћења и датуми стварања/измена.  Гнуов тар нуди многа проширења\n"
-"поред стандардног помагала."
 
 #: gnu/packages/base.scm:261
 msgid ""
@@ -1473,13 +1452,8 @@ msgid ""
 "different diff formats.  It may also be used to revert previously applied\n"
 "differences."
 msgstr ""
-"Закрпко је програм који примењује измене над датотекама на основу разлика\n"
-"изнесених програмом различник.  Измене могу бити примењене над једном или\n"
-"више датотека у зависности од садржаја датотеке разлика.  Прихвата више\n"
-"различитих записа различника.  Такође може бити коришћен за враћање претходно примењених разлика."
 
 #: gnu/packages/base.scm:285
-#, fuzzy
 msgid ""
 "GNU Diffutils is a package containing tools for finding the\n"
 "differences between files.  The \"diff\" command is used to show how two files\n"
@@ -1487,11 +1461,6 @@ msgid ""
 "\"diff3\" allows you to compare three files.  Finally, \"sdiff\" offers an\n"
 "interactive means to merge two files."
 msgstr ""
-"Гнуова помагала разлика је пакет који садржи алате за проналажење разлика\n"
-"између датотека.  Наредба „diff“ се користи за приказивање разлика двеју\n"
-"датотека, док „cmp“ приказује помераје и бројеве редова на којима се\n"
-"разликују.  „diff3“ вам омогућава упоређивање три датотеке.  На крају,\n"
-"„sdiff“ нуди међудејствени начин за стапање две датотеке."
 
 #: gnu/packages/base.scm:319
 msgid ""
@@ -1502,15 +1471,8 @@ msgid ""
 "are included: \"updatedb\" updates the file name database and \"xargs\" may be\n"
 "used to apply commands with arbitrarily long arguments."
 msgstr ""
-"Помагала проналажења достављају основна помагала за претраживање датотеке\n"
-"Гнуовог система.  Састоји се од два основна помагала претраживања: „find“\n"
-"дубински тражи датотеке у директоријуму према задатом мерилу а „locate“\n"
-"исписује датотеке у бази података које одговарају упиту.  Укључена су два\n"
-"помоћна алата: „updatedb“ освежава назив датотеке базе података а „xargs“\n"
-"се може користити за примењивање наредби са произвољно дугим аргументима."
 
 #: gnu/packages/base.scm:403
-#, fuzzy
 msgid ""
 "GNU Coreutils package includes all of the basic command-line tools that\n"
 "are expected in a POSIX system, excluding shell.  This package is the union of\n"
@@ -1518,10 +1480,6 @@ msgid ""
 "offer extended functionality beyond that which is outlined in the POSIX\n"
 "standard."
 msgstr ""
-"Гнуова кључна помагала укључују све основне алате линије наредби који се\n"
-"очекују у ПОСИКС систему.  Обезбеђују основне функције управљања датотеком,\n"
-"шкољком и текстом на Гнуовом систему.  Већина ових алата нуди проширене\n"
-"функционалности изван оних које су наведене у ПОСИКС стандарду."
 
 #: gnu/packages/base.scm:480
 msgid ""
@@ -1532,15 +1490,8 @@ msgid ""
 "ability to determine when files have to be regenerated after their sources\n"
 "change.  GNU make offers many powerful extensions over the standard utility."
 msgstr ""
-"Мејк је програм који се користи за управљање стварањем извршних или других\n"
-"датотека из њихових изворних.  Поступком се управља из „Makefile“-а, у коме\n"
-"програмери наводе како се свака датотека ствара из свог извора.  Поседује\n"
-"моћно решавање зависности и способност одређивања када датотеке треба да\n"
-"буду поново створене након измена њихових извора.  Гнуов мејк нуди много\n"
-"моћних проширења поред стандардног помагала."
 
 #: gnu/packages/base.scm:559
-#, fuzzy
 msgid ""
 "GNU Binutils is a collection of tools for working with binary files.\n"
 "Perhaps the most notable are \"ld\", a linker, and \"as\", an assembler.\n"
@@ -1549,22 +1500,13 @@ msgid ""
 "\"bfd\" library for working with executable and object formats is also\n"
 "included."
 msgstr ""
-"Гнуова бинарна помагала јесте збирка алата за рад са извршним датотекама.\n"
-"Можда је најпознатији „ld“, повезивач, и „as“, саставник.  Остали алати\n"
-"садрже програме за приказивање података бинарног профилисања, исписивање\n"
-"ниски у извршној датотеци, и помагала за рад са архивама.  Ту је такође и \n"
-"библиотека „bfd“ за рад са извршним и записима објеката."
 
 #: gnu/packages/base.scm:686
-#, fuzzy
 msgid ""
 "The linker wrapper (or @code{ld-wrapper}) wraps the linker to add any\n"
 "missing @code{-rpath} flags, and to detect any misuse of libraries outside of\n"
 "the store."
 msgstr ""
-"Омотач повезивача (или „ld-wrapper“) обмотава повезивача да би додао\n"
-"недостајућу опцију „-rpath“, и да би открио лоше коришћење библиотека\n"
-"изван складишта."
 
 #: gnu/packages/base.scm:922
 msgid ""
@@ -1575,12 +1517,6 @@ msgid ""
 "The GNU C library is used as the C library in the GNU system and most systems\n"
 "with the Linux kernel."
 msgstr ""
-"Сваком Јуниксоликом оперативном систему је потребна Ц библиотека: библиотека\n"
-"која одређује „системске позиве“ и остале основне олакшице као што су\n"
-"„open, malloc, printf, exit...“\n"
-"\n"
-"Гнуова Ц библиотека се користи као Ц библиотека у Гнуовом систему и већини\n"
-"система са Линукс језгром."
 
 #: gnu/packages/base.scm:1049
 msgid ""
@@ -1597,7 +1533,6 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/base.scm:1323
-#, fuzzy
 msgid ""
 "The Time Zone Database (often called tz or zoneinfo)\n"
 "contains code and data that represent the history of local time for many\n"
@@ -1605,11 +1540,6 @@ msgid ""
 "reflect changes made by political bodies to time zone boundaries, UTC offsets,\n"
 "and daylight-saving rules."
 msgstr ""
-"База података временске зоне (често називана „tz“ или „zoneinfo“)\n"
-"садржи код и податке који представљају историјат месног времена за\n"
-"многа представљајућа места широм света. Повремено се освежава како\n"
-"би осликала промене на границама временских зона које доносе политичка\n"
-"тела, помераје КУВ-а, и правила уштеде дневног светла."
 
 #: gnu/packages/base.scm:1361
 msgid ""
@@ -2533,7 +2463,6 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/databases.scm:1588
-#, fuzzy
 msgid ""
 "GNU Recutils is a set of tools and libraries for creating and\n"
 "manipulating text-based, human-editable databases.  Despite being text-based,\n"
@@ -2541,11 +2470,6 @@ msgid ""
 "unique fields, primary keys, time stamps and more.  Many different field\n"
 "types are supported, as is encryption."
 msgstr ""
-"Гнуово Рекпомагало је скуп алата и библиотека за стварање и руковање\n"
-"базама података заснованим на тексту које се могу уређивати.  Иако су\n"
-"засноване на тексту, базе података створене Рекпомагалом садрже све\n"
-"очекиване функције као што су јединствена поља, основни кључеви, ознаке\n"
-"времена и још неке. Многе различите врсте поља су подржане, као у шифровању."
 
 #: gnu/packages/databases.scm:1620
 msgid ""
@@ -7871,10 +7795,6 @@ msgid ""
 "provide a convenient means of extending the functionality of the application\n"
 "without requiring the source code to be rewritten."
 msgstr ""
-"Гуиле је Гнуов свеприсутан паметан језик за проширења, званични језик\n"
-"проширења за Гнуов систем.  То је примена Шеме језика који може лако\n"
-"бити уграђен у друге програме како би обезбедио исплатив начин проширивања\n"
-"функционалности програма без потребе поновног писања изворног кода."
 
 #: gnu/packages/guile.scm:524
 msgid ""
@@ -7884,7 +7804,6 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/guile.scm:626
-#, fuzzy
 msgid ""
 "Guile-JSON supports parsing and building JSON documents according to the\n"
 "specification.  These are the main features:\n"
@@ -7896,12 +7815,6 @@ msgid ""
 "@item Allows JSON pretty printing.\n"
 "@end itemize\n"
 msgstr ""
-"Гуиле-јсон подршка обраде и изградње ЈСОН докумената према\n"
-"одредби „http:://json.org“-а. Ово су главне функције:\n"
-"— Изричита скадност са одредбом „http://json.org“-а.\n"
-"— Изградња ЈСОН докумената програмљиво путем макроа.\n"
-"— Подршка јуникода за ниске.\n"
-"— Допушта фино ЈСОН штампање."
 
 #: gnu/packages/guile.scm:723
 msgid ""
@@ -10367,7 +10280,6 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/lout.scm:102
-#, fuzzy
 msgid ""
 "The Lout document formatting system reads a high-level description of\n"
 "a document similar in style to LaTeX and produces a PostScript or plain text\n"
@@ -10385,21 +10297,6 @@ msgid ""
 "outcome of an eight-year research project that went back to the\n"
 "beginning."
 msgstr ""
-"Лоут систем обликовања докумената сада чита опис документа виоког нивоа\n"
-"сличан по стилу ЛаТеХ-у и даје излазну датотеку у Постскрипту или\n"
-"обичном тексту. \n"
-"\n"
-"Лоут нуди опсег напредних функција без премца, укључујући оптималан\n"
-"завршетак пасуса и странице, самосталан прелом реда, укључивање и\n"
-"стварање Постскрипт ЕПС датотеке, обликовање једначине, табеле,\n"
-"дијаграме, окретање и промену величине, поређане пописе, библиографске\n"
-"базе података, покретања заглавља и парних-непарних страница, самостално\n"
-"унакрсно упућивање, вишејезичне документе укључујући завршетак реда\n"
-"(већина европских језика је подржана), обликовање рачунарских програма,\n"
-"и још много тога, све спремно за употребу. Такође, Лоут је лако проширив\n"
-"одредницама које су много лакше за писање него трофф ТеХ макроа зато што\n"
-"је Лоут језик високог нивоа, потпуно функционалан, резултат пројекта\n"
-"осмогодишњег истраживања који се вратио на почетак."
 
 #: gnu/packages/messaging.scm:186
 msgid ""
@@ -23043,134 +22940,3 @@ msgid ""
 "Run Gitile, a small Git forge.  Expose public repositories\n"
 "on the web."
 msgstr ""
-
-#~ msgid "Hello, GNU world: An example GNU package"
-#~ msgstr "Поздрав, Гну народе: Пример Гну пакета"
-
-#~ msgid "Print lines matching a pattern"
-#~ msgstr "Исписује редове који одговарају шаблону"
-
-#~ msgid "Stream editor"
-#~ msgstr "Уређивач протока"
-
-#~ msgid "Managing tar archives"
-#~ msgstr "Управљање тар архивама"
-
-#~ msgid "Apply differences to originals, with optional backups"
-#~ msgstr "Примењивање разлика на оригинале, са опционалним резервама"
-
-#~ msgid "Comparing and merging files"
-#~ msgstr "Упоређивање и стапање датотека"
-
-#~ msgid "Operating on files matching given criteria"
-#~ msgstr "Радње над датотекама према датим условима"
-
-#~ msgid "Core GNU utilities (file, text, shell)"
-#~ msgstr "Гнуова кључна помагала (датотека, текст, шкољка)"
-
-#~ msgid "Remake files automatically"
-#~ msgstr "Самостално поновно стварање датотека"
-
-#~ msgid "Binary utilities: bfd gas gprof ld"
-#~ msgstr "Бинарна помагала: bfd gas gprof ld"
-
-#~ msgid "The GNU C Library"
-#~ msgstr "Гну Ц библиотека"
-
-#~ msgid "Database of current and historical time zones"
-#~ msgstr "База података о текућим и застарелим временским зонама"
-
-#~ msgid "GNU C++ standard library (intermediate)"
-#~ msgstr "Гнуова Ц++ стандардна библиотека (посредничка)"
-
-#~ msgid "The linker wrapper"
-#~ msgstr "Омотач повезивача"
-
-#~ msgid "Complete GCC tool chain for C/C++ development"
-#~ msgstr "Потпуни ГЦЦ скуп алата за Ц/Ц++ развој"
-
-#~ msgid ""
-#~ "This package provides a complete GCC tool chain for C/C++ development to\n"
-#~ "be installed in user profiles.  This includes GCC, as well as libc (headers\n"
-#~ "and binaries, plus debugging symbols in the 'debug' output), and Binutils."
-#~ msgstr ""
-#~ "Овај пакет садржи потпуни ГЦЦ скуп алата за Ц/Ц++ развој\n"
-#~ "за инсталирање у корисничким профилима.  Укључује ГЦЦ, као и „libc“ (заглавља\n"
-#~ "и извршне, плус симболе прочишћавања у „debug“ излазу), и „Binutils“."
-
-#~ msgid "Scheme implementation intended especially for extensions"
-#~ msgstr "Примена шеме нарочито осмишљена за проширења"
-
-#~ msgid "Framework for building readers for GNU Guile"
-#~ msgstr "Радни склоп за изградњу читача за Гну Гуила"
-
-#~ msgid ""
-#~ "Guile-Reader is a simple framework for building readers for GNU Guile.\n"
-#~ "\n"
-#~ "The idea is to make it easy to build procedures that extend Guile’s read\n"
-#~ "procedure. Readers supporting various syntax variants can easily be written,\n"
-#~ "possibly by re-using existing “token readers” of a standard Scheme\n"
-#~ "readers. For example, it is used to implement Skribilo’s R5RS-derived\n"
-#~ "document syntax.\n"
-#~ "\n"
-#~ "Guile-Reader’s approach is similar to Common Lisp’s “read table”, but\n"
-#~ "hopefully more powerful and flexible (for instance, one may instantiate as\n"
-#~ "many readers as needed)."
-#~ msgstr ""
-#~ "Гуиле-читач је једноставан радни склоп за изградњу читача за Гну Гуила.\n"
-#~ "\n"
-#~ "Замисао је олакшати изградњу поступака који проширују Гуилов поступак\n"
-#~ "читања. Читачи који подржавају разне варијанте синтаксе могу бити лако\n"
-#~ "написани, по могућству поновним коришћењем постојећих „читача “ читача\n"
-#~ "стандардне Шеме. На пример, користи се за примену синтаксе документа која произилази из Р5РС Скрибилоа.\n"
-#~ "\n"
-#~ "Приступ Гуиле-читача је сличан Општем Лисповом „читању табеле“, али је на\n"
-#~ "срећу много моћнији и прилагодљивији (на пример, неко може да покрене\n"
-#~ "онолико читача колико му је потребно)."
-
-#~ msgid "Guile bindings to ncurses"
-#~ msgstr "Гуилеово повезивање са ен-курсом"
-
-#~ msgid ""
-#~ "guile-ncurses provides Guile language bindings for the ncurses\n"
-#~ "library."
-#~ msgstr ""
-#~ "гуиле-нкурсис обезбеђује повезивање Гуиле језика за нкурсис\n"
-#~ "библиотеку."
-
-#~ msgid "Run jobs at scheduled times"
-#~ msgstr "Покретање послова у заказано време"
-
-#~ msgid ""
-#~ "GNU Mcron is a complete replacement for Vixie cron.  It is used to run\n"
-#~ "tasks on a schedule, such as every hour or every Monday.  Mcron is written in\n"
-#~ "Guile, so its configuration can be written in Scheme; the original cron\n"
-#~ "format is also supported."
-#~ msgstr ""
-#~ "Гнуов Мкрон је потпуна замена за Викси крон.  Користи се за покретање\n"
-#~ "задатака на заказивање, рецимо сваког сата или сваког понедељка.  Мкрон\n"
-#~ "је написан у Гуилеу, тако да његово подешавање може бити написано у Шеми;\n"
-#~ "изворни кронов запис је такође подржан."
-
-#~ msgid "Collection of useful Guile Scheme modules"
-#~ msgstr "Збирка корисних модула Гуиле Шеме"
-
-#~ msgid ""
-#~ "guile-lib is intended as an accumulation place for pure-scheme Guile\n"
-#~ "modules, allowing for people to cooperate integrating their generic Guile\n"
-#~ "modules into a coherent library.  Think \"a down-scaled, limited-scope CPAN\n"
-#~ "for Guile\"."
-#~ msgstr ""
-#~ "гуиле-библ је замишљена као место скупљања за Гуиле модуле чисте-шеме,\n"
-#~ "омогућавајући људима да сарађују сједињавајући њихове опште Гуиле модуле\n"
-#~ "у обједињену библиотеку. Сетите се само „down-scaled, limited-scope CPAN\n"
-#~ "for Guile“."
-
-#~ msgid "JSON module for Guile"
-#~ msgstr "ЈСОН модул за Гуила"
-
-#~ msgid "Lout, a document layout system similar in style to LaTeX"
-#~ msgstr "Лоут, систем изгледа документа сличан у стилу ЛаТеХ-у"
-
-#~ msgid "Manipulate plain text files as databases"
-#~ msgstr "Управљајте датотекама обичног текста као базама подтака"
