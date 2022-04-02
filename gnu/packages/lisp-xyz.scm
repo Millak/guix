@@ -9997,8 +9997,8 @@ database files (dbf and db3 files).")
   (sbcl-package->cl-source-package sbcl-db3))
 
 (define-public sbcl-dbi
-  (let ((commit "7ba050dea8d137c1f85b7e704d4fc945104bf283")
-        (revision "1"))
+  (let ((commit "738a74dd69adb2a7c21fa67e140d89c7df25b227")
+        (revision "2"))
     (package
       (name "sbcl-dbi")
       (version (git-version "0.9.5" revision commit))
@@ -10010,7 +10010,7 @@ database files (dbf and db3 files).")
                (commit commit)))
          (file-name (git-file-name "cl-dbi" version))
          (sha256
-          (base32 "0qkpsf8w7ig6chbf4r7j1j7fwa6kpi58ij4hbcxpa4irqdan8s9f"))))
+          (base32 "0f8z7an8ssg8mdf9k781r4ygdppv798v6f08ibgpd8mv8a6491fg"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        `(("alexandria" ,sbcl-alexandria)
