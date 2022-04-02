@@ -11379,7 +11379,9 @@ from an XML-based format.")
      (license license:expat)
      (properties `((python2-variant . ,(delay python2-fonttools)))))))
 
-(define-public python-fonttools-with-tests
+;;; Rename 'python-fonttools' in next cycle, renaming the current
+;;; 'python-fonttools' to 'python-fonttools-minimal'.
+(define-public python-fonttools-full
   (package/inherit python-fonttools
     (arguments
      (substitute-keyword-arguments (package-arguments python-fonttools)
@@ -11404,11 +11406,15 @@ from an XML-based format.")
                                   " and not "))))))))))
     (native-inputs
      (modify-inputs (package-native-inputs python-fonttools)
-       (append python-pytest            ;FIXME: indentation is broken
-           python-brotli
-         python-fs
-         python-scipy
-         python-zopfli)))
+       (append python-pytest)))
+    (propagated-inputs
+     (list python-brotli
+           python-fs
+           python-lxml
+           python-lz4
+           python-scipy
+           python-unicodedata2
+           python-zopfli))
     (properties (alist-delete 'hidden? (package-properties python-fonttools)))))
 
 ;; Fonttools 4.x dropped support for Python 2, so stick with 3.x here.
