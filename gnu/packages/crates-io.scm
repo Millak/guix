@@ -13927,7 +13927,7 @@ Rust.")
 (define-public rust-criterion-0.3
   (package
     (name "rust-criterion")
-    (version "0.3.4")
+    (version "0.3.5")
     (source
      (origin
        (method url-fetch)
@@ -13935,7 +13935,7 @@ Rust.")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "08rx789365x6l9kbsg2r9c5yg25rd3pj1giwyhpcqis56pbpwcmb"))))
+        (base32 "044d2x7cxfvw2g558lzyllcv7jcdkw9xmacmb0nzx8pv4pyxl10n"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -13962,9 +13962,9 @@ Rust.")
         ("rust-tokio" ,rust-tokio-1)
         ("rust-walkdir" ,rust-walkdir-2))
        #:cargo-development-inputs
-       (("rust-approx" ,rust-approx-0.4)
+       (("rust-approx" ,rust-approx-0.5)
         ("rust-futures" ,rust-futures-0.3)
-        ("rust-quickcheck" ,rust-quickcheck-0.9)
+        ("rust-quickcheck" ,rust-quickcheck-1)
         ("rust-rand" ,rust-rand-0.8)
         ("rust-tempfile" ,rust-tempfile-3))))
     (home-page "https://bheisler.github.io/criterion.rs/book/index.html")
