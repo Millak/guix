@@ -61814,17 +61814,17 @@ writing colored text to a terminal.")
 (define-public rust-terminal-size-0.1
   (package
     (name "rust-terminal-size")
-    (version "0.1.16")
+    (version "0.1.17")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "terminal-size" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "01i4zlv8dplx8ps328wl14xv7w1ah0ni6i3g0w1dnd07fpnqrjl6"))))
+        (base32 "1pq60ng1a7fjp597ifk1cqlz8fv9raz9xihddld1m1pfdia1lg33"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #f
+     `(#:tests? #f          ; Tests require /dev/stderr
        #:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
         ("rust-winapi" ,rust-winapi-0.3))))
