@@ -23023,7 +23023,7 @@ macOS API for file changes notifications")
 (define-public rust-fst-0.4
   (package
     (name "rust-fst")
-    (version "0.4.0")
+    (version "0.4.7")
     (source
       (origin
         (method url-fetch)
@@ -23031,13 +23031,17 @@ macOS API for file changes notifications")
         (file-name
          (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32
-          "0ybmdzkknhv1wx6ws86iyixfyzc04l4nm71b9va7953r1m3i6z1z"))))
+         (base32 "06mnksicgv9rp8b7w0ykkshf355l05zym3ygm74qr5z30ndmpf3s"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-utf8-ranges" ,rust-utf8-ranges-1))))
+     `(#:cargo-inputs
+       (("rust-utf8-ranges" ,rust-utf8-ranges-1))
+       #:cargo-development-inputs
+       (("rust-doc-comment" ,rust-doc-comment-0.3)
+        ("rust-fnv" ,rust-fnv-1)
+        ("rust-memmap" ,rust-memmap-0.7)
+        ("rust-quickcheck" ,rust-quickcheck-0.9)
+        ("rust-rand" ,rust-rand-0.7))))
     (home-page "https://github.com/BurntSushi/fst")
     (synopsis "Represent sets or maps of large numbers of strings")
     (description
