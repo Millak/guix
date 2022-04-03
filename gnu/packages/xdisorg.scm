@@ -55,6 +55,7 @@
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 Derek Chuank <derekchuank@outlook.com>
+;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1901,27 +1902,20 @@ natural language input and provide results.")
 (define-public tint2
   (package
     (name "tint2")
-    (version "0.14.6")
+    (version "17.0.2")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://gitlab.com/o9000/" name
-                                  "/repository/archive.tar.gz?ref=" version))
-              (file-name (string-append name "-" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url (string-append "https://gitlab.com/o9000/" name "/"))
+                    (commit version)))
               (sha256
                (base32
-                "1kwzwxy4myagybm3rc7dgynfgp75742n348qibn1p2an9ggyivda"))))
+                "123apmgs6x2zfv1q57dyl4mwqf0vsw5ndh5jsg6p3fvhr66l1aja"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:tests? #f                      ;no test target
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-installation-prefix
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               (("/etc") "${CMAKE_INSTALL_PREFIX}/etc"))
-             #t)))))
+     '(#:tests? #f))                      ;no test target
     (inputs
-     (list gtk+-2
+     (list gtk+
            imlib2
            librsvg
            libxcomposite
