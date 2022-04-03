@@ -4922,6 +4922,7 @@ also contains the libsysfs library.")
           (git-reference
            (url "https://git.kernel.org/pub/scm/linux/kernel/git/brodo/cpufrequtils.git")
            (commit commit)))
+         (file-name (git-file-name name version))
          (sha256
           (base32 "01n2hp6v89cilqqvqvlcprphyhnljsjclh4h1zf3b1l7ypz29lbp"))))
       (build-system gnu-build-system)
