@@ -32192,6 +32192,33 @@ in plain text.  It is smart about where a link ends, such as with trailing
 punctuation.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-lipsum-0.8
+  (package
+    (name "rust-lipsum")
+    (version "0.8.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "lipsum" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32 "0sn5k0hgx099x2qdx0xlx8a5b74sfc55qnbyrhnh72baqxqp5vj2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-rand" ,rust-rand-0.8)
+        ("rust-rand-chacha" ,rust-rand-chacha-0.3))
+       #:cargo-development-inputs
+       (("rust-version-sync" ,rust-version-sync-0.9))))
+    (home-page "https://github.com/mgeisler/lipsum/")
+    (synopsis "Lorem ipsum text generation library in Rust")
+    (description
+     "Lipsum is a lorem ipsum text generation library.  Use this if you need
+some filler text for your application.  The text is generated using a simple
+Markov chain, which you can also instantiate to generate your own pieces of
+pseudo-random text.")
+    (license license:expat)))
+
 (define-public rust-libssh2-sys-0.2
   (package
     (name "rust-libssh2-sys")
