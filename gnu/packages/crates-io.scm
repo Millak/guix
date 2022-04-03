@@ -39637,8 +39637,33 @@ under its new name.")
      "This library detects the operating system type and version.")
     (license license:expat)))
 
+(define-public rust-os-pipe-1
+  (package
+    (name "rust-os-pipe")
+    (version "1.0.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "os-pipe" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32 "0mczqmqrkzmln4xg5ki1gwgykf4dsii0h4p7fxf667889ysz54ic"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-winapi" ,rust-winapi-0.3))))
+    (native-inputs
+     (list python-minimal-wrapper))     ; For the tests.
+    (home-page "https://github.com/oconnor663/os_pipe.rs")
+    (synopsis "Library for opening OS pipes")
+    (description
+     "This package provides a cross-platform library for opening OS pipes.")
+    (license license:expat)))
+
 (define-public rust-os-pipe-0.9
   (package
+    (inherit rust-os-pipe-1)
     (name "rust-os-pipe")
     (version "0.9.2")
     (source
@@ -39650,19 +39675,12 @@ under its new name.")
        (sha256
         (base32
          "04yjs1hf88jjm17g8a2lr7ibxyyg460rzbgcw9f1yzihq833y8zv"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
         ("rust-winapi" ,rust-winapi-0.3))))
-    (home-page
-     "https://github.com/oconnor663/os_pipe.rs")
-    (synopsis
-     "Cross-platform library for opening OS pipes")
-    (description
-     "A cross-platform library for opening OS pipes.")
-    (license license:expat)))
+    (native-inputs (list))))
 
 (define-public rust-os-pipe-0.5
   (package
