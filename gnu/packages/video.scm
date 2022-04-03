@@ -5130,7 +5130,7 @@ transcode or reformat the videos in any way, producing perfect backups.")
 (define-public svt-av1
   (package
     (name "svt-av1")
-    (version "0.9.0")
+    (version "0.9.1")
     (source
      (origin
        (method git-fetch)
@@ -5139,7 +5139,7 @@ transcode or reformat the videos in any way, producing perfect backups.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mavggl6f7pk7xs22859vm19qp9csjvdcys3b6n2f4pljqkp4qcj"))))
+        (base32 "02fchq2vlxcxzbrss72xl9vrxzysdy39d5i159bmg3qa45ngd2iw"))))
     (build-system cmake-build-system)
     ;; SVT-AV1 only supports 64-bit Intel-compatible CPUs.
     (supported-systems '("x86_64-linux"))
