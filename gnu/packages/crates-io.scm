@@ -28320,7 +28320,7 @@ with hyper.")
 (define-public rust-hyphenation-commons-0.8
   (package
     (name "rust-hyphenation-commons")
-    (version "0.8.0")
+    (version "0.8.4")
     (source
      (origin
        (method url-fetch)
@@ -28328,19 +28328,14 @@ with hyper.")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "089jv1pr718aq0yjfcv6x0zljw9f73jm15khdsydzfln3ci7n4hj"))))
+        (base32 "1gq59h9h8597k04yl53an0j56cvb0in98pxpp27dkiz5mnifgssz"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build?
-       #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-fst" ,rust-fst-0.4)
         ("rust-serde" ,rust-serde-1))))
-    (home-page
-     "https://github.com/tapeinosyne/hyphenation")
-    (synopsis
-     "Proemial code for the @code{hyphenation} library")
+    (home-page "https://github.com/tapeinosyne/hyphenation")
+    (synopsis "Proemial code for the @code{hyphenation} library")
     (description
      "This package provides a proemial code for the @code{hyphenation} library.")
     (license (list license:asl2.0 license:expat))))
@@ -28348,7 +28343,7 @@ with hyper.")
 (define-public rust-hyphenation-0.8
   (package
     (name "rust-hyphenation")
-    (version "0.8.0")
+    (version "0.8.4")
     (source
      (origin
        (method url-fetch)
@@ -28356,31 +28351,23 @@ with hyper.")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "117h952d2zlpyqmy0kb49wb42rd3l5m5kl3ldfhgygv6lin09b2w"))))
+        (base32 "1w2hib167vpz7jbg3zs92ifihj4akirlhb5509aib1df8i6dvx5w"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build?
-       #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-bincode" ,rust-bincode-1)
-        ("rust-bincode" ,rust-bincode-1)
         ("rust-fst" ,rust-fst-0.4)
-        ("rust-fst" ,rust-fst-0.4)
-        ("rust-hyphenation-commons"
-         ,rust-hyphenation-commons-0.8)
-        ("rust-hyphenation-commons"
-         ,rust-hyphenation-commons-0.8)
-        ("rust-pocket-resources"
-         ,rust-pocket-resources-0.3)
+        ("rust-hyphenation-commons" ,rust-hyphenation-commons-0.8)
+        ("rust-pocket-resources" ,rust-pocket-resources-0.3)
         ("rust-serde" ,rust-serde-1)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-unicode-normalization"
-         ,rust-unicode-normalization-0.1))))
-    (home-page
-     "https://github.com/tapeinosyne/hyphenation")
-    (synopsis
-     "Knuth-Liang hyphenation for a variety of languages")
+        ("rust-unicode-normalization" ,rust-unicode-normalization-0.1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-quickcheck" ,rust-quickcheck-1)
+        ("rust-unicode-segmentation" ,rust-unicode-segmentation-1))))
+    (home-page "https://github.com/tapeinosyne/hyphenation")
+    (synopsis "Knuth-Liang hyphenation for a variety of languages")
     (description
      "This package provides a Knuth-Liang hyphenation for a variety of languages.")
     (license (list license:asl2.0 license:expat))))
