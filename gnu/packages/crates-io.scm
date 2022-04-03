@@ -18590,6 +18590,24 @@ from macros.")
         ("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
         ("rust-strsim" ,rust-strsim-0.5))))))
 
+(define-public rust-document-features-0.2
+  (package
+    (name "rust-document-features")
+    (version "0.2.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "document-features" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32 "121wr2bd8a4s5i5yrxjz8c5amw2l69xmqqma86x6y4xmcgyhj75h"))))
+    (build-system cargo-build-system)
+    (home-page "https://slint-ui.com")
+    (synopsis "Extract documentation for feature flags from Cargo.toml")
+    (description "Extract documentation for the feature flags from comments in
+@code{Cargo.toml}.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-downcast-0.10
   (package
     (name "rust-downcast")
