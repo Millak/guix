@@ -67537,6 +67537,27 @@ char type that allow for the querying if whether or not a character is
 a member of a certain category of Unicode characters.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-unicode-linebreak-0.1
+  (package
+    (name "rust-unicode-linebreak")
+    (version "0.1.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "unicode-linebreak" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32 "0grq6bsn967q4vpifld53s7a140nlmpq5vy8ghgr73f4n2mdqlis"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-regex" ,rust-regex-1))))
+    (home-page "https://github.com/axelf4/unicode-linebreak")
+    (synopsis "Implementation of the Unicode Line Breaking Algorithm")
+    (description "This package provides an Implementation of the Unicode Line
+Breaking Algorithm in Rust.")
+    (license license:asl2.0)))
+
 (define-public rust-unicode-normalization-0.1
   (package
     (name "rust-unicode-normalization")
