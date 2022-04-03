@@ -14039,7 +14039,7 @@ criterion.")
 (define-public rust-criterion-plot-0.4
   (package
     (name "rust-criterion-plot")
-    (version "0.4.3")
+    (version "0.4.4")
     (source
      (origin
        (method url-fetch)
@@ -14047,13 +14047,12 @@ criterion.")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "17c8v5fv064181yspagkdcfd6jhs7233ba6g94bbl7v0xjnzw8p0"))))
+        (base32 "0mys2zkizh5az6ax77m5aqifk0vz35rn0a6wykvmjx9gkzg9c2fh"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-cast" ,rust-cast-0.2)
-        ("rust-itertools" ,rust-itertools-0.9))
+        ("rust-itertools" ,rust-itertools-0.10))
        #:cargo-development-inputs
        (("rust-itertools-num" ,rust-itertools-num-0.1)
         ("rust-num-complex" ,rust-num-complex-0.2)
