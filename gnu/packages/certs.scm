@@ -28,6 +28,7 @@
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
@@ -159,31 +160,27 @@ that was originally contributed to Debian.")
     (inputs '())
     (propagated-inputs '())
     (arguments
-     `(#:modules ((guix build gnu-build-system)
-                  (guix build utils)
-                  (rnrs io ports)
-                  (srfi srfi-26))
-       #:phases
-       (modify-phases
-           (map (cut assq <> %standard-phases)
-                '(set-paths install-locale unpack))
-         (add-after 'unpack 'install
-           (lambda _
-             ;; TODO: On the next rebuild cycle, remove references to
-             ;; '%output' and '%outputs'.
-             (let ((certsdir (string-append ,(if (%current-target-system)
-                                                 '(assoc-ref %outputs "out")
-                                                 '%output)
-                                            "/etc/ssl/certs/")))
-               (with-directory-excursion "nss/lib/ckfw/builtins/"
-                 (unless (file-exists? "blacklist.txt")
-                   (call-with-output-file "blacklist.txt" (const #t)))
-                 ;; Extract selected single certificates from blob.
-                 (invoke "certdata2pem")
-                 ;; Copy .pem files into the output.
-                 (for-each (cut install-file <> certsdir)
-                           (find-files "." ".*\\.pem$")))
-               (invoke "openssl" "rehash" certsdir)))))))
+     (list #:modules '((guix build gnu-build-system)
+                       (guix build utils)
+                       (rnrs io ports)
+                       (srfi srfi-26))
+           #:phases
+           #~(modify-phases
+                 (map (cut assq <> %standard-phases)
+                      '(set-paths install-locale unpack))
+               (add-after 'unpack 'install
+                 (lambda _
+                   (let ((certsdir (string-append #$output
+                                                  "/etc/ssl/certs/")))
+                     (with-directory-excursion "nss/lib/ckfw/builtins/"
+                       (unless (file-exists? "blacklist.txt")
+                         (call-with-output-file "blacklist.txt" (const #t)))
+                       ;; Extract selected single certificates from blob.
+                       (invoke "certdata2pem")
+                       ;; Copy .pem files into the output.
+                       (for-each (cut install-file <> certsdir)
+                                 (find-files "." ".*\\.pem$")))
+                     (invoke "openssl" "rehash" certsdir)))))))
     (synopsis "CA certificates from Mozilla")
     (description
      "This package provides certificates for Certification Authorities (CA)
