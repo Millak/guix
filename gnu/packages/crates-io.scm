@@ -12030,28 +12030,29 @@ colors.")
 (define-public rust-combine-4
   (package
     (name "rust-combine")
-    (version "4.5.2")
+    (version "4.6.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "combine" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0zkvqp21fbhznf7sjssdiw3zgx3x3q8w10c9mmjdzkf0wjsnjhyc"))))
+        (base32 "0qihymj493vvs054gzpcmp4lzb098zrj2p9miv19yzvrrjm2gdsh"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
-       (("rust-bytes" ,rust-bytes-0.5)
-        ("rust-bytes" ,rust-bytes-1)
+       (("rust-bytes" ,rust-bytes-1)
+        ("rust-bytes" ,rust-bytes-0.5)
+        ("rust-futures-core" ,rust-futures-core-0.3)
         ("rust-futures-io" ,rust-futures-io-0.3)
-        ("rust-futures-util" ,rust-futures-util-0.3)
         ("rust-memchr" ,rust-memchr-2)
         ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
         ("rust-regex" ,rust-regex-1)
         ("rust-tokio" ,rust-tokio-1)
+        ("rust-tokio" ,rust-tokio-0.3)
         ("rust-tokio" ,rust-tokio-0.2)
-        ("rust-tokio" ,rust-tokio-0.3))))
+        ("rust-tokio-util" ,rust-tokio-util-0.6))))
     (home-page "https://github.com/Marwes/combine")
     (synopsis "Parser combinators on arbitrary streams with zero-copy support")
     (description
