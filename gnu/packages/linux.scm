@@ -4910,45 +4910,49 @@ also contains the libsysfs library.")
     (license (list license:gpl2 license:gpl2+ license:lgpl2.1+))))
 
 (define-public cpufrequtils
-  (package
-    (name "cpufrequtils")
-    (version "008")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://kernel.org/linux/utils/kernel/cpufreq/"
-                           "cpufrequtils-" version ".tar.gz"))
-       (sha256
-        (base32 "0xjs8j44hh0cz6qpig1n0iw8xjpr6s5qmcmwh965ngapxgarr7af"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:tests? #f                      ; no test suite
-       #:make-flags
-       (let ((out (assoc-ref %outputs "out")))
-         (list "PROC=false"             ; obsoleted by sysfs in Linux 2.6(!)
-               (string-append "CC=" ,(cc-for-target))
-               (string-append "LDFLAGS=-Wl,-rpath=" out "/lib")
-               "INSTALL=install"
-               (string-append "bindir=" out "/bin")
-               (string-append "sbindir=" out "/sbin")
-               (string-append "mandir=" out "/share/man")
-               (string-append "includedir=" out "/include")
-               (string-append "libdir=" out "/lib")
-               (string-append "localedir=" out "/share/locale")
-               (string-append "docdir=" out "/share/doc/" ,name)))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))         ; no configure script
-    (native-inputs
-     `(("gettext" ,gettext-minimal)))
-    (home-page
-     "http://ftp.be.debian.org/pub/linux/utils/kernel/cpufreq/cpufrequtils.html")
-    (synopsis "Utilities to get and set CPU frequency on Linux")
-    (description
-     "The cpufrequtils suite contains utilities to retrieve CPU frequency
+  (let ((commit "a2f0c39d5f21596bb9f5223e895c0ff210b265d0")
+        (revision "1"))
+    (package
+      (name "cpufrequtils")
+      (version (git-version "008" revision commit ))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://git.kernel.org/pub/scm/linux/kernel/git/brodo/cpufrequtils.git")
+           (commit commit)))
+         (sha256
+          (base32 "01n2hp6v89cilqqvqvlcprphyhnljsjclh4h1zf3b1l7ypz29lbp"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:tests? #f                      ; no test suite
+         #:make-flags
+         (let ((out (assoc-ref %outputs "out")))
+           (list "PROC=false"             ; obsoleted by sysfs in Linux 2.6(!)
+                 (string-append "CC=" ,(cc-for-target))
+                 (string-append "LDFLAGS=-Wl,-rpath=" out "/lib")
+                 "INSTALL=install"
+                 (string-append "bindir=" out "/bin")
+                 (string-append "sbindir=" out "/sbin")
+                 (string-append "mandir=" out "/share/man")
+                 (string-append "includedir=" out "/include")
+                 (string-append "libdir=" out "/lib")
+                 (string-append "localedir=" out "/share/locale")
+                 (string-append "docdir=" out "/share/doc/" ,name)))
+         #:phases
+         (modify-phases %standard-phases
+           (delete 'configure))))         ; no configure script
+      (native-inputs
+       `(("gettext" ,gettext-minimal)))
+      (home-page
+       "http://ftp.be.debian.org/pub/linux/utils/kernel/cpufreq/cpufrequtils.html")
+      (synopsis "Utilities to get and set CPU frequency on Linux")
+      (description
+       "The cpufrequtils suite contains utilities to retrieve CPU frequency
 information, and set the CPU frequency if supported, using the cpufreq
 capabilities of the Linux kernel.")
-    (license license:gpl2)))
+      (license license:gpl2))))
 
 (define-public libite
   (package
