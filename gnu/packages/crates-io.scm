@@ -44490,6 +44490,29 @@ replacements, adding colorful diffs.")
 formatted tables in terminal.")
     (license license:bsd-3)))
 
+(define-public rust-print-bytes-0.4
+  (package
+    (name "rust-print-bytes")
+    (version "0.4.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "print-bytes" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32 "1zmvbaxfl4r780j0smg2kn1q3agks601aa43s5zdlzgcp32yjfvm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs
+       (("rust-os-str-bytes" ,rust-os-str-bytes-2))))
+    (home-page "https://github.com/dylni/print_bytes")
+    (synopsis "Print bytes as losslessly as possible")
+    (description "This package contains a Rust library to print bytes as
+losslessly as possible.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-proc-macro-crate-1
   (package
     (name "rust-proc-macro-crate")
