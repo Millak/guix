@@ -39754,22 +39754,22 @@ under its new name.")
         ("rust-nix" ,rust-nix-0.8)
         ("rust-winapi" ,rust-winapi-0.2))))))
 
-(define-public rust-os-str-bytes-4
+(define-public rust-os-str-bytes-6
   (package
     (name "rust-os-str-bytes")
-    (version "4.2.0")
+    (version "6.0.0")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "os-str-bytes" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "16d70qzd2g18i28i6znjcpck0r9hjd5gz5qcr1cl2l9s6d1sknmd"))))
+         (base32 "0r5z5xds2wzzqlqjaw96dpjsz5nqyzc1rflm4mh09aa32qyl88lf"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-memchr" ,rust-memchr-2)
-        ("rust-print-bytes" ,rust-print-bytes-0.4)
+        ("rust-print-bytes" ,rust-print-bytes-0.5)
         ("rust-uniquote" ,rust-uniquote-3))
        #:cargo-development-inputs
        (("rust-getrandom" ,rust-getrandom-0.2))))
@@ -39780,6 +39780,26 @@ under its new name.")
      "This package provides a traits for converting between byte sequences and
 platform-native strings.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-os-str-bytes-4
+  (package
+    (inherit rust-os-str-bytes-6)
+    (name "rust-os-str-bytes")
+    (version "4.2.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "os-str-bytes" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32 "16d70qzd2g18i28i6znjcpck0r9hjd5gz5qcr1cl2l9s6d1sknmd"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-memchr" ,rust-memchr-2)
+        ("rust-print-bytes" ,rust-print-bytes-0.4)
+        ("rust-uniquote" ,rust-uniquote-3))
+       #:cargo-development-inputs
+       (("rust-getrandom" ,rust-getrandom-0.2))))))
 
 (define-public rust-os-str-bytes-2
   (package
