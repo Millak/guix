@@ -55807,14 +55807,14 @@ some context).")
 (define-public rust-shlex-1
   (package
     (name "rust-shlex")
-    (version "1.0.0")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "shlex" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0gf773p2snqpw69rzh8s1wdlq8dc8c1ypmiv516il1fdyb46i9a2"))))
+        (base32 "18zqcay2dgxgrd1r645mb79m4q745jcrqj659k11bwh99lx8bcj3"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/comex/rust-shlex")
     (synopsis "Split a string into shell words, like Python's shlex")
