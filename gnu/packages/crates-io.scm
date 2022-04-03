@@ -36289,6 +36289,36 @@ general elements and for numerics.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-ndarray-0.14
+  (package
+    (inherit rust-ndarray-0.15)
+    (name "rust-ndarray")
+    (version "0.14.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "ndarray" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32 "011wqzmrd9gpfcfvy1xfbskqfiahn96pmi2d0r9x34d682amq3bc"))
+        (patches (search-patches "rust-ndarray-0.14-remove-blas-src.patch"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-approx" ,rust-approx-0.4)
+        ("rust-cblas-sys" ,rust-cblas-sys-0.1)
+        ("rust-matrixmultiply" ,rust-matrixmultiply-0.2)
+        ("rust-num-complex" ,rust-num-complex-0.3)
+        ("rust-num-integer" ,rust-num-integer-0.1)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-rawpointer" ,rust-rawpointer-0.2)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-approx" ,rust-approx-0.4)
+        ("rust-defmac" ,rust-defmac-0.2)
+        ("rust-itertools" ,rust-itertools-0.9)
+        ("rust-quickcheck" ,rust-quickcheck-0.9))))))
+
 (define-public rust-ndarray-0.13
   (package
     (inherit rust-ndarray-0.15)

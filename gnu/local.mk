@@ -1775,6 +1775,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/i3status-rust-enable-unstable-features.patch	\
   %D%/packages/patches/rust-ndarray-remove-blas-src-dep.patch	\
   %D%/packages/patches/rust-ndarray-0.13-remove-blas-src.patch	\
+  %D%/packages/patches/rust-ndarray-0.14-remove-blas-src.patch	\
   %D%/packages/patches/rust-nettle-disable-vendor.patch		 \
   %D%/packages/patches/rust-nettle-sys-disable-vendor.patch	 \
   %D%/packages/patches/rust-openssl-sys-no-vendor.patch	\
