@@ -40,7 +40,7 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Alex McGrath <amk@amk.ie>
-;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Alexandru-Sergiu Marton <brown121407@posteo.ro>
@@ -759,7 +759,7 @@ old-fashioned output methods with powerful ascii-art renderer.")
 (define-public celluloid
   (package
     (name "celluloid")
-    (version "0.22")
+    (version "0.23")
     (source
      (origin
        (method url-fetch)
@@ -767,7 +767,7 @@ old-fashioned output methods with powerful ascii-art renderer.")
                            "/releases/download/v" version
                            "/celluloid-" version ".tar.xz"))
        (sha256
-        (base32 "18g596ja8g0fy79pmxqdlzqzb0f9xq69ik4bah8g2ppipfvxbpjz"))))
+        (base32 "0x23y09jwkg8wbb0yp5f03sj5hwjg3kyhbbww2y1a0izs1iijbdj"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list intltool pkg-config))
