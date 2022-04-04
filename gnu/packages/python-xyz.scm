@@ -28268,13 +28268,13 @@ systems in Python.")
 (define-public python-dotenv
   (package
     (name "python-dotenv")
-    (version "0.19.2")
+    (version "0.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "python-dotenv" version))
        (sha256
-        (base32 "0pv5ygpr6syc6zkw21in4ysqs3k7qaxk9m1g5pzlafwm3silkpm5"))))
+        (base32 "13s9imfd0k4d7b1qy5wfqzw5vyj6rhmcrccsdz1l4g39b55b1qxp"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -28292,7 +28292,7 @@ systems in Python.")
      (list python-click))
     (native-inputs
      (list python-mock python-pytest python-sh))
-    (home-page "https://github.com/theskumar/python-dotenv")
+    (home-page "https://saurabh-kumar.com/python-dotenv/")
     (synopsis "Setup environment variables according to .env files")
     (description
      "This package provides the @code{python-dotenv} Python module to read
