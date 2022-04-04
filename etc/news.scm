@@ -25,6 +25,42 @@
 (channel-news
  (version 0)
 
+ (entry (commit "c42b7baf13c7633b4512e94da7445299c57b247d")
+        (title
+         (en "New @option{--export-manifest} option for @command{guix shell}")
+         (fr "Nouvelle option @option{--export-manifest} de @command{guix shell}"))
+        (body
+         (en "If you use @command{guix shell}, you might wonder how to
+``translate'' a command line into a manifest file that you can keep under
+version control, share with others, and pass to @command{guix shell -m} and in
+fact to most @command{guix} commands.  This is what the new
+@option{--export-manifest} option does.
+
+For example, the command below prints a manifest for the given packages:
+
+@lisp
+guix shell --export-manifest \\
+   -D guile git emacs emacs-geiser emacs-geiser-guile
+@end lisp
+
+Run @code{info \"(guix) Invoking guix shell\"} for more information.")
+         (fr "Si tu utilises @command{guix shell}, tu t'es peut-être déjà
+demandé comment « traduire » une ligne de commande en un fichier manifeste que
+tu puisse garder en gestion de version, partager et passer à @command{guix
+shell -m} et autres commandes @command{guix}.  C'est ce que la nouvelle option
+@option{--export-manifest} fait.
+
+Par exemple, la commande ci-dessous affiche un manifeste pour les paquets
+donnés :
+
+@lisp
+guix shell --export-manifest \\
+   -D guile git emacs emacs-geiser emacs-geiser-guile
+@end lisp
+
+Lancer @code{info \"(guix.fr) Invoquer guix shell\"} pour plus
+d'informations.")))
+
  (entry (commit "094a2cfbe45c104d0da30ff9d975d052ca0c118c")
         (title
          (en "New @command{guix home container} command")
