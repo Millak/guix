@@ -14182,7 +14182,8 @@ some of the details of opening and jumping in tabix-indexed files.")
       (build-system gnu-build-system)
       (arguments
        `(#:tests? #f ; There are no tests to run.
-         #:make-flags '("libsw.a" "all")
+         #:make-flags (list (string-append "CXX=" ,(cxx-for-target))
+                            "libsw.a" "all")
          #:phases
          (modify-phases %standard-phases
            (delete 'configure) ; There is no configure phase.
@@ -14190,10 +14191,14 @@ some of the details of opening and jumping in tabix-indexed files.")
              (lambda _
                (substitute* "Makefile"
                  (("-c ") "-c -fPIC "))
-               #t))
+               ,@(if (%current-target-system)
+                   `((substitute* "Makefile"
+                       (("ld") (string-append ,(%current-target-system) "-ld"))
+                       (("ar") (string-append ,(%current-target-system) "-ar"))))
+                   '())))
            (add-after 'build 'build-dynamic
              (lambda _
-               (invoke "g++"
+               (invoke ,(cxx-for-target)
                        "-shared" "-o" "libsmithwaterman.so"
                        "smithwaterman.o" "SmithWatermanGotoh.o"
                        "disorder.o" "BandedSmithWaterman.o"
@@ -14224,8 +14229,7 @@ some of the details of opening and jumping in tabix-indexed files.")
                              Description: smith-waterman-gotoh alignment algorithm~@
                              Libs: -L${libdir} -lsmithwaterman~@
                              Cflags: -I${includedir}~%"
-                             out ,version))))
-               #t)))))
+                             out ,version)))))))))
       (home-page "https://github.com/ekg/smithwaterman")
       (synopsis "Implementation of the Smith-Waterman algorithm")
       (description "Implementation of the Smith-Waterman algorithm.")
