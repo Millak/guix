@@ -10790,19 +10790,20 @@ learn about each of the parameters.")
   (sbcl-package->ecl-package sbcl-exponential-backoff))
 
 (define-public sbcl-sxql
-  (let ((commit "acdd183a4c38b4e0699a285f8a711c88f6b4302c"))
+  (let ((commit "cc3478cacb0557475a59cf619dad66c5dc8080ba")
+        (revision "3"))
     (package
       (name "sbcl-sxql")
-      (version (git-version "0.1.0" "2" commit))
+      (version (git-version "0.1.0" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/fukamachi/sxql")
                (commit commit)))
-         (file-name (git-file-name "sqxl" version))
+         (file-name (git-file-name "cl-sqxl" version))
          (sha256
-          (base32 "1i1crdsf2nbyxxpvjgrwmwpjxn6a4drbcmqs4q4shfi8zyap7vng"))))
+          (base32 "011an993amy8q3gl4hyqrgnc93cgny3cv9gbp679rrmyyp8zmywr"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-alexandria
@@ -10811,6 +10812,7 @@ learn about each of the parameters.")
              sbcl-iterate
              sbcl-optima
              sbcl-split-sequence
+             sbcl-trivia
              sbcl-trivial-types))
       (native-inputs
        (list sbcl-prove))
