@@ -123,132 +123,18 @@ the WPE-flavored port of WebKit.")
 engine that uses Wayland for graphics output.")
     (license license:bsd-2)))
 
-(define-public wpewebkit
-  (package
-    (name "wpewebkit")
-    (version "2.34.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri
-        (string-append "https://wpewebkit.org/releases/"
-                       name "-" version ".tar.xz"))
-       (sha256
-        (base32 "1z20bza01ld4jvi0qx8xsl5y4czaniwpi8hxdjyirj1mrszy8pf3"))))
-    (build-system cmake-build-system)
-    (outputs '("out" "doc"))
-    (arguments
-     `(#:tests? #f                      ; XXX: To be enabled
-       #:configure-flags
-       (list
-        "-DPORT=WPE"
-        ;; XXX: To be enabled.
-        ;; "-DENABLE_ACCELERATED_2D_CANVAS=ON"
-        "-DUSE_SYSTEMD=OFF"
-        "-DENABLE_ENCRYPTED_MEDIA=OFF"
-        "-DENABLE_GTKDOC=ON"
-        "-DUSE_GSTREAMER_GL=OFF")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'setenv
-           (lambda _
-             (setenv "HOME" "/tmp")
-             #t))
-         (add-after 'unpack 'patch-docbook-xml
-           (lambda* (#:key inputs #:allow-other-keys)
-             (for-each
-              (lambda (file)
-                (substitute* file
-                  (("http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd")
-                   (string-append (assoc-ref inputs "docbook-xml")
-                                  "/xml/dtd/docbook/docbookx.dtd"))))
-              (find-files "Source" "\\.sgml$"))
-             #t))
-         (add-after 'unpack 'patch-cmake
-           (lambda _
-             (substitute* "Source/PlatformWPE.cmake"
-               (("(Documentation/wpe(-webextensions)?-)\\$\\{WPE_API_VERSION\\}"
-                 all prefix)
-                (string-append prefix "${WPE_API_DOC_VERSION}"))
-               (("(html/wpe(-webextensions)?-)\\$\\{WPE_API_VERSION\\}"
-                 all prefix)
-                (string-append prefix "${WPE_API_DOC_VERSION}")))))
-         (add-after 'install 'move-doc-files
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc (assoc-ref outputs "doc")))
-               (mkdir-p (string-append doc "/share"))
-               (rename-file
-                (string-append out "/share/gtk-doc")
-                (string-append doc "/share/gtk-doc"))
-               #t))))))
-    (native-inputs
-     `(("docbook-xml" ,docbook-xml-4.1.2)
-       ("docbook-xsl" ,docbook-xsl)
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk-doc" ,gtk-doc/stable)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
-       ("python2" ,python-2.7)
-       ("ruby" ,ruby)))
-    (inputs
-     `(("atk" ,atk)
-       ("atk-bridge" ,at-spi2-atk)
-       ("bubblewrap" ,bubblewrap)
-       ("cairo" ,cairo)
-       ("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("gperf" ,gperf)
-       ("gstreamer" ,gstreamer)
-       ("gst-plugins-base" ,gst-plugins-base)
-       ("harfbuzz" ,harfbuzz)
-       ("icu" ,icu4c)
-       ("lcms" ,lcms)
-       ("libepoxy" ,libepoxy)
-       ("libgcrypt" ,libgcrypt)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libseccomp" ,libseccomp)
-       ("libtasn1" ,libtasn1)
-       ("libxml2" ,libxml2)
-       ("libxslt" ,libxslt)
-       ("mesa" ,mesa)
-       ("openjpeg" ,openjpeg)
-       ("sqlite" ,sqlite)
-       ("webp" ,libwebp)
-       ("woff2" ,woff2)
-       ("xdg-dbus-proxy" ,xdg-dbus-proxy)
-       ("zlib" ,zlib)))
-    (propagated-inputs
-     `(("glib" ,glib)
-       ("libsoup" ,libsoup)
-       ("wpe" ,libwpe)))
-    (synopsis "WebKit port optimized for embedded devices")
-    (description "WPE WebKit allows embedders to create simple and performant
-systems based on Web platform technologies.  It is designed with hardware
-acceleration in mind, leveraging common 3D graphics APIs for best performance.")
-    (home-page "https://wpewebkit.org/")
-    (license
-     (list
-      ;; Rendering and JavaScript Engines.
-      license:lgpl2.1+
-      ;; Others
-      license:bsd-2))
-    (properties '((cpe-name . "wpe_webkit")))))
+(define %webkit-version "2.36.0")
 
 (define-public webkitgtk
   (package
     (name "webkitgtk")
-    (version "2.36.0")
+    (version %webkit-version)
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.webkitgtk.org/releases/"
-                                  "webkitgtk-" version ".tar.xz"))
+                                  name "-" version ".tar.xz"))
               (sha256
-               (base32
-                "0kf6avqlq9f74lwzji7l3xlnng5yqarc4ykwsmfmy8q5y6hwqxxq"))
+               (base32 "0kf6avqlq9f74lwzji7l3xlnng5yqarc4ykwsmfmy8q5y6hwqxxq"))
               (patches (search-patches
                         "webkitgtk-adjust-bubblewrap-paths.patch"))))
     (build-system cmake-build-system)
@@ -403,3 +289,26 @@ propagated by default) such as @code{gst-plugins-good} and
     (propagated-inputs
      (modify-inputs (package-propagated-inputs webkitgtk)
        (replace "libsoup" libsoup-minimal-2)))))
+
+(define-public wpewebkit
+  (package
+    (inherit webkitgtk)
+    (name "wpewebkit")
+    (version %webkit-version)
+    (source (origin
+              (inherit (package-source webkitgtk))
+              (uri (string-append "https://wpewebkit.org/releases/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32 "0nkdx6pckbkhs85z3pidnh4cbp0wfa38lf2qyn0grywvgpwajsh9"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments webkitgtk)
+       ((#:configure-flags flags)
+        #~(cons "-DPORT=WPE"
+                (delete "-DPORT=GTK" #$flags)))))
+    (synopsis "WebKit port optimized for embedded devices")
+    (description "WPE WebKit allows embedders to create simple and performant
+systems based on Web platform technologies.  It is designed with hardware
+acceleration in mind, leveraging common 3D graphics APIs for best performance.")
+    (home-page "https://wpewebkit.org/")
+    (properties '((cpe-name . "wpe_webkit")))))
