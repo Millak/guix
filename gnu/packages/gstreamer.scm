@@ -1076,7 +1076,7 @@ given, also pass them to the build system instead of the ones used by PKG."
        #:configure-flags
        (list (string-append
               "-Dpygi-overrides-dir="
-              (python:site-packages %build-inputs %outputs) "gi/overrides"))))
+              (python:site-packages %build-inputs %outputs) "/gi/overrides"))))
     (native-inputs
      (list pkg-config python))
     (propagated-inputs
