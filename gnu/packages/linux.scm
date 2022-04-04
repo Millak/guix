@@ -767,7 +767,9 @@ for ARCH and optionally VARIANT, or #f if there is no such configuration."
                       ((option . #t)
                        (string-append option "=y"))
                       ((option . #f)
-                       (string-append option "=n")))
+                       (string-append option "=n"))
+                      ((option . string)
+                       (string-append option "=\"" string "\"")))
                     options)
                "\n"))
 
