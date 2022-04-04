@@ -82,6 +82,7 @@
   #:use-module (gnu packages lua)
   #:use-module (gnu packages man)
   #:use-module (gnu packages markup)
+  #:use-module (gnu packages nss)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages photo)
@@ -256,6 +257,7 @@ please install the @code{flyer-composer-gui} package.")))
                  libpng
                  libtiff
                  lcms
+                 nss                              ;for 'pdfsig'
                  openjpeg
                  poppler-data
                  zlib
