@@ -14181,55 +14181,57 @@ some of the details of opening and jumping in tabix-indexed files.")
          (base32 "0i9d8zrxpiracw3mxzd9siybpy62p06rqz9mc2w93arajgbk45bs"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:tests? #f ; There are no tests to run.
-         #:make-flags (list (string-append "CXX=" ,(cxx-for-target))
-                            "libsw.a" "all")
+       (list
+         #:tests? #f ; There are no tests to run.
+         #:make-flags
+         #~(list (string-append "CXX=" #$(cxx-for-target))
+                 "libsw.a" "all")
          #:phases
-         (modify-phases %standard-phases
-           (delete 'configure) ; There is no configure phase.
-           (add-after 'unpack 'patch-source
-             (lambda _
-               (substitute* "Makefile"
-                 (("-c ") "-c -fPIC "))
-               ,@(if (%current-target-system)
-                   `((substitute* "Makefile"
-                       (("ld") (string-append ,(%current-target-system) "-ld"))
-                       (("ar") (string-append ,(%current-target-system) "-ar"))))
-                   '())))
-           (add-after 'build 'build-dynamic
-             (lambda _
-               (invoke ,(cxx-for-target)
-                       "-shared" "-o" "libsmithwaterman.so"
-                       "smithwaterman.o" "SmithWatermanGotoh.o"
-                       "disorder.o" "BandedSmithWaterman.o"
-                       "LeftAlign.o" "Repeats.o" "IndelAllele.o")))
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (bin (string-append out "/bin"))
-                      (lib (string-append out "/lib")))
-                 (install-file "smithwaterman" bin)
-                 (for-each
-                   (lambda (file)
-                     (install-file file (string-append out "/include/smithwaterman")))
-                   (find-files "." "\\.h$"))
-                 (install-file "libsmithwaterman.so" lib)
-                 (install-file "libsw.a" lib)
-                 (mkdir-p (string-append lib "/pkgconfig"))
-                 (with-output-to-file (string-append lib "/pkgconfig/smithwaterman.pc")
-                   (lambda _
-                     (format #t "prefix=~a~@
-                             exec_prefix=${prefix}~@
-                             libdir=${exec_prefix}/lib~@
-                             includedir=${prefix}/include/smithwaterman~@
-                             ~@
-                             ~@
-                             Name: smithwaterman~@
-                             Version: ~a~@
-                             Description: smith-waterman-gotoh alignment algorithm~@
-                             Libs: -L${libdir} -lsmithwaterman~@
-                             Cflags: -I${includedir}~%"
-                             out ,version)))))))))
+         #~(modify-phases %standard-phases
+             (delete 'configure) ; There is no configure phase.
+             (add-after 'unpack 'patch-source
+               (lambda _
+                 (substitute* "Makefile"
+                   (("-c ") "-c -fPIC "))
+                 #$@(if (%current-target-system)
+                     #~((substitute* "Makefile"
+                          (("ld") (string-append #$(%current-target-system) "-ld"))
+                          (("ar") (string-append #$(%current-target-system) "-ar"))))
+                     '())))
+             (add-after 'build 'build-dynamic
+               (lambda _
+                 (invoke #$(cxx-for-target)
+                         "-shared" "-o" "libsmithwaterman.so"
+                         "smithwaterman.o" "SmithWatermanGotoh.o"
+                         "disorder.o" "BandedSmithWaterman.o"
+                         "LeftAlign.o" "Repeats.o" "IndelAllele.o")))
+             (replace 'install
+               (lambda* (#:key outputs #:allow-other-keys)
+                 (let* ((out (assoc-ref outputs "out"))
+                        (bin (string-append out "/bin"))
+                        (lib (string-append out "/lib")))
+                   (install-file "smithwaterman" bin)
+                   (for-each
+                     (lambda (file)
+                       (install-file file (string-append out "/include/smithwaterman")))
+                     (find-files "." "\\.h$"))
+                   (install-file "libsmithwaterman.so" lib)
+                   (install-file "libsw.a" lib)
+                   (mkdir-p (string-append lib "/pkgconfig"))
+                   (with-output-to-file (string-append lib "/pkgconfig/smithwaterman.pc")
+                     (lambda _
+                       (format #t "prefix=~a~@
+                               exec_prefix=${prefix}~@
+                               libdir=${exec_prefix}/lib~@
+                               includedir=${prefix}/include/smithwaterman~@
+                               ~@
+                               ~@
+                               Name: smithwaterman~@
+                               Version: ~a~@
+                               Description: smith-waterman-gotoh alignment algorithm~@
+                               Libs: -L${libdir} -lsmithwaterman~@
+                               Cflags: -I${includedir}~%"
+                               out #$version)))))))))
       (home-page "https://github.com/ekg/smithwaterman")
       (synopsis "Implementation of the Smith-Waterman algorithm")
       (description "Implementation of the Smith-Waterman algorithm.")
