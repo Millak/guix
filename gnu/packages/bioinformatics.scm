@@ -14512,6 +14512,7 @@ manipulations on VCF files.")
        ("parallel" ,parallel)
        ("perl" ,perl)
        ("pkg-config" ,pkg-config)
+       ("python" ,python)
        ("samtools" ,samtools)
        ("simde" ,simde)
        ;; This submodule is needed to run the tests.
