@@ -31445,6 +31445,43 @@ buffers using font locking and text properties.  The package styles
 headlines, keywords, tables and source blocks.")
    (license license:gpl3+)))
 
+(define-public emacs-pyimport
+  (let ((commit "a6f63cf7ed93f0c0f7c207e6595813966f8852b9")
+        (revision "0"))
+    (package
+      (name "emacs-pyimport")
+      (version (git-version "1.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/Wilfred/pyimport")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1q5gqhvh4zq5dy8vns694warcz48j1hdnxg16sjck4gsi9xivbvs"))))
+      (build-system emacs-build-system)
+      (inputs
+        (list python-pyflakes))
+      (propagated-inputs
+        (list emacs-dash emacs-s emacs-shut-up))
+      (arguments
+        (list #:phases
+              #~(modify-phases %standard-phases
+                  (add-after 'unpack 'patch-pyflakes-executable
+                    (lambda* (#:key inputs #:allow-other-keys)
+                      (let ((pyflakes (search-input-file inputs "/bin/pyflakes")))
+                        (make-file-writable "pyimport.el")
+                        (substitute* "pyimport.el"
+                          (("\"pyflakes")
+                           (string-append "\"" pyflakes)))))))))
+      (home-page "https://github.com/Wilfred/pyimport")
+      (synopsis "Manage Python imports from Emacs")
+      (description
+"@code{emacs-pyimport} manages python imports from Emacs via @code{python-pyflakes}.")
+      (license license:gpl3+)))) ; License is in pyimport.el
+
 (define-public emacs-osm
   (package
     (name "emacs-osm")
