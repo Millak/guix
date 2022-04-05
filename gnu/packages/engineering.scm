@@ -29,6 +29,7 @@
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 Evgeny Pisemsky <evgeny@pisemsky.com>
 ;;; Copyright © 2022 Olivier Dion <olivier.dion@polymtl.ca>
+;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -931,7 +932,7 @@ Emacs).")
 (define-public kicad
   (package
     (name "kicad")
-    (version "6.0.1")
+    (version "6.0.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -939,7 +940,7 @@ Emacs).")
                     (commit version)))
               (sha256
                (base32
-                "1vpcbhhw8844hm6vpk3kk405wak531pvcvcpc66z0b48iprk3imr"))
+                "0lki59ws0ncqkp9wxrhyni1ck2sx5z07mmpkjg0d9jpkync9hx9y"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -1046,7 +1047,7 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0zaafa9ckvdgsim6nhp3flj4r2fzzmwn054lc3iijwgga82qy7il"))))
+                "0p3ypfs11ck2w7dmqiy763krpj0slan4jvpzxs6z1473gdpbzgbs"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DBUILD_FORMATS=html")
@@ -1080,7 +1081,7 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1azjx1bmxaz8bniyw75lq60mc8hvay00jn9qdc2zp7isy3c9ibp0"))))
+                "12lyc187337bf2frl3jvwqdwwnd69f7l414k3kxhccs3sa2mcf1y"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; no tests exist
@@ -1109,7 +1110,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0mv9xs0mmmfn0yhzx1v55r5app13ckagb16249rabyiz3v5crdpb"))))
+                "0px2g9jansky0rvc0bdjylbmv8xwhc0q63g88hd2nzbknqli9f1y"))))
     (synopsis "Official KiCad footprint libraries")
     (description "This package contains the official KiCad footprint libraries.")))
 
@@ -1126,7 +1127,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0vwcbzq42hzjl4f0zjaswmiff1x59hv64g5n00mx1gl0gwngnyla"))))
+                "0ms9py93qyihxrhh9wm2ziycmdn88m36r8adx22ynjnxixw1f9ja"))))
     (synopsis "Official KiCad 3D model libraries")
     (description "This package contains the official KiCad 3D model libraries.")))
 
