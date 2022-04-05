@@ -156,6 +156,27 @@ them as it goes.")
 font, glyph, etc. mathematical operations on font data.")
     (license license:expat)))
 
+;;; An untested variant used to break a cycle with python-booleanoperations.
+(define-public python-fontpens-bootstrap
+  (package
+    (name "python-fontpens-bootstrap")
+    (version "0.2.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "fontPens" version ".zip"))
+       (sha256
+        (base32 "1za15dzsnymq6d9x7xdfqwgw4a3003wj75fn2crhyidkfd2s3nd6"))))
+    (build-system python-build-system)
+    (arguments (list #:tests? #f))
+    (propagated-inputs (list python-fonttools))
+    (native-inputs (list unzip))
+    (home-page "https://github.com/robofab-developers/fontPens")
+    (synopsis "Python classes implementing the pen protocol")
+    (description "This package provides a collection of Python classes
+implementing the pen protocol for manipulating glyphs.")
+    (license license:bsd-3)))
+
 (define-public python-opentype-sanitizer
   (package
     (name "python-opentype-sanitizer")
