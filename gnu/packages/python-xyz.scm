@@ -7097,6 +7097,36 @@ multiple values for the same key.  An ordered multivalue dictionary is a
 multivalue dictionary that retains the order of insertions and deletions.")
     (license license:unlicense)))
 
+(define-public python-autocommand
+  (package
+    (name "python-autocommand")
+    (version "2.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "autocommand" version))
+       (sha256
+        (base32 "03qp9xx4dq81ljhf56r21gp5j0lpqs1vaw99g0d84i97s3lj1m7y"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; This test fails with an invalid syntax error on 'task1 =
+                ;; asyncio.async(coro_1())' (see:
+                ;; https://github.com/Lucretiel/autocommand/issues/20).
+                (delete-file "test/test_autoasync.py")
+                (invoke "pytest" "-vv")))))))
+    (native-inputs (list python-pytest python-pytest-asyncio))
+    (home-page "https://github.com/Lucretiel/autocommand")
+    (synopsis "Python library to build a command-line from a function")
+    (description "@code{autocommand} is library to automatically generate and
+run simple @code{argparse} parsers from function signatures.")
+    (license license:lgpl3+)))
+
 (define-public python-autopep8
   (package
     (name "python-autopep8")
