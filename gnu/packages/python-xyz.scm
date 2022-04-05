@@ -118,6 +118,7 @@
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Evgeny Pisemsky <evgeny@pisemsky.com>
 ;;; Copyright © 2022 drozdov <drozdov@portalenergy.tech>
+;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29510,4 +29511,26 @@ adapted from the @code{packaging} package.")
     (description
       "This package automatically generates shell tab completion scripts for
 Python CLI apps.")
+    (license license:asl2.0)))
+
+(define-public python-sre-yield
+  (package
+    (name "python-sre-yield")
+    (version "1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sre_yield" version))
+       (sha256
+        (base32
+         "12kv3mvdr22g2v9wfr5aabh1f58s817dbh8mrlfzxzxs7hm1lkz9"))))
+    (build-system python-build-system)
+    (native-inputs (list python-nose))
+    (home-page "https://github.com/google/sre_yield")
+    (synopsis "Expands a regular expression to its possible matches")
+    (description
+     "The goal of sre_yield is to efficiently generate all values that can
+match a given regular expression, or count possible matches efficiently. It
+uses the parsed regular expression, so you get a much more accurate result
+than trying to just split strings.")
     (license license:asl2.0)))
