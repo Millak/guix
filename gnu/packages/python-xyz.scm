@@ -29512,6 +29512,24 @@ async I/O support.")
      "This package adds ANSI colors and decorations to your strings.")
     (license license:isc)))
 
+(define-public python-types-toml
+  (package
+    (name "python-types-toml")
+    (version "0.10.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "types-toml" version))
+       (sha256
+        (base32 "10400bd3yv6rjfnq8galskkbpqz1sfx9sfgr5qwvw04270x4cjgr"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/python/typeshed")
+    (synopsis "Typing stubs for TOML")
+    (description "This package contains typing stubs for TOML, a very small
+subset the Python stubs contained in the complete @code{typeshed}
+collection.")
+    (license license:asl2.0)))
+
 (define-public python-types-ujson
   (package
     (name "python-types-ujson")
