@@ -11145,8 +11145,11 @@ methylation and segmentation.")
     (arguments
      '(#:phases
        (modify-phases %standard-phases
-         (add-before 'configure 'set-PYTHONPATH
+         (add-before 'configure 'set-additional-environment-variables
            (lambda _
+             ;; Needed because of loompy
+             (setenv "NUMBA_CACHE_DIR" "/tmp")
+             ;; Needed to capture environment
              (setenv "PYTHONPATH" (getenv "GUIX_PYTHONPATH")))))))
     (inputs
      (list coreutils
