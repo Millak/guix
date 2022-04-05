@@ -98,6 +98,7 @@
   #:use-module (gnu packages pth)
   #:use-module (gnu packages pulseaudio)  ; libsndfile, libsamplerate
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
@@ -805,6 +806,31 @@ basic geometries.")
     ;; (GPLv3+), the combined work must be licensed as GPLv3+ (see:
     ;; https://gitlab.com/inkscape/inkscape/issues/784).
     (license license:gpl3+)))
+
+(define-public python-booleanoperations
+  (package
+    (name "python-booleanoperations")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "booleanOperations" version ".zip"))
+       (sha256
+        (base32 "1f41lb19m8azchl1aqz6j5ycbspb8jsf1cnn42hlydxd68f85ylc"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-fonttools python-pyclipper))
+    (native-inputs
+     (list python-defcon-bootstrap
+           python-fontpens-bootstrap
+           python-pytest
+           python-wheel
+           unzip))
+    (home-page "https://github.com/typemytype/booleanOperations")
+    (synopsis "Boolean operations on paths")
+    (description "Boolean operations on paths which uses a super fast
+@url{http://www.angusj.com/delphi/clipper.php, polygon clipper library by
+Angus Johnson}.")
+    (license license:expat)))
 
 (define-public pstoedit
   (package
