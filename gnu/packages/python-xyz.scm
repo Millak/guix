@@ -8418,19 +8418,41 @@ for older versions of Python.")
 (define-public python-importlib-metadata
   (package
     (name "python-importlib-metadata")
-    (version "1.5.0")
+    (version "4.11.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "importlib_metadata" version))
        (sha256
         (base32
-         "00ikdj4gjhankdljnz7g5ggak4k9lql2926x0x117ir9j2lv7x86"))))
+         "0f951zynlh39yicqnhrs3p1qa5p3g6ajjfcggf12y51ppxz5jk7a"))))
     (build-system python-build-system)
-    (propagated-inputs
-     (list python-zipp))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: PEP 517 manual build/install procedures copied from
+          ;; python-isort.
+          (replace 'build
+            (lambda _
+              ;; ZIP does not support timestamps before 1980.
+              (setenv "SOURCE_DATE_EPOCH" "315532800")
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv" "tests")))))))
+    (propagated-inputs (list python-zipp))
     (native-inputs
-     (list python-setuptools-scm python-pyfakefs python-packaging))
+     (list python-pypa-build
+           python-pyfakefs
+           python-pytest
+           python-setuptools-scm))
     (home-page "https://importlib-metadata.readthedocs.io/")
     (synopsis "Read metadata from Python packages")
     (description
@@ -8446,19 +8468,29 @@ need to use the older and less efficient @code{pkg_resources} package.")
 (define-public python2-importlib-metadata
   (let ((base (package-with-python2 (strip-python2-variant
                                      python-importlib-metadata))))
-    (package/inherit
-     base
-     (name "python2-importlib-metadata")
-     (native-inputs
-      `(("python-setuptools-scm" ,python2-setuptools-scm)
-        ("python-pyfakefs" ,python2-pyfakefs-bootstrap)
-        ("python-packaging" ,python2-packaging-bootstrap)))
-     (propagated-inputs
-      `(("python-configparser" ,python2-configparser)
-        ("python-contextlib2" ,python2-contextlib2)
-        ("python-importlib-resources" ,python2-importlib-resources)
-        ("python-pathlib2" ,python2-pathlib2)
-        ,@(package-propagated-inputs base))))))
+    (package/inherit base
+      (name "python2-importlib-metadata")
+      (version "1.5.0")
+      (source
+       (origin
+         (method url-fetch)
+         (uri (pypi-uri "importlib_metadata" version))
+         (sha256
+          (base32
+           "00ikdj4gjhankdljnz7g5ggak4k9lql2926x0x117ir9j2lv7x86"))))
+      (arguments (substitute-keyword-arguments (package-arguments base)
+                   ((#:phases phases)   ;reset standard phases
+                    #~%standard-phases)))
+      (native-inputs
+       `(("python-setuptools-scm" ,python2-setuptools-scm)
+         ("python-pyfakefs" ,python2-pyfakefs-bootstrap)
+         ("python-packaging" ,python2-packaging-bootstrap)))
+      (propagated-inputs
+       `(("python-configparser" ,python2-configparser)
+         ("python-contextlib2" ,python2-contextlib2)
+         ("python-importlib-resources" ,python2-importlib-resources)
+         ("python-pathlib2" ,python2-pathlib2)
+         ,@(package-propagated-inputs base))))))
 
 ;; This package is used by python2-pytest, and thus must not depend on it.
 (define-public python2-importlib-metadata-bootstrap
