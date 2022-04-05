@@ -12143,14 +12143,14 @@ asyncio.")
 (define-public python-pytest-black
   (package
     (name "python-pytest-black")
-    (version "0.3.8")
+    (version "0.3.12")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-black" version))
        (sha256
         (base32
-         "04lppqydxm0f3f3x0l8hj7v0j6d8syj34jc37yzqwqcyqsnaga81"))))
+         "19bmbcnaq02md8nnj6pywri3vps8sxnhysbfy386qkbn9w09ncqx"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-pytest python-black python-toml))
