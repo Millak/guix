@@ -960,35 +960,31 @@ behavior, not object observing or maintaining cached data.  Defcon implements
 UFO3 as described by the UFO font format.")
     (license license:expat)))
 
+(define-public python-defcon
+  (hidden-package
+   (package/inherit python-defcon-bootstrap
+     (name "python-defcon")
+     (propagated-inputs
+      (modify-inputs (package-propagated-inputs python-defcon-bootstrap)
+        (replace "python-fontpens-bootstrap" python-fontpens))))))
+
 (define-public python2-defcon
   (package
+    (inherit python-defcon)
     (name "python2-defcon")
     (version "0.3.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "defcon" version ".zip"))
-       (sha256
-        (base32
-         "03jlm2gy9lvbwj68kfdm43yaddwd634jwkdg4wf0jxx2s8mwbg22"))))
-    (build-system python-build-system)
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "defcon" version ".zip"))
+              (sha256
+               (base32
+                "03jlm2gy9lvbwj68kfdm43yaddwd634jwkdg4wf0jxx2s8mwbg22"))))
     (arguments
      `(#:python ,python-2))
     (native-inputs
      (list unzip python2-pytest python2-pytest-runner))
     (propagated-inputs
-     (list python2-fonttools python2-ufolib))
-    (home-page "https://pypi.org/project/defcon/")
-    (synopsis "Flexible objects for representing @acronym{UFO, unified font object} data")
-    (description
-     "Defcon is a set of @acronym{UFO, unified font object} based objects
-optimized for use in font editing applications.  The objects are built to
-be lightweight, fast and flexible.  The objects are very bare-bones and
-they are not meant to be end-all, be-all objects.  Rather, they are meant
-to provide base functionality so that you can focus on your application’s
-behavior, not object observing or maintaining cached data.  Defcon
-implements UFO3 as described by the UFO font format.")
-    (license license:expat)))
+     (list python2-fonttools python2-ufolib))))
 
 (define-public nototools
   (package
