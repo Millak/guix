@@ -133,6 +133,8 @@
     "third_party/depot_tools/owners.py" ;BSD-3
     "third_party/devtools-frontend" ;BSD-3
     "third_party/devtools-frontend/src/front_end/third_party/acorn" ;Expat
+    "third_party/devtools-frontend/src/front_end/third_party\
+/additional_readme_paths.json" ;no explicit license; trivial
     "third_party/devtools-frontend/src/front_end/third_party/axe-core" ;MPL2.0
     "third_party/devtools-frontend/src/front_end/third_party/chromium" ;BSD-3
     "third_party/devtools-frontend/src/front_end/third_party/codemirror" ;Expat
@@ -310,7 +312,7 @@
   ;; run the Blink performance tests, just remove everything to save ~70MiB.
   '("third_party/blink/perf_tests"))
 
-(define %chromium-version "98.0.4758.102")
+(define %chromium-version "99.0.4844.84")
 (define %ungoogled-revision (string-append %chromium-version "-1"))
 (define %debian-revision "debian/90.0.4430.85-1")
 
@@ -322,7 +324,7 @@
     (file-name (git-file-name "ungoogled-chromium" %ungoogled-revision))
     (sha256
      (base32
-      "0baz90fnzpldw0wwibhmh4pmki7vlpci9b9vvifa0rj5cwckl8a0"))))
+      "1j02zcam09mdw7wg30r1mx27b8bw0s9dvk4qjl6vrhp24rbmscs7"))))
 
 (define* (debian-patch name hash #:optional (revision %debian-revision))
   (origin
@@ -451,7 +453,7 @@
                                   %chromium-version ".tar.xz"))
               (sha256
                (base32
-                "0gpk13k8pfk65vinlmkg3p7mm0qb8z35psajkxzx0v3n2bllfns1"))
+                "05bma8lsm5lad58mlfiv8bg0fw5k5mxh0v6g1ik7xp2bsd71iv10"))
               (modules '((guix build utils)))
               (snippet (force ungoogled-chromium-snippet))))
     (build-system gnu-build-system)
@@ -595,6 +597,9 @@
                                "#include \"opus/opus_types.h\"")))
                           (find-files (string-append "third_party/webrtc/modules"
                                                      "/audio_coding/codecs/opus")))
+                (substitute* "media/audio/audio_opus_encoder.h"
+                  (("\"third_party/opus/src/include/opus.h\"")
+                   "<opus/opus.h>"))
 
                 (substitute* "third_party/webrtc/rtc_base/strings/json.h"
                   (("#include \"third_party/jsoncpp/")
@@ -637,7 +642,16 @@
                     (libvulkan.so.1 (search-input-file inputs
                                                        "/lib/libvulkan.so.1"))
                     (mesa-lib (dirname (search-input-file inputs
-                                                          "/lib/libGL.so.1"))))
+                                                          "/lib/libGL.so.1")))
+                    (gtk-libs '("libgio-2.0.so.0"
+                                "libgdk_pixbuf-2.0.so.0"
+                                "libgdk-3.so.0"
+                                "libgtk-3.so.0")))
+                (for-each (lambda (lib)
+                            (substitute* "ui/gtk/gtk_compat.cc"
+                              ((lib) (search-input-file
+                                      inputs (string-append "lib/" lib)))))
+                          gtk-libs)
                 (substitute* "printing/cups_config_helper.py"
                   (("cups_config =.*")
                    (string-append "cups_config = '" cups-config "'\n")))
@@ -738,8 +752,9 @@
                       #$(local-file
                          (search-auxiliary-file
                           "chromium/master-preferences.json")))
-                     (gtk+           (assoc-ref inputs "gtk+"))
-                     (xdg-utils      (assoc-ref inputs "xdg-utils")))
+                     (gtk (dirname (dirname
+                                    (search-input-file inputs "lib/libgtk-3.so"))))
+                     (xdg-utils (dirname (search-input-file inputs "bin/xdg-open"))))
 
                 (substitute* '("chrome/app/resources/manpage.1.in"
                                "chrome/installer/linux/common/desktop.template")
@@ -775,8 +790,8 @@
 
                   (wrap-program exe
                     ;; Avoid file manager crash.  See <https://bugs.gnu.org/26593>.
-                    `("XDG_DATA_DIRS" ":" prefix (,(string-append gtk+ "/share")))
-                    `("PATH" ":" prefix (,(string-append xdg-utils "/bin")))))
+                    `("XDG_DATA_DIRS" ":" prefix (,(string-append gtk "/share")))
+                    `("PATH" ":" prefix (,xdg-utils))))
 
                 (with-directory-excursion "chrome/app/theme/chromium"
                   (for-each
@@ -789,7 +804,7 @@
                    '("24" "48" "64" "128" "256")))))))))
     (native-inputs
      (list bison
-           clang-13
+           clang-14
            gn
            gperf
            lld-as-ld-wrapper
@@ -804,6 +819,7 @@
     (inputs
      (list alsa-lib
            atk
+           at-spi2-atk
            cups
            curl
            dbus
