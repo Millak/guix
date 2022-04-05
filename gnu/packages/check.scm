@@ -2344,6 +2344,64 @@ a Pytest test execution.")
 (define-public python2-pytest-pep8
   (package-with-python2 python-pytest-pep8))
 
+(define-public python-pytest-perf
+  (package
+    (name "python-pytest-perf")
+    (version "0.12.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jaraco/pytest-perf")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "05mgknvrmyz1kmkgw8jzvisavc68wz1g2wxv69i6xvzgqxf17m9f"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-k"
+                        (string-append
+                         ;; Do not test the myproject.toml build as it tries to pull
+                         ;; dependencies from the internet.
+                         "not project "
+                         ;; The benchmark test attempts to install the
+                         ;; package, failing to pull its dependencies from the
+                         ;; network.
+                         "and not BenchmarkRunner "
+                         ;; The upstream_url test requires networking.
+                         "and not upstream_url"))))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-black
+           python-pytest-checkdocs
+           python-pytest-cov
+           python-pytest-enabler
+           python-pytest-flake8
+           python-pytest-mypy))
+    (propagated-inputs
+     (list python-jaraco-context
+           python-jaraco-functools
+           python-more-itertools
+           python-packaging
+           python-pip-run
+           python-tempora))
+    (home-page "https://github.com/jaraco/pytest-perf")
+    (synopsis "Pytest plugin for performance testing")
+    (description "@code{pytest-perf} makes it easy to compare works by
+creating two installs, the control and the experiment, and measuring the
+performance of some Python code against each.  Under the hood, it uses the
+@command{pip-run} command to install from the upstream main
+branch (e.g. https://github.com/jaraco/pytest-perf) for the control and from
+@file{.} for the experiment.  It then runs each of the experiments against
+each of the environments.")
+    (license license:expat)))
+
 (define-public python-pytest-flakes
   (package
     (name "python-pytest-flakes")
