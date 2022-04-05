@@ -29585,6 +29585,24 @@ async I/O support.")
      "This package adds ANSI colors and decorations to your strings.")
     (license license:isc)))
 
+(define-public python-types-freezegun
+  (package
+    (name "python-types-freezegun")
+    (version "1.1.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "types-freezegun" version))
+       (sha256
+        (base32 "08g926s8343zwq140zcfwly3qfgmahm7lp0vgb3ics549b2hifzl"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/python/typeshed")
+    (synopsis "Typing stubs for @code{freezegun}")
+    (description "This package contains typing stubs for for @code{freezegun}, a
+very small subset the Python stubs contained in the complete @code{typeshed}
+collection.")
+    (license license:asl2.0)))
+
 (define-public python-types-toml
   (package
     (name "python-types-toml")
