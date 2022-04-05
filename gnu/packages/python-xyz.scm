@@ -3907,14 +3907,14 @@ environments and back.")
 (define-public python-pyyaml
   (package
     (name "python-pyyaml")
-    (version "5.4.1")
+    (version "6.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "PyYAML" version))
        (sha256
         (base32
-         "0pm440pmpvgv5rbbnm8hk4qga5a292kvlm1bh3x2nwr8pb5p8xv0"))))
+         "18imkjacvpxfgg1lbpraqywx3j7hr5dv99d242byqvrh2jf53yv8"))))
     (build-system python-build-system)
     (inputs
      (list libyaml python-cython))
@@ -3925,10 +3925,21 @@ environments and back.")
 complete YAML 1.1 parser, Unicode support, pickle support, capable extension
 API, and sensible error messages.  PyYAML supports standard YAML tags and
 provides Python-specific tags that represent an arbitrary Python object.")
-    (license license:expat)))
+    (license license:expat)
+    (properties `((python2-variant . ,(delay python2-pyyaml))))))
 
 (define-public python2-pyyaml
-  (package-with-python2 python-pyyaml))
+  (let ((base (package-with-python2 (strip-python2-variant python-pyyaml))))
+    (package
+      (inherit base)
+      (version "5.4.1")
+      (source
+       (origin
+         (method url-fetch)
+         (uri (pypi-uri "PyYAML" version))
+         (sha256
+          (base32
+           "0pm440pmpvgv5rbbnm8hk4qga5a292kvlm1bh3x2nwr8pb5p8xv0")))))))
 
 (define-public python-vine
   (package
