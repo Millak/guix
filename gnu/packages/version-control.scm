@@ -32,7 +32,7 @@
 ;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2021, 2022 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2021 Léo Le Bouter <lle-bout@zaclys.net>
@@ -221,14 +221,14 @@ Python 3.3 and later, rather than on Python 2.")
 (define-public git
   (package
    (name "git")
-   (version "2.35.1")
+   (version "2.34.0")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://kernel.org/software/scm/git/git-"
                                 version ".tar.xz"))
             (sha256
              (base32
-              "100h37cpw49pmlpf6lcpm1xi578gllf6y9in60h5mxj3cj754s6p"))))
+              "07s1c9lzlm4kpbb5lmxy0869phg7037pv4faz5hlqyb5csrbjv7x"))))
    (build-system gnu-build-system)
    (native-inputs
     `(("native-perl" ,perl)
@@ -248,7 +248,7 @@ Python 3.3 and later, rather than on Python 2.")
                 version ".tar.xz"))
           (sha256
            (base32
-            "00rqdj2bc3i7pfc16pciiz50ww41jkqg18iy5hi5jnf0y98sgqz4"))))
+            "0wic95h0i1bm66hxnc38pfj31n74lvk2xb8lx6kcfpzg2wszmsj7"))))
       ;; For subtree documentation.
       ("asciidoc" ,asciidoc)
       ("docbook-xsl" ,docbook-xsl)
@@ -338,7 +338,8 @@ Python 3.3 and later, rather than on Python 2.")
                       (("uname_S := .*" all)
                        (if (equal? ,(%current-target-system) "i586-pc-gnu")
                          "uname_S := GNU\n"
-                         all))))))
+                         all)))
+                    #t)))
               ;; We do not have bash-for-tests when cross-compiling.
               `((add-after 'unpack 'modify-PATH
                   (lambda* (#:key inputs #:allow-other-keys)
@@ -348,24 +349,28 @@ Python 3.3 and later, rather than on Python 2.")
                       ;; similar does the right thing.
                       (setenv "PATH" (string-join
                                       (remove (cut string-prefix? bash-full <>) path)
-                                      ":")))))))
+                                      ":"))
+                      #t)))))
         ;; Add cross curl-config script to PATH when cross-compiling.
         ,@(if (%current-target-system)
               '((add-before 'configure 'add-cross-curl-config
                    (lambda* (#:key inputs #:allow-other-keys)
                      (setenv "PATH"
                              (string-append (assoc-ref inputs "curl") "/bin:"
-                                            (getenv "PATH"))))))
+                                            (getenv "PATH")))
+                     #t)))
               '())
         (add-after 'configure 'patch-makefiles
           (lambda _
             (substitute* "Makefile"
               (("/usr/bin/perl") (which "perl"))
-              (("/usr/bin/python") (which "python3")))))
+              (("/usr/bin/python") (which "python3")))
+            #t))
         (add-after 'configure 'add-PM.stamp
           (lambda _
             ;; Add the "PM.stamp" to avoid "no rule to make target".
-            (call-with-output-file "perl/PM.stamp" (const #t))))
+            (call-with-output-file "perl/PM.stamp" (const #t))
+            #t))
         (add-after 'build 'build-subtree
           (lambda* (#:key inputs #:allow-other-keys)
             (with-directory-excursion "contrib/subtree"
@@ -384,7 +389,8 @@ Python 3.3 and later, rather than on Python 2.")
               (invoke "make" "install")
               (invoke "make" "install-doc")
               (substitute* "git-subtree"
-                (("/bin/sh") (which "sh"))))))
+                (("/bin/sh") (which "sh"))))
+            #t))
         (add-before 'check 'patch-tests
           (lambda _
             (let ((store-directory (%store-directory)))
@@ -422,7 +428,8 @@ Python 3.3 and later, rather than on Python 2.")
               (for-each delete-file
                         '("t/t9128-git-svn-cmd-branch.sh"
                           "t/t9167-git-svn-cmd-branch-subproject.sh"
-                          "t/t9141-git-svn-multiple-branches.sh")))))
+                          "t/t9141-git-svn-multiple-branches.sh"))
+              #t)))
         (add-after 'install 'install-shell-completion
           (lambda* (#:key outputs #:allow-other-keys)
             (let* ((out         (assoc-ref outputs "out"))
@@ -430,7 +437,8 @@ Python 3.3 and later, rather than on Python 2.")
               ;; TODO: Install the tcsh and zsh completions in the right place.
               (mkdir-p completions)
               (copy-file "contrib/completion/git-completion.bash"
-                         (string-append completions "/git")))))
+                         (string-append completions "/git"))
+              #t)))
         (add-after 'install 'install-credential-netrc
           (lambda* (#:key outputs #:allow-other-keys)
             (let* ((netrc (assoc-ref outputs "credential-netrc")))
@@ -444,22 +452,24 @@ Python 3.3 and later, rather than on Python 2.")
               ;; community calls this "dotless @INC").
               (wrap-program (string-append netrc "/bin/git-credential-netrc")
                 `("PERL5LIB" ":" prefix
-                  (,(string-append (assoc-ref outputs "out")
-                                   "/share/perl5")))))))
+                  (,(string-append (assoc-ref outputs "out") "/share/perl5"))))
+              #t)))
         (add-after 'install 'install-credential-libsecret
           (lambda* (#:key outputs #:allow-other-keys)
             (let* ((libsecret (assoc-ref outputs "credential-libsecret")))
               (with-directory-excursion "contrib/credential/libsecret"
                 ((assoc-ref gnu:%standard-phases 'build))
                 (install-file "git-credential-libsecret"
-                              (string-append libsecret "/bin"))))))
+                              (string-append libsecret "/bin"))
+                #t))))
         (add-after 'install 'install-subtree
           (lambda* (#:key outputs #:allow-other-keys)
             (let ((subtree (assoc-ref outputs "subtree")))
               (install-file "contrib/subtree/git-subtree"
                             (string-append subtree "/bin"))
               (install-file "contrib/subtree/git-subtree.1"
-                            (string-append subtree "/share/man/man1")))))
+                            (string-append subtree "/share/man/man1"))
+              #t)))
          (add-after 'install 'restore-sample-hooks-shebang
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -468,7 +478,8 @@ Python 3.3 and later, rather than on Python 2.")
                            (format #t "restoring shebang on `~a'~%" file)
                            (substitute* file
                              (("^#!.*/bin/sh") "#!/bin/sh")))
-                         (find-files dir ".*")))))
+                         (find-files dir ".*"))
+               #t)))
         (add-after 'install 'split
           (lambda* (#:key inputs outputs #:allow-other-keys)
             ;; Split the binaries to the various outputs.
@@ -544,7 +555,9 @@ Python 3.3 and later, rather than on Python 2.")
               (wrap-program git-sm
                 `("PATH" ":" prefix
                   (,(string-append (assoc-ref inputs "perl")
-                                   "/bin")))))))
+                                   "/bin"))))
+
+              #t)))
         (add-after 'split 'install-man-pages
           (lambda* (#:key inputs outputs #:allow-other-keys)
             (let* ((out (assoc-ref outputs "out"))
