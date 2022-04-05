@@ -2200,6 +2200,31 @@ style test suites, summarizing their results, and providing indication of
 failures.")
     (license license:ncsa)))
 
+;;; This is marked as a bootstrap package because it propagates bootstrapped
+;;; versions of jaraco-context and jaraco-functools.
+(define-public python-pytest-enabler-bootstrap
+  (hidden-package
+   (package
+     (name "python-pytest-enabler-bootstrap")
+     (version "1.2.1")
+     (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "pytest-enabler" version))
+        (sha256
+         (base32 "023ymm0r2gpn5q7aikvx567s507j0zk46w41w6gxb69c688zgs73"))))
+     (build-system python-build-system)
+     (arguments (list #:tests? #f))
+     (propagated-inputs
+      (list python-jaraco-context-bootstrap
+            python-jaraco-functools-bootstrap
+            python-toml))
+     (native-inputs (list python-setuptools-scm))
+     (home-page "https://github.com/jaraco/pytest-enabler")
+     (synopsis "Enable installed pytest plugins")
+     (description "Enable installed pytest plugins")
+     (license license:expat))))
+
 (define-public python-pytest-freezegun
   (package
     (name "python-pytest-freezegun")
