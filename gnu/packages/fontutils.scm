@@ -314,6 +314,49 @@ was developed for interpolating data related to fonts, but if can handle any
 arithmetic object.")
     (license license:bsd-3)))
 
+(define-public python-ufoprocessor
+  (package
+    (name "python-ufoprocessor")
+    (version "1.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ufoProcessor" version ".zip"))
+       (sha256
+        (base32 "0ns11aamgavgsfj8qf5kq7dvzmgl0mhr1cbych2f075ipfdvva5s"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              ;; Most of the tests appear to be a work in
+                              ;; progress; run only a subset.
+                              (invoke "python" "Tests/tests.py")))))))
+    (propagated-inputs
+     (list python-defcon
+           python-fontmath
+           python-fontparts
+           python-fonttools
+           python-mutatormath))
+    (native-inputs (list unzip))
+    (home-page "https://github.com/LettError/ufoProcessor")
+    (synopsis "Process and generate @acronym{UFO, Unified Font Object} files")
+    (description "This Python package processes and generates instances for
+@acronym{UFO, Unified Font Object} files, glyphs and other data.  It can,
+among other things:
+@itemize
+@item Collect source materials.
+@item Provide mutators for specific glyphs, font info, kerning so that other
+tools can generate partial instances.
+@item Support designspace format 4 with layers.
+@item Apply avar-like designspace bending.
+@item Apply rules.
+@item Generate actual UFO instances in formats 2 and 3.
+@item Round geometry as requested.
+@end itemize")
+    (license license:expat)))
+
 (define-public ttfautohint
   (package
     (name "ttfautohint")
