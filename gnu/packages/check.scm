@@ -2200,6 +2200,38 @@ style test suites, summarizing their results, and providing indication of
 failures.")
     (license license:ncsa)))
 
+(define-public python-pytest-freezegun
+  (package
+    (name "python-pytest-freezegun")
+    (version "0.4.2")
+    (source (origin
+              ;; The test suite is not included in the PyPI archive.
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ktosiek/pytest-freezegun")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "10c4pbh03b4s1q8cjd75lr0fvyf9id0zmdk29566qqsmaz28npas"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv")))))))
+    (propagated-inputs (list python-freezegun python-pytest))
+    (native-inputs (list unzip))
+    (home-page "https://github.com/ktosiek/pytest-freezegun")
+    (synopsis "Pytest plugin to freeze time in test fixtures")
+    (description "The @code{pytest-freezegun} plugin wraps tests and fixtures
+with @code{freeze_time}, which allows to control (i.e., freeze) the time seen
+by the test.")
+    (license license:expat)))
+
 (define-public python-pytest-mypy
   (package
     (name "python-pytest-mypy")
