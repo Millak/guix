@@ -12572,6 +12572,44 @@ is binding LibSass.")
 domains support.")
     (license license:expat)))
 
+;;; Variant used to break a cycle with python-pip-run-bootstrap.
+(define-public python-path-bootstrap
+  (hidden-package
+   (package
+     (name "python-path-bootstrap")
+     (version "16.4.0")
+     (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "path" version))
+        (sha256
+         (base32 "0lig13gxnfv98v790db1smvsbd3mnj7y8rwyiwhfi6xiqibygwms"))))
+     (build-system python-build-system)
+     (arguments
+      (list
+       #:tests? #f
+       #:phases
+       #~(modify-phases %standard-phases
+           ;; XXX: PEP 517 manual build/install procedures copied from
+           ;; python-isort.
+           (replace 'build
+             (lambda _
+               ;; ZIP does not support timestamps before 1980.
+               (setenv "SOURCE_DATE_EPOCH" "315532800")
+               (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+           (replace 'install
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((whl (car (find-files "dist" "\\.whl$"))))
+                 (invoke "pip" "--no-cache-dir" "--no-input"
+                         "install" "--no-deps" "--prefix" #$output whl)))))))
+     (native-inputs (list python-pypa-build python-setuptools-scm))
+     (home-page "https://github.com/jaraco/path")
+     (synopsis "Object-oriented file system path manipulation library")
+     (description "@code{path} (formerly @code{path.py}) implements path
+objects as first-class entities, allowing common operations on files to be
+invoked on those path objects directly.")
+     (license license:expat))))
+
 (define-public python-pretend
   (package
     (name "python-pretend")
