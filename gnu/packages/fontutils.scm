@@ -357,6 +357,32 @@ tools can generate partial instances.
 @end itemize")
     (license license:expat)))
 
+(define-public python-ufonormalizer
+  (package
+    (name "python-ufonormalizer")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ufonormalizer" version ".zip"))
+       (sha256
+        (base32 "0v5awian2alap7nvxfz38aahyqbqnma16nrqcpr8602hbbki04g6"))))
+    (build-system python-build-system)
+    (native-inputs (list python-setuptools-scm unzip))
+    (home-page "https://github.com/unified-font-object/ufoNormalizer")
+    (synopsis "Script to normalize @acronym{UFO, Unified Font Object} data")
+    (description "The purpose of the @command{ufonormalizer} command is to
+provide a standard formatting so that updates to @acronym{UFO, Unified Font
+Object} data can be usefully versioned.  Examples of formatting applied by
+ufoNormalizer include:
+@itemize
+@item Changing floating-point numbers to integers where it doesn't alter the
+value (e.g. @samp{x=\"95.0\"} becomes @samp{x=\"95\"})
+@item Rounding floating-point numbers to 10 digits
+@item Formatting XML with tabs rather than spaces.
+@end itemize")
+    (license license:bsd-3)))
+
 (define-public ttfautohint
   (package
     (name "ttfautohint")
