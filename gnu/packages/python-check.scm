@@ -2,7 +2,7 @@
 ;;; Copyright © 2019, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2019, 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019, 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019, 2021 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
@@ -1673,7 +1673,7 @@ supported by the MyPy typechecker.")
 (define-public python-mypy
   (package
     (name "python-mypy")
-    (version "0.931")
+    (version "0.942")
     (source
      (origin
        ;; Because of https://github.com/python/mypy/issues/9584, the
@@ -1690,9 +1690,10 @@ supported by the MyPy typechecker.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1v83flrdxh8grcp40qw04q4hzjflih9xwib64078vsxv2w36f817"))
+         "0hxnrqhvskiclwfj2s4gyfclzjas1dvpfxhyng8v7mq38rqps1j5"))
        (patches
-        (search-patches "python-mypy-12332.patch"))))
+        (search-patches "python-mypy-12332.patch"
+                        "python-mypy-use-sys-path.patch"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1714,10 +1715,10 @@ supported by the MyPy typechecker.")
     (home-page "http://www.mypy-lang.org/")
     (synopsis "Static type checker for Python")
     (description "Mypy is an optional static type checker for Python that aims
-to combine the benefits of dynamic (or 'duck') typing and static typing.  Mypy combines
+to combine the benefits of dynamic typing and static typing.  Mypy combines
 the expressive power and convenience of Python with a powerful type system and
-compile-time type checking.  Mypy type checks standard Python programs; run them using
-any Python VM with basically no runtime overhead.")
+compile-time type checking.  Mypy type checks standard Python programs; run
+them using any Python VM with basically no runtime overhead.")
     ;; Most of the code is under MIT license; Some files are under Python Software
     ;; Foundation License version 2: stdlib-samples/*, mypyc/lib-rt/pythonsupport.h and
     ;; mypyc/lib-rt/getargs.c
