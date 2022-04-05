@@ -2200,6 +2200,27 @@ style test suites, summarizing their results, and providing indication of
 failures.")
     (license license:ncsa)))
 
+(define-public python-pytest-mypy
+  (package
+    (name "python-pytest-mypy")
+    (version "0.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-mypy" version))
+       (sha256
+        (base32 "0p5bd4r4gbwk1h7mpx1jkhdwkckapfz24bp9x5mmqb610ps3pylz"))))
+    (build-system python-build-system)
+    (native-inputs (list python-setuptools-scm))
+    (propagated-inputs
+     (list python-attrs python-filelock python-mypy python-pytest))
+    (home-page "https://github.com/dbader/pytest-mypy")
+    (synopsis "Mypy static type checker plugin for Pytest")
+    (description "@code{pytest-mypi} is a static type checker plugin for
+Pytest that runs the mypy static type checker on your source files as part of
+a Pytest test execution.")
+    (license license:expat)))
+
 (define-public python-pytest-pep8
   (package
     (name "python-pytest-pep8")
