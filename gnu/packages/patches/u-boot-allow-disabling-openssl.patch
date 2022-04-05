@@ -1,39 +1,15 @@
-From f060e90d148270307228315e2759a0065ec1d796 Mon Sep 17 00:00:00 2001
 From: Vagrant Cascadian <vagrant@debian.org>
 Date: Fri, 22 Oct 2021 17:34:53 -0700
 Subject: [PATCH] Revert "tools: kwbimage: Do not hide usage of secure header
  under CONFIG_ARMADA_38X"
 
 This reverts commit b4f3cc2c42d97967a3a3c8796c340f6b07ecccac.
----
- tools/Makefile   |  8 ++++++++
- tools/kwbimage.c | 22 ++++++++++++++++++++++
- 2 files changed, 30 insertions(+)
 
-diff --git a/tools/Makefile b/tools/Makefile
-index 4a86321f64..9517f203fd 100644
---- a/tools/Makefile
-+++ b/tools/Makefile
-@@ -169,6 +169,14 @@ HOST_EXTRACFLAGS	+= -DCONFIG_FIT_SIGNATURE_MAX_SIZE=0xffffffff
- HOST_EXTRACFLAGS	+= -DCONFIG_FIT_CIPHER
- endif
- 
-+ifneq ($(CONFIG_SYS_U_BOOT_OFFS),)
-+HOSTCFLAGS_kwbimage.o += -DCONFIG_SYS_U_BOOT_OFFS=$(CONFIG_SYS_U_BOOT_OFFS)
-+endif
-+
-+ifneq ($(CONFIG_ARMADA_38X),)
-+HOSTCFLAGS_kwbimage.o += -DCONFIG_KWB_SECURE
-+endif
-+
- # MXSImage needs LibSSL
- ifneq ($(CONFIG_MX23)$(CONFIG_MX28)$(CONFIG_ARMADA_38X)$(CONFIG_TOOLS_LIBCRYPTO),)
- HOSTCFLAGS_kwbimage.o += \
 diff --git a/tools/kwbimage.c b/tools/kwbimage.c
-index d200ff2425..23d6be3c9a 100644
+index 94b7685392..eec599b0ee 100644
 --- a/tools/kwbimage.c
 +++ b/tools/kwbimage.c
-@@ -14,6 +14,7 @@
+@@ -19,6 +19,7 @@
  #include <stdint.h>
  #include "kwbimage.h"
  
@@ -41,11 +17,15 @@ index d200ff2425..23d6be3c9a 100644
  #include <openssl/bn.h>
  #include <openssl/rsa.h>
  #include <openssl/pem.h>
-@@ -39,10 +40,13 @@ void EVP_MD_CTX_cleanup(EVP_MD_CTX *ctx)
+@@ -44,6 +45,7 @@ void EVP_MD_CTX_cleanup(EVP_MD_CTX *ctx)
  	EVP_MD_CTX_reset(ctx);
  }
  #endif
 +#endif
+ 
+ /* fls - find last (most-significant) bit set in 4-bit integer */
+ static inline int fls4(int num)
+@@ -62,7 +64,9 @@ static inline int fls4(int num)
  
  static struct image_cfg_element *image_cfg;
  static int cfgn;
@@ -55,7 +35,7 @@ index d200ff2425..23d6be3c9a 100644
  
  struct boot_mode {
  	unsigned int id;
-@@ -237,6 +241,8 @@ image_count_options(unsigned int optiontype)
+@@ -278,6 +282,8 @@ image_count_options(unsigned int optiontype)
  	return count;
  }
  
@@ -64,16 +44,15 @@ index d200ff2425..23d6be3c9a 100644
  static int image_get_csk_index(void)
  {
  	struct image_cfg_element *e;
-@@ -259,6 +265,8 @@ static bool image_get_spezialized_img(void)
- 	return e->sec_specialized_img;
- }
+@@ -288,6 +294,7 @@ static int image_get_csk_index(void)
  
+ 	return e->csk_idx;
+ }
 +#endif
-+
- /*
-  * Compute a 8-bit checksum of a memory area. This algorithm follows
-  * the requirements of the Marvell SoC BootROM specifications.
-@@ -353,6 +361,7 @@ static uint8_t baudrate_to_option(unsigned int baudrate)
+ 
+ static bool image_get_spezialized_img(void)
+ {
+@@ -432,6 +439,7 @@ static uint8_t baudrate_to_option(unsigned int baudrate)
  	}
  }
  
@@ -81,18 +60,17 @@ index d200ff2425..23d6be3c9a 100644
  static void kwb_msg(const char *fmt, ...)
  {
  	if (verbose_mode) {
-@@ -847,6 +856,8 @@ done:
+@@ -926,6 +934,7 @@ static int kwb_dump_fuse_cmds(struct secure_hdr_v1 *sec_hdr)
+ done:
  	return ret;
  }
- 
 +#endif
-+
- static void *image_create_v0(size_t *imagesz, struct image_tool_params *params,
- 			     int payloadsz)
+ 
+ static size_t image_headersz_align(size_t headersz, uint8_t blockid)
  {
-@@ -977,11 +988,13 @@ static size_t image_headersz_v1(int *hasext)
- 			*hasext = 1;
- 	}
+@@ -1079,11 +1088,13 @@ static size_t image_headersz_v1(int *hasext)
+ 	 */
+ 	headersz = sizeof(struct main_hdr_v1);
  
 +#if defined(CONFIG_KWB_SECURE)
  	if (image_get_csk_index() >= 0) {
@@ -102,28 +80,27 @@ index d200ff2425..23d6be3c9a 100644
  	}
 +#endif
  
- 	/*
- 	 * The payload should be aligned on some reasonable
-@@ -1058,6 +1071,8 @@ err_close:
+ 	cpu_sheeva = image_is_cpu_sheeva();
+ 
+@@ -1270,6 +1281,7 @@ err_close:
  	return -1;
  }
  
 +#if defined(CONFIG_KWB_SECURE)
-+
- int export_pub_kak_hash(RSA *kak, struct secure_hdr_v1 *secure_hdr)
+ static int export_pub_kak_hash(RSA *kak, struct secure_hdr_v1 *secure_hdr)
  {
  	FILE *hashf;
-@@ -1170,6 +1185,7 @@ int add_secure_header_v1(struct image_tool_params *params, uint8_t *ptr,
+@@ -1382,6 +1394,7 @@ static int add_secure_header_v1(struct image_tool_params *params, uint8_t *ptr,
  
  	return 0;
  }
 +#endif
  
- static void *image_create_v1(size_t *imagesz, struct image_tool_params *params,
- 			     uint8_t *ptr, int payloadsz)
-@@ -1177,7 +1193,9 @@ static void *image_create_v1(size_t *imagesz, struct image_tool_params *params,
- 	struct image_cfg_element *e;
+ static void finish_register_set_header_v1(uint8_t **cur, uint8_t **next_ext,
+ 					  struct register_set_hdr_v1 *register_set_hdr,
+@@ -1406,7 +1419,9 @@ static void *image_create_v1(size_t *imagesz, struct image_tool_params *params,
  	struct main_hdr_v1 *main_hdr;
+ 	struct opt_hdr_v1 *ohdr;
  	struct register_set_hdr_v1 *register_set_hdr;
 +#if defined(CONFIG_KWB_SECURE)
  	struct secure_hdr_v1 *secure_hdr = NULL;
@@ -131,7 +108,7 @@ index d200ff2425..23d6be3c9a 100644
  	size_t headersz;
  	uint8_t *image, *cur;
  	int hasext = 0;
-@@ -1253,6 +1271,7 @@ static void *image_create_v1(size_t *imagesz, struct image_tool_params *params,
+@@ -1491,6 +1506,7 @@ static void *image_create_v1(size_t *imagesz, struct image_tool_params *params,
  	if (main_hdr->blockid == IBR_HDR_PEX_ID)
  		main_hdr->srcaddr = cpu_to_le32(0xFFFFFFFF);
  
@@ -139,26 +116,24 @@ index d200ff2425..23d6be3c9a 100644
  	if (image_get_csk_index() >= 0) {
  		/*
  		 * only reserve the space here; we fill the header later since
-@@ -1263,6 +1282,7 @@ static void *image_create_v1(size_t *imagesz, struct image_tool_params *params,
+@@ -1501,7 +1517,7 @@ static void *image_create_v1(size_t *imagesz, struct image_tool_params *params,
  		*next_ext = 1;
  		next_ext = &secure_hdr->next;
  	}
+-
 +#endif
- 
  	datai = 0;
- 	register_set_hdr = (struct register_set_hdr_v1 *)cur;
-@@ -1310,9 +1330,11 @@ static void *image_create_v1(size_t *imagesz, struct image_tool_params *params,
- 			return NULL;
+ 	for (cfgi = 0; cfgi < cfgn; cfgi++) {
+ 		e = &image_cfg[cfgi];
+@@ -1552,9 +1568,11 @@ static void *image_create_v1(size_t *imagesz, struct image_tool_params *params,
+ 					      &datai, delay);
  	}
  
 +#if defined(CONFIG_KWB_SECURE)
- 	if (secure_hdr && add_secure_header_v1(params, ptr, payloadsz,
+ 	if (secure_hdr && add_secure_header_v1(params, ptr, payloadsz + headersz,
  					       headersz, image, secure_hdr))
  		return NULL;
 +#endif
  
- 	/* Calculate and set the header checksum */
- 	main_hdr->checksum = image_checksum8(main_hdr, headersz);
--- 
-2.30.2
-
+ 	*imagesz = headersz;
+ 

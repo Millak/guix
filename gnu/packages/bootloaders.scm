@@ -517,7 +517,7 @@ tree binary files.  These are board description files used by Linux and BSD.")
 (define u-boot
   (package
     (name "u-boot")
-    (version "2021.10")
+    (version "2022.04")
     (source (origin
 	      (patches
                (list %u-boot-rockchip-inno-usb-patch
@@ -530,19 +530,22 @@ tree binary files.  These are board description files used by Linux and BSD.")
                     "u-boot-" version ".tar.bz2"))
               (sha256
                (base32
-                "1m0bvwv8r62s4wk4w3cmvs888dhv9gnfa98dczr4drk2jbhj7ryd"))))
+                "1l5w13dznj0z1ibqv2d6ljx2ma1gnf5x5ay3dqkqwxr6750nbq38"))))
     (native-inputs
      `(("bc" ,bc)
        ("bison" ,bison)
        ("dtc" ,dtc)
+       ("gnutls" ,gnutls)
        ("flex" ,flex)
        ("lz4" ,lz4)
+       ("tinfo" ,ncurses/tinfo)
        ("perl" ,perl)
        ("python" ,python)
        ("python-coverage" ,python-coverage)
        ("python-pycryptodomex" ,python-pycryptodomex)
        ("python-pytest" ,python-pytest)
-       ("swig" ,swig)))
+       ("swig" ,swig)
+       ("libuuid" ,util-linux "lib")))
     (build-system  gnu-build-system)
     (home-page "https://www.denx.de/wiki/U-Boot/")
     (synopsis "ARM bootloader")
@@ -911,14 +914,7 @@ to Novena upstream, does not load u-boot.img from the first partition.")
   (make-u-boot-package "qemu-riscv64" "riscv64-linux-gnu"))
 
 (define-public u-boot-qemu-riscv64-smode
-  (let ((base (make-u-boot-package "qemu-riscv64_smode" "riscv64-linux-gnu")))
-    (package
-      (inherit base)
-      (source (origin
-                (inherit (package-source u-boot))
-                (patches
-                 (search-patches "u-boot-riscv64-fix-extlinux.patch"
-                                 %u-boot-allow-disabling-openssl-patch)))))))
+  (make-u-boot-package "qemu-riscv64_smode" "riscv64-linux-gnu"))
 
 (define-public u-boot-sifive-unleashed
   (make-u-boot-package "sifive_unleashed" "riscv64-linux-gnu"))
