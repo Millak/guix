@@ -21508,6 +21508,60 @@ particularly convenient for use in tests.")
 (define-public python2-tempdir
   (package-with-python2 python-tempdir))
 
+(define-public python-tempora
+  (package
+    (name "python-tempora")
+    (version "5.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "tempora" version))
+       (sha256
+        (base32 "09wirlk5vmxlhl9rnxp7g5qz2nsd6b0gnzk5fczbz0s8lsbz386b"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: PEP 517 manual build copied from python-isort.
+          (replace 'build
+            (lambda _
+              (setenv "SOURCE_DATE_EPOCH" "315532800")
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (replace 'install
+            (lambda _
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; Do not test the myproject.toml build as it tries to pull
+                ;; dependencies from the Internet.
+                (invoke "pytest" "-k" "not project")))))))
+    (native-inputs
+     (list python-pypa-build
+           python-freezegun
+           python-pytest
+           python-pytest-black
+           python-pytest-checkdocs
+           python-pytest-cov
+           python-pytest-enabler
+           python-pytest-flake8
+           python-pytest-freezegun
+           python-pytest-mypy
+           python-setuptools-scm
+           python-types-freezegun
+           python-types-pytz))
+    (propagated-inputs (list python-jaraco-functools python-pytz))
+    (home-page "https://github.com/jaraco/tempora")
+    (synopsis "Python date and time objects and routines")
+    (description "The @code{tempora} Python library contains miscellaneous
+date and time related utilities and constants, routines for measuring,
+profiling, and getting datetime-aware @acronym{UTC, Coordinated Universal
+Time} values as well as an event scheduler.")
+    (license license:expat)))
+
 (define-public python-activepapers
   (package
     (name "python-activepapers")
