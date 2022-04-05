@@ -219,6 +219,16 @@ Interface} for interacting with the parts of fonts during the font development
 process.  FontParts is the successor of RoboFab.")
      (license license:expat))))
 
+(define-public python-fontparts
+  (package/inherit python-fontparts-bootstrap
+    (name "python-fontparts")
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs python-fontparts-bootstrap)
+       (replace "python-defcon-bootstrap" python-defcon)))
+    (properties
+     (alist-delete 'hidden?
+                   (package-properties python-fontparts-bootstrap)))))
+
 (define-public python-opentype-sanitizer
   (package
     (name "python-opentype-sanitizer")
