@@ -94,7 +94,7 @@
 ;;; Copyright © 2021 Yurii Kholodkov <urist.mckorobochka@gmail.com>
 ;;; Copyright © 2021 Alexey Abramov <levenson@mmer.org>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
-;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
+;;; Copyright © 2021, 2022 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Eugene Klimov <lipklim@mailbox.org>
 ;;; Copyright © 2021 Zheng Junjie <873216071@qq.com>
@@ -13037,6 +13037,30 @@ to take once it is.  Org Edna runs when either the BLOCKER or TRIGGER
 properties are set on a heading, and when it is changing from a TODO state to
 a DONE state.")
     (license license:gpl3+)))
+
+(define-public emacs-toodoo
+  ;; Package has no release.  Version is extracted from "Version:" keyword in
+  ;; main file, and commit below matches version bump.
+  (package
+    (name "emacs-toodoo")
+    (version "0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ChanderG/toodoo.el")
+             (commit "149a563863c2f728c5f903475dbce50547c51000")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "00q7aym0kl03j9m66pivgy0snxcjjg402049b2wdy18kgyypfvx8"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-transient emacs-evil))
+    (home-page "https://github.com/ChanderG/toodoo.el")
+    (synopsis "Magit-like interface for a Todo workflow built on top of Org")
+    (description "This package provides a minor mode for fast and easy management of Todos
+using Org mode and transients.")
+    (license license:asl2.0)))
 
 (define-public emacs-flx
   (package
