@@ -8516,6 +8516,28 @@ finding unresolved symbols in Python code and their corresponding imports.")
 procedures.")
      (license license:expat))))
 
+;;; Variant used to break a cycle with python-pytest-enabler.
+(define-public python-jaraco-functools-bootstrap
+  (hidden-package
+   (package
+     (name "python-jaraco-functools-bootstrap")
+     (version "3.5.0")
+     (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "jaraco.functools" version))
+        (sha256
+         (base32 "186xqzs3bqhjwajnprxy3sc3h0w5vdld8spc1dxjnn9720yykq1i"))))
+     (build-system python-build-system)
+     (arguments (list #:tests? #f))
+     (native-inputs (list python-setuptools-scm))
+     (propagated-inputs (list python-more-itertools))
+     (home-page "https://github.com/jaraco/jaraco.functools")
+     (synopsis "Python library extending Python's @code{functools}")
+     (description "This library extends the standard @code{functools} Python
+module with a few extra procedures.")
+     (license license:expat))))
+
 (define-public python-jaraco-packaging
   (package
     (name "python-jaraco-packaging")
