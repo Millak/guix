@@ -12658,6 +12658,49 @@ Python Package Index (PyPI).")
 (define-public python2-pip
   (package-with-python2 python-pip))
 
+;;; Variant used to break a dependency cycle with
+;;; python-pytest-perf-bootstrap.
+(define-public python-pip-run-bootstrap
+  (hidden-package
+   (package
+     (name "python-pip-run-bootstrap")
+     (version "8.8.0")
+     (source (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url "https://github.com/jaraco/pip-run")
+                     (commit (string-append "v" version))))
+               (file-name (git-file-name name version))
+               (sha256
+                (base32
+                 "0ycrjj3jgqcr9c2k7y8vprq65iblg0q0hvwz8zwi13gmb0ffds0c"))))
+     (build-system python-build-system)
+     (arguments
+      (list
+       #:tests? #f
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-before 'build 'pretend-version
+             ;; The version string is usually derived via setuptools-scm, but
+             ;; without the git metadata available this fails.
+             (lambda _
+               (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+     (native-inputs (list python-setuptools-scm))
+     (propagated-inputs (list python-autocommand python-path-bootstrap
+                              python-packaging))
+     (home-page "https://github.com/jaraco/pip-run")
+     (synopsis "Dynamic dependency loader for Python")
+     (description "The @command{pip-run} command provides on-demand temporary
+package installation for a single interpreter run.  It replaces this series of
+commands:
+@example
+$ virtualenv --python pythonX.X --system-site-packages /tmp/env
+$ /tmp/env/bin/pip install pkg1 pkg2 -r reqs.txt
+$ /tmp/env/bin/python ...
+$ rm -rf /tmp/env
+@end example")
+     (license license:expat))))
+
 (define-public python-tlsh
   (package
     (name "python-tlsh")
