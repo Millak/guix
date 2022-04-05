@@ -8557,6 +8557,44 @@ finding unresolved symbols in Python code and their corresponding imports.")
      "@code{inotify-simple} is a simple wrapper around inotify library.")
     (license license:bsd-3)))
 
+(define-public python-jaraco-classes
+  (package
+    (name "python-jaraco-classes")
+    (version "3.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jaraco.classes" version))
+       (sha256
+        (base32 "0d6g7qvfv1jlzbzh6asprqdblqd59grvlvr3nwbdqdqrmwlbfm7d"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; Do not test the myproject.toml build as it tries to pull
+                ;; dependencies from the Internet.
+                (invoke "pytest" "-vv" "-k" "not project")))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-black
+           python-pytest-checkdocs
+           python-pytest-cov
+           python-pytest-enabler-bootstrap ;OK since not propagated
+           python-pytest-flake8
+           python-pytest-mypy
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs (list python-more-itertools))
+    (home-page "https://github.com/jaraco/jaraco.classes")
+    (synopsis "Utility functions for Python class constructs")
+    (description "This Python library contains utility functions for Python
+class constructs.")
+    (license license:expat)))
+
 ;;; Variant used to break a cycle with python-pytest-enabler.
 (define-public python-jaraco-context-bootstrap
   (hidden-package
