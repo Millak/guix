@@ -133,6 +133,33 @@ files (OTF, TTF) and WOFF and WOFF2 font files, validating them and sanitizing
 them as it goes.")
     (license license:bsd-3)))
 
+(define-public python-cu2qu
+  (package
+    (name "python-cu2qu")
+    (version "1.6.7.post1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "cu2qu" version ".zip"))
+       (sha256
+        (base32 "1x762r7bf39g6aivfvrmq00h6f07abvs9x1xm0fz8l81vq8jz64c"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-fonttools-full))
+    (native-inputs
+     (list python-cython
+           python-defcon
+           python-pytest
+           python-pytest-runner
+           python-setuptools-scm
+           unzip))
+    (home-page "https://github.com/googlefonts/cu2qu")
+    (synopsis "Cubic-to-quadratic bezier curve conversion")
+    (description "This library provides functions which take in @acronym{UFO,
+Unified Font Object} objects (such as Defcon Fonts or Robofab RFonts) and
+converts any cubic curves to quadratic.  The most useful function is probably
+@code{fonts_to_quadratic}.")
+    (license license:asl2.0)))
+
 (define-public python-fontmath
   (package
     (name "python-fontmath")
