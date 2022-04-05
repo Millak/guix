@@ -170,6 +170,7 @@ designs.")
      `(#:install-plan
        '(("deps.edn" "lib/clojure/")
          ("example-deps.edn" "lib/clojure/")
+         ("tools.edn" "lib/clojure/")
          ("exec.jar" "lib/clojure/libexec/")
          ("clojure" "bin/")
          ("clj" "bin/"))
