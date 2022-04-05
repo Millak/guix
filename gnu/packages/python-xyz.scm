@@ -8495,6 +8495,27 @@ finding unresolved symbols in Python code and their corresponding imports.")
      "@code{inotify-simple} is a simple wrapper around inotify library.")
     (license license:bsd-3)))
 
+;;; Variant used to break a cycle with python-pytest-enabler.
+(define-public python-jaraco-context-bootstrap
+  (hidden-package
+   (package
+     (name "python-jaraco-context-bootstrap")
+     (version "4.1.1")
+     (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "jaraco.context" version))
+        (sha256
+         (base32 "0hbjm1rpxf4pzmbdp9rh3ali4zqnlcr8m97bhh1nizxvzcpxim7h"))))
+     (build-system python-build-system)
+     (arguments (list #:tests? #f))
+     (native-inputs (list python-setuptools-scm))
+     (home-page "https://github.com/jaraco/jaraco.context")
+     (synopsis "Context managers Python library")
+     (description "This Python library provides context managers-related
+procedures.")
+     (license license:expat))))
+
 (define-public python-jaraco-packaging
   (package
     (name "python-jaraco-packaging")
