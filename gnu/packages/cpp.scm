@@ -1157,8 +1157,8 @@ of C++14 components that complements @code{std} and Boost.")
                 (("ENABLE_TESTS") "FALSE")))))))
     (home-page "https://pocoproject.org/")
     (synopsis "Portable C++ components")
-    (description "A collection of libraries intended to be useful for building
-network-based applications.")
+    (description "This package provides a collection of C++ libraries intended
+to be useful for building network-based applications.")
     (license license:boost1.0)))
 
 (define-public aws-crt-cpp
