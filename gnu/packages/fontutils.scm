@@ -193,6 +193,27 @@ font, glyph, etc. mathematical operations on font data.")
     (description "Python wrapper for the OpenType Sanitizer library.")
     (license license:bsd-3)))
 
+(define-public python-mutatormath
+  (package
+    (name "python-mutatormath")
+    (version "3.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "MutatorMath" version ".zip"))
+       (sha256
+        (base32 "0r1qq45np49x14zz1zwkaayqrn7m8dn2jlipjldg2ihnmpzw29w1"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-defcon python-fontmath python-fonttools))
+    (native-inputs (list unzip))
+    (home-page "https://github.com/LettError/MutatorMath")
+    (synopsis "Piecewise linear interpolation Python library")
+    (description "MutatorMath is a Python library for the calculation of
+piecewise linear interpolations in n-dimensions with any number of masters. It
+was developed for interpolating data related to fonts, but if can handle any
+arithmetic object.")
+    (license license:bsd-3)))
+
 (define-public ttfautohint
   (package
     (name "ttfautohint")
