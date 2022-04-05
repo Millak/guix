@@ -11132,7 +11132,7 @@ methylation and segmentation.")
 (define-public pigx-scrnaseq
   (package
     (name "pigx-scrnaseq")
-    (version "1.1.7")
+    (version "1.1.8")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/BIMSBbioinfo/pigx_scrnaseq/"
@@ -11140,20 +11140,14 @@ methylation and segmentation.")
                                   "/pigx_scrnaseq-" version ".tar.gz"))
               (sha256
                (base32
-                "1h5mcxzwj3cidlkvy9ly5wmi48vwfsjf8dxjfirknqxr9a92hwlx"))
-              (patches (search-patches "pigx-scrnaseq-no-citeproc.patch"))))
+                "1lc42hl8mz95kilh0z39s3wnv092mhm6vl2i394n0yfvdzk4f885"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
+     '(#:phases
        (modify-phases %standard-phases
-         (add-before 'bootstrap 'autoreconf
-           (lambda _
-             (invoke "autoreconf" "-vif")))
          (add-before 'configure 'set-PYTHONPATH
            (lambda _
              (setenv "PYTHONPATH" (getenv "GUIX_PYTHONPATH")))))))
-    (native-inputs
-     (list automake autoconf))
     (inputs
      `(("coreutils" ,coreutils)
        ("perl" ,perl)
