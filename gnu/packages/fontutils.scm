@@ -178,6 +178,21 @@ font, glyph, etc. mathematical operations on font data.")
 implementing the pen protocol for manipulating glyphs.")
     (license license:bsd-3)))
 
+(define-public python-fontpens
+  (hidden-package
+   (package/inherit python-fontpens-bootstrap
+     (name "python-fontpens")
+     (arguments
+      (substitute-keyword-arguments (package-arguments python-fontpens-bootstrap)
+        ((#:tests? _ #f)
+         #t)))
+     (native-inputs
+      (modify-inputs (package-native-inputs python-fontpens-bootstrap)
+        (append python-fontparts-bootstrap
+                python-fontpens-bootstrap
+                python-pytest
+                python-pytest-runner))))))
+
 ;;; A variant used to break a cycle with python-fontpens.
 (define-public python-fontparts-bootstrap
   (hidden-package
