@@ -50,6 +50,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gperf)
+  #:use-module (gnu packages graphics)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages linux)
@@ -176,6 +177,32 @@ font, glyph, etc. mathematical operations on font data.")
     (description "This package provides a collection of Python classes
 implementing the pen protocol for manipulating glyphs.")
     (license license:bsd-3)))
+
+;;; A variant used to break a cycle with python-fontpens.
+(define-public python-fontparts-bootstrap
+  (hidden-package
+   (package
+     (name "python-fontparts-bootstrap")
+     (version "0.10.4")
+     (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "fontParts" version ".zip"))
+        (sha256
+         (base32 "1ic453q86s5hsw8mxnclk1vr4qp69fd67gywhv23zqwz9a7kb7lh"))))
+     (build-system python-build-system)
+     (propagated-inputs
+      (list python-booleanoperations
+            python-defcon-bootstrap
+            python-fontmath
+            python-fonttools))
+     (native-inputs (list unzip))
+     (home-page "https://github.com/robotools/fontParts")
+     (synopsis "Library for interacting with font parts")
+     (description "FontParts is an @acronym{API, Application Programming
+Interface} for interacting with the parts of fonts during the font development
+process.  FontParts is the successor of RoboFab.")
+     (license license:expat))))
 
 (define-public python-opentype-sanitizer
   (package
