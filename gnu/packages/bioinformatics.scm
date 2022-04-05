@@ -11149,50 +11149,51 @@ methylation and segmentation.")
            (lambda _
              (setenv "PYTHONPATH" (getenv "GUIX_PYTHONPATH")))))))
     (inputs
-     `(("coreutils" ,coreutils)
-       ("perl" ,perl)
-       ("fastqc" ,fastqc)
-       ("flexbar" ,flexbar)
-       ("java" ,icedtea-8)
-       ("jellyfish" ,jellyfish)
-       ("python-wrapper" ,python-wrapper)
-       ("python-pyyaml" ,python-pyyaml)
-       ("python-pandas" ,python-pandas)
-       ("python-magic" ,python-magic)
-       ("python-numpy" ,python-numpy)
-       ("python-loompy" ,python-loompy)
-       ("pandoc" ,pandoc)
-       ("samtools" ,samtools)
-       ("snakemake" ,snakemake)
-       ("star" ,star-for-pigx)
-       ("r-minimal" ,r-minimal)
-       ("r-argparser" ,r-argparser)
-       ("r-cowplot" ,r-cowplot)
-       ("r-data-table" ,r-data-table)
-       ("r-delayedarray" ,r-delayedarray)
-       ("r-delayedmatrixstats" ,r-delayedmatrixstats)
-       ("r-dplyr" ,r-dplyr)
-       ("r-dropbead" ,r-dropbead)
-       ("r-dt" ,r-dt)
-       ("r-genomicalignments" ,r-genomicalignments)
-       ("r-genomicfiles" ,r-genomicfiles)
-       ("r-genomicranges" ,r-genomicranges)
-       ("r-ggplot2" ,r-ggplot2)
-       ("r-hdf5array" ,r-hdf5array)
-       ("r-pheatmap" ,r-pheatmap)
-       ("r-rmarkdown" ,r-rmarkdown)
-       ("r-rsamtools" ,r-rsamtools)
-       ("r-rtracklayer" ,r-rtracklayer)
-       ("r-rtsne" ,r-rtsne)
-       ("r-scater" ,r-scater)
-       ("r-scran" ,r-scran)
-       ("r-seurat" ,r-seurat)
-       ("r-singlecellexperiment" ,r-singlecellexperiment)
-       ("r-stringr" ,r-stringr)
-       ("r-yaml" ,r-yaml)))
+     (list coreutils
+           perl
+           fastqc
+           flexbar
+           icedtea-8
+           jellyfish
+           python-wrapper
+           python-pyyaml
+           python-pandas
+           python-magic
+           python-numpy
+           python-loompy
+           pandoc
+           samtools
+           snakemake
+           star-for-pigx
+           r-minimal
+           r-argparser
+           r-cowplot
+           r-data-table
+           r-delayedarray
+           r-delayedmatrixstats
+           r-dplyr
+           r-dropbead
+           r-dt
+           r-genomicalignments
+           r-genomicfiles
+           r-genomicranges
+           r-ggplot2
+           r-hdf5array
+           r-pheatmap
+           r-rmarkdown
+           r-rsamtools
+           r-rtracklayer
+           r-rtsne
+           r-scater
+           r-scran
+           r-seurat
+           r-singlecellexperiment
+           r-stringr
+           r-yaml))
     (home-page "https://bioinformatics.mdc-berlin.de/pigx/")
     (synopsis "Analysis pipeline for single-cell RNA sequencing experiments")
-    (description "PiGX scRNAseq is an analysis pipeline for preprocessing and
+    (description
+     "PiGX scRNAseq is an analysis pipeline for preprocessing and
 quality control for single cell RNA sequencing experiments.  The inputs are
 read files from the sequencing experiment, and a configuration file which
 describes the experiment.  It produces processed files for downstream analysis
