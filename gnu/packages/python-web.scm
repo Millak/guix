@@ -50,6 +50,7 @@
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -6414,4 +6415,32 @@ Full documentation may be found at
     (synopsis "Twitter library for Python")
     (description "This package provides @code{Tweepy}, an easy-to-use Python
 library for accessing the Twitter API.")
+    (license license:expat)))
+
+(define-public python-quart
+  (package
+    (name "python-quart")
+    (version "0.17.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "Quart" version))
+       (sha256
+        (base32 "0h4n2dwzmqifya1razp9s7ppr4ra23ljac9v7sl039rzp3c17wic"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list hypercorn
+           python-aiofiles
+           python-blinker
+           python-click
+           python-itsdangerous
+           python-jinja2
+           python-markupsafe
+           python-toml
+           python-werkzeug))
+    (home-page "https://gitlab.com/pgjones/quart/")
+    (synopsis "Python ASGI web microframework with the same API as Flask")
+    (description
+     "This package provides a Python ASGI web microframework with the same API
+as Flask.")
     (license license:expat)))
