@@ -29603,6 +29603,24 @@ very small subset the Python stubs contained in the complete @code{typeshed}
 collection.")
     (license license:asl2.0)))
 
+(define-public python-types-pytz
+  (package
+    (name "python-types-pytz")
+    (version "2021.3.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "types-pytz" version))
+       (sha256
+        (base32 "14yr5hg2ww8s4a0mz2bkd549fv8qgm538fnzxvqv92ld1pcpym3l"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/python/typeshed")
+    (synopsis "Typing stubs for pytz")
+    (description "This package contains typing stubs for @code{pytz}, a very
+small subset the Python stubs contained in the complete @code{typeshed}
+collection.")
+    (license license:asl2.0)))
+
 (define-public python-types-toml
   (package
     (name "python-types-toml")
