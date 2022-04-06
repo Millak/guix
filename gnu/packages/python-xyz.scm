@@ -12739,6 +12739,42 @@ objects as first-class entities, allowing common operations on files to be
 invoked on those path objects directly.")
      (license license:expat))))
 
+(define-public python-path
+  (package/inherit python-path-bootstrap
+    (name "python-path")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments python-path-bootstrap)
+       ((#:tests? _ #f)
+        #t)
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  ;; Do not test the myproject.toml build as it tries to pull
+                  ;; dependencies from the Internet.
+                  (invoke "pytest" "-vv" "-k"
+                          (string-append
+                           "not project "
+                           ;; This tests assumes a root user exists.
+                           "and not test_get_owner")))))))))
+    (native-inputs
+     (modify-inputs (package-native-inputs python-path-bootstrap)
+       (append python-appdirs
+               python-packaging
+               python-pygments
+               python-pytest
+               python-pytest-black
+               python-pytest-checkdocs
+               python-pytest-cov
+               python-pytest-enabler
+               python-pytest-flake8
+               python-pytest-mypy)))
+    (properties (alist-delete 'hidden?
+                              (package-properties
+                               python-path-bootstrap)))))
+
 (define-public python-pretend
   (package
     (name "python-pretend")
