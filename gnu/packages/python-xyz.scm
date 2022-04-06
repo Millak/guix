@@ -8667,6 +8667,36 @@ procedures.")
 module with a few extra procedures.")
      (license license:expat))))
 
+(define-public python-jaraco-functools
+  (package/inherit python-jaraco-functools-bootstrap
+    (name "python-jaraco-functools")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments python-jaraco-functools-bootstrap)
+       ((#:tests? _ #f)
+        #t)
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  ;; Do not test the myproject.toml build as it tries to pull
+                  ;; dependencies from the Internet.
+                  (invoke "pytest" "-vv" "-k" "not project"))))))))
+    (native-inputs
+     (modify-inputs
+         (package-native-inputs python-jaraco-functools-bootstrap)
+       (append python-jaraco-classes
+               python-pytest
+               python-pytest-black
+               python-pytest-checkdocs
+               python-pytest-cov
+               python-pytest-enabler-bootstrap ;OK since not propagated
+               python-pytest-flake8
+               python-pytest-mypy)))
+    (properties (alist-delete 'hidden? (package-properties
+                                        python-jaraco-functools-bootstrap)))))
+
 (define-public python-jaraco-packaging
   (package
     (name "python-jaraco-packaging")
