@@ -12866,6 +12866,44 @@ $ rm -rf /tmp/env
 @end example")
      (license license:expat))))
 
+(define-public python-pip-run
+  (package/inherit python-pip-run-bootstrap
+    (name "python-pip-run")
+    (arguments
+     (substitute-keyword-arguments (package-arguments python-pip-run-bootstrap)
+       ((#:tests? _ #f)
+        #t)
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (invoke "pytest" "-k"
+                          (string-append
+                           ;; Do not test the myproject.toml build as it tries
+                           ;; to pull dependencies from the internet.
+                           "not project "
+                           ;; These tests attempt to install dependencies from
+                           ;; the network and fail.
+                           "and not test_pkg_imported "
+                           "and not test_pkg_loaded_from_alternate_index ")))))))))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs python-pip-run-bootstrap)
+       (replace "python-path-bootstrap" python-path)))
+    (native-inputs
+     (modify-inputs (package-native-inputs python-pip-run-bootstrap)
+       (append python-nbformat
+               python-pygments
+               python-pytest
+               python-pytest-black
+               python-pytest-checkdocs
+               python-pytest-cov
+               python-pytest-enabler
+               python-pytest-flake8
+               python-pytest-mypy)))
+    (properties (alist-delete 'hidden? (package-properties
+                                        python-pip-run-bootstrap)))))
+
 (define-public python-tlsh
   (package
     (name "python-tlsh")
