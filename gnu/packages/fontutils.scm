@@ -342,6 +342,49 @@ suite of the @code{psautohint} package.")
        ;; Code Pro, Source Serif Pro, all available under the same license.
        (license license:silofl1.1)))))
 
+(define-public psautohint
+  (package
+    (name "psautohint")
+    (version "2.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "psautohint" version))
+       (sha256
+        (base32 "0zzz7hy1kkkjfrrm9ly2di3xv2x1ywdqhbyqy21k670jysldw3nm"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'copy-font-data
+            ;; The data is copied as it needs to be writable for the tests.
+            (lambda _
+              (copy-recursively
+               #$(this-package-native-input "psautohint-font-data")
+               "tests/integration/data")
+              (for-each make-file-writable
+                        (find-files "tests/integration/data"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv")))))))
+    (propagated-inputs (list python-fonttools))
+    (native-inputs
+     (list psautohint-font-data
+           python-fs
+           python-pytest
+           python-pytest-cov
+           python-pytest-randomly
+           python-pytest-xdist
+           python-setuptools-scm
+           python-wheel))
+    (home-page "https://github.com/adobe-type-tools/psautohint")
+    (synopsis "Adobe's PostScript autohinter")
+    (description "This package provides the @command{autohinter} command that
+can be used to hint PostScript fonts.  A Python wrapper is also included.")
+    (license license:asl2.0)))
+
 (define-public python-ufoprocessor
   (package
     (name "python-ufoprocessor")
