@@ -14042,6 +14042,11 @@ spawn an HTTP server on port 8080:
 guix publish
 @end example
 
+@cindex socket activation, for @command{guix publish}
+@command{guix publish} can also be started following the systemd
+``socket activation'' protocol (@pxref{Service De- and Constructors,
+@code{make-systemd-constructor},, shepherd, The GNU Shepherd Manual}).
+
 Once a publishing server has been authorized, the daemon may download
 substitutes from it.  @xref{Getting Substitutes from Other Servers}.
 
