@@ -8616,6 +8616,35 @@ class constructs.")
 procedures.")
      (license license:expat))))
 
+(define-public python-jaraco-context
+  (package/inherit python-jaraco-context-bootstrap
+    (name "python-jaraco-context")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments python-jaraco-context-bootstrap)
+       ((#:tests? _ #f)
+        #t)
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  ;; Do not test the myproject.toml build as it tries to pull
+                  ;; dependencies from the Internet.
+                  (invoke "pytest" "-vv" "-k" "not project"))))))))
+    (native-inputs
+     (modify-inputs
+         (package-native-inputs python-jaraco-context-bootstrap)
+       (append python-pytest
+               python-pytest-black
+               python-pytest-checkdocs
+               python-pytest-cov
+               python-pytest-enabler-bootstrap ;OK since not propagated
+               python-pytest-flake8
+               python-pytest-mypy)))
+    (properties (alist-delete 'hidden? (package-properties
+                                        python-jaraco-context-bootstrap)))))
+
 ;;; Variant used to break a cycle with python-pytest-enabler.
 (define-public python-jaraco-functools-bootstrap
   (hidden-package
