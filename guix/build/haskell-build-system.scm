@@ -5,6 +5,7 @@
 ;;; Copyright © 2018, 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022 Simon Tournier <zimon.toutoune@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -118,8 +119,7 @@ and parameters ~s~%"
       (setenv "CONFIG_SHELL" "sh"))
     (run-setuphs "configure" params)
 
-    (setenv "GHC_PACKAGE_PATH" ghc-path)
-    #t))
+    (setenv "GHC_PACKAGE_PATH" ghc-path)))
 
 (define* (build #:key parallel-build? #:allow-other-keys)
   "Build a given Haskell package."
@@ -140,8 +140,7 @@ and parameters ~s~%"
                          (new    (string-append static subdir)))
                     (mkdir-p (dirname new))
                     (rename-file static-lib new)))
-                (find-files lib "\\.a$"))))
-  #t)
+                (find-files lib "\\.a$")))))
 
 (define* (setup-compiler #:key system inputs outputs #:allow-other-keys)
   "Setup the compiler environment."
@@ -175,8 +174,7 @@ and parameters ~s~%"
               conf-files)
     (invoke "ghc-pkg"
             (string-append "--package-db=" %tmp-db-dir)
-            "recache")
-    #t))
+            "recache")))
 
 (define* (register #:key name system inputs outputs #:allow-other-keys)
   "Generate the compiler registration and binary package database files for a
@@ -273,21 +271,18 @@ given Haskell package."
                                     config-file-name+id ".conf"))
         (invoke "ghc-pkg"
                 (string-append "--package-db=" config-dir)
-                "recache")))
-    #t))
+                "recache")))))
 
 (define* (check #:key tests? test-target #:allow-other-keys)
   "Run the test suite of a given Haskell package."
   (if tests?
       (run-setuphs test-target '())
-      (format #t "test suite not run~%"))
-  #t)
+      (format #t "test suite not run~%")))
 
 (define* (haddock #:key outputs haddock? haddock-flags #:allow-other-keys)
   "Generate the Haddock documentation of a given Haskell package."
   (when haddock?
-    (run-setuphs "haddock" haddock-flags))
-  #t)
+    (run-setuphs "haddock" haddock-flags)))
 
 (define* (patch-cabal-file #:key cabal-revision #:allow-other-keys)
   (when cabal-revision
@@ -296,8 +291,7 @@ given Haskell package."
       ((original)
        (format #t "replacing ~s with ~s~%" original cabal-revision)
        (copy-file cabal-revision original))
-      (_ (error "Could not find a Cabal file to patch."))))
-  #t)
+      (_ (error "Could not find a Cabal file to patch.")))))
 
 (define* (generate-setuphs #:rest empty)
   "Generate a default Setup.hs if needed."
@@ -307,8 +301,7 @@ given Haskell package."
     (with-output-to-file "Setup.hs"
       (lambda ()
         (format #t "import Distribution.Simple~%")
-        (format #t "main = defaultMain~%"))))
-  #t)
+        (format #t "main = defaultMain~%")))))
 
 (define %standard-phases
   (modify-phases gnu:%standard-phases
