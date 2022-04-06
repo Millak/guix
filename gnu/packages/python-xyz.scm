@@ -29621,6 +29621,23 @@ multipurpose analysis in Python.")
 static types.")
     (license license:asl2.0)))
 
+(define-public python-types-docutils
+  (package
+    (name "python-types-docutils")
+    (version "0.18.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "types-docutils" version))
+       (sha256
+        (base32 "14ypv0x6fk1pjw0bvvr1lkb2g6dvq2pwvbd5b5pzjl6182fhmaim"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/python/typeshed")
+    (synopsis "Typing stubs for docutils")
+    (description "This package provides a collection of library stubs for
+Python, with static types.")
+    (license license:asl2.0)))
+
 (define-public python-psycopg2-binary
   (package
     (name "python-psycopg2-binary")
