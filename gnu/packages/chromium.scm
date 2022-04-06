@@ -129,7 +129,8 @@
     "third_party/cros_system_api" ;BSD-3
     "third_party/dav1d" ;BSD-2
     "third_party/dawn" ;ASL2.0
-    "third_party/dawn/third_party/tint"
+    "third_party/dawn/third_party/khronos/gl.xml" ;ASL2.0
+    "third_party/dawn/third_party/tint" ;ASL2.0
     "third_party/depot_tools/owners.py" ;BSD-3
     "third_party/devtools-frontend" ;BSD-3
     "third_party/devtools-frontend/src/front_end/third_party/acorn" ;Expat
@@ -258,7 +259,6 @@
     "third_party/swiftshader/third_party/marl" ;ASL2.0
     "third_party/swiftshader/third_party/subzero" ;NCSA
     "third_party/swiftshader/third_party/SPIRV-Headers" ;X11-style
-    "third_party/tcmalloc/chromium" ;BSD-3
     "third_party/tensorflow-text" ;ASL2.0
     "third_party/tflite" ;ASL2.0
     "third_party/tflite/src/third_party/eigen3" ;MPL2.0
@@ -312,9 +312,9 @@
   ;; run the Blink performance tests, just remove everything to save ~70MiB.
   '("third_party/blink/perf_tests"))
 
-(define %chromium-version "99.0.4844.84")
+(define %chromium-version "100.0.4896.75")
 (define %ungoogled-revision (string-append %chromium-version "-1"))
-(define %debian-revision "debian/90.0.4430.85-1")
+(define %debian-revision "debian/100.0.4896.60-1")
 
 (define %ungoogled-origin
   (origin
@@ -324,7 +324,7 @@
     (file-name (git-file-name "ungoogled-chromium" %ungoogled-revision))
     (sha256
      (base32
-      "1j02zcam09mdw7wg30r1mx27b8bw0s9dvk4qjl6vrhp24rbmscs7"))))
+      "0s31dclgk3x9302wr5yij77361bqam2sfki39p651gwysfizb73n"))))
 
 (define* (debian-patch name hash #:optional (revision %debian-revision))
   (origin
@@ -337,14 +337,12 @@
     (sha256 (base32 hash))))
 
 (define %debian-patches
-  (list (debian-patch "fixes/nomerge.patch"
-                      "0lybs2b5gk08j8cr6vjrs9d3drd7qfw013z2r0y00by8dnpm74i3")
-        (debian-patch "system/jsoncpp.patch"
-                      "16lvhci10hz0q9axc6p921b95a76kbzcla5cl81czxzfwnynr1w5")
+  (list (debian-patch "system/jsoncpp.patch"
+                      "092jkvbkiw474lin62hbkv5vm251qpg0vz3j2qwavqln7qv6mcw1")
         (debian-patch "system/zlib.patch"
-                      "0j313bd3q8qc065j60x97dckrfgbwl4qxc8jhz33iihvv4lwziwv")
+                      "1iw4k8in5j6a1qxf12qd5z3sjayvnh5sq5z3qqg8m3cp0v4p947r")
         (debian-patch "system/openjpeg.patch"
-                      "048405xh84pys0kky81vlqhaxjyxvcql4py217z01qxiv991zxaj")))
+                      "1dq4zffhjahw8yd5w7d0zzvjpdb5dzhyfd4icjflrdb7fyf5ykc2")))
 
 (define %guix-patches
   (list (local-file
@@ -453,7 +451,7 @@
                                   %chromium-version ".tar.xz"))
               (sha256
                (base32
-                "05bma8lsm5lad58mlfiv8bg0fw5k5mxh0v6g1ik7xp2bsd71iv10"))
+                "1h60l1g340gvm4lz2lps6dqpvahpzn24hz47y2qvc6mavx9d6ki4"))
               (modules '((guix build utils)))
               (snippet (force ungoogled-chromium-snippet))))
     (build-system gnu-build-system)
@@ -605,11 +603,6 @@
                   (("#include \"third_party/jsoncpp/")
                    "#include \"json/"))
 
-                ;; This can be removed for M99.
-                (substitute* "media/gpu/chromeos/video_decoder_pipeline.cc"
-                  (("third_party/libdrm/src/include/drm/drm_fourcc\\.h")
-                   "libdrm/drm_fourcc.h"))
-
                 ;; Many files try to include ICU headers from "third_party/icu/...".
                 ;; Remove the "third_party/" prefix to use system headers instead.
                 (substitute* (find-files "chrome" "\\.cc$")
@@ -641,6 +634,7 @@
                     (libudev.so.1 (search-input-file inputs "/lib/libudev.so.1"))
                     (libvulkan.so.1 (search-input-file inputs
                                                        "/lib/libvulkan.so.1"))
+                    (icd.d (search-input-directory inputs "share/vulkan/icd.d"))
                     (mesa-lib (dirname (search-input-file inputs
                                                           "/lib/libGL.so.1")))
                     (gtk-libs '("libgio-2.0.so.0"
@@ -659,8 +653,31 @@
                   (("libnssckbi\\.so") libnssckbi.so))
                 (substitute* "device/udev_linux/udev1_loader.cc"
                   (("libudev\\.so\\.1") libudev.so.1))
-                (substitute* "third_party/dawn/src/dawn_native/vulkan/BackendVk.cpp"
+
+                ;; Patch libvulkan.so everywhere.
+                (substitute*
+                    '("third_party/swiftshader/include/vulkan/vulkan.hpp"
+                      "third_party/vulkan-deps/vulkan-tools\
+/src/vulkaninfo/vulkaninfo.h"
+                      "third_party/vulkan-deps/vulkan-headers\
+/src/include/vulkan/vulkan.hpp"
+                      "content/gpu/gpu_sandbox_hook_linux.cc"
+                      "ui/ozone/platform/wayland/gpu/vulkan_implementation_wayland.cc"
+                      "ui/ozone/platform/drm/gpu/vulkan_implementation_gbm.cc"
+                      "ui/ozone/platform/x11/vulkan_implementation_x11.cc"
+                      "third_party/skia/tools/sk_app/unix\
+/DawnVulkanWindowContext_unix.cpp")
                   (("libvulkan\\.so\\.1") libvulkan.so.1))
+                (substitute* "content/gpu/gpu_sandbox_hook_linux.cc"
+                  (("/usr/share/vulkan/icd\\.d") icd.d))
+
+                ;; Add the libvulkan directory to dawn built-in search paths.
+                (substitute* "third_party/dawn/src/dawn/native/Instance.cpp"
+                  (("^([[:blank:]]+)mRuntimeSearchPaths\\.push_back\\(\"\"\\);"
+                    all indent)
+                   (string-append indent "mRuntimeSearchPaths.push_back(\""
+                                  (dirname libvulkan.so.1) "/\");\n" all)))
+
                 (substitute*
                     '("ui/ozone/platform/x11/gl_ozone_glx.cc"
                       "ui/ozone/common/egl_util.cc"
