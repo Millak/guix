@@ -1080,6 +1080,12 @@ isort.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'use-path-instead-of-path.py
+           ;; path.py is obsolete.
+           (lambda _
+             (substitute* "setup.py"
+               (("'path.py'")
+                "'path'"))))
          (add-after 'unpack 'patch-tests
            (lambda _
              (mkdir "/tmp/bin")
@@ -1087,11 +1093,9 @@ isort.")
                (("dirname = '/bin'")
                 "dirname = '/tmp/bin'")
                (("bindir = os.path.realpath\\('/bin'\\)")
-                "bindir = os.path.realpath('/tmp/bin')"))
-             #t)))))
+                "bindir = os.path.realpath('/tmp/bin')")))))))
     (propagated-inputs
-     (list python-contextlib2 python-execnet python-pathpy
-           python-termcolor))
+     (list python-contextlib2 python-execnet python-path python-termcolor))
     (native-inputs
      (list python-mock python-pytest python-setuptools-git))
     (home-page "https://github.com/manahl/pytest-plugins")
