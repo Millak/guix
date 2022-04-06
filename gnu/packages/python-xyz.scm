@@ -22002,17 +22002,17 @@ working with iterables.")
 (define-public python-pybtex
   (package
     (name "python-pybtex")
-    (version "0.22.2")
+    (version "0.24.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pybtex" version))
        (sha256
-        (base32 "070wfcmxrd7xg1si421mi9150gmx2qwx431nwf69sq3hhmgnx080"))))
+        (base32 "0ma7sc10hk6caq5zghbk865vrlaynz7x5z630z0facqpnqssx3l1"))))
     (build-system python-build-system)
     (native-inputs
-     (list python-nose))
-    (inputs
+     (list python-pytest))
+    (propagated-inputs
      (list python-latexcodec python-pyyaml python-six))
     (arguments
      (list
@@ -22020,7 +22020,7 @@ working with iterables.")
                    (replace 'check
                      (lambda* (#:key tests? #:allow-other-keys)
                        (when tests?
-                         (invoke "nosetests")))))))
+                         (invoke "pytest")))))))
     (home-page "https://pybtex.org/")
     (synopsis "BibTeX-compatible bibliography processor")
     (description "Pybtex is a BibTeX-compatible bibliography processor written
