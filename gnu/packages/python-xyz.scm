@@ -29425,6 +29425,32 @@ simple mock/record and a complete capture/replay framework.")
 interfaces.")
     (license license:bsd-3)))
 
+(define-public python-ordered-set
+  (package
+    (name "python-ordered-set")
+    (version "4.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ordered-set" version))
+       (sha256
+        (base32 "1a34fg3r3480nfm6652kyqql3lwixf8jirzdja9camvnr128wjk9"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "pytest" "-vv")))))))
+    (native-inputs (list python-cython python-pytest))
+    (home-page "https://github.com/simonpercivall/orderedset")
+    (synopsis "Ordered Set implementation in Cython")
+    (description "This library provides an @code{OrderedSet} data type that
+works like a regular set, but remembers insertion order.  It supports the full
+Python @code{set} interface.")
+    (license license:asl2.0)))
+
 (define-public python-orgparse
   (package
     (name "python-orgparse")
