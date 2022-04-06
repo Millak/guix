@@ -36,11 +36,11 @@
   #:use-module (srfi srfi-2)
   #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-9 gnu)
-  #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-19)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-37)
+  #:use-module (srfi srfi-71)
   #:use-module (web http)
   #:use-module (web request)
   #:use-module (web response)
@@ -1190,8 +1190,7 @@ headers."
   ;; Preserve the request's 'connection' header in the response, so that the
   ;; server can close the connection if this is requested by the client.
   (lambda (request body)
-    (let-values (((response response-body)
-                  (handle request body)))
+    (let ((response response-body (handle request body)))
       (values (preserve-connection-headers request response)
               response-body))))
 
