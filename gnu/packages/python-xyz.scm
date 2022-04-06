@@ -20004,30 +20004,26 @@ point is the point of maximum curvature.")
 (define-public python-factory-boy
   (package
     (name "python-factory-boy")
-    (version "2.8.1")
+    (version "3.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "factory_boy" version))
        (sha256
-        (base32 "1fvin6san5xsjh2c4y18caj2lnmwxlylyqm8mh1yc6rp38wlwr56"))))
+        (base32 "0pm5lbvnwm0kg5i6z611rg907yw1gy551f2advmpaz041ixjg3d9"))))
     (build-system python-build-system)
     (arguments
      ;; Tests are not included in the tarball.
      `(#:tests? #f))
-    (propagated-inputs
-     `(("faker" ,python-faker)))
+    (propagated-inputs (list python-faker))
     (home-page "https://github.com/benhoyt/scandir")
     (synopsis "Versatile test fixtures replacement")
-    (description
-     "Factory_boy is a fixtures replacement based on thoughtbot’s factory_girl.
-
-     As a fixtures replacement tool, it aims to replace static, hard to maintain
-     fixtures with easy-to-use factories for complex object.
-
-     Instead of building an exhaustive test setup with every possible combination
-     of corner cases, factory_boy allows you to use objects customized for the
-     current test, while only declaring the test-specific fields")
+    (description "Factory_boy is a fixtures replacement based on thoughtbot’s
+factory_girl.  As a fixtures replacement tool, it aims to replace static, hard
+to maintain fixtures with easy-to-use factories for complex object.  Instead
+of building an exhaustive test setup with every possible combination of corner
+cases, factory_boy allows you to use objects customized for the current test,
+while only declaring the test-specific fields.")
     (license license:expat)))
 
 (define-public python-translate-toolkit
