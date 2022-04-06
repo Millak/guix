@@ -6,6 +6,7 @@
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2022 Philip Munksgaard <philip@munksgaard.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -215,12 +216,49 @@ given Haskell package."
          (if (not (vhash-assoc id seen))
              (let ((dep-conf  (string-append src  "/" id ".conf"))
                    (dep-conf* (string-append dest "/" id ".conf")))
-               (when (not (file-exists? dep-conf))
+               (unless (file-exists? dep-conf*)
+                 (unless (file-exists? dep-conf)
                    (error (format #f "File ~a does not exist. This usually means the dependency ~a is missing. Was checking conf-file ~a." dep-conf id conf-file)))
-               (copy-file dep-conf dep-conf*) ;XXX: maybe symlink instead?
-               (loop (vhash-cons id #t seen)
-                     (append lst (conf-depends dep-conf))))
+                 (copy-file dep-conf dep-conf*) ;XXX: maybe symlink instead?
+                 (loop (vhash-cons id #t seen)
+                       (append lst (conf-depends dep-conf)))))
              (loop seen tail))))))
+
+  (define (install-config-file conf-file dest output:doc output:lib)
+      ;; Copy CONF-FILE to DEST removing reference to OUTPUT:DOC from
+      ;; OUTPUT:LIB and using install-transitive-deps.
+      (let* ((contents (call-with-input-file conf-file read-string))
+             (id-rx (make-regexp "^id:[ \n\t]+([^ \t\n]+)$" regexp/newline))
+             (config-file-name+id
+              (match:substring (first (list-matches id-rx contents)) 1)))
+
+        (when (or
+               (and
+                (string? config-file-name+id)
+                (string-null? config-file-name+id))
+               (not config-file-name+id))
+          (error (format #f "The package id for ~a is empty. This is a bug." conf-file)))
+
+        ;; Remove reference to "doc" output from "lib" (or "out") by rewriting the
+        ;; "haddock-interfaces" field and removing the optional "haddock-html"
+        ;; field in the generated .conf file.
+        (when output:doc
+          (substitute* conf-file
+            (("^haddock-html: .*") "\n")
+            (((format #f "^haddock-interfaces: ~a" output:doc))
+             (string-append "haddock-interfaces: " output:lib)))
+          ;; Move the referenced file to the "lib" (or "out") output.
+          (match (find-files output:doc "\\.haddock$")
+            ((haddock-file . rest)
+             (let* ((subdir (string-drop haddock-file (string-length output:doc)))
+                    (new    (string-append output:lib subdir)))
+               (mkdir-p (dirname new))
+               (rename-file haddock-file new)))
+            (_ #f)))
+        (install-transitive-deps conf-file %tmp-db-dir dest)
+        (rename-file conf-file
+                     (string-append dest "/"
+                                    config-file-name+id ".conf"))))
 
   (let* ((out (assoc-ref outputs "out"))
          (doc (assoc-ref outputs "doc"))
@@ -231,7 +269,6 @@ given Haskell package."
          (config-dir (string-append lib
                                     "/ghc-" version
                                     "/" name ".conf.d"))
-         (id-rx (make-regexp "^id:[ \n\t]+([^ \t\n]+)$" regexp/newline))
          (config-file (string-append out "/" name ".conf"))
          (params
           (list (string-append "--gen-pkg-config=" config-file))))
@@ -239,39 +276,13 @@ given Haskell package."
     ;; The conf file is created only when there is a library to register.
     (when (file-exists? config-file)
       (mkdir-p config-dir)
-      (let* ((contents (call-with-input-file config-file read-string))
-             (config-file-name+id (match:substring (first (list-matches id-rx contents)) 1)))
-
-        (when (or
-                (and
-                  (string? config-file-name+id)
-                  (string-null? config-file-name+id))
-                (not config-file-name+id))
-          (error (format #f "The package id for ~a is empty. This is a bug." config-file)))
-
-        ;; Remove reference to "doc" output from "lib" (or "out") by rewriting the
-        ;; "haddock-interfaces" field and removing the optional "haddock-html"
-        ;; field in the generated .conf file.
-        (when doc
-          (substitute* config-file
-            (("^haddock-html: .*") "\n")
-            (((format #f "^haddock-interfaces: ~a" doc))
-             (string-append "haddock-interfaces: " lib)))
-          ;; Move the referenced file to the "lib" (or "out") output.
-          (match (find-files doc "\\.haddock$")
-            ((haddock-file . rest)
-             (let* ((subdir (string-drop haddock-file (string-length doc)))
-                    (new    (string-append lib subdir)))
-               (mkdir-p (dirname new))
-               (rename-file haddock-file new)))
-            (_ #f)))
-        (install-transitive-deps config-file %tmp-db-dir config-dir)
-        (rename-file config-file
-                     (string-append config-dir "/"
-                                    config-file-name+id ".conf"))
-        (invoke "ghc-pkg"
-                (string-append "--package-db=" config-dir)
-                "recache")))))
+      (if (file-is-directory? config-file)
+          (for-each (cut install-config-file <> config-dir doc lib)
+           (find-files config-file))
+          (install-config-file config-file config-dir doc lib))
+      (invoke "ghc-pkg"
+              (string-append "--package-db=" config-dir)
+              "recache"))))
 
 (define* (check #:key tests? test-target #:allow-other-keys)
   "Run the test suite of a given Haskell package."
