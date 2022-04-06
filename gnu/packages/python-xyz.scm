@@ -189,6 +189,7 @@
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages ninja)
   #:use-module (gnu packages openstack)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages pdf)
@@ -28324,6 +28325,94 @@ and frame grabber interface.")
     (license (license:non-copyleft
                ;; Yet another variant of the X/MIT license.
                "https://github.com/python-pillow/Sane/blob/master/COPYING"))))
+
+(define-public python-scikit-build
+  (package
+    (name "python-scikit-build")
+    (version "0.14.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "scikit-build" version))
+       (sha256
+        (base32 "1wx1m9vnxnnz59lyaisgyxldp313kciyd4af8lf112vb8vbjy9yk"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-cmake-executable
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "skbuild/constants.py"
+                (("^(CMAKE_DEFAULT_EXECUTABLE = ).*" _ head)
+                 (format #f "~a ~s~%" head
+                         (search-input-file inputs "bin/cmake"))))))
+          ;; XXX: PEP 517 manual build copied from python-isort.
+          (replace 'build
+            (lambda _
+              (setenv "SOURCE_DATE_EPOCH" "315532800")
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; These tests attempt to pull dependencies from the Internet.
+                (delete-file "tests/test_distribution.py")
+                (delete-file "tests/test_pep518.py")
+                (invoke "pytest" "-vv"
+                        "-n" (number->string (parallel-job-count))
+                        "-k" (string-append
+                              ;; These tests attempt to write to read-only
+                              ;; Python install directory.
+                              "not test_install_command "
+                              "and not test_test_command "
+                              "and not test_hello_develop "
+                              ;; These sdist-related tests fail for unknown
+                              ;; reasons (see:
+                              ;; https://github.com/scikit-build/scikit-build/issues/689).
+                              "and not test_hello_sdist_with_base "
+                              "and not test_manifest_in_sdist "
+                              "and not test_hello_sdist "
+                              "and not test_sdist_with_symlinks "
+                              ;; These are not parallel safe and fail
+                              ;; nondeterministically (see:
+                              ;; https://github.com/scikit-build/scikit-build/issues/711).
+                              "and not test_generator_cleanup"
+                              "and not test_generator_selection")))))
+          (replace 'install
+            (lambda _
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl)))))))
+    (native-inputs
+     (list cmake-minimal
+           gfortran
+           git-minimal
+           ninja
+           python-coverage
+           python-cython
+           python-mock
+           python-packaging
+           python-path
+           python-pypa-build
+           python-pytest
+           python-pytest-cov
+           python-pytest-mock
+           python-pytest-virtualenv
+           python-pytest-xdist
+           python-requests
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-distro python-packaging python-wheel))
+    (home-page "https://github.com/scikit-build/scikit-build")
+    (synopsis "Build system generator for Python C/C++/Fortran/Cython extensions")
+    (description "Scikit-build is an improved build system generator for
+CPython C/C++/Fortran/Cython extensions.  It has support for additional
+compilers, build systems, cross compilation, and locating dependencies and
+determining their build requirements.  The scikit-build package is
+fundamentally just glue between the @code{setuptools} Python module and
+CMake.")
+    (license license:expat)))
 
 (define-public python-screenkey
   (package
