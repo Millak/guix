@@ -15204,6 +15204,36 @@ python-xdo for newer bindings.)")
 (define-public python2-xdo
   (package-with-python2 python-xdo))
 
+(define-public python-xdoctest
+  (package
+    (name "python-xdoctest")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "xdoctest" version))
+       (sha256
+        (base32 "0bgbmb9nqv95f9gfxqifqff1qaz5fnanjqy4hv7ygrjp2kksgfvy"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     ;; A writable HOME is needed by the
+                     ;; 'import_module_from_path' test.
+                     (setenv "HOME" "/tmp")
+                     (invoke "pytest" "-vv")))))))
+    (propagated-inputs (list python-six))
+    (native-inputs (list python-pytest which))
+    (home-page "https://github.com/Erotemic/xdoctest")
+    (synopsis "Rewrite of the Python builtin doctest module")
+    (description "This package provides a rewrite of the builtin doctest
+module which leverages the Python @acronym{AST, Abstract Syntax Tree} instead
+of @acronym{REGEXPs, regular expressions}.")
+    (license license:asl2.0)))
+
 (define-public python-mako
   (package
     (name "python-mako")
