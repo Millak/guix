@@ -21984,15 +21984,15 @@ working with iterables.")
 (define-public python-latexcodec
   (package
     (name "python-latexcodec")
-    (version "1.0.7")
+    (version "2.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "latexcodec" version))
        (sha256
-        (base32 "0wnp3yqcgx0rpy8dz51vh75lbp2qif67da19zi7m3ca98n887hgb"))))
+        (base32 "16pynfnn8y8xp55yp06i721fccv5dlx9ba6k5bzcwq9j6wf5b8ia"))))
     (build-system python-build-system)
-    (inputs
+    (propagated-inputs
      (list python-six))
     (home-page "https://readthedocs.org/projects/latexcodec/")
     (synopsis "Work with LaTeX code in Python")
