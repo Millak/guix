@@ -364,6 +364,50 @@ library’s logging module.  It was designed with both complex and simple
 applications in mind and the idea to make logging fun.")
     (license license:bsd-3)))
 
+(define-public python-ubelt
+  (package
+    (name "python-ubelt")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Erotemic/ubelt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0hac9nqqvqfbca2s4g0mp1fnj0ah60bg9fb8234ibna3jww8qs33"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (setenv "HOME" "/tmp") ;else the test suite hangs
+                     (invoke "pytest" "-vv" "-k"
+                             (string-append
+                              ;; The builder user home doesn't match HOME,
+                              ;; which causes this test to fail.
+                              "not userhome "
+                              ;; This one pointlessly tries
+                              ;; locating various binaries on
+                              ;; the path.
+                              "and not find_exe"))))))))
+    (propagated-inputs (list python-ordered-set))
+    (native-inputs
+     (list python-pytest
+           python-requests
+           python-xdoctest))
+    (home-page "https://github.com/Erotemic/ubelt")
+    (synopsis "Python library for hashing, caching, timing and more")
+    (description "Ubelt is a small library of simple functions that extend the
+Python standard library.  It includes an @acronym{API, Application Programming
+Interface} to simplify common problems such as caching, timing, computing
+progress, among other things.")
+    (license license:asl2.0)))
+
 (define-public python-ueberzug
   (package
     (name "python-ueberzug")
