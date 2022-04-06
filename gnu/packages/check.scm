@@ -2225,6 +2225,36 @@ failures.")
      (description "Enable installed pytest plugins")
      (license license:expat))))
 
+(define-public python-pytest-enabler
+  (package/inherit python-pytest-enabler-bootstrap
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments python-pytest-enabler-bootstrap)
+       ((#:tests? _ #f)
+        #t)
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (invoke "python" "-m" "pytest" "-vv" "tests"))))))))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs python-pytest-enabler-bootstrap)
+       (replace "python-jaraco-context-bootstrap" python-jaraco-context)
+       (replace "python-jaraco-functools-bootstrap" python-jaraco-functools)))
+    (native-inputs
+     (modify-inputs (package-native-inputs python-pytest-enabler-bootstrap)
+       (append python-pytest
+               python-pytest-black
+               python-pytest-checkdocs
+               python-pytest-cov
+               python-pytest-flake8
+               python-pytest-mypy
+               python-types-toml)))
+    (properties (alist-delete 'hidden?
+                              (package-properties
+                               python-pytest-enabler-bootstrap)))))
+
 (define-public python-pytest-freezegun
   (package
     (name "python-pytest-freezegun")
