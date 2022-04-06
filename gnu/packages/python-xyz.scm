@@ -29587,3 +29587,22 @@ and setting the color of terminal output, via HyDEV.")
 versions of MkDocs-powered docs to a Git branch.  It is suitable for deploying
 to Github via gh-pages.")
     (license license:bsd-3)))
+
+(define-public python-flatten-json
+  (package
+    (name "python-flatten-json")
+    (version "0.1.13")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "flatten_json" version))
+        (sha256
+          (base32 "007m28gfs7pmz2rqqjxpial6skzw26hrfi8vrdy9agi9x0rj6dgf"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-six))
+    (home-page "https://github.com/amirziai/flatten")
+    (synopsis "Flatten JSON objects")
+    (description
+     "The @code{flatten_json} Python library flattens the hierarchy in your
+object, which can be useful if you want to force your objects into a table.")
+    (license license:expat)))
