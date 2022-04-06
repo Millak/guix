@@ -921,18 +921,21 @@ doctest to render the object representations.")
 (define-public python-pytest-checkdocs
   (package
     (name "python-pytest-checkdocs")
-    (version "1.2.5")
+    (version "2.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-checkdocs" version))
        (sha256
-        (base32 "0m4kn7141i6k8qr8ak3lbmk9vim11xsrlnrggcfwczfrglc6jmia"))))
+        (base32 "1bn1wr3yz8avkwacffyh26za7mg20f9pajpakfk4cn7yvmgbhcrb"))))
     (build-system python-build-system)
+    (arguments (list #:tests? #f))      ;no tests in pypi archive
     (propagated-inputs
-     (list python-docutils python-importlib-metadata python-more-itertools))
-    (native-inputs
-     (list python-setuptools-scm python-pytest))
+     (list python-docutils
+           python-importlib-metadata
+           python-pep517
+           python-pytest))
+    (native-inputs (list python-setuptools-scm))
     (home-page "https://github.com/jaraco/pytest-checkdocs")
     (synopsis "Check the README when running tests")
     (description
