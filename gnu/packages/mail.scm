@@ -46,6 +46,7 @@
 ;;; Copyright © 2021 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2021 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2022 Andrew Tropin <andrew@trop.in>
+;;; Copyright © 2022 Justin Veilleux <terramorpha@cock.li>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4597,3 +4598,23 @@ Guix's version of @command{sendgmail} has been patched for compatibility with
 all known forks, including support for non-@code{@@gmail.com} email
 addresses.")
       (license license:asl2.0))))
+
+(define-public smtpmail
+  (package
+    (name "smtpmail")
+    (version "0.4.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://savannah/smtpmail/smtpmail-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "08ap2l2g2avkq2jx05jy993517vvapmypg7j5cwl8gvpq436gdh5"))))
+    (build-system gnu-build-system)
+    (home-page "https://www.nongnu.org/smtpmail/")
+    (synopsis "SMTP utility")
+    (description
+     "smtpmail is a little console-based tool for users who have no local
+mailserver on their machine.  It enables these users to send their mail over a
+remote SMTP server.")
+    (license license:gpl2+)))
