@@ -72,6 +72,7 @@
   #:use-module (guix download)
   #:use-module (guix svn-download)
   #:use-module (guix git-download)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
@@ -313,6 +314,33 @@ piecewise linear interpolations in n-dimensions with any number of masters. It
 was developed for interpolating data related to fonts, but if can handle any
 arithmetic object.")
     (license license:bsd-3)))
+
+(define-public psautohint-font-data
+  ;; There is no release tag, so use the latest commit.
+  (let ((revision "0")
+        (commit "1e4c5061d328105c4dcfcb6fdbc27ec49b3e9d23"))
+    (hidden-package
+     (package
+       (name "psautohint-font-data")
+       (version (git-version "0.0.0" revision commit))
+       (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                (url "https://github.com/adobe-type-tools/psautohint-testdata")
+                (commit commit)))
+          (file-name (git-file-name name version))
+          (sha256
+           (base32
+            "0p7g8mnndzp8zpbj9h6lkvfdpvd74fy10q8wmkagbg2ahbdi1zva"))))
+       (build-system copy-build-system)
+       (home-page "https://github.com/adobe-type-tools/psautohint-testdata")
+       (synopsis "Test font data psautohint")
+       (description "This package contains the font data used by the test
+suite of the @code{psautohint} package.")
+       ;; The bundle contains font data from the Cantarell, Libertinus, Source
+       ;; Code Pro, Source Serif Pro, all available under the same license.
+       (license license:silofl1.1)))))
 
 (define-public python-ufoprocessor
   (package
