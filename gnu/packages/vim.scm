@@ -77,7 +77,7 @@
 (define-public vim
   (package
     (name "vim")
-    (version "8.2.4564")
+    (version "8.2.4701")
     (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -86,7 +86,7 @@
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "1ggvmvd6xsj9xvknjcvpj52na2km2wxvxfj8l29mqp03g4wwyzrr"))))
+               "0yqqzai3ihfjjjjmn50pxlcqllpkmlrf5z59ma5rn0gv8wwwdw7h"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -118,6 +118,11 @@
              (setenv "TERM" "xterm")))
          (add-before 'check 'skip-or-fix-failing-tests
            (lambda _
+             ;; This test failure is shared between BSD and Guix.
+             (with-fluids ((%default-port-encoding #f))
+               (substitute* "src/testdir/test_writefile.vim"
+                 (("!has\\('bsd'\\)") "0")))
+
              ;; This test assumes that PID 1 is run as root and that the user
              ;; running the test suite does not have permission to kill(1, 0)
              ;; it.  This is not true in the build container, where both PID 1
