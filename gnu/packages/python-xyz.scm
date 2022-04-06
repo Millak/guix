@@ -8766,57 +8766,6 @@ module with a few extra procedures.")
 releases.")
     (license license:expat)))
 
-(define-public python-pathpy
-  (package
-    (name "python-pathpy")
-    (version "11.5.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "path.py" version))
-       (sha256
-        (base32 "0ir9j1haq2jbi7aip6k2fa9l7q1l03k4hp1awxhjhcwzsnwp3ll8"))))
-    (outputs '("out" "doc"))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-appdirs python-importlib-metadata))
-    (native-inputs
-     (list python-setuptools-scm
-           python-sphinx
-           python-rst.linker
-           python-pytest
-           python-pytest-runner
-           python-jaraco-packaging))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'build 'build-doc
-           (lambda _
-             (setenv "LANG" "en_US.UTF-8")
-             (invoke "python" "setup.py" "build_sphinx")))
-         (add-after 'install 'install-doc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((data (string-append (assoc-ref outputs "doc") "/share"))
-                    (doc (string-append data "/doc/" ,name "-" ,version))
-                    (html (string-append doc "/html")))
-               (mkdir-p html)
-               (for-each (lambda (file)
-                           (copy-file file (string-append doc "/" file)))
-                         '("README.rst" "CHANGES.rst"))
-               (copy-recursively "build/sphinx/html" html)
-               #t)))
-         (replace 'check
-           (lambda _
-             ;; The import time test aborts if an import takes longer than
-             ;; 100ms.  It may very well take a little longer than that.
-             (invoke "pytest" "-v" "-k" "not test_import_time"))))))
-    (home-page "https://github.com/jaraco/path.py")
-    (synopsis "Python module wrapper for built-in os.path")
-    (description
-     "@code{path.py} implements path objects as first-class entities, allowing
-common operations on files to be invoked on those path objects directly.")
-    (license license:expat)))
-
 (define-public python-simplegeneric
   (package
     (name "python-simplegeneric")
@@ -12815,6 +12764,9 @@ invoked on those path objects directly.")
     (properties (alist-delete 'hidden?
                               (package-properties
                                python-path-bootstrap)))))
+
+(define-public python-pathpy
+  (deprecated-package "python-pathpy" python-path))
 
 (define-public python-pretend
   (package
