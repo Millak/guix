@@ -3430,3 +3430,27 @@ compiled translations.  Prebuilt Firmware files are removed.")
 related desktop applications using PyQt5.  It belongs to the Cura project
 from Ultimaker.")
     (license license:lgpl3+)))
+
+(define-public libcharon
+  (package
+    (name "libcharon")
+    (version "4.13.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+               (url "https://github.com/Ultimaker/libCharon")
+               (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ibv15y7lfxs09k6rbc3kiaz13gq3v9vqxrk20rqp6bdclk3izff"))))
+    (build-system cmake-build-system)
+    (native-inputs
+     (list python-pytest))
+    (inputs
+     (list python))
+    (home-page "https://github.com/Ultimaker/libCharon")
+    (synopsis "File metadata and streaming library")
+    (description "LibCharon is a Python file metadata and streaming library.  It
+belongs to the Cura project from Ultimaker.")
+    (license license:lgpl3+)))
