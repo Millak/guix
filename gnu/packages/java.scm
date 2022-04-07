@@ -2241,7 +2241,7 @@ new Date();"))
   (package
     (inherit openjdk16)
     (name "openjdk")
-    (version "17.0.1")
+    (version "17.0.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2250,7 +2250,7 @@ new Date();"))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1l1jgbz8q7zq66npfg88r0l5xga427vrz35iys09j44b6qllrldd"))
+                "0zwv5pnh7rb7a6689jlhjfcc92bsiy0xbhdxyj93096ah4n3hqhj"))
               (patches
                 (search-patches "openjdk-15-xcursor-no-dynamic.patch"))))
     (native-inputs
