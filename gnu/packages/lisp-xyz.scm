@@ -2802,8 +2802,7 @@ is statically typed so there are differences.")
            (lambda _
              ;; This is apparently deprecated since libffi-3.3.
              (substitute* "libffi/libffi-types.lisp"
-               (("\\\(\\\(:unix64.*") ")\n"))
-             #t))
+               (("\\\(\\\(:unix64.*") ")\n"))))
          (add-after 'unpack 'fix-paths
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "libffi/libffi.lisp"
