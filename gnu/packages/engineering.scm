@@ -3454,3 +3454,41 @@ from Ultimaker.")
     (description "LibCharon is a Python file metadata and streaming library.  It
 belongs to the Cura project from Ultimaker.")
     (license license:lgpl3+)))
+
+(define-public libsavitar
+  (package
+    (name "libsavitar")
+    (version "4.13.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Ultimaker/libSavitar")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cq85x0xizsjwf9nl7v7x4i9vl335mgv2lda3q2c9fcwrndsc3wk"))))
+    (build-system cmake-build-system)
+    (inputs
+     (list python python-sip-4))
+    (arguments
+     `(#:tests? #f ; No test suite.
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'fix-python-sitearch
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((path (string-append (assoc-ref outputs "out")
+                                        "/lib/python"
+                                        ,(version-major+minor
+                                          (package-version python))
+                                        "/site-packages")))
+               (substitute* "cmake/FindSIP.cmake"
+                 (("\\$\\{_process_output\\} Python3_SITEARCH")
+                  (string-append path " Python3_SITEARCH"))
+                 (("\\$\\{_process_output\\} Python3_SITELIB")
+                  (string-append path " Python3_SITELIB")))))))))
+    (home-page "https://github.com/Ultimaker/libSavitar")
+    (synopsis "C++ implementation of 3mf loading with SIP python bindings")
+    (description "LibSavitar is a C++ implementation of 3mf loading with SIP
+python bindings.  It belongs to the Cura project from Ultimaker.")
+    (license license:lgpl3+)))
