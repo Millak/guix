@@ -53,8 +53,10 @@
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages java)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages man)
+  #:use-module (gnu packages ninja)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
@@ -133,6 +135,143 @@ anti-aliased glyph bitmap generation with 256 gray levels.")
 files (OTF, TTF) and WOFF and WOFF2 font files, validating them and sanitizing
 them as it goes.")
     (license license:bsd-3)))
+
+(define-public python-afdko
+  (package
+    (name "python-afdko")
+    (version "3.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "afdko" version))
+       (sha256
+        (base32 "171r9f7n8fgz37dkcgpzj508lxfafcyzzx43ps12j1z2nk1sk905"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-problematic-requirements
+            (lambda _
+              (substitute* "requirements.txt"
+                ;; Remove lxml because the version requested here is different
+                ;; than the one propagated by the python-fonttools package.
+                (("^lxml==.*") ""))))
+          (add-after 'unpack 'patch-setup.py
+            (lambda _
+              ;; There is no use for Python-provided CMake nor Ninja binaries.
+              (substitute* '("pyproject.toml" "setup.py")
+                ((".*cmake.*") "")
+                ((".*ninja.*") ""))))
+          (add-after 'unpack 'unbundle-antlr4-cpp
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "CMakeLists.txt"
+                (("^include\\(ExternalAntlr4Cpp).*")
+                 (format #f "include_directories(SYSTEM ~a)"
+                         (search-input-directory inputs
+                                                 "include/antlr4-runtime"))))
+              (substitute* "c/makeotf/lib/hotconv/CMakeLists.txt"
+                (("antlr4_static")
+                 "antlr4-runtime"))))
+          ;; The test suite expects the commands to be Python rather than
+          ;; shell scripts, so move the wrap phase after the tests.
+          (delete 'wrap)
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" "/tmp")
+                (invoke "pytest" "-vv"))))
+          (add-after 'check 'wrap
+            (assoc-ref %standard-phases 'wrap))
+          (add-before 'wrap 'wrap-PATH
+            (lambda _
+              ;; The commands execute other commands from this package from
+              ;; PATH; by wrapping them with bindir, they can be found even
+              ;; when the command is run from its store location.
+              (let* ((bindir (string-append #$output "/bin"))
+                     (commands (find-files bindir)))
+                (for-each (lambda (c)
+                            (wrap-program c
+                              `("PATH" prefix (,bindir))))
+                          commands)))))))
+    (native-inputs
+     (list ninja python-pytest python-scikit-build python-wheel))
+    (inputs (list java-antlr4-runtime-cpp `(,util-linux "lib")))
+    (propagated-inputs
+     (list psautohint
+           python-booleanoperations
+           python-defcon
+           python-fontmath
+           python-fonttools-next
+           python-lxml
+           python-tqdm
+           python-ufonormalizer
+           python-ufoprocessor))
+    (home-page "https://github.com/adobe-type-tools/afdko")
+    (synopsis "Adobe Font Development Kit for OpenType")
+    (description "The Adobe Font Development Kit for OpenType (AFDKO) is a set
+of tools for building OpenType font (OTF) files from PostScript and TrueType
+font data.  It includes the following commands:
+@table @command
+@item buildcff2vf
+Assemble a CFF2 variable font from a .designspace file.
+@item buildmasterotfs
+Build master source OpenType/CFF fonts from a @file{.designspace} file
+and UFO master source fonts.
+@item charplot
+@itemx digiplot
+@itemx fontplot
+@itemx fontsetplot
+@itemx hintplot
+@itemx waterfallplot
+Aliases for the corresponding options of the @command{proofpdf} command.
+@item checkoutlinesufo
+Perform outline quality checks.  It can also remove path overlaps.
+@item comparefamily
+Look in a specific directory, examine and report on all the OpenType fonts found.
+@item type1
+@itemx detype1
+Compile and decompile, respectively, a Type 1 font to and from a plain-text
+representation.
+@item makeinstancesufo
+Generate UFO font instances from a set of master UFO fonts.
+@item makeotfexe
+Read all the font data and build the final OpenType font.
+@item makeotf
+This command can be used to prepare the input files needed by
+@command{makeotfexe}.
+@item mergefonts
+Merge one or more fonts into a parent font.
+@item otc2otf
+Extract all OpenType fonts from the parent OpenType Collection font.
+@item otf2otc
+Build an OpenType Collection font file from two or more OpenType font
+files.
+@item otf2ttf
+Converts OpenType-CFF fonts to TrueType.
+@item rotatefont
+Apply a Postscript transform matrix to the source font files.
+@item sfntdiff
+Low-level comparison of two OpenType font files.
+@item sfntedit
+Support table-editing, listing, and checksumming options on
+sfnt-formatted files such as OpenType Format (OTF) or TrueType.
+@item spot
+Dump sfnt data from plain files or Macintosh resource files.
+@item ttfcomponentizer
+Take in a TrueType font and look for a UFO font stored in the same directory.
+Use the UFO's components data to compose matching TrueType glyphs.
+@item ttfdecomponentizer
+Take in a TrueType font and decompose any composite glyphs into simple glyphs.
+@item ttxn
+Make a normalized dump of the font, or of selected tables.
+@item tx
+The @command{tx} (Type eXchange) is a test harness for the CoreType libraries
+but also provides many useful font conversion and analysis facilities.
+@end table")
+    (license license:asl2.0)))
+
+    (license license:asl2.0)))
 
 (define-public python-cu2qu
   (package
