@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2019 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2012 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2015, 2016, 2018 Mark H Weaver <mhw@netris.org>
@@ -741,6 +741,10 @@ the store.")
                  (srfi srfi-26)
                  (guix build utils)
                  (guix build gnu-build-system))
+
+      ;; Strip binaries but preserve the symbol table needed by Valgrind:
+      ;; <https://lists.gnu.org/archive/html/help-guix/2022-03/msg00036.html>.
+      #:strip-flags '("--strip-debug")
 
       #:configure-flags
       (list "--sysconfdir=/etc"
