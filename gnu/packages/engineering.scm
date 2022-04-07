@@ -120,7 +120,10 @@
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-crypto)
+  #:use-module (gnu packages python-science)
+  #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
@@ -3361,3 +3364,69 @@ Cura.")
     (description "This package contains binary data for Cura releases, like
 compiled translations.  Prebuilt Firmware files are removed.")
     (license license:agpl3)))
+
+(define-public uranium
+  (package
+    (name "uranium")
+    (version "4.13.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+               (url "https://github.com/Ultimaker/Uranium")
+               (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1nyxm3fdyrsisqkxbqld66bljd852wnc1yc6i1lyvncwvzn8ai32"))))
+    (build-system cmake-build-system)
+    (native-inputs
+     (list doxygen
+           gettext-minimal
+           graphviz
+           pkg-config
+           python-pytest
+           python-mypy
+           python-certifi
+           python-twisted))
+    (propagated-inputs
+     (list cura-binary-data
+           libarcus
+           python
+           python-cryptography
+           python-numpy
+           python-pyqt
+           python-scipy
+           python-shapely
+           python-trimesh
+           python-zeroconf
+           qtbase
+           qtdeclarative
+           qtgraphicaleffects
+           qtquickcontrols
+           qtquickcontrols2
+           qtsvg))
+    (arguments
+     `(;; FIXME: tests are disabled, because they cause an infinite loop.
+       #:tests? #f
+       #:configure-flags
+       ,#~(list (string-append "-DGETTEXT_MSGINIT_EXECUTABLE="
+                               #$(this-package-native-input "gettext-minimal")
+                               "/bin/msginit")
+                (string-append "-DCURA_BINARY_DATA_DIRECTORY="
+                               #$(this-package-input "cura-binary-data")))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-uranium-plugin-path
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* "UM/Application.py"
+               (("app_root =.*$")
+                (string-append "app_root = \""
+                               (assoc-ref outputs "out") "\"\n"))
+               (("app_root, \"share\", \"uranium\", \"plugins\"")
+                "app_root, \"lib\", \"uranium\", \"plugins\"")))))))
+    (home-page "https://github.com/Ultimaker/Uranium")
+    (synopsis "Python framework for building desktop applications")
+    (description "Uranium is a Python Framework for building 3D printing
+related desktop applications using PyQt5.  It belongs to the Cura project
+from Ultimaker.")
+    (license license:lgpl3+)))
