@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2019, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019, 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -1991,6 +1991,25 @@ testing (eg. httpretty, responses, requests-mock).  When it comes to testing
 asynchronous HTTP requests it is a bit harder (at least at the beginning).
 The purpose of this package is to provide an easy way to test asynchronous
 HTTP requests.")
+    (license license:expat)))
+
+(define-public python-parameterizedtestcase
+  (package
+    (name "python-parameterizedtestcase")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "parameterizedtestcase" version))
+       (sha256
+        (base32 "0zhjmsd16xacg4vd7zb75kw8q9khn52wvad634v1bvz7swaivk2c"))))
+    (build-system python-build-system)
+    (native-inputs (list python-setuptools)) ;for use_2to3
+    (home-page
+     "https://github.com/msabramo/python_unittest_parameterized_test_case")
+    (synopsis "Parameterized tests for Python's unittest module")
+    (description "This package provides parameterized tests for Python's
+@code{unittest} module taking inspiration from pytest.")
     (license license:expat)))
 
 (define-public python-pytest-rerunfailures
