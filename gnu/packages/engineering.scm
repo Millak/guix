@@ -30,6 +30,7 @@
 ;;; Copyright © 2022 Evgeny Pisemsky <evgeny@pisemsky.com>
 ;;; Copyright © 2022 Olivier Dion <olivier.dion@polymtl.ca>
 ;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
+;;; Copyright © 2022 Malte Frank Gerdes <malte.f.gerdes@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -117,6 +118,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pretty-print)
+  #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-xyz)
@@ -3246,3 +3248,44 @@ connector pinouts.  It takes plain text, YAML-formatted files as input and
 produces beautiful graphical output thanks to GraphViz.  It handles automatic
 BOM creation and has a lot of extra features.")
     (license license:gpl3)))
+
+(define-public libarcus
+  (package
+    (name "libarcus")
+    (version "4.13.0") ; Should same version as Cura package.
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Ultimaker/libArcus")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19fi0y0lk45cyampczgh3kz2swai4zcgzkffp0xf5h55rxxrdpvk"))))
+    (build-system cmake-build-system)
+    (inputs
+     (list protobuf
+           python
+           python-sip-4))
+    (arguments
+     `(#:tests? #f
+       #:configure-flags '("-DBUILD_EXAMPLES=OFF")
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'fix-python-sitearch
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* "cmake/FindSIP.cmake"
+               (("\\$\\{_process_output\\} Python3_SITEARCH")
+                (string-append (assoc-ref outputs "out")
+                               "/lib/python"
+                               ,(version-major+minor
+                                 (package-version python))
+                               "/site-packages"
+                               " Python3_SITEARCH"))))))))
+    (home-page "https://github.com/Ultimaker/libArcus")
+    (synopsis "Communication library for Ultimaker software components")
+    (description "This library contains C++ code and Python3 bindings for
+creating a socket in a thread and using this socket to send and receive
+messages based on the Protocol Buffers library.  It is designed to
+facilitate the communication between Cura and its backend and similar code.")
+    (license license:lgpl3+)))
