@@ -384,78 +384,74 @@ the same, being completely separated from the Internet.")
     (build-system gnu-build-system)
     (inputs (list libxml2 libxslt openssl pcre zlib))
     (arguments
-     `(#:tests? #f                      ; no test target
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'patch-/bin/sh
-           (lambda _
-             (substitute* "auto/feature"
-               (("/bin/sh") (which "sh")))
-             #t))
-         (replace 'configure
-           ;; The configure script is hand-written, not from GNU autotools.
-           (lambda* (#:key configure-flags inputs outputs #:allow-other-keys)
-             (let ((flags
-                    (append (list (string-append "--prefix=" (assoc-ref outputs "out"))
-                                  "--with-http_ssl_module"
-                                  "--with-http_v2_module"
-                                  "--with-http_xslt_module"
-                                  "--with-http_gzip_static_module"
-                                  "--with-http_gunzip_module"
-                                  "--with-http_addition_module"
-                                  "--with-http_sub_module"
-                                  "--with-pcre-jit"
-                                  "--with-debug"
-                                  "--with-stream"
-                                  ;; Even when not cross-building, we pass the
-                                  ;; --crossbuild option to avoid customizing for the
-                                  ;; kernel version on the build machine.
-                                  ,(let ((system "Linux")    ; uname -s
-                                         (release "3.2.0")   ; uname -r
-                                         ;; uname -m
-                                         (machine (match (or (%current-target-system)
-                                                             (%current-system))
-                                                    ("x86_64-linux"   "x86_64")
-                                                    ("i686-linux"     "i686")
-                                                    ("mips64el-linux" "mips64")
-                                                    ;; Prevent errors when querying
-                                                    ;; this package on unsupported
-                                                    ;; platforms, e.g. when running
-                                                    ;; "guix package --search="
-                                                    (_                "UNSUPPORTED"))))
-                                     (string-append "--crossbuild="
-                                                    system ":" release ":" machine)))
-                            configure-flags)))
-               (setenv "CC" ,(cc-for-target))
-               ;; Fix ./configure test for ‘#include <libxml/parser.h>’.
-               (setenv "CFLAGS"         ; CPPFLAGS is not respected
-                       (string-append "-I" (assoc-ref inputs "libxml2")
-                                      "/include/libxml2"))
-               (format #t "configure flags: ~s~%" flags)
-               (apply invoke "./configure" flags)
-               #t)))
-         (add-after 'install 'install-man-page
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (man (string-append out "/share/man")))
-               (install-file "objs/nginx.8" (string-append man "/man8"))
-               #t)))
-         (add-after 'install 'fix-root-dirs
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; 'make install' puts things in strange places, so we need to
-             ;; clean it up ourselves.
-             (let* ((out (assoc-ref outputs "out"))
-                    (share (string-append out "/share/nginx")))
-               ;; This directory is empty, so get rid of it.
-               (rmdir (string-append out "/logs"))
-               ;; Example configuration and HTML files belong in
-               ;; /share.
-               (mkdir-p share)
-               (rename-file (string-append out "/conf")
-                            (string-append share "/conf"))
-               (rename-file (string-append out "/html")
-                            (string-append share "/html"))
-               #t))))))
+     (list
+      #:tests? #f                       ; no test target
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'patch-/bin/sh
+            (lambda _
+              (substitute* "auto/feature"
+                (("/bin/sh") (which "sh")))))
+          (replace 'configure
+            ;; The configure script is hand-written, not from GNU autotools.
+            (lambda* (#:key configure-flags inputs outputs #:allow-other-keys)
+              (let ((flags
+                     (append (list (string-append "--prefix=" (assoc-ref outputs "out"))
+                                   "--with-http_ssl_module"
+                                   "--with-http_v2_module"
+                                   "--with-http_xslt_module"
+                                   "--with-http_gzip_static_module"
+                                   "--with-http_gunzip_module"
+                                   "--with-http_addition_module"
+                                   "--with-http_sub_module"
+                                   "--with-pcre-jit"
+                                   "--with-debug"
+                                   "--with-stream"
+                                   ;; Even when not cross-building, we pass the
+                                   ;; --crossbuild option to avoid customizing for the
+                                   ;; kernel version on the build machine.
+                                   #$(let ((system "Linux") ; uname -s
+                                           (release "3.2.0") ; uname -r
+                                           ;; uname -m
+                                           (machine (match (or (%current-target-system)
+                                                               (%current-system))
+                                                      ("x86_64-linux"   "x86_64")
+                                                      ("i686-linux"     "i686")
+                                                      ("mips64el-linux" "mips64")
+                                                      ;; Prevent errors when querying
+                                                      ;; this package on unsupported
+                                                      ;; platforms, e.g. when running
+                                                      ;; "guix package --search="
+                                                      (_                "UNSUPPORTED"))))
+                                       (string-append "--crossbuild="
+                                                      system ":" release ":" machine)))
+                             configure-flags)))
+                (setenv "CC" #$(cc-for-target))
+                ;; Fix ./configure test for ‘#include <libxml/parser.h>’.
+                (setenv "CFLAGS"        ; CPPFLAGS is not respected
+                        (string-append "-I" (assoc-ref inputs "libxml2")
+                                       "/include/libxml2"))
+                (format #t "configure flags: ~s~%" flags)
+                (apply invoke "./configure" flags))))
+          (add-after 'install 'install-man-page
+            (lambda _
+              (let ((man (string-append #$output "/share/man")))
+                (install-file "objs/nginx.8" (string-append man "/man8")))))
+          (add-after 'install 'fix-root-dirs
+            (lambda _
+              ;; 'make install' puts things in strange places, so we need to
+              ;; clean it up ourselves.
+              (let* ((out #$output)
+                     (share (string-append out "/share/nginx")))
+                ;; This directory is empty, so get rid of it.
+                (rmdir (string-append out "/logs"))
+                ;; Example configuration and HTML files belong in
+                ;; /share.
+                (mkdir-p share)
+                (rename-file (string-append out "/conf")
+                             (string-append share "/conf"))
+                (rename-file (string-append out "/html")
+                             (string-append share "/html"))))))))
     (home-page "https://nginx.org")
     (synopsis "HTTP and reverse proxy server")
     (description
