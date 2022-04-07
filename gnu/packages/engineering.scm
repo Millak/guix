@@ -3572,3 +3572,62 @@ belongs to the Cura project from Ultimaker.")
     (description "LibSavitar is a C++ implementation of 3mf loading with SIP
 python bindings.  It belongs to the Cura project from Ultimaker.")
     (license license:lgpl3+)))
+
+(define-public cura
+  (package
+    (name "cura")
+    (version "4.13.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Ultimaker/Cura")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yg17pcrj5gm02aqcjfk40ynvpb9r9aaq9rj108dkpki1is15ks7"))))
+    (build-system qt-build-system)
+    (native-inputs
+     (list python-certifi
+           python-mypy
+           python-pytest
+           python-requests))
+    (inputs
+     (list cura-engine
+           libcharon
+           libsavitar
+           python
+           python-keyring
+           python-pynest2d
+           python-pyserial
+           python-sentry-sdk
+           python-sip
+           uranium))
+    (arguments
+     `(;; TODO: Fix tests.
+       #:tests? #f
+       #:configure-flags '("-DURANIUM_SCRIPTS_DIR=")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'link-to-CuraEngine
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (symlink (string-append (assoc-ref inputs "cura-engine")
+                                     "/bin/CuraEngine")
+                      (string-append (assoc-ref outputs "out")
+                                     "/bin/CuraEngine"))))
+         (add-after 'link-to-CuraEngine 'wrap-pythonpath
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (wrap-program (string-append out "/bin/cura")
+                 (list "GUIX_PYTHONPATH"
+                       'prefix (list (string-append out
+                                                    "/lib/python"
+                                                    ,(version-major+minor
+                                                      (package-version python))
+                                                    "/site-packages")
+                                     (getenv "GUIX_PYTHONPATH"))))))))))
+    (home-page "https://github.com/Ultimaker/Cura")
+    (synopsis "Slicer for 3D printers")
+    (description "Cura is a slicing software from Ultimaker.  A @emph{slicer}
+generates G-Code for 3D printers.")
+    (license license:lgpl3+)))
