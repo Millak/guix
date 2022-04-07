@@ -21,6 +21,7 @@
 
 (define-module (gnu packages jupyter)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -215,15 +216,29 @@ the JupyterLab CSS variables.")
 (define-public python-jupyter-packaging
   (package
     (name "python-jupyter-packaging")
-    (version "0.9.1")
+    (version "0.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "jupyter_packaging" version))
        (sha256
         (base32
-         "0r015c0m713d19asmpimsw6bk2sqv2lpd2nccgjzjdj5h1crg0bg"))))
+         "1b7ssc627vgrdl21c09w9sxk5fc1ps3g7f70laxag4yw1bb5ax5j"))))
     (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; Disable isolation so that the package environment can be
+                ;; setup without connectivity.
+                (setenv "SOURCE_DATE_EPOCH" "315532800")
+                (substitute* "tests/test_build_api.py"
+                  (("\"-m\", \"build\"" all)
+                   (string-append all ", \"--no-isolation\"")))
+                (invoke "python" "-m" "pytest" "-vv")))))))
     (propagated-inputs
      (list python-deprecation python-packaging python-setuptools
            python-tomlkit python-wheel))
