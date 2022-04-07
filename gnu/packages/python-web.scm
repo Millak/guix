@@ -5,7 +5,7 @@
 ;;; Copyright © 2016, 2017 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2013, 2014, 2015, 2016, 2020 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016, 2017, 2019-2022 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2021 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016, 2017, 2020 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
@@ -498,7 +498,7 @@ Model} (SAM) templates into AWS CloudFormation templates.")
 (define-public python-aws-xray-sdk
   (package
     (name "python-aws-xray-sdk")
-    (version "2.6.0")
+    (version "2.9.0")
     (home-page "https://github.com/aws/aws-xray-sdk-python")
     (source (origin
               (method git-fetch)
@@ -506,7 +506,7 @@ Model} (SAM) templates into AWS CloudFormation templates.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "12fzr0ylpa1lx3xr1x2f1jx8iiyzcr6g57fb9jign0j0lxdlbzpv"))))
+                "04fyik5axbilj2g9fzhhw8ch8xfn7iai3j6myk7z4g26m1mrhxsi"))))
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -520,6 +520,7 @@ Model} (SAM) templates into AWS CloudFormation templates.")
                                   "tests/ext/psycopg2/test_psycopg2.py"
                                   "tests/ext/pymysql/test_pymysql.py"
                                   "tests/ext/pynamodb/test_pynamodb.py"
+                                  "tests/ext/sqlalchemy_core/test_postgres.py"
                                   "tests/test_async_recorder.py"
 
                                   ;; FIXME: Why is this failing?
@@ -528,6 +529,7 @@ Model} (SAM) templates into AWS CloudFormation templates.")
                                   ;; TODO: How to configure Django for these tests.
                                   "tests/ext/django/test_db.py"
                                   "tests/ext/django/test_middleware.py"
+                                  "tests/ext/django/test_settings.py"
 
                                   ;; These tests want to access httpbin.org.
                                   "tests/ext/requests/test_requests.py"
@@ -537,7 +539,13 @@ Model} (SAM) templates into AWS CloudFormation templates.")
                     (lambda _
                       ;; Allow "import tests.utils" to work as expected.
                       (setenv "PYTHONPATH" (getcwd))
-                      (invoke "pytest" "-vv" "tests"))))))
+                      (invoke "pytest" "-vv" "tests"
+                              "-k"
+                              ;; These tests fail because "fixture 'benchmark'
+                              ;; not found"
+                              (string-append
+                               "not test_pkgutil_static_read"
+                               " and not test_pkg_resources_static_read")))))))
     (native-inputs
      (list ;; These are required for the test suite.
            python-bottle
