@@ -6,7 +6,7 @@
 ;;; Copyright © 2016, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016-2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2019, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
@@ -80,11 +80,83 @@
        (uri (pypi-uri "scipy" version))
        (sha256
         (base32 "1gxsnw6viz2j3sm8ak2a8l7fcn4b2zm3kzfm8w57xxyyrzx7an5b"))))
+    (outputs '("out" "doc"))
     (build-system python-build-system)
-    (propagated-inputs
-     (list python-numpy python-matplotlib python-pyparsing))
-    (inputs
-     (list openblas pybind11))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-pythran
+            (lambda _
+              (setenv "SCIPY_USE_PYTHRAN" "0")))
+          (add-before 'build 'change-home-dir
+            (lambda _
+              ;; Change from /homeless-shelter to /tmp for write permission.
+              (setenv "HOME" "/tmp")))
+          (add-after 'unpack 'disable-broken-tests
+            (lambda _
+              (substitute* "scipy/sparse/linalg/dsolve/tests/test_linsolve.py"
+                (("^( +)def test_threads_parallel\\(self\\):" m indent)
+                 (string-append indent
+                                "@pytest.mark.skip(reason=\"Disabled by Guix\")\n"
+                                m)))
+              (substitute* "scipy/sparse/linalg/eigen/arpack/tests/test_arpack.py"
+                (("^def test_parallel_threads\\(\\):" m)
+                 (string-append "@pytest.mark.skip(reason=\"Disabled by Guix\")\n"
+                                m)))))
+          (add-before 'build 'configure-openblas
+            (lambda _
+              (call-with-output-file "site.cfg"
+                (lambda (port)
+                  (format port
+                          "[blas]
+libraries = openblas
+library_dirs = ~a/lib
+include_dirs = ~a/include
+
+# backslash-n to make emacs happy
+\n[atlas]
+library_dirs = ~a/lib
+atlas_libs = openblas
+"
+                          #$(this-package-input "openblas")
+                          #$(this-package-input "openblas")
+                          #$(this-package-input "openblas"))))))
+          (add-after 'install 'install-doc
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((data (string-append (assoc-ref outputs "doc") "/share"))
+                     (doc (string-append data "/doc/" #$name "-" #$version))
+                     (html (string-append doc "/html"))
+                     (pyver (string-append "PYVER="
+                                           #$(version-major+minor
+                                              (package-version python))))
+                     ;; By default it tries to run sphinx-build through the Python
+                     ;; interpreter which won't work with our shell wrapper.
+                     (sphinxbuild "SPHINXBUILD=LANG=C sphinx-build"))
+                ;; Make installed package available for building the
+                ;; documentation
+                (add-installed-pythonpath inputs outputs)
+                (with-directory-excursion "doc"
+                  ;; Fix generation of images for mathematical expressions.
+                  (substitute* (find-files "source" "conf\\.py")
+                    (("pngmath_use_preview = True")
+                     "pngmath_use_preview = False"))
+                  (mkdir-p html)
+                  (invoke "make" "html" pyver sphinxbuild)
+                  (with-directory-excursion "build/html"
+                    (for-each (lambda (file)
+                                (let* ((dir (dirname file))
+                                       (tgt-dir (string-append html "/" dir)))
+                                  (install-file file html)))
+                              (find-files ".")))))))
+          (replace 'check
+            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "/tmp"
+                  (invoke "python" "-c"
+                          "import scipy; scipy.test(verbose=2)"))))))))
+    (propagated-inputs (list python-numpy python-matplotlib python-pyparsing))
+    (inputs (list openblas pybind11))
     (native-inputs
      (list python-cython
            python-pydata-sphinx-theme
@@ -95,79 +167,6 @@
            gfortran
            perl
            which))
-    (outputs '("out" "doc"))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-pythran
-           (lambda _
-             (setenv "SCIPY_USE_PYTHRAN" "0")))
-         (add-before 'build 'change-home-dir
-           (lambda _
-             ;; Change from /homeless-shelter to /tmp for write permission.
-             (setenv "HOME" "/tmp")))
-         (add-after 'unpack 'disable-broken-tests
-           (lambda _
-             (substitute* "scipy/sparse/linalg/dsolve/tests/test_linsolve.py"
-               (("^( +)def test_threads_parallel\\(self\\):" m indent)
-                (string-append indent
-                               "@pytest.mark.skip(reason=\"Disabled by Guix\")\n"
-                               m)))
-             (substitute* "scipy/sparse/linalg/eigen/arpack/tests/test_arpack.py"
-               (("^def test_parallel_threads\\(\\):" m)
-                (string-append "@pytest.mark.skip(reason=\"Disabled by Guix\")\n"
-                               m)))))
-         (add-before 'build 'configure-openblas
-           (lambda* (#:key inputs #:allow-other-keys)
-             (call-with-output-file "site.cfg"
-               (lambda (port)
-                 (format port
-                         "[blas]
-libraries = openblas
-library_dirs = ~a/lib
-include_dirs = ~a/include
-
-# backslash-n to make emacs happy
-\n[atlas]
-library_dirs = ~a/lib
-atlas_libs = openblas
-"
-                         (assoc-ref inputs "openblas")
-                         (assoc-ref inputs "openblas")
-                         (assoc-ref inputs "openblas"))))))
-         (add-after 'install 'install-doc
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((data (string-append (assoc-ref outputs "doc") "/share"))
-                    (doc (string-append data "/doc/" ,name "-" ,version))
-                    (html (string-append doc "/html"))
-                    (pyver ,(string-append "PYVER=" (version-major+minor
-                                                     (package-version python))))
-                    ;; By default it tries to run sphinx-build through the Python
-                    ;; interpreter which won't work with our shell wrapper.
-                    (sphinxbuild "SPHINXBUILD=LANG=C sphinx-build"))
-               ;; Make installed package available for building the
-               ;; documentation
-               (add-installed-pythonpath inputs outputs)
-               (with-directory-excursion "doc"
-                 ;; Fix generation of images for mathematical expressions.
-                 (substitute* (find-files "source" "conf\\.py")
-                   (("pngmath_use_preview = True")
-                    "pngmath_use_preview = False"))
-                 (mkdir-p html)
-                 (invoke "make" "html" pyver sphinxbuild)
-                 (with-directory-excursion "build/html"
-                   (for-each (lambda (file)
-                               (let* ((dir (dirname file))
-                                      (tgt-dir (string-append html "/" dir)))
-                                 (install-file file html)))
-                             (find-files ".")))))))
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (with-directory-excursion "/tmp"
-                 (invoke "python" "-c"
-                         "import scipy; scipy.test(verbose=2)"))))))))
     (home-page "https://www.scipy.org/")
     (synopsis "The Scipy library provides efficient numerical routines")
     (description "The SciPy library is one of the core packages that make up
