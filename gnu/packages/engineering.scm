@@ -3463,6 +3463,54 @@ from Ultimaker.")
 problem.  It was inspired from the SVGNest Javascript library.")
     (license license:lgpl3)))
 
+(define-public python-pynest2d
+  (package
+    (name "python-pynest2d")
+    (version "4.12.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Ultimaker/pynest2d")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jhqfylg6vzlbz9rqs981bg6y8s18iklw1p8hmax72xq2c7561s1"))))
+    (build-system cmake-build-system)
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list boost
+           clipper
+           libnest2d-for-cura
+           nlopt
+           python
+           python-sip-4))
+    (arguments
+     `(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'fix-clipper-detection
+           (lambda* (#:key inputs #:allow-other-keys)
+             (setenv "CLIPPER_PATH" (assoc-ref inputs "clipper"))))
+         (add-before 'configure 'fix-python-sitearch
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((path (string-append (assoc-ref outputs "out")
+                                        "/lib/python"
+                                        ,(version-major+minor
+                                          (package-version python))
+                                        "/site-packages")))
+               (substitute* "cmake/FindSIP.cmake"
+                 (("\\$\\{_process_output\\} Python3_SITEARCH")
+                  (string-append path " Python3_SITEARCH"))
+                 (("\\$\\{_process_output\\} Python3_SITELIB")
+                  (string-append path " Python3_SITELIB")))))))))
+    (home-page "https://github.com/Ultimaker/pynest2d")
+    (synopsis "Python bindings for libnest2d")
+    (description
+     "This package contains CPython bindings for libnest2d-for-cura.")
+    (license license:lgpl3+)))
+
 (define-public libcharon
   (package
     (name "libcharon")
