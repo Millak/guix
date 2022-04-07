@@ -11,8 +11,9 @@
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
-;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Bonface Munyoki Kilyungi <me@bonfacemunyoki.com>
+;;; Copyright © 2022 Malte Frank Gerdes <malte.f.gerdes@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -243,6 +244,36 @@ nosetests, etc...) in Python projects.")
        "This package provides a Python module for creating JUnit XML test
 result documents that can be read by tools such as Jenkins or Bamboo.")
       (license license:expat))))
+
+(define-public python-pyinstrument
+  (package
+    (name "python-pyinstrument")
+    (version "4.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyinstrument" version))
+       (sha256
+        (base32 "18n3waxsxcd48pmcp8158s5rlancll2000amrdck9zfj5hfpkhhx"))))
+    (build-system python-build-system)
+    (native-inputs
+     (list python-flaky
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-trio))
+    (arguments
+     `(;; TODO: Get tests to work.
+       #:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (invoke "pytest" "-vv")))))))
+    (home-page "https://github.com/joerick/pyinstrument")
+    (synopsis "Call stack profiler for Python")
+    (description
+     "Pyinstrument is a Python profiler to help you optimize your code.")
+    (license license:bsd-3)))
 
 (define-public python-vcrpy
   (package
