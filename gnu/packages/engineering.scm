@@ -76,6 +76,7 @@
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages commencement)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages dejagnu)
   #:use-module (gnu packages digest)
@@ -3430,6 +3431,37 @@ compiled translations.  Prebuilt Firmware files are removed.")
 related desktop applications using PyQt5.  It belongs to the Cura project
 from Ultimaker.")
     (license license:lgpl3+)))
+
+(define-public libnest2d-for-cura
+  ;; Cura uses a custom fork of the libnest2d library.
+  (package
+    (name "libnest2d-for-cura")
+    (version "4.12.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Ultimaker/libnest2d")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wk7cv8sqnxy7srq61scrr18dz2i0l4s4slmjfh4890iy0wf9i7n"))))
+    (build-system cmake-build-system)
+    (inputs
+     (list boost clipper nlopt))
+    (arguments
+     `(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'fix-clipper-detection
+           (lambda* (#:key inputs #:allow-other-keys)
+             (setenv "CLIPPER_PATH" (assoc-ref inputs "clipper")))))))
+    (home-page "https://github.com/Ultimaker/libnest2d")
+    (synopsis "2D irregular bin packaging and nesting library")
+    (description
+     "Libnest2D is a library and framework for the 2D bin packaging
+problem.  It was inspired from the SVGNest Javascript library.")
+    (license license:lgpl3)))
 
 (define-public libcharon
   (package
