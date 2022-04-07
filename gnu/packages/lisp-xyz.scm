@@ -101,6 +101,7 @@
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages video)
   #:use-module (gnu packages web)
   #:use-module (gnu packages webkit)
@@ -16782,10 +16783,11 @@ running into parallelism problems when having to change directory.")
   (sbcl-package->cl-source-package sbcl-simple-inferiors))
 
 (define-public sbcl-legit
-  (let ((commit "48d50a20d8dcbd941d119683463b7c8257ba6458"))
+  (let ((commit "5f8a2d4c4f5fb8e53340eeef600433ee20e03fbe")
+        (revision "2"))
     (package
       (name "sbcl-legit")
-      (version (git-version "1.0.0" "1" commit))
+      (version (git-version "1.0.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -16794,11 +16796,23 @@ running into parallelism problems when having to change directory.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "181aqpj4zkfk1aavj5jw8rym6gw4ma3gd64z2h5fpryabgmwk236"))))
+          (base32 "0crr7ya7dg15di7glk3w9sgf6j8dmny347gynmxxrdvjj9pa906m"))))
       (build-system asdf-build-system/sbcl)
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'patch-git-executable
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "process.lisp"
+                 (("\"git")
+                  (string-append "\"" (search-input-file inputs
+                                                         "/bin/git")))))))))
       (inputs
-       (list sbcl-simple-inferiors sbcl-lambda-fiddle sbcl-cl-ppcre
-             sbcl-documentation-utils))
+       (list git
+             sbcl-cl-ppcre
+             sbcl-documentation-utils
+             sbcl-lambda-fiddle
+             sbcl-simple-inferiors))
       (home-page "https://shinmera.github.io/legit/")
       (synopsis "Interface to the git binary")
       (description
