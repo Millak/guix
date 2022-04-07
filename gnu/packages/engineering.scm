@@ -3332,3 +3332,32 @@ processing 3D models into 3D printing instruction for Ultimaker and other
 GCode based 3D printers.  It is part of the larger open source project called
 Cura.")
     (license license:agpl3+)))
+
+(define-public cura-binary-data
+  (package
+    (name "cura-binary-data")
+    (version "4.13.1")
+    (source
+     (origin
+       (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Ultimaker/cura-binary-data")
+               (commit version)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "11dra399adky7jxpaqqk1swrg5y3cc1086l54c3injg3ccgrvwik"))
+         (modules '((guix build utils)))
+         (snippet
+          '(begin
+             ;; Remove Windows executables and prebuilt firmware files.
+             (delete-file-recursively "cura/resources/firmware")
+             (delete-file-recursively "windows")))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f ; No test suite.
+       #:configure-flags '("-DENABLE_FIRMWARE_INSTALL=OFF")))
+    (home-page "https://github.com/Ultimaker/cura-binary-data")
+    (synopsis "Binary data for Cura, like compiled translations")
+    (description "This package contains binary data for Cura releases, like
+compiled translations.  Prebuilt Firmware files are removed.")
+    (license license:agpl3)))
