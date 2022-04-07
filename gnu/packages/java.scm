@@ -13,7 +13,7 @@
 ;;; Copyright © 2019, 2020, 2021 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Raghav Gururajan <raghavgururajan@disroot.org>
-;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Mike Gerwitz <mtg@gnu.org>
 ;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
@@ -45,6 +45,7 @@
   #:use-module (guix utils)
   #:use-module (guix gexp)
   #:use-module (guix build-system ant)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system maven)
   #:use-module (guix build-system trivial)
@@ -8628,6 +8629,38 @@ actual rendering.")
     (description "This package contains the runtime library used with generated
 sources by ANTLR.")
     (license license:bsd-3)))
+
+(define-public java-antlr4-runtime-cpp
+  (package
+    (inherit java-antlr4-runtime)
+    (name "java-antlr4-runtime-cpp")
+    (outputs '("out" "static"))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      ;; TODO: try to run the tests under
+      ;; runtime-testsuite/test/org/antlr/v4/test/runtime/cpp with antlr4.
+      #:tests? #f                       ;no CMake test target
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "runtime/Cpp")))
+          (add-after 'install 'move-static-library
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((static (assoc-ref outputs "static"))
+                    (libantlr4-runtime.a (search-input-file
+                                          outputs "lib/libantlr4-runtime.a")))
+                (mkdir-p (string-append static "/lib"))
+                (rename-file
+                 libantlr4-runtime.a
+                 (string-append static "/lib/"
+                                (basename libantlr4-runtime.a)))))))))
+    (native-inputs (list pkg-config))
+    (inputs (list `(,util-linux "lib"))) ;libuuid
+    (synopsis "ANTL C++ runtime library")
+    (description "This package contains the C++ runtime library used with C++
+generated sources by ANTLR.")))
 
 (define-public antlr4
   (package
