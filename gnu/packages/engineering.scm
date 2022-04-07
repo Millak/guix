@@ -1156,6 +1156,34 @@ libraries.")
     (description "This package contains the official KiCad project and
 worksheet templates.")))
 
+(define-public librseq
+  ;; There's no release.
+  (let ((commit "170f840b498e1aff068b90188727a656111bfc2f")
+        (revision "1"))
+    (package
+      (name "librseq")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/compudj/librseq.git")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0rdx59y8y9x8cfmmx5gl66gibkzpk3kw5lrrqhrxan8zr37a055y"))))
+      (build-system gnu-build-system)
+      (native-inputs (list autoconf automake libtool))
+      (home-page "https://github.com/compudj/librseq")
+      (synopsis "Userspace library for restartable sequences")
+      (description "A restartable sequence is a critical region delimited by a
+program where if its execution is preempted or interrupted, the kernel will
+divert the program control flow to a defined abort handler.  They are a good
+alternative to atomic operations for critical fast paths and are usually used
+in the context of per-cpu data.  The library offers ABI headers to interface
+with the kernel and various utilities such as per-cpu counters.")
+      (license (list license:lgpl2.1 license:expat)))))
+
 (define-public linsmith
   (package
     (name "linsmith")
