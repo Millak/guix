@@ -427,7 +427,8 @@ the same, being completely separated from the Internet.")
               (setenv "CC" #$(cc-for-target))
               ;; Fix ./configure test for ‘#include <libxml/parser.h>’.
               (setenv "CFLAGS"          ; CPPFLAGS is not respected
-                      (string-append "-I" (search-input-directory
+                      (string-append "-O2 -g "
+                                     "-I" (search-input-directory
                                            inputs "/include/libxml2")))
               (format #t "configure flags: ~s~%" configure-flags)
               (apply invoke "./configure"
