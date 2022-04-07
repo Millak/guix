@@ -73,17 +73,20 @@
 (define-public python-scipy
   (package
     (name "python-scipy")
-    (version "1.7.3")
+    (version "1.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "scipy" version))
        (sha256
-        (base32 "1gxsnw6viz2j3sm8ak2a8l7fcn4b2zm3kzfm8w57xxyyrzx7an5b"))))
+        (base32 "1gghkwn93niyasm36333xbqrnn3yiadq9d97wnc9mg14nzbg5m1i"))))
     (outputs '("out" "doc"))
     (build-system python-build-system)
     (arguments
      (list
+      #:modules '((guix build utils)
+                  (guix build python-build-system)
+                  (ice-9 format))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'disable-pythran
@@ -93,81 +96,59 @@
             (lambda _
               ;; Change from /homeless-shelter to /tmp for write permission.
               (setenv "HOME" "/tmp")))
-          (add-after 'unpack 'disable-broken-tests
-            (lambda _
-              (substitute* "scipy/sparse/linalg/dsolve/tests/test_linsolve.py"
-                (("^( +)def test_threads_parallel\\(self\\):" m indent)
-                 (string-append indent
-                                "@pytest.mark.skip(reason=\"Disabled by Guix\")\n"
-                                m)))
-              (substitute* "scipy/sparse/linalg/eigen/arpack/tests/test_arpack.py"
-                (("^def test_parallel_threads\\(\\):" m)
-                 (string-append "@pytest.mark.skip(reason=\"Disabled by Guix\")\n"
-                                m)))))
           (add-before 'build 'configure-openblas
             (lambda _
               (call-with-output-file "site.cfg"
                 (lambda (port)
                   (format port
-                          "[blas]
+                          "\
+[blas]
 libraries = openblas
 library_dirs = ~a/lib
-include_dirs = ~a/include
+include_dirs = ~:*~a/include
 
-# backslash-n to make emacs happy
-\n[atlas]
-library_dirs = ~a/lib
-atlas_libs = openblas
-"
-                          #$(this-package-input "openblas")
-                          #$(this-package-input "openblas")
-                          #$(this-package-input "openblas"))))))
-          (add-after 'install 'install-doc
-            (lambda* (#:key inputs outputs #:allow-other-keys)
+[atlas]
+library_dirs = ~:*~a/lib
+atlas_libs = openblas~%"  #$(this-package-input "openblas"))))))
+          (add-before 'build 'parallelize-build
+            (lambda _
+              (setenv "NPY_NUM_BUILD_JOBS"
+                      (number->string (parallel-job-count)))))
+          (add-before 'check 'install-doc
+            (lambda* (#:key outputs #:allow-other-keys)
               (let* ((data (string-append (assoc-ref outputs "doc") "/share"))
                      (doc (string-append data "/doc/" #$name "-" #$version))
-                     (html (string-append doc "/html"))
-                     (pyver (string-append "PYVER="
-                                           #$(version-major+minor
-                                              (package-version python))))
-                     ;; By default it tries to run sphinx-build through the Python
-                     ;; interpreter which won't work with our shell wrapper.
-                     (sphinxbuild "SPHINXBUILD=LANG=C sphinx-build"))
-                ;; Make installed package available for building the
-                ;; documentation
-                (add-installed-pythonpath inputs outputs)
+                     (html (string-append doc "/html")))
                 (with-directory-excursion "doc"
-                  ;; Fix generation of images for mathematical expressions.
-                  (substitute* (find-files "source" "conf\\.py")
-                    (("pngmath_use_preview = True")
-                     "pngmath_use_preview = False"))
+                  ;; Build doc.
+                  (invoke "make" "html"
+                          ;; Building the documentation takes a very long time.
+                          ;; Parallelize it.
+                          (string-append "SPHINXOPTS=-j"
+                                         (number->string (parallel-job-count))))
+                  ;; Install doc.
                   (mkdir-p html)
-                  (invoke "make" "html" pyver sphinxbuild)
-                  (with-directory-excursion "build/html"
-                    (for-each (lambda (file)
-                                (let* ((dir (dirname file))
-                                       (tgt-dir (string-append html "/" dir)))
-                                  (install-file file html)))
-                              (find-files ".")))))))
+                  (copy-recursively "build/html" html)))))
           (replace 'check
-            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+            (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
-                (with-directory-excursion "/tmp"
-                  (invoke "python" "-c"
-                          "import scipy; scipy.test(verbose=2)"))))))))
+                (invoke "./runtests.py" "-vv" "--no-build" "--mode=fast"
+                        "-j" (number->string (parallel-job-count)))))))))
     (propagated-inputs (list python-numpy python-matplotlib python-pyparsing))
     (inputs (list openblas pybind11))
     (native-inputs
-     (list python-cython
+     (list gfortran
+           perl
+           python-cython
+           python-numpydoc
            python-pydata-sphinx-theme
            python-pytest
+           python-pytest-xdist
            python-sphinx
            python-sphinx-panels
-           python-numpydoc
-           gfortran
-           perl
+           python-threadpoolctl
            which))
-    (home-page "https://www.scipy.org/")
+    (home-page "https://scipy.org/")
     (synopsis "The Scipy library provides efficient numerical routines")
     (description "The SciPy library is one of the core packages that make up
 the SciPy stack.  It provides many user-friendly and efficient numerical
