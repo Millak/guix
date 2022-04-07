@@ -30,6 +30,7 @@
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
+;;; Copyright © 2022 Collin J. Doering <collin@rekahsoft.ca>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -78,6 +79,7 @@
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages dns)
   #:use-module (gnu packages emacs)
+  #:use-module (gnu packages emacs-xyz)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gnome)
@@ -461,6 +463,37 @@ in ability, and easy to use.
 
 This package provides the Emacs mode.")
       (license license:gpl2+))))
+
+(define-public emacs-hledger-mode
+  (let ((commit "400bde42a8d2712af80cd7c773c9cdfbb63a515a")
+        (revision "1"))
+    (package
+      (name "emacs-hledger-mode")
+      (version (git-version "20220515" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/narendraj9/hledger-mode")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "0xmcfpr3rxli1adwypg18npl8hb8ak5rg6a6i26inzzqja6vr897"))))
+      (build-system emacs-build-system)
+      (propagated-inputs
+       (list emacs-popup
+             emacs-async
+             emacs-htmlize))
+      (arguments
+       '(#:include '("^[^/]+.el$")
+         #:exclude '()))
+      (home-page "https://github.com/narendraj9/hledger-mode")
+      (synopsis "Mode for writing journal entries for hledger")
+      (description
+       "This major mode for Emacs enables writing and managing hledger
+journal files.  It generates some useful reports along with some financial
+ratios that can help you keep a check on your financial health for users of
+the plaintext accounting system hledger.")
+      (license license:gpl3))))
 
 (define-public geierlein
   (package
