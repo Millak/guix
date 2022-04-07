@@ -86,7 +86,7 @@
 ;;; Copyright © 2020 Tim Howes <timhowes@lavabit.com>
 ;;; Copyright © 2020 Noah Landis <noahlandis@posteo.net>
 ;;; Copyright © 2020, 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
-;;; Copyright © 2020 André A. Gomes <andremegafone@gmail.com>
+;;; Copyright © 2020, 2022 André A. Gomes <andremegafone@gmail.com>
 ;;; Copyright © 2020 Jonathan Rostran <rostranjj@gmail.com>
 ;;; Copyright © 2020, 2021 Noah Evans <noah@nevans.me>
 ;;; Copyright © 2020 Brit Butler <brit@kingcons.io>
@@ -11608,12 +11608,13 @@ CIDER).")
 
 (define-public emacs-sly
   ;; Update together with sbcl-slynk.
-  (let ((commit "0470c0281498b9de072fcbf3718fc66720eeb3d0"))
+  (let ((commit "4513c382f07a2a2cedb3c046231b69eae2f5e6f0")
+        (revision "6"))
     ;; Versions are not always tagged.  Besides, latest master contains
     ;; important fixes.
     (package
       (name "emacs-sly")
-      (version (git-version "1.0.43" "5" commit))
+      (version (git-version "1.0.43" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -11623,7 +11624,7 @@ CIDER).")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1ws2a9azmdkkg47xnd4jggna45nf0bh54gyp0799b44c4bgjp029"))))
+           "10bzxhi5d7h18hqclxqy2z857d0sfbsnyxvrhmfkdi0h75zz7m4n"))))
       (build-system emacs-build-system)
       (native-inputs
        (list texinfo))
