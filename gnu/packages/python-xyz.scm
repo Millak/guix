@@ -11081,6 +11081,25 @@ output.")
     (description "This package contains a list of Python Standard Libraries.")
     (license license:expat)))
 
+(define-public python-stopit
+  (package
+    (name "python-stopit")
+    (version "1.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "stopit" version))
+       (sha256
+        (base32 "0vcrcvky249q4rbgmwf18mwmnypfk8jpn4h6knyjf86r7xc9rwzp"))))
+    (build-system python-build-system)
+    (arguments '(#:tests? #f)) ;there are none
+    (home-page "https://pypi.python.org/pypi/stopit")
+    (synopsis "Timeout control decorator and context managers")
+    (description
+     "Raise asynchronous exceptions in other threads, control the timeout of
+blocks or callables with two context managers and two decorators.")
+    (license license:expat)))
+
 (define-public python-straight-plugin
   (package
     (name "python-straight-plugin")
