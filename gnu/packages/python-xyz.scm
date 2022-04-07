@@ -9909,6 +9909,35 @@ more advanced mathematics.")
 multiprecision arithmetic.")
     (license license:lgpl3+)))
 
+(define-public python-plac
+  (package
+    (name "python-plac")
+    (version "1.3.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "plac" version))
+       (sha256
+        (base32 "1410h6jw1ksi24kb55xzkwqzba2qqjwiga1s354bf3s5s1jdig9q"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-tkinter
+           (lambda _
+             (substitute* "plac_tk.py"
+               (("from Tkinter import Tk")
+                "from tkinter import Tk")
+               (("from ScrolledText import ScrolledText")
+                "from tkinter.scrolledtext import ScrolledText")))))))
+    (native-inputs
+     `(("python-tkinter" ,python "tk")))
+    (home-page "https://github.com/ialbert/plac")
+    (synopsis "Command line arguments parser")
+    (description "This package can generate command line parameters from
+function signatures.")
+    (license license:bsd-3)))
+
 (define-public python-sympy
   (package
     (name "python-sympy")
