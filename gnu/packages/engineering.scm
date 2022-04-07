@@ -127,6 +127,7 @@
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages stb)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages tbb)
   #:use-module (gnu packages tcl)
@@ -3289,3 +3290,45 @@ creating a socket in a thread and using this socket to send and receive
 messages based on the Protocol Buffers library.  It is designed to
 facilitate the communication between Cura and its backend and similar code.")
     (license license:lgpl3+)))
+
+(define-public cura-engine
+  (package
+    (name "cura-engine")
+    (version "4.13.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+               (url "https://github.com/Ultimaker/CuraEngine")
+               (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xp2r0m5wwfsh9wdb3biqzvfqfz5jsmyw4bww93aksw0rgli07bp"))))
+    (build-system cmake-build-system)
+    (native-inputs
+     (list googletest pkg-config))
+    (inputs
+     (list libarcus protobuf stb-image))
+    (arguments
+     `(#:configure-flags '("-DBUILD_TESTS=ON")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-paths
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "../source/cmake/FindStb.cmake"
+               (("/usr/include")
+                (string-append (assoc-ref inputs "stb-image")
+                               "/include"))
+               (("stb/stb_image_resize.h")
+                "stb_image.h"))
+             (substitute*
+                 "../source/src/infill/ImageBasedDensityProvider.cpp"
+               (("stb/stb_image.h")
+                "stb_image.h")))))))
+    (home-page "https://github.com/Ultimaker/CuraEngine")
+    (synopsis "Cura slicing engine")
+    (description "CuraEngine is a powerful, fast and robust engine for
+processing 3D models into 3D printing instruction for Ultimaker and other
+GCode based 3D printers.  It is part of the larger open source project called
+Cura.")
+    (license license:agpl3+)))
