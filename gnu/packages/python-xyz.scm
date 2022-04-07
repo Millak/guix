@@ -11623,6 +11623,18 @@ from an XML-based format.")
                 (base32
                  "0v6399g755f2hn1ry62i5b6gdinf2fpx2966v3bxh6bjw1accb5p")))))))
 
+(define-public python-fonttools-next
+  (package
+    (inherit python-fonttools-full)
+    (version "4.32.0")
+    (source (origin
+              (inherit (package-source python-fonttools-full))
+              (method url-fetch)
+              (uri (pypi-uri "fonttools" version ".zip"))
+              (sha256
+               (base32
+                "14nk43z0dmznypm3zp4sdc04x1y608jawlnmwdkk32a947khvaar"))))))
+
 (define-public python-ly
   (package
     (name "python-ly")
