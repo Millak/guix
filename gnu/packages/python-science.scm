@@ -15,6 +15,8 @@
 ;;; Copyright © 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
 ;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2022 Malte Frank Gerdes <malte.f.gerdes@gmail.com>
+;;; Copyright © 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -371,6 +373,44 @@ genetic variation data.")
     (description
      "This package provides a Python implementation of the most recent version
 of the SGP4 satellite tracking algorithm.")
+    (license license:expat)))
+
+(define-public python-trimesh
+  (package
+    (name "python-trimesh")
+    (version "3.10.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trimesh" version))
+       (sha256
+        (base32 "0bw55cwxlxds0j54naijh64sdb0rkscx4i1fy0ql94h96kw2p2ir"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-numpy))
+    (native-inputs
+     (list python-coveralls
+           python-pyinstrument
+           python-pytest
+           python-pytest-cov))
+    (arguments
+     `(;; TODO: Get tests to work.
+       #:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-build
+           (lambda _
+             (substitute* "trimesh/resources/templates/blender_boolean.py"
+               (("\\$MESH_PRE")
+                "'$MESH_PRE'")))))))
+    (home-page "https://github.com/mikedh/trimesh")
+    (synopsis "Python library for loading and using triangular meshes")
+    (description
+     "Trimesh is a pure Python library for loading and using triangular meshes
+with an emphasis on watertight surfaces.  The goal of the library is to provide
+a full featured and well tested Trimesh object which allows for easy
+manipulation and analysis, in the style of the Polygon object in the Shapely
+library.")
     (license license:expat)))
 
 (define-public python-pandas
