@@ -55,9 +55,10 @@ guix build -m "$manifest.second" -d | \
     grep "$(guix build gash -d)"
 
 # Package transformation option.
-guix shell --export-manifest guile guix --with-latest=guile-json > "$manifest"
+guix shell --export-manifest guile guix \
+     --with-input=guile-json@3=guile-json > "$manifest"
 grep 'options->transformation' "$manifest"
-grep '(with-latest . "guile-json")' "$manifest"
+grep '(with-input . "guile-json@3=guile-json")' "$manifest"
 
 # Development manifest.
 guix shell --export-manifest -D guile git > "$manifest"
