@@ -23,7 +23,7 @@
 ;;; Copyright © 2020, 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021, 2022 Aurora <rind38@disroot.org>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
-;;; Copyright © 2021 André A. Gomes <andremegafone@gmail.com>
+;;; Copyright © 2021, 2022 André A. Gomes <andremegafone@gmail.com>
 ;;; Copyright © 2021, 2022 Cage <cage-dev@twistfold.it>
 ;;; Copyright © 2021 Cameron Chaparro <cameron@cameronchaparro.com>
 ;;; Copyright © 2021 Charles Jackson <charles.b.jackson@protonmail.com>
@@ -1025,10 +1025,11 @@ antialiased TrueType font rendering using CLX and XRender extension.")
   (sbcl-package->ecl-package sbcl-clx-truetype))
 
 (define-public sbcl-slynk
-  (let ((commit "0470c0281498b9de072fcbf3718fc66720eeb3d0"))
+  (let ((commit "4513c382f07a2a2cedb3c046231b69eae2f5e6f0")
+        (revision "6"))
     (package
       (name "sbcl-slynk")
-      (version (git-version "1.0.43" "5" commit))
+      (version (git-version "1.0.43" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -1037,8 +1038,8 @@ antialiased TrueType font rendering using CLX and XRender extension.")
            (url "https://github.com/joaotavora/sly")
            (commit commit)))
          (sha256
-          (base32 "1ws2a9azmdkkg47xnd4jggna45nf0bh54gyp0799b44c4bgjp029"))
-         (file-name (git-file-name "slynk" version))))
+          (base32 "10bzxhi5d7h18hqclxqy2z857d0sfbsnyxvrhmfkdi0h75zz7m4n"))
+         (file-name (git-file-name "cl-slynk" version))))
       (build-system asdf-build-system/sbcl)
       (outputs '("out" "image"))
       (arguments
