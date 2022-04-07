@@ -9938,6 +9938,29 @@ multiprecision arithmetic.")
 function signatures.")
     (license license:bsd-3)))
 
+(define-public python-yte
+  (package
+    (name "python-yte")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "yte" version))
+       (sha256
+        (base32 "07hm1warpqi4ifqgkaz5sg887x4a44yhxafmpf835ywnpchg4s03"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
+    (propagated-inputs (list python-plac python-pyyaml))
+    (home-page "https://github.com/koesterlab/yte")
+    (synopsis "YAML template engine with Python expressions")
+    (description
+     "This package provides a YAML template engine with Python expressions.")
+    (license license:expat)))
+
 (define-public python-sympy
   (package
     (name "python-sympy")
