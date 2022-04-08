@@ -6563,29 +6563,28 @@ functions from type definitions.")
 driver including all standard Jane Street ppx rewriters.")
     (license license:asl2.0)))
 
-(define-public ocaml4.07-splittable-random
+(define-public ocaml-splittable-random
   (package
-    (name "ocaml4.07-splittable-random")
-    (version "0.11.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://ocaml.janestreet.com/ocaml-core/v"
-                                  (version-major+minor version)
-                                  "/files/splittable_random-v" version ".tar.gz"))
-              (sha256
-               (base32
-                "0l1wbd881mymlnpzlq5q53mmdz3g5d7qjhyc7lfaq1x0iaccn5lc"))))
+    (name "ocaml-splittable-random")
+    (version "0.14.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/janestreet/splittable_random")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32 "0ax988b1wc7km8khg4s6iphbz16y1rssh7baigxfyw3ldp0agk14"))))
     (build-system dune-build-system)
-    (arguments
-     `(#:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
     (propagated-inputs
-      `(("ocaml-base" ,(package-with-ocaml4.07 ocaml-base))
-        ("ocaml-ppx-jane" ,ocaml4.07-ppx-jane)
-        ("ocaml-migrate-parsetree"
-         ,(package-with-ocaml4.07 ocaml-migrate-parsetree))))
-    (properties `((upstream-name . "splittable_random")))
+      (list ocaml-base
+            ocaml-ppx-assert
+            ocaml-ppx-bench
+            ocaml-ppx-inline-test
+            ocaml-ppx-sexp-message))
+    (properties `((upstream-name . "splittable_random")
+                  (ocaml-4.07-variant . ,(delay ocaml4.07-splittable-random))))
     (home-page "https://github.com/janestreet/splittable_random")
     (synopsis "PRNG that can be split into independent streams")
     (description "This package provides a splittable
@@ -6595,7 +6594,25 @@ second, independent stream of random values.
 
 This library implements a splittable pseudo-random number generator that sacrifices
 cryptographic-quality randomness in favor of performance.")
-    (license license:asl2.0)))
+    (license license:expat)))
+
+(define-public ocaml4.07-splittable-random
+  (package-with-ocaml4.07
+    (package
+      (inherit ocaml-splittable-random)
+      (version "0.11.0")
+      (source (origin
+                (method url-fetch)
+                (uri (string-append "https://ocaml.janestreet.com/ocaml-core/v"
+                                    (version-major+minor version)
+                                    "/files/splittable_random-v" version ".tar.gz"))
+                (sha256
+                 (base32
+                  "0l1wbd881mymlnpzlq5q53mmdz3g5d7qjhyc7lfaq1x0iaccn5lc"))))
+      (propagated-inputs
+        (list ocaml-base ocaml4.07-ppx-jane ocaml-migrate-parsetree))
+      (properties '())
+      (license license:asl2.0))))
 
 (define-public ocaml4.07-jane-street-headers
   (package
