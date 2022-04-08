@@ -6203,37 +6203,49 @@ packages.")
                          "0z3fc55jdjhhsblla6z4fqc13kljpcz29q79rvs5h2vsraqrldr2"))
      (properties `((upstream-name . "ppx_js_style"))))))
 
-(define-public ocaml4.07-ppx-typerep-conv
+(define-public ocaml-ppx-typerep-conv
   (package
-    (name "ocaml4.07-ppx-typerep-conv")
-    (version "0.11.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/janestreet/ppx_typerep_conv")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0a13dpfrrg0rsm8qni1bh7pqcda30l70z8r6yzi5a64bmwk7g5ah"))))
+    (name "ocaml-ppx-typerep-conv")
+    (version "0.14.2")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://github.com/janestreet/ppx_typerep_conv/")
+              (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32 "0yk9vkpnwr8labgfncqdi4rfkj88d8mb3cr8m4gdqpi3f2r27hf0"))))
     (build-system dune-build-system)
     (arguments
-     `(#:test-target "."
-       #:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
-    (propagated-inputs
-      `(("ocaml-base" ,(package-with-ocaml4.07 ocaml-base))
-        ("ocaml-typerep" ,ocaml4.07-typerep)
-        ("ocaml-migrate-parsetree"
-         ,(package-with-ocaml4.07 ocaml-migrate-parsetree))
-        ("ocaml-ppxlib" ,(package-with-ocaml4.07 ocaml-ppxlib))))
-    (properties `((upstream-name . "ppx_typerep_conv")))
+     `(#:test-target "."))
+    (propagated-inputs (list ocaml-base ocaml-typerep ocaml-ppxlib))
+    (properties `((upstream-name . "ppx_typerep_conv")
+                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-typerep-conv))))
     (home-page "https://github.com/janestreet/ppx_typerep_conv")
     (synopsis "Generation of runtime types from type declarations")
     (description "This package can automatically generate runtime types
 from type definitions.")
-    (license license:asl2.0)))
+    (license license:expat)))
+
+(define-public ocaml4.07-ppx-typerep-conv
+  (package-with-ocaml4.07
+    (package
+      (inherit ocaml-ppx-typerep-conv)
+      (version "0.11.1")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/janestreet/ppx_typerep_conv")
+                       (commit (string-append "v" version))))
+                (file-name (git-file-name "ocaml4.07-ppx-typerep-conv" version))
+                (sha256
+                 (base32
+                  "0a13dpfrrg0rsm8qni1bh7pqcda30l70z8r6yzi5a64bmwk7g5ah"))))
+      (properties '())
+      (propagated-inputs
+        (list ocaml-base ocaml-typerep ocaml-migrate-parsetree ocaml-ppxlib))
+      (license license:asl2.0))))
 
 (define-public ocaml-ppx-base
   (package
