@@ -62,11 +62,19 @@
   (or (getenv "GUIX_MANUAL")
       "guix"))
 
+(define %manual-languages
+  ;; Available translations for the 'guix-manual' text domain.
+  '("de" "en" "es" "fr" "ru" "zh_CN"))
+
+(define %cookbook-languages
+  ;; Available translations for the 'guix-cookbook' text domain.
+  '("de" "en" "fr" "sk"))
+
 (define %languages
-  ;; The cookbook is not translated in the same languages as the manual
+  ;; Available translations for the document being built.
   (if (string=? %manual "guix-cookbook")
-      '("de" "en" "fr" "sk")
-      '("de" "en" "es" "fr" "ru" "zh_CN")))
+      %cookbook-languages
+      %manual-languages))
 
 (define (texinfo-manual-images source)
   "Return a directory containing all the images used by the user manual, taken
@@ -969,7 +977,8 @@ PDF for language '~a'!~%~%"
   (computed-file (string-append manual "-pdf-manual") build
                  #:local-build? #f))
 
-(define (guix-manual-text-domain source languages)
+(define* (guix-manual-text-domain source
+                                  #:optional (languages %manual-languages))
   "Return the PO files for LANGUAGES of the 'guix-manual' text domain taken
 from SOURCE."
   (define po-directory
@@ -1042,9 +1051,7 @@ must be the Guix top-level source directory, from which PO files are taken."
             (define exp
               `(begin
                  (bindtextdomain "guix-manual"
-                                 #+(guix-manual-text-domain
-                                    source
-                                    languages))
+                                 #+(guix-manual-text-domain source))
                  (bindtextdomain "iso_639-3"      ;language names
                                  #+(file-append iso-codes
                                                 "/share/locale"))
