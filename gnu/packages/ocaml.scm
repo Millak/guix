@@ -5744,35 +5744,48 @@ many values).")
                  "0spx9k1v7vjjb6sigbfs69yndgq76v114jhxvzjmffw7q989cyhr"))))
      (properties `((upstream-name . "ppx_enumerate"))))))
 
-(define-public ocaml4.07-ppx-bench
+(define-public ocaml-ppx-bench
   (package
-    (name "ocaml4.07-ppx-bench")
-    (version "0.11.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://ocaml.janestreet.com/ocaml-core/v"
-                                  (version-major+minor version)
-                                  "/files/ppx_bench-v" version ".tar.gz"))
-              (sha256
-               (base32
-                "0ys4pblbcjbk9dn073rqiwm7r6rc7fah03j7riklkwnb5n44andl"))))
+    (name "ocaml-ppx-bench")
+    (version "0.14.1")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/janestreet/ppx_bench")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32 "12r7jgqgpb4i4cry3rgyl2nmxcscs5w7mmk06diz7i49r27p96im"))))
     (build-system dune-build-system)
     (arguments
      ;; No tests
-     `(#:tests? #f
-       #:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
-    (propagated-inputs
-     `(("ocaml-ppx-inline-test" ,(package-with-ocaml4.07 ocaml-ppx-inline-test))
-        ("ocaml-migrate-parsetree"
-         ,(package-with-ocaml4.07 ocaml-migrate-parsetree))
-        ("ocaml-ppxlib" ,(package-with-ocaml4.07 ocaml-ppxlib))))
-    (properties `((upstream-name . "ppx_bench")))
+     `(#:tests? #f))
+    (propagated-inputs (list ocaml-ppx-inline-test ocaml-ppxlib))
+    (properties `((upstream-name . "ppx_bench")
+                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-bench))))
     (home-page "https://github.com/janestreet/ppx_bench")
     (synopsis "Syntax extension for writing in-line benchmarks in ocaml code")
     (description "Syntax extension for writing in-line benchmarks in ocaml code.")
-    (license license:asl2.0)))
+    (license license:expat)))
+
+(define-public ocaml4.07-ppx-bench
+  (package-with-ocaml4.07
+    (package
+      (inherit ocaml-ppx-bench)
+      (version "0.11.0")
+      (source (origin
+                (method url-fetch)
+                (uri (string-append "https://ocaml.janestreet.com/ocaml-core/v"
+                                    (version-major+minor version)
+                                    "/files/ppx_bench-v" version ".tar.gz"))
+                (sha256
+                 (base32
+                  "0ys4pblbcjbk9dn073rqiwm7r6rc7fah03j7riklkwnb5n44andl"))))
+      (propagated-inputs
+        (list ocaml-ppx-inline-test ocaml-migrate-parsetree ocaml-ppxlib))
+      (properties '())
+      (license license:asl2.0))))
 
 (define-public ocaml-ppx-here
   (package
