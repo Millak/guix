@@ -6423,39 +6423,55 @@ verification tool.")
        ("ocaml-ppxlib" ,ocaml-ppxlib)))
     (properties `((upstream-name . "ppx_base"))))))
 
-(define-public ocaml4.07-ppx-bin-prot
+(define-public ocaml-ppx-bin-prot
   (package
-    (name "ocaml4.07-ppx-bin-prot")
-    (version "0.11.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/janestreet/ppx_bin_prot")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1h60i75bzvhna1axyn662gyrzhh441l79vl142d235i5x31dmnkz"))))
+    (name "ocaml-ppx-bin-prot")
+    (version "0.14.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/janestreet/ppx_bin_prot")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32 "1qryjxhyz3kn5jz5wm62j59lhjhd1mp7nbsj0np9qnbpapnnr1zg"))))
     (build-system dune-build-system)
     (arguments
      ;; Cyclic dependency with ocaml-ppx-jane
-     `(#:tests? #f
-       #:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
+     `(#:tests? #f))
     (propagated-inputs
-      `(("ocaml-base" ,(package-with-ocaml4.07 ocaml-base))
-        ("ocaml-bin-prot" ,ocaml4.07-bin-prot)
-        ("ocaml-ppx-here" ,(package-with-ocaml4.07 ocaml-ppx-here))
-        ("ocaml-migrate-parsetree"
-         ,(package-with-ocaml4.07 ocaml-migrate-parsetree))
-        ("ocaml-ppxlib" ,(package-with-ocaml4.07 ocaml-ppxlib))))
-    (properties `((upstream-name . "ppx_bin_prot")))
+      (list ocaml-base ocaml-bin-prot ocaml-ppx-here ocaml-ppxlib))
+    (properties `((upstream-name . "ppx_bin_prot")
+                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-bin-prot))))
     (home-page "https://github.com/janestreet/ppx_bin_prot")
     (synopsis "Generation of bin_prot readers and writers from types")
     (description "Generation of binary serialization and deserialization
 functions from type definitions.")
-    (license license:asl2.0)))
+    (license license:expat)))
+
+(define-public ocaml4.07-ppx-bin-prot
+  (package-with-ocaml4.07
+    (package
+      (inherit ocaml-ppx-bin-prot)
+      (version "0.11.1")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/janestreet/ppx_bin_prot")
+                       (commit (string-append "v" version))))
+                (file-name (git-file-name "ocaml4.07-ppx-bin-prot" version))
+                (sha256
+                 (base32
+                  "1h60i75bzvhna1axyn662gyrzhh441l79vl142d235i5x31dmnkz"))))
+      (propagated-inputs
+        (list ocaml-base
+              ocaml-bin-prot
+              ocaml-ppx-here
+              ocaml-migrate-parsetree
+              ocaml-ppxlib))
+      (properties '())
+      (license license:asl2.0))))
 
 (define-public ocaml4.07-ppx-jane
   (package
