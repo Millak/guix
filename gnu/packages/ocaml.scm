@@ -6139,35 +6139,46 @@ match expressions, and if expressions.")
 
      (properties `((upstream-name . "ppx_let"))))))
 
-(define-public ocaml4.07-ppx-fail
+(define-public ocaml-ppx-fail
   (package
-    (name "ocaml4.07-ppx-fail")
-    (version "0.11.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://ocaml.janestreet.com/ocaml-core/v"
-                                  (version-major+minor version)
-                                  "/files/ppx_fail-v" version ".tar.gz"))
-              (sha256
-               (base32
-                "07plqsvljiwvngggfypwq55g46s5my55y45mvlmalrxyppzr03s8"))))
+    (name "ocaml-ppx-fail")
+    (version "0.14.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/janestreet/ppx_fail")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32 "012p9gv7w4sk3b4x0sdmqrmr2856w8xc424waxb6vrybid7qjs95"))))
     (build-system dune-build-system)
-    (arguments
-     `(#:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
-    (propagated-inputs
-      `(("ocaml-base" ,(package-with-ocaml4.07 ocaml-base))
-        ("ocaml-ppx-here" ,(package-with-ocaml4.07 ocaml-ppx-here))
-        ("ocaml-migrate-parsetree"
-         ,(package-with-ocaml4.07 ocaml-migrate-parsetree))
-        ("ocaml-ppxlib" ,(package-with-ocaml4.07 ocaml-ppxlib))))
-    (properties `((upstream-name . "ppx_fail")))
+    (propagated-inputs (list ocaml-base ocaml-ppx-here ocaml-ppxlib))
+    (properties `((upstream-name . "ppx_fail")
+                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-fail))))
     (home-page "https://github.com/janestreet/ppx_fail")
     (synopsis "Add location to calls to failwiths")
     (description "Syntax extension that makes [failwiths] always include a
 position.")
-    (license license:asl2.0)))
+    (license license:expat)))
+
+(define-public ocaml4.07-ppx-fail
+  (package-with-ocaml4.07
+    (package
+      (inherit ocaml-ppx-fail)
+      (version "0.11.0")
+      (source (origin
+                (method url-fetch)
+                (uri (string-append "https://ocaml.janestreet.com/ocaml-core/v"
+                                    (version-major+minor version)
+                                    "/files/ppx_fail-v" version ".tar.gz"))
+                (sha256
+                 (base32
+                  "07plqsvljiwvngggfypwq55g46s5my55y45mvlmalrxyppzr03s8"))))
+      (propagated-inputs
+        (list ocaml-base ocaml-ppx-here ocaml-migrate-parsetree ocaml-ppxlib))
+      (properties '())
+      (license license:asl2.0))))
 
 (define-public ocaml-ppx-cold
   (package
