@@ -309,8 +309,9 @@ actual file name."
             (define (html-files directory)
               ;; Return the list of HTML files under DIRECTORY.
               (map (cut string-append directory "/" <>)
-                   (scandir #$manual (lambda (file)
-                                       (string-suffix? ".html" file)))))
+                   (or (scandir #$manual (lambda (file)
+                                           (string-suffix? ".html" file)))
+                       '())))
 
             (define anchors
               (sort (concatenate
