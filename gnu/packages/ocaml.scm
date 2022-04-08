@@ -5786,29 +5786,43 @@ many values).")
                          "0wxcak3ay4jpigm3pfdcpr65qw4hxfa8whhkryhcd8gy71x056z5"))
      (properties `((upstream-name . "ppx_here"))))))
 
-(define-public ocaml4.07-typerep
+(define-public ocaml-typerep
   (package
-    (name "ocaml4.07-typerep")
-    (version "0.11.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://ocaml.janestreet.com/ocaml-core/v"
-                                  (version-major+minor version)
-                                  "/files/typerep-v" version ".tar.gz"))
-              (sha256
-               (base32
-                "1zi7hy0prpgzqhr4lkacr04wvlvbp21jfbdfvffhrm6cd400rb5v"))))
+    (name "ocaml-typerep")
+    (version "0.14.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/janestreet/typerep")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32 "0wc7h853ka3s3lxxgm61ypidl0lzgc9abdkil6f72anl0c417y90"))))
     (build-system dune-build-system)
-    (arguments
-     `(#:tests? #f
-       #:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
-    (propagated-inputs `(("ocaml-base" ,(package-with-ocaml4.07 ocaml-base))))
+    (arguments `(#:tests? #f)); no tests
+    (propagated-inputs (list ocaml-base))
+    (properties `((ocaml4.07-variant . ,(delay ocaml4.07-typerep))))
     (home-page "https://github.com/janestreet/typerep")
     (synopsis "Typerep is a library for runtime types")
     (description "Typerep is a library for runtime types.")
-    (license license:asl2.0)))
+    (license license:expat)))
+
+(define-public ocaml4.07-typerep
+  (package-with-ocaml4.07
+    (package
+      (inherit ocaml-typerep)
+      (version "0.11.0")
+      (source (origin
+                (method url-fetch)
+                (uri (string-append "https://ocaml.janestreet.com/ocaml-core/v"
+                                    (version-major+minor version)
+                                    "/files/typerep-v" version ".tar.gz"))
+                (sha256
+                 (base32
+                  "1zi7hy0prpgzqhr4lkacr04wvlvbp21jfbdfvffhrm6cd400rb5v"))))
+      (properties '())
+      (license license:asl2.0))))
 
 (define-public ocaml4.07-ppx-sexp-value
   (package
