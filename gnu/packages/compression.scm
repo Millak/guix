@@ -35,6 +35,7 @@
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Ahmad Jarara <git@ajarara.io>
+;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1576,28 +1577,21 @@ or junctions, and always follows hard links.")
 (define-public zstd
   (package
     (name "zstd")
-    (version "1.5.0")
+    (version "1.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/facebook/zstd/releases/download/"
                            "v" version "/zstd-" version ".tar.gz"))
        (sha256
-        (base32 "150y541303vnvfhd8wkbih00lfvvm98rd12yijwlbkqzg3xgp52i"))))
+        (base32 "1l1zm1imcc2ixayykyh4y421shdj3pzp7g2xm2k2js8jmipxahkw"))))
     (build-system gnu-build-system)
-    (outputs '("out"                    ;1.2MiB executables and documentation
+    (outputs '("out"                    ;1.5MiB executables and documentation
                "lib"                    ;1.2MiB shared library and headers
                "static"))               ;1.2MiB static library
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'remove-bogus-check
-           (lambda _
-             ;; lib/Makefile falsely claims that no .pc file can be created.
-             (substitute* "lib/Makefile"
-               (("error configured .*dir ")
-                "true "))
-             #t))
          (add-after 'unpack 'patch-command-file-names
            ;; Don't require hard requirements to be in $PATH.
            (lambda* (#:key outputs #:allow-other-keys)
