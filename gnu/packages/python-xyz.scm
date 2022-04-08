@@ -29476,6 +29476,34 @@ database from the asyncio (PEP-3156/tulip) framework.  It wraps
 asynchronous features of the Psycopg database driver.")
     (license license:bsd-3)))
 
+(define-public python-verspec
+  (package
+    (name "python-verspec")
+    (version "0.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "verspec" version))
+              (sha256
+               (base32
+                "07n06wv85fm4vl1ird2mja0823js3x322wgs9gdnq1djjyk4ql64"))))
+    (build-system python-build-system)
+    (native-inputs (list python-coverage python-flake8 python-mypy
+                         python-pretend python-pytest))
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+                      (when tests?
+                        (add-installed-pythonpath inputs outputs)
+                        (invoke "touch" "test/__init__.py")
+                        (invoke "pytest")))))))
+    (home-page "https://github.com/jimporter/verspec")
+    (synopsis "Flexible version handling for Python")
+    (description
+     "This Python library handles software versions and specifiers.  It is
+adapted from the @code{packaging} package.")
+    (license (list license:bsd-2 license:asl2.0))))
+
 (define-public python-shtab
   (package
     (name "python-shtab")
