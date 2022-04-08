@@ -61,8 +61,8 @@
 
 ;; Define a PEG parser for the opam format
 (define-peg-pattern comment none (and "#" (* COMMCHR) "\n"))
-(define-peg-pattern SP none (or " " "\n" comment))
-(define-peg-pattern SP2 body (or " " "\n"))
+(define-peg-pattern SP none (or " " "\n" "\t" comment))
+(define-peg-pattern SP2 body (or " " "\n" "\t"))
 (define-peg-pattern QUOTE none "\"")
 (define-peg-pattern QUOTE2 body "\"")
 (define-peg-pattern COLON none ":")
