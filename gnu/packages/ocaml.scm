@@ -5580,33 +5580,30 @@ string conversion.")
        "11b73smf3g3bpd9lg014pr4rx285nk9mnk6g6464ph51jv0sqzhj"))
      (properties `((upstream-name . "ppx_custom_printf"))))))
 
-(define-public ocaml4.07-bin-prot
+(define-public ocaml-bin-prot
   (package
-    (name "ocaml4.07-bin-prot")
-    (version "0.11.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://ocaml.janestreet.com/ocaml-core/v"
-                                  (version-major+minor version)
-                                  "/files/bin_prot-v" version ".tar.gz"))
-              (sha256
-               (base32
-                "1rsd91gx36prj4whi76nsiz1bzpgal9nzyw3pxdz1alv4ilk2il6"))))
+    (name "ocaml-bin-prot")
+    (version "0.14.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/janestreet/bin_prot")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32 "1qyqbfp4zdc2jb87370cdgancisqffhf9x60zgh2m31kqik8annr"))))
     (build-system dune-build-system)
-    (inputs
-      `(("ocaml-base" ,(package-with-ocaml4.07 ocaml-base))
-        ("ocaml-ppx-compare" ,(package-with-ocaml4.07 ocaml-ppx-compare))
-        ("ocaml-ppx-custom-printf" ,(package-with-ocaml4.07 ocaml-ppx-custom-printf))
-        ("ocaml-ppx-fields-conv" ,(package-with-ocaml4.07 ocaml-ppx-fields-conv))
-        ("ocaml-ppx-sexp-conv" ,(package-with-ocaml4.07 ocaml-ppx-sexp-conv))
-        ("ocaml-ppx-variants-conv" ,(package-with-ocaml4.07 ocaml-ppx-variants-conv))
-        ("ocaml-migrate-parsetree"
-         ,(package-with-ocaml4.07 ocaml-migrate-parsetree))))
-    (arguments
-     `(#:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
-    (properties `((upstream-name . "bin_prot")))
+    (propagated-inputs
+      (list ocaml-base
+            ocaml-ppx-compare
+            ocaml-ppx-custom-printf
+            ocaml-ppx-fields-conv
+            ocaml-ppx-optcomp
+            ocaml-ppx-sexp-conv
+            ocaml-ppx-variants-conv))
+    (properties `((upstream-name . "bin_prot")
+                  (ocaml4.07-variant . ,(delay ocaml4.07-bin-prot))))
     (home-page "https://github.com/janestreet/bin_prot")
     (synopsis "Binary protocol generator")
     (description "This library contains functionality for reading and writing
@@ -5615,9 +5612,31 @@ typically supporting type-safe marshalling and unmarshalling of even highly
 structured values at speeds sufficient to saturate a gigabit connection.  The
 protocol is also heavily optimized for size, making it ideal for long-term
 storage of large amounts of data.")
-    (license (list
-               license:asl2.0
-               license:bsd-3))))
+    (license license:expat)))
+
+(define-public ocaml4.07-bin-prot
+  (package-with-ocaml4.07
+    (package
+      (inherit ocaml-bin-prot)
+      (version "0.11.0")
+      (source (origin
+                (method url-fetch)
+                (uri (string-append "https://ocaml.janestreet.com/ocaml-core/v"
+                                    (version-major+minor version)
+                                    "/files/bin_prot-v" version ".tar.gz"))
+                (sha256
+                 (base32
+                  "1rsd91gx36prj4whi76nsiz1bzpgal9nzyw3pxdz1alv4ilk2il6"))))
+      (propagated-inputs (list ocaml-base
+                               ocaml-ppx-compare
+                               ocaml-ppx-custom-printf
+                               ocaml-ppx-fields-conv
+                               ocaml-ppx-variants-conv
+                               ocaml-migrate-parsetree))
+      (properties '())
+      (license (list
+                 license:asl2.0
+                 license:bsd-3)))))
 
 (define-public ocaml-octavius
   (package
