@@ -55,7 +55,7 @@
            (lambda _
              (setenv "LSOF_CC" ,(cc-for-target))
              ,@(if (%current-target-system)
-                   (list (setenv "LINUX_CONF_CC" "gcc"))
+                   '((setenv "LINUX_CONF_CC" "gcc"))
                    '())
              (setenv "LSOF_MAKE" "make")
 
