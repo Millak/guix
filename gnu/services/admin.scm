@@ -102,7 +102,9 @@
                                      read)))
                           (kill pid SIGHUP))))
         (log-rotation
-         (files '("/var/log/guix-daemon.log")))))
+         (files '("/var/log/guix-daemon.log"))
+         (options '("rotate 4"                    ;don't keep too many of them
+                    "storefile @FILENAME.@COMP_EXT")))))
 
 (define (log-rotation->config rotation)
   "Return a string-valued gexp representing the rottlog configuration snippet
