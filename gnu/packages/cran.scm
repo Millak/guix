@@ -659,6 +659,26 @@ size and can be easily tested locally before being sent to a remote.")
 the system clipboards.")
     (license license:gpl3)))
 
+(define-public r-dlm
+  (package
+    (name "r-dlm")
+    (version "1.1-5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "dlm" version))
+       (sha256
+        (base32 "1aksm66sfa7ipl5xgs4j5giac7q2m744wjl40mva56xn6i674h4r"))))
+    (properties `((upstream-name . "dlm")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/package=dlm")
+    (synopsis "Bayesian and Likelihood Analysis of Dynamic Linear Models")
+    (description
+     "This package provides routines for Maximum likelihood, Kalman filtering
+and smoothing, and Bayesian analysis of Normal linear State Space models, also
+known as Dynamic Linear Models.")
+    (license license:gpl2+)))
+
 (define-public r-zoo
   (package
     (name "r-zoo")
