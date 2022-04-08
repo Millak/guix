@@ -6887,58 +6887,94 @@ standard library that was developed by Jane Street.")
     ;; by OCaml's license for consortium members (see THIRD-PARTY.txt).
     (license license:asl2.0)))
 
-(define-public ocaml4.07-core-kernel
+(define-public ocaml-core-kernel
   (package
-    (name "ocaml4.07-core-kernel")
-    (version "0.11.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/janestreet/core_kernel")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1dg7ygy7i64c5gaakb1cp1b26p9ks81vbxmb8fd7jff2q60j2z2g"))))
+    (name "ocaml-core-kernel")
+    (version "0.14.2")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/janestreet/core_kernel")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32 "1vxv9rq6m52n60gprm4sqjj1i1p4dd4sgns068hkp9g558d8zdjx"))))
     (build-system dune-build-system)
     (arguments
      ;; Cyclic dependency with ocaml-core
-     `(#:tests? #f
-       #:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
+     `(#:tests? #f))
     (propagated-inputs
-      `(("ocaml-base" ,(package-with-ocaml4.07 ocaml-base))
-        ("ocaml-bin-prot" ,ocaml4.07-bin-prot)
-        ("ocaml-configurator" ,ocaml4.07-configurator)
-        ("ocaml-fieldslib" ,(package-with-ocaml4.07 ocaml-fieldslib))
-        ("ocaml-jane-street-headers" ,ocaml4.07-jane-street-headers)
-        ("ocaml-ppx-assert" ,(package-with-ocaml4.07 ocaml-ppx-assert))
-        ("ocaml-ppx-base" ,(package-with-ocaml4.07 ocaml-ppx-base))
-        ("ocaml-ppx-hash" ,(package-with-ocaml4.07 ocaml-ppx-hash))
-        ("ocaml-ppx-inline-test" ,(package-with-ocaml4.07 ocaml-ppx-inline-test))
-        ("ocaml-ppx-jane" ,ocaml4.07-ppx-jane)
-        ("ocaml-ppx-sexp-conv" ,(package-with-ocaml4.07 ocaml-ppx-sexp-conv))
-        ("ocaml-ppx-sexp-message" ,ocaml4.07-ppx-sexp-message)
-        ("ocaml-sexplib" ,(package-with-ocaml4.07 ocaml-sexplib))
-        ("ocaml-splittable-random" ,ocaml4.07-splittable-random)
-        ("ocaml-stdio" ,(package-with-ocaml4.07 ocaml-stdio))
-        ("ocaml-typerep" ,ocaml4.07-typerep)
-        ("ocaml-variantslib" ,(package-with-ocaml4.07 ocaml-variantslib))
-        ("ocaml-migrate-parsetree"
-         ,(package-with-ocaml4.07 ocaml-migrate-parsetree))))
-    (properties `((upstream-name . "core_kernel")))
+      (list ocaml-base
+            ocaml-base-bigstring
+            ocaml-base-quickcheck
+            ocaml-bin-prot
+            ocaml-fieldslib
+            ocaml-jane-street-headers
+            ocaml-jst-config
+            ocaml-ppx-assert
+            ocaml-ppx-base
+            ocaml-ppx-hash
+            ocaml-ppx-inline-test
+            ocaml-ppx-jane
+            ocaml-ppx-sexp-conv
+            ocaml-ppx-sexp-message
+            ocaml-sexplib
+            ocaml-splittable-random
+            ocaml-stdio
+            ocaml-time-now
+            ocaml-typerep
+            ocaml-variantslib
+            ocaml-ppx-optcomp))
+    (properties `((upstream-name . "core_kernel")
+                  (ocaml4.07-variant . ,(delay ocaml4.07-core-kernel))))
     (home-page "https://github.com/janestreet/core_kernel")
     (synopsis "Portable standard library for OCaml")
     (description "Core is an alternative to the OCaml standard library.
 
 Core_kernel is the system-independent part of Core.  It is aimed for cases when
 the full Core is not available, such as in Javascript.")
-    (license (list
-               ;; this package and parts of OCaml, relicensed by janestreet
-               license:asl2.0
-               ;; MLton and sjs
-               license:expat))))
+    (license license:expat)))
+
+(define-public ocaml4.07-core-kernel
+  (package-with-ocaml4.07
+    (package
+      (inherit ocaml-core-kernel)
+      (version "0.11.1")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/janestreet/core_kernel")
+                       (commit (string-append "v" version))))
+                (file-name (git-file-name "ocaml4.07-core-kernel" version))
+                (sha256
+                 (base32
+                  "1dg7ygy7i64c5gaakb1cp1b26p9ks81vbxmb8fd7jff2q60j2z2g"))))
+      (propagated-inputs
+        (list ocaml-base
+              ocaml-bin-prot
+              ocaml4.07-configurator
+              ocaml-fieldslib
+              ocaml-jane-street-headers
+              ocaml-ppx-assert
+              ocaml-ppx-base
+              ocaml-ppx-hash
+              ocaml-ppx-inline-test
+              ocaml-ppx-jane
+              ocaml-ppx-sexp-conv
+              ocaml-ppx-sexp-message
+              ocaml-sexplib
+              ocaml-splittable-random
+              ocaml-stdio
+              ocaml-typerep
+              ocaml-variantslib
+              ocaml-migrate-parsetree))
+      (properties '())
+      (license (list
+                 ;; this package and parts of OCaml, relicensed by janestreet
+                 license:asl2.0
+                 ;; MLton and sjs
+                 license:expat)))))
 
 (define-public ocaml-markup
   (package
