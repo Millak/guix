@@ -4476,6 +4476,7 @@ recommend using this package directly.")
       "028yxb4h3iy025iy89v8653m5brh7flrjshghs4x99pd690pmfs7"))
     (build-system dune-build-system)
     (arguments '(#:tests? #f))           ; no tests
+    (properties `((ocaml4.07-variant . ,(delay ocaml4.07-jane-street-headers))))
     (home-page "https://github.com/janestreet/jane-street-headers")
     (synopsis "Jane Street C header files")
     (description "C header files shared between the various Jane Street
