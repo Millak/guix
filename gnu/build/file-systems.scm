@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2018, 2020-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2017 David Craven <david@craven.ch>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2019 Guillaume Le Vaillant <glv@posteo.net>
@@ -54,6 +54,7 @@
 
             bind-mount
 
+            system*/tty
             mount-flags->bit-mask
             check-file-system
             mount-file-system
@@ -66,6 +67,33 @@
 ;;; check file systems.
 ;;;
 ;;; Code:
+
+(define (system*/console program . args)
+  "Run PROGRAM with ARGS in a tty on top of /dev/console.  The return value is
+as for 'system*'."
+  (match (primitive-fork)
+    (0
+     (dynamic-wind
+       (const #t)
+       (lambda ()
+         (login-tty (open-fdes "/dev/console" O_RDWR))
+         (apply execlp program program args))
+       (lambda ()
+         (primitive-_exit 127))))
+    (pid
+     (cdr (waitpid pid)))))
+
+(define (system*/tty program . args)
+  "Run PROGRAM with ARGS, creating a tty if its standard input isn't one.
+The return value is as for 'system*'.
+
+This is necessary for commands such as 'cryptsetup open' or 'fsck' that may
+need to interact with the user but might be invoked from shepherd, where
+standard input is /dev/null."
+  (apply (if (isatty? (current-input-port))
+             system*
+             system*/console)
+         program args))
 
 (define (bind-mount source target)
   "Bind-mount SOURCE at TARGET."
