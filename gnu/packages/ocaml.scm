@@ -6247,6 +6247,29 @@ from type definitions.")
         (list ocaml-base ocaml-typerep ocaml-migrate-parsetree ocaml-ppxlib))
       (license license:asl2.0))))
 
+(define-public ocaml-ppx-string
+  (package
+    (name "ocaml-ppx-string")
+    (version "0.14.1")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/janestreet/ppx_string")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32 "0a8khmg0y32kyn3q6idwgh0d6d1s6ms1w75gj3dzng0v7y4h6jx4"))))
+    (build-system dune-build-system)
+    (arguments `(#:tests? #f)); no tests
+    (propagated-inputs
+      (list ocaml-base ocaml-ppx-base ocaml-stdio ocaml-ppxlib))
+    (properties `((upstream-name . "ppx_string")))
+    (home-page "https://github.com/janestreet/ppx_string")
+    (synopsis "Ppx extension for string interpolation")
+    (description "This extension provides a syntax for string interpolation.")
+    (license license:expat)))
+
 (define-public ocaml-ppx-base
   (package
     (name "ocaml-ppx-base")
