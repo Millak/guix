@@ -6614,6 +6614,39 @@ cryptographic-quality randomness in favor of performance.")
       (properties '())
       (license license:asl2.0))))
 
+(define-public ocaml-base-quickcheck
+  (package
+    (name "ocaml-base-quickcheck")
+    (version "0.14.1")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/janestreet/base_quickcheck")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32 "0apq3d9xb0zdaqsl4cjk5skyig57ff1plndb2mh0nn3czvfhifxs"))))
+    (build-system dune-build-system)
+    (propagated-inputs
+      (list ocaml-base
+            ocaml-ppx-base
+            ocaml-ppx-fields-conv
+            ocaml-ppx-let
+            ocaml-ppx-sexp-message
+            ocaml-ppx-sexp-value
+            ocaml-splittable-random
+            ocaml-ppxlib))
+    (properties `((upstream-name . "base_quickcheck")))
+    (home-page "https://github.com/janestreet/base_quickcheck")
+    (synopsis
+      "Randomized testing framework, designed for compatibility with Base")
+    (description
+      "@samp{base-quickcheck} provides randomized testing in the style of
+Haskell's Quickcheck library, with support for built-in types as well as
+types provided by Base.")
+    (license license:expat)))
+
 (define-public ocaml4.07-jane-street-headers
   (package
     (name "ocaml4.07-jane-street-headers")
