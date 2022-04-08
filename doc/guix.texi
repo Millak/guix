@@ -7362,7 +7362,8 @@ for details.
 A one-line description of the package.
 
 @item @code{description}
-A more elaborate description of the package.
+A more elaborate description of the package, as a string in Texinfo
+syntax.
 
 @item @code{license}
 @cindex license, of packages
