@@ -6976,6 +6976,28 @@ the full Core is not available, such as in Javascript.")
                  ;; MLton and sjs
                  license:expat)))))
 
+(define-public ocaml-timezone
+  (package
+    (name "ocaml-timezone")
+    (version "0.14.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/janestreet/timezone")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32 "0zf075k94nk2wxnzpxia7pnm655damwp1b58xf2s9disia1ydxg7"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-core-kernel ocaml-ppx-jane))
+    (home-page "https://github.com/janestreet/timezone")
+    (synopsis "Time-zone handling")
+    (description
+      "Timezone handles parsing timezone data and create @code{Timezone.t}
+that can later be used to manipulate time in core_kernel or core.")
+    (license license:expat)))
+
 (define-public ocaml-markup
   (package
     (name "ocaml-markup")
