@@ -6527,52 +6527,90 @@ functions from type definitions.")
       (properties '())
       (license license:asl2.0))))
 
-(define-public ocaml4.07-ppx-jane
+(define-public ocaml-ppx-jane
   (package
-    (name "ocaml4.07-ppx-jane")
-    (version "0.11.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://ocaml.janestreet.com/ocaml-core/v"
-                                  (version-major+minor version)
-                                  "/files/ppx_jane-v" version ".tar.gz"))
-              (sha256
-               (base32
-                "0lgppkw3aixrfnixihrsz2ipafv8fpvkdpy3pw8n0r615gg8x8la"))))
+    (name "ocaml-ppx-jane")
+    (version "0.14.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/janestreet/ppx_jane")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32 "1kk238fvrcylymwm7xwc7llbyspmx1y662ypq00vy70g112rir7j"))))
     (build-system dune-build-system)
     (arguments
-     `(#:test-target "."
-       #:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
+     `(#:test-target "."))
     (propagated-inputs
-     `(("ocaml-ppx-assert" ,(package-with-ocaml4.07 ocaml-ppx-assert))
-       ("ocaml-ppx-base" ,(package-with-ocaml4.07 ocaml-ppx-base))
-        ("ocaml-ppx-bench" ,ocaml4.07-ppx-bench)
-        ("ocaml-ppx-bin-prot" ,ocaml4.07-ppx-bin-prot)
-        ("ocaml-ppx-custom-printf" ,(package-with-ocaml4.07 ocaml-ppx-custom-printf))
-        ("ocaml-ppx-expect" ,(package-with-ocaml4.07 ocaml-ppx-expect))
-        ("ocaml-ppx-fail" ,ocaml4.07-ppx-fail)
-        ("ocaml-ppx-fields-conv" ,(package-with-ocaml4.07 ocaml-ppx-fields-conv))
-        ("ocaml-ppx-here" ,(package-with-ocaml4.07 ocaml-ppx-here))
-        ("ocaml-ppx-inline-test" ,(package-with-ocaml4.07 ocaml-ppx-inline-test))
-        ("ocaml-ppx-let" ,(package-with-ocaml4.07 ocaml-ppx-let))
-        ("ocaml-ppx-optcomp" ,(package-with-ocaml4.07 ocaml-ppx-optcomp))
-        ("ocaml-ppx-optional" ,(package-with-ocaml4.07 ocaml-ppx-optional))
-        ("ocaml-ppx-pipebang" ,ocaml4.07-ppx-pipebang)
-        ("ocaml-ppx-sexp-message" ,ocaml4.07-ppx-sexp-message)
-        ("ocaml-ppx-sexp-value" ,ocaml4.07-ppx-sexp-value)
-        ("ocaml-ppx-typerep-conv" ,ocaml4.07-ppx-typerep-conv)
-        ("ocaml-ppx-variants-conv" ,(package-with-ocaml4.07 ocaml-ppx-variants-conv))
-        ("ocaml-migrate-parsetree"
-         ,(package-with-ocaml4.07 ocaml-migrate-parsetree))
-        ("ocaml-ppxlib" ,(package-with-ocaml4.07 ocaml-ppxlib))))
-    (properties `((upstream-name . "ppx_jane")))
+      (list ocaml-base-quickcheck
+            ocaml-ppx-assert
+            ocaml-ppx-base
+            ocaml-ppx-bench
+            ocaml-ppx-bin-prot
+            ocaml-ppx-custom-printf
+            ocaml-ppx-expect
+            ocaml-ppx-fields-conv
+            ocaml-ppx-fixed-literal
+            ocaml-ppx-here
+            ocaml-ppx-inline-test
+            ocaml-ppx-let
+            ocaml-ppx-module-timer
+            ocaml-ppx-optcomp
+            ocaml-ppx-optional
+            ocaml-ppx-pipebang
+            ocaml-ppx-sexp-message
+            ocaml-ppx-sexp-value
+            ocaml-ppx-stable
+            ocaml-ppx-string
+            ocaml-ppx-typerep-conv
+            ocaml-ppx-variants-conv
+            ocaml-ppxlib))
+    (properties `((upstream-name . "ppx_jane")
+                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-jane))))
     (home-page "https://github.com/janestreet/ppx_jane")
     (synopsis "Standard Jane Street ppx rewriters")
     (description "This package installs a ppx-jane executable, which is a ppx
 driver including all standard Jane Street ppx rewriters.")
-    (license license:asl2.0)))
+    (license license:expat)))
+
+(define-public ocaml4.07-ppx-jane
+  (package-with-ocaml4.07
+    (package
+      (inherit ocaml-ppx-jane)
+      (version "0.11.0")
+      (source (origin
+                (method url-fetch)
+                (uri (string-append "https://ocaml.janestreet.com/ocaml-core/v"
+                                    (version-major+minor version)
+                                    "/files/ppx_jane-v" version ".tar.gz"))
+                (sha256
+                 (base32
+                  "0lgppkw3aixrfnixihrsz2ipafv8fpvkdpy3pw8n0r615gg8x8la"))))
+      (propagated-inputs
+        (list ocaml-ppx-assert
+              ocaml-ppx-base
+              ocaml-ppx-bench
+              ocaml-ppx-bin-prot
+              ocaml-ppx-custom-printf
+              ocaml-ppx-expect
+              ocaml-ppx-fail
+              ocaml-ppx-fields-conv
+              ocaml-ppx-here
+              ocaml-ppx-inline-test
+              ocaml-ppx-let
+              ocaml-ppx-optcomp
+              ocaml-ppx-optional
+              ocaml-ppx-pipebang
+              ocaml-ppx-sexp-message
+              ocaml-ppx-sexp-value
+              ocaml-ppx-typerep-conv
+              ocaml-ppx-variants-conv
+              ocaml-migrate-parsetree
+              ocaml-ppxlib))
+      (properties '())
+      (license license:asl2.0))))
 
 (define-public ocaml-splittable-random
   (package
@@ -6621,7 +6659,7 @@ cryptographic-quality randomness in favor of performance.")
                  (base32
                   "0l1wbd881mymlnpzlq5q53mmdz3g5d7qjhyc7lfaq1x0iaccn5lc"))))
       (propagated-inputs
-        (list ocaml-base ocaml4.07-ppx-jane ocaml-migrate-parsetree))
+        (list ocaml-base ocaml-ppx-jane ocaml-migrate-parsetree))
       (properties '())
       (license license:asl2.0))))
 
