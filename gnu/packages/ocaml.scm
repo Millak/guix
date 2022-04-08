@@ -6766,7 +6766,9 @@ then run the Bisect_ppx report tool on the generated visitation files.")
 (define-public ocaml-odoc
   (package
     (name "ocaml-odoc")
-    (version "2.1.0")
+    ;; 2.2.0-alpha contains fixes for Dune 3.0 compatibility
+    ;; (https://github.com/ocaml/odoc/commit/6ac97f3148f7791ec7451785ef4dbd9ca0daf2d1)
+    (version "2.2.0-alpha")
     (source
      (origin
        (method git-fetch)
@@ -6775,7 +6777,7 @@ then run the Bisect_ppx report tool on the generated visitation files.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ycb468pc6vsvqj176j99bmbkrr9saxvyn9qhpazi01abbcq5d90"))))
+        (base32 "07zjkk455l51i29lcayzrc1q8j5bvbv97sscv8yhcj7x6h6q2nag"))))
     (build-system dune-build-system)
     (arguments
      `(#:phases
