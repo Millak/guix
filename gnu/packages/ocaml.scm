@@ -6270,6 +6270,30 @@ from type definitions.")
     (description "This extension provides a syntax for string interpolation.")
     (license license:expat)))
 
+(define-public ocaml-ppx-stable
+  (package
+    (name "ocaml-ppx-stable")
+    (version "0.14.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/janestreet/ppx_stable")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1sp1kn23qr0pfypa4ilvhqq5y11y13xpfygfl582ra9kik5xqfa1"))))
+    (build-system dune-build-system)
+    (arguments
+     `(#:test-target "tests"))
+    (propagated-inputs (list ocaml-base ocaml-ppxlib))
+    (properties `((upstream-name . "ppx_stable")))
+    (home-page "https://github.com/janestreet/ppx_stable")
+    (synopsis "Stable types conversions generator")
+    (description "This package is a ppx extension for easier implementation of
+conversion functions between almost identical types.")
+    (license license:expat)))
+
 (define-public ocaml-ppx-base
   (package
     (name "ocaml-ppx-base")
