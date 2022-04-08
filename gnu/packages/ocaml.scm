@@ -5954,6 +5954,31 @@ context such as function arguments.")
 to record their startup time.")
     (license license:expat)))
 
+(define-public ocaml-ppx-fixed-literal
+  (package
+    (name "ocaml-ppx-fixed-literal")
+    (version "0.14.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/janestreet/ppx_fixed_literal")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32 "0s7rb4dhz4ibhh42a9sfxjj3zbwfyfmaihr92hpdv5j9xqn3n8mi"))))
+    (build-system dune-build-system)
+    (arguments
+     `(#:tests? #f)); no tests
+    (propagated-inputs (list ocaml-base ocaml-ppxlib))
+    (properties `((upstream-name . "ppx_fixed_literal")))
+    (home-page "https://github.com/janestreet/ppx_fixed_literal")
+    (synopsis "Simpler notation for fixed point literals")
+    (description
+      "@samp{ppx-fixed-literal} is a ppx rewriter that rewrites fixed point
+literal of the  form 1.0v to conversion functions currently in scope.")
+    (license license:expat)))
+
 (define-public ocaml-ppx-optional
   (package
     (name "ocaml-ppx-optional")
