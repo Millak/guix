@@ -378,6 +378,36 @@ converts any cubic curves to quadratic.  The most useful function is probably
 @code{fonts_to_quadratic}.")
     (license license:asl2.0)))
 
+(define-public python-ufo2ft
+  (package
+    (name "python-ufo2ft")
+    (version "2.26.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ufo2ft" version))
+       (sha256
+        (base32 "0a6iq5g6qdxj7nvip8nnf0mf8y5wmpd3wwq0dv7d4nm9bjrh0r6m"))))
+    (build-system python-build-system)
+    (native-inputs (list python-pytest python-pytest-runner))
+    (propagated-inputs
+     (list python-booleanoperations
+           python-cffsubr
+           python-compreffor
+           python-cu2qu
+           python-defcon
+           python-fonttools
+           python-skia-pathops
+           python-ufolib2))
+    (home-page "https://github.com/googlefonts/ufo2ft")
+    (synopsis "Generate OpenType fonts from Unified Font Objects (UFOs)")
+    (description "@code{ufo2ft} (UFO to FontTools) is a fork of @code{ufo2fdk}
+intended to leverage FontTools (a Python library) rather than the Adobe Font
+Development Kit for OpenType (AFDKO), a set of C libraries/utilities so that
+it can be more easily extended.  Like @code{ufo2fdk}, its primary purpose is
+to generate OpenType font binaries from Unified Font Objects (UFOs).")
+    (license license:expat)))
+
 (define-public python-fontmath
   (package
     (name "python-fontmath")
