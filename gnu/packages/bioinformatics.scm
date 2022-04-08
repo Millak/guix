@@ -9138,6 +9138,44 @@ droplet sequencing.  It has been particularly tailored for Drop-seq.")
 communication networks from scRNA-seq data.")
       (license license:gpl3))))
 
+(define-public r-copykat
+  (let ((commit                         ;no tag
+         "256de33dfc1b80a1a0ac9e098c5557f95a4e0d53")
+        (revision "0"))
+    (package
+      (name "r-copykat")
+      (version (git-version "1.0.8" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/navinlabcode/copykat")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0ckyqnial3imcqlgd6xfgwk5w977l1i87sx4kdbwdvg40w0vh1j8"))))
+      (properties `((upstream-name . "copykat")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-cluster
+             r-dlm
+             r-gplots
+             r-mcmcpack
+             r-mixtools
+             r-paralleldist
+             r-rcolorbrewer))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/navinlabcode/copykat")
+      (synopsis "Inference of genomic copy number from single cell RNAseq data")
+      (description
+       "This package Copynumber KAryotyping of Tumors infers genomic copy
+number and subclonal structure of human tumors using integrative Bayesian
+approaches to identify genome-wide aneuploidy at 5MB resolution in single
+cells data.  It separates tumor cells and tumor subclones from normal cells
+using high-throughput sc-RNAseq data.")
+      (license license:gpl2))))
+
 (define-public sambamba
   (package
     (name "sambamba")
