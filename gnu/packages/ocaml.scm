@@ -5929,6 +5929,31 @@ context such as function arguments.")
       (properties '())
       (license license:asl2.0))))
 
+(define-public ocaml-ppx-module-timer
+  (package
+    (name "ocaml-ppx-module-timer")
+    (version "0.14.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/janestreet/ppx_module_timer")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32 "163q1rpblwv82fxwyf0p4j9zpsj0jzvkfmzb03r0l49gqhn89mp6"))))
+    (build-system dune-build-system)
+    (arguments
+     `(#:tests? #f)); no tests
+    (propagated-inputs
+      (list ocaml-base ocaml-ppx-base ocaml-stdio ocaml-time-now ocaml-ppxlib))
+    (properties `((upstream-name . "ppx_module_timer")))
+    (home-page "https://github.com/janestreet/ppx_module_timer")
+    (synopsis "Ppx rewriter that records top-level module startup times")
+    (description "Modules using @samp{ppx_module_timer} have instrumentation
+to record their startup time.")
+    (license license:expat)))
+
 (define-public ocaml-ppx-optional
   (package
     (name "ocaml-ppx-optional")
