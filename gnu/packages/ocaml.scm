@@ -6612,6 +6612,28 @@ driver including all standard Jane Street ppx rewriters.")
       (properties '())
       (license license:asl2.0))))
 
+(define-public ocaml-base-bigstring
+  (package
+    (name "ocaml-base-bigstring")
+    (version "0.14.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/janestreet/base_bigstring")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ald2m7qywhxbygv58dzpgaj54p38zn0aiqd1z7i95kf3bsnsjqa"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-base ocaml-ppx-jane))
+    (properties `((upstream-name . "base_bigstring")))
+    (home-page "https://github.com/janestreet/base_bigstring")
+    (synopsis "String type based on [Bigarray], for use in I/O and C-bindings")
+    (description "This package provides string type based on [Bigarray], for
+use in I/O and C-bindings.")
+    (license license:expat)))
+
 (define-public ocaml-splittable-random
   (package
     (name "ocaml-splittable-random")
