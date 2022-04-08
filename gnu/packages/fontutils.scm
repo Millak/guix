@@ -271,6 +271,55 @@ but also provides many useful font conversion and analysis facilities.
 @end table")
     (license license:asl2.0)))
 
+(define-public python-cffsubr
+  (package
+    (name "python-cffsubr")
+    (version "0.2.9.post1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "cffsubr" version))
+       (modules '((guix build utils)))
+       (snippet '(delete-file-recursively "external")) ;unbundle ADFKO
+       (sha256
+        (base32 "0p7wyagkmwf4agr6ysgswrpmpifx5rz8dnjbcs2gmj29rwnl2cbb"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-setup.py
+            (lambda _
+              (substitute* '("pyproject.toml"
+                             "setup.py")
+                ;; This is not needed when building the package.
+                (("setuptools-git-ls-files") "")
+                ;; Do not attempt to build the unbundled ADFKO.
+                (("cmdclass\\[\"build_ext\"] = ExecutableBuildExt.*")
+                 ""))))
+          (add-after 'unpack 'patch-tx-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (define tx (search-input-file inputs "bin/tx"))
+              (substitute* "src/cffsubr/__init__.py"
+                (("TX_EXE = \"tx\"")
+                 (format #f "TX_EXE = ~s" tx))
+                ;; Use the full 'tx' file name directly.
+                (("with path\\(__name__, TX_EXE) as tx_cli:")
+                 "")
+                (("    (return subprocess.run\\(\\[)str\\(tx_cli)(].*)" _ h t)
+                 (format #f "~a~s~a" h tx t)))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv")))))))
+    (native-inputs (list python-pytest python-setuptools-scm python-wheel))
+    (inputs (list python-afdko))
+    (propagated-inputs (list python-fonttools))
+    (home-page "https://github.com/adobe-type-tools/cffsubr")
+    (synopsis "Compact Font Format (CFF) subroutinizer")
+    (description "This package provides the @command{cffsubr} command, a
+Compact Font Format (CFF) subroutinizer based on the Adobe Font Development
+Kit for OpenType (AFDKO) @command{tx} tool.")
     (license license:asl2.0)))
 
 (define-public python-cu2qu
