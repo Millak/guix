@@ -1074,6 +1074,31 @@ consistent fashion.  It seeks to combine functionality from lower level
 functions which can speed up workflow.")
     (license license:gpl2)))
 
+(define-public r-paralleldist
+  (package
+    (name "r-paralleldist")
+    (version "0.2.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "parallelDist" version))
+       (sha256
+        (base32 "01ly4hxwa64a0ya5gla8rvv72s9mcknsfznivjkh937pbjwb7iih"))))
+    (properties `((upstream-name . "parallelDist")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcpp r-rcpparmadillo r-rcppparallel))
+    (home-page "https://github.com/alexeckert/parallelDist")
+    (synopsis "Parallel Distance Matrix Computation using multiple threads")
+    (description
+     "This package provides a fast parallelized alternative to R's native
+@code{dist} function to calculate distance matrices for continuous, binary,
+and multi-dimensional input matrices, which supports a broad variety of
+predefined distance functions from other R packages, as well as user- defined
+functions written in C++.  For ease of use, the @code{parDist} function
+extends the signature of the @code{dist} function and uses the same parameter
+naming conventions as distance methods of existing R packages.")
+    (license license:gpl2+)))
+
 (define-public r-pheatmap
   (package
     (name "r-pheatmap")
