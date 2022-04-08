@@ -903,7 +903,7 @@ Installed in the store and in the profile, as well as
 being present at build time.
 @end table
 
-@xref{Package Reference,,, guix, GNU Guix Reference Manual} for more details.
+@xref{package Reference,,, guix, GNU Guix Reference Manual} for more details.
 
 The distinction between the various inputs is important: if a dependency can be
 handled as an @emph{input} instead of a @emph{propagated input}, it should be done so, or
