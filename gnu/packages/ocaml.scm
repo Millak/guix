@@ -6848,45 +6848,66 @@ thousands of times faster than fork.
       (propagated-inputs '())
       (properties '()))))
 
-(define-public ocaml4.07-core
+(define-public ocaml-core
   (package
-    (name "ocaml4.07-core")
-    (version "0.11.3")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/janestreet/core")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0pzl8n09z4f3i7z2wq4cjxfqrr8mj6xcdp7rbg0nxap2zdhjgvrq"))))
+    (name "ocaml-core")
+    (version "0.14.1")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/janestreet/core")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32 "1isrcl07nkmdm6akqsqs9z8s6zvva2lvg47kaagy7gsbyszrqb82"))))
     (build-system dune-build-system)
     (arguments
      `(#:package "core"
-       #:tests? #f; Require a cyclic dependency: core_extended
-       #:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
+       #:tests? #f)); Require a cyclic dependency: core_extended
     (propagated-inputs
-      `(("ocaml-base" ,(package-with-ocaml4.07 ocaml-base))
-        ("ocaml-configurator" ,ocaml4.07-configurator)
-        ("ocaml-core-kernel" ,ocaml4.07-core-kernel)
-        ("ocaml-ppx-assert" ,(package-with-ocaml4.07 ocaml-ppx-assert))
-        ("ocaml-ppx-jane" ,ocaml4.07-ppx-jane)
-        ("ocaml-sexplib" ,(package-with-ocaml4.07 ocaml-sexplib))
-        ("ocaml-spawn" ,ocaml4.07-spawn)
-        ("ocaml-stdio" ,(package-with-ocaml4.07 ocaml-stdio))
-        ("ocaml-migrate-parsetree"
-         ,(package-with-ocaml4.07 ocaml-migrate-parsetree))
-        ("ocaml-ppxlib" ,(package-with-ocaml4.07 ocaml-ppxlib))))
+      (list ocaml-core-kernel
+            ocaml-jst-config
+            ocaml-ppx-jane
+            ocaml-sexplib
+            ocaml-timezone
+            ocaml-spawn))
     (home-page "https://github.com/janestreet/core")
     (synopsis "Alternative to OCaml's standard library")
     (description "The Core suite of libraries is an alternative to OCaml's
 standard library that was developed by Jane Street.")
-    ;; Also contains parts of OCaml, relicensed to asl2.0, as permitted
+    ;; Also contains parts of OCaml, relicensed to expat, as permitted
     ;; by OCaml's license for consortium members (see THIRD-PARTY.txt).
-    (license license:asl2.0)))
+    (license license:expat)))
+
+(define-public ocaml4.07-core
+  (package-with-ocaml4.07
+    (package
+      (inherit ocaml-core)
+      (version "0.11.3")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/janestreet/core")
+                       (commit (string-append "v" version))))
+                (file-name (git-file-name "ocaml4.07-core" version))
+                (sha256
+                 (base32
+                  "0pzl8n09z4f3i7z2wq4cjxfqrr8mj6xcdp7rbg0nxap2zdhjgvrq"))))
+      (propagated-inputs
+        (list ocaml-base
+              ocaml4.07-configurator
+              ocaml-core-kernel
+              ocaml-ppx-assert
+              ocaml-ppx-jane
+              ocaml-sexplib
+              ocaml-spawn
+              ocaml-stdio
+              ocaml-migrate-parsetree
+              ocaml-ppxlib))
+      ;; Also contains parts of OCaml, relicensed to asl2.0, as permitted
+      ;; by OCaml's license for consortium members (see THIRD-PARTY.txt).
+      (license license:asl2.0))))
 
 (define-public ocaml-core-kernel
   (package
