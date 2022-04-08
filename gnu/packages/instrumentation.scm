@@ -215,7 +215,9 @@ with the script @command{flamegraph.pl} and many stackcollapse scripts.")
                 "1p7d94r275yvby6zqfxaswdl1q46zxbc8x5rkhnjxrp1d41byrsn"))))
     (build-system gnu-build-system)
     (inputs
-     (list liburcu numactl))
+     (list numactl))
+    (propagated-inputs
+     (list liburcu))          ;headers of liburcu are used by headers of lttng
     (native-inputs
      (list python-3 pkg-config))
     (home-page "https://lttng.org/")
