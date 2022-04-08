@@ -29475,3 +29475,37 @@ writing STL files.  It supports both the text and binary forms of STL.")
 database from the asyncio (PEP-3156/tulip) framework.  It wraps
 asynchronous features of the Psycopg database driver.")
     (license license:bsd-3)))
+
+(define-public python-shtab
+  (package
+    (name "python-shtab")
+    (version "1.5.3")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "shtab" version))
+        (sha256
+          (base32 "127mymfm7r0hddk2vknqq34fj6dirj6ip990i3g4isx0lsd7pnsc"))))
+    (build-system python-build-system)
+    (native-inputs
+      (list bash
+            python-pytest
+            python-pytest-cov
+            python-pytest-timeout
+            python-setuptools-scm
+            python-wheel))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace
+             'check
+           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (invoke "pytest")))))))
+    (home-page "https://github.com/iterative/shtab")
+    (synopsis "Automagic shell tab completion for Python CLI applications")
+    (description
+      "This package automatically generates shell tab completion scripts for
+Python CLI apps.")
+    (license license:asl2.0)))
