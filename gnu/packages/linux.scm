@@ -6776,7 +6776,10 @@ under OpenGL graphics workloads.")
                                   "-" version ".tar.bz2"))
               (sha256
                (base32
-                "0jaka7b4lccswjqiv4liclkj6w78gildg7vd6dnw3wf595pfs67h"))))
+                "0jaka7b4lccswjqiv4liclkj6w78gildg7vd6dnw3wf595pfs67h"))
+              (patches
+               (search-patches "efivar-211.patch"))))
+
     (build-system gnu-build-system)
     (arguments
      (list
