@@ -5888,35 +5888,46 @@ where one needs to construct a s-expression based on various element of the
 context such as function arguments.")
     (license license:asl2.0)))
 
-(define-public ocaml4.07-ppx-pipebang
+(define-public ocaml-ppx-pipebang
   (package
-    (name "ocaml4.07-ppx-pipebang")
-    (version "0.11.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://ocaml.janestreet.com/ocaml-core/v"
-                                  (version-major+minor version)
-                                  "/files/ppx_pipebang-v" version ".tar.gz"))
-              (sha256
-               (base32
-                "1wrrzlb4kdvkkcmzi01fw25jar38r2jlnyn0i6pn4z0lq4gpm9m0"))))
+    (name "ocaml-ppx-pipebang")
+    (version "0.14.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/janestreet/ppx_pipebang")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32 "0450b3p2rpnnn5yyvbkcd3c33jr2z0dp8blwxddaj2lv7nzl5dzf"))))
     (build-system dune-build-system)
-    (arguments
-     ;; No tests
-     `(#:tests? #f
-       #:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
-    (propagated-inputs
-      `(("ocaml-migrate-parsetree"
-         ,(package-with-ocaml4.07 ocaml-migrate-parsetree))
-        ("ocaml-ppxlib" ,(package-with-ocaml4.07 ocaml-ppxlib))))
-    (properties `((upstream-name . "ppx_pipebang")))
+    (arguments `(#:tests? #f)); no tests
+    (propagated-inputs (list ocaml-ppxlib))
+    (properties `((upstream-name . "ppx_pipebang")
+                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-pipebang))))
     (home-page "https://github.com/janestreet/ppx_pipebang")
     (synopsis "Inline reverse application operators `|>` and `|!`")
     (description "A ppx rewriter that inlines reverse application operators
 @code{|>} and @code{|!}.")
-    (license license:asl2.0)))
+    (license license:expat)))
+
+(define-public ocaml4.07-ppx-pipebang
+  (package-with-ocaml4.07
+    (package
+      (inherit ocaml-ppx-pipebang)
+      (version "0.11.0")
+      (source (origin
+                (method url-fetch)
+                (uri (string-append "https://ocaml.janestreet.com/ocaml-core/v"
+                                    (version-major+minor version)
+                                    "/files/ppx_pipebang-v" version ".tar.gz"))
+                (sha256
+                 (base32
+                  "1wrrzlb4kdvkkcmzi01fw25jar38r2jlnyn0i6pn4z0lq4gpm9m0"))))
+      (propagated-inputs (list ocaml-migrate-parsetree ocaml-ppxlib))
+      (properties '())
+      (license license:asl2.0))))
 
 (define-public ocaml-ppx-optional
   (package
