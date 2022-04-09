@@ -547,19 +547,17 @@ firmware blobs.  You can
 (define-public ganeti
   (package
     (name "ganeti")
-    (version "3.0.1")
+    (version "3.0.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/ganeti/ganeti")
                     (commit (string-append "v" version))))
               (sha256
-               (base32 "1i7gx0sdx9316fnldbv738s0ihym1370nhc1chk0biandkl8vvq0"))
+               (base32 "1xw7rm0k411aj0a4hrxz9drn7827bihp6bwizbapfx8k4c3125k4"))
               (file-name (git-file-name name version))
               (patches (search-patches "ganeti-shepherd-support.patch"
                                        "ganeti-shepherd-master-failover.patch"
-                                       "ganeti-sphinx-compat.patch"
-                                       "ganeti-haskell-compat.patch"
                                        "ganeti-haskell-pythondir.patch"
                                        "ganeti-pyyaml-compat.patch"
                                        "ganeti-disable-version-symlinks.patch"))))
@@ -612,20 +610,6 @@ firmware blobs.  You can
                             ,(system->qemu-target (%current-system))))
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'patch-version-constraints
-           (lambda _
-             ;; Loosen version constraints for compatibility with Stackage 18.10.
-             (substitute* "cabal/ganeti.template.cabal"
-               (("(.*base64-bytestring.*) < 1\\.1" _ match)
-                (string-append match " < 1.2"))
-               (("(.*QuickCheck.*) < 2\\.14" _ match)
-                (string-append match " < 2.15")))))
-         (add-after 'unpack 'pyparsing-compat
-           (lambda _
-             ;; Adjust for Pyparsing 3.0.  Remove for Ganeti 3.0.2+.
-             (substitute* "lib/qlang.py"
-               (("operatorPrecedence")
-                "infixNotation"))))
          (add-after 'unpack 'create-vcs-version
            (lambda _
              ;; If we are building from a git checkout, we need to create a
@@ -717,6 +701,7 @@ firmware blobs.  You can
                (("test/py/ganeti\\.asyncnotifier_unittest\\.py") "")
                (("test/py/ganeti\\.backend_unittest\\.py") "")
                (("test/py/ganeti\\.daemon_unittest\\.py") "")
+               (("test/py/ganeti\\.hypervisor\\.hv_kvm_unittest\\.py") "")
                (("test/py/ganeti\\.tools\\.ensure_dirs_unittest\\.py") "")
                (("test/py/ganeti\\.utils\\.io_unittest-runasroot\\.py") "")
                ;; Disable the bash_completion test, as it requires the full
