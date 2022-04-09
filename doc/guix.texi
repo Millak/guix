@@ -1554,7 +1554,11 @@ is normally run as @code{root} like this:
 # guix-daemon --build-users-group=guixbuild
 @end example
 
-@noindent
+@cindex socket activation, for @command{guix-daemon}
+This daemon can also be started following the systemd ``socket
+activation'' protocol (@pxref{Service De- and Constructors,
+@code{make-systemd-constructor},, shepherd, The GNU Shepherd Manual}).
+
 For details on how to set it up, @pxref{Setting Up the Daemon}.
 
 @cindex chroot
