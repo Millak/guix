@@ -36,6 +36,7 @@
             highlight/warn
             dim
 
+            colorize-full-matches
             color-rules
             color-output?
             isatty?*
@@ -152,6 +153,27 @@ that subsequent output will not have any colors in effect."
 (define highlight (coloring-procedure (color BOLD)))
 (define highlight/warn (coloring-procedure (color BOLD MAGENTA)))
 (define dim (coloring-procedure (color DARK)))
+
+(define (colorize-full-matches rules)
+  "Return a procedure that, given a string, colorizes according to RULES.
+RULES must be a list of regexp/color pairs; the whole match of a regexp is
+colorized with the corresponding color."
+  (define proc
+    (lambda (str)
+      (if (string-index str #\nul)
+          str
+          (let loop ((rules rules))
+            (match rules
+              (()
+               str)
+              (((regexp . color) . rest)
+               (match (regexp-exec regexp str)
+                 (#f (loop rest))
+                 (m  (string-append (proc (match:prefix m))
+                                    (colorize-string (match:substring m)
+                                                     color)
+                                    (proc (match:suffix m)))))))))))
+  proc)
 
 (define (colorize-matches rules)
   "Return a procedure that, when passed a string, returns that string
