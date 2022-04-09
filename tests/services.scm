@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2017, 2018, 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2019, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -212,9 +212,9 @@
         ;; because it is not currently running.  'baz' is loaded because it's
         ;; a new service.
         (shepherd-service-upgrade
-         (list (live-service '(foo) '() #t)
-               (live-service '(bar) '() #f)
-               (live-service '(root) '() #t))     ;essential!
+         (list (live-service '(foo) '() #f #t)
+               (live-service '(bar) '() #f #f)
+               (live-service '(root) '() #f #t))     ;essential!
          (list (shepherd-service (provision '(foo))
                                  (start #t))
                (shepherd-service (provision '(bar))
@@ -234,9 +234,9 @@
         ;; unloaded because 'foo' depends on it.  'foo' gets replaced but it
         ;; must be restarted manually.
         (shepherd-service-upgrade
-         (list (live-service '(foo) '(bar) #t)
-               (live-service '(bar) '() #t)       ;still used!
-               (live-service '(baz) '() #t))
+         (list (live-service '(foo) '(bar) #f #t)
+               (live-service '(bar) '() #f #t)    ;still used!
+               (live-service '(baz) '() #f #t))
          (list (shepherd-service (provision '(foo))
                                  (start #t)))))
     (lambda (unload restart)
@@ -251,9 +251,9 @@
         ;; 'foo', 'bar', and 'baz' depend on each other, but all of them are
         ;; obsolete, and thus should be unloaded.
         (shepherd-service-upgrade
-         (list (live-service '(foo) '(bar) #t)    ;obsolete
-               (live-service '(bar) '(baz) #t)    ;obsolete
-               (live-service '(baz) '() #t))      ;obsolete
+         (list (live-service '(foo) '(bar) #f #t) ;obsolete
+               (live-service '(bar) '(baz) #f #t) ;obsolete
+               (live-service '(baz) '() #f #t))   ;obsolete
          (list (shepherd-service (provision '(qux))
                                  (start #t)))))
     (lambda (unload restart)

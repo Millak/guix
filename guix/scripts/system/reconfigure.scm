@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2016, 2017, 2018 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -134,6 +134,7 @@ return the <live-service> objects that are currently running on MACHINE."
                  (map (lambda (service)
                         (list (live-service-provision service)
                               (live-service-requirement service)
+                              (live-service-transient service)
                               (match (live-service-running service)
                                 (#f #f)
                                 (#t #t)
@@ -143,8 +144,9 @@ return the <live-service> objects that are currently running on MACHINE."
 
   (mlet %store-monad ((services (eval exp)))
     (return (map (match-lambda
-                   ((provision requirement running)
-                    (live-service provision requirement running)))
+                   ((provision requirement transient? running)
+                    (live-service provision requirement
+                                  transient? running)))
                  services))))
 
 ;; XXX: Currently, this does NOT attempt to restart running services. See
