@@ -9160,6 +9160,35 @@ features found in other packages it also brings many improvements as
 well as completely new features.")
     (license license:gpl3+)))
 
+(define-public emacs-dumbparens
+  ;; There are no releases.
+  (let ((commit "18b668772f25e5f7b62c0a000b8169eaf7515057")
+        (revision "0"))
+    (package
+      (name "emacs-dumbparens")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/raxod502/dumbparens")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0xv2yzjzq2450z007jppf86knnwzb2s3sxvqyk1yp6qs9mgrmnyp"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #t
+        #:test-command #~(list "make" "test")))
+      (home-page "https://github.com/raxod502/dumbparens/")
+      (synopsis "Minor mode that provides improvements on Smartparens")
+      (description
+       "@code{emacs-dumbparens} is a minor mode for Emacs that deals with parens
+pairs and doesn't try to be smart about it.")
+      (license license:expat))))
+
 (define-public emacs-highlight-symbol
   ;; We prefer a more recent commit that provides an option to squelch
   ;; echo-area alerts that can drown out useful information like eldoc
