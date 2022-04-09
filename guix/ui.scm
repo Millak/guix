@@ -1489,6 +1489,9 @@ followed by \"+ \", which makes for a valid multi-line field value in the
   "Write to PORT a `recutils' record of package P, arranging to fit within
 WIDTH columns.  EXTRA-FIELDS is a list of symbol/value pairs to emit.  When
 HYPERLINKS? is true, emit hyperlink escape sequences when appropriate."
+  (define port*
+    (or (pager-wrapped-port port) port))
+
   (define width*
     ;; The available number of columns once we've taken into account space for
     ;; the initial "+ " prefix.
@@ -1508,8 +1511,8 @@ HYPERLINKS? is true, emit hyperlink escape sequences when appropriate."
     (string<? (package-full-name p1) (package-full-name p2)))
 
   ;; Note: Don't i18n field names so that people can post-process it.
-  (format port "name: ~a~%" (package-name p))
-  (format port "version: ~a~%" (package-version p))
+  (format port "name: ~a~%" (highlight (package-name p) port*))
+  (format port "version: ~a~%" (highlight (package-version p) port*))
   (format port "outputs: ~a~%" (string-join (package-outputs p)))
   (format port "systems: ~a~%"
           (split-lines (string-join (package-transitive-supported-systems p))

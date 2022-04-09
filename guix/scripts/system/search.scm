@@ -20,7 +20,7 @@
 (define-module (guix scripts system search)
   #:use-module (guix ui)
   #:use-module (guix utils)
-  #:autoload   (guix colors) (supports-hyperlinks?)
+  #:autoload   (guix colors) (highlight supports-hyperlinks?)
   #:autoload   (guix diagnostics) (location->hyperlink)
   #:use-module (gnu services)
   #:use-module (gnu services shepherd)
@@ -74,6 +74,9 @@ provided TYPE has a default value."
   "Write to PORT a recutils record of TYPE, arranging to fit within WIDTH
 columns.  When HYPERLINKS? is true, emit hyperlink escape sequences when
 appropriate."
+  (define port*
+    (or (pager-wrapped-port port) port))
+
   (define width*
     ;; The available number of columns once we've taken into account space for
     ;; the initial "+ " prefix.
@@ -88,7 +91,9 @@ appropriate."
                        (string-length "extends: ")))))
 
   ;; Note: Don't i18n field names so that people can post-process it.
-  (format port "name: ~a~%" (service-type-name type))
+  (format port "name: ~a~%"
+          (highlight (symbol->string (service-type-name type))
+                     port*))
   (format port "location: ~a~%"
           (or (and=> (service-type-location type)
                      (if hyperlinks? location->hyperlink location->string))
