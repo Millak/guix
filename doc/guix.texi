@@ -38323,7 +38323,7 @@ variables.
       ("ENV_VAR2" . "value2"))
 @end lisp
 
-The easiest way to extend a service type, without defining new service
+The easiest way to extend a service type, without defining a new service
 type is to use the @code{simple-service} helper from @code{(gnu
 services)}.
 
