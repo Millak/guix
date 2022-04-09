@@ -74,7 +74,7 @@
 ;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Ryan Desfosses <rdes@protonmail.com>
 ;;; Copyright © 2020 Marcin Karpezo <sirmacik@wioo.waw.pl>
-;;; Copyright © 2020 Fredrik Salomonsson <plattfot@gmail.com>
+;;; Copyright © 2020, 2022 Fredrik Salomonsson <plattfot@posteo.net>
 ;;; Copyright © 2020 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2020, 2021 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2020 Peng Mei Yu <i@pengmeiyu.com>
@@ -22097,6 +22097,29 @@ Pandoc, the document-conversion tool.")
       (description "This package extends @code{lsp-mode} to work with @code{C}
 and @code{C++} files through the @code{ccls} language server.")
       (license license:expat))))
+
+(define-public emacs-cpreproc
+  (package
+   (name "emacs-cpreproc")
+   (version "1.0.0")
+   (source
+    (origin
+     (method git-fetch)
+     (uri (git-reference
+           (url "https://git.sr.ht/~plattfot/cpreproc")
+           (commit version)))
+     (sha256
+      (base32
+       "0n4lhj9bbnkbzvifrj9q6z3j7z6jqzkaa36y239cfxdcc7i86c1c"))
+     (file-name (git-file-name name version))))
+   (build-system emacs-build-system)
+   (home-page "https://sr.ht/~plattfot/cpreproc")
+   (synopsis "Wrap C/C++ code in preprocessor macros")
+   (description
+    "Aim for this project is to make it easier to generate preprocessor macros
+from Emacs for C/C++ code that needs to be build against multiple incompatible
+versions of third party libraries or @code{C++} standards.")
+   (license license:gpl3+)))
 
 (define-public emacs-org-brain
   (package
