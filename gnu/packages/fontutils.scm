@@ -322,6 +322,35 @@ Compact Font Format (CFF) subroutinizer based on the Adobe Font Development
 Kit for OpenType (AFDKO) @command{tx} tool.")
     (license license:asl2.0)))
 
+(define-public python-compreffor
+  (package
+    (name "python-compreffor")
+    (version "0.5.1.post1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "compreffor" version))
+       (sha256
+        (base32 "1r3wqd67qnz8p6irv68mvadqv1nklgzw53376iarw3pq4gxrma36"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-setup.py
+            (lambda _
+              (substitute* "setup.py"
+                ;; Not actually needed.
+                ((", \"setuptools_git_ls_files\"") "")))))))
+    (native-inputs (list python-pytest python-pytest-runner
+                         python-setuptools-scm))
+    (propagated-inputs (list python-fonttools))
+    (home-page "https://github.com/googlefonts/compreffor")
+    (synopsis "Compact Font Format (CFF) subroutinizer for fontTools")
+    (description "This package provides a Compact Font Format (CFF)
+subroutinizer for fontTools.")
+    (license license:asl2.0)))
+
 (define-public python-cu2qu
   (package
     (name "python-cu2qu")
