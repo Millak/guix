@@ -269,6 +269,29 @@ The Lato 2.010 family supports more than 100 Latin-based languages, over
 50 Cyrillic-based languages as well as Greek and IPA phonetics.")
     (license license:silofl1.1)))
 
+(define-public font-gfs-ambrosia
+  ;; Based on
+  ;; https://src.fedoraproject.org/rpms/gfs-ambrosia-fonts
+  ;; /blob/rawhide/f/gfs-ambrosia-fonts.spec.
+  (package
+    (name "font-gfs-ambrosia")
+    (version "20080624")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://www.greekfontsociety-gfs.gr/"
+                           "_assets/fonts/GFS_Ambrosia.zip"))
+       (sha256
+        (base32
+         "0vnnsal61slgj9r4q35wiznd4mbcv49dl18n91s3nvv6jzd4r8b4"))))
+    (build-system font-build-system)
+    (home-page "https://www.greekfontsociety-gfs.gr/")
+    (synopsis "GFS Ambrosia, a Greek majuscule font family")
+    (description "GFS Ambrosia is a Greek typeface that has the main
+characteristics of the majuscule forms of the early Christian tradition.  The
+font is provided in the OpenType font (OTF) format.")
+    (license license:silofl1.1)))
+
 (define-public font-gnu-freefont
   (package
     (name "font-gnu-freefont")
