@@ -561,6 +561,7 @@ firmware blobs.  You can
                                        "ganeti-sphinx-compat.patch"
                                        "ganeti-haskell-compat.patch"
                                        "ganeti-haskell-pythondir.patch"
+                                       "ganeti-pyyaml-compat.patch"
                                        "ganeti-disable-version-symlinks.patch"))))
     (build-system gnu-build-system)
     (arguments
