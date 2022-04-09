@@ -573,6 +573,50 @@ suite of the @code{psautohint} package.")
 can be used to hint PostScript fonts.  A Python wrapper is also included.")
     (license license:asl2.0)))
 
+(define-public python-skia-pathops
+  (package
+    (name "python-skia-pathops")
+    (version "0.7.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "skia-pathops" version ".zip"))
+       (modules '((guix build utils)))
+       (snippet '(delete-file-recursively "src/cpp")) ;140+ MiB of stuff
+       (sha256
+        (base32 "1456rclfn6a01c2cchlgyn166zppcjcqij0k5gwmm8gvzsd5rn0r"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'configure-env
+            (lambda _
+              (setenv "BUILD_SKIA_FROM_SOURCE" "0")))
+          (add-after 'unpack 'adjust-c++-language
+            (lambda _
+              ;; Our version of Skia requires c++17.
+              (substitute* "setup.py"
+                (("-std=c\\+\\+14")
+                 "-std=c++17"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv")))))))
+    (native-inputs
+     (list pkg-config
+           python-cython
+           python-pytest
+           python-setuptools-scm
+           unzip))
+    (inputs (list skia))
+    (home-page "https://github.com/fonttools/skia-pathops")
+    (synopsis "Python bindings for the Skia library's Path Ops module")
+    (description "This package provides Python bindings for the Path Ops
+module of the Skia library, performing boolean operations on
+paths (intersection, union, difference, xor).")
+    (license license:bsd-3)))
+
 (define-public python-ufoprocessor
   (package
     (name "python-ufoprocessor")
