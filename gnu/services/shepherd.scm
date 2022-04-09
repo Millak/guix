@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2016, 2018-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018 Carlo Zancanaro <carlo@zancanaro.id.au>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
@@ -470,8 +470,13 @@ need to be restarted to complete their upgrade."
     (filter running? target))
 
   (define to-unload
-    ;; Unload services that are no longer required.
-    (remove essential? (filter obsolete? live)))
+    ;; Unload services that are no longer required.  Essential services must
+    ;; be kept and transient services such as inetd child services should be
+    ;; kept as well--they'll vanish eventually.
+    (remove (lambda (live)
+              (or (essential? live)
+                  (live-service-transient? live)))
+            (filter obsolete? live)))
 
   (values to-unload to-restart))
 
