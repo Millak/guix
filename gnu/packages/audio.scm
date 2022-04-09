@@ -3210,7 +3210,7 @@ tempo and pitch of an audio recording independently of one another.")
 (define-public rtmidi
   (package
     (name "rtmidi")
-    (version "4.0.0")
+    (version "5.0.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.music.mcgill.ca/~gary/rtmidi"
@@ -3218,7 +3218,7 @@ tempo and pitch of an audio recording independently of one another.")
               (file-name (string-append "rtmidi-" version ".tar.gz"))
               (sha256
                (base32
-                "1k962ljpnwyjw9jjiky2372khhri1wqvrj5qsalfpys31xqzw31p"))))
+                "1ff2yfq3k4l209fr71v3w98fpjjv1chs09vkbmxj03lcikahxns8"))))
     (build-system gnu-build-system)
     (inputs
      (list jack-1 alsa-lib))
@@ -3231,6 +3231,19 @@ tempo and pitch of an audio recording independently of one another.")
 classes) that provide a common cross-platform API for realtime MIDI
 input/output.")
     (license license:expat)))
+
+(define-public rtmidi-4.0
+  (package
+    (inherit rtmidi)
+    (version "4.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://www.music.mcgill.ca/~gary/rtmidi"
+                                  "/release/rtmidi-" version ".tar.gz"))
+              (file-name (string-append "rtmidi-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1k962ljpnwyjw9jjiky2372khhri1wqvrj5qsalfpys31xqzw31p"))))))
 
 (define-public sratom
   (package

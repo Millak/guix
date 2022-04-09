@@ -17,7 +17,7 @@
 ;;; Copyright © 2018 nee <nee.git@hidamari.blue>
 ;;; Copyright © 2018, 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
-;;; Copyright © 2018, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018-2019, 2021-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2019 Gabriel Hondet <gabrielhondet@gmail.com>
 ;;; Copyright © 2019 Timotej Lazar <timotej.lazar@araneo.si>
@@ -3862,7 +3862,7 @@ using the beets FetchArt plugin.")
      `(("alsa-lib" ,alsa-lib)
        ("lhasa" ,lhasa)
        ("jack" ,jack-1)
-       ("rtmidi" ,rtmidi)
+       ("rtmidi" ,rtmidi-4.0)
        ("sdl" ,sdl2)
        ("zlib" ,zlib)
        ("zziplib" ,zziplib)))
@@ -6141,7 +6141,7 @@ and as an LV2 plugin.")
       ("pulseaudio" ,pulseaudio)
       ("reproc" ,reproc)
       ("rubberband" ,rubberband)
-      ("rtmidi" ,rtmidi)
+      ("rtmidi" ,rtmidi-4.0)
       ("sdl2" ,sdl2)
       ("xdg-utils" ,xdg-utils)
       ("zstd" ,zstd "lib")))
