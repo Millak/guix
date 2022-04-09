@@ -260,6 +260,23 @@
       (list (map live-service-provision unload)
             (map shepherd-service-provision restart)))))
 
+(test-equal "shepherd-service-upgrade: transient service"
+  ;; Transient service must not be unloaded:
+  ;; <https://issues.guix.gnu.org/54812>.
+  '(((foo))                                       ;unload
+    ((qux)))                                      ;restart
+  (call-with-values
+      (lambda ()
+        (shepherd-service-upgrade
+         (list (live-service '(sshd-42) '() #t 42) ;transient
+               (live-service '(foo) '() #f #t)     ;obsolete
+               (live-service '(qux) '() #f #t))    ;running
+         (list (shepherd-service (provision '(qux))
+                                 (start #t)))))
+    (lambda (unload restart)
+      (list (map live-service-provision unload)
+            (map shepherd-service-provision restart)))))
+
 (test-eq "lookup-service-types"
   system-service-type
   (and (null? (lookup-service-types 'does-not-exist-at-all))
