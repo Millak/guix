@@ -2041,6 +2041,28 @@ displays (7SEG, 14SEG).  DSEG includes the roman alphabet and symbol glyphs.
 This package provides the TrueType fonts.")
     (license license:silofl1.1)))
 
+(define-public font-sil-ezra
+  (package
+    (name "font-sil-ezra")
+    (version "2.51")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://software.sil.org/downloads/r/ezra/EzraSIL-"
+                           version ".zip"))
+       (sha256
+        (base32
+         "1h8cfrvjdwxk963bw359jdg86bycwyyhvviqy6lwcfj7qhzcnszi"))))
+    (build-system font-build-system)
+    (home-page "https://software.sil.org/ezra/")
+    (synopsis "Biblia Hebraica Stuttgartensia (BHS) typography inspired typeface")
+    (description "Ezra SIL is a typeface fashioned after the square letter
+forms of the typography of the Biblia Hebraica Stuttgartensia (BHS), a
+beautiful Old Testament volume familiar to Biblical Hebrew scholars.  This
+font package provides @code{Ezra SIL} as well as @code{Ezra SIL SR}, which has
+a different style of marking.")
+    (license license:expat)))
+
 (define-public font-jetbrains-mono
   (package
     (name "font-jetbrains-mono")
