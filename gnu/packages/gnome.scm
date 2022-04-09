@@ -71,6 +71,7 @@
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2022 Leo Nikkilä <hello@lnikki.la>
 ;;; Copyright © 2022 Rene Saavedra <nanuui@protonmail.com>
+;;; Copyright © 2022 Alexandros Theodotou <alex@zrythm.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -12575,45 +12576,43 @@ Document Analysis and Recognition program.")
     (license license:gpl3+)))
 
 (define-public libadwaita
-  (let ((commit "8d66b987a19979d9d7b85dacc6bad5ce0c8743fe")
-        (revision "1"))
-    (package
-      (name "libadwaita")
-      (version (git-version "0.0.1" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://gitlab.gnome.org/GNOME/libadwaita.git")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0i3wav6jsyi4w4i2r1rad769m5y5s9djj4zqb7dfyh0bad24ba3q"))))
-      (build-system meson-build-system)
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-before 'check 'pre-check
-             (lambda* (#:key inputs #:allow-other-keys)
-               ;; Tests require a running X server.
-               (system "Xvfb :1 &")
-               (setenv "DISPLAY" ":1"))))))
-      (native-inputs
-       `(("sassc" ,sassc)
-         ("glib:bin" ,glib "bin")
-         ("gtk-doc" ,gtk-doc/stable)
-         ("pkg-config" ,pkg-config)
-         ("vala" ,vala)
-         ("xvfb" ,xorg-server-for-tests)))
-      (inputs
-       (list gtk gobject-introspection libportal))
-      (home-page "https://gnome.pages.gitlab.gnome.org/libadwaita/")
-      (synopsis "Building blocks for GNOME applications")
-      (description
-       "@code{libadwaita} offers widgets and objects to build GNOME
+  (package
+    (name "libadwaita")
+    (version "1.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/libadwaita/"
+                                  (version-major+minor version) "/"
+                                  "libadwaita-" version ".tar.xz"))
+              (sha256
+               (base32
+                "03h14mrm453bn03f48rmpf85pvg5cnzzab27cs1c43417s09ixdg"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'pre-check
+           (lambda* (#:key inputs #:allow-other-keys)
+             ;; Tests require a running X server.
+             (system "Xvfb :1 &")
+             (setenv "DISPLAY" ":1"))))))
+    (native-inputs
+     `(("sassc" ,sassc)
+       ("glib:bin" ,glib "bin")
+       ("gtk-doc" ,gtk-doc/stable)
+       ("pkg-config" ,pkg-config)
+       ("vala" ,vala)
+       ("xvfb" ,xorg-server-for-tests)
+       ("gettext" ,gettext-minimal)))
+    (inputs
+     (list gtk gobject-introspection libportal))
+    (home-page "https://gnome.pages.gitlab.gnome.org/libadwaita/")
+    (synopsis "Building blocks for GNOME applications")
+    (description
+     "@code{libadwaita} offers widgets and objects to build GNOME
 applications scaling from desktop workstations to mobile phones.  It is the
 successor of @code{libhandy} for GTK4.")
-      (license license:lgpl2.1+))))
+    (license license:lgpl2.1+)))
 
 (define-public gnome-power-manager
   (package
