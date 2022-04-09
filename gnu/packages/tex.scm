@@ -561,6 +561,52 @@ This package contains the binaries.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))
     (home-page "https://www.tug.org/texlive/")))
 
+(define-public texlive-bidi
+  (package
+    (name "texlive-bidi")
+    ;; Take the version from texlive-2022.0 as the one from texlive 2021.0 is
+    ;; buggy.
+    (version "36.4")
+    (source (origin
+              (method svn-multi-fetch)
+              (uri (svn-multi-reference
+                    (url (string-append "svn://www.tug.org/texlive/tags/"
+                                        "texlive-2022.0/Master/texmf-dist"))
+                    (locations (list "doc/xelatex/bidi/"
+                                     "source/xelatex/bidi/"))
+                    (revision 62885)))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "09nfvsjfnms3pclyd2rcivyb5qvzw48b934i3bcl83hv69ix2ks7"))))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:tex-directory "xelatex/bidi"
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'chdir
+                     (lambda _
+                       (chdir "source/xelatex/bidi")))
+                   (add-after 'install 'install-doc
+                     (lambda* (#:key outputs #:allow-other-keys)
+                       (let ((doc (string-append (assoc-ref outputs "doc")
+                                                 "/share/texmf-dist/doc")))
+                         (mkdir-p doc)
+                         (copy-recursively (string-append #$source "/doc")
+                                           doc)))))))
+    (propagated-inputs (list texlive-generic-iftex
+                             texlive-generic-ltxcmds
+                             texlive-hyperref
+                             texlive-latex-xkeyval
+                             texlive-zref))
+    (home-page "https://ctan.org/pkg/bidi")
+    (synopsis "Bidirectional typesetting in plain TeX and LaTeX using XeTeX")
+    (description "The @code{bidi} package provides a convenient interface for
+typesetting bidirectional texts with plain TeX and LaTeX.  The package
+includes adaptations for use with many other commonly-used packages.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-libkpathsea
   (package/inherit texlive-bin
     (name "texlive-libkpathsea")
