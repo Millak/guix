@@ -1315,6 +1315,52 @@ generate bitmaps.")
      `(("python" ,python-2)
        ,@(alist-delete "python" (package-inputs fontforge))))))
 
+(define-public python-ufolib2
+  (package
+    (name "python-ufolib2")
+    (version "0.13.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ufoLib2" version))
+       (sha256
+        (base32 "0yx4i8q5rfyqhr2fj70a7z1bp1jv7bdlr64ww9z4nv9ycbda4x9j"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: PEP 517 manual build copied from python-isort.
+          (replace 'build
+            (lambda _
+              ;; ZIP does not support timestamps before 1980.
+              (setenv "SOURCE_DATE_EPOCH" "315532800")
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv"))))
+          (replace 'install
+            (lambda _
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl)))))))
+    (native-inputs
+     (list python-pypa-build
+           python-pytest
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs (list python-attrs python-fonttools-full))
+    (home-page "https://github.com/fonttools/ufoLib2")
+    (synopsis "Unified Font Object (UFO) font processing library")
+    (description "The ufoLib2 Python library is meant to be a thin
+representation of the Unified Font Object (UFO) version 3 data model, intended
+for programmatic manipulation and fast batch processing of UFOs.  It resembles
+the defcon library, but does without notifications, the layout engine and
+other support classes.  Where useful and possible, ufoLib2 tries to be
+API-compatible with defcon.")
+    (license license:asl2.0)))
+
 (define-public python2-ufolib
   (package
     (name "python2-ufolib")
