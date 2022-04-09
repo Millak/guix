@@ -632,6 +632,28 @@ suite of the @code{psautohint} package.")
 can be used to hint PostScript fonts.  A Python wrapper is also included.")
     (license license:asl2.0)))
 
+(define-public python-sfdlib
+  (package
+    (name "python-sfdlib")
+    (version "1.2.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/aliftype/sfdLib")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1q61km32i1h3cmn8nazcgsbzpm8q2nxp3kq3glqgfgvlxr1s3brm"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-ufolib2))
+    (home-page "https://github.com/aliftype/sfdLib")
+    (synopsis "Simple SFD to UFO converter")
+    (description "This package provides the @command{sfd2ufo} command, a
+converter from FontForge’s @acronym{SFD, Spline Font Database} fonts to
+@acronym{UFO, Unified Font Object} fonts.")
+    (license license:bsd-3)))
+
 (define-public python-skia-pathops
   (package
     (name "python-skia-pathops")
