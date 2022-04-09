@@ -733,6 +733,7 @@ description matches REGEXPS sorted by relevance, and their score."
       (leave-on-EPIPE
        (display-search-results matches (current-output-port)
                                #:print service-type->recutils
+                               #:regexps regexps
                                #:command "guix home search")))))
 
 

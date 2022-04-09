@@ -20,7 +20,7 @@
 (define-module (guix scripts system search)
   #:use-module (guix ui)
   #:use-module (guix utils)
-  #:autoload   (guix colors) (highlight supports-hyperlinks?)
+  #:autoload   (guix colors) (color-output? highlight supports-hyperlinks?)
   #:autoload   (guix diagnostics) (location->hyperlink)
   #:use-module (gnu services)
   #:use-module (gnu services shepherd)
@@ -70,10 +70,12 @@ provided TYPE has a default value."
                                  #:optional (width (%text-width))
                                  #:key
                                  (extra-fields '())
-                                 (hyperlinks? (supports-hyperlinks? port)))
+                                 (hyperlinks? (supports-hyperlinks? port))
+                                 (highlighting identity))
   "Write to PORT a recutils record of TYPE, arranging to fit within WIDTH
 columns.  When HYPERLINKS? is true, emit hyperlink escape sequences when
-appropriate."
+appropriate.  Pass the description through HIGHLIGHTING, a one-argument
+procedure that may return a colorized version of its argument."
   (define port*
     (or (pager-wrapped-port port) port))
 
@@ -89,6 +91,11 @@ appropriate."
       (string->recutils
        (fill-paragraph list width*
                        (string-length "extends: ")))))
+
+  (define highlighting*
+    (if (color-output? port*)
+        highlighting
+        identity))
 
   ;; Note: Don't i18n field names so that people can post-process it.
   (format port "name: ~a~%"
@@ -114,14 +121,15 @@ appropriate."
 
   (when (service-type-description type)
     (format port "~a~%"
-            (string->recutils
-             (string-trim-right
-              (parameterize ((%text-width width*))
-                (texi->plain-text
-                 (string-append "description: "
-                                (or (and=> (service-type-description type) P_)
-                                    ""))))
-              #\newline))))
+            (highlighting*
+             (string->recutils
+              (string-trim-right
+               (parameterize ((%text-width width*))
+                 (texi->plain-text
+                  (string-append "description: "
+                                 (or (and=> (service-type-description type) P_)
+                                     ""))))
+               #\newline)))))
 
   (for-each (match-lambda
               ((field . value)

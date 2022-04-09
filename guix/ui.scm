@@ -1485,10 +1485,13 @@ followed by \"+ \", which makes for a valid multi-line field value in the
 (define* (package->recutils p port #:optional (width (%text-width))
                             #:key
                             (hyperlinks? (supports-hyperlinks? port))
-                            (extra-fields '()))
+                            (extra-fields '())
+                            (highlighting identity))
   "Write to PORT a `recutils' record of package P, arranging to fit within
 WIDTH columns.  EXTRA-FIELDS is a list of symbol/value pairs to emit.  When
-HYPERLINKS? is true, emit hyperlink escape sequences when appropriate."
+HYPERLINKS? is true, emit hyperlink escape sequences when appropriate.  Pass
+the synopsis and description through HIGHLIGHTING, a one-argument procedure
+that may return a colorized version of its argument."
   (define port*
     (or (pager-wrapped-port port) port))
 
@@ -1509,6 +1512,11 @@ HYPERLINKS? is true, emit hyperlink escape sequences when appropriate."
 
   (define (package<? p1 p2)
     (string<? (package-full-name p1) (package-full-name p2)))
+
+  (define highlighting*
+    (if (color-output? port*)
+        highlighting
+        identity))
 
   ;; Note: Don't i18n field names so that people can post-process it.
   (format port "name: ~a~%" (highlight (package-name p) port*))
@@ -1544,22 +1552,24 @@ HYPERLINKS? is true, emit hyperlink escape sequences when appropriate."
             (x
              (G_ "unknown"))))
   (format port "synopsis: ~a~%"
-          (string-map (match-lambda
-                        (#\newline #\space)
-                        (chr       chr))
-                      (or (package-synopsis-string p) "")))
+          (highlighting*
+           (string-map (match-lambda
+                         (#\newline #\space)
+                         (chr       chr))
+                       (or (package-synopsis-string p) ""))))
   (format port "~a~%"
-          (string->recutils
-           (string-trim-right
-            (parameterize ((%text-width width*))
-              ;; Call 'texi->plain-text' on the concatenated string to account
-              ;; for the width of "description:" in paragraph filling.
-              (texi->plain-text*
-               p
-               (string-append "description: "
-                              (or (and=> (package-description p) P_)
-                                  ""))))
-            #\newline)))
+          (highlighting*
+           (string->recutils
+            (string-trim-right
+             (parameterize ((%text-width width*))
+               ;; Call 'texi->plain-text' on the concatenated string to account
+               ;; for the width of "description:" in paragraph filling.
+               (texi->plain-text*
+                p
+                (string-append "description: "
+                               (or (and=> (package-description p) P_)
+                                   ""))))
+             #\newline))))
   (for-each (match-lambda
               ((field . value)
                (let ((field (symbol->string field)))
@@ -1707,10 +1717,12 @@ standard output is a tty, or with PORT set to the current output port."
 
 (define* (display-search-results matches port
                                  #:key
+                                 (regexps '())
                                  (command "guix search")
                                  (print package->recutils))
   "Display MATCHES, a list of object/score pairs, by calling PRINT on each of
-them.  If PORT is a terminal, print at most a full screen of results."
+them.  If PORT is a terminal, print at most a full screen of results.  REGEXPS
+is a list of regexps to highlight in search results."
   (define first-line
     (port-line port))
 
@@ -1721,6 +1733,12 @@ them.  If PORT is a terminal, print at most a full screen of results."
   (define (line-count str)
     (string-count str #\newline))
 
+  (define highlighting
+    (let ((match-color (color ON-RED BOLD)))
+      (colorize-full-matches (map (lambda (regexp)
+                                    (cons regexp match-color))
+                                  regexps))))
+
   (with-paginated-output-port paginated
     (let loop ((matches matches))
       (match matches
@@ -1728,7 +1746,8 @@ them.  If PORT is a terminal, print at most a full screen of results."
          (let* ((links? (supports-hyperlinks? port)))
            (print package paginated
                   #:hyperlinks? links?
-                  #:extra-fields `((relevance . ,score)))
+                  #:extra-fields `((relevance . ,score))
+                  #:highlighting highlighting)
            (loop rest)))
         (()
          #t)))))

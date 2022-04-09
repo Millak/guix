@@ -885,7 +885,8 @@ processed, #f otherwise."
               (regexps  (map (cut make-regexp* <> regexp/icase) patterns))
               (matches  (find-packages-by-description regexps)))
          (leave-on-EPIPE
-          (display-search-results matches (current-output-port)))
+          (display-search-results matches (current-output-port)
+                                  #:regexps regexps))
          #t))
 
       (('show _)
