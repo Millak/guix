@@ -120,7 +120,7 @@ separate mount and PID name space.  Return the \"outer\" PID. "
      pid)))
 
 (define* (exec-command* command #:key user group log-file pid-file
-                        directory (environment-variables (environ)))
+                        (directory "/") (environment-variables (environ)))
   "Like 'exec-command', but first restore signal handles modified by
 shepherd (PID 1)."
   ;; First restore the default handlers.
