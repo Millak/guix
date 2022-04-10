@@ -14230,8 +14230,10 @@ some of the details of opening and jumping in tabix-indexed files.")
                    (("-c ") "-c -fPIC "))
                  #$@(if (%current-target-system)
                      #~((substitute* "Makefile"
-                          (("ld") (string-append #$(%current-target-system) "-ld"))
-                          (("ar") (string-append #$(%current-target-system) "-ar"))))
+                          (("\tld")
+                           (string-append "\t" #$(%current-target-system) "-ld"))
+                          (("\tar")
+                           (string-append "\t" #$(%current-target-system) "-ar"))))
                      '())))
              (add-after 'build 'build-dynamic
                (lambda _
