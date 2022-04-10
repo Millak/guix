@@ -240,7 +240,7 @@ on Hurd systems for instance, fallback to direct forking."
                      (apply exec-command* command (strip-pid args)))
                    (lambda ()
                      (primitive-_exit 127))))
-              (pid #t))))
+              (pid pid))))               ;XXX: assuming the same PID namespace
         (apply fork+exec-command command (strip-pid args)))))
 
 ;; Local Variables:
