@@ -3515,30 +3515,23 @@ interfaces.")
 (define-public python-click
   (package
     (name "python-click")
-    (version "7.1.2")
+    (version "8.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "click" version))
        (sha256
         (base32
-         "06kbzd6sjfkqan3miwj9wqyddfxc2b6hi7p5s4dvqjb3gif2bdfj"))))
+         "0whs38a2i0561kwbgigs6vic9r0a1887m2v1aw3rmv6r2kz0g5s7"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'fix-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((glibc (assoc-ref inputs ,(if (%current-target-system)
-                                                 "cross-libc" "libc"))))
-               (substitute* "src/click/_unicodefun.py"
-                 (("'locale'")
-                  (string-append "'" glibc "/bin/locale'"))))))
          (replace 'check
-           (lambda _
-             (invoke "python" "-m" "pytest"))))))
-    (native-inputs
-     (list python-pytest))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-vv")))))))
+    (native-inputs (list python-pytest))
     (home-page "https://palletsprojects.com/p/click/")
     (synopsis "Command line library for Python")
     (description
@@ -3547,9 +3540,6 @@ composable way with as little code as necessary.  Its name stands for
 \"Command Line Interface Creation Kit\".  It's highly configurable but comes
 with sensible defaults out of the box.")
     (license license:bsd-3)))
-
-(define-public python2-click
-  (package-with-python2 python-click))
 
 (define-public python-click-5
   (package (inherit python-click)
