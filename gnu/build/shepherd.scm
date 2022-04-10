@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2018, 2019, 2020, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Mathieu Othacehe <othacehe@gnu.org>
+;;; Copyright © 2022 Leo Nikkilä <hello@lnikki.la>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -120,6 +121,7 @@ separate mount and PID name space.  Return the \"outer\" PID. "
      pid)))
 
 (define* (exec-command* command #:key user group log-file pid-file
+                        (supplementary-groups '())
                         (directory "/") (environment-variables (environ)))
   "Like 'exec-command', but first restore signal handles modified by
 shepherd (PID 1)."
@@ -135,6 +137,7 @@ shepherd (PID 1)."
   (exec-command command
                 #:user user
                 #:group group
+                #:supplementary-groups supplementary-groups
                 #:log-file log-file
                 #:directory directory
                 #:environment-variables environment-variables))
@@ -146,6 +149,7 @@ shepherd (PID 1)."
                                               (mappings '())
                                               (user #f)
                                               (group #f)
+                                              (supplementary-groups '())
                                               (log-file #f)
                                               pid-file
                                               (pid-file-timeout 5)
@@ -192,6 +196,8 @@ namespace, in addition to essential bind-mounts such /proc."
                                 (exec-command* command
                                                #:user user
                                                #:group group
+                                               #:supplementary-groups
+                                               supplementary-groups
                                                #:pid-file pid-file
                                                #:log-file log-file
                                                #:directory directory
