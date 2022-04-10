@@ -16,11 +16,11 @@
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
-;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2021, 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2021 Lars-Dominik Braun <lars@6xq.net>
-;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;;
@@ -945,8 +945,16 @@ of programming tools as well as libraries with equivalent functionality.")
     (arguments
      (substitute-keyword-arguments (package-arguments llvm)
        ((#:phases phases)
-        `(modify-phases ,phases
-           (delete 'install-opt-viewer)))))))
+        #~(modify-phases #$phases
+            (add-before 'build 'shared-lib-workaround
+              ;; Even with CMAKE_SKIP_BUILD_RPATH=FALSE, llvm-tblgen
+              ;; doesn't seem to get the correct rpath to be able to run
+              ;; from the build directory.  Set LD_LIBRARY_PATH as a
+              ;; workaround.
+              (lambda _
+                (setenv "LD_LIBRARY_PATH"
+                        (string-append (getcwd) "/lib"))))
+            (delete 'install-opt-viewer)))))))
 
 (define-public clang-runtime-3.9.1
   (clang-runtime-from-llvm
