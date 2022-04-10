@@ -131,6 +131,12 @@
                                 "--disable-build-details")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'enable-elogind
+            (lambda _
+              (substitute* "configure.ac"
+                (("libsystemd") "libelogind"))
+              (when (file-exists? "configure")
+                (delete-file "configure"))))
           (add-after 'unpack 'patch-program-file-names
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* '("src/callproc.c"
@@ -271,6 +277,7 @@
            gmp
            ghostscript
            poppler
+           elogind
 
            ;; When looking for libpng `configure' links with `-lpng -lz', so we
            ;; must also provide zlib as an input.
@@ -290,7 +297,7 @@
            libotf
            m17n-lib))
     (native-inputs
-     (list pkg-config texinfo))
+     (list autoconf pkg-config texinfo))
     (native-search-paths
      (list (search-path-specification
             (variable "EMACSLOADPATH")
