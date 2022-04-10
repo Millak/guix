@@ -4886,10 +4886,14 @@ It uses the uwsgi protocol for all the networking/interprocess communications.")
     (inputs
      (list oniguruma))
     (native-inputs
-     (list ;; TODO fix gems to generate documentation
-           ;;("ruby" ,ruby)
-           ;;("bundler" ,bundler)
-           valgrind))
+     (append
+       ;; TODO: fix gems to generate documentation
+       ;(list ruby bundler)
+       '()
+       (if (member (%current-system)
+                   (package-supported-systems valgrind))
+         (list valgrind)
+         '())))
     (build-system gnu-build-system)
     (home-page "https://stedolan.github.io/jq/")
     (synopsis "Command-line JSON processor")
