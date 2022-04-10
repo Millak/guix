@@ -41,6 +41,7 @@
 (define-module (gnu packages emacs)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
@@ -51,6 +52,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages fribidi)
   #:use-module (gnu packages gd)
   #:use-module (gnu packages gettext)
@@ -119,183 +121,176 @@
                       (list line
                             "\"~/.guix-profile/include\""
                             "\"/var/guix/profiles/system/profile/include\"")
-                      " ")))
-                  #t))))
+                      " ")))))))
     (build-system glib-or-gtk-build-system)
     (arguments
-     `(#:tests? #f                      ; no check target
-       #:configure-flags (list "--with-modules"
-                               "--with-cairo"
-                               "--disable-build-details")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-program-file-names
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* '("src/callproc.c"
-                            "lisp/term.el"
-                            "lisp/htmlfontify.el"
-                            "lisp/textmodes/artist.el"
-                            "lisp/progmodes/sh-script.el")
-               (("\"/bin/sh\"")
-                (format #f "~s" (which "sh"))))
-             (substitute* "lisp/doc-view.el"
-               (("\"(gs|dvipdf|ps2pdf)\"" all what)
-                (let ((ghostscript (assoc-ref inputs "ghostscript")))
-                  (if ghostscript
-                      (string-append "\"" ghostscript "/bin/" what "\"")
-                      all)))
-               (("\"(pdftotext)\"" all what)
-                (let ((poppler (assoc-ref inputs "poppler")))
-                  (if poppler
-                      (string-append "\"" poppler "/bin/" what "\"")
-                      all))))
-             ;; match ".gvfs-fuse-daemon-real" and ".gvfsd-fuse-real"
-             ;; respectively when looking for GVFS processes.
-             (substitute* "lisp/net/tramp-gvfs.el"
-               (("\\(tramp-compat-process-running-p \"(.*)\"\\)" all process)
-                (format #f "(or ~a (tramp-compat-process-running-p ~s))"
-                        all (string-append "." process "-real"))))
-             #t))
-         (add-before 'configure 'fix-/bin/pwd
-           (lambda _
-             ;; Use `pwd', not `/bin/pwd'.
-             (substitute* (find-files "." "^Makefile\\.in$")
-               (("/bin/pwd")
-                "pwd"))
-             #t))
-         (add-after 'install 'install-site-start
-           ;; Use 'guix-emacs' in "site-start.el", which is used autoload the
-           ;; Elisp packages found in EMACSLOADPATH.
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out      (assoc-ref outputs "out"))
-                    (lisp-dir (string-append out "/share/emacs/site-lisp"))
-                    (emacs    (string-append out "/bin/emacs")))
+     (list
+      #:tests? #f                      ; no check target
+      #:configure-flags #~(list "--with-modules"
+                                "--with-cairo"
+                                "--disable-build-details")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-program-file-names
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* '("src/callproc.c"
+                             "lisp/term.el"
+                             "lisp/htmlfontify.el"
+                             "lisp/textmodes/artist.el"
+                             "lisp/progmodes/sh-script.el")
+                (("\"/bin/sh\"")
+                 (format #f "~s" (search-input-file inputs "/bin/sh"))))
+              (substitute* "lisp/doc-view.el"
+                (("\"(gs|dvipdf|ps2pdf|pdftotext)\"" all what)
+                 (let ((replacement (search-input-file
+                                     inputs
+                                     (string-append "/bin/" what))))
+                   (if replacement
+                       (string-append "\"" replacement "\"")
+                       all))))
+              ;; match ".gvfs-fuse-daemon-real" and ".gvfsd-fuse-real"
+              ;; respectively when looking for GVFS processes.
+              (substitute* "lisp/net/tramp-gvfs.el"
+                (("\\(tramp-compat-process-running-p \"(.*)\"\\)" all process)
+                 (format #f "(or ~a (tramp-compat-process-running-p ~s))"
+                         all (string-append "." process "-real"))))))
+          (add-before 'configure 'fix-/bin/pwd
+            (lambda _
+              ;; Use `pwd', not `/bin/pwd'.
+              (substitute* (find-files "." "^Makefile\\.in$")
+                (("/bin/pwd")
+                 "pwd"))))
+          (add-after 'install 'install-site-start
+            ;; Use 'guix-emacs' in "site-start.el", which is used autoload the
+            ;; Elisp packages found in EMACSLOADPATH.
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((out      (assoc-ref outputs "out"))
+                     (lisp-dir (string-append out "/share/emacs/site-lisp"))
+                     (emacs    (string-append out "/bin/emacs")))
 
-               ;; This is duplicated from emacs-utils to prevent coupling.
-               (define* (emacs-byte-compile-directory dir)
-                 (let ((expr `(progn
-                               (setq byte-compile-debug t)
-                               (byte-recompile-directory
-                                (file-name-as-directory ,dir) 0 1))))
-                   (invoke emacs "--quick" "--batch"
-                           (format #f "--eval=~s" expr))))
+                ;; This is duplicated from emacs-utils to prevent coupling.
+                (define* (emacs-byte-compile-directory dir)
+                  (let ((expr `(progn
+                                (setq byte-compile-debug t)
+                                (byte-recompile-directory
+                                 (file-name-as-directory ,dir) 0 1))))
+                    (invoke emacs "--quick" "--batch"
+                            (format #f "--eval=~s" expr))))
 
-               (copy-file (assoc-ref inputs "guix-emacs.el")
-                          (string-append lisp-dir "/guix-emacs.el"))
-               (with-output-to-file (string-append lisp-dir "/site-start.el")
-                 (lambda ()
-                   (display
-                    (string-append
-                     "(when (require 'guix-emacs nil t)\n"
-                     "  (guix-emacs-autoload-packages)\n"
-                     "  (advice-add 'package-load-all-descriptors"
-                     " :after #'guix-emacs-load-package-descriptors))"))))
-               ;; Remove the extraneous subdirs.el file, as it causes Emacs to
-               ;; add recursively all the the sub-directories of a profile's
-               ;; share/emacs/site-lisp union when added to EMACSLOADPATH,
-               ;; which leads to conflicts.
-               (delete-file (string-append lisp-dir "/subdirs.el"))
-               ;; Byte compile the site-start files.
-               (emacs-byte-compile-directory lisp-dir))
-             #t))
-         (add-after 'glib-or-gtk-wrap 'restore-emacs-pdmp
-           ;; restore the dump file that Emacs installs somewhere in
-           ;; libexec/ to its original state
-           (lambda* (#:key outputs target #:allow-other-keys)
-             (let* ((libexec (string-append (assoc-ref outputs "out")
-                                            "/libexec"))
-                    ;; each of these ought to only match a single file,
-                    ;; but even if not (find-files) sorts by string<,
-                    ;; so the Nth element in one maps to the Nth element of
-                    ;; the other
-                    (pdmp (find-files libexec "\\.pdmp$"))
-                    (pdmp-real (find-files libexec "\\.pdmp-real$")))
-               (for-each rename-file pdmp-real pdmp))))
-         (add-after 'glib-or-gtk-wrap 'strip-double-wrap
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Directly copy emacs-X.Y to emacs, so that it is not wrapped
-             ;; twice.  This also fixes a minor issue, where WMs would not be
-             ;; able to track emacs back to emacs.desktop.
-             (with-directory-excursion (assoc-ref outputs "out")
-               (copy-file
-                (car (find-files "bin" "^emacs-([0-9]+\\.)+[0-9]+$"))
-                "bin/emacs")
-               #t)))
-         (add-after 'strip-double-wrap 'wrap-emacs-paths
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (lisp-dirs (find-files (string-append out "/share/emacs")
-                                           "^lisp$"
-                                           #:directories? #t)))
-               (for-each
-                (lambda (prog)
-                  (wrap-program prog
-                    ;; emacs-next and variants rely on uname being in PATH for
-                    ;; Tramp.  Tramp paths can't be hardcoded, because they
-                    ;; need to be portable.
-                    `("PATH" suffix
-                      ,(map (lambda (in) (string-append in "/bin"))
-                            (list (assoc-ref inputs "gzip")
-                                  (assoc-ref inputs "coreutils"))))
-                    `("EMACSLOADPATH" suffix ,lisp-dirs)))
-                (find-files (string-append out "/bin")
-                            ;; Matches versioned and unversioned emacs binaries.
-                            ;; We don't patch emacsclient, because it takes its
-                            ;; environment variables from emacs.
-                            ;; Likewise, we don't need to patch helper binaries
-                            ;; like etags, ctags or ebrowse.
-                            "^emacs(-[0-9]+(\\.[0-9]+)*)?$"))))))))
+                (copy-file #$(local-file
+                              (search-auxiliary-file "emacs/guix-emacs.el"))
+                           (string-append lisp-dir "/guix-emacs.el"))
+                (with-output-to-file (string-append lisp-dir "/site-start.el")
+                  (lambda ()
+                    (display
+                     (string-append
+                      "(when (require 'guix-emacs nil t)\n"
+                      "  (guix-emacs-autoload-packages)\n"
+                      "  (advice-add 'package-load-all-descriptors"
+                      " :after #'guix-emacs-load-package-descriptors))"))))
+                ;; Remove the extraneous subdirs.el file, as it causes Emacs to
+                ;; add recursively all the the sub-directories of a profile's
+                ;; share/emacs/site-lisp union when added to EMACSLOADPATH,
+                ;; which leads to conflicts.
+                (delete-file (string-append lisp-dir "/subdirs.el"))
+                ;; Byte compile the site-start files.
+                (emacs-byte-compile-directory lisp-dir))))
+          (add-after 'glib-or-gtk-wrap 'restore-emacs-pdmp
+            ;; restore the dump file that Emacs installs somewhere in
+            ;; libexec/ to its original state
+            (lambda* (#:key outputs target #:allow-other-keys)
+              (let* ((libexec (string-append (assoc-ref outputs "out")
+                                             "/libexec"))
+                     ;; each of these ought to only match a single file,
+                     ;; but even if not (find-files) sorts by string<,
+                     ;; so the Nth element in one maps to the Nth element of
+                     ;; the other
+                     (pdmp (find-files libexec "\\.pdmp$"))
+                     (pdmp-real (find-files libexec "\\.pdmp-real$")))
+                (for-each rename-file pdmp-real pdmp))))
+          (add-after 'glib-or-gtk-wrap 'strip-double-wrap
+            (lambda* (#:key outputs #:allow-other-keys)
+              ;; Directly copy emacs-X.Y to emacs, so that it is not wrapped
+              ;; twice.  This also fixes a minor issue, where WMs would not be
+              ;; able to track emacs back to emacs.desktop.
+              (with-directory-excursion (assoc-ref outputs "out")
+                (copy-file
+                 (car (find-files "bin" "^emacs-([0-9]+\\.)+[0-9]+$"))
+                 "bin/emacs"))))
+          (add-after 'strip-double-wrap 'wrap-emacs-paths
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (lisp-dirs (find-files (string-append out "/share/emacs")
+                                            "^lisp$"
+                                            #:directories? #t)))
+                (for-each
+                 (lambda (prog)
+                   (wrap-program prog
+                     ;; emacs-next and variants rely on uname being in PATH for
+                     ;; Tramp.  Tramp paths can't be hardcoded, because they
+                     ;; need to be portable.
+                     `("PATH" suffix
+                       ,(map dirname
+                             (list (search-input-file inputs "/bin/gzip")
+                                   ;; for coreutils
+                                   (search-input-file inputs "/bin/yes"))))
+                     `("EMACSLOADPATH" suffix ,lisp-dirs)))
+                 (find-files (string-append out "/bin")
+                             ;; Matches versioned and unversioned emacs binaries.
+                             ;; We don't patch emacsclient, because it takes its
+                             ;; environment variables from emacs.
+                             ;; Likewise, we don't need to patch helper binaries
+                             ;; like etags, ctags or ebrowse.
+                             "^emacs(-[0-9]+(\\.[0-9]+)*)?$"))))))))
     (inputs
-     `(("gnutls" ,gnutls)
-       ("ncurses" ,ncurses)
+     (list gnutls
+           ncurses
 
-       ;; Required for "core" functionality, such as dired and compression.
-       ("coreutils" ,coreutils)
-       ("gzip" ,gzip)
+           ;; Required for "core" functionality, such as dired and compression.
+           coreutils
+           gzip
 
-       ;; Avoid Emacs's limited movemail substitute that retrieves POP3 email
-       ;; only via insecure channels.  This is not needed for (modern) IMAP.
-       ("mailutils" ,mailutils)
+           ;; Avoid Emacs's limited movemail substitute that retrieves POP3
+           ;; email only via insecure channels.
+           ;; This is not needed for (modern) IMAP.
+           mailutils
 
-       ;; TODO: Add the optional dependencies.
-       ("gpm" ,gpm)
-       ("libx11" ,libx11)
-       ("gtk+" ,gtk+)
-       ("cairo" ,cairo)
-       ("pango" ,pango)
-       ("harfbuzz" ,harfbuzz)
-       ("libxft" ,libxft)
-       ("libtiff" ,libtiff)
-       ("giflib" ,giflib)
-       ("libjpeg" ,libjpeg-turbo)
-       ("acl" ,acl)
-       ("jansson" ,jansson)
-       ("gmp" ,gmp)
-       ("ghostscript" ,ghostscript)
-       ("poppler" ,poppler)
+           ;; TODO: Add the optional dependencies.
+           gpm
+           libx11
+           gtk+
+           cairo
+           pango
+           harfbuzz
+           libxft
+           libtiff
+           giflib
+           libjpeg-turbo
+           acl
+           jansson
+           gmp
+           ghostscript
+           poppler
 
-       ;; When looking for libpng `configure' links with `-lpng -lz', so we
-       ;; must also provide zlib as an input.
-       ("libpng" ,libpng)
-       ("zlib" ,zlib)
-       ("librsvg" ,@(if (target-x86-64?)
-                         (list librsvg-bootstrap)
-                         (list librsvg-2.40)))
-       ("libxpm" ,libxpm)
-       ("libxml2" ,libxml2)
-       ("libice" ,libice)
-       ("libsm" ,libsm)
-       ("alsa-lib" ,alsa-lib)
-       ("dbus" ,dbus)
+           ;; When looking for libpng `configure' links with `-lpng -lz', so we
+           ;; must also provide zlib as an input.
+           libpng
+           zlib
+           (if (target-x86-64?)
+               librsvg-bootstrap
+               librsvg-2.40)
+           libxpm
+           libxml2
+           libice
+           libsm
+           alsa-lib
+           dbus
 
-       ;; multilingualization support
-       ("libotf" ,libotf)
-       ("m17n-lib" ,m17n-lib)))
+           ;; multilingualization support
+           libotf
+           m17n-lib))
     (native-inputs
-     `(("guix-emacs.el" ,(search-auxiliary-file "emacs/guix-emacs.el"))
-       ("pkg-config" ,pkg-config)
-       ("texinfo" ,texinfo)))
-
+     (list pkg-config texinfo))
     (native-search-paths
      (list (search-path-specification
             (variable "EMACSLOADPATH")
