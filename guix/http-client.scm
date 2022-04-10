@@ -145,7 +145,7 @@ Raise an '&http-get-error' condition if downloading fails."
                             (or (not (uri-host uri))
                                 (string=? host (uri-host uri)))
                             port)
-                       (open-connection uri*
+                       (open-connection uri
                                         #:verify-certificate?
                                         verify-certificate?
                                         #:timeout timeout)))))
