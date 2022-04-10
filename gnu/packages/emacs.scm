@@ -79,17 +79,16 @@
 (define-public emacs
   (package
     (name "emacs")
-    (version "27.2")
+    (version "28.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/emacs/emacs-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1ff182gjw9wqsbx1kj5gl2r5pbqhp4ar54g04j33fgz6g17cr9xl"))
+                "1qbmmmhnjhn4lvzsnyk7l5ganbi6wzbm38jc1a7hhyh3k78b7c98"))
               (patches (search-patches "emacs-exec-path.patch"
                                        "emacs-fix-scheme-indent-function.patch"
-                                       "emacs-ignore-empty-xim-styles.patch"
                                        "emacs-source-date-epoch.patch"))
               (modules '((guix build utils)))
               (snippet
