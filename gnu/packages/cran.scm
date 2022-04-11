@@ -1721,17 +1721,19 @@ mixture models.")
 (define-public r-readxl
   (package
     (name "r-readxl")
-    (version "1.3.1")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "readxl" version))
        (sha256
         (base32
-         "15mambxr8c7k2ikdfsl1w3vxvm54dsnk0cl1qvks6iig7rql3d14"))))
+         "1xwi4k5si48hwkgfc59icfmp9dzlvfri59k5fsgn96zp9713k4mb"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-cellranger r-progress r-rcpp r-tibble))
+     (list r-cellranger r-cpp11 r-progress r-tibble))
+    (native-inputs
+     (list r-knitr))
     (home-page "https://readxl.tidyverse.org")
     (synopsis "Read Excel files")
     (description
