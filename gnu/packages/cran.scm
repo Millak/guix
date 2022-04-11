@@ -10272,14 +10272,14 @@ and make comparisons between different methodologies straightforward.")
 (define-public r-infotheo
   (package
     (name "r-infotheo")
-    (version "1.2.0")
+    (version "1.2.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "infotheo" version))
        (sha256
         (base32
-         "18xacczfq3z3xpy434js4nf3l19lczngzd0lq26wh22pvg1yniwv"))))
+         "1m1979vf8rvq3534mp1hihfadikhxrg3p6ac3hirz96kgb4qxyy0"))))
     (build-system r-build-system)
     (home-page "http://homepage.meyerp.com/software")
     (synopsis "Information-theoretic measures")
