@@ -995,13 +995,13 @@ algorithms.")
 (define-public r-magrittr
   (package
     (name "r-magrittr")
-    (version "2.0.2")
+    (version "2.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "magrittr" version))
        (sha256
-        (base32 "19k3q76qlri459iyyfgn9gl0w9lnv9v604yhpbc94nx71l6zvrkv"))))
+        (base32 "1ljmrrm36y31db5z4cl863ap8k3jcaxk0qzy3f0cn6iag4zzigx2"))))
     (build-system r-build-system)
     ;; knitr needs magrittr
     #;
