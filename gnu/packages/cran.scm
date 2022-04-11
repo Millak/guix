@@ -16288,14 +16288,14 @@ select colors to use in your R code.")
 (define-public r-ggextra
   (package
     (name "r-ggextra")
-    (version "0.9")
+    (version "0.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggExtra" version))
        (sha256
         (base32
-         "18mbi6gblqmrsciad1d2c9ngllk6mayaqj43k40hjq9ydqnvjbgj"))))
+         "1rd3qv6ah3zphr1jicjhgxms73vi496mjnxnsrcgl7z8nyxmas6w"))))
     (properties `((upstream-name . "ggExtra")))
     (build-system r-build-system)
     (propagated-inputs
