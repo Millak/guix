@@ -1212,7 +1212,7 @@ memory usage graphically, and it can display processes as a tree.")
 (define-public orage
   (package
     (name "orage")
-    (version "4.12.1")
+    (version "4.16.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/"
@@ -1220,20 +1220,15 @@ memory usage graphically, and it can display processes as a tree.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "0qlhvnl2m33vfxqlbkic2nmfpwyd4mq230jzhs48cg78392amy9w"))))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-build-with-libical3
-           (lambda* _
-             (substitute* "src/ical-code.c" ;; .is_utc not available in libical3
-               ((".*\\.is_utc.*$") ""))
-             #t)))))
+                "000py6r63rlv7pjwvwd7ycrb383lny8ha7ha3qpwh1r0d8xil496"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list intltool pkg-config))
+     (list
+      `(,glib "bin")                    ; for dbus-binding-tool
+      intltool
+      pkg-config))
     (inputs
-     (list gtk+-2 libical libnotify popt xfce4-panel))
+     (list dbus-glib gtk+-2 libical libnotify libxfce4ui popt xfce4-panel))
     (home-page "https://www.xfce.org/projects/")
     (synopsis "Simple calendar application with reminders")
     (description
