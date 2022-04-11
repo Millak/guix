@@ -159,6 +159,7 @@
   #:use-module (gnu packages file)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages gdb)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages geo)
   #:use-module (gnu packages ghostscript)
@@ -13031,6 +13032,107 @@ libmagic.")))
 
 (define-public python2-file
   (package-with-python2 python-file))
+
+(define-public python-pydevd
+  ;; Use the latest commit, which includes cleanups that removes Python 2
+  ;; syntax that would fail to build.
+  (let ((revision "0")
+        (commit "47e298499ef19563bb2ef5941a57046a35ae6868"))
+    (package
+      (name "python-pydevd")
+      (version (git-version "2.8.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/fabioz/PyDev.Debugger")
+               (commit commit)))
+         (modules '((guix build utils)))
+         (snippet '(begin
+                     ;; Delete pre-built binaries.
+                     (for-each delete-file (find-files "." "\\.(so|dylib|dll)"))
+                     ;; This source is generated via Cython.
+                     (delete-file "_pydevd_bundle/pydevd_cython.c")))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1yd017dh6xgxrqcyf8kk8jrr0a3zw895yfjih0z5jghyf0rck38q"))))
+      (build-system python-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'fix-tests
+              (lambda _
+                (substitute* "tests_python/test_convert_utilities.py"
+                  ;; Add missing trailing '/'.
+                  (("'\\\\\\\\usr\\\\\\\\bin\\\\\\\\') == '/usr/bin" all)
+                   (string-append all "/")))))
+            (add-after 'unpack 'patch-command-paths
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "_pydevd_bundle/pydevd_api.py"
+                  (("'kill'")
+                   (format #f "~s" (search-input-file inputs "bin/kill")))
+                  (("'pgrep'")
+                   (format #f "~s" (search-input-file inputs "bin/pgrep"))))))
+            (add-after 'unpack 'generate-sources
+              (lambda _
+                (setenv "PYTHONPATH" (getcwd))
+                (invoke "python" "build_tools/build.py")))
+            (add-after 'unpack 'adjust-attach-binary-name
+              (lambda _
+                (substitute*
+                    '("pydevd_tracing.py"
+                      "pydevd_attach_to_process/add_code_to_python_process.py")
+                  (("def get_(target|python_helper_lib)_filename.*" all)
+                   (format #f "~a    return ~s~%" all
+                           (string-append #$output "/lib/attach.so"))))))
+            (add-after 'unpack 'patch-gdb
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute*
+                    "pydevd_attach_to_process/add_code_to_python_process.py"
+                  (("'gdb',")
+                   (format #f "~s," (search-input-file inputs "bin/gdb"))))))
+            (add-after 'build 'build-attach-linux-binary
+              (lambda _
+                (invoke #+(cxx-for-target) "-shared" "-o" "attach.so"
+                        "-fPIC" "-nostartfiles"
+                        "pydevd_attach_to_process/linux_and_mac/attach.cpp")))
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (setenv "PYDEVD_USE_CYTHON" "YES")
+                  (invoke "pytest" "-vv"
+                          "-n" (number->string (parallel-job-count))
+                          "-k"
+                          (string-append
+                           ;; the GUI event loop requires an X server.
+                           "not test_gui_event_loop_custom "
+                           ;; This test validates that 'pydevd' is not in the
+                           ;; exception message, but it is due to being part
+                           ;; of the build file name present in the message.
+                           "and not test_evaluate_exception_trace")))))
+            (add-after 'install 'install-attach-binary
+              (lambda _
+                (install-file "attach.so"
+                              (string-append #$output "/lib"))))
+            ;; Some modules aren't designed to be loadable by themselves, such
+            ;; as 'pydev_app_engine_debug_startup' and fail.
+            (delete 'sanity-check))))
+      (native-inputs
+       (list python-cython
+             python-numpy
+             python-psutil
+             python-pytest
+             python-pytest-xdist
+             python-trio
+             python-untangle))
+      (inputs (list coreutils gdb procps))
+      (home-page "https://github.com/fabioz/PyDev.Debugger/")
+      (synopsis "Python debugger")
+      (description "PyDev.Debugger is a capable Python debugger used in PyDev
+and other @acronym{IDEs, Integrated Development Environments}.")
+      (license license:epl1.0))))
 
 (define-public python-debian
   (package
