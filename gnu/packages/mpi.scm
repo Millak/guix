@@ -79,15 +79,12 @@
                "doc"           ;400+ section 3 man pages
                "debug"))
     (inputs
-     `(("libx11" ,libx11)
-       ("cairo" ,cairo)
-       ("ncurses" ,ncurses)
-       ("expat" ,expat)
-       ,@(if (not (string-prefix? "armhf"
-                                  (or (%current-target-system)
-                                      (%current-system))))
-             `(("numactl" ,numactl))
-             '())))
+     (append (list libx11 cairo ncurses expat)
+             (if (not (string-prefix? "armhf"
+                                      (or (%current-target-system)
+                                          (%current-system))))
+                 (list numactl)
+                 '())))
     (propagated-inputs
      ;; hwloc.pc lists it in 'Requires.private'.
      (list libpciaccess))
@@ -163,7 +160,8 @@ bind processes, and much more.")
                 "13ajxwshxl1pa8b5gnkmm7hcg97m6xrlgz8vj1hmsb57qcv1skhd"))))
 
     ;; libnuma is no longer needed.
-    (inputs (alist-delete "numactl" (package-inputs hwloc-1)))
+    (inputs (modify-inputs (package-inputs hwloc-1)
+              (delete "numactl")))
     (arguments
      (substitute-keyword-arguments (package-arguments hwloc-1)
        ((#:phases phases)
