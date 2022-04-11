@@ -28344,14 +28344,14 @@ Design} (SFD) and to test their quality.")
 (define-public r-dials
   (package
     (name "r-dials")
-    (version "0.1.0")
+    (version "0.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dials" version))
        (sha256
         (base32
-         "02i9ddzi7gk5bwg87x8bpazk89mn102awgxzp9yw85dgbafqsydh"))))
+         "1h695g9vklqn0vd53j9k03s0989xjpjr11h5qhz3a0v6465fwm8a"))))
     (properties `((upstream-name . "dials")))
     (build-system r-build-system)
     (propagated-inputs
