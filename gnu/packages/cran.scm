@@ -14124,13 +14124,13 @@ Touzet and Varre (2007).")
 (define-public r-rncl
   (package
     (name "r-rncl")
-    (version "0.8.4")
+    (version "0.8.6")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "rncl" version))
               (sha256
                (base32
-                "0ss9jqrvv7bhvl5j74cjrp8r866d9dlavrbbfscwz3mhkgfx06bb"))))
+                "1ywgwqn82z8h6zpcxxq4hgngdpfa6dj0lr7bfq4cwfml9z075jgw"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-progress r-rcpp))
