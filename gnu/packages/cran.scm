@@ -28778,14 +28778,14 @@ use.")
 (define-public r-tidymodels
   (package
     (name "r-tidymodels")
-    (version "0.1.4")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tidymodels" version))
        (sha256
         (base32
-         "18krycdn0h1i8swrq6bgj8qnb200rr0pqhr6maq3h1jc66x0y7nd"))))
+         "1xkv4s4kn7k9137svb39zrm5302gxpxyp1jv5bb6z0xrvj5wwa4i"))))
     (properties `((upstream-name . "tidymodels")))
     (build-system r-build-system)
     (propagated-inputs
@@ -28811,7 +28811,7 @@ use.")
            r-workflowsets
            r-yardstick))
     (native-inputs
-     (list r-knitr r-rmarkdown pandoc))
+     (list r-knitr))
     (home-page "https://github.com/tidymodels/tidymodels")
     (synopsis "Tidy collection for modeling and statistical analysis")
     (description
