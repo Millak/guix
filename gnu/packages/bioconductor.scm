@@ -9315,6 +9315,47 @@ imports from AIA/ANDI NetCDF, mzXML, mzData and mzML files.  It preprocesses
 data for high-throughput, untargeted analyte profiling.")
     (license license:gpl2+)))
 
+(define-public r-wppi
+  (package
+    (name "r-wppi")
+    (version "1.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "wppi" version))
+              (sha256
+               (base32
+                "1spwa8p6w3pyw21dvd1lrhcz1sphdsmsd408jv55ss9nbgvgrp23"))))
+    (properties `((upstream-name . "wppi")))
+    (build-system r-build-system)
+    ;; This is necessary because omnipathr attempts to write a configuration
+    ;; file to HOME.
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
+    (propagated-inputs (list r-dplyr
+                             r-igraph
+                             r-logger
+                             r-magrittr
+                             r-matrix
+                             r-omnipathr
+                             r-progress
+                             r-purrr
+                             r-rcurl
+                             r-rlang
+                             r-tibble
+                             r-tidyr))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/AnaGalhoz37/wppi")
+    (synopsis "Weighting protein-protein interactions")
+    (description
+     "This package predicts functional relevance of protein-protein
+interactions based on functional annotations such as Human Protein Ontology
+and Gene Ontology, and prioritizes genes based on network topology, functional
+scores and a path search algorithm.")
+    (license license:expat)))
+
 (define-public r-wrench
   (package
     (name "r-wrench")
