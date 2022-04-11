@@ -775,6 +775,43 @@ Ensembl.")
 Ensembl.")
     (license license:artistic2.0)))
 
+(define-public r-tricycle
+  (package
+    (name "r-tricycle")
+    (version "1.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "tricycle" version))
+              (sha256
+               (base32
+                "19yh7yif8630j845m9rddva2z0xy4jcw9j4hvyr076jqbyxz998r"))))
+    (properties `((upstream-name . "tricycle")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-annotationdbi
+                             r-circular
+                             r-dplyr
+                             r-genomicranges
+                             r-ggplot2
+                             r-iranges
+                             r-rcolorbrewer
+                             r-s4vectors
+                             r-scater
+                             r-scattermore
+                             r-singlecellexperiment
+                             r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/hansenlab/tricycle")
+    (synopsis "Transferable representation and inference of cell cycle")
+    (description
+     "The package contains functions to infer and visualize cell cycle process
+using Single-cell RNA-Seq data.  It exploits the idea of transfer learning,
+projecting new data to the previous learned biologically interpretable space.
+The @code{tricycle} provides a pre-learned cell cycle space, which could be
+used to infer cell cycle time of human and mouse single cell samples.  In
+addition, it also offer functions to visualize cell cycle time on different
+embeddings and functions to build new reference.")
+    (license license:gpl3)))
+
 (define-public r-txdb-dmelanogaster-ucsc-dm6-ensgene
   (package
     (name "r-txdb-dmelanogaster-ucsc-dm6-ensgene")
