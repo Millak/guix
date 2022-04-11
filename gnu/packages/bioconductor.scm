@@ -2089,14 +2089,14 @@ mapping.")
 (define-public r-nmf
   (package
     (name "r-nmf")
-    (version "0.23.0")
+    (version "0.24.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "NMF" version))
        (sha256
         (base32
-         "0ls7q9yc9l1z10jphq5a11wkfgcxc3gm3sfjj376zx3vnc0wl30g"))))
+         "14yxra6in5c1md5nr75y8cdmh9pg0lxqabqflvlhgg1vbg9i2628"))))
     (properties `((upstream-name . "NMF")))
     (build-system r-build-system)
     (propagated-inputs
