@@ -6373,17 +6373,17 @@ to variables on the left-hand side of the assignment.")
 (define-public r-vctrs
   (package
     (name "r-vctrs")
-    (version "0.3.8")
+    (version "0.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "vctrs" version))
        (sha256
         (base32
-         "1c8v5lmap6iq4jpi7p3w05hsv2dq7rjg057pvnfyc5d1xmsqnkkz"))))
+         "0bslr22jnnwxx45s1a19az6saqf2svi8vkjf64pnpc6rma4ygpl9"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-ellipsis r-glue r-rlang))
+     (list r-cli r-glue r-rlang))
     (native-inputs
      (list r-knitr))
     (home-page "https://github.com/r-lib/vctrs")
