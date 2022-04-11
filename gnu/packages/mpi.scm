@@ -202,26 +202,24 @@ bind processes, and much more.")
 
     (build-system gnu-build-system)
     (inputs
-     `(("hwloc" ,hwloc-2 "lib")
-       ("gfortran" ,gfortran)
-       ("libfabric" ,libfabric)
-       ("libevent" ,libevent)
-       ("opensm" ,opensm)
-       ,@(if (and (not (%current-target-system))
-                  (member (%current-system) (package-supported-systems psm)))
-             `(("psm" ,psm))
-             '())
-       ,@(if (and (not (%current-target-system))
-                  (member (%current-system) (package-supported-systems psm2)))
-             `(("psm2" ,psm2))
-             '())
-       ,@(if (and (not (%current-target-system))
-                  (member (%current-system) (package-supported-systems ucx)))
-             `(("ucx" ,ucx))
-             '())
-       ("rdma-core" ,rdma-core)
-       ("valgrind" ,valgrind)
-       ("slurm" ,slurm)))              ;for PMI support (launching via "srun")
+     (let ((if-supported
+            (lambda (package)
+              (if (and (not (%current-target-system))
+                       (member (%current-system)
+                               (package-supported-systems package)))
+                  (list package)
+                  '()))))
+       (append (list `(,hwloc-2 "lib")
+                     gfortran
+                     libfabric
+                     libevent
+                     opensm)
+               (if-supported psm)
+               (if-supported psm2)
+               (if-supported ucx)
+               (list rdma-core
+                     valgrind
+                     slurm))))         ;for PMI support (launching via "srun")
     (native-inputs
      (list pkg-config perl))
     (outputs '("out" "debug"))
