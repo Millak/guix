@@ -12673,14 +12673,14 @@ quick reporting.")
 (define-public r-pander
   (package
     (name "r-pander")
-    (version "0.6.4")
+    (version "0.6.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pander" version))
        (sha256
         (base32
-         "1knjcr50xxns3w3kh15myjpsizn4d7fdqx071a4yj90imif07qjh"))))
+         "144zkq5w7v6fpzk3x40i0baybbp0y6x2ckh4b9qljryas9mhgp9a"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-digest r-rcpp))
