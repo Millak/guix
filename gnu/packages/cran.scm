@@ -15995,14 +15995,14 @@ database.")
 (define-public r-outliers
   (package
     (name "r-outliers")
-    (version "0.14")
+    (version "0.15")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "outliers" version))
        (sha256
         (base32
-         "0vcqfqmmv4yblyp3s6bd25r49pxb7hjzipiic5a82924nqfqzkmn"))))
+         "1yrmwvjjb0a6sbx940k9svf23cykcxz8rrwcgyic7lpgzbrdfcfc"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/outliers/index.html")
     (synopsis "Tests for outliers")
