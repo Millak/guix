@@ -18693,14 +18693,14 @@ repository.")
 (define-public r-mpm
   (package
     (name "r-mpm")
-    (version "1.0-22")
+    (version "1.0-23")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mpm" version))
        (sha256
         (base32
-         "0wijw8v0wmbfrda5564cmnp788qmlkk21yn5cp5qk8aprm9l1fnk"))))
+         "1jpv2ddmw7aarqbbyfys1yb840arw33319wnny3v2hk84hldmayj"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-kernsmooth r-mass))
