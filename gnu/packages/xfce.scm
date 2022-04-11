@@ -954,7 +954,7 @@ features playback of local media files, DVD/CD and live streams.")
 (define-public xfce4-terminal
   (package
     (name "xfce4-terminal")
-    (version "0.8.10")
+    (version "1.0.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/" name "/"
@@ -962,7 +962,7 @@ features playback of local media files, DVD/CD and live streams.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "1irxyg5vp6vyd9vxdqav6jhchfkmhlqq511386h644p0k30kfcvs"))))
+                "0xk5vchkzchkp7c5sfvi49m8kdq906cpbq2l33jm325iv5xnlfsr"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config intltool))
