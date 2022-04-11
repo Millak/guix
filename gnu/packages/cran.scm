@@ -32529,13 +32529,13 @@ convert dates to MMWR day, week, and year and the reverse.")
 (define-public r-cccd
   (package
     (name "r-cccd")
-    (version "1.5")
+    (version "1.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "cccd" version))
        (sha256
-        (base32 "0m364zsrgr7mh1yhl2lqxpaf71gzq3y3pp9qgnj4spiy4iadyy7i"))))
+        (base32 "0cxh19jqappc6zq9nz3m40ybdmsp12mf7yvflsz96wks3ly2ld4y"))))
     (properties `((upstream-name . "cccd")))
     (build-system r-build-system)
     (propagated-inputs (list r-deldir r-fnn r-igraph r-proxy))
