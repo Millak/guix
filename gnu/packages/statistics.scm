@@ -5176,14 +5176,14 @@ data for species delimitation, nearest neighbor based noise detection.")
 (define-public r-deoptimr
   (package
     (name "r-deoptimr")
-    (version "1.0-10")
+    (version "1.0-11")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "DEoptimR" version))
        (sha256
         (base32
-         "1m9ag073i7pbxsy74vkj0n4hjn6vmyc4n0k78nmslwwwmjh7nkvp"))))
+         "0nqn12n5qlyk2zsgh57dvizy5z71xgqrhrcqj6lbzybm9c7v6x0q"))))
     (properties `((upstream-name . "DEoptimR")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/DEoptimR")
