@@ -9656,17 +9656,17 @@ information are missing.")
 (define-public r-sjlabelled
   (package
     (name "r-sjlabelled")
-    (version "1.1.8")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sjlabelled" version))
        (sha256
         (base32
-         "17gskxr43rgbg7syla3b78g2qgksq2kj07iad4139xycqxblxya0"))))
+         "1va86q5wddyvqgdpy8d0an2c7v1qbb4hpn0ai6y1v5v1ff87w73k"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-insight))
+     (list r-datawizard r-insight))
     (native-inputs
      (list r-knitr))
     (home-page "https://github.com/strengejacke/sjlabelled")
