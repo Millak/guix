@@ -57,7 +57,7 @@
   ;; to migrate to 2.0.
   (package
     (name "hwloc")
-    (version "1.11.12")
+    (version "1.11.13")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.open-mpi.org/software/hwloc/v"
@@ -65,7 +65,8 @@
                                   "/downloads/hwloc-" version ".tar.bz2"))
               (sha256
                (base32
-                "0za1b9lvrm3rhn0lrxja5f64r0aq1qs4m0pxn1ji2mbi8ndppyyx"))))
+                "1j69p8a1pjpbpwn4w7l4dfxmaxxqikchjzqw1ncw05zmcmvlnjd4"))
+              (patches (search-patches "hwloc-1-test-btrfs.patch"))))
 
     (properties
      ;; Tell the 'generic-html' updater to monitor this URL for updates.
