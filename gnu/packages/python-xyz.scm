@@ -13134,6 +13134,78 @@ libmagic.")))
 and other @acronym{IDEs, Integrated Development Environments}.")
       (license license:epl1.0))))
 
+(define-public python-debugpy
+  (package
+    (name "python-debugpy")
+    (version "1.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference              ;no tests in PyPI archive
+             (url "https://github.com/microsoft/debugpy")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (modules '((guix build utils)))
+       ;; Remove the bundled PyDev-Debugger copy, including its pre-built
+       ;; attach binary.
+       (snippet '(delete-file-recursively "src/debugpy/_vendored"))
+       (patches (search-patches "python-debugpy-unbundle-pydevd.patch"))
+       (sha256
+        (base32
+         "1dpfzs3p51648i7f3fz8dw5d0vrj39iwn1jhn0226idc02ybyqih"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-sh-in-tests
+            (lambda _
+              (substitute* "tests/debugpy/test_run.py"
+                (("#!/bin/sh")
+                 (string-append "#!" (which "sh"))))))
+          (add-after 'unpack 'fix-version
+            ;; Versioneer is useless when there is no git metadata.
+            (lambda _
+              (substitute* "setup.py"
+                (("version=versioneer.get_version\\(),")
+                 (format #f "version=~s," #$version)))))
+          (add-before 'build 'configure
+            (lambda _
+              ;; This adjusts the behavior of debugpy to load pydevd from
+              ;; Python site packages.
+              (setenv "DEBUGPY_BUNDLING_DISABLED" "1")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (invoke "pytest" "-vv"
+                      "-n" (number->string (parallel-job-count))
+                      "-k"
+                      (string-append
+                       ;; These tests cannot be run in parallel because their
+                       ;; test data would not be copied by xdist and lead to
+                       ;; import errors. (see:
+                       ;; https://github.com/microsoft/debugpy/issues/342 and
+                       ;; https://github.com/microsoft/debugpy/issues/880).
+                       "not test_custom_python_args "
+                       "and not test_autokill ")))))))
+    (native-inputs
+     ;; See: https://raw.githubusercontent.com/microsoft/debugpy/
+     ;;      main/tests/requirements.txt.
+     (list python-django
+           python-gevent
+           python-flask
+           python-psutil
+           python-pytest
+           python-pytest-cov
+           python-pytest-timeout
+           python-pytest-xdist
+           python-requests))
+    (propagated-inputs (list python-pydevd))
+    (home-page "https://aka.ms/debugpy")
+    (synopsis "Debug Adapter Protocol Python implementation")
+    (description "An implementation of the Debug Adapter Protocol for
+Python.")
+    (license license:expat)))
+
 (define-public python-debian
   (package
     (name "python-debian")

@@ -1681,6 +1681,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-argcomplete-1.11.1-fish31.patch	\
   %D%/packages/patches/python-cross-compile.patch		\
   %D%/packages/patches/python-configobj-setuptools.patch	\
+  %D%/packages/patches/python-debugpy-unbundle-pydevd.patch	\
   %D%/packages/patches/python-docopt-pytest6-compat.patch	\
   %D%/packages/patches/python-execnet-read-only-fix.patch	\
   %D%/packages/patches/python-fixtures-remove-monkeypatch-test.patch	\
