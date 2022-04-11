@@ -1805,13 +1805,13 @@ into a pipeline of data manipulation and visualisation.")
 (define-public r-hmm
   (package
     (name "r-hmm")
-    (version "1.0")
+    (version "1.0.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "HMM" version))
               (sha256
                (base32
-                "0z0hcqfixx1l2a6d3lpy5hmh0n4gjgs0jnck441akpp3vh37glzw"))))
+                "03b548bnwqpnd7zypb4gvy9chyi5li2hp99a9vrh4qszxg2ihas7"))))
     (properties `((upstream-name . "HMM")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/HMM/")
