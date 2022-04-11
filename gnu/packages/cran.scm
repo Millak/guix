@@ -22313,14 +22313,14 @@ both exponential and logistic loss on a given data set.")
 (define-public r-genalg
   (package
     (name "r-genalg")
-    (version "0.2.0")
+    (version "0.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "genalg" version))
        (sha256
         (base32
-         "1wzfamq8k5yhwbdx0wy1w5bks93brj0p890xxc4yqrja4w38ja3s"))))
+         "1y4qz1s85zpd1r3259gr542arssf2vpd4drhy0wnq5q47ignrvna"))))
     (properties `((upstream-name . "genalg")))
     (build-system r-build-system)
     (home-page "https://github.com/egonw/genalg")
