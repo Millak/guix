@@ -269,7 +269,7 @@ it to your needs by using several command line options.")
 (define-public elementary-xfce-icon-theme
   (package
     (name "elementary-xfce-icon-theme")
-    (version "0.15.2")
+    (version "0.16")
     (source (origin
               (method git-fetch)
               (uri
@@ -279,7 +279,7 @@ it to your needs by using several command line options.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1g6vndqvp11c2kl5vkpzb1wxvr2pfb3hvqxjjdgx6qzq9x8zmiqk"))))
+                "1s8g7qyjdlq93fbrgysahy5kcbd8b2cpnfmpdvl0vbzyhy2x18d7"))))
     (build-system gnu-build-system)
     (arguments
      '(#:tests? #f                      ; no check target
