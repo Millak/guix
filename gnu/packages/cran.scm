@@ -27801,14 +27801,14 @@ Springer.")
 (define-public r-survmisc
   (package
     (name "r-survmisc")
-    (version "0.5.5")
+    (version "0.5.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "survMisc" version))
        (sha256
         (base32
-         "00nvvl8gz4477ab24rd0xvfksm8msv8h021b9ld5c9cizc41n2bm"))))
+         "014cf7sfndmib9jmj0p3h67sr750k2pvw7m865zwdpvlqddi44fr"))))
     (properties `((upstream-name . "survMisc")))
     (build-system r-build-system)
     (propagated-inputs
