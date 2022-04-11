@@ -25396,14 +25396,14 @@ techniques to average Bayesian predictive distributions.")
 (define-public r-rstan
   (package
     (name "r-rstan")
-    (version "2.21.3")
+    (version "2.21.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rstan" version))
        (sha256
         (base32
-         "1ccjdwh0xspna2c0m5p8as8y2b0lnhdyk9hfd3jh58j6n8fbzg3n"))))
+         "1smr5cjrqvpdnkmjpjp73p96sy581x15mwrn4fqd1p4d5mbgxr46"))))
     (properties `((upstream-name . "rstan")))
     (build-system r-build-system)
     (arguments
