@@ -8302,16 +8302,18 @@ using the @code{snow} package.")
 (define-public r-fstcore
   (package
     (name "r-fstcore")
-    (version "0.9.8")
+    (version "0.9.12")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fstcore" version))
        (sha256
-        (base32 "1qicjwsm87wgjm5mxrsgi697fmcfz6wyqcxfgngwxrf8kq4awjsf"))))
+        (base32 "1a5m68n2dqhi3r8wf5jwg4vjvl550c7wypcf5j0xmkvl836yg1lg"))))
     (properties `((upstream-name . "fstcore")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
+    (inputs (list zlib))
+    (native-inputs (list pkg-config))
     (home-page "https://www.fstpackage.org/fstcore/")
     (synopsis "R bindings to the fstlib library")
     (description
