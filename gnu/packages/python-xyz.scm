@@ -17228,25 +17228,24 @@ collections of data.")
 (define-public python-prompt-toolkit
   (package
     (name "python-prompt-toolkit")
-    (version "3.0.18")
+    (version "3.0.29")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "prompt_toolkit" version))
        (sha256
-        (base32 "1g1kq1aimhm23k2dmlmnznfzc83l6ly65g0h32hqz8injcdz3d71"))))
+        (base32 "19vf5cahp3imdpwhgvk55g3dvqmc6ga175r4vkq79kffx1h0yr5x"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (delete 'check)
-         (add-after 'install 'post-install-check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; HOME is needed for the test
-             ;; "test_pathcompleter_can_expanduser".
-             (setenv "HOME" "/tmp")
-             (add-installed-pythonpath inputs outputs)
-             (invoke "py.test"))))))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               ;; HOME is needed for the test
+               ;; "test_pathcompleter_can_expanduser".
+               (setenv "HOME" "/tmp")
+               (invoke "pytest" "-vv")))))))
     (propagated-inputs
      (list python-wcwidth))
     (native-inputs
