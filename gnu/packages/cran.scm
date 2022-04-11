@@ -26356,14 +26356,14 @@ here.")
 (define-public r-projpred
   (package
     (name "r-projpred")
-    (version "2.0.2")
+    (version "2.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "projpred" version))
        (sha256
         (base32
-         "0nx514mrfh3gv854pr71w5x3zgdnn0kinf5nh7z90q3h7ysry2mg"))))
+         "170pskvcsyk22xl4q8mklx8nw29miqzb42wajcab7bki8ap1ix46"))))
     (properties `((upstream-name . "projpred")))
     (build-system r-build-system)
     (propagated-inputs
@@ -26373,14 +26373,12 @@ here.")
            r-lme4
            r-loo
            r-magrittr
-           r-mass
            r-mgcv
-           r-optimx
+           r-mvtnorm
            r-rcpp
            r-rcpparmadillo
-           r-rngtools
-           r-rstantools
-           r-tidyverse))
+           r-rlang
+           r-rstantools))
     (native-inputs (list r-knitr))
     (home-page "https://mc-stan.org/projpred/")
     (synopsis "Projection predictive feature selection")
