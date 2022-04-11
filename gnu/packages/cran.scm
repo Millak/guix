@@ -2083,14 +2083,14 @@ callback or connection interfaces.")
 (define-public r-hwriter
   (package
     (name "r-hwriter")
-    (version "1.3.2")
+    (version "1.3.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "hwriter" version))
        (sha256
         (base32
-         "0arjsz854rfkfqhgvpqbm9lfni97dcjs66isdsfvwfd2wz932dbb"))))
+         "1wxnv8h9cs65m3z01dpnnkgn2cpwfsck70g1jz9nbkr7mdaa4bzd"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/hwriter")
     (synopsis "Output R objects in HTML format")
