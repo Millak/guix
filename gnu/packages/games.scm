@@ -69,6 +69,7 @@
 ;;; Copyright © 2021 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 Yovan Naumovski <yovan@gorski.stream>
+;;; Copyright © 2022 Roman Riabenko <roman@riabenko.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2249,6 +2250,38 @@ utilizing the art assets from the @code{SuperTux} project.")
                      license:cc-by-sa4.0
                      license:gpl2+
                      license:gpl3+)))))
+
+(define-public robotfindskitten
+  (package
+    (name "robotfindskitten")
+    (version "2.8284271.702")            ; 1600003_201b is older, see ChangeLog
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/" name "/" name
+                                  "/releases/download/" version "/"
+                                  name "-" version ".tar.gz"))
+              (sha256
+                (base32
+                 "1bwrkxm83r9ajpkd6x03nqvmdfpf5vz6yfy0c97pq3v3ykj74082"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ; there are no tests
+      #:make-flags
+      #~(list
+         ;; Required for colorized output, see <http://bugs.gnu.org/54607>.
+         "CFLAGS=-D_XOPEN_SOURCE=600"
+         (string-append "execgamesdir=" #$output "/bin"))))
+    (inputs (list ncurses))
+    (outputs (list "out" "debug"))
+    (synopsis "Thematic meditative game")
+    (description
+     "You are a robot moving around in a realm filled with ASCII characters.
+Examine humourously described though useless items as you search for a kitten
+among them.  The theme of this Zen simulation is continued in its
+documentation.")
+    (home-page "http://robotfindskitten.org/")
+    (license license:gpl2+)))
 
 (define-public roguebox-adventures
   (package
