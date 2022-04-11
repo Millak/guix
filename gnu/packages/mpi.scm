@@ -80,11 +80,7 @@
                "debug"))
     (inputs
      (append (list libx11 cairo ncurses expat)
-             (if (not (string-prefix? "armhf"
-                                      (or (%current-target-system)
-                                          (%current-system))))
-                 (list numactl)
-                 '())))
+             (if (target-arm32?) '() (list numactl))))
     (propagated-inputs
      ;; hwloc.pc lists it in 'Requires.private'.
      (list libpciaccess))
