@@ -271,20 +271,17 @@ bind processes, and much more.")
                       (substitute*
                           '("./ompi/mca/io/romio321/src/io_romio321_component.c")
                         (("MCA_io_romio321_COMPLETE_CONFIGURE_FLAGS")
-                         "\"[elided to reduce closure]\""))
-                      #t))
+                         "\"[elided to reduce closure]\""))))
                   (add-before 'build 'scrub-timestamps ;reproducibility
                     (lambda _
                       (substitute* '("ompi/tools/ompi_info/param.c"
                                      "orte/tools/orte-info/param.c"
                                      "oshmem/tools/oshmem_info/param.c")
-                        ((".*(Built|Configured) on.*") ""))
-                      #t))
+                        ((".*(Built|Configured) on.*") ""))))
                   (add-after 'install 'remove-logs ;reproducibility
                     (lambda* (#:key outputs #:allow-other-keys)
                       (let ((out (assoc-ref outputs "out")))
-                        (for-each delete-file (find-files out "config.log"))
-                        #t))))))
+                        (for-each delete-file (find-files out "config.log"))))))))
     (home-page "https://www.open-mpi.org")
     (synopsis "MPI-3 implementation")
     (description
