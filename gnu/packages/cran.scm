@@ -25488,14 +25488,14 @@ a formula and @code{data.frame} plus some additional arguments for priors.")
 (define-public r-kendall
   (package
     (name "r-kendall")
-    (version "2.2")
+    (version "2.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Kendall" version))
        (sha256
         (base32
-         "0z2yr3x2nvdm81w2imb61hxwcbmg14kfb2bxgh3wmkmv3wfjwkwn"))))
+         "1xmk95l4i3kj9jn0xh1chi2rj322k29jq14ra5pa7316gwf9vx2m"))))
     (properties `((upstream-name . "Kendall")))
     (build-system r-build-system)
     (propagated-inputs
