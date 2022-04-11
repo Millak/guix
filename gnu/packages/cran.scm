@@ -6166,13 +6166,13 @@ constants, and control debugging of packages via environment variables.")
 (define-public r-processx
   (package
     (name "r-processx")
-    (version "3.5.2")
+    (version "3.5.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "processx" version))
        (sha256
-        (base32 "0azw8sx6nv6pp8m8jrwq01b9na2swrnznn7dwrhn07268w82svzd"))))
+        (base32 "0ail3w8n5g1ibdamgpxcfpla18kqkilmppiasm7ms67cavx2k5k7"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ps r-r6))
