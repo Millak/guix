@@ -16530,14 +16530,14 @@ also provides tools for efficient random number generation and graphics.")
 (define-public r-beanplot
   (package
     (name "r-beanplot")
-    (version "1.2")
+    (version "1.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "beanplot" version))
        (sha256
         (base32
-         "0wmkr704fl8kdxkjwmaxw2a2h5dwzfgsgpncnk2p2wd4768jknj9"))))
+         "1b8mvlcsv5l9g08ag92hndsvk8jmgxvznhzgazc8y4296kp8l5a9"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/beanplot/")
     (synopsis "Visualization via beanplots")
