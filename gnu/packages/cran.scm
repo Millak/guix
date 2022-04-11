@@ -21404,14 +21404,14 @@ Social Sciences\" by Mark S. Handcock and Martina Morris, Springer-Verlag,
 (define-public r-accept
   (package
     (name "r-accept")
-    (version "0.8.3")
+    (version "0.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "accept" version))
        (sha256
         (base32
-         "0qn4lm6bk0z2iijwsfbymx1c9y39988fw124ncgmlrgw5kv80b7x"))))
+         "13kx8fbnbpasjklgbq2rf4n73j2s8rvy5v77ywqhfzln24937qgh"))))
     (properties `((upstream-name . "accept")))
     (build-system r-build-system)
     (propagated-inputs
