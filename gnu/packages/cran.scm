@@ -27756,14 +27756,14 @@ and @url{https://doi.org/10.1093/molbev/msw275,Didelot et al. (2017)}.")
 (define-public r-km-ci
   (package
     (name "r-km-ci")
-    (version "0.5-2")
+    (version "0.5-6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "km.ci" version))
        (sha256
         (base32
-         "1l6kw8jppaa1802yc5pbfwwgac56nhwc9p076ivylhms4w7cdf8v"))))
+         "18sc9vhbdgks8lhk2nfxkkayh8j4j227hl63fm5p04f7z4wm6wc1"))))
     (properties `((upstream-name . "km.ci")))
     (build-system r-build-system)
     (propagated-inputs
