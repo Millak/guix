@@ -7322,6 +7322,7 @@ libnfnetlink_conntrack and libctnetlink.  This library is currently used by
 conntrack-tools among many other applications.")
     (home-page "https://netfilter.org/projects/libnetfilter_conntrack/index.html")
     (supported-systems (filter target-linux? %supported-systems))
+    (properties '((upstream-name . "libnetfilter_conntrack")))
     (license license:gpl2+)))
 
 (define-public libnetfilter-cttimeout
@@ -7348,6 +7349,7 @@ timeout policies that can be attached to traffic flows.  This library is used
 by conntrack-tools.")
     (home-page "https://netfilter.org/projects/libnetfilter_cttimeout/index.html")
     (supported-systems (filter target-linux? %supported-systems))
+    (properties '((upstream-name . "libnetfilter_cttimeout")))
     (license license:gpl2)))
 
 (define-public libnetfilter-cthelper
@@ -7379,6 +7381,7 @@ list existing registered user-space connection tracking helpers
 @end enumerate")
     (home-page "https://netfilter.org/projects/libnetfilter_cthelper/index.html")
     (supported-systems (filter target-linux? %supported-systems))
+    (properties '((upstream-name . "libnetfilter_cthelper")))
     (license license:gpl2+)))
 
 (define-public libnetfilter-queue
@@ -7403,6 +7406,7 @@ to packets that have been queued by the kernel packet filter.  It is is part
 of a system that deprecates the old ip_queue/libipq mechanism.")
     (home-page "https://netfilter.org/projects/libnetfilter_queue/index.html")
     (supported-systems (filter target-linux? %supported-systems))
+    (properties '((upstream-name . "libnetfilter_queue")))
     (license license:gpl2+)))
 
 (define-public conntrack-tools
@@ -7474,6 +7478,7 @@ deleting accounting objects
 For the nfnetlink_acct subsystem.")
     (home-page "https://netfilter.org/projects/libnetfilter_acct/index.html")
     (supported-systems (filter target-linux? %supported-systems))
+    (properties '((upstream-name . "libnetfilter_acct")))
     (license license:lgpl2.1+)))
 
 (define-public nfacct
@@ -7536,6 +7541,7 @@ receiving to-be-logged packets from the kernel nfnetlink_log subsystem
 @end enumerate")
     (home-page "https://netfilter.org/projects/libnetfilter_log/index.html")
     (supported-systems (filter target-linux? %supported-systems))
+    (properties '((upstream-name . "libnetfilter_log")))
     (license license:gpl2+)))
 
 (define-public ulogd
