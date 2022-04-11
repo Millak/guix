@@ -12651,17 +12651,17 @@ of the individual checks.")
 (define-public r-rapportools
   (package
     (name "r-rapportools")
-    (version "1.0")
+    (version "1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rapportools" version))
        (sha256
         (base32
-         "1sgv4sc737i12arh5dc3263kjsz3dzg06qihfmrqyax94mv2d01b"))))
+         "0qr86idng12g6hdd764j0wmli700v7rjhw7jdjxj0ka8xm5v7ymm"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-pander r-plyr r-reshape))
+     (list r-mass r-pander r-plyr r-reshape2))
     (home-page "https://cran.r-project.org/web/packages/rapportools/")
     (synopsis "Miscellaneous helper functions with sane defaults for reporting")
     (description
