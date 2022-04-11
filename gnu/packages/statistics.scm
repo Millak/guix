@@ -6694,13 +6694,13 @@ designs, one-way designs, general ANOVA designs, and linear regression.")
 (define-public r-norm
   (package
     (name "r-norm")
-    (version "1.0-9.5")
+    (version "1.0-10.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "norm" version))
               (sha256
                (base32
-                "01j1h412yfjx5r4dd0w8rhlf55997spgb6zd6pawy19rgw0byp1h"))))
+                "1iqcsa7mj9ahnkbsri0cf2wlhh2bv86vwsh3iwihh42cywd7k123"))))
     (build-system r-build-system)
     (native-inputs
      (list gfortran))
