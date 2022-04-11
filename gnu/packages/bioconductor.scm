@@ -7,7 +7,7 @@
 ;;; Copyright © 2017, 2018, 2019, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2020, 2021, 2022 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2020 Peter Lo <peterloleungyau@gmail.com>
-;;; Copyright © 2020, 2021 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
+;;; Copyright © 2020, 2021, 2022 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2021 Hong Li <hli@mdc-berlin.de>
 ;;; Copyright © 2021 Tim Howes <timhowes@lavabit.com>
@@ -5190,6 +5190,43 @@ analogous to \"normalized log-ratios\".  However, in contrast to the latter,
 their variance is independent of the mean, and they are usually more sensitive
 and specific in detecting differential transcription.")
     (license license:artistic2.0)))
+
+;; There is no source tarball, so we fetch the code from the Bioconductor git
+;; repository.
+(define-public r-xcir
+  (let ((commit "3b59d456f2ad7f70285915b036b1dc4279687277")
+        (revision "1"))
+    (package
+      (name "r-xcir")
+      (version (git-version "1.8.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://git.bioconductor.org/packages/XCIR")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1xxw5ady5j2p7z7zjxgx7lhm85x7fxbljiv49lc2ghsvh9wm937p"))))
+      (properties `((upstream-name . "XCIR")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-biomart
+                               r-biostrings
+                               r-data-table
+                               r-ggplot2
+                               r-iranges
+                               r-readxl
+                               r-s4vectors
+                               r-seqminer
+                               r-variantannotation))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/SRenan/XCIR")
+      (synopsis "Analysis of X chromosome inactivation")
+      (description
+       "This package is an R package that offers models and tools for subject
+level analysis of @dfn{X chromosome inactivation} (XCI) and XCI-escape
+inference.")
+      (license license:gpl2))))
 
 (define-public r-xina
   (package
