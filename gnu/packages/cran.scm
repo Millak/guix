@@ -20447,23 +20447,24 @@ files is supported.")
 (define-public r-tidygraph
   (package
     (name "r-tidygraph")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tidygraph" version))
        (sha256
         (base32
-         "17qjns33zcj82jcsl7bn7i4zxcm7ric50zyf7agi0i01zi16qz85"))))
+         "0dmdff3bkg53xn0c51xd6k2d9c7l250x1lhl5z3libf533dw5g9g"))))
     (properties `((upstream-name . "tidygraph")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-dplyr
+     (list r-cli
+           r-cpp11
+           r-dplyr
            r-igraph
            r-magrittr
            r-pillar
            r-r6
-           r-rcpp
            r-rlang
            r-tibble
            r-tidyr))
