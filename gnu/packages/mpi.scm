@@ -96,8 +96,7 @@
              ;; machines: <https://github.com/open-mpi/hwloc/issues/213>.
              (substitute* "tests/linux-libnuma.c"
                (("numa_available\\(\\)")
-                "-1"))
-             #t))
+                "-1"))))
          (add-after 'install 'refine-libnuma
            ;; Give -L arguments for libraries to avoid propagation
            (lambda* (#:key inputs outputs #:allow-other-keys)
@@ -114,8 +113,7 @@
                ;; "lib" output doesn't refer to "out".
                (substitute* (string-append lib "/lib/pkgconfig/hwloc.pc")
                  (("^.*prefix=.*$")
-                  ""))
-               #t)))
+                  "")))))
          (add-after 'install 'move-man3-pages
            (lambda* (#:key outputs #:allow-other-keys)
              ;; Move section 3 man pages to the "doc" output.
@@ -123,8 +121,8 @@
                    (doc (assoc-ref outputs "doc")))
                (copy-recursively (string-append out "/share/man/man3")
                                  (string-append doc "/share/man/man3"))
-               (delete-file-recursively (string-append out "/share/man/man3"))
-               #t))))))
+               (delete-file-recursively
+                (string-append out "/share/man/man3"))))))))
     (home-page "https://www.open-mpi.org/projects/hwloc/")
     (synopsis "Abstraction of hardware architectures")
     (description
@@ -168,16 +166,14 @@ bind processes, and much more.")
                ;; some machines: <https://github.com/open-mpi/hwloc/issues/213>.
                (substitute* "tests/hwloc/linux-libnuma.c"
                  (("numa_available\\(\\)")
-                  "-1"))
-               #t))
+                  "-1"))))
            (add-before 'check 'skip-test-that-fails-on-qemu
              (lambda _
                ;; Skip test that fails on emulated hardware due to QEMU bug:
                ;; <https://bugs.gnu.org/40342>.
                (substitute* "tests/hwloc/hwloc_get_last_cpu_location.c"
                  (("hwloc_topology_init" all)
-                  (string-append "exit (77);\n" all)))
-               #t))))))))
+                  (string-append "exit (77);\n" all)))))))))))
 
 (define-deprecated hwloc-2.0 hwloc-2)
 
