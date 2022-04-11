@@ -17,6 +17,7 @@
 ;;; Copyright © 2021 Hui Lu <luhuins@163.com>
 ;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2022 Justin Veilleux <terramorpha@cock.li>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -186,6 +187,12 @@
             guix-configuration-generate-substitute-key?
             guix-configuration-extra-options
             guix-configuration-log-file
+
+            guix-extension
+            guix-extension?
+            guix-extension-authorized-keys
+            guix-extension-substitute-urls
+            guix-extension-chroot-directories
 
             guix-service-type
             guix-publish-configuration
@@ -1768,6 +1775,25 @@ proxy of 'guix-daemon'...~%")
               (substitute-key-authorization authorized-keys guix)
               #~#f))))
 
+(define-record-type* <guix-extension>
+  guix-extension make-guix-extension
+  guix-extension?
+  (authorized-keys guix-extension-authorized-keys ;list of file-like
+                    (default '()))
+  (substitute-urls guix-extension-substitute-urls ;list of strings
+                    (default '()))
+  (chroot-directories guix-extension-chroot-directories ;list of file-like/strings
+                      (default '())))
+
+(define (guix-extension-merge a b)
+  (guix-extension
+   (authorized-keys (append (guix-extension-authorized-keys a)
+                            (guix-extension-authorized-keys b)))
+   (substitute-urls (append (guix-extension-substitute-urls a)
+                            (guix-extension-substitute-urls b)))
+   (chroot-directories (append (guix-extension-chroot-directories a)
+                               (guix-extension-chroot-directories b)))))
+
 (define guix-service-type
   (service-type
    (name 'guix)
@@ -1778,14 +1804,19 @@ proxy of 'guix-daemon'...~%")
           (service-extension profile-service-type
                              (compose list guix-configuration-guix))))
 
-   ;; Extensions can specify extra directories to add to the build chroot.
-   (compose concatenate)
-   (extend (lambda (config directories)
+   ;; Extensions can specify extra directories to add to the build chroot,
+   ;; extra substitute urls and extra authorized keys
+   (compose (lambda (args) (fold guix-extension-merge (guix-extension) args)))
+   (extend (lambda (config extension)
              (guix-configuration
               (inherit config)
+              (authorized-keys (append (guix-extension-authorized-keys extension)
+                                       (guix-configuration-authorized-keys config)))
+              (substitute-urls (append (guix-extension-substitute-urls extension)
+                                       (guix-configuration-substitute-urls config)))
               (chroot-directories
-               (append (guix-configuration-chroot-directories config)
-                       directories)))))
+               (append (guix-extension-chroot-directories extension)
+                       (guix-configuration-chroot-directories config))))))
 
    (default-value (guix-configuration))
    (description
@@ -1801,7 +1832,7 @@ proxy of 'guix-daemon'...~%")
            (default 80))
   (host    guix-publish-configuration-host        ;string
            (default "localhost"))
-  (advertise? guix-publish-advertise?       ;boolean
+  (advertise? guix-publish-advertise?             ;boolean
               (default #f))
   (compression       guix-publish-configuration-compression
                      (thunked)
