@@ -13301,11 +13301,11 @@ automatically discovered and presented in recency order.")
       (license license:gpl3+))))
 
 (define-public emacs-message-view-patch
-  (let ((commit "522da46c1653b1cacc79cde91d6534da7ae9517d")
-        (revision "1"))
+  (let ((commit "40bc2e554fc1d0b6f0c403192c0a3ceaa019a78d")
+        (revision "2"))
     (package
       (name "emacs-message-view-patch")
-      (version (git-version "0.1.0" revision commit))
+      (version (git-version "0.2.0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -13314,8 +13314,9 @@ automatically discovered and presented in recency order.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "10lzf3b70pk6rzdrgx0ww0gc94v0ydh9zj1gbsa20xw27ds7hmfn"))))
+                  "0cmkiggrl42sjx31dwnzac32bs3q2ksmamkq1pjjl8fwshp4g8sv"))))
       (build-system emacs-build-system)
+      (inputs (list emacs-magit))
       (home-page "https://github.com/seanfarley/mu4e-patch")
       (synopsis "Colorize patch-like emails in mu4e or gnus")
       (description
