@@ -3771,14 +3771,14 @@ bindings that call a C++ function.")
 (define-public r-auc
   (package
     (name "r-auc")
-    (version "0.3.0")
+    (version "0.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "AUC" version))
        (sha256
         (base32
-         "0ripcib2qz0m7rgr1kiz68nx8f6p408l1ww7j78ljqik7p3g41g7"))))
+         "07xf47kypqbsg2mixmq6mnh4s89aqan9bgl6kfv6lbx8ajv2asw3"))))
     (properties `((upstream-name . "AUC")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/AUC")
