@@ -23035,14 +23035,14 @@ communities\" by MS Johnson (1926) @url{doi:10.2307/1373575}.")
 (define-public r-expint
   (package
     (name "r-expint")
-    (version "0.1-6")
+    (version "0.1-7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "expint" version))
        (sha256
         (base32
-         "0iai25cglcdnf44d2d1fz1xpw4q600my4zq4493fk4cs5673mlf7"))))
+         "01d0a7pc4qx7044a0cymnv5ld88r90vdvlqjbnzg9qlfbizdgyvw"))))
     (properties `((upstream-name . "expint")))
     (build-system r-build-system)
     (home-page "https://gitlab.com/vigou3/expint")
