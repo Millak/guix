@@ -134,7 +134,7 @@ return the <live-service> objects that are currently running on MACHINE."
                  (map (lambda (service)
                         (list (live-service-provision service)
                               (live-service-requirement service)
-                              (live-service-transient service)
+                              (live-service-transient? service)
                               (match (live-service-running service)
                                 (#f #f)
                                 (#t #t)
