@@ -24426,26 +24426,32 @@ project.")
 (define-public python-trio
   (package
     (name "python-trio")
-    (version "0.19.0")
+    (version "0.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trio" version))
        (sha256
-        (base32 "1qgg4zhca81dxc1nlmcr5pl1bclmvdp3niqbyslwxs65bs732pl9"))))
+        (base32 "0w30cwmdwfa8zq2agqv3h62jzwwsk7ms8f683ag8f3jx279m42k7"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'patch-sleep
+           (lambda _
+             (substitute* "trio/tests/test_subprocess.py"
+               (("/bin/sleep")
+                (which "sleep")))))
          (add-before 'check 'change-home
            (lambda _
              ;; Tests require a writable home.
-             (setenv "HOME" "/tmp")
-             #t))
+             (setenv "HOME" "/tmp")))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "pytest" "-vv" "-k"
+               (invoke "pytest" "-vv"
+                       "-n" (number->string (parallel-job-count))
+                       "-k"
                        (string-append
                          ;; This test times out.
                          "not test_ki_protection_works"
@@ -24454,7 +24460,10 @@ project.")
                          " and not test_run_in_trio_thread_ki"
                          " and not test_simple_cancel_scope_usage_doesnt_create_cyclic_garbage"
                          " and not test_nursery_cancel_doesnt_create_cyclic_garbage"
+                         " and not test_cancel_scope_exit_doesnt_create_cyclic_garbage"
                          " and not test_locals_destroyed_promptly_on_cancel"
+                         " and not test_ipython_exc_handler"
+                         " and not test_for_leaking_fds"
                          ;; These try to raise KeyboardInterrupt which does not work
                          ;; in the build environment.
                          " and not test_ki_self"
@@ -24463,7 +24472,9 @@ project.")
                          " and not test_getnameinfo"
                          " and not test_SocketType_resolve"
                          ;; OSError: protocol not found.
-                         " and not test_getprotobyname"))))))))
+                         " and not test_getprotobyname"
+                         ;; EOFError: Ran out of input.
+                         " and not test_static_tool_sees_all_symbols"))))))))
     (native-inputs
      (list python-astor
            python-ipython
@@ -24471,6 +24482,7 @@ project.")
            python-pylint
            python-pyopenssl
            python-pytest
+           python-pytest-xdist
            python-pytest-cov
            python-trustme))
     (propagated-inputs
