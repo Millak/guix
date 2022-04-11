@@ -1104,13 +1104,13 @@ prototype-based, rather than class-based object oriented ideas.")
 (define-public r-rcolorbrewer
   (package
     (name "r-rcolorbrewer")
-    (version "1.1-2")
+    (version "1.1-3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RColorBrewer" version))
        (sha256
-        (base32 "1pfcl8z1pnsssfaaz9dvdckyfnnc6rcq56dhislbf571hhg7isgk"))))
+        (base32 "1h0s0f4vvlk40cagp3qwhd0layzkjcnqkiwjyhwqns257i1gahjg"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/RColorBrewer")
     (synopsis "ColorBrewer palettes")
