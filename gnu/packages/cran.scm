@@ -28071,19 +28071,18 @@ more.")
 (define-public r-workflows
   (package
     (name "r-workflows")
-    (version "0.2.4")
+    (version "0.2.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "workflows" version))
        (sha256
         (base32
-         "1sxrgza922p137z41jcj2iwk19lxzwh6kp4kz7h9kw0b8rvfqwab"))))
+         "0xhc1j25fjipw8hvcpdbvfm640kp0flwvifj5f7g4n6b3wb8cm6a"))))
     (properties `((upstream-name . "workflows")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
-           r-ellipsis
            r-generics
            r-glue
            r-hardhat
