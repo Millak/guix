@@ -25015,14 +25015,14 @@ translated to input syntax for the R packages @code{sem} and @code{lavaan}.")
 (define-public r-cdm
   (package
     (name "r-cdm")
-    (version "7.5-15")
+    (version "7.6-11")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "CDM" version))
        (sha256
         (base32
-         "159ny2dz0rf1r3k1mqlfwambffc8rx425sggf5bn51nybpzanq3l"))))
+         "0k3arkzz7nzswjcsr7fdmpfs94ilg8l265dyn49555fw3673cgqj"))))
     (properties `((upstream-name . "CDM")))
     (build-system r-build-system)
     (propagated-inputs
