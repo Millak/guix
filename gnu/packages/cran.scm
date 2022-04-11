@@ -19973,17 +19973,17 @@ easily.")
 (define-public r-umap
   (package
     (name "r-umap")
-    (version "0.2.7.0")
+    (version "0.2.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "umap" version))
        (sha256
         (base32
-         "191vpy84s0bar06y9z1qx43x2kc4qp7lmrcmd0cvz2pnzq722jab"))))
+         "0aiarnzc8gl932gi8fxd9f9rshaiwh9vj570l135fkiaja3q2wap"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-openssl r-rcpp r-reticulate r-rspectra))
+     (list r-matrix r-openssl r-rcpp r-reticulate r-rspectra))
     (native-inputs
      (list r-knitr))
     (home-page "https://github.com/tkonopka/umap")
