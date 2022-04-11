@@ -6991,13 +6991,13 @@ is used to allow menus, dialogs, and the response to mouse actions to be
 (define-public r-rlrsim
   (package
     (name "r-rlrsim")
-    (version "3.1-6")
+    (version "3.1-8")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "RLRsim" version))
         (sha256
-          (base32 "1wkkibr250frsbfq70m9jdrylxb492zibf5w03z6zis98pjffssp"))))
+          (base32 "06i4slc7fj8xifq20i1vqfadfw2p81b0kfzga60139hnryz1zpva"))))
     (properties `((upstream-name . "RLRsim")))
     (build-system r-build-system)
     (propagated-inputs (list r-lme4 r-mgcv r-nlme r-rcpp))
