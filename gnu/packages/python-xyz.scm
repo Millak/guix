@@ -5451,58 +5451,27 @@ matching of file paths.")
 (define-public python-black
   (package
     (name "python-black")
-    (version "21.12b0")
+    (version "22.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "black" version))
        (sha256
         (base32
-         "1czjwr1bx9ax5l64xfi54sxb1ycdy4s9ciaqg592x7jn79lhzf3p"))))
+         "0yfahlqc7dsdp1js0cbv706apldnfnlbal9b53cww8n0hs40n0im"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         ;; XXX Remove this when updating this package:
-         ;; https://github.com/psf/black/issues/2703#issuecomment-1004752142
-         (add-after 'unpack 'relax-version-requirements
-           (lambda _
-             (substitute* "setup.py"
-               (("tomli[^\"]*\",")
-                "tomli\","))))
          (add-after 'patch-source-shebangs 'use-absolute-file-names
            (lambda* (#:key native-inputs inputs #:allow-other-keys)
              (let* ((inpts (or native-inputs inputs))
-                    (python3 (search-input-file inpts "/bin/python3"))
-                    (/bin/false (search-input-file inpts "/bin/false"))
-                    (/bin/sleep (search-input-file inpts "/bin/sleep")))
+                    (python3 (search-input-file inpts "/bin/python3")))
                (substitute* (find-files "tests" "\\.py$")
                  (("#!/usr/bin/env python3(\\.[0-9]+)?" _ minor-version)
                   (string-append "#!" python3 (if (string? minor-version)
                                                   minor-version
-                                                  ""))))
-               (substitute* "tests/test_primer.py"
-                 (("/bin/false") /bin/false)
-                 (("/bin/sleep") /bin/sleep)))))
-         (add-after 'unpack 'disable-broken-tests
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             ;; Make installed package available for running the tests
-             (setenv "PATH" (string-append (assoc-ref outputs "out") "/bin"
-                                           ":" (getenv "PATH")))
-
-             ;; The source formatting test fails because we patch various
-             ;; files; just disable it.
-             (substitute* "tests/test_format.py"
-               (("def test_source_is_formatted" all)
-                (format #f "@pytest.mark.skip(\"Disabled by Guix.\")\n~a"
-                        all)))))
-         ;; Remove blackd, because it depends on python-aiohttp and
-         ;; python-aiohttp-cors.
-         (add-after 'unpack 'remove-entrypoint
-           (lambda _
-             (substitute* "setup.py"
-               (("\\s*\"blackd=blackd:patched_main \\[d\\]\",\n") "")
-               (("\"blackd\", ") ""))))
+                                                  "")))))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests? (invoke "pytest" "-vv")))))))
