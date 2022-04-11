@@ -2532,9 +2532,10 @@ statements in the module it tests.")
                (delete-file "tests/primer/test_primer_external.py")
                (delete-file "tests/testutils/test_package_to_lint.py")
                (setenv "HOME" "/tmp")
-               (invoke "pytest" "-k" "test_functional")))))))
+               (invoke "pytest" "-k" "test_functional"
+                       "-n" (number->string (parallel-job-count)))))))))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-pytest-xdist))
     (propagated-inputs
      (list python-astroid
            python-isort
