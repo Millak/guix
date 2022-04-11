@@ -9265,15 +9265,16 @@ contrasts).")
 (define-public r-polynom
   (package
     (name "r-polynom")
-    (version "1.4-0")
+    (version "1.4-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "polynom" version))
        (sha256
         (base32
-         "1pflscwc0qzdf0y60j7s0dkglgmz18xajywfbn6s263idyr8idy5"))))
+         "0y4j07syjwpnq5w6a1d90z6h1hjzijmm42pq0f8jk2vcn5xxn7mw"))))
     (build-system r-build-system)
+    (native-inputs (list r-knitr))
     (home-page "https://cran.r-project.org/web/packages/polynom/")
     (synopsis "Functions for univariate polynomial manipulations")
     (description
