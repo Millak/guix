@@ -2259,14 +2259,14 @@ jQuery.")
 (define-public r-sass
   (package
     (name "r-sass")
-    (version "0.4.0")
+    (version "0.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sass" version))
        (sha256
         (base32
-         "0axw358bbk3vxsqg3wq0bz3xigasa6af8fxvi2ga8hli4cawl1kx"))))
+         "1fq8wqnxmx10lg0dh4qzmxdkhd22fjh8vhassapxb1chsimwn3w5"))))
     (properties `((upstream-name . "sass")))
     (build-system r-build-system)
     (propagated-inputs
