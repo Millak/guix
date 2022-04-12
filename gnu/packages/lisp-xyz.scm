@@ -5172,21 +5172,21 @@ port within a range.")
       (native-inputs
        (list sbcl-clunit))
       (inputs
-       (list sbcl-trivial-garbage))
+       (list python sbcl-trivial-garbage))
       (propagated-inputs
-       ;; This package doesn't do anything without python available
-       (list python
-             ;; For multi-dimensional array support
+       (list ;; For multi-dimensional array support
              python-numpy))
       (arguments
        '(#:phases
          (modify-phases %standard-phases
            (add-after 'unpack 'fix-python3-path
-             (lambda _
+             (lambda* (#:key inputs #:allow-other-keys)
                (substitute* "src/callpython.lisp"
                  (("\\*python-command\\* \"python\"")
                   (string-append "*python-command* "
-                                 "\"" (which "python3") "\"")))))
+                                 "\""
+                                 (search-input-file inputs "/bin/python3")
+                                 "\"")))))
            (add-after 'unpack 'replace-*base-directory*-var
              (lambda* (#:key outputs #:allow-other-keys)
                ;; In the ASD, the author makes an attempt to
