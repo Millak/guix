@@ -1937,17 +1937,17 @@ interfaces.")
 (define-public nomad-optimizer
   (package
     (name "nomad-optimizer")
-    (version "4.1.0")
+    (version "4.2.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/bbopt/nomad/")
-             (commit (string-append "v" version))))
+             (commit (string-append "v." version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0w386d8r5ldbvnv0c0g7vz95pfpvwdxis26vaalk2amsa5akl775"))))
+         "1r4ygy3xn83dnppsw1451ynklsxpb238g5gk57inn84ghmdk08mj"))))
     (build-system cmake-build-system)
     (native-inputs
      (list python-wrapper python-cython))
@@ -1959,7 +1959,8 @@ interfaces.")
                   (guix build cmake-build-system)
                   (guix build utils))
        #:configure-flags
-       '("-DBUILD_INTERFACES=ON"
+       '("-DBUILD_INTERFACE_C=ON"
+         "-DBUILD_INTERFACE_PYTHON=ON"
          "-DBUILD_TESTS=ON")
        #:phases
        (modify-phases %standard-phases
@@ -1993,8 +1994,11 @@ interfaces.")
                (substitute* "interfaces/PyNomad/setup_PyNomad.py"
                  (("^( +os_include_dirs = ).*" _ prefix)
                   (string-append prefix "[\"../../src\"]\n"))
-                 (("^(installed_lib_dir = ).*" _ prefix)
-                  (string-append prefix "\"" out "/lib\"\n"))))))
+                 (("^(installed_lib_dir1 = ).*" _ prefix)
+                  (string-append prefix "\"" out "/lib\"\n"))
+                 (("^installed_lib_dir2 = .*") "")
+                 (("^ +link_args\\.append\\(\"-Wl,-rpath,\" \\+ installed_lib_dir2\\)\n")
+                  "")))))
 
          ;; Fix the tests so they run in out-of-source builds.
          (add-after 'fix-sources-for-build 'fix-sources-for-tests
