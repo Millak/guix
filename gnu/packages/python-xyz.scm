@@ -8782,47 +8782,41 @@ away.")
 (define-public python2-ipython-genutils
   (package-with-python2 python-ipython-genutils))
 
-(define-public python-ipyparallel
-  (package
-    (name "python-ipyparallel")
-    (version "6.2.4")
-    (source
+;;; Variant used to break a cycle with python-ipykernel.
+(define-public python-ipyparallel-bootstrap
+  (hidden-package
+   (package
+     (name "python-ipyparallel-bootstrap")
+     (version "6.2.4")
+     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "ipyparallel" version))
         (sha256
          (base32
           "0rf0dbpxf5z82bw8lsjj45r3wdd4wc74anz4wiiaf2rbjqlb1ivn"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f ; RuntimeError: IO Loop failed to start
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'prepare-for-tests
-           (lambda _
-             (setenv "HOME" (getcwd))
-             #t)))))
-    (propagated-inputs
-     (list python-dateutil
-           python-decorator
-           python-ipykernel
-           python-ipython
-           python-ipython-genutils
-           python-jupyter-client
-           python-pyzmq
-           python-tornado
-           python-traitlets))
-    (native-inputs
-     (list python-ipython
-           python-mock
-           python-nose
-           python-pytest
-           python-pytest-cov
-           python-testpath))
-    (home-page "https://ipython.org/")
-    (synopsis "Interactive Parallel Computing with IPython")
-    (description
-     "@code{ipyparallel} is a Python package and collection of CLI scripts for
+     (build-system python-build-system)
+     (arguments
+      (list
+       #:tests? #f
+       #:phases #~(modify-phases %standard-phases
+                    ;; The python-ipykernel is normally propagated but is
+                    ;; removed from this package to break the cycle.
+                    (delete 'sanity-check))))
+     (propagated-inputs
+      (list python-dateutil
+            python-decorator
+            ;; python-ipykernel is omitted here to avoid a cycle.
+            python-ipython
+            python-ipython-genutils
+            python-jupyter-client-bootstrap
+            python-pyzmq
+            python-tornado
+            python-traitlets))
+     (home-page "https://ipython.org/")
+     (synopsis "Interactive Parallel Computing with IPython")
+     (description
+      "@code{ipyparallel} is a Python package and collection of CLI scripts for
 controlling clusters for Jupyter.  @code{ipyparallel} contains the following
 CLI scripts:
 @enumerate
@@ -8830,7 +8824,26 @@ CLI scripts:
 @item ipcontroller - start a scheduler
 @item ipengine - start an engine
 @end enumerate")
-    (license license:bsd-3)))
+     (license license:bsd-3))))
+
+(define-public python-ipyparallel
+  (package
+    (inherit python-ipyparallel-bootstrap)
+    (name "python-ipyparallel")
+    (arguments (list #:tests? #t))
+    (native-inputs
+     (list python-ipython
+           python-mock
+           python-nose
+           python-pytest
+           python-pytest-cov
+           python-testpath))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs python-ipyparallel-bootstrap)
+       (replace "python-jupyter-client-bootstrap" python-jupyter-client)
+       (append python-ipykernel)))
+    (properties (alist-delete 'hidden? (package-properties
+                                        python-ipyparallel-bootstrap)))))
 
 (define-public python-ipython-cluster-helper
   (package
@@ -9119,10 +9132,16 @@ installing @code{kernelspec}s for use with Jupyter frontends.")
       (package
         (inherit parent)
         (name "python-ipykernel-bootstrap")
+        (arguments (list #:tests? #f
+                         ;; The package should normally propagate ipykernel,
+                         ;; left out here to break the cycle.
+                         #:phases #~(modify-phases %standard-phases
+                                      (delete 'sanity-check))))
+        (native-inputs '())
         (propagated-inputs
-          `(("python-jupyter-client" ,python-jupyter-client-bootstrap)
-            ,@(fold alist-delete (package-propagated-inputs parent)
-                    '("python-jupyter-client"))))))))
+         (modify-inputs (package-propagated-inputs parent)
+           (replace "python-jupyter-client" python-jupyter-client-bootstrap)
+           (append python-ipyparallel-bootstrap)))))))
 
 (define-public python-pari-jupyter
   (package
