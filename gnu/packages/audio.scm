@@ -110,6 +110,7 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages rdf)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages samba)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
@@ -4632,10 +4633,18 @@ representations.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1mziklmqifhnb4kg9ia2r56r8wjn6xp40bkpf484hsgqvnrccl86"))))
+                "1mziklmqifhnb4kg9ia2r56r8wjn6xp40bkpf484hsgqvnrccl86"))
+              (modules '((guix build utils)))
+              (snippet
+               #~(begin
+                   (delete-file-recursively "iniparser")
+                   (substitute* "configure.ac"
+                     (("AC_CONFIG_FILES\\(iniparser/Makefile\\)") ""))
+                   (substitute* "Makefile.am"
+                     (("SUBDIRS = iniparser") ""))))))
     (build-system gnu-build-system)
     (native-inputs (list autoconf automake libtool))
-    (inputs (list fftw ncurses pulseaudio))
+    (inputs (list fftw ncurses pulseaudio iniparser))
     (arguments
      (list #:configure-flags
            #~(list (string-append "PREFIX="
@@ -4644,7 +4653,7 @@ representations.")
                                   #$output "/share/consolefonts"))
            #:make-flags
            #~(let ((lib (string-append #$output "/lib")))
-               (list (string-append "cava_LDFLAGS = -L" lib " -Wl,-rpath " lib)))
+               (list (string-append "cava_LDFLAGS = -L" lib " -Wl,-rpath " lib " -lrt")))
            #:phases
            #~(modify-phases %standard-phases
                (replace 'bootstrap
