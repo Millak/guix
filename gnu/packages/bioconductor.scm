@@ -9677,6 +9677,18 @@ Gaussian distributions.")
          "0ardmryx6ac7v6n900a1klrrldvbmh7bxvy8ldz8rwid19h29ikr"))))
     (properties `((upstream-name . "Rbowtie")))
     (build-system r-build-system)
+    (arguments
+     `(#:phases
+       ;; Disable unsupported `popcnt' instructions on
+       ;; architectures other than x86_64
+       ,(if (string-prefix? "x86_64"
+                            (or (%current-target-system)
+                                (%current-system)))
+            '%standard-phases
+            '(modify-phases %standard-phases
+               (add-after 'unpack 'patch-sources
+                 (lambda _
+                   (setenv "POPCNT_CAPABILITY" "0")))))))
     (inputs (list zlib))
     (native-inputs
      (list r-knitr))
