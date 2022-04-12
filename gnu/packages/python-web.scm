@@ -2889,7 +2889,7 @@ supports url redirection and retries, and also gzip and deflate decoding.")
                 (string-append "cmdline = ['" (which "groff") "'"))))))))
     (propagated-inputs
      (list python-colorama-for-awscli
-           python-botocore
+           python-botocore-for-awscli
            python-s3transfer
            python-docutils-0.15
            python-pyyaml-for-awscli
