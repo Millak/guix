@@ -1491,7 +1491,7 @@ timeout has been exceeded.")
 (define-public python-pytest-forked
   (package
     (name "python-pytest-forked")
-    (version "1.3.0")
+    (version "1.4.0")
     (source
      (origin
        (method git-fetch)               ;for tests
@@ -1501,29 +1501,24 @@ timeout has been exceeded.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1aip4kx50ynvykl7kq2mlbsi82vx701dvb8mm64lhp69bbv105rc"))))
+         "0j9bbjny7h3b4fig6l26f26c697r67mm62fzdd9m9rqyy2bmnqjs"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'disable-setuptools-scm
+         (add-before 'build 'pretend-version
            (lambda _
-             (substitute* "setup.py"
-               (("use_scm_version=True")
-                (format #f "version=~s" ,version))
-               (("setup_requires=\\['setuptools_scm'\\],.*")
-                ""))))
+             (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" ,version)))
          (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+           (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (add-installed-pythonpath inputs outputs)
                (invoke "pytest" "-vv")))))))
     (native-inputs
      ;; XXX: The bootstrap variant of Pytest is used to ensure the
      ;; 'hypothesis' plugin is not in the environment (due to
      ;; <http://issues.guix.gnu.org/25235>), which would cause the test suite
      ;; to fail (see: https://github.com/pytest-dev/pytest-forked/issues/54).
-     `(("python-pytest" ,python-pytest-bootstrap)))
+     (list python-pytest-bootstrap python-setuptools-scm))
     (home-page "https://github.com/pytest-dev/pytest-forked")
     (synopsis "Pytest plugin to run tests in isolated forked subprocesses")
     (description "This package provides a Pytest plugin which enables running
