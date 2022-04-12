@@ -3941,6 +3941,18 @@ provides Python-specific tags that represent an arbitrary Python object.")
           (base32
            "0pm440pmpvgv5rbbnm8hk4qga5a292kvlm1bh3x2nwr8pb5p8xv0")))))))
 
+(define-public python-pyyaml-for-awscli
+  (package
+    (inherit python-pyyaml)
+    (version "5.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "PyYAML" version))
+       (sha256
+        (base32
+         "0pm440pmpvgv5rbbnm8hk4qga5a292kvlm1bh3x2nwr8pb5p8xv0"))))))
+
 (define-public python-vine
   (package
     (name "python-vine")
