@@ -1064,7 +1064,7 @@ parsers according to a Parsing Expression Grammar (PEG).")
 (define-public cxxopts
   (package
     (name "cxxopts")
-    (version "2.2.1")
+    (version "3.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1073,7 +1073,7 @@ parsers according to a Parsing Expression Grammar (PEG).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0d3y747lsh1wkalc39nxd088rbypxigm991lk3j91zpn56whrpha"))))
+                "08x7j168l1xwj0r3rv89cgghmfhsx98lpq35r3vkh504m1pd55a6"))))
     (build-system cmake-build-system)
     (synopsis "Lightweight C++ command line option parser")
     (description
