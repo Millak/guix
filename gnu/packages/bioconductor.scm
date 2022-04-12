@@ -1102,6 +1102,32 @@ datasets which are derived from the Allen Brain Atlas:
 All datasets are restricted to protein coding genes.")
     (license license:gpl2+)))
 
+(define-public r-abarray
+  (package
+    (name "r-abarray")
+    (version "1.62.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "ABarray" version))
+              (sha256
+               (base32
+                "0yh7jmkwdg3kmm98ii0cxbla3s5bwy84fpg6xcpggsrriwzwfb5k"))))
+    (properties `((upstream-name . "ABarray")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biobase r-multtest))
+    (home-page "https://bioconductor.org/packages/ABarray")
+    (synopsis
+     "Gene expression analysis for Applied Biosystems Genome Survey Microarray")
+    (description
+     "The package @code{ABarray} is designed to work with Applied Biosystems
+whole genome microarray platform, as well as any other platform whose data can
+be transformed into expression data matrix.  Functions include data
+preprocessing, filtering, control probe analysis, statistical analysis in one
+single function.  A @dfn{graphical user interface} (GUI) is also provided.  The
+raw data, processed data, graphics output and statistical results are organized
+into folders according to the analysis settings used.")
+    (license license:gpl2+)))
+
 (define-public r-aneufinderdata
   (package
    (name "r-aneufinderdata")
