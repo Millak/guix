@@ -93,17 +93,21 @@ as shepherd package."
          (services (home-shepherd-configuration-services config)))
     (if (home-shepherd-configuration-auto-start? config)
         (with-imported-modules '((guix build utils))
-          #~(let ((log-dir (or (getenv "XDG_LOG_HOME")
-                               (format #f "~a/.local/var/log" (getenv "HOME")))))
-              ((@ (guix build utils) mkdir-p) log-dir)
-              (system*
-               #$(file-append shepherd "/bin/shepherd")
-               "--logfile"
-               (string-append
-                log-dir
-                "/shepherd.log")
-               "--config"
-               #$(home-shepherd-configuration-file services shepherd))))
+          #~(unless (file-exists?
+                     (string-append
+                      (or (getenv "XDG_RUNTIME_DIR")
+                          (format #f "/run/user/~a" (getuid)))
+                      "/shepherd/socket"))
+              (let ((log-dir (or (getenv "XDG_LOG_HOME")
+                                 (format #f "~a/.local/var/log"
+                                         (getenv "HOME")))))
+                ((@ (guix build utils) mkdir-p) log-dir)
+                (system*
+                 #$(file-append shepherd "/bin/shepherd")
+                 "--logfile"
+                 (string-append log-dir "/shepherd.log")
+                 "--config"
+                 #$(home-shepherd-configuration-file services shepherd)))))
         #~"")))
 
 (define (reload-configuration-gexp config)
