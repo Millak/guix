@@ -5181,6 +5181,12 @@ port within a range.")
       (arguments
        '(#:phases
          (modify-phases %standard-phases
+           (add-after 'unpack 'fix-python3-path
+             (lambda _
+               (substitute* "src/callpython.lisp"
+                 (("\\*python-command\\* \"python\"")
+                  (string-append "*python-command* "
+                                 "\"" (which "python3") "\"")))))
            (add-after 'unpack 'replace-*base-directory*-var
              (lambda* (#:key outputs #:allow-other-keys)
                ;; In the ASD, the author makes an attempt to
