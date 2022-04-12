@@ -2892,7 +2892,7 @@ supports url redirection and retries, and also gzip and deflate decoding.")
            python-botocore
            python-s3transfer
            python-docutils-0.15
-           python-pyyaml
+           python-pyyaml-for-awscli
            python-rsa))
     (native-inputs
      (list groff))
