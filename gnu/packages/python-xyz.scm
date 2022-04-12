@@ -27874,14 +27874,14 @@ a text editor and easily understood and used by both programmers and non-program
 (define-public python-nest-asyncio
   (package
     (name "python-nest-asyncio")
-    (version "1.5.1")
+    (version "1.5.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "nest_asyncio" version))
        (sha256
         (base32
-         "1anha29fcijminn5bh2icnx8x7nk39lna9wkc72262i12p2s3idg"))))
+         "0rbdw7lry66yj13hh4w63yzflnapdal1ffl237k8nsa2v4f2jhp4"))))
     (build-system python-build-system)
     (home-page "https://github.com/erdewit/nest_asyncio")
     (synopsis "Patch asyncio to allow nested event loops")
