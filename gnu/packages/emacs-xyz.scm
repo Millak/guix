@@ -16821,7 +16821,7 @@ from @code{groovy-mode} for editing Jenkins declarative pipeline files.")
 (define-public emacs-scratch-el
   (package
     (name "emacs-scratch-el")
-    (version "1.3")
+    (version "1.4")
     (source
      (origin
        (method git-fetch)
@@ -16830,7 +16830,7 @@ from @code{groovy-mode} for editing Jenkins declarative pipeline files.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0yiwq2gc4gdgfhaagpawhb7yrzc4fsnyb10w5d0q4whv64cj8555"))))
+        (base32 "174d8ancnkgb7q62196kd6nrfib6rnwxw4visgbk1c6yd1w8kray"))))
     (build-system emacs-build-system)
     (native-inputs
      (list texinfo))
