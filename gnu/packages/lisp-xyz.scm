@@ -32,6 +32,7 @@
 ;;; Copyright © 2021 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2021 Jacob MacDonald <jaccarmac@gmail.com>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
+;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5192,7 +5193,9 @@ port within a range.")
                   (string-append
                    "\""
                    (assoc-ref outputs "out")
-                   "/share/common-lisp/sbcl-source/py4cl/"
+                   "/share/common-lisp/"
+                   (%lisp-type)
+                   "/py4cl/"
                    "\""))))))))
       (synopsis "Call python from Common Lisp")
       (description
