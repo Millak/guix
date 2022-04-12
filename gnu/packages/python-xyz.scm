@@ -9020,69 +9020,75 @@ without using the configuration machinery.")
      "Jupyter core is the base package on which Jupyter projects rely.")
     (license license:bsd-3)))
 
-(define-public python-jupyter-client
-  (package
-    (name "python-jupyter-client")
-    (version "6.1.12")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "jupyter_client" version))
-       (sha256
-        (base32
-         "10p7fcgvv9hvz9zical9wk68ks5ssak2ykbzx65wm1k1hk8a3g64"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'set-tool-file-names
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((iproute (assoc-ref inputs "iproute")))
-               (substitute* "jupyter_client/localinterfaces.py"
-                 (("'ip'")
-                  (string-append "'" iproute "/sbin/ip'")))
-               #t)))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; Some tests try to write to $HOME.
-               (setenv "HOME" "/tmp")
-               (invoke "pytest" "-vv")))))))
-    (inputs
-     `(("iproute" ,iproute)))
-    (propagated-inputs
-     (list python-dateutil python-jupyter-core python-pyzmq
-           python-tornado-6 python-traitlets))
-    (native-inputs
-     `(("python-pytest" ,python-pytest)
-       ("python-pytest-timeout" ,python-pytest-timeout)
-       ("python-async-generator" ,python-async-generator)
-       ("python-mock" ,python-mock)
-       ("python-msgpack" ,python-msgpack)
-       ("python-ipython" ,python-ipython)
-       ("python-ipykernel" ,python-ipykernel-bootstrap)))
-    (home-page "https://jupyter.org/")
-    (synopsis "Jupyter protocol implementation and client libraries")
-    (description
-     "The @code{jupyter_client} package contains the reference implementation
-of the Jupyter protocol.  It also provides client and kernel management APIs
-for working with kernels, and the @code{jupyter kernelspec} entrypoint for
-installing @code{kernelspec}s for use with Jupyter frontends.")
-    (license license:bsd-3)))
-
 ;; Bootstrap variant of jupyter-client, which breaks the loop between ipykernel
 ;; and jupyter-client by removing the former from its native-inputs and
 ;; disabling tests.
 (define-public python-jupyter-client-bootstrap
-  (let ((base python-jupyter-client))
-    (hidden-package
-      (package
-        (inherit base)
-        (name "python-jupyter-client-bootstrap")
-        (arguments
-          `(#:tests? #f
-            ,@(package-arguments base)))
-        (native-inputs `())))))
+  (hidden-package
+   (package
+     (name "python-jupyter-client-bootstrap")
+     (version "7.2.2")
+     (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "jupyter_client" version))
+        (sha256
+         (base32
+          "12pbp177bfb3710y1a5598mwn8ffhyzmpll67m0nmalb98savnwg"))))
+     (build-system python-build-system)
+     (arguments
+      (list
+       #:tests? #f
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'set-tool-file-names
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "jupyter_client/localinterfaces.py"
+                 (("'ip'")
+                  (format #f "'~a'" (search-input-file inputs "sbin/ip")))))))))
+     (inputs (list iproute))
+     (propagated-inputs
+      (list python-dateutil
+            python-entrypoints
+            python-jupyter-core
+            python-nest-asyncio
+            python-pyzmq
+            python-tornado-6
+            python-traitlets))
+     (home-page "https://jupyter.org/")
+     (synopsis "Jupyter protocol implementation and client libraries")
+     (description
+      "The @code{jupyter_client} package contains the reference implementation
+of the Jupyter protocol.  It also provides client and kernel management APIs
+for working with kernels, and the @code{jupyter kernelspec} entrypoint for
+installing @code{kernelspec}s for use with Jupyter frontends.")
+     (license license:bsd-3))))
+
+(define-public python-jupyter-client
+  (let ((base python-jupyter-client-bootstrap))
+    (package
+      (inherit base)
+      (name "python-jupyter-client")
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:tests? _ #f)
+          #t)
+         ((#:phases phases #~%standard-phases)
+          #~(modify-phases #$phases
+              (replace 'check
+                (lambda* (#:key tests? #:allow-other-keys)
+                  (when tests?
+                    ;; Some tests try to write to $HOME.
+                    (setenv "HOME" "/tmp")
+                    (invoke "pytest" "-vv"))))))))
+      (native-inputs
+       (list python-pytest
+             python-pytest-asyncio
+             python-pytest-timeout
+             python-async-generator
+             python-ipython
+             python-ipykernel-bootstrap))
+      (properties (alist-delete 'hidden? (package-properties base))))))
 
 (define-public python-ipykernel
   (package
