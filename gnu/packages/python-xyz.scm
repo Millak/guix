@@ -14249,13 +14249,12 @@ text.")
 (define-public python-moto
   (package
     (name "python-moto")
-    (version "2.2.12")
+    (version "3.1.4")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "moto" version))
               (sha256
-               (base32
-                "0pvay0jp119lzzwf5qj5h6311271yq0w2i6344ds20grpf6g6gz8"))))
+               (base32 "0dfnad1f9d5ybabs69dzc7x357z1r4jbhrhgw57gyic1qnmcw864"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -14278,7 +14277,9 @@ text.")
                         ;; These tests require Docker.
                         " and not test_terminate_job"
                         " and not test_invoke_function_from_sqs_exception"
-                        " and not test_rotate_secret_lambda_invocations"
+                        " and not test_create_custom_lambda_resource__verify_cfnresponse_failed"
+                        " and not test_lambda_function"
+
                         ;; These tests also require the network.
                         " and not test_put_record_batch_http_destination"
                         " and not test_put_record_http_destination"
@@ -14289,30 +14290,28 @@ text.")
      (list python-flask
            python-flask-cors
            python-freezegun
-           python-parameterized
+           python-graphql-core
            python-pytest
            python-sure))
     (inputs
      (list bash-minimal))
     (propagated-inputs
      (list python-aws-xray-sdk
-           python-boto
            python-boto3
            python-botocore
            python-cfn-lint
            python-cryptography
            python-dateutil
            python-docker
-           python-idna
+           python-importlib-metadata
            python-jinja2
            python-jose
            python-jsondiff
-           python-mock
+           python-markupsafe
            python-pytz
            python-pyyaml
            python-requests
            python-responses
-           python-six
            python-sshpubkeys
            python-werkzeug
            python-xmltodict))
