@@ -1950,8 +1950,7 @@ interfaces.")
          "0w386d8r5ldbvnv0c0g7vz95pfpvwdxis26vaalk2amsa5akl775"))))
     (build-system cmake-build-system)
     (native-inputs
-     `(("python" ,python-wrapper)
-       ("python-cython" ,python-cython)))
+     (list python-wrapper python-cython))
     (arguments
      `(#:imported-modules ((guix build python-build-system)
                            ,@%cmake-build-system-modules)
