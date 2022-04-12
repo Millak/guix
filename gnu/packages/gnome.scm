@@ -70,6 +70,7 @@
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2022 Leo Nikkilä <hello@lnikki.la>
+;;; Copyright © 2022 Rene Saavedra <nanuui@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -11818,6 +11819,7 @@ these services on the Guix System.")
        ("libarchive" ,libarchive)
        ("libxml2" ,libxml2)
        ("pkg-config" ,pkg-config)
+       ("python" ,python-minimal)
        ("vala" ,vala)
        ("xvfb" ,xorg-server-for-tests)))
     (synopsis "GNOME email application built around conversations")
