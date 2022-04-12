@@ -391,9 +391,7 @@ size and quality.")
                                         " and not test_urls_cache_is_cleared")))
                (format #t "test suite not run~%")))))))
     (native-inputs
-     (list python-django python-setuptools-scm
-           ;; For tests.
-           python-pytest-xdist-next))
+     (list python-django python-setuptools-scm python-pytest-xdist))
     (propagated-inputs
      (list python-pytest))
     (home-page "https://pytest-django.readthedocs.org/")

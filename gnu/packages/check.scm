@@ -1390,44 +1390,27 @@ same arguments.")
 (define-public python-pytest-xdist
   (package
     (name "python-pytest-xdist")
-    (version "2.1.0")
+    (version "2.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-xdist" version))
        (sha256
         (base32
-         "0wh6pn66nncfs6ay0n863bgyriwsgppn8flx5l7551j1lbqkinc2"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; Remove pre-compiled .pyc files from source.
-           (for-each delete-file-recursively
-                     (find-files "." "__pycache__" #:directories? #t))
-           (for-each delete-file (find-files "." "\\.pyc$"))
-           #t))))
+         "1psf5dqxvc38qzxvc305mkg5xpdmdkbkkfiyqlmdnkgh7z5dx025"))))
     (build-system python-build-system)
     (arguments
-     '(#:tests? #f ; Lots of tests fail.
-       #:phases
+     '(#:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'patch-setup-py
-           (lambda _
-             ;; Relax pytest requirement.
-             (substitute* "setup.py"
-               (("pytest>=6\\.0\\.0") "pytest"))))
          (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+           (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (add-installed-pythonpath inputs outputs)
                (invoke "pytest" "-vv"
                        "-n" (number->string (parallel-job-count)))))))))
-    (native-inputs
-     (list python-setuptools-scm))
-    (propagated-inputs
-     (list python-execnet python-pytest python-py python-pytest-forked))
-    (home-page
-     "https://github.com/pytest-dev/pytest-xdist")
+    (native-inputs (list python-setuptools-scm))
+    (propagated-inputs (list python-execnet python-pytest python-py
+                             python-pytest-forked))
+    (home-page "https://github.com/pytest-dev/pytest-xdist")
     (synopsis
      "Plugin for py.test with distributed testing and loop-on-failing modes")
     (description
@@ -1438,25 +1421,6 @@ Python interpreters or platforms.  It uses rsync to copy the existing
 program code to a remote location, executes there, and then syncs the
 result back.")
     (license license:expat)))
-
-(define-public python2-pytest-xdist
-  (package-with-python2 python-pytest-xdist))
-
-(define-public python-pytest-xdist-next
-  (package/inherit python-pytest-xdist
-    (name "python-pytest-xdist")
-    (version "2.3.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-xdist" version))
-       (sha256
-        (base32
-         "19cy57jrf3pwi7x6fnbxryjvqagsl0yv736jnynvr3yqhlpxxv78"))))
-    (propagated-inputs
-     `(("python-execnet" ,python-execnet)
-       ("python-pytest" ,python-pytest-6)
-       ("python-pytest-forked" ,python-pytest-forked)))))
 
 (define-public python-pytest-timeout
   (package

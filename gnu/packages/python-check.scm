@@ -112,9 +112,9 @@ interfaces with pytest.")
                (add-installed-pythonpath inputs outputs)
                (invoke "pytest")))))))
     (native-inputs
-     (list python-pytest-flake8 python-pytest-xdist-next python-tabulate))
+     (list python-pytest-flake8 python-pytest-xdist python-tabulate))
     (propagated-inputs
-     (list python-pytest-6 python-six))
+     (list python-pytest python-six))
     (home-page "https://github.com/nicoulaj/pytest-csv")
     (synopsis "CSV reporter for Pytest")
     (description "This package provides a plugin for Pytest that enables a
