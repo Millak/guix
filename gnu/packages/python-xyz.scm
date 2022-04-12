@@ -16708,13 +16708,13 @@ library.  It can be used to act both as a TFTP client or TFTP server.")
 (define-public python-greenlet
   (package
     (name "python-greenlet")
-    (version "1.1.1")
+    (version "1.1.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "greenlet" version))
               (sha256
                (base32
-                "10gllbrcbazxck84nr7dw3js3gq0rxrsr4kkvy5hg542rms2gwn0"))))
+                "0jkln5bf6rq7dbvpv7ypin3pp9jqd2jr91yyxlnfcii3msj5w3z3"))))
     (build-system python-build-system)
     (home-page "https://greenlet.readthedocs.io/")
     (synopsis "Lightweight in-process concurrent programming")
