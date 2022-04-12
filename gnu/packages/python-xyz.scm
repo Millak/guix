@@ -14631,14 +14631,14 @@ This software is unmaintained, and new projects should use @code{boto3} instead.
   ;; are compatible.
   (package
     (name "python-botocore")
-    (version "1.22.11")
+    (version "1.24.35")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "botocore" version))
        (sha256
         (base32
-         "1z7g2scyzvfq4yj9b4w911k7802ry1v6lqfnwq12l0ak7ywmsvrh"))))
+         "0rv8mvhq5s373zdjs2yb45hzvqcqdh2lp2rbb21jjc8ciwnl5d9n"))))
     (build-system python-build-system)
     (arguments
      ;; FIXME: Many tests are failing.
