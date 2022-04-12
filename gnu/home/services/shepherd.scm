@@ -130,12 +130,21 @@ as shepherd package."
         #$(reload-configuration-gexp config)
         #$(launch-shepherd-gexp config)))
 
+(define (shepherd-xdg-configuration-files config)
+  (let* ((shepherd (home-shepherd-configuration-shepherd config))
+         (services (home-shepherd-configuration-services config)))
+    `(("shepherd/init.scm"
+       ,(home-shepherd-configuration-file services shepherd)))))
+
 (define-public home-shepherd-service-type
   (service-type (name 'home-shepherd)
                 (extensions
                  (list (service-extension
                         home-run-on-first-login-service-type
                         launch-shepherd-gexp)
+                       (service-extension
+                        home-xdg-configuration-files-service-type
+                        shepherd-xdg-configuration-files)
                        (service-extension
                         home-activation-service-type
                         ensure-shepherd-gexp)
