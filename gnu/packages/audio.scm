@@ -4634,35 +4634,34 @@ representations.")
                (base32
                 "1mziklmqifhnb4kg9ia2r56r8wjn6xp40bkpf484hsgqvnrccl86"))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list autoconf automake libtool))
-    (inputs
-     (list fftw ncurses pulseaudio))
+    (native-inputs (list autoconf automake libtool))
+    (inputs (list fftw ncurses pulseaudio))
     (arguments
-     `(#:configure-flags
-       (list (string-append "PREFIX=" %output)
-             (string-append "FONT_DIR=" %output "/share/consolefonts"))
-       #:make-flags
-       (let ((lib (string-append %output "/lib")))
-         (list (string-append "cava_LDFLAGS = -L" lib " -Wl,-rpath " lib)))
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'bootstrap
-           (lambda* (#:key outputs #:allow-other-keys)
-             (setenv "HOME" (getcwd))
-             (invoke "sh" "autogen.sh")))
-         (add-before 'build 'make-cava-ldflags
-           (lambda* (#:key outputs #:allow-other-keys)
-             (mkdir-p (string-append (assoc-ref outputs "out") "/lib"))
-             #t))
-         (add-after 'install 'data
-           (lambda* (#:key outputs #:allow-other-keys)
-             (for-each (lambda (file)
-                         (install-file file
-                                       (string-append (assoc-ref outputs "out")
-                                                      "/share/doc/examples")))
-                       (find-files "example_files"))
-             #t)))))
+     (list #:configure-flags
+           #~(list (string-append "PREFIX="
+                                  #$output)
+                   (string-append "FONT_DIR="
+                                  #$output "/share/consolefonts"))
+           #:make-flags
+           #~(let ((lib (string-append #$output "/lib")))
+               (list (string-append "cava_LDFLAGS = -L" lib " -Wl,-rpath " lib)))
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'bootstrap
+                 (lambda _
+                   (setenv "HOME"
+                           (getcwd))
+                   (invoke "sh" "autogen.sh")))
+               (add-before 'build 'make-cava-ldflags
+                 (lambda _
+                   (mkdir-p (string-append #$output "/lib"))))
+               (add-after 'install 'data
+                 (lambda _
+                   (for-each (lambda (file)
+                               (install-file file
+                                             (string-append #$output
+                                              "/share/doc/examples")))
+                             (find-files "example_files")))))))
     (home-page "https://karlstav.github.io/cava/")
     (synopsis "Console audio visualizer for ALSA, MPD, and PulseAudio")
     (description "C.A.V.A. is a bar audio spectrum visualizer for the terminal
