@@ -1994,8 +1994,7 @@ interfaces.")
                  (("^( +os_include_dirs = ).*" _ prefix)
                   (string-append prefix "[\"../../src\"]\n"))
                  (("^(installed_lib_dir = ).*" _ prefix)
-                  (string-append prefix "\"" out "/lib\"\n"))))
-             #t))
+                  (string-append prefix "\"" out "/lib\"\n"))))))
 
          ;; Fix the tests so they run in out-of-source builds.
          (add-after 'fix-sources-for-build 'fix-sources-for-tests
@@ -2060,8 +2059,7 @@ interfaces.")
                     (string-append builddir "/src/nomad ")))
                  (for-each
                   (lambda (f) (fix-exe-path dir f))
-                  '("param1.txt" "param2.txt" "param3.txt" "param10.txt"))))
-             #t))
+                  '("param1.txt" "param2.txt" "param3.txt" "param10.txt"))))))
 
          ;; The information in the .egg-info file is not kept up to date.
          (add-after 'install 'delete-superfluous-egg-info
@@ -2070,8 +2068,7 @@ interfaces.")
                            (site-packages inputs outputs)
                            "/PyNomad-0.0.0-py"
                            (python-version (assoc-ref inputs "python"))
-                           ".egg-info"))
-             #t)))))
+                           ".egg-info")))))))
     (home-page "https://www.gerad.ca/nomad/")
     (synopsis "Nonlinear optimization by mesh-adaptive direct search")
     (description
