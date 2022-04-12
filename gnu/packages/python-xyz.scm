@@ -14654,6 +14654,20 @@ interface to the Amazon Web Services (AWS) API.")
 (define-public python2-botocore
   (package-with-python2 python-botocore))
 
+(define-public python-botocore-for-awscli
+  ;; Note: When updating botocore, also make sure that boto3 and awscli
+  ;; are compatible.
+  (package
+    (inherit python-botocore)
+    (version "1.22.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "botocore" version))
+       (sha256
+        (base32
+         "1z7g2scyzvfq4yj9b4w911k7802ry1v6lqfnwq12l0ak7ywmsvrh"))))))
+
 (define-public python-boto3
   (package
     (name "python-boto3")
