@@ -1092,14 +1092,14 @@ in the terminal or with an external viewer.")
 (define-public gnuplot
   (package
     (name "gnuplot")
-    (version "5.4.2")
+    (version "5.4.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/gnuplot/gnuplot/"
                                   version "/gnuplot-"
                                   version ".tar.gz"))
        (sha256
-        (base32 "1fp7rbhjmz2w63r72kicf8lfszzimz2csfx868fracw167hpaz75"))))
+        (base32 "112dplskbkdbaqi935m2xlk1xsw8s5l568wm7xad75hgp6x9py2i"))))
     (build-system gnu-build-system)
     (inputs (list readline cairo pango gd lua))
     (native-inputs
