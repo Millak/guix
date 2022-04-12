@@ -14671,7 +14671,7 @@ interface to the Amazon Web Services (AWS) API.")
 (define-public python-boto3
   (package
     (name "python-boto3")
-    (version "1.19.11")
+    (version "1.21.35")
     (home-page "https://github.com/boto/boto3")
     (source (origin
               (method git-fetch)
@@ -14679,14 +14679,18 @@ interface to the Amazon Web Services (AWS) API.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1wv0ci2z5ywvm63dh4mp64vqyyvkm4qxc8dxv8ncrqiiphpgr9aq"))))
+                "1kdyf238rpfldnpzs0rdh3nhjn6hwfym4faskyhzlgzkf1smmbg1"))))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'delete-network-tests
            ;; Deleting integration tests because they are trying to connect to AWS.
            (lambda _
-             (delete-file-recursively "tests/integration"))))))
+             (delete-file-recursively "tests/integration")))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-v")))))))
     (build-system python-build-system)
     (native-inputs
      (list python-nose python-mock python-pytest))
