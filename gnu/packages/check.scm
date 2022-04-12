@@ -1570,6 +1570,23 @@ can be useful to isolate tests against undesirable global environment
 side-effects (such as setting environment variables).")
     (license license:expat)))
 
+(define-public python-pytest-forked-next
+  (package
+    (inherit python-pytest-forked)
+    (name "python-pytest-forked")
+    (version "1.4.0")
+    (source
+     (origin
+       (method git-fetch)               ;for tests
+       (uri (git-reference
+             (url "https://github.com/pytest-dev/pytest-forked")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0j9bbjny7h3b4fig6l26f26c697r67mm62fzdd9m9rqyy2bmnqjs"))))
+    (native-inputs (list python-pytest-bootstrap python-setuptools-scm))))
+
 (define-public python-scripttest
   (package
     (name "python-scripttest")
