@@ -1128,6 +1128,35 @@ raw data, processed data, graphics output and statistical results are organized
 into folders according to the analysis settings used.")
     (license license:gpl2+)))
 
+(define-public r-absseq
+  (package
+    (name "r-absseq")
+    (version "1.48.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "ABSSeq" version))
+              (sha256
+               (base32
+                "0l2hh6qv4lhw1g1kciw2f3ssj3lw83hqxnkmxzmv7snik3k6i650"))))
+    (properties `((upstream-name . "ABSSeq")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-limma r-locfit))
+    (home-page "https://bioconductor.org/packages/ABSSeq")
+    (synopsis
+     "RNA-Seq analysis based on modelling absolute expression differences")
+    (description
+     "This package implements a new RNA-Seq analysis method and integrates two
+modules: a basic model for pairwise comparison and a linear model for complex
+design.  RNA-Seq quantifies gene expression with reads count, which usually
+consists of conditions (or treatments) and several replicates for each
+condition.  This software infers differential expression directly by the
+counts difference between conditions.  It assumes that the sum counts
+difference between conditions follow a negative binomial distribution.  In
+addition, @code{ABSSeq} moderates the fold-changes by two steps: the
+expression level and gene-specific dispersion, that might facilitate the gene
+ranking by fold-change and visualization.")
+    (license license:gpl3+)))
+
 (define-public r-aneufinderdata
   (package
    (name "r-aneufinderdata")
