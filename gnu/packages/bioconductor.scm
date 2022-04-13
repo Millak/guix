@@ -11637,6 +11637,30 @@ segments fit (the relative error) to integer copy numbers for each percentage
 of @dfn{tumor cells} (cells with divergent segments).")
     (license license:gpl2)))
 
+(define-public r-acgh
+  (package
+    (name "r-acgh")
+    (version "1.72.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "aCGH" version))
+              (sha256
+               (base32
+                "1r1q6iq3g7svfn5m4jxlxp413djb40mvf6lh595y86sgwav5k6l4"))))
+    (properties `((upstream-name . "aCGH")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biobase r-cluster r-multtest r-survival))
+    (home-page "https://bioconductor.org/packages/aCGH")
+    (synopsis
+     "Classes and functions for array comparative genomic hybridization data")
+    (description
+     "This package provides functions for reading
+@dfn{array comparative genomic hybridization} (aCGH) data from image analysis
+output files and clone information files, creation of @code{aCGH} objects for
+storing these data.  Basic methods are accessing/replacing, subsetting,
+printing and plotting @code{aCGH} objects.")
+    (license license:gpl2)))
+
 ;; This is a CRAN package, but it depends on Bioconductor packages, so we put
 ;; it here.
 (define-public r-activedriverwgs
