@@ -1420,6 +1420,36 @@ also ensuring that the notebooks are running without errors.")
      "This package provides a pytest plugin for testing console scripts.")
     (license license:expat)))
 
+(define-public python-pytest-tornado
+  (package
+    (name "python-pytest-tornado")
+    (version "0.8.1")
+    (source (origin
+              (method git-fetch)        ;no tests in pypi archive
+              (uri (git-reference
+                    (url "https://github.com/eugeniy/pytest-tornado")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "05hgq1m9g35kpc01im7ci1wd85xi1rdxnyms9izjg65c9976zn6x"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv")))))))
+    (propagated-inputs (list python-pytest python-setuptools python-tornado))
+    (home-page "https://github.com/eugeniy/pytest-tornado")
+    (synopsis "Pytest plugin to ease testing tornado applications")
+    (description
+     "This package provides a py.test plugin providing fixtures and markers to
+simplify testing of asynchronous tornado applications.")
+    (license license:asl2.0)))
+
 (define-public python-pytest-tornasync
   (package
     (name "python-pytest-tornasync")
