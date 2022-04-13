@@ -2880,6 +2880,12 @@ supports url redirection and retries, and also gzip and deflate decoding.")
      '(#:tests? #f
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'use-recent-pyyaml
+           (lambda _
+             (substitute* '("awscli.egg-info/requires.txt"
+                            "setup.cfg"
+                            "setup.py")
+               (("<5.5") "<=6"))))
          (add-after 'unpack 'fix-reference-to-groff
            (lambda _
              (substitute* "awscli/help.py"
@@ -2892,7 +2898,7 @@ supports url redirection and retries, and also gzip and deflate decoding.")
            python-botocore-for-awscli
            python-s3transfer
            python-docutils-0.15
-           python-pyyaml-for-awscli
+           python-pyyaml
            python-rsa))
     (native-inputs
      (list groff))
