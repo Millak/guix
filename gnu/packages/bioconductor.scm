@@ -11661,6 +11661,33 @@ storing these data.  Basic methods are accessing/replacing, subsetting,
 printing and plotting @code{aCGH} objects.")
     (license license:gpl2)))
 
+(define-public r-acme
+  (package
+    (name "r-acme")
+    (version "2.50.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "ACME" version))
+              (sha256
+               (base32
+                "0h4bqbbqcwc938q7lysk5l35f64xz9d1bsniv2wshmlr4rr0zpcg"))))
+    (properties `((upstream-name . "ACME")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biobase r-biocgenerics))
+    (home-page "https://bioconductor.org/packages/aCGH/")
+    (synopsis "Calculating microarray enrichment")
+    (description
+     "This package implements @dfn{algorithms for calculating microarray
+enrichment} (ACME), and it is a set of tools for analysing tiling array of
+@dfn{combined chromatin immunoprecipitation with DNA microarray} (ChIP/chip),
+DNAse hypersensitivity, or other experiments that result in regions of the
+genome showing enrichment.  It does not rely on a specific array technology
+(although the array should be a tiling array), is very general (can be applied
+in experiments resulting in regions of enrichment), and is very insensitive to
+array noise or normalization methods.  It is also very fast and can be applied
+on whole-genome tiling array experiments quite easily with enough memory.")
+    (license license:gpl2+)))
+
 ;; This is a CRAN package, but it depends on Bioconductor packages, so we put
 ;; it here.
 (define-public r-activedriverwgs
