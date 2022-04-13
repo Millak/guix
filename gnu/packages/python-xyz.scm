@@ -9093,42 +9093,76 @@ installing @code{kernelspec}s for use with Jupyter frontends.")
 (define-public python-ipykernel
   (package
     (name "python-ipykernel")
-    (version "5.5.3")
+    (version "6.13.0")
     (source
      (origin
-      (method url-fetch)
-      (uri (pypi-uri "ipykernel" version))
-      (sha256
-       (base32 "02f55cjkp5q64x7ikjxznbxwjpkdmfy237b9kg7dk1pxmzvy90m6"))))
+       (method url-fetch)
+       (uri (pypi-uri "ipykernel" version))
+       (sha256
+        (base32 "0q5yni8h08nadsn53f957p0pjsjhwl2b2lp1hqz3jn0854z2fa0f"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (setenv "HOME" "/tmp")
-               (invoke "pytest" "-v"))))
-         (add-after 'install 'set-python-file-name
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Record the absolute file name of the 'python' executable in
-             ;; 'kernel.json'.
-             (let ((out (assoc-ref outputs "out")))
-               (substitute* (string-append out "/share/jupyter"
-                                           "/kernels/python3/kernel.json")
-                 (("\"python\"")
-                  (string-append "\"" (which "python") "\"")))
-               #t))))))
+     (list
+      #:imported-modules `(,@%python-build-system-modules
+                           (guix build syscalls))
+      #:modules '((guix build python-build-system)
+                  (guix build syscalls)
+                  (guix build utils)
+                  (ice-9 match))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (match (primitive-fork)
+                  (0                    ;child process
+                   (set-child-subreaper!)
+                   ;; XXX: Tini provides proper PID1-like signal handling that
+                   ;; reaps zombie processes, necessary for the
+                   ;; 'test_shutdown_subprocesses' test to pass.
+
+                   ;; TODO: Complete https://issues.guix.gnu.org/30948.
+                   (setenv "HOME" "/tmp")
+                   (execlp "tini" "--" "pytest" "-vv"))
+                  (pid
+                   (match (waitpid pid)
+                     ((_ . status)
+                      (unless (zero? status)
+                        (error "`pytest' exited with status"
+                               status)))))))))
+          (add-after 'install 'set-python-file-name
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Record the absolute file name of the 'python' executable in
+              ;; 'kernel.json'.
+              (substitute* (string-append #$output "/share/jupyter"
+                                          "/kernels/python3/kernel.json")
+                (("\"python\"")
+                 (format #f "~s" (search-input-file inputs
+                                                    "/bin/python3")))))))))
     (propagated-inputs
-     (list python-ipython python-tornado-6 python-traitlets
-           ;; imported at runtime during connect
-           python-jupyter-client))
+     (list python-debugpy
+           python-ipython
+           python-jupyter-client        ;imported at runtime during connect
+           python-matplotlib-inline
+           ;;python-nest-asyncio
+           ;;python-packaging
+           python-psutil
+           python-tornado-6
+           python-traitlets))
+    (inputs (list python))              ;for cross compilation
     (native-inputs
-     (list python-flaky python-nose python-pytest))
+     (list python-flaky
+           python-ipyparallel-bootstrap
+           ;; XXX: Our Pytest package captures its native inputs in its
+           ;; wrapper script (such as python-nose), which is used in the code
+           ;; and causes deprecation warnings.  Using the bootstrap variant
+           ;; avoids that.
+           python-pytest-bootstrap
+           python-pytest-timeout
+           tini))
     (home-page "https://ipython.org")
     (synopsis "IPython Kernel for Jupyter")
-    (description
-     "This package provides the IPython kernel for Jupyter.")
+    (description "This package provides the IPython kernel for Jupyter.")
     (license license:bsd-3)))
 
 ;; Bootstrap variant of ipykernel, which uses the bootstrap jupyter-client to
