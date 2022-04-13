@@ -219,8 +219,6 @@
             pam-limits-service-type
             pam-limits-service
 
-            references-file
-
             %base-services))
 
 ;;; Commentary:
@@ -1767,26 +1765,6 @@ proxy of 'guix-daemon'...~%")
         #$(if authorize-key?
               (substitute-key-authorization authorized-keys guix)
               #~#f))))
-
-(define* (references-file item #:optional (name "references"))
-  "Return a file that contains the list of references of ITEM."
-  (if (struct? item)                              ;lowerable object
-      (computed-file name
-                     (with-extensions (list guile-gcrypt) ;for store-copy
-                       (with-imported-modules (source-module-closure
-                                               '((guix build store-copy)))
-                         #~(begin
-                             (use-modules (guix build store-copy))
-
-                             (call-with-output-file #$output
-                               (lambda (port)
-                                 (write (map store-info-item
-                                             (call-with-input-file "graph"
-                                               read-reference-graph))
-                                        port))))))
-                     #:options `(#:local-build? #f
-                                 #:references-graphs (("graph" ,item))))
-      (plain-file name "()")))
 
 (define guix-service-type
   (service-type
