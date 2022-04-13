@@ -13441,23 +13441,21 @@ systems, as a command line tool, and as a Python library.")
 (define-public python-bleach
   (package
     (name "python-bleach")
-    (version "4.1.0")
+    (version "5.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "bleach" version))
        (sha256
-        (base32 "1nkibazmw1ry4cfxs9qrkkidxdf2z1hh1b20xq1ahqdsgsrxh009"))))
+        (base32 "0rc5avysbsl3w3i2qvb6522263zhwlvf50w0ifs8776w9c2wrmn6"))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
                   (replace 'check
                     (lambda* (#:key tests? #:allow-other-keys)
                       (when tests? (invoke "pytest" "-vv")))))))
-    (propagated-inputs
-     (list python-packaging python-six python-webencodings))
-    (native-inputs
-     (list python-pytest))
+    (propagated-inputs (list python-tinycss2 python-webencodings))
+    (native-inputs (list python-pytest))
     (home-page "https://github.com/mozilla/bleach")
     (synopsis "Whitelist-based HTML-sanitizing tool")
     (description "Bleach is an easy whitelist-based HTML-sanitizing tool.")
