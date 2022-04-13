@@ -11608,6 +11608,35 @@ enrichment, comparison, P-value calculation, shuffling, trimming, higher-order
 motifs, and others.")
     (license license:gpl3)))
 
+(define-public r-ace
+  (package
+    (name "r-ace")
+    (version "1.12.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "ACE" version))
+              (sha256
+               (base32
+                "1nkbxldn5ba4fzfh4skwjc37gm6apwp09vzwnj2jw3b7ivmr0yr6"))))
+    (properties `((upstream-name . "ACE")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biobase r-genomicranges r-ggplot2 r-qdnaseq))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/tgac-vumc/ACE")
+    (synopsis
+     "Absolute copy number estimation from low-coverage whole genome sequencing")
+    (description
+     "This package uses segmented copy number data to estimate tumor cell
+percentage and produce copy number plots displaying absolute copy numbers.  For
+this it uses segmented data from the @code{QDNAseq} package, which in turn uses
+a number of dependencies to turn mapped reads into segmented data.  @code{ACE}
+will run @code{QDNAseq} or use its output rds-file of segmented data.  It will
+subsequently run through all samples in the object(s), for which it will create
+individual subdirectories.  For each sample, it will calculate how well the
+segments fit (the relative error) to integer copy numbers for each percentage
+of @dfn{tumor cells} (cells with divergent segments).")
+    (license license:gpl2)))
+
 ;; This is a CRAN package, but it depends on Bioconductor packages, so we put
 ;; it here.
 (define-public r-activedriverwgs
