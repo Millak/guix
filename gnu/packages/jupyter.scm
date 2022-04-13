@@ -342,46 +342,27 @@ are interactive HTML widgets for Jupyter notebooks and the IPython kernel.")
 (define-public python-nbclient
   (package
     (name "python-nbclient")
-    (version "0.5.3")
+    (version "0.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "nbclient" version))
        (sha256
         (base32
-         "172q4r6mq0lg394di0pc6ipvniy14jg38wkdsj48r366609jf5yv"))))
+         "0cbhs8l8ma5nzm1i4484gsrb7189m1lmniashp929pxsqq1s929z"))))
     (build-system python-build-system)
-    ;; Tests require a kernel via python-ipykernel, and also tools from
-    ;; nbconvert.
+    ;; Tests require tools from nbconvert, which would introduces a cycle.
     (arguments '(#:tests? #false))
     (propagated-inputs
-     (list python-async-generator python-jupyter-client python-nbformat
-           python-nest-asyncio python-traitlets))
-    (native-inputs
-     (list python-black
-           python-bumpversion
-           python-check-manifest
-           python-codecov
-           python-coverage
-           python-flake8
-           ;; ("python-ipykernel" ,python-ipykernel)
-           ;; ("python-ipython" ,python-ipython)
-           ;; ("python-ipywidgets" ,python-ipywidgets)
-           python-mypy
-           python-pip
-           python-pytest
-           python-pytest-cov
-           python-setuptools
-           python-testpath
-           python-tox
-           python-twine
-           python-wheel
-           python-xmltodict))
+     (list python-jupyter-client
+           python-nbformat
+           python-nest-asyncio
+           python-traitlets))
     (home-page "https://jupyter.org")
     (synopsis "Client library for executing notebooks")
     (description
-     "This package provides a client library for executing notebooks. Formerly
-nbconvert's @code{ExecutePreprocessor.}")
+     "This package provides a client library for executing notebooks.
+It was formerly known as nbconvert's @code{ExecutePreprocessor.}")
     (license license:bsd-3)))
 
 (define-public repo2docker
