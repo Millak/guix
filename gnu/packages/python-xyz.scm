@@ -12816,16 +12816,16 @@ drafts 04, 06 and 07.")
 (define-public python-nbformat
   (package
     (name "python-nbformat")
-    (version "5.1.3")
+    (version "5.3.0")
     ;; The PyPi release tarball lacks some test cases and test data.
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/jupyter/nbformat.git")
+                    (url "https://github.com/jupyter/nbformat")
                     (commit version)))
               (sha256
                (base32
-                "033v16cfmxzh3jn5phnil4p3silr49iwh9wiigzhv0crc6sanvwz"))
+                "114c5c6cvpxhxj8zrw74351gcfzyzjh1jq3py4xf8wk9rahfay9z"))
               (file-name (git-file-name name version))))
     (build-system python-build-system)
     (arguments
@@ -12836,13 +12836,10 @@ drafts 04, 06 and 07.")
              (when tests?
                (invoke "pytest" "-vv")))))))
     (propagated-inputs
-     (list python-ipython-genutils python-jsonschema python-jupyter-core
+     (list python-fastjsonschema python-jsonschema python-jupyter-core
            python-traitlets))
     (native-inputs
      (list python-pytest
-           python-fastjsonschema ; This is only active
-           ; when setting NBFORMAT_VALIDATOR="fastjsonschema", so include it for
-           ; testing only.
            python-testpath))
     (home-page "https://jupyter.org")
     (synopsis "Jupyter Notebook format")
