@@ -1,0 +1,26 @@
+Avoid "multiple definition of `mystruct'" error from `ld`:
+
+Submitted upstream at https://github.com/idris-lang/Idris-dev/issues/4914
+
+--- a/test/ffi008/ffi008.h	1969-12-31 18:00:01.000000000 -0600
++++ a/test/ffi008/ffi008.h	2022-04-13 00:32:35.561262598 -0500
+@@ -10,7 +10,7 @@
+     int16_t b;
+ };
+ 
+-struct test2 mystruct;
++extern struct test2 mystruct;
+ 
+ int size1(void);
+ int size2(void);
+--- a/test/ffi008/ffi008.c	1969-12-31 18:00:01.000000000 -0600
++++ a/test/ffi008/ffi008.c	2022-04-13 00:32:53.145186302 -0500
+@@ -11,6 +11,8 @@
+     return sizeof(struct test2);
+ }
+ 
++struct test2 mystruct;
++
+ void print_mystruct(void) {
+     printf("a: %d b: %d\n", mystruct.a, mystruct.b);
+ }

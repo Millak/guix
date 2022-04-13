@@ -1286,6 +1286,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/idris-disable-test.patch			\
   %D%/packages/patches/idris-build-with-haskeline-0.8.patch	\
   %D%/packages/patches/idris-build-with-megaparsec-9.patch	\
+  %D%/packages/patches/idris-test-ffi008.patch			\
   %D%/packages/patches/ilmbase-fix-tests.patch			\
   %D%/packages/patches/imagemagick-CVE-2020-27829.patch		\
   %D%/packages/patches/imagemagick-ReadDCMImage-fix.patch	\

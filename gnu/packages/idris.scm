@@ -2,7 +2,7 @@
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2016, 2017 David Craven <david@craven.ch>
 ;;; Copyright © 2018 Alex ter Weele <alex.ter.weele@gmail.com>
-;;; Copyright © 2019, 2021 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2019, 2022 Eric Bavier <bavier@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -49,7 +49,8 @@
                 "1pachwc6msw3n1mz2z1r1w6h518w9gbhdvbaa5vi1qp3cn3wm6q4"))
               (patches (search-patches "idris-disable-test.patch"
                                        "idris-build-with-haskeline-0.8.patch"
-                                       "idris-build-with-megaparsec-9.patch"))))
+                                       "idris-build-with-megaparsec-9.patch"
+                                       "idris-test-ffi008.patch"))))
     (build-system haskell-build-system)
     (native-inputs                      ;For tests
      (list perl ghc-cheapskate ghc-tasty ghc-tasty-golden
