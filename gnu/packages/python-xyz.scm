@@ -8787,14 +8787,14 @@ away.")
   (hidden-package
    (package
      (name "python-ipyparallel-bootstrap")
-     (version "6.2.4")
+     (version "8.2.1")
      (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "ipyparallel" version))
         (sha256
          (base32
-          "0rf0dbpxf5z82bw8lsjj45r3wdd4wc74anz4wiiaf2rbjqlb1ivn"))))
+          "0wiwfd7870zbmczzn96jqxxjf2zcbcaxnsl1ddn8hspwa8y4frzj"))))
      (build-system python-build-system)
      (arguments
       (list
@@ -8806,12 +8806,14 @@ away.")
      (propagated-inputs
       (list python-dateutil
             python-decorator
-            ;; python-ipykernel is omitted here to avoid a cycle.
+            python-entrypoints
             python-ipython
-            python-ipython-genutils
+            ;; python-ipykernel is omitted here to break a cycle.
             python-jupyter-client-bootstrap
+            python-psutil
             python-pyzmq
-            python-tornado
+            python-tornado-6
+            python-tqdm
             python-traitlets))
      (home-page "https://ipython.org/")
      (synopsis "Interactive Parallel Computing with IPython")
@@ -8830,13 +8832,19 @@ CLI scripts:
   (package
     (inherit python-ipyparallel-bootstrap)
     (name "python-ipyparallel")
-    (arguments (list #:tests? #t))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda _
+              (invoke "pytest" "-vv"))))))
     (native-inputs
      (list python-ipython
-           python-mock
-           python-nose
            python-pytest
+           python-pytest-asyncio
            python-pytest-cov
+           python-pytest-tornado
            python-testpath))
     (propagated-inputs
      (modify-inputs (package-propagated-inputs python-ipyparallel-bootstrap)
