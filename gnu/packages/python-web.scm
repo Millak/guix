@@ -2893,7 +2893,7 @@ supports url redirection and retries, and also gzip and deflate decoding.")
                (("raise ExecutableNotFoundError\\('groff'\\)") "")
                (("cmdline = \\['groff'")
                 (string-append "cmdline = ['" (which "groff") "'"))))))))
-    (propagated-inputs
+    (inputs
      (list python-colorama-for-awscli
            python-botocore-for-awscli
            python-s3transfer
