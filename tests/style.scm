@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021-2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -377,7 +377,14 @@
       (list (package-inputs (@ (my-packages) my-coreutils))
             (read-package-field (@ (my-packages) my-coreutils) 'inputs 4)))))
 
+(test-equal "read-with-comments: dot notation"
+  (cons 'a 'b)
+  (call-with-input-string "(a . b)"
+    read-with-comments))
+
 (test-pretty-print "(list 1 2 3 4)")
+(test-pretty-print "((a . 1) (b . 2))")
+(test-pretty-print "(a b c . boom)")
 (test-pretty-print "(list 1
                           2
                           3
