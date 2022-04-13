@@ -174,6 +174,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages icu4c)
+  #:use-module (gnu packages inkscape)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages jupyter)
@@ -13587,70 +13588,71 @@ time.")
 (define-public python-nbconvert
   (package
     (name "python-nbconvert")
-    (version "6.0.7")
+    (version "6.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "nbconvert" version))
        (sha256
         (base32
-         "00lhqaxn481qvk2w5568asqlsnvrw2fm61p1vssx3m7vdnl17g6b"))))
+         "17g9xq4za7vvzml6l6d8zrzknhxsvgx02hymmsw9d1dygbi4cgi2"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-paths-and-tests
-           (lambda _
-             ;; Use pandoc binary from input.
-             (substitute* "nbconvert/utils/pandoc.py"
-               (("'pandoc'") (string-append "'" (which "pandoc") "'")))
-             ;; Same for LaTeX.
-             (substitute* "nbconvert/exporters/pdf.py"
-               (("\"xelatex\"") (string-append "\"" (which "xelatex") "\""))
-               (("\"bibtex\"") (string-append "\"" (which "bibtex") "\"")))
-             ;; Make sure tests are not skipped.
-             (substitute* (find-files "." "test_.+\\.py$")
-               (("@onlyif_cmds_exist\\(('(pandoc|xelatex)'(, )?)+\\)") ""))
-             ;; Pandoc is never missing, disable test.
-             (substitute* "nbconvert/utils/tests/test_pandoc.py"
-               (("import os" all) (string-append all "\nimport pytest"))
-               (("(.+)(def test_pandoc_available)" all indent def)
-                (string-append indent "@pytest.mark.skip('disabled by guix')\n"
-                               indent def)))
-             ;; Not installing pyppeteer, delete test.
-             (delete-file "nbconvert/exporters/tests/test_webpdf.py")
-             (substitute* "nbconvert/tests/test_nbconvertapp.py"
-               (("(.+)(def test_webpdf_with_chromium)" all indent def)
-                (string-append indent "@pytest.mark.skip('disabled by guix')\n"
-                               indent def)))))
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               ;; Some tests invoke the installed nbconvert binary.
-               (add-installed-pythonpath inputs outputs)
-               ;; Tests depend on templates installed to output.
-               (setenv "JUPYTER_PATH"
-                       (string-append
-                        (assoc-ref outputs "out")
-                        "/share/jupyter:"
-                        (getenv "JUPYTER_PATH")))
-               ;; Some tests need HOME
-               (setenv "HOME" "/tmp")
-               (invoke "pytest" "-vv")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Use pandoc binary from input.
+              (substitute* "nbconvert/utils/pandoc.py"
+                (("'pandoc'")
+                 (format #f "~s" (search-input-file inputs "bin/pandoc"))))
+              ;; Same for LaTeX.
+              (substitute* "nbconvert/exporters/pdf.py"
+                (("\"xelatex\"")
+                 (format #f "~s" (search-input-file inputs "bin/xelatex")))
+                (("\"bibtex\"")
+                 (format #f "~s" (search-input-file inputs "bin/bibtex"))))
+              ;; Likewise for Inkscape.
+              (substitute* "nbconvert/preprocessors/svg2pdf.py"
+                (("inkscape_path = which\\(\"inkscape\")")
+                 (format #f "inkscape_path = ~s"
+                         (search-input-file inputs "bin/inkscape"))))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; Tests depend on templates installed to output.
+                (setenv "JUPYTER_PATH"
+                        (string-append #$output "/share/jupyter:"
+                                       (getenv "JUPYTER_PATH")))
+                ;; Step outside of the source directory to avoid having both
+                ;; the installed package *and* the package from the source on
+                ;; Python's path.
+                (with-directory-excursion "/tmp"
+                  (invoke "pytest" "--pyargs" "nbconvert"
+                          "-vv" "-n" (number->string (parallel-job-count))
+                          "-k"
+                          (string-append
+                           ;; These tests require pyppeteer, not yet
+                           ;; available in Guix.
+                           "not test_webpdf_with_chromium "
+                           "and not test_webpdf.py "
+                           ;; These tests require ipywidgets, which would
+                           ;; introduce a dependency cycle.
+                           "and not test_execute_widgets_from_nbconvert "
+                           "and not test_execute_multiple_notebooks ")))))))))
     (inputs
-     (list pandoc
-           ;; XXX: Disabled, needs substitute*.
-           ;;("inkscape" ,inkscape)
-           ))
+     (list inkscape pandoc))
     (native-inputs
-     `(("python-ipykernel" ,python-ipykernel)
-       ;; XXX: Disabled, not in guix.
-       ;;("python-pyppeteer" ,python-pyppeteer)
-       ("python-pytest" ,python-pytest)
-       ("python-pytest-cov" ,python-pytest-cov)
-       ("python-pytest-dependency" ,python-pytest-dependency)))
+     (list python-ipykernel
+           ;; Adding ipywidgets would create a cycle.
+           ;;python-ipywidgets
+           ;;python-pyppeteer    ;TODO: package me
+           python-pytest
+           python-pytest-xdist))
     (propagated-inputs
-     (list python-bleach
+     (list python-beautifulsoup4
+           python-bleach
            python-defusedxml
            python-entrypoints
            python-jinja2
@@ -13666,37 +13668,39 @@ time.")
            ;; Required, even if [serve] is not used.
            python-tornado-6
            ;; Required at runtime for `jupyter nbconvert --to=pdf`.
-           (texlive-updmap.cfg (list texlive-adjustbox
-                                     texlive-amsfonts
-                                     texlive-booktabs
-                                     texlive-caption
-                                     texlive-enumitem
+           texlive-adjustbox
+           texlive-booktabs
+           texlive-caption
+           texlive-enumitem
+           texlive-fontspec
+           texlive-generic-iftex
+           texlive-grffile
+           texlive-hyperref
+           texlive-latex-fancyvrb
+           texlive-latex-float
+           texlive-latex-geometry
+           texlive-latex-jknapltx
+           texlive-latex-ms
+           texlive-latex-parskip
+           texlive-latex-trimspaces
+           texlive-latex-upquote
+           texlive-stringenc
+           texlive-tcolorbox
+           texlive-titling
+           texlive-tools
+           texlive-ulem
+           texlive-unicode-math
+           texlive-xcolor
+           (texlive-updmap.cfg (list texlive-amsfonts
                                      texlive-eurosym
                                      texlive-fonts-rsfs
-                                     texlive-generic-iftex
                                      texlive-jknappen
                                      texlive-latex-amsmath
-                                     texlive-latex-fancyvrb
-                                     texlive-latex-float
-                                     texlive-fontspec
-                                     texlive-latex-geometry
-                                     texlive-grffile
-                                     texlive-hyperref
-                                     texlive-latex-jknapltx
-                                     texlive-latex-ms
-                                     texlive-oberdiek
-                                     texlive-latex-parskip
-                                     texlive-latex-trimspaces
-                                     texlive-latex-upquote
                                      texlive-latex-ucs
                                      texlive-lm
+                                     texlive-lm-math
                                      texlive-mathpazo
-                                     texlive-stringenc
-                                     texlive-tcolorbox
-                                     texlive-titling
-                                     texlive-tools
-                                     texlive-ulem
-                                     texlive-xcolor
+                                     texlive-oberdiek
                                      texlive-zapfding))))
     (home-page "https://jupyter.org")
     (synopsis "Converting Jupyter Notebooks")
