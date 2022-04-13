@@ -38,6 +38,7 @@
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages tls)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module ((guix licenses) #:prefix license:))
@@ -431,6 +432,48 @@ application development.  TclX provides additional interfaces to the operating
 system, and adds many new programming constructs, text manipulation tools, and
 debugging tools.")
     (license license:tcl/tk)))
+
+(define-public tcl-tls
+  (package
+    (name "tcl-tls")
+    (version "1.7.22")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://core.tcl-lang.org/tcltls/uv/tcltls-"
+                           version ".tar.gz"))
+       (sha256
+        (base32
+         "1d639gzngxp7zwwpb4ayh663br6vhsbiy6wxm952rj2y4xx2nkp8"))))
+    (build-system gnu-build-system)
+    (inputs (list tcl))
+    (propagated-inputs (list openssl))
+    (arguments
+     '(#:configure-flags
+       (let ((out (assoc-ref %outputs "out"))
+             (tcl (assoc-ref %build-inputs "tcl"))
+             (ssllib (assoc-ref %build-inputs "openssl")))
+         (list "--with-ssl=libressl"
+               (string-append "-with-ssl-dir=" ssllib)
+               (string-append "--with-tcl=" tcl "/lib")
+               (string-append "--with-tclinclude=" tcl "/include")
+               (string-append "--exec-prefix=" out)
+               (string-append "--mandir=" out "/share/man")))
+
+       #:test-target "test"))
+    (search-paths
+     (list (search-path-specification
+            (variable "TCLLIBPATH")
+            (separator " ")
+            (files (list (string-append "lib/tcltls" version))))))
+    (home-page "https://core.tcl-lang.org/tcltls/index")
+    (synopsis "Tcl binding to OpenSSL toolkit")
+    (description
+     "This extension provides a generic binding to OpenSSL, utilizing the
+@code{Tcl_StackChannel} API for Tcl 8.2 and higher.  The sockets behave
+exactly the same as channels created using Tcl's built-in socket command with
+additional options for controlling the SSL session.")
+    (license license:public-domain)))
 
 (define-public go-github.com-nsf-gothic
   (let ((commit "97dfcc195b9de36c911a69a6ec2b5b2659c05652")
