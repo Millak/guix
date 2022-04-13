@@ -13791,20 +13791,25 @@ relevant, and the minimum expression of the most abundant condition.")
             r-summarizedexperiment))
     (native-inputs
      (list r-knitr))
-    (home-page
-      "https://github.com/HelenaLC/CATALYST")
+    (home-page "https://github.com/HelenaLC/CATALYST")
     (synopsis "Cytometry data analysis tools")
     (description
-      "This package is Cytometry dATa anALYSis Tools (CATALYST).  Mass
-cytometry (CyTOF) uses heavy metal isotopes rather than fluorescent tags as
-reporters to label antibodies, thereby substantially decreasing spectral
-overlap and allowing for examination of over 50 parameters at the single cell
-level.  While spectral overlap is significantly less pronounced in CyTOF than
-flow cytometry, spillover due to detection sensitivity, isotopic impurities,
-and oxide formation can impede data interpretability.  We designed
-CATALYST (Cytometry dATa anALYSis Tools) to provide a pipeline for
-preprocessing of cytometry data, including i) normalization using bead
-standards, ii) single-cell deconvolution, and iii) bead-based compensation.")
+     "This package is @dfn{Cytometry dATa anALYSis Tools} (CATALYST).  Mass
+cytometry like @dfn{Cytometry by time of flight} (CyTOF) uses heavy metal
+isotopes rather than fluorescent tags as reporters to label antibodies,
+thereby substantially decreasing spectral overlap and allowing for examination
+of over 50 parameters at the single cell level.  While spectral overlap is
+significantly less pronounced in CyTOF than flow cytometry, spillover due to
+detection sensitivity, isotopic impurities, and oxide formation can impede
+data interpretability.  @code{CATALYST} was designed to provide a pipeline for
+preprocessing of cytometry data, including:
+
+@enumerate
+@item normalization using bead standards;
+@item single-cell deconvolution;
+@item bead-based compensation.
+@end enumerate
+")
     (license license:gpl2+)))
 
 (define-public r-erma
