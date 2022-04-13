@@ -10546,6 +10546,57 @@ on the page, and which specifies where it is to be placed.  The environment is
 accompanied by various configuration commands.")
     (license license:lppl)))
 
+(define-public texlive-unicode-math
+  (package
+    (inherit (simple-texlive-package
+              "texlive-unicode-math"
+              (list "source/latex/unicode-math/"
+                    "doc/latex/unicode-math/"
+                    "tex/latex/unicode-math/unicode-math-table.tex")
+              (base32 "1j3041dcm7wqj0x26rxm9bb7q4xa1rqsqynqdb6cbjk3jmfvskxn")))
+    (outputs '("out" "doc"))
+    (arguments
+     (list
+      #:tex-directory "latex/unicode-math"
+      #:tex-format "xelatex"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'copy-files
+            ;; The documentation isn't built.
+            (lambda* (#:key outputs tex-directory #:allow-other-keys)
+              (let ((doc (assoc-ref outputs "doc"))
+                    (tex (string-append #$output "/share/texmf-dist/tex/"
+                                        tex-directory)))
+                ;; Install documentation.
+                (mkdir-p (string-append doc "/share/texmf-dist/doc" ))
+                (copy-recursively "doc" doc)
+                ;; Install unicode-math-table.tex, which is not
+                ;; built.
+                (install-file "tex/latex/unicode-math/unicode-math-table.tex"
+                              tex))))
+          (add-after 'copy-files 'chdir
+            (lambda* (#:key tex-directory #:allow-other-keys)
+              (chdir (string-append "source/" tex-directory)))))))
+    (home-page "https://ctan.org/pkg/unicode-math")
+    (synopsis "Unicode mathematics support for XeTeX and LuaTeX")
+    (description "This package will provide a complete implementation of
+Unicode maths for XeLaTeX and LuaLaTeX.  Unicode maths is currently supported
+by the following fonts:
+@itemize
+@item Latin Modern Math
+@item TeX Gyre Bonum Math
+@item TeX Gyre Pagella Math
+@item TeX Gyre Schola Math
+@item TeX Gyre Termes Math
+@item DejaVu Math TeX Gyre
+@item Asana-Math
+@item STIX
+@item XITS Math
+@item Libertinus Math
+@item Fira Math
+@end itemize")
+    (license license:lppl1.3c+)))
+
 (define-public texlive-xifthen
   (package
     (inherit (simple-texlive-package
