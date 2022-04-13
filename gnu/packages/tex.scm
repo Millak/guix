@@ -1117,6 +1117,22 @@ Computers & Typesetting series.")
 
 (define-deprecated-package texlive-fonts-lm texlive-lm)
 
+(define-public texlive-lm-math
+  (package
+    (inherit (simple-texlive-package
+              "texlive-lm-math"
+              (list "/doc/fonts/lm-math/"
+                    "/fonts/opentype/public/lm-math/")
+              (base32
+               "0gqdk8x3r1iz4n8j6r3pcqbwalxvkihayvmjfq4iv6hwb0pvys8z")
+              #:trivial? #t))
+    (home-page "http://www.gust.org.pl/projects/e-foundry/latin-modern")
+    (synopsis "OpenType maths fonts for Latin Modern")
+    (description "Latin Modern Math is a maths companion for the Latin Modern
+family of fonts, in OpenType format.  For use with LuaLaTeX or XeLaTeX,
+support is available from the @code{unicode-math} package.")
+    (license license:gfl1.0)))
+
 (define-public texlive-knuth-lib
   (let ((template (simple-texlive-package
                    "texlive-knuth-lib"
