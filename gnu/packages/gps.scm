@@ -138,7 +138,7 @@ between two other data points.")
 (define-public gama
   (package
     (name "gama")
-    (version "2.17")
+    (version "2.18")
     (source
       (origin
         (method url-fetch)
@@ -146,7 +146,7 @@ between two other data points.")
                             version ".tar.gz"))
         (sha256
          (base32
-          "1x8qz43q254mz0fyna9pxxna2sj8pcrm8bwxw840d36lh1qj6983"))
+          "03axw35vi5idsyxhfy7afj77bdig2v95l1s0sqy3kqw4cx5bpn2w"))
         (modules '((guix build utils)))
         (snippet
          '(begin
