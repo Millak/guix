@@ -20876,6 +20876,38 @@ Lisp.")
 (define-public ecl-jzon
   (sbcl-package->ecl-package sbcl-jzon))
 
+(define-public sbcl-simple-routes
+  (let ((commit "6f88c38945a4de73e85786d3499c39cacb400598")
+        (revision "1"))
+    (package
+      (name "sbcl-simple-routes")
+      (version (git-version "0.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.com/vancan1ty/simple-routes")
+               (commit commit)))
+         (file-name (git-file-name "cl-simple-routes" version))
+         (sha256
+          (base32 "0zkjl69zf1ynmqmvwccdbip3wxfyi7xplivv70qwxzd27mc0kh3k"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-cl-ppcre
+             sbcl-hunchentoot))
+      (home-page "https://gitlab.com/vancan1ty/simple-routes")
+      (synopsis "URL routing library for Hunchentoot")
+      (description
+       "@code{simple-routes} is a simple Common Lisp RESTful routing facility
+on top of Hunchentoot.")
+      (license license:bsd-2))))
+
+(define-public cl-simple-routes
+  (sbcl-package->cl-source-package sbcl-simple-routes))
+
+(define-public ecl-simple-routes
+  (sbcl-package->ecl-package sbcl-simple-routes))
+
 (define-public sbcl-purgatory
   (let ((commit "ade0d60a14a1067b9cc8cf06d1f1a1ca8cecdb03")
         (revision "1"))
