@@ -232,11 +232,15 @@ for adding, removing and dropping callbacks.")
        (uri (pypi-uri "aiohttp" version))
        (sha256
         (base32 "0y3m1dzl4h6frg8vys0fc3m83ijd1plfpihv3kvmxqadlphp2m7w"))
-       ;; TODO: Unbundle the llhttp sources.
-       ;; (modules '((guix build utils)))
-       ;; (snippet
-       ;;  '((delete-file-recursively "vendor")))
-       ))
+       (snippet
+        #~(begin
+            (use-modules ((guix build utils)))
+            ;; TODO: Unbundle the llhttp sources.
+            ;; (delete-file-recursively "vendor")
+            (delete-file "aiohttp/_helpers.c")
+            (delete-file "aiohttp/_http_parser.c")
+            (delete-file "aiohttp/_http_writer.c")
+            (delete-file "aiohttp/_websocket.c")))))
     (build-system python-build-system)
     (arguments
      '(#:phases
