@@ -2185,7 +2185,12 @@ new Date();"))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "168cr08nywp0q3vyj8njkhsmmnyd8rz9r58hk4xhzdzc6bdfkl1i"))))
+                "168cr08nywp0q3vyj8njkhsmmnyd8rz9r58hk4xhzdzc6bdfkl1i"))
+              (patches
+                (search-patches "openjdk-15-xcursor-no-dynamic.patch"))))
+    (inputs
+     (cons `("libxcursor" ,libxcursor) ; for our patch to work
+           (package-inputs openjdk14)))
     (native-inputs
      `(("autoconf" ,autoconf)
        ("openjdk14:jdk" ,openjdk14 "jdk")

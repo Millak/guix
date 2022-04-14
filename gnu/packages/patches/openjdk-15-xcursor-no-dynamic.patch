@@ -1,0 +1,72 @@
+From: Danny Milosavljevic <dannym@scratchpost.org>
+Date: Thu, 31 Mar 2022 17:02:00 +0200
+Subject: Make openjdk use libxcursor directly
+
+Fixes <https://issues.guix.gnu.org/54654>.
+
+This patch makes openjdk use libxcursor directly.
+Without it, libx11 would try to dlopen("libXcursor.so.1") and fail.
+
+diff -ru orig/22kjr9lzrml0h5m55viq7zlfkqr9p7ny-openjdk-15.0.3-checkout/make/modules/java.desktop/lib/Awt2dLibraries.gmk 22kjr9lzrml0h5m55viq7zlfkqr9p7ny-openjdk-15.0.3-checkout/make/modules/java.desktop/lib/Awt2dLibraries.gmk
+--- orig/22kjr9lzrml0h5m55viq7zlfkqr9p7ny-openjdk-15.0.3-checkout/make/modules/java.desktop/lib/Awt2dLibraries.gmk	2022-03-31 15:34:08.773419480 +0200
++++ 22kjr9lzrml0h5m55viq7zlfkqr9p7ny-openjdk-15.0.3-checkout/make/modules/java.desktop/lib/Awt2dLibraries.gmk	2022-03-31 21:36:27.854273411 +0200
+@@ -217,7 +217,7 @@
+       endif
+     endif
+ 
+-    LIBAWT_XAWT_LIBS := $(LIBM) -lawt -lXext -lX11 -lXrender $(LIBDL) -lXtst -lXi -ljava -ljvm
++    LIBAWT_XAWT_LIBS := $(LIBM) -lawt -lXext -lX11 -lXcursor -lXrender $(LIBDL) -lXtst -lXi -ljava -ljvm
+ 
+     ifeq ($(call isTargetOs, linux), true)
+       LIBAWT_XAWT_LIBS += -lpthread
+diff -ru orig/22kjr9lzrml0h5m55viq7zlfkqr9p7ny-openjdk-15.0.3-checkout/src/java.desktop/unix/native/libawt_xawt/xawt/XlibWrapper.c 22kjr9lzrml0h5m55viq7zlfkqr9p7ny-openjdk-15.0.3-checkout/src/java.desktop/unix/native/libawt_xawt/xawt/XlibWrapper.c
+--- orig/22kjr9lzrml0h5m55viq7zlfkqr9p7ny-openjdk-15.0.3-checkout/src/java.desktop/unix/native/libawt_xawt/xawt/XlibWrapper.c	2022-03-31 15:34:11.917502206 +0200
++++ 22kjr9lzrml0h5m55viq7zlfkqr9p7ny-openjdk-15.0.3-checkout/src/java.desktop/unix/native/libawt_xawt/xawt/XlibWrapper.c	2022-03-31 21:38:16.417253535 +0200
+@@ -40,10 +40,12 @@
+ #include <X11/keysym.h>
+ #include <X11/Sunkeysym.h>
+ #include <X11/Xlib.h>
++#include <X11/Xlibint.h>
+ #include <X11/Xatom.h>
+ #include <X11/XKBlib.h>
+ #include <X11/Xos.h>
+ #include <X11/Xutil.h>
++#include <X11/Xcursor/Xcursor.h>
+ 
+ #if defined(AIX)
+ #undef X_HAVE_UTF8_STRING
+@@ -972,10 +974,21 @@
+ 
+ }
+ 
++static XColor _Xconst foreground = { 0,    0,     0,     0  };  /* black */
++static XColor _Xconst background = { 0, 65535, 65535, 65535 };  /* white */
++
+ JNIEXPORT jint JNICALL Java_sun_awt_X11_XlibWrapper_XCreateFontCursor
+ (JNIEnv *env, jclass clazz, jlong display, jint shape) {
+     AWT_CHECK_HAVE_LOCK_RETURN(0);
+-    return XCreateFontCursor((Display *) jlong_to_ptr(display), (int) shape);
++    Display * dpy = (Display *) jlong_to_ptr(display);
++    if (dpy->cursor_font == None) {
++        dpy->cursor_font = XLoadFont(dpy, "cursor");
++        if (dpy->cursor_font == None) return None;
++    }
++    Cursor result = XcursorTryShapeCursor(dpy, dpy->cursor_font, dpy->cursor_font, (int) shape, (int) shape + 1, &foreground, &background);
++    if (!result)
++        result = XCreateFontCursor(dpy, (int) shape);
++    return result;
+ }
+ 
+ /*
+diff -ru orig/22kjr9lzrml0h5m55viq7zlfkqr9p7ny-openjdk-15.0.3-checkout/test/jdk/java/awt/JAWT/Makefile.unix 22kjr9lzrml0h5m55viq7zlfkqr9p7ny-openjdk-15.0.3-checkout/test/jdk/java/awt/JAWT/Makefile.unix
+--- orig/22kjr9lzrml0h5m55viq7zlfkqr9p7ny-openjdk-15.0.3-checkout/test/jdk/java/awt/JAWT/Makefile.unix	2022-03-31 15:34:10.553466316 +0200
++++ 22kjr9lzrml0h5m55viq7zlfkqr9p7ny-openjdk-15.0.3-checkout/test/jdk/java/awt/JAWT/Makefile.unix	2022-03-31 21:36:27.854273411 +0200
+@@ -31,7 +31,7 @@
+ 
+ J_INC =		$(TESTJAVA)/include
+ INCLUDES =	-I$(J_INC) -I$(J_INC)/$(SYST) -I.
+-LIBS =		-L$(TESTJAVA)/lib -ljawt -lX11
++LIBS =		-L$(TESTJAVA)/lib -ljawt -lX11 -lXcursor
+ 
+ all:		$(CLASSES) libmylib.so
+ 
