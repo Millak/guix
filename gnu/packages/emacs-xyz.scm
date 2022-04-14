@@ -18831,6 +18831,40 @@ navigate and display hierarchy structures.")
        "This package allows controlling @code{pulseaudio} from Emacs.")
       (license license:gpl3+))))
 
+(define-public emacs-pulsar
+  (package
+    (name "emacs-pulsar")
+    (version "0.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~protesilaos/pulsar")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "09s1r9zqc28g75jjxajdm34ni4m7gynh0xsffy5d60c50igiqa94"))))
+    (native-inputs (list texinfo))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'makeinfo
+            (lambda _
+              (invoke "emacs"
+                      "--batch"
+                      "--eval=(require 'ox-texinfo)"
+                      "--eval=(find-file \"README.org\")"
+                      "--eval=(org-texinfo-export-to-info)")
+              (install-file "pulsar.info" (string-append #$output "/share/info")))))))
+    (home-page "https://protesilaos.com/emacs/pulsar")
+    (synopsis "Pulse highlight line on demand or after running select functions")
+    (description "This package temporarily highlights the current line after a
+given function is invoked.")
+    (license (list license:gpl3+
+                   license:fdl1.3+)))) ; GFDLv1.3+ for the manual
+
 (define-public emacs-datetime
   (package
     (name "emacs-datetime")
