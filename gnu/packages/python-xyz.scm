@@ -7671,7 +7671,17 @@ formulas and hyperlinks to multiple worksheets in an Excel 2007+ XLSX file.")
               (uri (pypi-uri "PyWavelets" version))
               (sha256
                (base32
-                "13csbr6ls9q9ww53z2xwwsj0hpsz88rj2iwp623h0kmv8yq6kgbc"))))
+                "13csbr6ls9q9ww53z2xwwsj0hpsz88rj2iwp623h0kmv8yq6kgbc"))
+              (snippet
+               #~(begin
+                   (use-modules ((guix build utils)))
+                   (for-each delete-file
+                             (list
+                               "pywt/_extensions/_cwt.c"
+                               "pywt/_extensions/_dwt.c"
+                               "pywt/_extensions/_pywt.c"
+                               "pywt/_extensions/_pywt.h"
+                               "pywt/_extensions/_swt.c"))))))
     (build-system python-build-system)
     (arguments
      '(#:modules ((ice-9 ftw)
@@ -7689,7 +7699,8 @@ formulas and hyperlinks to multiple worksheets in an Excel 2007+ XLSX file.")
                (with-directory-excursion (string-append cwd "/build/" libdir)
                  (invoke "pytest" "-vv"))))))))
     (native-inputs
-     (list python-matplotlib ;for tests
+     (list python-cython
+           python-matplotlib ;for tests
            python-pytest))
     (propagated-inputs
      (list python-numpy))
