@@ -9832,18 +9832,18 @@ graphics.")
 (define-public r-birewire
   (package
     (name "r-birewire")
-    (version "3.26.0")
+    (version "3.26.5")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BiRewire" version))
        (sha256
         (base32
-         "0ki4rcwjgbixzy5q9s30ajx5zhpl18q50znrb60fchvl4hj9h93w"))))
+         "041i5d08bsc5jqx3309fixjacizs4yi992cwazxghm8mrk3kicbr"))))
     (properties `((upstream-name . "BiRewire")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-igraph r-matrix r-slam r-tsne))
+     (list r-igraph r-matrix r-rtsne r-slam))
     (home-page "https://bioconductor.org/packages/release/bioc/html/BiRewire.html")
     (synopsis "Tools for randomization of bipartite graphs")
     (description
