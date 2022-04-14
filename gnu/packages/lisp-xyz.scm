@@ -5151,6 +5151,37 @@ port within a range.")
 (define-public ecl-find-port
   (sbcl-package->ecl-package sbcl-find-port))
 
+(define-public sbcl-numpy-file-format
+  (let ((commit "e97aef6c592a412fdd1afa9a5f09d0b1ce134510")
+        (revision "1"))
+    (package
+      (name "sbcl-numpy-file-format")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/marcoheisig/numpy-file-format")
+               (commit commit)))
+         (file-name (git-file-name "cl-numpy-file-format" version))
+         (sha256
+          (base32 "0j7jjcf6k3anvgpm4nf81g6gbhff44v0v9rai7kwm2bm3abzsjfd"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-ieee-floats sbcl-trivial-features))
+      (home-page "https://github.com/marcoheisig/numpy-file-format")
+      (synopsis "Read and write NumPy .npy and .npz files")
+      (description
+       "The NUMPY-FILE-FORMAT library is a Common Lisp library for reading and
+writing NumPy @file{.npy} and @file{.npz} files.")
+      (license license:expat))))
+
+(define-public cl-numpy-file-format
+  (sbcl-package->cl-source-package sbcl-numpy-file-format))
+
+(define-public ecl-numpy-file-format
+  (sbcl-package->ecl-package sbcl-numpy-file-format))
+
 (define-public sbcl-py4cl
   (let ((commit "4c8a2b0814fd311f978964f825ce012290f60136")
         (revision "1"))
