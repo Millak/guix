@@ -1693,7 +1693,9 @@ wish to perform colour calibration.")
      (list `(,glib "bin")               ; for {glib-,}mkenums
            gobject-introspection
            gtk-doc/stable               ; for 88 KiB of API documentation
-           pkg-config))
+           pkg-config
+           ;; For tests
+           python-minimal))
     (inputs
      (list gusb
            libgudev
