@@ -67,7 +67,7 @@
 (define-public boost
   (package
     (name "boost")
-    (version "1.78.0")
+    (version "1.79.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://boostorg.jfrog.io/artifactory/main/release/"
@@ -75,13 +75,13 @@
                                   (version-with-underscores version) ".tar.bz2"))
               (patches
                (list (boost-patch
-                      ;; 1.78.0 was released with a faulty installation routine:
-                      ;; <https://github.com/bfgroup/b2/pull/113>.
-                      "0001-b2-fix-install.patch" version
-                      "02ljm22a4gcaj10xng8ww8aifrrlzm1pgyp08c06fd75f9pbkrbi")))
+                      ;; 1.79.0 was released with a segmentation fault:
+                      ;; <https://github.com/boostorg/json/issues/692>.
+                      "0001-json-array-erase-relocate.patch" version
+                      "1b0izwj8w92imr8ydzrh522syncprpf82n3kcy6apxn6p54b7p0f")))
               (sha256
                (base32
-                "1k5w6l3xsa9vipwk14sjb1vhsj88xwz7jr964996rcmxsisz30c6"))))
+                "0fggarccddj6q4ifj3kn7g565rbhn4ia1vd45fxb7y57a6fmhpa7"))))
     (build-system gnu-build-system)
     (inputs (list icu4c zlib))
     (native-inputs
