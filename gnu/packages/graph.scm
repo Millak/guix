@@ -2,7 +2,7 @@
 ;;; Copyright © 2017, 2018, 2019, 2020, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2020 Alexander Krotov <krotov@iitp.ru>
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlos@gmx.com>
@@ -91,7 +91,7 @@ distributions in empirical data.  SIAM Review 51, 661-703 (2009)}).")
 (define-public igraph
   (package
     (name "igraph")
-    (version "0.9.6")
+    (version "0.9.8")
     (source
      (origin
        (method url-fetch)
@@ -116,7 +116,7 @@ distributions in empirical data.  SIAM Review 51, 661-703 (2009)}).")
                      ((".*_IS_VENDORED.*")
                       ""))))
        (sha256
-        (base32 "11zkj9bpqcadb0rc4ahvjp9047dp9hna8cn3b0vl3zpc9v2rwabw"))))
+        (base32 "15v3ydq95gahnas37cip637hvc2nwrmk76xp0nv3gq53rrrk9a7r"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags (list "-DBUILD_SHARED_LIBS=ON")))
