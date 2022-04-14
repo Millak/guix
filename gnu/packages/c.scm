@@ -727,6 +727,34 @@ cryptographic primitives for the @acronym{AWS,Amazon Web Services} SDK.")
     (home-page "https://github.com/awslabs/aws-c-cal")
     (license license:asl2.0)))
 
+(define-public aws-c-sdkutils
+  (package
+    (name "aws-c-sdkutils")
+    ; Update only when updating aws-crt-cpp.
+    (version "0.1.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url (string-append "https://github.com/awslabs/" name))
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "14wpl3dxwjbbzas44v6m6m3ll89rgz34x9gb140qz624gwzs9v0v"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:configure-flags
+       (list "-DBUILD_SHARED_LIBS=ON"
+             (string-append "-DCMAKE_PREFIX_PATH="
+                            (assoc-ref %build-inputs "aws-c-common")))))
+    (propagated-inputs
+     (list aws-c-common))
+    (synopsis "Amazon Web Service utility library")
+    (description "This library provides for parsing and management of profiles
+for the @acronym{AWS,Amazon Web Services} SDK.")
+    (home-page "https://github.com/awslabs/aws-c-sdkutils")
+    (license license:asl2.0)))
+
 (define-public pcl
   (package
     (name "pcl")
