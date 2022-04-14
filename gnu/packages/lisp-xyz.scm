@@ -5183,8 +5183,8 @@ writing NumPy @file{.npy} and @file{.npz} files.")
   (sbcl-package->ecl-package sbcl-numpy-file-format))
 
 (define-public sbcl-py4cl
-  (let ((commit "4c8a2b0814fd311f978964f825ce012290f60136")
-        (revision "1"))
+  (let ((commit "2f2a008dd6162d4446803971292fe1b323fe0dd5")
+        (revision "2"))
     (package
       (name "sbcl-py4cl")
       (version (git-version "0.0.0" revision commit))
@@ -5197,7 +5197,7 @@ writing NumPy @file{.npy} and @file{.npz} files.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "15mk7qdqjkj56gdnbyrdyz6r7m1h26ldvn6ch96pmvg5vmr1m45r"))
+           "1zx1kpfpd8mi1qaa7gr32mki6nvl6pqcs3437fvn4xa3yf7ybsha"))
          (modules '((guix build utils)))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
@@ -5212,7 +5212,7 @@ writing NumPy @file{.npy} and @file{.npz} files.")
          (modify-phases %standard-phases
            (add-after 'unpack 'fix-python3-path
              (lambda* (#:key inputs #:allow-other-keys)
-               (substitute* "src/callpython.lisp"
+               (substitute* "src/python-process.lisp"
                  (("\\*python-command\\* \"python\"")
                   (string-append "*python-command* "
                                  "\""
@@ -5225,7 +5225,7 @@ writing NumPy @file{.npy} and @file{.npz} files.")
                ;; source-code so lisp can call into "py4cl.py". We can
                ;; hard-code this since we know where this file will
                ;; reside.
-               (substitute* "src/callpython.lisp"
+               (substitute* "src/python-process.lisp"
                  (("py4cl/config:\\*base-directory\\*")
                   (string-append
                    "\""
