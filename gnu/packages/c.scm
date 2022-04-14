@@ -837,7 +837,7 @@ currently limited to Huffman encoding and decoding.")
   (package
     (name "aws-c-auth")
     ; Update only when updating aws-crt-cpp.
-    (version "0.6.4")
+    (version "0.6.11")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -846,7 +846,7 @@ currently limited to Huffman encoding and decoding.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "120p69lj279yq3d2b81f45kgfrvf32j6m7s03m8hh27w8yd4vbfp"))
+                "0frfnbifkrib9l68mj92a3g1x8xc8hpdlzbga2a801zgf2flx4fy"))
               (patches
                (search-patches
                 "aws-c-auth-install-private-headers.patch"))))
@@ -858,7 +858,7 @@ currently limited to Huffman encoding and decoding.")
                             (assoc-ref %build-inputs "aws-c-common"))
              "-DENABLE_NET_TESTS=OFF")))
     (propagated-inputs
-     (list aws-c-cal aws-c-common aws-c-http aws-c-io))
+     (list aws-c-cal aws-c-common aws-c-http aws-c-io aws-c-sdkutils))
     (synopsis "Amazon Web Services client-side authentication library")
     (description
      "This library provides a C99 implementation for AWS client-side
