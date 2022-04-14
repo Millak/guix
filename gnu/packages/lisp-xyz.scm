@@ -3969,8 +3969,8 @@ defined in RFC 2616.")
 
 (define-public sbcl-cl-who
   (let ((version "1.1.4")
-        (commit "0d3826475133271ee8c590937136c1bc41b8cbe0")
-        (revision "2"))
+        (commit "07dafe9b351c32326ce20b5804e798f10d4f273d")
+        (revision "3"))
     (package
       (name "sbcl-cl-who")
       (version (git-version version revision commit))
@@ -3983,7 +3983,7 @@ defined in RFC 2616.")
          (file-name (git-file-name "cl-who" version))
          (sha256
           (base32
-           "0sc8nji9q1df04lhsiwsjy1a35996bibl31w5hp5sh8q6sa122dy"))))
+           "1rdvs113q6d46cblwhsv1vmm31p952wyzkyibqix0ypadpczlgp5"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-flexi-streams))
