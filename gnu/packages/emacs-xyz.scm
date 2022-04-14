@@ -6134,6 +6134,41 @@ the current Cargo project.")
 files which are intended to be packages.")
     (license license:gpl3+)))
 
+(define-public emacs-flymake-proselint
+  (let ((commit "6a99865c7ac6474b8c5d1f9a1ae2384667f06d36")
+        (revision "0"))
+   (package
+     (name "emacs-flymake-proselint")
+     (version (git-version "0.2.3" revision commit))
+     (source (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url "https://git.sr.ht/~manuel-uberti/flycheck-proselint")
+                     (commit commit)))
+               (file-name (git-file-name name version))
+               (sha256
+                (base32
+                 "028ilp9h22rlawlh5ydiykvi8pryyknwi019sjyxkk2h0fza9jan"))))
+     (build-system emacs-build-system)
+     (arguments
+      (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'patch-exec-paths
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "flymake-proselint.el"
+                 (("\"proselint\"")
+                  (string-append
+                   "\"" (search-input-file inputs "/bin/proselint") "\""))))))))
+     (propagated-inputs
+      (list emacs-flycheck))
+     (inputs
+      (list python-proselint))
+     (home-page "https://git.sr.ht/~manuel-uberti/flycheck-proselint")
+     (synopsis "Flymake backend for @code{proselint}")
+     (description "This package adds support for @code{proselint} in Flymake.")
+     (license license:gpl3+))))
+
 (define-public emacs-elisp-demos
   (package
     (name "emacs-elisp-demos")
