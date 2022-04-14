@@ -11461,19 +11461,20 @@ arrays based on fast wavelet-based functional models.")
 (define-public r-variancepartition
   (package
     (name "r-variancepartition")
-    (version "1.24.0")
+    (version "1.24.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "variancePartition" version))
        (sha256
         (base32
-         "0f5y61dpzwmr8v7npim18zvxa8n49rbzclb9j72haba0px6ibhvw"))))
+         "14aki7d9xl4rhhzv3cl09mbj1q7xhxg69s4kzms9hfv3cqjryqd7"))))
     (properties
      `((upstream-name . "variancePartition")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-biobase
+     (list r-aod
+           r-biobase
            r-biocparallel
            r-doparallel
            r-foreach
@@ -11487,7 +11488,9 @@ arrays based on fast wavelet-based functional models.")
            r-matrix
            r-pbkrtest
            r-progress
+           r-rdpack
            r-reshape2
+           r-rhpcblasctl
            r-rlang
            r-scales))
     (native-inputs
