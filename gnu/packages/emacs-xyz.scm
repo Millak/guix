@@ -27555,17 +27555,30 @@ Emacs that integrate with major modes like Org-mode.")
 (define-public emacs-modus-themes
   (package
     (name "emacs-modus-themes")
-    (version "2.2.0")
+    (version "2.3.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://gitlab.com/protesilaos/modus-themes")
+             (url "https://git.sr.ht/~protesilaos/modus-themes")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mnfbr312dqifsdngb29kvggfirfclc9ncaw5srd52hnwc5n0rxi"))))
+        (base32 "00c3sa663rnl2rvnjdqzghcyfbdri09xjfigyrgd5xa3y0mnpqiz"))))
+    (native-inputs (list texinfo))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'makeinfo
+            (lambda _
+              (invoke "emacs"
+                      "--batch"
+                      "--eval=(require 'ox-texinfo)"
+                      "--eval=(find-file \"doc/modus-themes.org\")"
+                      "--eval=(org-texinfo-export-to-info)")
+              (install-file "doc/modus-themes.info" (string-append #$output "/share/info")))))))
     (home-page "https://protesilaos.com/modus-themes/")
     (synopsis "Accessible themes (WCAG AAA)")
     (description
@@ -27578,7 +27591,8 @@ Modus Operandi (modus-operandi) is a light theme, while Modus
 Vivendi (modus-vivendi) is dark.  Each theme’s color palette is designed to
 meet the needs of the numerous interfaces that are possible in the Emacs
 computing environment.")
-    (license license:gpl3+)))
+    (license (list license:gpl3+
+                   license:fdl1.3+)))) ; GFDLv1.3+ for the manual
 
 (define-public emacs-punpun-theme
   (let ((commit "7026684cd568cb691af3ced5de14c375fe6f5a1a")
