@@ -2213,7 +2213,9 @@ new Date();"))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ggddsbsar4dj2fycfqqqagqil7prhb30afvq6933rz7pa9apm2f"))))
+                "1ggddsbsar4dj2fycfqqqagqil7prhb30afvq6933rz7pa9apm2f"))
+              (patches
+                (search-patches "openjdk-15-xcursor-no-dynamic.patch"))))
     (native-inputs
      `(("autoconf" ,autoconf)
        ("openjdk15:jdk" ,openjdk15 "jdk")
