@@ -1173,48 +1173,6 @@ ranking by fold-change and visualization.")
    (description "This package contains data used by @code{AneuFinder}.")
    (license license:artistic2.0)))
 
-(define-public r-aneufinder
-  (package
-    (name "r-aneufinder")
-    (version "1.22.0")
-    (source (origin
-              (method url-fetch)
-              (uri (bioconductor-uri "AneuFinder" version))
-              (sha256
-               (base32
-                "0xn8952fkchhx7m8dam6gjy86j551xp1cs67510s1qrmfgzpkjp0"))))
-    (build-system r-build-system)
-    (native-inputs
-     (list r-knitr))
-    (propagated-inputs
-     (list r-genomicranges
-           r-aneufinderdata
-           r-ecp
-           r-foreach
-           r-doparallel
-           r-biocgenerics
-           r-s4vectors
-           r-genomeinfodb
-           r-iranges
-           r-rsamtools
-           r-bamsignals
-           r-dnacopy
-           r-biostrings
-           r-genomicalignments
-           r-ggplot2
-           r-reshape2
-           r-ggdendro
-           r-ggrepel
-           r-reordercluster
-           r-mclust
-           r-cowplot))
-    (home-page "https://bioconductor.org/packages/AneuFinder/")
-    (synopsis "Copy number variation analysis in single-cell-sequencing data")
-    (description "This package implements functions for copy number variant
-calling, plotting, export and analysis from whole-genome single cell
-sequencing data.")
-    (license license:artistic2.0)))
-
 (define-public r-arrmdata
   (package
     (name "r-arrmdata")
@@ -1586,6 +1544,48 @@ TCGAbiolinksGUI package.")
 
 
 ;;; Packages
+
+(define-public r-aneufinder
+  (package
+    (name "r-aneufinder")
+    (version "1.22.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "AneuFinder" version))
+              (sha256
+               (base32
+                "0xn8952fkchhx7m8dam6gjy86j551xp1cs67510s1qrmfgzpkjp0"))))
+    (build-system r-build-system)
+    (native-inputs
+     (list r-knitr))
+    (propagated-inputs
+     (list r-genomicranges
+           r-aneufinderdata
+           r-ecp
+           r-foreach
+           r-doparallel
+           r-biocgenerics
+           r-s4vectors
+           r-genomeinfodb
+           r-iranges
+           r-rsamtools
+           r-bamsignals
+           r-dnacopy
+           r-biostrings
+           r-genomicalignments
+           r-ggplot2
+           r-reshape2
+           r-ggdendro
+           r-ggrepel
+           r-reordercluster
+           r-mclust
+           r-cowplot))
+    (home-page "https://bioconductor.org/packages/AneuFinder/")
+    (synopsis "Copy number variation analysis in single-cell-sequencing data")
+    (description "This package implements functions for copy number variant
+calling, plotting, export and analysis from whole-genome single cell
+sequencing data.")
+    (license license:artistic2.0)))
 
 (define-public r-biocversion
   (package
