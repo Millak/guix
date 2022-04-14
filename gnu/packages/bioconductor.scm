@@ -4710,13 +4710,13 @@ structures to hold pseudotime inference results.")
 (define-public r-slingshot
   (package
    (name "r-slingshot")
-   (version "2.2.0")
+   (version "2.2.1")
    (source (origin
             (method url-fetch)
             (uri (bioconductor-uri "slingshot" version))
             (sha256
              (base32
-              "081kp9b0lpw2xq9xvd2kykqqrqcj322mp7xa44xc3kf0nzsivqfa"))))
+              "10kjpmckhzjf41yfhzg7c8idqa9cxz33r4rza6rwihnqnw1liff3"))))
    (build-system r-build-system)
    (propagated-inputs
     (list r-igraph
