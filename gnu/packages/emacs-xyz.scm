@@ -1009,7 +1009,20 @@ process, passing on the arguments as command line arguments.")
               (sha256
                (base32 "0714n5nim0hyd5jywvvddka2gi2bhi1vkrbhx75mdn8h50r688kq"))
               (file-name (git-file-name name version))))
+    (native-inputs (list texinfo))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'makeinfo
+            (lambda _
+              (invoke "emacs"
+                      "--batch"
+                      "--eval=(require 'ox-texinfo)"
+                      "--eval=(find-file \"README.org\")"
+                      "--eval=(org-texinfo-export-to-info)")
+              (install-file "mct.info" (string-append #$output "/share/info")))))))
     (home-page "https://protesilaos.com/emacs/mct")
     (synopsis "Enhancement of the default Emacs minibuffer completion UI")
     (description "Minibuffer and Completions in Tandem, also known as MCT, or
@@ -1018,7 +1031,8 @@ mct.el, is an Emacs package that enhances the default minibuffer and
 framework.  The idea is to make the presentation and overall functionality be
 consistent with other popular, vertically aligned completion UIs while
 leveraging built-in functionality.")
-    (license license:gpl3+)))
+    (license (list license:gpl3+
+                   license:fdl1.3+)))) ; GFDLv1.3+ for the manual
 
 (define-public emacs-minions
   (package
