@@ -120,6 +120,7 @@
 ;;; Copyright © 2022 drozdov <drozdov@portalenergy.tech>
 ;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
 ;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
+;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -17167,6 +17168,33 @@ code completion, incremental search, support for Chinese double-width
 characters, mouse support, and auto suggestions.")
     (license license:bsd-3)
     (properties `((python2-variant . ,(delay python-prompt-toolkit-2))))))
+
+(define-public python-proselint
+  (package
+    (name "python-proselint")
+    (version "0.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "proselint" version))
+       (sha256
+        (base32
+         "0n1ahnq2mkgvh94g05xhc3l1fs3hh0ycskqlqivhhfdaq8ybdlkx"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'set-home-directory
+           (lambda _
+             (setenv "HOME" "/tmp"))))))
+    (propagated-inputs
+     (list python-click-8 python-future python-six))
+    (home-page "https://github.com/amperser/proselint")
+    (synopsis "Linter for prose")
+    (description "@code{python-proselint} is a linter for English prose, that
+scans through a file and detects issues.")
+    (license license:bsd-3)))
 
 (define-public python-prompt-toolkit-2
   (package (inherit python-prompt-toolkit)
