@@ -6476,14 +6476,14 @@ possible, parallelization is achieved using the BiocParallel framework.")
 (define-public r-destiny
   (package
     (name "r-destiny")
-    (version "3.8.0")
+    (version "3.8.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "destiny" version))
        (sha256
         (base32
-         "01662p5j9l12ylf5a5djg4cjppd2n3chrygzw8nnrcf1806xn58y"))))
+         "1f2mp2sxbf1zi61npj5rl5pl7z30rkj5953521iiv0w99mdfwhsc"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biobase
@@ -6509,7 +6509,7 @@ possible, parallelization is achieved using the BiocParallel framework.")
            r-tidyselect
            r-vim))
     (native-inputs
-     (list r-nbconvertr)) ; for vignettes
+     (list r-knitr r-nbconvertr)) ; for vignettes
     (home-page "https://bioconductor.org/packages/destiny/")
     (synopsis "Create and plot diffusion maps")
     (description "This package provides tools to create and plot diffusion
