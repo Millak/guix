@@ -13758,6 +13758,42 @@ memoizing functions.")
 number on the left margin in Emacs.")
     (license license:gpl2+)))
 
+(define-public emacs-lin
+  (package
+    (name "emacs-lin")
+    (version "0.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~protesilaos/lin")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1w1mli2wrxbnwagn3rx5ygslmzlri3drm74nqgwpl4pwh66xi98a"))))
+    (native-inputs (list texinfo))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'makeinfo
+            (lambda _
+              (invoke "emacs"
+                      "--batch"
+                      "--eval=(require 'ox-texinfo)"
+                      "--eval=(find-file \"README.org\")"
+                      "--eval=(org-texinfo-export-to-info)")
+              (install-file "lin.info" (string-append #$output "/share/info")))))))
+    (home-page "https://protesilaos.com/emacs/lin")
+    (synopsis "Make @command{hl-line-mode} more suitable for selection UIs")
+    (description "Lin is a stylistic enhancement for Emacs’ built-in
+@command{hl-line-mode}.  It remaps the hl-line face (or equivalent)
+buffer-locally to a style that is optimal for major modes where line selection
+is the primary mode of interaction.")
+    (license (list license:gpl3+
+                   license:fdl1.3+)))) ; GFDLv1.3+ for the manual
+
 (define-public emacs-idle-highlight
   (package
     (name "emacs-idle-highlight")
