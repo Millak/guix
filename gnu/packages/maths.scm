@@ -6076,21 +6076,22 @@ and comparisons are supported.")
 (define-public sundials
   (package
     (name "sundials")
-    (version "3.1.1")
+    (version "6.1.1")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://computation.llnl.gov/projects/sundials/download/"
+       (uri (string-append "https://github.com/LLNL/sundials/releases/download/v6.1.1/"
                            "sundials-" version ".tar.gz"))
        (sha256
         (base32
-         "090s8ymhd0g1s1d44fa73r5yi32hb4biwahhbfi327zd64yn8kd2"))))
+         "0327a1fy8rilwc4brsqqb71jd1ymb7mqgxsylab06crcg5xn7byg"))))
     (build-system cmake-build-system)
     (native-inputs
      `(("python" ,python-2)))    ;for tests; syntax incompatible with python 3
     (inputs
      `(("fortran" ,gfortran)            ;for fcmix
        ("blas" ,openblas)
+       ("petsc" ,petsc)
        ("suitesparse" ,suitesparse)))   ;TODO: Add hypre
     (arguments
      `(#:configure-flags `("-DCMAKE_C_FLAGS=-O2 -g -fcommon"
@@ -6120,24 +6121,17 @@ easily be incorporated into existing simulation codes.")
     (license license:bsd-3)))
 
 (define-public sundials-openmpi
-  (package (inherit sundials)
+  (package
+    (inherit sundials)
     (name "sundials-openmpi")
     (inputs
      `(("mpi" ,openmpi)
-       ("petsc" ,petsc-openmpi)         ;support in SUNDIALS requires MPI
-       ,@(package-inputs sundials)))
+       ("petsc-openmpi" ,petsc-openmpi)      ;support in SUNDIALS requires MPI
+       ,@(alist-delete "petsc" (package-inputs sundials))))
     (arguments
      (substitute-keyword-arguments (package-arguments sundials)
        ((#:configure-flags flags '())
-        `(cons* "-DMPI_ENABLE:BOOL=ON"
-                "-DPETSC_ENABLE:BOOL=ON"
-                (string-append "-DPETSC_INCLUDE_DIR="
-                               (assoc-ref %build-inputs "petsc")
-                               "/include")
-                (string-append "-DPETSC_LIBRARY_DIR="
-                               (assoc-ref %build-inputs "petsc")
-                               "/lib")
-                ,flags))
+        `(cons* "-DENABLE_MPI:BOOL=ON" ,flags))
        ((#:phases phases '%standard-phases)
         `(modify-phases ,phases
            (add-before 'check 'mpi-setup
