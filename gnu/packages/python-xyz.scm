@@ -3930,6 +3930,18 @@ provides Python-specific tags that represent an arbitrary Python object.")
     (license license:expat)
     (properties `((python2-variant . ,(delay python2-pyyaml))))))
 
+(define-public python-pyyaml-5
+  (package
+    (inherit python-pyyaml)
+    (version "5.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "PyYAML" version))
+       (sha256
+        (base32
+         "0pm440pmpvgv5rbbnm8hk4qga5a292kvlm1bh3x2nwr8pb5p8xv0"))))))
+
 (define-public python2-pyyaml
   (let ((base (package-with-python2 (strip-python2-variant python-pyyaml))))
     (package
