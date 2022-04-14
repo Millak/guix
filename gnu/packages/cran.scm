@@ -112,6 +112,29 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
 
+(define-public r-aod
+  (package
+    (name "r-aod")
+    (version "1.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "aod" version))
+       (sha256
+        (base32 "0p2i536s0aa54rah1l465g77k2ldn6jm6s25y9vc06mk29xvx1cv"))))
+    (properties `((upstream-name . "aod")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/package=aod")
+    (synopsis "Analysis of overdispersed data")
+    (description
+     "This package provides a set of functions to analyze overdispersed counts
+or proportions.  Most of the methods are already available elsewhere but are
+scattered in different packages.  The proposed functions should be considered
+as complements to more sophisticated methods such as @dfn{generalized
+estimating equations} (GEE) or @dfn{generalized linear mixed effect
+models} (GLMM).")
+    (license license:gpl2+)))
+
 (define-public r-brio
   (package
     (name "r-brio")
