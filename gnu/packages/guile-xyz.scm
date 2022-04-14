@@ -627,6 +627,25 @@ Unix-style DSV format and RFC 4180 format.")
                   (add-after 'unpack 'regenerate-autotools
                     (lambda _
                       (delete-file "configure")))
+                  (add-after 'unpack 'support-cross-compilation
+                    (lambda* (#:key target #:allow-other-keys)
+                      ;; Support cross-compilation.  These issues are fixed in
+                      ;; Fibers commit c4756b9c336374546a41ac90a4431fcc8f7e98ee
+                      ;; and this phase can be removed for 1.1.1.
+                      (when target
+                        (substitute* "build-aux/guile.am"
+                          (("\\$\\(AM_V_GEN\\)" all)
+                           (string-append all " FIBERS_CROSS_COMPILING=yes "))
+                          (("compile")
+                           (string-append "compile --target=" target
+                                          " -L $(abs_top_srcdir)")))
+                        (substitute* "fibers/epoll.scm"
+                          (("\\(dynamic-call")
+                           "(unless (getenv \"FIBERS_CROSS_COMPILING\") (dynamic-call")
+                          (("\\(dynamic-link.*" all)
+                           (string-append all ")\n"))
+                          (("#,(%sizeof|%offsetof)" _ prefix)
+                           prefix)))))
                   (add-after 'install 'mode-guile-objects
                     (lambda* (#:key outputs #:allow-other-keys)
                       ;; .go files are installed to "lib/guile/X.Y/cache".
