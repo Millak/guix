@@ -3,6 +3,7 @@
 ;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -30,6 +31,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cpp)
+  #:use-module (gnu packages docker)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages monitoring)
   #:use-module (gnu packages networking)
@@ -47,7 +49,7 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages serialization)
-  #:use-module (gnu packages docker))
+  #:use-module (gnu packages version-control))
 
 (define-public python-jupyter-protocol
   (package
@@ -396,6 +398,59 @@ Mathjax, the JavaScript display engine for mathematics.")
     (description
      "This package provides a client library for executing notebooks.
 It was formerly known as nbconvert's @code{ExecutePreprocessor.}")
+    (license license:bsd-3)))
+
+(define-public python-nbdime
+  (package
+    (name "python-nbdime")
+    (version "3.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "nbdime" version))
+       (sha256
+        (base32 "12v41lricbg713lzlfcx0cilfm9spndaanhp39q4ydvix4h76xk7"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-ipython-genutils
+            ;; TODO: Remove when a release newer than 3.1.1 is made.
+            (lambda _
+              (substitute* "nbdime/config.py"
+                (("from ipython_genutils import py3compat")
+                 "")
+                (("py3compat\\.getcwd")
+                 "os.getcwd")))))))
+    (propagated-inputs
+     (list python-colorama
+           python-gitpython
+           python-jinja2
+           python-jupyter-server
+           python-jupyter-server-mathjax
+           python-nbformat
+           python-pygments
+           python-requests
+           python-tornado-6))
+    (native-inputs
+     (list python-jupyter-server
+           python-mock
+           python-notebook
+           python-pytest
+           python-pytest-tornado
+           python-tabulate))
+    (home-page "https://nbdime.readthedocs.io")
+    (synopsis "Diff tools for Jupyter Notebooks")
+    (description "@code{nbdime} provides tools for diffing and merging of
+Jupyter Notebooks.  It includes the following commands:
+@table @command
+@item nbdiff compare notebooks in a terminal-friendly way
+@item nbmerge three-way merge of notebooks with automatic conflict resolution
+@item nbdiff-web rich rendered diff of notebooks
+@item nbmerge-web web-based three-way merge tool for notebooks
+nbshow present a single notebook in a terminal-friendly way
+@end table")
     (license license:bsd-3)))
 
 (define-public repo2docker
