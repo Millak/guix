@@ -17,7 +17,7 @@
 ;;; Copyright © 2021 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -54,7 +54,8 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages time)
   #:use-module (gnu packages python-science)
-  #:use-module (gnu packages graph))
+  #:use-module (gnu packages graph)
+  #:use-module (gnu packages tex))
 
 (define-public python-sphinx
   (package
@@ -95,13 +96,45 @@
            python-sphinxcontrib-htmlhelp
            python-sphinxcontrib-jsmath
            python-sphinxcontrib-qthelp
-           python-sphinxcontrib-serializinghtml))
+           python-sphinxcontrib-serializinghtml
+
+           ;; The Sphinx LaTeX library '\RequirePackage' or \\usepackage
+           ;; these:
+           texlive-amsfonts             ;amsmath, amssymb, amstext
+           texlive-amsmath
+           texlive-capt-of
+           texlive-carlisle             ;remreset
+           texlive-etoolbox
+           texlive-generic-ltxcmds
+           texlive-hyperref
+           ;; TODO: Remove texlive-stringenc and texlive-zapfding after
+           ;; propagating them in texlive-hyperref in next rebuild cycle.
+           texlive-stringenc
+           texlive-zapfding
+           texlive-latex-base           ;alltt, atbegshi, makeidx, textcomp
+           texlive-latex-cmap
+           texlive-latex-fancyhdr
+           texlive-latex-fancyvrb
+           texlive-latex-float
+           texlive-latex-fncychap
+           texlive-latex-framed
+           texlive-latex-geometry
+           texlive-latex-graphics       ;graphicx, color
+           texlive-latex-kvoptions
+           texlive-latex-needspace
+           texlive-latex-parskip
+           texlive-latex-preview
+           texlive-latex-tabulary
+           texlive-latex-titlesec
+           texlive-latex-tools          ;multicol, longtable
+           texlive-latex-upquote
+           texlive-latex-varwidth
+           texlive-oberdiek             ;hypcap
+           texlive-wrapfig
+           texlive-xcolor))
     (native-inputs
-     (list graphviz
-           imagemagick ;for "convert"
+     (list imagemagick                  ;for "convert"
            python-html5lib
-           python-mock
-           python-nose
            python-pytest))
     (home-page "https://www.sphinx-doc.org")
     (synopsis "Python documentation generator")

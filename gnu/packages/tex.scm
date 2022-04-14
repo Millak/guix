@@ -3326,6 +3326,9 @@ used by @code{hyperref} and @code{bookmark}.")
                    (rename-file (string-append share "/tex/latex/xcolor/xcolor.pro")
                                 (string-append share "/dvips/xcolor/xcolor.pro"))
                    #t)))))))
+      ;; TODO: Propagate texlive-hyperref and many others in the next rebuild
+      ;; cycle.  Grep for '\usepackage' to see what packages it requires.
+      ;; (propagated-inputs (list texlive-hyperref ...))
       (home-page "https://www.ctan.org/pkg/xcolor")
       (synopsis "Driver-independent color extensions for LaTeX and pdfLaTeX")
       (description
@@ -3449,7 +3452,13 @@ XML, using UTF-8 or a suitable 8-bit encoding.")
              texlive-latex-pdftexcmds
              texlive-latex-refcount
              texlive-latex-rerunfilecheck
-             texlive-url))
+             texlive-url
+             ;; TODO: Add this in next rebuild cycle.
+             ;;texlive-cm
+             ;;texlive-latex-graphics    ;for keyval
+             ;;texlive-stringenc
+             ;;texlive-zapfding
+             ))
       (home-page "https://www.ctan.org/pkg/hyperref")
       (synopsis "Extensive support for hypertext in LaTeX")
       (description
