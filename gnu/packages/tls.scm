@@ -1190,28 +1190,27 @@ ciphers such as ChaCha20, Curve25519, NTRU, and Blake2b.")
     (license license:gpl2+))) ; Audit
 
 (define-public aws-lc
-  (let ((commit "d0a5455417d80e68581e197d95720c3fb25e3926")
-        (revision "0"))
-    (package
-      (name "aws-lc")
-      (version (git-version "0.0.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url (string-append "https://github.com/awslabs/" name))
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1ysj3x1f2lcdvwzyb9x3waykz1j7r21viv5z5vgc0ja9xv7znm9g"))))
-      (build-system cmake-build-system)
-      (arguments
-       '(#:tests? #f ; re-enable but with go and perl dependencies
-         #:configure-flags
-         '("-DBUILD_SHARED_LIBS=ON")))
-      (synopsis "General purpose cryptographic library")
-      (description "AWS libcrypto (aws-lc) contains portable C implementations
+  (package
+    (name "aws-lc")
+    ; Update only when updating aws-crt-cpp.
+    (version "1.0.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url (string-append "https://github.com/awslabs/" name))
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "14dhdddlph36nshdkh0v43718hxjx5vxqxmkw7707393q0qrgipw"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:tests? #f ; re-enable but with go and perl dependencies
+       #:configure-flags
+       '("-DBUILD_SHARED_LIBS=ON")))
+    (synopsis "General purpose cryptographic library")
+    (description "AWS libcrypto (aws-lc) contains portable C implementations
 of algorithms needed for TLS and common applications, and includes optimized
 assembly versions for x86 and ARM.")
-      (home-page "https://github.com/awslabs/aws-lc")
-      (license license:asl2.0))))
+    (home-page "https://github.com/awslabs/aws-lc")
+    (license license:asl2.0)))
