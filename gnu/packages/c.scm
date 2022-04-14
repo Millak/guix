@@ -870,7 +870,7 @@ authentication.")
   (package
     (name "aws-c-s3")
     ; Update only when updating aws-crt-cpp.
-    (version "0.1.26")
+    (version "0.1.38")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -879,7 +879,7 @@ authentication.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0gaxnwwk0jbvkgjnxcgchq13xmn7jk5vjvjsps6b0vaz6bf12wv8"))))
+                "0n2y8hzb1bx3vnzlpb5hsav18dg33pwav0mpji6krz98y2l8msya"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
@@ -888,7 +888,7 @@ authentication.")
                             (assoc-ref %build-inputs "aws-c-common"))
              "-DENABLE_NET_TESTS=OFF")))
     (propagated-inputs
-     (list aws-c-auth aws-c-http))
+     (list aws-c-auth aws-c-http aws-checksums))
     (synopsis "Amazon Web Services client library for Amazon S3")
     (description
      "This library provides a C99 client implementation of the Simple Storage
