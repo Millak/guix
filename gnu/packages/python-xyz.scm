@@ -22100,45 +22100,34 @@ systems policies.")
 (define-public python-send2trash
   (package
     (name "python-send2trash")
-    (version "1.5.0")
+    (version "1.8.0")
     (source
      (origin (method git-fetch)
              ;; Source tarball on PyPI doesn't include tests.
              (uri (git-reference
-                   (url "https://github.com/hsoft/send2trash")
+                   (url "https://github.com/arsenetar/send2trash")
                    (commit version)))
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "1c76zldhw2ay7q7r00nnzcampjz9lkqfcbzqpm0iqp5i6bmmv30v"))))
+               "1k7dfypaaq4f36fbciaasv72j6wgjihw8d88axmz9c329bz8v5qx"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
          (add-before 'check 'pre-check
            (lambda _
-             (mkdir-p "/tmp/foo")
-             (setenv "HOME" "/tmp/foo")
-             #t)))))
-    (home-page "https://github.com/hsoft/send2trash")
+             (setenv "HOME" "/tmp")))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-vv")))))))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/arsenetar/send2trash")
     (synopsis "Send files to the user's @file{~/Trash} directory")
     (description "This package provides a Python library to send files to the
 user's @file{~/Trash} directory.")
-    (properties `((python2-variant . ,(delay python2-send2trash))))
     (license license:bsd-3)))
-
-(define-public python2-send2trash
-  (let ((base (package-with-python2
-               (strip-python2-variant python-send2trash))))
-    (package/inherit base
-      (arguments
-       (substitute-keyword-arguments (package-arguments python-send2trash)
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-before 'check 'setenv
-               (lambda _
-                 (setenv "GUIX_PYTHONPATH"
-                         (string-append (getcwd) ":" (getenv "GUIX_PYTHONPATH"))))))))))))
 
 (define-public python-pyfavicon
   (package
