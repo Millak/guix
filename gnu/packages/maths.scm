@@ -6087,12 +6087,10 @@ and comparisons are supported.")
          "0327a1fy8rilwc4brsqqb71jd1ymb7mqgxsylab06crcg5xn7byg"))))
     (build-system cmake-build-system)
     (native-inputs
-     `(("python" ,python-2)))    ;for tests; syntax incompatible with python 3
+     (list python-2))    ;for tests; syntax incompatible with python 3
     (inputs
-     `(("fortran" ,gfortran)            ;for fcmix
-       ("blas" ,openblas)
-       ("petsc" ,petsc)
-       ("suitesparse" ,suitesparse)))   ;TODO: Add hypre
+     (list gfortran                               ;for fcmix
+           openblas petsc suitesparse))           ;TODO: Add hypre
     (arguments
      `(#:configure-flags `("-DCMAKE_C_FLAGS=-O2 -g -fcommon"
                            "-DEXAMPLES_ENABLE_C:BOOL=ON"
@@ -6125,9 +6123,9 @@ easily be incorporated into existing simulation codes.")
     (inherit sundials)
     (name "sundials-openmpi")
     (inputs
-     `(("mpi" ,openmpi)
-       ("petsc-openmpi" ,petsc-openmpi)      ;support in SUNDIALS requires MPI
-       ,@(alist-delete "petsc" (package-inputs sundials))))
+     (modify-inputs (package-inputs sundials)
+       (delete "petsc")
+       (prepend openmpi petsc-openmpi)))     ;support in SUNDIALS requires MPI
     (arguments
      (substitute-keyword-arguments (package-arguments sundials)
        ((#:configure-flags flags '())
