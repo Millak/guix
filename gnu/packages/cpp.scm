@@ -1162,45 +1162,43 @@ to be useful for building network-based applications.")
     (license license:boost1.0)))
 
 (define-public aws-crt-cpp
-  (let* ((commit "b6d311d76b504bf8ace5134d3fca0e672c36c9c3")
-         (revision "1"))
-    (package
-      (name "aws-crt-cpp")
-      ; Update only when updating aws-sdk-cpp, and when updating also update
-      ; versions of library dependencies linked from from
-      ; https://github.com/awslabs/aws-crt-cpp/tree/{aws-crt-cpp commit}/crt
-      (version (git-version "0.17.1" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/awslabs/aws-crt-cpp")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1n0nlbz91j3ycwwrh9652f0h5qr2sj5b1l0i5sg40ajzs7wvzd32"))))
-      (build-system cmake-build-system)
-      (arguments
-       '(#:configure-flags
-         (list "-DBUILD_DEPS=OFF"
-               "-DBUILD_SHARED_LIBS=ON"
-               (string-append "-DCMAKE_PREFIX_PATH="
-                            (assoc-ref %build-inputs "aws-c-common"))
-               "-DENABLE_NET_TESTS=OFF")))
-      (propagated-inputs
-       (list aws-c-auth
-             aws-c-cal
-             aws-c-event-stream
-             aws-c-http
-             aws-c-mqtt
-             aws-c-s3))
-      (synopsis "C++ wrapper for Amazon Web Services C libraries")
-      (description "The AWS Common Runtime (CRT) library provides a C++ wrapper
+  (package
+    (name "aws-crt-cpp")
+    ; Update only when updating aws-sdk-cpp, and when updating also update
+    ; versions of library dependencies linked from from
+    ; https://github.com/awslabs/aws-crt-cpp/tree/{aws-crt-cpp commit}/crt
+    (version "0.17.27")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/awslabs/aws-crt-cpp")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "14g8pn7yii1klby7phcw08qnld1qv11vwmbdz8cs3mlpqahxrh4i"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:configure-flags
+       (list "-DBUILD_DEPS=OFF"
+             "-DBUILD_SHARED_LIBS=ON"
+             (string-append "-DCMAKE_PREFIX_PATH="
+                          (assoc-ref %build-inputs "aws-c-common"))
+             "-DENABLE_NET_TESTS=OFF")))
+    (propagated-inputs
+     (list aws-c-auth
+           aws-c-cal
+           aws-c-event-stream
+           aws-c-http
+           aws-c-mqtt
+           aws-c-s3))
+    (synopsis "C++ wrapper for Amazon Web Services C libraries")
+    (description "The AWS Common Runtime (CRT) library provides a C++ wrapper
 implementation for the following @acronym{AWS,Amazon Web Services} C libraries:
 aws-c-auth, aws-c-cal, aws-c-common, aws-c-compression, aws-c-event-stream,
 aws-c-http, aws-c-io, aws-c-mqtt, aws-checksums, and s2n.")
-      (home-page "https://github.com/awslabs/aws-crt-cpp")
-      (license license:asl2.0))))
+    (home-page "https://github.com/awslabs/aws-crt-cpp")
+    (license license:asl2.0)))
 
 (define-public aws-sdk-cpp
   (package
