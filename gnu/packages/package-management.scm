@@ -1183,7 +1183,7 @@ written entirely in Python.")
            python-pluginbase
            python-pygments
            python-pyjwt
-           python-pyyaml
+           python-pyyaml-5
            python-requests
            python-six
            python-tqdm
