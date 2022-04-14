@@ -15894,7 +15894,11 @@ populations.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1k8hllr5if6k2mm2zj391fv40sfc008cjm04l9vgfsdppb80i112"))))
+                "1k8hllr5if6k2mm2zj391fv40sfc008cjm04l9vgfsdppb80i112"))
+              (snippet
+               #~(begin
+                   (use-modules ((guix build utils)))
+                   (delete-file "src/scregseg/_utils.c")))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #false                  ; tests require network access
