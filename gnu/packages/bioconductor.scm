@@ -13396,13 +13396,13 @@ libraries.")
 (define-public r-singler
   (package
     (name "r-singler")
-    (version "1.8.0")
+    (version "1.8.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "SingleR" version))
        (sha256
-        (base32 "19lsn3cpghkhfbx4jqgbwwrnacrl7vj3r91ymd1gk02c9pn5dmci"))))
+        (base32 "0j0h6ipm65wv38qx40z16h01mfirpshfn4lhlwlg2nri4vmihlpi"))))
     (properties `((upstream-name . "SingleR")))
     (build-system r-build-system)
     (propagated-inputs
