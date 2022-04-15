@@ -543,7 +543,7 @@ currently focused application in the top panel of the GNOME shell.")
 (define-public gnome-shell-extension-just-perfection
   (package
     (name "gnome-shell-extension-just-perfection")
-    (version "16.0")
+    (version "20.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -552,7 +552,7 @@ currently focused application in the top panel of the GNOME shell.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05zbzgs92zqlmjq4h2q2gggrf1qiz8l6739zzg1x5090gvk4iak3"))))
+                "1b1hzibgryn861av2bjnfh5bmzs2bxfcsyl0ardkaj97228xsjzy"))))
     (build-system copy-build-system)
     (arguments
      `(#:install-plan
