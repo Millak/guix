@@ -322,7 +322,27 @@ interface and is based on GNU Guile.")
               (sha256
                (base32
                 "1rdwhrcibs2ly4hjwwb5kmzb133ccjmrfvb0a70cqkv9jy1pg061"))))
-    (native-inputs (list pkg-config guile-3.0))
+    (arguments
+     (list #:configure-flags #~'("--localstatedir=/var")
+           #:make-flags #~'("GUILE_AUTO_COMPILE=0")
+           #:phases (if (%current-target-system)
+                        #~(modify-phases %standard-phases
+                            (add-before 'configure 'set-fibers-directory
+                              (lambda _
+                                ;; When cross-compiling, refer to the target
+                                ;; Fibers, not the native one.
+                                (substitute* '("herd.in" "shepherd.in")
+                                  (("%FIBERS_SOURCE_DIRECTORY%")
+                                   #$(file-append
+                                      (this-package-input "guile-fibers")
+                                      "/share/guile/site/3.0"))
+                                  (("%FIBERS_OBJECT_DIRECTORY%")
+                                   #$(file-append
+                                      (this-package-input "guile-fibers")
+                                      "/lib/guile/3.0/site-ccache"))))))
+                        #~%standard-phases)))
+    (native-inputs (list pkg-config guile-3.0
+                         guile-fibers-1.1))       ;for cross-compilation
     (inputs (list guile-3.0 guile-fibers-1.1))))
 
 (define-public guile2.2-shepherd
