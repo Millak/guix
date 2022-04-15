@@ -4413,27 +4413,28 @@ the original Transport Tycoon Deluxe.")
          "0h583d8fxy78kc3jvpp78r76a48qhxrhm4q7jbnj74aw0kwrcl8g"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("grfcodec" ,grfcodec)
-       ; Scripts are Python3 compatible, but call the interpreter as
-       ; python instead of python3.
-       ("python" ,python-wrapper)
-       ("tar" ,tar)))
+     (list grfcodec
+           ;; Scripts are Python3 compatible, but call the interpreter as
+           ;; python instead of python3.
+           python-wrapper
+           tar))
     (arguments
-     `(#:make-flags
-       (list (string-append "DIR_NAME=openmsx")
-             (string-append "TAR="
-                            (search-input-file %build-inputs "/bin/tar")))
-       ;; The check phase only verifies md5sums, see openttd-opengfx.
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (copy-recursively "openmsx"
-                               (string-append (assoc-ref outputs "out")
-                                              "/share/games/openttd/baseset"
-                                              "/openmsx")))))))
+     (list
+      #:make-flags
+      #~(list (string-append "DIR_NAME=openmsx")
+              (string-append "TAR="
+                             (search-input-file %build-inputs "/bin/tar")))
+      ;; The check phase only verifies md5sums, see openttd-opengfx.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (copy-recursively "openmsx"
+                                (string-append (assoc-ref outputs "out")
+                                               "/share/games/openttd/baseset"
+                                               "/openmsx")))))))
     (home-page "http://dev.openttdcoop.org/projects/openmsx")
     (synopsis "Music set for OpenTTD")
     (description "OpenMSX is a music set for OpenTTD which makes it possible
