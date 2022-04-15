@@ -474,6 +474,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/phabricator.scm 			\
   %D%/packages/php.scm				\
   %D%/packages/piet.scm			\
+  %D%/packages/pikchr.scm			\
   %D%/packages/pkg-config.scm			\
   %D%/packages/plan9.scm			\
   %D%/packages/plotutils.scm			\
