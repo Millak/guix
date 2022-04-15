@@ -10813,7 +10813,57 @@ plugin for flake8 to check PEP-8 naming conventions.")
       (arguments
        `(#:tests? #f
          ,@(package-arguments base)))
-    (native-inputs `()))))
+      (native-inputs `()))))
+
+(define-public python-pep621
+  (package
+    (name "python-pep621")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/FFY00/python-pep621")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0nzig7bmzf0xx5svxlf065mrzihr0ci4p1yaxka9flqjba98flpr"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: PEP 517 manual build/install procedures copied from
+          ;; python-isort.
+          (replace 'build
+            (lambda _
+              ;; ZIP does not support timestamps before 1980.
+              (setenv "SOURCE_DATE_EPOCH" "315532800")
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (replace 'check
+            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv"
+                        ;; Two parameterized test_load tests are currently
+                        ;; failing (see:
+                        ;; https://github.com/FFY00/python-pep621/issues/14).
+                        "-k" "not test_load"))))
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl)))))))
+    (propagated-inputs (list python-packaging))
+    (native-inputs (list python-pypa-build python-pytest python-tomli))
+    (home-page "https://github.com/FFY00/python-pep621")
+    (synopsis "Dataclass for PEP 621 metadata")
+    (description "This project does not implement the parsing of
+@file{pyproject.toml} containing PEP 621 metadata.  Instead, given a Python
+data structure representing PEP 621 metadata (already parsed), it will
+validate this input and generate a PEP 643-compliant metadata
+file (e.g. @file{PKG-INFO}).")
+    (license license:expat)))
 
 (define-public python-pyflakes
   (package
