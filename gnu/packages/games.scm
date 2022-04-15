@@ -4300,22 +4300,24 @@ engine.  When you start it you will be prompted to download a graphics set.")
          "0nhzlk6s73qvznm5fdwcs1b42g2plf26s5ag39fvck45zm7m48jk"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags (list (string-append "CC=" ,(cc-for-target))
-                          (string-append "INSTALL_DIR="
-                                         (assoc-ref %outputs "out")
-                                         "/share/games/openttd/baseset/opengfx"))
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda _
-             ;; Make sure HOME is writable for GIMP.
-             (setenv "HOME" (getcwd))
+     (list
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "INSTALL_DIR="
+                             #$output
+                             "/share/games/openttd/baseset/opengfx"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              ;; Make sure HOME is writable for GIMP.
+              (setenv "HOME" (getcwd))
 
-             ;; Redirect stdout, not stderr, to /dev/null. This prevents
-             ;; dos2unix from receiving its version information as a flag.
-             (substitute* "Makefile"
-               (("\\$\\(UNIX2DOS\\) -q --version 2>/dev/null")
-                "$(UNIX2DOS) -q --version 1>/dev/null")))))
+              ;; Redirect stdout, not stderr, to /dev/null. This prevents
+              ;; dos2unix from receiving its version information as a flag.
+              (substitute* "Makefile"
+                (("\\$\\(UNIX2DOS\\) -q --version 2>/dev/null")
+                 "$(UNIX2DOS) -q --version 1>/dev/null")))))
        ;; The check phase for this package only checks the md5sums of the built
        ;; GRF files against the md5sums of the release versions. Because we use
        ;; different software versions than upstream does, some of the md5sums
@@ -4323,12 +4325,13 @@ engine.  When you start it you will be prompted to download a graphics set.")
        ;; to disable this test.
        #:tests? #f
        #:parallel-build? #f))
-    (native-inputs `(("dos2unix" ,dos2unix)
-                     ("gimp" ,gimp)
-                     ("grfcodec" ,grfcodec)
-                     ("nml" ,nml)
-                     ("which" ,which)
-                     ("python" ,python)))
+    (native-inputs
+     (list dos2unix
+           gimp
+           grfcodec
+           nml
+           which
+           python))
     (home-page "http://dev.openttdcoop.org/projects/opengfx")
     (synopsis "Base graphics set for OpenTTD")
     (description
