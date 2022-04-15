@@ -4363,34 +4363,34 @@ OpenGFX provides you with...
          "0aym026lg0r7dp3jxxs9c0rj8lwy1fz3v9hmk3mml6sycsg3fv42"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("catcodec" ,catcodec)
-       ("python" ,python)
-       ("tar" ,tar)))
+     (list catcodec
+           python
+           tar))
     (arguments
-     `(#:make-flags
-       (list (string-append "DIR_NAME=opensfx")
-             (string-append "TAR="
-                            (search-input-file %build-inputs "/bin/tar")))
-       ;; The check phase only verifies md5sums, see openttd-opengfx.
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'make-reproducible
-           (lambda _
-             ;; Remove the time dependency of the installed tarball by setting
-             ;; the modification times if its members to 0.
-             (substitute* "scripts/Makefile.def"
-               (("-cf") " --mtime=@0 -cf"))
-             #t))
-         (delete 'configure)
-         (add-before 'build 'prebuild
-           (lambda _ (invoke "make" "opensfx.cat")))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (copy-recursively "opensfx"
-                               (string-append (assoc-ref outputs "out")
-                                              "/share/games/openttd/baseset"
-                                              "/opensfx")))))))
+     (list
+      #:make-flags
+      #~(list (string-append "DIR_NAME=opensfx")
+              (string-append "TAR="
+                             (search-input-file %build-inputs "/bin/tar")))
+      ;; The check phase only verifies md5sums, see openttd-opengfx.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'make-reproducible
+            (lambda _
+              ;; Remove the time dependency of the installed tarball by setting
+              ;; the modification times if its members to 0.
+              (substitute* "scripts/Makefile.def"
+                (("-cf") " --mtime=@0 -cf"))))
+          (delete 'configure)
+          (add-before 'build 'prebuild
+            (lambda _ (invoke "make" "opensfx.cat")))
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (copy-recursively "opensfx"
+                                (string-append (assoc-ref outputs "out")
+                                               "/share/games/openttd/baseset"
+                                               "/opensfx")))))))
     (home-page "http://dev.openttdcoop.org/projects/opensfx")
     (synopsis "Base sounds for OpenTTD")
     (description "OpenSFX is a set of free base sounds for OpenTTD which make
