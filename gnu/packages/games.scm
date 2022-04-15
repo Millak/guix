@@ -4262,15 +4262,15 @@ world}, @uref{http://evolonline.org, Evol Online} and
                "1qz7ld55m9cvgr4mkv6c11y0zf2aph3ba605l45qj41hk2wzb2r5"))))
     (build-system cmake-build-system)
     (inputs
-     `(("allegro" ,allegro)
-       ("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("icu4c" ,icu4c)
-       ("libpng" ,libpng)
-       ("lzo" ,lzo)
-       ("sdl" ,sdl)
-       ("xz" ,xz)
-       ("zlib" ,zlib)))
+     (list allegro
+           fontconfig
+           freetype
+           icu4c
+           libpng
+           lzo
+           sdl
+           xz
+           zlib))
     (synopsis "Transportation economics simulator game")
     (description "OpenTTD is a game in which you transport goods and
 passengers by land, water and air.  It is a re-implementation of Transport
