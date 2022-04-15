@@ -1052,6 +1052,25 @@ automated way to document command-line programs.  It scans
 with a simple (opinionated) workflow.")
     (license license:expat)))
 
+(define-public python-sphinx-sitemap
+  (package
+    (name "python-sphinx-sitemap")
+    (version "2.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sphinx-sitemap" version))
+       (sha256
+        (base32 "0dvpryrz7vn8rvayzy5nrmqy4wyzlaxcx88bl46prc9w4cwxmbb5"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-sphinx))
+    (home-page "https://github.com/jdillard/sphinx-sitemap")
+    (synopsis "Sitemap generator for Sphinx")
+    (description "A Sphinx extension to generate multiversion and
+multilanguage sitemaps.org compliant sitemaps for the HTML version of your
+Sphinx documentation.")
+    (license license:expat)))
+
 (define-public python-pydata-sphinx-theme
   (package
     (name "python-pydata-sphinx-theme")
