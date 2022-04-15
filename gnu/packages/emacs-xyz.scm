@@ -8454,7 +8454,8 @@ board and goal value can be customized.")
           (add-after 'install 'install-pieces
             (lambda _
               (let ((pieces
-                     (string-append #$output "/share/emacs/site-lisp/pieces")))
+                     (string-append #$output "/share/emacs/site-lisp/chess-"
+                                    #$version "/pieces")))
                 (mkdir-p pieces)
                 (copy-recursively "pieces" pieces)))))))
     (home-page "https://elpa.gnu.org/packages/chess.html")
