@@ -20624,22 +20624,23 @@ access lexicographic data from WordNet.")
 (define-public sbcl-nfiles
   (package
    (name "sbcl-nfiles")
-   (version "0.2.1")
+   (version "0.4.0")
    (source
     (origin
      (method git-fetch)
      (uri (git-reference
            (url "https://github.com/atlas-engineer/nfiles")
            (commit version)))
-     (file-name (git-file-name "nfiles" version))
+     (file-name (git-file-name "cl-nfiles" version))
      (sha256
       (base32
-       "1jdrqvxp4dxlkggx951rxp29lg7hm8zxq35pqq8hr9m9ydy088s7"))))
+       "0qmyv4ajcz7mlihnslx55wr1n8aaisw4clmsijnjf1w6wxh7lh7w"))))
    (build-system asdf-build-system/sbcl)
    (inputs
     (list gnupg
           sbcl-alexandria
           sbcl-hu.dwim.defclass-star
+          sbcl-quri
           sbcl-serapeum
           sbcl-trivial-garbage
           sbcl-trivial-package-local-nicknames
