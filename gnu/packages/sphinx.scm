@@ -1002,6 +1002,56 @@ automated way to document command-line programs.  It scans
 @code{.. program::} and @code{.. option::} directives.")
     (license license:bsd-2)))
 
+(define-public python-sphinx-theme-builder
+  (package
+    (name "python-sphinx-theme-builder")
+    (version "0.2.0a14")
+    (source
+     (origin
+       (method git-fetch)               ;no tests in pypi archive
+       (uri (git-reference
+             (url "https://github.com/pradyunsg/sphinx-theme-builder")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1brqp34q716gglliallbgq4m63hl3nk8j6w8wcl8f2vvnkch6v98"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: PEP 517 manual build copied from python-isort.
+          (replace 'build
+            (lambda _
+              ;; ZIP does not support timestamps before 1980.
+              (setenv "SOURCE_DATE_EPOCH" "315532800")
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv"))))
+          (replace 'install
+            (lambda _
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl)))))))
+    (native-inputs (list python-flit-core python-pytest))
+    (propagated-inputs
+     (list python-pypa-build
+           python-click
+           python-nodeenv
+           python-packaging
+           python-pep621
+           python-rich
+           python-sphinx-autobuild
+           python-tomli))
+    (home-page "https://github.com/pradyunsg/sphinx-theme-builder")
+    (synopsis "Tool for authoring Sphinx themes")
+    (description "This package provides a tool for authoring Sphinx themes
+with a simple (opinionated) workflow.")
+    (license license:expat)))
+
 (define-public python-pydata-sphinx-theme
   (package
     (name "python-pydata-sphinx-theme")
