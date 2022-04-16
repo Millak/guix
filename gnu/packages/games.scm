@@ -4447,35 +4447,36 @@ Transport Tycoon Deluxe.")
     (inherit openttd-engine)
     (name "openttd")
     (arguments
-     `(#:configure-flags
-       (let* ((out (assoc-ref %outputs "out")))
-         (list (string-append "-DCMAKE_INSTALL_BINDIR=" out "/bin")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-sources
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "src/music/fluidsynth.cpp"
-               (("default_sf\\[\\] = \\{" all)
-                (string-append all "
+     (list
+      #:configure-flags
+      #~(list (string-append "-DCMAKE_INSTALL_BINDIR=" #$output "/bin"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-sources
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/music/fluidsynth.cpp"
+                (("default_sf\\[\\] = \\{" all)
+                 (string-append all "
 \t/* Guix hardcoded :P */
-\t\"" (string-append (assoc-ref inputs "freepats-gm")
-                     "/share/soundfonts/FreePatsGM.sf2") "\",
+\t\"" (search-input-file inputs "/share/soundfonts/FreePatsGM.sf2") "\",
 ")))))
-         (add-before 'check 'install-data
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (for-each
-              (lambda (input)
-                (copy-recursively (assoc-ref inputs input)
-                                  (assoc-ref outputs "out")))
-              (list "opengfx" "openmsx" "opensfx")))))))
+          (add-before 'check 'install-data
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((base "/share/games/openttd"))
+                (for-each
+                 (lambda (dir)
+                   ;; Copy the entire input, so as to not omit documentation
+                   ;; etc.
+                   (copy-recursively
+                    (string-drop-right dir (string-length base))
+                    (assoc-ref outputs "out")))
+                 (search-path-as-list (list base) (map cdr inputs)))))))))
     (inputs
      (modify-inputs (package-inputs openttd-engine)
        (prepend fluidsynth freepats-gm)))
     (native-inputs
-     `(("opengfx" ,openttd-opengfx)
-       ("openmsx" ,openttd-openmsx)
-       ("opensfx" ,openttd-opensfx)
-       ,@(package-native-inputs openttd-engine)))))
+     (modify-inputs (package-native-inputs openttd-engine)
+       (prepend openttd-opengfx openttd-openmsx openttd-opensfx)))))
 
 (define openrct2-title-sequences
   (package
