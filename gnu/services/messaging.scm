@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2015, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015, 2017-2020, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <contact@parouby.fr>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -28,11 +28,14 @@
   #:use-module (gnu services shepherd)
   #:use-module (gnu services configuration)
   #:use-module (gnu system shadow)
+  #:autoload   (gnu build linux-container) (%namespaces)
+  #:use-module ((gnu system file-systems) #:select (file-system-mapping))
   #:use-module (guix gexp)
   #:use-module (guix modules)
   #:use-module (guix records)
   #:use-module (guix packages)
   #:use-module (guix deprecation)
+  #:use-module (guix least-authority)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-35)
   #:use-module (ice-9 match)
@@ -821,7 +824,18 @@ string, you could instantiate a prosody service like this:
   DaemonInterface = " interface "
   DaemonPort = " (number->string port) "
   PluginDir = " plugins "/lib/bitlbee
-" extra-settings)))
+" extra-settings))
+            (bitlbee* (least-authority-wrapper
+                       (file-append bitlbee "/sbin/bitlbee")
+                       #:name "bitlbee"
+                       #:mappings (list (file-system-mapping
+                                         (source "/var/lib/bitlbee")
+                                         (target source)
+                                         (writable? #t))
+                                        (file-system-mapping
+                                         (source conf)
+                                         (target conf)))
+                       #:namespaces (delq 'net %namespaces))))
 
        (with-imported-modules (source-module-closure
                                '((gnu build shepherd)
@@ -836,20 +850,37 @@ string, you could instantiate a prosody service like this:
 
                 (modules '((gnu build shepherd)
                            (gnu system file-systems)))
-                (start #~(make-forkexec-constructor/container
-                          (list #$(file-append bitlbee "/sbin/bitlbee")
-                                "-n" "-F" "-u" "bitlbee" "-c" #$conf)
+                (start #~(if (defined? 'make-inetd-constructor)
 
-                          ;; Allow 'bitlbee-purple' to use libpurple plugins.
-                          #:environment-variables
-                          (list (string-append "PURPLE_PLUGIN_PATH="
-                                               #$plugins "/lib/purple-2"))
+                             (make-inetd-constructor
+                              (list #$bitlbee* "-I"
+                                    "-u" "bitlbee" "-c" #$conf)
+                              (addrinfo:addr
+                               (car (getaddrinfo #$interface
+                                                 #$(number->string port)
+                                                 (logior AI_NUMERICHOST
+                                                         AI_NUMERICSERV))))
+                              #:service-name-stem "bitlbee"
 
-                          #:pid-file "/var/run/bitlbee.pid"
-                          #:mappings (list (file-system-mapping
-                                            (source "/var/lib/bitlbee")
-                                            (target source)
-                                            (writable? #t)))))
+                              ;; Allow 'bitlbee-purple' to use libpurple plugins.
+                              #:environment-variables
+                              (list (string-append "PURPLE_PLUGIN_PATH="
+                                                   #$plugins "/lib/purple-2")))
+
+                             (make-forkexec-constructor/container
+                              (list #$(file-append bitlbee "/sbin/bitlbee")
+                                    "-n" "-F" "-u" "bitlbee" "-c" #$conf)
+
+                              ;; Allow 'bitlbee-purple' to use libpurple plugins.
+                              #:environment-variables
+                              (list (string-append "PURPLE_PLUGIN_PATH="
+                                                   #$plugins "/lib/purple-2"))
+
+                              #:pid-file "/var/run/bitlbee.pid"
+                              #:mappings (list (file-system-mapping
+                                                (source "/var/lib/bitlbee")
+                                                (target source)
+                                                (writable? #t))))))
                 (stop  #~(make-kill-destructor)))))))))
 
 (define %bitlbee-accounts
