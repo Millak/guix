@@ -1524,7 +1524,7 @@ following three utilities are included with the library:
 (define-public bitcoin-unlimited
   (package
     (name "bitcoin-unlimited")
-    (version "1.9.2.0")
+    (version "1.10.0.0")
     (source
      (origin
        (method git-fetch)
@@ -1533,7 +1533,7 @@ following three utilities are included with the library:
              (commit (string-append "BCHunlimited" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1cmrvh7azz0g89rsx6i8apd1li6r1lb3jrmbbf8fic1918lwv62m"))))
+        (base32 "12yb2rbd6hsns43qyxc5dm7h5k4sph9sb64q7kkbqi3xhgrrsjdq"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
@@ -1574,30 +1574,17 @@ following three utilities are included with the library:
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-tests
            (lambda _
-             ;; Fix data specific test failure
-             ;; https://reviews.bitcoinabc.org/rABC67bbd3d0aaee2952ff1cb5da51d1fd0b50c2b63a
-             (substitute* "src/test/rpc_tests.cpp"
-               (("1607731200") "9907731200"))
-
              ;; Disable utilprocess_tests because it never ends.
              ;; It looks like it tries to start /bin/sleep and waits until it
              ;; is in the list of running processes, but /bin/sleep doesn't
              ;; exist.
              (substitute* "src/Makefile.test.include"
                (("test/utilprocess_tests.cpp")
-                ""))
-
-             ;; Some transaction validation rules have changed (see upstream
-             ;; commit f208400825d4641b9310a1fba023d56e0862e3b0), which makes
-             ;; a test fail. Disable it for now.
-             ;; TODO: Remove this when the next version is released.
-             (substitute* "src/Makefile.test.include"
-               (("test/txvalidationcache_tests.cpp")
                 ""))))
          (add-before 'check 'set-home
            (lambda _
-             (setenv "HOME" (getenv "TMPDIR")) ; tests write to $HOME
-             #t)))))
+             ;; Tests write to $HOME
+             (setenv "HOME" (getenv "TMPDIR")))))))
     (home-page "https://www.bitcoinunlimited.info/")
     (synopsis "Client for the Bitcoin Cash protocol")
     (description
