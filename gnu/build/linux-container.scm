@@ -303,6 +303,7 @@ delete it when leaving the dynamic extent of this call."
 
 (define* (call-with-container mounts thunk #:key (namespaces %namespaces)
                               (host-uids 1) (guest-uid 0) (guest-gid 0)
+                              (relayed-signals (list SIGINT SIGTERM))
                               (process-spawned-hook (const #t)))
   "Run THUNK in a new container process and return its exit status; call
 PROCESS-SPAWNED-HOOK with the PID of the new process that has been spawned.
@@ -320,20 +321,27 @@ can map more than a single uid/gid.
 GUEST-UID and GUEST-GID specify the first UID (respectively GID) that host
 UIDs (respectively GIDs) map to in the namespace.
 
+RELAYED-SIGNALS is the list of signals that are \"relayed\" to the container
+process when caught by its parent.
+
 Note that if THUNK needs to load any additional Guile modules, the relevant
 module files must be present in one of the mappings in MOUNTS and the Guile
 load path must be adjusted as needed."
+  (define (install-signal-handlers pid)
+    ;; Install handlers that forward signals to PID.
+    (define (relay-signal signal)
+      (false-if-exception (kill pid signal)))
+
+    (for-each (lambda (signal)
+                (sigaction signal relay-signal))
+              relayed-signals))
+
   (call-with-temporary-directory
    (lambda (root)
      (let ((pid (run-container root mounts namespaces host-uids thunk
                                #:guest-uid guest-uid
                                #:guest-gid guest-gid)))
-       ;; Catch SIGINT and kill the container process.
-       (sigaction SIGINT
-         (lambda (signum)
-           (false-if-exception
-            (kill pid SIGKILL))))
-
+       (install-signal-handlers pid)
        (process-spawned-hook pid)
        (match (waitpid pid)
          ((_ . status) status))))))
