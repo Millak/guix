@@ -508,7 +508,7 @@ do so.")
 (define-public electrum
   (package
     (name "electrum")
-    (version "4.1.5")
+    (version "4.2.1")
     (source
      (origin
        (method url-fetch)
@@ -516,7 +516,7 @@ do so.")
                            version "/Electrum-"
                            version ".tar.gz"))
        (sha256
-        (base32 "188r4zji985z8pm9b942xhmvv174yndk6jxagxl7ljk03wl2wiwi"))
+        (base32 "0w41411zq07kx0351wxkmpn0wr42wd2nx0m6v0iwvpsggx654b6r"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -525,22 +525,23 @@ do so.")
            #t))))
     (build-system python-build-system)
     (inputs
-     (list python-pyqt
-           python-qrcode
-           python-protobuf
+     (list libsecp256k1
            python-aiohttp
            python-aiohttp-socks
-           python-aiorpcx-0.18
-           python-certifi
-           python-bitstring
+           python-aiorpcx
            python-attrs
+           python-bitstring
+           python-btchip-python
+           python-certifi
            python-cryptography
-           python-qdarkstyle
            python-dnspython
            python-hidapi
            python-ledgerblue
-           python-btchip-python
-           libsecp256k1))
+           python-protobuf
+           python-pyqt
+           python-qdarkstyle
+           python-qrcode
+           zbar))
     (arguments
      `(#:tests? #f                      ; no tests
        #:phases
