@@ -4,6 +4,7 @@
 ;;; Copyright © 2016 Andy Patterson <ajpatter@uwaterloo.ca>
 ;;; Copyright © 2017, 2019, 2020, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2022 João Gabriel <joaog.bastos@protonmail.ch>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,6 +25,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages avahi)
+  #:use-module (gnu packages boost)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
@@ -31,6 +33,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages pkg-config)
@@ -249,6 +252,64 @@ package contains the library, but no drivers.")
 proving access to any raster image scanner hardware (flatbed scanner,
 hand-held scanner, video- and still-cameras, frame-grabbers, etc.).  The
 package contains the library and drivers.")))
+
+(define-public utsushi
+  (let ((commit "839d06a5a80b353cb604eb9f7d352a1648ab1fdf"))
+    (package
+      (name "utsushi")
+      (version (git-version "0.65.0" "1" commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://gitlab.com/utsushi/utsushi")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0i6ipqy61abbsmqqqy5sii0vlib146snvp975sgjmv4nzy9mwf24"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:tests? #f
+         #:configure-flags
+         (list (string-append "--with-boost-libdir="
+                              (assoc-ref %build-inputs "boost") "/lib")
+               "CXXFLAGS=-Wno-error")
+         #:phases
+         (modify-phases %standard-phases
+           (add-before 'bootstrap 'zap-unnecessary-git-dependency
+             (lambda _
+               (substitute* "configure.ac"
+                 (("-m4_esyscmd_s\\(\\[git describe --always\\]\\)") ""))))
+           (add-after 'install 'install-udev-rules
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((out (assoc-ref outputs "out")))
+                 (mkdir-p (string-append out "/lib/udev/rules.d"))
+                 (install-file "drivers/esci/utsushi-esci.rules"
+                               (string-append out "/lib/udev/rules.d"))))))))
+      (inputs (list boost
+                    eudev
+                    sane-backends-minimal
+                    libusb
+                    libjpeg-turbo
+                    imagemagick
+                    libtiff
+                    zlib))
+      (native-inputs (list util-linux
+                           autoconf
+                           autoconf-archive
+                           automake
+                           gettext-minimal
+                           libtool
+                           libxslt
+                           pkg-config))
+      (home-page "https://gitlab.com/utsushi/utsushi")
+      (synopsis "Image scanning software for EPSON devices")
+      (description
+       "Utsushi is a set of applications for image scanning with
+support for a number of EPSON scanners, including a compatibility driver to
+interface with software built around the @acronym{SANE, Scanner Access Now Easy}
+standard.")
+      (license license:gpl3+))))
 
 (define-public scanbd
   (package
