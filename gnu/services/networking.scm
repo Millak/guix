@@ -2074,12 +2074,19 @@ See yggdrasil -genconf for config options.")
         #$@(map (cute apply set-config!-gexp <>) settings)))
   (define inner-script
     (program-file "ipfs-activation-inner" inner-gexp))
+
+  (define shepherd&co
+    ;; 'make-forkexec-constructor/container' needs version 0.9 for
+    ;; #:supplementary-groups.
+    (cons shepherd-0.9
+          (list (lookup-package-input shepherd-0.9 "guile-fibers"))))
+
   ;; Run ipfs init and ipfs config from a container,
   ;; in case the IPFS daemon was compromised at some point
   ;; and ~/.ipfs is now a symlink to somewhere outside
   ;; %ipfs-home.
   (define container-gexp
-    (with-extensions (list shepherd)
+    (with-extensions shepherd&co
       (with-imported-modules (source-module-closure
                               '((gnu build shepherd)
                                 (gnu system file-systems)))
