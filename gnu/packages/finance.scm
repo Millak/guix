@@ -11,7 +11,7 @@
 ;;; Copyright © 2018 Adriano Peluso <catonano@gmail.com>
 ;;; Copyright © 2018, 2019, 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2019, 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019, 2020, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2019, 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2019 Sebastian Schott <sschott@mailbox.org>
@@ -582,7 +582,7 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
 (define-public electron-cash
   (package
     (name "electron-cash")
-    (version "4.2.6")
+    (version "4.2.7")
     (source
      (origin
        (method git-fetch)
@@ -591,7 +591,7 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "193krlnski9wjyfjkxfp4gcs7dgmqkwxgsy2m8x1515vb5bzv5pz"))))
+        (base32 "1qiql2svjyxlgbg4c5b7grgsv8nx2cx33x3x13mvjjngjz3vgilv"))))
     (build-system python-build-system)
     (inputs
      `(("libevent" ,libevent)
