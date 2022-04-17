@@ -3775,7 +3775,7 @@ here are defined for the dvips engine only.")
              (add-after 'unpack 'chdir
                (lambda _ (chdir "source/latex/fontspec/") #t))))))
       (propagated-inputs
-       (list texlive-latex-l3packages))
+       (list texlive-cm texlive-latex-l3packages texlive-lm))
       (home-page "https://www.ctan.org/pkg/fontspec")
       (synopsis "Advanced font selection in XeLaTeX and LuaLaTeX")
       (description
