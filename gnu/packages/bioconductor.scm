@@ -1166,6 +1166,28 @@ datasets which are derived from the Allen Brain Atlas:
 All datasets are restricted to protein coding genes.")
     (license license:gpl2+)))
 
+(define-public r-adductdata
+  (package
+    (name "r-adductdata")
+    (version "1.10.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "adductData" version 'experiment))
+              (sha256
+               (base32
+                "0bp74p06gskwn2xl1srpnmsq27ajsrlynkzw6fcmvwwjcrzljmnj"))))
+    (properties `((upstream-name . "adductData")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-annotationhub r-experimenthub))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/adductData")
+    (synopsis "Data from untargeted mass spectrometry of modifications to Cys34")
+    (description
+     "This package contains data from untargeted @dfn{mass spectrometry} (MS)
+of modifications to @dfn{oxidized cysteine} (Cys) 34 in @dfn{human serum
+albumin} (HSA).")
+    (license license:artistic2.0)))
+
 (define-public r-aneufinderdata
   (package
    (name "r-aneufinderdata")
