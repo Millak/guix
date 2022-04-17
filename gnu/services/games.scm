@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -57,17 +58,34 @@
   (match-lambda
     (($ <wesnothd-configuration> package port)
      (with-imported-modules (source-module-closure
-                             '((gnu build shepherd)))
+                             '((gnu build shepherd)
+                               (gnu system file-systems)))
        (shepherd-service
         (documentation "The Battle for Wesnoth server")
         (provision '(wesnoth-daemon))
         (requirement '(networking))
-        (modules '((gnu build shepherd)))
+        (modules '((gnu build shepherd)
+                   (gnu system file-systems)))
         (start #~(make-forkexec-constructor/container
                   (list #$(file-append package "/bin/wesnothd")
                         "-p" #$(number->string port))
+                  #:mappings (list (file-system-mapping
+                                    (source "/var/run/wesnothd")
+                                    (target source)
+                                    (writable? #t)))
                   #:user "wesnothd" #:group "wesnothd"))
         (stop #~(make-kill-destructor)))))))
+
+(define wesnothd-activation
+  (with-imported-modules '((guix build utils))
+    #~(begin
+        (use-modules (guix build utils))
+
+        (let* ((user (getpw "wesnothd"))
+               (directory "/var/run/wesnothd"))
+          ;; wesnothd creates a Unix-domain socket in DIRECTORY.
+          (mkdir-p directory)
+          (chown directory (passwd:uid user) (passwd:gid user))))))
 
 (define wesnothd-service-type
   (service-type
@@ -77,6 +95,8 @@
    (extensions
     (list (service-extension account-service-type
                              (const %wesnothd-accounts))
+          (service-extension activation-service-type
+                             (const wesnothd-activation))
           (service-extension shepherd-root-service-type
                              (compose list wesnothd-shepherd-service))))
    (default-value (wesnothd-configuration))))
