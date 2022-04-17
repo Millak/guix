@@ -39,7 +39,7 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Jesse Dowell <jessedowell@gmail.com>
 ;;; Copyright © 2020 Hamzeh Nasajpour <h.nasajpour@pantherx.org>
-;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2021 Justin Veilleux <terramorpha@cock.li>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
@@ -2450,7 +2450,7 @@ the bandwidth, loss, and other parameters.")
 (define-public nethogs
   (package
     (name "nethogs")
-    (version "0.8.6")
+    (version "0.8.7")
     (source
      (origin
        (method git-fetch)
@@ -2459,7 +2459,7 @@ the bandwidth, loss, and other parameters.")
              (commit (string-append "v" version))))
        (hash
         (content-hash
-         (base32 "0sn1sdp86akwlm4r1vmkxjjl50c0xaisk91bbz57z7kcsaphxna9")
+         (base32 "10shdwvfj90lp2fxz9260342a1c2n1jbw058qy5pyq5kh3xwr9b8")
          sha256))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
