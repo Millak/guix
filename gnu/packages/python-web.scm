@@ -1483,6 +1483,61 @@ JSON Schema Specification Draft 2020-12.
 @end itemize")
     (license license:bsd-3)))
 
+(define-public python-openapi-spec-validator
+  (package
+    (name "python-openapi-spec-validator")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)               ;no tests in pypi release
+       (uri (git-reference
+             (url "https://github.com/p1c2u/openapi-spec-validator")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1q09sjh4hsc0c8yqbd97h5mp6rwh427y6zyn8kv8wljk6sa0fs4q"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-coverage-pytest-options
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("^--cov.*") ""))))
+          ;; XXX: PEP 517 manual build copied from python-isort.
+          (replace 'build
+            (lambda _
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv"
+                        ;; The example tests attempt to fetch resources from
+                        ;; the Internet (see:
+                        ;; https://github.com/p1c2u/openapi-spec-validator/issues/151).
+                        "-k" "not Example and not Exampe"))))
+          (replace 'install
+            (lambda _
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl)))))))
+    (native-inputs (list python-poetry-core python-pypa-build python-pytest))
+    (propagated-inputs
+     (list python-jsonschema
+           python-openapi-schema-validator
+           python-pyyaml
+           python-requests
+           python-setuptools))
+    (home-page "https://github.com/p1c2u/openapi-spec-validator")
+    (synopsis "OpenAPI spec validator")
+    (description "OpenAPI Spec Validator is a Python library that validates an
+OpenAPI specification against the OpenAPI 2.0 (also known as Swagger), OpenAPI
+3.0 and OpenAPI 3.1 specifications.  The validator aims to check for full
+compliance with the specification.")
+    (license license:asl2.0)))
+
 (define-public python-openid
   (package
     (name "python-openid")
