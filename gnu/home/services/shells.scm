@@ -586,7 +586,7 @@ when typed in the shell, will automatically expand to the full text."
    serialize-fish-abbreviations))
 
 (define (fish-files-service config)
-  `(("config/fish/config.fish"
+  `((".config/fish/config.fish"
      ,(mixed-text-file
        "fish-config.fish"
        #~(string-append "\
