@@ -63,14 +63,14 @@
   ;; directory.
   (package
     (name "gnucash")
-    (version "4.6")
+    (version "4.10")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/gnucash/gnucash%20%28stable%29/"
                            version "/gnucash-" version ".tar.bz2"))
        (sha256
-        (base32 "0csp8iddhc901vv09gl5lj970g6ili696vwj4vdpkiprp7gh26r5"))))
+        (base32 "0fy9p5fgi2i0x7acg5fnkfdrxxd3dypi3ykvnj53hfbfky8vpm3z"))))
     (build-system cmake-build-system)
     (inputs
      `(("guile" ,guile-3.0)
@@ -229,10 +229,10 @@ installed as well as Yelp, the Gnome help browser.")
        (origin
          (method url-fetch)
          (uri (string-append "mirror://sourceforge/gnucash/gnucash%20%28stable%29/"
-                             version "/gnucash-docs-" version revision ".tar.gz"))
+                             version "/gnucash-docs-" version ".1" revision ".tar.gz"))
          (sha256
-          (base32 "1365k4wb8zfm2zyg7zqyvajbzh9311m2zi1vpvbpp8p4sibqjksw"))))
-      (build-system gnu-build-system)
+          (base32 "0cf2m1lgpq6if89w8anz522nar5kwpfzi0kacymw17m42fzxz0cg"))))
+      (build-system cmake-build-system)
       ;; These are native-inputs because they are only required for building the
       ;; documentation.
       (native-inputs
@@ -243,6 +243,8 @@ installed as well as Yelp, the Gnome help browser.")
          ("libxslt" ,libxslt)
          ("docbook-xsl" ,docbook-xsl)
          ("scrollkeeper" ,scrollkeeper)))
+      (arguments
+       `(#:tests? #f)) ;no test target
       (home-page "https://www.gnucash.org/")
       (synopsis "Documentation for GnuCash")
       (description
