@@ -939,29 +939,31 @@ a gateway between IRC and chat networks.")))
 (define quassel-shepherd-service
   (match-lambda
     (($ <quassel-configuration> quassel interface port loglevel)
-     (with-imported-modules (source-module-closure
-                              '((gnu build shepherd)
-                                (gnu system file-systems)))
+     (let ((quassel (least-authority-wrapper
+                     (file-append quassel "/bin/quasselcore")
+                     #:name "quasselcore"
+                     #:mappings (list (file-system-mapping
+                                       (source "/var/lib/quassel")
+                                       (target source)
+                                       (writable? #t))
+                                      (file-system-mapping
+                                       (source "/var/log/quassel")
+                                       (target source)
+                                       (writable? #t)))
+                     ;; XXX: The daemon needs to live in the main user
+                     ;; namespace, as root, so it can access /var/lib/quassel
+                     ;; owned by "quasselcore".
+                     #:namespaces (fold delq %namespaces '(net user)))))
        (list (shepherd-service
                (provision '(quassel))
                (requirement '(user-processes networking))
-               (modules '((gnu build shepherd)
-                          (gnu system file-systems)))
-               (start #~(make-forkexec-constructor/container
-                          (list #$(file-append quassel "/bin/quasselcore")
-                                "--configdir=/var/lib/quassel"
-                                "--logfile=/var/log/quassel/core.log"
-                                (string-append "--loglevel=" #$loglevel)
-                                (string-append "--port=" (number->string #$port))
-                                (string-append "--listen=" #$interface))
-                          #:mappings (list (file-system-mapping
-                                             (source "/var/lib/quassel")
-                                             (target source)
-                                             (writable? #t))
-                                           (file-system-mapping
-                                             (source "/var/log/quassel")
-                                             (target source)
-                                             (writable? #t)))))
+               (start #~(make-forkexec-constructor
+                         (list #$quassel
+                               "--configdir=/var/lib/quassel"
+                               "--logfile=/var/log/quassel/core.log"
+                               (string-append "--loglevel=" #$loglevel)
+                               (string-append "--port=" (number->string #$port))
+                               (string-append "--listen=" #$interface))))
                (stop  #~(make-kill-destructor))))))))
 
 (define %quassel-account
