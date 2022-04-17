@@ -20940,6 +20940,42 @@ on top of Hunchentoot.")
 (define-public ecl-simple-routes
   (sbcl-package->ecl-package sbcl-simple-routes))
 
+(define-public sbcl-cl-ipfs-api2
+  (let ((commit "3ee52c80023bcc662f7d01276ea0a5814bd0011b")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-ipfs-api2")
+      (version (git-version "0.51" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/JadedCtrl/cl-ipfs-api2")
+               (commit commit)))
+         (file-name (git-file-name "cl-ipfs-api2" version))
+         (sha256
+          (base32 "1h0csxk4db1hid793mk5kz3nbjyl7z4ic1zk2wy46k1vz5lnnsph"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       '(#:tests? #f)) ; There are no tests.
+      (inputs
+       (list sbcl-arnesi
+             sbcl-drakma
+             sbcl-yason))
+      (home-page "https://github.com/JadedCtrl/cl-ipfs-api2/")
+      (synopsis "Bindings for the IPFS HTTP API")
+      (description
+       "@code{cl-sbcl-cl-ipfs-api2} is a pretty simple set of IPFS bindings
+for Common Lisp, using the HTTP API for (almost) everything, except for pubsub
+(which uses the locally installed go-ipfs program).")
+      (license license:lgpl3))))
+
+(define-public cl-ipfs-api2
+  (sbcl-package->cl-source-package sbcl-cl-ipfs-api2))
+
+(define-public ecl-cl-ipfs-api2
+  (sbcl-package->ecl-package sbcl-cl-ipfs-api2))
+
 (define-public sbcl-purgatory
   (let ((commit "ade0d60a14a1067b9cc8cf06d1f1a1ca8cecdb03")
         (revision "1"))
