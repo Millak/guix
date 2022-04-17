@@ -1429,6 +1429,60 @@ is Python’s.")
 (define-public python2-webencodings
   (package-with-python2 python-webencodings))
 
+(define-public python-openapi-schema-validator
+  (package
+    (name "python-openapi-schema-validator")
+    (version "0.2.3")
+    (source
+     (origin
+       (method git-fetch)               ;no tests in pypi release
+       (uri (git-reference
+             (url "https://github.com/p1c2u/openapi-schema-validator")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1swm8h74nhg63nxk347blwq9f1qn6iiq3zisndcvm7axkq3pc2df"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-coverage-pytest-options
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("^--cov.*") ""))))
+          ;; XXX: PEP 517 manual build copied from python-isort.
+          (replace 'build
+            (lambda _
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest"))))
+          (replace 'install
+            (lambda _
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl)))))))
+    (native-inputs (list python-poetry-core python-pypa-build python-pytest))
+    (propagated-inputs
+     (list python-isodate
+           python-jsonschema
+           python-rfc3339-validator
+           python-strict-rfc3339))
+    (home-page "https://github.com/p1c2u/openapi-schema-validator")
+    (synopsis "OpenAPI schema validation library for Python")
+    (description "Openapi-schema-validator is a Python library that validates
+a schema against:
+@itemize
+@item OpenAPI Schema Specification v3.0 which is an extended subset of the
+JSON Schema Specification Wright Draft 00.
+@item OpenAPI Schema Specification v3.1 which is an extended superset of the
+JSON Schema Specification Draft 2020-12.
+@end itemize")
+    (license license:bsd-3)))
+
 (define-public python-openid
   (package
     (name "python-openid")
