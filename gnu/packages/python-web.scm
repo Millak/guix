@@ -5345,24 +5345,18 @@ files.")
 (define-public python-websockets
   (package
     (name "python-websockets")
-    (version "8.1")
+    (version "10.3")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "websockets" version))
-        (sha256
-         (base32
-          "03s3ml6sbki24aajllf8aily0xzrn929zxi84p50zkkbikdd4raw"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aaugustin/websockets")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1vk7g5z977mi89hamwiqawpmibwvv9ghrf3pqva1waxmyc7gyjb5"))))
     (build-system python-build-system)
-    (arguments
-     '(#:tests? #f  ; Tests not included in release tarball.
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-websockets-package-name-requirement
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Python package names use dot as separator.
-             (substitute* "setup.py"
-               (("websockets/extensions") "websockets.extensions")))))))
     (home-page "https://github.com/aaugustin/websockets")
     (synopsis
      "Python implementation of the WebSocket Protocol (RFC 6455 & 7692)")
