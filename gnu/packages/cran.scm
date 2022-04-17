@@ -1150,6 +1150,28 @@ higher.")
 @url{https://www.oenb.at/en/Statistics/User-Defined-Tables/webservice.html}.")
     (license license:gpl2+)))
 
+(define-public r-orgmassspecr
+  (package
+    (name "r-orgmassspecr")
+    (version "0.5-3")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "OrgMassSpecR" version))
+              (sha256
+               (base32
+                "1dx9d8rb1dfqyhyc26zhfnxiv3rz2ikvs2mwqnsrq3lsjs9dvyc8"))))
+    (properties `((upstream-name . "OrgMassSpecR")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "http://OrgMassSpec.github.io/")
+    (synopsis "Organic or biological mass spectrometry data analysis")
+    (description
+     "This package @code{OrgMassSpecR} is an extension of the @code{R}
+statistical computing language.  It contains functions to assist with organic
+or biological mass spectrometry data analysis.  Mass spectral libraries are
+available as companion packages.")
+    (license license:bsd-2)))
+
 (define-public r-scales
   (package
     (name "r-scales")
