@@ -1581,6 +1581,41 @@ expression level and gene-specific dispersion, that might facilitate the gene
 ranking by fold-change and visualization.")
     (license license:gpl3+)))
 
+(define-public r-adam
+  (package
+    (name "r-adam")
+    (version "1.10.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "ADAM" version))
+              (sha256
+               (base32
+                "18zwci0ab54q7rdwj0n63w0i14lfrb4cccp09bcrq10gl1ki07f5"))))
+    (properties `((upstream-name . "ADAM")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-dplyr
+                             r-dt
+                             r-go-db
+                             r-keggrest
+                             r-knitr
+                             r-pbapply
+                             r-rcpp
+                             r-stringr
+                             r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/ADAM")
+    (synopsis "Gene activity and diversity analysis module")
+    (description
+     "This software @code{ADAM} is a @dfn{Gene set enrichment analysis} (GSEA)
+package created to group a set of genes from comparative samples (control
+versus experiment) belonging to different species according to their respective
+functions.  The corresponding roles are extracted from the default collections
+like Gene ontology and @dfn{Kyoto encyclopedia of genes and genomes} (KEGG).
+@code{ADAM} show their significance by calculating the p-values referring to
+gene diversity and activity.  Each group of genes is called @dfn{Group of
+functionally associated genes} (GFAG).")
+    (license license:gpl2+)))
+
 (define-public r-aneufinder
   (package
     (name "r-aneufinder")
