@@ -2560,14 +2560,14 @@ read and write, and compatible with JSON.")
     (native-inputs
      (list bmake pkg-config wayland-protocols))
     (inputs
-     `(("cairo" ,cairo)
-       ("libinput" ,libinput)
-       ("libucl" ,libucl)
-       ("libxkbcommon" ,libxkbcommon)
-       ("pam" ,linux-pam)
-       ("pango" ,pango)
-       ("wayland" ,wayland)
-       ("wlroots" ,wlroots)))
+     (list cairo
+           libinput
+           libucl
+           libxkbcommon
+           linux-pam
+           pango
+           wayland
+           wlroots))
     (arguments
      `(#:tests? #f                      ; no tests
        #:make-flags
