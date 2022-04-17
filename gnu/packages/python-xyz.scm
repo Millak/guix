@@ -29550,6 +29550,27 @@ from multiple sources.  Online trading accounts also often provide account
 statements in OFX files.")
     (license license:expat)))
 
+(define-public python-rfc3339-validator
+  (package
+    (name "python-rfc3339-validator")
+    (version "0.1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "rfc3339_validator" version))
+       (sha256
+        (base32 "0srg0b89aikzinw72s433994k5gv5lfyarq1adhas11kz6yjm2hk"))))
+    (build-system python-build-system)
+    (native-inputs (list python-hypothesis
+                         python-pytest
+                         python-pytest-runner
+                         python-strict-rfc3339))
+    (propagated-inputs (list python-six))
+    (home-page "https://github.com/naimetti/rfc3339-validator")
+    (synopsis "Python RFC3339 validator")
+    (description "This package provides a pure Python RFC3339 validator.")
+    (license license:expat)))
+
 (define-public python-strict-rfc3339
   (package
     (name "python-strict-rfc3339")
