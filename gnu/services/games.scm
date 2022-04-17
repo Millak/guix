@@ -23,6 +23,9 @@
   #:use-module (gnu packages admin)
   #:use-module (gnu packages games)
   #:use-module (gnu system shadow)
+  #:use-module ((gnu system file-systems) #:select (file-system-mapping))
+  #:use-module (gnu build linux-container)
+  #:autoload   (guix least-authority) (least-authority-wrapper)
   #:use-module (guix gexp)
   #:use-module (guix modules)
   #:use-module (guix records)
@@ -57,22 +60,20 @@
 (define wesnothd-shepherd-service
   (match-lambda
     (($ <wesnothd-configuration> package port)
-     (with-imported-modules (source-module-closure
-                             '((gnu build shepherd)
-                               (gnu system file-systems)))
+     (let ((wesnothd (least-authority-wrapper
+                      (file-append package "/bin/wesnothd")
+                      #:name "wesnothd"
+                      #:mappings (list (file-system-mapping
+                                        (source "/var/run/wesnothd")
+                                        (target source)
+                                        (writable? #t)))
+                      #:namespaces (delq 'net %namespaces))))
        (shepherd-service
         (documentation "The Battle for Wesnoth server")
         (provision '(wesnoth-daemon))
         (requirement '(networking))
-        (modules '((gnu build shepherd)
-                   (gnu system file-systems)))
-        (start #~(make-forkexec-constructor/container
-                  (list #$(file-append package "/bin/wesnothd")
-                        "-p" #$(number->string port))
-                  #:mappings (list (file-system-mapping
-                                    (source "/var/run/wesnothd")
-                                    (target source)
-                                    (writable? #t)))
+        (start #~(make-forkexec-constructor
+                  (list #$wesnothd "-p" #$(number->string port))
                   #:user "wesnothd" #:group "wesnothd"))
         (stop #~(make-kill-destructor)))))))
 
