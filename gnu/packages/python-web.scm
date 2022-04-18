@@ -2870,14 +2870,14 @@ supports url redirection and retries, and also gzip and deflate decoding.")
   (package
     ;; Note: updating awscli typically requires updating botocore as well.
     (name "awscli")
-    (version "1.21.11")
+    (version "1.22.90")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri name version))
        (sha256
         (base32
-         "0fkivwbx4nind5b7l4jhqm5bb9drgqsclcslrg4aggf9rcs4g4s0"))))
+         "0ky4ax4xh7s8w1l0hwc7w9ii8afvh9nib3kz09qhiqdinxzrlv54"))))
     (build-system python-build-system)
     (arguments
      ;; FIXME: The 'pypi' release does not contain tests.
@@ -2891,21 +2891,22 @@ supports url redirection and retries, and also gzip and deflate decoding.")
                             "setup.py")
                (("<5.5") "<=6"))))
          (add-after 'unpack 'fix-reference-to-groff
-           (lambda _
+           (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "awscli/help.py"
                (("if not self._exists_on_path\\('groff'\\):") "")
                (("raise ExecutableNotFoundError\\('groff'\\)") "")
                (("cmdline = \\['groff'")
-                (string-append "cmdline = ['" (which "groff") "'"))))))))
+                (string-append "cmdline = ['"
+                               (search-input-file inputs "bin/groff")
+                               "'"))))))))
     (inputs
-     (list python-colorama-for-awscli
-           python-botocore-for-awscli
+     (list groff
+           python-colorama-for-awscli
+           python-botocore
            python-s3transfer
            python-docutils-0.15
            python-pyyaml
            python-rsa))
-    (native-inputs
-     (list groff))
     (home-page "https://aws.amazon.com/cli/")
     (synopsis "Command line client for AWS")
     (description "AWS CLI provides a unified command line interface to the
