@@ -413,6 +413,12 @@ library.")
                   (srfi srfi-26))
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'enable-parallel-build
+           (lambda _
+             (substitute* "setup.py"
+               (("\"-j\", type=int, default=1")
+                (format #f "\"-j\", type=int, default=~a"
+                        (parallel-job-count))))))
          (add-after 'unpack 'patch-which
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((which (assoc-ref inputs "which")))
@@ -439,6 +445,7 @@ library.")
                  (when tests?
                    (invoke "pytest" "-vv" "pandas" "--skip-slow"
                            "--skip-network"
+                           "-n" (number->string (parallel-job-count))
                            "-k"
                            (string-append
                             ;; These test access the internet (see:
@@ -448,7 +455,11 @@ library.")
                             "not test_wrong_url"
                             ;; TODO: Missing input
                             " and not TestS3"
-                            " and not s3"))))))))))
+                            " and not s3"
+                            ;; This test fails when run with pytest-xdist
+                            ;; (see:
+                            ;; https://github.com/pandas-dev/pandas/issues/39096).
+                            " and not test_memory_usage"))))))))))
     (propagated-inputs
      (list python-jinja2
            python-numpy
@@ -466,6 +477,7 @@ library.")
            python-html5lib
            python-pytest
            python-pytest-mock
+           python-pytest-xdist
            ;; Needed to test clipboard support.
            xorg-server-for-tests))
     (home-page "https://pandas.pydata.org")
