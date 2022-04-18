@@ -23692,14 +23692,14 @@ validation testing and application logic.")
 (define-public python-numba
   (package
     (name "python-numba")
-    (version "0.54.1")
+    (version "0.55.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "numba" version))
        (sha256
         (base32
-         "0gzl2hz9azav9mny4mga19096rrnpw5816r1h4iwrvb4r01wipzr"))))
+         "18rf8i32m1045zxglvicpgldvzmqdxqvs3dhjd7wilb64sd0ds83"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
