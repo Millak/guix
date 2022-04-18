@@ -5014,7 +5014,7 @@ and fairly speedy.")
 (define-public python-uvicorn
   (package
     (name "python-uvicorn")
-    (version "0.13.2")
+    (version "0.17.6")
     (source
      (origin
        ;; PyPI tarball has no tests.
@@ -5024,20 +5024,33 @@ and fairly speedy.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04zgmp9z46k72ay6cz7plga6d3w3a6x41anabm7ramp7jdqf6na9"))))
+        (base32 "0npwls02nhna2lyw2nksxij16l9agf12c9f42pvxb5yrpi9l16c8"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (invoke "pytest" "-vv"))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-vv" "-o" "asyncio_mode=auto"
+                       "-k"
+                       (string-append
+                        ;; These error or fail due to networking.
+                        "not test_keepalive "
+                        "and not test_bind_unix_socket_works_with_"
+                        "reload_or_workers "))))))))
     (native-inputs
-     (list python-pytest python-pytest-mock python-requests
-           python-trustme python-wsproto))
+     (list python-httpx-bootstrap
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-mock
+           python-requests
+           python-trustme
+           python-wsproto))
     (propagated-inputs
-     (list python-click
+     (list python-asgiref
+           python-click
+           python-dotenv
            python-h11
            python-httptools
            python-pyyaml
