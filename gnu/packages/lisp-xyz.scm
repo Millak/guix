@@ -33,6 +33,7 @@
 ;;; Copyright © 2021 Jacob MacDonald <jaccarmac@gmail.com>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
+;;; Copyright © 2022 Thomas Albers Raviola <thomas@thomaslabs.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -21009,3 +21010,32 @@ the 9p network filesystem protocol.")
 
 (define-public cl-purgatory
   (sbcl-package->cl-source-package sbcl-purgatory))
+
+(define-public sbcl-just-getopt-parser
+  (package
+    (name "sbcl-just-getopt-parser")
+    (version "2021.11")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tlikonen/cl-just-getopt-parser")
+             (commit version)))
+       (sha256
+        (base32 "0ngh8b51ngh3bqacl40j6wwiinhwxswsy02d9k7qlzv9sbjxay4s"))
+       (file-name (git-file-name "cl-just-getopt-parser" version))))
+    (build-system asdf-build-system/sbcl)
+    (synopsis "Getopt-like command-line parser for Common Lisp")
+    (description
+     "This package provides the @code{getopt} function to parse command-line
+options.  The options are organized in valid options, other arguments and
+unknown arguments.  Optional Lisp conditions for error situations are also
+defined.")
+    (home-page "https://github.com/tlikonen/cl-just-getopt-parser")
+    (license license:cc0)))
+
+(define-public ecl-just-getopt-parser
+  (sbcl-package->ecl-package sbcl-just-getopt-parser))
+
+(define-public cl-just-getopt-parser
+  (sbcl-package->cl-source-package sbcl-just-getopt-parser))
