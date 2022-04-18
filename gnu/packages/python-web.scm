@@ -5412,6 +5412,17 @@ Plus all the standard features of requests:
 @end itemize")
     (license license:bsd-3)))
 
+;;; Variant used to break a cycle with python-uvicorn.
+(define-public python-httpx-bootstrap
+  (hidden-package
+   (package/inherit python-httpx
+     (name "python-httpx-bootstrap")
+     (arguments (list #:tests? #f))
+     (native-inputs '())
+     (propagated-inputs
+      (modify-inputs (package-propagated-inputs python-httpx)
+        (replace "python-httpcore"  python-httpcore-bootstrap))))))
+
 (define-public python-wsgiprox
   (package
     (name "python-wsgiprox")
