@@ -5319,7 +5319,7 @@ Some things HTTP Core does do:
 (define-public python-httpx
   (package
     (name "python-httpx")
-    (version "0.16.1")
+    (version "0.22.0")
     (source
      (origin
        ;; PyPI tarball does not contain tests.
@@ -5329,7 +5329,7 @@ Some things HTTP Core does do:
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00gmq45fckcqkj910bvd7pyqz1mvgsdvz4s0k7dzbnc5czzq1f4a"))))
+        (base32 "1awr56488b66zyl3cx1f03lq2n07xdg5kb4l46vnsm59s6hr02c5"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -5337,7 +5337,8 @@ Some things HTTP Core does do:
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "pytest" "-vv" "-k"
+               (invoke "pytest" "-vv" "-o" "asyncio_mode=auto"
+                       "-k"
                        ;; These tests try to open an outgoing connection.
                        (string-append
                         "not test_connect_timeout"
@@ -5347,26 +5348,23 @@ Some things HTTP Core does do:
                         "being_deleted"
                         " and not test_that_send_cause_client_to_be_not_closed"
                         " and not test_async_proxy_close"
-                        " and not test_sync_proxy_close"))))))))
+                        " and not test_sync_proxy_close"
+                        ;; This test is apparently incompatible with
+                        ;; python-click 8, fails with " AttributeError:
+                        ;; 'function' object has no attribute 'name'".
+                        " and not test_main"))))))))
     (native-inputs
-     (list python-autoflake
-           python-black
-           python-cryptography
-           python-flake8
-           python-flake8-bugbear
-           python-flake8-pie
-           python-isort
-           python-mypy
+     (list python-cryptography
            python-pytest
            python-pytest-asyncio
            python-pytest-trio
-           python-pytest-cov
            python-trio
            python-trio-typing
            python-trustme
            python-uvicorn))
     (propagated-inputs
-     (list python-brotli
+     (list python-charset-normalizer
+           python-brotli
            python-certifi
            python-chardet
            python-httpcore
