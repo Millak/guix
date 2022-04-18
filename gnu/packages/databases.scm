@@ -4001,20 +4001,20 @@ parsing code in hiredis.  It primarily speeds up parsing of multi bulk replies."
 (define-public python-fakeredis
   (package
     (name "python-fakeredis")
-    (version "1.7.0")
+    (version "1.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "fakeredis" version))
        (sha256
         (base32
-         "0wacd3f558vzsrpdvgvdwy9pp6crxf8hxblz30zbsv1k63j15gf9"))))
+         "1v68my2v7fg44zwky3k5d52nn1bi0szpgdslghrpa2ifnjhlnb3w"))))
     (build-system python-build-system)
     (arguments
      ;; no tests
      `(#:tests? #f))
     (propagated-inputs
-     (list python-packaging python-redis python-sortedcontainers))
+     (list python-aioredis python-packaging python-redis python-sortedcontainers))
     (home-page "https://github.com/jamesls/fakeredis")
     (synopsis "Fake implementation of redis API for testing purposes")
     (description
