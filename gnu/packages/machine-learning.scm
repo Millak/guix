@@ -1210,13 +1210,13 @@ for scientific computing and data science (e.g. BLAS and OpenMP).")
 (define-public python-pynndescent
   (package
     (name "python-pynndescent")
-    (version "0.5.5")
+    (version "0.5.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pynndescent" version))
        (sha256
-        (base32 "10pqqqc3jkpw03cyzy04slxmpgyhqnlgbyk0c1cv7kqr5d0zhzbs"))))
+        (base32 "0p3jsdcprjfzz7qf5674dsqfpvdn6p4wgqikg7b6ki5abf433yv1"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1224,12 +1224,16 @@ for scientific computing and data science (e.g. BLAS and OpenMP).")
          (replace 'check
            (lambda* (#:key inputs outputs tests? #:allow-other-keys)
              (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest" "--pyargs" "pynndescent")))))))
-    (native-inputs
-     (list python-pytest))
+               (invoke "python" "-m" "pytest" "--pyargs" "pynndescent"
+                       ;; wminkowski no longer exists in scipy 1.8.0 (see:
+                       ;; https://github.com/lmcinnes/pynndescent/issues/177)
+                       "-k" "not test_weighted_minkowski")))))))
+    (native-inputs (list python-pytest))
     (propagated-inputs
-     (list python-joblib python-llvmlite python-numba python-scikit-learn
+     (list python-joblib
+           python-llvmlite
+           python-numba
+           python-scikit-learn
            python-scipy))
     (home-page "https://github.com/lmcinnes/pynndescent")
     (synopsis "Nearest neighbor descent for approximate nearest neighbors")
