@@ -5254,7 +5254,7 @@ and serve updated contents upon changes to the directory.")
 (define-public python-httpcore
   (package
     (name "python-httpcore")
-    (version "0.12.2")
+    (version "0.14.7")
     (source
      (origin
        ;; PyPI tarball does not contain tests.
@@ -5264,34 +5264,31 @@ and serve updated contents upon changes to the directory.")
              (commit  version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1nrwwfdqjfc2a1k3j41cdwkprwvplf95fwmypdl2aq2qgp3209q0"))))
+        (base32 "0wdr28vf03l6yxhk8nrvhh7y7x18rqdcfzv1sb6jgzk9zmycrvc7"))))
     (build-system python-build-system)
     (arguments
-     `(#:tests? #f ; Tests hang at 98%
-       #:phases
+     `(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+           (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest" "-vv" "--cov=httpcore"
-                       "--cov=tests" "tests"))
-             #t)))))
+               (invoke "pytest" "-vv" "tests")))))))
     (native-inputs
-     (list python-autoflake
-           python-flake8
-           python-flake8-bugbear
-           python-flake8-pie
-           python-isort
-           python-mypy
-           python-pytest
+     (list python-pytest
            python-pytest-asyncio
            python-pytest-cov
+           python-pytest-httpbin
            python-pytest-trio
            python-uvicorn
            python-trustme))
     (propagated-inputs
-     (list python-h11 python-h2 python-sniffio python-trio
+     (list python-anyio
+           python-certifi
+           python-h11
+           python-h2
+           python-sniffio
+           python-socksio
+           python-trio
            python-trio-typing))
     (home-page "https://github.com/encode/httpcore")
     (synopsis "Minimal, low-level HTTP client")
