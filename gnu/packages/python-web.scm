@@ -575,6 +575,46 @@ Model} (SAM) templates into AWS CloudFormation templates.")
 emit information from within their applications to the AWS X-Ray service.")
     (license license:asl2.0)))
 
+(define-public python-cbor2
+  (package
+    (name "python-cbor2")
+    (version "5.4.2.post1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "cbor2" version))
+       (sha256
+        (base32 "15y78xcc3zkmvj1mdzz8gyhf3apbl91073kwhzbjk5abc1civwlw"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv")))))))
+    (native-inputs (list python-pytest python-pytest-cov python-setuptools-scm))
+    (home-page "https://github.com/agronholm/cbor2")
+    (synopsis "Concise Binary Object Representation (CBOR) (de)serializer")
+    (description "This Python library provides encoding and decoding for the
+Concise Binary Object
+Representation (CBOR) (@url{https://www.rfc-editor.org/rfc/rfc8949.html, RFC
+8949}) serialization format.  The specification is fully compatible with the
+original RFC 7049.  Among its features are:
+@itemize
+@item Simple API like the @code{json} or @code{pickle} modules.
+@item Support many CBOR tags with stdlib objects.
+@item Generic tag decoding.
+@item Shared value references including cyclic references.
+@item String references compact encoding with repeated strings replaced with
+indices.
+@item Optional C module backend tested on big- and little-endian architectures.
+@item Extensible tagged value handling using tag_hook and object_hook on
+decode and default on encode.
+@end itemize")
+    (license license:expat)))
+
 (define-public python-cfn-lint
   (package
     (name "python-cfn-lint")
