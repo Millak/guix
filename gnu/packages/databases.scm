@@ -32,7 +32,7 @@
 ;;; Copyright © 2017 Kristofer Buffington <kristoferbuffington@gmail.com>
 ;;; Copyright © 2018 Amirouche Boubekki <amirouche@hypermove.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
-;;; Copyright © 2018, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2018, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2019 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2019 Gábor Boskovits <boskovits@gmail.com>
@@ -3367,16 +3367,21 @@ Database API 2.0T.")
     (build-system python-build-system)
     (native-inputs
      (list python-cython ; for C extensions
-           python-pytest python-mock)) ; for tests
+           python-pytest python-mock python-pytest-xdist)) ; for tests
     (propagated-inputs
      (list python-greenlet))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "py.test")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv"
+                        "-n" (number->string (parallel-job-count))
+                        ;; The memory usage tests are very expensive and run in
+                        ;; sequence; skip them.
+                        "-k" "not test_memusage.py")))))))
     (home-page "https://www.sqlalchemy.org")
     (synopsis "Database abstraction library")
     (description
@@ -3388,7 +3393,23 @@ simple and Pythonic domain language.")
     (license license:x11)))
 
 (define-public python2-sqlalchemy
-  (package-with-python2 python-sqlalchemy))
+  (let ((base (package-with-python2 python-sqlalchemy)))
+    (package
+      (inherit base)
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (replace 'check
+                (lambda* (#:key tests? #:allow-other-keys)
+                  (when tests?
+                    (invoke "pytest" "-vv"
+                            ;; The memory usage tests are very expensive and run in
+                            ;; sequence; skip them.
+                            "-k" "not test_memusage.py"))))))))
+      ;; Do not use pytest-xdist, which is broken for Python 2.
+      (native-inputs (modify-inputs (package-native-inputs base)
+                       (delete "python-pytest-xdist"))))))
 
 (define-public python-sqlalchemy-stubs
   (package
