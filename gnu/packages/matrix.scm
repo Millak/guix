@@ -187,7 +187,7 @@ homeserver and generally help bootstrap the ecosystem.")
     (native-inputs
      `(("python-pytest" ,python-pytest-6)
        ("python-hyperframe" ,python-hyperframe)
-       ("python-hypothesis" ,python-hypothesis-6.23)
+       ("python-hypothesis" ,python-hypothesis-next)
        ("python-hpack" ,python-hpack)
        ("python-faker" ,python-faker)
        ("python-pytest-aiohttp" ,python-pytest-aiohttp)
