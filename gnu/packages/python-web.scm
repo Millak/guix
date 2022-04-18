@@ -1588,6 +1588,71 @@ OpenAPI specification against the OpenAPI 2.0 (also known as Swagger), OpenAPI
 compliance with the specification.")
     (license license:asl2.0)))
 
+(define-public python-openapi-core
+  (package
+    (name "python-openapi-core")
+    (version "0.14.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/p1c2u/openapi-core")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1npsibyf8zx6z230yl19kyap8g25kqvgm7z1w6rm6jxv58yqsp7r"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+ (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv" "tests/unit"
+                        ;; Ignore Pytest configuration in setup.cfg that adds
+                        ;; unwanted flake8 and coverage options.
+                        "-c" "/dev/null"
+                        ;; This tests fails due to changes in Pytest; fixed
+                        ;; but not yet released upstream
+                        ;; (https://github.com/p1c2u/openapi-core/issues/158).
+                        "-k" "not test_string_format_invalid_value")))))))
+    (native-inputs (list python-django
+                         python-falcon
+                         python-flask
+                         python-poetry-core
+                         python-pypa-build
+                         python-pytest
+                         python-responses))
+    (propagated-inputs
+     (list python-attrs
+           python-dictpath
+           python-isodate
+           python-jsonschema
+           python-lazy-object-proxy
+           python-more-itertools
+           python-openapi-schema-validator
+           python-openapi-spec-validator
+           python-parse
+           python-six
+           python-werkzeug))
+    (home-page "https://github.com/p1c2u/openapi-core")
+    (synopsis "OpenAPI core library")
+    (description "Openapi-core is a Python library that adds client-side and
+server-side support for the OpenAPI Specification v3.  It has features such
+as:
+@itemize
+@item Validation of requests and responses
+@item Schema casting and unmarshalling
+@item Media type and parameters deserialization
+@item Security providers (API keys, Cookie, Basic and Bearer HTTP
+authentications)
+@item Custom deserializers and formats
+@item Integration with libraries and frameworks.
+@end itemize")
+    (license license:bsd-3)))
+
 (define-public python-openid
   (package
     (name "python-openid")
