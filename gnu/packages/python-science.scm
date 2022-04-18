@@ -397,13 +397,13 @@ library.")
 (define-public python-pandas
   (package
     (name "python-pandas")
-    (version "1.3.5")
+    (version "1.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pandas" version))
        (sha256
-        (base32 "1wd92ra8xcjgigbypid53gvby89myg68ica6r8hdw4hhvvsqahhy"))))
+        (base32 "04lsak3j5hq2hk0vfjf532rdxdqmg2akamdl4yl3qipihp2izg4j"))))
     (build-system python-build-system)
     (arguments
      `(#:modules ((guix build utils)
