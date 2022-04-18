@@ -4075,14 +4075,14 @@ for Python.")
 (define-public python-jinja2
   (package
     (name "python-jinja2")
-    (version "3.0.1")
+    (version "3.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Jinja2" version))
        (sha256
         (base32
-         "197ms1wimxql650245v63wkv04n8bicj549wfhp51bx68x5lhgvh"))))
+         "1saawzys14l1p4kafs7hkihmnvqjq8fwxjmkjiqx3jq1nm5ys2v4"))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
@@ -4091,11 +4091,9 @@ for Python.")
                       (if tests?
                           (invoke "pytest" "-vv")
                           (format #t "test suite not run~%")))))))
-    (native-inputs
-     (list python-pytest))
-    (propagated-inputs
-     (list python-markupsafe))
-    (home-page "http://jinja.pocoo.org/")
+    (native-inputs (list python-pytest))
+    (propagated-inputs (list python-markupsafe))
+    (home-page "https://jinja.palletsprojects.com/")
     (synopsis "Python template engine")
     (description
      "Jinja2 is a small but fast and easy to use stand-alone template engine
