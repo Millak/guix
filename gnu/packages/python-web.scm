@@ -6336,6 +6336,27 @@ your code non-blocking and speedy.")
  functionality.")
     (license license:asl2.0)))
 
+(define-public python-socksio
+  (package
+    (name "python-socksio")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "socksio" version))
+       (sha256
+        (base32 "1b64j45w35jzhjhnq44bnyad9ydh1iyyd7a6j2c8phxmllyyp2zq"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/sethmlarson/socksio")
+    (synopsis "Sans-I/O implementation of SOCKS4, SOCKS4A, and SOCKS5.")
+    (description "The @code{socksio} Python module is a client-side sans-I/O
+SOCKS proxy implementation.  It supports SOCKS4, SOCKS4A, and SOCKS5.
+@code{socksio} is a sans-I/O library similar to @code{h11} or @code{h2}; this
+means the library itself does not handle the actual sending of the bytes
+through the network, it only deals with the implementation details of the
+SOCKS protocols.  It can be paired with any I/O library.")
+    (license license:expat)))
+
 (define-public python-azure-nspkg
   (package
     (name "python-azure-nspkg")
