@@ -215,6 +215,56 @@ alternative Python kernel for Jupyter.")
 the JupyterLab CSS variables.")
     (license license:bsd-3)))
 
+(define-public python-jupyterlab-server
+  (package
+    (name "python-jupyterlab-server")
+    (version "2.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jupyterlab_server" version))
+       (sha256
+        (base32 "1gxbfa5s0v4z0v8kagkm2bz8hlli5pwhr89y68w5kxcrqfsg9q00"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv" "-c" "/dev/null" "tests"
+                        ;; XXX: These tests appear to fail due to the lack of
+                        ;; locales.
+                        "-k" "not locale and not language")))))))
+    (propagated-inputs
+     (list python-babel
+           python-entrypoints
+           python-importlib-metadata    ;TODO: remove after Python >= 3.10
+           python-jinja2
+           python-json5
+           python-jsonschema
+           python-jupyter-server
+           python-packaging
+           python-requests))
+    (native-inputs
+     (list python-ipykernel
+           python-jupyter-server
+           python-openapi-core
+           python-openapi-spec-validator
+           python-pytest
+           python-pytest-console-scripts
+           python-pytest-tornasync
+           python-ruamel.yaml
+           python-strict-rfc3339))
+    (home-page "https://jupyter.org")
+    (synopsis "Server components for JupyterLab applications")
+    (description "JupyterLab Server sits between JupyterLab and Jupyter
+Server, and provides a set of REST API handlers and utilities that are used by
+JupyterLab.  It is a separate project in order to accommodate creating
+JupyterLab-like applications from a more limited scope.")
+    (license license:bsd-3)))
+
 (define-public python-jupyter-packaging
   (package
     (name "python-jupyter-packaging")
