@@ -5308,6 +5308,14 @@ Some things HTTP Core does do:
 @end itemize")
     (license license:bsd-3)))
 
+;;; Variant used to break a cycle between python-httpx and python-uvicorn.
+(define-public python-httpcore-bootstrap
+  (hidden-package
+   (package/inherit python-httpcore
+     (name "python-httpcore-bootstrap")
+     (arguments (list #:tests? #f))
+     (native-inputs '()))))
+
 (define-public python-httpx
   (package
     (name "python-httpx")
