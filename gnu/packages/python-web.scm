@@ -6444,3 +6444,25 @@ library for accessing the Twitter API.")
      "This package provides a Python ASGI web microframework with the same API
 as Flask.")
     (license license:expat)))
+
+(define-public python-ajsonrpc
+  (package
+    (name "python-ajsonrpc")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ajsonrpc" version))
+       (sha256
+        (base32 "17x1a4r4l428mhwn53abki9gzdzq3halyr4lj48fw3dzy0caq6vr"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-quart
+           python-sanic
+           python-tornado))
+    (home-page "https://github.com/pavlov99/ajsonrpc")
+    (synopsis "Async JSON-RPC 2.0 protocol and server")
+    (description
+     "This package provides a Python JSON-RPC 2.0 protocol and server powered
+by asyncio.")
+    (license license:expat)))
