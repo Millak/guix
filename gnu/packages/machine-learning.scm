@@ -16,7 +16,7 @@
 ;;; Copyright © 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
 ;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
-;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1095,8 +1095,13 @@ computing environments.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-before 'build 'configure
+           (lambda _
+             (setenv "SKLEARN_BUILD_PARALLEL"
+                     (number->string (parallel-job-count)))))
          (add-after 'build 'build-ext
-           (lambda _ (invoke "python" "setup.py" "build_ext" "--inplace")))
+           (lambda _ (invoke "python" "setup.py" "build_ext" "--inplace"
+                             "-j" (number->string (parallel-job-count)))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
@@ -1107,13 +1112,15 @@ computing environments.")
                (setenv "HOME" "/tmp")
 
                (invoke "pytest" "sklearn" "-m" "not network"
+                       "-n" (number->string (parallel-job-count))
                        ;; This test tries to access the internet.
                        "-k" "not test_load_boston_alternative")))))))
-    (inputs
-     (list openblas))
+    (inputs (list openblas))
     (native-inputs
-     (list python-pytest python-pandas ;for tests
-           python-cython))
+     (list python-cython
+           python-pandas
+           python-pytest
+           python-pytest-xdist))
     (propagated-inputs
      (list python-numpy python-threadpoolctl python-scipy python-joblib))
     (home-page "https://scikit-learn.org/")
