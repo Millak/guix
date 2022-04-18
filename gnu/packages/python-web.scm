@@ -668,14 +668,16 @@ for resource properties and best practices.")
 (define-public python-falcon
   (package
     (name "python-falcon")
-    (version "2.0.0")
+    (version "3.1.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "falcon" version))
-       (sha256
-        (base32
-         "1z6mqfv574x6jiawf67ib52g4kk20c2x7xk7wrn1573b8v7r79gf"))
+       ;; Use git, as there are some test files missing from the PyPI release,
+       ;; such as 'examples' directory.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/falconry/falcon")
+             (commit version)))
+       (file-name (git-file-name name version))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -683,11 +685,13 @@ for resource properties and best practices.")
            (substitute* "setup.py"
              ((".*falcon\\.vendor\\.mimeparse.*") ""))
            (substitute* '("falcon/media/handlers.py"
-                          "falcon/request.py")
-             (("from falcon\\.vendor ") ""))
-           (substitute* "falcon.egg-info/SOURCES.txt"
-             (("falcon/vendor.*") ""))
-           #t))))
+                          "falcon/request.py"
+                          "tests/test_deps.py")
+             (("from falcon\\.vendor ") "")
+             (("mimeparse.mimeparse") "mimeparse"))))
+       (sha256
+        (base32
+         "17k31d8avl63xsr6fzvmkxcsm7gnz5dqpgsz65psm1lpc38c79k3"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -697,27 +701,33 @@ for resource properties and best practices.")
              ;; Skip orjson, which requires rust to build.
              (substitute* "tests/test_media_handlers.py"
                (("== 'CPython") "!= 'CPython"))
-             (add-installed-pythonpath inputs outputs)
-             (invoke "pytest" "--ignore" "falcon"))))))
+             (setenv "HOME" "/tmp")
+             (invoke "pytest" "-vv" "tests"))))))
     (propagated-inputs
      (list python-mimeparse))
     (native-inputs
-     (list python-cython ;for faster binaries
+     (list python-aiofiles
+           python-cbor2
+           python-cython                ;for faster binaries
+           python-fakeredis
+           python-httpx
            python-mujson
            python-msgpack
+           python-pecan
+           python-pillow
            python-pytest
+           python-pytest-asyncio
            python-pytest-runner
            python-pyyaml
            python-rapidjson
            python-requests
            python-testtools
-           python-ujson))
+           python-ujson
+           python-websockets))
     (home-page "https://falconframework.org")
-    (synopsis
-     "Web framework for building APIs and application backends")
-    (description
-     "Falcon is a web API framework for building microservices, application
-backends and higher-level frameworks.  Among its features are:
+    (synopsis "Web framework for building APIs and application backends")
+    (description "Falcon is a web API framework for building microservices,
+application backends and higher-level frameworks.  Among its features are:
 @itemize
 @item Optimized and extensible code base
 @item Routing via URI templates and REST-inspired resource
