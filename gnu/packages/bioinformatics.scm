@@ -14478,7 +14478,7 @@ library automatically handles index file generation and use.")
 (define-public vcflib
   (package
     (name "vcflib")
-    (version "1.0.2")
+    (version "1.0.3")
     (source
      (origin
        (method git-fetch)
@@ -14487,7 +14487,7 @@ library automatically handles index file generation and use.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1k1z3876kbzifj1sqfzsf3lgb4rw779hvkg6ryxbyq5bc2paj9kh"))
+        (base32 "1r7pnajg997zdjkf1b38m14v0zqnfx52w7nbldwh1xpbpahb1hjh"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -14510,8 +14510,7 @@ library automatically handles index file generation and use.")
              (("Fasta.h") "fastahack/Fasta.h"))
            (for-each delete-file-recursively
                      '("fastahack" "filevercmp" "fsom" "googletest" "intervaltree"
-                       "libVCFH" "multichoose" "smithwaterman"))
-           #t))))
+                       "libVCFH" "multichoose" "smithwaterman"))))))
     (build-system cmake-build-system)
     (inputs
      (list bzip2
@@ -14540,8 +14539,7 @@ library automatically handles index file generation and use.")
              (substitute* "CMakeLists.txt"
                (("vcflib STATIC") "vcflib SHARED"))
              (substitute* "test/Makefile"
-               (("libvcflib.a") "libvcflib.so"))
-             #t))
+               (("libvcflib.a") "libvcflib.so"))))
          (add-after 'unpack 'unpack-submodule-sources
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((unpack (lambda (source target)
@@ -14556,8 +14554,7 @@ library automatically handles index file generation and use.")
                 (unpack "filevercmp-src" "filevercmp")
                 (unpack "fsom-src" "fsom")
                 (unpack "intervaltree-src" "intervaltree")
-                (unpack "multichoose-src" "multichoose"))
-               #t)))
+                (unpack "multichoose-src" "multichoose")))))
          ;; This pkg-config file is provided by other distributions.
          (add-after 'install 'install-pkg-config-file
            (lambda* (#:key outputs #:allow-other-keys)
