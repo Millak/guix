@@ -30317,7 +30317,7 @@ multipurpose analysis in Python.")
     (home-page "https://github.com/python/typeshed")
     (synopsis "Typing stubs for dataclasses")
     (description
-     "This packages provides a collection of library stubs for Python, with
+     "This package provides a collection of library stubs for Python, with
 static types.")
     (license license:asl2.0)))
 
