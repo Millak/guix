@@ -18400,6 +18400,35 @@ multitouch applications.")
 (define-public python-binwalk
   (deprecated-package "python-binwalk" binwalk))
 
+(define-public python-bson
+  (package
+    (name "python-bson")
+    (version "0.5.10")
+    (source
+     (origin
+       (method git-fetch)               ;for tests
+       (uri (git-reference
+             (url "https://github.com/py-bson/bson")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1vpy4rsvm3hhawvbg9rbw4j36ck8qylkhm8cjy0q6imvinkd2als"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "./test.py")))))))
+    (propagated-inputs (list python-dateutil python-six))
+    (home-page "https://github.com/py-bson/bson")
+    (synopsis "BSON (Binary JSON) codec for Python")
+    (description "@code{bson} is a Python library implementing a BSON (Binary
+JSON) codec.")
+    (license license:asl2.0)))
+
 (define-public python-nltk
   (package
     (name "python-nltk")
