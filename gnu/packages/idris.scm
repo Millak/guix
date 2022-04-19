@@ -3,6 +3,7 @@
 ;;; Copyright © 2016, 2017 David Craven <david@craven.ch>
 ;;; Copyright © 2018 Alex ter Weele <alex.ter.weele@gmail.com>
 ;;; Copyright © 2019, 2021, 2022 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2022 Attila Lendvai <attila@lendvai.name>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -39,19 +40,17 @@
 (define-public idris
   (package
     (name "idris")
-    (version "1.3.3")
+    (version "1.3.4")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://hackage.haskell.org/package/"
-                    "idris-" version "/idris-" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/idris-lang/Idris-dev.git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1pachwc6msw3n1mz2z1r1w6h518w9gbhdvbaa5vi1qp3cn3wm6q4"))
-              (patches (search-patches "idris-disable-test.patch"
-                                       "idris-build-with-haskeline-0.8.patch"
-                                       "idris-build-with-megaparsec-9.patch"
-                                       "idris-test-ffi008.patch"))))
+                "0cd2a92323hb9a6wy8sc0cqwnisf4pv8y9y2rxvxcbyv8cs1q8g2"))
+              (patches (search-patches "idris-test-ffi008.patch"))))
     (build-system haskell-build-system)
     (native-inputs                      ;For tests
      (list perl ghc-cheapskate ghc-tasty ghc-tasty-golden
