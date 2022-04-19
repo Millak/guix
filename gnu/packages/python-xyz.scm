@@ -15821,31 +15821,37 @@ Python 2.4 and 2.5, and will draw its fixes/improvements from python-trunk.")
 (define-public python-celery
   (package
     (name "python-celery")
-    (version "5.1.2")                  ;newer versions require python-click>=8
+    (version "5.2.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "celery" version))
        (sha256
-        (base32 "1c6lw31i3v81fyj4yn37lbvv70xdgb389iccirzyjr992vlkv6ld"))))
+        (base32 "109lcqarrbmh95sk1dm4yxayq1h3i27f4w23ndk64mqgyfnqqffi"))))
     (build-system python-build-system)
     (arguments
-     '(#:tests? #f
-       #:phases
+     '(#:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'delete-integration-tests
+         (add-after 'unpack 'relax-requirements
            (lambda _
-             (delete-file-recursively "t/integration"))) ;hangs tests
+             (substitute* "requirements/default.txt"
+               (("pytz.*")
+                "pytz\n"))))
          (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+           (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest" "t" "-k"
-                       (string-append   ; AssertionErrors
-                        "not test_check_privileges_no_fchown"
-                        " and not test_all_reqs_enabled_in_tests"))))))))
+               (invoke "python" "-m" "pytest" "t"
+                       "--ignore" "t/integration" ;hangs tests
+                       ;; The MongoDB backend test appears to expect an older
+                       ;; version of MongoDB which provided its own bson
+                       ;; module, fails with " AttributeError: module 'bson'
+                       ;; has no attribute 'encode'".
+                       "--ignore" "t/unit/backends/test_mongodb.py"
+                       ;; AssertionErrors
+                       "-k" "not test_check_privileges_no_fchown ")))))))
     (native-inputs
      (list python-case
+           python-dnspython
            python-flaky
            python-iniconfig
            python-moto
@@ -15857,12 +15863,10 @@ Python 2.4 and 2.5, and will draw its fixes/improvements from python-trunk.")
            python-toml))
     (propagated-inputs
      (list python-billiard
-           python-boto3
            python-click
            python-click-didyoumean
            python-click-plugins
            python-click-repl
-           python-cryptography
            python-kombu
            python-pytz
            python-vine))
