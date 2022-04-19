@@ -1978,7 +1978,7 @@ local servers publicly accessible on the web, even behind NATs and firewalls."))
    (name 'yggdrasil)
    (description
     "Connect to the Yggdrasil mesh network.
-See yggdrasil -genconf for config options.")
+See @command{yggdrasil -genconf} for config options.")
    (extensions
     (list (service-extension shepherd-root-service-type
                              yggdrasil-shepherd-service)
