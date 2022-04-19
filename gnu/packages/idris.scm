@@ -32,6 +32,7 @@
   #:use-module (guix build-system haskell)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix utils)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages))
 
@@ -103,7 +104,7 @@
                 dep))))
          (add-before 'configure 'set-cc-command
            (lambda _
-             (setenv "CC" "gcc")))
+             (setenv "CC" ,(cc-for-target))))
          (add-after 'install 'fix-libs-install-location
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -120,7 +121,7 @@
              (let ((out (assoc-ref outputs "out")))
                (chmod "test/scripts/timeout" #o755) ;must be executable
                (setenv "TASTY_NUM_THREADS" (number->string (parallel-job-count)))
-               (setenv "IDRIS_CC" "gcc") ;Needed for creating executables
+               (setenv "IDRIS_CC" ,(cc-for-target)) ;Needed for creating executables
                (setenv "PATH" (string-append out "/bin:" (getenv "PATH")))
                (apply (assoc-ref %standard-phases 'check) args))))
          (add-before 'check 'restore-libidris_rts
