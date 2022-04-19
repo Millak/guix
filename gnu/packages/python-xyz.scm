@@ -30677,6 +30677,10 @@ writing STL files.  It supports both the text and binary forms of STL.")
                   ;; There is a bug in the test_suit specification.
                   (add-after 'unpack 'patch-test-suite
                     (lambda _
+                      ;; Make compatible with PyYAML 6.
+                      (substitute* "multipart/tests/test_multipart.py"
+                        (("yaml.load")
+                         "yaml.safe_load"))
                       (substitute* "setup.py"
                         (("test_suite = 'multipart.tests.suite'")
                          "test_suite = 'multipart.tests.test_multipart.suite'"))
