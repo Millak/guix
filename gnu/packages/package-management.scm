@@ -18,7 +18,7 @@
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;;
@@ -1112,7 +1112,7 @@ written entirely in Python.")
 (define-public conan
   (package
     (name "conan")
-    (version "1.42.0")
+    (version "1.47.0")
     (source
      (origin
        (method git-fetch)               ;no tests in PyPI archive
@@ -1122,7 +1122,7 @@ written entirely in Python.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "153npvj81m1c33gfcv2nry7xhyikxnhjns7lvs525f1x20ck6asg"))))
+         "1zs2xb22rsy5fsc0fd7c95vrx1mfz7vasyg1lqkzyfimvn5zah6n"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1133,7 +1133,9 @@ written entirely in Python.")
                (("node-semver==0.6.1")
                 "node-semver>=0.6.1")
                (("Jinja2>=2.9, <3")
-                "Jinja2>=2.9"))))
+                "Jinja2>=2.9")
+               (("PyYAML>=3.11, <6.0")
+                "PyYAML"))))
          (add-after 'unpack 'patch-paths
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((coreutils (assoc-ref inputs "coreutils")))
@@ -1189,6 +1191,8 @@ written entirely in Python.")
                         ;; This one fails for unknown reasons (see:
                         ;; https://github.com/conan-io/conan/issues/9671).
                         "and not test_build "
+                        ;; This test expects the 'apt' command to be available.
+                        "and not test_apt_check "
                         (if (not (string-prefix? "x86_64" system))
                             ;; These tests either assume the machine is
                             ;; x86_64, or require a cross-compiler to target
