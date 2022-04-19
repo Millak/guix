@@ -2119,14 +2119,14 @@ class.")
 (define-public python-can
   (package
     (name "python-can")
-    (version "3.3.4")
+    (version "4.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "python-can" version))
        (sha256
         (base32
-         "0jclrvyxasaaxr0albq0kqrnrfqdgqxs7m2qw9nd8kfwg8xj4g1d"))))
+         "0pcbdgdw94lc2sxd56w6wdsshrs9dd5d3wp0x4sfd0drzx32inar"))))
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -2137,8 +2137,8 @@ class.")
                         (("coverage<5") "coverage")
                         (("pytest~=4\\.6") "pytest")
                         (("pytest-timeout~=1\\.3") "pytest-timeout")
-                        (("hypothesis~=4\\.56") "hypothesis"))
-                      #t))
+                        (("pytest-cov.*") "pytest-cov\n")
+                        (("hypothesis~=4\\.56") "hypothesis"))))
                   (add-after 'unpack 'fix-broken-tests
                     ;; The tests try to run two scripts it expects should be
                     ;; in PATH, but they aren't at this time (see:
@@ -2146,16 +2146,26 @@ class.")
                     (lambda _
                       (substitute* "test/test_scripts.py"
                         (("\"can_logger\\.py --help\"") "")
-                        (("\"can_player\\.py --help\"") ""))
-                      #t)))))
+                        (("\"can_player\\.py --help\"") ""))))
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (invoke "pytest" "-vv" "test"
+                                ;; Disable tests which require specific CAN
+                                ;; drivers we have no package for in Guix.
+                                "--ignore" "test/test_interface_canalystii.py"
+                                ;; These tests fail with "OSError: [Errno 19]
+                                ;; No such device".
+                                "-k" "not BasicTestUdpMulticastBusIPv")))))))
     (propagated-inputs
-     (list python-aenum python-wrapt))
+     (list python-msgpack python-typing-extensions python-wrapt))
     (native-inputs
      (list python-codecov
            python-coverage
            python-future
            python-hypothesis
            python-mock
+           python-parameterized
            python-pyserial
            python-pytest
            python-pytest-cov
