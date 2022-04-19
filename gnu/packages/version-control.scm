@@ -33,7 +33,7 @@
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2021 Léo Le Bouter <lle-bout@zaclys.net>
 ;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
@@ -1139,7 +1139,7 @@ repository")
 (define-public python-ghp-import
   (package
     (name "python-ghp-import")
-    (version "0.5.5")
+    (version "2.0.2")
     (source
      (origin
        (method git-fetch)
@@ -1148,7 +1148,7 @@ repository")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12pmw3zz3i57ljnm0rxdyjqdyhisbvy18mjwkb3bzp5pgzs2f45c"))))
+        (base32 "0i4lxsgqri1y8sw4k44bkwbzmdmk4vpmdi882mw148j8gk4i7vvj"))))
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -1159,6 +1159,7 @@ repository")
                              (licenses (string-append out "/share/licenses")))
                         (install-file "README.md" doc)
                         (install-file "LICENSE" licenses)))))))
+    (propagated-inputs (list python-dateutil))
     (home-page "https://github.com/davisp/ghp-import")
     (synopsis "Copy directory to the gh-pages branch")
     (description "Script that copies a directory to the gh-pages branch (by
@@ -1168,10 +1169,6 @@ default) of the repository.")
     (license (license:non-copyleft
               "https://raw.githubusercontent.com/davisp/ghp-import/master/LICENSE"
               "Tumbolia Public License"))))
-
-(define-public python2-ghp-import
-  (package-with-python2
-   (strip-python2-variant python-ghp-import)))
 
 (define-public python-gitdb
   (package
