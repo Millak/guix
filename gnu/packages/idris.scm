@@ -2,7 +2,7 @@
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2016, 2017 David Craven <david@craven.ch>
 ;;; Copyright © 2018 Alex ter Weele <alex.ter.weele@gmail.com>
-;;; Copyright © 2019, 2022 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2019, 2021, 2022 Eric Bavier <bavier@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -95,8 +95,7 @@
          ;; This allows us to call the 'idris' binary before installing.
          (add-after 'unpack 'set-ld-library-path
            (lambda _
-             (setenv "LD_LIBRARY_PATH" (string-append (getcwd) "/dist/build"))
-             #t))
+             (setenv "LD_LIBRARY_PATH" (string-append (getcwd) "/dist/build"))))
          (add-before 'configure 'update-constraints
            (lambda _
              (substitute* "idris.cabal"
@@ -104,8 +103,7 @@
                 dep))))
          (add-before 'configure 'set-cc-command
            (lambda _
-             (setenv "CC" "gcc")
-             #t))
+             (setenv "CC" "gcc")))
          (add-after 'install 'fix-libs-install-location
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -134,8 +132,7 @@
                    (static (assoc-ref outputs "static"))
                    (filename "/lib/idris/rts/libidris_rts.a"))
                (rename-file (string-append static filename)
-                            (string-append out filename))
-               #t))))))
+                            (string-append out filename))))))))
     (native-search-paths
      (list (search-path-specification
             (variable "IDRIS_LIBRARY_PATH")
@@ -193,8 +190,7 @@ Epigram and Agda.")
                                                                 path))
                                                         idris-path-subdirs)))))
             ;; FIXME: Seems to be a bug in idris that causes a dubious failure.
-            (apply system* install-cmd)
-            #t))))))
+            (apply system* install-cmd)))))))
 
 (define-public idris-lightyear
   (let ((commit "6d65ad111b4bed2bc131396f8385528fc6b3678a"))
