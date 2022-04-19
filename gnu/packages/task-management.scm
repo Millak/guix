@@ -4,6 +4,7 @@
 ;;; Copyright © 2021 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
+;;; Copyright © 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -22,6 +23,7 @@
 
 (define-module (gnu packages task-management)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (gnu packages check)
   #:use-module (gnu packages freedesktop)
@@ -42,6 +44,7 @@
   #:use-module (guix hg-download)
   #:use-module (guix utils)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python))
@@ -241,6 +244,41 @@ a task.")
 to with the goal of improving your focus and enhancing your productivity.
 You can also use it to fall asleep in a noisy environment.")
     (license license:gpl3+)))
+
+(define-public wtime
+  (package
+    (name "wtime")
+    (version "0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/wtime/wtime/"
+                           version "/wtime_"
+                           (string-replace-substring version "." "_")
+                           ".tar.gz"))
+       (sha256
+        (base32 "1rp1sxas9wjc84fvr6x94ryl3r9w7jd0x5j1hbi9q7yrgfclp830"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:make-flags
+       ,#~(list (string-append "CC=" #$(cc-for-target))
+                (string-append "PREFIX=" #$output))
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure)
+         (add-after 'unpack 'fix-man-path
+           (lambda _
+             (substitute* "Makefile"
+               (("/man1") "/share/man/man1")))))
+       #:tests? #f))  ; No "check" target.
+    (home-page "http://wtime.sourceforge.net")
+    (synopsis
+     "Command-line utility for tracking time spent on arbitrary tasks")
+    (description
+     "@code{wtime} is a command-line utility for tracking time spent working
+on arbitrary tasks.  All the time data is saved in files residing in the
+@code{.wtimed} directory in the user's home directory.")
+    (license license:x11)))
 
 (define-public todoman
   (package
