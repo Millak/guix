@@ -15673,18 +15673,27 @@ and provides a uniform API regardless of which JSON implementation is used.")
 (define-public python-amqp
   (package
     (name "python-amqp")
-    (version "5.0.7")
+    (version "5.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "amqp" version))
        (sha256
-        (base32 "0p9alyinl24z699w4gpd8wvn90sm2il1p0gfwdhbpinksy7vfmyp"))))
+        (base32 "1qmmffiy48nady7is8529vxcyqbq88v5zgawqr3fk4q8rkz166rc"))))
     (build-system python-build-system)
     (arguments
-     `(#:tests? #f)) ; not compatible with pytest>=6 as of 5.0.7
-    (propagated-inputs
-     (list python-vine))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv"
+                        "-c" "/dev/null" ;take control over pytest options
+                        ;; Integration tests require network connectivity.
+                        "--ignore" "t/integration")))))))
+    (native-inputs (list python-pytest))
+    (propagated-inputs (list python-vine))
     (home-page "https://github.com/celery/py-amqp")
     (synopsis "Low-level AMQP client for Python (fork of amqplib)")
     (description
