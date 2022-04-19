@@ -2255,14 +2255,14 @@ for the standard @code{argparse} library.")
 (define-public python-bitstruct
   (package
     (name "python-bitstruct")
-    (version "8.9.0")
+    (version "8.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "bitstruct" version))
        (sha256
         (base32
-         "1fpc1qh1vss05ap29xvhjp200fm0q4pvgcjl0qpryh7ay6xgr5vx"))))
+         "149c73yrqbph71bbyf925r2mbh2jdymqxc6d49lnylpiflf1j313"))))
     (build-system python-build-system)
     (home-page "https://github.com/eerimoq/bitstruct")
     (synopsis "Python values to and C bit field structs converter")
