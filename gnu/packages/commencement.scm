@@ -3613,7 +3613,7 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
   (with-boot4 (hidden-package
                (package-with-bootstrap-guile guile-3.0/fixed))))
 
-(define glibc-utf8-locales-final
+(define-public glibc-utf8-locales-final
   ;; Now that we have GUILE-FINAL, build the UTF-8 locales.  They are needed
   ;; by the build processes afterwards so their 'scm_to_locale_string' works
   ;; with the full range of Unicode codepoints (remember
@@ -3621,6 +3621,8 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
   ;; function.)
   (package
     (inherit glibc-utf8-locales)
+    (properties `((hidden? . #t)
+                  ,@(package-properties glibc-utf8-locales)))
     (native-inputs
      `(("glibc" ,glibc-final)
        ("gzip" ,(with-boot4 gzip))))))
