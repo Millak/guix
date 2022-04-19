@@ -34,6 +34,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lua)
+  #:use-module (gnu packages ncurses)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
@@ -143,6 +144,40 @@ to finish tasks, not organize them.")
 Done time management method.  It supports network synchronization, filtering
 and querying data, exposing task data in multiple formats to other tools.")
     (license license:expat)))
+
+(define-public worklog
+  (let ((commit "0f545ad6697ef4de7f68d92cd7cc5c6a4c60517b")
+        (revision "1"))
+    (package
+      (name "worklog")
+      (version (git-version "2.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/atsb/worklog")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "18dkmy168ks9gcnfqri1rfl0ag0dmh9d6ppfmjfcdd6g9gvi6zll"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:make-flags
+         ,#~(list (string-append "CC=" #$(cc-for-target))
+                  (string-append "BIN=" #$output "/bin")
+                  (string-append "MAN=" #$output "/share/man"))
+         #:phases
+         (modify-phases %standard-phases
+           (delete 'configure))
+         #:tests? #f))  ; No "check" target.
+      (inputs (list ncurses))
+      (home-page "https://github.com/atsb/worklog")
+      (synopsis "Program keeping track of time spent on different projects")
+      (description
+       "@code{worklog} is a program that helps you keep track of your time.
+@code{worklog} is a simple ncurses based based program that runs a clock and
+logs time to a logfile.")
+      (license license:public-domain))))
 
 (define-public dstask
   (package
