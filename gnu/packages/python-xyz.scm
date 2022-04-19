@@ -27441,14 +27441,14 @@ positioning, and keyboard input.")
 (define-public python-readme-renderer
   (package
     (name "python-readme-renderer")
-    (version "32.0")
+    (version "34.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "readme_renderer" version))
         (sha256
          (base32
-          "11av194kgq6mvp2afpapkb6vyn3y14gingmgsp3n10krlspvw4mm"))))
+          "1c75h9znffc2lh4j56yg23l5ifj5l8fbdq3kfigi8vbh45zx3d6z"))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
@@ -27460,7 +27460,12 @@ positioning, and keyboard input.")
                          "cmarkgfm>=0.5.0"))))
                   (replace 'check
                     (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests? (invoke "pytest" "-vv")))))))
+                      (when tests?
+                        ;; The GFM tests fail due to slight differences in the
+                        ;; generated vs expected HTML due to using a more
+                        ;; recent bleach version (see:
+                        ;; https://github.com/pypa/readme_renderer/issues/234).
+                        (invoke "pytest" "-vv" "-k" "not GFM")))))))
     (propagated-inputs
      (list python-bleach python-docutils python-pygments
 
