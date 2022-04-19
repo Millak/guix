@@ -2968,21 +2968,24 @@ backported for previous versions of Python from 2.4 to 3.3.")
 (define-public python-parse-type
   (package
     (name "python-parse-type")
-    (version "0.5.2")
+    (version "0.6.0")
     (source
      (origin
-      (method url-fetch)
-      (uri (pypi-uri "parse_type" version))
-      (sha256
-       (base32
-        "02wclgiqky06y36b3q07b7ngpks5j0gmgl6n71ac2j2hscc0nsbz"))))
+       (method url-fetch)
+       (uri (pypi-uri "parse_type" version))
+       (sha256
+        (base32
+         "07smqnzc9km7sbvxfyx4gdm9njrx58x8grdw6gs4gva81rk3rd10"))))
     (build-system python-build-system)
-    (propagated-inputs
-     (list python-six python-parse))
-    (native-inputs
-     ;; Use setuptools < 58 to work around
-     ;; https://github.com/jenisys/parse_type/issues/17
-     (list python-pytest python-pytest-runner python-setuptools))
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-vv" "-c" "/dev/null")))))))
+    (propagated-inputs (list python-six python-parse))
+    (native-inputs (list python-pytest))
     (home-page "https://github.com/jenisys/parse_type")
     (synopsis "Extended parse module")
     (description
