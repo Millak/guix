@@ -2796,26 +2796,40 @@ These include a barrier, broadcast, and allreduce.")
 (define-public python-umap-learn
   (package
     (name "python-umap-learn")
-    (version "0.3.10")
+    (version "0.5.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "umap-learn" version))
+       (method git-fetch)               ;no tests in pypi release
+       (uri (git-reference
+             (url "https://github.com/lmcinnes/umap")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "02ada2yy6km6zgk2836kg1c97yrcpalvan34p8c57446finnpki1"))))
+         "1315jkb0h1b579y9m59632f0nnpksilm01nxx46in0rq8zna8vsb"))))
     (build-system python-build-system)
-    (native-inputs
-     (list python-joblib python-nose))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" "/tmp")
+                (invoke "pytest" "-vv" "umap")))))))
+    (native-inputs (list python-pytest))
     (propagated-inputs
-     (list python-numba python-numpy python-scikit-learn python-scipy))
+     (list python-numba
+           python-numpy
+           python-pynndescent
+           python-scikit-learn
+           python-scipy
+           python-tqdm))
     (home-page "https://github.com/lmcinnes/umap")
-    (synopsis
-     "Uniform Manifold Approximation and Projection")
-    (description
-     "Uniform Manifold Approximation and Projection is a dimension reduction
-technique that can be used for visualisation similarly to t-SNE, but also for
-general non-linear dimension reduction.")
+    (synopsis "Uniform Manifold Approximation and Projection")
+    (description "Uniform Manifold Approximation and Projection is a dimension
+reduction technique that can be used for visualization similarly to t-SNE, but
+also for general non-linear dimension reduction.")
     (license license:bsd-3)))
 
 (define-public nnpack
