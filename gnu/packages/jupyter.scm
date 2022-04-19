@@ -54,16 +54,19 @@
 (define-public python-jupyter-protocol
   (package
     (name "python-jupyter-protocol")
-    (version "0.1.1")
+    (version "0.2.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "jupyter_protocol" version))
               (sha256
                (base32
-                "1bk3as5yw9y5nmq6l15nr46aby34phmvsx9kxgqnm5pd5q2b5h57"))))
+                "075vbaak6hlk9606lw61ldv72p6694k938jd1kvkm6spd0pczpmn"))))
     (build-system python-build-system)
     (propagated-inputs
-     (list python-dateutil python-jupyter-core python-pyzmq
+     (list python-dateutil
+           python-ipython-genutils
+           python-jupyter-core
+           python-pyzmq
            python-traitlets))
     (native-inputs
      (list python-ipykernel python-ipython python-mock python-pytest))
