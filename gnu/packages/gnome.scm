@@ -11782,46 +11782,45 @@ these services on the Guix System.")
                       (system "Xvfb :1 &")
                       (setenv "DISPLAY" ":1"))))))
     (inputs
-     `(("enchant" ,enchant)
-       ("folks" ,folks)
-       ("gcr" ,gcr)
-       ("glib" ,glib)
-       ("gmime" ,gmime)
-       ("gnome-online-accounts:lib"
-        ,gnome-online-accounts "lib")
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("gspell" ,gspell)
-       ("gsound" ,gsound)
-       ("gtk+" ,gtk+)
-       ("iso-codes" ,iso-codes)
-       ("json-glib" ,json-glib)
-       ("libcanberra" ,libcanberra)
-       ("libgee" ,libgee)
-       ("libhandy" ,libhandy)
-       ("libpeas" ,libpeas)
-       ("libsecret" ,libsecret)
-       ("libstemmer" ,libstemmer)
-       ("libunwind" ,libunwind)
-       ("sqlite" ,sqlite)
-       ("webkitgtk" ,webkitgtk-with-libsoup2)
-       ("ytnef" ,ytnef)))
+     (list enchant
+           folks
+           gcr
+           glib
+           gmime
+           `(,gnome-online-accounts "lib")
+           gsettings-desktop-schemas
+           gspell
+           gsound
+           gtk+
+           iso-codes
+           json-glib
+           libcanberra
+           libgee
+           libhandy
+           libpeas
+           libsecret
+           libstemmer
+           libunwind
+           sqlite
+           webkitgtk-with-libsoup2
+           ytnef))
     (native-inputs
-     `(("appstream-glib" ,appstream-glib)
-       ("cmake-minimal" ,cmake-minimal)
-       ("desktop-file-utils" ,desktop-file-utils)
-       ("gettext" ,gettext-minimal)
-       ("glib" ,glib)
-       ("glib:bin" ,glib "bin")
-       ("gmime" ,gmime)
-       ("gobject-introspection" ,gobject-introspection)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("itstool" ,itstool)
-       ("libarchive" ,libarchive)
-       ("libxml2" ,libxml2)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-minimal)
-       ("vala" ,vala)
-       ("xvfb" ,xorg-server-for-tests)))
+     (list appstream-glib
+           cmake-minimal
+           desktop-file-utils
+           gettext-minimal
+           glib
+           `(,glib "bin")
+           gmime
+           gobject-introspection
+           gsettings-desktop-schemas
+           itstool
+           libarchive
+           libxml2
+           pkg-config
+           python-minimal
+           vala
+           xorg-server-for-tests))
     (synopsis "GNOME email application built around conversations")
     (description
      "Geary collects related messages together into conversations,
