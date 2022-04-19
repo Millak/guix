@@ -11488,6 +11488,32 @@ output.")
 (define-public python2-cram
   (package-with-python2 python-cram))
 
+(define-public python-crccheck
+  (package
+    (name "python-crccheck")
+    (version "1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "crccheck" version))
+       (sha256
+        (base32 "15psg7wjfbpmmry54ffwg6pg63mnv7mkwmb0a7884axnr8qj55j5"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv")))))))
+    (native-inputs (list python-pytest))
+    (home-page "https://sourceforge.net/projects/crccheck/")
+    (synopsis "Calculation library for CRCs and checksums")
+    (description "@code{crccheck} is a calculation library for CRCs and
+checksums.  It implement more than a hundred checksum routines.")
+    (license license:gpl3+)))
+
 (define-public python-crashtest
   (package
     (name "python-crashtest")
