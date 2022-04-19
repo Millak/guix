@@ -15751,23 +15751,28 @@ applications.")
 (define-public python-kombu
   (package
     (name "python-kombu")
-    (version "5.2.2")
+    (version "5.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "kombu" version))
        (sha256
-        (base32 "0256915q3z4pjrkqxw16a31np3p25dxnk1mq2zv0hs4izdihfp8g"))))
+        (base32 "044ng79gj04668kf5fmy7fjkw8302xyapskkn65ym52zfbpf7kip"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'delete-transport-tests
-           (lambda _ ; this tests message passing to many different databases
-             (delete-file-recursively "t/unit/transport"))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv"
+                        ;; The transport tests attempt to pass messages to
+                        ;; many different databases.
+                        "--ignore" "t/unit/transport")))))))
     (native-inputs
-     (list python-case python-mock python-pyro4 python-pytest-sugar
-           python-pytz))
+     (list python-case python-pyro4 python-pytest-sugar
+           python-pytest python-pytz))
     (propagated-inputs
      (list python-amqp python-cached-property python-vine))
     (home-page "https://kombu.readthedocs.io")
