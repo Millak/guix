@@ -2235,6 +2235,23 @@ a library.")
     (description "DiskCache is a disk and file backed persistent cache.")
     (license license:asl2.0)))
 
+(define-public python-argparse-addons
+  (package
+    (name "python-argparse-addons")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "argparse_addons" version))
+       (sha256
+        (base32 "1yx54dmnr3xggjcjk6bbdafvzp6cynrakl56wyz3jglmfvk0znpm"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/eerimoq/argparse_addons")
+    (synopsis "Extensions for Python's @code{argparse} library")
+    (description "This Python library provides additional types and actions
+for the standard @code{argparse} library.")
+    (license license:expat)))
+
 (define-public python-bitstruct
   (package
     (name "python-bitstruct")
