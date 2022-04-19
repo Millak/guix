@@ -650,14 +650,18 @@ HTML")
 (define-public python-mkdocs
   (package
     (name "python-mkdocs")
-    (version "1.1.2")
+    (version "1.3.0")
     (source
      (origin
-       (method url-fetch)
-       (uri
-        (pypi-uri "mkdocs" version))
+       ;; The tests suite appears to be incomplete in the PyPI archive.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mkdocs/mkdocs")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0fgv5zawpyyv0vd4j5y8m4h058lh9jkwfcm0xy4pg7dr09a1xdph"))))
+        (base32
+         "1n5rdllrxvhnxmdrddf55p3s86dakx0rq2gg6bj6pr6jg2pn932b"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -667,15 +671,27 @@ HTML")
          (add-after 'unpack 'patch-requirements
            (lambda _
              (substitute* "setup.py"
-               (("==") ">=")))))))
+               (("==") ">="))))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "python" "-m" "unittest"
+                       "discover" "-p" "*tests.py" "mkdocs"
+                       "--top-level-directory" ".")))))))
     (propagated-inputs
-     (list python-click
+     (list python-babel
+           python-click
+           python-ghp-import
+           python-importlib-metadata
            python-jinja2
-           python-livereload
-           python-lunr
            python-markdown
+           python-markupsafe
+           python-mdx-gh-links
+           python-mergedeep
+           python-packaging
            python-pyyaml
-           python-tornado))
+           python-pyyaml-env-tag
+           python-watchdog))
     (home-page "https://www.mkdocs.org")
     (synopsis "Project documentation with Markdown")
     (description "MkDocs is a static site generator geared towards building
