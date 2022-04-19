@@ -307,14 +307,14 @@ JavaScript build steps.")
 (define-public python-jupyter-server
   (package
     (name "python-jupyter-server")
-    (version "1.10.2")
+    (version "1.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "jupyter_server" version))
        (sha256
         (base32
-         "1gvjbsw5nl94hz02rnkr4g4kkvh9fz7i45vz17hzwyvdpj7bd8yk"))))
+         "0fj6l34m6vk3yic87isz9bzgg4qsbr285x1faamf512bsrxghmn7"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -341,7 +341,6 @@ JavaScript build steps.")
     (propagated-inputs
      (list python-anyio
            python-argon2-cffi
-           python-ipython-genutils
            python-jinja2
            python-jupyter-client
            python-jupyter-core
@@ -349,7 +348,6 @@ JavaScript build steps.")
            python-nbformat
            python-prometheus-client
            python-pyzmq
-           python-requests-unixsocket
            python-send2trash
            python-terminado
            python-tornado-6
