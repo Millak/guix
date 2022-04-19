@@ -170,15 +170,15 @@ Messaging Protocol}.")
 (define-public xeus
   (package
     (name "xeus")
-    (version "0.23.2")
+    (version "2.4.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/QuantStack/xeus")
+                    (url "https://github.com/jupyter-xeus/xeus")
                     (commit version)))
               (sha256
                (base32
-                "1m1b6z1538r7mv2ggn7bdbd9570ja7cadplq64zl8rgl2c8vdi2a"))
+                "1k1h416qkw3yra6ayfa61nv0v4ify2wvp5x27slgbcw6c88w7fb1"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -190,7 +190,7 @@ Messaging Protocol}.")
            ;; The following inputs are used by the test suite.
            googletest
            python-pytest
-           python-3
+           python-wrapper
            python-jupyter-kernel-test
            python-jupyter-client))
     (inputs
@@ -199,7 +199,7 @@ Messaging Protocol}.")
            cppzmq
            zeromq
            openssl
-           `(,util-linux "lib")))         ;libuuid
+           `(,util-linux "lib")))       ;libuuid
     (home-page "https://quantstack.net/xeus")
     (synopsis "C++ implementation of the Jupyter Kernel protocol")
     (description
