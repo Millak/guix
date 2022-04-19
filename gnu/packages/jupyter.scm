@@ -713,26 +713,52 @@ datasets across widgets.")
 (define-public python-voila
   (package
     (name "python-voila")
-    (version "0.2.10")
+    (version "0.3.5")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "voila" version))
+       (method git-fetch)               ;no tests in pypi archive
+       (uri (git-reference
+             (url "https://github.com/voila-dashboards/voila")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "0krfc95yjlhjdmrsladhy6lpf4xs1zw49nmkyl4pkykndglvwa1m"))))
+         "10qn34ddmcwcl9zxa0gwxarxr64k8hx4yysdwrf0iqvmzmkwmbbj"))))
     (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "setup.cfg"
+                (("nbclient>=0.4.0,<0.6")
+                 "nbclient"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" "/tmp")
+                (invoke "pytest" "-vv"
+                        ;; Many tests depend on Node JavaScript dependencies
+                        ;; and a running HTTP server; ignore them.
+                        "--ignore" "tests/app"
+                        "--ignore" "tests/server")))))))
     (propagated-inputs
-     (list python-jupyter-client python-jupyter-server python-nbclient
-           python-nbconvert))
+     (list python-jupyter-client
+           python-jupyter-server
+           python-jupyterlab-server
+           python-nbclient
+           python-nbconvert
+           python-traitlets
+           python-websockets))
     (native-inputs
      (list python-ipywidgets
-           python-jupyter-packaging
            python-matplotlib
            python-mock
+           python-numpy
+           python-pandas
            python-pytest
            python-pytest-tornasync
-           python-setuptools
            python-tornado-6))
     (home-page "https://github.com/voila-dashboards/voila")
     (synopsis "Render live Jupyter notebooks with interactive widgets")
