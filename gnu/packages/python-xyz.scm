@@ -17428,6 +17428,28 @@ daemon.  It is the client side software which allows storing values in one or
 more, possibly remote, memcached servers.")
     (license license:psfl)))
 
+(define-public python-mergedeep
+  (package
+    (name "python-mergedeep")
+    (version "1.3.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/clarketm/mergedeep")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1msvvdzk33sxzgyvs4fs8dlsrsi7fjj038z83s0yw5h8m8d78469"))))
+    (build-system python-build-system)
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/clarketm/mergedeep")
+    (synopsis "Deep merge function for Python")
+    (description "This package provides a deep merge function for Python,
+useful to combine multiple data objects as one.")
+    (license license:expat)))
+
 (define-public python-clikit
   (package
     (name "python-clikit")
