@@ -706,6 +706,26 @@ configured with a single YAML configuration file.")
 Markdown.  All extensions are found under the module namespace of pymdownx.")
     (license license:expat)))
 
+(define-public python-mdx-gh-links
+  (package
+    (name "python-mdx-gh-links")
+    (version "0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "mdx_gh_links" version))
+       (sha256
+        (base32 "167k1jbp3jifxbnlpi6wy0z1skam7gqv2sixb5bhggb2vypqvysr"))))
+    (build-system python-build-system)
+    (arguments (list #:tests? #f))      ;tests connect github
+    (propagated-inputs (list python-markdown))
+    (home-page "https://github.com/Python-Markdown/github-links/")
+    (synopsis "Python-Markdown extension adding support for shorthand links")
+    (description "This package is an extension to Python-Markdown which adds
+support for shorthand links to GitHub users, repositories, issues and
+commits.")
+    (license license:bsd-3)))
+
 (define-public python-mkdocs-material
   (package
     (name "python-mkdocs-material")
