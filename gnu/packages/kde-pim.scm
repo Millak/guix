@@ -1336,8 +1336,9 @@ using a Qt/KMime C++ API.")
                       ;; <Libkdepim/MultiplyingLine> without this hack.
                       (setenv "CPLUS_INCLUDE_PATH"
                               (string-append
-                               (search-input-directory inputs "include/KF5")
-                               ":" (or (getenv "CPLUS_INCLUDE_PATH") ""))))))))
+                                (assoc-ref inputs "libkdepim")
+                                "/include/KF5:"
+                                (or (getenv "CPLUS_INCLUDE_PATH") ""))))))))
     (home-page "https://invent.kde.org/pim/messagelib")
     (synopsis "KDE PIM messaging libraries")
     (description "This package provides several libraries for messages,
