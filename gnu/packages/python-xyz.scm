@@ -29535,6 +29535,30 @@ provide the ability to selectively apply arguments to callable objects
 and to reference instance methods using weak-references.")
     (license license:bsd-3)))
 
+(define-public python-queuelib
+  (package
+    (name "python-queuelib")
+    (version "1.6.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "queuelib" version))
+        (sha256
+          (base32 "1lpwq8wx3025i14y5h0hbald2ypbarf081pql6cqcak4y9kp482b"))))
+    (build-system python-build-system)
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/scrapy/queuelib")
+    (synopsis
+      "Collection of persistent (disk-based) and non-persistent (memory-based) queues")
+    (description "Queuelib is a Python library that implements object
+collections which are stored in memory or persisted to disk, provide a
+simple API, and run fast.
+
+Queuelib provides collections for queues (FIFO), stacks (LIFO), queues
+sorted by priority and queues that are emptied in a round-robin
+fashion.")
+    (license license:bsd-3)))
+
 (define-public python-hypy-utils
   (package
     (name "python-hypy-utils")
