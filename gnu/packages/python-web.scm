@@ -3837,7 +3837,7 @@ on the command line.")
 (define-public python-flask-login
   (package
     (name "python-flask-login")
-    (version "0.5.0")
+    (version "0.6.0")
     (source
      (origin
        (method git-fetch)
@@ -3846,17 +3846,21 @@ on the command line.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11ac924w0y4m0kf3mxnxdlidy88jfa7njw5yyrq16dvnx4iwd8gg"))))
+        (base32 "12yw01ccgjn9c88cbkrd6k1ykjxd8fxip2b1isvxjirphnlqhn9g"))))
     (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "pytest" "-vv" "-c" "/dev/null")))))))
     (propagated-inputs
      (list python-flask))
     (native-inputs
      ;; For tests.
      (list python-blinker
-           python-coverage
            python-mock
-           python-pycodestyle
-           python-pyflakes
            python-pytest
            python-semantic-version
            python-werkzeug))
