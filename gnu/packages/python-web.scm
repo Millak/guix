@@ -6493,3 +6493,28 @@ by asyncio.")
     (description
       "Pure-Python robots.txt parser with support for modern conventions.")
     (license license:bsd-3)))
+
+(define-public python-parsel
+  (package
+    (name "python-parsel")
+    (version "1.6.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "parsel" version))
+        (sha256
+          (base32 "0yawf9r3r863lwxj0n89i7h3n8xjbsl5b7n6xg76r68scl5yzvvh"))))
+    (build-system python-build-system)
+    (propagated-inputs
+      (list python-cssselect
+            python-lxml
+            python-six
+            python-w3lib))
+    (native-inputs
+      (list python-pytest python-pytest-runner))
+    (home-page "https://github.com/scrapy/parsel")
+    (synopsis "Extract data from HTML and XML using XPath and CSS selectors")
+    (description "Parsel is a library to extract and remove data from
+HTML and XML using XPath and CSS selectors, optionally combined with
+regular expressions.")
+    (license license:bsd-3)))
