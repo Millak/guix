@@ -19,7 +19,7 @@
 ;;; Copyright © 2020 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2020 Tom Zander <tomz@freedommail.ch>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
-;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Carlo Holl <carloholl@gmail.com>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2021 ZmnSCPxj jxPCSnmZ <ZmnSCPxj@protonmail.com>
@@ -273,14 +273,14 @@ Accounting.")
 (define-public homebank
   (package
     (name "homebank")
-    (version "5.5.4")
+    (version "5.5.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://homebank.free.fr/public/homebank-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0rapdqv2j61cj2jzfk0fiby3na4k5g5i7shkqbjhld4rl2y6j1hd"))))
+                "0rwykjpv4w7bffyvx2j6py17nxw9jcbml7ma4is194i3npn0bkmy"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list pkg-config intltool))
