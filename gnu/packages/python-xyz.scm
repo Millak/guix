@@ -108,7 +108,7 @@
 ;;; Copyright © 2021 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2021 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
 ;;; Copyright © 2021 Pradana Aumars <paumars@courrier.dev>
-;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2021, 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Sébastien Lerique <sl@eauchat.org>
 ;;; Copyright © 2021 Raphaël Mélotte <raphael.melotte@mind.be>
 ;;; Copyright © 2021 ZmnSCPxj <ZmnSCPxj@protonmail.com>
@@ -29504,6 +29504,36 @@ match a given regular expression, or count possible matches efficiently. It
 uses the parsed regular expression, so you get a much more accurate result
 than trying to just split strings.")
     (license license:asl2.0)))
+
+(define-public python-pydispatcher
+  (package
+    (name "python-pydispatcher")
+    (version "2.0.5")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "PyDispatcher" version))
+        (sha256
+          (base32 "1bswbmhlbqdxlgbxlb6xrlm4k253sg8nvpl1whgsys8p3fg0cw2m"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+        (modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest")))))))
+    (native-inputs (list python-pytest))
+    (home-page "http://pydispatcher.sourceforge.net")
+    (synopsis "Multi-producer-multi-consumer signal dispatching mechanism")
+    (description "PyDispatcher is an enhanced version of Patrick K. O’Brien’s
+original @code{dispatcher.py} module.  It provides the Python programmer with
+a robust mechanism for event routing within various application contexts.
+
+Included in the package are the robustapply and saferef modules, which
+provide the ability to selectively apply arguments to callable objects
+and to reference instance methods using weak-references.")
+    (license license:bsd-3)))
 
 (define-public python-hypy-utils
   (package
