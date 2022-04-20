@@ -84,7 +84,10 @@ as shepherd package."
                                         services))))
             (if (defined? 'start-in-the-background)
                 (start-in-the-background services-to-start)
-                (for-each start services-to-start)))))
+                (for-each start services-to-start))
+
+            ;; Return one value.
+            #t)))
 
     (scheme-file "shepherd.conf" config)))
 
