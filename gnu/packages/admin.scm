@@ -47,6 +47,7 @@
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3730,6 +3731,32 @@ Intel DRM Driver.")
 Bash.  Neofetch displays information about your system next to an image, your OS
 logo, or any ASCII file of your choice.  The main purpose of Neofetch is to be
 used in screenshots to show other users what operating system or distribution
+you are running, what theme or icon set you are using, etc.")
+    (license license:expat)))
+
+(define-public hyfetch
+  (package
+    (name "hyfetch")
+    (version "1.0.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "HyFetch" version))
+        (sha256
+          (base32 "1bfkycdhsyzkk6q24gdy1xwvyz0rvkr7xk2khbn74b3nk6kp83r2"))))
+    (build-system python-build-system)
+    (inputs (list python-hypy-utils python-typing-extensions))
+    (arguments `(#:phases (modify-phases %standard-phases
+                            (add-before 'build 'set-HOME
+                              (lambda _  ;; Tries to set files in .config
+                                (setenv "HOME" "/tmp"))))))
+    (home-page "https://github.com/hykilpikonna/HyFetch")
+    (synopsis "@code{neofetch} with pride flags <3")
+    (description "HyFetch is a command-line system information tool fork of
+@code{neofetch}.  HyFetch displays information about your system next to your
+OS logo in ASCII representation.  The ASCII representation is then colored in
+the pattern of the pride flag of your choice.  The main purpose of HyFetch is to
+be used in screenshots to show other users what operating system or distribution
 you are running, what theme or icon set you are using, etc.")
     (license license:expat)))
 
