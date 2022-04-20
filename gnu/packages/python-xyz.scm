@@ -29559,6 +29559,36 @@ sorted by priority and queues that are emptied in a round-robin
 fashion.")
     (license license:bsd-3)))
 
+(define-public python-itemadapter
+  (package
+    (name "python-itemadapter")
+    (version "0.5.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "itemadapter" version))
+        (sha256
+          (base32 "083wp3h2brh8x19jbdr8rz3biqwp3jlqd0rfzcyrjyhssffsgdh5"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/scrapy/itemadapter")
+    (synopsis "Common interface for data container classes")
+    (description "The ItemAdapter class is a wrapper for data container
+objects, providing a common interface to handle objects of different
+types in an uniform manner, regardless of their underlying implementation.
+
+Currently supported types are:
+@itemize
+@item scrapy.item.Item
+@item dict
+@item dataclass-based classes
+@item attrs-based classes
+@item pydantic-based classes
+@end itemize
+
+Additionally, interaction with arbitrary types is supported by
+implementing a pre-defined interface.")
+    (license license:bsd-3)))
+
 (define-public python-hypy-utils
   (package
     (name "python-hypy-utils")
