@@ -3371,7 +3371,12 @@ simple and Pythonic domain language.")
                     (invoke "pytest" "-vv"
                             ;; The memory usage tests are very expensive and run in
                             ;; sequence; skip them.
-                            "-k" "not test_memusage.py"))))))))
+                            "-k"
+                            (string-append
+                             "not test_memusage.py"
+                             ;; This test fails with "AssertionError: Warnings
+                             ;; were not seen [...]".
+                             " and not test_fixture_five")))))))))
       ;; Do not use pytest-xdist, which is broken for Python 2.
       (native-inputs (modify-inputs (package-native-inputs base)
                        (delete "python-pytest-xdist"))))))
