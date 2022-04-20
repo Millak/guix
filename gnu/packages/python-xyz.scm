@@ -29589,6 +29589,30 @@ Additionally, interaction with arbitrary types is supported by
 implementing a pre-defined interface.")
     (license license:bsd-3)))
 
+(define-public python-itemloaders
+  (package
+    (name "python-itemloaders")
+    (version "1.0.4")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "itemloaders" version))
+        (sha256
+          (base32 "15hc78h90qhwass1bga1c3xar2dd6j8sxg61zg6jvh74lf6csxqj"))))
+    (build-system python-build-system)
+    (propagated-inputs
+      (list python-itemadapter python-jmespath python-parsel python-w3lib))
+    (home-page "https://github.com/scrapy/itemloaders")
+    (synopsis "Base library for scrapy's ItemLoader")
+    (description "Itemloaders is a library that helps you collect data
+from HTML and XML sources.  It comes in handy to extract data from web
+pages, as it supports data extraction using CSS and XPath Selectors.
+
+It’s specially useful when you need to standardize the data from many
+sources.  For example, it allows you to have all your casting and
+parsing rules in a single place.")
+    (license license:bsd-3)))
+
 (define-public python-hypy-utils
   (package
     (name "python-hypy-utils")
