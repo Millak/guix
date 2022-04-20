@@ -16,7 +16,7 @@
 ;;; Copyright © 2017 Theodoros Foradis <theodoros@foradis.org>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017, 2018, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2018, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2018, 2019, 2020, 2021, 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2018 Eric Bavier <bavier@member.fsf.org>
@@ -3343,7 +3343,7 @@ or errors (Left).")
            guile-lib
            guile-readline
            freeglut
-           webkitgtk))
+           webkitgtk-with-libsoup2))
     (propagated-inputs
      `(("glib-networking" ,glib-networking)
        ("gssettings-desktop-schemas" ,gsettings-desktop-schemas)))
@@ -3359,8 +3359,7 @@ or errors (Left).")
        (modify-phases %standard-phases
          (add-before 'configure 'setenv
            (lambda _
-             (setenv "GUILE_AUTO_COMPILE" "0")
-             #t))
+             (setenv "GUILE_AUTO_COMPILE" "0")))
          (add-after 'install 'wrap-binaries
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -3381,8 +3380,7 @@ or errors (Left).")
                (map (cut wrap-program <>
                          `("GUILE_LOAD_PATH" ":" prefix ,scm-path)
                          `("GUILE_LOAD_COMPILED_PATH" ":" prefix ,go-path))
-                    progs)
-               #t))))))
+                    progs)))))))
     (home-page "https://savannah.nongnu.org/projects/emacsy")
     (synopsis "Embeddable GNU Emacs-like library using Guile")
     (description
