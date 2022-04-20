@@ -30183,12 +30183,14 @@ Python @code{set} interface.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'patch-for-click-8
+           (lambda _
+             (substitute* "dynaconf/cli.py"
+               (("click.get_os_args\\()") ;deprecated from Click 8.1+
+                "sys.argv[1:]"))))
          (replace 'check
            (lambda* (#:key tests? outputs #:allow-other-keys)
              (when tests?
-               (setenv "PATH"
-                       (string-append (assoc-ref outputs "out") "/bin:"
-                                      (getenv "PATH")))
                ;; These tests depend on hvac and a live Vault process.
                (delete-file "tests/test_vault.py")
                (invoke "make" "test_only")))))))
@@ -30196,7 +30198,7 @@ Python @code{set} interface.")
      (list python-click python-configobj python-dotenv-0.13.0
            python-ruamel.yaml python-toml))
     (native-inputs
-     (list python-django python-flask python-pytest-6 python-pytest-cov
+     (list python-django python-flask python-pytest python-pytest-cov
            python-pytest-mock))
     (home-page "https://www.dynaconf.com/")
     (synopsis "The dynamic configurator for your Python project")
