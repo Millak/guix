@@ -86,8 +86,8 @@ as shepherd package."
                 (start-in-the-background services-to-start)
                 (for-each start services-to-start))
 
-            ;; Return one value.
-            #t)))
+            (redirect-port (open-input-file "/dev/null")
+                           (current-input-port)))))
 
     (scheme-file "shepherd.conf" config)))
 
