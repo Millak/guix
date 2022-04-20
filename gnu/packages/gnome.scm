@@ -446,7 +446,7 @@ services.")
      (list docbook-xml-4.1.2 gobject-introspection gtk-doc/stable
            pkg-config))
     (propagated-inputs
-     (list glib libsoup libxml2))
+     (list glib libsoup-minimal-2 libxml2))
     (synopsis "Glib library for feeds")
     (description "LibGRSS is a Glib abstraction to handle feeds in RSS, Atom,
 and other formats.")
