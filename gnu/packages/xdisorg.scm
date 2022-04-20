@@ -3050,3 +3050,4 @@ MouseKeys-acceleration management.")
 that support @samp{wlr-gamma-control-unstable-v1}.  It is also known as a blue
 light filter or night light.")
     (license license:expat)))
+

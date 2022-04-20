@@ -52,6 +52,7 @@
 ;;; Copyright © 2022 Gabriel Wicki <gabriel@erlikon.ch>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
+;;; Copyright © 2022 Pier-Hugues Pellerin <ph@heykimo.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -103,6 +104,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages gnome)
   #:use-module (gnu packages haskell-check)
   #:use-module (gnu packages haskell-web)
   #:use-module (gnu packages haskell-xyz)
@@ -2714,3 +2716,31 @@ which do not support it.")
     (synopsis "Logout menu for Wayland")
     (description "wlogout is a logout menu for Wayland environments.")
     (license license:expat)))
+
+(define-public avizo
+  (package
+    (name "avizo")
+    (version "1.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/misterdanb/avizo")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "02h2jbgrbl2hyq6bzwryc1r47mipgdqrdh7zi44skc25w045s6q5"))))
+    (build-system meson-build-system)
+    (inputs (list gtk+))
+    (native-inputs
+     (list vala
+           `(,glib "bin")
+           gobject-introspection
+           gtk-layer-shell
+           pkg-config))
+    (home-page "https://github.com/misterdanb/avizo")
+    (synopsis "Notification daemon for Sway")
+    (description
+     "Avizo is a simple notification daemon for Sway, mainly intended to be
+used for multimedia keys.")
+    (license license:gpl3+)))
