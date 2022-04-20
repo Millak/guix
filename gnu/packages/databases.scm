@@ -3226,41 +3226,6 @@ Memory-Mapped Database} (LMDB), a high-performance key-value store.")
            ;; but not actually needed on platforms currently supported by Guix.
            license:bsd-3))))
 
-(define-public python-orator
-  (package
-    (name "python-orator")
-    (version "0.9.9")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "orator" version))
-              (sha256
-               (base32
-                "0mbgybz63ryhr9p1f4glnls5c57jp6il3dw0kf97f3pj80687rvg"))))
-    (build-system python-build-system)
-    ;; FIXME: Tests are not distributed with PyPI, and the repository
-    ;; does not contain setup.py.  How to test?
-    (arguments '(#:tests? #f))
-    (propagated-inputs
-     (list python-backpack
-           python-blinker
-           python-cleo
-           python-faker
-           python-inflection
-           python-lazy-object-proxy
-           python-pendulum
-           python-pyaml
-           python-pygments
-           python-pyyaml
-           python-simplejson
-           python-six
-           python-wrapt))
-    (home-page "https://orator-orm.com/")
-    (synopsis "ActiveRecord ORM for Python")
-    (description
-     "Orator provides a simple ActiveRecord-like Object Relational Mapping
-implementation for Python.")
-    (license license:expat)))
-
 (define-public virtuoso-ose
   (package
     (name "virtuoso-ose")
