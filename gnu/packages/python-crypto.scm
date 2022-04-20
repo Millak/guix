@@ -24,7 +24,7 @@
 ;;; Copyright © 2020 Alexandros Theodotou <alex@zrythm.org>
 ;;; Copyright © 2020 Justus Winter <justus@sequoia-pgp.org>
 ;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -351,14 +351,10 @@ do what is needed for client/server Kerberos authentication based on
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "pytest"))
-             #t)))))
+               (invoke "pytest" "-vv" "-c" "/dev/null" "tests")))))))
     (native-inputs
      (list python-toml
            python-pytest
-           python-pytest-checkdocs
-           python-pytest-cov
-           python-pytest-flake8
            python-setuptools
            python-setuptools-scm))
     (propagated-inputs
