@@ -3249,14 +3249,14 @@ presume or force a developer to use a particular tool or library.")
 (define-public python-flask-wtf
   (package
     (name "python-flask-wtf")
-    (version "0.14.3")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Flask-WTF" version))
        (sha256
         (base32
-         "086pvg2x69n0nczcq7frknfjd8am1zdy8qqpva1sanwb02hf65yl"))))
+         "1jd614662r6ifh4svs8zfwm4k8bal5z3n6pq607bas8gxrpmrzil"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -3265,7 +3265,7 @@ presume or force a developer to use a particular tool or library.")
            (lambda _
              (invoke "pytest" "-vv"))))))
     (propagated-inputs
-     (list python-flask-babel python-babel python-wtforms))
+     (list python-flask python-itsdangerous python-wtforms))
     (native-inputs
      (list python-pytest))
     (home-page "https://github.com/lepture/flask-wtf")
