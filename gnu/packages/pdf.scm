@@ -88,6 +88,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -1480,77 +1481,75 @@ manipulating PDF documents from the command line.  It supports
 (define-public weasyprint
   (package
     (name "weasyprint")
-    (version "52.1")
+    (version "54.3")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/FelixSchwarz/WeasyPrint")
+             (url "https://github.com/Kozea/WeasyPrint")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0rcj9yah3bp6bbvkmny3w4csx4l5v49lc7mrk29g0x77qnwswjy7"))))
+         "0cn8gpgyic6pmrnhp0540nbgplpsd5aybi7k89anz6m1sshgjzgs"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-library-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((fontconfig (assoc-ref inputs "fontconfig"))
-                   (glib (assoc-ref inputs "glib"))
-                   (pango (assoc-ref inputs "pango"))
-                   (pangoft2 (assoc-ref inputs "pangoft2")))
-               (substitute* "weasyprint/fonts.py"
-                 (("'fontconfig'")
-                  (format #f "'~a/lib/libfontconfig.so'" fontconfig))
-                 (("'pangoft2-1.0'")
-                  (format #f "'~a/lib/libpangoft2-1.0.so'" pango)))
-               (substitute* "weasyprint/text.py"
-                 (("'gobject-2.0'")
-                  (format #f "'~a/lib/libgobject-2.0.so'" glib))
-                 (("'pango-1.0'")
-                  (format #f "'~a/lib/libpango-1.0.so'" pango))
-                 (("'pangocairo-1.0'")
-                  (format #f "'~a/lib/libpangocairo-1.0.so'" pango)))
-               #t)))
-         (add-after 'unpack 'disable-linters
-           ;; Their check fails; none of our business.
-           (lambda _
-             (substitute* "setup.cfg"
-               ((".*pytest-flake8.*") "")
-               ((".*pytest-isort.*") "")
-               (("--flake8") "")
-               (("--isort") ""))
-             #t))
-         (add-before 'check 'register-dejavu-font
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; TODO: fix FreeType so that fonts found in XDG_DATA_DIRS are
-             ;; honored.
-             (let* ((HOME "/tmp")
-                    (dejavu (assoc-ref inputs "font-dejavu"))
-                    (fonts-dir (string-append HOME "/.fonts")))
-               (setenv "HOME" HOME)
-               (mkdir-p fonts-dir)
-               (symlink (string-append dejavu "/share/fonts/truetype")
-                        (string-append fonts-dir "/truetype"))
-               (invoke "fc-cache" "-rv")))))))
-    (inputs
-     `(("fontconfig" ,fontconfig)
-       ("glib" ,glib)
-       ("pango" ,pango)))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-library-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "weasyprint/text/ffi.py"
+                (("'gobject-2.0-0'")
+                 (format #f "~s"
+                         (search-input-file inputs "lib/libgobject-2.0.so")))
+                (("'pango-1.0-0'")
+                 (format #f "~s"
+                         (search-input-file inputs "lib/libpango-1.0.so")))
+                (("'harfbuzz'")
+                 (format #f "~s"
+                         (search-input-file inputs "lib/libharfbuzz.so")))
+                (("'fontconfig-1'")
+                 (format #f "~s"
+                         (search-input-file inputs "lib/libfontconfig.so")))
+                (("'pangoft2-1.0-0'")
+                 (format #f "~s"
+                         (search-input-file inputs
+                                            "lib/libpangoft2-1.0.so"))))))
+          ;; XXX: PEP 517 manual build copied from python-isort.
+          (replace 'build
+            (lambda _
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv" "-c" "/dev/null"
+                        "-n" (number->string (parallel-job-count))))))
+          (replace 'install
+            (lambda _
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl)))))))
+    (inputs (list fontconfig glib harfbuzz pango))
     (propagated-inputs
      (list gdk-pixbuf
            python-cairocffi
            python-cairosvg
            python-cffi
            python-cssselect2
+           python-fonttools-full
            python-html5lib
+           python-pillow
+           python-pydyf
            python-pyphen
            python-tinycss2))
     (native-inputs
-     (list font-dejavu ;tests depend on it
-           python-pytest-cov python-pytest-runner))
+     (list font-dejavu                  ;tests depend on it
+           ghostscript
+           python-flit-core
+           python-pypa-build
+           python-pytest
+           python-pytest-xdist))
     (home-page "https://weasyprint.org/")
     (synopsis "Document factory for creating PDF files from HTML")
     (description "WeasyPrint helps web developers to create PDF documents.  It
