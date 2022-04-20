@@ -20,7 +20,7 @@
 ;;; Copyright © 2020-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Timotej Lazar <timotej.lazar@araneo.si>
-;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -700,6 +700,33 @@ it easy to modify them and write the changes to disk.  It is primarily useful
 for applications that wish to do lower level manipulation of PDF, such as
 extracting content or merging files.")
     (license license:lgpl2.0+)))
+
+(define-public python-pydyf
+  (package
+    (name "python-pydyf")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pydyf" version))
+       (sha256
+        (base32 "0b30g3hhxw1bg18r9ax85i1dkg8vy1y1wzas0bg0bxblh7j5sbqy"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv" "-c" "/dev/null")))))))
+    (propagated-inputs (list python-pillow))
+    (native-inputs (list ghostscript python-pytest))
+    (home-page "https://github.com/CourtBouillon/pydyf")
+    (synopsis "Low-level PDF generator")
+    (description "@code{pydyf} is a low-level PDF generator written in Python
+and based on PDF specification 1.7.")
+    (license license:bsd-3)))
 
 (define-public mupdf
   (package
