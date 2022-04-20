@@ -119,6 +119,7 @@
 ;;; Copyright © 2022 Evgeny Pisemsky <evgeny@pisemsky.com>
 ;;; Copyright © 2022 drozdov <drozdov@portalenergy.tech>
 ;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
+;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29534,6 +29535,23 @@ match a given regular expression, or count possible matches efficiently. It
 uses the parsed regular expression, so you get a much more accurate result
 than trying to just split strings.")
     (license license:asl2.0)))
+
+(define-public python-hypy-utils
+  (package
+    (name "python-hypy-utils")
+    (version "1.0.6")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "hypy_utils" version))
+              (sha256
+               (base32
+                "05csk0x8ivavq88x457cq5hwjcdirfbkzj7bbg5qgnpnf2dxxhiw"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/hykilpikonna/HyPyUtils")
+    (synopsis "Python utility functions for HyDEV")
+    (description "This module provides Python utility functions for modifying
+and setting the color of terminal output, via HyDEV.")
+    (license license:expat)))
 
 (define-public python-mike
   (package
