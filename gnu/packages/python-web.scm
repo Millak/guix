@@ -6466,3 +6466,30 @@ as Flask.")
      "This package provides a Python JSON-RPC 2.0 protocol and server powered
 by asyncio.")
     (license license:expat)))
+
+(define-public python-protego
+  (package
+    (name "python-protego")
+    (version "0.2.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "Protego" version))
+        (sha256
+          (base32 "1wigcjyhz8zbk562zhgfbkm733dcn65j1swzvki79dys0i1nsrnz"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+        (modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest")))))))
+    (propagated-inputs (list python-six))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/scrapy/protego")
+    (synopsis
+      "Pure-Python robots.txt parser with support for modern conventions")
+    (description
+      "Pure-Python robots.txt parser with support for modern conventions.")
+    (license license:bsd-3)))
