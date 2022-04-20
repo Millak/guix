@@ -557,7 +557,7 @@ bindings.")
        ("xscrnsaver" ,libxscrnsaver)))
     (propagated-inputs
      `(("glib" ,glib)
-       ("webkit" ,webkitgtk)))
+       ("webkit" ,webkitgtk-with-libsoup2)))
     (synopsis "GObject JavaScriptCore bridge")
     (description "Seed is a library and interpreter, dynamically bridging
 (through GObjectIntrospection) the WebKit JavaScriptCore engine, with the
