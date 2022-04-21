@@ -726,6 +726,37 @@ expression library for Common Lisp.  It is a non-recursive, backtracking VM.")
 (define-public ecl-boost-re
   (sbcl-package->ecl-package sbcl-boost-re))
 
+(define-public sbcl-boost-lexer
+  (let ((commit "139ca9e9580f890698deec05061e495376b7735a")
+        (revision "0"))
+    (package
+      (name "sbcl-boost-lexer")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/cl-boost/lexer")
+               (commit commit)))
+         (file-name (git-file-name "cl-boost-lexer" version))
+         (sha256
+          (base32 "01vsczb5cn62k2hkkn39xwh5fjn2x0b507n7afia98jnhhk3d5x4"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-boost-re))
+      (home-page "https://github.com/cl-boost/lexer")
+      (synopsis "String tokenizing for Common Lisp")
+      (description
+       "BOOST-LEXER is a tokenizer for Common Lisp that makes heavy use of
+BOOST-RE.")
+      (license license:asl2.0))))
+
+(define-public cl-boost-lexer
+  (sbcl-package->cl-source-package sbcl-boost-lexer))
+
+(define-public ecl-boost-lexer
+  (sbcl-package->ecl-package sbcl-boost-lexer))
+
 (define-public sbcl-ubiquitous
   (let ((commit "35eb7bd9e1b3daee1705f6b41260775180cce8af")
         (revision "1"))
