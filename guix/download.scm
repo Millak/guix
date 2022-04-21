@@ -246,6 +246,11 @@
        "http://cran.stat.auckland.ac.nz/"
        "http://cran.mirror.ac.za/"
        "http://cran.csie.ntu.edu.tw/")
+      (ctan
+       ;; This is the CTAN mirror multiplexor service, which automatically
+       ;; redirect to a mirror in or close to the country of the requester
+       ;; (see: https://ctan.org/mirrors/).
+       "https://mirror.ctan.org/")
       (imagemagick
        ;; from http://www.imagemagick.org/script/download.php
        ;; (without mirrors that are unavailable or not up to date)
