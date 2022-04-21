@@ -25,6 +25,12 @@
 (channel-news
  (version 0)
 
+ (entry (commit "be74fb7288c86a6a2245b7e35b57dde88db8a4e4")
+        (title (en "Linux-libre kernel updated to 5.17"))
+        (body
+          (en "The default version of the linux-libre kernel has been
+              updated to the 5.17 release series.")))
+
  (entry (commit "c42b7baf13c7633b4512e94da7445299c57b247d")
         (title
          (en "New @option{--export-manifest} option for @command{guix shell}")
