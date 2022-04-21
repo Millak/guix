@@ -60,14 +60,14 @@
 (define-public python-sphinx
   (package
     (name "python-sphinx")
-    (version "4.2.0")
+    (version "4.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Sphinx" version))
        (sha256
         (base32
-         "19jq21py7m061v8142y2dbqrbv0adqcdjmharrdy34a432wqs1wl"))))
+         "1rp28jryxwy24y8vpacclqihbizyi6b1s6id86pibvm46ybcmy3v"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -80,12 +80,14 @@
                (substitute* "tests/test_build_latex.py"
                  (("@pytest.mark.sphinx\\('latex', testroot='images'\\)")
                   "@pytest.mark.skip()"))
+               (setenv "HOME" "/tmp")   ;for test_cython
                (invoke "make" "test")))))))
     (propagated-inputs
      (list python-babel
            python-docutils
            python-jinja2
            python-imagesize
+           python-importlib-metadata
            python-packaging
            python-pygments
            python-requests
@@ -134,6 +136,7 @@
            texlive-xcolor))
     (native-inputs
      (list imagemagick                  ;for "convert"
+           python-cython
            python-html5lib
            python-pytest))
     (home-page "https://www.sphinx-doc.org")
