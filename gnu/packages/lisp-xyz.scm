@@ -1528,6 +1528,41 @@ and macros, primarily for software projects written in CL by the author.")
 (define-public cl-piping
   (sbcl-package->cl-source-package sbcl-piping))
 
+(define-public sbcl-bobbin
+  (let ((commit "b454e8241b24ceab674eeeae464c8082b1b6d8ce")
+        (revision "0"))
+    (package
+      (name "sbcl-bobbin")
+      (version (git-version "1.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/sjl/bobbin")
+               (commit commit)))
+         (file-name (git-file-name "cl-bobbin" version))
+         (sha256
+          (base32 "02lw7w8cbvnxw5acbz405rb5lcqsf4fx7dvj5ldr0lhgbyv1mjnm"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-1am))
+      (inputs
+       (list sbcl-split-sequence))
+      (home-page "https://docs.stevelosh.com/bobbin/")
+      (synopsis "Simple (word) wrapping utilities for strings")
+      (description
+       "Bobbin is a simple word-wrapping library for strings in Common Lisp.
+It aims to be simple, work nicely for the majority of cases, and degrade
+gracefully for edge cases.  It is not particularly concerned with speed — if
+you need very high-performance word wrapping, Bobbin is not for you.")
+      (license license:expat))))
+
+(define-public cl-bobbin
+  (sbcl-package->cl-source-package sbcl-bobbin))
+
+(define-public ecl-bobbin
+  (sbcl-package->ecl-package sbcl-bobbin))
+
 (define-public sbcl-cl-pcg
   (let ((commit "8263d85ab0ca17fb05637a4430c2d564456bce8f")
         (revision "1"))
