@@ -4794,21 +4794,20 @@ sample library.")
                 "1iihjivpkvmdfqf20kcl9k0s1iwlv9p5vpna7c58lbw3573fiyr4"))))
     (build-system qt-build-system)
     (arguments
-     `(#:tests? #f ; there is no test target
-       #:configure-flags
-       (list "-DENABLE_VST_NATIVE=OFF"
-             (string-append "-DCMAKE_EXE_LINKER_FLAGS="
-                            "-Wl,-rpath="
-                            (assoc-ref %outputs "out") "/lib/muse-"
-                            ,(version-major+minor version) "/modules")
-             (string-append "-DCMAKE_SHARED_LINKER_FLAGS="
-                            "-Wl,-rpath="
-                            (assoc-ref %outputs "out") "/lib/muse-"
-                            ,(version-major+minor version) "/modules"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'chdir
-           (lambda _ (chdir "src"))))))
+     (list
+      #:tests? #f                       ; there is no test target
+      #:configure-flags
+      #~(list "-DENABLE_VST_NATIVE=OFF"
+              (string-append "-DCMAKE_EXE_LINKER_FLAGS="
+                             "-Wl,-rpath=" #$output "/lib/muse-"
+                             #$(version-major+minor version) "/modules")
+              (string-append "-DCMAKE_SHARED_LINKER_FLAGS="
+                             "-Wl,-rpath=" #$output "/lib/muse-"
+                             #$(version-major+minor version) "/modules"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _ (chdir "src"))))))
     (inputs
      (list alsa-lib
            dssi
@@ -4825,7 +4824,7 @@ sample library.")
            lrdf
            lv2
            pcre
-           pulseaudio ; required by rtaudio
+           pulseaudio                   ; required by rtaudio
            qtbase-5
            qtsvg
            rtaudio
