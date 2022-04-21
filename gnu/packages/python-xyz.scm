@@ -6438,34 +6438,34 @@ parse and apply unified diffs.  It has features such as:
 (define-public python-numpydoc
   (package
     (name "python-numpydoc")
-    (version "1.1.0")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "numpydoc" version))
        (sha256
         (base32
-         "13j4fvy2p7lc8sn00sxvs0jb19vicaznfgx4cphv9jgxgz5xcvy3"))))
+         "1xjsli2fqks4iv3524v1d329siad7bbsi4kr174zvhsl1pnjds3w"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "setup.py"
+               (("'Jinja2>=2.10,<3.1'")
+                "'Jinja2>=2.10'"))))
          (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+           (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (add-installed-pythonpath inputs outputs)
                (invoke "pytest" "-v" "numpydoc/tests"
                        ;; TODO: unclear why these fail.
                        "-k" "not test_MyClass and not test_my_function")))))))
-    (propagated-inputs
-     (list python-sphinx))
-    (native-inputs
-     (list python-matplotlib python-pytest python-pytest-cov))
+    (propagated-inputs (list python-jinja2 python-sphinx))
+    (native-inputs (list python-matplotlib python-pytest python-pytest-cov))
     (home-page "https://pypi.org/project/numpydoc/")
-    (synopsis
-     "Numpy's Sphinx extensions")
-    (description
-     "Sphinx extension to support docstrings in Numpy format.")
+    (synopsis "Numpy's Sphinx extensions")
+    (description "Sphinx extension to support docstrings in Numpy format.")
     (license license:bsd-2)
     (properties `((python2-variant . ,(delay python2-numpydoc))))))
 
