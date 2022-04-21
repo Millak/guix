@@ -6285,8 +6285,7 @@ Trivia.")
                            "trivia.quasiquote.asd"
                            "trivia.cffi.asd"
                            "trivia.asd"
-                           "trivia.test.asd"))
-               #t)))))
+                           "trivia.test.asd")))))))
       (synopsis "Pattern matching in Common Lisp")
       (description "Trivia is a pattern matching compiler that is compatible
 with Optima, another pattern matching library for Common Lisp.  It is meant to
@@ -6329,8 +6328,7 @@ be faster and more extensible than Optima.")
                        '("trivia.level0.asd"
                          "trivia.level1.asd"
                          "trivia.level2.asd"
-                         "trivia.trivial.asd"))
-             #t)))))))
+                         "trivia.trivial.asd")))))))))
 
 (define-public cl-trivia
   (sbcl-package->cl-source-package sbcl-trivia))
