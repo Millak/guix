@@ -915,6 +915,25 @@ from (almost) arbitrarily complex font names, thus helping portability of TeX
 documents.")
     (license license:public-domain)))
 
+(define-public texlive-cbfonts-fd
+  (package
+    (inherit (simple-texlive-package
+              "texlive-cbfonts-fd"
+              (list "/doc/fonts/cbfonts/"
+                    "/tex/latex/cbfonts-fd/")
+              (base32
+               "0g91p2qcgqn916vgf777h45dabv2r6l6f9xkcq0b3gpir3qsj3d4")
+              #:trivial? #t))
+    (home-page "https://www.ctan.org/pkg/cbfonts-fd")
+    (synopsis "LaTeX font description files for the CB Greek fonts")
+    (description "The package provides font description files for all the many
+shapes available from the cbfonts collection.  The files provide the means
+whereby the @acronym{NFSS, New Font Selection Scheme} knows which fonts a
+LaTeX user is requesting.
+
+Tip: installing @code{texlive-cbfonts} will automatically propagate this one.")
+    (license license:lppl1.3c+)))
+
 (define-public texlive-cm
   (let ((template (simple-texlive-package
                    "texlive-cm"
