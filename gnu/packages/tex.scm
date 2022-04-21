@@ -5549,7 +5549,8 @@ BibLaTeX, and is considered experimental.")
     (build-system texlive-build-system)
     (arguments '(#:tex-directory "latex/geometry"))
     (propagated-inputs
-     (list texlive-oberdiek)) ;for ifpdf
+     (list texlive-oberdiek             ;for ifpdf
+           texlive-latex-graphics))     ;for keyval
     (home-page "https://www.ctan.org/pkg/geometry")
     (synopsis "Flexible and complete interface to document dimensions")
     (description
