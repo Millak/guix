@@ -6253,21 +6253,21 @@ Trivia.")
 ;;; Split the trivia package in two to work around the circular dependency
 ;;; between guicho271828/trivia and guicho271828/type-i.
 (define-public sbcl-trivia.trivial
-  (let ((commit "7286d5d2a4f685f1cac8370816f95276c0851111")
-        (revision "3"))
+  (let ((commit "8b406c3f83521d290e97bb787d3f6c1eb3b716af")
+        (revision "0"))
     (package
       (name "sbcl-trivia.trivial")
-      (version (git-version "0.0.0" revision commit))
+      (version (git-version "0.1" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/guicho271828/trivia")
                (commit commit)))
-         (file-name (git-file-name "trivia" version))
+         (file-name (git-file-name "cl-trivia" version))
          (sha256
           (base32
-           "0ln0sj3jry7kzbmxhnin66kpbqan1wp8wwgdbw4k29afbdblkcca"))))
+           "0fnnjnba07qrsf82jm4q6dini7z72xabcssy5y2bqy082r07l8l7"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-alexandria
@@ -6284,6 +6284,7 @@ Trivia.")
                            "trivia.ppcre.asd"
                            "trivia.quasiquote.asd"
                            "trivia.cffi.asd"
+                           "trivia.fset.asd"
                            "trivia.asd"
                            "trivia.test.asd")))))))
       (synopsis "Pattern matching in Common Lisp")
@@ -6311,6 +6312,7 @@ be faster and more extensible than Optima.")
            sbcl-cffi
            sbcl-cl-ppcre
            sbcl-fare-quasiquote
+           sbcl-fset
            sbcl-iterate
            sbcl-trivia.trivial
            sbcl-type-i))
@@ -6318,7 +6320,8 @@ be faster and more extensible than Optima.")
      '(#:asd-systems '("trivia"
                        "trivia.ppcre"
                        "trivia.quasiquote"
-                       "trivia.cffi")
+                       "trivia.cffi"
+                       "trivia.fset")
        #:test-asd-file "trivia.test.asd"
        #:phases
        (modify-phases %standard-phases
