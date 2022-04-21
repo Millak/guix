@@ -695,6 +695,37 @@ expression library for Common Lisp.  It is a non-recursive, backtracing VM.")
 (define-public ecl-boost-parse
   (sbcl-package->ecl-package sbcl-boost-parse))
 
+(define-public sbcl-boost-re
+  (let ((commit "d279fc58abf76d0c40aa6cde42e17a0591bc2c5d")
+        (revision "0"))
+    (package
+      (name "sbcl-boost-re")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/cl-boost/re")
+               (commit commit)))
+         (file-name (git-file-name "cl-boost-re" version))
+         (sha256
+          (base32 "1h9c2rdhw6m1pm67gqbj46y2vb1kc3i1c9y3l4qhgfz14dbk80a2"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-boost-parse))
+      (home-page "https://github.com/cl-boost/re")
+      (synopsis "Lua-style string pattern matching for Common Lisp")
+      (description
+       "BOOST-RE is a small, portable, lightweight, and quick, regular
+expression library for Common Lisp.  It is a non-recursive, backtracking VM.")
+      (license license:asl2.0))))
+
+(define-public cl-boost-re
+  (sbcl-package->cl-source-package sbcl-boost-re))
+
+(define-public ecl-boost-re
+  (sbcl-package->ecl-package sbcl-boost-re))
+
 (define-public sbcl-ubiquitous
   (let ((commit "35eb7bd9e1b3daee1705f6b41260775180cce8af")
         (revision "1"))
