@@ -376,21 +376,6 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.17)))
 
-(define-public linux-libre-5.16-version "5.16.20")
-(define-public linux-libre-5.16-gnu-revision "gnu")
-(define deblob-scripts-5.16
-  (linux-libre-deblob-scripts
-   linux-libre-5.16-version
-   linux-libre-5.16-gnu-revision
-   (base32 "1hrs478hnmk32gp6irjramdiwm118f3plhvmg6g118b6pzhzxjs2")
-   (base32 "1g57ki73s8bxm1kdgd4nqbcix0rp1x5mwi8i2c874f4grnsqbfny")))
-(define-public linux-libre-5.16-pristine-source
-  (let ((version linux-libre-5.16-version)
-        (hash (base32 "09dz8zp8cxvsc5amrswqqrkxd3i92ay2samlcspalaw6iz40s1nq")))
-   (make-linux-libre-source version
-                            (%upstream-linux-source version hash)
-                            deblob-scripts-5.16)))
-
 ;; The "longterm" kernels — the older releases with long-term upstream support.
 ;; Here are the support timelines:
 ;; <https://www.kernel.org/category/releases.html>
@@ -517,11 +502,6 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
                        (list %boot-logo-patch
                              %linux-libre-arm-export-__sync_icache_dcache-patch)))
 
-(define-public linux-libre-5.16-source
-  (source-with-patches linux-libre-5.16-pristine-source
-                       (list %boot-logo-patch
-                             %linux-libre-arm-export-__sync_icache_dcache-patch)))
-
 (define-public linux-libre-5.15-source
   (source-with-patches linux-libre-5.15-pristine-source
                        (list %boot-logo-patch
@@ -634,11 +614,6 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
   (make-linux-libre-headers* linux-libre-5.17-version
                              linux-libre-5.17-gnu-revision
                              linux-libre-5.17-source))
-
-(define-public linux-libre-headers-5.16
-  (make-linux-libre-headers* linux-libre-5.16-version
-                             linux-libre-5.16-gnu-revision
-                             linux-libre-5.16-source))
 
 (define-public linux-libre-headers-5.15
   (make-linux-libre-headers* linux-libre-5.15-version
@@ -959,18 +934,11 @@ It has been modified to remove all non-free binary blobs.")
                      '("x86_64-linux" "i686-linux" "armhf-linux" "aarch64-linux" "riscv64-linux")
                      #:configuration-file kernel-config))
 
-(define-public linux-libre-5.16
-  (make-linux-libre* linux-libre-5.16-version
-                     linux-libre-5.16-gnu-revision
-                     linux-libre-5.16-source
-                     '("x86_64-linux" "i686-linux" "armhf-linux" "aarch64-linux" "riscv64-linux")
-                     #:configuration-file kernel-config))
-
-(define-public linux-libre-version         linux-libre-5.16-version)
-(define-public linux-libre-gnu-revision    linux-libre-5.16-gnu-revision)
-(define-public linux-libre-pristine-source linux-libre-5.16-pristine-source)
-(define-public linux-libre-source          linux-libre-5.16-source)
-(define-public linux-libre                 linux-libre-5.16)
+(define-public linux-libre-version         linux-libre-5.17-version)
+(define-public linux-libre-gnu-revision    linux-libre-5.17-gnu-revision)
+(define-public linux-libre-pristine-source linux-libre-5.17-pristine-source)
+(define-public linux-libre-source          linux-libre-5.17-source)
+(define-public linux-libre                 linux-libre-5.17)
 
 (define-public linux-libre-5.15
   (make-linux-libre* linux-libre-5.15-version
@@ -1195,9 +1163,9 @@ It has been modified to remove all non-free binary blobs.")
 (define-public linux-libre-with-bpf
   (let ((base-linux-libre
          (make-linux-libre*
-          linux-libre-5.16-version
-          linux-libre-5.16-gnu-revision
-          linux-libre-5.16-source
+          linux-libre-5.17-version
+          linux-libre-5.17-gnu-revision
+          linux-libre-5.17-source
           '("x86_64-linux" "i686-linux" "armhf-linux"
             "aarch64-linux" "riscv64-linux")
           #:extra-version "bpf"
