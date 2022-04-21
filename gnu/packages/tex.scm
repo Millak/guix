@@ -915,6 +915,25 @@ from (almost) arbitrarily complex font names, thus helping portability of TeX
 documents.")
     (license license:public-domain)))
 
+(define-public texlive-cbfonts          ;71 MiB of greek fonts
+  (package
+    (inherit (simple-texlive-package
+              "texlive-cbfonts"
+              (list "/doc/fonts/cbfonts/"
+                    "/fonts/type1/public/cbfonts/")
+              (base32
+               "01j22cbwq9jkni5vvrpz2mg1799cbx3aq801sni74i8wb1zcf6y1")
+              #:trivial? #t))
+    (propagated-inputs (list texlive-cbfonts-fd))
+    (home-page "https://www.ctan.org/pkg/cbgreek-complete")
+    (synopsis "Complete set of Greek fonts")
+    (description "This bundle presents the whole of Beccari's original Greek
+font set, which use the @i{Lispiakos} font shape derived from the shape of the
+fonts used in printers' shops in Lispia.  The fonts are available both as
+Metafont source and in Adobe Type 1 format, and at the same wide set of design
+sizes as are such font sets as the EC fonts.")
+    (license license:lppl1.3c+)))
+
 (define-public texlive-cbfonts-fd
   (package
     (inherit (simple-texlive-package
