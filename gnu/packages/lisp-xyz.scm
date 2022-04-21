@@ -667,6 +667,34 @@ expression library for Common Lisp.  It is a non-recursive, backtracing VM.")
 (define-public cl-re
   (sbcl-package->cl-source-package sbcl-re))
 
+(define-public sbcl-boost-parse
+  (let ((commit "c8f7e536b950752f3e35003e7ee0446e0fd51b50")
+        (revision "0"))
+    (package
+      (name "sbcl-boost-parse")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/cl-boost/parse")
+               (commit commit)))
+         (file-name (git-file-name "cl-boost-parse" version))
+         (sha256
+          (base32 "0djnp392n9wgpr9r2ycnwkglad5mn285yvr53jx3g7anm2p8r0vf"))))
+      (build-system asdf-build-system/sbcl)
+      (home-page "https://github.com/cl-boost/parse")
+      (synopsis "Monadic parsing for Common Lisp")
+      (description
+       "BOOST-PARSE is a simple token parsing library for Common Lisp.")
+      (license license:asl2.0))))
+
+(define-public cl-boost-parse
+  (sbcl-package->cl-source-package sbcl-boost-parse))
+
+(define-public ecl-boost-parse
+  (sbcl-package->ecl-package sbcl-boost-parse))
+
 (define-public sbcl-ubiquitous
   (let ((commit "35eb7bd9e1b3daee1705f6b41260775180cce8af")
         (revision "1"))
