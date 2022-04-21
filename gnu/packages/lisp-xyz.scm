@@ -6270,10 +6270,10 @@ Trivia.")
            "0ln0sj3jry7kzbmxhnin66kpbqan1wp8wwgdbw4k29afbdblkcca"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("closer-mop" ,sbcl-closer-mop)
-         ("lisp-namespace" ,sbcl-lisp-namespace)
-         ("trivial-cltl2" ,sbcl-trivial-cltl2)))
+       (list sbcl-alexandria
+             sbcl-closer-mop
+             sbcl-lisp-namespace
+             sbcl-trivial-cltl2))
       (arguments
        '(#:phases
          (modify-phases %standard-phases
@@ -6305,16 +6305,16 @@ be faster and more extensible than Optima.")
     (inherit sbcl-trivia.trivial)
     (name "sbcl-trivia")
     (native-inputs
-     `(("fiveam" ,sbcl-fiveam)
-       ("optima" ,sbcl-optima)))
+     (list sbcl-fiveam
+           sbcl-optima))
     (inputs
-     `(("alexandria" ,sbcl-alexandria)
-       ("cffi" ,sbcl-cffi)
-       ("cl-ppcre" ,sbcl-cl-ppcre)
-       ("fare-quasiquote" ,sbcl-fare-quasiquote)
-       ("iterate" ,sbcl-iterate)
-       ("trivia.trivial" ,sbcl-trivia.trivial)
-       ("type-i" ,sbcl-type-i)))
+     (list sbcl-alexandria
+           sbcl-cffi
+           sbcl-cl-ppcre
+           sbcl-fare-quasiquote
+           sbcl-iterate
+           sbcl-trivia.trivial
+           sbcl-type-i))
     (arguments
      '(#:asd-systems '("trivia"
                        "trivia.ppcre"
