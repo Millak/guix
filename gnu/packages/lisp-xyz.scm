@@ -7849,6 +7849,39 @@ your own classes.")
 (define-public ecl-plump
   (sbcl-package->ecl-package sbcl-plump))
 
+(define-public sbcl-plump-sexp
+  (let ((commit "bbcf75e9ecda8fe7603098ab8c15828407bb4f08")
+        (revision "0"))
+    (package
+      (name "sbcl-plump-sexp")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/Shinmera/plump-sexp")
+           (commit commit)))
+         (file-name (git-file-name "cl-plump-sexp" version))
+         (sha256
+          (base32
+           "0zm9h0assjb8766z2v6l1k1s60y90y6f8smrl1dczwqlvc8xyln5"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-plump))
+      (synopsis "Convert S-expressions into a Plump DOM and back")
+      (description
+       "The Plump-SEXP library is a backend for Plump which can convert
+between S-expressions and the Plump DOM.")
+      (home-page "https://github.com/Shinmera/plump-sexp")
+      (license license:zlib))))
+
+(define-public cl-plump-sexp
+  (sbcl-package->cl-source-package sbcl-plump-sexp))
+
+(define-public ecl-plump-sexp
+  (sbcl-package->ecl-package sbcl-plump-sexp))
+
 ;;; Split the antik package in two to work around the circular dependency
 ;;; between antik/antik and antik/gsll.
 (define-public sbcl-antik-base
