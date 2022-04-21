@@ -5863,6 +5863,99 @@ capabilities.")
         (base32
          "19dw91pqbqcniw2z57kiyqs1qp56g7kqy1bdyv664g8s62sc01m9"))))))
 
+(define-public python-numpy-documentation
+  (package
+    (inherit python-numpy)
+    (name "python-numpy-documentation")
+    (arguments
+     (list
+      #:tests? #f                     ;we're only generating the documentation
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'add-gnu-freefont-to-texmf
+            (lambda _
+              ;; XXX: The Sphinx-generated tex output specifies the GNU
+              ;; FreeFont font to be searched via its extension, which uses
+              ;; kpathsea instead of fontconfig and fail (see:
+              ;; https://github.com/sphinx-doc/sphinx/issues/10347).  Create a
+              ;; symlink to GNU FreeFont and add it to the TEXMF tree via
+              ;; GUIX_TEXMF.
+              (mkdir-p "texmf-dist/fonts/opentype/public")
+              (symlink (string-append
+                        #$(this-package-native-input "font-gnu-freefont")
+                        "/share/fonts/opentype")
+                       (string-append
+                        (getcwd) "/"
+                        "texmf-dist/fonts/opentype/public/gnu-freefont"))
+              (setenv "GUIX_TEXMF" (string-append (getenv "GUIX_TEXMF") ":"
+                                                  (getcwd) "/texmf-dist"))))
+          (delete 'build)
+          (replace 'install
+            (lambda _
+              (let* ((data (string-append #$output "/share"))
+                     (doc (string-append data "/doc/numpy"))
+                     (html (string-append doc "/html"))
+                     (info (string-append data "/info"))
+                     (sphinxopts (string-append
+                                  "SPHINXOPTS=-j"
+                                  (number->string (parallel-job-count)))))
+                (with-directory-excursion "doc"
+                  ;; Do not treat warnings as errors.
+                  (substitute* "Makefile"
+                    ((" -WT ") " -T "))
+                  (setenv "HOME" "/tmp")
+                  ;; Build the PDF documentation.
+                  (invoke "make" "latex-build" sphinxopts)
+                  (invoke "make" "-C" "build/latex" "all-pdf" sphinxopts)
+                  ;; Build the HTML documentation
+                  (invoke "make" "html" sphinxopts)
+                  ;; Build the Info documentation.  The issues worked around
+                  ;; below can be tracked at
+                  ;; https://github.com/numpy/numpy/issues/12278.
+                  (substitute* "source/conf.py"
+                    ;; The root document should be "index", not "contents".
+                    (("\"contents\"") "'index'")
+                    ;; Disable Sphinx extensions that produce broken Texinfo.
+                    ((".*'numpydoc'.*") "")
+                    ((".*'sphinx.ext.autosummary'.*") ""))
+                  (invoke "make" "info" sphinxopts)
+                  ;; Install the HTML documentation.
+                  (mkdir-p html)
+                  (copy-recursively "build/html" html)
+                  ;; Install the PDF reference and user manuals.
+                  (install-file "build/latex/numpy-ref.pdf" doc)
+                  (install-file "build/latex/numpy-user.pdf" doc)
+                  ;; Install the info manual.
+                  (install-file "build/texinfo/numpy.info" info)
+                  (symlink (string-append html "/_images")
+                           (string-append info "/numpy-figures")))))))))
+    (native-inputs
+     (list font-gnu-freefont
+           perl
+           python-breathe
+           python-ipython
+           python-matplotlib
+           python-numpy
+           python-numpydoc
+           python-pandas
+           python-pydata-sphinx-theme
+           python-scipy                 ;used by matplotlib
+           python-sphinx
+           python-sphinx-panels
+           texinfo
+           texlive-bin
+           texlive-cbfonts
+           texlive-cm-super
+           texlive-greek-fontenc
+           texlive-latex-expdlist
+           texlive-polyglossia
+           texlive-xindy))
+    (inputs '())
+    (propagated-inputs '())
+    (synopsis "Documentation for the @code{python-numpy} package")
+    (description "This package provides the complete NumPy documentation in
+the Texinfo, HTML, and PDF formats.")))
+
 ;; Numpy 1.16.x are the last versions that support Python 2.
 (define-public python2-numpy
   (let ((numpy (package-with-python2
@@ -6082,119 +6175,6 @@ Kerberos (SPNEGO) and CredSSP authentication.  It also includes a packet
 parser that can be used to decode raw NTLM/SPNEGO/Kerberos tokens into a human
 readable format.")
     (license license:expat)))
-
-(define-public python-numpy-documentation
-  (package
-    (name "python-numpy-documentation")
-    (version (package-version python-numpy))
-    (source (package-source python-numpy))
-    (build-system python-build-system)
-    (native-inputs
-     `(("python-matplotlib" ,python-matplotlib)
-       ("python-numpy" ,python-numpy)
-       ("pkg-config" ,pkg-config)
-       ("python-sphinx" ,python-sphinx)
-       ("python-numpydoc" ,python-numpydoc)
-       ("texlive" ,(texlive-updmap.cfg (list
-                                        texlive-capt-of
-                                        texlive-cm-super
-                                        texlive-fonts-ec
-                                        texlive-generic-iftex
-                                        texlive-pdftex
-                                        texlive-amsfonts
-                                        texlive-latex-cmap
-                                        texlive-latex-environ
-                                        texlive-latex-eqparbox
-                                        texlive-etoolbox
-                                        texlive-latex-expdlist
-                                        texlive-latex-fancyhdr
-                                        texlive-latex-fancyvrb
-                                        texlive-latex-fncychap
-                                        texlive-latex-float
-                                        texlive-latex-framed
-                                        texlive-latex-geometry
-                                        texlive-latex-graphics
-                                        texlive-hyperref
-                                        texlive-latex-mdwtools
-                                        texlive-latex-multirow
-                                        texlive-latex-needspace
-                                        texlive-oberdiek
-                                        texlive-latex-parskip
-                                        texlive-latex-preview
-                                        texlive-latex-tabulary
-                                        texlive-latex-threeparttable
-                                        texlive-latex-titlesec
-                                        texlive-latex-trimspaces
-                                        texlive-latex-ucs
-                                        texlive-latex-upquote
-                                        texlive-url
-                                        texlive-latex-varwidth
-                                        texlive-wrapfig)))
-       ("texinfo" ,texinfo)
-       ("perl" ,perl)
-       ("scipy-sphinx-theme"
-        ,(let ((commit "c466764e2231ba132c09826b5b138fffa1cfcec3"))
-           (origin ;the build script expects scipy-sphinx-theme as a git submodule
-             (method git-fetch)
-             (uri (git-reference
-                   (url "https://github.com/scipy/scipy-sphinx-theme")
-                   (commit commit)))
-             (file-name (git-file-name "python-scipy-sphinx-theme"
-                                       (string-take commit 7)))
-             (sha256
-              (base32
-               "0q2y87clwlsgc7wvlsn9pzyssybcq10plwhq2w1ydykfsyyqbmkl")))))
-       ,@(package-native-inputs python-numpy)))
-    (arguments
-     `(#:tests? #f ; we're only generating the documentation
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'build)
-         (replace 'install
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((data (string-append (assoc-ref outputs "out") "/share"))
-                    (doc (string-append
-                          data "/doc/" ,name "-"
-                          ,(package-version python-numpy)))
-                    (info-reader (string-append data "/info"))
-                    (html (string-append doc "/html"))
-                    (scipy-sphinx-theme "scipy-sphinx-theme")
-                    (sphinx-theme-checkout (assoc-ref inputs scipy-sphinx-theme))
-                    (pyver ,(string-append "PYVER=")))
-
-               ;; FIXME: this is needed to for texlive-updmap.cfg to generate
-               ;; fonts, which are not found.
-               (setenv "HOME" "/tmp")
-
-               (with-directory-excursion "doc"
-                 (copy-recursively sphinx-theme-checkout scipy-sphinx-theme)
-                 (mkdir-p html)
-                 (invoke "make" "html" pyver)
-                 (invoke "make" "latex" "PAPER=a4" pyver)
-                 (invoke "make" "-C" "build/latex"
-                          "all-pdf" "PAPER=a4" pyver)
-                 ;; FIXME: Generation of the info file fails.
-                 ;; (invoke "make" "info" pyver)
-                 ;; (mkdir-p info)
-                 ;; (copy-file "build/texinfo/numpy.info"
-                 ;;            (string-append info "/numpy.info"))
-                 (for-each (lambda (file)
-                             (copy-file (string-append "build/latex" file)
-                                        (string-append doc file)))
-                           '("/numpy-ref.pdf" "/numpy-user.pdf"))
-                 (with-directory-excursion "build/html"
-                   (for-each (lambda (file)
-                               (let* ((dir (dirname file))
-                                      (tgt-dir (string-append html "/" dir)))
-                                 (unless (equal? "." dir)
-                                   (mkdir-p tgt-dir))
-                                 (install-file file html)))
-                             (find-files "." ".*")))))
-             #t)))))
-    (home-page (package-home-page python-numpy))
-    (synopsis "Documentation for the python-numpy package")
-    (description (package-description python-numpy))
-    (license (package-license python-numpy))))
 
 (define-public python-pygit2
   (package
