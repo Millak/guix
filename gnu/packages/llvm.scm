@@ -594,7 +594,7 @@ output), and Binutils.")
          "-DCMAKE_BUILD_WITH_INSTALL_RPATH=FALSE"
          "-DBUILD_SHARED_LIBS:BOOL=TRUE"
          "-DLLVM_ENABLE_FFI:BOOL=TRUE"
-         "-DLLVM_REQUIRES_RTTI=1"       ;for some third-party utilities
+         "-DLLVM_ENABLE_RTTI:BOOL=TRUE" ;for some third-party utilities
          "-DLLVM_INSTALL_UTILS=ON")     ;needed for rustc
       ;; Don't use '-g' during the build, to save space.
       #:build-type "Release"
@@ -804,7 +804,7 @@ with that of libgomp, the GNU Offloading and Multi Processing Library.")
             "-DCMAKE_BUILD_WITH_INSTALL_RPATH=FALSE"
             "-DBUILD_SHARED_LIBS:BOOL=TRUE"
             "-DLLVM_ENABLE_FFI:BOOL=TRUE"
-            "-DLLVM_REQUIRES_RTTI=1" ; For some third-party utilities
+            "-DLLVM_ENABLE_RTTI:BOOL=TRUE" ; For some third-party utilities
             "-DLLVM_INSTALL_UTILS=ON")) ; Needed for rustc.
        ;; Don't use '-g' during the build, to save space.
        #:build-type "Release"
