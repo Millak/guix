@@ -70,6 +70,38 @@ Protocol (TAP) in Python.  TAP is a line based test protocol for recording test
 data in a standard way.")
     (license license:bsd-3)))
 
+(define-public python-beartype
+  (package
+    (name "python-beartype")
+    (version "0.10.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "beartype" version))
+       (sha256
+        (base32 "0amzckgw9c93bl4jf0q6322j9wyyf3i8vl03yixfkrpllzv6kv14"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "pytest" "-vv" "beartype_test"
+                             ;; These tests rely on git through the
+                             ;; "get_main_readme_file" helper.
+                             "-k"
+                             (string-append "not test_doc_readme "
+                                            "and not test_sphinx "
+                                            "and not test_pep561_mypy"))))))))
+    (native-inputs
+     (list python-pytest))
+    (home-page "https://github.com/beartype/beartype")
+    (synopsis "Fast runtime type checking for Python")
+    (description "Beartype aims to be a very fast runtime type checking tool
+written in pure Python.")
+    (license license:expat)))
+
 (define-public python-pytest-click
   (package
     (name "python-pytest-click")
