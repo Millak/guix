@@ -808,7 +808,7 @@ specifications.")
 (define-public aws-c-compression
   (package
     (name "aws-c-compression")
-    ; Update only when updating aws-crt-cpp.
+    ;; Update only when updating aws-crt-cpp.
     (version "0.2.14")
     (source (origin
               (method git-fetch)
