@@ -1811,6 +1811,40 @@ them using any Python VM with basically no runtime overhead.")
                    (delete 'ensure-no-mtimes-pre-1980))))
      (native-inputs '()))))
 
+(define-public python-nptyping
+  (package
+    (name "python-nptyping")
+    (version "2.0.0")
+    (source (origin
+              (method git-fetch)        ;pypi only contains a binary wheel
+              (uri (git-reference
+                    (url "https://github.com/ramonhagenaars/nptyping")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0839mcrv5jljq9k9124ssnl1hc1inbxwlwjk72imabsbqssjy9rb"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'set-source-date-epoch
+           (lambda _
+             ;; Otherwise the wheel building test would fail with "ZIP does
+             ;; not support timestamps before 1980".
+             (setenv "SOURCE_DATE_EPOCH" "315532800"))))))
+    (native-inputs
+     (list python-beartype
+           python-mypy
+           python-typeguard
+           python-wheel))
+    (propagated-inputs (list python-numpy python-typing-extensions))
+    (home-page "https://github.com/ramonhagenaars/nptyping")
+    (synopsis "Type hints for Numpy")
+    (description "This package provides extensive dynamic type checks for
+dtypes and shapes of arrays for NumPy, extending @code{numpy.typing}.")
+    (license license:expat)))
+
 (define-public python-pylama
   (package
     (name "python-pylama")
