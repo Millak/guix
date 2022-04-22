@@ -17,6 +17,7 @@
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2022 Malte Frank Gerdes <malte.f.gerdes@gmail.com>
 ;;; Copyright © 2022 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -858,21 +859,28 @@ readable.")
 (define-public python-vedo
   (package
     (name "python-vedo")
-    (version "2021.0.3")
+    (version "2022.2.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/marcomusy/vedo")
-             (commit version)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "18i3ajh5jzhpc86di15lwh4jv97jhm627ii877sa4yhv6abzjfpn"))))
+         "1hhv4xc4bphhd1zrnf7r6fpf65xvkdqmb1lh51qg1xpv91h2az0h"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'fix-tests
+           ;; These tests require online data.
+           (lambda _
+             (substitute* "tests/common/test_actors.py"
+               (("^st = .*") "")
+               (("^assert isinstance\\(st\\.GetTexture\\(\\), .*") ""))
+             (delete-file "tests/common/test_pyplot.py")))
          (add-after 'build 'mpi-setup
            ,%openmpi-setup)
          (replace 'check
@@ -887,16 +895,16 @@ readable.")
                            '("common" "dolfin"))))))
          ;; Disable the sanity check, which fails with the following error:
          ;;
-         ;;   ...checking requirements: ERROR: vedo==2021.0.3 DistributionNotFound(Requirement.parse('vtk'), {'vedo'})
+         ;;   ...checking requirements: ERROR: vedo==2022.2.0 DistributionNotFound(Requirement.parse('vtk<9.1.0'), {'vedo'})
          (delete 'sanity-check))))
-    (inputs        ; for the check phase
-     (list fenics
-           python-matplotlib
+    (native-inputs
+     (list pkg-config
            python-pkgconfig))
-    (native-inputs ; for python-pkgconfig
-     (list pkg-config))
     (propagated-inputs
-     (list python-numpy
+     (list fenics
+           python-deprecated
+           python-matplotlib
+           python-numpy
            vtk))
     (home-page "https://github.com/marcomusy/vedo")
     (synopsis
@@ -907,8 +915,7 @@ scientific analysis and visualization.  The package provides a wide
 range of functionalities for working with three-dimensional meshes and
 point clouds.  It can also be used to generate high quality
 two-dimensional renderings such as scatter plots and histograms.
-@code{vedo} is based on @code{vtk} and @code{numpy}, with no other
-dependencies.")
+@code{vedo} is based on @code{vtk} and @code{numpy}.")
     ;; vedo is released under the Expat license.  Included fonts are
     ;; covered by the OFL license and textures by the CC0 license.
     ;; The earth images are in the public domain.
