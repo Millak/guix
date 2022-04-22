@@ -29534,3 +29534,26 @@ match a given regular expression, or count possible matches efficiently. It
 uses the parsed regular expression, so you get a much more accurate result
 than trying to just split strings.")
     (license license:asl2.0)))
+
+(define-public python-mike
+  (package
+    (name "python-mike")
+    (version "1.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "mike" version))
+              (sha256
+               (base32
+                "0yxp816x7s948xsd0fifvq9shg01xdxlifd9rzf5y2rd9iwz3hsn"))))
+    (build-system python-build-system)
+    (native-inputs
+     (list python-coverage python-flake8 python-shtab))
+    (propagated-inputs
+     (list python-jinja2 python-mkdocs python-pyyaml python-verspec))
+    (home-page "https://github.com/jimporter/mike")
+    (synopsis "Manage multiple versions of MkDocs-powered documentation")
+    (description
+     "This package provides a Python utility to easily deploy multiple
+versions of MkDocs-powered docs to a Git branch.  It is suitable for deploying
+to Github via gh-pages.")
+    (license license:bsd-3)))
