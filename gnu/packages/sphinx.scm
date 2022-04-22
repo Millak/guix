@@ -242,23 +242,23 @@ Apple help books.")
 (define-public python-sphinx-click
   (package
     (name "python-sphinx-click")
-    (version "3.0.1")
+    (version "4.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sphinx-click" version))
        (sha256
         (base32
-         "118ppsymp1p2gn8v7mifika817qx6v07mja7kxizq9cg7dpw894v"))))
+         "1nqy3b7wr64rbmdp7kpi723az53a89y6250h46i505g1rw0czam1"))))
     (build-system python-build-system)
     (arguments
-     `(#:tests? #f))                    ;requires python-coverage<5.0
-    (native-inputs
-     (list python-click
-           python-coverage
-           python-docutils
-           python-pbr
-           python-sphinx))
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "pytest" "-vv" "tests")))))))
+    (native-inputs (list python-pbr python-pytest python-wheel))
+    (propagated-inputs (list python-click python-docutils python-sphinx))
     (home-page "https://github.com/click-contrib/sphinx-click")
     (synopsis "Sphinx extension that documents click applications")
     (description "This package provide sphinx extension that automatically
