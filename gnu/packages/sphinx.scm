@@ -423,19 +423,15 @@ Blog, News or Announcements section to a Sphinx website.")
 (define-public python-sphinxcontrib-programoutput
   (package
     (name "python-sphinxcontrib-programoutput")
-    (version "0.15")
+    (version "0.17")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "sphinxcontrib-programoutput" version))
               (sha256
                (base32
-                "155bz0z2cz544pphkd3nk7ph83mz7nn0ql135kzi62kqmd75ppc0"))))
+                "0zrb2ny6y7nk84qmw5mds84fc4pxgqf4sjy7bk95b0zfrawfj3ih"))))
     (build-system python-build-system)
-    (arguments
-     ;; FIXME: Many tests are failing.
-     '(#:tests? #f))
-    (propagated-inputs
-     (list python-sphinx))
+    (propagated-inputs  (list python-sphinx))
     (synopsis "Sphinx extension to include program output")
     (description "A Sphinx extension to literally insert the output of arbitrary
 commands into documents, helping you to keep your command examples up to date.")
