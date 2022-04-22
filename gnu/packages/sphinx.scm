@@ -506,13 +506,13 @@ builder does not support SVG images natively (e.g. LaTeX).")
 (define-public python-sphinxcontrib-websupport
   (package
     (name "python-sphinxcontrib-websupport")
-    (version "1.2.0")
+    (version "1.2.4")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "sphinxcontrib-websupport" version))
               (sha256
                (base32
-                "1smma7r0rhwcmbfvvkfs5djfz1qm8wbpcvp084ca6dmw2b9zplxs"))))
+                "0ck2jphvs82vjcbphhd1h7j1xfi9ynv5d8g5b947qnk8l0ih5psf"))))
     (build-system python-build-system)
     (arguments
      ;; FIXME: Tests depend on Sphinx, which depends on this.
