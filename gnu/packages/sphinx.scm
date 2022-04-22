@@ -50,6 +50,7 @@
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -872,20 +873,42 @@ enabled web server.")
 (define-public python-sphinx-autodoc-typehints
   (package
     (name "python-sphinx-autodoc-typehints")
-    (version "1.11.1")
+    (version "1.18.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "sphinx-autodoc-typehints" version))
+       (method git-fetch)               ;no tests in pypi archive
+       (uri (git-reference
+             (url "https://github.com/tox-dev/sphinx-autodoc-typehints")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "086v9mg21pvfx0lfqjx2xf36hnzrsripfg345xi59f7xwb9scjr4"))))
+         "16yhpwfdmybir80a6892cnr98m58p19rklmjdlzhk3njx7di8jzp"))))
     (build-system python-build-system)
-    (propagated-inputs
-     (list python-setuptools-scm python-sphinx))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'pretend-version
+            ;; The version string is usually derived via setuptools-scm, but
+            ;; without the git metadata available, the version string is set to
+            ;; '0.0.0'.
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv" "tests"
+                        ;; This test requires to download an objects.inv file
+                        ;; from the Sphinx website.
+                        "-k" "not test_format_annotation")))))))
+    (propagated-inputs (list python-sphinx))
     (native-inputs
-     (list python-dataclasses python-pytest python-sphinx
-           python-sphobjinv python-typing-extensions))
+     (list python-nptyping
+           python-pytest
+           python-setuptools-scm
+           python-sphobjinv
+           python-typing-extensions))
     (home-page "https://pypi.org/project/sphinx-autodoc-typehints/")
     (synopsis "Type hints for the Sphinx autodoc extension")
     (description "This extension allows you to use Python 3 annotations for
