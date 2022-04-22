@@ -1575,8 +1575,8 @@ in an isolated environment, in separate namespaces.")
     (license license:gpl3+)))
 
 (define-public nar-herder
-  (let ((commit "f69da3686583d53974e720a9e66103126631cb69")
-        (revision "4"))
+  (let ((commit "e046f8a756aa24942f512b352e87dfe78fa89470")
+        (revision "5"))
     (package
       (name "nar-herder")
       (version (git-version "0" revision commit))
@@ -1587,7 +1587,7 @@ in an isolated environment, in separate namespaces.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "0glcmma6gkxna45bv0yki3l13r34ha7v0jrli3vmh4ysnhsnc4ii"))
+                  "0hbc24y08znlq28k1anzqkq7n1khmv31h4qd8syd2q7ax5kx8hqa"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1618,6 +1618,7 @@ in an isolated environment, in separate namespaces.")
                                          "guile-gcrypt"
                                          "guix"
                                          "guile-lib"
+                                         "guile-prometheus"
                                          "guile-sqlite3"
                                          "gnutls"
                                          "guile-fibers")))
@@ -1654,6 +1655,7 @@ in an isolated environment, in separate namespaces.")
              guile-gcrypt
              guix
              guile-fibers-1.1
+             guile-prometheus
              guile-lib
              guile-sqlite3))
       (inputs
@@ -1664,6 +1666,7 @@ in an isolated environment, in separate namespaces.")
              guile-gcrypt
              guix
              guile-fibers-1.1
+             guile-prometheus
              guile-lib
              guile-sqlite3
              gnutls))
