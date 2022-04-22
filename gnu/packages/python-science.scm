@@ -884,7 +884,11 @@ readable.")
                  (for-each (lambda (dir)
                              (with-directory-excursion dir
                                (invoke "./run_all.sh")))
-                           '("common" "dolfin")))))))))
+                           '("common" "dolfin"))))))
+         ;; Disable the sanity check, which fails with the following error:
+         ;;
+         ;;   ...checking requirements: ERROR: vedo==2021.0.3 DistributionNotFound(Requirement.parse('vtk'), {'vedo'})
+         (delete 'sanity-check))))
     (inputs        ; for the check phase
      (list fenics
            python-matplotlib
