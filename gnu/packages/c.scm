@@ -870,7 +870,7 @@ authentication.")
 (define-public aws-c-s3
   (package
     (name "aws-c-s3")
-    ; Update only when updating aws-crt-cpp.
+    ;; Update only when updating aws-crt-cpp.
     (version "0.1.38")
     (source (origin
               (method git-fetch)
