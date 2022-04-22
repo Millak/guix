@@ -876,15 +876,15 @@ readable.")
          (add-after 'build 'mpi-setup
            ,%openmpi-setup)
          (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (setenv "HOME" (getcwd))
-             (add-installed-pythonpath inputs outputs)
-             (with-directory-excursion "tests"
-               (for-each (lambda (dir)
-                           (with-directory-excursion dir
-                             (invoke "./run_all.sh")))
-                         '("common" "dolfin")))
-             #t)))))
+           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+             (when tests?
+               (setenv "HOME" (getcwd))
+               (add-installed-pythonpath inputs outputs)
+               (with-directory-excursion "tests"
+                 (for-each (lambda (dir)
+                             (with-directory-excursion dir
+                               (invoke "./run_all.sh")))
+                           '("common" "dolfin")))))))))
     (inputs        ; for the check phase
      `(("dolfin" ,fenics)
        ("pkgconfig" ,python-pkgconfig)
