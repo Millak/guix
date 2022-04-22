@@ -671,7 +671,7 @@ communication.")
 (define-public aws-c-io
   (package
     (name "aws-c-io")
-    ; Update only when updating aws-crt-cpp.
+    ;; Update only when updating aws-crt-cpp.
     (version "0.10.20")
     (source (origin
               (method git-fetch)
