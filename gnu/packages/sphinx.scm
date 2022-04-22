@@ -38,6 +38,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix hg-download)
   #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix build-system python)
@@ -701,25 +702,28 @@ theme for the Sphinx documentation system.  It's the default theme of Sphinx.")
 argparse commands and options")
     (license license:expat)))
 
+;;; FIXME: Currently broken by Jinja >= 3.10 (see:
+;;; https://foss.heptapod.net/doc-utils/cloud_sptheme/-/issues/47).
 (define-public python-sphinx-cloud-sptheme
   (package
     (name "python-sphinx-cloud-sptheme")
-    (version "1.8.0")
+    (version "1.10.1")
     (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "cloud_sptheme" version))
+              (method hg-fetch)
+              (uri (hg-reference
+                    (url "https://foss.heptapod.net/doc-utils/cloud_sptheme")
+                    (changeset version)))
+              (file-name (hg-file-name name version))
               (sha256
                (base32
-                "1dniqb6a39yh786f86c4jn666rwnyi1jvzn4616zhcchb7sfdshd"))))
+                "0k0pgi0vcn8vdy3k6x11fpp4mqp7p3l6n6pjfi3mir3vwjhdfz7l"))))
     (build-system python-build-system)
-    ;; FIXME: The 'pypi' release archive does not contain tests.
-    (arguments '(#:tests? #f))
-    (native-inputs
-     (list python-sphinx))
-    (home-page "https://bitbucket.org/ecollins/cloud_sptheme")
-    (synopsis "'Cloud' theme for Sphinx documenter")
-    (description "This package contains the \"Cloud\" theme for Sphinx and some
-related extensions.")
+    (native-inputs (list python-mock))
+    (propagated-inputs (list python-sphinx))
+    (home-page "https://foss.heptapod.net/doc-utils/cloud_sptheme")
+    (synopsis "Cloud theme for Sphinx")
+    (description "This package contains the @emph{Cloud} theme for Sphinx and
+some related extensions.")
     (license license:bsd-3)))
 
 (define-public python-guzzle-sphinx-theme
