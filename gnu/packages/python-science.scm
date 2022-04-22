@@ -886,14 +886,14 @@ readable.")
                                (invoke "./run_all.sh")))
                            '("common" "dolfin")))))))))
     (inputs        ; for the check phase
-     `(("dolfin" ,fenics)
-       ("pkgconfig" ,python-pkgconfig)
-       ("matplotlib" ,python-matplotlib)))
+     (list fenics
+           python-matplotlib
+           python-pkgconfig))
     (native-inputs ; for python-pkgconfig
      (list pkg-config))
     (propagated-inputs
-     `(("numpy" ,python-numpy)
-       ("vtk" ,vtk)))
+     (list python-numpy
+           vtk))
     (home-page "https://github.com/marcomusy/vedo")
     (synopsis
      "Analysis and visualization of 3D objects and point clouds")
