@@ -610,7 +610,7 @@ portability.")
 (define-public aws-checksums
   (package
     (name "aws-checksums")
-    ; Update only when updating aws-crt-cpp.
+    ;; Update only when updating aws-crt-cpp.
     (version "0.1.12")
     (source (origin
               (method git-fetch)
