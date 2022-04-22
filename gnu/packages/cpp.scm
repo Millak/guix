@@ -1227,7 +1227,7 @@ aws-c-http, aws-c-io, aws-c-mqtt, aws-checksums, and s2n.")
     (propagated-inputs
      (list aws-crt-cpp))
     (inputs
-     (list curl openssl pulseaudio zlib))
+     (list curl pulseaudio zlib))
     (synopsis "Amazon Web Services SDK for C++")
     (description
      "The AWS SDK for C++ provides a C++11 interface to the @acronym{AWS,Amazon
