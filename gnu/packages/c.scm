@@ -639,7 +639,7 @@ with fallback to efficient C99 software implementations.")
 (define-public aws-c-event-stream
   (package
     (name "aws-c-event-stream")
-    ; Update only when updating aws-crt-cpp.
+    ;; Update only when updating aws-crt-cpp.
     (version "0.2.7")
     (source (origin
               (method git-fetch)
