@@ -34430,6 +34430,10 @@ time-to-live (TTL) of @emph{negative} lookups---missing store items, for
 which the HTTP 404 code is returned.  By default, no negative TTL is
 advertised.
 
+@item @code{log-level} (default: @code{'DEBUG})
+Log level to use, specify a log level like @code{'INFO} to stop logging
+individual requests.
+
 @end table
 @end deftp
 
