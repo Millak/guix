@@ -1130,7 +1130,7 @@ derived from Mozilla's collection.")
 (define-public s2n
   (package
     (name "s2n")
-    ; Update only when updating aws-crt-cpp.
+    ;; Update only when updating aws-crt-cpp.
     (version "1.3.10")
     (source (origin
               (method git-fetch)
@@ -1144,10 +1144,13 @@ derived from Mozilla's collection.")
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
-       '("-DBUILD_SHARED_LIBS=ON")))
-    (propagated-inputs
-     `(("openssl" ,openssl)
-       ("openssl:static" ,openssl "static")))
+       '("-DBUILD_SHARED_LIBS=ON"
+         ;; Remove in next update; see https://github.com/aws/s2n-tls/pull/3108
+         ;; Building with 'Werror' results in compilation error (even building
+         ;; with gcc) when replacing the aws-lc input with openssl.
+         "-DUNSAFE_TREAT_WARNINGS_AS_ERRORS=OFF")))
+    (propagated-inputs (list aws-lc))
+    (supported-systems '("x86_64-linux"))
     (synopsis "SSL/TLS implementation in C99")
     (description
      "This library provides a C99 implementation of SSL/TLS.  It is designed to
