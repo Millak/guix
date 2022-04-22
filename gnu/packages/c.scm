@@ -731,7 +731,7 @@ cryptographic primitives for the @acronym{AWS,Amazon Web Services} SDK.")
 (define-public aws-c-sdkutils
   (package
     (name "aws-c-sdkutils")
-    ; Update only when updating aws-crt-cpp.
+    ;; Update only when updating aws-crt-cpp.
     (version "0.1.2")
     (source (origin
               (method git-fetch)
