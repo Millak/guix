@@ -268,19 +268,18 @@ documents click applications.")
 (define-public python-sphinx-copybutton
   (package
     (name "python-sphinx-copybutton")
-    (version "0.2.6")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sphinx-copybutton" version))
        (sha256
         (base32
-         "0ny9jpygj93z8jyjpi4v6jjz90pmns74s389wq16igzzq2mpgfjm"))))
+         "1xl7jwcldqvfya2gdp1nfxma7rv35alk998dfnx2fg6hmpd5kh50"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f)) ; XXX: Check requires network access.
-    (propagated-inputs
-     (list python-flit python-setuptools python-sphinx python-wheel))
+    (propagated-inputs (list python-sphinx))
     (home-page "https://github.com/choldgraf/sphinx-copybutton")
     (synopsis "Sphinx extension to add \"copy\" buttons to code blocks")
     (description
