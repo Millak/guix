@@ -584,7 +584,7 @@ portability.")
 (define-public aws-c-common
   (package
     (name "aws-c-common")
-    ; Update only when updating aws-crt-cpp.
+    ;; Update only when updating aws-crt-cpp.
     (version "0.6.20")
     (source (origin
               (method git-fetch)
@@ -600,6 +600,7 @@ portability.")
      '(#:configure-flags
        '("-DBUILD_SHARED_LIBS=ON")))
     (synopsis "Amazon Web Services core C library")
+    (supported-systems '("i686-linux" "x86_64-linux"))
     (description
      "This library provides common C99 primitives, configuration, data
  structures, and error handling for the @acronym{AWS,Amazon Web Services} SDK.")
