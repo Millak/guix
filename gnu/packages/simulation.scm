@@ -607,6 +607,10 @@ user interface to the FEniCS core components and external libraries.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "python/setup.py"
+               (("pybind11==") "pybind11>="))))
          (add-after 'patch-source-shebangs 'set-paths
            (lambda _
              ;; Define paths to store locations.
