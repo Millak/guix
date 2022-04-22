@@ -1077,29 +1077,34 @@ Sphinx documentation.")
 (define-public python-pydata-sphinx-theme
   (package
     (name "python-pydata-sphinx-theme")
-    (version "0.6.3")
+    ;; TODO: This is not the latest release, but the 0.8.x series introduced a
+    ;; new Sphinx theme build system that complicate things (see:
+    ;; https://github.com/pydata/pydata-sphinx-theme/issues/628 and
+    ;; https://src.fedoraproject.org/rpms/python-pydata-sphinx-theme
+    ;; /blob/rawhide/f/prepare_vendor.sh).
+    (version "0.7.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pydata-sphinx-theme" version))
        (sha256
         (base32
-         "055bh3hyh72pafiylvgpsjlk18wm15gg4azc5rjlsww5z475iq1j"))))
+         "0ph69bnnw9w8vksc7rk45q5yknsrsgk9a19xsbxym46jrmgz67b7"))))
     (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv")))))))
     (propagated-inputs
-     (list python-beautifulsoup4))
-    (native-inputs
      (list python-beautifulsoup4
-           python-docutils-0.15
-           python-jupyter-sphinx
-           python-numpy
-           python-numpydoc
-           python-pandas
-           python-pytest
-           python-pytest-regressions
-           python-recommonmark
-           python-sphinx
-           python-xarray))
+           python-docutils
+           python-jinja2
+           python-sphinx))
+    (native-inputs (list python-pytest python-pytest-regressions))
     (home-page "https://github.com/pydata/pydata-sphinx-theme")
     (synopsis "Bootstrap-based Sphinx theme")
     (description
