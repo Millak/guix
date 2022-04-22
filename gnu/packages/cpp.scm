@@ -1164,9 +1164,9 @@ to be useful for building network-based applications.")
 (define-public aws-crt-cpp
   (package
     (name "aws-crt-cpp")
-    ; Update only when updating aws-sdk-cpp, and when updating also update
-    ; versions of library dependencies linked from from
-    ; https://github.com/awslabs/aws-crt-cpp/tree/{aws-crt-cpp commit}/crt
+    ;; Update only when updating aws-sdk-cpp, and when updating also update
+    ;; versions of library dependencies linked from from
+    ;; https://github.com/awslabs/aws-crt-cpp/tree/{aws-crt-cpp commit}/crt
     (version "0.17.27")
     (source (origin
               (method git-fetch)
