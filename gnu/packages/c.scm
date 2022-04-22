@@ -778,7 +778,7 @@ low level functionality for coroutines.")
 (define-public aws-c-http
   (package
     (name "aws-c-http")
-    ; Update only when updating aws-crt-cpp.
+    ;; Update only when updating aws-crt-cpp.
     (version "0.6.13")
     (source (origin
               (method git-fetch)
