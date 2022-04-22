@@ -4005,7 +4005,7 @@ It is a replacement for the @command{urlview} program.")
        (list guile-email-latest
              guile-fibers
              guile-gcrypt
-             guile-json-3
+             guile-json-4
              guile-kolam
              guile-redis
              guile-syntax-highlight
