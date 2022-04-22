@@ -812,7 +812,7 @@ translate and to apply translation to Sphinx generated document.")
 (define-public python-sphinxext-opengraph
   (package
     (name "python-sphinxext-opengraph")
-    (version "0.4.2")
+    (version "0.6.3")
     (source
      (origin
        (method git-fetch)               ; no tests in PyPI release
@@ -821,18 +821,16 @@ translate and to apply translation to Sphinx generated document.")
              (commit (string-append "v"  version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0dka44wri7agcr1jd641hq6j7qlbycligp80ngf32l5asqz1mgzp"))))
+        (base32 "1wrgpan9z65fv4hbvisz4sypc4w5ammnxkyn5lhr43wdr6b967k1"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+           (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest")))))))
-    (native-inputs
-     (list python-beautifulsoup4 python-pytest python-sphinx))
+               (invoke "pytest" "-vv")))))))
+    (native-inputs (list python-beautifulsoup4 python-pytest python-sphinx))
     (home-page "https://github.com/wpilibsuite/sphinxext-opengraph")
     (synopsis "Sphinx Extension to enable OpenGraph support")
     (description
