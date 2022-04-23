@@ -6278,6 +6278,32 @@ to the interactive prompt.  It is an extension of the @code{rlcompleter}
 module from the standard Python library.")
     (license license:bsd-3)))
 
+(define-public python-ipdb
+  (package
+    (name "python-ipdb")
+    (version "0.13.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ipdb" version))
+       (sha256
+        (base32 "1ibql99agjf2gj7y0svzd5m0h81hailf4p3sj3yl9i1i8ykdj6wm"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "python" "-m" "unittest" "discover")))))))
+    (propagated-inputs (list python-ipython python-toml python-decorator))
+    (home-page "https://github.com/gotcha/ipdb")
+    (synopsis "IPython-enhanced Python debugger (pdb)")
+    (description "@code{ipdb} exports functions to access the IPython
+debugger, which features tab completion, syntax highlighting, better
+tracebacks and better introspection than Python's standard @command{pdb}
+debugger, with which it shares the same interface.")
+    (license license:bsd-3)))
+
 (define-public python-pdbpp
   (package
     (name "python-pdbpp")
