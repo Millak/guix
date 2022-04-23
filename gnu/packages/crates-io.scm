@@ -56202,7 +56202,7 @@ and Jaro-Winkler.")
 (define-public rust-structopt-0.3
   (package
     (name "rust-structopt")
-    (version "0.3.21")
+    (version "0.3.26")
     (source
      (origin
        (method url-fetch)
@@ -56211,14 +56211,27 @@ and Jaro-Winkler.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "136j0lvjmpv5syi751vxg8vb30gfyv4k81x8d18kxrj6xvbsqxsj"))))
+         "043sg3qxllann6q9i71d05qp3q13scmcvhxhd950ka2v8ij5qsqc"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-structopt-derive" ,rust-structopt-derive-0.4)
         ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-clap" ,rust-clap-2))))
+        ("rust-paw" ,rust-paw-1)
+        ("rust-clap" ,rust-clap-2))
+       #:cargo-development-inputs
+       (("rust-strum" ,rust-strum-0.21)
+        ("rust-trybuild" ,rust-trybuild-1)
+        ("rust-rustversion" ,rust-rustversion-1))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'fixup-cargo-toml
+           (lambda _
+             (substitute* "Cargo.toml"
+               ;; feature does not exist
+               (("lints.*") "")
+               (("2.33") ,(package-version rust-clap-2))))))))
     (home-page "https://github.com/TeXitoi/structopt")
     (synopsis "Parse command line argument by defining a struct")
     (description
