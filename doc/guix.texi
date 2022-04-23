@@ -9313,7 +9313,36 @@ instead of the default @code{"out"} output. This is useful for packages that
 include a Python package as only a part of the software, and thus want to
 combine the phases of @code{python-build-system} with another build system.
 Python bindings are a common usecase.
+@end defvr
 
+@defvr {Scheme Variable} pyproject-build-system
+This is a variable exported by @code{guix build-system pyproject}.  It
+is based on @var{python-build-system}, and adds support for
+@file{pyproject.toml} and @url{https://peps.python.org/pep-0517/, PEP 517}.
+It also supports a variety of build backends and test frameworks.
+
+The API is slightly different from @var{python-build-system}:
+@itemize
+@item
+@code{#:use-setuptools?} and @code{#:test-target} is removed.
+@item
+@code{#:build-backend} is added.  It defaults to @code{#false} and will try
+to guess the appropriate backend based on @file{pyproject.toml}.
+@item
+@code{#:test-backend} is added.  It defaults to @code{#false} and will guess
+an appropriate test backend based on what is available in package inputs.
+@item
+@code{#:test-flags} is added.  The default is @code{#false}, and varies based
+on the detected @code{#:test-backend}.
+@end itemize
+
+It is considered ``experimental'' in that the implementation details are
+not set in stone yet, however users are encouraged to try it for new
+Python projects (even those using @file{setup.py}).  The API is subject to
+change, but any breaking changes in the Guix channel will be dealt with.
+
+Eventually this build system will be deprecated and merged back into
+@var{python-build-system}, probably some time in 2024.
 @end defvr
 
 @defvr {Scheme Variable} perl-build-system

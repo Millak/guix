@@ -166,6 +166,7 @@ MODULES =					\
   guix/build-system/maven.scm			\
   guix/build-system/node.scm			\
   guix/build-system/perl.scm			\
+  guix/build-system/pyproject.scm		\
   guix/build-system/python.scm			\
   guix/build-system/renpy.scm			\
   guix/build-system/ocaml.scm			\
@@ -222,6 +223,7 @@ MODULES =					\
   guix/build/minetest-build-system.scm		\
   guix/build/node-build-system.scm		\
   guix/build/perl-build-system.scm		\
+  guix/build/pyproject-build-system.scm		\
   guix/build/python-build-system.scm		\
   guix/build/ocaml-build-system.scm		\
   guix/build/qt-build-system.scm		\

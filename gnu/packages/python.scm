@@ -26,7 +26,7 @@
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 Dylan Jeffers <sapientech@sapientech@openmailbox.org>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2016-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2016, 2017 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2016, 2017 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2016, 2017, 2018 Arun Isaac <arunisaac@systemreboot.net>
@@ -60,6 +60,7 @@
 ;;; Copyright © 2020, 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2021 Lars-Dominik Braun <lars@6xq.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -87,6 +88,7 @@
   #:use-module (gnu packages hurd)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tcl)
@@ -673,6 +675,37 @@ and the unversioned commands available.")))
 
 (define-public python-wrapper (wrap-python3 python))
 (define-public python-minimal-wrapper (wrap-python3 python-minimal))
+
+;; The Python used in pyproject-build-system.
+(define-public python-sans-pip
+  (hidden-package
+   (package/inherit python
+     (arguments
+      (substitute-keyword-arguments (package-arguments python)
+        ((#:configure-flags flags #~())
+         #~(append '("--with-ensurepip=no")
+                   (delete "--with-ensurepip=install" #$flags))))))))
+
+(define-public python-sans-pip-wrapper
+  (wrap-python3 python-sans-pip))
+
+(define-public python-toolchain
+  (let ((base (package/inherit python-sans-pip-wrapper)))
+    (package
+      (inherit base)
+      (properties '())
+      (name "python-toolchain")
+      (propagated-inputs
+       (modify-inputs (package-propagated-inputs base)
+         (append python-pip
+                 python-pypa-build
+                 python-setuptools
+                 python-wheel)))
+      (synopsis "Python toolchain")
+      (description
+       "Python toolchain including Python itself, setuptools and pip.
+Use this package if you need a minimal Python toolchain instead of just
+the interpreter."))))
 
 (define-public micropython
   (package
