@@ -56253,7 +56253,7 @@ struct.")
 (define-public rust-structopt-derive-0.4
   (package
    (name "rust-structopt-derive")
-   (version "0.4.14")
+   (version "0.4.18")
    (source
     (origin
      (method url-fetch)
@@ -56262,7 +56262,7 @@ struct.")
       (string-append name "-" version ".tar.gz"))
      (sha256
       (base32
-       "143gjwvz3s86hwp070km83y25n8kqp5f01kb1dr19f4ilkywvaav"))))
+       "1q5gcigmvw0cinjxzpyrkflliq5r1ivljmrvfrl3phcwgwraxdfw"))))
    (build-system cargo-build-system)
    (arguments
     `(#:skip-build? #t
