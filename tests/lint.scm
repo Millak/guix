@@ -50,7 +50,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages pkg-config)
-  #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages python-build)
   #:use-module ((gnu packages bash) #:select (bash bash-minimal))
   #:use-module (web uri)
   #:use-module (web server)

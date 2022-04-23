@@ -2178,46 +2178,6 @@ Because only safe literals are encoded, it is safe to send serpent data to
 other machines, such as over the network.")
     (license license:expat)))
 
-(define-public python-setuptools
-  (package
-    (name "python-setuptools")
-    (version "64.0.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "setuptools" version))
-       (sha256
-        (base32
-         "1sllqf0bhsl2yilf1w0xnlz0r4yaksmwaj0ap91zdc6kgbigdjiv"))
-       (modules '((guix build utils)))
-       (snippet
-        ;; Remove included binaries which are used to build self-extracting
-        ;; installers for Windows.
-        ;; TODO: Find some way to build them ourself so we can include them.
-        '(for-each delete-file (find-files "setuptools"
-                                           "^(cli|gui).*\\.exe$")))))
-    (build-system python-build-system)
-    ;; FIXME: Tests require pytest, which itself relies on setuptools.
-    ;; One could bootstrap with an internal untested setuptools.
-    (arguments (list #:tests? #f))
-    (home-page "https://pypi.org/project/setuptools/")
-    (synopsis "Library designed to facilitate packaging Python projects")
-    (description "Setuptools is a fully-featured, stable library designed to
-facilitate packaging Python projects, where packaging includes:
-@itemize
-@item Python package and module definitions
-@item distribution package metadata
-@item test hooks
-@item project installation
-@item platform-specific details.
-@end itemize")
-    ;; TODO: setuptools now bundles the following libraries:
-    ;; packaging, pyparsing, six and appdirs. How to unbundle?
-    (license (list license:psfl         ;setuptools itself
-                   license:expat        ;six, appdirs, pyparsing
-                   license:asl2.0       ;packaging is dual ASL2/BSD-2
-                   license:bsd-2))))
-
 (define-public python-setuptools-declarative-requirements
   (package
     (name "python-setuptools-declarative-requirements")

@@ -36,7 +36,7 @@
   #:use-module (gnu packages nettle)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
-  #:use-module (gnu packages python-xyz) ;; python-setuptools
+  #:use-module (gnu packages python-build)  ;python-setuptools
   #:use-module (gnu packages rust)
   #:use-module (gnu packages tls))
 
