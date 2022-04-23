@@ -748,6 +748,23 @@ Sphinx documentation system, used by @uref{http://docs.guzzlephp.org, Guzzle}
 and several other projects.")
     (license license:expat)))
 
+(define-public python-mpl-sphinx-theme
+  (package
+    (name "python-mpl-sphinx-theme")
+    (version "3.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "mpl_sphinx_theme" version))
+       (sha256
+        (base32 "0ilsw6s5hfvjzqs3258c8gmg5v3dwa6k69mwmkxsyh1qmv15krpw"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-pydata-sphinx-theme))
+    (home-page "https://github.com/matplotlib/mpl-sphinx-theme")
+    (synopsis "Matplotlib theme for Sphinx")
+    (description "This package provides a Matplotlib theme for Sphinx.")
+    (license license:bsd-3)))
+
 (define-public python-sphinx-rtd-theme
   (package
     (name "python-sphinx-rtd-theme")
