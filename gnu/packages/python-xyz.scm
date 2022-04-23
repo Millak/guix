@@ -5693,7 +5693,7 @@ writing C extensions for Python as easy as Python itself.")
 (define-public python-numpy-next
   (package
     (name "python-numpy-next")
-    (version "1.21.3")
+    (version "1.22.3")
     (source
      (origin
        (method url-fetch)
@@ -5702,12 +5702,12 @@ writing C extensions for Python as easy as Python itself.")
              version "/numpy-" version ".tar.gz"))
        (sha256
         (base32
-         "0s6hy8828yr7fcjiwnym4l8lrknr21gqfkaiawsf86n0hd0a5fyh"))))
+         "19dw91pqbqcniw2z57kiyqs1qp56g7kqy1bdyv664g8s62sc01m9"))))
     (build-system python-build-system)
     (inputs
      (list openblas))
     (native-inputs
-     (list python-cython python-hypothesis python-pytest
+     (list python-cython python-hypothesis-6.23 python-pytest
            python-pytest-xdist gfortran))
     (arguments
      `(#:phases
@@ -5799,6 +5799,12 @@ capabilities.")
               (sha256
                (base32
                 "140zq9snx0di4id4g97vaw9zz8x2rfla5lp3a70j666f5030yd5p"))))
+    ;; python-numpy-next replaced python-hypothesis with
+    ;; python-hypothesis-6.23. We switch it back here, to prevent
+    ;; python-numpy-1.20 and its numerous dependents from being rebuilt.
+    (native-inputs
+     (list python-cython python-hypothesis python-pytest
+           python-pytest-xdist gfortran))
     ;; 92 tests fail, many of them because parts of the temp file name
     ;; accidentally ends up in a comparison.
     (arguments
