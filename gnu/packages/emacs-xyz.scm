@@ -13320,7 +13320,7 @@ automatically discovered and presented in recency order.")
                   "0cmkiggrl42sjx31dwnzac32bs3q2ksmamkq1pjjl8fwshp4g8sv"))))
       (build-system emacs-build-system)
       (inputs (list emacs-magit))
-      (home-page "https://github.com/seanfarley/mu4e-patch")
+      (home-page "https://github.com/seanfarley/message-view-patch")
       (synopsis "Colorize patch-like emails in mu4e or gnus")
       (description
        "Extension for mu4e or gnus to colorize patch-like emails with diff-mode.
