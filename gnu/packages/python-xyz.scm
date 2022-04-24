@@ -6800,87 +6800,65 @@ toolkits.")
 
 (define-public python-matplotlib-documentation
   (package
+    (inherit python-matplotlib)
     (name "python-matplotlib-documentation")
-    (version (package-version python-matplotlib))
-    (source (package-source python-matplotlib))
-    (build-system python-build-system)
-    (native-inputs
-     `(("python-matplotlib" ,python-matplotlib)
-       ("python-colorspacious" ,python-colorspacious)
-       ("python-sphinx" ,python-sphinx)
-       ("python-sphinx-copybutton" ,python-sphinx-copybutton)
-       ("python-sphinx-gallery" ,python-sphinx-gallery)
-       ("python-numpydoc" ,python-numpydoc)
-       ("python-ipython" ,python-ipython)
-       ("python-ipykernel" ,python-ipykernel)
-       ("python-mock" ,python-mock)
-       ("graphviz" ,graphviz)
-       ("texlive" ,(texlive-updmap.cfg (list texlive-amsfonts
-                                             texlive-enumitem
-                                             texlive-latex-amsmath
-                                             texlive-latex-expdlist
-                                             texlive-latex-geometry
-                                             texlive-latex-preview
-                                             texlive-latex-type1cm
-                                             texlive-latex-ucs
-
-                                             texlive-pdftex
-
-                                             texlive-fonts-ec
-                                             texlive-times
-                                             texlive-txfonts)))
-       ("texinfo" ,texinfo)
-       ,@(package-native-inputs python-matplotlib)))
     (arguments
-     `(#:tests? #f ; we're only generating documentation
-       #:phases
-       (modify-phases %standard-phases
-         ;; The tests in python-matplotlib are run after the install phase, so
-         ;; we need to delete the extra phase here.
-         (delete 'check)
-         (replace 'build
-           (lambda _
-             (chdir "doc")
-             (setenv "PYTHONPATH" "../examples/units")
-             (substitute* "conf.py"
-               ;; Don't use git.
-               (("^SHA = check_output.*")
-                (string-append "SHA = \"" ,version "\"\n"))
-               ;; Don't fetch intersphinx files from the Internet
-               (("^explicit_order_folders" m)
-                (string-append "intersphinx_mapping = {}\n" m))
-               (("'sphinx.ext.intersphinx',") "")
-               ;; Disable URL embedding which requires internet access.
-               (("'https://docs.scipy.org/doc/numpy'") "None")
-               (("'https://docs.scipy.org/doc/scipy/reference'") "None"))
-             (invoke "make"
-                     "SPHINXBUILD=sphinx-build"
-                     "SPHINXOPTS=" ; don't abort on warnings
-                     "html" "texinfo")))
-         (replace 'install
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((data (string-append (assoc-ref outputs "out") "/share"))
-                    (doc (string-append data "/doc/python-matplotlib-" ,version))
-                    (info (string-append data "/info"))
-                    (html (string-append doc "/html")))
-               (mkdir-p html)
-               (mkdir-p info)
-               (copy-recursively "build/html" html)
-               (symlink (string-append html "/_images")
-                        (string-append info "/matplotlib-figures"))
-               (with-directory-excursion "build/texinfo"
-                 (substitute* "matplotlib.texi"
-                   (("@image\\{([^,]*)" all file)
-                    (string-append "@image{matplotlib-figures/" file)))
-                 (symlink (string-append html "/_images")
-                          "./matplotlib-figures")
-                 (invoke "makeinfo" "--no-split"
-                         "-o" "matplotlib.info" "matplotlib.texi"))
-               (install-file "build/texinfo/matplotlib.info" info)))))))
-    (home-page (package-home-page python-matplotlib))
-    (synopsis "Documentation for the python-matplotlib package")
-    (description (package-description python-matplotlib))
-    (license (package-license python-matplotlib))))
+     (list
+      #:tests? #f                       ;we're only generating documentation
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (chdir "doc")
+              (substitute* "conf.py"
+                ;; The sphinx_panels extension causes a "TypeError: first
+                ;; argument must be callable" to be raised when generating the
+                ;; info target; remove it (see:
+                ;; https://github.com/executablebooks/sphinx-panels/issues/74).
+                ((".*'sphinx_panels',.*") ""))
+              (invoke "make" "html" "info"
+                      ;; Don't abort on warnings; build in parallel.
+                      (format #f "SPHINXOPTS=-j~a" (parallel-job-count)))))
+          (replace 'install
+            (lambda _
+              (let* ((data (string-append #$output "/share"))
+                     (doc (string-append data "/doc/matplotlib"))
+                     (info (string-append data "/info"))
+                     (html (string-append doc "/html")))
+                (mkdir-p html)
+                (copy-recursively "build/html" html)
+                (install-file "build/texinfo/matplotlib.info" info)
+                ;; The "matplotlib-figures" directory contains are a subset of
+                ;; the images produced for the html target; simply create a
+                ;; symlink to it, saving about 11 MiB.
+                (symlink (string-append html "/_images")
+                         (string-append info "/matplotlib-figures"))))))))
+    (native-inputs
+     (list graphviz
+           inkscape
+           python-colorspacious
+           python-mpl-sphinx-theme
+           python-scipy
+           python-sphinx
+           python-sphinx-copybutton
+           python-sphinx-gallery
+           python-sphinxcontrib-svg2pdfconverter
+           python-numpydoc
+           python-ipython
+           python-ipywidgets
+           texlive-amsfonts
+           texlive-amsmath
+           texlive-babel
+           texlive-fontspec
+           texlive-unicode-math
+           texlive-etoolbox
+           texlive-latex-expdlist
+           texlive-underscore
+           texlive-latex-type1cm
+           texlive-times
+           texinfo))
+    (synopsis "Documentation for the @code{python-matplotlib} package")))
 
 (define-public python-matplotlib-inline
   (package
