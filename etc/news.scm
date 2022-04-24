@@ -26,10 +26,13 @@
  (version 0)
 
  (entry (commit "b6b2de2a0d52530bc1ee128c61580bed662ee15c")
-        (title (en "Linux-libre kernel updated to 5.17"))
+        (title (en "Linux-libre kernel updated to 5.17")
+               (de "Linux-libre-Kernel wird auf 5.17 aktualisiert"))
         (body
           (en "The default version of the linux-libre kernel has been
-              updated to the 5.17 release series.")))
+              updated to the 5.17 release series.")
+          (de "Der standardmäßig verwendete @code{linux-libre}-Kernel basiert
+jetzt auf der 5.17-Versionsreihe.")))
 
  (entry (commit "c42b7baf13c7633b4512e94da7445299c57b247d")
         (title
