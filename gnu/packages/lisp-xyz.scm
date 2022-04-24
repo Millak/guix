@@ -21198,3 +21198,40 @@ defined.")
 
 (define-public cl-just-getopt-parser
   (sbcl-package->cl-source-package sbcl-just-getopt-parser))
+
+(define-public sbcl-formgrep
+  (let ((commit "91238cdbdd0ad815ff5d574d032b4a502febd190")
+        (revision "0"))
+    (package
+      (name "sbcl-formgrep")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/death/formgrep")
+               (commit commit)))
+         (file-name (git-file-name "cl-formgrep" version))
+         (sha256
+          (base32 "1rqzkmz6nddg5ywvs3v0k8cvxdwas38mfwgbr3rs4fdsbps90k9r"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria
+             sbcl-babel
+             sbcl-cl-fad
+             sbcl-cl-ppcre
+             sbcl-eclector))
+      (home-page "https://github.com/death/formgrep")
+      (synopsis "Find top-level Lisp forms matching an operator pattern")
+      (description
+       "This library provides the @code{FORMGREP} function and related
+utilities which find top-level Lisp forms matching the regular expression
+corresponding to an operator name, returning the matched forms and the names
+of the files and the line numbers where they were found.")
+      (license license:expat))))
+
+(define-public cl-formgrep
+  (sbcl-package->cl-source-package sbcl-formgrep))
+
+(define-public ecl-formgrep
+  (sbcl-package->ecl-package sbcl-formgrep))
