@@ -59,7 +59,7 @@
 ;;; Copyright © 2020 Tomás Ortín Fernández <tomasortin@mailbox.org>
 ;;; Copyright © 2021 Olivier Rojon <o.rojon@posteo.net>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
-;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2021, 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 David Pflug <david@pflug.io>
 ;;; Copyright © 2021, 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
@@ -11957,10 +11957,10 @@ etc.  You can also play games on FICS or against an engine.")
     (license license:gpl2+)))
 
 (define-public stockfish
-  (let ((neural-network-revision "13406b1dcbe0")) ; also update hash below
+  (let ((neural-network-revision "6877cd24400e")) ; also update hash below
     (package
       (name "stockfish")
-      (version "14.1")
+      (version "15")
       (source
        (origin
          (method git-fetch)
@@ -11969,7 +11969,7 @@ etc.  You can also play games on FICS or against an engine.")
                (commit (string-append "sf_" version))))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0apqqcgpcflm3c6mcl13ln2y04f6zksnljmk4ys7naf7xk4vdgkd"))))
+          (base32 "1v19v6qhwbf31wpc3qcih4dvqxwqkh0p426skgjin6ags31hkbmh"))))
       (build-system gnu-build-system)
       (inputs
        `(("neural-network"
@@ -11979,7 +11979,7 @@ etc.  You can also play games on FICS or against an engine.")
                                  neural-network-revision ".nnue"))
              (sha256
               (base32
-               "0vr3hcmlqqm74pn7hc54gmfs9drqvgc53nh7bvy6v8z0rcfnnh0k"))))))
+               "1qyna598c0v7gdpycc6kpl12h5a2wa50dqray6gv208f80jcsxv8"))))))
       (arguments
        `(#:tests? #f
          #:make-flags (list "-C" "src"
