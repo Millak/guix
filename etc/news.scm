@@ -25,7 +25,7 @@
 (channel-news
  (version 0)
 
- (entry (commit "be74fb7288c86a6a2245b7e35b57dde88db8a4e4")
+ (entry (commit "b6b2de2a0d52530bc1ee128c61580bed662ee15c")
         (title (en "Linux-libre kernel updated to 5.17"))
         (body
           (en "The default version of the linux-libre kernel has been
