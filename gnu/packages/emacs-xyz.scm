@@ -25955,7 +25955,7 @@ all of your projects, then override or add variables on a per-project basis.")
 (define-public emacs-el-patch
   (package
     (name "emacs-el-patch")
-    (version "2.4")
+    (version "3.0")
     (source
      (origin
        (method git-fetch)
@@ -25964,14 +25964,8 @@ all of your projects, then override or add variables on a per-project basis.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vankik1dh2yd554h59s5vlzanwx8sx9j31kr15830m3hfgikygz"))))
+        (base32 "0qkx7f19kl85n56bp3q40200a6ynpkhimcnb3k6x4n6idn6ff2pa"))))
     (build-system emacs-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; XXX: The `validate-compiled-autoloads' phase fails with "Symbol’s
-         ;; value as variable is void: el-patch-deftype".
-         (delete 'validate-compiled-autoloads))))
     (home-page "https://github.com/raxod502/el-patch")
     (synopsis "Future-proof your Emacs customizations")
     (description "This package allows for an alternate definition of an Elisp
