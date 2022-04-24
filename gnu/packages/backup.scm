@@ -22,6 +22,7 @@
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Feng Shu <tumashu@163.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -71,6 +72,7 @@
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages gperf)
+  #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages guile-xyz)
   #:use-module (gnu packages linux)
@@ -1340,3 +1342,27 @@ tool.  It supports the use of remote backup repositories.  It can perform
 scheduled backups, and has a graphical tool for browsing and extracting the Borg
 archives.")
     (license license:gpl3+)))
+
+(define-public grsync
+  (package
+    (name "grsync")
+    (version "1.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "http://www.opbyte.it/release/"
+                                  "grsync-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1z1m782b50x348kgynzf753apy8yszkl31y32y1jsc055skcdixp"))))
+    (build-system gnu-build-system)
+    (native-inputs (list intltool pkg-config))
+    (inputs (list gtk+))
+    (propagated-inputs (list rsync))
+    (home-page "http://www.opbyte.it/grsync/")
+    (synopsis "GTK frontend for rsync")
+    (description
+     "Grsync is a simple graphical interface using GTK for the @command{rsync}
+command line program.  It currently supports only a limited set of the most
+important rsync features, but can be used effectively for local directory
+synchronization.")
+    (license license:gpl2)))
