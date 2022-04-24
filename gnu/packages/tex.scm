@@ -664,6 +664,26 @@ executables.  It is maintained as a part of TeX Live.")))
 documentation from TeX files.  It is part of the LaTeX base.")
     (license license:lppl1.3+)))
 
+(define-public texlive-underscore
+  (package
+    (inherit (simple-texlive-package
+              "texlive-underscore"
+              (list "/doc/latex/underscore/"
+                    "/tex/latex/underscore/")
+              (base32
+               "0slxsxc9azmv3gsm55jkhkv8a06wafankp55hhsdd6k4prp8szrb")
+              #:trivial? #t))
+    (home-page "https://www.ctan.org/pkg/underscore")
+    (synopsis "Control the behaviour of @samp{_} in text")
+    (description "This package causes @code{\\_} in text mode (i.e.,
+@code{\\textunderscore}) to print an underscore so that hyphenation of words
+either side of it is not affected; a package option controls whether an actual
+hyphenation point appears after the underscore, or merely a break point.  The
+package also arranges that, while in text, @samp{_} itself behaves as
+@code{\\textunderscore} (the behaviour of @samp{_} in maths mode is not
+affected).")
+    (license license:lppl1.2+)))
+
 (define-public texlive-unicode-data
   (package
     (inherit (simple-texlive-package
