@@ -3256,21 +3256,17 @@ API.")
       (license license:expat))))
 
 (define-public guile-srfi-189
-  (let ((commit "a0e3786702956c9e510d92746474ac988c2010ec")
-        (revision "0"))
+  (let ((commit "659e3cd0fc2bfca9085424eda8cad804ead2a9ea")
+        (revision "1"))
     (package
       (name "guile-srfi-189")
-      (version (git-version "0" revision commit))
+      ;; 'final' is the name of the latest git tag.
+      (version (git-version "final" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
-               ;; This is a fork of:
-               ;; (url "https://github.com/scheme-requests-for-implementation/srfi-189")
-               ;; Upstream merge requested at:
-               ;; https://github.com/scheme-requests-for-implementation/srfi-189/pull/21
-               ;; TODO switch over to the official repo when the PR gets merged
-               (url "https://github.com/attila-lendvai-patches/srfi-189")
+               (url "https://github.com/scheme-requests-for-implementation/srfi-189")
                (commit commit)))
          (sha256
           (base32
