@@ -11986,12 +11986,18 @@ etc.  You can also play games on FICS or against an engine.")
                             "build"
                             (string-append "PREFIX="
                                            (assoc-ref %outputs "out"))
+                            ,@(if (target-ppc32?)
+                                `("EXTRALDFLAGS=-latomic")
+                                `())
                             (string-append "ARCH="
                                            ,(match (%current-system)
                                               ("x86_64-linux" "x86-64")
                                               ("i686-linux" "x86-32")
                                               ("aarch64-linux" "armv8")
                                               ("armhf-linux" "armv7")
+                                              ("powerpc-linux" "ppc-32")
+                                              ("powerpc64le-linux" "ppc-64")
+                                              ("riscv64-linux" "general-64")
                                               ("mips64el-linux" "general-64")
                                               (_ "general-32"))))
          #:phases (modify-phases %standard-phases
@@ -12002,7 +12008,12 @@ etc.  You can also play games on FICS or against an engine.")
                       (lambda* (#:key inputs #:allow-other-keys)
                         (copy-file (assoc-ref inputs "neural-network")
                                    (format #f "src/nn-~a.nnue"
-                                           ,neural-network-revision)))))))
+                                           ,neural-network-revision))))
+                    ;; Guix doesn't use a multiarch gcc.
+                    (add-after 'unpack 'remove-m-flag
+                      (lambda _
+                        (substitute* "src/Makefile"
+                          (("-m\\$\\(bits\\)") "")))))))
       (synopsis "Strong chess engine")
       (description
        "Stockfish is a very strong chess engine.  It is much stronger than the
