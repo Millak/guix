@@ -1346,8 +1346,8 @@ and the notification, WiFi, and Bluetooth LED.")
     (license license:gpl2)))
 
 (define-public rtl8821ce-linux-module
-  (let ((commit "ca204c60724d23ab10244f920d4e50759ed1affb")
-        (revision "4"))
+  (let ((commit "dce62b9bbb7c76339b514153fcebb3a19bafdcc7")
+        (revision "5"))
     (package
       (name "rtl8821ce-linux-module")
       (version (git-version "0.0.0" revision commit))
@@ -1360,7 +1360,7 @@ and the notification, WiFi, and Bluetooth LED.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "18ma8a8h1l90dss0k6al7q6plwr57jc9g67p22g9917k1jfbhm97"))))
+           "0s5v6z4x7xdgr5qm4q7dr9nd5c8qy28jaw0p78hxji3m8if56vka"))))
       (build-system linux-module-build-system)
       (arguments
        (list #:make-flags
