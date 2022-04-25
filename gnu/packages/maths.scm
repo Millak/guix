@@ -45,7 +45,7 @@
 ;;; Copyright © 2021 Gerd Heber <gerd.heber@gmail.com>
 ;;; Copyright © 2021 Franck Pérignon <franck.perignon@univ-grenoble-alpes.fr>
 ;;; Copyright © 2021 Philip McGrath <philip@philipmcgrath.com>
-;;; Copyright © 2021 Paul A. Patience <paul@apatience.com>
+;;; Copyright © 2021, 2022 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
 ;;; Copyright © 2021 Jean-Baptiste Volatier <jbv@pm.me>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
@@ -2008,6 +2008,10 @@ interfaces.")
          (add-after 'fix-sources-for-build 'fix-sources-for-tests
            (lambda _
              (substitute* "examples/CMakeLists.txt"
+               ;; This test passes only sometimes.
+               ;; See https://github.com/bbopt/nomad/issues/72.
+               (("^ +add_subdirectory\\(\\$\\{CMAKE_CURRENT_SOURCE_DIR\\}/advanced/library/PSDMads\\)\n")
+                "")
                ;; examples/basic/batch/example3 is accidentally omitted.
                (("^(add_subdirectory\\(\\$\\{CMAKE_CURRENT_SOURCE_DIR\\}/basic/batch/example)2(\\)\n)"
                  _ prefix suffix)
@@ -2052,10 +2056,6 @@ interfaces.")
               "examples/advanced/library/exampleSuggestAndObserve/cache0.txt")
 
              (let ((builddir (string-append (getcwd) "/../build")))
-               ;; For some reason, omitting this fix causes the
-               ;; examples/advanced/library/PSDMads test to fail, even though
-               ;; it doesn't seem to reference any part of the FixedVariable
-               ;; test.
                (let ((dir "examples/advanced/library/FixedVariable"))
                  (substitute* (string-append dir "/fixedVariable.cpp")
                    (("^( +std::string sExe = ).*" _ prefix)
