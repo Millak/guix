@@ -29598,6 +29598,24 @@ adapted from the @code{packaging} package.")
 Python CLI apps.")
     (license license:asl2.0)))
 
+(define-public python-style
+  (package
+    (name "python-style")
+    (version "1.1.6")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "style" version))
+        (sha256
+          (base32 "1dcfb578v9mrwh92rgms87gql0gp4vgj6l9hpgyfg0wbd3rh3bfh"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/lmittmann/style")
+    (synopsis "Terminal string styling")
+    (description
+"@code{python-style} is a simple terminal string styling package.  Its API is
+a port of the chalk package for javascript.")
+    (license license:expat)))
+
 (define-public python-sre-yield
   (package
     (name "python-sre-yield")
