@@ -786,34 +786,34 @@ programming language.")))
        ,@(package-inputs nginx)))
     (arguments
      (substitute-keyword-arguments
-         `(#:configure-flags '("--add-dynamic-module=.")
-           #:make-flags '("modules")
+         `(#:make-flags '("modules")
            #:modules ((guix build utils)
                       (guix build gnu-build-system))
-           ,@(package-arguments nginx))
+           ,@(package-arguments nginx)
+           #:configure-flags '("--add-dynamic-module=."))
        ((#:phases phases)
-        `(modify-phases ,phases
-           (add-after 'unpack 'unpack-nginx-sources
-             (lambda* (#:key inputs native-inputs #:allow-other-keys)
-               (begin
-                 ;; The nginx source code is part of the module’s source.
-                 (format #t "decompressing nginx source code~%")
-                 (invoke "tar" "xvf" (assoc-ref inputs "nginx-sources")
-                         ;; This package's LICENSE file would be
-                         ;; overwritten with the one from nginx when
-                         ;; unpacking the nginx source, so rename the nginx
-                         ;; one when unpacking.
-                         "--transform=s,/LICENSE$,/LICENSE.nginx,"
-                         "--strip-components=1")
-                 #t)))
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((modules-dir (string-append (assoc-ref outputs "out")
-                                                 "/etc/nginx/modules")))
-                 (install-file "objs/ngx_rtmp_module.so" modules-dir)
-                 #t)))
-           (delete 'fix-root-dirs)
-           (delete 'install-man-page)))))
+        #~(modify-phases #$phases
+            (add-after 'unpack 'unpack-nginx-sources
+              (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                (begin
+                  ;; The nginx source code is part of the module’s source.
+                  (format #t "decompressing nginx source code~%")
+                  (invoke "tar" "xvf" (assoc-ref inputs "nginx-sources")
+                          ;; This package's LICENSE file would be
+                          ;; overwritten with the one from nginx when
+                          ;; unpacking the nginx source, so rename the nginx
+                          ;; one when unpacking.
+                          "--transform=s,/LICENSE$,/LICENSE.nginx,"
+                          "--strip-components=1")
+                  #t)))
+            (replace 'install
+              (lambda* (#:key outputs #:allow-other-keys)
+                (let ((modules-dir (string-append (assoc-ref outputs "out")
+                                                  "/etc/nginx/modules")))
+                  (install-file "objs/ngx_rtmp_module.so" modules-dir)
+                  #t)))
+            (delete 'fix-root-dirs)
+            (delete 'install-man-page)))))
     (home-page "https://github.com/arut/nginx-rtmp-module")
     (synopsis "NGINX module for audio and video streaming with RTMP")
     (description "This NGINX module provides streaming with the @acronym{RTMP,
