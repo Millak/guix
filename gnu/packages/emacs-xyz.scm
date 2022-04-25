@@ -18,7 +18,7 @@
 ;;; Copyright © 2016, 2017, 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017 Christopher Baines <mail@cbaines.net>
-;;; Copyright © 2017, 2018, 2019, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
+;;; Copyright © 2017, 2018, 2019, 2020, 2022 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017, 2018, 2019, 2020, 2021, 2022 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017 Vasile Dumitrascu <va511e@yahoo.com>
 ;;; Copyright © 2017, 2018 Kyle Meyer <kyle@kyleam.com>
@@ -30884,3 +30884,26 @@ headlines, keywords, tables and source blocks.")
 zoomable and moveable map display, display of tracks and POIs from GPX files,
 parallel fetching of tiles with cURL, and more.")
     (license license:gpl3+)))
+
+(define-public emacs-bitbake-modes
+  (package
+   (name "emacs-bitbake-modes")
+   (version "0.5.3")
+   (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://bitbucket.org/olanilsson/bitbake-modes")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "1580cfpfmsjwiq6v2vsqjwhzj9m4lrhhf3nffmbzp36r6q5n8611"))
+       (file-name (git-file-name name version))))
+   (build-system emacs-build-system)
+   (propagated-inputs (list emacs-mmm-mode))
+   (home-page "https://bitbucket.org/olanilsson/bitbake-modes")
+   (synopsis "Emacs major modes for bitbake")
+   (description
+"@code{emacs-bitbake-modes} is a collection of major modes and tools that can
+be useful when working with the bitbake files in Yocto and OpenEmbedded
+projects.")
+   (license license:gpl3+)))
