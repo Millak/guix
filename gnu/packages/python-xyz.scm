@@ -14011,13 +14011,13 @@ Jupyter kernels such as IJulia and IRKernel.")
 (define-public python-qtconsole
   (package
     (name "python-qtconsole")
-    (version "4.7.7")
+    (version "5.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "qtconsole" version))
        (sha256
-        (base32 "013qgpsm8jzcz3prhq7sxs36l8f7fgagmn3xa010gfhxf7cfldpj"))))
+        (base32 "09anp8g7vqi8z8wyi2lv21a2frd2dyhyrzvcrk2anijyqzyj0dcf"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -14034,7 +14034,7 @@ Jupyter kernels such as IJulia and IRKernel.")
            python-jupyter-core python-pygments python-pyqt python-pyzmq
            python-qtpy python-traitlets))
     (native-inputs
-     (list python-flaky python-pytest))
+     (list python-flaky python-pytest python-pytest-qt))
     (home-page "https://jupyter.org")
     (synopsis "Jupyter Qt console")
     (description "This package provides a Qt-based console for Jupyter with
