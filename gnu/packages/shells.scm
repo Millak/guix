@@ -19,6 +19,7 @@
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021, 2022 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2022 Andrew Tropin <andrew@trop.in>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -64,6 +65,7 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages xorg)
+  #:use-module (gnu packages texinfo)
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
@@ -521,9 +523,12 @@ history mechanism, job control and a C-like syntax.")
                        (substitute* "Test/A01grammar.ztst"
                          (("command -pv") "command -v")
                          (("command -p") "command ")
-                         (("'command' -p") "'command' "))
-                       #t)))))
-    (native-inputs (list autoconf))
+                         (("'command' -p") "'command' "))))
+                   (add-after 'build 'make-info
+                     (lambda _ (invoke "make" "info")))
+                   (add-after 'build 'install-info
+                     (lambda _ (invoke "make" "install.info"))))))
+    (native-inputs (list autoconf texinfo))
     (inputs (list ncurses pcre perl))
     (synopsis "Powerful shell for interactive use and scripting")
     (description "The Z shell (zsh) is a Unix shell that can be used
