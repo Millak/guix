@@ -2269,17 +2269,16 @@ top of the PyQt bindings for Qt.  PyQt-builder is used to build PyQt itself.")
 (define-public python-qtpy
   (package
     (name "python-qtpy")
-    (version "1.9.0")
+    (version "2.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "QtPy" version))
        (sha256
           (base32
-           "13cw8l7zrhbdi03k1wl1pg9xdl4ahdfa7yz8gd0f23sxnm22rdrd"))))
+           "13zbhnl2rm30xafwrzfwdb4mjp7gk4s9h2xagbf83pnjzczhgzdd"))))
     (build-system python-build-system)
-    (propagated-inputs
-     `(("python-pyside2" ,python-pyside-2)))
+    (propagated-inputs (list python-packaging))
     (arguments
      `(;; Not all supported bindings are packaged. Especially PyQt4.
        #:tests? #f))
