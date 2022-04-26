@@ -7,6 +7,7 @@
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2022 Alex Griffin <a@ajgrf.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -62,7 +63,7 @@
   #:use-module (ice-9 match)
   #:export (compressor?
             compressor-name
-            compressor-extenstion
+            compressor-extension
             compressor-command
             %compressors
             lookup-compressor
