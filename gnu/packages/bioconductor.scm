@@ -1713,6 +1713,34 @@ existing imputation methods like @code{DrImpute} and @code{SAVER}.
 results from different methods into an ensemble.")
     (license license:gpl3+)))
 
+(define-public r-adsplit
+  (package
+    (name "r-adsplit")
+    (version "1.64.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "adSplit" version))
+              (sha256
+               (base32
+                "1b4ck371h3a76m5h0brvlzsyg1g6q5fjrhra5hqv9pwxr330h9r2"))))
+    (properties `((upstream-name . "adSplit")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-annotationdbi
+           r-biobase
+           r-cluster
+           r-go-db
+           r-keggrest
+           r-multtest))
+    (home-page "https://compdiag.molgen.mpg.de/software/adSplit.shtml")
+    (synopsis "Annotation-driven splits in microarray data")
+    (description
+     "This package implements clustering of microarray gene expression
+profiles according to functional annotations.  For each term genes are
+annotated to, splits into two subclasses are computed and a significance of
+the supporting gene set is determined.")
+    (license license:gpl2+)))
+
 (define-public r-aneufinder
   (package
     (name "r-aneufinder")
