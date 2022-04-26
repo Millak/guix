@@ -108,6 +108,7 @@
 ;;; Copyright © 2021, 2022 Taiju HIGASHI <higashi@taiju.info>
 ;;; Copyright © 2022 Brandon Lucas <br@ndon.dk>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
+;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3056,7 +3057,7 @@ of bibliographic references.")
 (define-public emacs-corfu
   (package
     (name "emacs-corfu")
-    (version "0.20")
+    (version "0.22")
     (source
      (origin
        (method git-fetch)
@@ -3065,7 +3066,7 @@ of bibliographic references.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14hz2frz55smzhamynkahys2m4qbm9pha9w9v2rwaffw89jg6ia9"))))
+        (base32 "062lxyqh7nfaixmgfgmqfbkainxc8ypdkj6qjq38xigk55s7c5wk"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/minad/corfu")
     (synopsis "Completion overlay region function")
