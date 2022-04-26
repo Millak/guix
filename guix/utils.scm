@@ -8,12 +8,11 @@
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2018, 2020 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2018 Steve Sprang <scs@stevesprang.com>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -38,7 +37,6 @@
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-39)
   #:use-module (srfi srfi-71)
-  #:use-module (ice-9 ftw)
   #:use-module (rnrs io ports)                    ;need 'port-position' etc.
   #:use-module ((rnrs bytevectors) #:select (bytevector-u8-set!))
   #:use-module (guix memoization)
@@ -49,10 +47,11 @@
   #:use-module ((guix combinators) #:select (fold2))
   #:use-module (guix diagnostics)           ;<location>, &error-location, etc.
   #:use-module (ice-9 format)
-  #:use-module (ice-9 regex)
-  #:use-module (ice-9 match)
-  #:use-module (ice-9 format)
+  #:use-module (ice-9 ftw)
   #:use-module ((ice-9 iconv) #:prefix iconv:)
+  #:use-module (ice-9 match)
+  #:use-module (ice-9 regex)
+  #:use-module (ice-9 rdelim)
   #:use-module (ice-9 vlist)
   #:autoload   (zlib) (make-zlib-input-port make-zlib-output-port)
   #:use-module (system foreign)
@@ -133,6 +132,7 @@
             readlink*
             go-to-location
             edit-expression
+            delete-expression
 
             filtered-port
             decompressed-port
@@ -433,11 +433,13 @@ TARGET must be stat buffers as returned by 'stat'."
          (hash-set! %source-location-map target-key
                     `(,@target-stamp ,source-map)))))))
 
-(define* (edit-expression source-properties proc #:key (encoding "UTF-8"))
+(define* (edit-expression source-properties proc #:key (encoding "UTF-8")
+                          include-trailing-newline?)
   "Edit the expression specified by SOURCE-PROPERTIES using PROC, which should
 be a procedure that takes the original expression in string and returns a new
-one.  ENCODING will be used to interpret all port I/O, it default to UTF-8.
-This procedure returns #t on success."
+one.  ENCODING will be used to interpret all port I/O, it defaults to UTF-8.
+This procedure returns #t on success.  When INCLUDE-TRAILING-NEWLINE? is true,
+the trailing line is included in the edited expression."
   (define file   (assq-ref source-properties 'filename))
   (define line   (assq-ref source-properties 'line))
   (define column (assq-ref source-properties 'column))
@@ -446,10 +448,14 @@ This procedure returns #t on success."
     (call-with-input-file file
       (lambda (in)
         (let* ( ;; The start byte position of the expression.
-               (start  (begin (go-to-location in (+ 1 line) (+ 1 column))
+               (start  (begin (go-to-location
+                               in (+ 1 line) (+ 1 column))
                               (ftell in)))
                ;; The end byte position of the expression.
-               (end    (begin (read in) (ftell in))))
+               (end    (begin (read in)
+                              (when include-trailing-newline?
+                                (read-line in))
+                              (ftell in))))
           (seek in 0 SEEK_SET)          ; read from the beginning of the file.
           (let* ((pre-bv  (get-bytevector-n in start))
                  ;; The expression in string form.
@@ -477,6 +483,10 @@ This procedure returns #t on success."
                 ;; to LINE to the new file.
                 (move-source-location-map! (stat in) (stat file)
                                            (+ 1 line))))))))))
+
+(define (delete-expression source-properties)
+  "Delete the expression specified by SOURCE-PROPERTIES."
+  (edit-expression source-properties (const "") #:include-trailing-newline? #t))
 
 
 ;;;
