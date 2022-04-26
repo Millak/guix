@@ -2333,6 +2333,41 @@ generate dynamic style sheets.  The package uses the Sass CSS extension
 language, which is stable, powerful, and CSS compatible.")
     (license license:expat)))
 
+(define-public r-saver
+  (package
+    (name "r-saver")
+    (version "1.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "SAVER" version))
+              (sha256
+               (base32
+                "1s1kw8idkaj7j90fw4qn9k0wd4vz0sblsk06ry6lm4afcar0p158"))))
+    (properties `((upstream-name . "SAVER")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-doparallel
+           r-foreach
+           r-glmnet
+           r-iterators
+           r-matrix))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/mohuangx/SAVER")
+    (synopsis
+     "Recovery of gene expression profile in noisy and sparse scRNA-seq data")
+    (description
+     "This package is an implementation of a regularized regression prediction
+and empirical Bayes method to recover the true gene expression profile in noisy
+and sparse single-cell RNA-seq data.  In @dfn{single-cell RNA sequencing}
+(scRNA-seq) studies, only a small fraction of the transcripts present in each
+cell are sequenced.  This leads to unreliable quantification of genes with low
+or moderate expression, which hinders downstream analysis.  This package
+@dfn{single-cell analysis via expression recovery} (SAVER) implements an
+expression recovery method for unique molecule index (UMI)-based scRNA-seq
+data that borrows information across genes and cells to provide accurate
+expression estimates for all genes.")
+    (license license:gpl2)))
+
 ;; This package includes minified JavaScript files.  When upgrading please
 ;; check that there are no new minified JavaScript files.
 (define-public r-bslib
