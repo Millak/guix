@@ -1664,6 +1664,55 @@ expression and fold change can be easily seen with aid of the plots made with
 the @code{GFAGpathUi} function.")
     (license license:gpl2+)))
 
+(define-public r-adimpute
+  (package
+    (name "r-adimpute")
+    (version "1.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "ADImpute" version))
+              (sha256
+               (base32
+                "1bkq1hd8sqg9r28r70a9vd3gb2nsmg6dybf002d621p88cdfjib2"))))
+    (properties `((upstream-name . "ADImpute")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biocparallel
+           r-checkmate
+           r-data-table
+           r-drimpute
+           r-kernlab
+           r-mass
+           r-matrix
+           r-rsvd
+           r-s4vectors
+           r-saver
+           r-singlecellexperiment
+           r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/ADImpute")
+    (synopsis "Adaptive computational prediction for dropout imputations")
+    (description
+     "@dfn{Single-cell RNA sequencing} (scRNA-seq) methods are typically
+unable to quantify the expression levels of all genes in a cell, creating a
+need for the computational prediction of missing values (dropout imputation).
+Most existing dropout imputation methods are limited in the sense that they
+exclusively use the scRNA-seq dataset at hand and do not exploit external
+gene-gene relationship information.  The @code{ADImpute} package proposes two
+methods to address this issue:
+
+@enumerate
+@item a gene regulatory network-based approach using gene-gene relationships
+  learnt from external data;
+@item a baseline approach corresponding to a sample-wide average.
+@end enumerate
+
+@code{ADImpute} implements these novel methods and also combines them with
+existing imputation methods like @code{DrImpute} and @code{SAVER}.
+@code{ADImpute} can learn the best performing method per gene and combine the
+results from different methods into an ensemble.")
+    (license license:gpl3+)))
+
 (define-public r-aneufinder
   (package
     (name "r-aneufinder")
