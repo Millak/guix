@@ -31,6 +31,7 @@
 ;;; Copyright © 2022 Olivier Dion <olivier.dion@polymtl.ca>
 ;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
 ;;; Copyright © 2022 Malte Frank Gerdes <malte.f.gerdes@gmail.com>
+;;; Copyright © 2022 Konstantinos Agiannis <agiannis.kon@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -78,6 +79,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages curl)
+  #:use-module (gnu packages gawk)
   #:use-module (gnu packages dejagnu)
   #:use-module (gnu packages digest)
   #:use-module (gnu packages docbook)
@@ -3659,3 +3661,46 @@ python bindings.  It belongs to the Cura project from Ultimaker.")
     (description "Cura is a slicing software from Ultimaker.  A @emph{slicer}
 generates G-Code for 3D printers.")
     (license license:lgpl3+)))
+
+(define-public xschem
+  (let ((commit "f574539e21b297fa3bcebd52114555e162a5fc56")
+        (revision "1"))
+    (package
+      (name "xschem")
+      (version (git-version "3.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/StefanSchippers/xschem")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "129kj8m3wcf62plp74kml6pqwld4lnfmxy070a82lvj0rfiy77hb"))))
+      (native-inputs (list flex bison pkg-config))
+      (inputs (list gawk
+                    tcl
+                    tk
+                    libxpm
+                    cairo
+                    libxrender
+                    libxcb)) ; Last 3 are optional, but good to have.
+      (build-system gnu-build-system)
+      (arguments
+       `(#:tests? #f
+         #:phases
+         (modify-phases %standard-phases
+           (delete 'configure)
+           (add-before 'build 'setenv
+             (lambda* (#:key outputs #:allow-other-keys)
+               (setenv "CC" ,(cc-for-target))
+               (invoke "./configure"
+                       (string-append "--prefix="
+                                      (assoc-ref outputs "out"))))))))
+      (synopsis "Hierarchical schematic editor")
+      (description
+       "Xschem is an X11 schematic editor written in C and focused on
+hierarchical and parametric design.  It can generate VHDL, Verilog or Spice
+netlists from the drawn schematic, allowing the simulation of the circuit.")
+      (home-page "https://xschem.sourceforge.io/stefan/index.html")
+      (license license:gpl2+))))
