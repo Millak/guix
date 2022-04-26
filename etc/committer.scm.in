@@ -6,6 +6,7 @@
 ;;; Copyright © 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,19 +29,19 @@
 
 ;;; Code:
 
-(import (sxml xpath)
-        (srfi srfi-1)
-        (srfi srfi-2)
-        (srfi srfi-9)
-        (srfi srfi-11)
-        (srfi srfi-26)
-        (ice-9 format)
-        (ice-9 popen)
-        (ice-9 match)
-        (ice-9 rdelim)
-        (ice-9 regex)
-        (ice-9 textual-ports)
-        (guix gexp))
+(use-modules ((sxml xpath) #:prefix xpath:)
+             (srfi srfi-1)
+             (srfi srfi-2)
+             (srfi srfi-9)
+             (srfi srfi-11)
+             (srfi srfi-26)
+             (ice-9 format)
+             (ice-9 popen)
+             (ice-9 match)
+             (ice-9 rdelim)
+             (ice-9 regex)
+             (ice-9 textual-ports)
+             (guix gexp))
 
 (define* (break-string str #:optional (max-line-length 70))
   "Break the string STR into lines that are no longer than MAX-LINE-LENGTH.
@@ -214,10 +215,10 @@ corresponding to the top-level definition containing the staged changes."
 (define* (change-commit-message file-name old new #:optional (port (current-output-port)))
   "Print ChangeLog commit message for changes between OLD and NEW."
   (define (get-values expr field)
-    (match ((sxpath `(// ,field quasiquote *)) expr)
+    (match ((xpath:sxpath `(// ,field quasiquote *)) expr)
       (()
        ;; New-style plain lists
-       (match ((sxpath `(// ,field list *)) expr)
+       (match ((xpath:sxpath `(// ,field list *)) expr)
          ((inner) inner)
          (_ '())))
       ;; Old-style labelled inputs
@@ -234,7 +235,7 @@ corresponding to the top-level definition containing the staged changes."
   (define variable-name
     (second old))
   (define version
-    (and=> ((sxpath '(// version *any*)) new)
+    (and=> ((xpath:sxpath '(// version *any*)) new)
            first))
   (format port
           "gnu: ~a: Update to ~a.~%~%* ~a (~a): Update to ~a.~%"
