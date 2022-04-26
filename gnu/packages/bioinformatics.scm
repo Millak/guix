@@ -14567,27 +14567,27 @@ library automatically handles index file generation and use.")
         (base32 "1r7pnajg997zdjkf1b38m14v0zqnfx52w7nbldwh1xpbpahb1hjh"))
        (modules '((guix build utils)))
        (snippet
-        '(begin
-           (substitute* "CMakeLists.txt"
-             ((".*fastahack.*") "")
-             ((".*smithwaterman.*") "")
-             (("(pkg_check_modules\\(TABIXPP)" text)
-              (string-append
+        #~(begin
+            (substitute* "CMakeLists.txt"
+              ((".*fastahack.*") "")
+              ((".*smithwaterman.*") "")
+              (("(pkg_check_modules\\(TABIXPP)" text)
+               (string-append
                 "pkg_check_modules(FASTAHACK REQUIRED fastahack)\n"
                 "pkg_check_modules(SMITHWATERMAN REQUIRED smithwaterman)\n"
                 text))
-             (("\\$\\{TABIXPP_LIBRARIES\\}" text)
-              (string-append "${FASTAHACK_LIBRARIES} "
-                             "${SMITHWATERMAN_LIBRARIES} "
-                             text)))
-           (substitute* (find-files "." "\\.(h|c)(pp)?$")
-             (("\"SmithWatermanGotoh.h\"") "<smithwaterman/SmithWatermanGotoh.h>")
-             (("\"convert.h\"") "<smithwaterman/convert.h>")
-             (("\"disorder.h\"") "<smithwaterman/disorder.h>")
-             (("Fasta.h") "fastahack/Fasta.h"))
-           (for-each delete-file-recursively
-                     '("fastahack" "filevercmp" "fsom" "googletest" "intervaltree"
-                       "libVCFH" "multichoose" "smithwaterman"))))))
+              (("\\$\\{TABIXPP_LIBRARIES\\}" text)
+               (string-append "${FASTAHACK_LIBRARIES} "
+                              "${SMITHWATERMAN_LIBRARIES} "
+                              text)))
+            (substitute* (find-files "." "\\.(h|c)(pp)?$")
+              (("\"SmithWatermanGotoh.h\"") "<smithwaterman/SmithWatermanGotoh.h>")
+              (("\"convert.h\"") "<smithwaterman/convert.h>")
+              (("\"disorder.h\"") "<smithwaterman/disorder.h>")
+              (("Fasta.h") "fastahack/Fasta.h"))
+            (for-each delete-file-recursively
+                      '("fastahack" "filevercmp" "fsom" "googletest" "intervaltree"
+                        "libVCFH" "multichoose" "smithwaterman"))))))
     (build-system cmake-build-system)
     (inputs
      (list bzip2
@@ -14608,39 +14608,39 @@ library automatically handles index file generation and use.")
        ("intervaltree-src" ,(package-source intervaltree))
        ("multichoose-src" ,(package-source multichoose))))
     (arguments
-     `(#:tests? #f ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'build-shared-library
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               (("vcflib STATIC") "vcflib SHARED"))
-             (substitute* "test/Makefile"
-               (("libvcflib.a") "libvcflib.so"))))
-         (add-after 'unpack 'unpack-submodule-sources
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((unpack (lambda (source target)
-                             (mkdir target)
-                             (with-directory-excursion target
-                               (if (file-is-directory? (assoc-ref inputs source))
-                                   (copy-recursively (assoc-ref inputs source) ".")
-                                   (invoke "tar" "xvf"
-                                           (assoc-ref inputs source)
-                                           "--strip-components=1"))))))
-               (and
-                (unpack "filevercmp-src" "filevercmp")
-                (unpack "fsom-src" "fsom")
-                (unpack "intervaltree-src" "intervaltree")
-                (unpack "multichoose-src" "multichoose")))))
-         ;; This pkg-config file is provided by other distributions.
-         (add-after 'install 'install-pkg-config-file
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (pkgconfig (string-append out "/lib/pkgconfig")))
-               (mkdir-p pkgconfig)
-               (with-output-to-file (string-append pkgconfig "/vcflib.pc")
+     (list #:tests? #f ; no tests
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'build-shared-library
                  (lambda _
-                   (format #t "prefix=~a~@
+                   (substitute* "CMakeLists.txt"
+                     (("vcflib STATIC") "vcflib SHARED"))
+                   (substitute* "test/Makefile"
+                     (("libvcflib.a") "libvcflib.so"))))
+               (add-after 'unpack 'unpack-submodule-sources
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (let ((unpack (lambda (source target)
+                                   (mkdir target)
+                                   (with-directory-excursion target
+                                     (if (file-is-directory? (assoc-ref inputs source))
+                                         (copy-recursively (assoc-ref inputs source) ".")
+                                         (invoke "tar" "xvf"
+                                                 (assoc-ref inputs source)
+                                                 "--strip-components=1"))))))
+                     (and
+                      (unpack "filevercmp-src" "filevercmp")
+                      (unpack "fsom-src" "fsom")
+                      (unpack "intervaltree-src" "intervaltree")
+                      (unpack "multichoose-src" "multichoose")))))
+               ;; This pkg-config file is provided by other distributions.
+               (add-after 'install 'install-pkg-config-file
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out"))
+                          (pkgconfig (string-append out "/lib/pkgconfig")))
+                     (mkdir-p pkgconfig)
+                     (with-output-to-file (string-append pkgconfig "/vcflib.pc")
+                       (lambda _
+                         (format #t "prefix=~a~@
                            exec_prefix=${prefix}~@
                            libdir=${exec_prefix}/lib~@
                            includedir=${prefix}/include~@
@@ -14651,8 +14651,7 @@ library automatically handles index file generation and use.")
                            Description: C++ library for parsing and manipulating VCF files~@
                            Libs: -L${libdir} -lvcflib~@
                            Cflags: -I${includedir}~%"
-                           out ,version)))
-                 #t))))))
+                                 out #$version)))))))))
     (home-page "https://github.com/vcflib/vcflib/")
     (synopsis "Library for parsing and manipulating VCF files")
     (description "Vcflib provides methods to manipulate and interpret
