@@ -14296,7 +14296,7 @@ mutations from scRNA-Seq data.")
                   (delete-file-recursively "htslib")))))
    (build-system gnu-build-system)
    (inputs
-    (list htslib zlib))
+    (list bzip2 htslib xz zlib))
    (arguments
     (list #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
                                (string-append "CXX=" #$(cxx-for-target))
