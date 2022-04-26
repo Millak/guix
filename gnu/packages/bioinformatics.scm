@@ -14502,7 +14502,8 @@ neural networks.")
        (base32 "0rp1blskhzxf7vbh253ibpxbgl9wwgyzf1wbkxndi08d3j4vcss9"))))
     (build-system gnu-build-system)
     (arguments
-     (list #:tests? #f ; Unclear how to run tests: https://github.com/ekg/fastahack/issues/15
+     (list #:make-flags #~(list (string-append "CXX=" #$(cxx-for-target)))
+           #:tests? #f ; Unclear how to run tests: https://github.com/ekg/fastahack/issues/15
            #:phases
            #~(modify-phases %standard-phases
                (delete 'configure) ; There is no configure phase.
@@ -14512,7 +14513,7 @@ neural networks.")
                      (("-c ") "-c -fPIC "))))
                (add-after 'build 'build-dynamic
                  (lambda _
-                   (invoke "g++"
+                   (invoke #$(cxx-for-target)
                            "-shared" "-o" "libfastahack.so"
                            "Fasta.o" "FastaHack.o" "split.o" "disorder.o")))
                (replace 'install
