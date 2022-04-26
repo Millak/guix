@@ -1741,6 +1741,34 @@ annotated to, splits into two subclasses are computed and a significance of
 the supporting gene set is determined.")
     (license license:gpl2+)))
 
+(define-public r-affixcan
+  (package
+    (name "r-affixcan")
+    (version "1.12.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "AffiXcan" version))
+              (sha256
+               (base32
+                "06yn87briv2141jqad934gg5rcd90w5nghrgmbhqnmwafn72gj9d"))))
+    (properties `((upstream-name . "AffiXcan")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biocparallel
+           r-crayon
+           r-multiassayexperiment
+           r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/AffiXcan")
+    (synopsis "Functional approach to impute genetically regulated expression")
+    (description
+     "The @code{AffiXcan} package imputes a @dfn{genetically regulated
+expression} (GReX) for a set of genes in a sample of individuals, using a
+method based on the @dfn{total binding affinity} (TBA).  Statistical models to
+impute GReX can be trained with a training dataset where the real total
+expression values are known.")
+    (license license:gpl3)))
+
 (define-public r-aneufinder
   (package
     (name "r-aneufinder")
