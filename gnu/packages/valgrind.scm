@@ -5,6 +5,7 @@
 ;;; Copyright © 2016, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2022 Denis Carikli <GNUtoo@cyberdimension.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -22,13 +23,13 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages valgrind)
-  #:use-module (guix packages)
-  #:use-module (guix download)
   #:use-module (guix build-system gnu)
+  #:use-module (guix download)
   #:use-module (guix licenses)
+  #:use-module (guix packages)
+  #:use-module (gnu packages)
   #:use-module (gnu packages gdb)
-  #:use-module (gnu packages perl)
-  #:use-module (gnu packages))
+  #:use-module (gnu packages perl))
 
 (define-public valgrind
   (package
