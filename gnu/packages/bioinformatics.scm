@@ -14618,15 +14618,17 @@ library automatically handles index file generation and use.")
                    (substitute* "test/Makefile"
                      (("libvcflib.a") "libvcflib.so"))))
                (add-after 'unpack 'unpack-submodule-sources
-                 (lambda* (#:key inputs #:allow-other-keys)
+                 (lambda* (#:key inputs native-inputs #:allow-other-keys)
                    (let ((unpack (lambda (source target)
                                    (mkdir target)
                                    (with-directory-excursion target
-                                     (if (file-is-directory? (assoc-ref inputs source))
-                                         (copy-recursively (assoc-ref inputs source) ".")
-                                         (invoke "tar" "xvf"
-                                                 (assoc-ref inputs source)
-                                                 "--strip-components=1"))))))
+                                     (let ((source (or (assoc-ref inputs source)
+                                                       (assoc-ref native-inputs source))))
+                                       (if (file-is-directory? source)
+                                           (copy-recursively source ".")
+                                           (invoke "tar" "xvf"
+                                                   source
+                                                   "--strip-components=1")))))))
                      (and
                       (unpack "filevercmp-src" "filevercmp")
                       (unpack "fsom-src" "fsom")
