@@ -14608,7 +14608,13 @@ library automatically handles index file generation and use.")
        ("intervaltree-src" ,(package-source intervaltree))
        ("multichoose-src" ,(package-source multichoose))))
     (arguments
-     (list #:tests? #f ; no tests
+     (list #:configure-flags
+           #~(list (string-append
+                    "-DPKG_CONFIG_EXECUTABLE="
+                    (search-input-file
+                     %build-inputs (string-append
+                                    "/bin/" #$(pkg-config-for-target)))))
+           #:tests? #f ; no tests
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'build-shared-library
