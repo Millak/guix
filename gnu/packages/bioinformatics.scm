@@ -14283,49 +14283,48 @@ mutations from scRNA-Seq data.")
    (name "tabixpp")
    (version "1.1.0")
    (source (origin
-     (method git-fetch)
-     (uri (git-reference
-           (url "https://github.com/ekg/tabixpp")
-           (commit (string-append "v" version))))
-     (file-name (git-file-name name version))
-     (sha256
-      (base32 "1k2a3vbq96ic4lw72iwp5s3mwwc4xhdffjj584yn6l9637q9j1yd"))
-     (modules '((guix build utils)))
-     (snippet
-      `(begin
-         (delete-file-recursively "htslib") #t))))
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/ekg/tabixpp")
+                   (commit (string-append "v" version))))
+             (file-name (git-file-name name version))
+             (sha256
+              (base32 "1k2a3vbq96ic4lw72iwp5s3mwwc4xhdffjj584yn6l9637q9j1yd"))
+             (modules '((guix build utils)))
+             (snippet
+              #~(begin
+                  (delete-file-recursively "htslib")))))
    (build-system gnu-build-system)
    (inputs
     (list htslib zlib))
    (arguments
-    `(#:tests? #f ; There are no tests to run.
-      #:phases
-      (modify-phases %standard-phases
-        (delete 'configure) ; There is no configure phase.
-        ;; The build phase needs overriding the location of htslib.
-        (replace 'build
-          (lambda* (#:key inputs #:allow-other-keys)
-            (let ((htslib-ref (assoc-ref inputs "htslib")))
-              (invoke "make"
-                      (string-append "HTS_LIB=" htslib-ref "/lib/libhts.a")
-                      (string-append "INCLUDES= -I" htslib-ref "/include/htslib")
-                      "HTS_HEADERS="    ; No need to check for headers here.
-                      (string-append "LIBPATH=-L. -L" htslib-ref "/include"))
-              (invoke "g++" "-shared" "-o" "libtabixpp.so" "tabix.o" "-lhts")
-              (invoke "ar" "rcs" "libtabixpp.a" "tabix.o"))))
-        (replace 'install
-          (lambda* (#:key outputs #:allow-other-keys)
-            (let* ((out (assoc-ref outputs "out"))
-                   (lib (string-append out "/lib"))
-                   (bin (string-append out "/bin")))
-              (install-file "tabix++" bin)
-              (install-file "libtabixpp.so" lib)
-              (install-file "libtabixpp.a" lib)
-              (install-file "tabix.hpp" (string-append out "/include"))
-              (mkdir-p (string-append lib "/pkgconfig"))
-              (with-output-to-file (string-append lib "/pkgconfig/tabixpp.pc")
-                (lambda _
-                  (format #t "prefix=~a~@
+    (list #:tests? #f ; There are no tests to run.
+          #:phases
+          #~(modify-phases %standard-phases
+              (delete 'configure) ; There is no configure phase.
+              ;; The build phase needs overriding the location of htslib.
+              (replace 'build
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (invoke "make"
+                          (string-append "HTS_LIB=" (search-input-file inputs "/lib/libhts.a"))
+                          (string-append "INCLUDES= -I" (search-input-directory inputs "/include/htslib"))
+                          "HTS_HEADERS=" ; No need to check for headers here.
+                          (string-append "LIBPATH=-L. -L" (search-input-directory inputs "/include")))
+                  (invoke "g++" "-shared" "-o" "libtabixpp.so" "tabix.o" "-lhts")
+                  (invoke "ar" "rcs" "libtabixpp.a" "tabix.o")))
+              (replace 'install
+                (lambda* (#:key outputs #:allow-other-keys)
+                  (let* ((out (assoc-ref outputs "out"))
+                         (lib (string-append out "/lib"))
+                         (bin (string-append out "/bin")))
+                    (install-file "tabix++" bin)
+                    (install-file "libtabixpp.so" lib)
+                    (install-file "libtabixpp.a" lib)
+                    (install-file "tabix.hpp" (string-append out "/include"))
+                    (mkdir-p (string-append lib "/pkgconfig"))
+                    (with-output-to-file (string-append lib "/pkgconfig/tabixpp.pc")
+                      (lambda _
+                        (format #t "prefix=~a~@
                           exec_prefix=${prefix}~@
                           libdir=${exec_prefix}/lib~@
                           includedir=${prefix}/include~@
@@ -14336,8 +14335,7 @@ mutations from scRNA-Seq data.")
                           Description: C++ wrapper around tabix project~@
                           Libs: -L${libdir} -ltabixpp~@
                           Cflags: -I${includedir}~%"
-                          out ,version)))
-              #t))))))
+                                out #$version)))))))))
    (home-page "https://github.com/ekg/tabixpp")
    (synopsis "C++ wrapper around tabix project")
    (description "This is a C++ wrapper around the Tabix project which abstracts
