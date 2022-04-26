@@ -3793,6 +3793,27 @@ Shiny-based display methods for Bioconductor objects.")
 @dfn{Kyoto Encyclopedia of Genes and Genomes} (KEGG) REST server.")
     (license license:artistic2.0)))
 
+(define-public r-lfa
+  (package
+    (name "r-lfa")
+    (version "1.24.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "lfa" version))
+       (sha256
+        (base32 "02b90xjb2lfm86hbsdrvzpv20pijnq78ibz4dwjzqd9v4xhia3wr"))))
+    (properties `((upstream-name . "lfa")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-corpcor))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/StoreyLab/lfa")
+    (synopsis "Logistic Factor Analysis for categorical data")
+    (description
+     "@dfn{Logistic Factor Analysis} (LFA) is a method for a PCA analogue on
+Binomial data via estimation of latent structure in the natural parameter.")
+    (license license:gpl3)))
+
 (define-public r-limma
   (package
     (name "r-limma")
