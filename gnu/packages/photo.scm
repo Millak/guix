@@ -9,6 +9,7 @@
 ;;; Copyright © 2020 Sebastian Schott <sschott@mailbox.org>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020. 2021, 2022 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -415,15 +416,16 @@ scene to produce an image that looks much like a tone-mapped image.")
 (define-public lensfun
   (package
     (name "lensfun")
-    (version "0.3.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "mirror://sourceforge/lensfun/"
-                    version "/lensfun-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0cfk8jjhs9nbfjfdy98plrj9ayi59aph0nx6ppslgjhlcvacm2xf"))))
+    (version "0.3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lensfun/lensfun")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pv2y9yqzkw70p501425mf9cqv6yy8ppw5ilkpbd9bw9nss1js76"))))
     (build-system cmake-build-system)
     (arguments
      `(,@(if (any (cute string-prefix? <> (or (%current-system)
@@ -437,7 +439,7 @@ scene to produce an image that looks much like a tone-mapped image.")
      (list pkg-config))
     (inputs
      (list glib))
-    (home-page "https://sourceforge.net/projects/lensfun/")
+    (home-page "https://lensfun.github.io/")
     (synopsis "Library to correct optical lens defects with a lens database")
     (description "Digital photographs are not ideal.  Of course, the better is
 your camera, the better the results will be, but in any case if you look
