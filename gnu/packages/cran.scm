@@ -252,6 +252,35 @@ clean, transform, and prepare your data for analysis.  It also forms the data
 wrangling backend for the packages in the @code{easystats} ecosystem.")
     (license license:gpl3)))
 
+(define-public r-dbscan
+  (package
+    (name "r-dbscan")
+    (version "1.1-10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "dbscan" version))
+       (sha256
+        (base32 "1h8x1v9kk5zmw5qd575cyr16yz8l226lsaq71n079l4i8crcrzg1"))))
+    (properties `((upstream-name . "dbscan")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcpp))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/mhahsler/dbscan")
+    (synopsis "Density-based spatial clustering of applications with noise")
+    (description
+     "This package provides a fast reimplementation of several density-based
+algorithms of the DBSCAN family.  It includes the clustering algorithms DBSCAN
+(density-based spatial clustering of applications with noise) and
+@dfn{hierarchical DBSCAN} (HDBSCAN), the ordering algorithm @dfn{ordering
+points to identify the clustering structure} (OPTICS), shared nearest neighbor
+clustering, and the outlier detection algorithms @dfn{local outlier
+factor} (LOF) and @dfn{global-local outlier score from hierarchies} (GLOSH).
+The implementations use the kd-tree data structure for faster k-nearest
+neighbor search.  An R interface to fast kNN and fixed-radius NN search is
+also provided.")
+    (license license:gpl2+)))
+
 (define-public r-diffobj
   (package
     (name "r-diffobj")
