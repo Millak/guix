@@ -14298,18 +14298,18 @@ mutations from scRNA-Seq data.")
    (inputs
     (list htslib zlib))
    (arguments
-    (list #:tests? #f ; There are no tests to run.
+    (list #:make-flags #~(list "HTS_HEADERS="
+                               (string-append "HTS_LIB="
+                                              (search-input-file %build-inputs
+                                                                 "/lib/libhts.a"))
+                               "INCLUDES=")
+          #:tests? #f ; There are no tests to run.
           #:phases
           #~(modify-phases %standard-phases
               (delete 'configure) ; There is no configure phase.
-              ;; The build phase needs overriding the location of htslib.
-              (replace 'build
+              ;; Build shared and static libraries.
+              (add-after 'build 'build-libraries
                 (lambda* (#:key inputs #:allow-other-keys)
-                  (invoke "make"
-                          (string-append "HTS_LIB=" (search-input-file inputs "/lib/libhts.a"))
-                          (string-append "INCLUDES= -I" (search-input-directory inputs "/include/htslib"))
-                          "HTS_HEADERS=" ; No need to check for headers here.
-                          (string-append "LIBPATH=-L. -L" (search-input-directory inputs "/include")))
                   (invoke "g++" "-shared" "-o" "libtabixpp.so" "tabix.o" "-lhts")
                   (invoke "ar" "rcs" "libtabixpp.a" "tabix.o")))
               (replace 'install
