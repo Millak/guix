@@ -11972,6 +11972,64 @@ cells with similar identification cards in the different cytometric profiles
 is then merged.")
       (license license:gpl2))))
 
+(define-public r-giotto
+  (let ((commit "68d7390dce87223cac11d4d8f31705fe0144d011")
+        (revision "1"))
+    (package
+      (name "r-giotto")
+      (version (git-version "1.1.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/RubD/Giotto/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0mv60khc05wrxzr4ir6cirn7dpqvgwan5hm00lmafsyalr51nf5i"))))
+      (properties `((upstream-name . "Giotto")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-clusterr
+             r-complexheatmap
+             r-cowplot
+             r-data-table
+             r-dbscan
+             r-deldir
+             r-farver
+             r-fitdistrplus
+             r-ggdendro
+             r-ggplot2
+             r-ggraph
+             r-ggrepel
+             r-igraph
+             r-irlba
+             r-lfa
+             r-limma
+             r-magick
+             r-magrittr
+             r-matrix
+             r-matrixstats
+             r-plotly
+             r-qvalue
+             r-r-utils
+             r-rcolorbrewer
+             r-rcpp
+             r-reshape2
+             r-reticulate
+             r-rfast
+             r-rlang
+             r-rtsne
+             r-scales
+             r-uwot))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/RubD/Giotto/")
+      (synopsis "Spatial single-cell transcriptomics toolbox")
+      (description
+       "This package provides a toolbox to process, analyze and visualize
+spatial single-cell expression data.")
+      (license license:expat))))
+
 (define-public gffread
   ;; We cannot use the tagged release because it is not in sync with gclib.
   ;; See https://github.com/gpertea/gffread/issues/26
