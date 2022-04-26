@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 John Darrington <jmd@gnu.org>
-;;; Copyright © 2017, 2019 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2019, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2014, 2021-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
@@ -38,6 +38,7 @@
 (define-module (gnu packages image-processing)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -69,6 +70,7 @@
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)
@@ -90,6 +92,55 @@
   #:use-module (gnu packages xorg)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1))
+
+;; TODO: this is not reproducible.
+(define-public bart
+  (package
+    (name "bart")
+    (version "0.7.00")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mrirecon/bart")
+             (commit "d1b0e576c3f759089915565d5bf57832acf7b03e")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "159rj3agr9pb9lg38b56rnw3d8wcbkmb2n718z26zpy4c6a6d9rn"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:test-target "utest"
+      #:make-flags #~(list
+                      (string-append "PREFIX=" #$output)
+                      "OPENBLAS=1"
+                      "SCALAPACK=1"
+                      (string-append "BLAS_BASE=" #$(this-package-input "openblas"))
+                      (string-append "FFTW_BASE=" #$(this-package-input "fftw")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'unpack 'patch-/bin/bash
+            (lambda _
+              (substitute* "tests/pics.mk"
+                (("/bin/bash") (which "bash"))))))))
+    (inputs
+     (list fftw
+           fftwf
+           libpng
+           openblas
+           python
+           scalapack))
+    (native-inputs
+     (list doxygen
+           util-linux)) ;for flock
+    (home-page "https://mrirecon.github.io/bart/")
+    (synopsis "Toolbox for computational magnetic resonance imaging")
+    (description "The Berkeley Advanced Reconstruction Toolbox (BART) is an
+image-reconstruction framework for Computational Magnetic Resonance Imaging.
+The tools in this software implement various reconstruction algorithms for
+Magnetic Resonance Imaging.")
+    (license license:bsd-3)))
 
 (define-public dcmtk
   (package
