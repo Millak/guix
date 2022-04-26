@@ -25,9 +25,12 @@
 (define-module (gnu packages valgrind)
   #:use-module (guix build-system gnu)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix licenses)
   #:use-module (guix packages)
+  #:use-module (guix utils)
   #:use-module (gnu packages)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages gdb)
   #:use-module (gnu packages perl))
 
@@ -93,9 +96,58 @@ also use Valgrind to build new tools.")
 (define-public valgrind/interactive
   (package/inherit
    valgrind
+   (version "3.17.0")
+   (source (origin
+             (method url-fetch)
+             (uri (list (string-append "https://sourceware.org/pub/valgrind"
+                                       "/valgrind-" version ".tar.bz2")
+                        (string-append "ftp://sourceware.org/pub/valgrind"
+                                       "/valgrind-" version ".tar.bz2")))
+             (sha256
+              (base32
+               "18l5jbk301j3462gipqn9bkfx44mdmwn0pwr73r40gl1irkfqfmd"))
+             (patches (search-patches
+                       "valgrind-enable-arm.patch"
+                       "valgrind-fix-default-debuginfo-path.patch"))))
    (inputs
     ;; GDB is needed to provide a sane default for `--db-command'.
-    `(("gdb" ,gdb)))
+    `(("gdb" ,gdb)
+      ("glibc:debug" ,(canonical-package glibc) "debug")))
+   (arguments
+    (substitute-keyword-arguments (package-arguments valgrind)
+      ((#:phases phases #~%standard-phases)
+       #~(modify-phases #$phases
+           (add-before 'configure 'patch-default-debuginfo-path
+             (lambda* (#:key inputs #:allow-other-keys)
+               ;; This helps Valgrind find the debug symbols of ld.so.
+               ;; Without it, Valgrind does not work in a Guix shell
+               ;; container and cannot be used as-is during packages tests
+               ;; phases.
+               ;; TODO: Remove on the next rebuild cycle, when libc is not
+               ;; longer fully stripped.
+               (define libc-debug
+                 (string-append (assoc-ref inputs "glibc:debug")
+                                "/lib/debug"))
+
+               (substitute* '("coregrind/m_debuginfo/readelf.c"
+                              "docs/xml/manual-core-adv.xml"
+                              "docs/xml/manual-core.xml")
+                 (("DEFAULT_DEBUGINFO_PATH")
+                  libc-debug))
+               ;; We also need to account for the bigger path in
+               ;; the malloc-ed variables.
+               (substitute* '("coregrind/m_debuginfo/readelf.c")
+                 (("DEBUGPATH_EXTRA_BYTES_1")
+                  (number->string
+                   (+ (string-length libc-debug)
+                      (string-length "/.build-id//.debug")
+                      1))))
+               (substitute* '("coregrind/m_debuginfo/readelf.c")
+                 (("DEBUGPATH_EXTRA_BYTES_2")
+                  (number->string
+                   (+ (string-length libc-debug)
+                      (string-length "/usr/lib/debug")
+                      1))))))))))
    (properties '())))
 
 (define-public valgrind-3.18
@@ -103,12 +155,11 @@ also use Valgrind to build new tools.")
     (inherit valgrind/interactive)
     (version "3.18.1")
     (source (origin
-              (method url-fetch)
+              (inherit (package-source valgrind/interactive))
               (uri (list (string-append "https://sourceware.org/pub/valgrind"
                                         "/valgrind-" version ".tar.bz2")
                          (string-append "ftp://sourceware.org/pub/valgrind"
                                         "/valgrind-" version ".tar.bz2")))
               (sha256
                (base32
-                "1xgph509i6adv9w2glviw3xrmlz0dssg8992hbvxsbkp7ahrm180"))
-              (patches (search-patches "valgrind-enable-arm.patch"))))))
+                "1xgph509i6adv9w2glviw3xrmlz0dssg8992hbvxsbkp7ahrm180"))))))
