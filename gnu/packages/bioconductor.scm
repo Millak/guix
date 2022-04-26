@@ -1616,6 +1616,54 @@ gene diversity and activity.  Each group of genes is called @dfn{Group of
 functionally associated genes} (GFAG).")
     (license license:gpl2+)))
 
+(define-public r-adamgui
+  (package
+    (name "r-adamgui")
+    (version "1.10.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "ADAMgui" version))
+              (sha256
+               (base32
+                "0n06bb9djigha0249lxx84pn9q0xiryxbv25qsc3p2h46iaxi3wq"))))
+    (properties `((upstream-name . "ADAMgui")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-adam
+           r-colorramps
+           r-data-table
+           r-dplyr
+           r-dt
+           r-ggplot2
+           r-ggpubr
+           r-ggrepel
+           r-ggsignif
+           r-go-db
+           r-gridextra
+           r-knitr
+           r-rcolorbrewer
+           r-reshape2
+           r-shiny
+           r-shinyjs
+           r-stringi
+           r-stringr
+           r-testthat
+           r-varhandle))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/ADAMgui/")
+    (synopsis "GUI for gene activity and diversity analysis")
+    (description
+     "This package @code{ADAMgui} is a @dfn{graphical user interface} (GUI)
+for the @code{ADAM} package.  The @code{ADAMgui} package provides two
+shiny-based applications that allows the user to study the output of the
+@code{ADAM} package files through different plots.  It's possible, for
+example, to choose a specific @dfn{group of functionally associated
+genes} (GFAG) and observe the gene expression behavior with the plots created
+with the @code{GFAGtargetUi} function.  Features such as differential
+expression and fold change can be easily seen with aid of the plots made with
+the @code{GFAGpathUi} function.")
+    (license license:gpl2+)))
+
 (define-public r-aneufinder
   (package
     (name "r-aneufinder")
