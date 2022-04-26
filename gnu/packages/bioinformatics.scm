@@ -14502,36 +14502,35 @@ neural networks.")
        (base32 "0rp1blskhzxf7vbh253ibpxbgl9wwgyzf1wbkxndi08d3j4vcss9"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; Unclear how to run tests: https://github.com/ekg/fastahack/issues/15
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure) ; There is no configure phase.
-           (add-after 'unpack 'patch-source
-             (lambda _
-               (substitute* "Makefile"
-                 (("-c ") "-c -fPIC "))
-               #t))
-         (add-after 'build 'build-dynamic
-           (lambda _
-             (invoke "g++"
-                     "-shared" "-o" "libfastahack.so"
-                     "Fasta.o" "FastaHack.o" "split.o" "disorder.o")))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (lib (string-append out "/lib"))
-                    (bin (string-append out "/bin")))
-               (mkdir-p (string-append out "/include/fastahack"))
-               (for-each
-                 (lambda (file)
-                   (install-file file (string-append out "/include/fastahack")))
-                 (find-files "." "\\.h$"))
-               (install-file "fastahack" bin)
-               (install-file "libfastahack.so" lib)
-               (mkdir-p (string-append lib "/pkgconfig"))
-               (with-output-to-file (string-append lib "/pkgconfig/fastahack.pc")
+     (list #:tests? #f ; Unclear how to run tests: https://github.com/ekg/fastahack/issues/15
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure) ; There is no configure phase.
+               (add-after 'unpack 'patch-source
                  (lambda _
-                   (format #t "prefix=~a~@
+                   (substitute* "Makefile"
+                     (("-c ") "-c -fPIC "))))
+               (add-after 'build 'build-dynamic
+                 (lambda _
+                   (invoke "g++"
+                           "-shared" "-o" "libfastahack.so"
+                           "Fasta.o" "FastaHack.o" "split.o" "disorder.o")))
+               (replace 'install
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out"))
+                          (lib (string-append out "/lib"))
+                          (bin (string-append out "/bin")))
+                     (mkdir-p (string-append out "/include/fastahack"))
+                     (for-each
+                      (lambda (file)
+                        (install-file file (string-append out "/include/fastahack")))
+                      (find-files "." "\\.h$"))
+                     (install-file "fastahack" bin)
+                     (install-file "libfastahack.so" lib)
+                     (mkdir-p (string-append lib "/pkgconfig"))
+                     (with-output-to-file (string-append lib "/pkgconfig/fastahack.pc")
+                       (lambda _
+                         (format #t "prefix=~a~@
                            exec_prefix=${prefix}~@
                            libdir=${exec_prefix}/lib~@
                            includedir=${prefix}/include/fastahack~@
@@ -14542,8 +14541,7 @@ neural networks.")
                            Description: Indexing and sequence extraction from FASTA files~@
                            Libs: -L${libdir} -lfastahack~@
                            Cflags: -I${includedir}~%"
-                           out ,version))))
-             #t)))))
+                                 out #$version)))))))))
     (home-page "https://github.com/ekg/fastahack")
     (synopsis "Indexing and sequence extraction from FASTA files")
     (description "Fastahack is a small application for indexing and
