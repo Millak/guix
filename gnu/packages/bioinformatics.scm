@@ -14298,7 +14298,9 @@ mutations from scRNA-Seq data.")
    (inputs
     (list htslib zlib))
    (arguments
-    (list #:make-flags #~(list "HTS_HEADERS="
+    (list #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                               (string-append "CXX=" #$(cxx-for-target))
+                               "HTS_HEADERS="
                                (string-append "HTS_LIB="
                                               (search-input-file %build-inputs
                                                                  "/lib/libhts.a"))
@@ -14310,8 +14312,9 @@ mutations from scRNA-Seq data.")
               ;; Build shared and static libraries.
               (add-after 'build 'build-libraries
                 (lambda* (#:key inputs #:allow-other-keys)
-                  (invoke "g++" "-shared" "-o" "libtabixpp.so" "tabix.o" "-lhts")
-                  (invoke "ar" "rcs" "libtabixpp.a" "tabix.o")))
+                  (invoke #$(cxx-for-target)
+                          "-shared" "-o" "libtabixpp.so" "tabix.o" "-lhts")
+                  (invoke #$(ar-for-target) "rcs" "libtabixpp.a" "tabix.o")))
               (replace 'install
                 (lambda* (#:key outputs #:allow-other-keys)
                   (let* ((out (assoc-ref outputs "out"))
