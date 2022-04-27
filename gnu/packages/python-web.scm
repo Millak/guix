@@ -6362,6 +6362,30 @@ as a Python package.")
 the @code{BasicRouter}.")
     (license license:expat)))
 
+(define-public python-sanic-testing
+  (package
+    (name "python-sanic-testing")
+    (version "22.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sanic-testing" version))
+       (sha256
+        (base32 "1vkgi9d3xyik507j4jy9s74mkl81hgx3c2d5y3aa1av9h6wjjivp"))))
+    (build-system python-build-system)
+    (arguments
+     ;; PyPi sources does not contain tests, recursive dependency on
+     ;; python-sanic.
+     (list #:tests? #f))
+    (propagated-inputs (list python-httpx python-sanic-bootstrap
+                             python-websockets))
+    (home-page "https://github.com/sanic-org/sanic-testing/")
+    (synopsis "Test clients for Sanic")
+    (description "Internal package for @code{python-sanic}, which is
+meant to be the core testing utility and clients for testing Sanic
+applications.")
+    (license license:expat)))
+
 (define-public python-sanic
   (package
     (name "python-sanic")
