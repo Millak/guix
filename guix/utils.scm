@@ -78,6 +78,7 @@
             substitute-keyword-arguments
             ensure-keyword-arguments
 
+            %guix-source-root-directory
             current-source-directory
 
             nix-system->gnu-triplet
@@ -1030,6 +1031,10 @@ environment variable name like \"XDG_CONFIG_HOME\"; SUFFIX is a suffix like
 ;;;
 ;;; Source location.
 ;;;
+
+(define (%guix-source-root-directory)
+  "Return the source root directory of the Guix found in %load-path."
+  (dirname (absolute-dirname "guix/packages.scm")))
 
 (define absolute-dirname
   ;; Memoize to avoid repeated 'stat' storms from 'search-path'.
