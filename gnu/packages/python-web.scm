@@ -6341,6 +6341,27 @@ parsing and rewriting of remote git URLs from various hosting providers.")
 as a Python package.")
     (license license:bsd-3)))
 
+(define-public python-sanic-routing
+  (package
+    (name "python-sanic-routing")
+    (version "0.7.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sanic-routing" version))
+       (sha256
+        (base32 "0k9paln0jd4sc2bklp977c82n29pk12wiv726siplkh57y5yi70k"))))
+    (build-system python-build-system)
+    (arguments
+     ;; PyPi sources does not contain tests, recursive dependency on
+     ;; python-sanic.
+     (list #:tests? #f))
+    (home-page "https://github.com/sanic-org/sanic-routing/")
+    (synopsis "Routing component for Sanic")
+    (description "Internal package for @code{python-sanic}, which provides
+the @code{BasicRouter}.")
+    (license license:expat)))
+
 (define-public python-sanic
   (package
     (name "python-sanic")
