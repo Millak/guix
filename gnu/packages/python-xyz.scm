@@ -7105,14 +7105,14 @@ Python code against some of the style conventions in
 (define-public python-multidict
   (package
     (name "python-multidict")
-    (version "4.7.5")
+    (version "5.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "multidict" version))
        (sha256
         (base32
-         "07ikq2c72kd263hpldw55y0px2l3g34hjk66ml9lryh1jv287qmf"))))
+         "1kjrxav572j45xvr1iy60zb2g8zqvrinzdkl4ax36js4vczckl8d"))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
