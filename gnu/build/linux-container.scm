@@ -301,9 +301,28 @@ delete it when leaving the dynamic extent of this call."
       (lambda ()
         (false-if-exception (delete-file-recursively tmp-dir))))))
 
+(define (wait-child-process)
+  "Wait for one child process and return a pair, like 'waitpid', or return #f
+if there are no child processes left."
+  (catch 'system-error
+    (lambda ()
+      (waitpid WAIT_ANY))
+    (lambda args
+      (if (= ECHILD (system-error-errno args))
+          #f
+          (apply throw args)))))
+
+(define (status->exit-status status)
+  "Reify STATUS as an exit status."
+  (or (status:exit-val status)
+      ;; See <http://www.tldp.org/LDP/abs/html/exitcodes.html#EXITCODESREF>.
+      (+ 128 (or (status:term-sig status)
+                 (status:stop-sig status)))))
+
 (define* (call-with-container mounts thunk #:key (namespaces %namespaces)
                               (host-uids 1) (guest-uid 0) (guest-gid 0)
                               (relayed-signals (list SIGINT SIGTERM))
+                              (child-is-pid1? #t)
                               (process-spawned-hook (const #t)))
   "Run THUNK in a new container process and return its exit status; call
 PROCESS-SPAWNED-HOOK with the PID of the new process that has been spawned.
@@ -324,9 +343,37 @@ UIDs (respectively GIDs) map to in the namespace.
 RELAYED-SIGNALS is the list of signals that are \"relayed\" to the container
 process when caught by its parent.
 
+When CHILD-IS-PID1? is true, and if NAMESPACES contains 'pid', then the child
+process runs directly as PID 1.  As such, it is responsible for (1) installing
+signal handlers and (2) reaping terminated processes by calling 'waitpid'.
+When CHILD-IS-PID1? is false, a new intermediate process is created instead
+that takes this responsibility.
+
 Note that if THUNK needs to load any additional Guile modules, the relevant
 module files must be present in one of the mappings in MOUNTS and the Guile
 load path must be adjusted as needed."
+  (define thunk*
+    (if (and (memq 'pid namespaces)
+             (not child-is-pid1?))
+        (lambda ()
+          ;; Behave like an init process: create a sub-process that calls
+          ;; THUNK, and wait for child processes.  Furthermore, forward
+          ;; RELAYED-SIGNALS to the child process.
+          (match (primitive-fork)
+            (0
+             (call-with-clean-exit thunk))
+            (pid
+             (install-signal-handlers pid)
+             (let loop ()
+               (match (wait-child-process)
+                 ((child . status)
+                  (if (= child pid)
+                      (primitive-exit (status->exit-status status))
+                      (loop)))
+                 (#f
+                  (primitive-exit 128)))))))      ;cannot happen
+        thunk))
+
   (define (periodically-schedule-asyncs)
     ;; XXX: In Guile there's a time window where a signal-handling async could
     ;; be queued without being processed by the time we enter a blocking
@@ -347,7 +394,7 @@ load path must be adjusted as needed."
 
   (call-with-temporary-directory
    (lambda (root)
-     (let ((pid (run-container root mounts namespaces host-uids thunk
+     (let ((pid (run-container root mounts namespaces host-uids thunk*
                                #:guest-uid guest-uid
                                #:guest-gid guest-gid)))
        (install-signal-handlers pid)
