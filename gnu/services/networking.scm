@@ -796,7 +796,19 @@ CONFIG, an <opendht-configuration> object."
   (match-record config <opendht-configuration>
     (opendht bootstrap-host enable-logging? port debug? peer-discovery?
              proxy-server-port proxy-server-port-tls)
-    (let ((dhtnode #~(string-append #$opendht:tools "/bin/dhtnode")))
+    (let ((dhtnode (least-authority-wrapper
+                    ;; XXX: Work around lack of support for multiple outputs
+                    ;; in 'file-append'.
+                    (computed-file "dhtnode"
+                                   #~(symlink
+                                      (string-append #$opendht:tools
+                                                     "/bin/dhtnode")
+                                      #$output))
+                    #:name "dhtnode"
+                    #:mappings (list (file-system-mapping
+                                      (source "/dev/log") ;for syslog
+                                      (target source)))
+                    #:namespaces (delq 'net %namespaces))))
       `(,dhtnode
         "--service"                     ;non-forking mode
         ,@(if (string? bootstrap-host)
@@ -822,23 +834,15 @@ CONFIG, an <opendht-configuration> object."
 
 (define (opendht-shepherd-service config)
   "Return a <shepherd-service> running OpenDHT."
-  (with-imported-modules (source-module-closure
-                          '((gnu build shepherd)
-                            (gnu system file-systems)))
-    (shepherd-service
-     (documentation "Run an OpenDHT node.")
-     (provision '(opendht dhtnode dhtproxy))
-     (requirement '(networking syslogd))
-     (modules '((gnu build shepherd)
-                (gnu system file-systems)))
-     (start #~(make-forkexec-constructor/container
-               (list #$@(opendht-configuration->command-line-arguments config))
-               #:mappings (list (file-system-mapping
-                                 (source "/dev/log") ;for syslog
-                                 (target source)))
-               #:user "opendht"
-               #:group "opendht"))
-     (stop #~(make-kill-destructor)))))
+  (shepherd-service
+   (documentation "Run an OpenDHT node.")
+   (provision '(opendht dhtnode dhtproxy))
+   (requirement '(networking syslogd))
+   (start #~(make-forkexec-constructor
+             (list #$@(opendht-configuration->command-line-arguments config))
+             #:user "opendht"
+             #:group "opendht"))
+   (stop #~(make-kill-destructor))))
 
 (define opendht-service-type
   (service-type
