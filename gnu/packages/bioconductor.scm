@@ -1855,6 +1855,28 @@ column metadata for individual subjects that can be processed using downstream
 bulk RNA-seq tools.")
     (license license:gpl3)))
 
+(define-public r-agilp
+  (package
+    (name "r-agilp")
+    (version "3.26.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "agilp" version))
+              (sha256
+               (base32
+                "02cyc2y4v3y16zlrnax2c96b2qfxj6b2j37ps4g2gdqgas08n9xp"))))
+    (properties `((upstream-name . "agilp")))
+    (build-system r-build-system)
+    (home-page "https://bioconductor.org/packages/agilp")
+    (synopsis "Processing of Agilent expression array")
+    (description
+     "This package aims to provide a pipeline for the low-level analysis of
+gene expression microarray data, primarily focused on the Agilent platform,
+but which also provides utilities which may be useful for other platforms.")
+    ;; Some files are under GPLv2+ but the combined work is released under the
+    ;; GPLv3.
+    (license license:gpl3)))
+
 (define-public r-aneufinder
   (package
     (name "r-aneufinder")
