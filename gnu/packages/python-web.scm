@@ -6424,6 +6424,13 @@ that's written to go fast.  It allows the usage of the
 your code non-blocking and speedy.")
     (license license:expat)))
 
+(define-public python-sanic-bootstrap
+  (package
+     (inherit python-sanic)
+     (name "python-sanic-bootstrap")
+     (arguments (list #:tests? #f))
+     (native-inputs '())))
+
 (define-public python-socketio
   (package
     (name "python-socketio")
