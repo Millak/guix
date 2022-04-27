@@ -1769,6 +1769,31 @@ impute GReX can be trained with a training dataset where the real total
 expression values are known.")
     (license license:gpl3)))
 
+(define-public r-affyrnadegradation
+  (package
+    (name "r-affyrnadegradation")
+    (version "1.40.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "AffyRNADegradation" version))
+              (sha256
+               (base32
+                "00hzr62xn1i1w4g8krsxhivzwn8hd7hwhkdxyrpz6cs9vgr4x9kd"))))
+    (properties `((upstream-name . "AffyRNADegradation")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-affy))
+    (home-page "https://bioconductor.org/packages/AffyRNADegradation")
+    (synopsis
+     "Analyze and correct probe positional bias in data due to RNA degradation")
+    (description
+     "The @code{AffyRNADegradation} package helps with the assessment and
+correction of RNA degradation effects in Affymetrix 3 expression arrays.  The
+parameter @code{d} gives a robust and accurate measure of RNA integrity.  The
+correction removes the probe positional bias, and thus improves comparability
+of samples that are affected by RNA degradation.")
+    ;; the R file header specifies GPL2 or later
+    (license license:gpl2+)))
+
 (define-public r-aneufinder
   (package
     (name "r-aneufinder")
