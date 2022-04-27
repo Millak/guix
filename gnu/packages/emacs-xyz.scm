@@ -3068,6 +3068,17 @@ of bibliographic references.")
        (sha256
         (base32 "062lxyqh7nfaixmgfgmqfbkainxc8ypdkj6qjq38xigk55s7c5wk"))))
     (build-system emacs-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         ;; Move the extensions source files to the top level, which is included in
+         ;; the EMACSLOADPATH.
+         (add-after 'unpack 'move-source-files
+           (lambda _
+             (let ((el-files (find-files "./extensions" ".*\\.el$")))
+               (for-each (lambda (f)
+                           (rename-file f (basename f)))
+                         el-files)))))))
     (home-page "https://github.com/minad/corfu")
     (synopsis "Completion overlay region function")
     (description "Corfu enhances the default completion in region function
