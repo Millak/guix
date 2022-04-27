@@ -35,6 +35,7 @@
 ;;; Copyright © 2020 Aniket Patil <aniket112.patil@gmail.com>
 ;;; Copyright © 2021 Marcel Schilling <marcel.schilling@uni-luebeck.de>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2022 Navid Afkhami  <navid.afkhami@mdc-berlin.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -111,6 +112,30 @@
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
+
+(define-public r-afpt
+  (package
+    (name "r-afpt")
+    (version "1.1.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "afpt" version))
+              (sha256
+               (base32
+                "0cg5cdm9nl1hs6f3j0ljpw4bkqvh3ksyj615b9nnbqs5k28lyds9"))))
+    (properties `((upstream-name . "afpt")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/MarcoKlH/afpt-r/")
+    (synopsis "Tools for modelling of animal flight performance")
+    (description
+     "This package allows estimation and modelling of flight costs in animal
+(vertebrate) flight, implementing the aerodynamic power model.  Flight
+performance is estimated based on basic morphological measurements such as
+body mass, wingspan and wing area.  @code{Afpt} can be used to make
+predictions on how animals should adjust their flight behaviour and wingbeat
+kinematics to varying flight conditions.")
+    (license license:gpl3+)))
 
 (define-public r-aod
   (package
