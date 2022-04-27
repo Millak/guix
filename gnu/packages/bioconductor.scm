@@ -1794,6 +1794,33 @@ of samples that are affected by RNA degradation.")
     ;; the R file header specifies GPL2 or later
     (license license:gpl2+)))
 
+(define-public r-agdex
+  (package
+    (name "r-agdex")
+    (version "1.42.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "AGDEX" version))
+              (sha256
+               (base32
+                "0y0q4zdybr5hlsi7qy2hf6c2sqr2z2211wz36dz70jkqyr0ggw64"))))
+    (properties `((upstream-name . "AGDEX")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biobase r-gseabase))
+    (home-page "https://bioconductor.org/packages/AGDEX")
+    (synopsis
+     "Evaluate agreement of differential expression for cross-species genomics")
+    (description
+     "The objective of @code{AGDEX} is to evaluate whether the results of a
+pair of two-group differential expression analysis comparisons show a level of
+agreement that is greater than expected if the group labels for each two-group
+comparison are randomly assigned.  The agreement is evaluated for the entire
+transcriptome and (optionally) for a collection of pre-defined gene-sets.
+Additionally, the procedure performs permutation-based differential expression
+and meta analysis at both gene and gene-set levels of the data from each
+experiment.")
+    (license license:gpl2+)))
+
 (define-public r-aneufinder
   (package
     (name "r-aneufinder")
