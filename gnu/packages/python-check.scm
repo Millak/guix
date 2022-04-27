@@ -1985,13 +1985,13 @@ help in debugging failures and optimizing the scheduler to improve speed.")
 (define-public python-pytest-sanic
   (package
     (name "python-pytest-sanic")
-    (version "1.7.0")
+    (version "1.9.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pytest-sanic" version))
               (sha256
                 (base32
-                  "0hm7im77dgqfk8k34qbbfhimg8hifl4zwpa2s3mgbknrjvyw5qpx"))))
+                  "0shq1bqnydj0l3ipb73j1qh5kqcjvzkps30zk8grq3dwmh3wmnkr"))))
     (build-system python-build-system)
     (arguments
      ;; Tests depend on python-sanic.
