@@ -12250,3 +12250,35 @@ functions for complex numbers.  The functions in this module accept integers,
 floating-point numbers or complex numbers as arguments.")
     (home-page "https://github.com/ruby/cmath")
     (license license:bsd-2)))
+
+(define-public ruby-sucker-punch
+  (package
+    (name "ruby-sucker-punch")
+    (version "3.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "sucker_punch" version))
+       (sha256
+        (base32 "0yams24wndpj7dzdysvm4z1w6ggg4xvj4snxba66prahhxvik4xl"))))
+    (build-system ruby-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'extract-gemspec 'less-strict-dependencies
+           (lambda _
+             (substitute* "sucker_punch.gemspec"
+               (("1.0.0") "1.0")))))))
+    (native-inputs
+     (list
+      ruby-pry))
+    (propagated-inputs
+     (list
+      ruby-concurrent))
+    (home-page "https://github.com/brandonhilkert/sucker_punch")
+    (synopsis "Asynchronous processing library for Ruby")
+    (description "Sucker Punch is a single-process Ruby asynchronous processing
+library.  It is perfect for asynchronous processes like emailing, data crunching
+or social platform manipulation; and generally recommended for jobs that are
+fast and non-mission critical like logs, emails, etc.")
+    (license license:expat)))
