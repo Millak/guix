@@ -327,11 +327,20 @@ process when caught by its parent.
 Note that if THUNK needs to load any additional Guile modules, the relevant
 module files must be present in one of the mappings in MOUNTS and the Guile
 load path must be adjusted as needed."
+  (define (periodically-schedule-asyncs)
+    ;; XXX: In Guile there's a time window where a signal-handling async could
+    ;; be queued without being processed by the time we enter a blocking
+    ;; syscall like waitpid(2) (info "(guile) Signals").  This terrible hack
+    ;; ensures pending asyncs get a chance to run periodically.
+    (sigaction SIGALRM (lambda _ (alarm 1)))
+    (alarm 1))
+
   (define (install-signal-handlers pid)
     ;; Install handlers that forward signals to PID.
     (define (relay-signal signal)
       (false-if-exception (kill pid signal)))
 
+    (periodically-schedule-asyncs)
     (for-each (lambda (signal)
                 (sigaction signal relay-signal))
               relayed-signals))
