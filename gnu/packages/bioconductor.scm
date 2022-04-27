@@ -1821,6 +1821,40 @@ and meta analysis at both gene and gene-set levels of the data from each
 experiment.")
     (license license:gpl2+)))
 
+(define-public r-aggregatebiovar
+  (package
+    (name "r-aggregatebiovar")
+    (version "1.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "aggregateBioVar" version))
+              (sha256
+               (base32
+                "1wbfp1pf62di6pzxsf36lmzk6y9dllz1n4iv3mhpb1x8cvy4hqqk"))))
+    (properties `((upstream-name . "aggregateBioVar")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-matrix
+           r-rlang
+           r-s4vectors
+           r-singlecellexperiment
+           r-summarizedexperiment
+           r-tibble))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/jasonratcliff/aggregateBioVar")
+    (synopsis "Differential gene expression analysis for multi-subject scRNA-seq")
+    (description
+     "This package @code{aggregateBioVar} contains tools to summarize single
+cell gene expression profiles at the level of subject for single cell RNA-seq
+data collected from more than one subject (e.g. biological sample or technical
+replicates).  A @code{SingleCellExperiment} object is taken as input and
+converted to a list of @code{SummarizedExperiment} objects, where each list
+element corresponds to an assigned cell type.  The @code{SummarizedExperiment}
+objects contain aggregate gene-by-subject count matrices and inter-subject
+column metadata for individual subjects that can be processed using downstream
+bulk RNA-seq tools.")
+    (license license:gpl3)))
+
 (define-public r-aneufinder
   (package
     (name "r-aneufinder")
