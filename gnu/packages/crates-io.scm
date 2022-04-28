@@ -45716,7 +45716,14 @@ ecosystem.")
        (uri (crate-uri "pyo3" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "082p014xd8ipwnfsq1ln871wkslxmbrxd7kpqwa0mbq53jzivw3w"))))
+        (base32 "082p014xd8ipwnfsq1ln871wkslxmbrxd7kpqwa0mbq53jzivw3w"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; XXX: Relax "dev-dependencies.criterion"; this must match the
+        ;; version of RUST-CRITERION-0.3.
+        '(substitute* "Cargo.toml"
+           (("\"=0\\.3\\.4\"")
+            "\"=0.3.5\"")))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
