@@ -5256,18 +5256,20 @@ in finite element programs.")
   (package/inherit dealii
     (name "dealii-openmpi")
     (inputs
-     `(("arpack" ,arpack-ng-openmpi)
-       ("metis" ,metis)
-       ("scalapack" ,scalapack)
-       ,@(alist-delete "arpack" (package-inputs dealii))))
+     (modify-inputs (package-inputs dealii)
+       (delete "arpack")
+       (prepend arpack-ng-openmpi
+                metis
+                scalapack)))
     (propagated-inputs
-     `(("hdf5" ,hdf5-parallel-openmpi)
-       ("mpi" ,openmpi)
-       ("p4est" ,p4est-openmpi)
-       ("petsc" ,petsc-openmpi)
-       ("slepc" ,slepc-openmpi)
-       ("trilinos" ,trilinos-for-dealii-openmpi)
-       ,@(alist-delete "hdf5" (package-propagated-inputs dealii))))
+     (modify-inputs (package-propagated-inputs dealii)
+       (delete "hdf5")
+       (prepend hdf5-parallel-openmpi
+                openmpi
+                p4est-openmpi
+                petsc-openmpi
+                slepc-openmpi
+                trilinos-for-dealii-openmpi)))
     (arguments
      (substitute-keyword-arguments (package-arguments dealii)
        ((#:configure-flags flags)
