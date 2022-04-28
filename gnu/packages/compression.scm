@@ -233,39 +233,26 @@ adding and extracting files to/from a tar archive.")
 (define-public gzip
   (package
    (name "gzip")
-   (version "1.11")
+   (version "1.12")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnu/gzip/gzip-"
                                 version ".tar.xz"))
             (sha256
              (base32
-              "01vrly90rvc98af6rcmrb3gwv1l6pylasvsdka23dffwizb9b6lv"))))
+              "0mhrx5wk9gazmxdw7vmbpg036yzqqhsww6h12kwf2dzn37jh6pnf"))))
    (build-system gnu-build-system)
    (synopsis "General file (de)compression (using lzw)")
    (arguments
     ;; FIXME: The test suite wants `less', and optionally Perl.
     '(#:tests? #f
+      #:configure-flags '("ac_cv_prog_LESS=\"less\"")
       #:phases
       (modify-phases %standard-phases
-        (add-after 'unpack 'patch-for-glibc-2.28
-          (lambda _
-            ;; Adjust the bundled gnulib to work with glibc 2.28.  See e.g.
-            ;; "m4-gnulib-libio.patch".  This is a phase rather than patch
-            ;; or snippet to work around <https://bugs.gnu.org/32347>.
-            (substitute* (find-files "lib" "\\.c$")
-              (("#if defined _IO_ftrylockfile")
-               "#if defined _IO_EOF_SEEN"))
-            (substitute* "lib/stdio-impl.h"
-              (("^/\\* BSD stdio derived implementations")
-               (string-append "#if !defined _IO_IN_BACKUP && defined _IO_EOF_SEEN\n"
-                              "# define _IO_IN_BACKUP 0x100\n"
-                              "#endif\n\n"
-                              "/* BSD stdio derived implementations")))))
         (add-after 'unpack 'use-absolute-name-of-gzip
           (lambda* (#:key outputs #:allow-other-keys)
             (substitute* "gunzip.in"
-              (("exec gzip")
+              (("exec 'gzip'")
                (string-append "exec " (assoc-ref outputs "out")
                               "/bin/gzip"))))))))
    (description
