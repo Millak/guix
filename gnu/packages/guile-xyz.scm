@@ -129,7 +129,8 @@
   #:use-module (guix utils)
   #:use-module ((guix build utils) #:select (alist-replace))
   #:use-module (ice-9 match)
-  #:use-module ((srfi srfi-1) #:select (alist-delete)))
+  #:use-module ((srfi srfi-1) #:select (alist-delete))
+  #:use-module (srfi srfi-26))
 
 (define-public artanis
   (package
@@ -626,6 +627,25 @@ Unix-style DSV format and RFC 4180 format.")
                   (add-after 'unpack 'regenerate-autotools
                     (lambda _
                       (delete-file "configure")))
+                  (add-after 'unpack 'support-cross-compilation
+                    (lambda* (#:key target #:allow-other-keys)
+                      ;; Support cross-compilation.  These issues are fixed in
+                      ;; Fibers commit c4756b9c336374546a41ac90a4431fcc8f7e98ee
+                      ;; and this phase can be removed for 1.1.1.
+                      (when target
+                        (substitute* "build-aux/guile.am"
+                          (("\\$\\(AM_V_GEN\\)" all)
+                           (string-append all " FIBERS_CROSS_COMPILING=yes "))
+                          (("compile")
+                           (string-append "compile --target=" target
+                                          " -L $(abs_top_srcdir)")))
+                        (substitute* "fibers/epoll.scm"
+                          (("\\(dynamic-call")
+                           "(unless (getenv \"FIBERS_CROSS_COMPILING\") (dynamic-call")
+                          (("\\(dynamic-link.*" all)
+                           (string-append all ")\n"))
+                          (("#,(%sizeof|%offsetof)" _ prefix)
+                           prefix)))))
                   (add-after 'install 'mode-guile-objects
                     (lambda* (#:key outputs #:allow-other-keys)
                       ;; .go files are installed to "lib/guile/X.Y/cache".
@@ -640,10 +660,16 @@ Unix-style DSV format and RFC 4180 format.")
                         #t))))))
     (native-inputs
      (list texinfo pkg-config autoconf automake libtool
+           guile-3.0            ;for 'guild compile
            ;; Gettext brings 'AC_LIB_LINKFLAGS_FROM_LIBS'
            gettext-minimal))
     (inputs
-     (list guile-3.0))
+     (list guile-3.0))                            ;for libguile-3.0.so
+    (supported-systems
+     ;; This version requires 'epoll' and is thus limited to Linux-based
+     ;; systems, but this may change soon:
+     ;; <https://github.com/wingo/fibers/pull/53>.
+     (filter (cut string-suffix? "-linux" <>) %supported-systems))
     (synopsis "Lightweight concurrency facility for Guile")
     (description
      "Fibers is a Guile library that implements a a lightweight concurrency
@@ -716,7 +742,12 @@ is not available for Guile 2.0.")
   (package
     (inherit guile-fibers-1.1)
     (name "guile2.2-fibers")
-    (inputs (list guile-2.2))))
+    (inputs
+     (modify-inputs (package-inputs guile-fibers-1.1)
+       (replace "guile" guile-2.2)))
+    (native-inputs
+     (modify-inputs (package-native-inputs guile-fibers-1.1)
+       (replace "guile" guile-2.2)))))
 
 (define-public guile-filesystem
   (package
@@ -3225,21 +3256,17 @@ API.")
       (license license:expat))))
 
 (define-public guile-srfi-189
-  (let ((commit "a0e3786702956c9e510d92746474ac988c2010ec")
-        (revision "0"))
+  (let ((commit "659e3cd0fc2bfca9085424eda8cad804ead2a9ea")
+        (revision "1"))
     (package
       (name "guile-srfi-189")
-      (version (git-version "0" revision commit))
+      ;; 'final' is the name of the latest git tag.
+      (version (git-version "final" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
-               ;; This is a fork of:
-               ;; (url "https://github.com/scheme-requests-for-implementation/srfi-189")
-               ;; Upstream merge requested at:
-               ;; https://github.com/scheme-requests-for-implementation/srfi-189/pull/21
-               ;; TODO switch over to the official repo when the PR gets merged
-               (url "https://github.com/attila-lendvai-patches/srfi-189")
+               (url "https://github.com/scheme-requests-for-implementation/srfi-189")
                (commit commit)))
          (sha256
           (base32

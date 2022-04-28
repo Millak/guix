@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2020-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -47,6 +47,52 @@
          ;; to syslog.
          #'(format (current-output-port) fmt args ...))))))
 
+(define-syntax with-modules
+  (syntax-rules ()
+    "Dynamically load the given MODULEs at run time, making the chosen
+bindings available within the lexical scope of BODY."
+    ((_ ((module #:select (bindings ...)) rest ...) body ...)
+     (let* ((iface (resolve-interface 'module))
+            (bindings (module-ref iface 'bindings))
+            ...)
+       (with-modules (rest ...) body ...)))
+    ((_ () body ...)
+     (begin body ...))))
+
+(define (wait-for-readable-fd port timeout)
+  "Wait until PORT has data available for reading or TIMEOUT has expired.
+Return #t in the former case and #f in the latter case."
+  (match (resolve-module '(fibers) #f)            ;using Fibers?
+    (#f
+     (log "blocking on socket...~%")
+     (match (select (list port) '() '() timeout)
+       (((_) () ()) #t)
+       ((() () ())  #f)))
+    (fibers
+     ;; We're running on the Shepherd 0.9+ with Fibers.  Arrange to make a
+     ;; non-blocking wait so that other fibers can be scheduled in while we
+     ;; wait for PORT.
+     (with-modules (((fibers) #:select (spawn-fiber sleep))
+                    ((fibers channels)
+                     #:select (make-channel put-message get-message)))
+       ;; Make PORT non-blocking.
+       (let ((flags (fcntl port F_GETFL)))
+         (fcntl port F_SETFL (logior O_NONBLOCK flags)))
+
+       (let ((channel (make-channel)))
+         (spawn-fiber
+          (lambda ()
+            (sleep timeout)                       ;suspends the fiber
+            (put-message channel 'timeout)))
+         (spawn-fiber
+          (lambda ()
+            (lookahead-u8 port)                   ;suspends the fiber
+            (put-message channel 'readable)))
+         (log "suspending fiber on socket...~%")
+         (match (get-message channel)
+           ('readable #t)
+           ('timeout  #f)))))))
+
 (define* (secret-service-send-secrets port secret-root
                                       #:key (retry 60)
                                       (handshake-timeout 120))
@@ -74,7 +120,10 @@ wait for at most HANDSHAKE-TIMEOUT seconds for handshake to complete.  Return
 
   (log "sending secrets to ~a~%" port)
   (let ((sock (socket AF_INET SOCK_STREAM 0))
-        (addr (make-socket-address AF_INET INADDR_LOOPBACK port)))
+        (addr (make-socket-address AF_INET INADDR_LOOPBACK port))
+        (sleep (if (resolve-module '(fibers) #f)
+                   (module-ref (resolve-interface '(fibers)) 'sleep)
+                   sleep)))
     ;; Connect to QEMU on the forwarded port.  The 'connect' call succeeds as
     ;; soon as QEMU is ready, even if there's no server listening on the
     ;; forward port inside the guest.
@@ -93,23 +142,22 @@ wait for at most HANDSHAKE-TIMEOUT seconds for handshake to complete.  Return
 
     ;; Wait for "hello" message from the server.  This is the only way to know
     ;; that we're really connected to the server inside the guest.
-    (match (select (list sock) '() '() handshake-timeout)
-      (((_) () ())
-       (match (read sock)
-         (('secret-service-server ('version version ...))
-          (log "sending files from ~s...~%" secret-root)
-          (send-files sock)
-          (log "done sending files to port ~a~%" port)
-          (close-port sock)
-          secret-root)
-         (x
-          (log "invalid handshake ~s~%" x)
-          (close-port sock)
-          #f)))
-      ((() () ())                                 ;timeout
-       (log "timeout while sending files to ~a~%" port)
-       (close-port sock)
-       #f))))
+    (if (wait-for-readable-fd sock handshake-timeout)
+        (match (read sock)
+          (('secret-service-server ('version version ...))
+           (log "sending files from ~s...~%" secret-root)
+           (send-files sock)
+           (log "done sending files to port ~a~%" port)
+           (close-port sock)
+           secret-root)
+          (x
+           (log "invalid handshake ~s~%" x)
+           (close-port sock)
+           #f))
+        (begin                                    ;timeout
+         (log "timeout while sending files to ~a~%" port)
+         (close-port sock)
+         #f))))
 
 (define (delete-file* file)
   "Ensure FILE does not exist."
@@ -201,5 +249,9 @@ and #f otherwise."
     (when port
       (close-port port))
     result))
+
+;;; Local Variables:
+;;; eval: (put 'with-modules 'scheme-indent-function 1)
+;;; End:
 
 ;;; secret-service.scm ends here

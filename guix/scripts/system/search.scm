@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017, 2018, 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2017-2019, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -20,6 +20,8 @@
 (define-module (guix scripts system search)
   #:use-module (guix ui)
   #:use-module (guix utils)
+  #:autoload   (guix colors) (color-output? highlight supports-hyperlinks?)
+  #:autoload   (guix diagnostics) (location->hyperlink)
   #:use-module (gnu services)
   #:use-module (gnu services shepherd)
   #:use-module (srfi srfi-1)
@@ -68,10 +70,15 @@ provided TYPE has a default value."
                                  #:optional (width (%text-width))
                                  #:key
                                  (extra-fields '())
-                                 (hyperlinks? (supports-hyperlinks? port)))
+                                 (hyperlinks? (supports-hyperlinks? port))
+                                 (highlighting identity))
   "Write to PORT a recutils record of TYPE, arranging to fit within WIDTH
 columns.  When HYPERLINKS? is true, emit hyperlink escape sequences when
-appropriate."
+appropriate.  Pass the description through HIGHLIGHTING, a one-argument
+procedure that may return a colorized version of its argument."
+  (define port*
+    (or (pager-wrapped-port port) port))
+
   (define width*
     ;; The available number of columns once we've taken into account space for
     ;; the initial "+ " prefix.
@@ -85,8 +92,15 @@ appropriate."
        (fill-paragraph list width*
                        (string-length "extends: ")))))
 
+  (define highlighting*
+    (if (color-output? port*)
+        highlighting
+        identity))
+
   ;; Note: Don't i18n field names so that people can post-process it.
-  (format port "name: ~a~%" (service-type-name type))
+  (format port "name: ~a~%"
+          (highlight (symbol->string (service-type-name type))
+                     port*))
   (format port "location: ~a~%"
           (or (and=> (service-type-location type)
                      (if hyperlinks? location->hyperlink location->string))
@@ -107,14 +121,15 @@ appropriate."
 
   (when (service-type-description type)
     (format port "~a~%"
-            (string->recutils
-             (string-trim-right
-              (parameterize ((%text-width width*))
-                (texi->plain-text
-                 (string-append "description: "
-                                (or (and=> (service-type-description type) P_)
-                                    ""))))
-              #\newline))))
+            (highlighting*
+             (string->recutils
+              (string-trim-right
+               (parameterize ((%text-width width*))
+                 (texi->plain-text
+                  (string-append "description: "
+                                 (or (and=> (service-type-description type) P_)
+                                     ""))))
+               #\newline)))))
 
   (for-each (match-lambda
               ((field . value)

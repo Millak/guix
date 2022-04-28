@@ -37,6 +37,7 @@
   #:use-module (gnu packages databases)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fonts)
+  #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages game-development)
   #:use-module (gnu packages gettext)
@@ -48,8 +49,10 @@
   #:use-module (gnu packages javascript)
   #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks) ; extra-cmake-modules
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
@@ -62,8 +65,10 @@
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages video)
+  #:use-module (gnu packages xiph)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages xml)
+  #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
@@ -147,7 +152,7 @@ of categories with some of the activities available in that category.
      (origin
        (method url-fetch)
        (uri (string-append
-             "https://download.kde.org/stable/gcompris/qt/src/gcompris-qt-"
+             "mirror://kde/stable/gcompris/qt/src/gcompris-qt-"
              version ".tar.xz"))
        (sha256
         (base32 "0qncknaaf168anh4cjp7dqz6qzgx948kvgr32j2vga8mjakqn1aj"))))
@@ -542,6 +547,137 @@ use the computer and at the same time teach them a little math,
 letters of the alphabet, spelling, eye-hand coordination, etc.")
     (home-page "http://www.schoolsplay.org")
     (license license:gpl3+)))
+
+(define-public openboard
+  ;; The last release builds from qtwebkit, which is planned for removal in
+  ;; Guix, so use the latest commit of the 1.7-dev branch, which builds with
+  ;; qtwebengine.
+  (let ((commit "39e914f600d26565706f0e5b6ea2482b8b4038c7") ;1.6.2-rc0311
+        (revision "1"))
+    (package
+      (name "openboard")
+      (version (git-version "1.6.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/OpenBoard-org/OpenBoard")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1763l5dywirzidzc93726dggf9819p47hh6a7p7dwzd1bfq1wb2q"))))
+      (build-system qt-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ;no tests
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'set-initial-values
+              ;; Remove useless "Check for updates" action from menu.
+              ;; Also prevent pop-up window about importing Open Sankore
+              ;; documents since we don't package OpenBoard-Importer.
+              (lambda _
+                (substitute* "src/core/UBSettings.cpp"
+                  (("(appHideCheckForSoftwareUpdate = .*?)false(\\);)" _ beg end)
+                   (string-append beg "true" end))
+                  (("(appLookForOpenSankoreInstall = .*?)true(\\);)" _ beg end)
+                   (string-append beg "false" end)))))
+            (add-after 'unpack 'fix-build-error
+              ;; XXX: `errorOpeningVirtualKeyboard' variable is only
+              ;; defined when building for OSX.  Yet,
+              ;; "UBBoardController.cpp" relies on it unconditionally,
+              ;; resulting in a build failure.  Here, we get rid of
+              ;; that variable, assuming it is always false (its
+              ;; default value when building for OSX).
+              (lambda _
+                (substitute* "src/board/UBBoardController.cpp"
+                  (("if \\(!UBPlatformUtils::errorOpeningVirtualKeyboard\\)")
+                   ""))))
+            (add-after 'unpack 'fix-hard-coded-env
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "src/frameworks/UBPlatformUtils_linux.cpp"
+                  (("/usr/bin/env") (search-input-file inputs "/bin/env")))))
+            (add-after 'unpack 'fix-library-path
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "OpenBoard.pro"
+                  (("/usr/include/quazip")
+                   (search-input-directory inputs "/include/quazip5"))
+                  (("/usr/include/poppler")
+                   (search-input-directory inputs "/include/poppler")))))
+            (replace 'configure
+              (lambda _
+                (invoke "qmake" "OpenBoard.pro")))
+            (replace 'install
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let* ((share (string-append #$output "/share"))
+                       (openboard (string-append share "/openboard"))
+                       (i18n (string-append openboard "/i18n")))
+                  ;; Install data.
+                  (with-directory-excursion "resources"
+                    (for-each (lambda (directory)
+                                (let ((target
+                                       (string-append openboard "/" directory)))
+                                  (mkdir-p target)
+                                  (copy-recursively directory target)))
+                              '("customizations" "etc" "library"))
+                    (mkdir-p i18n)
+                    (for-each (lambda (f)
+                                (install-file f i18n))
+                              (find-files "i18n" "\\.qm$")))
+                  ;; Install desktop file an icon.
+                  (install-file "resources/images/OpenBoard.png"
+                                (string-append share
+                                               "/icons/hicolor/64x64/apps/"))
+                  (make-desktop-entry-file
+                   (string-append share "/applications/" #$name ".desktop")
+                   #:name "OpenBoard"
+                   #:comment "Interactive whiteboard application"
+                   #:exec "openboard %f"
+                   #:icon "OpenBoard"
+                   #:mime-type "application/ubz"
+                   #:categories '("Education"))
+                  ;; Install executable.
+                  (install-file "build/linux/release/product/OpenBoard" openboard)
+                  (let ((bin (string-append #$output "/bin")))
+                    (mkdir-p bin)
+                    (symlink (string-append openboard "/OpenBoard")
+                             (string-append bin "/openboard")))))))))
+      (native-inputs
+       (list qttools))
+      (inputs
+       (list alsa-lib
+             coreutils-minimal          ;for patched 'env' shebang
+             ffmpeg
+             freetype
+             lame
+             libass
+             libfdk
+             libressl
+             libtheora
+             libva
+             libvorbis
+             libvpx
+             libx264
+             opus
+             poppler
+             qtbase-5
+             qtdeclarative
+             qtmultimedia
+             qtsvg
+             qtwebchannel
+             qtwebengine
+             qtxmlpatterns
+             quazip-0
+             sdl
+             zlib))
+      (home-page "https://openboard.ch/")
+      (synopsis "Interactive whiteboard for schools and universities")
+      (description
+       "OpenBoard is a teaching software for interactive whiteboard
+designed primarily for use in schools and universities.  It can be
+used both with interactive whiteboards or in a dual-screen setup with
+a pen-tablet display and a beamer.")
+      (license license:gpl3))))
 
 (define-public omnitux
   (package

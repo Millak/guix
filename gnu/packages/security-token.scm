@@ -38,6 +38,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix gexp)
+  #:use-module (guix utils)
   #:use-module (guix git-download)
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
@@ -903,14 +904,16 @@ phone is required.")
        (file-name (git-file-name name version))
        (sha256 (base32 "12zy4cnlcffcb64lsx8198y09j1dwi0bcn9rr82q6i1k950yzd3p"))))
     (native-inputs (list pkg-config))
-    (inputs
-     `(("zlib" ,zlib)
-       ("udev" ,eudev)
-       ("libcbor" ,libcbor)
-       ("openssl" ,openssl)))
+    (inputs (list eudev libcbor openssl zlib))
     (build-system cmake-build-system)
     (arguments
-     '(#:phases
+     `(#:configure-flags
+       (list (string-append
+               "-DPKG_CONFIG_EXECUTABLE="
+               (search-input-file %build-inputs
+                                  (string-append
+                                    "/bin/" ,(pkg-config-for-target)))))
+       #:phases
        (modify-phases %standard-phases
          ;; regress tests enabled only for debug builds
          (delete 'check))))

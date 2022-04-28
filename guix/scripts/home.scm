@@ -45,6 +45,7 @@
   #:use-module (guix channels)
   #:use-module (guix derivations)
   #:use-module (guix ui)
+  #:autoload   (guix colors) (supports-hyperlinks? file-hyperlink)
   #:use-module (guix grafts)
   #:use-module (guix packages)
   #:use-module (guix profiles)
@@ -732,6 +733,7 @@ description matches REGEXPS sorted by relevance, and their score."
       (leave-on-EPIPE
        (display-search-results matches (current-output-port)
                                #:print service-type->recutils
+                               #:regexps regexps
                                #:command "guix home search")))))
 
 

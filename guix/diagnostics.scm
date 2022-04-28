@@ -39,6 +39,7 @@
             source-properties->location
             location->source-properties
             location->string
+            location->hyperlink
 
             &error-location
             error-location?
@@ -203,7 +204,10 @@ macro-expansion time."
                     (gettext prefix %gettext-domain))))
     (if location
         (format (guix-warning-port) "~a: ~a"
-                (location-color (location->string location))
+                (location-color
+                 (if (supports-hyperlinks? (guix-warning-port))
+                     (location->hyperlink location)
+                     (location->string location)))
                 (prefix-color prefix))
         (format (guix-warning-port) "~:[~*~;guix ~a: ~]~a"
                 (program-name) (program-name)
@@ -258,6 +262,16 @@ a location object."
     (#f (G_ "<unknown location>"))
     (($ <location> file line column)
      (format #f "~a:~a:~a" file line column))))
+
+(define (location->hyperlink location)
+  "Return a string corresponding to LOCATION, with escapes for a hyperlink."
+  (let ((str  (location->string location))
+        (file (if (string-prefix? "/" (location-file location))
+                  (location-file location)
+                  (search-path %load-path (location-file location)))))
+    (if file
+        (file-hyperlink file str)
+        str)))
 
 (define-condition-type &error-location &error
   error-location?

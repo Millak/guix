@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2017-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2020 Simon Tournier <zimon.toutoune@gmail.com>
@@ -31,6 +31,7 @@
   #:use-module (guix store)
   #:use-module (guix grafts)
   #:use-module (guix gexp)
+  #:use-module (guix colors)
   #:use-module ((guix build syscalls) #:select (terminal-columns))
   #:use-module ((guix build utils) #:select (every*))
   #:use-module (guix substitutes)
@@ -203,7 +204,7 @@ In case ITEMS is an empty list, return 1 instead."
                     #:make-progress-reporter
                     (lambda* (total #:key url #:allow-other-keys)
                       (progress-reporter/bar total)))))
-    (format #t "~a~%" server)
+    (format #t (highlight "~a~%") server)
     (let ((obtained  (length narinfos))
           (requested (length items))
           (missing   (lset-difference string=?
@@ -215,9 +216,17 @@ In case ITEMS is an empty list, return 1 instead."
           (time      (+ (time-second time)
                         (/ (time-nanosecond time) 1e9))))
       (when (> requested 0)
-        (format #t (G_ "  ~,1f% substitutes available (~h out of ~h)~%")
-                (* 100. (/ obtained requested 1.))
-                obtained requested))
+        (let* ((ratio    (/ obtained requested 1.))
+               (colorize (cond ((> ratio 0.80)
+                                (coloring-procedure (color BOLD GREEN)))
+                               ((< ratio 0.50)
+                                (coloring-procedure (color BOLD RED)))
+                               (else
+                                highlight))))
+          (format #t
+                  (colorize (G_ "  ~,1f% substitutes available (~h out of ~h)~%"))
+                  (* 100. ratio)
+                  obtained requested)))
       (let ((total (/ (reduce + 0 sizes) MiB)))
         (match (length sizes)
           ((? zero?)

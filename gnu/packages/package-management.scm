@@ -1183,7 +1183,7 @@ written entirely in Python.")
            python-pluginbase
            python-pygments
            python-pyjwt
-           python-pyyaml
+           python-pyyaml-5
            python-requests
            python-six
            python-tqdm
@@ -1267,8 +1267,8 @@ environments.")
     (license (list license:gpl3+ license:agpl3+ license:silofl1.1))))
 
 (define-public guix-build-coordinator
-  (let ((commit "f1223225144b866951f13ece7f0583fd826a5705")
-        (revision "50"))
+  (let ((commit "fff7454f8f136e2d3b0650d99d9f6b0055fa2e1c")
+        (revision "51"))
     (package
       (name "guix-build-coordinator")
       (version (git-version "0" revision commit))
@@ -1279,7 +1279,7 @@ environments.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1yw5hzmkhgb2s29wv7bsi3w50ps9zi0zd1n0faxbcfyglsryvgbs"))
+                  "1pc06wppgnj7zv6nb76agxhy23r1778ffsv82whckw6xdd08llqi"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1575,8 +1575,8 @@ in an isolated environment, in separate namespaces.")
     (license license:gpl3+)))
 
 (define-public nar-herder
-  (let ((commit "f69da3686583d53974e720a9e66103126631cb69")
-        (revision "4"))
+  (let ((commit "e046f8a756aa24942f512b352e87dfe78fa89470")
+        (revision "5"))
     (package
       (name "nar-herder")
       (version (git-version "0" revision commit))
@@ -1587,7 +1587,7 @@ in an isolated environment, in separate namespaces.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "0glcmma6gkxna45bv0yki3l13r34ha7v0jrli3vmh4ysnhsnc4ii"))
+                  "0hbc24y08znlq28k1anzqkq7n1khmv31h4qd8syd2q7ax5kx8hqa"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1618,6 +1618,7 @@ in an isolated environment, in separate namespaces.")
                                          "guile-gcrypt"
                                          "guix"
                                          "guile-lib"
+                                         "guile-prometheus"
                                          "guile-sqlite3"
                                          "gnutls"
                                          "guile-fibers")))
@@ -1654,6 +1655,7 @@ in an isolated environment, in separate namespaces.")
              guile-gcrypt
              guix
              guile-fibers-1.1
+             guile-prometheus
              guile-lib
              guile-sqlite3))
       (inputs
@@ -1664,6 +1666,7 @@ in an isolated environment, in separate namespaces.")
              guile-gcrypt
              guix
              guile-fibers-1.1
+             guile-prometheus
              guile-lib
              guile-sqlite3
              gnutls))
@@ -1896,14 +1899,14 @@ sandboxed desktop applications on GNU/Linux.")
 (define-public akku
   (package
     (name "akku")
-    (version "1.0.1")
+    (version "1.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://gitlab.com/akkuscm/akku.git")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
-              (sha256 (base32 "1dm32ws3nshnnscd7k75zswxxs1pp25y2q4k8j5ms241hz47by3c"))))
+              (sha256 (base32 "1pi18aamg1fd6f9ynfl7zx92052xzf0zwmhi2pwcwjs1kbah19f5"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases

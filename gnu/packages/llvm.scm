@@ -16,11 +16,11 @@
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
-;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2021, 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2021 Lars-Dominik Braun <lars@6xq.net>
-;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;;
@@ -108,17 +108,21 @@ as \"x86_64-linux\"."
 (define %llvm-release-monitoring-url
   "https://github.com/llvm/llvm-project/releases")
 
-(define* (clang-runtime-from-llvm llvm hash
-                                  #:optional (patches '()))
+(define* (clang-runtime-from-llvm llvm
+                                  #:optional
+                                  hash
+                                  (patches '()))
   (package
     (name "clang-runtime")
     (version (package-version llvm))
     (source
-     (origin
-       (method url-fetch)
-       (uri (llvm-uri "compiler-rt" version))
-       (sha256 (base32 hash))
-       (patches (map search-patch patches))))
+     (if hash
+         (origin
+           (method url-fetch)
+           (uri (llvm-uri "compiler-rt" version))
+           (sha256 (base32 hash))
+           (patches (map search-patch patches)))
+         (llvm-monorepo (package-version llvm))))
     (build-system cmake-build-system)
     (native-inputs (package-native-inputs llvm))
     (inputs
@@ -162,7 +166,8 @@ compiler.  In LLVM this library is called \"compiler-rt\".")
     ;; <https://compiler-rt.llvm.org/> doesn't list MIPS as supported.
     (supported-systems (delete "mips64el-linux" %supported-systems))))
 
-(define* (clang-from-llvm llvm clang-runtime hash
+(define* (clang-from-llvm llvm clang-runtime
+                          #:optional hash
                           #:key (patches '()) tools-extra
                           (properties
                            (append `((release-monitoring-url
@@ -176,14 +181,16 @@ given PATCHES.  When TOOLS-EXTRA is given, it must point to the
     (name "clang")
     (version (package-version llvm))
     (source
-     (origin
-       (method url-fetch)
-       (uri (llvm-uri (if (version>=? version "9.0.1")
-                                   "clang"
-                                   "cfe")
-                               version))
-       (sha256 (base32 hash))
-       (patches (map search-patch patches))))
+     (if hash
+         (origin
+           (method url-fetch)
+           (uri (llvm-uri (if (version>=? version "9.0.1")
+                              "clang"
+                              "cfe")
+                          version))
+           (sha256 (base32 hash))
+           (patches (map search-patch patches)))
+         (llvm-monorepo (package-version llvm))))
     ;; Using cmake allows us to treat llvm as an external library.  There
     ;; doesn't seem to be any way to do this with clang's autotools-based
     ;; build system.
@@ -519,17 +526,27 @@ output), and Binutils.")
               ("libc-debug" ,glibc "debug")
               ("libc-static" ,glibc "static")))))
 
-(define-public llvm-13
+(define %llvm-monorepo-hashes
+  '(("14.0.0" . "1ixqzjzq4ad3mv1w44gwcg1shy34c2b3i9ja71vx1wa7l2ms2376")))
+
+(define %llvm-patches
+  '(("14.0.0" . ("clang-14.0-libc-search-path.patch"))))
+
+(define (llvm-monorepo version)
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://github.com/llvm/llvm-project")
+          (commit (string-append "llvmorg-" version))))
+    (file-name (git-file-name "llvm-project" version))
+    (sha256 (base32 (assoc-ref %llvm-monorepo-hashes version)))
+    (patches (map search-patch (assoc-ref %llvm-patches version)))))
+
+(define-public llvm-14
   (package
     (name "llvm")
-    (version "13.0.1")
-    (source
-     (origin
-      (method url-fetch)
-      (uri (llvm-uri "llvm" version))
-      (sha256
-       (base32
-        "0d681xiixmx9inwvz14vi3xsznrcryk06a8rvk9cljiq5kc80szc"))))
+    (version "14.0.0")
+    (source (llvm-monorepo version))
     (build-system cmake-build-system)
     (outputs '("out" "opt-viewer"))
     (native-inputs
@@ -538,42 +555,46 @@ output), and Binutils.")
     (inputs
      (list libffi))
     (propagated-inputs
-     (list zlib))                 ;to use output from llvm-config
+     (list zlib))                       ;to use output from llvm-config
     (arguments
-     `(#:configure-flags
-       ,#~(quasiquote
-           ;; These options are required for cross-compiling LLVM according to
-           ;; https://llvm.org/docs/HowToCrossCompileLLVM.html.
-           (#$@(if (%current-target-system)
-                   #~(,(string-append "-DLLVM_TABLEGEN="
-                                      #+(file-append this-package
-                                                     "/bin/llvm-tblgen"))
-                      #$(string-append "-DLLVM_DEFAULT_TARGET_TRIPLE="
-                                       (%current-target-system))
-                      #$(string-append "-DLLVM_TARGET_ARCH="
-                                       (system->llvm-target))
-                      #$(string-append "-DLLVM_TARGETS_TO_BUILD="
-                                       (system->llvm-target)))
-                   #~())
-            "-DCMAKE_SKIP_BUILD_RPATH=FALSE"
-            "-DCMAKE_BUILD_WITH_INSTALL_RPATH=FALSE"
-            "-DBUILD_SHARED_LIBS:BOOL=TRUE"
-            "-DLLVM_ENABLE_FFI:BOOL=TRUE"
-            "-DLLVM_REQUIRES_RTTI=1" ; For some third-party utilities
-            "-DLLVM_INSTALL_UTILS=ON")) ; Needed for rustc.
-       ;; Don't use '-g' during the build, to save space.
-       #:build-type "Release"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-opt-viewer
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (opt-viewer-out (assoc-ref outputs "opt-viewer"))
-                    (opt-viewer-share-dir (string-append opt-viewer-out "/share"))
-                    (opt-viewer-dir (string-append opt-viewer-share-dir "/opt-viewer")))
-               (mkdir-p opt-viewer-share-dir)
-               (rename-file (string-append out "/share/opt-viewer")
-                            opt-viewer-dir)))))))
+     (list
+      #:configure-flags
+      #~(list
+         ;; These options are required for cross-compiling LLVM according
+         ;; to <https://llvm.org/docs/HowToCrossCompileLLVM.html>.
+         #$@(if (%current-target-system)
+                #~(,(string-append "-DLLVM_TABLEGEN="
+                                   #+(file-append this-package
+                                                  "/bin/llvm-tblgen"))
+                   #$(string-append "-DLLVM_DEFAULT_TARGET_TRIPLE="
+                                    (%current-target-system))
+                   #$(string-append "-DLLVM_TARGET_ARCH="
+                                    (system->llvm-target))
+                   #$(string-append "-DLLVM_TARGETS_TO_BUILD="
+                                    (system->llvm-target)))
+                '())
+         "-DCMAKE_SKIP_BUILD_RPATH=FALSE"
+         "-DCMAKE_BUILD_WITH_INSTALL_RPATH=FALSE"
+         "-DBUILD_SHARED_LIBS:BOOL=TRUE"
+         "-DLLVM_ENABLE_FFI:BOOL=TRUE"
+         "-DLLVM_REQUIRES_RTTI=1"       ;for some third-party utilities
+         "-DLLVM_INSTALL_UTILS=ON")     ;needed for rustc
+      ;; Don't use '-g' during the build, to save space.
+      #:build-type "Release"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'change-directory
+            (lambda _
+              (chdir "llvm")))
+          (add-after 'install 'install-opt-viewer
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (opt-viewer-out (assoc-ref outputs "opt-viewer"))
+                     (opt-viewer-share-dir (string-append opt-viewer-out "/share"))
+                     (opt-viewer-dir (string-append opt-viewer-share-dir "/opt-viewer")))
+                (mkdir-p opt-viewer-share-dir)
+                (rename-file (string-append out "/share/opt-viewer")
+                             opt-viewer-dir)))))))
     (home-page "https://www.llvm.org")
     (synopsis "Optimizing compiler infrastructure")
     (description
@@ -584,6 +605,55 @@ front-ends derived from GCC 4.0.1.  A new front-end for the C family of
 languages is in development.  The compiler infrastructure includes mirror sets
 of programming tools as well as libraries with equivalent functionality.")
     (license license:asl2.0)
+    (properties `((release-monitoring-url . ,%llvm-release-monitoring-url)))))
+
+(define-public clang-runtime-14
+  (let ((template (clang-runtime-from-llvm llvm-14)))
+    (package
+      (inherit template)
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:phases phases '(@ (guix build cmake-build-system) %standard-phases))
+          #~(modify-phases #$phases
+              (add-after 'unpack 'change-directory
+                (lambda _
+                  (chdir "compiler-rt")))))))
+      (native-inputs
+       `(;; FIXME: libfuzzer fails to build with GCC 10.
+         ("gcc" ,gcc-11)
+         ,@(package-native-inputs template))))))
+
+(define-public clang-14
+  (let ((template (clang-from-llvm llvm-14 clang-runtime-14)))
+    (package
+      (inherit template)
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:phases phases '(@ (guix build cmake-build-system) %standard-phases))
+          #~(modify-phases #$phases
+              (add-after 'unpack 'change-directory
+                (lambda _
+                  (chdir "clang"))))))))))
+
+(define-public clang-toolchain-14
+  (make-clang-toolchain clang-14))
+
+(define-public llvm-13
+  (package
+    (inherit llvm-14)
+    (version "13.0.1")
+    (source
+     (origin
+      (method url-fetch)
+      (uri (llvm-uri "llvm" version))
+      (sha256
+       (base32
+        "0d681xiixmx9inwvz14vi3xsznrcryk06a8rvk9cljiq5kc80szc"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments llvm-14)
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (delete 'change-directory)))))
     (properties `((release-monitoring-url . ,%llvm-release-monitoring-url)))))
 
 (define-public clang-runtime-13
@@ -875,8 +945,16 @@ of programming tools as well as libraries with equivalent functionality.")
     (arguments
      (substitute-keyword-arguments (package-arguments llvm)
        ((#:phases phases)
-        `(modify-phases ,phases
-           (delete 'install-opt-viewer)))))))
+        #~(modify-phases #$phases
+            (add-before 'build 'shared-lib-workaround
+              ;; Even with CMAKE_SKIP_BUILD_RPATH=FALSE, llvm-tblgen
+              ;; doesn't seem to get the correct rpath to be able to run
+              ;; from the build directory.  Set LD_LIBRARY_PATH as a
+              ;; workaround.
+              (lambda _
+                (setenv "LD_LIBRARY_PATH"
+                        (string-append (getcwd) "/lib"))))
+            (delete 'install-opt-viewer)))))))
 
 (define-public clang-runtime-3.9.1
   (clang-runtime-from-llvm
@@ -1072,9 +1150,32 @@ of programming tools as well as libraries with equivalent functionality.")
     (properties `((release-monitoring-url . ,%llvm-release-monitoring-url)))
     (license license:asl2.0)))          ;with LLVM exceptions
 
-(define-public lld
+(define-public lld-14
   (package
     (name "lld")
+    (version "14.0.0")
+    (source (llvm-monorepo version))
+    (build-system cmake-build-system)
+    (inputs
+     (list llvm-14))
+    (arguments
+     '(#:build-type "Release"
+       ;; TODO: Tests require the lit tool, which isn't installed by the LLVM
+       ;; package.
+       #:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'change-directory
+                    (lambda _
+                      (chdir "lld"))))))
+    (home-page "https://lld.llvm.org/")
+    (synopsis "Linker from the LLVM project")
+    (description "LLD is a high-performance linker, built as a set of reusable
+components which highly leverage existing libraries in the larger LLVM Project.")
+    (license license:asl2.0))) ; With LLVM exception
+
+(define-public lld-13
+  (package
+    (inherit lld-14)
     (version "13.0.1")
     (source (origin
               (method url-fetch)
@@ -1082,7 +1183,6 @@ of programming tools as well as libraries with equivalent functionality.")
               (sha256
                (base32
                 "1yscckcszfr234k4svhybdbsnz6w65x8pldl6c2nhyxzx12zfsk6"))))
-    (build-system cmake-build-system)
     (native-inputs
      ;; Note: check <https://bugs.llvm.org/show_bug.cgi?id=49228> to see
      ;; whether this is still necessary.
@@ -1090,20 +1190,15 @@ of programming tools as well as libraries with equivalent functionality.")
     (inputs
      (list llvm-13))
     (arguments
-     `(#:build-type "Release"
+     '(#:build-type "Release"
        ;; TODO: Tests require the lit tool, which isn't installed by the LLVM
        ;; package.
        #:tests? #f))
-    (home-page "https://lld.llvm.org/")
-    (synopsis "Linker from the LLVM project")
-    (description "LLD is a high-performance linker, built as a set of reusable
-components which highly leverage existing libraries in the larger LLVM Project.")
-    (properties `((release-monitoring-url . ,%llvm-release-monitoring-url)))
-    (license license:asl2.0))) ; With LLVM exception
+    (properties `((release-monitoring-url . ,%llvm-release-monitoring-url)))))
 
 (define-public lld-12
   (package
-    (inherit lld)
+    (inherit lld-13)
     (version "12.0.1")
     (source (origin
               (method url-fetch)
@@ -1113,6 +1208,8 @@ components which highly leverage existing libraries in the larger LLVM Project."
                 "0qg3fgc7wj34hdkqn21y03zcmsdd01szhhm1hfki63iifrm3y2v9"))))
     (inputs (modify-inputs (package-inputs lld)
               (replace "llvm" llvm-12)))))
+
+(define-public lld lld-14)
 
 (define* (make-lld-wrapper lld #:key lld-as-ld?)
   "Return a LLD wrapper.  When LLD-AS-LD? is true, create a 'ld' symlink that

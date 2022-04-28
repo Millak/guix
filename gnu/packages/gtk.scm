@@ -29,6 +29,7 @@
 ;;; Copyright © 2021 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Wamm K. D. <jaft.r@outlook.com>
+;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -408,6 +409,22 @@ context of the GTK+ widget toolkit.  Pango forms the core of text and font
 handling for GTK+-2.x.")
     (home-page "https://pango.gnome.org/")
     (license license:lgpl2.0+)))
+
+;; TODO: Make this the default package in next release cycle.
+(define-public pango-next
+  (package
+    (inherit pango)
+    (name "pango")
+    (version "1.50.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/pango/"
+                                  (version-major+minor version) "/"
+                                  name "-" version ".tar.xz"))
+              (patches (search-patches "pango-skip-libthai-test.patch"))
+              (sha256
+               (base32
+                "0qn1a7ccs3p5vc6swbqm6hdzka879l0gp9220lq4bcf2gpl67bgl"))))))
 
 (define-public pango-1.42
   (package
@@ -1059,7 +1076,7 @@ application suites.")
 (define-public gtk
   (package
     (name "gtk")
-    (version "4.4.1")
+    (version "4.6.1")
     (source
      (origin
        (method url-fetch)
@@ -1067,10 +1084,9 @@ application suites.")
                            (version-major+minor version)  "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "1x6xlc063nqp7cg6py4kq1kpw9pkq49ifk5kki0brc667ncdmahg"))
+        (base32 "0pzcs24j67f90kjcp6apgn6rffynxksjm1m7d3an7kdv3k90hmfq"))
        (patches
-        (search-patches "gtk4-respect-GUIX_GTK4_PATH.patch"
-                        "gtk-introspection-test.patch"))))
+        (search-patches "gtk4-respect-GUIX_GTK4_PATH.patch"))))
     (build-system meson-build-system)
     (outputs '("out" "bin" "doc"))
     (arguments
@@ -1100,6 +1116,10 @@ application suites.")
          (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
            (assoc-ref glib-or-gtk:%standard-phases
                       'generate-gdk-pixbuf-loaders-cache-file))
+         (add-after 'unpack 'patch-rst2man
+           (lambda _
+             (substitute* "docs/reference/gtk/meson.build"
+               (("find_program\\('rst2man'") "find_program('rst2man.py'"))))
          (add-after 'unpack 'patch
            (lambda* (#:key inputs native-inputs outputs #:allow-other-keys)
              ;; Correct DTD resources of docbook.
@@ -1177,6 +1197,7 @@ application suites.")
        ("pkg-config" ,pkg-config)
        ("python-pygobject" ,python-pygobject)
        ;; These python modules are required for building documentation.
+       ("python-docutils" ,python-docutils)
        ("python-jinja2" ,python-jinja2)
        ("python-markdown" ,python-markdown)
        ("python-markupsafe" ,python-markupsafe)
@@ -1199,7 +1220,10 @@ application suites.")
            iso-codes
            json-glib
            libcloudproviders ;for cloud-providers support
+           libjpeg-turbo
+           libpng
            librsvg
+           libtiff
            python
            rest
            tracker))          ;for filechooser search support
@@ -1222,7 +1246,7 @@ application suites.")
        ("libxkbcommon" ,libxkbcommon)
        ("libxrandr" ,libxrandr)
        ("libxrender" ,libxrender)
-       ("pango" ,pango)
+       ("pango" ,pango-next)
        ("vulkan-headers" ,vulkan-headers)
        ("vulkan-loader" ,vulkan-loader) ;for vulkan graphics API support
        ("wayland" ,wayland)             ;for wayland display-backend
@@ -1603,7 +1627,7 @@ library.")
 (define-public pangomm
   (package
     (name "pangomm")
-    (version "2.48.0")
+    (version "2.50.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -1611,7 +1635,7 @@ library.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0y2vyp6azvhrii6rzs89kr08wg8z1p562awyr812131zqdsd83ly"))))
+                "0nrvvf1fyzlimh7rvxcblnrvn2l9rz8mpn2iwzlzr6kv05zafym2"))))
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
@@ -1640,7 +1664,7 @@ library.")
        ("python" ,python)
        ("xsltproc" ,libxslt)))
     (propagated-inputs
-     (list cairo cairomm glibmm pango))
+     (list cairo cairomm glibmm pango-next))
     (home-page "https://pango.gnome.org//")
     (synopsis "C++ interface to the Pango text rendering library")
     (description
@@ -1736,7 +1760,7 @@ library.")
 (define-public gtkmm
   (package
     (name "gtkmm")
-    (version "4.4.0")
+    (version "4.6.1")
     (source
      (origin
        (method url-fetch)
@@ -1745,7 +1769,7 @@ library.")
                        (version-major+minor version)  "/"
                        name "-" version ".tar.xz"))
        (sha256
-        (base32 "1nhdf1s437k41af6frbqw2sky46qci0hgkg9h86a9rlnc0r69d1f"))))
+        (base32 "1q6iycd7jfbn6rp4sq6r7ndm96dc21inq8mq1d9xsky6kv5gwphd"))))
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
@@ -1785,7 +1809,7 @@ library.")
        ("xsltproc" ,libxslt)
        ("xorg-server" ,xorg-server-for-tests)))
     (propagated-inputs
-     (list atkmm cairomm glibmm gtk pangomm))
+     (list cairomm glibmm gtk pangomm))
     (synopsis "C++ Interfaces for GTK+ and GNOME")
     (description "GTKmm is the official C++ interface for the popular GUI
 library GTK+.  Highlights include typesafe callbacks, and a comprehensive set

@@ -39,7 +39,7 @@
 (define-public hwdata
   (package
     (name "hwdata")
-    (version "0.356")
+    (version "0.357")                   ;updated monthly
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -48,14 +48,15 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0m04d93dwiplwp9v74nhnc0hyi2n007mylkg8f0frb46z5qjrpl3"))))
+                "0kvxpdx14w2myqm3dikjvr2mr4j6767y4v5j8v7kffwvcv0ga9gv"))))
     (build-system gnu-build-system)
     (outputs '("out" "iab" "oui" "pci" "pnp" "usb"))
-    (native-inputs (list gzip))
     (arguments
      ;; Tests require pciutils, python, podman. Disable to avoid recursive dep.
      (list
       #:tests? #f
+      ;; Do not cross-compile, since the package only contains data.
+      #:target #f
       #:configure-flags #~(list (string-append "--datadir=" #$output "/share"))
       #:phases
       #~(modify-phases %standard-phases

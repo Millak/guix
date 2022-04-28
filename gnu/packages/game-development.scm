@@ -2554,8 +2554,7 @@ physics engine is just a system for procedural animation.")
          (add-after 'unpack 'change-to-build-dir
            (lambda _
              (chdir "buildsys/autotools")
-             (patch-shebang "get_version.py")
-             #t)))))
+             (patch-shebang "get_version.py"))))))
     (native-inputs
      (list autoconf
            automake

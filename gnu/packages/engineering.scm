@@ -29,6 +29,8 @@
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 Evgeny Pisemsky <evgeny@pisemsky.com>
 ;;; Copyright © 2022 Olivier Dion <olivier.dion@polymtl.ca>
+;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
+;;; Copyright © 2022 Malte Frank Gerdes <malte.f.gerdes@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -74,6 +76,7 @@
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages commencement)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages dejagnu)
   #:use-module (gnu packages digest)
@@ -116,14 +119,19 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pretty-print)
+  #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-crypto)
+  #:use-module (gnu packages python-science)
+  #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages stb)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages tbb)
   #:use-module (gnu packages tcl)
@@ -931,7 +939,7 @@ Emacs).")
 (define-public kicad
   (package
     (name "kicad")
-    (version "6.0.1")
+    (version "6.0.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -939,7 +947,7 @@ Emacs).")
                     (commit version)))
               (sha256
                (base32
-                "1vpcbhhw8844hm6vpk3kk405wak531pvcvcpc66z0b48iprk3imr"))
+                "0lki59ws0ncqkp9wxrhyni1ck2sx5z07mmpkjg0d9jpkync9hx9y"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -1046,7 +1054,7 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0zaafa9ckvdgsim6nhp3flj4r2fzzmwn054lc3iijwgga82qy7il"))))
+                "0p3ypfs11ck2w7dmqiy763krpj0slan4jvpzxs6z1473gdpbzgbs"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DBUILD_FORMATS=html")
@@ -1080,7 +1088,7 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1azjx1bmxaz8bniyw75lq60mc8hvay00jn9qdc2zp7isy3c9ibp0"))))
+                "12lyc187337bf2frl3jvwqdwwnd69f7l414k3kxhccs3sa2mcf1y"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; no tests exist
@@ -1109,7 +1117,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0mv9xs0mmmfn0yhzx1v55r5app13ckagb16249rabyiz3v5crdpb"))))
+                "0px2g9jansky0rvc0bdjylbmv8xwhc0q63g88hd2nzbknqli9f1y"))))
     (synopsis "Official KiCad footprint libraries")
     (description "This package contains the official KiCad footprint libraries.")))
 
@@ -1126,7 +1134,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0vwcbzq42hzjl4f0zjaswmiff1x59hv64g5n00mx1gl0gwngnyla"))))
+                "0ms9py93qyihxrhh9wm2ziycmdn88m36r8adx22ynjnxixw1f9ja"))))
     (synopsis "Official KiCad 3D model libraries")
     (description "This package contains the official KiCad 3D model libraries.")))
 
@@ -1147,6 +1155,34 @@ libraries.")
     (synopsis "Official KiCad project and worksheet templates")
     (description "This package contains the official KiCad project and
 worksheet templates.")))
+
+(define-public librseq
+  ;; There's no release.
+  (let ((commit "170f840b498e1aff068b90188727a656111bfc2f")
+        (revision "1"))
+    (package
+      (name "librseq")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/compudj/librseq.git")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0rdx59y8y9x8cfmmx5gl66gibkzpk3kw5lrrqhrxan8zr37a055y"))))
+      (build-system gnu-build-system)
+      (native-inputs (list autoconf automake libtool))
+      (home-page "https://github.com/compudj/librseq")
+      (synopsis "Userspace library for restartable sequences")
+      (description "A restartable sequence is a critical region delimited by a
+program where if its execution is preempted or interrupted, the kernel will
+divert the program control flow to a defined abort handler.  They are a good
+alternative to atomic operations for critical fast paths and are usually used
+in the context of per-cpu data.  The library offers ABI headers to interface
+with the kernel and various utilities such as per-cpu counters.")
+      (license (list license:lgpl2.1 license:expat)))))
 
 (define-public linsmith
   (package
@@ -3148,7 +3184,7 @@ visualization, matrix manipulation.")
 (define-public prusa-slicer
   (package
     (name "prusa-slicer")
-    (version "2.4.0")
+    (version "2.4.1")
     (source
      (origin
        (method git-fetch)
@@ -3157,7 +3193,7 @@ visualization, matrix manipulation.")
          (url "https://github.com/prusa3d/PrusaSlicer")
          (commit (string-append "version_" version))))
        (file-name (git-file-name name version))
-       (sha256 (base32 "1mb7v0khrmsgy3inmh4mjn709jlhx422kvbnrhsqziph2wwak9bz"))
+       (sha256 (base32 "0q1m8fcz39s03r9csq411ss8vbbpjx45icj8vgkysy8hqgqz3gz0"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -3245,3 +3281,381 @@ connector pinouts.  It takes plain text, YAML-formatted files as input and
 produces beautiful graphical output thanks to GraphViz.  It handles automatic
 BOM creation and has a lot of extra features.")
     (license license:gpl3)))
+
+(define-public libarcus
+  (package
+    (name "libarcus")
+    (version "4.13.0") ; Should same version as Cura package.
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Ultimaker/libArcus")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19fi0y0lk45cyampczgh3kz2swai4zcgzkffp0xf5h55rxxrdpvk"))))
+    (build-system cmake-build-system)
+    (inputs
+     (list protobuf
+           python
+           python-sip-4))
+    (arguments
+     `(#:tests? #f
+       #:configure-flags '("-DBUILD_EXAMPLES=OFF")
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'fix-python-sitearch
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* "cmake/FindSIP.cmake"
+               (("\\$\\{_process_output\\} Python3_SITEARCH")
+                (string-append (assoc-ref outputs "out")
+                               "/lib/python"
+                               ,(version-major+minor
+                                 (package-version python))
+                               "/site-packages"
+                               " Python3_SITEARCH"))))))))
+    (home-page "https://github.com/Ultimaker/libArcus")
+    (synopsis "Communication library for Ultimaker software components")
+    (description "This library contains C++ code and Python3 bindings for
+creating a socket in a thread and using this socket to send and receive
+messages based on the Protocol Buffers library.  It is designed to
+facilitate the communication between Cura and its backend and similar code.")
+    (license license:lgpl3+)))
+
+(define-public cura-engine
+  (package
+    (name "cura-engine")
+    (version "4.13.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+               (url "https://github.com/Ultimaker/CuraEngine")
+               (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xp2r0m5wwfsh9wdb3biqzvfqfz5jsmyw4bww93aksw0rgli07bp"))))
+    (build-system cmake-build-system)
+    (native-inputs
+     (list googletest pkg-config))
+    (inputs
+     (list libarcus protobuf stb-image))
+    (arguments
+     `(#:configure-flags '("-DBUILD_TESTS=ON")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-paths
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "../source/cmake/FindStb.cmake"
+               (("/usr/include")
+                (string-append (assoc-ref inputs "stb-image")
+                               "/include"))
+               (("stb/stb_image_resize.h")
+                "stb_image.h"))
+             (substitute*
+                 "../source/src/infill/ImageBasedDensityProvider.cpp"
+               (("stb/stb_image.h")
+                "stb_image.h")))))))
+    (home-page "https://github.com/Ultimaker/CuraEngine")
+    (synopsis "Cura slicing engine")
+    (description "CuraEngine is a powerful, fast and robust engine for
+processing 3D models into 3D printing instruction for Ultimaker and other
+GCode based 3D printers.  It is part of the larger open source project called
+Cura.")
+    (license license:agpl3+)))
+
+(define-public cura-binary-data
+  (package
+    (name "cura-binary-data")
+    (version "4.13.1")
+    (source
+     (origin
+       (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Ultimaker/cura-binary-data")
+               (commit version)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "11dra399adky7jxpaqqk1swrg5y3cc1086l54c3injg3ccgrvwik"))
+         (modules '((guix build utils)))
+         (snippet
+          '(begin
+             ;; Remove Windows executables and prebuilt firmware files.
+             (delete-file-recursively "cura/resources/firmware")
+             (delete-file-recursively "windows")))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f ; No test suite.
+       #:configure-flags '("-DENABLE_FIRMWARE_INSTALL=OFF")))
+    (home-page "https://github.com/Ultimaker/cura-binary-data")
+    (synopsis "Binary data for Cura, like compiled translations")
+    (description "This package contains binary data for Cura releases, like
+compiled translations.  Prebuilt Firmware files are removed.")
+    (license license:agpl3)))
+
+(define-public uranium
+  (package
+    (name "uranium")
+    (version "4.13.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+               (url "https://github.com/Ultimaker/Uranium")
+               (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1nyxm3fdyrsisqkxbqld66bljd852wnc1yc6i1lyvncwvzn8ai32"))))
+    (build-system cmake-build-system)
+    (native-inputs
+     (list doxygen
+           gettext-minimal
+           graphviz
+           pkg-config
+           python-pytest
+           python-mypy
+           python-certifi
+           python-twisted))
+    (propagated-inputs
+     (list cura-binary-data
+           libarcus
+           python
+           python-cryptography
+           python-numpy
+           python-pyqt
+           python-scipy
+           python-shapely
+           python-trimesh
+           python-zeroconf
+           qtbase
+           qtdeclarative
+           qtgraphicaleffects
+           qtquickcontrols
+           qtquickcontrols2
+           qtsvg))
+    (arguments
+     `(;; FIXME: tests are disabled, because they cause an infinite loop.
+       #:tests? #f
+       #:configure-flags
+       ,#~(list (string-append "-DGETTEXT_MSGINIT_EXECUTABLE="
+                               #$(this-package-native-input "gettext-minimal")
+                               "/bin/msginit")
+                (string-append "-DCURA_BINARY_DATA_DIRECTORY="
+                               #$(this-package-input "cura-binary-data")))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-uranium-plugin-path
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* "UM/Application.py"
+               (("app_root =.*$")
+                (string-append "app_root = \""
+                               (assoc-ref outputs "out") "\"\n"))
+               (("app_root, \"share\", \"uranium\", \"plugins\"")
+                "app_root, \"lib\", \"uranium\", \"plugins\"")))))))
+    (home-page "https://github.com/Ultimaker/Uranium")
+    (synopsis "Python framework for building desktop applications")
+    (description "Uranium is a Python Framework for building 3D printing
+related desktop applications using PyQt5.  It belongs to the Cura project
+from Ultimaker.")
+    (license license:lgpl3+)))
+
+(define-public libnest2d-for-cura
+  ;; Cura uses a custom fork of the libnest2d library.
+  (package
+    (name "libnest2d-for-cura")
+    (version "4.12.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Ultimaker/libnest2d")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wk7cv8sqnxy7srq61scrr18dz2i0l4s4slmjfh4890iy0wf9i7n"))))
+    (build-system cmake-build-system)
+    (inputs
+     (list boost clipper nlopt))
+    (arguments
+     `(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'fix-clipper-detection
+           (lambda* (#:key inputs #:allow-other-keys)
+             (setenv "CLIPPER_PATH" (assoc-ref inputs "clipper")))))))
+    (home-page "https://github.com/Ultimaker/libnest2d")
+    (synopsis "2D irregular bin packaging and nesting library")
+    (description
+     "Libnest2D is a library and framework for the 2D bin packaging
+problem.  It was inspired from the SVGNest Javascript library.")
+    (license license:lgpl3)))
+
+(define-public python-pynest2d
+  (package
+    (name "python-pynest2d")
+    (version "4.12.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Ultimaker/pynest2d")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jhqfylg6vzlbz9rqs981bg6y8s18iklw1p8hmax72xq2c7561s1"))))
+    (build-system cmake-build-system)
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list boost
+           clipper
+           libnest2d-for-cura
+           nlopt
+           python
+           python-sip-4))
+    (arguments
+     `(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'fix-clipper-detection
+           (lambda* (#:key inputs #:allow-other-keys)
+             (setenv "CLIPPER_PATH" (assoc-ref inputs "clipper"))))
+         (add-before 'configure 'fix-python-sitearch
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((path (string-append (assoc-ref outputs "out")
+                                        "/lib/python"
+                                        ,(version-major+minor
+                                          (package-version python))
+                                        "/site-packages")))
+               (substitute* "cmake/FindSIP.cmake"
+                 (("\\$\\{_process_output\\} Python3_SITEARCH")
+                  (string-append path " Python3_SITEARCH"))
+                 (("\\$\\{_process_output\\} Python3_SITELIB")
+                  (string-append path " Python3_SITELIB")))))))))
+    (home-page "https://github.com/Ultimaker/pynest2d")
+    (synopsis "Python bindings for libnest2d")
+    (description
+     "This package contains CPython bindings for libnest2d-for-cura.")
+    (license license:lgpl3+)))
+
+(define-public libcharon
+  (package
+    (name "libcharon")
+    (version "4.13.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+               (url "https://github.com/Ultimaker/libCharon")
+               (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ibv15y7lfxs09k6rbc3kiaz13gq3v9vqxrk20rqp6bdclk3izff"))))
+    (build-system cmake-build-system)
+    (native-inputs
+     (list python-pytest))
+    (inputs
+     (list python))
+    (home-page "https://github.com/Ultimaker/libCharon")
+    (synopsis "File metadata and streaming library")
+    (description "LibCharon is a Python file metadata and streaming library.  It
+belongs to the Cura project from Ultimaker.")
+    (license license:lgpl3+)))
+
+(define-public libsavitar
+  (package
+    (name "libsavitar")
+    (version "4.13.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Ultimaker/libSavitar")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cq85x0xizsjwf9nl7v7x4i9vl335mgv2lda3q2c9fcwrndsc3wk"))))
+    (build-system cmake-build-system)
+    (inputs
+     (list python python-sip-4))
+    (arguments
+     `(#:tests? #f ; No test suite.
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'fix-python-sitearch
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((path (string-append (assoc-ref outputs "out")
+                                        "/lib/python"
+                                        ,(version-major+minor
+                                          (package-version python))
+                                        "/site-packages")))
+               (substitute* "cmake/FindSIP.cmake"
+                 (("\\$\\{_process_output\\} Python3_SITEARCH")
+                  (string-append path " Python3_SITEARCH"))
+                 (("\\$\\{_process_output\\} Python3_SITELIB")
+                  (string-append path " Python3_SITELIB")))))))))
+    (home-page "https://github.com/Ultimaker/libSavitar")
+    (synopsis "C++ implementation of 3mf loading with SIP python bindings")
+    (description "LibSavitar is a C++ implementation of 3mf loading with SIP
+python bindings.  It belongs to the Cura project from Ultimaker.")
+    (license license:lgpl3+)))
+
+(define-public cura
+  (package
+    (name "cura")
+    (version "4.13.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Ultimaker/Cura")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yg17pcrj5gm02aqcjfk40ynvpb9r9aaq9rj108dkpki1is15ks7"))))
+    (build-system qt-build-system)
+    (native-inputs
+     (list python-certifi
+           python-mypy
+           python-pytest
+           python-requests))
+    (inputs
+     (list cura-engine
+           libcharon
+           libsavitar
+           python
+           python-keyring
+           python-pynest2d
+           python-pyserial
+           python-sentry-sdk
+           python-sip
+           uranium))
+    (arguments
+     `(;; TODO: Fix tests.
+       #:tests? #f
+       #:configure-flags '("-DURANIUM_SCRIPTS_DIR=")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'link-to-CuraEngine
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (symlink (string-append (assoc-ref inputs "cura-engine")
+                                     "/bin/CuraEngine")
+                      (string-append (assoc-ref outputs "out")
+                                     "/bin/CuraEngine"))))
+         (add-after 'link-to-CuraEngine 'wrap-pythonpath
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (wrap-program (string-append out "/bin/cura")
+                 (list "GUIX_PYTHONPATH"
+                       'prefix (list (string-append out
+                                                    "/lib/python"
+                                                    ,(version-major+minor
+                                                      (package-version python))
+                                                    "/site-packages")
+                                     (getenv "GUIX_PYTHONPATH"))))))))))
+    (home-page "https://github.com/Ultimaker/Cura")
+    (synopsis "Slicer for 3D printers")
+    (description "Cura is a slicing software from Ultimaker.  A @emph{slicer}
+generates G-Code for 3D printers.")
+    (license license:lgpl3+)))

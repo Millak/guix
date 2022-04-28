@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2015, 2020 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2014 Ian Denhardt <ian@zenhack.net>
-;;; Copyright © 2015, 2016, 2017, 2021 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2015, 2016, 2017, 2021, 2022 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017, 2021 Arun Isaac <arunisaac@systemreboot.net>
@@ -22,6 +22,7 @@
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Feng Shu <tumashu@163.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -62,6 +63,7 @@
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages datastructures)
+  #:use-module (gnu packages digest)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages dejagnu)
   #:use-module (gnu packages ftp)
@@ -70,6 +72,7 @@
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages gperf)
+  #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages guile-xyz)
   #:use-module (gnu packages linux)
@@ -629,13 +632,13 @@ detection, and lossless compression.")
 (define-public borg
   (package
     (name "borg")
-    (version "1.1.17")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "borgbackup" version))
        (sha256
-        (base32 "0x0ncy0b0bmf586hbdgrif3gjmkdw760vfnfxndr493v07y29fbs"))
+        (base32 "0rvzmy9qyicfs65qwy0n1nkvsidkcvx7kix43885dx1fj13mb6p3"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -645,8 +648,6 @@ detection, and lossless compression.")
            ;; generate the wrong list.
            (for-each delete-file
                      '("src/borg/algorithms/checksums.c"
-                       "src/borg/algorithms/msgpack/_packer.cpp"
-                       "src/borg/algorithms/msgpack/_unpacker.cpp"
                        "src/borg/chunker.c"
                        "src/borg/compress.c"
                        "src/borg/crypto/low_level.c"
@@ -656,11 +657,12 @@ detection, and lossless compression.")
                        "src/borg/platform/freebsd.c"
                        "src/borg/platform/linux.c"
                        "src/borg/platform/posix.c"
-                       "src/borg/platform/syncfilerange.c"))
+                       "src/borg/platform/syncfilerange.c"
+                       "src/borg/platform/windows.c"))
            ;; Remove bundled shared libraries.
            (with-directory-excursion "src/borg/algorithms"
              (for-each delete-file-recursively
-                       (list "blake2" "lz4" "zstd")))
+                       (list "lz4" "xxh64" "zstd")))
            #t))))
     (build-system python-build-system)
     (arguments
@@ -672,12 +674,12 @@ detection, and lossless compression.")
          (add-after 'unpack 'set-env
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((openssl (assoc-ref inputs "openssl"))
-                   (libb2 (assoc-ref inputs "libb2"))
                    (lz4 (assoc-ref inputs "lz4"))
+                   (xxhash (assoc-ref inputs "xxhash"))
                    (zstd (assoc-ref inputs "zstd")))
                (setenv "BORG_OPENSSL_PREFIX" openssl)
-               (setenv "BORG_LIBB2_PREFIX" libb2)
                (setenv "BORG_LIBLZ4_PREFIX" lz4)
+               (setenv "BORG_LIBXXHASH_PREFIX" xxhash)
                (setenv "BORG_LIBZSTD_PREFIX" zstd)
                (setenv "PYTHON_EGG_CACHE" "/tmp")
                ;; The test 'test_return_codes[python]' fails when
@@ -687,32 +689,37 @@ detection, and lossless compression.")
          ;; The tests need to be run after Borg is installed.
          (delete 'check)
          (add-after 'install 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; Make the installed package available for the test suite.
-             (add-installed-pythonpath inputs outputs)
-             ;; The tests should be run in an empty directory.
-             (mkdir-p "tests")
-             (with-directory-excursion "tests"
-               (invoke "py.test" "-v" "--pyargs" "borg.testsuite" "-k"
-                       (string-append
-                        ;; These tests need to write to '/var'.
-                        "not test_get_cache_dir "
-                        "and not test_get_config_dir "
-                        "and not test_get_keys_dir "
-                        "and not test_get_security_dir "
-                        ;; These tests assume there is a root user in
-                        ;; '/etc/passwd'.
-                        "and not test_access_acl "
-                        "and not test_default_acl "
-                        "and not test_non_ascii_acl "
-                        "and not test_create_stdin "
-                        ;; This test needs the unpackaged pytest-benchmark.
-                        "and not benchmark "
-                        ;; These tests assume the kernel supports FUSE.
-                        "and not test_fuse "
-                        "and not test_fuse_allow_damaged_files "
-                        "and not test_mount_hardlinks "
-                        "and not test_readonly_mount ")))))
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+              ;; Make the installed package available for the test suite.
+              (add-installed-pythonpath inputs outputs)
+              ;; The tests should be run in an empty directory.
+              (mkdir-p "tests")
+              (with-directory-excursion "tests"
+                (invoke "py.test" "-v" "--pyargs" "borg.testsuite" "-k"
+                        (string-append
+                         ;; These tests need to write to '/var'.
+                         "not test_get_cache_dir "
+                         "and not test_get_config_dir "
+                         "and not test_get_keys_dir "
+                         "and not test_get_security_dir "
+                         ;; These tests assume there is a root user in '/etc/passwd'.
+                         "and not test_access_acl "
+                         "and not test_default_acl "
+                         "and not test_get_item_uid_gid "
+                         "and not test_non_ascii_acl "
+                         "and not test_create_content_from_command "
+                         "and not test_create_content_from_command_with_failed_command "
+                         "and not test_create_stdin "
+                         ;; We don't need to run benchmarks
+                         "and not benchmark "
+                         ;; These tests assume the kernel supports FUSE.
+                         "and not test_fuse "
+                         "and not test_fuse_allow_damaged_files "
+                         "and not test_mount_hardlinks "
+                         "and not test_readonly_mount "
+                         "and not test_fuse_versions_view "
+                         "and not test_migrate_lock_alive"))))))
          (add-after 'install 'install-doc
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -720,10 +727,10 @@ detection, and lossless compression.")
                     (misc (string-append out "/share/borg/misc")))
                (for-each (cut install-file <> misc)
                          '("docs/misc/create_chunker-params.txt"
+                           "docs/misc/borg-data-flow.png"
                            "docs/misc/internals-picture.txt"
                            "docs/misc/prune-example.txt"))
-               (copy-recursively "docs/man" man)
-               #t)))
+               (copy-recursively "docs/man" man))))
          (add-after 'install-docs 'install-shell-completions
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -735,24 +742,27 @@ detection, and lossless compression.")
                  (install-file "zsh/_borg"
                                (string-append share "/zsh/site-functions"))
                  (install-file "fish/borg.fish"
-                               (string-append share "/fish/vendor_completions.d")))
-               #t))))))
+                               (string-append share "/fish/vendor_completions.d")))))))))
     (native-inputs
-     (list python-cython python-setuptools-scm python-pytest))
+     (list python-cython python-dateutil python-setuptools-scm python-pytest))
     (inputs
      (list acl
-           libb2
            lz4
            openssl
+           ;; This is the latest version of msgpack accepted by 'setup.py'.
+           python-msgpack-1.0.2
+           ;; FUSE 3 isn't working well, so we stick with FUSE 2 for now:
+           ;; <https://issues.guix.gnu.org/53407>
            python-llfuse
-           `(,zstd "lib")))
+           `(,zstd "lib")
+           xxhash))
     (synopsis "Deduplicated, encrypted, authenticated and compressed backups")
     (description "Borg is a deduplicating backup program.  Optionally, it
 supports compression and authenticated encryption.  The main goal of Borg is to
 provide an efficient and secure way to backup data.  The data deduplication
 technique used makes Borg suitable for daily backups since only changes are
-stored.  The authenticated encryption technique makes it suitable for
-storing backups on untrusted computers.")
+stored.  The authenticated encryption technique makes it suitable for storing
+backups on untrusted computers.")
     (home-page "https://www.borgbackup.org/")
     (license license:bsd-3)))
 
@@ -1332,3 +1342,27 @@ tool.  It supports the use of remote backup repositories.  It can perform
 scheduled backups, and has a graphical tool for browsing and extracting the Borg
 archives.")
     (license license:gpl3+)))
+
+(define-public grsync
+  (package
+    (name "grsync")
+    (version "1.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "http://www.opbyte.it/release/"
+                                  "grsync-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1z1m782b50x348kgynzf753apy8yszkl31y32y1jsc055skcdixp"))))
+    (build-system gnu-build-system)
+    (native-inputs (list intltool pkg-config))
+    (inputs (list gtk+))
+    (propagated-inputs (list rsync))
+    (home-page "http://www.opbyte.it/grsync/")
+    (synopsis "GTK frontend for rsync")
+    (description
+     "Grsync is a simple graphical interface using GTK for the @command{rsync}
+command line program.  It currently supports only a limited set of the most
+important rsync features, but can be used effectively for local directory
+synchronization.")
+    (license license:gpl2)))

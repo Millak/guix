@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2018, 2020-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2017 David Craven <david@craven.ch>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2019 Guillaume Le Vaillant <glv@posteo.net>
@@ -54,6 +54,7 @@
 
             bind-mount
 
+            system*/tty
             mount-flags->bit-mask
             check-file-system
             mount-file-system
@@ -66,6 +67,33 @@
 ;;; check file systems.
 ;;;
 ;;; Code:
+
+(define (system*/console program . args)
+  "Run PROGRAM with ARGS in a tty on top of /dev/console.  The return value is
+as for 'system*'."
+  (match (primitive-fork)
+    (0
+     (dynamic-wind
+       (const #t)
+       (lambda ()
+         (login-tty (open-fdes "/dev/console" O_RDWR))
+         (apply execlp program program args))
+       (lambda ()
+         (primitive-_exit 127))))
+    (pid
+     (cdr (waitpid pid)))))
+
+(define (system*/tty program . args)
+  "Run PROGRAM with ARGS, creating a tty if its standard input isn't one.
+The return value is as for 'system*'.
+
+This is necessary for commands such as 'cryptsetup open' or 'fsck' that may
+need to interact with the user but might be invoked from shepherd, where
+standard input is /dev/null."
+  (apply (if (isatty? (current-input-port))
+             system*
+             system*/console)
+         program args))
 
 (define (bind-mount source target)
   "Bind-mount SOURCE at TARGET."
@@ -180,13 +208,13 @@ true, check the file system even if it's marked as clean.  If REPAIR is false,
 do not write to the file system to fix errors.  If it's #t, fix all
 errors.  Otherwise, fix only those considered safe to repair automatically."
   (match (status:exit-val
-          (apply system* `("e2fsck" "-v" "-C" "0"
-                           ,@(if force? '("-f") '())
-                           ,@(match repair
-                               (#f '("-n"))
-                               (#t '("-y"))
-                               (_  '("-p")))
-                           ,device)))
+          (apply system*/tty "e2fsck" "-v" "-C" "0"
+                 `(,@(if force? '("-f") '())
+                   ,@(match repair
+                       (#f '("-n"))
+                       (#t '("-y"))
+                       (_  '("-p")))
+                   ,device)))
     (0 'pass)
     (1 'errors-corrected)
     (2 'reboot-required)
@@ -312,14 +340,14 @@ errors. Otherwise, fix only those considered safe to repair automatically."
         (status
          ;; A number, or #f on abnormal termination (e.g., assertion failure).
          (status:exit-val
-          (apply system* `("bcachefs" "fsck" "-v"
-                           ,@(if force? '("-f") '())
-                           ,@(match repair
-                               (#f '("-n"))
-                               (#t '("-y"))
-                               (_  '("-p")))
-                           ;; Make each multi-device member a separate argument.
-                           ,@(string-split device #\:))))))
+          (apply system*/tty "bcachefs" "fsck" "-v"
+                 `(,@(if force? '("-f") '())
+                   ,@(match repair
+                       (#f '("-n"))
+                       (#t '("-y"))
+                       (_  '("-p")))
+                   ;; Make each multi-device member a separate argument.
+                   ,@(string-split device #\:))))))
     (match (and=> status (cut logand <> (lognot ignored-bits)))
       (0 'pass)
       (1 'errors-corrected)
@@ -364,17 +392,17 @@ false, do not write to DEVICE.  If it's #t, fix any errors found.  Otherwise,
 fix only those considered safe to repair automatically."
   (if force?
       (match (status:exit-val
-              (apply system* `("btrfs" "check" "--progress"
-                               ;; Btrfs's ‘--force’ is not relevant to us here.
-                               ,@(match repair
-                                   ;; Upstream considers ALL repairs dangerous
-                                   ;; and will warn the user at run time.
-                                   (#t '("--repair"))
-                                   (_  '("--readonly" ; a no-op for clarity
-                                         ;; A 466G file system with 180G used is
-                                         ;; enough to kill btrfs with 6G of RAM.
-                                         "--mode" "lowmem")))
-                               ,device)))
+              (apply system*/tty "btrfs" "check" "--progress"
+                     ;; Btrfs's ‘--force’ is not relevant to us here.
+                     `(,@(match repair
+                           ;; Upstream considers ALL repairs dangerous
+                           ;; and will warn the user at run time.
+                           (#t '("--repair"))
+                           (_  '("--readonly"     ; a no-op for clarity
+                                 ;; A 466G file system with 180G used is
+                                 ;; enough to kill btrfs with 6G of RAM.
+                                 "--mode" "lowmem")))
+                       ,device)))
         (0 'pass)
         (_ 'fatal-error))
       'pass))
@@ -412,11 +440,11 @@ ignored: a full file system scan is always performed.  If REPAIR is false, do
 not write to the file system to fix errors. Otherwise, automatically fix them
 using the least destructive approach."
   (match (status:exit-val
-          (apply system* `("fsck.vfat" "-v"
-                           ,@(match repair
-                               (#f '("-n"))
-                               (_  '("-a"))) ; no 'safe/#t distinction
-                           ,device)))
+          (system*/tty "fsck.vfat" "-v"
+                       (match repair
+                         (#f "-n")
+                         (_  "-a"))               ;no 'safe/#t distinction
+                       device))
     (0 'pass)
     (1 'errors-corrected)
     (_ 'fatal-error)))
@@ -545,7 +573,7 @@ do not write to the file system to fix errors, and replay the transaction log
 only if FORCE?  is true. Otherwise, replay the transaction log before checking
 and automatically fix found errors."
   (match (status:exit-val
-          (apply system*
+          (apply system*/tty
                  `("jfs_fsck" "-v"
                    ;; The ‘LEVEL’ logic is convoluted.  To quote fsck/xchkdsk.c
                    ;; (‘-p’, ‘-a’, and ‘-r’ are aliases in every way):
@@ -621,10 +649,10 @@ REPAIR are true, automatically fix found errors."
             "warning: forced check of F2FS ~a implies repairing any errors~%"
             device))
   (match (status:exit-val
-          (apply system* `("fsck.f2fs"
-                           ,@(if force? '("-f") '())
-                           ,@(if repair '("-p") '("--dry-run"))
-                           ,device)))
+          (apply system*/tty "fsck.f2fs"
+                 `(,@(if force? '("-f") '())
+                   ,@(if repair '("-p") '("--dry-run"))
+                   ,device)))
     ;; 0 and -1 are the only two possibilities according to the man page.
     (0 'pass)
     (_ 'fatal-error)))
@@ -709,9 +737,9 @@ ignored: a full check is always performed.  Repair is not possible: if REPAIR is
 true and the volume has been repaired by an external tool, clear the volume
 dirty flag to indicate that it's now safe to mount."
   (match (status:exit-val
-          (apply system* `("ntfsfix"
-                           ,@(if repair '("--clear-dirty") '("--no-action"))
-                           ,device)))
+          (system*/tty "ntfsfix"
+                       (if repair "--clear-dirty" "--no-action")
+                       device))
     (0 'pass)
     (_ 'fatal-error)))
 
@@ -754,11 +782,11 @@ write to DEVICE.  If it's #t, replay the log, check, and fix any errors found.
 Otherwise, only replay the log, and check without attempting further repairs."
   (define (xfs_repair)
     (status:exit-val
-     (apply system* `("xfs_repair" "-Pv"
-                      ,@(match repair
-                          (#t '("-e"))
-                          (_  '("-n"))) ; will miss some errors
-                      ,device))))
+     (system*/tty "xfs_repair" "-Pv"
+                  (match repair
+                    (#t "-e")
+                    (_  "-n"))                    ;will miss some errors
+                  device)))
   (if force?
       ;; xfs_repair fails with exit status 2 if the log is dirty, which is
       ;; likely in situations where you're running xfs_repair.  Only the kernel

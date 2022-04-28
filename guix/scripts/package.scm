@@ -334,24 +334,8 @@ Alternately, see @command{guix package --search-paths -p ~s}.")
   "Search among all the versions of ENTRY's package that are available, and
 return the shortest unambiguous version prefix for this package.  If only one
 version of ENTRY's package is available, return the empty string."
-  (let ((name (manifest-entry-name entry)))
-    (match (map package-version (find-packages-by-name name))
-      ((_)
-       ;; A single version of NAME is available, so do not specify the
-       ;; version number, even if the available version doesn't match ENTRY.
-       "")
-      (versions
-       ;; If ENTRY uses the latest version, don't specify any version.
-       ;; Otherwise return the shortest unique version prefix.  Note that
-       ;; this is based on the currently available packages, which could
-       ;; differ from the packages available in the revision that was used
-       ;; to build MANIFEST.
-       (let ((current (manifest-entry-version entry)))
-         (if (every (cut version>? current <>)
-                    (delete current versions))
-             ""
-             (version-unique-prefix (manifest-entry-version entry)
-                                    versions)))))))
+  (package-unique-version-prefix (manifest-entry-name entry)
+                                 (manifest-entry-version entry)))
 
 (define* (export-manifest manifest
                           #:optional (port (current-output-port)))
@@ -901,7 +885,8 @@ processed, #f otherwise."
               (regexps  (map (cut make-regexp* <> regexp/icase) patterns))
               (matches  (find-packages-by-description regexps)))
          (leave-on-EPIPE
-          (display-search-results matches (current-output-port)))
+          (display-search-results matches (current-output-port)
+                                  #:regexps regexps))
          #t))
 
       (('show _)

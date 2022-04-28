@@ -7,7 +7,7 @@
 ;;; Copyright © 2014, 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2015 Omar Radwan <toxemicsquire4@gmail.com>
 ;;; Copyright © 2015 Pierre-Antoine Rault <par@rigelk.eu>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2020 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2015, 2016 David Thompson <davet@gnu.org>
@@ -118,6 +118,8 @@
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Evgeny Pisemsky <evgeny@pisemsky.com>
 ;;; Copyright © 2022 drozdov <drozdov@portalenergy.tech>
+;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
+;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1262,6 +1264,29 @@ and verifies that it matches the intended target hostname.")
 for working with bidirectional mappings in Python.")
     (license license:mpl2.0)))
 
+(define-public python-bip39
+  (package
+    (name "python-bip39")
+    (version "0.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "bip39" version))
+       (sha256
+        (base32 "18m7d3gi7vj2zi0bl1z7m0nhcj6i8j9vj4vil276siagnpkv64ry"))))
+    (build-system python-build-system)
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/de-centralized-systems/python-bip39/")
+    (synopsis "Self-contained and simple BIP39 implementation in Python")
+    (description
+     "This package provides a self-contained and simple BIP39
+implementation written in Python.  It includes a @code{bip39.py} executable.
+
+BIP39 is a standardized mapping between binary data (the @emph{entropy}),
+and a list of words that are easier to remember for humans (the
+@emph{mnemonic}).")
+    (license license:expat)))
+
 (define-public python-bitarray
   (package
     (name "python-bitarray")
@@ -1349,14 +1374,14 @@ NetCDF files can also be read and modified.  Python-HDF4 is a fork of
 (define-public python-h5py
   (package
     (name "python-h5py")
-    (version "2.10.0")
+    (version "3.6.0")
     (source
      (origin
       (method url-fetch)
       (uri (pypi-uri "h5py" version))
       (sha256
        (base32
-        "0baipzv8n93m0dq0riyi8rfhzrjrfrfh8zqhszzp1j2xjac2fhc4"))))
+        "0afv805vqrm5071g7alwv41920nhh8kjv4m5nbia9awj9a0x4ll7"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f ; no test target
@@ -1364,16 +1389,7 @@ NetCDF files can also be read and modified.  Python-HDF4 is a fork of
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-hdf5-paths
           (lambda* (#:key inputs #:allow-other-keys)
-            (let ((prefix (assoc-ref inputs "hdf5")))
-              (substitute* "setup_build.py"
-                (("\\['/opt/local/lib', '/usr/local/lib'\\]")
-                 (string-append "['" prefix "/lib" "']"))
-                (("'/opt/local/include', '/usr/local/include'")
-                 (string-append "'" prefix "/include" "'")))
-              (substitute* "setup_configure.py"
-                (("\\['/usr/local/lib', '/opt/local/lib'\\]")
-                 (string-append "['" prefix "/lib" "']")))
-              #t))))))
+            (setenv "HDF5_DIR" (assoc-ref inputs "hdf5")))))))
     (propagated-inputs
      (list python-six python-numpy))
     (inputs
@@ -1388,10 +1404,21 @@ HDF5 library from Python.  The low-level interface is intended to be a
 complete wrapping of the HDF5 API, while the high-level component supports
 access to HDF5 files, datasets and groups using established Python and NumPy
 concepts.")
-    (license license:bsd-3)))
+    (license license:bsd-3)
+    (properties `((python2-variant . ,(delay python2-h5py))))))
 
 (define-public python2-h5py
-  (package-with-python2 python-h5py))
+  (let ((base (package-with-python2 (strip-python2-variant python-h5py))))
+    (package
+      (inherit base)
+      (version "2.10.0")
+      (source
+       (origin
+         (method url-fetch)
+         (uri (pypi-uri "h5py" version))
+         (sha256
+          (base32
+           "0baipzv8n93m0dq0riyi8rfhzrjrfrfh8zqhszzp1j2xjac2fhc4")))))))
 
 (define-public python-hnswlib
   (package
@@ -3882,14 +3909,14 @@ environments and back.")
 (define-public python-pyyaml
   (package
     (name "python-pyyaml")
-    (version "5.4.1")
+    (version "6.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "PyYAML" version))
        (sha256
         (base32
-         "0pm440pmpvgv5rbbnm8hk4qga5a292kvlm1bh3x2nwr8pb5p8xv0"))))
+         "18imkjacvpxfgg1lbpraqywx3j7hr5dv99d242byqvrh2jf53yv8"))))
     (build-system python-build-system)
     (inputs
      (list libyaml python-cython))
@@ -3900,10 +3927,33 @@ environments and back.")
 complete YAML 1.1 parser, Unicode support, pickle support, capable extension
 API, and sensible error messages.  PyYAML supports standard YAML tags and
 provides Python-specific tags that represent an arbitrary Python object.")
-    (license license:expat)))
+    (license license:expat)
+    (properties `((python2-variant . ,(delay python2-pyyaml))))))
+
+(define-public python-pyyaml-5
+  (package
+    (inherit python-pyyaml)
+    (version "5.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "PyYAML" version))
+       (sha256
+        (base32
+         "0pm440pmpvgv5rbbnm8hk4qga5a292kvlm1bh3x2nwr8pb5p8xv0"))))))
 
 (define-public python2-pyyaml
-  (package-with-python2 python-pyyaml))
+  (let ((base (package-with-python2 (strip-python2-variant python-pyyaml))))
+    (package
+      (inherit base)
+      (version "5.4.1")
+      (source
+       (origin
+         (method url-fetch)
+         (uri (pypi-uri "PyYAML" version))
+         (sha256
+          (base32
+           "0pm440pmpvgv5rbbnm8hk4qga5a292kvlm1bh3x2nwr8pb5p8xv0")))))))
 
 (define-public python-vine
   (package
@@ -4671,7 +4721,7 @@ ecosystem, but can naturally be used also by other projects.")
 (define-public python-robotframework
   (package
     (name "python-robotframework")
-    (version "4.1.3")
+    (version "5.0")
     ;; There are no tests in the PyPI archive.
     (source
      (origin
@@ -4681,55 +4731,80 @@ ecosystem, but can naturally be used also by other projects.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0j71awmfkwk7prz82kr1zbcl3nrih3396sshrygnqlrdjmgivd3p"))
+        (base32 "0qcm36c8hachbv3bc05ky7cf63i3sj0y8dw3bwjvcln28i543f81"))
        (patches (search-patches
-                 "python-robotframework-source-date-epoch.patch"
-                 "python-robotframework-ug2html.patch"))))
+                 "python-robotframework-atest.patch"
+                 "python-robotframework-source-date-epoch.patch"))))
     (build-system python-build-system)
     (arguments
-     `(#:modules ((guix build python-build-system)
+     (list
+      #:modules '((guix build python-build-system)
                   (guix build utils)
                   (ice-9 ftw)
                   (ice-9 match)
                   (srfi srfi-26))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'build-and-install-doc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((doc (string-append (assoc-ref outputs "doc")
-                                       "/share/doc/robotframework")))
-               (invoke "invoke" "library-docs" "all")
-               (invoke "doc/userguide/ug2html.py" "dist") ;user guide
-               (mkdir-p doc)
-               (with-directory-excursion "dist"
-                 (define user-guide-dir
-                   (match (scandir "." (cut string-prefix?
-                                            "robotframework-userguide-" <>))
-                     ((dir) dir)
-                     (_ (error "could not find the user guide directory"))))
-                 (copy-recursively user-guide-dir doc)))))
-         (replace 'check
-           (lambda* (#:key native-inputs inputs tests?
-                     #:allow-other-keys)
-             (when tests?
-               ;; Some tests require timezone data.  Otherwise, they
-               ;; look up /etc/localtime, which doesn't exist, and
-               ;; fail with:
-               ;;
-               ;; OverflowError: mktime argument out of range
-               (setenv "TZDIR"
-                       (search-input-directory
-                        (or native-inputs inputs) "share/zoneinfo"))
-               (setenv "TZ" "Europe/Paris")
-               (invoke "python" "utest/run.py")))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'delete-problematic-tests
+            (lambda _
+              ;; Tests such as 'Tilde and username in path' rely on HOME and
+              ;; USER being set, on top of the user's /etc/passwd home
+              ;; directory not being '/', as is the case in the Guix build
+              ;; container.
+              (delete-file "atest/robot/standard_libraries/\
+operating_system/path_expansion.robot")
+              ;; FIXME: The test 'Process.Sending Signal.By default signal
+              ;; is not sent to process running in shell' fails for unknown
+              ;; reason (see:
+              ;; https://github.com/robotframework/robotframework/issues/4292).
+              (delete-file "atest/robot/standard_libraries/\
+process/sending_signal.robot")))
+          (add-before 'build 'build-and-install-doc
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((doc (string-append (assoc-ref outputs "doc")
+                                        "/share/doc/robotframework")))
+                (invoke "invoke" "library-docs" "all")
+                (invoke "doc/userguide/ug2html.py" "dist") ;user guide
+                (mkdir-p doc)
+                (with-directory-excursion "dist"
+                  (define user-guide-dir
+                    (match (scandir "." (cut string-prefix?
+                                             "robotframework-userguide-" <>))
+                      ((dir) dir)
+                      (_ (error "could not find the user guide directory"))))
+                  (copy-recursively user-guide-dir doc)))))
+          (replace 'check
+            (lambda* (#:key native-inputs inputs tests?
+                      #:allow-other-keys)
+              (when tests?
+                ;; Some tests require timezone data.  Otherwise, they
+                ;; look up /etc/localtime, which doesn't exist, and
+                ;; fail with:
+                ;;
+                ;; OverflowError: mktime argument out of range
+                (setenv "TZDIR"
+                        (search-input-directory
+                         (or native-inputs inputs) "share/zoneinfo"))
+                (setenv "TZ" "Europe/Paris")
+
+                (format #t "Running unit tests...~%")
+                (invoke "utest/run.py")
+
+                (format #t "Running acceptance tests...~%")
+                (invoke "xvfb-run" "atest/run.py")))))))
     (native-inputs
-     `(("python-docutils" ,python-docutils)
-       ("python-jsonschema" ,python-jsonschema)
-       ("python-invoke" ,python-invoke)
-       ("python-pygments" ,python-pygments)
-       ("python-rellu" ,python-rellu)
-       ("python:tk" ,python "tk")       ;used when building the HTML doc
-       ("tzdata" ,tzdata-for-tests)))
+     (list python-docutils
+           python-jsonschema
+           python-invoke
+           python-lxml
+           python-pygments
+           python-pyyaml
+           python-rellu
+           `(,python "tk")              ;used when building the HTML doc
+           python-xmlschema
+           scrot                        ;for taking screenshots
+           tzdata-for-tests
+           xvfb-run))
     (outputs '("out" "doc"))
     (home-page "https://robotframework.org")
     (synopsis "Generic automation framework")
@@ -4813,6 +4888,38 @@ data files in the CSV, XLS or XLSX formats.")
       (description "This package provides the @code{rflint} command-line
 utility, a static analysis tool (linter) for Robot Framework source files.")
       (license license:asl2.0))))
+
+(define-public python-robotframework-pabot
+  (package
+    (name "python-robotframework-pabot")
+    (version "2.5.2")
+    (source
+     (origin
+       ;; There are no tests in the PyPI archive.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mkorpela/pabot")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "14a8isq1f4lgfwjb84hhzg6jm7ns18dxa9bg6dy8k2ml8zl0qknk"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (replace 'check
+                     (lambda* (#:key tests? #:allow-other-keys)
+                       (when tests?
+                         (invoke "pytest" "-vv" "tests")))))))
+    (propagated-inputs
+     (list python-robotframework python-robotframework-stacktrace))
+    (native-inputs
+     (list python-pytest))
+    (home-page "https://pabot.org")
+    (synopsis "Parallel test runner for Robot Framework")
+    (description "Pabot is a parallel executor for Robot Framework tests.")
+    (license license:asl2.0)))
 
 (define-public python-robotframework-stacktrace
   (package
@@ -7250,17 +7357,17 @@ a general image processing tool.")
   (package
     (inherit python-pillow)
     (name "python-pillow-simd")
-    (version "9.0.0")
+    (version "9.0.0.post1")
     ;; The PyPI tarball does not include test files.
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/uploadcare/pillow-simd")
-             (commit version)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pxvfyzxzgk18mhm7xh5n19s88bpwaah5cm60p4c239phspzprdb"))))
+        (base32 "1dnvsln451aw3qy2cxg2ndd5mcanf5nrhxw9l7mcam730635hdm9"))))
     (inputs
      (modify-inputs (package-inputs python-pillow)
        (prepend libraqm libimagequant)))
@@ -7561,7 +7668,17 @@ formulas and hyperlinks to multiple worksheets in an Excel 2007+ XLSX file.")
               (uri (pypi-uri "PyWavelets" version))
               (sha256
                (base32
-                "13csbr6ls9q9ww53z2xwwsj0hpsz88rj2iwp623h0kmv8yq6kgbc"))))
+                "13csbr6ls9q9ww53z2xwwsj0hpsz88rj2iwp623h0kmv8yq6kgbc"))
+              (snippet
+               #~(begin
+                   (use-modules ((guix build utils)))
+                   (for-each delete-file
+                             (list
+                               "pywt/_extensions/_cwt.c"
+                               "pywt/_extensions/_dwt.c"
+                               "pywt/_extensions/_pywt.c"
+                               "pywt/_extensions/_pywt.h"
+                               "pywt/_extensions/_swt.c"))))))
     (build-system python-build-system)
     (arguments
      '(#:modules ((ice-9 ftw)
@@ -7579,7 +7696,8 @@ formulas and hyperlinks to multiple worksheets in an Excel 2007+ XLSX file.")
                (with-directory-excursion (string-append cwd "/build/" libdir)
                  (invoke "pytest" "-vv"))))))))
     (native-inputs
-     (list python-matplotlib ;for tests
+     (list python-cython
+           python-matplotlib ;for tests
            python-pytest))
     (propagated-inputs
      (list python-numpy))
@@ -9811,6 +9929,58 @@ more advanced mathematics.")
 multiprecision arithmetic.")
     (license license:lgpl3+)))
 
+(define-public python-plac
+  (package
+    (name "python-plac")
+    (version "1.3.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "plac" version))
+       (sha256
+        (base32 "1410h6jw1ksi24kb55xzkwqzba2qqjwiga1s354bf3s5s1jdig9q"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-tkinter
+           (lambda _
+             (substitute* "plac_tk.py"
+               (("from Tkinter import Tk")
+                "from tkinter import Tk")
+               (("from ScrolledText import ScrolledText")
+                "from tkinter.scrolledtext import ScrolledText")))))))
+    (native-inputs
+     `(("python-tkinter" ,python "tk")))
+    (home-page "https://github.com/ialbert/plac")
+    (synopsis "Command line arguments parser")
+    (description "This package can generate command line parameters from
+function signatures.")
+    (license license:bsd-3)))
+
+(define-public python-yte
+  (package
+    (name "python-yte")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "yte" version))
+       (sha256
+        (base32 "07hm1warpqi4ifqgkaz5sg887x4a44yhxafmpf835ywnpchg4s03"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
+    (propagated-inputs (list python-plac python-pyyaml))
+    (home-page "https://github.com/koesterlab/yte")
+    (synopsis "YAML template engine with Python expressions")
+    (description
+     "This package provides a YAML template engine with Python expressions.")
+    (license license:expat)))
+
 (define-public python-sympy
   (package
     (name "python-sympy")
@@ -10677,6 +10847,34 @@ lints.")
 TODO notes checker plugin for flake8.")
     (license license:expat)))
 
+(define-public python-flake8-isort
+  (package
+    (name "python-flake8-isort")
+    (version "4.1.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "flake8-isort" version))
+        (sha256
+          (base32 "05r7z0j9rqgy0a9261bhisairrz6w8hy5hy5kf2mhvhfnx53056q"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv")))))))
+    (propagated-inputs (list python-flake8 python-isort python-testfixtures))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/gforcada/flake8-isort")
+    (synopsis "Flake8 plugin integrating isort")
+    (description "This package provides a flake8 plugin that integrates isort,
+extending flake8 so that it can warn about badly sorted Python import
+directives.")
+    (license license:gpl2+)))
+
 (define-public python-autoflake
   (package
     (name "python-autoflake")
@@ -10901,6 +11099,25 @@ output.")
     (home-page "https://github.com/jackmaney/python-stdlib-list")
     (synopsis "Python Standard Libraries")
     (description "This package contains a list of Python Standard Libraries.")
+    (license license:expat)))
+
+(define-public python-stopit
+  (package
+    (name "python-stopit")
+    (version "1.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "stopit" version))
+       (sha256
+        (base32 "0vcrcvky249q4rbgmwf18mwmnypfk8jpn4h6knyjf86r7xc9rwzp"))))
+    (build-system python-build-system)
+    (arguments '(#:tests? #f)) ;there are none
+    (home-page "https://pypi.python.org/pypi/stopit")
+    (synopsis "Timeout control decorator and context managers")
+    (description
+     "Raise asynchronous exceptions in other threads, control the timeout of
+blocks or callables with two context managers and two decorators.")
     (license license:expat)))
 
 (define-public python-straight-plugin
@@ -11230,6 +11447,17 @@ suitable for similar data to JSON.  This package provides CPython bindings for
 reading and writing MessagePack data.")
     (home-page "https://pypi.org/project/msgpack/")
     (license license:asl2.0)))
+
+(define-public python-msgpack-1.0.2
+  (package
+    (inherit python-msgpack)
+    (version "1.0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "msgpack" version))
+              (sha256
+               (base32
+                "1109s2yynrahwi64ikax68hx0mbclz8p35afmpphw5dwynb49q7s"))))))
 
 ;; This msgpack library's name changed from "python-msgpack" to "msgpack" with
 ;; release 0.5. Some packages like borg still call it by the old name for now.
@@ -14080,13 +14308,12 @@ text.")
 (define-public python-moto
   (package
     (name "python-moto")
-    (version "2.2.12")
+    (version "3.1.4")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "moto" version))
               (sha256
-               (base32
-                "0pvay0jp119lzzwf5qj5h6311271yq0w2i6344ds20grpf6g6gz8"))))
+               (base32 "0dfnad1f9d5ybabs69dzc7x357z1r4jbhrhgw57gyic1qnmcw864"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -14109,7 +14336,9 @@ text.")
                         ;; These tests require Docker.
                         " and not test_terminate_job"
                         " and not test_invoke_function_from_sqs_exception"
-                        " and not test_rotate_secret_lambda_invocations"
+                        " and not test_create_custom_lambda_resource__verify_cfnresponse_failed"
+                        " and not test_lambda_function"
+
                         ;; These tests also require the network.
                         " and not test_put_record_batch_http_destination"
                         " and not test_put_record_http_destination"
@@ -14120,30 +14349,28 @@ text.")
      (list python-flask
            python-flask-cors
            python-freezegun
-           python-parameterized
+           python-graphql-core
            python-pytest
            python-sure))
     (inputs
      (list bash-minimal))
     (propagated-inputs
      (list python-aws-xray-sdk
-           python-boto
            python-boto3
            python-botocore
            python-cfn-lint
            python-cryptography
            python-dateutil
            python-docker
-           python-idna
+           python-importlib-metadata
            python-jinja2
            python-jose
            python-jsondiff
-           python-mock
+           python-markupsafe
            python-pytz
            python-pyyaml
            python-requests
            python-responses
-           python-six
            python-sshpubkeys
            python-werkzeug
            python-xmltodict))
@@ -14312,14 +14539,14 @@ servers.")
 (define-public python-jmespath
   (package
    (name "python-jmespath")
-   (version "0.9.4")
+   (version "1.0.0")
    (source
     (origin
      (method url-fetch)
      (uri (pypi-uri "jmespath" version))
      (sha256
       (base32
-       "0k0765x1mybcrzajh3hiqkl8sy9hs0bmn4900frxy0j3ykvaxqmx"))))
+       "0pmzfi230zfgiq2rz896kbb9f7mp0lnrjdl6x1npvxfixn0f5454"))))
    (build-system python-build-system)
    (native-inputs
     (list python-nose))
@@ -14462,14 +14689,14 @@ This software is unmaintained, and new projects should use @code{boto3} instead.
   ;; are compatible.
   (package
     (name "python-botocore")
-    (version "1.22.11")
+    (version "1.24.35")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "botocore" version))
        (sha256
         (base32
-         "1z7g2scyzvfq4yj9b4w911k7802ry1v6lqfnwq12l0ak7ywmsvrh"))))
+         "0rv8mvhq5s373zdjs2yb45hzvqcqdh2lp2rbb21jjc8ciwnl5d9n"))))
     (build-system python-build-system)
     (arguments
      ;; FIXME: Many tests are failing.
@@ -14488,7 +14715,7 @@ interface to the Amazon Web Services (AWS) API.")
 (define-public python-boto3
   (package
     (name "python-boto3")
-    (version "1.19.11")
+    (version "1.21.35")
     (home-page "https://github.com/boto/boto3")
     (source (origin
               (method git-fetch)
@@ -14496,14 +14723,18 @@ interface to the Amazon Web Services (AWS) API.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1wv0ci2z5ywvm63dh4mp64vqyyvkm4qxc8dxv8ncrqiiphpgr9aq"))))
+                "1kdyf238rpfldnpzs0rdh3nhjn6hwfym4faskyhzlgzkf1smmbg1"))))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'delete-network-tests
            ;; Deleting integration tests because they are trying to connect to AWS.
            (lambda _
-             (delete-file-recursively "tests/integration"))))))
+             (delete-file-recursively "tests/integration")))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-v")))))))
     (build-system python-build-system)
     (native-inputs
      (list python-nose python-mock python-pytest))
@@ -18460,14 +18691,14 @@ multitouch applications.")
 (define-public python-pycountry
   (package
     (name "python-pycountry")
-    (version "18.5.26")
+    (version "22.3.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pycountry" version))
        (sha256
         (base32
-         "15q9j047s3yc9cfcxq1ch8b71f81na44cr6dydd5gxk0ki9a4akz"))))
+         "0ihnkh86zz01vi46gcwgq6h71jrpj7hq71zi13c98n2qdhj3l5mj"))))
     (build-system python-build-system)
     (home-page "https://bitbucket.org/flyingcircus/pycountry")
     (synopsis "ISO databases for languages, countries, currencies, etc.")
@@ -21898,15 +22129,15 @@ working with iterables.")
 (define-public python-latexcodec
   (package
     (name "python-latexcodec")
-    (version "1.0.7")
+    (version "2.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "latexcodec" version))
        (sha256
-        (base32 "0wnp3yqcgx0rpy8dz51vh75lbp2qif67da19zi7m3ca98n887hgb"))))
+        (base32 "16pynfnn8y8xp55yp06i721fccv5dlx9ba6k5bzcwq9j6wf5b8ia"))))
     (build-system python-build-system)
-    (inputs
+    (propagated-inputs
      (list python-six))
     (home-page "https://readthedocs.org/projects/latexcodec/")
     (synopsis "Work with LaTeX code in Python")
@@ -21916,17 +22147,17 @@ working with iterables.")
 (define-public python-pybtex
   (package
     (name "python-pybtex")
-    (version "0.22.2")
+    (version "0.24.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pybtex" version))
        (sha256
-        (base32 "070wfcmxrd7xg1si421mi9150gmx2qwx431nwf69sq3hhmgnx080"))))
+        (base32 "0ma7sc10hk6caq5zghbk865vrlaynz7x5z630z0facqpnqssx3l1"))))
     (build-system python-build-system)
     (native-inputs
-     (list python-nose))
-    (inputs
+     (list python-pytest))
+    (propagated-inputs
      (list python-latexcodec python-pyyaml python-six))
     (arguments
      (list
@@ -21934,7 +22165,7 @@ working with iterables.")
                    (replace 'check
                      (lambda* (#:key tests? #:allow-other-keys)
                        (when tests?
-                         (invoke "nosetests")))))))
+                         (invoke "pytest")))))))
     (home-page "https://pybtex.org/")
     (synopsis "BibTeX-compatible bibliography processor")
     (description "Pybtex is a BibTeX-compatible bibliography processor written
@@ -22337,7 +22568,7 @@ user-space file systems in Python.")
 (define-public pybind11
   (package
     (name "pybind11")
-    (version "2.6.2")
+    (version "2.8.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -22345,7 +22576,7 @@ user-space file systems in Python.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "1lsacpawl2gb5qlh0cawj9swsyfbwhzhwiv6553a7lsigdbadqpy"))
+                "10hrkrh78sk7k0ydw1ghmp7gvpwmkby0l2s0kf2iaj9sz0vijkhs"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (native-inputs
@@ -22869,7 +23100,7 @@ N-dimensional arrays for Python.")
 (define-public python-anndata
   (package
     (name "python-anndata")
-    (version "0.7.8")
+    (version "0.8.0")
     (source
      (origin
        ;; The tarball from PyPi doesn't include tests.
@@ -22880,18 +23111,12 @@ N-dimensional arrays for Python.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1rrr9xfdaf00ixj5gyym75bl78gkaj55yfw3wjhvx0pdwqpwp9py"))))
+         "0v7npqrg1rdm8jzw22a45c0mqrmsv05r3k88i3lhzi0pzzxca1i1"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (delete 'check)
-         (add-before 'build 'relax-dependency-requirements
-           (lambda _
-             ;; We need to upgrade python-pandas to avoid
-             ;; https://github.com/pandas-dev/pandas/issues/35446
-             (substitute* "pyproject.toml"
-               (("pandas>=1.1.1") "pandas>=1.0.5"))))
          (replace 'build
            (lambda _
              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" ,version)
@@ -28188,13 +28413,13 @@ systems in Python.")
 (define-public python-dotenv
   (package
     (name "python-dotenv")
-    (version "0.19.2")
+    (version "0.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "python-dotenv" version))
        (sha256
-        (base32 "0pv5ygpr6syc6zkw21in4ysqs3k7qaxk9m1g5pzlafwm3silkpm5"))))
+        (base32 "13s9imfd0k4d7b1qy5wfqzw5vyj6rhmcrccsdz1l4g39b55b1qxp"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -28212,7 +28437,7 @@ systems in Python.")
      (list python-click))
     (native-inputs
      (list python-mock python-pytest python-sh))
-    (home-page "https://github.com/theskumar/python-dotenv")
+    (home-page "https://saurabh-kumar.com/python-dotenv/")
     (synopsis "Setup environment variables according to .env files")
     (description
      "This package provides the @code{python-dotenv} Python module to read
@@ -29095,6 +29320,42 @@ multipurpose analysis in Python.")
 static types.")
     (license license:asl2.0)))
 
+(define-public python-psycopg2-binary
+  (package
+    (name "python-psycopg2-binary")
+    (version "2.9.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "psycopg2-binary" version))
+              (sha256
+               (base32
+                "0kpaxg3lg5wg5ww5kxmzi2z2d7arsx13ci915d8a2pf17lqza7bn"))))
+    (build-system python-build-system)
+    (inputs (list postgresql))
+    (arguments
+     ;; Tests are disable because they need a live instance of PostgreSQL.
+     '(#:tests? #f))
+    (home-page "https://psycopg.org/")
+    (synopsis "PostgreSQL database adapter for Python")
+    (description
+     "Psycopg is a PostgreSQL database adapter for the Python programming
+language.  Its main features are the complete implementation of the Python DB
+API 2.0 specification and the thread safety (several threads can share the
+same connection).  It was designed for heavily multi-threaded applications
+that create and destroy lots of cursors and make a large number of concurrent
+@code{INSERT}s or @code{UPDATE}s.
+
+Psycopg 2 is mostly implemented in C as a libpq wrapper, resulting in
+being both efficient and secure.  It features client-side and
+server-side cursors, asynchronous communication and notifications,
+@code{COPY TO}/@code{COPY FROM} support.  Many Python types are supported
+out-of-the-box and adapted to matching PostgreSQL data types;
+adaptation can be extended and customized thanks to a flexible objects
+adaptation system.
+
+Psycopg 2 is both Unicode and Python 3 friendly.")
+    (license license:lgpl3+)))
+
 (define-public python-pyfuse3
   (package
     (name "python-pyfuse3")
@@ -29227,3 +29488,148 @@ writing STL files.  It supports both the text and binary forms of STL.")
     (description
      "This package provides a streaming multipart parser for Python.")
     (license license:asl2.0)))
+
+(define-public python-aiopg
+  (package
+    (name "python-aiopg")
+    (version "1.3.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "aiopg" version))
+              (sha256
+               (base32
+                "1mwmypsfzh8adjbyvf7kqv9h3k1kf5ykhi1g3ahw4wqdxaj6nz2l"))))
+    (build-system python-build-system)
+    (native-inputs (list python-sqlalchemy))
+    (propagated-inputs (list python-async-timeout python-psycopg2-binary))
+    (home-page "https://aiopg.readthedocs.io")
+    (synopsis "Postgres integration with asyncio")
+    (description
+     "aiopg is a library for accessing a PostgreSQL
+database from the asyncio (PEP-3156/tulip) framework.  It wraps
+asynchronous features of the Psycopg database driver.")
+    (license license:bsd-3)))
+
+(define-public python-verspec
+  (package
+    (name "python-verspec")
+    (version "0.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "verspec" version))
+              (sha256
+               (base32
+                "07n06wv85fm4vl1ird2mja0823js3x322wgs9gdnq1djjyk4ql64"))))
+    (build-system python-build-system)
+    (native-inputs (list python-coverage python-flake8 python-mypy
+                         python-pretend python-pytest))
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+                      (when tests?
+                        (add-installed-pythonpath inputs outputs)
+                        (invoke "touch" "test/__init__.py")
+                        (invoke "pytest")))))))
+    (home-page "https://github.com/jimporter/verspec")
+    (synopsis "Flexible version handling for Python")
+    (description
+     "This Python library handles software versions and specifiers.  It is
+adapted from the @code{packaging} package.")
+    (license (list license:bsd-2 license:asl2.0))))
+
+(define-public python-shtab
+  (package
+    (name "python-shtab")
+    (version "1.5.3")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "shtab" version))
+        (sha256
+          (base32 "127mymfm7r0hddk2vknqq34fj6dirj6ip990i3g4isx0lsd7pnsc"))))
+    (build-system python-build-system)
+    (native-inputs
+      (list bash
+            python-pytest
+            python-pytest-cov
+            python-pytest-timeout
+            python-setuptools-scm
+            python-wheel))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace
+             'check
+           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (invoke "pytest")))))))
+    (home-page "https://github.com/iterative/shtab")
+    (synopsis "Automagic shell tab completion for Python CLI applications")
+    (description
+      "This package automatically generates shell tab completion scripts for
+Python CLI apps.")
+    (license license:asl2.0)))
+
+(define-public python-sre-yield
+  (package
+    (name "python-sre-yield")
+    (version "1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sre_yield" version))
+       (sha256
+        (base32
+         "12kv3mvdr22g2v9wfr5aabh1f58s817dbh8mrlfzxzxs7hm1lkz9"))))
+    (build-system python-build-system)
+    (native-inputs (list python-nose))
+    (home-page "https://github.com/google/sre_yield")
+    (synopsis "Expands a regular expression to its possible matches")
+    (description
+     "The goal of sre_yield is to efficiently generate all values that can
+match a given regular expression, or count possible matches efficiently. It
+uses the parsed regular expression, so you get a much more accurate result
+than trying to just split strings.")
+    (license license:asl2.0)))
+
+(define-public python-hypy-utils
+  (package
+    (name "python-hypy-utils")
+    (version "1.0.6")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "hypy_utils" version))
+              (sha256
+               (base32
+                "05csk0x8ivavq88x457cq5hwjcdirfbkzj7bbg5qgnpnf2dxxhiw"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/hykilpikonna/HyPyUtils")
+    (synopsis "Python utility functions for HyDEV")
+    (description "This module provides Python utility functions for modifying
+and setting the color of terminal output, via HyDEV.")
+    (license license:expat)))
+
+(define-public python-mike
+  (package
+    (name "python-mike")
+    (version "1.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "mike" version))
+              (sha256
+               (base32
+                "0yxp816x7s948xsd0fifvq9shg01xdxlifd9rzf5y2rd9iwz3hsn"))))
+    (build-system python-build-system)
+    (native-inputs
+     (list python-coverage python-flake8 python-shtab))
+    (propagated-inputs
+     (list python-jinja2 python-mkdocs python-pyyaml python-verspec))
+    (home-page "https://github.com/jimporter/mike")
+    (synopsis "Manage multiple versions of MkDocs-powered documentation")
+    (description
+     "This package provides a Python utility to easily deploy multiple
+versions of MkDocs-powered docs to a Git branch.  It is suitable for deploying
+to Github via gh-pages.")
+    (license license:bsd-3)))

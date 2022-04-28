@@ -2,7 +2,7 @@
 ;;; Copyright © 2015, 2016, 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017, 2019–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Meiyo Peng <meiyo.peng@gmail.com>
-;;; Copyright © 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;;
@@ -266,7 +266,7 @@ to the structure and choosing one or more fields to act as the key.")
                           Cflags: -I${includedir}~%"
                           out ,version)))
               #t))))))
-    (native-inputs
+    (propagated-inputs
      (list libdivsufsort))
     (home-page "https://github.com/simongog/sdsl-lite")
     (synopsis "Succinct data structure library")

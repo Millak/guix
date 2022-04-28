@@ -254,7 +254,7 @@ supports HTTP, HTTPS and GnuTLS.")
 (define-public gnunet
   (package
    (name "gnunet")
-   (version "0.13.1")
+   (version "0.16.3")
    (source
     (origin
       (method url-fetch)
@@ -262,66 +262,37 @@ supports HTTP, HTTPS and GnuTLS.")
                           ".tar.gz"))
       (sha256
        (base32
-        "15jnca5zxng7r6m3qzq9lr73xxq0v6mvcp0lny3zrlkz5s2nmmq3"))))
+        "12n33r9nnkl5xwx8pwf571l2zvnvfllc8vm6mamrlyjk2cphaf9j"))))
    (build-system gnu-build-system)
    (inputs
-    `(("bluez" ,bluez)
-      ("glpk" ,glpk)
-      ("gnurl" ,gnurl)
-      ("gnutls" ,gnutls/dane)
-      ("gstreamer" ,gstreamer)
-      ("jansson" ,jansson)
-      ("libextractor" ,libextractor)
-      ("libidn" ,libidn2)
-      ("libgcrypt" ,libgcrypt)
-      ("libjpeg" ,libjpeg-turbo)
-      ("libltdl" ,libltdl)
-      ("libmicrohttpd" ,libmicrohttpd)
-      ("libogg" ,libogg)
-      ("libsodium" ,libsodium)
-      ("libunistring" ,libunistring)
-      ("miniupnpc" ,miniupnpc)
-      ("opus" ,opus)
-      ("pulseaudio" ,pulseaudio)
-      ("sqlite" ,sqlite)
-      ("zbar" ,zbar)
-      ("zlib" ,zlib)))
+    (list bluez
+          glpk
+          gnurl
+          gnutls/dane
+          gstreamer
+          jansson
+          libextractor
+          libidn2
+          libgcrypt
+          libjpeg-turbo
+          libltdl
+          libmicrohttpd
+          libogg
+          libsodium
+          libunistring
+          miniupnpc
+          opus
+          pulseaudio
+          sqlite
+          zbar
+          zlib))
    (native-inputs
-    (list curl pkg-config python xxd
+    (list curl openssl pkg-config python xxd
           (@ (gnu packages base) which)))
    (arguments
     '(#:parallel-tests? #f ; Parallel tests aren't supported.
       #:phases
       (modify-phases %standard-phases
-        (add-after 'configure 'remove-failing-tests
-          ;; These tests fail in Guix's building environment.
-          (lambda _
-            (substitute* "src/transport/Makefile"
-              (("\\$\\(am__EXEEXT_15\\)") "") ; test_transport_api_https
-              (("test_transport_api_manipulation_cfg\\$\\(EXEEXT\\) \\\\\n") "")
-              (("test_transport_api_udp_nat\\$\\(EXEEXT\\) \\\\\n") "")
-              (("test_transport_blacklisting_multiple_plugins\\$\\(EXEEXT\\) \\\\\n") ""))
-            (substitute* "src/testbed/Makefile"
-              (("test_testbed_api_2peers_1controller\\$\\(EXEEXT\\) \\\\\n") "")
-              (("test_testbed_api_statistics\\$\\(EXEEXT\\) \\\\\n") "")
-              (("test_testbed_api_test\\$\\(EXEEXT\\) \\\\\n") "")
-              (("test_testbed_api_test_timeout\\$\\(EXEEXT\\) \\\\\n") "")
-              (("test_testbed_api_topology\\$\\(EXEEXT\\) \\\\\n") "")
-              (("test_testbed_api_topology_clique\\$\\(EXEEXT\\) \\\\\n") ""))
-            (substitute* "src/topology/Makefile"
-              (("^check_PROGRAMS.*") "\n")
-              (("test_gnunet_daemon_topology\\$\\(EXEEXT\\)\n") ""))
-            (substitute* "src/namestore/Makefile"
-              (("\\$\\(am__append_2\\)") ""))
-            (substitute* "src/gns/Makefile"
-              (("\\$\\(am__append_4\\)") ""))
-            (substitute* "contrib/Makefile"
-              (("^check_PROGRAMS.*") "\n"))
-            ;; 'test' from coreutils doesn't behave as the test expects.
-            (substitute* '("src/gns/gnunet-gns-proxy-setup-ca.in"
-                           "src/transport/gnunet-transport-certificate-creation.in")
-              (("gnutls-certtool") "certtool"))
-            #t))
         (add-before 'check 'set-env-var-for-tests
           (lambda _
             (setenv "LANG" "en_US.UTF-8")))
@@ -344,7 +315,7 @@ that sense aims to replace the current internet protocol stack.  Along with
 an application for secure publication of files, it has grown to include all
 kinds of basic applications for the foundation of a GNU internet.")
    (license license:agpl3+)
-   (home-page "https://gnunet.org/")))
+   (home-page "https://gnunet.org/en/")))
 
 (define-public guile-gnunet                       ;GSoC 2015!
   (let ((commit "d12167ab3c8d7d6caffd9c606e389ef043760602")

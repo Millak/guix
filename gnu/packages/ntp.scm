@@ -8,6 +8,7 @@
 ;;; Copyright © 2019 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -153,7 +154,10 @@ time-stamping or reference clock, sub-microsecond accuracy is possible.")
             `(("libcap" ,libcap))
             '())))
    (arguments
-    `(#:phases
+    `(;; Pass "--with-yielding-select=yes" so that 'configure' knows whether
+      ;; 'select' yields when using pthreads in a cross-compilation context.
+      #:configure-flags (list "--with-yielding-select=yes")
+      #:phases
       (modify-phases %standard-phases
         (add-after 'unpack 'disable-network-test
                    (lambda _

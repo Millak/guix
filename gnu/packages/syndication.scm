@@ -3,6 +3,7 @@
 ;;; Copyright © 2018, 2019, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2022 Luis Felipe López Acevedo <luis.felipe.la@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -537,6 +538,11 @@ formats, including all versions of RSS and Atom.")
              (substitute* "gfeeds/confManager.py"
                (("mpv") (search-input-file inputs "/bin/mpv")))
              #t))
+         (add-after 'unpack 'patch-webkit2-version
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "bin/gfeeds.in"
+               (("gi\\.require_version\\('WebKit2', '4\\.0'\\)")
+                "gi.require_version('WebKit2', '4.1')"))))
          (add-after 'install 'wrap-gfeeds
            (lambda* (#:key outputs #:allow-other-keys)
              (wrap-program (string-append

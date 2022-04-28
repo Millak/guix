@@ -5,7 +5,7 @@
 ;;; Copyright © 2016, 2017 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2013, 2014, 2015, 2016, 2020 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016, 2017, 2019-2022 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2021 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016, 2017, 2020 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
@@ -49,6 +49,8 @@
 ;;; Copyright © 2021 Alice Brenon <alice.brenon@ens-lyon.fr>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
+;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -231,11 +233,15 @@ for adding, removing and dropping callbacks.")
        (uri (pypi-uri "aiohttp" version))
        (sha256
         (base32 "0y3m1dzl4h6frg8vys0fc3m83ijd1plfpihv3kvmxqadlphp2m7w"))
-       ;; TODO: Unbundle the llhttp sources.
-       ;; (modules '((guix build utils)))
-       ;; (snippet
-       ;;  '((delete-file-recursively "vendor")))
-       ))
+       (snippet
+        #~(begin
+            (use-modules ((guix build utils)))
+            ;; TODO: Unbundle the llhttp sources.
+            ;; (delete-file-recursively "vendor")
+            (delete-file "aiohttp/_helpers.c")
+            (delete-file "aiohttp/_http_parser.c")
+            (delete-file "aiohttp/_http_writer.c")
+            (delete-file "aiohttp/_websocket.c")))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -497,7 +503,7 @@ Model} (SAM) templates into AWS CloudFormation templates.")
 (define-public python-aws-xray-sdk
   (package
     (name "python-aws-xray-sdk")
-    (version "2.6.0")
+    (version "2.9.0")
     (home-page "https://github.com/aws/aws-xray-sdk-python")
     (source (origin
               (method git-fetch)
@@ -505,7 +511,7 @@ Model} (SAM) templates into AWS CloudFormation templates.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "12fzr0ylpa1lx3xr1x2f1jx8iiyzcr6g57fb9jign0j0lxdlbzpv"))))
+                "04fyik5axbilj2g9fzhhw8ch8xfn7iai3j6myk7z4g26m1mrhxsi"))))
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -519,6 +525,7 @@ Model} (SAM) templates into AWS CloudFormation templates.")
                                   "tests/ext/psycopg2/test_psycopg2.py"
                                   "tests/ext/pymysql/test_pymysql.py"
                                   "tests/ext/pynamodb/test_pynamodb.py"
+                                  "tests/ext/sqlalchemy_core/test_postgres.py"
                                   "tests/test_async_recorder.py"
 
                                   ;; FIXME: Why is this failing?
@@ -527,6 +534,7 @@ Model} (SAM) templates into AWS CloudFormation templates.")
                                   ;; TODO: How to configure Django for these tests.
                                   "tests/ext/django/test_db.py"
                                   "tests/ext/django/test_middleware.py"
+                                  "tests/ext/django/test_settings.py"
 
                                   ;; These tests want to access httpbin.org.
                                   "tests/ext/requests/test_requests.py"
@@ -536,7 +544,13 @@ Model} (SAM) templates into AWS CloudFormation templates.")
                     (lambda _
                       ;; Allow "import tests.utils" to work as expected.
                       (setenv "PYTHONPATH" (getcwd))
-                      (invoke "pytest" "-vv" "tests"))))))
+                      (invoke "pytest" "-vv" "tests"
+                              "-k"
+                              ;; These tests fail because "fixture 'benchmark'
+                              ;; not found"
+                              (string-append
+                               "not test_pkgutil_static_read"
+                               " and not test_pkg_resources_static_read")))))))
     (native-inputs
      (list ;; These are required for the test suite.
            python-bottle
@@ -2860,36 +2874,43 @@ supports url redirection and retries, and also gzip and deflate decoding.")
   (package
     ;; Note: updating awscli typically requires updating botocore as well.
     (name "awscli")
-    (version "1.21.11")
+    (version "1.22.90")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri name version))
        (sha256
         (base32
-         "0fkivwbx4nind5b7l4jhqm5bb9drgqsclcslrg4aggf9rcs4g4s0"))))
+         "0ky4ax4xh7s8w1l0hwc7w9ii8afvh9nib3kz09qhiqdinxzrlv54"))))
     (build-system python-build-system)
     (arguments
      ;; FIXME: The 'pypi' release does not contain tests.
      '(#:tests? #f
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'fix-reference-to-groff
+         (add-after 'unpack 'use-recent-pyyaml
            (lambda _
+             (substitute* '("awscli.egg-info/requires.txt"
+                            "setup.cfg"
+                            "setup.py")
+               (("<5.5") "<=6"))))
+         (add-after 'unpack 'fix-reference-to-groff
+           (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "awscli/help.py"
                (("if not self._exists_on_path\\('groff'\\):") "")
                (("raise ExecutableNotFoundError\\('groff'\\)") "")
                (("cmdline = \\['groff'")
-                (string-append "cmdline = ['" (which "groff") "'"))))))))
-    (propagated-inputs
-     (list python-colorama-for-awscli
+                (string-append "cmdline = ['"
+                               (search-input-file inputs "bin/groff")
+                               "'"))))))))
+    (inputs
+     (list groff
+           python-colorama-for-awscli
            python-botocore
            python-s3transfer
            python-docutils-0.15
            python-pyyaml
            python-rsa))
-    (native-inputs
-     (list groff))
     (home-page "https://aws.amazon.com/cli/")
     (synopsis "Command line client for AWS")
     (description "AWS CLI provides a unified command line interface to the
@@ -5026,8 +5047,7 @@ without requiring a page refresh.")
          (add-after 'unpack 'use-urllib3
            (lambda _
              (substitute* "port_for/_download_ranges.py"
-               (("urllib2") "urllib3"))
-             #t)))))
+               (("urllib2") "urllib3")))))))
     (propagated-inputs
      (list python-urllib3))
     (native-inputs
@@ -5043,14 +5063,14 @@ association.")
 (define-public python-livereload
   (package
     (name "python-livereload")
-    (version "2.6.1")
+    (version "2.6.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "livereload" version))
        (sha256
         (base32
-         "0rhggz185bxc3zjnfpmhcvibyzi86i624za1lfh7x7ajsxw4y9c9"))))
+         "0scqjnhg3ap81v36ghp0pik774dnfdkwqsx5j1jfbzarbs32yvvp"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-six python-tornado))
@@ -6192,12 +6212,20 @@ communicate with Microsoft Azure Storage services.")
      (origin
        (method url-fetch)
        (uri (pypi-uri "w3lib" version))
+       (patches (search-patches "python-w3lib-fix-test-failure.patch"))
        (sha256
         (base32
          "1pv02lvvmgz2qb61vz1jkjc04fgm4hpfvaj5zm4i3mjp64hd1mha"))))
     (build-system python-build-system)
+    (arguments
+     `(#:phases
+        (modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest")))))))
     (native-inputs
-     (list python-six))
+     (list python-pytest python-six))
     (home-page "https://github.com/scrapy/w3lib")
     (synopsis "Python library of web-related functions")
     (description
@@ -6390,4 +6418,54 @@ Full documentation may be found at
     (synopsis "Twitter library for Python")
     (description "This package provides @code{Tweepy}, an easy-to-use Python
 library for accessing the Twitter API.")
+    (license license:expat)))
+
+(define-public python-quart
+  (package
+    (name "python-quart")
+    (version "0.17.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "Quart" version))
+       (sha256
+        (base32 "0h4n2dwzmqifya1razp9s7ppr4ra23ljac9v7sl039rzp3c17wic"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list hypercorn
+           python-aiofiles
+           python-blinker
+           python-click
+           python-itsdangerous
+           python-jinja2
+           python-markupsafe
+           python-toml
+           python-werkzeug))
+    (home-page "https://gitlab.com/pgjones/quart/")
+    (synopsis "Python ASGI web microframework with the same API as Flask")
+    (description
+     "This package provides a Python ASGI web microframework with the same API
+as Flask.")
+    (license license:expat)))
+
+(define-public python-ajsonrpc
+  (package
+    (name "python-ajsonrpc")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ajsonrpc" version))
+       (sha256
+        (base32 "17x1a4r4l428mhwn53abki9gzdzq3halyr4lj48fw3dzy0caq6vr"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-quart
+           python-sanic
+           python-tornado))
+    (home-page "https://github.com/pavlov99/ajsonrpc")
+    (synopsis "Async JSON-RPC 2.0 protocol and server")
+    (description
+     "This package provides a Python JSON-RPC 2.0 protocol and server powered
+by asyncio.")
     (license license:expat)))

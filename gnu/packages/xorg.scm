@@ -6145,12 +6145,15 @@ to answer a question.  Xmessage can also exit after a specified time.")
              (string-append "ftp://ftp.invisible-island.net/xterm/"
                             "xterm-" version ".tgz")))
        (sha256
-        (base32 "10lc72spa69n9d7zg9nwhgwz70qzidp5i17jgw3lq3qg1a25sg4n"))))
+        (base32 "10lc72spa69n9d7zg9nwhgwz70qzidp5i17jgw3lq3qg1a25sg4n"))
+       (patches
+         (search-patches "xterm-370-explicit-xcursor.patch"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--enable-wide-chars" "--enable-load-vt-fonts"
                            "--enable-i18n" "--enable-doublechars"
-                           "--enable-luit" "--enable-mini-luit")
+                           "--enable-luit" "--enable-mini-luit"
+                           "X_EXTRA_LIBS=-lXcursor")
        #:tests? #f                      ; no test suite
        #:phases
        (modify-phases %standard-phases

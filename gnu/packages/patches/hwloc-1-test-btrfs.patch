@@ -1,0 +1,54 @@
+From 093316a897a2eb4972a7a3a5888f40975d03f6bf Mon Sep 17 00:00:00 2001
+From: Brice Goglin <Brice.Goglin@inria.fr>
+Date: Tue, 5 Apr 2022 17:39:50 +0200
+Subject: [PATCH] linux: (partial) fix the discovery of hugepages on btrfs
+ fsroot
+
+btrfs always returns 1 in directory stat.st_nlink.
+It breaks make check in tests/linux/ because the hugepages discovery
+uses st_nlink to allocate the memory page_types array.
+
+Always allocate at least 3 page_types slots
+(enough for all known cases, 1 for normal, 2 for huge pages)
+
+(partially cherry-picked from commit 7f351cec9bfe54a031f35ad16c9cfb99784d76dc)
+
+We don't reallocate later if needed as in 2.x commit 7f351cec9bfe54a031f35ad16c9cfb99784d76dc
+because v1.11 doesn't deserve a complete fix. Just commit the minimal change
+so that tests/linux/2i386-2t-hugepagesizecount with HWLOC_PAGESIZE_DEBUG=4096
+doesn't crash in btrfs anymore (test-topology.sh fails during make check if /tmp is in btrfs).
+
+Thanks to Philippe Swartvagher for the report.
+
+Signed-off-by: Brice Goglin <Brice.Goglin@inria.fr>
+---
+ src/topology-linux.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/src/topology-linux.c b/src/topology-linux.c
+index 58c275fea..269eca7f5 100644
+--- a/src/topology-linux.c
++++ b/src/topology-linux.c
+@@ -1,6 +1,6 @@
+ /*
+  * Copyright © 2009 CNRS
+- * Copyright © 2009-2019 Inria.  All rights reserved.
++ * Copyright © 2009-2022 Inria.  All rights reserved.
+  * Copyright © 2009-2013, 2015 Université Bordeaux
+  * Copyright © 2009-2014 Cisco Systems, Inc.  All rights reserved.
+  * Copyright © 2015 Intel, Inc.  All rights reserved.
+@@ -2329,7 +2329,14 @@ hwloc_get_procfs_meminfo_info(struct hwloc_topology *topology,
+ 
+   err = hwloc_stat("/sys/kernel/mm/hugepages", &st, data->root_fd);
+   if (!err) {
+-    types = 1 + st.st_nlink-2;
++    types = 1 /* normal non-huge size */ + st.st_nlink - 2 /* ignore . and .. */;
++    if (types < 3)
++      /* some buggy filesystems (e.g. btrfs when reading from fsroot)
++       * return wrong st_nlink for directories (always 1 for btrfs).
++       * use 3 as a sane default (default page + 2 huge sizes).
++       * hwloc_parse_hugepages_info() will extend it if needed.
++       */
++      types = 3;
+     has_sysfs_hugepages = 1;
+   }

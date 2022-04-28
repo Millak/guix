@@ -28,7 +28,7 @@
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2018 Gábor Boskovits <boskovits@gmail.com>
 ;;; Copyright © 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2019, 2020, 2021 Tanguy Le Carrour <tanguy@bioneland.org>
+;;; Copyright © 2019–2022 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Justus Winter <justus@sequoia-pgp.org>
 ;;; Copyright © 2020 Eric Brown <ecbrown@ericcbrown.com>
@@ -45,6 +45,8 @@
 ;;; Copyright © 2021 Benoit Joly <benoit@benoitj.ca>
 ;;; Copyright © 2021 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2021 Philip McGrath <philip@philipmcgrath.com>
+;;; Copyright © 2022 Andrew Tropin <andrew@trop.in>
+;;; Copyright © 2022 Justin Veilleux <terramorpha@cock.li>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -91,6 +93,7 @@
   #:use-module (gnu packages file)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages gawk)
   #:use-module (gnu packages gdb)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages ghostscript)
@@ -552,7 +555,7 @@ aliasing facilities to work just as they would on normal mail.")
 (define-public mutt
   (package
     (name "mutt")
-    (version "2.2.1")
+    (version "2.2.3")
     (source (origin
              (method url-fetch)
              (uri (list
@@ -562,7 +565,7 @@ aliasing facilities to work just as they would on normal mail.")
                                    version ".tar.gz")))
              (sha256
               (base32
-               "1ddbhwsycfpf430k52l5gggywd09h10hwcwzpydam43c5ga30vdp"))
+               "12cds5qm0x51wj1bz1a2f4q4qwbyfssq9pnisxz48ks5mg6xv2lp"))
              (patches (search-patches "mutt-store-references.patch"))))
     (build-system gnu-build-system)
     (inputs
@@ -1486,14 +1489,36 @@ and search library.")
   (package
     (inherit python-notmuch)
     (name "python-notmuch2")
+    (version (package-version notmuch))
     (propagated-inputs (list python-cffi))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; This python package lives in a subdirectory of the notmuch source
-         ;; tree, so chdir into it before building.
-         (add-after 'unpack 'enter-python-dir
-           (lambda _ (chdir "bindings/python-cffi"))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; This python package lives in a subdirectory of the notmuch source
+          ;; tree, so chdir into it before building.
+          (add-after 'unpack 'enter-python-dir
+            (lambda _ (chdir "bindings/python-cffi")))
+          ;; python-build-system does not invoke the configure script
+          ;; so _notmuch_config.py is missing
+          (add-after 'enter-python-dir 'create-notmuch-config
+            (lambda* (#:key inputs #:allow-other-keys)
+              (with-output-to-file "_notmuch_config.py"
+                (lambda _
+                  (display
+                   (string-append
+                    "NOTMUCH_INCLUDE_DIR="
+                    "'" (dirname (search-input-file inputs "include/notmuch.h")) "'\n"
+                    "NOTMUCH_LIB_DIR="
+                    "'" (dirname (search-input-file inputs "lib/libnotmuch.so")) "'"))))))
+          ;; version.txt is not included in notmuch, so we patch in the version number
+          (add-after 'create-notmuch-config 'patch-setup.py
+            (lambda _
+              (substitute* "setup.py"
+                (("NOTMUCH_VERSION_FILE")
+                 "'/dev/null'")
+                (("version=VERSION,")
+                 (string-append "version='" #$version "',"))))))))
     (synopsis "Pythonic bindings for the notmuch mail database using CFFI")
     (license license:gpl3+)))
 
@@ -1708,14 +1733,14 @@ addons which can add many functionalities to the base client.")
 (define-public msmtp
   (package
     (name "msmtp")
-    (version "1.8.19")
+    (version "1.8.20")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://marlam.de/msmtp/releases/"
+       (uri (string-append "https://marlam.de/msmtp/releases"
                            "/msmtp-" version ".tar.xz"))
        (sha256
-        (base32 "0ssj8izcw1fywihlip6wljd9i41w23cy0vp69sz4v1vn26cf389l"))))
+        (base32 "04di9qs2bwiwidnhk3afif5mh05q3ggr9cyhr5ysyj0gzjmf4fnr"))))
     (build-system gnu-build-system)
     (inputs
      (list libsecret gnutls zlib gsasl))
@@ -2722,18 +2747,55 @@ converts them to maildir format directories.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0fa8s9dp5ilwmfcwkx72x2b5i0maa5sl97hv2cdknqmc27gv0b1c"))))
+    (outputs '("out" "contrib"))
     (build-system gnu-build-system)
-    (native-inputs
-     (list perl))
+    (inputs (list bash-minimal
+                  coreutils
+                  gawk
+                  glibc
+                  gnupg
+                  ncurses
+                  openssl
+                  ruby
+                  sed))
+    (native-inputs (list perl))
     (arguments
      (list
       #:make-flags
       #~(list #$(string-append "CC=" (cc-for-target))
               "PREFIX="
               (string-append "DESTDIR=" #$output))
+      #:modules '((ice-9 ftw)
+                  (guix build utils)
+                  (guix build gnu-build-system))
       #:phases
       #~(modify-phases %standard-phases
-          (delete 'configure))))
+          (delete 'configure)
+          (add-after 'install 'install-contrib
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (contrib (assoc-ref outputs "contrib"))
+                     (contrib-bin (string-append contrib "/bin"))
+                     (exe? (lambda (file)
+                             (let ((s (stat file)))
+                               (and (eq? 'regular (stat:type s))
+                                    (logtest #o100 (stat:perms s)))))))
+                (mkdir-p contrib-bin)
+                (with-directory-excursion "contrib"
+                  (for-each
+                    (lambda (prog)
+                      (install-file prog contrib-bin)
+                      (wrap-program (string-append contrib-bin "/" prog)
+                       `("PATH" =
+                         (,contrib-bin
+                          ,(string-append out "/bin")
+                          ,(string-append (assoc-ref inputs "coreutils") "/bin")
+                          ,(string-append (assoc-ref inputs "gawk") "/bin")
+                          ,(string-append (assoc-ref inputs "glibc") "/bin")
+                          ,(string-append (assoc-ref inputs "ncurses") "/bin")
+                          ,(string-append (assoc-ref inputs "openssl") "/bin")
+                          ,(string-append (assoc-ref inputs "sed") "/bin")))))
+                    (scandir "." exe?)))))))))
     (home-page "https://github.com/leahneukirchen/mblaze")
     (synopsis "Unix utilities to deal with Maildir")
     (description
@@ -3984,8 +4046,8 @@ related tools to process winmail.dat files.")
 
 (define-public l2md
   ;; No official release.
-  (let ((commit "f7286b49bb5fce25c898c143712fe34ad4d7864e")
-        (revision "1"))
+  (let ((commit "9db252bc1716ebaf0abd3a47a59ea78e4e6253d6")
+        (revision "2"))
     (package
       (name "l2md")
       (version (git-version "0.1.0" revision commit))
@@ -3997,7 +4059,7 @@ related tools to process winmail.dat files.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0hxz8i70v1xgv30zjclfvmjqszn073c7i8nwmswi2lr6vd7cklvp"))))
+          (base32 "1hfbngwdavdhw5ghnadmi0djg2yrr0wrkv15jdd9wcqh9h6mxy8z"))))
       (build-system gnu-build-system)
       (inputs
        (list libgit2))
@@ -4574,3 +4636,23 @@ Guix's version of @command{sendgmail} has been patched for compatibility with
 all known forks, including support for non-@code{@@gmail.com} email
 addresses.")
       (license license:asl2.0))))
+
+(define-public smtpmail
+  (package
+    (name "smtpmail")
+    (version "0.4.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://savannah/smtpmail/smtpmail-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "08ap2l2g2avkq2jx05jy993517vvapmypg7j5cwl8gvpq436gdh5"))))
+    (build-system gnu-build-system)
+    (home-page "https://www.nongnu.org/smtpmail/")
+    (synopsis "SMTP utility")
+    (description
+     "smtpmail is a little console-based tool for users who have no local
+mailserver on their machine.  It enables these users to send their mail over a
+remote SMTP server.")
+    (license license:gpl2+)))

@@ -67,7 +67,7 @@ in apps built for the Pantheon desktop.")
 (define-public pantheon-calculator
   (package
     (name "pantheon-calculator")
-    (version "1.5.5")
+    (version "1.7.2")
     (source
      (origin
        (method git-fetch)
@@ -77,7 +77,7 @@ in apps built for the Pantheon desktop.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1csxsr2c8qvl97xz9ahwn91z095nzgr0i1mbcb1spljll2sr9lkj"))))
+         "11rwwi6nlhwpcm29dn2mbz0239nfjdwlqlqbchm0j9sr1ypifk2k"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -85,13 +85,13 @@ in apps built for the Pantheon desktop.")
        (modify-phases %standard-phases
          (add-after 'unpack 'disable-schema-cache-generation
            (lambda _
-             (setenv "DESTDIR" "/")
-             #t)))))
+             (setenv "DESTDIR" "/"))))))
     (inputs
-     `(("granite" ,granite)
-       ("glib" ,glib)
-       ("gtk" ,gtk+)
-       ("libgee" ,libgee)))
+      (list granite
+            glib
+            gtk+
+            libgee
+            libhandy))
     (native-inputs
      `(("cmake" ,cmake)
        ("glib:bin" ,glib "bin") ; for glib-compile-schemas

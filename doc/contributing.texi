@@ -1911,6 +1911,28 @@ Currently, some parts of Guix cannot be translated on Weblate, help wanted!
       translated.
 @end itemize
 
+@subsubheading Conditions for Inclusion
+
+There are no conditions for adding new translations of the @code{guix} and
+@code{guix-packages} components, other than they need at least one translated
+string.  New languages will be added to Guix as soon as possible.  The
+files may be removed if they fall out of sync and have no more translated
+strings.
+
+Given that the web site is dedicated to new users, we want its translation
+to be as complete as possible before we include it in the language menu.
+For a new language to be included, it needs to reach at least 80% completion.
+When a language is included, it may be removed in the future if it stays
+out of sync and falls below 60% completion.
+
+The manual and cookbook are automatically added in the default compilation
+target.  Everytime we synchronize translations, developers need to
+recompile all the translated manuals and cookbooks.  This is useless for what
+is essentially the English manual or cookbook.  Therefore, we will only
+include a new language when it reaches 10% completion in the component.
+When a language is included, it may be removed in the future if it stays
+out of sync and falls below 5% completion.
+
 @subsubheading Translation Infrastructure
 
 Weblate is backed by a git repository from which it discovers new strings to

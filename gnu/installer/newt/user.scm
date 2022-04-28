@@ -40,6 +40,9 @@ REAL-NAME, and HOME-DIRECTORY as the initial values in the form."
   (define (pad-label label)
     (string-pad-right label 25))
 
+  (define (root-account? name)
+    (string=? name "root"))
+
   (let* ((label-name
           (make-label -1 -1 (pad-label (G_ "Name"))))
          (label-real-name
@@ -116,10 +119,14 @@ REAL-NAME, and HOME-DIRECTORY as the initial values in the form."
                                GRID-ELEMENT-SUBGRID button-grid)
                               title)
 
-    (let ((error-page
+    (let ((error-empty-field-page
            (lambda ()
              (run-error-page (G_ "Empty inputs are not allowed.")
-                             (G_ "Empty input")))))
+                             (G_ "Empty input"))))
+          (error-root-page
+           (lambda ()
+             (run-error-page (G_ "Root account is automatically created.")
+                             (G_ "Root account")))))
       (receive (exit-reason argument)
           (run-form form)
         (dynamic-wind
@@ -132,22 +139,28 @@ REAL-NAME, and HOME-DIRECTORY as the initial values in the form."
                       (real-name      (entry-value entry-real-name))
                       (home-directory (entry-value entry-home-directory))
                       (password       (entry-value entry-password)))
-                  (if (or (string=? name "")
-                          (string=? home-directory ""))
-                      (begin
-                        (error-page)
-                        (run-user-add-page))
-                      (let ((password (confirm-password password)))
-                        (if password
-                            (user
-                             (name name)
-                             (real-name real-name)
-                             (home-directory home-directory)
-                             (password (make-secret password)))
-                            (run-user-add-page #:name name
-                                               #:real-name real-name
-                                               #:home-directory
-                                               home-directory)))))))))
+                  (cond
+                   ;; Empty field.
+                   ((or (string=? name "")
+                        (string=? home-directory ""))
+                    (error-empty-field-page)
+                    (run-user-add-page))
+                   ;; Reject root account.
+                   ((root-account? name)
+                    (error-root-page)
+                    (run-user-add-page))
+                   (else
+                    (let ((password (confirm-password password)))
+                      (if password
+                          (user
+                           (name name)
+                           (real-name real-name)
+                           (home-directory home-directory)
+                           (password (make-secret password)))
+                          (run-user-add-page #:name name
+                                             #:real-name real-name
+                                             #:home-directory
+                                             home-directory))))))))))
           (lambda ()
             (destroy-form-and-pop form)))))))
 

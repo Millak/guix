@@ -19,7 +19,7 @@
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2017 Theodoros Foradis <theodoros@foradis.org>
-;;; Copyright © 2017, 2019 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2017, 2019, 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Dave Love <me@fx@gnu.org>
 ;;; Copyright © 2018, 2019, 2020, 2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
@@ -45,7 +45,7 @@
 ;;; Copyright © 2021 Gerd Heber <gerd.heber@gmail.com>
 ;;; Copyright © 2021 Franck Pérignon <franck.perignon@univ-grenoble-alpes.fr>
 ;;; Copyright © 2021 Philip McGrath <philip@philipmcgrath.com>
-;;; Copyright © 2021 Paul A. Patience <paul@apatience.com>
+;;; Copyright © 2021, 2022 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
 ;;; Copyright © 2021 Jean-Baptiste Volatier <jbv@pm.me>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
@@ -533,6 +533,14 @@ precision floating point numbers.")
          #:phases
          (modify-phases %standard-phases
            ,@(cond
+              ((and (target-riscv64?)
+                    (%current-target-system))
+               '((add-after 'unpack 'force-bootstrap
+                   (lambda _
+                     ;; gsl ships with an old configure script that does not
+                     ;; support riscv64. Regenerate it.
+                     (delete-file "configure")))))
+
               ((or (string-prefix? "aarch64" system)
                    (string-prefix? "powerpc" system))
                ;; Some sparse matrix tests are failing on AArch64 and PowerPC:
@@ -568,6 +576,11 @@ precision floating point numbers.")
                         (string-append "exit (77);\n" all)))))))
 
               (else '()))))))
+    (native-inputs
+     (if (and (target-riscv64?)
+              (%current-target-system))
+         (list autoconf automake libtool)
+         '()))
     (home-page "https://www.gnu.org/software/gsl/")
     (synopsis "Numerical library for C and C++")
     (description
@@ -730,7 +743,7 @@ computing convex hulls.")
 (define-public lrslib
   (package
     (name "lrslib")
-    (version "7.1")
+    (version "7.2")
     (source
      (origin
        (method url-fetch)
@@ -739,7 +752,7 @@ computing convex hulls.")
                            (string-delete #\. version) ".tar.gz"))
        (sha256
         (base32
-         "05kq3hzam31dlmkccv3v358r478kpvx76mw37ka12c6ypwv5dsnk"))))
+         "1w1jsnfgny8cihndr5gfm99pvwp48qsvxkqfsi2q87gd3m57aj7w"))))
     (build-system gnu-build-system)
     (inputs
      (list gmp))
@@ -1079,14 +1092,14 @@ in the terminal or with an external viewer.")
 (define-public gnuplot
   (package
     (name "gnuplot")
-    (version "5.4.2")
+    (version "5.4.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/gnuplot/gnuplot/"
                                   version "/gnuplot-"
                                   version ".tar.gz"))
        (sha256
-        (base32 "1fp7rbhjmz2w63r72kicf8lfszzimz2csfx868fracw167hpaz75"))))
+        (base32 "112dplskbkdbaqi935m2xlk1xsw8s5l568wm7xad75hgp6x9py2i"))))
     (build-system gnu-build-system)
     (inputs (list readline cairo pango gd lua))
     (native-inputs
@@ -1924,21 +1937,20 @@ interfaces.")
 (define-public nomad-optimizer
   (package
     (name "nomad-optimizer")
-    (version "4.1.0")
+    (version "4.2.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/bbopt/nomad/")
-             (commit (string-append "v" version))))
+             (commit (string-append "v." version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0w386d8r5ldbvnv0c0g7vz95pfpvwdxis26vaalk2amsa5akl775"))))
+         "1r4ygy3xn83dnppsw1451ynklsxpb238g5gk57inn84ghmdk08mj"))))
     (build-system cmake-build-system)
     (native-inputs
-     `(("python" ,python-wrapper)
-       ("python-cython" ,python-cython)))
+     (list python-wrapper python-cython))
     (arguments
      `(#:imported-modules ((guix build python-build-system)
                            ,@%cmake-build-system-modules)
@@ -1947,7 +1959,8 @@ interfaces.")
                   (guix build cmake-build-system)
                   (guix build utils))
        #:configure-flags
-       '("-DBUILD_INTERFACES=ON"
+       '("-DBUILD_INTERFACE_C=ON"
+         "-DBUILD_INTERFACE_PYTHON=ON"
          "-DBUILD_TESTS=ON")
        #:phases
        (modify-phases %standard-phases
@@ -1981,13 +1994,38 @@ interfaces.")
                (substitute* "interfaces/PyNomad/setup_PyNomad.py"
                  (("^( +os_include_dirs = ).*" _ prefix)
                   (string-append prefix "[\"../../src\"]\n"))
-                 (("^(installed_lib_dir = ).*" _ prefix)
-                  (string-append prefix "\"" out "/lib\"\n"))))
-             #t))
+                 (("^(installed_lib_dir1 = ).*" _ prefix)
+                  (string-append prefix "\"" out "/lib\"\n"))
+                 (("^installed_lib_dir2 = .*") "")
+                 (("^ +link_args\\.append\\(\"-Wl,-rpath,\" \\+ installed_lib_dir2\\)\n")
+                  "")))))
 
          ;; Fix the tests so they run in out-of-source builds.
+         ;;
+         ;; TODO: Add support for examples/basic/batch/single_obj_MPIparallel,
+         ;; by adding openmpi to native-inputs and adjusting the example's
+         ;; BB_EXE parameter.
          (add-after 'fix-sources-for-build 'fix-sources-for-tests
            (lambda _
+             (substitute* "examples/CMakeLists.txt"
+               ;; This test passes only sometimes.
+               ;; See https://github.com/bbopt/nomad/issues/72.
+               (("^ +add_subdirectory\\(\\$\\{CMAKE_CURRENT_SOURCE_DIR\\}/advanced/library/PSDMads\\)\n")
+                "")
+               ;; examples/basic/batch/example3 is accidentally omitted.
+               (("^(add_subdirectory\\(\\$\\{CMAKE_CURRENT_SOURCE_DIR\\}/basic/batch/example)2(\\)\n)"
+                 _ prefix suffix)
+                (string-append prefix "2" suffix
+                               prefix "3" suffix))
+
+               ;; The generated runExampleTest.sh script runs the test as part
+               ;; of a pipeline and incorrectly (because pipefail is unset)
+               ;; relies on the value of the exit status immediately after the
+               ;; pipeline.
+               ;; (The patch-shebangs phase runs later than this one, so no
+               ;; need to update the path to bash here.)
+               (("#!/bin/bash") "#!/bin/bash\nset -o pipefail"))
+
              (substitute*
                  (map (lambda (d) (string-append "examples/" d "/CMakeLists.txt"))
                       (append
@@ -1998,58 +2036,74 @@ interfaces.")
                             '("FixedVariable" "NMonly" "PSDMads" "Restart"
                               "c_api/example1" "c_api/example2"
                               "exampleSuggestAndObserve"))))
-               ;; The built examples are assumed to be in the source tree
-               ;; (which isn't the case here).
+               ;; The runExampleTest.sh script is run with WORKING_DIRECTORY
+               ;; set to CMAKE_CURRENT_SOURCE_DIR.
+               ;; Other scripts invoked by that script (for example
+               ;; examples/advanced/batch/SuggestAndObserve/loopSuggestAndObserve.sh)
+               ;; are in that same directory, but compiled examples are
+               ;; located in CMAKE_CURRENT_BINARY_DIR.
                (("(COMMAND \\$\\{CMAKE_BINARY_DIR\\}/examples/runExampleTest\\.sh )\\.(/.*)"
                  _ command test)
                 (string-append command "${CMAKE_CURRENT_BINARY_DIR}" test)))
+
+             ;; The examples/basic/batch/example3 executable is already named
+             ;; bb3.exe.
+             (substitute* "examples/basic/batch/single_obj_parallel/CMakeLists.txt"
+               (("bb3.exe") "bb_parallel.exe"))
+
              ;; (Unrelated to support for out-of-source testing.)
              (make-file-writable
               "examples/advanced/library/exampleSuggestAndObserve/cache0.txt")
 
-             (let* ((builddir (string-append (getcwd) "/../build"))
-                    ;; The BB_EXE and SURROGATE_EXE paths are interpreted
-                    ;; relative to the configuration file provided to NOMAD.
-                    ;; However, the configuration files are all in the source
-                    ;; tree rather than in the build tree (unlike the compiled
-                    ;; executables).
-                    (fix-exe-path (lambda* (dir #:optional
-                                                (file "param.txt")
-                                                (exe-opt "BB_EXE"))
-                                    (substitute* (string-append dir "/" file)
-                                      (((string-append "^" exe-opt " +"))
-                                       ;; The $ prevents NOMAD from prefixing
-                                       ;; the executable with the path of the
-                                       ;; parent directory of the configuration
-                                       ;; file NOMAD was provided with as
-                                       ;; argument (param.txt or some such).
-                                       (string-append exe-opt " $"
-                                                      builddir "/" dir "/"))))))
-               (for-each
-                (lambda (dir)
-                  (let ((dir (string-append "examples/" dir)))
-                    (substitute* (string-append dir "/CMakeLists.txt")
-                      ;; The install phase has not yet run.
-                      (("COMMAND \\$\\{CMAKE_INSTALL_PREFIX\\}/bin/nomad ")
-                       "COMMAND ${CMAKE_BINARY_DIR}/src/nomad "))
-                    (fix-exe-path dir)
-                    (when (equal? dir "examples/basic/batch/surrogate_sort")
-                      (fix-exe-path dir "param.txt" "SURROGATE_EXE"))))
-                (append (map (lambda (d) (string-append "basic/batch/" d))
-                             '("example1" "example2"
-                               "single_obj" "single_obj_parallel"
-                               "surrogate_sort"))
-                        '("advanced/batch/LHonly")))
+             (let ((builddir (string-append (getcwd) "/../build")))
+               (let ((dir "examples/advanced/library/FixedVariable"))
+                 (substitute* (string-append dir "/fixedVariable.cpp")
+                   (("^( +std::string sExe = ).*" _ prefix)
+                    (string-append prefix "\"" builddir "/" dir "/ufl.exe" "\";\n"))))
 
-               (let ((dir "examples/advanced/batch/FixedVariable"))
-                 (substitute* (string-append dir "/runFixed.sh")
-                   ;; Hardcoded path to NOMAD executable.
-                   (("^\\.\\./\\.\\./\\.\\./\\.\\./bin/nomad ")
-                    (string-append builddir "/src/nomad ")))
+               ;; The BB_EXE and SURROGATE_EXE paths are interpreted relative
+               ;; to the configuration file provided to NOMAD.
+               ;; However, the configuration files are all in the source tree
+               ;; rather than in the build tree (unlike the compiled
+               ;; executables).
+               (let ((fix-exe-path (lambda* (dir #:optional
+                                                 (file "param.txt")
+                                                 (exe-opt "BB_EXE"))
+                                     (substitute* (string-append dir "/" file)
+                                       (((string-append "^" exe-opt " +"))
+                                        ;; The $ prevents NOMAD from prefixing
+                                        ;; the executable with the path of the
+                                        ;; parent directory of the configuration
+                                        ;; file NOMAD was provided with as
+                                        ;; argument (param.txt or some such).
+                                        (string-append exe-opt " $"
+                                                       builddir "/" dir "/"))))))
                  (for-each
-                  (lambda (f) (fix-exe-path dir f))
-                  '("param1.txt" "param2.txt" "param3.txt" "param10.txt"))))
-             #t))
+                  (lambda (dir)
+                    (let ((dir (string-append "examples/" dir)))
+                      (substitute* (string-append dir "/CMakeLists.txt")
+                        ;; The install phase has not yet run.
+                        (("COMMAND \\$\\{CMAKE_INSTALL_PREFIX\\}/bin/nomad ")
+                         "COMMAND ${CMAKE_BINARY_DIR}/src/nomad "))
+                      (fix-exe-path dir)
+                      (when (equal? dir "examples/basic/batch/surrogate_sort")
+                        (fix-exe-path dir "param.txt" "SURROGATE_EXE"))))
+                  (append (map (lambda (d) (string-append "basic/batch/" d))
+                               '("example1" "example2" "example3"
+                                 "single_obj"
+                                 "single_obj_parallel"
+                                 ;; "single_obj_MPIparallel"
+                                 "surrogate_sort"))
+                          '("advanced/batch/LHonly")))
+
+                 (let ((dir "examples/advanced/batch/FixedVariable"))
+                   (substitute* (string-append dir "/runFixed.sh")
+                     ;; Hardcoded path to NOMAD executable.
+                     (("^\\.\\./\\.\\./\\.\\./\\.\\./bin/nomad ")
+                      (string-append builddir "/src/nomad ")))
+                   (for-each
+                    (lambda (f) (fix-exe-path dir f))
+                    '("param1.txt" "param2.txt" "param3.txt" "param10.txt")))))))
 
          ;; The information in the .egg-info file is not kept up to date.
          (add-after 'install 'delete-superfluous-egg-info
@@ -2058,8 +2112,7 @@ interfaces.")
                            (site-packages inputs outputs)
                            "/PyNomad-0.0.0-py"
                            (python-version (assoc-ref inputs "python"))
-                           ".egg-info"))
-             #t)))))
+                           ".egg-info")))))))
     (home-page "https://www.gerad.ca/nomad/")
     (synopsis "Nonlinear optimization by mesh-adaptive direct search")
     (description
@@ -2801,7 +2854,7 @@ This is the certified version of the Open Cascade Technology (OCCT) library.")
 (define-public gmsh
   (package
     (name "gmsh")
-    (version "4.8.4")
+    (version "4.9.5")
     (source
      (origin
       (method git-fetch)
@@ -2812,7 +2865,7 @@ This is the certified version of the Open Cascade Technology (OCCT) library.")
                             (string-replace-substring version "." "_")))))
       (file-name (git-file-name name version))
       (sha256
-       (base32 "07mi6ja3b9libgcdp2b4dwnkap1b9ha2wi2zdn9mhmwvp3g1pxhp"))
+       (base32 "0asd9p64ng5l2zk5glc33x3ynnvdpndlflg3q9mr0jxr7y9x0lrm"))
       (modules '((guix build utils)))
       (snippet
        '(begin
@@ -6063,22 +6116,21 @@ and comparisons are supported.")
 (define-public sundials
   (package
     (name "sundials")
-    (version "3.1.1")
+    (version "6.1.1")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://computation.llnl.gov/projects/sundials/download/"
+       (uri (string-append "https://github.com/LLNL/sundials/releases/download/v6.1.1/"
                            "sundials-" version ".tar.gz"))
        (sha256
         (base32
-         "090s8ymhd0g1s1d44fa73r5yi32hb4biwahhbfi327zd64yn8kd2"))))
+         "0327a1fy8rilwc4brsqqb71jd1ymb7mqgxsylab06crcg5xn7byg"))))
     (build-system cmake-build-system)
     (native-inputs
-     `(("python" ,python-2)))    ;for tests; syntax incompatible with python 3
+     (list python-2))    ;for tests; syntax incompatible with python 3
     (inputs
-     `(("fortran" ,gfortran)            ;for fcmix
-       ("blas" ,openblas)
-       ("suitesparse" ,suitesparse)))   ;TODO: Add hypre
+     (list gfortran                               ;for fcmix
+           openblas petsc suitesparse))           ;TODO: Add hypre
     (arguments
      `(#:configure-flags `("-DCMAKE_C_FLAGS=-O2 -g -fcommon"
                            "-DEXAMPLES_ENABLE_C:BOOL=ON"
@@ -6107,24 +6159,17 @@ easily be incorporated into existing simulation codes.")
     (license license:bsd-3)))
 
 (define-public sundials-openmpi
-  (package (inherit sundials)
+  (package
+    (inherit sundials)
     (name "sundials-openmpi")
     (inputs
-     `(("mpi" ,openmpi)
-       ("petsc" ,petsc-openmpi)         ;support in SUNDIALS requires MPI
-       ,@(package-inputs sundials)))
+     (modify-inputs (package-inputs sundials)
+       (delete "petsc")
+       (prepend openmpi petsc-openmpi)))     ;support in SUNDIALS requires MPI
     (arguments
      (substitute-keyword-arguments (package-arguments sundials)
        ((#:configure-flags flags '())
-        `(cons* "-DMPI_ENABLE:BOOL=ON"
-                "-DPETSC_ENABLE:BOOL=ON"
-                (string-append "-DPETSC_INCLUDE_DIR="
-                               (assoc-ref %build-inputs "petsc")
-                               "/include")
-                (string-append "-DPETSC_LIBRARY_DIR="
-                               (assoc-ref %build-inputs "petsc")
-                               "/lib")
-                ,flags))
+        `(cons* "-DENABLE_MPI:BOOL=ON" ,flags))
        ((#:phases phases '%standard-phases)
         `(modify-phases ,phases
            (add-before 'check 'mpi-setup

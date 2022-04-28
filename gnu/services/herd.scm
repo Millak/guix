@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016, 2017, 2018, 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2019, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -20,6 +20,7 @@
 (define-module (gnu services herd)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
+  #:use-module (srfi srfi-9 gnu)
   #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
@@ -46,6 +47,7 @@
             live-service-provision
             live-service-requirement
             live-service-running
+            live-service-transient?
             live-service-canonical-name
 
             with-shepherd-action
@@ -194,10 +196,11 @@ of pairs."
 
 ;; Information about live Shepherd services.
 (define-record-type <live-service>
-  (live-service provision requirement running)
+  (live-service provision requirement transient? running)
   live-service?
   (provision    live-service-provision)           ;list of symbols
   (requirement  live-service-requirement)         ;list of symbols
+  (transient?   live-service-transient?)          ;Boolean
   (running      live-service-running))            ;#f | object
 
 (define (live-service-canonical-name service)
@@ -215,12 +218,45 @@ obtained."
       ((services _ ...)
        (match services
          ((('service ('version 0 _ ...) _ ...) ...)
-          (map (lambda (service)
-                 (alist-let* service (provides requires running)
-                   (live-service provides requires running)))
-               services))
+          (resolve-transients
+           (map (lambda (service)
+                  (alist-let* service (provides requires running transient?)
+                    ;; The Shepherd 0.9.0 would not provide 'transient?' in its
+                    ;; status sexp.  Thus, when it's missing, query it via an
+                    ;; "eval" request.
+                    (live-service provides requires
+                                  (if (sloppy-assq 'transient? service)
+                                      transient?
+                                      (and running *unspecified*))
+                                  running)))
+                services)))
          (x
           #f))))))
+
+(define (resolve-transients services)
+  "Resolve the subset of SERVICES whose 'transient?' field is undefined.  This
+is necessary to deal with Shepherd 0.9.0, which did not communicate whether a
+service is transient."
+  ;; All the fuss here is to make sure we make a single "eval root" request
+  ;; for all of SERVICES.
+  (let* ((unresolved (filter (compose unspecified? live-service-transient?)
+                             services))
+         (values     (or (eval-there
+                          `(and (defined? 'transient?) ;shepherd >= 0.9.0
+                                (map (compose transient? lookup-running)
+                                     ',(map (compose first
+                                                     live-service-provision)
+                                            unresolved))))
+                         (make-list (length unresolved) #f)))
+         (resolved   (map (lambda (unresolved transient?)
+                            (cons unresolved
+                                  (set-field unresolved
+                                             (live-service-transient?)
+                                             transient?)))
+                          unresolved values)))
+    (map (lambda (service)
+           (or (assq-ref resolved service) service))
+         services)))
 
 (define (unload-service service)
   "Unload SERVICE, a symbol name; return #t on success."

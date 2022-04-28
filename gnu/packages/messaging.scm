@@ -466,7 +466,7 @@ TCP sessions from existing clients.")
 (define-public poezio
   (package
     (name "poezio")
-    (version "0.13.1")
+    (version "0.13.2")
     (source
      (origin
        (method git-fetch)
@@ -478,17 +478,16 @@ TCP sessions from existing clients.")
        (file-name
         (git-file-name name version))
        (sha256
-        (base32 "041y61pcbdb86s04qwp8s1g6bp84yskc7vdizwpi2hz18y01x5fy"))))
+        (base32 "0p92k8ssjsgavyfv1fd5cgzyw87dmdd84vaz7zvfsf5crvpr1mkf"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch
-           (lambda _
-             (substitute* "setup.py"
-               (("'CC', 'cc'")
-                "'CC', 'gcc'"))
-             #t)))))
+      (list #:phases
+            #~(modify-phases %standard-phases
+                (add-after 'unpack 'patch
+                  (lambda _
+                    (substitute* "setup.py"
+                      (("'CC', 'cc'")
+                       "'CC', 'gcc'")))))))
     (native-inputs
      (list pkg-config python-setuptools python-sphinx))
     (inputs
@@ -498,7 +497,6 @@ TCP sessions from existing clients.")
            python-pyasn1-modules
            python-pygments
            python-pyinotify
-           ;("python" ,python)
            python-qrcode
            python-slixmpp))
     (synopsis "Console Jabber/XMPP Client")
@@ -2354,7 +2352,7 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
 (define-public nheko
   (package
     (name "nheko")
-    (version "0.9.2")
+    (version "0.9.3")
     (source
      (origin
        (method git-fetch)
@@ -2363,7 +2361,7 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0q9yzzl7mvlixm1c2f55lksxgh9q11zb8k80mkwnhmmli8wbb05f"))
+        (base32 "1941jvk72qy9g41cs2p3d6fphkg8ccjlsiclwymvzdyi7s3ilml7"))
        (modules '((guix build utils)))
        (snippet
         '(begin

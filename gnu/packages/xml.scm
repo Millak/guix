@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2018, 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2016, 2018-2019, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
@@ -88,7 +88,7 @@
 (define-public libxmlb
   (package
     (name "libxmlb")
-    (version "0.1.15")
+    (version "0.3.8")
     (source
      (origin
        (method git-fetch)
@@ -98,7 +98,7 @@
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mb73pnfwqc4mm0lm16yfn0lj495h8hcciprb2v6wgy3ifnnjxib"))))
+        (base32 "0znz2y1ig2kvlda44a3kxa8x7f222nbg50rjz6nlngzka0ccsgxx"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t))
@@ -2528,6 +2528,18 @@ because lxml.etree already has its own implementation of XPath 1.0.")
      "The lxml XML toolkit is a Pythonic binding for the C libraries
 libxml2 and libxslt.")
     (license license:bsd-3))) ; and a few more, see LICENSES.txt
+
+(define-public python-lxml-4.7
+  (package
+    (inherit python-lxml)
+    (version "4.7.1")
+    (source
+     (origin
+       (inherit (package-source python-lxml))
+       (uri (pypi-uri "lxml" version))
+       (sha256
+        (base32
+         "090viyanaki4q7w7i000xl0qh4in52bkl3qal55sz2bbm8w3hqd1"))))))
 
 (define-public python2-lxml
   (package-with-python2 python-lxml))

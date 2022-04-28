@@ -1,9 +1,9 @@
 # htmlxref.cnf - reference file for free Texinfo manuals on the web.
 # Modified by Ludovic Courtès <ludo@gnu.org> for the GNU Guix manual.
 
-htmlxrefversion=2021-09-24.23; # UTC
+htmlxrefversion=2022-04-08.17; # UTC
 
-# Copyright 2010-2020 Free Software Foundation, Inc.
+# Copyright 2010-2020, 2022 Free Software Foundation, Inc.
 # 
 # Copying and distribution of this file, with or without modification,
 # are permitted in any medium without royalty provided the copyright
@@ -414,7 +414,8 @@ guile-gtk	node	${GS}/guile-gtk/docs/guile-gtk/
 guile-rpc	mono	${GS}/guile-rpc/manual/guile-rpc.html
 guile-rpc	node	${GS}/guile-rpc/manual/html_node/
 
-GUIX = ${GS}/guix/manual
+GUIX_ROOT = https://guix.gnu.org
+GUIX = ${GUIX_ROOT}/guix/manual
  guix.de	mono	${GUIX}/de/guix.de.html
  guix.de	node	${GUIX}/de/html_node/
  guix.es	mono	${GUIX}/es/guix.es.html
@@ -428,7 +429,7 @@ GUIX = ${GS}/guix/manual
  guix		mono	${GUIX}/en/guix.html
  guix		node	${GUIX}/en/html_node/
 
-GUIX_COOKBOOK = ${GS}/guix/cookbook
+GUIX_COOKBOOK = ${GUIX_ROOT}/cookbook
  guix-cookbook.de	mono	${GUIX_COOKBOOK}/de/guix-cookbook.html
  guix-cookbook.de	node    ${GUIX_COOKBOOK}/de/html_node/
  guix-cookbook.fr	mono    ${GUIX_COOKBOOK}/fr/guix-cookbook.html

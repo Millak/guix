@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2017, 2019-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2021 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014 Ian Denhardt <ian@zenhack.net>
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
@@ -610,14 +610,14 @@ kilobytes of RAM.")
 (define-public libressl
   (package
     (name "libressl")
-    (version "3.3.3")
+    (version "3.3.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://openbsd/LibreSSL/"
                                   "libressl-" version ".tar.gz"))
               (sha256
                (base32
-                "0rihprcgxsydsbcqgd1952k2cfn4jmp7rlyp1c6sglfc6rdmcwd4"))))
+                "16jbzqj9wy2z10x8ppx63idw44k0d3wly0grpar0s6g1cn9q8a1z"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -633,6 +633,8 @@ kilobytes of RAM.")
                        ,(package-version this-package))
         ;; Provide a TLS-enabled netcat.
         "--enable-nc")))
+    (properties
+     `((release-monitoring-url . "https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/")))
     (home-page "https://www.libressl.org/")
     (synopsis "SSL/TLS implementation")
     (description "LibreSSL is a version of the TLS/crypto stack, forked from
@@ -1128,7 +1130,7 @@ derived from Mozilla's collection.")
   (package
     (name "s2n")
     ; Update only when updating aws-crt-cpp.
-    (version "1.1.0")
+    (version "1.3.10")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1137,7 +1139,7 @@ derived from Mozilla's collection.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "14dhdddlph36nshdkh0v33718hxjx5vxqxmkw7707393q0qrgipw"))))
+                "15fr6zwglw74x5qd090752kqn7n3cyi4gmz94ip45g3hflschxd3"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
@@ -1188,28 +1190,27 @@ ciphers such as ChaCha20, Curve25519, NTRU, and Blake2b.")
     (license license:gpl2+))) ; Audit
 
 (define-public aws-lc
-  (let ((commit "d0a5455417d80e68581e197d95720c3fb25e3926")
-        (revision "0"))
-    (package
-      (name "aws-lc")
-      (version (git-version "0.0.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url (string-append "https://github.com/awslabs/" name))
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1ysj3x1f2lcdvwzyb9x3waykz1j7r21viv5z5vgc0ja9xv7znm9g"))))
-      (build-system cmake-build-system)
-      (arguments
-       '(#:tests? #f ; re-enable but with go and perl dependencies
-         #:configure-flags
-         '("-DBUILD_SHARED_LIBS=ON")))
-      (synopsis "General purpose cryptographic library")
-      (description "AWS libcrypto (aws-lc) contains portable C implementations
+  (package
+    (name "aws-lc")
+    ; Update only when updating aws-crt-cpp.
+    (version "1.0.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url (string-append "https://github.com/awslabs/" name))
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "14dhdddlph36nshdkh0v43718hxjx5vxqxmkw7707393q0qrgipw"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:tests? #f ; re-enable but with go and perl dependencies
+       #:configure-flags
+       '("-DBUILD_SHARED_LIBS=ON")))
+    (synopsis "General purpose cryptographic library")
+    (description "AWS libcrypto (aws-lc) contains portable C implementations
 of algorithms needed for TLS and common applications, and includes optimized
 assembly versions for x86 and ARM.")
-      (home-page "https://github.com/awslabs/aws-lc")
-      (license license:asl2.0))))
+    (home-page "https://github.com/awslabs/aws-lc")
+    (license license:asl2.0)))

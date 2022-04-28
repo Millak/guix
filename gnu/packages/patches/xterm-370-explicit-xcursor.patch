@@ -1,0 +1,37 @@
+From: Danny Milosavljevic <dannym@scratchpost.org>
+Date: Thu, 2 Apr 2022 12:10:00 +0200
+Subject: Make xterm use libxcursor directly
+
+Fixes <https://issues.guix.gnu.org/54654>.
+
+This patch makes xterm use libxcursor directly.
+Without it, libx11 would try to dlopen("libXcursor.so.1") and fail.
+
+--- xterm-370/misc.c.orig	2022-04-02 11:52:26.225131854 +0200
++++ xterm-370/misc.c	2022-04-02 12:06:13.091482385 +0200
+@@ -79,6 +79,9 @@
+ #ifdef HAVE_LIBXPM
+ #include <X11/xpm.h>
+ #endif
++#ifdef HAVE_LIB_XCURSOR
++#include <X11/Xcursor/Xcursor.h>
++#endif
+ 
+ #ifdef HAVE_LANGINFO_CODESET
+ #include <langinfo.h>
+@@ -866,7 +869,14 @@
+ 		 * 0, 2 a shape, 3 a mask for 2, etc.  <X11/cursorfont.h>
+ 		 * contains defined names for each shape.
+ 		 */
+-		c = XCreateGlyphCursor(dpy,
++		c = XcursorTryShapeCursor(dpy,
++				       myFont.fs->fid, /* source_font */
++				       myFont.fs->fid, /* mask_font */
++				       c_index + 0, /* source_char */
++				       c_index + 1, /* mask_char */
++				       &foreground,
++				       &background);
++		if (c == None) c = XCreateGlyphCursor(dpy,
+ 				       myFont.fs->fid,	/* source_font */
+ 				       myFont.fs->fid,	/* mask_font */
+ 				       c_index + 0,	/* source_char */

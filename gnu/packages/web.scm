@@ -3,7 +3,7 @@
 ;;; Copyright © 2013 Aljosha Papsch <misc@rpapsch.de>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Raoul Jean Pierre Bonnal <ilpuccio.febo@gmail.com>
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020 Eric Bavier <bavier@posteo.net>
@@ -373,89 +373,86 @@ the same, being completely separated from the Internet.")
     ;; Track the ‘mainline’ branch.  Upstream considers it more reliable than
     ;; ’stable’ and recommends that “in general you deploy the NGINX mainline
     ;; branch at all times” (https://www.nginx.com/blog/nginx-1-6-1-7-released/)
-    (version "1.21.5")
+    (version "1.21.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://nginx.org/download/nginx-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1fygvl19cch100d15k74666jcbc7xpz7v5m7ygqac6556gskn3xj"))))
+                "1bh52jqqcaj5wlh2kvhxr00jhk2hnk8k97ki4pwyj4c8920p1p36"))))
     (build-system gnu-build-system)
     (inputs (list libxml2 libxslt openssl pcre zlib))
     (arguments
-     `(#:tests? #f                      ; no test target
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'patch-/bin/sh
-           (lambda _
-             (substitute* "auto/feature"
-               (("/bin/sh") (which "sh")))
-             #t))
-         (replace 'configure
-           ;; The configure script is hand-written, not from GNU autotools.
-           (lambda* (#:key configure-flags inputs outputs #:allow-other-keys)
-             (let ((flags
-                    (append (list (string-append "--prefix=" (assoc-ref outputs "out"))
-                                  "--with-http_ssl_module"
-                                  "--with-http_v2_module"
-                                  "--with-http_xslt_module"
-                                  "--with-http_gzip_static_module"
-                                  "--with-http_gunzip_module"
-                                  "--with-http_addition_module"
-                                  "--with-http_sub_module"
-                                  "--with-pcre-jit"
-                                  "--with-debug"
-                                  "--with-stream"
-                                  ;; Even when not cross-building, we pass the
-                                  ;; --crossbuild option to avoid customizing for the
-                                  ;; kernel version on the build machine.
-                                  ,(let ((system "Linux")    ; uname -s
-                                         (release "3.2.0")   ; uname -r
-                                         ;; uname -m
-                                         (machine (match (or (%current-target-system)
-                                                             (%current-system))
-                                                    ("x86_64-linux"   "x86_64")
-                                                    ("i686-linux"     "i686")
-                                                    ("mips64el-linux" "mips64")
-                                                    ;; Prevent errors when querying
-                                                    ;; this package on unsupported
-                                                    ;; platforms, e.g. when running
-                                                    ;; "guix package --search="
-                                                    (_                "UNSUPPORTED"))))
-                                     (string-append "--crossbuild="
-                                                    system ":" release ":" machine)))
-                            configure-flags)))
-               (setenv "CC" ,(cc-for-target))
-               ;; Fix ./configure test for ‘#include <libxml/parser.h>’.
-               (setenv "CFLAGS"         ; CPPFLAGS is not respected
-                       (string-append "-I" (assoc-ref inputs "libxml2")
-                                      "/include/libxml2"))
-               (format #t "configure flags: ~s~%" flags)
-               (apply invoke "./configure" flags)
-               #t)))
-         (add-after 'install 'install-man-page
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (man (string-append out "/share/man")))
-               (install-file "objs/nginx.8" (string-append man "/man8"))
-               #t)))
-         (add-after 'install 'fix-root-dirs
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; 'make install' puts things in strange places, so we need to
-             ;; clean it up ourselves.
-             (let* ((out (assoc-ref outputs "out"))
-                    (share (string-append out "/share/nginx")))
-               ;; This directory is empty, so get rid of it.
-               (rmdir (string-append out "/logs"))
-               ;; Example configuration and HTML files belong in
-               ;; /share.
-               (mkdir-p share)
-               (rename-file (string-append out "/conf")
-                            (string-append share "/conf"))
-               (rename-file (string-append out "/html")
-                            (string-append share "/html"))
-               #t))))))
+     (list
+      #:tests? #f                       ; no test target
+      #:configure-flags
+      #~(list "--with-http_ssl_module"
+              "--with-http_v2_module"
+              "--with-http_xslt_module"
+              "--with-http_gzip_static_module"
+              "--with-http_gunzip_module"
+              "--with-http_addition_module"
+              "--with-http_sub_module"
+              "--with-pcre-jit"
+              "--with-debug"
+              "--with-stream"
+              ;; Even when not cross-building, we pass the
+              ;; --crossbuild option to avoid customizing for the
+              ;; kernel version on the build machine.
+              #$(let ((system "Linux")  ; uname -s
+                      (release "3.2.0") ; uname -r
+                      ;; uname -m
+                      (machine (match (or (%current-target-system)
+                                          (%current-system))
+                                 ("x86_64-linux"   "x86_64")
+                                 ("i686-linux"     "i686")
+                                 ("mips64el-linux" "mips64")
+                                 ;; Prevent errors when querying
+                                 ;; this package on unsupported
+                                 ;; platforms, e.g. when running
+                                 ;; "guix package --search="
+                                 (_                "UNSUPPORTED"))))
+                  (string-append "--crossbuild="
+                                 system ":" release ":" machine)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'patch-/bin/sh
+            (lambda _
+              (substitute* "auto/feature"
+                (("/bin/sh") (which "sh")))))
+          (replace 'configure
+            ;; The configure script is hand-written, not from GNU autotools.
+            (lambda* (#:key configure-flags inputs #:allow-other-keys)
+              (setenv "CC" #$(cc-for-target))
+              ;; Fix ./configure test for ‘#include <libxml/parser.h>’.
+              (setenv "CFLAGS"          ; CPPFLAGS is not respected
+                      (string-append "-O2 -g "
+                                     "-I" (search-input-directory
+                                           inputs "/include/libxml2")))
+              (format #t "configure flags: ~s~%" configure-flags)
+              (apply invoke "./configure"
+                     (string-append "--prefix=" #$output)
+                     configure-flags)))
+          (add-after 'install 'install-man-page
+            (lambda _
+              (let ((man (string-append #$output "/share/man")))
+                (install-file "objs/nginx.8" (string-append man "/man8")))))
+          (add-after 'install 'fix-root-dirs
+            (lambda _
+              ;; 'make install' puts things in strange places, so we need to
+              ;; clean it up ourselves.
+              (let* ((out #$output)
+                     (share (string-append out "/share/nginx")))
+                ;; This directory is empty, so get rid of it.
+                (rmdir (string-append out "/logs"))
+                ;; Example configuration and HTML files belong in
+                ;; /share.
+                (mkdir-p share)
+                (rename-file (string-append out "/conf")
+                             (string-append share "/conf"))
+                (rename-file (string-append out "/html")
+                             (string-append share "/html"))))))))
     (home-page "https://nginx.org")
     (synopsis "HTTP and reverse proxy server")
     (description
@@ -471,9 +468,9 @@ and as a proxy to reduce the load on back-end HTTP or mail servers.")
 
 (define-public nginx-documentation
   ;; This documentation should be relevant for the current nginx package.
-  (let ((version "1.21.5")
-        (revision 2816)
-        (changeset "ae1d713a06e2"))
+  (let ((version "1.21.6")
+        (revision 2829)
+        (changeset "1ecf0e0526da"))
     (package
       (name "nginx-documentation")
       (version (simple-format #f "~A-~A-~A" version revision changeset))
@@ -485,7 +482,7 @@ and as a proxy to reduce the load on back-end HTTP or mail servers.")
                (file-name (string-append name "-" version))
                (sha256
                 (base32
-                 "03j85wj6qb32q5xhq9nvcjzarq98802gaq6n3f7k85aqj731bml0"))))
+                 "1r3y9wv4bhji5b16ljb557llf6ih3z2mzgwbia79h7223468w3fg"))))
       (build-system gnu-build-system)
       (arguments
        '(#:tests? #f                    ; no test suite
@@ -729,42 +726,42 @@ documentation.")
        ,@(package-inputs nginx)))
     (arguments
      (substitute-keyword-arguments
-         `(#:configure-flags '("--add-dynamic-module=.")
-           #:make-flags '("modules")
+         `(#:make-flags '("modules")
            #:modules ((guix build utils)
                       (guix build gnu-build-system)
                       (ice-9 popen)
                       (ice-9 regex)
                       (ice-9 textual-ports))
-           ,@(package-arguments nginx))
+           ,@(package-arguments nginx)
+           #:configure-flags '("--add-dynamic-module=."))
        ((#:phases phases)
-        `(modify-phases ,phases
-           (add-after 'unpack 'unpack-nginx-sources
-             (lambda* (#:key inputs native-inputs #:allow-other-keys)
-               (begin
-                 ;; The nginx source code is part of the module’s source.
-                 (format #t "decompressing nginx source code~%")
-                 (let ((tar (assoc-ref inputs "tar"))
-                       (nginx-srcs (assoc-ref inputs "nginx-sources")))
-                   (invoke (string-append tar "/bin/tar")
-                           "xvf" nginx-srcs "--strip-components=1"))
-                 #t)))
-           (add-before 'configure 'set-luajit-env
-             (lambda* (#:key inputs #:allow-other-keys)
-               (let ((luajit (assoc-ref inputs "luajit")))
-                 (setenv "LUAJIT_LIB"
-                         (string-append luajit "/lib"))
-                 (setenv "LUAJIT_INC"
-                         (string-append luajit "/include/luajit-2.1"))
-                 #t)))
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((modules-dir (string-append (assoc-ref outputs "out")
-                                                 "/etc/nginx/modules")))
-                 (install-file "objs/ngx_http_lua_module.so" modules-dir)
-                 #t)))
-           (delete 'fix-root-dirs)
-           (delete 'install-man-page)))))
+        #~(modify-phases #$phases
+            (add-after 'unpack 'unpack-nginx-sources
+              (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                (begin
+                  ;; The nginx source code is part of the module’s source.
+                  (format #t "decompressing nginx source code~%")
+                  (let ((tar (assoc-ref inputs "tar"))
+                        (nginx-srcs (assoc-ref inputs "nginx-sources")))
+                    (invoke (string-append tar "/bin/tar")
+                            "xvf" nginx-srcs "--strip-components=1"))
+                  #t)))
+            (add-before 'configure 'set-luajit-env
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((luajit (assoc-ref inputs "luajit")))
+                  (setenv "LUAJIT_LIB"
+                          (string-append luajit "/lib"))
+                  (setenv "LUAJIT_INC"
+                          (string-append luajit "/include/luajit-2.1"))
+                  #t)))
+            (replace 'install
+              (lambda* (#:key outputs #:allow-other-keys)
+                (let ((modules-dir (string-append (assoc-ref outputs "out")
+                                                  "/etc/nginx/modules")))
+                  (install-file "objs/ngx_http_lua_module.so" modules-dir)
+                  #t)))
+            (delete 'fix-root-dirs)
+            (delete 'install-man-page)))))
     (synopsis "NGINX module for Lua programming language support")
     (description "This NGINX module provides a scripting support with Lua
 programming language.")))
@@ -789,34 +786,34 @@ programming language.")))
        ,@(package-inputs nginx)))
     (arguments
      (substitute-keyword-arguments
-         `(#:configure-flags '("--add-dynamic-module=.")
-           #:make-flags '("modules")
+         `(#:make-flags '("modules")
            #:modules ((guix build utils)
                       (guix build gnu-build-system))
-           ,@(package-arguments nginx))
+           ,@(package-arguments nginx)
+           #:configure-flags '("--add-dynamic-module=."))
        ((#:phases phases)
-        `(modify-phases ,phases
-           (add-after 'unpack 'unpack-nginx-sources
-             (lambda* (#:key inputs native-inputs #:allow-other-keys)
-               (begin
-                 ;; The nginx source code is part of the module’s source.
-                 (format #t "decompressing nginx source code~%")
-                 (invoke "tar" "xvf" (assoc-ref inputs "nginx-sources")
-                         ;; This package's LICENSE file would be
-                         ;; overwritten with the one from nginx when
-                         ;; unpacking the nginx source, so rename the nginx
-                         ;; one when unpacking.
-                         "--transform=s,/LICENSE$,/LICENSE.nginx,"
-                         "--strip-components=1")
-                 #t)))
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((modules-dir (string-append (assoc-ref outputs "out")
-                                                 "/etc/nginx/modules")))
-                 (install-file "objs/ngx_rtmp_module.so" modules-dir)
-                 #t)))
-           (delete 'fix-root-dirs)
-           (delete 'install-man-page)))))
+        #~(modify-phases #$phases
+            (add-after 'unpack 'unpack-nginx-sources
+              (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                (begin
+                  ;; The nginx source code is part of the module’s source.
+                  (format #t "decompressing nginx source code~%")
+                  (invoke "tar" "xvf" (assoc-ref inputs "nginx-sources")
+                          ;; This package's LICENSE file would be
+                          ;; overwritten with the one from nginx when
+                          ;; unpacking the nginx source, so rename the nginx
+                          ;; one when unpacking.
+                          "--transform=s,/LICENSE$,/LICENSE.nginx,"
+                          "--strip-components=1")
+                  #t)))
+            (replace 'install
+              (lambda* (#:key outputs #:allow-other-keys)
+                (let ((modules-dir (string-append (assoc-ref outputs "out")
+                                                  "/etc/nginx/modules")))
+                  (install-file "objs/ngx_rtmp_module.so" modules-dir)
+                  #t)))
+            (delete 'fix-root-dirs)
+            (delete 'install-man-page)))))
     (home-page "https://github.com/arut/nginx-rtmp-module")
     (synopsis "NGINX module for audio and video streaming with RTMP")
     (description "This NGINX module provides streaming with the @acronym{RTMP,
@@ -4889,10 +4886,14 @@ It uses the uwsgi protocol for all the networking/interprocess communications.")
     (inputs
      (list oniguruma))
     (native-inputs
-     (list ;; TODO fix gems to generate documentation
-           ;;("ruby" ,ruby)
-           ;;("bundler" ,bundler)
-           valgrind))
+     (append
+       ;; TODO: fix gems to generate documentation
+       ;(list ruby bundler)
+       '()
+       (if (member (%current-system)
+                   (package-supported-systems valgrind))
+         (list valgrind)
+         '())))
     (build-system gnu-build-system)
     (home-page "https://stedolan.github.io/jq/")
     (synopsis "Command-line JSON processor")
@@ -7710,14 +7711,27 @@ bookmarks directly.  It can also present them in a web interface with
 (define-public anonip
   (package
     (name "anonip")
-    (version "1.0.0")
+    (version "1.1.0")
+    ;; The version on PyPi does not include fixture definitions for tests.
     (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "anonip" version))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/DigitaleGesellschaft/Anonip")
+                    (commit "beab328945547b0147a53655f32c5cc76ab4488b")))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ckn9nnfhpdnz8b92q8pkysdqj6pdh71ckfqvfj0z01cq0hzbhd2"))))
+                "0cssdcridadjzichz1vv1ng7jwphqkn8ihh83hpz9mcjmxyb94qc"))))
     (build-system python-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-vv" "tests.py" "anonip.py")))))))
+    (native-inputs
+     (list python-pytest python-pytest-cov))
     (home-page "https://github.com/DigitaleGesellschaft/Anonip")
     (synopsis "Anonymize IP addresses in log files")
     (description
@@ -7842,7 +7856,7 @@ solution for any project's interface needs:
 (define-public gmid
   (package
     (name "gmid")
-    (version "1.8.1")
+    (version "1.8.3")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -7850,7 +7864,7 @@ solution for any project's interface needs:
                     version "/gmid-" version ".tar.gz"))
               (sha256
                (base32
-                "0m4809mwy888bqsacmyck68grqfvynq74kswm109al6wjbvd61bn"))))
+                "1qbzlrzhyj7gvhgbm057zs1g5ajw1w6499qz61154v7ax8fwrdpp"))))
     (build-system gnu-build-system)
     (arguments
      (list #:test-target "regress"
@@ -7865,8 +7879,7 @@ solution for any project's interface needs:
                          coreutils
                          flex
                          pkg-config
-                         procps
-                         which))
+                         procps))
     (inputs (list libevent libressl))
     (home-page "https://git.omarpolo.com/gmid/about/")
     (synopsis "Simple and secure Gemini server")

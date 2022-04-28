@@ -8,7 +8,7 @@
 ;;; Copyright © 2016, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2016, 2018 Raoul Bonnal <ilpuccio.febo@gmail.com>
 ;;; Copyright © 2017, 2018 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2017, 2021 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2017, 2021, 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018 Gábor Boskovits <boskovits@gmail.com>
 ;;; Copyright © 2018, 2019, 2020, 2021 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
@@ -4788,7 +4788,7 @@ performance.")
                            "--enable-libcurl"
                            "--enable-s3")))
     (inputs
-     (list curl openssl))
+     (list bzip2 curl openssl xz))
     ;; This is referred to in the pkg-config file as a required library.
     (propagated-inputs
      (list zlib))
@@ -6668,7 +6668,7 @@ subsequent visualization, annotation and storage of results.")
 (define-public plink-ng
   (package (inherit plink)
     (name "plink-ng")
-    (version "2.00a2.3")
+    (version "2.00a3-20220315")
     (source
      (origin
        (method git-fetch)
@@ -6677,7 +6677,7 @@ subsequent visualization, annotation and storage of results.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1p88lz9agzjlspjhciz61qjc36cfniv4nkxszyy0njqyc5rzc0cd"))))
+        (base32 "19inr47jwddkjb9kfb14yxc7xb16c73lkhgxj9sncb0fsiskb4x8"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
@@ -8981,6 +8981,34 @@ analysis, variant tools is project based and provides a whole set of tools to
 manipulate and analyze genetic variants.")
     (license license:gpl3+)))
 
+(define-public r-chromvarmotifs
+  (let ((commit "38bed559c1f4770b6c91c80bf3f8ea965da26076")
+        (revision "1"))
+    (package
+      (name "r-chromvarmotifs")
+      (version (git-version "0.2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/GreenleafLab/chromVARmotifs")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0i9v1m1hrg1lkd2pnkj5nnrpks6vhhhpbdhsfl2lmjak4npxxr5q"))))
+      (properties `((upstream-name . "chromVARmotifs")))
+      (build-system r-build-system)
+      (propagated-inputs
+       `(("r-tfbstools" ,r-tfbstools)))
+      (home-page "https://github.com/GreenleafLab/chromVARmotifs")
+      (synopsis "Stores motif collections for use with motifmatchr or chromVAR")
+      (description
+       "This package stores motif collections as lists of @dfn{position
+frequency matrix} (PWMatrixList) objects provided by the @code{TFBSTools}
+package for use in R with packages like @code{motifmatchr} or
+@code{chromVAR}.")
+      (license license:expat))))
+
 (define-public r-raremetals2
   (package
     (name "r-raremetals2")
@@ -9008,6 +9036,43 @@ solution for binary trait.  The package rareMETALS2 offers improved features
 for analyzing gene-level association tests in meta-analyses for binary
 trait.")
     (license license:gpl3)))
+
+(define-public r-rnaseqdtu
+  (let ((commit "5bee1e769d2e1dc6a3f1cecb78078050eeb5b9ac")
+        (revision "1"))
+    (package
+      (name "r-rnaseqdtu")
+      (version (git-version "2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/mikelove/rnaseqDTU/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0jfi1ydsk8m5nadwnih48v87nnxdc7s3f0pny4axmnj40dd42as0"))))
+      (properties `((upstream-name . "rnaseqDTU")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-deseq2
+             r-devtools
+             r-dexseq
+             r-drimseq
+             r-edger
+             r-rafalib
+             r-stager))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/mikelove/rnaseqDTU/")
+      (synopsis "RNA-seq workflow for differential transcript usage")
+      (description
+       "This package provides an RNA-seq workflow for differential transcript
+usage (DTU) following Salmon quantification.  This workflow performs a DTU
+analysis on simulated data.  It also shows how to use stageR to perform
+two-stage testing of DTU, a statistical framework to screen at the gene level
+and then confirm which transcripts within the significant genes show evidence
+of DTU.")
+      (license license:artistic2.0))))
 
 (define-public r-dropbead
   (let ((commit "d746c6f3b32110428ea56d6a0001ce52a251c247")
@@ -9100,6 +9165,44 @@ droplet sequencing.  It has been particularly tailored for Drop-seq.")
        "This package infers, visualizes and analyzes the cell-cell
 communication networks from scRNA-seq data.")
       (license license:gpl3))))
+
+(define-public r-copykat
+  (let ((commit                         ;no tag
+         "256de33dfc1b80a1a0ac9e098c5557f95a4e0d53")
+        (revision "0"))
+    (package
+      (name "r-copykat")
+      (version (git-version "1.0.8" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/navinlabcode/copykat")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0ckyqnial3imcqlgd6xfgwk5w977l1i87sx4kdbwdvg40w0vh1j8"))))
+      (properties `((upstream-name . "copykat")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-cluster
+             r-dlm
+             r-gplots
+             r-mcmcpack
+             r-mixtools
+             r-paralleldist
+             r-rcolorbrewer))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/navinlabcode/copykat")
+      (synopsis "Inference of genomic copy number from single cell RNAseq data")
+      (description
+       "This package Copynumber KAryotyping of Tumors infers genomic copy
+number and subclonal structure of human tumors using integrative Bayesian
+approaches to identify genome-wide aneuploidy at 5MB resolution in single
+cells data.  It separates tumor cells and tumor subclones from normal cells
+using high-throughput sc-RNAseq data.")
+      (license license:gpl2))))
 
 (define-public sambamba
   (package
@@ -10266,7 +10369,7 @@ variational inference.")
 (define-public python-loompy
   (package
     (name "python-loompy")
-    (version "2.0.17")
+    (version "3.0.7")
     ;; The tarball on Pypi does not include the tests.
     (source (origin
               (method git-fetch)
@@ -10276,16 +10379,33 @@ variational inference.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "12a5kjgiikapv93wahfw0frszx1lblnppyz3vs5gy8fgmgngra07"))))
+                "0xmw2yv1y3y7vh5jcbrmlkn43nmfs0pf6z78k1yxqs3qy248m9b0"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (replace 'check
+         ;; See https://github.com/linnarsson-lab/loompy/issues/169
+         (add-after 'unpack 'fix-h5py-error
            (lambda _
-             (invoke "pytest" "tests"))))))
+             (substitute* "tests/test_file_attribute_manager.py"
+               (("h5py.File\\(f.name\\)")
+                "h5py.File(f.name, 'a')"))))
+         ;; Numba needs a writable dir to cache functions.
+         (add-before 'check 'set-numba-cache-dir
+           (lambda _
+             (setenv "NUMBA_CACHE_DIR" "/tmp")))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "tests")))))))
     (propagated-inputs
-     (list python-h5py python-numpy python-pandas python-scipy))
+     (list python-click
+           python-h5py
+           python-numba
+           python-numpy
+           python-numpy-groupies
+           python-pandas
+           python-scipy))
     (native-inputs
      (list python-pytest))
     (home-page "https://github.com/linnarsson-lab/loompy")
@@ -10869,7 +10989,7 @@ once.  This package provides tools to perform Drop-seq analyses.")
 (define-public pigx-rnaseq
   (package
     (name "pigx-rnaseq")
-    (version "0.0.19")
+    (version "0.0.20")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/BIMSBbioinfo/pigx_rnaseq/"
@@ -10877,8 +10997,7 @@ once.  This package provides tools to perform Drop-seq analyses.")
                                   "/pigx_rnaseq-" version ".tar.gz"))
               (sha256
                (base32
-                "1ja3bda1appxrzbfy7wp7khy30mm7lic8xbq3gkbpc5bld3as9cm"))
-              (patches (search-patches "pigx-rnaseq-no-citeproc.patch"))))
+                "0bf65qqvlkc77vl7cmmzacq70f0qav4p6nf8pp3x1vdd0nvhr24f"))))
     (build-system gnu-build-system)
     (arguments
      `(#:parallel-tests? #f             ; not supported
@@ -10909,6 +11028,7 @@ once.  This package provides tools to perform Drop-seq analyses.")
            sed
            gzip
            snakemake
+           megadepth
            multiqc
            star-for-pigx
            hisat2
@@ -11115,7 +11235,7 @@ methylation and segmentation.")
 (define-public pigx-scrnaseq
   (package
     (name "pigx-scrnaseq")
-    (version "1.1.7")
+    (version "1.1.8")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/BIMSBbioinfo/pigx_scrnaseq/"
@@ -11123,65 +11243,63 @@ methylation and segmentation.")
                                   "/pigx_scrnaseq-" version ".tar.gz"))
               (sha256
                (base32
-                "1h5mcxzwj3cidlkvy9ly5wmi48vwfsjf8dxjfirknqxr9a92hwlx"))
-              (patches (search-patches "pigx-scrnaseq-no-citeproc.patch"))))
+                "1lc42hl8mz95kilh0z39s3wnv092mhm6vl2i394n0yfvdzk4f885"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
+     '(#:phases
        (modify-phases %standard-phases
-         (add-before 'bootstrap 'autoreconf
+         (add-before 'configure 'set-additional-environment-variables
            (lambda _
-             (invoke "autoreconf" "-vif")))
-         (add-before 'configure 'set-PYTHONPATH
-           (lambda _
+             ;; Needed because of loompy
+             (setenv "NUMBA_CACHE_DIR" "/tmp")
+             ;; Needed to capture environment
              (setenv "PYTHONPATH" (getenv "GUIX_PYTHONPATH")))))))
-    (native-inputs
-     (list automake autoconf))
     (inputs
-     `(("coreutils" ,coreutils)
-       ("perl" ,perl)
-       ("fastqc" ,fastqc)
-       ("flexbar" ,flexbar)
-       ("java" ,icedtea-8)
-       ("jellyfish" ,jellyfish)
-       ("python-wrapper" ,python-wrapper)
-       ("python-pyyaml" ,python-pyyaml)
-       ("python-pandas" ,python-pandas)
-       ("python-magic" ,python-magic)
-       ("python-numpy" ,python-numpy)
-       ("python-loompy" ,python-loompy)
-       ("pandoc" ,pandoc)
-       ("samtools" ,samtools)
-       ("snakemake" ,snakemake)
-       ("star" ,star-for-pigx)
-       ("r-minimal" ,r-minimal)
-       ("r-argparser" ,r-argparser)
-       ("r-cowplot" ,r-cowplot)
-       ("r-data-table" ,r-data-table)
-       ("r-delayedarray" ,r-delayedarray)
-       ("r-delayedmatrixstats" ,r-delayedmatrixstats)
-       ("r-dplyr" ,r-dplyr)
-       ("r-dropbead" ,r-dropbead)
-       ("r-dt" ,r-dt)
-       ("r-genomicalignments" ,r-genomicalignments)
-       ("r-genomicfiles" ,r-genomicfiles)
-       ("r-genomicranges" ,r-genomicranges)
-       ("r-ggplot2" ,r-ggplot2)
-       ("r-hdf5array" ,r-hdf5array)
-       ("r-pheatmap" ,r-pheatmap)
-       ("r-rmarkdown" ,r-rmarkdown)
-       ("r-rsamtools" ,r-rsamtools)
-       ("r-rtracklayer" ,r-rtracklayer)
-       ("r-rtsne" ,r-rtsne)
-       ("r-scater" ,r-scater)
-       ("r-scran" ,r-scran)
-       ("r-seurat" ,r-seurat)
-       ("r-singlecellexperiment" ,r-singlecellexperiment)
-       ("r-stringr" ,r-stringr)
-       ("r-yaml" ,r-yaml)))
+     (list coreutils
+           perl
+           fastqc
+           flexbar
+           icedtea-8
+           jellyfish
+           python-wrapper
+           python-pyyaml
+           python-pandas
+           python-magic
+           python-numpy
+           python-loompy
+           pandoc
+           samtools
+           snakemake
+           star-for-pigx
+           r-minimal
+           r-argparser
+           r-cowplot
+           r-data-table
+           r-delayedarray
+           r-delayedmatrixstats
+           r-dplyr
+           r-dropbead
+           r-dt
+           r-genomicalignments
+           r-genomicfiles
+           r-genomicranges
+           r-ggplot2
+           r-hdf5array
+           r-pheatmap
+           r-rmarkdown
+           r-rsamtools
+           r-rtracklayer
+           r-rtsne
+           r-scater
+           r-scran
+           r-seurat
+           r-singlecellexperiment
+           r-stringr
+           r-yaml))
     (home-page "https://bioinformatics.mdc-berlin.de/pigx/")
     (synopsis "Analysis pipeline for single-cell RNA sequencing experiments")
-    (description "PiGX scRNAseq is an analysis pipeline for preprocessing and
+    (description
+     "PiGX scRNAseq is an analysis pipeline for preprocessing and
 quality control for single cell RNA sequencing experiments.  The inputs are
 read files from the sequencing experiment, and a configuration file which
 describes the experiment.  It produces processed files for downstream analysis
@@ -11192,7 +11310,7 @@ based methods.")
 (define-public pigx-sars-cov2-ww
   (package
     (name "pigx-sars-cov2-ww")
-    (version "0.0.4")
+    (version "0.0.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/BIMSBbioinfo/pigx_sarscov2_ww/"
@@ -11200,11 +11318,11 @@ based methods.")
                                   "/pigx_sars-cov2-ww-" version ".tar.gz"))
               (sha256
                (base32
-                "0axnmz4d8zgir888mc0cilcq4m3v41xmjmpp3w3444lciwnxydvs"))
-              (patches (search-patches "pigx-sars-cov2-ww-no-citeproc.patch"))))
+                "1fkr9gp09zl5n7kdqmy9lrnq28k2z97wg74wgkyfssfyxvmq9cr2"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
+     `(#:tests? #f ;requires huge kraken database
+       #:phases
        (modify-phases %standard-phases
          (add-before 'bootstrap 'autoreconf
            (lambda _
@@ -11812,6 +11930,105 @@ and maxima identification in mean-variance-normalized bimodality coefficient
 distributions.  Homotypic doublet proportion estimation is achieved by finding
 the sum of squared cell annotation frequencies.")
       (license license:cc0))))
+
+;; There have been no releases.
+(define-public r-cytobackbone
+  (let ((commit "4c1a0a35cc5ae1f8f516127cec92351d96fe26e7")
+        (revision "1"))
+    (package
+      (name "r-cytobackbone")
+      (version (git-version "1.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/tchitchek-lab/CytoBackBone")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0ahiad14zcgdk42xzw5xryic2ibn2l8lkrcdvl2b5sz2js028yb3"))))
+      (properties `((upstream-name . "CytoBackBone")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-flowcore
+             r-flowutils
+             r-fnn
+             r-ggplot2
+             r-preprocesscore))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/tchitchek-lab/CytoBackBone")
+      (synopsis "Merge phenotype information from different cytometric profiles")
+      (description
+       "This package implements an algorithm which increases the number of
+simultaneously measurable markers and in this way helps with study of the
+immune responses.  Thus, the present algorithm, named @code{CytoBackBone},
+allows combining phenotypic information of cells from different cytometric
+profiles obtained from different cytometry panels.  This computational
+approach is based on the principle that each cell has its own phenotypic and
+functional characteristics that can be used as an identification card.
+@code{CytoBackBone} uses a set of predefined markers, that we call the
+backbone, to define this identification card.  The phenotypic information of
+cells with similar identification cards in the different cytometric profiles
+is then merged.")
+      (license license:gpl2))))
+
+(define-public r-giotto
+  (let ((commit "68d7390dce87223cac11d4d8f31705fe0144d011")
+        (revision "1"))
+    (package
+      (name "r-giotto")
+      (version (git-version "1.1.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/RubD/Giotto/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0mv60khc05wrxzr4ir6cirn7dpqvgwan5hm00lmafsyalr51nf5i"))))
+      (properties `((upstream-name . "Giotto")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-clusterr
+             r-complexheatmap
+             r-cowplot
+             r-data-table
+             r-dbscan
+             r-deldir
+             r-farver
+             r-fitdistrplus
+             r-ggdendro
+             r-ggplot2
+             r-ggraph
+             r-ggrepel
+             r-igraph
+             r-irlba
+             r-lfa
+             r-limma
+             r-magick
+             r-magrittr
+             r-matrix
+             r-matrixstats
+             r-plotly
+             r-qvalue
+             r-r-utils
+             r-rcolorbrewer
+             r-rcpp
+             r-reshape2
+             r-reticulate
+             r-rfast
+             r-rlang
+             r-rtsne
+             r-scales
+             r-uwot))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/RubD/Giotto/")
+      (synopsis "Spatial single-cell transcriptomics toolbox")
+      (description
+       "This package provides a toolbox to process, analyze and visualize
+spatial single-cell expression data.")
+      (license license:expat))))
 
 (define-public gffread
   ;; We cannot use the tagged release because it is not in sync with gclib.
@@ -13461,6 +13678,13 @@ repeated areas between contigs.")
        (snippet
         '(for-each delete-file (find-files "." "\\.c")))))
     (build-system python-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         ;; Numba needs a writable dir to cache functions.
+         (add-before 'check 'set-numba-cache-dir
+           (lambda _
+             (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
     (native-inputs
      (list python-joblib))
     (propagated-inputs
@@ -14116,51 +14340,59 @@ some of the details of opening and jumping in tabix-indexed files.")
          (base32 "0i9d8zrxpiracw3mxzd9siybpy62p06rqz9mc2w93arajgbk45bs"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:tests? #f ; There are no tests to run.
-         #:make-flags '("libsw.a" "all")
+       (list
+         #:tests? #f ; There are no tests to run.
+         #:make-flags
+         #~(list (string-append "CXX=" #$(cxx-for-target))
+                 "libsw.a" "all")
          #:phases
-         (modify-phases %standard-phases
-           (delete 'configure) ; There is no configure phase.
-           (add-after 'unpack 'patch-source
-             (lambda _
-               (substitute* "Makefile"
-                 (("-c ") "-c -fPIC "))
-               #t))
-           (add-after 'build 'build-dynamic
-             (lambda _
-               (invoke "g++"
-                       "-shared" "-o" "libsmithwaterman.so"
-                       "smithwaterman.o" "SmithWatermanGotoh.o"
-                       "disorder.o" "BandedSmithWaterman.o"
-                       "LeftAlign.o" "Repeats.o" "IndelAllele.o")))
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (bin (string-append out "/bin"))
-                      (lib (string-append out "/lib")))
-                 (install-file "smithwaterman" bin)
-                 (for-each
-                   (lambda (file)
-                     (install-file file (string-append out "/include/smithwaterman")))
-                   (find-files "." "\\.h$"))
-                 (install-file "libsmithwaterman.so" lib)
-                 (install-file "libsw.a" lib)
-                 (mkdir-p (string-append lib "/pkgconfig"))
-                 (with-output-to-file (string-append lib "/pkgconfig/smithwaterman.pc")
-                   (lambda _
-                     (format #t "prefix=~a~@
-                             exec_prefix=${prefix}~@
-                             libdir=${exec_prefix}/lib~@
-                             includedir=${prefix}/include/smithwaterman~@
-                             ~@
-                             ~@
-                             Name: smithwaterman~@
-                             Version: ~a~@
-                             Description: smith-waterman-gotoh alignment algorithm~@
-                             Libs: -L${libdir} -lsmithwaterman~@
-                             Cflags: -I${includedir}~%"
-                             out ,version))))
-               #t)))))
+         #~(modify-phases %standard-phases
+             (delete 'configure) ; There is no configure phase.
+             (add-after 'unpack 'patch-source
+               (lambda _
+                 (substitute* "Makefile"
+                   (("-c ") "-c -fPIC "))
+                 #$@(if (%current-target-system)
+                     #~((substitute* "Makefile"
+                          (("\tld")
+                           (string-append "\t" #$(%current-target-system) "-ld"))
+                          (("\tar")
+                           (string-append "\t" #$(%current-target-system) "-ar"))))
+                     '())))
+             (add-after 'build 'build-dynamic
+               (lambda _
+                 (invoke #$(cxx-for-target)
+                         "-shared" "-o" "libsmithwaterman.so"
+                         "smithwaterman.o" "SmithWatermanGotoh.o"
+                         "disorder.o" "BandedSmithWaterman.o"
+                         "LeftAlign.o" "Repeats.o" "IndelAllele.o")))
+             (replace 'install
+               (lambda* (#:key outputs #:allow-other-keys)
+                 (let* ((out (assoc-ref outputs "out"))
+                        (bin (string-append out "/bin"))
+                        (lib (string-append out "/lib")))
+                   (install-file "smithwaterman" bin)
+                   (for-each
+                     (lambda (file)
+                       (install-file file (string-append out "/include/smithwaterman")))
+                     (find-files "." "\\.h$"))
+                   (install-file "libsmithwaterman.so" lib)
+                   (install-file "libsw.a" lib)
+                   (mkdir-p (string-append lib "/pkgconfig"))
+                   (with-output-to-file (string-append lib "/pkgconfig/smithwaterman.pc")
+                     (lambda _
+                       (format #t "prefix=~a~@
+                               exec_prefix=${prefix}~@
+                               libdir=${exec_prefix}/lib~@
+                               includedir=${prefix}/include/smithwaterman~@
+                               ~@
+                               ~@
+                               Name: smithwaterman~@
+                               Version: ~a~@
+                               Description: smith-waterman-gotoh alignment algorithm~@
+                               Libs: -L${libdir} -lsmithwaterman~@
+                               Cflags: -I${includedir}~%"
+                               out #$version)))))))))
       (home-page "https://github.com/ekg/smithwaterman")
       (synopsis "Implementation of the Smith-Waterman algorithm")
       (description "Implementation of the Smith-Waterman algorithm.")
@@ -14304,7 +14536,7 @@ library automatically handles index file generation and use.")
 (define-public vcflib
   (package
     (name "vcflib")
-    (version "1.0.2")
+    (version "1.0.3")
     (source
      (origin
        (method git-fetch)
@@ -14313,7 +14545,7 @@ library automatically handles index file generation and use.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1k1z3876kbzifj1sqfzsf3lgb4rw779hvkg6ryxbyq5bc2paj9kh"))
+        (base32 "1r7pnajg997zdjkf1b38m14v0zqnfx52w7nbldwh1xpbpahb1hjh"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -14336,8 +14568,7 @@ library automatically handles index file generation and use.")
              (("Fasta.h") "fastahack/Fasta.h"))
            (for-each delete-file-recursively
                      '("fastahack" "filevercmp" "fsom" "googletest" "intervaltree"
-                       "libVCFH" "multichoose" "smithwaterman"))
-           #t))))
+                       "libVCFH" "multichoose" "smithwaterman"))))))
     (build-system cmake-build-system)
     (inputs
      (list bzip2
@@ -14366,8 +14597,7 @@ library automatically handles index file generation and use.")
              (substitute* "CMakeLists.txt"
                (("vcflib STATIC") "vcflib SHARED"))
              (substitute* "test/Makefile"
-               (("libvcflib.a") "libvcflib.so"))
-             #t))
+               (("libvcflib.a") "libvcflib.so"))))
          (add-after 'unpack 'unpack-submodule-sources
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((unpack (lambda (source target)
@@ -14382,8 +14612,7 @@ library automatically handles index file generation and use.")
                 (unpack "filevercmp-src" "filevercmp")
                 (unpack "fsom-src" "fsom")
                 (unpack "intervaltree-src" "intervaltree")
-                (unpack "multichoose-src" "multichoose"))
-               #t)))
+                (unpack "multichoose-src" "multichoose")))))
          ;; This pkg-config file is provided by other distributions.
          (add-after 'install 'install-pkg-config-file
            (lambda* (#:key outputs #:allow-other-keys)
@@ -14441,6 +14670,7 @@ manipulations on VCF files.")
        ("parallel" ,parallel)
        ("perl" ,perl)
        ("pkg-config" ,pkg-config)
+       ("python" ,python)
        ("samtools" ,samtools)
        ("simde" ,simde)
        ;; This submodule is needed to run the tests.
@@ -15275,11 +15505,11 @@ translates between different variant encodings.")
       (license license:asl2.0))))
 
 (define-public r-signac
-  (let ((commit "e0512d348adeda4a3f23a2e8f56d1fe09840e03c")
-        (revision "1"))
+  (let ((commit "458e647b503c3472b0b98c0aeca934f452e039ee")
+        (revision "2"))
     (package
       (name "r-signac")
-      (version (git-version "1.1.1" revision commit))
+      (version (git-version "1.6.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -15288,16 +15518,12 @@ translates between different variant encodings.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32
-           "1yihhrv7zs87ax61la1nb4y12lg3knraw4b20k5digbcwm8488lb"))))
+          (base32 "1hgwpgighkvfkai80n4d2252s4sdpa4faag4ncdiylicl5wa7lbj"))))
       (properties `((upstream-name . "Signac")))
       (build-system r-build-system)
       (inputs (list zlib))
       (propagated-inputs
-       (list r-annotationfilter
-             r-biocgenerics
-             r-biostrings
-             r-biovizbase
+       (list r-biocgenerics
              r-data-table
              r-dplyr
              r-fastmatch
@@ -15305,7 +15531,6 @@ translates between different variant encodings.")
              r-future-apply
              r-genomeinfodb
              r-genomicranges
-             r-ggbio
              r-ggforce
              r-ggplot2
              r-ggrepel
@@ -15316,6 +15541,7 @@ translates between different variant encodings.")
              r-matrix
              r-patchwork
              r-pbapply
+             r-qlcmatrix
              r-rcpp
              r-rcpproll
              r-rsamtools
@@ -15324,7 +15550,8 @@ translates between different variant encodings.")
              r-seurat
              r-seuratobject
              r-stringi
-             r-tidyr))
+             r-tidyr
+             r-tidyselect))
       (home-page "https://github.com/timoast/signac/")
       (synopsis "Analysis of single-cell chromatin data")
       (description
@@ -15722,7 +15949,11 @@ populations.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1k8hllr5if6k2mm2zj391fv40sfc008cjm04l9vgfsdppb80i112"))))
+                "1k8hllr5if6k2mm2zj391fv40sfc008cjm04l9vgfsdppb80i112"))
+              (snippet
+               #~(begin
+                   (use-modules ((guix build utils)))
+                   (delete-file "src/scregseg/_utils.c")))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #false                  ; tests require network access
@@ -16069,3 +16300,155 @@ workflows from concise descriptions in ccwl.  It is implemented as an
 @acronym{EDSL, Embedded Domain Specific Language} in the Scheme programming
 language.")
     (license license:gpl3+)))
+
+(define-public wfmash
+  (package
+    (name "wfmash")
+    (version "0.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/ekg/wfmash/releases/download/v"
+                           version "/wfmash-v" version ".tar.gz"))
+       (sha256
+        (base32
+         "031cm1arpfckvihb28vlk69mirpnmlag81zcscfba1bac58wvr7c"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            ;; Unbundle atomic-queue.
+            (delete-file-recursively "src/common/atomic_queue")
+            (substitute* "src/align/include/computeAlignments.hpp"
+              (("\"common/atomic_queue/atomic_queue.h\"")
+               "<atomic_queue/atomic_queue.h>"))
+            ;; Remove compiler optimizations.
+            (substitute* (find-files "." "CMakeLists\\.txt")
+              (("-mcx16 ") "")
+              (("-march=native ") ""))
+            ;; Allow building on architectures other than x86_64.
+            (substitute* "src/common/dset64.hpp"
+              (("!__x86_64__") "0"))))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (replace 'check
+             ;; Adapted from .github/workflows/test_on_push.yml
+             (lambda* (#:key tests? inputs #:allow-other-keys)
+               (when tests?
+                 (let ((samtools (search-input-file inputs "/bin/samtools")))
+                   ;; This is the easiest way to access the data
+                   ;; needed for the test suite.
+                   (symlink (string-append "../wfmash-v" #$version "/data")
+                            "data")
+                   (and
+                     ;; This test takes 60 minutes on riscv64-linux.
+                     #$@(if (not (target-riscv64?))
+                          #~((begin
+                               ;; Test with a subset of the LPA dataset (PAF output)
+                               (setenv "ASAN_OPTIONS" "detect_leaks=1:symbolize=1")
+                               (setenv "LSAN_OPTIONS" "verbosity=0:log_threads=1")
+                               (with-output-to-file "LPA.subset.paf"
+                                 (lambda _
+                                   (invoke "bin/wfmash"
+                                           "data/LPA.subset.fa.gz"
+                                           "data/LPA.subset.fa.gz"
+                                           "-X" "-n" "10" "-T" "wflign_info."
+                                           "-u" "./")))
+                               (invoke "head" "LPA.subset.paf")))
+                          #~())
+                     ;; This test takes about 5 hours on riscv64-linux.
+                     #$@(if (not (target-riscv64?))
+                          #~((begin
+                               ;; Test with a subset of the LPA dataset (SAM output)
+                               (setenv "ASAN_OPTIONS" "detect_leaks=1:symbolize=1")
+                               (setenv "LSAN_OPTIONS" "verbosity=0:log_threads=1")
+                               (with-output-to-file "LPA.subset.sam"
+                                 (lambda _
+                                   (invoke "bin/wfmash"
+                                           "data/LPA.subset.fa.gz"
+                                           "data/LPA.subset.fa.gz"
+                                           "-X" "-N" "-a" "-T" "wflign_info.")))
+                               (with-output-to-file "LPA.subset.sam-view"
+                                 (lambda _
+                                   (invoke samtools "view" "LPA.subset.sam" "-bS")))
+                               (with-output-to-file "LPA.subset.bam"
+                                 (lambda _
+                                   (invoke samtools "sort" "LPA.subset.sam-view")))
+                               (invoke samtools "index" "LPA.subset.bam")
+                               ;; samtools view LPA.subset.bam | head | cut -f 1-9
+                               ;(invoke samtools "view" "LPA.subset.bam")
+                               ;; There should be an easier way to do this with pipes.
+                               (with-output-to-file "LPA.subset.bam-incr1"
+                                 (lambda _
+                                   (invoke samtools "view" "LPA.subset.bam")))
+                               (with-output-to-file "LPA.subset.bam-incr2"
+                                 (lambda _
+                                   (invoke "head" "LPA.subset.bam-incr1")))
+                               (invoke "cut" "-f" "1-9" "LPA.subset.bam-incr2")))
+                          #~())
+                     ;; This test takes 60 minutes on riscv64-linux.
+                     #$@(if (not (target-riscv64?))
+                          #~((begin
+                               ;; Test with a subset of the LPA dataset,
+                               ;; setting a lower identity threshold (PAF output)
+                               (setenv "ASAN_OPTIONS" "detect_leaks=1:symbolize=1")
+                               (setenv "LSAN_OPTIONS" "verbosity=0:log_threads=1")
+                               (with-output-to-file "LPA.subset.p90.paf"
+                                 (lambda _
+                                   (invoke "bin/wfmash"
+                                           "data/LPA.subset.fa.gz"
+                                           "data/LPA.subset.fa.gz"
+                                           "-X" "-p" "90" "-n" "10"
+                                           "-T" "wflign_info.")))
+                               (invoke "head" "LPA.subset.p90.paf")))
+                          #~())
+                     (begin
+                       ;; Test aligning short reads (500 bps) to a reference (SAM output)
+                       (setenv "ASAN_OPTIONS" "detect_leaks=1:symbolize=1")
+                       (setenv "LSAN_OPTIONS" "verbosity=0:log_threads=1")
+                       (with-output-to-file "reads.500bps.sam"
+                         (lambda _
+                           (invoke "bin/wfmash"
+                                   "data/reference.fa.gz"
+                                   "data/reads.500bps.fa.gz"
+                                   "-s" "0.5k" "-N" "-a")))
+                       (with-output-to-file "reads.500bps.sam-view"
+                         (lambda _
+                           (invoke samtools "view" "reads.500bps.sam" "-bS")))
+                       (with-output-to-file "reads.500bps.bam"
+                         (lambda _
+                           (invoke samtools "sort" "reads.500bps.sam-view")))
+                       (invoke samtools "index" "reads.500bps.bam")
+                       (with-output-to-file "reads.500bps.bam-view"
+                         (lambda _
+                           (invoke samtools "view" "reads.500bps.bam")))
+                       (invoke "head" "reads.500bps.bam-view"))
+                     (begin
+                       ;; Test with few very short reads (255bps) (PAF output)
+                       (setenv "ASAN_OPTIONS" "detect_leaks=1:symbolize=1")
+                       (setenv "LSAN_OPTIONS" "verbosity=0:log_threads=1")
+                       (with-output-to-file "reads.255bps.paf"
+                         (lambda _
+                           (invoke "bin/wfmash"
+                                   "data/reads.255bps.fa.gz"
+                                   "data/reads.255bps.fa.gz"
+                                   "-X" "-w" "16")))
+                       (invoke "head" "reads.255bps.paf"))))))))))
+    (inputs
+     (list atomic-queue
+           gsl
+           htslib
+           jemalloc
+           zlib))
+    (native-inputs
+     (list samtools))
+    (synopsis "Base-accurate DNA sequence aligner")
+    (description "@code{wfmash} is a DNA sequence read mapper based on mash
+distances and the wavefront alignment algorithm.  It is a fork of MashMap that
+implements base-level alignment via the wflign tiled wavefront global
+alignment algorithm.  It completes MashMap with a high-performance alignment
+module capable of computing base-level alignments for very large sequences.")
+    (home-page "https://github.com/ekg/wfmash")
+    (license license:expat)))

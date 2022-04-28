@@ -57,7 +57,7 @@
   ;; to migrate to 2.0.
   (package
     (name "hwloc")
-    (version "1.11.12")
+    (version "1.11.13")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.open-mpi.org/software/hwloc/v"
@@ -65,7 +65,8 @@
                                   "/downloads/hwloc-" version ".tar.bz2"))
               (sha256
                (base32
-                "0za1b9lvrm3rhn0lrxja5f64r0aq1qs4m0pxn1ji2mbi8ndppyyx"))))
+                "1j69p8a1pjpbpwn4w7l4dfxmaxxqikchjzqw1ncw05zmcmvlnjd4"))
+              (patches (search-patches "hwloc-1-test-btrfs.patch"))))
 
     (properties
      ;; Tell the 'generic-html' updater to monitor this URL for updates.
@@ -78,15 +79,8 @@
                "doc"           ;400+ section 3 man pages
                "debug"))
     (inputs
-     `(("libx11" ,libx11)
-       ("cairo" ,cairo)
-       ("ncurses" ,ncurses)
-       ("expat" ,expat)
-       ,@(if (not (string-prefix? "armhf"
-                                  (or (%current-target-system)
-                                      (%current-system))))
-             `(("numactl" ,numactl))
-             '())))
+     (append (list libx11 cairo ncurses expat)
+             (if (target-arm32?) '() (list numactl))))
     (propagated-inputs
      ;; hwloc.pc lists it in 'Requires.private'.
      (list libpciaccess))
@@ -102,8 +96,7 @@
              ;; machines: <https://github.com/open-mpi/hwloc/issues/213>.
              (substitute* "tests/linux-libnuma.c"
                (("numa_available\\(\\)")
-                "-1"))
-             #t))
+                "-1"))))
          (add-after 'install 'refine-libnuma
            ;; Give -L arguments for libraries to avoid propagation
            (lambda* (#:key inputs outputs #:allow-other-keys)
@@ -120,8 +113,7 @@
                ;; "lib" output doesn't refer to "out".
                (substitute* (string-append lib "/lib/pkgconfig/hwloc.pc")
                  (("^.*prefix=.*$")
-                  ""))
-               #t)))
+                  "")))))
          (add-after 'install 'move-man3-pages
            (lambda* (#:key outputs #:allow-other-keys)
              ;; Move section 3 man pages to the "doc" output.
@@ -129,8 +121,8 @@
                    (doc (assoc-ref outputs "doc")))
                (copy-recursively (string-append out "/share/man/man3")
                                  (string-append doc "/share/man/man3"))
-               (delete-file-recursively (string-append out "/share/man/man3"))
-               #t))))))
+               (delete-file-recursively
+                (string-append out "/share/man/man3"))))))))
     (home-page "https://www.open-mpi.org/projects/hwloc/")
     (synopsis "Abstraction of hardware architectures")
     (description
@@ -151,7 +143,7 @@ bind processes, and much more.")
   ;; Note: 2.x isn't the default yet, see above.
   (package
     (inherit hwloc-1)
-    (version "2.7.0")
+    (version "2.7.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.open-mpi.org/release/hwloc/v"
@@ -159,10 +151,11 @@ bind processes, and much more.")
                                   "/hwloc-" version ".tar.bz2"))
               (sha256
                (base32
-                "1q440fwvhnxz6j8k5bn3bxj86b3lzbr8fgib78l4iq6gxd9yx302"))))
+                "13ajxwshxl1pa8b5gnkmm7hcg97m6xrlgz8vj1hmsb57qcv1skhd"))))
 
     ;; libnuma is no longer needed.
-    (inputs (alist-delete "numactl" (package-inputs hwloc-1)))
+    (inputs (modify-inputs (package-inputs hwloc-1)
+              (delete "numactl")))
     (arguments
      (substitute-keyword-arguments (package-arguments hwloc-1)
        ((#:phases phases)
@@ -173,16 +166,14 @@ bind processes, and much more.")
                ;; some machines: <https://github.com/open-mpi/hwloc/issues/213>.
                (substitute* "tests/hwloc/linux-libnuma.c"
                  (("numa_available\\(\\)")
-                  "-1"))
-               #t))
+                  "-1"))))
            (add-before 'check 'skip-test-that-fails-on-qemu
              (lambda _
                ;; Skip test that fails on emulated hardware due to QEMU bug:
                ;; <https://bugs.gnu.org/40342>.
                (substitute* "tests/hwloc/hwloc_get_last_cpu_location.c"
                  (("hwloc_topology_init" all)
-                  (string-append "exit (77);\n" all)))
-               #t))))))))
+                  (string-append "exit (77);\n" all)))))))))))
 
 (define-deprecated hwloc-2.0 hwloc-2)
 
@@ -193,7 +184,7 @@ bind processes, and much more.")
 (define-public openmpi
   (package
     (name "openmpi")
-    (version "4.1.1")
+    (version "4.1.3")
     (source
      (origin
       (method url-fetch)
@@ -201,7 +192,7 @@ bind processes, and much more.")
                           (version-major+minor version)
                           "/downloads/openmpi-" version ".tar.bz2"))
       (sha256
-       (base32 "1nkwq123vvmggcay48snm9qqmrh0bdzpln0l1jnp26niidvplkz2"))
+       (base32 "0fqagib5ic0fb3rbl77z90gjrmyqk2qgyrd4f4w5vdggai6d109x"))
       (patches (search-patches "openmpi-mtl-priorities.patch"))))
 
     (properties
@@ -211,26 +202,24 @@ bind processes, and much more.")
 
     (build-system gnu-build-system)
     (inputs
-     `(("hwloc" ,hwloc-2 "lib")
-       ("gfortran" ,gfortran)
-       ("libfabric" ,libfabric)
-       ("libevent" ,libevent)
-       ("opensm" ,opensm)
-       ,@(if (and (not (%current-target-system))
-                  (member (%current-system) (package-supported-systems psm)))
-             `(("psm" ,psm))
-             '())
-       ,@(if (and (not (%current-target-system))
-                  (member (%current-system) (package-supported-systems psm2)))
-             `(("psm2" ,psm2))
-             '())
-       ,@(if (and (not (%current-target-system))
-                  (member (%current-system) (package-supported-systems ucx)))
-             `(("ucx" ,ucx))
-             '())
-       ("rdma-core" ,rdma-core)
-       ("valgrind" ,valgrind)
-       ("slurm" ,slurm)))              ;for PMI support (launching via "srun")
+     (let ((if-supported
+            (lambda (package)
+              (if (and (not (%current-target-system))
+                       (member (%current-system)
+                               (package-supported-systems package)))
+                  (list package)
+                  '()))))
+       (append (list `(,hwloc-2 "lib")
+                     gfortran
+                     libfabric
+                     libevent
+                     opensm)
+               (if-supported psm)
+               (if-supported psm2)
+               (if-supported ucx)
+               (list rdma-core
+                     valgrind
+                     slurm))))         ;for PMI support (launching via "srun")
     (native-inputs
      (list pkg-config perl))
     (outputs '("out" "debug"))
@@ -282,20 +271,17 @@ bind processes, and much more.")
                       (substitute*
                           '("./ompi/mca/io/romio321/src/io_romio321_component.c")
                         (("MCA_io_romio321_COMPLETE_CONFIGURE_FLAGS")
-                         "\"[elided to reduce closure]\""))
-                      #t))
+                         "\"[elided to reduce closure]\""))))
                   (add-before 'build 'scrub-timestamps ;reproducibility
                     (lambda _
                       (substitute* '("ompi/tools/ompi_info/param.c"
                                      "orte/tools/orte-info/param.c"
                                      "oshmem/tools/oshmem_info/param.c")
-                        ((".*(Built|Configured) on.*") ""))
-                      #t))
+                        ((".*(Built|Configured) on.*") ""))))
                   (add-after 'install 'remove-logs ;reproducibility
                     (lambda* (#:key outputs #:allow-other-keys)
                       (let ((out (assoc-ref outputs "out")))
-                        (for-each delete-file (find-files out "config.log"))
-                        #t))))))
+                        (for-each delete-file (find-files out "config.log"))))))))
     (home-page "https://www.open-mpi.org")
     (synopsis "MPI-3 implementation")
     (description

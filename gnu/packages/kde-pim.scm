@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2019, 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1336,8 +1336,9 @@ using a Qt/KMime C++ API.")
                       ;; <Libkdepim/MultiplyingLine> without this hack.
                       (setenv "CPLUS_INCLUDE_PATH"
                               (string-append
-                               (search-input-directory inputs "include/KF5")
-                               ":" (or (getenv "CPLUS_INCLUDE_PATH") ""))))))))
+                                (assoc-ref inputs "libkdepim")
+                                "/include/KF5:"
+                                (or (getenv "CPLUS_INCLUDE_PATH") ""))))))))
     (home-page "https://invent.kde.org/pim/messagelib")
     (synopsis "KDE PIM messaging libraries")
     (description "This package provides several libraries for messages,
@@ -1582,7 +1583,7 @@ and exchanging calendar data, vCalendar and iCalendar.")
     (version "0.1")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://download.kde.org/stable/kpeoplevcard/"
+              (uri (string-append "mirror://kde/stable/kpeoplevcard/"
                                   version "/kpeoplevcard-" version ".tar.xz"))
               (sha256
                (base32

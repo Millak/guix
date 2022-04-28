@@ -1,0 +1,25 @@
+diff --git a/Cargo.toml b/Cargo.toml
+index 57924f1..0c59727 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -43,11 +43,6 @@ bench = false
+ version = "0.4"
+ optional = true
+ 
+-[dependencies.blas-src]
+-version = "0.6.1"
+-optional = true
+-default-features = false
+-
+ [dependencies.cblas-sys]
+ version = "0.1.4"
+ optional = true
+@@ -92,7 +87,7 @@ version = "0.9"
+ default-features = false
+ 
+ [features]
+-blas = ["cblas-sys", "blas-src"]
++blas = ["cblas-sys"]
+ docs = ["approx", "serde", "rayon"]
+ serde-1 = ["serde"]
+ test = ["test-blas-openblas-sys"]

@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2016, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -3046,7 +3046,11 @@ Note: currently this package does not provide GPU support.")
        (uri (pypi-uri "hmmlearn" version))
        (sha256
         (base32
-         "1my0j3rzp17438idr32ssh0j969a98yjblx5igx5kgiiigr9qa1a"))))
+         "1my0j3rzp17438idr32ssh0j969a98yjblx5igx5kgiiigr9qa1a"))
+       (snippet
+        #~(begin
+            (use-modules ((guix build utils)))
+            (delete-file "lib/hmmlearn/_hmmc.c")))))
     (build-system python-build-system)
     (arguments
      `(#:phases

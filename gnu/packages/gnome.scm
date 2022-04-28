@@ -69,6 +69,8 @@
 ;;; Copyright © 2022 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
+;;; Copyright © 2022 Leo Nikkilä <hello@lnikki.la>
+;;; Copyright © 2022 Rene Saavedra <nanuui@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1191,12 +1193,10 @@ Library reference documentation.")
               (substitute* "data/meson.build"
                 (("udev\\.get_pkgconfig_variable\\('udevdir'\\)")
                  (format #f "'~a'" rules))))))
-        (add-before 'check 'start-virtual-dir-server
-          ;; The same server when started by tests/virtual-dir returns an
-          ;; unexpected status (4 instead of 200) and fails a test.  It is
-          ;; unclear why starting it manually here makes it pass.
+        (add-before 'check 'set-temporary-home
+          ;; Tests want to write into HOME.
           (lambda _
-            (system "tests/virtual-dir-server &"))))))
+            (setenv "HOME" "/tmp"))))))
    (native-inputs
     `(("docbook-xml" ,docbook-xml-4.3)
       ("gettext" ,gettext-minimal)
@@ -1205,7 +1205,7 @@ Library reference documentation.")
       ("gtk-doc" ,gtk-doc/stable)
       ("pkg-config" ,pkg-config)))
    (inputs
-    (list avahi libgudev libsoup))
+    (list avahi libgudev libsoup-minimal-2))
    (synopsis "WebDav server implementation using libsoup")
    (description "PhoDav was initially developed as a file-sharing mechanism for Spice,
 but it is generic enough to be reused in other projects,
@@ -5843,17 +5843,17 @@ throughout GNOME for API documentation).")
                 (string-append all "\n#include <EGL/eglmesaext.h>\n")))
              #t))
          (add-before 'check 'start-xorg-server
-                     (lambda* (#:key tests? inputs #:allow-other-keys)
-                       (if tests?
-                           (begin
-                             ;; The test suite requires a running X server.
-                             (system (format #f "~a/bin/Xvfb :1 +extension GLX &"
-                                             (assoc-ref inputs "xorg-server")))
-                             (setenv "DISPLAY" ":1")
-                             #t)
-                           (format #t "test suite not run~%"))
-                       #t)))))
-    (home-page "https://www.cogl3d.org")
+           (lambda* (#:key tests? inputs #:allow-other-keys)
+             (if tests?
+                 (begin
+                   ;; The test suite requires a running X server.
+                   (system (format #f "~a/bin/Xvfb :1 +extension GLX &"
+                                   (assoc-ref inputs "xorg-server")))
+                   (setenv "DISPLAY" ":1")
+                   #t)
+                 (format #t "test suite not run~%"))
+             #t)))))
+    (home-page "http://www.clutter-project.org")
     (synopsis "Object oriented GL/GLES Abstraction/Utility Layer")
     (description
      "Cogl is a small library for using 3D graphics hardware to draw pretty
@@ -11773,45 +11773,45 @@ these services on the Guix System.")
                       (system "Xvfb :1 &")
                       (setenv "DISPLAY" ":1"))))))
     (inputs
-     `(("enchant" ,enchant)
-       ("folks" ,folks)
-       ("gcr" ,gcr)
-       ("glib" ,glib)
-       ("gmime" ,gmime)
-       ("gnome-online-accounts:lib"
-        ,gnome-online-accounts "lib")
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("gspell" ,gspell)
-       ("gsound" ,gsound)
-       ("gtk+" ,gtk+)
-       ("iso-codes" ,iso-codes)
-       ("json-glib" ,json-glib)
-       ("libcanberra" ,libcanberra)
-       ("libgee" ,libgee)
-       ("libhandy" ,libhandy)
-       ("libpeas" ,libpeas)
-       ("libsecret" ,libsecret)
-       ("libstemmer" ,libstemmer)
-       ("libunwind" ,libunwind)
-       ("sqlite" ,sqlite)
-       ("webkitgtk" ,webkitgtk-with-libsoup2)
-       ("ytnef" ,ytnef)))
+     (list enchant
+           folks
+           gcr
+           glib
+           gmime
+           `(,gnome-online-accounts "lib")
+           gsettings-desktop-schemas
+           gspell
+           gsound
+           gtk+
+           iso-codes
+           json-glib
+           libcanberra
+           libgee
+           libhandy
+           libpeas
+           libsecret
+           libstemmer
+           libunwind
+           sqlite
+           webkitgtk-with-libsoup2
+           ytnef))
     (native-inputs
-     `(("appstream-glib" ,appstream-glib)
-       ("cmake-minimal" ,cmake-minimal)
-       ("desktop-file-utils" ,desktop-file-utils)
-       ("gettext" ,gettext-minimal)
-       ("glib" ,glib)
-       ("glib:bin" ,glib "bin")
-       ("gmime" ,gmime)
-       ("gobject-introspection" ,gobject-introspection)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("itstool" ,itstool)
-       ("libarchive" ,libarchive)
-       ("libxml2" ,libxml2)
-       ("pkg-config" ,pkg-config)
-       ("vala" ,vala)
-       ("xvfb" ,xorg-server-for-tests)))
+     (list appstream-glib
+           cmake-minimal
+           desktop-file-utils
+           gettext-minimal
+           glib
+           `(,glib "bin")
+           gmime
+           gobject-introspection
+           gsettings-desktop-schemas
+           itstool
+           libarchive
+           libxml2
+           pkg-config
+           python-minimal
+           vala
+           xorg-server-for-tests))
     (synopsis "GNOME email application built around conversations")
     (description
      "Geary collects related messages together into conversations,
@@ -12406,7 +12406,7 @@ profiler via Sysprof, debugging support, and more.")
 (define-public komikku
   (package
     (name "komikku")
-    (version "0.37.0")
+    (version "0.38.0")
     (source
      (origin
        (method git-fetch)
@@ -12416,7 +12416,7 @@ profiler via Sysprof, debugging support, and more.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1ab17xjpfy9ks6dzgcnh2p5n9hl82mi6f8zbaz7s36115dmp4fbf"))))
+         "1khf51r8001j0cvjja5rkqi07v08nqyz97hx8fjyi7p3l5b5vkwc"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t

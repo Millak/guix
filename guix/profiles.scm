@@ -1716,12 +1716,6 @@ the entries in MANIFEST."
               (force-output))))))
 
   (gexp->derivation "manual-database" build
-
-                    ;; Work around GDBM 1.13 issue whereby uninitialized bytes
-                    ;; get written to disk:
-                    ;; <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=29654#23>.
-                    #:env-vars `(("MALLOC_PERTURB_" . "1"))
-
                     #:substitutable? #f
                     #:local-build? #t
                     #:properties

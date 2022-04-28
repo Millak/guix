@@ -21,7 +21,8 @@
   #:use-module ((guix diagnostics) #:select (location))
   #:use-module (guix scripts environment)
   #:autoload   (guix scripts build) (show-build-options-help)
-  #:autoload   (guix transformations) (transformation-option-key?
+  #:autoload   (guix transformations) (options->transformation
+                                       transformation-option-key?
                                        show-transformation-options-help)
   #:use-module (guix scripts)
   #:use-module (guix packages)
@@ -41,7 +42,12 @@
   #:use-module ((guix build utils) #:select (mkdir-p))
   #:use-module (guix cache)
   #:use-module ((ice-9 ftw) #:select (scandir))
-  #:autoload   (gnu packages) (cache-is-authoritative?)
+  #:autoload   (ice-9 pretty-print) (pretty-print)
+  #:autoload   (gnu packages) (cache-is-authoritative?
+                               package-unique-version-prefix
+                               specification->package
+                               specification->package+output
+                               specifications->manifest)
   #:export (guix-shell))
 
 (define (show-help)
@@ -55,10 +61,13 @@ interactive shell in that environment.\n"))
   -D, --development      include the development inputs of the next package"))
   (display (G_ "
   -f, --file=FILE        add to the environment the package FILE evaluates to"))
+
   (display (G_ "
   -q                     inhibit loading of 'guix.scm' and 'manifest.scm'"))
   (display (G_ "
       --rebuild-cache    rebuild cached environment, if any"))
+  (display (G_ "
+      --export-manifest  print a manifest for the given options"))
 
   (show-environment-options-help)
   (newline)
@@ -111,6 +120,10 @@ interactive shell in that environment.\n"))
                         ;; The next option will put it back thanks to
                         ;; 'wrapped-option'.
                         (alist-delete 'ad-hoc? result)))
+
+              (option '("export-manifest") #f #f
+                      (lambda (opt name arg result)
+                        (alist-cons 'export-manifest? #t result)))
 
               ;; For consistency with 'guix package', support '-f' rather than
               ;; '-l' like 'guix environment' does.
@@ -382,6 +395,94 @@ return #f and #f."
 
 
 ;;;
+;;; Exporting a manifest.
+;;;
+
+(define (manifest-entry-version-prefix entry)
+  "Search among all the versions of ENTRY's package that are available, and
+return the shortest unambiguous version prefix for this package."
+  (package-unique-version-prefix (manifest-entry-name entry)
+                                 (manifest-entry-version entry)))
+
+(define (manifest->code* manifest extra-manifests)
+  "Like 'manifest->code', but insert a 'concatenate-manifests' call that
+concatenates MANIFESTS, a list of expressions."
+  (if (null? (manifest-entries manifest))
+      (match extra-manifests
+        ((one) one)
+        (lst   `(concatenate-manifests ,@extra-manifests)))
+      (match (manifest->code manifest
+                             #:entry-package-version
+                             manifest-entry-version-prefix)
+        (('begin exp ... last)
+         `(begin
+            ,@exp
+            ,(match extra-manifests
+               (() last)
+               (_  `(concatenate-manifests
+                     (list ,last ,@extra-manifests)))))))))
+
+(define (export-manifest opts port)
+  "Write to PORT a manifest corresponding to OPTS."
+  (define (manifest-lift proc)
+    (lambda (entry)
+      (match (manifest-entry-item entry)
+        ((? package? p)
+         (manifest-entry
+           (inherit (package->manifest-entry (proc p)))
+           (output (manifest-entry-output entry))))
+        (_
+         entry))))
+
+  (define (validated-spec spec)
+    ;; Return SPEC if it's a valid package spec.
+    (specification->package+output spec)
+    spec)
+
+  (let* ((transform (options->transformation opts))
+         (specs     (reverse
+                     (filter-map (match-lambda
+                                   (('package 'ad-hoc-package spec)
+                                    (validated-spec spec))
+                                   (_ #f))
+                                 opts)))
+         (extras    (reverse
+                     (filter-map (match-lambda
+                                   (('package 'package spec)
+                                    ;; Make sure SPEC is valid.
+                                    (specification->package spec)
+
+                                    ;; XXX: This is an approximation:
+                                    ;; transformation options are not applied.
+                                    `(package->development-manifest
+                                      (specification->package ,spec)))
+                                   (_ #f))
+                                 opts)))
+         (manifest  (concatenate-manifests
+                     (cons (map-manifest-entries
+                            (manifest-lift transform)
+                            (specifications->manifest specs))
+                           (filter-map (match-lambda
+                                         (('manifest . file)
+                                          (load-manifest file))
+                                         (_ #f))
+                                       opts)))))
+    (display (G_ "\
+;; What follows is a \"manifest\" equivalent to the command line you gave.
+;; You can store it in a file that you may then pass to any 'guix' command
+;; that accepts a '--manifest' (or '-m') option.\n")
+             port)
+    (match (manifest->code* manifest extras)
+      (('begin exp ...)
+       (for-each (lambda (exp)
+                   (newline port)
+                   (pretty-print exp port))
+                 exp))
+      (exp
+       (pretty-print exp port)))))
+
+
+;;;
 ;;; One-time hints.
 ;;;
 
@@ -445,4 +546,6 @@ to make sure your shell does not clobber environment variables."))) )
                 cache-entries
                 #:entry-expiration entry-expiration)))
 
-  (guix-environment* opts))
+  (if (assoc-ref opts 'export-manifest?)
+      (export-manifest opts (current-output-port))
+      (guix-environment* opts)))

@@ -221,14 +221,14 @@ Python 3.3 and later, rather than on Python 2.")
 (define-public git
   (package
    (name "git")
-   (version "2.34.1")
+   (version "2.36.0")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://kernel.org/software/scm/git/git-"
                                 version ".tar.xz"))
             (sha256
              (base32
-              "0b40vf315s1kz65x1wq47g8srl4wqac39pwnvlj1mdzs3kfma1rs"))))
+              "1ly13j37h1y8bgcj3h0cl43vcpwk9j4gsasssk8gar44cp0vypmg"))))
    (build-system gnu-build-system)
    (native-inputs
     `(("native-perl" ,perl)
@@ -248,7 +248,7 @@ Python 3.3 and later, rather than on Python 2.")
                 version ".tar.xz"))
           (sha256
            (base32
-            "1f3y7hxvs9p00wwwi8zdn0sgn6nh1pgg1fdsnz2bq8gzfbbmsqww"))))
+            "0p6vc6nyaibx2lxirjj2nm5spk5q6svz8l3w0pqnaa3i7l7c6qy0"))))
       ;; For subtree documentation.
       ("asciidoc" ,asciidoc)
       ("docbook-xsl" ,docbook-xsl)
@@ -1322,7 +1322,7 @@ lot easier.")
 (define-public stgit
   (package
     (name "stgit")
-    (version "1.1")
+    (version "1.5")
     (source
      (origin
        (method git-fetch)
@@ -1331,7 +1331,7 @@ lot easier.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jp74qsgw3f9c8xgaaqvmhfh4ar3n1ns5ncm8glvqyywlxldxi0n"))))
+        (base32 "1igljjpdgl4na1a5hi0nmg36ph0hw6hw8hhq5436fgcl8yjimyz3"))))
     (build-system python-build-system)
     (native-inputs
      (list perl))
@@ -1475,7 +1475,7 @@ also walk each side of a merge and test those changes individually.")
                       (let ((perl (search-input-file inputs "/bin/perl")))
                         ;; This seems to take care of every shell script that
                         ;; invokes Perl.
-                        (substitute* (find-files "." ".*")
+                        (substitute* (find-files ".")
                           ((" perl -")
                            (string-append " " perl " -")))
 
@@ -1494,8 +1494,7 @@ also walk each side of a merge and test those changes individually.")
                         ;; This works because gitolite-shell is in the PATH.
                         (substitute* "src/triggers/post-compile/ssh-authkeys"
                           (("\\$glshell \\$user")
-                           "gitolite-shell $user"))
-                        #t)))
+                           "gitolite-shell $user")))))
                   (add-before 'install 'patch-source
                     (lambda* (#:key inputs #:allow-other-keys)
                       ;; Gitolite uses cat to test the readability of the
@@ -1519,7 +1518,8 @@ also walk each side of a merge and test those changes individually.")
                                         (assoc-ref inputs "inetutils")
                                         "/bin/logger\"")))
 
-                      #t))
+                      (substitute* "src/commands/svnserve"
+                        (("/usr/bin/svnserve") "svnserve"))))
                   (replace 'install
                     (lambda* (#:key outputs #:allow-other-keys)
                       (let* ((output (assoc-ref outputs "out"))
@@ -1532,8 +1532,7 @@ also walk each side of a merge and test those changes individually.")
                         (for-each (lambda (script)
                                     (symlink (string-append sharedir "/" script)
                                              (string-append bindir "/" script)))
-                                  '("gitolite" "gitolite-shell"))
-                        #t)))
+                                  '("gitolite" "gitolite-shell")))))
                   (add-after 'install 'wrap-scripts
                     (lambda* (#:key inputs outputs #:allow-other-keys)
                       (let ((out (assoc-ref outputs "out"))
@@ -1544,10 +1543,9 @@ also walk each side of a merge and test those changes individually.")
                           `("PATH" ":" prefix
                             ,(map (lambda (dir)
                                     (string-append dir "/bin"))
-                                  (list out coreutils findutils git))))
-                        #t))))))
+                                  (list out coreutils findutils git))))))))))
     (inputs
-     (list perl coreutils findutils inetutils))
+     (list bash-minimal perl coreutils findutils inetutils))
     ;; git and openssh are propagated because trying to patch the source via
     ;; regexp matching is too brittle and prone to false positives.
     (propagated-inputs
@@ -1628,7 +1626,7 @@ visualize your public Git repositories on a web interface.")
 (define-public pre-commit
   (package
     (name "pre-commit")
-    (version "2.17.0")
+    (version "2.18.1")
     (source
      (origin
        (method git-fetch)               ; no tests in PyPI release
@@ -1637,7 +1635,7 @@ visualize your public Git repositories on a web interface.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1y4h6zrypxgm9j8q66hcx5cs4q2dkh9schzn2nsdmdqad19356s9"))))
+        (base32 "08c1nxqyqmy5sbmfnpvc8z82cx1rv9q290w7x2mrm0nd718s9yvp"))))
     (build-system python-build-system)
     (arguments
      `(#:phases

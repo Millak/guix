@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014 Alex Kost <alezost@gmail.com>
-;;; Copyright © 2018, 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2018, 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -28,6 +28,8 @@
             emacs-batch-disable-compilation
             emacs-generate-autoloads
             emacs-byte-compile-directory
+
+            as-display
             emacs-substitute-sexps
             emacs-substitute-variables))
 
@@ -82,6 +84,24 @@ true, evaluate using dynamic scoping."
                 (byte-recompile-directory (file-name-as-directory ,dir) 0 1))))
     (emacs-batch-eval expr)))
 
+(define as-display         ;syntactic keyword for 'emacs-substitute-sexps'
+  '(as display))
+
+(define-syntax replacement-helper
+  (syntax-rules (as-display)
+    ((_ (leading-regexp replacement (as-display)))
+     `(progn (goto-char (point-min))
+             (re-search-forward ,leading-regexp)
+             (kill-sexp)
+             (insert " ")
+             (insert ,(format #f "~a" replacement))))
+    ((_ (leading-regexp replacement))
+     `(progn (goto-char (point-min))
+             (re-search-forward ,leading-regexp)
+             (kill-sexp)
+             (insert " ")
+             (insert ,(format #f "~s" replacement))))))
+
 (define-syntax emacs-substitute-sexps
   (syntax-rules ()
     "Substitute the S-expression immediately following the first occurrence of
@@ -95,14 +115,15 @@ LEADING-REGEXP by the string returned by REPLACEMENT in FILE.  For example:
 
 This replaces the default values of the `w3m-command' and `w3m-image-viewer'
 variables declared in `w3m.el' with the results of the `string-append' calls
-above.  Note that LEADING-REGEXP uses Emacs regexp syntax."
-    ((emacs-substitute-sexps file (leading-regexp replacement) ...)
+above.  Note that LEADING-REGEXP uses Emacs regexp syntax.
+
+Here is another example that uses the '(as-display)' subform to avoid having
+the Elisp procedure symbol from being double quoted:
+  (emacs-substitute-sexps \"gnugo.el\"
+    (\"defvar gnugo-xpms\" \"#'gnugo-imgen-create-xpms\" (as-display))"
+    ((_ file replacement-spec ...)
      (emacs-batch-edit-file file
-       `(progn (progn (goto-char (point-min))
-                      (re-search-forward ,leading-regexp)
-                      (kill-sexp)
-                      (insert " ")
-                      (insert ,(format #f "~S" replacement)))
+       `(progn ,(replacement-helper replacement-spec)
                ...
                (basic-save-buffer))))))
 
@@ -117,11 +138,15 @@ REPLACEMENT in FILE.  For example:
 
 This replaces the default values of the `w3m-command' and `w3m-image-viewer'
 variables declared in `w3m.el' with the results of the `string-append' calls
-above."
-    ((emacs-substitute-variables file (variable replacement) ...)
+above.  Similarly to `emacs-substitute-sexps', the '(as-display)' subform can
+be used to have the replacement formatted like `display' would, which can be
+useful to avoid double quotes being added when the replacement is provided as
+a string."
+    ((_ file (variable replacement modifier ...) ...)
      (emacs-substitute-sexps file
        ((string-append "(def[a-z]+[[:space:]\n]+" variable "\\>")
-        replacement)
+        replacement
+        modifier ...)
        ...))))
 
 ;;; emacs-utils.scm ends here

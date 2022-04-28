@@ -100,6 +100,8 @@ Copyright @copyright{} 2021 Josselin Poiret@*
 Copyright @copyright{} 2021 Andrew Tropin@*
 Copyright @copyright{} 2021 Sarah Morgensen@*
 Copyright @copyright{} 2021 Josselin Poiret@*
+Copyright @copyright{} 2022 Remco van 't Veer@*
+Copyright @copyright{} 2022 Aleksandr Vityazev@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -1552,7 +1554,11 @@ is normally run as @code{root} like this:
 # guix-daemon --build-users-group=guixbuild
 @end example
 
-@noindent
+@cindex socket activation, for @command{guix-daemon}
+This daemon can also be started following the systemd ``socket
+activation'' protocol (@pxref{Service De- and Constructors,
+@code{make-systemd-constructor},, shepherd, The GNU Shepherd Manual}).
+
 For details on how to set it up, @pxref{Setting Up the Daemon}.
 
 @cindex chroot
@@ -5847,6 +5853,55 @@ This is similar to the same-named option in @command{guix package}
 (@pxref{profile-manifest, @option{--manifest}}) and uses the same
 manifest files.
 
+See @option{--export-manifest} below on how to obtain a first manifest.
+
+@cindex manifest, exporting
+@anchor{shell-export-manifest}
+@item --export-manifest
+Write to standard output a manifest suitable for @option{--manifest}
+corresponding to given command-line options.
+
+This is a way to ``convert'' command-line arguments into a manifest.
+For example, imagine you are tired of typing long lines and would like
+to get a manifest equivalent to this command line:
+
+@example
+guix shell -D guile git emacs emacs-geiser emacs-geiser-guile
+@end example
+
+Just add @option{--export-manifest} to the command line above:
+
+@example
+guix shell --export-manifest \
+  -D guile git emacs emacs-geiser emacs-geiser-guile
+@end example
+
+@noindent
+... and you get a manifest along these lines:
+
+@lisp
+(concatenate-manifests
+  (list (specifications->manifest
+          (list "git"
+                "emacs"
+                "emacs-geiser"
+                "emacs-geiser-guile"))
+        (package->development-manifest
+          (specification->package "guile"))))
+@end lisp
+
+You can store it into a file, say @file{manifest.scm}, and from there
+pass it to @command{guix shell} or indeed pretty much any @command{guix}
+command:
+
+@example
+guix shell -m manifest.scm
+@end example
+
+Voilà, you've converted a long command line into a manifest!  That
+conversion process honors package transformation options (@pxref{Package
+Transformation Options}) so it should be lossless.
+
 @item --profile=@var{profile}
 @itemx -p @var{profile}
 Create an environment containing the packages installed in @var{profile}. 
@@ -6233,6 +6288,10 @@ several times, in which case the manifests are concatenated.
 This is similar to the same-named option in @command{guix package}
 (@pxref{profile-manifest, @option{--manifest}}) and uses the same
 manifest files.
+
+@xref{shell-export-manifest, @command{guix shell --export-manifest}},
+for information on how to ``convert'' command-line options into a
+manifest.
 
 @item --ad-hoc
 Include all specified packages in the resulting environment, as if an
@@ -6691,6 +6750,10 @@ once and use it both for creating profiles and for creating archives
 for use on machines that do not have Guix installed.  Note that you can
 specify @emph{either} a manifest file @emph{or} a list of packages,
 but not both.
+
+@xref{shell-export-manifest, @command{guix shell --export-manifest}},
+for information on how to ``convert'' command-line options into a
+manifest.
 
 @item --system=@var{system}
 @itemx -s @var{system}
@@ -7303,7 +7366,8 @@ for details.
 A one-line description of the package.
 
 @item @code{description}
-A more elaborate description of the package.
+A more elaborate description of the package, as a string in Texinfo
+syntax.
 
 @item @code{license}
 @cindex license, of packages
@@ -13982,6 +14046,11 @@ spawn an HTTP server on port 8080:
 guix publish
 @end example
 
+@cindex socket activation, for @command{guix publish}
+@command{guix publish} can also be started following the systemd
+``socket activation'' protocol (@pxref{Service De- and Constructors,
+@code{make-systemd-constructor},, shepherd, The GNU Shepherd Manual}).
+
 Once a publishing server has been authorized, the daemon may download
 substitutes from it.  @xref{Getting Substitutes from Other Servers}.
 
@@ -17640,6 +17709,44 @@ The list of syslog-controlled files to be rotated.  By default it is:
 "/var/log/maillog")}.
 @end defvr
 
+Some log files just need to be deleted periodically once they are old,
+without any other criterion and without any archival step.  This is the
+case of build logs stored by @command{guix-daemon} under
+@file{/var/log/guix/drvs} (@pxref{Invoking guix-daemon}).  The
+@code{log-cleanup} service addresses this use case.  For example,
+@code{%base-services} (@pxref{Base Services}) includes the following:
+
+@lisp
+;; Periodically delete old build logs.
+(service log-cleanup-service-type
+         (log-cleanup-configuration
+          (directory "/var/log/guix/drvs")))
+@end lisp
+
+That ensures build logs do not accumulate endlessly.
+
+@defvr {Scheme Variable} log-cleanup-service-type
+This is the type of the service to delete old logs.  Its value must be a
+@code{log-cleanup-configuration} record as described below.
+@end defvr
+
+@deftp {Data Type} log-cleanup-configuration
+Data type representing the log cleanup configuration
+
+@table @asis
+@item @code{directory}
+Name of the directory containing log files.
+
+@item @code{expiry} (default: @code{(* 6 30 24 3600)})
+Age in seconds after which a file is subject to deletion (six months by
+default).
+
+@item @code{schedule} (default: @code{"30 12 01,08,15,22 * *"})
+String or gexp denoting the corresponding mcron job schedule
+(@pxref{Scheduled Job Execution}).
+@end table
+@end deftp
+
 @node Networking Setup
 @subsection Networking Setup
 
@@ -18865,6 +18972,12 @@ Name of the file where @command{sshd} writes its PID.
 @item @code{port-number} (default: @code{22})
 TCP port on which @command{sshd} listens for incoming connections.
 
+@item @code{max-connections} (default: @code{200})
+Hard limit on the maximum number of simultaneous client connections,
+enforced by the inetd-style Shepherd service (@pxref{Service De- and
+Constructors, @code{make-inetd-constructor},, shepherd, The GNU Shepherd
+Manual}).
+
 @item @code{permit-root-login} (default: @code{#f})
 This field determines whether and when to allow logins as root.  If
 @code{#f}, root logins are disallowed; if @code{#t}, they are allowed.
@@ -19384,19 +19497,12 @@ signing and encryption keys are defined in @file{/etc/yggdrasil-private.conf}
 @example
 # sample content for /etc/yggdrasil-private.conf
 @{
-  # Your public encryption key. Your peers may ask you for this to put
-  # into their AllowedEncryptionPublicKeys configuration.
-  EncryptionPublicKey: 378dc5...
+  # Your public key. Your peers may ask you for this to put
+  # into their AllowedPublicKeys configuration.
+  PublicKey: 64277...
 
-  # Your private encryption key. DO NOT share this with anyone!
-  EncryptionPrivateKey: 0777...
-
-  # Your public signing key. You should not ordinarily need to share
-  # this with anyone.
-  SigningPublicKey: e1664...
-
-  # Your private signing key. DO NOT share this with anyone!
-  SigningPrivateKey: 0589d...
+  # Your private key. DO NOT share this with anyone!
+  PrivateKey: 5c750...
 @}
 @end example
 @end defvr
@@ -24975,21 +25081,21 @@ account fingerprint for a registered username.
 
 @end deftp
 
-@subsubheading Murmur (VoIP server)
+@subsubheading Mumble server
 
-@cindex Murmur (VoIP server)
+@cindex Mumble
+@cindex Murmur
 @cindex VoIP server
-This section describes how to set up and run a Murmur server.  Murmur is
-the server of the @uref{https://mumble.info, Mumble} voice-over-IP
-(VoIP) suite.
+This section describes how to set up and run a
+@uref{https://mumble.info, Mumble} server (formerly known as Murmur).
 
-@deftp {Data Type} murmur-configuration
-The service type for the Murmur server.  An example configuration can
+@deftp {Data Type} mumble-server-configuration
+The service type for the Mumble server.  An example configuration can
 look like this:
 
 @lisp
-(service murmur-service-type
-         (murmur-configuration
+(service mumble-server-service-type
+         (mumble-server-configuration
           (welcome-text
             "Welcome to this Mumble server running on Guix!")
           (cert-required? #t) ;disallow text password logins
@@ -24997,7 +25103,8 @@ look like this:
           (ssl-key "/etc/letsencrypt/live/mumble.example.com/privkey.pem")))
 @end lisp
 
-After reconfiguring your system, you can manually set the murmur @code{SuperUser}
+After reconfiguring your system, you can manually set the mumble-server
+@code{SuperUser}
 password with the command that is printed during the activation phase.
 
 It is recommended to register a normal Mumble user account
@@ -25009,17 +25116,17 @@ the @code{SuperUser} password that you set previously,
 and grant your newly registered mumble user administrator or moderator
 rights and create some channels.
 
-Available @code{murmur-configuration} fields are:
+Available @code{mumble-server-configuration} fields are:
 
 @table @asis
 @item @code{package} (default: @code{mumble})
-Package that contains @code{bin/murmurd}.
+Package that contains @code{bin/mumble-server}.
 
-@item @code{user} (default: @code{"murmur"})
-User who will run the Murmur server.
+@item @code{user} (default: @code{"mumble-server"})
+User who will run the Mumble-Server server.
 
-@item @code{group} (default: @code{"murmur"})
-Group of the user who will run the murmur server.
+@item @code{group} (default: @code{"mumble-server"})
+Group of the user who will run the mumble-server server.
 
 @item @code{port} (default: @code{64738})
 Port on which the server will listen.
@@ -25036,11 +25143,11 @@ Maximum of users that can be connected to the server at once.
 @item @code{max-user-bandwidth} (default: @code{#f})
 Maximum voice traffic a user can send per second.
 
-@item @code{database-file} (default: @code{"/var/lib/murmur/db.sqlite"})
+@item @code{database-file} (default: @code{"/var/lib/mumble-server/db.sqlite"})
 File name of the sqlite database.
 The service's user will become the owner of the directory.
 
-@item @code{log-file} (default: @code{"/var/log/murmur/murmur.log"})
+@item @code{log-file} (default: @code{"/var/log/mumble-server/mumble-server.log"})
 File name of the log file.
 The service's user will become the owner of the directory.
 
@@ -25079,8 +25186,9 @@ If it is set to @code{#t} clients that use weak password authentication
 will not be accepted.  Users must have completed the certificate wizard to join.
 
 @item @code{remember-channel?} (default: @code{#f})
-Should murmur remember the last channel each user was in when they disconnected
-and put them into the remembered channel when they rejoin.
+Should mumble-server remember the last channel each user was in when
+they disconnected and put them into the remembered channel when they
+rejoin.
 
 @item @code{allow-html?} (default: @code{#f})
 Should html be allowed in text messages, user comments, and channel descriptions.
@@ -25096,10 +25204,10 @@ Disabling this setting will prevent public listing of the server.
 Should the server advertise itself in the local network through the bonjour protocol.
 
 @item @code{send-version?} (default: @code{#f})
-Should the murmur server version be exposed in ping requests.
+Should the mumble-server server version be exposed in ping requests.
 
 @item @code{log-days} (default: @code{31})
-Murmur also stores logs in the database, which are accessible via RPC.
+Mumble also stores logs in the database, which are accessible via RPC.
 The default is 31 days of months, but you can set this setting to 0 to keep logs forever,
 or -1 to disable logging to the database.
 
@@ -25132,17 +25240,19 @@ This option is specified using
 @uref{https://www.openssl.org/docs/apps/ciphers.html#CIPHER-LIST-FORMAT,
 OpenSSL cipher list notation}.
 
-It is recommended that you try your cipher string using 'openssl ciphers <string>'
-before setting it here, to get a feel for which cipher suites you will get.
-After setting this option, it is recommend that you inspect your Murmur log
-to ensure that Murmur is using the cipher suites that you expected it to.
+It is recommended that you try your cipher string using
+'openssl ciphers <string>' before setting it here, to get a feel for
+which cipher suites you will get.
+After setting this option, it is recommend that you inspect your Mumble
+server log to ensure that Mumble is using the cipher suites that you
+expected it to.
 
 Note: Changing this option may impact the backwards compatibility of your
-Murmur server, and can remove the ability for older Mumble clients to be able
-to connect to it.
+Mumble-Server server, and can remove the ability for older Mumble clients to be able to connect to it.
 
 @item @code{public-registration} (default: @code{#f})
-Must be a @code{<murmur-public-registration-configuration>} record or @code{#f}.
+Must be a @code{<mumble-server-public-registration-configuration>}
+record or @code{#f}.
 
 You can optionally register your server in the public server list that the
 @code{mumble} client shows on startup.
@@ -25156,8 +25266,8 @@ Optional alternative override for this configuration.
 @end table
 @end deftp
 
-@deftp {Data Type} murmur-public-registration-configuration
-Configuration for public registration of a murmur service.
+@deftp {Data Type} mumble-server-public-registration-configuration
+Configuration for public registration of a mumble-server service.
 
 @table @asis
 @item @code{name}
@@ -25177,7 +25287,12 @@ If it is set your server will be linked by this host name instead.
 @end table
 @end deftp
 
-
+@quotation Deprecation notice
+Due to historical reasons, all of the above @code{mumble-server-}
+procedures are also exported with the @code{murmur-} prefix.
+It is recommended that you switch to using @code{mumble-server-}
+going forward.
+@end quotation
 
 @node File-Sharing Services
 @subsection File-Sharing Services
@@ -28945,6 +29060,14 @@ The file to read the IP address of the upstream nameservers from.
 @item @code{no-resolv?} (default: @code{#f})
 When true, don't read @var{resolv-file}.
 
+@item @code{forward-private-reverse-lookup?} (default: @code{#t})
+When false, all reverse lookups for private IP ranges are answered with
+"no such domain" rather than being forwarded upstream.
+
+@item @code{query-servers-in-order?} (default: @code{#f})
+When true, dnsmasq queries the servers in the same order as they appear
+in @var{servers}.
+
 @item @code{servers} (default: @code{'()})
 Specify IP address of upstream servers directly.
 
@@ -28973,6 +29096,10 @@ disables caching.
 
 @item @code{negative-cache?} (default: @code{#t})
 When false, disable negative caching.
+
+@item @code{cpe-id} (default: @code{#f})
+If set, add a CPE (Customer-Premises Equipment) identifier to DNS
+queries which are forwarded upstream.
 
 @item @code{tftp-enable?} (default: @code{#f})
 Whether to enable the built-in TFTP server.
@@ -34303,6 +34430,10 @@ time-to-live (TTL) of @emph{negative} lookups---missing store items, for
 which the HTTP 404 code is returned.  By default, no negative TTL is
 advertised.
 
+@item @code{log-level} (default: @code{'DEBUG})
+Log level to use, specify a log level like @code{'INFO} to stop logging
+individual requests.
+
 @end table
 @end deftp
 
@@ -38215,7 +38346,7 @@ variables.
       ("ENV_VAR2" . "value2"))
 @end lisp
 
-The easiest way to extend a service type, without defining new service
+The easiest way to extend a service type, without defining a new service
 type is to use the @code{simple-service} helper from @code{(gnu
 services)}.
 

@@ -329,6 +329,59 @@ defined radio hardware devices with a common API.")
 SoapySDR library.")
     (license license:expat)))
 
+(define-public soapyaudio
+  ;; Use commit directly because fixes for recent hamlib are not in the latest
+  ;; release (0.1.1).
+  (let ((commit "79129c9bb98deca3294c05108fdc545579af6418")
+        (revision "0"))
+    (package
+      (name "soapyaudio")
+      (version (git-version "0.1.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/pothosware/SoapyAudio")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0mrcnd3k0j599x3k93dkpi5zgr0l7nblz8am9f0s6zs3dikfncvb"))
+         (modules '((guix build utils)))
+         (snippet
+          '(begin
+             ;; Delete bundled rtaudio.
+             (delete-file-recursively "RtAudio")))))
+      (build-system cmake-build-system)
+      (native-inputs
+       (list pkg-config))
+      (inputs
+       (list alsa-lib
+             hamlib
+             jack-1
+             libusb
+             pulseaudio
+             rtaudio
+             soapysdr))
+      (arguments
+       `(#:configure-flags '("-DUSE_HAMLIB=ON")
+         #:tests? #f  ; No test suite
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-rtaudio-detection
+             ;; CMake only finds rtaudio if it looks for it before looking
+             ;; for hamlib, not sure why...
+             (lambda _
+               (substitute* "CMakeLists.txt"
+                 (("option\\(USE_HAMLIB OFF" all)
+                  (string-append "find_package(RtAudio)\n" all))))))))
+      (home-page "https://github.com/pothosware/SoapyAudio/wiki")
+      (synopsis "SoapySDR module for audio devices")
+      (description
+       "This package provides support for sound card devices to the SoapySDR
+library.  It also adds hamlib support, which provides basic gain and frequency
+controls for certain tuners which may be paired with an audio device.")
+      (license license:expat))))
+
 (define-public soapyhackrf
   (package
     (name "soapyhackrf")

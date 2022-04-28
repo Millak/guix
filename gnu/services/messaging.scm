@@ -180,7 +180,7 @@
   (and (list? val) (and-map file-name? val)))
 (define (serialize-file-name-list field-name val)
   (serialize-string-list field-name val))
-(define-maybe file-name)
+(define-maybe file-name-list)
 
 (define (file-object? val)
   (or (file-like? val) (file-name? val)))
@@ -192,7 +192,7 @@
   (and (list? val) (and-map file-object? val)))
 (define (serialize-file-object-list field-name val)
   (serialize-string-list field-name val))
-(define-maybe file-object)
+(define-maybe file-object-list)
 
 (define (raw-content? val)
   (not (eq? val 'disabled)))

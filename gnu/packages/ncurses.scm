@@ -247,6 +247,17 @@ ncursesw library provides wide character support.")
     (inputs
      `(("gpm" ,gpm)))))
 
+;; Needed by u-boot 2022.04+
+;; Consider merging into ncurses for next core-updates cycle.
+(define-public ncurses/tinfo
+  (package/inherit ncurses
+    (name "ncurses-with-tinfo")
+    (arguments
+     (substitute-keyword-arguments (package-arguments ncurses)
+       ((#:configure-flags cf)
+        `(cons "--with-termlib=tinfo"
+               ,cf))))))
+
 (define-public dialog
   (package
     (name "dialog")

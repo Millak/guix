@@ -9,7 +9,7 @@
 ;;; Copyright © 2018, 2019, 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Prafulla Giri <pratheblackdiamond@gmail.com>
 ;;; Copyright © 2020, 2021, 2022 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 Alexandros Theodotou <alex@zrythm.org>
@@ -987,7 +987,7 @@ Python, PHP, and Perl.")
 (define-public marble-qt
   (package
     (name "marble-qt")
-    (version "21.08.3")
+    (version "21.12.3")
     (source
      (origin
        (method git-fetch)
@@ -996,7 +996,7 @@ Python, PHP, and Perl.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15gqym45z0gjzdc4ypfj0fki96c3dad4ygsi6lfr8yvwsx8swrb6"))))
+        (base32 "1h5a7did4shi3z5l0ad9arl6xr79xpjr7dbzx5l8xpp771pb0pcj"))))
     (build-system qt-build-system)
     (arguments
      ;; FIXME: libmarblewidget-qt5.so.28 not found.  Also enable the
@@ -1028,7 +1028,8 @@ Python, PHP, and Perl.")
            qtlocation
            qtserialport
            qtsvg
-           ;; ("qtwebengine" ,qtwebengine) ; FIXME: not found by CMake
+           qtwebchannel
+           qtwebengine
            shapelib
            shared-mime-info
            zlib))

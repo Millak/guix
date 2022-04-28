@@ -487,8 +487,17 @@ conflict with slocate compatibility.")
     (arguments
      `(#:configure-flags
        (list
-        (string-append
-         "--sharedstatedir=" (assoc-ref %outputs "out") "/var"))))
+        ;; Put the database in /var/cache/plocate.db
+        "--sharedstatedir=/var"
+        "-Dinstall_systemd=false"
+        "-Ddbpath=cache/plocate.db")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'remove-cachedirtag
+           (lambda _
+             (substitute* "meson.build"
+               ;; Remove the script adding a "cachedirtag"
+               (("meson.add_install_script") "#")))))))
     (inputs
      (list liburing
            `(,zstd "lib")))

@@ -47,6 +47,7 @@
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -109,6 +110,7 @@
   #:use-module (gnu packages groff)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
+  #:use-module (gnu packages guile-xyz)
   #:use-module (gnu packages hurd)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
@@ -266,7 +268,7 @@ the percentage of copied data.  It can also show estimated time and throughput,
 and provides a \"top-like\" mode (monitoring).")
     (license license:gpl3+)))
 
-(define-public shepherd
+(define-public shepherd-0.8
   (package
     (name "shepherd")
     (version "0.8.1")
@@ -307,14 +309,49 @@ interface and is based on GNU Guile.")
     (license license:gpl3+)
     (home-page "https://www.gnu.org/software/shepherd/")))
 
-(define-public guile2.2-shepherd
+;; Update on the next rebuild cycle.
+(define-public shepherd shepherd-0.8)
+
+(define-public shepherd-0.9
   (package
     (inherit shepherd)
+    (version "0.9.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/shepherd/shepherd-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "1rdwhrcibs2ly4hjwwb5kmzb133ccjmrfvb0a70cqkv9jy1pg061"))))
+    (arguments
+     (list #:configure-flags #~'("--localstatedir=/var")
+           #:make-flags #~'("GUILE_AUTO_COMPILE=0")
+           #:phases (if (%current-target-system)
+                        #~(modify-phases %standard-phases
+                            (add-before 'configure 'set-fibers-directory
+                              (lambda _
+                                ;; When cross-compiling, refer to the target
+                                ;; Fibers, not the native one.
+                                (substitute* '("herd.in" "shepherd.in")
+                                  (("%FIBERS_SOURCE_DIRECTORY%")
+                                   #$(file-append
+                                      (this-package-input "guile-fibers")
+                                      "/share/guile/site/3.0"))
+                                  (("%FIBERS_OBJECT_DIRECTORY%")
+                                   #$(file-append
+                                      (this-package-input "guile-fibers")
+                                      "/lib/guile/3.0/site-ccache"))))))
+                        #~%standard-phases)))
+    (native-inputs (list pkg-config guile-3.0
+                         guile-fibers-1.1))       ;for cross-compilation
+    (inputs (list guile-3.0 guile-fibers-1.1))))
+
+(define-public guile2.2-shepherd
+  (package
+    (inherit shepherd-0.9)
     (name "guile2.2-shepherd")
-    (native-inputs
-     (list pkg-config guile-2.2))
-    (inputs
-     (list guile-2.2 guile2.2-readline))))
+    (native-inputs (list pkg-config guile-2.2))
+    (inputs (list guile-2.2 guile2.2-fibers))))
 
 (define-public guile2.0-shepherd
   (package
@@ -2706,15 +2743,15 @@ provides the following commands:
     (build-system python-build-system)
     (propagated-inputs
      (list ansible-core))
-    ;; The Ansible collections are found by ansible-core via PYTHONPATH; the
-    ;; following search path ensures that they are found even when Python is
-    ;; not present in the profile.
+    ;; The Ansible collections are found by ansible-core via the Python search
+    ;; path; the following search path ensures that they are found even when
+    ;; Python is not present in the profile.
     (native-search-paths
      ;; XXX: Attempting to use (package-native-search-paths python)
      ;; here would cause an error about python being an unbound
      ;; variable in the tests/cpan.scm test.
      (list (search-path-specification
-            (variable "PYTHONPATH")
+            (variable "GUIX_PYTHONPATH")
             (files (list "lib/python3.9/site-packages")))))
     (home-page "https://www.ansible.com/")
     (synopsis "Radically simple IT automation")
@@ -3017,10 +3054,17 @@ displays a table of current bandwidth usage by pairs of hosts.")
      (list openssl libgcrypt))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags
+     `(#:configure-flags
        (list "--localstatedir=/var"
              (string-append "--with-pkgconfigdir="
-                            (assoc-ref %outputs "out") "/lib/pkgconfig"))
+                            (assoc-ref %outputs "out") "/lib/pkgconfig")
+             (string-append "--with-libgcrypt-prefix="
+                            (assoc-ref %build-inputs "libgcrypt"))
+             ,@(if (%current-target-system)
+                 ;; Assume yes on pipes when cross compiling.
+                 `("ac_cv_file__dev_spx=yes"
+                   "x_ac_cv_check_fifo_recvfd=yes")
+                 '()))
        #:phases
        (modify-phases %standard-phases
          ;; XXX Many test series fail.  Some might be fixable, others do no-no
@@ -3687,6 +3731,32 @@ Intel DRM Driver.")
 Bash.  Neofetch displays information about your system next to an image, your OS
 logo, or any ASCII file of your choice.  The main purpose of Neofetch is to be
 used in screenshots to show other users what operating system or distribution
+you are running, what theme or icon set you are using, etc.")
+    (license license:expat)))
+
+(define-public hyfetch
+  (package
+    (name "hyfetch")
+    (version "1.0.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "HyFetch" version))
+        (sha256
+          (base32 "1bfkycdhsyzkk6q24gdy1xwvyz0rvkr7xk2khbn74b3nk6kp83r2"))))
+    (build-system python-build-system)
+    (inputs (list python-hypy-utils python-typing-extensions))
+    (arguments `(#:phases (modify-phases %standard-phases
+                            (add-before 'build 'set-HOME
+                              (lambda _  ;; Tries to set files in .config
+                                (setenv "HOME" "/tmp"))))))
+    (home-page "https://github.com/hykilpikonna/HyFetch")
+    (synopsis "@code{neofetch} with pride flags <3")
+    (description "HyFetch is a command-line system information tool fork of
+@code{neofetch}.  HyFetch displays information about your system next to your
+OS logo in ASCII representation.  The ASCII representation is then colored in
+the pattern of the pride flag of your choice.  The main purpose of HyFetch is to
+be used in screenshots to show other users what operating system or distribution
 you are running, what theme or icon set you are using, etc.")
     (license license:expat)))
 

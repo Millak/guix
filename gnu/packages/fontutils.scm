@@ -286,7 +286,7 @@ work with most software requiring Type 1 fonts.")
     (build-system cmake-build-system)
     (outputs '("out" "bin"))
     (arguments
-     `(#:tests? #f                      ; No target
+     `(#:tests? #f                      ;no test suite
        #:configure-flags
        (list
         (string-append "-DCMAKE_INSTALL_BINDIR="
@@ -305,12 +305,11 @@ work with most software requiring Type 1 fonts.")
            (lambda _
              (substitute* "CMakeLists.txt"
                (("NOT BUILD_SHARED_LIBS")
-                "BUILD_SHARED_LIBS"))
-             #t)))))
+                "BUILD_SHARED_LIBS")))))))
     (native-inputs
      (list pkg-config))
-    (inputs
-     (list brotli))
+    (propagated-inputs
+     (list brotli))                     ;libwoff2dec.pc requires libbrotlidec
     (synopsis "Libraries and tools for WOFF2 font format")
     (description "WOFF2 provides libraries and tools to handle the Web Open
 Font Format (WOFF).")

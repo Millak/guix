@@ -66,6 +66,8 @@
             specification->location
             specifications->manifest
 
+            package-unique-version-prefix
+
             generate-package-cache))
 
 ;;; Commentary:
@@ -559,3 +561,22 @@ output."
   ;; fiddle with multiple-value returns.
   (packages->manifest
    (map (compose list specification->package+output) specs)))
+
+(define (package-unique-version-prefix name version)
+  "Search among all the versions of package NAME that are available, and
+return the shortest unambiguous version prefix to designate VERSION.  If only
+one version of the package is available, return the empty string."
+  (match (map package-version (find-packages-by-name name))
+    ((_)
+     ;; A single version of NAME is available, so do not specify the version
+     ;; number, even if the available version doesn't match VERSION.
+     "")
+    (versions
+     ;; If VERSION is the latest version, don't specify any version.
+     ;; Otherwise return the shortest unique version prefix.  Note that this
+     ;; is based on the currently available packages so the result may vary
+     ;; over time.
+     (if (every (cut version>? version <>)
+                (delete version versions))
+         ""
+         (version-unique-prefix version versions)))))

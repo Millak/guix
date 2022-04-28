@@ -585,7 +585,7 @@ portability.")
   (package
     (name "aws-c-common")
     ; Update only when updating aws-crt-cpp.
-    (version "0.6.11")
+    (version "0.6.20")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -594,7 +594,7 @@ portability.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1v4dhygiynl75y3702lbp9j8kph88j4f2sq39s4lkhn6lmbz5f0f"))))
+                "089grcj58n4xs41kmnpaqpwsalcisjbqqb5yqahxxyfx2lf1j9c9"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
@@ -671,7 +671,7 @@ communication.")
   (package
     (name "aws-c-io")
     ; Update only when updating aws-crt-cpp.
-    (version "0.10.9")
+    (version "0.10.20")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -680,7 +680,7 @@ communication.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "14rxa3k842fgk43702nz7z9y3clfhvax8j0k93i0c5vg14wj38yp"))))
+                "07l5rfbm1irkigfv51sfygs992af8rxicmay97frbx6z21khdjnr"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
@@ -700,7 +700,7 @@ event-driven, asynchronous network application protocols.")
   (package
     (name "aws-c-cal")
     ; Update only when updating aws-crt-cpp.
-    (version "0.5.12")
+    (version "0.5.17")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -709,7 +709,7 @@ event-driven, asynchronous network application protocols.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "09zqf610x4g2mcjcaf9nh88k6dkw14pi721yr8hxb5rmsx7rlfrb"))))
+                "0gd7xfzv509vcysifzfa8j2rykkc1prhiry7953snblkzm7airm5"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
@@ -725,6 +725,34 @@ event-driven, asynchronous network application protocols.")
     (description "This library provides a C99 wrapper for hash, HMAC, and ECC
 cryptographic primitives for the @acronym{AWS,Amazon Web Services} SDK.")
     (home-page "https://github.com/awslabs/aws-c-cal")
+    (license license:asl2.0)))
+
+(define-public aws-c-sdkutils
+  (package
+    (name "aws-c-sdkutils")
+    ; Update only when updating aws-crt-cpp.
+    (version "0.1.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url (string-append "https://github.com/awslabs/" name))
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "14wpl3dxwjbbzas44v6m6m3ll89rgz34x9gb140qz624gwzs9v0v"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:configure-flags
+       (list "-DBUILD_SHARED_LIBS=ON"
+             (string-append "-DCMAKE_PREFIX_PATH="
+                            (assoc-ref %build-inputs "aws-c-common")))))
+    (propagated-inputs
+     (list aws-c-common))
+    (synopsis "Amazon Web Service utility library")
+    (description "This library provides for parsing and management of profiles
+for the @acronym{AWS,Amazon Web Services} SDK.")
+    (home-page "https://github.com/awslabs/aws-c-sdkutils")
     (license license:asl2.0)))
 
 (define-public pcl
@@ -750,7 +778,7 @@ low level functionality for coroutines.")
   (package
     (name "aws-c-http")
     ; Update only when updating aws-crt-cpp.
-    (version "0.6.7")
+    (version "0.6.13")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -759,7 +787,7 @@ low level functionality for coroutines.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1s06bz6w7355ldyhwjidcpbff7591ch4lwwjcj47a6k2kczdmiz4"))))
+                "125glc9b3906r95519zqfbzzz6wj5ib4im2n45yxrigwkkpffbq9"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
@@ -809,7 +837,7 @@ currently limited to Huffman encoding and decoding.")
   (package
     (name "aws-c-auth")
     ; Update only when updating aws-crt-cpp.
-    (version "0.6.4")
+    (version "0.6.11")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -818,7 +846,7 @@ currently limited to Huffman encoding and decoding.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "120p69lj279yq3d2b81f45kgfrvf32j6m7s03m8hh27w8yd4vbfp"))
+                "0frfnbifkrib9l68mj92a3g1x8xc8hpdlzbga2a801zgf2flx4fy"))
               (patches
                (search-patches
                 "aws-c-auth-install-private-headers.patch"))))
@@ -830,7 +858,7 @@ currently limited to Huffman encoding and decoding.")
                             (assoc-ref %build-inputs "aws-c-common"))
              "-DENABLE_NET_TESTS=OFF")))
     (propagated-inputs
-     (list aws-c-cal aws-c-common aws-c-http aws-c-io))
+     (list aws-c-cal aws-c-common aws-c-http aws-c-io aws-c-sdkutils))
     (synopsis "Amazon Web Services client-side authentication library")
     (description
      "This library provides a C99 implementation for AWS client-side
@@ -842,7 +870,7 @@ authentication.")
   (package
     (name "aws-c-s3")
     ; Update only when updating aws-crt-cpp.
-    (version "0.1.26")
+    (version "0.1.38")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -851,7 +879,7 @@ authentication.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0gaxnwwk0jbvkgjnxcgchq13xmn7jk5vjvjsps6b0vaz6bf12wv8"))))
+                "0n2y8hzb1bx3vnzlpb5hsav18dg33pwav0mpji6krz98y2l8msya"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
@@ -860,7 +888,7 @@ authentication.")
                             (assoc-ref %build-inputs "aws-c-common"))
              "-DENABLE_NET_TESTS=OFF")))
     (propagated-inputs
-     (list aws-c-auth aws-c-http))
+     (list aws-c-auth aws-c-http aws-checksums))
     (synopsis "Amazon Web Services client library for Amazon S3")
     (description
      "This library provides a C99 client implementation of the Simple Storage
@@ -872,7 +900,7 @@ Service (S3) protocol for object storage.")
   (package
     (name "aws-c-mqtt")
     ; Update only when updating aws-crt-cpp.
-    (version "0.7.8")
+    (version "0.7.10")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -881,7 +909,7 @@ Service (S3) protocol for object storage.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "19j6nw2v36c4yff4p0fbf0748s06fd5r9cp2yakry9ybn1ada99c"))))
+                "0qmzx8b4wcsq9s99q2zrhx1s3jdmfy8zs16qys9bqv45gspi3ybr"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags

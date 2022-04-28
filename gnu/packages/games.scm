@@ -59,7 +59,7 @@
 ;;; Copyright © 2020 Tomás Ortín Fernández <tomasortin@mailbox.org>
 ;;; Copyright © 2021 Olivier Rojon <o.rojon@posteo.net>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
-;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2021, 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 David Pflug <david@pflug.io>
 ;;; Copyright © 2021, 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
@@ -69,6 +69,7 @@
 ;;; Copyright © 2021 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 Yovan Naumovski <yovan@gorski.stream>
+;;; Copyright © 2022 Roman Riabenko <roman@riabenko.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2250,6 +2251,38 @@ utilizing the art assets from the @code{SuperTux} project.")
                      license:gpl2+
                      license:gpl3+)))))
 
+(define-public robotfindskitten
+  (package
+    (name "robotfindskitten")
+    (version "2.8284271.702")            ; 1600003_201b is older, see ChangeLog
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/" name "/" name
+                                  "/releases/download/" version "/"
+                                  name "-" version ".tar.gz"))
+              (sha256
+                (base32
+                 "1bwrkxm83r9ajpkd6x03nqvmdfpf5vz6yfy0c97pq3v3ykj74082"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ; there are no tests
+      #:make-flags
+      #~(list
+         ;; Required for colorized output, see <http://bugs.gnu.org/54607>.
+         "CFLAGS=-D_XOPEN_SOURCE=600"
+         (string-append "execgamesdir=" #$output "/bin"))))
+    (inputs (list ncurses))
+    (outputs (list "out" "debug"))
+    (synopsis "Thematic meditative game")
+    (description
+     "You are a robot moving around in a realm filled with ASCII characters.
+Examine humourously described though useless items as you search for a kitten
+among them.  The theme of this Zen simulation is continued in its
+documentation.")
+    (home-page "http://robotfindskitten.org/")
+    (license license:gpl2+)))
+
 (define-public roguebox-adventures
   (package
     (name "roguebox-adventures")
@@ -4229,15 +4262,15 @@ world}, @uref{http://evolonline.org, Evol Online} and
                "1qz7ld55m9cvgr4mkv6c11y0zf2aph3ba605l45qj41hk2wzb2r5"))))
     (build-system cmake-build-system)
     (inputs
-     `(("allegro" ,allegro)
-       ("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("icu4c" ,icu4c)
-       ("libpng" ,libpng)
-       ("lzo" ,lzo)
-       ("sdl" ,sdl)
-       ("xz" ,xz)
-       ("zlib" ,zlib)))
+     (list allegro
+           fontconfig
+           freetype
+           icu4c
+           libpng
+           lzo
+           sdl
+           xz
+           zlib))
     (synopsis "Transportation economics simulator game")
     (description "OpenTTD is a game in which you transport goods and
 passengers by land, water and air.  It is a re-implementation of Transport
@@ -4267,22 +4300,24 @@ engine.  When you start it you will be prompted to download a graphics set.")
          "0nhzlk6s73qvznm5fdwcs1b42g2plf26s5ag39fvck45zm7m48jk"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags (list (string-append "CC=" ,(cc-for-target))
-                          (string-append "INSTALL_DIR="
-                                         (assoc-ref %outputs "out")
-                                         "/share/games/openttd/baseset/opengfx"))
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda _
-             ;; Make sure HOME is writable for GIMP.
-             (setenv "HOME" (getcwd))
+     (list
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "INSTALL_DIR="
+                             #$output
+                             "/share/games/openttd/baseset/opengfx"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              ;; Make sure HOME is writable for GIMP.
+              (setenv "HOME" (getcwd))
 
-             ;; Redirect stdout, not stderr, to /dev/null. This prevents
-             ;; dos2unix from receiving its version information as a flag.
-             (substitute* "Makefile"
-               (("\\$\\(UNIX2DOS\\) -q --version 2>/dev/null")
-                "$(UNIX2DOS) -q --version 1>/dev/null")))))
+              ;; Redirect stdout, not stderr, to /dev/null. This prevents
+              ;; dos2unix from receiving its version information as a flag.
+              (substitute* "Makefile"
+                (("\\$\\(UNIX2DOS\\) -q --version 2>/dev/null")
+                 "$(UNIX2DOS) -q --version 1>/dev/null")))))
        ;; The check phase for this package only checks the md5sums of the built
        ;; GRF files against the md5sums of the release versions. Because we use
        ;; different software versions than upstream does, some of the md5sums
@@ -4290,12 +4325,13 @@ engine.  When you start it you will be prompted to download a graphics set.")
        ;; to disable this test.
        #:tests? #f
        #:parallel-build? #f))
-    (native-inputs `(("dos2unix" ,dos2unix)
-                     ("gimp" ,gimp)
-                     ("grfcodec" ,grfcodec)
-                     ("nml" ,nml)
-                     ("which" ,which)
-                     ("python" ,python)))
+    (native-inputs
+     (list dos2unix
+           gimp
+           grfcodec
+           nml
+           which
+           python))
     (home-page "http://dev.openttdcoop.org/projects/opengfx")
     (synopsis "Base graphics set for OpenTTD")
     (description
@@ -4327,34 +4363,34 @@ OpenGFX provides you with...
          "0aym026lg0r7dp3jxxs9c0rj8lwy1fz3v9hmk3mml6sycsg3fv42"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("catcodec" ,catcodec)
-       ("python" ,python)
-       ("tar" ,tar)))
+     (list catcodec
+           python
+           tar))
     (arguments
-     `(#:make-flags
-       (list (string-append "DIR_NAME=opensfx")
-             (string-append "TAR="
-                            (search-input-file %build-inputs "/bin/tar")))
-       ;; The check phase only verifies md5sums, see openttd-opengfx.
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'make-reproducible
-           (lambda _
-             ;; Remove the time dependency of the installed tarball by setting
-             ;; the modification times if its members to 0.
-             (substitute* "scripts/Makefile.def"
-               (("-cf") " --mtime=@0 -cf"))
-             #t))
-         (delete 'configure)
-         (add-before 'build 'prebuild
-           (lambda _ (invoke "make" "opensfx.cat")))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (copy-recursively "opensfx"
-                               (string-append (assoc-ref outputs "out")
-                                              "/share/games/openttd/baseset"
-                                              "/opensfx")))))))
+     (list
+      #:make-flags
+      #~(list (string-append "DIR_NAME=opensfx")
+              (string-append "TAR="
+                             (search-input-file %build-inputs "/bin/tar")))
+      ;; The check phase only verifies md5sums, see openttd-opengfx.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'make-reproducible
+            (lambda _
+              ;; Remove the time dependency of the installed tarball by setting
+              ;; the modification times if its members to 0.
+              (substitute* "scripts/Makefile.def"
+                (("-cf") " --mtime=@0 -cf"))))
+          (delete 'configure)
+          (add-before 'build 'prebuild
+            (lambda _ (invoke "make" "opensfx.cat")))
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (copy-recursively "opensfx"
+                                (string-append (assoc-ref outputs "out")
+                                               "/share/games/openttd/baseset"
+                                               "/opensfx")))))))
     (home-page "http://dev.openttdcoop.org/projects/opensfx")
     (synopsis "Base sounds for OpenTTD")
     (description "OpenSFX is a set of free base sounds for OpenTTD which make
@@ -4377,27 +4413,28 @@ the original Transport Tycoon Deluxe.")
          "0h583d8fxy78kc3jvpp78r76a48qhxrhm4q7jbnj74aw0kwrcl8g"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("grfcodec" ,grfcodec)
-       ; Scripts are Python3 compatible, but call the interpreter as
-       ; python instead of python3.
-       ("python" ,python-wrapper)
-       ("tar" ,tar)))
+     (list grfcodec
+           ;; Scripts are Python3 compatible, but call the interpreter as
+           ;; python instead of python3.
+           python-wrapper
+           tar))
     (arguments
-     `(#:make-flags
-       (list (string-append "DIR_NAME=openmsx")
-             (string-append "TAR="
-                            (search-input-file %build-inputs "/bin/tar")))
-       ;; The check phase only verifies md5sums, see openttd-opengfx.
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (copy-recursively "openmsx"
-                               (string-append (assoc-ref outputs "out")
-                                              "/share/games/openttd/baseset"
-                                              "/openmsx")))))))
+     (list
+      #:make-flags
+      #~(list (string-append "DIR_NAME=openmsx")
+              (string-append "TAR="
+                             (search-input-file %build-inputs "/bin/tar")))
+      ;; The check phase only verifies md5sums, see openttd-opengfx.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (copy-recursively "openmsx"
+                                (string-append (assoc-ref outputs "out")
+                                               "/share/games/openttd/baseset"
+                                               "/openmsx")))))))
     (home-page "http://dev.openttdcoop.org/projects/openmsx")
     (synopsis "Music set for OpenTTD")
     (description "OpenMSX is a music set for OpenTTD which makes it possible
@@ -4410,26 +4447,36 @@ Transport Tycoon Deluxe.")
     (inherit openttd-engine)
     (name "openttd")
     (arguments
-     `(#:configure-flags
-       (let* ((out (assoc-ref %outputs "out")))
-         (list (string-append "-DCMAKE_INSTALL_BINDIR=" out "/bin")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'install-data
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (for-each
-              (lambda (input)
-                (copy-recursively (assoc-ref inputs input)
-                                  (assoc-ref outputs "out")))
-              (list "opengfx" "openmsx" "opensfx")))))))
+     (list
+      #:configure-flags
+      #~(list (string-append "-DCMAKE_INSTALL_BINDIR=" #$output "/bin"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-sources
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/music/fluidsynth.cpp"
+                (("default_sf\\[\\] = \\{" all)
+                 (string-append all "
+\t/* Guix hardcoded :P */
+\t\"" (search-input-file inputs "/share/soundfonts/FreePatsGM.sf2") "\",
+")))))
+          (add-before 'check 'install-data
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((base "/share/games/openttd"))
+                (for-each
+                 (lambda (dir)
+                   ;; Copy the entire input, so as to not omit documentation
+                   ;; etc.
+                   (copy-recursively
+                    (string-drop-right dir (string-length base))
+                    (assoc-ref outputs "out")))
+                 (search-path-as-list (list base) (map cdr inputs)))))))))
     (inputs
      (modify-inputs (package-inputs openttd-engine)
-       (prepend timidity++)))
+       (prepend fluidsynth freepats-gm)))
     (native-inputs
-     `(("opengfx" ,openttd-opengfx)
-       ("openmsx" ,openttd-openmsx)
-       ("opensfx" ,openttd-opensfx)
-       ,@(package-native-inputs openttd-engine)))))
+     (modify-inputs (package-native-inputs openttd-engine)
+       (prepend openttd-opengfx openttd-openmsx openttd-opensfx)))))
 
 (define openrct2-title-sequences
   (package
@@ -11910,10 +11957,10 @@ etc.  You can also play games on FICS or against an engine.")
     (license license:gpl2+)))
 
 (define-public stockfish
-  (let ((neural-network-revision "13406b1dcbe0")) ; also update hash below
+  (let ((neural-network-revision "6877cd24400e")) ; also update hash below
     (package
       (name "stockfish")
-      (version "14.1")
+      (version "15")
       (source
        (origin
          (method git-fetch)
@@ -11922,7 +11969,7 @@ etc.  You can also play games on FICS or against an engine.")
                (commit (string-append "sf_" version))))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0apqqcgpcflm3c6mcl13ln2y04f6zksnljmk4ys7naf7xk4vdgkd"))))
+          (base32 "1v19v6qhwbf31wpc3qcih4dvqxwqkh0p426skgjin6ags31hkbmh"))))
       (build-system gnu-build-system)
       (inputs
        `(("neural-network"
@@ -11932,19 +11979,25 @@ etc.  You can also play games on FICS or against an engine.")
                                  neural-network-revision ".nnue"))
              (sha256
               (base32
-               "0vr3hcmlqqm74pn7hc54gmfs9drqvgc53nh7bvy6v8z0rcfnnh0k"))))))
+               "1qyna598c0v7gdpycc6kpl12h5a2wa50dqray6gv208f80jcsxv8"))))))
       (arguments
        `(#:tests? #f
          #:make-flags (list "-C" "src"
                             "build"
                             (string-append "PREFIX="
                                            (assoc-ref %outputs "out"))
+                            ,@(if (target-ppc32?)
+                                `("EXTRALDFLAGS=-latomic")
+                                `())
                             (string-append "ARCH="
                                            ,(match (%current-system)
                                               ("x86_64-linux" "x86-64")
                                               ("i686-linux" "x86-32")
                                               ("aarch64-linux" "armv8")
                                               ("armhf-linux" "armv7")
+                                              ("powerpc-linux" "ppc-32")
+                                              ("powerpc64le-linux" "ppc-64")
+                                              ("riscv64-linux" "general-64")
                                               ("mips64el-linux" "general-64")
                                               (_ "general-32"))))
          #:phases (modify-phases %standard-phases
@@ -11955,7 +12008,12 @@ etc.  You can also play games on FICS or against an engine.")
                       (lambda* (#:key inputs #:allow-other-keys)
                         (copy-file (assoc-ref inputs "neural-network")
                                    (format #f "src/nn-~a.nnue"
-                                           ,neural-network-revision)))))))
+                                           ,neural-network-revision))))
+                    ;; Guix doesn't use a multiarch gcc.
+                    (add-after 'unpack 'remove-m-flag
+                      (lambda _
+                        (substitute* "src/Makefile"
+                          (("-m\\$\\(bits\\)") "")))))))
       (synopsis "Strong chess engine")
       (description
        "Stockfish is a very strong chess engine.  It is much stronger than the

@@ -470,7 +470,7 @@ playing your music.")
 (define-public strawberry
   (package
     (name "strawberry")
-    (version "1.0.1")
+    (version "1.0.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -479,7 +479,7 @@ playing your music.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "077dlj0kjcrj4g1h4w8finzykizaar67ik6yng6c8zjp2i5bam1j"))
+                "14fr2bm51k4n5byc9pwh3ba6v15s9jmqxigl1y9h00l7cvmfpbn1"))
               (modules '((guix build utils)
                          (ice-9 regex)))
               (snippet
@@ -2040,16 +2040,14 @@ Key features include:
                (("/usr/bin/aplay") "aplay")
                (("/usr/bin/timidity") "timidity")
                (("/usr/bin/mpg123") "mpg123")
-               (("/usr/bin/ogg123") "ogg123"))
-             #t))
+               (("/usr/bin/ogg123") "ogg123"))))
          (add-before 'build 'patch-python-shebangs
            (lambda _
              ;; Two python scripts begin with a Unicode BOM, so patch-shebang
              ;; has no effect.
              (substitute* '("solfege/parsetree.py"
                             "solfege/presetup.py")
-               (("#!/usr/bin/python") (string-append "#!" (which "python"))))
-             #t))
+               (("#!/usr/bin/python") (string-append "#!" (which "python"))))))
          (add-before 'build 'add-sitedirs
            ;; .pth files are not automatically interpreted unless the
            ;; directories containing them are added as "sites".  The directories
@@ -2605,7 +2603,7 @@ is subjective.")
 (define-public tuxguitar
   (package
     (name "tuxguitar")
-    (version "1.5.4")
+    (version "1.5.5")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2613,7 +2611,7 @@ is subjective.")
                     version "/tuxguitar-" version "-src.tar.gz"))
               (sha256
                (base32
-                "0fjhf56lhlhm84v08917xp4yw8y6d0qajm4qiy1gfp8dm74whwwg"))))
+                "1613aiq3x48l2nx1zxqh1cif6i5izkixfld8c9wri9nfv405b19f"))))
     (build-system ant-build-system)
     (arguments
      `(#:build-target "build"
@@ -2651,8 +2649,7 @@ is subjective.")
                                 "TuxGuitar-gm-utils"
                                 "TuxGuitar-alsa"
                                 "TuxGuitar-midi"
-                                "TuxGuitar-midi-ui"))
-               #t)))
+                                "TuxGuitar-midi-ui")))))
          (add-after 'build 'build-jni
            (lambda _
              (setenv "CC" "gcc")
@@ -2711,8 +2708,7 @@ is subjective.")
                                      " -Djava.library.path=" out "/lib"
                                      " org.herac.tuxguitar.app.TGMainSingleton"
                                      " \"$1\" \"$2\"")))))
-               (chmod (string-append bin "/tuxguitar") #o555)
-               #t))))))
+               (chmod (string-append bin "/tuxguitar") #o555)))))))
     (inputs
      (list alsa-lib java-swt))
     (home-page "http://tuxguitar.com.ar/")
@@ -5008,7 +5004,7 @@ studio.")
 (define-public gsequencer
   (package
     (name "gsequencer")
-    (version "3.14.5")
+    (version "3.18.2")
     (source
      (origin
        (method git-fetch)
@@ -5017,7 +5013,7 @@ studio.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18pfv4w30nng1p0vgmrnkfm38522iq1x1bj8iz4qfiffiv56dsnz"))))
+        (base32 "1lkn7rfrjvmds62i69igcgmic2snscgb9f6gdg5nzyfkis1fq5iz"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:phases

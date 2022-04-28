@@ -11,7 +11,7 @@
 ;;; Copyright © 2018 Adriano Peluso <catonano@gmail.com>
 ;;; Copyright © 2018, 2019, 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2019, 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019, 2020, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2019, 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2019 Sebastian Schott <sschott@mailbox.org>
@@ -19,7 +19,7 @@
 ;;; Copyright © 2020 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2020 Tom Zander <tomz@freedommail.ch>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
-;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Carlo Holl <carloholl@gmail.com>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2021 ZmnSCPxj jxPCSnmZ <ZmnSCPxj@protonmail.com>
@@ -273,14 +273,14 @@ Accounting.")
 (define-public homebank
   (package
     (name "homebank")
-    (version "5.5.4")
+    (version "5.5.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://homebank.free.fr/public/homebank-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0rapdqv2j61cj2jzfk0fiby3na4k5g5i7shkqbjhld4rl2y6j1hd"))))
+                "0rwykjpv4w7bffyvx2j6py17nxw9jcbml7ma4is194i3npn0bkmy"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list pkg-config intltool))
@@ -508,7 +508,7 @@ do so.")
 (define-public electrum
   (package
     (name "electrum")
-    (version "4.1.5")
+    (version "4.2.1")
     (source
      (origin
        (method url-fetch)
@@ -516,7 +516,7 @@ do so.")
                            version "/Electrum-"
                            version ".tar.gz"))
        (sha256
-        (base32 "188r4zji985z8pm9b942xhmvv174yndk6jxagxl7ljk03wl2wiwi"))
+        (base32 "0w41411zq07kx0351wxkmpn0wr42wd2nx0m6v0iwvpsggx654b6r"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -525,22 +525,23 @@ do so.")
            #t))))
     (build-system python-build-system)
     (inputs
-     (list python-pyqt
-           python-qrcode
-           python-protobuf
+     (list libsecp256k1
            python-aiohttp
            python-aiohttp-socks
-           python-aiorpcx-0.18
-           python-certifi
-           python-bitstring
+           python-aiorpcx
            python-attrs
+           python-bitstring
+           python-btchip-python
+           python-certifi
            python-cryptography
-           python-qdarkstyle
            python-dnspython
            python-hidapi
            python-ledgerblue
-           python-btchip-python
-           libsecp256k1))
+           python-protobuf
+           python-pyqt
+           python-qdarkstyle
+           python-qrcode
+           zbar))
     (arguments
      `(#:tests? #f                      ; no tests
        #:phases
@@ -582,7 +583,7 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
 (define-public electron-cash
   (package
     (name "electron-cash")
-    (version "4.2.6")
+    (version "4.2.7")
     (source
      (origin
        (method git-fetch)
@@ -591,7 +592,7 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "193krlnski9wjyfjkxfp4gcs7dgmqkwxgsy2m8x1515vb5bzv5pz"))))
+        (base32 "1qiql2svjyxlgbg4c5b7grgsv8nx2cx33x3x13mvjjngjz3vgilv"))))
     (build-system python-build-system)
     (inputs
      `(("libevent" ,libevent)
@@ -1156,6 +1157,9 @@ the KeepKey Hardware Wallet.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         ;; This package only has a Python script, not a Python module, so the
+         ;; sanity-check phase can't work.
+         (delete 'sanity-check)
          (add-after 'wrap 'fixup-agent-py
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out")))
@@ -1520,7 +1524,7 @@ following three utilities are included with the library:
 (define-public bitcoin-unlimited
   (package
     (name "bitcoin-unlimited")
-    (version "1.9.2.0")
+    (version "1.10.0.0")
     (source
      (origin
        (method git-fetch)
@@ -1529,7 +1533,7 @@ following three utilities are included with the library:
              (commit (string-append "BCHunlimited" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1cmrvh7azz0g89rsx6i8apd1li6r1lb3jrmbbf8fic1918lwv62m"))))
+        (base32 "12yb2rbd6hsns43qyxc5dm7h5k4sph9sb64q7kkbqi3xhgrrsjdq"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
@@ -1570,30 +1574,17 @@ following three utilities are included with the library:
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-tests
            (lambda _
-             ;; Fix data specific test failure
-             ;; https://reviews.bitcoinabc.org/rABC67bbd3d0aaee2952ff1cb5da51d1fd0b50c2b63a
-             (substitute* "src/test/rpc_tests.cpp"
-               (("1607731200") "9907731200"))
-
              ;; Disable utilprocess_tests because it never ends.
              ;; It looks like it tries to start /bin/sleep and waits until it
              ;; is in the list of running processes, but /bin/sleep doesn't
              ;; exist.
              (substitute* "src/Makefile.test.include"
                (("test/utilprocess_tests.cpp")
-                ""))
-
-             ;; Some transaction validation rules have changed (see upstream
-             ;; commit f208400825d4641b9310a1fba023d56e0862e3b0), which makes
-             ;; a test fail. Disable it for now.
-             ;; TODO: Remove this when the next version is released.
-             (substitute* "src/Makefile.test.include"
-               (("test/txvalidationcache_tests.cpp")
                 ""))))
          (add-before 'check 'set-home
            (lambda _
-             (setenv "HOME" (getenv "TMPDIR")) ; tests write to $HOME
-             #t)))))
+             ;; Tests write to $HOME
+             (setenv "HOME" (getenv "TMPDIR")))))))
     (home-page "https://www.bitcoinunlimited.info/")
     (synopsis "Client for the Bitcoin Cash protocol")
     (description

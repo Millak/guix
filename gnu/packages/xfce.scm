@@ -14,7 +14,7 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2021, 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021 André A. Gomes <andremegafone@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -36,6 +36,7 @@
   #:use-module (gnu artwork)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages calendar)
   #:use-module (gnu packages cdrom)
   #:use-module (gnu packages fonts)
@@ -164,12 +165,12 @@ Xfce Desktop Environment.")
                                (string-append etc "/bash_completion.d"))))))
          (delete 'check))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("intltool" ,intltool)
-       ("glib:bin" ,glib "bin") ;; for gdbus-codegen
-       ("gobject-introspection" ,gobject-introspection)
-       ("vala" ,vala)
-       ("dbus" ,dbus)))
+     (list pkg-config
+           intltool
+           `(,glib "bin") ;; for gdbus-codegen
+           gobject-introspection
+           vala
+           dbus))
     (propagated-inputs
      ;; libxfconf-0.pc refers to all these.
      (list glib))
@@ -201,10 +202,10 @@ storage system.")
     (native-inputs
      (list pkg-config intltool gobject-introspection))
     (propagated-inputs
-     `(("gtk+-3" ,gtk+)    ; required by libxfce4ui-2.pc
-       ;; libxfce4kbd-private-3.pc refers to all these.
-       ("libxfce4util" ,libxfce4util)
-       ("xfconf" ,xfconf)))
+     (list gtk+    ; required by libxfce4ui-2.pc
+           ;; libxfce4kbd-private-3.pc refers to all these.
+           libxfce4util
+           xfconf))
     (inputs (list libsm libice startup-notification))
     (home-page "https://www.xfce.org/")
     (synopsis "Widgets library for Xfce")
@@ -268,7 +269,7 @@ it to your needs by using several command line options.")
 (define-public elementary-xfce-icon-theme
   (package
     (name "elementary-xfce-icon-theme")
-    (version "0.15.2")
+    (version "0.16")
     (source (origin
               (method git-fetch)
               (uri
@@ -278,7 +279,7 @@ it to your needs by using several command line options.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1g6vndqvp11c2kl5vkpzb1wxvr2pfb3hvqxjjdgx6qzq9x8zmiqk"))))
+                "1s8g7qyjdlq93fbrgysahy5kcbd8b2cpnfmpdvl0vbzyhy2x18d7"))))
     (build-system gnu-build-system)
     (arguments
      '(#:tests? #f                      ; no check target
@@ -395,7 +396,7 @@ management D-Bus specification.")
 (define-public xfce4-panel
   (package
     (name "xfce4-panel")
-    (version "4.16.3")
+    (version "4.16.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -403,7 +404,7 @@ management D-Bus specification.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "14p0y6d3frphv67vsvnx6c1l4m82c1wwsk3kkg155nknibnyld2r"))
+                "116dr516dvcgnccc55p0ks5dgc1s7v9rvb66lkdl8lk53al53bqz"))
               (patches (search-patches "xfce4-panel-plugins.patch"))))
     (build-system gnu-build-system)
     (arguments
@@ -415,20 +416,20 @@ management D-Bus specification.")
                (("/usr/share/zoneinfo")
                 (search-input-directory inputs "share/zoneinfo"))))))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("intltool" ,intltool)
-       ("glib:bin" ,glib "bin")))
+     (list pkg-config
+           intltool
+           `(,glib "bin")))
     (propagated-inputs
-     `(("gtk+-3" ,gtk+)                 ; required by libxfce4panel-2.0.pc
-       ("libxfce4util" ,libxfce4util))) ; required by libxfce4panel-2.0.pc
+     (list gtk+ ; required by libxfce4panel-2.0.pc
+           libxfce4util)) ; required by libxfce4panel-2.0.pc
     (inputs
-     `(("tzdata" ,tzdata) ;; For fix-tzdata-path phase only.
-       ("exo" ,exo)
-       ("gtk+-2" ,gtk+-2)
-       ("xfconf" ,xfconf)
-       ("garcon" ,garcon)
-       ("libwnck" ,libwnck)
-       ("libxfce4ui" ,libxfce4ui)))
+     (list tzdata ;; For fix-tzdata-path phase only.
+           exo
+           gtk+-2
+           xfconf
+           garcon
+           libwnck
+           libxfce4ui))
     (native-search-paths
      (list (search-path-specification
             (variable "X_XFCE4_LIB_DIRS")
@@ -535,7 +536,7 @@ keys for controlling the audio volume.")
 (define-public xfce4-whiskermenu-plugin
   (package
     (name "xfce4-whiskermenu-plugin")
-    (version "2.6.1")
+    (version "2.6.2")
     (source
      (origin
        (method url-fetch)
@@ -543,17 +544,17 @@ keys for controlling the audio volume.")
                            "xfce4-whiskermenu-plugin/" (version-major+minor version) "/"
                            "xfce4-whiskermenu-plugin-" version ".tar.bz2"))
        (sha256
-        (base32 "0wpcc9i505mh6vphg27ph43dw4n3z59mwy39416yzmw325q04kl5"))))
+        (base32 "0vppm85pvhsigg5d74nx7cixlsrsyfjagw6avrdclfjr30nf483d"))))
     (build-system cmake-build-system)
     (native-inputs
      (list pkg-config intltool))
     (inputs
-     `(("xfce4-panel" ,xfce4-panel)
-       ("garcon" ,garcon)
-       ("gettext" ,gettext-minimal)
-       ("exo" ,exo)
-       ("gtk+" ,gtk+)
-       ("libxfce4ui" ,libxfce4ui)))
+     (list xfce4-panel
+           garcon
+           gettext-minimal
+           exo
+           gtk
+           libxfce4ui))
     (arguments
      `(#:tests? #f                      ; no tests
        #:phases
@@ -881,10 +882,79 @@ optional application menu or icons for minimized applications or launchers,
 devices and folders.")
     (license gpl2+)))
 
+(define-public gigolo
+  (package
+    (name "gigolo")
+    (version "0.5.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://archive.xfce.org/src/apps/"
+                                  name "/" (version-major+minor version)
+                                  "/" name "-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "1hxv3lla567nnqxxly8xfi8fzmpcdhxb493x9hinr7szfnh1ljp3"))))
+    (build-system gnu-build-system)
+    (native-inputs (list pkg-config intltool))
+    (inputs (list gtk+))
+    (home-page "https://www.xfce.org/")
+    (synopsis "Manage connections to remote file systems")
+    (description
+     "Gigolo is a graphical user interface to easily manage connections to
+remote file systems using GIO/GVfs.  It allows you to quickly connect/mount
+local and remote file systems and manage bookmarks of such.")
+    (license gpl2)))                              ;version 2 only
+
+(define-public parole
+  (package
+    (name "parole")
+    (version "4.16.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://archive.xfce.org/src/apps/"
+                                  name "/" (version-major+minor version) "/"
+                                  name "-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "1rx7apylqb7mf1dl0sswj1630fca3ddk4x1gcdmlv5ykrkc5lc0d"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list (string-append "CPPFLAGS=-I"
+                             #$(this-package-input "gst-plugins-base")
+                             "/include/gstreamer-1.0"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-parole
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
+                (wrap-program (string-append #$output "/bin/parole")
+                  #:sh (search-input-file inputs "bin/bash")
+                  `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path)))))))))
+    (native-inputs
+     (list pkg-config intltool gobject-introspection))
+    (inputs
+     (list bash-minimal                           ;for 'wrap-program'
+           dbus-glib
+           (list glib "bin")
+           gstreamer
+           gst-plugins-base
+           gst-plugins-good
+           libnotify
+           libxfce4ui
+           libxfce4util))
+    (home-page "https://www.xfce.org/")
+    (synopsis "Media player based on the GStreamer framework")
+    (description "Parole is a modern simple media player based on the
+GStreamer framework and written to fit well in the Xfce desktop.  Parole
+features playback of local media files, DVD/CD and live streams.")
+    (license gpl2)))                    ;version 2 only
+
 (define-public xfce4-terminal
   (package
     (name "xfce4-terminal")
-    (version "0.8.10")
+    (version "1.0.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/" name "/"
@@ -892,7 +962,7 @@ devices and folders.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "1irxyg5vp6vyd9vxdqav6jhchfkmhlqq511386h644p0k30kfcvs"))))
+                "19gbw5cp1qdg59l53y36cczm37l18c2cx2lhw25pzs9z3n3r0dhx"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config intltool))
@@ -907,6 +977,76 @@ with terminals within a single window, the possibility to have a
 pseudo-transparent terminal background, and a compact mode (where both the
 menubar and the window decorations are hidden) that helps you to save space
 on your desktop.")
+    (license gpl2+)))
+
+(define-public xfce4-dict
+  (package
+    (name "xfce4-dict")
+    (version "0.8.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://archive.xfce.org/src/apps/" name "/"
+                                  (version-major+minor version) "/"
+                                  name "-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "1qriyvii50v8a8dx7aw6nlm888mf5cjrb9nwm3r0dcs2yzxzx1fb"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list intltool pkg-config))
+    (inputs
+     (list libxfce4ui xfce4-panel))
+    (home-page "https://www.xfce.org/")
+    (synopsis "Dictionary of Xfce desktop")
+    (description
+     "Xfce4-dict allows you to search different kinds of dictionary services
+for words or phrases and shows you the result.  Currently you can query a Dict
+server (RFC 2229), any online dictionary service by opening a web browser or
+search for words using the aspell/ispell program.
+
+xfce4-dict contains a stand-alone application called “xfce4-dict” and a panel
+plugin for the Xfce panel.")
+    (license gpl2+)))
+
+(define-public xfdashboard
+  (package
+    (name "xfdashboard")
+    (version "0.8.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://archive.xfce.org/src/apps/"
+                                  name
+                                  "/"
+                                  (version-major+minor version)
+                                  "/"
+                                  name
+                                  "-"
+                                  version
+                                  ".tar.bz2"))
+              (sha256
+               (base32
+                "1xfyli91gpw7bn9gjk6gp8lnn50qsjd5lh5mzypz9kx3l88wbas4"))))
+    (build-system gnu-build-system)
+    (native-inputs (list intltool pkg-config `(,glib "bin")))
+    (inputs (list clutter
+                  garcon
+                  gtk+
+                  libwnck
+                  libxcomposite
+                  libxdamage
+                  libxfce4util
+                  libxfce4ui
+                  libxinerama
+                  xfconf))
+    (home-page "https://www.xfce.org/")
+    (synopsis "Gnome shell like dashboard for Xfce")
+    (description
+     "Xfdashboard provides a GNOME shell dashboard and MacOS Mission Control
+like interface for Xfce desktop.  It can be configured to run with any
+keyboard shortcut, when executed it provides an overview of applications
+currently opened which let user to switch between different applications.  Its
+search feature works like Xfce's app finder and makes it convenient to search
+for and start applications.")
     (license gpl2+)))
 
 (define-public mate-polkit-for-xfce
@@ -944,31 +1084,32 @@ on your desktop.")
                          directories)
             #t)))))
     (inputs
-     `(("exo"                  ,exo)
-       ("garcon"               ,garcon)
-       ("gnome-icon-theme"     ,gnome-icon-theme)
-       ("gtk-xfce-engine"      ,gtk-xfce-engine)
-       ("hicolor-icon-theme"   ,hicolor-icon-theme)
-       ("mate-polkit-for-xfce" ,mate-polkit-for-xfce)
-       ("ristretto"            ,ristretto)
-       ("shared-mime-info"     ,shared-mime-info)
-       ("thunar"               ,thunar)
-       ("thunar-volman"        ,thunar-volman)
-       ("tumbler"              ,tumbler)
-       ("xfce4-appfinder"      ,xfce4-appfinder)
-       ("xfce4-panel"          ,xfce4-panel)
-       ("xfce4-power-manager"  ,xfce4-power-manager)
-       ("xfce4-session"        ,xfce4-session)
-       ("xfce4-settings"       ,xfce4-settings)
-       ("xfce4-terminal"       ,xfce4-terminal)
-       ("xfconf"               ,xfconf)
-       ("xfdesktop"            ,xfdesktop)
-       ("xfwm4"                ,xfwm4)
-       ;; Panel plugins.
-       ("xfce4-battery-plugin"    ,xfce4-battery-plugin)
-       ("xfce4-clipman-plugin"    ,xfce4-clipman-plugin)
-       ("xfce4-pulseaudio-plugin" ,xfce4-pulseaudio-plugin)
-       ("xfce4-xkb-plugin"        ,xfce4-xkb-plugin)))
+     (list exo
+           garcon
+           gnome-icon-theme
+           gtk-xfce-engine
+           hicolor-icon-theme
+           mate-polkit-for-xfce
+           ristretto
+           shared-mime-info
+           thunar
+           thunar-volman
+           tumbler
+           xfce4-appfinder
+           xfce4-notifyd                          ;for pop-up notifications
+           xfce4-panel
+           xfce4-power-manager
+           xfce4-session
+           xfce4-settings
+           xfce4-terminal
+           xfconf
+           xfdesktop
+           xfwm4
+           ;; Panel plugins.
+           xfce4-battery-plugin
+           xfce4-clipman-plugin
+           xfce4-pulseaudio-plugin
+           xfce4-xkb-plugin))
     (propagated-inputs
      ;; Default font that applications such as IceCat require.
      (list font-dejavu))
@@ -1071,7 +1212,7 @@ memory usage graphically, and it can display processes as a tree.")
 (define-public orage
   (package
     (name "orage")
-    (version "4.12.1")
+    (version "4.16.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/"
@@ -1079,20 +1220,15 @@ memory usage graphically, and it can display processes as a tree.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "0qlhvnl2m33vfxqlbkic2nmfpwyd4mq230jzhs48cg78392amy9w"))))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-build-with-libical3
-           (lambda* _
-             (substitute* "src/ical-code.c" ;; .is_utc not available in libical3
-               ((".*\\.is_utc.*$") ""))
-             #t)))))
+                "000py6r63rlv7pjwvwd7ycrb383lny8ha7ha3qpwh1r0d8xil496"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list intltool pkg-config))
+     (list
+      `(,glib "bin")                    ; for dbus-binding-tool
+      intltool
+      pkg-config))
     (inputs
-     (list gtk+-2 libical libnotify popt xfce4-panel))
+     (list dbus-glib gtk+-2 libical libnotify libxfce4ui popt xfce4-panel))
     (home-page "https://www.xfce.org/projects/")
     (synopsis "Simple calendar application with reminders")
     (description
@@ -1169,7 +1305,7 @@ of data to either CD/DVD/BD.")
 (define-public mousepad
   (package
     (name "mousepad")
-    (version "0.5.8")
+    (version "0.5.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/mousepad/"
@@ -1177,7 +1313,7 @@ of data to either CD/DVD/BD.")
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "08d7qfisdq59phbm0nbjr667av7l4qnpl5x565pybqnmvz7vn7lj"))))
+                "0wzlcwhvpnig6123k83fsmrfjq5x1pqncxmnd8k2fmzccz0sh27i"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '(;; Use the GSettings keyfile backend rather than
@@ -1208,7 +1344,7 @@ of data to either CD/DVD/BD.")
 (define-public xfce4-screenshooter
   (package
    (name "xfce4-screenshooter")
-   (version "1.9.9")
+   (version "1.9.10")
    (source (origin
             (method url-fetch)
             (uri (string-append "https://archive.xfce.org/src/apps/"
@@ -1218,7 +1354,7 @@ of data to either CD/DVD/BD.")
                                 version ".tar.bz2"))
             (sha256
              (base32
-              "196swmc4amab8xcwv4q9p8b43fzzi9xagg20gnyjvf5x7yssxj1k"))))
+              "1mwjhakbjv9g6ffn6c55cbrfsrqhb2apwhmffvz8rfgm4y2igd04"))))
    (build-system gnu-build-system)
    (native-inputs
     (list pkg-config intltool
@@ -1261,19 +1397,19 @@ A plugin for the Xfce panel is also available.")
                   (string-append "DBUS_SESSION_SERVICE_DIR="
                                  dbus-dir)))))))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("intltool" ,intltool)
-       ("glib" ,glib)                             ; glib-compile-schemas
-       ("glib:bin" ,glib "bin")))                 ; glib-compile-schemas
+     (list pkg-config
+           intltool
+           glib ; glib-compile-schemas
+           `(,glib "bin")))                 ; glib-compile-schemas
     (inputs
-     `(("dbus-glib" ,dbus-glib)
-       ("libux-pam" ,linux-pam)
-       ("elogind" ,elogind)
-       ("garcon" ,garcon)
-       ("libxklavier" ,libxklavier)
-       ("libwnxk" ,libwnck)
-       ("libxscrnsaver" ,libxscrnsaver)
-       ("xfconf" ,xfconf)))
+     (list dbus-glib
+           linux-pam
+           elogind
+           garcon
+           libxklavier
+           libwnck
+           libxscrnsaver
+           xfconf))
     (home-page "https://docs.xfce.org/apps/screensaver/start")
     (synopsis "Screensaver for the Xfce desktop")
     (description
@@ -1466,7 +1602,7 @@ governor and frequencies supported and used by your system.")
 (define-public xfce4-diskperf-plugin
   (package
    (name "xfce4-diskperf-plugin")
-   (version "2.6.3")
+   (version "2.7.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
@@ -1475,7 +1611,7 @@ governor and frequencies supported and used by your system.")
                                   "/xfce4-diskperf-plugin-" version ".tar.bz2"))
               (sha256
                (base32
-                "0n8wsnjvzw98z8r0f0zr8n2gicjz6hhislp86xrjh0r4xcnymcbk"))))
+                "1jgcdwiaqs06l729vbj3kgv67iwimjp8gfy7ydzlvbx6859sc2ar"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool pkg-config))

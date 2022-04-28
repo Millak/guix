@@ -36,11 +36,11 @@
   #:use-module (srfi srfi-2)
   #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-9 gnu)
-  #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-19)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-37)
+  #:use-module (srfi srfi-71)
   #:use-module (web http)
   #:use-module (web request)
   #:use-module (web response)
@@ -1190,8 +1190,7 @@ headers."
   ;; Preserve the request's 'connection' header in the response, so that the
   ;; server can close the connection if this is requested by the client.
   (lambda (request body)
-    (let-values (((response response-body)
-                  (handle request body)))
+    (let ((response response-body (handle request body)))
       (values (preserve-connection-headers request response)
               response-body))))
 
@@ -1235,6 +1234,23 @@ headers."
                                            %default-socket-options))
     (bind sock address)
     sock))
+
+(define (systemd-socket)
+  "If this program is being spawned through systemd-style \"socket
+activation\", whereby the listening socket is passed as file descriptor 3,
+return the corresponding socket.  Otherwise return #f."
+  (and (equal? (and=> (getenv "LISTEN_PID") string->number)
+               (getpid))
+       (match (getenv "LISTEN_FDS")
+         ((= string->number 1)
+          (let ((sock (fdopen 3 "r+0")))
+            (configure-socket sock)
+            sock))
+         ((= string->number (? integer? n))
+          (leave (G_ "~a: unexpected number of startup file descriptors")
+                 n))
+         (_
+          #f))))
 
 (define (gather-user-privileges user)
   "Switch to the identity of USER, a user name."
@@ -1281,7 +1297,12 @@ headers."
                       (make-socket-address (sockaddr:fam addr)
                                            (sockaddr:addr addr)
                                            port)))
-           (socket  (open-server-socket address))
+           (socket style (match (systemd-socket)
+                           (#f
+                            (values (open-server-socket address)
+                                    'normal))
+                           (socket
+                            (values socket 'systemd))))
            (nar-path  (assoc-ref opts 'nar-path))
            (repl-port (assoc-ref opts 'repl))
            (cache     (assoc-ref opts 'cache))
@@ -1306,10 +1327,12 @@ consider using the '--user' option!~%")))
                      (cache-bypass-threshold
                       (or (assoc-ref opts 'cache-bypass-threshold)
                           (cache-bypass-threshold))))
-        (info (G_ "publishing ~a on ~a, port ~d~%")
-              %store-directory
-              (inet-ntop (sockaddr:fam address) (sockaddr:addr address))
-              (sockaddr:port address))
+        (if (eq? style 'systemd)
+            (info (G_ "publishing (started via socket activation)~%"))
+            (info (G_ "publishing ~a on ~a, port ~d~%")
+                  %store-directory
+                  (inet-ntop (sockaddr:fam address) (sockaddr:addr address))
+                  (sockaddr:port address)))
 
         (for-each (lambda (compression)
                     (info (G_ "using '~a' compression method, level ~a~%")

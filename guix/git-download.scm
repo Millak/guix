@@ -104,6 +104,12 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
   (define gnutls
     (module-ref (resolve-interface '(gnu packages tls)) 'gnutls))
 
+  (define glibc-locales
+    ;; Note: pick the '-final' variant to avoid circular dependency on
+    ;; i586-gnu, where 'glibc-utf8-locales' indirectly depends on Git.
+    (module-ref (resolve-interface '(gnu packages commencement))
+                'glibc-utf8-locales-final))
+
   (define modules
     (delete '(guix config)
             (source-module-closure '((guix build git)
@@ -124,6 +130,13 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
 
             (define recursive?
               (call-with-input-string (getenv "git recursive?") read))
+
+            ;; Let Guile interpret file names as UTF-8, otherwise
+            ;; 'delete-file-recursively' might fail to delete all of
+            ;; '.git'--see <https://issues.guix.gnu.org/54893>.
+            (setenv "GUIX_LOCPATH"
+                    #+(file-append glibc-locales "/lib/locale"))
+            (setlocale LC_ALL "en_US.utf8")
 
             ;; The 'git submodule' commands expects Coreutils, sed,
             ;; grep, etc. to be in $PATH.

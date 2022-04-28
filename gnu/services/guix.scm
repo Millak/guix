@@ -122,7 +122,8 @@
             nar-herder-configuration-port
             nar-herder-configuration-storage
             nar-herder-configuration-storage-limit
-            nar-herder-configuration-storage-nar-removal-criteria))
+            nar-herder-configuration-storage-nar-removal-criteria
+            nar-herder-configuration-log-level))
 
 ;;;; Commentary:
 ;;;
@@ -778,7 +779,9 @@ ca-certificates.crt file in the system profile."
   (ttl           nar-herder-configuration-ttl
                  (default #f))
   (negative-ttl  nar-herder-configuration-negative-ttl
-                 (default #f)))
+                 (default #f))
+  (log-level     nar-herder-configuration-log-level
+                 (default 'DEBUG)))
 
 
 (define (nar-herder-shepherd-services config)
@@ -788,7 +791,7 @@ ca-certificates.crt file in the system profile."
              database database-dump
              host port
              storage storage-limit storage-nar-removal-criteria
-             ttl negative-ttl)
+             ttl negative-ttl log-level)
 
     (unless (or mirror storage)
       (error "nar-herder: mirror or storage must be set"))
@@ -829,6 +832,9 @@ ca-certificates.crt file in the system profile."
                              '())
                       #$@(if negative-ttl
                              (list (string-append "--negative-ttl=" negative-ttl))
+                             '())
+                      #$@(if log-level
+                             (list (simple-format #f "--log-level=~A" log-level))
                              '()))
                 #:user #$user
                 #:group #$group

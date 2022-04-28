@@ -561,18 +561,23 @@ compression format (.mpc files).")
 (define-public eyed3
   (package
     (name "eyed3")
-    (version "0.8.12")
+    (version "0.9.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "eyeD3" version))
        (sha256
-        (base32 "0vabr7hh6vy1w8gn35vmx9qwiyrfv734d5ahifg7x3pv0c5fqkp5"))))
+        (base32 "063mpg5bks9dgggjyag8968z5r7z4x50s0m0rja956dk1zn68l2b"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f))    ; the required test data contains copyrighted material
     (propagated-inputs
-     (list python-grako python-magic python-pathlib python-six))
+     (list python-deprecation
+           python-filetype
+           python-grako
+           python-magic
+           python-pathlib
+           python-six))
     (synopsis "MP3 tag ID3 metadata editor")
     (description "eyeD3 is a Python tool for working with audio files,
 specifically mp3 files containing ID3 metadata (i.e. song info).  It provides a

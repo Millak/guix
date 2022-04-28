@@ -76,7 +76,6 @@
   #:autoload   (ice-9 popen) (open-pipe* close-pipe)
   #:autoload   (system repl repl)  (start-repl)
   #:autoload   (system repl debug) (make-debug stack->vector)
-  #:autoload   (web uri) (encode-and-join-uri-path)
   #:use-module (texinfo)
   #:use-module (texinfo plain-text)
   #:use-module (texinfo string-utils)
@@ -118,11 +117,6 @@
             string->recutils
             package->recutils
             package-specification->name+version+output
-
-            supports-hyperlinks?
-            hyperlink
-            file-hyperlink
-            location->hyperlink
 
             pager-wrapped-port
             with-paginated-output-port
@@ -1488,46 +1482,19 @@ followed by \"+ \", which makes for a valid multi-line field value in the
                       '()
                       str)))
 
-(define (hyperlink uri text)
-  "Return a string that denotes a hyperlink using an OSC escape sequence as
-documented at
-<https://gist.github.com/egmontkob/eb114294efbcd5adb1944c9f3cb5feda>."
-  (string-append "\x1b]8;;" uri "\x1b\\"
-                 text "\x1b]8;;\x1b\\"))
-
-(define* (supports-hyperlinks? #:optional (port (current-output-port)))
-  "Return true if PORT is a terminal that supports hyperlink escapes."
-  ;; Note that terminals are supposed to ignore OSC escapes they don't
-  ;; understand (this is the case of xterm as of version 349, for instance.)
-  ;; However, Emacs comint as of 26.3 does not ignore it and instead lets it
-  ;; through, hence the 'INSIDE_EMACS' special case below.
-  (and (isatty?* port)
-       (not (getenv "INSIDE_EMACS"))))
-
-(define* (file-hyperlink file #:optional (text file))
-  "Return TEXT with escapes for a hyperlink to FILE."
-  (hyperlink (string-append "file://" (gethostname)
-                            (encode-and-join-uri-path
-                             (string-split file #\/)))
-             text))
-
-(define (location->hyperlink location)
-  "Return a string corresponding to LOCATION, with escapes for a hyperlink."
-  (let ((str  (location->string location))
-        (file (if (string-prefix? "/" (location-file location))
-                  (location-file location)
-                  (search-path %load-path (location-file location)))))
-    (if file
-        (file-hyperlink file str)
-        str)))
-
 (define* (package->recutils p port #:optional (width (%text-width))
                             #:key
                             (hyperlinks? (supports-hyperlinks? port))
-                            (extra-fields '()))
+                            (extra-fields '())
+                            (highlighting identity))
   "Write to PORT a `recutils' record of package P, arranging to fit within
 WIDTH columns.  EXTRA-FIELDS is a list of symbol/value pairs to emit.  When
-HYPERLINKS? is true, emit hyperlink escape sequences when appropriate."
+HYPERLINKS? is true, emit hyperlink escape sequences when appropriate.  Pass
+the synopsis and description through HIGHLIGHTING, a one-argument procedure
+that may return a colorized version of its argument."
+  (define port*
+    (or (pager-wrapped-port port) port))
+
   (define width*
     ;; The available number of columns once we've taken into account space for
     ;; the initial "+ " prefix.
@@ -1546,9 +1513,14 @@ HYPERLINKS? is true, emit hyperlink escape sequences when appropriate."
   (define (package<? p1 p2)
     (string<? (package-full-name p1) (package-full-name p2)))
 
+  (define highlighting*
+    (if (color-output? port*)
+        highlighting
+        identity))
+
   ;; Note: Don't i18n field names so that people can post-process it.
-  (format port "name: ~a~%" (package-name p))
-  (format port "version: ~a~%" (package-version p))
+  (format port "name: ~a~%" (highlight (package-name p) port*))
+  (format port "version: ~a~%" (highlight (package-version p) port*))
   (format port "outputs: ~a~%" (string-join (package-outputs p)))
   (format port "systems: ~a~%"
           (split-lines (string-join (package-transitive-supported-systems p))
@@ -1580,22 +1552,24 @@ HYPERLINKS? is true, emit hyperlink escape sequences when appropriate."
             (x
              (G_ "unknown"))))
   (format port "synopsis: ~a~%"
-          (string-map (match-lambda
-                        (#\newline #\space)
-                        (chr       chr))
-                      (or (package-synopsis-string p) "")))
+          (highlighting*
+           (string-map (match-lambda
+                         (#\newline #\space)
+                         (chr       chr))
+                       (or (package-synopsis-string p) ""))))
   (format port "~a~%"
-          (string->recutils
-           (string-trim-right
-            (parameterize ((%text-width width*))
-              ;; Call 'texi->plain-text' on the concatenated string to account
-              ;; for the width of "description:" in paragraph filling.
-              (texi->plain-text*
-               p
-               (string-append "description: "
-                              (or (and=> (package-description p) P_)
-                                  ""))))
-            #\newline)))
+          (highlighting*
+           (string->recutils
+            (string-trim-right
+             (parameterize ((%text-width width*))
+               ;; Call 'texi->plain-text' on the concatenated string to account
+               ;; for the width of "description:" in paragraph filling.
+               (texi->plain-text*
+                p
+                (string-append "description: "
+                               (or (and=> (package-description p) P_)
+                                   ""))))
+             #\newline))))
   (for-each (match-lambda
               ((field . value)
                (let ((field (symbol->string field)))
@@ -1743,10 +1717,12 @@ standard output is a tty, or with PORT set to the current output port."
 
 (define* (display-search-results matches port
                                  #:key
+                                 (regexps '())
                                  (command "guix search")
                                  (print package->recutils))
   "Display MATCHES, a list of object/score pairs, by calling PRINT on each of
-them.  If PORT is a terminal, print at most a full screen of results."
+them.  If PORT is a terminal, print at most a full screen of results.  REGEXPS
+is a list of regexps to highlight in search results."
   (define first-line
     (port-line port))
 
@@ -1757,6 +1733,12 @@ them.  If PORT is a terminal, print at most a full screen of results."
   (define (line-count str)
     (string-count str #\newline))
 
+  (define highlighting
+    (let ((match-color (color ON-RED BOLD)))
+      (colorize-full-matches (map (lambda (regexp)
+                                    (cons regexp match-color))
+                                  regexps))))
+
   (with-paginated-output-port paginated
     (let loop ((matches matches))
       (match matches
@@ -1764,7 +1746,8 @@ them.  If PORT is a terminal, print at most a full screen of results."
          (let* ((links? (supports-hyperlinks? port)))
            (print package paginated
                   #:hyperlinks? links?
-                  #:extra-fields `((relevance . ,score)))
+                  #:extra-fields `((relevance . ,score))
+                  #:highlighting highlighting)
            (loop rest)))
         (()
          #t)))))

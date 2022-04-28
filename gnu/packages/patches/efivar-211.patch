@@ -1,0 +1,86 @@
+Patch from <https://github.com/rhboot/efivar/pull/211>.
+
+From 15622b7e5761f3dde3f0e42081380b2b41639a48 Mon Sep 17 00:00:00 2001
+From: itd0 <69421122+itd0@users.noreply.github.com>
+Date: Mon, 4 Apr 2022 19:59:58 +0200
+Subject: [PATCH] Avoid format error on i686
+
+On i686 definition of off_t and ssize_t differ.  Update format length
+modifiers as needed to avoid format errors with GCC.
+
+Signed-off-by: itd0 <69421122+itd0@users.noreply.github.com>
+---
+ src/esl-iter.c   | 18 +++++++++---------
+ src/secdb-dump.c |  2 +-
+ 2 files changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/src/esl-iter.c b/src/esl-iter.c
+index 26b5cb5e..4a1938ad 100644
+--- a/src/esl-iter.c
++++ b/src/esl-iter.c
+@@ -308,13 +308,13 @@ esl_list_iter_next_with_size_correction(esl_list_iter *iter, efi_guid_t *type,
+ 		return -1;
+ 	}
+ 	if (iter->offset < 0) {
+-		efi_error("iter->offset (%zd) < 0", iter->offset);
++		efi_error("iter->offset (%jd) < 0", (intmax_t)iter->offset);
+ 		errno = EINVAL;
+ 		return -1;
+ 	}
+ 	if ((uint32_t)iter->offset >= iter->len) {
+-		efi_error("iter->offset (%zd) >= iter->len (%zd)",
+-			  iter->offset, iter->len);
++		efi_error("iter->offset (%jd) >= iter->len (%zd)",
++			  (intmax_t)iter->offset, iter->len);
+ 		errno = EINVAL;
+ 		return -1;
+ 	}
+@@ -335,9 +335,9 @@ esl_list_iter_next_with_size_correction(esl_list_iter *iter, efi_guid_t *type,
+ 			      iter->len - iter->offset, iter->len - iter->offset,
+ 			      iter->esl->signature_list_size, iter->esl->signature_list_size);
+ 			if (correct_size && (iter->len - iter->offset) > 0) {
+-				warnx("correcting ESL size from %d to %zd at %lx",
++				warnx("correcting ESL size from %d to %jd at %lx",
+ 				      iter->esl->signature_list_size,
+-				      iter->len - iter->offset, iter->offset);
++				      (intmax_t)(iter->len - iter->offset), iter->offset);
+ 				debug("correcting ESL size from %d to %zd at %lx",
+ 				      iter->esl->signature_list_size,
+ 				      iter->len - iter->offset, iter->offset);
+@@ -360,9 +360,9 @@ esl_list_iter_next_with_size_correction(esl_list_iter *iter, efi_guid_t *type,
+ 		if (iter->len - iter->offset < iter->esl->signature_list_size) {
+ 			debug("EFI_SIGNATURE_LIST is malformed");
+ 			if (correct_size && (iter->len - iter->offset) > 0) {
+-				warnx("correcting ESL size from %d to %zd at 0x%lx",
++				warnx("correcting ESL size from %d to %jd at 0x%lx",
+ 				      iter->esl->signature_list_size,
+-				      iter->len - iter->offset, iter->offset);
++				      (intmax_t)(iter->len - iter->offset), iter->offset);
+ 				debug("correcting ESL size from %d to %zd at 0x%lx",
+ 				      iter->esl->signature_list_size,
+ 				      iter->len - iter->offset, iter->offset);
+@@ -411,9 +411,9 @@ esl_list_iter_next_with_size_correction(esl_list_iter *iter, efi_guid_t *type,
+ 	if (iter->esl->signature_list_size > iter->len - iter->offset) {
+ 		debug("EFI_SIGNATURE_LIST is malformed");
+ 		if (correct_size && (iter->len - iter->offset) > 0) {
+-			warnx("correcting ESL size from %d to %zd at 0x%lx",
++			warnx("correcting ESL size from %d to %jd at 0x%lx",
+ 			      iter->esl->signature_list_size,
+-			      iter->len - iter->offset, iter->offset);
++			      (intmax_t)(iter->len - iter->offset), iter->offset);
+ 			debug("correcting ESL size from %d to %zd at 0x%lx",
+ 			      iter->esl->signature_list_size,
+ 			      iter->len - iter->offset, iter->offset);
+diff --git a/src/secdb-dump.c b/src/secdb-dump.c
+index 02fb915b..17f64411 100644
+--- a/src/secdb-dump.c
++++ b/src/secdb-dump.c
+@@ -248,7 +248,7 @@ secdb_dump(efi_secdb_t *secdb, bool annotations)
+ 		esln += 1;
+ 	}
+ 	secdb_dump_finish();
+-	printf("%08lx\n", offset);
++	printf("%08zx\n", offset);
+ 
+ 	fflush(stdout);
+ }

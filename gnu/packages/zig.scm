@@ -39,14 +39,11 @@
        (file-name (git-file-name name version))
        (sha256
         (base32 "0nfvgg23sw50ksy0z0ml6lkdsvmd0278mq29m23dbb2jsirkhry7"))
-       (patches
-        (search-patches
-         "zig-disable-libc-note-test.patch"
-         "zig-use-system-paths.patch"))))
+       (patches (search-patches "zig-use-system-paths.patch"))))
     (build-system cmake-build-system)
     (inputs
      (list clang-13 ; Clang propagates llvm.
-           lld))
+           lld-13))
     ;; Zig compiles fine with GCC, but also needs native LLVM libraries.
     (native-inputs
      (list llvm-13))

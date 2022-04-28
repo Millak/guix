@@ -18,6 +18,8 @@
 
 (use-modules (gnu tests)
              (gnu packages package-management)
+             (guix monads)
+             (guix store)
              ((gnu ci) #:select (channel-source->package))
              ((guix git-download) #:select (git-predicate))
              ((guix utils) #:select (current-source-directory))
@@ -41,6 +43,21 @@ determined."
           (repository-close! repository))
         #f))))
 
+(define-syntax mparameterize
+  (syntax-rules ()
+    "This form implements dynamic scoping, similar to 'parameterize', but in a
+monadic context."
+    ((_ monad ((parameter value) rest ...) body ...)
+     (let ((old-value (parameter)))
+       (mbegin monad
+         ;; XXX: Non-local exits are not correctly handled.
+         (return (parameter value))
+         (mlet monad ((result (mparameterize monad (rest ...) body ...)))
+           (parameter old-value)
+           (return result)))))
+    ((_ monad () body ...)
+     (mbegin monad body ...))))
+
 (define (tests-for-current-guix source commit)
   "Return a list of tests for perform, using Guix built from SOURCE, a channel
 instance."
@@ -48,15 +65,19 @@ instance."
   ;; of tests to run in the usual way:
   ;;
   ;;   make check-system TESTS=installed-os
-  (parameterize ((current-guix-package
-                  (channel-source->package source #:commit commit)))
-    (match (getenv "TESTS")
-      (#f
-       (all-system-tests))
-      ((= string-tokenize (tests ...))
-       (filter (lambda (test)
-                 (member (system-test-name test) tests))
-               (all-system-tests))))))
+  (let ((guix (channel-source->package source #:commit commit)))
+    (map (lambda (test)
+           (system-test
+            (inherit test)
+            (value (mparameterize %store-monad ((current-guix-package guix))
+                     (system-test-value test)))))
+         (match (getenv "TESTS")
+           (#f
+            (all-system-tests))
+           ((= string-tokenize (tests ...))
+            (filter (lambda (test)
+                      (member (system-test-name test) tests))
+                    (all-system-tests)))))))
 
 (define (system-test->manifest-entry test)
   "Return a manifest entry for TEST, a system test."

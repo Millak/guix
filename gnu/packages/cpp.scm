@@ -1064,7 +1064,7 @@ parsers according to a Parsing Expression Grammar (PEG).")
 (define-public cxxopts
   (package
     (name "cxxopts")
-    (version "2.2.1")
+    (version "3.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1073,7 +1073,7 @@ parsers according to a Parsing Expression Grammar (PEG).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0d3y747lsh1wkalc39nxd088rbypxigm991lk3j91zpn56whrpha"))))
+                "08x7j168l1xwj0r3rv89cgghmfhsx98lpq35r3vkh504m1pd55a6"))))
     (build-system cmake-build-system)
     (synopsis "Lightweight C++ command line option parser")
     (description
@@ -1085,7 +1085,7 @@ standard GNU style syntax for options.")
 (define-public folly
   (package
     (name "folly")
-    (version "2021.10.04.00")
+    (version "2022.04.11.00")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1094,7 +1094,7 @@ standard GNU style syntax for options.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1h7apl42idymqra0xgw7s5ys3dxrqd8gq0f99g048k4g5fxl64s9"))))
+                "03c1my66xncn8yvgih4kc7j83ckmjbi2w29hdb28j30ixbn0bsjg"))))
     (build-system cmake-build-system)
     (arguments
      '(;; Tests must be explicitly enabled
@@ -1157,57 +1157,55 @@ of C++14 components that complements @code{std} and Boost.")
                 (("ENABLE_TESTS") "FALSE")))))))
     (home-page "https://pocoproject.org/")
     (synopsis "Portable C++ components")
-    (description "A collection of libraries intended to be useful for building
-network-based applications.")
+    (description "This package provides a collection of C++ libraries intended
+to be useful for building network-based applications.")
     (license license:boost1.0)))
 
 (define-public aws-crt-cpp
-  (let* ((commit "b6d311d76b504bf8ace5134d3fca0e672c36c9c3")
-         (revision "1"))
-    (package
-      (name "aws-crt-cpp")
-      ; Update only when updating aws-sdk-cpp, and when updating also update
-      ; versions of library dependencies linked from from
-      ; https://github.com/awslabs/aws-crt-cpp/tree/{aws-crt-cpp commit}/crt
-      (version (git-version "0.17.1" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/awslabs/aws-crt-cpp")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1n0nlbz91j3ycwwrh9652f0h5qr2sj5b1l0i5sg40ajzs7wvzd32"))))
-      (build-system cmake-build-system)
-      (arguments
-       '(#:configure-flags
-         (list "-DBUILD_DEPS=OFF"
-               "-DBUILD_SHARED_LIBS=ON"
-               (string-append "-DCMAKE_PREFIX_PATH="
-                            (assoc-ref %build-inputs "aws-c-common"))
-               "-DENABLE_NET_TESTS=OFF")))
-      (propagated-inputs
-       (list aws-c-auth
-             aws-c-cal
-             aws-c-event-stream
-             aws-c-http
-             aws-c-mqtt
-             aws-c-s3))
-      (synopsis "C++ wrapper for Amazon Web Services C libraries")
-      (description "The AWS Common Runtime (CRT) library provides a C++ wrapper
+  (package
+    (name "aws-crt-cpp")
+    ; Update only when updating aws-sdk-cpp, and when updating also update
+    ; versions of library dependencies linked from from
+    ; https://github.com/awslabs/aws-crt-cpp/tree/{aws-crt-cpp commit}/crt
+    (version "0.17.27")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/awslabs/aws-crt-cpp")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "14g8pn7yii1klby7phcw08qnld1qv11vwmbdz8cs3mlpqahxrh4i"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:configure-flags
+       (list "-DBUILD_DEPS=OFF"
+             "-DBUILD_SHARED_LIBS=ON"
+             (string-append "-DCMAKE_PREFIX_PATH="
+                          (assoc-ref %build-inputs "aws-c-common"))
+             "-DENABLE_NET_TESTS=OFF")))
+    (propagated-inputs
+     (list aws-c-auth
+           aws-c-cal
+           aws-c-event-stream
+           aws-c-http
+           aws-c-mqtt
+           aws-c-s3))
+    (synopsis "C++ wrapper for Amazon Web Services C libraries")
+    (description "The AWS Common Runtime (CRT) library provides a C++ wrapper
 implementation for the following @acronym{AWS,Amazon Web Services} C libraries:
 aws-c-auth, aws-c-cal, aws-c-common, aws-c-compression, aws-c-event-stream,
 aws-c-http, aws-c-io, aws-c-mqtt, aws-checksums, and s2n.")
-      (home-page "https://github.com/awslabs/aws-crt-cpp")
-      (license license:asl2.0))))
+    (home-page "https://github.com/awslabs/aws-crt-cpp")
+    (license license:asl2.0)))
 
 (define-public aws-sdk-cpp
   (package
     (name "aws-sdk-cpp")
     ; When updating also check for a tagged update to aws-crt-cpp from
     ; https://github.com/aws/aws-sdk-cpp/tree/main/crt
-    (version "1.9.136")
+    (version "1.9.236")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1216,7 +1214,7 @@ aws-c-http, aws-c-io, aws-c-mqtt, aws-checksums, and s2n.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ap7g7nmbnrcajy3b788bnpqd87dwmg83dhll1q8qzli04bcg47i"))))
+                "13qhxsbfn81r7lg382wb4d3xfc4a287ikww5i7whddk5yz0j8384"))))
     (build-system cmake-build-system)
     (arguments
      '(;; Tests are run during the build phase.
@@ -1294,11 +1292,19 @@ provides a number of utilities to make coding with expected cleaner.")
      `(#:configure-flags '("-Dbenchmarks=false")
        #:phases
        (modify-phases %standard-phases
+         ,@(if (%current-target-system)
+               `(;; boost is a test dependency. We don't run tests when
+                 ;; cross-compiling. Disable all targets that depend on it.
+                 (add-after 'unpack 'do-not-check-for-boost
+                   (lambda _
+                     (substitute* "meson.build"
+                       (("unit_test_framework = [^\n]*" all)
+                        "unit_test_framework = disabler()")))))
+               '())
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (lambda _
-                 (invoke "make" "run_tests")))))
+               (invoke "./tests"))))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (copy-recursively "../source/include/atomic_queue"

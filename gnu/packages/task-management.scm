@@ -4,6 +4,7 @@
 ;;; Copyright © 2021 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
+;;; Copyright © 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -22,6 +23,7 @@
 
 (define-module (gnu packages task-management)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (gnu packages check)
   #:use-module (gnu packages freedesktop)
@@ -32,6 +34,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lua)
+  #:use-module (gnu packages ncurses)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
@@ -42,6 +45,7 @@
   #:use-module (guix hg-download)
   #:use-module (guix utils)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python))
@@ -140,6 +144,40 @@ to finish tasks, not organize them.")
 Done time management method.  It supports network synchronization, filtering
 and querying data, exposing task data in multiple formats to other tools.")
     (license license:expat)))
+
+(define-public worklog
+  (let ((commit "0f545ad6697ef4de7f68d92cd7cc5c6a4c60517b")
+        (revision "1"))
+    (package
+      (name "worklog")
+      (version (git-version "2.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/atsb/worklog")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "18dkmy168ks9gcnfqri1rfl0ag0dmh9d6ppfmjfcdd6g9gvi6zll"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:make-flags
+         ,#~(list (string-append "CC=" #$(cc-for-target))
+                  (string-append "BIN=" #$output "/bin")
+                  (string-append "MAN=" #$output "/share/man"))
+         #:phases
+         (modify-phases %standard-phases
+           (delete 'configure))
+         #:tests? #f))  ; No "check" target.
+      (inputs (list ncurses))
+      (home-page "https://github.com/atsb/worklog")
+      (synopsis "Program keeping track of time spent on different projects")
+      (description
+       "@code{worklog} is a program that helps you keep track of your time.
+@code{worklog} is a simple ncurses based based program that runs a clock and
+logs time to a logfile.")
+      (license license:public-domain))))
 
 (define-public dstask
   (package
@@ -241,6 +279,41 @@ a task.")
 to with the goal of improving your focus and enhancing your productivity.
 You can also use it to fall asleep in a noisy environment.")
     (license license:gpl3+)))
+
+(define-public wtime
+  (package
+    (name "wtime")
+    (version "0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/wtime/wtime/"
+                           version "/wtime_"
+                           (string-replace-substring version "." "_")
+                           ".tar.gz"))
+       (sha256
+        (base32 "1rp1sxas9wjc84fvr6x94ryl3r9w7jd0x5j1hbi9q7yrgfclp830"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:make-flags
+       ,#~(list (string-append "CC=" #$(cc-for-target))
+                (string-append "PREFIX=" #$output))
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure)
+         (add-after 'unpack 'fix-man-path
+           (lambda _
+             (substitute* "Makefile"
+               (("/man1") "/share/man/man1")))))
+       #:tests? #f))  ; No "check" target.
+    (home-page "http://wtime.sourceforge.net")
+    (synopsis
+     "Command-line utility for tracking time spent on arbitrary tasks")
+    (description
+     "@code{wtime} is a command-line utility for tracking time spent working
+on arbitrary tasks.  All the time data is saved in files residing in the
+@code{.wtimed} directory in the user's home directory.")
+    (license license:x11)))
 
 (define-public todoman
   (package

@@ -10,6 +10,7 @@
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021 Noisytoot <noisytoot@disroot.org>
 ;;; Copyright © 2021 Kaelyn Takata <kaelyn.alexi@protonmail.com>
+;;; Copyright © 2022 Brian Cully <bjc@spork.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1145,7 +1146,7 @@ with the included @command{xfstests-check} helper.")
 (define-public zfs
   (package
     (name "zfs")
-    (version "2.1.2")
+    (version "2.1.4")
     (outputs '("out" "module" "src"))
     (source
       (origin
@@ -1154,7 +1155,7 @@ with the included @command{xfstests-check} helper.")
                               "/download/zfs-" version
                               "/zfs-" version ".tar.gz"))
           (sha256
-           (base32 "1rxrr329y6zgkcqv0gah8bgi9ih6pqaay7mnk4xqlrhzgb8z3315"))))
+           (base32 "1xmcy4f0damf1pkb1sy1339ir1jkky0dwzd8vhwgc1pqjgac0liv"))))
     (build-system linux-module-build-system)
     (arguments
      `(;; The ZFS kernel module should not be downloaded since the license

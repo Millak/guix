@@ -12,6 +12,7 @@
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Tissevert <tissevert+guix@marvid.fr>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
+;;; Copyright © 2022 Luis Henrique Gomes Higino <luishenriquegh2701@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -76,7 +77,7 @@
 (define-public vim
   (package
     (name "vim")
-    (version "8.2.4564")
+    (version "8.2.4701")
     (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -85,7 +86,7 @@
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "1ggvmvd6xsj9xvknjcvpj52na2km2wxvxfj8l29mqp03g4wwyzrr"))))
+               "0yqqzai3ihfjjjjmn50pxlcqllpkmlrf5z59ma5rn0gv8wwwdw7h"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -117,6 +118,11 @@
              (setenv "TERM" "xterm")))
          (add-before 'check 'skip-or-fix-failing-tests
            (lambda _
+             ;; This test failure is shared between BSD and Guix.
+             (with-fluids ((%default-port-encoding #f))
+               (substitute* "src/testdir/test_writefile.vim"
+                 (("!has\\('bsd'\\)") "0")))
+
              ;; This test assumes that PID 1 is run as root and that the user
              ;; running the test suite does not have permission to kill(1, 0)
              ;; it.  This is not true in the build container, where both PID 1
@@ -662,7 +668,7 @@ are detected, the user is notified.")))
 (define-public neovim
   (package
     (name "neovim")
-    (version "0.4.4")
+    (version "0.6.1")
     (source
      (origin
        (method git-fetch)
@@ -671,13 +677,19 @@ are detected, the user is notified.")))
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11zyj6jvkwas3n6w1ckj3pk6jf81z1g7ngg4smmwm7c27y2a6f2m"))))
+        (base32 "10p6lg5yv9n6wcwdprwvvi56dfcm4wsj54nm0invyx3mhf7374lx"))))
     (build-system cmake-build-system)
     (arguments
      `(#:modules ((srfi srfi-26)
                   (guix build cmake-build-system)
                   (guix build utils))
-       #:configure-flags '("-DPREFER_LUA:BOOL=YES")
+       #:configure-flags
+       (list ,@(if (member (if (%current-target-system)
+                               (gnu-triplet->nix-system (%current-target-system))
+                               (%current-system))
+                           (package-supported-systems luajit))
+                   '()
+                   '("-DPREFER_LUA:BOOL=YES")))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'set-lua-paths
@@ -717,11 +729,17 @@ are detected, the user is notified.")))
        ("libvterm" ,libvterm)
        ("unibilium" ,unibilium)
        ("jemalloc" ,jemalloc)
-       ("lua" ,lua-5.1)
+       ("lua" ,(if (member (if (%current-target-system)
+                               (gnu-triplet->nix-system (%current-target-system))
+                               (%current-system))
+                           (package-supported-systems luajit))
+                   luajit
+                   lua-5.1))
        ("lua-luv" ,lua5.1-luv)
        ("lua-lpeg" ,lua5.1-lpeg)
        ("lua-bitop" ,lua5.1-bitop)
-       ("lua-libmpack" ,lua5.1-libmpack)))
+       ("lua-libmpack" ,lua5.1-libmpack)
+       ("tree-sitter" ,tree-sitter)))
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("gettext" ,gettext-minimal)
@@ -1287,7 +1305,7 @@ additions:
          ("syntax" "share/vim/vimfiles/"))
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'link-univerisal-ctags
+         (add-after 'unpack 'link-universal-ctags
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((ctags (assoc-ref inputs "universal-ctags")))
                (substitute* "autoload/tagbar.vim"

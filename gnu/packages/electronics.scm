@@ -257,8 +257,7 @@ supported devices, as well as input/output file format support.")
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/OpenBoardView/OpenBoardView")
-                    (commit version)
-                    (recursive? #t)))   ;for the "src/imgui" submodule
+                    (commit version)))
               (file-name (git-file-name name version))
               (modules '((ice-9 ftw)
                          (srfi srfi-26)

@@ -54,6 +54,9 @@
          (replace 'configure
            (lambda _
              (setenv "LSOF_CC" ,(cc-for-target))
+             ,@(if (%current-target-system)
+                   '((setenv "LINUX_CONF_CC" "gcc"))
+                   '())
              (setenv "LSOF_MAKE" "make")
 
              ;; By default, the makefile captures the output of 'uname -a'.

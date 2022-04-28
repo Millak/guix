@@ -56,6 +56,7 @@
   #:use-module (srfi srfi-37)
   #:use-module (srfi srfi-98)
   #:export (assert-container-features
+            load-manifest
             guix-environment
             guix-environment*
             show-environment-options-help
@@ -285,6 +286,11 @@ use '--preserve' instead~%"))
             (_ memo)))
         '() alist))
 
+(define (load-manifest file)                      ;TODO: factorize
+  "Load the user-profile manifest (Scheme code) from FILE and return it."
+  (let ((user-module (make-user-module '((guix profiles) (gnu)))))
+    (load* file user-module)))
+
 (define (options/resolve-packages store opts)
   "Return OPTS with package specification strings replaced by manifest entries
 for the corresponding packages."
@@ -331,8 +337,7 @@ for the corresponding packages."
                    (let ((module (make-user-module '())))
                      (packages->outputs (load* file module) mode)))
                   (('manifest . file)
-                   (let ((module (make-user-module '((guix profiles) (gnu)))))
-                     (manifest-entries (load* file module))))
+                   (manifest-entries (load-manifest file)))
                   (_ '()))
                 opts)
     manifest-entry=?)))

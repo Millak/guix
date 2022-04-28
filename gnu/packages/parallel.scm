@@ -62,14 +62,14 @@
 (define-public parallel
   (package
     (name "parallel")
-    (version "20220222")
+    (version "20220322")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "mirror://gnu/parallel/parallel-"
                           version ".tar.bz2"))
       (sha256
-       (base32 "0id4lr3q0fh0r4vcz8sp19am9yc6j8g00m2726dgpmzacfw845pq"))))
+       (base32 "1n76lhw2sw21kj9hbd3pij9kwq460kpjl15p4qhssagmm7vcr4yz"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -182,19 +182,20 @@ when jobs finish.")
                   ;; <https://lists.gnu.org/archive/html/guix-devel/2016-02/msg00534.html>
                   ;; there are non-free bits under contribs/, though it's not
                   ;; clear which ones.  libpmi is clearly free (it used to be
-                  ;; under src/api/), so remove all of contribs/ except
-                  ;; contribs/pmi/.
+                  ;; under src/api/) and so is pmi2 (lax non-copyleft
+                  ;; license), so remove all of contribs/ except pmi and pmi2.
                   (substitute* "configure.ac"
                     (("^[[:space:]]+contribs/(.*)$" all directory)
-                     (if (and (string-prefix? "pmi" directory)
-                              (not (string-prefix? "pmi2" directory)))
+                     (if (string-prefix? "pmi" directory)
                          all
                          "")))
 
                   (rename-file "contribs/pmi" "tmp-pmi")
+                  (rename-file "contribs/pmi2" "tmp-pmi2")
                   (delete-file-recursively "contribs")
                   (mkdir "contribs")
-                  (rename-file "tmp-pmi" "contribs/pmi")))))
+                  (rename-file "tmp-pmi" "contribs/pmi")
+                  (rename-file "tmp-pmi2" "contribs/pmi2")))))
     ;; FIXME: More optional inputs could be added,
     ;; in particular mysql and gtk+.
     (inputs (list freeipmi
@@ -231,7 +232,10 @@ when jobs finish.")
                (add-after 'install 'install-libpmi
                  (lambda _
                    ;; Open MPI expects libpmi to be provided by Slurm so install it.
-                   (invoke "make" "install" "-C" "contribs/pmi"))))))
+                   (invoke "make" "install" "-C" "contribs/pmi")
+
+                   ;; Others expect pmi2.
+                   (invoke "make" "install" "-C" "contribs/pmi2"))))))
     (home-page "https://slurm.schedmd.com/")
     (synopsis "Workload manager for cluster computing")
     (description
@@ -246,6 +250,8 @@ by managing a queue of pending work.")
                    license:isc        ; src/common/strlcpy.c
                    license:lgpl2.1+   ; hilbert.[ch], src/common/slurm_time.h
                    license:zlib       ; src/common/strnatcmp.c
+                   (license:non-copyleft    ;contribs/pmi2, Argonne Natl. Lab.
+                    "https://github.com/SchedMD/slurm/blob/master/contribs/pmi2/COPYRIGHT")
                    license:gpl2+))))   ; the rest, often with OpenSSL exception
 
 ;; The SLURM client/daemon protocol and file format changes from time to time
