@@ -377,6 +377,34 @@ Distance (EMD).")
     (description "This package lets you manage Google Drive files from R.")
     (license license:expat)))
 
+(define-public r-guix-install
+  (package
+    (name "r-guix-install")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "guix.install" version))
+       (sha256
+        (base32 "0s3wb5781yc43c9zwrn7i87zcbrlx7xr0ms0v9hvgs7qsv02id9j"))))
+    (properties `((upstream-name . "guix.install")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-runit))
+    (home-page "https://github.com/BIMSBbioinfo/guix.install")
+    (synopsis "Install R packages with GNU Guix")
+    (description
+     "This R package provides a single procedure @code{guix.install()}, which
+allows users to install R packages via Guix right from within their running R
+session.  If the requested R package does not exist in Guix at this time, the
+package and all its missing dependencies will be imported recursively and the
+generated package definitions will be written to @file{~/.Rguix/packages.scm}.
+This record of imported packages can be used later to reproduce the
+environment, and to add the packages in question to a proper Guix channel (or
+Guix itself).  @code{guix.install()} not only supports installing packages
+from CRAN, but also from Bioconductor or even arbitrary git or mercurial
+repositories, replacing the need for installation via @code{devtools}.")
+    (license license:gpl3+)))
+
 (define-public r-ids
   (package
     (name "r-ids")
