@@ -342,36 +342,22 @@ languages.")
          (prepend autoconf))))))
 
 (define-public emacs-next-pgtk
-  (let ((commit "ae18c8ec4f0ef37c8c9cda473770ff47e41291e2")
-        (revision "1"))
-    (package
-      (inherit emacs-next)
-      (name "emacs-next-pgtk")
-      (version (git-version "28.0.50" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://git.savannah.gnu.org/git/emacs.git/")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "07hgfqh965zmra0rbmnf63p3lsinpv5hn5payqcrjx25pl75xnaf"))))
-      (arguments
-       (substitute-keyword-arguments (package-arguments emacs-next)
-         ((#:configure-flags flags ''())
-          `(cons* "--with-pgtk" "--with-xwidgets" ,flags))))
-      (propagated-inputs
-       (list gsettings-desktop-schemas glib-networking))
-      (inputs
-       `(("webkitgtk" ,webkitgtk-with-libsoup2)
-         ,@(package-inputs emacs-next)))
-      (home-page "https://github.com/masm11/emacs")
-      (synopsis "Emacs text editor with @code{pgtk} and @code{xwidgets} support")
-      (description "This is an unofficial Emacs fork build with a pure-GTK
-graphical toolkit to work natively on Wayland.  In addition to that, xwidgets
-also enabled and works without glitches even on X server."))))
+  (package
+    (inherit emacs-next)
+    (name "emacs-next-pgtk")
+    (arguments
+     (substitute-keyword-arguments (package-arguments emacs-next)
+       ((#:configure-flags flags ''())
+        `(cons* "--with-pgtk" "--with-xwidgets" ,flags))))
+    (propagated-inputs
+     (list gsettings-desktop-schemas glib-networking))
+    (inputs
+     `(("webkitgtk" ,webkitgtk-with-libsoup2)
+       ,@(package-inputs emacs-next)))
+    (home-page "https://github.com/masm11/emacs")
+    (synopsis "Emacs text editor with @code{pgtk} and @code{xwidgets} support")
+    (description "This Emacs build implements graphical UI purely in terms of
+GTK and also enables xwidgets.")))
 
 (define-public emacs-minimal
   ;; This is the version that you should use as an input to packages that just
