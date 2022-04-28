@@ -15745,6 +15745,44 @@ created by @code{git format-patch}, from @code{magit}, @code{dired} and
 @code{ibuffer} buffers.")
     (license license:gpl3+)))
 
+(define-public emacs-git-email
+  ;; Use latest commit since latest tagged release is missing important
+  ;; changes.
+  (let ((commit "b5ebade3a48dc0ce0c85699f25800808233c73be")
+        (revision "0"))
+    (package
+      (name "emacs-git-email")
+      (version (git-version "0.2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.sr.ht/~yoctocell/git-email")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1lk1yds7idgawnair8l3s72rgjmh80qmy4kl5wrnqvpmjrmdgvnx"))))
+      (build-system emacs-build-system)
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           ;; piem is not yet packaged in Guix.
+           (add-after 'unpack 'remove-piem
+             (lambda _
+               (delete-file "git-email-piem.el")))
+           (add-before 'install 'makeinfo
+             (lambda _
+               (invoke "makeinfo" "doc/git-email.texi"))))))
+      (native-inputs
+       (list texinfo))
+      (propagated-inputs
+       (list mu emacs-magit emacs-notmuch))
+      (license license:gpl3+)
+      (home-page "https://sr.ht/~yoctocell/git-email")
+      (synopsis "Format and send Git patches in Emacs")
+      (description "This package provides utilities for formatting and
+sending Git patches via Email, without leaving Emacs."))))
+
 (define-public emacs-erc-hl-nicks
   (package
     (name "emacs-erc-hl-nicks")
