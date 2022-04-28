@@ -7238,7 +7238,7 @@ used by nftables.")
 (define-public nftables
   (package
     (name "nftables")
-    (version "1.0.1")
+    (version "1.0.2")
     (source
      (origin
        (method url-fetch)
@@ -7247,14 +7247,27 @@ used by nftables.")
                   (string-append "https://www.nftables.org/projects/nftables"
                                  "/files/nftables-" version ".tar.bz2")))
        (sha256
-        (base32 "08x4xw0s5sap3q7jfr91v7mrkxrydi4dvsckw85ims0qb1ibmviw"))))
+        (base32 "00jcjn1pl7qyqpg8pd4yhlkys7wbj4vkzgg73n27nmplzips6a0b"))
+       (patches
+        (search-patches "nftables-fix-makefile.patch"))))
     (build-system gnu-build-system)
     (arguments `(#:configure-flags
                  '("--disable-static"
                    "--with-cli=readline"
-                   "--with-json")))
+                   "--with-json")
+                 #:phases
+                  (modify-phases %standard-phases
+                    (add-before 'configure 'autoreconf
+                      (lambda _
+                        (invoke "autoreconf" "-fi"))))))
     (inputs (list gmp libmnl libnftnl readline jansson))
-    (native-inputs (list pkg-config bison flex docbook2x))
+    (native-inputs (list pkg-config
+                         bison
+                         flex
+                         docbook2x
+                         autoconf
+                         automake
+                         libtool))
     (home-page "https://www.nftables.org")
     (synopsis "Userspace utility for Linux packet filtering")
     (description "nftables is the project that aims to replace the existing
