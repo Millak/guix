@@ -5191,22 +5191,20 @@ A unique design feature of Trilinos is its focus on packages.")
                                 "dealii-fix-sundials.patch"))
        (modules '((guix build utils)))
        (snippet
-        '(begin
-           ;; Remove bundled boost, muparser, TBB and UMFPACK.
-           (delete-file-recursively "bundled")
-           #t))))
+        ;; Remove bundled boost, muparser, TBB and UMFPACK.
+        '(delete-file-recursively "bundled"))))
     (build-system cmake-build-system)
     (outputs '("out" "doc"))
     (native-inputs
      ;; Required to build the documentation.
-      (list graphviz doxygen perl))
+     (list graphviz doxygen perl))
     (inputs
-      (list arpack-ng
-            openblas
-            gfortran
-            lapack
-            muparser
-            zlib))
+     (list arpack-ng
+           openblas
+           gfortran
+           lapack
+           muparser
+           zlib))
     (propagated-inputs
      ;; Some scripts are installed into share/deal.II/scripts that require
      ;; perl and python, but they are not executable (and some are missing the
@@ -5243,8 +5241,7 @@ A unique design feature of Trilinos is its focus on packages.")
              (let ((doc (string-append (assoc-ref outputs "doc")
                                        "/share/doc/" ,name "-" ,version)))
                (for-each delete-file (map (lambda (f) (string-append doc "/" f))
-                                          '("detailed.log" "summary.log"))))
-             #t)))))
+                                          '("detailed.log" "summary.log")))))))))
     (home-page "https://www.dealii.org/")
     (synopsis "Finite element library")
     (description
