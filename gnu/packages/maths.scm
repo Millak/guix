@@ -6198,6 +6198,29 @@ easily be incorporated into existing simulation codes.")
              ,%openmpi-setup)))))
     (synopsis "SUNDIALS with MPI support")))
 
+(define-public sundials-5
+  (package
+    (inherit sundials)
+    (name "sundials")
+    (version "5.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/LLNL/sundials/releases/download/v"
+                           version "/sundials-" version ".tar.gz"))
+       (sha256
+        (base32
+         "04x2x0jchf9kbcw2a1c6f4h4as8sr6k2snfz8z9k897pa4rl1vfl"))))))
+
+(define-public sundials-openmpi-5
+  (package/inherit sundials-5
+    (name "sundials-openmpi")
+    (propagated-inputs
+     (package-propagated-inputs sundials-openmpi))
+    (arguments
+     (package-arguments sundials-openmpi))
+    (synopsis (package-synopsis sundials-openmpi))))
+
 (define-public sundials-julia
   (package
     (inherit sundials)
