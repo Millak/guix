@@ -5213,7 +5213,11 @@ A unique design feature of Trilinos is its focus on packages.")
      ;; Anyway, they are meant to be used at build time, so rather than adding
      ;; the interpreters here, any package depending on them should just add
      ;; the requisite interpreter to its native inputs.
-     (list boost hdf5 suitesparse ; For UMFPACK.
+     (list boost
+           hdf5
+           suitesparse                  ; For UMFPACK.
+           ;; SUNDIALS 6.0.0 and later will be supported in deal.II 9.4.0.
+           sundials-5
            tbb))
     (arguments
      `(#:build-type "DebugRelease" ; Supports only Debug, Release and DebugRelease.
@@ -5263,12 +5267,13 @@ in finite element programs.")
                 scalapack)))
     (propagated-inputs
      (modify-inputs (package-propagated-inputs dealii)
-       (delete "hdf5")
+       (delete "hdf5" "sundials")
        (prepend hdf5-parallel-openmpi
                 openmpi
                 p4est-openmpi
                 petsc-openmpi
                 slepc-openmpi
+                sundials-openmpi-5
                 trilinos-for-dealii-openmpi)))
     (arguments
      (substitute-keyword-arguments (package-arguments dealii)
