@@ -1016,18 +1016,18 @@ Metafile}, and @acronym{EMF+, Enhanced Metafile Plus} files.")
     (arguments
      '(#:configure-flags (list "--disable-static")))
     (native-inputs
-     `(("pkgconfig" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("bzip2" ,bzip2)
-       ("freetype" ,freetype)
-       ("giflib" ,giflib)
-       ("libid3tag" ,libid3tag)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libtiff" ,libtiff)
-       ("libx11" ,libx11)
-       ("libxext" ,libxext)
-       ("libwebp" ,libwebp)))
+     (list bzip2
+           freetype
+           giflib
+           libid3tag
+           libjpeg-turbo
+           libpng
+           libtiff
+           libx11
+           libxext
+           libwebp))
     (home-page "https://sourceforge.net/projects/enlightenment/")
     (synopsis
      "Loading, saving, rendering and manipulating image files")
