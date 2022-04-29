@@ -799,9 +799,6 @@ AES block cipher algorithm and the common modes of operation (CBC, CFB, CTR,
 ECB and OFB).")
     (license license:expat)))
 
-(define-public python2-pyaes
-  (package-with-python2 python-pyaes))
-
 (define-public python-asn1crypto
   (package
     (name "python-asn1crypto")
