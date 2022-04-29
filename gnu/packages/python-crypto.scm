@@ -1010,9 +1010,6 @@ PyCryptodome variants, the other being python-pycryptodomex.")
     (license (list license:bsd-2
                    license:public-domain)))) ; code inherited from PyCrypto
 
-(define-public python2-pycryptodome
-  (package-with-python2 python-pycryptodome))
-
 (define-public python-pycryptodomex
   (package (inherit python-pycryptodome)
     (name "python-pycryptodomex")
