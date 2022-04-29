@@ -3311,9 +3311,6 @@ local Cassandra clusters. It creates, launches and removes Cassandra clusters
 on localhost.")
     (license license:asl2.0)))
 
-(define-public python2-ccm
-  (package-with-python2 python-ccm))
-
 (define-public python2-pysqlite
   (package
     (name "python2-pysqlite")
