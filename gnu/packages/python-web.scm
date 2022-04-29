@@ -1160,9 +1160,6 @@ SockJS provides a low-latency, full-duplex, cross-domain communication channel
 between a web browser and web server.")
     (license license:expat)))
 
-(define-public python2-sockjs-tornado
-  (package-with-python2 python-sockjs-tornado))
-
 (define-public python-flask-assets
   (package
     (name "python-flask-assets")
