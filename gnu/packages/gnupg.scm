@@ -532,9 +532,6 @@ cryptographic library.  It is developed in the GPGME source code, and then
 distributed separately.")
     (license license:lgpl2.1+)))
 
-(define-public python2-gpg
-  (package-with-python2 python-gpg))
-
 (define-public python-pygpgme
   (package
     (name "python-pygpgme")
