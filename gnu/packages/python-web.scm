@@ -2385,9 +2385,6 @@ Markup Language.")
 (define-public python-zope-configuration-bootstrap
   (python-zope-bootstrap-package python-zope-configuration))
 
-(define-public python2-zope-configuration
-  (package-with-python2 python-zope-configuration))
-
 (define-public python-zope-copy
   (package
     (name "python-zope-copy")
