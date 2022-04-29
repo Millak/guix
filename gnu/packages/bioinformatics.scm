@@ -981,14 +981,6 @@ pybedtools extends BEDTools by offering feature-level manipulations from with
 Python.")
     (license license:gpl2+)))
 
-(define-public python2-pybedtools
-  (let ((pybedtools (package-with-python2 python-pybedtools)))
-    (package
-      (inherit pybedtools)
-      (native-inputs
-       (modify-inputs (package-native-inputs pybedtools)
-         (prepend python2-pathlib))))))
-
 (define-public python-biom-format
   (package
     (name "python-biom-format")
