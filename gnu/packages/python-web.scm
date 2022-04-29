@@ -3152,9 +3152,6 @@ Script provides commands to serve applications based on this configuration
 file.")
     (license license:expat)))
 
-(define-public python2-pastedeploy
-  (package-with-python2 python-pastedeploy))
-
 (define-public python-webtest
   (package
     (name "python-webtest")
