@@ -14539,9 +14539,6 @@ config files.")
     (home-page "https://github.com/DiffSK/configobj")
     (license license:bsd-3)))
 
-(define-public python2-configobj
-  (package-with-python2 python-configobj))
-
 (define-public python-configargparse
   (package
     (name "python-configargparse")
