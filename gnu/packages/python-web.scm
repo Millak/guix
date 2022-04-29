@@ -2539,9 +2539,6 @@ security policies on Python objects.")
        ("python-zope-proxy" ,python-zope-proxy-bootstrap)
        ("python-zope-schema" ,python-zope-schema)))))
 
-(define-public python2-zope-security
-  (package-with-python2 python-zope-security))
-
 (define-public python-zope-component
   (package
     (name "python-zope-component")
