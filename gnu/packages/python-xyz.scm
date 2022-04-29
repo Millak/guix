@@ -9737,9 +9737,6 @@ toolkit.  Use it to build trees of widgets.")
 parsing (browser/HTTP) user agent strings.")
   (license license:expat)))
 
-(define-public python2-user-agents
-  (package-with-python2 python-user-agents))
-
 (define-public python-pydbus
   (package
     (name "python-pydbus")
