@@ -384,30 +384,29 @@ deserializing JSON.")
 (define-public perl6-json-class
   (package
     (name "perl6-json-class")
-    (version "0.0.12")
+    (version "0.0.18")
     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/jonathanstowe/JSON-Class")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32
-          "1zyzajc57j3m8q0nr72h9pw4w2nx92rafywlvysgphc5q9sb8np2"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jonathanstowe/JSON-Class")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0686qpcb6p5isjcsksrgsr1rh926cnhs6r091p5p3lh2fd575g1d"))))
     (build-system rakudo-build-system)
-    (propagated-inputs
-     (list perl6-json-marshal perl6-json-unmarshal))
     (native-inputs
      (list perl6-json-fast))
+    (propagated-inputs
+     (list perl6-json-marshal perl6-json-unmarshal))
     (home-page "https://github.com/jonathanstowe/JSON-Class")
-    (synopsis "Provide simple serialisation/deserialisation of objects to/from JSON")
+    (synopsis "Provide simple serialization/deserialization of objects to/from JSON")
     (description "This is a simple role that provides methods to instantiate a
-class from a JSON string that (hopefully,) represents it, and to serialise an
+class from a JSON string that (hopefully) represents it, and to serialize an
 object of the class to a JSON string.  The JSON created from an instance
 should round trip to a new instance with the same values for the public
 attributes.  Private attributes (that is ones without accessors,) will be
-ignored for both serialisation and de-serialisation.  The exact behaviour
+ignored for both serialization and deserialization.  The exact behaviour
 depends on that of @code{JSON::Marshal} and @code{JSON::Unmarshal}
 respectively.")
     (license license:artistic2.0)))
