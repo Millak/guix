@@ -3111,9 +3111,6 @@ for ODBC.")
 for ODBC.")
     (license (license:x11-style "file:///LICENSE.TXT"))))
 
-(define-public python2-pyodbc
-  (package-with-python2 python-pyodbc))
-
 (define-public mdbtools
   (package
     (name "mdbtools")
