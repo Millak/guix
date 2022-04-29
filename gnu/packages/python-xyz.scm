@@ -15852,9 +15852,6 @@ of @acronym{REGEXPs, regular expressions}.")
 templates into Python modules.")
     (license license:expat)))
 
-(define-public python2-mako
-  (package-with-python2 python-mako))
-
 (define-public python-waitress
   (package
     (name "python-waitress")
