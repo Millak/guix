@@ -3163,23 +3163,6 @@ using Guix System.")
     ;; GNU Library (not Lesser) General Public License.
     (license license:lgpl2.0+)))
 
-(define-public raul-devel
-  (let ((commit "4db870b2b20b0a608ec0283139056b836c5b1624")
-        (revision "1"))
-    (package (inherit raul)
-      (name "raul")
-      (version (string-append "0.8.9-" revision "."
-                              (string-take commit 9)))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://git.drobilla.net/raul.git")
-                      (commit commit)))
-                (file-name (string-append name "-" version "-checkout"))
-                (sha256
-                 (base32
-                  "04fajrass3ymr72flx5js5vxc601ccrmx8ny8scp0rw7j0igyjdr")))))))
-
 (define-public resample
   (package
     (name "resample")
