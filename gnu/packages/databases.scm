@@ -4020,9 +4020,6 @@ reasonable substitute.")
      "This package provides a Python interface to the Redis key-value store.")
     (license license:expat)))
 
-(define-public python2-redis
-  (package-with-python2 python-redis))
-
 (define-public python-rq
   (package
     (name "python-rq")
