@@ -100,17 +100,16 @@ with native libraries.
     (name "nqp")
     (version "2019.03")
     (source
-      (origin
-        (method url-fetch)
-        (uri (string-append "https://rakudo.perl6.org/downloads/nqp/nqp-"
-                            version ".tar.gz"))
-        (sha256
-         (base32
-          "183zhll13fx416s3hkg4bkvib77kyr857h0nydgrl643fpacxp83"))
-        (modules '((guix build utils)))
-        (snippet
-         '(begin
-            (delete-file-recursively "3rdparty") #t))))
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://rakudo.perl6.org/downloads/nqp/nqp-"
+                           version ".tar.gz"))
+       (sha256
+        (base32
+         "183zhll13fx416s3hkg4bkvib77kyr857h0nydgrl643fpacxp83"))
+       (modules '((guix build utils)))
+       (snippet
+        '(delete-file-recursively "3rdparty"))))
     (build-system perl-build-system)
     (arguments
      '(#:phases
@@ -125,21 +124,18 @@ with native libraries.
                             "tools/build/gen-moar-runner.pl"
                             "t/nqp/111-spawnprocasync.t"
                             "t/nqp/113-run-command.t")
-               (("/bin/sh") (which "sh")))
-             #t))
+               (("/bin/sh") (which "sh")))))
          (add-after 'unpack 'patch-source-date
            (lambda _
              (substitute* "tools/build/gen-version.pl"
-               (("gmtime") "gmtime(0)"))
-             #t))
+               (("gmtime") "gmtime(0)"))))
          (add-after 'unpack 'remove-failing-test
            ;; One subtest fails for unknown reasons
            (lambda _
-             (delete-file "t/nqp/019-file-ops.t")
-             #t))
+             (delete-file "t/nqp/019-file-ops.t")))
          (replace 'configure
            (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out  (assoc-ref outputs "out"))
+             (let ((out (assoc-ref outputs "out"))
                    (moar (assoc-ref inputs "moarvm")))
                (invoke "perl" "Configure.pl"
                        "--backends=moar"
