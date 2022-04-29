@@ -2132,9 +2132,6 @@ normally the case.")
     (home-page "https://github.com/untitaker/pytest-subtesthack/")
     (license license:unlicense)))
 
-(define-public python2-pytest-subtesthack
-  (package-with-python2 python-pytest-subtesthack))
-
 (define-public python-pytest-sugar
   (package
     (name "python-pytest-sugar")
