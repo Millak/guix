@@ -21913,9 +21913,6 @@ distribution, and the *.egg-info stored in a \"development checkout\" (e.g,
 created by running @code{python setup.py develop}).")
     (license license:expat)))
 
-(define-public python2-pkginfo
-  (package-with-python2 python-pkginfo))
-
 (define-public python-twine
   (package
     (name "python-twine")
