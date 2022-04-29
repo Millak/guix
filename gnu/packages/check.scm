@@ -2691,9 +2691,6 @@ pytest report.")
 a fork of pytest-capturelog.")
     (license license:expat)))
 
-(define-public python2-pytest-catchlog
-  (package-with-python2 python-pytest-catchlog))
-
 (define-public python-nosexcover
   (package
     (name "python-nosexcover")
