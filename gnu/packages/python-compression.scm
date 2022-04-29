@@ -279,9 +279,6 @@ the LZ4 frame format.")
     (description "Lz-string is a string compressor library for Python.")
     (license license:expat)))
 
-(define-public python2-lzstring
-  (package-with-python2 python-lzstring))
-
 (define-public bitshuffle
   (package
     (name "bitshuffle")
