@@ -22277,9 +22277,6 @@ not actively maintained and works only with Python 2 and NumPy < 1.9.")
      "This package provides a Python port of Google's libphonenumber library.")
     (license license:asl2.0)))
 
-(define-public python2-phonenumbers
-  (package-with-python2 python-phonenumbers))
-
 (define-public python-heapdict
   (package
     (name "python-heapdict")
