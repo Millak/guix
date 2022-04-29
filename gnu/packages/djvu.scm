@@ -291,46 +291,6 @@ and white.")
     (home-page "https://sourceforge.net/projects/minidjvu/")
     (license license:gpl2)))
 
-(define-public djvusmooth
-  (package
-    (name "djvusmooth")
-    (version "0.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://github.com/jwilk/djvusmooth/releases/download/" version
-             "/djvusmooth-" version ".tar.gz"))
-       (sha256
-        (base32 "0z403cklvxzz0qaczgv83ax0nknrd9h8micp04j9kjfdxk2sgval"))))
-    (build-system python-build-system)
-    (inputs
-     (list djvulibre python2-djvulibre python2-subprocess32
-           python2-wxpython))
-    (arguments
-     `(#:python ,python-2
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "lib/djvused.py"
-               (("djvused_path = 'djvused'")
-                (string-append "djvused_path = '"
-                               (assoc-ref inputs "djvulibre")
-                               "/bin/djvused'"))))))))
-    (synopsis "Graphical editor for DjVu documents")
-    (description
-     "@code{djvusmooth} is a graphical editor for DjVu_ documents.
-It is able to:
-@itemize
-@item edit document metadata,
-@item edit document outline (bookmarks),
-@item add, remove or edit hyperlinks,
-@item correct occasional errors in the hidden text layer.
-@end itemize\n")
-    (home-page "https://jwilk.net/software/djvusmooth")
-    (license license:gpl2)))
-
 (define-public didjvu
   (package
     (name "didjvu")
