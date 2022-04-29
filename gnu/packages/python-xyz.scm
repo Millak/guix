@@ -16977,9 +16977,6 @@ multiple processes (imagine multiprocessing, billiard, futures, celery etc).
 @end enumerate\n")
     (license license:bsd-3)))
 
-(define-public python2-tblib
-  (package-with-python2 python-tblib))
-
 (define-public python-tftpy
   (package
     (name "python-tftpy")
