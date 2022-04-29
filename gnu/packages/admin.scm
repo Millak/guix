@@ -2567,42 +2567,6 @@ degradation and failure.")
 specified directories.")
     (license license:expat)))
 
-(define-public graphios
-  (package
-   (name "graphios")
-   (version "2.0.3")
-   (source
-    (origin
-      (method url-fetch)
-      (uri (pypi-uri "graphios" version))
-      (sha256
-       (base32
-        "1h87hvc315wg6lklbf4l7csd3n5pgljwrfli1p3nasdi0izgn66i"))))
-   (build-system python-build-system)
-   (arguments
-    ;; Be warned: Building with Python 3 succeeds, but the build process
-    ;; throws a syntax error that is ignored.
-    `(#:python ,python-2
-      #:phases
-      (modify-phases %standard-phases
-        (add-before 'build 'fix-setup.py
-          (lambda* (#:key outputs #:allow-other-keys)
-            ;; Fix hardcoded, unprefixed file names.
-            (let ((out (assoc-ref outputs "out")))
-              (substitute* '("setup.py")
-                (("/etc") (string-append out "/etc"))
-                (("/usr") out)
-                (("distro_ver = .*") "distro_ver = ''"))
-              #t))))))
-   (home-page "https://github.com/shawn-sterling/graphios")
-   (synopsis "Emit Nagios metrics to Graphite, Statsd, and Librato")
-   (description
-    "Graphios is a script to emit nagios perfdata to various upstream metrics
-processing and time-series systems.  It's currently compatible with Graphite,
-Statsd, Librato and InfluxDB.  Graphios can emit Nagios metrics to any number
-of supported upstream metrics systems simultaneously.")
-   (license license:gpl2+)))
-
 (define-public ansible-core
   (package
     (name "ansible-core")
