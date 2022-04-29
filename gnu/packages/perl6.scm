@@ -791,28 +791,29 @@ statement for @code{Test::Mock}.")
     (license license:artistic2.0)))
 
 (define-public perl6-uri
-  (package
-    (name "perl6-uri")
-    (version "0.1.5")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/perl6-community-modules/uri")
-               (commit version)))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32
-          "0h318g75jqn2ckw051g35iqyfxz1mps0jyg5z6pd857y3kacbkpl"))))
-    (build-system rakudo-build-system)
-    (arguments '(#:with-zef? #f))
-    (home-page "https://github.com/perl6-community-modules/uri")
-    (synopsis "URI implementation using Perl 6")
-    (description "A URI implementation using Perl 6 grammars to implement RFC
+  ;; The commit where 0.3.5 was “tagged”.
+  (let ((commit "2e62d0f117c95a43e61ddb018dcacba8036aa3d5"))
+    (package
+      (name "perl6-uri")
+      (version "0.3.5")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/raku-community-modules/URI")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1a03r80zxpvnsjf2z5r8lk434v2ysrpaymqa6xq975l4124gckkx"))))
+      (build-system rakudo-build-system)
+      (arguments '(#:with-zef? #f))
+      (home-page "https://github.com/raku-community-modules/URI")
+      (synopsis "URI implementation using Raku")
+      (description "A URI implementation using Raku grammars to implement RFC
 3986 BNF.  Currently only implements parsing.  Includes @code{URI::Escape} to
 (un?)escape characters that aren't otherwise allowed in a URI with % and a hex
 character numbering.")
-    (license license:artistic2.0)))
+      (license license:artistic2.0))))
 
 (define-public perl6-xml-writer
   ;; Last commit was May 2017
