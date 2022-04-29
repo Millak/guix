@@ -21800,9 +21800,6 @@ version is a fork of jsonrpclib by Josh Marshall, usable with Pelix remote
 services.")
     (license license:asl2.0)))
 
-(define-public python2-jsonrpclib-pelix
-  (package-with-python2 python-jsonrpclib-pelix))
-
 (define-public python-setuptools-scm-git-archive
   (package
     (name "python-setuptools-scm-git-archive")
