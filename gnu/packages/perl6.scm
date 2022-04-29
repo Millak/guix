@@ -161,13 +161,13 @@ regular expression engine for the virtual machine.")
     (name "rakudo")
     (version "2019.03.1")
     (source
-      (origin
-        (method url-fetch)
-        (uri (string-append "https://rakudo.perl6.org/downloads/rakudo/rakudo-"
-                            version ".tar.gz"))
-        (sha256
-         (base32
-          "1nllf69v8xr6v3kkj7pmryg11n5m3ajfkr7j72pvhrgnjy8lv3r1"))))
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://rakudo.perl6.org/downloads/rakudo/rakudo-"
+                           version ".tar.gz"))
+       (sha256
+        (base32
+         "1nllf69v8xr6v3kkj7pmryg11n5m3ajfkr7j72pvhrgnjy8lv3r1"))))
     (build-system perl-build-system)
     (arguments
      '(#:phases
@@ -175,16 +175,14 @@ regular expression engine for the virtual machine.")
          (add-after 'unpack 'patch-source-date
            (lambda _
              (substitute* "tools/build/gen-version.pl"
-               (("gmtime") "gmtime(0)"))
-             #t))
+               (("gmtime") "gmtime(0)"))))
          (add-after 'patch-source-shebangs 'patch-more-shebangs
            (lambda _
              (substitute* '("tools/build/create-js-runner.pl"
                             "tools/build/create-moar-runner.p6"
                             "tools/build/create-jvm-runner.pl"
                             "src/core/Proc.pm6")
-               (("/bin/sh") (which "sh")))
-             #t))
+               (("/bin/sh") (which "sh")))))
          (replace 'configure
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out"))
@@ -197,23 +195,22 @@ regular expression engine for the virtual machine.")
          ;; modules systemwide.  See: https://github.com/ugexe/zef/issues/117
          (add-after 'install 'install-dist-tool
            (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out  (assoc-ref outputs "out"))
+             (let* ((out (assoc-ref outputs "out"))
                     (dest (string-append out "/share/perl6/tools")))
                (install-file "tools/install-dist.p6" dest)
                (substitute* (string-append dest "/install-dist.p6")
                  (("/usr/bin/env perl6")
-                  (string-append out "/bin/perl6"))))
-             #t)))))
+                  (string-append out "/bin/perl6")))))))))
     (inputs
      (list moarvm nqp openssl))
     (home-page "https://rakudo.org/")
     (native-search-paths
-      (list (search-path-specification
-              (variable "PERL6LIB")
-              (separator ",")
-              (files '("share/perl6/lib"
-                       "share/perl6/site/lib"
-                       "share/perl6/vendor/lib")))))
+     (list (search-path-specification
+            (variable "PERL6LIB")
+            (separator ",")
+            (files '("share/perl6/lib"
+                     "share/perl6/site/lib"
+                     "share/perl6/vendor/lib")))))
     (synopsis "Perl 6 Compiler")
     (description "Rakudo Perl is a compiler that implements the Perl 6
 specification and runs on top of several virtual machines.")
