@@ -947,9 +947,6 @@ better plugin api, being easier for users to configure, and simplifying internal
 interfaces and processes.")
     (license license:bsd-2)))
 
-(define-public python2-nose2
-  (package-with-python2 python-nose2))
-
 (define-public python-unittest2
   (package
     (name "python-unittest2")
