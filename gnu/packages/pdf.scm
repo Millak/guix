@@ -1240,9 +1240,6 @@ manipulation in memory.  It is therefore a useful tool for websites that
 manage or manipulate PDFs.")
     (license license:bsd-3)))
 
-(define-public python2-pypdf2
-  (package-with-python2 python-pypdf2))
-
 (define-public python2-pypdf
   (package
     (name "python2-pypdf")
