@@ -36,31 +36,30 @@
     (name "moarvm")
     (version "2019.03")
     (source
-      (origin
-        (method url-fetch)
-        (uri (string-append "https://moarvm.org/releases/MoarVM-"
-                            version ".tar.gz"))
-        (sha256
-         (base32
-          "017w1zvr6yl0cgjfc1b3ddlc6vjw9q8p7alw1vvsckw95190xc14"))
-        (modules '((guix build utils)))
-        (snippet
-         '(begin
-            ;(delete-file-recursively "3rdparty/dynasm") ; JIT
-            (delete-file-recursively "3rdparty/dyncall")
-            (delete-file-recursively "3rdparty/freebsd")
-            (delete-file-recursively "3rdparty/libatomicops")
-            (delete-file-recursively "3rdparty/libuv")
-            (delete-file-recursively "3rdparty/libtommath")
-            (delete-file-recursively "3rdparty/msinttypes")
-            #t))))
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://moarvm.org/releases/MoarVM-"
+                           version ".tar.gz"))
+       (sha256
+        (base32
+         "017w1zvr6yl0cgjfc1b3ddlc6vjw9q8p7alw1vvsckw95190xc14"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;(delete-file-recursively "3rdparty/dynasm") ; JIT
+           (delete-file-recursively "3rdparty/dyncall")
+           (delete-file-recursively "3rdparty/freebsd")
+           (delete-file-recursively "3rdparty/libatomicops")
+           (delete-file-recursively "3rdparty/libuv")
+           (delete-file-recursively "3rdparty/libtommath")
+           (delete-file-recursively "3rdparty/msinttypes")))))
     (build-system perl-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
          (replace 'configure
            (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out        (assoc-ref outputs "out"))
+             (let ((out (assoc-ref outputs "out"))
                    (pkg-config (assoc-ref inputs "pkg-config")))
                (setenv "CFLAGS" "-fcommon")
                (setenv "LDFLAGS" (string-append "-Wl,-rpath=" out "/lib"))
