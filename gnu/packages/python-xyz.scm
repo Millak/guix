@@ -20033,9 +20033,6 @@ JSON) codec.")
      as parsing the command line for options, and iterating over input files.")
     (license license:gpl2+)))
 
-(define-public python2-cliapp
-  (package-with-python2 python-cliapp))
-
 (define-public python-ttystatus
   (package
     (name "python-ttystatus")
