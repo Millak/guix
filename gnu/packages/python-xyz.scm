@@ -18286,9 +18286,6 @@ scans through a file and detects issues.")
      (list python-wcwidth python-six python-pygments))
     (properties '())))
 
-(define-public python2-prompt-toolkit
-  (package-with-python2 python-prompt-toolkit-2))
-
 (define-public python-prompt-toolkit-1
   (package (inherit python-prompt-toolkit-2)
     (version "1.0.15")
