@@ -2399,9 +2399,6 @@ a Pytest test execution.")
     (description "Pytest plugin for checking PEP8 compliance.")
     (license license:expat)))
 
-(define-public python2-pytest-pep8
-  (package-with-python2 python-pytest-pep8))
-
 (define-public python-pytest-perf
   (package
     (name "python-pytest-perf")
