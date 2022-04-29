@@ -21668,9 +21668,6 @@ complete rewrite in Cython to attempt to increase the performance over the
 pure Python module.")
    (license license:bsd-3)))
 
-(define-public python2-rencode
-  (package-with-python2 python-rencode))
-
 (define-public python-xenon
   (package
     (name "python-xenon")
