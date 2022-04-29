@@ -1525,27 +1525,31 @@ UFO3 as described by the UFO font format.")
 (define-public nototools
   (package
     (name "nototools")
-    (version "20170925")
+    (version "0.2.16")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url "https://github.com/googlei18n/nototools")
-              (commit "v2017-09-25-tooling-for-phase3-update")))
+             (url "https://github.com/googlefonts/nototools")
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "03nzvcvwmrhfrcjhg218q2f3hfrm3vlivp4rk19sc397kh3hisiz"))))
+         "14rrdamkmhrykff8ln07fq9cm8zwj3k113lzwjcy0lgz23g51jyl"))))
     (build-system python-build-system)
     (arguments
-     `(#:python ,python-2))
-    (propagated-inputs
-     (list python2-booleanoperations
-           python2-defcon
-           python2-fonttools
-           python2-pillow
-           python2-pyclipper
-           python2-ufolib))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'pretend-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (with-directory-excursion "tests"
+                (invoke "./run_tests")))))))
+    (native-inputs (list python-setuptools-scm))
+    (propagated-inputs (list python-afdko))
     (home-page "https://github.com/googlei18n/nototools")
     (synopsis "Noto fonts support tools and scripts")
     (description
