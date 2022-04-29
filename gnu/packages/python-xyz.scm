@@ -29675,6 +29675,35 @@ versions of MkDocs-powered docs to a Git branch.  It is suitable for deploying
 to Github via gh-pages.")
     (license license:bsd-3)))
 
+(define-public python-arpeggio
+  (package
+    (name "python-arpeggio")
+    (version "2.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "Arpeggio" version))
+              (sha256
+               (base32
+                "0ggdsck1wpladd5bh9drhkmm86bblgk2wagrhn3sdf4v04wkic6n"))))
+    (build-system python-build-system)
+    (native-inputs (list python-coverage
+                         python-coveralls
+                         python-flake8
+                         python-mike
+                         python-mkdocs
+                         python-pytest
+                         python-pytest-runner
+                         python-twine
+                         python-wheel))
+    (home-page "https://github.com/textX/Arpeggio")
+    (synopsis "Packrat parser interpreter for Python")
+    (description
+     "This Python library provides a recursive descent parser with backtracking
+and memoization (a.k.a. packrat parser).  Arpeggio grammars are based on PEG
+formalism.  Arpeggio's main use is a foundation for a toolchain for DSL
+development but it can be used for all sorts of general purpose parsing.")
+    (license license:expat)))
+
 (define-public python-flatten-json
   (package
     (name "python-flatten-json")
