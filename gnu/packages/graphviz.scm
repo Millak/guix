@@ -403,9 +403,6 @@ can be used either as a standalone application, or as a Python library.")
 graphs in Graphviz's DOT language, written in pure Python.")
     (license license:expat)))
 
-(define-public python2-pydot
-  (package-with-python2 python-pydot))
-
 (define-public dot2tex
   (package
     (name "dot2tex")
