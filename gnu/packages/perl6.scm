@@ -537,17 +537,16 @@ create an object from a JSON representation of an object.")
 (define-public perl6-license-spdx
   (package
     (name "perl6-license-spdx")
-    (version "3.4.0")
+    (version "3.16.0")
     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/jonathanstowe/License-SPDX")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32
-          "0dl263c3fbxk001gm5fisrzqz1dx182ipaa0x2qva2gxvl075xm8"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jonathanstowe/License-SPDX")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sv9rrrfn437crynmbs3aks5xcqchjkbr1k31fq0dphfaw88k5v3"))))
     (build-system rakudo-build-system)
     (propagated-inputs
      (list perl6-json-class))
