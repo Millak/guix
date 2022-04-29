@@ -23881,9 +23881,6 @@ Python library.  It was designed to be used in automation, specifically with
 Let's Encrypt.")
     (license license:expat)))
 
-(define-public python2-dns-lexicon
-  (package-with-python2 python-dns-lexicon))
-
 (define-public python-cfgv
   (package
     (name "python-cfgv")
