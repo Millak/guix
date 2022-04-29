@@ -5406,45 +5406,6 @@ clusters them to find significant groups.  The algorithm was designed to handle
 large-scale data and can be applied to hundreds of species at once.")
     (license license:gpl3+)))
 
-(define-public pyicoteo
-  (package
-    (name "pyicoteo")
-    (version "2.0.7")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://bitbucket.org/regulatorygenomicsupf/pyicoteo.git")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0hz5g8d25lbjy1wpscr490l0lmyvaix893hhax4fxnh1h9w34w8p"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2 ; does not work with Python 3
-       #:tests? #f))      ; there are no tests
-    (inputs
-     (list python2-matplotlib))
-    (home-page "https://bitbucket.org/regulatorygenomicsupf/pyicoteo")
-    (synopsis "Analyze high-throughput genetic sequencing data")
-    (description
-     "Pyicoteo is a suite of tools for the analysis of high-throughput genetic
-sequencing data.  It works with genomic coordinates.  There are currently six
-different command-line tools:
-
-@enumerate
-@item pyicoregion: for generating exploratory regions automatically;
-@item pyicoenrich: for differential enrichment between two conditions;
-@item pyicoclip: for calling CLIP-Seq peaks without a control;
-@item pyicos: for genomic coordinates manipulation;
-@item pyicoller: for peak calling on punctuated ChIP-Seq;
-@item pyicount: to count how many reads from N experiment files overlap in a
-  region file;
-@item pyicotrocol: to combine operations from pyicoteo.
-@end enumerate\n")
-    (license license:gpl3+)))
-
 (define-public prodigal
   (package
     (name "prodigal")
