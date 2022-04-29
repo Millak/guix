@@ -5195,54 +5195,6 @@ unassembled metagenomic reads, but is mainly designed for full genomes and
 assembled metagenomic sequence.")
     (license license:gpl3+)))
 
-(define-public miso
-  (let ((commit "b71402188000465e3430736a11ea118fd5639a4a")
-        (revision "1"))
-    (package
-      (name "miso")
-      (version (git-version "0.5.4" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/yarden/MISO/")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0x37ipwwvpxbkrg17gmq3hp92c9cphch8acd6cj7fqgnrjwd47g5"))
-                (modules '((guix build utils)))
-                (snippet
-                 '(substitute* "setup.py"
-                    ;; Use "gcc" instead of "cc" for compilation.
-                    (("^defines")
-                     "cc.set_executables(
-compiler='gcc',
-compiler_so='gcc',
-linker_exe='gcc',
-linker_so='gcc -shared'); defines")))))
-      (build-system python-build-system)
-      (arguments
-       `(#:python ,python-2               ; only Python 2 is supported
-         #:tests? #f))                    ; no "test" target
-      (inputs
-       ;; Samtools must not be newer than 1.2.  See
-       ;; https://github.com/yarden/MISO/issues/135
-       (list samtools-1.2 python2-numpy python2-pysam python2-scipy
-             python2-matplotlib))
-      (native-inputs
-       (list python2-mock ; for tests
-             python2-pytz))  ; for tests
-      (home-page "https://miso.readthedocs.io/en/fastmiso/")
-      (synopsis "Mixture of Isoforms model for RNA-Seq isoform quantitation")
-      (description
-       "MISO (Mixture-of-Isoforms) is a probabilistic framework that quantitates
-the expression level of alternatively spliced genes from RNA-Seq data, and
-identifies differentially regulated isoforms or exons across samples.  By
-modeling the generative process by which reads are produced from isoforms in
-RNA-Seq, the MISO model uses Bayesian inference to compute the probability
-that a read originated from a particular isoform.")
-      (license license:gpl2))))
-
 (define-public muscle
   (package
     (name "muscle")
