@@ -22494,9 +22494,6 @@ a notation for identifying weeks; yyyyWww (where the W is a literal).
 Week instances stringify to this form.")
     (license license:bsd-3)))
 
-(define-public python2-isoweek
-  (package-with-python2 python-isoweek))
-
 (define-public python-pyzbar
   (package
     (name "python-pyzbar")
