@@ -2126,9 +2126,6 @@ your Web app.")
 object to help create WSGI responses.")
     (license license:expat)))
 
-(define-public python2-webob
-  (package-with-python2 python-webob))
-
 (define-public python-zope-event
   (package
     (name "python-zope-event")
