@@ -567,9 +567,6 @@ distributed separately.")
 decrypt messages using the OpenPGP format by making use of GPGME.")
     (license license:lgpl2.1+)))
 
-(define-public python2-pygpgme
-  (package-with-python2 python-pygpgme))
-
 (define-public python-gnupg
   (package
     (name "python-gnupg")
