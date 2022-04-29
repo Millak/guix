@@ -304,6 +304,29 @@ regular expression engine for the virtual machine.")
 and runs on top of several virtual machines.")
     (license license:artistic2.0)))
 
+(define-public perl6-format-lisp
+  (let ((commit "1ae31e2a9366b287a83a9d451295fc9e3fb6d36f")
+        (revision "0"))
+    (package
+      (name "perl6-format-lisp")
+      (version (git-version "0.0.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/raku-community-modules/Format-Lisp")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1rhkd11xdyw99vl6ickjin0x7nhlgkq3qhpf8zp9jky0k711gxmr"))))
+      (build-system rakudo-build-system)
+      (arguments '(#:with-zef? #f))
+      (home-page "https://github.com/raku-community-modules/Format-Lisp")
+      (synopsis "Common Lisp's format call in Raku")
+      (description "This Raku module implements Common Lisp's @code{format}
+language.")
+      (license license:artistic2.0))))
+
 (define-public perl6-grammar-debugger
   ;; Last commit was September 2017.
   (let ((commit "0375008027c8caa216bd869476ce59ae09b2a702")
