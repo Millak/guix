@@ -41,12 +41,15 @@
   #:autoload   (zstd) (call-with-zstd-input-port)
   #:use-module (web uri)
   #:use-module (web client)
+  #:use-module (web request)
   #:use-module (web response)
+  #:use-module ((guix http-client) #:select (http-multiple-get))
   #:use-module (rnrs bytevectors)
   #:use-module (ice-9 binary-ports)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-64)
+  #:use-module (srfi srfi-71)
   #:use-module (ice-9 threads)
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
@@ -165,6 +168,26 @@ FileSize: ~a\n"
    (http-get-body
     (publish-uri
      (string-append "/" (store-path-hash-part %item) ".narinfo")))))
+
+(test-equal "/*.narinfo pipeline"
+  (make-list 500 200)
+  ;; Make sure clients can pipeline requests and correct responses, in the
+  ;; right order.  See <https://issues.guix.gnu.org/54723>.
+  (let* ((uri (string->uri (publish-uri
+                            (string-append "/"
+                                           (store-path-hash-part %item)
+                                           ".narinfo"))))
+         (_ expected (http-get uri #:streaming? #f #:decode-body? #f)))
+    (http-multiple-get (string->uri (publish-uri ""))
+                       (lambda (request response port result)
+                         (and (bytevector=? expected
+                                            (get-bytevector-n port
+                                                              (response-content-length
+                                                               response)))
+                              (cons (response-code response) result)))
+                       '()
+                       (make-list 500 (build-request uri))
+                       #:batch-size 77)))
 
 (test-equal "/*.narinfo with properly encoded '+' sign"
   ;; See <http://bugs.gnu.org/21888>.
