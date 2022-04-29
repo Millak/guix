@@ -2494,9 +2494,6 @@ each of the environments.")
     (description "Pytest plugin for checking Python source code with pyflakes.")
     (license license:expat)))
 
-(define-public python2-pytest-flakes
-  (package-with-python2 python-pytest-flakes))
-
 (define-public python-coverage-test-runner
   (package
     (name "python-coverage-test-runner")
