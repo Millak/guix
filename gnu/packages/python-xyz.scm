@@ -12467,9 +12467,6 @@ independent alignment of columns (left or right justified or centred) and
 printing of sub-tables by specifying a row range.")
     (license license:bsd-3)))
 
-(define-public python2-prettytable
-  (package-with-python2 python-prettytable))
-
 (define-public python-curio
   (package
     (name "python-curio")
