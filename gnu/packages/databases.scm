@@ -3609,9 +3609,6 @@ pysqlite it focuses on being a minimal layer over SQLite attempting just to
 translate the complete SQLite API into Python.")
     (license license:zlib)))
 
-(define-public python2-apsw
-  (package-with-python2 python-apsw))
-
 (define-public python-aiosqlite
   (package
     (name "python-aiosqlite")
