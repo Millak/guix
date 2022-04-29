@@ -3679,9 +3679,6 @@ MusicBrainz database.")
     ;; 'musicbrainzngs/compat.py' is ISC licensed.
     (license (list license:bsd-2 license:isc))))
 
-(define-public python2-musicbrainzngs
-  (package-with-python2 python-musicbrainzngs))
-
 (define-public python-isrcsubmit
   (package
     (name "python-isrcsubmit")
