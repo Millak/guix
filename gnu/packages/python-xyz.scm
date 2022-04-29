@@ -15953,17 +15953,7 @@ fast xml and html manipulation.")
     (description
      "Anyjson loads whichever is the fastest JSON module installed
 and provides a uniform API regardless of which JSON implementation is used.")
-    (license license:bsd-3)
-    (properties `((python2-variant . ,(delay python2-anyjson))))))
-
-(define-public python2-anyjson
-  (let ((anyjson (package-with-python2
-                  (strip-python2-variant python-anyjson))))
-    (package/inherit anyjson
-      (arguments `(;; Unlike the python 3 variant, we do run tests.  See above!
-                   #:tests? #t
-                   ,@(package-arguments anyjson)))
-      (native-inputs `(("python2-nose" ,python2-nose))))))
+    (license license:bsd-3)))
 
 (define-public python-amqp
   (package
