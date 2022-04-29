@@ -19452,22 +19452,7 @@ JSON) codec.")
      particularly useful for programs with many options or sub-parsers that can
      dynamically suggest completions ; for example, when browsing resources over the
      network.")
-    (license license:asl2.0)
-    (properties `((python2-variant . ,(delay python2-argcomplete))))))
-
-(define-public python2-argcomplete
-  (let ((variant (package-with-python2
-                  (strip-python2-variant python-argcomplete))))
-    (package/inherit variant
-      (arguments
-       (substitute-keyword-arguments (package-arguments variant)
-         ((#:phases phases '%standard-phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'set-my-HOME
-               (lambda _ (setenv "HOME" "/tmp")))))))
-      (native-inputs
-       `(("python2-importlib-metadata" ,python2-importlib-metadata)
-         ,@(package-native-inputs variant))))))
+    (license license:asl2.0)))
 
 (define-public python-csscompressor
   (package
