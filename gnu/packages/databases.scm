@@ -2877,9 +2877,6 @@ support for sqlite, mysql and postgresql.  If you already have a database, you
 can autogenerate peewee models using @code{pwiz}, a model generator.")
     (license license:expat)))
 
-(define-public python2-peewee
-  (package-with-python2 python-peewee))
-
 (define-public python-pypika-tortoise
   (package
     (name "python-pypika-tortoise")
