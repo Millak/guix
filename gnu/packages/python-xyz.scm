@@ -3016,28 +3016,6 @@ bug tracker.")
     (home-page "http://www.liquidx.net/pybugz/")
     (license license:gpl2)))
 
-(define-public python2-enum
-  (package
-    (name "python2-enum")
-    (version "0.4.6")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "enum" version))
-              (sha256
-               (base32
-                "13lk3yrwj42vl30kw3c194f739nrfrdg64s6i0v2p636n4k8brsl"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2))
-    (home-page "https://pypi.org/project/enum/")
-    (synopsis "Robust enumerated type support in Python")
-    (description
-     "This provides a module for robust enumerations in Python.  It has
-been superseded by the Python standard library and is provided only for
-compatibility.")
-    ;; Choice of either license.
-    (license (list license:gpl3+ license:psfl))))
-
 (define-public python-enum34
   (package
     (name "python-enum34")
