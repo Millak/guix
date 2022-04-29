@@ -818,18 +818,7 @@ but it works for any C/C++ project.")
     (description
      "Parameterized is a Python library that aims to fix parameterized testing
 for every Python test framework.  It supports nose, py.test, and unittest.")
-    (properties `((python2-variant . ,(delay python2-parameterized))))
     (license license:bsd-2)))
-
-(define-public python2-parameterized
-  (let ((base (package-with-python2 (strip-python2-variant
-                                     python-parameterized))))
-    (package/inherit
-     base
-     (source
-      (origin
-        (inherit (package-source base))
-        (patches (search-patches "python2-parameterized-docstring-test.patch")))))))
 
 (define-public python-minimock
   (package
