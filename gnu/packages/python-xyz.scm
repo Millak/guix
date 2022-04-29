@@ -14540,48 +14540,33 @@ tasks.  It includes single-command deployment for the Django Girls tutorial.")
   (package
     (name "python-pythondialog")
     (version "3.4.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pythondialog" version))
-       (sha256
-        (base32
-         "1728ghsran47jczn9bhlnkvk5bvqmmbihabgif5h705b84r1272c"))))
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pythondialog" version))
+              (sha256
+               (base32
+                "1728ghsran47jczn9bhlnkvk5bvqmmbihabgif5h705b84r1272c"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let* ((dialog (assoc-ref inputs "dialog")))
-               ;; Since this library really wants to grovel the search path, we
-               ;; must hardcode dialog's store path into it.
-               (substitute* "dialog.py"
-                 (("os.getenv\\(\"PATH\", \":/bin:/usr/bin\"\\)")
-                  (string-append "os.getenv(\"PATH\")  + \":" dialog "/bin\"")))
-               #t))))
-       #:tests? #f)) ; no test suite
-    (propagated-inputs
-     (list dialog))
+     `(#:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'patch-path
+                    (lambda* (#:key inputs #:allow-other-keys)
+                      (let* ((dialog (assoc-ref inputs "dialog")))
+                        (substitute* "dialog.py"
+                          (("os.getenv\\(\"PATH\", \":/bin:/usr/bin\"\\)") (string-append
+                                                                            "os.getenv(\"PATH\")  + \":"
+                                                                            dialog
+                                                                            "/bin\"")))
+                        #t))))
+       #:tests? #f))
+    (propagated-inputs (list dialog))
     (home-page "http://pythondialog.sourceforge.net/")
     (synopsis "Python interface to the UNIX dialog utility")
-    (description "A Python wrapper for the dialog utility.  Its purpose is to
+    (description
+     "A Python wrapper for the dialog utility.  Its purpose is to
 provide an easy to use, pythonic and comprehensive Python interface to dialog.
 This allows one to make simple text-mode user interfaces on Unix-like systems")
-    (license license:lgpl2.1)
-    (properties `((python2-variant . ,(delay python2-pythondialog))))))
-
-(define-public python2-pythondialog
-  (let ((base (package-with-python2 (strip-python2-variant python-pythondialog))))
-    (package
-      (inherit base)
-      (version (package-version python-pythondialog))
-      (source (origin
-                (method url-fetch)
-                (uri (pypi-uri "python2-pythondialog" version))
-                (sha256
-                 (base32
-                  "0d8k7lxk50imdyx85lv8j98i4c93a71iwpapnl1506rpkbm9qvd9")))))))
+    (license license:lgpl2.1)))
 
 (define-public python-configobj
   (package
