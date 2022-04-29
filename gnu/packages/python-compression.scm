@@ -260,9 +260,6 @@ by Yann Collet.  The project contains bindings for the LZ4 block format and
 the LZ4 frame format.")
     (license license:bsd-3)))
 
-(define-public python2-lz4
-  (package-with-python2 python-lz4))
-
 (define-public python-lzstring
   (package
     (name "python-lzstring")
