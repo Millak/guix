@@ -6547,9 +6547,6 @@ Values such as sequence name, sequence description, sequence quality and the
 sequence itself can be retrieved from these databases.")
     (license license:bsd-3)))
 
-(define-public python2-screed
-  (package-with-python2 python-screed))
-
 (define-public sra-tools
   (package
     (name "sra-tools")
