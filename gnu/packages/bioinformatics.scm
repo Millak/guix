@@ -5366,47 +5366,6 @@ interrupted by stop codons.  OrfM finds and prints these ORFs.")
 files and writing bioinformatics applications.")
     (license license:bsd-3)))
 
-(define-public python2-warpedlmm
-  (package
-    (name "python2-warpedlmm")
-    (version "0.21")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "WarpedLMM" version ".zip"))
-       (sha256
-        (base32
-         "1agfz6zqa8nc6cw47yh0s3y14gkpa9wqazwcj7mwwj3ffnw39p3j"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2  ; requires Python 2.7
-       #:tests? #f ; test data are not included
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'use-weave
-           (lambda _
-             (substitute* "warpedlmm/util/linalg.py"
-               (("from scipy import linalg, weave")
-                "from scipy import linalg\nimport weave"))
-             #t)))))
-    (propagated-inputs
-     (list python2-scipy
-           python2-numpy
-           python2-matplotlib
-           python2-fastlmm
-           python2-pandas
-           python2-pysnptools
-           python2-weave))
-    (native-inputs
-     (list python2-mock python2-nose unzip))
-    (home-page "https://github.com/PMBio/warpedLMM")
-    (synopsis "Implementation of warped linear mixed models")
-    (description
-     "WarpedLMM is a Python implementation of the warped linear mixed model,
-which automatically learns an optimal warping function (or transformation) for
-the phenotype as it models the data.")
-    (license license:asl2.0)))
-
 (define-public prank
   (package
     (name "prank")
