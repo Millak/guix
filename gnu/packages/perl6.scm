@@ -155,15 +155,14 @@ t/30-if-macro.t\n")))))
 (define-public nqp
   (package
     (name "nqp")
-    (version "2019.03")
+    (version "2022.04")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://rakudo.perl6.org/downloads/nqp/nqp-"
-                           version ".tar.gz"))
+       (uri (string-append "https://github.com/Raku/nqp/releases/download/"
+                           version "/nqp-" version ".tar.gz"))
        (sha256
-        (base32
-         "183zhll13fx416s3hkg4bkvib77kyr857h0nydgrl643fpacxp83"))
+        (base32 "1777shxr8qw6m2492ckb0r301qdx5gls6kphz554dh6k4n74avam"))
        (modules '((guix build utils)))
        (snippet
         '(delete-file-recursively "3rdparty"))))
@@ -171,25 +170,28 @@ t/30-if-macro.t\n")))))
     (arguments
      '(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'remove-calls-to-git
+           (lambda _
+             (invoke "perl" "-ni" "-e"
+                     "print if not /^BEGIN {/ .. /^}/"
+                     "Configure.pl")))
+         (add-after 'remove-calls-to-git 'fix-paths
+           (lambda _
+             (substitute* "tools/build/gen-version.pl"
+               (("catfile\\(\\$libdir, 'MAST', \\$_\\)")
+                (string-append "catfile('"
+                               (assoc-ref %build-inputs "moarvm")
+                               "/share/nqp/lib"
+                               "', 'MAST', $_)")))))
          (add-after 'patch-source-shebangs 'patch-more-shebangs
            (lambda _
-             (substitute* '("tools/build/install-jvm-runner.pl.in"
+             (substitute* '("t/nqp/111-spawnprocasync.t"
+                            "t/nqp/113-run-command.t"
                             "tools/build/gen-js-cross-runner.pl"
                             "tools/build/gen-js-runner.pl"
                             "tools/build/install-js-runner.pl"
-                            "tools/build/install-moar-runner.pl"
-                            "tools/build/gen-moar-runner.pl"
-                            "t/nqp/111-spawnprocasync.t"
-                            "t/nqp/113-run-command.t")
+                            "tools/build/install-jvm-runner.pl.in")
                (("/bin/sh") (which "sh")))))
-         (add-after 'unpack 'patch-source-date
-           (lambda _
-             (substitute* "tools/build/gen-version.pl"
-               (("gmtime") "gmtime(0)"))))
-         (add-after 'unpack 'remove-failing-test
-           ;; One subtest fails for unknown reasons
-           (lambda _
-             (delete-file "t/nqp/019-file-ops.t")))
          (replace 'configure
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out"))
@@ -198,18 +200,20 @@ t/30-if-macro.t\n")))))
                        "--backends=moar"
                        "--with-moar" (string-append moar "/bin/moar")
                        "--prefix" out)))))))
+    (native-inputs
+     (list nqp-configure))
     (inputs
      (list moarvm))
-    (home-page "https://github.com/perl6/nqp")
+    (home-page "https://github.com/Raku/nqp")
     (synopsis "Not Quite Perl")
-    (description "This is \"Not Quite Perl\" -- a lightweight Perl 6-like
-environment for virtual machines.  The key feature of NQP is that it's designed
-to be a very small environment (as compared with, say, perl6 or Rakudo) and is
-focused on being a high-level way to create compilers and libraries for virtual
-machines like MoarVM, the JVM, and others.
+    (description "This is \"Not Quite Perl\" -- a lightweight Raku-like
+environment for virtual machines.  The key feature of NQP is that it's
+designed to be a very small environment (as compared with, say, Rakudo) and is
+focused on being a high-level way to create compilers and libraries for
+virtual machines like MoarVM, the JVM, and others.
 
-Unlike a full-fledged implementation of Perl 6, NQP strives to have as small a
-runtime footprint as it can, while still providing a Perl 6 object model and
+Unlike a full-fledged implementation of Raku, NQP strives to have as small a
+runtime footprint as it can, while still providing a Raku object model and
 regular expression engine for the virtual machine.")
     (license license:artistic2.0)))
 
