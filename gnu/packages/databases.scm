@@ -3895,9 +3895,6 @@ for Python.  The design goals are:
 parsing code in hiredis.  It primarily speeds up parsing of multi bulk replies.")
     (license license:bsd-3)))
 
-(define-public python2-hiredis
-  (package-with-python2 python-hiredis))
-
 (define-public python-aioredis
   (package
     (name "python-aioredis")
