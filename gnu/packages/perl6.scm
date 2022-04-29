@@ -763,31 +763,31 @@ some confidence that they have a working distribution META description file.")
     (license license:artistic2.0)))
 
 (define-public perl6-test-mock
-  (package
-    (name "perl6-test-mock")
-    (version "1.5")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
+  (let ((commit "1130427f4d9f3866fa39e113251bb142d7fa5cc8")
+        (revision "0"))
+    (package
+      (name "perl6-test-mock")
+      (version (git-version "1.5" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
                (url "https://github.com/jnthn/test-mock")
-               ;; The commit where 1.5 was "tagged"
-               (commit "6eddb42f73f40b9ac29c14badb41ce4a04d876f2")))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32
-          "07yr3qimc8fl29p23562ayj2j9h53madcnf9sgqvgf2kcprh0zd2"))))
-    (build-system rakudo-build-system)
-    (propagated-inputs
-     (list perl6-oo-monitors))
-    (home-page "https://github.com/jnthn/test-mock")
-    (synopsis "Module for simply generating and checking mock objects")
-    (description "@code{Test::Mock} is a module that works alongside the
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "03qq6z9ilw0ak3dx9i24ygr4c21wf4xvli8px02hmshpkhavclj5"))))
+      (build-system rakudo-build-system)
+      (propagated-inputs
+       (list perl6-oo-monitors))
+      (home-page "https://github.com/jnthn/test-mock")
+      (synopsis "Module for simply generating and checking mock objects")
+      (description "@code{Test::Mock} is a module that works alongside the
 standard Test module to help you write tests when you want to verify what
 methods are called on an object, while still having calls to undefined methods
-die.  You get started just as normal with the test file, but also add a use
-statement for @code{Test::Mock}.")
-    (license license:artistic2.0)))
+die.  You get started just as normal with the test file, but also add a
+@code{use} statement for @code{Test::Mock}.")
+      (license license:artistic2.0))))
 
 (define-public perl6-uri
   ;; The commit where 0.3.5 was “tagged”.
