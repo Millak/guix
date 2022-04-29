@@ -359,27 +359,27 @@ have profiling information collected when the grammar is used.")
       (license license:artistic2.0))))
 
 (define-public perl6-json
-  (package
-    (name "perl6-json")
-    (version "1.0")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
+  ;; The commit where 1.0 was “tagged”.
+  (let ((commit "a5ef8c179350dae44ce7fb1abb684fc62c1c2b99"))
+    (package
+      (name "perl6-json")
+      (version "1.0")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
                (url "https://github.com/moritz/json")
-               ;; The commit where 1.0 was "tagged"
-               (commit "a5ef8c179350dae44ce7fb1abb684fc62c1c2b99")))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32
-          "1kzryxkqyr129rcckd4jh0dfxdgzv71qx8dpkpm1divbfjyknlay"))))
-    (build-system rakudo-build-system)
-    (arguments '(#:with-zef? #f))
-    (home-page "https://github.com/moritz/json")
-    (synopsis "Minimal JSON (de)serializer")
-    (description "This module is a simple Perl 6 module for serializing and
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1kzryxkqyr129rcckd4jh0dfxdgzv71qx8dpkpm1divbfjyknlay"))))
+      (build-system rakudo-build-system)
+      (arguments '(#:with-zef? #f))
+      (home-page "https://github.com/moritz/json")
+      (synopsis "Minimal JSON (de)serializer")
+      (description "This module is a simple Raku module for serializing and
 deserializing JSON.")
-    (license license:artistic2.0)))
+      (license license:artistic2.0))))
 
 (define-public perl6-json-class
   (package
