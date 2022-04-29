@@ -23189,9 +23189,6 @@ on virtual file systems.
 Glob2 currently based on the glob code from Python 3.3.1.")
     (license license:bsd-2)))
 
-(define-public python2-glob2
-  (package-with-python2 python-glob2))
-
 (define-public python-gipc
   (package
     (name "python-gipc")
