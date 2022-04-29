@@ -1035,33 +1035,6 @@ of the box are Windows LM hashes, plus lots of other hashes and ciphers.  This
 is the community-enhanced, \"jumbo\" version of John the Ripper.")
       (license license:gpl2+))))
 
-(define-public sala
-  (package
-    (name "sala")
-    (version "1.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "sala" version))
-       (sha256
-        (base32
-         "13qgmc3i2a0cqp8jqrfl93lnphfagb32pgfikc1gza2a14asxzi8"))))
-    (build-system python-build-system)
-    (arguments
-     ;; Sala is supposed to work with Python 3.2 or higher,
-     ;; but it doesn't work with Python 3.6. Better stick
-     ;; to Python 2, which works fine.
-     `(#:python ,python-2))
-    (propagated-inputs
-     (list gnupg pwgen))
-    (home-page "http://www.digip.org/sala/")
-    (synopsis "Encrypted plaintext password store")
-    (description
-     "Store passwords and other bits of sensitive plain-text information
-to encrypted files on a directory hierarchy.  The information is protected
-by GnuPG's symmetrical encryption.")
-    (license license:expat)))
-
 (define-public fpm2
   (package
     (name "fpm2")
