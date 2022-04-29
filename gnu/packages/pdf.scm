@@ -1046,9 +1046,6 @@ of rich PDF documents, and also creation of charts in a variety of bitmap and
 vector formats.")
     (license license:bsd-3)))
 
-(define-public python2-reportlab
-  (package-with-python2 python-reportlab))
-
 (define-public impressive
   (package
     (name "impressive")
