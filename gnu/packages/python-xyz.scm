@@ -22290,24 +22290,7 @@ Time} values as well as an event scheduler.")
 combine data, code, and documentation in single-file packages,
 suitable for publication as supplementary material or on repositories
 such as figshare or Zenodo.")
-    (properties `((python2-variant . ,(delay python2-activepapers))))
     (license license:bsd-3)))
-
-(define-public python2-activepapers
-  (let ((base (package-with-python2
-               (strip-python2-variant python-activepapers))))
-    (package/inherit base
-      (arguments
-       (substitute-keyword-arguments (package-arguments base)
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (delete 'delete-python2-code)
-             (add-after 'unpack 'delete-python3-code
-               (lambda _
-                 (for-each delete-file
-                           '("lib/activepapers/builtins3.py"
-                             "lib/activepapers/standardlib3.py"
-                             "lib/activepapers/utility3.py")))))))))))
 
 (define-public python-semver
   (package
