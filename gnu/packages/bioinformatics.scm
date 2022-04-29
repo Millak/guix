@@ -4025,48 +4025,6 @@ standard linear mixed model resolver with application in @acronym{GWAS,
 genome-wide association studies}.")
     (license license:gpl3)))
 
-(define-public grit
-  (package
-    (name "grit")
-    (version "2.0.5")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/nboley/grit")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1l5v8vfvfbrpmgnrvbrbv40d0arhxcnmxgv2f1mlcqfa3q6bkqm9"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'generate-from-cython-sources
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; Delete these C files to force fresh generation from pyx sources.
-             (delete-file "grit/sparsify_support_fns.c")
-             (delete-file "grit/call_peaks_support_fns.c")
-             (substitute* "setup.py"
-               (("Cython.Setup") "Cython.Build"))
-             #t)))))
-    (inputs
-     (list python2-scipy python2-numpy python2-pysam python2-networkx))
-    (native-inputs
-     (list python2-cython))
-    ;; The canonical <http://grit-bio.org> home page times out as of 2020-01-21.
-    (home-page "https://github.com/nboley/grit")
-    (synopsis "Tool for integrative analysis of RNA-seq type assays")
-    (description
-     "GRIT is designed to use RNA-seq, TES, and TSS data to build and quantify
-full length transcript models.  When none of these data sources are available,
-GRIT can be run by providing a candidate set of TES or TSS sites.  In
-addition, GRIT can merge in reference junctions and gene boundaries.  GRIT can
-also be run in quantification mode, where it uses a provided GTF file and just
-estimates transcript expression.")
-    (license license:gpl3+)))
-
 (define-public hisat
   (package
     (name "hisat")
