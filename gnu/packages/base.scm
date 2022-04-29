@@ -293,14 +293,14 @@ interactive means to merge two files.")
 (define-public findutils
   (package
    (name "findutils")
-   (version "4.8.0")
+   (version "4.9.0")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnu/findutils/findutils-"
                                 version ".tar.xz"))
             (sha256
              (base32
-              "0r3i72hnw0a30khlczi9k2c51aamaj6kfmp5mk3844nrjxz7n4jp"))
+              "1zk2sighc26bfdsm97bv7cd1cnvq7r4gll4zqpnp0rs3kp0bigx2"))
             (patches (search-patches "findutils-localstatedir.patch"))))
    (build-system gnu-build-system)
    (arguments
