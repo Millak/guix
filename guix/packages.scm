@@ -662,7 +662,7 @@ interfaces."
   (assoc-ref (package-properties p) 'hidden?))
 
 (define (package-superseded p)
-  "Return the package the supersedes P, or #f if P is still current."
+  "Return the package that supersedes P, or #f if P is still current."
   (assoc-ref (package-properties p) 'superseded))
 
 (define (deprecated-package old-name p)
