@@ -1006,58 +1006,6 @@ suitable for both the desktop and mobile devices.")
     ;; under gpl2+. Therefore, the combined work is licensed under gpl3+.
     (license license:gpl3+)))
 
-(define-public python2-tegaki-recognize
-  (let ((commit "eceec69fe651d0733c8c8752dae569d2283d0f3c")
-        (revision "1"))
-    (package
-      (inherit python2-tegaki-tools)
-      (name "python2-tegaki-recognize")
-      ;; version copied from <https://github.com/tegaki/tegaki/releases>
-      (version (git-version "0.3.1" revision commit))
-      (source
-       (origin
-         ;; We use GIT-FETCH because 'tegaki-recognize.desktop.in' and
-         ;; 'tegaki-recognize.in' are missing in the tarball.
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/tegaki/tegaki")
-               (commit commit)))
-         (sha256
-          (base32
-           "09mw2if9p885phbgah5f95q3fwy7s5b46qlmpxqyzfcnj6g7afr5"))
-         (file-name (git-file-name name version))
-         (modules `((guix build utils)
-                    (ice-9 ftw)
-                    (srfi srfi-26)
-                    ,@remove-pre-compiled-files-modules))
-         (snippet
-          `(begin
-             ;; remove unnecessary files with potentially different license
-             (for-each delete-file-recursively
-                       (scandir "."
-                                (negate (cut member <> '("tegaki-recognize"
-                                                         "." "..")))))
-             ,(remove-pre-compiled-files "pyc")
-             #t))))
-      (arguments
-       (substitute-keyword-arguments (package-arguments python2-tegaki-tools)
-         ((#:phases _)
-          `(modify-phases %standard-phases
-             (add-after 'unpack 'chdir
-               (lambda _
-                 (chdir "tegaki-recognize")
-                 #t))
-             ;; 'setup.py' script does not support one of the Python build
-             ;; system's default flags, "--single-version-externally-managed"
-             (replace 'install
-               (lambda* (#:key outputs #:allow-other-keys)
-                 (invoke "python" "setup.py" "install"
-                         (string-append "--prefix=" (assoc-ref outputs "out"))
-                         "--root=/")
-                 #t))))))
-      (synopsis "Chinese and Japanese Handwriting Recognition (Main program)")
-      (license license:gpl2+))))
-
 (define-public tegaki-zinnia-japanese
   (package
     (inherit python2-tegaki-wagomu)
