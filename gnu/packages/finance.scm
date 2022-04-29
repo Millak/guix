@@ -1230,9 +1230,6 @@ The module also includes implementations of the Verhoeff,
 Luhn and family of ISO/IEC 7064 check digit algorithms.")
     (license license:lgpl2.1+)))
 
-(define-public python2-stdnum
-  (package-with-python2 python-stdnum))
-
 (define-public python-duniterpy
   (package
     (name "python-duniterpy")
