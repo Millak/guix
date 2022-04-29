@@ -2828,9 +2828,6 @@ JSON APIs with Behave.")
 @command{nosetests} command of the Python Nose unit test framework.")
     (license license:bsd-3)))
 
-(define-public python2-rednose
-  (package-with-python2 python-rednose))
-
 (define-public python-nose-random
   (package
     (name "python-nose-random")
