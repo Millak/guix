@@ -3092,9 +3092,6 @@ development.")
 for ODBC.")
     (license (license:x11-style "file://LICENSE.TXT"))))
 
-(define-public python2-pyodbc-c
-  (package-with-python2 python-pyodbc-c))
-
 (define-public python-pyodbc
   (package
     (name "python-pyodbc")
