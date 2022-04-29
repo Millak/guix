@@ -2988,14 +2988,7 @@ OAuth request-signing logic.")
      "Rauth is a Python library for OAuth 1.0/a, 2.0, and Ofly.  It also
 provides service wrappers for convenient connection initialization and
 authenticated session objects providing things like keep-alive.")
-    (license license:expat)
-    (properties `((python2-variant . ,(delay python2-rauth))))))
-
-(define-public python2-rauth
-  (let ((base (package-with-python2 (strip-python2-variant python-rauth))))
-    (package/inherit base
-      (native-inputs `(("python2-unittest2" ,python2-unittest2)
-                       ,@(package-native-inputs base))))))
+    (license license:expat)))
 
 (define-public python-unalix
   (package
