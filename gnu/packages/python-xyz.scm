@@ -19168,9 +19168,6 @@ JSON) codec.")
      useful as a validator for JSON data.")
   (license license:expat)))
 
-(define-public python2-validictory
-  (package-with-python2 python-validictory))
-
 (define-public python-pyelftools
   (package
     (name "python-pyelftools")
