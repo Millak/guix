@@ -6582,9 +6582,6 @@ To address this and enable easy cycling over arbitrary @code{kwargs}, the
 convert between colorspaces like sRGB, XYZ, CIEL*a*b*, CIECAM02, CAM02-UCS, etc.")
     (license license:expat)))
 
-(define-public python2-colorspacious
-  (package-with-python2 python-colorspacious))
-
 (define-public python-proto-matcher
   (package
     (name "python-proto-matcher")
