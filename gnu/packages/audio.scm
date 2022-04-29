@@ -2568,9 +2568,6 @@ compensation, (de)interleaving, and byte-swapping
 cross-platform audio input/output stream library.")
     (license license:expat)))
 
-(define-public python2-pyaudio
-  (package-with-python2 python-pyaudio))
-
 (define-public python-pyliblo
   (package
     (name "python-pyliblo")
