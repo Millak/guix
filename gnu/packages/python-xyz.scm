@@ -21315,9 +21315,6 @@ class ShellOutSSHClientTests"))))
      window memory map manager.")
     (license license:bsd-3)))
 
-(define-public python2-smmap
-  (package-with-python2 python-smmap))
-
 (define-public python-regex
   (package
     (name "python-regex")
