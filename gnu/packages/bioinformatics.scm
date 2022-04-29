@@ -2854,9 +2854,6 @@ files.")
 accessing bigWig files.")
     (license license:expat)))
 
-(define-public python2-pybigwig
-  (package-with-python2 python-pybigwig))
-
 (define-public python-schema-salad
   (package
     (name "python-schema-salad")
