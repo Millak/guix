@@ -12195,9 +12195,6 @@ reading and writing MessagePack data.")
 and MAC network addresses.")
     (license license:bsd-3)))
 
-(define-public python2-netaddr
-  (package-with-python2 python-netaddr))
-
 (define-public python2-pyroute2
   (package
     (name "python2-pyroute2")
