@@ -2917,9 +2917,6 @@ create data based on random numbers and yet remain repeatable.")
     (description "Shows how much time was needed to run individual tests.")
     (license license:expat)))
 
-(define-public python2-nose-timer
-  (package-with-python2 python-nose-timer))
-
 (define-public python-freezegun
   (package
     (name "python-freezegun")
