@@ -2096,9 +2096,6 @@ multiple Unicode code points, e.g. \"G\" + acute-accent)
 @end enumerate")
     (license license:expat)))
 
-(define-public python2-uniseg
-  (package-with-python2 python-uniseg))
-
 (define-public python-humanfriendly
   (package
     (name "python-humanfriendly")
