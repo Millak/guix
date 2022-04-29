@@ -6510,6 +6510,28 @@ right-hand side of an assignment into multiple values and assigns these values
 to variables on the left-hand side of the assignment.")
     (license license:expat)))
 
+(define-public r-zlog
+  (package
+    (name "r-zlog")
+    (version "1.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "zlog" version))
+              (sha256
+               (base32
+                "1d5j31p0h3rrn230087h3ngpvwknlisjv0f1qdbicdj9m177spci"))))
+    (properties `((upstream-name . "zlog")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://cran.r-project.org/package=zlog")
+    (synopsis "Transformation for laboratory easurements")
+    (description
+     "The @code{zlog} package offers functions to transform laboratory
+measurements into standardised z or @math{z(log)-values}.  Therefore the lower
+and upper reference limits are needed.  If these are not known they could be
+estimated from a given sample.")
+    (license license:gpl3+)))
+
 (define-public r-vctrs
   (package
     (name "r-vctrs")
