@@ -2059,9 +2059,6 @@ the last py.test invocation.")
     (home-page "https://bitbucket.org/hpk42/pytest-cache/")
     (license license:expat)))
 
-(define-public python2-pytest-cache
-  (package-with-python2 python-pytest-cache))
-
 (define-public python-pytest-localserver
   (package
     (name "python-pytest-localserver")
