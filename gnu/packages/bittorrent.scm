@@ -255,49 +255,6 @@ Transmission BitTorrent daemon.")
     (home-page "https://github.com/tremc/tremc")
     (license l:gpl3+)))
 
-(define-public transmission-remote-cli
-  (package
-    (name "transmission-remote-cli")
-    (version "1.7.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/fagga/transmission-remote-cli")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "09w9f8vrm61lapin8fmq4rgahr95y3c6wss10g0fgd0kl16f895v"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2 ; only supports Python 2
-       #:tests? #f ; no test suite
-       #:phases (modify-phases %standard-phases
-                  ;; The software is just a Python script that must be
-                  ;; copied into place.
-                  (delete 'build)
-                  (replace 'install
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let* ((out (assoc-ref outputs "out"))
-                             (bin (string-append out "/bin"))
-                             (man (string-append out "/share/man/man1"))
-                             ;; FIXME install zsh completions
-                             (completions (string-append out "/etc/bash_completion.d")))
-                        (install-file "transmission-remote-cli" bin)
-                        (install-file "transmission-remote-cli.1" man)
-                        (install-file
-                          (string-append
-                            "completion/bash/"
-                            "transmission-remote-cli-bash-completion.sh")
-                          completions)))))))
-    (synopsis "Console client for the Transmission BitTorrent daemon")
-    (description "Transmission-remote-cli is a console client, with a curses
-interface, for the Transmission BitTorrent daemon.  This package is no longer
-maintained upstream.")
-    (home-page "https://github.com/fagga/transmission-remote-cli")
-    (license l:gpl3+)
-    (properties `((superseded . ,tremc)))))
-
 (define-public aria2
   (package
     (name "aria2")
