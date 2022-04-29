@@ -186,35 +186,6 @@ refreshed, and more.")
 'syntax highlighting' for various patch formats.")
     (license gpl2+)))
 
-(define-public patches
-  (let ((commit "ef1b8a7d954b82ed4af3a08fd63d2085d19090ef"))
-    (package
-      (name "patches")
-      (home-page "https://github.com/stefanha/patches")
-      (version (string-append "0.0-1." (string-take commit 7)))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url home-page)
-                      (commit commit)))
-                (sha256
-                 (base32
-                  "11rdmhv0l1s8nqb20ywmw2zqizczch2p62qf9apyx5wqgxlnjshk"))
-                (file-name (string-append name "-"version "-checkout"))))
-      (build-system python-build-system)
-      (inputs (list python2-notmuch))
-      (arguments
-       `(#:tests? #f                             ;no "test" target
-         #:python ,python-2))                    ;not compatible with Python 3
-      (synopsis "Patch tracking tool")
-      (description
-       "@code{Patches} is a patch-tracking tool initially written for the QEMU
-project.  It provides commands that build a database of patches from a mailing
-list, and commands that can search that database.  It allows users to track
-the status of a patch, apply patches, and search for patches---all that from
-the command-line or from Emacs via its Notmuch integration.")
-      (license gpl2+))))
-
 (define-public vbindiff
   (package
     (name "vbindiff")
