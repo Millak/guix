@@ -1951,9 +1951,6 @@ and @code{nose2-cov}.  It is useful for developing coverage plugins for these
 testing frameworks.")
     (license license:expat)))
 
-(define-public python2-cov-core
- (package-with-python2 python-cov-core))
-
 (define-public python-codecov
   (package
     (name "python-codecov")
