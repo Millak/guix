@@ -2975,9 +2975,6 @@ time by mocking the datetime module.")
 mocks, stubs and fakes.")
     (license license:bsd-3)))
 
-(define-public python2-flexmock
-  (package-with-python2 python-flexmock))
-
 (define-public python-flaky
   (package
     (name "python-flaky")
