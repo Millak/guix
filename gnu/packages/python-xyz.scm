@@ -3114,13 +3114,6 @@ files.  It can be used to create po files from scratch or to modify
 existing ones.")
     (license license:expat)))
 
-(define-public python2-polib
-  (let ((base (package-with-python2 (strip-python2-variant python-polib))))
-    (package/inherit base
-      (arguments `(,@(package-arguments base)
-                   ;; Tests don't work with python2.
-                   #:tests? #f)))))
-
 (define-public python-polling2
   (package
     (name "python-polling2")
