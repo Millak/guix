@@ -34,15 +34,14 @@
 (define-public moarvm
   (package
     (name "moarvm")
-    (version "2019.03")
+    (version "2022.04")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://moarvm.org/releases/MoarVM-"
                            version ".tar.gz"))
        (sha256
-        (base32
-         "017w1zvr6yl0cgjfc1b3ddlc6vjw9q8p7alw1vvsckw95190xc14"))
+        (base32 "0128fxqaz7cwjf6amaz2cgd7xl52zvi5fr7bwnj229snll5za1mf"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -57,6 +56,10 @@
     (arguments
      '(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'fix-build
+           (lambda _
+             (substitute* "build/Makefile.in"
+               (("^ +3rdparty/freebsd/.*") ""))))
          (replace 'configure
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out"))
@@ -71,11 +74,11 @@
                        "--has-libffi"
                        "--has-libuv")))))))
     (home-page "https://moarvm.org/")
-    ;; These should be inputs but moar.h can't find them when building rakudo
-    (propagated-inputs
-     (list libatomic-ops libffi libtommath-1.0 libuv))
     (native-inputs
      (list pkg-config))
+    ;; These should be inputs but moar.h can't find them when building Rakudo.
+    (propagated-inputs
+     (list libatomic-ops libffi libtommath libuv))
     (synopsis "VM for NQP And Rakudo Perl 6")
     (description
      "Short for \"Metamodel On A Runtime\", MoarVM is a modern virtual machine
