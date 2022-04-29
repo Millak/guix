@@ -840,52 +840,6 @@ frames} (ORFs) using ribosome profiling (ribo-seq) data.  This package
 provides the Ribotaper pipeline.")
     (license license:gpl3+)))
 
-(define-public ribodiff
-  (package
-    (name "ribodiff")
-    (version "0.2.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/ratschlab/RiboDiff")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0x75nlp7qnmm64jasbi6l21f2cy99r2cjyl6b4hr8zf2bq22drnz"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2
-       #:phases
-       (modify-phases %standard-phases
-         ;; This test fails because of the matplotlib plotting backend.
-         (add-after 'unpack 'disable-plot-test
-           (lambda _
-             (substitute* "src/ribodiff/functional_test_te.py"
-               (("pl\\.make_plots\\(data, opts\\)") "#"))))
-         ;; Generate an installable executable script wrapper.
-         (add-after 'unpack 'patch-setup.py
-           (lambda _
-             (substitute* "setup.py"
-               (("^(.*)packages=.*" line prefix)
-                (string-append line "\n"
-                               prefix "scripts=['scripts/TE.py'],\n"))))))))
-    (inputs
-     (list python2-numpy python2-matplotlib python2-scipy
-           python2-statsmodels))
-    (native-inputs
-     (list python2-mock python2-nose))
-    (home-page "https://public.bmi.inf.ethz.ch/user/zhongy/RiboDiff/")
-    (synopsis "Detect translation efficiency changes from ribosome footprints")
-    (description "RiboDiff is a statistical tool that detects the protein
-translational efficiency change from Ribo-Seq (ribosome footprinting) and
-RNA-Seq data.  It uses a generalized linear model to detect genes showing
-difference in translational profile taking mRNA abundance into account.  It
-facilitates us to decipher the translational regulation that behave
-independently with transcriptional regulation.")
-    (license license:gpl3+)))
-
 (define-public bioawk
   (package
     (name "bioawk")
