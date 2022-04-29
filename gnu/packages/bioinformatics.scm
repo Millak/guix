@@ -1306,9 +1306,6 @@ into separate processes; and more.")
 relying on a complex dependency tree.")
     (license license:expat)))
 
-(define-public python2-fastalite
-  (package-with-python2 python-fastalite))
-
 (define-public biosoup
   (package
     (name "biosoup")
