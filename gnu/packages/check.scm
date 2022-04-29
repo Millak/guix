@@ -2048,9 +2048,6 @@ tools for mocking system commands and recording calls to those.")
     (home-page "https://github.com/trentm/testlib")
     (license license:expat)))
 
-(define-public python2-testlib
-  (package-with-python2 python-testlib))
-
 ;;; The software provided by this package was integrated into pytest 2.8.
 (define-public python-pytest-cache
   (package
