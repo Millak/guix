@@ -2722,9 +2722,6 @@ especially -cover-package.")
 backported from Python 2.7 for Python 2.4+.")
     (license license:bsd-3)))
 
-(define-public python2-discover
-  (package-with-python2 python-discover))
-
 (define-public behave
   (package
     (name "behave")
