@@ -32,7 +32,7 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Justus Winter <justus@sequoia-pgp.org>
 ;;; Copyright © 2020 Eric Brown <ecbrown@ericcbrown.com>
-;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020, 2021 Alexey Abramov <levenson@mmer.org>
 ;;; Copyright © 2020 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
@@ -40,7 +40,6 @@
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
 ;;; Copyright © 2020 divoplade <d@divoplade.fr>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Benoit Joly <benoit@benoitj.ca>
 ;;; Copyright © 2021 Morgan Smith <Morgan.J.Smith@outlook.com>
@@ -1551,31 +1550,33 @@ minimum information necessary to bring replicas up to date regardless of which
 pairs have previously synchronized.")
     (license license:gpl2+)))           ; with OpenSSL libcrypto exception
 
-(define-public getmail
+(define-public getmail6
   (package
-    (name "getmail")
-    (version "5.16")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://pyropus.ca/software/getmail/old-versions/"
-                           "getmail-" version ".tar.gz"))
-       (sha256
-        (base32 "1yk7lrndbfsrbdxikwzdqvadryqsldalxdn3a184dg4sxzmgis3a"))))
+    (name "getmail6")
+    (version "6.18.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/getmail6/getmail6")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "08a5yw6ll1kmd1ardj8rzhsw4wl48zzdc87g5lh4p5snv8w2m4ja"))))
     (build-system python-build-system)
-    (arguments
-     (list #:tests? #f                  ; no tests
-           #:python python-2))
-    (home-page "https://pyropus.ca/software/getmail/")
+    (arguments (list #:tests? #f))      ;tests require docker
+    (home-page "https://github.com/getmail6/getmail6")
     (synopsis "Mail retriever")
     (description
-     "A flexible, extensible mail retrieval system with support for
-POP3, IMAP4, SSL variants of both, maildirs, mboxrd files, external MDAs,
-arbitrary message filtering, single-user and domain-mailboxes, and many other
-useful features.")
+     "A flexible, extensible mail retrieval system with support for POP3,
+IMAP4, SSL variants of both, maildirs, mboxrd files, external MDAs, arbitrary
+message filtering, single-user and domain-mailboxes, and many other useful
+features.  This is a fork derived from getmali 5.14, aimed at Python 3
+compatibility.")
+    (license license:gpl2+)))           ;see docs/COPYING
 
-    ;; License is specified in file '__init__.py'.
-    (license license:gpl2)))
+(define-public getmail
+  (deprecated-package "getmail" getmail6))
 
 (define-public libetpan
   (package
