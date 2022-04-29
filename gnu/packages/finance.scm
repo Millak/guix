@@ -978,9 +978,6 @@ of Bitcoin BIP-0039.")
 Ledger Blue/Nano S.")
     (license license:asl2.0)))
 
-(define-public python2-ledgerblue
-  (package-with-python2 python-ledgerblue))
-
 (define-public python-btchip-python
   (package
     (name "python-btchip-python")
