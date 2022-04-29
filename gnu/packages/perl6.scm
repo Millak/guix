@@ -743,22 +743,21 @@ minimal wrapper around an instance of this module.")
 (define-public perl6-test-meta
   (package
     (name "perl6-test-meta")
-    (version "0.0.14")
+    (version "0.0.17")
     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/jonathanstowe/Test-META")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32
-          "1mzrglb7lbiy5h9dlc7dyhvv9gppxmdmpmrv6nzbd695jzr38bri"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jonathanstowe/Test-META")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0kd4yixx6lac240lcx0f5pfswspvpp43034mq2vs65zxghsvvcmf"))))
     (build-system rakudo-build-system)
     (propagated-inputs
-     (list perl6-meta6 perl6-uri))
+     (list perl6-license-spdx perl6-meta6 perl6-uri))
     (home-page "https://github.com/jonathanstowe/Test-META")
-    (synopsis "Test a distributions META file")
+    (synopsis "Test a distribution's META file")
     (description "This provides a simple mechanism for module authors to have
 some confidence that they have a working distribution META description file.")
     (license license:artistic2.0)))
