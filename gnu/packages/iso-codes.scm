@@ -115,6 +115,3 @@ groups.")
     (synopsis "Self-contained ISO 3166-1 country definitions")
     (description "This package provides the ISO 3166-1 country definitions.")
     (license license:expat)))
-
-(define-public python2-iso3166
-  (package-with-python2 python-iso3166))
