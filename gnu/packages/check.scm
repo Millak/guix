@@ -2863,9 +2863,6 @@ by resetting it to a repeatable number for each test, enabling the tests to
 create data based on random numbers and yet remain repeatable.")
     (license license:bsd-3)))
 
-(define-public python2-nose-randomly
-  (package-with-python2 python-nose-randomly))
-
 (define-public python-nose-timer
   (package
     (name "python-nose-timer")
