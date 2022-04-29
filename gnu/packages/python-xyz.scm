@@ -19865,19 +19865,6 @@ JSON) codec.")
      instead of servers and network commands.")
     (license license:bsd-3)))
 
-(define-public python2-invoke
-  (let ((parent (package-with-python2 python-invoke)))
-    (package
-      (inherit parent)
-      (arguments
-       (substitute-keyword-arguments (package-arguments parent)
-         ((#:phases phases #t)
-          `(modify-phases ,phases
-             (delete 'delete-python2-code)
-             (add-after 'unpack 'delete-python3-code
-               (lambda _
-                 (delete-file-recursively "invoke/vendor/yaml3"))))))))))
-
 (define-public python-automat
   (package
     (name "python-automat")
