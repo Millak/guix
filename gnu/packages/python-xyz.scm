@@ -16174,9 +16174,6 @@ best-effort representations using smaller coded character sets (ASCII,
 ISO 8859, etc.).")
     (license license:expat)))
 
-(define-public python2-translitcodec
-  (package-with-python2 python-translitcodec))
-
 (define-public python-anyqt
   (package
     (name "python-anyqt")
