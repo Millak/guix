@@ -1526,9 +1526,6 @@ CSV, DB3, iXF, SQLite, MS-SQL or MySQL to PostgreSQL.")
 Most public APIs are compatible with @command{mysqlclient} and MySQLdb.")
     (license license:expat)))
 
-(define-public python2-pymysql
-  (package-with-python2 python-pymysql))
-
 (define-public qdbm
   (package
     (name "qdbm")
