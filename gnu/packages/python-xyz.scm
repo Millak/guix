@@ -17385,29 +17385,6 @@ specified in POSIX.1-2001 and POSIX.1-2008.")
 (define-public python2-wcwidth
   (package-with-python2 python-wcwidth))
 
-(define-public python2-jsonrpclib
-  (package
-    (name "python2-jsonrpclib")
-    (version "0.1.7")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "jsonrpclib" version))
-              (sha256
-               (base32
-                "02vgirw2bcgvpcxhv5hf3yvvb4h5wzd1lpjx8na5psdmaffj6l3z"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f
-       #:python ,python-2))
-    (home-page "https://github.com/joshmarshall/jsonrpclib/")
-    (synopsis "Implementation of JSON-RPC specification for Python")
-    (description
-     "This library is an implementation of the JSON-RPC specification.
-It supports both the original 1.0 specification, as well as the
-new (proposed) 2.0 spec, which includes batch submission, keyword arguments,
-etc.")
-    (license license:asl2.0)))
-
 (define-public python-chai
   (package
     (name "python-chai")
