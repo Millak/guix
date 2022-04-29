@@ -20115,16 +20115,7 @@ builds partial trees by inspecting living objects.")
      imports alphabetically, and automatically separated into sections.  It
      provides a command line utility, a python library and plugins for various
      editors.")
-    (license license:expat)
-    (properties `((python2-variant . ,(delay python2-isort))))))
-
-(define-public python2-isort
-  (let ((base (package-with-python2
-               (strip-python2-variant python-isort))))
-    (package/inherit base
-      (native-inputs
-       `(("python2-futures" ,python2-futures)
-         ,@(package-native-inputs base))))))
+    (license license:expat)))
 
 (define-public python2-backports-functools-lru-cache
   (package
