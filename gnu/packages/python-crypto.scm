@@ -1087,15 +1087,7 @@ extensions to Python's httplib, urllib, and xmlrpclib; unforgeable HMAC'ing
 AuthCookies for web session management; FTP/TLS client and server; S/MIME;
 M2Crypto can also be used to provide TLS for Twisted.  Smartcards supported
 through the Engine interface.")
-    (properties `((python2-variant . ,(delay python2-m2crypto))))
     (license license:expat)))
-
-(define-public python2-m2crypto
-  (let ((m2crypto (package-with-python2
-                   (strip-python2-variant python-m2crypto))))
-    (package/inherit m2crypto
-             (propagated-inputs
-              `(("python2-typing" ,python2-typing))))))
 
 (define-public python-pykeepass
   (package
