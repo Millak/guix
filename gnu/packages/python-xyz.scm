@@ -16958,44 +16958,6 @@ respectively.")
 (define-public python2-cysignals
   (package-with-python2 python-cysignals))
 
-(define-public python2-shedskin
- (package
-  (name "python2-shedskin")
-  (version "0.9.4")
-  (source
-    (origin
-      (method url-fetch)
-      (uri (string-append "https://github.com/shedskin/shedskin/"
-                          "releases/download/v" version
-                          "/shedskin-" version ".tgz"))
-      (sha256
-        (base32
-          "0nzwrzgw1ga8rw6f0ryq7zr9kkiavd1cqz5hzxkcbicl1dk7kz41"))))
-  (build-system python-build-system)
-  (arguments
-   `(#:python ,python-2
-     #:phases (modify-phases %standard-phases
-               (add-after 'unpack 'fix-resulting-include-libs
-                (lambda* (#:key inputs #:allow-other-keys)
-                 (let ((libgc (assoc-ref inputs "libgc"))
-                       (pcre (assoc-ref inputs "pcre")))
-                  (substitute* "shedskin/makefile.py"
-                   (("variable == 'CCFLAGS':[ ]*")
-                    (string-append "variable == 'CCFLAGS':\n"
-                                   "            line += ' -I " pcre "/include"
-                                   " -I " libgc "/include'"))
-                   (("variable == 'LFLAGS':[ ]*")
-                    (string-append "variable == 'LFLAGS':\n"
-                                   "            line += ' -L" pcre "/lib"
-                                   " -L " libgc "/lib'")))
-                  #t))))))
-  (inputs (list pcre libgc))
-  (home-page "https://shedskin.github.io/")
-  (synopsis "Experimental Python-2 to C++ Compiler")
-  (description (string-append "This is an experimental compiler for a subset of
-Python.  It generates C++ code and a Makefile."))
-  (license (list license:gpl3 license:bsd-3 license:expat))))
-
 (define-public python-rope
   (package
     (name "python-rope")
