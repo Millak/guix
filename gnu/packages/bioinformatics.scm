@@ -8729,32 +8729,6 @@ regions of statistically significant read enrichment.  Additional covariates
 may optionally be provided to further inform the peak-calling process.")
       (license license:gpl3+))))
 
-(define-public pepr
-  (package
-    (name "pepr")
-    (version "1.0.9")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "PePr" version))
-              (sha256
-               (base32
-                "0qxjfdpl1b1y53nccws2d85f6k74zwmx8y8sd9rszcqhfayx6gdx"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2 ; python2 only
-       #:tests? #f)) ; no tests included
-    (propagated-inputs
-     (list python2-numpy python2-scipy python2-pysam))
-    (home-page "https://github.com/shawnzhangyx/PePr")
-    (synopsis "Peak-calling and prioritization pipeline for ChIP-Seq data")
-    (description
-     "PePr is a ChIP-Seq peak calling or differential binding analysis tool
-that is primarily designed for data with biological replicates.  It uses a
-negative binomial distribution to model the read counts among the samples in
-the same group, and look for consistent differences between ChIP and control
-group or two ChIP groups run under different conditions.")
-    (license license:gpl3+)))
-
 (define-public filevercmp
   (let ((commit "1a9b779b93d0b244040274794d402106907b71b7")
         (revision "1"))
