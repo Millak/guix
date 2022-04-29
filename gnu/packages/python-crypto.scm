@@ -726,9 +726,6 @@ python-axolotl.")
     (license (list license:gpl3    ; Most files
                    license:bsd-3)))) ; curve/curve25519-donna.c
 
-(define-public python2-axolotl-curve25519
-  (package-with-python2 python-axolotl-curve25519))
-
 (define-public python-axolotl
   (package
     (name "python-axolotl")
