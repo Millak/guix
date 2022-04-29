@@ -637,31 +637,30 @@ monitor.  Condition variables are also supported.")
     (license license:artistic2.0)))
 
 (define-public perl6-svg
-  ;; Latest commit, basically unchanged since August 2015
+  ;; Latest commit, basically unchanged since August 2015.
   (let ((commit "07190c0602aa276e5319f06aa0012452dbff3582")
         (revision "1"))
     (package
       (name "perl6-svg")
       (version (git-version "0.0.0" revision commit))
       (source
-        (origin
-          (method git-fetch)
-          (uri (git-reference
-                 (url "https://github.com/moritz/svg")
-                 (commit commit)))
-          (file-name (git-file-name name version))
-          (sha256
-           (base32
-            "0mkjdhg7ajksdn61n8fqhyzfd7ly9myazsvpsm02a5c2q73hdygg"))))
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/moritz/svg")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0mkjdhg7ajksdn61n8fqhyzfd7ly9myazsvpsm02a5c2q73hdygg"))))
       (build-system rakudo-build-system)
       (propagated-inputs
        (list perl6-xml-writer))
       (home-page "https://github.com/moritz/svg")
-      (synopsis "Perl 6 module to generate SVG")
-      (description "This is a Perl 6 module that makes it easy to write
+      (synopsis "Raku module to generate SVG")
+      (description "This is a Raku module that makes it easy to write
 @dfn{Scalable Vector Graphic files} (SVG).  Right now it is a shallow wrapper
-around @code{XML::Writer}, adding only the xmlns attributes that identifies an
-XML file as SVG.")
+around @code{XML::Writer}, adding only the @samp{xmlns} attributes that
+identify an XML file as SVG.")
       (license license:artistic2.0))))
 
 (define-public perl6-svg-plot
