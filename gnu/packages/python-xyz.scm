@@ -6024,9 +6024,6 @@ Numeric.")
 objects.")
     (license license:expat)))
 
-(define-public python2-munch
-  (package-with-python2 python-munch))
-
 (define-public python-colormath
   (package
     (name "python-colormath")
