@@ -300,9 +300,6 @@ wrapper for accessing libusb-1.0.")
      "PyUSB aims to be an easy to use Python module to access USB devices.")
     (license license:bsd-3)))
 
-(define-public python2-pyusb
-  (package-with-python2 python-pyusb))
-
 (define-public python-capablerobot-usbhub
   (package
     (name "python-capablerobot-usbhub")
