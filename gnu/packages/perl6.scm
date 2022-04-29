@@ -98,6 +98,60 @@ with native libraries.
 @end itemize")
     (license license:artistic2.0)))
 
+(define-public nqp-configure
+  (let ((commit "9b98931e0bfb8c4aac61590edf5074e63aa8ea4b"))
+    (package
+      (name "nqp-configure")
+      ;; NQP and Rakudo use the same version of nqp-configure.
+      ;; We may as well set nqp-configure's version to the same as theirs.
+      (version "2022.04")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Raku/nqp-configure")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1vc1q11kjb964jal9dhgf5vwp371a3rfw7gj987n33kzli7a10n0"))))
+      (build-system perl-build-system)
+      (arguments
+       '(#:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'create-makefile-and-manifest
+             (lambda _
+               (call-with-output-file "Makefile.PL"
+                 (lambda (port)
+                   (format port "
+use ExtUtils::MakeMaker;
+WriteMakefile(NAME => 'NQP::Config');\n")))
+               (call-with-output-file "MANIFEST"
+                 (lambda (port)
+                   (format port "
+LICENSE
+MANIFEST
+Makefile.PL
+README.md
+bin/make.nqp
+doc/Macros.md
+doc/NQP-Config.md
+lib/NQP/Config.pm
+lib/NQP/Config/Test.pm
+lib/NQP/Macros.pm
+t/10-config.t
+t/20-macros.t
+t/30-if-macro.t\n")))))
+           (add-after 'patch-source-shebangs 'patch-more-shebangs
+             (lambda _
+               (substitute* '("bin/make.nqp"
+                              "lib/NQP/Config.pm")
+                 (("/bin/sh") (which "sh"))))))))
+      (home-page "https://github.com/Raku/nqp-configure")
+      (synopsis "Configuration and build modules for NQP")
+      (description "This library provides support modules for NQP and Rakudo
+@file{Configure.pl} scripts.")
+      (license license:artistic2.0))))
+
 (define-public nqp
   (package
     (name "nqp")
