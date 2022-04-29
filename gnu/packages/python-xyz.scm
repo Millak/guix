@@ -3821,9 +3821,6 @@ cutting and pasting that code over and over.")
                    ;; kitchen/pycompat25/defaultdict.py:
                    license:psfl))))
 
-(define-public python2-kitchen
-  (package-with-python2 python-kitchen))
-
 (define-public python-roman
   (package
     (name "python-roman")
