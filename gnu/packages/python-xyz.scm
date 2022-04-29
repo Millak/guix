@@ -3538,9 +3538,6 @@ structure is left untouched.")
 files.")
     (license license:bsd-3)))
 
-(define-public python2-exif-read
-  (package-with-python2 python-exif-read))
-
 (define-public python-pyld
   (package
     (name "python-pyld")
