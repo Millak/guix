@@ -615,22 +615,20 @@ from base64.")
 (define-public perl6-oo-monitors
   (package
     (name "perl6-oo-monitors")
-    (version "1.1")
+    (version "1.1.1")
     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/jnthn/oo-monitors")
-               ;; The commit where 1.1 was "tagged"
-               (commit "494db3a3852854f30a80c9bd1489a7d5e429e7c5")))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32
-          "1sbw2x54wwjjanghjnc7ipmplaw1srvbrphsdv4ym6cipnbmbj9x"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jnthn/oo-monitors")
+             (commit (string-append "release-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1aqb0x2vnmpi3knkf5v5aix6h29ln80gpxwa181i8kwfpxs8ir9f"))))
     (build-system rakudo-build-system)
     (arguments '(#:with-zef? #f))
     (home-page "https://github.com/jnthn/oo-monitors")
-    (synopsis "Monitors with condition variables for Perl 6")
+    (synopsis "Monitors with condition variables for Raku")
     (description "A monitor provides per-instance mutual exclusion for objects.
 This means that for a given object instance, only one thread can ever be inside
 its methods at a time.  This is achieved by a lock being associated with each
