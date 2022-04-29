@@ -483,34 +483,6 @@ and in creating applications based on the Enlightenment Foundation Library suite
                    license:gpl2          ; edi
                    license:gpl3))))      ; data/extra/examples/images/mono-runtime.png
 
-(define-public lekha
-  (package
-    (name "lekha")
-    (version "0.2.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "Lekha" version))
-              (sha256
-               (base32
-                "0zr6i74ik58pbzrd7r9l7sawqbdv0r2c1a9927qkqzwga27x8j15"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f ; no test target
-       #:python ,python-2
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-data-location
-           (lambda _ (substitute* "setup.py"
-                       (("'/usr/")"'"))
-             #t)))))
-    (propagated-inputs
-     (list python2-efl python2-pypdf2 python2-pyxdg))
-    (synopsis "Simple PDF viewer")
-    (description
-     "Simple PDF viewer based on the Enlightenment Foundation Libraries.")
-    (home-page "https://github.com/kaihu/lekha")
-    (license license:gpl3+)))
-
 (define-public ephoto
   (package
     (name "ephoto")
