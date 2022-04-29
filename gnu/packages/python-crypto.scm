@@ -938,9 +938,6 @@ Python.")
 protocol (Javascript Object Signing and Encryption).")
     (license license:asl2.0)))
 
-(define-public python2-josepy
-  (package-with-python2 python-josepy))
-
 (define pycryptodome-unbundle-tomcrypt-snippet
   #~(begin
       ;; Unbundle libtomcrypt.
