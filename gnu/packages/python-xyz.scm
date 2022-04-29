@@ -11844,9 +11844,6 @@ almost any existing Python modules, and an easy way for outside developers to
 add functionality and customization to your projects with their own plugins.")
     (license license:expat)))
 
-(define-public python2-straight-plugin
-  (package-with-python2 python-straight-plugin))
-
 (define-public python-pysendfile
   (package
     (name "python-pysendfile")
