@@ -8924,9 +8924,6 @@ packages will remove their dependency on this, and this package will go
 away.")
     (license license:bsd-3)))
 
-(define-public python2-ipython-genutils
-  (package-with-python2 python-ipython-genutils))
-
 ;;; Variant used to break a cycle with python-ipykernel.
 (define-public python-ipyparallel-bootstrap
   (hidden-package
