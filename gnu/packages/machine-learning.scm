@@ -1326,9 +1326,6 @@ forward-mode differentiation, and the two can be composed arbitrarily.  The
 main intended application of Autograd is gradient-based optimization.")
       (license license:expat))))
 
-(define-public python2-autograd
-  (package-with-python2 python-autograd))
-
 (define-public lightgbm
   (package
     (name "lightgbm")
