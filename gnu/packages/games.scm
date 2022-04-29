@@ -8682,33 +8682,6 @@ the net.  There can be 1 to 8 balls in game.  Once one ball touches
 the ground, the set ends and all balls are served again.")
     (license license:gpl3+)))
 
-(define-public slingshot
-  (package
-    (name "slingshot")
-    (version "0.9")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/ryanakca/slingshot")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "19m8b6nsi786bc6gmkp185mwri3r5y249gjmqd5qsc23nnfhgrs1"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2))
-    (inputs
-     (list python2-pygame))
-    (home-page "https://github.com/ryanakca/slingshot")
-    (synopsis "Simple 2D shooting strategy game set in space")
-    (description "Slingshot is a two-dimensional strategy game where two
-players attempt to shoot one another through a section of space populated by
-planets.  The main feature of the game is that the shots, once fired, are
-affected by the gravity of the planets.")
-    (license license:gpl2+)))
-
 (define-public 4dtris
   (package
     (name "4dtris")
