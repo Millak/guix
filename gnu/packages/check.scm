@@ -2598,14 +2598,7 @@ recognize TestCases.")
      "Python-pytest-warnings is a pytest plugin to list Python warnings in
 pytest report.")
     (license license:expat)
-    (properties `((python2-variant . ,(delay python2-pytest-warnings))
-                  ;; This package is part of pytest as of version 3.1.0.
-                  (superseded . ,python-pytest)))))
-
-(define-public python2-pytest-warnings
-  (package (inherit (package-with-python2
-                     (strip-python2-variant python-pytest-warnings)))
-           (properties `((superseded . ,python2-pytest)))))
+    (properties `((superseded unquote python-pytest)))))
 
 (define-public python-pytest-capturelog
   (package
