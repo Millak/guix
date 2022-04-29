@@ -299,15 +299,6 @@ and RIPEMD160), and various encryption algorithms (AES, DES, RSA, ElGamal,
 etc.).  The package is structured to make adding new modules easy.")
     (license license:public-domain)))
 
-(define-public python2-pycrypto
-  (let ((pycrypto (package-with-python2 python-pycrypto)))
-    (package/inherit pycrypto
-      (inputs
-       `(("python" ,python-2)
-         ,@(alist-delete
-            "python"
-            (package-inputs pycrypto)))))))
-
 (define-public python-kerberos
   (package
     (name "python-kerberos")
