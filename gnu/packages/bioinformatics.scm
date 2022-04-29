@@ -4157,9 +4157,6 @@ HMMs).")
 from high-throughput sequencing assays.")
     (license license:gpl3+)))
 
-(define-public python2-htseq
-  (package-with-python2 htseq))
-
 (define-public java-htsjdk
   (package
     (name "java-htsjdk")
