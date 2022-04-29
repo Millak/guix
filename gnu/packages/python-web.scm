@@ -3518,9 +3518,6 @@ provide an easy-to-use Python interface for building OAuth1 and OAuth2 clients."
 replay them during future tests.  It is designed to work with python-requests.")
     (license license:expat)))
 
-(define-public python2-betamax
-  (package-with-python2 python-betamax))
-
 (define-public python-betamax-matchers
   (package
     (name "python-betamax-matchers")
