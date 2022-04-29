@@ -19745,9 +19745,6 @@ JSON) codec.")
                                                                      Problem} (SAT) solver.")
     (license license:expat)))
 
-(define-public python2-pycosat
-  (package-with-python2 python-pycosat))
-
 (define-public python2-ruamel.ordereddict
   (package
     (name "python2-ruamel.ordereddict")
