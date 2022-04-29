@@ -227,9 +227,6 @@ the LZO library from your Python scripts thereby compressing ordinary
 Python strings.")
     (license license:gpl2+)))
 
-(define-public python2-lzo
-  (package-with-python2 python-lzo))
-
 (define-public python-lz4
   (package
     (name "python-lz4")
