@@ -13398,9 +13398,6 @@ access possibly compressed archives in many different formats.  It uses
 Python's @code{ctypes} foreign function interface (FFI).")
     (license license:lgpl2.0+)))
 
-(define-public python2-libarchive-c
-  (package-with-python2 python-libarchive-c))
-
 (define-public python-file
   (package/inherit file
     (name "python-file")
