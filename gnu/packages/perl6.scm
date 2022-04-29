@@ -438,24 +438,23 @@ It is a drop-in replacement for @code{JSON::Tiny}'s @code{from-json} and
 (define-public perl6-json-marshal
   (package
     (name "perl6-json-marshal")
-    (version "0.0.16")
+    (version "0.0.23")
     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/jonathanstowe/JSON-Marshal")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32
-          "0qy7j83h6gjzyyv74ncd92cd9h45rv8diaz3vldiv3b6fqwz4c6i"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jonathanstowe/JSON-Marshal")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "057xmdadhy5wkbhr6w1iybv2j7qf4bf8d4cp8m4qdcgk6pqzpkgc"))))
     (build-system rakudo-build-system)
-    (propagated-inputs
-     (list perl6-json-fast perl6-json-name))
     (native-inputs
      (list perl6-json-fast))
+    (propagated-inputs
+     (list perl6-json-fast perl6-json-name))
     (home-page "https://github.com/jonathanstowe/JSON-Marshal")
-    (synopsis "Simple serialisation of objects to JSON")
+    (synopsis "Simple serialization of objects to JSON")
     (description "This library provides a single exported subroutine to create
 a JSON representation of an object.  It should round trip back into an object
 of the same class using @code{JSON::Unmarshal}.")
