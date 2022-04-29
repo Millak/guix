@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
-;;; Copyright © 2015, 2016 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015, 2016, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
@@ -328,7 +328,8 @@ host	all	all	::1/128 	md5"))
            profile-service-type
            (compose list postgresql-configuration-postgresql))))
    (default-value (postgresql-configuration
-                   (postgresql postgresql-10)))))
+                   (postgresql postgresql-10)))
+   (description "Run the PostgreSQL database server.")))
 
 (define-deprecated (postgresql-service #:key (postgresql postgresql)
                                        (port 5432)
@@ -514,7 +515,10 @@ created after the PostgreSQL database is started.")))
                                           (const memcached-activation))
                        (service-extension account-service-type
                                           (const %memcached-accounts))))
-                (default-value (memcached-configuration))))
+                (default-value (memcached-configuration))
+                (description "Run @command{memcached}, a daemon that provides
+an in-memory caching service, intended for use by dynamic web
+applications.")))
 
 
 ;;;
@@ -680,7 +684,9 @@ FLUSH PRIVILEGES;
                              %mysql-activation)
           (service-extension shepherd-root-service-type
                              mysql-shepherd-services)))
-   (default-value (mysql-configuration))))
+   (default-value (mysql-configuration))
+   (description "Run the MySQL or MariaDB database server,
+@command{mysqld}.")))
 
 (define-deprecated (mysql-service #:key (config (mysql-configuration)))
   mysql-service-type
@@ -759,4 +765,5 @@ FLUSH PRIVILEGES;
                                           redis-activation)
                        (service-extension account-service-type
                                           (const %redis-accounts))))
-                (default-value (redis-configuration))))
+                (default-value (redis-configuration))
+                (description "Run Redis, a caching key/value store.")))

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Andy Wingo <wingo@igalia.com>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Sou Bunnbu <iyzsong@gmail.com>
@@ -366,7 +366,11 @@ users are allowed."
                  (list (service-extension dbus-root-service-type
                                           geoclue-dbus-service)
                        (service-extension account-service-type
-                                          (const %geoclue-accounts))))))
+                                          (const %geoclue-accounts))))
+                (description "Run the @command{geoclue} location service.
+This service provides a D-Bus interface to allow applications to request
+access to a user's physical location, and optionally to add information to
+online location databases.")))
 
 (define* (geoclue-service #:key (geoclue geoclue)
                           (whitelist '())
@@ -914,7 +918,11 @@ screens and scanners.")))
 
                          ;; Profile 'udisksctl' & co. in the system profile.
                          (service-extension profile-service-type
-                                            udisks-package))))))
+                                            udisks-package)))
+                  (description "Run UDisks, a @dfn{disk management} daemon
+that provides user interfaces with notifications and ways to mount/unmount
+disks.  Programs that talk to UDisks include the @command{udisksctl} command,
+part of UDisks, and GNOME Disks."))))
 
 (define* (udisks-service #:key (udisks udisks))
   "Return a service for @uref{http://udisks.freedesktop.org/docs/latest/,
@@ -1129,7 +1137,12 @@ seats.)"
                        ;; We need /run/user, /run/systemd, etc.
                        (service-extension file-system-service-type
                                           (const %elogind-file-systems))))
-                (default-value (elogind-configuration))))
+                (default-value (elogind-configuration))
+                (description "Run the @command{elogind} login and seat
+management service.  The @command{elogind} service integrates with PAM to
+allow other system components to know the set of logged-in users as well as
+their session types (graphical, console, remote, etc.).  It can also clean up
+after users when they log out.")))
 
 (define* (elogind-service #:key (config (elogind-configuration)))
   "Return a service that runs the @command{elogind} login and seat management
@@ -1177,7 +1190,11 @@ when they log out."
                                           (const %accountsservice-activation))
                        (service-extension dbus-root-service-type list)
                        (service-extension polkit-service-type list)))
-                (default-value accountsservice)))
+                (default-value accountsservice)
+                (description "Run AccountsService, a system service available
+over D-Bus that can list available accounts, change their passwords, and so
+on.  AccountsService integrates with PolicyKit to enable unprivileged users to
+acquire the capability to modify their system configuration.")))
 
 (define* (accountsservice-service #:key (accountsservice accountsservice))
   "Return a service that runs AccountsService, a system service that

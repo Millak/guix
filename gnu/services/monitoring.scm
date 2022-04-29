@@ -419,7 +419,10 @@ configuration file."))
                              zabbix-server-account)
           (service-extension activation-service-type
                              zabbix-server-activation)))
-   (default-value (zabbix-server-configuration))))
+   (default-value (zabbix-server-configuration))
+   (description "Run the Zabbix server, a high-performance monitoring system
+that can collect data about machines from a variety of sources and provide the
+results in a Web interface.")))
 
 (define (generate-zabbix-server-documentation)
   (generate-documentation
@@ -546,7 +549,9 @@ configuration file."))
                              zabbix-agent-account)
           (service-extension activation-service-type
                              zabbix-agent-activation)))
-   (default-value (zabbix-agent-configuration))))
+   (default-value (zabbix-agent-configuration))
+   (description "Run the Zabbix agent, @command{zabbix_agentd}, which gathers
+information about the running system for the Zabbix monitoring server.")))
 
 (define (generate-zabbix-agent-documentation)
   (generate-documentation
