@@ -128,35 +128,6 @@ science, and related areas.  It offers flexible high quality rendering and a
 powerful plugin architecture.")
     (license license:bsd-3)))
 
-(define-public domainfinder
-  (package
-    (name "domainfinder")
-    (version "2.0.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://bitbucket.org/khinsen/"
-                           "domainfinder/downloads/DomainFinder-"
-                           version ".tar.gz"))
-       (sha256
-        (base32
-         "1z26lsyf7xwnzwjvimmbla7ckipx6p734w7y0jk2a2fzci8fkdcr"))))
-    (build-system python-build-system)
-    (inputs
-     (list python2-mmtk))
-    (arguments
-     `(#:python ,python-2
-       ;; No test suite
-       #:tests? #f))
-    (home-page "http://dirac.cnrs-orleans.fr/DomainFinder.html")
-    (synopsis "Analysis of dynamical domains in proteins")
-    (description "DomainFinder is an interactive program for the determination
-and characterization of dynamical domains in proteins.  It can infer dynamical
-domains by comparing two protein structures, or from normal mode analysis on a
-single structure.  The software is currently not actively maintained and works
-only with Python 2 and NumPy < 1.9.")
-    (license license:cecill-c)))
-
 (define-public inchi
   (package
     (name "inchi")
