@@ -16348,9 +16348,6 @@ by providing an implementation of the PEP 3156 event-loop.")
 programmatically interfacing with your system's $EDITOR.")
   (license license:asl2.0)))
 
-(define-public python2-editor
-  (package-with-python2 python-editor))
-
 (define-public python-multiprocessing-logging
   (package
     (name "python-multiprocessing-logging")
