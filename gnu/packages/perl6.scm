@@ -594,22 +594,21 @@ customary attributes are used.")
 (define-public perl6-mime-base64
   (package
     (name "perl6-mime-base64")
-    (version "1.2.1")
+    (version "1.2.3")
     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/perl6/Perl6-MIME-Base64")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32
-          "0l67m8mvz3gxml425sd1ggfnhzh4lf754k7w8fngfr453s6lsza1"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/raku-community-modules/MIME-Base64")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19bndwbjr05gg8rrq2msmw1ik8xw2r3gbd77vxrp8l6c674zgy95"))))
     (build-system rakudo-build-system)
     (arguments '(#:with-zef? #f))
-    (home-page "https://github.com/perl6/Perl6-MIME-Base64")
+    (home-page "https://github.com/raku-community-modules/MIME-Base64")
     (synopsis "Encoding and decoding Base64 ASCII strings")
-    (description "This Perl 6 module implements encoding and decoding to and
+    (description "This Raku module implements encoding and decoding to and
 from base64.")
     (license license:artistic2.0)))
 
