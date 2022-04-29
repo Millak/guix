@@ -22923,19 +22923,6 @@ file system events on Linux.")
   (package-with-python2 python-pyinotify))
 
 
-(define-public python2-quex
-  (package (inherit python2-quex-0.67.3)
-    (name "python2-quex")
-    (version "0.68.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://sourceforge/quex/DOWNLOAD/quex-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0svc9nla3b9145d6b7fb9dizx412l3difzqw0ilh9lz52nsixw8j"))
-       (file-name (string-append name "-" version ".tar.gz"))))))
-
 (define-public python-more-itertools
   (package
     (name "python-more-itertools")
