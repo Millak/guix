@@ -561,35 +561,34 @@ licences therein.")
 (define-public perl6-meta6
   (package
     (name "perl6-meta6")
-    (version "0.0.23")
+    (version "0.0.26")
     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/jonathanstowe/META6")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32
-          "1xnlaamfbdlfb2zidim3bbc4mawsrg6qxhxi6gbld46z1cyry1cw"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jonathanstowe/META6")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jg8z0y29df9sy6za285jy38c3v6dl54ar54dp6marzcih02payx"))))
     (build-system rakudo-build-system)
-    (propagated-inputs
-     (list perl6-json-class))
     (native-inputs
      (list perl6-json-fast))
+    (propagated-inputs
+     (list perl6-json-class))
     (home-page "https://github.com/jonathanstowe/META6")
-    (synopsis "Do things with Perl 6 [META files]")
-    (description "This provides a representation of the Perl 6 META files
-specification - the META file data can be read, created, parsed and written in a
-manner that is conformant with the specification.
+    (synopsis "Do things with Raku META files")
+    (description "This provides a representation of the Raku META files
+specification -- the META file data can be read, created, parsed and written
+in a manner that is conformant with the specification.
 
-Where they are known about it also makes allowance for customary usage in
-existing software (such as installers and so forth.)
+Where they are known about, it also makes allowance for customary usage in
+existing software (such as installers and so forth).
 
-The intent of this is allow the generation and testing of META files for
-module authors, so it can provide meta-information whether the attributes are
-mandatory as per the spec and where known the places that customary attributes
-are used.")
+The intent of this is to allow the generation and testing of META files for
+module authors, so it can provide meta-information about whether the
+attributes are mandatory as per the spec and, where known, the places that
+customary attributes are used.")
     (license license:artistic2.0)))
 
 (define-public perl6-mime-base64
