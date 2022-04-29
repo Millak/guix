@@ -21765,9 +21765,6 @@ interpreter when it prints a stack trace.")
 executed more than a given number of times during a given period.")
     (license license:asl2.0)))
 
-(define-public python2-ratelimiter
-  (package-with-python2 python-ratelimiter))
-
 (define-public python-jsonrpclib-pelix
   (package
     (name "python-jsonrpclib-pelix")
