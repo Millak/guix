@@ -1052,7 +1052,7 @@ vector formats.")
 (define-public impressive
   (package
     (name "impressive")
-    (version "0.12.1")
+    (version "0.13.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1060,36 +1060,33 @@ vector formats.")
                     version "/Impressive-" version ".tar.gz"))
               (sha256
                (base32
-                "1r7ihv41awnlnlry1kymb8fka053wdhzibfwcarn78rr3vs338vl"))))
+                "0d1d2jxfl9vmy4swcdz660xd4wx91w1i3n07k522pccapwxig294"))))
     (build-system python-build-system)
-
-    ;; TODO: Add dependency on pdftk.
-    (inputs (list python2-pygame python2-pillow sdl xpdf))
-
     (arguments
-     `(#:python ,python-2
-       #:phases (modify-phases %standard-phases
-                  (delete 'build)
-                  (delete 'configure)
-                  (delete 'check)
-                  (replace 'install
-                    (lambda* (#:key inputs outputs #:allow-other-keys)
-                      ;; There's no 'setup.py' so install things manually.
-                      (let* ((out  (assoc-ref outputs "out"))
-                             (bin  (string-append out "/bin"))
-                             (man1 (string-append out "/share/man/man1"))
-                             (sdl  (assoc-ref inputs "sdl"))
-                             (xpdf (assoc-ref inputs "xpdf")))
-                        (mkdir-p bin)
-                        (copy-file "impressive.py"
-                                   (string-append bin "/impressive"))
-                        (wrap-program (string-append bin "/impressive")
-                          `("LIBRARY_PATH" ":" prefix ;for ctypes
-                            (,(string-append sdl "/lib")))
-                          `("PATH" ":" prefix     ;for pdftoppm
-                            (,(string-append xpdf "/bin"))))
-                        (install-file "impressive.1" man1)
-                        #t))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'build)
+          (delete 'configure)
+          (delete 'check)
+          (replace 'install
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; There's no 'setup.py' so install things manually.
+              (let* ((bin  (string-append #$output "/bin"))
+                     (impressive (string-append bin "/impressive"))
+                     (man1 (string-append #$output "/share/man/man1")))
+                (mkdir-p bin)
+                (copy-file "impressive.py" impressive)
+                (chmod impressive #o755)
+                (wrap-program (string-append bin "/impressive")
+                  `("LIBRARY_PATH" ":" prefix ;for ctypes
+                    (,(string-append #$(this-package-input "sdl")
+                                     "/lib")))
+                  `("PATH" ":" prefix   ;for pdftoppm
+                    (,(search-input-file inputs "bin/xpdf"))))
+                (install-file "impressive.1" man1)))))))
+    ;; TODO: Add dependency on pdftk.
+    (inputs (list python-pygame python-pillow sdl xpdf))
     (home-page "http://impressive.sourceforge.net")
     (synopsis "PDF presentation tool with visual effects")
     (description
