@@ -28419,9 +28419,6 @@ heterogeneous and multi-platform clusters (including clusters running other
 applications with variable CPU loads).")
     (license license:bsd-3)))
 
-(define-public python2-parallel
-  (package-with-python2 python-parallel))
-
 (define-public python-djvulibre
   (package
     (name "python-djvulibre")
