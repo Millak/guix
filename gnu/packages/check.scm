@@ -849,9 +849,6 @@ for every Python test framework.  It supports nose, py.test, and unittest.")
 doctest.")
     (license license:expat)))
 
-(define-public python2-minimock
-  (package-with-python2 python-minimock))
-
 (define-public python-mock
   (package
     (name "python-mock")
