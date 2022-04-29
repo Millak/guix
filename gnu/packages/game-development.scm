@@ -407,14 +407,6 @@ levels.")
                    ;; under the CC0 license.
                    license:cc0))))
 
-(define-public python2-tmx
-  (let ((python2-tmx (package-with-python2 python-tmx)))
-    (package
-      (inherit python2-tmx)
-      (propagated-inputs
-       (modify-inputs (package-propagated-inputs python2-tmx)
-         (prepend python2-pathlib))))))
-
 (define-public python-xsge
   (package
     (name "python-xsge")
