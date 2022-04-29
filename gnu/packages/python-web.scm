@@ -2966,9 +2966,6 @@ adapter for use with the Requests library.")
 OAuth request-signing logic.")
     (license license:bsd-3)))
 
-(define-public python2-oauthlib
-  (package-with-python2 python-oauthlib))
-
 (define-public python-rauth
   (package
     (name "python-rauth")
