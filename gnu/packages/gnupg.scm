@@ -21,6 +21,7 @@
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Nikita Domnitskii <nikita@domnitskii.me>
 ;;; Copyright © 2021 Aleksandr Vityazev <avityazev@posteo.org>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -638,44 +639,38 @@ signing, decryption, verification, and key-listing parsing.")
 
 (define-public pius
   (package
-   (name "pius")
-   (version "2.2.7")
-   (source (origin
-            (method url-fetch)
-            (uri (string-append
-                  "https://github.com/jaymzh/pius/releases/download/v"
-                  version "/pius-" version ".tar.bz2"))
-            (sha256
-             (base32
-              "1nsl7czicv95j0gfz4s82ys3g3h2mwr6cq3ilid8bpz3iy7z4ipy"))))
-   (build-system python-build-system)
-   (inputs `(("perl" ,perl)             ; for 'pius-party-worksheet'
-             ("gpg" ,gnupg)
-             ("python-six" ,python2-six)))
-   (arguments
-    `(#:tests? #f
-      #:python ,python-2                ; uses the Python 2 'print' syntax
-      #:phases
-      (modify-phases %standard-phases
-        (add-before
-         'build 'set-gpg-file-name
-         (lambda* (#:key inputs outputs #:allow-other-keys)
-           (let* ((gpg (search-input-file inputs "/bin/gpg")))
+    (name "pius")
+    (version "3.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/jaymzh/pius/releases/download/v"
+                    version "/pius-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "11fhmfvr0avxl222rv43wjd2xjbpxrsmcl8xwmn0nvf1rw95v9fn"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'set-gpg-file-name
+           (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "libpius/constants.py"
-               (("/usr/bin/gpg2") gpg))
-             #t))))))
-   (synopsis "Programs to simplify GnuPG key signing")
-   (description
-    "Pius (PGP Individual UID Signer) helps attendees of PGP keysigning
+               (("/usr/bin/gpg2")
+                (search-input-file inputs "bin/gpg"))))))))
+    (inputs (list perl                  ;for 'pius-party-worksheet'
+                  gnupg))
+    (synopsis "Programs to simplify GnuPG key signing")
+    (description
+     "Pius (PGP Individual UID Signer) helps attendees of PGP key signing
 parties.  It is the main utility and makes it possible to quickly and easily
 sign each UID on a set of PGP keys.  It is designed to take the pain out of
-the sign-all-the-keys part of PGP Keysigning Party while adding security
-to the process.
-
-pius-keyring-mgr and pius-party-worksheet help organisers of
-PGP keysigning parties.")
-   (license license:gpl2)
-   (home-page "https://www.phildev.net/pius/index.shtml")))
+the sign-all-the-keys part of PGP key signing parties while adding security to
+the process.  The @command{pius-keyring-mgr} and
+@command{pius-party-worksheet} commands help organizers of PGP key signing
+parties.")
+    (license license:gpl2)
+    (home-page "https://www.phildev.net/pius/index.shtml")))
 
 (define-public signing-party
   (package
