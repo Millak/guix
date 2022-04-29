@@ -511,22 +511,21 @@ probably not necessary to use this directly as it will be required by, e.g.,
     (license license:artistic2.0)))
 
 (define-public perl6-json-unmarshal
-  ;; Last commit was May 2017
+  ;; Last commit was May 2017.
   (let ((commit "e1b6288c5f3165058f36c0f4e171cdf2dfd640da")
         (revision "1"))
     (package
       (name "perl6-json-unmarshal")
       (version (git-version "0.0.0" revision commit))
       (source
-        (origin
-          (method git-fetch)
-          (uri (git-reference
-                 (url "https://github.com/tadzik/JSON-Unmarshal")
-                 (commit commit)))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32
-          "14azsmzmwdn8k0gqcpvballharcvzylmlyrx2wmv4kpqfnz29fjc"))))
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/tadzik/JSON-Unmarshal")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "14azsmzmwdn8k0gqcpvballharcvzylmlyrx2wmv4kpqfnz29fjc"))))
       (build-system rakudo-build-system)
       (propagated-inputs
        (list perl6-json-fast perl6-json-name))
