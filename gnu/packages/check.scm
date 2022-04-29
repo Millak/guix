@@ -2607,9 +2607,6 @@ cases.  Since they are TestCase subclasses, they work with other test suites tha
 recognize TestCases.")
     (license license:bsd-2)))
 
-(define-public python2-python-paramunittest
-  (package-with-python2 python-paramunittest))
-
 (define-public python-pytest-warnings
   (package
     (name "python-pytest-warnings")
