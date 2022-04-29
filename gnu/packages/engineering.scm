@@ -1647,9 +1647,6 @@ bindings for Python, Java, OCaml and more.")
                 (string-append "'" (assoc-ref %build-inputs "capstone") "/lib',\n")))
              #t)))))))
 
-(define-public python2-capstone
-  (package-with-python2 python-capstone))
-
 
 (define-public python-esptool-3.0
   (package
