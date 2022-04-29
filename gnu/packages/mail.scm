@@ -3366,25 +3366,8 @@ filtering, digest delivery, and more.")
     (description
      "The mailmanclient library provides official Python bindings for
 the GNU Mailman 3 REST API.")
-    (properties `((python2-variant . ,(delay python2-mailmanclient))))
     (license license:lgpl3+)))
 
-;; This is the last version which supports Python-2.
-(define-public python2-mailmanclient
-  (let ((base (package-with-python2
-                (strip-python2-variant python-mailmanclient))))
-    (package
-      (inherit base)
-      (version "3.1.1")
-      (source
-        (origin
-          (method url-fetch)
-          (uri (pypi-uri "mailmanclient" version))
-          (sha256
-           (base32
-            "0fdfs5g3pf30v2i7w18pdkv9xnfxmfcv66mzv56dck0a1igq07m3"))))
-      (propagated-inputs
-       (list python2-six python2-httplib2)))))
 
 (define-public mlmmj
   (package
