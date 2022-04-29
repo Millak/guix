@@ -5285,39 +5285,6 @@ interrupted by stop codons.  OrfM finds and prints these ORFs.")
     (home-page "https://github.com/wwood/OrfM")
     (license license:lgpl3+)))
 
-(define-public python2-pbcore
-  (package
-    (name "python2-pbcore")
-    (version "1.2.10")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pbcore" version))
-              (sha256
-               (base32
-                "1kjmv891d6qbpp4shhhvkl02ff4q5xlpnls2513sm2cjcrs52f1i"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2               ;pbcore < 2.0 requires Python 2.7
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'remove-sphinx-dependency
-                    (lambda _
-                      ;; Sphinx is only required for documentation tests, which
-                      ;; we do not run; furthermore it depends on python2-sphinx
-                      ;; which is no longer maintained.
-                      (substitute* "requirements-dev.txt"
-                        (("^sphinx") ""))
-                      #t)))))
-    (propagated-inputs
-     (list python2-cython python2-numpy python2-pysam python2-h5py))
-    (native-inputs
-     (list python2-nose python2-pyxb))
-    (home-page "https://pacificbiosciences.github.io/pbcore/")
-    (synopsis "Library for reading and writing PacBio data files")
-    (description
-     "The pbcore package provides Python APIs for interacting with PacBio data
-files and writing bioinformatics applications.")
-    (license license:bsd-3)))
-
 (define-public prank
   (package
     (name "prank")
