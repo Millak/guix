@@ -2659,9 +2659,6 @@ pytest report.")
      "Python-pytest-catchlog is a pytest plugin to catch log messages.")
     (license license:expat)))
 
-(define-public python2-pytest-capturelog
-  (package-with-python2 python-pytest-capturelog))
-
 (define-public python-pytest-catchlog
   (package
     (name "python-pytest-catchlog")
