@@ -13430,9 +13430,6 @@ Note that this module and the @code{python-magic} module both provide a
 developed separately, both serve the same purpose: provide Python bindings for
 libmagic.")))
 
-(define-public python2-file
-  (package-with-python2 python-file))
-
 (define-public python-pydevd
   ;; Use the latest commit, which includes cleanups that removes Python 2
   ;; syntax that would fail to build.
