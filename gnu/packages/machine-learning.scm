@@ -1128,54 +1128,7 @@ computing environments.")
     (description
      "Scikit-learn provides simple and efficient tools for data mining and
 data analysis.")
-    (properties `((python2-variant . ,(delay python2-scikit-learn))))
     (license license:bsd-3)))
-
-;; scikit-learn 0.22 and later only supports Python 3, so we stick with
-;; an older version here.
-(define-public python2-scikit-learn
-  (let ((base (package-with-python2 (strip-python2-variant python-scikit-learn))))
-    (package
-      (inherit base)
-      (version "0.20.4")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/scikit-learn/scikit-learn")
-                      (commit version)))
-                (file-name (git-file-name "python-scikit-learn" version))
-                (sha256
-                 (base32
-                  "08zbzi8yx5wdlxfx9jap61vg1malc9ajf576w7a0liv6jvvrxlpj"))))
-      (arguments
-       `(#:python ,python-2
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'build 'build-ext
-             (lambda _ (invoke "python" "setup.py" "build_ext" "--inplace")))
-           (replace 'check
-             (lambda* (#:key tests? #:allow-other-keys)
-               (when tests?
-                 ;; Restrict OpenBLAS threads to prevent segfaults while testing!
-                 (setenv "OPENBLAS_NUM_THREADS" "1")
-
-                 ;; Some tests require write access to $HOME.
-                 (setenv "HOME" "/tmp")
-
-                 (invoke "pytest" "sklearn" "-m" "not network"
-                         "-k"
-                         (string-append
-                          ;; This test tries to access the internet.
-                          "not test_load_boston_alternative"
-                          ;; This test fails for unknown reasons
-                          " and not test_rank_deficient_design"))))))))
-      (inputs
-       (list openblas))
-      (native-inputs
-       (list python2-pytest python2-pandas ;for tests
-             python2-cython))
-      (propagated-inputs
-       (list python2-numpy python2-scipy python2-joblib)))))
 
 (define-public python-threadpoolctl
   (package
