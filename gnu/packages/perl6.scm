@@ -824,20 +824,19 @@ character numbering.")
       (name "perl6-xml-writer")
       (version (git-version "0.0.0" revision commit))
       (source
-        (origin
-          (method git-fetch)
-          (uri (git-reference
-                 (url "https://github.com/masak/xml-writer")
-                 (commit commit)))
-          (file-name (git-file-name name version))
-          (sha256
-           (base32
-            "1kwrf7akp70kyzw1b90khp71a6hpilihwndy2jsjpffcd4hd4m4z"))))
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/masak/xml-writer")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1kwrf7akp70kyzw1b90khp71a6hpilihwndy2jsjpffcd4hd4m4z"))))
       (build-system rakudo-build-system)
       (arguments '(#:with-zef? #f))
       (home-page "https://github.com/masak/xml-writer")
-      (synopsis "Perl 6 module to generate XML")
-      (description "@code{XML::Writer} is a module for creating XML in Perl 6.")
+      (synopsis "Raku module to generate XML")
+      (description "@code{XML::Writer} is a module for creating XML in Raku.")
       (license license:artistic2.0))))
 
 (define-public perl6-zef
