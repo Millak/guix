@@ -16600,33 +16600,6 @@ ambiguities (forward vs. backward slashes, etc.).
 encoding algorithms to do fuzzy string matching.")
     (license license:bsd-2)))
 
-(define-public python2-unicodecsv
-  (package
-    (name "python2-unicodecsv")
-    (version "0.14.1")
-    (source (origin
-             (method git-fetch)
-             ;; The test suite is not included in the PyPi release.
-             ;; https://github.com/jdunck/python-unicodecsv/issues/19
-             (uri (git-reference
-                    (url "https://github.com/jdunck/python-unicodecsv")
-                    (commit version)))
-             (file-name (git-file-name name version))
-             (sha256
-              (base32
-               "15hx2k41a2lpv4hcml9zp4cvlx1171mnb5s4s13xc1pxkq3vgdjy"))))
-    (build-system python-build-system)
-    (arguments
-     `(;; It supports Python 3, but Python 3 can already do Unicode CSV.
-       #:python ,python-2))
-    (native-inputs
-     (list python2-unittest2))
-    (home-page "https://github.com/jdunck/python-unicodecsv")
-    (synopsis "Unicode CSV module for Python 2")
-    (description "Unicodecsv is a drop-in replacement for Python 2.7's CSV
-module, adding support for Unicode strings.")
-    (license license:bsd-2)))
-
 (define-public python-pdfminer-six
   (package
     (name "python-pdfminer-six")
