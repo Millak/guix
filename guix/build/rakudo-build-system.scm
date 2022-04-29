@@ -59,7 +59,7 @@
           #t)
         (begin
           (let ((inst (string-append (assoc-ref inputs "rakudo")
-                                     "/share/perl6/tools/install-dist.p6")))
+                                     "/share/perl6/tools/install-dist.raku")))
             (setenv "RAKUDO_RERESOLVE_DEPENDENCIES" "0")
             (setenv "RAKUDO_MODULE_DEBUG" "1") ; be verbose while building
             (invoke inst (string-append "--to=" perl6) "--for=site"))))))
