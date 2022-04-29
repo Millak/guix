@@ -17446,9 +17446,6 @@ application service.  It is designed to be easy to use and to avoid common
 programming errors.")
     (license license:asl2.0)))
 
-(define-public python2-kazoo
-  (package-with-python2 python-kazoo))
-
 (define-public python-pykafka
   (package
     (name "python-pykafka")
