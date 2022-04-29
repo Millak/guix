@@ -3163,32 +3163,6 @@ using Guix System.")
     ;; GNU Library (not Lesser) General Public License.
     (license license:lgpl2.0+)))
 
-(define-public raul
-  (package
-    (name "raul")
-    (version "0.8.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://download.drobilla.net/raul-"
-                                  version ".tar.bz2"))
-              (sha256
-               (base32
-                "09ms40xc1x6qli6lxkwn5ibqh62nl9w7dq0b6jh1q2zvnrxwsd8b"))))
-    (build-system waf-build-system)
-    (arguments
-     `(#:python ,python-2
-       #:tests? #f)) ; no check target
-    (inputs
-     (list glib boost))
-    (native-inputs
-     (list pkg-config))
-    (home-page "https://drobilla.net/software/raul/")
-    (synopsis "Real-time audio utility library")
-    (description
-     "Raul (Real-time Audio Utility Library) is a C++ utility library primarily
-aimed at audio/musical applications.")
-    (license license:gpl2+)))
-
 (define-public raul-devel
   (let ((commit "4db870b2b20b0a608ec0283139056b836c5b1624")
         (revision "1"))
