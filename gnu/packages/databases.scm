@@ -3546,16 +3546,7 @@ value in database is immediately visible to other processes accessing the same
 database.  Concurrency is possible because the values are stored in separate
 files.  Hence the “database” is a directory where all files are governed by
 PickleShare.")
-    (properties `((python2-variant . ,(delay python2-pickleshare))))
     (license license:expat)))
-
-(define-public python2-pickleshare
-  (let ((pickleshare (package-with-python2
-                      (strip-python2-variant python-pickleshare))))
-    (package (inherit pickleshare)
-      (propagated-inputs (modify-inputs (package-propagated-inputs
-                                                        pickleshare)
-                           (prepend python2-pathlib2))))))
 
 (define-public python-apsw
   (package
