@@ -2512,9 +2512,6 @@ Python's logging module.  The @code{ColoredFormatter} class inherits from
 messages in color.")
     (license license:expat)))
 
-(define-public python2-coloredlogs
-  (package-with-python2 python-coloredlogs))
-
 (define-public python-editorconfig
   (package
     (name "python-editorconfig")
