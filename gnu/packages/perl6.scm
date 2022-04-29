@@ -487,6 +487,29 @@ It will of course also be needed in classes thar are going to use
 @code{JSON::Marshal} or @code{JSON::Unmarshal} for serialisation/de-serialisation.")
     (license license:artistic2.0)))
 
+(define-public perl6-json-optin
+  (package
+    (name "perl6-json-optin")
+    (version "0.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jonathanstowe/JSON-OptIn")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0iz1wd3rfcb3kdc8cylwfxr8p02bpivk7kcf3dmm2l4mmdhyk7np"))))
+    (build-system rakudo-build-system)
+    (arguments '(#:with-zef? #f))
+    (home-page "https://github.com/jonathanstowe/JSON-OptIn")
+    (synopsis "Provide a trait and role to identify opt-in JSON serialization")
+    (description "This provides a trait and a role for the identification of
+`opt in' serializable attributes in, e.g., @code{JSON::Marshal}.  It's
+probably not necessary to use this directly as it will be required by, e.g.,
+@code{JSON::Name}, but it's just more convenient to package it separately.")
+    (license license:artistic2.0)))
+
 (define-public perl6-json-unmarshal
   ;; Last commit was May 2017
   (let ((commit "e1b6288c5f3165058f36c0f4e171cdf2dfd640da")
