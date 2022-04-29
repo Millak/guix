@@ -375,42 +375,6 @@ through the Display Data Channel Command Interface (@dfn{DDC/CI}) protocol.")
 human-readable format and checks if it conforms to the standards.")
       (license license:expat))))
 
-(define-public h-client
-  (let ((version "0.0a0")
-        (revision 138))
-    (package
-      (name "h-client")
-      (version (string-append version "-" (number->string revision)))
-      (source
-       (origin
-         (method svn-fetch)
-         (uri
-          (svn-reference
-           (url "https://svn.savannah.nongnu.org/svn/h-client/trunk/h-client")
-           (revision revision)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1pdd2qhyaa5vh7z4rkpwjlby1flkwhzmp8zlglalx5y5sv95l4kp"))))
-      (build-system python-build-system)
-      (arguments
-       `(#:python ,python-2
-         ;; Tests depends on /etc/os-release which does not exist in the
-         ;; build container.
-         #:tests? #f))
-      (inputs
-       (list python-2 python2-pycurl python2-pygtk pciutils usbutils))
-      (synopsis "Graphical client for the h-node hardware database
-project")
-      (description
-       "The h-node project (https://www.h-node.org) aims to build a database of
-hardware that works with fully free operating systems.
-h-client is a GTK+ graphical client that is able to retrieves information on
-the hardware inside the computer it's running on, and on peripherals connected
-to it, and help you submit that information to the h-node project along with
-whether the hardware works with a fully free operating system or not.")
-      (home-page "https://savannah.nongnu.org/projects/h-client/")
-      (license license:gpl3+))))
-
 (define-public headsetcontrol
   (package
     (name "headsetcontrol")
