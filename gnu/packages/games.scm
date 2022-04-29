@@ -70,6 +70,7 @@
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2022 Roman Riabenko <roman@riabenko.com>
+;;; Copyright © 2022 zamfofex <zamfofex@twdb.moe>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -140,6 +141,7 @@
   #:use-module (gnu packages golang)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages graphics)
+  #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gsasl)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
@@ -12672,3 +12674,44 @@ disassembly of the DOS version, extended with new features.")
 Magic II (aka HOMM2) game engine.  It requires assets and game resources to
 play; it will look for them at @file{~/.local/share/fheroes2} folder.")
     (license license:gpl2)))
+
+(define-public liquidwar6
+  (package
+    (name "liquidwar6")
+    (version "0.6.3902")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/liquidwar6/" "liquidwar6-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "1976nnl83d8wspjhb5d5ivdvdxgb8lp34wp54jal60z4zad581fn"))))
+    (native-inputs (list doxygen))
+    (inputs (list guile-2.0
+                  zlib
+                  expat
+                  sqlite
+                  ncurses
+                  readline
+                  curl
+                  python-2
+                  libxslt
+                  perl
+                  graphviz
+                  glu
+                  libcaca
+                  (sdl-union (list sdl sdl-image sdl-ttf sdl-mixer))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "--enable-allinone" "CFLAGS=-Wno-error -O2 -g"
+                   (string-append "CPPFLAGS=" "-I"
+                                  #$(this-package-input "sdl-union")
+                                  "/include/SDL"))))
+    (synopsis "Liquid War 6 is a unique multiplayer wargame.")
+    (description
+     "Liquid War 6 is a unique multiplayer war game.  Your army is a blob of
+liquid and you have to try and eat your opponents.  Rules are very simple yet
+original, they have been invented by Thomas Colcombet.")
+    (home-page "https://www.gnu.org/software/liquidwar6/")
+    (license license:gpl3+)))
