@@ -4026,9 +4026,6 @@ of components for parsing, generating, and processing HTML, XML or other
 textual content for output generation on the web.")
     (license license:bsd-3)))
 
-(define-public python2-genshi
-  (package-with-python2 python-genshi))
-
 (define-public python-flask-principal
   (package
     (name "python-flask-principal")
