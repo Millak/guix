@@ -415,24 +415,24 @@ respectively.")
 (define-public perl6-json-fast
   (package
     (name "perl6-json-fast")
-    (version "0.10")
+    (version "0.17")
     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/timo/json_fast")
-               (commit version)))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "1g8hr1mdrxwdpzc7hvs9l5r12phvba6y6a5chgkj90ing77ji4b2"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/timo/json_fast")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gckca9m6jkz6s59rpwf59721q6icfm45jj49sw3vdjr6jh2dgdb"))))
     (build-system rakudo-build-system)
     (arguments '(#:with-zef? #f))
     (home-page "https://github.com/timo/json_fast")
-    (synopsis "Perl6 json parser")
-    (description "A naive imperative json parser in pure perl6 (but with direct
+    (synopsis "Raku JSON parser")
+    (description "A naive imperative JSON parser in pure Raku (but with direct
 access to @code{nqp::} ops), to evaluate performance against @code{JSON::Tiny}.
-It is a drop-in replacement for @code{JSON::Tiny}'s from-json and to-json subs,
-but it offers a few extra features.")
+It is a drop-in replacement for @code{JSON::Tiny}'s @code{from-json} and
+@code{to-json} subs, but it offers a few extra features.")
     (license license:artistic2.0)))
 
 (define-public perl6-json-marshal
