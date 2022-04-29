@@ -3892,9 +3892,6 @@ memory usage and transliteration quality.")
     ;; The user can choose either license.
     (license (list license:clarified-artistic license:gpl2+))))
 
-(define-public python2-text-unidecode
-  (package-with-python2 python-text-unidecode))
-
 (define-public python-pyjwt
   (package
     (name "python-pyjwt")
