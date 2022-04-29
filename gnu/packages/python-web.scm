@@ -3880,9 +3880,6 @@ users' sessions over extended periods of time.")
 library for Python")
     (license license:asl2.0)))
 
-(define-public python2-oauth2client
-  (package-with-python2 python-oauth2client))
-
 (define-public python-flask-oidc
   (package
     (name "python-flask-oidc")
