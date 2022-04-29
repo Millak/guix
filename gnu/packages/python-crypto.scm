@@ -714,9 +714,6 @@ library.")
     (description "Ed25519 public-key signatures")
     (license license:expat)))
 
-(define-public python2-ed25519
-  (package-with-python2 python-ed25519))
-
 (define-public python-axolotl-curve25519
   (package
     (name "python-axolotl-curve25519")
