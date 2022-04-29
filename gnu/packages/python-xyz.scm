@@ -3294,9 +3294,6 @@ matching them against a list of media-ranges.")
 server.")
     (license license:asl2.0)))
 
-(define-public python2-miniboa
-  (package-with-python2 python-miniboa))
-
 (define-public python-pafy
   (package
     (name "python-pafy")
