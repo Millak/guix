@@ -24939,9 +24939,6 @@ Currently, all stateless Readline commands are implemented.  Yanking and history
 are not supported.")
     (license license:expat)))
 
-(define-public python2-readlike
-  (package-with-python2 python-readlike))
-
 (define-public python-reparser
   (package
     (name "python-reparser")
