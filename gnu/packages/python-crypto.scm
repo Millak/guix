@@ -1320,9 +1320,6 @@ service_identity implements RFC 6125 fully and plans to add other
 relevant RFCs too.")
     (license license:expat)))
 
-(define-public python2-service-identity
-  (package-with-python2 python-service-identity))
-
 (define-public python-hkdf
   (package
     (name "python-hkdf")
