@@ -2480,9 +2480,6 @@ some helpful Python 2 compatibility convenience methods.")
 add the log levels NOTICE, SPAM, SUCCESS and VERBOSE.")
     (license license:expat)))
 
-(define-public python2-verboselogs
-  (package-with-python2 python-verboselogs))
-
 (define-public python-coloredlogs
   (package
     (name "python-coloredlogs")
