@@ -680,17 +680,16 @@ with optional labels, or xy plots).")
 (define-public perl6-tap-harness
   (package
     (name "perl6-tap-harness")
-    (version "0.0.7")
+    (version "0.3.5")
     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/perl6/tap-harness6")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32
-          "1lig8i0my3fgqvlay9532xslbf3iis2d7wz89gniwvwqffi2kh6r"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Raku/tap-harness6")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "162crdy8g6xhnry26pjma2panm0c79n26igmljg79al4bqj9lyc9"))))
     (build-system rakudo-build-system)
     (arguments
      '(#:with-zef? #f
@@ -699,9 +698,9 @@ with optional labels, or xy plots).")
        (modify-phases %standard-phases
          (replace 'check
            (lambda _
-             (invoke "perl6" "-Ilib" "bin/prove6" "-l" "t"))))))
-    (home-page "https://github.com/perl6/tap-harness6/")
-    (synopsis "TAP harness for perl6")
+             (apply invoke "raku" "-MTAP" "-Ilib" (find-files "t" "\\.t$")))))))
+    (home-page "https://github.com/Raku/tap-harness6")
+    (synopsis "TAP harness for Raku")
     (description "This module provides the @command{prove6} command which runs a
 TAP based test suite and prints a report.  The @command{prove6} command is a
 minimal wrapper around an instance of this module.")
