@@ -4347,9 +4347,6 @@ It is currently fairly complete for PCM devices, and has some support for
 mixers.")
     (license license:psfl)))
 
-(define-public python2-pyalsaaudio
-  (package-with-python2 python-pyalsaaudio))
-
 (define-public ldacbt
   (package
     (name "ldacbt")
