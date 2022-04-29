@@ -1085,9 +1085,6 @@ TREZOR Hardware Wallet.")
 the KeepKey Hardware Wallet.")
     (license license:lgpl3)))
 
-(define-public python2-keepkey
-  (package-with-python2 python-keepkey))
-
 (define-public ledger-agent
   (package
     (name "ledger-agent")
