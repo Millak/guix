@@ -19605,18 +19605,6 @@ while only declaring the test-specific fields.")
      several utilities, as well as an API for building localization tools.")
     (license license:gpl2+)))
 
-;; Required for virtaal, newer versions do not build with python2
-(define-public python2-translate-toolkit
-  (package-with-python2
-    (package
-      (inherit python-translate-toolkit)
-      (version "2.1.0")
-      (source
-       (origin
-         (method url-fetch)
-         (uri (pypi-uri "translate-toolkit" version ".tar.bz2"))
-         (sha256
-          (base32 "1vlkwrg83vb17jc36pmwh2b7jphwf390lz0jw8hakcg16qhwypvq")))))))
 
 (define-public python-packaging
   (package/inherit python-packaging-bootstrap
