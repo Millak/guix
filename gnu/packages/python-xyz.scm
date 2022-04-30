@@ -18976,9 +18976,6 @@ JSON) codec.")
      a file-like object from which an arbitrarily-sized key can be read.")
     (license license:expat)))
 
-(define-public python2-pbkdf2
-  (package-with-python2 python-pbkdf2))
-
 (define-public python-qrcode
   (package
     (name "python-qrcode")
