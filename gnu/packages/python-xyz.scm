@@ -26152,9 +26152,6 @@ be necessary when using @code{cmd}.")
 allows you, from Python code, to “fix” invalid (X)HTML markup.")
     (license license:expat)))
 
-(define-public python2-pytidylib
-  (package-with-python2 python-pytidylib))
-
 (define-public python-mujson
   (package
     (name "python-mujson")
