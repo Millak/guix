@@ -9848,9 +9848,6 @@ some are not yet implemented).")
 interfaces in an easy and portable manner.")
     (license license:expat)))
 
-(define-public python2-netifaces
-  (package-with-python2 python-netifaces))
-
 (define-public python-networkx
   (package
     (name "python-networkx")
