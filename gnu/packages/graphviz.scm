@@ -208,9 +208,6 @@ interfaces for other technical domains.")
 visualization tool suite.")
     (license license:expat)))
 
-(define-public python2-graphviz
-  (package-with-python2 python-graphviz))
-
 (define-public python-pygraphviz
   (package
     (name "python-pygraphviz")
