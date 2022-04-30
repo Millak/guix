@@ -6418,9 +6418,6 @@ computations, most specially if they are not memory-bounded (e.g. those using
 transcendental functions).")
     (license license:expat)))
 
-(define-public python2-numexpr
-  (package-with-python2 python-numexpr))
-
 (define-public python-cycler
   (package
     (name "python-cycler")
