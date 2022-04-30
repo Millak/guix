@@ -23892,9 +23892,6 @@ data.")
 they use the same path.")
     (license license:bsd-2)))
 
-(define-public python2-locket
-  (package-with-python2 python-locket))
-
 (define-public python-blosc
   (package
     (name "python-blosc")
