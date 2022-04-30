@@ -9698,9 +9698,6 @@ the GObject Introspection bindings to libnotify for non-GTK applications.")
     (license (list license:bsd-2
                    license:lgpl2.1+))))
 
-(define-public python2-notify2
-  (package-with-python2 python-notify2))
-
 ;; beautifulsoup4 has a totally different namespace than 3.x,
 ;; and pypi seems to put it under its own name, so I guess we should too
 (define-public python-beautifulsoup4
