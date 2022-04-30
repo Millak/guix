@@ -10862,34 +10862,19 @@ cyclomatic complexity of Python source code.")
                 "0y732h02n2aih8gzyfj4bbhg4jgahyv84mjwfindk2g6w45rka0s"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (invoke "pytest" "-v"))))))
-    (propagated-inputs
-     (list python-pycodestyle python-entrypoints python-pyflakes
-           python-mccabe))
-    (native-inputs
-     (list python-mock python-pytest))
+     `(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key inputs outputs #:allow-other-keys)
+                      (add-installed-pythonpath inputs outputs)
+                      (invoke "pytest" "-v"))))))
+    (propagated-inputs (list python-pycodestyle python-entrypoints
+                             python-pyflakes python-mccabe))
+    (native-inputs (list python-mock python-pytest))
     (home-page "https://gitlab.com/pycqa/flake8")
-    (synopsis
-      "The modular source code checker: pep8, pyflakes and co")
+    (synopsis "The modular source code checker: pep8, pyflakes and co")
     (description
-      "Flake8 is a wrapper around PyFlakes, pep8 and python-mccabe.")
-    (properties `((python2-variant . ,(delay python2-flake8))))
+     "Flake8 is a wrapper around PyFlakes, pep8 and python-mccabe.")
     (license license:expat)))
-
-(define-public python2-flake8
-  (let ((base (package-with-python2 (strip-python2-variant python-flake8))))
-    (package/inherit base
-      (propagated-inputs
-       `(("python2-configparser" ,python2-configparser)
-         ("python2-enum34" ,python2-enum34)
-         ("python2-functools32" ,python2-functools32)
-         ("python2-typing" ,python2-typing)
-          ,@(package-propagated-inputs base))))))
 
 (define-public python-flake8-3.8
   (package
