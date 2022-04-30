@@ -18451,15 +18451,7 @@ Design spec without sacrificing ease of use or application performance.")
     (synopsis "Package to check if a file is binary or text")
     (description "Ultra-lightweight pure Python package to check if a file is
      binary or text.")
-    (license license:bsd-3)
-    (properties `((python2-variant . ,(delay python2-binaryornot))))))
-
-(define-public python2-binaryornot
-  (let ((base (package-with-python2 (strip-python2-variant python-binaryornot))))
-    (package/inherit base
-      (propagated-inputs
-       `(("python2-enum34" ,python2-enum34)
-         ,@(package-propagated-inputs base))))))
+    (license license:bsd-3)))
 
 (define-public binwalk
   (package
