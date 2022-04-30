@@ -10547,17 +10547,6 @@ full-featured computer algebra system (CAS) while keeping the code as simple
 as possible in order to be comprehensible and easily extensible.")
     (license license:bsd-3)))
 
-(define-public python2-sympy
-  (package
-    (inherit (package-with-python2 python-sympy))
-    (version "1.5.1")  ; last release for python2
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "sympy" version))
-       (sha256
-        (base32 "0zjfbxlkazzh9z22gf62azrkipb2xw7mpzjz3wl1az9893bh2yfp"))))))
-
 (define-public python-q
   (package
     (name "python-q")
