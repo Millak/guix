@@ -2435,9 +2435,6 @@ brokering, etc.) for which the proxy is responsible.")
 (define-public python-zope-proxy-bootstrap
   (python-zope-bootstrap-package python-zope-proxy))
 
-(define-public python2-zope-proxy
-  (package-with-python2 python-zope-proxy))
-
 (define-public python-zope-hookable
   (package
     (name "python-zope-hookable")
