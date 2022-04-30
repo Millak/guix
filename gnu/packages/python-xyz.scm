@@ -6815,9 +6815,6 @@ branch created by Mario Vilas to address some open issues,
 as the original project seems to have been abandoned circa 2007.")
     (license license:bsd-3)))
 
-(define-public python2-socksipy-branch
-  (package-with-python2 python-socksipy-branch))
-
 (define-public python-socksipychain
   (package
     (name "python-socksipychain")
