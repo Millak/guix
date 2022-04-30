@@ -3651,9 +3651,6 @@ something else) to Python data-types.")
         (base32
          "10zqvpaky51kgb8nd42bk7jwl8cn2zvayxjpdc1wwmpybj92x67s"))))))
 
-(define-public python2-schema-0.5
-  (package-with-python2 python-schema-0.5))
-
 (define-public python-kitchen
   (package
     (name "python-kitchen")
