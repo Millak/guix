@@ -23069,9 +23069,6 @@ the public ICANN TLDs and their exceptions.  It can optionally support the
 Public Suffix List's private domains as well.")
     (license license:bsd-3)))
 
-(define-public python2-tldextract
-  (package-with-python2 python-tldextract))
-
 (define-public python-tldr
   (package
     (name "python-tldr")
