@@ -5556,7 +5556,7 @@ definitions.")
 (define-public ocaml-ppx-variants-conv
   (package
     (name "ocaml-ppx-variants-conv")
-    (version "0.14.2")
+    (version "0.15.0")
     (source
      (origin
        (method git-fetch)
@@ -5566,7 +5566,7 @@ definitions.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1p11fiz4m160hs0xzg4g9rxchp053sz3s3d1lyciqixad1xi47a4"))))
+         "1dh0bw9dn246k00pymf59yjkl6x6bxd76lkk9b5xpq2692wwlc3s"))))
     (build-system dune-build-system)
     (propagated-inputs
      (list ocaml-base ocaml-variantslib ocaml-migrate-parsetree
