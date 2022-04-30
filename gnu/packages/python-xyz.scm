@@ -12442,9 +12442,6 @@ primary use case is APIs defined before keyword-only parameters existed.")
 suitable for a wide range of protocols based on the ASN.1 specification.")
     (license license:bsd-2)))
 
-(define-public python2-pyasn1
-  (package-with-python2 python-pyasn1))
-
 (define-public python-pyasn1-modules
   (package
     (name "python-pyasn1-modules")
