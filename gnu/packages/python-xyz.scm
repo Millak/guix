@@ -18580,15 +18580,7 @@ JSON) codec.")
      example when a master process is forked: changing the children's title
      allows identifying the task each process is busy with.  The technique
      is used by PostgreSQL and the OpenSSH Server for example.")
-    (license license:bsd-3)
-    (properties `((python2-variant . ,(delay python2-setproctitle))))))
-
-(define-public python2-setproctitle
-  (let ((base (package-with-python2
-               (strip-python2-variant python-setproctitle))))
-    (package/inherit base
-      (native-inputs `(("python2-nose" ,python2-nose)
-                       ,@(package-native-inputs base))))))
+    (license license:bsd-3)))
 
 (define-public python-validictory
   (package
