@@ -19461,9 +19461,6 @@ JSON) codec.")
                                                        transducers).")
     (license license:expat)))
 
-(define-public python2-automat
-  (package-with-python2 python-automat))
-
 (define-public python-m2r
   (package
     (name "python-m2r")
