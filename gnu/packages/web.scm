@@ -6354,9 +6354,6 @@ internetarchive python module for programmatic access to archive.org.")
 snippets on @url{https://commandlinefu.com}.")
       (license license:expat))))
 
-(define-public python2-clf
-  (package-with-python2 python-clf))
-
 (define-public rss-bridge
   (package
     (name "rss-bridge")
