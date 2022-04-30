@@ -1985,8 +1985,7 @@ originally developed at FriendFeed.  By using non-blocking network I/O,
 Tornado can scale to tens of thousands of open connections, making it ideal
 for long polling, WebSockets, and other applications that require a long-lived
 connection to each user.")
-    (license license:asl2.0)
-    (properties `((python2-variant . ,(delay python2-tornado))))))
+    (license license:asl2.0)))
 
 (define-public python-tornado-6
   (package
@@ -2018,16 +2017,6 @@ Tornado can scale to tens of thousands of open connections, making it ideal
 for long polling, WebSockets, and other applications that require a long-lived
 connection to each user.")
     (license license:asl2.0)))
-
-(define-public python2-tornado
-  (let ((tornado (package-with-python2 (strip-python2-variant python-tornado))))
-    (package/inherit tornado
-      (propagated-inputs
-       `(("python2-backport-ssl-match-hostname"
-          ,python2-backport-ssl-match-hostname)
-         ("python2-backports-abc" ,python2-backports-abc)
-         ("python2-singledispatch" ,python2-singledispatch)
-          ,@(package-propagated-inputs tornado))))))
 
 (define-public python-tornado-http-auth
   (package
