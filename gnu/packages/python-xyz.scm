@@ -8222,9 +8222,6 @@ Pexpect works like Don Libes’ Expect.  Pexpect allows your script to spawn a
 child application and control it as if a human were typing commands.")
     (license license:isc)))
 
-(define-public python2-pexpect
-  (package-with-python2 python-pexpect))
-
 (define-public python-setuptools-scm
   (package
     (name "python-setuptools-scm")
