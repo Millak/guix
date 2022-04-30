@@ -378,9 +378,6 @@ under several distributions that's hard or impossible to figure out.")
 ISO 8601 dates, time and duration.")
     (license bsd-3)))
 
-(define-public python2-isodate
-  (package-with-python2 python-isodate))
-
 (define-public python-iso8601
   (package
     (name "python-iso8601")
