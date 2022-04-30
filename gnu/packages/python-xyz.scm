@@ -22526,9 +22526,6 @@ round-trip parsing for different Python versions (in multiple Python versions).
 Parso is also able to list multiple syntax errors in your Python file.")
     (license license:expat)))
 
-(define-public python2-parso
-  (package-with-python2 python-parso))
-
 (define-public python-async-generator
   (package
     (name "python-async-generator")
