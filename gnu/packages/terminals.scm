@@ -1063,9 +1063,6 @@ pyte is a fork of vt102, which was an incomplete pure Python implementation
 of VT100 terminal.")
     (license license:lgpl3+)))
 
-(define-public python2-pyte
-  (package-with-python2 python-pyte))
-
 (define-public python-blessings
   (package
     (name "python-blessings")
