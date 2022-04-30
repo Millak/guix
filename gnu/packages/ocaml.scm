@@ -5847,10 +5847,10 @@ many values).")
 (define-public ocaml-ppx-here
   (package
     (name "ocaml-ppx-here")
-    (version "0.14.0")
+    (version "0.15.0")
     (source
      (janestreet-origin "ppx_here" version
-                        "0b444djy68v6ji0ypwv5l02pkl151qzrgg96lyhl8dxfrzvj1zkj"))
+                        "1pyaw31j9n6r98ar947n3j2qj6rrszbdxr8jghk96j4ajdy05g65"))
     (build-system dune-build-system)
     (arguments
      ;; broken tests
