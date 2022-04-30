@@ -6076,7 +6076,7 @@ to record their startup time.")
 (define-public ocaml-ppx-fixed-literal
   (package
     (name "ocaml-ppx-fixed-literal")
-    (version "0.14.0")
+    (version "0.15.0")
     (source
       (origin
         (method git-fetch)
@@ -6085,7 +6085,7 @@ to record their startup time.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-          (base32 "0s7rb4dhz4ibhh42a9sfxjj3zbwfyfmaihr92hpdv5j9xqn3n8mi"))))
+          (base32 "10siwcqrqa4gh0mg6fkaby0jjskc01r81pcblc67h3vmbjjh08j9"))))
     (build-system dune-build-system)
     (arguments
      `(#:tests? #f)); no tests
