@@ -1118,15 +1118,7 @@ profiling and limiting process resources and management of running processes.
 It implements many functionalities offered by command line tools such as: ps,
 top, lsof, netstat, ifconfig, who, df, kill, free, nice, ionice, iostat,
 iotop, uptime, pidof, tty, taskset, pmap.")
-    (properties `((python2-variant . ,(delay python2-psutil))))
     (license license:bsd-3)))
-
-(define-public python2-psutil
-  (let ((base (package-with-python2 (strip-python2-variant python-psutil))))
-    (package/inherit base
-      (propagated-inputs
-       `(("python2-enum34" ,python2-enum34)         ;optional
-         ,@(package-propagated-inputs base))))))
 
 (define-public python-shapely
   (package
