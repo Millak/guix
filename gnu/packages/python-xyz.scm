@@ -10376,9 +10376,6 @@ provides convenient short API for print out of values, tracebacks, and
 falling into the Python interpreter.")
     (license license:asl2.0)))
 
-(define-public python2-q
-  (package-with-python2 python-q))
-
 (define-public python-xlib
   (package
     (name "python-xlib")
