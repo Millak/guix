@@ -6240,11 +6240,11 @@ position.")
 (define-public ocaml-ppx-cold
   (package
     (name "ocaml-ppx-cold")
-    (version "0.14.0")
+    (version "0.15.0")
     (home-page "https://github.com/janestreet/ppx_cold")
     (source
      (janestreet-origin "ppx_cold" version
-                        "1madfzhpir9amnxmg530n70vll0jrl59vyp71miji73i6b9sy6n2"))
+                        "13gqmfw2sq80anag9bwpm35600l1fnfn7mh9cbj1291k84rsx7wb"))
     (build-system dune-build-system)
     (arguments `(#:test-target "tests"))
     (propagated-inputs
