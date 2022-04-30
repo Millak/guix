@@ -2666,9 +2666,6 @@ It will honor all the options you pass to the Nose coverage plugin,
 especially -cover-package.")
     (license license:expat)))
 
-(define-public python2-nosexcover
-  (package-with-python2 python-nosexcover))
-
 (define-public python-discover
   (package
     (name "python-discover")
