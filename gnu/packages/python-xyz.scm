@@ -19280,9 +19280,6 @@ JSON) codec.")
      console.")
     (license license:bsd-3)))
 
-(define-public python2-qrcode
-  (package-with-python2 python-qrcode))
-
 (define-public python-rst2ansi
   (package
     (name "python-rst2ansi")
