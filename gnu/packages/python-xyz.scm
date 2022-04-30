@@ -17382,9 +17382,6 @@ inspection of types defined in the Python standard typing module.")
 until the object is actually required, and caches the result of said call.")
     (license license:bsd-2)))
 
-(define-public python2-lazy-object-proxy
-  (package-with-python2 python-lazy-object-proxy))
-
 (define-public python-dnspython
   (package
     (name "python-dnspython")
