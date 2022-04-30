@@ -182,10 +182,10 @@ OCaml and can effectively bootstrap OCaml 4.07.
 This package produces a native @command{ocamlc} and a bytecode @command{ocamllex}.")
       (license license:expat))))
 
-(define-public ocaml-4.13
+(define-public ocaml-4.14
   (package
     (name "ocaml")
-    (version "4.13.1")
+    (version "4.14.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -194,7 +194,7 @@ This package produces a native @command{ocamlc} and a bytecode @command{ocamllex
                     "/ocaml-" version ".tar.xz"))
               (sha256
                (base32
-                "1s7xwqidpjwfhnpfma4nb93gxfr7g9jfn03s1j03iyavmpgph7ck"))))
+                "0axcc7c23pf4qinz4vxgkba6pwziwbp9i2ydwzar7x9zlp6diarn"))))
     (build-system gnu-build-system)
     (native-search-paths
      (list (search-path-specification
@@ -244,7 +244,7 @@ functional, imperative and object-oriented styles of programming.")
 
 (define-public ocaml-4.09
   (package
-    (inherit ocaml-4.13)
+    (inherit ocaml-4.14)
     (version "4.09.0")
     (source (origin
               (method url-fetch)
@@ -460,7 +460,7 @@ depend: $(STDLIB_MLIS) $(STDLIB_DEPS)"))
        ("perl" ,perl)
        ("pkg-config" ,pkg-config)))))
 
-(define-public ocaml ocaml-4.13)
+(define-public ocaml ocaml-4.14)
 
 (define-public ocamlbuild
   (package
@@ -694,7 +694,7 @@ repository-wide uninstallability checks.")
 (define-public ocaml-down
   (package
     (name "ocaml-down")
-    (version "0.0.3")
+    (version "0.1.0")
     (source
       (origin
         (method url-fetch)
@@ -702,7 +702,7 @@ repository-wide uninstallability checks.")
                             version ".tbz"))
         (sha256
          (base32
-          "1nz2f5j17frgr2vrslcz9klmi6w9sm2vqwwwpi33ngcm3rgmsrlg"))))
+          "1q467y6qz96ndiybpmggdcnrcip49kxw2i93pb54j1xjzkv1vnl1"))))
     (build-system ocaml-build-system)
     (arguments
      `(#:tests? #f ;no tests
@@ -8143,7 +8143,9 @@ libraries.")
        (sha256
         (base32 "0iyhl9z57j53j2jvyqcwmxhbvy23l6g80aa0abmlgwam14yskspf"))))
     (build-system dune-build-system)
-    (arguments `(#:test-target "."))
+    (arguments
+     `(#:tests? #f ;tests assume ocaml 4.13
+       #:test-target "."))
     (propagated-inputs
      (list ocaml-ppxlib
            ocaml-uchar
