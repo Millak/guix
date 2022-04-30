@@ -7891,7 +7891,7 @@ a uniform style.")
 (define-public ocaml-bigstringaf
   (package
     (name "ocaml-bigstringaf")
-    (version "0.8.0")
+    (version "0.9.0")
     (home-page "https://github.com/inhabitedtype/bigstringaf")
     (source
      (origin
@@ -7902,7 +7902,7 @@ a uniform style.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0z69g3bpgw4p7z9h5j70w75rnxfrd8c7nlhqq6xvvkkgbxafm1ll"))))
+         "188j9awxg99vrp2l3rqfmdxdazq5xrjmg1wf62vfqsks9sff6wqx"))))
     (build-system dune-build-system)
     (arguments
      '(#:test-target "."))
