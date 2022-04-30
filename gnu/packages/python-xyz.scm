@@ -19868,9 +19868,6 @@ JSON) codec.")
      if it does not fit, and resized if the terminal size changes.")
     (license license:gpl3+)))
 
-(define-public python2-ttystatus
-  (package-with-python2 python-ttystatus))
-
 (define-public python-astroid
   (package
     (name "python-astroid")
