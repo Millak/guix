@@ -22119,9 +22119,6 @@ takes the code and reformats it to the best formatting that conforms to the
 style guide, even if the original code didn't violate the style guide.")
     (license license:asl2.0)))
 
-(define-public python2-yapf
-  (package-with-python2 python-yapf))
-
 (define-public python-yq
   (package
     (name "python-yq")
