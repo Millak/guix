@@ -6849,9 +6849,6 @@ those files.  It can also efficiently manipulate ranges of integers using set
 operators such as union, intersection, and difference.")
     (license license:asl2.0)))
 
-(define-public python2-pysnptools
-  (package-with-python2 python-pysnptools))
-
 (define-public python-pykdtree
   (package
     (name "python-pykdtree")
