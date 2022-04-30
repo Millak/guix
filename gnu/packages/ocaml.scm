@@ -5603,7 +5603,7 @@ variant types.")
 (define-public ocaml-ppx-custom-printf
   (package
     (name "ocaml-ppx-custom-printf")
-    (version "0.14.1")
+    (version "0.15.0")
     (home-page "https://github.com/janestreet/ppx_custom_printf")
     (source
      (origin
@@ -5614,7 +5614,7 @@ variant types.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0c1m65kn27zvwmfwy7kk46ga76yw2a3ik9jygpy1b6nn6pi026w9"))))
+         "1k8nmq6kwqz2wpkm9ymq749dz1vd8lxrjc711knp1wyz5935hnsv"))))
     (build-system dune-build-system)
     (propagated-inputs
      (list ocaml-base ocaml-ppx-sexp-conv ocaml-migrate-parsetree
