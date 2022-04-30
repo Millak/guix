@@ -1091,9 +1091,6 @@ avoids styling altogether when the output is redirected to something other
 than a terminal.")
     (license license:expat)))
 
-(define-public python2-blessings
-  (package-with-python2 python-blessings))
-
 (define-public python-curtsies
   (package
     (name "python-curtsies")
