@@ -439,9 +439,6 @@ embedded systems.")
 Libraries stack (eo, evas, ecore, edje, emotion, ethumb and elementary).")
     (license license:lgpl3)))
 
-(define-public python2-efl
-  (package-with-python2 python-efl))
-
 (define-public edi
   (package
     (name "edi")
