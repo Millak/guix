@@ -4542,11 +4542,11 @@ packages.")
 (define-public ocaml-time-now
   (package
     (name "ocaml-time-now")
-    (version "0.14.0")
+    (version "0.15.0")
     (source
      (janestreet-origin
       "time_now" version
-      "0hkn2jw4dz5gflnsblskl5wp6z7zbrahwjmaxmsskfviwjg82cqh"))
+      "1a6b1f55mwci1bd8w8vji0qn6wbs60jbwixvwgy4klx2blq57cqk"))
     (build-system dune-build-system)
     (arguments '(#:tests? #f))           ; no tests
     (propagated-inputs
