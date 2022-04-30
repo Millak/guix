@@ -9705,9 +9705,6 @@ toolkit.  Use it to build trees of widgets.")
      "@code{ua-parser} is a Python port of Browserscope's user agent parser.")
     (license license:asl2.0)))
 
-(define-public python2-ua-parser
-  (package-with-python2 python-ua-parser))
-
 (define-public python-user-agents
   (package
     (name "python-user-agents")
