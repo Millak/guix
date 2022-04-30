@@ -6010,7 +6010,7 @@ context such as function arguments.")
 (define-public ocaml-ppx-pipebang
   (package
     (name "ocaml-ppx-pipebang")
-    (version "0.14.0")
+    (version "0.15.0")
     (source
       (origin
         (method git-fetch)
@@ -6019,7 +6019,7 @@ context such as function arguments.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-          (base32 "0450b3p2rpnnn5yyvbkcd3c33jr2z0dp8blwxddaj2lv7nzl5dzf"))))
+          (base32 "0sm5dghyalhws3hy1cc2ih36az1k4q02hcgj6l26gwyma3y4irvq"))))
     (build-system dune-build-system)
     (arguments `(#:tests? #f)); no tests
     (propagated-inputs (list ocaml-ppxlib))
