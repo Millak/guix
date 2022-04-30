@@ -1206,9 +1206,6 @@ to create fully featured games and multimedia programs in the python language.")
                    license:public-domain
                    license:lgpl2.1+))))
 
-(define-public python2-pygame
-  (package-with-python2 python-pygame))
-
 (define-public python-pygame-sdl2
   (let ((real-version "2.1.0")
         (renpy-version "7.4.11"))
