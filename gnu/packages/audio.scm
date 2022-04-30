@@ -2594,9 +2594,6 @@ to send and receive OSC messages using a nice and simple Python API.  Also
 included are the command line utilities @code{send_osc} and @code{dump_osc}.")
     (license license:lgpl2.1+)))
 
-(define-public python2-pyliblo
-  (package-with-python2 python-pyliblo))
-
 (define-public python-soundfile
   (package
     (name "python-soundfile")
