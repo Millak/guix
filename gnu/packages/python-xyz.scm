@@ -14687,35 +14687,6 @@ in threaded applications.  It includes timeout support from Python 3.3 but
 otherwise matches 3.2’s API.")
     (license license:psfl)))
 
-(define-public python2-futures
-  (package
-    (name "python2-futures")
-    (version "3.2.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "futures" version))
-        (sha256
-         (base32
-          "0rdjmmsab550kxsssdq49jcniz77zlkpw4pvi9hvib3lsskjmh4y"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "python" "test_futures.py")
-             #t)))))
-    (home-page "https://github.com/agronholm/pythonfutures")
-    (synopsis
-     "Backport of the concurrent.futures package from Python 3.2")
-    (description
-     "The concurrent.futures module provides a high-level interface for
-asynchronously executing callables.  This package backports the
-concurrent.futures package from Python 3.2")
-    (license license:bsd-3)))
-
 (define-public python-promise
   (package
     (name "python-promise")
