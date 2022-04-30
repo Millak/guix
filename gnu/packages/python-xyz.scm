@@ -23754,29 +23754,7 @@ supported by the default pickle module from the Python standard library.  It
 is especially useful for cluster computing where Python expressions are
 shipped over the network to execute on remote hosts, possibly close to the
 data.")
-    (properties `((python2-variant . ,(delay python2-cloudpickle))))
     (license license:bsd-3)))
-
-(define-public python2-cloudpickle
-  (let ((base (package-with-python2 (strip-python2-variant python-cloudpickle))))
-    (package/inherit base
-      (version "1.3.0")
-      (source
-       (origin
-         (method url-fetch)
-         (uri (pypi-uri "cloudpickle" version))
-         (sha256
-          (base32
-           "0lx7gy9clp427qwcm7b23zdsldpr03gy3vxxhyi8fpbhwz859brq"))))
-      (native-inputs
-       `(;; For tests.
-         ("python-mock" ,python2-mock)
-         ("python-psutil" ,python2-psutil)
-         ("python-pytest" ,python2-pytest)
-         ("python-tornado" ,python2-tornado)))
-      (propagated-inputs
-       `(("python-futures" ,python2-futures)
-         ,@(package-propagated-inputs base))))))
 
 (define-public python-locket
   (package
