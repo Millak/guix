@@ -2313,9 +2313,6 @@ tests.")
 internationalized messages within program source text.")
     (license license:zpl2.1)))
 
-(define-public python2-zope-i18nmessageid
-  (package-with-python2 python-zope-i18nmessageid))
-
 (define-public python-zope-schema
   (package
     (name "python-zope-schema")
