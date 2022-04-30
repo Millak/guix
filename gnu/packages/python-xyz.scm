@@ -3822,9 +3822,6 @@ A web profiling frontend exposes process statistics, garbage
 visualisation and class tracker statistics.")
     (license license:asl2.0)))
 
-(define-public python2-pympler
-  (package-with-python2 python-pympler))
-
 (define-public python-itsdangerous
   (package
     (name "python-itsdangerous")
