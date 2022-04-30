@@ -4310,9 +4310,6 @@ via commands such as @command{rst2man}, as well as supporting Python code.")
     ;; licensed under the PFSL, BSD 2-clause, and GPLv3+ licenses.
     (license (list license:public-domain license:psfl license:bsd-2 license:gpl3+))))
 
-(define-public python2-docutils
-  (package-with-python2 python-docutils))
-
 ;; awscli refuses to be built with docutils < 0.16.
 (define-public python-docutils-0.15
   (package
@@ -4326,18 +4323,6 @@ via commands such as @command{rst2man}, as well as supporting Python code.")
                 "0ja8q6mdj6xv62jjw3phv8j5nfqi5x8hnfy4pqfcjcgz4b34k8sl"))))
     ;; tests contain Python 2 syntax.
     (arguments '(#:tests? #false))))
-
-;; python2-sphinx fails its test suite with newer versions.
-(define-public python2-docutils-0.14
-  (package
-    (inherit python2-docutils)
-    (version "0.14")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "docutils" version))
-              (sha256
-               (base32
-                "0x22fs3pdmr42kvz6c654756wja305qv6cx1zbhwlagvxgr4xrji"))))))
 
 (define-public python-restructuredtext-lint
   (package
