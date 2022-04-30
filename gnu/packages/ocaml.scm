@@ -5640,7 +5640,7 @@ string conversion.")
 (define-public ocaml-bin-prot
   (package
     (name "ocaml-bin-prot")
-    (version "0.14.0")
+    (version "0.15.0")
     (source
       (origin
         (method git-fetch)
@@ -5649,7 +5649,7 @@ string conversion.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-          (base32 "1qyqbfp4zdc2jb87370cdgancisqffhf9x60zgh2m31kqik8annr"))))
+          (base32 "1qfqglscc25wwnjx7byqmjcnjww1msnr8940gyg8h93wdq43fjnh"))))
     (build-system dune-build-system)
     (propagated-inputs
       (list ocaml-base
