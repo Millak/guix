@@ -154,31 +154,7 @@ atlas_libs = openblas~%"  #$(this-package-input "openblas"))))))
     (description "The SciPy library is one of the core packages that make up
 the SciPy stack.  It provides many user-friendly and efficient numerical
 routines such as routines for numerical integration and optimization.")
-    (properties `((python2-variant . ,(delay python2-scipy))))
     (license license:bsd-3)))
-
-;; Version 1.2.2 is the last version to support Python 2
-(define-public python2-scipy
-  (package
-    (inherit (package-with-python2
-              (strip-python2-variant python-scipy)))
-    (version "1.2.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "scipy" version))
-       (sha256
-        (base32
-         "1cgvgin8fvckv96hjh3ikmwkra5rif51bdb75ifzf7xbil5iwcx4"))))
-    (native-inputs
-     (list python2-cython
-           python2-pytest
-           python2-sphinx
-           python2-numpydoc
-           gfortran-7
-           gcc-7
-           perl
-           which))))
 
 (define-public python-scikit-fuzzy
   (package
