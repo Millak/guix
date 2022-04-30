@@ -756,9 +756,6 @@ is a ratcheting forward secrecy protocol that works in synchronous and
 asynchronous messaging environments.")
     (license license:gpl3)))
 
-(define-public python2-axolotl
-  (package-with-python2 python-axolotl))
-
 
 (define-public python-pyaes
   (package
