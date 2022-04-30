@@ -8743,9 +8743,6 @@ e.g. @code{pickle.dump()} and other generic functions found in the Python
 standard library.")
     (license license:zpl2.1)))
 
-(define-public python2-simplegeneric
-  (package-with-python2 python-simplegeneric))
-
 (define-public python-ipython-genutils
   ;; TODO: This package is retired, check if can be removed, see description.
   (package
