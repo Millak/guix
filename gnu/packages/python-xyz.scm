@@ -16711,9 +16711,6 @@ standard library's @code{bz2} module, including features from the latest
 development version of CPython that are not available in older releases.")
     (license license:asl2.0)))
 
-(define-public python2-bz2file
-  (package-with-python2 python-bz2file))
-
 (define-public python-future
   (package
     (name "python-future")
