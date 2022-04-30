@@ -5962,7 +5962,7 @@ building s-expressions from ocaml values.")
 (define-public ocaml-ppx-sexp-message
   (package
     (name "ocaml-ppx-sexp-message")
-    (version "0.14.1")
+    (version "0.15.0")
     (source
       (origin
         (method git-fetch)
@@ -5971,7 +5971,7 @@ building s-expressions from ocaml values.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-          (base32 "1lvsr0d68kakih1ll33hy6dxbjkly6lmky4q6z0h0hrcbd6z48k4"))))
+          (base32 "0a7hx50bkkc5n5msc3zzc4ixnp7674x3mallknb9j31jnd8l90nj"))))
     (build-system dune-build-system)
     (propagated-inputs
       (list ocaml-base ocaml-ppx-here ocaml-ppx-sexp-conv ocaml-ppxlib))
