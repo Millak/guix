@@ -22374,9 +22374,6 @@ It can be used to generate XCode projects, Visual Studio projects, Ninja build
 files, and Makefiles.")
       (license license:bsd-3))))
 
-(define-public python2-gyp
-  (package-with-python2 python-gyp))
-
 (define-public python-whatever
   (package
     (name "python-whatever")
