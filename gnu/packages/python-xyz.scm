@@ -6225,9 +6225,6 @@ To address this and enable easy cycling over arbitrary @code{kwargs}, the
 @code{Cycler} class was developed.")
     (license license:bsd-3)))
 
-(define-public python2-cycler
-  (package-with-python2 python-cycler))
-
 (define-public python-colorspacious
   (package
     (name "python-colorspacious")
