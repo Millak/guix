@@ -10807,30 +10807,15 @@ plugin for flake8 to check PEP-8 naming conventions.")
     (inherit python-pep517-bootstrap)
     (name "python-pep517")
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (delete-file "pytest.ini")
-             ;; This test tries to connect to the internet
-             (delete-file "tests/test_meta.py")
-             (if tests?
-               (invoke "pytest")
-               #t))))))
-    (native-inputs
-     (list python-mock python-pytest python-testpath))
-    (properties `((python2-variant . ,(delay python2-pep517))))))
+     '(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (delete-file "pytest.ini")
+                      (delete-file "tests/test_meta.py")
+                      (if tests?
+                          (invoke "pytest") #t))))))
+    (native-inputs (list python-mock python-pytest python-testpath))))
 
-;; Skip the tests so we don't create a cyclical dependency with pytest.
-(define-public python2-pep517
-  (let ((base (package-with-python2
-                (strip-python2-variant python-pep517))))
-    (package/inherit base
-      (name "python2-pep517")
-      (arguments
-       `(#:tests? #f
-         ,@(package-arguments base)))
-      (native-inputs `()))))
 
 (define-public python-pep621
   (package
