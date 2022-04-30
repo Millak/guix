@@ -7079,7 +7079,7 @@ that can later be used to manipulate time in core_kernel or core.")
 (define-public ocaml-markup
   (package
     (name "ocaml-markup")
-    (version "1.0.2")
+    (version "1.0.3")
     (home-page "https://github.com/aantron/markup.ml")
     (source
      (origin
@@ -7090,7 +7090,7 @@ that can later be used to manipulate time in core_kernel or core.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1kvqwrrcrys5d0kzdwxcj66jpi6sdhfas4pcg02pixx92q87vhqm"))))
+         "1acgcbhx4rxx92rf65lsns588d6zzfrin2pnpkx24jw5vbgz7idn"))))
     (build-system dune-build-system)
     (arguments
      `(#:package "markup"))
