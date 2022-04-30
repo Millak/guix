@@ -119,9 +119,6 @@ expressions.")
      "This library provides a timezone database for Python.")
     (license expat)))
 
-(define-public python2-tzdata
-  (package-with-python2 python-pytzdata))
-
 (define-public python-pytz
   (package
     (name "python-pytz")
