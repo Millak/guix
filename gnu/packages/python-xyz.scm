@@ -14565,30 +14565,7 @@ library as well as on the command line.")
    (description "Pluggy is an extraction of the plugin manager as used by
 Pytest but stripped of Pytest specific details.")
    (home-page "https://pypi.org/project/pluggy/")
-   (properties `((python2-variant . ,(delay python2-pluggy))))
    (license license:expat)))
-
-(define-public python2-pluggy
-  (let ((base (package-with-python2 (strip-python2-variant
-                                     python-pluggy))))
-    (package/inherit
-     base
-     (propagated-inputs
-      `(("python-importlib-metadata" ,python2-importlib-metadata))))))
-
-;; This package requires python2-importlib-metadata, but that package
-;; ends up needing python2-pluggy via python2-pytest, so we need this
-;; variant to solve the circular dependency.
-(define-public python2-pluggy-bootstrap
-  (hidden-package
-   (package/inherit
-    python2-pluggy
-    (name "python2-pluggy-bootstrap")
-    (arguments
-     `(#:tests? #f
-       ,@(package-arguments python2-pluggy)))
-    (propagated-inputs
-     `(("python-importlib-metadata" ,python2-importlib-metadata-bootstrap))))))
 
 (define-public python-plumbum
   (package
