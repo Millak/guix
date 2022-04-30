@@ -17902,9 +17902,6 @@ simple, lightweight implementation.")
      "This library validates email address syntax and deliverability.")
     (license license:cc0)))
 
-(define-public python2-email-validator
-  (package-with-python2 python-email-validator))
-
 (define-public python-ukpostcodeparser
   (package
     (name "python-ukpostcodeparser")
