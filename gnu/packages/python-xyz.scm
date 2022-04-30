@@ -20455,9 +20455,6 @@ while only declaring the test-specific fields.")
         (base32
          "1fq02y57kinyknxjcav0slcb0k9mwdffqw2hnlhdkpj7palh2mwk"))))))
 
-(define-public python2-jsonpatch-0.4
-  (package-with-python2 python-jsonpatch-0.4))
-
 (define-public python-rfc3986
   (package
     (name "python-rfc3986")
