@@ -899,6 +899,49 @@ Git-friendly development workflow.")
     ;; The 'LICENSE' file waives some requirements compared to LGPLv3.
     (license license:lgpl3)))
 
+(define-public ocaml-camlp-streams
+  (package
+    (name "ocaml-camlp-streams")
+    (version "5.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/ocaml/camlp-streams")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32 "1wd5k0irzwi841b27pbx0n5fdybbgx97184zm8cjajizd2j8w0g5"))))
+    (build-system dune-build-system)
+    (arguments
+     ;; No tests
+     `(#:tests? #f))
+    (home-page "https://github.com/ocaml/camlp-streams")
+    (synopsis "Stream and Genlex libraries for use with Camlp4 and Camlp5")
+    (description
+      "This package provides two library modules:
+
+@itemize
+@item Stream: imperative streams, with in-place update and memoization of
+the latest element produced.
+@item Genlex: a small parameterized lexical analyzer producing streams of
+tokens from streams of characters.
+@end itemize
+
+The two modules are designed for use with Camlp4 and Camlp5: The stream
+patterns and stream expressions of Camlp4/Camlp5 consume and produce data of
+type 'a Stream.t.  The Genlex tokenizer can be used as a simple lexical
+analyzer for Camlp4/Camlp5-generated parsers.
+
+The Stream module can also be used by hand-written recursive-descent parsers,
+but is not very convenient for this purpose.
+
+The Stream and Genlex modules have been part of the OCaml standard library for a
+long time, and have been distributed as part of the core OCaml system.  They
+will be removed from the OCaml standard library at some future point, but will
+be maintained and distributed separately in the camlpstreams package.")
+    (license license:lgpl2.1)))
+
 (define-public camlp5
   (package
     (name "camlp5")
