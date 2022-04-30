@@ -13177,9 +13177,6 @@ responses, rather than doing any computation.")
 Python Package Index (PyPI).")
     (license license:expat)))
 
-(define-public python2-pip
-  (package-with-python2 python-pip))
-
 ;;; Variant used to break a dependency cycle with
 ;;; python-pytest-perf-bootstrap.
 (define-public python-pip-run-bootstrap
