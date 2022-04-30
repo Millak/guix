@@ -23613,9 +23613,6 @@ environments.")
      "PyNamecheap is a Namecheap API client in Python.")
     (license license:expat)))
 
-(define-public python2-pynamecheap
-  (package-with-python2 python-pynamecheap))
-
 (define-public python-dns-lexicon
   (package
     (name "python-dns-lexicon")
