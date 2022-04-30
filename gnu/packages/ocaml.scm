@@ -6441,7 +6441,7 @@ from type definitions.")
 (define-public ocaml-ppx-string
   (package
     (name "ocaml-ppx-string")
-    (version "0.14.1")
+    (version "0.15.0")
     (source
       (origin
         (method git-fetch)
@@ -6450,7 +6450,7 @@ from type definitions.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-          (base32 "0a8khmg0y32kyn3q6idwgh0d6d1s6ms1w75gj3dzng0v7y4h6jx4"))))
+          (base32 "1dp5frk6cig5m3m5rrh2alw63snyf845x7zlkkaljip02pqcbw1s"))))
     (build-system dune-build-system)
     (arguments `(#:tests? #f)); no tests
     (propagated-inputs
