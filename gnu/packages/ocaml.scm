@@ -6694,7 +6694,7 @@ use in I/O and C-bindings.")
 (define-public ocaml-splittable-random
   (package
     (name "ocaml-splittable-random")
-    (version "0.14.0")
+    (version "0.15.0")
     (source
       (origin
         (method git-fetch)
@@ -6703,7 +6703,7 @@ use in I/O and C-bindings.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-          (base32 "0ax988b1wc7km8khg4s6iphbz16y1rssh7baigxfyw3ldp0agk14"))))
+          (base32 "0ap5z4z1aagz4z02q9642cbl25jzws9lbc2x5xkpyjlc0qcm9v3m"))))
     (build-system dune-build-system)
     (propagated-inputs
       (list ocaml-base
