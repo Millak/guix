@@ -6360,7 +6360,7 @@ to denote the expected output.")
 (define-public ocaml-ppx-js-style
   (package
     (name "ocaml-ppx-js-style")
-    (version "0.14.1")
+    (version "0.15.0")
     (source
      (origin
        (method git-fetch)
@@ -6370,7 +6370,7 @@ to denote the expected output.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "16ax6ww9h36xyn9acbm8zxv0ajs344sm37lgj2zd2bvgsqv24kxj"))))
+         "0q2p9pvmlncgv0hprph95xiv7s6q44ynvp4yl4dckf1qx68rb3ba"))))
     (build-system dune-build-system)
     (arguments `(#:tests? #f)) ; No tests
     (propagated-inputs
