@@ -5878,7 +5878,7 @@ many values).")
 (define-public ocaml-typerep
   (package
     (name "ocaml-typerep")
-    (version "0.14.0")
+    (version "0.15.0")
     (source
       (origin
         (method git-fetch)
@@ -5887,7 +5887,7 @@ many values).")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-          (base32 "0wc7h853ka3s3lxxgm61ypidl0lzgc9abdkil6f72anl0c417y90"))))
+          (base32 "1qxfi01qim0hrgd6d0bgvpxg36i99mmm8cw4wqpr9kxyqvgzv26z"))))
     (build-system dune-build-system)
     (arguments `(#:tests? #f)); no tests
     (propagated-inputs (list ocaml-base))
