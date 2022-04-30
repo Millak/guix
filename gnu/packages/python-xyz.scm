@@ -13222,9 +13222,6 @@ a hash value.")
      "This package provides ANSII Color formatting for output in terminals.")
     (license license:expat)))
 
-(define-public python2-termcolor
-  (package-with-python2 python-termcolor))
-
 (define-public python-terminaltables
   (package
     (name "python-terminaltables")
