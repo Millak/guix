@@ -20481,16 +20481,7 @@ while only declaring the test-specific fields.")
      @item Halstead metrics (all of them)
      @item the Maintainability Index (a Visual Studio metric)
      @end itemize")
-    (properties `((python2-variant . ,(delay python2-radon))))
     (license license:expat)))
-
-(define-public python2-radon
-  (let ((base (package-with-python2 (strip-python2-variant python-radon))))
-    (package/inherit base
-      (propagated-inputs
-       `(("python-configparser" ,python2-configparser)
-         ("python-future" ,python2-future)
-         ,@(package-propagated-inputs base))))))
 
 (define-public python-sure
   (package
