@@ -7234,9 +7234,6 @@ gettext support, themed icons, and scrollkeeper-based documentation into
 Python's distutils.")
     (license license:gpl2)))
 
-(define-public python2-distutils-extra
-  (package-with-python2 python-distutils-extra))
-
 (define-public python2-elib.intl
   (package
     (name "python2-elib.intl")
