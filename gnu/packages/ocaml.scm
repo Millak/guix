@@ -5409,10 +5409,10 @@ by making sure that you only compare comparable values.")
 (define-public ocaml-fieldslib
   (package
     (name "ocaml-fieldslib")
-    (version "0.14.0")
+    (version "0.15.0")
     (source (janestreet-origin
              "fieldslib" version
-             "10n5y376fb5jgqk9h8vq158rm1b36h9lzh6p11q33h6xgvb1v6n3"))
+             "083izf854vzmi5zj63r7ipjf09y1dqf7iy8n6r4663444xrzs2h5"))
     (build-system dune-build-system)
     (arguments `(#:tests? #f)) ; No tests
     (propagated-inputs
