@@ -1476,9 +1476,6 @@ program code to a remote location, executes there, and then syncs the
 result back.")
     (license license:expat)))
 
-(define-public python2-pytest-xdist
-  (package-with-python2 python-pytest-xdist))
-
 (define-public python-pytest-xdist-next
   (package/inherit python-pytest-xdist
     (name "python-pytest-xdist")
