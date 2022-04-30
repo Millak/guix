@@ -23776,9 +23776,6 @@ of Python libraries for building Python applications.")
 source via the Abstract Syntax Tree.")
     (license license:bsd-3)))
 
-(define-public python2-astor
-  (package-with-python2 python-astor))
-
 (define-public python-astunparse
   (package
     (name "python-astunparse")
