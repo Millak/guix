@@ -7974,9 +7974,6 @@ any machine that can run Python.")
 support for Python 3 and PyPy.  It is based on cffi.")
     (license license:expat)))
 
-(define-public python2-xcffib
-  (package-with-python2 python-xcffib))
-
 (define-public python-cairocffi
   (package
     (name "python-cairocffi")
