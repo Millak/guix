@@ -2922,19 +2922,8 @@ backported for previous versions of Python from 2.4 to 3.3.")
     (native-inputs (list python-pytest))
     (home-page "https://github.com/jenisys/parse_type")
     (synopsis "Extended parse module")
-    (description
-     "Parse_type extends the python parse module.")
-    (properties
-     `((python2-variant . ,(delay python2-parse-type))))
+    (description "Parse_type extends the python parse module.")
     (license license:bsd-3)))
-
-(define-public python2-parse-type
-  (let ((base (package-with-python2
-                (strip-python2-variant python-parse-type))))
-    (package/inherit base
-      (propagated-inputs
-       `(("python2-enum34" ,python2-enum34)
-         ,@(package-propagated-inputs base))))))
 
 (define-public python-parse
   (package
