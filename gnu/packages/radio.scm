@@ -430,30 +430,6 @@ controls for certain tuners which may be paired with an audio device.")
      "This package provides RTL-SDR devices support to the SoapySDR library.")
     (license license:expat)))
 
-(define-public chirp
-  (package
-    (name "chirp")
-    (version "20220118")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://trac.chirp.danplanet.com/chirp_daily/daily-"
-                           version "/chirp-daily-" version ".tar.gz"))
-       (sha256
-        (base32 "0q2ifmprxqqxnww8fx8fjmm2lv9vdv6xzsk1ysa27fb290vgyawn"))))
-    (build-system python-build-system)
-    (inputs
-     (list python2-libxml2 python2-pygtk python2-pyserial))
-    (arguments
-     `(#:python ,python-2))
-    (home-page "https://chirp.danplanet.com")
-    (synopsis "Cross-radio programming tool")
-    (description "Chirp is a cross-radio programming tool.  It supports a
-growing list of radios across several manufacturers and allows transferring of
-memory contents between them.")
-    (license (list license:gpl3+
-                   license:lgpl3+)))) ; chirp/elib_intl.py
-
 (define-public aptdec
   ;; No release since 2013, use commit directly.
   (let ((commit "51405971fd4e97714d1e987269e49c6edfe4e0da")
