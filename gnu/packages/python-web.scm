@@ -2489,9 +2489,6 @@ Zope3, which are are special objects that have a structural location.")
 (define-public python-zope-location-bootstrap
   (python-zope-bootstrap-package python-zope-location))
 
-(define-public python2-zope-location
-  (package-with-python2 python-zope-location))
-
 (define-public python-zope-security
   (package
     (name "python-zope-security")
