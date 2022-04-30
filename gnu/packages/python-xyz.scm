@@ -18724,9 +18724,6 @@ JSON) codec.")
     (description "Python Data Structures for Humans.")
     (license license:bsd-3)))
 
-(define-public python2-schematics
-  (package-with-python2 python-schematics))
-
 (define-public python-odfpy
   (package
     (name "python-odfpy")
