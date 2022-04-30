@@ -4202,20 +4202,7 @@ templates.  A format string can be provided to control the output.")
     (description
      "Pystache is a Python implementation of the framework agnostic,
 logic-free templating system Mustache.")
-    (license license:expat)
-    (properties `((python2-variant . ,(delay python2-pystache))))))
-
-(define-public python2-pystache
-  (let ((base (package-with-python2
-               (strip-python2-variant python-pystache))))
-    (package/inherit base
-      (arguments
-       `(#:python ,python-2
-         #:phases
-         (modify-phases %standard-phases
-           (replace 'check
-             (lambda _
-               (invoke "python" "test_pystache.py")))))))))
+    (license license:expat)))
 
 (define-public python-pystitcher
   (package
