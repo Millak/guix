@@ -24226,9 +24226,6 @@ regular-spaced values, etc.
 This Python package wraps the Blosc library.")
     (license license:bsd-3)))
 
-(define-public python2-blosc
-  (package-with-python2 python-blosc))
-
 (define-public python-partd
   (package
     (name "python-partd")
