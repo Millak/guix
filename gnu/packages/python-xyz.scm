@@ -1242,9 +1242,6 @@ and function call return values in a human-readable way.")
 by @code{binstar}, @code{binstar-build}, and @code{chalmers}.")
     (license license:bsd-3)))
 
-(define-public python2-clyent
-  (package-with-python2 python-clyent))
-
 (define-public python-babel
   (package
     (name "python-babel")
