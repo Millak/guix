@@ -16007,14 +16007,6 @@ useful for solving the Assignment Problem.")
 checking library.")
     (license license:bsd-2)))
 
-(define-public python2-whoosh
-  (let ((whoosh (package-with-python2 (strip-python2-variant python-whoosh))))
-    (package/inherit whoosh
-      (propagated-inputs
-       `(("python2-backport-ssl-match-hostname"
-          ,python2-backport-ssl-match-hostname)
-          ,@(package-propagated-inputs whoosh))))))
-
 (define-public python-codespell
   (package
     (name "python-codespell")
