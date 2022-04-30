@@ -16177,9 +16177,6 @@ for mixed Cython/Python code or external C libraries and pure Cython code,
 respectively.")
     (license license:lgpl3+)))
 
-(define-public python2-cysignals
-  (package-with-python2 python-cysignals))
-
 (define-public python-rope
   (package
     (name "python-rope")
