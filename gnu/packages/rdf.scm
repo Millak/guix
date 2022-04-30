@@ -399,9 +399,6 @@ powerful language for representing information.")
     ;; and this package is only transitional.
     (arguments '(#:tests? #f))))
 
-(define-public python2-rdflib
-  (package-with-python2 python-rdflib-5))
-
 ;; Note: This package is only needed for rdflib < 6.0; supersede when
 ;; the above are removed.
 (define-public python-rdflib-jsonld
