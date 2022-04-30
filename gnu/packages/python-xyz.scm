@@ -2720,9 +2720,6 @@ lossless but can be tweaked for more aggressive cleaning.")
 after Andy Lester’s Perl module WWW::Mechanize.")
     (license license:bsd-3)))
 
-(define-public python2-mechanize
-  (package-with-python2 python-mechanize))
-
 (define-public python-simpleaudio
   (package
     (name "python-simpleaudio")
