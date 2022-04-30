@@ -5764,11 +5764,11 @@ hash functions from type exrpessions and definitions.")
 (define-public ocaml-ppx-enumerate
   (package
     (name "ocaml-ppx-enumerate")
-    (version "0.14.0")
+    (version "0.15.0")
     (source
      (janestreet-origin
       "ppx_enumerate" version
-      "1ij6sffgqhnjwnj9brhrrw1c6xgxlh0s6r17x1qkgnyrc73gfsz8"))
+      "16yhk3xk2hskmlspb6mikmdp60qaypyiqgq9p17kxpial6fgpdfy"))
     (build-system dune-build-system)
     (arguments
      `(#:tests? #f)) ; no test suite
