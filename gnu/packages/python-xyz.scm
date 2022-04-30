@@ -14923,9 +14923,6 @@ files for use with Python.")
      "This library provides a Python module to parse command-line arguments.")
     (license license:bsd-3)))
 
-(define-public python2-args
-  (package-with-python2 python-args))
-
 (define-public python-clint
   (package
     (name "python-clint")
