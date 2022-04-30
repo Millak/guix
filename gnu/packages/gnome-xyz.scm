@@ -825,7 +825,7 @@ position when the mouse is moved rapidly.")
 (define-public gnome-shell-extension-burn-my-windows
   (package
     (name "gnome-shell-extension-burn-my-windows")
-    (version "7")
+    (version "15")
     (source
      (origin
        (method git-fetch)
@@ -834,7 +834,7 @@ position when the mouse is moved rapidly.")
              (commit (string-append "v" version))))
        (sha256
         (base32
-         "1513kh6dfvnaj5jq2mm7rv1k54v91hjckgim1dpqlxwnv4gi9krd"))
+         "1gabnqdk11n6345jzv9sc4yjmfrdgg0lsz6zc29gc5afzgirkhm5"))
        (file-name (git-file-name name version))))
     (build-system copy-build-system)
     (arguments
