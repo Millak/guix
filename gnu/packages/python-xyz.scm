@@ -10727,9 +10727,6 @@ application monitoring and error tracking software.")
 PEP 8.")
     (license license:expat)))
 
-(define-public python2-pep8
-  (package-with-python2 python-pep8))
-
 (define-public python-pep8-naming
   (package
     (name "python-pep8-naming")
