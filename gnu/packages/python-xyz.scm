@@ -5614,7 +5614,6 @@ with Python.  It contains among other things: a powerful N-dimensional array
 object, sophisticated (broadcasting) functions, tools for integrating C/C++
 and Fortran code, useful linear algebra, Fourier transform, and random number
 capabilities.")
-    (properties `((python2-variant . ,(delay python2-numpy))))
     (license license:bsd-3)))
 
 (define-public python-numpy-next
@@ -5725,74 +5724,6 @@ capabilities.")
     (synopsis "Documentation for the @code{python-numpy} package")
     (description "This package provides the complete NumPy documentation in
 the Texinfo, HTML, and PDF formats.")))
-
-;; Numpy 1.16.x are the last versions that support Python 2.
-(define-public python2-numpy
-  (let ((numpy (package-with-python2
-                (strip-python2-variant python-numpy))))
-    (package
-      (inherit numpy)
-      (name "python2-numpy")
-      (version "1.16.5")
-      (source (origin
-                (method url-fetch)
-                (uri (string-append
-                      "https://github.com/numpy/numpy/releases/download/v"
-                      version "/numpy-" version ".tar.gz"))
-                (sha256
-                 (base32
-                  "0lg1cycxzi4rvvrd5zxinpdz0ni792fpx6xjd75z1923zcac8qrb"))))
-      (arguments
-       (substitute-keyword-arguments (package-arguments numpy)
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'delete-failing-tests
-                (lambda _
-                  ;; There's just one failing test here.
-                  (delete-file "numpy/linalg/tests/test_linalg.py")
-                  ;; ...and this one depends on the previous one.
-                  (delete-file "numpy/matrixlib/tests/test_matrix_linalg.py")))
-              (replace 'check
-                ;; Older versions don't cope well with the extra Pytest
-                ;; options, so remove them.
-                (lambda* (#:key tests? outputs inputs #:allow-other-keys)
-                  (when tests?
-                    (invoke "./runtests.py" "-vv" "--no-build" "--mode=fast"
-                            "-j" (number->string (parallel-job-count))))))))))
-      (native-inputs
-       (list python2-cython python2-pytest gfortran)))))
-
-;; NOTE: NumPy 1.8 is packaged only for Python 2 because it is of
-;; interest only for legacy code going back to NumPy's predecessor
-;; Numeric.
-(define-public python2-numpy-1.8
-  (package
-    (inherit python2-numpy)
-    (version "1.8.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/numpy/numpy")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name "numpy" version))
-       (sha256
-        (base32
-         "0ikgi15rsqwbkfsjjxrwh40lqyal2wvyp3923y6w6ch3dcr82sfk"))))
-    (arguments (substitute-keyword-arguments (package-arguments python2-numpy)
-                 ((#:tests? _ #f) #f)   ;disable tests
-                 ((#:phases phases)
-                  #~(modify-phases #$phases
-                      (delete 'delete-failing-tests)))))
-    (native-inputs '())
-    (description "NumPy is the fundamental package for scientific computing
-with Python.  It contains among other things: a powerful N-dimensional array
-object, sophisticated (broadcasting) functions, tools for integrating C/C++
-and Fortran code, useful linear algebra, Fourier transform, and random number
-capabilities.  Version 1.8 is the last one to contain the numpy.oldnumeric API
-that includes the compatibility layer numpy.oldnumeric with NumPy's predecessor
-Numeric.")
-    (license license:bsd-3)))
 
 (define-public python-munch
   (package

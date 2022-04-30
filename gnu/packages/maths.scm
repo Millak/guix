@@ -5366,7 +5366,6 @@ in finite element programs.")
        ;; Disable it for now.
        ;;("octave" ,octave-cli)
        ("python" ,python-2) ; print syntax
-       ;; ("python2-numpy" ,python2-numpy) ; only required for the tests
        ("zlib" ,zlib)))
     (arguments
      `(;; The 'share/flann/octave' contains a .mex file, which is an ELF file

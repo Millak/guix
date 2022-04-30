@@ -303,9 +303,6 @@ with templates to facilitate the execution of the program.  Input files can be
 staged, and output files collected using a standard interface.")
     (license license:bsd-3)))
 
-(define with-numpy-1.8
-  (package-input-rewriting `((,python2-numpy . ,python2-numpy-1.8))))
-
 (define-public tng
   (package
     (name "tng")
