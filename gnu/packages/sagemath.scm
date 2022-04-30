@@ -101,9 +101,6 @@ but it can be used independently.")
 libraries GMO, MPFR and MPC.")
     (license license:lgpl3+)))
 
-(define-public python2-gmpy2
-  (package-with-python2 python-gmpy2))
-
 (define-public cliquer
   (package
     (name "cliquer")
