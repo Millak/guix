@@ -22354,9 +22354,6 @@ files, and Makefiles.")
 functions by partial application of operators.")
     (license license:bsd-3)))
 
-(define-public python2-whatever
-  (package-with-python2 python-whatever))
-
 (define-public python-funcy
   (package
     (name "python-funcy")
