@@ -11024,9 +11024,6 @@ It also removes useless @code{pass} statements.")
 Python.")
     (license license:bsd-3)))
 
-(define-public python2-mistune
-  (package-with-python2 python-mistune))
-
 ;; 2.0 is not released yet, but some packages have started using it.
 (define-public python-mistune-next
   (package
