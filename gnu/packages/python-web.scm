@@ -811,9 +811,6 @@ over a different origin than that of the web application.")
 other HTTP libraries.")
     (license license:expat)))
 
-(define-public python2-httplib2
-  (package-with-python2 python-httplib2))
-
 (define-public httpie
   (package
     (name "httpie")
