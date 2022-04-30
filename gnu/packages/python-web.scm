@@ -2132,9 +2132,6 @@ is a simple event-dispatching system on which more sophisticated event
 dispatching systems can be built.")
     (license license:zpl2.1)))
 
-(define-public python2-zope-event
-  (package-with-python2 python-zope-event))
-
 (define-public python-zope-interface
   (package
     (name "python-zope-interface")
