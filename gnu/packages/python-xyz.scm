@@ -10408,9 +10408,6 @@ low-level X clients.  It is written entirely in Python.")
 2.6-3.3.")
     (license license:expat)))
 
-(define-public python2-singledispatch
-  (package-with-python2 python-singledispatch))
-
 ;; the python- version can be removed with python-3.5
 (define-public python-backports-abc
   (package
