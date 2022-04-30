@@ -2902,9 +2902,6 @@ applications. dogtail scripts are written in Python and executed like any
 other Python program.")
     (license license:gpl2+)))
 
-(define-public python2-dogtail
-  (package-with-python2 python-dogtail))
-
 (define-public python-empy
   (package
     (name "python-empy")
