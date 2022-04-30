@@ -21097,9 +21097,6 @@ version of @code{SocksiPy} with bug fixes and extra features.")
 ignoring formatting changes.")
     (license license:expat)))
 
-(define-public python2-pydiff
-  (package-with-python2 python-pydiff))
-
 (define-public python-pydub
   (package
     (name "python-pydub")
