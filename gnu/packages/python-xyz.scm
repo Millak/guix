@@ -2111,16 +2111,7 @@ text interfaces more user-friendly.  It includes tools to parse and format
 numbers, file sizes, and timespans, timers for long-running operations, menus
 to allow the user to choose from a list of options, and terminal interaction
 helpers.")
-    (properties `((python2-variant . ,(delay python2-humanfriendly))))
     (license license:expat)))
-
-(define-public python2-humanfriendly
-  (let ((base (package-with-python2
-                (strip-python2-variant python-humanfriendly))))
-    (package/inherit base
-      (propagated-inputs
-       `(("python2-monotonic" ,python2-monotonic)
-         ,@(package-propagated-inputs base))))))
 
 (define-public python-textparser
   (package
