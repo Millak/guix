@@ -446,9 +446,6 @@ aware applications in Python.  The smart card module is built on top of the
 PCSC API Python wrapper module.")
     (license license:lgpl2.1+)))
 
-(define-public python2-pyscard
-  (package-with-python2 python-pyscard))
-
 (define-public yubikey-oath-dmenu
   (package
     (name "yubikey-oath-dmenu")
