@@ -285,9 +285,6 @@ language-neutral, platform-neutral extensible mechanism for serializing
 structured data.")
     (license license:expat)))
 
-(define-public python2-protobuf
-  (package-with-python2 python-protobuf))
-
 ;; For tensorflow.
 (define-public python-protobuf-3.6
   (package
