@@ -2228,9 +2228,6 @@ that have uses outside of the Zope framework.")
 forms, HTTP servers, regular expressions, and more.")
     (license license:zpl2.1)))
 
-(define-public python2-zope-testing
-  (package-with-python2 python-zope-testing))
-
 (define-public python-zope-testrunner
   (package
     (name "python-zope-testrunner")
