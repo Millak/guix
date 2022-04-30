@@ -19114,9 +19114,6 @@ JSON) codec.")
     (description "Pyev provides a Python interface to libev.")
     (license license:gpl3)))
 
-(define-public python2-pyev
-  (package-with-python2 python-pyev))
-
 (define-public python-imagesize
   (package
     (name "python-imagesize")
