@@ -5523,9 +5523,6 @@ enable formatting of partial files.")
 interested parties to subscribe to events, or \"signals\".")
     (license license:expat)))
 
-(define-public python2-blinker
-  (package-with-python2 python-blinker))
-
 (define-public pelican
   (package
     (name "pelican")
