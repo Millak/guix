@@ -1482,9 +1482,6 @@ useful for email address completion.")
 and search library.")
     (license license:gpl3+)))
 
-(define-public python2-notmuch
-  (package-with-python2 python-notmuch))
-
 (define-public python-notmuch2
   (package
     (inherit python-notmuch)
