@@ -515,9 +515,6 @@ datetime type.")
      "This package contains a library for parsing ISO 8601 datetime strings.")
     (license bsd-3)))
 
-(define-public python2-aniso8601
-  (package-with-python2 python-aniso8601))
-
 (define-public datefudge
   (package
     (name "datefudge")
