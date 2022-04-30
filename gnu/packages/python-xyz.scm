@@ -15734,9 +15734,6 @@ input.  (Note that this is mostly a legacy library; you may wish to look at
 python-xdo for newer bindings.)")
     (license license:bsd-3)))
 
-(define-public python2-xdo
-  (package-with-python2 python-xdo))
-
 (define-public python-xdoctest
   (package
     (name "python-xdoctest")
