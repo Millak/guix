@@ -11276,9 +11276,6 @@ markdown_py is also provided to convert Markdown files to HTML.")
 pseudo terminal (pty), and interact with both the process and its pty.")
     (license license:isc)))
 
-(define-public python2-ptyprocess
-  (package-with-python2 python-ptyprocess))
-
 (define-public python-cram
   (package
     (name "python-cram")
