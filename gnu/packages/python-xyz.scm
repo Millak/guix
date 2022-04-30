@@ -20588,9 +20588,6 @@ compatible with the standard @code{re} module, but offers additional
 functionality like full case-folding for case-insensitive matches in Unicode.")
      (license license:psfl)))
 
-(define-public python2-regex
-  (package-with-python2 python-regex))
-
 (define-public python-pyopengl
   (package
     (name "python-pyopengl")
