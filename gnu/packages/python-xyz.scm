@@ -9486,9 +9486,6 @@ distance between two or more sequences by many algorithms.")
 toolkit.  Use it to build trees of widgets.")
     (license license:gpl3+)))
 
-(define-public python2-urwidtrees
-  (package-with-python2 python-urwidtrees))
-
 (define-public python-ua-parser
   (package
     (name "python-ua-parser")
