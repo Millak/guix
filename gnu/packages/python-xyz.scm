@@ -2744,9 +2744,6 @@ any other callable) periodically at pre-determined intervals using a simple,
 human-friendly syntax.")
     (license license:expat)))
 
-(define-public python2-schedule
-  (package-with-python2 python-schedule))
-
 (define-public python-scour
   (package
     (name "python-scour")
