@@ -2935,30 +2935,6 @@ system is highly configurable via command line options and embedded
 commands.")
     (license license:lgpl2.1+)))
 
-(define-public python2-element-tree
-  (package
-    (name "python2-element-tree")
-    (version "1.2.6")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "http://effbot.org/media/downloads/elementtree-"
-                    version "-20050316.tar.gz"))
-              (sha256
-               (base32
-                "016bphqnlg0l4vslahhw4r0aanw95bpypy65r1i1acyb2wj5z7dj"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2                       ; seems to be part of Python 3
-       #:tests? #f))                            ; no 'test' sub-command
-    (synopsis "Toolkit for XML processing in Python")
-    (description
-     "ElementTree is a Python library supporting lightweight XML processing.")
-    (home-page "https://effbot.org/zone/element-index.htm")
-    (license (license:x11-style
-              "http://docs.python.org/2/license.html"
-              "Like \"CWI LICENSE AGREEMENT FOR PYTHON 0.9.0 THROUGH 1.2\"."))))
-
 (define-public python-enum34
   (package
     (name "python-enum34")
