@@ -27,7 +27,7 @@
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2021 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
@@ -1421,7 +1421,7 @@ elements to their parents
 (define-public xlsx2csv
   (package
     (name "xlsx2csv")
-    (version "0.7.4")
+    (version "0.7.8")
     (source
      (origin
        (method git-fetch)
@@ -1430,17 +1430,17 @@ elements to their parents
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "168dm6p7w6pvgd87yb9hcxv9y0liv6mxgril202nfva68cp8y939"))))
+        (base32 "1p10571295f8zw1lsma8k5z07hrk9aspar0lsz8zpgjl7v35zcq7"))))
     (build-system python-build-system)
     (arguments
-     `(#:python ,python-2               ; use python-2 for the test script
-       #:phases
+     `(#:phases
        (modify-phases %standard-phases
          (replace 'check
            (lambda _
              (substitute* "test/run"
                ;; Run tests with `python' only.
-               (("^(PYTHON_VERSIONS = ).*" all m) (string-append m "['']")))
+               (("^(PYTHON_VERSIONS = ).*" all m)
+                (string-append m "['']")))
              (invoke "test/run"))))))
     (home-page "https://github.com/dilshod/xlsx2csv")
     (synopsis "XLSX to CSV converter")
