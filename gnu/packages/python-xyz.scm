@@ -21556,9 +21556,6 @@ Rust Python extensions implemented with @code{PyO3} or @code{rust-cpython}.")
 Angus Johnson's polygon clipping Clipper library (ver. 6.4.2).")
     (license license:expat)))
 
-(define-public python2-pyclipper
-  (package-with-python2 python-pyclipper))
-
 (define-public python-tempdir
   (package
     (name "python-tempdir")
