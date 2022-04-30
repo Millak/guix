@@ -612,7 +612,6 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/web-browsers.scm			\
   %D%/packages/webkit.scm			\
   %D%/packages/wget.scm				\
-  %D%/packages/wicd.scm				\
   %D%/packages/wine.scm				\
   %D%/packages/wireservice.scm				\
   %D%/packages/wm.scm				\
@@ -1941,10 +1940,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/webkitgtk-adjust-bubblewrap-paths.patch	\
   %D%/packages/patches/webrtc-audio-processing-big-endian.patch	\
   %D%/packages/patches/websocketpp-fix-for-cmake-3.15.patch	\
-  %D%/packages/patches/wicd-bitrate-none-fix.patch		\
-  %D%/packages/patches/wicd-get-selected-profile-fix.patch	\
-  %D%/packages/patches/wicd-urwid-1.3.patch			\
-  %D%/packages/patches/wicd-wpa2-ttls.patch			\
   %D%/packages/patches/widelands-add-missing-map-include.patch	\
   %D%/packages/patches/widelands-system-wide_minizip.patch	\
   %D%/packages/patches/wmctrl-64-fix.patch			\

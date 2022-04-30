@@ -129,8 +129,7 @@ containerized OS.  EXTRA-FILE-SYSTEMS is a list of file systems to add to OS."
                  static-networking-service-type
                  dhcp-client-service-type
                  network-manager-service-type
-                 connman-service-type
-                 wicd-service-type)
+                 connman-service-type)
                 (list))))
 
   (define services-to-add
