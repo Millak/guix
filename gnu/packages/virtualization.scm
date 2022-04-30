@@ -1702,23 +1702,24 @@ any other utility or application that speaks QMP.")
 (define-public qmpbackup
   (package
     (name "qmpbackup")
-    (version "0.2")
+    (version "0.23")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/abbbi/qmpbackup")
-                     (commit version)))
+                    (url "https://github.com/abbbi/qmpbackup")
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0swhp5byz44brhyis1a39p11fyn9q84xz5q6v2fah29r7d71kmmx"))))
+                "0x9v81z0b2qr2y6m46rfnl4kl5jnixsdrl1c790iwl6pq9kzzvzg"))))
     (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2))
+    ;; The test suite requires to download a 241 MiB QEMU image; skip it.
+    (arguments (list #:tests? #f))
+    (inputs (list python-qemu-qmp))
     (home-page "https://github.com/abbbi/qmpbackup")
     (synopsis "Backup and restore QEMU machines")
-    (description "qmpbackup is designed to create and restore full and
-incremental backups of running QEMU virtual machines via QMP, the QEMU
+    (description "@command{qmpbackup} is designed to create and restore full
+and incremental backups of running QEMU virtual machines via QMP, the QEMU
 Machine Protocol.")
     (license license:gpl3+)))
 
