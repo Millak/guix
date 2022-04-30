@@ -12032,9 +12032,6 @@ Supported netlink families and protocols include:
   wrappers and decorator functions.")
     (license license:bsd-2)))
 
-(define-public python2-wrapt
-  (package-with-python2 python-wrapt))
-
 (define-public python-commentjson
   (package
     (name "python-commentjson")
