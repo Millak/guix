@@ -6710,9 +6710,6 @@ Python code against some of the style conventions in
 @url{http://www.python.org/dev/peps/pep-0008/,PEP 8}.")
     (license license:expat)))
 
-(define-public python2-pycodestyle
-  (package-with-python2 python-pycodestyle))
-
 (define-public python-pycodestyle-2.6
   (package
     (inherit python-pycodestyle)
