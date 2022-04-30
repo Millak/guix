@@ -22662,9 +22662,6 @@ commit, but it also includes some other useful statistics.")
 MacFUSE.  The binding is created using the standard @code{ctypes} library.")
     (license license:isc)))
 
-(define-public python2-fusepy
-  (package-with-python2 python-fusepy))
-
 (define-public python-fusepyng
   (package
     (name "python-fusepyng")
