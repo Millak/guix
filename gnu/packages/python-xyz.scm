@@ -8118,9 +8118,6 @@ submission and control.  This package is an implementation of the DRMAA 1.0
 Python language binding specification.")
     (license license:bsd-3)))
 
-(define-public python2-drmaa
-  (package-with-python2 python-drmaa))
-
 (define-public python-grako
   (package
     (name "python-grako")
