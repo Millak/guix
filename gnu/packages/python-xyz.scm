@@ -20075,9 +20075,6 @@ while only declaring the test-specific fields.")
      Sure is heavily inspired by @code{RSpec Expectations} and @code{should.js}.")
     (license license:gpl3+)))
 
-(define-public python2-sure
-  (package-with-python2 python-sure))
-
 (define-public python-misaka
   (package
     (name "python-misaka")
