@@ -2241,9 +2241,6 @@ SAM/BAM format.  Pysam is a lightweight wrapper of the SAMtools C API.  It
 also includes an interface for tabix.")
     (license license:expat)))
 
-(define-public python2-pysam
-  (package-with-python2 python-pysam))
-
 (define-public python-twobitreader
   (package
     (name "python-twobitreader")
