@@ -10431,9 +10431,6 @@ low-level X clients.  It is written entirely in Python.")
 @code{collections.abc} module in Python-3.5.")
     (license license:psfl)))
 
-(define-public python2-backports-abc
-  (package-with-python2 python-backports-abc))
-
 (define-public python-backports-csv
   (package
     (name "python-backports-csv")
