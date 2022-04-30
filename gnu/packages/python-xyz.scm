@@ -14504,9 +14504,6 @@ the standard library.")
 tables.")
     (license license:expat)))
 
-(define-public python2-texttable
-  (package-with-python2 python-texttable))
-
 (define-public python-atomicwrites
   (package
     (name "python-atomicwrites")
