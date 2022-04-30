@@ -545,9 +545,6 @@ kinds of messages to i3, select the affected containers, filter results and
 subscribe to events.")
     (license license:gpl3+)))
 
-(define-public python2-i3-py
-  (package-with-python2 python-i3-py))
-
 (define-public qtile
   (package
     (name "qtile")
