@@ -436,9 +436,6 @@ ISO 8601 dates, time and duration.")
 value (in fractional seconds) of a clock which never goes backwards.")
     (license asl2.0)))
 
-(define-public python2-monotonic
-  (package-with-python2 python-monotonic))
-
 (define-public python-pyrfc3339
   (package
     (name "python-pyrfc3339")
