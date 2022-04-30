@@ -19347,9 +19347,6 @@ JSON) codec.")
      converting text with ANSI color codes to HTML or LaTeX.")
     (license license:gpl3+)))
 
-(define-public python2-ansi2html
-  (package-with-python2 python-ansi2html))
-
 (define-public python-easy-ansi
   (package
     (name "python-easy-ansi")
