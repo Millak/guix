@@ -18033,13 +18033,7 @@ as well.")
      It supports syntax highlighting, multiline editing, autocompletion, mouse,
      color schemes, bracketed paste, Vi and Emacs keybindings, Chinese characters
      etc.")
-    (license license:bsd-3)
-    (properties `((python2-variant . ,(delay ptpython-2))))))
-
-(define-public ptpython-2
-  (let ((base (package-with-python2 (strip-python2-variant ptpython))))
-    (package/inherit base
-      (name "ptpython2"))))
+    (license license:bsd-3)))
 
 (define-public python-easyprocess
   (package
