@@ -6170,13 +6170,13 @@ size, the version of the compiler, ...")
 (define-public ocaml-ppx-let
   (package
     (name "ocaml-ppx-let")
-    (version "0.14.0")
+    (version "0.15.0")
     (source
      (janestreet-origin "ppx_let" version
-                        "1qcrnd86pbr1di5m6z4ps4p15qawwa02jxwz3xfd82hdbjmdwf1s"))
+                        "0m9niyiiv3qzv5x8hw0ifxjjzshnmx40dchka9d93mmnx88jqx34"))
     (build-system dune-build-system)
     (propagated-inputs
-     (list ocaml-base ocaml-migrate-parsetree ocaml-ppxlib))
+     (list ocaml-base ocaml-migrate-parsetree ocaml-ppxlib ocaml-ppx-here))
     (properties `((upstream-name . "ppx_let")
                   (ocaml4.07-variant . ,(delay ocaml4.07-ppx-let))))
     (home-page "https://github.com/janestreet/ppx_let")
