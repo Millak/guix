@@ -12185,9 +12185,6 @@ spreadsheets using Microsoft Excel proprietary file formats @samp{.xls} and
 Unicode-aware.  It is not intended as an end-user tool.")
     (license license:bsd-3)))
 
-(define-public python2-xlrd
-  (package-with-python2 python-xlrd))
-
 ;;; Note: this package is unmaintained since 2018 (archived on GitHub).
 (define-public python-xlwt
   (package
