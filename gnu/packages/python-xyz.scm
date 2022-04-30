@@ -16093,9 +16093,6 @@ standard library module.  This module (python-pathlib) isn't maintained
 anymore.")
     (license license:expat)))
 
-(define-public python2-pathlib
-  (package-with-python2 python-pathlib))
-
 (define-public python2-pathlib2
   (package
     (name "python2-pathlib2")
