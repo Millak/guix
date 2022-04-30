@@ -10706,9 +10706,6 @@ file (e.g. @file{PKG-INFO}).")
 cyclomatic complexity of Python source code.")
     (license license:expat)))
 
-(define-public python2-mccabe
-  (package-with-python2 python-mccabe))
-
 (define-public python-flake8
   (package
     (name "python-flake8")
