@@ -3917,9 +3917,6 @@ memory usage and transliteration quality.")
      "PyJWT is a JSON Web Token implementation written in Python.")
     (license license:expat)))
 
-(define-public python2-pyjwt
-  (package-with-python2 python-pyjwt))
-
 (define-public python-pymsgbox
   (package
     (name "python-pymsgbox")
