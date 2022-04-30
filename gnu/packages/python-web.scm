@@ -3232,9 +3232,6 @@ Python.")
     (home-page "https://gitlab.com/sashahart/cookies")
     (license license:expat)))
 
-(define-public python2-cookies
-  (package-with-python2 python-cookies))
-
 (define-public python-responses
   (package
     (name "python-responses")
