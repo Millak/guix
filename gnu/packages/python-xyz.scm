@@ -17684,9 +17684,6 @@ It supports TSIG authenticated messages and EDNS0.")
                 "1yaw7irazy42n0kdhlk7wyg8ki34rxcnc5xbc1wfwy245b0wbxab"))))
     (native-inputs '())))
 
-(define-public python2-dnspython-1.16
-  (package-with-python2 python-dnspython-1.16))
-
 (define-public python-py3dns
   (package
     (name "python-py3dns")
