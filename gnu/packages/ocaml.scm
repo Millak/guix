@@ -6261,10 +6261,10 @@ https://github.com/ocaml/ocaml/issues/8563.")
 (define-public ocaml-ppx-assert
   (package
     (name "ocaml-ppx-assert")
-    (version "0.14.0")
+    (version "0.15.0")
     (source
      (janestreet-origin "ppx_assert" version
-                        "1l2rr4jz2q5b35ryn2z146z7m9v6k8krp5gpn8ilib66mnz5zx15"))
+                        "0rsr1yz2rs12w6qw0dz09dg3k2x2pfgd014fgp6nj993hhznapsf"))
     (build-system dune-build-system)
     (propagated-inputs
      (list ocaml-base
