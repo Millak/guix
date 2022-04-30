@@ -261,9 +261,6 @@ messages, and verify the signatures.  The keys and signatures are very short,
 making them easy to handle and incorporate into other protocols.")
     (license license:expat)))
 
-(define-public python2-ecdsa
-  (package-with-python2 python-ecdsa))
-
 ;;; Pycrypto is abandoned upstream:
 ;;;
 ;;; https://github.com/dlitz/pycrypto/issues/173
