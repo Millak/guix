@@ -2224,9 +2224,6 @@ that have uses outside of the Zope framework.")
 (define-public python-zope-exceptions-bootstrap
   (python-zope-bootstrap-package python-zope-exceptions))
 
-(define-public python2-zope-exceptions
-  (package-with-python2 python-zope-exceptions))
-
 (define-public python-zope-testing
   (package
     (name "python-zope-testing")
