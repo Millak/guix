@@ -14944,9 +14944,6 @@ text.")
    (home-page "https://pypi.org/project/colorama/")
    (license license:bsd-3)))
 
-(define-public python2-colorama
-  (package-with-python2 python-colorama))
-
 ;; awscli and botocore do not accept version 0.4.4
 (define-public python-colorama-for-awscli
   (package
