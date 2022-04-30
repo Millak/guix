@@ -19867,9 +19867,6 @@ builds partial trees by inspecting living objects.")
      applications in seconds while maintaining all the flexibility.")
     (license license:expat)))
 
-(define-public python2-mando
-  (package-with-python2 python-mando))
-
 (define-public python-mwclient
   (package
     (name "python-mwclient")
