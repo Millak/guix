@@ -20075,9 +20075,6 @@ while only declaring the test-specific fields.")
      by path in a JSON document (see RFC 6901).")
   (license license:bsd-3)))
 
-(define-public python2-jsonpointer
-  (package-with-python2 python-jsonpointer))
-
 (define-public python-jsonpatch
   (package
     (name "python-jsonpatch")
