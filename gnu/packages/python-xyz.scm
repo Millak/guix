@@ -3373,9 +3373,6 @@ new copy of the structure containing the requested updates.  The original
 structure is left untouched.")
     (license license:expat)))
 
-(define-public python2-pyrsistent
-  (package-with-python2 python-pyrsistent))
-
 (define-public python-exif-read
   (package
     (name "python-exif-read")
