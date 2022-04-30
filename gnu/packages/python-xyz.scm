@@ -5125,9 +5125,6 @@ reStructuredText external reference or timestamps.  It's primary purpose is to
 augment the changelog, but it can be used for other documents, too.")
     (license license:expat)))
 
-(define-public python2-rst.linker
-  (package-with-python2 python-rst.linker))
-
 (define-public python-sshpubkeys
   (package
     (name "python-sshpubkeys")
