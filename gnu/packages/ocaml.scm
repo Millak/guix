@@ -1045,6 +1045,19 @@ written in Objective Caml.")
        (sha256
         (base32 "1vzdnvpj5dbj3ifx03v25pj2jj1ccav072v4d29pk1czdba2lzfc"))))
     (build-system dune-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-race
+           (lambda _
+             ;; There's a race between bng.o and bng_generic.c.  Both depend on
+             ;; the architecture specific bng.c, but only the latter declares
+             ;; the dependency.
+             (mkdir-p "_build/default/src")
+             (for-each
+               (lambda (f)
+                 (copy-file f (string-append "_build/default/" f)))
+               (find-files "src" "bng_.*\\.c")))))))
     (home-page "https://github.com/ocaml/num")
     (synopsis "Arbitrary-precision integer and rational arithmetic")
     (description "OCaml-Num contains the legacy Num library for
