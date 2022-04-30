@@ -7097,34 +7097,6 @@ gettext support, themed icons, and scrollkeeper-based documentation into
 Python's distutils.")
     (license license:gpl2)))
 
-(define-public python2-elib.intl
-  (package
-    (name "python2-elib.intl")
-    (version "0.0.3")
-    (source
-     (origin
-       ;; This project doesn't tag releases or publish tarballs, so we take
-       ;; source from a (semi-arbitrary, i.e. latest as of now) git commit.
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/dieterv/elib.intl")
-             (commit "d09997cfef")))
-       (file-name (string-append name "-" version "-checkout"))
-       (sha256
-        (base32
-         "0y7vzff9xgbnaay7m0va1arl6g68ncwrvbgwl7jqlclsahzzb09d"))))
-    (build-system python-build-system)
-    (arguments
-     ;; incompatible with Python 3 (exception syntax)
-     `(#:python ,python-2
-       #:tests? #f))
-    (home-page "https://github.com/dieterv/elib.intl")
-    (synopsis "Enhanced internationalization for Python")
-    (description
-     "The elib.intl module provides enhanced internationalization (I18N)
-services for your Python modules and applications.")
-    (license license:lgpl3+)))
-
 (define-public python-olefile
   (package
     (name "python-olefile")
