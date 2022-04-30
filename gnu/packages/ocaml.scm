@@ -6397,7 +6397,7 @@ packages.")
 (define-public ocaml-ppx-typerep-conv
   (package
     (name "ocaml-ppx-typerep-conv")
-    (version "0.14.2")
+    (version "0.15.0")
     (source
       (origin
         (method git-fetch)
@@ -6406,7 +6406,7 @@ packages.")
               (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-          (base32 "0yk9vkpnwr8labgfncqdi4rfkj88d8mb3cr8m4gdqpi3f2r27hf0"))))
+          (base32 "1q1lzykpm83ra4l5jh4rfddhd3c96kx4s4rvx0w4b51z1qk56zam"))))
     (build-system dune-build-system)
     (arguments
      `(#:test-target "."))
