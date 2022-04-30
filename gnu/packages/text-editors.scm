@@ -1132,42 +1132,6 @@ systems that displays its buffer(s) as a hex dump.  The user interface is kept
 similar to vi/ex.")
     (license license:bsd-3)))
 
-(define-public virtaal
-  (package
-    (name "virtaal")
-    (version "0.7.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://sourceforge/translate/Virtaal/"
-                                  version "/virtaal-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "0cyimjp3191qlmw6n0ipqdr9xr0cq4f6dqvz4rl9q31h6l3kywf9"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2
-       #:use-setuptools? #f
-       #:tests? #f ;; Failing tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Set data file path to absolute store path.
-             (substitute* "virtaal/common/pan_app.py"
-               (("file_discovery\\.get_abs_data_filename.*")
-                (string-append "os.path.join('"
-                               (assoc-ref outputs "out")
-                               "/share', *path_parts)"))))))))
-    (inputs
-     (list python2-lxml python2-pygtk python2-simplejson
-           python2-translate-toolkit python2-pycurl))
-    (synopsis "Graphical translation tool")
-    (description "Virtaal is a powerful yet simple translation tool with an
-uncluttered user interface.  It supports a multitude of translation formats
-provided by the Translate Toolkit, including XLIFF and PO.")
-    (home-page "https://virtaal.translatehouse.org/")
-    (license license:gpl2+)))
-
 (define-public tree-sitter
   (package
     (name "tree-sitter")
