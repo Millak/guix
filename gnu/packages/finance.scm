@@ -950,9 +950,6 @@ settings.")
 of Bitcoin BIP-0039.")
     (license license:expat)))
 
-(define-public python2-mnemonic
-  (package-with-python2 python-mnemonic))
-
 (define-public python-ledgerblue
   (package
     (name "python-ledgerblue")
