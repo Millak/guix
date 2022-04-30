@@ -2575,9 +2575,6 @@ facilities for defining, registering and looking up components.")
 (define-public python-zope-component-bootstrap
   (python-zope-bootstrap-package python-zope-component))
 
-(define-public python2-zope-component
-  (package-with-python2 python-zope-component))
-
 (define-public python-zope-deferredimport
   (package
     (name "python-zope-deferredimport")
