@@ -2492,9 +2492,7 @@ files are easily readable and they work nicely with version control systems.")
          "0vmxgn9wd3j80hp4gr5iq06jrl4gryz5zgfdd2ah30d12sfcfig0"))))
     (build-system python-build-system)
     (propagated-inputs
-     (list python2-backports-functools-lru-cache
-           python2-backports-shutil-get-terminal-size
-           python-cached-property
+     (list python-cached-property
            python-colorama
            python-imagesize
            python-importlib-metadata
