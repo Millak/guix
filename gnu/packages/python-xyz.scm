@@ -27400,9 +27400,6 @@ applications with variable CPU loads).")
     (home-page "https://jwilk.net/software/python-djvulibre")
     (license license:gpl2)))
 
-(define-public python2-djvulibre
-  (package-with-python2 python-djvulibre))
-
 (define-public python-versioneer
   (package
     (name "python-versioneer")
