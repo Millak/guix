@@ -16474,9 +16474,6 @@ modules, which are different and were developed separately, both serve
 the same purpose: to provide Python bindings for libmagic.")
     (license license:expat)))
 
-(define-public python2-magic
-  (package-with-python2 python-magic))
-
 (define-public python-pkgconfig
   (package
     (name "python-pkgconfig")
