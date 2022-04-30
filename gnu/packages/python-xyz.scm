@@ -3403,9 +3403,6 @@ files.")
      "PyLD is an implementation of the JSON-LD specification.")
     (license license:bsd-3)))
 
-(define-public python2-pyld
-  (package-with-python2 python-pyld))
-
 (define-public python-cli-helpers
   (package
     (name "python-cli-helpers")
