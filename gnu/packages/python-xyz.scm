@@ -6518,53 +6518,7 @@ quality figures in a variety of hardcopy formats and interactive environments
 across platforms.  Matplotlib can be used in Python scripts, the python and
 ipython shell, web application servers, and six graphical user interface
 toolkits.")
-    (license license:psfl)
-    (properties `((python2-variant . ,(delay python2-matplotlib))))))
-
-(define-public python2-matplotlib
-  (let ((matplotlib (package-with-python2
-                     (strip-python2-variant python-matplotlib))))
-    (package/inherit matplotlib
-      (version "2.2.5")
-      (source
-       (origin
-         (method url-fetch)
-         (uri (pypi-uri "matplotlib" version))
-         (sha256
-          (base32
-           "1sk05fdai9rw35l983rw2ymvz0nafs7szs7yz4nxrpyr1j27l0x3"))))
-      (arguments
-       (substitute-keyword-arguments (package-arguments matplotlib)
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'install 'create-init-file
-                (lambda _
-                  (with-output-to-file
-                      (string-append
-                       #$output
-                       "/lib/python2.7/site-packages/mpl_toolkits/__init__.py")
-                    (lambda _ (display "")))))
-              (delete 'fix-and-disable-failing-tests)
-              (delete 'check)))))      ; These tests weren't run the the past.
-      (native-inputs
-       `(("pkg-config" ,pkg-config)))
-      (propagated-inputs
-       `(("gobject-introspection" ,gobject-introspection)
-         ("python2-backports-functools-lru-cache" ,python2-backports-functools-lru-cache)
-         ("python2-certifi" ,python2-certifi)
-         ("python2-cycler" ,python2-cycler)
-         ("python2-dateutil" ,python2-dateutil)
-         ("python2-functools32" ,python2-functools32)
-         ("python2-kiwisolver" ,python2-kiwisolver)
-         ("python2-numpy" ,python2-numpy)
-         ("python2-pillow" ,python2-pillow)
-         ("python2-pycairo" ,python2-pycairo)
-         ("python2-pygobject-2" ,python2-pygobject-2)
-         ("python2-pyparsing" ,python2-pyparsing)
-         ("python2-pytz" ,python2-pytz)
-         ("python2-six" ,python2-six)
-         ("python2-subprocess32" ,python2-subprocess32)
-         ("python2-tkinter" ,python-2 "tk"))))))
+    (license license:psfl)))
 
 (define-public python-matplotlib-documentation
   (package
