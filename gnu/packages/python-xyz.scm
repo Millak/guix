@@ -3590,9 +3590,6 @@ version numbers.")
     (home-page "https://github.com/habnabit/vcversioner")
     (license license:isc)))
 
-(define-public python2-vcversioner
-  (package-with-python2 python-vcversioner))
-
 (define-public python-jdcal
   (package
     (name "python-jdcal")
