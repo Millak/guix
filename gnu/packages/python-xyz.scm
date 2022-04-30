@@ -15626,9 +15626,6 @@ This software is unmaintained, and new projects should use @code{boto3} instead.
 interface to the Amazon Web Services (AWS) API.")
     (license license:asl2.0)))
 
-(define-public python2-botocore
-  (package-with-python2 python-botocore))
-
 (define-public python-boto3
   (package
     (name "python-boto3")
