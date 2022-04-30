@@ -7114,9 +7114,6 @@ by pycodestyle.")
     (license (license:non-copyleft
               "https://github.com/hhatto/autopep8/blob/master/LICENSE"))))
 
-(define-public python2-autopep8
-  (package-with-python2 python-autopep8))
-
 (define-public python-distlib
   (package
     (name "python-distlib")
