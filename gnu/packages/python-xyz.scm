@@ -12006,9 +12006,6 @@ reading and writing MessagePack data.")
                  ((".fromstring\\(") ".frombytes("))
                #t))))))))
 
-(define-public python2-msgpack
-  (package-with-python2 python-msgpack))
-
 (define-public python-netaddr
   (package
     (name "python-netaddr")
