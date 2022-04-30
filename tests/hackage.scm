@@ -309,6 +309,108 @@ executable cabal
 (test-assert "hackage->guix-package test flag executable"
   (eval-test-with-cabal test-cabal-flag-executable match-ghc-foo))
 
+;; Check if-elif-else statements
+(define test-cabal-if
+  "name: foo
+version: 1.0.0
+homepage: http://test.org
+synopsis: synopsis
+description: description
+license: BSD3
+library
+  if os(first)
+    Build-depends: ghc-c
+")
+
+(define test-cabal-else
+  "name: foo
+version: 1.0.0
+homepage: http://test.org
+synopsis: synopsis
+description: description
+license: BSD3
+library
+  if os(first)
+    Build-depends: ghc-a
+  else
+    Build-depends: ghc-c
+")
+
+(define test-cabal-elif
+  "name: foo
+version: 1.0.0
+homepage: http://test.org
+synopsis: synopsis
+description: description
+license: BSD3
+library
+  if os(first)
+    Build-depends: ghc-a
+  elif os(second)
+    Build-depends: ghc-b
+  elif os(guix)
+    Build-depends: ghc-c
+  elif os(third)
+    Build-depends: ghc-d
+  else
+    Build-depends: ghc-e
+")
+
+;; Try the same with different bracket styles
+(define test-cabal-elif-brackets
+  "name: foo
+version: 1.0.0
+homepage: http://test.org
+synopsis: synopsis
+description: description
+license: BSD3
+library
+  if os(first) {
+    Build-depends: ghc-a
+  }
+  elif os(second)
+    Build-depends: ghc-b
+  elif os(guix) { Build-depends: ghc-c }
+  elif os(third) {
+    Build-depends: ghc-d }
+  else
+    Build-depends: ghc-e
+")
+
+(define-package-matcher match-ghc-elif
+  ('package
+    ('name "ghc-foo")
+    ('version "1.0.0")
+    ('source
+     ('origin
+       ('method 'url-fetch)
+       ('uri ('hackage-uri "foo" 'version))
+       ('sha256
+        ('base32
+         (? string? hash)))))
+    ('build-system 'haskell-build-system)
+    ('inputs ('list 'ghc-c))
+    ('home-page "http://test.org")
+    ('synopsis (? string?))
+    ('description (? string?))
+    ('license 'license:bsd-3)))
+
+(test-assert "hackage->guix-package test lonely if statement"
+  (eval-test-with-cabal test-cabal-else match-ghc-elif
+                        #:cabal-environment '(("os" . "guix"))))
+
+(test-assert "hackage->guix-package test else statement"
+  (eval-test-with-cabal test-cabal-else match-ghc-elif
+                        #:cabal-environment '(("os" . "guix"))))
+
+(test-assert "hackage->guix-package test elif statement"
+  (eval-test-with-cabal test-cabal-elif match-ghc-elif
+                        #:cabal-environment '(("os" . "guix"))))
+
+(test-assert "hackage->guix-package test elif statement with brackets"
+  (eval-test-with-cabal test-cabal-elif-brackets match-ghc-elif
+                        #:cabal-environment '(("os" . "guix"))))
+
 ;; Check Hackage Cabal revisions.
 (define test-cabal-revision
   "name: foo

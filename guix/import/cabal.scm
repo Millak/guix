@@ -149,7 +149,7 @@ to the stack."
            (right: IF FLAG EXEC TEST-SUITE CUSTOM-SETUP SOURCE-REPO BENCHMARK LIB COMMON OCURLY)
            (left: OR)
            (left: PROPERTY AND)
-           (right: ELSE NOT))
+           (right: ELIF ELSE NOT))
    ;; --- rules
    (body        (properties sections)   : (append $1 $2))
    (sections    (sections flags)        : (append $1 $2)
@@ -193,32 +193,32 @@ to the stack."
                 (LIB open exprs close)    : `(section library ,$3))
    (exprs       (exprs PROPERTY)         : (append $1 (list $2))
                 (PROPERTY)               : (list $1)
-                (exprs if-then-else)     : (append $1 (list $2))
-                (if-then-else)           : (list $1)
-                (exprs if-then)          : (append $1 (list $2))
-                (if-then)                : (list $1))
-   (if-then-else (IF tests OCURLY exprs CCURLY ELSE OCURLY exprs CCURLY)
-                 : `(if ,$2 ,$4 ,$8)
-                 (IF tests open exprs close ELSE OCURLY exprs CCURLY)
-                 : `(if ,$2 ,$4 ,$8)
-                 ;; The 'open' token after 'tests' is shifted after an 'exprs'
-                 ;; is found.  This is because, instead of 'exprs' a 'OCURLY'
-                 ;; token is a valid alternative.  For this reason, 'open'
-                 ;; pushes a <parse-context> with a line indentation equal to
-                 ;; the indentation of 'exprs'.
-                 ;;
-                 ;; Differently from this, without the rule above this
-                 ;; comment, when an 'ELSE' token is found, the 'open' token
-                 ;; following the 'ELSE' would be shifted immediately, before
-                 ;; the 'exprs' is found (because there are no other valid
-                 ;; tokens).  The 'open' would therefore create a
-                 ;; <parse-context> with the indentation of 'ELSE' and not
-                 ;; 'exprs', creating an inconsistency.  We therefore allow
-                 ;; mixed style conditionals.
-                 (IF tests open exprs close ELSE open exprs close)
-                 : `(if ,$2 ,$4 ,$8))
-   (if-then     (IF tests OCURLY exprs CCURLY) : `(if ,$2 ,$4 ())
-                (IF tests open exprs close)    : `(if ,$2 ,$4 ()))
+                (exprs elif-else)          : (append $1 (list ($2 '(()))))
+                (elif-else)                : (list ($1 '(()))))
+   ;; LALR(1) parsers prefer to be left-recursive, which make if-statements slightly involved.
+   ;; XXX: This technically allows multiple else statements.
+   (elif-else   (elif-else ELIF tests OCURLY exprs CCURLY) : (lambda (y) ($1 (list (append (list 'if $3 $5) y))))
+                (elif-else ELIF tests open exprs close) : (lambda (y) ($1 (list (append (list 'if $3 $5) y))))
+                (elif-else ELSE OCURLY exprs CCURLY) : (lambda (y) ($1 (list $4)))
+                ;; The 'open' token after 'tests' is shifted after an 'exprs'
+                ;; is found.  This is because, instead of 'exprs' a 'OCURLY'
+                ;; token is a valid alternative.  For this reason, 'open'
+                ;; pushes a <parse-context> with a line indentation equal to
+                ;; the indentation of 'exprs'.
+                ;;
+                ;; Differently from this, without the rule above this
+                ;; comment, when an 'ELSE' token is found, the 'open' token
+                ;; following the 'ELSE' would be shifted immediately, before
+                ;; the 'exprs' is found (because there are no other valid
+                ;; tokens).  The 'open' would therefore create a
+                ;; <parse-context> with the indentation of 'ELSE' and not
+                ;; 'exprs', creating an inconsistency.  We therefore allow
+                ;; mixed style conditionals.
+                (elif-else ELSE open exprs close) : (lambda (y) ($1 (list $4)))
+                ;; Terminating rule.
+                (if-then) : (lambda (y) (append $1 y)))
+   (if-then     (IF tests OCURLY exprs CCURLY) : (list 'if $2 $4)
+                (IF tests open exprs close)    : (list 'if $2 $4))
    (tests       (TEST OPAREN ID CPAREN)        : `(,$1 ,$3)
                 (TRUE)                         : 'true
                 (FALSE)                        : 'false
@@ -386,6 +386,8 @@ matching a string against the created regexp."
 
 (define is-else (make-rx-matcher "^else" regexp/icase))
 
+(define (is-elif s) (string-ci=? s "elif"))
+
 (define (is-if s) (string-ci=? s "if"))
 
 (define (is-true s) (string-ci=? s "true"))
@@ -402,8 +404,8 @@ matching a string against the created regexp."
 
 (define (is-id s port loc)
   (let ((cabal-reserved-words
-         '("if" "else" "library" "flag" "executable" "test-suite" "custom-setup"
-           "source-repository" "benchmark" "common"))
+         '("if" "else" "elif" "library" "flag" "executable" "test-suite"
+           "custom-setup" "source-repository" "benchmark" "common"))
         (spaces (read-while (cut char-set-contains? char-set:blank <>) port))
         (c (peek-char port)))
     (unread-string spaces port)
@@ -494,6 +496,8 @@ string with the read characters."
 
 (define (lex-else loc) (make-lexical-token 'ELSE loc #f))
 
+(define (lex-elif loc) (make-lexical-token 'ELIF loc #f))
+
 (define (lex-if loc) (make-lexical-token 'IF loc #f))
 
 (define (lex-true loc) (make-lexical-token 'TRUE loc #t))
@@ -568,6 +572,7 @@ location."
 LOC is the current port location."
   (let* ((w (read-delimited " <>=()\t\n" port 'peek)))
     (cond ((is-if w) (lex-if loc))
+          ((is-elif w) (lex-elif loc))
           ((is-test w port) (lex-test w loc))
           ((is-true w) (lex-true loc))
           ((is-false w) (lex-false loc))
