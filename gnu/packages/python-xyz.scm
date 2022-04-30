@@ -17113,9 +17113,6 @@ It uses LR parsing and does extensive error checking.")
 data in Python.")
     (license license:expat)))
 
-(define-public python2-tabulate
-  (package-with-python2 python-tabulate))
-
 (define-public python-kazoo
   (package
     (name "python-kazoo")
