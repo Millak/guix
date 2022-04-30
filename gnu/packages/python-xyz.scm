@@ -14652,9 +14652,6 @@ minimal and fast API targeting the following uses:
     (home-page "https://codespeak.net/execnet/")
     (license license:expat)))
 
-(define-public python2-execnet
-  (package-with-python2 python-execnet))
-
 (define-public python-icalendar
   (package
     (name "python-icalendar")
