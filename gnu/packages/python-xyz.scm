@@ -2541,9 +2541,6 @@ from @code{lxml}.  It aims to provide a low memory, compatible implementation
 of @code{xmlfile}.")
     (license license:expat)))
 
-(define-public python2-et-xmlfile
-  (package-with-python2 python-et-xmlfile))
-
 (define-public python-openpyxl
   (package
     (name "python-openpyxl")
