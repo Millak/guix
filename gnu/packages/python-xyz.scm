@@ -3165,9 +3165,6 @@ documentation-related tools used by the Astropy project.")
      "Extras is a set of extensions to the Python standard library.")
     (license license:expat)))
 
-(define-public python2-extras
-  (package-with-python2 python-extras))
-
 (define-public python-mimeparse
   (package
     (name "python-mimeparse")
