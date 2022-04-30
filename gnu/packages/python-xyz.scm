@@ -11162,9 +11162,6 @@ unnecessary plus operators for explicit string literal concatenation.")
 plugins that intend to support Flake8 2.x and 3.x simultaneously.")
     (license license:expat)))
 
-(define-public python2-flake8-polyfill
-  (package-with-python2 python-flake8-polyfill))
-
 (define-public python-flake8-print
   (package
     (name "python-flake8-print")
