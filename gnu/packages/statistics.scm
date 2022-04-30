@@ -2033,9 +2033,6 @@ building design matrices.")
     ;; and is covered by the PSFL.
     (license (list license:bsd-2 license:psfl))))
 
-(define-public python2-patsy
-  (package-with-python2 python-patsy))
-
 (define-public python-statsmodels
   (package
     (name "python-statsmodels")
