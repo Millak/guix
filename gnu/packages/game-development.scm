@@ -1257,9 +1257,6 @@ While it aims to be used as a drop-in replacement, it appears to be
 developed mainly for Ren'py.")
       (license (list license:lgpl2.1 license:zlib)))))
 
-(define-public python2-pygame-sdl2
-  (package-with-python2 python-pygame-sdl2))
-
 (define-public renpy
   (package
     (name "renpy")
