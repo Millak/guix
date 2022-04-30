@@ -6170,25 +6170,7 @@ parse and apply unified diffs.  It has features such as:
     (home-page "https://pypi.org/project/numpydoc/")
     (synopsis "Numpy's Sphinx extensions")
     (description "Sphinx extension to support docstrings in Numpy format.")
-    (license license:bsd-2)
-    (properties `((python2-variant . ,(delay python2-numpydoc))))))
-
-(define-public python2-numpydoc
-  (let ((base (package-with-python2
-               (strip-python2-variant python-numpydoc))))
-    (package/inherit base
-      ;; This is the last version to support Python 2
-      (version "0.9.1")
-      (source
-       (origin
-         (method url-fetch)
-         (uri (pypi-uri "numpydoc" version))
-         (sha256
-          (base32
-           "09x6l1a4dcvj7001bvcmcayg1nwqwhaxlwbp6kzj9qrk57lqx3z0"))))
-      (propagated-inputs
-       `(("python2-jinja2" ,python2-jinja2)
-         ,@(package-propagated-inputs base))))))
+    (license license:bsd-2)))
 
 (define-public python-numexpr
   (package
