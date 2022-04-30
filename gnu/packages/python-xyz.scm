@@ -20162,9 +20162,6 @@ while only declaring the test-specific fields.")
      validation of URIs (see RFC 3986) and IRIs (see RFC 3987).")
     (license license:gpl3+)))
 
-(define-public python2-rfc3987
-  (package-with-python2 python-rfc3987))
-
 ;; The latest commit contains fixes for building with both python3 and python2.
 (define-public python-rfc6555
   (let ((commit "1a181b432312731f6742a5eb558dae4761d32361")
