@@ -68,9 +68,6 @@ scripts to their final locations) at any later time.  Wheel files can be
 installed with a newer @code{pip} or with wheel's own command line utility.")
     (license license:expat)))
 
-(define-public python2-wheel
-  (package-with-python2 python-wheel))
-
 ;;; XXX: Not really at home, but this seems the best place to prevent circular
 ;;; module dependencies.
 (define-public python-toml
