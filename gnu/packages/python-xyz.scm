@@ -15717,9 +15717,6 @@ templates into Python modules.")
 server with very acceptable performance.")
     (license license:zpl2.1)))
 
-(define-public python2-waitress
-  (package-with-python2 python-waitress))
-
 (define-public python-whichcraft
   (package
     (name "python-whichcraft")
