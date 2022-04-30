@@ -945,7 +945,7 @@ be maintained and distributed separately in the camlpstreams package.")
 (define-public camlp5
   (package
     (name "camlp5")
-    (version "8.00.02")
+    (version "8.00.03")
     (source
      (origin
        (method git-fetch)
@@ -954,7 +954,7 @@ be maintained and distributed separately in the camlpstreams package.")
              (commit (string-append "rel" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03qm99h2380x0y69sppg10yz1mwx7smkscia7pa175wmilifx8vy"))))
+        (base32 "1fnvmaw9cland09pjx5h6w3f6fz9s23l4nbl4m9fcaa2i4dpraz6"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f  ; XXX TODO figure out how to run the tests
@@ -986,9 +986,9 @@ be maintained and distributed separately in the camlpstreams package.")
                                                      "/lib/ocaml/camlp5/"))
              #t)))))
     (inputs
-     (list ocaml))
+     (list ocaml ocaml-camlp-streams))
     (native-inputs
-     (list perl))
+     (list perl ocaml-findlib))
     (home-page "https://camlp5.github.io/")
     (synopsis "Pre-processor Pretty Printer for OCaml")
     (description
