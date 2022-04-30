@@ -24447,14 +24447,6 @@ are not supported.")
 on regular expressions.")
     (license license:expat)))
 
-(define-public python2-reparser
-  (let ((reparser (package-with-python2
-                   (strip-python2-variant python-reparser))))
-    (package/inherit reparser
-             (propagated-inputs
-              `(("python2-enum34" ,python2-enum34)
-                ,@(package-propagated-inputs reparser))))))
-
 (define-public python-retrying
   (package
     (name "python-retrying")
