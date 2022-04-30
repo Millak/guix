@@ -12678,9 +12678,6 @@ suitable for a wide range of protocols based on the ASN.1 specification.")
 implementations of ASN.1-based codecs and protocols.")
     (license license:bsd-3)))
 
-(define-public python2-pyasn1-modules
-  (package-with-python2 python-pyasn1-modules))
-
 (define-public python-ipaddress
   (package
     (name "python-ipaddress")
