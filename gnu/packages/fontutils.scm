@@ -1504,24 +1504,6 @@ UFO3 as described by the UFO font format.")
       (modify-inputs (package-propagated-inputs python-defcon-bootstrap)
         (replace "python-fontpens-bootstrap" python-fontpens))))))
 
-(define-public python2-defcon
-  (package
-    (inherit python-defcon)
-    (name "python2-defcon")
-    (version "0.3.5")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "defcon" version ".zip"))
-              (sha256
-               (base32
-                "03jlm2gy9lvbwj68kfdm43yaddwd634jwkdg4wf0jxx2s8mwbg22"))))
-    (arguments
-     `(#:python ,python-2))
-    (native-inputs
-     (list unzip python2-pytest python2-pytest-runner))
-    (propagated-inputs
-     (list python2-fonttools python2-ufolib))))
-
 (define-public nototools
   (package
     (name "nototools")
