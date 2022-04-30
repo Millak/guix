@@ -14884,9 +14884,6 @@ works with RPython.  It is a more-or-less direct port of David Bazzley's PLY,
 with a new public API, and RPython support.")
     (license license:bsd-3)))
 
-(define-public python2-rply
-  (package-with-python2 python-rply))
-
 (define-public python-hy
   (package
     (name "python-hy")
