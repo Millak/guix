@@ -156,6 +156,12 @@ library
   Exposed-Modules:
     Test.QuickCheck.Exception")
 
+(define test-read-cabal-2
+  "name: test-me
+common defaults
+    if os(foobar) { cc-options: -DBARBAZ }
+") ; Intentional newline.
+
 (test-begin "hackage")
 
 (define-syntax-rule (define-package-matcher name pattern)
@@ -468,6 +474,16 @@ executable cabal
                       ())
                  ("build-depends" ("containers"))
                  ("exposed-modules" ("Test.QuickCheck.Exception")))))
+     #t)
+    (x (pk 'fail x #f))))
+
+(test-assert "read-cabal test: if brackets on the same line"
+  (match (call-with-input-string test-read-cabal-2 read-cabal)
+    ((("name" ("test-me"))
+        ('section 'common "defaults"
+          (('if ('os "foobar")
+               (("cc-options" ("-DBARBAZ ")))
+               ()))))
      #t)
     (x (pk 'fail x #f))))
 

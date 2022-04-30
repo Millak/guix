@@ -354,7 +354,7 @@ matching a string against the created regexp."
                 (make-regexp pat))))
     (cut regexp-exec rx <>)))
 
-(define is-layout-property (make-rx-matcher "([a-z0-9-]+)[ \t]*:[ \t]*(\\w?[^{}]*)$"
+(define is-layout-property (make-rx-matcher "([a-z0-9-]+)[ \t]*:[ \t]*(\\w?[^{}]*)"
                                             regexp/icase))
 
 (define is-braced-property (make-rx-matcher "([a-z0-9-]+)[ \t]*:[ \t]*\\{[ \t]*$"
@@ -465,7 +465,10 @@ string with the read characters."
         (value (match:substring k-v-rx-res 2)))
     (make-lexical-token
      'PROPERTY loc
-     (list key `(,(read-value port value (current-indentation)))))))
+     (list key `(,(if (eqv? (peek-char port) #\newline) ; The next character
+                      ; is not necessarily a newline if a bracket follows the property.
+                      (read-value port value (current-indentation))
+                      value))))))
 
 (define (lex-braced-property k-rx-res loc port)
   (let ((key (string-downcase (match:substring k-rx-res 1))))
@@ -600,7 +603,9 @@ the current port location."
      (else (unread-string s port) #f))))
 
 (define (lex-property port loc)
-  (let* ((s (read-delimited "\n" port 'peek)))
+  ;; Stop reading on a }, so closing brackets (for example during
+  ;; if-clauses) work properly.
+  (let* ((s (read-delimited "\n}" port 'peek)))
     (cond
       ((is-braced-property s) => (cut lex-braced-property <> loc port))
       ((is-layout-property s) => (cut lex-layout-property <> loc port))
