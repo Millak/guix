@@ -19269,9 +19269,6 @@ JSON) codec.")
      @end enumerate")
     (license (license:x11-style "file://LICENSE"))))
 
-(define-public python2-cheetah
-  (package-with-python2 python-cheetah))
-
 (define-public python-dulwich
   (package
     (name "python-dulwich")
