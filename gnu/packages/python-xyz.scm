@@ -9559,37 +9559,17 @@ interfaces in an easy and portable manner.")
                     (lambda* (#:key tests? #:allow-other-keys)
                       (if tests?
                           (invoke "pytest" "-vv" "--pyargs" "networkx")
-                          (format #t "test suite not run~%"))
-                      #t)))))
-    ;; python-decorator is needed at runtime.
-    (propagated-inputs
-     (list python-decorator))
-    (native-inputs
-     (list python-pytest))
+                          (format #t "test suite not run~%")) #t)))))
+    (propagated-inputs (list python-decorator))
+    (native-inputs (list python-pytest))
     (home-page "https://networkx.github.io/")
-    (synopsis "Python module for creating and manipulating graphs and networks")
+    (synopsis
+     "Python module for creating and manipulating graphs and networks")
     (description
-      "NetworkX is a Python package for the creation, manipulation, and study
+     "NetworkX is a Python package for the creation, manipulation, and study
 of the structure, dynamics, and functions of complex networks.")
-    (properties `((python2-variant . ,(delay python2-networkx))))
     (license license:bsd-3)))
 
-;; NetworkX 2.2 is the last version with support for Python 2.
-(define-public python2-networkx
-  (let ((base (package-with-python2 (strip-python2-variant python-networkx))))
-    (package
-      (inherit base)
-      (version "2.2")
-      (source (origin
-                (method url-fetch)
-                (uri (pypi-uri "networkx" version ".zip"))
-                (sha256
-                 (base32
-                  "12swxb15299v9vqjsq4z8rgh5sdhvpx497xwnhpnb0gynrx6zra5"))))
-      (arguments
-       `(#:python ,python-2))
-      (native-inputs
-       (list python2-nose unzip)))))
 
 (define-public python-datrie
   (package
