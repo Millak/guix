@@ -1442,30 +1442,6 @@ other support classes.  Where useful and possible, ufoLib2 tries to be
 API-compatible with defcon.")
     (license license:asl2.0)))
 
-(define-public python2-ufolib
-  (package
-    (name "python2-ufolib")
-    (version "2.1.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "ufoLib" version ".zip"))
-       (sha256
-        (base32 "07qy6mx7z0wi9a30lc2hj5i9q1gnz1n8l40dmjz2c19mj9s6mz9l"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2))
-    (propagated-inputs
-     (list python2-fonttools))
-    (native-inputs
-     (list unzip python2-pytest python2-pytest-runner))
-    (home-page "https://github.com/unified-font-object/ufoLib")
-    (synopsis "Low-level UFO reader and writer")
-    (description
-     "UfoLib reads and writes Unified Font Object (UFO)
-files.  UFO is a file format that stores fonts source files.")
-    (license license:bsd-3)))
-
 ;;; A variant used to break a cycle between python-fontpens and
 ;;; python-fontparts.
 (define-public python-defcon-bootstrap
