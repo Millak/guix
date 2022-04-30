@@ -3227,9 +3227,6 @@ documentation-related tools used by the Astropy project.")
 matching them against a list of media-ranges.")
     (license license:expat)))
 
-(define-public python2-mimeparse
-  (package-with-python2 python-mimeparse))
-
 (define-public python-miniboa
   (package
     (name "python-miniboa")
