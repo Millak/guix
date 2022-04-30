@@ -449,9 +449,6 @@ value (in fractional seconds) of a clock which never goes backwards.")
 timestamps.")
     (license expat)))
 
-(define-public python2-pyrfc3339
-  (package-with-python2 python-pyrfc3339))
-
 (define-public python-arrow
   (package
     (name "python-arrow")
