@@ -315,6 +315,25 @@ executable cabal
 (test-assert "hackage->guix-package test flag executable"
   (eval-test-with-cabal test-cabal-flag-executable match-ghc-foo))
 
+;; There is no mandatory space between property name and value.
+(define test-cabal-property-no-space
+  "name:foo
+version:1.0.0
+homepage:http://test.org
+synopsis:synopsis
+description:description
+license:BSD3
+common bench-defaults
+  ghc-options:-Wall
+executable cabal
+  build-depends:
+    HTTP       >= 4000.2.5 && < 4000.3,
+    mtl        >= 2.0      && < 3
+")
+
+(test-assert "hackage->guix-package test properties without space"
+  (eval-test-with-cabal test-cabal-property-no-space match-ghc-foo))
+
 ;; Check if-elif-else statements
 (define test-cabal-if
   "name: foo

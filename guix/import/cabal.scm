@@ -573,7 +573,7 @@ location."
 (define (lex-word port loc)
   "Process tokens which can be recognized by reading the next word form PORT.
 LOC is the current port location."
-  (let* ((w (read-delimited " <>=()\t\n" port 'peek)))
+  (let* ((w (read-delimited " <>=():\t\n" port 'peek)))
     (cond ((is-if w) (lex-if loc))
           ((is-elif w) (lex-elif loc))
           ((is-test w port) (lex-test w loc))
