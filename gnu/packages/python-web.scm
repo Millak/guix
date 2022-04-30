@@ -2288,9 +2288,6 @@ tests.")
        ("python-zope-exceptions" ,python-zope-exceptions-bootstrap)))
     (properties `((hidden? . #t)))))
 
-(define-public python2-zope-testrunner
-  (package-with-python2 python-zope-testrunner))
-
 (define-public python-zope-i18nmessageid
   (package
     (name "python-zope-i18nmessageid")
