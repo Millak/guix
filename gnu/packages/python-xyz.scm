@@ -3557,9 +3557,6 @@ version numbers.")
 between Julian dates and Gregorian dates.")
     (license license:bsd-2)))
 
-(define-public python2-jdcal
-  (package-with-python2 python-jdcal))
-
 (define-public python-jsondiff
   (package
    (name "python-jsondiff")
