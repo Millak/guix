@@ -4817,7 +4817,7 @@ format}.  @code{craml} is released as a single binary (called @code{craml}).")
 (define-public ocaml-dot-merlin-reader
   (package
     (name "ocaml-dot-merlin-reader")
-    (version "4.4-413")
+    (version "4.5-414")
     (source
      (origin
        (method git-fetch)
@@ -4827,7 +4827,7 @@ format}.  @code{craml} is released as a single binary (called @code{craml}).")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0wijg1vh2q6yr46vkv34vvksligd0ajl4hv7m6qbz3ywqr8akg23"))))
+         "125gyk63fg9plqkyrkl3wvpr3czjxgvshf4496fc4swldl7z587c"))))
     (build-system dune-build-system)
     (arguments '(#:package "dot-merlin-reader"
                  #:tests? #f))          ; no tests
