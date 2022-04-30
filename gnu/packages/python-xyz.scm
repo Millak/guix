@@ -19250,9 +19250,6 @@ JSON) codec.")
      reST format.")
     (license license:expat)))
 
-(define-public python2-m2r
-  (package-with-python2 python-m2r))
-
 (define-public python-constantly
   (package
     (name "python-constantly")
