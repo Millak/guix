@@ -1976,8 +1976,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/xterm-370-explicit-xcursor.patch		\
   %D%/packages/patches/xygrib-fix-finding-data.patch		\
   %D%/packages/patches/yggdrasil-extra-config.patch	\
-  %D%/packages/patches/ytfzf-programs.patch        \
-  %D%/packages/patches/ytfzf-updates.patch        \
   %D%/packages/patches/ytnef-CVE-2021-3403.patch	\
   %D%/packages/patches/ytnef-CVE-2021-3404.patch	\
   %D%/packages/patches/zig-use-system-paths.patch
