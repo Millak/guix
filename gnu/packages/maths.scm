@@ -3336,9 +3336,6 @@ Cassowary solver with typical use cases gaining a 40x improvement.  Memory
 savings are consistently > 5x.")
     (license license:bsd-3)))
 
-(define-public python2-kiwisolver
-  (package-with-python2 python-kiwisolver))
-
 (define-public slepc
   (package
     (name "slepc")
