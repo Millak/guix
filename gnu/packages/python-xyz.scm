@@ -21322,9 +21322,6 @@ deleted with all their contents when they are no longer needed.  It is
 particularly convenient for use in tests.")
     (license license:expat)))
 
-(define-public python2-tempdir
-  (package-with-python2 python-tempdir))
-
 (define-public python-tempora
   (package
     (name "python-tempora")
