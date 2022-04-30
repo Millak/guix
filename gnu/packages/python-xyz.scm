@@ -3937,14 +3937,6 @@ e.g. filters, callbacks and errbacks can all be promises.")
      "Virtualenv is a tool to create isolated Python environments.")
     (license license:expat)))
 
-(define-public python2-virtualenv
-  (let ((base (package-with-python2 (strip-python2-variant python-virtualenv))))
-    (package
-      (inherit base)
-      (propagated-inputs
-       (modify-inputs (package-propagated-inputs base)
-         (prepend python2-contextlib2))))))
-
 (define-public python-markupsafe
   (package
     (name "python-markupsafe")
