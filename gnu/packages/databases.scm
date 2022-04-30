@@ -3364,30 +3364,6 @@ designed for efficient and high-performing database access, adapted into a
 simple and Pythonic domain language.")
     (license license:x11)))
 
-(define-public python2-sqlalchemy
-  (let ((base (package-with-python2 python-sqlalchemy)))
-    (package
-      (inherit base)
-      (arguments
-       (substitute-keyword-arguments (package-arguments base)
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (replace 'check
-                (lambda* (#:key tests? #:allow-other-keys)
-                  (when tests?
-                    (invoke "pytest" "-vv"
-                            ;; The memory usage tests are very expensive and run in
-                            ;; sequence; skip them.
-                            "-k"
-                            (string-append
-                             "not test_memusage.py"
-                             ;; This test fails with "AssertionError: Warnings
-                             ;; were not seen [...]".
-                             " and not test_fixture_five")))))))))
-      ;; Do not use pytest-xdist, which is broken for Python 2.
-      (native-inputs (modify-inputs (package-native-inputs base)
-                       (delete "python-pytest-xdist"))))))
-
 (define-public python-sqlalchemy-stubs
   (package
     (name "python-sqlalchemy-stubs")
