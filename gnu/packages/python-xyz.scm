@@ -20558,9 +20558,6 @@ while only declaring the test-specific fields.")
      renderers (e.g. man pages or LaTeX).")
     (license license:expat)))
 
-(define-public python2-misaka
-  (package-with-python2 python-misaka))
-
 (define-public python-jsonpointer
   (package
     (name "python-jsonpointer")
