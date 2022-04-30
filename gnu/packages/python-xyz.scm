@@ -20594,9 +20594,6 @@ while only declaring the test-specific fields.")
      which adds support for zone identifiers to IPv6 addresses.")
     (license license:asl2.0)))
 
-(define-public python2-rfc3986
-  (package-with-python2 python-rfc3986))
-
 (define-public python-rfc3987
   (package
     (name "python-rfc3987")
