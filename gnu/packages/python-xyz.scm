@@ -10529,9 +10529,6 @@ so it might be a tiny bit slower.")
 applications.")
     (license license:bsd-3)))
 
-(define-public python2-waf
-  (package-with-python2 python-waf))
-
 (define-public python-pyzmq
   (package
     (name "python-pyzmq")
