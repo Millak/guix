@@ -10629,9 +10629,6 @@ file (e.g. @file{PKG-INFO}).")
       "Pyflakes statically checks Python source code for common errors.")
     (license license:expat)))
 
-(define-public python2-pyflakes
-  (package-with-python2 python-pyflakes))
-
 (define-public python-pyflakes-2.2
   (package
     (inherit python-pyflakes)
