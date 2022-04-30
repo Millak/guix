@@ -16140,9 +16140,6 @@ Python 3.  It allows you to use a single, clean Python 3.x-compatible codebase
 to support both Python 2 and Python 3 with minimal overhead.")
     (license license:expat)))
 
-(define-public python2-future
-  (package-with-python2 python-future))
-
 (define-public python-cysignals
   (package
     (name "python-cysignals")
