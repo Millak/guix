@@ -13250,15 +13250,7 @@ objects with some common interface.  The most common examples are
 @code{console_scripts} entry points, which define shell commands by
 identifying a Python function to run.  The @code{entrypoints} module contains
 functions to find and load entry points.")
-    (license license:expat)
-    (properties `((python2-variant . ,(delay python2-entrypoints))))))
-
-(define-public python2-entrypoints
-  (package
-    (inherit (package-with-python2
-              (strip-python2-variant python-entrypoints)))
-    (propagated-inputs
-     (list python2-configparser))))
+    (license license:expat)))
 
 (define-public python-epc
   (package
