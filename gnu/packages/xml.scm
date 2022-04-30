@@ -1119,9 +1119,6 @@ code for classes that correspond to data structures defined by XMLSchema.")
                    license:gpl2      ; bundled jquery in doc is dual MIT/GPL2
                    license:psfl))))  ; pyxb/utils/activestate.py
 
-(define-public python2-pyxb
-  (package-with-python2 python-pyxb))
-
 (define-public xmlto
   (package
     (name "xmlto")
