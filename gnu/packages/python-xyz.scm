@@ -10391,9 +10391,6 @@ Python's float/complex types and math/cmath modules, but also does much
 more advanced mathematics.")
     (license license:bsd-3)))
 
-(define-public python2-mpmath
-  (package-with-python2 python-mpmath))
-
 (define-public python-bigfloat
   (package
     (name "python-bigfloat")
