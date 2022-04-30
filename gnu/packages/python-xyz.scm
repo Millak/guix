@@ -3773,9 +3773,6 @@ services or command-line parsing, converted from JSON/YAML (or
 something else) to Python data-types.")
     (license license:psfl)))
 
-(define-public python2-schema
-  (package-with-python2 python-schema))
-
 (define-public python-schema-0.5
   (package (inherit python-schema)
     (version "0.5.0")
