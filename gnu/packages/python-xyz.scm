@@ -21025,9 +21025,6 @@ setuptools_scm, which supports obtaining versions from git archives that
 belong to tagged versions.")
     (license license:expat)))
 
-(define-public python2-setuptools-scm-git-archive
-  (package-with-python2 python-setuptools-scm-git-archive))
-
 (define-public python-setuptools-git
   (package
     (name "python-setuptools-git")
