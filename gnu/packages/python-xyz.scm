@@ -2976,34 +2976,6 @@ commands.")
               "http://docs.python.org/2/license.html"
               "Like \"CWI LICENSE AGREEMENT FOR PYTHON 0.9.0 THROUGH 1.2\"."))))
 
-(define-public python2-pybugz
-  (package
-    (name "python2-pybugz")
-    (version "0.6.11")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "http://bits.liquidx.net/projects/pybugz/pybugz-"
-                    version ".tar.gz"))
-              (sha256
-               (base32
-                "17ni00p08gp5lkxlrrcnvi3x09fmajnlbz4da03qcgl9q21ym4jd"))
-              (patches (search-patches "pybugz-stty.patch"
-                                       "pybugz-encode-error.patch"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2                         ; SyntaxError with Python 3
-       #:tests? #f))                              ; no 'test' sub-command
-    (propagated-inputs
-     `(("element-tree" ,python2-element-tree)))
-    (synopsis "Python and command-line interface to Bugzilla")
-    (description
-     "PyBugz is a Python library and command-line tool to query the Bugzilla
-bug tracking system.  It is meant as an aid to speed up interaction with the
-bug tracker.")
-    (home-page "http://www.liquidx.net/pybugz/")
-    (license license:gpl2)))
-
 (define-public python-enum34
   (package
     (name "python-enum34")
