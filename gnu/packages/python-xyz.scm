@@ -24207,9 +24207,6 @@ access the system cron automatically and simply using a direct API.")
 by Igor Pavlov.")
     (license license:lgpl2.1+)))
 
-(define-public python2-pylzma
-  (package-with-python2 python-pylzma))
-
 (define-public python-ifaddr
   (package
     (name "python-ifaddr")
