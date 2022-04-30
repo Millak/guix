@@ -20272,32 +20272,6 @@ while only declaring the test-specific fields.")
 (define-public python2-sure
   (package-with-python2 python-sure))
 
-(define-public python2-couleur
-  ;; This package does not seem to support python3 at all, hence,
-  ;; only the python2 variant definition is provided.
-  (package
-    (name "python2-couleur")
-    (version "0.6.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "couleur" version))
-       (sha256
-        (base32
-         "1qqaxyqz74wvid0cr119dhcwz0h0if5b5by44zl49pd5z65v58k1"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2))
-    (home-page "https://github.com/gabrielfalcao/couleur")
-    (synopsis
-     "ANSI terminal tool for python, colored shell and other handy fancy features")
-    (description
-     "@code{Couleur} provides python programs a way to use the ANSI features in a unix
-     terminal such as coloured output in the shell, overwriting output, indentation, etc.")
-    ;; README.md says ASL2.0, but all source code headers are LGPL3+.
-    ;; https://github.com/gabrielfalcao/couleur/issues/11
-    (license license:lgpl3+)))
-
 (define-public python-misaka
   (package
     (name "python-misaka")
