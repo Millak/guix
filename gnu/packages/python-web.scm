@@ -2348,9 +2348,6 @@ internationalized messages within program source text.")
 defining data schemas.")
     (license license:zpl2.1)))
 
-(define-public python2-zope-schema
-  (package-with-python2 python-zope-schema))
-
 (define-public python-zope-configuration
   (package
     (name "python-zope-configuration")
