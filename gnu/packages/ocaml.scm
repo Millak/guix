@@ -6101,11 +6101,11 @@ literal of the  form 1.0v to conversion functions currently in scope.")
 (define-public ocaml-ppx-optional
   (package
     (name "ocaml-ppx-optional")
-    (version "0.14.0")
+    (version "0.15.0")
     (source
      (janestreet-origin
       "ppx_optional" version
-      "1hh6ivlp1qpvyn8l0vhrahkkcp3scf7km254sgplprmk10wnyidz"))
+      "0af7ayhfc1jc01mxs4k253gq49yss2ymkmjsy6fpcz39zhci7fvj"))
     (build-system dune-build-system)
     (arguments `(#:tests? #f)) ; No tests
     (propagated-inputs
