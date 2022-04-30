@@ -5259,9 +5259,6 @@ public key files.")
 which can produce feeds in RSS 2.0, RSS 0.91, and Atom formats.")
     (license license:bsd-3)))
 
-(define-public python2-feedgenerator
-  (package-with-python2 python-feedgenerator))
-
 (define-public python-lsp-jsonrpc
   (package
     (name "python-lsp-jsonrpc")
