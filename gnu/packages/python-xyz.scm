@@ -18984,9 +18984,6 @@ JSON) codec.")
      between the different Python versions.")
     (license license:psfl)))
 
-(define-public python2-random2
-  (package-with-python2 python-random2))
-
 (define-public python-snowballstemmer
   (package
     (name "python-snowballstemmer")
