@@ -3260,9 +3260,6 @@ Python.")
 library.")
     (license license:asl2.0)))
 
-(define-public python2-responses
-  (package-with-python2 python-responses))
-
 (define-public python-grequests
   (package
     (name "python-grequests")
