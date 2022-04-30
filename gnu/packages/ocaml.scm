@@ -6051,7 +6051,7 @@ context such as function arguments.")
 (define-public ocaml-ppx-module-timer
   (package
     (name "ocaml-ppx-module-timer")
-    (version "0.14.0")
+    (version "0.15.0")
     (source
       (origin
         (method git-fetch)
@@ -6060,7 +6060,7 @@ context such as function arguments.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-          (base32 "163q1rpblwv82fxwyf0p4j9zpsj0jzvkfmzb03r0l49gqhn89mp6"))))
+          (base32 "0lzi5hxi10p89ddqbrc667267f888kqslal76gfhmszyk60n20av"))))
     (build-system dune-build-system)
     (arguments
      `(#:tests? #f)); no tests
