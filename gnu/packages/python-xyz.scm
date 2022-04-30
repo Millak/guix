@@ -15300,9 +15300,6 @@ library as well as on the command line.")
    (home-page "https://stuvel.eu/rsa")
    (license license:asl2.0)))
 
-(define-public python2-rsa
-  (package-with-python2 python-rsa))
-
 (define-public python-pluggy
   (package
    (name "python-pluggy")
