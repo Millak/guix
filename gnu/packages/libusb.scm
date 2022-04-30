@@ -621,6 +621,3 @@ HID-Class devices.")
                    (license:non-copyleft
                     "https://github.com/trezor/cython-hidapi/blob/master/LICENSE-orig.txt"
                     "You are free to use cython-hidapi code for any purpose.")))))
-
-(define-public python2-hidapi
-  (package-with-python2 python-hidapi))
