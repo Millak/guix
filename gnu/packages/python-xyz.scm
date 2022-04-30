@@ -10528,9 +10528,6 @@ X client library for Python programs.  It is useful to implement
 low-level X clients.  It is written entirely in Python.")
     (license license:gpl2+)))
 
-(define-public python2-xlib
-  (package-with-python2 python-xlib))
-
 (define-public python-singledispatch
   (package
     (name "python-singledispatch")
