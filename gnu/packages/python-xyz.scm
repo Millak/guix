@@ -20153,9 +20153,6 @@ point is the point of maximum curvature.")
     (description "Advanced directory tree synchronisation tool.")
     (license license:expat)))
 
-(define-public python2-dirsync
-  (package-with-python2 python-dirsync))
-
 (define-public python-levenshtein
   (package
     (name "python-levenshtein")
