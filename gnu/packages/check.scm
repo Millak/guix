@@ -2504,9 +2504,6 @@ unit tests and failing them if the unit test module does not exercise all
 statements in the module it tests.")
     (license license:gpl3+)))
 
-(define-public python2-coverage-test-runner
-  (package-with-python2 python-coverage-test-runner))
-
 (define-public python-pylint
   (package
     (name "python-pylint")
