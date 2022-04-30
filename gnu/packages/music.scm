@@ -2008,72 +2008,85 @@ Key features include:
 (define-public solfege
   (package
     (name "solfege")
-    (version "3.22.2")
+    (version "3.23.5pre2")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "mirror://gnu/solfege/solfege-"
-                    version ".tar.xz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.savannah.gnu.org/git/solfege.git")
+                    (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1w25rxdbj907nsx285k9nm480pvy12w3yknfh4n1dfv17cwy072i"))))
+                "1lmzp4kn0xh58yc8gzriz1i34g5qaa2xxrxzpmr7v9jyk19dqmcm"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; xmllint attempts to download DTD
-       #:test-target "test"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-configuration
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "default.config"
-               (("/usr/bin/aplay") "aplay")
-               (("/usr/bin/timidity") "timidity")
-               (("/usr/bin/mpg123") "mpg123")
-               (("/usr/bin/ogg123") "ogg123"))))
-         (add-before 'build 'patch-python-shebangs
-           (lambda _
-             ;; Two python scripts begin with a Unicode BOM, so patch-shebang
-             ;; has no effect.
-             (substitute* '("solfege/parsetree.py"
-                            "solfege/presetup.py")
-               (("#!/usr/bin/python") (string-append "#!" (which "python"))))))
-         (add-before 'build 'add-sitedirs
-           ;; .pth files are not automatically interpreted unless the
-           ;; directories containing them are added as "sites".  The directories
-           ;; are then added to those in the PYTHONPATH.  This is required for
-           ;; the operation of pygtk and pygobject.
-           (lambda _
-             (substitute* "run-solfege.py"
-               (("import os")
-                "import os, site
-for path in [path for path in sys.path if 'site-packages' in path]: site.addsitedir(path)"))
-             #t))
-         (add-before 'build 'adjust-config-file-prefix
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "run-solfege.py"
-               (("prefix = os.path.*$")
-                (string-append "prefix = " (assoc-ref outputs "out"))))
-             #t))
-         (add-after 'install 'wrap-program
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; Make sure 'solfege' runs with the correct PYTHONPATH.
-             (let* ((out (assoc-ref outputs "out"))
-                    (path (getenv "GUIX_PYTHONPATH")))
-               (wrap-program (string-append out "/bin/solfege")
-                 `("GUIX_PYTHONPATH" ":" prefix (,path))))
-             #t)))))
+     (list
+      #:tests? #f                       ;xmllint attempts to download DTD
+      #:test-target "test"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (substitute* "autogen.sh"
+                (("python3 -c \"import tools.*create_versions_file.*")
+                 (string-append "echo \"version_info = '"
+                                #$version "' > solfege/_version.py\"\n")))
+              (substitute* "Makefile.in"
+                (("\\$\\(PYTHON) -c \"import tools.*create_versions_file.*")
+                 "true\n"))
+              (substitute* "solfege/buildinfo.py.in"
+                (("from solfege._version import version_info")
+                 "version_info = {'git_sha': 'N/A'}"))))
+          (add-after 'unpack 'fix-configuration
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "default.config"
+                (("/usr/bin/aplay") "aplay")
+                (("/usr/bin/timidity") "timidity")
+                (("/usr/bin/mpg123") "mpg123")
+                (("/usr/bin/ogg123") "ogg123"))))
+          (add-before 'build 'patch-python-shebangs
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Two python scripts begin with a Unicode BOM, so patch-shebang
+              ;; has no effect.
+              (substitute* '("solfege/parsetree.py"
+                             "solfege/presetup.py")
+                (("#!/usr/bin/python")
+                 (string-append "#!" search-input-file inputs "bin/python")))))
+          (add-before 'build 'add-sitedirs
+            ;; .pth files are not automatically interpreted unless the
+            ;; directories containing them are added as "sites".  The
+            ;; directories are then added to those in the PYTHONPATH.  This is
+            ;; required for the operation of pygtk and pygobject.
+            (lambda _
+              (substitute* "run-solfege.py"
+                (("import os")
+                 "import os, site
+for path in [path for path in sys.path if 'site-packages' in path]: site.addsitedir(path)"))))
+          (add-before 'build 'adjust-config-file-prefix
+            (lambda _
+              (substitute* "run-solfege.py"
+                (("prefix = os.path.*$")
+                 (string-append "prefix = " #$output)))))
+          (add-after 'install 'wrap-program
+            (lambda* (#:key outputs #:allow-other-keys)
+              ;; Make sure 'solfege' runs with the correct PYTHONPATH.
+              (let ((path (getenv "GUIX_PYTHONPATH")))
+                (wrap-program (search-input-file outputs "bin/solfege")
+                  `("GUIX_PYTHONPATH" ":" prefix (,path)))))))))
     (inputs
-     `(("python" ,python-2)
-       ("pygtk" ,python2-pygtk)
-       ("gettext" ,gettext-minimal)
-       ("gtk" ,gtk+)
-       ("lilypond" ,lilypond)))
+     (list python-wrapper
+           python-pygobject
+           gettext-minimal
+           gtk+
+           lilypond))
     (native-inputs
-     (list pkg-config
+     (list autoconf
+           automake
+           pkg-config
            txt2man
-           libxml2 ; for tests
+           libxml2                      ; for tests
            ghostscript
-           texinfo-5))
+           texinfo))
     (home-page "https://www.gnu.org/software/solfege/")
     (synopsis "Ear training")
     (description
