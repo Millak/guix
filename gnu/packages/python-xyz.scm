@@ -2424,9 +2424,6 @@ to the terminal in real time but is also available to the Python program
 for additional processing.")
     (license license:expat)))
 
-(define-public python2-capturer
-  (package-with-python2 python-capturer))
-
 (define-public python-case
   (package
     (name "python-case")
