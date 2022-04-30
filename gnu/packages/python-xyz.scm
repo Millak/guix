@@ -1852,9 +1852,6 @@ the version levels, and check whether any given string is a proper semantic
 version identifier.")
     (license license:bsd-3)))
 
-(define-public python2-semantic-version
-  (package-with-python2 python-semantic-version))
-
 (define-public python-serpent
   (package
     (name "python-serpent")
