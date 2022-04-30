@@ -5,7 +5,7 @@
 ;;; Copyright © 2014, 2015, 2017 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2017, 2018, 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018, 2019, 2020, 2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2018, 2019, 2020, 2021, 2022 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2019, 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020, 2022 Timothy Sample <samplet@ngyro.com>
 ;;; Copyright © 2020 Guy Fleury Iteriteka <gfleury@disroot.org>
@@ -627,9 +627,12 @@ $MES -e '(mescc)' module/mescc.scm -- \"$@\"
     (version "0.9.26-1103-g6e62e0e")
     (source (origin
               (method url-fetch)
-              (uri (string-append
-                    "http://lilypond.org/janneke/mes/20191117/"
-                    "/tcc-" version ".tar.gz"))
+              (uri (list
+                    (string-append "mirror://gnu/guix/mirror/"
+                                   "tcc-" version ".tar.gz")
+                    (string-append
+                     "https://lilypond.org/janneke/mes/20191117/"
+                     "/tcc-" version ".tar.gz")))
               (sha256
                (base32
                 "1qbybw7mxbgkv3sazvz1v7c8byq998vk8f1h25ik8w3d2l63lxng"))))
@@ -639,8 +642,9 @@ $MES -e '(mescc)' module/mescc.scm -- \"$@\"
     (propagated-inputs '())
     (native-inputs
      `(("mes" ,mes-boot)
-       ("nyacc-source" ,(origin (inherit (package-source nyacc-0.99))
-                                (snippet #f)))
+       ("nyacc-source" ,(bootstrap-origin
+                         (origin (inherit (package-source nyacc-1.00.2))
+                                 (snippet #f))))
        ("mescc-tools" ,%bootstrap-mescc-tools)
        ,@(%boot-gash-inputs)))
     (arguments
