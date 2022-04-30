@@ -20437,9 +20437,6 @@ while only declaring the test-specific fields.")
      address is valid and really exists.")
     (license license:lgpl3+)))
 
-(define-public python2-validate-email
-  (package-with-python2 python-validate-email))
-
 (define-public python-flex
   (package
     (name "python-flex")
