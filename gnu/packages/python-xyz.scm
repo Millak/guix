@@ -17620,9 +17620,6 @@ as well.")
      and/or Xon/Xoff.  The port is accessed in RAW mode.")
     (license license:bsd-3)))
 
-(define-public python2-pyserial
-  (package-with-python2 python-pyserial))
-
 (define-public python-pyserial-asyncio
   (package
     (name "python-pyserial-asyncio")
