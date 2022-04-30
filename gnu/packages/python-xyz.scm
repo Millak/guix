@@ -8150,9 +8150,6 @@ Python language binding specification.")
 memoizing PEG/Packrat parser in Python.")
     (license license:bsd-3)))
 
-(define-public python2-grako
-  (package-with-python2 python-grako))
-
 (define-public python-grandalf
   (package
     (name "python-grandalf")
