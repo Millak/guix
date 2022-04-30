@@ -2159,9 +2159,6 @@ interfaces\" for Python.  Interfaces are a mechanism for labeling objects as
 conforming to a given API or contract.")
     (license license:zpl2.1)))
 
-(define-public python2-zope-interface
-  (package-with-python2 python-zope-interface))
-
 (define-public python-zope-exceptions
   (package
     (name "python-zope-exceptions")
