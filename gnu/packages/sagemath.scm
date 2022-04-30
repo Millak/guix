@@ -69,9 +69,6 @@ PARI/GP.  It has been spun off from the SageMath mathematics software system,
 but it can be used independently.")
     (license license:gpl2+)))
 
-(define-public python2-cypari2
-  (package-with-python2 python-cypari2))
-
 ;; The stable version of the following package is not young enough to be
 ;; used with Sage, since it does not support cython; so we use a beta
 ;; release.
