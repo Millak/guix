@@ -1414,9 +1414,6 @@ high-speed transfers via libcurl and frequently outperforms alternatives.")
     ;; under the terms of LGPLv2.1+ or Expat.
     (license (list license:lgpl2.1+ license:expat))))
 
-(define-public python2-pycurl
-  (package-with-python2 python-pycurl))
-
 (define-public python-webencodings
   (package
     (name "python-webencodings")
