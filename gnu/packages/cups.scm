@@ -53,6 +53,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils)
@@ -869,40 +870,35 @@ HP@tie{}LaserJet, and possibly other printers.  See @file{README} for details.")
         (base32 "06pa47rl1gy19bg3fsp4a4y9vdy4ya2maajm14n791ivhf2hcwyh"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:modules
-       ((srfi srfi-26)
-        ,@%gnu-build-system-modules)
-       #:configure-flags
-       `("--disable-static"
-         ,(string-append "--prefix="
-                         (assoc-ref %outputs "out"))
-         ,(string-append "--with-cupsfilterdir="
-                         (assoc-ref %outputs "out") "/lib/cups/filter")
-         ,(string-append "--with-cupsppddir="
-                         (assoc-ref %outputs "out") "/share/cups/model"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-autotools-version-requirement
-           (lambda _
-             (substitute* "aclocal.m4"
-               (("1\\.15")
-                ,(package-version automake)))
-             (substitute* "configure"
-               (("^(ACLOCAL=).*" _ match)
-                (string-append match "aclocal"))
-               (("^(AUTOMAKE=).*" _ match)
-                (string-append match "automake")))
-             #t))
-         (add-after 'install 'compress-PPDs
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (with-directory-excursion out
-                 (for-each (cut invoke "gzip" "-9" <>)
-                           (find-files "share/cups" "\\.ppd$")))))))))
+     (list #:modules
+           `((srfi srfi-26)
+             ,@%gnu-build-system-modules)
+           #:configure-flags
+           #~(list "--disable-static"
+                   (string-append "--prefix=" #$output)
+                   (string-append "--with-cupsfilterdir=" #$output "/lib/cups/filter")
+                   (string-append "--with-cupsppddir=" #$output "/share/cups/model"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-autotools-version-requirement
+                 (lambda _
+                   (substitute* "aclocal.m4"
+                     (("1\\.15")
+                      #$(package-version automake)))
+                   (substitute* "configure"
+                     (("^(ACLOCAL=).*" _ match)
+                      (string-append match "aclocal"))
+                     (("^(AUTOMAKE=).*" _ match)
+                      (string-append match "automake")))))
+               (add-after 'install 'compress-PPDs
+                 (lambda _
+                   (with-directory-excursion #$output
+                     (for-each (cut invoke "gzip" "-9" <>)
+                               (find-files "share/cups" "\\.ppd$"))))))))
     (native-inputs
      (list autoconf automake))
     (inputs
-     `(("cups" ,cups-minimal)))
+     (list cups-minimal))
     (synopsis "ESC/P-R printer driver")
     (description
      "This package provides a filter for @acronym{CUPS, the Common UNIX Printing
