@@ -5493,7 +5493,7 @@ standard library.")
 (define-public ocaml-ppx-fields-conv
   (package
     (name "ocaml-ppx-fields-conv")
-    (version "0.14.2")
+    (version "0.15.0")
     (home-page "https://github.com/janestreet/ppx_fields_conv")
     (source
      (origin
@@ -5504,7 +5504,7 @@ standard library.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1zwirwqry24b48bg7d4yc845hvcirxyymzbw95aaxdcck84d30n8"))))
+         "094wsnw7fcwgl9xg6vkjb0wbgpn9scsp847yhdd184sz9v1amz14"))))
     (build-system dune-build-system)
     (propagated-inputs
      (list ocaml-base ocaml-fieldslib ocaml-migrate-parsetree
