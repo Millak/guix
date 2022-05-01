@@ -5014,7 +5014,7 @@ that was developed by Jane Street, the largest industrial user of OCaml.")
 (define-public ocaml-parsexp
   (package
     (name "ocaml-parsexp")
-    (version "0.14.2")
+    (version "0.15.0")
     (home-page "https://github.com/janestreet/parsexp")
     (source (origin
               (method git-fetch)
@@ -5024,7 +5024,7 @@ that was developed by Jane Street, the largest industrial user of OCaml.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "14yi0licf1cp6b7qny5pz6dmlalqdksx0m0kzcrwi6byjxwjkbi9"))))
+                "1grzpxi39318vcqhwf723hqh11k68irh59zb3dyg9lw8wjn7752a"))))
     (build-system dune-build-system)
     (inputs
      (list ocaml-sexplib0 ocaml-base))
