@@ -15401,53 +15401,6 @@ standard library module.  This module (python-pathlib) isn't maintained
 anymore.")
     (license license:expat)))
 
-(define-public python2-pathlib2
-  (package
-    (name "python2-pathlib2")
-    (version "2.3.5")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pathlib2" version))
-              (sha256
-               (base32
-                "0s4qa8c082fdkb17izh4mfgwrjd1n5pya18wvrbwqdvvb5xs9nbc"))))
-    (build-system python-build-system)
-    ;; We only need the the Python 2 variant, since for Python 3 our minimum
-    ;; version is 3.4 which already includes this package as part of the
-    ;; standard library.
-    (arguments
-     `(#:python ,python-2))
-    (propagated-inputs
-     (list python2-scandir python2-six))
-    (home-page "https://pypi.org/project/pathlib2/")
-    (synopsis "Object-oriented file system paths - backport of standard
-pathlib module")
-    (description "The goal of pathlib2 is to provide a backport of standard
-pathlib module which tracks the standard library module, so all the newest
-features of the standard pathlib can be used also on older Python versions.
-
-Pathlib offers a set of classes to handle file system paths.  It offers the
-following advantages over using string objects:
-
-@enumerate
-@item No more cumbersome use of os and os.path functions.  Everything can
-be done easily through operators, attribute accesses, and method calls.
-@item Embodies the semantics of different path types.  For example,
-comparing Windows paths ignores casing.
-@item Well-defined semantics, eliminating any inconsistencies or
-ambiguities (forward vs. backward slashes, etc.).
-@end enumerate")
-    (license license:expat)))
-
-(define-public python2-pathlib2-bootstrap
-  (hidden-package
-   (package
-     (inherit python2-pathlib2)
-     (name "python2-pathlib2-bootstrap")
-     (propagated-inputs
-      `(("python2-scandir" ,python2-scandir)
-        ("python2-six" ,python2-six-bootstrap))))))
-
 (define-public python-jellyfish
   (package
     (name "python-jellyfish")
