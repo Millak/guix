@@ -19231,9 +19231,6 @@ point is the point of maximum curvature.")
      It supports both normal and Unicode strings.")
     (license license:gpl2+)))
 
-(define-public python2-levenshtein
-  (package-with-python2 python-levenshtein))
-
 (define-public python-scandir
   (package
     (name "python-scandir")
