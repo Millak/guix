@@ -470,32 +470,12 @@ builder does not support SVG images natively (e.g. LaTeX).")
      `(#:tests? #f))
     (home-page "https://sphinx-doc.org/")
     (synopsis "Sphinx API for web applications")
-    (description "This package provides a Python API to easily integrate
+    (description
+     "This package provides a Python API to easily integrate
 Sphinx documentation into your web application.  It provides tools to
 integrate Sphinx documents in web templates and to handle searches.")
-    (license license:bsd-3)
-    (properties `((python2-variant . ,(delay python2-sphinxcontrib-websupport))))))
+    (license license:bsd-3)))
 
-;; 1.1.2 is the last version to support Python 2.
-(define-public python2-sphinxcontrib-websupport
-  (package
-    (inherit (package-with-python2
-              (strip-python2-variant python-sphinxcontrib-websupport)))
-    (version "1.1.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "sphinxcontrib-websupport" version))
-              (sha256
-               (base32
-                "1z7fqra0xm1cdp8vvp80fcvnjlywym7bzz80m0liq7fz1zxvw08m"))))
-    (arguments
-     `(#:tests? #f
-       #:python ,python-2
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'sanity-check))))
-    (propagated-inputs
-     (list python2-six))))
 
 (define-public python-sphinx-gallery
   (package
