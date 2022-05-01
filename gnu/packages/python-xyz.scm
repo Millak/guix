@@ -18050,9 +18050,6 @@ JSON) codec.")
      English stemmer.")
     (license license:bsd-3)))
 
-(define-public python2-snowballstemmer
-  (package-with-python2 python-snowballstemmer))
-
 (define-public python-setproctitle
   (package
     (name "python-setproctitle")
