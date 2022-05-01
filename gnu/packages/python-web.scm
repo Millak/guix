@@ -4147,9 +4147,6 @@ addon modules.")
     (description "@code{python-bottle} is a WSGI framework for small web-applications.")
     (license license:expat)))
 
-(define-public python2-bottle
-  (package-with-python2 python-bottle))
-
 (define-public python-wtforms
   (package
     (name "python-wtforms")
