@@ -20072,9 +20072,6 @@ requirements is not met.")
 version of @code{SocksiPy} with bug fixes and extra features.")
     (license license:bsd-3)))
 
-(define-public python2-pysocks
-  (package-with-python2 python-pysocks))
-
 (define-public python-pydiff
   (package
     (name "python-pydiff")
