@@ -3773,7 +3773,7 @@ JSON.")
 (define-public ocaml-easy-format
   (package
     (name "ocaml-easy-format")
-    (version "1.3.2")
+    (version "1.3.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3782,7 +3782,7 @@ JSON.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1fc95q2ypck6m6rv3kiawwilh5ac93v2hcp823mj608d5kj79xkb"))))
+                "1dl5faibbb5nm3v70ix7k6208yib1954x20nmw3g56wff5vdlzid"))))
     (build-system dune-build-system)
     (arguments
      `(#:package "easy-format"
