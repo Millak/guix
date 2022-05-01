@@ -5021,27 +5021,27 @@ as is the case with audio plugins.")
                             `("GUIX_PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH"))))
                #t))))))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("ffmpeg" ,ffmpeg)
-       ("fluidsynth" ,fluidsynth)
-       ("file" ,file)
-       ("liblo" ,liblo)
-       ("libsndfile" ,libsndfile)
-       ("gtk2" ,gtk+-2)   ;needed for bridging GTK2 plugins in GTK3 hosts
-       ("gtk+" ,gtk+)
-       ("python-pyliblo" ,python-pyliblo)
-       ("python-pyqt" ,python-pyqt)
-       ("python-rdflib" ,python-rdflib)
-       ;; python-pyqt shows the following error without python-wrapper:
-       ;; Error while finding module specification for 'PyQt5.uic.pyuic'
-       ;; (ModuleNotFoundError: No module named 'PyQt5')
-       ("python-wrapper" ,python-wrapper)
-       ("libx11" ,libx11)
-       ("qtbase" ,qtbase-5)
-       ("zlib" ,zlib)
+     (list alsa-lib
+           ffmpeg
+           fluidsynth
+           file
+           liblo
+           libsndfile
+           libx11
+           gtk+-2              ;needed for bridging GTK2 plugins in GTK3 hosts
+           gtk+
+           python-pyliblo
+           python-pyqt
+           python-rdflib
+           ;; python-pyqt shows the following error without python-wrapper:
+           ;; Error while finding module specification for 'PyQt5.uic.pyuic'
+           ;; (ModuleNotFoundError: No module named 'PyQt5')
+           python-wrapper
+           qtbase-5
+           zlib
 
-       ;; For WRAP-SCRIPT above.
-       ("guile" ,guile-2.2)))
+           ;; For WRAP-SCRIPT above.
+           guile-2.2))
     (native-inputs
      (list pkg-config))
     (home-page "https://kx.studio/Applications:Carla")
