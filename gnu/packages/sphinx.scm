@@ -631,9 +631,6 @@ introspection of @code{zope.interface} instances in code.")
 theme for the Sphinx documentation system.  It's the default theme of Sphinx.")
     (license license:bsd-3)))
 
-(define-public python2-sphinx-alabaster-theme
-  (package-with-python2 python-sphinx-alabaster-theme))
-
 (define-public python-sphinx-argparse
   (package
     (name "python-sphinx-argparse")
