@@ -1157,14 +1157,14 @@ human-readable output.")
 (define-public lrzip
   (package
     (name "lrzip")
-    (version "0.641")
+    (version "0.651")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "http://ck.kolivas.org/apps/lrzip/lrzip-" version ".tar.xz"))
        (sha256
-        (base32 "0ziyanspd96dc3lp2qdcylc7aq8dhb511jhqrhxvlp502fjqjqrc"))))
+        (base32 "1y822rpl7ak57s1a4xzd6ja82cp3sff9axrpkdn5khcpn3n8vga8"))))
     (build-system gnu-build-system)
     (native-inputs
      `(;; nasm is only required when building for 32-bit x86 platforms
