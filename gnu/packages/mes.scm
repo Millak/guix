@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017, 2018, 2019, 2020, 2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2017, 2018, 2019, 2020, 2021, 2022 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2017, 2018 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
@@ -219,7 +219,7 @@ Guile.")
 (define-public mescc-tools
   (package
     (name "mescc-tools")
-    (version "1.2.0")
+    (version "1.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -229,7 +229,7 @@ Guile.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1xkn5sspfxldy4wm8fq8gd8kwn46578zhfl12c16pq74x21zb198"))))
+                "0z2ni2qn2np1walcaqlxz8sinzb78d4hiq9glddzf26wxc226hs4"))))
     (build-system gnu-build-system)
     (supported-systems '("i686-linux" "x86_64-linux"
                          "armhf-linux" "aarch64-linux"
