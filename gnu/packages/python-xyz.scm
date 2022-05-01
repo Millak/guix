@@ -2724,9 +2724,6 @@ the optional C extension for speedups.  Simplejson is also supported on
 Python 3.3+.")
     (license license:x11)))
 
-(define-public python2-simplejson
-  (package-with-python2 python-simplejson))
-
 
 (define-public python-pyicu
   (package
