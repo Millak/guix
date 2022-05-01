@@ -772,9 +772,6 @@ for private keys, public keys, certificates, CRL, OCSP, CMS, PKCS#3, PKCS#7,
 PKCS#8, PKCS#12, PKCS#5, X.509 and TSP.")
     (license license:expat)))
 
-(define-public python2-asn1crypto
-  (package-with-python2 python-asn1crypto))
-
 (define-public python-pynacl
   (package
     (name "python-pynacl")
