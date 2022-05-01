@@ -18151,9 +18151,6 @@ JSON) codec.")
      PNG, JPEG, JPEG2000 and GIF files in pure Python.")
     (license license:expat)))
 
-(define-public python2-imagesize
- (package-with-python2 python-imagesize))
-
 (define-public python-termstyle
   (package
     (name "python-termstyle")
