@@ -13712,9 +13712,6 @@ programmatically with command-line parsers like @code{getopt} and
 @code{argparse}.")
     (license license:expat)))
 
-(define-public python2-docopt
-  (package-with-python2 python-docopt))
-
 (define-public python-pythonanywhere
   (package
     (name "python-pythonanywhere")
