@@ -19465,9 +19465,6 @@ while only declaring the test-specific fields.")
     ;; licenses.
     (license (list license:asl2.0 license:bsd-2))))
 
-(define-public python2-packaging
-  (package-with-python2 python-packaging))
-
 ;; TODO(staging): merge with python-packaging-bootstrap.
 (define-public python-packaging-next
   (package
