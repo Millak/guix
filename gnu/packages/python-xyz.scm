@@ -12195,9 +12195,6 @@ fakes, or doubles.  Basically, a stub is an object that returns pre-canned
 responses, rather than doing any computation.")
     (license license:bsd-3)))
 
-(define-public python2-pretend
-  (package-with-python2 python-pretend))
-
 (define-public python-pip
   (package
     (name "python-pip")
