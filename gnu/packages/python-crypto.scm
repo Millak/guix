@@ -437,9 +437,6 @@ for example, for recording or replaying web content.")
 is used by the Requests library to verify HTTPS requests.")
     (license license:asl2.0)))
 
-(define-public python2-certifi
-  (package-with-python2 python-certifi))
-
 (define-public python-cryptography-vectors
   (package
     (name "python-cryptography-vectors")
