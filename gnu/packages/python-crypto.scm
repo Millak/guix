@@ -679,9 +679,6 @@ message digests and key derivation functions.")
 library.")
     (license license:asl2.0)))
 
-(define-public python2-pyopenssl
-  (package-with-python2 python-pyopenssl))
-
 (define-public python-ed25519
   (package
     (name "python-ed25519")
