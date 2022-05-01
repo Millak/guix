@@ -1790,9 +1790,6 @@ library to determine which lines are executable, and which have been
 executed.")
     (license license:bsd-3)))
 
-(define-public python2-coverage
-  (package-with-python2 python-coverage))
-
 (define-public python-pytest-asyncio
   (package
     (name "python-pytest-asyncio")
