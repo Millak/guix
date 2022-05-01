@@ -4564,7 +4564,7 @@ since the start of the Unix epoch.")
 (define-public ocaml-ppx-inline-test
   (package
     (name "ocaml-ppx-inline-test")
-    (version "0.14.1")
+    (version "0.15.0")
     (home-page "https://github.com/janestreet/ppx_inline_test")
     (source
      (origin
@@ -4575,7 +4575,7 @@ since the start of the Unix epoch.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1ajdna1m9l1l3nfigyy33zkfa3yarfr6s086jdw2pcfwlq1fhhl4"))))
+         "1a0gaj9p6gbn5j7c258mnzr7yjlq0hqi3aqqgyj1g2dbk1sxdbjz"))))
     (build-system dune-build-system)
     (arguments
      `(#:tests? #f)) ;see home page README for further information
@@ -4984,11 +4984,11 @@ exclusion algorithms are typical examples of such systems.")
 (define-public ocaml-sexplib0
   (package
     (name "ocaml-sexplib0")
-    (version "0.14.0")
+    (version "0.15.0")
     (home-page "https://github.com/janestreet/sexplib0")
     (source
      (janestreet-origin "sexplib0" version
-                        "0adrc0r1vvvr41dcpj8jwkzh1dfgqf0mks9xlnnskqfm3a51iavg"))
+                        "1fpg991n578m11r0ki4als4c76s3sp703b4khivx40v48402qill"))
     (build-system dune-build-system)
     (arguments `(#:tests? #f)) ;no tests
     (properties `((ocaml4.07-variant . ,(delay ocaml4.07-sexplib0))))
@@ -5071,11 +5071,11 @@ parsexp_io.")
 (define-public ocaml-sexplib
   (package
     (name "ocaml-sexplib")
-    (version "0.14.0")
+    (version "0.15.0")
     (home-page "https://github.com/janestreet/sexplib")
     (source
      (janestreet-origin "sexplib" version
-                        "12rlnc6fcrjfdn3gs2agi418sj54ighhs6dfll37zcv7mgywblm2"))
+                        "1xs55f11yhscnfrzpvy1vn05j6xi9kxy097465624l615j7k8qm5"))
     (build-system dune-build-system)
     (propagated-inputs
      (list ocaml-base ocaml-num ocaml-parsexp ocaml-sexplib0))
@@ -5100,7 +5100,7 @@ functionality for parsing and pretty-printing s-expressions.")
 (define-public ocaml-base
   (package
     (name "ocaml-base")
-    (version "0.14.3")
+    (version "0.15.0")
     (home-page "https://github.com/janestreet/base")
     (source
       (origin
@@ -5111,7 +5111,7 @@ functionality for parsing and pretty-printing s-expressions.")
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "1cqpdpvhr4zns1lpdm2w0p6q400mc1z91hd716mb062ng83n2nsf"))))
+          "1qyycqqr4dijvxm4hhy79c964wd91kpsfvb89kna1qwgllg0hrpj"))))
     (build-system dune-build-system)
     (propagated-inputs
      (list ocaml-sexplib0))
@@ -5196,11 +5196,11 @@ is now @code{Ocaml_common.Ast_helper}.")
 (define-public ocaml-stdio
   (package
     (name "ocaml-stdio")
-    (version "0.14.0")
+    (version "0.15.0")
     (home-page "https://github.com/janestreet/stdio")
     (source
      (janestreet-origin "stdio" version
-                        "1hj5hraprqy2i90a690l11yjszvb99j818q3d684ryx6p2lddk0l"))
+                        "0jsyg4jlp76d9gx1fngms6nfs7dcpsysdsvkywjq9a663n994wn3"))
     (build-system dune-build-system)
     (propagated-inputs
      (list ocaml-base ocaml-sexplib0))
@@ -5295,6 +5295,23 @@ as part of the same ocaml-migrate-parsetree driver.")
         (base32
          "0wlqvyqy9ccp7z981blv42aqwq7zfq93cakbahjyy48hiiir6vp2"))))
     (build-system dune-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-test-format
+           (lambda _
+             ;; Since sexplib >= 0.15, error formating has changed
+             (substitute* "test/driver/exception_handling/run.t"
+               (("\\(Failure ") "Failure("))
+             (substitute* "test/base/test.ml"
+               (("Invalid_argument \\((.*)\\)." _ m)
+                (string-append "Invalid_argument " m "."))
+               (("\\(Invalid_argument (.*)\\)" _ m)
+                (string-append "Invalid_argument " m ".")))
+             (substitute* "test/ppx_import_support/test.ml"
+               (("\\(Failure") "Failure")
+               (("  \"(Some ppx-es.*)\")" _ m)
+                (string-append " \"" m "\"."))))))))
     (propagated-inputs
      (list ocaml-base
            ocaml-compiler-libs
@@ -5514,7 +5531,7 @@ new record values.")
 (define-public ocaml-ppx-sexp-conv
   (package
     (name "ocaml-ppx-sexp-conv")
-    (version "0.14.3")
+    (version "0.15.0")
     (home-page "https://github.com/janestreet/ppx_sexp_conv")
     (source
      (origin
@@ -5525,10 +5542,10 @@ new record values.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0dbri9d00ydi0dw1cavswnqdmhjaaz80vap29ns2lr6mhhlvyjmj"))))
+         "1fyf7hgxprn7pj58rmmrfpv938a0avpzvvk6wzihpmfm6whgbdm8"))))
     (build-system dune-build-system)
     (propagated-inputs
-     (list ocaml-base ocaml-migrate-parsetree ocaml-ppxlib))
+     (list ocaml-base ocaml-ppxlib))
     (properties `((upstream-name . "ppx_sexp_conv")
                   (ocaml4.07-variant . ,(delay ocaml4.07-ppx-sexp-conv))))
     (synopsis "Generation of S-expression conversion functions from type definitions")
@@ -6302,7 +6319,7 @@ useful errors on failure.")
 (define-public ocaml-ppx-expect
   (package
     (name "ocaml-ppx-expect")
-    (version "0.14.2")
+    (version "0.15.0")
     (source
      (origin
        (method git-fetch)
@@ -6312,7 +6329,7 @@ useful errors on failure.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1v886rsl93wdmaw61z10q8nqshf8hvlznj9gym2ljrjz4cqyjsa4"))))
+         "134dl5qhjxsj2mcmrx9f3m0iys0n5mjfpz9flj8zn8d2jir43776"))))
     (build-system dune-build-system)
     (propagated-inputs
      (list ocaml-base
@@ -6825,7 +6842,7 @@ cryptographic-quality randomness in favor of performance.")
 (define-public ocaml-base-quickcheck
   (package
     (name "ocaml-base-quickcheck")
-    (version "0.14.1")
+    (version "0.15.0")
     (source
       (origin
         (method git-fetch)
@@ -6834,7 +6851,7 @@ cryptographic-quality randomness in favor of performance.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-          (base32 "0apq3d9xb0zdaqsl4cjk5skyig57ff1plndb2mh0nn3czvfhifxs"))))
+          (base32 "0q73kfr67cz5wp4qn4rq3lpa922hqmvwdiinnans0js65fvlgqsi"))))
     (build-system dune-build-system)
     (propagated-inputs
       (list ocaml-base
@@ -6987,7 +7004,7 @@ thousands of times faster than fork.
 (define-public ocaml-core
   (package
     (name "ocaml-core")
-    (version "0.14.1")
+    (version "0.15.0")
     (source
       (origin
         (method git-fetch)
@@ -6996,18 +7013,32 @@ thousands of times faster than fork.
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-          (base32 "1isrcl07nkmdm6akqsqs9z8s6zvva2lvg47kaagy7gsbyszrqb82"))))
+          (base32 "1m2ybvlz9zlb2d0jc0j7wdgd18mx9sh3ds2ylkv0cfjx1pzi0l25"))))
     (build-system dune-build-system)
     (arguments
      `(#:package "core"
        #:tests? #f)); Require a cyclic dependency: core_extended
     (propagated-inputs
-      (list ocaml-core-kernel
+      (list ocaml-base
+            ocaml-base-bigstring
+            ocaml-base-quickcheck
+            ocaml-bin-prot
+            ocaml-fieldslib
+            ocaml-jane-street-headers
             ocaml-jst-config
+            ocaml-ppx-assert
+            ocaml-ppx-base
+            ocaml-ppx-hash
+            ocaml-ppx-inline-test
             ocaml-ppx-jane
+            ocaml-ppx-sexp-conv
+            ocaml-ppx-sexp-message
             ocaml-sexplib
-            ocaml-timezone
-            ocaml-spawn))
+            ocaml-splittable-random
+            ocaml-stdio
+            ocaml-time-now
+            ocaml-typerep
+            ocaml-variantslib))
     (home-page "https://github.com/janestreet/core")
     (synopsis "Alternative to OCaml's standard library")
     (description "The Core suite of libraries is an alternative to OCaml's
@@ -7045,10 +7076,33 @@ standard library that was developed by Jane Street.")
       ;; by OCaml's license for consortium members (see THIRD-PARTY.txt).
       (license license:asl2.0))))
 
+(define-public ocaml-int-repr
+  (package
+    (name "ocaml-int-repr")
+    (version "0.15.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/janestreet/int_repr")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32 "0ph88ym3s9dk30n17si2xam40sp8wv1xffw5cl3bskc2vfya1nvl"))))
+    (build-system dune-build-system)
+    (arguments
+     `(#:tests? #f)) ;no tests
+    (propagated-inputs (list ocaml-base ocaml-ppx-jane))
+    (properties `((upstream-name . "int_repr")))
+    (home-page "https://github.com/janestreet/int_repr")
+    (synopsis "Integers of various widths")
+    (description "Integers of various widths.")
+    (license license:expat)))
+
 (define-public ocaml-core-kernel
   (package
     (name "ocaml-core-kernel")
-    (version "0.14.2")
+    (version "0.15.0")
     (source
       (origin
         (method git-fetch)
@@ -7057,33 +7111,13 @@ standard library that was developed by Jane Street.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-          (base32 "1vxv9rq6m52n60gprm4sqjj1i1p4dd4sgns068hkp9g558d8zdjx"))))
+          (base32 "05mb4vbf293iq1xx4acyrmi9cgcw6capwrsa54ils62alby6w6yq"))))
     (build-system dune-build-system)
     (arguments
      ;; Cyclic dependency with ocaml-core
      `(#:tests? #f))
     (propagated-inputs
-      (list ocaml-base
-            ocaml-base-bigstring
-            ocaml-base-quickcheck
-            ocaml-bin-prot
-            ocaml-fieldslib
-            ocaml-jane-street-headers
-            ocaml-jst-config
-            ocaml-ppx-assert
-            ocaml-ppx-base
-            ocaml-ppx-hash
-            ocaml-ppx-inline-test
-            ocaml-ppx-jane
-            ocaml-ppx-sexp-conv
-            ocaml-ppx-sexp-message
-            ocaml-sexplib
-            ocaml-splittable-random
-            ocaml-stdio
-            ocaml-time-now
-            ocaml-typerep
-            ocaml-variantslib
-            ocaml-ppx-optcomp))
+      (list ocaml-base ocaml-core ocaml-int-repr ocaml-ppx-jane))
     (properties `((upstream-name . "core_kernel")
                   (ocaml4.07-variant . ,(delay ocaml4.07-core-kernel))))
     (home-page "https://github.com/janestreet/core_kernel")
@@ -7137,7 +7171,7 @@ the full Core is not available, such as in Javascript.")
 (define-public ocaml-timezone
   (package
     (name "ocaml-timezone")
-    (version "0.14.0")
+    (version "0.15.0")
     (source
       (origin
         (method git-fetch)
@@ -7146,9 +7180,9 @@ the full Core is not available, such as in Javascript.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-          (base32 "0zf075k94nk2wxnzpxia7pnm655damwp1b58xf2s9disia1ydxg7"))))
+          (base32 "00a007aji5rbz42kgbq1w90py6fm9k9akycs5abkcfll5rd0cbhx"))))
     (build-system dune-build-system)
-    (propagated-inputs (list ocaml-core-kernel ocaml-ppx-jane))
+    (propagated-inputs (list ocaml-core ocaml-ppx-jane))
     (home-page "https://github.com/janestreet/timezone")
     (synopsis "Time-zone handling")
     (description
