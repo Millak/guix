@@ -2747,9 +2747,6 @@ Python 3.3+.")
      "PyICU is a python extension wrapping the ICU C++ API.")
     (license license:x11)))
 
-(define-public python2-pyicu
-  (package-with-python2 python-pyicu))
-
 (define-public python-dogtail
   (package
     (name "python-dogtail")
