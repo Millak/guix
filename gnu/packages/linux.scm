@@ -7,7 +7,7 @@
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
-;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016, 2017 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2016 Raymond Nicholson <rain1@openmailbox.org>
 ;;; Copyright © 2016 Mathieu Lirzin <mthl@gnu.org>
@@ -6585,7 +6585,7 @@ the default @code{nsswitch} and the experimental @code{umich_ldap}.")
 (define-public mcelog
   (package
     (name "mcelog")
-    (version "180")
+    (version "181")
     (source
      (origin
        (method git-fetch)
@@ -6594,7 +6594,7 @@ the default @code{nsswitch} and the experimental @code{umich_ldap}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xy1082c67yd48idg5vwvrw7yx74gn6jj2d9c67d0rh6yji091ki"))
+        (base32 "0c9zdivv86xd8dmwia0k9fbr52zrafbyzn7ss53mh17sry5gm716"))
        (modules '((guix build utils)))
        (snippet
         `(begin
