@@ -5933,7 +5933,7 @@ many values).")
 (define-public ocaml-ppx-sexp-value
   (package
     (name "ocaml-ppx-sexp-value")
-    (version "0.14.0")
+    (version "0.15.0")
     (source
       (origin
         (method git-fetch)
@@ -5942,7 +5942,7 @@ many values).")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-          (base32 "1d1c92pyypqkd9473d59j0sfppxvcxggbc62w8bkqnbxrdmvirn9"))))
+          (base32 "0kz83j9v6yz3v8c6vr9ilhkcci4hhjd6i6r6afnx72jh6i7d3hnv"))))
     (build-system dune-build-system)
     (propagated-inputs
       (list ocaml-base ocaml-ppx-here ocaml-ppx-sexp-conv ocaml-ppxlib))
