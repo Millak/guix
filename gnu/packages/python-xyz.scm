@@ -12004,9 +12004,6 @@ implementations of ASN.1-based codecs and protocols.")
  IPv6 addresses and networks.")
     (license license:psfl)))
 
-(define-public python2-ipaddress
-  (package-with-python2 python-ipaddress))
-
 (define-public python-asn1tools
   (package
     (name "python-asn1tools")
