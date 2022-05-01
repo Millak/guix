@@ -1259,30 +1259,6 @@ access to various locale display names, localized number and date formatting,
 etc.")
     (license license:bsd-3)))
 
-(define-public python2-backport-ssl-match-hostname
-  (package
-    (name "python2-backport-ssl-match-hostname")
-    (version "3.5.0.1")
-    (source
-     (origin
-      (method url-fetch)
-      (uri (pypi-uri "backports.ssl_match_hostname" version))
-      (sha256
-       (base32
-        "1wndipik52cyqy0677zdgp90i435pmvwd89cz98lm7ri0y3xjajh"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2
-       #:tests? #f)) ; no test target
-    (home-page "https://bitbucket.org/brandon/backports.ssl_match_hostname")
-    (synopsis "Backport of ssl.match_hostname() function from Python 3.5")
-    (description
-     "This backport brings the ssl.match_hostname() function to users of
-earlier versions of Python.  The function checks the hostname in the
-certificate returned by the server to which a connection has been established,
-and verifies that it matches the intended target hostname.")
-    (license license:psfl)))
-
 (define-public python-bidict
   (package
     (name "python-bidict")
