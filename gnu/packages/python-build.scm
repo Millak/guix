@@ -3,7 +3,7 @@
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
-;;; Copyright © 2018, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2018, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;;
@@ -306,24 +306,7 @@ information.")
     ;; *either* of the licenses found in LICENSE.APACHE or LICENSE.BSD.
     ;; Contributions to this software is made under the terms of *both* these
     ;; licenses.
-    (license (list license:asl2.0 license:bsd-2))
-    (properties `((python2-variant . ,(delay python2-packaging-bootstrap))))))
-
-(define-public python2-packaging-bootstrap
-  (let ((base (package-with-python2
-               (strip-python2-variant python-packaging-bootstrap))))
-    (package/inherit base
-      (version "20.0")                  ;last version with Python 2 support
-      (source
-       (origin
-         (method url-fetch)
-         (uri (pypi-uri "packaging" version))
-         ;; XXX: The URL in the patch file is wrong, it should be
-         ;; <https://github.com/pypa/packaging/pull/256>.
-         (patches (search-patches "python-packaging-test-arch.patch"))
-         (sha256
-          (base32
-           "1y2ip3a4ykkpgnwgn85j6hkspcl0cg3mzms97f40mk57vwqq67gy")))))))
+    (license (list license:asl2.0 license:bsd-2))))
 
 ;;; The name 'python-pypa-build' is chosen rather than 'python-build' to avoid
 ;;; a name clash with python-build from (guix build-system python).
