@@ -4998,28 +4998,25 @@ as is the case with audio plugins.")
         (base32 "01ngkmfcxyg1bb4qmfvlkkjbx4lx62akxqhizl8zmqnhfcy4p9bx"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no "check" target
-       #:make-flags
-       (list (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (add-before 'build 'set-CC-variable-and-show-features
-           (lambda _
-             (setenv "CC" "gcc")
-             (invoke "make" "features")))
-         (add-after 'install 'make-carla-executable
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (chmod (string-append out "/share/carla/carla") #o555)
-               #t)))
-         (add-after 'install 'wrap-executables
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (wrap-script (string-append out "/bin/carla")
-                            #:guile (search-input-file inputs "bin/guile")
-                            `("GUIX_PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH"))))
-               #t))))))
+     (list #:tests? #f                  ; no "check" target
+           #:make-flags
+           #~(list (string-append "PREFIX=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)      ; no configure script
+               (add-before 'build 'set-CC-variable-and-show-features
+                 (lambda _
+                   (setenv "CC" "gcc")
+                   (invoke "make" "features")))
+               (add-after 'install 'make-carla-executable
+                 (lambda _
+                   (chmod (string-append #$output "/share/carla/carla") #o555)))
+               (add-after 'install 'wrap-executables
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (wrap-script (string-append #$output "/bin/carla")
+                                #:guile (search-input-file inputs "bin/guile")
+                                `("GUIX_PYTHONPATH" ":" prefix
+                                  (,(getenv "GUIX_PYTHONPATH")))))))))
     (inputs
      (list alsa-lib
            ffmpeg
