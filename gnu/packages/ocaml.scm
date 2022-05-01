@@ -2253,14 +2253,14 @@ dates and times.")
 (define-public ocaml-cmdliner
   (package
     (name "ocaml-cmdliner")
-    (version "1.0.4")
+    (version "1.1.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://erratique.ch/software/cmdliner/releases/"
                                   "cmdliner-" version ".tbz"))
               (sha256
                (base32
-                "1h04q0zkasd0mw64ggh4y58lgzkhg6yhzy60lab8k8zq9ba96ajw"))))
+                "1i5k2bdmkd97g0il9cxfd8praqbvblnq5k3irwp2c9g5fkh9vdca"))))
     (build-system ocaml-build-system)
     (inputs
      (list ocaml-result))
@@ -2279,6 +2279,7 @@ dates and times.")
                (("Sys.readdir dir")
                 "let a = Sys.readdir dir in Array.sort String.compare a; a"))
              #t)))))
+    (properties `((ocaml4.07-variant . ,(delay ocaml4.07-cmdliner))))
     (home-page "https://erratique.ch/software/cmdliner")
     (synopsis "Declarative definition of command line interfaces for OCaml")
     (description "Cmdliner is a module for the declarative definition of command
@@ -2288,6 +2289,20 @@ module automatically handles syntax errors, help messages and UNIX man page
 generation. It supports programs with single or multiple commands and respects
 most of the POSIX and GNU conventions.")
     (license license:bsd-3)))
+
+(define-public ocaml4.07-cmdliner
+  (package-with-ocaml4.07
+    (package
+      (inherit ocaml-cmdliner)
+      (version "1.0.4")
+      (source (origin
+                (method url-fetch)
+                (uri (string-append "https://erratique.ch/software/cmdliner/releases/"
+                                    "cmdliner-" version ".tbz"))
+                (sha256
+                 (base32
+                  "1h04q0zkasd0mw64ggh4y58lgzkhg6yhzy60lab8k8zq9ba96ajw"))))
+      (properties '()))))
 
 (define-public ocaml-fmt
   (package
@@ -2385,7 +2400,16 @@ immutability.")
     (build-system dune-build-system)
     (arguments
      `(#:package "alcotest"
-       #:test-target "."))
+       #:test-target "."
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-test-format
+           (lambda _
+             ;; cmdliner changed the format and the tests fail
+             (substitute* "test/e2e/alcotest/failing/unknown_option.expected"
+               (("`") "'")
+               (("COMMAND") "[COMMAND]")
+               (("\\.\\.\\.") "…")))))))
     (native-inputs
      (list ocamlbuild))
     (propagated-inputs
@@ -2421,6 +2445,9 @@ simple (yet expressive) query language to select the tests to run.")
                 (sha256
                  (base32
                   "1frwi185z4aadmaf0vp8xk5227nyg7nmh28ijj5l7ncjr5slvhz8"))))
+      (arguments
+       `(#:package "alcotest"
+         #:test-target "."))
       (properties '()))))
 
 (define-public ocaml-ppx-tools
@@ -7619,6 +7646,17 @@ variants.")
                (base32
                 "1w1givvhwv9jzj9zbg4mmlpb35sqi75w83r99p2z50bdr69fdf57"))))
     (build-system dune-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-test-format
+           (lambda _
+             ;; cmdliner changed the format and the tests fail
+             (substitute* '("test/bin/mdx-test/misc/no-such-file/test.expected"
+                            "test/bin/mdx-test/misc/no-such-prelude/test.expected")
+               (("`") "'")
+               (("COMMAND") "[COMMAND]")
+               (("\\.\\.\\.") "…")))))))
     (inputs
      (list ocaml-fmt
            ocaml-astring
