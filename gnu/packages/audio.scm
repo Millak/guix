@@ -5006,7 +5006,7 @@ as is the case with audio plugins.")
                (delete 'configure)      ; no configure script
                (add-before 'build 'set-CC-variable-and-show-features
                  (lambda _
-                   (setenv "CC" "gcc")
+                   (setenv "CC" #$(cc-for-target))
                    (invoke "make" "features")))
                (add-after 'install 'make-carla-executable
                  (lambda _
