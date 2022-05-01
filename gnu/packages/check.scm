@@ -2794,37 +2794,6 @@ create data based on random numbers and yet remain repeatable.")
 time by mocking the datetime module.")
     (license license:asl2.0)))
 
-(define-public python2-freezegun
-  (package
-    (name "python2-freezegun")
-    (version "0.3.14")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "freezegun" version))
-       (sha256
-        (base32 "0al75mk829j1izxi760b7yjnknjihyfhp2mvi5qiyrxb9cpxwqk2"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python2-mock python2-pytest))
-    (propagated-inputs
-     (list python2-six python2-dateutil))
-    (arguments
-     `(#:python ,python-2
-       #:phases
-       (modify-phases %standard-phases
-         ;; The tests are normally executed via `make test`, but the PyPi
-         ;; package does not include the Makefile.
-         (replace 'check
-           (lambda _
-             (invoke "pytest" "-vv"))))))
-    (home-page "https://github.com/spulec/freezegun")
-    (synopsis "Test utility for mocking the datetime module")
-    (description
-     "FreezeGun is a library that allows your python tests to travel through
-time by mocking the datetime module.")
-    (license license:asl2.0)))
-
 (define-public python-flexmock
   (package
     (name "python-flexmock")
