@@ -8012,51 +8012,7 @@ its top-level name.  This functionality intends to replace most uses of
 @code{pkg_resources} entry point API and metadata API.  Along with
 @code{importlib.resources} in Python 3.7 and newer, this can eliminate the
 need to use the older and less efficient @code{pkg_resources} package.")
-    (properties `((python2-variant . ,(delay python2-importlib-metadata))))
     (license license:asl2.0)))
-
-(define-public python2-importlib-metadata
-  (let ((base (package-with-python2 (strip-python2-variant
-                                     python-importlib-metadata))))
-    (package/inherit base
-      (name "python2-importlib-metadata")
-      (version "1.5.0")
-      (source
-       (origin
-         (method url-fetch)
-         (uri (pypi-uri "importlib_metadata" version))
-         (sha256
-          (base32
-           "00ikdj4gjhankdljnz7g5ggak4k9lql2926x0x117ir9j2lv7x86"))))
-      (arguments (substitute-keyword-arguments (package-arguments base)
-                   ((#:phases phases)   ;reset standard phases
-                    #~%standard-phases)))
-      (native-inputs
-       `(("python-setuptools-scm" ,python2-setuptools-scm)
-         ("python-pyfakefs" ,python2-pyfakefs-bootstrap)
-         ("python-packaging" ,python2-packaging-bootstrap)))
-      (propagated-inputs
-       `(("python-configparser" ,python2-configparser)
-         ("python-contextlib2" ,python2-contextlib2)
-         ("python-importlib-resources" ,python2-importlib-resources)
-         ("python-pathlib2" ,python2-pathlib2)
-         ,@(package-propagated-inputs base))))))
-
-;; This package is used by python2-pytest, and thus must not depend on it.
-(define-public python2-importlib-metadata-bootstrap
-  (hidden-package
-   (package/inherit
-    python2-importlib-metadata
-    (name "python2-importlib-metadata-bootstrap")
-    (arguments
-     `(#:tests? #f
-       ,@(package-arguments python2-importlib-metadata)))
-    (propagated-inputs
-     `(("python-zipp" ,python2-zipp-bootstrap)
-       ("python-pathlib2" ,python2-pathlib2-bootstrap)
-       ("python-configparser" ,python2-configparser)
-       ("python-contextlib2" ,python2-contextlib2-bootstrap)
-       ("python-importlib-resources" ,python2-importlib-resources-bootstrap))))))
 
 (define-public python-importmagic
   (package
