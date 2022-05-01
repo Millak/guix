@@ -28,6 +28,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages tor)
+  #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils)
@@ -67,27 +68,27 @@
                "0i2v3a2h7d0bjn64pi1c6h2x15lb53plf71xwkbkb51bnmc124ry"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list "--enable-lzma"
-             "--enable-zstd")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'skip-practracker
-           ;; This is a style linter.  It doesn't get to throw fatal errors.
-           (lambda _
-             (setenv "TOR_DISABLE_PRACTRACKER" "set")))
-         ,@(if (or (target-aarch64?)
-                   (target-ppc32?))
-             ;; Work around upstream issue relating to sandboxing and glibc-2.33.
-             ;; This is similar to the issue the tor-sandbox-i686 patch fixes
-             ;; but for other architectures.
-             ;; https://gitlab.torproject.org/tpo/core/tor/-/issues/40381
-             ;; https://gitlab.torproject.org/tpo/core/tor/-/merge_requests/446
-             `((add-before 'check 'adjust-test-suite
+     (list #:configure-flags
+           #~(list "--enable-lzma"
+                   "--enable-zstd")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'skip-practracker
+                 ;; This is a style linter.  It doesn't get to throw fatal errors.
                  (lambda _
-                   (substitute* "src/test/test_include.sh"
-                     ((".*Sandbox 1.*") "")))))
-             '()))))
+                   (setenv "TOR_DISABLE_PRACTRACKER" "set")))
+               #$@(if (or (target-aarch64?)
+                         (target-ppc32?))
+                     ;; Work around upstream issue relating to sandboxing and glibc-2.33.
+                     ;; This is similar to the issue the tor-sandbox-i686 patch fixes
+                     ;; but for other architectures.
+                     ;; https://gitlab.torproject.org/tpo/core/tor/-/issues/40381
+                     ;; https://gitlab.torproject.org/tpo/core/tor/-/merge_requests/446
+                     `((add-before 'check 'adjust-test-suite
+                         (lambda _
+                           (substitute* "src/test/test_include.sh"
+                             ((".*Sandbox 1.*") "")))))
+                     '()))))
     (native-inputs
      (list pkg-config python))             ; for tests
     (inputs
@@ -120,9 +121,9 @@ instead.")
     (name "tor-client")
     (arguments
      (substitute-keyword-arguments (package-arguments tor)
-       ((#:configure-flags flags)
-        (append flags
-                '("--disable-module-relay")))))
+       ((#:configure-flags flags #~'())
+        #~(append #$flags
+                  (list "--disable-module-relay")))))
     (synopsis "Client to the anonymous Tor network")
     (description
      "Tor protects you by bouncing your communications around a distributed
