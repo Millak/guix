@@ -4253,7 +4253,7 @@ sensitive completion, colors, and more.")
 (define-public ocaml-integers
   (package
     (name "ocaml-integers")
-    (version "0.6.0")
+    (version "0.7.0")
     (home-page "https://github.com/ocamllabs/ocaml-integers")
     (source (origin
               (method git-fetch)
@@ -4263,7 +4263,7 @@ sensitive completion, colors, and more.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "07qk7dgxykn528qvhfwa0j402yr58y1y84ivpi1ji1lvk0qddxcs"))))
+                "0c0bmy53ag6504kih0cvnp4yf7mbcimb18m1mgs592ffb0zj1rff"))))
     (build-system dune-build-system)
     (arguments
      `(#:tests? #f)) ; no tests
