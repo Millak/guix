@@ -6637,6 +6637,30 @@ PPXs or compiler features not yet upstreamed.")
 nodes for lazily rendering log messages.")
     (license license:expat)))
 
+(define-public ocaml-ppx-disable-unused-warnings
+  (package
+    (name "ocaml-ppx-disable-unused-warnings")
+    (version "0.15.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/janestreet/ppx_disable_unused_warnings")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32 "0sb5i4v7p9df2bxk66rjs30k9fqdrwsq1jgykjv6wyrx2d9bv955"))))
+    (build-system dune-build-system)
+    (arguments
+     `(#:test-target "tests"))
+    (propagated-inputs (list ocaml-base ocaml-ppxlib))
+    (properties `((upstream-name . "ppx_disable_unused_warnings")))
+    (home-page "https://github.com/janestreet/ppx_disable_unused_warnings")
+    (synopsis "Simple ppx extension for commonly unused warnings")
+    (description "This package expands @code{@@disable_unused_warnings} into
+@code{@@warning \"-20-26-32-33-34-35-36-37-38-39-60-66-67\"}")
+    (license license:expat)))
+
 (define-public ocaml-ppx-jane
   (package
     (name "ocaml-ppx-jane")
