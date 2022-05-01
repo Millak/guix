@@ -5382,10 +5382,10 @@ OCaml AST in the OCaml syntax;
 (define-public ocaml-ppx-compare
   (package
     (name "ocaml-ppx-compare")
-    (version "0.14.0")
+    (version "0.15.0")
     (source
      (janestreet-origin "ppx_compare" version
-                        "0mqxa2s194nif7x4fjn1p5gd9i3bakr8nv27gf8x1g5nmi8q9pmp"))
+                        "11bkw7fgzfay8ws0piwphqip3y2lk2c9s2gil3zisnbvka92h1va"))
     (build-system dune-build-system)
     (arguments
      ;; Tests are currenlty failing
