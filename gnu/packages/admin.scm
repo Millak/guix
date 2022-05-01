@@ -3917,16 +3917,15 @@ information tool.")
     (native-inputs
      (list pkg-config))
     (arguments
-     `(#:tests? #f                      ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))           ; no configure script
-       #:make-flags
-       (list
-        (string-append "PREFIX="
-                       (assoc-ref %outputs "out"))
-        (string-append "CC=" ,(cc-for-target))
-        (string-append "PKG_CONFIG=" ,(pkg-config-for-target)))))
+     (list #:tests? #f                  ; no tests
+           #:make-flags
+           #~(list
+              (string-append "PREFIX=" #$output)
+              (string-append "CC=" #$(cc-for-target))
+              (string-append "PKG_CONFIG=" #$(pkg-config-for-target)))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))))       ; no configure script
     (home-page "https://github.com/jarun/nnn")
     (synopsis "Terminal file browser")
     (description
