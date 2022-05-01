@@ -361,9 +361,6 @@ ISO 8601 dates, time and duration.")
 @code{2007-01-14T20:34:22+00:00}) into @code{datetime} objects.")
     (license expat)))
 
-(define-public python2-iso8601
-  (package-with-python2 python-iso8601))
-
 (define-public python-monotonic
   (package
     (name "python-monotonic")
