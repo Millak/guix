@@ -6584,6 +6584,31 @@ functions from type definitions.")
       (properties '())
       (license license:asl2.0))))
 
+(define-public ocaml-ppx-ignore-instrumentation
+  (package
+    (name "ocaml-ppx-ignore-instrumentation")
+    (version "0.15.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/janestreet/ppx_ignore_instrumentation")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32 "16fgig88g3jr0m3i636fr52h29h1yzhi8nhnl4029zn808kcdyj2"))))
+    (build-system dune-build-system)
+    (arguments
+     `(#:tests? #f)) ;no tests
+    (propagated-inputs (list ocaml-ppxlib))
+    (properties `((upstream-name . "ppx_ignore_instrumentation")))
+    (home-page "https://github.com/janestreet/ppx_ignore_instrumentation")
+    (synopsis "Ignore Jane Street specific instrumentation extensions")
+    (description
+      "Ignore Jane Street specific instrumentation extensions from internal
+PPXs or compiler features not yet upstreamed.")
+    (license license:expat)))
+
 (define-public ocaml-ppx-jane
   (package
     (name "ocaml-ppx-jane")
