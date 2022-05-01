@@ -18854,29 +18854,6 @@ builds partial trees by inspecting living objects.")
      editors.")
     (license license:expat)))
 
-(define-public python2-backports-functools-lru-cache
-  (package
-    (name "python2-backports-functools-lru-cache")
-    (version "1.6.1")
-    (source
-     (origin
-       (method url-fetch)
-       ;; only the pypi tarballs contain the necessary metadata
-       (uri (pypi-uri "backports.functools_lru_cache" version))
-       (sha256
-        (base32
-         "0jidrkk2w6bhjm197plxiaxrav64mgcrign0bfyr7md2ilc5zplg"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python2-setuptools-scm))
-    (arguments
-     `(#:python ,python-2))
-    (home-page "https://github.com/jaraco/backports.functools_lru_cache")
-    (synopsis "Backport of functools.lru_cache from Python 3.3")
-    (description "@code{python2-backports-functools-lru-cache} is a backport
-     of @code{functools.lru_cache} from python 3.3.")
-    (license license:expat)))
-
 (define-public python-configparser
   (package
     (name "python-configparser")
