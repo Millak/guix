@@ -6505,11 +6505,11 @@ conversion functions between almost identical types.")
 (define-public ocaml-ppx-base
   (package
     (name "ocaml-ppx-base")
-    (version "0.14.0")
+    (version "0.15.0")
     (source
      (janestreet-origin
       "ppx_base" version
-      "0b7a3fmi90jk8paz0g36yzaq670fbnrbi1j8r5ibh9wbcfli7ji6"))
+      "181w7y2has8jsrqdsvd08q5nhnkx523vwsk3lg0cjix55qssvfyn"))
     (build-system dune-build-system)
     (arguments
      `(#:test-target "."))
