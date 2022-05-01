@@ -6664,7 +6664,7 @@ nodes for lazily rendering log messages.")
 (define-public ocaml-ppx-jane
   (package
     (name "ocaml-ppx-jane")
-    (version "0.14.0")
+    (version "0.15.0")
     (source
       (origin
         (method git-fetch)
@@ -6673,7 +6673,7 @@ nodes for lazily rendering log messages.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-          (base32 "1kk238fvrcylymwm7xwc7llbyspmx1y662ypq00vy70g112rir7j"))))
+          (base32 "1p6847gdfnnj6qpa4yh57s6wwpsl7rfgy0q7993chz24h9mhz5lk"))))
     (build-system dune-build-system)
     (arguments
      `(#:test-target "."))
@@ -6684,12 +6684,15 @@ nodes for lazily rendering log messages.")
             ocaml-ppx-bench
             ocaml-ppx-bin-prot
             ocaml-ppx-custom-printf
+            ocaml-ppx-disable-unused-warnings
             ocaml-ppx-expect
             ocaml-ppx-fields-conv
             ocaml-ppx-fixed-literal
             ocaml-ppx-here
+            ocaml-ppx-ignore-instrumentation
             ocaml-ppx-inline-test
             ocaml-ppx-let
+            ocaml-ppx-log
             ocaml-ppx-module-timer
             ocaml-ppx-optcomp
             ocaml-ppx-optional
