@@ -399,9 +399,10 @@ output without any plausibility checks.")
                (install-file "fixparts.8" man)
                (install-file "gdisk.8" man)
                (install-file "sgdisk.8" man)))))))
+    (native-inputs
+     (list gettext-minimal))
     (inputs
-     (list gettext-minimal
-           ncurses
+     (list ncurses
            popt
            `(,util-linux "lib"))) ;libuuid
     (home-page "https://www.rodsbooks.com/gdisk/")
