@@ -3649,7 +3649,7 @@ writing to these structures, and they are accessed via the Bigarray module.")
 (define-public ocaml-hex
   (package
     (name "ocaml-hex")
-    (version "1.4.0")
+    (version "1.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3658,7 +3658,7 @@ writing to these structures, and they are accessed via the Bigarray module.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0c8nhibcwy0ykzca4jn3gqb8ylq21ff88y82gl60wyzijr64rn0q"))))
+                "0xnl5wxd2qrba7phm3mdrjwd2kk26kb17dv94ciwp49ljcj28qc1"))))
     (build-system dune-build-system)
     (arguments
      `(#:test-target "."))
