@@ -13656,33 +13656,7 @@ connection pool.")
 provides utilities for common tasks involving decorators and context
 managers.  It also contains additional features that are not part of
 the standard library.")
-    (properties `((python2-variant . ,(delay python2-contextlib2))))
     (license license:psfl)))
-
-(define-public python2-contextlib2
-  (let ((base (package-with-python2
-               (strip-python2-variant python-contextlib2))))
-    (package/inherit base
-      (arguments
-       (substitute-keyword-arguments (package-arguments base)
-         ((#:phases phases)
-          `(modify-phases ,phases
-           (replace 'check
-             (lambda _ (invoke "python" "test_contextlib2.py" "-v")))))))
-      (native-inputs
-       `(("python2-unittest2" ,python2-unittest2))))))
-
-;; This package is used by python2-pytest via python2-importlib-metadata,
-;; and thus can not depend on python-unittest2 (which depends on pytest).
-(define-public python2-contextlib2-bootstrap
-  (hidden-package
-   (package/inherit
-    python2-contextlib2
-    (name "python2-contextlib2-bootstrap")
-    (arguments
-     `(#:tests? #f
-       ,@(package-arguments python2-contextlib2)))
-    (native-inputs '()))))
 
 (define-public python-texttable
   (package
