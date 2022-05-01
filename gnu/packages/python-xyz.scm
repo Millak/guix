@@ -19272,9 +19272,6 @@ point is the point of maximum curvature.")
      perform the operations required for synchronizing plain text.")
     (license license:asl2.0)))
 
-(define-public python2-diff-match-patch
-  (package-with-python2 python-diff-match-patch))
-
 (define-public python-dirsync
   (package
     (name "python-dirsync")
