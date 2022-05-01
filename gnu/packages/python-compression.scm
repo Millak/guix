@@ -383,30 +383,7 @@ install: libbitshuffle.so
     (description
      "This package provides a @code{pathlib}-compatible @code{Zipfile} object
 wrapper.  It provides a backport of the @code{Path} object.")
-    (properties `((python2-variant . ,(delay python2-zipp))))
     (license license:expat)))
-
-(define-public python2-zipp
-  (let ((base (package-with-python2 (strip-python2-variant python-zipp))))
-    (package/inherit
-     base
-     (native-inputs
-      `(("python-contextlib2" ,python2-contextlib2)
-        ("python-pathlib2" ,python2-pathlib2)
-        ("python-unittest2" ,python2-unittest2)
-        ,@(package-native-inputs base))))))
-
-;; This package is used to bootstrap pytest, via importlib-metadata.
-(define-public python2-zipp-bootstrap
-  (hidden-package
-   (package/inherit
-    python2-zipp
-    (name "python2-zipp-bootstrap")
-    (arguments
-     `(#:tests? #f
-       ,@(package-arguments python2-zipp)))
-    (native-inputs
-     `(("python-setuptools-scm" ,python2-setuptools-scm))))))
 
 (define-public python-zopfli
   (package
