@@ -2056,14 +2056,14 @@ corrupted input.")
 (define-public plzip
   (package
     (name "plzip")
-    (version "1.9")
+    (version "1.10")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://savannah/lzip/plzip/"
                            "plzip-" version ".tar.gz"))
        (sha256
-        (base32 "19zinpx7hssl6r3vilpvq2s7wha3545xan8b0vcvsxnyipdx3n0l"))))
+        (base32 "16408n8z21hfxp0qnx3hh1d0c47g8z9i3vflbgbrmf6qcn1abyj3"))))
     (build-system gnu-build-system)
     (inputs
      (list lzlib))
