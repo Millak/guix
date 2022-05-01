@@ -376,11 +376,6 @@ output without any plausibility checks.")
       (sha256
        (base32 "1hjh5m77fmfq5m44yy61kchv7mbfgx026aw3jy5qxszsjckavzns"))))
     (build-system gnu-build-system)
-    (inputs
-     `(("gettext" ,gettext-minimal)
-       ("ncurses" ,ncurses)
-       ("popt" ,popt)
-       ("util-linux" ,util-linux "lib"))) ;libuuid
     (arguments
      `(#:test-target "test"
        #:phases
@@ -404,6 +399,11 @@ output without any plausibility checks.")
                (install-file "fixparts.8" man)
                (install-file "gdisk.8" man)
                (install-file "sgdisk.8" man)))))))
+    (inputs
+     (list gettext-minimal
+           ncurses
+           popt
+           `(,util-linux "lib"))) ;libuuid
     (home-page "https://www.rodsbooks.com/gdisk/")
     (synopsis "Low-level GPT disk partitioning and formatting")
     (description "GPT fdisk (aka gdisk) is a text-mode partitioning tool that
