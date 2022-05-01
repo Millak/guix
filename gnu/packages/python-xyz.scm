@@ -13823,9 +13823,6 @@ for atomic file system operations.")
     (home-page "https://github.com/untitaker/python-atomicwrites")
     (license license:expat)))
 
-(define-public python2-atomicwrites
-  (package-with-python2 python-atomicwrites))
-
 (define-public python-atomicwrites-1.4
   (package
     (inherit python-atomicwrites)
