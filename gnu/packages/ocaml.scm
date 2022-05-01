@@ -4498,7 +4498,7 @@ syntax checking on dedukti files.")
 (define-public ocaml-jst-config
   (package
     (name "ocaml-jst-config")
-    (version "0.14.1")
+    (version "0.15.1")
     (source
       (origin
         (method git-fetch)
@@ -4508,7 +4508,7 @@ syntax checking on dedukti files.")
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "0sak7rrix8vd2bscbjxbxi1d9jyd27ik59dpybfxhzhsn9s1wllv"))))
+          "1yp5p63clvaxmkf7vlasgyapxc31x29c154pyq63n0fvi2fpf4y3"))))
     (build-system dune-build-system)
     (arguments '(#:tests? #f))           ; no tests
     (propagated-inputs
