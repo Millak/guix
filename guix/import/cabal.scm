@@ -384,7 +384,7 @@ matching a string against the created regexp."
 
 (define is-lib (make-rx-matcher "^library *" regexp/icase))
 
-(define is-else (make-rx-matcher "^else" regexp/icase))
+(define (is-else s) (string-ci=? s "else"))
 
 (define (is-elif s) (string-ci=? s "elif"))
 
@@ -576,6 +576,7 @@ LOC is the current port location."
   (let* ((w (read-delimited " <>=():\t\n" port 'peek)))
     (cond ((is-if w) (lex-if loc))
           ((is-elif w) (lex-elif loc))
+          ((is-else w) (lex-else loc))
           ((is-test w port) (lex-test w loc))
           ((is-true w) (lex-true loc))
           ((is-false w) (lex-false loc))
@@ -599,7 +600,6 @@ the current port location."
      ((is-custom-setup s) => (cut lex-custom-setup <> loc))
      ((is-benchmark s) => (cut lex-benchmark <> loc))
      ((is-lib s) (lex-lib loc))
-     ((is-else s) (lex-else loc))
      (else (unread-string s port) #f))))
 
 (define (lex-property port loc)

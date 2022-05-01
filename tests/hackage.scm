@@ -398,7 +398,10 @@ library
   elif os(guix) { Build-depends: ghc-c }
   elif os(third) {
     Build-depends: ghc-d }
-  else
+  elif os(fourth)
+  {
+    Build-depends: ghc-d
+  } else
     Build-depends: ghc-e
 ")
 
