@@ -7999,7 +7999,7 @@ defined in OCaml 4.12.0.")
 (define-public ocamlformat
   (package
     (name "ocamlformat")
-    (version "0.20.1")
+    (version "0.21.0")
     (source
       (origin
         (method git-fetch)
@@ -8009,13 +8009,16 @@ defined in OCaml 4.12.0.")
         (file-name (git-file-name name version))
         (sha256
           (base32
-            "1q78gxsz763d6vbi1lyfmn7733l10qhq80bchdli9zw7sggs7nq1"))))
+            "10vy102a0isd8cg94y61pm4qfgy74d6003dw0qn0bdmbd19r5071"))))
     (build-system dune-build-system)
     (arguments
      '(#:package "ocamlformat"
-       ;; FIXME: The expected format is slightly different than what the
-       ;; produced format is for test/cli/stdin.t
-       #:tests? #f))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-test-format
+           (lambda _
+             (substitute* "test/cli/repl_file_errors.t/run.t"
+               ((" ;;") ";;")))))))
     (propagated-inputs
       (list ocaml-version
             ocaml-base
@@ -8033,7 +8036,7 @@ defined in OCaml 4.12.0.")
             ocaml-uuseg
             ocaml-uutf))
     (native-inputs
-      (list ocaml-alcotest ocaml-ocp-indent ocaml-bisect-ppx))
+      (list git-minimal ocaml-alcotest ocaml-ocp-indent ocaml-bisect-ppx))
     (home-page "https://github.com/ocaml-ppx/ocamlformat")
     (synopsis "Auto-formatter for OCaml code")
     (description "OCamlFormat is a tool to automatically format OCaml code in
