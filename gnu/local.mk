@@ -1710,7 +1710,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-pycrypto-time-clock.patch		\
   %D%/packages/patches/python-pyan3-fix-absolute-path-bug.patch \
   %D%/packages/patches/python-pyan3-fix-positional-arguments.patch \
-  %D%/packages/patches/python2-pygobject-2-deprecation.patch	\
   %D%/packages/patches/python-pygpgme-fix-pinentry-tests.patch	\
   %D%/packages/patches/python-pytorch-runpath.patch		\
   %D%/packages/patches/python-pytorch-system-libraries.patch	\

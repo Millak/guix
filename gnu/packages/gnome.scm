@@ -4990,13 +4990,6 @@ and the GLib main loop, to integrate well with GNOME applications.")
        ("pkg-config" ,pkg-config)
        ("vala" ,vala)
        ("xsltproc" ,libxslt)))
-       ;; These are needed for the tests.
-       ;; FIXME: Add gjs once available.
-       ;("dbus" ,dbus)
-       ;("python2" ,python-2)
-       ;("python2-dbus" ,python2-dbus)
-       ;("python2-pygobject" ,python2-pygobject)
-       ;("python2-pygobject-2" ,python2-pygobject-2)))
     (propagated-inputs
      (list glib)) ; required by libsecret-1.pc
     (inputs
