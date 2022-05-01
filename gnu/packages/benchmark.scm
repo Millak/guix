@@ -73,36 +73,37 @@
                 "1qjivkisn7dxk8irrb0rglmmdpbnai6n7vindf18ln0j24cc1x56"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:modules (,@%gnu-build-system-modules
-                  (ice-9 textual-ports))
-       #:test-target "test"
-       #:configure-flags '("--disable-native") ;don't generate code for the build CPU
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key (configure-flags ''()) outputs #:allow-other-keys)
-             ;; The configure script doesn't understand some of the
-             ;; GNU options, so we can't use the stock phase.
-             (let ((out (assoc-ref outputs "out")))
-               (apply invoke "./configure"
-                      (string-append "--prefix=" out)
-                      configure-flags))))
-         ;; The main `fio` executable is fairly small and self contained.
-         ;; Moving the auxiliary scripts to a separate output saves ~100 MiB
-         ;; on the closure.
-         (add-after 'install 'move-outputs
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((oldbin (string-append (assoc-ref outputs "out") "/bin"))
-                   (newbin (string-append (assoc-ref outputs "utils") "/bin"))
-                   (script? (lambda* (file #:rest _)
-                              (call-with-input-file file
-                                (lambda (port)
-                                  (char=? #\# (peek-char port)))))))
-               (mkdir-p newbin)
-               (for-each (lambda (file)
-                           (link file (string-append newbin "/" (basename file)))
-                           (delete-file file))
-                         (find-files oldbin script?))))))))
+     (list #:modules
+           `(,@%gnu-build-system-modules
+             (ice-9 textual-ports))
+           #:test-target "test"
+           #:configure-flags
+           #~(list "--disable-native")  ;don't generate code for the build CPU
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'configure
+                 (lambda* (#:key (configure-flags ''()) #:allow-other-keys)
+                   ;; The configure script doesn't understand some of the
+                   ;; GNU options, so we can't use the stock phase.
+                   (apply invoke "./configure"
+                          (string-append "--prefix=" #$output)
+                          configure-flags)))
+               ;; The main `fio` executable is fairly small and self contained.
+               ;; Moving the auxiliary scripts to a separate output saves ~100 MiB
+               ;; on the closure.
+               (add-after 'install 'move-outputs
+                 (lambda _
+                   (let ((oldbin (string-append #$output "/bin"))
+                         (newbin (string-append #$output:utils "/bin"))
+                         (script? (lambda* (file #:rest _)
+                                    (call-with-input-file file
+                                      (lambda (port)
+                                        (char=? #\# (peek-char port)))))))
+                     (mkdir-p newbin)
+                     (for-each (lambda (file)
+                                 (link file (string-append newbin "/" (basename file)))
+                                 (delete-file file))
+                               (find-files oldbin script?))))))))
     (outputs '("out" "utils"))
     (inputs
      (list libaio python zlib))
