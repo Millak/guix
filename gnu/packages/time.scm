@@ -140,9 +140,6 @@ higher.  It also solves the issue of ambiguous times at the end of daylight
 saving time.  Almost all of the Olson timezones are supported.")
     (license expat)))
 
-(define-public python2-pytz
-  (package-with-python2 python-pytz))
-
 (define-public python-pendulum
   (package
     (name "python-pendulum")
