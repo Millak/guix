@@ -3622,9 +3622,6 @@ machine identifiers from human-readable Unicode strings that should still be
 somewhat intelligible.")
     (license license:gpl2+)))
 
-(define-public python2-unidecode
-  (package-with-python2 python-unidecode))
-
 (define-public python-text-unidecode
   (package
     (name "python-text-unidecode")
