@@ -5470,8 +5470,7 @@ while still staying in time.")
            #~(modify-phases %standard-phases
                (add-after 'install 'install-documentation
                  (lambda _
-                   (let ((doc (string-append #$output "/share/doc/"
-                                             #$name "-" #$version)))
+                   (let ((doc (string-append #$output "/share/doc/" #$name)))
                      (install-file "README" doc)
                      (copy-file #$(this-package-native-input "manual")
                                 (string-append doc "/butt-manual.pdf"))))))))
