@@ -754,7 +754,7 @@ let () = String.split_on_char ':' (Sys.getenv \"OCAMLPATH\")
 (define-public ocaml-opam-file-format
   (package
     (name "ocaml-opam-file-format")
-    (version "2.1.3")
+    (version "2.1.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -763,7 +763,7 @@ let () = String.split_on_char ':' (Sys.getenv \"OCAMLPATH\")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1fxhppdmrysr2nb5z3c448h17np48f3ga9jih33acj78r4rdblcs"))))
+                "0dmnb1mqdy4913f9ma446hi5m99q7hfibj6j0m8x2wsfnfy2fw62"))))
     (build-system ocaml-build-system)
     (arguments
      `(#:tests? #f; No tests
