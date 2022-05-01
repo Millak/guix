@@ -1452,9 +1452,6 @@ BOM detection, but the actual implementation for encoders and decoders
 is Python’s.")
     (license license:bsd-3)))
 
-(define-public python2-webencodings
-  (package-with-python2 python-webencodings))
-
 (define-public python-openapi-schema-validator
   (package
     (name "python-openapi-schema-validator")
