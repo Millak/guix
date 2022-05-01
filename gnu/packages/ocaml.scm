@@ -6769,7 +6769,7 @@ driver including all standard Jane Street ppx rewriters.")
 (define-public ocaml-base-bigstring
   (package
     (name "ocaml-base-bigstring")
-    (version "0.14.0")
+    (version "0.15.0")
     (source
      (origin
        (method git-fetch)
@@ -6778,9 +6778,9 @@ driver including all standard Jane Street ppx rewriters.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ald2m7qywhxbygv58dzpgaj54p38zn0aiqd1z7i95kf3bsnsjqa"))))
+        (base32 "1hv3hw2fwqmkrxms1g6rw3c18mmla1z5bva3anx45mnff903iv4q"))))
     (build-system dune-build-system)
-    (propagated-inputs (list ocaml-base ocaml-ppx-jane))
+    (propagated-inputs (list ocaml-base ocaml-int-repr ocaml-ppx-jane))
     (properties `((upstream-name . "base_bigstring")))
     (home-page "https://github.com/janestreet/base_bigstring")
     (synopsis "String type based on [Bigarray], for use in I/O and C-bindings")
