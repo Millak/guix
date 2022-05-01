@@ -1593,9 +1593,6 @@ rendering @acronym{SVG, Scalable Vector Graphics}.")
 your terminal.")
     (license license:expat)))
 
-(define-public python2-pastel
-  (package-with-python2 python-pastel))
-
 (define-public fgallery
   (package
     (name "fgallery")
