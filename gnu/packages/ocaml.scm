@@ -6936,7 +6936,7 @@ Configurator allows one to:
 (define-public ocaml-spawn
   (package
     (name "ocaml-spawn")
-    (version "0.15.0")
+    (version "0.15.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6945,7 +6945,7 @@ Configurator allows one to:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1fjr91psas5zmk1hxvxh0dchhn0pkyzlr4gg232f5g9vdgissi0p"))))
+                "16aq5z3mq5lkpryfs4w0748b2w9v061myml0hn7nhh6r6i329w7a"))))
     (build-system dune-build-system)
     (propagated-inputs (list ocaml-odoc))
     (native-inputs (list ocaml-ppx-expect))
