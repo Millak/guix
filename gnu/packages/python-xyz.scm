@@ -16447,9 +16447,6 @@ Wikipedia code samples at
 @url{http://en.wikipedia.org/wiki/Levenshtein_distance}.")
     (license license:bsd-3)))
 
-(define-public python2-pylev
-  (package-with-python2 python-pylev))
-
 (define-public python-cleo
   (package
     (name "python-cleo")
