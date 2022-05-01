@@ -3219,15 +3219,6 @@ port forwards using @acronym{UPnP, Universal Plug and Play}.")
      "Backport of @code{funcsigs} which was introduced in Python 3.3.")
     (license license:asl2.0)))
 
-(define-public python2-funcsigs-bootstrap
-  (package
-    (inherit python2-funcsigs)
-    (name "python2-funcsigs-bootstrap")
-    (native-inputs `())
-    (arguments
-     `(#:tests? #f
-       ,@(package-arguments python2-funcsigs)))))
-
 (define-public python-py
   (package
     (name "python-py")
