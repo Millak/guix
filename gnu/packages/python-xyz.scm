@@ -29606,3 +29606,48 @@ to Github via gh-pages.")
      "The @code{flatten_json} Python library flattens the hierarchy in your
 object, which can be useful if you want to force your objects into a table.")
     (license license:expat)))
+
+(define-public python-deepmerge
+  (package
+    (name "python-deepmerge")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "deepmerge" version))
+       (sha256
+        (base32 "06hagzg8ccmjzqvszdxb52jgx5il8a1jdz41n4dpkyyjsfg7fi2b"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)
+              ;; ZIP does not support timestamps before 1980.
+              (setenv "SOURCE_DATE_EPOCH" "315532800")))
+          (replace 'build
+            (lambda _
+              (invoke "python" "-m" "build" "--wheel"
+                      "--no-isolation" ".")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest"))))
+          (replace 'install
+            (lambda _
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl)))))))
+    (native-inputs
+     (list python-pypa-build
+           python-setuptools-scm
+           python-pytest
+           python-wheel))
+    (home-page "https://deepmerge.readthedocs.io/en/latest/")
+    (synopsis "Merge nested data structures")
+    (description
+     "The @code{deep-merge} Python library provides a toolset to deeply merge
+nested data structures in Python like lists and dictionaries.")
+    (license license:expat)))
