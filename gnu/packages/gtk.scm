@@ -1919,26 +1919,9 @@ printing and other features typical of a source code editor.")
     (synopsis "Python bindings for cairo")
     (description
      "Pycairo is a set of Python bindings for the Cairo graphics library.")
-    (license license:lgpl3+)
-    (properties `((python2-variant . ,(delay python2-pycairo))))))
+    (license license:lgpl3+)))
 
 ;; Pycairo no longer supports Python 2 since version 1.19.0, so we stick
-;; with this older version here.
-(define-public python2-pycairo
-  (let ((pycairo (package-with-python2
-                  (strip-python2-variant python-pycairo))))
-    (package
-      (inherit pycairo)
-      (version "1.18.2")
-      (source (origin
-                (method url-fetch)
-                (uri (string-append "https://github.com/pygobject/pycairo/releases"
-                                    "/download/v" version "/pycairo-" version ".tar.gz"))
-                (sha256
-                 (base32
-                  "0cb5n4r4nl0k1g90b1gz9iyk4lp7hi03db98i1p52a870bym7f6w"))))
-      ;; Dual-licensed under LGPL 2.1 or Mozilla Public License 1.1
-      (license (list license:lgpl2.1 license:mpl1.1)))))
 
 (define-public perl-cairo
   (package
