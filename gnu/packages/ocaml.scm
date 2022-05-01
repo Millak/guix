@@ -4525,11 +4525,11 @@ recommend using this package directly.")
 (define-public ocaml-jane-street-headers
   (package
     (name "ocaml-jane-street-headers")
-    (version "0.14.0")
+    (version "0.15.0")
     (source
      (janestreet-origin
       "jane-street-headers" version
-      "028yxb4h3iy025iy89v8653m5brh7flrjshghs4x99pd690pmfs7"))
+      "1r27r0bxxa0iaah5rm84lwhrmh784vfpmb6056hpv0p34rxs7r1l"))
     (build-system dune-build-system)
     (arguments '(#:tests? #f))           ; no tests
     (properties `((ocaml4.07-variant . ,(delay ocaml4.07-jane-street-headers))))
