@@ -2029,14 +2029,14 @@ Clzip is intended to be fully compatible with the regular lzip package.")
 (define-public lzlib
   (package
     (name "lzlib")
-    (version "1.12")
+    (version "1.13")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://savannah/lzip/lzlib/"
                            "lzlib-" version ".tar.gz"))
        (sha256
-        (base32 "1c9pwd6by8is4z8bs6j306jyy6pgm2dvsn4fr7fg2b5m5qj88pcf"))))
+        (base32 "107vkzfgvb21cqq4gmxyfn97l4s2c0b3i14k9rkv594b2krmiax1"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
