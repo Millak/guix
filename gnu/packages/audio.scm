@@ -5466,15 +5466,15 @@ while still staying in time.")
                   ((".*zica.*") "")))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-documentation
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (manual (assoc-ref inputs "manual"))
-                    (doc (string-append out "/share/doc/" ,name "-" ,version)))
-               (install-file "README" doc)
-               (copy-file manual (string-append doc "/butt-manual.pdf"))))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'install-documentation
+                 (lambda _
+                   (let ((doc (string-append #$output "/share/doc/"
+                                             #$name "-" #$version)))
+                     (install-file "README" doc)
+                     (copy-file #$(this-package-native-input "manual")
+                                (string-append doc "/butt-manual.pdf"))))))))
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("manual"
