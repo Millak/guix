@@ -5,7 +5,7 @@
 ;;; Copyright © 2016 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
@@ -854,7 +854,7 @@ HP@tie{}LaserJet, and possibly other printers.  See @file{README} for details.")
 (define-public epson-inkjet-printer-escpr
   (package
     (name "epson-inkjet-printer-escpr")
-    (version "1.7.17")
+    (version "1.7.18")
     ;; XXX: This currently works.  But it will break as soon as a newer
     ;; version is available since the URLs for older versions are not
     ;; preserved.  An alternative source will be added as soon as
@@ -862,11 +862,11 @@ HP@tie{}LaserJet, and possibly other printers.  See @file{README} for details.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://download3.ebz.epson.net/dsc/f/03/00/12/99/"
-                           "78/73605b3f8aac63694fdabee6bd43389731696cd9/"
-                           "epson-inkjet-printer-escpr-1.7.17-1lsb3.2.tar.gz"))
+       (uri (string-append "https://download3.ebz.epson.net/dsc/f/03/00/13/43/"
+                           "81/cbdd80826424935cef20d16be8ee5851388977a7/"
+                           "epson-inkjet-printer-escpr-1.7.18-1lsb3.2.tar.gz"))
        (sha256
-        (base32 "1d7ckrl5kya98h27mx4pgnaz5sbrsd5vhwc8kva9nfah9wsga4wg"))))
+        (base32 "06pa47rl1gy19bg3fsp4a4y9vdy4ya2maajm14n791ivhf2hcwyh"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules
