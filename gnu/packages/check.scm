@@ -1026,77 +1026,17 @@ standard library.")
      "Pytest is a testing tool that provides auto-discovery of test modules
 and functions, detailed info on failing assert statements, modular fixtures,
 and many external plugins.")
-    (license license:expat)
-    (properties `((python2-variant . ,(delay python2-pytest))))))
+    (license license:expat)))
 
 (define-public python-pytest-6 python-pytest)
 
-;; Pytest 4.x are the last versions that support Python 2.
-(define-public python2-pytest
-  (package
-    (inherit (strip-python2-variant python-pytest))
-    (name "python2-pytest")
-    (version "4.6.11")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pytest" version))
-              (sha256
-               (base32
-                "0ls3pqr86xgif6bphsb6wrww9r2vc7p7a2naq8zcq8115wwq5yjh"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2
-       ,@(package-arguments python-pytest)))
-    (propagated-inputs
-     `(("python-atomicwrites" ,python2-atomicwrites)
-       ("python-attrs" ,python2-attrs-bootstrap)
-       ("python-funcsigs" ,python2-funcsigs)
-       ("python-importlib-metadata" ,python2-importlib-metadata-bootstrap)
-       ("python-more-itertools" ,python2-more-itertools)
-       ("python-packaging" ,python2-packaging-bootstrap)
-       ("python-pathlib2" ,python2-pathlib2)
-       ("python-pluggy" ,python2-pluggy)
-       ("python-py" ,python2-py)
-       ("python-six" ,python2-six-bootstrap)
-       ("python-wcwidth" ,python2-wcwidth)))
-    (native-inputs
-     `(("bash" ,bash)                   ;tests require 'compgen'
-       ("python-hypothesis" ,python2-hypothesis)
-       ("python-nose" ,python2-nose)
-       ("python-mock" ,python2-mock)
-       ("python-pytest" ,python2-pytest-bootstrap)
-       ("python-setuptools-scm" ,python2-setuptools-scm)))))
-
 (define-public python-pytest-bootstrap
   (package
-    (inherit (strip-python2-variant python-pytest))
+    (inherit python-pytest)
     (name "python-pytest-bootstrap")
     (native-inputs (list python-iniconfig python-setuptools-scm
                          python-toml))
-    (arguments `(#:tests? #f))
-    (properties `((python2-variant . ,(delay python2-pytest-bootstrap))))))
-
-(define-public python2-pytest-bootstrap
-  (hidden-package
-   (package/inherit
-    python2-pytest
-    (name "python2-pytest-bootstrap")
-    (arguments
-     (substitute-keyword-arguments (package-arguments python2-pytest)
-       ((#:tests? _ #f) #f)))
-    (native-inputs
-     `(("python-setuptools-scm" ,python2-setuptools-scm)))
-     (propagated-inputs
-      `(("python-atomicwrites" ,python2-atomicwrites)
-        ("python-attrs" ,python2-attrs-bootstrap)
-        ("python-funcsigs" ,python2-funcsigs-bootstrap)
-        ("python-importlib-metadata" ,python2-importlib-metadata-bootstrap)
-        ("python-more-itertools" ,python2-more-itertools)
-        ("python-packaging" ,python2-packaging-bootstrap)
-        ("python-pathlib2" ,python2-pathlib2-bootstrap)
-        ("python-pluggy" ,python2-pluggy-bootstrap)
-        ("python-py" ,python2-py)
-        ("python-wcwidth" ,python2-wcwidth))))))
+    (arguments `(#:tests? #f))))
 
 (define-public python-pytest-assume
   (package
