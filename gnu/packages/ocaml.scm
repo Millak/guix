@@ -5439,10 +5439,10 @@ of a record and create new record values.")
 (define-public ocaml-variantslib
   (package
     (name "ocaml-variantslib")
-    (version "0.14.0")
+    (version "0.15.0")
     (source
      (janestreet-origin "variantslib" version
-              "11zp27gh282dx9ifbhcp6i7fkc97fvk8amaj58mf1g1hwklc0lm3"))
+              "12dssx4by6rgjzfrvksz83hkcpmsq0brn87dh22pv1rrwhw79n75"))
     (build-system dune-build-system)
     (arguments
      ;; No tests
