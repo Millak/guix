@@ -9106,22 +9106,7 @@ computing.")
     (description
      "Urwid is a curses-based UI/widget library for Python.  It includes many
 features useful for text console applications.")
-    (properties `((python2-variant . ,(delay python2-urwid))))
     (license license:lgpl2.1+)))
-
-(define-public python2-urwid
-  (let ((base (package-with-python2
-               (strip-python2-variant python-urwid))))
-    (package
-      (inherit base)
-      (version "2.1.0")
-      (source
-       (origin
-         (method url-fetch)
-         (uri (pypi-uri "urwid" version))
-         (sha256
-          (base32
-           "11ndnhxd41m13darf5s0c6bafdpkzq1l6mfb04wbzdmyc1hg75h8")))))))
 
 (define-public python-urwid-readline
   (package
