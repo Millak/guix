@@ -5475,32 +5475,32 @@ while still staying in time.")
                     (doc (string-append out "/share/doc/" ,name "-" ,version)))
                (install-file "README" doc)
                (copy-file manual (string-append doc "/butt-manual.pdf"))))))))
-    (inputs
-     `(("dbus" ,dbus)
-       ("flac" ,flac)
-       ("fltk" ,fltk)
-       ("lame" ,lame)
-       ("libfdk" ,libfdk)
-       ("libsamplerate" ,libsamplerate)
-       ("libvorbis" ,libvorbis)
-       ("libx11" ,libx11)
-       ("libxext" ,libxext)
-       ("libxfixes" ,libxfixes)
-       ("libxft" ,libxft)
-       ("libxrender" ,libxrender)
-       ("ogg" ,libogg)
-       ("openssl" ,openssl)
-       ("opus" ,opus)
-       ("portaudio" ,portaudio)))
     (native-inputs
      `(("pkg-config" ,pkg-config)
-       ("manual" ,(origin
-                    (method url-fetch)
-                    (uri (string-append "https://danielnoethen.de/butt/butt-"
-                                        version "_manual.pdf"))
-                    (sha256
-                     (base32
-                      "0kadqzzbk25n0aqxgbqhg4mq4hsbjq44phzcx5qj1b8847yzz8si"))))))
+       ("manual"
+        ,(origin
+           (method url-fetch)
+           (uri (string-append "https://danielnoethen.de/butt/butt-"
+                               version "_manual.pdf"))
+           (sha256
+            (base32 "0kadqzzbk25n0aqxgbqhg4mq4hsbjq44phzcx5qj1b8847yzz8si"))))))
+    (inputs
+     (list dbus
+           flac
+           fltk
+           lame
+           libfdk
+           libsamplerate
+           libvorbis
+           libx11
+           libxext
+           libxfixes
+           libxft
+           libxrender
+           libogg
+           openssl
+           opus
+           portaudio))
     (home-page "https://danielnoethen.de/butt/")
     (synopsis "Audio streaming tool")
     (description "Butt is a tool to stream audio to a ShoutCast or
