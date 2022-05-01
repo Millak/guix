@@ -5804,7 +5804,7 @@ many values).")
 (define-public ocaml-ppx-bench
   (package
     (name "ocaml-ppx-bench")
-    (version "0.14.1")
+    (version "0.15.0")
     (source
       (origin
         (method git-fetch)
@@ -5813,7 +5813,7 @@ many values).")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-          (base32 "12r7jgqgpb4i4cry3rgyl2nmxcscs5w7mmk06diz7i49r27p96im"))))
+          (base32 "0bc0gbm922417wqisafxh35jslcp7xy1s0h0a1q32rhx0ivxx3g6"))))
     (build-system dune-build-system)
     (arguments
      ;; No tests
