@@ -13559,9 +13559,6 @@ simulation, statistical modeling, machine learning and much more.")
 automatically detect a wide range of file encodings.")
     (license license:lgpl2.1+)))
 
-(define-public python2-chardet
-  (package-with-python2 python-chardet))
-
 (define-public python-charset-normalizer
   (package
     (name "python-charset-normalizer")
