@@ -2983,16 +2983,7 @@ addon for removing tracking fields from URLs.")
      "Urllib3 supports features left out of urllib and urllib2 libraries.  It
 can reuse the same socket connection for multiple requests, it can POST files,
 supports url redirection and retries, and also gzip and deflate decoding.")
-    (properties `((python2-variant . ,(delay python2-urllib3))))
     (license license:expat)))
-
-(define-public python2-urllib3
-  (let ((base (package-with-python2 (strip-python2-variant python-urllib3))))
-    (package/inherit
-     base
-     (propagated-inputs
-      `(("python-ipaddress" ,python2-ipaddress)
-        ,@(package-propagated-inputs base))))))
 
 (define-public awscli
   (package
