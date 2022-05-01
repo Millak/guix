@@ -9328,25 +9328,8 @@ Soup 4.  It aims to provide selecting, matching, and filtering using modern
 CSS selectors.  Soup Sieve currently provides selectors from the CSS level 1
 specifications up through the latest CSS level 4 drafts and beyond (though
 some are not yet implemented).")
-    (properties `((python2-variant . ,(delay python2-soupsieve))))
     (license license:expat)))
 
-;; This is the last version that supports python-2
-(define-public python2-soupsieve
-  (let ((base (package-with-python2 (strip-python2-variant python-soupsieve))))
-    (package
-      (inherit base)
-      (version "1.9.6")
-      (source
-       (origin
-         (method url-fetch)
-         (uri (pypi-uri "soupsieve" version))
-         (sha256
-          (base32
-           "1apgqxngi1216h1cyvrvj9gy3wf45mh1lz4n76j26jf3k36bm1br"))))
-      (propagated-inputs
-       (modify-inputs (package-propagated-inputs base)
-         (prepend python2-backports-functools-lru-cache))))))
 
 (define-public python-netifaces
   (package
