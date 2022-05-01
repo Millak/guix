@@ -17010,9 +17010,6 @@ addresses, and phone numbers.")
 YAML-serialized data.")
     (license license:wtfpl2)))
 
-(define-public python2-pyaml
-  (package-with-python2 python-pyaml))
-
 (define-public python-pyyaml-env-tag
   (package
     (name "python-pyyaml-env-tag")
