@@ -17150,9 +17150,6 @@ environment variables in YAML files.")
 collections of data.")
     (license license:expat)))
 
-(define-public python2-backpack
-  (package-with-python2 python-backpack))
-
 (define-public python-prompt-toolkit
   (package
     (name "python-prompt-toolkit")
