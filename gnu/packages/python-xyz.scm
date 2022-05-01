@@ -15450,9 +15450,6 @@ way.")
     (home-page "https://eventable.github.io/vobject/")
     (license license:asl2.0)))
 
-(define-public python2-vobject
-  (package-with-python2 python-vobject))
-
 (define-public python-munkres
   (package
     (name "python-munkres")
