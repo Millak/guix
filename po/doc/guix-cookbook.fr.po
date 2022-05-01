@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix manual checkout\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2022-03-19 15:18+0000\n"
+"POT-Creation-Date: 2022-04-09 15:18+0000\n"
 "PO-Revision-Date: 2022-01-30 10:16+0000\n"
 "Last-Translator: Julien Lepiller <fedora-account@lepiller.eu>\n"
 "Language-Team: French <https://translate.fedoraproject.org/projects/guix/documentation-cookbook/fr/>\n"
@@ -561,7 +561,9 @@ msgstr "Pour une introduction plus détaillée, consultez @uref{http://www.troub
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:302
-msgid "One of the reference Scheme books is the seminal ``Structure and Interpretation of Computer Programs'', by Harold Abelson and Gerald Jay Sussman, with Julie Sussman.  You'll find a @uref{https://mitpress.mit.edu/sites/default/files/sicp/index.html, free copy online}, together with @uref{https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-001-structure-and-interpretation-of-computer-programs-spring-2005/video-lectures/, videos of the lectures by the authors}.  The book is available in Texinfo format as the @code{sicp} Guix package.  Go ahead, run @code{guix install sicp} and start reading with @code{info sicp} (@pxref{,,, sicp, Structure and Interpretation of Computer Programs}).  An @uref{https://sarabander.github.io/sicp/, unofficial ebook is also available}."
+#, fuzzy
+#| msgid "One of the reference Scheme books is the seminal ``Structure and Interpretation of Computer Programs'', by Harold Abelson and Gerald Jay Sussman, with Julie Sussman.  You'll find a @uref{https://mitpress.mit.edu/sites/default/files/sicp/index.html, free copy online}, together with @uref{https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-001-structure-and-interpretation-of-computer-programs-spring-2005/video-lectures/, videos of the lectures by the authors}.  The book is available in Texinfo format as the @code{sicp} Guix package.  Go ahead, run @code{guix install sicp} and start reading with @code{info sicp} (@pxref{,,, sicp, Structure and Interpretation of Computer Programs}).  An @uref{https://sarabander.github.io/sicp/, unofficial ebook is also available}."
+msgid "One of the reference Scheme books is the seminal ``Structure and Interpretation of Computer Programs'', by Harold Abelson and Gerald Jay Sussman, with Julie Sussman.  You'll find a @uref{https://mitpress.mit.edu/sites/default/files/sicp/index.html, free copy online}, together with @uref{https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-001-structure-and-interpretation-of-computer-programs-spring-2005/video-lectures/, videos of the lectures by the authors}.  The book is available in Texinfo format as the @code{sicp} Guix package.  Go ahead, run @code{guix install sicp} and start reading with @code{info sicp} (@pxref{Top,,, sicp, Structure and Interpretation of Computer Programs}).  An @uref{https://sarabander.github.io/sicp/, unofficial ebook is also available}."
 msgstr "L'un des livres de référence majeurs pour Scheme est « Structure and Interpretation of Computer Programs » de Harold Abelson et Gerald Jay Sussman, avec Julie Sussman. Vous trouverez une @uref{https://mitpress.mit.edu/sites/default/files/sicp/index.html,copie gratuite en ligne}, avec @uref{https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-001-structure-and-interpretation-of-computer-programs-spring-2005/video-lectures/, les vidéos des cours donnés par les auteurs, en anglais}. Le livre est disponible au format Texinfo dans le paquet Guix @code{sicp}. Allez-y, lancez @code{guix install sicp} et commencez à le lire avec @code{info sicp} (@pxref{,,, sicp, Structure and Interpretation of Computer Programs}). Un @uref{https://sarabander.github.io/sicp/,livre électronique officieux est aussi disponible}."
 
 #. type: Plain text
@@ -1641,7 +1643,9 @@ msgstr "Installées dans le dépôt et dans le profil, et présentes à la const
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:907
-msgid "@xref{Package Reference,,, guix, GNU Guix Reference Manual} for more details."
+#, fuzzy
+#| msgid "@xref{Package Reference,,, guix, GNU Guix Reference Manual} for more details."
+msgid "@xref{package Reference,,, guix, GNU Guix Reference Manual} for more details."
 msgstr "@xref{Référence de package,,, guix.fr, le manuel de référence de GNU Guix} pour plus de détails."
 
 #. type: Plain text

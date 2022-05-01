@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix manual checkout\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2022-03-19 15:18+0000\n"
-"PO-Revision-Date: 2022-02-08 17:16+0000\n"
+"POT-Creation-Date: 2022-04-09 15:18+0000\n"
+"PO-Revision-Date: 2022-04-04 15:17+0000\n"
 "Last-Translator: Marek Felšöci <marek@felsoci.sk>\n"
 "Language-Team: Slovak <https://translate.fedoraproject.org/projects/guix/documentation-cookbook/sk/>\n"
 "Language: sk\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.11.2\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:7
@@ -558,7 +558,9 @@ msgstr "Ak hľadáte podrobnejšiu úvodnú príručku, pozrite si @uref{http://
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:302
-msgid "One of the reference Scheme books is the seminal ``Structure and Interpretation of Computer Programs'', by Harold Abelson and Gerald Jay Sussman, with Julie Sussman.  You'll find a @uref{https://mitpress.mit.edu/sites/default/files/sicp/index.html, free copy online}, together with @uref{https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-001-structure-and-interpretation-of-computer-programs-spring-2005/video-lectures/, videos of the lectures by the authors}.  The book is available in Texinfo format as the @code{sicp} Guix package.  Go ahead, run @code{guix install sicp} and start reading with @code{info sicp} (@pxref{,,, sicp, Structure and Interpretation of Computer Programs}).  An @uref{https://sarabander.github.io/sicp/, unofficial ebook is also available}."
+#, fuzzy
+#| msgid "One of the reference Scheme books is the seminal ``Structure and Interpretation of Computer Programs'', by Harold Abelson and Gerald Jay Sussman, with Julie Sussman.  You'll find a @uref{https://mitpress.mit.edu/sites/default/files/sicp/index.html, free copy online}, together with @uref{https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-001-structure-and-interpretation-of-computer-programs-spring-2005/video-lectures/, videos of the lectures by the authors}.  The book is available in Texinfo format as the @code{sicp} Guix package.  Go ahead, run @code{guix install sicp} and start reading with @code{info sicp} (@pxref{,,, sicp, Structure and Interpretation of Computer Programs}).  An @uref{https://sarabander.github.io/sicp/, unofficial ebook is also available}."
+msgid "One of the reference Scheme books is the seminal ``Structure and Interpretation of Computer Programs'', by Harold Abelson and Gerald Jay Sussman, with Julie Sussman.  You'll find a @uref{https://mitpress.mit.edu/sites/default/files/sicp/index.html, free copy online}, together with @uref{https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-001-structure-and-interpretation-of-computer-programs-spring-2005/video-lectures/, videos of the lectures by the authors}.  The book is available in Texinfo format as the @code{sicp} Guix package.  Go ahead, run @code{guix install sicp} and start reading with @code{info sicp} (@pxref{Top,,, sicp, Structure and Interpretation of Computer Programs}).  An @uref{https://sarabander.github.io/sicp/, unofficial ebook is also available}."
 msgstr "Jednou z hlavných kníh o jazyku Scheme je „Structure and Interpretation of Computer Programs“ od Harolda Abelsona, Gerlda Jay Sussmana a Julie Sussmanovej. @uref{https://mitpress.mit.edu/sites/default/files/sicp/index.html, Bezplatné vydanie je dostupné online} spolu so @uref{https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-001-structure-and-interpretation-of-computer-programs-spring-2005/video-lectures/, záznamami prednášok autorov}. Kniha je tiež dostupná vo formáte Texinfo ako balík Guix @code{sicp}. Neváhajte, zadajte @code{guix install sicp} do príkazového riadku a začnite čítať pomocou príkazu @code{info sicp} (@pxref{,,, sicp, Structure and Interpretation of Computer Programs}). @uref{https://sarabander.github.io/sicp/, Dostupná online je aj neoficiálna elektronická kniha}."
 
 #. type: Plain text
@@ -1639,7 +1641,9 @@ msgstr "Inštalované do úložiska aj do profilu a prítomné pri zostavovaní.
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:907
-msgid "@xref{Package Reference,,, guix, GNU Guix Reference Manual} for more details."
+#, fuzzy
+#| msgid "@xref{Package Reference,,, guix, GNU Guix Reference Manual} for more details."
+msgid "@xref{package Reference,,, guix, GNU Guix Reference Manual} for more details."
 msgstr "Viď @xref{Package Reference,,, guix, GNU Guix Reference Manual} pre viac podrobností."
 
 #. type: Plain text
@@ -2967,12 +2971,12 @@ msgstr "Z dejinného pohľadu je systém Guix sústredený okolo štruktúry @co
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1660
 msgid "Depending on the target machine, that can go from a standard @code{x86_64} machine to a small ARM single board computer such as the Pine64, the image constraints can vary a lot.  The hardware manufacturers will impose different image formats with various partition sizes and offsets."
-msgstr ""
+msgstr "Požiadavky na obraz sa môžu značne líšiť v závislosti na cieľovom stroji, čo môže byť obvyklý @code{x86_64} alebo malý jednodoskový počítač ako Pine64. Výrobcovia technického vybavenia presadzujú rôzne formáty obrazov s rôznymi veľkosťami a umiestneniami oddielov."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1665
 msgid "To create images suitable for all those machines, a new abstraction is necessary: that's the goal of the @code{image} record.  This record contains all the required information to be transformed into a standalone image, that can be directly booted on any target machine."
-msgstr ""
+msgstr "Na vytváranie obrazov vhodných pre všetky tieto stroje je nevyhnutné ďalšie zovšeobecnenie, čo je cieľom záznamu @code{image}.  Tento záznam obsahuje všetky potrebné údaje k premene na samostatný obraz, ktorý je možno priamo zaviesť na hocijakom cieľovom stroji."
 
 #. type: lisp
 #: guix-git/doc/guix-cookbook.texi:1687
@@ -2999,45 +3003,65 @@ msgid ""
 "  (substitutable?     image-substitutable? ;boolean\n"
 "                      (default #t)))\n"
 msgstr ""
+"(define-record-type* <image>\n"
+"  image make-image\n"
+"  image?\n"
+"  (name               image-name ;symbol\n"
+"                      (default #f))\n"
+"  (format             image-format) ;symbol\n"
+"  (target             image-target\n"
+"                      (default #f))\n"
+"  (size               image-size  ;size in bytes as integer\n"
+"                      (default 'guess))\n"
+"  (operating-system   image-operating-system  ;<operating-system>\n"
+"                      (default #f))\n"
+"  (partitions         image-partitions ;list of <partition>\n"
+"                      (default '()))\n"
+"  (compression?       image-compression? ;boolean\n"
+"                      (default #t))\n"
+"  (volatile-root?     image-volatile-root? ;boolean\n"
+"                      (default #t))\n"
+"  (substitutable?     image-substitutable? ;boolean\n"
+"                      (default #t)))\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1693
 msgid "This record contains the operating-system to instantiate. The @code{format} field defines the image type and can be @code{efi-raw}, @code{qcow2} or @code{iso9660} for instance. In the future, it could be extended to @code{docker} or other image types."
-msgstr ""
+msgstr "Tento záznam obsahuje operačný systém na zostavenie. Pole @code{format} určuje druh obrazu a medzi jeho platné hodnoty patria @code{efi-raw}, @code{qcow2} alebo @code{iso9660}. V budúcnosti by sa mohli rozšíriť o @code{docker} a ďalšie druhy obrazov."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1696
 msgid "A new directory in the Guix sources is dedicated to images definition. For now there are four files:"
-msgstr ""
+msgstr "Na zadávanie obrazov bol spomedzi zdrojových súborov Guixu vyhradený nový priečinok. Zatiaľ sa v ňom nachádzajú štyri súbory:"
 
 #. type: file{#1}
 #: guix-git/doc/guix-cookbook.texi:1698
 #, no-wrap
 msgid "gnu/system/images/hurd.scm"
-msgstr ""
+msgstr "gnu/system/images/hurd.scm"
 
 #. type: file{#1}
 #: guix-git/doc/guix-cookbook.texi:1699
 #, no-wrap
 msgid "gnu/system/images/pine64.scm"
-msgstr ""
+msgstr "gnu/system/images/pine64.scm"
 
 #. type: file{#1}
 #: guix-git/doc/guix-cookbook.texi:1700
 #, no-wrap
 msgid "gnu/system/images/novena.scm"
-msgstr ""
+msgstr "gnu/system/images/novena.scm"
 
 #. type: file{#1}
 #: guix-git/doc/guix-cookbook.texi:1701
 #, no-wrap
 msgid "gnu/system/images/pinebook-pro.scm"
-msgstr ""
+msgstr "gnu/system/images/pinebook-pro.scm"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1707
 msgid "Let's have a look to @file{pine64.scm}. It contains the @code{pine64-barebones-os} variable which is a minimal definition of an operating-system dedicated to the @b{Pine A64 LTS} board."
-msgstr ""
+msgstr "Pozrime sa na @file{pine64.scm}. Obsahuje premennú @code{pine64-barebones-os} predstavujúcu najmenšie možné zadanie operačného systému určeného pre dosku @b{Pine A64 LTS}."
 
 #. type: lisp
 #: guix-git/doc/guix-cookbook.texi:1731
@@ -3066,16 +3090,38 @@ msgid ""
 "                             (tty \"ttyS0\")))\n"
 "                   %base-services))))\n"
 msgstr ""
+"(define pine64-barebones-os\n"
+"  (operating-system\n"
+"   (host-name \"vignemale\")\n"
+"   (timezone \"Europe/Bratislava\")\n"
+"   (locale \"sk_SK.utf8\")\n"
+"   (bootloader (bootloader-configuration\n"
+"                (bootloader u-boot-pine64-lts-bootloader)\n"
+"                (targets '(\"/dev/vda\"))))\n"
+"   (initrd-modules '())\n"
+"   (kernel linux-libre-arm64-generic)\n"
+"   (file-systems (cons (file-system\n"
+"                        (device (file-system-label \"moj-korenovy-system\"))\n"
+"                        (mount-point \"/\")\n"
+"                        (type \"ext4\"))\n"
+"                       %base-file-systems))\n"
+"   (services (cons (service agetty-service-type\n"
+"                            (agetty-configuration\n"
+"                             (extra-options '(\"-L\")) ; bez zisťovania nosného signálu\n"
+"                             (baud-rate \"115200\")\n"
+"                             (term \"vt100\")\n"
+"                             (tty \"ttyS0\")))\n"
+"                   %base-services))))\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1735
 msgid "The @code{kernel} and @code{bootloader} fields are pointing to packages dedicated to this board."
-msgstr ""
+msgstr "Polia @code{kernel} a @code{bootloader} odkazujú na balíky určené pre túto dosku."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1737
 msgid "Right below, the @code{pine64-image-type} variable is also defined."
-msgstr ""
+msgstr "Tesne pod nimi je zadaná aj premenná @code{pine64-image-type}."
 
 #. type: lisp
 #: guix-git/doc/guix-cookbook.texi:1743
@@ -3086,11 +3132,15 @@ msgid ""
 "   (name 'pine64-raw)\n"
 "   (constructor (cut image-with-os arm64-disk-image <>))))\n"
 msgstr ""
+"(define pine64-image-type\n"
+"  (image-type\n"
+"   (name 'pine64-raw)\n"
+"   (constructor (cut image-with-os arm64-disk-image <>))))\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1747
 msgid "It's using a record we haven't talked about yet, the @code{image-type} record, defined this way:"
-msgstr ""
+msgstr "Využíva záznam, o ktorom sme ešte nehovorili, a teda @code{image-type}, zadaný nasledovne:"
 
 #. type: lisp
 #: guix-git/doc/guix-cookbook.texi:1754
@@ -3102,28 +3152,33 @@ msgid ""
 "  (name           image-type-name) ;symbol\n"
 "  (constructor    image-type-constructor)) ;<operating-system> -> <image>\n"
 msgstr ""
+"(define-record-type* <image-type>\n"
+"  image-type make-image-type\n"
+"  image-type?\n"
+"  (name           image-type-name) ; znak\n"
+"  (constructor    image-type-constructor)) ; <operating-system> -> <image>\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1760
 msgid "The main purpose of this record is to associate a name to a procedure transforming an @code{operating-system} to an image.  To understand why it is necessary, let's have a look to the command producing an image from an @code{operating-system} configuration file:"
-msgstr ""
+msgstr "Hlavným účelom tohto záznamu je priradiť názov funkcii pretvárajúcej @code{operating-system} na obraz.  Aby sme pochopili, prečo je to dôležité, pozrime sa na príkaz vytvárajúci obraz zo súboru nastavení @code{operating-system}:"
 
 #. type: example
 #: guix-git/doc/guix-cookbook.texi:1763
 #, no-wrap
 msgid "guix system image my-os.scm\n"
-msgstr ""
+msgstr "guix system image moj-os.scm\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1769
 msgid "This command expects an @code{operating-system} configuration but how should we indicate that we want an image targeting a Pine64 board? We need to provide an extra information, the @code{image-type}, by passing the @code{--image-type} or @code{-t} flag, this way:"
-msgstr ""
+msgstr "Tento príkaz očakáva nastavenie druhu @code{operating-system}, ale ako by sme mali určiť, že chceme obraz pre dosku Pine64? Musíme poskytnúť doplňujúci údaj, @code{image-type}, pomocou voľby @code{--image-type} alebo @code{-t} a to takto:"
 
 #. type: example
 #: guix-git/doc/guix-cookbook.texi:1772
 #, no-wrap
 msgid "guix system image --image-type=pine64-raw my-os.scm\n"
-msgstr ""
+msgstr "guix system image --image-type=pine64-raw moj-os.scm\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1778

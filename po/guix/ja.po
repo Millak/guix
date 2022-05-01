@@ -1,27 +1,27 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2021 the authors of Guix (msgids) and the following authors (msgstr)
+# Copyright (C) YEAR the authors of Guix (msgids) and the following authors (msgstr)
 # This file is distributed under the same license as the GNU guix package.
-# Quentin PAGÈS <quentinantonin@free.fr>, 2021.
+# ROCKTAKEY <rocktakey@gmail.com>, 2022.
 #: guix/diagnostics.scm:158
 msgid ""
 msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2022-04-30 15:18+0000\n"
-"PO-Revision-Date: 2021-05-03 02:58+0000\n"
-"Last-Translator: Quentin PAGÈS <quentinantonin@free.fr>\n"
-"Language-Team: Occitan <https://translate.fedoraproject.org/projects/guix/guix/oc/>\n"
-"Language: oc\n"
+"PO-Revision-Date: 2022-04-29 13:18+0000\n"
+"Last-Translator: ROCKTAKEY <rocktakey@gmail.com>\n"
+"Language-Team: Japanese <https://translate.fedoraproject.org/projects/guix/guix/ja/>\n"
+"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.6.1\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.12\n"
 
 #: gnu.scm:81
 #, scheme-format
 msgid "module ~a not found"
-msgstr "modul ~a pas trobat"
+msgstr ""
 
 #: gnu.scm:99
 msgid ""
@@ -73,12 +73,12 @@ msgstr ""
 #: gnu/packages.scm:496 gnu/packages.scm:513
 #, scheme-format
 msgid "~A: package not found for version ~a~%"
-msgstr "~A : paquet pas trobat per la version ~a~%"
+msgstr ""
 
 #: gnu/packages.scm:497 gnu/packages.scm:514
 #, scheme-format
 msgid "~A: unknown package~%"
-msgstr "~A : paquet desconegut~%"
+msgstr ""
 
 #: gnu/packages.scm:553
 #, scheme-format
@@ -683,10 +683,9 @@ msgid "Updater for packages hosted on Git repositories"
 msgstr ""
 
 #: guix/import/gnu.scm:118
-#, fuzzy, scheme-format
-#| msgid "~A: package not found for version ~a~%"
+#, scheme-format
 msgid "no GNU package found for ~a"
-msgstr "~A : paquet pas trobat per la version ~a~%"
+msgstr ""
 
 #: guix/import/gnu.scm:126
 #, scheme-format
@@ -801,10 +800,9 @@ msgid "'~a' is not a valid URI~%"
 msgstr ""
 
 #: guix/import/opam.scm:325
-#, fuzzy, scheme-format
-#| msgid "module ~a not found"
+#, scheme-format
 msgid "opam: package '~a' not found~%"
-msgstr "modul ~a pas trobat"
+msgstr ""
 
 #: guix/import/opam.scm:436
 msgid "Updater for OPAM packages"
@@ -896,7 +894,7 @@ msgstr ""
 
 #: gnu/installer.scm:290
 msgid "Services"
-msgstr ""
+msgstr "サービス"
 
 #: gnu/installer.scm:301
 msgid "Partitioning"
@@ -2393,10 +2391,9 @@ msgid "Would you like to add this key to keyring '~a'?~%"
 msgstr ""
 
 #: guix/graph.scm:348
-#, fuzzy, scheme-format
-#| msgid "~A: unknown package~%"
+#, scheme-format
 msgid "~a: unknown graph backend"
-msgstr "~A : paquet desconegut~%"
+msgstr ""
 
 #. TRANSLATORS: 'modify-phases' is a Scheme syntax
 #. and should not be translated.
@@ -5450,22 +5447,19 @@ msgid "successfully deployed ~a~%"
 msgstr ""
 
 #: guix/scripts/deploy.scm:212
-#, fuzzy, scheme-format
-#| msgid "module ~a not found"
+#, scheme-format
 msgid "~a: command succeeded~%"
-msgstr "modul ~a pas trobat"
+msgstr ""
 
 #: guix/scripts/deploy.scm:215
-#, fuzzy, scheme-format
-#| msgid "module ~a not found"
+#, scheme-format
 msgid "~a: command exited with code ~a~%"
-msgstr "modul ~a pas trobat"
+msgstr ""
 
 #: guix/scripts/deploy.scm:218
-#, fuzzy, scheme-format
-#| msgid "module ~a not found"
+#, scheme-format
 msgid "~a: command stopped with signal ~a~%"
-msgstr "modul ~a pas trobat"
+msgstr ""
 
 #: guix/scripts/deploy.scm:221
 #, scheme-format
@@ -5473,10 +5467,9 @@ msgid "~a: command terminated with signal ~a~%"
 msgstr ""
 
 #: guix/scripts/deploy.scm:225
-#, fuzzy, scheme-format
-#| msgid "module ~a not found"
+#, scheme-format
 msgid "command output on ~a:~%"
-msgstr "modul ~a pas trobat"
+msgstr ""
 
 #: guix/scripts/deploy.scm:246
 #, scheme-format
@@ -7222,10 +7215,9 @@ msgid "Did you mean '~a'?~%"
 msgstr ""
 
 #: guix/scripts/environment.scm:592
-#, fuzzy, scheme-format
-#| msgid "module ~a not found"
+#, scheme-format
 msgid "~a: command not found~%"
-msgstr "modul ~a pas trobat"
+msgstr ""
 
 #: guix/scripts/environment.scm:799
 #, scheme-format
@@ -7367,16 +7359,14 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/home.scm:451
-#, fuzzy, scheme-format
-#| msgid "module ~a not found"
+#, scheme-format
 msgid "process terminated with signal ~a~%"
-msgstr "modul ~a pas trobat"
+msgstr ""
 
 #: guix/scripts/home.scm:453
-#, fuzzy, scheme-format
-#| msgid "module ~a not found"
+#, scheme-format
 msgid "process stopped with signal ~a~%"
-msgstr "modul ~a pas trobat"
+msgstr ""
 
 #: guix/scripts/home.scm:467
 #, scheme-format
@@ -8198,10 +8188,9 @@ msgid "no definition location for package ~a~%"
 msgstr ""
 
 #: guix/scripts/style.scm:784
-#, fuzzy, scheme-format
-#| msgid "~A: unknown package~%"
+#, scheme-format
 msgid "~a: unknown styling~%"
-msgstr "~A : paquet desconegut~%"
+msgstr ""
 
 #: guix/scripts/style.scm:791
 #, scheme-format
