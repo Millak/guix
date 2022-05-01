@@ -456,9 +456,6 @@ is used by the Requests library to verify HTTPS requests.")
     ;; Distributed under either BSD-3 or ASL2.0
     (license (list license:bsd-3 license:asl2.0))))
 
-(define-public python2-cryptography-vectors
-  (package-with-python2 python-cryptography-vectors))
-
 (define-public python-cryptography
   (package
     (name "python-cryptography")
