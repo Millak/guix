@@ -488,26 +488,7 @@ library” for Python.  The package includes both high level recipes, and low
 level interfaces to common cryptographic algorithms such as symmetric ciphers,
 message digests and key derivation functions.")
     ;; Distributed under either BSD-3 or ASL2.0
-    (license (list license:bsd-3 license:asl2.0))
-    (properties `((python2-variant . ,(delay python2-cryptography))))))
-
-(define-public python2-cryptography
-  (let ((crypto (package-with-python2
-                 (strip-python2-variant python-cryptography))))
-    (package/inherit crypto
-      (arguments
-       `(#:python ,python-2
-         #:phases
-         (modify-phases %standard-phases
-           ;; The sanity-check attempts attempts to import the non-existent
-           ;; modules "_openssl" and "_padding".
-           (delete 'sanity-check))))
-      (propagated-inputs
-       `(("python2-ipaddress" ,python2-ipaddress)
-         ("python2-backport-ssl-match-hostname"
-          ,python2-backport-ssl-match-hostname)
-         ("python2-enum34" ,python2-enum34)
-         ,@(package-propagated-inputs crypto))))))
+    (license (list license:bsd-3 license:asl2.0))))
 
 ;; TODO: Make this the default in the next staging cycle.
 (define-public python-cryptography-vectors-next
