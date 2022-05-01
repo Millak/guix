@@ -19033,9 +19033,6 @@ point is the point of maximum curvature.")
      This package is part of the Python standard library since version 3.5.")
     (license license:bsd-3)))
 
-(define-public python2-scandir
-  (package-with-python2 python-scandir))
-
 (define-public python-factory-boy
   (package
     (name "python-factory-boy")
