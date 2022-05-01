@@ -2838,9 +2838,6 @@ those tests or marking them to @code{@@skip}, they can be automatically
 retried.")
     (license license:asl2.0)))
 
-(define-public python2-flaky
-  (package-with-python2 python-flaky))
-
 (define-public python-pyhamcrest
   (package
     (name "python-pyhamcrest")
