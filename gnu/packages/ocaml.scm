@@ -5744,10 +5744,10 @@ storage of large amounts of data.")
 (define-public ocaml-ppx-hash
   (package
     (name "ocaml-ppx-hash")
-    (version "0.14.0")
+    (version "0.15.0")
     (source
      (janestreet-origin "ppx_hash" version
-                "0x4wgdvhgd8a49bzari52jpkykxpv6ncgp5ncda3xgg0a9r49s8n"))
+                "048pim0xicj8j9whd5lnchf62788sk3w89h12aybbalk1xm6dfs5"))
     (build-system dune-build-system)
     (propagated-inputs
      (list ocaml-base ocaml-ppx-compare ocaml-ppx-sexp-conv
