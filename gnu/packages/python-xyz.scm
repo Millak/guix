@@ -12026,9 +12026,6 @@ the Python standard library but currently only supports the older 2003
 specification.")
     (license license:bsd-4)))
 
-(define-public python2-idna
-  (package-with-python2 python-idna))
-
 (define-public python-libsass
   (package
     (name "python-libsass")
