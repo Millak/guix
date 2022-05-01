@@ -6609,6 +6609,34 @@ functions from type definitions.")
 PPXs or compiler features not yet upstreamed.")
     (license license:expat)))
 
+(define-public ocaml-ppx-log
+  (package
+    (name "ocaml-ppx-log")
+    (version "0.15.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/janestreet/ppx_log")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32 "08i9gz3f4w3bmlrfdw7ja9awsfkhhldz03bnnc4hijfmn8sawzi0"))))
+    (build-system dune-build-system)
+    (propagated-inputs
+      (list ocaml-base
+            ocaml-ppx-here
+            ocaml-ppx-sexp-conv
+            ocaml-ppx-sexp-message
+            ocaml-sexplib
+            ocaml-ppxlib))
+    (properties `((upstream-name . "ppx_log")))
+    (home-page "https://github.com/janestreet/ppx_log")
+    (synopsis "Extension nodes for lazily rendering log messages")
+    (description "This package provides ppx_sexp_message-like extension
+nodes for lazily rendering log messages.")
+    (license license:expat)))
+
 (define-public ocaml-ppx-jane
   (package
     (name "ocaml-ppx-jane")
