@@ -2508,7 +2508,8 @@ track changes in important system configuration files.")
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
-       (list "--without-python")))
+       (list "--disable-static"
+             "--without-python")))
     (home-page "https://people.redhat.com/sgrubb/libcap-ng/")
     (synopsis "Library for more easily working with POSIX capabilities")
     (description
