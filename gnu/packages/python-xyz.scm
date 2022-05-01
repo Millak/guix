@@ -7899,65 +7899,20 @@ older Python versions.")
   (package
     (name "python-importlib-resources")
     (version "3.0.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "importlib_resources" version))
-        (sha256
-         (base32
-          "1hq626mx5jl9zfl0wdrjkxsnh8qd98fqv322n68b9251xjk4bxqr"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-setuptools-scm python-toml))
-    (home-page "http://importlib-resources.readthedocs.io/")
-    (synopsis "Read resources from Python packages")
-    (description
-     "@code{importlib_resources} is a backport of Python 3's standard library
-@code{importlib.resources} module for Python 2.7, and Python 3.")
-    (properties `((python2-variant . ,(delay python2-importlib-resources))))
-    (license license:asl2.0)))
-
-(define-public python2-importlib-resources
-  (package
-    (name "python2-importlib-resources")
-    (version "1.0.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "importlib_resources" version))
               (sha256
                (base32
-                "0y3hg12iby1qyaspnbisz4s4vxax7syikk3skznwqizqyv89y9yk"))))
+                "1hq626mx5jl9zfl0wdrjkxsnh8qd98fqv322n68b9251xjk4bxqr"))))
     (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2
-       #:phases (modify-phases %standard-phases
-                  ;; The build system tests for python-wheel, but it is
-                  ;; not required for Guix nor the test suite.  Just drop
-                  ;; it to make bootstrapping pytest easier.
-                  (add-after 'unpack 'drop-wheel-dependency
-                    (lambda _
-                      (substitute* "setup.cfg"
-                        (("^[[:blank:]]+wheel")
-                         ""))
-                      #t)))))
-    (propagated-inputs
-     (list python2-pathlib2 python2-typing))
-    (home-page "https://gitlab.com/python-devs/importlib_resources")
-    (synopsis "Backport of @code{importlib.resources} from Python 3.7")
+    (native-inputs (list python-setuptools-scm python-toml))
+    (home-page "http://importlib-resources.readthedocs.io/")
+    (synopsis "Read resources from Python packages")
     (description
-     "This package provides an implementation of @code{importlib.resources}
-for older versions of Python.")
+     "@code{importlib_resources} is a backport of Python 3's standard library
+@code{importlib.resources} module for Python 2.7, and Python 3.")
     (license license:asl2.0)))
-
-;; For importlib-metadata-bootstrap below.
-(define-public python2-importlib-resources-bootstrap
-  (hidden-package
-   (package/inherit
-    python2-importlib-resources
-    (name "python2-importlib-resources-bootstrap")
-    (propagated-inputs
-     `(("python-pathlib2-bootstrap" ,python2-pathlib2-bootstrap)
-       ("python-typing" ,python2-typing))))))
 
 (define-public python-importlib-metadata
   (package
