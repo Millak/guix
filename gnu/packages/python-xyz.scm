@@ -10223,36 +10223,6 @@ Python 2 and Python 3.")
          ;; module "backports".
          (delete 'sanity-check))))))
 
-(define-public python2-backports-shutil-get-terminal-size
-  (package
-    (name "python2-backports-shutil-get-terminal-size")
-    (version "1.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "backports.shutil_get_terminal_size" version))
-       (sha256
-        (base32
-         "107cmn7g3jnbkp826zlj8rrj19fam301qvaqf0f3905f5217lgki"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "py.test" "-v"))))))
-    (native-inputs
-     (list python2-pytest))
-    (home-page "https://github.com/chrippa/backports.shutil_get_terminal_size")
-    (synopsis "Backport of Python 3.3's @code{shutil.get_terminal_size}")
-    (description
-     "This package provides a backport of the @code{get_terminal_size
-function} from Python 3.3's @code{shutil}.
-Unlike the original version it is written in pure Python rather than C,
-so it might be a tiny bit slower.")
-    (license license:expat)))
-
 (define-public python-waf
   (package
     (name "python-waf")
