@@ -21087,28 +21087,6 @@ Python 3.6+ type hints.")
 with PEP 484 argument (and return) type annotations.")
     (license license:expat)))
 
-(define-public python2-typing
-  (package
-    (name "python2-typing")
-    (version "3.10.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "typing" version))
-       (sha256
-        (base32 "0c5il4d68fd4qrm5k3dps70j0xz0n5krj6lhwn9vzpal3whsvd0k"))))
-    (build-system python-build-system)
-    (arguments (list #:python python-2))
-    (home-page "https://docs.python.org/3/library/typing.html")
-    (synopsis "Type hints for Python")
-    (description "This is a backport of the standard library @code{typing}
-module to Python versions older than 3.5.  Typing defines a standard notation
-for Python function and variable type annotations.  The notation can be used
-for documenting code in a concise, standard format, and it has been designed
-to also be used by static and runtime type checkers, static analyzers, IDEs
-and other tools.")
-    (license license:psfl)))
-
 (define-public python-typing-extensions
   (package
     (name "python-typing-extensions")
