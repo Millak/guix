@@ -1327,9 +1327,6 @@ Python's @code{random.seed}.")
 @file{setup.py} files can use to run tests.")
     (license license:expat)))
 
-(define-public python2-pytest-runner
-  (package-with-python2 python-pytest-runner))
-
 (define-public python-pytest-lazy-fixture
   (package
     (name "python-pytest-lazy-fixture")
