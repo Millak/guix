@@ -1914,7 +1914,10 @@ raise a deprecation warning if the 'compression-level' field was used."
                           (make-systemd-constructor
                            #$command #$endpoints #$@options)
                           (make-forkexec-constructor #$command #$@options)))
-             (stop #~(make-kill-destructor)))))))
+             (stop #~(if (and (defined? 'make-systemd-destructor)
+                              #$(not advertise?))
+                         (make-systemd-destructor)
+                         (make-kill-destructor))))))))
 
 (define %guix-publish-accounts
   (list (user-group (name "guix-publish") (system? #t))

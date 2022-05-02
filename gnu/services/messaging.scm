@@ -883,7 +883,9 @@ string, you could instantiate a prosody service like this:
                                                 (source "/var/lib/bitlbee")
                                                 (target source)
                                                 (writable? #t))))))
-                (stop  #~(make-kill-destructor)))))))))
+                (stop  #~(if (defined? 'make-inetd-destructor)
+                             (make-inetd-destructor)
+                             (make-kill-destructor))))))))))
 
 (define %bitlbee-accounts
   ;; User group and account to run BitlBee.

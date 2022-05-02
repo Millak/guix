@@ -179,7 +179,10 @@ database {
                          (list #$dicod "--foreground"
                                (string-append "--config=" #$dicod.conf))
                          #:user "dicod" #:group "dicod")))
-           (stop #~(make-kill-destructor))))))
+           (stop #~(if (and (defined? 'make-inetd-destructor)
+                            #$(= 1 (length interfaces))) ;XXX
+                       (make-inetd-destructor)
+                       (make-kill-destructor)))))))
 
 (define dicod-service-type
   (service-type
