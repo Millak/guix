@@ -23,6 +23,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix git-download)
   #:use-module (guix svn-download)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages gettext)
@@ -54,22 +55,22 @@
              readline
              sqlite))
       (arguments
-       `(#:configure-flags (list (string-append
-                                  "--with-sqlite3="
-                                  (assoc-ref %build-inputs "sqlite")))
-         #:phases
-         (modify-phases %standard-phases
-           (add-before 'configure 'fix-configure
-             (lambda _
-               (substitute* "buildtag.sh"
-                 ;; Don't exit on failed SVN-related calls.
-                 (("^ +return 0\n") "")
-                 ;; Manually set the SVN revision, since the directory is
-                 ;; unversioned and we know it anyway.
-                 (("^SVNINFO=.*")
-                  ,(string-append "SVNINFO=" (number->string revision) "\n"))
-                 ;; Requires running ‘svn info’ on a versioned directory.
-                 (("\\\\\"\\$ARCHIVE_SVNINFO\\\\\"") "\\\"\\\"")))))))
+       (list #:configure-flags #~(list (string-append
+                                        "--with-sqlite3="
+                                        #$(this-package-input "sqlite")))
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-before 'configure 'fix-configure
+                   (lambda _
+                     (substitute* "buildtag.sh"
+                       ;; Don't exit on failed SVN-related calls.
+                       (("^ +return 0\n") "")
+                       ;; Manually set the SVN revision, since the directory is
+                       ;; unversioned and we know it anyway.
+                       (("^SVNINFO=.*")
+                        (string-append "SVNINFO=" #$(number->string revision) "\n"))
+                       ;; Requires running ‘svn info’ on a versioned directory.
+                       (("\\\\\"\\$ARCHIVE_SVNINFO\\\\\"") "\\\"\\\"")))))))
       (synopsis "APL interpreter")
       (description
        "GNU APL is a free interpreter for the programming language APL.  It is
