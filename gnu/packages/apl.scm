@@ -48,11 +48,11 @@
       (build-system gnu-build-system)
       (home-page "https://www.gnu.org/software/apl/")
       (inputs
-       `(("gettext" ,gettext-minimal)
-         ("lapack" ,lapack)
-         ("pcre" ,pcre2)
-         ("sqlite" ,sqlite)
-         ("readline" ,readline)))
+       (list gettext-minimal
+             lapack
+             pcre2
+             readline
+             sqlite))
       (arguments
        `(#:configure-flags (list (string-append
                                   "--with-sqlite3="
