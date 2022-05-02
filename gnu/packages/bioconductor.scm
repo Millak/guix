@@ -1944,6 +1944,36 @@ time drift and quantifies level mass spectral peaks from @dfn{first stage of
 mass spectrometry} (MS1) data.")
     (license license:artistic2.0)))
 
+(define-public r-agimicrorna
+  (package
+    (name "r-agimicrorna")
+    (version "2.46.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "AgiMicroRna" version))
+              (sha256
+               (base32
+                "0jic89gyphbv7jzlfgm9bh1aq48lp86rq6hr34gsg9z0pa1192xa"))))
+    (properties `((upstream-name . "AgiMicroRna")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-affy
+           r-affycoretools
+           r-biobase
+           r-limma
+           r-preprocesscore))
+    (home-page "https://git.bioconductor.org/packages/AgiMicroRna")
+    (synopsis
+     "Processing and differential expression analysis of Agilent microRNA chips")
+    (description
+     "@code{AgiMicroRna} provides useful functionality for the processing,
+quality assessment and differential expression analysis of Agilent microRNA
+array data.  The package uses a limma-like structure to generate the processed
+data in order to make statistical inferences about differential expression
+using the linear model features implemented in limma.  Standard Bioconductor
+objects are used so that other packages could be used as well.")
+    (license license:gpl3)))
+
 (define-public r-aneufinder
   (package
     (name "r-aneufinder")
