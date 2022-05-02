@@ -785,11 +785,9 @@ river flooding.")
           (base32
            "0kv832s2vyff30zz8yqypw5jifwdanvh5x56d2bzkvy94h4jlddy"))
         (snippet
-         '(begin
-            (let ((file (open-file "setup.py" "a")))
-              (display "from setuptools import setup\nsetup()" file)
-              (close-port file))
-            #t))))
+         '(let ((file (open-file "setup.py" "a")))
+            (display "from setuptools import setup\nsetup()" file)
+            (close-port file)))))
     (build-system python-build-system)
     (inputs
      (list python-h5py
@@ -805,8 +803,7 @@ river flooding.")
          (replace 'check
            (lambda* (#:key outputs inputs #:allow-other-keys)
              (add-installed-pythonpath inputs outputs)
-             (invoke "python" "-m" "pytest" "-v" "tests")
-             #t)))))
+             (invoke "python" "-m" "pytest" "-v" "tests"))))))
     (home-page "https://github.com/nschloe/meshio")
     (synopsis "I/O for mesh files")
     (description "There are various file formats available for
