@@ -6129,28 +6129,30 @@ and comparisons are supported.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://github.com/LLNL/sundials/releases/download/v6.1.1/"
-                           "sundials-" version ".tar.gz"))
+       (uri (string-append "https://github.com/LLNL/sundials/releases/download/v"
+                           version "/sundials-" version ".tar.gz"))
        (sha256
         (base32
          "0327a1fy8rilwc4brsqqb71jd1ymb7mqgxsylab06crcg5xn7byg"))))
     (build-system cmake-build-system)
     (native-inputs
-     (list python-2))    ;for tests; syntax incompatible with python 3
+     (list python-2))          ; For tests; syntax incompatible with Python 3.
     (inputs
-     (list gfortran                               ;for fcmix
-           openblas petsc suitesparse))           ;TODO: Add hypre
+     (list openblas suitesparse))
     (arguments
-     `(#:configure-flags `("-DCMAKE_C_FLAGS=-O2 -g -fcommon"
+     '(#:configure-flags `("-DCMAKE_C_FLAGS=-O2 -g -fcommon"
+
+                           "-DSUNDIALS_INDEX_SIZE=32"
+                           ;; Incompatible with 32-bit indices.
+                           ;;"-DBUILD_FORTRAN_MODULE_INTERFACE:BOOL=ON"
+
                            "-DEXAMPLES_ENABLE_C:BOOL=ON"
                            "-DEXAMPLES_ENABLE_CXX:BOOL=ON"
-                           "-DEXAMPLES_ENABLE_F77:BOOL=ON"
-                           "-DEXAMPLES_ENABLE_F90:BOOL=ON"
+                           ;; Requires -DBUILD_FORTRAN_MODULE_INTERFACE:BOOL=ON.
+                           ;;"-DEXAMPLES_ENABLE_F2003:BOOL=ON"
                            "-DEXAMPLES_INSTALL:BOOL=OFF"
 
-                           "-DFCMIX_ENABLE:BOOL=ON"
-
-                           "-DKLU_ENABLE:BOOL=ON"
+                           "-DENABLE_KLU:BOOL=ON"
                            ,(string-append "-DKLU_INCLUDE_DIR="
                                            (assoc-ref %build-inputs "suitesparse")
                                            "/include")
@@ -6168,22 +6170,26 @@ easily be incorporated into existing simulation codes.")
     (license license:bsd-3)))
 
 (define-public sundials-openmpi
-  (package
-    (inherit sundials)
+  (package/inherit sundials
     (name "sundials-openmpi")
-    (inputs
-     (modify-inputs (package-inputs sundials)
-       (delete "petsc")
-       (prepend openmpi petsc-openmpi)))     ;support in SUNDIALS requires MPI
+    (propagated-inputs
+     (list openmpi
+           ;; Support for the below requires MPI.
+           ;; TODO: Add HYPRE.
+           petsc-openmpi))
     (arguments
      (substitute-keyword-arguments (package-arguments sundials)
        ((#:configure-flags flags '())
-        `(cons* "-DENABLE_MPI:BOOL=ON" ,flags))
+        `(cons* "-DENABLE_MPI:BOOL=ON"
+                "-DENABLE_PETSC:BOOL=ON"
+                (string-append "-DPETSC_DIR="
+                               (assoc-ref %build-inputs "petsc-openmpi"))
+                ,flags))
        ((#:phases phases '%standard-phases)
         `(modify-phases ,phases
            (add-before 'check 'mpi-setup
-	     ,%openmpi-setup)))))
-    (synopsis "SUNDIALS with OpenMPI support")))
+             ,%openmpi-setup)))))
+    (synopsis "SUNDIALS with MPI support")))
 
 (define-public sundials-julia
   (package
@@ -6202,13 +6208,19 @@ easily be incorporated into existing simulation codes.")
          "0nx4sqhmi126m14myzm7syv2053harav9snl0a247wnkcgs5rxrv"))))
     (inputs
      (modify-inputs (package-inputs sundials)
-       (prepend lapack)))
+       (prepend gfortran lapack)))
     (arguments
-     (substitute-keyword-arguments (package-arguments sundials)
-       ((#:configure-flags flags '())
-        `(cons* "-DLAPACK_ENABLE:BOOL=ON"
-                ,flags))))
-    (synopsis "SUNDIALS with lapack support as required by julia-sundials-jll")))
+     '(#:configure-flags `("-DCMAKE_C_FLAGS=-O2 -g -fcommon"
+                           "-DSUNDIALS_INDEX_SIZE=32"
+                           "-DKLU_ENABLE:BOOL=ON"
+                           ,(string-append "-DKLU_INCLUDE_DIR="
+                                           (assoc-ref %build-inputs "suitesparse")
+                                           "/include")
+                           ,(string-append "-DKLU_LIBRARY_DIR="
+                                           (assoc-ref %build-inputs "suitesparse")
+                                           "/lib")
+                           "-DLAPACK_ENABLE:BOOL=ON")))
+    (synopsis "SUNDIALS with LAPACK support as required by julia-sundials-jll")))
 
 (define-public combinatorial-blas
   (package
