@@ -31144,6 +31144,53 @@ uses the parsed regular expression, so you get a much more accurate result
 than trying to just split strings.")
     (license license:asl2.0)))
 
+(define-public python-pyperf
+  (package
+    (name "python-pyperf")
+    (version "2.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyperf" version))
+       (sha256
+        (base32 "189qf9wdbig0fk4n3bavx8acgdbay5lllfvw48jvbfaafb7y5hja"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-tests
+           (lambda _
+             ;; Some of these tests fail with:
+             ;;
+             ;;   ModuleNotFoundError: No module named 'pyperf'
+             ;;
+             ;; even when calling ‘add-installed-pythonpath’ in the ‘check’
+             ;; phase.
+             (delete-file "pyperf/tests/test_examples.py")))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               ;; From tox.ini's ‘testenv.commands’.
+               (invoke "python" "-bb" "-Wd"
+                       "-m" "unittest" "discover"
+                       "-s" "pyperf/tests/" "-v")))))))
+    (native-inputs
+     (list python-psutil))
+    (home-page "https://github.com/psf/pyperf")
+    (synopsis "Toolkit for running Python benchmarks")
+    (description "The Python @code{pyperf} module is a toolkit for writing,
+running and analyzing benchmarks.  It features a simple API that can:
+
+@itemize
+@item automatically calibrate a benchmark for a time budget;
+@item spawn multiple worker processes;
+@item compute the mean and standard deviation;
+@item detect if a benchmark result seems unstable;
+@item store benchmark results in JSON format;
+@item support multiple units: seconds, bytes and integer.
+@end itemize")
+    (license license:expat)))
+
 (define-public python-pydispatcher
   (package
     (name "python-pydispatcher")
