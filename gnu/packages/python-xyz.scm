@@ -23097,7 +23097,6 @@ N-dimensional arrays for Python.")
            python-packaging
            python-pandas
            python-scipy
-           python-xlrd-1
            python-zarr))
     (native-inputs
      (list python-joblib python-pytest python-toml python-flit
