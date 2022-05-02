@@ -12397,6 +12397,14 @@ Cross-build for @var{triplet}, which must be a valid GNU triplet, such
 as @code{"aarch64-linux-gnu"} (@pxref{Specifying Target Triplets, GNU
 configuration triplets,, autoconf, Autoconf}).
 
+@item --list-systems
+List all the supported systems, that can be passed as an argument to
+@option{--system}.
+
+@item --list-targets
+List all the supported targets, that can be passed as an argument to
+@option{--target}.
+
 @anchor{build-check}
 @item --check
 @cindex determinism, checking

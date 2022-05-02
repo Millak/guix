@@ -93,14 +93,14 @@ Export/import one or more packages from/to the store.\n"))
   (display (G_ "
   -S, --source           build the packages' source derivations"))
   (display (G_ "
-  -s, --system=SYSTEM    attempt to build for SYSTEM--e.g., \"i686-linux\""))
-  (display (G_ "
-      --target=TRIPLET   cross-build for TRIPLET--e.g., \"armel-linux-gnu\""))
-  (display (G_ "
   -v, --verbosity=LEVEL  use the given verbosity LEVEL"))
 
   (newline)
   (show-build-options-help)
+  (newline)
+  (show-cross-build-options-help)
+  (newline)
+  (show-native-build-options-help)
 
   (newline)
   (display (G_ "
@@ -166,14 +166,6 @@ Export/import one or more packages from/to the store.\n"))
          (option '(#\S "source") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'source? #t result)))
-         (option '(#\s "system") #t #f
-                 (lambda (opt name arg result)
-                   (alist-cons 'system arg
-                               (alist-delete 'system result eq?))))
-         (option '("target") #t #f
-                 (lambda (opt name arg result)
-                   (alist-cons 'target arg
-                               (alist-delete 'target result eq?))))
          (option '(#\e "expression") #t #f
                  (lambda (opt name arg result)
                    (alist-cons 'expression arg result)))
@@ -186,7 +178,9 @@ Export/import one or more packages from/to the store.\n"))
                  (lambda (opt name arg result)
                    (alist-cons 'dry-run? #t result)))
 
-         %standard-build-options))
+         (append %standard-build-options
+                 %standard-cross-build-options
+                 %standard-native-build-options)))
 
 (define (derivation-from-expression store str package-derivation
                                     system source?)

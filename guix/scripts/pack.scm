@@ -1244,17 +1244,9 @@ last resort for relocation."
          (option '(#\m "manifest") #t #f
                  (lambda (opt name arg result)
                    (alist-cons 'manifest arg result)))
-         (option '(#\s "system") #t #f
-                 (lambda (opt name arg result)
-                   (alist-cons 'system arg
-                               (alist-delete 'system result eq?))))
          (option '("entry-point") #t #f
                  (lambda (opt name arg result)
                    (alist-cons 'entry-point arg result)))
-         (option '("target") #t #f
-                 (lambda (opt name arg result)
-                   (alist-cons 'target arg
-                               (alist-delete 'target result eq?))))
          (option '(#\C "compression") #t #f
                  (lambda (opt name arg result)
                    (alist-cons 'compressor (lookup-compressor arg)
@@ -1305,12 +1297,18 @@ last resort for relocation."
 
          (append %deb-format-options
                  %transformation-options
-                 %standard-build-options)))
+                 %standard-build-options
+                 %standard-cross-build-options
+                 %standard-native-build-options)))
 
 (define (show-help)
   (display (G_ "Usage: guix pack [OPTION]... PACKAGE...
 Create a bundle of PACKAGE.\n"))
   (show-build-options-help)
+  (newline)
+  (show-cross-build-options-help)
+  (newline)
+  (show-native-build-options-help)
   (newline)
   (show-transformation-options-help)
   (newline)
@@ -1324,10 +1322,6 @@ Create a bundle of PACKAGE.\n"))
   -R, --relocatable      produce relocatable executables"))
   (display (G_ "
   -e, --expression=EXPR  consider the package EXPR evaluates to"))
-  (display (G_ "
-  -s, --system=SYSTEM    attempt to build for SYSTEM--e.g., \"i686-linux\""))
-  (display (G_ "
-      --target=TRIPLET   cross-build for TRIPLET--e.g., \"armel-linux-gnu\""))
   (display (G_ "
   -C, --compression=TOOL compress using TOOL--e.g., \"lzip\""))
   (display (G_ "

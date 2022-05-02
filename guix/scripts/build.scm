@@ -47,6 +47,7 @@
   #:use-module (srfi srfi-35)
   #:use-module (srfi srfi-37)
   #:use-module (gnu packages)
+  #:use-module (gnu platform)
   #:use-module ((guix status) #:select (with-status-verbosity))
   #:use-module ((guix progress) #:select (current-terminal-columns))
   #:use-module ((guix build syscalls) #:select (terminal-columns))
@@ -54,9 +55,15 @@
   #:export (log-url
 
             %standard-build-options
+            %standard-cross-build-options
+            %standard-native-build-options
+
             set-build-options-from-command-line
             set-build-options-from-command-line*
+
             show-build-options-help
+            show-cross-build-options-help
+            show-native-build-options-help
 
             guix-build
             register-root
@@ -183,6 +190,18 @@ options handled by 'set-build-options-from-command-line', and listed in
   -M, --max-jobs=N       allow at most N build jobs"))
   (display (G_ "
       --debug=LEVEL      produce debugging output at LEVEL")))
+
+(define (show-cross-build-options-help)
+  (display (G_ "
+      --list-targets     list available targets"))
+  (display (G_ "
+      --target=TRIPLET   cross-build for TRIPLET--e.g., \"aarch64-linux-gnu\"")))
+
+(define (show-native-build-options-help)
+  (display (G_ "
+      --list-systems     list available systems"))
+  (display (G_ "
+  -s, --system=SYSTEM    attempt to build for SYSTEM--e.g., \"i686-linux\"")))
 
 (define (set-build-options-from-command-line store opts)
   "Given OPTS, an alist as returned by 'args-fold' given
@@ -319,6 +338,52 @@ use '--no-offload' instead~%")))
                         (leave (G_ "not a number: '~a' option argument: ~a~%")
                                name arg)))))))
 
+(define (list-systems)
+  "Print the available systems."
+  (display (G_ "The available systems are:\n"))
+  (newline)
+  (format #t "~{   - ~a ~%~}"
+          (sort (systems) string<?)))
+
+(define (list-targets)
+  "Print the available targets."
+  (display (G_ "The available targets are:\n"))
+  (newline)
+  (format #t "~{   - ~a ~%~}"
+          (sort (targets) string<?)))
+
+(define %standard-cross-build-options
+  ;; Build options related to cross builds.
+  (list
+   (option '("list-targets") #f #f
+           (lambda (opt name arg result)
+             (list-targets)
+             (exit 0)))
+   (option '("target") #t #f
+           (lambda (opt name arg result . rest)
+             (let ((t (false-if-exception
+                       (first (member arg (targets))))))
+               (if t
+                   (apply values (alist-cons 'target t result) rest)
+                   (leave (G_ "'~a' is not a supported target~%")
+                          arg)))))))
+
+(define %standard-native-build-options
+  ;; Build options related to native builds.
+  (list
+   (option '("list-systems") #f #f
+           (lambda (opt name arg result)
+             (list-systems)
+             (exit 0)))
+   (option '(#\s "system") #t #f
+           (lambda (opt name arg result . rest)
+             (let ((s (false-if-exception
+                       (first (member arg (systems))))))
+               (if s
+                   (apply values (alist-cons 'system s result) rest)
+                   (leave (G_ "'~a' is not a supported system~%")
+                          arg)))))))
+
 
 ;;;
 ;;; Command-line options.
@@ -353,10 +418,6 @@ Build the given PACKAGE-OR-DERIVATION and return their output paths.\n"))
       --sources[=TYPE]   build source derivations; TYPE may optionally be one
                          of \"package\", \"all\" (default), or \"transitive\""))
   (display (G_ "
-  -s, --system=SYSTEM    attempt to build for SYSTEM--e.g., \"i686-linux\""))
-  (display (G_ "
-      --target=TRIPLET   cross-build for TRIPLET--e.g., \"armel-linux-gnu\""))
-  (display (G_ "
   -d, --derivations      return the derivation paths of the given packages"))
   (display (G_ "
       --check            rebuild items to check for non-determinism issues"))
@@ -373,6 +434,10 @@ Build the given PACKAGE-OR-DERIVATION and return their output paths.\n"))
       --log-file         return the log file names for the given derivations"))
   (newline)
   (show-build-options-help)
+  (newline)
+  (show-cross-build-options-help)
+  (newline)
+  (show-native-build-options-help)
   (newline)
   (show-transformation-options-help)
   (newline)
@@ -420,13 +485,6 @@ must be one of 'package', 'all', or 'transitive'~%")
                           (alist-cons 'build-mode (build-mode repair)
                                       result)
                           rest)))
-         (option '(#\s "system") #t #f
-                 (lambda (opt name arg result)
-                   (alist-cons 'system arg result)))
-         (option '("target") #t #f
-                 (lambda (opt name arg result)
-                   (alist-cons 'target arg
-                               (alist-delete 'target result eq?))))
          (option '(#\d "derivations") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'derivations-only? #t result)))
@@ -459,7 +517,9 @@ must be one of 'package', 'all', or 'transitive'~%")
                    (alist-cons 'log-file? #t result)))
 
          (append %transformation-options
-                 %standard-build-options)))
+                 %standard-build-options
+                 %standard-cross-build-options
+                 %standard-native-build-options)))
 
 (define (options->things-to-build opts)
   "Read the arguments from OPTS and return a list of high-level objects to

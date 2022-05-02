@@ -39,7 +39,9 @@
                           options->transformation
                           %transformation-options))
   #:use-module ((guix scripts build)
-                #:select (%standard-build-options))
+                #:select (%standard-build-options
+                          %standard-native-build-options
+                          show-native-build-options-help))
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
@@ -504,10 +506,6 @@ package modules, while attempting to retain user package modules."
          (option '(#\e "expression") #t #f
                  (lambda (opt name arg result)
                    (alist-cons 'expression arg result)))
-         (option '(#\s "system") #t #f
-                 (lambda (opt name arg result)
-                   (alist-cons 'system arg
-                               (alist-delete 'system result eq?))))
          (find (lambda (option)
                 (member "load-path" (option-names option)))
               %standard-build-options)
@@ -519,7 +517,8 @@ package modules, while attempting to retain user package modules."
                  (lambda args
                    (show-version-and-exit "guix graph")))
 
-         %transformation-options))
+         (append %transformation-options
+                 %standard-native-build-options)))
 
 (define (show-help)
   ;; TRANSLATORS: Here 'dot' is the name of a program; it must not be
@@ -540,8 +539,6 @@ Emit a representation of the dependency graph of PACKAGE...\n"))
       --path             display the shortest path between the given nodes"))
   (display (G_ "
   -e, --expression=EXPR  consider the package EXPR evaluates to"))
-  (display (G_ "
-  -s, --system=SYSTEM    consider the graph for SYSTEM--e.g., \"i686-linux\""))
   (newline)
   (display (G_ "
   -L, --load-path=DIR    prepend DIR to the package module search path"))
@@ -552,6 +549,8 @@ Emit a representation of the dependency graph of PACKAGE...\n"))
   -h, --help             display this help and exit"))
   (display (G_ "
   -V, --version          display version information and exit"))
+  (newline)
+  (show-native-build-options-help)
   (newline)
   (show-bug-report-information))
 
