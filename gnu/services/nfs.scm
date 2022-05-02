@@ -131,7 +131,10 @@ use this facility."))))
      ;; configure and start this service.  Only one value can be provided.  We
      ;; override it with the value returned by the extending service.
      (compose identity)
-     (extend (lambda (config values) (first values)))
+     (extend (lambda (config values)
+               (match values
+                 ((first . rest) first)
+                 (_ config))))
      (default-value (pipefs-configuration))
      (description "Mount the pipefs file system, which is used to transfer
 NFS-related data between the kernel and user-space programs."))))
