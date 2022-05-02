@@ -6125,7 +6125,7 @@ and comparisons are supported.")
 (define-public sundials
   (package
     (name "sundials")
-    (version "6.1.1")
+    (version "6.2.0")
     (source
      (origin
        (method url-fetch)
@@ -6133,7 +6133,7 @@ and comparisons are supported.")
                            version "/sundials-" version ".tar.gz"))
        (sha256
         (base32
-         "0327a1fy8rilwc4brsqqb71jd1ymb7mqgxsylab06crcg5xn7byg"))))
+         "07gk9060xk3bzfqf8v4fqlp0rcxswiwlsy887zv87i1gfy9map8r"))))
     (build-system cmake-build-system)
     (native-inputs
      (list python-2))          ; For tests; syntax incompatible with Python 3.
