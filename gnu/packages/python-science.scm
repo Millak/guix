@@ -1187,6 +1187,58 @@ pandas code.")
 aggregated sum and more.")
     (license license:bsd-3)))
 
+(define-public python-pyvista
+  (package
+    (name "python-pyvista")
+    (version "0.34.0")
+    (source
+     ;; The PyPI tarball does not contain the tests.
+     ;; (However, we don't yet actually run the tests.)
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pyvista/pyvista")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0f2x2wvi5pkpv5h3jrnx8zxnaj51navfqp2fdna1l9rpjgjjf94g"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-appdirs
+           python-imageio
+           python-matplotlib
+           python-meshio
+           python-numpy
+           python-pillow
+           python-scooby
+           vtk))
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         ;; Disable tests for now because they require several modules
+         ;; currently unpackaged in Guix.
+         (delete 'check)
+         ;; Disable the sanity check, which fails with the following error:
+         ;;
+         ;;   ...checking requirements: ERROR: pyvista==0.34.0 DistributionNotFound(Requirement.parse('vtk'), {'pyvista'})
+         (delete 'sanity-check))))
+    (home-page "https://docs.pyvista.org/")
+    (synopsis "3D plotting and mesh analysis through VTK")
+    (description
+     "PyVista is...
+
+@itemize
+@item @emph{Pythonic VTK}: a high-level API to the Visualization
+Toolkit (VTK);
+@item mesh data structures and filtering methods for spatial datasets;
+@item 3D plotting made simple and built for large/complex data geometries.
+@end itemize
+
+This package provides a Pythonic, well-documented interface exposing VTK's
+powerful visualization backend to facilitate rapid prototyping, analysis, and
+visual integration of spatially referenced datasets.")
+    (license license:expat)))
+
 (define-public python-traittypes
   (package
     (name "python-traittypes")
