@@ -6175,12 +6175,19 @@ easily be incorporated into existing simulation codes.")
     (propagated-inputs
      (list openmpi
            ;; Support for the below requires MPI.
-           ;; TODO: Add HYPRE.
+           hypre-openmpi
            petsc-openmpi))
     (arguments
      (substitute-keyword-arguments (package-arguments sundials)
        ((#:configure-flags flags '())
         `(cons* "-DENABLE_MPI:BOOL=ON"
+                "-DENABLE_HYPRE:BOOL=ON"
+                (string-append "-DHYPRE_INCLUDE_DIR="
+                               (assoc-ref %build-inputs "hypre-openmpi")
+                               "/include")
+                (string-append "-DHYPRE_LIBRARY_DIR="
+                               (assoc-ref %build-inputs "hypre-openmpi")
+                               "/lib")
                 "-DENABLE_PETSC:BOOL=ON"
                 (string-append "-DPETSC_DIR="
                                (assoc-ref %build-inputs "petsc-openmpi"))
