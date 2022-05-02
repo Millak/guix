@@ -3174,7 +3174,16 @@ scientific applications modeled by partial differential equations.")
                   (("libptesmumps") "libesmumps")
                   (("libptscotchparmetis") "libptscotchparmetisv3"))))
             (add-before 'configure 'mpi-setup
-              #$%openmpi-setup)))))
+              #$%openmpi-setup)
+            (add-after 'install 'patch-header-inclusions
+              ;; TODO: Replace with ‘patch-header-inclusions’ when (some form
+              ;; of) https://issues.guix.gnu.org/54780#19 is merged.
+              (lambda _
+                (substitute* (string-append #$output "/include/petsclayouthdf5.h")
+                  (("<(H5Ipublic.h)>" _ header)
+                   (format #f "<~a/include/~a>"
+                           #$(this-package-input "hdf5-parallel-openmpi")
+                           header)))))))))
     (synopsis "Library to solve PDEs (with MUMPS and MPI support)")))
 
 (define-public petsc-complex-openmpi
