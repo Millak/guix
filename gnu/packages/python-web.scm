@@ -7409,3 +7409,35 @@ with @code{html_text} does not contain elements such as JavaScript or inline
 styles not normally visible to users.  It also normalizes white space
 characters in a smarter, more visually pleasing style.")
     (license license:expat)))
+
+(define-public python-mf2py
+  (package
+    (name "python-mf2py")
+    (version "1.1.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/microformats/mf2py")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "00pzfc5sl6ywlcr6f2k37n3f2bb7w488p2k95ixzjwx6w3yh747n"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv" "test")))))))
+    (native-inputs (list python-pytest))
+    (propagated-inputs
+     (list python-beautifulsoup4 python-html5lib python-requests))
+    (home-page "https://github.com/microformats/mf2py")
+    (synopsis "Python Microformats2 parser")
+    (description "This Python library provides a Microformats2 parser
+implementing the full Microformats2 (mf2) specification, including backward
+compatibility with Microformats1 (mf1).")
+    (license license:expat)))
