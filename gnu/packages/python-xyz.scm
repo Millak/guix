@@ -179,6 +179,7 @@
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages inkscape)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages image-processing)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages jupyter)
   #:use-module (gnu packages kerberos)
@@ -7738,6 +7739,65 @@ experimental data and metadata at the Laboratory for Fluorescence Dynamics.")
 write a wide range of image data, including animated images, video, volumetric
 data, and scientific formats.")
     (license license:bsd-2)))
+
+(define-public python-pyvips
+  (package
+    (name "python-pyvips")
+    (version "2.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyvips" version))
+       (sha256
+        (base32 "0lq71iiic4pc8qhxr60gi141w25pjnn4vsh05d5l0fjkgjsv137b"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               ;; Maybe switch to API mode (i.e., build the C extension)?
+               ;; It is advertised as faster to start up and run.
+               ;; However, even with ‘pkg-config’ and ‘python-pkgconfig’ in
+               ;; ‘native-inputs’, the API mode build fails with:
+               ;;
+               ;;   Falling back to ABI mode. Details: unable to find pkg-config package "vips"
+               ;;
+               ;; The build doesn't actually fail without the below
+               ;; substitution, it's just slower because ‘setup.py’ tries
+               ;; (unsuccessfully) to download the Python ‘pkgconfig’ module.
+               (add-after 'unpack 'fix-build
+                 (lambda _
+                   (substitute* "setup.py"
+                     (("^( +setup_)API\\(\\)\n" _ prefix)
+                      (string-append prefix "ABI()\n")))))
+               (add-after 'unpack 'fix-paths
+                 (lambda _
+                   (substitute* "pyvips/__init__.py"
+                     (("^( +_vips_libname) = '(libvips.so.42)'"
+                       _ var libname)
+                      (format #f "~a = '~a/lib/~a'"
+                              var #$(this-package-input "vips") libname))
+                     (("^( +_gobject_libname) = '(libgobject-2.0.so.0)'"
+                       _ var libname)
+                      (format #f "~a = '~a/lib/~a'"
+                              var #$(this-package-input "glib") libname)))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "python" "setup.py" "test")))))))
+    (native-inputs
+     (list python-pyperf
+           python-pytest
+           python-pytest-flake8
+           python-pytest-runner))
+    (inputs
+     (list glib vips))
+    (propagated-inputs
+     (list python-cffi))
+    (home-page "https://github.com/libvips/pyvips")
+    (synopsis "Python bindings for VIPS")
+    (description "The @code{pyvips} package provides Python bindings for VIPS,
+a multithreaded image-processing system with low memory needs.")
+    (license license:expat)))
 
 (define-public python-pycparser
   (package
