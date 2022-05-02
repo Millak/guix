@@ -776,18 +776,18 @@ river flooding.")
 (define-public python-meshio
   (package
     (name "python-meshio")
-    (version "4.4.6")
+    (version "5.3.4")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "meshio" version))
-        (sha256
-          (base32
-           "0kv832s2vyff30zz8yqypw5jifwdanvh5x56d2bzkvy94h4jlddy"))
-        (snippet
-         '(let ((file (open-file "setup.py" "a")))
-            (display "from setuptools import setup\nsetup()" file)
-            (close-port file)))))
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "meshio" version))
+       (sha256
+        (base32
+         "1w39qcg0rw5kb04j7sa45fnqd6k20fsdgrf62cmw2ygjgwnnjh72"))
+       (snippet
+        '(let ((file (open-file "setup.py" "a")))
+           (display "from setuptools import setup\nsetup()" file)
+           (close-port file)))))
     (build-system python-build-system)
     (inputs
      (list python-h5py
@@ -796,7 +796,8 @@ river flooding.")
      (list python-pytest))
     (propagated-inputs
      (list python-importlib-metadata
-           python-numpy))
+           python-numpy
+           python-rich))
     (arguments
      '(#:phases
        (modify-phases %standard-phases
