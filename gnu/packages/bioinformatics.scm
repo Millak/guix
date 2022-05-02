@@ -12652,6 +12652,13 @@ fasta subsequences.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         ;; cooler requests cytoolz<0.11.  It only uses cytoolz for "compose",
+         ;; which composes two functions.
+         (add-after 'unpack 'use-recent-cytoolz
+           (lambda _
+             (substitute* '("requirements.txt"
+                            "cooler.egg-info/requires.txt")
+               (("cytoolz.*<.*0.11") "cytoolz"))))
          (add-after 'unpack 'patch-tests
            (lambda _
              (substitute* "tests/test_create.py"
@@ -12677,7 +12684,7 @@ fasta subsequences.")
      (list python-asciitree
            python-biopython
            python-click
-           python-cytoolz-for-cooler
+           python-cytoolz
            python-dask
            python-h5py
            python-multiprocess
