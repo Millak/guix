@@ -24806,6 +24806,34 @@ dissimilarity useful for clustering mixed data, and, optionally, perform the
 clustering.")
     (license license:gpl2+)))
 
+(define-public r-treemap
+  (package
+    (name "r-treemap")
+    (version "2.4-3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "treemap" version))
+       (sha256
+        (base32 "1fg8gygw38x7msn32barx2irvcv8flm6wqvipnbj1qkh9w89y3q4"))))
+    (properties `((upstream-name . "treemap")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-colorspace
+           r-data-table
+           r-ggplot2
+           r-gridbase
+           r-igraph
+           r-rcolorbrewer
+           r-shiny))
+    (native-inputs (list r-knitr))
+    (home-page "https://cran.r-project.org/package=treemap")
+    (synopsis "Treemap visualization")
+    (description
+     "A treemap is a space-filling visualization of hierarchical structures.
+This package offers great flexibility to draw treemaps.")
+    (license license:gpl3+)))
+
 (define-public r-acrosstic
   (package
     (name "r-acrosstic")
