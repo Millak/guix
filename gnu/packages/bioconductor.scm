@@ -2107,6 +2107,30 @@ using the linear model features implemented in limma.  Standard Bioconductor
 objects are used so that other packages could be used as well.")
     (license license:gpl3)))
 
+(define-public r-aims
+  (package
+    (name "r-aims")
+    (version "1.28.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "AIMS" version))
+              (sha256
+               (base32
+                "1z7yzaizyzcv556w8880603nd947k0d6raadjm42mdl66mma0cdx"))))
+    (properties `((upstream-name . "AIMS")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biobase r-e1071))
+    (home-page "https://git.bioconductor.org/packages/AIMS")
+    (synopsis
+     "Absolute assignment of breast cancer intrinsic molecular subtype")
+    (description
+     "This package contains an implementation of @code{AIMS} -- Absolute
+Intrinsic Molecular Subtyping.  It contains necessary functions to assign the
+five intrinsic molecular subtypes (Luminal A, Luminal B, Her2-enriched,
+Basal-like, Normal-like).  Assignments could be done on individual samples as
+well as on dataset of gene expression data.")
+    (license license:artistic2.0)))
+
 (define-public r-airpart
   (package
     (name "r-airpart")
