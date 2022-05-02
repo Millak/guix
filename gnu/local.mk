@@ -632,7 +632,11 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/zwave.scm			\
 						\
   %D%/platforms/arm.scm		                \
-  %D%/platforms/hurd.scm	                \
+  %D%/platforms/mips.scm	                \
+  %D%/platforms/powerpc.scm	                \
+  %D%/platforms/riscv.scm	                \
+  %D%/platforms/s390.scm	                \
+  %D%/platforms/x86.scm		                \
 						\
   %D%/services.scm				\
   %D%/services/admin.scm			\
