@@ -828,6 +828,8 @@ string, you could instantiate a prosody service like this:
             (bitlbee* (least-authority-wrapper
                        (file-append bitlbee "/sbin/bitlbee")
                        #:name "bitlbee"
+                       #:preserved-environment-variables
+                       '("PURPLE_PLUGIN_PATH")
                        #:mappings (list (file-system-mapping
                                          (source "/var/lib/bitlbee")
                                          (target source)
