@@ -792,13 +792,13 @@ river flooding.")
             #t))))
     (build-system python-build-system)
     (inputs
-     `(("h5py" ,python-h5py)
-       ("netcdf4" ,python-netcdf4)))
+     (list python-h5py
+           python-netcdf4))
     (native-inputs
-     `(("pytest" ,python-pytest)))
+     (list python-pytest))
     (propagated-inputs
-     `(("importlib-metadata" ,python-importlib-metadata)
-       ("numpy" ,python-numpy)))
+     (list python-importlib-metadata
+           python-numpy))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
