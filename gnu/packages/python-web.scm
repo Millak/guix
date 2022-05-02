@@ -7368,3 +7368,22 @@ scraping framework, used to crawl websites and extract structured data
 from their pages.  It can be used for a wide range of purposes, from data
 mining to monitoring and automated testing.")
     (license license:bsd-3)))
+
+(define-public python-jstyleson
+  (package
+    (name "python-jstyleson")
+    (version "0.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jstyleson" version))
+       (sha256
+        (base32 "13ihw6jqwkg3ai4xb83kw39pvh73b2wg6ld3wvj5jaasn7rh6038"))))
+    (build-system python-build-system)
+    (arguments (list #:tests? #f))      ;no tests in pypi release
+    (home-page "https://github.com/linjackson78/jstyleson")
+    (synopsis "JSON parser supporting js-style comments")
+    (description "@code{jstyleson} is a Python library to parse JSON.
+Contrary to the standard Python @code{json} library, it understands js-style
+comments.  Trailing comma is also supported.")
+    (license license:expat)))
