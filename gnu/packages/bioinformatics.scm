@@ -4878,9 +4878,9 @@ data.  It also provides the @command{bgzip}, @command{htsfile}, and
 
 (define htslib-for-stringtie
   (package
-    (inherit htslib)
+    (inherit htslib-1.12)
     (source (origin
-              (inherit (package-source htslib))
+              (inherit (package-source htslib-1.12))
               (patches
                (search-patches "htslib-for-stringtie.patch"))))
     (arguments
