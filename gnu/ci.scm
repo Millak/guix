@@ -55,6 +55,7 @@
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages make-bootstrap)
   #:use-module (gnu packages package-management)
+  #:use-module (gnu platform)
   #:use-module (gnu system)
   #:use-module (gnu system image)
   #:use-module (gnu system vm)
@@ -71,7 +72,6 @@
             image->job
 
             %core-packages
-            %cross-targets
             channel-source->package
 
             arguments->systems
@@ -169,17 +169,6 @@ SYSTEM."
       (drop-right %core-packages 6)
       %core-packages))
 
-(define %cross-targets
-  '("mips64el-linux-gnu"
-    "arm-linux-gnueabihf"
-    "aarch64-linux-gnu"
-    "powerpc-linux-gnu"
-    "powerpc64le-linux-gnu"
-    "riscv64-linux-gnu"
-    "i586-pc-gnu"                                 ;aka. GNU/Hurd
-    "i686-w64-mingw32"
-    "x86_64-w64-mingw32"))
-
 (define (cross-jobs store system)
   "Return a list of cross-compilation jobs for SYSTEM."
   (define (from-32-to-64? target)
@@ -221,7 +210,7 @@ SYSTEM."
                                           package target system))
                      (packages-to-cross-build target)))
               (remove (either from-32-to-64? same? pointless?)
-                      %cross-targets)))
+                      (targets))))
 
 (define* (guix-jobs store systems #:key source commit)
   "Return a list of jobs for Guix itself."

@@ -23,7 +23,7 @@
 (use-modules (gnu packages)
              (guix packages)
              (guix profiles)
-             ((gnu ci) #:select (%cross-targets))
+             ((gnu platform) #:select (targets))
              ((gnu services xorg) #:select (%default-xorg-modules))
              (guix utils)
              (srfi srfi-1)
@@ -144,7 +144,7 @@ TARGET."
                           %packages-to-cross-build)))
                ;; XXX: Important bits like libsigsegv and libffi don't support
                ;; RISCV at the moment, so don't require RISCV support.
-               (delete "riscv64-linux-gnu" %cross-targets))))
+               (delete "riscv64-linux-gnu" (targets)))))
 
 (define %cross-bootstrap-manifest
   (manifest
