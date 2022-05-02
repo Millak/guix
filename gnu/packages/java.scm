@@ -1768,7 +1768,7 @@ new Date();"))
 (define-public openjdk11
   (package
     (name "openjdk")
-    (version "11.0.13")
+    (version "11.0.15")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://openjdk-sources.osci.io/openjdk11/openjdk-"
@@ -1776,7 +1776,7 @@ new Date();"))
               (file-name (string-append name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "0xavz7msaadprq65p5bhp6sxcyp12p0zlbhb3aaz0cvp21c9pdm9"))
+                "0di91nnms2iq1svgq72r5y17am17r4vh2lq43k0bkcwpc84d6nd8"))
               (modules '((guix build utils)))
               (snippet
                `(begin
@@ -1819,8 +1819,8 @@ new Date();"))
            (lambda _
              ;; This file was "fixed" by patch-source-shebangs, but it requires
              ;; this exact first line.
-             (substitute* "make/data/blacklistedcertsconverter/blacklisted.certs.pem"
-               (("^#!.*") "#! java BlacklistedCertsConverter SHA-256\n"))
+             (substitute* "make/data/blockedcertsconverter/blocked.certs.pem"
+               (("^#!.*") "#! java BlockedCertsConverter SHA-256\n"))
              #t))
          (add-after 'unpack 'patch-jni-libs
            ;; Hardcode dynamically loaded libraries.
