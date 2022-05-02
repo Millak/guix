@@ -7387,3 +7387,25 @@ mining to monitoring and automated testing.")
 Contrary to the standard Python @code{json} library, it understands js-style
 comments.  Trailing comma is also supported.")
     (license license:expat)))
+
+(define-public python-html-text
+  (package
+    (name "python-html-text")
+    (version "0.5.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "html_text" version))
+       (sha256
+        (base32 "1v9x171l3bmyayc1144nrkn9410lp4lhlrrjii54j7b5f2xipmmg"))))
+    (build-system python-build-system)
+    (native-inputs (list python-pytest))
+    (propagated-inputs (list python-lxml))
+    (home-page "https://github.com/TeamHG-Memex/html-text")
+    (synopsis "Extract text from HTML")
+    (description "HTML to Text is a Python library for extract text from HTML.
+Contrary to other solution such as LXML or Beautiful Soup, the text extracted
+with @code{html_text} does not contain elements such as JavaScript or inline
+styles not normally visible to users.  It also normalizes white space
+characters in a smarter, more visually pleasing style.")
+    (license license:expat)))
