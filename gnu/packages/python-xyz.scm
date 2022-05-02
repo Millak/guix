@@ -122,6 +122,7 @@
 ;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -31555,4 +31556,84 @@ written in C.")
     (home-page "https://github.com/explosion/murmurhash")
     (synopsis "Cython bindings for MurmurHash2")
     (description "This package provides Cython bindings for MurmurHash2.")
+    (license license:expat)))
+
+;; Scooby requires for its test suite a ‘pyvips’ package that is missing its
+;; VIPS dependency.
+(define python-pyvips-for-python-scooby
+  (package
+    (inherit python-pyvips)
+    (name "python-pyvips-for-python-scooby")
+    (arguments
+     (substitute-keyword-arguments (package-arguments python-pyvips)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (delete 'fix-paths)
+            ;; The checks won't succeed without VIPS.
+            (delete 'check)
+            (delete 'sanity-check)))))
+    (inputs
+     (modify-inputs (package-inputs python-pyvips)
+       (delete "vips")))
+    (synopsis "pyvips for Scooby's test suite")))
+
+(define-public python-scooby
+  (package
+    (name "python-scooby")
+    (version "0.5.12")
+    (source
+     ;; The PyPI tarball does not contain the tests.
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/banesullivan/scooby")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gkpmz8wl3jg8ylf1na35308sznw2g9wx33zqlyq5i2gpy2ml9mw"))))
+    (build-system python-build-system)
+    (native-inputs
+     (list python-beautifulsoup4
+           python-numpy
+           python-pytest
+           python-pytest-cov
+           python-pyvips-for-python-scooby
+           python-scipy))
+    (propagated-inputs
+     (list python-psutil))
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-tests
+           (lambda _
+             (substitute* "tests/test_scooby.py"
+               ;; The test suite uses the no-version PyPI package
+               ;; (https://pypi.org/project/no-version/),
+               ;; but it doesn't seem worth packaging in Guix just for this.
+               (("scooby\\.report\\.VERSION_NOT_FOUND")
+                "scooby.report.MODULE_NOT_FOUND")
+               (("^ +import no_version  # noqa.*") ""))))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest")))))))
+    (home-page "https://github.com/banesullivan/scooby")
+    (synopsis "Report hardware information and Python package versions")
+    (description
+     "The Scooby package reports the following information about the currently
+running system:
+
+@itemize
+@item operating system name;
+@item hardware information including machine type (e.g., @samp{i386},
+@samp{x86_64}, etc.), CPU count and total RAM;
+@item Python environment (e.g., Python, IPython, etc.);
+@item file system name;
+@item Python version;
+@item versions of specified Python packages.
+@end itemize
+
+It can generate reports as HTML tables or plain text lists.
+
+Scooby has no required dependencies, and only few optional dependencies.")
     (license license:expat)))
