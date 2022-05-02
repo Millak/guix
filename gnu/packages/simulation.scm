@@ -798,12 +798,12 @@ river flooding.")
      (list python-importlib-metadata
            python-numpy))
     (arguments
-     `(#:phases
+     '(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (invoke "python" "-m" "pytest" "-v" "tests"))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "python" "-m" "pytest" "-v" "tests")))))))
     (home-page "https://github.com/nschloe/meshio")
     (synopsis "I/O for mesh files")
     (description "There are various file formats available for
