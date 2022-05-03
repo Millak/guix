@@ -25631,6 +25631,33 @@ univariate time series forecasts including exponential smoothing via state
 space models and automatic ARIMA modelling.")
     (license license:gpl3)))
 
+(define-public r-forestplot
+  (package
+    (name "r-forestplot")
+    (version "2.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "forestplot" version))
+              (sha256
+               (base32
+                "0bzwi6ws0qjq1pqiadssynbkxxd4zjp974jfdplmv16fcyszqhyi"))))
+    (properties `((upstream-name . "forestplot")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-checkmate r-magrittr))
+    (native-inputs (list r-knitr))
+    (home-page "https://gforge.se/packages/")
+    (synopsis "Advanced forest plot using @code{grid} graphics")
+    (description
+     "This package provides a forest plot that allows for multiple
+confidence intervals per row, custom fonts for each text element,
+custom confidence intervals, text mixed with expressions, and more.
+The aim is to extend the use of forest plots beyond meta-analyses.
+This is a more general version of the original @code{rmeta} package's
+@code{forestplot()} function and relies heavily on the @code{grid}
+package.")
+    (license license:gpl2)))
+
 (define-public r-formattable
   (package
     (name "r-formattable")
