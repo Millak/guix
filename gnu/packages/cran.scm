@@ -8855,6 +8855,29 @@ variable) to other variables (explanatory variables) are derived and
 evaluated by the @dfn{Akaike Information Criterion} (AIC).")
     (license license:gpl2+)))
 
+(define-public r-catdata
+  (package
+    (name "r-catdata")
+    (version "1.2.2")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "catdata" version))
+              (sha256
+               (base32
+                "14kx7yi0cv6dyh9wjasb8gn6cp1bhglgwql7dc2a7lqvdcp0d5vj"))))
+    (properties `((upstream-name . "catdata")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-mass))
+    (home-page "https://cran.r-project.org/package=catdata")
+    (synopsis
+     "Datasets and examples used in the book @emph{Regression for Categorical Data}")
+    (description
+     "This R package contains examples from the book @emph{Regression
+for Categorical Data}, Tutz 2012, Cambridge University Press.  The
+names of the examples refer to the chapter and the data set that is
+used.")
+    (license license:gpl2)))
+
 (define-public r-arules
   (package
     (name "r-arules")
