@@ -6486,6 +6486,47 @@ University Press.  It provides smoothing methods for nonparametric regression
 and density estimation")
     (license license:gpl2+)))
 
+(define-public r-smurf
+  (package
+    (name "r-smurf")
+    (version "1.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "smurf" version))
+              (sha256
+               (base32
+                "00q54pg42anilhcshhjvv277mkszbpzpkf1g7srs7cjd5skjvsaf"))))
+    (properties `((upstream-name . "smurf")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-catdata
+           r-glmnet
+           r-mass
+           r-matrix
+           r-mgcv
+           r-rcolorbrewer
+           r-rcpp
+           r-rcpparmadillo
+           r-speedglm))
+    (native-inputs (list r-knitr))
+    (home-page "https://gitlab.com/TReynkens/smurf")
+    (synopsis "Sparse multi-type regularized feature modeling")
+    (description
+     "The @code{smurf} package contains the implementation of the
+@dfn{Sparse Multi-type Regularized Feature} (SMuRF) modeling algorithm
+to fit @dfn{generalized linear models} (GLMs) with multiple types of
+predictors via regularized maximum likelihood.  Next to the fitting
+procedure, following functionality is available:
+
+@itemize
+@item Selection of the regularization tuning parameter lambda using
+  three different approaches: in-sample, out-of-sample or using
+  cross-validation.
+@item S3 methods to handle the fitted object including visualization
+  of the coefficients and a model summary.
+@end itemize")
+    (license license:gpl2+)))
+
 (define-public r-venndiagram
   (package
     (name "r-venndiagram")
