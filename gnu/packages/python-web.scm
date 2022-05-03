@@ -97,6 +97,7 @@
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages rdf)
   #:use-module (gnu packages rpc)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sphinx)
@@ -7441,3 +7442,49 @@ characters in a smarter, more visually pleasing style.")
 implementing the full Microformats2 (mf2) specification, including backward
 compatibility with Microformats1 (mf1).")
     (license license:expat)))
+
+(define-public python-extruct
+  (package
+    (name "python-extruct")
+    (version "0.13.0")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/scrapinghub/extruct")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "075zldf3dqcc429z1vk2ngbmv034bnlyk6arh3rh30jbsvz9pzl5"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv" "tests")))))))
+    (native-inputs (list python-pytest))
+    (propagated-inputs
+     (list python-html-text
+           python-jstyleson
+           python-lxml
+           python-mf2py
+           python-pyrdfa3
+           python-rdflib
+           python-rdflib-jsonld
+           python-w3lib))
+    (home-page "https://github.com/scrapinghub/extruct")
+    (synopsis "Extract embedded metadata from HTML markup")
+    (description "@code{extruct} is a Python library for extracting embedded
+metadata from HTML markup.  Currently, extruct supports:
+@itemize
+@item W3C's HTML Microdata
+@item embedded JSON-LD
+@item Microformat via mf2py
+@item Facebook's Open Graph
+@item (experimental) RDFa via rdflib
+@item Dublin Core Metadata (DC-HTML-2003)
+@end itemize")
+    (license license:bsd-3)))
