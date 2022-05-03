@@ -2082,6 +2082,53 @@ using the linear model features implemented in limma.  Standard Bioconductor
 objects are used so that other packages could be used as well.")
     (license license:gpl3)))
 
+(define-public r-airpart
+  (package
+    (name "r-airpart")
+    (version "1.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "airpart" version))
+              (sha256
+               (base32
+                "0ljankgvgf8rby4z340wxx8v7acs9yz955p3a40jl6y8rz1svc06"))))
+    (properties `((upstream-name . "airpart")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-apeglm
+           r-clue
+           r-complexheatmap
+           r-dplyr
+           r-dynamictreecut
+           r-emdbook
+           r-forestplot
+           r-ggplot2
+           r-lpsolve
+           r-matrixstats
+           r-mclust
+           r-pbapply
+           r-plyr
+           r-rcolorbrewer
+           r-rlang
+           r-s4vectors
+           r-scater
+           r-singlecellexperiment
+           r-smurf
+           r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/airpart")
+    (synopsis "Differential cell-type-specific allelic imbalance")
+    (description
+     "The airpart package identifies sets of genes displaying differential
+cell-type-specific allelic imbalance across cell types or states, utilizing
+single-cell allelic counts.  It makes use of a generalized fused lasso with
+binomial observations of allelic counts to partition cell types by their
+allelic imbalance.  Alternatively, a nonparametric method for partitioning
+cell types is offered.  The package includes a number of visualizations and
+quality control functions for examining single cell allelic imbalance
+datasets.")
+    (license license:gpl2)))
+
 (define-public r-amountain
   (package
     (name "r-amountain")
