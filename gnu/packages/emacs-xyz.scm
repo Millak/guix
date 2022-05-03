@@ -12830,9 +12830,10 @@ programming and reproducible research.")
          (add-after 'unpack 'enter-source-directory
            (lambda _
              (chdir "lisp"))))))
+    (native-inputs
+     (list emacs-cider))
     (propagated-inputs
      (list emacs-arduino-mode ;XXX: remove after 0.4+ release.
-           emacs-cider
            emacs-org))
     (home-page "https://git.sr.ht/~bzg/org-contrib")
     (synopsis "Unmaintained add-ons for Org mode")
