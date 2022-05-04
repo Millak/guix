@@ -1098,7 +1098,7 @@ on your file system and offers to remove it.  @command{rmlint} can find:
 (define-public lf
   (package
     (name "lf")
-    (version "25")
+    (version "27")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1107,11 +1107,10 @@ on your file system and offers to remove it.  @command{rmlint} can find:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "014cybng6hc9y3ma74hpc1ac3rkz4ydflx8jbmvx81rdd08rzwz7"))))
+                "1piym8za0iw2s8yryh39y072f90mzisv89ffvn1jzb71f71mbfqa"))))
     (build-system go-build-system)
     (native-inputs
      `(("go-github.com-mattn-go-runewidth" ,go-github.com-mattn-go-runewidth)
-       ("go-github.com-nsf-termbox-go" ,go-github.com-nsf-termbox-go)
        ("go-golang-org-x-term" ,go-golang-org-x-term)
        ("go-gopkg-in-djherbis-times-v1" ,go-gopkg-in-djherbis-times-v1)
        ("go-github-com-gdamore-tcell-v2" ,go-github-com-gdamore-tcell-v2)))
