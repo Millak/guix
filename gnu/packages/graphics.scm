@@ -872,7 +872,7 @@ distills complex, animated scenes into a set of baked geometric results.")
 (define-public mangohud
   (package
     (name "mangohud")
-    (version "0.6.6-1")
+    (version "0.6.7")
     (source
      (origin
        (method git-fetch)
@@ -881,7 +881,7 @@ distills complex, animated scenes into a set of baked geometric results.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ka004wxkajmvs5vy60r4ckm7f169c61rrd46w6gywkaqf5yp1ab"))))
+        (base32 "0n2x6agv2j8nd6h1998dqsphb7k57zx8vsayv47dqix28kg5kixz"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -912,11 +912,6 @@ distills complex, animated scenes into a set of baked geometric results.")
               (substitute* "src/meson.build"
                 (("\\\\\\$LIB")
                  "lib"))
-              (substitute* "src/loaders/loader_libdrm.cpp"
-                (("libdrm.so.2")
-                 (search-input-file inputs "lib/libdrm.so.2"))
-                (("libdrm_amdgpu.so.1")
-                 (search-input-file inputs "lib/libdrm_amdgpu.so.1")))
               (substitute* "src/overlay.cpp"
                 (("glxinfo")
                  (search-input-file inputs "bin/glxinfo")))
@@ -934,7 +929,6 @@ distills complex, animated scenes into a set of baked geometric results.")
            glslang
            `(,hwdata "pci")
            imgui-1.86
-           libdrm
            libx11
            mesa
            mesa-utils
