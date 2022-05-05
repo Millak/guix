@@ -31263,6 +31263,30 @@ to the @url{https://multitran.com} online dictionary.")
 @command{python} buffers.")
     (license license:gpl3)))
 
+(define-public emacs-code-cells
+  ;; No tagged release upstream
+  (let ((commit "8660bdeedee360e5eb632f1eb1356eb09d7dfbee")
+        (revision "0"))
+    (package
+      (name "emacs-code-cells")
+      (version (git-version "0.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/astoff/code-cells.el")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0mvfsdlhc3znc0d2p8vm7apkbpvbs688wmwvd0sms33qly53f546"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/astoff/code-cells.el")
+      (synopsis "Emacs utilities for code split into cells, including Jupyter
+notebooks")
+      (description "This package lets you efficiently navigate, edit and
+execute code split into cells according to certain magic comments.")
+      (license license:gpl3+))))
+
 (define-public emacs-kibit-helper
   (package
     (name "emacs-kibit-helper")
