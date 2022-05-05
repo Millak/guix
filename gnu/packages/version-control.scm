@@ -2555,13 +2555,13 @@ based on a manifest file published by servers.")
 (define-public b4
   (package
     (name "b4")
-    (version "0.6.2")
+    (version "0.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "b4" version))
        (sha256
-        (base32 "1j904dy9cwxl85k2ngc498q5cdnqwsmw3jibjr1m55w8aqdck68z"))
+        (base32 "115ysciq15sxc8fd9hf7p0f4wnd5xapcfkmq8g33y1c8nbdxclbx"))
        (modules '((guix build utils)))
        (snippet
         '(begin
