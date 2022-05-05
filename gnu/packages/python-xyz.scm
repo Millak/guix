@@ -4438,21 +4438,7 @@ text styles of documentation.")
     (synopsis "Syntax highlighting")
     (description
      "Pygments is a syntax highlighting package written in Python.")
-    (license license:bsd-2)
-    (properties `((python2-variant . ,(delay python2-pygments))))))
-
-;; Pygments 2.6 and later does not support Python 2.
-(define-public python2-pygments
-  (let ((base (package-with-python2 (strip-python2-variant python-pygments))))
-    (package
-      (inherit base)
-      (version "2.5.2")
-      (source (origin
-                (method url-fetch)
-                (uri (pypi-uri "Pygments" version))
-                (sha256
-                 (base32
-                  "1zmhnswy0wxfn0xprs9aqsvx2c3kmzfn2wx14q8cv3vpkxdamj4q")))))))
+    (license license:bsd-2)))
 
 (define-public python-pygments-github-lexers
   (package
