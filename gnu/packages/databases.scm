@@ -3635,6 +3635,29 @@ async versions of all the standard connection and cursor methods, and context
 managers for automatically closing connections.")
     (license license:expat)))
 
+(define-public python-databases
+  (package
+    (name "python-databases")
+    (version "0.5.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "databases" version))
+       (sha256
+        (base32 "0dzb998kg35xmd50ih168320vih2w3ich798r8fc4lf9q4bb1ih2"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-aiosqlite
+           python-aiopg
+           python-aiomysql
+           python-asyncpg
+           python-asyncmy
+           python-sqlalchemy))
+    (home-page "https://github.com/encode/databases")
+    (synopsis "Async database support for Python.")
+    (description "This package implements async database support for Python.")
+    (license license:bsd-3)))
+
 (define-public python2-neo4j-driver
   (package
     (name "python2-neo4j-driver")
