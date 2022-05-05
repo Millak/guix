@@ -19337,6 +19337,26 @@ multitouch applications.")
     (description "This package provides a MediaWiki API client.")
     (license license:expat)))
 
+(define-public python-kneed
+  (package
+    (name "python-kneed")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "kneed" version))
+       (sha256
+        (base32 "0vkwi0pr7nfkp3c46hnmx0275yx68v96v10rmspv0wis33x6f39l"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-matplotlib python-numpy python-scipy))
+    (home-page "https://github.com/arvkevi/kneed")
+    (synopsis "Knee-point detection in Python")
+    (description "This package implements the kneedle algorithm.  Given a set
+of x and y values, kneed will return the knee point of the function.  The knee
+point is the point of maximum curvature.")
+    (license license:bsd-3)))
+
 (define-public python-utils
   (package
     (name "python-utils")
