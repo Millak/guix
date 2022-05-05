@@ -959,7 +959,7 @@ to that transformation."
                      . ,(map (match-lambda
                                ((key value _)
                                 (cons key value)))
-                             applicable))
+                             (reverse applicable))) ;preserve order
                     ,@(package-properties p)))))
 
   (lambda (obj)
