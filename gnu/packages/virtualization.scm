@@ -15,7 +15,7 @@
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020, 2021 Marius Bakke <mbakke@fastmail.com>
-;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
@@ -1654,6 +1654,50 @@ mainly implemented in user space.")
     ;; The project is licensed under GPLv2; files in the lib/ directory are
     ;; LGPLv2.1.
     (license (list license:gpl2 license:lgpl2.1))))
+
+(define-public python-qemu-qmp
+  (package
+    (name "python-qemu-qmp")
+    (version "0.0.0a0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "qemu.qmp" version))
+       (sha256
+        (base32 "1rpsbiwvngij6fjcc5cx1azcc4dxmm080crr31wc7jrm7i61p7c2"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; The Avocado test runner insists on writing stuff to HOME.
+                (setenv "HOME" "/tmp")
+                ;; The mypy tests fail (see:
+                ;; https://gitlab.com/jsnow/qemu.qmp/-/issues/1).
+                (delete-file "tests/mypy.sh")
+                (invoke "avocado" "--show=all" "run" "tests")))))))
+    (native-inputs
+     (list python-avocado-framework
+           python-setuptools-scm
+           python-flake8
+           python-isort
+           python-pylint))
+    (propagated-inputs
+     (list python-pygments
+           python-urwid
+           python-urwid-readline))
+    (home-page "https://gitlab.com/jsnow/qemu.qmp")
+    (synopsis "QEMU Monitor Protocol Python library")
+    (description "@code{emu.qmp} is a
+@url{https://gitlab.com/qemu-project/qemu/-/blob/master/docs/interop/qmp-intro.txt,
+QEMU Monitor Protocol (QMP)} library written in Python.  It is used to send
+QMP messages to running QEMU emulators.  It can be used to communicate with
+QEMU emulators, the QEMU Guest Agent (QGA), the QEMU Storage Daemon (QSD), or
+any other utility or application that speaks QMP.")
+    (license license:gpl2+)))
 
 (define-public qmpbackup
   (package
