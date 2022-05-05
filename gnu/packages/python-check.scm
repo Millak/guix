@@ -33,9 +33,14 @@
 
 (define-module (gnu packages python-check)
   #:use-module (gnu packages)
+  #:use-module (gnu packages admin)
+  #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages docker)
   #:use-module (gnu packages django)
   #:use-module (gnu packages openstack)
+  #:use-module (gnu packages perl)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -2101,6 +2106,83 @@ asynchronous HTTP requests it is a bit harder (at least at the beginning).
 The purpose of this package is to provide an easy way to test asynchronous
 HTTP requests.")
     (license license:expat)))
+
+(define-public python-avocado-framework
+  (package
+    (name "python-avocado-framework")
+    (version "96.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "avocado-framework" version))
+       (sha256
+        (base32 "0zhz6423p0b5gqx2mvg7dmq8m9gbsay7wqjdwzirlwcg2v3rcz0m"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      ;; The test suite hangs, due to a serious bug in Python/Avocado (see:
+      ;; https://github.com/avocado-framework/avocado/issues/4935).
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              ;; These are runtime dependencies (inputs).
+              (substitute* "avocado/plugins/spawners/podman.py"
+                (("default='/usr/bin/podman'")
+                 "default='podman'"))
+              (substitute* "avocado/utils/podman.py"
+                (("\"/usr/bin/env\", \"python3\"")
+                 (format #f "~s" (search-input-file inputs "bin/python"))))
+              (substitute* "avocado/utils/memory.py"
+                (("\"sync\"")
+                 (format #f "~s" (search-input-file inputs "bin/sync")))
+                (("/bin/sh")
+                 (search-input-file inputs "bin/sh")))
+              ;; Batch process the tests modules with less care; if something
+              ;; is wrong, the test suite will fail.  These are tests
+              ;; dependencies (native inputs).
+              (substitute* (find-files "selftests" "\\.py$")
+                (("#!/usr/bin/env")
+                 (string-append "#!" (search-input-file (or native-inputs inputs)
+                                                        "bin/env")))
+                (("/bin/(false|true|sh|sleep|sudo)" _ name)
+                 (search-input-file (or native-inputs inputs)
+                                    (string-append "bin/" name))))))
+          (add-after 'unpack 'remove-broken-entrypoints
+            ;; The avocado-external-runner entry point fails to load, the
+            ;; 'scripts' top level package not being found (see:
+            ;; https://github.com/avocado-framework/avocado/issues/5370).
+            (lambda _
+              (substitute* "setup.py"
+                (("'avocado-external-runner = scripts.external_runner:main'.*")
+                 ""))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" "/tmp")
+                (setenv "PYTHONPATH" (getcwd))
+                (invoke "./selftests/check.py" "--skip" "static-checks")))))))
+    (native-inputs (list bash-minimal coreutils-minimal perl sudo))
+    (inputs (list bash-minimal coreutils-minimal))
+    (home-page "https://avocado-framework.github.io/")
+    (synopsis "Tools and libraries to help with automated testing")
+    (description "Avocado is a set of tools and libraries to help with
+automated testing, i.e. a test framework.  Native tests are written in Python
+and they follow the unittest pattern, but any executable can serve as a
+test.  The following output formats are supported:
+@table @asis
+@item xUnit
+an XML format that contains test results in a structured form, and are used by
+other test automation projects, such as Jenkins.
+@item JSON
+a widely used data exchange format.  The JSON Avocado plugin outputs job
+information, similarly to the xunit output plugin.
+@item TAP
+Provides the basic TAP (Test Anything Protocol) results.  Unlike most existing
+Avocado machine readable outputs this one is streamlined (per test results).
+@end table")
+    (license license:gpl2)))            ;some files are under GPLv2 only
 
 (define-public python-parameterizedtestcase
   (package
