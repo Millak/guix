@@ -24736,25 +24736,18 @@ standard error channel (stderr) in your program.")
 (define-public python-anyio
   (package
     (name "python-anyio")
-    (version "3.3.0")
+    (version "3.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "anyio" version))
        (sha256
         (base32
-         "0x03hsprdrs86wjjkj96zm2jswy3a5bgyrknyi58pzz5hdsscmxf"))))
+         "19m58805wir4i2s45dd5ynwlzb7ky1218isbir53gpqzzgigzbm0"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'fix-compatibility
-           (lambda _
-             (substitute* "tests/test_taskgroups.py"
-               (("import pytest")
-                "import pytest\nimport _pytest\nfrom _pytest import logging")
-               (("pytest.LogCaptureFixture")
-                "_pytest.logging.LogCaptureFixture"))))
          (replace 'check
            (lambda* (#:key inputs outputs tests? #:allow-other-keys)
              (when tests?
@@ -24791,18 +24784,24 @@ standard error channel (stderr) in your program.")
                         " and not test_send_eof"
                         " and not test_send_large_buffer"
                         " and not test_send_receive"
-                        " and not test_socket_options"))))))))
+                        " and not test_socket_options"
+                        " and not test_unretrieved_future_exception_server_crash"))))))))
     (propagated-inputs
-     (list python-idna python-sniffio python-typing-extensions))
+     (list python-contextvars
+           python-dataclasses
+           python-idna
+           python-sniffio
+           python-typing-extensions))
     (native-inputs
-     (list python-coverage
+     (list python-contextlib2
+           python-coverage
            python-hypothesis
-           python-iniconfig
            python-mock
            python-pytest-6
            python-pytest-mock
            python-pytest-trio
            python-setuptools-scm
+           python-trio
            python-trustme
            python-uvloop))
     (home-page "https://github.com/agronholm/anyio")
