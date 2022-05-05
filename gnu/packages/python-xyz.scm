@@ -29393,7 +29393,11 @@ writing STL files.  It supports both the text and binary forms of STL.")
                     (lambda _
                       (substitute* "setup.py"
                         (("test_suite = 'multipart.tests.suite'")
-                         "test_suite = 'multipart.tests.test_multipart.suite'")))))))
+                         "test_suite = 'multipart.tests.test_multipart.suite'"))
+                      ;; Needed by PyYAML 6.0.
+                      (substitute* "multipart/tests/test_multipart.py"
+                        (("yaml_data = yaml.load\\(f\\)")
+                         "yaml_data = yaml.load(f, Loader=yaml.SafeLoader)")))))))
     (home-page "https://github.com/andrew-d/python-multipart")
     (synopsis "Streaming multipart parser for Python")
     (description
