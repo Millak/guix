@@ -15759,6 +15759,8 @@ created by @code{git format-patch}, from @code{magit}, @code{dired} and
          (uri (git-reference
                (url "https://git.sr.ht/~yoctocell/git-email")
                (commit commit)))
+         (patches
+          (search-patches "emacs-git-email-missing-parens.patch"))
          (file-name (git-file-name name version))
          (sha256
           (base32 "1lk1yds7idgawnair8l3s72rgjmh80qmy4kl5wrnqvpmjrmdgvnx"))))
