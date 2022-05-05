@@ -9150,7 +9150,7 @@ features useful for text console applications.")
 (define-public python-urwid-readline
   (package
     (name "python-urwid-readline")
-    (version "0.12")
+    (version "0.13")
     (source
      (origin
        (method git-fetch)
@@ -9160,7 +9160,7 @@ features useful for text console applications.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0sq5qgxj7gcfww3ww7idr87isnmp0hi36n241b3q395x1zafdv22"))))
+         "0y9k86p31mlr9rwnrbljvfgl183r5j60yaj0r3scljn1m0mlg8qg"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -9168,12 +9168,9 @@ features useful for text console applications.")
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "python" "-m" "pytest"))
-             #t)))))
-    (propagated-inputs
-     (list python-urwid))
-    (native-inputs
-     (list python-pytest))
+               (invoke "pytest" "-vv")))))))
+    (propagated-inputs (list python-urwid))
+    (native-inputs (list python-pytest))
     (home-page "https://github.com/rr-/urwid_readline")
     (synopsis "Text input widget for urwid that supports readline shortcuts")
     (description
