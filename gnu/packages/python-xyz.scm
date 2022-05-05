@@ -8947,21 +8947,21 @@ installing @code{kernelspec}s for use with Jupyter frontends.")
 (define-public python-pari-jupyter
   (package
     (name "python-pari-jupyter")
-    (version "1.4.0")
+    (version "1.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pari-jupyter" version))
        (sha256
         (base32
-         "1hwjr66vfjsx28qmxrgsp3z0px1xqwxv53byvsrbwbjp4pbp79sz"))))
+         "1ikqvv335qfrhmlji0iclci6pnm2c3fvnxf031jr1d68j79g6ypd"))))
     (build-system python-build-system)
     (arguments '(#:tests? #f))          ;no test suite
     (propagated-inputs
      (list python-ipykernel))
     (inputs
      (list pari-gp readline))
-    (home-page "https://github.com/jdemeyer/pari-jupyter")
+    (home-page "https://github.com/sagemath/pari-jupyter")
     (synopsis "Jupyter kernel for PARI/GP")
     (description "The package provides a PARI/GP kernel for Jupyter.")
     (license license:gpl3+)))
