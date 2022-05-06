@@ -6750,9 +6750,6 @@ Storage or Compound Document, Microsoft Office).  It is an improved version of
 the OleFileIO module from PIL, the Python Image Library.")
     (license license:bsd-3)))
 
-(define-public python2-olefile
-  (package-with-python2 python-olefile))
-
 (define-public python-pypdf3
   (package
     (name "python-pypdf3")
