@@ -9653,21 +9653,8 @@ SVG, EPS, PNG and terminal output.")
 graphics in Python.  It is built on top of matplotlib and tightly integrated
 with the PyData stack, including support for numpy and pandas data structures
 and statistical routines from scipy and statsmodels.")
-    (properties `((python2-variant . ,(delay python2-seaborn))))
     (license license:bsd-3)))
 
-;; 0.9.1 is the last release with support for Python 2.
-(define-public python2-seaborn
-  (let ((base (package-with-python2 (strip-python2-variant python-seaborn))))
-    (package
-      (inherit base)
-      (version "0.9.1")
-      (source (origin
-                (method url-fetch)
-                (uri (pypi-uri "seaborn" version))
-                (sha256
-                 (base32
-                  "1bjnshjz4d6z3vrwfwall1a3yh8h3a1h47c3fg7458x9426alcys")))))))
 
 (define-public python-session-info
   (package
