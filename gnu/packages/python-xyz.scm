@@ -8999,6 +8999,7 @@ callback signature using a prototype function.")
     (build-system python-build-system)
     (propagated-inputs
      (list python-backcall
+           python-decorator
            python-pyzmq
            python-prompt-toolkit-2
            python-terminado
