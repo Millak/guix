@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2017, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Muriithi Frederick Muriuki <fredmanglis@gmail.com>
 ;;; Copyright © 2017, 2018 Oleg Pykhalov <go.wigust@gmail.com>
@@ -111,6 +111,7 @@
   #:use-module (gnu packages version-control)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system guile)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
@@ -659,6 +660,50 @@ out) and returning a package that uses that as its 'source'."
     (description "This package contains GNU Guix icons organized according to
 the Icon Theme Specification.  They can be used by applications querying the
 GTK icon cache for instance.")))
+
+(define-public guix-modules
+  (package
+    (name "guix-modules")
+    (version "0.1.0")
+    (home-page "https://gitlab.inria.fr/guix-hpc/guix-modules")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference (url home-page)
+                                  (commit (string-append "v" version))))
+              (file-name (string-append "guix-modules-" version "-checkout"))
+              (sha256
+               (base32
+                "1ckvrrmkgzz93i35sj1372wxs7ln4gzszpri1pcdf473z0p7nh7w"))))
+    (build-system guile-build-system)
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (add-after 'install 'move-to-extension-directory
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out"))
+                             (target (string-append
+                                      out
+                                      "/share/guix/extensions/module.scm")))
+                        (mkdir-p (dirname target))
+                        (rename-file (car (find-files out "module.scm"))
+                                     target)))))))
+    (native-inputs (list (lookup-package-input guix "guile") guix))
+    (synopsis "Generate environment modules from Guix packages")
+    (description
+     "Guix-Modules is an extension of Guix that provides a new @command{guix
+module} command.  The @command{guix module create} sub-command creates
+@dfn{environment modules}, allowing you to manipulate software environments
+with the @command{module} command commonly found on @acronym{HPC,
+high-performance computing} clusters.
+
+To use this extension, set the @env{GUIX_EXTENSIONS_PATH} environment
+variable, along these lines:
+
+@example
+export GUIX_EXTENSIONS_PATH=\"$HOME/.guix-profile/share/guix/extensions\"
+@end example
+
+Replace @code{$HOME/.guix-profile} with the appropriate profile.")
+    (license license:gpl3+)))
 
 
 ;;;
