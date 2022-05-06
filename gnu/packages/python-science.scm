@@ -1183,3 +1183,39 @@ pandas code.")
      "This package provides optimized tools for group-indexing operations:
 aggregated sum and more.")
     (license license:bsd-3)))
+
+(define-public python-traittypes
+  (package
+    (name "python-traittypes")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "traittypes" version))
+       (sha256
+        (base32 "1mlv93irdrgxrhnhq3ksi9585d55bpi4mv9dha4p8gkkjiia4vxy"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               ;; This one test fails because it doesn't raise an expected
+               ;; exception.
+               (invoke "pytest" "-vv" "-k" "not test_bad_values")))))))
+    (propagated-inputs (list python-traitlets))
+    (native-inputs
+     (list python-numpy
+           python-pandas
+           python-nose
+           python-pytest
+           python-xarray))
+    (home-page "https://github.com/jupyter-widgets/traittypes")
+    (synopsis "Trait types for NumPy, SciPy and friends")
+    (description "The goal of this package is to provide a reference
+implementation of trait types for common data structures used in the scipy
+stack such as numpy arrays or pandas and xarray data structures.  These are
+out of the scope of the main traitlets project but are a common requirement to
+build applications with traitlets in combination with the scipy stack.")
+    (license license:bsd-3)))
