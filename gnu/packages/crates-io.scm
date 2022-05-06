@@ -40481,14 +40481,14 @@ unparking.")
 (define-public rust-parking-lot-0.11
   (package
     (name "rust-parking-lot")
-    (version "0.11.1")
+    (version "0.11.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "parking_lot" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1sqmgaia8zfd5fbnqw2w13ijh7crk3lf9vw4cb52vwlx0an48xvd"))))
+        (base32 "16gzf41bxmm10x82bla8d6wfppy9ym3fxsmdjyvn61m66s0bf5vx"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
