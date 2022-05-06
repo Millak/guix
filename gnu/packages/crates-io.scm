@@ -40046,6 +40046,30 @@ normally prevent moving a type that has been borrowed from.")
       "This package provides a library for padding strings at runtime.")
     (license license:expat)))
 
+(define-public rust-page-size-0.4
+  (package
+    (name "rust-page-size")
+    (version "0.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "page_size" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1kgdv7f626jy4i2pq8czp4ppady4g4kqfa5ik4dah7mzzd4fbggf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-spin" ,rust-spin-0.5)
+        ("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://github.com/Elzair/page_size_rs")
+    (synopsis "Retrieve the memory page size")
+    (description
+     "This package provides an easy, fast, cross-platform way to retrieve the
+memory page size.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-pager-0.15
   (package
     (name "rust-pager")
