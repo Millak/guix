@@ -20,6 +20,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix download)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
@@ -38,70 +39,71 @@
                            name "-" version ".tar.gz"))
        (sha256
         (base32 "1sh9chg5q10c3bzsmgl1pb7pmdf04j2lqszhw8jk5qlxr9y8ybcq"))))
-    (inputs `(("bash" ,bash-minimal)
-              ("guile" ,guile-3.0-latest)
-              ("guile-json" ,guile-json-4)
-              ("guile-readline" ,guile-readline)
-              ("mcrl2" ,mcrl2-minimal)
-              ("sed" ,sed)))
+    (inputs (list bash-minimal
+                  guile-3.0-latest
+                  guile-json-4
+                  guile-readline
+                  mcrl2-minimal
+                  sed))
     (native-inputs (list guile-3.0-latest pkg-config))
     (build-system gnu-build-system)
     (arguments
-     `(#:modules ((ice-9 popen)
+     (list
+      #:modules `((ice-9 popen)
                   ,@%gnu-build-system-modules)
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-tests
-           (lambda _
-             ;; The mCRL2 output for these tests is unstable, i.e., varies
-             ;; between different builds.
-             (substitute* "Makefile.in"
-               (("test/all/compliance_blocking_double_release ") " ")
-               (("test/all/illegal_external_nonsynchronous ") " ")
-               (("test/all/livelock_synchronous_illegal ") " ")
-               (("test/all/queuefull_external_sync ") " "))))
-         (add-before 'configure 'setenv
-           (lambda _
-             (setenv "GUILE_AUTO_COMPILE" "0")))
-         (add-after 'install 'install-readmes
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (base (string-append ,name "-" ,version))
-                    (doc (string-append out "/share/doc/" base)))
-               (mkdir-p doc)
-               (copy-file "NEWS" (string-append doc "/NEWS")))))
-         (add-after 'install 'wrap-binaries
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bash (assoc-ref %build-inputs "bash"))
-                    (guile (assoc-ref %build-inputs "guile"))
-                    (json (assoc-ref %build-inputs "guile-json"))
-                    (mcrl2 (assoc-ref %build-inputs "mcrl2"))
-                    (readline (assoc-ref %build-inputs "guile-readline"))
-                    (sed (assoc-ref %build-inputs "sed"))
-                    (effective (read
-                                (open-pipe* OPEN_READ
-                                            "guile" "-c"
-                                            "(write (effective-version))")))
-                    (path (list (string-append bash "/bin")
-                                (string-append guile "/bin")
-                                (string-append mcrl2 "/bin")
-                                (string-append sed "/bin")))
-                    (scm-dir (string-append "/share/guile/site/" effective))
-                    (scm-path
-                     (list (string-append out scm-dir)
-                           (string-append json scm-dir)
-                           (string-append readline scm-dir)))
-                    (go-dir (string-append "/lib/guile/" effective
-                                           "/site-ccache/"))
-                    (go-path (list (string-append out go-dir)
-                                   (string-append json go-dir)
-                                   (string-append readline go-dir))))
-               (wrap-program (string-append out "/bin/dzn")
-                 `("PATH" ":" prefix ,path)
-                 `("GUILE_AUTO_COMPILE" ":" = ("0"))
-                 `("GUILE_LOAD_PATH" ":" prefix ,scm-path)
-                 `("GUILE_LOAD_COMPILED_PATH" ":" prefix ,go-path))))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-tests
+            (lambda _
+              ;; The mCRL2 output for these tests is unstable, i.e., varies
+              ;; between different builds.
+              (substitute* "Makefile.in"
+                (("test/all/compliance_blocking_double_release ") " ")
+                (("test/all/illegal_external_nonsynchronous ") " ")
+                (("test/all/livelock_synchronous_illegal ") " ")
+                (("test/all/queuefull_external_sync ") " "))))
+          (add-before 'configure 'setenv
+            (lambda _
+              (setenv "GUILE_AUTO_COMPILE" "0")))
+          (add-after 'install 'install-readmes
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (base (string-append #$name "-" #$version))
+                     (doc (string-append out "/share/doc/" base)))
+                (mkdir-p doc)
+                (copy-file "NEWS" (string-append doc "/NEWS")))))
+          (add-after 'install 'wrap-binaries
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (bash (assoc-ref %build-inputs "bash-minimal"))
+                     (guile (assoc-ref %build-inputs "guile"))
+                     (json (assoc-ref %build-inputs "guile-json"))
+                     (mcrl2 (assoc-ref %build-inputs "mcrl2-minimal"))
+                     (readline (assoc-ref %build-inputs "guile-readline"))
+                     (sed (assoc-ref %build-inputs "sed"))
+                     (effective (read
+                                 (open-pipe* OPEN_READ
+                                             "guile" "-c"
+                                             "(write (effective-version))")))
+                     (path (list (string-append bash "/bin")
+                                 (string-append guile "/bin")
+                                 (string-append mcrl2 "/bin")
+                                 (string-append sed "/bin")))
+                     (scm-dir (string-append "/share/guile/site/" effective))
+                     (scm-path
+                      (list (string-append out scm-dir)
+                            (string-append json scm-dir)
+                            (string-append readline scm-dir)))
+                     (go-dir (string-append "/lib/guile/" effective
+                                            "/site-ccache/"))
+                     (go-path (list (string-append out go-dir)
+                                    (string-append json go-dir)
+                                    (string-append readline go-dir))))
+                (wrap-program (string-append out "/bin/dzn")
+                  `("PATH" ":" prefix ,path)
+                  `("GUILE_AUTO_COMPILE" ":" = ("0"))
+                  `("GUILE_LOAD_PATH" ":" prefix ,scm-path)
+                  `("GUILE_LOAD_COMPILED_PATH" ":" prefix ,go-path))))))))
     (synopsis "Programming language with verifyable formal semantics")
     (description "Dezyne is a programming language and a set of tools to
 specify, validate, verify, simulate, document, and implement concurrent
