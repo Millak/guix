@@ -12663,9 +12663,13 @@ JSON Reference and JSON Pointer.")
      (origin
        (method url-fetch)
        (uri (pypi-uri "fastbencode" version))
+       (modules '((guix build utils)))
+       ;; Delete pre-generated Cython C files.
+       (snippet '(for-each delete-file (find-files "." "\\.c$")))
        (sha256
         (base32 "1r66w3vpmvfmssshjpgqaj2m14c8p94nymr96mwn61idajz9mg5n"))))
     (build-system python-build-system)
+    (native-inputs (list python-cython))
     (home-page "https://github.com/breezy-team/fastbencode")
     (synopsis "Python Bencode (de)serializer with optional fast C extensions")
     (description
