@@ -11307,9 +11307,9 @@ and interactive quality reports.  The pipeline is designed to work with UMI
 based methods.")
     (license license:gpl3+)))
 
-(define-public pigx-sars-cov2-ww
+(define-public pigx-sars-cov-2
   (package
-    (name "pigx-sars-cov2-ww")
+    (name "pigx-sars-cov-2")
     (version "0.0.5")
     (source (origin
               (method url-fetch)
@@ -11372,6 +11372,9 @@ SARS-CoV-2.  The pipeline can be used for continuous sampling.  The output
 report will provide an intuitive visual overview about the development of
 variant abundance over time and location.")
     (license license:gpl3+)))
+
+(define-public pigx-sars-cov2-ww
+  (deprecated-package "pigx-sars-cov2-ww" pigx-sars-cov-2))
 
 (define-public pigx
   (package
