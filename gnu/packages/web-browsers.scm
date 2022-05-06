@@ -167,23 +167,24 @@ management, extensions such as advertisement blocker and colorful tabs.")
                 "1jy90k04kl7y3l8jzg5jx7fglyqzngng0964j7j67gjxy9vkanzh"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags '("--enable-graphics")
+     (list
+       #:configure-flags #~(list "--enable-graphics")
        #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key outputs (configure-flags '()) #:allow-other-keys)
-             ;; The tarball uses a very old version of autoconf. It doesn't
-             ;; understand extra flags like `--enable-fast-install', so
-             ;; we need to invoke it with just what it understands.
-             (let ((out (assoc-ref outputs "out")))
-               ;; 'configure' doesn't understand '--host'.
-               ,@(if (%current-target-system)
-                     `((setenv "CHOST" ,(%current-target-system)))
-                     '())
-               (setenv "CONFIG_SHELL" (which "bash"))
-               (apply invoke "./configure"
-                      (string-append "--prefix=" out)
-                      configure-flags)))))))
+       #~(modify-phases %standard-phases
+           (replace 'configure
+             (lambda* (#:key outputs (configure-flags '()) #:allow-other-keys)
+               ;; The tarball uses a very old version of autoconf. It doesn't
+               ;; understand extra flags like `--enable-fast-install', so
+               ;; we need to invoke it with just what it understands.
+               (let ((out (assoc-ref outputs "out")))
+                 ;; 'configure' doesn't understand '--host'.
+                 #$@(if (%current-target-system)
+                       #~((setenv "CHOST" #$(%current-target-system)))
+                       #~())
+                 (setenv "CONFIG_SHELL" (which "bash"))
+                 (apply invoke "./configure"
+                        (string-append "--prefix=" out)
+                        configure-flags)))))))
     (native-inputs (list pkg-config))
     (inputs
      (list gpm
