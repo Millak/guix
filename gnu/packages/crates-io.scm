@@ -40613,7 +40613,7 @@ synchronization primitives.")
 (define-public rust-parking-lot-core-0.8
   (package
     (name "rust-parking-lot-core")
-    (version "0.8.0")
+    (version "0.8.4")
     (source
      (origin
        (method url-fetch)
@@ -40621,7 +40621,7 @@ synchronization primitives.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "16yazfg3sq9mz6cfdkhgbv8yvc1kkasyhys4y7r3g16hgmralqf3"))))
+         "08n7w09q6b2prvazbzgwrc9ml7aaf8yg3132ifsayrkwy1nwwzs6"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
