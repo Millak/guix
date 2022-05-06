@@ -6808,45 +6808,39 @@ retrieve text and metadata from PDFs as well as merge entire files together.")
   (package
     (name "python-pillow")
     (version "9.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "Pillow" version))
-       (sha256
-        (base32
-         "0gjry0yqryd2678sm47jhdnbghzxn5wk8pgyaqwr4qi7x5ijjvpf"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           (delete-file-recursively "src/thirdparty")))))
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "Pillow" version))
+              (sha256
+               (base32
+                "0gjry0yqryd2678sm47jhdnbghzxn5wk8pgyaqwr4qi7x5ijjvpf"))
+              (modules '((guix build utils)))
+              (snippet '(begin
+                          (delete-file-recursively "src/thirdparty")))))
     (build-system python-build-system)
-    (native-inputs
-     (list python-pytest))
-    (inputs
-     (list freetype
-           lcms
-           libjpeg-turbo
-           libtiff
-           libwebp
-           openjpeg
-           zlib))
-    (propagated-inputs
-     (list python-olefile))
+    (native-inputs (list python-pytest))
+    (inputs (list freetype
+                  lcms
+                  libjpeg-turbo
+                  libtiff
+                  libwebp
+                  openjpeg
+                  zlib))
+    (propagated-inputs (list python-olefile))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-ldconfig
-           (lambda _
-             (substitute* "setup.py"
-               (("\\['/sbin/ldconfig', '-p'\\]") "['true']"))))
-         (replace 'check
-           (lambda* (#:key outputs inputs tests? #:allow-other-keys)
-             (when tests?
-               (setenv "HOME" (getcwd))
-               ;; Make installed package available for running the tests.
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "selftest.py" "--installed")
-               (invoke "python" "-m" "pytest" "-vv")))))))
+     `(#:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'patch-ldconfig
+                    (lambda _
+                      (substitute* "setup.py"
+                        (("\\['/sbin/ldconfig', '-p'\\]") "['true']"))))
+                  (replace 'check
+                    (lambda* (#:key outputs inputs tests? #:allow-other-keys)
+                      (when tests?
+                        (setenv "HOME"
+                                (getcwd))
+                        (add-installed-pythonpath inputs outputs)
+                        (invoke "python" "selftest.py" "--installed")
+                        (invoke "python" "-m" "pytest" "-vv")))))))
     (home-page "https://python-pillow.org")
     (synopsis "Fork of the Python Imaging Library")
     (description
@@ -6856,8 +6850,7 @@ efficient internal representation, and fairly powerful image processing
 capabilities.  The core image library is designed for fast access to data
 stored in a few basic pixel formats.  It should provide a solid foundation for
 a general image processing tool.")
-    (properties `((python2-variant . ,(delay python2-pillow))
-                  (cpe-name . "pillow")))
+    (properties `((cpe-name . "pillow")))
     (license (license:x11-style
               "http://www.pythonware.com/products/pil/license.htm"
               "The PIL Software License"))))
