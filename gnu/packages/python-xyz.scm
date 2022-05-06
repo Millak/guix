@@ -8735,21 +8735,19 @@ connect strings, then issue SQL commands within IPython or IPython Notebook.")
 (define-public python-traitlets
   (package
     (name "python-traitlets")
-    (version "4.3.3")
+    (version "5.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "traitlets" version))
        (sha256
         (base32
-         "1xsrwgivpkxlbr4dfndfsi098s29yqgswgjc1qqn69yxklvfw8yh"))))
+         "1ivhxglsrnhqw4g98ihddn7i5f6976gpk31fijwq473wb9n4b7q5"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (replace 'check (lambda _ (invoke "pytest" "-vv" "traitlets"))))))
-    (propagated-inputs
-     (list python-ipython-genutils python-decorator python-six))
     (native-inputs
      (list python-pytest))
     (home-page "https://ipython.org")
