@@ -473,6 +473,10 @@ debugging tools.")
 @code{Tcl_StackChannel} API for Tcl 8.2 and higher.  The sockets behave
 exactly the same as channels created using Tcl's built-in socket command with
 additional options for controlling the SSL session.")
+    (properties
+     '((release-monitoring-url
+        . "https://core.tcl-lang.org/tcltls/wiki/Download")
+       (upstream-name . "tcltls")))
     (license license:public-domain)))
 
 (define-public go-github.com-nsf-gothic
