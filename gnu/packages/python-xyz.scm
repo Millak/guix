@@ -24403,6 +24403,32 @@ Stamen, and supports custom tilesets with Mapbox or Cloudmade API keys.  It
 supports Image, Video, GeoJSON and TopoJSON overlays.")
     (license license:expat)))
 
+(define-public python-mercantile
+  (package
+    (name "python-mercantile")
+    (version "1.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "mercantile" version))
+       (sha256
+        (base32 "0sxmndhzzrvss5irsgzfrk51k6jihwcb7661992mizdgbnqnsg7s"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-click))
+    (native-inputs
+     (list python-check-manifest python-hypothesis python-pytest))
+    (home-page "https://github.com/mapbox/mercantile")
+    (synopsis "Web mercator XYZ tile utilities")
+    (description "The mercantile module provides @code{ul(xtile, ytile, zoom)}
+and @code{bounds(xtile, ytile, zoom)} functions that respectively return the
+upper left corner and bounding longitudes and latitudes for XYZ tiles, a
+@code{xy(lng, lat)} function that returns spherical mercator x and y
+coordinates, a @code{tile(lng, lat, zoom)} function that returns the tile
+containing a given point, and quadkey conversion functions
+@code{quadkey(xtile, ytile, zoom)} and @code{quadkey_to_tile(quadkey)} for
+translating between quadkey and tile coordinates.")
+    (license license:bsd-3)))
+
 (define-public jube
   (package
     ;; This is a command-line tool, so no "python-" prefix.
