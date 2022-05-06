@@ -743,9 +743,9 @@ compatible with normal Python as possible to allow you to transfer code with
 ease from the desktop to a microcontroller or embedded system.")
     (license license:expat)))
 
-(define-public pypy3
+(define-public pypy
   (package
-    (name "pypy3")
+    (name "pypy")
     (version "7.3.5")
     (source (origin
               (method url-fetch)
@@ -755,148 +755,144 @@ ease from the desktop to a microcontroller or embedded system.")
                (base32
                 "18lrdmpcczlbk3cfarkgwqdmilrybz56i1dafk8dkjlyk90gw86r"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                      ;FIXME: 43 out of 364 tests are failing
+      #:modules '((ice-9 ftw) (ice-9 match)
+                  (guix build utils) (guix build gnu-build-system))
+      #:disallowed-references (list nss-certs)
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'unpack 'patch-source
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* '("rpython/rlib/clibffi.py")
+                ;; find_library does not work for libc
+                (("ctypes\\.util\\.find_library\\('c'\\)") "'libc.so'"))
+              (substitute* '("lib_pypy/cffi/_pycparser/ply/cpp.py")
+                ;; Make reproducible (XXX: unused?)
+                (("time\\.localtime\\(\\)") "time.gmtime(0)"))
+              (substitute* '("pypy/module/sys/version.py")
+                ;; Make reproducible
+                (("t\\.gmtime\\(\\)") "t.gmtime(0)"))
+              (substitute* '("lib_pypy/_tkinter/tklib_build.py")
+                ;; Link to versioned libtcl and libtk
+                (("linklibs = \\['tcl', 'tk'\\]")
+                 "linklibs = ['tcl8.6', 'tk8.6']")
+                (("incdirs = \\[\\]")
+                 (string-append
+                  "incdirs = ['"
+                  #$(this-package-input "tcl") "/include', '"
+                  #$(this-package-input "tk")  "/include']")))
+              (substitute* '("lib_pypy/_curses_build.py")
+                ;; Find curses
+                (("/usr/local")
+                 #$(this-package-input "ncurses")))
+              (substitute* '("lib_pypy/_dbm.py")
+                ;; Use gdbm compat library, so we don’t need to pull
+                ;; in bdb.
+                (("ctypes.util.find_library\\('db'\\)")
+                 (format #f "~s" (search-input-file
+                                  inputs "lib/libgdbm_compat.so"))))
+              (substitute* '("lib_pypy/_sqlite3_build.py")
+                ;; Always use search paths
+                (("sys\\.platform\\.startswith\\('freebsd'\\)") "True")
+                ;; Find sqlite3
+                (("/usr/local") (assoc-ref inputs "sqlite"))
+                (("libname = 'sqlite3'")
+                 (format #f "libname = ~s"
+                         (search-input-file inputs "lib/libsqlite3.so.0"))))
+              (substitute* '("lib-python/3/subprocess.py")
+                ;; Fix shell path
+                (("/bin/sh")
+                 (search-input-file inputs "/bin/sh")))
+              (substitute* '("lib-python/3/distutils/unixccompiler.py")
+                ;; gcc-toolchain does not provide symlink cc -> gcc
+                (("\"cc\"") "\"gcc\""))))
+          (add-after 'unpack 'set-source-file-times-to-1980
+            ;; copied from python package, required by zip testcase
+            (lambda _
+              (let ((circa-1980 (* 10 366 24 60 60)))
+                (ftw "." (lambda (file stat flag)
+                           (utime file circa-1980 circa-1980)
+                           #t)))))
+          (replace 'build
+            (lambda _
+              (with-directory-excursion "pypy/goal"
+                ;; Build with jit optimization.
+                (invoke "python2"
+                        "../../rpython/bin/rpython"
+                        (string-append "--make-jobs="
+                                       (number->string (parallel-job-count)))
+                        "-Ojit"
+                        "targetpypystandalone"
+                        "--allworkingmodules"))
+              ;; Build c modules and package everything, so tests work.
+              (with-directory-excursion "pypy/tool/release"
+                (invoke "python2" "package.py"
+                        "--archive-name" "pypy-dist"
+                        "--builddir" (getcwd)))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests?
+                  (begin
+                    (setenv "HOME" "/tmp") ; test_with_pip tries to
+                                        ; access ~/.cache/pip
+                    ;; Run library tests only (no interpreter unit tests).
+                    ;; This is what Gentoo does.
+                    (invoke "python" "pypy/test_all.py"
+                            "--pypy=pypy/tool/release/pypy-dist/bin/pypy3"
+                            "lib-python"))
+                  (format #t "test suite not run~%"))))
+          (replace 'install
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((bin-pypy3 (string-append #$output "/bin/pypy3"))
+                     (shebang-match-python "#!.+/bin/python")
+                     (shebang-pypy3 (string-append "#!" bin-pypy3))
+                     (dist-dir "pypy/tool/release/pypy-dist"))
+                (with-directory-excursion dist-dir
+                  ;; Delete test data.
+                  (for-each
+                   (lambda (x)
+                     (delete-file-recursively (string-append
+                                               "lib-python/3/" x)))
+                   '("tkinter/test"
+                     "test"
+                     "sqlite3/test"
+                     "lib2to3/tests"
+                     "idlelib/idle_test"
+                     "distutils/tests"
+                     "ctypes/test"
+                     "unittest/test"))
+                  ;; Patch shebang referencing python.
+                  (substitute* '("lib-python/3/cgi.py"
+                                 "lib-python/3/encodings/rot_13.py")
+                    ((shebang-match-python) shebang-pypy3))
+                  (with-fluids ((%default-port-encoding "ISO-8859-1"))
+                    (substitute* '("lib_pypy/_md5.py"
+                                   "lib_pypy/_sha1.py")
+                      ((shebang-match-python) shebang-pypy3))))
+                (copy-recursively dist-dir out)))))))
     (native-inputs
-     `(("python-2" ,python-2)
-       ("pkg-config" ,pkg-config)
-       ("tar" ,tar)                     ; Required for package.py
-       ("python2-pycparser" ,python2-pycparser)
-       ("python2-hypothesis" ,python2-hypothesis)
-       ("nss-certs" ,nss-certs)         ; For ssl tests
-       ("gzip" ,gzip)))
+     (list gzip
+           nss-certs                    ; For ssl tests
+           pkg-config
+           python-2
+           python2-pycparser
+           tar))                        ; Required for package.py
     (inputs
-     (list libffi
-           zlib
+     (list bzip2
+           expat
+           gdbm
+           glibc
+           libffi
            ncurses
            openssl
-           expat
-           bzip2
            sqlite
-           gdbm
            tcl
            tk
-           glibc
-           xz))                     ; liblzma
-    (arguments
-     `(#:tests? #f                     ;FIXME: 43 out of 364 tests are failing
-       #:modules ((ice-9 ftw) (ice-9 match)
-                  (guix build utils) (guix build gnu-build-system))
-       #:disallowed-references (,nss-certs)
-       #:phases (modify-phases %standard-phases
-                  (delete 'configure)
-                  (add-after 'unpack 'patch-source
-                    (lambda* (#:key inputs outputs #:allow-other-keys)
-                      (substitute* '("rpython/rlib/clibffi.py")
-                        ;; find_library does not work for libc
-                        (("ctypes\\.util\\.find_library\\('c'\\)") "'libc.so'"))
-                      (substitute* '("lib_pypy/cffi/_pycparser/ply/cpp.py")
-                        ;; Make reproducible (XXX: unused?)
-                        (("time\\.localtime\\(\\)") "time.gmtime(0)"))
-                      (substitute* '("pypy/module/sys/version.py")
-                        ;; Make reproducible
-                        (("t\\.gmtime\\(\\)") "t.gmtime(0)"))
-                      (substitute* '("lib_pypy/_tkinter/tklib_build.py")
-                        ;; Link to versioned libtcl and libtk
-                        (("linklibs = \\['tcl', 'tk'\\]")
-                         "linklibs = ['tcl8.6', 'tk8.6']")
-                        (("incdirs = \\[\\]")
-                         (string-append "incdirs = ['"
-                                        (assoc-ref inputs "tcl")
-                                        "/include', '"
-                                        (assoc-ref inputs "tk")
-                                        "/include']")))
-                      (substitute* '("lib_pypy/_curses_build.py")
-                        ;; Find curses
-                        (("/usr/local") (assoc-ref inputs "ncurses")))
-                      (substitute* '("lib_pypy/_dbm.py")
-                        ;; Use gdbm compat library, so we don’t need to pull
-                        ;; in bdb.
-                        (("ctypes.util.find_library\\('db'\\)")
-                         (format #f "'~a/lib/libgdbm_compat.so'"
-                                 (assoc-ref inputs "gdbm"))))
-                      (substitute* '("lib_pypy/_sqlite3_build.py")
-                        ;; Always use search paths
-                        (("sys\\.platform\\.startswith\\('freebsd'\\)") "True")
-                        ;; Find sqlite3
-                        (("/usr/local") (assoc-ref inputs "sqlite"))
-                        (("libname = 'sqlite3'")
-                         (string-append "libname = '"
-                                        (assoc-ref inputs "sqlite")
-                                        "/lib/libsqlite3.so.0'")))
-                      (substitute* '("lib-python/3/subprocess.py")
-                        ;; Fix shell path
-                        (("/bin/sh")
-                         (search-input-file inputs "/bin/sh")))
-                      (substitute* '("lib-python/3/distutils/unixccompiler.py")
-                        ;; gcc-toolchain does not provide symlink cc -> gcc
-                        (("\"cc\"") "\"gcc\""))))
-                  (add-after
-                      'unpack 'set-source-file-times-to-1980
-                    ;; copied from python package, required by zip testcase
-                    (lambda _
-                      (let ((circa-1980 (* 10 366 24 60 60)))
-                        (ftw "." (lambda (file stat flag)
-                                   (utime file circa-1980 circa-1980)
-                                   #t)))))
-                  (replace 'build
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (with-directory-excursion "pypy/goal"
-                        ;; Build with jit optimization.
-                        (invoke "python2"
-                                "../../rpython/bin/rpython"
-                                (string-append "--make-jobs="
-                                               (number->string (parallel-job-count)))
-                                "-Ojit"
-                                "targetpypystandalone"
-                                "--allworkingmodules"))
-                      ;; Build c modules and package everything, so tests work.
-                      (with-directory-excursion "pypy/tool/release"
-                        (invoke "python2" "package.py"
-                                "--archive-name" "pypy-dist"
-                                "--builddir" (getcwd)))))
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (if tests?
-                          (begin
-                            (setenv "HOME" "/tmp") ; test_with_pip tries to
-                                        ; access ~/.cache/pip
-                            ;; Run library tests only (no interpreter unit
-                            ;; tests). This is what Gentoo does.
-                            (invoke
-                             "python2"
-                             "pypy/test_all.py"
-                             "--pypy=pypy/tool/release/pypy-dist/bin/pypy3"
-                             "lib-python"))
-                          (format #t "test suite not run~%"))))
-                  (replace 'install
-                    (lambda* (#:key inputs outputs #:allow-other-keys)
-                      (let* ((out (assoc-ref outputs "out"))
-                             (bin-pypy3 (string-append out "/bin/pypy3"))
-                             (shebang-match-python "#!.+/bin/python")
-                             (shebang-pypy3 (string-append "#!" bin-pypy3))
-                             (dist-dir "pypy/tool/release/pypy-dist"))
-                        (with-directory-excursion dist-dir
-                          ;; Delete test data.
-                          (for-each
-                           (lambda (x)
-                             (delete-file-recursively (string-append
-                                                       "lib-python/3/" x)))
-                           '("tkinter/test"
-                             "test"
-                             "sqlite3/test"
-                             "lib2to3/tests"
-                             "idlelib/idle_test"
-                             "distutils/tests"
-                             "ctypes/test"
-                             "unittest/test"))
-                          ;; Patch shebang referencing python2
-                          (substitute* '("lib-python/3/cgi.py"
-                                         "lib-python/3/encodings/rot_13.py")
-                            ((shebang-match-python) shebang-pypy3))
-                          (with-fluids ((%default-port-encoding "ISO-8859-1"))
-                            (substitute* '("lib_pypy/_md5.py"
-                                           "lib_pypy/_sha1.py")
-                              ((shebang-match-python) shebang-pypy3))))
-                        (copy-recursively dist-dir out)))))))
+           xz
+           zlib))
     (home-page "https://www.pypy.org/")
     (synopsis "Python implementation with just-in-time compilation")
     (description "PyPy is a faster, alternative implementation of the Python
@@ -910,3 +906,5 @@ Python code natively, including C extensions.")
                    (license:non-copyleft
                     "http://www.unicode.org/copyright.html")))))
 
+(define-public pypy3
+  (deprecated-package "pypy3" pypy))
