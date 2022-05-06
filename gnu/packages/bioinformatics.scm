@@ -11310,23 +11310,20 @@ based methods.")
 (define-public pigx-sars-cov-2
   (package
     (name "pigx-sars-cov-2")
-    (version "0.0.5")
+    (version "0.0.7")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://github.com/BIMSBbioinfo/pigx_sarscov2_ww/"
-                                  "releases/download/v" version
-                                  "/pigx_sars-cov2-ww-" version ".tar.gz"))
+              (uri (string-append "https://github.com/BIMSBbioinfo/pigx_sars-cov-2"
+                                  "/releases/download/v" version
+                                  "/pigx_sars-cov-2-" version ".tar.gz"))
               (sha256
                (base32
-                "1fkr9gp09zl5n7kdqmy9lrnq28k2z97wg74wgkyfssfyxvmq9cr2"))))
+                "1bqm03ypf7l8lrkjkydxzn7vy0qlps3v9c5cpz2wb008zw44bi3k"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ;requires huge kraken database
        #:phases
        (modify-phases %standard-phases
-         (add-before 'bootstrap 'autoreconf
-           (lambda _
-             (invoke "autoreconf" "-vif")))
          (add-before 'configure 'set-PYTHONPATH
            (lambda _
              (setenv "PYTHONPATH" (getenv "GUIX_PYTHONPATH")))))))
@@ -11334,7 +11331,6 @@ based methods.")
      (list automake autoconf))
     (inputs
      (list bash-minimal
-           bbmap
            bedtools
            bwa
            ensembl-vep
@@ -11345,7 +11341,6 @@ based methods.")
            krona-tools
            lofreq
            multiqc
-           prinseq
            python-pyyaml
            python-wrapper
            r-base64url
@@ -11361,6 +11356,7 @@ based methods.")
            r-rmarkdown
            r-stringr
            r-tidyr
+           r-viridis
            samtools
            snakemake
            wget))
