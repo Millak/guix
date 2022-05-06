@@ -166,7 +166,7 @@ when jobs finish.")
 (define-public slurm
   (package
     (name "slurm")
-    (version "20.11.7")
+    (version "20.11.9")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -174,7 +174,7 @@ when jobs finish.")
                     version ".tar.bz2"))
               (sha256
                (base32
-                "1fdjihg1x7ks5l77yjv14a4mg6r0v8c3zk1dcxkhrhq3n4dc9nbs"))
+                "0xq2d6dm285y541dyg1h66z7svsisrq8c81ag0f601xz1cn3mq9m"))
               (modules '((guix build utils)))
               (snippet
                '(begin
