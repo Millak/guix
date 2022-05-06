@@ -6862,24 +6862,6 @@ a general image processing tool.")
               "http://www.pythonware.com/products/pil/license.htm"
               "The PIL Software License"))))
 
-(define-public python2-pillow
-  (package-with-python2
-   (package
-     (inherit (strip-python2-variant python-pillow))
-     ;; Version 6 is the last series with Python 2 support.
-     (version "6.2.2")
-     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "Pillow" version))
-        (sha256
-         (base32
-          "0l5rv8jkdrb5q846v60v03mcq64yrhklidjkgwv6s1pda71g17yv"))))
-     (arguments
-      (substitute-keyword-arguments (package-arguments python-pillow)
-        ;; FIXME: One of the tests is failing.
-        ((#:tests? _ #f) #f))))))
-
 (define-public python-pillow-2.9
   (package
     (inherit python-pillow)
