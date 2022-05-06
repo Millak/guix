@@ -517,6 +517,34 @@ sending queries to an SPARQL endpoint and fetching & presenting the results in
 a notebook.")
     (license license:bsd-3)))
 
+(define-public python-ipympl
+  (package
+    (name "python-ipympl")
+    (version "0.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ipympl" version))
+       (sha256
+        (base32 "11rppjdqzgs4pfiq8gww5xkpbk21fp86vvv839v56b9rqq06j2b4"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-ipython
+           python-ipython-genutils
+           python-ipywidgets
+           python-matplotlib
+           python-numpy
+           python-pillow
+           python-traitlets))
+    (native-inputs
+     (list python-jupyter-packaging))
+    (home-page "https://matplotlib.org/ipympl/")
+    (synopsis "Matplotlib Jupyter Extension")
+    (description "Leveraging the Jupyter interactive widgets framework, ipympl
+enables the interactive features of matplotlib in the Jupyter notebook and in
+JupyterLab.")
+    (license license:bsd-3)))
+
 (define-public python-voila
   (package
     (name "python-voila")
