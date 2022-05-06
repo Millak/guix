@@ -387,6 +387,30 @@ layers (evdev and uinput), making remapping work in almost all the places.")
 state.")
     (license license:gpl3+)))
 
+(define-public xkblayout
+  ;; Upstream doesn't have any version numbers
+  (let ((version "0.0.0")
+        (revision "0")
+        (commit "c0851b0f4bc9bc1a07240605baac8e50abe63fa8"))
+    (package
+      (name "xkblayout")
+      (version (git-version version revision commit))
+      (home-page "https://gitlab.freedesktop.org/whot/xkblayout")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url home-page)
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0057988l5l7pmwg7dp6cqvj5l4lr0g5z3wq189g6kz36l9rmh675"))))
+      (build-system python-build-system)
+      (synopsis "XKB layout template generator")
+      (description "xkblayout is a CLI application to generate templates for
+a new XKB layout, either in the user's home directory or the system directory.")
+      (license license:gpl3+))))
+
 (define-public xclip
   (package
     (name "xclip")
