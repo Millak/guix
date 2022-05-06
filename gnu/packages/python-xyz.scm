@@ -24429,6 +24429,33 @@ containing a given point, and quadkey conversion functions
 translating between quadkey and tile coordinates.")
     (license license:bsd-3)))
 
+(define-public python-xyzservices
+  (package
+    (name "python-xyzservices")
+    (version "2022.4.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "xyzservices" version))
+        (sha256
+          (base32 "1paxv4i0dws85md7csv7pf80jl3xh792mx8rxnsrk61ks3ivbsyg"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-vv")))))))
+    (native-inputs
+     (list python-pytest python-mercantile python-requests))
+    (home-page "https://github.com/geopandas/xyzservices")
+    (synopsis "Source of XYZ tiles providers")
+    (description "@code{xyzservices} is a lightweight library providing a
+repository of available XYZ services offering raster basemap tiles.  The
+repository is provided via Python API and as a compressed JSON file.")
+    (license license:bsd-3)))
+
 (define-public jube
   (package
     ;; This is a command-line tool, so no "python-" prefix.
