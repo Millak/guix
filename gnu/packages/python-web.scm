@@ -7394,3 +7394,21 @@ metadata from HTML markup.  Currently, extruct supports:
 @item Dublin Core Metadata (DC-HTML-2003)
 @end itemize")
     (license license:bsd-3)))
+
+(define-public python-wadllib
+  (package
+    (name "python-wadllib")
+    (version "1.3.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "wadllib" version))
+       (sha256
+        (base32 "1z65crvdsjxh9nahz1g6q021ijmv85ixmq88l96d61qh5imavndc"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-lazr-uri))
+    (home-page "https://launchpad.net/wadllib")
+    (synopsis "Web Application Description Language (WADL) navigation library")
+    (description "The @code{wadllib} Python library allows navigating HTTP
+resources using Web Application Description Language (WADL) files as guides.")
+    (license license:lgpl3)))
