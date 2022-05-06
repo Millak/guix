@@ -167,10 +167,11 @@ management, extensions such as advertisement blocker and colorful tabs.")
                 "1jy90k04kl7y3l8jzg5jx7fglyqzngng0964j7j67gjxy9vkanzh"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
+     `(#:configure-flags '("--enable-graphics")
+       #:phases
        (modify-phases %standard-phases
          (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
+           (lambda* (#:key outputs (configure-flags '()) #:allow-other-keys)
              ;; The tarball uses a very old version of autoconf. It doesn't
              ;; understand extra flags like `--enable-fast-install', so
              ;; we need to invoke it with just what it understands.
@@ -180,9 +181,9 @@ management, extensions such as advertisement blocker and colorful tabs.")
                      `((setenv "CHOST" ,(%current-target-system)))
                      '())
                (setenv "CONFIG_SHELL" (which "bash"))
-               (invoke "./configure"
-                       (string-append "--prefix=" out)
-                       "--enable-graphics")))))))
+               (apply invoke "./configure"
+                      (string-append "--prefix=" out)
+                      configure-flags)))))))
     (native-inputs (list pkg-config))
     (inputs `(("gpm" ,gpm)
               ("libevent" ,libevent)
