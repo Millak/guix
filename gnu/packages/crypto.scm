@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 David Thompson <davet@gnu.org>
-;;; Copyright © 2015, 2017, 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2017, 2018, 2019, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016 Lukas Gradl <lgradl@openmailbox>
 ;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -1546,8 +1546,6 @@ structure.  However CryFS is not considered stable yet by the developers.")
 (define-public rust-blake3-0.3
   (package
     (name "rust-blake3")
-    ;; Version 1 requires Rust >= 1.51.
-    ;; <https://github.com/BLAKE3-team/BLAKE3/releases/tag/1.0.0>
     (version "0.3.8")
     (source
       (origin
@@ -1568,6 +1566,48 @@ structure.  However CryFS is not considered stable yet by the developers.")
          ("rust-crypto-mac" ,rust-crypto-mac-0.8)
          ("rust-digest" ,rust-digest-0.9)
          ("rust-rayon" ,rust-rayon-1))))
+    (home-page "https://github.com/BLAKE3-team/BLAKE3")
+    (synopsis "BLAKE3 hash function Rust implementation")
+    (description "This crate provides the official Rust implementation of the
+BLAKE3 cryptographic hash function.  BLAKE3 is faster than MD5, SHA-1, SHA-2,
+SHA-3, and BLAKE2.")
+    ;; Users may choose between these two licenses when redistributing the
+    ;; program provided by this package.
+    (license (list license:cc0 license:asl2.0))))
+
+(define-public rust-blake3-1
+  (package
+    (name "rust-blake3")
+    (version "1.0.0")
+    ;; The crate does not include the reference_impl directory.
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/BLAKE3-team/BLAKE3")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "09xi7rjyi5hgxyfpias485x5argwqygvfl9sggiw221qjdfxpbdn"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:cargo-inputs
+      `(("rust-arrayref" ,rust-arrayref-0.3)
+        ("rust-arrayvec" ,rust-arrayvec-0.7)
+        ("rust-cc" ,rust-cc-1)
+        ("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-constant-time-eq" ,rust-constant-time-eq-0.1)
+        ("rust-crypto-mac" ,rust-crypto-mac-0.11)
+        ("rust-digest" ,rust-digest-0.9)
+        ("rust-rayon" ,rust-rayon-1))
+      #:cargo-development-inputs
+      `(("rust-cc" ,rust-cc-1)
+        ("rust-hex" ,rust-hex-0.4)
+        ("rust-page-size" ,rust-page-size-0.4)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rand-chacha" ,rust-rand-chacha-0.3))))
     (home-page "https://github.com/BLAKE3-team/BLAKE3")
     (synopsis "BLAKE3 hash function Rust implementation")
     (description "This crate provides the official Rust implementation of the
