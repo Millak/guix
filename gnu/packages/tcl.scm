@@ -449,18 +449,17 @@ debugging tools.")
     (inputs (list tcl))
     (propagated-inputs (list openssl))
     (arguments
-     '(#:configure-flags
-       (let ((out (assoc-ref %outputs "out"))
-             (tcl (assoc-ref %build-inputs "tcl"))
-             (ssllib (assoc-ref %build-inputs "openssl")))
-         (list "--with-ssl=libressl"
-               (string-append "-with-ssl-dir=" ssllib)
-               (string-append "--with-tcl=" tcl "/lib")
-               (string-append "--with-tclinclude=" tcl "/include")
-               (string-append "--exec-prefix=" out)
-               (string-append "--mandir=" out "/share/man")))
+     (list #:configure-flags
+           #~(let ((tcl #$(this-package-input "tcl")))
+               (list "--with-ssl=libressl"
+                     (string-append "-with-ssl-dir="
+                                    #$(this-package-input "openssl"))
+                     (string-append "--with-tcl=" tcl "/lib")
+                     (string-append "--with-tclinclude=" tcl "/include")
+                     (string-append "--exec-prefix=" #$output)
+                     (string-append "--mandir=" #$output "/share/man")))
 
-       #:test-target "test"))
+           #:test-target "test"))
     (search-paths
      (list (search-path-specification
             (variable "TCLLIBPATH")
