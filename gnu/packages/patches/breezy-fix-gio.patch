@@ -1,0 +1,338 @@
+This patch combines https://code.launchpad.net/~jelmer/brz/enable-gio/+merge/419150
+and https://bazaar.launchpad.net/~jelmer/brz/fix-gio/revision/7570.
+
+=== modified file 'breezy/transport/gio_transport.py'
+--- a/breezy/transport/gio_transport.py	2022-04-09 12:17:41 +0000
++++ b/breezy/transport/gio_transport.py	2022-04-09 12:33:51 +0000
+@@ -52,11 +52,7 @@
+ from ..tests.test_server import TestServer
+ 
+ try:
+-    import glib
+-except ImportError as e:
+-    raise errors.DependencyNotPresent('glib', e)
+-try:
+-    import gio
++    from gi.repository import Gio as gio
+ except ImportError as e:
+     raise errors.DependencyNotPresent('gio', e)
+ 
+
+@@ -57,6 +57,9 @@
+     raise errors.DependencyNotPresent('gio', e)
+ 
+ 
++from gi.repository.GLib import GError
++
++
+ class GioLocalURLServer(TestServer):
+     """A pretend server for local transports, using file:// urls.
+ 
+@@ -81,7 +84,7 @@
+     def __init__(self, transport, relpath):
+         FileStream.__init__(self, transport, relpath)
+         self.gio_file = transport._get_GIO(relpath)
+-        self.stream = self.gio_file.create()
++        self.stream = self.gio_file.create(0, None)
+ 
+     def _close(self):
+         self.stream.close()
+@@ -90,7 +93,7 @@
+         try:
+             # Using pump_string_file seems to make things crash
+             osutils.pumpfile(BytesIO(bytes), self.stream)
+-        except gio.Error as e:
++        except GError as e:
+             # self.transport._translate_gio_error(e,self.relpath)
+             raise errors.BzrError(str(e))
+ 
+@@ -98,12 +101,12 @@
+ class GioStatResult(object):
+ 
+     def __init__(self, f):
+-        info = f.query_info('standard::size,standard::type')
++        info = f.query_info('standard::size,standard::type', 0, None)
+         self.st_size = info.get_size()
+         type = info.get_file_type()
+-        if (type == gio.FILE_TYPE_REGULAR):
++        if type == gio.FileType.REGULAR:
+             self.st_mode = stat.S_IFREG
+-        elif type == gio.FILE_TYPE_DIRECTORY:
++        elif type == gio.FileType.DIRECTORY:
+             self.st_mode = stat.S_IFDIR
+ 
+ 
+@@ -122,7 +125,7 @@
+             user, netloc = netloc.rsplit('@', 1)
+         # Seems it is not possible to list supported backends for GIO
+         # so a hardcoded list it is then.
+-        gio_backends = ['dav', 'file', 'ftp', 'obex', 'sftp', 'ssh', 'smb']
++        gio_backends = ['dav', 'file', 'ftp', 'obex', 'sftp', 'ssh', 'smb', 'http']
+         if scheme not in gio_backends:
+             raise urlutils.InvalidURL(base,
+                                       extra="GIO support is only available for " +
+@@ -138,13 +141,10 @@
+                                            _from_transport=_from_transport)
+ 
+     def _relpath_to_url(self, relpath):
+-        full_url = urlutils.join(self.url, relpath)
+-        if isinstance(full_url, str):
+-            raise urlutils.InvalidURL(full_url)
+-        return full_url
++        return urlutils.join(self.url, relpath)
+ 
+     def _get_GIO(self, relpath):
+-        """Return the ftplib.GIO instance for this object."""
++        """Return the GIO instance for this object."""
+         # Ensures that a connection is established
+         connection = self._get_connection()
+         if connection is None:
+@@ -152,7 +152,7 @@
+             connection, credentials = self._create_connection()
+             self._set_connection(connection, credentials)
+         fileurl = self._relpath_to_url(relpath)
+-        file = gio.File(fileurl)
++        file = gio.File.new_for_uri(fileurl)
+         return file
+ 
+     def _auth_cb(self, op, message, default_user, default_domain, flags):
+@@ -197,7 +197,7 @@
+         try:
+             obj.mount_enclosing_volume_finish(res)
+             self.loop.quit()
+-        except gio.Error as e:
++        except GError as e:
+             self.loop.quit()
+             raise errors.BzrError(
+                 "Failed to mount the given location: " + str(e))
+@@ -209,12 +209,12 @@
+             user, password = credentials
+ 
+         try:
+-            connection = gio.File(self.url)
++            connection = gio.File.new_for_uri(self.url)
+             mount = None
+             try:
+                 mount = connection.find_enclosing_mount()
+-            except gio.Error as e:
+-                if (e.code == gio.ERROR_NOT_MOUNTED):
++            except GError as e:
++                if e.code == gio.IOErrorEnum.NOT_MOUNTED:
+                     self.loop = glib.MainLoop()
+                     ui.ui_factory.show_message('Mounting %s using GIO' %
+                                                self.url)
+@@ -227,7 +227,7 @@
+                     m = connection.mount_enclosing_volume(op,
+                                                           self._mount_done_cb)
+                     self.loop.run()
+-        except gio.Error as e:
++        except GError as e:
+             raise errors.TransportError(msg="Error setting up connection:"
+                                         " %s" % str(e), orig_error=e)
+         return connection, (user, password)
+@@ -257,8 +257,8 @@
+             if stat.S_ISREG(st.st_mode) or stat.S_ISDIR(st.st_mode):
+                 return True
+             return False
+-        except gio.Error as e:
+-            if e.code == gio.ERROR_NOT_FOUND:
++        except GError as e:
++            if e.code == gio.IOErrorEnum.NOT_FOUND:
+                 return False
+             else:
+                 self._translate_gio_error(e, relpath)
+@@ -281,10 +281,10 @@
+             buf = fin.read()
+             fin.close()
+             return BytesIO(buf)
+-        except gio.Error as e:
++        except GError as e:
+             # If we get a not mounted here it might mean
+             # that a bad path has been entered (or that mount failed)
+-            if (e.code == gio.ERROR_NOT_MOUNTED):
++            if e.code == gio.IOErrorEnum.NOT_MOUNTED:
+                 raise errors.PathError(relpath,
+                                        extra='Failed to get file, make sure the path is correct. '
+                                        + str(e))
+@@ -307,19 +307,19 @@
+             closed = True
+             try:
+                 f = self._get_GIO(tmppath)
+-                fout = f.create()
++                fout = f.create(0, None)
+                 closed = False
+                 length = self._pump(fp, fout)
+                 fout.close()
+                 closed = True
+                 self.stat(tmppath)
+                 dest = self._get_GIO(relpath)
+-                f.move(dest, flags=gio.FILE_COPY_OVERWRITE)
++                f.move(dest, flags=gio.FileCopyFlags.OVERWRITE)
+                 f = None
+                 if mode is not None:
+                     self._setmode(relpath, mode)
+                 return length
+-            except gio.Error as e:
++            except GError as e:
+                 self._translate_gio_error(e, relpath)
+         finally:
+             if not closed and fout is not None:
+@@ -335,7 +335,7 @@
+             f = self._get_GIO(relpath)
+             f.make_directory()
+             self._setmode(relpath, mode)
+-        except gio.Error as e:
++        except GError as e:
+             self._translate_gio_error(e, relpath)
+ 
+     def open_write_stream(self, relpath, mode=None):
+@@ -369,14 +369,11 @@
+                 f.delete()
+             else:
+                 raise errors.NotADirectory(relpath)
+-        except gio.Error as e:
++        except GError as e:
+             self._translate_gio_error(e, relpath)
+         except errors.NotADirectory as e:
+             # just pass it forward
+             raise e
+-        except Exception as e:
+-            mutter('failed to rmdir %s: %s' % (relpath, e))
+-            raise errors.PathError(relpath)
+ 
+     def append_file(self, relpath, file, mode=None):
+         """Append the text in the file-like object into the final
+@@ -392,7 +389,7 @@
+             result = 0
+             fo = self._get_GIO(tmppath)
+             fi = self._get_GIO(relpath)
+-            fout = fo.create()
++            fout = fo.create(0, None)
+             try:
+                 info = GioStatResult(fi)
+                 result = info.st_size
+@@ -400,11 +397,11 @@
+                 self._pump(fin, fout)
+                 fin.close()
+             # This separate except is to catch and ignore the
+-            # gio.ERROR_NOT_FOUND for the already existing file.
++            # gio.IOErrorEnum.NOT_FOUND for the already existing file.
+             # It is valid to open a non-existing file for append.
+             # This is caused by the broken gio append_to...
+-            except gio.Error as e:
+-                if e.code != gio.ERROR_NOT_FOUND:
++            except GError as e:
++                if e.code != gio.IOErrorEnum.NOT_FOUND:
+                     self._translate_gio_error(e, relpath)
+             length = self._pump(file, fout)
+             fout.close()
+@@ -413,9 +410,11 @@
+                 raise errors.BzrError("Failed to append size after "
+                                       "(%d) is not original (%d) + written (%d) total (%d)" %
+                                       (info.st_size, result, length, result + length))
+-            fo.move(fi, flags=gio.FILE_COPY_OVERWRITE)
++            fo.move(
++                fi, flags=gio.FileCopyFlags.OVERWRITE, cancellable=None,
++                progress_callback=None)
+             return result
+-        except gio.Error as e:
++        except GError as e:
+             self._translate_gio_error(e, relpath)
+ 
+     def _setmode(self, relpath, mode):
+@@ -429,8 +428,8 @@
+             try:
+                 f = self._get_GIO(relpath)
+                 f.set_attribute_uint32(gio.FILE_ATTRIBUTE_UNIX_MODE, mode)
+-            except gio.Error as e:
+-                if e.code == gio.ERROR_NOT_SUPPORTED:
++            except GError as e:
++                if e.code == gio.IOErrorEnum.NOT_SUPPORTED:
+                     # Command probably not available on this server
+                     mutter("GIO Could not set permissions to %s on %s. %s",
+                            oct(mode), self._remote_path(relpath), str(e))
+@@ -444,8 +443,8 @@
+                 mutter("GIO move (rename): %s => %s", rel_from, rel_to)
+             f = self._get_GIO(rel_from)
+             t = self._get_GIO(rel_to)
+-            f.move(t)
+-        except gio.Error as e:
++            f.move(t, flags=0, cancellable=None, progress_callback=None)
++        except GError as e:
+             self._translate_gio_error(e, rel_from)
+ 
+     def move(self, rel_from, rel_to):
+@@ -455,8 +454,8 @@
+                 mutter("GIO move: %s => %s", rel_from, rel_to)
+             f = self._get_GIO(rel_from)
+             t = self._get_GIO(rel_to)
+-            f.move(t, flags=gio.FILE_COPY_OVERWRITE)
+-        except gio.Error as e:
++            f.move(t, flags=gio.FileCopyFlags.OVERWRITE)
++        except GError as e:
+             self._translate_gio_error(e, relfrom)
+ 
+     def delete(self, relpath):
+@@ -466,7 +465,7 @@
+                 mutter("GIO delete: %s", relpath)
+             f = self._get_GIO(relpath)
+             f.delete()
+-        except gio.Error as e:
++        except GError as e:
+             self._translate_gio_error(e, relpath)
+ 
+     def external_url(self):
+@@ -489,11 +488,11 @@
+         try:
+             entries = []
+             f = self._get_GIO(relpath)
+-            children = f.enumerate_children(gio.FILE_ATTRIBUTE_STANDARD_NAME)
++            children = f.enumerate_children(gio.FILE_ATTRIBUTE_STANDARD_NAME, 0, None)
+             for child in children:
+                 entries.append(urlutils.escape(child.get_name()))
+             return entries
+-        except gio.Error as e:
++        except GError as e:
+             self._translate_gio_error(e, relpath)
+ 
+     def iter_files_recursive(self):
+@@ -519,7 +518,7 @@
+                 mutter("GIO stat: %s", relpath)
+             f = self._get_GIO(relpath)
+             return GioStatResult(f)
+-        except gio.Error as e:
++        except GError as e:
+             self._translate_gio_error(e, relpath, extra='error w/ stat')
+ 
+     def lock_read(self, relpath):
+@@ -556,21 +555,21 @@
+             mutter("GIO Error: %s %s" % (str(err), path))
+         if extra is None:
+             extra = str(err)
+-        if err.code == gio.ERROR_NOT_FOUND:
++        if err.code == gio.IOErrorEnum.NOT_FOUND:
+             raise errors.NoSuchFile(path, extra=extra)
+-        elif err.code == gio.ERROR_EXISTS:
++        elif err.code == gio.IOErrorEnum.EXISTS:
+             raise errors.FileExists(path, extra=extra)
+-        elif err.code == gio.ERROR_NOT_DIRECTORY:
++        elif err.code == gio.IOErrorEnum.NOT_DIRECTORY:
+             raise errors.NotADirectory(path, extra=extra)
+-        elif err.code == gio.ERROR_NOT_EMPTY:
++        elif err.code == gio.IOErrorEnum.NOT_EMPTY:
+             raise errors.DirectoryNotEmpty(path, extra=extra)
+-        elif err.code == gio.ERROR_BUSY:
++        elif err.code == gio.IOErrorEnum.BUSY:
+             raise errors.ResourceBusy(path, extra=extra)
+-        elif err.code == gio.ERROR_PERMISSION_DENIED:
++        elif err.code == gio.IOErrorEnum.PERMISSION_DENIED:
+             raise errors.PermissionDenied(path, extra=extra)
+-        elif err.code == gio.ERROR_HOST_NOT_FOUND:
++        elif err.code == gio.IOErrorEnum.HOST_NOT_FOUND:
+             raise errors.PathError(path, extra=extra)
+-        elif err.code == gio.ERROR_IS_DIRECTORY:
++        elif err.code == gio.IOErrorEnum.IS_DIRECTORY:
+             raise errors.PathError(path, extra=extra)
+         else:
+             mutter('unable to understand error for path: %s: %s', path, err)
+

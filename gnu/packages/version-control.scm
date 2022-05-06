@@ -187,29 +187,63 @@ as well as the classic centralized workflow.")
        (uri (string-append "https://launchpad.net/brz/"
                            (version-major+minor version) "/" version
                            "/+download/breezy-" version ".tar.gz"))
+       (modules '((guix build utils)))
+       ;; Delete pre-generated Cython C files.
+       (snippet '(for-each delete-file (find-files "." "\\pyx.c$")))
        (sha256
-        (base32 "1md4b6ajawf5h50fqizmjj0g833ihc674dh7fn0mvl4d412nwyhq"))))
+        (base32
+         "1md4b6ajawf5h50fqizmjj0g833ihc674dh7fn0mvl4d412nwyhq"))
+       (patches (search-patches "breezy-fix-gio.patch"))))
     (build-system python-build-system)
-    ;; TODO: Maybe regenerate C files with Cython?
-    (inputs
-     `(("gettext" ,gettext-minimal)
-       ("python-configobj" ,python-configobj)
-       ("python-dulwich" ,python-dulwich)
-       ("python-fastbencode" ,python-fastbencode)
-       ("python-fastimport" ,python-fastimport)
-       ("python-paramiko" ,python-paramiko)
-       ("python-patiencediff" ,python-patiencediff)
-       ("python-pycryptodome" ,python-pycryptodome)
-       ("python-pygpgme" ,python-pygpgme)))
     (arguments
-     `(#:tests? #f))                    ; no tests in release tarball
+     (list
+      #:tests? #f                       ;FIXME: the test suite hangs
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-test-shebangs
+            (lambda _
+              (substitute* (append (find-files "breezy/bzr/tests")
+                                   (find-files "breezy/tests"))
+                (("#!/bin/sh")
+                 (format #f "#!~a" (which "sh"))))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; The test_read_bundle tests fails with "TypeError: a
+                ;; bytes-like object is required, not '_ResultTuple'" (see:
+                ;; https://bugs.launchpad.net/brz/+bug/1968415/comments/4).
+                (substitute* "breezy/bzr/tests/__init__.py"
+                  (("'test_read_bundle'," all)
+                   (string-append "# " all)))
+                (setenv "BZR_EDITOR" "nano")
+                (setenv "HOME" "/tmp")
+                (invoke "testr" "init")
+                (invoke "testr" "run")))))))
+    (native-inputs
+     (list nano                         ;for tests
+           python-cython
+           python-docutils
+           python-subunit
+           python-testrepository))
+    (inputs
+     (list gettext-minimal
+           python-configobj
+           python-dulwich
+           python-fastbencode
+           python-fastimport
+           python-launchpadlib
+           python-paramiko
+           python-patiencediff
+           python-pycryptodome
+           python-pygobject
+           python-pygpgme))
     (home-page "https://www.breezy-vcs.org/")
     (synopsis "Decentralized revision control system")
     (description
      "Breezy (@command{brz}) is a decentralized revision control system.  By
 default, Breezy provides support for both the
-@uref{https://www.bazaar-vcs.org, Bazaar} and @uref{https://www.git-scm.com,
-Git} file formats.  Breezy is backwards compatible with Bazaar's disk format
+@uref{https://bazaar.canonical.com/, Bazaar} and @uref{https://www.git-scm.com,
+Git} file formats.  Breezy is backwabrds compatible with Bazaar's disk format
 and protocols.  One of the key differences with Bazaar is that Breezy runs on
 Python 3.3 and later, rather than on Python 2.")
     (license license:gpl2+)))
