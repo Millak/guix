@@ -185,14 +185,15 @@ management, extensions such as advertisement blocker and colorful tabs.")
                       (string-append "--prefix=" out)
                       configure-flags)))))))
     (native-inputs (list pkg-config))
-    (inputs `(("gpm" ,gpm)
-              ("libevent" ,libevent)
-              ("libjpeg" ,libjpeg-turbo)
-              ("libpng" ,libpng)
-              ("libtiff" ,libtiff)
-              ("libxt" ,libxt)
-              ("openssl" ,openssl)
-              ("zlib" ,zlib)))
+    (inputs
+     (list gpm
+           libevent
+           libjpeg-turbo
+           libpng
+           libtiff
+           libxt
+           openssl
+           zlib))
     (synopsis "Text and graphics mode web browser")
     (description "Links is a graphics and text mode web browser, with many
 features including, tables, builtin image display, bookmarks, SSL and more.")
