@@ -20,7 +20,7 @@
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
-;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Jacob Hrbek <kreyren@rixotstudio.cz>
 ;;; Copyright © 2021 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
@@ -29075,7 +29075,7 @@ data efficiently.")
 (define-public rust-instant-0.1
   (package
     (name "rust-instant")
-    (version "0.1.4")
+    (version "0.1.9")
     (source
      (origin
        (method url-fetch)
@@ -29084,7 +29084,7 @@ data efficiently.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "10k1170waz1na056wvjvkps3lz28z9pc8kp8vpy4kpp53i5a4xvp"))))
+         "1v659qqm55misvjijfbl1p7azjp4yynjbwldan8836ynpgp4w4k1"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; Issue during the wasm test.
