@@ -41,6 +41,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
+  #:use-module ((guix search-paths) #:select ($SSL_CERT_DIR $SSL_CERT_FILE))
   #:use-module (gnu packages)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
@@ -82,15 +83,8 @@
        ("python" ,python-minimal-wrapper)))
    (native-search-paths
     ;; These variables are introduced by curl-use-ssl-cert-env.patch.
-    (list (search-path-specification
-           (variable "SSL_CERT_DIR")
-           (separator #f)                        ;single entry
-           (files '("etc/ssl/certs")))
-          (search-path-specification
-           (variable "SSL_CERT_FILE")
-           (file-type 'regular)
-           (separator #f)                        ;single entry
-           (files '("etc/ssl/certs/ca-certificates.crt")))
+    (list $SSL_CERT_DIR
+          $SSL_CERT_FILE
           ;; Note: This search path is respected by the `curl` command-line
           ;; tool only.  Patching libcurl to read it too would bring no
           ;; advantages and require maintaining a more complex patch.
