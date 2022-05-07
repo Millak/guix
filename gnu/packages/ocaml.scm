@@ -7807,10 +7807,9 @@ generate OCaml code from .glade files), libpanel, librsvg and quartz.")
     (license license:lgpl2.0)))
 
 (define-public ocaml-reactivedata
-  ;; Future releases will use dune.
   (package
     (name "ocaml-reactivedata")
-    (version "0.2.2")
+    (version "0.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7819,26 +7818,11 @@ generate OCaml code from .glade files), libpanel, librsvg and quartz.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0l5z0fsckqkywjbn2nwy3s55h85yx8scc4hq9qzr9ig3hrq1mfb0"))))
+                "0gmpfnw08c7hx4bsgrgvp6w7pq2ghqxq3qd1cbdyscbg9n22jrca"))))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-before 'build 'fix-deprecated
-           (lambda _
-             (substitute*
-                 "src/reactiveData.ml"
-               (("Pervasives.compare") "compare"))
-             #t))
-         (add-before 'install 'forget-makefile
-           ;; Ensure we use opam to install files
-           (lambda _
-             (delete-file "Makefile")
-             #t)))))
-    (build-system ocaml-build-system)
+     `(#:tests? #f)) ;no tests
+    (build-system dune-build-system)
     (properties `((upstream-name . "reactiveData")))
-    (native-inputs
-     (list ocamlbuild opam))
     (propagated-inputs
      (list ocaml-react))
     (home-page "https://github.com/ocsigen/reactiveData")
