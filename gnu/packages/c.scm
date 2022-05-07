@@ -585,7 +585,7 @@ portability.")
 (define-public byacc
   (package
     (name "byacc")
-    (version "20210808")
+    (version "20220128")
     (source (origin
              (method url-fetch)
              (uri (string-append
@@ -593,7 +593,7 @@ portability.")
                    version ".tgz"))
              (sha256
               (base32
-               "10rsgnygn11358jr2dn6bbjj7sj9d9hqf6piqxil4nfhx6dm4n7i"))))
+               "173l5pdzgqk2ld6lf0ablii0iiw07sry2vrjfrm4wc99qmf81ha2"))))
     (build-system gnu-build-system)
     (home-page "https://invisible-island.net/byacc/byacc.html")
     (synopsis "Berkeley Yacc LALR parser generator")
