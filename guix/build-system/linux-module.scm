@@ -50,8 +50,8 @@
     (module-ref module 'linux-libre)))
 
 (define (system->arch system)
-  (let ((module (resolve-interface '(gnu packages linux))))
-    ((module-ref module 'system->linux-architecture) system)))
+  (let ((module (resolve-interface '(gnu platform))))
+    ((module-ref module 'lookup-platform-by-target-or-system) system)))
 
 (define (make-linux-module-builder linux)
   (package

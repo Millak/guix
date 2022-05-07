@@ -42,6 +42,7 @@
   #:use-module (gnu packages swig)
   #:use-module (gnu packages tbb)
   #:use-module (gnu packages xml)
+  #:use-module (gnu platform)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
@@ -312,9 +313,10 @@ line for tracing control, a @code{lttng-ctl} library for tracing control and a
        (modify-phases %standard-phases
          (replace 'configure
            (lambda* (#:key outputs target #:allow-other-keys)
-             (let ((arch ,(system->linux-architecture
-                           (or (%current-target-system)
-                               (%current-system)))))
+             (let ((arch ,(platform-linux-architecture
+                           (lookup-platform-by-target-or-system
+                            (or (%current-target-system)
+                                (%current-system))))))
                (setenv "ARCH"
                        (cond
                         ((string=? arch "arm64") "aarch64")

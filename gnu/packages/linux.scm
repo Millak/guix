@@ -158,6 +158,7 @@
   #:use-module (gnu packages groff)
   #:use-module (gnu packages selinux)
   #:use-module (gnu packages swig)
+  #:use-module (gnu platform)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
@@ -180,20 +181,6 @@
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 match)
   #:use-module (ice-9 regex))
-
-(define-public (system->linux-architecture arch)
-  "Return the Linux architecture name for ARCH, a Guix system name such as
-\"x86_64-linux\" or a target triplet such as \"arm-linux-gnueabihf\"."
-  (let ((arch (car (string-split arch #\-))))
-    (cond ((string=? arch "i686") "i386")
-          ((string-prefix? "mips" arch) "mips")
-          ((string-prefix? "arm" arch) "arm")
-          ((string-prefix? "aarch64" arch) "arm64")
-          ((string-prefix? "alpha" arch) "alpha")
-          ((string-prefix? "powerpc" arch) "powerpc") ;including "powerpc64le"
-          ((string-prefix? "s390" arch) "s390")
-          ((string-prefix? "riscv" arch) "riscv")
-          (else arch))))
 
 (define-public (system->defconfig system)
   "Some systems (notably powerpc-linux) require a special target for kernel
@@ -567,9 +554,10 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
          (delete 'configure)
          (replace 'build
            (lambda _
-             (let ((arch ,(system->linux-architecture
-                          (or (%current-target-system)
-                              (%current-system))))
+             (let ((arch ,(platform-linux-architecture
+                           (lookup-platform-by-target-or-system
+                            (or (%current-target-system)
+                                (%current-system)))))
                    (defconfig ,(system->defconfig
                                 (or (%current-target-system)
                                     (%current-system))))
@@ -807,8 +795,9 @@ for ARCH and optionally VARIANT, or #f if there is no such configuration."
 
        ,@(match (and configuration-file
                      (configuration-file
-                      (system->linux-architecture
-                       (or (%current-target-system) (%current-system)))
+                      (platform-linux-architecture
+                       (lookup-platform-by-target-or-system
+                        (or (%current-target-system) (%current-system))))
                       #:variant (version-major+minor version)))
            (#f                                    ;no config for this platform
             '())
@@ -839,9 +828,10 @@ for ARCH and optionally VARIANT, or #f if there is no such configuration."
                    (setenv "KBUILD_BUILD_HOST" "guix")
 
                    ;; Set ARCH and CROSS_COMPILE.
-                   (let ((arch #$(system->linux-architecture
-                                  (or (%current-target-system)
-                                      (%current-system)))))
+                   (let ((arch #$(platform-linux-architecture
+                                  (lookup-platform-by-target-or-system
+                                   (or (%current-target-system)
+                                       (%current-system))))))
                      (setenv "ARCH" arch)
                      (format #t "`ARCH' set to `~a'~%" (getenv "ARCH"))
 

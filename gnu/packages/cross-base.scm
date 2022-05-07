@@ -30,6 +30,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages hurd)
   #:use-module (gnu packages mingw)
+  #:use-module (gnu platform)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix utils)
@@ -345,7 +346,8 @@ target that libc."
           `(modify-phases ,phases
              (replace 'build
                (lambda _
-                 (setenv "ARCH" ,(system->linux-architecture target))
+                 (setenv "ARCH" ,(platform-linux-architecture
+                                  (lookup-platform-by-target target)))
                  (format #t "`ARCH' set to `~a' (cross compiling)~%"
                          (getenv "ARCH"))
 
