@@ -27,10 +27,12 @@
   (platform
    (target "arm-linux-gnueabihf")
    (system "armhf-linux")
-   (linux-architecture "arm")))
+   (linux-architecture "arm")
+   (glibc-dynamic-linker "/lib/ld-linux-armhf.so.3")))
 
 (define aarch64-linux
   (platform
    (target "aarch64-linux-gnu")
    (system "aarch64-linux")
-   (linux-architecture "arm64")))
+   (linux-architecture "arm64")
+   (glibc-dynamic-linker "/lib/ld-linux-aarch64.so.1")))

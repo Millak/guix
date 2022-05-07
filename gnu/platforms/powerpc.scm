@@ -27,10 +27,12 @@
   (platform
    (target "powerpc-linux-gnu")
    (system "powerpc-linux")
-   (linux-architecture "powerpc")))
+   (linux-architecture "powerpc")
+   (glibc-dynamic-linker "/lib/ld.so.1")))
 
 (define powerpc64le-linux
   (platform
    (target "powerpc64le-linux-gnu")
    (system "powerpc64le-linux")
-   (linux-architecture "powerpc")))
+   (linux-architecture "powerpc")
+   (glibc-dynamic-linker "/lib/ld64.so.2")))

@@ -26,4 +26,5 @@
   (platform
    (target "s390x-linux-gnu")
    (system "s390x-linux")
-   (linux-architecture "s390")))
+   (linux-architecture "s390")
+   (glibc-dynamic-linker "/lib/ld64.so.1")))

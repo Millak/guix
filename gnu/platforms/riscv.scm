@@ -26,4 +26,5 @@
   (platform
    (target "riscv64-linux-gnu")
    (system "riscv64-linux")
-   (linux-architecture "riscv")))
+   (linux-architecture "riscv")
+   (glibc-dynamic-linker "/lib/ld-linux-riscv64-lp64d.so.1")))

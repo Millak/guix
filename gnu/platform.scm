@@ -27,6 +27,7 @@
             platform-target
             platform-system
             platform-linux-architecture
+            platform-glibc-dynamic-linker
 
             platform-modules
             platforms
@@ -58,12 +59,17 @@
 ;;
 ;; The 'linux-architecture' is only relevant if the kernel is Linux.  In that
 ;; case, it corresponds to the ARCH variable used when building Linux.
+;;
+;; The 'glibc-dynamic-linker' field is the name of Glibc's dynamic linker for
+;; the corresponding system.
 (define-record-type* <platform> platform make-platform
   platform?
-  (target             platform-target)               ;"x86_64-linux-gnu"
-  (system             platform-system)               ;"x86_64-linux"
-  (linux-architecture platform-linux-architecture    ;"x86"
-                      (default #f)))
+  (target               platform-target)
+  (system               platform-system)
+  (linux-architecture   platform-linux-architecture
+                        (default #f))
+  (glibc-dynamic-linker platform-glibc-dynamic-linker))
+
 
 ;;;
 ;;; Platforms.

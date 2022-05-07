@@ -26,6 +26,7 @@
 (define-module (gnu packages bootstrap)
   #:use-module (guix licenses)
   #:use-module (gnu packages)
+  #:use-module (gnu platform)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix build-system)
@@ -314,33 +315,29 @@ or false to signal an error."
                                  (%current-system))))
   "Return the name of Glibc's dynamic linker for SYSTEM."
   ;; See the 'SYSDEP_KNOWN_INTERPRETER_NAMES' cpp macro in libc.
-  (cond ((string=? system "x86_64-linux") "/lib/ld-linux-x86-64.so.2")
-        ((string=? system "i686-linux") "/lib/ld-linux.so.2")
-        ((string=? system "armhf-linux") "/lib/ld-linux-armhf.so.3")
-        ((string=? system "mips64el-linux") "/lib/ld.so.1")
-        ((string=? system "i586-gnu") "/lib/ld.so.1")
-        ((string=? system "i686-gnu") "/lib/ld.so.1")
-        ((string=? system "aarch64-linux") "/lib/ld-linux-aarch64.so.1")
-        ((string=? system "powerpc-linux") "/lib/ld.so.1")
-        ((string=? system "powerpc64-linux") "/lib/ld64.so.1")
-        ((string=? system "powerpc64le-linux") "/lib/ld64.so.2")
-        ((string=? system "alpha-linux") "/lib/ld-linux.so.2")
-        ((string=? system "s390x-linux") "/lib/ld64.so.1")
-        ((string=? system "riscv64-linux") "/lib/ld-linux-riscv64-lp64d.so.1")
+  (let ((platform (lookup-platform-by-system system)))
+    (cond
+     ((platform? platform)
+      (platform-glibc-dynamic-linker platform))
 
-        ;; XXX: This one is used bare-bones, without a libc, so add a case
-        ;; here just so we can keep going.
-        ((string=? system "arm-elf") "no-ld.so")
-        ((string=? system "arm-eabi") "no-ld.so")
-        ((string=? system "xtensa-elf") "no-ld.so")
-        ((string=? system "avr") "no-ld.so")
-        ((string=? system "propeller-elf") "no-ld.so")
-        ((string=? system "i686-mingw") "no-ld.so")
-        ((string=? system "x86_64-mingw") "no-ld.so")
-        ((string=? system "vc4-elf") "no-ld.so")
+     ;; TODO: Define those as platforms.
+     ((string=? system "i686-gnu") "/lib/ld.so.1")
+     ((string=? system "powerpc64-linux") "/lib/ld64.so.1")
+     ((string=? system "alpha-linux") "/lib/ld-linux.so.2")
 
-        (else (error "dynamic linker name not known for this system"
-                     system))))
+     ;; XXX: This one is used bare-bones, without a libc, so add a case
+     ;; here just so we can keep going.
+     ((string=? system "arm-elf") "no-ld.so")
+     ((string=? system "arm-eabi") "no-ld.so")
+     ((string=? system "xtensa-elf") "no-ld.so")
+     ((string=? system "avr") "no-ld.so")
+     ((string=? system "propeller-elf") "no-ld.so")
+     ((string=? system "i686-mingw") "no-ld.so")
+     ((string=? system "x86_64-mingw") "no-ld.so")
+     ((string=? system "vc4-elf") "no-ld.so")
+
+     (else (error "dynamic linker name not known for this system"
+                  system)))))
 
 
 ;;;
