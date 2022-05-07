@@ -219,96 +219,85 @@ integrate Windows applications into your desktop.")
     (inputs (modify-inputs (package-inputs wine)
               (prepend wine)))
     (arguments
-     `(#:make-flags
-       (list "SHELL=bash"
-             (string-append "libdir=" %output "/lib/wine64"))
-       #:phases
-       (modify-phases %standard-phases
-         ;; Explicitly set both the 64-bit and 32-bit versions of vulkan-loader
-         ;; when installing to x86_64-linux so both are available.
-         ;; TODO: Add more JSON files as they become available in Mesa.
-         ,@(match (%current-system)
-             ((or "x86_64-linux")
-              `((add-after 'copy-wine32-binaries 'wrap-executable
-                  (lambda* (#:key inputs outputs #:allow-other-keys)
-                    (let* ((out (assoc-ref outputs "out")))
-                      (wrap-program (string-append out "/bin/wine-preloader")
-                        `("VK_ICD_FILENAMES" ":" =
-                          (,(string-append
-                             (assoc-ref inputs "mesa")
-                             "/share/vulkan/icd.d/radeon_icd.x86_64.json" ":"
-                             (assoc-ref inputs "mesa")
-                             "/share/vulkan/icd.d/intel_icd.x86_64.json" ":"
-                             (assoc-ref inputs "wine")
-                             "/share/vulkan/icd.d/radeon_icd.i686.json" ":"
-                             (assoc-ref inputs "wine")
-                             "/share/vulkan/icd.d/intel_icd.i686.json"))))
-                      (wrap-program (string-append out "/bin/wine64-preloader")
-                        `("VK_ICD_FILENAMES" ":" =
-                          (,(string-append
-                             (assoc-ref inputs "mesa")
-                             "/share/vulkan/icd.d/radeon_icd.x86_64.json"
-                             ":" (assoc-ref inputs "mesa")
-                             "/share/vulkan/icd.d/intel_icd.x86_64.json"
-                             ":" (assoc-ref inputs "wine")
-                             "/share/vulkan/icd.d/radeon_icd.i686.json"
-                             ":" (assoc-ref inputs "wine")
-                             "/share/vulkan/icd.d/intel_icd.i686.json"))))
-                      #t)))))
-             (_
-              `()))
-         (add-after 'unpack 'patch-SHELL
-           (lambda _
-             (substitute* "configure"
-               ;; configure first respects CONFIG_SHELL, clobbers SHELL later.
-               (("/bin/sh")
-                (which "bash")))))
-         (add-after 'patch-generated-file-shebangs 'patch-makedep
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "tools/makedep.c"
-               (("output_filenames\\( unix_libs \\);" all)
-                (string-append all
-                               "output ( \" -Wl,-rpath=%s \", so_dir );")))))
-         (add-after 'install 'copy-wine32-binaries
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((wine32 (assoc-ref %build-inputs "wine"))
-                    (out (assoc-ref %outputs "out")))
-               ;; Copy the 32-bit binaries needed for WoW64.
-               (copy-file (string-append wine32 "/bin/wine")
-                          (string-append out "/bin/wine"))
-               ;; Copy the real 32-bit wine-preloader instead of the wrapped
-               ;; version.
-               (copy-file (string-append wine32 "/bin/.wine-preloader-real")
-                          (string-append out "/bin/wine-preloader")))))
-         (add-after 'install 'copy-wine32-libraries
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((wine32 (assoc-ref %build-inputs "wine"))
-                    (out (assoc-ref %outputs "out")))
-               (copy-recursively (string-append wine32 "/lib/wine32")
-                                 (string-append out "/lib/wine32")))))
-         (add-after 'compress-documentation 'copy-wine32-manpage
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((wine32 (assoc-ref %build-inputs "wine"))
-                    (out (assoc-ref %outputs "out")))
-               ;; Copy the missing man file for the wine binary from wine.
-               (copy-file (string-append wine32 "/share/man/man1/wine.1.gz")
-                          (string-append out "/share/man/man1/wine.1.gz")))))
-         (add-after 'configure 'patch-dlopen-paths
-           ;; Hardcode dlopened sonames to absolute paths.
-           (lambda _
-             (let* ((library-path (search-path-as-string->list
-                                   (getenv "LIBRARY_PATH")))
-                    (find-so (lambda (soname)
-                               (search-path library-path soname))))
-               (substitute* "include/config.h"
-                 (("(#define SONAME_.* )\"(.*)\"" _ defso soname)
-                  (format #f "~a\"~a\"" defso (find-so soname))))))))
-       #:configure-flags
-       (list "--enable-win64"
-             (string-append "LDFLAGS=-Wl,-rpath=" %output "/lib/wine64"))
-       ,@(strip-keyword-arguments '(#:configure-flags #:make-flags #:phases
-                                    #:system)
-                                  (package-arguments wine))))
+     (cons*
+      #:make-flags
+      #~(list "SHELL=bash"
+              (string-append "libdir=" #$output "/lib/wine64"))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Explicitly set both the 64-bit and 32-bit versions of vulkan-loader
+          ;; when installing to x86_64-linux so both are available.
+          ;; TODO: Add more JSON files as they become available in Mesa.
+          #$@(match (%current-system)
+               ((or "x86_64-linux")
+                `((add-after 'copy-wine32-binaries 'wrap-executable
+                    (lambda* (#:key inputs outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out"))
+                             (icd-files (map
+                                         (lambda (basename)
+                                           (search-input-file
+                                            inputs
+                                            (string-append "/share/vulkan/icd.d/"
+                                                           basename)))
+                                         '("radeon_icd.x86_64.json"
+                                           "intel_icd.x86_64.json"
+                                           "radeon_icd.i686.json"
+                                           "intel_icd.i686.json"))))
+                        (wrap-program (string-append out "/bin/wine-preloader")
+                          `("VK_ICD_FILENAMES" ":" = ,icd-files))
+                        (wrap-program (string-append out "/bin/wine64-preloader")
+                          `("VK_ICD_FILENAMES" ":" = ,icd-files)))))))
+               (_
+                `()))
+          (add-after 'unpack 'patch-SHELL
+            (lambda _
+              (substitute* "configure"
+                ;; configure first respects CONFIG_SHELL, clobbers SHELL later.
+                (("/bin/sh")
+                 (which "bash")))))
+          (add-after 'patch-generated-file-shebangs 'patch-makedep
+            (lambda* (#:key outputs #:allow-other-keys)
+              (substitute* "tools/makedep.c"
+                (("output_filenames\\( unix_libs \\);" all)
+                 (string-append all
+                                "output ( \" -Wl,-rpath=%s \", so_dir );")))))
+          (add-after 'install 'copy-wine32-binaries
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((out (assoc-ref %outputs "out")))
+                ;; Copy the 32-bit binaries needed for WoW64.
+                (copy-file (search-input-file inputs "/bin/wine")
+                           (string-append out "/bin/wine"))
+                ;; Copy the real 32-bit wine-preloader instead of the wrapped
+                ;; version.
+                (copy-file (search-input-file inputs "/bin/.wine-preloader-real")
+                           (string-append out "/bin/wine-preloader")))))
+          (add-after 'install 'copy-wine32-libraries
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((out (assoc-ref %outputs "out")))
+                (copy-recursively (search-input-directory inputs "/lib/wine32")
+                                  (string-append out "/lib/wine32")))))
+          (add-after 'compress-documentation 'copy-wine32-manpage
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((out (assoc-ref %outputs "out")))
+                ;; Copy the missing man file for the wine binary from wine.
+                (copy-file (search-input-file inputs "/share/man/man1/wine.1.gz")
+                           (string-append out "/share/man/man1/wine.1.gz")))))
+          (add-after 'configure 'patch-dlopen-paths
+            ;; Hardcode dlopened sonames to absolute paths.
+            (lambda _
+              (let* ((library-path (search-path-as-string->list
+                                    (getenv "LIBRARY_PATH")))
+                     (find-so (lambda (soname)
+                                (search-path library-path soname))))
+                (substitute* "include/config.h"
+                  (("(#define SONAME_.* )\"(.*)\"" _ defso soname)
+                   (format #f "~a\"~a\"" defso (find-so soname))))))))
+      #:configure-flags
+      #~(list "--enable-win64"
+              (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib/wine64"))
+      (strip-keyword-arguments '(#:configure-flags #:make-flags #:phases
+                                 #:system)
+                               (package-arguments wine))))
     (synopsis "Implementation of the Windows API (WoW64 version)")
     (supported-systems '("x86_64-linux" "aarch64-linux"))))
 
