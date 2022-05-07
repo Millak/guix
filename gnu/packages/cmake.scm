@@ -38,6 +38,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system emacs)
+  #:use-module ((guix search-paths) #:select ($SSL_CERT_DIR $SSL_CERT_FILE))
   #:use-module (gnu packages)
   #:use-module (gnu packages backup)
   #:use-module (gnu packages compression)
@@ -229,15 +230,8 @@ using the CMake build system.")
             (files '("")))
            ;; "cmake-curl-certificates.patch" changes CMake to honor 'SSL_CERT_DIR'
            ;; and 'SSL_CERT_FILE', hence these search path entries.
-           (search-path-specification
-            (variable "SSL_CERT_DIR")
-            (separator #f)              ;single entry
-            (files '("etc/ssl/certs")))
-           (search-path-specification
-            (variable "SSL_CERT_FILE")
-            (file-type 'regular)
-            (separator #f)              ;single entry
-            (files '("etc/ssl/certs/ca-certificates.crt")))))
+           $SSL_CERT_DIR
+           $SSL_CERT_FILE))
     (home-page "https://cmake.org/")
     (synopsis "Cross-platform build system")
     (description
