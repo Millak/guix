@@ -921,7 +921,7 @@ using GNU Radio and the Qt GUI toolkit.")
 (define-public fldigi
   (package
     (name "fldigi")
-    (version "4.1.20")
+    (version "4.1.22")
     (source
      (origin
        (method git-fetch)
@@ -930,7 +930,7 @@ using GNU Radio and the Qt GUI toolkit.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0y43241s3p8qzn7x6x28v5v2bf934riznj14bb7m6k6vgd849qzl"))))
+        (base32 "1n1ljqsqar9s8yh8hn9yc1clabkhv4jidym3ibg25yb5svckscli"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake gettext-minimal pkg-config))
