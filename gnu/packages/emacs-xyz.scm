@@ -9055,6 +9055,27 @@ replaced with the directory you choose.")
 and present results either as single emails or full trees.")
     (license license:gpl3+)))
 
+(define-public emacs-consult-eglot
+  (package
+   (name "emacs-consult-eglot")
+   (version "0.2.0")
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url "https://github.com/mohkale/consult-eglot")
+                  (commit (string-append "v" version))))
+            (sha256
+             (base32 "1qxk1npxbf8m3g9spikgdxcf6mzjx6cwy3f5vn6zz5ksh14xw3sd"))
+            (file-name (git-file-name name version))))
+   (build-system emacs-build-system)
+   (propagated-inputs (list emacs-consult emacs-eglot))
+   (home-page "https://github.com/mohkale/consult-eglot")
+   (synopsis "Consulting-read interface for eglot")
+   (description "This package acts as a parallel of consult-lsp for eglot and
+provides a front-end interface for the workspace/symbols LSP procedure
+call.")
+   (license license:gpl3+)))
+
 (define-public emacs-marginalia
   (package
     (name "emacs-marginalia")
