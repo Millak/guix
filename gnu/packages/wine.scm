@@ -353,7 +353,7 @@ integrate Windows applications into your desktop.")
 (define-public wine-staging-patchset-data
   (package
     (name "wine-staging-patchset-data")
-    (version "6.6")
+    (version "7.8")
     (source
      (origin
        (method git-fetch)
@@ -362,7 +362,7 @@ integrate Windows applications into your desktop.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0d5m9pvafr0iw99ny7rgzfmw7zw45q5wfcw68zj88mvzs47xkgms"))))
+        (base32 "02rgpymhqrdr3aamvv6yvpgh82rj1n4adr36mi26cs3zbkx8zb55"))))
     (build-system trivial-build-system)
     (native-inputs
      (list bash coreutils))
@@ -412,7 +412,7 @@ integrate Windows applications into your desktop.")
                              "wine-" wine-version ".tar.xz"))
          (file-name (string-append name "-" wine-version ".tar.xz"))
          (sha256
-          (base32 "1bc4zmqpdqs1ncz3qisp8a313pqzi5a31gq1s99ivb60vk325rcr")))))
+          (base32 "1f0r00b6lk59cmpj42b7f2jrd58d7vxfvpp54j7arwjhdg4yjxlg")))))
     (inputs (modify-inputs (package-inputs wine)
               (prepend autoconf ; for autoreconf
                        ffmpeg
@@ -423,54 +423,19 @@ integrate Windows applications into your desktop.")
                        util-linux ; for hexdump
                        wine-staging-patchset-data)))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; Explicitly set the 32-bit version of vulkan-loader when installing
-         ;; to i686-linux or x86_64-linux.
-         ;; TODO: Add more JSON files as they become available in Mesa.
-         ,@(match (%current-system)
-             ((or "i686-linux" "x86_64-linux")
-              `((add-after 'install 'wrap-executable
-                  (lambda* (#:key inputs outputs #:allow-other-keys)
-                    (let* ((out (assoc-ref outputs "out"))
-                           (icd (string-append out "/share/vulkan/icd.d")))
-                      (mkdir-p icd)
-                      (copy-file (search-input-file inputs
-                                 "/share/vulkan/icd.d/radeon_icd.i686.json")
-                                 (string-append icd "/radeon_icd.i686.json"))
-                      (copy-file (search-input-file inputs
-                                 "/share/vulkan/icd.d/intel_icd.i686.json")
-                                 (string-append icd "/intel_icd.i686.json"))
-                      (wrap-program (string-append out "/bin/wine-preloader")
-                                    `("VK_ICD_FILENAMES" ":" =
-                                      (,(string-append icd
-                                        "/radeon_icd.i686.json" ":"
-                                        icd "/intel_icd.i686.json"))))
-                      #t)))))
-             (_
-              `())
-             )
-         (add-before 'configure 'patch-source-wine-staging
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((source (assoc-ref %build-inputs "source"))
-                    (script (string-append (assoc-ref %build-inputs
-                            "wine-staging-patchset-data")
-                            "/share/wine-staging/patches/patchinstall.sh")))
-               (invoke script (string-append "DESTDIR=" ".") "--all")
-               #t)))
-         (add-after 'configure 'patch-dlopen-paths
-           ;; Hardcode dlopened sonames to absolute paths.
-           (lambda _
-             (let* ((library-path (search-path-as-string->list
-                                   (getenv "LIBRARY_PATH")))
-                    (find-so (lambda (soname)
-                               (search-path library-path soname))))
-               (substitute* "include/config.h"
-                 (("(#define SONAME_.* )\"(.*)\"" _ defso soname)
-                  (format #f "~a\"~a\"" defso (find-so soname))))
-               #t))))
-       ,@(strip-keyword-arguments '(#:phases)
-                                  (package-arguments wine))))
+     (substitute-keyword-arguments (package-arguments wine)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (delete 'patch-SHELL)
+            (add-before 'configure 'apply-wine-staging-patches
+              (lambda* (#:key inputs #:allow-other-keys)
+                (invoke (search-input-file
+                         inputs
+                         "/share/wine-staging/patches/patchinstall.sh")
+                        "DESTDIR=."
+                        "--all")))
+            (add-after 'apply-wine-staging-patches 'patch-SHELL
+              (assoc-ref #$phases 'patch-SHELL))))))
     (synopsis "Implementation of the Windows API (staging branch, 32-bit only)")
     (description "Wine-Staging is the testing area of Wine.  It
 contains bug fixes and features, which have not been integrated into
@@ -493,96 +458,19 @@ integrated into the main branch.")
     (inputs (modify-inputs (package-inputs wine-staging)
               (prepend wine-staging)))
     (arguments
-     `(#:make-flags
-       (list "SHELL=bash"
-             (string-append "libdir=" %output "/lib/wine64"))
-       #:phases
-       (modify-phases %standard-phases
-         ;; Explicitly set both the 64-bit and 32-bit versions of vulkan-loader
-         ;; when installing to x86_64-linux so both are available.
-         ;; TODO: Add more JSON files as they become available in Mesa.
-         ,@(match (%current-system)
-           ((or "x86_64-linux")
-             `((add-after 'copy-wine32-binaries 'wrap-executable
-               (lambda* (#:key inputs outputs #:allow-other-keys)
-                 (let* ((out (assoc-ref outputs "out")))
-                   (wrap-program (string-append out "/bin/wine-preloader")
-                                 `("VK_ICD_FILENAMES" ":" =
-                                   (,(string-append (assoc-ref inputs "mesa")
-                                     "/share/vulkan/icd.d/radeon_icd.x86_64.json" ":"
-                                     (assoc-ref inputs "mesa")
-                                     "/share/vulkan/icd.d/intel_icd.x86_64.json" ":"
-                                     (assoc-ref inputs "wine-staging")
-                                     "/share/vulkan/icd.d/radeon_icd.i686.json" ":"
-                                     (assoc-ref inputs "wine-staging")
-                                     "/share/vulkan/icd.d/intel_icd.i686.json"))))
-                   (wrap-program (string-append out "/bin/wine64-preloader")
-                                 `("VK_ICD_FILENAMES" ":" =
-                                   (,(string-append (assoc-ref inputs "mesa")
-                                     "/share/vulkan/icd.d/radeon_icd.x86_64.json"
-                                     ":" (assoc-ref inputs "mesa")
-                                     "/share/vulkan/icd.d/intel_icd.x86_64.json"
-                                     ":" (assoc-ref inputs "wine-staging")
-                                     "/share/vulkan/icd.d/radeon_icd.i686.json"
-                                     ":" (assoc-ref inputs "wine-staging")
-                                     "/share/vulkan/icd.d/intel_icd.i686.json"))))
-                   #t)))))
-           (_
-            `())
-           )
-         (add-before 'configure 'patch-source-wine-staging
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((source (assoc-ref %build-inputs "source"))
-                    (script (string-append (assoc-ref %build-inputs
-                            "wine-staging-patchset-data")
-                            "/share/wine-staging/patches/patchinstall.sh")))
-               (invoke script (string-append "DESTDIR=" ".") "--all")
-               #t)))
-         (add-after 'install 'copy-wine32-binaries
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((wine32 (assoc-ref %build-inputs "wine-staging"))
-                    (out (assoc-ref %outputs "out")))
-               ;; Copy the 32-bit binaries needed for WoW64.
-               (copy-file (string-append wine32 "/bin/wine")
-                          (string-append out "/bin/wine"))
-               ;; Copy the real 32-bit wine-preloader instead of the wrapped
-               ;; version.
-               (copy-file (string-append wine32 "/bin/.wine-preloader-real")
-                          (string-append out "/bin/wine-preloader"))
-               #t)))
-         (add-after 'install 'copy-wine32-libraries
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((wine32 (assoc-ref %build-inputs "wine-staging"))
-                    (out (assoc-ref %outputs "out")))
-               (copy-recursively (string-append wine32 "/lib/wine32")
-                                 (string-append out "/lib/wine32"))
-               #t)))
-         (add-after 'compress-documentation 'copy-wine32-manpage
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((wine32 (assoc-ref %build-inputs "wine-staging"))
-                    (out (assoc-ref %outputs "out")))
-               ;; Copy the missing man file for the wine binary from
-               ;; wine-staging.
-               (copy-file (string-append wine32 "/share/man/man1/wine.1.gz")
-                          (string-append out "/share/man/man1/wine.1.gz"))
-               #t)))
-         (add-after 'configure 'patch-dlopen-paths
-           ;; Hardcode dlopened sonames to absolute paths.
-           (lambda _
-             (let* ((library-path (search-path-as-string->list
-                                   (getenv "LIBRARY_PATH")))
-                    (find-so (lambda (soname)
-                               (search-path library-path soname))))
-               (substitute* "include/config.h"
-                 (("(#define SONAME_.* )\"(.*)\"" _ defso soname)
-                  (format #f "~a\"~a\"" defso (find-so soname))))
-               #t))))
-       #:configure-flags
-       (list "--enable-win64"
-             (string-append "LDFLAGS=-Wl,-rpath=" %output "/lib/wine64"))
-       ,@(strip-keyword-arguments '(#:configure-flags #:make-flags #:phases
-                                    #:system)
-                                  (package-arguments wine-staging))))
+     (substitute-keyword-arguments (package-arguments wine64)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (delete 'patch-SHELL)
+            (add-before 'configure 'apply-wine-staging-patches
+              (lambda* (#:key inputs #:allow-other-keys)
+                (invoke (search-input-file
+                         inputs
+                         "/share/wine-staging/patches/patchinstall.sh")
+                        "DESTDIR=."
+                        "--all")))
+            (add-after 'apply-wine-staging-patches 'patch-SHELL
+              (assoc-ref #$phases 'patch-SHELL))))))
     (synopsis "Implementation of the Windows API (staging branch, WoW64
 version)")
     (supported-systems '("x86_64-linux" "aarch64-linux"))))
