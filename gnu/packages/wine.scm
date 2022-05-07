@@ -6,6 +6,7 @@
 ;;; Copyright © 2017, 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
+;;; Copyright © 2022 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25,6 +26,7 @@
 (define-module (gnu packages wine)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix utils)
@@ -89,118 +91,113 @@
         (base32 "1f0r00b6lk59cmpj42b7f2jrd58d7vxfvpp54j7arwjhdg4yjxlg"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("bison" ,bison)
-       ("flex" ,flex)
-       ("gettext" ,gettext-minimal)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)))
+     (list bison flex gettext-minimal perl pkg-config))
     (inputs
      ;; Some libraries like libjpeg are now compiled into native PE objects.
      ;; The ELF objects provided by Guix packages are of no use.  Whilst this
      ;; is technically bundling, it's quite defensible.  It might be possible
      ;; to build some of these from Guix PACKAGE-SOURCE but attempts were not
      ;; fruitful so far.  See <https://www.winehq.org/announce/7.0>.
-     `(("alsa-lib" ,alsa-lib)
-       ("dbus" ,dbus)
-       ("cups" ,cups)
-       ("eudev" ,eudev)
-       ("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("gnutls" ,gnutls)
-       ("gst-plugins-base" ,gst-plugins-base)
-       ("libgphoto2" ,libgphoto2)
-       ("libldap" ,openldap)
-       ("libnetapi" ,samba)
-       ("libsane" ,sane-backends)
-       ("libpcap" ,libpcap)
-       ("libusb" ,libusb)
-       ("libICE" ,libice)
-       ("libX11" ,libx11)
-       ("libXi" ,libxi)
-       ("libXext" ,libxext)
-       ("libXcursor" ,libxcursor)
-       ("libXrender" ,libxrender)
-       ("libXrandr" ,libxrandr)
-       ("libXinerama" ,libxinerama)
-       ("libXxf86vm" ,libxxf86vm)
-       ("libXcomposite" ,libxcomposite)
-       ("mit-krb5" ,mit-krb5)
-       ("openal" ,openal)
-       ("pulseaudio" ,pulseaudio)
-       ("sdl2" ,sdl2)
-       ("unixodbc" ,unixodbc)
-       ("v4l-utils" ,v4l-utils)
-       ("vkd3d" ,vkd3d)
-       ("vulkan-loader" ,vulkan-loader)))
+     (list alsa-lib
+           cups
+           dbus
+           eudev
+           fontconfig
+           freetype
+           gnutls
+           gst-plugins-base
+           libgphoto2
+           openldap
+           samba
+           sane-backends
+           libpcap
+           libusb
+           libice
+           libx11
+           libxi
+           libxext
+           libxcursor
+           libxrender
+           libxrandr
+           libxinerama
+           libxxf86vm
+           libxcomposite
+           mit-krb5
+           openal
+           pulseaudio
+           sdl2
+           unixodbc
+           v4l-utils
+           vkd3d
+           vulkan-loader))
     (arguments
-     `(;; Force a 32-bit build targeting a similar architecture, i.e.:
-       ;; armhf for armhf/aarch64, i686 for i686/x86_64.
-       #:system ,@(match (%current-system)
-                    ((or "armhf-linux" "aarch64-linux")
-                     `("armhf-linux"))
-                    (_
-                     `("i686-linux")))
+     (list
+      ;; Force a 32-bit build targeting a similar architecture, i.e.:
+      ;; armhf for armhf/aarch64, i686 for i686/x86_64.
+      #:system (match (%current-system)
+                 ((or "armhf-linux" "aarch64-linux") "armhf-linux")
+                 (_ "i686-linux"))
 
        ;; XXX: There's a test suite, but it's unclear whether it's supposed to
        ;; pass.
        #:tests? #f
 
        #:configure-flags
-       (list (string-append "LDFLAGS=-Wl,-rpath=" %output "/lib/wine32"))
+       #~(list (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib/wine32"))
 
        #:make-flags
-       (list "SHELL=bash"
-             (string-append "libdir=" %output "/lib/wine32"))
+       #~(list "SHELL=bash"
+               (string-append "libdir=" #$output "/lib/wine32"))
 
        #:phases
-       (modify-phases %standard-phases
-         ;; Explicitly set the 32-bit version of vulkan-loader when installing
-         ;; to i686-linux or x86_64-linux.
-         ;; TODO: Add more JSON files as they become available in Mesa.
-         ,@(match (%current-system)
-             ((or "i686-linux" "x86_64-linux")
-              `((add-after 'install 'wrap-executable
-                  (lambda* (#:key inputs outputs #:allow-other-keys)
-                    (let* ((out (assoc-ref outputs "out"))
-                           (icd (string-append out "/share/vulkan/icd.d")))
-                      (mkdir-p icd)
-                      (copy-file (string-append
-                                  (assoc-ref inputs "mesa")
-                                  "/share/vulkan/icd.d/radeon_icd.i686.json")
-                                 (string-append icd "/radeon_icd.i686.json"))
-                      (copy-file (string-append
-                                  (assoc-ref inputs "mesa")
-                                  "/share/vulkan/icd.d/intel_icd.i686.json")
-                                 (string-append icd "/intel_icd.i686.json"))
-                      (wrap-program (string-append out "/bin/wine-preloader")
-                        `("VK_ICD_FILENAMES" ":" =
-                          (,(string-append icd
-                                           "/radeon_icd.i686.json" ":"
-                                           icd "/intel_icd.i686.json")))))))))
-             (_
-              `()))
-         (add-after 'unpack 'patch-SHELL
-           (lambda _
-             (substitute* "configure"
-               ;; configure first respects CONFIG_SHELL, clobbers SHELL later.
-               (("/bin/sh")
-                (which "bash")))))
-         (add-after 'configure 'patch-dlopen-paths
-           ;; Hardcode dlopened sonames to absolute paths.
-           (lambda _
-             (let* ((library-path (search-path-as-string->list
-                                   (getenv "LIBRARY_PATH")))
-                    (find-so (lambda (soname)
-                               (search-path library-path soname))))
-               (substitute* "include/config.h"
-                 (("(#define SONAME_.* )\"(.*)\"" _ defso soname)
-                  (format #f "~a\"~a\"" defso (find-so soname)))))))
-         (add-after 'patch-generated-file-shebangs 'patch-makedep
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "tools/makedep.c"
-               (("output_filenames\\( unix_libs \\);" all)
-                (string-append all
-                               "output ( \" -Wl,-rpath=%s \", so_dir );"))))))))
+       #~(modify-phases %standard-phases
+           ;; Explicitly set the 32-bit version of vulkan-loader when installing
+           ;; to i686-linux or x86_64-linux.
+           ;; TODO: Add more JSON files as they become available in Mesa.
+           #$@(match (%current-system)
+                ((or "i686-linux" "x86_64-linux")
+                 `((add-after 'install 'wrap-executable
+                     (lambda* (#:key inputs outputs #:allow-other-keys)
+                       (let* ((out (assoc-ref outputs "out"))
+                              (icd (string-append out "/share/vulkan/icd.d")))
+                         (mkdir-p icd)
+                         (copy-file (search-input-file
+                                     inputs
+                                     "/share/vulkan/icd.d/radeon_icd.i686.json")
+                                    (string-append icd "/radeon_icd.i686.json"))
+                         (copy-file (search-input-file
+                                     inputs
+                                     "/share/vulkan/icd.d/intel_icd.i686.json")
+                                    (string-append icd "/intel_icd.i686.json"))
+                         (wrap-program (string-append out "/bin/wine-preloader")
+                           `("VK_ICD_FILENAMES" ":" =
+                             (,(string-append icd
+                                              "/radeon_icd.i686.json" ":"
+                                              icd "/intel_icd.i686.json")))))))))
+                (_
+                 `()))
+           (add-after 'unpack 'patch-SHELL
+             (lambda _
+               (substitute* "configure"
+                 ;; configure first respects CONFIG_SHELL, clobbers SHELL later.
+                 (("/bin/sh")
+                  (which "bash")))))
+           (add-after 'configure 'patch-dlopen-paths
+             ;; Hardcode dlopened sonames to absolute paths.
+             (lambda _
+               (let* ((library-path (search-path-as-string->list
+                                     (getenv "LIBRARY_PATH")))
+                      (find-so (lambda (soname)
+                                 (search-path library-path soname))))
+                 (substitute* "include/config.h"
+                   (("(#define SONAME_.* )\"(.*)\"" _ defso soname)
+                    (format #f "~a\"~a\"" defso (find-so soname)))))))
+           (add-after 'patch-generated-file-shebangs 'patch-makedep
+             (lambda* (#:key outputs #:allow-other-keys)
+               (substitute* "tools/makedep.c"
+                 (("output_filenames\\( unix_libs \\);" all)
+                  (string-append all
+                                 "output ( \" -Wl,-rpath=%s \", so_dir );"))))))))
     (home-page "https://www.winehq.org/")
     (synopsis "Implementation of the Windows API (32-bit only)")
     (description
