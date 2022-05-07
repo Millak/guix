@@ -88,7 +88,7 @@ Copyright @copyright{} 2020 Daniel Brooks@*
 Copyright @copyright{} 2020 John Soo@*
 Copyright @copyright{} 2020 Jonathan Brielmaier@*
 Copyright @copyright{} 2020 Edgar Vincent@*
-Copyright @copyright{} 2021 Maxime Devos@*
+Copyright @copyright{} 2021, 2022 Maxime Devos@*
 Copyright @copyright{} 2021 B. Wilson@*
 Copyright @copyright{} 2021 Xinglu Chen@*
 Copyright @copyright{} 2021 Raghav Gururajan@*
@@ -10126,6 +10126,25 @@ files to be matched @emph{within} the sub-directories specified by the
 Again, the libxml2 example shows a situation where this is needed.
 @end table
 @end deftp
+
+Some search paths are not tied by a single package but to many packages.
+To reduce duplications, some of them are pre-defined in @code{(guix
+search-paths)}.
+
+@defvr {Scheme Variable} $SSL_CERT_DIR
+@defvrx {Scheme Variable} $SSL_CERT_FILE
+These two search paths indicate where X.509 certificates can be found
+(@pxref{X.509 Certificates}).
+@end defvr
+
+These pre-defined search paths can be used as in the following example:
+
+@lisp
+(package
+  (name "curl")
+  ;; some fields omitted ...
+  (native-search-paths (list $SSL_CERT_DIR $SSL_CERT_FILE)))
+@end lisp
 
 How do you turn search path specifications on one hand and a bunch of
 directories on the other hand in a set of environment variable
