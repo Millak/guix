@@ -3009,7 +3009,7 @@ and record oriented data modeling and the Semantic Web.")
              ;; Pytest doesn't know what to do with "-n auto"
              (substitute* "tox.ini"
                (("-n auto") "")))))))
-    (propagated-inputs
+    (inputs
      (list python-argcomplete
            python-bagit
            python-coloredlogs
