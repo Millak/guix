@@ -121,6 +121,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils)
+  #:use-module ((guix search-paths) #:select ($SSL_CERT_DIR $SSL_CERT_FILE))
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1))
 
@@ -473,14 +474,9 @@ $(prefix)/etc/openrc\n")))
        (list (search-path-specification
               (variable "GUIX_EXTENSIONS_PATH")
               (files '("share/guix/extensions")))
-
              ;; (guix git) and (guix build download) honor this variable whose
              ;; name comes from OpenSSL.
-             (search-path-specification
-              (variable "SSL_CERT_DIR")
-              (separator #f)                      ;single entry
-              (files '("etc/ssl/certs")))))
-
+             $SSL_CERT_DIR))
       (home-page "https://www.gnu.org/software/guix/")
       (synopsis "Functional package manager for installed software packages and versions")
       (description
