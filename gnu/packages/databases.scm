@@ -1568,22 +1568,23 @@ organized in a hash table or B+ tree.")
                (base32
                 "03kf91f20brn2ffljfjzirxh5xj99m1mvvspcx2lph9000mmj0b3"))))
     (build-system gnu-build-system)
-
-    (arguments '(#:configure-flags
-                 (list "--disable-static"
-                       (string-append "--with-bash-headers="
-                                      (assoc-ref %build-inputs "bash:include")
-                                      "/include/bash"))))
-
-    (native-inputs `(("bc" ,bc)
-                     ("bash:include" ,bash "include")
-                     ("check" ,check-0.14)
-                     ("pkg-config" ,pkg-config)))
-
-    ;; TODO: Add more optional inputs.
-    (inputs `(("curl" ,curl)
-              ("libgcrypt" ,libgcrypt)
-              ("libuuid" ,util-linux "lib")))
+    (arguments
+     (list #:configure-flags
+           '(list "--disable-static"
+                  (string-append "--with-bash-headers="
+                                 (search-input-directory %build-inputs
+                                                         "include/bash")))))
+    (native-inputs
+     ;; XXX Without labels, the default 'configure phase picks the wrong "bash".
+     `(("bc" ,bc)
+       ("bash:include" ,bash "include")
+       ("check" ,check-0.14)
+       ("pkg-config" ,pkg-config)))
+    (inputs
+     ;; TODO: Add more optional inputs.
+     (list curl
+           libgcrypt
+           `(,util-linux "lib")))
     (synopsis "Manipulate plain text files as databases")
     (description
      "GNU Recutils is a set of tools and libraries for creating and
