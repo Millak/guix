@@ -1572,8 +1572,9 @@ organized in a hash table or B+ tree.")
      (list #:configure-flags
            '(list "--disable-static"
                   (string-append "--with-bash-headers="
-                                 (search-input-directory %build-inputs
-                                                         "include/bash")))))
+                                 (dirname (search-input-directory
+                                           %build-inputs
+                                           "include/bash"))))))
     (native-inputs
      ;; XXX Without labels, the default 'configure phase picks the wrong "bash".
      `(("bc" ,bc)
