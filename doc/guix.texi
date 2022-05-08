@@ -41,7 +41,7 @@ Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021 Julien Lepiller@*
 Copyright @copyright{} 2016 Alex ter Weele@*
 Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021 Christopher Baines@*
 Copyright @copyright{} 2017, 2018, 2019 Clément Lassieur@*
-Copyright @copyright{} 2017, 2018, 2020, 2021 Mathieu Othacehe@*
+Copyright @copyright{} 2017, 2018, 2020, 2021, 2022 Mathieu Othacehe@*
 Copyright @copyright{} 2017 Federico Beffa@*
 Copyright @copyright{} 2017, 2018 Carlo Zancanaro@*
 Copyright @copyright{} 2017 Thomas Danckaert@*
@@ -174,6 +174,7 @@ Weblate} (@pxref{Translating Guix}).
 * Development::                 Guix-aided software development.
 * Programming Interface::       Using Guix in Scheme.
 * Utilities::                   Package management commands.
+* Foreign architectures::       Build for foreign architectures.
 * System Configuration::        Configuring the operating system.
 * Home Configuration::          Configuring the home environment.
 * Documentation::               Browsing software user manuals.
@@ -321,6 +322,10 @@ Invoking @command{guix build}
 * Package Transformation Options::  Creating variants of packages.
 * Additional Build Options::    Options specific to 'guix build'.
 * Debugging Build Failures::    Real life packaging experience.
+
+Foreign architectures
+* Using cross-compilation::  Build for foreign architecture using cross-compilation.
+* Using native building::    Build for foreign architectures natively.
 
 System Configuration
 
@@ -15210,6 +15215,172 @@ Session_PID: 4278
 @end example
 @end table
 @end table
+
+@node Foreign architectures
+@chapter Foreign architectures
+
+GNU Guix can target computers of different CPU architectures when
+producing packages (@pxref{Invoking guix package}), packs
+(@pxref{Invoking guix pack}) or full systems (@pxref{Invoking guix
+system}).
+
+GNU Guix supports two distinct mechanisms to target foreign
+architectures:
+
+@enumerate
+@item
+The traditional
+@uref{https://en.wikipedia.org/wiki/Cross_compiler,cross-compilation}
+mechanism.
+@item
+The native building mechanism which consists in building using the CPU
+instruction set of the foreign system you are targeting.  It often
+requires emulation, using the QEMU program for instance.
+@end enumerate
+
+@menu
+* Using cross-compilation::  Build for foreign architecture using cross-compilation.
+* Using native building::    Build for foreign architectures natively.
+@end menu
+
+@node Using cross-compilation
+@section Using cross-compilation
+
+@cindex foreign architectures
+The GNU Guix commands supporting cross-compilation are proposing the
+@option{--list-targets} and @option{--target} options.
+
+The @option{--list-targets} option lists all the supported targets that
+can be passed as an argument to @option{--target}.
+
+@example
+$ guix build --list-targets
+The available targets are:
+
+   - aarch64-linux-gnu
+   - arm-linux-gnueabihf
+   - i586-pc-gnu
+   - i686-linux-gnu
+   - i686-w64-mingw32
+   - mips64el-linux-gnu
+   - powerpc-linux-gnu
+   - powerpc64le-linux-gnu
+   - riscv64-linux-gnu
+   - s390x-linux-gnu
+   - x86_64-linux-gnu
+   - x86_64-w64-mingw32
+@end example
+
+The targets are specified as GNU triplets (@pxref{Specifying Target
+Triplets, GNU configuration triplets,, autoconf, Autoconf}).
+
+Those triplets are passed to GCC and the other underlying compilers
+possibly involved when building a package, a system image or any other
+GNU Guix output.
+
+@example
+$ guix build --target=aarch64-linux-gnu hello
+/gnu/store/9926by9qrxa91ijkhw9ndgwp4bn24g9h-hello-2.12
+
+$ file /gnu/store/9926by9qrxa91ijkhw9ndgwp4bn24g9h-hello-2.12/bin/hello
+/gnu/store/9926by9qrxa91ijkhw9ndgwp4bn24g9h-hello-2.12/bin/hello: ELF
+64-bit LSB executable, ARM aarch64 @dots{}
+@end example
+
+The major benefit of cross-compilation is that there are no performance
+penaly compared to emulation using QEMU.  There are however higher risks
+that some packages fail to cross-compile because few GNU Guix users are
+using this mecanism extensively.
+
+@node Using native building
+@section Using native building
+
+The GNU Guix commands that support impersonating a specific system have
+the @option{--list-systems} and @option{--system} options.
+
+The @option{--list-systems} option lists all the supported systems that
+can be passed as an argument to @option{--system}.
+
+@example
+$ guix build --list-systems
+The available systems are:
+
+   - x86_64-linux [current]
+   - aarch64-linux
+   - armhf-linux
+   - i586-gnu
+   - i686-linux
+   - mips64el-linux
+   - powerpc-linux
+   - powerpc64le-linux
+   - riscv64-linux
+   - s390x-linux
+
+$ guix build --system=i686-linux hello
+/gnu/store/cc0km35s8x2z4pmwkrqqjx46i8b1i3gm-hello-2.12
+
+$ file /gnu/store/cc0km35s8x2z4pmwkrqqjx46i8b1i3gm-hello-2.12/bin/hello
+/gnu/store/cc0km35s8x2z4pmwkrqqjx46i8b1i3gm-hello-2.12/bin/hello: ELF
+32-bit LSB executable, Intel 80386 @dots{}
+@end example
+
+In the above example, the GNU Guix current system is @var{x86_64-linux}.
+The @var{hello} package is however built for the @var{i686-linux}
+system.
+
+This is possible because the @var{i686} CPU instruction set is a subset
+of the @var{x86_64}, hence @var{i686} targeting binaries can be run on
+@var{x86_64}.
+
+Still in the context of the previous example, if picking the
+@var{aarch64-linux} system and the @command{guix build
+--system=aarch64-linux hello} has to build some derivations, an extra
+step might be needed.
+
+The @var{aarch64-linux} targeting binaries cannot directly be run on a
+@var{x86_64-linux} system.  An emulation layer is requested.  The GNU
+Guix daemon can take advantage of the Linux kernel
+@uref{https://en.wikipedia.org/wiki/Binfmt_misc,binfmt_misc} mechanism
+for that.  In short, the Linux kernel can defer the execution of a
+binary targeting a foreign platform, here @var{aarch64-linux}, to a
+userspace program, usually an emulator.
+
+There is a GNU Guix service that registers QEMU as a backend for the
+@code{binfmt_misc} mechanism (@pxref{Virtualization Services,
+@code{qemu-binfmt-service-type}}).  On Debian based foreign
+distributions, the alternative would be the @code{qemu-user-static}
+package.
+
+If the @code{binfmt_misc} mechanism is not setup correctly, the building
+will fail this way:
+
+@example
+$ guix build --system=armhf-linux hello --check
+@dots{}
+@ unsupported-platform /gnu/store/jjn969pijv7hff62025yxpfmc8zy0aq0-hello-2.12.drv aarch64-linux
+while setting up the build environment: a `aarch64-linux' is required to
+build `/gnu/store/jjn969pijv7hff62025yxpfmc8zy0aq0-hello-2.12.drv', but
+I am a `x86_64-linux'@dots{}
+@end example
+
+whereas, with the @code{binfmt_misc} mechanism correctly linked with
+QEMU, one can expect to see:
+
+@example
+$ guix build --system=armhf-linux hello --check
+/gnu/store/13xz4nghg39wpymivlwghy08yzj97hlj-hello-2.12
+@end example
+
+The main advantage of native building compared to cross-compiling, is
+that more packages are likely to build correctly.  However it comes at a
+price: compilation backed by QEMU is @emph{way slower} than
+cross-compilation, because every instruction needs to be emulated.
+
+The availability of substitutes for the architecture targeted by the
+@code{--system} option can mitigate this problem.  An other way to work
+around it is to install GNU Guix on a machine which CPU is supporting
+the targeted instruction set, an set it up as an offload machine
+(@pxref{Daemon Offload Setup}).
 
 @node System Configuration
 @chapter System Configuration
