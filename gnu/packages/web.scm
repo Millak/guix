@@ -838,50 +838,48 @@ stream.  Remote control of the module is possible over HTTP.")
                 "09hf3cp4ivy9a9z9drgi4f6d60137dcqncqw0wpbyvs9lygrsj71"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list "--with-krb5"
-             "--with-ldap"
-             "--with-libev"
-             "--with-libunwind"
-             "--with-openssl"
-             "--with-pam"
-             "--with-sasl")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'embed-/bin/sh-reference
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "src/mod_ssi.c"
-               (("/bin/sh") (search-input-file inputs "/bin/sh")))
-             #t))
-         (add-after 'unpack 'fix-tests
-           (lambda _
-             (setenv "SHELL" (which "sh"))
-             ;; gethostbyaddr fails
-             (substitute* "tests/LightyTest.pm"
-               (("\\{HOSTNAME\\} = \\$name;")
-                "{HOSTNAME} = \"127.0.0.1\";"))
-             #t))
-         (add-after 'unpack 'skip-failing-tests
-           ;; XXX It would be wonderful if you, reader, felt suddenly and
-           ;; irresistibly compelled to investigate & fix these failures.
-           (lambda _
-             ;; Throws a bunch of ‘connect failed: Connection refused’.
-             (delete-file "tests/mod-scgi.t")
+     (list #:configure-flags
+           #~(list "--with-krb5"
+                   "--with-ldap"
+                   "--with-libev"
+                   "--with-libunwind"
+                   "--with-openssl"
+                   "--with-pam"
+                   "--with-sasl")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'embed-/bin/sh-reference
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "src/mod_ssi.c"
+                     (("/bin/sh") (search-input-file inputs "/bin/sh")))))
+               (add-after 'unpack 'fix-tests
+                 (lambda _
+                   (setenv "SHELL" (which "sh"))
+                   ;; gethostbyaddr fails
+                   (substitute* "tests/LightyTest.pm"
+                     (("\\{HOSTNAME\\} = \\$name;")
+                      "{HOSTNAME} = \"127.0.0.1\";"))))
+               (add-after 'unpack 'skip-failing-tests
+                 ;; XXX It would be wonderful if you, reader, felt suddenly and
+                 ;; irresistibly compelled to investigate & fix these failures.
+                 (lambda _
+                   ;; Throws a bunch of ‘connect failed: Connection refused’.
+                   (delete-file "tests/mod-scgi.t")
 
-             ;; test_mod_ssi_read_fd: Assertion `cq->first' failed.
-             (substitute* "src/t/test_mod.c"
-               ((".*\\btest_mod_ssi\\b.*") "")))))))
+                   ;; test_mod_ssi_read_fd: Assertion `cq->first' failed.
+                   (substitute* "src/t/test_mod.c"
+                     ((".*\\btest_mod_ssi\\b.*") "")))))))
     (inputs
-     `(("bash-minimal" ,bash-minimal)
-       ("cyrus-sasl" ,cyrus-sasl)
-       ("libev" ,libev)
-       ("libunwind" ,libunwind)
-       ("linux-pam" ,linux-pam)
-       ("mit-krb5" ,mit-krb5)
-       ("openldap" ,openldap)
-       ("openssl" ,openssl)
-       ("pcre2" ,pcre2)
-       ("zlib" ,zlib)))
+     (list bash-minimal
+           cyrus-sasl
+           libev
+           libunwind
+           linux-pam
+           mit-krb5
+           openldap
+           openssl
+           pcre2
+           zlib))
     (native-inputs
      (list perl ; for tests
            pkg-config which))
