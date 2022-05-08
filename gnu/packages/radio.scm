@@ -554,7 +554,7 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
        ("python-scipy" ,python-scipy)
        ("python-sphinx" ,python-sphinx)
        ("texlive" ,(texlive-updmap.cfg (list texlive-amsfonts
-                                             texlive-latex-amsmath
+                                             texlive-amsmath
                                              ;; TODO: Add newunicodechar.
                                              texlive-latex-graphics)))
        ("xorg-server" ,xorg-server-for-tests)))
@@ -762,7 +762,7 @@ to access different radio hardware.")
        ("libtool" ,libtool)
        ("pkg-config" ,pkg-config)
        ("texlive" ,(texlive-updmap.cfg (list texlive-amsfonts
-                                        texlive-latex-amsmath
+                                        texlive-amsmath
                                         ;; TODO: Add newunicodechar.
                                         texlive-latex-graphics)))))
     (inputs

@@ -3768,37 +3768,6 @@ loading fonts by their proper names instead of file names.")
 
 (define-deprecated-package texlive-luatex-luaotfload texlive-luaotfload)
 
-(define-public texlive-latex-amsmath
-  (package
-    (name "texlive-latex-amsmath")
-    (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "amsmath"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "172zybw7rp05jca8wl6x0mh6z6gncdyi1j9wdfyjnhbvqw0z4wi4"))))
-    ;; This package misses important files
-    (replacement texlive-amsmath)
-    (build-system texlive-build-system)
-    (arguments '(#:tex-directory "latex/amsmath"))
-    (home-page "https://www.ctan.org/pkg/amsmath")
-    (synopsis "AMS mathematical facilities for LaTeX")
-    (description
-     "This is the principal package in the AMS-LaTeX distribution.  It adapts
-for use in LaTeX most of the mathematical features found in AMS-TeX; it is
-highly recommended as an adjunct to serious mathematical typesetting in LaTeX.
-When amsmath is loaded, AMS-LaTeX packages @code{amsbsyamsbsy} (for bold
-symbols), @code{amsopnamsopn} (for operator names) and
-@code{amstextamstext} (for text embedded in mathematics) are also loaded.
-This package is part of the LaTeX required distribution; however, several
-contributed packages add still further to its appeal; examples are
-@code{empheqempheq}, which provides functions for decorating and highlighting
-mathematics, and @code{ntheoremntheorem}, for specifying theorem (and similar)
-definitions.")
-    (license license:lppl1.3c+)))
-
 (define-public texlive-amsmath
   (let ((template (simple-texlive-package
                    "texlive-amsmath"
@@ -3843,6 +3812,8 @@ contributed packages add still further to its appeal; examples are
 mathematics, and @code{ntheoremntheorem}, for specifying theorem (and similar)
 definitions.")
       (license license:lppl1.3c+))))
+
+(define-deprecated-package texlive-latex-amsmath texlive-amsmath)
 
 (define-public texlive-amscls
   (let ((template (simple-texlive-package
@@ -4241,7 +4212,7 @@ part of the LaTeX required set of packages.")
                 texlive-latex-base
                 texlive-kpathsea       ;for mktex.opt
                 ;; LaTeX packages from the "required" set.
-                texlive-latex-amsmath
+                texlive-amsmath
                 texlive-amscls
                 texlive-babel
                 texlive-generic-babel-english

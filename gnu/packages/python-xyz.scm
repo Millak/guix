@@ -6719,7 +6719,7 @@ toolkits.")
        ("graphviz" ,graphviz)
        ("texlive" ,(texlive-updmap.cfg (list texlive-amsfonts
                                              texlive-enumitem
-                                             texlive-latex-amsmath
+                                             texlive-amsmath
                                              texlive-latex-expdlist
                                              texlive-latex-geometry
                                              texlive-latex-preview
@@ -13053,7 +13053,7 @@ time.")
                                      texlive-fonts-rsfs
                                      texlive-generic-iftex
                                      texlive-jknappen
-                                     texlive-latex-amsmath
+                                     texlive-amsmath
                                      texlive-latex-fancyvrb
                                      texlive-latex-float
                                      texlive-fontspec
