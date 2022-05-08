@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2014, 2015, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016, 2017, 2018, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2018, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017, 2018, 2019, 2021 Eric Bavier <bavier@posteo.net>
@@ -77,18 +77,21 @@
                  ;; This is a style linter.  It doesn't get to throw fatal errors.
                  (lambda _
                    (setenv "TOR_DISABLE_PRACTRACKER" "set")))
-               #$@(if (or (target-aarch64?)
-                         (target-ppc32?))
-                     ;; Work around upstream issue relating to sandboxing and glibc-2.33.
-                     ;; This is similar to the issue the tor-sandbox-i686 patch fixes
-                     ;; but for other architectures.
+               #$@(if (or (target-x86-64?)
+                          (target-x86-32?))
+                     '()
+                     ;; Work around upstream issues relating to libseccomp,
+                     ;; sandboxing and glibc-2.33.  This is similar to the issue
+                     ;; the tor-sandbox-i686 patch fixes but for other architectures.
                      ;; https://gitlab.torproject.org/tpo/core/tor/-/issues/40381
+                     ;; https://gitlab.torproject.org/tpo/core/tor/-/issues/40599
                      ;; https://gitlab.torproject.org/tpo/core/tor/-/merge_requests/446
                      `((add-before 'check 'adjust-test-suite
                          (lambda _
                            (substitute* "src/test/test_include.sh"
-                             ((".*Sandbox 1.*") "")))))
-                     '()))))
+                             ((".*Sandbox 1.*") ""))
+                           (substitute* "src/test/test.c"
+                             ((".*sandbox_tests.*") "")))))))))
     (native-inputs
      (list pkg-config python))             ; for tests
     (inputs
