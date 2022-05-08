@@ -10321,7 +10321,9 @@ only know by its Unicode name or code point.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1igqmach1vhcrvbpw346pmkbb5kabbb806ssswrvkp569n700wmc"))))
+        (base32 "1igqmach1vhcrvbpw346pmkbb5kabbb806ssswrvkp569n700wmc"))
+       ;; XXX: Remove when upgrading
+       (patches (search-patches "gcolor3-update-libportal-usage.patch"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t))
