@@ -4882,11 +4882,12 @@ the XMODEM/YMODEM/ZMODEM file transfer protocols.")
     (native-inputs
      (list perl))
     (arguments
-     `(#:make-flags (list (string-append "CC=" ,(cc-for-target))
-                          (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))
+     (list #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))))
     (synopsis "Unix command line queue utility")
     (description
      "@code{nq} can create very lightweight job queue systems which require no
