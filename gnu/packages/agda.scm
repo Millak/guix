@@ -2,7 +2,7 @@
 ;;; Copyright © 2018 Alex ter Weele <alex.ter.weele@gmail.com>
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
-;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 John Soo <jsoo1@asu.edu>
 ;;; Copyright © 2019 Ludovic Courtès <ludo@gnu.org>
 ;;;
@@ -37,7 +37,7 @@
 (define-public agda
   (package
     (name "agda")
-    (version "2.6.2.1")
+    (version "2.6.2.2")
     (source
      (origin
        (method url-fetch)
@@ -45,7 +45,7 @@
              "https://hackage.haskell.org/package/Agda/Agda-"
              version ".tar.gz"))
        (sha256
-        (base32 "03dw7jfqr3ffik6avigm525djqh2gn5c3qwnb2h6298zkr9lch9w"))))
+        (base32 "0yjjbhc593ylrm4mq4j01nkdvh7xqsg5in30wxj4y53vf5hkggp5"))))
     (build-system haskell-build-system)
     (inputs
      (list ghc-aeson
