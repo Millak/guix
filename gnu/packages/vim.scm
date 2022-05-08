@@ -77,7 +77,7 @@
 (define-public vim
   (package
     (name "vim")
-    (version "8.2.4701")
+    (version "8.2.4912")
     (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -86,7 +86,7 @@
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "0yqqzai3ihfjjjjmn50pxlcqllpkmlrf5z59ma5rn0gv8wwwdw7h"))))
+               "0wcvwmybkw76ha58idrq6pf4gxk14wbw1f8cwqs0slvkfdc8jyya"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -95,12 +95,11 @@
        (modify-phases %standard-phases
          (add-after 'configure 'patch-absolute-paths
            (lambda _
-             (substitute* "runtime/tools/mve.awk"
-               (("/usr/bin/nawk") (which "gawk")))
              (substitute* '("src/testdir/Makefile"
                             "src/testdir/test_filetype.vim"
                             "src/testdir/test_normal.vim"
                             "src/testdir/test_popupwin.vim"
+                            "src/testdir/test_prompt_buffer.vim"
                             "src/testdir/test_shell.vim"
                             "src/testdir/test_suspend.vim"
                             "src/testdir/test_terminal.vim"
@@ -122,15 +121,6 @@
              (with-fluids ((%default-port-encoding #f))
                (substitute* "src/testdir/test_writefile.vim"
                  (("!has\\('bsd'\\)") "0")))
-
-             ;; This test assumes that PID 1 is run as root and that the user
-             ;; running the test suite does not have permission to kill(1, 0)
-             ;; it.  This is not true in the build container, where both PID 1
-             ;; and the test suite are run as the same user.  Skip the test.
-             ;; An alternative fix would be to patch the PID used to a random
-             ;; 32-bit value and hope it never shows up in the test environment.
-             (substitute* "src/testdir/test_swap.vim"
-               (("if !IsRoot\\(\\)") "if 0"))
 
              ;; These tests check how the terminal looks after executing some
              ;; actions.  The path of the bash binary is shown, which results in
