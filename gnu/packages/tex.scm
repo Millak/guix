@@ -3862,14 +3862,13 @@ distribution.")
          ((#:phases phases)
           `(modify-phases ,phases
              (add-after 'unpack 'chdir
-               (lambda _ (chdir "source/latex/babel/") #t))
+               (lambda _ (chdir "source/latex/babel/")))
              ;; This package tries to produce babel.aux twice but refuses to
              ;; overwrite the first one.
              (add-before 'build 'fix-ins
                (lambda _
                  (substitute* "babel.ins"
-                   (("askonceonly") "askforoverwritefalse"))
-                 #t))
+                   (("askonceonly") "askforoverwritefalse"))))
            (add-before 'copy-files 'unchdir
              (lambda _
                (chdir "../../..")))
