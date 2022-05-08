@@ -13,6 +13,7 @@
 ;;; Copyright © 2020, 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 David Dashyan <mail@davie.li>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
+;;; Copyright © 2022 (unmatched parenthesis <paren@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -144,6 +145,46 @@ compiler while still keeping it small, simple, fast and understandable.")
     ;; PCC incorporates code under various BSD licenses; for new code bsd-2 is
     ;; preferred.  See http://pcc.ludd.ltu.se/licenses/ for more details.
     (license (list license:bsd-2 license:bsd-3))))
+
+(define-public qbe
+  (let ((commit "2caa26e388b1c904d2f12fb09f84df7e761d8331")
+        (revision "1"))
+    (package
+      (name "qbe")
+      (version (git-version "0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "git://c9x.me/qbe")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1gv03ym0gqrl4wkbhysa82025xwrkr1fg44z814b6vnggwlqgljc"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:make-flags
+             #~(list (string-append "CC=" #$(cc-for-target))
+                     (string-append "PREFIX=" #$output))
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'allow-cross-compilation
+                   (lambda _
+                     (substitute* "Makefile"
+                       (("`uname -m`") #$(or (%current-target-system)
+                                             (%current-system))))))
+                 (add-after 'allow-cross-compilation 'use-$CC-for-tests
+                   (lambda _
+                     (substitute* "tools/test.sh"
+                       (("cc=\"cc -no-pie\"") "cc=\"${CC} -no-pie\""))))
+                 (delete 'configure))))
+      (supported-systems (list "x86_64-linux" "aarch64-linux" "riscv64-linux"))
+      (synopsis "Simple compiler backend")
+      (description
+       "QBE is a small compiler backend using an SSA-based intermediate
+language as input.")
+      (home-page "https://c9x.me/compile/")
+      (license license:expat))))
 
 (define-public python-pcpp
   (package
