@@ -49,6 +49,7 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages check)
   #:use-module (gnu packages flex)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages guile)
@@ -63,6 +64,52 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml))
+
+(define-public cproc
+  (let ((commit "70fe9ef1810cc6c05bde9eb0970363c35fa7e802")
+        (revision "1"))
+    (package
+      (name "cproc")
+      (version (git-version "0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.sr.ht/~mcf/cproc")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1qmgzll7z7mn587azkj4cizyyd8ii6iznfxpc66ja08140sbn9yx"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:make-flags
+        #~(list (string-append "CC=" #$(cc-for-target))
+                (string-append "PREFIX=" #$output))
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'configure
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((gcc-lib (assoc-ref inputs "gcc:lib"))
+                      (host-system #$(nix-system->gnu-triplet
+                                      (%current-system)))
+                      (target-system #$(nix-system->gnu-triplet
+                                        (or (%current-target-system)
+                                            (%current-system)))))
+                  (invoke "./configure"
+                          (string-append "--prefix=" #$output)
+                          (string-append "--host=" host-system)
+                          (string-append "--target=" target-system)
+                          (string-append "--with-ld=" #$(ld-for-target))
+                          (string-append "--with-gcc-libdir=" gcc-lib))))))))
+      (inputs `(("qbe" ,qbe)
+                ("gcc:lib" ,gcc "lib")))
+      (supported-systems (list "x86_64-linux" "aarch64-linux"))
+      (synopsis "Simple C11 compiler backed by QBE")
+      (description "@code{cproc} is a C compiler using QBE as a backend,
+ supporting most of C11 along with some GCC and C2x extensions.")
+      (home-page "https://sr.ht/~mcf/cproc")
+      (license license:expat))))
 
 (define-public tcc
   (package
