@@ -16,7 +16,7 @@
 ;;; Copyright © 2016 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2021 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016 Bake Timmons <b3timmons@speedymail.org>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017, 2018, 2020, 2021, 2022 Marius Bakke <marius@gnu.org>
@@ -849,9 +849,9 @@ stream.  Remote control of the module is possible over HTTP.")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'embed-/bin/sh-reference
-           (lambda _
+           (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "src/mod_ssi.c"
-               (("/bin/sh") (which "sh")))
+               (("/bin/sh") (search-input-file inputs "/bin/sh")))
              #t))
          (add-after 'unpack 'fix-tests
            (lambda _
@@ -862,7 +862,8 @@ stream.  Remote control of the module is possible over HTTP.")
                 "{HOSTNAME} = \"127.0.0.1\";"))
              #t)))))
     (inputs
-     `(("cyrus-sasl" ,cyrus-sasl)
+     `(("bash-minimal" ,bash-minimal)
+       ("cyrus-sasl" ,cyrus-sasl)
        ("libev" ,libev)
        ("libunwind" ,libunwind)
        ("linux-pam" ,linux-pam)
