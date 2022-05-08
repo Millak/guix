@@ -18632,7 +18632,7 @@ for Kivy, the multitouch application platform.")
 (define-public python-kivy
   (package
     (name "python-kivy")
-    (version "1.10.1")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
@@ -18640,7 +18640,7 @@ for Kivy, the multitouch application platform.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1zzxjdp78hfjjiklzr82l4zwibwcq4j6kgicspqs6iyyfn5yisbw"))))
+         "1cq4djfn7h8560mvz94dydsldg2jpp5w9rby7nafgmbh7fxg65is"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f              ; Tests require many optional packages
@@ -18650,7 +18650,7 @@ for Kivy, the multitouch application platform.")
            (lambda* (#:key inputs #:allow-other-keys)
              (setenv "KIVY_SDL2_PATH"
                      (search-input-directory inputs "/include/SDL2"))))
-         (add-before 'sanity-check 'set-home
+         (add-before 'build 'set-home
            (lambda _
              ;; 'kivy/__init__.py' wants to create $HOME/.kivy.
              (setenv "HOME" (getcwd)))))))
