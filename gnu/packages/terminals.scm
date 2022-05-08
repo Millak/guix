@@ -5,7 +5,7 @@
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2016, 2017, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2017 José Miguel Sánchez García <jmi2k@openmailbox.org>
-;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2017, 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Petter <petter@mykolab.ch>
@@ -559,7 +559,7 @@ to all types of devices that provide serial consoles.")
 (define-public beep
   (package
     (name "beep")
-    (version "1.4.10")
+    (version "1.4.12")
     (source
      (origin
        (method git-fetch)
@@ -572,11 +572,12 @@ to all types of devices that provide serial consoles.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05c2gxfqc12rgp88c65q7f5ha9gzh222vdh0qpdq1zmyhqj43pq1"))))
+        (base32 "0dgrb5yg4ys1fa4hs95iz3m2yhryfzzw0j6g6yf6vhbys4ihcf40"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
-       (list (string-append "prefix=" (assoc-ref %outputs "out"))
+       (list (string-append "CC=" ,(cc-for-target))
+             (string-append "prefix=" (assoc-ref %outputs "out"))
              (string-append "pkgdocdir=$(docdir)/" ,name "-" ,version))
        #:phases
        (modify-phases %standard-phases
@@ -585,9 +586,14 @@ to all types of devices that provide serial consoles.")
            (lambda _
              (substitute* "GNUmakefile"
                (("/bin/bash")
-                (which "bash")))
+                (which "bash"))
+               ;; XXX In the build environment, $(PWD) is the *parent* directory
+               ;; /tmp/guix-build-beep-x.y.drv-0!  A pure guix shell works fine.
+               (("\\$\\(PWD\\)" pwd)
+                (string-append pwd "/source")))
              (substitute* (find-files "tests" "\\.expected")
                ;; The build environment lacks /dev/{console,tty*}.
+               ;; In fact, even nckx's regular Guix System lacks ttyS1…
                ((": Permission denied")
                 ": No such file or directory")))))))
     (synopsis "Linux command-line utility to control the PC speaker")
