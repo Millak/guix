@@ -14,7 +14,7 @@
 ;;; Copyright © 2017, 2018, 2019, 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017, 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2017, 2020 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2018, 2020, 2022 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018 Benjamin Slade <slade@jnanam.net>
@@ -954,7 +954,7 @@ rendering commands to the X server.")
 (define-public iceauth
   (package
     (name "iceauth")
-    (version "1.0.8")
+    (version "1.0.9")
     (source
       (origin
         (method url-fetch)
@@ -963,8 +963,7 @@ rendering commands to the X server.")
                version
                ".tar.bz2"))
         (sha256
-          (base32
-            "1ik0mdidmyvy48hn8p2hwvf3535rf3m96hhf0mvcqrbj44x23vp6"))))
+         (base32 "1ik0mdidmyvy48hn8p2hwvf3535rf3m96hhf0mvcqrbj44x23vp6"))))
     (build-system gnu-build-system)
     (inputs
       (list libice))
