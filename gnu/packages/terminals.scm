@@ -578,8 +578,7 @@ to all types of devices that provide serial consoles.")
     (arguments
      (list #:make-flags
            #~(list (string-append "CC=" #$(cc-for-target))
-                   (string-append "prefix=" #$output)
-                   (string-append "pkgdocdir=$(docdir)/" #$name "-" #$version))
+                   (string-append "prefix=" #$output))
            #:phases
            #~(modify-phases %standard-phases
                (delete 'configure)      ; no configure script
