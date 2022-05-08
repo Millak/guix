@@ -802,7 +802,16 @@ to GitHub contributions calendar.")
                (base32
                 "0vgpb2175a5dhqiy1iwywwppahgqhi340i8bsvafjpvkw284vazd"))
               (modules '((guix build utils)))
-              (snippet '(delete-file-recursively "deps"))))
+              (snippet
+               '(begin
+                  (delete-file-recursively "deps")
+
+                  ;; The "refs:revparse::date" test is time-dependent: it
+                  ;; assumes "HEAD@{10 years ago}" doesn't match anything,
+                  ;; which is no longer true.  Adjust that test.
+                  (substitute* "tests/refs/revparse.c"
+                    (("10 years ago")
+                     "100 years ago"))))))
     (build-system cmake-build-system)
     (outputs '("out" "debug"))
     (arguments
