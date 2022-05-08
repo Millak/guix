@@ -71,22 +71,22 @@
            ghc-uri-encode
            ghc-zlib))
     (arguments
-     `(#:modules ((guix build haskell-build-system)
-                  (guix build utils)
-                  (srfi srfi-26)
-                  (ice-9 match))
-       #:phases
-       (modify-phases %standard-phases
-         ;; This allows us to call the 'agda' binary before installing.
-         (add-after 'unpack 'set-ld-library-path
-           (lambda _
-             (setenv "LD_LIBRARY_PATH" (string-append (getcwd) "/dist/build"))))
-         (add-after 'compile 'agda-compile
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (agda-compiler (string-append out "/bin/agda")))
-               (for-each (cut invoke agda-compiler <>)
-                         (find-files (string-append out "/share") "\\.agda$"))))))))
+     (list #:modules `((guix build haskell-build-system)
+                       (guix build utils)
+                       (srfi srfi-26)
+                       (ice-9 match))
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; This allows us to call the 'agda' binary before installing.
+               (add-after 'unpack 'set-ld-library-path
+                 (lambda _
+                   (setenv "LD_LIBRARY_PATH" (string-append (getcwd) "/dist/build"))))
+               (add-after 'compile 'agda-compile
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let ((agda-compiler (string-append #$output "/bin/agda")))
+                     (for-each (cut invoke agda-compiler <>)
+                               (find-files (string-append #$output "/share")
+                                           "\\.agda$"))))))))
     (home-page "https://wiki.portal.chalmers.se/agda/")
     (synopsis
      "Dependently typed functional programming language and proof assistant")
