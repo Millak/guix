@@ -58,6 +58,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (gnu packages)
@@ -575,27 +576,27 @@ to all types of devices that provide serial consoles.")
         (base32 "0dgrb5yg4ys1fa4hs95iz3m2yhryfzzw0j6g6yf6vhbys4ihcf40"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             (string-append "prefix=" (assoc-ref %outputs "out"))
-             (string-append "pkgdocdir=$(docdir)/" ,name "-" ,version))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (add-before 'check 'patch-tests
-           (lambda _
-             (substitute* "GNUmakefile"
-               (("/bin/bash")
-                (which "bash"))
-               ;; XXX In the build environment, $(PWD) is the *parent* directory
-               ;; /tmp/guix-build-beep-x.y.drv-0!  A pure guix shell works fine.
-               (("\\$\\(PWD\\)" pwd)
-                (string-append pwd "/source")))
-             (substitute* (find-files "tests" "\\.expected")
-               ;; The build environment lacks /dev/{console,tty*}.
-               ;; In fact, even nckx's regular Guix System lacks ttyS1…
-               ((": Permission denied")
-                ": No such file or directory")))))))
+     (list #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "prefix=" #$output)
+                   (string-append "pkgdocdir=$(docdir)/" #$name "-" #$version))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)      ; no configure script
+               (add-before 'check 'patch-tests
+                 (lambda _
+                   (substitute* "GNUmakefile"
+                     (("/bin/bash")
+                      (which "bash"))
+                     ;; XXX In the build environment, $(PWD) is the *parent* directory
+                     ;; /tmp/guix-build-beep-x.y.drv-0!  A pure guix shell works fine.
+                     (("\\$\\(PWD\\)" pwd)
+                      (string-append pwd "/source")))
+                   (substitute* (find-files "tests" "\\.expected")
+                     ;; The build environment lacks /dev/{console,tty*}.
+                     ;; In fact, even nckx's regular Guix System lacks ttyS1…
+                     ((": Permission denied")
+                      ": No such file or directory")))))))
     (synopsis "Linux command-line utility to control the PC speaker")
     (description "beep allows the user to control the PC speaker with precision,
 allowing different sounds to indicate different events.  While it can be run
