@@ -1570,7 +1570,8 @@ organized in a hash table or B+ tree.")
     (build-system gnu-build-system)
 
     (arguments '(#:configure-flags
-                 (list (string-append "--with-bash-headers="
+                 (list "--disable-static"
+                       (string-append "--with-bash-headers="
                                       (assoc-ref %build-inputs "bash:include")
                                       "/include/bash"))))
 
