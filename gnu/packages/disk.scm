@@ -1110,10 +1110,8 @@ on your file system and offers to remove it.  @command{rmlint} can find:
                 "1piym8za0iw2s8yryh39y072f90mzisv89ffvn1jzb71f71mbfqa"))))
     (build-system go-build-system)
     (native-inputs
-     `(("go-github.com-mattn-go-runewidth" ,go-github.com-mattn-go-runewidth)
-       ("go-golang-org-x-term" ,go-golang-org-x-term)
-       ("go-gopkg-in-djherbis-times-v1" ,go-gopkg-in-djherbis-times-v1)
-       ("go-github-com-gdamore-tcell-v2" ,go-github-com-gdamore-tcell-v2)))
+     (list go-github.com-mattn-go-runewidth go-golang-org-x-term
+           go-gopkg-in-djherbis-times-v1 go-github-com-gdamore-tcell-v2))
     (arguments
      `(#:import-path "github.com/gokcehan/lf"))
     (home-page "https://github.com/gokcehan/lf")
