@@ -49,7 +49,7 @@
   (make-parameter "https://www.stackage.org"))
 
 ;; Latest LTS version compatible with current GHC.
-(define %default-lts-version "18.14")
+(define %default-lts-version "20.5")
 
 (define-json-mapping <stackage-lts> make-stackage-lts
   stackage-lts?
