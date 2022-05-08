@@ -6229,8 +6229,6 @@ use this package to insert PostScript files, in addition to PDF files.")
                     "0yn0yl6x1z9ab5gb56lhvkqabd2agz3ggxifwxkiysrj5780j29z"))))
     (package
       (inherit template)
-      ;; TODO: This package is missing files.
-      (replacement texlive-stmaryrd/fixed)
       (arguments (substitute-keyword-arguments (package-arguments template)
                    ((#:tex-directory _ #t)
                     "latex/stmaryrd")
@@ -6246,7 +6244,15 @@ use this package to insert PostScript files, in addition to PDF files.")
                              (("^%% LaTeX2e.*") "\\input docstrip\n")
                              (("fontdef\\}\\}" line)
                               (string-append line "\n\\endbatchfile")))
-                           #t))))))
+                           #t))
+                       (add-before 'copy-files 'unchdir
+                         (lambda _
+                           (chdir "../../..")))
+                       (add-after 'copy-files 'delete-extra-files
+                         (lambda* (#:key outputs #:allow-other-keys)
+                           (delete-file-recursively
+                            (string-append (assoc-ref outputs "out")
+                                           "/share/texmf-dist/source/fonts/stmaryrd/build"))))))))
       (home-page "https://www.ctan.org/pkg/stmaryrd")
       (synopsis "St Mary Road symbols for theoretical computer science")
       (description
@@ -6256,25 +6262,6 @@ use under LaTeX; the package supports the @code{only} option (provided by the
 @code{somedefs} package) to restrict what is loaded, for those who don't need
 the whole font.")
       (license license:lppl))))
-
-(define-public texlive-stmaryrd/fixed
-  (package
-    (inherit texlive-stmaryrd)
-    (name "texlive-stmaryrd-fixed")
-    (arguments
-     (substitute-keyword-arguments (package-arguments texlive-stmaryrd)
-       ((#:tex-directory _ #t)
-        "latex/stmaryrd")
-       ((#:phases phases)
-        `(modify-phases ,phases
-           (add-before 'copy-files 'unchdir
-             (lambda _
-               (chdir "../../..")))
-           (add-after 'copy-files 'delete-extra-files
-             (lambda* (#:key outputs #:allow-other-keys)
-               (delete-file-recursively
-                (string-append (assoc-ref outputs "out")
-                               "/share/texmf-dist/source/fonts/stmaryrd/build"))))))))))
 
 (define-deprecated-package texlive-fonts-stmaryrd texlive-stmaryrd)
 
