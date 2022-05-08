@@ -18670,6 +18670,35 @@ for Kivy, the multitouch application platform.")
 multitouch applications.")
     (license license:expat)))
 
+(define-public python-kivymd
+  (package
+    (name "python-kivymd")
+    (version "0.104.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "kivymd" version))
+       (sha256
+        (base32 "04lwy6j0agrdwa4a6dl6qs97nx9ysmscmm8psvdzjpyj8aa1zg4p"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:tests? #f                                ;tests require network
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'sanity-check 'set-home
+           (lambda _
+             ;; 'kivy/__init__.py' wants to create $HOME/.kivy.
+             (setenv "HOME" (getcwd)))))))
+    (native-inputs (list python-docutils))
+    (propagated-inputs
+     (list python-kivy python-pillow python-pygments python-kivy-garden))
+    (home-page "https://github.com/kivymd/KivyMD")
+    (synopsis "Material Design compliant widgets for use with Kivy")
+    (description
+     "This package provides Kivy widgets that approximate Google's Material
+Design spec without sacrificing ease of use or application performance.")
+    (license license:expat)))
+
 (define-public python2-kivy
   (package-with-python2 python-kivy))
 
