@@ -21,6 +21,7 @@
 
 (define-module (guix scripts build)
   #:use-module (guix ui)
+  #:use-module (guix colors)
   #:use-module (guix scripts)
   #:autoload   (guix import json) (json->scheme-file)
   #:use-module (guix store)
@@ -342,8 +343,15 @@ use '--no-offload' instead~%")))
   "Print the available systems."
   (display (G_ "The available systems are:\n"))
   (newline)
-  (format #t "~{   - ~a ~%~}"
-          (sort (systems) string<?)))
+  (let ((systems*
+         (map (lambda (system)
+                (if (string=? system (%current-system))
+                    (highlight
+                     (string-append system " [current]"))
+                    system))
+              (systems))))
+    (format #t "~{   - ~a ~%~}"
+            (sort systems* string<?))))
 
 (define (list-targets)
   "Print the available targets."
