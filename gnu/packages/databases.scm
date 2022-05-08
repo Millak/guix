@@ -1559,14 +1559,14 @@ organized in a hash table or B+ tree.")
 (define-public recutils
   (package
     (name "recutils")
-    (version "1.8")
+    (version "1.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/recutils/recutils-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "14xiln4immfsw8isnvwvq0h23f6z0wilpgsc4qzabnrzb5lsx3nz"))))
+                "03kf91f20brn2ffljfjzirxh5xj99m1mvvspcx2lph9000mmj0b3"))))
     (build-system gnu-build-system)
 
     (arguments '(#:configure-flags
