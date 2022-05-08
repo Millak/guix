@@ -2329,8 +2329,8 @@ Installation}).
 
 The installation system provides root shells on TTYs 3 to 6; press
 @kbd{ctrl-alt-f3}, @kbd{ctrl-alt-f4}, and so on to reach them.  It includes
-many common tools needed to install the system.  But it is also a full-blown
-Guix System, which means that you can install additional packages, should you
+many common tools needed to install the system, but is also a full-blown
+Guix System.  This means that you can install additional packages, should you
 need it, using @command{guix package} (@pxref{Invoking guix package}).
 
 @menu
