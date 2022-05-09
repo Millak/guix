@@ -701,16 +701,17 @@ external server.")
                             "one.c"))))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure)  ; no configure script
-         (replace 'install
-           (lambda* (#:key (make-flags '()) #:allow-other-keys)
-             (apply invoke "make" "install-shared" make-flags))))
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (delete 'configure)          ; no configure script
+           (replace 'install
+             (lambda* (#:key (make-flags '()) #:allow-other-keys)
+               (apply invoke "make" "install-shared" make-flags))))
        #:make-flags
-       (list ,(string-append "VERSION=" version)
-             ,(string-append "CC=" (cc-for-target))
-             (string-append "prefix=" (assoc-ref %outputs "out")))
+       #~(list (string-append "VERSION=" #$version)
+               (string-append "CC=" #$(cc-for-target))
+               (string-append "prefix=" #$output))
        #:tests? #f))                    ; no tests
     (inputs
      (list readline))
