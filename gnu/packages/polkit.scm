@@ -93,12 +93,12 @@
     (propagated-inputs
      (list glib)) ; required by polkit-gobject-1.pc
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("glib:bin" ,glib "bin") ; for glib-mkenums
-       ("intltool" ,intltool)
-       ("gobject-introspection" ,gobject-introspection)
-       ("libxslt" ,libxslt) ; for man page generation
-       ("docbook-xsl" ,docbook-xsl))) ; for man page generation
+     (list pkg-config
+           `(,glib "bin")                         ;for glib-mkenums
+           intltool
+           gobject-introspection
+           libxslt                                ;for man page generation
+           docbook-xsl))                          ;for man page generation
     (arguments
      `(#:configure-flags '("--sysconfdir=/etc"
                            "--enable-man-pages"
@@ -170,13 +170,11 @@ for unprivileged applications.")
                (lambda _
                  (delete-file "configure")))))))
       (native-inputs
-       (append `(("autoconf" ,autoconf)
-                 ("automake" ,automake)
-                 ("libtool" ,libtool)
-                 ("pkg-config" ,pkg-config))
-           (package-native-inputs base)))
-      (inputs (alist-replace "mozjs" `(,duktape)
-                             (package-inputs base))))))
+       (modify-inputs (package-native-inputs base)
+         (prepend autoconf automake libtool)))
+      (inputs
+       (modify-inputs (package-inputs base)
+         (replace "mozjs" duktape))))))
 
 (define polkit-for-system
   (mlambda (system)
