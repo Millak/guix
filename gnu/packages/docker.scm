@@ -29,6 +29,7 @@
   #:use-module (gnu packages)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
@@ -186,53 +187,55 @@ Python without keeping their credentials in a Docker configuration file.")
         (base32 "1vsl747i3wyy68j4lp4nprwxadbyga8qxlrk892afcd2990zp5mr"))))
     (build-system go-build-system)
     (arguments
-     (let ((make-flags (list (string-append "VERSION=" version)
-                             "REVISION=0")))
-       `(#:import-path "github.com/containerd/containerd"
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'patch-paths
-             (lambda* (#:key inputs import-path outputs #:allow-other-keys)
-               (with-directory-excursion (string-append "src/" import-path)
-                 (substitute* "runtime/v1/linux/runtime.go"
-                   (("defaultRuntime[ \t]*=.*")
-                    (string-append "defaultRuntime = \""
-                                   (assoc-ref inputs "runc")
-                                   "/sbin/runc\"\n"))
-                   (("defaultShim[ \t]*=.*")
-                    (string-append "defaultShim = \""
-                                   (assoc-ref outputs "out")
-                                   "/bin/containerd-shim\"\n")))
-                 (substitute* "pkg/cri/config/config_unix.go"
-                   (("DefaultRuntimeName: \"runc\"")
-                    (string-append "DefaultRuntimeName: \""
-                                   (assoc-ref inputs "runc")
-                                   "/sbin/runc\"")))
-                 (substitute* "vendor/github.com/containerd/go-runc/runc.go"
-                   (("DefaultCommand[ \t]*=.*")
-                    (string-append "DefaultCommand = \""
-                                   (assoc-ref inputs "runc")
-                                   "/sbin/runc\"\n")))
-                 (substitute* "vendor/github.com/containerd/continuity/testutil\
+     (let ((make-flags #~(list (string-append "VERSION=" #$version)
+                               (string-append "DESTDIR=" #$output)
+                               "PREFIX="
+                               "REVISION=0")))
+       (list
+        #:import-path "github.com/containerd/containerd"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-paths
+              (lambda* (#:key inputs import-path outputs #:allow-other-keys)
+                (with-directory-excursion (string-append "src/" import-path)
+                  (substitute* "runtime/v1/linux/runtime.go"
+                    (("defaultRuntime[ \t]*=.*")
+                     (string-append "defaultRuntime = \""
+                                    (search-input-file inputs "/sbin/runc")
+                                    "\"\n"))
+                    (("defaultShim[ \t]*=.*")
+                     (string-append "defaultShim = \""
+                                    (assoc-ref outputs "out")
+                                    "/bin/containerd-shim\"\n")))
+                  (substitute* "pkg/cri/config/config_unix.go"
+                    (("DefaultRuntimeName: \"runc\"")
+                     (string-append "DefaultRuntimeName: \""
+                                    (search-input-file inputs "/sbin/runc")
+                                    "\"")))
+                  (substitute* "vendor/github.com/containerd/go-runc/runc.go"
+                    (("DefaultCommand[ \t]*=.*")
+                     (string-append "DefaultCommand = \""
+                                    (search-input-file inputs "/sbin/runc")
+                                    "\"\n")))
+                  (substitute* "vendor/github.com/containerd/continuity/testutil\
 /loopback/loopback_linux.go"
-                   (("exec\\.Command\\(\"losetup\"")
-                    (string-append "exec.Command(\""
-                                   (assoc-ref inputs "util-linux")
-                                   "/sbin/losetup\"")))
-                 (substitute* "archive/compression/compression.go"
-                   (("exec\\.LookPath\\(\"unpigz\"\\)")
-                    (string-append "\"" (assoc-ref inputs "pigz")
-                                   "/bin/unpigz\", error(nil)"))))))
-           (replace 'build
-             (lambda* (#:key import-path #:allow-other-keys)
-               (with-directory-excursion (string-append "src/" import-path)
-                 (apply invoke "make" ',make-flags))))
-           (replace 'install
-             (lambda* (#:key import-path outputs #:allow-other-keys)
-               (with-directory-excursion (string-append "src/" import-path)
-                 (let* ((out (assoc-ref outputs "out")))
-                   (apply invoke "make" (string-append "DESTDIR=" out)
-                          "PREFIX=" "install" ',make-flags)))))))))
+                    (("exec\\.Command\\(\"losetup\"")
+                     (string-append "exec.Command(\""
+                                    (search-input-file inputs "/sbin/losetup")
+                                    "\"")))
+                  (substitute* "archive/compression/compression.go"
+                    (("exec\\.LookPath\\(\"unpigz\"\\)")
+                     (string-append "\""
+                                    (search-input-file inputs "/bin/unpigz")
+                                    "\", error(nil)"))))))
+            (replace 'build
+              (lambda* (#:key import-path #:allow-other-keys)
+                (with-directory-excursion (string-append "src/" import-path)
+                  (apply invoke "make" #$make-flags))))
+            (replace 'install
+              (lambda* (#:key import-path #:allow-other-keys)
+                (with-directory-excursion (string-append "src/" import-path)
+                  (apply invoke "make" "install" #$make-flags))))))))
     (inputs
      (list btrfs-progs libseccomp pigz runc util-linux))
     (native-inputs
