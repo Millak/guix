@@ -324,260 +324,259 @@ built-in registry server of Docker.")
         (base32 "0hn7fg717rggwk6dbicrwa7aglqp7dp0jp5rvn6p9gfcnrp2w97d"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:modules
-       ((guix build gnu-build-system)
+     (list
+      #:modules
+      '((guix build gnu-build-system)
         ((guix build go-build-system) #:prefix go:)
         (guix build union)
         (guix build utils))
-       #:imported-modules
-       (,@%gnu-build-system-modules
+      #:imported-modules
+      `(,@%gnu-build-system-modules
         (guix build union)
         (guix build go-build-system))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "builder/builder-next/executor_unix.go"
-               (("CommandCandidates:.*runc.*")
-                (string-append "CommandCandidates: []string{\""
-                               (assoc-ref inputs "runc")
-                               "/sbin/runc\"},\n")))
-             (substitute* "vendor/github.com/containerd/go-runc/runc.go"
-               (("DefaultCommand = .*")
-                (string-append "DefaultCommand = \""
-                               (assoc-ref inputs "runc")
-                               "/sbin/runc\"\n")))
-             (substitute* "vendor/github.com/containerd/containerd/runtime/v1/linux/runtime.go"
-               (("defaultRuntime[ \t]*=.*")
-                (string-append "defaultRuntime = \""
-                               (assoc-ref inputs "runc")
-                               "/sbin/runc\"\n"))
-               (("defaultShim[ \t]*=.*")
-                (string-append "defaultShim = \""
-                               (assoc-ref inputs "containerd")
-                               "/bin/containerd-shim\"\n")))
-             (substitute* "daemon/daemon_unix.go"
-               (("DefaultShimBinary = .*")
-                (string-append "DefaultShimBinary = \""
-                               (assoc-ref inputs "containerd")
-                               "/bin/containerd-shim\"\n"))
-               (("DefaultRuntimeBinary = .*")
-                (string-append "DefaultRuntimeBinary = \""
-                               (assoc-ref inputs "runc")
-                               "/sbin/runc\"\n")))
-             (substitute* "daemon/runtime_unix.go"
-               (("defaultRuntimeName = .*")
-                (string-append "defaultRuntimeName = \""
-                               (assoc-ref inputs "runc")
-                               "/sbin/runc\"\n")))
-             (substitute* "daemon/config/config.go"
-               (("StockRuntimeName = .*")
-                (string-append "StockRuntimeName = \""
-                               (assoc-ref inputs "runc")
-                               "/sbin/runc\"\n"))
-               (("DefaultInitBinary = .*")
-                (string-append "DefaultInitBinary = \""
-                               (assoc-ref inputs "tini")
-                               "/bin/tini-static\"\n")))
-             (substitute* "daemon/config/config_common_unix_test.go"
-               (("expectedInitPath: \"docker-init\"")
-                (string-append "expectedInitPath: \""
-                               (assoc-ref inputs "tini")
-                               "/bin/tini-static\"")))
-             (substitute* "vendor/github.com/moby/buildkit/executor/runcexecutor/executor.go"
-               (("var defaultCommandCandidates = .*")
-                (string-append "var defaultCommandCandidates = []string{\""
-                               (assoc-ref inputs "runc") "/sbin/runc\"}")))
-             (substitute* "vendor/github.com/docker/libnetwork/portmapper/proxy.go"
-               (("var userlandProxyCommandName = .*")
-                (string-append "var userlandProxyCommandName = \""
-                               (assoc-ref inputs "docker-proxy")
-                               "/bin/proxy\"\n")))
-             (substitute* "pkg/archive/archive.go"
-               (("string\\{\"xz")
-                (string-append "string{\"" (assoc-ref inputs "xz") "/bin/xz")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "builder/builder-next/executor_unix.go"
+                (("CommandCandidates:.*runc.*")
+                 (string-append "CommandCandidates: []string{\""
+                                (search-input-file inputs "/sbin/runc")
+                                "\"},\n")))
+              (substitute* "vendor/github.com/containerd/go-runc/runc.go"
+                (("DefaultCommand = .*")
+                 (string-append "DefaultCommand = \""
+                                (search-input-file inputs "/sbin/runc")
+                                "\"\n")))
+              (substitute* "vendor/github.com/containerd/containerd/runtime/v1/linux/runtime.go"
+                (("defaultRuntime[ \t]*=.*")
+                 (string-append "defaultRuntime = \""
+                                (search-input-file inputs "/sbin/runc")
+                                "\"\n"))
+                (("defaultShim[ \t]*=.*")
+                 (string-append "defaultShim = \""
+                                (search-input-file inputs "/bin/containerd-shim")
+                                "\"\n")))
+              (substitute* "daemon/daemon_unix.go"
+                (("DefaultShimBinary = .*")
+                 (string-append "DefaultShimBinary = \""
+                                (search-input-file inputs "/bin/containerd-shim")
+                                "\"\n"))
+                (("DefaultRuntimeBinary = .*")
+                 (string-append "DefaultRuntimeBinary = \""
+                                (search-input-file inputs "/sbin/runc")
+                                "\"\n")))
+              (substitute* "daemon/runtime_unix.go"
+                (("defaultRuntimeName = .*")
+                 (string-append "defaultRuntimeName = \""
+                                (search-input-file inputs "/sbin/runc")
+                                "\"\n")))
+              (substitute* "daemon/config/config.go"
+                (("StockRuntimeName = .*")
+                 (string-append "StockRuntimeName = \""
+                                (search-input-file inputs "/sbin/runc")
+                                "\"\n"))
+                (("DefaultInitBinary = .*")
+                 (string-append "DefaultInitBinary = \""
+                                (search-input-file inputs "/bin/tini-static")
+                                "\"\n")))
+              (substitute* "daemon/config/config_common_unix_test.go"
+                (("expectedInitPath: \"docker-init\"")
+                 (string-append "expectedInitPath: \""
+                                (search-input-file inputs "/bin/tini-static")
+                                "\"")))
+              (substitute* "vendor/github.com/moby/buildkit/executor/runcexecutor/executor.go"
+                (("var defaultCommandCandidates = .*")
+                 (string-append "var defaultCommandCandidates = []string{\""
+                                (search-input-file inputs "/sbin/runc") "\"}")))
+              (substitute* "vendor/github.com/docker/libnetwork/portmapper/proxy.go"
+                (("var userlandProxyCommandName = .*")
+                 (string-append "var userlandProxyCommandName = \""
+                                (search-input-file inputs "/bin/proxy")
+                                "\"\n")))
+              (substitute* "pkg/archive/archive.go"
+                (("string\\{\"xz")
+                 (string-append "string{\"" (search-input-file inputs "/bin/xz"))))
 
-             (let ((source-files (filter (lambda (name)
-                                           (not (string-contains name "test")))
-                                         (find-files "." "\\.go$"))))
-               (let-syntax ((substitute-LookPath*
-                             (syntax-rules ()
-                               ((_ (source-text package relative-path) ...)
-                                (substitute* source-files
-                                  (((string-append "\\<exec\\.LookPath\\(\""
-                                                   source-text
-                                                   "\")"))
-                                   (string-append "\""
-                                                  (assoc-ref inputs package)
-                                                  "/" relative-path
-                                                  "\", error(nil)")) ...))))
-                            (substitute-Command*
-                             (syntax-rules ()
-                               ((_ (source-text package relative-path) ...)
-                                (substitute* source-files
-                                  (((string-append "\\<(re)?exec\\.Command\\(\""
-                                                   source-text
-                                                   "\"") _ re?)
-                                   (string-append (if re? re? "")
-                                                  "exec.Command(\""
-                                                  (assoc-ref inputs package)
-                                                  "/" relative-path
-                                                  "\"")) ...)))))
-                 (substitute-LookPath*
-                  ("containerd" "containerd" "bin/containerd")
-                  ("ps" "procps" "bin/ps")
-                  ("mkfs.xfs" "xfsprogs" "sbin/mkfs.xfs")
-                  ("lvmdiskscan" "lvm2" "sbin/lvmdiskscan")
-                  ("pvdisplay" "lvm2" "sbin/pvdisplay")
-                  ("blkid" "util-linux" "sbin/blkid")
-                  ("unpigz" "pigz" "bin/unpigz")
-                  ("iptables" "iptables" "sbin/iptables")
-                  ("ip6tables" "iptables" "sbin/ip6tables")
-                  ("iptables-legacy" "iptables" "sbin/iptables")
-                  ("ip" "iproute2" "sbin/ip"))
+              (let ((source-files (filter (lambda (name)
+                                            (not (string-contains name "test")))
+                                          (find-files "." "\\.go$"))))
+                (let-syntax ((substitute-LookPath*
+                              (syntax-rules ()
+                                ((_ (source-text path) ...)
+                                 (substitute* source-files
+                                   (((string-append "\\<exec\\.LookPath\\(\""
+                                                    source-text
+                                                    "\")"))
+                                    (string-append "\""
+                                                   (search-input-file inputs path)
+                                                   "\", error(nil)")) ...))))
+                             (substitute-Command*
+                              (syntax-rules ()
+                                ((_ (source-text path) ...)
+                                 (substitute* source-files
+                                   (((string-append "\\<(re)?exec\\.Command\\(\""
+                                                    source-text
+                                                    "\"") _ re?)
+                                    (string-append (if re? re? "")
+                                                   "exec.Command(\""
+                                                   (search-input-file inputs path)
+                                                   "\"")) ...)))))
+                  (substitute-LookPath*
+                   ("containerd" "/bin/containerd")
+                   ("ps" "/bin/ps")
+                   ("mkfs.xfs" "/sbin/mkfs.xfs")
+                   ("lvmdiskscan" "/sbin/lvmdiskscan")
+                   ("pvdisplay" "/sbin/pvdisplay")
+                   ("blkid" "/sbin/blkid")
+                   ("unpigz" "/bin/unpigz")
+                   ("iptables" "/sbin/iptables")
+                   ("ip6tables" "/sbin/ip6tables")
+                   ("iptables-legacy" "/sbin/iptables")
+                   ("ip" "/sbin/ip"))
 
-                 (substitute-Command*
-                  ("modprobe" "kmod" "bin/modprobe")
-                  ("pvcreate" "lvm2" "sbin/pvcreate")
-                  ("vgcreate" "lvm2" "sbin/vgcreate")
-                  ("lvcreate" "lvm2" "sbin/lvcreate")
-                  ("lvconvert" "lvm2" "sbin/lvconvert")
-                  ("lvchange" "lvm2" "sbin/lvchange")
-                  ("mkfs.xfs" "xfsprogs" "sbin/mkfs.xfs")
-                  ("xfs_growfs" "xfsprogs" "sbin/xfs_growfs")
-                  ("mkfs.ext4" "e2fsprogs" "sbin/mkfs.ext4")
-                  ("tune2fs" "e2fsprogs" "sbin/tune2fs")
-                  ("blkid" "util-linux" "sbin/blkid")
-                  ("resize2fs" "e2fsprogs" "sbin/resize2fs")
-                  ("ps" "procps" "bin/ps")
-                  ("losetup" "util-linux" "sbin/losetup")
-                  ("uname" "coreutils" "bin/uname")
-                  ("dbus-launch" "dbus" "bin/dbus-launch")
-                  ("git" "git" "bin/git")))
-               ;; docker-mountfrom ??
-               ;; docker
-               ;; docker-untar ??
-               ;; docker-applyLayer ??
-               ;; /usr/bin/uname
-               ;; grep
-               ;; apparmor_parser
+                  (substitute-Command*
+                   ("modprobe" "/bin/modprobe")
+                   ("pvcreate" "/sbin/pvcreate")
+                   ("vgcreate" "/sbin/vgcreate")
+                   ("lvcreate" "/sbin/lvcreate")
+                   ("lvconvert" "/sbin/lvconvert")
+                   ("lvchange" "/sbin/lvchange")
+                   ("mkfs.xfs" "/sbin/mkfs.xfs")
+                   ("xfs_growfs" "/sbin/xfs_growfs")
+                   ("mkfs.ext4" "/sbin/mkfs.ext4")
+                   ("tune2fs" "/sbin/tune2fs")
+                   ("blkid" "/sbin/blkid")
+                   ("resize2fs" "/sbin/resize2fs")
+                   ("ps" "/bin/ps")
+                   ("losetup" "/sbin/losetup")
+                   ("uname" "/bin/uname")
+                   ("dbus-launch" "/bin/dbus-launch")
+                   ("git" "/bin/git")))
+                ;; docker-mountfrom ??
+                ;; docker
+                ;; docker-untar ??
+                ;; docker-applyLayer ??
+                ;; /usr/bin/uname
+                ;; grep
+                ;; apparmor_parser
 
-               ;; Make compilation fail when, in future versions, Docker
-               ;; invokes other programs we don't know about and thus don't
-               ;; substitute.
-               (substitute* source-files
-                 ;; Search for Java in PATH.
-                 (("\\<exec\\.Command\\(\"java\"")
-                  "xxec.Command(\"java\"")
-                 ;; Search for AUFS in PATH (mainline Linux doesn't support it).
-                 (("\\<exec\\.Command\\(\"auplink\"")
-                  "xxec.Command(\"auplink\"")
-                 ;; Fail on other unsubstituted commands.
-                 (("\\<exec\\.Command\\(\"([a-zA-Z0-9][a-zA-Z0-9_-]*)\""
-                   _ executable)
-                  (string-append "exec.Guix_doesnt_want_Command(\""
-                                 executable "\""))
-                 (("\\<xxec\\.Command")
-                  "exec.Command")
-                 ;; Search for ZFS in PATH.
-                 (("\\<LookPath\\(\"zfs\"\\)") "LooxPath(\"zfs\")")
+                ;; Make compilation fail when, in future versions, Docker
+                ;; invokes other programs we don't know about and thus don't
+                ;; substitute.
+                (substitute* source-files
+                  ;; Search for Java in PATH.
+                  (("\\<exec\\.Command\\(\"java\"")
+                   "xxec.Command(\"java\"")
+                  ;; Search for AUFS in PATH (mainline Linux doesn't support it).
+                  (("\\<exec\\.Command\\(\"auplink\"")
+                   "xxec.Command(\"auplink\"")
+                  ;; Fail on other unsubstituted commands.
+                  (("\\<exec\\.Command\\(\"([a-zA-Z0-9][a-zA-Z0-9_-]*)\""
+                    _ executable)
+                   (string-append "exec.Guix_doesnt_want_Command(\""
+                                  executable "\""))
+                  (("\\<xxec\\.Command")
+                   "exec.Command")
+                  ;; Search for ZFS in PATH.
+                  (("\\<LookPath\\(\"zfs\"\\)") "LooxPath(\"zfs\")")
                  ;; Do not fail when buildkit-qemu-<target> isn't found.
                  ;; FIXME: We might need to package buildkit and docker's
                  ;; buildx plugin, to support qemu-based docker containers.
-                 (("\\<LookPath\\(\"buildkit-qemu-\"") "LooxPath(\"buildkit-qemu-\"")
-                 ;; Fail on other unsubstituted LookPaths.
-                 (("\\<LookPath\\(\"") "Guix_doesnt_want_LookPath\\(\"")
-                 (("\\<LooxPath") "LookPath")))))
-         (add-after 'patch-paths 'delete-failing-tests
-           (lambda _
-             ;; Needs internet access.
-             (delete-file "builder/remotecontext/git/gitutils_test.go")
-             ;; Permission denied.
-             (delete-file "daemon/graphdriver/devmapper/devmapper_test.go")
-             ;; Operation not permitted (idtools.MkdirAllAndChown).
-             (delete-file "daemon/graphdriver/vfs/vfs_test.go")
-             ;; Timeouts after 5 min.
-             (delete-file "plugin/manager_linux_test.go")
-             ;; Operation not permitted.
-             (delete-file "daemon/graphdriver/aufs/aufs_test.go")
-             (delete-file "daemon/graphdriver/btrfs/btrfs_test.go")
-             (delete-file "daemon/graphdriver/overlay/overlay_test.go")
-             (delete-file "daemon/graphdriver/overlay2/overlay_test.go")
-             (delete-file "pkg/chrootarchive/archive_unix_test.go")
-             (delete-file "daemon/container_unix_test.go")
-             ;; This file uses cgroups and /proc.
-             (delete-file "pkg/sysinfo/sysinfo_linux_test.go")
-             ;; This file uses cgroups.
-             (delete-file "runconfig/config_test.go")
-             ;; This file uses /var.
-             (delete-file "daemon/oci_linux_test.go")
-             ;; Signal tests fail in bizarre ways
-             (delete-file "pkg/signal/signal_linux_test.go")))
-         (replace 'configure
-           (lambda _
-             (setenv "DOCKER_BUILDTAGS" "seccomp")
-             (setenv "DOCKER_GITCOMMIT" (string-append "v" ,%docker-version))
-             (setenv "VERSION" (string-append ,%docker-version "-ce"))
-             ;; Automatically use bundled dependencies.
-             ;; TODO: Unbundle - see file "vendor.conf".
-             (setenv "AUTO_GOPATH" "1")
-             ;; Respectively, strip the symbol table and debug
-             ;; information, and the DWARF symbol table.
-             (setenv "LDFLAGS" "-s -w")
-             ;; Make build faster
-             (setenv "GOCACHE" "/tmp")))
-         (add-before 'build 'setup-go-environment
-           (assoc-ref go:%standard-phases 'setup-go-environment))
-         (replace 'build
-           (lambda _
-             ;; Our LD doesn't like the statically linked relocatable things
-             ;; that go produces, so install the dynamic version of
-             ;; dockerd instead.
-             (invoke "hack/make.sh" "dynbinary")))
-         (replace 'check
-           (lambda _
-             ;; The build process generated a file because the environment
-             ;; variable "AUTO_GOPATH" was set.  Use it.
-             (setenv "GOPATH" (string-append (getcwd) "/.gopath"))
-             ;; ".gopath/src/github.com/docker/docker" is a link to the current
-             ;; directory and chdir would canonicalize to that.
-             ;; But go needs to have the uncanonicalized directory name, so
-             ;; store that.
-             (setenv "PWD" (string-append (getcwd)
-                                          "/.gopath/src/github.com/docker/docker"))
-             (with-directory-excursion ".gopath/src/github.com/docker/docker"
-               (invoke "hack/test/unit"))
-             (setenv "PWD" #f)))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (out-bin (string-append out "/bin")))
-               (install-file "bundles/dynbinary-daemon/dockerd" out-bin)
-               (install-file (string-append "bundles/dynbinary-daemon/dockerd-"
-                                            (getenv "VERSION"))
-                             out-bin))))
-         (add-after 'install 'remove-go-references
-           (assoc-ref go:%standard-phases 'remove-go-references)))))
+                  (("\\<LookPath\\(\"buildkit-qemu-\"") "LooxPath(\"buildkit-qemu-\"")
+                  ;; Fail on other unsubstituted LookPaths.
+                  (("\\<LookPath\\(\"") "Guix_doesnt_want_LookPath\\(\"")
+                  (("\\<LooxPath") "LookPath")))))
+          (add-after 'patch-paths 'delete-failing-tests
+            (lambda _
+              ;; Needs internet access.
+              (delete-file "builder/remotecontext/git/gitutils_test.go")
+              ;; Permission denied.
+              (delete-file "daemon/graphdriver/devmapper/devmapper_test.go")
+              ;; Operation not permitted (idtools.MkdirAllAndChown).
+              (delete-file "daemon/graphdriver/vfs/vfs_test.go")
+              ;; Timeouts after 5 min.
+              (delete-file "plugin/manager_linux_test.go")
+              ;; Operation not permitted.
+              (delete-file "daemon/graphdriver/aufs/aufs_test.go")
+              (delete-file "daemon/graphdriver/btrfs/btrfs_test.go")
+              (delete-file "daemon/graphdriver/overlay/overlay_test.go")
+              (delete-file "daemon/graphdriver/overlay2/overlay_test.go")
+              (delete-file "pkg/chrootarchive/archive_unix_test.go")
+              (delete-file "daemon/container_unix_test.go")
+              ;; This file uses cgroups and /proc.
+              (delete-file "pkg/sysinfo/sysinfo_linux_test.go")
+              ;; This file uses cgroups.
+              (delete-file "runconfig/config_test.go")
+              ;; This file uses /var.
+              (delete-file "daemon/oci_linux_test.go")
+              ;; Signal tests fail in bizarre ways
+              (delete-file "pkg/signal/signal_linux_test.go")))
+          (replace 'configure
+            (lambda _
+              (setenv "DOCKER_BUILDTAGS" "seccomp")
+              (setenv "DOCKER_GITCOMMIT" (string-append "v" #$%docker-version))
+              (setenv "VERSION" (string-append #$%docker-version "-ce"))
+              ;; Automatically use bundled dependencies.
+              ;; TODO: Unbundle - see file "vendor.conf".
+              (setenv "AUTO_GOPATH" "1")
+              ;; Respectively, strip the symbol table and debug
+              ;; information, and the DWARF symbol table.
+              (setenv "LDFLAGS" "-s -w")
+              ;; Make build faster
+              (setenv "GOCACHE" "/tmp")))
+          (add-before 'build 'setup-go-environment
+            (assoc-ref go:%standard-phases 'setup-go-environment))
+          (replace 'build
+            (lambda _
+              ;; Our LD doesn't like the statically linked relocatable things
+              ;; that go produces, so install the dynamic version of
+              ;; dockerd instead.
+              (invoke "hack/make.sh" "dynbinary")))
+          (replace 'check
+            (lambda _
+              ;; The build process generated a file because the environment
+              ;; variable "AUTO_GOPATH" was set.  Use it.
+              (setenv "GOPATH" (string-append (getcwd) "/.gopath"))
+              ;; ".gopath/src/github.com/docker/docker" is a link to the current
+              ;; directory and chdir would canonicalize to that.
+              ;; But go needs to have the uncanonicalized directory name, so
+              ;; store that.
+              (setenv "PWD" (string-append (getcwd)
+                                           "/.gopath/src/github.com/docker/docker"))
+              (with-directory-excursion ".gopath/src/github.com/docker/docker"
+                (invoke "hack/test/unit"))
+              (setenv "PWD" #f)))
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (out-bin (string-append out "/bin")))
+                (install-file "bundles/dynbinary-daemon/dockerd" out-bin)
+                (install-file (string-append "bundles/dynbinary-daemon/dockerd-"
+                                             (getenv "VERSION"))
+                              out-bin))))
+          (add-after 'install 'remove-go-references
+            (assoc-ref go:%standard-phases 'remove-go-references)))))
     (inputs
-     `(("btrfs-progs" ,btrfs-progs)
-       ("containerd" ,containerd)       ; for containerd-shim
-       ("coreutils" ,coreutils)
-       ("dbus" ,dbus)
-       ("docker-proxy" ,docker-libnetwork-cmd-proxy)
-       ("e2fsprogs" ,e2fsprogs)
-       ("git" ,git)
-       ("iproute2" ,iproute)
-       ("iptables" ,iptables)
-       ("kmod" ,kmod)
-       ("libseccomp" ,libseccomp)
-       ("pigz" ,pigz)
-       ("procps" ,procps)
-       ("runc" ,runc)
-       ("util-linux" ,util-linux)
-       ("lvm2" ,lvm2)
-       ("tini" ,tini)
-       ("xfsprogs" ,xfsprogs)
-       ("xz" ,xz)))
+     (list btrfs-progs
+           containerd       ; for containerd-shim
+           coreutils
+           dbus
+           docker-libnetwork-cmd-proxy
+           e2fsprogs
+           git
+           iproute
+           iptables
+           kmod
+           libseccomp
+           pigz
+           procps
+           runc
+           util-linux
+           lvm2
+           tini
+           xfsprogs
+           xz))
     (native-inputs
      (list eudev ; TODO: Should be propagated by lvm2 (.pc -> .pc)
            go gotestsum pkg-config))
