@@ -704,14 +704,14 @@ extracting content or merging files.")
 (define-public mupdf
   (package
     (name "mupdf")
-    (version "1.19.0")
+    (version "1.19.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://mupdf.com/downloads/archive/"
                            "mupdf-" version "-source.tar.xz"))
        (sha256
-        (base32 "1i98xqgnzp168hnnhradl8658qsif06wlbvcglz0mmh8wi1rkwrq"))
+        (base32 "0gl0wf16m1cafs20h3v1f4ysf7zlbijjyd6s1r1krwvlzriwdsmm"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -725,8 +725,7 @@ extracting content or merging files.")
                                               (string-append kept "/" file)))
                        keep)
              (delete-file-recursively from)
-             (rename-file kept from))
-           #t))))
+             (rename-file kept from))))))
     (build-system gnu-build-system)
     (inputs
       `(("curl" ,curl)
