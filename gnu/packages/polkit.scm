@@ -54,7 +54,6 @@
   (package
     (name "polkit")
     (version "0.120")
-    (replacement polkit-mozjs/fixed)
     (source (origin
              (method url-fetch)
              (uri (string-append
@@ -63,7 +62,8 @@
              (sha256
               (base32
                "00zfg9b9ivkcj2jcf5b92cpvvyljz8cmfwj86lkvy5rihnd5jypf"))
-             (patches (search-patches "polkit-configure-elogind.patch"))
+             (patches (search-patches "polkit-configure-elogind.patch"
+                                      "polkit-CVE-2021-4034.patch"))
              (modules '((guix build utils)))
              (snippet
               '(begin
@@ -146,16 +146,6 @@ privileged processes.  It is a framework for centralizing the decision
 making process with respect to granting access to privileged operations
 for unprivileged applications.")
     (license lgpl2.0+)))
-
-(define-public polkit-mozjs/fixed
-  (package
-    (inherit polkit-mozjs)
-    (version "0.121")
-    (source (origin
-              (inherit (package-source polkit-mozjs))
-              (patches (cons (search-patch "polkit-CVE-2021-4034.patch")
-                             (origin-patches
-                              (package-source polkit-mozjs))))))))
 
 ;;; Variant of polkit built with Duktape, a lighter JavaScript engine compared
 ;;; to mozjs.
