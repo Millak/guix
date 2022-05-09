@@ -210,7 +210,7 @@ If native threads are supported, the returned list will include
     (name "chez-scheme")
     ;; The version should match `(scheme-version-number)`.
     ;; See s/cmacros.ss c. line 360.
-    (version "9.5.6")
+    (version "9.5.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -218,7 +218,7 @@ If native threads are supported, the returned list will include
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "07s433hn1z2slfc026sidrpzxv3a8narcd40qqr1xrpb9012xdky"))
+                "0xchqq8cm0ka5wgpn18sjs0hh15rc3nb7xrjqbbc9al3asq0d7gc"))
               (file-name (git-file-name name version))
               (snippet #~(begin
                            (use-modules (guix build utils))
