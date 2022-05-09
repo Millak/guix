@@ -49,8 +49,6 @@
   #:use-module (srfi srfi-26)
   #:export (chez-scheme-for-system
             nix-system->chez-machine
-            chez-machine->nonthreaded
-            chez-machine->threaded
             unpack-nanopass+stex))
 
 ;; Commentary:
@@ -82,68 +80,57 @@ including support for native threads."
       chez-scheme
       chez-scheme-for-racket))
 
-(define (chez-machine->nonthreaded machine)
-  "Given a string MACHINE naming a Chez Scheme machine type, returns a string
-naming the nonthreaded machine type for the same architecture and OS as
-MACHINE.  The returned string may share storage with MACHINE."
-  ;; Chez Scheme documentation consistently uses "nonthreaded" rather than
-  ;; e.g. "unthreaded"
-  (if (eqv? #\t (string-ref machine 0))
-      (substring machine 1)
-      machine))
-(define (chez-machine->threaded machine)
-  "Like @code{chez-machine->nonthreaded}, but returns the threaded machine
-type."
-  (if (eqv? #\t (string-ref machine 0))
-      machine
-      (string-append "t" machine)))
+(define* (target-chez-arch #:optional (system
+                                       (or (%current-target-system)
+                                           (%current-system))))
+  "Return a string representing the architecture of SYSTEM as used in Chez
+Scheme machine types, or '#f' if none is defined."
+  (cond
+   ((target-x86-64? system)
+    "a6")
+   ((target-x86-32? system)
+    "i3")
+   ((target-aarch64? system)
+    "arm64")
+   ((target-arm32? system)
+    "arm32")
+   ((target-ppc64le? system)
+    #f)
+   ((target-ppc32? system)
+    "ppc32")
+   ((target-riscv64? system)
+    #f)
+   (else
+    #f)))
 
-;; Based on the implementation from raco-cross-lib/private/cross/platform.rkt
-;; in https://github.com/racket/raco-cross.
-;; For supported platforms, refer to release_notes/release_notes.stex in the
-;; upstream Chez Scheme repository or to racket/src/ChezScheme/README.md
-;; in https://github.com/racket/racket.
-(define %nix-arch-to-chez-alist
-  `(("x86_64" . "a6")
-    ("i386" . "i3")
-    ("aarch64" . "arm64")
-    ("armhf" . "arm32") ;; Chez supports ARM v6+
-    ("ppc" . "ppc32")))
-(define %nix-os-to-chez-alist
-  `(("w64-mingw32" . "nt")
-    ("darwin" . "osx")
-    ("linux" . "le")
-    ("freebsd" . "fb")
-    ("openbsd" . "ob")
-    ("netbsd" . "nb")
-    ("solaris" . "s2")))
-
-(define (chez-machine->nix-system machine)
-  "Return the Nix system type corresponding to the Chez Scheme machine type
-MACHINE.  If MACHINE is not a string representing a known machine type, an
-exception is raised.  This function does not distinguish between threaded and
-nonthreaded variants of MACHINE.
-
-Note that this function only handles Chez Scheme machine types in the
-strictest sense, not other kinds of descriptors sometimes used in place of a
-Chez Scheme machine type by Racket, such as @code{\"pb\"}, @code{#f}, or
-@code{\"racket\"}.  (When using such extensions, the Chez Scheme machine type
-for the host system is often still relevant.)"
-  (let ((machine (chez-machine->nonthreaded machine)))
-    (let find-arch ((alist %nix-arch-to-chez-alist))
-      (match alist
-        (((nix . chez) . alist)
-         (if (string-prefix? chez machine)
-             (string-append
-              nix "-" (let ((machine-os
-                             (substring machine (string-length chez))))
-                        (let find-os ((alist %nix-os-to-chez-alist))
-                          (match alist
-                            (((nix . chez) . alist)
-                             (if (equal? chez machine-os)
-                                 nix
-                                 (find-os alist)))))))
-             (find-arch alist)))))))
+(define* (target-chez-os #:optional (system (or (%current-target-system)
+                                                (%current-system))))
+  "Return a string representing the operating system kernel of SYSTEM as used
+in Chez Scheme machine types, or '#f' if none is defined."
+  ;; e.g. "le" includes both GNU/Linux and Android
+  (cond
+   ((target-linux? system)
+    "le")
+   ((target-hurd? system)
+    #f)
+   ((target-mingw? system)
+    "nt")
+   ;; missing (guix utils) predicates
+   ;; cf. https://github.com/NixOS/nixpkgs/blob/master/lib/systems/doubles.nix
+   ((string-suffix? "-darwin" system)
+    "osx")
+   ((string-suffix? "-freebsd" system)
+    "fb")
+   ((string-suffix? "-openbsd" system)
+    "ob")
+   ((string-suffix? "-netbsd" system)
+    "nb")
+   ;; Nix says "x86_64-solaris", but accommodate "-solaris2"
+   ((string-contains system "solaris")
+    "s2")
+   ;; unknown
+   (else
+    #f)))
 
 (define* (nix-system->chez-machine #:optional
                                    (system (or (%current-target-system)
@@ -153,15 +140,80 @@ identifier SYSTEM, or @code{#f} if the translation of SYSTEM to a Chez Scheme
 machine type is undefined.
 
 It is unspecified whether the resulting string will name a threaded or a
-nonthreaded machine type: when the distinction is relevant, use
-@code{chez-machine->nonthreaded} or @code{chez-machine->threaded} to adjust
-the result."
-  (let* ((hyphen (string-index system #\-))
-         (nix-arch (substring system 0 hyphen))
-         (nix-os (substring system (+ 1 hyphen)))
-         (chez-arch (assoc-ref %nix-arch-to-chez-alist nix-arch))
-         (chez-os (assoc-ref %nix-os-to-chez-alist nix-os)))
+nonthreaded machine type."
+  (let* ((chez-arch (target-chez-arch system))
+         (chez-os (target-chez-os system)))
     (and chez-arch chez-os (string-append chez-arch chez-os))))
+
+(define %chez-features-table
+  ;; An alist of alists mapping:
+  ;;   os -> arch -> (or/c #f (listof symbol?))
+  ;; where:
+  ;;  - `os` is a string for the OS part of a Chez Scheme machine type; and
+  ;;  - `arch` is a string for the architecture part of a Chez machine type.
+  ;;
+  ;; The absence of an entry for a given arch--os pair means that neither
+  ;; upstream Chez Scheme nor the Racket variant can generate native code for
+  ;; that system.  (The Racket variant can still provide support via its
+  ;; ``portable bytecode'' backends and optional compilation to C.)  A value
+  ;; of `#f` means that upstream Chez Scheme does not support the arch--os
+  ;; pair at all, but the Racket variant does.  A list has the same meaning as
+  ;; a result from `chez-upstream-features-for-system`.
+  ;;
+  ;; The arch--os pairs marked "commented out" have been commented out in the
+  ;; STeX source for the upstream release notes since the initial release as
+  ;; free software, but they are reported to work and/or have been described
+  ;; as supported by upstream maintainers.
+  ;;
+  ;; For this overall approach to make sense, we assume that Racket's variant
+  ;; of Chez Scheme can generate native code for a superset of the platforms
+  ;; supported upstream, supports threads on all platforms it supports at all
+  ;; (because they are needed for Racket), and doesn't need bootstrap
+  ;; bootfiles.  Those assumptions have held for several years.
+  '(;; Linux
+    ("le"
+     ("i3" threads bootstrap-bootfiles)
+     ("a6" threads bootstrap-bootfiles)
+     ("arm32" bootstrap-bootfiles)
+     ("arm64" . #f)
+     ("ppc32" threads))
+    ;; FreeBSD
+    ("fb"
+     ("i3" threads) ;; commented out
+     ("a6" threads) ;; commented out
+     ("arm32" . #f)
+     ("arm64" . #f)
+     ("ppc32" . #f))
+    ;; OpenBSD
+    ("ob"
+     ("i3" threads) ;; commented out
+     ("a6" threads) ;; commented out
+     ("arm32" . #f)
+     ("arm64" . #f)
+     ("ppc32" . #f))
+    ;; NetBSD
+    ("nb"
+     ("i3" threads) ;; commented out
+     ("a6" threads) ;; commented out
+     ("arm32" . #f)
+     ("arm64" . #f)
+     ("ppc32" . #f))
+    ;; OpenSolaris / OpenIndiana / Illumos
+    ("s2"
+     ("i3" threads) ;; commented out
+     ("a6" threads)) ;; commented out
+    ;; Windows
+    ("nt"
+     ("i3" threads bootstrap-bootfiles)
+     ("a6" threads bootstrap-bootfiles)
+     ;; ^ threads "experiemental", but reportedly fine
+     ("arm64" . #f))
+    ;; Darwin
+    ("osx"
+     ("i3" threads bootstrap-bootfiles)
+     ("a6" threads bootstrap-bootfiles)
+     ("arm64" . #f)
+     ("ppc32" . #f))))
 
 (define* (chez-upstream-features-for-system #:optional
                                             (system
@@ -172,20 +224,14 @@ for the Nix system identifier SYSTEM, or @code{#f} if upstream Chez Scheme
 does not support SYSTEM at all.
 
 If native threads are supported, the returned list will include
-@code{'threads}.  Other feature symbols may be added in the future."
-  (cond
-   ((not (nix-system->chez-machine system))
-    #f)
-   ((target-aarch64? system)
-    #f)
-   ((target-arm32? system)
-    (and (target-linux? system)
-         '()))
-   ((target-ppc32? system)
-    (and (target-linux? system)
-         '(threads)))
-   (else
-    '(threads))))
+@code{'threads}.  If bootstrap bootfiles for SYSTEM are distributed in the
+upstream Chez Scheme repository, the returned list will include
+@code{'bootstrap-bootfiles}.  Other feature symbols may be added in the
+future."
+  (let ((chez-arch (target-chez-arch system))
+        (chez-os (target-chez-os system)))
+    (and=> (assoc-ref %chez-features-table chez-os)
+           (cut assoc-ref <> chez-arch))))
 
 ;;
 ;; Chez Scheme:
@@ -365,14 +411,9 @@ If native threads are supported, the returned list will include
                   ((pth)
                    (symlink pth
                             "csug.pdf")))))))))
-    ;; Chez Scheme does not have a  MIPS backend.
-    ;; FIXME: Debian backports patches to get armhf working.
-    ;; We should too. It is the Chez machine type arm32le
-    ;; (no threaded version upstream yet, though there is in
-    ;; Racket's fork), more specifically (per the release notes) ARMv6.
     (supported-systems
      (delete
-      "armhf-linux" ;; <-- should work, but reportedly broken
+      "armhf-linux" ;; XXX reportedly broken, needs checking
       (filter chez-upstream-features-for-system
               %supported-systems)))
     (home-page "https://cisco.github.io/ChezScheme/")
@@ -471,16 +512,9 @@ Faster multiplication and division for large exact numbers
      (list #:install-plan
            #~`(("boot/" "lib/chez-scheme-bootfiles"))))
     (supported-systems
-     ;; Upstream only distributes pre-built bootfiles for
-     ;; arm32le and t?(i3|a6)(le|nt|osx)
      (filter (lambda (system)
-               (let ((machine (and=> (nix-system->chez-machine system)
-                                     chez-machine->nonthreaded)))
-                 (or (equal? "arm32le" machine)
-                     (and machine
-                          (member (substring machine 0 2) '("i3" "a6"))
-                          (or-map (cut string-suffix? <> machine)
-                                  '("le" "nt" "osx"))))))
+               (and=> (chez-upstream-features-for-system system)
+                      (cut memq 'bootstrap-bootfiles <>)))
              %supported-systems))
     (synopsis "Chez Scheme bootfiles (binary seed)")
     (description
