@@ -5,7 +5,7 @@
 ;;; Copyright © 2021 Evgeny Pisemsky <evgeny@pisemsky.com>
 ;;; Copyright © 2021 Léo Le Bouter <lle-bout@zaclys.net>
 ;;; Copyright © 2021 Denis Carikli <GNUtoo@cyberdimension.org>
-;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021, 2022 John Kehayias <john.kehayias@protonmail.com>
@@ -34,6 +34,7 @@
   #:use-module (gnu packages admin)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages bison)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cpp)
@@ -81,6 +82,33 @@
 
 ;; This is a module for packages related to physical hardware that don't (yet)
 ;; have a more specific home like gps.scm, security-token.scm, &c.
+
+
+(define-public envytools
+  (let ((commit "9014a51b1436461c7b3b005bdae72bf4912f4e72")
+        (revision "1"))
+    (package
+      (name "envytools")
+      (version (git-version "0.1" revision commit))
+      (home-page "https://github.com/envytools/envytools")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url home-page)
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1lqh73yxd5jgv7b770m37zimzhyn4f3053jybkixkhvm93zka8vd"))))
+      (build-system cmake-build-system)
+      (native-inputs (list bison flex pkg-config))
+      (inputs (list libxml2 python))
+      (synopsis "Reverse-engineering tools for Nvidia's proprietary GPU drivers")
+      (description
+       "This package provides tools for exploring Nvidia's proprietary GPU
+drivers, including an assembler and a disassembler for several GPU instruction
+sets, and tools to deal with register databases.")
+      (license license:expat))))
 
 (define-public hwinfo
   (package

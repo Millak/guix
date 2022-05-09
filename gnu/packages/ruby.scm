@@ -1298,6 +1298,39 @@ formats.")
     (home-page "https://asciidoctor.org")
     (license license:expat)))
 
+(define-public ruby-asciidoctor-multipage
+  (package
+    (name "ruby-asciidoctor-multipage")
+    (version "0.0.15")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/owenh000/asciidoctor-multipage")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "01qqkf00cp4sj82brz8kl02pjirydafwgld3z166slysiq78d1c5"))))
+    (propagated-inputs (list ruby-asciidoctor ruby-slim))
+    (build-system ruby-build-system)
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                  (add-after 'extract-gemspec 'strip-version-requirements
+                    (lambda _
+                      (delete-file "Gemfile")
+                      (substitute* "asciidoctor-multipage.gemspec"
+                        (("(.*add_.*dependency '[_A-Za-z0-9-]+').*" _ stripped)
+                         (string-append stripped "
+"))) #t)))))
+    (synopsis
+     "Asciidoctor extension for generating HTML output using multiple pages")
+    (description
+     "Asciidoctor generates single-page documents.  This extension
+splits documents up into multiple HTML pages according to their headings, with
+configurable levels.")
+    (license license:expat)
+    (home-page "https://github.com/owenh000/asciidoctor-multipage")))
+
 (define-public ruby-prawn-icon
   (package
     (name "ruby-prawn-icon")

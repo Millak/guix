@@ -63,6 +63,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
@@ -666,20 +667,18 @@ embedded kernel situations.")
     (license license:expat)))
 
 (define-public cool-retro-term
-  (let ((commit "1.1.1")
-        (revision "0"))                 ;not used currently
     (package
       (name "cool-retro-term")
-      (version "1.1.1")
+      (version "1.2.0")
       (source (origin
                 (method git-fetch)
                 (file-name (string-append name "-" version "-checkout"))
                 (uri (git-reference
                       (url (string-append "https://github.com/Swordfish90/" name))
-                      (commit commit)
+                      (commit version)
                       (recursive? #t)))
                 (sha256
-                 (base32 "0wb6anchxa5jpn9c73kr4byrf2xlj8x8qzc5x7ny6saj7kbbvp75"))
+                 (base32 "02mj70gcpx9fvrhsy6iqwp399dya9iyakx940b6ws952d23xn337"))
                 (modules '((guix build utils)
                            (srfi srfi-1)
                            (srfi srfi-26)
@@ -778,11 +777,10 @@ embedded kernel situations.")
                        "app/qml/ApplicationSettings.qml"))
                     ;; Final substitution for default scanline and pixel fonts
                     (substitute* "app/qml/ApplicationSettings.qml"
-                      (("COMMODORE_PET") "PROGGY_TINY"))
-                    #t))))
+                      (("COMMODORE_PET") "PROGGY_TINY"))))))
       (build-system gnu-build-system)
       (inputs
-       (list qtbase-5 qtdeclarative qtgraphicaleffects qtquickcontrols))
+       (list qtbase-5 qtdeclarative qtgraphicaleffects qtquickcontrols2 bash-minimal))
       (arguments
        `(#:phases
          (modify-phases %standard-phases
@@ -806,20 +804,17 @@ embedded kernel situations.")
                                (string-append (assoc-ref inputs i) qml))
                              '("qtdeclarative"
                                "qtgraphicaleffects"
-                               "qtquickcontrols")))))
-                 #t)))
+                               "qtquickcontrols2"))))))))
            (add-after 'install 'add-alternate-name
              (lambda* (#:key outputs #:allow-other-keys)
                (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
                  (symlink (string-append bin "/cool-retro-term")
-                          (string-append bin "/crt"))
-                 #t)))
+                          (string-append bin "/crt")))))
            (add-after 'install 'install-man
              (lambda* (#:key outputs #:allow-other-keys)
                (let ((mandir (string-append (assoc-ref outputs "out")
                                             "/share/man/man1")))
-                 (install-file "packaging/debian/cool-retro-term.1" mandir)
-                 #t))))))
+                 (install-file "packaging/debian/cool-retro-term.1" mandir)))))))
       (synopsis "Terminal emulator")
       (description
        "Cool-retro-term (crt) is a terminal emulator which mimics the look and
@@ -832,7 +827,7 @@ eye-candy, customizable, and reasonably lightweight.")
                 ;; Fonts
                 license:silofl1.1
                 license:x11
-                license:bsd-3)))))
+                license:bsd-3))))
 
 (define-public foot
   (package

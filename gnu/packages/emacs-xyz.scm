@@ -1009,7 +1009,20 @@ process, passing on the arguments as command line arguments.")
               (sha256
                (base32 "0714n5nim0hyd5jywvvddka2gi2bhi1vkrbhx75mdn8h50r688kq"))
               (file-name (git-file-name name version))))
+    (native-inputs (list texinfo))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'makeinfo
+            (lambda _
+              (invoke "emacs"
+                      "--batch"
+                      "--eval=(require 'ox-texinfo)"
+                      "--eval=(find-file \"README.org\")"
+                      "--eval=(org-texinfo-export-to-info)")
+              (install-file "mct.info" (string-append #$output "/share/info")))))))
     (home-page "https://protesilaos.com/emacs/mct")
     (synopsis "Enhancement of the default Emacs minibuffer completion UI")
     (description "Minibuffer and Completions in Tandem, also known as MCT, or
@@ -1018,7 +1031,8 @@ mct.el, is an Emacs package that enhances the default minibuffer and
 framework.  The idea is to make the presentation and overall functionality be
 consistent with other popular, vertically aligned completion UIs while
 leveraging built-in functionality.")
-    (license license:gpl3+)))
+    (license (list license:gpl3+
+                   license:fdl1.3+)))) ; GFDLv1.3+ for the manual
 
 (define-public emacs-minions
   (package
@@ -6133,6 +6147,41 @@ the current Cargo project.")
      "This library provides a flycheck checker for the metadata in Emacs Lisp
 files which are intended to be packages.")
     (license license:gpl3+)))
+
+(define-public emacs-flymake-proselint
+  (let ((commit "6a99865c7ac6474b8c5d1f9a1ae2384667f06d36")
+        (revision "0"))
+   (package
+     (name "emacs-flymake-proselint")
+     (version (git-version "0.2.3" revision commit))
+     (source (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url "https://git.sr.ht/~manuel-uberti/flycheck-proselint")
+                     (commit commit)))
+               (file-name (git-file-name name version))
+               (sha256
+                (base32
+                 "028ilp9h22rlawlh5ydiykvi8pryyknwi019sjyxkk2h0fza9jan"))))
+     (build-system emacs-build-system)
+     (arguments
+      (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'patch-exec-paths
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "flymake-proselint.el"
+                 (("\"proselint\"")
+                  (string-append
+                   "\"" (search-input-file inputs "/bin/proselint") "\""))))))))
+     (propagated-inputs
+      (list emacs-flycheck))
+     (inputs
+      (list python-proselint))
+     (home-page "https://git.sr.ht/~manuel-uberti/flycheck-proselint")
+     (synopsis "Flymake backend for @code{proselint}")
+     (description "This package adds support for @code{proselint} in Flymake.")
+     (license license:gpl3+))))
 
 (define-public emacs-elisp-demos
   (package
@@ -13148,6 +13197,42 @@ provides functions to convert hash tables from and to alists and plists.")
 you to deal with multiple log levels.")
     (license license:gpl3+)))
 
+(define-public emacs-logos
+  (package
+    (name "emacs-logos")
+    (version "0.3.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~protesilaos/logos")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1xhnhaxmjqdv0bbh22gj9ak83hha8d59q64b6aa4rynrgcyajk45"))))
+    (native-inputs (list texinfo))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'makeinfo
+            (lambda* (#:key outputs #:allow-other-keys)
+              (invoke "emacs"
+                      "--batch"
+                      "--eval=(require 'ox-texinfo)"
+                      "--eval=(find-file \"README.org\")"
+                      "--eval=(org-texinfo-export-to-info)")
+              (install-file "logos.info" (string-append #$output "/share/info")))))))
+    (home-page "https://protesilaos.com/emacs/logos")
+    (synopsis "Simple focus mode for Emacs")
+    (description "This package provides a simple focus mode which can be
+applied to any buffer for reading, writing, or even doing a presentation.  The
+buffer can be divided in pages using the @code{page-delimiter}, outline
+structure, or any other pattern.")
+    (license (list license:gpl3+
+                   license:fdl1.3+)))) ; GFDLv1.3+ for the manual
+
 (define-public emacs-gn-mode
   (package
     (name "emacs-gn-mode")
@@ -13672,6 +13757,42 @@ memoizing functions.")
     (description "@code{emacs-linum-relative} displays the relative line
 number on the left margin in Emacs.")
     (license license:gpl2+)))
+
+(define-public emacs-lin
+  (package
+    (name "emacs-lin")
+    (version "0.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~protesilaos/lin")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1w1mli2wrxbnwagn3rx5ygslmzlri3drm74nqgwpl4pwh66xi98a"))))
+    (native-inputs (list texinfo))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'makeinfo
+            (lambda _
+              (invoke "emacs"
+                      "--batch"
+                      "--eval=(require 'ox-texinfo)"
+                      "--eval=(find-file \"README.org\")"
+                      "--eval=(org-texinfo-export-to-info)")
+              (install-file "lin.info" (string-append #$output "/share/info")))))))
+    (home-page "https://protesilaos.com/emacs/lin")
+    (synopsis "Make @command{hl-line-mode} more suitable for selection UIs")
+    (description "Lin is a stylistic enhancement for Emacs’ built-in
+@command{hl-line-mode}.  It remaps the hl-line face (or equivalent)
+buffer-locally to a style that is optimal for major modes where line selection
+is the primary mode of interaction.")
+    (license (list license:gpl3+
+                   license:fdl1.3+)))) ; GFDLv1.3+ for the manual
 
 (define-public emacs-idle-highlight
   (package
@@ -15744,6 +15865,46 @@ internally.")
 created by @code{git format-patch}, from @code{magit}, @code{dired} and
 @code{ibuffer} buffers.")
     (license license:gpl3+)))
+
+(define-public emacs-git-email
+  ;; Use latest commit since latest tagged release is missing important
+  ;; changes.
+  (let ((commit "b5ebade3a48dc0ce0c85699f25800808233c73be")
+        (revision "0"))
+    (package
+      (name "emacs-git-email")
+      (version (git-version "0.2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.sr.ht/~yoctocell/git-email")
+               (commit commit)))
+         (patches
+          (search-patches "emacs-git-email-missing-parens.patch"))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1lk1yds7idgawnair8l3s72rgjmh80qmy4kl5wrnqvpmjrmdgvnx"))))
+      (build-system emacs-build-system)
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           ;; piem is not yet packaged in Guix.
+           (add-after 'unpack 'remove-piem
+             (lambda _
+               (delete-file "git-email-piem.el")))
+           (add-before 'install 'makeinfo
+             (lambda _
+               (invoke "makeinfo" "doc/git-email.texi"))))))
+      (native-inputs
+       (list texinfo))
+      (propagated-inputs
+       (list mu emacs-magit emacs-notmuch))
+      (license license:gpl3+)
+      (home-page "https://sr.ht/~yoctocell/git-email")
+      (synopsis "Format and send Git patches in Emacs")
+      (description "This package provides utilities for formatting and
+sending Git patches via Email, without leaving Emacs."))))
 
 (define-public emacs-erc-hl-nicks
   (package
@@ -18669,6 +18830,40 @@ navigate and display hierarchy structures.")
       (description
        "This package allows controlling @code{pulseaudio} from Emacs.")
       (license license:gpl3+))))
+
+(define-public emacs-pulsar
+  (package
+    (name "emacs-pulsar")
+    (version "0.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~protesilaos/pulsar")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "09s1r9zqc28g75jjxajdm34ni4m7gynh0xsffy5d60c50igiqa94"))))
+    (native-inputs (list texinfo))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'makeinfo
+            (lambda _
+              (invoke "emacs"
+                      "--batch"
+                      "--eval=(require 'ox-texinfo)"
+                      "--eval=(find-file \"README.org\")"
+                      "--eval=(org-texinfo-export-to-info)")
+              (install-file "pulsar.info" (string-append #$output "/share/info")))))))
+    (home-page "https://protesilaos.com/emacs/pulsar")
+    (synopsis "Pulse highlight line on demand or after running select functions")
+    (description "This package temporarily highlights the current line after a
+given function is invoked.")
+    (license (list license:gpl3+
+                   license:fdl1.3+)))) ; GFDLv1.3+ for the manual
 
 (define-public emacs-datetime
   (package
@@ -22432,10 +22627,11 @@ text-tree applications inside GNU Emacs.  It consists of 2 subprojects:
       (license license:gpl3))))
 
 (define-public emacs-helm-org-contacts
-  (let ((commit "e7f11615802df55bb8b679450b5a5ef82a9081f9"))
+  (let ((commit "741eca6239684950219c9a12802386a132491b8c")
+        (revision "2"))
     (package
       (name "emacs-helm-org-contacts")
-      (version (git-version "20200310" "1" commit))
+      (version (git-version "20201202" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -22445,7 +22641,7 @@ text-tree applications inside GNU Emacs.  It consists of 2 subprojects:
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "06a1gbrq3qcfsn0kyv4i24x1xxfrrwqa3kgfj4xa4va88q2vqyb5"))))
+           "1xy51hc3az8bc9sj71sjzy03xpkfa4v3cdcv3gpq3cj2zhk9gr8h"))))
       (build-system emacs-build-system)
       (propagated-inputs
        (list emacs-dash emacs-helm emacs-s))
@@ -27359,17 +27555,30 @@ Emacs that integrate with major modes like Org-mode.")
 (define-public emacs-modus-themes
   (package
     (name "emacs-modus-themes")
-    (version "2.2.0")
+    (version "2.3.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://gitlab.com/protesilaos/modus-themes")
+             (url "https://git.sr.ht/~protesilaos/modus-themes")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mnfbr312dqifsdngb29kvggfirfclc9ncaw5srd52hnwc5n0rxi"))))
+        (base32 "00c3sa663rnl2rvnjdqzghcyfbdri09xjfigyrgd5xa3y0mnpqiz"))))
+    (native-inputs (list texinfo))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'makeinfo
+            (lambda _
+              (invoke "emacs"
+                      "--batch"
+                      "--eval=(require 'ox-texinfo)"
+                      "--eval=(find-file \"doc/modus-themes.org\")"
+                      "--eval=(org-texinfo-export-to-info)")
+              (install-file "doc/modus-themes.info" (string-append #$output "/share/info")))))))
     (home-page "https://protesilaos.com/modus-themes/")
     (synopsis "Accessible themes (WCAG AAA)")
     (description
@@ -27382,7 +27591,8 @@ Modus Operandi (modus-operandi) is a light theme, while Modus
 Vivendi (modus-vivendi) is dark.  Each theme’s color palette is designed to
 meet the needs of the numerous interfaces that are possible in the Emacs
 computing environment.")
-    (license license:gpl3+)))
+    (license (list license:gpl3+
+                   license:fdl1.3+)))) ; GFDLv1.3+ for the manual
 
 (define-public emacs-punpun-theme
   (let ((commit "7026684cd568cb691af3ced5de14c375fe6f5a1a")

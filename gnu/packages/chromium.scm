@@ -129,7 +129,8 @@
     "third_party/cros_system_api" ;BSD-3
     "third_party/dav1d" ;BSD-2
     "third_party/dawn" ;ASL2.0
-    "third_party/dawn/third_party/khronos/gl.xml" ;ASL2.0
+    ;; TODO: can likely be unbundled when Vulkan is updated.
+    "third_party/dawn/third_party/khronos" ;ASL2.0
     "third_party/dawn/third_party/tint" ;ASL2.0
     "third_party/depot_tools/owners.py" ;BSD-3
     "third_party/devtools-frontend" ;BSD-3
@@ -312,9 +313,9 @@
   ;; run the Blink performance tests, just remove everything to save ~70MiB.
   '("third_party/blink/perf_tests"))
 
-(define %chromium-version "100.0.4896.127")
+(define %chromium-version "101.0.4951.54")
 (define %ungoogled-revision (string-append %chromium-version "-1"))
-(define %debian-revision "debian/100.0.4896.60-1")
+(define %debian-revision "debian/101.0.4951.41-2")
 
 (define %ungoogled-origin
   (origin
@@ -324,7 +325,7 @@
     (file-name (git-file-name "ungoogled-chromium" %ungoogled-revision))
     (sha256
      (base32
-      "192kyhr0fa97csciv5kp496y9zwcsknwlrmdr4jic3rvv8ig1q9y"))))
+      "0zhzy7llqddvym992pwhkgqh2f6ywjqqg0bhahl6c0np95gzhpbs"))))
 
 (define* (debian-patch name hash #:optional (revision %debian-revision))
   (origin
@@ -337,7 +338,9 @@
     (sha256 (base32 hash))))
 
 (define %debian-patches
-  (list (debian-patch "system/jsoncpp.patch"
+  (list (debian-patch "upstream/libxml.patch"
+                      "0fnmidh3sbmi4khw25rpqpd4i9kj8rb42s40n242h55z30hc36qr")
+        (debian-patch "system/jsoncpp.patch"
                       "092jkvbkiw474lin62hbkv5vm251qpg0vz3j2qwavqln7qv6mcw1")
         (debian-patch "system/zlib.patch"
                       "1iw4k8in5j6a1qxf12qd5z3sjayvnh5sq5z3qqg8m3cp0v4p947r")
@@ -451,7 +454,7 @@
                                   %chromium-version ".tar.xz"))
               (sha256
                (base32
-                "0kgq38dy9mjyc44556i9gxhlsgd7dfvv1xi1ibk92b4p7i2y6427"))
+                "1d808a7mvg0nd0mm20c1ny5kdvb2xvrs8vz4nnk456ix8pywcv62"))
               (modules '((guix build utils)))
               (snippet (force ungoogled-chromium-snippet))))
     (build-system gnu-build-system)

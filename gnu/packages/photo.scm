@@ -9,6 +9,7 @@
 ;;; Copyright © 2020 Sebastian Schott <sschott@mailbox.org>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020. 2021, 2022 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -31,6 +32,7 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
+  #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
@@ -381,29 +383,38 @@ overlapping images, as well as some command line tools.")
                 "0j5x011ilalb47ssah50ag0a4phgh1b0wdgxdbbp1gcyjcjf60w7"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("perl" ,perl)
-       ("perl-timedate" ,perl-timedate)
-       ;; for building the documentation
-       ("gnuplot" ,gnuplot)
-       ("help2man" ,help2man)
-       ("imagemagick" ,imagemagick)
-       ("libxml2" ,libxml2)
-       ("texlive-minimal" ,texlive-tiny)
-       ("tidy" ,tidy)
-       ("transfig" ,transfig)))
+     (list pkg-config
+           perl
+           perl-timedate
+           ;; For building the documentation.
+           gnuplot
+           help2man
+           imagemagick
+           libxml2
+           texlive-tiny
+           tidy
+           transfig))
     (inputs
-     `(("boost" ,boost)
-       ("gsl" ,gsl)
-       ("lcms" ,lcms)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libtiff" ,libtiff)
-       ("openexr" ,openexr-2)
-       ("vigra" ,vigra)
-       ("zlib" ,zlib)))
+     (list boost
+           gsl
+           lcms
+           libjpeg-turbo
+           libpng
+           libtiff
+           openexr-2
+           vigra
+           zlib))
     (arguments
-     `(#:configure-flags `("--enable-openmp")))
+     (list #:configure-flags
+           #~(list "--enable-openmp")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'add-missing-include
+                 (lambda _
+                   (substitute* "src/minimizer.h"
+                     ;; Fix error: ‘numeric_limits’ is not a member of ‘std’.
+                     (("#include <vector>" line)
+                      (string-append line "\n#include <limits>"))))))))
     (home-page "http://enblend.sourceforge.net/")
     (synopsis "Tools for combining and blending images")
     (description
@@ -415,15 +426,16 @@ scene to produce an image that looks much like a tone-mapped image.")
 (define-public lensfun
   (package
     (name "lensfun")
-    (version "0.3.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "mirror://sourceforge/lensfun/"
-                    version "/lensfun-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0cfk8jjhs9nbfjfdy98plrj9ayi59aph0nx6ppslgjhlcvacm2xf"))))
+    (version "0.3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lensfun/lensfun")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pv2y9yqzkw70p501425mf9cqv6yy8ppw5ilkpbd9bw9nss1js76"))))
     (build-system cmake-build-system)
     (arguments
      `(,@(if (any (cute string-prefix? <> (or (%current-system)
@@ -437,7 +449,7 @@ scene to produce an image that looks much like a tone-mapped image.")
      (list pkg-config))
     (inputs
      (list glib))
-    (home-page "https://sourceforge.net/projects/lensfun/")
+    (home-page "https://lensfun.github.io/")
     (synopsis "Library to correct optical lens defects with a lens database")
     (description "Digital photographs are not ideal.  Of course, the better is
 your camera, the better the results will be, but in any case if you look

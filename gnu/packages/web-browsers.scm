@@ -158,41 +158,44 @@ management, extensions such as advertisement blocker and colorful tabs.")
 (define-public links
   (package
     (name "links")
-    (version "2.25")
+    (version "2.26")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://links.twibright.com/download/"
                                   "links-" version ".tar.bz2"))
               (sha256
                (base32
-                "0b6x97xi8i4pag2scba02c0h95cm3sia58q99zppk0lfd448bmrd"))))
+                "1jy90k04kl7y3l8jzg5jx7fglyqzngng0964j7j67gjxy9vkanzh"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; The tarball uses a very old version of autoconf. It doesn't
-             ;; understand extra flags like `--enable-fast-install', so
-             ;; we need to invoke it with just what it understands.
-             (let ((out (assoc-ref outputs "out")))
-               ;; 'configure' doesn't understand '--host'.
-               ,@(if (%current-target-system)
-                     `((setenv "CHOST" ,(%current-target-system)))
-                     '())
-               (setenv "CONFIG_SHELL" (which "bash"))
-               (invoke "./configure"
-                       (string-append "--prefix=" out)
-                       "--enable-graphics")))))))
+     (list
+       #:configure-flags #~(list "--enable-graphics")
+       #:phases
+       #~(modify-phases %standard-phases
+           (replace 'configure
+             (lambda* (#:key outputs (configure-flags '()) #:allow-other-keys)
+               ;; The tarball uses a very old version of autoconf. It doesn't
+               ;; understand extra flags like `--enable-fast-install', so
+               ;; we need to invoke it with just what it understands.
+               (let ((out (assoc-ref outputs "out")))
+                 ;; 'configure' doesn't understand '--host'.
+                 #$@(if (%current-target-system)
+                       #~((setenv "CHOST" #$(%current-target-system)))
+                       #~())
+                 (setenv "CONFIG_SHELL" (which "bash"))
+                 (apply invoke "./configure"
+                        (string-append "--prefix=" out)
+                        configure-flags)))))))
     (native-inputs (list pkg-config))
-    (inputs `(("gpm" ,gpm)
-              ("libevent" ,libevent)
-              ("libjpeg" ,libjpeg-turbo)
-              ("libpng" ,libpng)
-              ("libtiff" ,libtiff)
-              ("libxt" ,libxt)
-              ("openssl" ,openssl)
-              ("zlib" ,zlib)))
+    (inputs
+     (list gpm
+           libevent
+           libjpeg-turbo
+           libpng
+           libtiff
+           libxt
+           openssl
+           zlib))
     (synopsis "Text and graphics mode web browser")
     (description "Links is a graphics and text mode web browser, with many
 features including, tables, builtin image display, bookmarks, SSL and more.")

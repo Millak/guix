@@ -586,7 +586,7 @@ when typed in the shell, will automatically expand to the full text."
    serialize-fish-abbreviations))
 
 (define (fish-files-service config)
-  `(("config/fish/config.fish"
+  `(("fish/config.fish"
      ,(mixed-text-file
        "fish-config.fish"
        #~(string-append "\
@@ -650,7 +650,7 @@ end\n\n")
   (service-type (name 'home-fish)
                 (extensions
                  (list (service-extension
-                        home-files-service-type
+                        home-xdg-configuration-files-service-type
                         fish-files-service)
                        (service-extension
                         home-profile-service-type

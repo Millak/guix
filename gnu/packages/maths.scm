@@ -49,6 +49,7 @@
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
 ;;; Copyright © 2021 Jean-Baptiste Volatier <jbv@pm.me>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2021 Pierre-Antoine Bouttier <pierre-antoine.bouttier@univ-grenoble-alpes.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1852,6 +1853,65 @@ sharing of scientific data.")
     (home-page (package-home-page netcdf))
     (license (package-license netcdf))))
 
+(define-public n2p2
+  (package
+    (name "n2p2")
+    (version "2.1.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/CompPhysVienna/n2p2")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1lw195ihpxwh08387i4gamk1glhalpq888q6nj8l5vswbgnrv1pq"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:make-flags '("MODE=shared" "-C" "src")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'post-unpack
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "src/makefile.gnu"
+               (("PROJECT_EIGEN=/usr/include/eigen3")
+                (string-append "PROJECT_EIGEN="
+                               (assoc-ref inputs "eigen") "/include/eigen3")))
+             (substitute* "src/makefile.gnu"
+               (("-lblas")
+                (string-append "-L" (assoc-ref inputs "openblas")
+                               "/lib -lopenblas"))
+               (("-march=native")
+                ""))
+             (substitute* "src/application/makefile"
+               (("LDFLAGS=")
+                "LDFLAGS=-Wl,-rpath='$$ORIGIN/../lib' "))))
+         (delete 'configure)
+         (delete 'check)
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bindir (string-append out "/bin"))
+                    (libdir (string-append out "/lib"))
+                    (incdir (string-append out "/include")))
+               (for-each (lambda (f) (install-file f bindir))
+                         (find-files "bin" "^nnp-"))
+               (for-each (lambda (f) (install-file f libdir))
+                         (find-files "lib" "\\.so$"))
+               (for-each (lambda (f) (install-file f incdir))
+                         (find-files "include" "\\.h$"))))))))
+    (inputs
+     (list openmpi gsl openblas eigen))
+    (synopsis "Neural network potentials for chemistry and physics")
+    (description "This package contains software that will allow you to use
+existing neural network potential parameterizations to predict energies and
+forces (with standalone tools but also in conjunction with the MD software
+LAMMPS).  In addition it is possible to train new neural network potentials
+with the provided training tools.")
+    (home-page "https://compphysvienna.github.io/n2p2/")
+    (properties '((tunable? . #t)))        ;to benefit from SIMD code in Eigen
+    (license license:gpl3+)))
+
 (define-public nlopt
   (package
     (name "nlopt")
@@ -3174,7 +3234,16 @@ scientific applications modeled by partial differential equations.")
                   (("libptesmumps") "libesmumps")
                   (("libptscotchparmetis") "libptscotchparmetisv3"))))
             (add-before 'configure 'mpi-setup
-              #$%openmpi-setup)))))
+              #$%openmpi-setup)
+            (add-after 'install 'patch-header-inclusions
+              ;; TODO: Replace with ‘patch-header-inclusions’ when (some form
+              ;; of) https://issues.guix.gnu.org/54780#19 is merged.
+              (lambda _
+                (substitute* (string-append #$output "/include/petsclayouthdf5.h")
+                  (("<(H5Ipublic.h)>" _ header)
+                   (format #f "<~a/include/~a>"
+                           #$(this-package-input "hdf5-parallel-openmpi")
+                           header)))))))))
     (synopsis "Library to solve PDEs (with MUMPS and MPI support)")))
 
 (define-public petsc-complex-openmpi
@@ -5170,34 +5239,30 @@ A unique design feature of Trilinos is its focus on packages.")
 (define-public dealii
   (package
     (name "dealii")
-    (version "9.3.2")
+    (version "9.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/dealii/dealii/releases/"
                            "download/v" version "/dealii-" version ".tar.gz"))
        (sha256
-        (base32 "1s0kawnljg24jj6nibwrif5gxdgg2daqfylhqqpl1lvmzmmxfhak"))
-       (patches (search-patches "dealii-fix-compiliation-with-boost-1.78.patch"
-                                "dealii-fix-sundials.patch"))
+        (base32 "0a8s4yxcbvzmfgv5qcg27h2ss4fcnyhrhhs35glqj59l9cbmkysx"))
        (modules '((guix build utils)))
        (snippet
-        '(begin
-           ;; Remove bundled boost, muparser, TBB and UMFPACK.
-           (delete-file-recursively "bundled")
-           #t))))
+        ;; Remove bundled boost, muparser, TBB and UMFPACK.
+        '(delete-file-recursively "bundled"))))
     (build-system cmake-build-system)
     (outputs '("out" "doc"))
     (native-inputs
      ;; Required to build the documentation.
-      (list graphviz doxygen perl))
+     (list graphviz doxygen perl))
     (inputs
-      (list arpack-ng
-            openblas
-            gfortran
-            lapack
-            muparser
-            zlib))
+     (list arpack-ng
+           openblas
+           gfortran
+           lapack
+           muparser
+           zlib))
     (propagated-inputs
      ;; Some scripts are installed into share/deal.II/scripts that require
      ;; perl and python, but they are not executable (and some are missing the
@@ -5206,7 +5271,11 @@ A unique design feature of Trilinos is its focus on packages.")
      ;; Anyway, they are meant to be used at build time, so rather than adding
      ;; the interpreters here, any package depending on them should just add
      ;; the requisite interpreter to its native inputs.
-     (list boost hdf5 suitesparse ; For UMFPACK.
+     (list boost
+           hdf5
+           suitesparse                  ; For UMFPACK.
+           ;; SUNDIALS 6.0.0 and later will be supported in deal.II 9.4.0.
+           sundials-5
            tbb))
     (arguments
      `(#:build-type "DebugRelease" ; Supports only Debug, Release and DebugRelease.
@@ -5234,8 +5303,7 @@ A unique design feature of Trilinos is its focus on packages.")
              (let ((doc (string-append (assoc-ref outputs "doc")
                                        "/share/doc/" ,name "-" ,version)))
                (for-each delete-file (map (lambda (f) (string-append doc "/" f))
-                                          '("detailed.log" "summary.log"))))
-             #t)))))
+                                          '("detailed.log" "summary.log")))))))))
     (home-page "https://www.dealii.org/")
     (synopsis "Finite element library")
     (description
@@ -5250,18 +5318,21 @@ in finite element programs.")
   (package/inherit dealii
     (name "dealii-openmpi")
     (inputs
-     `(("arpack" ,arpack-ng-openmpi)
-       ("metis" ,metis)
-       ("scalapack" ,scalapack)
-       ,@(alist-delete "arpack" (package-inputs dealii))))
+     (modify-inputs (package-inputs dealii)
+       (delete "arpack")
+       (prepend arpack-ng-openmpi
+                metis
+                scalapack)))
     (propagated-inputs
-     `(("hdf5" ,hdf5-parallel-openmpi)
-       ("mpi" ,openmpi)
-       ("p4est" ,p4est-openmpi)
-       ("petsc" ,petsc-openmpi)
-       ("slepc" ,slepc-openmpi)
-       ("trilinos" ,trilinos-for-dealii-openmpi)
-       ,@(alist-delete "hdf5" (package-propagated-inputs dealii))))
+     (modify-inputs (package-propagated-inputs dealii)
+       (delete "hdf5" "sundials")
+       (prepend hdf5-parallel-openmpi
+                openmpi
+                p4est-openmpi
+                petsc-openmpi
+                slepc-openmpi
+                sundials-openmpi-5
+                trilinos-for-dealii-openmpi)))
     (arguments
      (substitute-keyword-arguments (package-arguments dealii)
        ((#:configure-flags flags)
@@ -6116,32 +6187,34 @@ and comparisons are supported.")
 (define-public sundials
   (package
     (name "sundials")
-    (version "6.1.1")
+    (version "6.2.0")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://github.com/LLNL/sundials/releases/download/v6.1.1/"
-                           "sundials-" version ".tar.gz"))
+       (uri (string-append "https://github.com/LLNL/sundials/releases/download/v"
+                           version "/sundials-" version ".tar.gz"))
        (sha256
         (base32
-         "0327a1fy8rilwc4brsqqb71jd1ymb7mqgxsylab06crcg5xn7byg"))))
+         "07gk9060xk3bzfqf8v4fqlp0rcxswiwlsy887zv87i1gfy9map8r"))))
     (build-system cmake-build-system)
     (native-inputs
-     (list python-2))    ;for tests; syntax incompatible with python 3
+     (list python-2))          ; For tests; syntax incompatible with Python 3.
     (inputs
-     (list gfortran                               ;for fcmix
-           openblas petsc suitesparse))           ;TODO: Add hypre
+     (list openblas suitesparse))
     (arguments
-     `(#:configure-flags `("-DCMAKE_C_FLAGS=-O2 -g -fcommon"
+     '(#:configure-flags `("-DCMAKE_C_FLAGS=-O2 -g -fcommon"
+
+                           "-DSUNDIALS_INDEX_SIZE=32"
+                           ;; Incompatible with 32-bit indices.
+                           ;;"-DBUILD_FORTRAN_MODULE_INTERFACE:BOOL=ON"
+
                            "-DEXAMPLES_ENABLE_C:BOOL=ON"
                            "-DEXAMPLES_ENABLE_CXX:BOOL=ON"
-                           "-DEXAMPLES_ENABLE_F77:BOOL=ON"
-                           "-DEXAMPLES_ENABLE_F90:BOOL=ON"
+                           ;; Requires -DBUILD_FORTRAN_MODULE_INTERFACE:BOOL=ON.
+                           ;;"-DEXAMPLES_ENABLE_F2003:BOOL=ON"
                            "-DEXAMPLES_INSTALL:BOOL=OFF"
 
-                           "-DFCMIX_ENABLE:BOOL=ON"
-
-                           "-DKLU_ENABLE:BOOL=ON"
+                           "-DENABLE_KLU:BOOL=ON"
                            ,(string-append "-DKLU_INCLUDE_DIR="
                                            (assoc-ref %build-inputs "suitesparse")
                                            "/include")
@@ -6159,22 +6232,56 @@ easily be incorporated into existing simulation codes.")
     (license license:bsd-3)))
 
 (define-public sundials-openmpi
-  (package
-    (inherit sundials)
+  (package/inherit sundials
     (name "sundials-openmpi")
-    (inputs
-     (modify-inputs (package-inputs sundials)
-       (delete "petsc")
-       (prepend openmpi petsc-openmpi)))     ;support in SUNDIALS requires MPI
+    (propagated-inputs
+     (list openmpi
+           ;; Support for the below requires MPI.
+           hypre-openmpi
+           petsc-openmpi))
     (arguments
      (substitute-keyword-arguments (package-arguments sundials)
        ((#:configure-flags flags '())
-        `(cons* "-DENABLE_MPI:BOOL=ON" ,flags))
+        `(cons* "-DENABLE_MPI:BOOL=ON"
+                "-DENABLE_HYPRE:BOOL=ON"
+                (string-append "-DHYPRE_INCLUDE_DIR="
+                               (assoc-ref %build-inputs "hypre-openmpi")
+                               "/include")
+                (string-append "-DHYPRE_LIBRARY_DIR="
+                               (assoc-ref %build-inputs "hypre-openmpi")
+                               "/lib")
+                "-DENABLE_PETSC:BOOL=ON"
+                (string-append "-DPETSC_DIR="
+                               (assoc-ref %build-inputs "petsc-openmpi"))
+                ,flags))
        ((#:phases phases '%standard-phases)
         `(modify-phases ,phases
            (add-before 'check 'mpi-setup
-	     ,%openmpi-setup)))))
-    (synopsis "SUNDIALS with OpenMPI support")))
+             ,%openmpi-setup)))))
+    (synopsis "SUNDIALS with MPI support")))
+
+(define-public sundials-5
+  (package
+    (inherit sundials)
+    (name "sundials")
+    (version "5.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/LLNL/sundials/releases/download/v"
+                           version "/sundials-" version ".tar.gz"))
+       (sha256
+        (base32
+         "04x2x0jchf9kbcw2a1c6f4h4as8sr6k2snfz8z9k897pa4rl1vfl"))))))
+
+(define-public sundials-openmpi-5
+  (package/inherit sundials-5
+    (name "sundials-openmpi")
+    (propagated-inputs
+     (package-propagated-inputs sundials-openmpi))
+    (arguments
+     (package-arguments sundials-openmpi))
+    (synopsis (package-synopsis sundials-openmpi))))
 
 (define-public sundials-julia
   (package
@@ -6193,13 +6300,19 @@ easily be incorporated into existing simulation codes.")
          "0nx4sqhmi126m14myzm7syv2053harav9snl0a247wnkcgs5rxrv"))))
     (inputs
      (modify-inputs (package-inputs sundials)
-       (prepend lapack)))
+       (prepend gfortran lapack)))
     (arguments
-     (substitute-keyword-arguments (package-arguments sundials)
-       ((#:configure-flags flags '())
-        `(cons* "-DLAPACK_ENABLE:BOOL=ON"
-                ,flags))))
-    (synopsis "SUNDIALS with lapack support as required by julia-sundials-jll")))
+     '(#:configure-flags `("-DCMAKE_C_FLAGS=-O2 -g -fcommon"
+                           "-DSUNDIALS_INDEX_SIZE=32"
+                           "-DKLU_ENABLE:BOOL=ON"
+                           ,(string-append "-DKLU_INCLUDE_DIR="
+                                           (assoc-ref %build-inputs "suitesparse")
+                                           "/include")
+                           ,(string-append "-DKLU_LIBRARY_DIR="
+                                           (assoc-ref %build-inputs "suitesparse")
+                                           "/lib")
+                           "-DLAPACK_ENABLE:BOOL=ON")))
+    (synopsis "SUNDIALS with LAPACK support as required by julia-sundials-jll")))
 
 (define-public combinatorial-blas
   (package

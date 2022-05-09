@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2017, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Muriithi Frederick Muriuki <fredmanglis@gmail.com>
 ;;; Copyright © 2017, 2018 Oleg Pykhalov <go.wigust@gmail.com>
@@ -111,6 +111,7 @@
   #:use-module (gnu packages version-control)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system guile)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
@@ -156,8 +157,8 @@
   ;; Note: the 'update-guix-package.scm' script expects this definition to
   ;; start precisely like this.
   (let ((version "1.3.0")
-        (commit "2fb4304ee7eb7d17d48bee345677ef1f288a0b86")
-        (revision 24))
+        (commit "c1719a0adf3fa7611b56ca4d75b3ac8cf5c9c8ac")
+        (revision 25))
     (package
       (name "guix")
 
@@ -173,7 +174,7 @@
                       (commit commit)))
                 (sha256
                  (base32
-                  "0pwizj76n9wpzcb4a631gj8yfxfpzq11p5kmmvmv6j4cqhn61dr0"))
+                  "0yaphn5shvmxffi4qw66bpvl3q8gn5n168v61x9c2m3vksjygmrn"))
                 (file-name (string-append "guix-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -659,6 +660,50 @@ out) and returning a package that uses that as its 'source'."
     (description "This package contains GNU Guix icons organized according to
 the Icon Theme Specification.  They can be used by applications querying the
 GTK icon cache for instance.")))
+
+(define-public guix-modules
+  (package
+    (name "guix-modules")
+    (version "0.1.0")
+    (home-page "https://gitlab.inria.fr/guix-hpc/guix-modules")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference (url home-page)
+                                  (commit (string-append "v" version))))
+              (file-name (string-append "guix-modules-" version "-checkout"))
+              (sha256
+               (base32
+                "1ckvrrmkgzz93i35sj1372wxs7ln4gzszpri1pcdf473z0p7nh7w"))))
+    (build-system guile-build-system)
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (add-after 'install 'move-to-extension-directory
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out"))
+                             (target (string-append
+                                      out
+                                      "/share/guix/extensions/module.scm")))
+                        (mkdir-p (dirname target))
+                        (rename-file (car (find-files out "module.scm"))
+                                     target)))))))
+    (native-inputs (list (lookup-package-input guix "guile") guix))
+    (synopsis "Generate environment modules from Guix packages")
+    (description
+     "Guix-Modules is an extension of Guix that provides a new @command{guix
+module} command.  The @command{guix module create} sub-command creates
+@dfn{environment modules}, allowing you to manipulate software environments
+with the @command{module} command commonly found on @acronym{HPC,
+high-performance computing} clusters.
+
+To use this extension, set the @env{GUIX_EXTENSIONS_PATH} environment
+variable, along these lines:
+
+@example
+export GUIX_EXTENSIONS_PATH=\"$HOME/.guix-profile/share/guix/extensions\"
+@end example
+
+Replace @code{$HOME/.guix-profile} with the appropriate profile.")
+    (license license:gpl3+)))
 
 
 ;;;
@@ -1575,8 +1620,8 @@ in an isolated environment, in separate namespaces.")
     (license license:gpl3+)))
 
 (define-public nar-herder
-  (let ((commit "e046f8a756aa24942f512b352e87dfe78fa89470")
-        (revision "5"))
+  (let ((commit "ea997c68515540e34bda267730b9c7c6f21ff6b4")
+        (revision "6"))
     (package
       (name "nar-herder")
       (version (git-version "0" revision commit))
@@ -1587,7 +1632,7 @@ in an isolated environment, in separate namespaces.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "0hbc24y08znlq28k1anzqkq7n1khmv31h4qd8syd2q7ax5kx8hqa"))
+                  "11clylk3aizwy0b5sx4xnwj62bzv20ysb5cjcjsx184f1g8lgbw6"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1798,103 +1843,106 @@ the boot loader configuration.")
 
 (define-public flatpak
   (package
-   (name "flatpak")
-   (version "1.12.7")
-   (source
-    (origin
-     (method url-fetch)
-     (uri (string-append "https://github.com/flatpak/flatpak/releases/download/"
-                         version "/flatpak-" version ".tar.xz"))
-     (sha256
-      (base32 "05lkpbjiwp69q924i1jfyk5frcqbdbv9kyzbqwm2hy723i9jmdbd"))
-     (patches (search-patches "flatpak-fix-path.patch"))))
+    (name "flatpak")
+    (version "1.12.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/flatpak/flatpak/releases/download/"
+                           version "/flatpak-" version ".tar.xz"))
+       (sha256
+        (base32 "05lkpbjiwp69q924i1jfyk5frcqbdbv9kyzbqwm2hy723i9jmdbd"))
+       (patches
+        (search-patches "flatpak-fix-path.patch"
+                        "flatpak-unset-gdk-pixbuf-for-sandbox.patch"))))
 
-   ;; Wrap 'flatpak' so that GIO_EXTRA_MODULES is set, thereby allowing GIO to
-   ;; find the TLS backend in glib-networking.
-   (build-system glib-or-gtk-build-system)
+    ;; Wrap 'flatpak' so that GIO_EXTRA_MODULES is set, thereby allowing GIO to
+    ;; find the TLS backend in glib-networking.
+    (build-system glib-or-gtk-build-system)
 
-   (arguments
-    '(#:configure-flags
-      (list
-       "--enable-documentation=no" ;; FIXME
-       "--enable-system-helper=no"
-       "--localstatedir=/var"
-       (string-append "--with-system-bubblewrap="
-                      (assoc-ref %build-inputs "bubblewrap")
-                      "/bin/bwrap")
-       (string-append "--with-system-dbus-proxy="
-                      (assoc-ref %build-inputs "xdg-dbus-proxy")
-                      "/bin/xdg-dbus-proxy"))
+    (arguments
+     (list
+      #:configure-flags
+      #~(list
+         "--enable-documentation=no" ;; FIXME
+         "--enable-system-helper=no"
+         "--localstatedir=/var"
+         (string-append "--with-system-bubblewrap="
+                        (assoc-ref %build-inputs "bubblewrap")
+                        "/bin/bwrap")
+         (string-append "--with-system-dbus-proxy="
+                        (assoc-ref %build-inputs "xdg-dbus-proxy")
+                        "/bin/xdg-dbus-proxy"))
       #:phases
-      (modify-phases %standard-phases
-        (add-after 'unpack 'fix-tests
-          (lambda* (#:key inputs #:allow-other-keys)
-            (copy-recursively
-             (search-input-directory inputs "lib/locale")
-             "/tmp/locale")
-            (for-each make-file-writable (find-files "/tmp"))
-            (substitute* "tests/make-test-runtime.sh"
-              (("cp `which.*") "echo guix\n")
-              (("cp -r /usr/lib/locale/C\\.\\*")
-               (string-append "mkdir ${DIR}/usr/lib/locale/en_US; \
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-tests
+            (lambda* (#:key inputs #:allow-other-keys)
+              (copy-recursively
+               (search-input-directory inputs "lib/locale")
+               "/tmp/locale")
+              (for-each make-file-writable (find-files "/tmp"))
+              (substitute* "tests/make-test-runtime.sh"
+                (("cp `which.*") "echo guix\n")
+                (("cp -r /usr/lib/locale/C\\.\\*")
+                 (string-append "mkdir ${DIR}/usr/lib/locale/en_US; \
 cp -r /tmp/locale/*/en_US.*")))
-            (substitute* "tests/libtest.sh"
-              (("/bin/kill") (which "kill"))
-              (("/usr/bin/python3") (which "python3")))
-            #t))
-        (add-after 'unpack 'p11-kit-fix
-          (lambda* (#:key inputs #:allow-other-keys)
-            (let ((p11-path (search-input-file inputs "/bin/p11-kit")))
-              (substitute* "session-helper/flatpak-session-helper.c"
-                (("\"p11-kit\",")
-                 (string-append "\"" p11-path "\","))
-                (("if \\(g_find_program_in_path \\(\"p11-kit\"\\)\\)")
-                 (string-append "if (g_find_program_in_path (\""
-                                p11-path "\"))"))))))
-        ;; Many tests fail for unknown reasons, so we just run a few basic
-        ;; tests.
-        (replace 'check
-          (lambda _
-            (setenv "HOME" "/tmp")
-            (invoke "make" "check"
-                    "TESTS=tests/test-basic.sh tests/test-config.sh testcommon"))))))
-   (native-inputs
-    (list bison
-          dbus ; for dbus-daemon
-          gettext-minimal
-          `(,glib "bin") ; for glib-mkenums + gdbus-codegen
-          glibc-utf8-locales
-          gobject-introspection
-          libcap
-          pkg-config
-          python
-          python-pyparsing
-          socat
-          which))
-   (inputs
-    (list appstream-glib
-          bubblewrap
-          dconf
-          fuse
-          gdk-pixbuf
-          gpgme
-          json-glib
-          libarchive
-          libostree
-          libseccomp
-          libsoup-minimal-2
-          libxau
-          libxml2
-          p11-kit-next
-          util-linux
-          xdg-dbus-proxy))
-   (propagated-inputs (list glib-networking gnupg gsettings-desktop-schemas))
-   (home-page "https://flatpak.org")
-   (synopsis "System for building, distributing, and running sandboxed desktop
+              (substitute* "tests/libtest.sh"
+                (("/bin/kill") (which "kill"))
+                (("/usr/bin/python3") (which "python3")))
+              #t))
+          (add-after 'unpack 'p11-kit-fix
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((p11-path (search-input-file inputs "/bin/p11-kit")))
+                (substitute* "session-helper/flatpak-session-helper.c"
+                  (("\"p11-kit\",")
+                   (string-append "\"" p11-path "\","))
+                  (("if \\(g_find_program_in_path \\(\"p11-kit\"\\)\\)")
+                   (string-append "if (g_find_program_in_path (\""
+                                  p11-path "\"))"))))))
+          ;; Many tests fail for unknown reasons, so we just run a few basic
+          ;; tests.
+          (replace 'check
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (invoke "make" "check"
+                      "TESTS=tests/test-basic.sh tests/test-config.sh testcommon"))))))
+    (native-inputs
+     (list bison
+           dbus ; for dbus-daemon
+           gettext-minimal
+           `(,glib "bin") ; for glib-mkenums + gdbus-codegen
+           glibc-utf8-locales
+           gobject-introspection
+           libcap
+           pkg-config
+           python
+           python-pyparsing
+           socat
+           which))
+    (inputs
+     (list appstream-glib
+           bubblewrap
+           dconf
+           fuse
+           gdk-pixbuf
+           gpgme
+           json-glib
+           libarchive
+           libostree
+           libseccomp
+           libsoup-minimal-2
+           libxau
+           libxml2
+           p11-kit-next
+           util-linux
+           xdg-dbus-proxy))
+    (propagated-inputs (list glib-networking gnupg gsettings-desktop-schemas))
+    (home-page "https://flatpak.org")
+    (synopsis "System for building, distributing, and running sandboxed desktop
 applications")
-   (description "Flatpak is a system for building, distributing, and running
+    (description "Flatpak is a system for building, distributing, and running
 sandboxed desktop applications on GNU/Linux.")
-   (license license:lgpl2.1+)))
+    (license license:lgpl2.1+)))
 
 (define-public akku
   (package

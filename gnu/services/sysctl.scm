@@ -81,4 +81,6 @@
               (inherit config)
               (settings (append (sysctl-configuration-settings config)
                                 settings)))))
-   (default-value (sysctl-configuration))))
+   (default-value (sysctl-configuration))
+   (description "Set Linux kernel parameters under @file{/proc/sys} at system
+startup time.")))

@@ -11,7 +11,7 @@
 # Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 # Copyright © 2016, 2017, 2018, 2019 Alex Vong <alexvong1995@gmail.com>
 # Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
-# Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+# Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 # Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 # Copyright © 2017, 2018 Clément Lassieur <clement@lassieur.org>
 # Copyright © 2017, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -191,6 +191,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/debian.scm			\
   %D%/packages/debug.scm			\
   %D%/packages/dejagnu.scm			\
+  %D%/packages/dezyne.scm			\
   %D%/packages/dhall.scm			\
   %D%/packages/dico.scm				\
   %D%/packages/dictionaries.scm			\
@@ -994,8 +995,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/dbus-c++-gcc-compat.patch		\
   %D%/packages/patches/dbus-c++-threading-mutex.patch		\
   %D%/packages/patches/dbxfs-remove-sentry-sdk.patch		\
-  %D%/packages/patches/dealii-fix-compiliation-with-boost-1.78.patch	\
-  %D%/packages/patches/dealii-fix-sundials.patch		\
   %D%/packages/patches/debops-constants-for-external-program-names.patch \
   %D%/packages/patches/debops-debops-defaults-fall-back-to-less.patch \
   %D%/packages/patches/dee-vapi.patch			\
@@ -1029,6 +1028,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/elm-compiler-fix-map-key.patch		\
   %D%/packages/patches/elogind-revert-polkit-detection.patch	\
   %D%/packages/patches/emacs-exec-path.patch			\
+  %D%/packages/patches/emacs-git-email-missing-parens.patch	\
   %D%/packages/patches/emacs-fix-scheme-indent-function.patch	\
   %D%/packages/patches/emacs-ignore-empty-xim-styles.patch	\
   %D%/packages/patches/emacs-json-reformat-fix-tests.patch	\
@@ -1070,6 +1070,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/findutils-localstatedir.patch		\
   %D%/packages/patches/flann-cmake-3.11.patch			\
   %D%/packages/patches/flatpak-fix-path.patch			\
+  %D%/packages/patches/flatpak-unset-gdk-pixbuf-for-sandbox.patch	\
   %D%/packages/patches/fontconfig-cache-ignore-mtime.patch	\
   %D%/packages/patches/foobillard++-pkg-config.patch		\
   %D%/packages/patches/foomatic-filters-CVE-2015-8327.patch	\
@@ -1528,6 +1529,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/netsurf-system-utf8proc.patch		\
   %D%/packages/patches/netsurf-y2038-tests.patch		\
   %D%/packages/patches/netsurf-longer-test-timeout.patch	\
+  %D%/packages/patches/nftables-fix-makefile.patch		\
   %D%/packages/patches/nhc98-c-update.patch			\
   %D%/packages/patches/nix-dont-build-html-doc.diff		\
   %D%/packages/patches/nfs4-acl-tools-0.3.7-fixpaths.patch	\
@@ -1567,6 +1569,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/openjdk-15-xcursor-no-dynamic.patch	\
   %D%/packages/patches/openmpi-mtl-priorities.patch		\
   %D%/packages/patches/openssh-hurd.patch			\
+  %D%/packages/patches/openssh-trust-guix-store-directory.patch	\
   %D%/packages/patches/openresolv-restartcmd-guix.patch	\
   %D%/packages/patches/openrgb-unbundle-hueplusplus.patch	\
   %D%/packages/patches/opensles-add-license-file.patch			\
@@ -1859,7 +1862,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/tlf-support-hamlib-4.2+.patch		\
   gnu/packages/patches/tootle-glib-object-naming.patch		\
   gnu/packages/patches/tootle-reason-phrase.patch		\
-  %D%/packages/patches/tor-sandbox-i686.patch			\
   %D%/packages/patches/transcode-ffmpeg.patch	\
   %D%/packages/patches/transfig-gcc10-fno-common.patch		\
   %D%/packages/patches/transmission-honor-localedir.patch	\
@@ -1920,7 +1922,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/util-linux-tests.patch			\
   %D%/packages/patches/util-linux-CVE-2021-3995.patch		\
   %D%/packages/patches/util-linux-CVE-2021-3996.patch		\
-  %D%/packages/patches/valgrind-enable-arm.patch		\
+  %D%/packages/patches/valgrind-enable-arm.patch			\
+  %D%/packages/patches/valgrind-fix-default-debuginfo-path.patch	\
   %D%/packages/patches/vboot-utils-fix-format-load-address.patch	\
   %D%/packages/patches/vboot-utils-fix-tests-show-contents.patch	\
   %D%/packages/patches/vboot-utils-skip-test-workbuf.patch	\
@@ -1977,8 +1980,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/xterm-370-explicit-xcursor.patch		\
   %D%/packages/patches/xygrib-fix-finding-data.patch		\
   %D%/packages/patches/yggdrasil-extra-config.patch	\
-  %D%/packages/patches/ytfzf-programs.patch        \
-  %D%/packages/patches/ytfzf-updates.patch        \
   %D%/packages/patches/ytnef-CVE-2021-3403.patch	\
   %D%/packages/patches/ytnef-CVE-2021-3404.patch	\
   %D%/packages/patches/zig-use-system-paths.patch

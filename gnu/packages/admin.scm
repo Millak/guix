@@ -13,7 +13,7 @@
 ;;; Copyright © 2016 Peter Feigl <peter.feigl@nexoid.at>
 ;;; Copyright © 2016 John J. Foerch <jjfoerch@earthlink.net>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
-;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2017 Ben Sturmfels <ben@sturm.com.au>
 ;;; Copyright © 2017 Ethan R. Jones <doubleplusgood23@gmail.com>
@@ -2211,7 +2211,7 @@ module slots, and the list of I/O ports (e.g. serial, parallel, USB).")
 (define-public acpica
   (package
     (name "acpica")
-    (version "20211217")
+    (version "20220331")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2219,7 +2219,7 @@ module slots, and the list of I/O ports (e.g. serial, parallel, USB).")
                     version ".tar.gz"))
               (sha256
                (base32
-                "0521hmaw2zhi0mpgnaf2i83dykfgql4bx98cg7xqy8wmj649z194"))))
+                "0yjcl00nnnlw01sz6a1i5d3v75gr17mkbxkxfx2v344al33abk8w"))))
     (build-system gnu-build-system)
     (native-inputs (list flex bison))
     (arguments
@@ -2496,7 +2496,7 @@ track changes in important system configuration files.")
 (define-public libcap-ng
   (package
     (name "libcap-ng")
-    (version "0.8.2")
+    (version "0.8.3")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2504,11 +2504,12 @@ track changes in important system configuration files.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "1sasp1n154aqy9fz0knlb966svm7xg1zjhg1vr4q839bgjvq7h2j"))))
+                "0ba9dfga7chwf6lf7a03x1a30fgdy2pb4r7pnn1jzfr2is2gdmmy"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
-       (list "--without-python")))
+       (list "--disable-static"
+             "--without-python")))
     (home-page "https://people.redhat.com/sgrubb/libcap-ng/")
     (synopsis "Library for more easily working with POSIX capabilities")
     (description
@@ -3100,13 +3101,13 @@ platform-specific methods.")
   (package
     (name "audit")
     (home-page "https://people.redhat.com/sgrubb/audit/")
-    (version "3.0.7")
+    (version "3.0.8")
     (source (origin
               (method url-fetch)
               (uri (string-append home-page "audit-" version ".tar.gz"))
               (sha256
                (base32
-                "15r5lrrkv2zj3dvpqssd46w61hmrq27y7c2rz33s20ck59iphk4b"))))
+                "04w9m9ffvi58z11i344wa1hji9ba68cdklrkizhiwf39mnwxkx5m"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags (list "--with-python=no"
@@ -3903,30 +3904,29 @@ information tool.")
 (define-public nnn
   (package
     (name "nnn")
-    (version "4.4")
+    (version "4.5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/jarun/nnn/releases/download/v"
                            version "/nnn-v" version ".tar.gz"))
        (sha256
-        (base32 "0lqn7pyy8c1vy29vn8ad4x23cw67cy1d21ghns6f3w9a1h7kyjp0"))))
+        (base32 "1aj9hzhpwxl2v1dlf3jpd3rp81z689dq8iycbipc0024dnyibp7s"))))
     (build-system gnu-build-system)
     (inputs
      (list ncurses readline))
     (native-inputs
      (list pkg-config))
     (arguments
-     `(#:tests? #f                      ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))           ; no configure script
-       #:make-flags
-       (list
-        (string-append "PREFIX="
-                       (assoc-ref %outputs "out"))
-        (string-append "CC=" ,(cc-for-target))
-        (string-append "PKG_CONFIG=" ,(pkg-config-for-target)))))
+     (list #:tests? #f                  ; no tests
+           #:make-flags
+           #~(list
+              (string-append "PREFIX=" #$output)
+              (string-append "CC=" #$(cc-for-target))
+              (string-append "PKG_CONFIG=" #$(pkg-config-for-target)))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))))       ; no configure script
     (home-page "https://github.com/jarun/nnn")
     (synopsis "Terminal file browser")
     (description

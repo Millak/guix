@@ -23,6 +23,7 @@
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 dissent <disseminatedissent@protonmail.com>
+;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -97,7 +98,7 @@
 (define-public ytfzf
   (package
     (name "ytfzf")
-    (version "1.2.0")
+    (version "2.3")
     (home-page "https://github.com/pystardust/ytfzf")
     (source
      (origin
@@ -108,128 +109,32 @@
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00d416qb4109pm77ikhnmds8qng90ni2jan9kdnxz7b6sh5f61nz"))
-       (patches
-        (search-patches
-         ;; Pre-requisite for 'patch-script' phase.
-         "ytfzf-programs.patch"
-         ;; Disables self-update.
-         "ytfzf-updates.patch"))))
+        (base32 "01prcg6gfwy1r49v92pkzxay9iadqqhpaxvn8jmij2jm5l50iynd"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ;no test suite
-       #:modules
-       ((guix build gnu-build-system)
-        (guix build utils)
-        (srfi srfi-26))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-script
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bash (assoc-ref inputs "bash"))
-                    (catimg (assoc-ref inputs "catimg"))
-                    (chafa (assoc-ref inputs "chafa"))
-                    (coreutils (assoc-ref inputs "coreutils"))
-                    (curl (assoc-ref inputs "curl"))
-                    (dmenu (assoc-ref inputs "dmenu"))
-                    (fzf (assoc-ref inputs "fzf"))
-                    (gawk (assoc-ref inputs "gawk"))
-                    (grep (assoc-ref inputs "grep"))
-                    (jp2a (assoc-ref inputs "jp2a"))
-                    (jq (assoc-ref inputs "jq"))
-                    (libnotify (assoc-ref inputs "libnotify"))
-                    (mpv (assoc-ref inputs "mpv"))
-                    (ncurses (assoc-ref inputs "ncurses"))
-                    (python-ueberzug (assoc-ref inputs "python-ueberzug"))
-                    (sed (assoc-ref inputs "sed"))
-                    (util-linux (assoc-ref inputs "util-linux"))
-                    (youtube-dl (assoc-ref inputs "youtube-dl")))
-               ;; Use correct $PREFIX path.
-               (substitute* "Makefile"
-                 (("/usr/bin")
-                  (string-append out "/bin")))
-               ;; Use absolute path for referenced programs.
-               (substitute* "ytfzf"
-                 (("@awk@")
-                  (string-append gawk "/bin/awk"))
-                 (("@cat@")
-                  (string-append coreutils "/bin/cat"))
-                 (("@catimg@")
-                  (string-append catimg "/bin/catimg"))
-                 (("@chafa@")
-                  (string-append chafa "/bin/chafa"))
-                 (("@chmod@")
-                  (string-append coreutils "/bin/chmod"))
-                 (("@column@")
-                  (string-append util-linux "/bin/column"))
-                 (("@cp@")
-                  (string-append coreutils "/bin/cp"))
-                 (("@cut@")
-                  (string-append coreutils "/bin/cut"))
-                 (("@curl@")
-                  (string-append curl "/bin/curl"))
-                 (("@date@")
-                  (string-append coreutils "/bin/date"))
-                 (("@dmenu@")
-                  (string-append dmenu "/bin/dmenu"))
-                 (("@fzf@")
-                  (string-append fzf "/bin/fzf"))
-                 (("@grep@")
-                  (string-append grep "/bin/grep"))
-                 (("@head@")
-                  (string-append coreutils "/bin/head"))
-                 (("@jp2a@")
-                  (string-append jp2a "/bin/jp2a"))
-                 (("@jq@")
-                  (string-append jq "/bin/jq"))
-                 (("@mkdir@")
-                  (string-append coreutils "/bin/mkdir"))
-                 (("@mkfifo@")
-                  (string-append coreutils "/bin/mkfifo"))
-                 (("@mpv@")
-                  (string-append mpv "/bin/mpv"))
-                 (("@nohup@")
-                  (string-append coreutils "/bin/nohup"))
-                 (("@notify-send@")
-                  (string-append libnotify "/bin/notify-send"))
-                 (("@rm@")
-                  (string-append coreutils "/bin/rm"))
-                 (("@sed@")
-                  (string-append sed "/bin/sed"))
-                 (("@seq@")
-                  (string-append coreutils "/bin/seq"))
-                 (("@setsid@")
-                  (string-append util-linux "/bin/setsid"))
-                 (("@sh@")
-                  (string-append bash "/bin/sh"))
-                 (("@sleep@")
-                  (string-append coreutils "/bin/sleep"))
-                 (("@sort@")
-                  (string-append coreutils "/bin/sort"))
-                 (("@tput@")
-                  (string-append ncurses "/bin/tput"))
-                 (("@tr@")
-                  (string-append coreutils "/bin/tr"))
-                 (("@ueberzug@")
-                  (string-append python-ueberzug "/bin/ueberzug"))
-                 (("@uname@")
-                  (string-append coreutils "/bin/uname"))
-                 (("@uniq@")
-                  (string-append coreutils "/bin/uniq"))
-                 (("@wc@")
-                  (string-append coreutils "/bin/wc"))
-                 (("@youtube-dl@")
-                  (string-append youtube-dl "/bin/youtube-dl"))))
-             (substitute* "ytfzf"
-               ;; Generate temporary files in the user-specific path,
-               ;; to avoid issues in multi-user systems.
-               (("/tmp/ytfzf")
-                "$HOME/.cache/ytfzf")
-               ;; Report errors to Guix.
-               (("report at: https://github.com/pystardust/ytfzf")
-                "report at: https://issues.guix.gnu.org"))))
-         (delete 'configure))))         ;no configure script
+     (list
+      #:tests? #f                       ;no test suite
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'install 'install-addons
+            (lambda _
+              (invoke "make" "addons"
+                      (string-append "PREFIX=" #$output))))
+          (add-after 'install 'wrap-program
+            (lambda* (#:key inputs #:allow-other-keys)
+              (wrap-program (string-append #$output "/bin/ytfzf")
+                `("PATH" ":" prefix
+                  ,(map (lambda (input)
+                          (string-append (assoc-ref inputs input) "/bin"))
+                        '("bash" "catimg" "chafa" "coreutils" "curl"
+                          "dmenu" "fzf" "gawk" "grep" "jp2a" "jq"
+                          "libnotify" "mpv" "ncurses" "python-ueberzug"
+                          "sed" "util-linux" "youtube-dl")))
+                `("YTFZF_SYSTEM_ADDON_DIR" ":" =
+                  ,(list (string-append #$output "/share/ytfzf/addons")))))))))
     (inputs
      (list bash
            catimg

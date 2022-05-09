@@ -481,11 +481,7 @@ HTTP-PORT."
           (test-begin "tailon")
 
           (test-assert "service running"
-            (marionette-eval
-             '(begin
-                (use-modules (gnu services herd))
-                (start-service 'tailon))
-             marionette))
+            (wait-for-tcp-port 8080 marionette))
 
           (test-equal "http-get"
             200

@@ -189,7 +189,8 @@ a server that supports the SSH-2 protocol.")
              (method url-fetch)
              (uri (string-append "mirror://openbsd/OpenSSH/portable/"
                                  "openssh-" version ".tar.gz"))
-             (patches (search-patches "openssh-hurd.patch"))
+             (patches (search-patches "openssh-hurd.patch"
+                                      "openssh-trust-guix-store-directory.patch"))
              (sha256
               (base32
                "1ry5prcax0134v6srkgznpl9ch5snkgq7yvjqvd8c5mbnxa7cjgx"))))
@@ -249,6 +250,11 @@ a server that supports the SSH-2 protocol.")
              (substitute* "Makefile"
                (("PRIVSEP_PATH=/var/empty")
                 (string-append "PRIVSEP_PATH=" out "/var/empty"))))))
+        (add-after 'configure 'set-store-location
+          (lambda* _
+            (substitute* "misc.c"
+              (("@STORE_DIRECTORY@")
+               (string-append "\"" (%store-directory) "\"")))))
         (add-before 'check 'patch-tests
          (lambda _
            (substitute* "regress/test-exec.sh"

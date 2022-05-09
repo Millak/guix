@@ -522,7 +522,9 @@ is truncated and rewritten every minute.")
                        (service-extension account-service-type
                                           (const %openvpn-accounts))
                        (service-extension activation-service-type
-                                          (const %openvpn-activation))))))
+                                          (const %openvpn-activation))))
+                (description "Run the OpenVPN server, which allows you to
+@emph{host} a @acronym{VPN, virtual private network}.")))
 
 (define openvpn-client-service-type
   (service-type (name 'openvpn-client)
@@ -532,7 +534,10 @@ is truncated and rewritten every minute.")
                        (service-extension account-service-type
                                           (const %openvpn-accounts))
                        (service-extension activation-service-type
-                                          (const %openvpn-activation))))))
+                                          (const %openvpn-activation))))
+                (description
+                 "Run the OpenVPN client service, which allows you to connect
+to an existing @acronym{VPN, virtual private network}.")))
 
 (define* (openvpn-client-service #:key (config (openvpn-client-configuration)))
   (validate-configuration config openvpn-client-configuration-fields)
@@ -819,4 +824,6 @@ PostUp = ~a set %i private-key ~a
     (list (service-extension shepherd-root-service-type
                              wireguard-shepherd-service)
           (service-extension activation-service-type
-                             wireguard-activation)))))
+                             wireguard-activation)))
+   (description "Set up Wireguard @acronym{VPN, Virtual Private Network}
+tunnels.")))

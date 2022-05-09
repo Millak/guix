@@ -92,7 +92,10 @@
                (match values
                  ((first . rest) first)
                  (_ config))))
-     (default-value (rpcbind-configuration)))))
+     (default-value (rpcbind-configuration))
+     (description "Run the RPC Bind service, which provides a facility to map
+ONC RPC program numbers into universal addresses.  Many NFS related services
+use this facility."))))
 
 
 
@@ -128,8 +131,13 @@
      ;; configure and start this service.  Only one value can be provided.  We
      ;; override it with the value returned by the extending service.
      (compose identity)
-     (extend (lambda (config values) (first values)))
-     (default-value (pipefs-configuration)))))
+     (extend (lambda (config values)
+               (match values
+                 ((first . rest) first)
+                 (_ config))))
+     (default-value (pipefs-configuration))
+     (description "Mount the pipefs file system, which is used to transfer
+NFS-related data between the kernel and user-space programs."))))
 
 
 
@@ -174,7 +182,10 @@
                (match values
                  ((first . rest) first)
                  (_ config))))
-     (default-value (gss-configuration)))))
+     (default-value (gss-configuration))
+     (description "Run the @dfn{global security system} (GSS) daemon, which
+provides strong security for protocols based on remote procedure calls (ONC
+RPC)."))))
 
 
 
@@ -239,7 +250,10 @@
      ;; override it with the value returned by the extending service.
      (compose identity)
      (extend (lambda (config values) (first values)))
-     (default-value (idmap-configuration)))))
+     (default-value (idmap-configuration))
+     (description "Run the idmap daemon, which provides a mapping between user
+IDs and user names.  It is typically required to access file systems mounted
+via NFSv4."))))
 
 (define-record-type* <nfs-configuration>
   nfs-configuration make-nfs-configuration

@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016 Sou Bunnbu <iyzsong@gmail.com>
-;;; Copyright © 2016, 2017, 2018, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016, 2017, 2018, 2020, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Huang Ying <huang.ying.caritas@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -22,12 +22,15 @@
   #:use-module (guix gexp)
   #:use-module (guix records)
   #:use-module (guix modules)
+  #:use-module (guix least-authority)
   #:use-module (gnu services)
   #:use-module (gnu services shepherd)
   #:use-module (gnu system shadow)
   #:use-module ((gnu packages admin) #:select (shadow))
   #:use-module (gnu packages dico)
   #:use-module (gnu packages dictionaries)
+  #:autoload   (gnu build linux-container) (%namespaces)
+  #:autoload   (gnu system file-systems) (file-system-mapping)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 match)
@@ -142,27 +145,44 @@ database {
         (chown rundir (passwd:uid user) (passwd:gid user)))))
 
 (define (dicod-shepherd-service config)
-  (let ((dicod      (file-append (dicod-configuration-dico config)
-                                 "/bin/dicod"))
-        (dicod.conf (dicod-configuration-file config)))
-    (with-imported-modules (source-module-closure
-                            '((gnu build shepherd)
-                              (gnu system file-systems)))
-      (list (shepherd-service
-             (provision '(dicod))
-             (requirement '(user-processes))
-             (documentation "Run the dicod daemon.")
-             (modules '((gnu build shepherd)
-                        (gnu system file-systems)))
-             (start #~(make-forkexec-constructor/container
-                       (list #$dicod "--foreground"
-                             (string-append "--config=" #$dicod.conf))
-                       #:user "dicod" #:group "dicod"
-                       #:mappings (list (file-system-mapping
-                                         (source "/var/run/dicod")
-                                         (target source)
-                                         (writable? #t)))))
-             (stop #~(make-kill-destructor)))))))
+  (let* ((dicod.conf (dicod-configuration-file config))
+         (interfaces (dicod-configuration-interfaces config))
+         (dicod      (least-authority-wrapper
+                      (file-append (dicod-configuration-dico config)
+                                   "/bin/dicod")
+                      #:name "dicod"
+                      #:mappings (list (file-system-mapping
+                                        (source "/var/run/dicod")
+                                        (target source)
+                                        (writable? #t))
+                                       (file-system-mapping
+                                        (source "/dev/log")
+                                        (target source))
+                                       (file-system-mapping
+                                        (source dicod.conf)
+                                        (target source)))
+                      #:namespaces (delq 'net %namespaces))))
+    (list (shepherd-service
+           (provision '(dicod))
+           (requirement '(user-processes))
+           (documentation "Run the dicod daemon.")
+           (start #~(if (and (defined? 'make-inetd-constructor)
+                             #$(= 1 (length interfaces))) ;XXX
+                        (make-inetd-constructor
+                         (list #$dicod "--inetd" "--foreground"
+                               (string-append "--config=" #$dicod.conf))
+                         (addrinfo:addr
+                          (car (getaddrinfo #$(first interfaces) "dict")))
+                         #:user "dicod" #:group "dicod"
+                         #:service-name-stem "dicod")
+                        (make-forkexec-constructor
+                         (list #$dicod "--foreground"
+                               (string-append "--config=" #$dicod.conf))
+                         #:user "dicod" #:group "dicod")))
+           (stop #~(if (and (defined? 'make-inetd-destructor)
+                            #$(= 1 (length interfaces))) ;XXX
+                       (make-inetd-destructor)
+                       (make-kill-destructor)))))))
 
 (define dicod-service-type
   (service-type

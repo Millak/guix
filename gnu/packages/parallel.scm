@@ -166,7 +166,7 @@ when jobs finish.")
 (define-public slurm
   (package
     (name "slurm")
-    (version "20.11.7")
+    (version "21.08.8")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -174,7 +174,7 @@ when jobs finish.")
                     version ".tar.bz2"))
               (sha256
                (base32
-                "1fdjihg1x7ks5l77yjv14a4mg6r0v8c3zk1dcxkhrhq3n4dc9nbs"))
+                "1sjln54idc9rhg8f2nvm38sgs6fncncyzslas8ixy65pqz2hphbf"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -213,7 +213,8 @@ when jobs finish.")
            #~(list "--enable-pam" "--sysconfdir=/etc/slurm"
                    "--disable-static"
                    (string-append "--with-freeipmi=" #$(this-package-input "freeipmi"))
-                   (string-append "--with-hwloc=" #$(this-package-input "hwloc"))
+                   (string-append "--with-hwloc="
+                                  (ungexp (this-package-input "hwloc") "lib"))
                    (string-append "--with-json=" #$(this-package-input "json-c"))
                    (string-append "--with-munge=" #$(this-package-input "munge"))
 
@@ -260,6 +261,20 @@ by managing a queue of pending work.")
 ;; releases here.  See also <https://issues.guix.gnu.org/44387>.
 ;; As noted in the link, YY.MM is the release scheme, and the 'maintenance'
 ;; digit does not introduce incompatibilities.
+
+(define-public slurm-20.11
+  (package
+    (inherit slurm)
+    (version "20.11.9")
+    (source (origin
+              (inherit (package-source slurm))
+              (method url-fetch)
+              (uri (string-append
+                    "https://download.schedmd.com/slurm/slurm-"
+                    version ".tar.bz2"))
+              (sha256
+               (base32
+                "0xq2d6dm285y541dyg1h66z7svsisrq8c81ag0f601xz1cn3mq9m"))))))
 
 (define-public slurm-20.02
   (package

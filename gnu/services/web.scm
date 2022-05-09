@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2017, 2018 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2017, 2018, 2019 Christopher Baines <mail@cbaines.net>
@@ -486,7 +486,8 @@
                 (compose concatenate)
                 (extend httpd-process-extensions)
                 (default-value
-                  (httpd-configuration))))
+                  (httpd-configuration))
+                (description "Run the Apache httpd Web server.")))
 
 (define-record-type* <nginx-server-configuration>
   nginx-server-configuration make-nginx-server-configuration
@@ -867,7 +868,9 @@ of index files."
                                           fcgiwrap-accounts)
                        (service-extension activation-service-type
                                           fcgiwrap-activation)))
-                (default-value (fcgiwrap-configuration))))
+                (default-value (fcgiwrap-configuration))
+                (description "Run FastCGI, an interface between the front-end
+and the back-end of a Web service.")))
 
 (define-record-type* <php-fpm-configuration> php-fpm-configuration
   make-php-fpm-configuration
@@ -2010,10 +2013,12 @@ root=/srv/gemini
 
 (define agate-service-type
   (service-type
-   (name 'guix)
+   (name 'agate)
    (extensions
     (list (service-extension account-service-type
                              agate-accounts)
           (service-extension shepherd-root-service-type
                              agate-shepherd-service)))
-   (default-value (agate-configuration))))
+   (default-value (agate-configuration))
+   (description "Run Agate, a simple Gemini protocol server written in
+Rust.")))

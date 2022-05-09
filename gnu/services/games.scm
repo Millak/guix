@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -22,6 +23,9 @@
   #:use-module (gnu packages admin)
   #:use-module (gnu packages games)
   #:use-module (gnu system shadow)
+  #:use-module ((gnu system file-systems) #:select (file-system-mapping))
+  #:use-module (gnu build linux-container)
+  #:autoload   (guix least-authority) (least-authority-wrapper)
   #:use-module (guix gexp)
   #:use-module (guix modules)
   #:use-module (guix records)
@@ -56,18 +60,33 @@
 (define wesnothd-shepherd-service
   (match-lambda
     (($ <wesnothd-configuration> package port)
-     (with-imported-modules (source-module-closure
-                             '((gnu build shepherd)))
+     (let ((wesnothd (least-authority-wrapper
+                      (file-append package "/bin/wesnothd")
+                      #:name "wesnothd"
+                      #:mappings (list (file-system-mapping
+                                        (source "/var/run/wesnothd")
+                                        (target source)
+                                        (writable? #t)))
+                      #:namespaces (delq 'net %namespaces))))
        (shepherd-service
         (documentation "The Battle for Wesnoth server")
         (provision '(wesnoth-daemon))
         (requirement '(networking))
-        (modules '((gnu build shepherd)))
-        (start #~(make-forkexec-constructor/container
-                  (list #$(file-append package "/bin/wesnothd")
-                        "-p" #$(number->string port))
+        (start #~(make-forkexec-constructor
+                  (list #$wesnothd "-p" #$(number->string port))
                   #:user "wesnothd" #:group "wesnothd"))
         (stop #~(make-kill-destructor)))))))
+
+(define wesnothd-activation
+  (with-imported-modules '((guix build utils))
+    #~(begin
+        (use-modules (guix build utils))
+
+        (let* ((user (getpw "wesnothd"))
+               (directory "/var/run/wesnothd"))
+          ;; wesnothd creates a Unix-domain socket in DIRECTORY.
+          (mkdir-p directory)
+          (chown directory (passwd:uid user) (passwd:gid user))))))
 
 (define wesnothd-service-type
   (service-type
@@ -77,6 +96,8 @@
    (extensions
     (list (service-extension account-service-type
                              (const %wesnothd-accounts))
+          (service-extension activation-service-type
+                             (const wesnothd-activation))
           (service-extension shepherd-root-service-type
                              (compose list wesnothd-shepherd-service))))
    (default-value (wesnothd-configuration))))

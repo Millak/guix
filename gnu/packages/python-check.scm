@@ -14,6 +14,7 @@
 ;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Bonface Munyoki Kilyungi <me@bonfacemunyoki.com>
 ;;; Copyright © 2022 Malte Frank Gerdes <malte.f.gerdes@gmail.com>
+;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2055,4 +2056,32 @@ eliminate flaky failures.")
     (description "xunitparser reads a JUnit/XUnit XML file and maps it to
 Python objects.  It tries to use the objects available in the standard
 @code{unittest} module.")
+    (license license:expat)))
+
+(define-public python-sybil
+  (package
+    (name "python-sybil")
+    (version "3.0.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "sybil" version))
+        (sha256
+          (base32 "03ak1w93linfqx6c9lwgq5niyy3j9yblv4ip40hmlzmg0hidq0kg"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+        (modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest")))))))
+    (native-inputs (list python-pytest python-pytest-cov))
+    (home-page "https://github.com/simplistix/sybil")
+    (synopsis "Automated testing for examples in code and documentation")
+    (description
+      "This library provides a way to check examples in your code and
+documentation by parsing them from their source and evaluating the
+parsed examples as part of your normal test run.  Integration is
+provided for the main Python test runners.")
     (license license:expat)))

@@ -19,7 +19,7 @@
 ;;; Copyright © 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;;; Copyright © 2020 Dimakis Dimakakos <me@bendersteed.tech>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
-;;; Copyright © 2020, 2021 Adam Kandur <rndd@tuta.io>
+;;; Copyright © 2020, 2021, 2022 Adam Kandur <rndd@tuta.io>
 ;;; Copyright © 2020, 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021, 2022 Aurora <rind38@disroot.org>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
@@ -909,6 +909,40 @@ file.")
 
 (define-public cl-zpb-ttf
   (sbcl-package->cl-source-package sbcl-zpb-ttf))
+
+(define-public sbcl-zip
+  ;; named branch is outdated
+  (let ((commit "688b1545dd7a4fe355556768bb03f8bd9b847a87")
+        (revision "1"))
+    (package
+      (name "sbcl-zip")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/bluelisp/zip")
+               (commit commit)))
+         (sha256
+          (base32 "0s08a6fq182fzsbfyvihqbdllq6gxcwkvphxnrd9wwz65dhg5y66"))
+         (file-name (git-file-name "cl-zip" version))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-babel
+             sbcl-cl-fad
+             sbcl-salza2
+             sbcl-trivial-gray-streams))
+      (synopsis "Zip library written in Common Lisp")
+      (description "This package provide a Common Lisp library for .zip-file
+reading and writing.")
+      (home-page "https://zip.common-lisp.dev")
+      (license (list license:bsd-2 license:llgpl)))))
+
+(define-public ecl-zip
+  (sbcl-package->ecl-package sbcl-zip))
+
+(define-public cl-zip
+  (sbcl-package->cl-source-package sbcl-zip))
 
 (define-public sbcl-cl-vectors
   (package

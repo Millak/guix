@@ -10,7 +10,7 @@
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym@scratchpost.org>
-;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2016, 2019, 2020 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2016, 2018, 2019, 2020, 2021 Marius Bakke <marius@gnu.org>
@@ -632,14 +632,14 @@ archiving.  Lzip is a clean implementation of the LZMA algorithm.")
 (define-public lziprecover
   (package
     (name "lziprecover")
-    (version "1.22")
+    (version "1.23")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://savannah/lzip/lziprecover/"
                                   "lziprecover-" version ".tar.gz"))
               (sha256
                (base32
-                "0qh8dnhr5rly2k9dnx43qqynqwqzi5kfb15pyd29qwppfl4qm5gx"))))
+                "0wmmyi03fv2lflsir5ldrsv04q57k3hmlqajzb1m3p86gwbh967j"))))
     (build-system gnu-build-system)
     (home-page "https://www.nongnu.org/lzip/lziprecover.html")
     (synopsis "Recover and decompress data from damaged lzip files")
@@ -1157,14 +1157,14 @@ human-readable output.")
 (define-public lrzip
   (package
     (name "lrzip")
-    (version "0.641")
+    (version "0.651")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "http://ck.kolivas.org/apps/lrzip/lrzip-" version ".tar.xz"))
        (sha256
-        (base32 "0ziyanspd96dc3lp2qdcylc7aq8dhb511jhqrhxvlp502fjqjqrc"))))
+        (base32 "1y822rpl7ak57s1a4xzd6ja82cp3sff9axrpkdn5khcpn3n8vga8"))))
     (build-system gnu-build-system)
     (native-inputs
      `(;; nasm is only required when building for 32-bit x86 platforms
@@ -1976,14 +1976,14 @@ of archives.")
 (define-public lunzip
   (package
     (name "lunzip")
-    (version "1.12")
+    (version "1.13")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://savannah/lzip/lunzip/"
                            "lunzip-" version ".tar.gz"))
        (sha256
-        (base32 "1liaynyy3qcs29hfk1pnb7i9r1mnmpw557j5v356qsv6qnm4lnz5"))))
+        (base32 "153qa674rlbw812fb7h8rfzdw4hvr6vgkjl1c0yfplj7p4h86z9w"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -2003,14 +2003,14 @@ Lunzip is intended to be fully compatible with the regular lzip package.")
 (define-public clzip
   (package
     (name "clzip")
-    (version "1.12")
+    (version "1.13")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://savannah/lzip/clzip/"
                            "clzip-" version ".tar.gz"))
        (sha256
-        (base32 "1s7yidqvmxi61hh569h5aci816l6qkffjgx0zx57qyyq0qq2pjgw"))))
+        (base32 "0ypagygbnq4ppqyg7sj4816x5c1w579883m2nsq0zxbb0gszpjbs"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -2029,14 +2029,14 @@ Clzip is intended to be fully compatible with the regular lzip package.")
 (define-public lzlib
   (package
     (name "lzlib")
-    (version "1.12")
+    (version "1.13")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://savannah/lzip/lzlib/"
                            "lzlib-" version ".tar.gz"))
        (sha256
-        (base32 "1c9pwd6by8is4z8bs6j306jyy6pgm2dvsn4fr7fg2b5m5qj88pcf"))))
+        (base32 "107vkzfgvb21cqq4gmxyfn97l4s2c0b3i14k9rkv594b2krmiax1"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -2056,14 +2056,14 @@ corrupted input.")
 (define-public plzip
   (package
     (name "plzip")
-    (version "1.9")
+    (version "1.10")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://savannah/lzip/plzip/"
                            "plzip-" version ".tar.gz"))
        (sha256
-        (base32 "19zinpx7hssl6r3vilpvq2s7wha3545xan8b0vcvsxnyipdx3n0l"))))
+        (base32 "16408n8z21hfxp0qnx3hh1d0c47g8z9i3vflbgbrmf6qcn1abyj3"))))
     (build-system gnu-build-system)
     (inputs
      (list lzlib))

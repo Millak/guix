@@ -31,6 +31,7 @@
 ;;; Copyright © 2022 Olivier Dion <olivier.dion@polymtl.ca>
 ;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
 ;;; Copyright © 2022 Malte Frank Gerdes <malte.f.gerdes@gmail.com>
+;;; Copyright © 2022 Konstantinos Agiannis <agiannis.kon@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -78,6 +79,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages curl)
+  #:use-module (gnu packages gawk)
   #:use-module (gnu packages dejagnu)
   #:use-module (gnu packages digest)
   #:use-module (gnu packages docbook)
@@ -939,7 +941,7 @@ Emacs).")
 (define-public kicad
   (package
     (name "kicad")
-    (version "6.0.4")
+    (version "6.0.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -947,7 +949,7 @@ Emacs).")
                     (commit version)))
               (sha256
                (base32
-                "0lki59ws0ncqkp9wxrhyni1ck2sx5z07mmpkjg0d9jpkync9hx9y"))
+                "19mg672h1gjdvnkp13cpkhk67xpwms72y4gd6g8983fcsxr8nq23"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -1054,7 +1056,7 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0p3ypfs11ck2w7dmqiy763krpj0slan4jvpzxs6z1473gdpbzgbs"))))
+                "190pnrf2cy06wnnskyb4fqj4a4nfmz17i3y79rnrz3j62h3fmg0w"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DBUILD_FORMATS=html")
@@ -1088,7 +1090,7 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "12lyc187337bf2frl3jvwqdwwnd69f7l414k3kxhccs3sa2mcf1y"))))
+                "1dhgdp08ah08fc5nvwkqmgpl2any9vgy1gykmyzsd4dl8hhvznh5"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; no tests exist
@@ -1117,7 +1119,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0px2g9jansky0rvc0bdjylbmv8xwhc0q63g88hd2nzbknqli9f1y"))))
+                "0sxzd4dr1g12ck8b2wsyg9r2s1j3472nksrjrwpzjdyfc8rqbjai"))))
     (synopsis "Official KiCad footprint libraries")
     (description "This package contains the official KiCad footprint libraries.")))
 
@@ -1134,7 +1136,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ms9py93qyihxrhh9wm2ziycmdn88m36r8adx22ynjnxixw1f9ja"))))
+                "00i6mybg3pprzb283b26z5b2g7a8sbghlvc0fwk9gwrp3wz1yqzc"))))
     (synopsis "Official KiCad 3D model libraries")
     (description "This package contains the official KiCad 3D model libraries.")))
 
@@ -3659,3 +3661,46 @@ python bindings.  It belongs to the Cura project from Ultimaker.")
     (description "Cura is a slicing software from Ultimaker.  A @emph{slicer}
 generates G-Code for 3D printers.")
     (license license:lgpl3+)))
+
+(define-public xschem
+  (let ((commit "f574539e21b297fa3bcebd52114555e162a5fc56")
+        (revision "1"))
+    (package
+      (name "xschem")
+      (version (git-version "3.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/StefanSchippers/xschem")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "129kj8m3wcf62plp74kml6pqwld4lnfmxy070a82lvj0rfiy77hb"))))
+      (native-inputs (list flex bison pkg-config))
+      (inputs (list gawk
+                    tcl
+                    tk
+                    libxpm
+                    cairo
+                    libxrender
+                    libxcb)) ; Last 3 are optional, but good to have.
+      (build-system gnu-build-system)
+      (arguments
+       `(#:tests? #f
+         #:phases
+         (modify-phases %standard-phases
+           (delete 'configure)
+           (add-before 'build 'setenv
+             (lambda* (#:key outputs #:allow-other-keys)
+               (setenv "CC" ,(cc-for-target))
+               (invoke "./configure"
+                       (string-append "--prefix="
+                                      (assoc-ref outputs "out"))))))))
+      (synopsis "Hierarchical schematic editor")
+      (description
+       "Xschem is an X11 schematic editor written in C and focused on
+hierarchical and parametric design.  It can generate VHDL, Verilog or Spice
+netlists from the drawn schematic, allowing the simulation of the circuit.")
+      (home-page "https://xschem.sourceforge.io/stefan/index.html")
+      (license license:gpl2+))))

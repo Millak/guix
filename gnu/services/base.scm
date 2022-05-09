@@ -219,8 +219,6 @@
             pam-limits-service-type
             pam-limits-service
 
-            references-file
-
             %base-services))
 
 ;;; Commentary:
@@ -1768,26 +1766,6 @@ proxy of 'guix-daemon'...~%")
               (substitute-key-authorization authorized-keys guix)
               #~#f))))
 
-(define* (references-file item #:optional (name "references"))
-  "Return a file that contains the list of references of ITEM."
-  (if (struct? item)                              ;lowerable object
-      (computed-file name
-                     (with-extensions (list guile-gcrypt) ;for store-copy
-                       (with-imported-modules (source-module-closure
-                                               '((guix build store-copy)))
-                         #~(begin
-                             (use-modules (guix build store-copy))
-
-                             (call-with-output-file #$output
-                               (lambda (port)
-                                 (write (map store-info-item
-                                             (call-with-input-file "graph"
-                                               read-reference-graph))
-                                        port))))))
-                     #:options `(#:local-build? #f
-                                 #:references-graphs (("graph" ,item))))
-      (plain-file name "()")))
-
 (define guix-service-type
   (service-type
    (name 'guix)
@@ -1877,13 +1855,7 @@ raise a deprecation warning if the 'compression-level' field was used."
   (match-record config <guix-publish-configuration>
     (guix port host nar-path cache workers ttl negative-ttl
           cache-bypass-threshold advertise?)
-    (list (shepherd-service
-           (provision '(guix-publish))
-           (requirement `(user-processes
-                          guix-daemon
-                          ,@(if advertise? '(avahi-daemon) '())))
-           (start #~(make-forkexec-constructor
-                     (list #$(file-append guix "/bin/guix")
+    (let ((command #~(list #$(file-append guix "/bin/guix")
                            "publish" "-u" "guix-publish"
                            "-p" #$(number->string port)
                            #$@(config->compression-options config)
@@ -1913,17 +1885,39 @@ raise a deprecation warning if the 'compression-level' field was used."
                                         "--cache-bypass-threshold="
                                         (number->string
                                          cache-bypass-threshold)))
-                                  #~()))
+                                  #~())))
+          (options #~(#:environment-variables
+                      ;; Make sure we run in a UTF-8 locale so we can produce
+                      ;; nars for packages that contain UTF-8 file names such
+                      ;; as 'nss-certs'.  See <https://bugs.gnu.org/26948>.
+                      (list (string-append "GUIX_LOCPATH="
+                                           #$glibc-utf8-locales "/lib/locale")
+                            "LC_ALL=en_US.utf8")
+                      #:log-file "/var/log/guix-publish.log"))
+          (endpoints #~(let ((ai (false-if-exception
+                                  (getaddrinfo #$host
+                                               #$(number->string port)
+                                               AI_NUMERICSERV))))
+                         (if (pair? ai)
+                             (list (endpoint (addrinfo:addr (car ai))))
+                             '()))))
+      (list (shepherd-service
+             (provision '(guix-publish))
+             (requirement `(user-processes
+                            guix-daemon
+                            ,@(if advertise? '(avahi-daemon) '())))
 
-                     ;; Make sure we run in a UTF-8 locale so we can produce
-                     ;; nars for packages that contain UTF-8 file names such
-                     ;; as 'nss-certs'.  See <https://bugs.gnu.org/26948>.
-                     #:environment-variables
-                     (list (string-append "GUIX_LOCPATH="
-                                          #$glibc-utf8-locales "/lib/locale")
-                           "LC_ALL=en_US.utf8")
-                     #:log-file "/var/log/guix-publish.log"))
-           (stop #~(make-kill-destructor))))))
+             ;; Use lazy socket activation unless ADVERTISE? is true: in that
+             ;; case the process should start right away to advertise itself.
+             (start #~(if (and (defined? 'make-systemd-constructor) ;> 0.9.0?
+                               #$(not advertise?))
+                          (make-systemd-constructor
+                           #$command #$endpoints #$@options)
+                          (make-forkexec-constructor #$command #$@options)))
+             (stop #~(if (and (defined? 'make-systemd-destructor)
+                              #$(not advertise?))
+                         (make-systemd-destructor)
+                         (make-kill-destructor))))))))
 
 (define %guix-publish-accounts
   (list (user-group (name "guix-publish") (system? #t))

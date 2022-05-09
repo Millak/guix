@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017, 2018, 2019, 2020, 2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2017, 2018, 2019, 2020, 2021, 2022 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2017, 2018 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
@@ -167,14 +167,14 @@ parsers to allow execution with Guile as extension languages.")))
 (define-public mes
   (package
     (name "mes")
-    (version "0.23")
+    (version "0.24")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/mes/"
                                   "mes-" version ".tar.gz"))
               (sha256
                (base32
-                "0mnryfkl0dwbr5gxp16j5s95gw7z1vm1fqa1pxabp0aiar1hw53s"))))
+                "00lrpm4x5qg0l840zhbf9mr67mqhp8gljcl24j5dy0y109gf32w2"))))
     (supported-systems '("armhf-linux" "i686-linux" "x86_64-linux"))
     (propagated-inputs (list mescc-tools nyacc-1.00.2))
     (native-inputs
@@ -190,6 +190,7 @@ parsers to allow execution with Guile as extension languages.")))
             (else
              '())))
        (list graphviz help2man
+             m2-planet
              perl                               ;build-aux/gitlog-to-changelog
              texinfo)))
     (build-system gnu-build-system)
@@ -219,7 +220,7 @@ Guile.")
 (define-public mescc-tools
   (package
     (name "mescc-tools")
-    (version "1.2.0")
+    (version "1.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -229,11 +230,11 @@ Guile.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1xkn5sspfxldy4wm8fq8gd8kwn46578zhfl12c16pq74x21zb198"))))
+                "0z2ni2qn2np1walcaqlxz8sinzb78d4hiq9glddzf26wxc226hs4"))))
     (build-system gnu-build-system)
     (supported-systems '("i686-linux" "x86_64-linux"
                          "armhf-linux" "aarch64-linux"
-                         "powerpc64le-linux"))
+                         "riscv32-linux" "riscv64-linux"))
     (arguments
      `(#:make-flags (list (string-append "PREFIX=" (assoc-ref %outputs "out")))
        #:test-target "test"
@@ -252,7 +253,7 @@ get_machine.")
 (define-public m2-planet
   (package
     (name "m2-planet")
-    (version "1.8.0")
+    (version "1.9.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -262,7 +263,7 @@ get_machine.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0525fhijrjljgaabmgsjy8yk2pmh5zf8lwa44wpvkjc18knl7nza"))))
+                "0cgvvq91cbxxm93k8ayyvhpaf3c2lv10qw4wyqwn3hc1qb1cfyvr"))))
     (native-inputs (list mescc-tools))
     (build-system gnu-build-system)
     (arguments

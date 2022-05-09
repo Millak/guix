@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016, 2018, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 John Darrington <jmd@gnu.org>
@@ -43,6 +43,7 @@
   #:use-module (gnu services dbus)
   #:use-module (gnu system shadow)
   #:use-module (gnu system pam)
+  #:use-module ((gnu system file-systems) #:select (file-system-mapping))
   #:use-module (gnu packages admin)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
@@ -59,6 +60,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages ipfs)
   #:use-module (gnu build linux-container)
+  #:autoload   (guix least-authority) (least-authority-wrapper)
   #:use-module (guix gexp)
   #:use-module (guix records)
   #:use-module (guix modules)
@@ -794,7 +796,19 @@ CONFIG, an <opendht-configuration> object."
   (match-record config <opendht-configuration>
     (opendht bootstrap-host enable-logging? port debug? peer-discovery?
              proxy-server-port proxy-server-port-tls)
-    (let ((dhtnode #~(string-append #$opendht:tools "/bin/dhtnode")))
+    (let ((dhtnode (least-authority-wrapper
+                    ;; XXX: Work around lack of support for multiple outputs
+                    ;; in 'file-append'.
+                    (computed-file "dhtnode"
+                                   #~(symlink
+                                      (string-append #$opendht:tools
+                                                     "/bin/dhtnode")
+                                      #$output))
+                    #:name "dhtnode"
+                    #:mappings (list (file-system-mapping
+                                      (source "/dev/log") ;for syslog
+                                      (target source)))
+                    #:namespaces (delq 'net %namespaces))))
       `(,dhtnode
         "--service"                     ;non-forking mode
         ,@(if (string? bootstrap-host)
@@ -820,23 +834,15 @@ CONFIG, an <opendht-configuration> object."
 
 (define (opendht-shepherd-service config)
   "Return a <shepherd-service> running OpenDHT."
-  (with-imported-modules (source-module-closure
-                          '((gnu build shepherd)
-                            (gnu system file-systems)))
-    (shepherd-service
-     (documentation "Run an OpenDHT node.")
-     (provision '(opendht dhtnode dhtproxy))
-     (requirement '(networking syslogd))
-     (modules '((gnu build shepherd)
-                (gnu system file-systems)))
-     (start #~(make-forkexec-constructor/container
-               (list #$@(opendht-configuration->command-line-arguments config))
-               #:mappings (list (file-system-mapping
-                                 (source "/dev/log") ;for syslog
-                                 (target source)))
-               #:user "opendht"
-               #:group "opendht"))
-     (stop #~(make-kill-destructor)))))
+  (shepherd-service
+   (documentation "Run an OpenDHT node.")
+   (provision '(opendht dhtnode dhtproxy))
+   (requirement '(networking syslogd))
+   (start #~(make-forkexec-constructor
+             (list #$@(opendht-configuration->command-line-arguments config))
+             #:user "opendht"
+             #:group "opendht"))
+   (stop #~(make-kill-destructor))))
 
 (define opendht-service-type
   (service-type
@@ -2018,13 +2024,20 @@ See @command{yggdrasil -genconf} for config options.")
          (system? #t))))
 
 (define (ipfs-binary config)
-  (file-append (ipfs-configuration-package config) "/bin/ipfs"))
+  (define command
+    (file-append (ipfs-configuration-package config) "/bin/ipfs"))
+
+  (least-authority-wrapper
+   command
+   #:name "ipfs"
+   #:mappings (list %ipfs-home-mapping)
+   #:namespaces (delq 'net %namespaces)))
 
 (define %ipfs-home-mapping
-  #~(file-system-mapping
-     (source #$%ipfs-home)
-     (target #$%ipfs-home)
-     (writable? #t)))
+  (file-system-mapping
+   (source %ipfs-home)
+   (target %ipfs-home)
+   (writable? #t)))
 
 (define %ipfs-environment
   #~(list #$(string-append "HOME=" %ipfs-home)))
@@ -2033,82 +2046,66 @@ See @command{yggdrasil -genconf} for config options.")
   "Return a <shepherd-service> for IPFS with CONFIG."
   (define ipfs-daemon-command
     #~(list #$(ipfs-binary config) "daemon"))
-  (list
-   (with-imported-modules (source-module-closure
-                           '((gnu build shepherd)
-                             (gnu system file-systems)))
-     (shepherd-service
-      (provision '(ipfs))
-      ;; While IPFS is most useful when the machine is connected
-      ;; to the network, only loopback is required for starting
-      ;; the service.
-      (requirement '(loopback))
-      (documentation "Connect to the IPFS network")
-      (modules '((gnu build shepherd)
-                 (gnu system file-systems)))
-      (start #~(make-forkexec-constructor/container
-                #$ipfs-daemon-command
-                #:namespaces '#$(fold delq %namespaces '(user net))
-                #:mappings (list #$%ipfs-home-mapping)
-                #:log-file "/var/log/ipfs.log"
-                #:user "ipfs"
-                #:group "ipfs"
-                #:environment-variables #$%ipfs-environment))
-      (stop #~(make-kill-destructor))))))
+
+  (list (shepherd-service
+         (provision '(ipfs))
+         ;; While IPFS is most useful when the machine is connected
+         ;; to the network, only loopback is required for starting
+         ;; the service.
+         (requirement '(loopback))
+         (documentation "Connect to the IPFS network")
+         (start #~(make-forkexec-constructor
+                   #$ipfs-daemon-command
+                   #:log-file "/var/log/ipfs.log"
+                   #:user "ipfs" #:group "ipfs"
+                   #:environment-variables #$%ipfs-environment))
+         (stop #~(make-kill-destructor)))))
 
 (define (%ipfs-activation config)
   "Return an activation gexp for IPFS with CONFIG"
-  (define (ipfs-config-command setting value)
-    #~(#$(ipfs-binary config) "config" #$setting #$value))
-  (define (set-config!-gexp setting value)
-    #~(system* #$@(ipfs-config-command setting value)))
+  (define (exec-command . args)
+    ;; Exec the given ifps command with the right authority.
+    #~(let ((pid (primitive-fork)))
+        (if (zero? pid)
+            (dynamic-wind
+              (const #t)
+              (lambda ()
+                ;; Run ipfs init and ipfs config from a container,
+                ;; in case the IPFS daemon was compromised at some point
+                ;; and ~/.ipfs is now a symlink to somewhere outside
+                ;; %ipfs-home.
+                (let ((pw (getpwnam "ipfs")))
+                  (setgroups '#())
+                  (setgid (passwd:gid pw))
+                  (setuid (passwd:uid pw))
+                  (environ #$%ipfs-environment)
+                  (execl #$(ipfs-binary config) #$@args)))
+              (lambda ()
+                (primitive-exit 127)))
+            (waitpid pid))))
+
   (define settings
     `(("Addresses.API" ,(ipfs-configuration-api config))
       ("Addresses.Gateway" ,(ipfs-configuration-gateway config))))
+
   (define inner-gexp
     #~(begin
         (umask #o077)
         ;; Create $HOME/.ipfs structure
-        (system* #$(ipfs-binary config) "init")
+        #$(exec-command "ipfs" "init")
         ;; Apply settings
-        #$@(map (cute apply set-config!-gexp <>) settings)))
+        #$@(map (match-lambda
+                  ((setting value)
+                   (exec-command "ipfs" "config" setting value)))
+                settings)))
+
   (define inner-script
     (program-file "ipfs-activation-inner" inner-gexp))
 
-  (define shepherd&co
-    ;; 'make-forkexec-constructor/container' needs version 0.9 for
-    ;; #:supplementary-groups.
-    (cons shepherd-0.9
-          (list (lookup-package-input shepherd-0.9 "guile-fibers"))))
-
-  ;; Run ipfs init and ipfs config from a container,
-  ;; in case the IPFS daemon was compromised at some point
-  ;; and ~/.ipfs is now a symlink to somewhere outside
-  ;; %ipfs-home.
-  (define container-gexp
-    (with-extensions shepherd&co
-      (with-imported-modules (source-module-closure
-                              '((gnu build shepherd)
-                                (gnu system file-systems)))
-        #~(begin
-            (use-modules (gnu build shepherd)
-                         (gnu system file-systems))
-            (let* ((constructor
-                    (make-forkexec-constructor/container
-                     (list #$inner-script)
-                     #:namespaces '#$(fold delq %namespaces '(user))
-                     #:mappings (list #$%ipfs-home-mapping)
-                     #:user "ipfs"
-                     #:group "ipfs"
-                     #:environment-variables #$%ipfs-environment))
-                   (pid (constructor)))
-              (waitpid pid))))))
   ;; The activation may happen from the initrd, which uses
   ;; a statically-linked guile, while the guix container
   ;; procedures require a working dynamic-link.
-  (define container-script
-    (program-file "ipfs-activation-container" container-gexp))
-  #~(system* #$container-script))
+  #~(system* #$inner-script))
 
 (define ipfs-service-type
   (service-type

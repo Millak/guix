@@ -1606,6 +1606,24 @@ importing.* \\(guix config\\) from the host"
                    (not (member (derivation-file-name native) refs))
                    (member (derivation-file-name cross) refs))))))
 
+(test-assertm "references-file"
+  (let* ((exp      #~(symlink #$%bootstrap-guile #$output))
+         (computed (computed-file "computed" exp
+                                  #:guile %bootstrap-guile))
+         (refs     (references-file computed "refs"
+                                    #:guile %bootstrap-guile)))
+    (mlet* %store-monad ((drv0 (lower-object %bootstrap-guile))
+                         (drv1 (lower-object computed))
+                         (drv2 (lower-object refs)))
+      (mbegin %store-monad
+        (built-derivations (list drv2))
+        (mlet %store-monad ((refs ((store-lift requisites)
+                                   (list (derivation->output-path drv1)))))
+          (return (lset= string=?
+                         (call-with-input-file (derivation->output-path drv2)
+                           read)
+                         refs)))))))
+
 (test-assert "lower-object & gexp-input-error?"
   (guard (c ((gexp-input-error? c)
              (gexp-error-invalid-input c)))

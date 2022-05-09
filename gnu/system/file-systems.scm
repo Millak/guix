@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Google LLC
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -272,7 +272,8 @@ flags are found."
   ;; Note: If we have (guix store database) in the search path and we do *not*
   ;; have (guix store) proper, 'resolve-module' returns an empty (guix store)
   ;; with one sub-module.
-  (cond ((and=> (resolve-module '(guix store) #:ensure #f)
+  (cond ((and=> (parameterize ((current-warning-port (%make-void-port "w0")))
+                  (resolve-module '(guix store) #:ensure #f))
                 (lambda (store)
                   (module-variable store '%store-prefix)))
          =>

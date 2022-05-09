@@ -20,7 +20,7 @@
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
-;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Jacob Hrbek <kreyren@rixotstudio.cz>
 ;;; Copyright © 2021 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
@@ -29075,7 +29075,7 @@ data efficiently.")
 (define-public rust-instant-0.1
   (package
     (name "rust-instant")
-    (version "0.1.4")
+    (version "0.1.9")
     (source
      (origin
        (method url-fetch)
@@ -29084,7 +29084,7 @@ data efficiently.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "10k1170waz1na056wvjvkps3lz28z9pc8kp8vpy4kpp53i5a4xvp"))))
+         "1v659qqm55misvjijfbl1p7azjp4yynjbwldan8836ynpgp4w4k1"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; Issue during the wasm test.
@@ -32386,7 +32386,7 @@ by inspecting the system for user preference.")
 (define-public rust-lock-api-0.4
   (package
     (name "rust-lock-api")
-    (version "0.4.1")
+    (version "0.4.5")
     (source
      (origin
        (method url-fetch)
@@ -32394,7 +32394,7 @@ by inspecting the system for user preference.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0716z2rs0kydmd1818kqp4641dfkqzr0rpbnrpxhabxylp2pq918"))))
+         "028izfyraynijd9h9x5miv1vmg6sjnw1v95wgm7f4xlr7h4lsaki"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -40046,6 +40046,30 @@ normally prevent moving a type that has been borrowed from.")
       "This package provides a library for padding strings at runtime.")
     (license license:expat)))
 
+(define-public rust-page-size-0.4
+  (package
+    (name "rust-page-size")
+    (version "0.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "page_size" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1kgdv7f626jy4i2pq8czp4ppady4g4kqfa5ik4dah7mzzd4fbggf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-spin" ,rust-spin-0.5)
+        ("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://github.com/Elzair/page_size_rs")
+    (synopsis "Retrieve the memory page size")
+    (description
+     "This package provides an easy, fast, cross-platform way to retrieve the
+memory page size.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-pager-0.15
   (package
     (name "rust-pager")
@@ -40481,14 +40505,14 @@ unparking.")
 (define-public rust-parking-lot-0.11
   (package
     (name "rust-parking-lot")
-    (version "0.11.1")
+    (version "0.11.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "parking_lot" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1sqmgaia8zfd5fbnqw2w13ijh7crk3lf9vw4cb52vwlx0an48xvd"))))
+        (base32 "16gzf41bxmm10x82bla8d6wfppy9ym3fxsmdjyvn61m66s0bf5vx"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
@@ -40613,7 +40637,7 @@ synchronization primitives.")
 (define-public rust-parking-lot-core-0.8
   (package
     (name "rust-parking-lot-core")
-    (version "0.8.0")
+    (version "0.8.4")
     (source
      (origin
        (method url-fetch)
@@ -40621,7 +40645,7 @@ synchronization primitives.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "16yazfg3sq9mz6cfdkhgbv8yvc1kkasyhys4y7r3g16hgmralqf3"))))
+         "08n7w09q6b2prvazbzgwrc9ml7aaf8yg3132ifsayrkwy1nwwzs6"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs

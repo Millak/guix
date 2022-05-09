@@ -37,6 +37,7 @@
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-crypto)
+  #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages rdf)
@@ -515,6 +516,66 @@ Docker registry.")
     (description "This module installs a Jupyter kernel for SPARQL.  It allows
 sending queries to an SPARQL endpoint and fetching & presenting the results in
 a notebook.")
+    (license license:bsd-3)))
+
+(define-public python-ipympl
+  (package
+    (name "python-ipympl")
+    (version "0.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ipympl" version))
+       (sha256
+        (base32 "11rppjdqzgs4pfiq8gww5xkpbk21fp86vvv839v56b9rqq06j2b4"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-ipython
+           python-ipython-genutils
+           python-ipywidgets
+           python-matplotlib
+           python-numpy
+           python-pillow
+           python-traitlets))
+    (native-inputs
+     (list python-jupyter-packaging))
+    (home-page "https://matplotlib.org/ipympl/")
+    (synopsis "Matplotlib Jupyter Extension")
+    (description "Leveraging the Jupyter interactive widgets framework, ipympl
+enables the interactive features of matplotlib in the Jupyter notebook and in
+JupyterLab.")
+    (license license:bsd-3)))
+
+(define-public python-ipydatawidgets
+  (package
+    (name "python-ipydatawidgets")
+    (version "4.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ipydatawidgets" version))
+       (sha256
+        (base32 "1g65nzlsb1cipmvh9v27b22kkmzwvg8zbf32hmg1c25mb65vbr6h"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-v")))))))
+    (propagated-inputs
+     (list python-ipywidgets python-numpy python-six python-traittypes))
+    (native-inputs
+     (list python-jupyter-packaging
+           python-nbval
+           python-pytest
+           python-pytest-cov))
+    (home-page "https://github.com/vidartf/ipydatawidgets")
+    (synopsis "Widgets to help facilitate reuse of large datasets across widgets")
+    (description
+     "This package provides a set of widgets to help facilitate reuse of large
+datasets across widgets.")
     (license license:bsd-3)))
 
 (define-public python-voila

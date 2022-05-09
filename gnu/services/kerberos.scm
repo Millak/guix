@@ -410,8 +410,10 @@ machine does not have a keytab.")
   (service-type (name 'krb5)
                 (extensions
                  (list (service-extension etc-service-type
-                                          krb5-etc-service)))))
-
+                                          krb5-etc-service)))
+                (description "Programs using a Kerberos client library
+normally expect a configuration file in @file{/etc/krb5.conf}.  This service
+generates such a file.  It does not cause any daemon to be started.")))
 
 
 
@@ -455,4 +457,8 @@ machine does not have a keytab.")
                 (extensions
                  (list
                   (service-extension pam-root-service-type
-                                     pam-krb5-pam-services)))))
+                                     pam-krb5-pam-services)))
+                (description "The @code{pam-krb5} service allows for login
+authentication and password management via Kerberos.  You will need this
+service if you want PAM-enabled applications to authenticate users using
+Kerberos.")))

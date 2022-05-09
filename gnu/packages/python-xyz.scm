@@ -108,7 +108,7 @@
 ;;; Copyright © 2021 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2021 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
 ;;; Copyright © 2021 Pradana Aumars <paumars@courrier.dev>
-;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2021, 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Sébastien Lerique <sl@eauchat.org>
 ;;; Copyright © 2021 Raphaël Mélotte <raphael.melotte@mind.be>
 ;;; Copyright © 2021 ZmnSCPxj <ZmnSCPxj@protonmail.com>
@@ -120,6 +120,7 @@
 ;;; Copyright © 2022 drozdov <drozdov@portalenergy.tech>
 ;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
 ;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
+;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3510,6 +3511,18 @@ with sensible defaults out of the box.")
         (base32 "0njsm0wn31l21bi118g5825ma5sa3rwn7v2x4wjd7yiiahkri337"))))
     (arguments `())))
 
+(define-public python-click-8
+  (package (inherit python-click)
+    (name "python-click")
+    (version "8.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "click" version))
+       (sha256
+        (base32 "0whs38a2i0561kwbgigs6vic9r0a1887m2v1aw3rmv6r2kz0g5s7"))))
+    (arguments `())))
+
 (define-public python-cligj
   (package
     (name "python-cligj")
@@ -5680,7 +5693,7 @@ writing C extensions for Python as easy as Python itself.")
 (define-public python-numpy-next
   (package
     (name "python-numpy-next")
-    (version "1.21.3")
+    (version "1.22.3")
     (source
      (origin
        (method url-fetch)
@@ -5689,12 +5702,12 @@ writing C extensions for Python as easy as Python itself.")
              version "/numpy-" version ".tar.gz"))
        (sha256
         (base32
-         "0s6hy8828yr7fcjiwnym4l8lrknr21gqfkaiawsf86n0hd0a5fyh"))))
+         "19dw91pqbqcniw2z57kiyqs1qp56g7kqy1bdyv664g8s62sc01m9"))))
     (build-system python-build-system)
     (inputs
      (list openblas))
     (native-inputs
-     (list python-cython python-hypothesis python-pytest
+     (list python-cython python-hypothesis-6.23 python-pytest
            python-pytest-xdist gfortran))
     (arguments
      `(#:phases
@@ -5786,6 +5799,12 @@ capabilities.")
               (sha256
                (base32
                 "140zq9snx0di4id4g97vaw9zz8x2rfla5lp3a70j666f5030yd5p"))))
+    ;; python-numpy-next replaced python-hypothesis with
+    ;; python-hypothesis-6.23. We switch it back here, to prevent
+    ;; python-numpy-1.20 and its numerous dependents from being rebuilt.
+    (native-inputs
+     (list python-cython python-hypothesis python-pytest
+           python-pytest-xdist gfortran))
     ;; 92 tests fail, many of them because parts of the temp file name
     ;; accidentally ends up in a comparison.
     (arguments
@@ -8730,21 +8749,19 @@ connect strings, then issue SQL commands within IPython or IPython Notebook.")
 (define-public python-traitlets
   (package
     (name "python-traitlets")
-    (version "4.3.3")
+    (version "5.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "traitlets" version))
        (sha256
         (base32
-         "1xsrwgivpkxlbr4dfndfsi098s29yqgswgjc1qqn69yxklvfw8yh"))))
+         "1ivhxglsrnhqw4g98ihddn7i5f6976gpk31fijwq473wb9n4b7q5"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (replace 'check (lambda _ (invoke "pytest" "-vv" "traitlets"))))))
-    (propagated-inputs
-     (list python-ipython-genutils python-decorator python-six))
     (native-inputs
      (list python-pytest))
     (home-page "https://ipython.org")
@@ -8942,21 +8959,21 @@ installing @code{kernelspec}s for use with Jupyter frontends.")
 (define-public python-pari-jupyter
   (package
     (name "python-pari-jupyter")
-    (version "1.4.0")
+    (version "1.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pari-jupyter" version))
        (sha256
         (base32
-         "1hwjr66vfjsx28qmxrgsp3z0px1xqwxv53byvsrbwbjp4pbp79sz"))))
+         "1ikqvv335qfrhmlji0iclci6pnm2c3fvnxf031jr1d68j79g6ypd"))))
     (build-system python-build-system)
     (arguments '(#:tests? #f))          ;no test suite
     (propagated-inputs
      (list python-ipykernel))
     (inputs
      (list pari-gp readline))
-    (home-page "https://github.com/jdemeyer/pari-jupyter")
+    (home-page "https://github.com/sagemath/pari-jupyter")
     (synopsis "Jupyter kernel for PARI/GP")
     (description "The package provides a PARI/GP kernel for Jupyter.")
     (license license:gpl3+)))
@@ -8996,6 +9013,7 @@ callback signature using a prototype function.")
     (build-system python-build-system)
     (propagated-inputs
      (list python-backcall
+           python-decorator
            python-pyzmq
            python-prompt-toolkit-2
            python-terminado
@@ -11733,32 +11751,6 @@ Unicode-aware.  It is not intended as an end-user tool.")
 
 (define-public python2-xlrd
   (package-with-python2 python-xlrd))
-
-;; We need this for python-anndata
-(define-public python-xlrd-1
-  (package
-    (inherit python-xlrd)
-    (name "python-xlrd")
-    (version "1.2.0")
-    (source (origin
-              ;; The tests are not included in the PyPI archive.
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/python-excel/xlrd")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0sm5p0ii5ayh52ak1jpw0n1kgsv72vdwwp8c3z13l8yf4irsb587"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; Some tests depend on writing a temporary file to the user's home
-         ;; directory.
-         (add-after 'unpack 'fix-tests
-           (lambda _
-             (setenv "HOME" "/tmp"))))))))
 
 ;;; Note: this package is unmaintained since 2018 (archived on GitHub).
 (define-public python-xlwt
@@ -17229,6 +17221,33 @@ characters, mouse support, and auto suggestions.")
     (license license:bsd-3)
     (properties `((python2-variant . ,(delay python-prompt-toolkit-2))))))
 
+(define-public python-proselint
+  (package
+    (name "python-proselint")
+    (version "0.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "proselint" version))
+       (sha256
+        (base32
+         "0n1ahnq2mkgvh94g05xhc3l1fs3hh0ycskqlqivhhfdaq8ybdlkx"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'set-home-directory
+           (lambda _
+             (setenv "HOME" "/tmp"))))))
+    (propagated-inputs
+     (list python-click-8 python-future python-six))
+    (home-page "https://github.com/amperser/proselint")
+    (synopsis "Linter for prose")
+    (description "@code{python-proselint} is a linter for English prose, that
+scans through a file and detects issues.")
+    (license license:bsd-3)))
+
 (define-public python-prompt-toolkit-2
   (package (inherit python-prompt-toolkit)
     (name "python-prompt-toolkit")
@@ -19408,6 +19427,26 @@ multitouch applications.")
     (synopsis "MediaWiki API client")
     (description "This package provides a MediaWiki API client.")
     (license license:expat)))
+
+(define-public python-kneed
+  (package
+    (name "python-kneed")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "kneed" version))
+       (sha256
+        (base32 "0vkwi0pr7nfkp3c46hnmx0275yx68v96v10rmspv0wis33x6f39l"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-matplotlib python-numpy python-scipy))
+    (home-page "https://github.com/arvkevi/kneed")
+    (synopsis "Knee-point detection in Python")
+    (description "This package implements the kneedle algorithm.  Given a set
+of x and y values, kneed will return the knee point of the function.  The knee
+point is the point of maximum curvature.")
+    (license license:bsd-3)))
 
 (define-public python-utils
   (package
@@ -23143,7 +23182,6 @@ N-dimensional arrays for Python.")
            python-packaging
            python-pandas
            python-scipy
-           python-xlrd-1
            python-zarr))
     (native-inputs
      (list python-joblib python-pytest python-toml python-flit
@@ -23292,22 +23330,6 @@ functions, and dictionaries.")
 main differences are that @code{cytoolz} is faster and cytoolz offers a C API
 that is accessible to other projects developed in Cython.")
     (license license:bsd-3)))
-
-;; python-cooler doesn't work with 0.11 yet
-(define-public python-cytoolz-for-cooler
-  (package
-    (inherit python-cytoolz)
-    (version "0.10.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "cytoolz" version))
-       (sha256
-        (base32
-         "0p4a9nadsy1337gy2cnb5yanbn03j3zm6d9adyqad9bk3nlbpxc2"))
-       (modules '((guix build utils)))
-       (snippet
-        '(for-each delete-file (find-files "cytoolz" "\\.c$")))))))
 
 (define-public python-sortedcollections
   (package
@@ -24473,6 +24495,59 @@ Stamen, and supports custom tilesets with Mapbox or Cloudmade API keys.  It
 supports Image, Video, GeoJSON and TopoJSON overlays.")
     (license license:expat)))
 
+(define-public python-mercantile
+  (package
+    (name "python-mercantile")
+    (version "1.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "mercantile" version))
+       (sha256
+        (base32 "0sxmndhzzrvss5irsgzfrk51k6jihwcb7661992mizdgbnqnsg7s"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-click))
+    (native-inputs
+     (list python-check-manifest python-hypothesis python-pytest))
+    (home-page "https://github.com/mapbox/mercantile")
+    (synopsis "Web mercator XYZ tile utilities")
+    (description "The mercantile module provides @code{ul(xtile, ytile, zoom)}
+and @code{bounds(xtile, ytile, zoom)} functions that respectively return the
+upper left corner and bounding longitudes and latitudes for XYZ tiles, a
+@code{xy(lng, lat)} function that returns spherical mercator x and y
+coordinates, a @code{tile(lng, lat, zoom)} function that returns the tile
+containing a given point, and quadkey conversion functions
+@code{quadkey(xtile, ytile, zoom)} and @code{quadkey_to_tile(quadkey)} for
+translating between quadkey and tile coordinates.")
+    (license license:bsd-3)))
+
+(define-public python-xyzservices
+  (package
+    (name "python-xyzservices")
+    (version "2022.4.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "xyzservices" version))
+        (sha256
+          (base32 "1paxv4i0dws85md7csv7pf80jl3xh792mx8rxnsrk61ks3ivbsyg"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-vv")))))))
+    (native-inputs
+     (list python-pytest python-mercantile python-requests))
+    (home-page "https://github.com/geopandas/xyzservices")
+    (synopsis "Source of XYZ tiles providers")
+    (description "@code{xyzservices} is a lightweight library providing a
+repository of available XYZ services offering raster basemap tiles.  The
+repository is provided via Python API and as a compressed JSON file.")
+    (license license:bsd-3)))
+
 (define-public jube
   (package
     ;; This is a command-line tool, so no "python-" prefix.
@@ -24825,25 +24900,18 @@ standard error channel (stderr) in your program.")
 (define-public python-anyio
   (package
     (name "python-anyio")
-    (version "3.3.0")
+    (version "3.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "anyio" version))
        (sha256
         (base32
-         "0x03hsprdrs86wjjkj96zm2jswy3a5bgyrknyi58pzz5hdsscmxf"))))
+         "19m58805wir4i2s45dd5ynwlzb7ky1218isbir53gpqzzgigzbm0"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'fix-compatibility
-           (lambda _
-             (substitute* "tests/test_taskgroups.py"
-               (("import pytest")
-                "import pytest\nimport _pytest\nfrom _pytest import logging")
-               (("pytest.LogCaptureFixture")
-                "_pytest.logging.LogCaptureFixture"))))
          (replace 'check
            (lambda* (#:key inputs outputs tests? #:allow-other-keys)
              (when tests?
@@ -24880,18 +24948,24 @@ standard error channel (stderr) in your program.")
                         " and not test_send_eof"
                         " and not test_send_large_buffer"
                         " and not test_send_receive"
-                        " and not test_socket_options"))))))))
+                        " and not test_socket_options"
+                        " and not test_unretrieved_future_exception_server_crash"))))))))
     (propagated-inputs
-     (list python-idna python-sniffio python-typing-extensions))
+     (list python-contextvars
+           python-dataclasses
+           python-idna
+           python-sniffio
+           python-typing-extensions))
     (native-inputs
-     (list python-coverage
+     (list python-contextlib2
+           python-coverage
            python-hypothesis
-           python-iniconfig
            python-mock
            python-pytest-6
            python-pytest-mock
            python-pytest-trio
            python-setuptools-scm
+           python-trio
            python-trustme
            python-uvloop))
     (home-page "https://github.com/agronholm/anyio")
@@ -29482,7 +29556,11 @@ writing STL files.  It supports both the text and binary forms of STL.")
                     (lambda _
                       (substitute* "setup.py"
                         (("test_suite = 'multipart.tests.suite'")
-                         "test_suite = 'multipart.tests.test_multipart.suite'")))))))
+                         "test_suite = 'multipart.tests.test_multipart.suite'"))
+                      ;; Needed by PyYAML 6.0.
+                      (substitute* "multipart/tests/test_multipart.py"
+                        (("yaml_data = yaml.load\\(f\\)")
+                         "yaml_data = yaml.load(f, Loader=yaml.SafeLoader)")))))))
     (home-page "https://github.com/andrew-d/python-multipart")
     (synopsis "Streaming multipart parser for Python")
     (description
@@ -29572,6 +29650,24 @@ adapted from the @code{packaging} package.")
 Python CLI apps.")
     (license license:asl2.0)))
 
+(define-public python-style
+  (package
+    (name "python-style")
+    (version "1.1.6")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "style" version))
+        (sha256
+          (base32 "1dcfb578v9mrwh92rgms87gql0gp4vgj6l9hpgyfg0wbd3rh3bfh"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/lmittmann/style")
+    (synopsis "Terminal string styling")
+    (description
+"@code{python-style} is a simple terminal string styling package.  Its API is
+a port of the chalk package for javascript.")
+    (license license:expat)))
+
 (define-public python-sre-yield
   (package
     (name "python-sre-yield")
@@ -29593,6 +29689,114 @@ match a given regular expression, or count possible matches efficiently. It
 uses the parsed regular expression, so you get a much more accurate result
 than trying to just split strings.")
     (license license:asl2.0)))
+
+(define-public python-pydispatcher
+  (package
+    (name "python-pydispatcher")
+    (version "2.0.5")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "PyDispatcher" version))
+        (sha256
+          (base32 "1bswbmhlbqdxlgbxlb6xrlm4k253sg8nvpl1whgsys8p3fg0cw2m"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+        (modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest")))))))
+    (native-inputs (list python-pytest))
+    (home-page "http://pydispatcher.sourceforge.net")
+    (synopsis "Multi-producer-multi-consumer signal dispatching mechanism")
+    (description "PyDispatcher is an enhanced version of Patrick K. O’Brien’s
+original @code{dispatcher.py} module.  It provides the Python programmer with
+a robust mechanism for event routing within various application contexts.
+
+Included in the package are the robustapply and saferef modules, which
+provide the ability to selectively apply arguments to callable objects
+and to reference instance methods using weak-references.")
+    (license license:bsd-3)))
+
+(define-public python-queuelib
+  (package
+    (name "python-queuelib")
+    (version "1.6.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "queuelib" version))
+        (sha256
+          (base32 "1lpwq8wx3025i14y5h0hbald2ypbarf081pql6cqcak4y9kp482b"))))
+    (build-system python-build-system)
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/scrapy/queuelib")
+    (synopsis
+      "Collection of persistent (disk-based) and non-persistent (memory-based) queues")
+    (description "Queuelib is a Python library that implements object
+collections which are stored in memory or persisted to disk, provide a
+simple API, and run fast.
+
+Queuelib provides collections for queues (FIFO), stacks (LIFO), queues
+sorted by priority and queues that are emptied in a round-robin
+fashion.")
+    (license license:bsd-3)))
+
+(define-public python-itemadapter
+  (package
+    (name "python-itemadapter")
+    (version "0.5.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "itemadapter" version))
+        (sha256
+          (base32 "083wp3h2brh8x19jbdr8rz3biqwp3jlqd0rfzcyrjyhssffsgdh5"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/scrapy/itemadapter")
+    (synopsis "Common interface for data container classes")
+    (description "The ItemAdapter class is a wrapper for data container
+objects, providing a common interface to handle objects of different
+types in an uniform manner, regardless of their underlying implementation.
+
+Currently supported types are:
+@itemize
+@item scrapy.item.Item
+@item dict
+@item dataclass-based classes
+@item attrs-based classes
+@item pydantic-based classes
+@end itemize
+
+Additionally, interaction with arbitrary types is supported by
+implementing a pre-defined interface.")
+    (license license:bsd-3)))
+
+(define-public python-itemloaders
+  (package
+    (name "python-itemloaders")
+    (version "1.0.4")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "itemloaders" version))
+        (sha256
+          (base32 "15hc78h90qhwass1bga1c3xar2dd6j8sxg61zg6jvh74lf6csxqj"))))
+    (build-system python-build-system)
+    (propagated-inputs
+      (list python-itemadapter python-jmespath python-parsel python-w3lib))
+    (home-page "https://github.com/scrapy/itemloaders")
+    (synopsis "Base library for scrapy's ItemLoader")
+    (description "Itemloaders is a library that helps you collect data
+from HTML and XML sources.  It comes in handy to extract data from web
+pages, as it supports data extraction using CSS and XPath Selectors.
+
+It’s specially useful when you need to standardize the data from many
+sources.  For example, it allows you to have all your casting and
+parsing rules in a single place.")
+    (license license:bsd-3)))
 
 (define-public python-hypy-utils
   (package
@@ -29633,3 +29837,96 @@ and setting the color of terminal output, via HyDEV.")
 versions of MkDocs-powered docs to a Git branch.  It is suitable for deploying
 to Github via gh-pages.")
     (license license:bsd-3)))
+
+(define-public python-arpeggio
+  (package
+    (name "python-arpeggio")
+    (version "2.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "Arpeggio" version))
+              (sha256
+               (base32
+                "0ggdsck1wpladd5bh9drhkmm86bblgk2wagrhn3sdf4v04wkic6n"))))
+    (build-system python-build-system)
+    (native-inputs (list python-coverage
+                         python-coveralls
+                         python-flake8
+                         python-mike
+                         python-mkdocs
+                         python-pytest
+                         python-pytest-runner
+                         python-twine
+                         python-wheel))
+    (home-page "https://github.com/textX/Arpeggio")
+    (synopsis "Packrat parser interpreter for Python")
+    (description
+     "This Python library provides a recursive descent parser with backtracking
+and memoization (a.k.a. packrat parser).  Arpeggio grammars are based on PEG
+formalism.  Arpeggio's main use is a foundation for a toolchain for DSL
+development but it can be used for all sorts of general purpose parsing.")
+    (license license:expat)))
+
+(define-public python-flatten-json
+  (package
+    (name "python-flatten-json")
+    (version "0.1.13")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "flatten_json" version))
+        (sha256
+          (base32 "007m28gfs7pmz2rqqjxpial6skzw26hrfi8vrdy9agi9x0rj6dgf"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-six))
+    (home-page "https://github.com/amirziai/flatten")
+    (synopsis "Flatten JSON objects")
+    (description
+     "The @code{flatten_json} Python library flattens the hierarchy in your
+object, which can be useful if you want to force your objects into a table.")
+    (license license:expat)))
+
+(define-public python-deepmerge
+  (package
+    (name "python-deepmerge")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "deepmerge" version))
+       (sha256
+        (base32 "06hagzg8ccmjzqvszdxb52jgx5il8a1jdz41n4dpkyyjsfg7fi2b"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)
+              ;; ZIP does not support timestamps before 1980.
+              (setenv "SOURCE_DATE_EPOCH" "315532800")))
+          (replace 'build
+            (lambda _
+              (invoke "python" "-m" "build" "--wheel"
+                      "--no-isolation" ".")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest"))))
+          (replace 'install
+            (lambda _
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl)))))))
+    (native-inputs
+     (list python-pypa-build
+           python-setuptools-scm
+           python-pytest
+           python-wheel))
+    (home-page "https://deepmerge.readthedocs.io/en/latest/")
+    (synopsis "Merge nested data structures")
+    (description
+     "The @code{deep-merge} Python library provides a toolset to deeply merge
+nested data structures in Python like lists and dictionaries.")
+    (license license:expat)))

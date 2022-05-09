@@ -21,6 +21,7 @@
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1129,7 +1130,7 @@ derived from Mozilla's collection.")
 (define-public s2n
   (package
     (name "s2n")
-    ; Update only when updating aws-crt-cpp.
+    ;; Update only when updating aws-crt-cpp.
     (version "1.3.10")
     (source (origin
               (method git-fetch)
@@ -1143,10 +1144,13 @@ derived from Mozilla's collection.")
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
-       '("-DBUILD_SHARED_LIBS=ON")))
-    (propagated-inputs
-     `(("openssl" ,openssl)
-       ("openssl:static" ,openssl "static")))
+       '("-DBUILD_SHARED_LIBS=ON"
+         ;; Remove in next update; see https://github.com/aws/s2n-tls/pull/3108
+         ;; Building with 'Werror' results in compilation error (even building
+         ;; with gcc) when replacing the aws-lc input with openssl.
+         "-DUNSAFE_TREAT_WARNINGS_AS_ERRORS=OFF")))
+    (propagated-inputs (list aws-lc))
+    (supported-systems '("x86_64-linux"))
     (synopsis "SSL/TLS implementation in C99")
     (description
      "This library provides a C99 implementation of SSL/TLS.  It is designed to
@@ -1192,7 +1196,7 @@ ciphers such as ChaCha20, Curve25519, NTRU, and Blake2b.")
 (define-public aws-lc
   (package
     (name "aws-lc")
-    ; Update only when updating aws-crt-cpp.
+    ;; Update only when updating aws-crt-cpp.
     (version "1.0.2")
     (source (origin
               (method git-fetch)
@@ -1202,10 +1206,10 @@ ciphers such as ChaCha20, Curve25519, NTRU, and Blake2b.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "14dhdddlph36nshdkh0v43718hxjx5vxqxmkw7707393q0qrgipw"))))
+                "16y4iy2rqrmb7b1c394wyq7a5vbjb41599524my6b6q1vk1pi307"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:tests? #f ; re-enable but with go and perl dependencies
+     '(#:test-target "run_minimal_tests"
        #:configure-flags
        '("-DBUILD_SHARED_LIBS=ON")))
     (synopsis "General purpose cryptographic library")

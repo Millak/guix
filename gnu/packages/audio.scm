@@ -110,6 +110,7 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages rdf)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages samba)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
@@ -4632,37 +4633,44 @@ representations.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1mziklmqifhnb4kg9ia2r56r8wjn6xp40bkpf484hsgqvnrccl86"))))
+                "1mziklmqifhnb4kg9ia2r56r8wjn6xp40bkpf484hsgqvnrccl86"))
+              (modules '((guix build utils)))
+              (snippet
+               #~(begin
+                   (delete-file-recursively "iniparser")
+                   (substitute* "configure.ac"
+                     (("AC_CONFIG_FILES\\(iniparser/Makefile\\)") ""))
+                   (substitute* "Makefile.am"
+                     (("SUBDIRS = iniparser") ""))))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list autoconf automake libtool))
-    (inputs
-     (list fftw ncurses pulseaudio))
+    (native-inputs (list autoconf automake libtool))
+    (inputs (list fftw ncurses pulseaudio iniparser))
     (arguments
-     `(#:configure-flags
-       (list (string-append "PREFIX=" %output)
-             (string-append "FONT_DIR=" %output "/share/consolefonts"))
-       #:make-flags
-       (let ((lib (string-append %output "/lib")))
-         (list (string-append "cava_LDFLAGS = -L" lib " -Wl,-rpath " lib)))
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'bootstrap
-           (lambda* (#:key outputs #:allow-other-keys)
-             (setenv "HOME" (getcwd))
-             (invoke "sh" "autogen.sh")))
-         (add-before 'build 'make-cava-ldflags
-           (lambda* (#:key outputs #:allow-other-keys)
-             (mkdir-p (string-append (assoc-ref outputs "out") "/lib"))
-             #t))
-         (add-after 'install 'data
-           (lambda* (#:key outputs #:allow-other-keys)
-             (for-each (lambda (file)
-                         (install-file file
-                                       (string-append (assoc-ref outputs "out")
-                                                      "/share/doc/examples")))
-                       (find-files "example_files"))
-             #t)))))
+     (list #:configure-flags
+           #~(list (string-append "PREFIX="
+                                  #$output)
+                   (string-append "FONT_DIR="
+                                  #$output "/share/consolefonts"))
+           #:make-flags
+           #~(let ((lib (string-append #$output "/lib")))
+               (list (string-append "cava_LDFLAGS = -L" lib " -Wl,-rpath " lib " -lrt")))
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'bootstrap
+                 (lambda _
+                   (setenv "HOME"
+                           (getcwd))
+                   (invoke "sh" "autogen.sh")))
+               (add-before 'build 'make-cava-ldflags
+                 (lambda _
+                   (mkdir-p (string-append #$output "/lib"))))
+               (add-after 'install 'data
+                 (lambda _
+                   (for-each (lambda (file)
+                               (install-file file
+                                             (string-append #$output
+                                              "/share/doc/examples")))
+                             (find-files "example_files")))))))
     (home-page "https://karlstav.github.io/cava/")
     (synopsis "Console audio visualizer for ALSA, MPD, and PulseAudio")
     (description "C.A.V.A. is a bar audio spectrum visualizer for the terminal
@@ -4990,50 +4998,47 @@ as is the case with audio plugins.")
         (base32 "01ngkmfcxyg1bb4qmfvlkkjbx4lx62akxqhizl8zmqnhfcy4p9bx"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no "check" target
-       #:make-flags
-       (list (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (add-before 'build 'set-CC-variable-and-show-features
-           (lambda _
-             (setenv "CC" "gcc")
-             (invoke "make" "features")))
-         (add-after 'install 'make-carla-executable
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (chmod (string-append out "/share/carla/carla") #o555)
-               #t)))
-         (add-after 'install 'wrap-executables
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (wrap-script (string-append out "/bin/carla")
-                            #:guile (search-input-file inputs "bin/guile")
-                            `("GUIX_PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH"))))
-               #t))))))
+     (list #:tests? #f                  ; no "check" target
+           #:make-flags
+           #~(list (string-append "PREFIX=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)      ; no configure script
+               (add-before 'build 'set-CC-variable-and-show-features
+                 (lambda _
+                   (setenv "CC" #$(cc-for-target))
+                   (invoke "make" "features")))
+               (add-after 'install 'make-carla-executable
+                 (lambda _
+                   (chmod (string-append #$output "/share/carla/carla") #o555)))
+               (add-after 'install 'wrap-executables
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (wrap-script (string-append #$output "/bin/carla")
+                                #:guile (search-input-file inputs "bin/guile")
+                                `("GUIX_PYTHONPATH" ":" prefix
+                                  (,(getenv "GUIX_PYTHONPATH")))))))))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("ffmpeg" ,ffmpeg)
-       ("fluidsynth" ,fluidsynth)
-       ("file" ,file)
-       ("liblo" ,liblo)
-       ("libsndfile" ,libsndfile)
-       ("gtk2" ,gtk+-2)   ;needed for bridging GTK2 plugins in GTK3 hosts
-       ("gtk+" ,gtk+)
-       ("python-pyliblo" ,python-pyliblo)
-       ("python-pyqt" ,python-pyqt)
-       ("python-rdflib" ,python-rdflib)
-       ;; python-pyqt shows the following error without python-wrapper:
-       ;; Error while finding module specification for 'PyQt5.uic.pyuic'
-       ;; (ModuleNotFoundError: No module named 'PyQt5')
-       ("python-wrapper" ,python-wrapper)
-       ("libx11" ,libx11)
-       ("qtbase" ,qtbase-5)
-       ("zlib" ,zlib)
+     (list alsa-lib
+           ffmpeg
+           fluidsynth
+           file
+           liblo
+           libsndfile
+           libx11
+           gtk+-2              ;needed for bridging GTK2 plugins in GTK3 hosts
+           gtk+
+           python-pyliblo
+           python-pyqt
+           python-rdflib
+           ;; python-pyqt shows the following error without python-wrapper:
+           ;; Error while finding module specification for 'PyQt5.uic.pyuic'
+           ;; (ModuleNotFoundError: No module named 'PyQt5')
+           python-wrapper
+           qtbase-5
+           zlib
 
-       ;; For WRAP-SCRIPT above.
-       ("guile" ,guile-2.2)))
+           ;; For WRAP-SCRIPT above.
+           guile-2.2))
     (native-inputs
      (list pkg-config))
     (home-page "https://kx.studio/Applications:Carla")
@@ -5444,55 +5449,54 @@ while still staying in time.")
 (define-public butt
   (package
     (name "butt")
-    (version "0.1.32")
+    (version "0.1.34")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/butt/butt/butt-"
                                   version "/butt-" version ".tar.gz"))
               (sha256
                (base32
-                "1qwllkx9p1gb3syhbbck3agrk375m82l18fb81aqygi4g3dg3s9r"))
+                "0zd1g1673pv8z437y34fllxska8dzpd7mygpham35pzwpdyc5c1p"))
               (modules '((guix build utils)))
               (snippet
                '(substitute* "src/butt.cpp"
                   ((".*zica.*") "")))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-documentation
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (manual (assoc-ref inputs "manual"))
-                    (doc (string-append out "/share/doc/" ,name "-" ,version)))
-               (install-file "README" doc)
-               (copy-file manual (string-append doc "/butt-manual.pdf"))))))))
-    (inputs
-     `(("dbus" ,dbus)
-       ("flac" ,flac)
-       ("fltk" ,fltk)
-       ("lame" ,lame)
-       ("libfdk" ,libfdk)
-       ("libsamplerate" ,libsamplerate)
-       ("libvorbis" ,libvorbis)
-       ("libx11" ,libx11)
-       ("libxext" ,libxext)
-       ("libxfixes" ,libxfixes)
-       ("libxft" ,libxft)
-       ("libxrender" ,libxrender)
-       ("ogg" ,libogg)
-       ("openssl" ,openssl)
-       ("opus" ,opus)
-       ("portaudio" ,portaudio)))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'install-documentation
+                 (lambda _
+                   (let ((doc (string-append #$output "/share/doc/" #$name)))
+                     (install-file "README" doc)
+                     (copy-file #$(this-package-native-input "manual")
+                                (string-append doc "/butt-manual.pdf"))))))))
     (native-inputs
      `(("pkg-config" ,pkg-config)
-       ("manual" ,(origin
-                    (method url-fetch)
-                    (uri (string-append "https://danielnoethen.de/butt/butt-"
-                                        version "_manual.pdf"))
-                    (sha256
-                     (base32
-                      "0g70jyyxbx5nin3xs9q9zf878b2kyy7rn8gn9w91x1ychbjd6dhh"))))))
+       ("manual"
+        ,(origin
+           (method url-fetch)
+           (uri (string-append "https://danielnoethen.de/butt/butt-"
+                               version "_manual.pdf"))
+           (sha256
+            (base32 "0kadqzzbk25n0aqxgbqhg4mq4hsbjq44phzcx5qj1b8847yzz8si"))))))
+    (inputs
+     (list dbus
+           flac
+           fltk
+           lame
+           libfdk
+           libsamplerate
+           libvorbis
+           libx11
+           libxext
+           libxfixes
+           libxft
+           libxrender
+           libogg
+           openssl
+           opus
+           portaudio))
     (home-page "https://danielnoethen.de/butt/")
     (synopsis "Audio streaming tool")
     (description "Butt is a tool to stream audio to a ShoutCast or

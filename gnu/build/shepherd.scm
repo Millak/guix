@@ -31,7 +31,8 @@
                                  exec-command
                                  %precious-signals)
   #:autoload (shepherd system) (unblock-signals)
-  #:export (make-forkexec-constructor/container
+  #:export (default-mounts
+            make-forkexec-constructor/container
             fork+exec-command/container))
 
 ;;; Commentary:

@@ -35,6 +35,7 @@
 ;;; Copyright © 2020 Aniket Patil <aniket112.patil@gmail.com>
 ;;; Copyright © 2021 Marcel Schilling <marcel.schilling@uni-luebeck.de>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2022 Navid Afkhami  <navid.afkhami@mdc-berlin.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -111,6 +112,30 @@
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
+
+(define-public r-afpt
+  (package
+    (name "r-afpt")
+    (version "1.1.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "afpt" version))
+              (sha256
+               (base32
+                "0cg5cdm9nl1hs6f3j0ljpw4bkqvh3ksyj615b9nnbqs5k28lyds9"))))
+    (properties `((upstream-name . "afpt")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/MarcoKlH/afpt-r/")
+    (synopsis "Tools for modelling of animal flight performance")
+    (description
+     "This package allows estimation and modelling of flight costs in animal
+(vertebrate) flight, implementing the aerodynamic power model.  Flight
+performance is estimated based on basic morphological measurements such as
+body mass, wingspan and wing area.  @code{Afpt} can be used to make
+predictions on how animals should adjust their flight behaviour and wingbeat
+kinematics to varying flight conditions.")
+    (license license:gpl3+)))
 
 (define-public r-aod
   (package
@@ -1124,6 +1149,28 @@ higher.")
 @acronym{OeNB, Oesterreichische Nationalbank},
 @url{https://www.oenb.at/en/Statistics/User-Defined-Tables/webservice.html}.")
     (license license:gpl2+)))
+
+(define-public r-orgmassspecr
+  (package
+    (name "r-orgmassspecr")
+    (version "0.5-3")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "OrgMassSpecR" version))
+              (sha256
+               (base32
+                "1dx9d8rb1dfqyhyc26zhfnxiv3rz2ikvs2mwqnsrq3lsjs9dvyc8"))))
+    (properties `((upstream-name . "OrgMassSpecR")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "http://OrgMassSpec.github.io/")
+    (synopsis "Organic or biological mass spectrometry data analysis")
+    (description
+     "This package @code{OrgMassSpecR} is an extension of the @code{R}
+statistical computing language.  It contains functions to assist with organic
+or biological mass spectrometry data analysis.  Mass spectral libraries are
+available as companion packages.")
+    (license license:bsd-2)))
 
 (define-public r-scales
   (package
@@ -6484,6 +6531,28 @@ unpacking, and destructuring assignment in R.  The operator unpacks the
 right-hand side of an assignment into multiple values and assigns these values
 to variables on the left-hand side of the assignment.")
     (license license:expat)))
+
+(define-public r-zlog
+  (package
+    (name "r-zlog")
+    (version "1.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "zlog" version))
+              (sha256
+               (base32
+                "1d5j31p0h3rrn230087h3ngpvwknlisjv0f1qdbicdj9m177spci"))))
+    (properties `((upstream-name . "zlog")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://cran.r-project.org/package=zlog")
+    (synopsis "Transformation for laboratory easurements")
+    (description
+     "The @code{zlog} package offers functions to transform laboratory
+measurements into standardised z or @math{z(log)-values}.  Therefore the lower
+and upper reference limits are needed.  If these are not known they could be
+estimated from a given sample.")
+    (license license:gpl3+)))
 
 (define-public r-vctrs
   (package

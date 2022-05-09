@@ -7,7 +7,7 @@
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
-;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016, 2017 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2016 Raymond Nicholson <rain1@openmailbox.org>
 ;;; Copyright © 2016 Mathieu Lirzin <mthl@gnu.org>
@@ -380,7 +380,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The "longterm" kernels — the older releases with long-term upstream support.
 ;; Here are the support timelines:
 ;; <https://www.kernel.org/category/releases.html>
-(define-public linux-libre-5.15-version "5.15.36")
+(define-public linux-libre-5.15-version "5.15.37")
 (define-public linux-libre-5.15-gnu-revision "gnu")
 (define deblob-scripts-5.15
   (linux-libre-deblob-scripts
@@ -390,7 +390,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1s2s1sjdhblaz80shq1jgp4kp9vi7j1bsh4vvsk28s5m6xwf6yvl")))
 (define-public linux-libre-5.15-pristine-source
   (let ((version linux-libre-5.15-version)
-        (hash (base32 "1466557034q1fzvpy8vwj8ps3cv2q8s7z76af9y1jz4kgaqmsd1n")))
+        (hash (base32 "09n0l9ly111r6jbpgz1kw2q4n4mmcv5jxfhs5bcsiyjp44d0kgqq")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.15)))
@@ -425,7 +425,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.4)))
 
-(define-public linux-libre-4.19-version "4.19.240")
+(define-public linux-libre-4.19-version "4.19.241")
 (define-public linux-libre-4.19-gnu-revision "gnu1")
 (define deblob-scripts-4.19
   (linux-libre-deblob-scripts
@@ -435,7 +435,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1mp9d0b7mqw7cl65k0a18265cvn4qwcpnvna8r6n5m3y4pz3rik9")))
 (define-public linux-libre-4.19-pristine-source
   (let ((version linux-libre-4.19-version)
-        (hash (base32 "1hj6vngynx6kjaczjl77jjwqq0kh0lm6jdqjvakd1cgrppaizb3j")))
+        (hash (base32 "04zyi22c2d91k7v2w0s8v112cqqf24km599mn18k2nafq79njqjc")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.19)))
@@ -6586,7 +6586,7 @@ the default @code{nsswitch} and the experimental @code{umich_ldap}.")
 (define-public mcelog
   (package
     (name "mcelog")
-    (version "180")
+    (version "181")
     (source
      (origin
        (method git-fetch)
@@ -6595,7 +6595,7 @@ the default @code{nsswitch} and the experimental @code{umich_ldap}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xy1082c67yd48idg5vwvrw7yx74gn6jj2d9c67d0rh6yji091ki"))
+        (base32 "0c9zdivv86xd8dmwia0k9fbr52zrafbyzn7ss53mh17sry5gm716"))
        (modules '((guix build utils)))
        (snippet
         `(begin
@@ -7239,7 +7239,7 @@ used by nftables.")
 (define-public nftables
   (package
     (name "nftables")
-    (version "1.0.1")
+    (version "1.0.2")
     (source
      (origin
        (method url-fetch)
@@ -7248,14 +7248,27 @@ used by nftables.")
                   (string-append "https://www.nftables.org/projects/nftables"
                                  "/files/nftables-" version ".tar.bz2")))
        (sha256
-        (base32 "08x4xw0s5sap3q7jfr91v7mrkxrydi4dvsckw85ims0qb1ibmviw"))))
+        (base32 "00jcjn1pl7qyqpg8pd4yhlkys7wbj4vkzgg73n27nmplzips6a0b"))
+       (patches
+        (search-patches "nftables-fix-makefile.patch"))))
     (build-system gnu-build-system)
     (arguments `(#:configure-flags
                  '("--disable-static"
                    "--with-cli=readline"
-                   "--with-json")))
+                   "--with-json")
+                 #:phases
+                  (modify-phases %standard-phases
+                    (add-before 'configure 'autoreconf
+                      (lambda _
+                        (invoke "autoreconf" "-fi"))))))
     (inputs (list gmp libmnl libnftnl readline jansson))
-    (native-inputs (list pkg-config bison flex docbook2x))
+    (native-inputs (list pkg-config
+                         bison
+                         flex
+                         docbook2x
+                         autoconf
+                         automake
+                         libtool))
     (home-page "https://www.nftables.org")
     (synopsis "Userspace utility for Linux packet filtering")
     (description "nftables is the project that aims to replace the existing
@@ -9060,7 +9073,7 @@ provides user-space tools for creating EROFS file systems.")
 (define-public rasdaemon
   (package
     (name "rasdaemon")
-    (version "0.6.7")
+    (version "0.6.8")
     (source
      (origin
        (method git-fetch)
@@ -9069,7 +9082,7 @@ provides user-space tools for creating EROFS file systems.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12ih96jwmr7imp9zyckf9zjqqm5ra1kv5fj6kbw71y6yl31069dz"))))
+        (base32 "0r0339mg4rc12p63iiq2kwdqn1zjakyiv014i2a2l9s8v5rjik41"))))
     (native-inputs (list autoconf automake libtool))
     (inputs (list sqlite))
     (arguments

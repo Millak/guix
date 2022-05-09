@@ -664,7 +664,7 @@ other machines/servers.  Electroncash does not download the Bitcoin Cash blockch
   ;; the system's dynamically linked library.
   (package
     (name "monero")
-    (version "0.17.3.0")
+    (version "0.17.3.2")
     (source
      (origin
        (method git-fetch)
@@ -681,15 +681,9 @@ other machines/servers.  Electroncash does not download the Bitcoin Cash blockch
            (for-each
             delete-file-recursively
             '("external/miniupnp" "external/rapidjson"
-              "external/unbound"))
-           ;; TODO: Remove the following when upgrading to a newer tagged
-           ;; version as it will already contain the fix for Boost 1.76.
-           (substitute* "contrib/epee/include/storages/portable_storage.h"
-             (("#include \"int-util.h\"" all)
-              (string-append all "\n#include <boost/mpl/contains.hpp>")))
-           #t))
+              "external/unbound"))))
        (sha256
-        (base32 "1spsf7m3x4psp9s7mivr6x4886jnbq4i8ll2dl8bv5bsdhcd3pjm"))))
+        (base32 "19sgcbli7fc1l6ms7ma6hcz1mmpbnd296lc8a19rl410acpv45zy"))))
     (build-system cmake-build-system)
     (native-inputs
      (list doxygen
@@ -726,21 +720,18 @@ other machines/servers.  Electroncash does not download the Bitcoin Cash blockch
          ;; tests/core_tests need a valid HOME
          (add-before 'configure 'set-home
            (lambda _
-             (setenv "HOME" (getcwd))
-             #t))
+             (setenv "HOME" (getcwd))))
          (add-after 'set-home 'change-log-path
            (lambda _
              (substitute* "contrib/epee/src/mlog.cpp"
                (("epee::string_tools::get_current_module_folder\\(\\)")
                 "\".bitmonero\"")
                (("return \\(")
-                "return ((std::string(getenv(\"HOME\"))) / "))
-             #t))
+                "return ((std::string(getenv(\"HOME\"))) / "))))
          (add-after 'change-log-path 'fix-file-permissions-for-tests
            (lambda _
              (for-each make-file-writable
-                       (find-files "tests/data/" "wallet_9svHk1.*"))
-             #t))
+                       (find-files "tests/data/" "wallet_9svHk1.*"))))
          ;; Only try tests that don't need access to network or system
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
@@ -768,8 +759,7 @@ other machines/servers.  Electroncash does not download the Bitcoin Cash blockch
          (add-after 'install 'delete-unused-files
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
-               (delete-file-recursively (string-append out "/include")))
-             #t)))))
+               (delete-file-recursively (string-append out "/include"))))))))
     (home-page "https://web.getmonero.org/")
     (synopsis "Command-line interface to the Monero currency")
     (description
@@ -780,7 +770,7 @@ the Monero command line client and daemon.")
 (define-public monero-gui
   (package
     (name "monero-gui")
-    (version "0.17.3.1")
+    (version "0.17.3.2")
     (source
      (origin
        (method git-fetch)
@@ -794,10 +784,9 @@ the Monero command line client and daemon.")
         '(begin
            ;; Delete bundled monero sources, we already have them.
            ;; See the 'extract-monero-sources' phase.
-           (delete-file-recursively "monero")
-           #t))
+           (delete-file-recursively "monero")))
        (sha256
-        (base32 "0mzxbi16zvpfgwykg0c7gm5dmjxr2a47kjwih36g53a7pnf04zl1"))))
+        (base32 "12x0d981fkb43inx7zqjr3ny53dih9g8k03cmaflxqwviinb1k4b"))))
     (build-system qt-build-system)
     (native-inputs
      `(,@(package-native-inputs monero)

@@ -17,6 +17,7 @@
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2022 Malte Frank Gerdes <malte.f.gerdes@gmail.com>
 ;;; Copyright © 2022 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -858,42 +859,53 @@ readable.")
 (define-public python-vedo
   (package
     (name "python-vedo")
-    (version "2021.0.3")
+    (version "2022.2.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/marcomusy/vedo")
-             (commit version)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "18i3ajh5jzhpc86di15lwh4jv97jhm627ii877sa4yhv6abzjfpn"))))
+         "1hhv4xc4bphhd1zrnf7r6fpf65xvkdqmb1lh51qg1xpv91h2az0h"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'fix-tests
+           ;; These tests require online data.
+           (lambda _
+             (substitute* "tests/common/test_actors.py"
+               (("^st = .*") "")
+               (("^assert isinstance\\(st\\.GetTexture\\(\\), .*") ""))
+             (delete-file "tests/common/test_pyplot.py")))
          (add-after 'build 'mpi-setup
            ,%openmpi-setup)
          (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (setenv "HOME" (getcwd))
-             (add-installed-pythonpath inputs outputs)
-             (with-directory-excursion "tests"
-               (for-each (lambda (dir)
-                           (with-directory-excursion dir
-                             (invoke "./run_all.sh")))
-                         '("common" "dolfin")))
-             #t)))))
-    (inputs        ; for the check phase
-     `(("dolfin" ,fenics)
-       ("pkgconfig" ,python-pkgconfig)
-       ("matplotlib" ,python-matplotlib)))
-    (native-inputs ; for python-pkgconfig
-     (list pkg-config))
+           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+             (when tests?
+               (setenv "HOME" (getcwd))
+               (add-installed-pythonpath inputs outputs)
+               (with-directory-excursion "tests"
+                 (for-each (lambda (dir)
+                             (with-directory-excursion dir
+                               (invoke "./run_all.sh")))
+                           '("common" "dolfin"))))))
+         ;; Disable the sanity check, which fails with the following error:
+         ;;
+         ;;   ...checking requirements: ERROR: vedo==2022.2.0 DistributionNotFound(Requirement.parse('vtk<9.1.0'), {'vedo'})
+         (delete 'sanity-check))))
+    (native-inputs
+     (list pkg-config
+           python-pkgconfig))
     (propagated-inputs
-     `(("numpy" ,python-numpy)
-       ("vtk" ,vtk)))
+     (list fenics
+           python-deprecated
+           python-matplotlib
+           python-numpy
+           vtk))
     (home-page "https://github.com/marcomusy/vedo")
     (synopsis
      "Analysis and visualization of 3D objects and point clouds")
@@ -903,8 +915,7 @@ scientific analysis and visualization.  The package provides a wide
 range of functionalities for working with three-dimensional meshes and
 point clouds.  It can also be used to generate high quality
 two-dimensional renderings such as scatter plots and histograms.
-@code{vedo} is based on @code{vtk} and @code{numpy}, with no other
-dependencies.")
+@code{vedo} is based on @code{vtk} and @code{numpy}.")
     ;; vedo is released under the Expat license.  Included fonts are
     ;; covered by the OFL license and textures by the CC0 license.
     ;; The earth images are in the public domain.
@@ -1182,4 +1193,40 @@ pandas code.")
     (description
      "This package provides optimized tools for group-indexing operations:
 aggregated sum and more.")
+    (license license:bsd-3)))
+
+(define-public python-traittypes
+  (package
+    (name "python-traittypes")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "traittypes" version))
+       (sha256
+        (base32 "1mlv93irdrgxrhnhq3ksi9585d55bpi4mv9dha4p8gkkjiia4vxy"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               ;; This one test fails because it doesn't raise an expected
+               ;; exception.
+               (invoke "pytest" "-vv" "-k" "not test_bad_values")))))))
+    (propagated-inputs (list python-traitlets))
+    (native-inputs
+     (list python-numpy
+           python-pandas
+           python-nose
+           python-pytest
+           python-xarray))
+    (home-page "https://github.com/jupyter-widgets/traittypes")
+    (synopsis "Trait types for NumPy, SciPy and friends")
+    (description "The goal of this package is to provide a reference
+implementation of trait types for common data structures used in the scipy
+stack such as numpy arrays or pandas and xarray data structures.  These are
+out of the scope of the main traitlets project but are a common requirement to
+build applications with traitlets in combination with the scipy stack.")
     (license license:bsd-3)))

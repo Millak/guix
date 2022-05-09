@@ -12,6 +12,7 @@
 ;;; Copyright © 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020, 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 David Dashyan <mail@davie.li>
+;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -581,10 +582,32 @@ portability.")
     (license (list license:bsd-2        ;all files except...
                    license:bsd-3))))    ;...the unidef.1 manual page
 
+(define-public byacc
+  (package
+    (name "byacc")
+    (version "20220128")
+    (source (origin
+             (method url-fetch)
+             (uri (string-append
+                   "https://invisible-mirror.net/archives/byacc/byacc-"
+                   version ".tgz"))
+             (sha256
+              (base32
+               "173l5pdzgqk2ld6lf0ablii0iiw07sry2vrjfrm4wc99qmf81ha2"))))
+    (build-system gnu-build-system)
+    (home-page "https://invisible-island.net/byacc/byacc.html")
+    (synopsis "Berkeley Yacc LALR parser generator")
+    (description
+     "Berkeley Yacc is an LALR(1) parser generator.  Yacc reads the grammar
+specification from a file and generates an LALR(1) parser for it.  The parsers
+consist of a set of LALR(1) parsing tables and a driver routine written in the
+C programming language.")
+    (license license:public-domain)))
+
 (define-public aws-c-common
   (package
     (name "aws-c-common")
-    ; Update only when updating aws-crt-cpp.
+    ;; Update only when updating aws-crt-cpp.
     (version "0.6.20")
     (source (origin
               (method git-fetch)
@@ -600,6 +623,7 @@ portability.")
      '(#:configure-flags
        '("-DBUILD_SHARED_LIBS=ON")))
     (synopsis "Amazon Web Services core C library")
+    (supported-systems '("i686-linux" "x86_64-linux"))
     (description
      "This library provides common C99 primitives, configuration, data
  structures, and error handling for the @acronym{AWS,Amazon Web Services} SDK.")
@@ -609,7 +633,7 @@ portability.")
 (define-public aws-checksums
   (package
     (name "aws-checksums")
-    ; Update only when updating aws-crt-cpp.
+    ;; Update only when updating aws-crt-cpp.
     (version "0.1.12")
     (source (origin
               (method git-fetch)
@@ -638,7 +662,7 @@ with fallback to efficient C99 software implementations.")
 (define-public aws-c-event-stream
   (package
     (name "aws-c-event-stream")
-    ; Update only when updating aws-crt-cpp.
+    ;; Update only when updating aws-crt-cpp.
     (version "0.2.7")
     (source (origin
               (method git-fetch)
@@ -670,7 +694,7 @@ communication.")
 (define-public aws-c-io
   (package
     (name "aws-c-io")
-    ; Update only when updating aws-crt-cpp.
+    ;; Update only when updating aws-crt-cpp.
     (version "0.10.20")
     (source (origin
               (method git-fetch)
@@ -699,7 +723,7 @@ event-driven, asynchronous network application protocols.")
 (define-public aws-c-cal
   (package
     (name "aws-c-cal")
-    ; Update only when updating aws-crt-cpp.
+    ;; Update only when updating aws-crt-cpp.
     (version "0.5.17")
     (source (origin
               (method git-fetch)
@@ -730,7 +754,7 @@ cryptographic primitives for the @acronym{AWS,Amazon Web Services} SDK.")
 (define-public aws-c-sdkutils
   (package
     (name "aws-c-sdkutils")
-    ; Update only when updating aws-crt-cpp.
+    ;; Update only when updating aws-crt-cpp.
     (version "0.1.2")
     (source (origin
               (method git-fetch)
@@ -777,7 +801,7 @@ low level functionality for coroutines.")
 (define-public aws-c-http
   (package
     (name "aws-c-http")
-    ; Update only when updating aws-crt-cpp.
+    ;; Update only when updating aws-crt-cpp.
     (version "0.6.13")
     (source (origin
               (method git-fetch)
@@ -807,7 +831,7 @@ specifications.")
 (define-public aws-c-compression
   (package
     (name "aws-c-compression")
-    ; Update only when updating aws-crt-cpp.
+    ;; Update only when updating aws-crt-cpp.
     (version "0.2.14")
     (source (origin
               (method git-fetch)
@@ -836,7 +860,7 @@ currently limited to Huffman encoding and decoding.")
 (define-public aws-c-auth
   (package
     (name "aws-c-auth")
-    ; Update only when updating aws-crt-cpp.
+    ;; Update only when updating aws-crt-cpp.
     (version "0.6.11")
     (source (origin
               (method git-fetch)
@@ -869,7 +893,7 @@ authentication.")
 (define-public aws-c-s3
   (package
     (name "aws-c-s3")
-    ; Update only when updating aws-crt-cpp.
+    ;; Update only when updating aws-crt-cpp.
     (version "0.1.38")
     (source (origin
               (method git-fetch)
@@ -899,7 +923,7 @@ Service (S3) protocol for object storage.")
 (define-public aws-c-mqtt
   (package
     (name "aws-c-mqtt")
-    ; Update only when updating aws-crt-cpp.
+    ;; Update only when updating aws-crt-cpp.
     (version "0.7.10")
     (source (origin
               (method git-fetch)

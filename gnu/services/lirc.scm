@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Alex Kost <alezost@gmail.com>
-;;; Copyright © 2015, 2016 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015, 2016, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -79,7 +79,9 @@
                  (list (service-extension shepherd-root-service-type
                                           lirc-shepherd-service)
                        (service-extension activation-service-type
-                                          (const %lirc-activation))))))
+                                          (const %lirc-activation))))
+                (description "Run LIRC, a daemon that decodes infrared signals
+from remote controls.")))
 
 (define* (lirc-service #:key (lirc lirc)
                        device driver config-file

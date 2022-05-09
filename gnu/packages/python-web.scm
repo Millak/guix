@@ -6469,3 +6469,114 @@ as Flask.")
      "This package provides a Python JSON-RPC 2.0 protocol and server powered
 by asyncio.")
     (license license:expat)))
+
+(define-public python-protego
+  (package
+    (name "python-protego")
+    (version "0.2.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "Protego" version))
+        (sha256
+          (base32 "1wigcjyhz8zbk562zhgfbkm733dcn65j1swzvki79dys0i1nsrnz"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+        (modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest")))))))
+    (propagated-inputs (list python-six))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/scrapy/protego")
+    (synopsis
+      "Pure-Python robots.txt parser with support for modern conventions")
+    (description
+      "Pure-Python robots.txt parser with support for modern conventions.")
+    (license license:bsd-3)))
+
+(define-public python-parsel
+  (package
+    (name "python-parsel")
+    (version "1.6.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "parsel" version))
+        (sha256
+          (base32 "0yawf9r3r863lwxj0n89i7h3n8xjbsl5b7n6xg76r68scl5yzvvh"))))
+    (build-system python-build-system)
+    (propagated-inputs
+      (list python-cssselect
+            python-lxml
+            python-six
+            python-w3lib))
+    (native-inputs
+      (list python-pytest python-pytest-runner))
+    (home-page "https://github.com/scrapy/parsel")
+    (synopsis "Extract data from HTML and XML using XPath and CSS selectors")
+    (description "Parsel is a library to extract and remove data from
+HTML and XML using XPath and CSS selectors, optionally combined with
+regular expressions.")
+    (license license:bsd-3)))
+
+(define-public python-scrapy
+  (package
+    (name "python-scrapy")
+    (version "2.6.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "Scrapy" version))
+        (sha256
+          (base32 "09rqalbwcz9ix8h0992mzjs50sssxsmmh8w9abkrqchgknjmbzan"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+        (modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest"
+                        ;; requires network access
+                        "--ignore" "tests/test_command_check.py"
+                        "-k"
+                        (string-append
+                         ;; Failing for unknown reasons
+                         "not test_server_set_cookie_domain_suffix_public_private"
+                         " and not test_user_set_cookie_domain_suffix_public_private"
+                         " and not test_pformat")
+                        "tests")))))))
+    (propagated-inputs
+      (list python-botocore ; Optional: For S3FeedStorage class.
+            python-cryptography
+            python-cssselect
+            python-itemadapter
+            python-itemloaders
+            python-lxml
+            python-parsel
+            python-protego
+            python-pydispatcher
+            python-pyopenssl
+            python-queuelib
+            python-service-identity
+            python-setuptools
+            python-tldextract
+            python-twisted
+            python-w3lib
+            python-zope-interface))
+    (native-inputs
+      (list python-pytest
+            python-pyftpdlib
+            python-sybil
+            python-testfixtures
+            python-uvloop))
+    (home-page "https://scrapy.org")
+    (synopsis "High-level Web crawling and Web scraping framework")
+    (description "Scrapy is a fast high-level web crawling and web
+scraping framework, used to crawl websites and extract structured data
+from their pages. It can be used for a wide range of purposes, from data
+mining to monitoring and automated testing.")
+    (license license:bsd-3)))

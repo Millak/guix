@@ -448,8 +448,7 @@ FFC is part of the FEniCS Project.")
               ;; Specify directory to find the header file.
               (("(^set\\(CATCH_INCLUDE_DIR ).*(/catch\\))" _ front back)
                (string-append front
-                              "$ENV{CATCH_DIR}/include" back "\n")))
-            #t))))
+                              "$ENV{CATCH_DIR}/include" back "\n")))))))
     (build-system cmake-build-system)
     (inputs
      `(("blas" ,openblas)
@@ -494,8 +493,7 @@ FFC is part of the FEniCS Project.")
              (setenv "SLEPC_DIR" (assoc-ref %build-inputs "slepc"))
              (setenv "SCOTCH_DIR" (assoc-ref %build-inputs "scotch"))
              (setenv "SUNDIALS_DIR" (assoc-ref %build-inputs "sundials"))
-             (setenv "UMFPACK_DIR" (assoc-ref %build-inputs "suitesparse"))
-             #t))
+             (setenv "UMFPACK_DIR" (assoc-ref %build-inputs "suitesparse"))))
          (add-before 'check 'pre-check
            (lambda _
              ;; The Dolfin repository uses git-lfs, whereby web links are
@@ -546,15 +544,15 @@ FFC is part of the FEniCS Project.")
                     "demo_mesh-quality_serial "
                     "demo_mesh-quality_mpi "
                     "demo_multimesh-stokes_serial "
-                    ")\n") port)))
-             #t))
+                    ")\n") port)))))
          (replace 'check
-           (lambda _
-             (and (invoke "make" "unittests")
-                  (invoke "make" "demos")
-                  (invoke "ctest" "-R" "unittests")
-                  (invoke "ctest" "-R" "demo" "-R" "serial")
-                  (invoke "ctest" "-R" "demo" "-R" "mpi")))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "make" "unittests")
+               (invoke "make" "demos")
+               (invoke "ctest" "-R" "unittests")
+               (invoke "ctest" "-R" "demo" "-R" "serial")
+               (invoke "ctest" "-R" "demo" "-R" "mpi")))))))
     (home-page "https://bitbucket.org/fenics-project/dolfin/")
     (synopsis "Problem solving environment for differential equations")
     (description
@@ -609,6 +607,10 @@ user interface to the FEniCS core components and external libraries.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "python/setup.py"
+               (("pybind11==") "pybind11>="))))
          (add-after 'patch-source-shebangs 'set-paths
            (lambda _
              ;; Define paths to store locations.
@@ -659,17 +661,18 @@ user interface to the FEniCS core components and external libraries.")
              ;; Restrict OpenBLAS to MPI-only in preference to MPI+OpenMP.
              (setenv "OPENBLAS_NUM_THREADS" "1")))
          (replace 'check
-           (lambda _
-             (with-directory-excursion "test"
-               ;; Note: The test test_snes_set_from_options() in the file
-               ;; unit/nls/test_PETScSNES_solver.py fails and is ignored.
-               ;; Limit the number of jobs to 3 as 500 MiB of memory is used
-               ;; per process.
-               (invoke "mpirun" "-np" (number->string
-                                       (min 3 (parallel-job-count)))
-                       "python" "-B" "-m"
-                       "pytest" "unit" "--ignore"
-                       "unit/nls/test_PETScSNES_solver.py"))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (with-directory-excursion "test"
+                 ;; Note: The test test_snes_set_from_options() in the file
+                 ;; unit/nls/test_PETScSNES_solver.py fails and is ignored.
+                 ;; Limit the number of jobs to 3 as 500 MiB of memory is used
+                 ;; per process.
+                 (invoke "mpirun" "-np" (number->string
+                                         (min 3 (parallel-job-count)))
+                         "python" "-B" "-m"
+                         "pytest" "unit" "--ignore"
+                         "unit/nls/test_PETScSNES_solver.py")))))
          (add-after 'install 'install-demo-files
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((demos (string-append

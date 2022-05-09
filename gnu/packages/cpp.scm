@@ -1164,9 +1164,9 @@ to be useful for building network-based applications.")
 (define-public aws-crt-cpp
   (package
     (name "aws-crt-cpp")
-    ; Update only when updating aws-sdk-cpp, and when updating also update
-    ; versions of library dependencies linked from from
-    ; https://github.com/awslabs/aws-crt-cpp/tree/{aws-crt-cpp commit}/crt
+    ;; Update only when updating aws-sdk-cpp, and when updating also update
+    ;; versions of library dependencies linked from from
+    ;; https://github.com/awslabs/aws-crt-cpp/tree/{aws-crt-cpp commit}/crt
     (version "0.17.27")
     (source (origin
               (method git-fetch)
@@ -1227,7 +1227,7 @@ aws-c-http, aws-c-io, aws-c-mqtt, aws-checksums, and s2n.")
     (propagated-inputs
      (list aws-crt-cpp))
     (inputs
-     (list curl openssl pulseaudio zlib))
+     (list curl pulseaudio zlib))
     (synopsis "Amazon Web Services SDK for C++")
     (description
      "The AWS SDK for C++ provides a C++11 interface to the @acronym{AWS,Amazon

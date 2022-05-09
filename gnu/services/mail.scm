@@ -1600,7 +1600,9 @@ greyed out, instead of only later giving \"not selectable\" popup error.
                        (service-extension pam-root-service-type
                                           (const %dovecot-pam-services))
                        (service-extension activation-service-type
-                                          %dovecot-activation)))))
+                                          %dovecot-activation)))
+                (description "Run Dovecot, a mail server that can run POP3,
+IMAP, and LMTP.")))
 
 (define* (dovecot-service #:key (config (dovecot-configuration)))
   "Return a service that runs @command{dovecot}, a mail server that can run
@@ -1729,7 +1731,9 @@ match from local for any action outbound
           (service-extension profile-service-type
                              (compose list opensmtpd-configuration-package))
           (service-extension shepherd-root-service-type
-                             opensmtpd-shepherd-service)))))
+                             opensmtpd-shepherd-service)))
+   (description "Run the OpenSMTPD, a lightweight @acronym{SMTP, Simple Mail
+Transfer Protocol} server.")))
 
 
 ;;;
@@ -1754,7 +1758,9 @@ match from local for any action outbound
    (extensions
     (list (service-extension etc-service-type mail-aliases-etc)))
    (compose concatenate)
-   (extend append)))
+   (extend append)
+   (description "Provide a @file{/etc/aliases} file---an email alias
+database---computed from the given alias list.")))
 
 
 ;;;
@@ -1831,7 +1837,8 @@ exim_group = exim
           (service-extension account-service-type (const %exim-accounts))
           (service-extension activation-service-type exim-activation)
           (service-extension profile-service-type exim-profile)
-          (service-extension mail-aliases-service-type (const '()))))))
+          (service-extension mail-aliases-service-type (const '()))))
+   (description "Run the Exim mail transfer agent (MTA).")))
 
 
 ;;;
