@@ -276,8 +276,9 @@
        ;; main-distribution-test that aren't part of the main
        ;; distribution.
        #:tests? #f
-       ;; Upstream recommends #:out-of-source?, and it does
-       ;; help with debugging, but it confuses `install-license-files`.
+       ;; Upstream recommends #:out-of-source?, and it
+       ;; helps a lot with debugging.
+       #:out-of-source? #t
        #:modules '((ice-9 match)
                    (ice-9 regex)
                    (guix build gnu-build-system)
@@ -314,7 +315,18 @@
                                 #f)))))))
            (add-before 'configure 'chdir
              (lambda _
-               (chdir "racket/src"))))))
+               (chdir "racket/src")))
+           (replace 'install-license-files
+             ;; The #:out-of-source? mode for install-license-files fails
+             ;; to find the srcdir: as a workaround, navigate there ourselves.
+             (let ((install-license-files
+                    (assoc-ref %standard-phases 'install-license-files)))
+               (lambda args
+                 (with-directory-excursion "../src"
+                   (apply install-license-files
+                          `(,@args
+                            ;; if there are duplicate keywords, last is used
+                            #:out-of-source? #f)))))))))
      (home-page "https://racket-lang.org")
      (synopsis "Old Racket implementation used for bootstrapping")
      (description "This variant of the Racket BC (``before Chez'' or
