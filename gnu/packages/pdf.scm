@@ -714,18 +714,19 @@ extracting content or merging files.")
         (base32 "0gl0wf16m1cafs20h3v1f4ysf7zlbijjyd6s1r1krwvlzriwdsmm"))
        (modules '((guix build utils)))
        (snippet
-        '(begin
-           ;; Remove bundled software.
-           (let* ((keep (list "extract"
-                              "lcms2")) ; different from our lcms2 package
-                  (from "thirdparty")
-                  (kept (string-append from "~temp")))
-             (mkdir-p kept)
-             (for-each (lambda (file) (rename-file (string-append from "/" file)
-                                              (string-append kept "/" file)))
-                       keep)
-             (delete-file-recursively from)
-             (rename-file kept from))))))
+        #~(begin
+            ;; Remove bundled software.
+            (let* ((keep (list "extract"
+                               "lcms2")) ; different from our lcms2 package
+                   (from "thirdparty")
+                   (kept (string-append from "~temp")))
+              (mkdir-p kept)
+              (for-each (lambda (file)
+                          (rename-file (string-append from "/" file)
+                                       (string-append kept "/" file)))
+                        keep)
+              (delete-file-recursively from)
+              (rename-file kept from))))))
     (build-system gnu-build-system)
     (inputs
      (list curl
@@ -742,21 +743,23 @@ extracting content or merging files.")
            openssl
            zlib))
     (native-inputs
-      (list pkg-config))
+     (list pkg-config))
     (arguments
-      `(#:tests? #f                     ; no check target
-        #:make-flags (list "verbose=yes"
-                           (string-append "CC=" ,(cc-for-target))
-                           "XCFLAGS=-fpic"
-                           "USE_SYSTEM_LIBS=yes"
-                           "USE_SYSTEM_MUJS=yes"
-                           "shared=yes"
-                           ;; Even with the linkage patch we must fix RUNPATH.
-                           (string-append "LDFLAGS=-Wl,-rpath="
-                                          (assoc-ref %outputs "out") "/lib")
-                           (string-append "prefix=" (assoc-ref %outputs "out")))
-        #:phases (modify-phases %standard-phases
-                   (delete 'configure)))) ; no configure script
+     (list
+       #:tests? #f                      ; no check target
+       #:make-flags
+       #~(list "verbose=yes"
+               (string-append "CC=" #$(cc-for-target))
+               "XCFLAGS=-fpic"
+               "USE_SYSTEM_LIBS=yes"
+               "USE_SYSTEM_MUJS=yes"
+               "shared=yes"
+               ;; Even with the linkage patch we must fix RUNPATH.
+               (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib")
+               (string-append "prefix=" #$output))
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure))))      ; no configure script
     (home-page "https://mupdf.com")
     (synopsis "Lightweight PDF viewer and toolkit")
     (description
