@@ -174,7 +174,7 @@ Python without keeping their credentials in a Docker configuration file.")
 (define-public containerd
   (package
     (name "containerd")
-    (version "1.4.4")
+    (version "1.6.6")
     (source
      (origin
        (method git-fetch)
@@ -183,7 +183,7 @@ Python without keeping their credentials in a Docker configuration file.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qjbfj1dw6pykxhh8zahcxlgpyjzgnrngk5vjaf34akwyan8nrxb"))))
+        (base32 "1vsl747i3wyy68j4lp4nprwxadbyga8qxlrk892afcd2990zp5mr"))))
     (build-system go-build-system)
     (arguments
      (let ((make-flags (list (string-append "VERSION=" version)
@@ -203,6 +203,11 @@ Python without keeping their credentials in a Docker configuration file.")
                     (string-append "defaultShim = \""
                                    (assoc-ref outputs "out")
                                    "/bin/containerd-shim\"\n")))
+                 (substitute* "pkg/cri/config/config_unix.go"
+                   (("DefaultRuntimeName: \"runc\"")
+                    (string-append "DefaultRuntimeName: \""
+                                   (assoc-ref inputs "runc")
+                                   "/sbin/runc\"")))
                  (substitute* "vendor/github.com/containerd/go-runc/runc.go"
                    (("DefaultCommand[ \t]*=.*")
                     (string-append "DefaultCommand = \""
@@ -226,8 +231,8 @@ Python without keeping their credentials in a Docker configuration file.")
              (lambda* (#:key import-path outputs #:allow-other-keys)
                (with-directory-excursion (string-append "src/" import-path)
                  (let* ((out (assoc-ref outputs "out")))
-                   (apply invoke "make" (string-append "DESTDIR=" out) "install"
-                          ',make-flags)))))))))
+                   (apply invoke "make" (string-append "DESTDIR=" out)
+                          "PREFIX=" "install" ',make-flags)))))))))
     (inputs
      (list btrfs-progs libseccomp pigz runc util-linux))
     (native-inputs
