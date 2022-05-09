@@ -111,8 +111,7 @@ also use Valgrind to build new tools.")
                        "valgrind-fix-default-debuginfo-path.patch"))))
    (inputs
     ;; GDB is needed to provide a sane default for `--db-command'.
-    `(("gdb" ,gdb)
-      ("glibc:debug" ,(canonical-package glibc) "debug")))
+    (list gdb `(,(canonical-package glibc) "debug")))
    (arguments
     (substitute-keyword-arguments (package-arguments valgrind)
       ((#:phases phases #~%standard-phases)
@@ -126,7 +125,7 @@ also use Valgrind to build new tools.")
                ;; TODO: Remove on the next rebuild cycle, when libc is not
                ;; longer fully stripped.
                (define libc-debug
-                 (string-append (assoc-ref inputs "glibc:debug")
+                 (string-append (ungexp (this-package-input "glibc") "debug")
                                 "/lib/debug"))
 
                (substitute* '("coregrind/m_debuginfo/readelf.c"
