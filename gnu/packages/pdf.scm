@@ -728,19 +728,19 @@ extracting content or merging files.")
              (rename-file kept from))))))
     (build-system gnu-build-system)
     (inputs
-      `(("curl" ,curl)
-        ("freeglut" ,freeglut)
-        ("freetype" ,freetype)
-        ("gumbo-parser" ,gumbo-parser)
-        ("harfbuzz" ,harfbuzz)
-        ("jbig2dec" ,jbig2dec)
-        ("libjpeg" ,libjpeg-turbo)
-        ("libx11" ,libx11)
-        ("libxext" ,libxext)
-        ("mujs" ,mujs)
-        ("openjpeg" ,openjpeg)
-        ("openssl" ,openssl)
-        ("zlib" ,zlib)))
+     (list curl
+           freeglut
+           freetype
+           gumbo-parser
+           harfbuzz
+           jbig2dec
+           libjpeg-turbo
+           libx11
+           libxext
+           mujs
+           openjpeg
+           openssl
+           zlib))
     (native-inputs
       (list pkg-config))
     (arguments
