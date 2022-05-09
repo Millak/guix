@@ -309,35 +309,43 @@ If native threads are supported, the returned list will include
                             (string-append (dirname scheme.boot)
                                            "/chez-scheme.boot")))))))
           ;; Building the documentation requires stex and a running scheme.
-          ;; FIXME: this is probably wrong for cross-compilation
-          (add-after 'install-symlink 'install-doc
+          (add-after 'install-symlink 'install-docs
             (lambda* (#:key native-inputs inputs outputs #:allow-other-keys)
-              (match (assoc-ref outputs "doc")
-                (#f
-                 (format #t "not installing docs~%"))
-                (doc-prefix
-                 (let* ((chez+version (strip-store-file-name #$output))
-                        (scheme (search-input-file outputs "/bin/scheme"))
-                        (stexlib (search-input-directory (or native-inputs
-                                                             inputs)
-                                                         "/lib/stex"))
-                        (doc-dir (string-append doc-prefix
-                                                "/share/doc/"
-                                                chez+version)))
-                   (define* (stex-make #:optional (suffix ""))
-                     (invoke "make" "install"
-                             (string-append "Scheme=" scheme)
-                             (string-append "STEXLIB=" stexlib)
-                             (string-append "installdir=" doc-dir suffix)))
-                   (with-directory-excursion "csug"
-                     (stex-make "/csug"))
-                   (with-directory-excursion "release_notes"
-                     (stex-make "/release_notes"))
-                   (with-directory-excursion doc-dir
-                     (symlink "release_notes/release_notes.pdf"
-                              "release_notes.pdf")
-                     (symlink "csug/csug9_5.pdf"
-                              "csug.pdf"))))))))))
+              (let* ((doc-prefix (or (assoc-ref outputs "doc")
+                                     (assoc-ref outputs "out")))
+                     (chez+version (strip-store-file-name #$output))
+                     (scheme (search-input-file outputs "/bin/scheme"))
+                     (stexlib (search-input-directory (or native-inputs
+                                                          inputs)
+                                                      "/lib/stex"))
+                     (doc-dir (string-append doc-prefix
+                                             "/share/doc/"
+                                             chez+version)))
+                (define* (stex-make #:optional (suffix ""))
+                  (invoke "make" "install"
+                          (string-append "Scheme=" scheme)
+                          (string-append "STEXLIB=" stexlib)
+                          (string-append "installdir=" doc-dir suffix)))
+                (with-directory-excursion "csug"
+                  (stex-make "/csug"))
+                (with-directory-excursion "release_notes"
+                  (stex-make "/release_notes")))))
+          (add-after 'install-docs 'link-doc-pdfs
+            ;; otherwise, it's hard to notice them in a forest of HTML files
+            (lambda* (#:key outputs #:allow-other-keys)
+              (with-directory-excursion
+                  (string-append (or (assoc-ref outputs "doc")
+                                     (assoc-ref outputs "out"))
+                                 "/share/doc/"
+                                 (strip-store-file-name #$output))
+                (symlink "release_notes/release_notes.pdf"
+                         "release_notes.pdf")
+                (match (find-files "csug"
+                                   "csug.*\\.pdf$" ;; embeded version number
+                                   #:fail-on-error? #t)
+                  ((pth)
+                   (symlink pth
+                            "csug.pdf")))))))))
     ;; Chez Scheme does not have a  MIPS backend.
     ;; FIXME: Debian backports patches to get armhf working.
     ;; We should too. It is the Chez machine type arm32le
