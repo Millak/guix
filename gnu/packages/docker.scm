@@ -7,6 +7,7 @@
 ;;; Copyright © 2020 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2020 Jesse Dowell <jessedowell@gmail.com>
 ;;; Copyright © 2021 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2022 Pierre Langlois <pierre.langlois@gmx.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -190,7 +191,7 @@ Python without keeping their credentials in a Docker configuration file.")
        `(#:import-path "github.com/containerd/containerd"
          #:phases
          (modify-phases %standard-phases
-           (add-after 'chdir 'patch-paths
+           (add-after 'unpack 'patch-paths
              (lambda* (#:key inputs import-path outputs #:allow-other-keys)
                (with-directory-excursion (string-append "src/" import-path)
                  (substitute* "runtime/v1/linux/runtime.go"
