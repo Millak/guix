@@ -69,14 +69,17 @@
 (define* (chez-scheme-for-system #:optional
                                  (system (or (%current-target-system)
                                              (%current-system))))
-  "Return 'chez-scheme' unless only 'chez-scheme-for-racket' supports SYSTEM,
-including support for native threads."
-  (if (or
-       ;; full support upstream
-       (and=> (chez-upstream-features-for-system system)
-              (cut memq 'threads <>))
-       ;; no support anywhere
-       (not (nix-system->chez-machine system)))
+  "Return 'chez-scheme' if it fully supports SYSTEM, including support for
+bootstrapping and native threads.  Otherwise, return
+'chez-scheme-for-racket'."
+  (if (and=> (chez-upstream-features-for-system system)
+             (lambda (features)
+               (every (cut memq <> features)
+                      '(threads
+                        ;; We can cross-compile for platforms without
+                        ;; bootstrap bootfiles, but we can't self-host
+                        ;; on them short of adding more binary seeds.
+                        bootstrap-bootfiles))))
       chez-scheme
       chez-scheme-for-racket))
 
