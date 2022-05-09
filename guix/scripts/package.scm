@@ -10,6 +10,7 @@
 ;;; Copyright © 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2018 Steve Sprang <scs@stevesprang.com>
+;;; Copyright © 2022 Josselin Poiret <dev@jpoiret.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -694,10 +695,10 @@ the resulting manifest entry."
   (manifest-entry-with-provenance
    (package->manifest-entry package output)))
 
-(define (options->installable opts manifest transaction)
-  "Given MANIFEST, the current manifest, and OPTS, the result of 'args-fold',
-return an variant of TRANSACTION that accounts for the specified installations
-and upgrades."
+(define (options->installable opts manifest transform transaction)
+  "Given MANIFEST, the current manifest, OPTS, and TRANSFORM, the result of
+'args-fold', return an variant of TRANSACTION that accounts for the specified
+installations, upgrades and transformations."
   (define upgrade?
     (options->upgrade-predicate opts))
 
@@ -714,13 +715,14 @@ and upgrades."
                   (('install . (? package? p))
                    ;; When given a package via `-e', install the first of its
                    ;; outputs (XXX).
-                   (package->manifest-entry* p "out"))
+                   (package->manifest-entry* (transform p) "out"))
                   (('install . (? string? spec))
                    (if (store-path? spec)
                        (store-item->manifest-entry spec)
                        (let-values (((package output)
                                      (specification->package+output spec)))
-                         (package->manifest-entry* package output))))
+                         (package->manifest-entry* (transform package)
+                                                   output))))
                   (('install . obj)
                    (leave (G_ "cannot install non-package object: ~s~%")
                           obj))
@@ -979,16 +981,6 @@ processed, #f otherwise."
   (define profile  (or (assoc-ref opts 'profile) %current-profile))
   (define transform (options->transformation opts))
 
-  (define (transform-entry entry)
-    (let ((item (transform (manifest-entry-item entry))))
-      (manifest-entry-with-transformations
-       (manifest-entry
-         (inherit entry)
-         (item item)
-         (version (if (package? item)
-                      (package-version item)
-                      (manifest-entry-version entry)))))))
-
   (when (equal? profile %current-profile)
     ;; Normally the daemon created %CURRENT-PROFILE when we connected, unless
     ;; it's a version that lacks the fix for <https://bugs.gnu.org/37744>
@@ -1021,16 +1013,12 @@ processed, #f otherwise."
                              (map load-manifest files))))))
            (step1    (options->removable opts manifest
                                          (manifest-transaction)))
-           (step2    (options->installable opts manifest step1))
-           (step3    (manifest-transaction
-                      (inherit step2)
-                      (install (map transform-entry
-                                    (manifest-transaction-install step2)))))
-           (new      (manifest-perform-transaction manifest step3))
+           (step2    (options->installable opts manifest transform step1))
+           (new      (manifest-perform-transaction manifest step2))
            (trans    (if (null? files)
-                         step3
+                         step2
                          (fold manifest-transaction-install-entry
-                               step3
+                               step2
                                (manifest-entries manifest)))))
 
       (warn-about-old-distro)
