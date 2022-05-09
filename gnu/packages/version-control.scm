@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2013 Cyril Roelandt <tipecaml@gmail.com>
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2014 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015, 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
@@ -874,7 +874,14 @@ write native speed custom Git applications in any language with bindings.")
                 "1fjdglkh04qv3b4alg621pxa689i0wlf8m7nf2755zawjr2zhwxd"))
               (patches (search-patches "libgit2-mtime-0.patch"))
               (snippet '(begin
-                          (delete-file-recursively "deps") #t))
+                          (delete-file-recursively "deps")
+
+                          ;; The "refs:revparse::date" test is time-dependent: it
+                          ;; assumes "HEAD@{10 years ago}" doesn't match anything,
+                          ;; which is no longer true.  Adjust that test.
+                          (substitute* "tests/refs/revparse.c"
+                            (("10 years ago")
+                             "100 years ago"))))
               (modules '((guix build utils)))))))
 
 (define-public git-crypt
