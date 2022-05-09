@@ -258,8 +258,18 @@ If native threads are supported, the returned list will include
         (ice-9 ftw)
         (ice-9 match))
       #:test-target "test"
-      ;; TODO when we fix armhf, it may not support --threads
-      #:configure-flags #~'("--threads")
+      #:configure-flags
+      #~`(,(string-append "--installprefix=" #$output)
+          #$@(if (and=> (chez-upstream-features-for-system)
+                        (cut memq 'threads <>))
+                 #~("--threads")
+                 #~())
+          "ZLIB=-lz"
+          "LZ4=-llz4"
+          "--libkernel"
+          ;; Guix will do 'compress-man-pages',
+          ;; and letting Chez try causes an error
+          "--nogzip-man-pages")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'unpack-nanopass+stex
@@ -273,26 +283,35 @@ If native threads are supported, the returned list will include
                (search-input-directory (or native-inputs inputs)
                                        "lib/chez-scheme-bootfiles")
                "boot")))
-          ;; NOTE: the custom Chez 'configure' script doesn't allow
+          ;; NOTE: The custom Chez 'configure' script doesn't allow
           ;; unrecognized flags, such as those automatically added
-          ;; by `gnu-build-system`.
+          ;; by `gnu-build-system`. This replacement phase uses only
+          ;; the explicitly provided `#:configure-flags`.
           (replace 'configure
-            (lambda* (#:key inputs (configure-flags '()) #:allow-other-keys)
-              ;; add flags which are always required:
-              (let ((flags (cons* (string-append "--installprefix=" #$output)
-                                  "ZLIB=-lz"
-                                  "LZ4=-llz4"
-                                  "--libkernel"
-                                  ;; Guix will do compress-man-pages,
-                                  ;; and letting Chez try causes an error
-                                  "--nogzip-man-pages"
-                                  configure-flags)))
-                (format #t "configure flags: ~s~%" flags)
-                ;; Some makefiles (for tests) don't seem to propagate CC
-                ;; properly, so we take it out of their hands:
-                (setenv "CC" #$(cc-for-target))
-                (setenv "HOME" "/tmp")
-                (apply invoke "./configure" flags))))
+            (lambda* (#:key inputs (configure-flags '()) out-of-source?
+                            #:allow-other-keys)
+              (let* ((abs-srcdir (getcwd))
+                     (srcdir (if out-of-source?
+                                 (string-append "../" (basename abs-srcdir))
+                                 ".")))
+                (format #t "source directory: ~s (relative from build: ~s)~%"
+                        abs-srcdir srcdir)
+                (if out-of-source?
+                    (begin
+                      (mkdir "../build")
+                      (chdir "../build")))
+                (format #t "build directory: ~s~%" (getcwd))
+                (format #t "configure flags: ~s~%" configure-flags)
+                (apply invoke
+                       (string-append srcdir "/configure")
+                       configure-flags))))
+          (add-after 'configure 'configure-environment-variables
+            (lambda args
+              ;; Some makefiles (for tests) don't seem to propagate CC
+              ;; properly, so we take it out of their hands:
+              (setenv "CC" #$(cc-for-target))
+              ;; Likewise, some tests have needed HOME to be set:
+              (setenv "HOME" "/tmp")))
           ;; The binary file name is called "scheme" as is the one from
           ;; MIT/GNU Scheme.  We add a symlink to use in case both are
           ;; installed.
@@ -385,7 +404,9 @@ and 32-bit PowerPC architectures.")
     (arguments
      (substitute-keyword-arguments (package-arguments chez-scheme)
        ((#:configure-flags cfg-flags #~'())
-        #~(cons "--disable-x11" #$cfg-flags))
+        #~(cons* "--disable-x11"
+                 "--threads" ;; ok to potentially duplicate
+                 #$cfg-flags))
        ((#:phases those-phases #~%standard-phases)
         #~(let* ((those-phases #$those-phases)
                  (unpack (assoc-ref those-phases 'unpack)))
