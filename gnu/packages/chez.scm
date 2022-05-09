@@ -602,6 +602,10 @@ Chez Scheme.")))
                             ("src" "lib/stex/")
                             ("Mf-stex" "lib/stex/")
                             ("Makefile.template" "lib/stex/"))
+         #:modules
+         '((guix build copy-build-system)
+           (guix build utils)
+           (ice-9 popen))
          #:phases
          #~(modify-phases %standard-phases
              (add-before 'install 'patch-sources
@@ -633,8 +637,14 @@ Chez Scheme.")))
                         (define makefile
                           (string-append (getcwd) "/Makefile"))
                         (define machine
-                          #$(and=> (nix-system->chez-machine)
-                                   chez-machine->threaded))
+                          (let ((pipe (open-pipe* OPEN_BOTH scheme "-q")))
+                            ;; try to not be wrong for cross-compilation
+                            ;; (avoid #% reader abbreviation for Guile)
+                            (write '(($primitive $target-machine)) pipe)
+                            (force-output pipe)
+                            (let ((sym (read pipe)))
+                              (close-pipe pipe)
+                              (symbol->string sym))))
                         (with-directory-excursion
                             (search-input-directory outputs "/lib/stex")
                           (invoke "make"
