@@ -29089,13 +29089,14 @@ data efficiently.")
     (arguments
      `(#:tests? #f  ; Issue during the wasm test.
        #:cargo-inputs
-       (("rust-js-sys" ,rust-js-sys-0.3)
+       (("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-js-sys" ,rust-js-sys-0.3)
         ("rust-stdweb" ,rust-stdweb-0.4)
-        ("rust-time" ,rust-time-0.1)
+        ("rust-time" ,rust-time-0.2)
         ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
         ("rust-web-sys" ,rust-web-sys-0.3))
        #:cargo-development-inputs
-       (("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.2))))
+       (("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
     (home-page "https://github.com/sebcrozet/instant")
     (synopsis
      "Partial replacement for std::time::Instant that works on WASM too")
