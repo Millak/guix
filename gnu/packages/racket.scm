@@ -190,8 +190,11 @@
 (define* (racket-vm-for-system #:optional
                                (system (or (%current-target-system)
                                            (%current-system))))
-  "Return 'racket-vm-cs' if it supports SYSTEM; 'racket-vm-bc' otherwise."
-  (if (nix-system->chez-machine system)
+  "Return 'racket-vm-cs' if we are able to build it for SYSTEM; 'racket-vm-bc'
+otherwise."
+  ;; Once we figure out the issues in https://racket.discourse.group/t/950,
+  ;; we can use 'racket-vm-cs' everywhere.
+  (if (racket-cs-native-supported-system? system)
       racket-vm-cs
       racket-vm-bc))
 

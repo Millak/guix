@@ -48,7 +48,7 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:export (chez-scheme-for-system
-            nix-system->chez-machine
+            racket-cs-native-supported-system?
             unpack-nanopass+stex))
 
 ;; Commentary:
@@ -131,19 +131,6 @@ in Chez Scheme machine types, or '#f' if none is defined."
    ;; unknown
    (else
     #f)))
-
-(define* (nix-system->chez-machine #:optional
-                                   (system (or (%current-target-system)
-                                               (%current-system))))
-  "Return the Chez Scheme machine type corresponding to the Nix system
-identifier SYSTEM, or @code{#f} if the translation of SYSTEM to a Chez Scheme
-machine type is undefined.
-
-It is unspecified whether the resulting string will name a threaded or a
-nonthreaded machine type."
-  (let* ((chez-arch (target-chez-arch system))
-         (chez-os (target-chez-os system)))
-    (and chez-arch chez-os (string-append chez-arch chez-os))))
 
 (define %chez-features-table
   ;; An alist of alists mapping:
@@ -232,6 +219,19 @@ future."
         (chez-os (target-chez-os system)))
     (and=> (assoc-ref %chez-features-table chez-os)
            (cut assoc-ref <> chez-arch))))
+
+(define* (racket-cs-native-supported-system? #:optional
+                                             (system
+                                              (or (%current-target-system)
+                                                  (%current-system))))
+  "Can Racket's variant of Chez Scheme generate native code for SYSTEM?
+Otherwise, SYSTEM can use only the ``portable bytecode'' backends."
+  (let ((chez-arch (target-chez-arch system))
+        (chez-os (target-chez-os system)))
+    (and (and=> (assoc-ref %chez-features-table chez-os)
+                ;; NOT assoc-ref: supported even if cdr is #f
+                (cut assoc chez-arch <>))
+         #t)))
 
 ;;
 ;; Chez Scheme:
@@ -459,7 +459,9 @@ and 32-bit PowerPC architectures.")
               (add-after 'unpack 'chdir
                 (lambda args
                   (chdir "racket/src/ChezScheme"))))))))
-    (supported-systems (filter nix-system->chez-machine
+    ;; TODO: How to build pbarch/pbchunks for other systems?
+    ;; See https://racket.discourse.group/t/950
+    (supported-systems (filter racket-cs-native-supported-system?
                                %supported-systems))
     (home-page "https://github.com/racket/ChezScheme")
     ;; ^ This is downstream of https://github.com/racket/racket,
