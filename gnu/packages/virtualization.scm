@@ -18,7 +18,7 @@
 ;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
+;;; Copyright © 2021, 2022 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2021 Dion Mendel <guix@dm9.info>
 ;;; Copyright © 2021 Andrew Whatson <whatson@gmail.com>
 ;;; Copyright © 2021 Vincent Legoll <vincent.legoll@gmail.com>
@@ -1817,7 +1817,7 @@ main monitor/GPU.")
 (define-public runc
   (package
     (name "runc")
-    (version "1.0.0-rc93")
+    (version "1.1.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1826,7 +1826,7 @@ main monitor/GPU.")
               (file-name (string-append name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0b90r1bkvlqli53ca1yc1l488dba0isd3i6l7nlhszxi8p7hzvkh"))))
+                "0jx56x49dgkygdbrfb3pmxycy1n37arj97jra8n422dj36xz1hbm"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/opencontainers/runc"
@@ -1851,8 +1851,7 @@ main monitor/GPU.")
                  (invoke "make" "install" "install-bash" "install-man"
                          (string-append "PREFIX=" out)))))))))
     (native-inputs
-     `(("go-md2man" ,go-github-com-go-md2man)
-       ("pkg-config" ,pkg-config)))
+     (list go-github-com-go-md2man pkg-config))
     (inputs
      (list libseccomp))
     (synopsis "Open container initiative runtime")
