@@ -440,7 +440,7 @@ built-in registry server of Docker.")
                  (substitute-LookPath*
                   ("containerd" "containerd" "bin/containerd")
                   ("ps" "procps" "bin/ps")
-                  ("mkfs.xfs" "xfsprogs" "bin/mkfs.xfs")
+                  ("mkfs.xfs" "xfsprogs" "sbin/mkfs.xfs")
                   ("lvmdiskscan" "lvm2" "sbin/lvmdiskscan")
                   ("pvdisplay" "lvm2" "sbin/pvdisplay")
                   ("blkid" "util-linux" "sbin/blkid")
