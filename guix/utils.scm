@@ -14,6 +14,7 @@
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2018 Steve Sprang <scs@stevesprang.com>
 ;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
+;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -92,6 +93,7 @@
             target-mingw?
             target-x86-32?
             target-x86-64?
+            target-x86?
             target-arm32?
             target-aarch64?
             target-arm?
@@ -696,6 +698,10 @@ a character other than '@'."
   "Is the architecture of TARGET a variant of Intel/AMD's 64-bit
 architecture (x86_64)?"
   (string-prefix? "x86_64-" target))
+
+(define* (target-x86? #:optional (target (or (%current-target-system)
+                                             (%current-system))))
+  (or (target-x86-32? target) (target-x86-64? target)))
 
 (define* (target-arm32? #:optional (target (or (%current-target-system)
                                                (%current-system))))
