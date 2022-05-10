@@ -40523,7 +40523,7 @@ unparking.")
         ("rust-parking-lot-core" ,rust-parking-lot-core-0.8))
        #:cargo-development-inputs
        (("rust-bincode" ,rust-bincode-1)
-        ("rust-rand" ,rust-rand-0.7))))
+        ("rust-rand" ,rust-rand-0.8))))
     (home-page "https://github.com/Amanieu/parking_lot")
     (synopsis
      "Efficient implementations of the standard synchronization primitives")
