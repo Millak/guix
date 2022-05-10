@@ -9,7 +9,7 @@
 ;;; Copyright © 2017, 2019, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2019 Gábor Boskovits <boskovits@gmail.com>
 ;;; Copyright © 2018 Chris Marusich <cmmarusich@gmail.com>
-;;; Copyright © 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019, 2020, 2021 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Raghav Gururajan <raghavgururajan@disroot.org>
@@ -2054,6 +2054,16 @@ new Date();"))
                `(begin
                   (for-each delete-file (find-files "." ".*.(bin|exe|jar)$"))
                   #t))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments openjdk11)
+       ((#:phases phases)
+        `(modify-phases ,phases
+           (replace 'fix-java-shebangs
+             (lambda _
+               ;; This file was "fixed" by patch-source-shebangs, but it requires
+               ;; this exact first line.
+               (substitute* "make/data/blacklistedcertsconverter/blacklisted.certs.pem"
+                 (("^#!.*") "#! java BlacklistedCertsConverter SHA-256\n"))))))))
     (inputs
      `(("alsa-lib" ,alsa-lib)
        ("cups" ,cups)
