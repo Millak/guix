@@ -584,7 +584,7 @@ is used by the Requests library to verify HTTPS requests.")
            rust-pyo3-macros-0.15
            rust-pyo3-macros-backend-0.15
            rust-quote-1
-           rust-redox-syscall-0.1
+           rust-redox-syscall-0.2
            rust-scopeguard-1
            rust-smallvec-1
            rust-stable-deref-trait-1
