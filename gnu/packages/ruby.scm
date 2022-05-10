@@ -12576,3 +12576,28 @@ flexibility.
 @item Provides APIs for exchanging money from one currency to another.
 @end itemize")
     (license license:expat)))
+
+(define-public ruby-monetize
+  (package
+    (name "ruby-monetize")
+    (version "1.11.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "monetize" version))
+        (sha256
+          (base32 "0cna2myxdbwfq0gn6k2hgrh368dq7wld3jklm96443ysykd0difn"))))
+    (build-system ruby-build-system)
+    (arguments
+     `(#:test-target "spec"))
+    (native-inputs
+     (list
+      ruby-rspec))
+    (propagated-inputs
+     (list
+      ruby-money))
+    (home-page "https://github.com/RubyMoney/monetize")
+    (synopsis "Convert various objects into Money objects")
+    (description "Monetize provides a library for converting various objects
+into Money objects.")
+    (license license:expat)))
