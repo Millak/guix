@@ -134,6 +134,35 @@
 adds functionality on top of @code{wadlib}.")
     (license license:lgpl3+)))
 
+(define-public python-launchpadlib
+  (package
+    (name "python-launchpadlib")
+    (version "1.10.16")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "launchpadlib" version))
+       (sha256
+        (base32 "106aixwchwyb100wlf4cnj1vgsi2d7x40ps8xv8az27r6qwv3x0d"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-before 'check 'set-home
+                          (lambda _
+                            ;; Tests require a writable home.
+                            (setenv "HOME" "/tmp"))))))
+    (propagated-inputs
+     (list python-httplib2
+           python-keyring
+           python-lazr-restfulclient
+           python-lazr-uri))
+    (native-inputs (list python-mock python-testresources python-wadllib))
+    (home-page "https://help.launchpad.net/API/launchpadlib")
+    (synopsis "Python client library for Launchpad's web service")
+    (description "@code{launchpadlib} is a Python library that allows
+scripting Launchpad via its the web service API.")
+    (license license:lgpl3+)))
+
 (define-public python-lazr-uri
   (package
     (name "python-lazr-uri")
