@@ -62368,8 +62368,34 @@ handle Unicode characters correctly.")
 @code{thiserror} crate.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-thread-id-4
+  (package
+    (name "rust-thread-id")
+    (version "4.0.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "thread-id" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32 "0zvikdngp0950hi0jgiipr8l36rskk1wk7pc8cd43xr3g5if1psz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-redox-syscall" ,rust-redox-syscall-0.2)
+        ("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://github.com/ruuda/thread-id")
+    (synopsis "Get a unique ID for the current thread in Rust")
+    (description
+     "For diagnostics and debugging it can often be useful to get an ID that is
+different for every thread.")
+    (license (list license:asl2.0
+                   license:expat))))
+
 (define-public rust-thread-id-3
   (package
+    (inherit rust-thread-id-4)
     (name "rust-thread-id")
     (version "3.3.0")
     (source
@@ -62380,19 +62406,11 @@ handle Unicode characters correctly.")
         (sha256
          (base32
           "1h90v19fjz3x9b25ywh68z5yf2zsmm6h5zb4rl302ckbsp4z9yy7"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
         ("rust-redox-syscall" ,rust-redox-syscall-0.1)
-        ("rust-winapi" ,rust-winapi-0.3))))
-    (home-page "https://github.com/ruuda/thread-id")
-    (synopsis "Get a unique ID for the current thread in Rust")
-    (description
-     "For diagnostics and debugging it can often be useful to get an ID that is
-different for every thread.")
-    (license (list license:asl2.0
-                   license:expat))))
+        ("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-thread-id-2
   (package
