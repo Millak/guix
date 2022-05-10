@@ -1772,7 +1772,7 @@ provides tight coupling to Guix.")
 (define-public guile-ics
   (package
     (name "guile-ics")
-    (version "0.2.0")
+    (version "0.2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1781,26 +1781,17 @@ provides tight coupling to Guix.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0qjjvadr7gibdq9jvwkmlkb4afsw9n2shfj9phpiadinxk3p4m2g"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; Allow builds with Guile 3.0.
-                  (substitute* "configure.ac"
-                    (("^GUILE_PKG.*")
-                     "GUILE_PKG([3.0 2.2 2.0])\n"))
-                  #t))))
+                "11wv6qk8xd4sd8s97mnw383p098ffivk0na4jii76r5wbmg1wd7q"))
+              (modules '((guix build utils)))))
     (build-system gnu-build-system)
-    ;; XXX: Tests expect 'test-runner-current' to not return #f after
-    ;; 'test-end', which is no longer the case in Guile 3.0.7.
-    (arguments '(#:tests? #f))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("texinfo" ,texinfo)
-       ;; Gettext brings 'AC_LIB_LINKFLAGS_FROM_LIBS'.
-       ("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf
+           automake
+           texinfo
+           ;; Gettext brings 'AC_LIB_LINKFLAGS_FROM_LIBS'.
+           gettext-minimal
+           help2man
+           pkg-config))
     (inputs (list guile-3.0 which))
     (propagated-inputs (list guile-lib))
     (home-page "https://github.com/artyom-poptsov/guile-ics")
