@@ -12488,3 +12488,23 @@ Sadayuki Furuhashi's MessagePack library.")
 easier by automating repetitive work based on conventions, configuration, and
 templates.")
     (license license:expat)))
+
+(define-public ruby-base32
+  (package
+    (name "ruby-base32")
+    (version "0.3.4")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "base32" version))
+        (sha256
+          (base32 "1fjs0l3c5g9qxwp43kcnhc45slx29yjb6m6jxbb2x1krgjmi166b"))))
+    (build-system ruby-build-system)
+    (native-inputs
+     (list
+      ruby-gem-release))
+    (home-page "https://github.com/stesla/base32")
+    (synopsis "Ruby extension for base32 encoding and decoding")
+    (description "Base32 is a library which provides base32 decoding and
+encoding.")
+    (license license:expat)))
