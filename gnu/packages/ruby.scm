@@ -12420,3 +12420,25 @@ code")
     (description "LazyObject is an object wrapper that forwards all calls to the
 reference object.  This object is not created until the first method dispatch.")
     (license license:expat)))
+
+(define-public ruby-citrus
+  (package
+    (name "ruby-citrus")
+    (version "3.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       ;; Download from GitHub because the rubygems version does not contain
+       ;; files needed for tests.
+       (uri (git-reference
+             (url "https://github.com/mjackson/citrus")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "197wrgqrddgm1xs3yvjvd8vkvil4h4mdrcp16jmd4b57rxrrr769"))))
+    (build-system ruby-build-system)
+    (home-page "http://mjackson.github.io/citrus/")
+    (synopsis "Parsing Expressions for Ruby")
+    (description "Citrus is a parsing library for Ruby that combines the
+expressiveness of the language with the parsing expressions.")
+    (license license:expat)))
