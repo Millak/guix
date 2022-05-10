@@ -109,6 +109,31 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (srfi srfi-1))
 
+(define-public python-lazr-restfulclient
+  (package
+    (name "python-lazr-restfulclient")
+    (version "0.14.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "lazr.restfulclient" version))
+       (sha256
+        (base32 "11yhlqmdf2cqbdfzn8gdmzvmcivh4fflr18zf412sflvfjrdc3xz"))))
+    (build-system python-build-system)
+    ;; Disable the test suite to avoid the lazr.authentication requirement,
+    ;; which requires the ancient 'oauth', a Python 2 only library.
+    (arguments (list #:tests? #f))
+    (propagated-inputs
+     (list python-distro
+           python-httplib2
+           python-oauthlib
+           python-wadllib))
+    (home-page "https://launchpad.net/lazr.restfulclient")
+    (synopsis "Web client Python library extending wadlib")
+    (description "This package provides a programmable client library that
+adds functionality on top of @code{wadlib}.")
+    (license license:lgpl3+)))
+
 (define-public python-lazr-uri
   (package
     (name "python-lazr-uri")
