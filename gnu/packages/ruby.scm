@@ -12362,3 +12362,21 @@ immutable Struct class, plus extensible, lightweight validation and coercion.")
 specification.  It provides 100% mutation coverage, tested on MRI 1.9, 2.0, 2.1,
 2.2, Rubinius, and JRuby.")
     (license license:unlicense)))
+
+(define-public ruby-multicodecs
+  (package
+    (name "ruby-multicodecs")
+    (version "0.2.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "multicodecs" version))
+        (sha256
+          (base32 "0drq267di57l9zqw6zvqqimilz42rbc8z7392dwkk8wslq30s7v8"))))
+    (build-system ruby-build-system)
+    (home-page "https://github.com/SleeplessByte/ruby-multicodec")
+    (synopsis "Ruby implementation of multiformats/multicodec")
+    (description "Multicodecs is the ruby implementation of
+multiformats/multicodec, a canonical table of of codecs used by various
+multiformats.")
+    (license license:expat)))
