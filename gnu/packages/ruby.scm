@@ -12508,3 +12508,33 @@ templates.")
     (description "Base32 is a library which provides base32 decoding and
 encoding.")
     (license license:expat)))
+
+(define-public ruby-dhall
+  (package
+    (name "ruby-dhall")
+    (version "0.5.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "dhall" version))
+        (sha256
+          (base32 "09wcq8xc1ynld04r2f332bx8cn7rjc4afaq8hm1dr2fc35jlpn6m"))))
+    (build-system ruby-build-system)
+    (arguments
+     ;; No test in gem archive
+     `(#:tests? #f))
+    (propagated-inputs
+      (list
+       ruby-base32
+       ruby-cbor
+       ruby-citrus
+       ruby-lazy-object
+       ruby-multihashes
+       ruby-promise
+       ruby-value-semantics))
+    (home-page "https://git.sr.ht/~singpolyma/dhall-ruby")
+    (synopsis "Ruby implementation of the Dhall configuration language")
+    (description "Dhall.rb is a Ruby implementation of the Dhall configuration
+language.  Dhall is a memory safe and non-Turing-complete configuration
+language.")
+    (license license:gpl3+)))
