@@ -12300,3 +12300,31 @@ fast and non-mission critical like logs, emails, etc.")
 more threads to wait until a set of operations being performed in other threads
 completes.")
     (license license:expat)))
+
+(define-public ruby-value-semantics
+  (package
+    (name "ruby-value-semantics")
+    (version "3.6.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "value_semantics" version))
+        (sha256
+          (base32 "1vdwai8wf6r1fkvdpyz1vzxm89q7ghjvb3pqpg2kvwibwzd99dnx"))))
+    (build-system ruby-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "rspec")))))))
+    (native-inputs
+     (list
+      ruby-rspec))
+    (home-page "https://github.com/tomdalling/value_semantics")
+    (synopsis "Ruby gem for making value classes")
+    (description "ValueSemantics generates modules that provide conventional
+value semantics for a given set of attributes.  The behaviour is similar to an
+immutable Struct class, plus extensible, lightweight validation and coercion.")
+    (license license:expat)))
