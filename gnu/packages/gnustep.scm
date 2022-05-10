@@ -3,6 +3,7 @@
 ;;; Copyright © 2016, 2017 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -23,7 +24,7 @@
   #:use-module (guix download)
   #:use-module (guix packages)
   #:use-module (guix build-system gnu)
-  #:use-module (guix licenses)
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
   #:use-module (gnu packages xorg)
@@ -62,7 +63,7 @@ to write makefiles for a GNUstep-based project.  It allows the user to write a
 project without having to deal with the complex issues associated with
 configuration, building, installation, and packaging.  It also allows the user
 to easily create cross-compiled binaries.")
-    (license gpl3+)))
+    (license license:gpl3+)))
 
 (define-public windowmaker
   (package
@@ -153,7 +154,7 @@ possible, it reproduces the elegant look and feel of the NeXTSTEP user
 interface.  It is fast, feature rich, easy to configure, and easy to use.")
 
     ;; Artwork is distributed under the WTFPL.
-    (license gpl2+)))
+    (license license:gpl2+)))
 
 (define-public wmbattery
   (package
@@ -180,7 +181,7 @@ interface.  It is fast, feature rich, easy to configure, and easy to use.")
 This includes if it is plugged in, if the battery is charging, how many minutes
 of battery life remain, battery life remaining (with both a percentage and a
 graph), and battery status (high - green, low - yellow, or critical - red).")
-    (license gpl2)))
+    (license license:gpl2)))
 
 (define-public wmnd
   (package
@@ -204,7 +205,7 @@ graph), and battery status (high - green, low - yellow, or critical - red).")
     (description
      "WMND is a dockapp for monitoring network interfaces under WindowMaker and
 other compatible window managers.")
-    (license gpl2+)))
+    (license license:gpl2+)))
 
 (define-public wmcpuload
   (package
@@ -231,7 +232,7 @@ chart, and has an LCD look-alike user interface.  The back-light may be turned
 on and off by clicking the mouse button over the application.  If the CPU usage
 hits a certain threshold, an alarm-mode will alert you by turning back-light
 on.")
-    (license gpl2+)))
+    (license license:gpl2+)))
 
 (define-public wmclock
   (package
@@ -257,7 +258,7 @@ on.")
      "wmclock is an applet for Window Maker which displays the date and time in
 a dockable tile.  It features multiple language support, 24h or 12h time
 display, and can run a user-specified program on mouse click.")
-    (license gpl2+)))
+    (license license:gpl2+)))
 
 (define-public wmfire
   (package
@@ -286,4 +287,4 @@ memory, network load, a file or just be set to show a pretty flame.  On
 entering the dock a burning spot replaces the cursor, and after two seconds
 symbols to represent the current monitor are \"burnt\" onscreen.  The flame
 colour can also be changed.")
-    (license gpl2+)))
+    (license license:gpl2+)))
