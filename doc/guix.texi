@@ -279,6 +279,7 @@ Programming Interface
 * Package Modules::             Packages from the programmer's viewpoint.
 * Defining Packages::           Defining new packages.
 * Defining Package Variants::   Customizing packages.
+* Writing Manifests::           The bill of materials of your environment.
 * Build Systems::               Specifying how packages are built.
 * Build Phases::                Phases of the build process of a package.
 * Build Utilities::             Helpers for your package definitions and more.
@@ -3378,7 +3379,6 @@ commands.  The advantage is that @var{file} can be put under version
 control, copied to different machines to reproduce the same profile, and
 so on.
 
-@c FIXME: Add reference to (guix profile) documentation when available.
 @var{file} must return a @dfn{manifest} object, which is roughly a list
 of packages:
 
@@ -3393,30 +3393,7 @@ of packages:
        (list guile-2.0 "debug")))
 @end lisp
 
-@findex specifications->manifest
-In this example we have to know which modules define the @code{emacs}
-and @code{guile-2.0} variables to provide the right
-@code{use-package-modules} line, which can be cumbersome.  We can
-instead provide regular package specifications and let
-@code{specifications->manifest} look up the corresponding package
-objects, like this:
-
-@lisp
-(specifications->manifest
- '("emacs" "guile@@2.2" "guile@@2.2:debug"))
-@end lisp
-
-@findex package->development-manifest
-You might also want to create a manifest for all the dependencies of a
-package, rather than the package itself:
-
-@lisp
-(package->development-manifest (specification->package "emacs"))
-@end lisp
-
-The example above gives you all the software required to develop Emacs,
-similar to what @command{guix environment emacs} provides.
-
+@xref{Writing Manifests}, for information on how to write a manifest.
 @xref{export-manifest, @option{--export-manifest}}, to learn how to
 obtain a manifest file from an existing profile.
 
@@ -4711,7 +4688,7 @@ want to install in your profile the current @code{guile} package, along with
 the @code{guile-json} as it existed in an older revision of Guix---perhaps
 because the newer @code{guile-json} has an incompatible API and you want to
 run your code against the old API@.  To do that, you could write a manifest for
-use by @code{guix package --manifest} (@pxref{Invoking guix package}); in that
+use by @code{guix package --manifest} (@pxref{Writing Manifests}); in that
 manifest, you would create an inferior for that old Guix revision you care
 about, and you would look up the @code{guile-json} package in the inferior:
 
@@ -5783,6 +5760,7 @@ former is sourced only by log-in shells.  @xref{Bash Startup Files,,,
 bash, The GNU Bash Reference Manual}, for details on Bash start-up
 files.
 
+@anchor{shell-development-option}
 @item --development
 @itemx -D
 Cause @command{guix shell} to include in the environment the
@@ -5824,6 +5802,10 @@ To select other outputs, two element tuples can be specified:
 guix shell -e '(list (@@ (gnu packages bash) bash) "include")'
 @end example
 
+@xref{package-development-manifest,
+@code{package->development-manifest}}, for information on how to write a
+manifest for the development environment of a package.
+
 @item --file=@var{file}
 @itemx -f @var{file}
 Create an environment containing the package or list of packages that
@@ -5843,6 +5825,7 @@ running:
 guix shell -D -f gdb-devel.scm
 @end example
 
+@anchor{shell-manifest}
 @item --manifest=@var{file}
 @itemx -m @var{file}
 Create an environment for the packages contained in the manifest object
@@ -5853,6 +5836,7 @@ This is similar to the same-named option in @command{guix package}
 (@pxref{profile-manifest, @option{--manifest}}) and uses the same
 manifest files.
 
+@xref{Writing Manifests}, for information on how to write a manifest.
 See @option{--export-manifest} below on how to obtain a first manifest.
 
 @cindex manifest, exporting
@@ -6737,6 +6721,7 @@ This has the same purpose as the same-named option in @command{guix
 build} (@pxref{Additional Build Options, @option{--expression} in
 @command{guix build}}).
 
+@anchor{pack-manifest}
 @item --manifest=@var{file}
 @itemx -m @var{file}
 Use the packages contained in the manifest object returned by the Scheme
@@ -6751,6 +6736,7 @@ for use on machines that do not have Guix installed.  Note that you can
 specify @emph{either} a manifest file @emph{or} a list of packages,
 but not both.
 
+@xref{Writing Manifests}, for information on how to write a manifest.
 @xref{shell-export-manifest, @command{guix shell --export-manifest}},
 for information on how to ``convert'' command-line options into a
 manifest.
@@ -6957,6 +6943,7 @@ package definitions.
 * Package Modules::             Packages from the programmer's viewpoint.
 * Defining Packages::           Defining new packages.
 * Defining Package Variants::   Customizing packages.
+* Writing Manifests::           The bill of materials of your environment.
 * Build Systems::               Specifying how packages are built.
 * Build Phases::                Phases of the build process of a package.
 * Build Utilities::             Helpers for your package definitions and more.
@@ -7961,6 +7948,312 @@ depended on and returns the resulting package.  The procedure stops recursion
 when @var{cut?} returns true for a given package.  When @var{deep?} is true, @var{proc} is
 applied to implicit inputs as well.
 @end deffn
+
+@node Writing Manifests
+@section Writing Manifests
+
+@cindex manifest
+@cindex bill of materials (manifests)
+@command{guix} commands let you specify package lists on the command
+line.  This is convenient, but as the command line becomes longer and
+less trivial, it quickly becomes more convenient to have that package
+list in what we call a @dfn{manifest}.  A manifest is some sort of a
+``bill of materials'' that defines a package set.  You would typically
+come up with a code snippet that builds the manifest, store it in a
+file, say @file{manifest.scm}, and then pass that file to the
+@option{-m} (or @option{--manifest}) option that many @command{guix}
+commands support.  For example, here's what a manifest for a simple
+package set might look like:
+
+@lisp
+;; Manifest for three packages.
+(specifications->manifest '("gcc-toolchain" "make" "git"))
+@end lisp
+
+Once you have that manifest, you can pass it, for example, to
+@command{guix package} to install just those three packages to your
+profile (@pxref{profile-manifest, @option{-m} option of @command{guix
+package}}):
+
+@example
+guix package -m manifest.scm
+@end example
+
+@noindent
+... or you can pass it to @command{guix shell} (@pxref{shell-manifest,
+@command{-m} option of @command{guix shell}}) to spawn an ephemeral
+environment:
+
+@example
+guix shell -m manifest.scm
+@end example
+
+@noindent
+... or you can pass it to @command{guix pack} in pretty much the same
+way (@pxref{pack-manifest, @option{-m} option of @command{guix pack}}).
+You can store the manifest under version control, share it with others
+so they can easily get set up, etc.
+
+But how do you write your first manifest?  To get started, maybe you'll
+want to write a manifest that mirrors what you already have in a
+profile.  Rather than start from a blank page, @command{guix package}
+can generate a manifest for you (@pxref{export-manifest, @command{guix
+package --export-manifest}}):
+
+@example
+# Write to 'manifest.scm' a manifest corresponding to the
+# default profile, ~/.guix-profile.
+guix package --export-manifest > manifest.scm
+@end example
+
+Or maybe you'll want to ``translate'' command-line arguments into a
+manifest.  In that case, @command{guix shell} can help
+(@pxref{shell-export-manifest, @command{guix shell --export-manifest}}):
+
+@example
+# Write a manifest for the packages specified on the command line.
+guix shell --export-manifest gcc-toolchain make git > manifest.scm
+@end example
+
+In both cases, the @option{--export-manifest} option tries hard to
+generate a faithful manifest; in particular, it takes package
+transformation options into account (@pxref{Package Transformation
+Options}).
+
+@quotation Note
+Manifests are @emph{symbolic}: they refer to packages of the channels
+@emph{currently in use} (@pxref{Channels}).  In the example above,
+@code{gcc-toolchain} might refer to version 11 today, but it might refer
+to version 13 two years from now.
+
+If you want to ``pin'' your software environment to specific package
+versions and variants, you need an additional piece of information: the
+list of channel revisions in use, as returned by @command{guix
+describe}.  @xref{Replicating Guix}, for more information.
+@end quotation
+
+Once you've obtained your first manifest, perhaps you'll want to
+customize it.  Since your manifest is code, you now have access to all
+the Guix programming interfaces!
+
+Let's assume you want a manifest to deploy a custom variant of GDB, the
+GNU Debugger, that does not depend on Guile, together with another
+package.  Building on the example seen in the previous section
+(@pxref{Defining Package Variants}), you can write a manifest along
+these lines:
+
+@lisp
+(use-modules (guix packages)
+             (gnu packages gdb)               ;for 'gdb'
+             (gnu packages version-control))  ;for 'git'
+
+;; Define a variant of GDB without a dependency on Guile.
+(define gdb-sans-guile
+  (package
+    (inherit gdb)
+    (inputs (modify-inputs (package-inputs gdb)
+              (delete "guile")))))
+
+;; Return a manifest containing that one package plus Git.
+(packages->manifest (list gdb-sans-guile git))
+@end lisp
+
+Note that in this example, the manifest directly refers to the
+@code{gdb} and @code{git} variables, which are bound to a @code{package}
+object (@pxref{package Reference}), instead of calling
+@code{specifications->manifest} to look up packages by name as we did
+before.  The @code{use-modules} form at the top lets us access the core
+package interface (@pxref{Defining Packages}) and the modules that
+define @code{gdb} and @code{git} (@pxref{Package Modules}).  Seamlessly,
+we're weaving all this together---the possibilities are endless, unleash
+your creativity!
+
+The data type for manifests as well as supporting procedures are defined
+in the @code{(guix profiles)} module, which is automatically available
+to code passed to @option{-m}.  The reference follows.
+
+@deftp {Data Type} manifest
+Data type representing a manifest.
+
+It currently has one field:
+
+@table @code
+@item entries
+This must be a list of @code{manifest-entry} records---see below.
+@end table
+@end deftp
+
+@deftp {Data Type} manifest-entry
+Data type representing a manifest entry.  A manifest entry contains
+essential metadata: a name and version string, the object (usually a
+package) for that entry, the desired output (@pxref{Packages with
+Multiple Outputs}), and a number of optional pieces of information
+detailed below.
+
+Most of the time, you won't build a manifest entry directly; instead,
+you will pass a package to @code{package->manifest-entry}, described
+below.  In some unusual cases though, you might want to create manifest
+entries for things that are @emph{not} packages, as in this example:
+
+@lisp
+;; Manually build a single manifest entry for a non-package object.
+(let ((hello (program-file "hello" #~(display "Hi!"))))
+  (manifest-entry
+    (name "foo")
+    (version "42")
+    (item
+     (computed-file "hello-directory"
+                     #~(let ((bin (string-append #$output "/bin")))
+                         (mkdir #$output) (mkdir bin)
+                          (symlink #$hello
+                                   (string-append bin "/hello")))))))
+@end lisp
+
+The available fields are the following:
+
+@table @asis
+@item @code{name}
+@itemx @code{version}
+Name and version string for this entry.
+
+@item @code{item}
+A package or other file-like object (@pxref{G-Expressions, file-like
+objects}).
+
+@item @code{output} (default: @code{"out"})
+Output of @code{item} to use, in case @code{item} has multiple outputs
+(@pxref{Packages with Multiple Outputs}).
+
+@item @code{dependencies} (default: @code{'()})
+List of manifest entries this entry depends on.  When building a
+profile, dependencies are added to the profile.
+
+Typically, the propagated inputs of a package (@pxref{package Reference,
+@code{propagated-inputs}}) end up having a corresponding manifest entry
+in among the dependencies of the package's own manifest entry.
+
+@item @code{search-paths} (default: @code{'()})
+The list of search path specifications honored by this entry
+(@pxref{Search Paths}).
+
+@item @code{properties} (default: @code{'()})
+List of symbol/value pairs.  When building a profile, those properties
+get serialized.
+
+This can be used to piggyback additional metadata---e.g., the
+transformations applied to a package (@pxref{Package Transformation
+Options}).
+
+@item @code{parent} (default: @code{(delay #f)})
+A promise pointing to the ``parent'' manifest entry.
+
+This is used as a hint to provide context when reporting an error
+related to a manifest entry coming from a @code{dependencies} field.
+@end table
+@end deftp
+
+@deffn {Scheme Procedure} concatenate-manifests @var{lst}
+Concatenate the manifests listed in @var{lst} and return the resulting
+manifest.
+@end deffn
+
+@c TODO: <manifest-pattern>, manifest-lookup, manifest-remove, etc.
+
+@deffn {Scheme Procedure} package->manifest-entry @var{package} @
+  [@var{output}] [#:properties]
+Return a manifest entry for the @var{output} of package @var{package},
+where @var{output} defaults to @code{"out"}, and with the given
+@var{properties}.  By default @var{properties} is the empty list or, if
+one or more package transformations were applied to @var{package}, it is
+an association list representing those transformations, suitable as an
+argument to @code{options->transformation} (@pxref{Defining Package
+Variants, @code{options->transformation}}).
+
+The code snippet below builds a manifest with an entry for the default
+output and the @code{send-email} output of the @code{git} package:
+
+@lisp
+(use-modules (gnu packages version-control))
+
+(manifest (list (package->manifest-entry git)
+                (package->manifest-entry git "send-email")))
+@end lisp
+@end deffn
+
+@deffn {Scheme Procedure} packages->manifest @var{packages}
+Return a list of manifest entries, one for each item listed in
+@var{packages}.  Elements of @var{packages} can be either package
+objects or package/string tuples denoting a specific output of a
+package.
+
+Using this procedure, the manifest above may be rewritten more
+concisely:
+
+@lisp
+(use-modules (gnu packages version-control))
+
+(packages->manifest (list git `(,git "send-email")))
+@end lisp
+@end deffn
+
+@anchor{package-development-manifest}
+@deffn {Scheme Procedure} package->development-manifest @var{package} @
+  [@var{system}] [#:target]
+Return a manifest for the @dfn{development inputs} of @var{package} for
+@var{system}, optionally when cross-compiling to @var{target}.
+Development inputs include both explicit and implicit inputs of
+@var{package}.
+
+Like the @option{-D} option of @command{guix shell}
+(@pxref{shell-development-option, @command{guix shell -D}}), the
+resulting manifest describes the environment in which one can develop
+@var{package}.  For example, suppose you're willing to set up a
+development environment for Inkscape, with the addition of Git for
+version control; you can describe that ``bill of materials'' with the
+following manifest:
+
+@lisp
+(use-modules (gnu packages inkscape)          ;for 'inkscape'
+             (gnu packages version-control))  ;for 'git'
+
+(concatenate-manifests
+ (list (package->development-manifest inkscape)
+       (packages->manifest (list git))))
+@end lisp
+
+In this example, the development manifest that
+@code{package->development-manifest} returns includes the compiler
+(GCC), the many supporting libraries (Boost, GLib, GTK, etc.), and a
+couple of additional development tools---these are the dependencies
+@command{guix show inkscape} lists.
+@end deffn
+
+@c TODO: Move (gnu packages) interface to a section of its own.
+
+Last, the @code{(gnu packages)} module provides higher-level facilities
+to build manifests.  In particular, it lets you look up packages by
+name---see below.
+
+@deffn {Scheme Procedure} specifications->manifest @var{specs}
+Given @var{specs}, a list of specifications such as @code{"emacs@@25.2"}
+or @code{"guile:debug"}, return a manifest.  Specs have the format that
+command-line tools such as @command{guix install} and @command{guix
+package} understand (@pxref{Invoking guix package}).
+
+As an example, it lets you rewrite the Git manifest that we saw earlier
+like this:
+
+@lisp
+(specifications->manifest '("git" "git:send-email"))
+@end lisp
+
+Notice that we do not need to worry about @code{use-modules}, importing
+the right set of modules, and referring to the right variables.
+Instead, we directly refer to packages in the same way as on the command
+line, which can often be more convenient.
+@end deffn
+
+@c TODO: specifications->package, etc.
 
 
 @node Build Systems
@@ -39388,7 +39681,7 @@ You can then pass it to any command with the @option{-m} option:
 guix shell -m manifest.scm -- pdflatex doc.tex
 @end example
 
-@xref{Invoking guix package, @option{--manifest}}, for more on
+@xref{Writing Manifests}, for more on
 manifests.  In the future, we plan to provide packages for @TeX{} Live
 @dfn{collections}---``meta-packages'' such as @code{fontsrecommended},
 @code{humanities}, or @code{langarabic} that provide the set of packages
