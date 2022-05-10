@@ -12282,3 +12282,21 @@ library.  It is perfect for asynchronous processes like emailing, data crunching
 or social platform manipulation; and generally recommended for jobs that are
 fast and non-mission critical like logs, emails, etc.")
     (license license:expat)))
+
+(define-public ruby-countdownlatch
+  (package
+    (name "ruby-countdownlatch")
+    (version "1.0.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "countdownlatch" version))
+        (sha256
+          (base32 "1v6pbay6z07fp7yvnba1hmyacbicvmjndd8rn2h1b5rmpcb5s0j3"))))
+    (build-system ruby-build-system)
+    (home-page "https://github.com/benlangfeld/countdownlatch")
+    (synopsis "Thread synchronization aid Ruby")
+    (description "CountDownLatch is a synchronization aid that allows one or
+more threads to wait until a set of operations being performed in other threads
+completes.")
+    (license license:expat)))
