@@ -12401,3 +12401,22 @@ multiformats.")
 implementation for Ruby.  A multihash is a digest with an embedded hash function
 code")
     (license license:expat)))
+
+(define-public ruby-lazy-object
+  (package
+    (name "ruby-lazy-object")
+    (version "0.0.3")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "lazy_object" version))
+        (sha256
+          (base32 "08px15lahc28ik9smvw1hgamf792gd6gq0s4k94yq1h7jq25wjn8"))))
+    (build-system ruby-build-system)
+    (arguments
+     `(#:test-target "spec"))
+    (home-page "https://github.com/HornsAndHooves/lazy_object")
+    (synopsis "Object wrapper that forwards all calls to the reference object")
+    (description "LazyObject is an object wrapper that forwards all calls to the
+reference object.  This object is not created until the first method dispatch.")
+    (license license:expat)))
