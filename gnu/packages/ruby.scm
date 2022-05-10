@@ -12467,3 +12467,24 @@ expressiveness of the language with the parsing expressions.")
 @acronym{CBOR, Concise Binary Object Representation} format, based on
 Sadayuki Furuhashi's MessagePack library.")
     (license license:asl2.0)))
+
+(define-public ruby-gem-release
+  (package
+    (name "ruby-gem-release")
+    (version "2.2.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "gem-release" version))
+        (sha256
+          (base32 "108rrfaiayi14zrqbb6z0cbwcxh8n15am5ry2a86v7c8c3niysq9"))))
+    (build-system ruby-build-system)
+    (arguments
+     ;; No rakefile
+     `(#:tests? #f))
+    (home-page "https://github.com/svenfuchs/gem-release")
+    (synopsis "Ruby gem plugin for release management")
+    (description "GemRelease is a gem plugin that aims at making gem development
+easier by automating repetitive work based on conventions, configuration, and
+templates.")
+    (license license:expat)))
