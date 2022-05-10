@@ -12328,3 +12328,37 @@ completes.")
 value semantics for a given set of attributes.  The behaviour is similar to an
 immutable Struct class, plus extensible, lightweight validation and coercion.")
     (license license:expat)))
+
+(define-public ruby-promise
+  (package
+    (name "ruby-promise")
+    (version "0.7.4")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "promise.rb" version))
+        (sha256
+          (base32 "0a819sikcqvhi8hck1y10d1nv2qkjvmmm553626fmrh51h2i089d"))))
+    (build-system ruby-build-system)
+    (arguments
+     `(#:test-target "spec"
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'extract-gemspec 'less-strict-dependencies
+           (lambda _
+             (substitute* "Rakefile"
+               (("if Gem.ruby_version.*") "if false\n"))
+             (substitute* "spec/spec_helper.rb"
+               ((".*devtools/spec_helper.*") "\n")))))))
+    (native-inputs
+     (list
+      ruby-rspec
+      ruby-rspec-its
+      ruby-awesome-print
+      ruby-fuubar))
+    (home-page "https://github.com/lgierth/promise.rb")
+    (synopsis "Asynchronous operation library for Ruby")
+    (description "Promise is a Ruby implementation of the Promises/A+
+specification.  It provides 100% mutation coverage, tested on MRI 1.9, 2.0, 2.1,
+2.2, Rubinius, and JRuby.")
+    (license license:unlicense)))
