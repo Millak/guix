@@ -12442,3 +12442,28 @@ reference object.  This object is not created until the first method dispatch.")
     (description "Citrus is a parsing library for Ruby that combines the
 expressiveness of the language with the parsing expressions.")
     (license license:expat)))
+
+(define-public ruby-cbor
+  (package
+    (name "ruby-cbor")
+    (version "0.5.9.6")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "cbor" version))
+        (sha256
+          (base32 "0511idr8xps9625nh3kxr68sdy6l3xy2kcz7r57g47fxb1v18jj3"))))
+    (build-system ruby-build-system)
+    (arguments
+     `(#:test-target "spec"))
+    (native-inputs
+     (list
+      ruby-rspec
+      ruby-rake-compiler
+      ruby-yard))
+    (home-page "http://cbor.io/")
+    (synopsis "Concise Binary Object Representation")
+    (description "CBOR is a library for the
+@acronym{CBOR, Concise Binary Object Representation} format, based on
+Sadayuki Furuhashi's MessagePack library.")
+    (license license:asl2.0)))
