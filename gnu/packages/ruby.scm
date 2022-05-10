@@ -12538,3 +12538,41 @@ encoding.")
 language.  Dhall is a memory safe and non-Turing-complete configuration
 language.")
     (license license:gpl3+)))
+
+(define-public ruby-money
+  (package
+    (name "ruby-money")
+    (version "6.16.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "money" version))
+        (sha256
+          (base32 "0jkmsj5ymadik7bvl670bqwmvhsdyv7hjr8gq9z293hq35gnyiyg"))))
+    (build-system ruby-build-system)
+    (arguments
+     ;; No rakefile.
+     `(#:tests? #f))
+    (propagated-inputs
+     (list
+      ruby-i18n))
+    (home-page "https://rubymoney.github.io/money/")
+    (synopsis "Currency conversion library for Ruby")
+    (description "RubyMoney provides a library for dealing with money and
+currency conversion.  Its features are:
+@itemize
+@item
+Provides a Money class which encapsulates all information about a certain
+amount of money, such as its value and its currency.
+@item
+Provides a Money::Currency class which encapsulates all information about a
+monetary unit.
+@item
+Represents monetary values as integers, in cents; so avoids floating point
+rounding errors.
+@item
+Represents currency as Money::Currency instances providing a high level of
+flexibility.
+@item Provides APIs for exchanging money from one currency to another.
+@end itemize")
+    (license license:expat)))
