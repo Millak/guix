@@ -12380,3 +12380,24 @@ specification.  It provides 100% mutation coverage, tested on MRI 1.9, 2.0, 2.1,
 multiformats/multicodec, a canonical table of of codecs used by various
 multiformats.")
     (license license:expat)))
+
+(define-public ruby-multihashes
+  (package
+    (name "ruby-multihashes")
+    (version "0.2.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "multihashes" version))
+        (sha256
+          (base32 "17wiyy3fiv8rpgdv9ca01yncsmaaf8yg15bg18wc7m9frss1vgqg"))))
+    (build-system ruby-build-system)
+    (propagated-inputs
+     (list
+      ruby-multicodecs))
+    (home-page "https://github.com/multiformats/ruby-multihash")
+    (synopsis "Multihash implementation for Ruby")
+    (description "Multihashes provides a simple, low-level multihash
+implementation for Ruby.  A multihash is a digest with an embedded hash function
+code")
+    (license license:expat)))
