@@ -389,6 +389,9 @@ given PATCHES.  When TOOLS-EXTRA is given, it must point to the
             (variable "CPLUS_INCLUDE_PATH")
             (files '("include/c++" "include")))
            (search-path-specification
+            (variable "OBJC_INCLUDE_PATH")
+            (files '("include")))
+           (search-path-specification
             (variable "LIBRARY_PATH")
             (files '("lib" "lib64")))))
 
