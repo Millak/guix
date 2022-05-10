@@ -6625,51 +6625,14 @@ comparison.
 (define-public python-matplotlib
   (package
     (name "python-matplotlib")
-    (version "3.5.1")
+    (version "3.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "matplotlib" version))
        (sha256
-        (base32 "076f8qi265x8jy89c03r3vv5h4is4ir5mawwrrrpp96314783sdj"))))
+        (base32 "18h78s5ld1i6mz00w258hy29909nfr3ddq6ry9kq18agw468bks8"))))
     (build-system python-build-system)
-    (propagated-inputs     ; the following packages are all needed at run time
-     `(("python-cycler" ,python-cycler)
-       ("python-fonttools" ,python-fonttools)
-       ("python-kiwisolver" ,python-kiwisolver)
-       ("python-packaging" ,python-packaging)
-       ("python-pyparsing" ,python-pyparsing)
-       ("python-pygobject" ,python-pygobject)
-       ("python-certifi" ,python-certifi)
-       ("gobject-introspection" ,gobject-introspection)
-       ("python-tkinter" ,python "tk")
-       ("python-dateutil" ,python-dateutil)
-       ("python-numpy" ,python-numpy)
-       ("python-pillow" ,python-pillow)
-       ("python-pytz" ,python-pytz)
-       ("python-six" ,python-six)
-       ("python-wxpython" ,python-wxpython)
-       ;; From version 1.4.0 'matplotlib' makes use of 'cairocffi' instead of
-       ;; 'pycairo'. However, 'pygobject' makes use of a 'pycairo' 'context'
-       ;; object. For this reason we need to import both libraries.
-       ;; https://cairocffi.readthedocs.io/en/stable/cffi_api.html#converting-pycairo-wrappers-to-cairocffi
-       ("python-pycairo" ,python-pycairo)
-       ("python-cairocffi" ,python-cairocffi)))
-    (inputs
-     (list libpng
-           freetype
-           qhull
-           cairo
-           glib
-           tcl
-           tk))
-    (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("python-pytest" ,python-pytest)
-       ("python-pytest-timeout" ,python-pytest-timeout)
-       ("python-pytest-xdist" ,python-pytest-xdist)
-       ("python-setuptools-scm" ,python-setuptools-scm)
-       ("python-setuptools-scm-git-archive" ,python-setuptools-scm-git-archive)))
     (arguments
      (list
       #:phases
@@ -6687,8 +6650,8 @@ comparison.
             (lambda _
               (substitute* (append (find-files "lib/matplotlib/tests/"
                                                "test_.*\\.py$")
-                               (find-files "lib/mpl_toolkits/tests"
-                                           "test_.*\\.py$"))
+                                   (find-files "lib/mpl_toolkits/tests"
+                                               "test_.*\\.py$"))
                 (("^from matplotlib" match)
                  (string-append "import pytest\n" match))
                 (("( *)@([^_]+_)*(image_comparison|check_figures_equal)" match
@@ -6711,7 +6674,11 @@ reason=\"unknown minor image differences\")\n" match)))
                           ;; different version of FreeType.
                           "lib/matplotlib/tests/test_constrainedlayout.py"
                           ;; Fontconfig returns no fonts.
-                          "lib/matplotlib/tests/test_font_manager.py"))))
+                          "lib/matplotlib/tests/test_font_manager.py"
+                          ;; The images comparison test fails
+                          ;; non-deterministically when run in parallel (see:
+                          ;; https://github.com/matplotlib/matplotlib/issues/22992).
+                          "lib/matplotlib/tests/test_compare_images.py"))))
           (add-before 'build 'configure-environment
             (lambda* (#:key inputs #:allow-other-keys)
               ;; Fix rounding errors when using the x87 FPU.
@@ -6741,7 +6708,47 @@ tests = True~%" (assoc-ref inputs "tcl") (assoc-ref inputs "tk"))))))
                   ;; everything gets built in the source directory.
                   (invoke "pytest"
                           "-n" (number->string (parallel-job-count))
-                          "-m" "not network" "--pyargs" "matplotlib"))))))))
+                          "-m" "not network" "--pyargs" "matplotlib"
+                          ;; The 'test_lazy_auto_backend_selection' fails
+                          ;; because it would require an X server; skip it.
+                          "-k" "not test_lazy_auto_backend_selection"))))))))
+    (propagated-inputs
+     (list gobject-introspection
+           python-cairocffi
+           python-certifi
+           python-cycler
+           python-dateutil
+           python-fonttools
+           python-kiwisolver
+           python-numpy
+           python-packaging
+           python-pillow
+           ;; ;; 'pycairo'.  However, 'pygobject' makes use of a 'pycairo' 'context'
+           ;; ;; From version 1.4.0 'matplotlib' makes use of 'cairocffi' instead of
+           ;; ;; https://cairocffi.readthedocs.io/en/stable/cffi_api.html#converting-pycairo-wrappers-to-cairocffi
+           ;; ;; object.  For this reason we need to import both libraries.
+           ;; python-pycairo
+           python-pygobject
+           python-pyparsing
+           python-pytz
+           python-six
+           `(,python "tk")
+           python-wxpython))
+    (inputs
+     (list cairo
+           freetype
+           glib
+           libpng
+           qhull
+           tcl
+           tk))
+    (native-inputs
+     (list pkg-config
+           python-pytest
+           python-pytest-timeout
+           python-pytest-xdist
+           python-setuptools-scm
+           python-setuptools-scm-git-archive))
     (home-page "https://matplotlib.org/")
     (synopsis "2D plotting library for Python")
     (description
