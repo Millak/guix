@@ -40651,15 +40651,22 @@ synchronization primitives.")
     (arguments
      `(#:cargo-inputs
        (("rust-backtrace" ,rust-backtrace-0.3)
-        ("rust-cfg-if" ,rust-cfg-if-0.1)
-        ("rust-cloudabi" ,rust-cloudabi-0.1)
+        ("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-instant" ,rust-instant-0.1)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-petgraph" ,rust-petgraph-0.5)
-        ("rust-redox-syscall" ,rust-redox-syscall-0.1)
+        ("rust-redox-syscall" ,rust-redox-syscall-0.2)
         ("rust-smallvec" ,rust-smallvec-1)
-        ("rust-thread-id" ,rust-thread-id-3)
-        ("rust-winapi" ,rust-winapi-0.3))))
+        ("rust-thread-id" ,rust-thread-id-4)
+        ("rust-winapi" ,rust-winapi-0.3))
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'relax-dependencies
+                    (lambda _
+                      ;; XXX: The file demands 0.3.60; we have 0.3.56, but
+                      ;; that works well, really.
+                      (substitute* "Cargo.toml"
+                        (("0\\.3\\.60")
+                         ,(package-version rust-backtrace-0.3))))))))
     (home-page "https://github.com/Amanieu/parking_lot")
     (synopsis "API for creating custom synchronization primitives")
     (description "This package provides an advanced API for creating custom
