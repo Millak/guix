@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2018, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,7 +28,7 @@
 ;;; Code:
 
 (define* (bzr-fetch url revision directory
-                    #:key (bzr-command "bzr"))
+                    #:key (bzr-command "brz"))
   "Fetch REVISION from URL into DIRECTORY.  REVISION must be a valid Bazaar
 revision identifier.  Return #t on success, else throw an exception."
   ;; Do not attempt to write .bzr.log to $HOME, which doesn't exist.
@@ -37,8 +37,6 @@ revision identifier.  Return #t on success, else throw an exception."
   (invoke bzr-command "-Ossl.cert_reqs=none" "checkout"
           "--lightweight" "-r" revision url directory)
   (with-directory-excursion directory
-    (begin
-      (delete-file-recursively ".bzr")
-      #t)))
+    (delete-file-recursively ".bzr")))
 
 ;;; bzr.scm ends here

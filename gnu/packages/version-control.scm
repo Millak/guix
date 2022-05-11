@@ -139,44 +139,6 @@
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1))
 
-(define-public bazaar
-  (package
-    (name "bazaar")
-    (version "2.7.0")
-    (source
-     (origin
-      (method url-fetch)
-      (uri (string-append "https://launchpad.net/bzr/"
-                          (version-major+minor version) "/" version
-                          "/+download/bzr-" version ".tar.gz"))
-      (patches (search-patches "bazaar-CVE-2017-14176.patch"))
-      (sha256
-       (base32
-        "1cysix5k3wa6y7jjck3ckq3abls4gvz570s0v0hxv805nwki4i8d"))))
-    (build-system python-build-system)
-    (inputs
-     ;; Note: 'tools/packaging/lp-upload-release' and 'tools/weavemerge.sh'
-     ;; require Zsh.
-     `(("gettext" ,gettext-minimal)))
-    (arguments
-     `(#:tests? #f ; no test target
-       #:python ,python-2   ; Python 3 apparently not yet supported, see
-                            ; https://answers.launchpad.net/bzr/+question/229048
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-mandir
-           (lambda _
-             (substitute* "setup.py"
-                          (("man/man1") "share/man/man1"))
-             #t)))))
-    (home-page "https://gnu.org/software/bazaar")
-    (synopsis "Version control system supporting both distributed and centralized workflows")
-    (description
-     "GNU Bazaar is a version control system that allows you to record
-changes to project files over time.  It supports both a distributed workflow
-as well as the classic centralized workflow.")
-    (license license:gpl2+)))
-
 (define-public breezy
   (package
     (name "breezy")
@@ -247,6 +209,9 @@ Git} file formats.  Breezy is backwabrds compatible with Bazaar's disk format
 and protocols.  One of the key differences with Bazaar is that Breezy runs on
 Python 3.3 and later, rather than on Python 2.")
     (license license:gpl2+)))
+
+(define-public bazaar
+  (deprecated-package "bazaar" breezy))
 
 (define git-cross-configure-flags
   '("ac_cv_fread_reads_directories=yes"
