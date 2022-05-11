@@ -545,13 +545,13 @@ ksh, and tcsh.")
 (define-public xonsh
   (package
     (name "xonsh")
-    (version "0.9.27")
+    (version "0.12.4")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "xonsh" version))
         (sha256
-          (base32 "1maz7yvb5py91n699yqsna81x2i25mvrqkrcn7h7870nxd87ral2"))
+          (base32 "0xlac84nsgs0052n2pw8np1smlgghrbd7p6yrcp7d5qh8zdr9lx3"))
         (modules '((guix build utils)))
         (snippet
          `(begin
@@ -565,6 +565,7 @@ ksh, and tcsh.")
                                "xonsh/__amalgam__.py"
                                "xonsh/lexer.py"
                                "xonsh/parsers/base.py"
+                               "xonsh/parsers/completion_context.py"
                                "xonsh/xonfig.py")
               (("from xonsh\\.ply\\.(.*) import" _ module)
                (format #f "from ~a import" module))
@@ -572,10 +573,19 @@ ksh, and tcsh.")
             #t))))
     (build-system python-build-system)
     (arguments
-     '(;; TODO Try running run the test suite.
-       ;; See 'requirements-tests.txt' in the source distribution for more
-       ;; information.
-       #:tests? #f))
+     (list ;; TODO Try running run the test suite.
+           ;; See 'requirements-tests.txt' in the source distribution for more
+           ;; information.
+           #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'install
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out")))
+                     (invoke "python" "-m" "compileall"
+                             "--invalidation-mode=unchecked-hash" out)
+                     (invoke "python" "setup.py" "install" "--root=/"
+                             (string-append "--prefix=" out))))))))
     (inputs
      (list python-ply))
     (home-page "https://xon.sh/")
