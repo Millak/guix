@@ -12601,3 +12601,37 @@ flexibility.
     (description "Monetize provides a library for converting various objects
 into Money objects.")
     (license license:expat)))
+
+(define-public ruby-money-open-exchange-rates
+  (package
+    (name "ruby-money-open-exchange-rates")
+    (version "1.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       ;; Download from GitHub because the rubygems version does not contain
+       ;; Rakefile.
+       (uri (git-reference
+             (url "https://github.com/spk/money-open-exchange-rates")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11xwqli8snr19k48yh8h77sal5vxd4snzq9gxg08v61f0574m3gw"))))
+    (build-system ruby-build-system)
+    (native-inputs
+     (list
+      ruby-minitest
+      ruby-mocha
+      ruby-monetize
+      ruby-rake
+      ruby-rubocop
+      ruby-timecop
+      ruby-webmock))
+    (propagated-inputs
+     (list
+      ruby-money))
+    (home-page "https://spk.github.io/money-open-exchange-rates/")
+    (synopsis "Money open exchange rates for Ruby")
+    (description "This package provides a gem that calculates the exchange rate
+using published rates from open-exchange-rates.  Compatible with the money gem.")
+    (license license:expat)))
