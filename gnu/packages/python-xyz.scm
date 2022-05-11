@@ -6126,18 +6126,18 @@ readable format.")
 (define-public python-pygit2
   (package
     (name "python-pygit2")
-    (version "1.7.1")
+    (version "1.9.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pygit2" version))
        (sha256
-        (base32 "0p8n25bijirxh31cv99vd1mkdsvpcs6z6441wz1fqva3b2as5ynp"))))
+        (base32 "1jdr6z1il03nifwgpcdf95w6xzzbfzdkcqq5dcqjaa0rnv1pjr7g"))))
     (build-system python-build-system)
     (arguments
      '(#:tests? #f))            ; tests don't run correctly in our environment
     (propagated-inputs
-     (list python-cached-property python-cffi libgit2-1.3))
+     (list python-cached-property python-cffi libgit2))
     (native-inputs
      (list python-pytest))
     (home-page "https://github.com/libgit2/pygit2")
