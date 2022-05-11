@@ -34,6 +34,7 @@
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2022 Thomas Albers Raviola <thomas@thomaslabs.org>
+;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -57,6 +58,7 @@
 
 (define-module (gnu packages lisp-xyz)
   #:use-module (gnu packages)
+  #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
@@ -21269,3 +21271,54 @@ of the files and the line numbers where they were found.")
 
 (define-public ecl-formgrep
   (sbcl-package->ecl-package sbcl-formgrep))
+
+(define-public sbcl-lmdb
+  (let ((commit "f439b707939a52769dc9747838ff4a616fab14a3")
+        (revision "0"))
+    (package
+      (name "sbcl-lmdb")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/antimer/lmdb")
+               (commit commit)))
+         (file-name (git-file-name "cl-lmdb" version))
+         (sha256
+          (base32 "0akvimmvd4kcx6gh1j1dzvcclhc0jc4hc9vkh3ldgzb8wyf4vl8q"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'fix-paths
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "src/lmdb.lisp"
+                  (("\"liblmdb.so\"")
+                   (string-append
+                    "\"" (search-input-file inputs "/lib/liblmdb.so") "\""))))))))
+      (inputs
+       (list lmdb
+             sbcl-alexandria
+             sbcl-bordeaux-threads
+             sbcl-cl-reexport
+             sbcl-mgl-pax
+             sbcl-osicat
+             sbcl-trivial-features
+             sbcl-trivial-garbage
+             sbcl-trivial-utf-8))
+      (native-inputs
+       (list sbcl-try))
+      (home-page "https://github.com/antimer/lmdb")
+      (synopsis "LMDB bindings for Common Lisp")
+      (description
+       "LMDB, the Lightning Memory-mapped Database, is an ACID key-value
+database with multiversion concurrency control.  This package is a Common Lisp
+wrapper around the C LMDB library.  It covers most of C LMDB's functionality,
+has a simplified API, much needed safety checks, and comprehensive
+documentation.")
+      (license license:expat))))
+
+(define-public cl-lmdb
+  (sbcl-package->cl-source-package sbcl-lmdb))
