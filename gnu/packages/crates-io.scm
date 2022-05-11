@@ -35915,18 +35915,16 @@ statically-sized or dynamically-sized matrices.")
        (uri (crate-uri "nalgebra-macros" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "063jvvvlwmzzxfr4wyiil2cn1yqj3arvghwsr2nk4ilv2jwc1z01"))))
+        (base32 "063jvvvlwmzzxfr4wyiil2cn1yqj3arvghwsr2nk4ilv2jwc1z01"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (substitute* "Cargo.toml"
+             ;; The resolver feature is not supported by our versions of Cargo.
+             (("resolver = \"2\".*") ""))))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'configure 'patch-Cargo.toml
-           (lambda _
-             (substitute* '("Cargo.toml"
-                            "guix-vendor/rust-nalgebra-macros-0.1.0.tar.gz/Cargo.toml")
-               ;; The resolver feature is not supported by this version of Cargo.
-               (("resolver = \"2\".*") "")))))
        #:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
