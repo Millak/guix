@@ -44645,11 +44645,17 @@ renamed in @file{Cargo.toml}.")
        (uri (crate-uri "proc-macro-error" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1373bhxaf0pagd8zkyd03kkx6bchzf6g0dkwrwzsnal9z47lj9fs"))))
+        (base32 "1373bhxaf0pagd8zkyd03kkx6bchzf6g0dkwrwzsnal9z47lj9fs"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; Ignore the "DO NOT BUMP" warning.
+           (substitute* "Cargo.toml"
+             (("=1.0.107") "^1.0.107")
+             (("=0.5.2") "^0.5.2"))))))
     (build-system cargo-build-system)
     (arguments
-     ;; Tests fail with "extern crate test_crate; <-- can't find crate" error.
-     `(#:tests? #f
+     `(#:tests? #f      ; 'test_crate' folder not included in release.
        #:cargo-inputs
        (("rust-proc-macro-error-attr" ,rust-proc-macro-error-attr-1)
         ("rust-proc-macro2" ,rust-proc-macro2-1)
@@ -44659,14 +44665,7 @@ renamed in @file{Cargo.toml}.")
        #:cargo-development-inputs
        (("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-toml" ,rust-toml-0.5)
-        ("rust-trybuild" ,rust-trybuild-1))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-version-requirements
-           (lambda _
-             (substitute* "Cargo.toml"
-               (("1.0.107") ,(package-version rust-serde-derive-1))
-               (("0.5.2") ,(package-version rust-toml-0.5))))))))
+        ("rust-trybuild" ,rust-trybuild-1))))
     (home-page "https://gitlab.com/CreepySkeleton/proc-macro-error")
     (synopsis "Drop-in replacement to panics in proc-macros")
     (description
