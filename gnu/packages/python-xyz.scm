@@ -1863,7 +1863,17 @@ Python 3 support.")
     ;; FIXME: Tests require pytest, which itself relies on setuptools.
     ;; One could bootstrap with an internal untested setuptools.
     (arguments
-     `(#:tests? #f))
+     `(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'compatibility-fixes
+           (lambda _
+             ;; HTMLParser no longer exists.
+             (substitute* "setuptools/py33compat.py"
+               (("html_parser.HTMLParser\\(\\).unescape")
+                "html.unescape"))
+             ;; This needs distutils.msvc9compiler
+             (delete-file "setuptools/tests/test_msvc.py"))))))
     (native-inputs
      (list unzip))
     (home-page "https://pypi.org/project/setuptools/")
