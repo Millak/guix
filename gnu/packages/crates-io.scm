@@ -46943,17 +46943,16 @@ tools for implementation.")
        (uri (crate-uri "rand_distr" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0brd2946xfapm2bmhmczfbwck041x7khsfhqxw1f24kxis7m8kcn"))))
+        (base32 "0brd2946xfapm2bmhmczfbwck041x7khsfhqxw1f24kxis7m8kcn"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (substitute* "Cargo.toml"
+             ;; The resolver feature is not supported by our versions of Cargo.
+             (("resolver = \"2\".*") ""))))))
     (build-system cargo-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'configure 'patch-Cargo.toml
-           (lambda _
-             (substitute* "Cargo.toml"
-               ;; The resolver feature is not supported by this version of Cargo.
-               (("resolver = \"2\".*") "")))))
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-average" ,rust-average-0.13)
         ("rust-num-traits" ,rust-num-traits-0.2)
         ("rust-rand" ,rust-rand-0.8)
