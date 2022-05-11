@@ -5,7 +5,7 @@
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2018, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -309,10 +309,12 @@ information.")
     ;; *either* of the licenses found in LICENSE.APACHE or LICENSE.BSD.
     ;; Contributions to this software is made under the terms of *both* these
     ;; licenses.
-    (license (list license:asl2.0 license:bsd-2))))
+    (license (list license:asl2.0 license:bsd-2))
+    (properties `((python2-variant . ,(delay python2-packaging-bootstrap))))))
 
 (define-public python2-packaging-bootstrap
-  (let ((base (package-with-python2 python-packaging-bootstrap)))
+  (let ((base (package-with-python2
+               (strip-python2-variant python-packaging-bootstrap))))
     (package/inherit base
       (version "20.0")                  ;last version with Python 2 support
       (source
