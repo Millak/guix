@@ -35742,18 +35742,16 @@ quick compile time, and minimal dependencies.")
         (uri (crate-uri "nalgebra" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-          (base32 "01hxksmgg17c4k2rzjx1h8kkjbw9rm81dsancg459zh2zrcisva7"))))
+          (base32 "01hxksmgg17c4k2rzjx1h8kkjbw9rm81dsancg459zh2zrcisva7"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (substitute* "Cargo.toml"
+             ;; The resolver feature is not supported by our versions of Cargo.
+             (("resolver = \"2\".*") ""))))))
     (build-system cargo-build-system)
     (arguments
       `(#:skip-build? #t
-        #:phases
-        (modify-phases %standard-phases
-         (add-after 'configure 'patch-Cargo.toml
-           (lambda _
-             (substitute* '("Cargo.toml"
-                            "guix-vendor/rust-nalgebra-0.26.2.tar.gz/Cargo.toml")
-               ;; The resolver feature is not supported by this version of Cargo.
-               (("resolver = \"2\".*") "")))))
         #:cargo-inputs
         (("rust-abomonation" ,rust-abomonation-0.7)
          ("rust-alga" ,rust-alga-0.9)
@@ -35926,8 +35924,7 @@ statically-sized or dynamically-sized matrices.")
          (add-after 'configure 'patch-Cargo.toml
            (lambda _
              (substitute* '("Cargo.toml"
-                            "guix-vendor/rust-nalgebra-macros-0.1.0.tar.gz/Cargo.toml"
-                            "guix-vendor/rust-nalgebra-0.26.2.tar.gz/Cargo.toml")
+                            "guix-vendor/rust-nalgebra-macros-0.1.0.tar.gz/Cargo.toml")
                ;; The resolver feature is not supported by this version of Cargo.
                (("resolver = \"2\".*") "")))))
        #:cargo-inputs
@@ -58236,14 +58233,6 @@ map.")
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'configure 'patch-Cargo.toml
-           (lambda _
-             (substitute* '("Cargo.toml"
-                            "guix-vendor/rust-nalgebra-0.26.2.tar.gz/Cargo.toml")
-               ;; The resolver feature is not supported by this version of Cargo.
-               (("resolver = \"2\".*") "")))))
        #:cargo-inputs
        (("rust-approx" ,rust-approx-0.4)
         ("rust-lazy-static" ,rust-lazy-static-1)
