@@ -23684,19 +23684,19 @@ identifying what the file is.")
 (define-public python-tldextract
   (package
     (name "python-tldextract")
-    (version "2.2.0")
+    (version "3.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "tldextract" version))
        (sha256
         (base32
-         "1d5s8v6kpsgazyahflhji1cfdcf89rv7l7z55v774bhzvcjp2y99"))))
+         "1wac4yvcpgqjvls770mfx165amvy7gr00nnd2w24bqqwyamj9kdd"))))
     (build-system python-build-system)
     (native-inputs
-     (list python-pytest python-responses))
+     (list python-pytest python-responses python-setuptools-scm))
     (propagated-inputs
-     (list python-idna python-requests python-requests-file))
+     (list python-filelock python-idna python-requests python-requests-file))
     (home-page
      "https://github.com/john-kurkowski/tldextract")
     (synopsis
