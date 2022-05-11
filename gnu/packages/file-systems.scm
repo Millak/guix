@@ -1369,7 +1369,7 @@ On Guix System, you will need to invoke the included shell scripts as
 (define-public mergerfs
   (package
     (name "mergerfs")
-    (version "2.32.6")
+    (version "2.33.5")
     (source
      (origin
        (method url-fetch)
@@ -1377,7 +1377,7 @@ On Guix System, you will need to invoke the included shell scripts as
                            "releases/download/" version "/"
                            "mergerfs-" version ".tar.gz"))
        (sha256
-        (base32 "08gwi094ll0b7nf2i44fyjxiyvr45rp766npbdyw0yzyigas8a2f"))))
+        (base32 "0m0fg191ax855yb20vqpvn6v2gc3i5xdizx09pgpymj1ybxc7yyw"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
