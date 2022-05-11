@@ -45753,7 +45753,7 @@ ecosystem.")
         ;; version of RUST-CRITERION-0.3.
         '(substitute* "Cargo.toml"
            (("\"=0\\.3\\.4\"")
-            "\"=0.3.5\"")))))
+            "\"^0.3.4\"")))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
