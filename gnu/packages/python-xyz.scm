@@ -5772,7 +5772,7 @@ capabilities.")
                 (strip-python2-variant python-numpy-next))))
     (package
       (inherit numpy)
-      (name "python-numpy")
+      (name "python2-numpy")
       (version "1.16.5")
       (source (origin
                 (method url-fetch)
