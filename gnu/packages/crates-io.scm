@@ -5248,20 +5248,18 @@ they're not available.")
        (uri (crate-uri "average" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1c97m8yagvq8r6qgd3harm5vnkdbld4mxg9byyxh6igjsf8wfgl4"))))
+        (base32 "1c97m8yagvq8r6qgd3harm5vnkdbld4mxg9byyxh6igjsf8wfgl4"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (substitute* "Cargo.toml"
+             ;; The resolver feature is not supported by our versions of Cargo.
+             (("resolver = \"2\".*") "")
+             ;; Relax version requirement for byteorder
+             (("=1.3") "^1.3"))))))
     (build-system cargo-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'configure 'patch-Cargo.toml
-           (lambda _
-             (substitute* '("guix-vendor/rust-average-0.13.1.tar.gz/Cargo.toml"
-                            "Cargo.toml")
-               ;; The resolver feature is not supported by this version of Cargo.
-               (("resolver = \"2\".*") "")
-               ;; Relax!
-               (("1.3") ,(package-version rust-byteorder-1))))))
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-easy-cast" ,rust-easy-cast-0.4)
         ("rust-float-ord" ,rust-float-ord-0.3)
         ("rust-num-traits" ,rust-num-traits-0.2)
@@ -35753,8 +35751,7 @@ quick compile time, and minimal dependencies.")
          (add-after 'configure 'patch-Cargo.toml
            (lambda _
              (substitute* '("Cargo.toml"
-                            "guix-vendor/rust-nalgebra-0.26.2.tar.gz/Cargo.toml"
-                            "guix-vendor/rust-average-0.13.1.tar.gz/Cargo.toml")
+                            "guix-vendor/rust-nalgebra-0.26.2.tar.gz/Cargo.toml")
                ;; The resolver feature is not supported by this version of Cargo.
                (("resolver = \"2\".*") "")))))
         #:cargo-inputs
@@ -35930,8 +35927,7 @@ statically-sized or dynamically-sized matrices.")
            (lambda _
              (substitute* '("Cargo.toml"
                             "guix-vendor/rust-nalgebra-macros-0.1.0.tar.gz/Cargo.toml"
-                            "guix-vendor/rust-nalgebra-0.26.2.tar.gz/Cargo.toml"
-                            "guix-vendor/rust-average-0.13.1.tar.gz/Cargo.toml")
+                            "guix-vendor/rust-nalgebra-0.26.2.tar.gz/Cargo.toml")
                ;; The resolver feature is not supported by this version of Cargo.
                (("resolver = \"2\".*") "")))))
        #:cargo-inputs
@@ -46959,8 +46955,7 @@ tools for implementation.")
        (modify-phases %standard-phases
          (add-after 'configure 'patch-Cargo.toml
            (lambda _
-             (substitute* '("Cargo.toml"
-                            "guix-vendor/rust-average-0.13.1.tar.gz/Cargo.toml")
+             (substitute* "Cargo.toml"
                ;; The resolver feature is not supported by this version of Cargo.
                (("resolver = \"2\".*") "")))))
        #:cargo-inputs
@@ -58246,7 +58241,6 @@ map.")
          (add-after 'configure 'patch-Cargo.toml
            (lambda _
              (substitute* '("Cargo.toml"
-                            "guix-vendor/rust-average-0.13.1.tar.gz/Cargo.toml"
                             "guix-vendor/rust-nalgebra-0.26.2.tar.gz/Cargo.toml")
                ;; The resolver feature is not supported by this version of Cargo.
                (("resolver = \"2\".*") "")))))
