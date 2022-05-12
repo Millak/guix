@@ -14503,7 +14503,8 @@ neural networks.")
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags #~(list (string-append "CXX=" #$(cxx-for-target)))
-           #:tests? #f ; Unclear how to run tests: https://github.com/ekg/fastahack/issues/15
+           ;; Unclear how to run tests: https://github.com/ekg/fastahack/issues/15
+           #:tests? #f
            #:phases
            #~(modify-phases %standard-phases
                (delete 'configure) ; There is no configure phase.
