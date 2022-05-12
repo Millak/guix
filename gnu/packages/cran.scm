@@ -18983,6 +18983,26 @@ methods.")
     ;; Any version of the GPL
     (license license:gpl2+)))
 
+(define-public r-unglue
+  (package
+    (name "r-unglue")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "unglue" version))
+       (sha256
+        (base32 "0w8ld4xllx0lj1jz8i2sj92f8136hlwri1d8ldpg1ymxj7aw93vg"))))
+    (properties `((upstream-name . "unglue")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/package=unglue")
+    (synopsis "Extract matched substrings using a pattern")
+    (description
+     "This package lets you use syntax inspired by the package @code{glue} to
+extract matched substrings in a more intuitive and compact way than by using
+standard regular expressions.")
+    (license license:gpl3)))
+
 (define-public r-untb
   (package
     (name "r-untb")
