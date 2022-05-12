@@ -15,7 +15,7 @@
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2016 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
-;;; Copyright © 2016, 2017, 2018, 2019, 2021 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2016–2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016 Bake Timmons <b3timmons@speedymail.org>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
@@ -8199,13 +8199,13 @@ Unicode.")
                   "1znvnr30xi5vgd6n3wvgv9pwj992zpzzjk0fmq28ydf1l6kqvkm7"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:tests? #f ; no tests
-         #:make-flags
-         (list (string-append "CC=" ,(cc-for-target))
-               (string-append "PREFIX=" %output))
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure)))) ; no configure script
+       (list #:tests? #f ; no tests
+             #:make-flags
+             #~(list (string-append "CC=" #$(cc-for-target))
+                     (string-append "PREFIX=" (assoc-ref %outputs "out")))
+             #:phases
+             #~(modify-phases %standard-phases
+                 (delete 'configure)))) ; no configure script
       (home-page "https://tools.suckless.org/quark/")
       (synopsis "Small and simple HTTP GET/HEAD-only web server for static
 content")
