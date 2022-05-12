@@ -16,6 +16,7 @@
 ;;; Copyright © 2020 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1091,7 +1092,7 @@ is written in a way that can be used for any general C# application.")
 (define-public glmark2
   (package
     (name "glmark2")
-    (version "2020.04")
+    (version "2021.12")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1100,20 +1101,12 @@ is written in a way that can be used for any general C# application.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ywpzp0imi3f8iyp7d1739576zx2nsr3db5hp2as4yhflfyq1as2"))
-              (modules '((guix build utils)))
-              ;; Fix Python 3 incompatibility.
-              (snippet
-               '(begin
-                  (substitute* "wscript"
-                    (("(sorted\\()FLAVORS\\.keys\\(\\)(.*)" _ beginning end)
-                     (string-append beginning "list(FLAVORS)" end)))
-                  #t))))
-    (build-system waf-build-system)
+                "1aydqbrg9i74s19rrdrsscx94m885yvc43v3sdqlgyh675ms98jb"))))
+    (build-system meson-build-system)
     (arguments
      '(#:tests? #f                      ; no check target
        #:configure-flags
-       (list (string-append "--with-flavors="
+       (list (string-append "-Dflavors="
                             (string-join '("x11-gl" "x11-glesv2"
                                            "drm-gl" "drm-glesv2"
                                            "wayland-gl" "wayland-glesv2")
