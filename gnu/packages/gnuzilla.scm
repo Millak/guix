@@ -17,7 +17,7 @@
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Baptiste Strazzul <bstrazzull@hotmail.fr>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -974,9 +974,7 @@ in C/C++.")
        ("clang" ,clang-11)
        ("perl" ,perl)
        ("node" ,node)
-       ("python" ,python)
-       ("python-2" ,python-2)
-       ("python2-pysqlite" ,python2-pysqlite)
+       ("python" ,python-wrapper)
        ("yasm" ,yasm)
        ("nasm" ,nasm)  ; XXX FIXME: only needed on x86_64 and i686
        ("pkg-config" ,pkg-config)
