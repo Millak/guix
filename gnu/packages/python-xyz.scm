@@ -28870,8 +28870,8 @@ and frame grabber interface.")
                               ;; These are not parallel safe and fail
                               ;; nondeterministically (see:
                               ;; https://github.com/scikit-build/scikit-build/issues/711).
-                              "and not test_generator_cleanup"
-                              "and not test_generator_selection")))))
+                              "and not test_generator_cleanup "
+                              "and not test_generator_selection ")))))
           (replace 'install
             (lambda _
               (let ((whl (car (find-files "dist" "\\.whl$"))))
