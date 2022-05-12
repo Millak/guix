@@ -7813,6 +7813,28 @@ annotation file.  This package is intended to be used as example data for
 packages that work with genomic data.")
    (license license:gpl2+)))
 
+(define-public r-piton
+  (package
+    (name "r-piton")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "piton" version))
+       (sha256
+        (base32 "1krf6zi238m275nxjlpyayv8y2drbgs2kg19dpkqm0lmlz5y5ar8"))))
+    (properties `((upstream-name . "piton")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcpp))
+    (home-page "https://github.com/Ironholds/piton")
+    (synopsis "Parsing expression grammars in Rcpp")
+    (description
+     "This package provides a wrapper around the Parsing Expression Grammar
+Template Library, a C++11 library for generating parsing expression grammars,
+that makes it accessible within Rcpp.  With this, developers can implement
+their own grammars and easily expose them in R packages.")
+    (license license:expat)))
+
 (define-public r-uuid
   (package
     (name "r-uuid")
