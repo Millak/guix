@@ -3302,30 +3302,6 @@ local Cassandra clusters. It creates, launches and removes Cassandra clusters
 on localhost.")
     (license license:asl2.0)))
 
-(define-public python2-pysqlite
-  (package
-    (name "python2-pysqlite")
-    (version "2.8.3")
-    (source
-     (origin
-      (method url-fetch)
-      (uri (pypi-uri "pysqlite" version))
-      (sha256
-       (base32
-        "1424gwq9sil2ffmnizk60q36vydkv8rxs6m7xs987kz8cdc37lqp"))))
-    (build-system python-build-system)
-    (inputs
-     (list sqlite))
-    (arguments
-     `(#:python ,python-2 ; incompatible with Python 3
-       #:tests? #f)) ; no test target
-    (home-page "https://github.com/ghaering/pysqlite")
-    (synopsis "SQLite bindings for Python")
-    (description
-     "Pysqlite provides SQLite bindings for Python that comply to the
-Database API 2.0T.")
-    (license license:zlib)))
-
 (define-public python-sqlalchemy
   (package
     (name "python-sqlalchemy")
