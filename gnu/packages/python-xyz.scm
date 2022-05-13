@@ -7713,21 +7713,7 @@ child application and control it as if a human were typing commands.")
      "Setuptools_scm handles managing your Python package versions in
 @dfn{software configuration management} (SCM) metadata instead of declaring
 them as the version argument or in a SCM managed file.")
-    (license license:expat)
-    (properties `((python2-variant . ,(delay python2-setuptools-scm))))))
-
-(define-public python2-setuptools-scm
-  (let ((base (package-with-python2
-               (strip-python2-variant python-setuptools-scm))))
-    (package/inherit base
-      (version "5.0.2")                  ;no python 2 support in version 6
-      (source (origin
-                (method url-fetch)
-                (uri (pypi-uri "setuptools_scm" version))
-                (sha256
-                 (base32
-                  "1j75i8avp9fhrkpbabsa8vyvbi49kmxlq6l10xir9qs96kfwx843"))))
-      (propagated-inputs '()))))
+    (license license:expat)))
 
 (define-public python-sexpdata
   (package
