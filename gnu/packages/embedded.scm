@@ -1144,36 +1144,6 @@ MPSSE (Multi-Protocol Synchronous Serial Engine) adapter by FTDI that can do
 SPI, I2C, JTAG.")
     (license license:gpl2+)))
 
-(define-public python2-libmpsse
-  (package
-    (inherit python-libmpsse)
-    (name "python2-libmpsse")
-    (arguments
-     (substitute-keyword-arguments (package-arguments python-libmpsse)
-      ((#:phases phases)
-       `(modify-phases ,phases
-         (replace 'set-environment-up
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((python (assoc-ref inputs "python")))
-               (chdir "src")
-               (setenv "PYDEV" (string-append python
-                               "/include/python"
-                               ,(version-major+minor (package-version python-2))))
-               #t)))
-         (replace 'install
-           (lambda* (#:key inputs outputs make-flags #:allow-other-keys #:rest args)
-             (let* ((out (assoc-ref outputs "out"))
-                    (out-python (string-append out
-                                               "/lib/python"
-                                               ,(version-major+minor (package-version python-2))
-                                               "/site-packages"))
-                    (install (assoc-ref %standard-phases 'install)))
-               (install #:make-flags (cons (string-append "PYLIB=" out-python)
-                                           make-flags)))))))))
-    (inputs
-     (alist-replace "python" (list python-2)
-                    (package-inputs python-libmpsse)))))
-
 (define-public picprog
   (package
     (name "picprog")
