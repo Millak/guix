@@ -33,6 +33,7 @@
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2021 David Dashyan <mail@davie.li>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -951,13 +952,13 @@ between hosts and entries in the password store.")
       (native-inputs
        (list perl))
       (inputs
-       `(("gmp" ,gmp)
-         ("libpcap" ,libpcap)
-         ("nss" ,nss)
-         ("openssl" ,openssl)
-         ("python" ,python-2)           ; For "python" and "python2" shebangs
-         ("ruby" ,ruby)                 ; For genincstats.rb
-         ("zlib" ,zlib)))
+       (list gmp
+             libpcap
+             nss
+             openssl
+             python-wrapper
+             ruby                       ; For genincstats.rb
+             zlib))
       (arguments
        `(#:configure-flags
          (list "--with-systemwide"
@@ -1018,8 +1019,7 @@ between hosts and entries in the password store.")
                                      (find-files "." "(.*\\.chr|.*\\.lst)")
                                      (find-files "." ".*\\.conf")))
                    (copy-recursively "rules" (string-append datadir "/rules")))
-                 (copy-recursively "../doc" docdir)
-                 #t)))
+                 (copy-recursively "../doc" docdir))))
            (delete 'check) ; Tests need installed .conf files; move after install
            (add-after 'install 'check
              (lambda args
