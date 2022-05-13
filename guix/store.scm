@@ -1362,8 +1362,12 @@ object, only for build requests on EXPECTED-STORE."
         (unresolved things continue)
         (continue #t))))
 
+(define default-cutoff
+  ;; Default cutoff parameter for 'map/accumulate-builds'.
+  (make-parameter 32))
+
 (define* (map/accumulate-builds store proc lst
-                                #:key (cutoff 30))
+                                #:key (cutoff (default-cutoff)))
   "Apply PROC over each element of LST, accumulating 'build-things' calls and
 coalescing them into a single call.
 
@@ -1377,21 +1381,24 @@ CUTOFF is the threshold above which we stop accumulating unresolved nodes."
     (build-accumulator store))
 
   (define-values (result rest)
-    (let loop ((lst lst)
-               (result '())
-               (unresolved 0))
-      (match lst
-        ((head . tail)
-         (match (with-build-handler accumulator
-                  (proc head))
-           ((? unresolved? obj)
-            (if (>= unresolved cutoff)
-                (values (reverse (cons obj result)) tail)
-                (loop tail (cons obj result) (+ 1 unresolved))))
-           (obj
-            (loop tail (cons obj result) unresolved))))
-        (()
-         (values (reverse result) lst)))))
+    ;; Have the default cutoff decay as we go deeper in the call stack to
+    ;; avoid pessimal behavior.
+    (parameterize ((default-cutoff (quotient cutoff 2)))
+      (let loop ((lst lst)
+                 (result '())
+                 (unresolved 0))
+        (match lst
+          ((head . tail)
+           (match (with-build-handler accumulator
+                    (proc head))
+             ((? unresolved? obj)
+              (if (>= unresolved cutoff)
+                  (values (reverse (cons obj result)) tail)
+                  (loop tail (cons obj result) (+ 1 unresolved))))
+             (obj
+              (loop tail (cons obj result) unresolved))))
+          (()
+           (values (reverse result) lst))))))
 
   (match (append-map (lambda (obj)
                        (if (unresolved? obj)
