@@ -862,17 +862,7 @@ doctest.")
 of your system under test with mock objects and make assertions about how they
 have been used.  This library is now part of Python (since Python 3.3),
 available via the @code{unittest.mock} module.")
-    (properties `((python2-variant . ,(delay python2-mock))))
     (license license:expat)))
-
-(define-public python2-mock
-  (let ((base (package-with-python2
-               (strip-python2-variant python-mock))))
-    (package/inherit base
-      (propagated-inputs
-       `(("python2-functools32" ,python2-functools32)
-         ("python2-funcsigs" ,python2-funcsigs)
-         ,@(package-propagated-inputs base))))))
 
 ;;; This package is unmaintained (see the note at the top of doc/index.rst).
 (define-public python-nose
