@@ -1000,8 +1000,7 @@ standards of the IceCat project.")
              (mkdir "comm")
              (copy-recursively (assoc-ref inputs "thunderbird-sources")
                                "comm")
-             (delete-file "sourcestamp.txt")
-             #t))
+             (delete-file "sourcestamp.txt")))
          (add-after 'patch-source-shebangs 'patch-cargo-checksums
            (lambda _
              (use-modules (guix build cargo-utils))
@@ -1014,16 +1013,14 @@ standards of the IceCat project.")
                          (find-files "." "Cargo.lock$"))
                (for-each generate-all-checksums
                          '("third_party/rust"
-                           "toolkit/library/rust")))
-             #t))
+                           "toolkit/library/rust")))))
          ;; Fixes issue where each installation directory generates its own profile.
          ;; See e.g. https://trac.torproject.org/projects/tor/ticket/31457
          (add-after 'patch-source-shebangs 'fix-profile-setting
            (lambda _
              (substitute* "comm/mail/moz.configure"
                (("MOZ_DEDICATED_PROFILES, True")
-                "MOZ_DEDICATED_PROFILES, False"))
-             #t))
+                "MOZ_DEDICATED_PROFILES, False"))))
          (add-after 'prepare-thunderbird-sources 'rename-to-icedove
            (lambda _
              (substitute* "comm/mail/confvars.sh"
@@ -1086,8 +1083,7 @@ standards of the IceCat project.")
                (("(pref\\(\"extensions.systemAddon.update.enabled\").*" _ m)
                 (string-append m ", false);"))
                (("(pref\\(\"lightweightThemes.update.enabled\").*" _ m)
-                (string-append m ", false);")))
-             #t))
+                (string-append m ", false);")))))
          (add-after 'build 'neutralize-store-references
            (lambda _
              ;; Mangle the store references to compilers & other build tools in
@@ -1103,8 +1099,7 @@ standards of the IceCat project.")
                 (string-append store
                                (string-take hash 8)
                                "<!-- Guix: not a runtime dependency -->"
-                               (string-drop hash 8))))
-             #t))
+                               (string-drop hash 8))))))
          (delete 'bootstrap)
          (replace 'configure
            (lambda* (#:key inputs outputs configure-flags #:allow-other-keys)
@@ -1206,8 +1201,7 @@ standards of the IceCat project.")
                             [Desktop Action ComposeMessage]~@
                             Name=Write new message~@
                             Exec=~@*~a/bin/icedove -compose~%"
-                           out))))
-             #t))
+                           out))))))
          (add-after 'install 'wrap-program
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -1220,8 +1214,7 @@ standards of the IceCat project.")
                     (eudev-lib (string-append eudev "/lib")))
                (wrap-program (car (find-files lib "^icedove$"))
                  `("XDG_DATA_DIRS" prefix (,gtk-share))
-                 `("LD_LIBRARY_PATH" prefix (,pulseaudio-lib ,eudev-lib)))
-               #t))))))
+                 `("LD_LIBRARY_PATH" prefix (,pulseaudio-lib ,eudev-lib)))))))))
     (inputs
      `(("bzip2" ,bzip2)
        ("cairo" ,cairo)
@@ -1285,8 +1278,7 @@ standards of the IceCat project.")
        ("node" ,node)
        ("perl" ,perl)
        ("pkg-config" ,pkg-config)
-       ("python" ,python)
-       ("python2" ,python-2.7)
+       ("python" ,python-wrapper)
        ("rust" ,rust)
        ("rust-cbindgen" ,rust-cbindgen-0.19)
        ("which" ,which)
