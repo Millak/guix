@@ -151,31 +151,15 @@ a continuous layout.")
        (sha256
         (base32 "0c595yziz81c9izf9s5sskd00qmgz2n1hp2vdcgg0dx81g3xfidb"))))
     (build-system gnu-build-system)
-    (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)
-       ("python2" ,python-2)
-       ("python2-nose" ,python2-nose)))
+    (arguments (list #:tests? #f))      ;requires Python 2
+    (native-inputs (list gettext-minimal pkg-config))
     (inputs
-     `(("djvulibre" ,djvulibre)
-       ("exiv2" ,exiv2)
-       ("graphicsmagick" ,graphicsmagick)
-       ("poppler" ,poppler)
-       ("poppler-data" ,poppler-data)
-       ("util-linux-lib" ,util-linux "lib"))) ; for libuuid
-    (arguments
-     `(#:test-target "test"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-tests
-           (lambda _
-             (substitute* "tests/test-xmp-broken.py"
-               ;; Error message changed in recent versions of XML parser
-               (("XML parsing failure")
-                "Error in XMLValidator"))))
-         (add-before 'check 'set-home-for-tests
-           (lambda _
-             (setenv "HOME" "/tmp"))))))
+     (list djvulibre
+           exiv2
+           graphicsmagick
+           poppler
+           poppler-data
+           `(,util-linux "lib")))       ;for libuuid
     (synopsis "PDF to DjVu converter")
     (description
      "@code{pdf2djvu} creates DjVu files from PDF files.
