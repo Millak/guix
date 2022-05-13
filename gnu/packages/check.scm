@@ -2062,8 +2062,7 @@ much larger range of examples than you would ever want to write by hand.  It’s
 based on the Haskell library, Quickcheck, and is designed to integrate
 seamlessly into your existing Python unit testing work flow.")
     (home-page "https://github.com/HypothesisWorks/hypothesis")
-    (license license:mpl2.0)
-    (properties `((python2-variant . ,(delay python2-hypothesis))))))
+    (license license:mpl2.0)))
 
 ;;; TODO: Make the default python-hypothesis in the next rebuild cycle.
 (define-public python-hypothesis-next
@@ -2079,22 +2078,6 @@ seamlessly into your existing Python unit testing work flow.")
     (propagated-inputs
      (modify-inputs (package-propagated-inputs python-hypothesis)
        (append python-pytest)))))       ;to satisfy the sanity-check phase
-
-;; This is the last version of Hypothesis that supports Python 2.
-(define-public python2-hypothesis
-  (let ((hypothesis (package-with-python2
-                     (strip-python2-variant python-hypothesis))))
-    (package (inherit hypothesis)
-      (version "4.57.1")
-      (source (origin
-                (method url-fetch)
-                (uri (pypi-uri "hypothesis" version))
-                (sha256
-                 (base32
-                  "183gpxbfcdhdqzlahkji5a71n6lmvgqsbkcb0ihqad51n2j6jhrw"))))
-      (propagated-inputs
-       (modify-inputs (package-propagated-inputs hypothesis)
-         (prepend python2-enum34))))))
 
 (define-public python-hypothesmith
   (package
