@@ -3144,9 +3144,6 @@ port forwards using @acronym{UPnP, Universal Plug and Play}.")
 code introspection, and logging.")
     (license license:expat)))
 
-(define-public python2-py
-  (package-with-python2 python-py))
-
 ;; Recent versions of python-fixtures and python-testrepository need
 ;; python-pbr for packaging, which itself needs these two packages for
 ;; testing.
