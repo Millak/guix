@@ -2541,9 +2541,6 @@ libxml2 and libxslt.")
         (base32
          "090viyanaki4q7w7i000xl0qh4in52bkl3qal55sz2bbm8w3hqd1"))))))
 
-(define-public python2-lxml
-  (package-with-python2 python-lxml))
-
 (define-public python-untangle
   ;; The latest tagged release is from 2014; use the latest commit.
   (let ((revision "1")
