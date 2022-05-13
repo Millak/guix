@@ -16024,9 +16024,6 @@ Python implementation of the @code{wcwidth} and @code{wcswidth} C functions
 specified in POSIX.1-2001 and POSIX.1-2008.")
     (license license:expat)))
 
-(define-public python2-wcwidth
-  (package-with-python2 python-wcwidth))
-
 (define-public python-chai
   (package
     (name "python-chai")
