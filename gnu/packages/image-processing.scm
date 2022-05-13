@@ -185,7 +185,7 @@ licences similar to the Modified BSD licence."))))
 (define-public mia
   (package
     (name "mia")
-    (version "2.4.6")
+    (version "2.4.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/mia/mia/"
@@ -193,37 +193,41 @@ licences similar to the Modified BSD licence."))))
                                   "/mia-" version ".tar.xz"))
               (sha256
                (base32
-                "0j4nd5z7i3v199jh7hqqhwd4g7snchizkc7rhzanpvngqg91m1pb"))))
+                "0qpcd3n26q52dpyibm11f5l6cgscdr54p2jish39gc3p1f5h3ws1"))
+              (patches (search-patches "mia-fix-boost-headers.patch"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
-       (list "-DMIA_CREATE_NIPYPE_INTERFACES=0"
+       (list "-DMIA_CREATE_NIPYPE_INTERFACES=OFF"
              "-DCMAKE_CXX_FLAGS=-fpermissive")))
     (inputs
-     `(("boost" ,boost)
-       ("dcmtk" ,dcmtk)
-       ("doxygen" ,doxygen)
-       ("eigen" ,eigen)
-       ("fftw" ,fftw)
-       ("fftwf" ,fftwf)
-       ("gsl" ,gsl)
-       ("gts" ,gts)
-       ("hdf5" ,hdf5)
-       ("itpp" ,itpp)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libtiff" ,libtiff)
-       ("libxml" ,libxml2)
-       ("libxml++" ,libxml++)
-       ("maxflow" ,maxflow)
-       ("niftilib" ,niftilib)
-       ("nlopt" ,nlopt)
-       ("openexr" ,openexr-2)
-       ("python-lxml" ,python2-lxml)
-       ("vtk" ,vtk)))
+     (list boost
+           dcmtk
+           doxygen
+           eigen
+           fftw
+           fftwf
+           gsl
+           gts
+           hdf5
+           itpp
+           libjpeg-turbo
+           libpng
+           libtiff
+           libxml2
+           libxml++
+           maxflow
+           niftilib
+           nlopt
+           openexr-2
+           python-lxml
+           ;; The build fails when using the regular VTK (currently at version
+           ;; 9), with error "addons/vtk/vtkvf.cc:23:10: fatal error:
+           ;; vtkStructuredPointsReader.h: No such file or directory".
+           vtk-7))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("python" ,python-2)))
+     (list pkg-config
+           python-wrapper))
     (home-page "http://mia.sourceforge.net")
     (synopsis "Toolkit for gray scale medical image analysis")
     (description "MIA provides a combination of command line tools, plug-ins,

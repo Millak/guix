@@ -1,0 +1,479 @@
+Retrieved from Debian, and added a few "#include <boost/mpl/vector.hpp>"
+directives to fix the build.
+
+diff --git a/addons/hdf5/test_hdf5_3dimage.cc b/addons/hdf5/test_hdf5_3dimage.cc
+index a7185618..7a398821 100644
+--- a/addons/hdf5/test_hdf5_3dimage.cc
++++ b/addons/hdf5/test_hdf5_3dimage.cc
+@@ -23,7 +23,7 @@
+ #include <mia/internal/autotest.hh>
+ 
+ #include <boost/mpl/vector.hpp>
+-#include <boost/test/test_case_template.hpp>
++#include <boost/test/unit_test.hpp>
+ 
+ #include <addons/hdf5/hdf5_3dimage.hh>
+ 
+diff --git a/addons/hdf5/test_hdf5mia.cc b/addons/hdf5/test_hdf5mia.cc
+index 3d62106e..8141be07 100644
+--- a/addons/hdf5/test_hdf5mia.cc
++++ b/addons/hdf5/test_hdf5mia.cc
+@@ -23,7 +23,6 @@
+ #include <mia/internal/autotest.hh>
+ 
+ #include <boost/mpl/vector.hpp>
+-#include <boost/test/test_case_template.hpp>
+ #include <boost/mpl/insert_range.hpp>
+ 
+ #include <addons/hdf5/hdf5a_mia.hh>
+diff --git a/addons/nifti/test_niftiimage.cc b/addons/nifti/test_niftiimage.cc
+index 8df3f0b5..840ae585 100644
+--- a/addons/nifti/test_niftiimage.cc
++++ b/addons/nifti/test_niftiimage.cc
+@@ -23,8 +23,6 @@
+ #include <mia/internal/autotest.hh>
+ 
+ #include <boost/mpl/vector.hpp>
+-#include <boost/test/test_case_template.hpp>
+-
+ 
+ #include <nifti/niftiimage.hh>
+ #include <unistd.h>
+diff --git a/addons/vistaio/test_2dvistaio.cc b/addons/vistaio/test_2dvistaio.cc
+index b3da29a0..9b1599dd 100644
+--- a/addons/vistaio/test_2dvistaio.cc
++++ b/addons/vistaio/test_2dvistaio.cc
+@@ -23,8 +23,6 @@
+ #include <mia/internal/autotest.hh>
+ 
+ #include <boost/mpl/vector.hpp>
+-#include <boost/test/test_case_template.hpp>
+-
+ 
+ #include <vistaio/2dvistaio.hh>
+ #include <unistd.h>
+diff --git a/addons/vistaio/test_3dvistaio.cc b/addons/vistaio/test_3dvistaio.cc
+index 93c007d0..c3ae1fdb 100644
+--- a/addons/vistaio/test_3dvistaio.cc
++++ b/addons/vistaio/test_3dvistaio.cc
+@@ -23,8 +23,6 @@
+ #include <mia/internal/autotest.hh>
+ 
+ #include <boost/mpl/vector.hpp>
+-#include <boost/test/test_case_template.hpp>
+-
+ 
+ #include <vistaio/3dvistaio.hh>
+ #include <unistd.h>
+diff --git a/addons/vtk/test_vtkimage.cc b/addons/vtk/test_vtkimage.cc
+index eaf96a6b..8212ef1d 100644
+--- a/addons/vtk/test_vtkimage.cc
++++ b/addons/vtk/test_vtkimage.cc
+@@ -23,8 +23,6 @@
+ #include <mia/internal/autotest.hh>
+ 
+ #include <boost/mpl/vector.hpp>
+-#include <boost/test/test_case_template.hpp>
+-
+ 
+ #include <vtk/vtkimage.hh>
+ #include <unistd.h>
+diff --git a/mia/2d/creator/test_circle.cc b/mia/2d/creator/test_circle.cc
+index 9784e05d..7ca4bab9 100644
+--- a/mia/2d/creator/test_circle.cc
++++ b/mia/2d/creator/test_circle.cc
+@@ -21,8 +21,6 @@
+ 
+ #include <mia/internal/plugintester.hh>
+ #include <boost/mpl/vector.hpp>
+-#include <boost/test/test_case_template.hpp>
+-
+ #include <mia/2d/creator/circle.hh>
+ 
+ using namespace mia;
+diff --git a/mia/2d/filter/test_convert.cc b/mia/2d/filter/test_convert.cc
+index 80304793..f40d295a 100644
+--- a/mia/2d/filter/test_convert.cc
++++ b/mia/2d/filter/test_convert.cc
+@@ -25,7 +25,6 @@
+ #include <type_traits>
+ 
+ #include <boost/mpl/vector.hpp>
+-#include <boost/test/test_case_template.hpp>
+ #include <boost/mpl/insert_range.hpp>
+ 
+ 
+diff --git a/mia/2d/filter/test_morphological.cc b/mia/2d/filter/test_morphological.cc
+index 2fc58583..9a004946 100644
+--- a/mia/2d/filter/test_morphological.cc
++++ b/mia/2d/filter/test_morphological.cc
+@@ -20,7 +20,6 @@
+ 
+ #include <mia/internal/plugintester.hh>
+ #include <boost/mpl/vector.hpp>
+-#include <boost/test/test_case_template.hpp>
+ #include <mia/2d/filter/morphological.hh>
+ 
+ namespace bmpl = boost::mpl;
+diff --git a/mia/2d/filter/test_sortlabel.cc b/mia/2d/filter/test_sortlabel.cc
+index 78464e1a..49c327e3 100644
+--- a/mia/2d/filter/test_sortlabel.cc
++++ b/mia/2d/filter/test_sortlabel.cc
+@@ -23,7 +23,6 @@
+ #include <mia/2d/filter/sortlabel.hh>
+ 
+ #include <boost/mpl/vector.hpp>
+-#include <boost/test/test_case_template.hpp>
+ namespace bmpl = boost::mpl;
+ 
+ 
+diff --git a/mia/2d/filter/test_thinning.cc b/mia/2d/filter/test_thinning.cc
+index 3ebb2cdc..8bc5b356 100644
+--- a/mia/2d/filter/test_thinning.cc
++++ b/mia/2d/filter/test_thinning.cc
+@@ -21,7 +21,6 @@
+ 
+ #include <mia/internal/plugintester.hh>
+ #include <boost/mpl/vector.hpp>
+-#include <boost/test/test_case_template.hpp>
+ #include <mia/2d/filter/thinning.hh>
+ #include <mia/2d/imagetest.hh>
+ 
+diff --git a/mia/2d/test_filter_cast.cc b/mia/2d/test_filter_cast.cc
+index e806e14f..91c77398 100644
+--- a/mia/2d/test_filter_cast.cc
++++ b/mia/2d/test_filter_cast.cc
+@@ -24,7 +24,7 @@
+ #include <mia/internal/autotest.hh>
+ #include <mia/2d/filter.hh>
+ 
+-#include <boost/test/test_case_template.hpp>
++#include <boost/mpl/vector.hpp>
+ #include <boost/type_traits.hpp>
+ #include <boost/mpl/list.hpp>
+ 
+diff --git a/mia/2d/test_image.cc b/mia/2d/test_image.cc
+index c82dc59b..1f602510 100644
+--- a/mia/2d/test_image.cc
++++ b/mia/2d/test_image.cc
+@@ -24,6 +24,7 @@
+ #include <mia/internal/autotest.hh>
+ 
+ #include <boost/filesystem/path.hpp>
++#include <boost/mpl/vector.hpp>
+ 
+ #include <iostream>
+ 
+diff --git a/mia/2d/test_interpol.cc b/mia/2d/test_interpol.cc
+index d1f3703d..5caafccf 100644
+--- a/mia/2d/test_interpol.cc
++++ b/mia/2d/test_interpol.cc
+@@ -23,7 +23,6 @@
+ 
+ #include <mia/internal/autotest.hh>
+ 
+-#include <boost/test/test_case_template.hpp>
+ #include <boost/type_traits.hpp>
+ #include <boost/mpl/list.hpp>
+ 
+diff --git a/mia/3d/fifotestfixture.cc b/mia/3d/fifotestfixture.cc
+index ab2e7c65..1b6e6bb4 100644
+--- a/mia/3d/fifotestfixture.cc
++++ b/mia/3d/fifotestfixture.cc
+@@ -24,7 +24,7 @@
+ 
+ #include <climits>
+ #include <boost/test/unit_test.hpp>
+-#include <boost/test/floating_point_comparison.hpp>
++#include <boost/test/tools/floating_point_comparison.hpp>
+ #include <mia/core/msgstream.hh>
+ #include <mia/2d/imagetest.hh>
+ #include <mia/3d/fifotestfixture.hh>
+diff --git a/mia/3d/filter/test_convert.cc b/mia/3d/filter/test_convert.cc
+index e83032c1..dad9afaa 100644
+--- a/mia/3d/filter/test_convert.cc
++++ b/mia/3d/filter/test_convert.cc
+@@ -20,7 +20,6 @@
+ 
+ #include <mia/internal/autotest.hh>
+ #include <boost/mpl/vector.hpp>
+-#include <boost/test/test_case_template.hpp>
+ #include <mia/core/type_traits.hh>
+ #include <mia/3d/filter/convert.hh>
+ #include <boost/mpl/insert_range.hpp>
+diff --git a/mia/3d/test_image.cc b/mia/3d/test_image.cc
+index 18f71892..c21e0d20 100644
+--- a/mia/3d/test_image.cc
++++ b/mia/3d/test_image.cc
+@@ -21,7 +21,8 @@
+ #include <climits>
+ #include <boost/test/unit_test_suite.hpp>
+ #include <boost/test/unit_test.hpp>
+-#include <boost/test/floating_point_comparison.hpp>
++#include <boost/test/tools/floating_point_comparison.hpp>
++#include <boost/mpl/vector.hpp>
+ 
+ #include <mia/3d/image.hh>
+ #include <mia/core/filter.hh>
+diff --git a/mia/3d/test_imageio.cc b/mia/3d/test_imageio.cc
+index 0640a668..7a6b5635 100644
+--- a/mia/3d/test_imageio.cc
++++ b/mia/3d/test_imageio.cc
+@@ -20,7 +20,6 @@
+ 
+ #include <mia/internal/autotest.hh>
+ #include <boost/mpl/vector.hpp>
+-#include <boost/test/test_case_template.hpp>
+ #include <boost/mpl/insert_range.hpp>
+ 
+ #include <mia/core/attribute_names.hh>
+diff --git a/mia/core/splinekernel/test_bspline.cc b/mia/core/splinekernel/test_bspline.cc
+index 54d6bda3..0abfe443 100644
+--- a/mia/core/splinekernel/test_bspline.cc
++++ b/mia/core/splinekernel/test_bspline.cc
+@@ -23,8 +23,6 @@
+ #include <mia/core/splinekernel/bspline.hh>
+ #include <mia/core/interpolator1d.hh>
+ #include <boost/mpl/vector.hpp>
+-#include <boost/test/test_case_template.hpp>
+-
+ 
+ using namespace mia;
+ using namespace mia::bsplinekernel;
+diff --git a/mia/core/test_cost.cc b/mia/core/test_cost.cc
+index 70097b2e..305ca84d 100644
+--- a/mia/core/test_cost.cc
++++ b/mia/core/test_cost.cc
+@@ -27,7 +27,7 @@
+ #include <mia/core/msgstream.hh>
+ 
+ #include <boost/test/unit_test_suite.hpp>
+-#include <boost/test/floating_point_comparison.hpp>
++#include <boost/test/tools/floating_point_comparison.hpp>
+ #include <boost/test/test_tools.hpp>
+ 
+ NS_MIA_USE
+diff --git a/mia/core/test_cstplan.cc b/mia/core/test_cstplan.cc
+index aa241d48..a9e5a0e3 100644
+--- a/mia/core/test_cstplan.cc
++++ b/mia/core/test_cstplan.cc
+@@ -23,7 +23,7 @@
+ 
+ #include <boost/test/unit_test_suite.hpp>
+ #include <boost/test/unit_test.hpp>
+-#include <boost/test/floating_point_comparison.hpp>
++#include <boost/test/tools/floating_point_comparison.hpp>
+ 
+ #include <mia/core/cstplan.hh>
+ 
+diff --git a/mia/core/test_dictmap.cc b/mia/core/test_dictmap.cc
+index a9217290..fd05fe30 100644
+--- a/mia/core/test_dictmap.cc
++++ b/mia/core/test_dictmap.cc
+@@ -26,7 +26,7 @@
+ 
+ #include <boost/test/test_tools.hpp>
+ #include <boost/test/unit_test_suite.hpp>
+-#include <boost/test/floating_point_comparison.hpp>
++#include <boost/test/tools/floating_point_comparison.hpp>
+ 
+ #include <mia/core/dictmap.hh>
+ #include <mia/core/cmdlineparser.hh>
+diff --git a/mia/core/test_fifofilter.cc b/mia/core/test_fifofilter.cc
+index 2a066f2e..6e2a385d 100644
+--- a/mia/core/test_fifofilter.cc
++++ b/mia/core/test_fifofilter.cc
+@@ -27,7 +27,7 @@
+ 
+ #include <boost/test/test_tools.hpp>
+ #include <boost/test/unit_test_suite.hpp>
+-#include <boost/test/floating_point_comparison.hpp>
++#include <boost/test/tools/floating_point_comparison.hpp>
+ 
+ 
+ #include <mia/core/cmdlineparser.hh>
+diff --git a/mia/core/test_gsl_matrix.cc b/mia/core/test_gsl_matrix.cc
+index 4add5f7a..6d16353d 100644
+--- a/mia/core/test_gsl_matrix.cc
++++ b/mia/core/test_gsl_matrix.cc
+@@ -25,7 +25,7 @@
+ #define BOOST_TEST_MAIN
+ #define BOOST_TEST_ALTERNATIVE_INIT_API
+ #include <boost/test/unit_test.hpp>
+-#include <boost/test/floating_point_comparison.hpp>
++#include <boost/test/tools/floating_point_comparison.hpp>
+ #include <mia/core/gsl_matrix.hh>
+ 
+ #include <stdexcept>
+diff --git a/mia/core/test_gsl_matrix_vector_ops.cc b/mia/core/test_gsl_matrix_vector_ops.cc
+index e5f7d7b9..217020f7 100644
+--- a/mia/core/test_gsl_matrix_vector_ops.cc
++++ b/mia/core/test_gsl_matrix_vector_ops.cc
+@@ -28,7 +28,7 @@
+ #define BOOST_TEST_MAIN
+ #define BOOST_TEST_ALTERNATIVE_INIT_API
+ #include <boost/test/unit_test.hpp>
+-#include <boost/test/floating_point_comparison.hpp>
++#include <boost/test/tools/floating_point_comparison.hpp>
+ 
+ #include <iostream>
+ #include <cmath>
+diff --git a/mia/core/test_gsl_multimin.cc b/mia/core/test_gsl_multimin.cc
+index 5bbc434b..129f578a 100644
+--- a/mia/core/test_gsl_multimin.cc
++++ b/mia/core/test_gsl_multimin.cc
+@@ -25,7 +25,7 @@
+ #define BOOST_TEST_MAIN
+ #define BOOST_TEST_ALTERNATIVE_INIT_API
+ #include <boost/test/unit_test.hpp>
+-#include <boost/test/floating_point_comparison.hpp>
++#include <boost/test/tools/floating_point_comparison.hpp>
+ #include <vector>
+ 
+ #include <mia/core/gsl_multimin.hh>
+diff --git a/mia/core/test_gsl_pca.cc b/mia/core/test_gsl_pca.cc
+index 436b36b0..12942921 100644
+--- a/mia/core/test_gsl_pca.cc
++++ b/mia/core/test_gsl_pca.cc
+@@ -27,7 +27,7 @@
+ #define BOOST_TEST_MAIN
+ #define BOOST_TEST_ALTERNATIVE_INIT_API
+ #include <boost/test/unit_test.hpp>
+-#include <boost/test/floating_point_comparison.hpp>
++#include <boost/test/tools/floating_point_comparison.hpp>
+ 
+ #include <mia/core/gsl_pca.hh>
+ 
+diff --git a/mia/core/test_gsl_vector.cc b/mia/core/test_gsl_vector.cc
+index 541c88b8..ba91f159 100644
+--- a/mia/core/test_gsl_vector.cc
++++ b/mia/core/test_gsl_vector.cc
+@@ -25,10 +25,9 @@
+ #define BOOST_TEST_MAIN
+ #define BOOST_TEST_ALTERNATIVE_INIT_API
+ #include <boost/test/unit_test.hpp>
+-#include <boost/test/floating_point_comparison.hpp>
++#include <boost/test/tools/floating_point_comparison.hpp>
+ 
+ #include <boost/mpl/vector.hpp>
+-#include <boost/test/test_case_template.hpp>
+ 
+ #include <mia/core/gsl_vector.hh>
+ 
+diff --git a/mia/core/test_interpol.cc b/mia/core/test_interpol.cc
+index 36669dc0..2dd5157d 100644
+--- a/mia/core/test_interpol.cc
++++ b/mia/core/test_interpol.cc
+@@ -24,7 +24,7 @@
+ #include <mia/internal/autotest.hh>
+ 
+ #include <boost/mpl/vector.hpp>
+-#include <boost/test/test_case_template.hpp>
++#include <boost/test/unit_test.hpp>
+ #include <boost/type_traits.hpp>
+ #include <boost/filesystem/path.hpp>
+ 
+diff --git a/mia/core/test_parameter.cc b/mia/core/test_parameter.cc
+index ae9b4976..28ef2a80 100644
+--- a/mia/core/test_parameter.cc
++++ b/mia/core/test_parameter.cc
+@@ -26,7 +26,7 @@
+ 
+ #include <boost/test/test_tools.hpp>
+ #include <boost/test/unit_test_suite.hpp>
+-#include <boost/test/floating_point_comparison.hpp>
++#include <boost/test/tools/floating_point_comparison.hpp>
+ 
+ #include <mia/core/parameter.hh>
+ #include <mia/core/msgstream.hh>
+diff --git a/mia/core/test_probmap.cc b/mia/core/test_probmap.cc
+index 2dc6cb6c..38052681 100644
+--- a/mia/core/test_probmap.cc
++++ b/mia/core/test_probmap.cc
+@@ -22,7 +22,7 @@
+ 
+ #include <boost/test/unit_test_suite.hpp>
+ #include <boost/test/unit_test.hpp>
+-#include <boost/test/floating_point_comparison.hpp>
++#include <boost/test/tools/floating_point_comparison.hpp>
+ 
+ #include <mia/core/cmdlineparser.hh>
+ #include <mia/core/probmap.hh>
+diff --git a/mia/core/test_sqmin.cc b/mia/core/test_sqmin.cc
+index f00b3b85..4a0b67b9 100644
+--- a/mia/core/test_sqmin.cc
++++ b/mia/core/test_sqmin.cc
+@@ -23,7 +23,7 @@
+ #define BOOST_TEST_DYN_LINK
+ #include <boost/test/unit_test_suite.hpp>
+ #include <boost/test/unit_test.hpp>
+-#include <boost/test/floating_point_comparison.hpp>
++#include <boost/test/tools/floating_point_comparison.hpp>
+ 
+ #include <mia/core/sqmin.hh>
+ 
+diff --git a/mia/internal/autotest.hh b/mia/internal/autotest.hh
+index 419f6e8f..4458c0b2 100644
+--- a/mia/internal/autotest.hh
++++ b/mia/internal/autotest.hh
+@@ -34,7 +34,7 @@
+ #define BOOST_TEST_MAIN
+ #define BOOST_TEST_NO_MAIN
+ #include <boost/test/unit_test.hpp>
+-#include <boost/test/floating_point_comparison.hpp>
++#include <boost/test/tools/floating_point_comparison.hpp>
+ 
+ #include <miaconfig.h>
+ #include <mia/core/cmdlineparser.hh>
+diff --git a/mia/internal/plugintester.hh b/mia/internal/plugintester.hh
+index 2d42b858..e632e5f7 100644
+--- a/mia/internal/plugintester.hh
++++ b/mia/internal/plugintester.hh
+@@ -31,7 +31,7 @@
+ #define BOOST_TEST_MAIN
+ #define BOOST_TEST_NO_MAIN
+ #include <boost/test/unit_test.hpp>
+-#include <boost/test/floating_point_comparison.hpp>
++#include <boost/test/tools/floating_point_comparison.hpp>
+ 
+ #include <miaconfig.h>
+ #include <mia/core/factory.hh>
+diff --git a/mia/test/testhelpers.hh b/mia/test/testhelpers.hh
+index 27f37e7f..68c213a6 100644
+--- a/mia/test/testhelpers.hh
++++ b/mia/test/testhelpers.hh
+@@ -23,7 +23,7 @@
+ 
+ #include <type_traits>
+ #include <boost/test/unit_test.hpp>
+-#include <boost/test/floating_point_comparison.hpp>
++#include <boost/test/tools/floating_point_comparison.hpp>
+ 
+ namespace miatest
+ {
+diff --git a/src/2dlerp.cc b/src/2dlerp.cc
+index 4c7dde77..1e8801de 100644
+--- a/src/2dlerp.cc
++++ b/src/2dlerp.cc
+@@ -25,7 +25,7 @@
+ 
+ #include <boost/test/unit_test_suite.hpp>
+ #include <boost/test/unit_test.hpp>
+-#include <boost/test/floating_point_comparison.hpp>
++#include <boost/test/tools/floating_point_comparison.hpp>
+ 
+ #include <mia/core.hh>
+ #include <mia/internal/main.hh>
+diff --git a/src/3dlerp.cc b/src/3dlerp.cc
+index 6ee8dca0..2f1c1f3a 100644
+--- a/src/3dlerp.cc
++++ b/src/3dlerp.cc
+@@ -24,7 +24,7 @@
+ #define BOOST_TEST_NO_MAIN
+ #include <boost/test/unit_test_suite.hpp>
+ #include <boost/test/unit_test.hpp>
+-#include <boost/test/floating_point_comparison.hpp>
++#include <boost/test/tools/floating_point_comparison.hpp>
+ 
+ #include <mia/core.hh>
+ #include <mia/internal/main.hh>
