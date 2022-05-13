@@ -2788,29 +2788,20 @@ semantics.")
 (define-public libpqxx
   (package
     (name "libpqxx")
-    (version "4.0.1")
+    (version "7.7.3")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "http://pqxx.org/download/software/libpqxx/"
-                    name "-" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jtv/libpqxx")
+                    (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0f6wxspp6rx12fkasanb0z2g2gc8dhcfwnxagx8wwqbpg6ifsz09"))))
+                "1mrhsih5bhiin0l3c4vp22l9p7c5035m0vvqpx18c0407fkzc7hp"))))
     (build-system gnu-build-system)
-    (native-inputs
-     `(("python" ,python-2)))
+    (native-inputs (list gcc-11 python-wrapper))
     (inputs (list postgresql))
-    (arguments
-     `(#:tests? #f   ; # FAIL:  1
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'fix-sed-command
-           (lambda _
-             ;; Newer sed versions error out if double brackets are not used.
-             (substitute* "configure"
-               (("\\[:space:\\]") "[[:space:]]"))
-             #t)))))
+    (arguments '(#:tests? #f))      ;tests require a running PostgreSQL server
     (synopsis "C++ connector for PostgreSQL")
     (description
      "Libpqxx is a C++ library to enable user programs to communicate with the
