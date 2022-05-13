@@ -3746,8 +3746,7 @@ environments and back.")
 complete YAML 1.1 parser, Unicode support, pickle support, capable extension
 API, and sensible error messages.  PyYAML supports standard YAML tags and
 provides Python-specific tags that represent an arbitrary Python object.")
-    (license license:expat)
-    (properties `((python2-variant . ,(delay python2-pyyaml))))))
+    (license license:expat)))
 
 (define-public python-pyyaml-5
   (package
@@ -3760,19 +3759,6 @@ provides Python-specific tags that represent an arbitrary Python object.")
        (sha256
         (base32
          "0pm440pmpvgv5rbbnm8hk4qga5a292kvlm1bh3x2nwr8pb5p8xv0"))))))
-
-(define-public python2-pyyaml
-  (let ((base (package-with-python2 (strip-python2-variant python-pyyaml))))
-    (package
-      (inherit base)
-      (version "5.4.1")
-      (source
-       (origin
-         (method url-fetch)
-         (uri (pypi-uri "PyYAML" version))
-         (sha256
-          (base32
-           "0pm440pmpvgv5rbbnm8hk4qga5a292kvlm1bh3x2nwr8pb5p8xv0")))))))
 
 (define-public python-vine
   (package
