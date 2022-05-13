@@ -13975,29 +13975,6 @@ functional subset of Python—Syntactic macro metaprogramming with full access
 to the Python ecosystem.")
     (license license:asl2.0)))
 
-(define-public python2-functools32
-  (package
-    (name "python2-functools32")
-    (version "3.2.3-2")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "functools32" version))
-        (sha256
-         (base32
-          "0v8ya0b58x47wp216n1zamimv4iw57cxz3xxhzix52jkw3xks9gn"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2
-       #:tests? #f)) ; no test target
-    (home-page "https://github.com/MiCHiLU/python-functools32")
-    (synopsis
-     "Backport of the functools module from Python 3.2.3")
-    (description
-     "This package is a backport of the @code{functools} module from Python
-3.2.3 for use with older versions of Python and PyPy.")
-    (license license:expat)))
-
 (define-public python-promise
   (package
     (name "python-promise")
