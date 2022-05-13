@@ -24,6 +24,7 @@
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -663,21 +664,20 @@ underlying solvers like Cplex, Gurobi, Lpsolver, Glpk, CbC, SCIP or WBO.")
                 "ocaml-dose3-Install-mli-cmx-etc.patch"))))
     (build-system ocaml-build-system)
     (arguments
-     `(#:configure-flags
+     `(#:tests? #f                      ;the test suite requires python 2
+       #:configure-flags
        ,#~(list (string-append "SHELL="
                                #+(file-append (canonical-package bash-minimal)
                                               "/bin/sh")))
        #:make-flags
        ,#~(list (string-append "LIBDIR=" #$output "/lib/ocaml/site-lib"))))
     (propagated-inputs
-      (list ocaml-graph ocaml-cudf ocaml-extlib ocaml-re))
+     (list ocaml-graph ocaml-cudf ocaml-extlib ocaml-re))
     (native-inputs
-      `(("perl" ,perl)
-        ("python" ,python-2) ; for a test script
-        ("python2-pyyaml" ,python2-pyyaml) ; for a test script
-        ("ocaml-extlib" ,ocaml-extlib)
-        ("ocamlbuild" ,ocamlbuild)
-        ("ocaml-cppo" ,ocaml-cppo)))
+     (list perl
+           ocaml-extlib
+           ocamlbuild
+           ocaml-cppo))
     (home-page "https://www.mancoosi.org/software/")
     (synopsis "Package distribution management framework")
     (description "Dose3 is a framework made of several OCaml libraries for
