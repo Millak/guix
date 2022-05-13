@@ -989,7 +989,7 @@ standards of the IceCat project.")
     (arguments
      `(#:tests? #f                              ; no check target
        #:imported-modules ,%cargo-utils-modules ;for `generate-all-checksums'
-       #:modules ((guix build utils)    ;find-files
+       #:modules ((guix build utils)            ;find-files
                   (sxml simple)
                   (ice-9 regex)
                   ,@%gnu-build-system-modules)
@@ -1216,44 +1216,44 @@ standards of the IceCat project.")
                  `("XDG_DATA_DIRS" prefix (,gtk-share))
                  `("LD_LIBRARY_PATH" prefix (,pulseaudio-lib ,eudev-lib)))))))))
     (inputs
-     `(("bzip2" ,bzip2)
-       ("cairo" ,cairo)
-       ("cups" ,cups)
-       ("dbus-glib" ,dbus-glib)
-       ("ffmpeg" ,ffmpeg)
-       ("freetype" ,freetype)
-       ("gdk-pixbuf" ,gdk-pixbuf)
-       ("glib" ,glib)
-       ("gtk+" ,gtk+)
-       ("gtk+-2" ,gtk+-2)
-       ("hunspell" ,hunspell)
-       ("icu4c" ,icu4c)
-       ("libcanberra" ,libcanberra)
-       ("libevent" ,libevent)
-       ("libffi" ,libffi)
-       ("libgnome" ,libgnome)
-       ("libjpeg-turbo" ,libjpeg-turbo)
-       ("libpng-apng" ,libpng-apng)
-       ("libvpx" ,libvpx)
-       ("libxcomposite" ,libxcomposite)
-       ("libxft" ,libxft)
-       ("libxinerama" ,libxinerama)
-       ("libxscrnsaver" ,libxscrnsaver)
-       ("libxt" ,libxt)
-       ("mesa" ,mesa)
-       ("mit-krb5" ,mit-krb5)
-       ("nspr" ,nspr-4.32)
-       ; FIXME: create nss >= 3.68 after core-updates merge
-       ;("nss" ,nss)
-       ("pango" ,pango)
-       ("pixman" ,pixman)
-       ("pulseaudio" ,pulseaudio)
-       ("sqlite" ,sqlite)
-       ("startup-notification" ,startup-notification)
-       ("eudev" ,eudev)
-       ("unzip" ,unzip)
-       ("zip" ,zip)
-       ("zlib" ,zlib)))
+     (list bzip2
+           cairo
+           cups
+           dbus-glib
+           ffmpeg
+           freetype
+           gdk-pixbuf
+           glib
+           gtk+
+           gtk+-2
+           hunspell
+           icu4c
+           libcanberra
+           libevent
+           libffi
+           libgnome
+           libjpeg-turbo
+           libpng-apng
+           libvpx
+           libxcomposite
+           libxft
+           libxinerama
+           libxscrnsaver
+           libxt
+           mesa
+           mit-krb5
+           nspr-4.32
+           ;; FIXME: create nss >= 3.68 after core-updates merge
+           ;;nss
+           pango
+           pixman
+           pulseaudio
+           sqlite
+           startup-notification
+           eudev
+           unzip
+           zip
+           zlib))
     (native-inputs
      `(("thunderbird-sources"
         ;; The changeset identifier is taken from the file "sourcestamp.txt"
