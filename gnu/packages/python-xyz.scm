@@ -17608,17 +17608,6 @@ JSON) codec.")
     (arguments
      '(#:phases
        (modify-phases %standard-phases
-         (add-before 'check 'patch-Makefile
-           ;; Stricly this is only required for the python2 variant.
-           ;; But adding a phase in an inherited package seems to be
-           ;; cumbersum. So we patch even for python3.
-           (lambda _
-             (let ((nose (assoc-ref %build-inputs "python2-nose")))
-               (when nose
-                 (substitute* "Makefile"
-                   (("\\$\\(PYTHON\\) [^ ]which nosetests[^ ] ")
-                    (string-append nose "/bin/nosetests "))))
-               #t)))
          (replace 'check
            (lambda _
              (setenv "PYTHON" (or (which "python3") (which "python")))
