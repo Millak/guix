@@ -3120,27 +3120,6 @@ port forwards using @acronym{UPnP, Universal Plug and Play}.")
     (home-page "http://miniupnp.free.fr")
     (license license:bsd-3)))
 
-(define-public python2-funcsigs
-  (package
-    (name "python2-funcsigs")
-    (version "1.0.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "funcsigs" version))
-              (sha256
-               (base32
-                "0l4g5818ffyfmfs1a924811azhjj8ax9xd1cffr1mzd3ycn0zfx7"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2))
-    (native-inputs
-     (list python2-unittest2))
-    (home-page "http://funcsigs.readthedocs.org")
-    (synopsis "Python function signatures from PEP362")
-    (description
-     "Backport of @code{funcsigs} which was introduced in Python 3.3.")
-    (license license:asl2.0)))
-
 (define-public python-py
   (package
     (name "python-py")
