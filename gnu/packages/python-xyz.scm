@@ -12269,11 +12269,6 @@ of complexity; for example, a byte stream of identical bytes will not generate
 a hash value.")
     (license license:asl2.0)))
 
-(define-public python2-tlsh
-  (package/inherit python-tlsh
-    (name "python2-tlsh")
-    (inputs `(("python" ,python-2)))))
-
 (define-public python-termcolor
   (package
     (name "python-termcolor")
