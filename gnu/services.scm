@@ -183,8 +183,7 @@
                  (default &no-default-value))
 
   ;; Meta-data.
-  (description  service-type-description          ;string
-                (default #f))
+  (description  service-type-description)         ;string
   (location     service-type-location             ;<location>
                 (default (and=> (current-source-location)
                                 source-properties->location))
