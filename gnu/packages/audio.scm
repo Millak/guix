@@ -2239,23 +2239,23 @@ synchronous execution of all clients, and low latency operation.")
 ;; jack-2 implement the same API.  JACK2 is provided primarily as a client
 ;; program for users who might benefit from the D-BUS features.
 (define-public jack-2
-  (package (inherit jack-1)
+  (package
+    (inherit jack-1)
     (name "jack2")
-    (version "1.9.14")
+    (version "1.9.21")
     (source (origin
-             (method url-fetch)
-             (uri (string-append "https://github.com/jackaudio/jack2/releases/"
-                                 "download/v" version "/jack2-"
-                                 version ".tar.gz"))
-             (file-name (string-append name "-" version ".tar.gz"))
-             (sha256
-              (base32
-               "0z11hf55a6mi8h50hfz5wry9pshlwl4mzfwgslghdh40cwv342m2"))))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jackaudio/jack2")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0sbrffmdbajvrk7iqvsvrnwnpvmicvbjyq3f52r6ashdsznsz03b"))))
     (build-system waf-build-system)
     (arguments
-     `(#:tests? #f  ; no check target
-       #:configure-flags '("--dbus"
-                           "--alsa")
+     `(#:tests? #f                      ; no check target
+       #:configure-flags '("--dbus" "--alsa")
        #:phases
        (modify-phases %standard-phases
          (add-before 'configure 'set-linkflags
@@ -2269,16 +2269,13 @@ synchronous execution of all clients, and low latency operation.")
                ((".*CFLAGS.*-Wall.*" m)
                 (string-append m
                                "    conf.env.append_unique('LINKFLAGS',"
-                               "'-Wl,-rpath=" %output "/lib')\n")))
-             #t))
+                               "'-Wl,-rpath=" %output "/lib')\n")))))
          (add-after 'install 'wrap-python-scripts
-           (lambda* (#:key inputs outputs #:allow-other-keys)
+           (lambda* (#:key outputs #:allow-other-keys)
              ;; Make sure 'jack_control' runs with the correct PYTHONPATH.
-             (let* ((out (assoc-ref outputs "out"))
-                    (path (getenv "GUIX_PYTHONPATH")))
-               (wrap-program (string-append out "/bin/jack_control")
-                 `("GUIX_PYTHONPATH" ":" prefix (,path))))
-             #t)))))
+             (wrap-program (search-input-file outputs "bin/jack_control")
+               `("GUIX_PYTHONPATH" ":"
+                 prefix (,(getenv "GUIX_PYTHONPATH")))))))))
     (inputs
      (list alsa-lib
            dbus
