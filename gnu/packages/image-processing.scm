@@ -429,23 +429,6 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
         ;; from ‘const char*’ to ‘char*’ [-fpermissive]".
         `(cons "-DCMAKE_CXX_FLAGS=-fpermissive" ,flags))))))
 
-;; itksnap needs an older variant of VTK.
-(define-public vtk-6
-  (package (inherit vtk)
-    (version "6.3.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://vtk.org/files/release/"
-                                  (version-major+minor version)
-                                  "/VTK-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0pla1r5mvkgl4sl213gfdhzrypdgai0h3z5mfgm6p9jz9hsr794j"))))
-    (inputs
-     (modify-inputs (package-inputs vtk)
-       (replace "jsoncpp" jsoncpp-for-tensorflow)
-       (replace "python" python-2)))))         ;fails to build with Python 3.9
-
 (define-public opencv
   (package
     (name "opencv")
