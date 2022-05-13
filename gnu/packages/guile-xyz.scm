@@ -183,9 +183,9 @@
     (propagated-inputs
      (list guile-json-3 guile-readline guile-redis))
     (native-inputs
-     `(("bash"       ,bash)         ;for the `source' builtin
-       ("pkgconfig"  ,pkg-config)
-       ("util-linux" ,util-linux))) ;for the `script' command
+     (list bash-minimal                           ;for the `source' builtin
+           pkg-config
+           util-linux))                           ;for the `script' command
     (arguments
      `(#:modules (((guix build guile-build-system)
                    #:select (target-guile-effective-version))
