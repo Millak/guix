@@ -1935,6 +1935,9 @@ dist_patch_DATA =						\
   %D%/packages/patches/vte-CVE-2012-2738-pt1.patch			\
   %D%/packages/patches/vte-CVE-2012-2738-pt2.patch			\
   %D%/packages/patches/vtk-fix-freetypetools-build-failure.patch	\
+  %D%/packages/patches/vtk-7-gcc-10-compat.patch		\
+  %D%/packages/patches/vtk-7-hdf5-compat.patch			\
+  %D%/packages/patches/vtk-7-python-compat.patch		\
   %D%/packages/patches/warsow-qfusion-fix-bool-return-type.patch	\
   %D%/packages/patches/webkitgtk-adjust-bubblewrap-paths.patch	\
   %D%/packages/patches/webrtc-audio-processing-big-endian.patch	\

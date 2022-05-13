@@ -407,6 +407,28 @@ a suite of 3D interaction widgets, supports parallel processing, and
 integrates with various databases on GUI toolkits such as Qt and Tk.")
     (license license:bsd-3)))
 
+(define-public vtk-7
+  (package
+    (inherit vtk)
+    (version "7.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://vtk.org/files/release/"
+                                  (version-major+minor version)
+                                  "/VTK-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0nm7xwwj7rnsxjdv2ssviys8nhci4n9iiiqm2y14s520hl2dsp1d"))
+              (patches (search-patches "vtk-7-python-compat.patch"
+                                       "vtk-7-hdf5-compat.patch"
+                                       "vtk-7-gcc-10-compat.patch"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments vtk)
+       ((#:configure-flags flags)
+        ;; Otherwise, the build would fail with: "error: invalid conversion
+        ;; from ‘const char*’ to ‘char*’ [-fpermissive]".
+        `(cons "-DCMAKE_CXX_FLAGS=-fpermissive" ,flags))))))
+
 ;; itksnap needs an older variant of VTK.
 (define-public vtk-6
   (package (inherit vtk)
