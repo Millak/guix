@@ -24,7 +24,7 @@
 ;;; Copyright © 2019 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2020 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2020 Guillaume Le Vaillant <glv@posteo.net>
-;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2021 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
@@ -53,6 +53,7 @@
   #:use-module (guix utils)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix bzr-download)
   #:use-module (guix git-download)
   #:use-module ((guix build utils) #:select (alist-replace))
   #:use-module (guix build-system cmake)
@@ -2544,64 +2545,85 @@ printed to standard output.")
    (license license:gpl3+)))
 
 (define-public libdbusmenu
-  (package
-    (name "libdbusmenu")
-    (version "16.04.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://launchpad.net/libdbusmenu/"
-                           (version-major+minor version) "/" version
-                           "/+download/libdbusmenu-" version ".tar.gz"))
-       (sha256
-        (base32 "12l7z8dhl917iy9h02sxmpclnhkdjryn08r8i4sr8l3lrlm4mk5r"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:configure-flags
-       '("--sysconfdir=/etc"
-         "--localstatedir=/var"
-         ;; The shebang of the generated test files should be patched before
-         ;; enabling tests.
-         "--disable-tests")
-       #:make-flags
-       `(,(string-append "typelibdir=" (assoc-ref %outputs "out")
-                         "/lib/girepository-1.0"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'do-not-treat-warnings-as-errors
-           (lambda _
-             ;; Prevent the build from failing due to deprecation warnings
-             ;; from newer GLib and GTK versions.
-             (substitute* (find-files "." "^Makefile.in$")
-               ((" -Werror")
-                ""))
-             #t))
-         (add-before 'configure 'set-environment
-           (lambda _
-             (setenv "HAVE_VALGRIND_TRUE" "")
-             (setenv "HAVE_VALGRIND_FALSE" "#")
-             #t)))))
-    (inputs
-     `(("glib" ,glib)
-       ("gtk+" ,gtk+)
-       ("gtk+-2" ,gtk+-2)))
-    (native-inputs
-     `(("glib:bin" ,glib "bin")
-       ("gnome-doc-utils" ,gnome-doc-utils)
-       ("gobject-introspection" ,gobject-introspection)
-       ("intltool" ,intltool)
-       ("json-glib" ,json-glib)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-2)
-       ("vala" ,vala)))
-    (home-page "https://launchpad.net/libdbusmenu")
-    (synopsis "Library for passing menus over DBus")
-    (description "@code{libdbusmenu} passes a menu structure across DBus so
+  (let ((bzr-revision "496"))
+    (package
+      (name "libdbusmenu")
+      (version (string-append "16.04.0" "-" bzr-revision))
+      (source
+       (origin
+         (method bzr-fetch)
+         (uri (bzr-reference
+               (url "lp:libdbusmenu")
+               (revision bzr-revision)))
+         (file-name (string-append name "-" version "-checkout"))
+         (sha256
+          (base32
+           "1rnp86r8f2xjcbk6jjl6np1qdhc3d7fj1c3ggn0gbv2kksc8r1bx"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:configure-flags
+        #~(list "--sysconfdir=/etc"
+                "--localstatedir=/var"
+                ;; The shebang of the generated test files should be patched
+                ;; before enabling tests.
+                "--disable-tests")
+        #:make-flags
+        #~(list (string-append "typelibdir=" #$output "/lib/girepository-1.0"))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'remove-deprecated-gnome-common-macros
+              (lambda _
+                ;; Adapted from a Debian patch to remove deprecated macros.
+                (substitute* "autogen.sh"
+                  (("^USE_GNOME2_MACROS.*") "")
+                  (("^USE_COMMON_DOC_BUILD.*") ""))))
+            (add-after 'unpack 'patch-paths
+              (lambda _
+                (substitute* "libdbusmenu-glib/Makefile.am"
+                  (("/bin/false")
+                   "false")
+                  ;; (("\\$\\(srcdir)/clean-namespaces.xslt")
+                  ;;  "clean-namespaces.xslt")
+                  )))
+            (add-before 'configure 'do-not-treat-warnings-as-errors
+              (lambda _
+                ;; Prevent the build from failing due to deprecation warnings
+                ;; from newer GLib and GTK versions.
+                (substitute* (find-files "." "^Makefile.in$")
+                  ((" -Werror")
+                   ""))))
+            (add-before 'configure 'set-environment
+              (lambda _
+                (setenv "HAVE_VALGRIND_TRUE" "")
+                (setenv "HAVE_VALGRIND_FALSE" "#"))))))
+      (inputs
+       (list glib
+             gtk+
+             gtk+-2))
+      (native-inputs
+       (list autoconf
+             automake
+             `(,glib "bin")
+             gobject-introspection
+             gnome-common
+             gtk-doc                    ;FIXME: propagate by gnome-common?
+             intltool
+             json-glib
+             libtool
+             libxslt
+             pkg-config
+             python-wrapper
+             which
+             vala))
+      (home-page "https://launchpad.net/libdbusmenupython")
+      (synopsis "Library for passing menus over DBus")
+      (description "@code{libdbusmenu} passes a menu structure across DBus so
 that a program can create a menu simply without worrying about how it is
 displayed on the other side of the bus.")
 
-    ;; Dual-licensed under either LGPLv2.1 or LGPLv3.
-    (license (list license:lgpl2.1 license:lgpl3))))
+      ;; Dual-licensed under either LGPLv2.1 or LGPLv3.
+      (license (list license:lgpl2.1 license:lgpl3)))))
 
 (define-public gtk-layer-shell
   (package
