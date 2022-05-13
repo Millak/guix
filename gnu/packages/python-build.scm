@@ -261,8 +261,7 @@ Python file, so it can be easily copied into your project.")
 executing simple grammars, vs. the traditional lex/yacc approach, or the use
 of regular expressions.  The pyparsing module provides a library of classes
 that client code uses to construct the grammar directly in Python code.")
-    (license license:expat)
-    (properties `((python2-variant . ,(delay python2-pyparsing))))))
+    (license license:expat)))
 
 ;;; This is the last release compatible with Python 2.
 (define-public python-pyparsing-2.4.7
@@ -275,9 +274,6 @@ that client code uses to construct the grammar directly in Python code.")
        (uri (pypi-uri "pyparsing" version))
        (sha256
         (base32 "1hgc8qrbq1ymxbwfbjghv01fm3fbpjwpjwi0bcailxxzhf3yq0y2"))))))
-
-(define-public python2-pyparsing
-  (package-with-python2 (strip-python2-variant python-pyparsing-2.4.7)))
 
 (define-public python-packaging-bootstrap
   (package
