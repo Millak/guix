@@ -617,8 +617,7 @@ Filter) modules follow the convention of 1V / Octave.")
         "--enable-jack"
         "--enable-sndfile"
         "--enable-samplerate"
-        "--enable-avcodec")
-       #:python ,python-2))
+        "--enable-avcodec")))
     (inputs
      (list jack-1 libsndfile libsamplerate fftwf ffmpeg)) ; for libavcodec
     (native-inputs
