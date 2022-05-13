@@ -18413,9 +18413,6 @@ JSON) codec.")
     (native-inputs `())
     (arguments `(#:tests? #f))))
 
-(define-public python2-attrs-bootstrap
-  (package-with-python2 python-attrs-bootstrap))
-
 (define-public python-cliapp
   (package
     (name "python-cliapp")
