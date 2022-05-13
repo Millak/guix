@@ -177,47 +177,6 @@
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 match))
 
-(define-public 4store
-  (package
-    (name "4store")
-    (version "1.1.6")
-    (source (origin
-      (method git-fetch)
-      (uri (git-reference
-             (url "https://github.com/4store/4store")
-             (commit (string-append "v" version))))
-      (file-name (git-file-name name version))
-      (sha256
-       (base32 "1kzdfmwpzy64cgqlkcz5v4klwx99w0jk7afckyf7yqbqb4rydmpk"))
-      (patches (search-patches "4store-unset-preprocessor-directive.patch"
-                               "4store-fix-buildsystem.patch"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list perl
-           python-2
-           autoconf
-           automake
-           gettext-minimal
-           libtool
-           `(,pcre "bin") ;for 'pcre-config'
-           pkg-config))
-    (inputs
-     (list glib
-           rasqal
-           libxml2
-           raptor2
-           readline
-           avahi
-           cyrus-sasl
-           openssl
-           `(,util-linux "lib")))
-    ;; http://www.4store.org has been down for a while now.
-    (home-page "https://github.com/4store/4store")
-    (synopsis "Clustered RDF storage and query engine")
-    (description "4store is a RDF/SPARQL store written in C, supporting
-either single machines or networked clusters.")
-    (license license:gpl3+)))
-
 (define-public ephemeralpg
   (package
     (name "ephemeralpg")
