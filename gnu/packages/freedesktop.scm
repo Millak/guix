@@ -960,9 +960,6 @@ manager for the current system.")
 Python.")
     (license license:lgpl2.0)))
 
-(define-public python2-pyxdg
-  (package-with-python2 python-pyxdg))
-
 (define-public wayland
   (package
     (name "wayland")
