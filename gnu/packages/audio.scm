@@ -11,7 +11,7 @@
 ;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018 okapi <okapi@firemail.cc>
-;;; Copyright © 2018, 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2018, 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2018, 2019 Marius Bakke <mbakke@fastmail.com>
@@ -2801,37 +2801,33 @@ software.")
     (description "An LV2 port of the mda EPiano VSTi.")))
 
 (define-public lvtk
-  (package
-    (name "lvtk")
-    (version "1.2.0")
-    (source (origin
-             (method git-fetch)
-             (uri (git-reference
-                   (url "https://github.com/lvtk/lvtk")
-                   (commit version)))
-             (file-name (git-file-name name version))
-             (sha256
-              (base32
-               "1b01zvzl70ana6l1kn8fgyr7msnn3c7x61cgw7fdpp50322352p8"))))
-    (build-system waf-build-system)
-    (arguments
-     `(#:tests? #f  ; no check target
-       #:python ,python-2
-       #:configure-flags
-       (list (string-append "--boost-includes="
-                            (assoc-ref %build-inputs "boost")
-                            "/include"))))
-    (inputs
-     (list boost gtkmm-2 lv2))
-    (native-inputs
-     (list pkg-config))
-    (home-page "https://github.com/lvtk/lvtk")
-    (synopsis "C++ libraries for LV2 plugins")
-    (description
-     "The LV2 Toolkit (LVTK) contains libraries that wrap the LV2 C API and
+  ;; Use the latest commit, as the latest release was made in 2014 and depends
+  ;; on Python 2.
+  (let ((commit "a73feabe772f9650aa071e6a4df660e549ab7c48")
+        (revision "0"))
+    (package
+      (name "lvtk")
+      (version (git-version "1.2.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/lvtk/lvtk")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0scmv8b4jlm88d21dqqchjy98wb93zclc9x960h213gdi871vsaj"))))
+      (build-system waf-build-system)
+      (arguments (list #:tests? #f))    ;no check target
+      (inputs (list boost gtkmm lv2))
+      (native-inputs (list pkg-config))
+      (home-page "https://github.com/lvtk/lvtk")
+      (synopsis "C++ libraries for LV2 plugins")
+      (description
+       "The LV2 Toolkit (LVTK) contains libraries that wrap the LV2 C API and
 extensions into easy to use C++ classes.  It is the successor of
 lv2-c++-tools.")
-    (license license:gpl3+)))
+      (license license:isc))))
 
 (define-public openal
   (package
