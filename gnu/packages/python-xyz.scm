@@ -2816,9 +2816,6 @@ commands.")
 backported for previous versions of Python from 2.4 to 3.3.")
     (license license:bsd-3)))
 
-(define-public python2-enum34
-  (package-with-python2 python-enum34))
-
 (define-public python-parse-type
   (package
     (name "python-parse-type")
