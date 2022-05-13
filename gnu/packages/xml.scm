@@ -345,9 +345,6 @@ formulas and hyperlinks to multiple worksheets in an Excel 2007+ XLSX file.")
     (inputs `(("libxml2" ,libxml2)))
     (synopsis "Python bindings for the libxml2 library")))
 
-(define-public python2-libxml2
-  (package-with-python2 python-libxml2))
-
 (define-public libxslt
   (package
     (name "libxslt")
