@@ -11095,9 +11095,6 @@ provided that can be used to do various manipulations with LilyPond files.")
 should be stored on various operating systems.")
     (license license:expat)))
 
-(define-public python2-appdirs
-  (package-with-python2 python-appdirs))
-
 (define-public python-gorilla
   (package
     (name "python-gorilla")
