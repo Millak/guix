@@ -19,6 +19,7 @@
 ;;; Copyright © 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -145,7 +146,7 @@ Magnetic Resonance Imaging.")
 (define-public dcmtk
   (package
     (name "dcmtk")
-    (version "3.6.6")
+    (version "3.6.7")
     (source
      (origin
        (method url-fetch)
@@ -154,8 +155,11 @@ Magnetic Resonance Imaging.")
                        "dcmtk" (string-join (string-split version #\.) "")
                        "/dcmtk-" version ".tar.gz"))
        (sha256
-        (base32 "13j5yf3p6qj3mr17d77r3kcqchf055hgvk1w15vmdr8f54mwcnb8"))))
+        (base32 "02kix73qhndgb56cmi5327666i6imp7hi17wwqp26q4d7s72jn3w"))))
     (build-system cmake-build-system)
+    (arguments
+     ;; By default, only static archives are built.
+     (list #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON")))
     (inputs
      (list icu4c
            libjpeg-turbo
