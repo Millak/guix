@@ -162,9 +162,6 @@ Six supports every Python version since 2.5.  It is contained in only one
 Python file, so it can be easily copied into your project.")
     (license license:x11)))
 
-(define-public python2-six-bootstrap
-  (package-with-python2 python-six-bootstrap))
-
 (define-public python-tomli
   (package
     (name "python-tomli")
