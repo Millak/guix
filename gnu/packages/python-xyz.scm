@@ -10921,8 +10921,7 @@ supports reading and writing of TrueType/OpenType fonts, reading and writing
 of AFM files, reading (and partially writing) of PS Type 1 fonts.  The package
 also contains a tool called “TTX” which converts TrueType/OpenType fonts to and
 from an XML-based format.")
-     (license license:expat)
-     (properties `((python2-variant . ,(delay python2-fonttools)))))))
+     (license license:expat))))
 
 ;;; Rename 'python-fonttools' in next cycle, renaming the current
 ;;; 'python-fonttools' to 'python-fonttools-minimal'.
@@ -10961,19 +10960,6 @@ from an XML-based format.")
            python-unicodedata2
            python-zopfli))
     (properties (alist-delete 'hidden? (package-properties python-fonttools)))))
-
-;; Fonttools 4.x dropped support for Python 2, so stick with 3.x here.
-(define-public python2-fonttools
-  (let ((base (package-with-python2 (strip-python2-variant python-fonttools))))
-    (package
-      (inherit base)
-     (version "3.44.0")
-     (source (origin
-               (method url-fetch)
-               (uri (pypi-uri "fonttools" version ".zip"))
-               (sha256
-                (base32
-                 "0v6399g755f2hn1ry62i5b6gdinf2fpx2966v3bxh6bjw1accb5p")))))))
 
 (define-public python-fonttools-next
   (package
