@@ -1032,7 +1032,8 @@ combine the information contained in both.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15i5ixpryfrbf3vrrb5rici8fb585f25k0v1ljds16bp1f1msr4q"))))
+        (base32 "15i5ixpryfrbf3vrrb5rici8fb585f25k0v1ljds16bp1f1msr4q"))
+       (patches (search-patches "itk-snap-alt-glibc-compat.patch"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
@@ -1051,22 +1052,19 @@ combine the information contained in both.")
              (substitute* "CMakeLists.txt"
                (("install_qt5_executable\
 \\(\\$\\{SNAP_MAIN_INSTALL_DIR\\}/\\$\\{SNAP_EXE\\}\\)")
-                ""))
-             #t))
+                ""))))
          (add-after 'unpack 'disable-gui-tests
            (lambda _
              ;; The GUI tests just time out.
              (substitute* "CMakeLists.txt"
                (("  (Workspace|DiffSpace|ProbeIntensity|RegionCompetition\
 |RandomForest|RandomForestBailOut)")
-                ""))
-             #t))
+                ""))))
          (add-after 'unpack 'make-reproducible
            (lambda _
              (substitute* "CMakeLists.txt"
                (("TODAY\\(SNAP_VERSION_COMPILE_DATE\\)")
-                "SET(SNAP_VERSION_COMPILE_DATE \"(removed for reproducibility)\")"))
-             #t))
+                "SET(SNAP_VERSION_COMPILE_DATE \"(removed for reproducibility)\")"))))
          (add-after 'unpack 'prepare-submodules
            (lambda* (#:key inputs #:allow-other-keys)
              (rmdir "Submodules/c3d")
@@ -1077,19 +1075,16 @@ combine the information contained in both.")
                (("vcl_") "std::"))
              (rmdir "Submodules/greedy")
              (symlink (assoc-ref inputs "greedy-src")
-                      "Submodules/greedy")
-             #t))
+                      "Submodules/greedy")))
          (add-after 'unpack 'fix-includes
            (lambda _
              (substitute* "GUI/Model/RegistrationModel.cxx"
                (("<vnl_symmetric_eigensystem.h>")
-                "<vnl/algo/vnl_symmetric_eigensystem.h>"))
-             #t))
+                "<vnl/algo/vnl_symmetric_eigensystem.h>"))))
          (add-before 'check 'prepare-tests
            (lambda _
              ;; Needed by at least one test.
-             (setenv "HOME" "/tmp")
-             #t))
+             (setenv "HOME" "/tmp")))
          (add-after 'install 'wrap-executable
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
@@ -1098,23 +1093,22 @@ combine the information contained in both.")
                    ,(map (lambda (label)
                            (string-append (assoc-ref inputs label)
                                           "/lib/qt5/plugins"))
-                         '("qtbase" "qtdeclarative"))))
-               #t))))))
+                         '("qtbase" "qtdeclarative"))))))))))
     (inputs
-     `(("curl" ,curl)
-       ("fftw" ,fftw)
-       ("fftwf" ,fftwf)
-       ("glu" ,glu)
-       ("hdf5" ,hdf5)
-       ("mesa" ,mesa-opencl)
-       ;; This package does not build with either insight-toolkit 5.0.0 and
-       ;; not with 4.13.  It really needs to be 4.12.
-       ("itk" ,insight-toolkit-4.12)
-       ("vtk" ,vtk-6)
-       ("qtbase" ,qtbase-5)
-       ("qtdeclarative" ,qtdeclarative)
-       ("vxl" ,vxl-1)
-       ("zlib" ,zlib)))
+     (list curl
+           fftw
+           fftwf
+           glu
+           hdf5
+           mesa-opencl
+           ;; This package does not build with either insight-toolkit 5.0.0
+           ;; and not with 4.13.  It really needs to be 4.12.
+           insight-toolkit-4.12
+           vtk-7
+           qtbase-5
+           qtdeclarative
+           vxl-1
+           zlib))
     (native-inputs
      `(("googletest" ,googletest)
        ("qttools" ,qttools)

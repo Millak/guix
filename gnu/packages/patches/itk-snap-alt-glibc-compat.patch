@@ -1,0 +1,22 @@
+Retrieved from ALT Linux.
+https://git.altlinux.org/tasks/273587/build/300/x86_64/srpm/itk-snap-3.8.0-alt6.src.rpm
+
+diff --git a/GUI/Qt/main.cxx b/GUI/Qt/main.cxx
+index 576f7160..ceab92e6 100644
+--- a/GUI/Qt/main.cxx
++++ b/GUI/Qt/main.cxx
+@@ -51,12 +51,13 @@ using namespace std;
+ #if defined (__unix__) || (defined (__APPLE__) && defined (__MACH__))
+ 
+ #include <signal.h>
++#include <string.h>
+ #include <execinfo.h>
+ 
+ void SegmentationFaultHandler(int sig)
+ {
+   cerr << "*************************************" << endl;
+-  cerr << "ITK-SNAP: " << sys_siglist[sig] << endl;
++  cerr << "ITK-SNAP: " << strsignal(sig) << " (" << sigabbrev_np(sig) << ")" << endl;
+   cerr << "BACKTRACE: " << endl;
+   void *array[50];
+   int nsize = backtrace(array, 50);
