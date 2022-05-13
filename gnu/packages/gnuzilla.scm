@@ -96,356 +96,6 @@
 (define-public mozjs
   (package
     (name "mozjs")
-    (version "17.0.0")
-    (source (origin
-             (method url-fetch)
-             (uri (string-append
-                   "https://ftp.mozilla.org/pub/mozilla.org/js/"
-                   name version ".tar.gz"))
-             (sha256
-              (base32
-               "1fig2wf4f10v43mqx67y68z6h77sy900d1w0pz9qarrqx57rc7ij"))
-             (patches (search-patches "mozjs17-aarch64-support.patch"))
-             (modules '((guix build utils)))
-             (snippet
-              ;; Fix incompatibility with Perl 5.22+.
-              '(begin
-                 (substitute* '("js/src/config/milestone.pl")
-                   (("defined\\(@TEMPLATE_FILE)") "@TEMPLATE_FILE"))
-                 #t))))
-    (build-system gnu-build-system)
-    (native-inputs
-     `(("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-2)))
-    (propagated-inputs
-     (list nspr)) ; in the Requires.private field of mozjs-17.0.pc
-    (inputs
-     (list zlib))
-    (arguments
-     `(;; XXX: parallel build fails, lacking:
-       ;;   mkdir -p "system_wrapper_js/"
-       #:parallel-build? #f
-       #:make-flags '("CXXFLAGS=-fpermissive")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'delete-timedout-test
-           ;; This test times out on slower hardware.
-           (lambda _
-             (delete-file "js/src/jit-test/tests/basic/bug698584.js")
-             #t))
-         (add-before 'configure 'chdir
-           (lambda _
-             (chdir "js/src")
-             #t))
-         (replace 'configure
-           ;; configure fails if it is followed by SHELL and CONFIG_SHELL
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (setenv "SHELL" (which "sh"))
-               (setenv "CONFIG_SHELL" (which "sh"))
-               (invoke "./configure" (string-append "--prefix=" out)
-                       ,@(if (string=? "aarch64-linux"
-                                       (%current-system))
-                             '("--host=aarch64-unknown-linux-gnu")
-                             '()))))))))
-    (home-page
-     "https://developer.mozilla.org/en-US/docs/Mozilla/Projects/SpiderMonkey")
-    (synopsis "Mozilla javascript engine")
-    (description "SpiderMonkey is Mozilla's JavaScript engine written
-in C/C++.")
-    (license license:mpl2.0))) ; and others for some files
-
-(define-public mozjs-24
-  (package (inherit mozjs)
-    (name "mozjs")
-    (version "24.2.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://ftp.mozilla.org/pub/mozilla.org/js/"
-                    name "-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "1n1phk8r3l8icqrrap4czplnylawa0ddc2cc4cgdz46x3lrkybz6"))
-              (modules '((guix build utils)))
-              (patches (search-patches "mozjs24-aarch64-support.patch"))
-              (snippet
-               ;; Fix incompatibility with Perl 5.22+.
-               '(begin
-                  (substitute* '("js/src/config/milestone.pl")
-                    (("defined\\(@TEMPLATE_FILE)") "@TEMPLATE_FILE"))
-                  #t))))
-    (arguments
-      (substitute-keyword-arguments (package-arguments mozjs)
-        ((#:phases phases)
-         `(modify-phases ,phases
-            (replace 'configure
-              (lambda* (#:key outputs #:allow-other-keys)
-                (let ((out (assoc-ref outputs "out")))
-                  ;; configure fails if it is followed by SHELL and CONFIG_SHELL
-                  (setenv "SHELL" (which "sh"))
-                  (setenv "CONFIG_SHELL" (which "sh"))
-                  (invoke "./configure"
-                          (string-append "--prefix=" out)
-                          "--with-system-nspr"
-                          "--enable-system-ffi"
-                          "--enable-threadsafe"
-                          ,@(if (string=? "aarch64-linux"
-                                          (%current-system))
-                                '("--host=aarch64-unknown-linux-gnu")
-                                '())))))))))
-    (inputs
-     (list libffi zlib))))
-
-(define-public mozjs-38
-  (package
-    (inherit mozjs)
-    (name "mozjs")
-    (version "38.2.1.rc0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://anduin.linuxfromscratch.org/BLFS/mozjs/"
-                    name "-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "0p4bmbpgkfsj54xschcny0a118jdrdgg0q29rwxigg3lh5slr681"))
-              (patches
-               (search-patches
-                ;; See https://bugzilla.mozilla.org/show_bug.cgi?id=1269317 for
-                ;; GCC 6 compatibility.
-
-                "mozjs38-version-detection.patch" ; for 0ad
-                "mozjs38-tracelogger.patch"
-
-                ;; See https://bugzilla.mozilla.org/show_bug.cgi?id=1339931.
-                "mozjs38-pkg-config-version.patch"
-                "mozjs38-shell-version.patch"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; Fix incompatibility with sed 4.4.
-                  (substitute* "js/src/configure"
-                    (("\\^\\[:space:\\]") "^[[:space:]]"))
-
-                  ;; The headers are symlinks to files that are in /tmp, so they
-                  ;; end up broken.  Copy them instead.
-                  (substitute*
-                      "python/mozbuild/mozbuild/backend/recursivemake.py"
-                    (("\\['dist_include'\\].add_symlink")
-                     "['dist_include'].add_copy"))
-
-                  ;; Remove bundled libraries.
-                  (for-each delete-file-recursively
-                            '("intl"
-                              "js/src/ctypes/libffi"
-                              "js/src/ctypes/libffi-patches"
-                              "modules/zlib"))
-                  #t))))
-    (arguments
-     `(;; XXX: parallel build fails, lacking:
-       ;;   mkdir -p "system_wrapper_js/"
-       #:parallel-build? #f
-       ;; See https://bugzilla.mozilla.org/show_bug.cgi?id=1008470.
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (chdir "js/src")
-               (setenv "SHELL" (which "sh"))
-               (setenv "CONFIG_SHELL" (which "sh"))
-               (invoke "./configure"
-                       (string-append "--prefix=" out)
-                       "--enable-ctypes"
-                       "--enable-gcgenerational"
-                       "--enable-optimize"
-                       "--enable-pie"
-                       "--enable-readline"
-                       "--enable-shared-js"
-                       "--enable-system-ffi"
-                       "--enable-threadsafe"
-                       "--enable-xterm-updates"
-                       "--with-system-icu"
-                       "--with-system-nspr"
-                       "--with-system-zlib"
-
-                       ;; Intl API requires bundled ICU.
-                       "--without-intl-api")))))))
-    (native-inputs
-     `(("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python-2" ,python-2)))
-    (inputs
-     (list libffi readline icu4c zlib))))
-
-(define-public mozjs-52
-  ;; No releases yet at <https://archive.mozilla.org/pub/spidermonkey/releases/>.
-  ;; While we could take a snapshot of the complete mozilla-esr52 repository at
-  ;; <https://treeherder.mozilla.org/#/jobs?repo=mozilla-esr52&filter-searchStr=sm-tc>,
-  ;; we take the Debian version instead, because it is easier to work with.
-  (let ((commit "6507e63cc416fd7a3269e390efe712f8b56f374a")
-        (revision "1"))
-    (package (inherit mozjs-38)
-      (version (git-version "52.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://salsa.debian.org/gnome-team/mozjs52.git")
-                      (commit commit)))
-                (file-name (git-file-name "mozjs" version))
-                (sha256
-                 (base32
-                  "1ny0s53r8wn4byys87h784xrq1xg767akmfm6gqrbvrz57mlm3q2"))))
-      (arguments
-       `(#:tests? #f ; depends on repository metadata
-         #:configure-flags
-         '("--enable-ctypes"
-           "--enable-optimize"
-           "--enable-pie"
-           "--enable-readline"
-           "--enable-shared-js"
-           "--enable-system-ffi"
-           "--with-system-icu"
-           "--with-system-nspr"
-           "--with-system-zlib"
-
-           ;; Intl API requires bundled ICU.
-           "--without-intl-api"
-
-           ;; Without this gnome-shell will crash at runtime.
-           "--disable-jemalloc")
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'patch-and-chdir
-             (lambda* (#:key inputs #:allow-other-keys)
-               ;; This patch prevents a segfault when executing JS_Init().
-               ;; The build does not fail without this patch, but the
-               ;; configure phase of the gjs package would fail.
-               ;; See https://bugzilla.mozilla.org/show_bug.cgi?id=1176787
-               (make-file-writable "js/src/old-configure.in")
-               (make-file-writable "js/src/old-configure")
-               (make-file-writable "mozglue/build/moz.build")
-               (invoke "patch" "-p1" "--force"
-                       "--input" "debian/patches/disable-mozglue.patch")
-               (invoke "touch" "js/src/configure")
-               (chdir "js/src")
-               #t))
-           (replace 'configure
-             (lambda* (#:key inputs outputs configure-flags #:allow-other-keys)
-               ;; The configure script does not accept environment variables
-               ;; as arguments.
-               (let ((out (assoc-ref outputs "out")))
-                 (setenv "SHELL" (which "sh"))
-                 (setenv "CONFIG_SHELL" (which "sh"))
-                 (setenv "AUTOCONF" (which "autoconf"))
-                 (apply invoke "./configure"
-                        (cons (string-append "--prefix=" out)
-                              configure-flags))))))))
-      (native-inputs
-       (modify-inputs (package-native-inputs mozjs-38)
-         (prepend autoconf-2.13 automake))))))
-
-(define-public mozjs-60
-  ;; No releases yet at <https://archive.mozilla.org/pub/spidermonkey/releases/>.
-  ;; While we could take a snapshot of the complete mozilla-esr60 repository at
-  ;; <https://treeherder.mozilla.org/#/jobs?repo=mozilla-esr60&filter-searchStr=sm-tc>,
-  ;; we take the Debian version instead, because it is easier to work with.
-  (package
-    (inherit mozjs-38)
-    (version "60.2.3-4")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://salsa.debian.org/gnome-team/mozjs60.git")
-                    (commit (string-append "debian/" version))))
-              (file-name (git-file-name "mozjs" version))
-              (sha256
-               (base32
-                "1xl6avsj9gkgma71p56jzs7nasc767k3n1frnmri5pad4rj94bij"))
-              (patches (search-patches "mozjs60-riscv64-support.patch"))))
-    (arguments
-     `(#:tests? #f ; FIXME: all tests pass, but then the check phase fails anyway.
-       #:test-target "check-jstests"
-       #:configure-flags
-       ,#~(quasiquote
-           ("--enable-ctypes"
-            "--enable-optimize"
-            "--enable-pie"
-            "--enable-readline"
-            "--enable-shared-js"
-            "--enable-system-ffi"
-            "--with-system-nspr"
-            #$@(if (%current-target-system)
-                   #~(,(string-append "--with-nspr-prefix="
-                                      #$(this-package-input "nspr")))
-                   #~())
-            "--with-system-zlib"
-            "--with-system-icu"
-            "--with-intl-api"
-            ;; This is important because without it gjs will segfault during the
-            ;; configure phase.  With jemalloc only the standalone mozjs console
-            ;; will work.
-            "--disable-jemalloc"
-            ;; Mozilla deviates from Autotools conventions due to historical
-            ;; reasons.
-            #$@(if (%current-target-system)
-                   #~(#$(string-append
-                         "--host="
-                         (nix-system->gnu-triplet (%current-system)))
-                      #$(string-append "--target=" (%current-target-system)))
-                   #~())))
-       #:phases
-       (modify-phases %standard-phases
-         ;; Make sure pkg-config will be found.
-         ,@(if (%current-target-system)
-               `((add-before 'configure 'set-PKG-CONFIG
-                   (lambda _
-                     (setenv "PKG_CONFIG" ,(pkg-config-for-target)))))
-               '())
-         (replace 'configure
-           (lambda* (#:key inputs outputs configure-flags #:allow-other-keys)
-             ;; The configure script does not accept environment variables as
-             ;; arguments.  It also must be run from a different directory,
-             ;; but not the root directory either.
-             (let ((out (assoc-ref outputs "out")))
-               (mkdir "run-configure-from-here")
-               (chdir "run-configure-from-here")
-               (setenv "SHELL" (which "sh"))
-               (setenv "CONFIG_SHELL" (which "sh"))
-               (setenv "AUTOCONF" (which "autoconf"))
-               (apply invoke "../js/src/configure"
-                      (cons (string-append "--prefix=" out)
-                            configure-flags))
-               #t)))
-         (add-after 'unpack 'update-config-scripts
-           (lambda* (#:key native-inputs inputs #:allow-other-keys)
-             (for-each (lambda (file)
-                             (install-file
-                               (search-input-file
-                                 (or native-inputs inputs)
-                                 (string-append "/bin/" file)) "build/autoconf"))
-                           '("config.guess" "config.sub"))))
-         (add-after 'unpack 'disable-broken-tests
-           (lambda _
-             ;; This test assumes that /bin exists and contains certain
-             ;; executables.
-             (delete-file "js/src/tests/shell/os.js")
-             #t)))))
-    (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("config" ,config)
-       ("which" ,which)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-2)))))
-
-(define-public mozjs-78
-  (package
-    (inherit mozjs-60)
     (version "78.15.0")
     (source (origin
               (method url-fetch)
@@ -456,13 +106,16 @@ in C/C++.")
               (sha256
                (base32
                 "0l91cxdc5v9fps79ckb1kid4gw6v5qng1jd9zvaacwaiv628shx4"))))
+    (build-system gnu-build-system)
     (arguments
-     `(#:imported-modules ,%cargo-utils-modules ;for `generate-all-checksums'
-       #:modules ((guix build cargo-utils)
+     (list
+      #:imported-modules %cargo-utils-modules ;for `generate-all-checksums'
+      #:modules `((guix build cargo-utils)
                   ,@%gnu-build-system-modules)
-       #:test-target "check-jstests"
-       #:configure-flags
-       '(;; Disable debugging symbols to save space.
+      #:test-target "check-jstests"
+      #:configure-flags
+      #~(list
+         ;; Disable debugging symbols to save space.
          "--disable-debug"
          "--disable-debug-symbols"
          ;; This is important because without it gjs will segfault during the
@@ -483,109 +136,111 @@ in C/C++.")
          "--with-system-nspr"
          "--with-system-zlib"
          "--with-intl-api")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'patch-source-shebangs 'patch-cargo-checksums
-           (lambda _
-             (let ((null-hash
-                    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"))
-               (for-each (lambda (file)
-                           (format #t "patching checksums in ~a~%" file)
-                           (substitute* file
-                             (("^checksum = \".*\"")
-                              (string-append "checksum = \"" null-hash "\""))))
-                         (find-files "." "Cargo\\.lock$"))
-               (for-each generate-all-checksums
-                         '("js" "third_party/rust"))
-               #t)))
-         (replace 'configure
-           (lambda* (#:key inputs outputs configure-flags #:allow-other-keys)
-             ;; The configure script does not accept environment variables as
-             ;; arguments.  It also must be run from a different directory,
-             ;; but not the root directory either.
-             (let ((out (assoc-ref outputs "out")))
-               (mkdir "run-configure-from-here")
-               (chdir "run-configure-from-here")
-               (setenv "SHELL" (which "sh"))
-               (setenv "CONFIG_SHELL" (which "sh"))
-               (setenv "AUTOCONF" (which "autoconf"))
-               (apply invoke "../js/src/configure"
-                      (cons (string-append "--prefix=" out)
-                            configure-flags))
-               #t)))
-         (add-after 'unpack 'adjust-for-icu-68
-           (lambda _
-             (with-directory-excursion "js/src/tests"
-               ;; The test suite expects a lightly patched ICU 67.  Since
-               ;; Guix is about to switch to ICU 68, massage the tests to
-               ;; work with that instead of patching ICU.  Try removing this
-               ;; phase for newer versions of mozjs.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'patch-source-shebangs 'patch-cargo-checksums
+            (lambda _
+              (let ((null-hash
+                     "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"))
+                (for-each (lambda (file)
+                            (format #t "patching checksums in ~a~%" file)
+                            (substitute* file
+                              (("^checksum = \".*\"")
+                               (string-append "checksum = \"" null-hash "\""))))
+                          (find-files "." "Cargo\\.lock$"))
+                (for-each generate-all-checksums
+                          '("js" "third_party/rust")))))
+          (replace 'configure
+            (lambda* (#:key inputs configure-flags #:allow-other-keys)
+              ;; The configure script does not accept environment variables as
+              ;; arguments.  It also must be run from a different directory,
+              ;; but not the root directory either.
+              (mkdir "run-configure-from-here")
+              (chdir "run-configure-from-here")
+              (setenv "SHELL" (which "sh"))
+              (setenv "CONFIG_SHELL" (which "sh"))
+              (setenv "AUTOCONF" (which "autoconf"))
+              (apply invoke "../js/src/configure"
+                     (cons (string-append "--prefix=" #$output)
+                           configure-flags))))
+          (add-after 'unpack 'adjust-for-icu-68
+            (lambda _
+              (with-directory-excursion "js/src/tests"
+                ;; The test suite expects a lightly patched ICU 67.  Since
+                ;; Guix is about to switch to ICU 68, massage the tests to
+                ;; work with that instead of patching ICU.  Try removing this
+                ;; phase for newer versions of mozjs.
 
-               ;; These tests look up locale names and expects to get
-               ;; "GB" instead of "UK".
-               (substitute* "non262/Intl/DisplayNames/language.js"
-                 (("Traditionell, GB")
-                  "Traditionell, UK"))
-               (substitute* "non262/Intl/DisplayNames/region.js"
-                 (("\"GB\": \"GB\"")
-                  "\"GB\": \"UK\""))
+                ;; These tests look up locale names and expects to get
+                ;; "GB" instead of "UK".
+                (substitute* "non262/Intl/DisplayNames/language.js"
+                  (("Traditionell, GB")
+                   "Traditionell, UK"))
+                (substitute* "non262/Intl/DisplayNames/region.js"
+                  (("\"GB\": \"GB\"")
+                   "\"GB\": \"UK\""))
 
-               ;; XXX: Some localized time formats have changed, and
-               ;; substitution fails for accented characters, even though
-               ;; it works in the REPL(?).  Just delete these for now.
-               (delete-file "non262/Intl/Date/toLocaleString_timeZone.js")
-               (delete-file "non262/Intl/Date/toLocaleDateString_timeZone.js")
+                ;; XXX: Some localized time formats have changed, and
+                ;; substitution fails for accented characters, even though
+                ;; it works in the REPL(?).  Just delete these for now.
+                (delete-file "non262/Intl/Date/toLocaleString_timeZone.js")
+                (delete-file "non262/Intl/Date/toLocaleDateString_timeZone.js")
 
-               ;; Similarly, these get an unexpected "A" suffix when looking
-               ;; up a time in the "ar-MA-u-ca-islamicc" locale, which is
-               ;; tricky to substitute.
-               (delete-file "non262/Intl/DateTimeFormat/format_timeZone.js")
-               (delete-file "non262/Intl/DateTimeFormat/format.js")
+                ;; Similarly, these get an unexpected "A" suffix when looking
+                ;; up a time in the "ar-MA-u-ca-islamicc" locale, which is
+                ;; tricky to substitute.
+                (delete-file "non262/Intl/DateTimeFormat/format_timeZone.js")
+                (delete-file "non262/Intl/DateTimeFormat/format.js")
 
-               ;; This file compares a generated list of ICU locale names
-               ;; with actual lookups.  Some have changed slightly, i.e.
-               ;; daf-Latn-ZZ -> daf-Latn-CI, so drop it for simplicity.
-               (delete-file "non262/Intl/Locale/likely-subtags-generated.js"))
+                ;; This file compares a generated list of ICU locale names
+                ;; with actual lookups.  Some have changed slightly, i.e.
+                ;; daf-Latn-ZZ -> daf-Latn-CI, so drop it for simplicity.
+                (delete-file "non262/Intl/Locale/likely-subtags-generated.js"))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (with-directory-excursion "../js/src/tests"
+                (substitute* "shell/os.js"
+                  ;; FIXME: Why does the killed process have an exit status?
+                  ((".*killed process should not have exitStatus.*")
+                   ""))
 
-             #t))
-         (add-before 'check 'pre-check
-           (lambda _
-             (with-directory-excursion "../js/src/tests"
-               (substitute* "shell/os.js"
-                 ;; FIXME: Why does the killed process have an exit status?
-                 ((".*killed process should not have exitStatus.*")
-                  ""))
+                ;; XXX: Delete all tests that test time zone functionality,
+                ;; because the test suite uses /etc/localtime to figure out
+                ;; the offset from the hardware clock, which does not work
+                ;; in the build container.  See <tests/non262/Date/shell.js>.
+                (delete-file-recursively "non262/Date")
+                (delete-file "non262/Intl/DateTimeFormat/tz-environment-variable.js")
 
-               ;; XXX: Delete all tests that test time zone functionality,
-               ;; because the test suite uses /etc/localtime to figure out
-               ;; the offset from the hardware clock, which does not work
-               ;; in the build container.  See <tests/non262/Date/shell.js>.
-               (delete-file-recursively "non262/Date")
-               (delete-file "non262/Intl/DateTimeFormat/tz-environment-variable.js")
-
-               (setenv "JSTESTS_EXTRA_ARGS"
-                       (string-join
-                        (list
-                         ;; Do not run tests marked as "random".
-                         "--exclude-random"
-                         ;; Exclude web platform tests.
-                         "--wpt=disabled"
-                         ;; Respect the daemons configured number of jobs.
-                         (string-append "--worker-count="
-                                        (number->string (parallel-job-count)))))))
-             #t)))))
+                (setenv "JSTESTS_EXTRA_ARGS"
+                        (string-join
+                         (list
+                          ;; Do not run tests marked as "random".
+                          "--exclude-random"
+                          ;; Exclude web platform tests.
+                          "--wpt=disabled"
+                          ;; Respect the daemons configured number of jobs.
+                          (string-append "--worker-count="
+                                         (number->string (parallel-job-count))))))))))))
     (native-inputs
-     `(("autoconf" ,autoconf-2.13)
-       ("automake" ,automake)
-       ;; TODO(staging): Use the default LLVM in the next rebuild cycle.
-       ("llvm" ,llvm-9)                 ;for llvm-objdump
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-3)
-       ("rust" ,rust)
-       ("cargo" ,rust "cargo")))
+     (list autoconf-2.13
+           automake
+           ;; TODO(staging): Use the default LLVM in the next rebuild cycle.
+           llvm-9                       ;for llvm-objdump
+           perl
+           pkg-config
+           python-3
+           rust
+           `(,rust "cargo")))
     (inputs
-     (list icu4c readline zlib))))
+     (list icu4c readline zlib))
+    (propagated-inputs
+     (list nspr))                ; in the Requires.private field of mozjs-*.pc
+    (home-page
+     "https://developer.mozilla.org/en-US/docs/Mozilla/Projects/SpiderMonkey")
+    (synopsis "Mozilla javascript engine")
+    (description "SpiderMonkey is Mozilla's JavaScript engine written
+in C/C++.")
+    (license license:mpl2.0))) ; and others for some files
 
 (define mozilla-compare-locales
   (origin
