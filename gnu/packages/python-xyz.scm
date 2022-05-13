@@ -20060,9 +20060,6 @@ stack traces of Python programs.  It exactly mimics the behavior of the Python
 interpreter when it prints a stack trace.")
     (license license:psfl)))
 
-(define-public python2-traceback2
-  (package-with-python2 python-traceback2))
-
 (define-public python-ratelimiter
   (package
     (name "python-ratelimiter")
