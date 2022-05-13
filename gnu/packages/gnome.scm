@@ -2477,61 +2477,44 @@ GNOME Desktop.")
     (name "gnome-keyring")
     (version "40.0")
     (source (origin
-             (method url-fetch)
-             (uri (string-append "mirror://gnome/sources/" name "/"
-                                 (version-major version)  "/"
-                                 name "-" version ".tar.xz"))
-             (sha256
-              (base32
-               "0cdrlcw814zayhvlaxqs1sm9bqlfijlp22dzzd0g5zg2isq4vlm3"))))
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/" name "/"
+                                  (version-major version)  "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0cdrlcw814zayhvlaxqs1sm9bqlfijlp22dzzd0g5zg2isq4vlm3"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ;48 of 603 tests fail because /var/lib/dbus/machine-id does
-                   ;not exist
-       #:configure-flags
-       (list
-        (string-append "--with-pkcs11-config="
-                       (assoc-ref %outputs "out") "/share/p11-kit/modules/")
-        (string-append "--with-pkcs11-modules="
-                       (assoc-ref %outputs "out") "/share/p11-kit/modules/"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-/bin/sh-reference
-           (lambda _
-             (substitute* "po/Makefile.in.in"
-               (("/bin/sh") (which "sh")))
-             #t))
-         (add-after 'unpack 'fix-docbook
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "docs/Makefile.am"
-               (("http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl")
-                (string-append (assoc-ref inputs "docbook-xsl")
-                               "/xml/xsl/docbook-xsl-"
-                               ,(package-version docbook-xsl)
-                               "/manpages/docbook.xsl")))
-             (setenv "XML_CATALOG_FILES"
-                     (string-append (assoc-ref inputs "docbook-xml")
-                                    "/xml/dtd/docbook/catalog.xml"))
-             ;; Rerun the whole thing to avoid version mismatch ("This is
-             ;; Automake 1.15.1, but the definition used by this
-             ;; AM_INIT_AUTOMAKE comes from Automake 1.15.").  Note: we don't
-             ;; use 'autoreconf' because it insists on running 'libtoolize'.
-             (invoke "autoconf")
-             (invoke "aclocal")
-             (invoke "automake" "-ac"))))))
+     (list
+      #:tests? #f  ;48 of 603 tests fail because /var/lib/dbus/machine-id does
+                                        ;not exist
+      #:configure-flags
+      #~(list
+         (string-append "--with-pkcs11-config="
+                        #$output "/share/p11-kit/modules/")
+         (string-append "--with-pkcs11-modules="
+                        #$output "/share/p11-kit/modules/"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-/bin/sh-reference
+            (lambda _
+              (substitute* "po/Makefile.in.in"
+                (("/bin/sh") (which "sh"))))))))
     (inputs
      (list libgcrypt linux-pam openssh dbus gcr))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("glib" ,glib "bin")
-       ("glib" ,glib) ; for m4 macros
-       ("python" ,python-2) ;for tests
-       ("intltool" ,intltool)
-       ("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libxslt" ,libxslt) ;for documentation
-       ("docbook-xml" ,docbook-xml-4.3)
-       ("docbook-xsl" ,docbook-xsl)))
+     (list pkg-config
+           `(,glib "bin")
+           glib                         ;for m4 macros
+           python-wrapper               ;for tests
+           intltool
+           autoconf
+           automake
+           libxml2                      ;for XML_CATALOG_FILES
+           libxslt                      ;for documentation
+           docbook-xml
+           docbook-xsl))
     (propagated-inputs
      (list gcr))
     (home-page "https://www.gnome.org")
