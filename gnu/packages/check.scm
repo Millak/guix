@@ -3056,19 +3056,6 @@ under test to interact with a fake file system instead of the real file
 system.  The code under test requires no modification to work with pyfakefs.")
     (license license:asl2.0)))
 
-;; This minimal variant is used to avoid a circular dependency between
-;; python2-importlib-metadata, which requires pyfakefs for its tests, and
-;; python2-pytest, which requires python2-importlib-metadata.
-(define-public python2-pyfakefs-bootstrap
-  (hidden-package
-   (package
-     (inherit (package-with-python2 python-pyfakefs))
-     (name "python2-pyfakefs-bootstrap")
-     (native-inputs '())
-     (arguments
-      `(#:python ,python-2
-        #:tests? #f)))))
-
 (define-public python-aiounittest
   (package
     (name "python-aiounittest")
