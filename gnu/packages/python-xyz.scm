@@ -20029,9 +20029,6 @@ attempting to optimize internally, using a cache, the common case where many
 lines are read from a single file.")
     (license license:psfl)))
 
-(define-public python2-linecache2
-  (package-with-python2 python-linecache2))
-
 (define-public python-traceback2
   (package
     (name "python-traceback2")
