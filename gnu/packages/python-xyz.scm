@@ -21091,25 +21091,7 @@ file system events on Linux.")
 number of iterator building blocks inspired by constructs from APL, Haskell,
 and SML.  @code{more-itertools} includes additional building blocks for
 working with iterables.")
-    (properties `((python2-variant . ,(delay python2-more-itertools))))
     (license license:expat)))
-
-;; The 5.x series are the last versions supporting Python 2.7.
-(define-public python2-more-itertools
-  (package
-    (inherit python-more-itertools)
-    (name "python2-more-itertools")
-    (version "5.0.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "more-itertools" version))
-              (sha256
-               (base32
-                "1r12cm6mcdwdzz7d47a6g4l437xsvapdlgyhqay3i2nrlv03da9q"))))
-    (arguments
-     `(#:python ,python-2))
-    (propagated-inputs
-     `(("python2-six" ,python2-six-bootstrap)))))
 
 (define-public python-latexcodec
   (package
