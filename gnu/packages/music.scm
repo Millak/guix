@@ -3401,11 +3401,11 @@ analogue-like user interface.")
 (define-public mod-host
   ;; The last release was in 2014 but since then hundreds of commits have
   ;; been made.
-  (let ((commit "1726ad06b11323da7e1aaed690ff8aef91f702b5")
-        (revision "3"))
+  (let ((commit "cdd30ddbd2cc916be8a0364275071c3d8335b3a7")
+        (revision "4"))
     (package
       (name "mod-host")
-      (version (string-append "0.10.6-" revision "." (string-take commit 9)))
+      (version (git-version "0.10.6" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -3413,34 +3413,33 @@ analogue-like user interface.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1nrd37c35w6z6ldczgrwmmd9hx1n3zyvcjcgb3mi4cygqdanvspv"))
-                (file-name (string-append name "-" version "-checkout"))))
+                  "1xnflvcyj071gn9nhv5dynd0v85nq99sz1wn3adlj43l5m4fbx3a"))
+                (file-name (git-file-name name version))))
       (build-system gnu-build-system)
       (arguments
-       `(#:tests? #f ; no tests included
-         #:make-flags
-         (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
-               "CC=gcc")
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure)
-           (add-after 'unpack 'fix-jack-installation-directory
-             (lambda _
-               ;; Do not attempt to install files to output of "jack" package.
-               (substitute* "Makefile"
-                 (("\\$\\(shell pkg-config --variable=libdir jack\\)")
-                  "lib"))
-               #t)))))
+       (list
+        #:tests? #f                     ; no tests included
+        #:make-flags
+        #~(list (string-append "PREFIX=" #$output) "CC=gcc")
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            (add-after 'unpack 'fix-jack-installation-directory
+              (lambda _
+                ;; Do not attempt to install files to output of "jack" package.
+                (substitute* "Makefile"
+                  (("\\$\\(shell pkg-config --variable=libdir jack\\)")
+                   "lib")))))))
       (inputs
        (list lilv
              fftw
              fftwf
              lv2
-             jack-1
+             jack-2
              readline))
       (native-inputs
-       `(("pkg-config" ,pkg-config)
-         ("python" ,python-2)))
+       (list pkg-config
+             python-wrapper))
       (home-page "https://github.com/moddevices/mod-host")
       (synopsis "LV2 host for Jack controllable via socket or command line")
       (description "mod-host is an LV2 plugin host for JACK, controllable via
