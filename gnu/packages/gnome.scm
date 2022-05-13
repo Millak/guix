@@ -332,7 +332,6 @@
     (inputs
      (list dvd+rw-tools
            glib
-           gnome-doc-utils
            gstreamer
            gst-plugins-base
            gtk+
