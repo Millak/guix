@@ -953,9 +953,6 @@ interfaces and processes.")
 standard library.")
     (license license:psfl)))
 
-(define-public python2-unittest2
-  (package-with-python2 python-unittest2))
-
 (define-public python-pytest
   (package
     (name "python-pytest")
