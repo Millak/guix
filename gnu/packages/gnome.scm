@@ -2226,37 +2226,6 @@ The gnome-about program helps find which version of GNOME is installed.")
     ; Some bits under the LGPL.
     (license license:gpl2+)))
 
-(define-public gnome-doc-utils
-  (package
-    (name "gnome-doc-utils")
-    (version "0.20.10")
-    (source
-     (origin
-      (method url-fetch)
-      (uri (string-append "mirror://gnome/sources/" name "/"
-                          (version-major+minor version)  "/"
-                          name "-" version ".tar.xz"))
-      (sha256
-       (base32
-        "19n4x25ndzngaciiyd8dd6s2mf9gv6nv3wv27ggns2smm7zkj1nb"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list intltool
-           docbook-xml-4.4
-           python2-libxml2
-           libxml2
-           libxslt
-           pkg-config
-           python-2))
-    (home-page "https://wiki.gnome.org/GnomeDocUtils")
-    (synopsis
-     "Documentation utilities for the Gnome project")
-    (description
-     "Gnome-doc-utils is a collection of documentation utilities for the
-Gnome project.  It includes xml2po tool which makes it easier to translate
-and keep up to date translations of documentation.")
-    (license license:gpl2+))) ; xslt under lgpl
-
 (define-public gnome-disk-utility
   (package
     (name "gnome-disk-utility")
