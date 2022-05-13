@@ -887,17 +887,7 @@ available via the @code{unittest.mock} module.")
     (synopsis "Python testing library")
     (description
      "Nose extends the unittest library to make testing easier.")
-    (license license:lgpl2.0+)
-    (properties `((python2-variant . ,(delay python2-nose))))))
-
-(define-public python2-nose
-  (let ((base (package-with-python2
-               (strip-python2-variant python-nose))))
-    (package/inherit base
-      (arguments (substitute-keyword-arguments (package-arguments base)
-                   ((#:phases phases)
-                    `(modify-phases ,phases
-                       (delete 'invoke-2to3))))))))
+    (license license:lgpl2.0+)))
 
 (define-public python-nose2
   (package
