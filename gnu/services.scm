@@ -292,7 +292,8 @@ for service of type '~a'")
 singleton service type NAME, of which the returned service is an instance."
   (let* ((extension (service-extension target identity))
          (type      (service-type (name name)
-                                  (extensions (list extension)))))
+                                  (extensions (list extension))
+                                  (description "This is a simple service."))))
     (service type value)))
 
 (define-syntax %modify-service

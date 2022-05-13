@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2020, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
@@ -161,7 +161,10 @@
   (service-type (name 'marionette-repl)
                 (extensions
                  (list (service-extension shepherd-root-service-type
-                                          marionette-shepherd-service)))))
+                                          marionette-shepherd-service)))
+                (description "The @dfn{marionette} service allows a guest
+system (virtual machine) to be manipulated by the host.  It is used for system
+tests.")))
 
 (define* (marionette-operating-system os
                                       #:key
