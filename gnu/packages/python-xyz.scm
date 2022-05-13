@@ -2573,7 +2573,16 @@ in the current session, Python, and the OS.")
      `(("python-pytest" ,python-pytest-bootstrap)))))
 
 (define-public python2-six
-  (package-with-python2 python-six))
+  (let ((base (package-with-python2 python-six)))
+    (package
+      (inherit base)
+      ;; Reduce Python 2 closure by disabling tests and removing the native
+      ;; inputs.
+      (arguments (substitute-keyword-arguments (package-arguments base)
+                   ((#:phases phases)
+                    `(modify-phases ,phases
+                       (delete 'check)))))
+      (native-inputs '()))))
 
 (define-public python-schedule
   (package
