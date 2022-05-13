@@ -2306,17 +2306,15 @@ synchronous execution of all clients, and low latency operation.")
                 "05lycfq0f06zjp5xqvzjz9hx9kmqx72yng1lghh76hv63dw43lcj"))))
     (build-system waf-build-system)
     (arguments
-     `(#:tests? #f                      ; no check target
-       #:python ,python-2))
+     `(#:tests? #f))                    ; no check target
     (inputs
-     `(("lv2" ,lv2)
-       ("lilv" ,lilv)
-       ("suil" ,suil)
-       ("gtk2" ,gtk+-2)
-       ("gtk3" ,gtk+)
-       ("gtkmm" ,gtkmm-2)
-       ("qtbase" ,qtbase-5)
-       ("jack" ,jack-1)))
+     (list lv2
+           lilv
+           suil
+           gtk
+           gtkmm
+           qtbase-5
+           jack-1))
     (native-inputs
      (list pkg-config))
     (home-page "https://drobilla.net/software/jalv/")
