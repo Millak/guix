@@ -376,12 +376,12 @@ GTK and also enables xwidgets.")))
             (delete 'restore-emacs-pdmp)
             (delete 'strip-double-wrap)))))
     (inputs
-     `(("guix-emacs.el" ,(search-auxiliary-file "emacs/guix-emacs.el"))
-       ("ncurses" ,ncurses)
-       ("coreutils" ,coreutils)
-       ("gzip" ,gzip)))
+     (list (search-auxiliary-file "emacs/guix-emacs.el")
+           ncurses
+           coreutils
+           gzip))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))))
+     (list autoconf pkg-config))))
 
 (define-public emacs-xwidgets
   (package/inherit emacs
