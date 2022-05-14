@@ -348,13 +348,13 @@ languages.")
     (name "emacs-next-pgtk")
     (arguments
      (substitute-keyword-arguments (package-arguments emacs-next)
-       ((#:configure-flags flags ''())
-        `(cons* "--with-pgtk" "--with-xwidgets" ,flags))))
+       ((#:configure-flags flags #~'())
+        #~(cons* "--with-pgtk" "--with-xwidgets" #$flags))))
     (propagated-inputs
      (list gsettings-desktop-schemas glib-networking))
     (inputs
-     `(("webkitgtk" ,webkitgtk-with-libsoup2)
-       ,@(package-inputs emacs-next)))
+     (modify-inputs (package-inputs emacs-next)
+       (prepend webkitgtk-with-libsoup2)))
     (home-page "https://github.com/masm11/emacs")
     (synopsis "Emacs text editor with @code{pgtk} and @code{xwidgets} support")
     (description "This Emacs build implements graphical UI purely in terms of
