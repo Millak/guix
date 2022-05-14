@@ -289,9 +289,9 @@ pure Scheme to Tar and decompression in one easy step.")
            #:builder
            #~(begin
                (use-modules (guix build utils))
-               (let ((source (assoc-ref %build-inputs "source"))
-                     (tar (assoc-ref %build-inputs "bootar"))
-                     (out (assoc-ref %outputs "out")))
+               (let ((source #$(package-source this-package))
+                     (tar #$(this-package-native-input "bootar"))
+                     (out #$output))
                  (setenv "PATH" (string-append tar "/bin:"))
                  (invoke "tar" "xvf" source)
                  (mkdir-p out)
