@@ -394,7 +394,7 @@ Installing Debugging Files
 
 Bootstrapping
 
-* Full-source Bootstrap::       A Bootstrap worthy of GNU.
+* Full-Source Bootstrap::       A Bootstrap worthy of GNU.
 * Preparing to Use the Bootstrap Binaries:: Building that what matters most.
 
 @end detailmenu
@@ -39491,12 +39491,12 @@ re-create them if needed (@pxref{Preparing to Use the Bootstrap
 Binaries}).
 
 @menu
-* Full-source Bootstrap::       A Bootstrap worthy of GNU.
+* Full-Source Bootstrap::       A Bootstrap worthy of GNU.
 * Preparing to Use the Bootstrap Binaries:: Building that what matters most.
 @end menu
 
-@node Full-source Bootstrap
-@section The Full-source Bootstrap
+@node Full-Source Bootstrap
+@section The Full-Source Bootstrap
 
 Guix---like other GNU/Linux distributions---is traditionally bootstrapped from
 a set of bootstrap binaries: Bourne shell, command-line tools provided by GNU
