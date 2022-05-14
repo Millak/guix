@@ -121,6 +121,7 @@
 ;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
 ;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
+;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -31383,3 +31384,37 @@ object, which can be useful if you want to force your objects into a table.")
      "The @code{deep-merge} Python library provides a toolset to deeply merge
 nested data structures in Python like lists and dictionaries.")
     (license license:expat)))
+
+(define-public python-murmurhash3
+  (package
+    (name "python-murmurhash3")
+    (version "2.3.5")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "murmurhash3" version))
+              (sha256
+               (base32
+                "1gdzys1212dx70byz07ipknbw1awbqskh6aznlkm85js8b8qfczm"))))
+    (build-system python-build-system)
+    (native-inputs (list python-cython python-pytest))
+    (inputs (list python))
+    (arguments
+     (list #:modules
+           '((ice-9 ftw) (ice-9 match)
+             (guix build utils)
+             (guix build python-build-system))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'set-source-file-times-to-1980
+                 (lambda _
+                   (let ((circa-1980 (* 10 366 24 60 60)))
+                     (ftw "."
+                          (lambda (file stat flag)
+                            (utime file circa-1980 circa-1980) #t))))))))
+    (home-page "https://github.com/veegee/mmh3")
+    (synopsis "Python wrapper for MurmurHash (MurmurHash3)")
+    (description
+     "@code{murmurhash3} is a Python library for MurmurHash (MurmurHash3), a set
+of fast and robust hash functions.  This library is a Python extension module
+written in C.")
+    (license license:public-domain)))
