@@ -523,9 +523,7 @@ of a package, and INPUT-NAMES, a list of package specifications such as
   ;; Emit a warning if some inputs of PACKAGE are likely to should not be
   ;; an input at all.
   (let ((input-names '("python-setuptools"
-                       "python2-setuptools"
-                       "python-pip"
-                       "python2-pip")))
+                       "python-pip")))
     (map (lambda (input)
            (make-warning
             package

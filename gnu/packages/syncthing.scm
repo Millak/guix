@@ -202,8 +202,6 @@ Protocol.")
              python-pygobject
              psmisc
              syncthing))
-      ;; (native-inputs
-      ;;  `(("python2-setuptools" ,python2-setuptools)))
       (home-page "https://github.com/syncthing/syncthing-gtk")
       (synopsis "GTK3 based GUI and notification area icon for Syncthing")
       (description "@code{syncthing-gtk} is a GTK3 Python based GUI and
