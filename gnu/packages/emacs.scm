@@ -369,16 +369,14 @@ GTK and also enables xwidgets.")))
     (build-system gnu-build-system)
     (arguments
      (substitute-keyword-arguments (package-arguments emacs)
-       ((#:configure-flags flags ''())
+       ((#:configure-flags flags #~'())
         #~(list "--with-gnutls=no" "--disable-build-details"))
        ((#:phases phases)
         #~(modify-phases #$phases
             (delete 'restore-emacs-pdmp)
             (delete 'strip-double-wrap)))))
-    (inputs
-     (list ncurses coreutils gzip))
-    (native-inputs
-     (list autoconf pkg-config))))
+    (inputs (list ncurses coreutils gzip))
+    (native-inputs (list autoconf pkg-config))))
 
 (define-public emacs-xwidgets
   (package/inherit emacs
