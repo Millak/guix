@@ -148,9 +148,10 @@
                  (format #f "~s" (search-input-file inputs "/bin/sh"))))
               (substitute* "lisp/doc-view.el"
                 (("\"(gs|dvipdf|ps2pdf|pdftotext)\"" all what)
-                 (let ((replacement (search-input-file
-                                     inputs
-                                     (string-append "/bin/" what))))
+                 (let ((replacement (false-if-exception
+                                     (search-input-file
+                                      inputs
+                                      (string-append "/bin/" what)))))
                    (if replacement
                        (string-append "\"" replacement "\"")
                        all))))
