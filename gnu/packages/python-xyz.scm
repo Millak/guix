@@ -31418,3 +31418,34 @@ nested data structures in Python like lists and dictionaries.")
 of fast and robust hash functions.  This library is a Python extension module
 written in C.")
     (license license:public-domain)))
+
+(define-public python-murmurhash
+  (package
+    (name "python-murmurhash")
+    (version "1.0.7")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "murmurhash" version))
+              (sha256
+               (base32
+                "0vwkn98c703nvsigl2nz99rax2pafkx3djjfkgc49jiipmp3j2k3"))))
+    (build-system python-build-system)
+    (native-inputs (list python-cython python-pytest))
+    (inputs (list python python-murmurhash3))
+    (arguments
+     (list #:modules
+           '((ice-9 ftw) (ice-9 match)
+             (guix build utils)
+             (guix build python-build-system))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'set-source-file-times-to-1980
+                 (lambda _
+                   (let ((circa-1980 (* 10 366 24 60 60)))
+                     (ftw "."
+                          (lambda (file stat flag)
+                            (utime file circa-1980 circa-1980) #t))))))))
+    (home-page "https://github.com/explosion/murmurhash")
+    (synopsis "Cython bindings for MurmurHash2")
+    (description "This package provides Cython bindings for MurmurHash2.")
+    (license license:expat)))
