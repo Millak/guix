@@ -369,11 +369,11 @@ GTK and also enables xwidgets.")))
     (arguments
      (substitute-keyword-arguments (package-arguments emacs)
        ((#:configure-flags flags ''())
-        `(list "--with-gnutls=no" "--disable-build-details"))
+        #~(list "--with-gnutls=no" "--disable-build-details"))
        ((#:phases phases)
-        `(modify-phases ,phases
-           (delete 'restore-emacs-pdmp)
-           (delete 'strip-double-wrap)))))
+        #~(modify-phases #$phases
+            (delete 'restore-emacs-pdmp)
+            (delete 'strip-double-wrap)))))
     (inputs
      `(("guix-emacs.el" ,(search-auxiliary-file "emacs/guix-emacs.el"))
        ("ncurses" ,ncurses)
