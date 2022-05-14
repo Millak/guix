@@ -13438,9 +13438,6 @@ on marker set compatibility, similarity in genomic characteristics, and
 proximity within a reference genome.")
     (license license:gpl3+)))
 
-(define-public python2-checkm-genome
-  (deprecated-package "python2-checkm-genome" checkm))
-
 (define-public umi-tools
   (package
     (name "umi-tools")
