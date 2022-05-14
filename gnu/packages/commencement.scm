@@ -445,55 +445,55 @@ MesCC-Tools), and finally M2-Planet.")
                                  (snippet #f))))
        ,@(%boot-gash-inputs)))
     (arguments
-     `(#:implicit-inputs? #f
-       #:tests? #f
-       #:guile ,%bootstrap-guile
-       #:strip-binaries? #f             ;no strip yet
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'unpack-seeds
-           (lambda _
-             (let ((nyacc-source (assoc-ref %build-inputs "nyacc-source")))
-               (with-directory-excursion ".."
-                 (invoke "tar" "-xvf" nyacc-source)))))
-         (replace 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (gash (assoc-ref inputs "bash"))
-                   (mes (assoc-ref inputs "mes"))
-                   (dir (with-directory-excursion ".." (getcwd))))
-               (setenv "GUILE_LOAD_PATH" (string-append
-                                          dir "/nyacc-1.00.2/module"))
-               (invoke "gash" "configure.sh"
-                       (string-append "--prefix=" out)
-                       "--host=i686-linux-gnu"))))
-         (replace 'build
-           (lambda _
-             (invoke "gash" "bootstrap.sh")))
-         (delete 'check)
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "install.sh"  ; show some progress
-               ((" -xf") " -xvf")
-               (("^( *)((cp|mkdir|tar) [^']*[^\\])\n" all space cmd)
-                (string-append space "echo '" cmd "'\n"
-                               space cmd "\n")))
-             (invoke "gash" "install.sh")
-             ;; Keep ASCII output, for friendlier comparison and bisection
-             (let* ((out (assoc-ref outputs "out"))
-                    (cache (string-append out "/lib/cache")))
-               (define (objects-in-dir dir)
-                 (find-files dir
-                             (lambda (name stat)
-                               (and (equal? (dirname name) dir)
-                                    (or (string-suffix? ".M1" name)
-                                        (string-suffix? ".hex2" name)
-                                        (string-suffix? ".o" name)
-                                        (string-suffix? ".s" name))))))
-               (for-each (lambda (x) (install-file x cache))
-                         (append (objects-in-dir "m2")
-                                 (objects-in-dir ".")
-                                 (objects-in-dir "mescc-lib")))))))))
+     (list
+      #:implicit-inputs? #f
+      #:tests? #f
+      #:guile %bootstrap-guile
+      #:strip-binaries? #f              ;no strip yet
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'unpack-seeds
+            (lambda _
+              (let ((nyacc-source #$(this-package-native-input "nyacc-source")))
+                (with-directory-excursion ".."
+                  (invoke "tar" "-xvf" nyacc-source)))))
+          (replace 'configure
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((out #$output)
+                    (gash #$(this-package-native-input "bash"))
+                    (dir (with-directory-excursion ".." (getcwd))))
+                (setenv "GUILE_LOAD_PATH" (string-append
+                                           dir "/nyacc-1.00.2/module"))
+                (invoke "gash" "configure.sh"
+                        (string-append "--prefix=" out)
+                        "--host=i686-linux-gnu"))))
+          (replace 'build
+            (lambda _
+              (invoke "gash" "bootstrap.sh")))
+          (delete 'check)
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (substitute* "install.sh" ; show some progress
+                ((" -xf") " -xvf")
+                (("^( *)((cp|mkdir|tar) [^']*[^\\])\n" all space cmd)
+                 (string-append space "echo '" cmd "'\n"
+                                space cmd "\n")))
+              (invoke "gash" "install.sh")
+              ;; Keep ASCII output, for friendlier comparison and bisection
+              (let* ((out #$output)
+                     (cache (string-append out "/lib/cache")))
+                (define (objects-in-dir dir)
+                  (find-files dir
+                              (lambda (name stat)
+                                (and (equal? (dirname name) dir)
+                                     (or (string-suffix? ".M1" name)
+                                         (string-suffix? ".hex2" name)
+                                         (string-suffix? ".o" name)
+                                         (string-suffix? ".s" name))))))
+                (for-each (lambda (x) (install-file x cache))
+                          (append (objects-in-dir "m2")
+                                  (objects-in-dir ".")
+                                  (objects-in-dir "mescc-lib")))))))))
     (native-search-paths
      (list (search-path-specification
             (variable "C_INCLUDE_PATH")
