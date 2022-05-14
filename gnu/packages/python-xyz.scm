@@ -16623,8 +16623,7 @@ interfaces in Python.  It's like GNU Readline but it also features syntax
 highlighting while typing, out-of-the-box multi-line input editing, advanced
 code completion, incremental search, support for Chinese double-width
 characters, mouse support, and auto suggestions.")
-    (license license:bsd-3)
-    (properties `((python2-variant . ,(delay python-prompt-toolkit-2))))))
+    (license license:bsd-3)))
 
 (define-public python-proselint
   (package
@@ -16652,21 +16651,6 @@ characters, mouse support, and auto suggestions.")
     (description "@code{python-proselint} is a linter for English prose, that
 scans through a file and detects issues.")
     (license license:bsd-3)))
-
-(define-public python-prompt-toolkit-2
-  (package (inherit python-prompt-toolkit)
-    (name "python-prompt-toolkit")
-    (version "2.0.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "prompt_toolkit" version))
-       (sha256
-        (base32
-         "0fgacqk73w7s932vy46pan2yp8rvjmlkag20xvaydh9mhf6h85zx"))))
-    (propagated-inputs
-     (list python-wcwidth python-six python-pygments))
-    (properties '())))
 
 (define-public python-jedi
   (package
