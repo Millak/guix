@@ -162,6 +162,16 @@ common defaults
     if os(foobar) { cc-options: -DBARBAZ }
 ") ; Intentional newline.
 
+;; Test opening bracket on new line.
+(define test-read-cabal-brackets-newline
+  "name: test-me
+common defaults
+    build-depends:
+    {  foobar
+    ,  barbaz
+    }
+")
+
 (test-begin "hackage")
 
 (define-syntax-rule (define-package-matcher name pattern)
@@ -333,6 +343,21 @@ executable cabal
 
 (test-assert "hackage->guix-package test properties without space"
   (eval-test-with-cabal test-cabal-property-no-space match-ghc-foo))
+
+;; There may be no final newline terminating a property.
+(define test-cabal-no-final-newline
+"name: foo
+version: 1.0.0
+homepage: http://test.org
+synopsis: synopsis
+description: description
+license: BSD3
+executable cabal
+  build-depends: HTTP       >= 4000.2.5 && < 4000.3, mtl        >= 2.0      && < 3")
+
+(test-expect-fail 1)
+(test-assert "hackage->guix-package test without final newline"
+  (eval-test-with-cabal test-cabal-no-final-newline match-ghc-foo))
 
 ;; Check if-elif-else statements
 (define test-cabal-if
@@ -506,6 +531,15 @@ executable cabal
           (('if ('os "foobar")
                (("cc-options" ("-DBARBAZ ")))
                ()))))
+     #t)
+    (x (pk 'fail x #f))))
+
+(test-expect-fail 1)
+(test-assert "read-cabal test: property brackets on new line"
+  (match (call-with-input-string test-read-cabal-brackets-newline read-cabal)
+    ((("name" ("test-me"))
+        ('section 'common "defaults"
+          (("build-depends" ("foobar ,  barbaz")))))
      #t)
     (x (pk 'fail x #f))))
 
