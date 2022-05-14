@@ -33,6 +33,7 @@
 (define-module (gnu system)
   #:use-module (guix inferior)
   #:use-module (guix store)
+  #:use-module (guix memoization)
   #:use-module (guix monads)
   #:use-module (guix gexp)
   #:use-module (guix records)
@@ -42,6 +43,7 @@
   #:use-module ((guix utils) #:select (substitute-keyword-arguments))
   #:use-module (guix i18n)
   #:use-module (guix diagnostics)
+  #:use-module (guix ui)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
@@ -78,11 +80,13 @@
   #:use-module (gnu system uuid)
   #:use-module (gnu system file-systems)
   #:use-module (gnu system mapped-devices)
+  #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
+  #:use-module (srfi srfi-71)
   #:use-module (rnrs bytevectors)
   #:export (operating-system
             operating-system?
@@ -600,25 +604,26 @@ from the initrd."
                (any file-system-needed-for-boot? users)))
            devices)))
 
-(define (operating-system-bootloader-crypto-devices os)
-  "Return the subset of mapped devices that the bootloader must open.
-Only devices specified by uuid are supported."
-  (define (valid-crypto-device? dev)
-    (or (uuid? dev)
-        (begin
-          (warning (G_ "\
-mapped-device '~a' may not be mounted by the bootloader.~%")
-                   dev)
-          #f)))
-  (filter-map (match-lambda
-                ((and (= mapped-device-type type)
-                      (= mapped-device-source source))
-                 (and (eq? luks-device-mapping type)
-                      (valid-crypto-device? source)
-                      source))
-                (_ #f))
-              ;; XXX: Ordering is important, we trust the returned one.
-              (operating-system-boot-mapped-devices os)))
+(define operating-system-bootloader-crypto-devices
+  (mlambdaq (os)                        ;to avoid duplicated output
+    "Return the sources of the LUKS mapped devices specified by UUID."
+    ;; XXX: Device ordering is important, we trust the returned one.
+    (let* ((luks-devices (filter (lambda (m)
+                                   (eq? luks-device-mapping
+                                        (mapped-device-type m)))
+                                 (operating-system-boot-mapped-devices os)))
+           (uuid-crypto-devices non-uuid-crypto-devices
+                                (partition (compose uuid? mapped-device-source)
+                                           luks-devices)))
+      (when (not (null? non-uuid-crypto-devices))
+        (for-each (lambda (dev)
+                    (warning
+                     (source-properties->location (mapped-device-location dev))
+                     (G_ "mapped device '~a' may be ignored by bootloader~%")
+                     (mapped-device-source dev)))
+                  non-uuid-crypto-devices)
+        (display-hint "Specify mapped device sources via their LUKS UUID."))
+      (map mapped-device-source uuid-crypto-devices))))
 
 (define (device-mapping-services os)
   "Return the list of device-mapping services for OS as a list."
