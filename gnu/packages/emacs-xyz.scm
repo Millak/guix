@@ -3677,14 +3677,15 @@ restore the saved place.")
                (base32
                 "0z6f8y1m9amhg427iz1d4xcyr6n0kj5w7kmiz134p320ixsdnzd8"))))
     (build-system emacs-build-system)
-    (arguments `(#:tests? #t
-                 #:phases
-                 (modify-phases %standard-phases
-                   (add-after 'unpack 'disable-byte-compile-error-on-warn
-                     (lambda _
-                       (substitute* "Makefile"
-                         (("\\(setq byte-compile-error-on-warn t\\)")
-                          "(setq byte-compile-error-on-warn nil)")))))))
+    (arguments
+     (list #:tests? #t
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'disable-byte-compile-error-on-warn
+                 (lambda _
+                   (substitute* "Makefile"
+                     (("\\(setq byte-compile-error-on-warn t\\)")
+                      "(setq byte-compile-error-on-warn nil)")))))))
     (home-page "https://github.com/magnars/dash.el")
     (synopsis "Modern list library for Emacs")
     (description "This package provides a modern list API library for Emacs.")
