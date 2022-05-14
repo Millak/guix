@@ -402,22 +402,20 @@ editor (with xwidgets support)")
     (synopsis "The extensible, customizable, self-documenting text
 editor (console only)")
     (build-system gnu-build-system)
-    (inputs (fold alist-delete
-                  (package-inputs emacs)
-                  '("libx11" "gtk+" "libxft" "libtiff" "giflib" "libjpeg"
-                    "imagemagick" "libpng" "librsvg" "libxpm" "libice"
-                    "libsm" "cairo" "pango" "harfbuzz"
-
-                    ;; These depend on libx11, so remove them as well.
-                    "libotf" "m17n-lib" "dbus")))
+    (inputs (modify-inputs (package-inputs emacs)
+              (delete "libx11" "gtk+" "libxft" "libtiff" "giflib" "libjpeg"
+                      "imagemagick" "libpng" "librsvg" "libxpm" "libice"
+                      "libsm" "cairo" "pango" "harfbuzz"
+                      ;; These depend on libx11, so remove them as well.
+                      "libotf" "m17n-lib" "dbus")))
     (arguments
      (substitute-keyword-arguments (package-arguments emacs)
-       ((#:configure-flags flags ''())
-        `(delete "--with-cairo" ,flags))
+       ((#:configure-flags flags #~'())
+        #~(delete "--with-cairo" #$flags))
        ((#:phases phases)
-        `(modify-phases ,phases
-           (delete 'restore-emacs-pdmp)
-           (delete 'strip-double-wrap)))))))
+        #~(modify-phases #$phases
+            (delete 'restore-emacs-pdmp)
+            (delete 'strip-double-wrap)))))))
 
 (define-public emacs-no-x-toolkit
   (package/inherit emacs
