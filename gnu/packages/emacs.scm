@@ -386,16 +386,15 @@ editor (with xwidgets support)")
     (build-system gnu-build-system)
     (arguments
      (substitute-keyword-arguments (package-arguments emacs)
-       ((#:configure-flags flags ''())
-        `(cons "--with-xwidgets" ,flags))
+       ((#:configure-flags flags #~'())
+        #~(cons "--with-xwidgets" #$flags))
        ((#:phases phases)
-        `(modify-phases ,phases
-           (delete 'restore-emacs-pdmp)
-           (delete 'strip-double-wrap)))))
+        #~(modify-phases #$phases
+            (delete 'restore-emacs-pdmp)
+            (delete 'strip-double-wrap)))))
     (inputs
-     `(("webkitgtk" ,webkitgtk-with-libsoup2)
-       ("libxcomposite" ,libxcomposite)
-       ,@(package-inputs emacs)))))
+     (modify-inputs (package-inputs emacs)
+       (prepend webkitgtk-with-libsoup2 libxcomposite)))))
 
 (define-public emacs-no-x
   (package/inherit emacs
