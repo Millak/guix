@@ -443,7 +443,7 @@ editor (with wide ints)" )
     (arguments
      (substitute-keyword-arguments (package-arguments emacs)
        ((#:configure-flags flags)
-        `(cons "--with-wide-int" ,flags))))))
+        #~(cons "--with-wide-int" #$flags))))))
 
 (define-public guile-emacs
   (let ((commit "41120e0f595b16387eebfbf731fff70481de1b4b")
