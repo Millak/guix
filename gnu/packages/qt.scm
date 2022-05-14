@@ -1771,69 +1771,68 @@ using the Enchant spell-checking library.")
              ;; Do not enable support for loading the Widevine DRM plugin.
              (substitute* "src/buildtools/config/common.pri"
                (("enable_widevine=true")
-                "enable_widevine=false"))
-             #t)))))
+                "enable_widevine=false")))))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("bison" ,bison)
-       ("flex" ,flex)
-       ("gperf" ,gperf)
-       ("ninja" ,ninja)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python-2" ,python-2)
-       ("python-six" ,python2-six)
-       ("ruby" ,ruby)))
+     (list bison
+           flex
+           gperf
+           ninja
+           perl
+           pkg-config
+           python2-six
+           python-2
+           ruby))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("atk" ,atk)
-       ("cups-minimal" ,cups-minimal)
-       ("curl" ,curl)
-       ("dbus" ,dbus)
-       ("ffmpeg" ,ffmpeg)
-       ("fontconfig" ,fontconfig)
-       ("harbuzz" ,harfbuzz)
-       ("icu4c" ,icu4c)
-       ("jsoncpp" ,jsoncpp)
-       ("lcms" ,lcms)
-       ("libcap" ,libcap)
-       ("libevent" ,libevent)
-       ("libgcrypt" ,libgcrypt)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libvpx" ,libvpx)
-       ("libwebp" ,libwebp)
-       ("libx11" ,libx11)
-       ("libxcb" ,libxcb)
-       ("libxcomposite" ,libxcomposite)
-       ("libxcursor" ,libxcursor)
-       ("libxi" ,libxi)
-       ("libxkbcommon" ,libxkbcommon)
-       ;; FIXME: libxml2 needs to built with icu support though it links to
-       ;; libxml2 configure summary still states "Checking for compatible
-       ;; system libxml2... no"
-       ("libxml2" ,libxml2)
-       ("openh264" ,openh264)
-       ("libxrandr" ,libxrandr)
-       ("libxrender" ,libxrender)
-       ("libxslt" ,libxslt)
-       ("libxtst" ,libxtst)
-       ("mesa" ,mesa)
-       ("minizip" ,minizip)
-       ("nss" ,nss)
-       ("opus" ,opus)
-       ("pciutils" ,pciutils)
-       ("protobuf" ,protobuf)
-       ("pulseaudio" ,pulseaudio)
-       ("qtbase" ,qtbase-5)
-       ("qtdeclarative" ,qtdeclarative)
-       ("qtmultimedia" ,qtmultimedia)
-       ("qtwebchannel" ,qtwebchannel)
-       ("re2" ,re2)
-       ("snappy" ,snappy)
-       ("udev" ,eudev)
-       ("valgrind" ,valgrind)
-       ("vulkan-headers" ,vulkan-headers)
-       ("xcb-util" ,xcb-util)))
+     (list alsa-lib
+           atk
+           cups-minimal
+           curl
+           dbus
+           ffmpeg
+           fontconfig
+           harfbuzz
+           icu4c
+           jsoncpp
+           lcms
+           libcap
+           libevent
+           libgcrypt
+           libjpeg-turbo
+           libvpx
+           libwebp
+           libx11
+           libxcb
+           libxcomposite
+           libxcursor
+           libxi
+           libxkbcommon
+           ;; FIXME: libxml2 needs to built with icu support though it links to
+           ;; libxml2 configure summary still states "Checking for compatible
+           ;; system libxml2... no"
+           libxml2
+           openh264
+           libxrandr
+           libxrender
+           libxslt
+           libxtst
+           mesa
+           minizip
+           nss
+           opus
+           pciutils
+           protobuf
+           pulseaudio
+           qtbase-5
+           qtdeclarative
+           qtmultimedia
+           qtwebchannel
+           re2
+           snappy
+           eudev
+           valgrind
+           vulkan-headers
+           xcb-util))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg)
        ((#:modules modules '())
@@ -1844,13 +1843,12 @@ using the Enchant spell-checking library.")
         `(modify-phases ,phases
            (add-before 'configure 'substitute-source
              (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out"))
-                     (nss (assoc-ref inputs "nss"))
-                     (udev (assoc-ref inputs "udev")))
-                 (with-atomic-file-replacement "src/buildtools/config/linux.pri"
-                   (lambda (in out)
-                     (display (get-string-all in) out)
-                     (display "\ngn_args += use_system_openh264=true\n" out)))
+               (let ((out (assoc-ref outputs "out")))
+                 (with-atomic-file-replacement
+                  "src/buildtools/config/linux.pri"
+                  (lambda (in out)
+                    (display (get-string-all in) out)
+                    (display "\ngn_args += use_system_openh264=true\n" out)))
                  ;; Qtwebengine is not installed into the same prefix as
                  ;; qtbase.  Some qtbase QTLibraryInfo constants will not
                  ;; work.  Replace with the full path to the qtwebengine
@@ -1863,12 +1861,11 @@ using the Enchant spell-checking library.")
                  ;; Substitute full dynamic library path for nss.
                  (substitute* "src/3rdparty/chromium/crypto/nss_util.cc"
                    (("libnssckbi.so")
-                    (string-append nss "/lib/nss/libnssckbi.so")))
+                    (search-input-file inputs "lib/nss/libnssckbi.so")))
                  ;; Substitute full dynamic library path for udev.
                  (substitute* "src/3rdparty/chromium/device/udev_linux/udev1_loader.cc"
                    (("libudev.so.1")
-                    (string-append udev "/lib/libudev.so.1")))
-                 #t)))
+                    (search-input-file inputs "lib/libudev.so.1"))))))
            (add-before 'configure 'set-env
              (lambda _
                ;; Avoids potential race conditions.
@@ -1876,8 +1873,7 @@ using the Enchant spell-checking library.")
                (setenv "NINJAFLAGS"
                        (string-append "-k1" ;less verbose build output
                                       ;; Respect the '--cores' option of 'guix build'.
-                                      " -j" (number->string (parallel-job-count))))
-               #t))
+                                      " -j" (number->string (parallel-job-count))))))
            (replace 'configure
              (lambda _
                ;; Valid QT_BUILD_PARTS variables are:
