@@ -423,14 +423,15 @@ editor (console only)")
     (synopsis "The extensible, customizable, self-documenting text
 editor (without an X toolkit)" )
     (build-system gnu-build-system)
-    (inputs (append `(("inotify-tools" ,inotify-tools))
-                    (alist-delete "gtk+" (package-inputs emacs))))
+    (inputs (modify-inputs (package-inputs emacs)
+              (delete "gtk+")
+              (prepend inotify-tools)))
     (arguments
      (substitute-keyword-arguments (package-arguments emacs)
-       ((#:configure-flags flags ''())
-        `(cons "--with-x-toolkit=no" ,flags))
+       ((#:configure-flags flags #~'())
+        #~(cons "--with-x-toolkit=no" #$flags))
        ((#:phases phases)
-        `(modify-phases ,phases
+        #~(modify-phases #$phases
            (delete 'restore-emacs-pdmp)
            (delete 'strip-double-wrap)))))))
 
