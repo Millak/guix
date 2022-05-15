@@ -10,7 +10,7 @@
 ;;; Copyright © 2017 Andy Wingo <wingo@igalia.com>
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017, 2019 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2017 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017, 2018 Amirouche <amirouche@hypermove.net>
 ;;; Copyright © 2018 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2018 Eric Bavier <bavier@member.fsf.org>
@@ -833,7 +833,9 @@ type system, elevating types to first-class status.")
     (native-inputs
      (list pkg-config autoconf automake texinfo guile-3.0 guile-bytestructures))
     (inputs
-     (list guile-3.0 libgit2))
+     ;; libgit2@1.4.3 ‘fixed’ a git CVE it never shared, breaking Guix.  Use
+     ;; 1.3 for now; see <https://issues.guix.gnu.org/55399> for alternatives.
+     (list guile-3.0 libgit2-1.3))
     (propagated-inputs
      (list guile-bytestructures))
     (synopsis "Guile bindings for libgit2")
