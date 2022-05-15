@@ -4534,14 +4534,14 @@ parts of it.")
            (lambda* (#:key inputs #:allow-other-keys)
              ;; Get libgfortran found when building in utest.
              (setenv "FEXTRALIB"
-                     (string-append "-L" (assoc-ref inputs "fortran-lib")
-                                    "/lib")))))))
+                     (string-append
+                      "-L"
+                      (dirname
+                       (search-input-file inputs "/lib/libgfortran.so")))))))))
     (inputs
-     `(("fortran-lib" ,gfortran "lib")))
+     (list `(,gfortran "lib")))
     (native-inputs
-     `(("cunit" ,cunit)
-       ("fortran" ,gfortran)
-       ("perl" ,perl)))
+     (list cunit gfortran perl))
     (home-page "https://www.openblas.net/")
     (synopsis "Optimized BLAS library based on GotoBLAS")
     (description
