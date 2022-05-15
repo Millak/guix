@@ -29579,11 +29579,12 @@ conventions.")
     (license license:gpl3+)))
 
 (define-public emacs-haskell-snippets
-  ;; The commit below is 5 commits ahead of release, and includes a build fix.
-  (let ((commit "07b0f460b946fd1be26c29652cb0468b47782f3a"))
+  ;; The commit below is 7 commits ahead of release, and includes a build fix.
+  ;; And also a fix in one snippet.
+  (let ((commit "1c29c4a68ce89848b8d371c6510d1de3b586c8b3"))
     (package
       (name "emacs-haskell-snippets")
-      (version (git-version "0.1.0" "0" commit))
+      (version (git-version "0.1.0" "1" commit))
       (source
        (origin
          (method git-fetch)
@@ -29593,20 +29594,19 @@ conventions.")
            (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0a7y3awi9hcyahggf0ghsdwvsmrhr9yq634wy9lkqjzrm2hqj0ci"))))
+          (base32 "1lwnggarmavyf164cfzbzzkq9ffahhd3bz7gw644czs49sndcawf"))))
       (build-system emacs-build-system)
       (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-after 'install 'install-snippets
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (snippets
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'install 'install-snippets
+              (lambda _
+                (let ((snippets
                        (string-append
-                        out "/share/emacs/site-lisp/snippets/haskell-mode")))
-                 (mkdir-p snippets)
-                 (copy-recursively "snippets/haskell-mode" snippets)
-                 #t))))))
+                        #$output "/share/emacs/site-lisp/snippets/haskell-mode")))
+                  (mkdir-p snippets)
+                  (copy-recursively "snippets/haskell-mode" snippets)))))))
       (propagated-inputs
        (list emacs-yasnippet))
       (home-page "https://github.com/haskell/haskell-snippets")
