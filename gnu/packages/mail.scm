@@ -46,6 +46,7 @@
 ;;; Copyright © 2021 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2022 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2022 Justin Veilleux <terramorpha@cock.li>
+;;; Copyright © 2022 Thiago Jung Bauermann <bauermann@kolabnow.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4084,12 +4085,12 @@ Git and exports them in maildir format or to an MDA through a pipe.")
      '(#:phases
        (modify-phases %standard-phases
          (add-before 'configure 'qualify-paths
-           (lambda _
+           (lambda* (#:key inputs #:allow-other-keys)
              ;; Use absolute paths for 'xapian-compact'.
-             (let ((xapian-compact (which "xapian-compact")))
-               (substitute* "script/public-inbox-compact"
-                 (("xapian-compact") xapian-compact)))
-             #t))
+             (substitute* "lib/PublicInbox/Xapcmd.pm"
+               (("'xapian-compact'")
+                (format #f "'~a'" (search-input-file inputs
+                                                     "/bin/xapian-compact"))))))
          (add-before 'check 'pre-check
            (lambda _
              (substitute* "t/spawn.t"
@@ -4100,8 +4101,7 @@ Git and exports them in maildir format or to an MDA through a pipe.")
              ;; XXX: This test fails due to zombie process is not reaped by
              ;; the builder.
              (substitute* "t/httpd-unix.t"
-               (("^SKIP: \\{") "SKIP: { skip('Guix');"))
-             #t))
+               (("^SKIP: \\{") "SKIP: { skip('Guix');"))))
          (add-after 'install 'wrap-programs
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
@@ -4116,14 +4116,13 @@ Git and exports them in maildir format or to an MDA through a pipe.")
                     ;; perl module.
                     `("PATH" ":" prefix
                       (,(dirname (search-input-file inputs "/bin/git"))))))
-                (find-files (string-append out "/bin"))))
-             #t)))))
+                (find-files (string-append out "/bin")))))))))
     (native-inputs
-     (list xapian
-           ;; For testing.
+     (list ;; For testing.
            lsof openssl))
     (inputs
-     (list git
+     (list bash-minimal
+           git
            perl-dbd-sqlite
            perl-dbi
            perl-email-address-xs
@@ -4145,7 +4144,8 @@ Git and exports them in maildir format or to an MDA through a pipe.")
            ;; ("highlight" ,highlight)
            ;; For testing.
            perl-ipc-run
-           perl-xml-feed))
+           perl-xml-feed
+           xapian))
     (home-page "https://public-inbox.org/README.html")
     (synopsis "Archive mailing lists in Git repositories")
     (description
