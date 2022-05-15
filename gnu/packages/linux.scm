@@ -6805,14 +6805,22 @@ interface to the variable facility of UEFI boot firmware.")
     (arguments
      (list
       #:tests? #f                       ;no tests
-      #:make-flags #~(list (string-append "prefix=" #$output)
-                           (string-append "libdir=" #$output "/lib")
-                           ;; EFIDIR denotes a subdirectory relative to the
-                           ;; EFI System Partition where the loader will be
-                           ;; installed (known as OS_VENDOR in the code).
-                           ;; GRUB overrides this, as such it's only used if
-                           ;; nothing else is specified on the command line.
-                           "EFIDIR=gnu")
+      #:make-flags
+      #~(append (list (string-append "prefix=" #$output)
+                      (string-append "libdir=" #$output "/lib")
+                      ;; EFIDIR denotes a subdirectory relative to the
+                      ;; EFI System Partition where the loader will be
+                      ;; installed (known as OS_VENDOR in the code).
+                      ;; GRUB overrides this, as such it's only used if
+                      ;; nothing else is specified on the command line.
+                      "EFIDIR=gnu")
+                #$(if (%current-target-system)
+                    #~(list
+                        (string-append "CC=" #$(cc-for-target))
+                        (string-append "PKG_CONFIG=" #$(pkg-config-for-target))
+                        (string-append "EXTRAINCDIRS="
+                                       #$(this-package-input "efivar") "/include"))
+                    #~'()))
       #:phases #~(modify-phases %standard-phases (delete 'configure))))
     (native-inputs
      (list pkg-config))
