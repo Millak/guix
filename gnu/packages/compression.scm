@@ -2647,7 +2647,7 @@ to their original, binary CD format.")
 (define-public libdeflate
   (package
     (name "libdeflate")
-    (version "1.8")
+    (version "1.10")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2656,7 +2656,7 @@ to their original, binary CD format.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0nw1zhr2s6ffcc3s0n5wsshvjb6pmybwapagli135zzn2fx1pdiz"))))
+                "0v5qh1cz787xj86l15x6brkkaw0jbxhqj5f85275q0l945qazvwm"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
