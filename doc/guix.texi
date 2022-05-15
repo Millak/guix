@@ -3457,7 +3457,7 @@ The typical use case is to define these environment variables in the
 shell:
 
 @example
-$ eval `guix package --search-paths`
+$ eval $(guix package --search-paths)
 @end example
 
 @var{kind} may be one of @code{exact}, @code{prefix}, or @code{suffix},
