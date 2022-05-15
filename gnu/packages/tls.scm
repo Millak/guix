@@ -5,7 +5,7 @@
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2016, 2017, 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017, 2018 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
@@ -762,14 +762,14 @@ certificates for free.")
 (define-public perl-net-ssleay
   (package
     (name "perl-net-ssleay")
-    (version "1.88")
+    (version "1.92")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://cpan/authors/id/C/CH/CHRISN/"
                                   "Net-SSLeay-" version ".tar.gz"))
               (sha256
                (base32
-                "1pfgh4h3szcpvqlcimc60pjbk9zwls99x5863sva0wc47i4dl010"))))
+                "1acnjd5180dca26dmjq0b9ib0dbavlrzd6fnf4nidrzj02rz5hj7"))))
     (build-system perl-build-system)
     (inputs (list openssl))
     (arguments
