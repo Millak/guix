@@ -15860,29 +15860,26 @@ multiplexer.")
     (license license:gpl3+)))
 
 (define-public emacs-plz
-  (let ((commit "7e456638a651bab3a814e3ea81742dd917509cbb")
-        (revision "1"))
-    (package
-      (name "emacs-plz")
-      (version (git-version "0.1-pre" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/alphapapa/plz.el")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "05kgxrps1s20im5hhq799nrs3615bvssm4r0ysgmwm203mmzsjgj"))))
-      (build-system emacs-build-system)
-      (inputs (list curl))
-      (home-page "https://github.com/alphapapa/plz.el")
-      (synopsis "HTTP library for Emacs")
-      (description
-       "This package provides HTTP library for Emacs.  It uses curl as
-a backend, which avoids some of the issues with using Emacs’s built-in url
-library.")
-      (license license:gpl3+))))
+  (package
+    (name "emacs-plz")
+    (version "0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/alphapapa/plz.el")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0psdjmj1r4g57vhm6c4hajmma72jk893fk820fbjgjwqihr1bxx9"))))
+    (build-system emacs-build-system)
+    (inputs (list curl))
+    (home-page "https://github.com/alphapapa/plz.el")
+    (synopsis "HTTP library for Emacs")
+    (description
+     "This package provides HTTP library for Emacs.  It uses Curl as a backend,
+which avoids some of the issues with using Emacs’s built-in Url library.")
+    (license license:gpl3+)))
 
 (define-public emacs-ement
   (let ((commit "c951737dc855604aba389166bb0e7366afadc533")
