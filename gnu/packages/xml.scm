@@ -99,7 +99,9 @@
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0znz2y1ig2kvlda44a3kxa8x7f222nbg50rjz6nlngzka0ccsgxx"))))
+        (base32 "0znz2y1ig2kvlda44a3kxa8x7f222nbg50rjz6nlngzka0ccsgxx"))
+       ;; Drop xb-tool patch after libxmlb 0.3.8, merged upstream
+       (patches (search-patches "libxmlb-install-xb-tool-into-bindir.patch"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t))

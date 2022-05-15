@@ -111,6 +111,13 @@
                          (string-append "['" (which "stat") "',"))
                         (("\\['getfacl',")
                          (string-append "['" (which "getfacl") "',")))))
+                  (add-after 'unpack 'xb-tool-external-tool
+                    ;; Fixed upstream, remove this phase when updating to
+                    ;; diffoscope 213
+                    (lambda _
+                      (substitute* "diffoscope/external_tools.py"
+                        ((".debian.: .libxmlb-dev.")
+                         "\"debian\": \"libxmlb-dev\", \"guix\": \"libxmlb\""))))
                   (add-after 'build 'build-man-page
                     (lambda* (#:key (make-flags '()) #:allow-other-keys)
                       (apply invoke "make" "-C" "doc" make-flags)))
