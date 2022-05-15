@@ -52,6 +52,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages compression)
+  #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix utils)
   #:use-module (guix packages)
@@ -990,21 +991,19 @@ byte-for-byte identical output.")
                 "01y7n7lafp6maqnp4jrmasawnv67najh1bd7gjrmv3d08h1ydjdl"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (replace 'install
-                  (lambda* (#:key outputs #:allow-other-keys)
-                    (let* ((out (assoc-ref outputs "out"))
-                           (bin (string-append out "/bin"))
-                           (man (string-append out "/share/man/man1")))
-                      (install-file "pigz" bin)
-                      (symlink "pigz" (string-append bin  "/unpigz"))
-                      (install-file "pigz.1" man)
-                      #t))))
-       #:make-flags
-       (list ,(string-append "CC=" (cc-for-target)))
-       #:test-target "test"))
+     (list #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target)))
+           #:test-target "test"
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (replace 'install
+                 (lambda _
+                   (let* ((bin (string-append #$output "/bin"))
+                          (man (string-append #$output "/share/man/man1")))
+                     (install-file "pigz" bin)
+                     (symlink "pigz" (string-append bin  "/unpigz"))
+                     (install-file "pigz.1" man)))))))
     (native-inputs (list which))
     (inputs (list zlib))
     (home-page "https://zlib.net/pigz/")
