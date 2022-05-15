@@ -1103,8 +1103,7 @@ tarballs.")
     (native-inputs
      (list gobject-introspection help2man pkg-config))
     (inputs
-     (list git
-           glib
+     (list glib
            gnupg
            gnutls
            gpgme
