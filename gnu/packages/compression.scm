@@ -980,14 +980,14 @@ byte-for-byte identical output.")
 (define-public pigz
   (package
     (name "pigz")
-    (version "2.6")
+    (version "2.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://zlib.net/pigz/"
                                   name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0z9avc4mifwcpj3qdsf9m2rjw9jx03b2r9pj0c4xgla9fh6ppv9f"))))
+                "01y7n7lafp6maqnp4jrmasawnv67najh1bd7gjrmv3d08h1ydjdl"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -1004,7 +1004,8 @@ byte-for-byte identical output.")
                       #t))))
        #:make-flags
        (list ,(string-append "CC=" (cc-for-target)))
-       #:test-target "tests"))
+       #:test-target "test"))
+    (native-inputs (list which))
     (inputs (list zlib))
     (home-page "https://zlib.net/pigz/")
     (synopsis "Parallel implementation of gzip")
