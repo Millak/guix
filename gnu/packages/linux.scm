@@ -6787,7 +6787,7 @@ interface to the variable facility of UEFI boot firmware.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/rhinstaller/efibootmgr")
+             (url "https://github.com/rhboot/efibootmgr")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
@@ -6826,7 +6826,7 @@ interface to the variable facility of UEFI boot firmware.")
      (list pkg-config))
     (inputs
      (list efivar popt))
-    (home-page "https://github.com/rhinstaller/efibootmgr")
+    (home-page "https://github.com/rhboot/efibootmgr")
     (synopsis "Modify the Extensible Firmware Interface (EFI) boot manager")
     (description
      "@code{efibootmgr} is a user-space application to modify the Intel
