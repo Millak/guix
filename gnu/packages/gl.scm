@@ -287,36 +287,34 @@ also known as DXTn or DXTC) for Mesa.")
             libxxf86vm
             xorgproto))
     (inputs
-      `(("expat" ,expat)
-        ("libelf" ,elfutils)  ;required for r600 when using llvm
-        ("libva" ,(force libva-without-mesa))
-        ("libxml2" ,libxml2)
-        ("libxrandr" ,libxrandr)
-        ("libxvmc" ,libxvmc)
-        ,@(match (%current-system)
-            ((or "x86_64-linux" "i686-linux" "powerpc64le-linux" "aarch64-linux"
-                 "powerpc-linux" "riscv64-linux")
-             ;; Note: update the 'clang' input of mesa-opencl when bumping this.
-             `(("llvm" ,llvm-11)))
-            (_
-             `()))
-        ("wayland" ,wayland)
-        ("wayland-protocols" ,wayland-protocols)))
+     (append (list expat
+                   elfutils                 ;libelf required for r600 when using llvm
+                   (force libva-without-mesa)
+                   libxml2
+                   libxrandr
+                   libxvmc
+                   wayland
+                   wayland-protocols)
+             (if (member (%current-system)
+                         '("x86_64-linux" "i686-linux" "powerpc64le-linux"
+                           "aarch64-linux" "powerpc-linux" "riscv64-linux"))
+                 ;; Note: update the 'clang' input of mesa-opencl when bumping this.
+                 (list llvm-11)
+                 '())))
     (native-inputs
-      `(("bison" ,bison)
-        ("flex" ,flex)
-        ("gettext" ,gettext-minimal)
-        ,@(match (%current-system)
-            ((or "x86_64-linux" "i686-linux" "powerpc64le-linux" "aarch64-linux"
-                 "powerpc-linux" "riscv64-linux")
-             `(("glslang" ,glslang)))
-            (_
-             `()))
-        ("pkg-config" ,pkg-config)
-        ("python" ,python-wrapper)
-        ("python-libxml2", python-libxml2) ;for OpenGL ES 1.1 and 2.0 support
-        ("python-mako" ,python-mako)
-        ("which" ,(@ (gnu packages base) which))))
+     (append (list bison
+                   flex
+                   gettext-minimal
+                   pkg-config
+                   python-wrapper
+                   python-libxml2                  ;for OpenGL ES 1.1 and 2.0 support
+                   python-mako
+                   (@ (gnu packages base) which))
+             (if (member (%current-system)
+                         '("x86_64-linux" "i686-linux" "powerpc64le-linux"
+                           "aarch64-linux" "powerpc-linux" "riscv64-linux"))
+                 (list glslang)
+                 '())))
     (outputs '("out" "bin"))
     (arguments
      `(#:configure-flags
@@ -519,11 +517,11 @@ from software emulation to complete hardware acceleration for modern GPUs.")
        ((#:configure-flags flags)
         `(cons "-Dgallium-opencl=standalone" ,flags))))
     (inputs
-     `(("libclc" ,libclc)
-       ,@(package-inputs mesa)))
+     (modify-inputs (package-inputs mesa)
+       (prepend libclc)))
     (native-inputs
-     `(("clang" ,clang-11)
-       ,@(package-native-inputs mesa)))))
+     (modify-inputs (package-native-inputs mesa)
+       (prepend clang-11)))))
 
 (define-public mesa-opencl-icd
   (package/inherit mesa-opencl
