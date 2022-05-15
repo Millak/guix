@@ -4,7 +4,7 @@
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2016, 2017, 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2016 Raimon Grau <raimonster@gmail.com>
-;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2016-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
@@ -1863,14 +1863,14 @@ live network and disk I/O bandwidth monitor.")
 (define-public aircrack-ng
   (package
     (name "aircrack-ng")
-    (version "1.6")
+    (version "1.7")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.aircrack-ng.org/aircrack-ng-"
                            version ".tar.gz"))
        (sha256
-        (base32 "0ix2k64qg7x3w0bzdsbk1m50kcpq1ws59g3zkwiafvpwdr4gs2sg"))))
+        (base32 "1hsq1gwmafka4bahs6rc8p98yi542h9a502h64bjlygpr3ih99q5"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake libtool pkg-config which))
@@ -1894,16 +1894,14 @@ live network and disk I/O bandwidth monitor.")
                       ;; ‘patch-shebangs’ phase has had a chance to run.
                       (substitute* "evalrev"
                         (("/bin/sh")
-                         (which "sh")))
-                      #t))
+                         (which "sh")))))
                   (add-after 'build 'absolutize-tools
                     (lambda* (#:key inputs #:allow-other-keys)
                       (let ((ethtool (search-input-file inputs
                                                         "/sbin/ethtool")))
                         (substitute* "scripts/airmon-ng"
                           (("ethtool ")
-                           (string-append ethtool " ")))
-                        #t))))))
+                           (string-append ethtool " ")))))))))
     (home-page "https://www.aircrack-ng.org")
     (synopsis "Assess WiFi network security")
     (description
