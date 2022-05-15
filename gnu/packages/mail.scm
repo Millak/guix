@@ -337,6 +337,7 @@ example, modify the message headers or body, or encrypt or sign the message.")
                       (string-append "\"" (which "sh") "\""))))))
            #:configure-flags
            #~(list "--sysconfdir=/etc"
+                   "--disable-static"
 
                    ;; Add "/X.Y" to the installation directory.
                    (string-append "--with-guile-site-dir="
