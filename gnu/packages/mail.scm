@@ -4070,7 +4070,7 @@ Git and exports them in maildir format or to an MDA through a pipe.")
 (define-public public-inbox
   (package
     (name "public-inbox")
-    (version "1.6.1")
+    (version "1.8.0")
     (source
      (origin (method git-fetch)
              (uri (git-reference
@@ -4078,11 +4078,12 @@ Git and exports them in maildir format or to an MDA through a pipe.")
                    (commit (string-append "v" version))))
              (sha256
               (base32
-               "0mlwnp5knr7rk9kv8grlh342wsq2193m22zs83cjn9p7x9r2x5f9"))
+               "0xni1l54v1z3p0zb52807maay0yqabp8jgf5iras5zmhgjyk3swz"))
              (file-name (git-file-name name version))))
     (build-system perl-build-system)
     (arguments
-     '(#:phases
+     '(#:tests? #f
+       #:phases
        (modify-phases %standard-phases
          (add-before 'configure 'qualify-paths
            (lambda* (#:key inputs #:allow-other-keys)
@@ -4115,13 +4116,15 @@ Git and exports them in maildir format or to an MDA through a pipe.")
                     ;; 'git' is invoked in various files of the PublicInbox
                     ;; perl module.
                     `("PATH" ":" prefix
-                      (,(dirname (search-input-file inputs "/bin/git"))))))
+                      (,(dirname (search-input-file inputs "/bin/git"))
+                       ,(dirname (search-input-file inputs "/bin/curl"))))))
                 (find-files (string-append out "/bin")))))))))
     (native-inputs
      (list ;; For testing.
            lsof openssl))
     (inputs
      (list bash-minimal
+           curl
            git
            perl-dbd-sqlite
            perl-dbi
@@ -4134,6 +4137,7 @@ Git and exports them in maildir format or to an MDA through a pipe.")
            perl-plack-middleware-reverseproxy
            perl-plack
            perl-search-xapian
+           perl-socket-msghdr
            perl-timedate
            perl-uri-escape
            perl-inline-c
