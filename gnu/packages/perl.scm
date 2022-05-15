@@ -11849,3 +11849,27 @@ regexp patterns in modules.")
     (description "Data::SExpression parses Lisp S-Expressions into Perl data
 structures.")
     (license license:perl-license)))
+
+(define-public perl-socket-msghdr
+  (package
+    (name "perl-socket-msghdr")
+    (version "0.05")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/F/FE/FELIPE/Socket-MsgHdr-"
+             version
+             ".tar.gz"))
+       (sha256
+        (base32 "0g3qa7xn0aqn417jfvnc0i3ksyqa7bnvws0wihldir6ywcaiql4n"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/Socket-MsgHdr")
+    (synopsis "Perform advanced operations via sendmsg and recvmsg")
+    (description "Socket::MsgHdr provides advanced socket messaging operations
+via sendmsg and recvmsg.
+
+It also allows manipulating ancillary data or so-called control
+information (cmsghdr).  This ancillary data may be used for file descriptor
+passing, IPv6 operations, and a host of implemenation-specific extensions.")
+    (license license:perl-license)))
