@@ -146,19 +146,16 @@ and others.")
            (lambda _
              (substitute* "Makefile.am"
                ((".*LIBAVUTIL_LIBS.*") "")))))))
-    (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("gettext" ,gettext-minimal)))
+    (native-inputs (list autoconf automake gettext-minimal))
     (inputs
-     `(("ffmpeg" ,ffmpeg)
-       ("flac" ,flac)
-       ("libexif" ,libexif)
-       ("libid3tag" ,libid3tag)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libvorbis" ,libvorbis)
-       ("sqlite" ,sqlite)
-       ("zlib" ,zlib)))
+     (list ffmpeg
+           flac
+           libexif
+           libid3tag
+           libjpeg-turbo
+           libvorbis
+           sqlite
+           zlib))
     (home-page "https://sourceforge.net/projects/minidlna/")
     (synopsis "DLNA/UPnP-AV media server")
     (description "ReadyMedia (formerly known as MiniDLNA) is a simple media
