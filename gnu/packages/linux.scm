@@ -6758,7 +6758,7 @@ under OpenGL graphics workloads.")
        #:make-flags
        #~(list (string-append "prefix=" #$output)
                (string-append "libdir=" #$output "/lib")
-               (string-append "CC_FOR_BUILD=" #$(cc-for-target))
+               (string-append "CC=" #$(cc-for-target))
                (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib"))
        #:phases
        #~(modify-phases %standard-phases
