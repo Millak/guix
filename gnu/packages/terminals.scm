@@ -436,8 +436,7 @@ combining, and so on, with a simple interface.")
     (arguments
      `(#:tests? #f                      ; no tests
        #:configure-flags
-       (list (string-append "--prefix=" (assoc-ref %outputs "out"))
-             "--disable-static"
+       (list "--disable-static"
              "--enable-optimize-redrawing"
              "--with-imagelib=gdk-pixbuf")))
     (native-inputs (list gettext-minimal pkg-config))
