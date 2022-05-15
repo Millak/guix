@@ -2664,6 +2664,10 @@ to their original, binary CD format.")
              (string-append "PREFIX=" (assoc-ref %outputs "out")))
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'skip-static-library-installation
+           (lambda _
+             (substitute* "Makefile"
+               (("install .*\\$\\(STATIC_LIB\\).*") ""))))
          (delete 'configure))))
     (inputs
      (list zlib))
