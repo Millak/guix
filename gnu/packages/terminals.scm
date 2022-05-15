@@ -440,19 +440,17 @@ combining, and so on, with a simple interface.")
              "--disable-static"
              "--enable-optimize-redrawing"
              "--with-imagelib=gdk-pixbuf")))
-    (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)))
+    (native-inputs (list gettext-minimal pkg-config))
     (inputs
-     `(("cairo" ,cairo)
-       ("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("fribidi" ,fribidi)
-       ("gdk-pixbuf" ,gdk-pixbuf)
-       ("gtk+" ,gtk+)
-       ("libx11" ,libx11)
-       ("libxext" ,libxext)
-       ("libxft" ,libxft)))
+     (list cairo
+           fontconfig
+           freetype
+           fribidi
+           gdk-pixbuf
+           gtk+
+           libx11
+           libxext
+           libxft))
     (home-page "http://mlterm.sourceforge.net/")
     (synopsis "Multi-Lingual TERMinal emulator")
     (description
