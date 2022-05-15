@@ -24824,6 +24824,34 @@ debug server.  It is similar to the LSP but provides integration with
 Debug server.")
     (license license:gpl3+)))
 
+(define-public emacs-bfuture
+  (package
+    (name "emacs-bfuture")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~plattfot/bfuture")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32
+         "1m4v4xbsvg26z7nvg2c8q7x1nvv7v4ajm56l0nbkwcbdbrgahpva"))
+       (file-name (git-file-name name version))))
+    (build-system emacs-build-system)
+    (arguments
+     (list #:tests? (not (%current-target-system))
+           #:test-command #~'("ert-runner")))
+    (native-inputs (list emacs-ert-runner))
+    (home-page "https://github.com/plattfot/bfuture.el")
+    (synopsis "Basic future concept for Emacs with Tramp support")
+    (description
+     "This package provides basic functions for spawning processes asynchronous in
+Emacs and retrieving the output.  It is similar to @code{emacs-pfuture} except
+that this works over Tramp but the feature set is more limited.  For example,
+it cannot tell stdout and stderr apart.")
+    (license license:gpl3+)))
+
 (define-public emacs-pfuture
   (package
     (name "emacs-pfuture")
