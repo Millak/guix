@@ -5549,7 +5549,11 @@ and copy/paste text in the console and in xterm.")
     (outputs '("out"
                "static"))      ; static versions of the binaries in "out"
     (arguments
-     '(#:phases (modify-phases %standard-phases
+     '(#:configure-flags
+       ;; The ‘Python support’ was never actually installed by previous
+       ;; versions of this package, but did prevent cross-compilation.
+       (list "--disable-python")
+       #:phases (modify-phases %standard-phases
                   (add-after 'unpack 'patch-makefile
                     (lambda* (#:key outputs #:allow-other-keys)
                       (substitute* "Makefile"
@@ -5576,6 +5580,7 @@ and copy/paste text in the console and in xterm.")
        #:test-target "test"
        #:parallel-tests? #f)) ; tests fail when run in parallel
     (inputs `(("e2fsprogs" ,e2fsprogs)  ; for btrfs-convert
+              ("eudev" ,eudev)
               ("lzo" ,lzo)
               ("util-linux:lib" ,util-linux "lib")       ;for libblkid and libuuid
               ("util-linux:static" ,util-linux "static") ;ditto
@@ -5594,7 +5599,6 @@ and copy/paste text in the console and in xterm.")
                      ("acl" ,acl)
                      ("which" ,which)
                      ("dmsetup" ,lvm2)
-                     ("udevadm" ,eudev)
                      ;; The tests need 'grep' with perl regexp support.
                      ("grep" ,grep)))
     (home-page "https://btrfs.wiki.kernel.org/index.php/Main_Page")
