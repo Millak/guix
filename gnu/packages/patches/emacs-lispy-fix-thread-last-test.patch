@@ -1,0 +1,39 @@
+From dbe23aec174001c42f6edc7a594863a82a24bcfa Mon Sep 17 00:00:00 2001
+From: Kyle Meyer <kyle@kyleam.com>
+Date: Sun, 15 May 2022 13:56:37 -0400
+Subject: [PATCH] lispy-test.el (lispy-toggle-threaded-last): Update for Emacs
+ 28
+
+Starting with Emacs 28.1, thread-first uses `(declare (indent 0) ...)`
+rather than `(declare (indent 1) ...)`.
+---
+
+  Proposed upstream at <https://github.com/abo-abo/lispy/pull/632>.
+
+ lispy-test.el | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/lispy-test.el b/lispy-test.el
+index d946731..87d8c87 100644
+--- a/lispy-test.el
++++ b/lispy-test.el
+@@ -150,7 +150,13 @@ (ert-deftest lispy-toggle-threaded-last ()
+                    "|(thread-last (a 1) (b 2) (c 3))"))
+   (should (string= (lispy-with "|(equal 1443070800.0\n       (ts-unix\n        (ts-parse-org-element\n         (org-element-context))))"
+                                (lispy-toggle-thread-last))
+-                   "|(thread-last (org-element-context)\n  (ts-parse-org-element)\n  (ts-unix)\n  (equal 1443070800.0))"))
++                   (let ((indent (make-string
++                                  (if (version< emacs-version "28.1") 2 13)
++                                  ?\s)))
++                     (concat "|(thread-last (org-element-context)\n"
++                             indent "(ts-parse-org-element)\n"
++                             indent "(ts-unix)\n"
++                             indent "(equal 1443070800.0))"))))
+   (should (string= (lispy-with "|(thread-last (org-element-context)\n  (ts-parse-org-element)\n  (ts-unix)\n  (equal 1443070800.0))"
+                                (lispy-toggle-thread-last))
+                    "|(equal 1443070800.0\n       (ts-unix\n        (ts-parse-org-element\n         (org-element-context))))")))
+
+base-commit: df1b7e614fb0f73646755343e8892ddda310f427
+-- 
+2.36.0
+
