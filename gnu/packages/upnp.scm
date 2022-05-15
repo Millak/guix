@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 Sree Harsha Totakura <sreeharsha@totakura.in>
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
-;;; Copyright © 2016, 2017, 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2016–2018, 2020–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Theodoros Foradis <theodoros@foradis.org>
 ;;; Copyright © 2019 Jens Mølgaard <jens@zete.tk>
 ;;; Copyright © 2020 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
@@ -126,7 +126,7 @@ and others.")
 (define-public readymedia
   (package
     (name "readymedia")
-    (version "1.3.0")
+    (version "1.3.1")
     (source
      (origin
        (method git-fetch)
@@ -136,8 +136,7 @@ and others.")
                       "v" (string-replace-substring version "." "_")))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0g04lffj37wdv5bnpl5faxpnmlj6bbk8y7ziaz2wp6h82g6kb5wj"))))
+        (base32 "09fg3697wshg0j46mi3bp2i6ypiqm39vmzx52bci8r6j07yz7fwx"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--with-os-name=Linux")      ; uname -s
@@ -146,8 +145,7 @@ and others.")
          (add-after 'unpack 'patch-source
            (lambda _
              (substitute* "Makefile.am"
-               ((".*LIBAVUTIL_LIBS.*") ""))
-             #t)))))
+               ((".*LIBAVUTIL_LIBS.*") "")))))))
     (native-inputs
      `(("autoconf" ,autoconf)
        ("automake" ,automake)
