@@ -1874,7 +1874,9 @@ live network and disk I/O bandwidth monitor.")
         (base32 "1hsq1gwmafka4bahs6rc8p98yi542h9a502h64bjlygpr3ih99q5"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list autoconf automake libtool pkg-config which))
+     (list autoconf automake libtool pkg-config which
+           ;; For tests.
+           expect))
     (inputs
      (list `(,hwloc "lib")              ; speed boost on SMP machines
            libgcrypt
