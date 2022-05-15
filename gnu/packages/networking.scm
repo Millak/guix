@@ -116,6 +116,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages kerberos)
+  #:use-module (gnu packages mpi)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages nettle)
   #:use-module (gnu packages openldap)
@@ -1875,7 +1876,8 @@ live network and disk I/O bandwidth monitor.")
     (native-inputs
      (list autoconf automake libtool pkg-config which))
     (inputs
-     (list libgcrypt
+     (list `(,hwloc "lib")              ; speed boost on SMP machines
+           libgcrypt
            libnl
            libpcap
            ethtool
