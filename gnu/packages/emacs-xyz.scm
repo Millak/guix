@@ -13490,7 +13490,9 @@ the Emacs Tempo library.  You may also write your templates in Lisp.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0via9dzw8m5lzymg1h78xkwjssh39zr3g6ccyamlf1rjzjsyxknv"))))
+        (base32 "0via9dzw8m5lzymg1h78xkwjssh39zr3g6ccyamlf1rjzjsyxknv"))
+       (patches
+        (search-patches "emacs-yasnippet-fix-tests.patch"))))
     (build-system emacs-build-system)
     (arguments
      `(#:tests? #t
