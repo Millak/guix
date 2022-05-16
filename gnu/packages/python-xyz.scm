@@ -1283,7 +1283,37 @@ etc.")
     (license license:bsd-3)))
 
 (define-public python2-babel
-  (package-with-python2 python-babel))
+  (package
+    (name "python2-babel")
+    (version "2.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "Babel" version))
+       (sha256
+        (base32
+         "018yg7g2pa6vjixx1nx41cfispgfi0azzp0a1chlycbj8jsil0ys"))))
+    (build-system python-build-system)
+    (native-inputs
+     (list python2-freezegun python2-pytest tzdata-for-tests))
+    (propagated-inputs
+     (list python2-pytz))
+    (arguments
+     `(#:python ,python-2
+       #:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda _
+                      (invoke "pytest" "-vv"))))))
+    (home-page "https://babel.pocoo.org/")
+    (synopsis
+     "Tools for internationalizing Python applications")
+    (description
+     "Babel is composed of two major parts:
+- tools to build and work with gettext message catalogs
+- a Python interface to the CLDR (Common Locale Data Repository), providing
+access to various locale display names, localized number and date formatting,
+etc.")
+    (license license:bsd-3)))
 
 (define-public python2-backport-ssl-match-hostname
   (package
