@@ -2143,16 +2143,16 @@ are both supported).")
 (define-public profanity
   (package
     (name "profanity")
-    (version "0.11.1")
+    (version "0.12.1")
     (source
      (origin
        (method url-fetch)
        (uri
-        (string-append "https://profanity-im.github.io/profanity-"
+        (string-append "https://profanity-im.github.io/tarballs/profanity-"
                        version ".tar.gz"))
        (sha256
         (base32
-         "0idx0a5g077a57q462w01m0h8i4vyvabzlj87p8527wpqbv4s6vg"))))
+         "0vihmlzxr6n3y6v0vdzzxh5p1i09p0hx6sd1b2pnpcgkgcg4hi73"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:configure-flags
@@ -2180,10 +2180,10 @@ are both supported).")
        ("gpgme" ,gpgme)
        ("gtk+" ,gtk+-2)
        ("libgcrypt" ,libgcrypt)
-       ("libmesode" ,libmesode)
        ("libnotify" ,libnotify)
        ("libotr" ,libotr)
        ("libsignal-protocol-c" ,libsignal-protocol-c)
+       ("libstrophe" ,libstrophe)
        ;; ("libxss" ,libxss)
        ("ncurses" ,ncurses)
        ("openssl" ,openssl)
