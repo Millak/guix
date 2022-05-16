@@ -18,7 +18,7 @@
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;;
@@ -80,6 +80,7 @@
   #:use-module (gnu packages libedit)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lisp)
+  #:use-module (gnu packages lua)
   #:use-module (gnu packages man)
   #:use-module (gnu packages markup)
   #:use-module (gnu packages nettle)
@@ -121,6 +122,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils)
+  #:use-module ((guix search-paths) #:select ($SSL_CERT_DIR $SSL_CERT_FILE))
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1))
 
@@ -473,14 +475,9 @@ $(prefix)/etc/openrc\n")))
        (list (search-path-specification
               (variable "GUIX_EXTENSIONS_PATH")
               (files '("share/guix/extensions")))
-
              ;; (guix git) and (guix build download) honor this variable whose
              ;; name comes from OpenSSL.
-             (search-path-specification
-              (variable "SSL_CERT_DIR")
-              (separator #f)                      ;single entry
-              (files '("etc/ssl/certs")))))
-
+             $SSL_CERT_DIR))
       (home-page "https://www.gnu.org/software/guix/")
       (synopsis "Functional package manager for installed software packages and versions")
       (description
@@ -829,7 +826,7 @@ features of Stow with some extensions.")
 (define-public rpm
   (package
     (name "rpm")
-    (version "4.16.1.3")
+    (version "4.17.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://ftp.rpm.org/releases/rpm-"
@@ -837,35 +834,40 @@ features of Stow with some extensions.")
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "07g2g0adgjm29wqy94iqhpp5dk0hacfw1yf7kzycrrxnfbwwfgai"))))
+                "0sjyqs6hc57k46f45b68dfxnp985s0gar0fi1s0ig6vl4h5j439f"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags '("--with-external-db"   ;use the system's bdb
-                           "--enable-python"
-                           "--without-lua")
+     '(#:configure-flags '("--with-external-db" ;use the system's bdb
+                           "--enable-python")
        #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'fix-lua-check
+                    (lambda _
+                      (substitute* "configure"
+                        (("lua >= 5.3")
+                         "lua-5.3 >= 5.3"))))
                   (add-before 'configure 'set-nss-library-path
                     (lambda* (#:key inputs #:allow-other-keys)
                       (let ((nss (assoc-ref inputs "nss")))
                         (setenv "LIBRARY_PATH"
                                 (string-append (getenv "LIBRARY_PATH") ":"
-                                               nss "/lib/nss"))
-                        #t))))))
+                                               nss "/lib/nss"))))))))
     (native-inputs
      (list pkg-config))
     (inputs
-     (list python
-           xz
-           bdb
-           popt
-           nss
-           nspr
+     (list bdb
+           bzip2
+           cpio
+           file
            libarchive
            libgcrypt
-           file
-           bzip2
-           zlib
-           cpio))
+           lua
+           nspr
+           nss
+           popt
+           python
+           sqlite
+           xz
+           zlib))
     (home-page "https://rpm.org/")
     (synopsis "The RPM Package Manager")
     (description
@@ -1112,7 +1114,7 @@ written entirely in Python.")
 (define-public conan
   (package
     (name "conan")
-    (version "1.42.0")
+    (version "1.47.0")
     (source
      (origin
        (method git-fetch)               ;no tests in PyPI archive
@@ -1122,7 +1124,7 @@ written entirely in Python.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "153npvj81m1c33gfcv2nry7xhyikxnhjns7lvs525f1x20ck6asg"))))
+         "1zs2xb22rsy5fsc0fd7c95vrx1mfz7vasyg1lqkzyfimvn5zah6n"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1133,7 +1135,9 @@ written entirely in Python.")
                (("node-semver==0.6.1")
                 "node-semver>=0.6.1")
                (("Jinja2>=2.9, <3")
-                "Jinja2>=2.9"))))
+                "Jinja2>=2.9")
+               (("PyYAML>=3.11, <6.0")
+                "PyYAML"))))
          (add-after 'unpack 'patch-paths
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((coreutils (assoc-ref inputs "coreutils")))
@@ -1189,6 +1193,8 @@ written entirely in Python.")
                         ;; This one fails for unknown reasons (see:
                         ;; https://github.com/conan-io/conan/issues/9671).
                         "and not test_build "
+                        ;; This test expects the 'apt' command to be available.
+                        "and not test_apt_check "
                         (if (not (string-prefix? "x86_64" system))
                             ;; These tests either assume the machine is
                             ;; x86_64, or require a cross-compiler to target

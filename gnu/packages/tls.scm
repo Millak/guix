@@ -51,6 +51,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system trivial)
+  #:use-module ((guix search-paths) #:select ($SSL_CERT_DIR $SSL_CERT_FILE))
   #:use-module (gnu packages compression)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
@@ -495,15 +496,7 @@ OpenSSL for TARGET."
                                                      #$(package-version this-package)
                                                      "/misc")))))))
     (native-search-paths
-     (list (search-path-specification
-            (variable "SSL_CERT_DIR")
-            (separator #f)              ;single entry
-            (files '("etc/ssl/certs")))
-           (search-path-specification
-            (variable "SSL_CERT_FILE")
-            (file-type 'regular)
-            (separator #f)              ;single entry
-            (files '("etc/ssl/certs/ca-certificates.crt")))))
+     (list $SSL_CERT_DIR $SSL_CERT_FILE))
     (synopsis "SSL/TLS implementation")
     (description
      "OpenSSL is an implementation of SSL/TLS.")
@@ -532,7 +525,7 @@ OpenSSL for TARGET."
 (define-public openssl-3.0
   (package
     (inherit openssl)
-    (version "3.0.2")
+    (version "3.0.3")
     (source (origin
               (method url-fetch)
               (uri (list (string-append "https://www.openssl.org/source/openssl-"
@@ -545,7 +538,7 @@ OpenSSL for TARGET."
               (patches (search-patches "openssl-3.0-c-rehash-in.patch"))
               (sha256
                (base32
-                "0qyvvw8n97f0gs786l2dkxnmi3hs344mxplw7jp5cisdmp71rscq"))))
+                "02wcan5izwsxg6vl5fzkqq4icwi7cp4hrj327h05zppirsnph07f"))))
     (arguments
      (substitute-keyword-arguments (package-arguments openssl)
        ((#:phases phases '%standard-phases)

@@ -14,7 +14,7 @@
 ;;; Copyright © 2018, 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020, 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Leo Le Bouter <lle-bout@zaclys.net>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
@@ -50,6 +50,7 @@
   #:use-module (guix build-system texlive)
   #:use-module (guix utils)
   #:use-module (guix deprecation)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix svn-download)
   #:use-module (gnu packages)
@@ -58,6 +59,8 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages lisp)
+  #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gd)
   #:use-module (gnu packages ghostscript)
@@ -561,6 +564,52 @@ This package contains the binaries.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))
     (home-page "https://www.tug.org/texlive/")))
 
+(define-public texlive-bidi
+  (package
+    (name "texlive-bidi")
+    ;; Take the version from texlive-2022.0 as the one from texlive 2021.0 is
+    ;; buggy.
+    (version "36.4")
+    (source (origin
+              (method svn-multi-fetch)
+              (uri (svn-multi-reference
+                    (url (string-append "svn://www.tug.org/texlive/tags/"
+                                        "texlive-2022.0/Master/texmf-dist"))
+                    (locations (list "doc/xelatex/bidi/"
+                                     "source/xelatex/bidi/"))
+                    (revision 62885)))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "09nfvsjfnms3pclyd2rcivyb5qvzw48b934i3bcl83hv69ix2ks7"))))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:tex-directory "xelatex/bidi"
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'chdir
+                     (lambda _
+                       (chdir "source/xelatex/bidi")))
+                   (add-after 'install 'install-doc
+                     (lambda* (#:key outputs #:allow-other-keys)
+                       (let ((doc (string-append (assoc-ref outputs "doc")
+                                                 "/share/texmf-dist/doc")))
+                         (mkdir-p doc)
+                         (copy-recursively (string-append #$source "/doc")
+                                           doc)))))))
+    (propagated-inputs (list texlive-generic-iftex
+                             texlive-generic-ltxcmds
+                             texlive-hyperref
+                             texlive-latex-xkeyval
+                             texlive-zref))
+    (home-page "https://ctan.org/pkg/bidi")
+    (synopsis "Bidirectional typesetting in plain TeX and LaTeX using XeTeX")
+    (description "The @code{bidi} package provides a convenient interface for
+typesetting bidirectional texts with plain TeX and LaTeX.  The package
+includes adaptations for use with many other commonly-used packages.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-libkpathsea
   (package/inherit texlive-bin
     (name "texlive-libkpathsea")
@@ -614,6 +663,26 @@ executables.  It is maintained as a part of TeX Live.")))
     (description "This package provides the docstrip utility to strip
 documentation from TeX files.  It is part of the LaTeX base.")
     (license license:lppl1.3+)))
+
+(define-public texlive-underscore
+  (package
+    (inherit (simple-texlive-package
+              "texlive-underscore"
+              (list "/doc/latex/underscore/"
+                    "/tex/latex/underscore/")
+              (base32
+               "0slxsxc9azmv3gsm55jkhkv8a06wafankp55hhsdd6k4prp8szrb")
+              #:trivial? #t))
+    (home-page "https://www.ctan.org/pkg/underscore")
+    (synopsis "Control the behaviour of @samp{_} in text")
+    (description "This package causes @code{\\_} in text mode (i.e.,
+@code{\\textunderscore}) to print an underscore so that hyphenation of words
+either side of it is not affected; a package option controls whether an actual
+hyphenation point appears after the underscore, or merely a break point.  The
+package also arranges that, while in text, @samp{_} itself behaves as
+@code{\\textunderscore} (the behaviour of @samp{_} in maths mode is not
+affected).")
+    (license license:lppl1.2+)))
 
 (define-public texlive-unicode-data
   (package
@@ -868,6 +937,44 @@ from (almost) arbitrarily complex font names, thus helping portability of TeX
 documents.")
     (license license:public-domain)))
 
+(define-public texlive-cbfonts          ;71 MiB of greek fonts
+  (package
+    (inherit (simple-texlive-package
+              "texlive-cbfonts"
+              (list "/doc/fonts/cbfonts/"
+                    "/fonts/type1/public/cbfonts/")
+              (base32
+               "01j22cbwq9jkni5vvrpz2mg1799cbx3aq801sni74i8wb1zcf6y1")
+              #:trivial? #t))
+    (propagated-inputs (list texlive-cbfonts-fd))
+    (home-page "https://www.ctan.org/pkg/cbgreek-complete")
+    (synopsis "Complete set of Greek fonts")
+    (description "This bundle presents the whole of Beccari's original Greek
+font set, which use the @i{Lispiakos} font shape derived from the shape of the
+fonts used in printers' shops in Lispia.  The fonts are available both as
+Metafont source and in Adobe Type 1 format, and at the same wide set of design
+sizes as are such font sets as the EC fonts.")
+    (license license:lppl1.3c+)))
+
+(define-public texlive-cbfonts-fd
+  (package
+    (inherit (simple-texlive-package
+              "texlive-cbfonts-fd"
+              (list "/doc/fonts/cbfonts/"
+                    "/tex/latex/cbfonts-fd/")
+              (base32
+               "0g91p2qcgqn916vgf777h45dabv2r6l6f9xkcq0b3gpir3qsj3d4")
+              #:trivial? #t))
+    (home-page "https://www.ctan.org/pkg/cbfonts-fd")
+    (synopsis "LaTeX font description files for the CB Greek fonts")
+    (description "The package provides font description files for all the many
+shapes available from the cbfonts collection.  The files provide the means
+whereby the @acronym{NFSS, New Font Selection Scheme} knows which fonts a
+LaTeX user is requesting.
+
+Tip: installing @code{texlive-cbfonts} will automatically propagate this one.")
+    (license license:lppl1.3c+)))
+
 (define-public texlive-cm
   (let ((template (simple-texlive-package
                    "texlive-cm"
@@ -942,6 +1049,31 @@ display, and mathematical fonts in a range of styles, based on Monotype Modern
       (license license:knuth))))
 
 (define-deprecated-package texlive-fonts-cm texlive-cm)
+
+(define-public texlive-cm-lgc
+  (package
+    (inherit (simple-texlive-package
+              "texlive-cm-lgc"
+              (list "/doc/fonts/cm-lgc/"
+                    "/fonts/afm/public/cm-lgc/"
+                    "/fonts/type1/public/cm-lgc/"
+                    "/fonts/vf/public/cm-lgc/"
+                    "/tex/latex/cm-lgc/")
+              (base32
+               "0rm7wgyb07y8h6vbvc2xzsqnxy322d4j9ly2p67z84b81c8i3zpc")
+              #:trivial? #t))
+    (home-page "https://www.ctan.org/pkg/cm-lgc")
+    (synopsis "Type 1 CM-based fonts for Latin, Greek and Cyrillic")
+    (description "The fonts are converted from Metafont sources of the
+Computer Modern font families, using @command{textrace}.  Supported encodings
+are: T1 (Latin), T2A (Cyrillic), LGR (Greek) and TS1.  The package also
+includes Unicode virtual fonts for use with Omega.  The font set is not a
+replacement for any of the other Computer Modern-based font sets (for example,
+cm-super for Latin and Cyrillic, or cbgreek for Greek), since it is available
+at a single size only; it offers a compact set for @i{general} working.  The
+fonts themselves are encoded to external standards, and virtual fonts are
+provided for use with TeX.")
+    (license license:gpl2+)))
 
 (define-public texlive-cm-super
   (let ((template (simple-texlive-package
@@ -1070,6 +1202,22 @@ Computers & Typesetting series.")
     (license license:lppl1.3c+)))
 
 (define-deprecated-package texlive-fonts-lm texlive-lm)
+
+(define-public texlive-lm-math
+  (package
+    (inherit (simple-texlive-package
+              "texlive-lm-math"
+              (list "/doc/fonts/lm-math/"
+                    "/fonts/opentype/public/lm-math/")
+              (base32
+               "0gqdk8x3r1iz4n8j6r3pcqbwalxvkihayvmjfq4iv6hwb0pvys8z")
+              #:trivial? #t))
+    (home-page "http://www.gust.org.pl/projects/e-foundry/latin-modern")
+    (synopsis "OpenType maths fonts for Latin Modern")
+    (description "Latin Modern Math is a maths companion for the Latin Modern
+family of fonts, in OpenType format.  For use with LuaLaTeX or XeLaTeX,
+support is available from the @code{unicode-math} package.")
+    (license license:gfl1.0)))
 
 (define-public texlive-knuth-lib
   (let ((template (simple-texlive-package
@@ -3131,6 +3279,9 @@ used by @code{hyperref} and @code{bookmark}.")
                    (rename-file (string-append share "/tex/latex/xcolor/xcolor.pro")
                                 (string-append share "/dvips/xcolor/xcolor.pro"))
                    #t)))))))
+      ;; TODO: Propagate texlive-hyperref and many others in the next rebuild
+      ;; cycle.  Grep for '\usepackage' to see what packages it requires.
+      ;; (propagated-inputs (list texlive-hyperref ...))
       (home-page "https://www.ctan.org/pkg/xcolor")
       (synopsis "Driver-independent color extensions for LaTeX and pdfLaTeX")
       (description
@@ -3254,7 +3405,13 @@ XML, using UTF-8 or a suitable 8-bit encoding.")
              texlive-latex-pdftexcmds
              texlive-latex-refcount
              texlive-latex-rerunfilecheck
-             texlive-url))
+             texlive-url
+             ;; TODO: Add this in next rebuild cycle.
+             ;;texlive-cm
+             ;;texlive-latex-graphics    ;for keyval
+             ;;texlive-stringenc
+             ;;texlive-zapfding
+             ))
       (home-page "https://www.ctan.org/pkg/hyperref")
       (synopsis "Extensive support for hypertext in LaTeX")
       (description
@@ -3571,7 +3728,7 @@ here are defined for the dvips engine only.")
              (add-after 'unpack 'chdir
                (lambda _ (chdir "source/latex/fontspec/") #t))))))
       (propagated-inputs
-       (list texlive-latex-l3packages))
+       (list texlive-cm texlive-latex-l3packages texlive-lm))
       (home-page "https://www.ctan.org/pkg/fontspec")
       (synopsis "Advanced font selection in XeLaTeX and LuaLaTeX")
       (description
@@ -3906,6 +4063,65 @@ polyglossia package rather than Babel.")
       (license license:lppl1.3+))))
 
 (define-deprecated-package texlive-latex-babel texlive-babel)
+
+(define-public texlive-cs
+  (package
+    (inherit (simple-texlive-package
+              "texlive-cs"
+              (list
+               "fonts/enc/dvips/cs/"
+               "fonts/map/dvips/cs/"
+               "fonts/source/public/cs/"
+               ;; TODO: Remove these pre-built files after the manual
+               ;; build below is fixed.
+               ;; The font fails to build from the Metafont sources, with
+               ;; errors such as:
+               ;; This is METAFONT, Version 2.71828182 (TeX Live 2021/GNU Guix) [...]
+               ;; (./csaccent.mf
+               ;; >> cap_curve#-dot_size#
+               ;; ! Unknown relation will be considered false.
+               ;; <to be read again>
+               "fonts/tfm/cs/cs-a35/"
+               "fonts/tfm/cs/cs-charter/"
+               "fonts/tfm/public/cs/"
+               "fonts/type1/public/cs/"
+               "fonts/vf/cs/cs-a35/")
+              (base32 "1ww5lrqja051fh0ygmfdyy5a6bhwq9k5zv857vwiqf5syvw5djps")
+              #:trivial? #t))
+    (home-page "http://petr.olsak.net/cstex/")
+    (synopsis "Czech/Slovak-tuned Computer Modern fonts")
+    (description "This package provides Czech/Slovak-tuned Computer Modern
+fonts in the Metafont format; Type 1 format versions (csfonts-t1) are also
+available.")
+    (license license:gpl2+)))           ;see fonts/source/public/cs/cscode.mf
+
+;;; Note: if this package is modified, its name must be changed to comply with
+;;; its license.
+(define-public texlive-csplain
+  (package
+    (inherit (simple-texlive-package
+              "texlive-csplain"
+              (list "tex/csplain/base/")
+              (base32 "0cgrwc8lgf2x2hq6bb4kqxw597card985zdd9ipn7k98mmwrxhz3")
+              #:trivial? #t))
+    (home-page "http://petr.olsak.net/csplain-e.html")
+    (synopsis "Plain TeX multilanguage support")
+    (description "CSplain is a small extension of basic Plain TeX macros from
+which the formats @code{csplain} and @code{pdfcsplain} can be generated.  It
+supports: hyphenation of words for 50+ languages, simple and powerful font
+loading system (various sizes of fonts), TeX, pdfTeX, XeTeX and LuaTeX
+engines, math fonts simply loaded with full amstex-like features, three
+internal encodings (IL2 for Czech/Slovak languages, T1 for many languages with
+latin alphabet and Unicode in new TeX engines), natural UTF-8 input in pdfTeX
+using encTeX without any active characters, Czech and Slovak special
+typesetting features.  An important part of the package is OPmac, which
+implements most of LaTeX's features (sectioning, font selection, color, hyper
+reference and URLs, bibliography, index, table of contents, tables, etc.) by
+Plain TeX macros.  The OPmac macros can generate a bibliography without any
+external program.")
+    ;; This custom permissive license includes as a redistribution condition
+    ;; that says the package must be renamed from 'csplain' if it is modified.
+    (license (license:non-copyleft "file:///tex/csplain/base/csplain.ini"))))
 
 (define-public texlive-generic-babel-english
   (package
@@ -5195,7 +5411,8 @@ BibLaTeX, and is considered experimental.")
     (build-system texlive-build-system)
     (arguments '(#:tex-directory "latex/geometry"))
     (propagated-inputs
-     (list texlive-oberdiek)) ;for ifpdf
+     (list texlive-oberdiek             ;for ifpdf
+           texlive-latex-graphics))     ;for keyval
     (home-page "https://www.ctan.org/pkg/geometry")
     (synopsis "Flexible and complete interface to document dimensions")
     (description
@@ -5232,25 +5449,306 @@ which adds some minor changes to LaTeX maths; a rewrite of LaTeX's tabular and
 array environments; verbatim handling; and syntax diagrams.")
     (license license:gpl3+)))
 
-(define-public texlive-latex-polyglossia
+(define-public texlive-makecmds
   (package
-    (name "texlive-latex-polyglossia")
-    (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "polyglossia"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "1ci6hr8hx4g2x359n6wqvw6w8fv42cjjpzxxxd3pn6av5nkaiav3"))))
-    (build-system texlive-build-system)
-    (arguments '(#:tex-directory "latex/polyglossia"))
+    (inherit (simple-texlive-package
+              "texlive-makecmds"
+              (list "doc/latex/makecmds/README"
+                    "source/latex/makecmds/makecmds.dtx"
+                    "source/latex/makecmds/makecmds.ins")
+              (base32 "0znx80x6ic7a25v9dw8yjibq7lx65wangcyii18kk5x5z4jljba9")))
+    (outputs '("out" "doc"))
+    (arguments
+     (list
+      #:tex-directory "latex/makecmds"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'chdir
+            (lambda _
+              (setenv "ROOT_DIR" (getcwd))
+              (chdir "source/latex/makecmds")))
+          (add-after 'build 'build-doc
+            (lambda _
+              (copy-file "makecmds.dtx" "build/makecmds.dtx")
+              (chdir "build")
+              (invoke "pdflatex" "makecmds.dtx"))) ;generate makecmds.pdf
+          (replace 'install
+            (lambda* (#:key outputs tex-directory #:allow-other-keys)
+              (let ((doc (string-append (assoc-ref outputs "doc")
+                                        "/share/doc/" tex-directory))
+                    (out (string-append #$output "/share/texmf-dist/tex/"
+                                        tex-directory)))
+                (install-file "makecmds.pdf" doc)
+                (install-file (car (find-files (getenv "ROOT_DIR") "README"))
+                              doc)
+                (install-file "makecmds.sty" out)))))))
+    (native-inputs (list (texlive-updmap.cfg
+                          (list texlive-amsfonts
+                                texlive-cm))))
+    (home-page "https://www.ctan.org/pkg/makecmds")
+    (synopsis "TeX macro to define or redefine a command")
+    (description "The package provides a @code{\\makecommand} command, which
+is like @code{\\newcommand} or @code{\\renewcommand} except it
+always (re)defines a command.  There is also @code{\\makeenvironment} and
+@code{\\provideenvironment} for environments.")
+    (license license:lppl1.3c+)))
+
+(define-public texlive-metalogo
+  (package
+    (inherit (simple-texlive-package
+              "texlive-metalogo"
+              (list "doc/latex/metalogo/README"
+                    ;; These PDFs are apparently used as graphic files, not
+                    ;; built.
+                    "doc/latex/metalogo/TeXoutline.pdf"
+                    "doc/latex/metalogo/eLaToutline.pdf"
+                    "source/latex/metalogo/metalogo.dtx"
+                    "source/latex/metalogo/metalogo.ins")
+              (base32 "0v1jwp8xhzwn0a4apiyya17s4r1kpn6q9nmv38jj1wwdvgia0jpi")))
+    (outputs '("out" "doc"))
+    (arguments
+     (list
+      #:tex-directory "latex/metalogo"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'chdir
+            (lambda _
+              (setenv "ROOT_DIR" (getcwd))
+              (chdir "source/latex/metalogo")))
+          (add-after 'chdir 'patch-metalogo.dtx
+            (lambda _
+              (substitute* "metalogo.dtx"
+                ;; Prevent embedding a build time date, for reproducibility.
+                (("^% \\\\date.*") "")
+                ;; These fonts are not free.
+                (("^\\\\setmainfont.*") "")
+                (("^\\\\DeclareSymbolFont\\{SabonMaths}.*") "")
+                (("^\\\\AtBeginDocument\\{.*") "")
+                ((".*\\\\expandafter.*\\\\symSabonMaths.*") "")
+                (("^\\\\setsansfont.*MgOpen Cosmetica.*") "")
+                (("^\\\\setmonofont.*Consolas.*") "")
+                ;; The 'stix' texlive font package has been obsoleted by
+                ;; stix2.
+                (("^\\\\newfontfamily\\\\stixgeneral\\{STIXGeneral}")
+                 "\\newfontfamily\\stixgeneral{STIX Two Text}"))))
+          (add-after 'build 'build-doc
+            (lambda* (#:key outputs tex-directory #:allow-other-keys)
+              (define doc-sources (string-append (getenv "ROOT_DIR")
+                                                 "/doc/latex/metalogo"))
+              (copy-file "metalogo.dtx" "build/metalogo.dtx")
+              (mkdir "build/graphics")
+              (copy-file (string-append doc-sources "/TeXoutline.pdf")
+                         "build/graphics/TeXoutline.pdf")
+              (copy-file (string-append doc-sources "/eLaToutline.pdf")
+                         "build/graphics/eLaToutline.pdf")
+              (chdir "build")
+              (invoke "xelatex" "metalogo.dtx"))) ;generate metalogo.pdf
+          (replace 'install
+            (lambda* (#:key outputs tex-directory #:allow-other-keys)
+              (let ((doc (string-append (assoc-ref outputs "doc")
+                                        "/share/doc/" tex-directory))
+                    (out (string-append #$output "/share/texmf-dist/tex/"
+                                        tex-directory)))
+                (install-file "metalogo.pdf" doc)
+                (install-file (car (find-files (getenv "ROOT_DIR") "README"))
+                              doc)
+                (install-file "metalogo.sty" out)))))))
+    (native-inputs (list fontconfig     ;for XDG_DATA_DIRS, to locate OTF fonts
+                         texlive-booktabs
+                         texlive-cm
+                         texlive-fontspec
+                         texlive-generic-iftex
+                         texlive-latex-base
+                         texlive-latex-eukdate
+                         texlive-latex-graphics
+                         texlive-latex-multirow
+                         texlive-lm     ;for lmroman10-regular
+                         texlive-stix2-otf))
+    (propagated-inputs (list texlive-fontspec texlive-generic-iftex
+                             texlive-latex-graphics))
+    (home-page "https://ctan.org/pkg/metalogo")
+    (synopsis "Extended TeX logo macros")
+    (description "This package exposes spacing parameters for various TeX
+logos to the end user, to optimise the logos for different fonts.  It is
+written especially for XeLaTeX users.")
+    (license license:lppl1.3c+)))
+
+(define-public texlive-paralist
+  (package
+    (inherit (simple-texlive-package
+              "texlive-paralist"
+              (list "doc/latex/paralist/README"
+                    "source/latex/paralist/paralist.dtx"
+                    "source/latex/paralist/paralist.ins")
+              (base32 "1lz8yds2i64wkb89a9amydwkzsdbc09s1kbgn7vgh2qsxqrrgwam")))
+    (outputs '("out" "doc"))
+    (arguments
+     (list
+      #:tex-directory "latex/paralist"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'chdir
+            (lambda _
+              (setenv "ROOT_DIR" (getcwd))
+              (chdir "source/latex/paralist")))
+          (add-after 'build 'build-doc
+            (lambda* (#:key outputs tex-directory #:allow-other-keys)
+              (copy-file "paralist.dtx" "build/paralist.dtx")
+              (chdir "build")
+              (invoke "pdflatex" "paralist.dtx")))
+          (replace 'install
+            (lambda* (#:key outputs tex-directory #:allow-other-keys)
+              (let ((doc (string-append (assoc-ref outputs "doc")
+                                        "/share/doc/" tex-directory))
+                    (out (string-append #$output "/share/texmf-dist/tex/"
+                                        tex-directory)))
+                (install-file "paralist.pdf" doc)
+                (install-file (car (find-files (getenv "ROOT_DIR") "README"))
+                              doc)
+                (install-file "paralist.sty" out)))))))
+    (native-inputs (list texlive-latex-base
+                         (texlive-updmap.cfg
+                          (list texlive-cm
+                                texlive-jknappen))))
+    (home-page "https://ctan.org/pkg/paralist")
+    (synopsis "Enumerate and itemize within paragraphs")
+    (description "The @code{paralist} package provides enumerate and itemize
+environments that can be used within paragraphs to format the items either as
+running text or as separate paragraphs with a preceding number or symbol.  It
+also provides compacted versions of enumerate and itemize.")
+    (license license:lppl1.0+)))
+
+(define-public texlive-polyglossia
+  (package
+    (inherit (simple-texlive-package
+              "texlive-polyglossia"
+              (list "source/latex/polyglossia/"
+                    ;; These files are not part of polyglossia.dtx
+                    "tex/latex/polyglossia/arabicnumbers.sty"
+                    "tex/latex/polyglossia/xpg-cyrillicnumbers.sty")
+              (base32 "1p0hhclypv2zbs8h64c6sd689m9ym3vvpn966qpwpjxbymsrc49g")))
+    (outputs '("out" "doc"))
+    (arguments
+     (list
+      #:tex-directory "latex/polyglossia"
+      #:tex-format "xelatex"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'build-and-install-xelatex.fmt
+            (lambda* (#:key tex-format #:allow-other-keys)
+              (invoke "fmtutil-sys" "--byfmt" tex-format "--fmtdir=web2c")
+              ;; Extend the current TEXMF environment variable to make
+              ;; available the newly built formats.
+              (setenv "GUIX_TEXMF" (string-append (getcwd) ":"
+                                                  (getenv "GUIX_TEXMF")))
+              ;; XXX: Extend the base (more limited) xelatex.fmt provided by
+              ;; texlive-latex-base, otherwise packages using Polyglossia
+              ;; would encounter the same lack of hyphenation support problem.
+              (install-file "web2c/xetex/xelatex.fmt"
+                            (string-append #$output
+                                           "/share/texmf-dist/web2c/xetex"))))
+          (add-before 'build 'chdir
+            (lambda _
+              ;; This is so the build can find the files not part of the .dtx.
+              (setenv "TEXINPUTS" (string-append (getcwd)
+                                                 "/tex/latex/polyglossia:"))
+              (chdir "source/latex/polyglossia")))
+          (add-after 'chdir 'substitute-nonfree-fonts
+            (lambda _
+              (substitute* "polyglossia.dtx"
+                (("\\{Serto Jerusalem}")
+                 "{FreeSans}"))))
+          (add-after 'substitute-nonfree-fonts 'extract-dtx
+            (lambda* (#:key tex-format #:allow-other-keys)
+              (invoke tex-format "polyglossia.dtx")))
+          (add-after 'install 'install-doc
+            (lambda* (#:key outputs tex-directory #:allow-other-keys)
+              (let ((doc (string-append (assoc-ref outputs "doc")
+                                        "/share/texmf-dist/doc" tex-directory)))
+                (install-file "README.md" doc)
+                (install-file "polyglossia.pdf" doc)))))))
+    (native-inputs (list fontconfig     ;for XDG_DATA_DIRS (to locate fonts)
+                         font-amiri
+                         font-dejavu
+                         font-gfs-ambrosia
+                         font-gnu-freefont
+                         font-linuxlibertine
+                         font-sil-ezra
+                         texlive-latex-base
+                         texlive-babel
+                         texlive-bin    ;for fmtutil.cnf
+                         texlive-bidi
+                         texlive-booktabs
+                         texlive-caption
+                         texlive-context
+                         texlive-latex-fancyvrb
+                         texlive-etoolbox
+                         texlive-fonts-latex
+                         texlive-fontspec
+                         texlive-hyperref
+                         ;; TODO: Remove texlive-stringenc and
+                         ;; texlive-zapfding after texlive-hyperref propagates
+                         ;; them.
+                         texlive-stringenc
+                         texlive-zapfding
+                         texlive-latex-graphics
+                         texlive-kpathsea ;for cp227.tcx & friends
+                         texlive-makecmds
+                         texlive-metalogo
+                         texlive-microtype
+                         texlive-paralist
+                         texlive-latex-tools
+                         texlive-tex-ini-files)) ;for pdftexconfig
+    ;; polyglossia.sty \RequirePackage or \\usepackage these other TexLive
+    ;; packages.
+    (propagated-inputs
+     (list texlive-bidi
+           texlive-etoolbox
+           texlive-fontspec
+           texlive-hyperref
+           ;; TODO: Remove texlive-stringenc and
+           ;; texlive-zapfding after texlive-hyperref propagates
+           ;; them.
+           texlive-stringenc
+           texlive-zapfding
+           texlive-makecmds
+           texlive-latex-l3packages     ;expl3, l3keys2e, xparse
+           texlive-latex-tools
+           texlive-latex-xkeyval))
     (home-page "https://www.ctan.org/pkg/polyglossia")
-    (synopsis "Alternative to babel for XeLaTeX and LuaLaTeX")
-    (description
-     "This package provides a complete Babel replacement for users of LuaLaTeX
-and XeLaTeX; it relies on the @code{fontspec} package, version 2.0 at least.")
-    (license license:lppl1.3+)))
+    (synopsis "Alternative to Babel for XeLaTeX and LuaLaTeX")
+    (description "This package provides a complete Babel replacement for users
+of LuaLaTeX and XeLaTeX.  It includes support for over 70 different languages,
+some of which in different regional or national varieties, or using a
+different writing system.  It enables:
+@itemize
+@item
+Loading the appropriate hyphenation patterns.
+@item
+Setting the script and language tags of the current font (if possible and
+available), using the package fontspec.
+@item
+Switching to a font assigned by the user to a particular script or language.
+@item
+Adjusting some typographical conventions in function of the current language
+(such as afterindent, frenchindent, spaces before or after punctuation marks,
+etc.)
+@item
+Redefining the document strings (like @samp{chapter}, @samp{figure},
+@samp{bibliography}).  Adapting the formatting of dates (for non-gregorian
+calendars via external packages bundled with polyglossia: currently the
+Hebrew, Islamic and Farsi calendars are supported).
+@item
+For languages that have their own numeration system, modifying the formatting
+of numbers appropriately.
+@item
+Ensuring the proper directionality if the document contains languages
+written from right to left (via the packages bidi and luabidi, available
+separately).
+@end itemize")
+    (license license:expat)))
+
+(define-deprecated-package texlive-latex-polyglossia texlive-polyglossia)
 
 (define-public texlive-latex-supertabular
   (package
@@ -5947,6 +6445,76 @@ Adobe's basic set.")
     ;; No license version specified.
     (license license:gpl3+)))
 
+(define-public texlive-zref
+  (package
+    (inherit (simple-texlive-package
+              "texlive-zref"
+              (list "doc/latex/zref/"
+                    "source/latex/zref/")
+              (base32 "09l2wrqx0navislkx15iazv7jy0ip8bqaw3c0hjf0jy81kqrrm01")))
+    (outputs '("out" "doc"))
+    (arguments
+     (list
+      #:build-targets #~(list "zref.dtx")
+      #:tex-directory "latex/zref"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (setenv "ROOT_DIR" (getcwd))
+              (chdir "source/latex/zref")))
+          (add-after 'install 'install-doc
+            (lambda* (#:key outputs #:allow-other-keys)
+              (define doc (string-append (assoc-ref outputs "doc")
+                                         "/share/texmf-dist/doc"))
+              (mkdir-p doc)
+              (copy-recursively (string-append (getenv "ROOT_DIR") "/doc")
+                                doc))))))
+    (propagated-inputs (list texlive-generic-atbegshi
+                             texlive-generic-gettitlestring
+                             texlive-generic-iftex
+                             texlive-latex-atveryend
+                             texlive-latex-kvoptions
+                             texlive-latex-pdftexcmds
+                             texlive-latex-xkeyval))
+    (home-page "https://github.com/ho-tex/zref")
+    (synopsis "Reference scheme for LaTeX")
+    (description "This package offers a means to remove the limitation, of
+only two properties, that is inherent in the way LaTeX's reference system
+works.  The package implements an extensible referencing system, where
+properties may be defined and used in the course of a document.  It provides
+an interface for macro programmers to access the new reference scheme and some
+modules that use it.  Modules available are:
+@table @code
+@item zref-user
+use zref for traditional labels and references;
+@item zref-abspage
+retrieve absolute page numbers (physical pages, as opposed to the logical page
+number that is normally typeset when a page number is requested;
+@item zref-lastpage
+provide a zref-label for the last page of the document;
+@item zref-nextpage
+provide the page number of the next page of the document;
+@item zref-totpages
+provide the total number of pages in the document;
+@item zref-pagelayout
+provide the page layout parameters of a each page (which may then be printed
+at the end of the document);
+@item zref-perpage
+make a counter reset for each new page;
+@item zref-titleref
+make section title or caption text available through the reference system;
+@item zref-savepos
+make positions on a page available;
+@item zref-dotfill
+controlled dot-filling
+@item zref-env
+record the latest environment's name and the line it started on;
+@item zref-xr
+provide the facilities of the xr and xr-hyper packages.
+@end table")
+    (license license:lppl1.3c+)))
+
 (define-deprecated-package texlive-fonts-adobe-zapfding texlive-zapfding)
 
 (define-public texlive-fonts-rsfs
@@ -6214,6 +6782,41 @@ hypertext features like hyperlinks and article threads are provided.  The
 package supports pdfTeX (pdfLaTeX) and VTeX.  With VTeX it is even possible to
 use this package to insert PostScript files, in addition to PDF files.")
     (license license:lppl1.3+)))
+
+(define-public texlive-stix2-otf
+  (let ((base (simple-texlive-package
+               "texlive-stix2-otf"
+               (list "/doc/fonts/stix2-otf/"
+                     "/fonts/opentype/public/stix2-otf/")
+               (base32 "0i7rd1wn5jgm3gbi779gy78apz63w034ck4pn73xw6s10zgjzmgl")
+               ;; Building these fonts requires FontLab, which is nonfree.
+               #:trivial? #t)))
+    (package
+      (inherit base)
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'install 'symlink-fonts-to-system-fonts-prefix
+                ;; This is so that fontconfig can locate the fonts, such as
+                ;; when using xetex or xelatex.
+                (lambda _
+                  (let ((system-fonts-prefix (string-append #$output
+                                                            "/share/fonts")))
+                    (mkdir-p system-fonts-prefix)
+                    (symlink (string-append
+                              #$output "/share/texmf-dist/fonts/opentype"
+                              "/public/stix2-otf")
+                             (string-append system-fonts-prefix
+                                            "/stix2-otf")))))))))
+      (home-page "https://www.stixfonts.org/")
+      (synopsis "OpenType Unicode text and maths fonts")
+      (description "The Scientific and Technical Information eXchange (STIX)
+fonts are intended to satisfy the demanding needs of authors, publishers,
+printers, and others working in the scientific, medical, and technical fields.
+They combine a comprehensive Unicode-based collection of mathematical symbols
+and alphabets with a set of text faces suitable for professional publishing.")
+      (license license:silofl1.1))))
 
 (define-public texlive-stmaryrd
   (let ((template (simple-texlive-package
@@ -9969,6 +10572,57 @@ on the page, and which specifies where it is to be placed.  The environment is
 accompanied by various configuration commands.")
     (license license:lppl)))
 
+(define-public texlive-unicode-math
+  (package
+    (inherit (simple-texlive-package
+              "texlive-unicode-math"
+              (list "source/latex/unicode-math/"
+                    "doc/latex/unicode-math/"
+                    "tex/latex/unicode-math/unicode-math-table.tex")
+              (base32 "1j3041dcm7wqj0x26rxm9bb7q4xa1rqsqynqdb6cbjk3jmfvskxn")))
+    (outputs '("out" "doc"))
+    (arguments
+     (list
+      #:tex-directory "latex/unicode-math"
+      #:tex-format "xelatex"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'copy-files
+            ;; The documentation isn't built.
+            (lambda* (#:key outputs tex-directory #:allow-other-keys)
+              (let ((doc (assoc-ref outputs "doc"))
+                    (tex (string-append #$output "/share/texmf-dist/tex/"
+                                        tex-directory)))
+                ;; Install documentation.
+                (mkdir-p (string-append doc "/share/texmf-dist/doc" ))
+                (copy-recursively "doc" doc)
+                ;; Install unicode-math-table.tex, which is not
+                ;; built.
+                (install-file "tex/latex/unicode-math/unicode-math-table.tex"
+                              tex))))
+          (add-after 'copy-files 'chdir
+            (lambda* (#:key tex-directory #:allow-other-keys)
+              (chdir (string-append "source/" tex-directory)))))))
+    (home-page "https://ctan.org/pkg/unicode-math")
+    (synopsis "Unicode mathematics support for XeTeX and LuaTeX")
+    (description "This package will provide a complete implementation of
+Unicode maths for XeLaTeX and LuaLaTeX.  Unicode maths is currently supported
+by the following fonts:
+@itemize
+@item Latin Modern Math
+@item TeX Gyre Bonum Math
+@item TeX Gyre Pagella Math
+@item TeX Gyre Schola Math
+@item TeX Gyre Termes Math
+@item DejaVu Math TeX Gyre
+@item Asana-Math
+@item STIX
+@item XITS Math
+@item Libertinus Math
+@item Fira Math
+@end itemize")
+    (license license:lppl1.3c+)))
+
 (define-public texlive-xifthen
   (package
     (inherit (simple-texlive-package
@@ -9989,6 +10643,54 @@ another.  The package also enables use of complex expressions as introduced by
 the package @code{calc}, together with the ability of defining new commands to
 handle complex tests.")
     (license license:lppl)))
+
+(define-public texlive-xindy
+  (package
+    (name "texlive-xindy")
+    (version "2.5.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://ctan/indexing/xindy/base/xindy-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "0hxsx4zw19kmixkmrln17sxgg1ln4pfp4lpfn5v5fyr1nwfyk3ic"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "--enable-docs")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-clisp
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; The xindy.in file is encoded in ISO-8859-1 (or iso-latin-1).
+              (with-fluids ((%default-port-encoding "ISO-8859-1"))
+                (substitute* "user-commands/xindy.in"
+                  (("(our \\$clisp = ).*" _ head)
+                   (format #f "our $clisp = ~s;~%"
+                           (search-input-file inputs "bin/clisp"))))))))))
+    (native-inputs (list clisp
+                         glibc-locales
+                         perl
+                         texlive-bin
+                         texlive-greek-fontenc
+                         texlive-hyperref
+                         texlive-latex-base
+                         texlive-latex-cyrillic
+                         texlive-latex-geometry
+                         (texlive-updmap.cfg ;fonts
+                          (list texlive-cbfonts
+                                texlive-lh
+                                texlive-jknappen))))
+    (inputs (list clisp perl))          ;used at run time
+    (home-page "https://www.ctan.org/pkg/xindy")
+    (synopsis "General-purpose index processor")
+    (description "Xindy was developed after an impasse had been encountered in
+the attempt to complete internationalisation of @command{makeindex}.  Xindy
+can be used to process indexes for documents marked up using (La)TeX, Nroff
+family and SGML-based languages.  Xindy is highly configurable, both in markup
+terms and in terms of the collating order of the text being processed.")
+    (license license:gpl2+)))
 
 (define-public bibtool
   (package

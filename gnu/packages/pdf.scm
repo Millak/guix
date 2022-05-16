@@ -20,7 +20,7 @@
 ;;; Copyright © 2020-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Timotej Lazar <timotej.lazar@araneo.si>
-;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -88,6 +88,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -701,63 +702,92 @@ for applications that wish to do lower level manipulation of PDF, such as
 extracting content or merging files.")
     (license license:lgpl2.0+)))
 
+(define-public python-pydyf
+  (package
+    (name "python-pydyf")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pydyf" version))
+       (sha256
+        (base32 "0b30g3hhxw1bg18r9ax85i1dkg8vy1y1wzas0bg0bxblh7j5sbqy"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv" "-c" "/dev/null")))))))
+    (propagated-inputs (list python-pillow))
+    (native-inputs (list ghostscript python-pytest))
+    (home-page "https://github.com/CourtBouillon/pydyf")
+    (synopsis "Low-level PDF generator")
+    (description "@code{pydyf} is a low-level PDF generator written in Python
+and based on PDF specification 1.7.")
+    (license license:bsd-3)))
+
 (define-public mupdf
   (package
     (name "mupdf")
-    (version "1.19.0")
+    (version "1.19.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://mupdf.com/downloads/archive/"
                            "mupdf-" version "-source.tar.xz"))
        (sha256
-        (base32 "1i98xqgnzp168hnnhradl8658qsif06wlbvcglz0mmh8wi1rkwrq"))
+        (base32 "0gl0wf16m1cafs20h3v1f4ysf7zlbijjyd6s1r1krwvlzriwdsmm"))
        (modules '((guix build utils)))
        (snippet
-        '(begin
-           ;; Remove bundled software.
-           (let* ((keep (list "extract"
-                              "lcms2")) ; different from our lcms2 package
-                  (from "thirdparty")
-                  (kept (string-append from "~temp")))
-             (mkdir-p kept)
-             (for-each (lambda (file) (rename-file (string-append from "/" file)
-                                              (string-append kept "/" file)))
-                       keep)
-             (delete-file-recursively from)
-             (rename-file kept from))
-           #t))))
+        #~(begin
+            ;; Remove bundled software.
+            (let* ((keep (list "extract"
+                               "lcms2")) ; different from our lcms2 package
+                   (from "thirdparty")
+                   (kept (string-append from "~temp")))
+              (mkdir-p kept)
+              (for-each (lambda (file)
+                          (rename-file (string-append from "/" file)
+                                       (string-append kept "/" file)))
+                        keep)
+              (delete-file-recursively from)
+              (rename-file kept from))))))
     (build-system gnu-build-system)
     (inputs
-      `(("curl" ,curl)
-        ("freeglut" ,freeglut)
-        ("freetype" ,freetype)
-        ("gumbo-parser" ,gumbo-parser)
-        ("harfbuzz" ,harfbuzz)
-        ("jbig2dec" ,jbig2dec)
-        ("libjpeg" ,libjpeg-turbo)
-        ("libx11" ,libx11)
-        ("libxext" ,libxext)
-        ("mujs" ,mujs)
-        ("openjpeg" ,openjpeg)
-        ("openssl" ,openssl)
-        ("zlib" ,zlib)))
+     (list curl
+           freeglut
+           freetype
+           gumbo-parser
+           harfbuzz
+           jbig2dec
+           libjpeg-turbo
+           libx11
+           libxext
+           mujs
+           openjpeg
+           openssl
+           zlib))
     (native-inputs
-      (list pkg-config))
+     (list pkg-config))
     (arguments
-      `(#:tests? #f                     ; no check target
-        #:make-flags (list "verbose=yes"
-                           (string-append "CC=" ,(cc-for-target))
-                           "XCFLAGS=-fpic"
-                           "USE_SYSTEM_LIBS=yes"
-                           "USE_SYSTEM_MUJS=yes"
-                           "shared=yes"
-                           ;; Even with the linkage patch we must fix RUNPATH.
-                           (string-append "LDFLAGS=-Wl,-rpath="
-                                          (assoc-ref %outputs "out") "/lib")
-                           (string-append "prefix=" (assoc-ref %outputs "out")))
-        #:phases (modify-phases %standard-phases
-                   (delete 'configure)))) ; no configure script
+     (list
+       #:tests? #f                      ; no check target
+       #:make-flags
+       #~(list "verbose=yes"
+               (string-append "CC=" #$(cc-for-target))
+               "XCFLAGS=-fpic"
+               "USE_SYSTEM_LIBS=yes"
+               "USE_SYSTEM_MUJS=yes"
+               "shared=yes"
+               ;; Even with the linkage patch we must fix RUNPATH.
+               (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib")
+               (string-append "prefix=" #$output))
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure))))      ; no configure script
     (home-page "https://mupdf.com")
     (synopsis "Lightweight PDF viewer and toolkit")
     (description
@@ -1451,77 +1481,75 @@ manipulating PDF documents from the command line.  It supports
 (define-public weasyprint
   (package
     (name "weasyprint")
-    (version "52.1")
+    (version "54.3")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/FelixSchwarz/WeasyPrint")
+             (url "https://github.com/Kozea/WeasyPrint")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0rcj9yah3bp6bbvkmny3w4csx4l5v49lc7mrk29g0x77qnwswjy7"))))
+         "0cn8gpgyic6pmrnhp0540nbgplpsd5aybi7k89anz6m1sshgjzgs"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-library-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((fontconfig (assoc-ref inputs "fontconfig"))
-                   (glib (assoc-ref inputs "glib"))
-                   (pango (assoc-ref inputs "pango"))
-                   (pangoft2 (assoc-ref inputs "pangoft2")))
-               (substitute* "weasyprint/fonts.py"
-                 (("'fontconfig'")
-                  (format #f "'~a/lib/libfontconfig.so'" fontconfig))
-                 (("'pangoft2-1.0'")
-                  (format #f "'~a/lib/libpangoft2-1.0.so'" pango)))
-               (substitute* "weasyprint/text.py"
-                 (("'gobject-2.0'")
-                  (format #f "'~a/lib/libgobject-2.0.so'" glib))
-                 (("'pango-1.0'")
-                  (format #f "'~a/lib/libpango-1.0.so'" pango))
-                 (("'pangocairo-1.0'")
-                  (format #f "'~a/lib/libpangocairo-1.0.so'" pango)))
-               #t)))
-         (add-after 'unpack 'disable-linters
-           ;; Their check fails; none of our business.
-           (lambda _
-             (substitute* "setup.cfg"
-               ((".*pytest-flake8.*") "")
-               ((".*pytest-isort.*") "")
-               (("--flake8") "")
-               (("--isort") ""))
-             #t))
-         (add-before 'check 'register-dejavu-font
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; TODO: fix FreeType so that fonts found in XDG_DATA_DIRS are
-             ;; honored.
-             (let* ((HOME "/tmp")
-                    (dejavu (assoc-ref inputs "font-dejavu"))
-                    (fonts-dir (string-append HOME "/.fonts")))
-               (setenv "HOME" HOME)
-               (mkdir-p fonts-dir)
-               (symlink (string-append dejavu "/share/fonts/truetype")
-                        (string-append fonts-dir "/truetype"))
-               (invoke "fc-cache" "-rv")))))))
-    (inputs
-     `(("fontconfig" ,fontconfig)
-       ("glib" ,glib)
-       ("pango" ,pango)))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-library-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "weasyprint/text/ffi.py"
+                (("'gobject-2.0-0'")
+                 (format #f "~s"
+                         (search-input-file inputs "lib/libgobject-2.0.so")))
+                (("'pango-1.0-0'")
+                 (format #f "~s"
+                         (search-input-file inputs "lib/libpango-1.0.so")))
+                (("'harfbuzz'")
+                 (format #f "~s"
+                         (search-input-file inputs "lib/libharfbuzz.so")))
+                (("'fontconfig-1'")
+                 (format #f "~s"
+                         (search-input-file inputs "lib/libfontconfig.so")))
+                (("'pangoft2-1.0-0'")
+                 (format #f "~s"
+                         (search-input-file inputs
+                                            "lib/libpangoft2-1.0.so"))))))
+          ;; XXX: PEP 517 manual build copied from python-isort.
+          (replace 'build
+            (lambda _
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv" "-c" "/dev/null"
+                        "-n" (number->string (parallel-job-count))))))
+          (replace 'install
+            (lambda _
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl)))))))
+    (inputs (list fontconfig glib harfbuzz pango))
     (propagated-inputs
      (list gdk-pixbuf
            python-cairocffi
            python-cairosvg
            python-cffi
            python-cssselect2
+           python-fonttools-full
            python-html5lib
+           python-pillow
+           python-pydyf
            python-pyphen
            python-tinycss2))
     (native-inputs
-     (list font-dejavu ;tests depend on it
-           python-pytest-cov python-pytest-runner))
+     (list font-dejavu                  ;tests depend on it
+           ghostscript
+           python-flit-core
+           python-pypa-build
+           python-pytest
+           python-pytest-xdist))
     (home-page "https://weasyprint.org/")
     (synopsis "Document factory for creating PDF files from HTML")
     (description "WeasyPrint helps web developers to create PDF documents.  It

@@ -236,36 +236,35 @@ tmpfs/ramfs filesystems.")
 (define-public parted
   (package
     (name "parted")
-    (version "3.4")
+    (version "3.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/parted/parted-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0hjkv84x1bs2qqyx1fnzjqyyqrhv7kpdbq9bgydmi99d8wi80ag1"))))
+                "18h51i3x5cbqhlj5rm23m9sfw63gaaby5czln5w6qpqj3ifdsf29"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-locales-and-python
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "tests/t0251-gpt-unicode.sh"
-               (("C.UTF-8") "en_US.utf8")) ;not in Glibc locales
-             (substitute* "tests/msdos-overlap"
-               (("/usr/bin/python") (which "python")))
-             #t)))))
+     (list #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'fix-locales-and-python
+             (lambda _
+               (substitute* "tests/t0251-gpt-unicode.sh"
+                 (("C.UTF-8") "en_US.utf8")) ;not in Glibc locales
+               (substitute* "tests/msdos-overlap"
+                 (("/usr/bin/python") (which "python"))))))))
     (inputs
      (list lvm2 readline
            `(,util-linux "lib")))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
+     (list gettext-minimal
 
-       ;; For the tests.
-       ("e2fsprogs" ,e2fsprogs)
-       ("perl" ,perl)
-       ("python-wrapper" ,python-wrapper)
-       ("util-linux" ,util-linux)))
+           ;; For the tests.
+           e2fsprogs
+           perl
+           python-wrapper
+           util-linux))
     (home-page "https://www.gnu.org/software/parted/")
     (synopsis "Disk partition editor")
     (description

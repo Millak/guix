@@ -1179,7 +1179,36 @@ supports coverage of subprocesses.")
   (license license:expat)))
 
 (define-public python2-pytest-cov
-  (package-with-python2 python-pytest-cov))
+  (package
+    (name "python2-pytest-cov")
+    (version "2.8.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "pytest-cov" version))
+        (sha256
+         (base32 "0avzlk9p4nc44k7lpx9109dybq71xqnggxb9f4hp0l64pbc44ryc"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:python ,python-2
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'check
+          (lambda _
+            ;; Options taken from tox.ini.
+            ;; TODO: make "--restructuredtext" tests pass. They currently fail
+            ;; with "Duplicate implicit target name".
+            (invoke "python" "./setup.py" "check"
+                    "--strict" "--metadata"))))))
+    (propagated-inputs
+     (list python2-coverage python2-pytest))
+    (home-page "https://github.com/pytest-dev/pytest-cov")
+    (synopsis "Pytest plugin for measuring coverage")
+    (description
+     "Pytest-cov produces coverage reports.  It supports centralised testing and
+distributed testing in both @code{load} and @code{each} modes.  It also
+supports coverage of subprocesses.")
+  (license license:expat)))
 
 (define-public python-pytest-httpserver
   (package
@@ -1240,6 +1269,47 @@ system in a favourable state.  The plugin allows user to control the level of
 randomness they want to introduce and to disable reordering on subsets of
 tests.  Tests can be rerun in a specific order by passing a seed value
 reported in a previous test run.")
+    (license license:expat)))
+
+(define-public python-pytest-randomly
+  (package
+    (name "python-pytest-randomly")
+    (version "3.11.0")
+    (source (origin
+              (method git-fetch)        ;no tests in pypi archive
+              (uri (git-reference
+                    (url "https://github.com/pytest-dev/pytest-randomly")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1sjgq49g8f8973vhmzrim79b6wz29a765n99azjk1maimqh7mmik"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; The tests validating ordering fail, as well as as two
+                ;; others, for unknown reasons (see:
+                ;; https://github.com/pytest-dev/pytest-randomly/issues/454).
+                (invoke "pytest" "-vv" "-k"
+                        (string-append
+                         "not reordered "
+                         "and not test_it_runs_before_stepwise "
+                         "and not test_entrypoint_injection"))))))))
+    (native-inputs (list python-coverage
+                         python-factory-boy
+                         python-faker
+                         python-numpy
+                         python-pytest-xdist))
+    (propagated-inputs (list python-importlib-metadata python-pytest))
+    (home-page "https://github.com/pytest-dev/pytest-randomly")
+    (synopsis "Pytest plugin to randomly order tests")
+    (description "This is a Pytest plugin to randomly order tests and control
+Python's @code{random.seed}.")
     (license license:expat)))
 
 (define-public python-pytest-runner
@@ -1445,18 +1515,16 @@ result back.")
 (define-public python-pytest-xdist-next
   (package/inherit python-pytest-xdist
     (name "python-pytest-xdist")
-    (version "2.3.0")
+    (version "2.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-xdist" version))
        (sha256
         (base32
-         "19cy57jrf3pwi7x6fnbxryjvqagsl0yv736jnynvr3yqhlpxxv78"))))
-    (propagated-inputs
-     `(("python-execnet" ,python-execnet)
-       ("python-pytest" ,python-pytest-6)
-       ("python-pytest-forked" ,python-pytest-forked)))))
+         "1psf5dqxvc38qzxvc305mkg5xpdmdkbkkfiyqlmdnkgh7z5dx025"))))
+    (propagated-inputs (list python-execnet python-pytest
+                             python-pytest-forked-next))))
 
 (define-public python-pytest-timeout
   (package
@@ -1531,6 +1599,23 @@ each test in a subprocess and will report if a test crashed the process.  It
 can be useful to isolate tests against undesirable global environment
 side-effects (such as setting environment variables).")
     (license license:expat)))
+
+(define-public python-pytest-forked-next
+  (package
+    (inherit python-pytest-forked)
+    (name "python-pytest-forked")
+    (version "1.4.0")
+    (source
+     (origin
+       (method git-fetch)               ;for tests
+       (uri (git-reference
+             (url "https://github.com/pytest-dev/pytest-forked")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0j9bbjny7h3b4fig6l26f26c697r67mm62fzdd9m9rqyy2bmnqjs"))))
+    (native-inputs (list python-pytest-bootstrap python-setuptools-scm))))
 
 (define-public python-scripttest
   (package
@@ -2121,20 +2206,24 @@ instantly.")
 much larger range of examples than you would ever want to write by hand.  It’s
 based on the Haskell library, Quickcheck, and is designed to integrate
 seamlessly into your existing Python unit testing work flow.")
-    (home-page "https://github.com/HypothesisWorks/hypothesis-python")
+    (home-page "https://github.com/HypothesisWorks/hypothesis")
     (license license:mpl2.0)
     (properties `((python2-variant . ,(delay python2-hypothesis))))))
 
-(define-public python-hypothesis-6.23
+;;; TODO: Make the default python-hypothesis in the next rebuild cycle.
+(define-public python-hypothesis-next
   (package
     (inherit python-hypothesis)
-    (version "6.23.4")
+    (version "6.43.3")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "hypothesis" version))
               (sha256
                (base32
-                "0wp8i9qmd5wl1sq1l2b97fgliyk5fyphssl6j7q5qn5zjlfgi4qs"))))))
+                "0d67dlc5a47i48fxzmji2mnybzby0h1wdscmj54555fghcyp1045"))))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs python-hypothesis)
+       (append python-pytest)))))       ;to satisfy the sanity-check phase
 
 ;; This is the last version of Hypothesis that supports Python 2.
 (define-public python2-hypothesis
@@ -2200,6 +2289,114 @@ style test suites, summarizing their results, and providing indication of
 failures.")
     (license license:ncsa)))
 
+;;; This is marked as a bootstrap package because it propagates bootstrapped
+;;; versions of jaraco-context and jaraco-functools.
+(define-public python-pytest-enabler-bootstrap
+  (hidden-package
+   (package
+     (name "python-pytest-enabler-bootstrap")
+     (version "1.2.1")
+     (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "pytest-enabler" version))
+        (sha256
+         (base32 "023ymm0r2gpn5q7aikvx567s507j0zk46w41w6gxb69c688zgs73"))))
+     (build-system python-build-system)
+     (arguments (list #:tests? #f))
+     (propagated-inputs
+      (list python-jaraco-context-bootstrap
+            python-jaraco-functools-bootstrap
+            python-toml))
+     (native-inputs (list python-setuptools-scm))
+     (home-page "https://github.com/jaraco/pytest-enabler")
+     (synopsis "Enable installed pytest plugins")
+     (description "Enable installed pytest plugins")
+     (license license:expat))))
+
+(define-public python-pytest-enabler
+  (package/inherit python-pytest-enabler-bootstrap
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments python-pytest-enabler-bootstrap)
+       ((#:tests? _ #f)
+        #t)
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (invoke "python" "-m" "pytest" "-vv" "tests"))))))))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs python-pytest-enabler-bootstrap)
+       (replace "python-jaraco-context-bootstrap" python-jaraco-context)
+       (replace "python-jaraco-functools-bootstrap" python-jaraco-functools)))
+    (native-inputs
+     (modify-inputs (package-native-inputs python-pytest-enabler-bootstrap)
+       (append python-pytest
+               python-pytest-black
+               python-pytest-checkdocs
+               python-pytest-cov
+               python-pytest-flake8
+               python-pytest-mypy
+               python-types-toml)))
+    (properties (alist-delete 'hidden?
+                              (package-properties
+                               python-pytest-enabler-bootstrap)))))
+
+(define-public python-pytest-freezegun
+  (package
+    (name "python-pytest-freezegun")
+    (version "0.4.2")
+    (source (origin
+              ;; The test suite is not included in the PyPI archive.
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ktosiek/pytest-freezegun")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "10c4pbh03b4s1q8cjd75lr0fvyf9id0zmdk29566qqsmaz28npas"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv")))))))
+    (propagated-inputs (list python-freezegun python-pytest))
+    (native-inputs (list unzip))
+    (home-page "https://github.com/ktosiek/pytest-freezegun")
+    (synopsis "Pytest plugin to freeze time in test fixtures")
+    (description "The @code{pytest-freezegun} plugin wraps tests and fixtures
+with @code{freeze_time}, which allows to control (i.e., freeze) the time seen
+by the test.")
+    (license license:expat)))
+
+(define-public python-pytest-mypy
+  (package
+    (name "python-pytest-mypy")
+    (version "0.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-mypy" version))
+       (sha256
+        (base32 "0p5bd4r4gbwk1h7mpx1jkhdwkckapfz24bp9x5mmqb610ps3pylz"))))
+    (build-system python-build-system)
+    (native-inputs (list python-setuptools-scm))
+    (propagated-inputs
+     (list python-attrs python-filelock python-mypy python-pytest))
+    (home-page "https://github.com/dbader/pytest-mypy")
+    (synopsis "Mypy static type checker plugin for Pytest")
+    (description "@code{pytest-mypi} is a static type checker plugin for
+Pytest that runs the mypy static type checker on your source files as part of
+a Pytest test execution.")
+    (license license:expat)))
+
 (define-public python-pytest-pep8
   (package
     (name "python-pytest-pep8")
@@ -2235,6 +2432,64 @@ failures.")
 
 (define-public python2-pytest-pep8
   (package-with-python2 python-pytest-pep8))
+
+(define-public python-pytest-perf
+  (package
+    (name "python-pytest-perf")
+    (version "0.12.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jaraco/pytest-perf")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "05mgknvrmyz1kmkgw8jzvisavc68wz1g2wxv69i6xvzgqxf17m9f"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-k"
+                        (string-append
+                         ;; Do not test the myproject.toml build as it tries to pull
+                         ;; dependencies from the internet.
+                         "not project "
+                         ;; The benchmark test attempts to install the
+                         ;; package, failing to pull its dependencies from the
+                         ;; network.
+                         "and not BenchmarkRunner "
+                         ;; The upstream_url test requires networking.
+                         "and not upstream_url"))))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-black
+           python-pytest-checkdocs
+           python-pytest-cov
+           python-pytest-enabler
+           python-pytest-flake8
+           python-pytest-mypy))
+    (propagated-inputs
+     (list python-jaraco-context
+           python-jaraco-functools
+           python-more-itertools
+           python-packaging
+           python-pip-run
+           python-tempora))
+    (home-page "https://github.com/jaraco/pytest-perf")
+    (synopsis "Pytest plugin for performance testing")
+    (description "@code{pytest-perf} makes it easy to compare works by
+creating two installs, the control and the experiment, and measuring the
+performance of some Python code against each.  Under the hood, it uses the
+@command{pip-run} command to install from the upstream main
+branch (e.g. https://github.com/jaraco/pytest-perf) for the control and from
+@file{.} for the experiment.  It then runs each of the experiments against
+each of the environments.")
+    (license license:expat)))
 
 (define-public python-pytest-flakes
   (package
@@ -2328,9 +2583,10 @@ statements in the module it tests.")
                (delete-file "tests/primer/test_primer_external.py")
                (delete-file "tests/testutils/test_package_to_lint.py")
                (setenv "HOME" "/tmp")
-               (invoke "pytest" "-k" "test_functional")))))))
+               (invoke "pytest" "-k" "test_functional"
+                       "-n" (number->string (parallel-job-count)))))))))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-pytest-xdist))
     (propagated-inputs
      (list python-astroid
            python-isort
@@ -2711,7 +2967,35 @@ time by mocking the datetime module.")
     (license license:asl2.0)))
 
 (define-public python2-freezegun
-  (package-with-python2 python-freezegun))
+  (package
+    (name "python2-freezegun")
+    (version "0.3.14")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "freezegun" version))
+       (sha256
+        (base32 "0al75mk829j1izxi760b7yjnknjihyfhp2mvi5qiyrxb9cpxwqk2"))))
+    (build-system python-build-system)
+    (native-inputs
+     (list python2-mock python2-pytest))
+    (propagated-inputs
+     (list python2-six python2-dateutil))
+    (arguments
+     `(#:python ,python-2
+       #:phases
+       (modify-phases %standard-phases
+         ;; The tests are normally executed via `make test`, but the PyPi
+         ;; package does not include the Makefile.
+         (replace 'check
+           (lambda _
+             (invoke "pytest" "-vv"))))))
+    (home-page "https://github.com/spulec/freezegun")
+    (synopsis "Test utility for mocking the datetime module")
+    (description
+     "FreezeGun is a library that allows your python tests to travel through
+time by mocking the datetime module.")
+    (license license:asl2.0)))
 
 (define-public python-flexmock
   (package

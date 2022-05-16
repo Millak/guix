@@ -5248,20 +5248,18 @@ they're not available.")
        (uri (crate-uri "average" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1c97m8yagvq8r6qgd3harm5vnkdbld4mxg9byyxh6igjsf8wfgl4"))))
+        (base32 "1c97m8yagvq8r6qgd3harm5vnkdbld4mxg9byyxh6igjsf8wfgl4"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (substitute* "Cargo.toml"
+             ;; The resolver feature is not supported by our versions of Cargo.
+             (("resolver = \"2\".*") "")
+             ;; Relax version requirement for byteorder
+             (("=1.3") "^1.3"))))))
     (build-system cargo-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'configure 'patch-Cargo.toml
-           (lambda _
-             (substitute* '("guix-vendor/rust-average-0.13.1.tar.gz/Cargo.toml"
-                            "Cargo.toml")
-               ;; The resolver feature is not supported by this version of Cargo.
-               (("resolver = \"2\".*") "")
-               ;; Relax!
-               (("1.3") ,(package-version rust-byteorder-1))))))
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-easy-cast" ,rust-easy-cast-0.4)
         ("rust-float-ord" ,rust-float-ord-0.3)
         ("rust-num-traits" ,rust-num-traits-0.2)
@@ -25050,7 +25048,7 @@ dirty state into your program.")
      `(("pkg-config" ,pkg-config)
        ("git" ,git-minimal)))           ;for a single test
     (inputs
-     (list libgit2 libssh2 openssl zlib))
+     (list libgit2-1.3 libssh2 openssl zlib))
     (home-page "https://github.com/rust-lang/git2-rs")
     (synopsis "Rust bindings to libgit2")
     (description
@@ -35744,19 +35742,16 @@ quick compile time, and minimal dependencies.")
         (uri (crate-uri "nalgebra" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-          (base32 "01hxksmgg17c4k2rzjx1h8kkjbw9rm81dsancg459zh2zrcisva7"))))
+          (base32 "01hxksmgg17c4k2rzjx1h8kkjbw9rm81dsancg459zh2zrcisva7"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (substitute* "Cargo.toml"
+             ;; The resolver feature is not supported by our versions of Cargo.
+             (("resolver = \"2\".*") ""))))))
     (build-system cargo-build-system)
     (arguments
       `(#:skip-build? #t
-        #:phases
-        (modify-phases %standard-phases
-         (add-after 'configure 'patch-Cargo.toml
-           (lambda _
-             (substitute* '("Cargo.toml"
-                            "guix-vendor/rust-nalgebra-0.26.2.tar.gz/Cargo.toml"
-                            "guix-vendor/rust-average-0.13.1.tar.gz/Cargo.toml")
-               ;; The resolver feature is not supported by this version of Cargo.
-               (("resolver = \"2\".*") "")))))
         #:cargo-inputs
         (("rust-abomonation" ,rust-abomonation-0.7)
          ("rust-alga" ,rust-alga-0.9)
@@ -35920,20 +35915,16 @@ statically-sized or dynamically-sized matrices.")
        (uri (crate-uri "nalgebra-macros" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "063jvvvlwmzzxfr4wyiil2cn1yqj3arvghwsr2nk4ilv2jwc1z01"))))
+        (base32 "063jvvvlwmzzxfr4wyiil2cn1yqj3arvghwsr2nk4ilv2jwc1z01"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (substitute* "Cargo.toml"
+             ;; The resolver feature is not supported by our versions of Cargo.
+             (("resolver = \"2\".*") ""))))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'configure 'patch-Cargo.toml
-           (lambda _
-             (substitute* '("Cargo.toml"
-                            "guix-vendor/rust-nalgebra-macros-0.1.0.tar.gz/Cargo.toml"
-                            "guix-vendor/rust-nalgebra-0.26.2.tar.gz/Cargo.toml"
-                            "guix-vendor/rust-average-0.13.1.tar.gz/Cargo.toml")
-               ;; The resolver feature is not supported by this version of Cargo.
-               (("resolver = \"2\".*") "")))))
        #:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
@@ -40523,7 +40514,7 @@ unparking.")
         ("rust-parking-lot-core" ,rust-parking-lot-core-0.8))
        #:cargo-development-inputs
        (("rust-bincode" ,rust-bincode-1)
-        ("rust-rand" ,rust-rand-0.7))))
+        ("rust-rand" ,rust-rand-0.8))))
     (home-page "https://github.com/Amanieu/parking_lot")
     (synopsis
      "Efficient implementations of the standard synchronization primitives")
@@ -40646,7 +40637,14 @@ synchronization primitives.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "08n7w09q6b2prvazbzgwrc9ml7aaf8yg3132ifsayrkwy1nwwzs6"))))
+         "08n7w09q6b2prvazbzgwrc9ml7aaf8yg3132ifsayrkwy1nwwzs6"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; XXX: The file demands 0.3.60; we have 0.3.56, but
+           ;; that works well, really.
+           (substitute* "Cargo.toml"
+             (("0\\.3\\.60") "0.3.56"))))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -40658,15 +40656,7 @@ synchronization primitives.")
         ("rust-redox-syscall" ,rust-redox-syscall-0.2)
         ("rust-smallvec" ,rust-smallvec-1)
         ("rust-thread-id" ,rust-thread-id-4)
-        ("rust-winapi" ,rust-winapi-0.3))
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'relax-dependencies
-                    (lambda _
-                      ;; XXX: The file demands 0.3.60; we have 0.3.56, but
-                      ;; that works well, really.
-                      (substitute* "Cargo.toml"
-                        (("0\\.3\\.60")
-                         ,(package-version rust-backtrace-0.3))))))))
+        ("rust-winapi" ,rust-winapi-0.3))))
     (home-page "https://github.com/Amanieu/parking_lot")
     (synopsis "API for creating custom synchronization primitives")
     (description "This package provides an advanced API for creating custom
@@ -44646,11 +44636,17 @@ renamed in @file{Cargo.toml}.")
        (uri (crate-uri "proc-macro-error" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1373bhxaf0pagd8zkyd03kkx6bchzf6g0dkwrwzsnal9z47lj9fs"))))
+        (base32 "1373bhxaf0pagd8zkyd03kkx6bchzf6g0dkwrwzsnal9z47lj9fs"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; Ignore the "DO NOT BUMP" warning.
+           (substitute* "Cargo.toml"
+             (("=1.0.107") "^1.0.107")
+             (("=0.5.2") "^0.5.2"))))))
     (build-system cargo-build-system)
     (arguments
-     ;; Tests fail with "extern crate test_crate; <-- can't find crate" error.
-     `(#:tests? #f
+     `(#:tests? #f      ; 'test_crate' folder not included in release.
        #:cargo-inputs
        (("rust-proc-macro-error-attr" ,rust-proc-macro-error-attr-1)
         ("rust-proc-macro2" ,rust-proc-macro2-1)
@@ -44660,14 +44656,7 @@ renamed in @file{Cargo.toml}.")
        #:cargo-development-inputs
        (("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-toml" ,rust-toml-0.5)
-        ("rust-trybuild" ,rust-trybuild-1))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-version-requirements
-           (lambda _
-             (substitute* "Cargo.toml"
-               (("1.0.107") ,(package-version rust-serde-derive-1))
-               (("0.5.2") ,(package-version rust-toml-0.5))))))))
+        ("rust-trybuild" ,rust-trybuild-1))))
     (home-page "https://gitlab.com/CreepySkeleton/proc-macro-error")
     (synopsis "Drop-in replacement to panics in proc-macros")
     (description
@@ -45755,7 +45744,7 @@ ecosystem.")
         ;; version of RUST-CRITERION-0.3.
         '(substitute* "Cargo.toml"
            (("\"=0\\.3\\.4\"")
-            "\"=0.3.5\"")))))
+            "\"^0.3.4\"")))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -46954,18 +46943,16 @@ tools for implementation.")
        (uri (crate-uri "rand_distr" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0brd2946xfapm2bmhmczfbwck041x7khsfhqxw1f24kxis7m8kcn"))))
+        (base32 "0brd2946xfapm2bmhmczfbwck041x7khsfhqxw1f24kxis7m8kcn"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (substitute* "Cargo.toml"
+             ;; The resolver feature is not supported by our versions of Cargo.
+             (("resolver = \"2\".*") ""))))))
     (build-system cargo-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'configure 'patch-Cargo.toml
-           (lambda _
-             (substitute* '("Cargo.toml"
-                            "guix-vendor/rust-average-0.13.1.tar.gz/Cargo.toml")
-               ;; The resolver feature is not supported by this version of Cargo.
-               (("resolver = \"2\".*") "")))))
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-average" ,rust-average-0.13)
         ("rust-num-traits" ,rust-num-traits-0.2)
         ("rust-rand" ,rust-rand-0.8)
@@ -58243,15 +58230,6 @@ map.")
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'configure 'patch-Cargo.toml
-           (lambda _
-             (substitute* '("Cargo.toml"
-                            "guix-vendor/rust-average-0.13.1.tar.gz/Cargo.toml"
-                            "guix-vendor/rust-nalgebra-0.26.2.tar.gz/Cargo.toml")
-               ;; The resolver feature is not supported by this version of Cargo.
-               (("resolver = \"2\".*") "")))))
        #:cargo-inputs
        (("rust-approx" ,rust-approx-0.4)
         ("rust-lazy-static" ,rust-lazy-static-1)
@@ -62385,13 +62363,13 @@ handle Unicode characters correctly.")
         (uri (crate-uri "thread-id" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-          (base32 "0zvikdngp0950hi0jgiipr8l36rskk1wk7pc8cd43xr3g5if1psz"))))
+         (base32 "0zvikdngp0950hi0jgiipr8l36rskk1wk7pc8cd43xr3g5if1psz"))))
     (build-system cargo-build-system)
     (arguments
-      `(#:cargo-inputs
-        (("rust-libc" ,rust-libc-0.2)
-         ("rust-redox-syscall" ,rust-redox-syscall-0.2)
-         ("rust-winapi" ,rust-winapi-0.3))))
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-redox-syscall" ,rust-redox-syscall-0.2)
+        ("rust-winapi" ,rust-winapi-0.3))))
     (home-page "https://github.com/ruuda/thread-id")
     (synopsis "Get a unique ID for the current thread in Rust")
     (description

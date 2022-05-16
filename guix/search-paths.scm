@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2014, 2015, 2017, 2018 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,6 +33,8 @@
             search-path-specification-file-pattern
 
             $PATH
+            $SSL_CERT_DIR
+            $SSL_CERT_FILE
 
             search-path-specification->sexp
             sexp->search-path-specification
@@ -69,6 +72,29 @@
   (search-path-specification
    (variable "PATH")
    (files '("bin" "sbin"))))
+
+;; Two variables for certificates (see (guix)X.509 Certificates),
+;; respected by 'openssl', possibly GnuTLS in the future
+;; (https://gitlab.com/gnutls/gnutls/-/merge_requests/1541)
+;; and many of their dependents -- even some GnuTLS depepdents
+;; like Guile.  As they are not tied to a single package, define
+;; them here to avoid duplication.
+;;
+;; Additionally, the 'native-search-paths' field is not thunked,
+;; so doing (package-native-search-paths openssl)
+;; could cause import cycle issues.
+(define-public $SSL_CERT_DIR
+  (search-path-specification
+   (variable "SSL_CERT_DIR")
+   (separator #f)              ;single entry
+   (files '("etc/ssl/certs"))))
+
+(define-public $SSL_CERT_FILE
+  (search-path-specification
+   (variable "SSL_CERT_FILE")
+   (file-type 'regular)
+   (separator #f)              ;single entry
+   (files '("etc/ssl/certs/ca-certificates.crt"))))
 
 (define (search-path-specification->sexp spec)
   "Return an sexp representing SPEC, a <search-path-specification>.  The sexp

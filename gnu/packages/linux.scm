@@ -362,17 +362,17 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The current "stable" kernels. That is, the most recently released major
 ;; versions that are still supported upstream.
 
-(define-public linux-libre-5.17-version "5.17.5")
+(define-public linux-libre-5.17-version "5.17.7")
 (define-public linux-libre-5.17-gnu-revision "gnu")
 (define deblob-scripts-5.17
   (linux-libre-deblob-scripts
    linux-libre-5.17-version
    linux-libre-5.17-gnu-revision
    (base32 "08ip5g827f30qzb3j2l19zkbdqv00sij46nbrjg75h5kkasdbfgr")
-   (base32 "0h9zm17lb5g93yp8rdzbhznrd5jbrl2k096c28wz6ic6gpz0wrvh")))
+   (base32 "1zd4ds6ha4a2acqnalp234r2m9rz9p30qmy1aqri78i06aw7flwn")))
 (define-public linux-libre-5.17-pristine-source
   (let ((version linux-libre-5.17-version)
-        (hash (base32 "11z95wsgmj97pg77yck26l0383gncbla0zwpzv4gjdj4p62x3g4v")))
+        (hash (base32 "16ccf7n6fns9z93c65lchn5v3fgl9c5vkr1v6p0c1xifn7v7xxi2")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.17)))
@@ -380,92 +380,92 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The "longterm" kernels — the older releases with long-term upstream support.
 ;; Here are the support timelines:
 ;; <https://www.kernel.org/category/releases.html>
-(define-public linux-libre-5.15-version "5.15.37")
+(define-public linux-libre-5.15-version "5.15.39")
 (define-public linux-libre-5.15-gnu-revision "gnu")
 (define deblob-scripts-5.15
   (linux-libre-deblob-scripts
    linux-libre-5.15-version
    linux-libre-5.15-gnu-revision
    (base32 "1n57mz5agvf1d0ggbg080d7hvx8p9y0iqxkq4ypg10a7n96zy7y5")
-   (base32 "1s2s1sjdhblaz80shq1jgp4kp9vi7j1bsh4vvsk28s5m6xwf6yvl")))
+   (base32 "0gs92qbpvirwd02rpwwnja7771z2azbiy9ppy9ynpr14lxmzxnnh")))
 (define-public linux-libre-5.15-pristine-source
   (let ((version linux-libre-5.15-version)
-        (hash (base32 "09n0l9ly111r6jbpgz1kw2q4n4mmcv5jxfhs5bcsiyjp44d0kgqq")))
+        (hash (base32 "1bfpiyccjggysd04flaana0x69n1lcpckzpw1v6kh3ly9xil31l8")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.15)))
 
-(define-public linux-libre-5.10-version "5.10.113")
+(define-public linux-libre-5.10-version "5.10.115")
 (define-public linux-libre-5.10-gnu-revision "gnu1")
 (define deblob-scripts-5.10
   (linux-libre-deblob-scripts
    linux-libre-5.10-version
    linux-libre-5.10-gnu-revision
    (base32 "0mw7qn77y9c6wrnw4rjvf75cpm1w6n1aqqhf8cnghcb97p2yxxrf")
-   (base32 "0wx0y9fbgfbmhdb8v4ki2hq58m0w6gp66wq944sr5x0sv6m4bgf3")))
+   (base32 "1xyhz0dyrkg2avz382ly3dzpa5v89x49gfzx80c1drpwsk7jg6gp")))
 (define-public linux-libre-5.10-pristine-source
   (let ((version linux-libre-5.10-version)
-        (hash (base32 "1z3dd5hrdbn2axsi2n70n41q1dq2dvg7s8aph1p6yiajpc16llc2")))
+        (hash (base32 "0w9gwizyqjgsj93dqqvlh6bqkmpzjajhj09319nqncc95yrigr7m")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.10)))
 
-(define-public linux-libre-5.4-version "5.4.191")
+(define-public linux-libre-5.4-version "5.4.193")
 (define-public linux-libre-5.4-gnu-revision "gnu1")
 (define deblob-scripts-5.4
   (linux-libre-deblob-scripts
    linux-libre-5.4-version
    linux-libre-5.4-gnu-revision
    (base32 "1nlgk8ajb5wl3aa96h9a0pb9j5a5wmrbpk63varn557x1d00r7wj")
-   (base32 "1mp9d0b7mqw7cl65k0a18265cvn4qwcpnvna8r6n5m3y4pz3rik9")))
+   (base32 "05i286d98fm2pdf9724x1dsmfcm7gsd7yyyvxqlpisyj1kx14hda")))
 (define-public linux-libre-5.4-pristine-source
   (let ((version linux-libre-5.4-version)
-        (hash (base32 "0fharjqasvq76pciwci6qamdadpfjh2n8gdyri8fj65drmgsi318")))
+        (hash (base32 "187jfk9hf52n5z9yv56vq1knp3kdcbyk5w5k98ziwcbdjm1x65hd")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.4)))
 
-(define-public linux-libre-4.19-version "4.19.241")
+(define-public linux-libre-4.19-version "4.19.242")
 (define-public linux-libre-4.19-gnu-revision "gnu1")
 (define deblob-scripts-4.19
   (linux-libre-deblob-scripts
    linux-libre-4.19-version
    linux-libre-4.19-gnu-revision
    (base32 "06pqv050bkii0hc2v7ymny5264w1bca8db0dp1pw9mfmjg865am5")
-   (base32 "1mp9d0b7mqw7cl65k0a18265cvn4qwcpnvna8r6n5m3y4pz3rik9")))
+   (base32 "1dnjgx1nmawm9gm0yf15nl80nmg7hy7q2vl3jxjbwj6hlrfv5dmx")))
 (define-public linux-libre-4.19-pristine-source
   (let ((version linux-libre-4.19-version)
-        (hash (base32 "04zyi22c2d91k7v2w0s8v112cqqf24km599mn18k2nafq79njqjc")))
+        (hash (base32 "18k5fbzclk7g657bs8idwqjk7hakzx6256b1a3506sy29q4zvg2r")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.19)))
 
-(define-public linux-libre-4.14-version "4.14.277")
+(define-public linux-libre-4.14-version "4.14.278")
 (define-public linux-libre-4.14-gnu-revision "gnu1")
 (define deblob-scripts-4.14
   (linux-libre-deblob-scripts
    linux-libre-4.14-version
    linux-libre-4.14-gnu-revision
    (base32 "02rxvr0gmxb3zfsyyzdmzgfq04gkdkv1cc38md0xfl0mxzdzdfyk")
-   (base32 "1mp9d0b7mqw7cl65k0a18265cvn4qwcpnvna8r6n5m3y4pz3rik9")))
+   (base32 "1dnjgx1nmawm9gm0yf15nl80nmg7hy7q2vl3jxjbwj6hlrfv5dmx")))
 (define-public linux-libre-4.14-pristine-source
   (let ((version linux-libre-4.14-version)
-        (hash (base32 "058vzn1gcsc194hgwrj78afawz2anm7ga8a1x5m5i4cw8p1arp73")))
+        (hash (base32 "1glb6z3nicd2lzhvwcqj54642agk0bbg022wnc3ckld5ngpd9miw")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.14)))
 
-(define-public linux-libre-4.9-version "4.9.312")
+(define-public linux-libre-4.9-version "4.9.313")
 (define-public linux-libre-4.9-gnu-revision "gnu1")
 (define deblob-scripts-4.9
   (linux-libre-deblob-scripts
    linux-libre-4.9-version
    linux-libre-4.9-gnu-revision
    (base32 "0nai5m4rbh37qaj1xf2qj7656l2gacfh0847q5d07y22b048fq5n")
-   (base32 "0wdaj40pcq9wg5xnz2zj3jj8bawhfgqxcwp6dnavbf9lq0gca48p")))
+   (base32 "14jyn2yrbm6ayp0bszs4f9jy3p1qkrj5p5gf5c42spr67aa2lv2v")))
 (define-public linux-libre-4.9-pristine-source
   (let ((version linux-libre-4.9-version)
-        (hash (base32 "09y6wl4j3y46fza6kmssibmxspxx0i44fqrhc2cyvrm2bgxv2bzs")))
+        (hash (base32 "1p3vr1h01ph6x0pxrr6y6k5c4nrhvq650dfngv5mkrgsc5w7ffz0")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.9)))
@@ -6759,7 +6759,7 @@ under OpenGL graphics workloads.")
        #:make-flags
        #~(list (string-append "prefix=" #$output)
                (string-append "libdir=" #$output "/lib")
-               (string-append "CC_FOR_BUILD=" #$(cc-for-target))
+               (string-append "CC=" #$(cc-for-target))
                (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib"))
        #:phases
        #~(modify-phases %standard-phases
@@ -6788,7 +6788,7 @@ interface to the variable facility of UEFI boot firmware.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/rhinstaller/efibootmgr")
+             (url "https://github.com/rhboot/efibootmgr")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
@@ -6806,20 +6806,28 @@ interface to the variable facility of UEFI boot firmware.")
     (arguments
      (list
       #:tests? #f                       ;no tests
-      #:make-flags #~(list (string-append "prefix=" #$output)
-                           (string-append "libdir=" #$output "/lib")
-                           ;; EFIDIR denotes a subdirectory relative to the
-                           ;; EFI System Partition where the loader will be
-                           ;; installed (known as OS_VENDOR in the code).
-                           ;; GRUB overrides this, as such it's only used if
-                           ;; nothing else is specified on the command line.
-                           "EFIDIR=gnu")
+      #:make-flags
+      #~(append (list (string-append "prefix=" #$output)
+                      (string-append "libdir=" #$output "/lib")
+                      ;; EFIDIR denotes a subdirectory relative to the
+                      ;; EFI System Partition where the loader will be
+                      ;; installed (known as OS_VENDOR in the code).
+                      ;; GRUB overrides this, as such it's only used if
+                      ;; nothing else is specified on the command line.
+                      "EFIDIR=gnu")
+                #$(if (%current-target-system)
+                    #~(list
+                        (string-append "CC=" #$(cc-for-target))
+                        (string-append "PKG_CONFIG=" #$(pkg-config-for-target))
+                        (string-append "EXTRAINCDIRS="
+                                       #$(this-package-input "efivar") "/include"))
+                    #~'()))
       #:phases #~(modify-phases %standard-phases (delete 'configure))))
     (native-inputs
      (list pkg-config))
     (inputs
      (list efivar popt))
-    (home-page "https://github.com/rhinstaller/efibootmgr")
+    (home-page "https://github.com/rhboot/efibootmgr")
     (synopsis "Modify the Extensible Firmware Interface (EFI) boot manager")
     (description
      "@code{efibootmgr} is a user-space application to modify the Intel

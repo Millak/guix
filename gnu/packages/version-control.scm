@@ -33,7 +33,7 @@
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2021 Léo Le Bouter <lle-bout@zaclys.net>
 ;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
@@ -44,6 +44,7 @@
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
+;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -789,7 +790,7 @@ to GitHub contributions calendar.")
 (define-public libgit2
   (package
     (name "libgit2")
-    (version "1.3.0")
+    (version "1.4.3")
     (source (origin
               ;; Since v1.1.1, release artifacts are no longer offered (see:
               ;; https://github.com/libgit2/libgit2/discussions/5932#discussioncomment-1682729).
@@ -800,18 +801,18 @@ to GitHub contributions calendar.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0vgpb2175a5dhqiy1iwywwppahgqhi340i8bsvafjpvkw284vazd"))
+                "02x1a4zrzpzjd0yxnsi8njh5hgihc1iy1v4r0fnl8m4ckcgp6x2s"))
               (modules '((guix build utils)))
               (snippet
                '(begin
                   (delete-file-recursively "deps")
 
                   ;; The "refs:revparse::date" test is time-dependent: it
-                  ;; assumes "HEAD@{10 years ago}" doesn't match anything,
-                  ;; which is no longer true.  Adjust that test.
+                  ;; assumes "HEAD@{10 years ago}" matches a specific commit.
+                  ;; See <https://github.com/libgit2/libgit2/pull/6299>.
                   (substitute* "tests/refs/revparse.c"
-                    (("10 years ago")
-                     "100 years ago"))))))
+                    (("test_object.*10 years ago.*" all)
+                     (string-append "// " all "\n")))))))
     (build-system cmake-build-system)
     (outputs '("out" "debug"))
     (arguments
@@ -819,6 +820,7 @@ to GitHub contributions calendar.")
        (list "-DUSE_NTLMCLIENT=OFF" ;TODO: package this
              "-DREGEX_BACKEND=pcre2"
              "-DUSE_HTTP_PARSER=system"
+             "-DUSE_SSH=ON" ; cmake fails to find libssh if this is missing
              ,@(if (%current-target-system)
                    `((string-append
                       "-DPKG_CONFIG_EXECUTABLE="
@@ -829,18 +831,11 @@ to GitHub contributions calendar.")
                    '()))
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'fix-hardcoded-paths
-           (lambda _
-             (substitute* "tests/repo/init.c"
-               (("#!/bin/sh") (string-append "#!" (which "sh"))))
-             (substitute* "tests/clar/fs.h"
-               (("/bin/cp") (which "cp"))
-               (("/bin/rm") (which "rm")))))
          ;; Run checks more verbosely, unless we are cross-compiling.
          (replace 'check
            (lambda* (#:key (tests? #t) #:allow-other-keys)
              (if tests?
-                 (invoke "./libgit2_clar" "-v" "-Q")
+                 (invoke "./libgit2_tests" "-v" "-Q")
                  ;; Tests may be disabled if cross-compiling.
                  (format #t "Test suite not run.~%")))))))
     (inputs
@@ -859,12 +854,39 @@ write native speed custom Git applications in any language with bindings.")
     ;; GPLv2 with linking exception
     (license license:gpl2)))
 
-(define-public libgit2-1.1
+(define-public libgit2-1.3
   (package
     (inherit libgit2)
-    (name "libgit2")
+    (version "1.3.0")
+    (source (origin
+              (inherit (package-source libgit2))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/libgit2/libgit2")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name "libgit2" version))
+              (sha256
+               (base32
+                "0vgpb2175a5dhqiy1iwywwppahgqhi340i8bsvafjpvkw284vazd"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments libgit2)
+       ((#:phases _ '%standard-phases)
+        `(modify-phases %standard-phases
+           ;; Run checks more verbosely, unless we are cross-compiling.
+           (replace 'check
+             (lambda* (#:key (tests? #t) #:allow-other-keys)
+               (if tests?
+                   (invoke "./libgit2_clar" "-v" "-Q")
+                   ;; Tests may be disabled if cross-compiling.
+                   (format #t "Test suite not run.~%"))))))))))
+
+(define-public libgit2-1.1
+  (package
+    (inherit libgit2-1.3)
     (version "1.1.0")
     (source (origin
+              (inherit (package-source libgit2-1.3))
+              (file-name #f)                      ;use the default name
               (method url-fetch)
               (uri (string-append "https://github.com/libgit2/libgit2/"
                                   "releases/download/v" version
@@ -872,17 +894,7 @@ write native speed custom Git applications in any language with bindings.")
               (sha256
                (base32
                 "1fjdglkh04qv3b4alg621pxa689i0wlf8m7nf2755zawjr2zhwxd"))
-              (patches (search-patches "libgit2-mtime-0.patch"))
-              (snippet '(begin
-                          (delete-file-recursively "deps")
-
-                          ;; The "refs:revparse::date" test is time-dependent: it
-                          ;; assumes "HEAD@{10 years ago}" doesn't match anything,
-                          ;; which is no longer true.  Adjust that test.
-                          (substitute* "tests/refs/revparse.c"
-                            (("10 years ago")
-                             "100 years ago"))))
-              (modules '((guix build utils)))))))
+              (patches (search-patches "libgit2-mtime-0.patch"))))))
 
 (define-public git-crypt
   (package
@@ -1127,7 +1139,7 @@ repository")
 (define-public python-ghp-import
   (package
     (name "python-ghp-import")
-    (version "0.5.5")
+    (version "2.0.2")
     (source
      (origin
        (method git-fetch)
@@ -1136,7 +1148,7 @@ repository")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12pmw3zz3i57ljnm0rxdyjqdyhisbvy18mjwkb3bzp5pgzs2f45c"))))
+        (base32 "0i4lxsgqri1y8sw4k44bkwbzmdmk4vpmdi882mw148j8gk4i7vvj"))))
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -1147,6 +1159,7 @@ repository")
                              (licenses (string-append out "/share/licenses")))
                         (install-file "README.md" doc)
                         (install-file "LICENSE" licenses)))))))
+    (propagated-inputs (list python-dateutil))
     (home-page "https://github.com/davisp/ghp-import")
     (synopsis "Copy directory to the gh-pages branch")
     (description "Script that copies a directory to the gh-pages branch (by
@@ -1156,10 +1169,6 @@ default) of the repository.")
     (license (license:non-copyleft
               "https://raw.githubusercontent.com/davisp/ghp-import/master/LICENSE"
               "Tumbolia Public License"))))
-
-(define-public python2-ghp-import
-  (package-with-python2
-   (strip-python2-variant python-ghp-import)))
 
 (define-public python-gitdb
   (package

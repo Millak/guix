@@ -11,7 +11,7 @@
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2019, 2020 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2015 John Soo <jsoo1@asu.edu>
-;;; Copyright © 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019, 2020 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2020 Alexandru-Sergiu Marton <brown121407@member.fsf.org>
 ;;; Copyright © 2020 Brian Leung <bkleung89@gmail.com>
@@ -404,12 +404,16 @@ to @code{cabal repl}).")
     (inputs
      (list curl
            ghc-aeson
+           ghc-ansi-terminal
            ghc-async
+           ghc-attoparsec
            ghc-aws
            ghc-bloomfilter
            ghc-byteable
            ghc-case-insensitive
            ghc-concurrent-output
+           ghc-conduit
+           ghc-connection
            ghc-crypto-api
            ghc-cryptonite
            ghc-data-default
@@ -417,26 +421,28 @@ to @code{cabal repl}).")
            ghc-disk-free-space
            ghc-dlist
            ghc-edit-distance
-           ghc-esqueleto
            ghc-exceptions
            ghc-feed
            ghc-filepath-bytestring
            ghc-free
            ghc-hinotify
-           ghc-hslogger
            ghc-http-client
+           ghc-http-client-tls
            ghc-http-client-restricted
            ghc-http-conduit
            ghc-http-types
            ghc-ifelse
            ghc-magic
            ghc-memory
+           ghc-microlens
            ghc-monad-control
            ghc-monad-logger
            ghc-mountpoints
            ghc-network
+           ghc-network-bsd
            ghc-network-info
            ghc-network-multicast
+           ghc-network-uri
            ghc-old-locale
            ghc-optparse-applicative
            ghc-persistent
@@ -454,10 +460,13 @@ to @code{cabal repl}).")
            ghc-stm-chans
            ghc-tagsoup
            ghc-torrent
+           ghc-transformers
            ghc-unix-compat
+           ghc-unliftio-core
            ghc-unordered-containers
            ghc-utf8-string
            ghc-uuid
+           ghc-vector
            git
            rsync))
     (native-inputs

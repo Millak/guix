@@ -23,7 +23,7 @@
 ;;; Copyright © 2017 Jelle Licht <jlicht@fsfe.org>
 ;;; Copyright © 2017 Adriano Peluso <catonano@gmail.com>
 ;;; Copyright © 2017, 2021 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017, 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2017, 2018 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2017 Rutger Helling <rhelling@mykolab.com>
@@ -517,14 +517,14 @@ mapping from string keys to string values.")
 (define-public memcached
   (package
     (name "memcached")
-    (version "1.6.13")
+    (version "1.6.15")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "https://memcached.org/files/memcached-" version ".tar.gz"))
        (sha256
-        (base32 "1m5mhw9ybb8qcyi6hb5kwpqanqmlnz27r54ccabc4y7nhpfvl6mx"))))
+        (base32 "05fmds73hr71bha9gszjfp02lgyacqfyyhkgl6xysy4kchyvwyld"))))
     (build-system gnu-build-system)
     (inputs
      (list libevent cyrus-sasl))
@@ -1545,30 +1545,33 @@ organized in a hash table or B+ tree.")
 (define-public recutils
   (package
     (name "recutils")
-    (version "1.8")
+    (version "1.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/recutils/recutils-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "14xiln4immfsw8isnvwvq0h23f6z0wilpgsc4qzabnrzb5lsx3nz"))))
+                "03kf91f20brn2ffljfjzirxh5xj99m1mvvspcx2lph9000mmj0b3"))))
     (build-system gnu-build-system)
-
-    (arguments '(#:configure-flags
-                 (list (string-append "--with-bash-headers="
-                                      (assoc-ref %build-inputs "bash:include")
-                                      "/include/bash"))))
-
-    (native-inputs `(("bc" ,bc)
-                     ("bash:include" ,bash "include")
-                     ("check" ,check-0.14)
-                     ("pkg-config" ,pkg-config)))
-
-    ;; TODO: Add more optional inputs.
-    (inputs `(("curl" ,curl)
-              ("libgcrypt" ,libgcrypt)
-              ("libuuid" ,util-linux "lib")))
+    (arguments
+     (list #:configure-flags
+           '(list "--disable-static"
+                  (string-append "--with-bash-headers="
+                                 (dirname (search-input-directory
+                                           %build-inputs
+                                           "include/bash"))))))
+    (native-inputs
+     ;; XXX Without labels, the default 'configure phase picks the wrong "bash".
+     `(("bc" ,bc)
+       ("bash:include" ,bash "include")
+       ("check" ,check-0.14)
+       ("pkg-config" ,pkg-config)))
+    (inputs
+     ;; TODO: Add more optional inputs.
+     (list curl
+           libgcrypt
+           `(,util-linux "lib")))
     (synopsis "Manipulate plain text files as databases")
     (description
      "GNU Recutils is a set of tools and libraries for creating and
@@ -3209,41 +3212,6 @@ Memory-Mapped Database} (LMDB), a high-performance key-value store.")
            ;; but not actually needed on platforms currently supported by Guix.
            license:bsd-3))))
 
-(define-public python-orator
-  (package
-    (name "python-orator")
-    (version "0.9.9")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "orator" version))
-              (sha256
-               (base32
-                "0mbgybz63ryhr9p1f4glnls5c57jp6il3dw0kf97f3pj80687rvg"))))
-    (build-system python-build-system)
-    ;; FIXME: Tests are not distributed with PyPI, and the repository
-    ;; does not contain setup.py.  How to test?
-    (arguments '(#:tests? #f))
-    (propagated-inputs
-     (list python-backpack
-           python-blinker
-           python-cleo
-           python-faker
-           python-inflection
-           python-lazy-object-proxy
-           python-pendulum
-           python-pyaml
-           python-pygments
-           python-pyyaml
-           python-simplejson
-           python-six
-           python-wrapt))
-    (home-page "https://orator-orm.com/")
-    (synopsis "ActiveRecord ORM for Python")
-    (description
-     "Orator provides a simple ActiveRecord-like Object Relational Mapping
-implementation for Python.")
-    (license license:expat)))
-
 (define-public virtuoso-ose
   (package
     (name "virtuoso-ose")
@@ -3340,26 +3308,31 @@ Database API 2.0T.")
 (define-public python-sqlalchemy
   (package
     (name "python-sqlalchemy")
-    (version "1.4.31")
+    (version "1.4.35")
     (source
      (origin
       (method url-fetch)
       (uri (pypi-uri "SQLAlchemy" version))
       (sha256
-       (base32 "06448s883bb8fgca33bn0pfaj15la0g4cax2mmx482kqwp8mjasq"))))
+       (base32 "1ddab00d5mpzg25r1qxccma2zb551hhmymsy1ycp6r6w04xq3z1g"))))
     (build-system python-build-system)
     (native-inputs
      (list python-cython ; for C extensions
-           python-pytest python-mock)) ; for tests
+           python-pytest python-mock python-pytest-xdist)) ; for tests
     (propagated-inputs
      (list python-greenlet))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "py.test")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv"
+                        "-n" (number->string (parallel-job-count))
+                        ;; The memory usage tests are very expensive and run in
+                        ;; sequence; skip them.
+                        "-k" "not test_memusage.py")))))))
     (home-page "https://www.sqlalchemy.org")
     (synopsis "Database abstraction library")
     (description
@@ -3371,7 +3344,28 @@ simple and Pythonic domain language.")
     (license license:x11)))
 
 (define-public python2-sqlalchemy
-  (package-with-python2 python-sqlalchemy))
+  (let ((base (package-with-python2 python-sqlalchemy)))
+    (package
+      (inherit base)
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (replace 'check
+                (lambda* (#:key tests? #:allow-other-keys)
+                  (when tests?
+                    (invoke "pytest" "-vv"
+                            ;; The memory usage tests are very expensive and run in
+                            ;; sequence; skip them.
+                            "-k"
+                            (string-append
+                             "not test_memusage.py"
+                             ;; This test fails with "AssertionError: Warnings
+                             ;; were not seen [...]".
+                             " and not test_fixture_five")))))))))
+      ;; Do not use pytest-xdist, which is broken for Python 2.
+      (native-inputs (modify-inputs (package-native-inputs base)
+                       (delete "python-pytest-xdist"))))))
 
 (define-public python-sqlalchemy-stubs
   (package
@@ -3925,23 +3919,58 @@ parsing code in hiredis.  It primarily speeds up parsing of multi bulk replies."
 (define-public python2-hiredis
   (package-with-python2 python-hiredis))
 
+(define-public python-aioredis
+  (package
+    (name "python-aioredis")
+    (version "2.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "aioredis" version))
+       (sha256
+        (base32 "13nrkk45az6qdiwfpbw80ls6bfip0i27qlkh9gsp2b9zk6pim9ga"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-before 'check 'start-redis
+                          (lambda _
+                            (invoke "redis-server" "--daemonize" "yes")))
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "pytest" "-vv")))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-asyncio
+           python-uvloop
+           redis))
+    (propagated-inputs
+     (list python-async-timeout
+           python-hiredis
+           python-typing-extensions))
+    (home-page "https://github.com/aio-libs/aioredis-py")
+    (synopsis "Redis support for Python's @code{asyncio} module")
+    (description "This package provides Redis support for the Python
+@code{asyncio} (PEP 3156) module.")
+    (license license:expat)))
+
 (define-public python-fakeredis
   (package
     (name "python-fakeredis")
-    (version "1.7.0")
+    (version "1.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "fakeredis" version))
        (sha256
         (base32
-         "0wacd3f558vzsrpdvgvdwy9pp6crxf8hxblz30zbsv1k63j15gf9"))))
+         "1v68my2v7fg44zwky3k5d52nn1bi0szpgdslghrpa2ifnjhlnb3w"))))
     (build-system python-build-system)
     (arguments
      ;; no tests
      `(#:tests? #f))
     (propagated-inputs
-     (list python-packaging python-redis python-sortedcontainers))
+     (list python-aioredis python-packaging python-redis python-sortedcontainers))
     (home-page "https://github.com/jamesls/fakeredis")
     (synopsis "Fake implementation of redis API for testing purposes")
     (description

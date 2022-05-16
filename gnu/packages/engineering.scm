@@ -32,6 +32,7 @@
 ;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
 ;;; Copyright © 2022 Malte Frank Gerdes <malte.f.gerdes@gmail.com>
 ;;; Copyright © 2022 Konstantinos Agiannis <agiannis.kon@gmail.com>
+;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2803,13 +2804,13 @@ GUI.")
 (define-public poke
   (package
     (name "poke")
-    (version "2.1")
+    (version "2.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/poke/poke-" version
                                   ".tar.gz"))
               (sha256
-               (base32 "0w168jcjahl3jawkhnh0dc10mcw4nwv4yawwc8xhqm5w3dn8wlnd"))
+               (base32 "0rn7ph7fvbwasf7jhai122sniqjkw81p0kvbxjlv6z6s2q8wz41n"))
               (modules '((guix build utils)))
               (snippet
                '(begin

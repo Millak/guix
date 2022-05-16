@@ -14,7 +14,7 @@
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2016 Toni Reina <areina@riseup.net>
-;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 José Miguel Sánchez García <jmi2k@openmailbox.com>
 ;;; Copyright © 2017 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
@@ -47,6 +47,7 @@
 ;;; Copyright © 2022 Kitzman <kitzman@disroot.org>
 ;;; Copyright © 2021 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -69,11 +70,13 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system font)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system trivial)
+  #:use-module (gnu packages c)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
@@ -264,6 +267,29 @@ sans-serif designed for on-screen reading.  It is used by GNOME@tie{}3.")
      "Lato is a sanserif typeface family.  It covers over 3000 glyphs per style.
 The Lato 2.010 family supports more than 100 Latin-based languages, over
 50 Cyrillic-based languages as well as Greek and IPA phonetics.")
+    (license license:silofl1.1)))
+
+(define-public font-gfs-ambrosia
+  ;; Based on
+  ;; https://src.fedoraproject.org/rpms/gfs-ambrosia-fonts
+  ;; /blob/rawhide/f/gfs-ambrosia-fonts.spec.
+  (package
+    (name "font-gfs-ambrosia")
+    (version "20080624")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://www.greekfontsociety-gfs.gr/"
+                           "_assets/fonts/GFS_Ambrosia.zip"))
+       (sha256
+        (base32
+         "0vnnsal61slgj9r4q35wiznd4mbcv49dl18n91s3nvv6jzd4r8b4"))))
+    (build-system font-build-system)
+    (home-page "https://www.greekfontsociety-gfs.gr/")
+    (synopsis "GFS Ambrosia, a Greek majuscule font family")
+    (description "GFS Ambrosia is a Greek typeface that has the main
+characteristics of the majuscule forms of the early Christian tradition.  The
+font is provided in the OpenType font (OTF) format.")
     (license license:silofl1.1)))
 
 (define-public font-gnu-freefont
@@ -695,6 +721,49 @@ following fonts in the OpenType format: Adventor, Bonum, Chorus, Cursor,
 Heros, Pagella, Schola, Termes.")
     (license license:gfl1.0)))
 
+(define-public font-amiri
+  (package
+    (name "font-amiri")
+    (version "0.114")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/aliftype/amiri")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "01d54i68pmy37fhvxv8kld3iqlc1m0vr871zd66y5y4c7kn2v7as"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:imported-modules `(,@%gnu-build-system-modules
+                           (guix build font-build-system))
+      #:modules `(,@%gnu-build-system-modules
+                  ((guix build font-build-system) #:prefix font:))
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure)
+                   (replace 'install
+                     (assoc-ref font:%standard-phases 'install)))))
+    (native-inputs
+     (list python-fonttools
+           python-pcpp
+           python-opentype-sanitizer
+           python-sfdlib
+           python-ufolib2
+           python-ufo2ft
+           python-wrapper))
+    (home-page "https://www.amirifont.org/")
+    (synopsis "Body text Naskh typeface")
+    (description "Amiri (أميري) is a classical Arabic typeface in Naskh style
+for typesetting books and other running text.  Amiri is a revival of the
+typeface pioneered in early 20th century by Bulaq Press in Cairo, also known
+as Amiria Press, after which the font is named.  The uniqueness of this
+typeface comes from its balance between the beauty of Naskh calligraphy on one
+hand and the constraints and requirements of elegant typography on the
+other.")
+    (license license:silofl1.1)))
+
 (define-public font-anonymous-pro
   (package
     (name "font-anonymous-pro")
@@ -1003,7 +1072,7 @@ designed to work well in user interface environments.")
 (define-public font-adobe-source-sans-pro
   (package
     (name "font-adobe-source-sans-pro")
-    (version "3.028R")
+    (version "3.046R")
     (source
      (origin
        (method git-fetch)
@@ -1012,7 +1081,7 @@ designed to work well in user interface environments.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0lgjqi4d5p1q1z00ad807v5qy4z54gmp7jpdaypc0rxk8czv6zq7"))))
+        (base32 "01dnhyfffnlyjzyh40x2z728qpc4i0jvrcxdcjfm17zrwhmw84lw"))))
     (build-system font-build-system)
     (home-page "https://github.com/adobe-fonts/source-sans-pro")
     (synopsis
@@ -1994,6 +2063,28 @@ have been designed to be very distinguishable from each other.")
 displays (7SEG, 14SEG).  DSEG includes the roman alphabet and symbol glyphs.
 This package provides the TrueType fonts.")
     (license license:silofl1.1)))
+
+(define-public font-sil-ezra
+  (package
+    (name "font-sil-ezra")
+    (version "2.51")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://software.sil.org/downloads/r/ezra/EzraSIL-"
+                           version ".zip"))
+       (sha256
+        (base32
+         "1h8cfrvjdwxk963bw359jdg86bycwyyhvviqy6lwcfj7qhzcnszi"))))
+    (build-system font-build-system)
+    (home-page "https://software.sil.org/ezra/")
+    (synopsis "Biblia Hebraica Stuttgartensia (BHS) typography inspired typeface")
+    (description "Ezra SIL is a typeface fashioned after the square letter
+forms of the typography of the Biblia Hebraica Stuttgartensia (BHS), a
+beautiful Old Testament volume familiar to Biblical Hebrew scholars.  This
+font package provides @code{Ezra SIL} as well as @code{Ezra SIL SR}, which has
+a different style of marking.")
+    (license license:expat)))
 
 (define-public font-jetbrains-mono
   (package

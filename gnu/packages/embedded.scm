@@ -11,6 +11,7 @@
 ;;; Copyright © 2020, 2021, 2022 Simon South <simon@simonsouth.net>
 ;;; Copyright © 2021 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2022 Mathieu Othacehe <othacehe@gnu.org>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1647,17 +1648,22 @@ whereas kdmx creates pseudo-ttys.")
 (define-public mbed-tools
   (package
     (name "mbed-tools")
-    (version "7.49.1")
+    (version "7.53.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "mbed-tools" version))
        (sha256
         (base32
-         "07w1h1093xzpg8agw9hjhki5856mam2c6f3q7jb2866n82cihkg9"))))
+         "0gdmyxy97bqr9bmkg90v3axmrr2db734nwzq2l05z84x9qiarc9i"))))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "setup.py"
+               (("\"Click>=7.1,<8\"")
+                "\"Click>=7.1\""))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?

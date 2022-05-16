@@ -16,7 +16,7 @@
 ;;; Copyright © 2017 Theodoros Foradis <theodoros@foradis.org>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017, 2018, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2018, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2018, 2019, 2020, 2021, 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2018 Eric Bavier <bavier@member.fsf.org>
@@ -135,14 +135,14 @@
 (define-public artanis
   (package
     (name "artanis")
-    (version "0.5")
+    (version "0.5.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/artanis/artanis-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1vk1kp2xhz35xa5n27cxlq9c88wk6qm7fqaac8rb0pb6k9pvsv7v"))
+                "1zfg49s7wp37px7k22qcr06rxfwyn3gv1c3jmma346xw0m8jr63w"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -153,7 +153,8 @@
                   (delete-file-recursively "artanis/third-party/redis")
                   (substitute* '("artanis/artanis.scm"
                                  "artanis/lpc.scm"
-                                 "artanis/oht.scm")
+                                 "artanis/oht.scm"
+                                 "artanis/tpl/parser.scm")
                     (("(#:use-module \\()artanis third-party (json\\))" _
                       use-module json)
                      (string-append use-module json)))
@@ -182,9 +183,9 @@
     (propagated-inputs
      (list guile-json-3 guile-readline guile-redis))
     (native-inputs
-     `(("bash"       ,bash)         ;for the `source' builtin
-       ("pkgconfig"  ,pkg-config)
-       ("util-linux" ,util-linux))) ;for the `script' command
+     (list bash-minimal                           ;for the `source' builtin
+           pkg-config
+           util-linux))                           ;for the `script' command
     (arguments
      `(#:modules (((guix build guile-build-system)
                    #:select (target-guile-effective-version))
@@ -1772,7 +1773,7 @@ provides tight coupling to Guix.")
 (define-public guile-ics
   (package
     (name "guile-ics")
-    (version "0.2.0")
+    (version "0.2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1781,26 +1782,17 @@ provides tight coupling to Guix.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0qjjvadr7gibdq9jvwkmlkb4afsw9n2shfj9phpiadinxk3p4m2g"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; Allow builds with Guile 3.0.
-                  (substitute* "configure.ac"
-                    (("^GUILE_PKG.*")
-                     "GUILE_PKG([3.0 2.2 2.0])\n"))
-                  #t))))
+                "11wv6qk8xd4sd8s97mnw383p098ffivk0na4jii76r5wbmg1wd7q"))
+              (modules '((guix build utils)))))
     (build-system gnu-build-system)
-    ;; XXX: Tests expect 'test-runner-current' to not return #f after
-    ;; 'test-end', which is no longer the case in Guile 3.0.7.
-    (arguments '(#:tests? #f))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("texinfo" ,texinfo)
-       ;; Gettext brings 'AC_LIB_LINKFLAGS_FROM_LIBS'.
-       ("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf
+           automake
+           texinfo
+           ;; Gettext brings 'AC_LIB_LINKFLAGS_FROM_LIBS'.
+           gettext-minimal
+           help2man
+           pkg-config))
     (inputs (list guile-3.0 which))
     (propagated-inputs (list guile-lib))
     (home-page "https://github.com/artyom-poptsov/guile-ics")
@@ -3343,7 +3335,7 @@ or errors (Left).")
            guile-lib
            guile-readline
            freeglut
-           webkitgtk))
+           webkitgtk-with-libsoup2))
     (propagated-inputs
      `(("glib-networking" ,glib-networking)
        ("gssettings-desktop-schemas" ,gsettings-desktop-schemas)))
@@ -3359,8 +3351,7 @@ or errors (Left).")
        (modify-phases %standard-phases
          (add-before 'configure 'setenv
            (lambda _
-             (setenv "GUILE_AUTO_COMPILE" "0")
-             #t))
+             (setenv "GUILE_AUTO_COMPILE" "0")))
          (add-after 'install 'wrap-binaries
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -3381,8 +3372,7 @@ or errors (Left).")
                (map (cut wrap-program <>
                          `("GUILE_LOAD_PATH" ":" prefix ,scm-path)
                          `("GUILE_LOAD_COMPILED_PATH" ":" prefix ,go-path))
-                    progs)
-               #t))))))
+                    progs)))))))
     (home-page "https://savannah.nongnu.org/projects/emacsy")
     (synopsis "Embeddable GNU Emacs-like library using Guile")
     (description

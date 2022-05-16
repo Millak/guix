@@ -17,7 +17,7 @@
 ;;; Copyright © 2021 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -38,6 +38,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix hg-download)
   #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix build-system python)
@@ -49,24 +50,26 @@
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages time)
   #:use-module (gnu packages python-science)
-  #:use-module (gnu packages graph))
+  #:use-module (gnu packages graph)
+  #:use-module (gnu packages tex))
 
 (define-public python-sphinx
   (package
     (name "python-sphinx")
-    (version "4.2.0")
+    (version "4.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Sphinx" version))
        (sha256
         (base32
-         "19jq21py7m061v8142y2dbqrbv0adqcdjmharrdy34a432wqs1wl"))))
+         "1rp28jryxwy24y8vpacclqihbizyi6b1s6id86pibvm46ybcmy3v"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -79,12 +82,14 @@
                (substitute* "tests/test_build_latex.py"
                  (("@pytest.mark.sphinx\\('latex', testroot='images'\\)")
                   "@pytest.mark.skip()"))
+               (setenv "HOME" "/tmp")   ;for test_cython
                (invoke "make" "test")))))))
     (propagated-inputs
      (list python-babel
            python-docutils
            python-jinja2
            python-imagesize
+           python-importlib-metadata
            python-packaging
            python-pygments
            python-requests
@@ -95,13 +100,46 @@
            python-sphinxcontrib-htmlhelp
            python-sphinxcontrib-jsmath
            python-sphinxcontrib-qthelp
-           python-sphinxcontrib-serializinghtml))
+           python-sphinxcontrib-serializinghtml
+
+           ;; The Sphinx LaTeX library '\RequirePackage' or \\usepackage
+           ;; these:
+           texlive-amsfonts             ;amsmath, amssymb, amstext
+           texlive-amsmath
+           texlive-capt-of
+           texlive-carlisle             ;remreset
+           texlive-etoolbox
+           texlive-generic-ltxcmds
+           texlive-hyperref
+           ;; TODO: Remove texlive-stringenc and texlive-zapfding after
+           ;; propagating them in texlive-hyperref in next rebuild cycle.
+           texlive-stringenc
+           texlive-zapfding
+           texlive-latex-base           ;alltt, atbegshi, makeidx, textcomp
+           texlive-latex-cmap
+           texlive-latex-fancyhdr
+           texlive-latex-fancyvrb
+           texlive-latex-float
+           texlive-latex-fncychap
+           texlive-latex-framed
+           texlive-latex-geometry
+           texlive-latex-graphics       ;graphicx, color
+           texlive-latex-kvoptions
+           texlive-latex-needspace
+           texlive-latex-parskip
+           texlive-latex-preview
+           texlive-latex-tabulary
+           texlive-latex-titlesec
+           texlive-latex-tools          ;multicol, longtable
+           texlive-latex-upquote
+           texlive-latex-varwidth
+           texlive-oberdiek             ;hypcap
+           texlive-wrapfig
+           texlive-xcolor))
     (native-inputs
-     (list graphviz
-           imagemagick ;for "convert"
+     (list imagemagick                  ;for "convert"
+           python-cython
            python-html5lib
-           python-mock
-           python-nose
            python-pytest))
     (home-page "https://www.sphinx-doc.org")
     (synopsis "Python documentation generator")
@@ -206,23 +244,23 @@ Apple help books.")
 (define-public python-sphinx-click
   (package
     (name "python-sphinx-click")
-    (version "3.0.1")
+    (version "4.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sphinx-click" version))
        (sha256
         (base32
-         "118ppsymp1p2gn8v7mifika817qx6v07mja7kxizq9cg7dpw894v"))))
+         "1nqy3b7wr64rbmdp7kpi723az53a89y6250h46i505g1rw0czam1"))))
     (build-system python-build-system)
     (arguments
-     `(#:tests? #f))                    ;requires python-coverage<5.0
-    (native-inputs
-     (list python-click
-           python-coverage
-           python-docutils
-           python-pbr
-           python-sphinx))
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "pytest" "-vv" "tests")))))))
+    (native-inputs (list python-pbr python-pytest python-wheel))
+    (propagated-inputs (list python-click python-docutils python-sphinx))
     (home-page "https://github.com/click-contrib/sphinx-click")
     (synopsis "Sphinx extension that documents click applications")
     (description "This package provide sphinx extension that automatically
@@ -232,19 +270,18 @@ documents click applications.")
 (define-public python-sphinx-copybutton
   (package
     (name "python-sphinx-copybutton")
-    (version "0.2.6")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sphinx-copybutton" version))
        (sha256
         (base32
-         "0ny9jpygj93z8jyjpi4v6jjz90pmns74s389wq16igzzq2mpgfjm"))))
+         "1xl7jwcldqvfya2gdp1nfxma7rv35alk998dfnx2fg6hmpd5kh50"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f)) ; XXX: Check requires network access.
-    (propagated-inputs
-     (list python-flit python-setuptools python-sphinx python-wheel))
+    (propagated-inputs (list python-sphinx))
     (home-page "https://github.com/choldgraf/sphinx-copybutton")
     (synopsis "Sphinx extension to add \"copy\" buttons to code blocks")
     (description
@@ -388,19 +425,15 @@ Blog, News or Announcements section to a Sphinx website.")
 (define-public python-sphinxcontrib-programoutput
   (package
     (name "python-sphinxcontrib-programoutput")
-    (version "0.15")
+    (version "0.17")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "sphinxcontrib-programoutput" version))
               (sha256
                (base32
-                "155bz0z2cz544pphkd3nk7ph83mz7nn0ql135kzi62kqmd75ppc0"))))
+                "0zrb2ny6y7nk84qmw5mds84fc4pxgqf4sjy7bk95b0zfrawfj3ih"))))
     (build-system python-build-system)
-    (arguments
-     ;; FIXME: Many tests are failing.
-     '(#:tests? #f))
-    (propagated-inputs
-     (list python-sphinx))
+    (propagated-inputs  (list python-sphinx))
     (synopsis "Sphinx extension to include program output")
     (description "A Sphinx extension to literally insert the output of arbitrary
 commands into documents, helping you to keep your command examples up to date.")
@@ -471,13 +504,13 @@ builder does not support SVG images natively (e.g. LaTeX).")
 (define-public python-sphinxcontrib-websupport
   (package
     (name "python-sphinxcontrib-websupport")
-    (version "1.2.0")
+    (version "1.2.4")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "sphinxcontrib-websupport" version))
               (sha256
                (base32
-                "1smma7r0rhwcmbfvvkfs5djfz1qm8wbpcvp084ca6dmw2b9zplxs"))))
+                "0ck2jphvs82vjcbphhd1h7j1xfi9ynv5d8g5b947qnk8l0ih5psf"))))
     (build-system python-build-system)
     (arguments
      ;; FIXME: Tests depend on Sphinx, which depends on this.
@@ -651,13 +684,13 @@ theme for the Sphinx documentation system.  It's the default theme of Sphinx.")
 (define-public python-sphinx-argparse
   (package
     (name "python-sphinx-argparse")
-    (version "0.2.5")
+    (version "0.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sphinx-argparse" version))
        (sha256
-        (base32 "05wc8f5hb3jsg2vh2jf7jsyan8d4i09ifrz2c8fp6f7x1zw9iav0"))))
+        (base32 "07nw68nrbpzsswb5bz8gdb5allgj6jnz8m81afhr9v6c8fyiq5c2"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-sphinx))
@@ -670,25 +703,28 @@ theme for the Sphinx documentation system.  It's the default theme of Sphinx.")
 argparse commands and options")
     (license license:expat)))
 
+;;; FIXME: Currently broken by Jinja >= 3.10 (see:
+;;; https://foss.heptapod.net/doc-utils/cloud_sptheme/-/issues/47).
 (define-public python-sphinx-cloud-sptheme
   (package
     (name "python-sphinx-cloud-sptheme")
-    (version "1.8.0")
+    (version "1.10.1")
     (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "cloud_sptheme" version))
+              (method hg-fetch)
+              (uri (hg-reference
+                    (url "https://foss.heptapod.net/doc-utils/cloud_sptheme")
+                    (changeset version)))
+              (file-name (hg-file-name name version))
               (sha256
                (base32
-                "1dniqb6a39yh786f86c4jn666rwnyi1jvzn4616zhcchb7sfdshd"))))
+                "0k0pgi0vcn8vdy3k6x11fpp4mqp7p3l6n6pjfi3mir3vwjhdfz7l"))))
     (build-system python-build-system)
-    ;; FIXME: The 'pypi' release archive does not contain tests.
-    (arguments '(#:tests? #f))
-    (native-inputs
-     (list python-sphinx))
-    (home-page "https://bitbucket.org/ecollins/cloud_sptheme")
-    (synopsis "'Cloud' theme for Sphinx documenter")
-    (description "This package contains the \"Cloud\" theme for Sphinx and some
-related extensions.")
+    (native-inputs (list python-mock))
+    (propagated-inputs (list python-sphinx))
+    (home-page "https://foss.heptapod.net/doc-utils/cloud_sptheme")
+    (synopsis "Cloud theme for Sphinx")
+    (description "This package contains the @emph{Cloud} theme for Sphinx and
+some related extensions.")
     (license license:bsd-3)))
 
 (define-public python-guzzle-sphinx-theme
@@ -712,21 +748,37 @@ Sphinx documentation system, used by @uref{http://docs.guzzlephp.org, Guzzle}
 and several other projects.")
     (license license:expat)))
 
+(define-public python-mpl-sphinx-theme
+  (package
+    (name "python-mpl-sphinx-theme")
+    (version "3.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "mpl_sphinx_theme" version))
+       (sha256
+        (base32 "0ilsw6s5hfvjzqs3258c8gmg5v3dwa6k69mwmkxsyh1qmv15krpw"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-pydata-sphinx-theme))
+    (home-page "https://github.com/matplotlib/mpl-sphinx-theme")
+    (synopsis "Matplotlib theme for Sphinx")
+    (description "This package provides a Matplotlib theme for Sphinx.")
+    (license license:bsd-3)))
+
 (define-public python-sphinx-rtd-theme
   (package
     (name "python-sphinx-rtd-theme")
-    (version "0.2.4")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sphinx_rtd_theme" version))
        (sha256
         (base32
-         "05rlhjzdyapr2w74jjs7mrm8hi69qskcr5vya9f9drpsys7lpxrd"))))
+         "0p3abj91c3l72ajj5jwblscsdf1jflrnn0djx2h5y6f2wjbx9ipf"))))
     (build-system python-build-system)
     (arguments '(#:tests? #f)) ; No tests.
-    (propagated-inputs
-     (list python-sphinx))
+    (propagated-inputs (list python-docutils python-sphinx))
     (home-page "https://github.com/snide/sphinx_rtd_theme/")
     (synopsis "ReadTheDocs.org theme for Sphinx")
     (description "A theme for Sphinx used by ReadTheDocs.org.")
@@ -776,7 +828,7 @@ translate and to apply translation to Sphinx generated document.")
 (define-public python-sphinxext-opengraph
   (package
     (name "python-sphinxext-opengraph")
-    (version "0.4.2")
+    (version "0.6.3")
     (source
      (origin
        (method git-fetch)               ; no tests in PyPI release
@@ -785,18 +837,16 @@ translate and to apply translation to Sphinx generated document.")
              (commit (string-append "v"  version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0dka44wri7agcr1jd641hq6j7qlbycligp80ngf32l5asqz1mgzp"))))
+        (base32 "1wrgpan9z65fv4hbvisz4sypc4w5ammnxkyn5lhr43wdr6b967k1"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+           (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest")))))))
-    (native-inputs
-     (list python-beautifulsoup4 python-pytest python-sphinx))
+               (invoke "pytest" "-vv")))))))
+    (native-inputs (list python-beautifulsoup4 python-pytest python-sphinx))
     (home-page "https://github.com/wpilibsuite/sphinxext-opengraph")
     (synopsis "Sphinx Extension to enable OpenGraph support")
     (description
@@ -837,20 +887,42 @@ enabled web server.")
 (define-public python-sphinx-autodoc-typehints
   (package
     (name "python-sphinx-autodoc-typehints")
-    (version "1.11.1")
+    (version "1.18.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "sphinx-autodoc-typehints" version))
+       (method git-fetch)               ;no tests in pypi archive
+       (uri (git-reference
+             (url "https://github.com/tox-dev/sphinx-autodoc-typehints")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "086v9mg21pvfx0lfqjx2xf36hnzrsripfg345xi59f7xwb9scjr4"))))
+         "16yhpwfdmybir80a6892cnr98m58p19rklmjdlzhk3njx7di8jzp"))))
     (build-system python-build-system)
-    (propagated-inputs
-     (list python-setuptools-scm python-sphinx))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'pretend-version
+            ;; The version string is usually derived via setuptools-scm, but
+            ;; without the git metadata available, the version string is set to
+            ;; '0.0.0'.
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv" "tests"
+                        ;; This test requires to download an objects.inv file
+                        ;; from the Sphinx website.
+                        "-k" "not test_format_annotation")))))))
+    (propagated-inputs (list python-sphinx))
     (native-inputs
-     (list python-dataclasses python-pytest python-sphinx
-           python-sphobjinv python-typing-extensions))
+     (list python-nptyping
+           python-pytest
+           python-setuptools-scm
+           python-sphobjinv
+           python-typing-extensions))
     (home-page "https://pypi.org/project/sphinx-autodoc-typehints/")
     (synopsis "Type hints for the Sphinx autodoc extension")
     (description "This extension allows you to use Python 3 annotations for
@@ -969,32 +1041,106 @@ automated way to document command-line programs.  It scans
 @code{.. program::} and @code{.. option::} directives.")
     (license license:bsd-2)))
 
+(define-public python-sphinx-theme-builder
+  (package
+    (name "python-sphinx-theme-builder")
+    (version "0.2.0a14")
+    (source
+     (origin
+       (method git-fetch)               ;no tests in pypi archive
+       (uri (git-reference
+             (url "https://github.com/pradyunsg/sphinx-theme-builder")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1brqp34q716gglliallbgq4m63hl3nk8j6w8wcl8f2vvnkch6v98"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: PEP 517 manual build copied from python-isort.
+          (replace 'build
+            (lambda _
+              ;; ZIP does not support timestamps before 1980.
+              (setenv "SOURCE_DATE_EPOCH" "315532800")
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv"))))
+          (replace 'install
+            (lambda _
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl)))))))
+    (native-inputs (list python-flit-core python-pytest))
+    (propagated-inputs
+     (list python-pypa-build
+           python-click
+           python-nodeenv
+           python-packaging
+           python-pep621
+           python-rich
+           python-sphinx-autobuild
+           python-tomli))
+    (home-page "https://github.com/pradyunsg/sphinx-theme-builder")
+    (synopsis "Tool for authoring Sphinx themes")
+    (description "This package provides a tool for authoring Sphinx themes
+with a simple (opinionated) workflow.")
+    (license license:expat)))
+
+(define-public python-sphinx-sitemap
+  (package
+    (name "python-sphinx-sitemap")
+    (version "2.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sphinx-sitemap" version))
+       (sha256
+        (base32 "0dvpryrz7vn8rvayzy5nrmqy4wyzlaxcx88bl46prc9w4cwxmbb5"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-sphinx))
+    (home-page "https://github.com/jdillard/sphinx-sitemap")
+    (synopsis "Sitemap generator for Sphinx")
+    (description "A Sphinx extension to generate multiversion and
+multilanguage sitemaps.org compliant sitemaps for the HTML version of your
+Sphinx documentation.")
+    (license license:expat)))
+
 (define-public python-pydata-sphinx-theme
   (package
     (name "python-pydata-sphinx-theme")
-    (version "0.6.3")
+    ;; TODO: This is not the latest release, but the 0.8.x series introduced a
+    ;; new Sphinx theme build system that complicate things (see:
+    ;; https://github.com/pydata/pydata-sphinx-theme/issues/628 and
+    ;; https://src.fedoraproject.org/rpms/python-pydata-sphinx-theme
+    ;; /blob/rawhide/f/prepare_vendor.sh).
+    (version "0.7.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pydata-sphinx-theme" version))
        (sha256
         (base32
-         "055bh3hyh72pafiylvgpsjlk18wm15gg4azc5rjlsww5z475iq1j"))))
+         "0ph69bnnw9w8vksc7rk45q5yknsrsgk9a19xsbxym46jrmgz67b7"))))
     (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv")))))))
     (propagated-inputs
-     (list python-beautifulsoup4))
-    (native-inputs
      (list python-beautifulsoup4
-           python-docutils-0.15
-           python-jupyter-sphinx
-           python-numpy
-           python-numpydoc
-           python-pandas
-           python-pytest
-           python-pytest-regressions
-           python-recommonmark
-           python-sphinx
-           python-xarray))
+           python-docutils
+           python-jinja2
+           python-sphinx))
+    (native-inputs (list python-pytest python-pytest-regressions))
     (home-page "https://github.com/pydata/pydata-sphinx-theme")
     (synopsis "Bootstrap-based Sphinx theme")
     (description

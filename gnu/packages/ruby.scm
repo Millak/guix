@@ -12250,3 +12250,388 @@ functions for complex numbers.  The functions in this module accept integers,
 floating-point numbers or complex numbers as arguments.")
     (home-page "https://github.com/ruby/cmath")
     (license license:bsd-2)))
+
+(define-public ruby-sucker-punch
+  (package
+    (name "ruby-sucker-punch")
+    (version "3.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "sucker_punch" version))
+       (sha256
+        (base32 "0yams24wndpj7dzdysvm4z1w6ggg4xvj4snxba66prahhxvik4xl"))))
+    (build-system ruby-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'extract-gemspec 'less-strict-dependencies
+           (lambda _
+             (substitute* "sucker_punch.gemspec"
+               (("1.0.0") "1.0")))))))
+    (native-inputs
+     (list
+      ruby-pry))
+    (propagated-inputs
+     (list
+      ruby-concurrent))
+    (home-page "https://github.com/brandonhilkert/sucker_punch")
+    (synopsis "Asynchronous processing library for Ruby")
+    (description "Sucker Punch is a single-process Ruby asynchronous processing
+library.  It is perfect for asynchronous processes like emailing, data crunching
+or social platform manipulation; and generally recommended for jobs that are
+fast and non-mission critical like logs, emails, etc.")
+    (license license:expat)))
+
+(define-public ruby-countdownlatch
+  (package
+    (name "ruby-countdownlatch")
+    (version "1.0.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "countdownlatch" version))
+        (sha256
+          (base32 "1v6pbay6z07fp7yvnba1hmyacbicvmjndd8rn2h1b5rmpcb5s0j3"))))
+    (build-system ruby-build-system)
+    (home-page "https://github.com/benlangfeld/countdownlatch")
+    (synopsis "Thread synchronization aid Ruby")
+    (description "CountDownLatch is a synchronization aid that allows one or
+more threads to wait until a set of operations being performed in other threads
+completes.")
+    (license license:expat)))
+
+(define-public ruby-value-semantics
+  (package
+    (name "ruby-value-semantics")
+    (version "3.6.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "value_semantics" version))
+        (sha256
+          (base32 "1vdwai8wf6r1fkvdpyz1vzxm89q7ghjvb3pqpg2kvwibwzd99dnx"))))
+    (build-system ruby-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "rspec")))))))
+    (native-inputs
+     (list
+      ruby-rspec))
+    (home-page "https://github.com/tomdalling/value_semantics")
+    (synopsis "Ruby gem for making value classes")
+    (description "ValueSemantics generates modules that provide conventional
+value semantics for a given set of attributes.  The behaviour is similar to an
+immutable Struct class, plus extensible, lightweight validation and coercion.")
+    (license license:expat)))
+
+(define-public ruby-promise
+  (package
+    (name "ruby-promise")
+    (version "0.7.4")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "promise.rb" version))
+        (sha256
+          (base32 "0a819sikcqvhi8hck1y10d1nv2qkjvmmm553626fmrh51h2i089d"))))
+    (build-system ruby-build-system)
+    (arguments
+     `(#:test-target "spec"
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'extract-gemspec 'less-strict-dependencies
+           (lambda _
+             (substitute* "Rakefile"
+               (("if Gem.ruby_version.*") "if false\n"))
+             (substitute* "spec/spec_helper.rb"
+               ((".*devtools/spec_helper.*") "\n")))))))
+    (native-inputs
+     (list
+      ruby-rspec
+      ruby-rspec-its
+      ruby-awesome-print
+      ruby-fuubar))
+    (home-page "https://github.com/lgierth/promise.rb")
+    (synopsis "Asynchronous operation library for Ruby")
+    (description "Promise is a Ruby implementation of the Promises/A+
+specification.  It provides 100% mutation coverage, tested on MRI 1.9, 2.0, 2.1,
+2.2, Rubinius, and JRuby.")
+    (license license:unlicense)))
+
+(define-public ruby-multicodecs
+  (package
+    (name "ruby-multicodecs")
+    (version "0.2.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "multicodecs" version))
+        (sha256
+          (base32 "0drq267di57l9zqw6zvqqimilz42rbc8z7392dwkk8wslq30s7v8"))))
+    (build-system ruby-build-system)
+    (home-page "https://github.com/SleeplessByte/ruby-multicodec")
+    (synopsis "Ruby implementation of multiformats/multicodec")
+    (description "Multicodecs is the ruby implementation of
+multiformats/multicodec, a canonical table of of codecs used by various
+multiformats.")
+    (license license:expat)))
+
+(define-public ruby-multihashes
+  (package
+    (name "ruby-multihashes")
+    (version "0.2.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "multihashes" version))
+        (sha256
+          (base32 "17wiyy3fiv8rpgdv9ca01yncsmaaf8yg15bg18wc7m9frss1vgqg"))))
+    (build-system ruby-build-system)
+    (propagated-inputs
+     (list
+      ruby-multicodecs))
+    (home-page "https://github.com/multiformats/ruby-multihash")
+    (synopsis "Multihash implementation for Ruby")
+    (description "Multihashes provides a simple, low-level multihash
+implementation for Ruby.  A multihash is a digest with an embedded hash function
+code")
+    (license license:expat)))
+
+(define-public ruby-lazy-object
+  (package
+    (name "ruby-lazy-object")
+    (version "0.0.3")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "lazy_object" version))
+        (sha256
+          (base32 "08px15lahc28ik9smvw1hgamf792gd6gq0s4k94yq1h7jq25wjn8"))))
+    (build-system ruby-build-system)
+    (arguments
+     `(#:test-target "spec"))
+    (home-page "https://github.com/HornsAndHooves/lazy_object")
+    (synopsis "Object wrapper that forwards all calls to the reference object")
+    (description "LazyObject is an object wrapper that forwards all calls to the
+reference object.  This object is not created until the first method dispatch.")
+    (license license:expat)))
+
+(define-public ruby-citrus
+  (package
+    (name "ruby-citrus")
+    (version "3.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       ;; Download from GitHub because the rubygems version does not contain
+       ;; files needed for tests.
+       (uri (git-reference
+             (url "https://github.com/mjackson/citrus")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "197wrgqrddgm1xs3yvjvd8vkvil4h4mdrcp16jmd4b57rxrrr769"))))
+    (build-system ruby-build-system)
+    (home-page "http://mjackson.github.io/citrus/")
+    (synopsis "Parsing Expressions for Ruby")
+    (description "Citrus is a parsing library for Ruby that combines the
+expressiveness of the language with the parsing expressions.")
+    (license license:expat)))
+
+(define-public ruby-cbor
+  (package
+    (name "ruby-cbor")
+    (version "0.5.9.6")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "cbor" version))
+        (sha256
+          (base32 "0511idr8xps9625nh3kxr68sdy6l3xy2kcz7r57g47fxb1v18jj3"))))
+    (build-system ruby-build-system)
+    (arguments
+     `(#:test-target "spec"))
+    (native-inputs
+     (list
+      ruby-rspec
+      ruby-rake-compiler
+      ruby-yard))
+    (home-page "http://cbor.io/")
+    (synopsis "Concise Binary Object Representation")
+    (description "CBOR is a library for the
+@acronym{CBOR, Concise Binary Object Representation} format, based on
+Sadayuki Furuhashi's MessagePack library.")
+    (license license:asl2.0)))
+
+(define-public ruby-gem-release
+  (package
+    (name "ruby-gem-release")
+    (version "2.2.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "gem-release" version))
+        (sha256
+          (base32 "108rrfaiayi14zrqbb6z0cbwcxh8n15am5ry2a86v7c8c3niysq9"))))
+    (build-system ruby-build-system)
+    (arguments
+     ;; No rakefile
+     `(#:tests? #f))
+    (home-page "https://github.com/svenfuchs/gem-release")
+    (synopsis "Ruby gem plugin for release management")
+    (description "GemRelease is a gem plugin that aims at making gem development
+easier by automating repetitive work based on conventions, configuration, and
+templates.")
+    (license license:expat)))
+
+(define-public ruby-base32
+  (package
+    (name "ruby-base32")
+    (version "0.3.4")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "base32" version))
+        (sha256
+          (base32 "1fjs0l3c5g9qxwp43kcnhc45slx29yjb6m6jxbb2x1krgjmi166b"))))
+    (build-system ruby-build-system)
+    (native-inputs
+     (list
+      ruby-gem-release))
+    (home-page "https://github.com/stesla/base32")
+    (synopsis "Ruby extension for base32 encoding and decoding")
+    (description "Base32 is a library which provides base32 decoding and
+encoding.")
+    (license license:expat)))
+
+(define-public ruby-dhall
+  (package
+    (name "ruby-dhall")
+    (version "0.5.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "dhall" version))
+        (sha256
+          (base32 "09wcq8xc1ynld04r2f332bx8cn7rjc4afaq8hm1dr2fc35jlpn6m"))))
+    (build-system ruby-build-system)
+    (arguments
+     ;; No test in gem archive
+     `(#:tests? #f))
+    (propagated-inputs
+      (list
+       ruby-base32
+       ruby-cbor
+       ruby-citrus
+       ruby-lazy-object
+       ruby-multihashes
+       ruby-promise
+       ruby-value-semantics))
+    (home-page "https://git.sr.ht/~singpolyma/dhall-ruby")
+    (synopsis "Ruby implementation of the Dhall configuration language")
+    (description "Dhall.rb is a Ruby implementation of the Dhall configuration
+language.  Dhall is a memory safe and non-Turing-complete configuration
+language.")
+    (license license:gpl3+)))
+
+(define-public ruby-money
+  (package
+    (name "ruby-money")
+    (version "6.16.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "money" version))
+        (sha256
+          (base32 "0jkmsj5ymadik7bvl670bqwmvhsdyv7hjr8gq9z293hq35gnyiyg"))))
+    (build-system ruby-build-system)
+    (arguments
+     ;; No rakefile.
+     `(#:tests? #f))
+    (propagated-inputs
+     (list
+      ruby-i18n))
+    (home-page "https://rubymoney.github.io/money/")
+    (synopsis "Currency conversion library for Ruby")
+    (description "RubyMoney provides a library for dealing with money and
+currency conversion.  Its features are:
+@itemize
+@item
+Provides a Money class which encapsulates all information about a certain
+amount of money, such as its value and its currency.
+@item
+Provides a Money::Currency class which encapsulates all information about a
+monetary unit.
+@item
+Represents monetary values as integers, in cents; so avoids floating point
+rounding errors.
+@item
+Represents currency as Money::Currency instances providing a high level of
+flexibility.
+@item Provides APIs for exchanging money from one currency to another.
+@end itemize")
+    (license license:expat)))
+
+(define-public ruby-monetize
+  (package
+    (name "ruby-monetize")
+    (version "1.11.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "monetize" version))
+        (sha256
+          (base32 "0cna2myxdbwfq0gn6k2hgrh368dq7wld3jklm96443ysykd0difn"))))
+    (build-system ruby-build-system)
+    (arguments
+     `(#:test-target "spec"))
+    (native-inputs
+     (list
+      ruby-rspec))
+    (propagated-inputs
+     (list
+      ruby-money))
+    (home-page "https://github.com/RubyMoney/monetize")
+    (synopsis "Convert various objects into Money objects")
+    (description "Monetize provides a library for converting various objects
+into Money objects.")
+    (license license:expat)))
+
+(define-public ruby-money-open-exchange-rates
+  (package
+    (name "ruby-money-open-exchange-rates")
+    (version "1.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       ;; Download from GitHub because the rubygems version does not contain
+       ;; Rakefile.
+       (uri (git-reference
+             (url "https://github.com/spk/money-open-exchange-rates")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11xwqli8snr19k48yh8h77sal5vxd4snzq9gxg08v61f0574m3gw"))))
+    (build-system ruby-build-system)
+    (native-inputs
+     (list
+      ruby-minitest
+      ruby-mocha
+      ruby-monetize
+      ruby-rake
+      ruby-rubocop
+      ruby-timecop
+      ruby-webmock))
+    (propagated-inputs
+     (list
+      ruby-money))
+    (home-page "https://spk.github.io/money-open-exchange-rates/")
+    (synopsis "Money open exchange rates for Ruby")
+    (description "This package provides a gem that calculates the exchange rate
+using published rates from open-exchange-rates.  Compatible with the money gem.")
+    (license license:expat)))

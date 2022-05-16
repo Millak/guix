@@ -86,6 +86,7 @@
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages node)
+  #:use-module (gnu packages openstack)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
@@ -575,6 +576,46 @@ Model} (SAM) templates into AWS CloudFormation templates.")
 emit information from within their applications to the AWS X-Ray service.")
     (license license:asl2.0)))
 
+(define-public python-cbor2
+  (package
+    (name "python-cbor2")
+    (version "5.4.2.post1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "cbor2" version))
+       (sha256
+        (base32 "15y78xcc3zkmvj1mdzz8gyhf3apbl91073kwhzbjk5abc1civwlw"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv")))))))
+    (native-inputs (list python-pytest python-pytest-cov python-setuptools-scm))
+    (home-page "https://github.com/agronholm/cbor2")
+    (synopsis "Concise Binary Object Representation (CBOR) (de)serializer")
+    (description "This Python library provides encoding and decoding for the
+Concise Binary Object
+Representation (CBOR) (@url{https://www.rfc-editor.org/rfc/rfc8949.html, RFC
+8949}) serialization format.  The specification is fully compatible with the
+original RFC 7049.  Among its features are:
+@itemize
+@item Simple API like the @code{json} or @code{pickle} modules.
+@item Support many CBOR tags with stdlib objects.
+@item Generic tag decoding.
+@item Shared value references including cyclic references.
+@item String references compact encoding with repeated strings replaced with
+indices.
+@item Optional C module backend tested on big- and little-endian architectures.
+@item Extensible tagged value handling using tag_hook and object_hook on
+decode and default on encode.
+@end itemize")
+    (license license:expat)))
+
 (define-public python-cfn-lint
   (package
     (name "python-cfn-lint")
@@ -628,14 +669,16 @@ for resource properties and best practices.")
 (define-public python-falcon
   (package
     (name "python-falcon")
-    (version "2.0.0")
+    (version "3.1.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "falcon" version))
-       (sha256
-        (base32
-         "1z6mqfv574x6jiawf67ib52g4kk20c2x7xk7wrn1573b8v7r79gf"))
+       ;; Use git, as there are some test files missing from the PyPI release,
+       ;; such as 'examples' directory.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/falconry/falcon")
+             (commit version)))
+       (file-name (git-file-name name version))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -643,11 +686,13 @@ for resource properties and best practices.")
            (substitute* "setup.py"
              ((".*falcon\\.vendor\\.mimeparse.*") ""))
            (substitute* '("falcon/media/handlers.py"
-                          "falcon/request.py")
-             (("from falcon\\.vendor ") ""))
-           (substitute* "falcon.egg-info/SOURCES.txt"
-             (("falcon/vendor.*") ""))
-           #t))))
+                          "falcon/request.py"
+                          "tests/test_deps.py")
+             (("from falcon\\.vendor ") "")
+             (("mimeparse.mimeparse") "mimeparse"))))
+       (sha256
+        (base32
+         "17k31d8avl63xsr6fzvmkxcsm7gnz5dqpgsz65psm1lpc38c79k3"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -657,27 +702,33 @@ for resource properties and best practices.")
              ;; Skip orjson, which requires rust to build.
              (substitute* "tests/test_media_handlers.py"
                (("== 'CPython") "!= 'CPython"))
-             (add-installed-pythonpath inputs outputs)
-             (invoke "pytest" "--ignore" "falcon"))))))
+             (setenv "HOME" "/tmp")
+             (invoke "pytest" "-vv" "tests"))))))
     (propagated-inputs
      (list python-mimeparse))
     (native-inputs
-     (list python-cython ;for faster binaries
+     (list python-aiofiles
+           python-cbor2
+           python-cython                ;for faster binaries
+           python-fakeredis
+           python-httpx
            python-mujson
            python-msgpack
+           python-pecan
+           python-pillow
            python-pytest
+           python-pytest-asyncio
            python-pytest-runner
            python-pyyaml
            python-rapidjson
            python-requests
            python-testtools
-           python-ujson))
+           python-ujson
+           python-websockets))
     (home-page "https://falconframework.org")
-    (synopsis
-     "Web framework for building APIs and application backends")
-    (description
-     "Falcon is a web API framework for building microservices, application
-backends and higher-level frameworks.  Among its features are:
+    (synopsis "Web framework for building APIs and application backends")
+    (description "Falcon is a web API framework for building microservices,
+application backends and higher-level frameworks.  Among its features are:
 @itemize
 @item Optimized and extensible code base
 @item Routing via URI templates and REST-inspired resource
@@ -1064,7 +1115,7 @@ and that could be anything you want.")
                (add-installed-pythonpath inputs outputs)
                (invoke "python" "-m" "pytest" "-vv" "test")))))))
     (native-inputs
-     (list python-hypothesis-6.23 python-pytest))
+     (list python-hypothesis-next python-pytest))
     (propagated-inputs
      (list python-hpack python-hyperframe))
     (home-page "https://github.com/python-hyper/h2")
@@ -1428,6 +1479,180 @@ is Python’s.")
 
 (define-public python2-webencodings
   (package-with-python2 python-webencodings))
+
+(define-public python-openapi-schema-validator
+  (package
+    (name "python-openapi-schema-validator")
+    (version "0.2.3")
+    (source
+     (origin
+       (method git-fetch)               ;no tests in pypi release
+       (uri (git-reference
+             (url "https://github.com/p1c2u/openapi-schema-validator")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1swm8h74nhg63nxk347blwq9f1qn6iiq3zisndcvm7axkq3pc2df"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-coverage-pytest-options
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("^--cov.*") ""))))
+          ;; XXX: PEP 517 manual build copied from python-isort.
+          (replace 'build
+            (lambda _
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest"))))
+          (replace 'install
+            (lambda _
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl)))))))
+    (native-inputs (list python-poetry-core python-pypa-build python-pytest))
+    (propagated-inputs
+     (list python-isodate
+           python-jsonschema
+           python-rfc3339-validator
+           python-strict-rfc3339))
+    (home-page "https://github.com/p1c2u/openapi-schema-validator")
+    (synopsis "OpenAPI schema validation library for Python")
+    (description "Openapi-schema-validator is a Python library that validates
+a schema against:
+@itemize
+@item OpenAPI Schema Specification v3.0 which is an extended subset of the
+JSON Schema Specification Wright Draft 00.
+@item OpenAPI Schema Specification v3.1 which is an extended superset of the
+JSON Schema Specification Draft 2020-12.
+@end itemize")
+    (license license:bsd-3)))
+
+(define-public python-openapi-spec-validator
+  (package
+    (name "python-openapi-spec-validator")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)               ;no tests in pypi release
+       (uri (git-reference
+             (url "https://github.com/p1c2u/openapi-spec-validator")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1q09sjh4hsc0c8yqbd97h5mp6rwh427y6zyn8kv8wljk6sa0fs4q"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-coverage-pytest-options
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("^--cov.*") ""))))
+          ;; XXX: PEP 517 manual build copied from python-isort.
+          (replace 'build
+            (lambda _
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv"
+                        ;; The example tests attempt to fetch resources from
+                        ;; the Internet (see:
+                        ;; https://github.com/p1c2u/openapi-spec-validator/issues/151).
+                        "-k" "not Example and not Exampe"))))
+          (replace 'install
+            (lambda _
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl)))))))
+    (native-inputs (list python-poetry-core python-pypa-build python-pytest))
+    (propagated-inputs
+     (list python-jsonschema
+           python-openapi-schema-validator
+           python-pyyaml
+           python-requests
+           python-setuptools))
+    (home-page "https://github.com/p1c2u/openapi-spec-validator")
+    (synopsis "OpenAPI spec validator")
+    (description "OpenAPI Spec Validator is a Python library that validates an
+OpenAPI specification against the OpenAPI 2.0 (also known as Swagger), OpenAPI
+3.0 and OpenAPI 3.1 specifications.  The validator aims to check for full
+compliance with the specification.")
+    (license license:asl2.0)))
+
+(define-public python-openapi-core
+  (package
+    (name "python-openapi-core")
+    (version "0.14.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/p1c2u/openapi-core")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1npsibyf8zx6z230yl19kyap8g25kqvgm7z1w6rm6jxv58yqsp7r"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+ (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv" "tests/unit"
+                        ;; Ignore Pytest configuration in setup.cfg that adds
+                        ;; unwanted flake8 and coverage options.
+                        "-c" "/dev/null"
+                        ;; This tests fails due to changes in Pytest; fixed
+                        ;; but not yet released upstream
+                        ;; (https://github.com/p1c2u/openapi-core/issues/158).
+                        "-k" "not test_string_format_invalid_value")))))))
+    (native-inputs (list python-django
+                         python-falcon
+                         python-flask
+                         python-poetry-core
+                         python-pypa-build
+                         python-pytest
+                         python-responses))
+    (propagated-inputs
+     (list python-attrs
+           python-dictpath
+           python-isodate
+           python-jsonschema
+           python-lazy-object-proxy
+           python-more-itertools
+           python-openapi-schema-validator
+           python-openapi-spec-validator
+           python-parse
+           python-six
+           python-werkzeug))
+    (home-page "https://github.com/p1c2u/openapi-core")
+    (synopsis "OpenAPI core library")
+    (description "Openapi-core is a Python library that adds client-side and
+server-side support for the OpenAPI Specification v3.  It has features such
+as:
+@itemize
+@item Validation of requests and responses
+@item Schema casting and unmarshalling
+@item Media type and parameters deserialization
+@item Security providers (API keys, Cookie, Basic and Bearer HTTP
+authentications)
+@item Custom deserializers and formats
+@item Integration with libraries and frameworks.
+@end itemize")
+    (license license:bsd-3)))
 
 (define-public python-openid
   (package
@@ -2994,13 +3219,13 @@ minimum of WSGI.")
 (define-public python-flask
   (package
     (name "python-flask")
-    (version "2.0.2")
+    (version "2.1.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Flask" version))
               (sha256
                (base32
-                "1qilnrdakhbw5k951kczdy8ia0wczh0dpp1vi4qhgmfx6klvhbvv"))))
+                "1j0rjly2yhbm566lq2s8543fs7fz86f77abps539djcfalzbvjd8"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -3012,8 +3237,13 @@ minimum of WSGI.")
     (native-inputs
      (list python-pytest))
     (propagated-inputs
-     (list python-itsdangerous python-jinja2 python-click python-werkzeug))
-    (home-page "https://www.palletsprojects.com/p/flask/")
+     (list python-asgiref               ;async extra
+           python-click
+           python-importlib-metadata
+           python-itsdangerous
+           python-jinja2
+           python-werkzeug))
+    (home-page "https://palletsprojects.com/p/flask/")
     (synopsis "Microframework based on Werkzeug, Jinja2 and good intentions")
     (description "Flask is a micro web framework based on the Werkzeug toolkit
 and Jinja2 template engine.  It is called a micro framework because it does not
@@ -3023,14 +3253,14 @@ presume or force a developer to use a particular tool or library.")
 (define-public python-flask-wtf
   (package
     (name "python-flask-wtf")
-    (version "0.14.3")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Flask-WTF" version))
        (sha256
         (base32
-         "086pvg2x69n0nczcq7frknfjd8am1zdy8qqpva1sanwb02hf65yl"))))
+         "1jd614662r6ifh4svs8zfwm4k8bal5z3n6pq607bas8gxrpmrzil"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -3039,7 +3269,7 @@ presume or force a developer to use a particular tool or library.")
            (lambda _
              (invoke "pytest" "-vv"))))))
     (propagated-inputs
-     (list python-flask-babel python-babel python-wtforms))
+     (list python-flask python-itsdangerous python-wtforms))
     (native-inputs
      (list python-pytest))
     (home-page "https://github.com/lepture/flask-wtf")
@@ -3611,7 +3841,7 @@ on the command line.")
 (define-public python-flask-login
   (package
     (name "python-flask-login")
-    (version "0.5.0")
+    (version "0.6.0")
     (source
      (origin
        (method git-fetch)
@@ -3620,17 +3850,21 @@ on the command line.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11ac924w0y4m0kf3mxnxdlidy88jfa7njw5yyrq16dvnx4iwd8gg"))))
+        (base32 "12yw01ccgjn9c88cbkrd6k1ykjxd8fxip2b1isvxjirphnlqhn9g"))))
     (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "pytest" "-vv" "-c" "/dev/null")))))))
     (propagated-inputs
      (list python-flask))
     (native-inputs
      ;; For tests.
      (list python-blinker
-           python-coverage
            python-mock
-           python-pycodestyle
-           python-pyflakes
            python-pytest
            python-semantic-version
            python-werkzeug))
@@ -4863,7 +5097,7 @@ and fairly speedy.")
 (define-public python-uvicorn
   (package
     (name "python-uvicorn")
-    (version "0.13.2")
+    (version "0.17.6")
     (source
      (origin
        ;; PyPI tarball has no tests.
@@ -4873,20 +5107,33 @@ and fairly speedy.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04zgmp9z46k72ay6cz7plga6d3w3a6x41anabm7ramp7jdqf6na9"))))
+        (base32 "0npwls02nhna2lyw2nksxij16l9agf12c9f42pvxb5yrpi9l16c8"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (invoke "pytest" "-vv"))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-vv" "-o" "asyncio_mode=auto"
+                       "-k"
+                       (string-append
+                        ;; These error or fail due to networking.
+                        "not test_keepalive "
+                        "and not test_bind_unix_socket_works_with_"
+                        "reload_or_workers "))))))))
     (native-inputs
-     (list python-pytest python-pytest-mock python-requests
-           python-trustme python-wsproto))
+     (list python-httpx-bootstrap
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-mock
+           python-requests
+           python-trustme
+           python-wsproto))
     (propagated-inputs
-     (list python-click
+     (list python-asgiref
+           python-click
+           python-dotenv
            python-h11
            python-httptools
            python-pyyaml
@@ -5103,7 +5350,7 @@ and serve updated contents upon changes to the directory.")
 (define-public python-httpcore
   (package
     (name "python-httpcore")
-    (version "0.12.2")
+    (version "0.14.7")
     (source
      (origin
        ;; PyPI tarball does not contain tests.
@@ -5113,34 +5360,31 @@ and serve updated contents upon changes to the directory.")
              (commit  version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1nrwwfdqjfc2a1k3j41cdwkprwvplf95fwmypdl2aq2qgp3209q0"))))
+        (base32 "0wdr28vf03l6yxhk8nrvhh7y7x18rqdcfzv1sb6jgzk9zmycrvc7"))))
     (build-system python-build-system)
     (arguments
-     `(#:tests? #f ; Tests hang at 98%
-       #:phases
+     `(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+           (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest" "-vv" "--cov=httpcore"
-                       "--cov=tests" "tests"))
-             #t)))))
+               (invoke "pytest" "-vv" "tests")))))))
     (native-inputs
-     (list python-autoflake
-           python-flake8
-           python-flake8-bugbear
-           python-flake8-pie
-           python-isort
-           python-mypy
-           python-pytest
+     (list python-pytest
            python-pytest-asyncio
            python-pytest-cov
+           python-pytest-httpbin
            python-pytest-trio
            python-uvicorn
            python-trustme))
     (propagated-inputs
-     (list python-h11 python-h2 python-sniffio python-trio
+     (list python-anyio
+           python-certifi
+           python-h11
+           python-h2
+           python-sniffio
+           python-socksio
+           python-trio
            python-trio-typing))
     (home-page "https://github.com/encode/httpcore")
     (synopsis "Minimal, low-level HTTP client")
@@ -5160,10 +5404,18 @@ Some things HTTP Core does do:
 @end itemize")
     (license license:bsd-3)))
 
+;;; Variant used to break a cycle between python-httpx and python-uvicorn.
+(define-public python-httpcore-bootstrap
+  (hidden-package
+   (package/inherit python-httpcore
+     (name "python-httpcore-bootstrap")
+     (arguments (list #:tests? #f))
+     (native-inputs '()))))
+
 (define-public python-httpx
   (package
     (name "python-httpx")
-    (version "0.16.1")
+    (version "0.22.0")
     (source
      (origin
        ;; PyPI tarball does not contain tests.
@@ -5173,7 +5425,7 @@ Some things HTTP Core does do:
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00gmq45fckcqkj910bvd7pyqz1mvgsdvz4s0k7dzbnc5czzq1f4a"))))
+        (base32 "1awr56488b66zyl3cx1f03lq2n07xdg5kb4l46vnsm59s6hr02c5"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -5181,7 +5433,8 @@ Some things HTTP Core does do:
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "pytest" "-vv" "-k"
+               (invoke "pytest" "-vv" "-o" "asyncio_mode=auto"
+                       "-k"
                        ;; These tests try to open an outgoing connection.
                        (string-append
                         "not test_connect_timeout"
@@ -5191,26 +5444,23 @@ Some things HTTP Core does do:
                         "being_deleted"
                         " and not test_that_send_cause_client_to_be_not_closed"
                         " and not test_async_proxy_close"
-                        " and not test_sync_proxy_close"))))))))
+                        " and not test_sync_proxy_close"
+                        ;; This test is apparently incompatible with
+                        ;; python-click 8, fails with " AttributeError:
+                        ;; 'function' object has no attribute 'name'".
+                        " and not test_main"))))))))
     (native-inputs
-     (list python-autoflake
-           python-black
-           python-cryptography
-           python-flake8
-           python-flake8-bugbear
-           python-flake8-pie
-           python-isort
-           python-mypy
+     (list python-cryptography
            python-pytest
            python-pytest-asyncio
            python-pytest-trio
-           python-pytest-cov
            python-trio
            python-trio-typing
            python-trustme
            python-uvicorn))
     (propagated-inputs
-     (list python-brotli
+     (list python-charset-normalizer
+           python-brotli
            python-certifi
            python-chardet
            python-httpcore
@@ -5255,6 +5505,17 @@ Plus all the standard features of requests:
 @item Chunked Requests
 @end itemize")
     (license license:bsd-3)))
+
+;;; Variant used to break a cycle with python-uvicorn.
+(define-public python-httpx-bootstrap
+  (hidden-package
+   (package/inherit python-httpx
+     (name "python-httpx-bootstrap")
+     (arguments (list #:tests? #f))
+     (native-inputs '())
+     (propagated-inputs
+      (modify-inputs (package-propagated-inputs python-httpx)
+        (replace "python-httpcore"  python-httpcore-bootstrap))))))
 
 (define-public python-wsgiprox
   (package
@@ -5343,24 +5604,18 @@ files.")
 (define-public python-websockets
   (package
     (name "python-websockets")
-    (version "8.1")
+    (version "10.3")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "websockets" version))
-        (sha256
-         (base32
-          "03s3ml6sbki24aajllf8aily0xzrn929zxi84p50zkkbikdd4raw"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aaugustin/websockets")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1vk7g5z977mi89hamwiqawpmibwvv9ghrf3pqva1waxmyc7gyjb5"))))
     (build-system python-build-system)
-    (arguments
-     '(#:tests? #f  ; Tests not included in release tarball.
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-websockets-package-name-requirement
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Python package names use dot as separator.
-             (substitute* "setup.py"
-               (("websockets/extensions") "websockets.extensions")))))))
     (home-page "https://github.com/aaugustin/websockets")
     (synopsis
      "Python implementation of the WebSocket Protocol (RFC 6455 & 7692)")
@@ -5729,6 +5984,53 @@ Swagger.")
      "Manuel lets you mix and match traditional doctests with custom test syntax.")
     (license license:asl2.0)))
 
+(define-public python-pecan
+  (package
+    (name "python-pecan")
+    (version "1.4.1")
+    (source
+     (origin
+       (method git-fetch)               ;no tests in pypi release
+       (uri (git-reference
+             (url "https://github.com/pecan/pecan")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "10lz0cqafx3j24m52vv9ph0bxrzyx6wv2dgz7g9kfm60lhaskqkh"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "test-requirements.txt"
+                ;; Drop extraneous virtualenv requirement.
+                ((".*virtualenv.*") ""))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv" "pecan")))))))
+    (native-inputs
+     (list gunicorn
+           python-genshi
+           python-jinja2
+           python-pytest
+           python-sqlalchemy
+           uwsgi))
+    (propagated-inputs
+     (list python-logutils
+           python-mako
+           python-six
+           python-webob
+           python-webtest))
+    (home-page "http://github.com/pecan/pecan")
+    (synopsis "WSGI object-dispatching web framework")
+    (description "This package provides a WSGI object-dispatching web
+framework, designed to be lean and fast, with few dependencies.")
+    (license license:bsd-3)))
+
 (define-public python-persistent
   (package
     (name "python-persistent")
@@ -6043,56 +6345,103 @@ parsing and rewriting of remote git URLs from various hosting providers.")
 as a Python package.")
     (license license:bsd-3)))
 
+(define-public python-sanic-routing
+  (package
+    (name "python-sanic-routing")
+    (version "0.7.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sanic-routing" version))
+       (sha256
+        (base32 "0k9paln0jd4sc2bklp977c82n29pk12wiv726siplkh57y5yi70k"))))
+    (build-system python-build-system)
+    (arguments
+     ;; PyPi sources does not contain tests, recursive dependency on
+     ;; python-sanic.
+     (list #:tests? #f))
+    (home-page "https://github.com/sanic-org/sanic-routing/")
+    (synopsis "Routing component for Sanic")
+    (description "Internal package for @code{python-sanic}, which provides
+the @code{BasicRouter}.")
+    (license license:expat)))
+
+(define-public python-sanic-testing
+  (package
+    (name "python-sanic-testing")
+    (version "22.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sanic-testing" version))
+       (sha256
+        (base32 "1vkgi9d3xyik507j4jy9s74mkl81hgx3c2d5y3aa1av9h6wjjivp"))))
+    (build-system python-build-system)
+    (arguments
+     ;; PyPi sources does not contain tests, recursive dependency on
+     ;; python-sanic.
+     (list #:tests? #f))
+    (propagated-inputs (list python-httpx python-sanic-bootstrap
+                             python-websockets))
+    (home-page "https://github.com/sanic-org/sanic-testing/")
+    (synopsis "Test clients for Sanic")
+    (description "Internal package for @code{python-sanic}, which is
+meant to be the core testing utility and clients for testing Sanic
+applications.")
+    (license license:expat)))
+
 (define-public python-sanic
   (package
     (name "python-sanic")
-    (version "20.12.4")
+    ;; We provide the latest LTS version of python-sanic.
+    (version "21.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sanic" version))
        (sha256
         (base32
-         "0axfc151s7nrykzypzciyvkxxrs5ayx8kxv4r620hjb9w3jjhfnp"))))
+         "0b8mcd1q9qkwcv2qz8nlyaacs0bp7a1l31sdq2m8hhkxykzfq5bg"))))
     (build-system python-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'use-recent-pytest
-           ;; Allow using recent dependencies.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "setup.py"
-               (("pytest==5.2.1") "pytest")
-               (("multidict>=5.0,<6.0") "multidict")
-               (("httpx==0\\.15\\.4") "httpx"))
-             #t))
-         (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (invoke "pytest" "-vv" "./tests" "-k"
-                     (string-append "not test_zero_downtime "
-                                    "and not test_gunicorn_worker "
-                                    "and not test_logo_")))))))
+      (list
+       #:phases
+         #~(modify-phases %standard-phases
+           (replace 'check
+             (lambda* (#:key tests? #:allow-other-keys)
+               (when tests?
+                 (invoke "pytest" "-vv" "./tests" "-k"
+                         (string-append
+                           ;; PyPi sources lack examples module.
+                           "not test_gunicorn_"
+                           ;; Does not expect brotli and reordered headers.
+                           " and not test_raw_headers"
+                           ;; These look like buggy testcases.
+                           " and not test_zero_downtime"
+                           " and not test_non_default_uvloop_config_raises_warning"
+                           " and not test_listeners_triggered"
+                           " and not test_keep_alive_connection_context"
+                           " and not test_keep_alive_client_timeout"))))))))
     (propagated-inputs
      (list python-aiofiles
            python-httptools
-           python-httpx
            python-multidict
+           python-sanic-routing
            python-ujson
            python-uvloop
            python-websockets))
     (native-inputs
      (list gunicorn
+           python-bandit
            python-beautifulsoup4
-           python-hstspreload
-           python-httpcore
+           python-chardet
+           python-isort
            python-pytest
-           python-pytest-cov
            python-pytest-benchmark
            python-pytest-sanic
            python-pytest-sugar
            python-pytest-asyncio
-           python-urllib3
+           python-sanic-testing
            python-uvicorn))
     (home-page
      "https://github.com/sanic-org/sanic/")
@@ -6104,6 +6453,13 @@ that's written to go fast.  It allows the usage of the
 @code{async/await} syntax added in Python 3.5, which makes
 your code non-blocking and speedy.")
     (license license:expat)))
+
+(define-public python-sanic-bootstrap
+  (package
+     (inherit python-sanic)
+     (name "python-sanic-bootstrap")
+     (arguments (list #:tests? #f))
+     (native-inputs '())))
 
 (define-public python-socketio
   (package
@@ -6163,6 +6519,27 @@ your code non-blocking and speedy.")
      "Socks is a library providing core proxy (SOCKS4, SOCKS5, HTTP tunneling)
  functionality.")
     (license license:asl2.0)))
+
+(define-public python-socksio
+  (package
+    (name "python-socksio")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "socksio" version))
+       (sha256
+        (base32 "1b64j45w35jzhjhnq44bnyad9ydh1iyyd7a6j2c8phxmllyyp2zq"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/sethmlarson/socksio")
+    (synopsis "Sans-I/O implementation of SOCKS4, SOCKS4A, and SOCKS5.")
+    (description "The @code{socksio} Python module is a client-side sans-I/O
+SOCKS proxy implementation.  It supports SOCKS4, SOCKS4A, and SOCKS5.
+@code{socksio} is a sans-I/O library similar to @code{h11} or @code{h2}; this
+means the library itself does not handle the actual sending of the bytes
+through the network, it only deals with the implementation details of the
+SOCKS protocols.  It can be paired with any I/O library.")
+    (license license:expat)))
 
 (define-public python-azure-nspkg
   (package

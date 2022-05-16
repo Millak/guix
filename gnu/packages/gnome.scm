@@ -446,7 +446,7 @@ services.")
      (list docbook-xml-4.1.2 gobject-introspection gtk-doc/stable
            pkg-config))
     (propagated-inputs
-     (list glib libsoup libxml2))
+     (list glib libsoup-minimal-2 libxml2))
     (synopsis "Glib library for feeds")
     (description "LibGRSS is a Glib abstraction to handle feeds in RSS, Atom,
 and other formats.")
@@ -557,7 +557,7 @@ bindings.")
        ("xscrnsaver" ,libxscrnsaver)))
     (propagated-inputs
      `(("glib" ,glib)
-       ("webkit" ,webkitgtk)))
+       ("webkit" ,webkitgtk-with-libsoup2)))
     (synopsis "GObject JavaScriptCore bridge")
     (description "Seed is a library and interpreter, dynamically bridging
 (through GObjectIntrospection) the WebKit JavaScriptCore engine, with the
@@ -11942,7 +11942,8 @@ and toolbars.")
        ("gettext" ,gettext-minimal)
        ("glib:bin" ,glib "bin")
        ("gobject-introspection" ,gobject-introspection)
-       ("gtk+:bin" ,gtk+ "bin")))
+       ("gtk+:bin" ,gtk+ "bin")
+       ("python-wrapper" ,python-wrapper)))
     (inputs
      `(("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
        ("gspell" ,gspell)

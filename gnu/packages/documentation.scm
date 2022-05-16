@@ -11,6 +11,7 @@
 ;;; Copyright © 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.counoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -31,9 +32,11 @@
   #:use-module (guix licenses)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (guix deprecation)
   #:use-module (gnu packages)
@@ -41,7 +44,9 @@
   #:use-module (gnu packages backup)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages docbook)
@@ -53,6 +58,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages sphinx)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
 
@@ -255,6 +261,57 @@ generate both TeX output for high-quality hardcopies or HTML output for online
 browsing.  The documentation is extracted directly from the C/C++/IDL source
 or Java class files.")
     (license gpl2+)))
+
+(define-public python-docrepr
+  (package
+    (name "python-docrepr")
+    (version "0.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/spyder-ide/docrepr")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1ma5gwy93m1djd3zdlnqfrwhgr8ic1qbsz5kkrb9f987ax40lfkd"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-sources
+            (lambda _
+              ;; XXX: This fixes an issue where shutil.copytree would fail
+              ;; merging directories with same files copied by Sphinx from the
+              ;; store (hence read-only, throwing a Permission denied error).
+              ;; In the case this happens, it falls back to a manual copy
+              ;; routine that omits overwriting same-named files (see:
+              ;; https://github.com/spyder-ide/docrepr/issues/54).
+              (substitute* "docrepr/utils.py"
+                (("except TypeError")
+                 "except (TypeError, shutil.Error)"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-p" "no:warnings" "-vv")))))))
+    (native-inputs
+     (list python-ipython
+           python-matplotlib
+           python-numpy
+           python-pytest
+           python-pytest-asyncio))
+    (propagated-inputs
+     (list python-docutils
+           python-jinja2
+           python-matplotlib
+           python-sphinx))
+    (home-page "https://github.com/spyder-ide/docrepr/")
+    (synopsis "Python docstrings to HTML renderer")
+    (description "Docrepr renders Python docstrings to HTML with Sphinx.  It
+can generate rich and plain representations of docstrings, alongside
+additional metadata about the object to which the docstring belongs.")
+    (license bsd-3)))
 
 (define-public scrollkeeper
   (package

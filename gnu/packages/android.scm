@@ -4,7 +4,7 @@
 ;;; Copyright © 2016, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2017 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2017, 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2017, 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019, 2020 Andreas Enge <andreas@enge.fr>
@@ -1078,23 +1078,33 @@ backups.  It supports encrypted archives.")
 (define-public python-miio
   (package
     (name "python-miio")
-    (version "0.5.8")
+    (version "0.5.11")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "python-miio" version))
        (sha256
         (base32
-         "0a4f5ybjvibawwxcjm3r9nnrzf1yff6wwgy05yzyk0bb3rmc99fp"))))
+         "1dyzzywfa5h6q8clmzxsqmszlby8757ajmvkhdyvq6719z4bn46n"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "setup.py"
+               (("cryptography>=35")
+                "cryptography"))))
+         (add-after 'unpack 'adjust-for-click-8
+           (lambda _
+             (substitute* '("miio/integrations/vacuum/roborock/vacuum.py"
+                            "miio/integrations/vacuum/roborock/vacuum_cli.py")
+               (("resultcallback")
+                "result_callback"))))
          (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+           (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest" "miio")))))))
+               (invoke "pytest" "-vv" "miio")))))))
     (native-inputs
      (list python-pytest
            python-pytest-mock

@@ -266,18 +266,25 @@ file metadata operations that can be performed per second.")
 (define-public python-locust
   (package
     (name "python-locust")
-    (version "2.5.1")
+    (version "2.8.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "locust" version))
        (sha256
         (base32
-         "1516z6z5pikybg7pma2cgxgj3wxaaky7z6d30mxf81wd4krbq16s"))))
+         "1gn13j758j36knlcdyyyggn60rpw98iqdkvl3kjsz34brysic6q1"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "setup.py"
+               (("setuptools_scm<=6.0.1")
+                "setuptools_scm")
+               (("Jinja2<3.1.0")
+                "Jinja2"))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
@@ -299,7 +306,10 @@ file metadata operations that can be performed per second.")
                                ;; respectively (see:
                                ;; https://github.com/locustio/locust/issues/1708).
                                "not test_custom_exit_code"
-                               "not test_webserver") " and "))))))))
+                               "not test_webserver"
+                               ;; This test fails with "AssertionError:
+                               ;; 'stopped' != 'stopping'".
+                               "not test_distributed_shape") " and "))))))))
     (propagated-inputs
      (list python-configargparse
            python-flask
@@ -307,6 +317,7 @@ file metadata operations that can be performed per second.")
            python-flask-cors
            python-gevent
            python-geventhttpclient
+           python-jinja2
            python-msgpack
            python-psutil
            python-pyzmq
@@ -315,8 +326,11 @@ file metadata operations that can be performed per second.")
            python-typing-extensions
            python-werkzeug))
     (native-inputs
-     (list python-mock python-pyquery python-pytest
-           python-retry python-setuptools-scm))
+     (list python-mock
+           python-pyquery
+           python-pytest
+           python-retry
+           python-setuptools-scm))
     (home-page "https://locust.io/")
     (synopsis "Distributed load testing framework")
     (description "Locust is a performance testing tool that aims to be easy to

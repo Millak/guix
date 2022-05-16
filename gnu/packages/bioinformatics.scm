@@ -3009,7 +3009,7 @@ and record oriented data modeling and the Semantic Web.")
              ;; Pytest doesn't know what to do with "-n auto"
              (substitute* "tox.ini"
                (("-n auto") "")))))))
-    (propagated-inputs
+    (inputs
      (list python-argcomplete
            python-bagit
            python-coloredlogs
@@ -14503,7 +14503,8 @@ neural networks.")
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags #~(list (string-append "CXX=" #$(cxx-for-target)))
-           #:tests? #f ; Unclear how to run tests: https://github.com/ekg/fastahack/issues/15
+           ;; Unclear how to run tests: https://github.com/ekg/fastahack/issues/15
+           #:tests? #f
            #:phases
            #~(modify-phases %standard-phases
                (delete 'configure) ; There is no configure phase.

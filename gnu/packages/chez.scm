@@ -4,7 +4,7 @@
 ;;; Copyright © 2017, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Brendan Tildesley <mail@brendan.scot>
-;;; Copyright © 2021 Philip McGrath <philip@philipmcgrath.com>
+;;; Copyright © 2021, 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -48,9 +48,7 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:export (chez-scheme-for-system
-            nix-system->chez-machine
-            chez-machine->nonthreaded
-            chez-machine->threaded
+            racket-cs-native-supported-system?
             unpack-nanopass+stex))
 
 ;; Commentary:
@@ -71,97 +69,141 @@
 (define* (chez-scheme-for-system #:optional
                                  (system (or (%current-target-system)
                                              (%current-system))))
-  "Return 'chez-scheme' unless only 'chez-scheme-for-racket' supports SYSTEM,
-including support for native threads."
-  (if (or
-       ;; full support upstream
-       (and=> (chez-upstream-features-for-system system)
-              (cut memq 'threads <>))
-       ;; no support anywhere
-       (not (nix-system->chez-machine system)))
+  "Return 'chez-scheme' if it fully supports SYSTEM, including support for
+bootstrapping and native threads.  Otherwise, return
+'chez-scheme-for-racket'."
+  (if (and=> (chez-upstream-features-for-system system)
+             (lambda (features)
+               (every (cut memq <> features)
+                      '(threads
+                        ;; We can cross-compile for platforms without
+                        ;; bootstrap bootfiles, but we can't self-host
+                        ;; on them short of adding more binary seeds.
+                        bootstrap-bootfiles))))
       chez-scheme
       chez-scheme-for-racket))
 
-(define (chez-machine->nonthreaded machine)
-  "Given a string MACHINE naming a Chez Scheme machine type, returns a string
-naming the nonthreaded machine type for the same architecture and OS as
-MACHINE.  The returned string may share storage with MACHINE."
-  ;; Chez Scheme documentation consistently uses "nonthreaded" rather than
-  ;; e.g. "unthreaded"
-  (if (eqv? #\t (string-ref machine 0))
-      (substring machine 1)
-      machine))
-(define (chez-machine->threaded machine)
-  "Like @code{chez-machine->nonthreaded}, but returns the threaded machine
-type."
-  (if (eqv? #\t (string-ref machine 0))
-      machine
-      (string-append "t" machine)))
+(define* (target-chez-arch #:optional (system
+                                       (or (%current-target-system)
+                                           (%current-system))))
+  "Return a string representing the architecture of SYSTEM as used in Chez
+Scheme machine types, or '#f' if none is defined."
+  (cond
+   ((target-x86-64? system)
+    "a6")
+   ((target-x86-32? system)
+    "i3")
+   ((target-aarch64? system)
+    "arm64")
+   ((target-arm32? system)
+    "arm32")
+   ((target-ppc64le? system)
+    #f)
+   ((target-ppc32? system)
+    "ppc32")
+   ((target-riscv64? system)
+    #f)
+   (else
+    #f)))
 
-;; Based on the implementation from raco-cross-lib/private/cross/platform.rkt
-;; in https://github.com/racket/raco-cross.
-;; For supported platforms, refer to release_notes/release_notes.stex in the
-;; upstream Chez Scheme repository or to racket/src/ChezScheme/README.md
-;; in https://github.com/racket/racket.
-(define %nix-arch-to-chez-alist
-  `(("x86_64" . "a6")
-    ("i386" . "i3")
-    ("aarch64" . "arm64")
-    ("armhf" . "arm32") ;; Chez supports ARM v6+
-    ("ppc" . "ppc32")))
-(define %nix-os-to-chez-alist
-  `(("w64-mingw32" . "nt")
-    ("darwin" . "osx")
-    ("linux" . "le")
-    ("freebsd" . "fb")
-    ("openbsd" . "ob")
-    ("netbsd" . "nb")
-    ("solaris" . "s2")))
+(define* (target-chez-os #:optional (system (or (%current-target-system)
+                                                (%current-system))))
+  "Return a string representing the operating system kernel of SYSTEM as used
+in Chez Scheme machine types, or '#f' if none is defined."
+  ;; e.g. "le" includes both GNU/Linux and Android
+  (cond
+   ((target-linux? system)
+    "le")
+   ((target-hurd? system)
+    #f)
+   ((target-mingw? system)
+    "nt")
+   ;; missing (guix utils) predicates
+   ;; cf. https://github.com/NixOS/nixpkgs/blob/master/lib/systems/doubles.nix
+   ((string-suffix? "-darwin" system)
+    "osx")
+   ((string-suffix? "-freebsd" system)
+    "fb")
+   ((string-suffix? "-openbsd" system)
+    "ob")
+   ((string-suffix? "-netbsd" system)
+    "nb")
+   ;; Nix says "x86_64-solaris", but accommodate "-solaris2"
+   ((string-contains system "solaris")
+    "s2")
+   ;; unknown
+   (else
+    #f)))
 
-(define (chez-machine->nix-system machine)
-  "Return the Nix system type corresponding to the Chez Scheme machine type
-MACHINE.  If MACHINE is not a string representing a known machine type, an
-exception is raised.  This function does not distinguish between threaded and
-nonthreaded variants of MACHINE.
-
-Note that this function only handles Chez Scheme machine types in the
-strictest sense, not other kinds of descriptors sometimes used in place of a
-Chez Scheme machine type by Racket, such as @code{\"pb\"}, @code{#f}, or
-@code{\"racket\"}.  (When using such extensions, the Chez Scheme machine type
-for the host system is often still relevant.)"
-  (let ((machine (chez-machine->nonthreaded machine)))
-    (let find-arch ((alist %nix-arch-to-chez-alist))
-      (match alist
-        (((nix . chez) . alist)
-         (if (string-prefix? chez machine)
-             (string-append
-              nix "-" (let ((machine-os
-                             (substring machine (string-length chez))))
-                        (let find-os ((alist %nix-os-to-chez-alist))
-                          (match alist
-                            (((nix . chez) . alist)
-                             (if (equal? chez machine-os)
-                                 nix
-                                 (find-os alist)))))))
-             (find-arch alist)))))))
-
-(define* (nix-system->chez-machine #:optional
-                                   (system (or (%current-target-system)
-                                               (%current-system))))
-  "Return the Chez Scheme machine type corresponding to the Nix system
-identifier SYSTEM, or @code{#f} if the translation of SYSTEM to a Chez Scheme
-machine type is undefined.
-
-It is unspecified whether the resulting string will name a threaded or a
-nonthreaded machine type: when the distinction is relevant, use
-@code{chez-machine->nonthreaded} or @code{chez-machine->threaded} to adjust
-the result."
-  (let* ((hyphen (string-index system #\-))
-         (nix-arch (substring system 0 hyphen))
-         (nix-os (substring system (+ 1 hyphen)))
-         (chez-arch (assoc-ref %nix-arch-to-chez-alist nix-arch))
-         (chez-os (assoc-ref %nix-os-to-chez-alist nix-os)))
-    (and chez-arch chez-os (string-append chez-arch chez-os))))
+(define %chez-features-table
+  ;; An alist of alists mapping:
+  ;;   os -> arch -> (or/c #f (listof symbol?))
+  ;; where:
+  ;;  - `os` is a string for the OS part of a Chez Scheme machine type; and
+  ;;  - `arch` is a string for the architecture part of a Chez machine type.
+  ;;
+  ;; The absence of an entry for a given arch--os pair means that neither
+  ;; upstream Chez Scheme nor the Racket variant can generate native code for
+  ;; that system.  (The Racket variant can still provide support via its
+  ;; ``portable bytecode'' backends and optional compilation to C.)  A value
+  ;; of `#f` means that upstream Chez Scheme does not support the arch--os
+  ;; pair at all, but the Racket variant does.  A list has the same meaning as
+  ;; a result from `chez-upstream-features-for-system`.
+  ;;
+  ;; The arch--os pairs marked "commented out" have been commented out in the
+  ;; STeX source for the upstream release notes since the initial release as
+  ;; free software, but they are reported to work and/or have been described
+  ;; as supported by upstream maintainers.
+  ;;
+  ;; For this overall approach to make sense, we assume that Racket's variant
+  ;; of Chez Scheme can generate native code for a superset of the platforms
+  ;; supported upstream, supports threads on all platforms it supports at all
+  ;; (because they are needed for Racket), and doesn't need bootstrap
+  ;; bootfiles.  Those assumptions have held for several years.
+  '(;; Linux
+    ("le"
+     ("i3" threads bootstrap-bootfiles)
+     ("a6" threads bootstrap-bootfiles)
+     ("arm32" bootstrap-bootfiles)
+     ("arm64" . #f)
+     ("ppc32" threads))
+    ;; FreeBSD
+    ("fb"
+     ("i3" threads) ;; commented out
+     ("a6" threads) ;; commented out
+     ("arm32" . #f)
+     ("arm64" . #f)
+     ("ppc32" . #f))
+    ;; OpenBSD
+    ("ob"
+     ("i3" threads) ;; commented out
+     ("a6" threads) ;; commented out
+     ("arm32" . #f)
+     ("arm64" . #f)
+     ("ppc32" . #f))
+    ;; NetBSD
+    ("nb"
+     ("i3" threads) ;; commented out
+     ("a6" threads) ;; commented out
+     ("arm32" . #f)
+     ("arm64" . #f)
+     ("ppc32" . #f))
+    ;; OpenSolaris / OpenIndiana / Illumos
+    ("s2"
+     ("i3" threads) ;; commented out
+     ("a6" threads)) ;; commented out
+    ;; Windows
+    ("nt"
+     ("i3" threads bootstrap-bootfiles)
+     ("a6" threads bootstrap-bootfiles)
+     ;; ^ threads "experiemental", but reportedly fine
+     ("arm64" . #f))
+    ;; Darwin
+    ("osx"
+     ("i3" threads bootstrap-bootfiles)
+     ("a6" threads bootstrap-bootfiles)
+     ("arm64" . #f)
+     ("ppc32" . #f))))
 
 (define* (chez-upstream-features-for-system #:optional
                                             (system
@@ -172,20 +214,27 @@ for the Nix system identifier SYSTEM, or @code{#f} if upstream Chez Scheme
 does not support SYSTEM at all.
 
 If native threads are supported, the returned list will include
-@code{'threads}.  Other feature symbols may be added in the future."
-  (cond
-   ((not (nix-system->chez-machine system))
-    #f)
-   ((target-aarch64? system)
-    #f)
-   ((target-arm32? system)
-    (and (target-linux? system)
-         '()))
-   ((target-ppc32? system)
-    (and (target-linux? system)
-         '(threads)))
-   (else
-    '(threads))))
+@code{'threads}.  If bootstrap bootfiles for SYSTEM are distributed in the
+upstream Chez Scheme repository, the returned list will include
+@code{'bootstrap-bootfiles}.  Other feature symbols may be added in the
+future."
+  (let ((chez-arch (target-chez-arch system))
+        (chez-os (target-chez-os system)))
+    (and=> (assoc-ref %chez-features-table chez-os)
+           (cut assoc-ref <> chez-arch))))
+
+(define* (racket-cs-native-supported-system? #:optional
+                                             (system
+                                              (or (%current-target-system)
+                                                  (%current-system))))
+  "Can Racket's variant of Chez Scheme generate native code for SYSTEM?
+Otherwise, SYSTEM can use only the ``portable bytecode'' backends."
+  (let ((chez-arch (target-chez-arch system))
+        (chez-os (target-chez-os system)))
+    (and (and=> (assoc-ref %chez-features-table chez-os)
+                ;; NOT assoc-ref: supported even if cdr is #f
+                (cut assoc chez-arch <>))
+         #t)))
 
 ;;
 ;; Chez Scheme:
@@ -210,7 +259,7 @@ If native threads are supported, the returned list will include
     (name "chez-scheme")
     ;; The version should match `(scheme-version-number)`.
     ;; See s/cmacros.ss c. line 360.
-    (version "9.5.6")
+    (version "9.5.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -218,7 +267,7 @@ If native threads are supported, the returned list will include
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "07s433hn1z2slfc026sidrpzxv3a8narcd40qqr1xrpb9012xdky"))
+                "0xchqq8cm0ka5wgpn18sjs0hh15rc3nb7xrjqbbc9al3asq0d7gc"))
               (file-name (git-file-name name version))
               (snippet #~(begin
                            (use-modules (guix build utils))
@@ -258,8 +307,18 @@ If native threads are supported, the returned list will include
         (ice-9 ftw)
         (ice-9 match))
       #:test-target "test"
-      ;; TODO when we fix armhf, it may not support --threads
-      #:configure-flags #~'("--threads")
+      #:configure-flags
+      #~`(,(string-append "--installprefix=" #$output)
+          #$@(if (and=> (chez-upstream-features-for-system)
+                        (cut memq 'threads <>))
+                 #~("--threads")
+                 #~())
+          "ZLIB=-lz"
+          "LZ4=-llz4"
+          "--libkernel"
+          ;; Guix will do 'compress-man-pages',
+          ;; and letting Chez try causes an error
+          "--nogzip-man-pages")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'unpack-nanopass+stex
@@ -273,26 +332,35 @@ If native threads are supported, the returned list will include
                (search-input-directory (or native-inputs inputs)
                                        "lib/chez-scheme-bootfiles")
                "boot")))
-          ;; NOTE: the custom Chez 'configure' script doesn't allow
+          ;; NOTE: The custom Chez 'configure' script doesn't allow
           ;; unrecognized flags, such as those automatically added
-          ;; by `gnu-build-system`.
+          ;; by `gnu-build-system`. This replacement phase uses only
+          ;; the explicitly provided `#:configure-flags`.
           (replace 'configure
-            (lambda* (#:key inputs (configure-flags '()) #:allow-other-keys)
-              ;; add flags which are always required:
-              (let ((flags (cons* (string-append "--installprefix=" #$output)
-                                  "ZLIB=-lz"
-                                  "LZ4=-llz4"
-                                  "--libkernel"
-                                  ;; Guix will do compress-man-pages,
-                                  ;; and letting Chez try causes an error
-                                  "--nogzip-man-pages"
-                                  configure-flags)))
-                (format #t "configure flags: ~s~%" flags)
-                ;; Some makefiles (for tests) don't seem to propagate CC
-                ;; properly, so we take it out of their hands:
-                (setenv "CC" #$(cc-for-target))
-                (setenv "HOME" "/tmp")
-                (apply invoke "./configure" flags))))
+            (lambda* (#:key inputs (configure-flags '()) out-of-source?
+                            #:allow-other-keys)
+              (let* ((abs-srcdir (getcwd))
+                     (srcdir (if out-of-source?
+                                 (string-append "../" (basename abs-srcdir))
+                                 ".")))
+                (format #t "source directory: ~s (relative from build: ~s)~%"
+                        abs-srcdir srcdir)
+                (if out-of-source?
+                    (begin
+                      (mkdir "../build")
+                      (chdir "../build")))
+                (format #t "build directory: ~s~%" (getcwd))
+                (format #t "configure flags: ~s~%" configure-flags)
+                (apply invoke
+                       (string-append srcdir "/configure")
+                       configure-flags))))
+          (add-after 'configure 'configure-environment-variables
+            (lambda args
+              ;; Some makefiles (for tests) don't seem to propagate CC
+              ;; properly, so we take it out of their hands:
+              (setenv "CC" #$(cc-for-target))
+              ;; Likewise, some tests have needed HOME to be set:
+              (setenv "HOME" "/tmp")))
           ;; The binary file name is called "scheme" as is the one from
           ;; MIT/GNU Scheme.  We add a symlink to use in case both are
           ;; installed.
@@ -309,43 +377,46 @@ If native threads are supported, the returned list will include
                             (string-append (dirname scheme.boot)
                                            "/chez-scheme.boot")))))))
           ;; Building the documentation requires stex and a running scheme.
-          ;; FIXME: this is probably wrong for cross-compilation
-          (add-after 'install-symlink 'install-doc
+          (add-after 'install-symlink 'install-docs
             (lambda* (#:key native-inputs inputs outputs #:allow-other-keys)
-              (match (assoc-ref outputs "doc")
-                (#f
-                 (format #t "not installing docs~%"))
-                (doc-prefix
-                 (let* ((chez+version (strip-store-file-name #$output))
-                        (scheme (search-input-file outputs "/bin/scheme"))
-                        (stexlib (search-input-directory (or native-inputs
-                                                             inputs)
-                                                         "/lib/stex"))
-                        (doc-dir (string-append doc-prefix
-                                                "/share/doc/"
-                                                chez+version)))
-                   (define* (stex-make #:optional (suffix ""))
-                     (invoke "make" "install"
-                             (string-append "Scheme=" scheme)
-                             (string-append "STEXLIB=" stexlib)
-                             (string-append "installdir=" doc-dir suffix)))
-                   (with-directory-excursion "csug"
-                     (stex-make "/csug"))
-                   (with-directory-excursion "release_notes"
-                     (stex-make "/release_notes"))
-                   (with-directory-excursion doc-dir
-                     (symlink "release_notes/release_notes.pdf"
-                              "release_notes.pdf")
-                     (symlink "csug/csug9_5.pdf"
-                              "csug.pdf"))))))))))
-    ;; Chez Scheme does not have a  MIPS backend.
-    ;; FIXME: Debian backports patches to get armhf working.
-    ;; We should too. It is the Chez machine type arm32le
-    ;; (no threaded version upstream yet, though there is in
-    ;; Racket's fork), more specifically (per the release notes) ARMv6.
+              (let* ((doc-prefix (or (assoc-ref outputs "doc")
+                                     (assoc-ref outputs "out")))
+                     (chez+version (strip-store-file-name #$output))
+                     (scheme (search-input-file outputs "/bin/scheme"))
+                     (stexlib (search-input-directory (or native-inputs
+                                                          inputs)
+                                                      "/lib/stex"))
+                     (doc-dir (string-append doc-prefix
+                                             "/share/doc/"
+                                             chez+version)))
+                (define* (stex-make #:optional (suffix ""))
+                  (invoke "make" "install"
+                          (string-append "Scheme=" scheme)
+                          (string-append "STEXLIB=" stexlib)
+                          (string-append "installdir=" doc-dir suffix)))
+                (with-directory-excursion "csug"
+                  (stex-make "/csug"))
+                (with-directory-excursion "release_notes"
+                  (stex-make "/release_notes")))))
+          (add-after 'install-docs 'link-doc-pdfs
+            ;; otherwise, it's hard to notice them in a forest of HTML files
+            (lambda* (#:key outputs #:allow-other-keys)
+              (with-directory-excursion
+                  (string-append (or (assoc-ref outputs "doc")
+                                     (assoc-ref outputs "out"))
+                                 "/share/doc/"
+                                 (strip-store-file-name #$output))
+                (symlink "release_notes/release_notes.pdf"
+                         "release_notes.pdf")
+                (match (find-files "csug"
+                                   "csug.*\\.pdf$" ;; embeded version number
+                                   #:fail-on-error? #t)
+                  ((pth)
+                   (symlink pth
+                            "csug.pdf")))))))))
     (supported-systems
      (delete
-      "armhf-linux" ;; <-- should work, but reportedly broken
+      "armhf-linux" ;; XXX reportedly broken, needs checking
       (filter chez-upstream-features-for-system
               %supported-systems)))
     (home-page "https://cisco.github.io/ChezScheme/")
@@ -361,7 +432,7 @@ and 32-bit PowerPC architectures.")
   (package
     (inherit chez-scheme)
     (name "chez-scheme-for-racket")
-    (version "9.5.7.3")
+    (version "9.5.7.6")
     ;; The version should match `(scheme-fork-version-number)`.
     ;; See racket/src/ChezScheme/s/cmacros.ss c. line 360.
     ;; It will always be different than the upstream version!
@@ -377,7 +448,9 @@ and 32-bit PowerPC architectures.")
     (arguments
      (substitute-keyword-arguments (package-arguments chez-scheme)
        ((#:configure-flags cfg-flags #~'())
-        #~(cons "--disable-x11" #$cfg-flags))
+        #~(cons* "--disable-x11"
+                 "--threads" ;; ok to potentially duplicate
+                 #$cfg-flags))
        ((#:phases those-phases #~%standard-phases)
         #~(let* ((those-phases #$those-phases)
                  (unpack (assoc-ref those-phases 'unpack)))
@@ -389,7 +462,9 @@ and 32-bit PowerPC architectures.")
               (add-after 'unpack 'chdir
                 (lambda args
                   (chdir "racket/src/ChezScheme"))))))))
-    (supported-systems (filter nix-system->chez-machine
+    ;; TODO: How to build pbarch/pbchunks for other systems?
+    ;; See https://racket.discourse.group/t/950
+    (supported-systems (filter racket-cs-native-supported-system?
                                %supported-systems))
     (home-page "https://github.com/racket/ChezScheme")
     ;; ^ This is downstream of https://github.com/racket/racket,
@@ -442,16 +517,9 @@ Faster multiplication and division for large exact numbers
      (list #:install-plan
            #~`(("boot/" "lib/chez-scheme-bootfiles"))))
     (supported-systems
-     ;; Upstream only distributes pre-built bootfiles for
-     ;; arm32le and t?(i3|a6)(le|nt|osx)
      (filter (lambda (system)
-               (let ((machine (and=> (nix-system->chez-machine system)
-                                     chez-machine->nonthreaded)))
-                 (or (equal? "arm32le" machine)
-                     (and machine
-                          (member (substring machine 0 2) '("i3" "a6"))
-                          (or-map (cut string-suffix? <> machine)
-                                  '("le" "nt" "osx"))))))
+               (and=> (chez-upstream-features-for-system system)
+                      (cut memq 'bootstrap-bootfiles <>)))
              %supported-systems))
     (synopsis "Chez Scheme bootfiles (binary seed)")
     (description
@@ -573,6 +641,10 @@ Chez Scheme.")))
                             ("src" "lib/stex/")
                             ("Mf-stex" "lib/stex/")
                             ("Makefile.template" "lib/stex/"))
+         #:modules
+         '((guix build copy-build-system)
+           (guix build utils)
+           (ice-9 popen))
          #:phases
          #~(modify-phases %standard-phases
              (add-before 'install 'patch-sources
@@ -604,8 +676,14 @@ Chez Scheme.")))
                         (define makefile
                           (string-append (getcwd) "/Makefile"))
                         (define machine
-                          #$(and=> (nix-system->chez-machine)
-                                   chez-machine->threaded))
+                          (let ((pipe (open-pipe* OPEN_BOTH scheme "-q")))
+                            ;; try to not be wrong for cross-compilation
+                            ;; (avoid #% reader abbreviation for Guile)
+                            (write '(($primitive $target-machine)) pipe)
+                            (force-output pipe)
+                            (let ((sym (read pipe)))
+                              (close-pipe pipe)
+                              (symbol->string sym))))
                         (with-directory-excursion
                             (search-input-directory outputs "/lib/stex")
                           (invoke "make"

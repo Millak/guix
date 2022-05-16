@@ -1030,7 +1030,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/emacs-exec-path.patch			\
   %D%/packages/patches/emacs-git-email-missing-parens.patch	\
   %D%/packages/patches/emacs-fix-scheme-indent-function.patch	\
-  %D%/packages/patches/emacs-ignore-empty-xim-styles.patch	\
   %D%/packages/patches/emacs-json-reformat-fix-tests.patch	\
   %D%/packages/patches/emacs-highlight-stages-add-gexp.patch	\
   %D%/packages/patches/emacs-hyperbole-toggle-messaging.patch	\
@@ -1039,6 +1038,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/emacs-telega-path-placeholder.patch	\
   %D%/packages/patches/emacs-telega-test-env.patch		\
   %D%/packages/patches/emacs-wordnut-require-adaptive-wrap.patch	\
+  %D%/packages/patches/emacs-yasnippet-fix-tests.patch	\
   %D%/packages/patches/enjarify-setup-py.patch			\
   %D%/packages/patches/enlightenment-fix-setuid-path.patch	\
   %D%/packages/patches/eog-update-libportal-usage.patch		\
@@ -1297,7 +1297,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/iputils-libcap-compat.patch		\
   %D%/packages/patches/ipxe-reproducible-geniso.patch	        \
   %D%/packages/patches/irrlicht-use-system-libs.patch		\
-  %D%/packages/patches/isc-dhcp-gcc-compat.patch		\
   %D%/packages/patches/isl-0.11.1-aarch64-support.patch	\
   %D%/packages/patches/json-c-0.13-CVE-2020-12762.patch	\
   %D%/packages/patches/json-c-0.12-CVE-2020-12762.patch	\
@@ -1428,6 +1427,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/libxml2-terminating-newline.patch	\
   %D%/packages/patches/libxml2-xpath-recursion-limit.patch	\
   %D%/packages/patches/libxml2-xpath0-Add-option-xpath0.patch	\
+  %D%/packages/patches/libxmlb-install-xb-tool-into-bindir.patch \
   %D%/packages/patches/libxslt-generated-ids.patch		\
   %D%/packages/patches/libxt-guix-search-paths.patch		\
   %D%/packages/patches/lierolibre-check-unaligned-access.patch	\
@@ -1682,10 +1682,13 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-argcomplete-1.11.1-fish31.patch	\
   %D%/packages/patches/python-cross-compile.patch		\
   %D%/packages/patches/python-configobj-setuptools.patch	\
+  %D%/packages/patches/python-debugpy-unbundle-pydevd.patch	\
   %D%/packages/patches/python-docopt-pytest6-compat.patch	\
   %D%/packages/patches/python-execnet-read-only-fix.patch	\
   %D%/packages/patches/python-fixtures-remove-monkeypatch-test.patch	\
   %D%/packages/patches/python-flask-restful-werkzeug-compat.patch	\
+  %D%/packages/patches/python-ipython-documentation-chars.patch	\
+  %D%/packages/patches/python-ipython-documentation-repro.patch	\
   %D%/packages/patches/python-keras-integration-test.patch	\
   %D%/packages/patches/python-pdoc3-tests.patch			\
   %D%/packages/patches/python-peachpy-determinism.patch	\
@@ -1724,6 +1727,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-waitress-fix-tests.patch		\
   %D%/packages/patches/python-werkzeug-tests.patch		\
   %D%/packages/patches/python-mypy-12332.patch			\
+  %D%/packages/patches/python-mypy-use-sys-path.patch		\
   %D%/packages/patches/qemu-build-info-manual.patch		\
   %D%/packages/patches/qemu-glibc-2.27.patch 			\
   %D%/packages/patches/qemu-glibc-2.30.patch 			\
@@ -1759,8 +1763,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/ripperx-missing-file.patch		\
   %D%/packages/patches/rpcbind-CVE-2017-8779.patch		\
   %D%/packages/patches/rtags-separate-rct.patch			\
-  %D%/packages/patches/racket-enable-scheme-backport.patch	\
-  %D%/packages/patches/racket-gui-tethered-launcher-backport.patch	\
   %D%/packages/patches/racket-minimal-sh-via-rktio.patch	\
   %D%/packages/patches/remake-impure-dirs.patch			\
   %D%/packages/patches/restic-0.9.6-fix-tests-for-go1.15.patch	\

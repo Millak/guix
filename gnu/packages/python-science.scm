@@ -6,7 +6,7 @@
 ;;; Copyright © 2016, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016-2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2019, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
@@ -73,102 +73,82 @@
 (define-public python-scipy
   (package
     (name "python-scipy")
-    (version "1.7.3")
+    (version "1.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "scipy" version))
        (sha256
-        (base32 "1gxsnw6viz2j3sm8ak2a8l7fcn4b2zm3kzfm8w57xxyyrzx7an5b"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-numpy python-matplotlib python-pyparsing))
-    (inputs
-     (list openblas pybind11))
-    (native-inputs
-     (list python-cython
-           python-pydata-sphinx-theme
-           python-pytest
-           python-sphinx
-           python-sphinx-panels
-           python-numpydoc
-           gfortran
-           perl
-           which))
+        (base32 "1gghkwn93niyasm36333xbqrnn3yiadq9d97wnc9mg14nzbg5m1i"))))
     (outputs '("out" "doc"))
+    (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-pythran
-           (lambda _
-             (setenv "SCIPY_USE_PYTHRAN" "0")))
-         (add-before 'build 'change-home-dir
-           (lambda _
-             ;; Change from /homeless-shelter to /tmp for write permission.
-             (setenv "HOME" "/tmp")))
-         (add-after 'unpack 'disable-broken-tests
-           (lambda _
-             (substitute* "scipy/sparse/linalg/dsolve/tests/test_linsolve.py"
-               (("^( +)def test_threads_parallel\\(self\\):" m indent)
-                (string-append indent
-                               "@pytest.mark.skip(reason=\"Disabled by Guix\")\n"
-                               m)))
-             (substitute* "scipy/sparse/linalg/eigen/arpack/tests/test_arpack.py"
-               (("^def test_parallel_threads\\(\\):" m)
-                (string-append "@pytest.mark.skip(reason=\"Disabled by Guix\")\n"
-                               m)))))
-         (add-before 'build 'configure-openblas
-           (lambda* (#:key inputs #:allow-other-keys)
-             (call-with-output-file "site.cfg"
-               (lambda (port)
-                 (format port
-                         "[blas]
+     (list
+      #:modules '((guix build utils)
+                  (guix build python-build-system)
+                  (ice-9 format))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-pythran
+            (lambda _
+              (setenv "SCIPY_USE_PYTHRAN" "0")))
+          (add-before 'build 'change-home-dir
+            (lambda _
+              ;; Change from /homeless-shelter to /tmp for write permission.
+              (setenv "HOME" "/tmp")))
+          (add-before 'build 'configure-openblas
+            (lambda _
+              (call-with-output-file "site.cfg"
+                (lambda (port)
+                  (format port
+                          "\
+[blas]
 libraries = openblas
 library_dirs = ~a/lib
-include_dirs = ~a/include
+include_dirs = ~:*~a/include
 
-# backslash-n to make emacs happy
-\n[atlas]
-library_dirs = ~a/lib
-atlas_libs = openblas
-"
-                         (assoc-ref inputs "openblas")
-                         (assoc-ref inputs "openblas")
-                         (assoc-ref inputs "openblas"))))))
-         (add-after 'install 'install-doc
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((data (string-append (assoc-ref outputs "doc") "/share"))
-                    (doc (string-append data "/doc/" ,name "-" ,version))
-                    (html (string-append doc "/html"))
-                    (pyver ,(string-append "PYVER=" (version-major+minor
-                                                     (package-version python))))
-                    ;; By default it tries to run sphinx-build through the Python
-                    ;; interpreter which won't work with our shell wrapper.
-                    (sphinxbuild "SPHINXBUILD=LANG=C sphinx-build"))
-               ;; Make installed package available for building the
-               ;; documentation
-               (add-installed-pythonpath inputs outputs)
-               (with-directory-excursion "doc"
-                 ;; Fix generation of images for mathematical expressions.
-                 (substitute* (find-files "source" "conf\\.py")
-                   (("pngmath_use_preview = True")
-                    "pngmath_use_preview = False"))
-                 (mkdir-p html)
-                 (invoke "make" "html" pyver sphinxbuild)
-                 (with-directory-excursion "build/html"
-                   (for-each (lambda (file)
-                               (let* ((dir (dirname file))
-                                      (tgt-dir (string-append html "/" dir)))
-                                 (install-file file html)))
-                             (find-files ".")))))))
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (with-directory-excursion "/tmp"
-                 (invoke "python" "-c"
-                         "import scipy; scipy.test(verbose=2)"))))))))
-    (home-page "https://www.scipy.org/")
+[atlas]
+library_dirs = ~:*~a/lib
+atlas_libs = openblas~%"  #$(this-package-input "openblas"))))))
+          (add-before 'build 'parallelize-build
+            (lambda _
+              (setenv "NPY_NUM_BUILD_JOBS"
+                      (number->string (parallel-job-count)))))
+          (add-before 'check 'install-doc
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((data (string-append (assoc-ref outputs "doc") "/share"))
+                     (doc (string-append data "/doc/" #$name "-" #$version))
+                     (html (string-append doc "/html")))
+                (with-directory-excursion "doc"
+                  ;; Build doc.
+                  (invoke "make" "html"
+                          ;; Building the documentation takes a very long time.
+                          ;; Parallelize it.
+                          (string-append "SPHINXOPTS=-j"
+                                         (number->string (parallel-job-count))))
+                  ;; Install doc.
+                  (mkdir-p html)
+                  (copy-recursively "build/html" html)))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "./runtests.py" "-vv" "--no-build" "--mode=fast"
+                        "-j" (number->string (parallel-job-count)))))))))
+    (propagated-inputs (list python-numpy python-matplotlib python-pyparsing))
+    (inputs (list openblas pybind11))
+    (native-inputs
+     (list gfortran
+           perl
+           python-cython
+           python-numpydoc
+           python-pydata-sphinx-theme
+           python-pytest
+           python-pytest-xdist
+           python-sphinx
+           python-sphinx-panels
+           python-threadpoolctl
+           which))
+    (home-page "https://scipy.org/")
     (synopsis "The Scipy library provides efficient numerical routines")
     (description "The SciPy library is one of the core packages that make up
 the SciPy stack.  It provides many user-friendly and efficient numerical
@@ -417,13 +397,13 @@ library.")
 (define-public python-pandas
   (package
     (name "python-pandas")
-    (version "1.3.5")
+    (version "1.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pandas" version))
        (sha256
-        (base32 "1wd92ra8xcjgigbypid53gvby89myg68ica6r8hdw4hhvvsqahhy"))))
+        (base32 "04lsak3j5hq2hk0vfjf532rdxdqmg2akamdl4yl3qipihp2izg4j"))))
     (build-system python-build-system)
     (arguments
      `(#:modules ((guix build utils)
@@ -433,6 +413,12 @@ library.")
                   (srfi srfi-26))
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'enable-parallel-build
+           (lambda _
+             (substitute* "setup.py"
+               (("\"-j\", type=int, default=1")
+                (format #f "\"-j\", type=int, default=~a"
+                        (parallel-job-count))))))
          (add-after 'unpack 'patch-which
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((which (assoc-ref inputs "which")))
@@ -459,6 +445,7 @@ library.")
                  (when tests?
                    (invoke "pytest" "-vv" "pandas" "--skip-slow"
                            "--skip-network"
+                           "-n" (number->string (parallel-job-count))
                            "-k"
                            (string-append
                             ;; These test access the internet (see:
@@ -468,7 +455,11 @@ library.")
                             "not test_wrong_url"
                             ;; TODO: Missing input
                             " and not TestS3"
-                            " and not s3"))))))))))
+                            " and not s3"
+                            ;; This test fails when run with pytest-xdist
+                            ;; (see:
+                            ;; https://github.com/pandas-dev/pandas/issues/39096).
+                            " and not test_memory_usage"))))))))))
     (propagated-inputs
      (list python-jinja2
            python-numpy
@@ -486,6 +477,7 @@ library.")
            python-html5lib
            python-pytest
            python-pytest-mock
+           python-pytest-xdist
            ;; Needed to test clipboard support.
            xorg-server-for-tests))
     (home-page "https://pandas.pydata.org")
@@ -953,7 +945,7 @@ of Pandas
 (define-public python-pingouin
   (package
     (name "python-pingouin")
-    (version "0.5.0")
+    (version "0.5.1")
     (source
      ;; The PyPI tarball does not contain the tests.
      (origin
@@ -964,7 +956,7 @@ of Pandas
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "01aaq023q4bymffrc2wm56af87da32wcvy5d5156i4g7qgvh346r"))))
+         "10v3mwcmyc7rd2957cbmfcw66yw2y0fz7zcfyx46q8slbmd1d8d4"))))
     (build-system python-build-system)
     (arguments
      `(#:phases

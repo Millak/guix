@@ -12,7 +12,7 @@
 ;;; Copyright © 2019, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Felipe Balbi <balbi@kernel.org>
@@ -50,13 +50,17 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gperf)
+  #:use-module (gnu packages graphics)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages java)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages man)
+  #:use-module (gnu packages ninja)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages webkit)
@@ -65,10 +69,12 @@
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages tex)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix svn-download)
   #:use-module (guix git-download)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
@@ -107,6 +113,659 @@ Type1, CID, CFF, Windows FON/FNT, X11 PCF, and others.  It supports high-speed
 anti-aliased glyph bitmap generation with 256 gray levels.")
    (license license:freetype)           ; some files have other licenses
    (home-page "https://www.freetype.org/")))
+
+(define-public opentype-sanitizer
+  (package
+    (name "opentype-sanitizer")
+    (version "8.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/khaledhosny/ots"
+                                  "/releases/download/v" version
+                                  "/ots-" version ".tar.xz"))
+              (sha256
+               (base32
+                "17z8cxv48rfig5k7j3xk3bmbf7rm3kxsc3bazix96l0wws58r569"))))
+    (build-system meson-build-system)
+    (native-inputs (list googletest pkg-config))
+    (inputs (list freetype lz4 woff2 zlib))
+    (home-page "https://github.com/khaledhosny/ots")
+    (synopsis "Sanitizer for OpenType fonts")
+    (description "The OpenType Sanitizer (OTS) parses and serializes OpenType
+files (OTF, TTF) and WOFF and WOFF2 font files, validating them and sanitizing
+them as it goes.")
+    (license license:bsd-3)))
+
+(define-public python-afdko
+  (package
+    (name "python-afdko")
+    (version "3.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "afdko" version))
+       (sha256
+        (base32 "171r9f7n8fgz37dkcgpzj508lxfafcyzzx43ps12j1z2nk1sk905"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-problematic-requirements
+            (lambda _
+              (substitute* "requirements.txt"
+                ;; Remove lxml because the version requested here is different
+                ;; than the one propagated by the python-fonttools package.
+                (("^lxml==.*") ""))))
+          (add-after 'unpack 'patch-setup.py
+            (lambda _
+              ;; There is no use for Python-provided CMake nor Ninja binaries.
+              (substitute* '("pyproject.toml" "setup.py")
+                ((".*cmake.*") "")
+                ((".*ninja.*") ""))))
+          (add-after 'unpack 'unbundle-antlr4-cpp
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "CMakeLists.txt"
+                (("^include\\(ExternalAntlr4Cpp).*")
+                 (format #f "include_directories(SYSTEM ~a)"
+                         (search-input-directory inputs
+                                                 "include/antlr4-runtime"))))
+              (substitute* "c/makeotf/lib/hotconv/CMakeLists.txt"
+                (("antlr4_static")
+                 "antlr4-runtime"))))
+          ;; The test suite expects the commands to be Python rather than
+          ;; shell scripts, so move the wrap phase after the tests.
+          (delete 'wrap)
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" "/tmp")
+                (invoke "pytest" "-vv"))))
+          (add-after 'check 'wrap
+            (assoc-ref %standard-phases 'wrap))
+          (add-before 'wrap 'wrap-PATH
+            (lambda _
+              ;; The commands execute other commands from this package from
+              ;; PATH; by wrapping them with bindir, they can be found even
+              ;; when the command is run from its store location.
+              (let* ((bindir (string-append #$output "/bin"))
+                     (commands (find-files bindir)))
+                (for-each (lambda (c)
+                            (wrap-program c
+                              `("PATH" prefix (,bindir))))
+                          commands)))))))
+    (native-inputs
+     (list ninja python-pytest python-scikit-build python-wheel))
+    (inputs (list java-antlr4-runtime-cpp `(,util-linux "lib")))
+    (propagated-inputs
+     (list psautohint
+           python-booleanoperations
+           python-defcon
+           python-fontmath
+           python-fonttools-next
+           python-lxml
+           python-tqdm
+           python-ufonormalizer
+           python-ufoprocessor))
+    (home-page "https://github.com/adobe-type-tools/afdko")
+    (synopsis "Adobe Font Development Kit for OpenType")
+    (description "The Adobe Font Development Kit for OpenType (AFDKO) is a set
+of tools for building OpenType font (OTF) files from PostScript and TrueType
+font data.  It includes the following commands:
+@table @command
+@item buildcff2vf
+Assemble a CFF2 variable font from a .designspace file.
+@item buildmasterotfs
+Build master source OpenType/CFF fonts from a @file{.designspace} file
+and UFO master source fonts.
+@item charplot
+@itemx digiplot
+@itemx fontplot
+@itemx fontsetplot
+@itemx hintplot
+@itemx waterfallplot
+Aliases for the corresponding options of the @command{proofpdf} command.
+@item checkoutlinesufo
+Perform outline quality checks.  It can also remove path overlaps.
+@item comparefamily
+Look in a specific directory, examine and report on all the OpenType fonts found.
+@item type1
+@itemx detype1
+Compile and decompile, respectively, a Type 1 font to and from a plain-text
+representation.
+@item makeinstancesufo
+Generate UFO font instances from a set of master UFO fonts.
+@item makeotfexe
+Read all the font data and build the final OpenType font.
+@item makeotf
+This command can be used to prepare the input files needed by
+@command{makeotfexe}.
+@item mergefonts
+Merge one or more fonts into a parent font.
+@item otc2otf
+Extract all OpenType fonts from the parent OpenType Collection font.
+@item otf2otc
+Build an OpenType Collection font file from two or more OpenType font
+files.
+@item otf2ttf
+Converts OpenType-CFF fonts to TrueType.
+@item rotatefont
+Apply a Postscript transform matrix to the source font files.
+@item sfntdiff
+Low-level comparison of two OpenType font files.
+@item sfntedit
+Support table-editing, listing, and checksumming options on
+sfnt-formatted files such as OpenType Format (OTF) or TrueType.
+@item spot
+Dump sfnt data from plain files or Macintosh resource files.
+@item ttfcomponentizer
+Take in a TrueType font and look for a UFO font stored in the same directory.
+Use the UFO's components data to compose matching TrueType glyphs.
+@item ttfdecomponentizer
+Take in a TrueType font and decompose any composite glyphs into simple glyphs.
+@item ttxn
+Make a normalized dump of the font, or of selected tables.
+@item tx
+The @command{tx} (Type eXchange) is a test harness for the CoreType libraries
+but also provides many useful font conversion and analysis facilities.
+@end table")
+    (license license:asl2.0)))
+
+(define-public python-cffsubr
+  (package
+    (name "python-cffsubr")
+    (version "0.2.9.post1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "cffsubr" version))
+       (modules '((guix build utils)))
+       (snippet '(delete-file-recursively "external")) ;unbundle ADFKO
+       (sha256
+        (base32 "0p7wyagkmwf4agr6ysgswrpmpifx5rz8dnjbcs2gmj29rwnl2cbb"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-setup.py
+            (lambda _
+              (substitute* '("pyproject.toml"
+                             "setup.py")
+                ;; This is not needed when building the package.
+                (("setuptools-git-ls-files") "")
+                ;; Do not attempt to build the unbundled ADFKO.
+                (("cmdclass\\[\"build_ext\"] = ExecutableBuildExt.*")
+                 ""))))
+          (add-after 'unpack 'patch-tx-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (define tx (search-input-file inputs "bin/tx"))
+              (substitute* "src/cffsubr/__init__.py"
+                (("TX_EXE = \"tx\"")
+                 (format #f "TX_EXE = ~s" tx))
+                ;; Use the full 'tx' file name directly.
+                (("with path\\(__name__, TX_EXE) as tx_cli:")
+                 "")
+                (("    (return subprocess.run\\(\\[)str\\(tx_cli)(].*)" _ h t)
+                 (format #f "~a~s~a" h tx t)))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv")))))))
+    (native-inputs (list python-pytest python-setuptools-scm python-wheel))
+    (inputs (list python-afdko))
+    (propagated-inputs (list python-fonttools))
+    (home-page "https://github.com/adobe-type-tools/cffsubr")
+    (synopsis "Compact Font Format (CFF) subroutinizer")
+    (description "This package provides the @command{cffsubr} command, a
+Compact Font Format (CFF) subroutinizer based on the Adobe Font Development
+Kit for OpenType (AFDKO) @command{tx} tool.")
+    (license license:asl2.0)))
+
+(define-public python-compreffor
+  (package
+    (name "python-compreffor")
+    (version "0.5.1.post1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "compreffor" version))
+       (sha256
+        (base32 "1r3wqd67qnz8p6irv68mvadqv1nklgzw53376iarw3pq4gxrma36"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-setup.py
+            (lambda _
+              (substitute* "setup.py"
+                ;; Not actually needed.
+                ((", \"setuptools_git_ls_files\"") "")))))))
+    (native-inputs (list python-pytest python-pytest-runner
+                         python-setuptools-scm))
+    (propagated-inputs (list python-fonttools))
+    (home-page "https://github.com/googlefonts/compreffor")
+    (synopsis "Compact Font Format (CFF) subroutinizer for fontTools")
+    (description "This package provides a Compact Font Format (CFF)
+subroutinizer for fontTools.")
+    (license license:asl2.0)))
+
+(define-public python-cu2qu
+  (package
+    (name "python-cu2qu")
+    (version "1.6.7.post1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "cu2qu" version ".zip"))
+       (sha256
+        (base32 "1x762r7bf39g6aivfvrmq00h6f07abvs9x1xm0fz8l81vq8jz64c"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-fonttools-full))
+    (native-inputs
+     (list python-cython
+           python-defcon
+           python-pytest
+           python-pytest-runner
+           python-setuptools-scm
+           unzip))
+    (home-page "https://github.com/googlefonts/cu2qu")
+    (synopsis "Cubic-to-quadratic bezier curve conversion")
+    (description "This library provides functions which take in @acronym{UFO,
+Unified Font Object} objects (such as Defcon Fonts or Robofab RFonts) and
+converts any cubic curves to quadratic.  The most useful function is probably
+@code{fonts_to_quadratic}.")
+    (license license:asl2.0)))
+
+(define-public python-ufo2ft
+  (package
+    (name "python-ufo2ft")
+    (version "2.26.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ufo2ft" version))
+       (sha256
+        (base32 "0a6iq5g6qdxj7nvip8nnf0mf8y5wmpd3wwq0dv7d4nm9bjrh0r6m"))))
+    (build-system python-build-system)
+    (native-inputs (list python-pytest python-pytest-runner))
+    (propagated-inputs
+     (list python-booleanoperations
+           python-cffsubr
+           python-compreffor
+           python-cu2qu
+           python-defcon
+           python-fonttools
+           python-skia-pathops
+           python-ufolib2))
+    (home-page "https://github.com/googlefonts/ufo2ft")
+    (synopsis "Generate OpenType fonts from Unified Font Objects (UFOs)")
+    (description "@code{ufo2ft} (UFO to FontTools) is a fork of @code{ufo2fdk}
+intended to leverage FontTools (a Python library) rather than the Adobe Font
+Development Kit for OpenType (AFDKO), a set of C libraries/utilities so that
+it can be more easily extended.  Like @code{ufo2fdk}, its primary purpose is
+to generate OpenType font binaries from Unified Font Objects (UFOs).")
+    (license license:expat)))
+
+(define-public python-fontmath
+  (package
+    (name "python-fontmath")
+    (version "0.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "fontMath" version ".zip"))
+       (sha256
+        (base32 "001756zxn2386dm4svgqjgw5026hvyacxl09b2qlk7s06phpcphw"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-fonttools))
+    (native-inputs
+     (list python-setuptools-scm
+           python-pytest
+           python-pytest-runner
+           python-wheel
+           unzip))
+    (home-page "https://github.com/robotools/fontMath")
+    (synopsis "Fast font mathematical operations library")
+    (description "This package provides a set of objects for performing fast
+font, glyph, etc. mathematical operations on font data.")
+    (license license:expat)))
+
+;;; An untested variant used to break a cycle with python-booleanoperations.
+(define-public python-fontpens-bootstrap
+  (package
+    (name "python-fontpens-bootstrap")
+    (version "0.2.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "fontPens" version ".zip"))
+       (sha256
+        (base32 "1za15dzsnymq6d9x7xdfqwgw4a3003wj75fn2crhyidkfd2s3nd6"))))
+    (build-system python-build-system)
+    (arguments (list #:tests? #f))
+    (propagated-inputs (list python-fonttools))
+    (native-inputs (list unzip))
+    (home-page "https://github.com/robofab-developers/fontPens")
+    (synopsis "Python classes implementing the pen protocol")
+    (description "This package provides a collection of Python classes
+implementing the pen protocol for manipulating glyphs.")
+    (license license:bsd-3)))
+
+(define-public python-fontpens
+  (hidden-package
+   (package/inherit python-fontpens-bootstrap
+     (name "python-fontpens")
+     (arguments
+      (substitute-keyword-arguments (package-arguments python-fontpens-bootstrap)
+        ((#:tests? _ #f)
+         #t)))
+     (native-inputs
+      (modify-inputs (package-native-inputs python-fontpens-bootstrap)
+        (append python-fontparts-bootstrap
+                python-fontpens-bootstrap
+                python-pytest
+                python-pytest-runner))))))
+
+;;; A variant used to break a cycle with python-fontpens.
+(define-public python-fontparts-bootstrap
+  (hidden-package
+   (package
+     (name "python-fontparts-bootstrap")
+     (version "0.10.4")
+     (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "fontParts" version ".zip"))
+        (sha256
+         (base32 "1ic453q86s5hsw8mxnclk1vr4qp69fd67gywhv23zqwz9a7kb7lh"))))
+     (build-system python-build-system)
+     (propagated-inputs
+      (list python-booleanoperations
+            python-defcon-bootstrap
+            python-fontmath
+            python-fonttools))
+     (native-inputs (list unzip))
+     (home-page "https://github.com/robotools/fontParts")
+     (synopsis "Library for interacting with font parts")
+     (description "FontParts is an @acronym{API, Application Programming
+Interface} for interacting with the parts of fonts during the font development
+process.  FontParts is the successor of RoboFab.")
+     (license license:expat))))
+
+(define-public python-fontparts
+  (package/inherit python-fontparts-bootstrap
+    (name "python-fontparts")
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs python-fontparts-bootstrap)
+       (replace "python-defcon-bootstrap" python-defcon)))
+    (properties
+     (alist-delete 'hidden?
+                   (package-properties python-fontparts-bootstrap)))))
+
+(define-public python-opentype-sanitizer
+  (package
+    (name "python-opentype-sanitizer")
+    (version "8.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "opentype-sanitizer" version))
+       (sha256
+        (base32 "1wjy6chbnj9ic5yjxal6spln5jfzr8cigqs6ab0gj7q60dndrl5k"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'unbundle-opentype-sanitizer
+            (lambda* (#:key inputs #:allow-other-keys)
+              (delete-file-recursively "src/c")
+              (substitute* "setup.py"
+                (("^cmdclass\\[\"download\"].*") "")
+                (("^cmdclass\\[\"build_ext\"].*") "")
+                (("^cmdclass\\[\"egg_info\"].*") ""))
+              (substitute* "src/python/ots/__init__.py"
+                (("^OTS_SANITIZE = .*")
+                 (format #f "OTS_SANITIZE = ~s~%"
+                         (search-input-file inputs "bin/ots-sanitize"))))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv")))))))
+    (native-inputs (list python-pytest python-setuptools-scm))
+    (inputs (list opentype-sanitizer))
+    (home-page "https://github.com/googlefonts/ots-python")
+    (synopsis "Python wrapper for OpenType Sanitizer")
+    (description "Python wrapper for the OpenType Sanitizer library.")
+    (license license:bsd-3)))
+
+(define-public python-mutatormath
+  (package
+    (name "python-mutatormath")
+    (version "3.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "MutatorMath" version ".zip"))
+       (sha256
+        (base32 "0r1qq45np49x14zz1zwkaayqrn7m8dn2jlipjldg2ihnmpzw29w1"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-defcon python-fontmath python-fonttools))
+    (native-inputs (list unzip))
+    (home-page "https://github.com/LettError/MutatorMath")
+    (synopsis "Piecewise linear interpolation Python library")
+    (description "MutatorMath is a Python library for the calculation of
+piecewise linear interpolations in n-dimensions with any number of masters. It
+was developed for interpolating data related to fonts, but if can handle any
+arithmetic object.")
+    (license license:bsd-3)))
+
+(define-public psautohint-font-data
+  ;; There is no release tag, so use the latest commit.
+  (let ((revision "0")
+        (commit "1e4c5061d328105c4dcfcb6fdbc27ec49b3e9d23"))
+    (hidden-package
+     (package
+       (name "psautohint-font-data")
+       (version (git-version "0.0.0" revision commit))
+       (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                (url "https://github.com/adobe-type-tools/psautohint-testdata")
+                (commit commit)))
+          (file-name (git-file-name name version))
+          (sha256
+           (base32
+            "0p7g8mnndzp8zpbj9h6lkvfdpvd74fy10q8wmkagbg2ahbdi1zva"))))
+       (build-system copy-build-system)
+       (home-page "https://github.com/adobe-type-tools/psautohint-testdata")
+       (synopsis "Test font data psautohint")
+       (description "This package contains the font data used by the test
+suite of the @code{psautohint} package.")
+       ;; The bundle contains font data from the Cantarell, Libertinus, Source
+       ;; Code Pro, Source Serif Pro, all available under the same license.
+       (license license:silofl1.1)))))
+
+(define-public psautohint
+  (package
+    (name "psautohint")
+    (version "2.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "psautohint" version))
+       (sha256
+        (base32 "0zzz7hy1kkkjfrrm9ly2di3xv2x1ywdqhbyqy21k670jysldw3nm"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'copy-font-data
+            ;; The data is copied as it needs to be writable for the tests.
+            (lambda _
+              (copy-recursively
+               #$(this-package-native-input "psautohint-font-data")
+               "tests/integration/data")
+              (for-each make-file-writable
+                        (find-files "tests/integration/data"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv")))))))
+    (propagated-inputs (list python-fonttools))
+    (native-inputs
+     (list psautohint-font-data
+           python-fs
+           python-pytest
+           python-pytest-cov
+           python-pytest-randomly
+           python-pytest-xdist
+           python-setuptools-scm
+           python-wheel))
+    (home-page "https://github.com/adobe-type-tools/psautohint")
+    (synopsis "Adobe's PostScript autohinter")
+    (description "This package provides the @command{autohinter} command that
+can be used to hint PostScript fonts.  A Python wrapper is also included.")
+    (license license:asl2.0)))
+
+(define-public python-sfdlib
+  (package
+    (name "python-sfdlib")
+    (version "1.2.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/aliftype/sfdLib")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1q61km32i1h3cmn8nazcgsbzpm8q2nxp3kq3glqgfgvlxr1s3brm"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-ufolib2))
+    (home-page "https://github.com/aliftype/sfdLib")
+    (synopsis "Simple SFD to UFO converter")
+    (description "This package provides the @command{sfd2ufo} command, a
+converter from FontForge’s @acronym{SFD, Spline Font Database} fonts to
+@acronym{UFO, Unified Font Object} fonts.")
+    (license license:bsd-3)))
+
+(define-public python-skia-pathops
+  (package
+    (name "python-skia-pathops")
+    (version "0.7.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "skia-pathops" version ".zip"))
+       (modules '((guix build utils)))
+       (snippet '(delete-file-recursively "src/cpp")) ;140+ MiB of stuff
+       (sha256
+        (base32 "1456rclfn6a01c2cchlgyn166zppcjcqij0k5gwmm8gvzsd5rn0r"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'configure-env
+            (lambda _
+              (setenv "BUILD_SKIA_FROM_SOURCE" "0")))
+          (add-after 'unpack 'adjust-c++-language
+            (lambda _
+              ;; Our version of Skia requires c++17.
+              (substitute* "setup.py"
+                (("-std=c\\+\\+14")
+                 "-std=c++17"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv")))))))
+    (native-inputs
+     (list pkg-config
+           python-cython
+           python-pytest
+           python-setuptools-scm
+           unzip))
+    (inputs (list skia))
+    (home-page "https://github.com/fonttools/skia-pathops")
+    (synopsis "Python bindings for the Skia library's Path Ops module")
+    (description "This package provides Python bindings for the Path Ops
+module of the Skia library, performing boolean operations on
+paths (intersection, union, difference, xor).")
+    (license license:bsd-3)))
+
+(define-public python-ufoprocessor
+  (package
+    (name "python-ufoprocessor")
+    (version "1.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ufoProcessor" version ".zip"))
+       (sha256
+        (base32 "0ns11aamgavgsfj8qf5kq7dvzmgl0mhr1cbych2f075ipfdvva5s"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              ;; Most of the tests appear to be a work in
+                              ;; progress; run only a subset.
+                              (invoke "python" "Tests/tests.py")))))))
+    (propagated-inputs
+     (list python-defcon
+           python-fontmath
+           python-fontparts
+           python-fonttools
+           python-mutatormath))
+    (native-inputs (list unzip))
+    (home-page "https://github.com/LettError/ufoProcessor")
+    (synopsis "Process and generate @acronym{UFO, Unified Font Object} files")
+    (description "This Python package processes and generates instances for
+@acronym{UFO, Unified Font Object} files, glyphs and other data.  It can,
+among other things:
+@itemize
+@item Collect source materials.
+@item Provide mutators for specific glyphs, font info, kerning so that other
+tools can generate partial instances.
+@item Support designspace format 4 with layers.
+@item Apply avar-like designspace bending.
+@item Apply rules.
+@item Generate actual UFO instances in formats 2 and 3.
+@item Round geometry as requested.
+@end itemize")
+    (license license:expat)))
+
+(define-public python-ufonormalizer
+  (package
+    (name "python-ufonormalizer")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ufonormalizer" version ".zip"))
+       (sha256
+        (base32 "0v5awian2alap7nvxfz38aahyqbqnma16nrqcpr8602hbbki04g6"))))
+    (build-system python-build-system)
+    (native-inputs (list python-setuptools-scm unzip))
+    (home-page "https://github.com/unified-font-object/ufoNormalizer")
+    (synopsis "Script to normalize @acronym{UFO, Unified Font Object} data")
+    (description "The purpose of the @command{ufonormalizer} command is to
+provide a standard formatting so that updates to @acronym{UFO, Unified Font
+Object} data can be usefully versioned.  Examples of formatting applied by
+ufoNormalizer include:
+@itemize
+@item Changing floating-point numbers to integers where it doesn't alter the
+value (e.g. @samp{x=\"95.0\"} becomes @samp{x=\"95\"})
+@item Rounding floating-point numbers to 10 digits
+@item Formatting XML with tabs rather than spaces.
+@end itemize")
+    (license license:bsd-3)))
 
 (define-public ttfautohint
   (package
@@ -737,6 +1396,52 @@ generate bitmaps.")
      `(("python" ,python-2)
        ,@(alist-delete "python" (package-inputs fontforge))))))
 
+(define-public python-ufolib2
+  (package
+    (name "python-ufolib2")
+    (version "0.13.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ufoLib2" version))
+       (sha256
+        (base32 "0yx4i8q5rfyqhr2fj70a7z1bp1jv7bdlr64ww9z4nv9ycbda4x9j"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: PEP 517 manual build copied from python-isort.
+          (replace 'build
+            (lambda _
+              ;; ZIP does not support timestamps before 1980.
+              (setenv "SOURCE_DATE_EPOCH" "315532800")
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv"))))
+          (replace 'install
+            (lambda _
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl)))))))
+    (native-inputs
+     (list python-pypa-build
+           python-pytest
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs (list python-attrs python-fonttools-full))
+    (home-page "https://github.com/fonttools/ufoLib2")
+    (synopsis "Unified Font Object (UFO) font processing library")
+    (description "The ufoLib2 Python library is meant to be a thin
+representation of the Unified Font Object (UFO) version 3 data model, intended
+for programmatic manipulation and fast batch processing of UFOs.  It resembles
+the defcon library, but does without notifications, the layout engine and
+other support classes.  Where useful and possible, ufoLib2 tries to be
+API-compatible with defcon.")
+    (license license:asl2.0)))
+
 (define-public python2-ufolib
   (package
     (name "python2-ufolib")
@@ -761,35 +1466,61 @@ generate bitmaps.")
 files.  UFO is a file format that stores fonts source files.")
     (license license:bsd-3)))
 
-(define-public python2-defcon
+;;; A variant used to break a cycle between python-fontpens and
+;;; python-fontparts.
+(define-public python-defcon-bootstrap
   (package
-    (name "python2-defcon")
-    (version "0.3.5")
+    (name "python-defcon-bootstrap")
+    (version "0.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "defcon" version ".zip"))
        (sha256
-        (base32
-         "03jlm2gy9lvbwj68kfdm43yaddwd634jwkdg4wf0jxx2s8mwbg22"))))
+        (base32 "0g0bjwzdj6sskyh8snbxsxza3czdmvb807qv38mizx631cm8c2d0"))))
     (build-system python-build-system)
+    (propagated-inputs (list python-fontpens-bootstrap python-fonttools-full))
+    (native-inputs
+     (list python-pytest
+           python-pytest-runner
+           python-setuptools-scm
+           unzip))
+    (home-page "https://github.com/robotools/defcon")
+    (synopsis "Flexible objects for representing @acronym{UFO, unified font object} data")
+    (description "Defcon is a set of @acronym{UFO, unified font object} based
+objects optimized for use in font editing applications.  The objects are built
+to be lightweight, fast and flexible.  The objects are very bare-bones and
+they are not meant to be end-all, be-all objects.  Rather, they are meant to
+provide base functionality so that you can focus on your application’s
+behavior, not object observing or maintaining cached data.  Defcon implements
+UFO3 as described by the UFO font format.")
+    (license license:expat)))
+
+(define-public python-defcon
+  (hidden-package
+   (package/inherit python-defcon-bootstrap
+     (name "python-defcon")
+     (propagated-inputs
+      (modify-inputs (package-propagated-inputs python-defcon-bootstrap)
+        (replace "python-fontpens-bootstrap" python-fontpens))))))
+
+(define-public python2-defcon
+  (package
+    (inherit python-defcon)
+    (name "python2-defcon")
+    (version "0.3.5")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "defcon" version ".zip"))
+              (sha256
+               (base32
+                "03jlm2gy9lvbwj68kfdm43yaddwd634jwkdg4wf0jxx2s8mwbg22"))))
     (arguments
      `(#:python ,python-2))
     (native-inputs
      (list unzip python2-pytest python2-pytest-runner))
     (propagated-inputs
-     (list python2-fonttools python2-ufolib))
-    (home-page "https://pypi.org/project/defcon/")
-    (synopsis "Flexible objects for representing @acronym{UFO, unified font object} data")
-    (description
-     "Defcon is a set of @acronym{UFO, unified font object} based objects
-optimized for use in font editing applications.  The objects are built to
-be lightweight, fast and flexible.  The objects are very bare-bones and
-they are not meant to be end-all, be-all objects.  Rather, they are meant
-to provide base functionality so that you can focus on your application’s
-behavior, not object observing or maintaining cached data.  Defcon
-implements UFO3 as described by the UFO font format.")
-    (license license:expat)))
+     (list python2-fonttools python2-ufolib))))
 
 (define-public nototools
   (package

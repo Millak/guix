@@ -3,7 +3,7 @@
 ;;; Copyright © 2015, 2017, 2018, 2019, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016 Lukas Gradl <lgradl@openmailbox>
-;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2017, 2019, 2020 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2017 Pierre Langlois <pierre.langlois@gmx.com>
@@ -580,7 +580,7 @@ attacks than alternative functions such as @code{PBKDF2} or @code{bcrypt}.")
 (define-public libscrypt
   (package
     (name "libscrypt")
-    (version "1.21")
+    (version "1.22")
     (source
      (origin
        (method git-fetch)
@@ -589,22 +589,20 @@ attacks than alternative functions such as @code{PBKDF2} or @code{bcrypt}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1d76ys6cp7fi4ng1w3mz2l0p9dbr7ljbk33dcywyimzjz8bahdng"))))
+        (base32 "10dinz1zx8zfm81ra16s20izpm7f7j414n4i3fkdf40vbl5slra1"))))
     (build-system gnu-build-system)
     (outputs (list "out" "static"))
     (arguments
-     `(#:make-flags (list (string-append "PREFIX=" %output)
-                          ,(string-append "CC=" (cc-for-target)))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (add-after 'install 'install:static
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (lib (string-append out "/lib")))
-               (install-file "libscrypt.a" lib)
-               #t))))))
+     (list #:make-flags
+           #~(list (string-append "PREFIX=" #$output)
+                   (string-append "CC=" #$(cc-for-target)))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)      ; no configure script
+               (add-after 'install 'install:static
+                 (lambda _
+                   (install-file "libscrypt.a"
+                                 (string-append #$output:static "/lib")))))))
     (home-page "https://lolware.net/libscrypt.html")
     (synopsis "Password hashing library")
     (description "@code{libscrypt} implements @code{scrypt} key derivation

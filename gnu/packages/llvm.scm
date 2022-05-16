@@ -17,7 +17,7 @@
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2021, 2022 Maxime Devos <maximedevos@telenet.be>
-;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2021 Lars-Dominik Braun <lars@6xq.net>
 ;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
@@ -1503,14 +1503,14 @@ with that of libgomp, the GNU Offloading and Multi Processing Library.")
 (define-public python-llvmlite
   (package
     (name "python-llvmlite")
-    (version "0.37.0")
+    (version "0.38.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "llvmlite" version))
        (sha256
         (base32
-         "05avhsvdcqh8wfpblx16qslfq3masqcbkfyn8p3c13h1rmqbi4k3"))))
+         "0p4nyic9rm7s2fm3m3wpkh568594p9q9nfyjkqxny49vrxn1d7d9"))))
     (build-system python-build-system)
     (arguments
      `(#:phases

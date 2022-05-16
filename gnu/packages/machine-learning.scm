@@ -16,7 +16,7 @@
 ;;; Copyright © 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
 ;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
-;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1111,8 +1111,13 @@ computing environments.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-before 'build 'configure
+           (lambda _
+             (setenv "SKLEARN_BUILD_PARALLEL"
+                     (number->string (parallel-job-count)))))
          (add-after 'build 'build-ext
-           (lambda _ (invoke "python" "setup.py" "build_ext" "--inplace")))
+           (lambda _ (invoke "python" "setup.py" "build_ext" "--inplace"
+                             "-j" (number->string (parallel-job-count)))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
@@ -1123,13 +1128,15 @@ computing environments.")
                (setenv "HOME" "/tmp")
 
                (invoke "pytest" "sklearn" "-m" "not network"
+                       "-n" (number->string (parallel-job-count))
                        ;; This test tries to access the internet.
                        "-k" "not test_load_boston_alternative")))))))
-    (inputs
-     (list openblas))
+    (inputs (list openblas))
     (native-inputs
-     (list python-pytest python-pandas ;for tests
-           python-cython))
+     (list python-cython
+           python-pandas
+           python-pytest
+           python-pytest-xdist))
     (propagated-inputs
      (list python-numpy python-threadpoolctl python-scipy python-joblib))
     (home-page "https://scikit-learn.org/")
@@ -1219,13 +1226,13 @@ for scientific computing and data science (e.g. BLAS and OpenMP).")
 (define-public python-pynndescent
   (package
     (name "python-pynndescent")
-    (version "0.5.5")
+    (version "0.5.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pynndescent" version))
        (sha256
-        (base32 "10pqqqc3jkpw03cyzy04slxmpgyhqnlgbyk0c1cv7kqr5d0zhzbs"))))
+        (base32 "0p3jsdcprjfzz7qf5674dsqfpvdn6p4wgqikg7b6ki5abf433yv1"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1233,12 +1240,16 @@ for scientific computing and data science (e.g. BLAS and OpenMP).")
          (replace 'check
            (lambda* (#:key inputs outputs tests? #:allow-other-keys)
              (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest" "--pyargs" "pynndescent")))))))
-    (native-inputs
-     (list python-pytest))
+               (invoke "python" "-m" "pytest" "--pyargs" "pynndescent"
+                       ;; wminkowski no longer exists in scipy 1.8.0 (see:
+                       ;; https://github.com/lmcinnes/pynndescent/issues/177)
+                       "-k" "not test_weighted_minkowski")))))))
+    (native-inputs (list python-pytest))
     (propagated-inputs
-     (list python-joblib python-llvmlite python-numba python-scikit-learn
+     (list python-joblib
+           python-llvmlite
+           python-numba
+           python-scikit-learn
            python-scipy))
     (home-page "https://github.com/lmcinnes/pynndescent")
     (synopsis "Nearest neighbor descent for approximate nearest neighbors")
@@ -2804,26 +2815,40 @@ These include a barrier, broadcast, and allreduce.")
 (define-public python-umap-learn
   (package
     (name "python-umap-learn")
-    (version "0.3.10")
+    (version "0.5.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "umap-learn" version))
+       (method git-fetch)               ;no tests in pypi release
+       (uri (git-reference
+             (url "https://github.com/lmcinnes/umap")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "02ada2yy6km6zgk2836kg1c97yrcpalvan34p8c57446finnpki1"))))
+         "1315jkb0h1b579y9m59632f0nnpksilm01nxx46in0rq8zna8vsb"))))
     (build-system python-build-system)
-    (native-inputs
-     (list python-joblib python-nose))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" "/tmp")
+                (invoke "pytest" "-vv" "umap")))))))
+    (native-inputs (list python-pytest))
     (propagated-inputs
-     (list python-numba python-numpy python-scikit-learn python-scipy))
+     (list python-numba
+           python-numpy
+           python-pynndescent
+           python-scikit-learn
+           python-scipy
+           python-tqdm))
     (home-page "https://github.com/lmcinnes/umap")
-    (synopsis
-     "Uniform Manifold Approximation and Projection")
-    (description
-     "Uniform Manifold Approximation and Projection is a dimension reduction
-technique that can be used for visualisation similarly to t-SNE, but also for
-general non-linear dimension reduction.")
+    (synopsis "Uniform Manifold Approximation and Projection")
+    (description "Uniform Manifold Approximation and Projection is a dimension
+reduction technique that can be used for visualization similarly to t-SNE, but
+also for general non-linear dimension reduction.")
     (license license:bsd-3)))
 
 (define-public nnpack

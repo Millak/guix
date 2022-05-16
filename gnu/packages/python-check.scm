@@ -2,7 +2,7 @@
 ;;; Copyright © 2019, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2019, 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019, 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019, 2021 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
@@ -69,6 +69,38 @@
 Protocol (TAP) in Python.  TAP is a line based test protocol for recording test
 data in a standard way.")
     (license license:bsd-3)))
+
+(define-public python-beartype
+  (package
+    (name "python-beartype")
+    (version "0.10.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "beartype" version))
+       (sha256
+        (base32 "0amzckgw9c93bl4jf0q6322j9wyyf3i8vl03yixfkrpllzv6kv14"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "pytest" "-vv" "beartype_test"
+                             ;; These tests rely on git through the
+                             ;; "get_main_readme_file" helper.
+                             "-k"
+                             (string-append "not test_doc_readme "
+                                            "and not test_sphinx "
+                                            "and not test_pep561_mypy"))))))))
+    (native-inputs
+     (list python-pytest))
+    (home-page "https://github.com/beartype/beartype")
+    (synopsis "Fast runtime type checking for Python")
+    (description "Beartype aims to be a very fast runtime type checking tool
+written in pure Python.")
+    (license license:expat)))
 
 (define-public python-pytest-click
   (package
@@ -921,18 +953,21 @@ doctest to render the object representations.")
 (define-public python-pytest-checkdocs
   (package
     (name "python-pytest-checkdocs")
-    (version "1.2.5")
+    (version "2.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-checkdocs" version))
        (sha256
-        (base32 "0m4kn7141i6k8qr8ak3lbmk9vim11xsrlnrggcfwczfrglc6jmia"))))
+        (base32 "1bn1wr3yz8avkwacffyh26za7mg20f9pajpakfk4cn7yvmgbhcrb"))))
     (build-system python-build-system)
+    (arguments (list #:tests? #f))      ;no tests in pypi archive
     (propagated-inputs
-     (list python-docutils python-importlib-metadata python-more-itertools))
-    (native-inputs
-     (list python-setuptools-scm python-pytest))
+     (list python-docutils
+           python-importlib-metadata
+           python-pep517
+           python-pytest))
+    (native-inputs (list python-setuptools-scm))
     (home-page "https://github.com/jaraco/pytest-checkdocs")
     (synopsis "Check the README when running tests")
     (description
@@ -1077,6 +1112,12 @@ isort.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'use-path-instead-of-path.py
+           ;; path.py is obsolete.
+           (lambda _
+             (substitute* "setup.py"
+               (("'path.py'")
+                "'path'"))))
          (add-after 'unpack 'patch-tests
            (lambda _
              (mkdir "/tmp/bin")
@@ -1084,11 +1125,9 @@ isort.")
                (("dirname = '/bin'")
                 "dirname = '/tmp/bin'")
                (("bindir = os.path.realpath\\('/bin'\\)")
-                "bindir = os.path.realpath('/tmp/bin')"))
-             #t)))))
+                "bindir = os.path.realpath('/tmp/bin')")))))))
     (propagated-inputs
-     (list python-contextlib2 python-execnet python-pathpy
-           python-termcolor))
+     (list python-contextlib2 python-execnet python-path python-termcolor))
     (native-inputs
      (list python-mock python-pytest python-setuptools-git))
     (home-page "https://github.com/manahl/pytest-plugins")
@@ -1335,17 +1374,21 @@ new fixtures, new methods and new comparison objects.")
            (lambda _
              ;; This test fails because of a mismatch in the output of LaTeX
              ;; equation environments.  Seems OK to skip.
-             (delete-file "tests/ipynb-test-samples/test-latex-pass-correctouput.ipynb")
-             #t))
+             (delete-file
+              "tests/ipynb-test-samples/test-latex-pass-correctouput.ipynb")))
          (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (invoke "pytest" "-vv" "-k"
-                     (string-append
-                     ;; This only works with Pytest < 5.
-                      "not nbdime_reporter"
-                     ;; https://github.com/computationalmodelling/nbval/pull/148.
-                      " and not test_timeouts")))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-vv" "-k"
+                       (string-append
+                        ;; This only works with Pytest < 5.
+                        "not nbdime_reporter"
+                        ;; https://github.com/computationalmodelling/nbval/pull/148.
+                        " and not test_timeouts"
+                        ;; It seems the output format has changed; the following
+                        ;; test fails with "Unexpected output fields from
+                        ;; running code: {'text/plain'}".
+                        " and not test_conf_ignore_stderr "))))))))
     (native-inputs
      (list python-pytest python-pytest-cov python-sympy))
     (propagated-inputs
@@ -1412,6 +1455,36 @@ also ensuring that the notebooks are running without errors.")
     (description
      "This package provides a pytest plugin for testing console scripts.")
     (license license:expat)))
+
+(define-public python-pytest-tornado
+  (package
+    (name "python-pytest-tornado")
+    (version "0.8.1")
+    (source (origin
+              (method git-fetch)        ;no tests in pypi archive
+              (uri (git-reference
+                    (url "https://github.com/eugeniy/pytest-tornado")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "05hgq1m9g35kpc01im7ci1wd85xi1rdxnyms9izjg65c9976zn6x"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv")))))))
+    (propagated-inputs (list python-pytest python-setuptools python-tornado))
+    (home-page "https://github.com/eugeniy/pytest-tornado")
+    (synopsis "Pytest plugin to ease testing tornado applications")
+    (description
+     "This package provides a py.test plugin providing fixtures and markers to
+simplify testing of asynchronous tornado applications.")
+    (license license:asl2.0)))
 
 (define-public python-pytest-tornasync
   (package
@@ -1673,7 +1746,7 @@ supported by the MyPy typechecker.")
 (define-public python-mypy
   (package
     (name "python-mypy")
-    (version "0.931")
+    (version "0.942")
     (source
      (origin
        ;; Because of https://github.com/python/mypy/issues/9584, the
@@ -1690,9 +1763,10 @@ supported by the MyPy typechecker.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1v83flrdxh8grcp40qw04q4hzjflih9xwib64078vsxv2w36f817"))
+         "0hxnrqhvskiclwfj2s4gyfclzjas1dvpfxhyng8v7mq38rqps1j5"))
        (patches
-        (search-patches "python-mypy-12332.patch"))))
+        (search-patches "python-mypy-12332.patch"
+                        "python-mypy-use-sys-path.patch"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1714,10 +1788,10 @@ supported by the MyPy typechecker.")
     (home-page "http://www.mypy-lang.org/")
     (synopsis "Static type checker for Python")
     (description "Mypy is an optional static type checker for Python that aims
-to combine the benefits of dynamic (or 'duck') typing and static typing.  Mypy combines
+to combine the benefits of dynamic typing and static typing.  Mypy combines
 the expressive power and convenience of Python with a powerful type system and
-compile-time type checking.  Mypy type checks standard Python programs; run them using
-any Python VM with basically no runtime overhead.")
+compile-time type checking.  Mypy type checks standard Python programs; run
+them using any Python VM with basically no runtime overhead.")
     ;; Most of the code is under MIT license; Some files are under Python Software
     ;; Foundation License version 2: stdlib-samples/*, mypyc/lib-rt/pythonsupport.h and
     ;; mypyc/lib-rt/getargs.c
@@ -1736,6 +1810,40 @@ any Python VM with basically no runtime overhead.")
                    ;; directory".
                    (delete 'ensure-no-mtimes-pre-1980))))
      (native-inputs '()))))
+
+(define-public python-nptyping
+  (package
+    (name "python-nptyping")
+    (version "2.0.0")
+    (source (origin
+              (method git-fetch)        ;pypi only contains a binary wheel
+              (uri (git-reference
+                    (url "https://github.com/ramonhagenaars/nptyping")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0839mcrv5jljq9k9124ssnl1hc1inbxwlwjk72imabsbqssjy9rb"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'set-source-date-epoch
+           (lambda _
+             ;; Otherwise the wheel building test would fail with "ZIP does
+             ;; not support timestamps before 1980".
+             (setenv "SOURCE_DATE_EPOCH" "315532800"))))))
+    (native-inputs
+     (list python-beartype
+           python-mypy
+           python-typeguard
+           python-wheel))
+    (propagated-inputs (list python-numpy python-typing-extensions))
+    (home-page "https://github.com/ramonhagenaars/nptyping")
+    (synopsis "Type hints for Numpy")
+    (description "This package provides extensive dynamic type checks for
+dtypes and shapes of arrays for NumPy, extending @code{numpy.typing}.")
+    (license license:expat)))
 
 (define-public python-pylama
   (package
@@ -1877,13 +1985,13 @@ help in debugging failures and optimizing the scheduler to improve speed.")
 (define-public python-pytest-sanic
   (package
     (name "python-pytest-sanic")
-    (version "1.7.0")
+    (version "1.9.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pytest-sanic" version))
               (sha256
                 (base32
-                  "0hm7im77dgqfk8k34qbbfhimg8hifl4zwpa2s3mgbknrjvyw5qpx"))))
+                  "0shq1bqnydj0l3ipb73j1qh5kqcjvzkps30zk8grq3dwmh3wmnkr"))))
     (build-system python-build-system)
     (arguments
      ;; Tests depend on python-sanic.

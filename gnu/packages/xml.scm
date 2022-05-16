@@ -72,6 +72,7 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -98,7 +99,9 @@
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0znz2y1ig2kvlda44a3kxa8x7f222nbg50rjz6nlngzka0ccsgxx"))))
+        (base32 "0znz2y1ig2kvlda44a3kxa8x7f222nbg50rjz6nlngzka0ccsgxx"))
+       ;; Drop xb-tool patch after libxmlb 0.3.8, merged upstream
+       (patches (search-patches "libxmlb-install-xb-tool-into-bindir.patch"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t))
@@ -2543,6 +2546,35 @@ libxml2 and libxslt.")
 
 (define-public python2-lxml
   (package-with-python2 python-lxml))
+
+(define-public python-untangle
+  ;; The latest tagged release is from 2014; use the latest commit.
+  (let ((revision "1")
+        (commit "fb916a9621175d000a3b0ca9322d3b3ebf8570c0"))
+    (package
+      (name "python-untangle")
+      ;; PyPI currently offers some untagged 1.1.1 version.
+      (version (git-version "1.1.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)             ;no tests in pypi archive
+         (uri (git-reference
+               (url "https://github.com/stchris/untangle")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0dn2jz9ajncbqx3pdlgqaxmngl6pdiaz03nj8mkddasckdq9lbrh"))))
+      (build-system python-build-system)
+      (arguments (list #:phases #~(modify-phases %standard-phases
+                                    (replace 'check
+                                      (lambda* (#:key tests? #:allow-other-keys)
+                                        (when tests?
+                                          (invoke "python" "tests/tests.py")))))))
+      (home-page "http://0chris.com/untangle")
+      (synopsis "XML to Python objects conversion library")
+      (description "@code{untangle} is a tiny Python library which converts an
+XML document to a Python object.")
+      (license license:expat))))
 
 (define-public python-xmlschema
   (package

@@ -671,7 +671,7 @@ console.")
 (define-public htop
   (package
     (name "htop")
-    (version "3.1.2")
+    (version "3.2.0")
     (source
      (origin
        (method git-fetch)
@@ -679,7 +679,7 @@ console.")
              (url "https://github.com/htop-dev/htop")
              (commit version)))
        (sha256
-        (base32 "024qhrlmqgwmn6bwb5yiff9bhhdabryiphzx8y654k8r8vqi59j4"))
+        (base32 "16l1r2ixzs640ybqp2x8bfyvk98kiywy7k3sjmp5j5npdzn5ryd7"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (inputs
@@ -1068,7 +1068,7 @@ would need and has several interesting built-in capabilities.")
 (define-public netcat-openbsd
   (package
     (name "netcat-openbsd")
-    (version "1.218-2")
+    (version "1.218-5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1077,7 +1077,7 @@ would need and has several interesting built-in capabilities.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1rj4nx0jdism1idc4fghahqbafhv72cpk7zlyq9czgvbps10d1kh"))))
+                "0hpbmz9m2q22a6qgbn9590z2x96xgffim8g0m1v47mariz3pqhlc"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no test suite
@@ -1232,15 +1232,14 @@ connection alive.")
                                       bind-release-version)))
     (package
       (name "isc-dhcp")
-      (version "4.4.2-P1")
+      (version "4.4.3")
       (source (origin
                 (method url-fetch)
                 (uri (string-append "https://ftp.isc.org/isc/dhcp/"
                                     version "/dhcp-" version ".tar.gz"))
-                (patches (search-patches "isc-dhcp-gcc-compat.patch"))
                 (sha256
                  (base32
-                  "06jsr0cg5rsmyibshrpcb9za0qgwvqccashdma7mlm1rflrh8pmh"))))
+                  "062q2g8cj2zv0zv22x6pg21m21bdlscxkg3li0ac0pm0qasccghf"))))
       (build-system gnu-build-system)
       (arguments
        `(#:parallel-build? #f
@@ -4128,7 +4127,7 @@ Python loading in HPC environments.")
   (let ((real-name "inxi"))
     (package
       (name "inxi-minimal")
-      (version "3.3.11-1")
+      (version "3.3.15-1")
       (source
        (origin
          (method git-fetch)
@@ -4137,7 +4136,7 @@ Python loading in HPC environments.")
                (commit version)))
          (file-name (git-file-name real-name version))
          (sha256
-          (base32 "1nk3q2xg0myykq1myasxhvhhr0vk8qv3m7pb3icw81r3ydasnls0"))))
+          (base32 "02zy94bd6ayfl9y7ka6gk32q254k49cbq3a6wgi31r2fcvybyrf7"))))
       (build-system trivial-build-system)
       (inputs
        `(("bash" ,bash-minimal)
@@ -4868,7 +4867,7 @@ the XMODEM/YMODEM/ZMODEM file transfer protocols.")
 (define-public nq
   (package
     (name "nq")
-    (version "0.4")
+    (version "0.5")
     (source
      (origin
        (method git-fetch)
@@ -4877,16 +4876,17 @@ the XMODEM/YMODEM/ZMODEM file transfer protocols.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0sdamjzvmf6cxhjmd1rjvn7zm6k10fp5n6vabyxd3yl30cgrxw2i"))))
+        (base32 "0szbndvwl6ghwjzb165s09977s0r1yq8h0ziknm0h6xndkcjspl3"))))
     (build-system gnu-build-system)
     (native-inputs
      (list perl))
     (arguments
-     `(#:make-flags (list (string-append "CC=" ,(cc-for-target))
-                          (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))
+     (list #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))))
     (synopsis "Unix command line queue utility")
     (description
      "@code{nq} can create very lightweight job queue systems which require no

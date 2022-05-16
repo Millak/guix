@@ -2,7 +2,7 @@
 ;;; Copyright © 2017 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017, 2019, 2020, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2017, 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2018, 2019, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -34,6 +34,7 @@
   #:use-module (gnu packages readline)
   #:use-module (gnu packages uglifyjs)
   #:use-module (gnu packages web)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -681,7 +682,7 @@ external server.")
 (define-public mujs
   (package
     (name "mujs")
-    (version "1.1.3")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
@@ -690,19 +691,27 @@ external server.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qizld89qw24i9v6i2j9cxjyqn425xbiqfp1b7qfrkyxqkn0byws"))))
+        (base32 "0kqw3xhjk4l2jar14a1f9b3m0xq0h2g3nc9m6hsdv7kf8jhfm83l"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            (for-each delete-file
+                      (list "astnames.h"
+                            "opnames.h"
+                            "one.c"))))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure)  ; no configure script
-         (replace 'install
-           (lambda* (#:key (make-flags '()) #:allow-other-keys)
-             (apply invoke "make" "install-shared" make-flags))))
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (delete 'configure)          ; no configure script
+           (replace 'install
+             (lambda* (#:key (make-flags '()) #:allow-other-keys)
+               (apply invoke "make" "install-shared" make-flags))))
        #:make-flags
-       (list ,(string-append "VERSION=" version)
-             ,(string-append "CC=" (cc-for-target))
-             (string-append "prefix=" (assoc-ref %outputs "out")))
+       #~(list (string-append "VERSION=" #$version)
+               (string-append "CC=" #$(cc-for-target))
+               (string-append "prefix=" #$output))
        #:tests? #f))                    ; no tests
     (inputs
      (list readline))

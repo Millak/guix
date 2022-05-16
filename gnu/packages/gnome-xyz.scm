@@ -57,6 +57,7 @@
   #:use-module (gnu packages inkscape)
   #:use-module (gnu packages image)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages tls)
@@ -1207,6 +1208,7 @@ extended file attributes.  It also functions as a standalone command.")
            vala))
     (native-inputs
      (list pkg-config
+           python-wrapper
            `(,glib "bin"))) ; for 'glib-compile-resources'
     (home-page "https://github.com/bitstower/markets")
     (synopsis "Stock, currency and cryptocurrency tracker")

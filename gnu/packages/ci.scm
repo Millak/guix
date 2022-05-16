@@ -28,6 +28,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix download)
+  #:use-module ((guix search-paths) #:select ($SSL_CERT_DIR))
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages boost)
@@ -52,7 +53,8 @@
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
   #:use-module (guix build-system cmake)
-  #:use-module (guix build-system gnu))
+  #:use-module (guix build-system gnu)
+  #:use-module ((guix search-paths) #:select ($SSL_CERT_DIR)))
 
 (define-public cuirass
   (let ((commit "9f08035f942a1e78f92e2db886d7837b0ab98b2f")
@@ -173,9 +175,7 @@
               (file-type 'regular)
               (separator #f)                      ;single entry
               (files '("etc/ssl/certs/ca-certificates.crt")))
-             (search-path-specification
-              (variable "SSL_CERT_DIR")
-              (files '("etc/ssl/certs")))))
+             $SSL_CERT_DIR))
       (synopsis "Continuous integration system")
       (description
        "Cuirass is a continuous integration tool using GNU Guix.  It is

@@ -24,7 +24,7 @@
 ;;; Copyright © 2020 Alexandros Theodotou <alex@zrythm.org>
 ;;; Copyright © 2020 Justus Winter <justus@sequoia-pgp.org>
 ;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -351,14 +351,10 @@ do what is needed for client/server Kerberos authentication based on
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "pytest"))
-             #t)))))
+               (invoke "pytest" "-vv" "-c" "/dev/null" "tests")))))))
     (native-inputs
      (list python-toml
            python-pytest
-           python-pytest-checkdocs
-           python-pytest-cov
-           python-pytest-flake8
            python-setuptools
            python-setuptools-scm))
     (propagated-inputs
@@ -370,29 +366,7 @@ do what is needed for client/server Kerberos authentication based on
 service from python.  It can be used in any application that needs safe
 password storage.")
     ;; "MIT" and PSF dual license
-    (properties `((python2-variant . ,(delay python2-keyring))))
     (license license:x11)))
-
-(define-public python2-keyring
-  (let ((keyring (package-with-python2
-                   (strip-python2-variant python-keyring))))
-    (package
-      (inherit keyring)
-      (name "python2-keyring")
-      (version "8.7")
-      (source
-        (origin
-          (method url-fetch)
-          (uri (pypi-uri "keyring" version))
-          (sha256
-           (base32
-            "0482rmi2x6p78wl2kz8qzyq21xz1sbbfwnv5x7dggar4vkwxhzfx"))))
-      (arguments
-       `(#:python ,python-2))
-      (native-inputs
-       (list python2-pytest python2-pytest-runner python2-setuptools-scm))
-      (propagated-inputs
-       (list python2-pycrypto)))))
 
 (define-public python-keyrings.alt
   (package

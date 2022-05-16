@@ -3,6 +3,7 @@
 ;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -21,6 +22,7 @@
 
 (define-module (gnu packages jupyter)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -29,6 +31,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cpp)
+  #:use-module (gnu packages docker)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages monitoring)
   #:use-module (gnu packages networking)
@@ -46,21 +49,24 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages serialization)
-  #:use-module (gnu packages docker))
+  #:use-module (gnu packages version-control))
 
 (define-public python-jupyter-protocol
   (package
     (name "python-jupyter-protocol")
-    (version "0.1.1")
+    (version "0.2.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "jupyter_protocol" version))
               (sha256
                (base32
-                "1bk3as5yw9y5nmq6l15nr46aby34phmvsx9kxgqnm5pd5q2b5h57"))))
+                "075vbaak6hlk9606lw61ldv72p6694k938jd1kvkm6spd0pczpmn"))))
     (build-system python-build-system)
     (propagated-inputs
-     (list python-dateutil python-jupyter-core python-pyzmq
+     (list python-dateutil
+           python-ipython-genutils
+           python-jupyter-core
+           python-pyzmq
            python-traitlets))
     (native-inputs
      (list python-ipykernel python-ipython python-mock python-pytest))
@@ -76,23 +82,40 @@ protocol} to be used by both clients and kernels.")
 (define-public python-jupyter-kernel-mgmt
   (package
     (name "python-jupyter-kernel-mgmt")
-    (version "0.4.0")
+    (version "0.5.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "jupyter_kernel_mgmt" version))
               (sha256
                (base32
-                "0i7a78dn89ca8h0a42giyxwcmk6y4wrdr7q8h2ax9vybb84c795q"))))
+                "0977ixfi1pzjgy84hl0zycg4wpllmid98fhzcpy0lxd322w4sl7x"))))
     (build-system python-build-system)
+    (arguments
+     (list
+      ;; There are 8 test failures, most of them in 'test_client_loop.py'
+      ;; (see: https://github.com/takluyver/jupyter_kernel_mgmt/issues/48).
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" "/tmp")
+                (invoke "pytest" "-vv" "jupyter_kernel_mgmt")))))))
     (propagated-inputs
      (list python-dateutil
            python-entrypoints
            python-jupyter-core
            python-jupyter-protocol
            python-pyzmq
+           python-tornado
            python-traitlets))
     (native-inputs
-     (list python-ipykernel python-ipython python-mock python-pytest))
+     (list python-async-generator
+           python-ipykernel
+           python-ipython
+           python-pytest
+           python-pytest-asyncio))
     (home-page "https://jupyter.org")
     (synopsis "Discover, launch, and communicate with Jupyter kernels")
     (description
@@ -147,15 +170,15 @@ Messaging Protocol}.")
 (define-public xeus
   (package
     (name "xeus")
-    (version "0.23.2")
+    (version "2.4.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/QuantStack/xeus")
+                    (url "https://github.com/jupyter-xeus/xeus")
                     (commit version)))
               (sha256
                (base32
-                "1m1b6z1538r7mv2ggn7bdbd9570ja7cadplq64zl8rgl2c8vdi2a"))
+                "1k1h416qkw3yra6ayfa61nv0v4ify2wvp5x27slgbcw6c88w7fb1"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -167,7 +190,7 @@ Messaging Protocol}.")
            ;; The following inputs are used by the test suite.
            googletest
            python-pytest
-           python-3
+           python-wrapper
            python-jupyter-kernel-test
            python-jupyter-client))
     (inputs
@@ -176,7 +199,7 @@ Messaging Protocol}.")
            cppzmq
            zeromq
            openssl
-           `(,util-linux "lib")))         ;libuuid
+           `(,util-linux "lib")))       ;libuuid
     (home-page "https://quantstack.net/xeus")
     (synopsis "C++ implementation of the Jupyter Kernel protocol")
     (description
@@ -212,18 +235,82 @@ alternative Python kernel for Jupyter.")
 the JupyterLab CSS variables.")
     (license license:bsd-3)))
 
+(define-public python-jupyterlab-server
+  (package
+    (name "python-jupyterlab-server")
+    (version "2.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jupyterlab_server" version))
+       (sha256
+        (base32 "1gxbfa5s0v4z0v8kagkm2bz8hlli5pwhr89y68w5kxcrqfsg9q00"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv" "-c" "/dev/null" "tests"
+                        ;; XXX: These tests appear to fail due to the lack of
+                        ;; locales.
+                        "-k" "not locale and not language")))))))
+    (propagated-inputs
+     (list python-babel
+           python-entrypoints
+           python-importlib-metadata    ;TODO: remove after Python >= 3.10
+           python-jinja2
+           python-json5
+           python-jsonschema
+           python-jupyter-server
+           python-packaging
+           python-requests))
+    (native-inputs
+     (list python-ipykernel
+           python-jupyter-server
+           python-openapi-core
+           python-openapi-spec-validator
+           python-pytest
+           python-pytest-console-scripts
+           python-pytest-tornasync
+           python-ruamel.yaml
+           python-strict-rfc3339))
+    (home-page "https://jupyter.org")
+    (synopsis "Server components for JupyterLab applications")
+    (description "JupyterLab Server sits between JupyterLab and Jupyter
+Server, and provides a set of REST API handlers and utilities that are used by
+JupyterLab.  It is a separate project in order to accommodate creating
+JupyterLab-like applications from a more limited scope.")
+    (license license:bsd-3)))
+
 (define-public python-jupyter-packaging
   (package
     (name "python-jupyter-packaging")
-    (version "0.9.1")
+    (version "0.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "jupyter_packaging" version))
        (sha256
         (base32
-         "0r015c0m713d19asmpimsw6bk2sqv2lpd2nccgjzjdj5h1crg0bg"))))
+         "1b7ssc627vgrdl21c09w9sxk5fc1ps3g7f70laxag4yw1bb5ax5j"))))
     (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; Disable isolation so that the package environment can be
+                ;; setup without connectivity.
+                (setenv "SOURCE_DATE_EPOCH" "315532800")
+                (substitute* "tests/test_build_api.py"
+                  (("\"-m\", \"build\"" all)
+                   (string-append all ", \"--no-isolation\"")))
+                (invoke "python" "-m" "pytest" "-vv")))))))
     (propagated-inputs
      (list python-deprecation python-packaging python-setuptools
            python-tomlkit python-wheel))
@@ -240,14 +327,14 @@ JavaScript build steps.")
 (define-public python-jupyter-server
   (package
     (name "python-jupyter-server")
-    (version "1.10.2")
+    (version "1.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "jupyter_server" version))
        (sha256
         (base32
-         "1gvjbsw5nl94hz02rnkr4g4kkvh9fz7i45vz17hzwyvdpj7bd8yk"))))
+         "0fj6l34m6vk3yic87isz9bzgg4qsbr285x1faamf512bsrxghmn7"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -274,7 +361,6 @@ JavaScript build steps.")
     (propagated-inputs
      (list python-anyio
            python-argon2-cffi
-           python-ipython-genutils
            python-jinja2
            python-jupyter-client
            python-jupyter-core
@@ -282,7 +368,6 @@ JavaScript build steps.")
            python-nbformat
            python-prometheus-client
            python-pyzmq
-           python-requests-unixsocket
            python-send2trash
            python-terminado
            python-tornado-6
@@ -324,49 +409,116 @@ endpoints—to Jupyter web applications.")
 are interactive HTML widgets for Jupyter notebooks and the IPython kernel.")
     (license license:bsd-3)))
 
+(define-public python-jupyter-server-mathjax
+  (package
+    (name "python-jupyter-server-mathjax")
+    (version "0.2.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jupyter_server_mathjax" version))
+       (sha256
+        (base32 "1cz7grhj9jih9mgw4xk7a4bqy1fwlb1jsawh6ykxnvpydn76rnb4"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "/tmp"
+                  (invoke "pytest" "-vv"
+                          "--pyargs" "jupyter_server_mathjax"))))))))
+    (propagated-inputs (list python-jupyter-server))
+    (native-inputs
+     (list python-jupyter-server
+           python-jupyter-packaging
+           python-pytest
+           python-pytest-tornasync))
+    (home-page "https://jupyter.org")
+    (synopsis "Jupyter Server extension for serving Mathjax")
+    (description "This package provides a Jupyter Server extension for serving
+Mathjax, the JavaScript display engine for mathematics.")
+    (license license:bsd-3)))
+
 (define-public python-nbclient
   (package
     (name "python-nbclient")
-    (version "0.5.3")
+    (version "0.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "nbclient" version))
        (sha256
         (base32
-         "172q4r6mq0lg394di0pc6ipvniy14jg38wkdsj48r366609jf5yv"))))
+         "0cbhs8l8ma5nzm1i4484gsrb7189m1lmniashp929pxsqq1s929z"))))
     (build-system python-build-system)
-    ;; Tests require a kernel via python-ipykernel, and also tools from
-    ;; nbconvert.
+    ;; Tests require tools from nbconvert, which would introduces a cycle.
     (arguments '(#:tests? #false))
     (propagated-inputs
-     (list python-async-generator python-jupyter-client python-nbformat
-           python-nest-asyncio python-traitlets))
-    (native-inputs
-     (list python-black
-           python-bumpversion
-           python-check-manifest
-           python-codecov
-           python-coverage
-           python-flake8
-           ;; ("python-ipykernel" ,python-ipykernel)
-           ;; ("python-ipython" ,python-ipython)
-           ;; ("python-ipywidgets" ,python-ipywidgets)
-           python-mypy
-           python-pip
-           python-pytest
-           python-pytest-cov
-           python-setuptools
-           python-testpath
-           python-tox
-           python-twine
-           python-wheel
-           python-xmltodict))
+     (list python-jupyter-client
+           python-nbformat
+           python-nest-asyncio
+           python-traitlets))
     (home-page "https://jupyter.org")
     (synopsis "Client library for executing notebooks")
     (description
-     "This package provides a client library for executing notebooks. Formerly
-nbconvert's @code{ExecutePreprocessor.}")
+     "This package provides a client library for executing notebooks.
+It was formerly known as nbconvert's @code{ExecutePreprocessor.}")
+    (license license:bsd-3)))
+
+(define-public python-nbdime
+  (package
+    (name "python-nbdime")
+    (version "3.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "nbdime" version))
+       (sha256
+        (base32 "12v41lricbg713lzlfcx0cilfm9spndaanhp39q4ydvix4h76xk7"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-ipython-genutils
+            ;; TODO: Remove when a release newer than 3.1.1 is made.
+            (lambda _
+              (substitute* "nbdime/config.py"
+                (("from ipython_genutils import py3compat")
+                 "")
+                (("py3compat\\.getcwd")
+                 "os.getcwd")))))))
+    (propagated-inputs
+     (list python-colorama
+           python-gitpython
+           python-jinja2
+           python-jupyter-server
+           python-jupyter-server-mathjax
+           python-nbformat
+           python-pygments
+           python-requests
+           python-tornado-6))
+    (native-inputs
+     (list python-jupyter-server
+           python-mock
+           python-notebook
+           python-pytest
+           python-pytest-tornado
+           python-tabulate))
+    (home-page "https://nbdime.readthedocs.io")
+    (synopsis "Diff tools for Jupyter Notebooks")
+    (description "@code{nbdime} provides tools for diffing and merging of
+Jupyter Notebooks.  It includes the following commands:
+@table @command
+@item nbdiff compare notebooks in a terminal-friendly way
+@item nbmerge three-way merge of notebooks with automatic conflict resolution
+@item nbdiff-web rich rendered diff of notebooks
+@item nbmerge-web web-based three-way merge tool for notebooks
+nbshow present a single notebook in a terminal-friendly way
+@end table")
     (license license:bsd-3)))
 
 (define-public repo2docker
@@ -488,33 +640,32 @@ Docker registry.")
                 "004v22nyi5cnpxq4fiws89p7i5wcnzv45n3n70axdd6prh6rkapx"))))
     (build-system python-build-system)
     (arguments
-     `(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'no-custom-css
-           (lambda* (#:key inputs #:allow-other-keys)
+     (list
+      #:tests? #f                       ;no test suite
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'no-custom-css
+            (lambda _
               (substitute* "sparqlkernel/install.py"
-                (("install_custom_css\\( destd, PKGNAME \\)") ""))
-              #t))
-         (add-after 'install 'install-kernelspec
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (setenv "HOME" "/tmp")
-               (add-installed-pythonpath inputs outputs)
-               (invoke
-                 (string-append out "/bin/jupyter-sparqlkernel")
-                 "install"
-                 (string-append "--InstallKernelSpec.prefix=" out))
-               #t))))))
-    (native-inputs
-     (list python-traitlets python-jupyter-client python-notebook
-           python-ipykernel python-html5lib-0.9))
+                (("install_custom_css\\( destd, PKGNAME \\)") ""))))
+          (add-after 'add-install-to-pythonpath 'install-kernelspec
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (invoke
+               (string-append #$output "/bin/jupyter-sparqlkernel")
+               "install"
+               (string-append "--InstallKernelSpec.prefix=" #$output)))))))
     (propagated-inputs
-     (list python-sparqlwrapper python-pygments))
+     (list python-ipykernel
+           python-notebook
+           python-pygments
+           python-rdflib
+           python-sparqlwrapper
+           python-traitlets))
     (home-page "https://github.com/paulovn/sparql-kernel")
     (synopsis "Jupyter kernel for SPARQL")
     (description "This module installs a Jupyter kernel for SPARQL.  It allows
-sending queries to an SPARQL endpoint and fetching & presenting the results in
+sending queries to an SPARQL endpoint, fetching and presenting the results in
 a notebook.")
     (license license:bsd-3)))
 
@@ -581,26 +732,52 @@ datasets across widgets.")
 (define-public python-voila
   (package
     (name "python-voila")
-    (version "0.2.10")
+    (version "0.3.5")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "voila" version))
+       (method git-fetch)               ;no tests in pypi archive
+       (uri (git-reference
+             (url "https://github.com/voila-dashboards/voila")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "0krfc95yjlhjdmrsladhy6lpf4xs1zw49nmkyl4pkykndglvwa1m"))))
+         "10qn34ddmcwcl9zxa0gwxarxr64k8hx4yysdwrf0iqvmzmkwmbbj"))))
     (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "setup.cfg"
+                (("nbclient>=0.4.0,<0.6")
+                 "nbclient"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" "/tmp")
+                (invoke "pytest" "-vv"
+                        ;; Many tests depend on Node JavaScript dependencies
+                        ;; and a running HTTP server; ignore them.
+                        "--ignore" "tests/app"
+                        "--ignore" "tests/server")))))))
     (propagated-inputs
-     (list python-jupyter-client python-jupyter-server python-nbclient
-           python-nbconvert))
+     (list python-jupyter-client
+           python-jupyter-server
+           python-jupyterlab-server
+           python-nbclient
+           python-nbconvert
+           python-traitlets
+           python-websockets))
     (native-inputs
      (list python-ipywidgets
-           python-jupyter-packaging
            python-matplotlib
            python-mock
+           python-numpy
+           python-pandas
            python-pytest
            python-pytest-tornasync
-           python-setuptools
            python-tornado-6))
     (home-page "https://github.com/voila-dashboards/voila")
     (synopsis "Render live Jupyter notebooks with interactive widgets")
