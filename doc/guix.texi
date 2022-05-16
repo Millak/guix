@@ -5175,7 +5175,7 @@ write in @code{~/.config/guix/channels.scm} this specification:
 @noindent
 From there on, @command{guix pull} will fetch code from the @code{super-hacks}
 branch of the repository at @code{example.org}.  The authentication concern is
-addressed below ((@pxref{Channel  Authentication}).
+addressed below (@pxref{Channel Authentication}).
 
 @node Replicating Guix
 @section Replicating Guix
@@ -5202,7 +5202,7 @@ say, on another machine, by providing a channel specification in
 
 The @command{guix describe --format=channels} command can even generate this
 list of channels directly (@pxref{Invoking guix describe}).  The resulting
-file can be used with the -C options of @command{guix pull}
+file can be used with the @option{-C} option of @command{guix pull}
 (@pxref{Invoking guix pull}) or @command{guix time-machine}
 (@pxref{Invoking guix time-machine}).
 
