@@ -10328,11 +10328,9 @@ only know by its Unicode name or code point.")
     (arguments
      `(#:glib-or-gtk? #t))
     (native-inputs
-     `(("desktop-file-utils" ,desktop-file-utils)
-       ("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("gtk+:bin" ,gtk+ "bin")
-       ("pkg-config" ,pkg-config)))
+     (list desktop-file-utils gettext-minimal
+           `(,glib "bin")
+           `(,gtk+ "bin") pkg-config))
     (inputs
      (list gsettings-desktop-schemas gtk+ libportal))
     (home-page "https://www.hjdskes.nl/projects/gcolor3/")
