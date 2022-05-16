@@ -27522,8 +27522,8 @@ contrast and few colors.")
       (license license:gpl3+))))
 
 (define-public emacs-doom-themes
-  (let ((commit "e803fc4ac8cf7118e2d1544d8241b848b5e79e9f")
-        (revision "5")
+  (let ((commit "e9bdd137116fa2037ed60037b8421cf68c64888d")
+        (revision "6")
         (version "2.1.6"))
     (package
       (name "emacs-doom-themes")
@@ -27535,7 +27535,7 @@ contrast and few colors.")
                       (commit commit)))
                 (file-name (git-file-name name version))
                 (sha256
-                 (base32 "128hdmf0jkzr12fv2r6z349qiwba6q97hsb6b1n2qlhi0v5v3mfh"))))
+                 (base32 "178ri980kwkndb73dawhsfr1dkl6xjdb451z0iar9ghk8z0r0wpg"))))
       (build-system emacs-build-system)
       (native-inputs
        (list emacs-ert-runner))
