@@ -2139,22 +2139,21 @@ are both supported).")
            libtool
            pkg-config))
     (inputs
-     `(("curl" ,curl)
-       ("expat" ,expat)
-       ("glib" ,glib)
-       ("gpgme" ,gpgme)
-       ("gtk+" ,gtk+-2)
-       ("libgcrypt" ,libgcrypt)
-       ("libnotify" ,libnotify)
-       ("libotr" ,libotr)
-       ("libsignal-protocol-c" ,libsignal-protocol-c)
-       ("libstrophe" ,libstrophe)
-       ;; ("libxss" ,libxss)
-       ("ncurses" ,ncurses)
-       ("openssl" ,openssl)
-       ("python" ,python-wrapper)
-       ("readline" ,readline)
-       ("sqlite" ,sqlite)))
+     (list curl
+           expat
+           glib
+           gpgme
+           gtk+-2
+           libgcrypt
+           libnotify
+           libotr
+           libsignal-protocol-c
+           libstrophe
+           ncurses
+           openssl
+           python-wrapper
+           readline
+           sqlite))
     (synopsis "Console-based XMPP client")
     (description "Profanity is a console based XMPP client written in C
 using ncurses and libmesode, inspired by Irssi.")
