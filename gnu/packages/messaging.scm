@@ -2064,41 +2064,6 @@ is also scriptable and extensible via Guile.")
     (home-page "https://www.gnu.org/software/freetalk/")
     (license license:gpl3+)))
 
-(define-public libmesode
-  (package
-    (name "libmesode")
-    (version "0.10.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/profanity-im/libmesode")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1bxnkhrypgv41qyy1n545kcggmlw1hvxnhwihijhhcf2pxd2s654"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:configure-flags (list "--disable-static")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-make
-           (lambda _
-             (substitute* "Makefile.am"
-               (("'\\^xmpp_'") "'.'"))
-             #t)))))
-    (inputs
-     (list expat openssl))
-    (native-inputs
-     (list autoconf automake libtool pkg-config))
-    (synopsis "C library for writing XMPP clients")
-    (description "Libmesode is a fork of libstrophe for use with Profanity
-XMPP Client.  In particular, libmesode provides extra TLS functionality such as
-manual SSL certificate verification.")
-    (home-page "https://github.com/profanity/libmesode")
-    ;; Dual-licensed.
-    (license (list license:gpl3+ license:x11))))
-
 (define-public libstrophe
   (package
     (name "libstrophe")
