@@ -2101,7 +2101,7 @@ manual SSL certificate verification.")
 (define-public libstrophe
   (package
     (name "libstrophe")
-    (version "0.10.1")
+    (version "0.12.0")
     (source
      (origin
        (method git-fetch)
@@ -2110,7 +2110,7 @@ manual SSL certificate verification.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11d341avsfr0z4lq15cy5dkmff6qpy91wkgzdpfdy31l27pa1g79"))))
+        (base32 "1apply301lxyjax2677bd5mc0a3233nm5qb7fiqpawq2n7vh17v0"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags (list "--disable-static")
