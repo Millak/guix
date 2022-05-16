@@ -855,14 +855,14 @@ string, you could instantiate a prosody service like this:
                 (start #~(if (defined? 'make-inetd-constructor)
 
                              (make-inetd-constructor
-                              (list #$bitlbee* "-I"
-                                    "-u" "bitlbee" "-c" #$conf)
+                              (list #$bitlbee* "-I" "-c" #$conf)
                               (addrinfo:addr
                                (car (getaddrinfo #$interface
                                                  #$(number->string port)
                                                  (logior AI_NUMERICHOST
                                                          AI_NUMERICSERV))))
                               #:service-name-stem "bitlbee"
+                              #:user "bitlbee" #:group "bitlbee"
 
                               ;; Allow 'bitlbee-purple' to use libpurple plugins.
                               #:environment-variables
