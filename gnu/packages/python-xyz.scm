@@ -9289,10 +9289,8 @@ installing @code{kernelspec}s for use with Jupyter frontends.")
          "1ikqvv335qfrhmlji0iclci6pnm2c3fvnxf031jr1d68j79g6ypd"))))
     (build-system python-build-system)
     (arguments '(#:tests? #f))          ;no test suite
-    (propagated-inputs
-     (list python-ipykernel))
     (inputs
-     (list pari-gp readline))
+     (list pari-gp readline python-ipykernel))
     (home-page "https://github.com/sagemath/pari-jupyter")
     (synopsis "Jupyter kernel for PARI/GP")
     (description "The package provides a PARI/GP kernel for Jupyter.")
