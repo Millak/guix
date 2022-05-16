@@ -3,6 +3,7 @@
 ;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -292,71 +293,73 @@ and white.")
     (license license:gpl2)))
 
 (define-public didjvu
-  (package
-    (name "didjvu")
-    (version "0.9")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://github.com/jwilk/didjvu/releases/download/" version
-             "/didjvu-" version ".tar.gz"))
-       (sha256
-        (base32 "0xyrnk8d2khi7q1zr28gjkjq6frz4mkb5jdl8821yzf12k7c8pbv"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list python2-nose))
-    (inputs
-     `(("djvulibre" ,djvulibre)
-       ("minidjvu" ,minidjvu)
-       ("python" ,python-2)
-       ("python2-gamera" ,python2-gamera)
-       ("python2-pillow" ,python2-pillow)))
-    (arguments
-     `(#:modules ((guix build gnu-build-system)
-                  ((guix build python-build-system) #:prefix python:)
-                  (guix build utils))
-       #:imported-modules (,@%gnu-build-system-modules
-                           (guix build python-build-system))
-       #:test-target "test"
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-before 'check 'disable-failing-test
-           (lambda _
-             (substitute* "tests/test_ipc.py"
-               ;; test_wait_signal gets stuck forever
-               (("yield self\\._test_signal, name")
-                "return True")
-               ;; test_path fails to find a file it should have created
-               (("path = os\\.getenv\\('PATH'\\)\\.split\\(':'\\)")
-                "return True"))
-             (substitute* "tests/test_timestamp.py"
-               ;; test_timezones fails with:
-               ;;   '2009-12-18T21:25:14Z' != '2009-12-18T22:25:14+01:00'
-               (("@fork_isolation")
-                "return True"))))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (invoke "make"
-                       "DESTDIR="
-                       (string-append "PREFIX=" out)
-                       "install"))))
-         (add-after 'install 'wrap-python
-           (assoc-ref python:%standard-phases 'wrap))
-         (add-after 'wrap-python 'wrap-path
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (djvulibre (assoc-ref inputs "djvulibre")))
-               (wrap-program (string-append out "/bin/didjvu")
-                 `("PATH" ":" prefix (,(string-append djvulibre "/bin"))))))))))
-    (synopsis "DjVu encoder with foreground/background separation")
-    (description
-     "@code{didjvu} uses the @code{Gamera} framework to separate the foreground
+  (let ((revision "0")
+        (commit "c792d61e85fbe5b6e678bc7d686b0208717c587b"))
+    (package
+      (name "didjvu")
+      (version (git-version "0.9" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/FriedrichFroebel/didjvu")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "09lwfwirmfl93062i2rvdcrgwp9fj95ny07059bxq7dl6z0z35qj"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:modules ((guix build gnu-build-system)
+                    ((guix build python-build-system) #:prefix python:)
+                    (guix build utils))
+         #:imported-modules (,@%gnu-build-system-modules
+                             (guix build python-build-system))
+         #:test-target "test"
+         #:phases
+         (modify-phases %standard-phases
+           (delete 'configure)
+           (add-before 'check 'disable-failing-test
+             (lambda _
+               (substitute* "tests/test_ipc.py"
+                 ;; test_wait_signal gets stuck forever
+                 (("yield self\\._test_signal, name")
+                  "return True")
+                 ;; test_path fails to find a file it should have created
+                 (("path = os\\.getenv\\('PATH'\\)\\.split\\(':'\\)")
+                  "return True"))
+               (substitute* "tests/test_timestamp.py"
+                 ;; test_timezones fails with:
+                 ;;   '2009-12-18T21:25:14Z' != '2009-12-18T22:25:14+01:00'
+                 (("@fork_isolation")
+                  "return True"))))
+           (replace 'install
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((out (assoc-ref outputs "out")))
+                 (invoke "make"
+                         "DESTDIR="
+                         (string-append "PREFIX=" out)
+                         "install"))))
+           (add-after 'install 'wrap-python
+             (assoc-ref python:%standard-phases 'wrap))
+           (add-after 'wrap-python 'wrap-path
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (let ((out (assoc-ref outputs "out"))
+                     (djvulibre (assoc-ref inputs "djvulibre")))
+                 (wrap-program (string-append out "/bin/didjvu")
+                   `("PATH" ":" prefix (,(string-append djvulibre "/bin"))))))))))
+      (native-inputs (list python-nose))
+      (inputs
+       (list djvulibre
+             minidjvu
+             python-gamera
+             python-pillow
+             python-wrapper))
+      (synopsis "DjVu encoder with foreground/background separation")
+      (description
+       "@code{didjvu} uses the @code{Gamera} framework to separate the foreground
 and background layers of images, which can then be encoded into a DjVu file.")
-    (home-page "https://jwilk.net/software/didjvu")
-    (license license:gpl2)))
+      (home-page "https://jwilk.net/software/didjvu")
+      (license license:gpl2))))
 
 (define-public ocrodjvu
   (let ((revision "0")
