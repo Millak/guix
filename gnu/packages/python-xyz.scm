@@ -14009,7 +14009,7 @@ in the data.")
          "1iqrxhd8hvlyf8cqbc731ssnwm61wrycnbiczy5wsfahd3hlh8i4"))))
     (build-system python-build-system)
     (propagated-inputs
-     (list python-ipykernel python-jupyter-client python-prompt-toolkit-2
+     (list python-ipykernel python-jupyter-client python-prompt-toolkit
            python-pygments))
     (native-inputs
      (list python-nose python-pytest))
