@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
@@ -620,9 +620,10 @@ Docker registry.")
               (invoke "python" "-m" "bash_kernel.install" "--prefix" out)
               #t))))))
    (inputs
-     (list bash))
-   (propagated-inputs
-     (list python-pexpect python-ipykernel python-jupyter-client))
+     (list bash
+           python-pexpect
+           python-ipykernel
+           python-jupyter-client))
    (home-page "https://github.com/takluyver/bash_kernel")
    (synopsis "Jupyter kernel for Bash")
    (description "A bash shell kernel for Jupyter.")
