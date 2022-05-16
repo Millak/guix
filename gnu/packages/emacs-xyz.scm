@@ -109,6 +109,7 @@
 ;;; Copyright © 2022 Brandon Lucas <br@ndon.dk>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2022 Dominic Martinez <dom@dominicm.dev>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -27690,7 +27691,9 @@ contrast and few colors.")
                ;; EMACSLOADPATH.
                (for-each (lambda (f)
                            (rename-file f (basename f)))
-                         (find-files "./themes" ".*\\.el$"))
+                         (append
+                          (find-files "./themes" ".*\\.el$")
+                          (find-files "./extensions" ".*\\.el$")))
                #t)))))
       (synopsis "Wide collection of color themes for Emacs")
       (description "Emacs-doom-themes contains numerous popular color themes for
