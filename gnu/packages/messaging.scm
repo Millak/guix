@@ -34,6 +34,7 @@
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
+;;; Copyright © 2022 Jack Hill <jackhill@jackhill.us>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2113,14 +2114,20 @@ manual SSL certificate verification.")
         (base32 "1apply301lxyjax2677bd5mc0a3233nm5qb7fiqpawq2n7vh17v0"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags (list "--disable-static")
+     (list #:configure-flags '(list "--disable-static")
        #:phases
-       (modify-phases %standard-phases
+       #~(modify-phases %standard-phases
          (add-after 'unpack 'patch-make
            (lambda _
              (substitute* "Makefile.am"
                (("'\\^xmpp_'") "'.'"))
-             #t)))))
+             #t))
+         (add-after 'install-licence-files 'install-extra-licence-files
+           (lambda _
+            (let ((license-directory (string-append #$output
+                                                    "/share/doc/"
+                                                    #$name "-" #$version "/")))
+              (install-file "MIT-LICENSE.txt" license-directory)))))))
     (inputs
      (list expat openssl))
     (native-inputs
@@ -2129,7 +2136,7 @@ manual SSL certificate verification.")
     (description "Libstrophe is a minimal XMPP library written in C.  It has
 almost no external dependencies, only an XML parsing library (expat or libxml
 are both supported).")
-    (home-page "http://strophe.im/libstrophe")
+    (home-page "https://strophe.im/libstrophe/")
     ;; Dual-licensed.
     (license (list license:gpl3+ license:x11))))
 
