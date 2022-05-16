@@ -26357,17 +26357,17 @@ error-prone \"update the embedded version string\" step from your release
 process.")
     (license license:public-domain)))
 
-(define-public python2-gamera
+(define-public python-gamera
   (package
-    (name "python2-gamera")
-    (version "3.4.4")
+    (name "python-gamera")
+    (version "4.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://gamera.informatik.hsnr.de/download/"
                            "gamera-" version ".tar.gz"))
        (sha256
-        (base32 "1g4y1kxk1hmxfsiz682hbxvwryqilnb21ci509m559yp7hcliiyy"))
+        (base32 "0fhlwbvpm3k54n4aa1y6qd348jqrb54ak9p0ic16drx7f07dsq05"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -26377,17 +26377,33 @@ process.")
                        "src/libtiff"
                        "src/zlib-1.2.8"))))))
     (build-system python-build-system)
-    (inputs
-     (list libpng libtiff zlib))
     (arguments
-     `(#:python ,python-2
-       #:phases
+     `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'disable-wx-support
            (lambda _
              (substitute* "setup.py"
                (("no_wx = False")
-                "no_wx = True")))))))
+                "no_wx = True"))))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               ;; Some tests require a writable HOME directory and test
+               ;; directory.
+               (setenv "HOME" "/tmp")
+               (mkdir "tests/tmp")     ;the code assumes this directory exists
+               ;; (for-each make-file-writable (find-files "tests"))
+               (with-directory-excursion "tests"
+                 (invoke "pytest" "-vv"
+                         ;; This test causes gamera/gendoc.py to be loaded,
+                         ;; which fails due to the missing docutils, pygments
+                         ;; and silvercity (very old, unpackaged) libraries.
+                         "--ignore" "test_plugins.py"
+                         ;; This test triggers a segfault (see:
+                         ;; https://github.com/hsnr-gamera/gamera-4/issues/47).
+                         "--ignore" "test_rle.py"))))))))
+    (native-inputs (list python-pytest))
+    (inputs (list libpng libtiff zlib))
     (synopsis "Framework for building document analysis applications")
     (description
      "Gamera is a toolkit for building document image recognition systems.")
