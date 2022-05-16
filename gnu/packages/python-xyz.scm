@@ -14041,9 +14041,8 @@ Jupyter kernels such as IJulia and IRKernel.")
                  (assoc-ref outputs "out") "/bin"))))))))
     ;; Remove the python-ipython propagated input, to avoid the cycle
     (propagated-inputs
-     (alist-delete
-      "python-ipython"
-      (package-propagated-inputs python-jupyter-console)))))
+     (modify-inputs (package-propagated-inputs python-jupyter-console)
+       (delete "python-ipython")))))
 
 (define-public python-qtconsole
   (package
