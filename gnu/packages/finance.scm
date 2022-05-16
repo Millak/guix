@@ -26,6 +26,8 @@
 ;;; Copyright © 2021 François J <francois-oss@avalenn.eu>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022 Kyle Meyer <kyle@kyleam.com>
+;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -395,51 +397,53 @@ in ability, and easy to use.")
                     "See src/wcwidth.cc in the distribution.")))))
 
 (define-public emacs-ledger-mode
-  (package
-    (name "emacs-ledger-mode")
-    (version "4.0.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/ledger/ledger-mode")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1r5rcyxd6d1rqwamzpvqdbkbdf1zbj75aaciqijrklnm59ps244y"))))
-    (build-system emacs-build-system)
-    (arguments
-     `(;; ledger-test.el is needed at runtime (but probably not for a good reason).
-       #:exclude '()
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((ledger (assoc-ref inputs "ledger")))
-               (make-file-writable "ledger-exec.el")
-               (emacs-substitute-variables "ledger-exec.el"
-                 ("ledger-binary-path" (string-append ledger "/bin/ledger"))))
-             #t))
-         (add-after 'build 'build-doc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((target (string-append (assoc-ref outputs "out")
-                                          "/share/info")))
-               (mkdir-p target)
-               (invoke "makeinfo" "-o" target
-                       "../source/doc/ledger-mode.texi"))
-             #t))
-         (replace 'check
-           (lambda _
-             (with-directory-excursion "../source/test"
-               (invoke "make" "test-batch")))))))
-    (inputs
-     (list ledger))
-    (native-inputs
-     (list texinfo))
-    (home-page "https://ledger-cli.org/")
-    (synopsis "Command-line double-entry accounting program")
-    (description
-     "Ledger is a powerful, double-entry accounting system that is
+  ;; The last release was on Nov 8, 2019 and doesn't build with Emacs 28.
+  (let ((commit "11e850395448ee7012dba16bd6df103f5552ebfb")
+        (revision "0"))
+    (package
+      (name "emacs-ledger-mode")
+      (version (git-version "4.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/ledger/ledger-mode")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0hzky36vrlb7kvpyz4gy3zn01zdlmlx0s58w6ggk5djbcvjc2rfx"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        ;; ledger-test.el is needed at runtime (but probably not for a good reason).
+        #:exclude #~'()
+        #:tests? #t
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-path
+              (lambda* (#:key inputs #:allow-other-keys)
+                (make-file-writable "ledger-exec.el")
+                (emacs-substitute-variables "ledger-exec.el"
+                  ("ledger-binary-path" (search-input-file inputs "/bin/ledger")))))
+            (add-after 'build 'build-doc
+              (lambda _
+                (let ((target (string-append #$output "/share/info")))
+                  (mkdir-p target)
+                  (invoke "makeinfo" "-o" target
+                          "../source/doc/ledger-mode.texi"))))
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (with-directory-excursion "../source/test"
+                    (invoke "make" "test-batch"))))))))
+      (inputs
+       (list ledger))
+      (native-inputs
+       (list texinfo))
+      (home-page "https://ledger-cli.org/")
+      (synopsis "Command-line double-entry accounting program")
+      (description
+       "Ledger is a powerful, double-entry accounting system that is
 accessed from the UNIX command-line.  This may put off some users, since
 there is no flashy UI, but for those who want unparalleled reporting
 access to their data there are few alternatives.
@@ -453,7 +457,7 @@ a graph or html instead.  Ledger is simple in concept, surprisingly rich
 in ability, and easy to use.
 
 This package provides the Emacs mode.")
-    (license license:gpl2+)))
+      (license license:gpl2+))))
 
 (define-public geierlein
   (package
