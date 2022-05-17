@@ -4693,21 +4693,19 @@ Netgear devices.")
 (define-public atop
   (package
     (name "atop")
-    (version "2.6.0")
+    (version "2.7.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.atoptool.nl/download/atop-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0wlg0n0h9vwpjp2dcb623jvvqck422jrjpq9mbpzg4hnawxcmhly"))))
+                "0kjwgf94skbrndv1krlmsrq34smzi3iwk73fbsnyw787gvqx4j6a"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; no test suite
        #:make-flags
        (list (string-append "CC=" ,(cc-for-target))
-             ;; The installer requires a choice between systemd or SysV.
-             "systemdinstall"
              (string-append "DESTDIR=" (assoc-ref %outputs "out"))
              (string-append "BINPATH=/bin")
              (string-append "SBINPATH=/sbin")
@@ -4722,12 +4720,8 @@ Netgear devices.")
        (modify-phases %standard-phases
          (delete 'configure) ; No ./configure script
          (add-before 'build 'patch-build
-           (lambda* (#:key outputs #:allow-other-keys)
+           (lambda _
              (substitute* "Makefile"
-               ;; We don't need to chown things in the build environment.
-               (("chown.*$") "")
-               ;; We can't toggle the setuid bit in the build environment.
-               (("chmod 04711") "chmod 0711")
                ;; Otherwise, it creates a blank configuration file as a "default".
                (("touch.*DEFPATH)/atop") "")
                (("chmod.*DEFPATH)/atop") ""))
