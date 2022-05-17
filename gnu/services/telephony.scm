@@ -157,7 +157,7 @@ the @samp{root} user (i.e., not in the store), to guard against leaking the
 secret key material of the Jami account it contains."
    empty-serializer)
   (allowed-contacts
-   (maybe-account-fingerprint-list 'disabled)
+   maybe-account-fingerprint-list
    "The list of allowed contacts for the account, entered as their 40
 characters long fingerprint.  Messages or calls from accounts not in that list
 will be rejected.  When unspecified, the configuration of the account archive
@@ -166,7 +166,7 @@ allowance, which typically defaults to allow any contact to communicate with
 the account."
    empty-serializer)
   (moderators
-   (maybe-account-fingerprint-list 'disabled)
+   maybe-account-fingerprint-list
    "The list of contacts that should have moderation privileges (to ban, mute,
 etc. other users) in rendezvous conferences, entered as their 40 characters
 long fingerprint.  When unspecified, the configuration of the account archive
@@ -175,24 +175,24 @@ anyone to moderate."
    empty-serializer)
   ;; The serializable fields below are to be set with set-account-details.
   (rendezvous-point?
-   (maybe-boolean 'disabled)
+   maybe-boolean
    "Whether the account should operate in the rendezvous mode.  In this mode,
 all the incoming audio/video calls are mixed into a conference.  When left
 unspecified, the value from the account archive prevails.")
   (peer-discovery?
-   (maybe-boolean 'disabled)
+   maybe-boolean
    "Whether peer discovery should be enabled.  Peer discovery is used to
 discover other OpenDHT nodes on the local network, which can be useful to
 maintain communication between devices on such network even when the
 connection to the the Internet has been lost.  When left unspecified, the
 value from the account archive prevails.")
   (bootstrap-hostnames
-   (maybe-string-list 'disabled)
+   maybe-string-list
    "A list of hostnames or IPs pointing to OpenDHT nodes, that should be used
 to initially join the OpenDHT network.  When left unspecified, the value from
 the account archive prevails.")
   (name-server-uri
-   (maybe-string 'disabled)
+   maybe-string
    "The URI of the name server to use, that can be used to retrieve the
 account fingerprint for a registered username."))
 
@@ -214,7 +214,7 @@ SET-ACCOUNT-DETAILS."
                                    name ((configuration-field-getter field)
                                          jami-account-object)))
                            ;; The define-maybe default serializer produces an
-                           ;; empty string for the 'disabled value.
+                           ;; empty string for unspecified values.
                            (value* (if (string-null? value)
                                        #f
                                        value)))
@@ -247,7 +247,7 @@ SET-ACCOUNT-DETAILS."
    (boolean #f)
    "Whether to force automatic answer to incoming calls.")
   (accounts
-   (maybe-jami-account-list 'disabled)
+   maybe-jami-account-list
    "A list of Jami accounts to be (re-)provisioned every time the Jami daemon
 service starts.  When providing this field, the account directories under
 @file{/var/lib/jami/} are recreated every time the service starts, ensuring a
@@ -307,7 +307,7 @@ CONFIG, a <jami-configuration> object."
          (dbus (jami-configuration-dbus config))
          (dbus-daemon (file-append dbus "/bin/dbus-daemon"))
          (accounts (jami-configuration-accounts config))
-         (declarative-mode? (not (eq? 'disabled accounts))))
+         (declarative-mode? (not (unspecified? accounts))))
 
     (with-extensions (list guile-packrat ;used by guile-ac-d-bus
                            guile-ac-d-bus
@@ -649,7 +649,7 @@ argument, either a registered username or the fingerprint of the account.")
                                           account-details)
                            (let ((username (archive-name->username
                                             archive)))
-                             (when (not (eq? 'disabled allowed-contacts))
+                             (when (not (unspecified? allowed-contacts))
                                ;; Reject calls from unknown contacts.
                                (set-account-details
                                 '(("DHT.PublicInCalls" . "false")) username)
@@ -659,7 +659,7 @@ argument, either a registered username or the fingerprint of the account.")
                                ;; Add allowed ones.
                                (for-each (cut add-contact <> username)
                                          allowed-contacts))
-                             (when (not (eq? 'disabled moderators))
+                             (when (not (unspecified? moderators))
                                ;; Disable the 'AllModerators' property.
                                (set-all-moderators #f username)
                                ;; Remove all moderators.

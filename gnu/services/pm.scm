@@ -114,55 +114,55 @@ before syncing on AC.")
    "Same as @code{max-lost-work-secs-on-ac} but on BAT mode.")
 
   (cpu-scaling-governor-on-ac
-   (maybe-space-separated-string-list 'disabled)
+   maybe-space-separated-string-list
    "CPU frequency scaling governor on AC mode.  With intel_pstate
 driver, alternatives are powersave and performance.  With acpi-cpufreq driver,
 alternatives are ondemand, powersave, performance and conservative.")
 
   (cpu-scaling-governor-on-bat
-   (maybe-space-separated-string-list 'disabled)
+   maybe-space-separated-string-list
    "Same as @code{cpu-scaling-governor-on-ac} but on BAT mode.")
 
   (cpu-scaling-min-freq-on-ac
-   (maybe-non-negative-integer 'disabled)
+   maybe-non-negative-integer
    "Set the min available frequency for the scaling governor on AC.")
 
   (cpu-scaling-max-freq-on-ac
-   (maybe-non-negative-integer 'disabled)
+   maybe-non-negative-integer
    "Set the max available frequency for the scaling governor on AC.")
 
   (cpu-scaling-min-freq-on-bat
-   (maybe-non-negative-integer 'disabled)
+   maybe-non-negative-integer
    "Set the min available frequency for the scaling governor on BAT.")
 
   (cpu-scaling-max-freq-on-bat
-   (maybe-non-negative-integer 'disabled)
+   maybe-non-negative-integer
    "Set the max available frequency for the scaling governor on BAT.")
 
   (cpu-min-perf-on-ac
-   (maybe-non-negative-integer 'disabled)
+   maybe-non-negative-integer
    "Limit the min P-state to control the power dissipation of the CPU,
 in AC mode.  Values are stated as a percentage of the available performance.")
 
   (cpu-max-perf-on-ac
-   (maybe-non-negative-integer 'disabled)
+   maybe-non-negative-integer
    "Limit the max P-state to control the power dissipation of the CPU,
 in AC mode.  Values are stated as a percentage of the available performance.")
 
   (cpu-min-perf-on-bat
-   (maybe-non-negative-integer 'disabled)
+   maybe-non-negative-integer
    "Same as @code{cpu-min-perf-on-ac} on BAT mode.")
 
   (cpu-max-perf-on-bat
-   (maybe-non-negative-integer 'disabled)
+   maybe-non-negative-integer
    "Same as @code{cpu-max-perf-on-ac} on BAT mode.")
 
   (cpu-boost-on-ac?
-   (maybe-boolean 'disabled)
+   maybe-boolean
    "Enable CPU turbo boost feature on AC mode.")
 
   (cpu-boost-on-bat?
-   (maybe-boolean 'disabled)
+   maybe-boolean
    "Same as @code{cpu-boost-on-ac?} on BAT mode.")
 
   (sched-powersave-on-ac?
@@ -179,7 +179,7 @@ used under light load conditions.")
    "Enable Linux kernel NMI watchdog.")
 
   (phc-controls
-   (maybe-string 'disabled)
+   maybe-string
    "For Linux kernels with PHC patch applied, change CPU voltages.
 An example value would be @samp{\"F:V F:V F:V F:V\"}.")
 
@@ -205,16 +205,16 @@ performance, normal, powersave.")
    "Same as @code{disk-apm-bat} but on BAT mode.")
 
   (disk-spindown-timeout-on-ac
-   (maybe-space-separated-string-list 'disabled)
+   maybe-space-separated-string-list
    "Hard disk spin down timeout.  One value has to be specified for
 each declared hard disk.")
 
   (disk-spindown-timeout-on-bat
-   (maybe-space-separated-string-list 'disabled)
+   maybe-space-separated-string-list
    "Same as @code{disk-spindown-timeout-on-ac} but on BAT mode.")
 
   (disk-iosched
-   (maybe-space-separated-string-list 'disabled)
+   maybe-space-separated-string-list
    "Select IO scheduler for disk devices.  One value has to be specified
 for each declared hard disk.  Example alternatives are cfq, deadline and noop.")
 
@@ -228,16 +228,16 @@ min_power, medium_power, max_performance.")
    "Same as @code{sata-linkpwr-ac} but on BAT mode.")
 
   (sata-linkpwr-blacklist
-   (maybe-string 'disabled)
+   maybe-string
    "Exclude specified SATA host devices for link power management.")
 
   (ahci-runtime-pm-on-ac?
-   (maybe-on-off-boolean 'disabled)
+   maybe-on-off-boolean
    "Enable Runtime Power Management for AHCI controller and disks
 on AC mode.")
 
   (ahci-runtime-pm-on-bat?
-   (maybe-on-off-boolean 'disabled)
+   maybe-on-off-boolean
    "Same as @code{ahci-runtime-pm-on-ac} on BAT mode.")
 
   (ahci-runtime-pm-timeout
@@ -254,19 +254,19 @@ default, performance, powersave.")
    "Same as @code{pcie-aspm-ac} but on BAT mode.")
 
   (start-charge-thresh-bat0
-   (maybe-non-negative-integer 'disabled)
+   maybe-non-negative-integer
    "Percentage when battery 0 should begin charging.")
 
   (stop-charge-thresh-bat0
-   (maybe-non-negative-integer 'disabled)
+   maybe-non-negative-integer
    "Percentage when battery 0 should stop charging.")
 
   (start-charge-thresh-bat1
-   (maybe-non-negative-integer 'disabled)
+   maybe-non-negative-integer
    "Percentage when battery 1 should begin charging.")
 
   (stop-charge-thresh-bat1
-   (maybe-non-negative-integer 'disabled)
+   maybe-non-negative-integer
    "Percentage when battery 1 should stop charging.")
 
   (radeon-power-profile-on-ac
@@ -346,7 +346,7 @@ on and auto.")
 blacklisted ones.")
 
   (runtime-pm-blacklist
-   (maybe-space-separated-string-list 'disabled)
+   maybe-space-separated-string-list
    "Exclude specified PCI(e) device addresses from Runtime Power Management.")
 
   (runtime-pm-driver-blacklist
@@ -359,7 +359,7 @@ Runtime Power Management.")
    "Enable USB autosuspend feature.")
 
   (usb-blacklist
-   (maybe-string 'disabled)
+   maybe-string
    "Exclude specified devices from USB autosuspend.")
 
   (usb-blacklist-wwan?
@@ -367,12 +367,12 @@ Runtime Power Management.")
    "Exclude WWAN devices from USB autosuspend.")
 
   (usb-whitelist
-   (maybe-string 'disabled)
+   maybe-string
    "Include specified devices into USB autosuspend, even if they are
 already excluded by the driver or via @code{usb-blacklist-wwan?}.")
 
   (usb-autosuspend-disable-on-shutdown?
-   (maybe-boolean 'disabled)
+   maybe-boolean
    "Enable USB autosuspend before shutdown.")
 
   (restore-device-state-on-startup?

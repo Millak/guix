@@ -136,3 +136,15 @@
 
 (test-assert "maybe value without serialization no procedure bound"
   (not (defined? 'serialize-maybe-string)))
+
+(test-assert "maybe type, no default"
+  (unspecified?
+   (config-with-maybe-string/no-serialization-name
+    (config-with-maybe-string/no-serialization))))
+
+(test-assert "maybe type, with default"
+  (equal?
+   "foo"
+   (config-with-maybe-string/no-serialization-name
+    (config-with-maybe-string/no-serialization
+     (name "foo")))))

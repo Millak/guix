@@ -91,26 +91,26 @@ queried for location information.")
    "Nighttime color temperature (kelvins).")
 
   (daytime-brightness
-   (maybe-inexact-number 'disabled)
+   maybe-inexact-number
    "Daytime screen brightness, between 0.1 and 1.0.")
   (nighttime-brightness
-   (maybe-inexact-number 'disabled)
+   maybe-inexact-number
    "Nighttime screen brightness, between 0.1 and 1.0.")
 
   (latitude
-   (maybe-inexact-number 'disabled)
+   maybe-inexact-number
    "Latitude, when @code{location-provider} is @code{'manual}.")
   (longitude
-   (maybe-inexact-number 'disabled)
+   maybe-inexact-number
    "Longitude, when @code{location-provider} is @code{'manual}.")
 
   (dawn-time
-   (maybe-string 'disabled)
+   maybe-string
    "Custom time for the transition from night to day in the
 morning---@code{\"HH:MM\"} format.  When specified, solar elevation is not
 used to determine the daytime/nighttime period.")
   (dusk-time
-   (maybe-string 'disabled)
+   maybe-string
    "Likewise, custom time for the transition from day to night in the
 evening.")
 

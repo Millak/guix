@@ -93,7 +93,7 @@
 (define (configuration-missing-field kind field)
   (configuration-error
    (format #f "~a configuration missing required field ~a" kind field)))
-(define (configuration-no-default-value kind field)
+(define (configuration-missing-default-value kind field)
   (configuration-error
    (format #f "The field `~a' of the `~a' configuration record \
 does not have a default value" field kind)))
@@ -142,7 +142,8 @@ does not have a default value" field kind)))
                                     (id #'stem #'serialize-maybe- #'stem))))
        #`(begin
            (define (maybe-stem? val)
-             (or (eq? val 'disabled) (stem? val)))
+             (or (unspecified? val)
+                 (stem? val)))
            #,@(if serialize?
                   (list #'(define (serialize-maybe-stem field-name val)
                             (if (stem? val)
@@ -170,10 +171,10 @@ does not have a default value" field kind)))
      (values #'(field-type def)))
     ((field-type)
      (identifier? #'field-type)
-     (values #'(field-type 'disabled)))
+     (values #'(field-type *unspecified*)))
     (field-type
      (identifier? #'field-type)
-     (values #'(field-type 'disabled)))))
+     (values #'(field-type *unspecified*)))))
 
 (define (define-configuration-helper serialize? serializer-prefix syn)
   (syntax-case syn ()
@@ -219,9 +220,7 @@ does not have a default value" field kind)))
                                           source-properties->location))
                           (innate))
                #,@(map (lambda (name getter def)
-                         (if (eq? (syntax->datum def) (quote 'undefined))
-                             #`(#,name #,getter)
-                             #`(#,name #,getter (default #,def))))
+                         #`(#,name #,getter (default #,def)))
                        #'(field ...)
                        #'(field-getter ...)
                        #'(field-default ...)))
@@ -236,8 +235,8 @@ does not have a default value" field kind)))
                         (lambda ()
                           (display '#,(id #'stem #'% #'stem))
                           (if (eq? (syntax->datum field-default)
-                                   'undefined)
-                              (configuration-no-default-value
+                                   '*unspecified*)
+                              (configuration-missing-default-value
                                '#,(id #'stem #'% #'stem) 'field)
                               field-default)))
                       (documentation doc))
