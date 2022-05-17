@@ -23,6 +23,7 @@
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021, 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2022 Allan Adair <allan@adair.no>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -956,38 +957,34 @@ SHA256, SHA512, SHA3, AICH, ED2K, Tiger, DC++ TTH, BitTorrent BTIH, GOST R
                 "0q2mzzg0a40prp9gwjk7d9fn8kwj6z2x6h6mzlm0hr6sxz7h0vp2"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref %outputs "out"))
-                    (lib (string-append out "/lib")))
-               ;; Upstream tests and benchmarks with -O3.
-               (setenv "CXXFLAGS" "-O3")
-               (invoke "python" "./configure.py"
-                       (string-append "--prefix=" out)
-                       "--disable-static"
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              ;; Upstream tests and benchmarks with -O3.
+              (setenv "CXXFLAGS" "-O3")
+              (invoke "python" "./configure.py"
+                      (string-append "--prefix=" #$output)
+                      "--disable-static"
 
-                       ;; Otherwise, the `botan` executable cannot find
-                       ;; libbotan.
-                       (string-append "--ldflags=-Wl,-rpath=" lib)
+                      ;; Otherwise, the `botan` executable cannot find
+                      ;; libbotan.
+                      (string-append "--ldflags=-Wl,-rpath=" #$output "/lib")
 
-                       "--with-os-feature=getentropy"
-                       "--with-rst2man"
+                      "--with-os-feature=getentropy"
+                      "--with-rst2man"
 
-                       ;; Recommended by upstream
-                       "--with-zlib" "--with-bzip2" "--with-sqlite3"))))
-         (add-before 'check 'library-path-for-tests
-           (lambda _ (setenv "LD_LIBRARY_PATH" (getcwd))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (if tests?
-                 (invoke "./botan-test")))))))
-    (native-inputs
-     `(("python" ,python-wrapper)
-       ("python-docutils" ,python-docutils)))
-    (inputs
-     (list sqlite bzip2 zlib))
+                      ;; Recommended by upstream
+                      "--with-zlib" "--with-bzip2" "--with-sqlite3")))
+          (add-before 'check 'library-path-for-tests
+            (lambda _ (setenv "LD_LIBRARY_PATH" (getcwd))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "./botan-test")))))))
+    (native-inputs (list python-wrapper python-docutils))
+    (inputs (list sqlite bzip2 zlib))
     (synopsis "Cryptographic library in C++11")
     (description "Botan is a cryptography library, written in C++11, offering
 the tools necessary to implement a range of practical systems, such as TLS/DTLS,
