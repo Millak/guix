@@ -4707,13 +4707,8 @@ Netgear devices.")
        #:make-flags
        (list (string-append "CC=" ,(cc-for-target))
              (string-append "DESTDIR=" (assoc-ref %outputs "out"))
-             (string-append "BINPATH=/bin")
-             (string-append "SBINPATH=/sbin")
              (string-append "SYSDPATH=/etc/systemd/system")
              (string-append "PMPATHD=/etc/systemd/system-sleep")
-             (string-append "MAN1PATH=/share/man/man1")
-             (string-append "MAN5PATH=/share/man/man5")
-             (string-append "MAN8PATH=/share/man/man8")
              ;; Or else it tries to create /var/log/atop...
              (string-append "LOGPATH="))
        #:phases
@@ -4722,10 +4717,11 @@ Netgear devices.")
          (add-before 'build 'patch-build
            (lambda _
              (substitute* "Makefile"
+               ;; Don't use /usr as a prefix
+               (("/usr") "")
                ;; Otherwise, it creates a blank configuration file as a "default".
                (("touch.*DEFPATH)/atop") "")
-               (("chmod.*DEFPATH)/atop") ""))
-             #t)))))
+               (("chmod.*DEFPATH)/atop") "")))))))
     (inputs
      `(("ncurses" ,ncurses)
        ("python" ,python-wrapper) ; for `atopgpud`
