@@ -6432,18 +6432,18 @@ src blocks.")
 (define-public emacs-debbugs
   (package
     (name "emacs-debbugs")
-    (version "0.31")
+    (version "0.32")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/debbugs-"
                            version ".tar"))
        (sha256
-        (base32 "11vdjrn5m5g6pirw8jv0602fbwwgdhazfrrwxxplii8x02gqk0sr"))))
+        (base32 "1xp3mj3ndaljma0g7x9abziphgi2a6j8k1v52sb8xwgn4p5gdvby"))))
     (build-system emacs-build-system)
     (arguments '(#:include '("\\.el$" "\\.wsdl$" "\\.info$")))
     (propagated-inputs
-     (list emacs-async))
+     (list emacs-soap-client))
     (home-page "https://elpa.gnu.org/packages/debbugs.html")
     (synopsis "Access the Debbugs bug tracker in Emacs")
     (description
