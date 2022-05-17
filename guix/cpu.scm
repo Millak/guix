@@ -211,6 +211,57 @@ corresponds to CPU, a record as returned by 'current-cpu'."
          ;; TODO: Recognize CENTAUR/CYRIX/NSC?
 
          "x86_64"))
+    ("aarch64"
+     ;; Transcribed from GCC's list of aarch64 processors in aarch64-cores.def
+     ;; What to do with big.LITTLE cores?
+     (match (cpu-vendor cpu)
+       ("0x41"
+        (match (cpu-model cpu)
+          ((or #xd02 #xd04 #xd03 #xd07 #xd08 #xd09)
+           "armv8-a")
+          ((or #xd05 #xd0a #xd0b #xd0e #xd0d #xd41 #xd42 #xd4b #xd46 #xd43 #xd44 #xd41 #xd0c #xd4a)
+           "armv8.2-a")
+          (#xd40
+           "armv8.4-a")
+          (#xd15
+           "armv8-r")
+          ((or #xd46 #xd47 #xd48 #xd49 #xd4f)
+           "armv9-a")))
+       ("0x42"
+        "armv8.1-a")
+       ("0x43"
+        (match (cpu-model cpu)
+          ((or #x0a0 #x0a1 #x0a2 #x0a3)
+           "armv8-a")
+          (#x0af
+           "armv8.1-a")
+          ((or #x0b0 #x0b1 #x0b2 #x0b3 #x0b4 #x0b5)
+           "armv8.2-a")
+          (#x0b8
+           "armv8.3-a")))
+       ("0x46"
+        "armv8.2-a")
+       ("0x48"
+        "armv8.2-a")
+       ("0x50"
+        "armv8-a")
+       ("0x51"
+        (match (cpu-model cpu)
+          (#xC00
+           "armv8-a")
+          (#x516
+           "armv8.1-a")
+          (#xC01
+           "armv8.4-a")))
+       ("0x53"
+        "armv8-a")
+       ("0x68"
+        "armv8-a")
+       ("0xC0"
+        "armv8.6-a")
+       (_
+        "armv8-a"))
+     "armv8-a")
     (architecture
-     ;; TODO: AArch64.
+     ;; TODO: More architectures
      architecture)))
