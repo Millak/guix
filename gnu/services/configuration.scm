@@ -5,6 +5,7 @@
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
+;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -162,78 +163,90 @@ does not have a default value" field kind)))
 (define-syntax-rule (define-maybe/no-serialization stem)
   (define-maybe stem (no-serialization)))
 
+(define (normalize-field-type+def s)
+  (syntax-case s ()
+    ((field-type def)
+     (identifier? #'field-type)
+     (values #'(field-type def)))
+    ((field-type)
+     (identifier? #'field-type)
+     (values #'(field-type 'disabled)))
+    (field-type
+     (identifier? #'field-type)
+     (values #'(field-type 'disabled)))))
+
 (define (define-configuration-helper serialize? serializer-prefix syn)
   (syntax-case syn ()
-    ((_ stem (field (field-type def ...) doc custom-serializer ...) ...)
-     (with-syntax (((field-getter ...)
-                    (map (lambda (field)
-                           (id #'stem #'stem #'- field))
-    			 #'(field ...)))
-                   ((field-predicate ...)
-                    (map (lambda (type)
-                           (id #'stem type #'?))
-    			 #'(field-type ...)))
-                   ((field-default ...)
-                    (map (match-lambda
-    			   ((field-type default-value)
-                            default-value)
-    			   ((field-type)
-                            ;; Quote `undefined' to prevent a possibly
-                            ;; unbound warning.
-                            (syntax 'undefined)))
-    			 #'((field-type def ...) ...)))
-                   ((field-serializer ...)
-                    (map (lambda (type custom-serializer)
-                           (and serialize?
-                                (match custom-serializer
-                                  ((serializer)
-                                   serializer)
-                                  (()
-                                   (if serializer-prefix
-                                       (id #'stem
-                                           serializer-prefix
-                                           #'serialize- type)
-                                       (id #'stem #'serialize- type))))))
-                         #'(field-type ...)
-                         #'((custom-serializer ...) ...))))
-       #`(begin
-    	   (define-record-type* #,(id #'stem #'< #'stem #'>)
-    	     #,(id #'stem #'% #'stem)
-    	     #,(id #'stem #'make- #'stem)
-    	     #,(id #'stem #'stem #'?)
-    	     (%location #,(id #'stem #'stem #'-location)
-    			(default (and=> (current-source-location)
-    					source-properties->location))
-    			(innate))
-    	     #,@(map (lambda (name getter def)
-    		       (if (eq? (syntax->datum def) (quote 'undefined))
-    			   #`(#,name #,getter)
-    			   #`(#,name #,getter (default #,def))))
-    		     #'(field ...)
-    		     #'(field-getter ...)
-    		     #'(field-default ...)))
-    	   (define #,(id #'stem #'stem #'-fields)
-    	     (list (configuration-field
-    		    (name 'field)
-    		    (type 'field-type)
-    		    (getter field-getter)
-    		    (predicate field-predicate)
-    		    (serializer field-serializer)
-    		    (default-value-thunk
-    		      (lambda ()
-    			(display '#,(id #'stem #'% #'stem))
-    			(if (eq? (syntax->datum field-default)
-    				 'undefined)
-    			    (configuration-no-default-value
-    			     '#,(id #'stem #'% #'stem) 'field)
-    			    field-default)))
-    		    (documentation doc))
-    		   ...))
-    	   (define-syntax-rule (stem arg (... ...))
-    	     (let ((conf (#,(id #'stem #'% #'stem) arg (... ...))))
-    	       (validate-configuration conf
-    				       #,(id #'stem #'stem #'-fields))
-    	       conf)))))))
+    ((_ stem (field field-type+def doc custom-serializer ...) ...)
+     (with-syntax
+         ((((field-type def) ...)
+           (map normalize-field-type+def #'(field-type+def ...))))
+       (with-syntax
+           (((field-getter ...)
+             (map (lambda (field)
+                    (id #'stem #'stem #'- field))
+                  #'(field ...)))
+            ((field-predicate ...)
+             (map (lambda (type)
+                    (id #'stem type #'?))
+                  #'(field-type ...)))
+            ((field-default ...)
+             (map (match-lambda
+                    ((field-type default-value)
+                     default-value))
+                  #'((field-type def) ...)))
+            ((field-serializer ...)
+             (map (lambda (type custom-serializer)
+                    (and serialize?
+                         (match custom-serializer
+                           ((serializer)
+                            serializer)
+                           (()
+                            (if serializer-prefix
+                                (id #'stem
+                                    serializer-prefix
+                                    #'serialize- type)
+                                (id #'stem #'serialize- type))))))
+                  #'(field-type ...)
+                  #'((custom-serializer ...) ...))))
+         #`(begin
+             (define-record-type* #,(id #'stem #'< #'stem #'>)
+               #,(id #'stem #'% #'stem)
+               #,(id #'stem #'make- #'stem)
+               #,(id #'stem #'stem #'?)
+               (%location #,(id #'stem #'stem #'-location)
+                          (default (and=> (current-source-location)
+                                          source-properties->location))
+                          (innate))
+               #,@(map (lambda (name getter def)
+                         (if (eq? (syntax->datum def) (quote 'undefined))
+                             #`(#,name #,getter)
+                             #`(#,name #,getter (default #,def))))
+                       #'(field ...)
+                       #'(field-getter ...)
+                       #'(field-default ...)))
+             (define #,(id #'stem #'stem #'-fields)
+               (list (configuration-field
+                      (name 'field)
+                      (type 'field-type)
+                      (getter field-getter)
+                      (predicate field-predicate)
+                      (serializer field-serializer)
+                      (default-value-thunk
+                        (lambda ()
+                          (display '#,(id #'stem #'% #'stem))
+                          (if (eq? (syntax->datum field-default)
+                                   'undefined)
+                              (configuration-no-default-value
+                               '#,(id #'stem #'% #'stem) 'field)
+                              field-default)))
+                      (documentation doc))
+                     ...))
+             (define-syntax-rule (stem arg (... ...))
+               (let ((conf (#,(id #'stem #'% #'stem) arg (... ...))))
+                 (validate-configuration conf
+                                         #,(id #'stem #'stem #'-fields))
+                 conf))))))))
 
 (define no-serialization         ;syntactic keyword for 'define-configuration'
   '(no serialization))
@@ -241,26 +254,26 @@ does not have a default value" field kind)))
 (define-syntax define-configuration
   (lambda (s)
     (syntax-case s (no-serialization prefix)
-      ((_ stem (field (field-type def ...) doc custom-serializer ...) ...
+      ((_ stem (field field-type+def doc custom-serializer ...) ...
           (no-serialization))
        (define-configuration-helper
-         #f #f #'(_ stem (field (field-type def ...) doc custom-serializer ...)
+         #f #f #'(_ stem (field field-type+def doc custom-serializer ...)
                  ...)))
-      ((_ stem  (field (field-type def ...) doc custom-serializer ...) ...
+      ((_ stem  (field field-type+def doc custom-serializer ...) ...
           (prefix serializer-prefix))
        (define-configuration-helper
-         #t #'serializer-prefix #'(_ stem (field (field-type def ...)
+         #t #'serializer-prefix #'(_ stem (field field-type+def
                                                  doc custom-serializer ...)
                  ...)))
-      ((_ stem (field (field-type def ...) doc custom-serializer ...) ...)
+      ((_ stem (field field-type+def doc custom-serializer ...) ...)
        (define-configuration-helper
-         #t #f #'(_ stem (field (field-type def ...) doc custom-serializer ...)
+         #t #f #'(_ stem (field field-type+def doc custom-serializer ...)
                  ...))))))
 
 (define-syntax-rule (define-configuration/no-serialization
-                      stem (field (field-type def ...)
+                      stem (field field-type+def
                                   doc custom-serializer ...) ...)
-  (define-configuration stem (field (field-type def ...)
+  (define-configuration stem (field field-type+def
                                     doc custom-serializer ...) ...
     (no-serialization)))
 
