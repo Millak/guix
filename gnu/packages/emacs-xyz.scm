@@ -22487,52 +22487,37 @@ files.  It focuses on highlighting the document to improve readability.")
     (license license:gpl2+)))
 
 (define-public emacs-racer
-  (package
-    (name "emacs-racer")
-    (version "1.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri
-        (git-reference
-         (url "https://github.com/racer-rust/emacs-racer")
-         (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0xj5iki10cg8j8vvqjlw6lfx97k3agwirhchcjnzbnkry48x9qi6"))))
-    (arguments
-     `(#:tests? #t
-       #:test-command '("make" "test")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'fix-makefile
-           (lambda _
-             (substitute* "Makefile"
-               (("\\$\\{CASK\\} exec ") ""))
-             #t))
-         ;; Two tests are failing with Emacs 27, as reported here:
-         ;; <https://github.com/racer-rust/emacs-racer/issues/136>.  Disable
-         ;; them.
-         (add-before 'check 'fix-failing-tests
-           (lambda _
-             (substitute* "test/racer-test.el"
-               (("`Write`") "Write")
-               (("^\\\\\\[`str\\]:.*") "")
-               ((" \\[`str`\\]") " str"))
-             #t)))))
-    (native-inputs
-     (list emacs-ert-runner emacs-undercover))
-    (propagated-inputs
-     (list emacs-dash emacs-f emacs-pos-tip emacs-rust-mode emacs-s))
-    (build-system emacs-build-system)
-    (home-page "https://github.com/racer-rust/emacs-racer")
-    (synopsis "Racer support for Emacs")
-    (description
-     "This is the official Emacs package for Racer.  It supports code
+  (let ((commit "1e63e98626737ea9b662d4a9b1ffd6842b1c648c")
+        (revision "0"))
+    (package
+      (name "emacs-racer")
+      (version (git-version "1.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/racer-rust/emacs-racer")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "12a429lajk09qp1jxgig54p8z6wndfgr4jwdmgkc9s2df9sw02d3"))))
+      (arguments
+       `(#:tests? #t
+         #:test-command '("ert-runner")))
+      (native-inputs
+       (list emacs-ert-runner emacs-undercover))
+      (propagated-inputs
+       (list emacs-dash emacs-f emacs-pos-tip emacs-rust-mode emacs-s))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/racer-rust/emacs-racer")
+      (synopsis "Racer support for Emacs")
+      (description
+       "This is the official Emacs package for Racer.  It supports code
 completion of variables, functions and modules.  It can also jump to
 definition of functions and types, and show a help buffer based on the
 docstring of the thing at point.")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public emacs-rust-mode
   (package
