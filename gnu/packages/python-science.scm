@@ -19,6 +19,7 @@
 ;;; Copyright © 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2022 Wiktor Żelazny <wzelazny@vurv.cz>
+;;; Copyright © 2022 Eric Bavier <bavier@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -857,6 +858,32 @@ correlation coefficient
 and more
 @end itemize")
     (license license:gpl3)))
+
+(define-public python-pyglm
+  (package
+    (name "python-pyglm")
+    (version "2.5.7")
+    (source
+     (origin
+       ;; Test files are not included in the archive in pypi.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Zuzu-Typ/PyGLM")
+             (commit version)
+             ;; Checkout the bundled `glm` submodule.  PyGLM uses the
+             ;; currently unreleased GLM_EXT_matrix_integer feature.  Can
+             ;; maybe unbundle once glm@0.9.9.9 is released.
+             (recursive? #t)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "08v0cgkwsf8rxscx5g9c5p1dy38rvak2fy3q6hg985if1nj6d9ks"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/Zuzu-Typ/PyGLM")
+    (synopsis "OpenGL Mathematics library for Python")
+    (description "PyGLM is a Python extension library which brings the OpenGL
+Mathematics (GLM) library to Python.")
+    (license license:zlib)))
 
 (define-public python-distributed
   (package
