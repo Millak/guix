@@ -2,7 +2,7 @@
 ;;; Copyright © 2013, 2014, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014, 2016 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016, 2017, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Rene Saavedra <rennes@openmailbox.org>
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
@@ -79,14 +79,14 @@
 (define-public freetype
   (package
    (name "freetype")
-   (version "2.10.4")
+   (version "2.12.1")
    (source
     (origin
       (method url-fetch)
       (uri (string-append "mirror://savannah/freetype/freetype-"
                           version ".tar.xz"))
       (sha256
-       (base32 "112pyy215chg7f7fmp2l9374chhhpihbh8wgpj5nj6avj3c59a46"))))
+       (base32 "0zqsqi092sxzvqc31b23n8ww9lcjgy8vz01g576z0k6caw0z4rj7"))))
    (build-system gnu-build-system)
    (arguments
     ;; The use of "freetype-config" is deprecated, but other packages still
@@ -106,7 +106,7 @@ It supports both bitmap and scalable formats, including TrueType, OpenType,
 Type1, CID, CFF, Windows FON/FNT, X11 PCF, and others.  It supports high-speed
 anti-aliased glyph bitmap generation with 256 gray levels.")
    (license license:freetype)           ; some files have other licenses
-   (home-page "https://www.freetype.org/")))
+   (home-page "https://freetype.org/")))
 
 (define-public ttfautohint
   (package
