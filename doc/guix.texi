@@ -19329,15 +19329,16 @@ The node host name that is used to make the first connection to the
 network.  A specific port value can be provided by appending the
 @code{:PORT} suffix.  By default, it uses the Jami bootstrap nodes, but
 any host can be specified here.  It's also possible to disable
-bootsrapping by setting this to the @code{'disabled} symbol.
+bootsrapping by explicitly setting this to the @code{*unspecified*}
+value.
 
 Defaults to @samp{"bootstrap.jami.net:4222"}.
 
 @end deftypevr
 
 @deftypevr {@code{opendht-configuration} parameter} maybe-number port
-The UDP port to bind to.  When set to @code{'disabled}, an available
-port is automatically selected.
+The UDP port to bind to.  When explicitly set to @code{*unspecified*},
+an available port is automatically selected.
 
 Defaults to @samp{4222}.
 
@@ -25090,7 +25091,7 @@ The available configuration parameters follow.  Each parameter
 definition is preceded by its type; for example, @samp{string-list foo}
 indicates that the @code{foo} parameter should be specified as a list of
 strings.  Types starting with @code{maybe-} denote parameters that won't
-show up in @code{prosody.cfg.lua} when their value is @code{'disabled}.
+show up in @code{prosody.cfg.lua} when their value is left unspecified.
 
 There is also a way to specify the configuration as a string, if you
 have an old @code{prosody.cfg.lua} file that you want to port over from
@@ -25704,7 +25705,7 @@ Whether to enable debug level messages.
 @item @code{auto-answer?} (default: @code{#f}) (type: boolean)
 Whether to force automatic answer to incoming calls.
 
-@item @code{accounts} (default: @code{disabled}) (type: maybe-jami-account-list)
+@item @code{accounts} (type: maybe-jami-account-list)
 A list of Jami accounts to be (re-)provisioned every time the Jami
 daemon service starts.  When providing this field, the account
 directories under @file{/var/lib/jami/} are recreated every time the
@@ -25726,39 +25727,39 @@ should @emph{not} be encrypted.  It is highly recommended to make it
 readable only to the @samp{root} user (i.e., not in the store), to guard
 against leaking the secret key material of the Jami account it contains.
 
-@item @code{allowed-contacts} (default: @code{disabled}) (type: maybe-account-fingerprint-list)
+@item @code{allowed-contacts} (type: maybe-account-fingerprint-list)
 The list of allowed contacts for the account, entered as their 40
 characters long fingerprint.  Messages or calls from accounts not in
-that list will be rejected.  When unspecified, the configuration of the
-account archive is used as-is with respect to contacts and public
+that list will be rejected.  When left specified, the configuration of
+the account archive is used as-is with respect to contacts and public
 inbound calls/messaging allowance, which typically defaults to allow any
 contact to communicate with the account.
 
-@item @code{moderators} (default: @code{disabled}) (type: maybe-account-fingerprint-list)
+@item @code{moderators} (type: maybe-account-fingerprint-list)
 The list of contacts that should have moderation privileges (to ban,
 mute, etc.  other users) in rendezvous conferences, entered as their 40
-characters long fingerprint.  When unspecified, the configuration of the
-account archive is used as-is with respect to moderation, which
+characters long fingerprint.  When left unspecified, the configuration
+of the account archive is used as-is with respect to moderation, which
 typically defaults to allow anyone to moderate.
 
-@item @code{rendezvous-point?} (default: @code{disabled}) (type: maybe-boolean)
+@item @code{rendezvous-point?} (type: maybe-boolean)
 Whether the account should operate in the rendezvous mode.  In this
 mode, all the incoming audio/video calls are mixed into a conference.
 When left unspecified, the value from the account archive prevails.
 
-@item @code{peer-discovery?} (default: @code{disabled}) (type: maybe-boolean)
+@item @code{peer-discovery?} (type: maybe-boolean)
 Whether peer discovery should be enabled.  Peer discovery is used to
 discover other OpenDHT nodes on the local network, which can be useful
 to maintain communication between devices on such network even when the
 connection to the the Internet has been lost.  When left unspecified,
 the value from the account archive prevails.
 
-@item @code{bootstrap-hostnames} (default: @code{disabled}) (type: maybe-string-list)
+@item @code{bootstrap-hostnames} (type: maybe-string-list)
 A list of hostnames or IPs pointing to OpenDHT nodes, that should be
 used to initially join the OpenDHT network.  When left unspecified, the
 value from the account archive prevails.
 
-@item @code{name-server-uri} (default: @code{disabled}) (type: maybe-string)
+@item @code{name-server-uri} (type: maybe-string)
 The URI of the name server to use, that can be used to retrieve the
 account fingerprint for a registered username.
 
@@ -26392,8 +26393,8 @@ Defaults to @samp{prefer-encrypted-connections}.
 @deftypevr {@code{transmission-daemon-configuration} parameter} maybe-string peer-congestion-algorithm
 The TCP congestion-control algorithm to use for peer connections,
 specified using a string recognized by the operating system in calls to
-@code{setsockopt} (or set to @code{disabled}, in which case the
-operating-system default is used).
+@code{setsockopt}.  When left unspecified, the operating-system default
+is used.
 
 Note that on GNU/Linux systems, the kernel must be configured to allow
 processes to use a congestion-control algorithm not in the default set;
@@ -30021,7 +30022,7 @@ Defaults to @samp{tun}.
 
 If you do not have some of these files (eg.@: you use a username and
 password), you can disable any of the following three fields by setting
-it to @code{'disabled}.
+it to @code{*unspecified*}.
 
 @deftypevr {@code{openvpn-client-configuration} parameter} maybe-string ca
 The certificate authority to check connections against.
@@ -30095,7 +30096,6 @@ Authenticate with server using username/password.  The option is a file
 containing username/password on 2 lines.  Do not use a file-like object as it
 would be added to the store and readable by any user.
 
-Defaults to @samp{'disabled}.
 @end deftypevr
 
 @deftypevr {@code{openvpn-client-configuration} parameter} key-usage verify-key-usage?
@@ -30176,7 +30176,7 @@ Defaults to @samp{tun}.
 
 If you do not have some of these files (eg.@: you use a username and
 password), you can disable any of the following three fields by setting
-it to @code{'disabled}.
+it to @code{*unspecified*}.
 
 @deftypevr {@code{openvpn-server-configuration} parameter} maybe-string ca
 The certificate authority to check connections against.
@@ -30975,10 +30975,10 @@ content by adding a valid @code{tlp-configuration}:
 @end deffn
 
 Each parameter definition is preceded by its type; for example,
-@samp{boolean foo} indicates that the @code{foo} parameter
-should be specified as a boolean.  Types starting with
-@code{maybe-} denote parameters that won't show up in TLP config file
-when their value is @code{'disabled}.
+@samp{boolean foo} indicates that the @code{foo} parameter should be
+specified as a boolean.  Types starting with @code{maybe-} denote
+parameters that won't show up in TLP config file when their value is
+left unset, or is explicitly set to the @code{*unspecified*} value.
 
 @c The following documentation was initially generated by
 @c (generate-tlp-documentation) in (gnu services pm).  Manually maintained
@@ -38573,15 +38573,16 @@ macro which is a shorthand of this.
 @deffn {Scheme Syntax} define-maybe @var{type}
 Sometimes a field should not be serialized if the user doesn’t specify a
 value.  To achieve this, you can use the @code{define-maybe} macro to
-define a ``maybe type''; if the value of a maybe type is set to the
-@code{disabled}, it will not be serialized.
+define a ``maybe type''; if the value of a maybe type is left unset, or
+is set to the @code{*unspecified*} value, then it will not be
+serialized.
 
 When defining a ``maybe type'', the corresponding serializer for the
 regular type will be used by default.  For example, a field of type
 @code{maybe-string} will be serialized using the @code{serialize-string}
 procedure by default, you can of course change this by specifying a
 custom serializer procedure.  Likewise, the type of the value would have
-to be a string, unless it is set to the @code{disabled} symbol.
+to be a string, or left unspecified.
 
 @lisp
 (define-maybe string)
@@ -38591,9 +38592,9 @@ to be a string, unless it is set to the @code{disabled} symbol.
 
 (define-configuration baz-configuration
   (name
-   ;; Nothing will be serialized by default.  If set to a string, the
-   ;; `serialize-string' procedure will be used to serialize the string.
-   (maybe-string 'disabled)
+   ;; If set to a string, the `serialize-string' procedure will be used
+   ;; to serialize the string.  Otherwise this field is not serialized.
+   maybe-string    ; equivalent to (maybe-string *unspecified*)
    "The name of this module."))
 @end lisp
 
@@ -38610,7 +38611,7 @@ serializer name by using the @code{prefix} literal.
 
 There is also the @code{no-serialization} literal, which when set means
 that no serializer will be defined for the ``maybe type'', regardless of
-its value is @code{disabled} or not.
+whether its value is set or not.
 @code{define-maybe/no-serialization} is a shorthand for specifying the
 @code{no-serialization} literal.
 
@@ -38619,7 +38620,7 @@ its value is @code{disabled} or not.
 
 (define-configuration/no-serialization test-configuration
   (mode
-   (maybe-symbol 'disabled)
+   maybe-symbol
    "Docstring."))
 @end lisp
 @end deffn
@@ -38751,10 +38752,10 @@ Below is an example of a record type created using
    "The name of the contact."
    serialize-contact-name)
   (phone-number
-   (maybe-integer 'disabled)
+   maybe-integer
    "The person's phone number.")
   (email
-   (maybe-string 'disabled)
+   maybe-string
    "The person's email address.")
   (married?
    (boolean)
@@ -39478,24 +39479,24 @@ Daytime color temperature (kelvins).
 @item @code{nighttime-temperature} (default: @code{4500}) (type: integer)
 Nighttime color temperature (kelvins).
 
-@item @code{daytime-brightness} (default: @code{disabled}) (type: maybe-inexact-number)
-Daytime screen brightness, between 0.1 and 1.0.
+@item @code{daytime-brightness} (type: maybe-inexact-number)
+Daytime screen brightness, between 0.1 and 1.0, or left unspecified.
 
-@item @code{nighttime-brightness} (default: @code{disabled}) (type: maybe-inexact-number)
-Nighttime screen brightness, between 0.1 and 1.0.
+@item @code{nighttime-brightness} (type: maybe-inexact-number)
+Nighttime screen brightness, between 0.1 and 1.0, or left unspecified.
 
-@item @code{latitude} (default: @code{disabled}) (type: maybe-inexact-number)
+@item @code{latitude} (type: maybe-inexact-number)
 Latitude, when @code{location-provider} is @code{'manual}.
 
-@item @code{longitude} (default: @code{disabled}) (type: maybe-inexact-number)
+@item @code{longitude} (type: maybe-inexact-number)
 Longitude, when @code{location-provider} is @code{'manual}.
 
-@item @code{dawn-time} (default: @code{disabled}) (type: maybe-string)
+@item @code{dawn-time} (type: maybe-string)
 Custom time for the transition from night to day in the
 morning---@code{"HH:MM"} format.  When specified, solar elevation is not
 used to determine the daytime/nighttime period.
 
-@item @code{dusk-time} (default: @code{disabled}) (type: maybe-string)
+@item @code{dusk-time} (type: maybe-string)
 Likewise, custom time for the transition from day to night in the
 evening.
 
