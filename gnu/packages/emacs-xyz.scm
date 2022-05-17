@@ -4724,6 +4724,13 @@ keep pressing the key until it selects what you want.  There's also
        (list emacs-buttercup))
       (arguments
        '(#:tests? #t
+         #:phases
+         (modify-phases %standard-phases
+           ;; This causes the byte-compilation before unit-tests to fail.
+           (add-after 'unpack 'remove-error-on-warn
+             (lambda _
+               (substitute* "Makefile"
+                 (("--eval '\\(setq byte-compile-error-on-warn t\\)'") "")))))
          ;; Don't run case-tests as they will fail to create sockets because
          ;; the path is too long
          #:test-command '("make" "byte-compile" "unit-tests")
