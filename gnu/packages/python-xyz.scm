@@ -23995,16 +23995,16 @@ Public Suffix List's private domains as well.")
         (base32 "1hxmprqg8c4cvs19n7f80f3y7jj74i8sc2dmq2gdjmsdrb54bbzc"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'build 'build-doc
-           (lambda _
-             (invoke "make" "-C" "docs")))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; This test fails. It tries to open a network socket.
-               (invoke "pytest" "-vv" "-k" "not test_error_message")))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'build 'build-doc
+                 (lambda _
+                   (invoke "make" "-C" "docs")))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     ;; This test fails. It tries to open a network socket.
+                     (invoke "pytest" "-vv" "-k" "not test_error_message")))))))
     (native-inputs
      (list python-pytest python-pytest-runner python-sphinx-argparse))
     (inputs
