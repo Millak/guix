@@ -3645,6 +3645,18 @@ composable way with as little code as necessary.  Its name stands for
 with sensible defaults out of the box.")
     (license license:bsd-3)))
 
+(define-public python-click-7
+  (package (inherit python-click)
+    (name "python-click")
+    (version "7.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "click" version))
+       (sha256
+        (base32 "06kbzd6sjfkqan3miwj9wqyddfxc2b6hi7p5s4dvqjb3gif2bdfj"))))
+    (arguments `())))
+
 (define-public python-click-5
   (package (inherit python-click)
     (name "python-click")
