@@ -4746,6 +4746,8 @@ using colors, etc.  At regular intervals, it shows system-level activity related
 to the CPU, memory, swap, disks (including LVM) and network layers, and for
 every process (and thread) it shows e.g. the CPU utilization, memory growth,
 disk utilization, priority, username, state, and exit code.")
+    (properties
+     `((release-monitoring-url . "https://www.atoptool.nl/downloadatop.php")))
     (license license:gpl2+)))
 
 ;; TODO: Unvendor u-root (pkg: forth, golang, testutil).
