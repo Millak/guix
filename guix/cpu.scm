@@ -62,31 +62,51 @@
       (lambda (port)
         (let loop ((vendor #f)
                    (family #f)
-                   (model #f))
+                   (model #f)
+                   (flags (set)))
           (match (read-line port)
             ((? eof-object?)
-             #f)
+             (cpu (utsname:machine (uname))
+                  vendor family model flags))
+            ;; vendor for x86_64 and i686
             ((? (prefix? "vendor_id") str)
              (match (string-tokenize str)
                (("vendor_id" ":" vendor)
-                (loop vendor family model))))
+                (loop vendor family model flags))))
+            ;; vendor for aarch64 and armhf
+            ((? (prefix? "CPU implementer") str)
+             (match (string-tokenize str)
+               (("CPU" "implementer" ":" vendor)
+                (loop vendor family model flags))))
+            ;; family for x86_64 and i686
             ((? (prefix? "cpu family") str)
              (match (string-tokenize str)
                (("cpu" "family" ":" family)
-                (loop vendor (string->number family) model))))
+                (loop vendor (string->number family) model flags))))
+            ;; model for x86_64 and i686
             ((? (prefix? "model") str)
              (match (string-tokenize str)
                (("model" ":" model)
-                (loop vendor family (string->number model)))
+                (loop vendor family (string->number model) flags))
                (_
-                (loop vendor family model))))
+                (loop vendor family model flags))))
+            ;; model for aarch64 and armhf
+            ((? (prefix? "CPU part") str)
+             (match (string-tokenize str)
+               (("CPU" "part" ":" model)
+                (loop vendor family (string->number (string-drop model 2) 16) flags))))
+            ;; flags for x86_64 and i686
             ((? (prefix? "flags") str)
              (match (string-tokenize str)
                (("flags" ":" flags ...)
-                (cpu (utsname:machine (uname))
-                     vendor family model (list->set flags)))))
+                (loop vendor family model (list->set flags)))))
+            ;; flags for aarch64 and armhf
+            ((? (prefix? "Features") str)
+             (match (string-tokenize str)
+               (("Features" ":" flags ...)
+                (loop vendor family model (list->set flags)))))
             (_
-             (loop vendor family model))))))))
+             (loop vendor family model flags))))))))
 
 (define (cpu->gcc-architecture cpu)
   "Return the architecture name, suitable for GCC's '-march' flag, that
