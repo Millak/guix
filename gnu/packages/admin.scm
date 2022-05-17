@@ -4703,29 +4703,30 @@ Netgear devices.")
                 "0kjwgf94skbrndv1krlmsrq34smzi3iwk73fbsnyw787gvqx4j6a"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; no test suite
+     (list
+       #:tests? #f              ; no test suite
        #:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             (string-append "DESTDIR=" (assoc-ref %outputs "out"))
-             (string-append "SYSDPATH=/etc/systemd/system")
-             (string-append "PMPATHD=/etc/systemd/system-sleep")
-             ;; Or else it tries to create /var/log/atop...
-             (string-append "LOGPATH="))
+       #~(list (string-append "CC=" #$(cc-for-target))
+               (string-append "DESTDIR=" #$output)
+               (string-append "SYSDPATH=/etc/systemd/system")
+               (string-append "PMPATHD=/etc/systemd/system-sleep")
+               ;; Or else it tries to create /var/log/atop...
+               (string-append "LOGPATH="))
        #:phases
-       (modify-phases %standard-phases
-         (delete 'configure) ; No ./configure script
-         (add-before 'build 'patch-build
-           (lambda _
-             (substitute* "Makefile"
-               ;; Don't use /usr as a prefix
-               (("/usr") "")
-               ;; Otherwise, it creates a blank configuration file as a "default".
-               (("touch.*DEFPATH)/atop") "")
-               (("chmod.*DEFPATH)/atop") "")))))))
+       #~(modify-phases %standard-phases
+           (delete 'configure)  ; No ./configure script
+           (add-before 'build 'patch-build
+             (lambda _
+               (substitute* "Makefile"
+                 ;; Don't use /usr as a prefix.
+                 (("/usr") "")
+                 ;; Otherwise, it creates a blank configuration file as a "default".
+                 (("touch.*DEFPATH)/atop") "")
+                 (("chmod.*DEFPATH)/atop") "")))))))
     (inputs
-     `(("ncurses" ,ncurses)
-       ("python" ,python-wrapper) ; for `atopgpud`
-       ("zlib" ,zlib)))
+     (list ncurses
+           python-wrapper       ; for `atopgpud`
+           zlib))
     (home-page "https://www.atoptool.nl/")
     (synopsis "Linux performance monitoring console")
     (description "Atop is an ASCII full-screen performance monitor for Linux
