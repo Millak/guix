@@ -789,7 +789,11 @@ on stdout instead of using a socket as the Emacsclient does.")
                 (patches (search-patches
                           ;; Submitted for inclusion upstream (see:
                           ;; https://github.com/magit/libegit2/pull/96).
-                          "emacs-libgit-use-system-libgit2.patch"))))
+                          "emacs-libgit-use-system-libgit2.patch"))
+                (snippet
+                 #~(begin
+                     ;; bundled, use the one shipped with emacs instead
+                     (delete-file "src/emacs-module.h")))))
       ;; Use the cmake-build-system as it provides support for cross builds.
       (build-system cmake-build-system)
       (arguments
@@ -804,6 +808,13 @@ on stdout instead of using a socket as the Emacsclient does.")
                     (guix build utils))
          #:phases
          (modify-phases %standard-phases
+           (add-after 'unpack 'patch-source
+             (lambda _
+               ;; Use Emacs 28 unibyte strings.
+               ;; XXX: This now breaks if linked against Emacs <= 26, probably
+               ;; also 27.
+               (substitute* "src/egit-blob.c"
+                 (("make_string") "make_unibyte_string"))))
            (add-after 'unpack 'set-libgit--module-file
              (lambda* (#:key outputs #:allow-other-keys)
                (let ((out (assoc-ref outputs "out")))
