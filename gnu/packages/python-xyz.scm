@@ -61,7 +61,7 @@
 ;;; Copyright © 2019 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2019, 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019, 2020 Alex Griffin <a@ajgrf.com>
-;;; Copyright © 2019, 2020, 2021 Pierre Langlois <pierre.langlois@gmx.com>
+;;; Copyright © 2019, 2020, 2021, 2022 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2019 Jacob MacDonald <jaccarmac@gmail.com>
 ;;; Copyright © 2019, 2020, 2021 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2019 Wiktor Żelazny <wzelazny@vurv.cz>
@@ -3655,18 +3655,6 @@ with sensible defaults out of the box.")
        (uri (pypi-uri "click" version))
        (sha256
         (base32 "0njsm0wn31l21bi118g5825ma5sa3rwn7v2x4wjd7yiiahkri337"))))
-    (arguments `())))
-
-(define-public python-click-8
-  (package (inherit python-click)
-    (name "python-click")
-    (version "8.1.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "click" version))
-       (sha256
-        (base32 "0whs38a2i0561kwbgigs6vic9r0a1887m2v1aw3rmv6r2kz0g5s7"))))
     (arguments `())))
 
 (define-public python-cligj
@@ -18375,7 +18363,7 @@ characters, mouse support, and auto suggestions.")
            (lambda _
              (setenv "HOME" "/tmp"))))))
     (propagated-inputs
-     (list python-click-8 python-future python-six))
+     (list python-click python-future python-six))
     (home-page "https://github.com/amperser/proselint")
     (synopsis "Linter for prose")
     (description "@code{python-proselint} is a linter for English prose, that
