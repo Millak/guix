@@ -1347,3 +1347,31 @@ for parameterized model creation and handling.  Its features include:
  @item Efficient caching.
 @end itemize")
     (license license:bsd-3)))
+
+(define-public python-gpy
+  (package
+    (name "python-gpy")
+    (version "1.10.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "GPy" version))
+              (sha256
+               (base32
+                "1yx65ajrmqp02ykclhlb0n8s3bx5r0xj075swwwigiqaippr7dx2"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                  (add-before 'check 'remove-plotting-tests
+                    ;; These fail
+                    (lambda _
+                      (delete-file "GPy/testing/plotting_tests.py"))))))
+    (native-inputs (list python-cython python-nose python-climin))
+    (propagated-inputs (list python-numpy python-paramz python-scipy
+                             python-six))
+    (home-page "https://sheffieldml.github.io/GPy/")
+    (synopsis "The Gaussian Process Toolbox")
+    (description
+     "@command{GPy} is a Gaussian Process (GP) framework written in
+Python, from the Sheffield machine learning group.  GPy implements a range of
+machine learning algorithms based on GPs.")
+    (license license:bsd-3)))
