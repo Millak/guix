@@ -5,6 +5,7 @@
 ;;; Copyright © 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
+;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -80,7 +81,7 @@ rather than \\n."
 
 (define importers '("gnu" "pypi" "cpan" "hackage" "stackage" "egg" "elpa"
                     "gem" "go" "cran" "crate" "texlive" "json" "opam"
-                    "minetest"))
+                    "minetest" "elm"))
 
 (define (resolve-importer name)
   (let ((module (resolve-interface

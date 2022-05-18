@@ -919,8 +919,8 @@ prefix unless the name would already begin with @code{elm-}.
 In many cases we can reconstruct an Elm package's upstream name heuristically,
 but, since conversion to a Guix-style name involves a loss of information,
 this is not always possible.  Care should be taken to add the
-@code{'upstream-name} property when necessary so that tools
-will work correctly. The most notable scenarios
+@code{'upstream-name} property when necessary so that @samp{guix import elm}
+will work correctly (@pxref{Invoking guix import}). The most notable scenarios
 when explicitly specifying the upstream name is necessary are:
 
 @enumerate
