@@ -179,3 +179,22 @@ core libraries for HTML and SVG.  You should almost certainly use those
 higher-level libraries directly.")
     (properties '((upstream-name . "elm/virtual-dom")))
     (license license:bsd-3)))
+
+(define-public elm-html
+  (package
+    (name "elm-html")
+    (version "1.0.0")
+    (source
+     (elm-package-origin
+      "elm/html"
+      version
+      (base32 "15k1679ja57vvlpinpv06znmrxy09lbhzfkzdc89i01qa8c4gb4a")))
+    (build-system elm-build-system)
+    (propagated-inputs
+     (list elm-virtual-dom
+           elm-json
+           elm-core))
+    (home-page "https://package.elm-lang.org/packages/elm/html/1.0.0")
+    (synopsis "Fast HTML, rendered with virtual DOM diffing")
+    (description "This package provides Elm's HTML rendering library.")
+    (license license:bsd-3)))
