@@ -800,23 +800,23 @@ Grammars (PEGs).")
                 "1yzi4bm845vl84wyv2qw4z1n1v285lgwm681swmp84brfy2s7czp"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f                      ; there are none
-       #:configure-flags
-       '("-DWITH_LUA_ENGINE=Lua"
-         "-DWITH_SHARED_LIBUV=On"
-         "-DBUILD_MODULE=Off"
-         "-DBUILD_SHARED_LIBS=On"
-         "-DLUA_BUILD_TYPE=System")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'copy-lua-compat
-           (lambda* (#:key inputs #:allow-other-keys)
-             (copy-recursively (assoc-ref inputs "lua-compat")
-                               "lua-compat")
-             (setenv "CPATH"
-                     (string-append (getcwd) "/lua-compat/c-api:"
-                                    (or (getenv "CPATH") "")))
-             #t)))))
+     (list #:tests? #f                      ; there are none
+           #:configure-flags
+           #~'("-DWITH_LUA_ENGINE=Lua"
+               "-DWITH_SHARED_LIBUV=On"
+               "-DBUILD_MODULE=Off"
+               "-DBUILD_SHARED_LIBS=On"
+               "-DLUA_BUILD_TYPE=System")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'copy-lua-compat
+                 (lambda* _
+                   (copy-recursively #+(this-package-native-input "lua-compat")
+                                     "lua-compat")
+                   (setenv "CPATH"
+                           (string-append (getcwd) "/lua-compat/c-api:"
+                                          (or (getenv "CPATH") "")))
+                   #t)))))
     (inputs
      (list lua libuv-for-luv))
     (native-inputs
