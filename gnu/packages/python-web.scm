@@ -6901,52 +6901,52 @@ regular expressions.")
     (name "python-scrapy")
     (version "2.6.1")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "Scrapy" version))
-        (sha256
-          (base32 "09rqalbwcz9ix8h0992mzjs50sssxsmmh8w9abkrqchgknjmbzan"))))
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "Scrapy" version))
+       (sha256
+        (base32 "09rqalbwcz9ix8h0992mzjs50sssxsmmh8w9abkrqchgknjmbzan"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
-        (modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest"
-                        ;; requires network access
-                        "--ignore" "tests/test_command_check.py"
-                        "-k"
-                        (string-append
-                         ;; Failing for unknown reasons
-                         "not test_server_set_cookie_domain_suffix_public_private"
-                         " and not test_user_set_cookie_domain_suffix_public_private"
-                         " and not test_pformat")
-                        "tests")))))))
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest"
+                       ;; requires network access
+                       "--ignore" "tests/test_command_check.py"
+                       "-k"
+                       (string-append
+                        ;; Failing for unknown reasons
+                        "not test_server_set_cookie_domain_suffix_public_private"
+                        " and not test_user_set_cookie_domain_suffix_public_private"
+                        " and not test_pformat")
+                       "tests")))))))
     (propagated-inputs
-      (list python-botocore ; Optional: For S3FeedStorage class.
-            python-cryptography
-            python-cssselect
-            python-itemadapter
-            python-itemloaders
-            python-lxml
-            python-parsel
-            python-protego
-            python-pydispatcher
-            python-pyopenssl
-            python-queuelib
-            python-service-identity
-            python-setuptools
-            python-tldextract
-            python-twisted
-            python-w3lib
-            python-zope-interface))
+     (list python-botocore              ; Optional: For S3FeedStorage class.
+           python-cryptography
+           python-cssselect
+           python-itemadapter
+           python-itemloaders
+           python-lxml
+           python-parsel
+           python-protego
+           python-pydispatcher
+           python-pyopenssl
+           python-queuelib
+           python-service-identity
+           python-setuptools
+           python-tldextract
+           python-twisted
+           python-w3lib
+           python-zope-interface))
     (native-inputs
-      (list python-pytest
-            python-pyftpdlib
-            python-sybil
-            python-testfixtures
-            python-uvloop))
+     (list python-pytest
+           python-pyftpdlib
+           python-sybil
+           python-testfixtures
+           python-uvloop))
     (home-page "https://scrapy.org")
     (synopsis "High-level Web crawling and Web scraping framework")
     (description "Scrapy is a fast high-level web crawling and web
