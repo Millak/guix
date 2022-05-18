@@ -540,3 +540,23 @@ on the @code{marked} project, which focuses on speed.")
 @url{https://todomvc.com,TodoMVC}, a simple to-do--list application used to
 compare front-end web frameworks.")
       (license license:bsd-3))))
+
+(define-public elm-debois-elm-dom
+  (package
+    (name "elm-debois-elm-dom")
+    (version "1.3.0")
+    (source
+     (elm-package-origin
+      "debois/elm-dom"
+      version
+      (base32 "0w4z4w6ip118lk5g80w6mbbfxhfmivbmdkdm6wsmk63x85gscmqx")))
+    (build-system elm-build-system)
+    (propagated-inputs
+     (list elm-json elm-html elm-core))
+    (home-page "https://package.elm-lang.org/packages/debois/elm-dom/1.3.0")
+    (synopsis "DOM traversal for Elm event-handlers")
+    (description
+     "This package provides a library for reading information off the DOM.
+Use this if you need to discover geometry information (width, position, etc.)
+of rendered elements.")
+    (license license:asl2.0)))
