@@ -40,9 +40,9 @@
 ;; `elm reactor` exit with a useful error message if they aren't there.
 (define %reactor-root-base
   "share/elm/reactor-")
-(define-public elm
+(define-public elm-sans-reactor
   (package
-    (name "elm")
+    (name "elm-sans-reactor")
     (version "0.19.1")
     (source
      (origin
@@ -92,6 +92,77 @@
            ghc-utf8-string
            ghc-vector
            ghc-zip-archive))
+    (home-page "https://elm-lang.org")
+    (synopsis "Minimal variant of @command{elm}")
+    (description
+     "This package provides a version of the Elm compiler without support for
+the @command{elm reactor} development command.")
+    (license license:bsd-3)))
+
+(define-public elm
+  (package
+    (name "elm")
+    (version (package-version elm-sans-reactor))
+    (source (package-source elm-sans-reactor))
+    (native-inputs (list elm-sans-reactor))
+    (inputs (list elm-sans-reactor
+                  elm-browser
+                  elm-core
+                  elm-html
+                  elm-http
+                  elm-json
+                  elm-project-metadata-utils
+                  elm-svg
+                  elm-explorations-markdown))
+    (build-system elm-build-system)
+    (arguments
+     (list
+      #:modules
+      `((srfi srfi-26)
+        ,@%elm-default-modules)
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'stage)
+          (replace 'configure
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              (with-directory-excursion "reactor"
+                (patch-application-dependencies))))
+          (replace 'build
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              (with-directory-excursion "reactor"
+                (invoke (search-input-file (or native-inputs inputs)
+                                           "/bin/elm")
+                        "make"
+                        "--optimize"
+                        "src/NotFound.elm"
+                        "src/Errors.elm"
+                        "src/Index.elm"))))
+          (replace 'install
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((out-dir #$output)
+                     (bin-dir (string-append out-dir "/bin"))
+                     (reactor-dir (string-append out-dir
+                                                 "/"
+                                                 #$%reactor-root-base
+                                                 (getenv "GUIX_ELM_VERSION")))
+                     (reactor-subdir (string-append reactor-dir "/_elm")))
+                ;; We can't use a symlink here because Haskell's
+                ;; `getExecutablePath` follows all symlinks.
+                ;; Guix can make it a hard link later.
+                (install-file (search-input-file inputs ;; NOT native-inputs
+                                                 "/bin/elm")
+                              bin-dir)
+                (install-file "reactor/assets/favicon.ico" reactor-dir)
+                (for-each (cut install-file <> reactor-subdir)
+                          '("reactor/elm.js"
+                            "reactor/assets/styles.css"
+                            ;; TODO: these are source-code-pro v1.017 and
+                            ;; source-sans-pro v1.050: there may be breaking
+                            ;; changes in Guix's existing
+                            ;; font-adobe-source-{code,sans}-pro packages
+                            "reactor/assets/source-code-pro.ttf"
+                            "reactor/assets/source-sans-pro.ttf")))))
+          (delete 'validate-compiled))))
     (home-page "https://elm-lang.org")
     (synopsis "Programming language for Web applications")
     (description

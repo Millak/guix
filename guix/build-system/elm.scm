@@ -101,7 +101,7 @@ given VERSION with sha256 checksum HASH."
   "Return the default Elm package for builds."
   ;; Lazily resolve the binding to avoid a circular dependency.
   (let ((elm (resolve-interface '(gnu packages elm))))
-    (module-ref elm 'elm)))
+    (module-ref elm 'elm-sans-reactor)))
 
 (define (default-elm-core)
   "Return the default elm-core package."

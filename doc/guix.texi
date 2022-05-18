@@ -8724,7 +8724,7 @@ build procedure for @url{https://elm-lang.org, Elm} packages similar to
 @samp{elm install}.
 
 The build system adds an Elm compiler package to the set of inputs.  The
-default compiler package (currently @code{elm}) can be overridden
+default compiler package (currently @code{elm-sans-reactor}) can be overridden
 using the @code{#:elm} argument.  Additionally, Elm packages needed by the
 build system itself are added as implicit inputs if they are not already
 present: to suppress this behavior, use the
@@ -8747,7 +8747,10 @@ The build system is focused on @dfn{packages} in the Elm sense of the word:
 Elm @dfn{projects} which declare @code{@{ "type": "package" @}} in their
 @file{elm.json} files.  Using @code{elm-build-system} to build Elm
 @dfn{applications} (which declare @code{@{ "type": "application" @}}) is
-possible, but requires ad-hoc modifications to the build phases.
+possible, but requires ad-hoc modifications to the build phases.  For
+an example, see the definition of
+the @code{elm} package itself (because the front-end for the
+@samp{elm reactor} command is an Elm application).
 
 @item
 Elm supports multiple versions of a package coexisting simultaneously under
