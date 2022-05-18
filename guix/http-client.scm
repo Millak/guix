@@ -296,6 +296,7 @@ returning."
                                   #f #f base64url-alphabet))))
 
 (define* (http-fetch/cached uri #:key (ttl (%http-cache-ttl)) text?
+                            (headers '((user-agent . "GNU Guile")))
                             (write-cache dump-port)
                             (cache-miss (const #t))
                             (log-port (current-error-port))
@@ -307,6 +308,9 @@ Call WRITE-CACHE with the HTTP input port and the cache output port to write
 the data to cache.  Call CACHE-MISS with URI just before fetching data from
 URI.
 
+HEADERS is an alist of extra HTTP headers, to which cache-related headers are
+added automatically as appropriate.
+
 TIMEOUT specifies the timeout in seconds for connection establishment.
 
 Write information about redirects to LOG-PORT."
@@ -316,12 +320,12 @@ Write information about redirects to LOG-PORT."
         (and cache-port
              (stat:mtime (stat cache-port))))
 
-      (define headers
-        `((user-agent . "GNU Guile")
-          ,@(if cache-time
-                `((if-modified-since
-                   . ,(time-utc->date (make-time time-utc 0 cache-time))))
-                '())))
+      (define extended-headers
+        (if cache-time
+            `((if-modified-since
+               . ,(time-utc->date (make-time time-utc 0 cache-time)))
+              ,@headers)
+            headers))
 
       ;; Update the cache and return an input port.
       (guard (c ((http-get-error? c)
@@ -332,7 +336,8 @@ Write information about redirects to LOG-PORT."
                      (raise c))))
         (let ((port (http-fetch uri #:text? text?
                                 #:log-port log-port
-                                #:headers headers #:timeout timeout)))
+                                #:headers extended-headers
+                                #:timeout timeout)))
           (cache-miss uri)
           (mkdir-p (dirname file))
           (when cache-port
