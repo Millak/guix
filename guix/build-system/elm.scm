@@ -103,6 +103,18 @@ given VERSION with sha256 checksum HASH."
   (let ((elm (resolve-interface '(gnu packages elm))))
     (module-ref elm 'elm)))
 
+(define (default-elm-core)
+  "Return the default elm-core package."
+  ;; Lazily resolve the binding to avoid a circular dependency.
+  (let ((elm (resolve-interface '(gnu packages elm))))
+    (module-ref elm 'elm-core)))
+
+(define (default-elm-json)
+  "Return the default elm-json package."
+  ;; Lazily resolve the binding to avoid a circular dependency.
+  (let ((elm (resolve-interface '(gnu packages elm))))
+    (module-ref elm 'elm-json)))
+
 (define* (lower name
                 #:key source inputs native-inputs outputs system target
                 (implicit-elm-package-inputs? #t)
@@ -127,6 +139,28 @@ given VERSION with sha256 checksum HASH."
                '())
          ,@inputs
          ("elm" ,elm)
+         ,@(cond
+            (implicit-elm-package-inputs?
+             ;; These are needed for elm-build-system even if not actually
+             ;; needed by the package being built.  But "elm/json" is often
+             ;; present in practice, and "elm/core" always is: only add the
+             ;; default packages if no suitable inputs have been given
+             ;; explicitly.
+             (filter-map
+              (match-lambda
+                ((name get-default)
+                 (cond
+                  ((find (match-lambda
+                           ((_ pkg . _)
+                            (equal? name (guix-package->elm-name pkg))))
+                         inputs)
+                   #f)
+                  (else
+                   `(,name ,(get-default))))))
+              `(("elm/core" ,default-elm-core)
+                ("elm/json" ,default-elm-json))))
+            (else
+             '()))
          ;; TODO: probably don't need most of (standard-packages)
          ,@(standard-packages)))
       (outputs outputs)
