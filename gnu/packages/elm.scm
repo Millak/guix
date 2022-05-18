@@ -686,3 +686,24 @@ dates without times or zones.")
      "This package provides extra functions for working with @code{Posix}
 times from @code{elm/time}.")
     (license license:bsd-3)))
+
+(define-public elm-myrho-elm-round
+  (package
+    (name "elm-myrho-elm-round")
+    (version "1.0.4")
+    (source
+     (elm-package-origin
+      "myrho/elm-round"
+      version
+      (base32 "0y3j43wr815cvwz5310zalnqzpg3hw8h127zjjlf6x8ynapc2mdb")))
+    (build-system elm-build-system)
+    (propagated-inputs (list elm-core))
+    (inputs (list elm-explorations-test))
+    (home-page "https://package.elm-lang.org/packages/myrho/elm-round/1.0.4")
+    (synopsis "Flexible rounding of Elm @code{Float}s")
+    (description
+     "This library converts a @code{Float} to a @code{String} with ultimate
+control how many digits after the decimal point are shown and how the
+remaining digits are rounded.  It rounds, floors and ceils the @dfn{common}
+way (i.e. half up) or the @dfn{commerical} way (ie. half away from zero).")
+    (license license:bsd-3)))
