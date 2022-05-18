@@ -220,3 +220,22 @@ higher-level libraries directly.")
      "This package provides Elm's @acronym{SVG, Scalable Vector Graphics}
 library.")
     (license license:bsd-3)))
+
+(define-public elm-time
+  (package
+    (name "elm-time")
+    (version "1.0.0")
+    (source
+     (elm-package-origin
+      "elm/time"
+      version
+      (base32 "0wqa2vhl1zf8z0j2yd3yjwfhr0dydfns43bbzll3k4rhnjadxr1l")))
+    (build-system elm-build-system)
+    (propagated-inputs (list elm-core))
+    (home-page "https://package.elm-lang.org/packages/elm/time/1.0.0")
+    (synopsis
+     "POSIX time and time zones in Elm")
+    (description
+     "This package provides an Elm library for working with POSIX times, time
+zones, formatting, and the clock.")
+    (license license:bsd-3)))
