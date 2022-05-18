@@ -12075,7 +12075,7 @@ news items, openrc and runscripts.")
 (define-public emacs-evil
   (package
     (name "emacs-evil")
-    (version "1.14.0")
+    (version "1.14.2")
     (source
      (origin
        (method git-fetch)
@@ -12085,20 +12085,20 @@ news items, openrc and runscripts.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "17xrn3s6a4afmls8fw8nnxa1jq9dmj2qqrxa2vngh50hxpz8840p"))))
+         "1mhm1hd6gzxc2vvihh1w1j8f30xp0ssqcxnp8fx22niz04fk5df8"))))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'fix-test-helpers
-           (lambda _
-             (substitute* "evil-test-helpers.el"
-               (("\\(undo-tree-mode 1\\)") ""))
-             #t))
-         (add-before 'install 'make-info
-           (lambda _
-             (with-directory-excursion "doc/build/texinfo"
-                 (invoke "makeinfo" "--no-split"
-                         "-o" "evil.info" "evil.texi")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'fix-test-helpers
+            (lambda _
+              (substitute* "evil-test-helpers.el"
+                (("\\(undo-tree-mode 1\\)") ""))))
+          (add-before 'install 'make-info
+            (lambda _
+              (with-directory-excursion "doc/build/texinfo"
+                (invoke "makeinfo" "--no-split"
+                        "-o" "evil.info" "evil.texi")))))))
     (build-system emacs-build-system)
     (native-inputs (list texinfo))
     (home-page "https://github.com/emacs-evil/evil")
