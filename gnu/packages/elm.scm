@@ -622,3 +622,24 @@ packaged for Guix.")
     (description "This package enhances @code{elm/time} with support for
 format strings and internationalization of dates.")
     (license license:bsd-3)))
+
+(define-public elm-danhandrea-elm-time-extra
+  (package
+    (name "elm-danhandrea-elm-time-extra")
+    (version "1.1.0")
+    (source
+     (elm-package-origin
+      "danhandrea/elm-time-extra"
+      version
+      (base32 "0z13q8x148d5amcc89f846yzql89n9gyan8fr48y91dhhn7vxibf")))
+    (build-system elm-build-system)
+    (propagated-inputs (list elm-time elm-core))
+    (inputs
+     (list elm-explorations-test
+           elm-danhandrea-elm-date-format))
+    (home-page
+     "https://package.elm-lang.org/packages/danhandrea/elm-time-extra/1.1.0")
+    (synopsis "Extra utilities for POSIX time in Elm")
+    (description "This package enhances @code{elm/time} with extra utilities
+for working with POSIX times.")
+    (license license:bsd-3)))
