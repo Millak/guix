@@ -729,3 +729,34 @@ formatting dates and times.  It uses Elm's type system instead of format
 strings, which makes formatting code more readable and can catch some errors
 at compile time.")
     (license license:bsd-3)))
+
+(define-public elm-terezka-intervals
+  (package
+    (name "elm-terezka-intervals")
+    (version "2.0.1")
+    (source
+     (elm-package-origin
+      "terezka/intervals"
+      version
+      (base32 "0h3im58sa6awyppch1v8ppcrzwc5h48yn45crx98m8zs4isx91lj")))
+    (build-system elm-build-system)
+    (propagated-inputs
+     (list elm-ryannhg-date-format
+           elm-myrho-elm-round
+           elm-justinmimbs-time-extra
+           elm-time
+           elm-svg
+           elm-json
+           elm-html
+           elm-core
+           elm-danhandrea-elm-time-extra))
+    (inputs (list elm-explorations-test))
+    (home-page "https://package.elm-lang.org/packages/terezka/intervals/2.0.1")
+    (synopsis "Produce nice intervals for Elm charts")
+    (description
+     "This package provides an Elm library for producing nice intervals for
+charts.  It's useful in combination with @code{terezka/elm-charts}.  When I
+say ``nice'', I just mean that I try to calculate intervals which begin with
+10, 5, 3, 2, or 1 (adjusted to magnitude, of course!).  For dates, I try to
+hit whole days, weeks, and months or hours, minutes, and seconds.")
+    (license license:bsd-3)))
