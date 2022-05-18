@@ -18,6 +18,7 @@
 ;;; Copyright © 2022 Malte Frank Gerdes <malte.f.gerdes@gmail.com>
 ;;; Copyright © 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
+;;; Copyright © 2022 Wiktor Żelazny <wzelazny@vurv.cz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1291,3 +1292,24 @@ build applications with traitlets in combination with the scipy stack.")
     (description "This package is an implementation of the Promises/A+
 specification and test suite in Python.")
     (license license:expat)))
+
+(define-public python-climin
+  (package
+    (name "python-climin")
+    (version "0.1a1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "climin" version))
+              (sha256
+               (base32
+                "1wpjisd5zzi5yvjff02hnxn84822k8sdxvvd33lil2x79wdb36rv"))))
+    (build-system python-build-system)
+    (native-inputs (list python-nose))
+    (propagated-inputs (list python-numpydoc python-numpy python-scipy))
+    (home-page "https://github.com/BRML/climin")
+    (synopsis "Optimization for machine learning")
+    (description
+     "@command{climin} is a Python package for optimization,
+heavily biased to machine learning scenarios.  It works on top of
+@command{numpy} and (partially) @command{gnumpy}.")
+    (license license:bsd-3)))
