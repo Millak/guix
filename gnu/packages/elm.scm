@@ -578,3 +578,28 @@ of rendered elements.")
      "Need to generate random numbers?  How about random game boards?  Or
 random positions in 3D space?  This is the package for you!")
     (license license:bsd-3)))
+
+(define-public elm-explorations-test
+  (package
+    (name "elm-explorations-test")
+    (version "1.2.2")
+    (source
+     (elm-package-origin
+      "elm-explorations/test"
+      version
+      (base32 "0kw32x0lr6nh5j9xk56vgg7x7c705g38grghh7cdp49frwdd6w3l")))
+    (build-system elm-build-system)
+    (propagated-inputs
+     (list elm-virtual-dom
+           elm-random
+           elm-json
+           elm-html
+           elm-core))
+    (home-page
+     "https://package.elm-lang.org/packages/elm-explorations/test/1.2.2")
+    (synopsis "Testing framework for Elm")
+    (description "This package enables writing unit and fuzz tests for Elm
+code.  To actually run the tests, you need the command-line tool from
+@url{https://github.com/rtfeldman/node-test-runner}, which has not yet been
+packaged for Guix.")
+    (license license:bsd-3)))
