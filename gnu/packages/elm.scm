@@ -352,3 +352,23 @@ files, and work with file content.")
     (description "This package enables Elm programs to make HTTP requests and
 talk to servers.")
     (license license:bsd-3)))
+
+(define-public elm-parser
+  (package
+    (name "elm-parser")
+    (version "1.1.0")
+    (source
+     (elm-package-origin
+      "elm/parser"
+      version
+      (base32 "06xx29rmagc5r45qfpvrd393lz83ylngidfp08432f1qc8y6r3lh")))
+    (build-system elm-build-system)
+    (propagated-inputs (list elm-core))
+    (home-page "https://package.elm-lang.org/packages/elm/parser/1.1.0")
+    (synopsis
+     "Parsing library for Elm")
+    (description
+     "Regular expressions are quite confusing and difficult to use.  This
+library provides a coherent alternative that handles more cases and produces
+clearer code.  It is focused on simplicity and great error messages.")
+    (license license:bsd-3)))
