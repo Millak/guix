@@ -24020,27 +24020,30 @@ chevron marks.")
       (license license:gpl3+))))
 
 (define-public emacs-nix-mode
-  (package
-    (name "emacs-nix-mode")
-    (version "1.4.5")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/NixOS/nix-mode")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1bqlhkxg0faddhvxx909dq46dxdxk4mdyhdpww92dmzgxdpq38sx"))))
-    (build-system emacs-build-system)
-    (inputs
-     (list emacs-company emacs-json-mode emacs-mmm-mode))
-    (home-page "https://github.com/NixOS/nix-mode")
-    (synopsis "Emacs major mode for editing Nix expressions")
-    (description "@code{nixos-mode} provides an Emacs major mode for editing
+  ;; Use the latest commit to get unreleased fixes to build with Emacs 28.1.
+  (let ((commit "8fe2ccf0b01f694a77d2528e06c10f06057784f6")
+        (revision "0"))
+    (package
+      (name "emacs-nix-mode")
+      (version (git-version "1.4.5" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/NixOS/nix-mode")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "08kz9qp4gp55z1i87ig0ysq6pgqgwlgr765g1vp8gsh6lp3myh36"))))
+      (build-system emacs-build-system)
+      (propagated-inputs
+       (list emacs-company emacs-json-mode emacs-magit emacs-mmm-mode))
+      (home-page "https://github.com/NixOS/nix-mode")
+      (synopsis "Emacs major mode for editing Nix expressions")
+      (description "@code{nixos-mode} provides an Emacs major mode for editing
 Nix expressions.  It supports syntax highlighting, indenting and refilling of
 comments.")
-    (license license:lgpl2.1+)))
+      (license license:lgpl2.1+))))
 
 (define-public emacs-libmpdel
   (package
