@@ -715,9 +715,14 @@ pyproj, Rtree, and Shapely.")
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
                (invoke "pytest"
-                       ; Disable test that fails with
-                       ; NotImplementedError in pandas.
-                       "-k" "not test_fillna_no_op_returns_copy"
+                       ; Disable tests that fail due to incompatibilities
+                       ; with our pandas version.
+                       "-k"
+                       (string-append
+                         "not test_getitem_invalid"
+                         " and not test_value_counts"
+                         " and not test_setitem_invalid"
+                         " and not test_insert_invalid")
                        ; Disable tests that require internet access.
                        "-m" "not web")))))))
     (propagated-inputs
