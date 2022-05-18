@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019 Robert Vollmert <rob@vllmrt.net>
+;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,18 +25,24 @@
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages haskell-web)
   #:use-module (guix build-system haskell)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages))
 
-;; The full elm build calls out to itself via Template Haskell to
-;; compile the elm reactor web app. elm reactor isn't required to
-;; compile elm applications, so we take this part out of this
-;; bootstrap package.
+;; The `elm` build usually calls out to itself via Template Haskell to compile
+;; the `elm reactor` web app (which depends on additional Elm packages) and
+;; embeds the static files into itself.  The reactor isn't required to compile
+;; Elm applications, so we want to skip it for the bootstrap package, but we
+;; also want to be able to enable it once we can build it.  We patch Elm to
+;; instead look for the files on disk relative to the executable and to have
+;; `elm reactor` exit with a useful error message if they aren't there.
+(define %reactor-root-base
+  "share/elm/reactor-")
 (define-public elm-compiler
   (package
     (name "elm-compiler")
-    (version "0.19.0")
+    (version "0.19.1")
     (source
      (origin
        (method git-fetch)
@@ -44,24 +51,29 @@
              (url "https://github.com/elm/compiler/")
              (commit version)))
        (sha256
-        (base32 "0s93z9vr0vp5w894ghc5s34nsq09sg1msf59zfiba87sid5vgjqy"))
+        (base32 "1rdg3xp3js9xadclk3cdypkscm5wahgsfmm4ldcw3xswzhw6ri8w"))
        (patches
-        (search-patches "elm-compiler-disable-reactor.patch"
-                        "elm-compiler-fix-map-key.patch"))))
+        (search-patches "elm-reactor-static-files.patch"))))
     (build-system haskell-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'update-constraints
-           (lambda _
-             (substitute* "elm.cabal"
-               (("(ansi-terminal|containers|network|http-client|language-glsl)\\s+[^,]+" all dep)
-                dep)))))))
+     (list
+      #:configure-flags
+      #~(list (string-append "--ghc-option=-DGUIX_REACTOR_STATIC_REL_ROOT="
+                             "\"../" #$%reactor-root-base
+                             #$(package-version this-package)
+                             "\""))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'update-constraints
+            (lambda _
+              (substitute* "elm.cabal"
+                (("(ansi-terminal|containers|network|http-client|language-glsl)\\s+[^,]+" all dep)
+                 dep)))))))
     (inputs
      (list ghc-ansi-terminal
            ghc-ansi-wl-pprint
            ghc-edit-distance
-           ghc-file-embed
+           ghc-filelock
            ghc-http
            ghc-http-client
            ghc-http-client-tls
