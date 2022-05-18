@@ -103,3 +103,58 @@ such as @command{elm make} and @command{elm repl}.")
 ;; The 'elm' package used to be called 'elm-compiler'.
 (define-public elm-compiler
   (deprecated-package "elm-compiler" elm))
+
+(define-public elm-core
+  (package
+    (name "elm-core")
+    (version "1.0.5")
+    (source
+     (elm-package-origin
+      "elm/core"
+      version
+      (base32 "0g3xbi8f9k5q45s95nx3jfvzwdf4b2n63a52wr4027d2xjx0pmvl")))
+    (build-system elm-build-system)
+    (inputs (list elm-json-bootstrap))
+    (arguments
+     (list #:implicit-elm-package-inputs? #f))
+    (home-page "https://package.elm-lang.org/packages/elm/core/1.0.5")
+    (synopsis "Elm's standard libraries")
+    (description "Every Elm project needs this package!")
+    (license license:bsd-3)))
+
+(define-public elm-json
+  (package
+    (name "elm-json")
+    (version "1.1.3")
+    (source
+     (elm-package-origin
+      "elm/json"
+      version
+      (base32 "1hx986yqw1v2bpkrh6brszl8n8awwg1s8zi7v5qg0p1rqwvjlicz")))
+    (build-system elm-build-system)
+    (propagated-inputs (list elm-core))
+    (arguments
+     (list #:implicit-elm-package-inputs? #f))
+    (home-page "https://package.elm-lang.org/packages/elm/json/1.1.3")
+    (synopsis "Encode and decode JSON values in Elm")
+    (description
+     "This package helps you convert between Elm values and JSON values.")
+    (license license:bsd-3)))
+
+(define-public elm-json-bootstrap
+  ;; elm/core doesn't depend on elm/json,
+  ;; but elm-build-system's strategy for building it
+  ;; (and everything else) does
+  (hidden-package
+   (package
+     (inherit elm-json)
+     (name "elm-json-bootstrap")
+     (properties '((upstream-name . "elm/json")))
+     (propagated-inputs '())
+     (arguments
+      (list #:phases
+            #~(modify-phases %standard-phases
+                (delete 'configure)
+                (delete 'build)
+                (delete 'validate-compiled))
+            #:implicit-elm-package-inputs? #f)))))
