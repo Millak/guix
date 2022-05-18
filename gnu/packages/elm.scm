@@ -198,3 +198,25 @@ higher-level libraries directly.")
     (synopsis "Fast HTML, rendered with virtual DOM diffing")
     (description "This package provides Elm's HTML rendering library.")
     (license license:bsd-3)))
+
+(define-public elm-svg
+  (package
+    (name "elm-svg")
+    (version "1.0.1")
+    (source
+     (elm-package-origin
+      "elm/svg"
+      version
+      (base32 "1iqsc3p129j56lp1y3z3mfc6x1shvrmx3pkhri2777ylhyw90qvl")))
+    (build-system elm-build-system)
+    (propagated-inputs
+     (list elm-html
+           elm-virtual-dom
+           elm-json
+           elm-core))
+    (home-page "https://package.elm-lang.org/packages/elm/svg/1.0.1")
+    (synopsis "Fast SVG, rendered with virtual DOM diffing")
+    (description
+     "This package provides Elm's @acronym{SVG, Scalable Vector Graphics}
+library.")
+    (license license:bsd-3)))
