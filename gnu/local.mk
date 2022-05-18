@@ -1024,6 +1024,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/einstein-build.patch			\
   %D%/packages/patches/elfutils-tests-ptrace.patch		\
   %D%/packages/patches/elixir-path-length.patch			\
+  %D%/packages/patches/elm-offline-package-registry.patch	\
   %D%/packages/patches/elm-reactor-static-files.patch		\
   %D%/packages/patches/elogind-revert-polkit-detection.patch	\
   %D%/packages/patches/emacs-exec-path.patch			\

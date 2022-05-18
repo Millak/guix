@@ -25,6 +25,7 @@
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages haskell-web)
   #:use-module (guix build-system haskell)
+  #:use-module (guix build-system elm)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
@@ -53,7 +54,8 @@
        (sha256
         (base32 "1rdg3xp3js9xadclk3cdypkscm5wahgsfmm4ldcw3xswzhw6ri8w"))
        (patches
-        (search-patches "elm-reactor-static-files.patch"))))
+        (search-patches "elm-reactor-static-files.patch"
+                        "elm-offline-package-registry.patch"))))
     (build-system haskell-build-system)
     (arguments
      (list

@@ -447,6 +447,7 @@ needed is to review and apply the patch.
 * Perl Modules::                Little pearls.
 * Java Packages::               Coffee break.
 * Rust Crates::                 Beware of oxidation.
+* Elm Packages::                Trees of browser code
 * Fonts::                       Fond of fonts.
 @end menu
 
@@ -897,6 +898,87 @@ when possible.  Of course this is not always possible, as the package may be
 developed for a different Operating System, depend on features from the Nightly
 Rust compiler, or the test suite may have atrophied since it was released.
 
+
+@node Elm Packages
+@subsection Elm Packages
+
+@cindex Elm
+Elm applications can be named like other software: their names need not
+mention Elm.
+
+Packages in the Elm sense (see @code{elm-build-system} under @ref{Build
+Systems}) are required use names of the format
+@var{author}@code{/}@var{project}, where both the @var{author} and the
+@var{project} may contain hyphens internally, and the @var{author} sometimes
+contains uppercase letters.
+
+To form the Guix package name from the upstream name, we follow a convention
+similar to Python packages (@pxref{Python Modules}), adding an @code{elm-}
+prefix unless the name would already begin with @code{elm-}.
+
+In many cases we can reconstruct an Elm package's upstream name heuristically,
+but, since conversion to a Guix-style name involves a loss of information,
+this is not always possible.  Care should be taken to add the
+@code{'upstream-name} property when necessary so that tools
+will work correctly. The most notable scenarios
+when explicitly specifying the upstream name is necessary are:
+
+@enumerate
+@item
+When the @var{author} is @code{elm} and the @var{project} contains one or more
+hyphens, as with @code{elm/virtual-dom}; and
+
+@item
+When the @var{author} contains hyphens or uppercase letters, as with
+@code{Elm-Canvas/raster-shapes}---unless the @var{author} is
+@code{elm-explorations}, which is handled as a special case, so packages like
+@code{elm-explorations/markdown} do @emph{not} need to use the
+@code{'upstream-name} property.
+@end enumerate
+
+The module @code{(guix build-system elm)} provides the following utilities for
+working with names and related conventions:
+
+@deffn {Scheme procedure} elm-package-origin @var{elm-name} @var{version} @
+  @var{hash}
+Returns a Git origin using the repository naming and tagging regime required
+for a published Elm package with the upstream name @var{elm-name} at version
+@var{version} with sha256 checksum @var{hash}.
+
+For example:
+@lisp
+(package
+  (name "elm-html")
+  (version "1.0.0")
+  (source
+   (elm-package-origin
+    "elm/html"
+    version
+    (base32 "15k1679ja57vvlpinpv06znmrxy09lbhzfkzdc89i01qa8c4gb4a")))
+  ...)
+@end lisp
+@end deffn
+
+@deffn {Scheme procedure} elm->package-name @var{elm-name}
+Returns the Guix-style package name for an Elm package with upstream name
+@var{elm-name}.
+
+Note that there is more than one possible @var{elm-name} for which
+@code{elm->package-name} will produce a given result.
+@end deffn
+
+@deffn {Scheme procedure} guix-package->elm-name @var{package}
+Given an Elm @var{package}, returns the possibly-inferred upstream name, or
+@code{#f} the upstream name is not specified via the @code{'upstream-name}
+property and can not be inferred by @code{infer-elm-package-name}.
+@end deffn
+
+@deffn {Scheme procedure} infer-elm-package-name @var{guix-name}
+Given the @var{guix-name} of an Elm package, returns the inferred upstream
+name, or @code{#f} if the upstream name can't be inferred.  If the result is
+not @code{#f}, supplying it to @code{elm->package-name} would produce
+@var{guix-name}.
+@end deffn
 
 @node Fonts
 @subsection Fonts

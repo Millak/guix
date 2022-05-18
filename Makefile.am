@@ -141,6 +141,7 @@ MODULES =					\
   guix/build-system/cmake.scm			\
   guix/build-system/dub.scm			\
   guix/build-system/dune.scm			\
+  guix/build-system/elm.scm			\
   guix/build-system/emacs.scm			\
   guix/build-system/font.scm			\
   guix/build-system/go.scm			\
@@ -192,6 +193,7 @@ MODULES =					\
   guix/build/cmake-build-system.scm		\
   guix/build/dub-build-system.scm		\
   guix/build/dune-build-system.scm		\
+  guix/build/elm-build-system.scm		\
   guix/build/emacs-build-system.scm		\
   guix/build/meson-build-system.scm		\
   guix/build/minify-build-system.scm		\
@@ -472,6 +474,7 @@ SCM_TESTS =					\
   tests/derivations.scm			\
   tests/discovery.scm				\
   tests/egg.scm				\
+  tests/elm.scm				\
   tests/elpa.scm				\
   tests/file-systems.scm			\
   tests/gem.scm				\

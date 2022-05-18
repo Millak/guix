@@ -102,6 +102,7 @@ Copyright @copyright{} 2021 Sarah Morgensen@*
 Copyright @copyright{} 2021 Josselin Poiret@*
 Copyright @copyright{} 2022 Remco van 't Veer@*
 Copyright @copyright{} 2022 Aleksandr Vityazev@*
+Copyright @copyright{} 2022 Philip M@sup{c}Grath@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -8715,6 +8716,57 @@ is useful when a package contains multiple packages and you want to build
 only one of them.  This is equivalent to passing the @code{-p} argument to
 @code{dune}.
 
+@end defvr
+
+@defvr {Scheme variable} elm-build-system
+This variable is exported by @code{(guix build-system elm)}.  It implements a
+build procedure for @url{https://elm-lang.org, Elm} packages similar to
+@samp{elm install}.
+
+The build system adds an Elm compiler package to the set of inputs.  The
+default compiler package (currently @code{elm}) can be overridden
+using the @code{#:elm} argument.  Additionally, Elm packages needed by the
+build system itself are added as implicit inputs if they are not already
+present: to suppress this behavior, use the
+@code{#:implicit-elm-package-inputs?} argument, which is primarily useful for
+bootstrapping.
+
+The @code{"dependencies"} and @code{"test-dependencies"} in an Elm package's
+@file{elm.json} file correspond to @code{propagated-inputs} and @code{inputs},
+respectively.
+
+Elm requires a particular structure for package names: @pxref{Elm Packages}
+for more details, including utilities provided by @code{(guix build-system
+elm)}.
+
+There are currently a few noteworthy limitations to @code{elm-build-system}:
+
+@itemize
+@item
+The build system is focused on @dfn{packages} in the Elm sense of the word:
+Elm @dfn{projects} which declare @code{@{ "type": "package" @}} in their
+@file{elm.json} files.  Using @code{elm-build-system} to build Elm
+@dfn{applications} (which declare @code{@{ "type": "application" @}}) is
+possible, but requires ad-hoc modifications to the build phases.
+
+@item
+Elm supports multiple versions of a package coexisting simultaneously under
+@env{ELM_HOME}, but this does not yet work well with @code{elm-build-system}.
+This limitation primarily affects Elm applications, because they specify
+exact versions for their dependencies, whereas Elm packages specify supported
+version ranges.  As a workaround, you can use
+the @code{patch-application-dependencies} procedure provided by
+@code{(guix build elm-build-system)} to rewrite their @file{elm.json} files to
+refer to the package versions actually present in the build environment.
+Alternatively, Guix package transformations (@pxref{Defining Package
+Variants}) could be used to rewrite an application's entire dependency graph.
+
+@item
+We are not yet able to run tests for Elm projects because neither
+@url{https://github.com/mpizenberg/elm-test-rs, @command{elm-test-rs}} nor the
+Node.js-based @url{https://github.com/rtfeldman/node-test-runner,
+@command{elm-test}} runner has been packaged for Guix yet.
+@end itemize
 @end defvr
 
 @defvr {Scheme Variable} go-build-system
