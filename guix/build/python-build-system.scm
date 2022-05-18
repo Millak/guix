@@ -176,8 +176,8 @@ without errors."
 
 (define (site-packages inputs outputs)
   "Return the path of the current output's Python site-package."
-  (let* ((out (python-output outputs))
-         (python (assoc-ref inputs "python")))
+  (let ((out (python-output outputs))
+        (python (assoc-ref inputs "python")))
     (string-append out "/lib/python" (python-version python) "/site-packages")))
 
 (define (add-installed-pythonpath inputs outputs)
