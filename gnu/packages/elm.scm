@@ -760,3 +760,35 @@ say ``nice'', I just mean that I try to calculate intervals which begin with
 10, 5, 3, 2, or 1 (adjusted to magnitude, of course!).  For dates, I try to
 hit whole days, weeks, and months or hours, minutes, and seconds.")
     (license license:bsd-3)))
+
+(define-public elm-terezka-elm-charts
+  (package
+    (name "elm-terezka-elm-charts")
+    (version "3.0.0") ;; NOTE! Tags like 5.1.0 are from an OLDER version.
+    (source
+     (elm-package-origin
+      "terezka/elm-charts"
+      version
+      (base32 "17syq73jwldc7fk7snm5k8s85nsvxyprb34rs1rwjsapc1vii7hc")))
+    (build-system elm-build-system)
+    (propagated-inputs
+     (list elm-terezka-intervals
+           elm-ryannhg-date-format
+           elm-time
+           elm-svg
+           elm-json
+           elm-html
+           elm-core
+           elm-debois-elm-dom))
+    (home-page
+     "https://elm-charts.org")
+    (synopsis "SVG chart components in Elm")
+    (description
+     "Make SVG charts in all Elm.  The package can draw charts at a variety of
+different levels of customization, from basic charts with standard features to
+very custom styles.  The library also allows including your very own SVG
+elements while still easily utilizing the coordinate system calculated from
+your data, as well as editing the SVGs made by the package.  It has great
+support for interactivity, layering different charts, and adding irregular
+details.")
+    (license license:bsd-3)))
