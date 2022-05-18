@@ -331,3 +331,24 @@ and @code{DataView}.")
     (description "This package enables Elm programs to select files, download
 files, and work with file content.")
     (license license:bsd-3)))
+
+(define-public elm-http
+  (package
+    (name "elm-http")
+    (version "2.0.0")
+    (source
+     (elm-package-origin
+      "elm/http"
+      version
+      (base32 "0mfbz0lkfidmq5xpv5csw8943q0yrpvj0rwd2vb0gc8rbsfc9dg8")))
+    (build-system elm-build-system)
+    (propagated-inputs
+     (list elm-json
+           elm-file
+           elm-core
+           elm-bytes))
+    (home-page "https://package.elm-lang.org/packages/elm/http/2.0.0")
+    (synopsis "Make HTTP requests in Elm")
+    (description "This package enables Elm programs to make HTTP requests and
+talk to servers.")
+    (license license:bsd-3)))
