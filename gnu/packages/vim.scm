@@ -658,7 +658,7 @@ are detected, the user is notified.")))
 (define-public neovim
   (package
     (name "neovim")
-    (version "0.6.1")
+    (version "0.7.0")
     (source
      (origin
        (method git-fetch)
@@ -667,7 +667,7 @@ are detected, the user is notified.")))
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10p6lg5yv9n6wcwdprwvvi56dfcm4wsj54nm0invyx3mhf7374lx"))))
+        (base32 "1m7xmry66pn27gvk7qj9di83xa1h7zjp4c6ygnf218pqhr08x06g"))))
     (build-system cmake-build-system)
     (arguments
      `(#:modules ((srfi srfi-26)
@@ -713,7 +713,7 @@ are detected, the user is notified.")))
                (("\\$\\{CMAKE_C_COMPILER\\}") "/gnu/store/.../bin/gcc"))
              #t)))))
     (inputs
-     `(("libuv" ,libuv)
+     `(("libuv" ,libuv-for-luv)
        ("msgpack" ,msgpack)
        ("libtermkey" ,libtermkey)
        ("libvterm" ,libvterm)
