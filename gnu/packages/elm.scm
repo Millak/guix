@@ -397,3 +397,22 @@ you.")
     (properties '((upstream-name . "elm/project-metadata-utils")))
     (license license:bsd-3)))
 
+(define-public elm-explorations-markdown
+  (package
+    (name "elm-explorations-markdown")
+    (version "1.0.0")
+    (source
+     (elm-package-origin
+      "elm-explorations/markdown"
+      version
+      (base32 "1f57ikdpbbhchcpwj32216gxjxijrc3sdpg27s1cgzia9pnkqk6p")))
+    (build-system elm-build-system)
+    (propagated-inputs (list elm-html elm-core))
+    (home-page
+     "https://package.elm-lang.org/packages/elm-explorations/markdown/1.0.0")
+    (synopsis "Fast markdown parsing and rendering in Elm")
+    (description
+     "This package is for markdown parsing and rendering in Elm.  It is based
+on the @code{marked} project, which focuses on speed.")
+    (license license:bsd-3)))
+
