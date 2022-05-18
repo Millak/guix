@@ -60,7 +60,6 @@
             %bootstrap-gcc
             %bootstrap-glibc
             %bootstrap-inputs
-            %bootstrap-mes
 
             %bootstrap-inputs-for-tests))
 
@@ -931,55 +930,6 @@ exec ~a/bin/.gcc-wrapped -B~a/lib \
     (home-page #f)
     (license gpl3+)))
 
-(define %bootstrap-mes
-  ;; The initial Mes.  Uses binaries from a tarball typically built by
-  ;; %MES-BOOTSTRAP-TARBALL.
-  (package
-    (name "bootstrap-mes")
-    (version "0")
-    (source #f)
-    (build-system trivial-build-system)
-    (arguments
-     `(#:guile ,%bootstrap-guile
-       #:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils)
-                      (ice-9 popen))
-         (let ((out     (assoc-ref %outputs "out"))
-               (tar     (assoc-ref %build-inputs "tar"))
-               (xz      (assoc-ref %build-inputs "xz"))
-               (tarball (assoc-ref %build-inputs "tarball")))
-
-           (mkdir out)
-           (copy-file tarball "binaries.tar.xz")
-           (invoke xz "-d" "binaries.tar.xz")
-           (let ((builddir (getcwd))
-                 (bindir   (string-append out "/bin")))
-             (with-directory-excursion out
-               (invoke tar "xvf"
-                       (string-append builddir "/binaries.tar"))))))))
-    (inputs
-     `(("tar" ,(bootstrap-executable "tar" (%current-system)))
-       ("xz"  ,(bootstrap-executable "xz" (%current-system)))
-       ("tarball"
-        ,(bootstrap-origin
-          (origin
-            (method url-fetch)
-            (uri (map
-                  (cute string-append <>
-                        "/i686-linux/20190815/"
-                        "mes-minimal-stripped-0.19-i686-linux.tar.xz")
-                  %bootstrap-base-urls))
-            (sha256
-             (base32
-              "1q4xjpx6nbn44kxnilpgl12bhpmwy2bblzwszc2ci7xkf400jcpv")))))))
-    (supported-systems '("i686-linux" "x86_64-linux"))
-    (synopsis "Bootstrap binaries of Mes")
-    (description synopsis)
-    (home-page #f)
-    (license gpl3+)))
-
 (define (%bootstrap-inputs)
   ;; The initial, pre-built inputs.  From now on, we can start building our
   ;; own packages.
@@ -997,7 +947,7 @@ exec ~a/bin/.gcc-wrapped -B~a/lib \
 (define %bootstrap-inputs-for-tests
   ;; These are bootstrap inputs that are cheap to produce (no compilation
   ;; needed) and that are meant to be used for testing.  (These are those we
-  ;; used before the Mes-based reduced bootstrap.)
+  ;; used before the Mes-based full-source bootstrap.)
   `(("libc" ,%bootstrap-glibc)
     ("gcc" ,%bootstrap-gcc)
     ("binutils" ,%bootstrap-binutils)
