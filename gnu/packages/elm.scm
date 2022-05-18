@@ -292,3 +292,21 @@ Use it for HTTP and for @dfn{routing} in @acronym{SPAs, single-page apps}.")
      "This package allows you to create Elm programs that run in browsers,
 with access to browser history for @acronym{SPAs, single-page apps}.")
     (license license:bsd-3)))
+
+(define-public elm-bytes
+  (package
+    (name "elm-bytes")
+    (version "1.0.8")
+    (source
+     (elm-package-origin
+      "elm/bytes"
+      version
+      (base32 "0n411j2cyz9m241q6vszfzpq3fraradwal5m0gigp2505mdfpz3x")))
+    (build-system elm-build-system)
+    (propagated-inputs (list elm-core))
+    (home-page "https://package.elm-lang.org/packages/elm/bytes/1.0.8")
+    (synopsis "Work with sequences of bytes in Elm")
+    (description "This package provides an Elm library for working with
+densely packed sequences of bytes, such as @code{ArrayBuffer}, typed arrays,
+and @code{DataView}.")
+    (license license:bsd-3)))
