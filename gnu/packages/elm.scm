@@ -158,3 +158,24 @@ such as @command{elm make} and @command{elm repl}.")
                 (delete 'build)
                 (delete 'validate-compiled))
             #:implicit-elm-package-inputs? #f)))))
+
+(define-public elm-virtual-dom
+  (package
+    (name "elm-virtual-dom")
+    (version "1.0.3")
+    (source
+     (elm-package-origin
+      "elm/virtual-dom"
+      version
+      (base32 "1bjyyws7l0qvgp4ixzaimwriq86ncx5bvrzaksvjx3pv7bmkbx69")))
+    (build-system elm-build-system)
+    (propagated-inputs (list elm-json elm-core))
+    (home-page "https://package.elm-lang.org/packages/elm/virtual-dom/1.0.2")
+    (synopsis
+     "Elm's low-level virtual DOM implementation")
+    (description
+     "This package provides a virtual DOM implementation that backs Elm's
+core libraries for HTML and SVG.  You should almost certainly use those
+higher-level libraries directly.")
+    (properties '((upstream-name . "elm/virtual-dom")))
+    (license license:bsd-3)))
