@@ -39,6 +39,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
@@ -70,6 +71,40 @@
   #:use-module (guix build-system python)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1))
+
+(define-public calceph
+  (package
+    (name "calceph")
+    (version  "3.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://www.imcce.fr/content/medias/recherche/equipes/asd/calceph/calceph-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "078wn773pwf4pg9m0h0l00g4aq744pq1rb6kz6plgdpzp3hhpk1k"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list gfortran))
+    (home-page "https://www.imcce.fr/inpop/calceph")
+    (synopsis "Astronomical library to access the binary planetary ephemeris files")
+    (description
+     "The CALCEPH Library is designed to access the binary planetary ephemeris files,
+such INPOPxx and JPL DExxx ephemeris files, (called @code{original JPL binary} or
+@code{INPOP 2.0 or 3.0 binary} ephemeris files in the next sections) and the SPICE
+kernel files (called @code{SPICE} ephemeris files in the next sections).  At the
+moment, supported SPICE files are:
+
+@itemize
+@item text Planetary Constants Kernel (KPL/PCK) files;
+@item binary PCK (DAF/PCK) files;
+@item binary SPK (DAF/SPK) files containing segments of type 1, 2, 3, 5, 8, 9,
+12, 13, 17, 18, 19, 20, 21, 102, 103 and 120;
+@item meta kernel (KPL/MK) files;
+@item frame kernel (KPL/FK) files (only basic support).
+@end itemize\n")
+    (license license:cecill)))
 
 (define-public cfitsio
   (package
