@@ -239,3 +239,31 @@ library.")
      "This package provides an Elm library for working with POSIX times, time
 zones, formatting, and the clock.")
     (license license:bsd-3)))
+
+(define-public elm-url
+  (package
+    (name "elm-url")
+    (version "1.0.0")
+    (source
+     (elm-package-origin
+      "elm/url"
+      version
+      (base32 "1f2ij4i7zmijnj2i50qf19lpkr14bhms8dkq029inb5mydi9f8gs")))
+    (build-system elm-build-system)
+    (propagated-inputs (list elm-core))
+    (home-page "https://package.elm-lang.org/packages/elm/url/1.0.0")
+    (synopsis
+     "Create and parse URLs in Elm")
+    (description
+     "This package helps you:
+
+@enumerate
+@item
+build new URLs; and
+
+@item
+parse existing URLs into nice Elm data structures.
+@end enumerate
+
+Use it for HTTP and for @dfn{routing} in @acronym{SPAs, single-page apps}.")
+    (license license:bsd-3)))
