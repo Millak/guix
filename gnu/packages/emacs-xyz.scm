@@ -12073,41 +12073,45 @@ news items, openrc and runscripts.")
     (license license:gpl2+)))
 
 (define-public emacs-evil
-  (package
-    (name "emacs-evil")
-    (version "1.14.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/emacs-evil/evil")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1mhm1hd6gzxc2vvihh1w1j8f30xp0ssqcxnp8fx22niz04fk5df8"))))
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'fix-test-helpers
-            (lambda _
-              (substitute* "evil-test-helpers.el"
-                (("\\(undo-tree-mode 1\\)") ""))))
-          (add-before 'install 'make-info
-            (lambda _
-              (with-directory-excursion "doc/build/texinfo"
-                (invoke "makeinfo" "--no-split"
-                        "-o" "evil.info" "evil.texi")))))))
-    (build-system emacs-build-system)
-    (native-inputs (list texinfo))
-    (home-page "https://github.com/emacs-evil/evil")
-    (synopsis "Extensible Vi layer for Emacs")
-    (description
-     "Evil is an extensible vi layer for Emacs.  It emulates the
+  ;; Commit message claims this is 1.15.0, but there's no tag for it, so we
+  ;; use full git-version instead
+  (let ((commit "008a6cdb12f15e748979a7d1c2f26c34c84dedbf")
+        (revision "0"))
+    (package
+      (name "emacs-evil")
+      (version (git-version "1.15.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/emacs-evil/evil")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1hxhw1rsm0wbrhz85gfabncanijpxd47g5yrdnl3bbm499z1gsvg"))))
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (add-before 'check 'fix-test-helpers
+             (lambda _
+               (substitute* "evil-test-helpers.el"
+                 (("\\(undo-tree-mode 1\\)") ""))
+               #t))
+           (add-before 'install 'make-info
+             (lambda _
+               (with-directory-excursion "doc/build/texinfo"
+                   (invoke "makeinfo" "--no-split"
+                           "-o" "evil.info" "evil.texi")))))))
+      (build-system emacs-build-system)
+      (native-inputs (list texinfo))
+      (home-page "https://github.com/emacs-evil/evil")
+      (synopsis "Extensible Vi layer for Emacs")
+      (description
+       "Evil is an extensible vi layer for Emacs.  It emulates the
 main features of Vim, and provides facilities for writing custom
 extensions.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-evil-collection
   (package
