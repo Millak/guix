@@ -267,3 +267,28 @@ parse existing URLs into nice Elm data structures.
 
 Use it for HTTP and for @dfn{routing} in @acronym{SPAs, single-page apps}.")
     (license license:bsd-3)))
+
+(define-public elm-browser
+  (package
+    (name "elm-browser")
+    (version "1.0.2")
+    (source
+     (elm-package-origin
+      "elm/browser"
+      version
+      (base32 "0863nw2hhbpm3s03lm1imi5x28wwknzrwg2p79s5mydgvdvgwjf0")))
+    (build-system elm-build-system)
+    (propagated-inputs
+     (list elm-virtual-dom
+           elm-url
+           elm-time
+           elm-json
+           elm-html
+           elm-core))
+    (home-page "https://package.elm-lang.org/packages/elm/browser/1.0.2")
+    (synopsis
+     "Run Elm in browsers")
+    (description
+     "This package allows you to create Elm programs that run in browsers,
+with access to browser history for @acronym{SPAs, single-page apps}.")
+    (license license:bsd-3)))
