@@ -560,3 +560,21 @@ compare front-end web frameworks.")
 Use this if you need to discover geometry information (width, position, etc.)
 of rendered elements.")
     (license license:asl2.0)))
+
+(define-public elm-random
+  (package
+    (name "elm-random")
+    (version "1.0.0")
+    (source
+     (elm-package-origin
+      "elm/random"
+      version
+      (base32 "0z0znkwfs35xiabk6pa9yqwsq03jssgd7jmsj1kk000mikfm7f39")))
+    (build-system elm-build-system)
+    (propagated-inputs (list elm-time elm-core))
+    (home-page "https://package.elm-lang.org/packages/elm/random/1.0.0")
+    (synopsis "Generate random numbers and values in Elm")
+    (description
+     "Need to generate random numbers?  How about random game boards?  Or
+random positions in 3D space?  This is the package for you!")
+    (license license:bsd-3)))
