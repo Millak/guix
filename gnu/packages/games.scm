@@ -6677,7 +6677,7 @@ fight against their plot and save his fellow rabbits from slavery.")
     ;; A snippet here would cause a build failure because of timestamps
     ;; reset.  See https://bugs.gnu.org/26734.
     (inputs
-     (list #{0ad-data}#
+     (list 0ad-data
            curl
            enet
            fmt
