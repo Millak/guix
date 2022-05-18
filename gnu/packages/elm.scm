@@ -643,3 +643,24 @@ format strings and internationalization of dates.")
     (description "This package enhances @code{elm/time} with extra utilities
 for working with POSIX times.")
     (license license:bsd-3)))
+
+(define-public elm-justinmimbs-date
+  (package
+    (name "elm-justinmimbs-date")
+    (version "4.0.1")
+    (source
+     (elm-package-origin
+      "justinmimbs/date"
+      version
+      (base32 "13mf97137f0yb3gx1mxbya2y70qciah4hp5bcnpj8166vgzb7l3l")))
+    (build-system elm-build-system)
+    (propagated-inputs
+     (list elm-time
+           elm-parser
+           elm-core))
+    (home-page "https://package.elm-lang.org/packages/justinmimbs/date/4.0.1")
+    (synopsis "Work with dates without times or zones in Elm")
+    (description
+     "This Elm package provides a simple @code{Date} type for working with
+dates without times or zones.")
+    (license license:bsd-3)))
