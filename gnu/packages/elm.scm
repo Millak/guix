@@ -664,3 +664,25 @@ for working with POSIX times.")
      "This Elm package provides a simple @code{Date} type for working with
 dates without times or zones.")
     (license license:bsd-3)))
+
+(define-public elm-justinmimbs-time-extra
+  (package
+    (name "elm-justinmimbs-time-extra")
+    (version "1.1.1")
+    (source
+     (elm-package-origin
+      "justinmimbs/time-extra"
+      version
+      (base32 "1gmgvzlpzkysvm86d0md75ply10pz28bg699m4763frss0jvrngh")))
+    (build-system elm-build-system)
+    (propagated-inputs
+     (list elm-justinmimbs-date
+           elm-time
+           elm-core))
+    (home-page
+     "https://package.elm-lang.org/packages/justinmimbs/time-extra/1.1.1")
+    (synopsis "Extra functions for POSIX times in Elm")
+    (description
+     "This package provides extra functions for working with @code{Posix}
+times from @code{elm/time}.")
+    (license license:bsd-3)))
