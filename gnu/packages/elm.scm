@@ -372,3 +372,28 @@ talk to servers.")
 library provides a coherent alternative that handles more cases and produces
 clearer code.  It is focused on simplicity and great error messages.")
     (license license:bsd-3)))
+
+(define-public elm-project-metadata-utils
+  (package
+    (name "elm-project-metadata-utils")
+    (version "1.0.2")
+    (source
+     (elm-package-origin
+      "elm/project-metadata-utils"
+      version
+      (base32 "1wj7chfy4knwwyc3k0hy431c80hs7hc686qsr34ayn8gip73x2jj")))
+    (build-system elm-build-system)
+    (propagated-inputs
+     (list elm-parser
+           elm-json
+           elm-core))
+    (home-page
+     "https://package.elm-lang.org/packages/elm/project-metadata-utils/1.0.2")
+    (synopsis "Work with @file{elm.json} and @file{docs.json} files in Elm")
+    (description
+     "This package is meant for people creating Elm tooling, like editor
+plugins.  If you just want to make stuff in Elm, there is nothing here for
+you.")
+    (properties '((upstream-name . "elm/project-metadata-utils")))
+    (license license:bsd-3)))
+
