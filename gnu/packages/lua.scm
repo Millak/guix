@@ -16,6 +16,7 @@
 ;;; Copyright © 2021 Vinícius dos Santos Oliveira <vini.ipsmaker@gmail.com>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022 Brandon Lucas <br@ndon.dk>
+;;; Copyright © 2022 Luis Henrique Gomes Higino <luishenriquegh2701@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -785,7 +786,7 @@ Grammars (PEGs).")
 (define (make-lua-luv name lua)
   (package
     (name name)
-    (version "1.32.0-0")
+    (version "1.43.0-0")
     (source (origin
               ;; The release tarball includes the sources of libuv but does
               ;; not include the pkg-config files.
@@ -796,7 +797,7 @@ Grammars (PEGs).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0c65c1lhbl0axnyks3910gjs0z0hw7w6jvl07g8kbpnbvfl4qajh"))))
+                "1yzi4bm845vl84wyv2qw4z1n1v285lgwm681swmp84brfy2s7czp"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ; there are none
@@ -813,22 +814,22 @@ Grammars (PEGs).")
              (copy-recursively (assoc-ref inputs "lua-compat")
                                "lua-compat")
              (setenv "CPATH"
-                     (string-append (getcwd) "/lua-compat:"
+                     (string-append (getcwd) "/lua-compat/c-api:"
                                     (or (getenv "CPATH") "")))
              #t)))))
     (inputs
-     (list lua libuv))
+     (list lua libuv-for-luv))
     (native-inputs
      `(("lua-compat"
         ,(origin
            (method git-fetch)
            (uri (git-reference
                  (url "https://github.com/keplerproject/lua-compat-5.3")
-                 (commit "daebe77a2f498817713df37f0bb316db1d82222f")))
+                 (commit "v0.10")))
            (file-name "lua-compat-5.3-checkout")
            (sha256
             (base32
-             "02a14nvn7aggg1yikj9h3dcf8aqjbxlws1bfvqbpfxv9d5phnrpz"))))))
+             "1caxn228gx48g6kymp9w7kczgxcg0v0cd5ixsx8viybzkd60dcn4"))))))
     (home-page "https://github.com/luvit/luv/")
     (synopsis "Libuv bindings for Lua")
     (description
