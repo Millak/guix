@@ -603,3 +603,22 @@ code.  To actually run the tests, you need the command-line tool from
 @url{https://github.com/rtfeldman/node-test-runner}, which has not yet been
 packaged for Guix.")
     (license license:bsd-3)))
+
+(define-public elm-danhandrea-elm-date-format
+  (package
+    (name "elm-danhandrea-elm-date-format")
+    (version "2.0.1")
+    (source
+     (elm-package-origin
+      "danhandrea/elm-date-format"
+      version
+      (base32 "03mglzyywij5sm56m7q2jhhbsv7f9rdirgwmq0q41ghir81bzpv6")))
+    (build-system elm-build-system)
+    (propagated-inputs (list elm-time elm-core))
+    (inputs (list elm-explorations-test))
+    (home-page
+     "https://package.elm-lang.org/packages/danhandrea/elm-date-format/2.0.1")
+    (synopsis "Date formatting for Elm")
+    (description "This package enhances @code{elm/time} with support for
+format strings and internationalization of dates.")
+    (license license:bsd-3)))
