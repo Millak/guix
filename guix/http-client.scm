@@ -314,7 +314,10 @@ added automatically as appropriate.
 TIMEOUT specifies the timeout in seconds for connection establishment.
 
 Write information about redirects to LOG-PORT."
-  (let ((file (cache-file-for-uri uri)))
+  (let* ((uri (if (string? uri)
+                  (string->uri uri)
+                  uri))
+         (file (cache-file-for-uri uri)))
     (define (update-cache cache-port)
       (define cache-time
         (and cache-port
