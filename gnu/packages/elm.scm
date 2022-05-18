@@ -487,3 +487,56 @@ you.")
 on the @code{marked} project, which focuses on speed.")
     (license license:bsd-3)))
 
+(define-public elm-todomvc
+  (let ((commit "f236e7e56941c7705aba6e42cb020ff515fe3290")
+        (revision "1"))
+    (package
+      (name "elm-todomvc")
+      (version (git-version "1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/evancz/elm-todomvc")
+               (commit commit)))
+         (sha256
+          (base32 "0g37bglzshkf79s4n7aq9ib44h5qn8ng7n72sh2xslgd20h05nfw"))
+         (file-name (git-file-name name version))))
+      (inputs (list elm-browser elm-core elm-html elm-json))
+      (build-system elm-build-system)
+      (arguments
+       (list
+        #:modules
+        `((srfi srfi-26)
+          ,@%elm-default-modules)
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'stage)
+            (replace 'configure
+              patch-application-dependencies)
+            (replace 'build
+              (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                (invoke (search-input-file (or native-inputs inputs)
+                                           "/bin/elm")
+                        "make"
+                        "src/Main.elm"
+                        "--output=elm.js")))
+            (replace 'install
+              (lambda args
+                (let* ((out-dir #$output)
+                       (dest-dir
+                        (string-append out-dir
+                                       "/share/"
+                                       (strip-store-file-name out-dir))))
+                  (for-each (cut install-file <> dest-dir)
+                            `("elm.js"
+                              "index.html"
+                              "style.css"
+                              "README.md")))))
+            (delete 'validate-compiled))))
+      (home-page "https://github.com/evancz/elm-todomvc")
+      (synopsis "TodoMVC in Elm")
+      (description "This is the official Elm implementation of
+@url{https://todomvc.com,TodoMVC}, a simple to-do--list application used to
+compare front-end web frameworks.")
+      (license license:bsd-3))))

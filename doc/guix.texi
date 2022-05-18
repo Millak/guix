@@ -8748,7 +8748,7 @@ Elm @dfn{projects} which declare @code{@{ "type": "package" @}} in their
 @file{elm.json} files.  Using @code{elm-build-system} to build Elm
 @dfn{applications} (which declare @code{@{ "type": "application" @}}) is
 possible, but requires ad-hoc modifications to the build phases.  For
-an example, see the definition of
+examples, see the definitions of the @code{elm-todomvc} example application and
 the @code{elm} package itself (because the front-end for the
 @samp{elm reactor} command is an Elm application).
 
@@ -8757,7 +8757,7 @@ Elm supports multiple versions of a package coexisting simultaneously under
 @env{ELM_HOME}, but this does not yet work well with @code{elm-build-system}.
 This limitation primarily affects Elm applications, because they specify
 exact versions for their dependencies, whereas Elm packages specify supported
-version ranges.  As a workaround, you can use
+version ranges.  As a workaround, the example applications mentioned above use
 the @code{patch-application-dependencies} procedure provided by
 @code{(guix build elm-build-system)} to rewrite their @file{elm.json} files to
 refer to the package versions actually present in the build environment.
