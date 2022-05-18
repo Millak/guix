@@ -2468,6 +2468,7 @@ comments.")))
              coin3D
              double-conversion
              eigen
+             fontconfig
              freetype
              gl2ps
              glew
