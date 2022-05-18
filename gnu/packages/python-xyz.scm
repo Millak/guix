@@ -16497,13 +16497,13 @@ is made as zipfile like as possible.")
 (define-public python-rich
   (package
     (name "python-rich")
-    (version "10.2.2")
+    (version "12.4.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "rich" version))
               (sha256
                (base32
-                "1z5m5brcdf3vndpavcqj5nl35xby4x5rfj48klhwqycfqf3g9cqp"))))
+                "149vjb4cpf9mz14iig0b6d8065dm8aslp6pc45g9ipmp1wf00ffj"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -16532,7 +16532,7 @@ is made as zipfile like as possible.")
            (file-name (git-file-name name version))
            (sha256
             (base32
-             "19f4svb363sn5708qkpa6lakmiwzyb25h8kmh7bqrsbbrvi9hr70"))))))
+             "17c3gljn8zv32xnpsgd3fqgqn4r7cdfqri41hridcpbhssdgkyp9"))))))
     (home-page "https://github.com/willmcgugan/rich")
     (synopsis "Render rich text and more to the terminal")
     (description
