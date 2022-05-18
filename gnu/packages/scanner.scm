@@ -269,23 +269,23 @@ package contains the library and drivers.")))
                   "0i6ipqy61abbsmqqqy5sii0vlib146snvp975sgjmv4nzy9mwf24"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:tests? #f
-         #:configure-flags
-         (list (string-append "--with-boost-libdir="
-                              (assoc-ref %build-inputs "boost") "/lib")
-               "CXXFLAGS=-Wno-error")
-         #:phases
-         (modify-phases %standard-phases
-           (add-before 'bootstrap 'zap-unnecessary-git-dependency
-             (lambda _
-               (substitute* "configure.ac"
-                 (("-m4_esyscmd_s\\(\\[git describe --always\\]\\)") ""))))
-           (add-after 'install 'install-udev-rules
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out")))
-                 (mkdir-p (string-append out "/lib/udev/rules.d"))
-                 (install-file "drivers/esci/utsushi-esci.rules"
-                               (string-append out "/lib/udev/rules.d"))))))))
+       (list #:tests? #f
+             #:configure-flags
+             #~(list (string-append "--with-boost-libdir="
+                                    #$(this-package-input "boost") "/lib")
+                     "CXXFLAGS=-Wno-error")
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-before 'bootstrap 'zap-unnecessary-git-dependency
+                   (lambda _
+                     (substitute* "configure.ac"
+                       (("-m4_esyscmd_s\\(\\[git describe --always\\]\\)") ""))))
+                 (add-after 'install 'install-udev-rules
+                   (lambda* (#:key outputs #:allow-other-keys)
+                     (mkdir-p (string-append #$output "/lib/udev/rules.d"))
+                     (install-file "drivers/esci/utsushi-esci.rules"
+                                   (string-append #$output
+                                                  "/lib/udev/rules.d")))))))
       (inputs (list boost
                     eudev
                     sane-backends-minimal
