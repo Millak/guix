@@ -707,3 +707,25 @@ control how many digits after the decimal point are shown and how the
 remaining digits are rounded.  It rounds, floors and ceils the @dfn{common}
 way (i.e. half up) or the @dfn{commerical} way (ie. half away from zero).")
     (license license:bsd-3)))
+
+(define-public elm-ryannhg-date-format
+  (package
+    (name "elm-ryannhg-date-format")
+    (version "2.3.0")
+    (source
+     (elm-package-origin
+      "ryannhg/date-format"
+      version
+      (base32 "0razh6im5qwmla10knk67j8w11mqlqlyfnclykbfl06kaksfm3sp")))
+    (build-system elm-build-system)
+    (propagated-inputs (list elm-time elm-core))
+    (inputs (list elm-explorations-test))
+    (home-page
+     "https://package.elm-lang.org/packages/ryannhg/date-format/2.3.0")
+    (synopsis "Reliable advanced dates formatting for Elm")
+    (description
+     "This package provides Elm programs with reliable, powerful tools for
+formatting dates and times.  It uses Elm's type system instead of format
+strings, which makes formatting code more readable and can catch some errors
+at compile time.")
+    (license license:bsd-3)))
