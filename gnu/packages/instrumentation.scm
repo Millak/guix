@@ -223,7 +223,7 @@ with the script @command{flamegraph.pl} and many stackcollapse scripts.")
 user space tracer.  It receives commands from a session daemon, for example to
 enable and disable specific instrumentation points, and writes event records
 to ring buffers shared with a consumer daemon.")
-    (license license:lgpl2.1+)))
+    (license (list license:lgpl2.1 license:expat))))
 
 (define-public lttng-tools
   (package
