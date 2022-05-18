@@ -1313,3 +1313,37 @@ specification and test suite in Python.")
 heavily biased to machine learning scenarios.  It works on top of
 @command{numpy} and (partially) @command{gnumpy}.")
     (license license:bsd-3)))
+
+(define-public python-paramz
+  (package
+    (name "python-paramz")
+    (version "0.9.5")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "paramz" version))
+              (sha256
+               (base32
+                "16hbh97kj6b1c2gw22rqnr3w3nqkszh9gj8vgx738gq81wf225q9"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-decorator python-numpy python-scipy
+                             python-six))
+    (home-page "https://github.com/sods/paramz")
+    (synopsis "The Parameterization Framework")
+    (description
+     "@command{paramz} is a lightweight parameterization framework
+for parameterized model creation and handling.  Its features include:
+
+@itemize
+ @item Easy model creation with parameters.
+ @item Fast optimized access of parameters for optimization routines.
+ @item Memory efficient storage of parameters (only one copy in memory).
+ @item Renaming of parameters.
+ @item Intuitive printing of models and parameters.
+ @item Gradient saving directly inside parameters.
+ @item Gradient checking of parameters.
+ @item Optimization of parameters.
+ @item Jupyter notebook integration.
+ @item Efficient storage of models, for reloading.
+ @item Efficient caching.
+@end itemize")
+    (license license:bsd-3)))
