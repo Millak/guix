@@ -310,3 +310,24 @@ with access to browser history for @acronym{SPAs, single-page apps}.")
 densely packed sequences of bytes, such as @code{ArrayBuffer}, typed arrays,
 and @code{DataView}.")
     (license license:bsd-3)))
+
+(define-public elm-file
+  (package
+    (name "elm-file")
+    (version "1.0.5")
+    (source
+     (elm-package-origin
+      "elm/file"
+      version
+      (base32 "0aimgicrdpys0v89m2wjx413561zil14cczjh6mkn9jcgckx6yng")))
+    (build-system elm-build-system)
+    (propagated-inputs
+     (list elm-time
+           elm-json
+           elm-core
+           elm-bytes))
+    (home-page "https://package.elm-lang.org/packages/elm/file/1.0.5")
+    (synopsis "Work with files in Elm")
+    (description "This package enables Elm programs to select files, download
+files, and work with file content.")
+    (license license:bsd-3)))
