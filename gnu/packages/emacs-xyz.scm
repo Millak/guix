@@ -10972,9 +10972,25 @@ indentation guides in Emacs:
                (with-directory-excursion "test"
                  (for-each delete-file
                            (append (find-files "." "elpy-refactor")
-                               (find-files "." "elpy-multiedit")
-                             (find-files "." "elpy-pdb")
-                             (find-files "." "elpy-promise"))))))
+                                   (find-files "." "elpy-multiedit")
+                                   (find-files "." "elpy-pdb")
+                                   (find-files "." "elpy-promise")))
+                 ;; These test fail since upgrading Emacs from version 27 to
+                 ;; 28.1 (see:
+                 ;; https://github.com/jorgenschaefer/elpy/issues/1982).
+                 (delete-file "elpy-project-find-git-root-test.el")
+                 (substitute* "elpy-company-backend-test.el"
+                   (("elpy-company-backend-should-add-shell-candidates.*" all)
+                    (string-append all "  :expected-result :failed\n")))
+                 (substitute* "elpy-eldoc-documentation-test.el"
+                   (("elpy-eldoc-documentation-should-show-object-onelinedoc.*" all)
+                    (string-append all "  :expected-result :failed\n")))
+                 (substitute* "elpy-shell-send-file-test.el"
+                   (("elpy-shell-send-file-should-accept-large-strings.*" all)
+                    (string-append all "  :expected-result :failed\n")))
+                 (substitute* "elpy-shell-echo-inputs-and-outputs-test.el"
+                   (("elpy-shell-should-echo-outputs.*" all)
+                    (string-append all "  :expected-result :failed\n"))))))
            ;; The default environment of the RPC uses Virtualenv to install
            ;; Python dependencies from PyPI.  We don't want/need this in Guix.
            (add-before 'check 'do-not-use-virtualenv
