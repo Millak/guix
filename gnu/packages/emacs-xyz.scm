@@ -15794,27 +15794,46 @@ library.")
       (license license:gpl3+))))
 
 (define-public emacs-rpm-spec-mode
-  (package
-    (name "emacs-rpm-spec-mode")
-    (version "0.16")
-    (source
-     (origin
-       (method url-fetch)
-       ;; URI has the Fedora release number instead of the version
-       ;; number. This will have to updated manually every new release.
-       (uri (string-append
-             "https://src.fedoraproject.org/cgit/rpms"
-             "/emacs-rpm-spec-mode.git/snapshot"
-             "/emacs-rpm-spec-mode-f26.tar.gz"))
-       (sha256
-        (base32
-         "17dz80lhjrc89fj17pysl8slahzrqdkxgcjdk55zls6jizkr6kz3"))))
-    (build-system emacs-build-system)
-    (home-page "http://pkgs.fedoraproject.org/cgit/rpms/emacs-rpm-spec-mode.git")
-    (synopsis "Emacs major mode for editing RPM spec files")
-    (description "@code{emacs-rpm-spec-mode} provides an Emacs major mode for
+  (let ((commit "c1c38050c48ea330c7cea632b8785d66daeefb2b")
+        (revision "0"))
+    (package
+      (name "emacs-rpm-spec-mode")
+      (version (git-version "0.16" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/stigbjorlykke/rpm-spec-mode")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0427kcvf2ljhzwxskn3jzk0ncrl3f9zcz2sm83d9pmhh5jax2gch"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'adjust-for-emacs-28
+              (lambda _
+                ;; Since Emacs 28, define-obsolete-variable-alias require a
+                ;; 3rd argument to specify when the deprecation was
+                ;; introduced.
+                ;; The rpm-spec-mode.el file is encoded in ISO-8859-1 (iso-latin-1).
+                (with-fluids ((%default-port-encoding "ISO-8859-1"))
+                  (substitute* "rpm-spec-mode.el"
+                    (("'rpm-spec-completion-ignore-case" all)
+                     (string-append all " \"0.12\""))
+                    (("'rpm-spec-nobuild" all)
+                     (string-append all " \"0.12\""))
+                    (("'rpm-spec-initialize-sections" all)
+                     (string-append all " \"0.12\""))
+                    (("'rpm-spec-insert-changelog-version" all)
+                     (string-append all " \"0.12\"")))))))))
+      (home-page "https://github.com/stigbjorlykke/rpm-spec-mode")
+      (synopsis "Emacs major mode for editing RPM spec files")
+      (description "@code{emacs-rpm-spec-mode} provides an Emacs major mode for
 editing RPM spec files.")
-    (license license:gpl2+)))
+      (license license:gpl2+))))
 
 (define-public emacs-lcr
   (package
