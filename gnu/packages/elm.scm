@@ -39,9 +39,9 @@
 ;; `elm reactor` exit with a useful error message if they aren't there.
 (define %reactor-root-base
   "share/elm/reactor-")
-(define-public elm-compiler
+(define-public elm
   (package
-    (name "elm-compiler")
+    (name "elm")
     (version "0.19.1")
     (source
      (origin
@@ -93,7 +93,11 @@
     (home-page "https://elm-lang.org")
     (synopsis "Programming language for Web applications")
     (description
-     "This package provides Elm, a statically-typed functional programming
-language for the browser.  It includes commands for developers such as
-@command{elm make} and @command{elm repl}.")
+     "Elm is a statically-typed, purely-functional programming language for
+the browser.  The @command{elm} exectable includes commands for developers
+such as @command{elm make} and @command{elm repl}.")
     (license license:bsd-3)))
+
+;; The 'elm' package used to be called 'elm-compiler'.
+(define-public elm-compiler
+  (deprecated-package "elm-compiler" elm))
