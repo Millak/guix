@@ -6914,11 +6914,17 @@ regular expressions.")
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
                (invoke "pytest"
-                       ;; requires network access
+                       "-n" (number->string (parallel-job-count))
+                       ;; These tests fail when run in parallel (see:
+                       ;; https://github.com/scrapy/scrapy/issues/5502).
+                       "--ignore" "tests/test_engine.py"
+                       "--ignore" "tests/test_engine_stop_download_bytes.py"
+                       "--ignore" "tests/test_engine_stop_download_headers.py"
+                       ;; This test require network access.
                        "--ignore" "tests/test_command_check.py"
                        "-k"
                        (string-append
-                        ;; Failing for unknown reasons
+                        ;; The followin tests fail for unknown reasons.
                         "not test_server_set_cookie_domain_suffix_public_private"
                         " and not test_user_set_cookie_domain_suffix_public_private"
                         " and not test_pformat")
@@ -6943,6 +6949,7 @@ regular expressions.")
            python-zope-interface))
     (native-inputs
      (list python-pytest
+           python-pytest-xdist
            python-pyftpdlib
            python-sybil
            python-testfixtures
@@ -6951,6 +6958,6 @@ regular expressions.")
     (synopsis "High-level Web crawling and Web scraping framework")
     (description "Scrapy is a fast high-level web crawling and web
 scraping framework, used to crawl websites and extract structured data
-from their pages. It can be used for a wide range of purposes, from data
+from their pages.  It can be used for a wide range of purposes, from data
 mining to monitoring and automated testing.")
     (license license:bsd-3)))
