@@ -2,7 +2,7 @@
 ;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2018, 2019 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2017, 2020 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2018, 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2018, 2020, 2022 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2019 Carl Dong <contact@carldong.me>
 ;;; Copyright © 2019 Léo Le Bouter <lle-bout@zaclys.net>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
@@ -60,7 +60,6 @@
             %bootstrap-gcc
             %bootstrap-glibc
             %bootstrap-inputs
-            %bootstrap-mescc-tools
             %bootstrap-mes
 
             %bootstrap-inputs-for-tests))
@@ -930,55 +929,6 @@ exec ~a/bin/.gcc-wrapped -B~a/lib \
     (synopsis "Bootstrap binaries of the GNU Compiler Collection")
     (description synopsis)
     (home-page #f)
-    (license gpl3+)))
-
-(define %bootstrap-mescc-tools
-  ;; The initial MesCC tools.  Uses binaries from a tarball typically built by
-  ;; %MESCC-TOOLS-BOOTSTRAP-TARBALL.
-  (package
-    (name "bootstrap-mescc-tools")
-    (version "0.5.2")
-    (source #f)
-    (build-system trivial-build-system)
-    (arguments
-     `(#:guile ,%bootstrap-guile
-       #:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils)
-                      (ice-9 popen))
-         (let ((out     (assoc-ref %outputs "out"))
-               (tar     (assoc-ref %build-inputs "tar"))
-               (xz      (assoc-ref %build-inputs "xz"))
-               (tarball (assoc-ref %build-inputs "tarball")))
-
-           (mkdir out)
-           (copy-file tarball "binaries.tar.xz")
-           (invoke xz "-d" "binaries.tar.xz")
-           (let ((builddir (getcwd))
-                 (bindir   (string-append out "/bin")))
-             (with-directory-excursion out
-               (invoke tar "xvf"
-                       (string-append builddir "/binaries.tar"))))))))
-    (inputs
-     `(("tar" ,(bootstrap-executable "tar" (%current-system)))
-       ("xz"  ,(bootstrap-executable "xz" (%current-system)))
-       ("tarball"
-        ,(bootstrap-origin
-          (origin
-            (method url-fetch)
-            (uri (map
-                  (cute string-append <>
-                        "/i686-linux/20190815/"
-                        "mescc-tools-static-stripped-0.5.2-i686-linux.tar.xz")
-                  %bootstrap-base-urls))
-            (sha256
-             (base32
-              "0c3kklgghzh4q2dbpl6asb74cimp7hp6jscdwqwmzxbapgcl6582")))))))
-    (synopsis "Bootstrap binaries of MesCC Tools")
-    (description synopsis)
-    (home-page #f)
-    (supported-systems '("i686-linux" "x86_64-linux"))
     (license gpl3+)))
 
 (define %bootstrap-mes
