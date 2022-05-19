@@ -33,6 +33,7 @@
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages guile)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -361,7 +362,40 @@ other apt sources typically provided by open source developers.")
                (setenv "PERL_LIBDIR"
                        (string-append out
                                       "/lib/perl5/site_perl/"
-                                      ,(package-version perl)))))))))
+                                      ,(package-version perl))))))
+         (add-after 'install 'wrap-scripts
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (with-directory-excursion (string-append out "/bin")
+                 (for-each
+                   (lambda (file)
+                     (wrap-script file
+                       ;; Make sure all perl scripts in "bin" find the
+                       ;; required Perl modules at runtime.
+                       `("PERL5LIB" ":" prefix
+                         (,(string-append out
+                                          "/lib/perl5/site_perl")
+                           ,(getenv "PERL5LIB")))
+                       ;; DPKG perl modules always expect dpkg to be installed.
+                       ;; Work around this by adding dpkg to the path of the scripts.
+                       `("PATH" ":" prefix (,(string-append out "/bin")))))
+                   (list "dpkg-architecture"
+                         "dpkg-buildflags"
+                         "dpkg-buildpackage"
+                         "dpkg-checkbuilddeps"
+                         "dpkg-distaddfile"
+                         "dpkg-genbuildinfo"
+                         "dpkg-genchanges"
+                         "dpkg-gencontrol"
+                         "dpkg-gensymbols"
+                         "dpkg-mergechangelogs"
+                         "dpkg-name"
+                         "dpkg-parsechangelog"
+                         "dpkg-scanpackages"
+                         "dpkg-scansources"
+                         "dpkg-shlibdeps"
+                         "dpkg-source"
+                         "dpkg-vendor")))))))))
     (native-inputs
      `(("autoconf" ,autoconf)
        ("automake" ,automake)
@@ -371,6 +405,7 @@ other apt sources typically provided by open source developers.")
        ("perl-io-string" ,perl-io-string)))
     (inputs
      (list bzip2
+           guile-3.0        ; For wrap-script
            libmd
            ncurses
            perl
