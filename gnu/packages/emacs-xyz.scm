@@ -485,6 +485,28 @@ repositories through the
 server}.  The main advantage compared to @code{vc-hg} is speed.")
     (license license:gpl3+)))
 
+(define-public emacs-terminal-here
+  (package
+    (name "emacs-terminal-here")
+    (version "2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/davidshepherd7/terminal-here")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1iv1c2mbvhn00ha46c6f98j9syc71xhjpk8m5wa5p32sk4wcc9f4"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/davidshepherd7/terminal-here")
+    (synopsis "Open external terminals from Emacs")
+    (description
+     "This package provides commands to open external terminal emulators from
+Emacs, whose initial working directories are determined in relation to the
+current buffer.")
+    (license license:gpl3+)))
+
 (define-public emacs-hgignore-mode
   ;; From 2021-03-14.
   ;; No releases available.
