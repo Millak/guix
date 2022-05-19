@@ -1486,27 +1486,28 @@ persisted.
 (define-public python-rtree
   (package
     (name "python-rtree")
-    (version "0.9.7")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Rtree" version))
        (sha256
-        (base32 "0gna530vy6rh76035cqh7i2lx199cvxjrzjczg9rm6k96k5751xy"))))
+        (base32 "10lnhf67c9pb0yisxdqmb52dy6lj1za1h9d4p69v0ihk2a138j6h"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'find-libspatialindex
            (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "SPATIALINDEX_C_LIBRARY"
-                     (string-append (assoc-ref inputs "libspatialindex")
-                                    "/lib/libspatialindex.so"))))
+             (let ((libspatialindex (assoc-ref inputs "libspatialindex")))
+               (substitute* "rtree/finder.py"
+                 (("find_library\\(\"spatialindex_c\"\\)")
+                  (string-append  "\"" libspatialindex
+                                  "/lib/libspatialindex_c.so\""))))))
          (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+           (lambda* (#:key outputs tests? #:allow-other-keys)
              (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest")))))))
+                 (invoke "pytest")))))))
     (native-inputs
      (list python-numpy python-pytest python-wheel))
     (inputs
