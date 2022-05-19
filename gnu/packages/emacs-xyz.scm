@@ -3197,23 +3197,25 @@ that the binary uses instead of the actual binary contents.")
     (license license:gpl3+)))
 
 (define-public emacs-font-lock-studio
-  (package
-    (name "emacs-font-lock-studio")
-    (version "20170127.2051")           ;melpa version
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/Lindydancer/font-lock-studio")
-             (commit "12c35967b31233e06946c70627aa3152dacfe261")))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0q0s6f5vi3sfifj7vq2nnsmgyyivp1sd3idk32858md5ri71qif0"))))
-    (build-system emacs-build-system)
-    (home-page "https://github.com/Lindydancer/font-lock-studio")
-    (synopsis "Interactive debugger for Font Lock keywords")
-    (description
-     "Font Lock Studio is an interactive debugger for Emacs syntax highlighting
+  (let ((commit "12c35967b31233e06946c70627aa3152dacfe261")
+        (revision "1"))
+    (package
+      (name "emacs-font-lock-studio")
+      (version (git-version "0.0.7" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Lindydancer/font-lock-studio")
+               (commit "12c35967b31233e06946c70627aa3152dacfe261")))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0q0s6f5vi3sfifj7vq2nnsmgyyivp1sd3idk32858md5ri71qif0"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/Lindydancer/font-lock-studio")
+      (synopsis "Interactive debugger for Font Lock keywords")
+      (description
+       "Font Lock Studio is an interactive debugger for Emacs syntax highlighting
 rules, also called Font Lock keywords.  It can @emph{single-step} Font Lock
 keywords -- matchers, highlights, and anchored rules, to see what happens when
 a buffer is fontified.  Breakpoints can be set on or inside rules.  When
@@ -3221,7 +3223,7 @@ inside a rule, matches are visualized using a palette of background colors.
 The explainer can describe a rule in plain-text English.  Finally, tight
 integration with Edebug allows stepping into Lisp expressions that are part of
 the Font Lock keywords.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-form-feed
   (package
