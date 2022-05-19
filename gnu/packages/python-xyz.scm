@@ -31805,3 +31805,36 @@ toolkit for Python.")
      "This package provides a Python library for parsing, modifying, and
 composing subtitles in the SRT file format.")
     (license license:expat)))
+
+(define-public python-gatt
+  (package
+    (name "python-gatt")
+    (version "0.2.7")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "gatt" version))
+              (sha256
+               (base32
+                "0fjf066jixk30fr8xwfalwfnhqpr56yv0cccyypnx2qp9bi9svb2"))))
+    (propagated-inputs (list python-dbus python-pygobject))
+    (build-system python-build-system)
+    (home-page "https://github.com/getsenic/gatt-python")
+    (synopsis "Bluetooth GATT SDK for Python")
+    (description "The Bluetooth @acronym{GATT, Generic ATTribute Profile}
+@acronym{SDK, Software Development Kit} for Python helps you implement and
+communicate with any Bluetooth Low Energy device that has a GATT
+profile.  It supports:
+
+@itemize @bullet
+@item Discovering nearby Bluetooth Low Energy devices
+@item Connecting and disconnecting devices
+@item Implementing your custom GATT profile
+@item Accessing all GATT services
+@item Accessing all GATT characteristics
+@item Reading characteristic values
+@item Writing characteristic values
+@item Subscribing for characteristic value change notifications
+@end itemize
+
+Currently, Linux is the only platform supported by this library.")
+    (license license:expat)))
