@@ -739,6 +739,71 @@ enables you to easily do operations in Python that would otherwise
 require a spatial database such as PostGIS.")
     (license license:bsd-3)))
 
+(define-public python-osmnx
+  (package
+    (name "python-osmnx")
+    (version "1.1.2")
+    (source
+     (origin
+       ; Fetch from github as the pypi package is missing the tests dir.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gboeing/osmnx")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1n8qjn184p5a2s3j6x6iyc1i7p3l3xnbqqxm6ajwgwv6j5fw1d5a"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               ; TODO: Disable network tests
+               (invoke "pytest" "tests"
+                       "-k"
+                       (string-append
+                         ;; The following tests require network access.
+                         "not test_geocode_to_gdf"
+                         " and not test_stats"
+                         " and not test_osm_xml"
+                         " and not test_elevation"
+                         " and not test_routing"
+                         " and not test_plots"
+                         " and not test_find_nearest"
+                         " and not test_api_endpoints"
+                         " and not test_graph_save_load"
+                         " and not test_graph_from_functions"
+                         " and not test_geometries"))))))))
+    (propagated-inputs
+      (list python-folium
+            python-geopandas
+            python-matplotlib
+            python-networkx
+            python-numpy
+            python-pandas
+            python-pyproj
+            python-requests
+            python-rtree
+            python-shapely))
+    (native-inputs
+      (list python-numpy python-pytest))
+    (home-page "https://github.com/gboeing/osmnx")
+    (synopsis
+      "Retrieve, model, analyze, and visualize OpenStreetMap street networks")
+    (description
+      "OSMnx is a Python library that lets you download geospatial data
+from OpenStreetMap and model, project, visualize, and analyze real-world
+street networks and any other geospatial geometries.  You can download
+and model walkable, drivable, or bikeable urban networks with a single
+line of Python code then easily analyze and visualize them.  You can
+just as easily download and work with other infrastructure types,
+amenities/points of interest, building footprints, elevation data,
+street bearings/orientations, and speed/travel time.")
+    (license license:expat)))
+
 (define-public mapnik
   (package
     (name "mapnik")
