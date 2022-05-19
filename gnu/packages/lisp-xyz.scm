@@ -21322,3 +21322,31 @@ documentation.")
 
 (define-public cl-lmdb
   (sbcl-package->cl-source-package sbcl-lmdb))
+
+(define-public sbcl-listopia
+  (package
+    (name "sbcl-listopia")
+    (version "0.12.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Dimercel/listopia")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "07xa2s2s60h9f40az3zdacybl5pk1x8bhvga9phsra0czbv44lx2"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-prove))
+    (home-page "https://github.com/Dimercel/listopia")
+    (synopsis "List manipulation library for Common Lisp")
+    (description "This package is a list manipulation library for Common Lisp
+inspired by Haskell package @code{Data.List}.")
+    (license license:llgpl)))
+
+(define-public cl-listopia
+  (sbcl-package->cl-source-package sbcl-listopia))
+
+(define-public ecl-listopia
+  (sbcl-package->ecl-package sbcl-listopia))
