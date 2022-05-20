@@ -317,7 +317,7 @@ function interface, and a symbolic debugger.")
         ,(smlnj-file version
                      "asdl.tgz"
                      "0mad2df5pmkdsb69gflxma6m6i3gla6hdmjjnkzk76pagpr8zb0m"))))
-    (home-page "http://www.smlnj.org")
+    (home-page "https://www.smlnj.org")
     (synopsis "Standard ML of New Jersey interactive compiler")
     (description
       "SML/NJ is an implementation of the Standard ML programming language.
