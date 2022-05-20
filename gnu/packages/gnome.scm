@@ -12027,7 +12027,7 @@ GTK+.  It integrates well with the GNOME desktop environment.")
            python-pygobject
            python-pyenchant
            python-pypandoc
-           webkitgtk))
+           webkitgtk-with-libsoup2))
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")
