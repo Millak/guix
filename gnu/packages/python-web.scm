@@ -6713,6 +6713,26 @@ Python.")
 Python.")
     (license license:expat)))
 
+(define-public python-azure-storage-blob
+  (package
+    (name "python-azure-storage-blob")
+    (version "12.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "azure-storage-blob" version ".zip"))
+       (sha256
+        (base32 "1xv23ph822qywjxs81say9xi5dzmvxcii6sww6d1hvd83iyz1npn"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-azure-core python-cryptography python-msrest))
+    (native-inputs (list unzip))
+    (home-page "https://github.com/Azure/azure-sdk-for-python/")
+    (synopsis "Microsoft Azure Blob Storage client library for Python")
+    (description "This package provides the Microsoft Azure Blob Storage
+Client Library for Python.")
+    (license license:expat)))
+
 (define-public python-w3lib
   (package
     (name "python-w3lib")
