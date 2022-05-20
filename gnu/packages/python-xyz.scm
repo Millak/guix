@@ -10194,6 +10194,74 @@ providing a clean and modern domain specific specification language (DSL) in
 Python style, together with a fast and comfortable execution environment.")
     (license license:expat)))
 
+(define-public snakemake-6
+  (package
+    (inherit snakemake)
+    (name "snakemake")
+    (version "6.15.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/snakemake/snakemake")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09yrpi9f86r9yvcm2dfjs5zy87c4j31bxama77kfd6y8yfrrjlai"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         ;; For cluster execution Snakemake will call Python.  Since there is
+         ;; no suitable GUIX_PYTHONPATH set, cluster execution will fail.  We
+         ;; fix this by calling the snakemake wrapper instead.
+
+         ;; XXX: There is another instance of sys.executable on line 692, but
+         ;; it is not clear how to patch it.
+         (add-after 'unpack 'call-wrapper-not-wrapped-snakemake
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* "snakemake/executors/__init__.py"
+               (("\\{sys.executable\\} -m snakemake")
+                (string-append (assoc-ref outputs "out")
+                               "/bin/snakemake")))))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (setenv "HOME" "/tmp")
+               ;; This test attempts to change S3 buckets on AWS and fails
+               ;; because there are no AWS credentials.
+               (delete-file "tests/test_tibanna.py")
+               (invoke "pytest")))))))
+    (inputs
+     (list python-appdirs
+           python-configargparse
+           python-connection-pool
+           python-datrie
+           python-docutils
+           python-filelock
+           python-gitpython
+           python-jinja2
+           python-jsonschema
+           python-nbformat
+           python-networkx
+           python-psutil
+           python-pulp
+           python-pyyaml
+           python-py-tes
+           python-ratelimiter
+           python-requests
+           python-smart-open
+           python-stopit
+           python-tabulate
+           python-toposort
+           python-wrapt))
+    (native-inputs
+     (list git-minimal
+           python-wrapper
+           python-pytest
+           python-pandas
+           python-requests-mock))))
+
 (define-public python-pyqrcode
   (package
     (name "python-pyqrcode")
