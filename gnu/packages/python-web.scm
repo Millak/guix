@@ -6627,6 +6627,25 @@ AutoRest-generated Python clients.")
 communicate with Microsoft Azure Storage services.")
     (license license:expat)))
 
+(define-public python-azure-common
+  (package
+    (name "python-azure-common")
+    (version "1.1.28")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "azure-common" version ".zip"))
+       (sha256
+        (base32 "18q4cy1xl2zly3rk7a1sc14w932x59r8c9j4d8dnlsz32hrcvh2a"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-azure-nspkg))
+    (native-inputs (list unzip))
+    (home-page "https://github.com/Azure/azure-sdk-for-python")
+    (synopsis "Microsoft Azure Client library for Python")
+    (description "This package provides the Microsoft Azure Client library for
+Python.")
+    (license license:expat)))
+
 (define-public python-w3lib
   (package
     (name "python-w3lib")
