@@ -96,6 +96,7 @@
                                              (channels . ,channels))))))
                         (file
                          (string-append directory "/jobs-" system ".scm")))
+                    (close-inferior inferior)
                     (call-with-output-file file
                       (lambda (port)
                         (write jobs port)))))))
