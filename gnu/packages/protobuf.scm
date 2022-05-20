@@ -233,19 +233,15 @@ encoder in C++.  The developer using protozero has to manually translate the
 (define-public python-protobuf
   (package
     (name "python-protobuf")
-    (version "3.12.4")
+    (version "3.20.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "protobuf" version))
        (sha256
         (base32
-         "0mj6z58aiw532s1mq48m9xdrm3gdyp2vv9cdinfb5wmnfpm5m7n9"))))
+         "1ja2vpk9nklllmsirmil2s4l7ni9yfqvbvj47zz5xx17s1k1bhxd"))))
     (build-system python-build-system)
-    (native-inputs
-     (list python-wheel))
-    (propagated-inputs
-     (list python-six))
     (home-page "https://github.com/google/protobuf")
     (synopsis "Protocol buffers is a data interchange format")
     (description
