@@ -40,8 +40,6 @@
   #:use-module (guix scripts build)
   #:use-module (guix scripts describe)
   #:autoload   (guix build utils) (which mkdir-p)
-  #:use-module ((guix build syscalls)
-                #:select (with-file-lock/no-wait))
   #:use-module (guix git)
   #:use-module (git)
   #:autoload   (gnu packages) (fold-available-packages)
