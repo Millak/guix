@@ -20,7 +20,7 @@
 ;;; Copyright © 2020 Dimakis Dimakakos <me@bendersteed.tech>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020, 2021, 2022 Adam Kandur <rndd@tuta.io>
-;;; Copyright © 2020, 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2020, 2021, 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021, 2022 Aurora <rind38@disroot.org>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2021, 2022 André A. Gomes <andremegafone@gmail.com>
@@ -21350,3 +21350,53 @@ inspired by Haskell package @code{Data.List}.")
 
 (define-public ecl-listopia
   (sbcl-package->ecl-package sbcl-listopia))
+
+(define-public sbcl-clog
+  (package
+    (name "sbcl-clog")
+    (version "1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rabbibotton/clog")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-clog" version))
+       (sha256
+        (base32 "0f4i6571nm0j704zgnh60sc9slifs11byb2gs8gamqjcfh931dap"))))
+    (build-system asdf-build-system/sbcl)
+    (inputs
+     (list sbcl-3bmd
+           sbcl-alexandria
+           sbcl-bordeaux-threads
+           sbcl-cl-ppcre
+           sbcl-cl-sqlite
+           sbcl-cl-template
+           sbcl-clack
+           sbcl-closer-mop
+           sbcl-colorize
+           sbcl-dbi
+           sbcl-hunchentoot
+           sbcl-lack
+           sbcl-mgl-pax
+           sbcl-parse-float
+           sbcl-quri
+           sbcl-trivial-open-browser
+           sbcl-websocket-driver))
+    (arguments
+     '(#:asd-systems '("clog" "clog/docs" "clog/tools")))
+    (home-page "https://github.com/rabbibotton/clog")
+    (synopsis "Common Lisp Omnificent GUI")
+    (description
+     "This package provides a Common Lisp web framework for building GUI
+applications.  CLOG can take the place, or work along side, most cross platform
+GUI frameworks and website frameworks.  The CLOG package starts up the
+connectivity to the browser or other websocket client (often a browser embedded
+in a native template application).")
+    (license license:bsd-3)))
+
+(define-public cl-clog
+  (sbcl-package->cl-source-package sbcl-clog))
+
+(define-public ecl-clog
+  (sbcl-package->ecl-package sbcl-clog))
