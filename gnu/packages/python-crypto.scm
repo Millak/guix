@@ -11,7 +11,7 @@
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2014, 2015 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2015, 2016, 2017, 2019 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2017, 2019, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2016, 2017, 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017 Carlo Zancanaro <carlo@zancanaro.id.au>
@@ -1698,6 +1698,31 @@ armored and binary formats.
 It can create and verify RSA, DSA, and ECDSA signatures, at the moment.  It
 can also encrypt and decrypt messages using RSA and ECDH.")
     (license license:bsd-3)))
+
+(define-public python-pyu2f
+  (package
+    (name "python-pyu2f")
+    (version "0.1.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyu2f" version))
+       (sha256
+        (base32 "0srhzdbgdsqwpcw7awqm19yg3xbabqckfvrp8rbpvz2232hs7jm3"))))
+    (build-system python-build-system)
+    (arguments '(#:tests? #f))          ;none included
+    (propagated-inputs (list python-six))
+    (native-inputs
+     (list python-mock
+           python-pyfakefs
+           python-pytest
+           python-unittest2))
+    (home-page "https://github.com/google/pyu2f/")
+    (synopsis "U2F host library for interacting with a U2F device over USB")
+    (description
+     "Pyu2f is a Python-based U2F host library.  It provides functionality for
+interacting with a U2F device over USB.")
+    (license license:asl2.0)))
 
 (define-public python-sop
   (package
