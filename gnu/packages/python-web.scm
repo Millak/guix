@@ -6753,6 +6753,46 @@ Client Library for Python.")
 of the CRC32C hashing algorithm.")
     (license license:asl2.0)))
 
+(define-public python-google-auth
+  (package
+    (name "python-google-auth")
+    (version "2.6.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "google-auth" version))
+       (sha256
+        (base32 "04ikassansqkkw4pa98in7q9r4z001m6bi2r3ssxwwrb0f79790v"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest")))))))
+    (propagated-inputs
+     (list python-cachetools
+           python-cryptography
+           python-pyasn1-modules
+           python-rsa
+           python-six))
+    (native-inputs
+     (list python-flask
+           python-freezegun
+           python-oauth2client
+           python-pyopenssl
+           python-pytest
+           python-pytest-localserver
+           python-pyu2f
+           python-requests
+           python-responses))
+    (home-page "https://github.com/googleapis/google-auth-library-python")
+    (synopsis "Google Authentication Library")
+    (description "This library simplifies using Google's various
+server-to-server authentication mechanisms to access Google APIs.")
+    (license license:asl2.0)))
+
 (define-public python-googleapis-common-protos
   (package
     (name "python-googleapis-common-protos")
