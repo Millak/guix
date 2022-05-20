@@ -6961,6 +6961,49 @@ via direct download.  This package provides a Google Cloud Storage API client
 library for Python.")
     (license license:asl2.0)))
 
+(define-public python-smart-open
+  (package
+    (name "python-smart-open")
+    (version "6.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "smart_open" version))
+       (sha256
+        (base32 "1c12ilanx9hgpcc5chjkaqnx1hx14iazyindy7syvjhbdywhc0fn"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:tests? #false ;none included
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest")))))))
+    (propagated-inputs
+     (list python-azure-common
+           python-azure-core
+           python-azure-storage-blob
+           python-boto3
+           python-google-cloud-storage
+           python-requests))
+    (native-inputs
+     (list python-flask
+           python-flask-cors
+           python-graphql-core
+           python-moto
+           python-paramiko
+           python-pathlib2
+           python-pytest
+           python-pytest-rerunfailures
+           python-responses))
+    (home-page "https://github.com/piskvorky/smart_open")
+    (synopsis "Utilities for streaming large files")
+    (description
+     "This package provides utilities for streaming large files (S3, HDFS,
+GCS, Azure Blob Storage, gzip, bz2, etc.)")
+    (license license:expat)))
+
 (define-public python-w3lib
   (package
     (name "python-w3lib")
