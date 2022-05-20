@@ -352,7 +352,7 @@ hex1, hex2, M1, and M2-Planet.")
                  (base32
                   "1ammifkj33205qrpfm84yb1c99lwgbn4jsl1hd08aab8c9ffz6p4"))))
       (supported-systems '("i686-linux" "x86_64-linux"
-                           "armhf-linux" "aarch64-linux"
+                           "aarch64-linux"
                            "riscv64-linux"))
       (native-inputs
        `(("bootstrap-seeds" ,bootstrap-seeds)
@@ -380,8 +380,10 @@ hex1, hex2, M1, and M2-Planet.")
                     (cond
                      ((or #$(target-x86-64?) #$(target-x86-32?))
                       "x86")
-                     (#$(target-arm?)
-                      "armv7l")
+                     (#$(target-aarch64?)
+                      "AArch64")
+                     (#$(target-riscv64?)
+                      "riscv64")
                      (else
                       (error "stage0-posix: system not supported" target))))
                    (kaem (string-append "../bootstrap-seeds/POSIX/"
