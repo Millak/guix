@@ -17502,6 +17502,23 @@ multitouch applications.")
 Design spec without sacrificing ease of use or application performance.")
     (license license:expat)))
 
+(define-public python-asyncgui
+  (package
+    (name "python-asyncgui")
+    (version "0.5.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "asyncgui" version))
+              (sha256
+               (base32
+                "0614130afg2qc1qq4p82piskvvx6lpjl4nlsakbjzdyd78xywnb7"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/gottadiveintopython/asyncgui")
+    (synopsis "Enables async/await without an event loop")
+    (description "This package provides support for async/await applications
+without requiring an event loop, useful for creative responsive GUIs.")
+    (license license:expat)))
+
 (define-public python-binaryornot
   (package
     (name "python-binaryornot")
