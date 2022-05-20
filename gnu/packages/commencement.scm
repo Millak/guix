@@ -440,6 +440,7 @@ MesCC-Tools), and finally M2-Planet.")
                 "00lrpm4x5qg0l840zhbf9mr67mqhp8gljcl24j5dy0y109gf32w2"))))
     (inputs '())
     (propagated-inputs '())
+    (supported-systems '("i686-linux" "x86_64-linux"))
     (native-inputs
      `(("m2-planet" ,stage0-posix)
        ("nyacc-source" ,(bootstrap-origin
