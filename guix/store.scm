@@ -33,6 +33,7 @@
   #:use-module (gcrypt hash)
   #:use-module (guix profiling)
   #:autoload   (guix build syscalls) (terminal-columns)
+  #:autoload   (guix build utils) (dump-port)
   #:use-module (rnrs bytevectors)
   #:use-module (ice-9 binary-ports)
   #:use-module ((ice-9 control) #:select (let/ec))
@@ -681,29 +682,6 @@ automatically close the store when the dynamic extent of EXP is left."
 (define current-build-output-port
   ;; The port where build output is sent.
   (make-parameter (current-error-port)))
-
-(define* (dump-port in out
-                    #:optional len
-                    #:key (buffer-size 16384))
-  "Read LEN bytes from IN (or as much as possible if LEN is #f) and write it
-to OUT, using chunks of BUFFER-SIZE bytes."
-  (define buffer
-    (make-bytevector buffer-size))
-
-  (let loop ((total 0)
-             (bytes (get-bytevector-n! in buffer 0
-                                       (if len
-                                           (min len buffer-size)
-                                           buffer-size))))
-    (or (eof-object? bytes)
-        (and len (= total len))
-        (let ((total (+ total bytes)))
-          (put-bytevector out buffer 0 bytes)
-          (loop total
-                (get-bytevector-n! in buffer 0
-                                   (if len
-                                       (min (- len total) buffer-size)
-                                       buffer-size)))))))
 
 (define %newlines
   ;; Newline characters triggering a flush of 'current-build-output-port'.
