@@ -705,7 +705,8 @@ background while you work.")
     (arguments
      '(#:tests? #f ; no check target
        #:configure-flags
-       (list "-DBUILD_SHARED_LIBS=ON"
+       (list "-DBUILD_ALLEGRO4=OFF"
+             "-DBUILD_SHARED_LIBS=ON"
              "-DBUILD_EXAMPLES=OFF")))
     (home-page "https://github.com/kode54/dumb")
     (synopsis "Module audio renderer library")
@@ -729,7 +730,7 @@ settings (aliasing, linear interpolation and cubic interpolation).")
     (arguments
      (substitute-keyword-arguments (package-arguments dumb)
        ((#:configure-flags flags)
-        `(cons "-DBUILD_ALLEGRO4=ON" ,flags))))
+        `(cons "-DBUILD_ALLEGRO4=ON" ,(delete "-DBUILD_ALLEGRO4=OFF" flags)))))
     (inputs
      (list allegro-4))))
 
