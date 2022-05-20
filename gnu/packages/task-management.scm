@@ -175,8 +175,8 @@ and querying data, exposing task data in multiple formats to other tools.")
       (synopsis "Program keeping track of time spent on different projects")
       (description
        "@code{worklog} is a program that helps you keep track of your time.
-@code{worklog} is a simple ncurses based based program that runs a clock and
-logs time to a logfile.")
+@code{worklog} is a simple ncurses based program that runs a clock and logs
+time to a logfile.")
       (license license:public-domain))))
 
 (define-public dstask
