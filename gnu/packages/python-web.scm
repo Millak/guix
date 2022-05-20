@@ -6853,6 +6853,45 @@ and Resumable Uploads.")
 common protos in the @code{googleapis/api-common-protos} repository.")
     (license license:asl2.0)))
 
+(define-public python-google-api-core
+  (package
+    (name "python-google-api-core")
+    (version "2.7.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "google-api-core" version))
+       (sha256
+        (base32 "0ydwvg9gzp75cd11s62db5w3jhj643yrw095rv95psfb0h3pz58p"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               ;; These don't work because it doesn't find AsyncMock even when
+               ;; we add it to the inputs.
+               (for-each delete-file
+                         '("tests/asyncio/test_page_iterator_async.py"
+                           "tests/asyncio/test_retry_async.py"))
+               (invoke "pytest")))))))
+    (propagated-inputs
+     (list python-google-auth
+           python-googleapis-common-protos
+           python-protobuf
+           python-proto-plus
+           python-requests))
+    (native-inputs
+     (list python-mock
+           python-pytest
+           python-pytest-asyncio))
+    (home-page "https://github.com/googleapis/python-api-core")
+    (synopsis "Google API client core library")
+    (description "This library defines common helpers used by all Google API
+clients.")
+    (license license:asl2.0)))
+
 (define-public python-w3lib
   (package
     (name "python-w3lib")
