@@ -4242,44 +4242,44 @@ sockets, SSL, continuable uploads, file uploads, cookies, and more.")
   (sbcl-package->ecl-package sbcl-drakma))
 
 (define-public sbcl-hunchentoot
-  (package
-    (name "sbcl-hunchentoot")
-    (version "1.3.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/edicl/hunchentoot")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name "hunchentoot" version))
-       (sha256
-        (base32 "1z0m45lp6rv59g69l44gj3q3d2bmjlhqzpii0vgkniam21dcimy9"))))
-    (build-system asdf-build-system/sbcl)
-    (native-inputs
-     (list sbcl-cl-who sbcl-drakma))
-    (inputs
-     (list sbcl-chunga
-           sbcl-cl-base64
-           sbcl-cl-fad
-           sbcl-cl-ppcre
-           sbcl-flexi-streams
-           sbcl-cl+ssl
-           sbcl-md5
-           sbcl-rfc2388
-           sbcl-trivial-backtrace
-           sbcl-usocket))
-    (arguments
-     `(;; FIXME: Tests fail because they fail to open the file
-       ;; "/proc/sys/kernel/osrelease"
-       #:tests? #f))
-    (home-page "https://edicl.github.io/hunchentoot/")
-    (synopsis "Web server written in Common Lisp")
-    (description
-     "Hunchentoot is a web server written in Common Lisp and at the same
+  ;; NOTE: (Sharlatan-20220520T213309+0100): The latest commit fixed tests,
+  ;; switch to the version tag when release is ready.
+  (let ((commit "76862391040c20255c7275e815c2175e46bfd080")
+        (revision "1"))
+    (package
+      (name "sbcl-hunchentoot")
+      (version (git-version "1.3.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/edicl/hunchentoot")
+               (commit commit)))
+         (file-name (git-file-name "cl-hunchentoot" version))
+         (sha256
+          (base32 "1h7ggmmzvgwr4p6j3ai0dqrw30q5309l13w4c03gqrapvwrb65l0"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-cl-who sbcl-drakma))
+      (inputs
+       (list sbcl-chunga
+             sbcl-cl-base64
+             sbcl-cl-fad
+             sbcl-cl-ppcre
+             sbcl-flexi-streams
+             sbcl-cl+ssl
+             sbcl-md5
+             sbcl-rfc2388
+             sbcl-trivial-backtrace
+             sbcl-usocket))
+      (home-page "https://edicl.github.io/hunchentoot/")
+      (synopsis "Web server written in Common Lisp")
+      (description
+       "Hunchentoot is a web server written in Common Lisp and at the same
 time a toolkit for building dynamic websites.  As a stand-alone web server,
 Hunchentoot is capable of HTTP/1.1 chunking (both directions), persistent
 connections (keep-alive), and SSL.")
-    (license license:bsd-2)))
+      (license license:bsd-2))))
 
 (define-public cl-hunchentoot
   (sbcl-package->cl-source-package sbcl-hunchentoot))
