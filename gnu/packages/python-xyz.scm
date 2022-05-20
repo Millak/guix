@@ -17502,6 +17502,33 @@ multitouch applications.")
 Design spec without sacrificing ease of use or application performance.")
     (license license:expat)))
 
+(define-public python-asynckivy
+  (package
+    (name "python-asynckivy")
+    (version "0.5.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        (pypi-uri "asynckivy" version))
+       (sha256
+        (base32 "0ivjvch8yn3k1ybfp7c1nm8mhc0ymg7d04mq54lly7yjvg0jvcni"))))
+    (build-system python-build-system)
+    (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (add-before 'check 'set-home
+             (lambda _
+               ;; 'kivy/__init__.py' wants to create $HOME/.kivy.
+               (setenv "HOME" (getcwd)))))))
+    (propagated-inputs (list python-kivy python-asyncgui))
+    (home-page "https://github.com/gottadiveintopython/asynckivy")
+    (synopsis "Async library for Kivy")
+    (description
+     "This package provides async versions of Kivy functions to avoid the
+callback-heavy mode of interaction typical in some Kivy applications.")
+    (license license:expat)))
+
 (define-public python-asyncgui
   (package
     (name "python-asyncgui")
