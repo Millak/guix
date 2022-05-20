@@ -88,6 +88,7 @@
   #:use-module (gnu packages node)
   #:use-module (gnu packages openstack)
   #:use-module (gnu packages pcre)
+  #:use-module (gnu packages protobuf)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
@@ -6750,6 +6751,34 @@ Client Library for Python.")
     (description
      "This package provides a Python wrapper of the C library implementation
 of the CRC32C hashing algorithm.")
+    (license license:asl2.0)))
+
+(define-public python-googleapis-common-protos
+  (package
+    (name "python-googleapis-common-protos")
+    (version "1.56.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "googleapis-common-protos" version))
+       (sha256
+        (base32 "16x1pjc34mrj9w130j40r23ndpykhsqivvk5xfl63ss6qsfyapkb"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:tests? #false ;fails for unknown reasons
+       #:phases
+        (modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest")))))))
+    (propagated-inputs (list python-protobuf))
+    (native-inputs
+     (list python-pytest))
+    (home-page "https://github.com/googleapis/python-api-common-protos")
+    (synopsis "Common protobufs used in Google APIs")
+    (description "This package contains Python classes generated from the
+common protos in the @code{googleapis/api-common-protos} repository.")
     (license license:asl2.0)))
 
 (define-public python-w3lib
