@@ -10074,6 +10074,25 @@ generate MPS or LP files and call GLPK, COIN CLP/CBC, CPLEX, and GUROBI to
 solve linear problems.")
     (license license:expat)))
 
+(define-public python-py-tes
+  (package
+    (name "python-py-tes")
+    (version "0.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "py-tes" version))
+       (sha256
+        (base32 "0b272y392v0mnq0f3sm5kgcx8fn4qwfbym89hhvqxz3xkganr4pn"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-attrs python-dateutil python-future python-requests))
+    (home-page "https://github.com/ohsu-comp-bio/py-tes")
+    (synopsis "Library for communicating with the GA4GH Task Execution API")
+    (description "This package provides a library for communicating with the
+GA4GH Task Execution API.")
+    (license license:expat)))
+
 (define-public python-toposort
   (package
     (name "python-toposort")
