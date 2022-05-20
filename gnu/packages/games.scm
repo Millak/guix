@@ -12679,6 +12679,31 @@ Magic II (aka HOMM2) game engine.  It requires assets and game resources to
 play; it will look for them at @file{~/.local/share/fheroes2} folder.")
     (license license:gpl2)))
 
+(define-public apricots
+  (package
+    (name "apricots")
+    (version "0.2.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/moggers87/apricots")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "0vis217hhnb9fbs9sf8mmcm71qp44kr3xqmffc1gdiixvi90c781"))
+       (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (native-inputs (list autoconf  ; autom4te used in ./bootstrap
+                         automake  ; aclocal used in ./bootstrap
+                         cppcheck))
+    (inputs (list freealut openal sdl2))
+    (home-page "https://github.com/moggers87/apricots")
+    (synopsis "Arcade airplane game")
+    (description "@code{apricots} is a game where you fly a little plane
+around the screen and shoot things and drop bombs on enemy targets.  It's
+meant to be quick and fun.")
+    (license license:gpl2+)))
+
 (define-public liquidwar6
   (package
     (name "liquidwar6")
