@@ -14398,6 +14398,23 @@ be set via config files and/or environment variables.")
     (home-page "https://github.com/bw2/ConfigArgParse")
     (license license:expat)))
 
+(define-public python-connection-pool
+  (package
+    (name "python-connection-pool")
+    (version "0.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "connection_pool" version))
+       (sha256
+        (base32 "1p6hfkcl4n3hhhcgjbaxn21i7b1yipag6j7dnilir4k5xxx9whmz"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/zhouyl/ConnectionPool")
+    (synopsis "Thread-safe connection pool")
+    (description "This package provides a library implementing a thread-safe
+connection pool.")
+    (license license:expat)))
+
 (define-public python-argparse-manpage
   (package
     (name "python-argparse-manpage")
