@@ -71,6 +71,7 @@
 ;;; Copyright © 2022 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2022 Roman Riabenko <roman@riabenko.com>
 ;;; Copyright © 2022 zamfofex <zamfofex@twdb.moe>
+;;; Copyright © 2022 Gabriel Arazas <foo.dogsquared@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -12693,3 +12694,35 @@ liquid and you have to try and eat your opponents.  Rules are very simple yet
 original, they have been invented by Thomas Colcombet.")
     (home-page "https://www.gnu.org/software/liquidwar6/")
     (license license:gpl3+)))
+
+(define-public freerct
+  (package
+    (name "freerct")
+    (version "0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/FreeRCT/FreeRCT")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1szwy2cq4ffp4yxm9pp9vdyia0i5nz0wnppdd1xb9w7v3wa4mywi"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f))
+    (native-inputs (list flex bison))
+    (inputs (list libpng sdl2 sdl2-ttf))
+    (home-page "https://freerct.net/")
+    (synopsis "Theme park management simulation game")
+    (description
+     "FreeRCT is a game that captures the look and feel of the popular games
+RollerCoaster Tycoon 1 and 2, graphics- and gameplay-wise.
+
+In this game, you play as a manager of a theme park, allowing you to make a
+park of your dreams.  The list of responsiblities includes managing staff,
+finances, landscaping, and most importantly: rides.  Good managers follow the
+principle of prioritizing the guests' happiness with a well-maintained park.
+Should they go unwise, a theme park plunge into chaos with vandalizing guests
+and unsafe rides.  Which path will you take?")
+    (license license:gpl2)))
