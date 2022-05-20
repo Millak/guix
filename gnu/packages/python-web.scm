@@ -6920,6 +6920,47 @@ clients.")
 classes) used by all of the @code{google-cloud-*} packages.")
     (license license:asl2.0)))
 
+(define-public python-google-cloud-storage
+  (package
+    (name "python-google-cloud-storage")
+    (version "2.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "google-cloud-storage" version))
+       (sha256
+        (base32 "0nwg9ic29s70kpvi71gmjv1y4w5a3vc9gj6d16f8w8hpbvgb1jzl"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (for-each delete-file-recursively
+                         (list
+                          ;; The system tests fail to find test_utils.retry.
+                          "tests/system/"
+                          ;; Needs docker.
+                          "tests/conformance/"))
+               (invoke "pytest")))))))
+    (native-inputs
+     (list python-pytest python-test-utils))
+    (propagated-inputs
+     (list python-google-api-core
+           python-google-auth
+           python-google-cloud-core
+           python-google-resumable-media
+           python-protobuf
+           python-requests))
+    (home-page "https://github.com/googleapis/python-storage")
+    (synopsis "Google Cloud Storage API client library")
+    (description "Google Cloud Storage allows you to store data on Google
+infrastructure, and it can be used to distribute large data objects to users
+via direct download.  This package provides a Google Cloud Storage API client
+library for Python.")
+    (license license:asl2.0)))
+
 (define-public python-w3lib
   (package
     (name "python-w3lib")
