@@ -1222,3 +1222,20 @@ stack such as numpy arrays or pandas and xarray data structures.  These are
 out of the scope of the main traitlets project but are a common requirement to
 build applications with traitlets in combination with the scipy stack.")
     (license license:bsd-3)))
+
+(define-public python-aplus
+  (package
+    (name "python-aplus")
+    (version "0.11.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "aplus" version))
+       (sha256
+        (base32 "1rznc26nlp641rn8gpdngfp79a3fji38yavqakxi35mx2da04msg"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/xogeny/aplus")
+    (synopsis "Promises/A+ for Python")
+    (description "This package is an implementation of the Promises/A+
+specification and test suite in Python.")
+    (license license:expat)))
