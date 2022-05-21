@@ -25,6 +25,37 @@
 (channel-news
  (version 0)
 
+ (entry (commit "903c82583e1cec4c9ff09d5895c5cc646c37b661")
+        (title
+         (en "New @command{guix import elm} command")
+         (fr "Nouvelle commande @command{guix import elm}"))
+        (body
+         (en "The new @command{guix import elm} command allows packagers to
+generate a package definition or given the name of a package for Elm, a
+functional programming language for the Web:
+
+@example
+guix import elm elm/bytes
+@end example
+
+Run @command{info \"(guix) Invoking guix import\"} for more info.
+
+This comes with a new build system for Elm packages---run @command{info
+\"(guix) Build Systems\"} for details.")
+         (fr "La nouvelle commande @command{guix import elm} permet de générer
+une définition de paquet reposant sur Elm, un langage de programmation
+fonctionnelle pour le Web:
+
+@example
+guix import elm elm/bytes
+@end example
+
+Lancer @command{info \"(guix.fr) Invoquer guix import\"} pour plus
+d'informations.
+
+Cela vient avec un nouveau système de construction pour paquets Elm---lancer
+@command{info \"(guix.fr) Systèmes de construction\"} pour plus de détails.")))
+
  (entry (commit "b6b2de2a0d52530bc1ee128c61580bed662ee15c")
         (title (en "Linux-libre kernel updated to 5.17")
                (de "Linux-libre-Kernel wird auf 5.17 aktualisiert"))
