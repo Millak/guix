@@ -43,7 +43,7 @@
                ;; Hence the following "when", which might otherwise be unnecessary;
                ;; it prevents causing an error when root-dir-unexpanded is nil.
                (when root-dir-unexpanded
-                 (let* ((root-dir (expand-file-name root-dir-unexpanded))
+                 (let* ((root-dir (file-local-name (expand-file-name root-dir-unexpanded)))
                         ;; Workaround for bug https://issues.guix.gnu.org/43818.
                         (root-dir* (directory-file-name root-dir)))
 
