@@ -30,6 +30,7 @@
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2022 Benjamin Slade <slade@lambda-y.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2546,7 +2547,7 @@ independent of your desktop environment, and supports global key bindings.")
 (define-public yad
   (package
     (name "yad")
-    (version "5.0")
+    (version "12.0")
     (source
      (origin
        (method git-fetch)
@@ -2555,7 +2556,7 @@ independent of your desktop environment, and supports global key bindings.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07rd61hvilsxxrj7lf8c9k0a8glj07s48m7ya8d45030r90g3lvc"))))
+        (base32 "1nbbw4vwlxjlp83d35w54952b6rrn8qlr3d053lisqwl0hfcm7if"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:configure-flags
