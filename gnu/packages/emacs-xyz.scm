@@ -24348,48 +24348,51 @@ indentation and a command to plot the file.")
 according to their use.")
       (license license:gpl3+))))
 
-(define-public emacs-dtache
+(define-public emacs-detached
   (package
-    (name "emacs-dtache")
-    (version "0.5")
+    (name "emacs-detached")
+    (version "0.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://gitlab.com/niklaseklund/dtache")
+                    (url "https://git.sr.ht/~niklaseklund/detached.el")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05gm5l533y8xr00w3c3i4fbhzhib6i7q2bbnpkm08w1n8a08iaj5"))))
+                "160h60vrpxslw6y290ndc065cc75dab58aq7kjqash94vkifnii2"))))
     (arguments
      (list
       #:tests? #t
       #:test-command #~(list "ert-runner")
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'install 'install-dtache-env
+          (add-before 'install 'install-detached-env
             (lambda _
-              (install-file "dtache-env" (string-append #$output "/bin"))))
+              (install-file "detached-env" (string-append #$output "/bin"))))
           (add-after 'unpack 'configure
             (lambda* (#:key inputs #:allow-other-keys)
-              (make-file-writable "dtache.el")
-              (emacs-substitute-variables "dtache.el"
-                ("dtache-env"
-                 (string-append #$output "/bin/dtache-env"))
-                ("dtache-dtach-program"
+              (make-file-writable "detached.el")
+              (emacs-substitute-variables "detached.el"
+                ("detached-env"
+                 (string-append #$output "/bin/detached-env"))
+                ("detached-dtach-program"
                  (search-input-file inputs "/bin/dtach"))
-                ("dtache-shell-program"
+                ("detached-shell-program"
                  (search-input-file inputs "/bin/bash"))))))))
     (build-system emacs-build-system)
     (native-inputs (list emacs-ert-runner))
     (inputs (list dtach))
-    (home-page "https://gitlab.com/niklaseklund/dtache")
-    (synopsis "Run and interact with detached shell commands")
+    (home-page "https://git.sr.ht/~niklaseklund/detached.el")
+    (synopsis "A package to launch, and manage, detached processes")
     (description
-     "The dtache package allows users to run shell commands
-detached from Emacs.  These commands are launched in sessions, using the
-program dtach.")
+     "The detached package allows users to run processes
+detached from Emacs.  It provides integration with multiple built-in modes, as
+well as providing an interface to attach and interact with the processes.")
     (license license:gpl3+)))
+
+(define-public emacs-dtache
+  (deprecated-package "emacs-dtache" emacs-detached))
 
 (define-public emacs-dtrt-indent
   (package
