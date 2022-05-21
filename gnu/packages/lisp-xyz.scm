@@ -5495,7 +5495,7 @@ high-level way.  This library provides such operators.")
          (uri (git-reference
                (url "https://github.com/snmsts/burgled-batteries3")
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-burgled-batteries3" version))
          (sha256
           (base32
            "1nzn7jawrfajyzwfnzrg2cmn9xxadcqh4szbpg0jggkhdkdzz4wa"))
@@ -5519,21 +5519,21 @@ high-level way.  This library provides such operators.")
                  (setenv "BB_PYTHON3_DYLIB"
                          (string-append python "/lib/libpython3.so"))
                  #t)))
-           (add-after 'unpack 'adjust-for-python-3.8
+           (add-after 'unpack 'adjust-for-python-3.9
              (lambda _
-               ;; This method is no longer part of the public API.
+               ;; These methods are no longer part of the public API.
                (substitute* "ffi-interface.lisp"
-                 ((".*PyEval_ReInitThreads.*")
-                  ""))
-               #t)))))
+                 ((".*PyEval_ReInitThreads.*") "")
+                 ((".*\"PyErr_Warn\".*") "")
+                 ((".*\"PyFloat_ClearFreeList\".*") "")))))))
       (native-inputs
        (list sbcl-cl-fad sbcl-lift sbcl-cl-quickcheck))
       (inputs
-       `(("python" ,python)
-         ("sbcl-cffi" ,sbcl-cffi)
-         ("sbcl-alexandria" , sbcl-alexandria)
-         ("sbcl-parse-declarations-1.0" ,sbcl-parse-declarations)
-         ("sbcl-trivial-garbage" ,sbcl-trivial-garbage)))
+       (list python
+             sbcl-alexandria
+             sbcl-cffi
+             sbcl-parse-declarations
+             sbcl-trivial-garbage))
       (synopsis "Bridge between Python and Lisp (FFI bindings, etc.)")
       (description
        "This package provides a shim between Python3 (specifically, the
