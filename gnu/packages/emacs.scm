@@ -272,6 +272,7 @@
            libxft
            libtiff
            giflib
+           lcms
            libjpeg-turbo
            acl
            jansson
