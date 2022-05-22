@@ -162,8 +162,8 @@ building tools.")
              ;; corresponding file to be sure that espeak compiles correctly.
              (copy-file "portaudio19.h" "portaudio.h")
              (substitute* "Makefile"
-               (("/bin/ln") "ln"))
-             #t)))))
+               (("/bin/ln") "ln")
+               (("\\$\\(INSTALL\\).*\\$\\(STATIC_LIB.*") "")))))))
        (inputs
         (list portaudio pulseaudio))
        (native-inputs (list unzip))
