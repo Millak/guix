@@ -320,12 +320,21 @@ used in the image."
                             file-system)))))))))
 
     (define (partition->gpt-type partition)
-      ;; Return the genimage GPT partition type code corresponding to PARTITION.
-      ;; See https://github.com/pengutronix/genimage/blob/master/README.rst
-      (let ((flags (partition-flags partition)))
+      ;; Return the genimage GPT partition type code corresponding to the
+      ;; given PARTITION.  See:
+      ;; https://github.com/pengutronix/genimage/blob/master/README.rst
+      (let ((flags (partition-flags partition))
+            (file-system (partition-file-system partition)))
         (cond
-          ((member 'esp flags) "U")
-          (else "L"))))
+         ((member 'esp flags) "U")
+         ((string-prefix? "ext" file-system) "L")
+         ((string=? file-system "vfat") "F")
+         (else
+          (raise (condition
+                  (&message
+                   (message
+                    (format #f (G_ "unsupported partition type: ~a")
+                            file-system)))))))))
 
     (define (partition-image partition)
       ;; Return as a file-like object, an image of the given PARTITION.  A
