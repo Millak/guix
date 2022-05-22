@@ -107,21 +107,20 @@ in FITS files.")
 (define-public python-fitsio
   (package
     (name "python-fitsio")
-    (version "1.1.5")
+    (version "1.1.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "fitsio" version))
        (sha256
-        (base32 "1llql2i6xr9lkdl81jx5nvz80kspamvira90546y32ldy551hq1l"))
+        (base32 "0q8siijys9kmjnqvyipjgh6hkhf4fwvr1swhsf4if211i9b0m1xy"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove the bundled cfitsio
         `(begin
            (delete-file-recursively "cfitsio3490")
            (substitute* "MANIFEST.in"
-             (("recursive-include cfitsio3490.*$\n") ""))
-           #t))))
+             (("recursive-include cfitsio3490.*$\n") ""))))))
     (build-system python-build-system)
     (arguments
      `(#:phases
