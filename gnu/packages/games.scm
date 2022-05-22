@@ -7589,7 +7589,7 @@ original.")
 (define-public rinutils
   (package
     (name "rinutils")
-    (version "0.10.0")
+    (version "0.10.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7598,7 +7598,7 @@ original.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05h9sq3w900mx8xij7qgqgqcbdk1x5gvbpz7prw2pfbzrrbiq2ns"))))
+                "0r90kncf6mvyklifpdsnm50iya7w2951nz35nlgndmqnr82gvdwf"))))
     (build-system cmake-build-system)
     (arguments
      (list #:phases
