@@ -3499,7 +3499,7 @@ OBS audio sources.")
 (define-public obs-websocket
   (package
     (name "obs-websocket")
-    (version "4.9.0")
+    (version "4.9.1")
     (source
      (origin
        (method git-fetch)
@@ -3509,7 +3509,7 @@ OBS audio sources.")
              (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1r47861ma1s3998clahbnbc216wcf706b1ps514k5p28h511l5w0"))))
+        (base32 "0giwhm0rbc578qng4invqqma935zzjlf05msz1gx986aqk654s7k"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ;no tests
@@ -3519,10 +3519,10 @@ OBS audio sources.")
            (lambda* _
              (substitute* "CMakeLists.txt"
                ;; Remove lines that set writeable permissions on outputs.
+               (("PERMISSIONS [^)]*") "")
                (("set\\(CMAKE_INSTALL_DEFAULT_DIRECTORY_PERMISSIONS") "")
-               (("OWNER_READ.*\\)") "")
-               (("PERMISSIONS") ")"))
-             #t)))))
+               ;; Ug^WClever hack to comment out the next line, which is ‘)’.
+               (("(OWNER|GROUP|WORLD)_READ .*") "#")))))))
     (inputs
      (list obs qtbase-5))
     (home-page "https://github.com/Palakis/obs-websocket")
