@@ -704,6 +704,14 @@ default value."
   (category internal)
   (synopsis "implement the build daemon's substituter protocol")
 
+  (match args
+    ((or ("-V") ("--version"))
+     (show-version-and-exit "guix substitute"))
+    ((or ("-h") ("--help") ())
+     (show-help)
+     (exit 0))
+    (_ #t))
+
   (define print-build-trace?
     (match (or (find-daemon-option "untrusted-print-extended-build-trace")
                (find-daemon-option "print-extended-build-trace"))
@@ -775,10 +783,6 @@ default value."
                                      #:print-build-trace?
                                      print-build-trace?)
                (loop))))))
-       ((or ("-V") ("--version"))
-        (show-version-and-exit "guix substitute"))
-       ((or ("-h") ("--help"))
-        (show-help))
        (opts
         (leave (G_ "~a: unrecognized options~%") opts))))))
 
