@@ -131,14 +131,15 @@ any small or embedded system.")
                 "150lvp7hf9ndafvmr42kb8xi86hxjd2zj4binwwhgjw2dwrvy25m"))))
     (build-system gnu-build-system)
     (arguments
-     (list #:phases
+     (list #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "HOSTCC=gcc")
+                   (string-append "PREFIX=" #$output))
+           #:phases
            #~(modify-phases %standard-phases
-               (add-before 'configure 'set-environment-variables
-                 (lambda _
-                   (setenv "CC" #$(cc-for-target))
-                   (setenv "HOSTCC" (which "gcc"))))
                (replace 'configure
-                 (lambda _ (invoke "make" "defconfig")))
+                 (lambda* (#:key make-flags #:allow-other-keys)
+                   (apply invoke "make" "defconfig" make-flags)))
                (add-before 'check 'fix-or-skip-broken-tests
                  (lambda _
                    ;; Some tests expect $USER to magically be the current user.
@@ -148,11 +149,6 @@ any small or embedded system.")
                    ;; Delete tests that expect a root or 0 user to exist.
                    (substitute* "tests/id.test"
                      (("^testing .*[ \\(]root.*") ""))))
-               (replace 'install
-                 (lambda* (#:key outputs #:allow-other-keys)
-                   (invoke "make"
-                           (string-append "PREFIX=" #$output)
-                           "install")))
                (add-after 'install 'remove-usr-directory
                  (lambda* (#:key outputs #:allow-other-keys)
                    (delete-file-recursively (string-append #$output "/usr")))))
