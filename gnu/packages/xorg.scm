@@ -416,17 +416,16 @@ provided.")
 (define-public editres
   (package
     (name "editres")
-    (version "1.0.7")
+    (version "1.0.8")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/app/" name "-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
-         (base32
-          "04awfwmy3f9f0bchidc4ssbgrbicn5gzasg3jydpfnp5513d76h8"))))
+         (base32 "1ydn32x9qh2zkn90w6nfv33gcq75z67w93bakkykadl8n7zmvkw3"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
