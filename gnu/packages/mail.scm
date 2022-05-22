@@ -4035,6 +4035,9 @@ It is a replacement for the @command{urlview} program.")
                (base32
                 "0pk7jp8yc91nahcb7659khwdid0ibfi7n0135kwfnasak8gr75rz"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           '(list "--disable-static")))
     (native-inputs
      (list autoconf automake libtool))
     (home-page "https://github.com/Yeraze/ytnef/")
