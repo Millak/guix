@@ -3526,14 +3526,14 @@ filters, new key bindings and faces.  It can be enabled by
 (define-public emacs-djvu
   (package
     (name "emacs-djvu")
-    (version "1.1.1")
+    (version "1.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
-                           "djvu-" version ".el"))
+                           "djvu-" version ".tar"))
        (sha256
-        (base32 "0z2qk1v4qkvcwl27ycqfb8vyszq5v6b8ci29b4la00yaki16p04i"))))
+        (base32 "0i7xwgg2fxndy81lnng6fh9iknals8xvx4f1nmxq7c099bzwb57c"))))
     (build-system emacs-build-system)
     (inputs (list djview djvulibre))
     (arguments
