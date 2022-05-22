@@ -688,13 +688,13 @@ replacement for the code@{python-memcached} library.")
 (define-public litecli
  (package
   (name "litecli")
-  (version "1.6.0")
+  (version "1.8.0")
   (source
    (origin
      (method url-fetch)
      (uri (pypi-uri "litecli" version))
      (sha256
-      (base32 "1yb706mgzizzijm1k0fbny98jf58qh5q6f2870rbplxlfla4w9sd"))))
+      (base32 "0ghh8hq5bw3y2ybiy4ibbdfz55jxvilg1s6zmhxmqikhg5s95xh2"))))
   (build-system python-build-system)
   (propagated-inputs
    (list python-cli-helpers
