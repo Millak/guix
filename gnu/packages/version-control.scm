@@ -2608,15 +2608,7 @@ email header.")
        (method url-fetch)
        (uri (pypi-uri "b4" version))
        (sha256
-        (base32 "115ysciq15sxc8fd9hf7p0f4wnd5xapcfkmq8g33y1c8nbdxclbx"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; Fixes issue with dependency requirements being too strict. See upstream commit:
-           ;; https://git.kernel.org/pub/scm/utils/b4/b4.git/commit/?id=31348a14afdb1d39e7faf9576eaddea1ced76e19
-           (substitute* "setup.py"
-             (("~=") ">="))
-           #t))))
+        (base32 "115ysciq15sxc8fd9hf7p0f4wnd5xapcfkmq8g33y1c8nbdxclbx"))))
     (build-system python-build-system)
     (arguments
      (list #:tests? #f                  ;no tests
