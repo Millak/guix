@@ -74,6 +74,7 @@
             cabal-executable-dependencies
 
             cabal-library?
+            cabal-library-name
             cabal-library-dependencies
 
             cabal-test-suite?
@@ -189,8 +190,8 @@ to the stack."
                 (bm-sec)                : (list $1))
    (bm-sec      (BENCHMARK OCURLY exprs CCURLY) : `(section benchmark ,$1 ,$3)
                 (BENCHMARK open exprs close)    : `(section benchmark ,$1 ,$3))
-   (lib-sec     (LIB OCURLY exprs CCURLY) : `(section library ,$3)
-                (LIB open exprs close)    : `(section library ,$3))
+   (lib-sec     (LIB OCURLY exprs CCURLY) : `(section library ,$1 ,$3)
+                (LIB open exprs close)    : `(section library ,$1 ,$3))
    (exprs       (exprs PROPERTY)         : (append $1 (list $2))
                 (PROPERTY)               : (list $1)
                 (exprs elif-else)          : (append $1 (list ($2 '(()))))
@@ -382,7 +383,8 @@ matching a string against the created regexp."
 (define is-benchmark (make-rx-matcher "^benchmark +([a-z0-9_-]+)"
                                       regexp/icase))
 
-(define is-lib (make-rx-matcher "^library *" regexp/icase))
+;; Libraries can have optional names since Cabal 2.0.
+(define is-lib (make-rx-matcher "^library(\\s+([a-z0-9_-]+))?\\s*" regexp/icase))
 
 (define (is-else s) (string-ci=? s "else"))
 
@@ -476,8 +478,9 @@ string with the read characters."
      'PROPERTY loc
      (list key `(,(read-braced-value port))))))
 
-(define (lex-rx-res rx-res token loc)
-  (let ((name (string-downcase (match:substring rx-res 1))))
+(define* (lex-rx-res rx-res token loc #:optional (substring-id 1))
+  (let* ((match (match:substring rx-res substring-id))
+         (name (if match (string-downcase match) match)))
     (make-lexical-token token loc name)))
 
 (define (lex-flag flag-rx-res loc) (lex-rx-res flag-rx-res 'FLAG loc))
@@ -495,7 +498,7 @@ string with the read characters."
 
 (define (lex-benchmark bm-rx-res loc) (lex-rx-res bm-rx-res 'BENCHMARK loc))
 
-(define (lex-lib loc) (make-lexical-token 'LIB loc #f))
+(define (lex-lib lib-rx-res loc) (lex-rx-res lib-rx-res 'LIB loc 2))
 
 (define (lex-else loc) (make-lexical-token 'ELSE loc #f))
 
@@ -599,7 +602,7 @@ the current port location."
      ((is-common s) => (cut lex-common <> loc))
      ((is-custom-setup s) => (cut lex-custom-setup <> loc))
      ((is-benchmark s) => (cut lex-benchmark <> loc))
-     ((is-lib s) (lex-lib loc))
+     ((is-lib s) => (cut lex-lib <> loc))
      (else (unread-string s port) #f))))
 
 (define (lex-property port loc)
@@ -729,8 +732,9 @@ If #f use the function 'port-filename' to obtain it."
   (dependencies cabal-executable-dependencies)) ; list of <cabal-dependency>
 
 (define-record-type <cabal-library>
-  (make-cabal-library dependencies)
+  (make-cabal-library name dependencies)
   cabal-library?
+  (name cabal-library-name)
   (dependencies cabal-library-dependencies)) ; list of <cabal-dependency>
 
 (define-record-type <cabal-test-suite>
@@ -861,9 +865,6 @@ the ordering operation and the version."
        (list 'section 'flag name parameters))
       (('section 'custom-setup parameters)
        (list 'section 'custom-setup parameters))
-      ;; library does not have a name parameter
-      (('section 'library parameters)
-       (list 'section 'library (eval parameters)))
       (('section type name parameters)
        (list 'section type name (eval parameters)))
       (((? string? name) values)
@@ -923,6 +924,8 @@ pertaining to SECTION-TYPE sections.  SECTION-TYPE must be one of:
                                             name
                                             (lookup-join parameters "type")
                                             (lookup-join parameters "location")))
+                      ((library) (make-cabal-library name
+                                                     (dependencies parameters)))
                       ((flag)
                        (let* ((default (lookup-join parameters "default"))
                               (default-true-or-false
@@ -939,8 +942,6 @@ pertaining to SECTION-TYPE sections.  SECTION-TYPE must be one of:
                                           default-true-or-false
                                           manual-true-or-false)))
                       (else #f)))
-                   (('section (? (cut equal? <> section-type) lib) parameters)
-                    (make-cabal-library (dependencies parameters)))
                    (_ #f))
               sexp))
 

@@ -172,6 +172,15 @@ common defaults
     }
 ")
 
+;; Test library with (since Cabal 2.0) and without names.
+(define test-read-cabal-library-name
+  "name: test-me
+library foobar
+    build-depends: foo, bar
+library
+    build-depends: bar, baz
+")
+
 (test-begin "hackage")
 
 (define-syntax-rule (define-package-matcher name pattern)
@@ -507,7 +516,7 @@ executable cabal
 (test-assert "read-cabal test 1"
   (match (call-with-input-string test-read-cabal-1 read-cabal)
     ((("name" ("test-me"))
-      ('section 'library
+      ('section 'library #f
                 (('if ('flag "base4point8")
                       (("build-depends" ("base >= 4.8 && < 5")))
                       (('if ('flag "base4")
@@ -540,6 +549,16 @@ executable cabal
     ((("name" ("test-me"))
         ('section 'common "defaults"
           (("build-depends" ("foobar ,  barbaz")))))
+     #t)
+    (x (pk 'fail x #f))))
+
+(test-assert "read-cabal test: library name"
+  (match (call-with-input-string test-read-cabal-library-name read-cabal)
+    ((("name" ("test-me"))
+        ('section 'library "foobar"
+          (("build-depends" ("foo, bar"))))
+        ('section 'library #f
+          (("build-depends" ("bar, baz")))))
      #t)
     (x (pk 'fail x #f))))
 
