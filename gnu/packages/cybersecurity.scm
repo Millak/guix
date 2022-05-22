@@ -112,7 +112,7 @@ Refresh}in-DRAM mitigations effectively and as such can trigger bit flips.")
     (build-system python-build-system)
     (propagated-inputs
      (list python-capstone))
-    (home-page "http://shell-storm.org/project/ROPgadget/")
+    (home-page "https://shell-storm.org/project/ROPgadget/")
     (synopsis "Semiautomatic return oriented programming")
     (description
      "This tool lets you search for @acronym{ROP, Return Oriented Programming}
