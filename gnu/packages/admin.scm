@@ -4399,6 +4399,13 @@ Logitech Unifying Receiver.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (replace 'unpack
+           ;; XXX Remove after fixing <https://issues.guix.gnu.org/55287>.
+           (lambda* (#:key source #:allow-other-keys)
+             (mkdir "source")
+             (chdir "source")
+             (copy-recursively source "."
+                               #:keep-mtime? #t)))
          (replace 'configure
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (substitute* "lynis"
