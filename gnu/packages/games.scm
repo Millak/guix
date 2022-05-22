@@ -7648,7 +7648,7 @@ original.")
 (define-public fortune-mod
   (package
     (name "fortune-mod")
-    (version "3.12.0")
+    (version "3.14.0")
     (source
      (origin
        (method git-fetch)
@@ -7657,7 +7657,7 @@ original.")
              (commit (string-append "fortune-mod-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1iq3bxrw8758jqvfqaasd7w1zm0g28g9n25qccnzvr98997h6r2n"))))
+        (base32 "1f2zif3s6vddbhph4jr1cymdsn7gagg59grrxs0yap6myqmy8shg"))))
     (build-system cmake-build-system)
     (arguments
      (list #:test-target "check"
