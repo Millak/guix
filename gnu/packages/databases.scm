@@ -1599,14 +1599,14 @@ types are supported, as is encryption.")
 (define-public emacs-rec-mode
   (package
     (name "emacs-rec-mode")
-    (version "1.8.2")
+    (version "1.8.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://elpa.gnu.org/packages/"
                                   "rec-mode-" version ".tar"))
               (sha256
                (base32
-                "06mjj1la2v8zdhsflj3mwcp7qnkj7gxzm8wbk2pli1h8vnq2zvd0"))
+                "0lkmvvdj4xx3qhxqggizrcdawav0accyrza2wmhfdq88g2zh5575"))
               (snippet '(begin (delete-file "rec-mode.info")))))
     (build-system emacs-build-system)
     (arguments
