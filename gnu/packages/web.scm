@@ -6256,14 +6256,14 @@ inspired by Ruby's @code{fakeweb}.")
 (define-public jo
   (package
     (name "jo")
-    (version "1.4")
+    (version "1.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/jpmens/jo/releases/download/"
                            version "/jo-" version ".tar.gz"))
        (sha256
-        (base32 "18jna9xlpxci3cak3z85c448zv2zr41baclgym3hk433p0p4vii4"))))
+        (base32 "18fizi0368jgajrmy13xpdiks76jwch8lhx1d1sagmd63cpmj5gb"))))
     (build-system gnu-build-system)
     (home-page "https://github.com/jpmens/jo")
     (synopsis "Output JSON from a shell")
