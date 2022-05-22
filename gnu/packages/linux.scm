@@ -3219,6 +3219,43 @@ the command line or a script.")
 processes currently causing I/O.")
       (license license:gpl2+))))
 
+(define-public iotop
+  (package
+    (name "iotop")
+    (version "1.21")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Tomas-M/iotop")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03wdnkfl51dapilg6r9vjga1xrl9lxlypfz07k50nscvbq8v8fb7"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output))
+           #:tests? #f                  ; no tests
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)))) ; no configure script
+    (native-inputs (list pkg-config))
+    (inputs (list ncurses))
+    (home-page "https://github.com/Tomas-M/iotop")
+    (synopsis "Interactive @command{top}-like input/output activity monitor")
+    (description
+     "iotop identifies which processes and threads are most responsible for
+@acronym{I/O, input/output} activity such as disc reads and writes.  It sorts
+them in a live, interactive table overview similar to that of the well-known
+@command{top}.
+
+This information makes it much easier for an administrator to see which tasks
+are blocking others and adjust their priority (using @command{ionice}) or stop
+or kill them altogether.")
+    (license license:gpl2+)))
+
 (define-public fuse
   (package
     (name "fuse")
