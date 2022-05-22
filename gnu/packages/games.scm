@@ -1062,34 +1062,34 @@ more.  This package does @emph{not} provide the game assets.")
               license:bsd-3)))) ; CorsixTH/Src/random.c
 
 (define-public cowsay
+  ;; This is a continuation of Tony Monroe's now-unmaintained original, that
+  ;; aims to become the ‘canonical modern fork’.  We'll see.  What it gives
+  ;; us today is a bunch of fixes that other distros shipped as patches.
   (package
     (name "cowsay")
-    (version "3.04")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/tnalpgge/rank-amateur-cowsay")
-                     (commit (string-append name "-" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "06455kq37hvq1xb7adyiwrx0djs50arsxvjgixyxks16lm1rlc7n"))))
+    (version "3.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cowsay-org/cowsay")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yrgwwacrhsgpyp14c3imkd4bb9b4i68q4df9cq1i1fh4fc2nn5p"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (delete 'build)                ; nothing to be built
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (invoke "sh" "install.sh"
-                     (assoc-ref outputs "out"))))
-         (delete 'check)
-         (add-after 'install 'check
-           (lambda* (#:key outputs #:allow-other-keys)
-             (invoke (string-append (assoc-ref outputs "out")
-                                    "/bin/cowsay")
-                     "We're done!"))))))
+     (list #:make-flags
+           #~(list (string-append "prefix=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)      ; no configure script
+               (delete 'check)
+               (add-after 'install 'check
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (invoke (string-append (assoc-ref outputs "out")
+                                          "/bin/cowsay")
+                           "We're done!"))))))
     (inputs
      (list perl))
     (home-page (string-append "https://web.archive.org/web/20071026043648/"
