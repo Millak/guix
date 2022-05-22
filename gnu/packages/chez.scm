@@ -529,7 +529,7 @@ current platform.  (Chez can then cross-compile bootfiles for all other
 supported platforms.)
 
 This package provides bootstrap bootfiles for upstream Chez Scheme.
-Currently, it simply packages the binaries checked in to the upsream
+Currently, it simply packages the binaries checked in to the upstream
 repository.  Hopefully we can eventually adapt Racket's @code{cs-bootstrap} to
 work with upstream Chez Scheme so that we can bootstrap these files from
 source.")))
