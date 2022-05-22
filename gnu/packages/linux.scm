@@ -3183,13 +3183,13 @@ settings.")
 the command line or a script.")
     (license license:gpl2+)))
 
-(define-public iotop
+(define-public iotop-python
   ;; The last release is from 2013 and gives a misleading CONFIG_TASK_DELAY_ACCT
   ;; error on ‘newer’ kernels.
   (let ((revision "0")
         (commit "a14256a3ff74eeee59493ac088561f1bafab85a7"))
     (package
-      (name "iotop")
+      (name "iotop-python")
       (version (git-version "0.6" revision commit))
       (source
        (origin
