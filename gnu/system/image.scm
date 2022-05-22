@@ -219,7 +219,8 @@ set to the given OS."
       #$(partition-file-system-options partition)
       #$(partition-label partition)
       #$(and=> (partition-uuid partition)
-               uuid-bytevector)))
+               uuid-bytevector)
+      #$(partition-flags partition)))
 
 (define gcrypt-sqlite3&co
   ;; Guile-Gcrypt, Guile-SQLite3, and their propagated inputs.
@@ -401,17 +402,21 @@ used in the image."
                     (partition-type-values image partition)))
         (let ((label (partition-label partition))
               (image (partition-image partition))
-              (offset (partition-offset partition)))
+              (offset (partition-offset partition))
+              (bootable (if (memq 'boot (partition-flags partition))
+                            "true" "false" )))
           #~(format #f "~/partition ~a {
   ~/~/~a = ~a
   ~/~/image = \"~a\"
   ~/~/offset = \"~a\"
+  ~/~/bootable = \"~a\"
   ~/}"
                     #$label
                     #$partition-type-attribute
                     #$partition-type-value
                     #$image
-                    #$offset))))
+                    #$offset
+                    #$bootable))))
 
     (define (genimage-type-options image-type image)
       (cond
