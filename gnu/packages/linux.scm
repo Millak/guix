@@ -8239,7 +8239,7 @@ IP addresses and routes, and configure IPsec.")
 (define-public libinih
   (package
     (name "libinih")
-    (version "53")
+    (version "55")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8248,7 +8248,7 @@ IP addresses and routes, and configure IPsec.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0dqf5j2sw4hq68rqvxbrsf44ygfzx9ypiyzipk4cvp9aimbvsbc6"))))
+                "0g6dkcphlzgxvh9zyf6rj82gigccca6x5acjxn01gz6rykfg0lnn"))))
     (build-system meson-build-system)
     ;; Install static libraries for use by the initrd's xfsprogs/static.
     (outputs (list "out" "static"))
