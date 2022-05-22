@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -34,7 +34,7 @@
 (define-public busybox
   (package
     (name "busybox")
-    (version "1.33.1")
+    (version "1.34.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -42,22 +42,20 @@
                     version ".tar.bz2"))
               (sha256
                (base32
-                "0a0dcvsh7nxnhxc5y73fky0z30i9p7r30qfidm2akn0n5fywdkhj"))))
+                "0jfm9fik7nv4w21zqdg830pddgkdjmplmna9yjn9ck1lwn4vsps1"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
          (add-before 'configure 'disable-timestamps
            (lambda _
-             (setenv "KCONFIG_NOTIMESTAMP" "1")
-             #t))
+             (setenv "KCONFIG_NOTIMESTAMP" "1")))
          (add-before 'configure 'disable-taskset
            ;; This feature fails its tests in the build environment,
            ;; was default 'n' until after 1.26.2.
            (lambda _
              (substitute* "util-linux/taskset.c"
-               (("default y") "default n"))
-             #t))
+               (("default y") "default n"))))
          (replace 'configure
            (lambda* (#:key make-flags #:allow-other-keys)
              (apply invoke "make" "defconfig" make-flags)))
@@ -65,8 +63,7 @@
            (lambda _
              (substitute* ".config"
                (("# CONFIG_INSTALL_NO_USR is not set")
-                "CONFIG_INSTALL_NO_USR=y"))
-             #t))
+                "CONFIG_INSTALL_NO_USR=y"))))
          (replace 'check
            (lambda* (#:key make-flags #:allow-other-keys)
              (substitute* '("testsuite/du/du-s-works"
