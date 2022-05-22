@@ -98,7 +98,7 @@ to easily create cross-compiled binaries.")
     (home-page "http://www.gnustep.org/")
     (synopsis "Objective-C runtime library for Clang")
     (description "Libobjc2 is an Objective-C runtime library designed as a
-drop-in replacment for GCC runtime.  It supports following features beyond
+drop-in replacement for GCC runtime.  It supports following features beyond
 GCC runtime.
 
 @itemize
