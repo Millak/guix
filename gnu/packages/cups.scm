@@ -129,7 +129,7 @@ driver is known to work with these printers:
 (define-public cups-filters
   (package
     (name "cups-filters")
-    (version "1.28.9")
+    (version "1.28.15")
     (source
      (origin
        (method url-fetch)
@@ -137,8 +137,7 @@ driver is known to work with these printers:
         (string-append "https://openprinting.org/download/cups-filters/"
                        "cups-filters-" version ".tar.xz"))
        (sha256
-        (base32
-         "1bk0x1rrb8wqbhh5c979ppgy6s2kqss8mjdlahgcjvd79wm3fs9g"))
+        (base32 "12s7s2jgnh4q7ws7r2is6xp3pqq818jhnm4vpyzyywmvkxvfq1x9"))
        (modules '((guix build utils)))
        (snippet
         ;; Install backends, banners and filters to cups-filters output
