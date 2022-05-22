@@ -4932,7 +4932,9 @@ capabilities of the Linux kernel.")
         (base32 "0i27ppb557kdc1hm7nf0f5r7sxvqma31pr57h79whl6qcp28gy4a"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
+     `(#:configure-flags
+       (list "--disable-static")
+       #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-tests
            (lambda* (#:key inputs #:allow-other-keys)
