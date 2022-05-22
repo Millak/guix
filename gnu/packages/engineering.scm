@@ -1732,14 +1732,14 @@ it suitable for security research and analysis.")
 (define-public asco
   (package
     (name "asco")
-    (version "0.4.10")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://sourceforge/asco/asco/" version "/ASCO-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "119rbc2dc8xzwxvykgji0v0nrzvymjmlizr1bc2mihspj686kxsl"))))
+    (version "0.4.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/asco/asco/" version "/ASCO-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "0ggxv0p1zmfbvd1k17p2j1cskbjsa83fansz8ihxn7ax9qdicljv"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                                ; no tests
@@ -1756,8 +1756,7 @@ it suitable for security research and analysis.")
                  (("nice")
                   (string-append coreutils "/bin/nice")))
                (substitute* "Makefile"
-                 (("<FULL_PATH_TO_MPICH>/bin/mpicc") (which "mpicc")))
-               #t)))
+                 (("<FULL_PATH_TO_MPICH>/bin/mpicc") (which "mpicc"))))))
          (replace 'install                        ; no install target
            (lambda* (#:key outputs #:allow-other-keys)
              (for-each (lambda (file)
@@ -1765,8 +1764,7 @@ it suitable for security research and analysis.")
                                              (assoc-ref outputs "out")
                                              "/bin")))
                        '("asco" "asco-mpi" "asco-test"
-                         "tools/alter/alter" "tools/log/log"))
-             #t)))))
+                         "tools/alter/alter" "tools/log/log")))))))
     (native-inputs
      `(("mpi" ,openmpi)))
     (inputs
