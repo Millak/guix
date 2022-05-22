@@ -1445,7 +1445,9 @@ microblogging service.")
      '(#:make-flags
        '("GUILE_AUTO_COMPILE=0"))) ;to prevent guild warnings
     (inputs
-     (list guile-3.0 parted))
+     ;; XXX: Use Parted 3.4 to work around issues when using 3.5 in the Guix
+     ;; System installer: <https://issues.guix.gnu.org/55549>.
+     (list guile-3.0 parted-3.4))
     (propagated-inputs
      (list guile-bytestructures))
     (native-inputs
