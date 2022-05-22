@@ -712,7 +712,7 @@ Chez Scheme.")))
                   (else
                    (format #t "not making docs~%"))))))))
        (home-page "https://github.com/dybvig/stex")
-       (synopsis "LaTeX with embeded Scheme code and HTML generation")
+       (synopsis "LaTeX with embedded Scheme code and HTML generation")
        (description "The @code{stex} package extends LaTeX with a handful of
 commands for including Scheme code (or pretty much any other kind of code, as
 long as you don't plan to use the Scheme-specific transcript support) in a
