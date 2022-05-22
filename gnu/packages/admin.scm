@@ -4541,7 +4541,7 @@ supplied by the user when logging in.")
 (define-public jc
   (package
     (name "jc")
-    (version "1.13.4")
+    (version "1.19.0")
     (source
      (origin
        ;; The PyPI tarball lacks the test suite.
@@ -4551,8 +4551,16 @@ supplied by the user when logging in.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rwvyyrdnw43pixp8h51rncq2inc9pbbj1j2191y5si00pjw34zr"))))
+        (base32 "021zk0y8kb6v3qf3hwfg8qjzzmrca039nz3fjywiy2njmbhr8hyi"))))
     (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               ;; XXX Guix's America/Los_Angeles time zone is somehow broken.
+               (add-before 'check 'hack-time-zone
+                 (lambda _
+                   (substitute* (find-files "tests" "^test.*\\.py$")
+                     (("America/Los_Angeles") "PST8PDT")))))))
     (propagated-inputs
      (list python-pygments python-ruamel.yaml python-xmltodict))
     (home-page "https://github.com/kellyjonbrazil/jc")
