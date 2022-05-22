@@ -233,9 +233,7 @@ Python.")
     (arguments
      `(#:tests? #f))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python)))
+     (list gettext-minimal pkg-config python))
     (inputs
      (list mpfr pcre2))
     (home-page "https://github.com/storaged-project/libbytesize")
