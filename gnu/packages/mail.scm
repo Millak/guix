@@ -4365,7 +4365,7 @@ on RFC 3501 and original @code{imaplib} module.")
 (define-public rspamd
   (package
     (name "rspamd")
-    (version "2.7")
+    (version "3.2")
     (source
      (origin
        (method git-fetch)
@@ -4373,11 +4373,12 @@ on RFC 3501 and original @code{imaplib} module.")
              (url "https://github.com/rspamd/rspamd")
              (commit version)))
        (sha256
-        (base32 "0fw6nbfc3xqapzq5nydakwgpw6cz6vb3qby2aqlr06lzf87d3hic"))
+        (base32 "122d5m1nfxxz93bhsk8lm4dazvdknzphb0a1188m7bsa4iynbfv2"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
-     '(#:configure-flags '("-DENABLE_LUAJIT=ON")))
+     '(#:configure-flags '("-DENABLE_LUAJIT=ON"
+                           "-DLOCAL_CONFDIR=/etc/rspamd")))
     (inputs
      (list openssl
            glib
@@ -4386,7 +4387,7 @@ on RFC 3501 and original @code{imaplib} module.")
            sqlite
            file
            icu4c
-           pcre
+           pcre2
            zlib
            perl
            libsodium))
