@@ -3142,6 +3142,29 @@ the point.  Corfu can be considered the minimalistic
 @code{completion-in-region} counterpart of the Vertico minibuffer UI.")
     (license license:gpl3+)))
 
+(define-public emacs-corfu-doc
+  (package
+    (name "emacs-corfu-doc")
+    (version "0.6.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/galeo/corfu-doc")
+             (commit "f9566cf13f6730a45b2f3c12e491a3fa2097e5d5")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "098yf29yv1b11p7kvdc7n4ra7f5vcmf6nlvhl85jgwqrsdz1795b"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-corfu))
+    (home-page "https://github.com/galeo/corfu-doc")
+    (synopsis "Documentation popup for Corfu")
+    (description
+     "The @code{corfu-doc} package provides a way to display a documentation
+popup for completion candidates when using @code{emacs-corfu}.  It can
+be regarded as @code{emacs-company-quickhelp} for @code{emacs-corfu}.")
+    (license license:gpl3+)))
+
 (define-public emacs-cape
   (package
     (name "emacs-cape")
