@@ -2737,8 +2737,8 @@ can append files to the end of such compressed archives.")
           (string-append "-DCMAKE_INSTALL_RPATH=" lib)))))
     (synopsis "The C library for parsing and generating CBOR")
     (description
-     "The Concise Binary Object Representation (CBOR) is a data format whose
-design goals include the possibility of extremely small code size, fairly
+     "@acronym{CBOR, The Concise Binary Object Representation} is a data format
+whose design goals include the possibility of extremely small code size, fairly
 small message size, and extensibility without the need for version
 negotiation.  These design goals make it different from earlier binary
 serializations such as ASN.1 and MessagePack.")
