@@ -56,6 +56,7 @@
 ;;; Copyright © 2021 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2022 cage <cage-dev@twistfold.it>
+;;; Copyright © 2022 Pradana Aumars <paumars@courrier.dev>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -112,6 +113,7 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
   #:use-module (gnu packages databases)
+  #:use-module (gnu packages django)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages emacs)
@@ -154,6 +156,7 @@
   #:use-module (gnu packages markup)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages networking)
+  #:use-module (gnu packages node)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages openldap)
   #:use-module (gnu packages openstack)
@@ -162,6 +165,8 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages perl-check)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -177,7 +182,9 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages valgrind)
   #:use-module (gnu packages version-control)
+  #:use-module (gnu packages video)
   #:use-module (gnu packages vim)
+  #:use-module (gnu packages wget)
   #:use-module (gnu packages xml)
   #:use-module ((srfi srfi-1) #:select (delete-duplicates)))
 
@@ -8218,3 +8225,40 @@ provided by a TLS reverse proxy (e.g. tlstunnel, hitch or stunnel).")
       ;; "cpe:2.3:a:comelz:quark" package.  The proper fix is for (guix cve)
       ;; to account for "vendor names".
       (properties '((lint-hidden-cve . ("CVE-2019-15520")))))))
+
+(define-public archivebox
+  (package
+    (name "archivebox")
+    (version "0.6.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri name version))
+              (sha256
+               (base32
+                "1mnq82ynq01l7vx957bbx4bvgwdh59qsnx6pdydaqszbakp74yyc"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list curl
+           node))
+    (inputs
+     (list python
+           youtube-dl
+           wget
+           git
+           python-w3lib
+           python-ipython
+           python-croniter
+           python-crontab
+           python-dateparser
+           python-django-extensions
+           python-django-3.1.14
+           python-mypy-extensions))
+    (native-inputs
+     (list python-wheel))
+    (synopsis "Self-hosted Web archiving")
+    (description "ArchiveBox is a powerful, self-hosted Web archiving
+solution to collect, save, and view sites you want to preserve offline.
+You can feed it URLs one at a time, or schedule regular imports.  It saves
+snapshots of the URLs you feed it in several formats.")
+    (home-page "https://archivebox.io/")
+    (license license:expat)))
