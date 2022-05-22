@@ -397,16 +397,16 @@ other apt sources typically provided by open source developers.")
                          "dpkg-source"
                          "dpkg-vendor")))))))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("gettext" ,gettext-minimal)
-       ("gnupg" ,gnupg)                 ; to run t/Dpkg_OpenPGP.t
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)
-       ("perl-io-string" ,perl-io-string)))
+     (list autoconf
+           automake
+           gettext-minimal
+           gnupg                        ; to run t/Dpkg_OpenPGP.t
+           libtool
+           pkg-config
+           perl-io-string))
     (inputs
      (list bzip2
-           guile-3.0        ; For wrap-script
+           guile-3.0                    ; for wrap-script
            libmd
            ncurses
            perl
