@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2018 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2015, 2018 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;;
@@ -158,7 +158,7 @@ refreshed, and more.")
 (define-public colordiff
   (package
     (name "colordiff")
-    (version "1.0.19")
+    (version "1.0.20")
     (source
       (origin
         (method url-fetch)
@@ -167,7 +167,7 @@ refreshed, and more.")
                    (string-append "http://www.colordiff.org/archive/colordiff-"
                                   version ".tar.gz")))
       (sha256
-       (base32 "069vzzgs7b44bmfh3ks2psrdb26s1w19gp9w4xxbgi7nhx6w3s26"))))
+       (base32 "1kbv3lsyzzrwca4v3ajpnv8q5j0h53r94lxiqgmikxmrxrxh3cp3"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no tests

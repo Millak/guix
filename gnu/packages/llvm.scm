@@ -627,7 +627,16 @@ of programming tools as well as libraries with equivalent functionality.")
          ,@(package-native-inputs template))))))
 
 (define-public clang-14
-  (let ((template (clang-from-llvm llvm-14 clang-runtime-14)))
+  (let ((template
+         (clang-from-llvm llvm-14 clang-runtime-14
+                          #:tools-extra
+                          (origin
+                            (method url-fetch)
+                            (uri (llvm-uri "clang-tools-extra"
+                                           (package-version llvm-14)))
+                            (sha256
+                             (base32
+                              "188hh6l956gkl6hgjzzdraj5jp538zhhhllxvy23gml6slrmbj7j"))))))
     (package
       (inherit template)
       (arguments
