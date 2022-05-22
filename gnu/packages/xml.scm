@@ -2238,7 +2238,7 @@ implements @code{XMLStreamWriter} and @code{XMLStreamReader} and supports
 (define-public java-jdom2
   (package
     (name "java-jdom")
-    (version "2.0.6")
+    (version "2.0.6.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2247,7 +2247,7 @@ implements @code{XMLStreamWriter} and @code{XMLStreamReader} and supports
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "14vv1kxrsdvwi4cz3rx6r48w5y6fvk9cymil8qhvxwp56xxrgxiq"))))
+                "1r4pwl0z7hm45v9l2wbq3fjmqi13zmwzbrggyqizrwv31kghhx56"))))
     (build-system ant-build-system)
     (arguments
      `(#:build-target "package"
