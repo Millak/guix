@@ -1547,7 +1547,7 @@ domains, their live performance and resource utilization statistics.")
 (define-public criu
   (package
     (name "criu")
-    (version "3.16.1")
+    (version "3.17")
     (source
      (origin
        (method git-fetch)
@@ -1556,15 +1556,17 @@ domains, their live performance and resource utilization statistics.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1riw15197fnrs254jl7wks9x8bdml76kf1vnqkkgyypr13dnq55g"))))
+        (base32 "1qql1xp2zkkd7z50vp0nylx3rqrp8xa3c6x25c886d5i1j9pak5x"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
        #:tests? #f ; tests require mounting as root
        #:make-flags
        (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
-             (string-append "LIBDIR=" (assoc-ref %outputs "out")
-                            "/lib")
+             (string-append "LIBDIR=$(PREFIX)/lib")
+             ;; Upstream mistakenly puts binaries in /var.  Now, in practice no
+             ;; plugins are built, but the build system still fails otherwise.
+             (string-append "PLUGINDIR=$(LIBDIR)/criu")
              (string-append "ASCIIDOC="
                             (search-input-file %build-inputs
                                                "/bin/asciidoc"))
@@ -1586,10 +1588,14 @@ domains, their live performance and resource utilization statistics.")
                  ,(package-version docbook-xsl)
                  "/manpages/docbook.xsl")))))
          (add-after 'unpack 'hardcode-variables
-           (lambda* (#:key inputs #:allow-other-keys)
+           (lambda* (#:key inputs outputs #:allow-other-keys)
              ;; Hardcode arm version detection
              (substitute* "Makefile"
-               (("ARMV.*:=.*") "ARMV := 7\n"))))
+               (("ARMV.*:=.*") "ARMV := 7\n"))
+             ;; Hard-code the correct PLUGINDIR above.
+             (substitute* "criu/include/plugin.h"
+               (("/var") (string-append (assoc-ref outputs "out"))))
+             ))
          (add-before 'build 'fix-symlink
            (lambda* (#:key inputs #:allow-other-keys)
              ;; The file 'images/google/protobuf/descriptor.proto' points to
