@@ -745,6 +745,7 @@ stream decoding")
                           (ncurses (assoc-ref inputs "ncurses")))
                       (setenv "CONFIG_SHELL" (which "bash"))
                       (invoke "./configure"
+                              "--disable-static"
                               (string-append "--prefix=" out)
                               (string-append "--build=" build)
                               (string-append "--with-ncurses="
