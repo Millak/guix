@@ -62,8 +62,7 @@
                  (string-append "--with-guile-site-ccache-dir=" out
                                 "/lib/guile/" effective "/site-ccache")))))
       (native-inputs (list guile-2.2 pkg-config texinfo))
-      (inputs `(("guile" ,guile-2.2)
-                ("xcb" ,xcb-proto)))
+      (inputs (list guile-2.2 xcb-proto))
       (home-page "https://github.com/mwitmer/guile-xcb")
       (synopsis "XCB bindings for Guile")
       (description
