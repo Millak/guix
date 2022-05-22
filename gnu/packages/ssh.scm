@@ -72,6 +72,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils)
@@ -93,18 +94,18 @@
     (inputs
      (list readline))
     (arguments
-     `(#:make-flags
-       (list ,(string-append "CC=" (cc-for-target))
-             (string-append "INSTALL_BIN=" (assoc-ref %outputs "out") "/bin"))
-       #:tests? #f                      ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-file-names
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (substitute* "Makefile"
-               (("/usr/local/opt/readline")
-                (assoc-ref inputs "readline")))))
-         (delete 'configure))))         ; no configure script
+     (list #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "INSTALL_BIN=" #$output "/bin"))
+           #:tests? #f                  ; no tests
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-file-names
+                 (lambda _
+                   (substitute* "Makefile"
+                     (("/usr/local/opt/readline")
+                      #$(this-package-input "readline")))))
+               (delete 'configure))))         ; no configure script
     (build-system gnu-build-system)
     (home-page "https://github.com/six-ddc/hss/")
     (synopsis "Interactive SSH client for multiple servers")
