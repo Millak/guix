@@ -1751,10 +1751,10 @@ it suitable for security research and analysis.")
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((coreutils (assoc-ref inputs "coreutils-minimal")))
                (substitute* '("errfunc.c" "asco.c")
-                 (("cp ")
-                  (string-append coreutils "/bin/cp "))
-                 (("nice")
-                  (string-append coreutils "/bin/nice")))
+                 (("(cp|nice) " _ command)
+                  (string-append
+                   (search-input-file inputs (string-append "bin/" command))
+                   " ")))
                (substitute* "Makefile"
                  (("<FULL_PATH_TO_MPICH>/bin/mpicc") (which "mpicc"))))))
          (replace 'install                        ; no install target
