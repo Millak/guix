@@ -15288,7 +15288,7 @@ $ file /gnu/store/9926by9qrxa91ijkhw9ndgwp4bn24g9h-hello-2.12/bin/hello
 The major benefit of cross-compilation is that there are no performance
 penaly compared to emulation using QEMU.  There are however higher risks
 that some packages fail to cross-compile because few users are using
-this mecanism extensively.
+this mechanism extensively.
 
 @node Using native builds
 @section Using native builds
@@ -22343,23 +22343,23 @@ LE scanning interval used for connection establishment.
 LE scanning window used for connection establishment.
 
 @item @code{min-connection-interval} (default: @code{#f})
-LE default minimum connection interval. This value is superceeded by any specific
+LE default minimum connection interval. This value is superseded by any specific
 value provided via the Load Connection Parameters interface.
 
 @item @code{max-connection-interval} (default: @code{#f})
-LE default maximum connection interval. This value is superceeded by any specific
+LE default maximum connection interval. This value is superseded by any specific
 value provided via the Load Connection Parameters interface.
 
 @item @code{connection-latency} (default: @code{#f})
-LE default connection latency. This value is superceeded by any specific
+LE default connection latency. This value is superseded by any specific
 value provided via the Load Connection Parameters interface.
 
 @item @code{connection-supervision-timeout} (default: @code{#f})
-LE default connection supervision timeout. This value is superceeded by any specific
+LE default connection supervision timeout. This value is superseded by any specific
 value provided via the Load Connection Parameters interface.
 
 @item @code{autoconnect-timeout} (default: @code{#f})
-LE default autoconnect timeout. This value is superceeded by any specific
+LE default autoconnect timeout. This value is superseded by any specific
 value provided via the Load Connection Parameters interface.
 
 @item @code{adv-mon-allowlist-scan-duration} (default: @code{300})
@@ -34844,7 +34844,7 @@ The Guix Data Service instance from which to query to find out about
 derivations to build.
 
 @item @code{guix-data-service-build-server-id} (default: @code{#f})
-The Guix Data Service build server ID coresponding to the builds being
+The Guix Data Service build server ID corresponding to the builds being
 submitted.  Providing this speeds up the submitting of builds as
 derivations that have already been submitted can be skipped before
 asking the coordinator to build them.
