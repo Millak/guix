@@ -2833,9 +2833,9 @@ UCY (Omega Unicode Cyrillic), LCY, LWN (OT2), and koi8-r.")
     (synopsis "Enhanced input encoding handling")
     (description
      "This package deals with input encodings.  It provides a wider range of input
-encodings using standard mappings, than does inputenc; it also covers nearly all
-slots.  In this way, it serves as more uptodate replacement for package
-inputenc.")
+encodings using standard mappings, than does inputenc.  It also covers nearly all
+slots.  In this way, it serves as more up to date replacement for the inputenc
+package.")
     (license license:lppl1.3+)))
 
 (define-public texlive-kpathsea
