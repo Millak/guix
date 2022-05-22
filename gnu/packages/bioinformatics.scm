@@ -7824,7 +7824,7 @@ single-cell data.")
              r-rlist))
       (home-page "https://github.com/soumelis-lab/ICELLNET")
       (synopsis "Transcriptomic-based framework to dissect cell communication")
-      (description "This packages provides a a transcriptomic-based framework
+      (description "This package provides a a transcriptomic-based framework
 to dissect cell communication in a global manner.  It integrates an original
 expert-curated database of ligand-receptor interactions taking into account
 multiple subunits expression.  Based on transcriptomic profiles (gene

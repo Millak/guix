@@ -28198,7 +28198,7 @@ geometric models.")
     (native-inputs (list r-knitr))
     (home-page "https://github.com/JiaxiangBU/add2ggplot")
     (synopsis "Extension for ggplot2")
-    (description "This packages provides tools to create themes and color
+    (description "This package provides tools to create themes and color
 palettes for the package ggplot2.")
     (license license:expat)))
 
