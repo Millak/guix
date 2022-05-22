@@ -19603,7 +19603,7 @@ buffer.")
 (define-public emacs-beginend
   (package
     (name "emacs-beginend")
-    (version "2.2.0")
+    (version "2.3.0")
     (source
      (origin
        (method git-fetch)
@@ -19612,7 +19612,7 @@ buffer.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1r9033zlx2q2dk3bjz004flxdiw79qiswq0zqdjnlzwassvk0f35"))))
+        (base32 "17r8v1sjvgcmprywny9fdg54x4pssp8p7a9ivv5mrygkqjz1vykk"))))
     ;; TODO: Run tests.
     (build-system emacs-build-system)
     (inputs
