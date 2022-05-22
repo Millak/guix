@@ -3184,35 +3184,40 @@ the command line or a script.")
     (license license:gpl2+)))
 
 (define-public iotop
-  (package
-    (name "iotop")
-    (version "0.6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "http://guichaz.free.fr/iotop/files/iotop-"
-                           version ".tar.gz"))
-       (sha256 (base32
-                "1kp8mqg2pbxq4xzpianypadfxcsyfgwcaqgqia6h9fsq6zyh4z0s"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-build-with-python3
-           (lambda _
-             (substitute* "setup.py"
-               (("itervalues") "values"))
-             #t)))
-       ;; There are currently no checks in the package.
-       #:tests? #f))
-    (native-inputs (list python))
-    (home-page "http://guichaz.free.fr/iotop/")
-    (synopsis
-     "Displays the IO activity of running processes")
-    (description
-     "Iotop is a Python program with a top like user interface to show the
+  ;; The last release is from 2013 and gives a misleading CONFIG_TASK_DELAY_ACCT
+  ;; error on ‘newer’ kernels.
+  (let ((revision "0")
+        (commit "a14256a3ff74eeee59493ac088561f1bafab85a7"))
+    (package
+      (name "iotop")
+      (version (git-version "0.6" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://repo.or.cz/iotop.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "00h5p8fk1zi237q8mqds8apqbis9iw0yih1hl0pr63dsnyzmmrpw"))))
+      (build-system python-build-system)
+      (arguments
+       '(#:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-build-with-python3
+             (lambda _
+               (substitute* "setup.py"
+                 (("itervalues") "values")))))
+         ;; There are currently no checks in the package.
+         #:tests? #f))
+      (native-inputs (list python))
+      (home-page "http://guichaz.free.fr/iotop/")
+      (synopsis
+       "Displays the IO activity of running processes")
+      (description
+       "Iotop is a Python program with a top like user interface to show the
 processes currently causing I/O.")
-    (license license:gpl2+)))
+      (license license:gpl2+))))
 
 (define-public fuse
   (package
