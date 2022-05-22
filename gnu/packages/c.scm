@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016, 2018 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018, 2020–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019, 2021 Guillaume Le Vaillant <glv@posteo.net>
@@ -220,7 +220,7 @@ Python.")
 (define-public libbytesize
   (package
     (name "libbytesize")
-    (version "2.2")
+    (version "2.6")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -228,7 +228,7 @@ Python.")
                     "download/" version "/libbytesize-" version ".tar.gz"))
               (sha256
                (base32
-                "1aivwypmnqcaj2230pifvf3jcgl5chja8rspkxf0j3480asm8g5r"))))
+                "0h87ryi0mp8msq43h1cna453cqaw5knx1xaggfzm4fxvn8sjpapg"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f))
