@@ -95,14 +95,17 @@ dependencies.")
                     (ice-9 popen))
          ;; The '.scm' files go to $(datadir), so set that to the
          ;; standard value.
-         #:configure-flags (list (string-append "--datadir="
-                                                (assoc-ref %outputs "out")
-                                                "/share/guile/site/2.2"))
+         #:configure-flags
+         (let ((out (assoc-ref %outputs "out"))
+               (effective ,(version-major+minor
+                            (package-version (this-package-input "guile")))))
+           (list (string-append "--datadir=" out
+                                "/share/guile/site/" effective)))
          #:phases
          (modify-phases %standard-phases
            (add-before 'configure 'set-module-directory
              (lambda* (#:key outputs #:allow-other-keys)
-               ;; Install .scm files to $out/share/guile/site/2.2.
+               ;; Install .scm files to $out/share/guile/site/x.y.
                (let ((out (assoc-ref outputs "out"))
                      (effective (read-line
                                  (open-pipe* OPEN_READ
