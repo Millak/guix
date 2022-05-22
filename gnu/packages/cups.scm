@@ -260,54 +260,54 @@ filters for the PDF-centric printing workflow introduced by OpenPrinting.")
         (base32 "01nn6ij7kpf2vzikinn7mk4crjx4ab8m4pplvsccc8gg30a2q9y9"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       ;; This package is not maximally minimal: "--with-components=libcups"
-       ;; breaks cups-filters.  Disable some other unnecessary features.
-       (list "--without-icondir"
-             "--without-languages"
-             "--without-menudir")
-       ;; Seven tests fail, mostly because of files that are provided by the
-       ;; cups-filters package.
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'never-cupsAdminGetServerSettings
-           ;; Instead of querying the daemon directly, this part of CUPS assumes
-           ;; that (1) it has access to a cupsd.conf under CUPS_SERVERROOT, and
-           ;; (2) the file's contents apply to the running daemon.  (1) is false
-           ;; at least on Guix Systems resulting in extremely long delays when
-           ;; loading the Web interface's /admin page.  (2) isn't valid anywhere
-           ;; because it ignores, e.g., -c FILE.
-           ;; Upstream considers this code on ‘life support’ so just neuter it.
-	   (lambda _
-	     (substitute* "cgi-bin/admin.c"
-	       (("!cupsAdminGetServerSettings" match)
-		(string-append "0 && " match)))))
-         (add-after 'unpack 'remove-Web-UI-server-settings
-           ;; The /admin page's server configuration form is questionable for
-           ;; the same reason as cupsAdminGetServerSettings, and won't work at
-           ;; all on Guix Systems.  Remove it entirely.
-           (lambda _
-             ;; SUBSTITUTE* and a patch both have (dis)advantages.  This is
-             ;; shorter & should ensure that no translation is forgotten.
-             (substitute* (find-files "templates" "^admin\\.tmpl$")
-               ((" class=\"halves\"") "")
-               (("<FORM.* ACTION=\"/jobs.*</FORM>" match)
-                (string-append match "</P>{BROKEN? "))
-               (("</FORM>}" match)
-                (string-append match "}")))))
-         (add-before 'configure 'patch-makedefs
-           (lambda _
-             (substitute* "Makedefs.in"
-               (("INITDIR.*=.*@INITDIR@") "INITDIR = @prefix@/@INITDIR@")
-               (("/bin/sh") (which "sh")))))
-         (add-before 'check 'skip-failing-tests
-           (lambda _
-             (substitute* "test/run-stp-tests.sh"
-               ;; The number of error/warning lines differs, probably related
-               ;; to a missing font.  Substitute the last observed count.
-               (("(\\$count != )33" _ prefix)
-                (string-append prefix "39"))))))))
+     (list #:configure-flags
+           ;; This package isn't maximally minimal: "--with-components=libcups"
+           ;; breaks cups-filters.  Disable some other unnecessary features.
+           #~(list "--without-icondir"
+                   "--without-languages"
+                   "--without-menudir")
+           ;; Seven tests fail, mostly because of files that are provided by the
+           ;; cups-filters package.
+           #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'never-cupsAdminGetServerSettings
+                 ;; Rather than just ask the daemon, this part of CUPS assumes
+                 ;; that (1) it has access to a cupsd.conf under CUPS_SERVERROOT
+                 ;; and (2) the file's contents apply to the running daemon.
+                 ;; (1) is false at least on Guix Systems resulting in extremely
+                 ;; long delays when loading the Web interface's /admin page.
+                 ;; (2) is never valid: it ignores, e.g., -c FILE.  Upstream
+                 ;; considers this code on ‘life support’ so just neuter it.
+	         (lambda _
+	           (substitute* "cgi-bin/admin.c"
+	             (("!cupsAdminGetServerSettings" match)
+		      (string-append "0 && " match)))))
+               (add-after 'unpack 'remove-Web-UI-server-settings
+                 ;; The /admin page's server configuration form is questionable
+                 ;; for the same reason as cupsAdminGetServerSettings, and won't
+                 ;; work at all on Guix Systems.  Remove it entirely.
+                 (lambda _
+                   ;; SUBSTITUTE* & patches both have (dis)advantages.  This is
+                   ;; shorter & should ensure that no translation is forgotten.
+                   (substitute* (find-files "templates" "^admin\\.tmpl$")
+                     ((" class=\"halves\"") "")
+                     (("<FORM.* ACTION=\"/jobs.*</FORM>" match)
+                      (string-append match "</P>{BROKEN? "))
+                     (("</FORM>}" match)
+                      (string-append match "}")))))
+               (add-before 'configure 'patch-makedefs
+                 (lambda _
+                   (substitute* "Makedefs.in"
+                     (("INITDIR.*=.*@INITDIR@") "INITDIR = @prefix@/@INITDIR@")
+                     (("/bin/sh") (which "sh")))))
+               (add-before 'check 'skip-failing-tests
+                 (lambda _
+                   (substitute* "test/run-stp-tests.sh"
+                     ;; The number of error/warning lines differs, probably due
+                     ;; to a missing font.  Substitute the last observed count.
+                     (("(\\$count != )33" _ prefix)
+                      (string-append prefix "39"))))))))
     (native-inputs
      (list pkg-config))
     (inputs
@@ -335,122 +335,123 @@ applications''.  These must be installed separately.")
      (substitute-keyword-arguments (package-arguments cups-minimal)
        ((#:tests? _ #t)
         #t)
-       ((#:configure-flags flags '())
-        `(append ,flags
-                 (list "--with-languages=all"))) ; no ‘=all’ means none(!)
-       ((#:phases phases '%standard-phases)
-        `(modify-phases ,phases
-           (add-before 'check 'patch-tests
-             (lambda _
-               (let ((filters (assoc-ref %build-inputs "cups-filters"))
-                     (catpath (string-append
-                               (assoc-ref %build-inputs "coreutils") "/bin/"))
-                     (testdir (string-append (getcwd) "/tmp/")))
-                 (mkdir testdir)
-                 (substitute* "test/run-stp-tests.sh"
-                   ((" *BASE=/tmp/") (string-append "BASE=" testdir))
+       ((#:configure-flags flags #~'())
+        #~(append #$flags
+                  (list "--with-languages=all"))) ; no ‘=all’ means none(!)
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-before 'check 'patch-tests
+              (lambda* (#:key outputs #:allow-other-keys)
+                (let ((filters #$(this-package-input "cups-filters"))
+                      (catpath (string-append
+                                #$(this-package-input "coreutils") "/bin/"))
+                      (testdir (string-append (getcwd) "/tmp/")))
+                  (mkdir testdir)
+                  (substitute* "test/run-stp-tests.sh"
+                    ((" *BASE=/tmp/") (string-append "BASE=" testdir))
 
-                   ;; Allow installation of filters from the output directory
-                   ;; and from cups-filters.
-                   (("for dir in /usr/libexec/cups/filter /usr/lib/cups/filter")
-                    (string-append
-                     "for dir in "
-                     (assoc-ref %outputs "out") "/lib/cups/filter "
-                     filters "/lib/cups/filter"))
+                    ;; Allow installation of filters from the output directory
+                    ;; and from cups-filters.
+                    (("for dir in /usr/libexec/cups/filter /usr/lib/cups/filter")
+                     (string-append
+                      "for dir in "
+                      (assoc-ref outputs "out") "/lib/cups/filter "
+                      filters "/lib/cups/filter"))
 
-                   ;; Check for charsets in the default cups-filters output.
-                   (("/usr/share/cups/charsets")
-                    (string-append filters "/share/cups/charsets"))
+                    ;; Check for charsets in the default cups-filters output.
+                    (("/usr/share/cups/charsets")
+                     (string-append filters "/share/cups/charsets"))
 
-                   ;; Install additional required filters.
-                   (("instfilter texttopdf texttopdf pdf")
-                    (string-append
-                     "instfilter texttopdf texttopdf pdf;"
-                     "instfilter imagetoraster imagetoraster raster;"
-                     "instfilter gstoraster gstoraster raster;"
-                     "instfilter urftopdf urftopdf pdf;"
-                     "instfilter rastertopdf rastertopdf pdf;"
-                     "instfilter pstopdf pstopdf pdf"))
+                    ;; Install additional required filters.
+                    (("instfilter texttopdf texttopdf pdf")
+                     (string-append
+                      "instfilter texttopdf texttopdf pdf;"
+                      "instfilter imagetoraster imagetoraster raster;"
+                      "instfilter gstoraster gstoraster raster;"
+                      "instfilter urftopdf urftopdf pdf;"
+                      "instfilter rastertopdf rastertopdf pdf;"
+                      "instfilter pstopdf pstopdf pdf"))
 
-                   ;; Specify the location of the lpstat binary.
-                   (("description=\"`lpstat -l")
-                    "description=\"`../systemv/lpstat -l")
+                    ;; Specify the location of the lpstat binary.
+                    (("description=\"`lpstat -l")
+                     "description=\"`../systemv/lpstat -l")
 
-                   ;; Patch the shebangs of embedded scripts.
-                   (("#!/bin/sh") (string-append "#!" (which "sh")))
+                    ;; Patch the shebangs of embedded scripts.
+                    (("#!/bin/sh") (string-append "#!" (which "sh")))
 
-                   ;; Also link MIME definitions from cups-filters
-                   ;; to enable the additional filters for the test suite.
-                   (("ln -s \\$root/conf/mime\\.types")
-                    (string-append
-                     "ln -s " filters
-                     "/share/cups/mime/cupsfilters.types $BASE/share/mime; "
-                     "ln -s $root/conf/mime.types"))
-                   (("ln -s \\$root/conf/mime\\.convs")
-                    (string-append
-                     "ln -s " filters
-                     "/share/cups/mime/cupsfilters.convs $BASE/share/mime; "
-                     "ln -s $root/conf/mime.convs")))
+                    ;; Also link MIME definitions from cups-filters
+                    ;; to enable the additional filters for the test suite.
+                    (("ln -s \\$root/conf/mime\\.types")
+                     (string-append
+                      "ln -s " filters
+                      "/share/cups/mime/cupsfilters.types $BASE/share/mime; "
+                      "ln -s $root/conf/mime.types"))
+                    (("ln -s \\$root/conf/mime\\.convs")
+                     (string-append
+                      "ln -s " filters
+                      "/share/cups/mime/cupsfilters.convs $BASE/share/mime; "
+                      "ln -s $root/conf/mime.convs")))
 
-                 ;; Fix the search path for the "cat" command.
-                 (substitute* "cups/testfile.c"
-                   (("cupsFileFind\\(\"cat\", \"/bin\"")
-                    (string-append "cupsFileFind(\"cat\", \"" catpath "\""))
-                   (("cupsFileFind\\(\"cat\", \"/bin:/usr/bin\"")
-                    (string-append "cupsFileFind(\"cat\", \"" catpath "\""))))))
-           (add-after 'install 'install-cups-filters-symlinks
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out"))
-                     (cups-filters (assoc-ref inputs "cups-filters")))
-                 ;; Charsets.
-                 (symlink
-                  (string-append cups-filters "/share/cups/charsets")
-                  (string-append out "/share/charsets"))
+                  ;; Fix the search path for the "cat" command.
+                  (substitute* "cups/testfile.c"
+                    (("cupsFileFind\\(\"cat\", \"/bin\"")
+                     (string-append "cupsFileFind(\"cat\", \"" catpath "\""))
+                    (("cupsFileFind\\(\"cat\", \"/bin:/usr/bin\"")
+                     (string-append "cupsFileFind(\"cat\", \"" catpath "\""))))))
+            (add-after 'install 'install-cups-filters-symlinks
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (let ((out (assoc-ref outputs "out"))
+                      (cups-filters #$(this-package-input "cups-filters")))
+                  ;; Charsets.
+                  (symlink
+                   (string-append cups-filters "/share/cups/charsets")
+                   (string-append out "/share/charsets"))
 
-                 ;; MIME types, driver files, and PPDs.
-                 (for-each
-                  (lambda (f)
-                    (symlink (string-append cups-filters f)
-                             (string-append out f)))
-                  '("/share/cups/mime/cupsfilters.types"
-                    "/share/cups/mime/cupsfilters.convs"
-                    "/share/cups/drv/cupsfilters.drv"
-                    "/share/ppd"))
+                  ;; MIME types, driver files, and PPDs.
+                  (for-each
+                   (lambda (f)
+                     (symlink (string-append cups-filters f)
+                              (string-append out f)))
+                   '("/share/cups/mime/cupsfilters.types"
+                     "/share/cups/mime/cupsfilters.convs"
+                     "/share/cups/drv/cupsfilters.drv"
+                     "/share/ppd"))
 
-                 ;; Filters.
-                 (for-each
-                  (lambda (f)
-                    (symlink f
-                             (string-append out "/lib/cups/filter"
-                                            (basename f))))
-                  (find-files (string-append cups-filters "/lib/cups/filter")))
+                  ;; Filters.
+                  (for-each
+                   (lambda (f)
+                     (symlink f
+                              (string-append out "/lib/cups/filter"
+                                             (basename f))))
+                   (find-files (string-append cups-filters "/lib/cups/filter")))
 
-                 ;; Backends.
-                 (for-each
-                  (lambda (f)
-                    (symlink (string-append cups-filters f)
-                             (string-append out "/lib/cups/backend/"
-                                            (basename f))))
-                  '("/lib/cups/backend/parallel"
-                    "/lib/cups/backend/serial"))
+                  ;; Backends.
+                  (for-each
+                   (lambda (f)
+                     (symlink (string-append cups-filters f)
+                              (string-append out "/lib/cups/backend/"
+                                             (basename f))))
+                   '("/lib/cups/backend/parallel"
+                     "/lib/cups/backend/serial"))
 
-                 ;; Banners.
-                 (let ((banners "/share/cups/banners"))
-                   (delete-file-recursively (string-append out banners))
-                   (symlink (string-append cups-filters banners)
-                            (string-append out banners)))
+                  ;; Banners.
+                  (let ((banners "/share/cups/banners"))
+                    (delete-file-recursively (string-append out banners))
+                    (symlink (string-append cups-filters banners)
+                             (string-append out banners)))
 
-                 ;; Assorted data.
-                 (let ((data "/share/cups/data"))
-                   (delete-file-recursively (string-append out data))
-                   (symlink (string-append cups-filters data)
-                            (string-append out data))))))))))
+                  ;; Assorted data.
+                  (let ((data "/share/cups/data"))
+                    (delete-file-recursively (string-append out data))
+                    (symlink (string-append cups-filters data)
+                             (string-append out data))))))))))
     (inputs
-     `(("avahi" ,avahi)
-       ("gnutls" ,gnutls)
-       ("cups-filters" ,cups-filters)
-       ("linux-pam" ,linux-pam)
-       ("zlib"  ,zlib)))))
+     (list avahi
+           coreutils
+           cups-filters
+           gnutls
+           linux-pam
+           zlib))))
 
 (define-public cups-pk-helper
   (package
