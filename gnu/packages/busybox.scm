@@ -120,7 +120,7 @@ any small or embedded system.")
 (define-public toybox
   (package
     (name "toybox")
-    (version "0.8.6")
+    (version "0.8.7")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -128,7 +128,7 @@ any small or embedded system.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "0jq3368jps6jg717ikzhlc6whml3k2s9xy69zpj4i0r35c5ck622"))))
+                "150lvp7hf9ndafvmr42kb8xi86hxjd2zj4binwwhgjw2dwrvy25m"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases
