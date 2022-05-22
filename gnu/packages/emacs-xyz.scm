@@ -29745,7 +29745,7 @@ personal wiki.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00zclyh600865ys7pqiryp3k5li9h20bypvfp2bzqi3588hn9n4i"))))
+        (base32 "166n1q30xamms4lfqq9vp0yknq33gwlk54qaravxxwz01fdpgb25"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-helm-bibtex emacs-org-ref emacs-org-roam))
