@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020, 2021 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2022 Pavel Shlyak <p.shlyak@pantherx.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -305,10 +306,18 @@ used in the image."
     (define (partition->dos-type partition)
       ;; Return the MBR partition type corresponding to the given PARTITION.
       ;; See: https://en.wikipedia.org/wiki/Partition_type.
-      (let ((flags (partition-flags partition)))
+      (let ((flags (partition-flags partition))
+            (file-system (partition-file-system partition)))
         (cond
          ((member 'esp flags) "0xEF")
-         (else "0x83"))))
+         ((string-prefix? "ext" file-system) "0x83")
+         ((string=? file-system "vfat") "0x0E")
+         (else
+          (raise (condition
+                  (&message
+                   (message
+                    (format #f (G_ "unsupported partition type: ~a")
+                            file-system)))))))))
 
     (define (partition->gpt-type partition)
       ;; Return the genimage GPT partition type code corresponding to PARTITION.
