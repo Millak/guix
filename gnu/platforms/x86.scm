@@ -23,7 +23,8 @@
   #:export (i686-linux
             x86_64-linux
             i686-mingw
-            x86_64-mingw))
+            x86_64-mingw
+            hurd))
 
 (define i686-linux
   (platform
