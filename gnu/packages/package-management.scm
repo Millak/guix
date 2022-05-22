@@ -4,7 +4,7 @@
 ;;; Copyright © 2017 Muriithi Frederick Muriuki <fredmanglis@gmail.com>
 ;;; Copyright © 2017, 2018 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2017 Roel Janssen <roel@gnu.org>
-;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018 Sou Bunnbu <iyzsong@member.fsf.org>
@@ -1796,7 +1796,7 @@ for packaging and deployment of cross-compiled Windows applications.")
 (define-public libostree
   (package
     (name "libostree")
-    (version "2022.1")
+    (version "2022.2")
     (source
      (origin
        (method url-fetch)
@@ -1804,7 +1804,7 @@ for packaging and deployment of cross-compiled Windows applications.")
              "https://github.com/ostreedev/ostree/releases/download/v"
              (version-major+minor version) "/libostree-" version ".tar.xz"))
        (sha256
-        (base32 "1mfakwm0sjvb1vvl3jhc451yyf723k7c4vv1yqs8law4arw0x823"))))
+        (base32 "0sv70dqmf2w2lshp80sfh9m6qv5mrg72zqqbx63bd32dg2szbqkn"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
@@ -1813,8 +1813,7 @@ for packaging and deployment of cross-compiled Windows applications.")
            (lambda _
              ;; Don't try to use the non-existing '/var/tmp' as test
              ;; directory.
-             (setenv "TEST_TMPDIR" (getenv "TMPDIR"))
-             #t)))
+             (setenv "TEST_TMPDIR" (getenv "TMPDIR")))))
        ;; XXX: fails with:
        ;;     tap-driver.sh: missing test plan
        ;;     tap-driver.sh: internal error getting exit status
