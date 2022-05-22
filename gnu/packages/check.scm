@@ -16,7 +16,7 @@
 ;;; Copyright © 2016 Troy Sankey <sankeytms@gmail.com>
 ;;; Copyright © 2016 Lukas Gradl <lgradl@openmailbox.org>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017, 2018 Arun Isaac <arunisaac@systemreboot.net>
@@ -3314,7 +3314,7 @@ system.  The code under test requires no modification to work with pyfakefs.")
 (define-public python-aiounittest
   (package
     (name "python-aiounittest")
-    (version "1.4.0")
+    (version "1.4.1")
     ;; Pypi package lacks tests.
     (source
      (origin (method git-fetch)
@@ -3324,7 +3324,7 @@ system.  The code under test requires no modification to work with pyfakefs.")
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "0hql5mw62lclrpblbh7xvinwjfcdcfvhhlvl7xlq2hi9isjq1c8r"))))
+               "10x7ds09b9415r92f7g9714gxixvvq3bm5mnh29ml9aba8blcb0n"))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
