@@ -222,12 +222,13 @@ object."
                                         '())))
     (map cabal-dependency-name custom-setup-dependencies)))
 
-(define (filter-dependencies dependencies own-name)
+(define (filter-dependencies dependencies own-names)
   "Filter the dependencies included with the GHC compiler from DEPENDENCIES, a
-list with the names of dependencies.  OWN-NAME is the name of the Cabal
-package being processed and is used to filter references to itself."
+list with the names of dependencies.  OWN-NAMES is the name of the Cabal
+package being processed and its internal libaries and is used to filter
+references to itself."
   (filter (lambda (d) (not (member (string-downcase d)
-                                   (cons own-name ghc-standard-libraries))))
+                                   (append own-names ghc-standard-libraries))))
           dependencies))
 
 (define* (hackage-module->sexp cabal cabal-hash
@@ -248,9 +249,11 @@ the hash of the Cabal file."
   (define source-url
     (hackage-source-url name version))
 
+  (define own-names (cons (cabal-package-name cabal)
+                          (map cabal-library-name (cabal-package-library cabal))))
+
   (define hackage-dependencies
-    (filter-dependencies (cabal-dependencies->names cabal)
-                         (cabal-package-name cabal)))
+    (filter-dependencies (cabal-dependencies->names cabal) own-names))
 
   (define hackage-native-dependencies
     (lset-difference
@@ -260,7 +263,7 @@ the hash of the Cabal file."
                   (cabal-test-dependencies->names cabal)
                   '())
               (cabal-custom-setup-dependencies->names cabal))
-      (cabal-package-name cabal))
+      own-names)
      hackage-dependencies))
 
   (define dependencies

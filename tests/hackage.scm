@@ -368,6 +368,25 @@ executable cabal
 (test-assert "hackage->guix-package test without final newline"
   (eval-test-with-cabal test-cabal-no-final-newline match-ghc-foo))
 
+;; Make sure internal libraries will not be part of the dependencies.
+(define test-cabal-internal-library-ignored
+  "name: foo
+version: 1.0.0
+homepage: http://test.org
+synopsis: synopsis
+description: description
+license: BSD3
+executable cabal
+  build-depends:
+    HTTP       >= 4000.2.5 && < 4000.3,
+    internal
+library internal
+  build-depends: mtl        >= 2.0      && < 3
+")
+
+(test-assert "hackage->guix-package test internal libraries are ignored"
+  (eval-test-with-cabal test-cabal-internal-library-ignored match-ghc-foo))
+
 ;; Check if-elif-else statements
 (define test-cabal-if
   "name: foo
