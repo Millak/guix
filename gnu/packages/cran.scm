@@ -969,7 +969,7 @@ variables.")
     (home-page "https://github.com/dynverse/lmds")
     (synopsis "Landmark multi-dimensional scaling")
     (description
-     "This package provides a fast dimensionality reduction method scaleable
+     "This package provides a fast dimensionality reduction method scalable
 to large numbers of samples.  @dfn{Landmark Multi-Dimensional Scaling} (LMDS)
 is an extension of classical Torgerson MDS, but rather than calculating a
 complete distance matrix between all pairs of samples, only the distances
