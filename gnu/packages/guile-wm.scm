@@ -115,8 +115,7 @@ dependencies.")
                    (("^wmdir = .*$")
                     (string-append "wmdir = " out
                                    "/share/guile/site/"
-                                   effective "\n"))))
-               #t))
+                                   effective "\n"))))))
            (add-after 'install 'set-load-path
              (lambda* (#:key inputs outputs #:allow-other-keys)
                ;; Put Guile-XCB's and Guile-WM's modules in the
@@ -136,8 +135,7 @@ dependencies.")
                      (,mods ,(string-append xcb "/share/guile/site/" effective)))
                    `("GUILE_LOAD_COMPILED_PATH" ":" prefix
                      (,gos ,(string-append xcb "/lib/guile/"
-                                           effective "/site-ccache")))))
-               #t))
+                                           effective "/site-ccache")))))))
            (add-after 'install 'install-go-files
              (lambda* (#:key outputs inputs #:allow-other-keys)
                (let* ((out (assoc-ref outputs "out"))
@@ -158,8 +156,7 @@ dependencies.")
                                     (go   (string-append object-dir base ".go")))
                                (invoke "guild" "compile" "-L" module-dir
                                        file "-o" go)))
-                           (find-files module-dir "\\.scm$"))
-                 #t)))
+                           (find-files module-dir "\\.scm$")))))
            (add-after 'install 'install-xsession
              (lambda* (#:key outputs #:allow-other-keys)
                ;; add a .desktop file to xsessions
@@ -175,8 +172,7 @@ dependencies.")
                                     Comment=~a~@
                                     Exec=~a/bin/guile-wm~@
                                     Type=Application~%"
-                             ,name ,synopsis %output))))
-               #t)))))
+                             ,name ,synopsis %output)))))))))
       (native-inputs (list guile-2.2 guile-xcb pkg-config texinfo))
       (inputs (list guile-2.2 guile-xcb))
       (home-page "https://github.com/mwitmer/guile-wm/releases")
