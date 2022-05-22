@@ -1617,7 +1617,7 @@ types are supported, as is encryption.")
              (invoke "makeinfo" "--no-split"
                      "-o" "rec-mode.info" "rec-mode.texi"))))))
     (native-inputs
-     `(("texinfo" ,texinfo)))
+     (list texinfo))
     (home-page "https://www.gnu.org/software/recutils/")
     (synopsis "Emacs mode for working with recutils database files")
     (description "This package provides an Emacs major mode @code{rec-mode}
