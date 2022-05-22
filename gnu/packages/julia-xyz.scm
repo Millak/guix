@@ -1650,7 +1650,7 @@ combinations of dual numbers with predefined Julia numeric types.")
     (propagated-inputs
      (list julia-arrayinterface))
     (home-page "https://github.com/ChrisRackauckas/EllipsisNotation.jl")
-    (synopsis "Elipsis notation implementation")
+    (synopsis "Ellipsis notation implementation")
     (description "This implements the notation @code{..} for indexing arrays.
 It's similar to the Python @code{...} in that it means \"all of the columns
 before (or after)\".")
