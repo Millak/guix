@@ -11,7 +11,7 @@
 ;;; Copyright © 2015, 2017, 2018, 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2017, 2018 Nikita <nikita@n0.is>
-;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Vasile Dumitrascu <va511e@yahoo.com>
 ;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017, 2020 EuAndreh <eu@euandre.org>
@@ -180,7 +180,7 @@ as well as the classic centralized workflow.")
 (define-public breezy
   (package
     (name "breezy")
-    (version "3.2.1")
+    (version "3.2.2")
     (source
      (origin
        (method url-fetch)
@@ -188,14 +188,14 @@ as well as the classic centralized workflow.")
                            (version-major+minor version) "/" version
                            "/+download/breezy-" version ".tar.gz"))
        (sha256
-        (base32
-         "0p6q545xpmxa6fgvkjglfpqpybg33817vhw0a82az8i83bmnicp0"))))
+        (base32 "1md4b6ajawf5h50fqizmjj0g833ihc674dh7fn0mvl4d412nwyhq"))))
     (build-system python-build-system)
     ;; TODO: Maybe regenerate C files with Cython?
     (inputs
      `(("gettext" ,gettext-minimal)
        ("python-configobj" ,python-configobj)
        ("python-dulwich" ,python-dulwich)
+       ("python-fastbencode" ,python-fastbencode)
        ("python-fastimport" ,python-fastimport)
        ("python-paramiko" ,python-paramiko)
        ("python-patiencediff" ,python-patiencediff)
