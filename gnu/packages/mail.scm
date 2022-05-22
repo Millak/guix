@@ -4024,7 +4024,7 @@ It is a replacement for the @command{urlview} program.")
 (define-public ytnef
   (package
     (name "ytnef")
-    (version "1.9.3")
+    (version "2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4033,9 +4033,7 @@ It is a replacement for the @command{urlview} program.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "07h48s5qf08503pp9kafqbwipdqghiif22ghki7z8j67gyp04l6l"))
-              (patches (search-patches "ytnef-CVE-2021-3403.patch"
-                                       "ytnef-CVE-2021-3404.patch"))))
+                "0pk7jp8yc91nahcb7659khwdid0ibfi7n0135kwfnasak8gr75rz"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake libtool))
