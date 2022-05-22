@@ -7,7 +7,7 @@
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2016, 2019, 2021 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2015, 2018, 2020, 2021 Kyle Meyer <kyle@kyleam.com>
+;;; Copyright © 2015, 2018, 2020, 2021, 2022 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2015, 2017, 2018, 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2017, 2018 Nikita <nikita@n0.is>
@@ -2576,6 +2576,28 @@ Mercurial, Bazaar, Darcs, CVS, Fossil, and Veracity.")
 collections efficiently.  Mirrors decide to clone and update repositories
 based on a manifest file published by servers.")
     (license license:gpl3+)))
+
+(define-public patatt
+  (package
+    (name "patatt")
+    (version "0.4.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "patatt" version))
+       (sha256
+        (base32 "0fpbkmdlnz9s1lakw11jlrzpz4mb6f4dksdiir9g1ppq0g34sy58"))))
+    (build-system python-build-system)
+    (arguments '(#:tests? #f))          ; No tests.
+    (propagated-inputs
+     (list python-pynacl))
+    (home-page "https://git.kernel.org/pub/scm/utils/patatt/patatt.git")
+    (synopsis "Tool for cryptographic patch attestation")
+    (description "This utility provides end-to-end cryptographic attestation
+of patches sent via mail.  It does so by adapting the DKIM email signature
+standard to include cryptographic signatures via the X-Developer-Signature
+email header.")
+    (license license:expat-0)))
 
 (define-public b4
   (package
