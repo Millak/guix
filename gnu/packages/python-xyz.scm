@@ -3592,7 +3592,7 @@ files.")
 (define-public python-cli-helpers
   (package
     (name "python-cli-helpers")
-    (version "2.0.1")
+    (version "2.2.1")
     (source
      (origin
        ;; There's no source tarball on PyPI.
@@ -3602,13 +3602,12 @@ files.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bg2iw9l5dip0kbs00hajdk2v18wvhssbnq8hdf71278qf0wks5l"))))
+        (base32 "1hzavh9v9lkd1dn9f0nvg80f7v4banxvcrj10zy72przqz51k1sb"))))
     (build-system python-build-system)
     (native-inputs
      (list python-pytest))
     (propagated-inputs
-     (list python-wcwidth python-configobj python-tabulate
-           python-terminaltables))
+     (list python-wcwidth python-configobj python-tabulate))
     (home-page "https://github.com/dbcli/cli_helpers")
     (synopsis "Helpers for building command-line apps")
     (description
