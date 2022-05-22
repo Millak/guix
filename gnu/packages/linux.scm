@@ -4920,7 +4920,7 @@ capabilities of the Linux kernel.")
 (define-public libite
   (package
     (name "libite")
-    (version "2.5.1")
+    (version "2.5.2")
     (source
      (origin
        (method git-fetch)
@@ -4929,8 +4929,7 @@ capabilities of the Linux kernel.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "14i0q0nxns6g4zh86zdqy97dwljkqdr5l85ammljzccsrijg9m8v"))))
+        (base32 "0i27ppb557kdc1hm7nf0f5r7sxvqma31pr57h79whl6qcp28gy4a"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
