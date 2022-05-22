@@ -400,6 +400,7 @@ other apt sources typically provided by open source developers.")
      `(("autoconf" ,autoconf)
        ("automake" ,automake)
        ("gettext" ,gettext-minimal)
+       ("gnupg" ,gnupg)                 ; to run t/Dpkg_OpenPGP.t
        ("libtool" ,libtool)
        ("pkg-config" ,pkg-config)
        ("perl-io-string" ,perl-io-string)))
