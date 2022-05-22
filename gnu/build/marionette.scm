@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Chris Marusich <cmmarusich@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -196,31 +196,38 @@ FILE has not shown up after TIMEOUT seconds, raise an error."
      (error "file didn't show up" file))))
 
 (define* (wait-for-tcp-port port marionette
-                            #:key (timeout 20))
+                            #:key
+                            (timeout 20)
+                            (address `(make-socket-address AF_INET
+                                                           INADDR_LOOPBACK
+                                                           ,port)))
   "Wait for up to TIMEOUT seconds for PORT to accept connections in
-MARIONETTE.  Raise an error on failure."
+MARIONETTE.  ADDRESS must be an expression that returns a socket address,
+typically a call to 'make-socket-address'.  Raise an error on failure."
   ;; Note: The 'connect' loop has to run within the guest because, when we
   ;; forward ports to the host, connecting to the host never raises
   ;; ECONNREFUSED.
   (match (marionette-eval
-          `(begin
-             (let ((sock (socket PF_INET SOCK_STREAM 0)))
-               (let loop ((i 0))
-                 (catch 'system-error
-                   (lambda ()
-                     (connect sock AF_INET INADDR_LOOPBACK ,port)
-                     (close-port sock)
-                     'success)
-                   (lambda args
-                     (if (< i ,timeout)
-                         (begin
-                           (sleep 1)
-                           (loop (+ 1 i)))
-                         'failure))))))
+          `(let* ((address ,address)
+                  (sock (socket (sockaddr:fam address) SOCK_STREAM 0)))
+             (let loop ((i 0))
+               (catch 'system-error
+                 (lambda ()
+                   (connect sock address)
+                   (close-port sock)
+                   'success)
+                 (lambda args
+                   (if (< i ,timeout)
+                       (begin
+                         (sleep 1)
+                         (loop (+ 1 i)))
+                       (list 'failure address))))))
           marionette)
     ('success #t)
-    ('failure
-     (error "nobody's listening on port" port))))
+    (('failure address)
+     (error "nobody's listening on port"
+            (list (inet-ntop (sockaddr:fam address) (sockaddr:addr address))
+                  (sockaddr:port address))))))
 
 (define* (wait-for-unix-socket file-name marionette
                                 #:key (timeout 20))
