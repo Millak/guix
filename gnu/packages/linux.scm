@@ -8190,7 +8190,7 @@ introduced in Linux 2.6.31.")
 (define-public libnfnetlink
   (package
     (name "libnfnetlink")
-    (version "1.0.1")
+    (version "1.0.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -8198,7 +8198,7 @@ introduced in Linux 2.6.31.")
                     "libnfnetlink-" version ".tar.bz2"))
               (sha256
                (base32
-                "06mm2x4b01k3m7wnrxblk9j0mybyr4pfz28ml7944xhjx6fy2w7j"))))
+                "0xn3rcrzxr6g82kfxzs9bqn2zvl2kf2yda30drwb9vr6sk1wfr5h"))))
     (build-system gnu-build-system)
     (home-page "https://www.netfilter.org/projects/libnfnetlink/")
     (synopsis "Low-level netfilter netlink communication library")
