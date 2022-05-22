@@ -891,51 +891,52 @@ libgit2 bindings for Emacs, intended to boost the performance of Magit.")
         (base32 "0cxyvp2aav27znc7mf6c83q5pddpdniaqkrxn1r8dbgr540qmnpn"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:emacs ,emacs-no-x             ;module support is required
-       #:tests? #t
-       #:test-command '("make" "test")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'build-info-manual
-           (lambda _
-             (invoke "make" "info")
-             ;; Copy info files to the lisp directory, which acts as
-             ;; the root of the project for the emacs-build-system.
-             (for-each (lambda (f)
-                         (install-file f "lisp"))
-                       (find-files "Documentation" "\\.info$"))
-             (chdir "lisp")))
-         (add-after 'build-info-manual 'set-magit-version
-           (lambda _
-             (make-file-writable "magit.el")
-             (emacs-substitute-variables "magit.el"
-               ("magit-version" ,version))))
-         (add-after 'set-magit-version 'patch-exec-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((perl (assoc-ref inputs "perl")))
-               (make-file-writable "magit-sequence.el")
-               (emacs-substitute-variables "magit-sequence.el"
-                 ("magit-perl-executable" (string-append perl "/bin/perl"))))))
-         (add-before 'check 'configure-git
-           (lambda _
-             ;; Otherwise some tests fail with error "unable to auto-detect
-             ;; email address".
-             (setenv "HOME" (getcwd))
-             (invoke "git" "config" "--global" "user.name" "toto")
-             (invoke "git" "config" "--global" "user.email"
-                     "toto@toto.com")))
-         (add-after 'configure-git 'disable-tramp-test
-           (lambda _
-             ;; There is an issue causing TRAMP to fail in the build
-             ;; environment.  Setting the tramp-remote-shell parameter of
-             ;; the sudo-method to the file name of the shell didn't help.
-             (chdir "..")
-             (substitute* "t/magit-tests.el"
-               (("^\\(ert-deftest magit-toplevel:tramp.*" all)
-                (string-append all "  (skip-unless nil)")))))
-         (add-before 'install 'enter-lisp-directory
-           (lambda _
-             (chdir "lisp"))))))
+     (list
+      #:emacs emacs-no-x             ;module support is required
+      #:tests? #t
+      #:test-command #~(list "make" "test")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'build-info-manual
+            (lambda _
+              (invoke "make" "info")
+              ;; Copy info files to the lisp directory, which acts as
+              ;; the root of the project for the emacs-build-system.
+              (for-each (lambda (f)
+                          (install-file f "lisp"))
+                        (find-files "Documentation" "\\.info$"))
+              (chdir "lisp")))
+          (add-after 'build-info-manual 'set-magit-version
+            (lambda _
+              (make-file-writable "magit.el")
+              (emacs-substitute-variables "magit.el"
+                ("magit-version" #$version))))
+          (add-after 'set-magit-version 'patch-exec-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (make-file-writable "magit-sequence.el")
+              (emacs-substitute-variables "magit-sequence.el"
+                ("magit-perl-executable"
+                 (search-input-file inputs "/bin/perl")))))
+          (add-before 'check 'configure-git
+            (lambda _
+              ;; Otherwise some tests fail with error "unable to auto-detect
+              ;; email address".
+              (setenv "HOME" (getcwd))
+              (invoke "git" "config" "--global" "user.name" "toto")
+              (invoke "git" "config" "--global" "user.email"
+                      "toto@toto.com")))
+          (add-after 'configure-git 'disable-tramp-test
+            (lambda _
+              ;; There is an issue causing TRAMP to fail in the build
+              ;; environment.  Setting the tramp-remote-shell parameter of
+              ;; the sudo-method to the file name of the shell didn't help.
+              (chdir "..")
+              (substitute* "t/magit-tests.el"
+                (("^\\(ert-deftest magit-toplevel:tramp.*" all)
+                 (string-append all "  (skip-unless nil)")))))
+          (add-before 'install 'enter-lisp-directory
+            (lambda _
+              (chdir "lisp"))))))
     (native-inputs
      (list texinfo))
     (inputs
