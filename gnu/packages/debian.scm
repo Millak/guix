@@ -336,7 +336,7 @@ other apt sources typically provided by open source developers.")
 (define-public dpkg
   (package
     (name "dpkg")
-    (version "1.21.0")
+    (version "1.21.8")
     (source
       (origin
         (method git-fetch)
@@ -345,14 +345,14 @@ other apt sources typically provided by open source developers.")
                (commit version)))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0g33cyd0qbyfdrphcw8m8ikj2hxqpjbyxbhvnp751515c8hgc4rx"))))
+         (base32 "1whb78pywdlm4v1ablgvvplqjn15b6qrwqkj0pihw5j77aakyz2s"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (add-before 'bootstrap 'patch-version
            (lambda _
-             (patch-shebang "get-version")
+             (patch-shebang "build-aux/get-version")
              (with-output-to-file ".dist-version"
                (lambda () (display ,version)))))
          (add-after 'unpack 'set-perl-libdir
