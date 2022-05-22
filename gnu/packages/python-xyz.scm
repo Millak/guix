@@ -107,7 +107,7 @@
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2021 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
-;;; Copyright © 2021 Pradana Aumars <paumars@courrier.dev>
+;;; Copyright © 2021, 2022 Pradana Aumars <paumars@courrier.dev>
 ;;; Copyright © 2021, 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Sébastien Lerique <sl@eauchat.org>
 ;;; Copyright © 2021 Raphaël Mélotte <raphael.melotte@mind.be>
@@ -31786,4 +31786,22 @@ Pickle for serialization, which has many drawbacks.")
     (description
      "This package provides a lightweight console printing and formatting
 toolkit for Python.")
+    (license license:expat)))
+
+(define-public python-srt
+  (package
+    (name "python-srt")
+    (version "3.5.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "srt" version))
+              (sha256
+               (base32
+                "0l24710spxarijmv3h7iicvx0lv6m3d4xg77nd9kyv8jwifav93s"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/cdown/srt")
+    (synopsis "SRT parsing library")
+    (description
+     "This package provides a Python library for parsing, modifying, and
+composing subtitles in the SRT file format.")
     (license license:expat)))
