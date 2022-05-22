@@ -2,7 +2,7 @@
 ;;; Copyright © 2016 David Thompson <davet@gnu.org>
 ;;; Copyright © 2016, 2019, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018, 2020–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
@@ -179,18 +179,16 @@ based on human speech recordings.")
 (define-public espeak-ng
   (package
     (name "espeak-ng")
-    (version "1.50")
-    (home-page "https://github.com/espeak-ng/espeak-ng")
-    ;; Note: eSpeak NG publishes release tarballs, but the 1.50 tarball is
-    ;; broken: <https://github.com/espeak-ng/espeak-ng/issues/683>.
-    ;; Download the raw repository to work around it; remove 'native-inputs'
-    ;; below when switching back to the release tarball.
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference (url home-page) (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32 "0jkqhf2h94vbqq7mg7mmm23bq372fa7mdk941my18c3vkldcir1b"))))
+    (version "1.51")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/espeak-ng/espeak-ng")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xhgdmvpgi464x9ba586c6hvscfkbhry75cv796hl9pz1nawq31b"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--disable-static")
@@ -202,6 +200,7 @@ based on human speech recordings.")
      (list autoconf automake libtool which))
     (inputs
      (list libcap pcaudiolib))
+    (home-page "https://github.com/espeak-ng/espeak-ng")
     (synopsis "Software speech synthesizer")
     (description
      "eSpeak NG is a software speech synthesizer for more than 100 languages.
