@@ -464,6 +464,18 @@ an interpreter, a compiler, a debugger, and much more.")
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)
+         (add-after 'unpack 'fix-build-id
+           ;; One of the build scripts makes a build id using the current date.
+           ;; Replace it with a reproducible id using a part of the output hash.
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((hash (substring (assoc-ref outputs "out")
+                                    (+ (string-length (%store-directory)) 1)
+                                    (+ (string-length (%store-directory)) 9))))
+               (substitute* "make-config.sh"
+                 (("echo .* > output/build-id.inc")
+                  (string-append "echo '\"'guix-sbcl-"
+                                 hash
+                                 "'\"' > output/build-id.inc"))))))
          (add-after 'unpack 'replace-asdf
            ;; SBCL developers have not committed to keeping ASDF up to date
            ;; due to breaking changes [1]. Guix can handle this situation
