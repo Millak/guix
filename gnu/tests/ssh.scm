@@ -136,8 +136,18 @@ root with an empty password."
                     (= pid (wait-for-file #$pid-file marionette))
                     pid)))
 
-            (test-assert "wait for port 22"
+            (test-assert "wait for port 22, IPv4"
               (wait-for-tcp-port 22 marionette))
+
+            (test-assert "wait for port 22, IPv6"
+              ;; Make sure it's also available as IPv6.
+              ;; See <https://issues.guix.gnu.org/55335>.
+              (wait-for-tcp-port 22 marionette
+                                 #:address
+                                 `(make-socket-address
+                                   AF_INET6
+                                   (inet-pton AF_INET6 "::1")
+                                   22)))
 
             ;; Connect to the guest over SSH.  Make sure we can run a shell
             ;; command there.

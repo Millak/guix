@@ -528,19 +528,32 @@ of user-name/file-like tuples."
     #~(list (string-append #$(openssh-configuration-openssh config) "/sbin/sshd")
             "-D" "-f" #$(openssh-config-file config)))
 
+  (define inetd-style?
+    ;; Whether to use 'make-inetd-constructor'.  That procedure appeared in
+    ;; Shepherd 0.9.0, but in 0.9.0, 'make-inetd-constructor' wouldn't let us
+    ;; pass a list of endpoints, and it wouldn't let us define a service
+    ;; listening on both IPv4 and IPv6, hence the conditional below.
+    #~(and (defined? 'make-inetd-constructor)
+           (not (string=? (@ (shepherd config) Version) "0.9.0"))))
+
   (list (shepherd-service
          (documentation "OpenSSH server.")
          (requirement '(syslogd loopback))
          (provision '(ssh-daemon ssh sshd))
-         (start #~(if (defined? 'make-inetd-constructor)
+
+         (start #~(if #$inetd-style?
                       (make-inetd-constructor
                        (append #$openssh-command '("-i"))
-                       (make-socket-address AF_INET INADDR_ANY
-                                            #$port-number)
+                       (list (endpoint
+                              (make-socket-address AF_INET INADDR_ANY
+                                                   #$port-number))
+                             (endpoint
+                              (make-socket-address AF_INET6 IN6ADDR_ANY
+                                                   #$port-number)))
                        #:max-connections #$max-connections)
                       (make-forkexec-constructor #$openssh-command
                                                  #:pid-file #$pid-file)))
-         (stop #~(if (defined? 'make-inetd-destructor)
+         (stop #~(if #$inetd-style?
                      (make-inetd-destructor)
                      (make-kill-destructor)))
          (auto-start? (openssh-auto-start? config)))))
