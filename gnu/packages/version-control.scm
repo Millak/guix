@@ -2620,6 +2620,8 @@ email header.")
                (delete 'sanity-check))))
     (inputs
      (list python-dkimpy python-dnspython python-requests))
+    (propagated-inputs
+     (list patatt))
     (home-page "https://git.kernel.org/pub/scm/utils/b4/b4.git")
     (synopsis "Tool for working with patches in public-inbox archives")
     (description
