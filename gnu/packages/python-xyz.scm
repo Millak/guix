@@ -31,7 +31,7 @@
 ;;; Copyright © 2016, 2017, 2019 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2016, 2017, 2018, 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2016, 2017, 2018, 2020, 2021 Julien Lepiller <julien@lepiller.eu>
-;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016, 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017 Carlo Zancanaro <carlo@zancanaro.id.au>
 ;;; Copyright © 2017 Frederick M. Muriithi <fredmanglis@gmail.com>
@@ -13724,6 +13724,34 @@ Debian-related files, such as:
       "This Python library implements several JSON specs, like JSON Schema,
 JSON Reference and JSON Pointer.")
     (license license:bsd-3)))
+
+(define-public python-fastbencode
+  (package
+    (name "python-fastbencode")
+    (version "0.0.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "fastbencode" version))
+       (sha256
+        (base32 "1r66w3vpmvfmssshjpgqaj2m14c8p94nymr96mwn61idajz9mg5n"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/breezy-team/fastbencode")
+    (synopsis "Python Bencode (de)serializer with optional fast C extensions")
+    (description
+     "The fastbencode Python package implements the bencode serialization
+format for storing and transmitting loosely structured data, originally used
+by BitTorrent.
+
+The format can encode four different types of values: byte strings, integers,
+lists, and dictionaries (associative arrays).  It's simple and unaffected by
+endianness,
+
+This package includes both a pure-Python version and an optional C extension
+based on Cython.  Both provide the same functionality, but the C version has
+significantly better performance.")
+    (license (list license:expat        ; _bencode_py.py
+                   license:gpl2+))))    ; __init__.py
 
 (define-public python-fastjsonschema
   (package
