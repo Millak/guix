@@ -4,6 +4,7 @@
 ;;; Copyright © 2017, 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2019 Pierre-Moana Levesque <pierre.moana.levesque@gmail.com>
+;;; Copyright © 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -30,7 +31,8 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
-  #:use-module (guix build-system gnu))
+  #:use-module (guix build-system gnu)
+  #:use-module (guix utils))
 
 (define-public guile-xcb
   (let ((commit "db7d5a393cc37a56f66541b3f33938b40c6f35b3")
@@ -48,16 +50,17 @@
                  (base32
                   "16w4vgzbmnwih4bgfn8rw85ryfvzhc6hyly6bic9sd7hhc82rcnd"))))
       (build-system gnu-build-system)
-      (arguments '(;; Parallel builds fail.
-                   #:parallel-build? #f
-                   #:configure-flags (list (string-append
-                                            "--with-guile-site-dir="
-                                            (assoc-ref %outputs "out")
-                                            "/share/guile/site/2.2")
-                                           (string-append
-                                            "--with-guile-site-ccache-dir="
-                                            (assoc-ref %outputs "out")
-                                            "/lib/guile/2.2/site-ccache"))))
+      (arguments
+       `( ;; Parallel builds fail.
+         #:parallel-build? #f
+         #:configure-flags
+         (let ((out (assoc-ref %outputs "out"))
+               (effective ,(version-major+minor
+                            (package-version (this-package-input "guile")))))
+           (list (string-append "--with-guile-site-dir=" out
+                                "/share/guile/site/" effective)
+                 (string-append "--with-guile-site-ccache-dir=" out
+                                "/lib/guile/" effective "/site-ccache")))))
       (native-inputs (list guile-2.2 pkg-config texinfo))
       (inputs `(("guile" ,guile-2.2)
                 ("xcb" ,xcb-proto)))
