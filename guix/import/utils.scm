@@ -11,6 +11,7 @@
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2022 Alice Brenon <alice.brenon@ens-lyon.fr>
+;;; Copyright © 2022 Kyle Meyer <kyle@kyleam.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -176,6 +177,7 @@ of the string VERSION is replaced by the symbol 'version."
     ("EPL-2.0"                     'license:epl2.0)
     ("EUPL-1.2"                    'license:eupl1.2)
     ("MIT"                         'license:expat)
+    ("MIT-0"                       'license:expat-0)
     ("FTL"                         'license:freetype)
     ("FreeBSD-DOC"                 'license:freebsd-doc)
     ("Freetype"                    'license:freetype)
