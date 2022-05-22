@@ -29479,3 +29479,32 @@ Information about these scales can be
 @url{https://en.wikipedia.org/wiki/List_of_musical_scales_and_modes, found on
 Wikipedia}.")
     (license license:expat)))
+
+(define-public python-langcodes
+  (package
+    (name "python-langcodes")
+    (version "3.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "langcodes" version))
+              (sha256
+               (base32
+                "1xkyh3qdcigb18qiimbwl2669y22hhdmd89mqcd270c7lbahfkbr"))))
+    (build-system python-build-system)
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/rspeer/langcodes")
+    (synopsis "Python library for working with language codes")
+    (description
+     "This package provides a Python library for working with and comparing
+language codes.
+
+@code{python-langcodes} implements @url{http://tools.ietf.org/html/bcp47, BCP
+47}, the IETF Best Current Practices on Tags for Identifying Languages.  BCP
+47 is also known as RFC 5646.  It subsumes ISO 639 and is backward compatible
+with it, and it also implements recommendations from the
+@url{http://cldr.unicode.org/, Unicode CLDR}.
+
+@code{python-langcodes} can also refer to a database of language properties
+and names, built from Unicode CLDR and the IANA subtag registry, if you
+install @code{python-language-data}.")
+    (license license:expat)))
