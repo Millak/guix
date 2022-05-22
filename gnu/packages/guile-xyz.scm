@@ -684,6 +684,7 @@ communication between fibers.
 Note that Fibers makes use of some Guile 2.1/2.2-specific features and
 is not available for Guile 2.0.")
      (home-page "https://github.com/wingo/fibers")
+     (properties '((upstream-name . "fibers")))
      (license license:lgpl3+))))
 
 (define-public guile-fibers
