@@ -31768,3 +31768,22 @@ function from the registry.  This makes the object easy to serialize, because th
 name is a simple string.  If you instead saved the function, you'd have to use
 Pickle for serialization, which has many drawbacks.")
     (license license:expat)))
+
+(define-public python-wasabi
+  (package
+    (name "python-wasabi")
+    (version "0.9.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "wasabi" version))
+              (sha256
+               (base32
+                "1kwqfalq7qxs9f7xb2m055g01qpbznyzxl7sjnzjdvvhkczg39md"))))
+    (build-system python-build-system)
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/ines/wasabi")
+    (synopsis "Console printing and formatting toolkit")
+    (description
+     "This package provides a lightweight console printing and formatting
+toolkit for Python.")
+    (license license:expat)))
