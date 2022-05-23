@@ -41,6 +41,7 @@
   #:use-module (gnu services linux)
   #:use-module (gnu services shepherd)
   #:use-module (gnu services dbus)
+  #:use-module (gnu services admin)
   #:use-module (gnu system shadow)
   #:use-module (gnu system pam)
   #:use-module ((gnu system file-systems) #:select (file-system-mapping))
@@ -384,6 +385,11 @@ daemon is responsible for allocating IP addresses to its client.")))
 ;;; NTP.
 ;;;
 
+
+(define %ntp-log-rotation
+  (list (log-rotation
+         (files '("/var/log/ntpd.log")))))
+
 (define ntp-server-types (make-enumeration
                           '(pool
                             server
@@ -532,7 +538,9 @@ restrict source notrap nomodify noquery\n"))
                        (service-extension account-service-type
                                           (const %ntp-accounts))
                        (service-extension activation-service-type
-                                          ntp-service-activation)))
+                                          ntp-service-activation)
+                       (service-extension rottlog-service-type
+                                          (const %ntp-log-rotation))))
                 (description
                  "Run the @command{ntpd}, the Network Time Protocol (NTP)
 daemon of the @uref{http://www.ntp.org, Network Time Foundation}.  The daemon
@@ -614,7 +622,7 @@ will keep the system clock synchronized with that of the given servers.")
                      ;; When ntpd is daemonized it repeatedly tries to respawn
                      ;; while running, leading shepherd to disable it.  To
                      ;; prevent spamming stderr, redirect output to logfile.
-                     #:log-file "/var/log/ntpd"))
+                     #:log-file "/var/log/ntpd.log"))
            (stop #~(make-kill-destructor))))))
 
 (define (openntpd-service-activation config)
@@ -640,7 +648,9 @@ will keep the system clock synchronized with that of the given servers.")
                        (service-extension profile-service-type
                                           (compose list openntpd-configuration-openntpd))
                        (service-extension activation-service-type
-                                          openntpd-service-activation)))
+                                          openntpd-service-activation)
+                       (service-extension rottlog-service-type
+                                          (const %ntp-log-rotation))))
                 (default-value (openntpd-configuration))
                 (description
                  "Run the @command{ntpd}, the Network Time Protocol (NTP)
@@ -987,6 +997,10 @@ HiddenServicePort ~a ~a~%"
                 (stop #~(make-kill-destructor))
                 (documentation "Run the Tor anonymous network overlay."))))))))
 
+(define %tor-log-rotation
+  (list (log-rotation
+         (files '("/var/log/tor.log")))))
+
 (define (tor-activation config)
   "Set up directories for Tor and its hidden services, if any."
   #~(begin
@@ -1032,7 +1046,9 @@ HiddenServicePort ~a ~a~%"
                        (service-extension account-service-type
                                           (const %tor-accounts))
                        (service-extension activation-service-type
-                                          tor-activation)))
+                                          tor-activation)
+                       (service-extension rottlog-service-type
+                                          (const %tor-log-rotation))))
 
                 ;; This can be extended with hidden services.
                 (compose concatenate)
@@ -1314,6 +1330,10 @@ wireless networking."))))
                       #:log-file "/var/log/connman.log"))
             (stop #~(make-kill-destructor)))))))
 
+(define %connman-log-rotation
+  (list (log-rotation
+         (files '("/var/log/connman.log")))))
+
 (define connman-service-type
   (let ((connman-package (compose list connman-configuration-connman)))
     (service-type (name 'connman)
@@ -1328,7 +1348,9 @@ wireless networking."))))
                                             connman-activation)
                          ;; Add connman to the system profile.
                          (service-extension profile-service-type
-                                            connman-package)))
+                                            connman-package)
+                         (service-extension rottlog-service-type
+                                            (const %connman-log-rotation))))
                   (default-value (connman-configuration))
                   (description
                    "Run @url{https://01.org/connman,Connman},
@@ -1570,12 +1592,18 @@ extra-settings "\n"))))
                    #:log-file "/var/log/hostapd.log"))
          (stop #~(make-kill-destructor)))))
 
+(define %hostapd-log-rotation
+  (list (log-rotation
+         (files '("/var/log/hostapd.log")))))
+
 (define hostapd-service-type
   (service-type
    (name 'hostapd)
    (extensions
     (list (service-extension shepherd-root-service-type
-                             hostapd-shepherd-services)))
+                             hostapd-shepherd-services)
+          (service-extension rottlog-service-type
+                             (const %hostapd-log-rotation))))
    (description
     "Run the @uref{https://w1.fi/hostapd/, hostapd} daemon for Wi-Fi access
 points and authentication servers.")))
@@ -1867,6 +1895,10 @@ table inet filter {
        ;; SIGTERM doesn't always work for some reason.
        (stop #~(make-kill-destructor SIGINT))))))
 
+(define %pagekite-log-rotation
+  (list (log-rotation
+         (files '("/var/log/pagekite.log")))))
+
 (define %pagekite-accounts
   (list (user-group (name "pagekite") (system? #t))
         (user-account
@@ -1885,7 +1917,9 @@ table inet filter {
     (list (service-extension shepherd-root-service-type
                              (compose list pagekite-shepherd-service))
           (service-extension account-service-type
-                             (const %pagekite-accounts))))
+                             (const %pagekite-accounts))
+          (service-extension rottlog-service-type
+                             (const %pagekite-log-rotation))))
    (description
     "Run @url{https://pagekite.net/,PageKite}, a tunneling solution to make
 local servers publicly accessible on the web, even behind NATs and firewalls.")))
@@ -1976,6 +2010,10 @@ local servers publicly accessible on the web, even behind NATs and firewalls."))
                    #:group "yggdrasil"))
          (stop #~(make-kill-destructor)))))
 
+(define %yggdrasil-log-rotation
+  (list (log-rotation
+         (files '("/var/log/yggdrasil.log")))))
+
 (define %yggdrasil-accounts
   (list (user-group (name "yggdrasil") (system? #t))))
 
@@ -1991,7 +2029,9 @@ See @command{yggdrasil -genconf} for config options.")
           (service-extension account-service-type
                              (const %yggdrasil-accounts))
           (service-extension profile-service-type
-                             (compose list yggdrasil-configuration-package))))))
+                             (compose list yggdrasil-configuration-package))
+          (service-extension rottlog-service-type
+                             (const %yggdrasil-log-rotation))))))
 
 
 ;;;
@@ -2061,6 +2101,10 @@ See @command{yggdrasil -genconf} for config options.")
                    #:environment-variables #$%ipfs-environment))
          (stop #~(make-kill-destructor)))))
 
+(define %ipfs-log-rotation
+  (list (log-rotation
+         (files '("/var/log/ipfs.log")))))
+
 (define (%ipfs-activation config)
   "Return an activation gexp for IPFS with CONFIG"
   (define (exec-command . args)
@@ -2116,7 +2160,9 @@ See @command{yggdrasil -genconf} for config options.")
           (service-extension activation-service-type
                              %ipfs-activation)
           (service-extension shepherd-root-service-type
-                             ipfs-shepherd-service)))
+                             ipfs-shepherd-service)
+          (service-extension rottlog-service-type
+                             (const %ipfs-log-rotation))))
    (default-value (ipfs-configuration))
    (description
     "Run @command{ipfs daemon}, the reference implementation
@@ -2153,10 +2199,16 @@ of the IPFS peer-to-peer storage network.")))
        (respawn? #f)
        (stop #~(make-kill-destructor)))))))
 
+(define %keepalived-log-rotation
+  (list (log-rotation
+         (files '("/var/log/keepalived.log")))))
+
 (define keepalived-service-type
   (service-type (name 'keepalived)
                 (extensions (list (service-extension shepherd-root-service-type
-                                                     keepalived-shepherd-service)))
+                                                     keepalived-shepherd-service)
+                                  (service-extension rottlog-service-type
+                                                     (const %keepalived-log-rotation))))
                 (description
                  "Run @uref{https://www.keepalived.org/, Keepalived}
 routing software.")))
