@@ -208,6 +208,7 @@ contains the archive keys used for that.")
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((out    (assoc-ref outputs "out"))
                    (tzdata (assoc-ref inputs "tzdata"))
+                   (dpkg   (assoc-ref inputs "dpkg"))
                    (debian (assoc-ref inputs "debian-keyring"))
                    (ubuntu (assoc-ref inputs "ubuntu-keyring")))
                (substitute* "Makefile"
@@ -224,7 +225,8 @@ contains the archive keys used for that.")
                (substitute* "scripts/gutsy"
                  (("/usr") ubuntu))
                (substitute* "debootstrap"
-                 (("=/usr") (string-append "=" out)))
+                 (("=/usr") (string-append "=" out))
+                 (("/usr/bin/dpkg") (string-append dpkg "/bin/dpkg")))
                ;; Ensure PATH works both in guix and within the debian chroot
                ;; workaround for: https://bugs.debian.org/929889
                (substitute* "functions"
@@ -252,6 +254,7 @@ contains the archive keys used for that.")
     (inputs
      `(("debian-keyring" ,debian-archive-keyring)
        ("ubuntu-keyring" ,ubuntu-keyring)
+       ("dpkg" ,dpkg)
        ("tzdata" ,tzdata)
 
        ;; Called at run-time from various places, needs to be in PATH.
