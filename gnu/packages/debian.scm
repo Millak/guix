@@ -233,22 +233,19 @@ contains the archive keys used for that.")
                  (("PATH=/sbin:/usr/sbin:/bin:/usr/bin")
                   "PATH=$PATH:/sbin:/usr/sbin:/bin:/usr/bin"))
                (substitute* (find-files "scripts" ".")
-                 (("/usr/share/zoneinfo") (string-append tzdata "/share/zoneinfo")))
-               #t)))
+                 (("/usr/share/zoneinfo") (string-append tzdata "/share/zoneinfo"))))))
          (add-after 'install 'install-man-file
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
                (install-file "debootstrap.8"
-                             (string-append out "/share/man/man8"))
-               #t)))
+                             (string-append out "/share/man/man8")))))
          (add-after 'install 'wrap-executable
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((debootstrap (string-append (assoc-ref outputs "out")
                                                "/sbin/debootstrap"))
                    (path        (getenv "PATH")))
                (wrap-program debootstrap
-                             `("PATH" ":" prefix (,path)))
-               #t))))
+                             `("PATH" ":" prefix (,path)))))))
        #:make-flags (list (string-append "DESTDIR=" (assoc-ref %outputs "out")))
        #:tests? #f)) ; no tests
     (inputs
