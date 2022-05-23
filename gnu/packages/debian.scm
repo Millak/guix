@@ -22,6 +22,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
@@ -201,62 +202,59 @@ contains the archive keys used for that.")
          (base32 "0hfx6k86kby4xf0xqskpllq00g159j4khh66hfi6dhcdb91dgyd7"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-after 'unpack 'patch-source
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out    (assoc-ref outputs "out"))
-                   (tzdata (assoc-ref inputs "tzdata"))
-                   (dpkg   (assoc-ref inputs "dpkg"))
-                   (debian (assoc-ref inputs "debian-keyring"))
-                   (ubuntu (assoc-ref inputs "ubuntu-keyring")))
-               (substitute* "Makefile"
-                 (("/usr") "")
-                 (("-o root -g root") "")
-                 (("chown root.*") "\n"))
-               (substitute* '("scripts/etch"
-                              "scripts/potato"
-                              "scripts/sarge"
-                              "scripts/sid"
-                              "scripts/woody"
-                              "scripts/woody.buildd")
-                 (("/usr") debian))
-               (substitute* "scripts/gutsy"
-                 (("/usr") ubuntu))
-               (substitute* "debootstrap"
-                 (("=/usr") (string-append "=" out))
-                 (("/usr/bin/dpkg") (string-append dpkg "/bin/dpkg")))
-               ;; Ensure PATH works both in guix and within the debian chroot
-               ;; workaround for: https://bugs.debian.org/929889
-               (substitute* "functions"
-                 (("PATH=/sbin:/usr/sbin:/bin:/usr/bin")
-                  "PATH=$PATH:/sbin:/usr/sbin:/bin:/usr/bin"))
-               (substitute* (find-files "scripts" ".")
-                 (("/usr/share/zoneinfo") (string-append tzdata "/share/zoneinfo"))))))
-         (add-after 'install 'install-man-file
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (delete 'configure)
+           (add-after 'unpack 'patch-source
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (let ((debian #$(this-package-input "debian-archive-keyring"))
+                     (ubuntu #$(this-package-input "ubuntu-keyring")))
+                 (substitute* "Makefile"
+                   (("/usr") "")
+                   (("-o root -g root") "")
+                   (("chown root.*") "\n"))
+                 (substitute* '("scripts/etch"
+                                "scripts/potato"
+                                "scripts/sarge"
+                                "scripts/sid"
+                                "scripts/woody"
+                                "scripts/woody.buildd")
+                   (("/usr") debian))
+                 (substitute* "scripts/gutsy"
+                   (("/usr") ubuntu))
+                 (substitute* "debootstrap"
+                   (("=/usr") (string-append "=" #$output))
+                   (("/usr/bin/dpkg") (search-input-file inputs "/bin/dpkg")))
+                 ;; Ensure PATH works both in guix and within the debian chroot
+                 ;; workaround for: https://bugs.debian.org/929889
+                 (substitute* "functions"
+                   (("PATH=/sbin:/usr/sbin:/bin:/usr/bin")
+                    "PATH=$PATH:/sbin:/usr/sbin:/bin:/usr/bin"))
+                 (substitute* (find-files "scripts")
+                   (("/usr/share/zoneinfo")
+                    (search-input-directory inputs "/share/zoneinfo"))))))
+           (add-after 'install 'install-man-file
+             (lambda* (#:key outputs #:allow-other-keys)
                (install-file "debootstrap.8"
-                             (string-append out "/share/man/man8")))))
-         (add-after 'install 'wrap-executable
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((debootstrap (string-append (assoc-ref outputs "out")
-                                               "/sbin/debootstrap"))
-                   (path        (getenv "PATH")))
-               (wrap-program debootstrap
-                             `("PATH" ":" prefix (,path)))))))
-       #:make-flags (list (string-append "DESTDIR=" (assoc-ref %outputs "out")))
-       #:tests? #f)) ; no tests
+                             (string-append #$output "/share/man/man8"))))
+           (add-after 'install 'wrap-executable
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((debootstrap (string-append #$output "/sbin/debootstrap"))
+                     (path        (getenv "PATH")))
+                 (wrap-program debootstrap
+                               `("PATH" ":" prefix (,path)))))))
+         #:make-flags #~(list (string-append "DESTDIR=" #$output))
+         #:tests? #f))  ; no tests
     (inputs
-     `(("debian-keyring" ,debian-archive-keyring)
-       ("ubuntu-keyring" ,ubuntu-keyring)
-       ("dpkg" ,dpkg)
-       ("tzdata" ,tzdata)
+     (list debian-archive-keyring
+           ubuntu-keyring
+           dpkg
+           tzdata
 
-       ;; Called at run-time from various places, needs to be in PATH.
-       ("gnupg" ,gnupg)
-       ("wget" ,wget)))
+           ;; Called at run-time from various places, needs to be in PATH.
+           gnupg
+           wget))
     (native-inputs
      (list perl))
     (home-page "https://tracker.debian.org/pkg/debootstrap")
