@@ -1651,7 +1651,7 @@ visualize your public Git repositories on a web interface.")
 (define-public pre-commit
   (package
     (name "pre-commit")
-    (version "2.18.1")
+    (version "2.19.0")
     (source
      (origin
        (method git-fetch)               ; no tests in PyPI release
@@ -1660,7 +1660,7 @@ visualize your public Git repositories on a web interface.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08c1nxqyqmy5sbmfnpvc8z82cx1rv9q290w7x2mrm0nd718s9yvp"))))
+        (base32 "102z1n6wjrmk5h4p59l929bi0r91bl3vz62j4k6sz2j7k0a791g5"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
