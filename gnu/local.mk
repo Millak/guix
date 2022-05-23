@@ -1614,8 +1614,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/sdl-pango-sans-serif.patch		\
   %D%/packages/patches/smalltalk-multiplication-overflow.patch	\
   %D%/packages/patches/sqlite-hurd.patch			\
-  %D%/packages/patches/sssd-collision-with-external-nss-symbol.patch	\
-  %D%/packages/patches/sssd-fix-samba-4.15.3.patch	\
   %D%/packages/patches/strace-readlink-tests.patch		\
   %D%/packages/patches/sunxi-tools-remove-sys-io.patch	\
   %D%/packages/patches/p11-kit-hurd.patch			\
@@ -1829,7 +1827,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/snappy-add-inline-for-GCC.patch		\
   %D%/packages/patches/sphinxbase-fix-doxygen.patch		\
   %D%/packages/patches/spice-vdagent-glib-2.68.patch		\
-  %D%/packages/patches/sssd-fix-samba.patch			\
+  %D%/packages/patches/sssd-optional-systemd.patch		\
   %D%/packages/patches/sssd-system-directories.patch		\
   %D%/packages/patches/steghide-fixes.patch			\
   %D%/packages/patches/suitesparse-mongoose-cmake.patch		\
