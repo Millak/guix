@@ -10211,7 +10211,7 @@ is suitable as a default application in a Desktop environment.")
 (define-public xpad
   (package
     (name "xpad")
-    (version "5.1.0")
+    (version "5.8.0")
     (source
      (origin
        (method url-fetch)
@@ -10220,13 +10220,13 @@ is suitable as a default application in a Desktop environment.")
                            name "-" version ".tar.bz2"))
        (sha256
         (base32
-         "0l0g5x8g6dwhf5ksnqqrjjsycy57kcvdslkmsr6bl3vrsjd7qml3"))))
+         "1sc2dz4yxx6glnqpnhiby85g2blnsfn8d3fvbaqhdi2hi0q54q7j"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake
            `(,gtk+ "bin") intltool pkg-config))
     (inputs
-     (list gtksourceview-3 libsm))
+     (list gtksourceview libsm))
     (home-page "https://wiki.gnome.org/Apps/Xpad")
     (synopsis "Virtual sticky note")
     (description
