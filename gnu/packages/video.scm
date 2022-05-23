@@ -1735,9 +1735,9 @@ convert and stream audio and video.  It includes the libavcodec
 audio/video codec library.")
     (license license:gpl2+)))
 
-(define-public ffmpeg
+(define-public ffmpeg-4
   (package
-    (name "ffmpeg")
+    (inherit ffmpeg-5)
     (version "4.4.1")
     (source (origin
              (method url-fetch)
@@ -1746,192 +1746,14 @@ audio/video codec library.")
              (sha256
               (base32
                "00hfwd8ld6jnd26pl9f0wcd2mag4zacxxgqgabsja2xkkagavnza"))))
-    (build-system gnu-build-system)
-    (inputs
-     `(("dav1d" ,dav1d)
-       ("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("frei0r-plugins" ,frei0r-plugins)
-       ("gnutls" ,gnutls)
-       ("opus" ,opus)
-       ("ladspa" ,ladspa)
-       ("lame" ,lame)
-       ("libaom" ,libaom)
-       ("libass" ,libass)
-       ("libbluray" ,libbluray)
-       ("libcaca" ,libcaca)
-       ("libcdio-paranoia" ,libcdio-paranoia)
-       ("libdrm" ,libdrm)
-       ("libtheora" ,libtheora)
-       ("libva" ,libva)
-       ("libvdpau" ,libvdpau)
-       ("libvorbis" ,libvorbis)
-       ("libvpx" ,libvpx)
-       ("libx11" ,libx11)
-       ("libx264" ,libx264)
-       ("mesa" ,mesa)
-       ("openal" ,openal)
-       ("pulseaudio" ,pulseaudio)
-       ;; XXX: rav1e depends on rust, which currently only works on x86_64.
-       ;; See also the related configure flag when changing this.
-       ,@(if (string-prefix? "x86_64" (or (%current-target-system)
-                                          (%current-system)))
-             `(("rav1e" ,rav1e))
-             '())
-       ("sdl" ,sdl2)
-       ("soxr" ,soxr)
-       ("speex" ,speex)
-       ("srt" ,srt)
-       ("twolame" ,twolame)
-       ("vidstab" ,vidstab)
-       ("x265" ,x265)
-       ("xvid" ,xvid)
-       ("zlib" ,zlib)))
-    (native-inputs
-     (list bc
-           perl
-           pkg-config
-           texinfo
-           speex
-           yasm))
     (arguments
-     `(#:test-target "fate"
-       #:configure-flags
-       ;; possible additional inputs:
-       ;;   --enable-avisynth        enable reading of AviSynth script
-       ;;                            files [no]
-       ;;   --enable-libaacplus      enable AAC+ encoding via libaacplus [no]
-       ;;   --enable-libcelt         enable CELT decoding via libcelt [no]
-       ;;   --enable-libdc1394       enable IIDC-1394 grabbing using libdc1394
-       ;;                            and libraw1394 [no]
-       ;;   --enable-libfaac         enable AAC encoding via libfaac [no]
-       ;;   --enable-libfdk-aac      enable AAC de/encoding via libfdk-aac [no]
-       ;;   --enable-libflite        enable flite (voice synthesis) support via
-       ;;                            libflite [no]
-       ;;   --enable-libgme          enable Game Music Emu via libgme [no]
-       ;;   --enable-libgsm          enable GSM de/encoding via libgsm [no]
-       ;;   --enable-libiec61883     enable iec61883 via libiec61883 [no]
-       ;;   --enable-libilbc         enable iLBC de/encoding via libilbc [no]
-       ;;   --enable-libmodplug      enable ModPlug via libmodplug [no]
-       ;;   --enable-libnut          enable NUT (de)muxing via libnut,
-       ;;                            native (de)muxer exists [no]
-       ;;   --enable-libopencore-amrnb    enable AMR-NB de/encoding via
-       ;;                                 libopencore-amrnb [no]
-       ;;   --enable-libopencore-amrwb    enable AMR-WB decoding via
-       ;;                                 libopencore-amrwb [no]
-       ;;   --enable-libopencv       enable video filtering via libopencv [no]
-       ;;   --enable-libopenjpeg     enable JPEG 2000 de/encoding via
-       ;;                            OpenJPEG [no]
-       ;;   --enable-librtmp         enable RTMP[E] support via librtmp [no]
-       ;;   --enable-libschroedinger enable Dirac de/encoding via
-       ;;                            libschroedinger [no]
-       ;;   --enable-libshine        enable fixed-point MP3 encoding via
-       ;;                            libshine [no]
-       ;;   --enable-libssh          enable SFTP protocol via libssh [no]
-       ;;                            (libssh2 does not work)
-       ;;   --enable-libstagefright-h264  enable H.264 decoding via
-       ;;                                 libstagefright [no]
-       ;;   --enable-libutvideo      enable Ut Video encoding and decoding via
-       ;;                            libutvideo [no]
-       ;;   --enable-libv4l2         enable libv4l2/v4l-utils [no]
-       ;;   --enable-libvo-aacenc    enable AAC encoding via libvo-aacenc [no]
-       ;;   --enable-libvo-amrwbenc  enable AMR-WB encoding via
-       ;;                            libvo-amrwbenc [no]
-       ;;   --enable-libwavpack      enable wavpack encoding via libwavpack [no]
-       ;;   --enable-libxavs         enable AVS encoding via xavs [no]
-       ;;   --enable-libzmq          enable message passing via libzmq [no]
-       ;;   --enable-libzvbi         enable teletext support via libzvbi [no]
-       ;;   --enable-opencl          enable OpenCL code
-       '("--enable-avresample"
-         "--enable-gpl" ; enable optional gpl licensed parts
-         "--enable-shared"
-         "--enable-frei0r"
-         "--enable-fontconfig"
-         "--enable-gnutls"
-         "--enable-ladspa"
-         "--enable-libaom"
-         "--enable-libass"
-         "--enable-libbluray"
-         "--enable-libcaca"
-         "--enable-libcdio"
-         "--enable-libdav1d"
-         "--enable-libfreetype"
-         "--enable-libmp3lame"
-         "--enable-libopus"
-         "--enable-libpulse"
-         ,@(if (string-prefix? "x86_64" (or (%current-target-system)
-                                            (%current-system)))
-               '("--enable-librav1e")
-               '())
-         "--enable-libsoxr"
-         "--enable-libspeex"
-         "--enable-libsrt"
-         "--enable-libtheora"
-         "--enable-libtwolame"
-         "--enable-libvidstab"
-         "--enable-libvorbis"
-         "--enable-libvpx"
-         "--enable-libxvid"
-         "--enable-libx264"
-         "--enable-libx265"
-         "--enable-openal"
-         "--enable-opengl"
-         "--enable-libdrm"
-         "--enable-vaapi"
-
-         "--enable-runtime-cpudetect"
-
-         ;; The HTML pages take 7.2 MiB
-         "--disable-htmlpages"
-
-         ;; The static libraries are 23 MiB
-         "--disable-static"
-
-         ;; Runtime cpu detection is not implemented on
-         ;; MIPS, so we disable some features.
-         "--disable-mips32r2"
-         "--disable-mipsdsp"
-         "--disable-mipsdspr2"
-         "--disable-mipsfpu")
-       #:phases
-       (modify-phases %standard-phases
-         (replace
-          'configure
-          ;; configure does not work followed by "SHELL=..." and
-          ;; "CONFIG_SHELL=..."; set environment variables instead
-          (lambda* (#:key outputs configure-flags #:allow-other-keys)
-            (let ((out (assoc-ref outputs "out")))
-              (substitute* "configure"
-                (("#! /bin/sh") (string-append "#!" (which "sh"))))
-              (setenv "SHELL" (which "bash"))
-              (setenv "CONFIG_SHELL" (which "bash"))
-              (apply invoke
-                     "./configure"
-                     (string-append "--prefix=" out)
-                     ;; Add $libdir to the RUNPATH of all the binaries.
-                     (string-append "--extra-ldflags=-Wl,-rpath="
-                                    out "/lib")
-                     configure-flags))))
-         (add-before
-          'check 'set-ld-library-path
-          (lambda _
-            ;; Allow $(top_builddir)/ffmpeg to find its dependencies when
-            ;; running tests.
-            (let* ((dso  (find-files "." "\\.so$"))
-                   (path (string-join (map dirname dso) ":")))
-              (format #t "setting LD_LIBRARY_PATH to ~s~%" path)
-              (setenv "LD_LIBRARY_PATH" path)
-              #t))))))
-    (home-page "https://www.ffmpeg.org/")
-    (synopsis "Audio and video framework")
-    (description "FFmpeg is a complete, cross-platform solution to record,
-convert and stream audio and video.  It includes the libavcodec
-audio/video codec library.")
-    (license license:gpl2+)))
+     (substitute-keyword-arguments (package-arguments ffmpeg-5)
+       ((#:configure-flags flags ''())
+        #~(cons "--enable-avresample" #$flags))))))
 
 (define-public ffmpeg-3.4
   (package
-    (inherit ffmpeg)
+    (inherit ffmpeg-4)
     (version "3.4.9")
     (source (origin
              (method url-fetch)
@@ -1941,23 +1763,22 @@ audio/video codec library.")
               (base32
                "0d8nkd9c85rkjlgsq1hidmykkrksi883ygqzhhj6wh4nqflv8vs9"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments ffmpeg)
+     (substitute-keyword-arguments (package-arguments ffmpeg-4)
        ((#:modules modules %gnu-build-system-modules)
         `((srfi srfi-1)
           ,@modules))
        ((#:configure-flags flags)
-        `(fold delete
-               ,flags
-               '("--enable-libdav1d"
-                 "--enable-libaom"
-                 "--enable-librav1e"
-                 "--enable-libsrt")))))
-    (inputs (modify-inputs (package-inputs ffmpeg)
+        #~(fold delete #$flags
+                '("--enable-libdav1d"
+                  "--enable-libaom"
+                  "--enable-librav1e"
+                  "--enable-libsrt")))))
+    (inputs (modify-inputs (package-inputs ffmpeg-4)
               (delete "dav1d" "libaom" "rav1e" "srt")))))
 
 (define-public ffmpeg-2.8
   (package
-    (inherit ffmpeg)
+    (inherit ffmpeg-3.4)
     (version "2.8.18")
     (source (origin
               (method url-fetch)
@@ -1999,15 +1820,14 @@ audio/video codec library.")
              (let* ((dso  (find-files "." "\\.so$"))
                     (path (string-join (map dirname dso) ":")))
                (format #t "setting LD_LIBRARY_PATH to ~s~%" path)
-               (setenv "LD_LIBRARY_PATH" path)
-               #t))))))
-    (inputs (modify-inputs (package-inputs ffmpeg)
-              (delete "dav1d" "libaom" "rav1e" "srt")))))
+               (setenv "LD_LIBRARY_PATH" path)))))))))
+
+(define-public ffmpeg ffmpeg-4)
 
 (define-public ffmpeg-for-stepmania
   (hidden-package
    (package
-     (inherit ffmpeg)
+     (inherit ffmpeg-4)
      (version "2.1.3")
      (source
       (origin
@@ -2019,17 +1839,17 @@ audio/video codec library.")
          (base32 "1by8rmbva8mfrivdbbkr2gx4kga89zqygkd4cfjl76nr8mdcdamb"))
         (file-name (git-file-name "ffmpeg" version))))
      (arguments
-      (substitute-keyword-arguments (package-arguments ffmpeg)
+      (substitute-keyword-arguments (package-arguments ffmpeg-4)
         ((#:configure-flags flags)
-         '(list "--disable-programs"
-                "--disable-doc"
-                "--disable-debug"
-                "--disable-avdevice"
-                "--disable-swresample"
-                "--disable-postproc"
-                "--disable-avfilter"
-                "--disable-shared"
-                "--enable-static"))))
+         #~(list "--disable-programs"
+                 "--disable-doc"
+                 "--disable-debug"
+                 "--disable-avdevice"
+                 "--disable-swresample"
+                 "--disable-postproc"
+                 "--disable-avfilter"
+                 "--disable-shared"
+                 "--enable-static"))))
      (inputs '()))))
 
 (define-public ffmpegthumbnailer
