@@ -29,6 +29,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages backup)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages dbm)
@@ -249,6 +250,7 @@ contains the archive keys used for that.")
     (inputs
      (list debian-archive-keyring
            ubuntu-keyring
+           bash-minimal
            dpkg
            tzdata
 
