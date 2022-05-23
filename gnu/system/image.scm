@@ -32,7 +32,7 @@
   #:use-module (gnu bootloader)
   #:use-module (gnu bootloader grub)
   #:use-module (gnu image)
-  #:use-module (gnu platform)
+  #:use-module (guix platform)
   #:use-module (gnu services)
   #:use-module (gnu services base)
   #:use-module (gnu system)

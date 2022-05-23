@@ -16,23 +16,43 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (gnu platforms powerpc)
-  #:use-module (gnu platform)
-  #:use-module (gnu packages linux)
+(define-module (guix platforms x86)
+  #:use-module (guix platform)
   #:use-module (guix records)
-  #:export (powerpc-linux
-            powerpc64le-linux))
+  #:export (i686-linux
+            x86_64-linux
+            i686-mingw
+            x86_64-mingw
+            hurd))
 
-(define powerpc-linux
+(define i686-linux
   (platform
-   (target "powerpc-linux-gnu")
-   (system "powerpc-linux")
-   (linux-architecture "powerpc")
+   (target "i686-linux-gnu")
+   (system "i686-linux")
+   (linux-architecture "i386")
+   (glibc-dynamic-linker "/lib/ld-linux.so.2")))
+
+(define x86_64-linux
+  (platform
+   (target "x86_64-linux-gnu")
+   (system "x86_64-linux")
+   (linux-architecture "x86_64")
+   (glibc-dynamic-linker "/lib/ld-linux-x86-64.so.2")))
+
+(define i686-mingw
+  (platform
+   (target "i686-w64-mingw32")
+   (system #f)
+   (glibc-dynamic-linker #f)))
+
+(define x86_64-mingw
+  (platform
+   (target "x86_64-w64-mingw32")
+   (system #f)
+   (glibc-dynamic-linker #f)))
+
+(define hurd
+  (platform
+   (target "i586-pc-gnu")
+   (system "i586-gnu")
    (glibc-dynamic-linker "/lib/ld.so.1")))
-
-(define powerpc64le-linux
-  (platform
-   (target "powerpc64le-linux-gnu")
-   (system "powerpc64le-linux")
-   (linux-architecture "powerpc")
-   (glibc-dynamic-linker "/lib/ld64.so.2")))

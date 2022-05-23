@@ -132,6 +132,14 @@ MODULES =					\
   guix/workers.scm				\
   guix/least-authority.scm			\
   guix/ipfs.scm					\
+  guix/platform.scm                             \
+  guix/platforms/arm.scm                        \
+  guix/platforms/hurd.scm                       \
+  guix/platforms/mips.scm                       \
+  guix/platforms/powerpc.scm                    \
+  guix/platforms/riscv.scm                      \
+  guix/platforms/s390.scm                       \
+  guix/platforms/x86.scm                        \
   guix/build-system.scm				\
   guix/build-system/android-ndk.scm		\
   guix/build-system/ant.scm			\

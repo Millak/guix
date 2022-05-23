@@ -161,7 +161,7 @@
   #:use-module (gnu packages wget)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
-  #:use-module (gnu platform)
+  #:use-module (guix platform)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 match))

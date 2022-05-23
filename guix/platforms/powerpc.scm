@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2021 Mathieu Othacehe <othacehe@gnu.org>
+;;; Copyright © 2022 Mathieu Othacehe <othacehe@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -16,14 +16,22 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (gnu platforms hurd)
-  #:use-module (gnu platform)
-  #:use-module (gnu packages linux)
+(define-module (guix platforms powerpc)
+  #:use-module (guix platform)
   #:use-module (guix records)
-  #:export (hurd))
+  #:export (powerpc-linux
+            powerpc64le-linux))
 
-(define hurd
+(define powerpc-linux
   (platform
-   (target "i586-pc-gnu")
-   (system "i586-gnu")
+   (target "powerpc-linux-gnu")
+   (system "powerpc-linux")
+   (linux-architecture "powerpc")
    (glibc-dynamic-linker "/lib/ld.so.1")))
+
+(define powerpc64le-linux
+  (platform
+   (target "powerpc64le-linux-gnu")
+   (system "powerpc64le-linux")
+   (linux-architecture "powerpc")
+   (glibc-dynamic-linker "/lib/ld64.so.2")))

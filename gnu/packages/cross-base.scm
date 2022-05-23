@@ -30,7 +30,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages hurd)
   #:use-module (gnu packages mingw)
-  #:use-module (gnu platform)
+  #:use-module (guix platform)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix utils)

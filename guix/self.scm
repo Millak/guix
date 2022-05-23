@@ -888,7 +888,7 @@ itself."
                    ,@(scheme-modules* source "gnu/system")
                    ,@(scheme-modules* source "gnu/services")
                    ,@(scheme-modules* source "gnu/machine")
-                   ,@(scheme-modules* source "gnu/platforms/"))
+                   ,@(scheme-modules* source "guix/platforms/"))
                  (list *core-package-modules* *package-modules*
                        *extra-modules* *core-modules*)
                  #:extensions dependencies

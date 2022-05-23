@@ -40448,7 +40448,7 @@ guix build --target=armv5tel-linux-gnueabi bootstrap-tarballs
 @end example
 
 For this to work, it is first required to register a new platform as
-defined in the @code{(gnu platform)} module.  A platform is making the
+defined in the @code{(guix platform)} module.  A platform is making the
 connection between a GNU triplet (@pxref{Specifying Target Triplets, GNU
 configuration triplets,, autoconf, Autoconf}), the equivalent
 @var{system} in Nix notation, the name of the

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2022 Mathieu Othacehe <othacehe@gnu.org>
+;;; Copyright © 2021 Mathieu Othacehe <othacehe@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -16,15 +16,22 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (gnu platforms mips)
-  #:use-module (gnu platform)
-  #:use-module (gnu packages linux)
+(define-module (guix platforms arm)
+  #:use-module (guix platform)
   #:use-module (guix records)
-  #:export (mips64-linux))
+  #:export (armv7-linux
+            aarch64-linux))
 
-(define mips64-linux
+(define armv7-linux
   (platform
-   (target "mips64el-linux-gnu")
-   (system "mips64el-linux")
-   (linux-architecture "mips")
-   (glibc-dynamic-linker "/lib/ld.so.1")))
+   (target "arm-linux-gnueabihf")
+   (system "armhf-linux")
+   (linux-architecture "arm")
+   (glibc-dynamic-linker "/lib/ld-linux-armhf.so.3")))
+
+(define aarch64-linux
+  (platform
+   (target "aarch64-linux-gnu")
+   (system "aarch64-linux")
+   (linux-architecture "arm64")
+   (glibc-dynamic-linker "/lib/ld-linux-aarch64.so.1")))

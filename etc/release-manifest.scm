@@ -23,7 +23,7 @@
 (use-modules (gnu packages)
              (guix packages)
              (guix profiles)
-             ((gnu platform) #:select (targets))
+             ((guix platform) #:select (targets))
              ((gnu services xorg) #:select (%default-xorg-modules))
              (guix utils)
              (srfi srfi-1)

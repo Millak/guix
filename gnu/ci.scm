@@ -55,7 +55,7 @@
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages make-bootstrap)
   #:use-module (gnu packages package-management)
-  #:use-module (gnu platform)
+  #:use-module (guix platform)
   #:use-module (gnu system)
   #:use-module (gnu system image)
   #:use-module (gnu system vm)

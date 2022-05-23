@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2021 Mathieu Othacehe <othacehe@gnu.org>
+;;; Copyright © 2022 Mathieu Othacehe <othacehe@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -16,23 +16,14 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (gnu platforms arm)
-  #:use-module (gnu platform)
-  #:use-module (gnu packages linux)
+(define-module (guix platforms s390)
+  #:use-module (guix platform)
   #:use-module (guix records)
-  #:export (armv7-linux
-            aarch64-linux))
+  #:export (s390x-linux))
 
-(define armv7-linux
+(define s390x-linux
   (platform
-   (target "arm-linux-gnueabihf")
-   (system "armhf-linux")
-   (linux-architecture "arm")
-   (glibc-dynamic-linker "/lib/ld-linux-armhf.so.3")))
-
-(define aarch64-linux
-  (platform
-   (target "aarch64-linux-gnu")
-   (system "aarch64-linux")
-   (linux-architecture "arm64")
-   (glibc-dynamic-linker "/lib/ld-linux-aarch64.so.1")))
+   (target "s390x-linux-gnu")
+   (system "s390x-linux")
+   (linux-architecture "s390")
+   (glibc-dynamic-linker "/lib/ld64.so.1")))

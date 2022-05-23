@@ -16,7 +16,7 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (gnu platform)
+(define-module (guix platform)
   #:use-module (guix discovery)
   #:use-module (guix memoization)
   #:use-module (guix records)
@@ -78,7 +78,7 @@
 (define (platform-modules)
   "Return the list of platform modules."
   (all-modules (map (lambda (entry)
-                      `(,entry . "gnu/platforms"))
+                      `(,entry . "guix/platforms"))
                     %load-path)
                #:warn warn-about-load-error))
 

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2022 Mathieu Othacehe <othacehe@gnu.org>
+;;; Copyright © 2021 Mathieu Othacehe <othacehe@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -16,15 +16,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (gnu platforms riscv)
-  #:use-module (gnu platform)
-  #:use-module (gnu packages linux)
+(define-module (guix platforms hurd)
+  #:use-module (guix platform)
   #:use-module (guix records)
-  #:export (riscv64-linux))
+  #:export (hurd))
 
-(define riscv64-linux
+(define hurd
   (platform
-   (target "riscv64-linux-gnu")
-   (system "riscv64-linux")
-   (linux-architecture "riscv")
-   (glibc-dynamic-linker "/lib/ld-linux-riscv64-lp64d.so.1")))
+   (target "i586-pc-gnu")
+   (system "i586-gnu")
+   (glibc-dynamic-linker "/lib/ld.so.1")))

@@ -16,15 +16,14 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (gnu platforms s390)
-  #:use-module (gnu platform)
-  #:use-module (gnu packages linux)
+(define-module (guix platforms riscv)
+  #:use-module (guix platform)
   #:use-module (guix records)
-  #:export (s390x-linux))
+  #:export (riscv64-linux))
 
-(define s390x-linux
+(define riscv64-linux
   (platform
-   (target "s390x-linux-gnu")
-   (system "s390x-linux")
-   (linux-architecture "s390")
-   (glibc-dynamic-linker "/lib/ld64.so.1")))
+   (target "riscv64-linux-gnu")
+   (system "riscv64-linux")
+   (linux-architecture "riscv")
+   (glibc-dynamic-linker "/lib/ld-linux-riscv64-lp64d.so.1")))
