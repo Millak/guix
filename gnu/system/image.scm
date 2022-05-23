@@ -299,7 +299,7 @@ used in the image."
         (raise (condition
                 (&message
                  (message
-                  (format #f (G_ "Unsupported image type ~a~%.")
+                  (format #f (G_ "unsupported image type: ~a")
                           format))))))))
 
     (define (partition->dos-type partition)
