@@ -28,6 +28,7 @@
   #:use-module (guix build-system)
   #:use-module (guix build-system gnu)
   #:use-module (guix packages)
+  #:use-module (guix platform)
   #:use-module (ice-9 match)
   #:export (%linux-module-build-system-modules
             linux-module-build
@@ -50,8 +51,7 @@
     (module-ref module 'linux-libre)))
 
 (define (system->arch system)
-  (let ((module (resolve-interface '(gnu platform))))
-    ((module-ref module 'lookup-platform-by-target-or-system) system)))
+  (platform-linux-architecture (lookup-platform-by-target-or-system system)))
 
 (define (make-linux-module-builder linux)
   (package
