@@ -28,6 +28,7 @@
  (entry (commit "903c82583e1cec4c9ff09d5895c5cc646c37b661")
         (title
          (en "New @command{guix import elm} command")
+         (de "Neuer Befehl @command{guix import elm}")
          (fr "Nouvelle commande @command{guix import elm}"))
         (body
          (en "The new @command{guix import elm} command allows packagers to
@@ -42,6 +43,19 @@ Run @command{info \"(guix) Invoking guix import\"} for more info.
 
 This comes with a new build system for Elm packages---run @command{info
 \"(guix) Build Systems\"} for details.")
+         (de "Mit dem neuen Befehl @command{guix import elm} können Paketautoren
+eine Paketdefinition anhand des Namens eines Pakets für Elm, einer funktionalen
+Programmiersprache für das Web, erzeugen:
+
+@example
+guix import elm elm/bytes
+@end example
+
+Führen Sie @command{info \"(guix.de) Aufruf von guix import\"} aus, um mehr
+Informationen zu bekommen.
+
+Dazu kommt ein neues Erstellungssystem für Elm-Pakete.  Führen Sie
+@command{info \"(guix.de) Erstellungssysteme\"} aus, um mehr zu erfahren.")
          (fr "La nouvelle commande @command{guix import elm} permet de générer
 une définition de paquet reposant sur Elm, un langage de programmation
 fonctionnelle pour le Web:
