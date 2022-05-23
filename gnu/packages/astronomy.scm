@@ -54,6 +54,7 @@
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages netpbm)
   #:use-module (gnu packages perl)
@@ -1679,6 +1680,54 @@ SolarSoft data analysis environment.")
 positions of the sun: dawn, sunrise, solar noon, sunset, dusk, solar
 elevation, solar azimuth, rahukaalam, and the phases of the moon.")
     (license license:asl2.0)))
+
+(define-public python-spherical-geometry
+  (package
+    (name "python-spherical-geometry")
+    (version "1.2.22")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/spacetelescope/spherical_geometry")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0kzcncqir4v7nhk9lxj9gxr32p3krkaqa58y2i4kksgxxy24qw4z"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      ;; NOTE: (Sharlatan-20220523T231348+0100): Tests depends on old Python2
+      ;; libarry `sphere'
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'preparations
+            (lambda _
+              ;; Fixing: setuptools-scm was unable to detect version for ...
+              (substitute* "setup.py"
+                (("use_scm_version=True")
+                 (format #f "version=~s" #$version))
+                (("setup_requires=\\['setuptools_scm'\\],.*")
+                 ""))
+              ;; Use our own libraries in place of bundles.
+              (setenv "USE_SYSTEM_QD" "1"))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools-scm))
+    (inputs
+     (list qd))
+    (propagated-inputs
+     (list python-astropy
+           python-numpy))
+    (home-page "https://github.com/spacetelescope/tweakwcs")
+    (synopsis "Python astronimical package for handling spherical polygons")
+    (description
+     "The @code{spherical_geometry} library is a Python package for handling
+spherical polygons that represent arbitrary regions of the sky.")
+    ;; LICENSE.rst Association of Universities for Research in Astronomy (AURA)
+    ;; QD_LIBRARY_LICENSE.rst for bandeled QD source
+    (license license:bsd-3)))
 
 (define-public libnova
   (package
