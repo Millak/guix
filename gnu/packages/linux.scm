@@ -1186,7 +1186,7 @@ It has been modified to remove all non-free binary blobs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1s7h9y3adyfhw7cjldlfmid79lrwz3vqlvziw9nwd6x5qdj4w9vp"))))
+        (base32 "09ljx0jl987753r2kjqj5kxms95bijw0xn14kf82ryn38ck5c8cf"))))
     (build-system linux-module-build-system)
     (arguments
      (list #:tests? #f                  ; no tests
