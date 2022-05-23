@@ -295,11 +295,12 @@ used in the image."
       ;; the hdimage format (raw disk-image) is supported.
       (cond
        ((memq format '(disk-image compressed-qcow2)) "hdimage")
-        (else
-         (raise (condition
-                 (&message
-                  (message
-                   (format #f (G_ "Unsupported image type ~a~%.") format))))))))
+       (else
+        (raise (condition
+                (&message
+                 (message
+                  (format #f (G_ "Unsupported image type ~a~%.")
+                          format))))))))
 
     (define (partition->dos-type partition)
       ;; Return the MBR partition type corresponding to the given PARTITION.
@@ -396,10 +397,10 @@ used in the image."
 
     (define (genimage-type-options image-type image)
       (cond
-        ((equal? image-type "hdimage")
-         (format #f "~%~/~/gpt = ~a~%~/"
-                 (if (gpt-image? image) "true" "false")))
-        (else "")))
+       ((equal? image-type "hdimage")
+        (format #f "~%~/~/gpt = ~a~%~/"
+                (if (gpt-image? image) "true" "false")))
+       (else "")))
 
     (let* ((format (image-format image))
            (image-type (format->image-type format))
