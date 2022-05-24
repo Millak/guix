@@ -2283,7 +2283,7 @@ utilizing the art assets from the @code{SuperTux} project.")
     (synopsis "Thematic meditative game")
     (description
      "You are a robot moving around in a realm filled with ASCII characters.
-Examine humourously described though useless items as you search for a kitten
+Examine humorously described though useless items as you search for a kitten
 among them.  The theme of this Zen simulation is continued in its
 documentation.")
     (home-page "http://robotfindskitten.org/")
