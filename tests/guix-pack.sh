@@ -107,7 +107,7 @@ guix pack --dry-run --bootstrap -f docker -S /opt/gnu=/ guile-bootstrap
 
 # Build a tarball pack of cross-compiled software.  Use coreutils because
 # guile-bootstrap is not intended to be cross-compiled.
-guix pack --dry-run --bootstrap --target=arm-unknown-linux-gnueabihf coreutils
+guix pack --dry-run --bootstrap --target=arm-linux-gnueabihf coreutils
 
 # Likewise, 'guix pack -R' requires a full-blown toolchain (because
 # 'glibc-bootstrap' lacks 'libc.a'), hence '--dry-run'.
