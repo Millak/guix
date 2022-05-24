@@ -3871,6 +3871,9 @@ is the GNU Compiler Collection.")
 (define-public gcc-toolchain-11
   (make-gcc-toolchain gcc-11))
 
+(define-public gcc-toolchain-12
+  (make-gcc-toolchain gcc-12))
+
 (define-public gcc-toolchain-aka-gcc
   ;; It's natural for users to try "guix install gcc".  This package
   ;; automatically "redirects" them to 'gcc-toolchain'.
