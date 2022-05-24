@@ -96,10 +96,9 @@ Copyright @copyright{} 2021 Domagoj Stolfa@*
 Copyright @copyright{} 2021 Hui Lu@*
 Copyright @copyright{} 2021 pukkamustard@*
 Copyright @copyright{} 2021 Alice Brenon@*
-Copyright @copyright{} 2021 Josselin Poiret@*
+Copyright @copyright{} 2021, 2022 Josselin Poiret@*
 Copyright @copyright{} 2021 Andrew Tropin@*
 Copyright @copyright{} 2021 Sarah Morgensen@*
-Copyright @copyright{} 2021 Josselin Poiret@*
 Copyright @copyright{} 2022 Remco van 't Veer@*
 Copyright @copyright{} 2022 Aleksandr Vityazev@*
 Copyright @copyright{} 2022 Philip M@sup{c}Grath@*
@@ -35202,11 +35201,11 @@ that compression will be 2:1, it is possible that uncompressable data
 can be written to swap and this is a method to limit how much memory can
 be used.  It accepts a string and can be a number of bytes or use a
 suffix, eg.: @code{"2G"}.
-@item @code{priority} (default @code{-1})
+@item @code{priority} (default @code{#f})
 This is the priority of the swap device created from the zram device.
-@code{swapon} accepts values between -1 and 32767, with higher values
-indicating higher priority.  Higher priority swap will generally be used
-first.
+@xref{Swap Space} for a description of swap priorities.  You might want
+to set a specific priority for the zram device, otherwise it could end
+up not being used much for the reasons described there.
 @end table
 
 @end deftp
