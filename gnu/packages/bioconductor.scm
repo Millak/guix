@@ -4560,6 +4560,48 @@ the results is also provided.  All PCA methods make use of the same data
 structure (pcaRes) to provide a common interface to the PCA results.")
     (license license:gpl3+)))
 
+;; This is a CRAN package, but it depends on a Bioconductor package:
+;; r-aroma-light, r-dnacopy..
+(define-public r-pscbs
+  (package
+    (name "r-pscbs")
+    (version "0.66.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "PSCBS" version))
+       (sha256
+        (base32 "14rs2wywipbkia3dbzfhpnkmfgdvm2bf586lggsx63sywlv5d02q"))))
+    (properties `((upstream-name . "PSCBS")))
+    (build-system r-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-before 'install 'change-home-dir
+           (lambda _
+             ;; Change from /homeless-shelter to /tmp for write permission.
+             (setenv "HOME" "/tmp"))))))
+    (propagated-inputs
+     (list r-aroma-light
+           r-dnacopy
+           r-future
+           r-listenv
+           r-matrixstats
+           r-r-cache
+           r-r-methodss3
+           r-r-oo
+           r-r-utils))
+    (native-inputs
+     (list r-r-rsp                      ;used to build vignettes
+           r-r-devices))
+    (home-page "https://github.com/HenrikBengtsson/PSCBS")
+    (synopsis "Analysis of parent-specific DNA copy numbers")
+    (description
+     "This is a package for segmentation of allele-specific DNA copy number
+data and detection of regions with abnormal copy number within each parental
+chromosome.  Both tumor-normal paired and tumor-only analyses are supported.")
+    (license license:gpl2+)))
+
 (define-public r-protgenerics
   (package
     (name "r-protgenerics")
