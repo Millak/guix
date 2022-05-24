@@ -698,6 +698,24 @@ It also includes runtime support libraries for these languages.")
        ("armhf" ,@%gcc-11-armhf-micro-architectures)
        ("x86_64" ,@%gcc-11-x86_64-micro-architectures))))))
 
+(define-public gcc-12
+  (package
+    (inherit gcc-11)
+    ;; Note: 'compiler-cpu-architectures' is unchanged compared to GCC 11.
+    (version "12.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/gcc/gcc-"
+                                  version "/gcc-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0ywws66myjxcwsmla721g35d2ymlckq6ii7j9av0477ki5467zb2"))
+              (patches (search-patches "gcc-12-strmov-store-file-names.patch"
+                                       "gcc-5.0-libvtv-runpath.patch"))
+              (modules '((guix build utils)))
+              (snippet gcc-canadian-cross-objdump-snippet)))))
+
+
 ;; Note: When changing the default gcc version, update
 ;;       the gcc-toolchain-* definitions.
 (define-public gcc gcc-10)
