@@ -583,6 +583,20 @@ Go.  It also includes runtime support libraries for these languages.")
 
         "znver2" "znver3")))
 
+(define %gcc-11-aarch64-micro-architectures
+  ;; Suitable '-march' values for GCC 11.
+  %gcc-10-aarch64-micro-architectures)            ;unchanged
+
+(define %gcc-11-armhf-micro-architectures
+  %gcc-10-armhf-micro-architectures)
+
+(define %gcc-11-x86_64-micro-architectures
+  ;; Suitable '-march' values for GCC 11.
+  (append %gcc-10-x86_64-micro-architectures
+          '("sapphirerapids" "alterlake" "rocketlake" ;Intel
+
+            "btver1" "btver2")))                  ;AMD
+
 (define-public gcc-7
   (package
     (inherit gcc-6)
@@ -678,8 +692,11 @@ It also includes runtime support libraries for these languages.")
             (modules '((guix build utils)))
             (snippet gcc-canadian-cross-objdump-snippet)))
 
-   ;; TODO: Add newly supported micro-architectures.
-   (properties (package-properties gcc-10))))
+   (properties
+    `((compiler-cpu-architectures
+       ("aarch64" ,@%gcc-11-aarch64-micro-architectures)
+       ("armhf" ,@%gcc-11-armhf-micro-architectures)
+       ("x86_64" ,@%gcc-11-x86_64-micro-architectures))))))
 
 ;; Note: When changing the default gcc version, update
 ;;       the gcc-toolchain-* definitions.
