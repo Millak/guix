@@ -174,7 +174,7 @@ Weblate} (@pxref{Translating Guix}).
 * Development::                 Guix-aided software development.
 * Programming Interface::       Using Guix in Scheme.
 * Utilities::                   Package management commands.
-* Foreign architectures::       Build for foreign architectures.
+* Foreign Architectures::       Build for foreign architectures.
 * System Configuration::        Configuring the operating system.
 * Home Configuration::          Configuring the home environment.
 * Documentation::               Browsing software user manuals.
@@ -323,9 +323,9 @@ Invoking @command{guix build}
 * Additional Build Options::    Options specific to 'guix build'.
 * Debugging Build Failures::    Real life packaging experience.
 
-Foreign architectures
+Foreign Architectures
 * Using cross-compilation::  Build for foreign architecture using cross-compilation.
-* Using native building::    Build for foreign architectures natively.
+* Using native builds::      Build for foreign architectures natively.
 
 System Configuration
 
@@ -15216,13 +15216,12 @@ Session_PID: 4278
 @end table
 @end table
 
-@node Foreign architectures
-@chapter Foreign architectures
+@node Foreign Architectures
+@chapter Foreign Architectures
 
-GNU Guix can target computers of different CPU architectures when
-producing packages (@pxref{Invoking guix package}), packs
-(@pxref{Invoking guix pack}) or full systems (@pxref{Invoking guix
-system}).
+You can target computers of different CPU architectures when producing
+packages (@pxref{Invoking guix package}), packs (@pxref{Invoking guix
+pack}) or full systems (@pxref{Invoking guix system}).
 
 GNU Guix supports two distinct mechanisms to target foreign
 architectures:
@@ -15240,14 +15239,14 @@ requires emulation, using the QEMU program for instance.
 
 @menu
 * Using cross-compilation::  Build for foreign architecture using cross-compilation.
-* Using native building::    Build for foreign architectures natively.
+* Using native builds::      Build for foreign architectures natively.
 @end menu
 
 @node Using cross-compilation
 @section Using cross-compilation
 
 @cindex foreign architectures
-The GNU Guix commands supporting cross-compilation are proposing the
+The commands supporting cross-compilation are proposing the
 @option{--list-targets} and @option{--target} options.
 
 The @option{--list-targets} option lists all the supported targets that
@@ -15271,7 +15270,7 @@ The available targets are:
    - x86_64-w64-mingw32
 @end example
 
-The targets are specified as GNU triplets (@pxref{Specifying Target
+Targets are specified as GNU triplets (@pxref{Specifying Target
 Triplets, GNU configuration triplets,, autoconf, Autoconf}).
 
 Those triplets are passed to GCC and the other underlying compilers
@@ -15289,14 +15288,14 @@ $ file /gnu/store/9926by9qrxa91ijkhw9ndgwp4bn24g9h-hello-2.12/bin/hello
 
 The major benefit of cross-compilation is that there are no performance
 penaly compared to emulation using QEMU.  There are however higher risks
-that some packages fail to cross-compile because few GNU Guix users are
-using this mecanism extensively.
+that some packages fail to cross-compile because few users are using
+this mecanism extensively.
 
-@node Using native building
-@section Using native building
+@node Using native builds
+@section Using native builds
 
-The GNU Guix commands that support impersonating a specific system have
-the @option{--list-systems} and @option{--system} options.
+The commands that support impersonating a specific system have the
+@option{--list-systems} and @option{--system} options.
 
 The @option{--list-systems} option lists all the supported systems that
 can be passed as an argument to @option{--system}.
@@ -15324,9 +15323,8 @@ $ file /gnu/store/cc0km35s8x2z4pmwkrqqjx46i8b1i3gm-hello-2.12/bin/hello
 32-bit LSB executable, Intel 80386 @dots{}
 @end example
 
-In the above example, the GNU Guix current system is @var{x86_64-linux}.
-The @var{hello} package is however built for the @var{i686-linux}
-system.
+In the above example, the current system is @var{x86_64-linux}.  The
+@var{hello} package is however built for the @var{i686-linux} system.
 
 This is possible because the @var{i686} CPU instruction set is a subset
 of the @var{x86_64}, hence @var{i686} targeting binaries can be run on
@@ -15345,7 +15343,7 @@ for that.  In short, the Linux kernel can defer the execution of a
 binary targeting a foreign platform, here @var{aarch64-linux}, to a
 userspace program, usually an emulator.
 
-There is a GNU Guix service that registers QEMU as a backend for the
+There is a service that registers QEMU as a backend for the
 @code{binfmt_misc} mechanism (@pxref{Virtualization Services,
 @code{qemu-binfmt-service-type}}).  On Debian based foreign
 distributions, the alternative would be the @code{qemu-user-static}
