@@ -137,7 +137,6 @@ MODULES =					\
   guix/platforms/mips.scm                       \
   guix/platforms/powerpc.scm                    \
   guix/platforms/riscv.scm                      \
-  guix/platforms/s390.scm                       \
   guix/platforms/x86.scm                        \
   guix/build-system.scm				\
   guix/build-system/android-ndk.scm		\

@@ -15265,7 +15265,6 @@ The available targets are:
    - powerpc-linux-gnu
    - powerpc64le-linux-gnu
    - riscv64-linux-gnu
-   - s390x-linux-gnu
    - x86_64-linux-gnu
    - x86_64-w64-mingw32
 @end example
@@ -15313,7 +15312,6 @@ The available systems are:
    - powerpc-linux
    - powerpc64le-linux
    - riscv64-linux
-   - s390x-linux
 
 $ guix build --system=i686-linux hello
 /gnu/store/cc0km35s8x2z4pmwkrqqjx46i8b1i3gm-hello-2.12
