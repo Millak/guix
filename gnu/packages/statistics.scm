@@ -203,7 +203,7 @@ This package also provides @command{xls2csv} to export Excel files to CSV.")
 (define r-with-tests
   (package
     (name "r-with-tests")
-    (version "4.1.3")
+    (version "4.2.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://cran/src/base/R-"
@@ -211,7 +211,7 @@ This package also provides @command{xls2csv} to export Excel files to CSV.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1mpy4sar1amx5ai9rqr9s0nw8p65iqfrqbm5n9h402b17hrmpzqm"))))
+                "123l17sv3smh5cz0vrjxjj8jf81bb860kah6iww9bl3skdqvgsiq"))))
     (build-system gnu-build-system)
     (arguments
      `(#:disallowed-references (,tzdata-for-tests)
@@ -237,6 +237,16 @@ This package also provides @command{xls2csv} to export Excel files to CSV.")
                  (("uname") uname-bin))
                (substitute* "src/unix/sys-std.c"
                  (("rm -Rf ") (string-append rm-bin " -Rf "))))))
+         (add-after 'unpack 'patch-tests
+           (lambda _
+             ;; This is needed because R is run during the check phase and
+             ;; /bin/sh doesn't exist in the build container.
+             (substitute* "src/unix/sys-unix.c"
+               (("\"/bin/sh\"")
+                (string-append "\"" (which "sh") "\"")))
+             ;; This test fails because line numbers are off by two.
+             (substitute* "tests/reg-packages.R"
+               (("8 <= print" m) (string-append "## " m)))))
          (add-after 'unpack 'build-reproducibly
            (lambda _
              ;; The documentation contains time stamps to demonstrate
@@ -315,6 +325,9 @@ as.POSIXct(if (\"\" != Sys.getenv(\"SOURCE_DATE_EPOCH\")) {\
              (setenv "TZDIR"
                      (search-input-directory inputs
                                              "share/zoneinfo"))))
+         (add-before 'check 'set-home
+           ;; Some tests require that HOME be set.
+           (lambda _ (setenv "HOME" "/tmp")))
          (add-after 'build 'make-info
           (lambda _ (invoke "make" "info")))
          (add-after 'build 'install-info
