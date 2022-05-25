@@ -23,7 +23,7 @@
   #:use-module (gnu bootloader grub)
   #:use-module (gnu image)
   #:use-module (gnu packages ssh)
-  #:use-module (guix platforms hurd)
+  #:use-module (guix platforms x86)
   #:use-module (gnu services)
   #:use-module (gnu services ssh)
   #:use-module (gnu system)
