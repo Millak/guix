@@ -34845,6 +34845,12 @@ derivations to build.
 The Guix Data Service instance from which to query to find out about
 derivations to build.
 
+@item @code{guix-data-service-build-server-id} (default: @code{#f})
+The Guix Data Service build server ID coresponding to the builds being
+submitted.  Providing this speeds up the submitting of builds as
+derivations that have already been submitted can be skipped before
+asking the coordinator to build them.
+
 @item @code{processed-commits-file} (default: @code{"/var/cache/guix-build-coordinator-queue-builds/processed-commits"})
 A file to record which commits have been processed, to avoid needlessly
 processing them again if the service is restarted.
