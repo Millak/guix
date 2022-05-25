@@ -2,7 +2,7 @@
 ;;; Copyright © 2012, 2013, 2015, 2016, 2017, 2019 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2016 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2017, 2019 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2019, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Pierre-Moana Levesque <pierre.moana.levesque@gmail.com>
 ;;; Copyright © 2019, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -45,14 +45,14 @@
 (define-public texinfo
   (package
     (name "texinfo")
-    (version "6.7")
+    (version "6.8")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/texinfo/texinfo-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1aicn1v3czqii08wc91jw089n1x3gfchkf808q2as59dak0h714q"))))
+                "1i7yb7mrp3inz25zbzv2pllr4y7d58v818f1as7iz8mw53nm7dwf"))))
     (build-system gnu-build-system)
     (arguments
      ;; When cross-compiling, the package is configured twice: once with the
