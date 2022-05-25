@@ -175,10 +175,22 @@ function interface, and a symbolic debugger.")
                        "sml.boot.amd64-unix/SMLNJ-BASIS/.cm/amd64-unix/basis-common.cm"))
 
              ;; Build.
-             (invoke "./config/install.sh" "-default"
-                     (if (string=? "i686-linux" ,(%current-system))
-                       "32"
-                       "64"))
+             ;; The `sml` executable built by this package somehow inherits the
+             ;; signal dispositions of the shell where it was built. If SIGINT
+             ;; is ignored in the shell, the resulting `sml` will also ignore
+             ;; SIGINT. This will break the use of Ctrl-c for interrupting
+             ;; execution in the SML/NJ REPL.
+             ;; Here, we use Guile's `system` procedure instead of Guix's
+             ;; `invoke` because `invoke` uses Guile's `system*`, which causes
+             ;; SIGINT and SIGQUIT to be ignored.
+             (let ((exit-code
+                     (system (string-append "./config/install.sh -default "
+                                            (if (string=? "i686-linux"
+                                                          ,(%current-system))
+                                              "32"
+                                              "64")))))
+               (unless (zero? exit-code)
+                 (error (format #f "Exit code: ~a" exit-code))))
 
              ;; Undo the binary patch.
              (for-each
