@@ -85,7 +85,8 @@
                                    (open-inferior (derivation->output-path derivation)))
                                  %cuirass-supported-systems)))
              (n-par-for-each
-              (/ (current-processor-count) 2)
+              (min (length %cuirass-supported-systems)
+                   (current-processor-count))
               (lambda (system inferior)
                 (with-store store
                   (let ((channels (map channel-instance->sexp instances)))
