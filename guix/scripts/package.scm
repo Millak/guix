@@ -204,8 +204,12 @@ non-zero relevance score."
                (match m2
                  ((package2 . score2)
                   (if (= score1 score2)
-                      (string>? (package-full-name package1)
-                                (package-full-name package2))
+                      (if (string=? (package-name package1)
+                                    (package-name package2))
+                          (version>? (package-version package1)
+                                     (package-version package2))
+                          (string>? (package-name package1)
+                                    (package-name package2)))
                       (> score1 score2))))))))))
 
 (define (transaction-upgrade-entry store entry transaction)
