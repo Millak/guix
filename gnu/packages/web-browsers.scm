@@ -504,25 +504,12 @@ interface.")
              (setenv "QT_QPA_PLATFORM" "offscreen")))
          (add-after 'install 'install-more
            (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (app (string-append out "/share/applications"))
-                    (hicolor (string-append out "/share/icons/hicolor")))
-               (install-file "doc/qutebrowser.1"
-                             (string-append out "/share/man/man1"))
-               (for-each
-                (lambda (i)
-                  (let ((src  (format #f "icons/qutebrowser-~dx~d.png" i i))
-                        (dest (format #f "~a/~dx~d/apps/qutebrowser.png"
-                                      hicolor i i)))
-                    (mkdir-p (dirname dest))
-                    (copy-file src dest)))
-                '(16 24 32 48 64 128 256 512))
-               (install-file "icons/qutebrowser.svg"
-                             (string-append hicolor "/scalable/apps"))
-               (substitute* "misc/org.qutebrowser.qutebrowser.desktop"
-                 (("Exec=qutebrowser")
-                  (string-append "Exec=" out "/bin/qutebrowser")))
-               (install-file "misc/org.qutebrowser.qutebrowser.desktop" app))))
+             (let ((out (assoc-ref outputs "out")))
+               (rename-file "misc/Makefile" "Makefile")
+               (substitute* "Makefile"
+                 ((".*setup\\.py.*") ""))
+               (invoke "make" "install" (string-append "PREFIX=" out))
+               (delete-file-recursively (string-append out "/share/metainfo")))))
          (add-after 'wrap 'wrap-qt-process-path
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
