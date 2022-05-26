@@ -793,12 +793,14 @@ for ARCH and optionally VARIANT, or #f if there is no such configuration."
        ("mpfr" ,mpfr)
        ("mpc" ,mpc)
 
-       ,@(match (and configuration-file
-                     (configuration-file
-                      (platform-linux-architecture
-                       (lookup-platform-by-target-or-system
-                        (or (%current-target-system) (%current-system))))
-                      #:variant (version-major+minor version)))
+       ,@(match (let ((arch (platform-linux-architecture
+                             (lookup-platform-by-target-or-system
+                              (or (%current-target-system)
+                                  (%current-system))))))
+                  (and configuration-file arch
+                       (configuration-file
+                        arch
+                        #:variant (version-major+minor version))))
            (#f                                    ;no config for this platform
             '())
            ((? string? config)
