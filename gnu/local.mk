@@ -1023,6 +1023,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/elm-offline-package-registry.patch	\
   %D%/packages/patches/elm-reactor-static-files.patch		\
   %D%/packages/patches/elogind-revert-polkit-detection.patch	\
+  %D%/packages/patches/emacs-deferred-fix-number-of-arguments.patch	\
   %D%/packages/patches/emacs-exec-path.patch			\
   %D%/packages/patches/emacs-ess-fix-obsolete-function-alias.patch	\
   %D%/packages/patches/emacs-git-email-missing-parens.patch	\

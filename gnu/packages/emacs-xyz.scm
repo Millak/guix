@@ -6552,7 +6552,9 @@ framework for Emacs Lisp to be used with @code{ert}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xy9zb6wwkgwhcxdnslqk52bq3z24chgk6prqi4ks0qcf2bwyh5h"))))
+        (base32 "0xy9zb6wwkgwhcxdnslqk52bq3z24chgk6prqi4ks0qcf2bwyh5h"))
+       (patches
+        (search-patches "emacs-deferred-fix-number-of-arguments.patch"))))
     (build-system emacs-build-system)
     (arguments
      `(#:phases
