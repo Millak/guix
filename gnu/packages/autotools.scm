@@ -485,12 +485,14 @@ Makefile, simplifying the entire process for the developer.")
        #:phases
        (modify-phases %standard-phases
          (add-before 'check 'pre-check
-           (lambda* (#:key inputs native-inputs #:allow-other-keys)
+           (lambda* (#:key inputs native-inputs parallel-tests? #:allow-other-keys)
              ;; Run the test suite in parallel, if possible.
              (setenv "TESTSUITEFLAGS"
                      (string-append
                       "-j"
-                      (number->string (parallel-job-count))))
+                      (if parallel-tests?
+                        (number->string (parallel-job-count))
+                        "1")))
            ;; Patch references to /bin/sh.
            (let ((bash (assoc-ref (or native-inputs inputs) "bash")))
              (substitute* "tests/testsuite"
