@@ -88,6 +88,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
@@ -484,6 +485,7 @@ interface.")
            python-jinja2
            python-markupsafe
            python-pygments
+           python-pynacl
            python-pyyaml
            ;; FIXME: python-pyqtwebengine needs to come before python-pyqt so
            ;; that it's __init__.py is used first.
@@ -499,6 +501,13 @@ interface.")
        #:tests? #f
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'find-userscripts
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* "qutebrowser/commands/userscripts.py"
+               (("os.path.join.*system=True)")
+               (string-append "os.path.join(\""
+                              (assoc-ref outputs "out")
+                              "\", \"share\", \"qutebrowser\"")))))
          (add-before 'check 'set-env-offscreen
            (lambda _
              (setenv "QT_QPA_PLATFORM" "offscreen")))
@@ -510,6 +519,24 @@ interface.")
                  ((".*setup\\.py.*") ""))
                (invoke "make" "install" (string-append "PREFIX=" out))
                (delete-file-recursively (string-append out "/share/metainfo")))))
+         (add-after 'install-more 'wrap-scripts
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (python (assoc-ref inputs "python"))
+                    (path (string-append out "/lib/python"
+                                         ,(version-major+minor (package-version
+                                                                python))
+                                         "/site-packages:"
+                                         (getenv "GUIX_PYTHONPATH"))))
+               (for-each
+                 (lambda (file)
+                   (wrap-program file
+                     `("GUIX_PYTHONPATH" ":" prefix (,path))))
+                 (append
+                   (find-files
+                     (string-append out "/share/qutebrowser/scripts") "\\.py$")
+                   (find-files
+                     (string-append out "/share/qutebrowser/userscripts")))))))
          (add-after 'wrap 'wrap-qt-process-path
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
