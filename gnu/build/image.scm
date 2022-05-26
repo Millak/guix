@@ -95,16 +95,18 @@ turn doesn't take any constant overhead into account, force a 1-MiB minimum."
                            (estimate-partition-size root)
                            size)))))))
 
-(define* (make-vfat-image partition target root)
+(define* (make-vfat-image partition target root fs-bits)
   "Handle the creation of VFAT partition images.  See 'make-partition-image'."
   (let ((size (partition-size partition))
-        (label (partition-label partition)))
-    (invoke "fakeroot" "mkdosfs" "-n" label "-C" target
-            "-F" "16" "-S" "1024"
-            (size-in-kib
-             (if (eq? size 'guess)
-                 (estimate-partition-size root)
-                 size)))
+        (label (partition-label partition))
+        (flags (partition-flags partition)))
+    (apply invoke "fakeroot" "mkdosfs" "-n" label "-C" target
+                          "-F" (number->string fs-bits)
+                          (size-in-kib
+                           (if (eq? size 'guess)
+                               (estimate-partition-size root)
+                               size))
+                    (if (member 'esp flags) (list "-S" "1024") '()))
     (for-each (lambda (file)
                 (unless (member file '("." ".."))
                   (invoke "mcopy" "-bsp" "-i" target
@@ -120,8 +122,10 @@ ROOT directory to populate the image."
     (cond
      ((string-prefix? "ext" type)
       (make-ext-image partition target root))
-     ((string=? type "vfat")
-      (make-vfat-image partition target root))
+     ((or (string=? type "vfat") (string=? type "fat16"))
+      (make-vfat-image partition target root 16))
+     ((string=? type "fat32")
+      (make-vfat-image partition target root 32))
      (else
       (raise (condition
               (&message
