@@ -462,14 +462,15 @@ Makefile, simplifying the entire process for the developer.")
               (patches (search-patches "libtool-skip-tests2.patch"))))
     (build-system gnu-build-system)
     (propagated-inputs (list m4))
-    (native-inputs `(("m4" ,m4)
-                     ("perl" ,perl)
-                     ;; XXX: this shouldn't be necessary, but without it test
-                     ;; 102 fails because it cannot find ltdl/libltdl.la.
-                     ("libltdl" ,libltdl)
-                     ("help2man" ,help2man) ;because we modify ltmain.sh
-                     ("automake" ,automake)      ;some tests rely on 'aclocal'
-                     ("autoconf" ,autoconf-wrapper))) ;others on 'autom4te'
+    (native-inputs
+     (list m4
+           perl
+           ;; XXX: this shouldn't be necessary, but without it test
+           ;; 102 fails because it cannot find ltdl/libltdl.la.
+           libltdl
+           help2man             ; because we modify ltmain.sh
+           automake             ; some tests rely on 'aclocal'
+           autoconf-wrapper))   ; others on 'autom4te'
 
     (arguments
      `(;; Libltdl is provided as a separate package, so don't install it here.
