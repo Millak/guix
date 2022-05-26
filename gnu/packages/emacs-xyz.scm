@@ -20230,24 +20230,26 @@ functions.")
     (license license:gpl3+)))
 
 (define-public emacs-benchmark-init
-  (package
-    (name "emacs-benchmark-init")
-    (version "1.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/dholm/benchmark-init-el")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1kyn1izm5sbqbp9whnhk9dn3yc7zy8bz5san5w3ivi3rpx15fh94"))))
-    (build-system emacs-build-system)
-    (home-page "https://github.com/dholm/benchmark-init-el")
-    (synopsis "Benchmark Emacs @code{require} and @code{load} calls")
-    (description "@code{benchmark-init} provides a way to keep track of where
+  (let ((commit "02435560415bbadbcf5051fb7042880549170e7e")
+        (revision "1"))
+    (package
+      (name "emacs-benchmark-init")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/dholm/benchmark-init-el")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "19375vamhld4xm2qrdmhlp2nczfvalmz9x6ahl23zwkilr8n1nbw"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/dholm/benchmark-init-el")
+      (synopsis "Benchmark Emacs @code{require} and @code{load} calls")
+      (description "@code{benchmark-init} provides a way to keep track of where
 time is being spent during Emacs startup in order to optimize startup time.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-magit-gerrit
   (package
