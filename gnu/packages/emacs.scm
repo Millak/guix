@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2017, 2019, 2021-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014 Taylan Ulrich Bayirli/Kammer <taylanbayirli@gmail.com>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020 Mark H Weaver <mhw@netris.org>
@@ -474,18 +474,18 @@ editor (with wide ints)" )
                                        #:tests? #f
                                        ,@(package-arguments emacs))
          ((#:configure-flags flags ''())
-          `(delete "--with-cairo" ,flags))
+          #~(delete "--with-cairo" #$flags))
          ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'autogen
-               (lambda _
-                 (invoke "sh" "autogen.sh")))
-             ;; Build sometimes fails: deps/dispnew.d: No such file or directory
-             (add-before 'build 'make-deps-dir
-               (lambda _
-                 (invoke "mkdir" "-p" "src/deps")))
-             (delete 'restore-emacs-pdmp)
-             (delete 'strip-double-wrap))))))))
+          #~(modify-phases #$phases
+              (add-after 'unpack 'autogen
+                (lambda _
+                  (invoke "sh" "autogen.sh")))
+              ;; Build sometimes fails: deps/dispnew.d: No such file or directory
+              (add-before 'build 'make-deps-dir
+                (lambda _
+                  (invoke "mkdir" "-p" "src/deps")))
+              (delete 'restore-emacs-pdmp)
+              (delete 'strip-double-wrap))))))))
 
 (define-public m17n-db
   (package
