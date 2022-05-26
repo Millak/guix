@@ -978,8 +978,7 @@ manually.")
 
 (define (ddclient-activation config)
   "Return the activation GEXP for CONFIG."
-  (with-imported-modules '((guix build utils)
-                           (ice-9 rdelim))
+  (with-imported-modules '((guix build utils))
     #~(begin
         (use-modules (guix build utils)
                      (ice-9 rdelim))
