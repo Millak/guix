@@ -419,6 +419,56 @@ GLib-based library, libnice, as well as GStreamer elements to use it.")
         license:lgpl2.1+
         license:mpl1.1)))))
 
+(define-public librecast
+  (package
+    (name "librecast")
+    (version "0.5.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://codeberg.org/librecast/librecast")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1zzdxawzsj0lxyxm8c2wdqx3b633f8ybvlg6szs4v0y42xg4a829"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:parallel-tests? #f
+       #:make-flags (let ((target ,(%current-target-system)))
+                      (list ,(string-append "CC="
+                                            (cc-for-target))
+                            (string-append "PREFIX="
+                                           (assoc-ref %outputs "out"))))
+       #:phases (modify-phases %standard-phases
+                  (add-before 'check 'remove-network-tests
+                    (lambda _
+                      ;; these tests require networking
+                      (delete-file "./test/0000-0010.c")
+                      (delete-file "./test/0000-0012.c")
+                      (delete-file "./test/0000-0013.c")
+                      (delete-file "./test/0000-0014.c")
+                      (delete-file "./test/0000-0015.c")
+                      (delete-file "./test/0000-0016.c")
+                      (delete-file "./test/0000-0018.c")
+                      (delete-file "./test/0000-0019.c")
+                      (delete-file "./test/0000-0021.c")
+                      (delete-file "./test/0000-0028.c")
+                      (delete-file "./test/0000-0036.c")
+                      (delete-file "./test/0000-0037.c")
+                      (delete-file "./test/0000-0038.c")
+                      (delete-file "./test/0000-0039.c")
+                      (delete-file "./test/0000-0040.c")))
+                  (replace 'check
+                    (lambda _
+                      (invoke "make" "test"))))))
+    (inputs (list libsodium lcrq))
+    (synopsis "librecast IPv6 multicast library")
+    (description "Librecast is a C library which supports IPv6 multicast
+networking.")
+    (home-page "https://librecast.net/librecast.html")
+    (license (list license:gpl2 license:gpl3))))
+
 (define-public rtmpdump
   ;; There are no tags in the repository, and the project is unlikely to
   ;; make new releases.  Take a recent commit for multiple security fixes
