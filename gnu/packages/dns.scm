@@ -333,14 +333,14 @@ and BOOTP/TFTP for network booting of diskless machines.")
     ;; When updating, check whether isc-dhcp's bundled copy should be as well.
     ;; The BIND release notes are available here:
     ;; https://www.isc.org/bind/
-    (version "9.16.27")
+    (version "9.16.29")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://ftp.isc.org/isc/bind9/" version
                            "/bind-" version ".tar.xz"))
        (sha256
-        (base32 "0rpmighbbim9wi24p2bg814x5z20xkvv5y6nfnfh30ac22pjm44h"))
+        (base32 "0rklj342khnycs462nd3k35yymsdv6ibv352jv1nymmxxfc8yh68"))
        (patches
         (search-patches "bind-re-add-attr-constructor-priority.patch"))))
     (build-system gnu-build-system)
@@ -871,7 +871,7 @@ Extensions} (DNSSEC).")
 (define-public knot
   (package
     (name "knot")
-    (version "3.1.6")
+    (version "3.1.8")
     (source
      (origin
        (method git-fetch)
@@ -880,7 +880,7 @@ Extensions} (DNSSEC).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rwcp55fvmm0vhad1368knfn0ri642sigh8nykvvikdlx06d21cj"))
+        (base32 "0v3rh27qnyihdqp5nm8bnn9xd5rl2fbwhj4cmdpc8ik4qs21xyf4"))
        (modules '((guix build utils)))
        (snippet
         '(begin

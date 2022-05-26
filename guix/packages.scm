@@ -1618,6 +1618,11 @@ and return it."
                                  (&package-error
                                   (package package))))))))))))
 
+(define %package-graft-cache
+  ;; Cache mapping <package> records to <graft> records, for packages that
+  ;; have a replacement.
+  (allocate-store-connection-cache 'package-graft-cache))
+
 (define (input-graft system)
   "Return a monadic procedure that, given a package with a graft, returns a
 graft, and #f otherwise."
@@ -1626,9 +1631,8 @@ graft, and #f otherwise."
       (((? package? package) output)
        (let ((replacement (package-replacement package)))
          (if replacement
-             ;; XXX: We should use a separate cache instead of abusing the
-             ;; object cache.
-             (mcached (mlet %store-monad ((orig (package->derivation package system
+             (mcached eq? (=> %package-graft-cache)
+                      (mlet %store-monad ((orig (package->derivation package system
                                                                      #:graft? #f))
                                           (new  (package->derivation replacement system
                                                                      #:graft? #t)))
@@ -1637,7 +1641,7 @@ graft, and #f otherwise."
                                   (origin-output output)
                                   (replacement new)
                                   (replacement-output output))))
-                      package 'graft output system)
+                      package output system)
              (return #f))))
       (_
        (return #f)))))

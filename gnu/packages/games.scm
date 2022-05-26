@@ -1062,34 +1062,34 @@ more.  This package does @emph{not} provide the game assets.")
               license:bsd-3)))) ; CorsixTH/Src/random.c
 
 (define-public cowsay
+  ;; This is a continuation of Tony Monroe's now-unmaintained original, that
+  ;; aims to become the ‘canonical modern fork’.  We'll see.  What it gives
+  ;; us today is a bunch of fixes that other distros shipped as patches.
   (package
     (name "cowsay")
-    (version "3.04")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/tnalpgge/rank-amateur-cowsay")
-                     (commit (string-append name "-" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "06455kq37hvq1xb7adyiwrx0djs50arsxvjgixyxks16lm1rlc7n"))))
+    (version "3.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cowsay-org/cowsay")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yrgwwacrhsgpyp14c3imkd4bb9b4i68q4df9cq1i1fh4fc2nn5p"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (delete 'build)                ; nothing to be built
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (invoke "sh" "install.sh"
-                     (assoc-ref outputs "out"))))
-         (delete 'check)
-         (add-after 'install 'check
-           (lambda* (#:key outputs #:allow-other-keys)
-             (invoke (string-append (assoc-ref outputs "out")
-                                    "/bin/cowsay")
-                     "We're done!"))))))
+     (list #:make-flags
+           #~(list (string-append "prefix=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)      ; no configure script
+               (delete 'check)
+               (add-after 'install 'check
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (invoke (string-append (assoc-ref outputs "out")
+                                          "/bin/cowsay")
+                           "We're done!"))))))
     (inputs
      (list perl))
     (home-page (string-append "https://web.archive.org/web/20071026043648/"
@@ -1353,44 +1353,48 @@ effects and music to make a completely free game.")
 (define-public freedroidrpg
   (package
     (name "freedroidrpg")
-    (version "0.16.1")
+    (version "1.0rc2")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "http://ftp.osuosl.org/pub/freedroid/"
-                           "freedroidRPG-" (version-major+minor version) "/"
-                           "freedroidRPG-" version ".tar.gz"))
+       (uri (let ((major+minor
+                   (version-major+minor
+                    (string-replace-substring version "rc" "."))))
+              (string-append "http://ftp.osuosl.org/pub/freedroid/"
+                             "freedroidRPG-" major+minor "/"
+                             "freedroidRPG-" version ".tar.gz")))
        (sha256
-        (base32 "0n4kn38ncmcy3lrxmq8fjry6c1z50z4q1zcqfig0j4jb0dsz2va2"))))
+        (base32 "10jknaad2ph9j5bs4jxvpnl8rq5yjlq0nasv98f4mki2hh8yiczy"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list
-        (string-append "CFLAGS="
-                       "-fcommon "      ; XXX needed to build with GCC 10
-                       "-I" (assoc-ref %build-inputs "sdl-gfx") "/include/SDL "
-                       "-I" (assoc-ref %build-inputs "sdl-image") "/include/SDL "
-                       "-I" (assoc-ref %build-inputs "sdl-mixer") "/include/SDL")
-        "--enable-opengl")
-       ;; FIXME: the test suite fails with the following error output:
-       ;;   4586 Segmentation fault      env SDL_VIDEODRIVER=dummy \
-       ;;   SDL_AUDIODRIVER=dummy ./src/freedroidRPG -nb text
-       #:tests? #f))
+     (list
+      #:configure-flags
+      #~(list
+         (string-append "CFLAGS=-fcommon "
+                        "-I" #$(this-package-input "sdl-gfx") "/include/SDL "
+                        "-I" #$(this-package-input "sdl-image") "/include/SDL "
+                        "-I" #$(this-package-input "sdl-mixer") "/include/SDL")
+         "--enable-opengl")
+      ;; FIXME: the test suite fails with the following error output:
+      ;;   4586 Segmentation fault      env SDL_VIDEODRIVER=dummy \
+      ;;   SDL_AUDIODRIVER=dummy ./src/freedroidRPG -nb text
+      #:tests? #f))
     (native-inputs
      (list pkg-config))
     (inputs
-     `(("glu" ,glu)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libogg" ,libogg)
-       ("libpng" ,libpng)
-       ("libvorbis" ,libvorbis)
-       ("mesa" ,mesa)
-       ("python" ,python-wrapper)
-       ("sdl" ,sdl)
-       ("sdl-gfx" ,sdl-gfx)
-       ("sdl-image" ,sdl-image)
-       ("sdl-mixer" ,sdl-mixer)
-       ("zlib" ,zlib)))
+     (list glew
+           glu
+           libjpeg-turbo
+           libogg
+           libpng
+           libvorbis
+           mesa
+           python-wrapper
+           sdl
+           sdl-gfx
+           sdl-image
+           sdl-mixer
+           zlib))
     (home-page "https://www.freedroid.org/")
     (synopsis "Isometric role-playing game against killer robots")
     (description
@@ -1952,14 +1956,14 @@ Chess).  It is similar to standard chess but this variant is far more complicate
 (define-public ltris
   (package
     (name "ltris")
-    (version "1.2.3")
+    (version "1.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/lgames/ltris/"
                            "ltris-" version ".tar.gz"))
        (sha256
-        (base32 "1a2m17jwkyar8gj07bn5jk01j2ps4vvc48z955jjjsh67q2svi0f"))))
+        (base32 "10wg6v12w3jms8ka2x9a87p06l9gzpr94ai9v428c9r320q7psyn"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
@@ -2279,7 +2283,7 @@ utilizing the art assets from the @code{SuperTux} project.")
     (synopsis "Thematic meditative game")
     (description
      "You are a robot moving around in a realm filled with ASCII characters.
-Examine humourously described though useless items as you search for a kitten
+Examine humorously described though useless items as you search for a kitten
 among them.  The theme of this Zen simulation is continued in its
 documentation.")
     (home-page "http://robotfindskitten.org/")
@@ -4254,14 +4258,14 @@ world}, @uref{http://evolonline.org, Evol Online} and
 (define openttd-engine
   (package
     (name "openttd-engine")
-    (version "12.1")
+    (version "12.2")
     (source
      (origin (method url-fetch)
              (uri (string-append "https://cdn.openttd.org/openttd-releases/"
                                  version "/openttd-" version "-source.tar.xz"))
              (sha256
               (base32
-               "1qz7ld55m9cvgr4mkv6c11y0zf2aph3ba605l45qj41hk2wzb2r5"))))
+               "0p79mi6hnj9138911l56zxxzy7rqz02nmxbf455jc31sx46qyl41"))))
     (build-system cmake-build-system)
     (inputs
      (list allegro
@@ -6673,7 +6677,7 @@ fight against their plot and save his fellow rabbits from slavery.")
     ;; A snippet here would cause a build failure because of timestamps
     ;; reset.  See https://bugs.gnu.org/26734.
     (inputs
-     (list #{0ad-data}#
+     (list 0ad-data
            curl
            enet
            fmt
@@ -7585,7 +7589,7 @@ original.")
 (define-public rinutils
   (package
     (name "rinutils")
-    (version "0.10.0")
+    (version "0.10.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7594,7 +7598,7 @@ original.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05h9sq3w900mx8xij7qgqgqcbdk1x5gvbpz7prw2pfbzrrbiq2ns"))))
+                "0r90kncf6mvyklifpdsnm50iya7w2951nz35nlgndmqnr82gvdwf"))))
     (build-system cmake-build-system)
     (arguments
      (list #:phases
@@ -7644,7 +7648,7 @@ original.")
 (define-public fortune-mod
   (package
     (name "fortune-mod")
-    (version "3.12.0")
+    (version "3.14.0")
     (source
      (origin
        (method git-fetch)
@@ -7653,7 +7657,7 @@ original.")
              (commit (string-append "fortune-mod-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1iq3bxrw8758jqvfqaasd7w1zm0g28g9n25qccnzvr98997h6r2n"))))
+        (base32 "1f2zif3s6vddbhph4jr1cymdsn7gagg59grrxs0yap6myqmy8shg"))))
     (build-system cmake-build-system)
     (arguments
      (list #:test-target "check"

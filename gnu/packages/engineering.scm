@@ -1732,14 +1732,14 @@ it suitable for security research and analysis.")
 (define-public asco
   (package
     (name "asco")
-    (version "0.4.10")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://sourceforge/asco/asco/" version "/ASCO-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "119rbc2dc8xzwxvykgji0v0nrzvymjmlizr1bc2mihspj686kxsl"))))
+    (version "0.4.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/asco/asco/" version "/ASCO-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "0ggxv0p1zmfbvd1k17p2j1cskbjsa83fansz8ihxn7ax9qdicljv"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                                ; no tests
@@ -1751,13 +1751,12 @@ it suitable for security research and analysis.")
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((coreutils (assoc-ref inputs "coreutils-minimal")))
                (substitute* '("errfunc.c" "asco.c")
-                 (("cp ")
-                  (string-append coreutils "/bin/cp "))
-                 (("nice")
-                  (string-append coreutils "/bin/nice")))
+                 (("(cp|nice) " _ command)
+                  (string-append
+                   (search-input-file inputs (string-append "bin/" command))
+                   " ")))
                (substitute* "Makefile"
-                 (("<FULL_PATH_TO_MPICH>/bin/mpicc") (which "mpicc")))
-               #t)))
+                 (("<FULL_PATH_TO_MPICH>/bin/mpicc") (which "mpicc"))))))
          (replace 'install                        ; no install target
            (lambda* (#:key outputs #:allow-other-keys)
              (for-each (lambda (file)
@@ -1765,8 +1764,7 @@ it suitable for security research and analysis.")
                                              (assoc-ref outputs "out")
                                              "/bin")))
                        '("asco" "asco-mpi" "asco-test"
-                         "tools/alter/alter" "tools/log/log"))
-             #t)))))
+                         "tools/alter/alter" "tools/log/log")))))))
     (native-inputs
      `(("mpi" ,openmpi)))
     (inputs
@@ -1784,7 +1782,7 @@ high-performance parallel differential evolution (DE) optimization algorithm.")
   ;; See <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=27344#236>.
   (package
     (name "libngspice")
-    (version "36")
+    (version "37")
     (source
      (origin
        (method url-fetch)
@@ -1795,7 +1793,7 @@ high-performance parallel differential evolution (DE) optimization algorithm.")
                             "old-releases/" version
                             "/ngspice-" version ".tar.gz")))
        (sha256
-        (base32 "133za6m9grpnnlb46sijkda7ky41mrbvfdb60i0m695sxy3q50ag"))))
+        (base32 "1gpcic6b6xk3g4956jcsqljf33kj5g43cahmydq6m8rn39sadvlv"))))
     (build-system gnu-build-system)
     (arguments
      `(;; No tests for libngspice exist.
@@ -1821,10 +1819,7 @@ high-performance parallel differential evolution (DE) optimization algorithm.")
        (list "--enable-openmp"
              "--enable-ciderlib"
              "--enable-xspice"
-             "--with-ngshared"
-             ;; Readline must be disabled to build KiCad with ngspice 34.  See
-             ;; https://bugs.archlinux.org/task/70563 for reference.
-             "--with-readline=no")))
+             "--with-ngshared")))
     (native-inputs
      (list bison flex))
     (inputs
@@ -2468,6 +2463,7 @@ comments.")))
              coin3D
              double-conversion
              eigen
+             fontconfig
              freetype
              gl2ps
              glew

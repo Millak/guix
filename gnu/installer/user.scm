@@ -69,5 +69,10 @@
       (supplementary-groups '("wheel" "netdev"
                               "audio" "video"))))
 
-  `((users (cons* ,@(map user->sexp users)
-                  %base-user-accounts))))
+  `((users (cons*
+            ,@(filter-map (lambda (user)
+                            ;; Do not emit a 'user-account' form for "root".
+                            (and (not (string=? (user-name user) "root"))
+                                 (user->sexp user)))
+                          users)
+            %base-user-accounts))))

@@ -969,7 +969,7 @@ variables.")
     (home-page "https://github.com/dynverse/lmds")
     (synopsis "Landmark multi-dimensional scaling")
     (description
-     "This package provides a fast dimensionality reduction method scaleable
+     "This package provides a fast dimensionality reduction method scalable
 to large numbers of samples.  @dfn{Landmark Multi-Dimensional Scaling} (LMDS)
 is an extension of classical Torgerson MDS, but rather than calculating a
 complete distance matrix between all pairs of samples, only the distances
@@ -28198,7 +28198,7 @@ geometric models.")
     (native-inputs (list r-knitr))
     (home-page "https://github.com/JiaxiangBU/add2ggplot")
     (synopsis "Extension for ggplot2")
-    (description "This packages provides tools to create themes and color
+    (description "This package provides tools to create themes and color
 palettes for the package ggplot2.")
     (license license:expat)))
 

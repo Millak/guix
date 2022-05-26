@@ -17,7 +17,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu image)
-  #:use-module (gnu platform)
+  #:use-module (guix platform)
   #:use-module (guix records)
   #:export (partition
             partition?

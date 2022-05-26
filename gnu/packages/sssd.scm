@@ -24,22 +24,28 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix utils)
+  #:use-module (guix build utils)
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages)
   #:use-module (gnu packages)
   #:use-module (gnu packages adns)
   #:use-module (gnu packages augeas)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages dns)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages jose)
   #:use-module (gnu packages kerberos)
   #:use-module (gnu packages libunistring)
   #:use-module (gnu packages linux)
@@ -49,8 +55,11 @@
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages python)
   #:use-module (gnu packages samba)
+  #:use-module (gnu packages security-token)
   #:use-module (gnu packages selinux)
+  #:use-module (gnu packages ssh)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml))
 
@@ -136,93 +145,128 @@ dynamically-growing, reference-counted array; libbasicobjects, a set of
 fundamental object types for C.")
     (license license:lgpl3+)))
 
-;; Note: This package installs modules for ldb and nss.  For the former we
-;; need to set LDB_MODULES_PATH.  For the latter LD_PRELOAD or LD_LIBRARY_PATH
-;; is needed.
 (define-public sssd
   (package
     (name "sssd")
-    (version "1.16.5")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://releases.pagure.org/SSSD/sssd/"
-                                  "sssd-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1h6hwibaf3xa2w6qpzjiiywmfj6zkgbz4r2isf3gd0xm6vq7n6if"))
-              (patches (search-patches "sssd-fix-samba.patch"
-                                       "sssd-system-directories.patch"
-                                       "sssd-collision-with-external-nss-symbol.patch"
-                                       "sssd-fix-samba-4.15.3.patch"))))
+    (version "2.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/SSSD/sssd")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05pw5lg410vc2yc3k4hqfsbyr9k4k18qb61gbh9xz7fcjpcysqv8"))
+       (patches (search-patches "sssd-optional-systemd.patch"
+                                "sssd-system-directories.patch"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       (list (string-append "DOCBOOK_XSLT="
-                            (assoc-ref %build-inputs "docbook-xsl")
-                            "/xml/xsl/docbook-xsl-"
-                            ,(package-version docbook-xsl)
-                            "/manpages/docbook.xsl")
-             ;; Remove "--postvalid" option, because that requires access to
-             ;; online DTDs.
-             "XMLLINT_FLAGS = --catalogs --nonet --noent --xinclude --noout")
-       #:configure-flags
-       (list "--localstatedir=/var" ;for /var/lib/sss, /var/run/sssd.pid, etc.
-             "--sysconfdir=/etc"    ;/etc/sssd
+     (list
+      #:make-flags
+      #~(list (string-append "CFLAGS=-DRENEWAL_PROG_PATH=\\\""
+                             #$(this-package-input "adcli") "/sbin/adcli"
+                             "\\\"")
+              (string-append "DOCBOOK_XSLT="
+                             #$(this-package-native-input "docbook-xsl")
+                             "/xml/xsl/docbook-xsl-"
+                             #$(package-version (this-package-native-input "docbook-xsl"))
+                             "/manpages/docbook.xsl")
+              ;; Remove "--postvalid" option, because that requires access to
+              ;; online DTDs.
+              "XMLLINT_FLAGS = --catalogs --nonet --noent --xinclude --noout")
+      #:configure-flags
+      #~(list "--localstatedir=/var" ; for /var/lib/sss, /var/run/sssd.pid, etc.
+              "--sysconfdir=/etc"    ; /etc/sssd
 
-             "--disable-cifs-idmap-plugin"
-             "--without-nfsv4-idmapd-plugin"
-             "--without-python2-bindings"
-             "--without-python3-bindings"
-             (string-append "--with-plugin-path="
-                            (assoc-ref %outputs "out")
-                            "/lib/sssd")
-             (string-append "--with-krb5-plugin-path="
-                            (assoc-ref %outputs "out")
-                            "/lib/krb5/plugins/libkrb5")
-             (string-append "--with-cifs-plugin-path="
-                            (assoc-ref %outputs "out")
-                            "/lib/cifs-utils")
-             (string-append "--with-init-dir="
-                            (assoc-ref %outputs "out")
-                            "/etc/init.d")
-             (string-append "--with-ldb-lib-dir="
-                            (assoc-ref %outputs "out")
-                            "/lib/ldb/modules/ldb")
-             (string-append "--with-xml-catalog-path="
-                            (assoc-ref %build-inputs "docbook-xml")
-                            "/xml/dtd/docbook/catalog.xml"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-failing-test
-           (lambda _
-             (substitute* "src/tests/responder_socket_access-tests.c"
-               (("tcase_add_test\\(tc_utils, resp_str_to_array_test\\);") ""))
-             #t))
-         (add-after 'unpack 'add-config-in
-           (lambda _
-             (let ((config.h (open-file "config.h.in" "a")))
-               (display (string-append "
-/* Missing in commits on original repo, dunno why but won't work without. */
-#undef SMB_HAS_NEW_NDR_PULL_STEAL_SWITCH
-")
-                        config.h)
-               (close config.h))))
-         (add-before 'configure 'autoconf
-           (lambda _
-             (invoke "autoconf"))))))
+              "--disable-cifs-idmap-plugin"
+              "--without-nfsv4-idmapd-plugin"
+              (string-append "--with-plugin-path="
+                             #$output "/lib/sssd")
+              (string-append "--with-krb5-plugin-path="
+                             #$output "/lib/krb5/plugins/libkrb5")
+              (string-append "--with-cifs-plugin-path="
+                             #$output "/lib/cifs-utils")
+              (string-append "--with-init-dir="
+                             #$output "/etc/init.d")
+              (string-append "--with-ldb-lib-dir="
+                             #$output "/lib/ldb/modules/ldb")
+              (string-append "--with-xml-catalog-path="
+                             #$(this-package-native-input "docbook-xml")
+                             "/xml/dtd/docbook/catalog.xml"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'patch-source-shebangs 'patch-more-shebangs
+            (lambda _
+              (substitute* '("src/tools/analyzer/sss_analyze"
+                             "src/tools/sss_obfuscate")
+                (("#!/usr/bin/.*python")
+                 (string-append "#!" #$(this-package-input "python") "/bin/python3")))))
+          (add-before 'bootstrap 'fix-configure-macros
+            (lambda _
+              ;; A configure test for nsupdate realm support fails without this.
+              (substitute* "src/external/nsupdate.m4"
+                (("\\$NSUPDATE ") "$NSUPDATE -i "))
+              ;; Let tests find softhsm lib.
+              (substitute* "src/external/test_ca.m4"
+                (("/usr/lib/softhsm")
+                 (string-append #$(this-package-native-input "softhsm")
+                                "/lib/softhsm")))))
+          (add-before 'configure 'disable-failing-tests
+            (lambda _
+              ;; Disable tests that needs /etc/passwd.
+              (substitute* "Makefile.am"
+                (("pam-srv-tests") "")
+                (("test-negcache") ""))
+              ;; This test fails for unknown reason.
+              (substitute* "src/tests/responder_socket_access-tests.c"
+                (("tcase_add_test\\(tc_utils, resp_str_to_array_test\\);") ""))))
+          (add-before 'check 'set-libpython-path
+            (lambda _
+              (setenv "LD_LIBRARY_PATH"
+                      (string-append #$(this-package-input "python") "/lib"))))
+          (add-after 'install 'remove-static-libs
+            (lambda _
+              ;; Remove a static library that produces a (harmless) warning
+              ;; when starting a program that uses sssd’s LDB modules.
+              (delete-file
+               (string-append #$output "/lib/ldb/modules/ldb/memberof.la"))))
+          (add-after 'install 'wrap-binaries
+            (lambda _
+              (with-directory-excursion #$output
+                ;; Set path to LDB modules for sssd and utilities.
+                (for-each (lambda (bin)
+                            (wrap-program (string-append "sbin/" bin)
+                              `("LDB_MODULES_PATH" ":" prefix
+                                (,(string-append #$output "/lib/ldb/modules/ldb")))))
+                          '("sssd" "sssctl" "sss_cache" "sss_override" "sss_seed"))
+                ;; Set path to sssd’s site-packages for scripts.
+                (for-each (lambda (script)
+                            (wrap-program script
+                              `("GUIX_PYTHONPATH" ":" prefix
+                                (,(string-append #$output "/lib/python"
+                                                 #$(version-major+minor
+                                                    (package-version
+                                                     (this-package-input "python")))
+                                                 "/site-packages")))))
+                          '("libexec/sssd/sss_analyze" "sbin/sss_obfuscate"))))))))
     (inputs
-     (list augeas
-           `(,isc-bind "utils")
+     (list adcli
+           bash-minimal
            c-ares
-           curl
+           curl ; for OpenID Connect support
            cyrus-sasl
            dbus
            ding-libs
            glib
            gnutls
            http-parser
+           `(,isc-bind "utils")
            jansson
+           jose ; for OpenID Connect support
+           keyutils
            ldb
+           libnl
            libselinux
            libsemanage
            libunistring
@@ -231,21 +275,32 @@ fundamental object types for C.")
            nss
            openldap
            openssl
-           pcre
+           p11-kit ; for PKCS#11 support
+           pcre2
            popt
+           python
            samba
            talloc
            tdb
            tevent))
     (native-inputs
-     (list autoconf-2.69
-           check-0.14
-           docbook-xsl
+     (list autoconf
+           automake
+           check ; for tests
+           cmocka ; for tests
            docbook-xml
+           docbook-xsl
+           doxygen
+           gettext-minimal
+           libfaketime ; for tests
+           libtool
            libxml2 ; for xmllint
            libxslt
+           openssh ; for tests
            pkg-config
-           `(,util-linux "lib"))) ;for uuid.h, reqired for KCM
+           po4a
+           softhsm ; for tests
+           `(,util-linux "lib"))) ; for uuid.h, reqired for KCM
     (home-page "https://pagure.io/SSSD/sssd/")
     (synopsis "System security services daemon")
     (description "SSSD is a system daemon.  Its primary function is to provide

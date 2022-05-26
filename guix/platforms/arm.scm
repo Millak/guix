@@ -16,13 +16,22 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (gnu platforms hurd)
-  #:use-module (gnu platform)
-  #:use-module (gnu packages linux)
+(define-module (guix platforms arm)
+  #:use-module (guix platform)
   #:use-module (guix records)
-  #:export (hurd))
+  #:export (armv7-linux
+            aarch64-linux))
 
-(define hurd
+(define armv7-linux
   (platform
-   (target "i586-pc-gnu")
-   (system "i586-gnu")))
+   (target "arm-linux-gnueabihf")
+   (system "armhf-linux")
+   (linux-architecture "arm")
+   (glibc-dynamic-linker "/lib/ld-linux-armhf.so.3")))
+
+(define aarch64-linux
+  (platform
+   (target "aarch64-linux-gnu")
+   (system "aarch64-linux")
+   (linux-architecture "arm64")
+   (glibc-dynamic-linker "/lib/ld-linux-aarch64.so.1")))

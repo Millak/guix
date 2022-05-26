@@ -315,14 +315,14 @@ interface and is based on GNU Guile.")
 (define-public shepherd-0.9
   (package
     (inherit shepherd)
-    (version "0.9.0")
+    (version "0.9.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/shepherd/shepherd-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1rdwhrcibs2ly4hjwwb5kmzb133ccjmrfvb0a70cqkv9jy1pg061"))))
+                "0l2arn6gsyw88xk9phxnyplvv1mn8sqp3ipgyyb0nszdzvxlgd36"))))
     (arguments
      (list #:configure-flags #~'("--localstatedir=/var")
            #:make-flags #~'("GUILE_AUTO_COMPILE=0")
@@ -4367,7 +4367,7 @@ Logitech Unifying Receiver.")
   (package
     (name "lynis")
     ;; Also update the ‘lynis-sdk’ input to the commit matching this release.
-    (version "3.0.6")
+    (version "3.0.8")
     (source
      (origin
        (method git-fetch)
@@ -4376,7 +4376,7 @@ Logitech Unifying Receiver.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1a1n8alcq6zil1rwk9940cg3x2nz3igcxfad99505pdh7ccz9324"))
+        (base32 "19kz1ffbbd431cdfw7fjcl5hjkks3gfkwk3w2zkwsxgyiky1gx3w"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -4392,13 +4392,20 @@ Logitech Unifying Receiver.")
            (method git-fetch)
            (uri (git-reference
                  (url "https://github.com/CISOfy/lynis-sdk")
-                 (commit "1c4e5f60a03e29a1525ca9ec17c793461058253d")))
+                 (commit "dffe5d352e4d6029ea95a84d50604ccd97cb8999")))
            (file-name (git-file-name "lynis-sdk" version))
            (sha256
-            (base32 "060k8k1q4c7nvrv3cwscxq8md2v75q3nrwwim1hgfw20divw3npy"))))))
+            (base32 "05qq4395x8f0kyl1ppm74npsf8sb3hhgz0ck4fya91sy6a26b4ja"))))))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (replace 'unpack
+           ;; XXX Remove after fixing <https://issues.guix.gnu.org/55287>.
+           (lambda* (#:key source #:allow-other-keys)
+             (mkdir "source")
+             (chdir "source")
+             (copy-recursively source "."
+                               #:keep-mtime? #t)))
          (replace 'configure
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (substitute* "lynis"
@@ -4693,49 +4700,40 @@ Netgear devices.")
 (define-public atop
   (package
     (name "atop")
-    (version "2.6.0")
+    (version "2.7.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.atoptool.nl/download/atop-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0wlg0n0h9vwpjp2dcb623jvvqck422jrjpq9mbpzg4hnawxcmhly"))))
+                "0kjwgf94skbrndv1krlmsrq34smzi3iwk73fbsnyw787gvqx4j6a"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; no test suite
+     (list
+       #:tests? #f              ; no test suite
        #:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             ;; The installer requires a choice between systemd or SysV.
-             "systemdinstall"
-             (string-append "DESTDIR=" (assoc-ref %outputs "out"))
-             (string-append "BINPATH=/bin")
-             (string-append "SBINPATH=/sbin")
-             (string-append "SYSDPATH=/etc/systemd/system")
-             (string-append "PMPATHD=/etc/systemd/system-sleep")
-             (string-append "MAN1PATH=/share/man/man1")
-             (string-append "MAN5PATH=/share/man/man5")
-             (string-append "MAN8PATH=/share/man/man8")
-             ;; Or else it tries to create /var/log/atop...
-             (string-append "LOGPATH="))
+       #~(list (string-append "CC=" #$(cc-for-target))
+               (string-append "DESTDIR=" #$output)
+               (string-append "SYSDPATH=/etc/systemd/system")
+               (string-append "PMPATHD=/etc/systemd/system-sleep")
+               ;; Or else it tries to create /var/log/atop...
+               (string-append "LOGPATH="))
        #:phases
-       (modify-phases %standard-phases
-         (delete 'configure) ; No ./configure script
-         (add-before 'build 'patch-build
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "Makefile"
-               ;; We don't need to chown things in the build environment.
-               (("chown.*$") "")
-               ;; We can't toggle the setuid bit in the build environment.
-               (("chmod 04711") "chmod 0711")
-               ;; Otherwise, it creates a blank configuration file as a "default".
-               (("touch.*DEFPATH)/atop") "")
-               (("chmod.*DEFPATH)/atop") ""))
-             #t)))))
+       #~(modify-phases %standard-phases
+           (delete 'configure)  ; No ./configure script
+           (add-before 'build 'patch-build
+             (lambda _
+               (substitute* "Makefile"
+                 ;; Don't use /usr as a prefix.
+                 (("/usr") "")
+                 ;; Otherwise, it creates a blank configuration file as a "default".
+                 (("touch.*DEFPATH)/atop") "")
+                 (("chmod.*DEFPATH)/atop") "")))))))
     (inputs
-     `(("ncurses" ,ncurses)
-       ("python" ,python-wrapper) ; for `atopgpud`
-       ("zlib" ,zlib)))
+     (list ncurses
+           python-wrapper       ; for `atopgpud`
+           zlib))
     (home-page "https://www.atoptool.nl/")
     (synopsis "Linux performance monitoring console")
     (description "Atop is an ASCII full-screen performance monitor for Linux
@@ -4746,6 +4744,8 @@ using colors, etc.  At regular intervals, it shows system-level activity related
 to the CPU, memory, swap, disks (including LVM) and network layers, and for
 every process (and thread) it shows e.g. the CPU utilization, memory growth,
 disk utilization, priority, username, state, and exit code.")
+    (properties
+     `((release-monitoring-url . "https://www.atoptool.nl/downloadatop.php")))
     (license license:gpl2+)))
 
 ;; TODO: Unvendor u-root (pkg: forth, golang, testutil).

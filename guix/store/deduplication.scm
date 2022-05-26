@@ -22,7 +22,7 @@
 
 (define-module (guix store deduplication)
   #:use-module (gcrypt hash)
-  #:use-module ((guix build utils) #:hide (dump-port))
+  #:use-module (guix build utils)
   #:use-module (guix build syscalls)
   #:use-module (guix base32)
   #:use-module (srfi srfi-11)
@@ -37,31 +37,6 @@
             deduplicate
             dump-file/deduplicate
             copy-file/deduplicate))
-
-;; TODO: Remove once 'dump-port' in (guix build utils) has an optional 'len'
-;; parameter.
-(define* (dump-port in out
-                    #:optional len
-                    #:key (buffer-size 16384))
-  "Read LEN bytes from IN (or as much as possible if LEN is #f) and write it
-to OUT, using chunks of BUFFER-SIZE bytes."
-  (define buffer
-    (make-bytevector buffer-size))
-
-  (let loop ((total 0)
-             (bytes (get-bytevector-n! in buffer 0
-                                       (if len
-                                           (min len buffer-size)
-                                           buffer-size))))
-    (or (eof-object? bytes)
-        (and len (= total len))
-        (let ((total (+ total bytes)))
-          (put-bytevector out buffer 0 bytes)
-          (loop total
-                (get-bytevector-n! in buffer 0
-                                   (if len
-                                       (min (- len total) buffer-size)
-                                       buffer-size)))))))
 
 (define (nar-sha256 file)
   "Gives the sha256 hash of a file and the size of the file in nar form."

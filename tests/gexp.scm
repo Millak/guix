@@ -502,7 +502,7 @@
                              (ungexp coreutils)
                              (ungexp-native glibc)
                              (ungexp binutils))))
-         (target "mips64el-linux")
+         (target "mips64el-linux-gnu")
          (guile  (derivation->output-path
                   (package-derivation %store %bootstrap-guile)))
          (cu     (derivation->output-path
@@ -547,7 +547,7 @@
                  (gexp->sexp* exp)))))
 
 (test-assert "input list + ungexp-native"
-  (let* ((target "mips64el-linux")
+  (let* ((target "mips64el-linux-gnu")
          (exp   (gexp (display
                        (cons '(ungexp-native (list %bootstrap-guile coreutils))
                              '(ungexp (list glibc binutils))))))
@@ -764,7 +764,7 @@
                         intd)))))
 
 (test-assertm "gexp->derivation, cross-compilation"
-  (mlet* %store-monad ((target -> "mips64el-linux")
+  (mlet* %store-monad ((target -> "mips64el-linux-gnu")
                        (exp    -> (gexp (list (ungexp coreutils)
                                               (ungexp output))))
                        (xdrv      (gexp->derivation "foo" exp
@@ -778,7 +778,7 @@
                  (not (member (derivation-file-name cu) refs))))))
 
 (test-assertm "gexp->derivation, ungexp-native"
-  (mlet* %store-monad ((target -> "mips64el-linux")
+  (mlet* %store-monad ((target -> "mips64el-linux-gnu")
                        (exp    -> (gexp (list (ungexp-native coreutils)
                                               (ungexp output))))
                        (xdrv      (gexp->derivation "foo" exp
@@ -788,7 +788,7 @@
                       (derivation-file-name xdrv)))))
 
 (test-assertm "gexp->derivation, ungexp + ungexp-native"
-  (mlet* %store-monad ((target -> "mips64el-linux")
+  (mlet* %store-monad ((target -> "mips64el-linux-gnu")
                        (exp    -> (gexp (list (ungexp-native coreutils)
                                               (ungexp glibc)
                                               (ungexp output))))
@@ -802,7 +802,7 @@
                  (member (derivation-file-name xglibc) refs)))))
 
 (test-assertm "gexp->derivation, ungexp-native + composed gexps"
-  (mlet* %store-monad ((target -> "mips64el-linux")
+  (mlet* %store-monad ((target -> "mips64el-linux-gnu")
                        (exp0   -> (gexp (list 1 2
                                               (ungexp coreutils))))
                        (exp    -> (gexp (list 0 (ungexp-native exp0))))

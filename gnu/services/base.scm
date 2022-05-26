@@ -2191,7 +2191,8 @@ instance."
                              (service-extension
                               account-service-type account-extension)
                              (service-extension
-                              udev-service-type udev-extension))))))
+                              udev-service-type udev-extension)))
+                (description "This service adds udev rules."))))
     (service type #f)))
 
 (define (swap-space->shepherd-service-name space)

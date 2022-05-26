@@ -12781,7 +12781,7 @@ const functions with conditional compilations.")
     (home-page "https://github.com/RustCrypto/formats/tree/master/const-oid")
     (synopsis "Implementation of the ISO/IEC Object Identifier (OID)")
     (description
-     "This packages is a const-friendly implementation of the ISO/IEC Object
+     "This package is a const-friendly implementation of the ISO/IEC Object
 Identifier (OID) standard as defined in ITU X.660, with support for BER/DER
 encoding/decoding as well as heapless no_std (i.e., embedded) support.")
     (license (list license:asl2.0 license:expat))))
@@ -41728,7 +41728,7 @@ PEM-encoded data.")
     (synopsis
      "PEM Encoding implementing a subset of Privacy-Enhanced Mail encoding")
     (description
-     "This packages provides PEM Encoding (RFC 7468) for PKIX, PKCS, and CMS
+     "This package provides PEM Encoding (RFC 7468) for PKIX, PKCS, and CMS
 Structures, implementing a strict subset of the original Privacy-Enhanced Mail
 encoding intended specifically for use with cryptographic keys, certificates,
 and other messages.  It provides a no_std-friendly, constant-time
@@ -52866,7 +52866,7 @@ clean}.")
     (home-page "https://github.com/RustCrypto/password-hashes")
     (synopsis "Scrypt password-based key derivation function")
     (description
-     "This packages provides a Scrypt password-based key derivation
+     "This package provides a Scrypt password-based key derivation
 function.")
     (license (list license:expat license:asl2.0))))
 

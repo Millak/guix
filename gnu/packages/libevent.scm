@@ -7,6 +7,7 @@
 ;;; Copyright © 2017 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
+;;; Copyright © 2022 Luis Henrique Gomes Higino <luishenriquegh2701@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -168,6 +169,22 @@ resolution, asynchronous file system operations, and threading primitives.")
                   "1kqpn19d20aka30h6q5h8lnzyp0vw0xzgx0wm4w2r5j6yf76m2hr"))))
       (home-page "https://github.com/JuliaLang/libuv")
       (properties '((hidden? . #t))))))
+
+(define-public libuv-for-luv
+  ;; When upgrading make-lua-luv, also upgrade this. Get the version from
+  ;; https://github.com/luvit/luv/blob/master/CMakeLists.txt
+  (package
+    (inherit libuv)
+    (name "libuv")
+    (version "1.43.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://dist.libuv.org/dist/v" version
+                                  "/libuv-v" version ".tar.gz"))
+              (sha256
+               (base32
+                "194kwq3jfj9s628kzkchdca534rikjw0xiyas0cjbphqmsvjpmwh"))))
+    (properties '((hidden? . #t)))))
 
 (define-public perl-anyevent
   (package

@@ -141,7 +141,11 @@ regular file port (socket).
 This is equivalent to (open-pipe* OPEN_BOTH ...) except that the result is a
 regular file port that can be passed to 'select' ('open-pipe*' returns a
 custom binary port)."
-  (match (socketpair AF_UNIX SOCK_STREAM 0)
+  ;; Make sure the sockets are close-on-exec; failing to do that, a second
+  ;; inferior (for instance) would inherit the underlying file descriptor, and
+  ;; thus (close-port PARENT) in the original process would have no effect:
+  ;; the REPL process wouldn't get EOF on standard input.
+  (match (socketpair AF_UNIX (logior SOCK_STREAM SOCK_CLOEXEC) 0)
     ((parent . child)
      (match (primitive-fork)
        (0

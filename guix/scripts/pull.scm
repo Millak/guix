@@ -40,8 +40,6 @@
   #:use-module (guix scripts build)
   #:use-module (guix scripts describe)
   #:autoload   (guix build utils) (which mkdir-p)
-  #:use-module ((guix build syscalls)
-                #:select (with-file-lock/no-wait))
   #:use-module (guix git)
   #:use-module (git)
   #:autoload   (gnu packages) (fold-available-packages)
@@ -119,11 +117,12 @@ Download and deploy the latest version of Guix.\n"))
   (display (G_ "
   -v, --verbosity=LEVEL  use the given verbosity LEVEL"))
   (display (G_ "
-  -s, --system=SYSTEM    attempt to build for SYSTEM--e.g., \"i686-linux\""))
-  (display (G_ "
       --bootstrap        use the bootstrap Guile to build the new Guix"))
   (newline)
   (show-build-options-help)
+  (newline)
+  (show-native-build-options-help)
+  (newline)
   (display (G_ "
   -h, --help             display this help and exit"))
   (display (G_ "
@@ -184,10 +183,6 @@ Download and deploy the latest version of Guix.\n"))
                  (lambda (opt name arg result)
                    (alist-cons 'profile (canonicalize-profile arg)
                                result)))
-         (option '(#\s "system") #t #f
-                 (lambda (opt name arg result)
-                   (alist-cons 'system arg
-                               (alist-delete 'system result eq?))))
          (option '(#\n "dry-run") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'dry-run? #t result)))
@@ -208,7 +203,8 @@ Download and deploy the latest version of Guix.\n"))
                  (lambda args
                    (show-version-and-exit "guix pull")))
 
-         %standard-build-options))
+         (append %standard-build-options
+                 %standard-native-build-options)))
 
 (define (warn-about-backward-updates channel start commit relation)
   "Warn about non-forward updates of CHANNEL from START to COMMIT, without

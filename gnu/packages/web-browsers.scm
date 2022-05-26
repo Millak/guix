@@ -89,6 +89,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
@@ -467,7 +468,7 @@ interface.")
 (define-public qutebrowser
   (package
     (name "qutebrowser")
-    (version "2.4.0")
+    (version "2.5.1")
     (source
      (origin
        (method url-fetch)
@@ -475,18 +476,17 @@ interface.")
                            "qutebrowser/releases/download/v" version "/"
                            "qutebrowser-" version ".tar.gz"))
        (sha256
-        (base32 "1v4jhlmgfm8v9sbf7i3xg1vjh6dy8y2gpckk0mizkazb2jxrmkgj"))))
+        (base32 "1g7dfrnjgifvbmz1523iq9qxhrsciajr8dv3pak6dlacm235i276"))))
     (build-system python-build-system)
     (native-inputs
      (list python-attrs)) ; for tests
     (inputs
      (list bash-minimal
            python-colorama
-           python-cssutils
            python-jinja2
            python-markupsafe
            python-pygments
-           python-pypeg2
+           python-pynacl
            python-pyyaml
            ;; FIXME: python-pyqtwebengine needs to come before python-pyqt so
            ;; that it's __init__.py is used first.
@@ -502,30 +502,42 @@ interface.")
        #:tests? #f
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'find-userscripts
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* "qutebrowser/commands/userscripts.py"
+               (("os.path.join.*system=True)")
+               (string-append "os.path.join(\""
+                              (assoc-ref outputs "out")
+                              "\", \"share\", \"qutebrowser\"")))))
          (add-before 'check 'set-env-offscreen
            (lambda _
              (setenv "QT_QPA_PLATFORM" "offscreen")))
          (add-after 'install 'install-more
            (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (rename-file "misc/Makefile" "Makefile")
+               (substitute* "Makefile"
+                 ((".*setup\\.py.*") ""))
+               (invoke "make" "install" (string-append "PREFIX=" out))
+               (delete-file-recursively (string-append out "/share/metainfo")))))
+         (add-after 'install-more 'wrap-scripts
+           (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
-                    (app (string-append out "/share/applications"))
-                    (hicolor (string-append out "/share/icons/hicolor")))
-               (install-file "doc/qutebrowser.1"
-                             (string-append out "/share/man/man1"))
+                    (python (assoc-ref inputs "python"))
+                    (path (string-append out "/lib/python"
+                                         ,(version-major+minor (package-version
+                                                                python))
+                                         "/site-packages:"
+                                         (getenv "GUIX_PYTHONPATH"))))
                (for-each
-                (lambda (i)
-                  (let ((src  (format #f "icons/qutebrowser-~dx~d.png" i i))
-                        (dest (format #f "~a/~dx~d/apps/qutebrowser.png"
-                                      hicolor i i)))
-                    (mkdir-p (dirname dest))
-                    (copy-file src dest)))
-                '(16 24 32 48 64 128 256 512))
-               (install-file "icons/qutebrowser.svg"
-                             (string-append hicolor "/scalable/apps"))
-               (substitute* "misc/org.qutebrowser.qutebrowser.desktop"
-                 (("Exec=qutebrowser")
-                  (string-append "Exec=" out "/bin/qutebrowser")))
-               (install-file "misc/org.qutebrowser.qutebrowser.desktop" app))))
+                 (lambda (file)
+                   (wrap-program file
+                     `("GUIX_PYTHONPATH" ":" prefix (,path))))
+                 (append
+                   (find-files
+                     (string-append out "/share/qutebrowser/scripts") "\\.py$")
+                   (find-files
+                     (string-append out "/share/qutebrowser/userscripts")))))))
          (add-after 'wrap 'wrap-qt-process-path
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))

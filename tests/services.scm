@@ -30,8 +30,10 @@
 
 (test-equal "services, default value"
   '(42 123 234 error)
-  (let* ((t1 (service-type (name 't1) (extensions '())))
+  (let* ((t1 (service-type (name 't1) (extensions '())
+                           (description "")))
          (t2 (service-type (name 't2) (extensions '())
+                           (description "")
                            (default-value 42))))
     (list (service-value (service t2))
           (service-value (service t2 123))
@@ -40,13 +42,13 @@
             (service t1)))))
 
 (test-assert "service-back-edges"
-  (let* ((t1 (service-type (name 't1) (extensions '())
+  (let* ((t1 (service-type (name 't1) (extensions '()) (description "")
                            (compose +) (extend *)))
-         (t2 (service-type (name 't2)
+         (t2 (service-type (name 't2) (description "")
                            (extensions
                             (list (service-extension t1 (const '()))))
                            (compose +) (extend *)))
-         (t3 (service-type (name 't3)
+         (t3 (service-type (name 't3) (description "")
                            (extensions
                             (list (service-extension t2 identity)
                                   (service-extension t1 list)))))
@@ -63,16 +65,16 @@
   ;; from services of type T3; 'xyz 60' comes from the service of type T2,
   ;; where 60 = 15 × 4 = (1 + 2 + 3 + 4 + 5) × 4.
   '(initial-value 5 4 3 2 1 xyz 60)
-  (let* ((t1 (service-type (name 't1) (extensions '())
+  (let* ((t1 (service-type (name 't1) (extensions '()) (description "")
                            (compose concatenate)
                            (extend cons)))
-         (t2 (service-type (name 't2)
+         (t2 (service-type (name 't2) (description "")
                            (extensions
                             (list (service-extension t1
                                                      (cut list 'xyz <>))))
                            (compose (cut reduce + 0 <>))
                            (extend *)))
-         (t3 (service-type (name 't3)
+         (t3 (service-type (name 't3) (description "")
                            (extensions
                             (list (service-extension t2 identity)
                                   (service-extension t1 list)))))
@@ -86,10 +88,10 @@
          (service-value r))))
 
 (test-assert "fold-services, ambiguity"
-  (let* ((t1 (service-type (name 't1) (extensions '())
+  (let* ((t1 (service-type (name 't1) (extensions '()) (description "")
                            (compose concatenate)
                            (extend cons)))
-         (t2 (service-type (name 't2)
+         (t2 (service-type (name 't2) (description "")
                            (extensions
                             (list (service-extension t1 list)))))
          (s  (service t2 42)))
@@ -105,8 +107,8 @@
       #f)))
 
 (test-assert "fold-services, missing target"
-  (let* ((t1 (service-type (name 't1) (extensions '())))
-         (t2 (service-type (name 't2)
+  (let* ((t1 (service-type (name 't1) (extensions '()) (description "")))
+         (t2 (service-type (name 't2) (description "")
                            (extensions
                             (list (service-extension t1 list)))))
          (s  (service t2 42)))
@@ -119,11 +121,11 @@
       #f)))
 
 (test-assert "instantiate-missing-services"
-  (let* ((t1 (service-type (name 't1) (extensions '())
+  (let* ((t1 (service-type (name 't1) (extensions '()) (description "")
                            (default-value 'dflt)
                            (compose concatenate)
                            (extend cons)))
-         (t2 (service-type (name 't2)
+         (t2 (service-type (name 't2) (description "")
                            (extensions
                             (list (service-extension t1 list)))))
          (s1 (service t1 'hey!))
@@ -135,17 +137,17 @@
                  (instantiate-missing-services (list s1 s2))))))
 
 (test-assert "instantiate-missing-services, indirect"
-  (let* ((t1 (service-type (name 't1) (extensions '())
+  (let* ((t1 (service-type (name 't1) (extensions '()) (description "")
                            (default-value 'dflt)
                            (compose concatenate)
                            (extend cons)))
-         (t2 (service-type (name 't2)
+         (t2 (service-type (name 't2) (description "")
                            (default-value 'dflt2)
                            (compose concatenate)
                            (extend cons)
                            (extensions
                             (list (service-extension t1 list)))))
-         (t3 (service-type (name 't3)
+         (t3 (service-type (name 't3) (description "")
                            (extensions
                             (list (service-extension t2 list)))))
          (s1 (service t1))
@@ -160,8 +162,8 @@
              (instantiate-missing-services (list s2 s3))))))
 
 (test-assert "instantiate-missing-services, no default value"
-  (let* ((t1 (service-type (name 't1) (extensions '())))
-         (t2 (service-type (name 't2)
+  (let* ((t1 (service-type (name 't1) (extensions '()) (description "")))
+         (t2 (service-type (name 't2) (description "")
                            (extensions
                             (list (service-extension t1 list)))))
          (s  (service t2 42)))

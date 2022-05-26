@@ -92,6 +92,7 @@
             guix-build-coordinator-queue-builds-configuration-systems
             guix-build-coordinator-queue-builds-configuration-system-and-targets
             guix-build-coordinator-queue-builds-configuration-guix-data-service
+            guix-build-coordinator-queue-builds-configuration-guix-data-service-build-server-id
             guix-build-coordinator-queue-builds-configuration-processed-commits-file
 
             guix-build-coordinator-queue-builds-service-type
@@ -230,6 +231,9 @@
   (guix-data-service
    guix-build-coordinator-queue-builds-configuration-guix-data-service
    (default "https://data.guix.gnu.org"))
+  (guix-data-service-build-server-id
+   guix-build-coordinator-queue-builds-configuration-guix-data-service-build-server-id
+   (default #f))
   (processed-commits-file
    guix-build-coordinator-queue-builds-configuration-processed-commits-file
    (default "/var/cache/guix-build-coordinator-queue-builds/processed-commits")))
@@ -494,7 +498,9 @@
 (define (guix-build-coordinator-queue-builds-shepherd-services config)
   (match-record config <guix-build-coordinator-queue-builds-configuration>
     (package user coordinator systems systems-and-targets
-             guix-data-service processed-commits-file)
+             guix-data-service
+             guix-data-service-build-server-id
+             processed-commits-file)
     (list
      (shepherd-service
       (documentation "Guix Build Coordinator queue builds from Guix Data Service")
@@ -516,6 +522,12 @@
                    (or systems-and-targets '()))
            #$@(if guix-data-service
                   #~(#$(string-append "--guix-data-service=" guix-data-service))
+                  #~())
+           #$@(if guix-data-service-build-server-id
+                  #~(#$(simple-format
+                        #f
+                        "--guix-data-service-build-server-id=~A"
+                        guix-data-service-build-server-id))
                   #~())
            #$@(if processed-commits-file
                   #~(#$(string-append "--processed-commits-file="

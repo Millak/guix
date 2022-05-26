@@ -48,6 +48,7 @@
 ;;; Copyright © 2021 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2249,6 +2250,53 @@ variation Arial.  Tamil characters are inherently vertically-elliptical.  The
 orthography of Roman glyphs of Meera Inimai are also based on this
 characteristic so that they sit smoothly with the Tamil glyphs.")
     (license license:silofl1.1)))
+
+(define-public font-ipa-ex
+  (package
+    (name "font-ipa-ex")
+    (version "004.01")
+    (source (origin
+              (method url-fetch/zipbomb)
+              (uri (string-append
+                    "https://moji.or.jp/wp-content/ipafont/IPAexfont/"
+                    "IPAexfont" (string-join (string-split version #\.) "")
+                    ".zip"))
+              (sha256
+               (base32
+                "0jwpszgisrls1lsgq1ngcm99zjaikb8hshr02512qrzrnd53gy5w"))))
+    (build-system font-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'make-read-only
+            (lambda _
+              ;; Otherwise the files have the executable bit set.
+              (for-each (lambda (file)
+                          (chmod file #o444))
+                        (find-files "." #:directories? #f))))
+          (add-after 'install 'install-doc
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((font+version
+                     #$(string-append
+                        "IPAexfont"
+                        (string-join (string-split version #\.) "")))
+                    (doc-dir (string-append #$output "/share/doc/" #$name)))
+                (with-directory-excursion font+version
+                  (mkdir-p doc-dir)
+                  (copy-file (string-append "Readme_" font+version ".txt")
+                             (string-append doc-dir "/README"))
+                  (copy-file "IPA_Font_License_Agreement_v1.0.txt"
+                             (string-append doc-dir "/LICENSE")))))))))
+    (home-page "https://moji.or.jp/ipafont/")
+    (synopsis "Japanese font from the Information-technology Promotion Agency")
+    (description "IPAex Fonts are suitable for both display and printing.
+This is a modernized version of IPA Fonts that aims to provide a good balance
+for authoring Japanese documents mixed with Western characters, while
+following Japanese printing tradition.  Japanese characters (Kanji, Kana and
+punctuation marks) are full width mono-space pitch, and Western characters are
+proportional pitch.")
+    (license license:ipa)))
 
 (define-public font-ipa-mj-mincho
   (package

@@ -1158,128 +1158,136 @@ with the included @command{xfstests-check} helper.")
            (base32 "1xmcy4f0damf1pkb1sy1339ir1jkky0dwzd8vhwgc1pqjgac0liv"))))
     (build-system linux-module-build-system)
     (arguments
-     `(;; The ZFS kernel module should not be downloaded since the license
-       ;; terms don't allow for distributing it, only building it locally.
-       #:substitutable? #f
-       ;; Tests cannot run in an unprivileged build environment.
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'configure 'really-configure
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (substitute* "configure"
-                 (("-/bin/sh") (string-append "-" (which "sh"))))
-               (invoke "./configure"
-                       "--with-config=all"
-                       (string-append "--prefix=" out)
-                       (string-append "--with-dracutdir=" out "/lib/dracut")
-                       (string-append "--with-udevdir=" out "/lib/udev")
-                       (string-append "--with-mounthelperdir=" out "/sbin")
-                       (string-append "--with-linux="
-                                      (assoc-ref inputs "linux-module-builder")
-                                      "/lib/modules/build")))))
-         (add-after 'unpack 'patch-source
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out        (assoc-ref outputs "out"))
-                   (src        (assoc-ref outputs "src"))
-                   (util-linux (assoc-ref inputs "util-linux"))
-                   (nfs-utils  (assoc-ref inputs "nfs-utils"))
-                   (kmod       (assoc-ref inputs "kmod-runtime")))
-               ;; New feature "compatibility=" in 2.1.0.
-               ;; This feature looks up in two locations:
-               ;;   /etc/zfs/compatibility.d/
-               ;;   /usr/share/zfs/compatibility.d/
-               ;; The first is intended for system-specific compatibility
-               ;; sets, while the second is what is installed with the
-               ;; OpenZFS package, so use the absolute path for the first
-               ;; (which requires patching in the file) and the store path
-               ;; for the second (which it gets by default).
-               (substitute* "include/sys/fs/zfs.h"
-                 (("#define\tZPOOL_SYSCONF_COMPAT_D.*$")
-                  ; Use absolute path.
-                  "#define\tZPOOL_SYSCONF_COMPAT_D\t\"/etc/zfs/compatibility.d\"\n"))
-               ;; Also update the manual, which uses absolute paths, so that
-               ;; /usr/share/zfs/compatibility.d/ is referred via the store.
-               (substitute* '("man/man7/zpoolprops.7"
-                              "man/man7/zpool-features.7")
-                 (("/usr/share/zfs/compatibility.d")
-                  (string-append out "/share/zfs/compatibility.d")))
-               (substitute* "etc/Makefile.in"
-                 ;; This just contains an example configuration file for
-                 ;; configuring ZFS on traditional init systems, skip it
-                 ;; since we cannot use it anyway; the install target becomes
-                 ;; misdirected.
-                 (("= default ") "= "))
-               (substitute* "lib/libzfs/os/linux/libzfs_util_os.c"
-                 ;; Use path to /gnu/store/*-kmod in actual path that is exec'ed.
-                 (("\"/sbin/modprobe\"")
-                  (string-append "\"" kmod "/bin/modprobe" "\""))
-                 ;; Just use 'modprobe' in message to user, since Guix
-                 ;; does not have a traditional /sbin/
-                 (("'/sbin/modprobe ") "'modprobe "))
-               (substitute* "contrib/Makefile.in"
-                 ;; This is not configurable nor is its hard-coded /usr prefix.
-                 ((" initramfs") ""))
-               (substitute* "module/os/linux/zfs/zfs_ctldir.c"
-                 (("/usr/bin/env\", \"umount")
-                  (string-append util-linux "/bin/umount\", \"-n"))
-                 (("/usr/bin/env\", \"mount")
-                  (string-append util-linux "/bin/mount\", \"-n")))
-               (substitute* "lib/libzfs/os/linux/libzfs_mount_os.c"
-                 (("/bin/mount") (string-append util-linux "/bin/mount"))
-                 (("/bin/umount") (string-append util-linux "/bin/umount")))
-               (substitute* "lib/libshare/os/linux/nfs.c"
-                 (("/usr/sbin/exportfs")
-                  (string-append nfs-utils "/sbin/exportfs")))
-               (substitute* "config/zfs-build.m4"
-                 (("\\$sysconfdir/init.d") (string-append out "/etc/init.d")))
-               (substitute* '("etc/zfs/Makefile.am"
-                              "cmd/zed/Makefile.am")
-                 (("\\$\\(sysconfdir)") (string-append out "/etc")))
-               (substitute* "cmd/vdev_id/vdev_id"
-                 (("PATH=/bin:/sbin:/usr/bin:/usr/sbin")
-                  (string-append "PATH="
-                                 (dirname (which "chmod")) ":"
-                                 (dirname (which "grep")) ":"
-                                 (dirname (which "sed")) ":"
-                                 (dirname (which "gawk")))))
-               (substitute* "contrib/pyzfs/Makefile.in"
-                 ((".*install-lib.*") ""))
-               (substitute* '("Makefile.am" "Makefile.in")
-                 (("\\$\\(prefix)/src") (string-append src "/src")))
-               (substitute* (find-files "udev/rules.d/" ".rules.in$")
-                 (("/sbin/modprobe") (string-append kmod "/bin/modprobe"))))))
-         (replace 'build
-           (lambda _ (invoke "make")))
-         (replace 'install
-           (lambda* (#:key outputs inputs native-inputs #:allow-other-keys)
-             (let* ((out    (assoc-ref outputs "out"))
-                    (moddir (assoc-ref outputs "module"))
-                    (kmod   (assoc-ref (or native-inputs inputs) "kmod")))
-               (invoke "make" "install"
-                       (string-append "DEFAULT_INITCONF_DIR=" out "/etc/default")
-                       (string-append "DEPMOD=" kmod "/bin/depmod")
-                       (string-append "INSTALL_PATH=" out)
-                       (string-append "INSTALL_MOD_PATH=" moddir)
-                       "INSTALL_MOD_STRIP=1")
-               (install-file "contrib/bash_completion.d/zfs"
-                             (string-append out
-                                            "/share/bash-completion/completions"))))))))
+     (list
+      ;; The ZFS kernel module should not be downloaded since the license
+      ;; terms don't allow for distributing it, only building it locally.
+      #:substitutable? #f
+      ;; Tests cannot run in an unprivileged build environment.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'configure 'really-configure
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "configure"
+                (("-/bin/sh") (string-append "-" (which "sh"))))
+              (invoke "./configure"
+                      "--with-config=all"
+                      (string-append "--prefix=" #$output)
+                      (string-append "--with-dracutdir=" #$output
+                                     "/lib/dracut")
+                      (string-append "--with-udevdir=" #$output
+                                     "/lib/udev")
+                      (string-append "--with-mounthelperdir=" #$output
+                                     "/sbin")
+                      (string-append "--with-linux="
+                                     (search-input-directory
+                                      inputs
+                                      "lib/modules/build")))))
+          (add-after 'unpack 'patch-source
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; New feature "compatibility=" in 2.1.0.
+              ;; This feature looks up in two locations:
+              ;;   /etc/zfs/compatibility.d/
+              ;;   /usr/share/zfs/compatibility.d/
+              ;; The first is intended for system-specific compatibility
+              ;; sets, while the second is what is installed with the
+              ;; OpenZFS package, so use the absolute path for the first
+              ;; (which requires patching in the file) and the store path
+              ;; for the second (which it gets by default).
+              (substitute* "include/sys/fs/zfs.h"
+                (("#define\tZPOOL_SYSCONF_COMPAT_D.*$")
+                 ;; Use absolute path.
+                 "#define\tZPOOL_SYSCONF_COMPAT_D\t\"/etc/zfs/compatibility.d\"\n"))
+              ;; Also update the manual, which uses absolute paths, so that
+              ;; /usr/share/zfs/compatibility.d/ is referred via the store.
+              (substitute* '("man/man7/zpoolprops.7"
+                             "man/man7/zpool-features.7")
+                (("/usr/share/zfs/compatibility.d")
+                 (string-append #$output "/share/zfs/compatibility.d")))
+              (substitute* "etc/Makefile.in"
+                ;; This just contains an example configuration file for
+                ;; configuring ZFS on traditional init systems, skip it
+                ;; since we cannot use it anyway; the install target becomes
+                ;; misdirected.
+                (("= default ") "= "))
+              (substitute* "lib/libzfs/os/linux/libzfs_util_os.c"
+                ;; Use path to /gnu/store/*-kmod in actual path that is
+                ;; exec'ed.
+                (("\"/sbin/modprobe\"")
+                 (string-append "\""
+                                (search-input-file inputs "/bin/modprobe")
+                                "\""))
+                ;; Just use 'modprobe' in message to user, since Guix
+                ;; does not have a traditional /sbin/
+                (("'/sbin/modprobe ") "'modprobe "))
+              (substitute* "contrib/Makefile.in"
+                ;; This is not configurable nor is its hard-coded /usr prefix.
+                ((" initramfs") ""))
+              (substitute* "module/os/linux/zfs/zfs_ctldir.c"
+                (("/usr/bin/env\", \"umount")
+                 (string-append (search-input-file inputs "/bin/umount")
+                                "\", \"-n"))
+                (("/usr/bin/env\", \"mount")
+                 (string-append (search-input-file inputs "/bin/mount")
+                                "\", \"-n")))
+              (substitute* "lib/libzfs/os/linux/libzfs_mount_os.c"
+                (("/bin/mount") (search-input-file inputs "/bin/mount"))
+                (("/bin/umount") (search-input-file inputs "/bin/umount")))
+              (substitute* "lib/libshare/os/linux/nfs.c"
+                (("/usr/sbin/exportfs")
+                 (search-input-file inputs "/sbin/exportfs")))
+              (substitute* "config/zfs-build.m4"
+                (("\\$sysconfdir/init.d")
+                 (string-append #$output "/etc/init.d")))
+              (substitute* '("etc/zfs/Makefile.am"
+                             "cmd/zed/Makefile.am")
+                (("\\$\\(sysconfdir)") (string-append #$output "/etc")))
+              (substitute* "cmd/vdev_id/vdev_id"
+                (("PATH=/bin:/sbin:/usr/bin:/usr/sbin")
+                 (string-append "PATH="
+                                (dirname (which "chmod")) ":"
+                                (dirname (which "grep")) ":"
+                                (dirname (which "sed")) ":"
+                                (dirname (which "gawk")))))
+              (substitute* "contrib/pyzfs/Makefile.in"
+                ((".*install-lib.*") ""))
+              (substitute* '("Makefile.am" "Makefile.in")
+                (("\\$\\(prefix)/src") (string-append #$output:src "/src")))
+              (substitute* (find-files "udev/rules.d/" ".rules.in$")
+                (("/sbin/modprobe")
+                 (search-input-file inputs "/bin/modprobe")))))
+          (replace 'build
+            (lambda _ (invoke "make")))
+          (replace 'install
+            (lambda* (#:key inputs native-inputs #:allow-other-keys)
+              (let* ((kmod (assoc-ref (or native-inputs inputs) "kmod")))
+                (invoke "make" "install"
+                        (string-append "DEFAULT_INITCONF_DIR="
+                                       #$output "/etc/default")
+                        (string-append "DEPMOD="
+                                       (search-input-file
+                                        (or native-inputs inputs)
+                                        "/bin/depmod"))
+                        (string-append "INSTALL_PATH=" #$output)
+                        (string-append "INSTALL_MOD_PATH=" #$output:module)
+                        "INSTALL_MOD_STRIP=1")
+                (install-file
+                 "contrib/bash_completion.d/zfs"
+                 (string-append #$output
+                                "/share/bash-completion/completions"))))))))
     (native-inputs
      (list attr kmod pkg-config))
-    (inputs
-     `(("eudev" ,eudev)
-       ("kmod-runtime" ,kmod)
-       ("libaio" ,libaio)
-       ("libtirpc" ,libtirpc)
-       ("nfs-utils" ,nfs-utils)
-       ("openssl" ,openssl)
-       ("python" ,python)
-       ("python-cffi" ,python-cffi)
-       ("util-linux" ,util-linux)
-       ("util-linux:lib" ,util-linux "lib")
-       ("zlib" ,zlib)))
+    (inputs (list eudev
+                  kmod
+                  libaio
+                  libtirpc
+                  nfs-utils
+                  openssl
+                  python
+                  python-cffi
+                  util-linux
+                  `(,util-linux "lib")
+                  zlib))
     (home-page "https://zfsonlinux.org/")
     (synopsis "OpenZFS on Linux")
     (description

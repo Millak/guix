@@ -161,6 +161,7 @@
   #:use-module (gnu packages wget)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
+  #:use-module (guix platform)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 match))
@@ -6576,10 +6577,12 @@ simultaneously.")
              ;; architecture name ("i386") instead of the target system prefix
              ;; ("i686").
              (mkdir (string-append (assoc-ref outputs "out") "/ilib"))
-             (copy-recursively (string-append "build/ncbi-vdb/linux/gcc/"
-                                              ,(system->linux-architecture
-                                                (or (%current-target-system)
-                                                    (%current-system)))
+             (copy-recursively (string-append
+                                "build/ncbi-vdb/linux/gcc/"
+                                ,(platform-linux-architecture
+                                  (lookup-platform-by-target-or-system
+                                   (or (%current-target-system)
+                                       (%current-system))))
                                               "/rel/ilib")
                                (string-append (assoc-ref outputs "out")
                                               "/ilib"))
@@ -7821,7 +7824,7 @@ single-cell data.")
              r-rlist))
       (home-page "https://github.com/soumelis-lab/ICELLNET")
       (synopsis "Transcriptomic-based framework to dissect cell communication")
-      (description "This packages provides a a transcriptomic-based framework
+      (description "This package provides a a transcriptomic-based framework
 to dissect cell communication in a global manner.  It integrates an original
 expert-curated database of ligand-receptor interactions taking into account
 multiple subunits expression.  Based on transcriptomic profiles (gene

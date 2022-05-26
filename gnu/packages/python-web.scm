@@ -88,6 +88,7 @@
   #:use-module (gnu packages node)
   #:use-module (gnu packages openstack)
   #:use-module (gnu packages pcre)
+  #:use-module (gnu packages protobuf)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
@@ -96,6 +97,7 @@
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages rpc)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages texinfo)
@@ -4497,6 +4499,8 @@ users, gradebooks, and more.")
     (build-system python-build-system)
     (arguments
      `(#:tests? #f)) ; There are no tests.
+    (propagated-inputs
+     (list python-beautifulsoup4))
     (home-page "https://breakingcode.wordpress.com/")
     (synopsis "Python bindings to the Google search engine")
     (description "This package provides Python bindings for using the
@@ -6541,6 +6545,53 @@ through the network, it only deals with the implementation details of the
 SOCKS protocols.  It can be paired with any I/O library.")
     (license license:expat)))
 
+(define-public python-msrest
+  (package
+    (name "python-msrest")
+    (version "0.6.21")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "msrest" version))
+       (sha256
+        (base32 "1n389m3hcsyjskzimq4j71nyw9pjkrp0n5wg1q2c4bfwpv3inrkj"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest"
+                       "-k"
+                       ;; These attempt to connect to bing.com.
+                       (string-append
+                        "not test_basic_aiohttp"
+                        " and not test_basic_async_requests"
+                        " and not test_conf_async_requests"
+                        " and not test_conf_async_trio_requests"
+                        " and not test_basic_aiohttp"
+                        " and not test_basic_async_requests"
+                        " and not test_conf_async_requests"
+                        " and not test_conf_async_trio_requests"))))))))
+    (propagated-inputs
+     (list python-aiohttp
+           python-certifi
+           python-isodate
+           python-requests
+           python-requests-oauthlib))
+    (native-inputs
+     (list python-httpretty
+           python-pytest
+           python-pytest-aiohttp
+           python-pytest-asyncio
+           python-pytest-trio))
+    (home-page "https://github.com/Azure/msrest-for-python")
+    (synopsis "AutoRest swagger generator Python client runtime.")
+    (description "This package provides the runtime library @code{msrest} for
+AutoRest-generated Python clients.")
+    (license license:expat)))
+
 (define-public python-azure-nspkg
   (package
     (name "python-azure-nspkg")
@@ -6579,6 +6630,381 @@ SOCKS protocols.  It can be paired with any I/O library.")
     (description
      "This project provides a client library in Python that makes it easy to
 communicate with Microsoft Azure Storage services.")
+    (license license:expat)))
+
+(define-public python-azure-common
+  (package
+    (name "python-azure-common")
+    (version "1.1.28")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "azure-common" version ".zip"))
+       (sha256
+        (base32 "18q4cy1xl2zly3rk7a1sc14w932x59r8c9j4d8dnlsz32hrcvh2a"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-azure-nspkg))
+    (native-inputs (list unzip))
+    (home-page "https://github.com/Azure/azure-sdk-for-python")
+    (synopsis "Microsoft Azure Client library for Python")
+    (description "This package provides the Microsoft Azure Client library for
+Python.")
+    (license license:expat)))
+
+(define-public python-azure-core
+  (package
+    (name "python-azure-core")
+    (version "1.24.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "azure-core" version ".zip"))
+       (sha256
+        (base32 "1r8bpn3zz02mj00qbaks5qq49wqd3mznkm90bchd1mxa3w21nnrl"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               ;; This fails because devtools_testutils doesn't exist.
+               (delete-file "tests/test_connection_string_parsing.py")
+               ;; Needs network.
+               (for-each delete-file
+                         '("tests/async_tests/test_streaming_async.py"
+                           "tests/test_streaming.py"))
+               (add-installed-pythonpath inputs outputs)
+               (setenv "PYTHONPATH"
+                       (string-append (getcwd) "/tests/testserver_tests/coretestserver:"
+                                      (getenv "GUIX_PYTHONPATH")))
+               (invoke "pytest"
+                       ;; Most of these need network access.
+                       "-m" "not asyncio and not live_test_only"
+                       "-k"
+                       ;; These need network access.
+                       (string-append
+                        "not test_example_raw_response_hook"
+                        " and not test_example_headers_policy"
+                        " and not test_example_request_id_policy"
+                        " and not test_example_user_agent_policy"
+                        " and not test_example_requests"
+                        " and not test_example_pipeline"
+                        " and not test_example_pipeline_client"
+                        " and not test_example_redirect_policy"
+                        " and not test_example_no_redirects"
+                        " and not test_example_retry_policy"
+                        " and not test_example_no_retries"
+                        " and not test_decompress_plain_no_header"
+                        " and not test_compress_plain_no_header"
+                        " and not test_decompress_compressed_no_header"))))))))
+    (propagated-inputs
+     (list python-aiohttp
+           python-requests
+           python-six
+           python-trio
+           python-typing-extensions))
+    (native-inputs
+     (list python-flask
+           python-msrest
+           python-pytest
+           python-pytest-aiohttp
+           python-pytest-asyncio
+           python-pytest-trio
+           unzip))
+    (home-page "https://github.com/Azure/azure-sdk-for-python")
+    (synopsis "Microsoft Azure Core library for Python")
+    (description "This package provides the Microsoft Azure Core library for
+Python.")
+    (license license:expat)))
+
+(define-public python-azure-storage-blob
+  (package
+    (name "python-azure-storage-blob")
+    (version "12.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "azure-storage-blob" version ".zip"))
+       (sha256
+        (base32 "1xv23ph822qywjxs81say9xi5dzmvxcii6sww6d1hvd83iyz1npn"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-azure-core python-cryptography python-msrest))
+    (native-inputs (list unzip))
+    (home-page "https://github.com/Azure/azure-sdk-for-python/")
+    (synopsis "Microsoft Azure Blob Storage client library for Python")
+    (description "This package provides the Microsoft Azure Blob Storage
+Client Library for Python.")
+    (license license:expat)))
+
+(define-public python-google-crc32c
+  (package
+    (name "python-google-crc32c")
+    (version "1.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "google-crc32c" version))
+       (sha256
+        (base32 "1ps4qaccij6cixs91772y9f9r1n702yfzy4qqmds6x5h7qkycv97"))))
+    (build-system python-build-system)
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/googleapis/python-crc32c")
+    (synopsis "Python wrapper of Google CRC32C")
+    (description
+     "This package provides a Python wrapper of the C library implementation
+of the CRC32C hashing algorithm.")
+    (license license:asl2.0)))
+
+(define-public python-google-auth
+  (package
+    (name "python-google-auth")
+    (version "2.6.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "google-auth" version))
+       (sha256
+        (base32 "04ikassansqkkw4pa98in7q9r4z001m6bi2r3ssxwwrb0f79790v"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest")))))))
+    (propagated-inputs
+     (list python-cachetools
+           python-cryptography
+           python-pyasn1-modules
+           python-rsa
+           python-six))
+    (native-inputs
+     (list python-flask
+           python-freezegun
+           python-oauth2client
+           python-pyopenssl
+           python-pytest
+           python-pytest-localserver
+           python-pyu2f
+           python-requests
+           python-responses))
+    (home-page "https://github.com/googleapis/google-auth-library-python")
+    (synopsis "Google Authentication Library")
+    (description "This library simplifies using Google's various
+server-to-server authentication mechanisms to access Google APIs.")
+    (license license:asl2.0)))
+
+(define-public python-google-resumable-media
+  (package
+    (name "python-google-resumable-media")
+    (version "2.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "google-resumable-media" version))
+       (sha256
+        (base32 "04qm6rd4mpbbym8ci5xrb6fymc3mmm8x2z9f43q5iwbr3s5lx4h6"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               ;; The system tests fail to find test_utils.retry.
+               (delete-file-recursively "tests/system/")
+               (invoke "pytest")))))))
+    (propagated-inputs (list python-google-crc32c))
+    (native-inputs
+     (list python-google-auth
+           python-pytest
+           python-requests
+           python-test-utils))
+    (home-page "https://github.com/googleapis/google-resumable-media-python")
+    (synopsis "Utilities for Google Media Downloads and Resumable Uploads")
+    (description "This package provides utilities for Google Media Downloads
+and Resumable Uploads.")
+    (license license:asl2.0)))
+
+(define-public python-googleapis-common-protos
+  (package
+    (name "python-googleapis-common-protos")
+    (version "1.56.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "googleapis-common-protos" version))
+       (sha256
+        (base32 "16x1pjc34mrj9w130j40r23ndpykhsqivvk5xfl63ss6qsfyapkb"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:tests? #false ;fails for unknown reasons
+       #:phases
+        (modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest")))))))
+    (propagated-inputs (list python-protobuf))
+    (native-inputs
+     (list python-pytest))
+    (home-page "https://github.com/googleapis/python-api-common-protos")
+    (synopsis "Common protobufs used in Google APIs")
+    (description "This package contains Python classes generated from the
+common protos in the @code{googleapis/api-common-protos} repository.")
+    (license license:asl2.0)))
+
+(define-public python-google-api-core
+  (package
+    (name "python-google-api-core")
+    (version "2.7.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "google-api-core" version))
+       (sha256
+        (base32 "0ydwvg9gzp75cd11s62db5w3jhj643yrw095rv95psfb0h3pz58p"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               ;; These don't work because it doesn't find AsyncMock even when
+               ;; we add it to the inputs.
+               (for-each delete-file
+                         '("tests/asyncio/test_page_iterator_async.py"
+                           "tests/asyncio/test_retry_async.py"))
+               (invoke "pytest")))))))
+    (propagated-inputs
+     (list python-google-auth
+           python-googleapis-common-protos
+           python-protobuf
+           python-proto-plus
+           python-requests))
+    (native-inputs
+     (list python-mock
+           python-pytest
+           python-pytest-asyncio))
+    (home-page "https://github.com/googleapis/python-api-core")
+    (synopsis "Google API client core library")
+    (description "This library defines common helpers used by all Google API
+clients.")
+    (license license:asl2.0)))
+
+(define-public python-google-cloud-core
+  (package
+    (name "python-google-cloud-core")
+    (version "2.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "google-cloud-core" version))
+       (sha256
+        (base32 "0sa66kidgr32dfq9ngha9l362xnqvnqqmssn5my1gd3lc6g65apx"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest")))))))
+    (propagated-inputs (list python-google-api-core python-google-auth))
+    (native-inputs
+     (list python-grpcio python-pytest))
+    (home-page "https://github.com/googleapis/python-cloud-core")
+    (synopsis "Google Cloud API client core library")
+    (description "This library defines common helpers (e.g. base @code{Client}
+classes) used by all of the @code{google-cloud-*} packages.")
+    (license license:asl2.0)))
+
+(define-public python-google-cloud-storage
+  (package
+    (name "python-google-cloud-storage")
+    (version "2.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "google-cloud-storage" version))
+       (sha256
+        (base32 "0nwg9ic29s70kpvi71gmjv1y4w5a3vc9gj6d16f8w8hpbvgb1jzl"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (for-each delete-file-recursively
+                         (list
+                          ;; The system tests fail to find test_utils.retry.
+                          "tests/system/"
+                          ;; Needs docker.
+                          "tests/conformance/"))
+               (invoke "pytest")))))))
+    (native-inputs
+     (list python-pytest python-test-utils))
+    (propagated-inputs
+     (list python-google-api-core
+           python-google-auth
+           python-google-cloud-core
+           python-google-resumable-media
+           python-protobuf
+           python-requests))
+    (home-page "https://github.com/googleapis/python-storage")
+    (synopsis "Google Cloud Storage API client library")
+    (description "Google Cloud Storage allows you to store data on Google
+infrastructure, and it can be used to distribute large data objects to users
+via direct download.  This package provides a Google Cloud Storage API client
+library for Python.")
+    (license license:asl2.0)))
+
+(define-public python-smart-open
+  (package
+    (name "python-smart-open")
+    (version "6.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "smart_open" version))
+       (sha256
+        (base32 "1c12ilanx9hgpcc5chjkaqnx1hx14iazyindy7syvjhbdywhc0fn"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:tests? #false ;none included
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest")))))))
+    (propagated-inputs
+     (list python-azure-common
+           python-azure-core
+           python-azure-storage-blob
+           python-boto3
+           python-google-cloud-storage
+           python-requests))
+    (native-inputs
+     (list python-flask
+           python-flask-cors
+           python-graphql-core
+           python-moto
+           python-paramiko
+           python-pathlib2
+           python-pytest
+           python-pytest-rerunfailures
+           python-responses))
+    (home-page "https://github.com/piskvorky/smart_open")
+    (synopsis "Utilities for streaming large files")
+    (description
+     "This package provides utilities for streaming large files (S3, HDFS,
+GCS, Azure Blob Storage, gzip, bz2, etc.)")
     (license license:expat)))
 
 (define-public python-w3lib
@@ -6904,56 +7330,63 @@ regular expressions.")
     (name "python-scrapy")
     (version "2.6.1")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "Scrapy" version))
-        (sha256
-          (base32 "09rqalbwcz9ix8h0992mzjs50sssxsmmh8w9abkrqchgknjmbzan"))))
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "Scrapy" version))
+       (sha256
+        (base32 "09rqalbwcz9ix8h0992mzjs50sssxsmmh8w9abkrqchgknjmbzan"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
-        (modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest"
-                        ;; requires network access
-                        "--ignore" "tests/test_command_check.py"
-                        "-k"
-                        (string-append
-                         ;; Failing for unknown reasons
-                         "not test_server_set_cookie_domain_suffix_public_private"
-                         " and not test_user_set_cookie_domain_suffix_public_private"
-                         " and not test_pformat")
-                        "tests")))))))
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest"
+                       "-n" (number->string (parallel-job-count))
+                       ;; These tests fail when run in parallel (see:
+                       ;; https://github.com/scrapy/scrapy/issues/5502).
+                       "--ignore" "tests/test_engine.py"
+                       "--ignore" "tests/test_engine_stop_download_bytes.py"
+                       "--ignore" "tests/test_engine_stop_download_headers.py"
+                       ;; This test require network access.
+                       "--ignore" "tests/test_command_check.py"
+                       "-k"
+                       (string-append
+                        ;; The followin tests fail for unknown reasons.
+                        "not test_server_set_cookie_domain_suffix_public_private"
+                        " and not test_user_set_cookie_domain_suffix_public_private"
+                        " and not test_pformat")
+                       "tests")))))))
     (propagated-inputs
-      (list python-botocore ; Optional: For S3FeedStorage class.
-            python-cryptography
-            python-cssselect
-            python-itemadapter
-            python-itemloaders
-            python-lxml
-            python-parsel
-            python-protego
-            python-pydispatcher
-            python-pyopenssl
-            python-queuelib
-            python-service-identity
-            python-setuptools
-            python-tldextract
-            python-twisted
-            python-w3lib
-            python-zope-interface))
+     (list python-botocore              ; Optional: For S3FeedStorage class.
+           python-cryptography
+           python-cssselect
+           python-itemadapter
+           python-itemloaders
+           python-lxml
+           python-parsel
+           python-protego
+           python-pydispatcher
+           python-pyopenssl
+           python-queuelib
+           python-service-identity
+           python-setuptools
+           python-tldextract
+           python-twisted
+           python-w3lib
+           python-zope-interface))
     (native-inputs
-      (list python-pytest
-            python-pyftpdlib
-            python-sybil
-            python-testfixtures
-            python-uvloop))
+     (list python-pytest
+           python-pytest-xdist
+           python-pyftpdlib
+           python-sybil
+           python-testfixtures
+           python-uvloop))
     (home-page "https://scrapy.org")
     (synopsis "High-level Web crawling and Web scraping framework")
     (description "Scrapy is a fast high-level web crawling and web
 scraping framework, used to crawl websites and extract structured data
-from their pages. It can be used for a wide range of purposes, from data
+from their pages.  It can be used for a wide range of purposes, from data
 mining to monitoring and automated testing.")
     (license license:bsd-3)))

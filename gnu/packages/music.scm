@@ -13,7 +13,7 @@
 ;;; Copyright © 2017–2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2017, 2018, 2019, 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2017 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 nee <nee.git@hidamari.blue>
 ;;; Copyright © 2018, 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
@@ -705,7 +705,8 @@ background while you work.")
     (arguments
      '(#:tests? #f ; no check target
        #:configure-flags
-       (list "-DBUILD_SHARED_LIBS=ON"
+       (list "-DBUILD_ALLEGRO4=OFF"
+             "-DBUILD_SHARED_LIBS=ON"
              "-DBUILD_EXAMPLES=OFF")))
     (home-page "https://github.com/kode54/dumb")
     (synopsis "Module audio renderer library")
@@ -729,7 +730,7 @@ settings (aliasing, linear interpolation and cubic interpolation).")
     (arguments
      (substitute-keyword-arguments (package-arguments dumb)
        ((#:configure-flags flags)
-        `(cons "-DBUILD_ALLEGRO4=ON" ,flags))))
+        `(cons "-DBUILD_ALLEGRO4=ON" ,(delete "-DBUILD_ALLEGRO4=OFF" flags)))))
     (inputs
      (list allegro-4))))
 
@@ -2277,7 +2278,7 @@ perform creative live mixes with digital music files.")
 (define-public synthv1
   (package
     (name "synthv1")
-    (version "0.9.24")
+    (version "0.9.25")
     (source (origin
               (method url-fetch)
               (uri
@@ -2285,7 +2286,7 @@ perform creative live mixes with digital music files.")
                               "/synthv1-" version ".tar.gz"))
               (sha256
                (base32
-                "0m9xpl7kq0zlain8598q5cqrh1c7ima2w8jrpq7ds8vh97r7p1bl"))))
+                "1i16036f9wm52c5pxkllq7ir749jcknbh35i9wcxd5n88p6mzw02"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests
@@ -2308,7 +2309,7 @@ oscillators and stereo effects.")
 (define-public drumkv1
   (package
     (name "drumkv1")
-    (version "0.9.24")
+    (version "0.9.25")
     (source (origin
               (method url-fetch)
               (uri
@@ -2316,7 +2317,7 @@ oscillators and stereo effects.")
                               "/drumkv1-" version ".tar.gz"))
               (sha256
                (base32
-                "04k0mkvlz9ka0mlck4g7c86s1rhb9pkhml6j6n9b5hwlbq8a9mxk"))))
+                "0p50b4k4zldagiwxs0micmdbqib46ysipdj8lkxqdv0pysmd72fc"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests
@@ -2340,7 +2341,7 @@ effects.")
 (define-public samplv1
   (package
     (name "samplv1")
-    (version "0.9.24")
+    (version "0.9.25")
     (source (origin
               (method url-fetch)
               (uri
@@ -2348,7 +2349,7 @@ effects.")
                               "/samplv1-" version ".tar.gz"))
               (sha256
                (base32
-                "1c3ksd02dfqvzc3zk4x282b6gxr1l4ya9c4l04dcn55mrymgn2zz"))))
+                "0d05b03knrwh1zr4p0kcyn58scy6a392f0xxm78cqf0gikd3bw5c"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests
@@ -2372,7 +2373,7 @@ effects.")
 (define-public padthv1
   (package
     (name "padthv1")
-    (version "0.9.24")
+    (version "0.9.25")
     (source (origin
               (method url-fetch)
               (uri
@@ -2380,7 +2381,7 @@ effects.")
                               "/padthv1-" version ".tar.gz"))
               (sha256
                (base32
-                "0p3qp2lzhmj8i17bcqzsi0782nz7s90hx3s8vax6bxl4mqxsvnxb"))))
+                "11fa2794g7dqsiw674wr2m4k0xdw89imqwa8mgms0igskxxbvjka"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests
@@ -3320,14 +3321,14 @@ from the command line.")
 (define-public qtractor
   (package
     (name "qtractor")
-    (version "0.9.25")
+    (version "0.9.26")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://downloads.sourceforge.net/qtractor/"
                                   "qtractor-" version ".tar.gz"))
               (sha256
                (base32
-                "0x99yjabznr2pl867j3h9zdsjzkxzxm2c0xk1xwk50gfp8gwg9bh"))))
+                "02r4dhhbn3dzhqi5cnm2vwimqk10bdlpy233n4a3590qg4krnqkd"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; no "check" target

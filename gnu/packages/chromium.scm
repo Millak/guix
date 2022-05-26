@@ -131,7 +131,7 @@
     "third_party/dawn" ;ASL2.0
     ;; TODO: can likely be unbundled when Vulkan is updated.
     "third_party/dawn/third_party/khronos" ;ASL2.0
-    "third_party/dawn/third_party/tint" ;ASL2.0
+    "third_party/dawn/third_party/gn/webgpu-cts" ;BSD-3
     "third_party/depot_tools/owners.py" ;BSD-3
     "third_party/devtools-frontend" ;BSD-3
     "third_party/devtools-frontend/src/front_end/third_party/acorn" ;Expat
@@ -175,7 +175,6 @@
     "third_party/khronos" ;Expat, SGI
     "third_party/leveldatabase" ;BSD-3
     "third_party/libavif" ;BSD-2
-    "third_party/libXNVCtrl" ;Expat
     "third_party/libaddressinput" ;ASL2.0
     "third_party/libaom" ;BSD-2 or "Alliance for Open Media Patent License 1.0"
     "third_party/libaom/source/libaom/third_party/fastfeat" ;BSD-3
@@ -260,13 +259,13 @@
     "third_party/swiftshader/third_party/marl" ;ASL2.0
     "third_party/swiftshader/third_party/subzero" ;NCSA
     "third_party/swiftshader/third_party/SPIRV-Headers" ;X11-style
+    "third_party/swiftshader/third_party/SPIRV-Tools" ;ASL2.0
     "third_party/tensorflow-text" ;ASL2.0
     "third_party/tflite" ;ASL2.0
     "third_party/tflite/src/third_party/eigen3" ;MPL2.0
     "third_party/tflite/src/third_party/fft2d" ;ASL2.0
     "third_party/ukey2" ;ASL2.0
     "third_party/usb_ids" ;BSD-3
-    "third_party/usrsctp" ;BSD-2
     "third_party/utf" ;Expat
     "third_party/vulkan-deps" ;ASL2.0, BSD-3, Expat
     "third_party/vulkan_memory_allocator" ;Expat
@@ -313,9 +312,9 @@
   ;; run the Blink performance tests, just remove everything to save ~70MiB.
   '("third_party/blink/perf_tests"))
 
-(define %chromium-version "101.0.4951.64")
+(define %chromium-version "102.0.5005.61")
 (define %ungoogled-revision (string-append %chromium-version "-1"))
-(define %debian-revision "debian/101.0.4951.41-2")
+(define %debian-revision "debian/102.0.5005.61-1")
 
 (define %ungoogled-origin
   (origin
@@ -325,27 +324,48 @@
     (file-name (git-file-name "ungoogled-chromium" %ungoogled-revision))
     (sha256
      (base32
-      "0k7w6xvjf1yzyak9ywvcdw762d8zbx6d8haz35q87jz0mxfn2mr3"))))
+      "1hlyi6k894blkkqmqsizx72bag2vj6wlpza0fvi8db5wp6i5b58g"))))
 
-(define* (debian-patch name hash #:optional (revision %debian-revision))
+(define %debian-origin
   (origin
-    (method url-fetch)
-    (uri (string-append "https://salsa.debian.org/chromium-team/chromium/-/raw/"
-                        revision "/debian/patches/" name))
-    (file-name (match (string-split name #\/)
-                 ((category name)
-                  (string-append "ungoogled-chromium-" category "-" name))))
-    (sha256 (base32 hash))))
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://salsa.debian.org/chromium-team/chromium.git")
+          (commit %debian-revision)))
+    (file-name (git-file-name "debian-chromium-patches"
+                              (match (string-split %debian-revision #\/)
+                                ((_ version) version))))
+    (sha256
+     (base32
+      "1ln6r1qzlr7dsgvcbssvvc34my4mpkwv9hmvlb2dhjncs7isp65j"))))
+
+(define (debian-patch name)
+  (computed-file
+   (basename name)
+   #~(symlink (string-append #$%debian-origin "/debian/patches/" #$name)
+              #$output)))
 
 (define %debian-patches
-  (list (debian-patch "upstream/libxml.patch"
-                      "0fnmidh3sbmi4khw25rpqpd4i9kj8rb42s40n242h55z30hc36qr")
-        (debian-patch "system/jsoncpp.patch"
-                      "092jkvbkiw474lin62hbkv5vm251qpg0vz3j2qwavqln7qv6mcw1")
-        (debian-patch "system/zlib.patch"
-                      "1iw4k8in5j6a1qxf12qd5z3sjayvnh5sq5z3qqg8m3cp0v4p947r")
-        (debian-patch "system/openjpeg.patch"
-                      "1dq4zffhjahw8yd5w7d0zzvjpdb5dzhyfd4icjflrdb7fyf5ykc2")))
+  (map debian-patch
+       '("upstream/libxml.patch"
+         "upstream/dawn-version-fix.patch"
+         "upstream/blink-ftbfs.patch"
+         "upstream/nested-nested-nested-nested-nested-nested-regex-patterns.patch"
+         "system/jsoncpp.patch"
+         "system/zlib.patch"
+         "system/openjpeg.patch")))
+
+;; Take a patch from Arch that reverts a change which requires an unreleased
+;; version of ffmpeg.
+(define %ungoogled-chromium-unroll-ffmpeg.patch
+  (origin
+    (method url-fetch)
+    (uri "https://raw.githubusercontent.com/archlinux/svntogit-packages\
+/f3225f99b900e11ac900725992ea883142d7309c/trunk/roll-src-third_party-ffmpeg.patch")
+    (file-name "ungoogled-chromium-unroll-ffmpeg.patch")
+    (sha256
+     (base32
+      "0i7crn6fcwq09kd6a4smqnffaldyv61lmv2p0drcnpfrwalmkprh"))))
 
 (define %guix-patches
   (list (local-file
@@ -386,6 +406,9 @@
                       (invoke "patch" "-p1" "--force" "--input"
                               patch "--no-backup-if-mismatch"))
                     (append '#+%debian-patches '#+%guix-patches))
+
+          (invoke "patch" "-Rp1" "--force" "--input" "--no-backup-if-mismatch"
+                  "--input" #$%ungoogled-chromium-unroll-ffmpeg.patch)
 
           (with-directory-excursion #+%ungoogled-origin
             (format #t "Ungooglifying...~%")
@@ -454,7 +477,7 @@
                                   %chromium-version ".tar.xz"))
               (sha256
                (base32
-                "1xyqm32y9v1hn8ji6qfw6maynqgg3266j58dq4x4aqsm2gj9cn4w"))
+                "07vbi3gn9g4n04b2qi2hm34r122snrqaifa46yk3pyh1d79rfdqs"))
               (modules '((guix build utils)))
               (snippet (force ungoogled-chromium-snippet))))
     (build-system gnu-build-system)
@@ -500,6 +523,8 @@
               "build_with_tflite_lib=false"
               ;; Avoid dependency on code formatting tools.
               "blink_enable_generated_code_formatting=false"
+              ;; Don't bother building Dawn tests.
+              "build_dawn_tests=false"
 
               ;; Define a custom toolchain that simply looks up CC, AR and
               ;; friends from the environment.
@@ -560,7 +585,6 @@
               "rtc_build_libvpx=true"
               "rtc_build_opus=false"
               "rtc_build_libsrtp=true"  ;FIXME: fails to find headers
-              "rtc_build_usrsctp=true"  ;TODO: package this
               "rtc_build_ssl=true")     ;XXX: requires BoringSSL
       #:phases
       #~(modify-phases %standard-phases
@@ -701,6 +725,15 @@
                 ;; Define the GN toolchain.
                 (setenv "AR" "llvm-ar") (setenv "NM" "llvm-nm")
                 (setenv "CC" "clang") (setenv "CXX" "clang++")
+
+                ;; Disable compiler flags that require Clang 15.
+                (substitute* "build/config/compiler/BUILD.gn"
+                  (("\"-no-opaque-pointers\",")
+                   "")
+                  (("\"-Wno-unqualified-std-cast-call\"")
+                   "")
+                  (("\"-Wno-deprecated-non-prototype\"")
+                   ""))
 
                 ;; TODO: pre-compile instead. Avoids a race condition.
                 (setenv "PYTHONDONTWRITEBYTECODE" "1")

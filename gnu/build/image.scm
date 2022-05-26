@@ -5,6 +5,7 @@
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
+;;; Copyright © 2022 Pavel Shlyak <p.shlyak@pantherx.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -48,12 +49,13 @@
   "Take SEXP, a tuple as returned by 'partition->gexp', and turn it into a
 <partition> record."
   (match sexp
-    ((size file-system file-system-options label uuid)
+    ((size file-system file-system-options label uuid flags)
      (partition (size size)
                 (file-system file-system)
                 (file-system-options file-system-options)
                 (label label)
-                (uuid uuid)))))
+                (uuid uuid)
+                (flags flags)))))
 
 (define (size-in-kib size)
   "Convert SIZE expressed in bytes, to kilobytes and return it as a string."
@@ -78,6 +80,7 @@ turn doesn't take any constant overhead into account, force a 1-MiB minimum."
         (fs-options (partition-file-system-options partition))
         (label (partition-label partition))
         (uuid (partition-uuid partition))
+        (flags (partition-flags partition))
         (journal-options "lazy_itable_init=1,lazy_journal_init=1"))
     (apply invoke
            `("fakeroot" "mke2fs" "-t" ,fs "-d" ,root

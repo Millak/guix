@@ -10312,16 +10312,16 @@ only know by its Unicode name or code point.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1igqmach1vhcrvbpw346pmkbb5kabbb806ssswrvkp569n700wmc"))))
+        (base32 "1igqmach1vhcrvbpw346pmkbb5kabbb806ssswrvkp569n700wmc"))
+       ;; XXX: Remove when upgrading
+       (patches (search-patches "gcolor3-update-libportal-usage.patch"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t))
     (native-inputs
-     `(("desktop-file-utils" ,desktop-file-utils)
-       ("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("gtk+:bin" ,gtk+ "bin")
-       ("pkg-config" ,pkg-config)))
+     (list desktop-file-utils gettext-minimal
+           `(,glib "bin")
+           `(,gtk+ "bin") pkg-config))
     (inputs
      (list gsettings-desktop-schemas gtk+ libportal))
     (home-page "https://www.hjdskes.nl/projects/gcolor3/")

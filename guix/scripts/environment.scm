@@ -96,8 +96,6 @@ shell'."
   (display (G_ "
       --search-paths     display needed environment variable definitions"))
   (display (G_ "
-  -s, --system=SYSTEM    attempt to build for SYSTEM--e.g., \"i686-linux\""))
-  (display (G_ "
   -r, --root=FILE        make FILE a symlink to the result, and register it
                          as a garbage collector root"))
   (display (G_ "
@@ -144,6 +142,8 @@ COMMAND or an interactive shell in that environment.\n"))
   (show-environment-options-help)
   (newline)
   (show-build-options-help)
+  (newline)
+  (show-native-build-options-help)
   (newline)
   (show-transformation-options-help)
   (newline)
@@ -226,10 +226,6 @@ use '--preserve' instead~%"))
          (option '(#\n "dry-run") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'dry-run? #t result)))
-         (option '(#\s "system") #t #f
-                 (lambda (opt name arg result)
-                   (alist-cons 'system arg
-                               (alist-delete 'system result eq?))))
          (option '(#\C "container") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'container? #t result)))
@@ -273,7 +269,8 @@ use '--preserve' instead~%"))
                    (alist-cons 'bootstrap? #t result)))
 
          (append %transformation-options
-                 %standard-build-options)))
+                 %standard-build-options
+                 %standard-native-build-options)))
 
 (define (pick-all alist key)
   "Return a list of values in ALIST associated with KEY."

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2019, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Florian Pelz <pelzflorian@pelzflorian.de>
@@ -33,6 +33,7 @@
   #:use-module (gcrypt hash)
   #:use-module (guix profiling)
   #:autoload   (guix build syscalls) (terminal-columns)
+  #:autoload   (guix build utils) (dump-port)
   #:use-module (rnrs bytevectors)
   #:use-module (ice-9 binary-ports)
   #:use-module ((ice-9 control) #:select (let/ec))
@@ -681,29 +682,6 @@ automatically close the store when the dynamic extent of EXP is left."
 (define current-build-output-port
   ;; The port where build output is sent.
   (make-parameter (current-error-port)))
-
-(define* (dump-port in out
-                    #:optional len
-                    #:key (buffer-size 16384))
-  "Read LEN bytes from IN (or as much as possible if LEN is #f) and write it
-to OUT, using chunks of BUFFER-SIZE bytes."
-  (define buffer
-    (make-bytevector buffer-size))
-
-  (let loop ((total 0)
-             (bytes (get-bytevector-n! in buffer 0
-                                       (if len
-                                           (min len buffer-size)
-                                           buffer-size))))
-    (or (eof-object? bytes)
-        (and len (= total len))
-        (let ((total (+ total bytes)))
-          (put-bytevector out buffer 0 bytes)
-          (loop total
-                (get-bytevector-n! in buffer 0
-                                   (if len
-                                       (min (- len total) buffer-size)
-                                       buffer-size)))))))
 
 (define %newlines
   ;; Newline characters triggering a flush of 'current-build-output-port'.
@@ -1362,8 +1340,12 @@ object, only for build requests on EXPECTED-STORE."
         (unresolved things continue)
         (continue #t))))
 
+(define default-cutoff
+  ;; Default cutoff parameter for 'map/accumulate-builds'.
+  (make-parameter 32))
+
 (define* (map/accumulate-builds store proc lst
-                                #:key (cutoff 30))
+                                #:key (cutoff (default-cutoff)))
   "Apply PROC over each element of LST, accumulating 'build-things' calls and
 coalescing them into a single call.
 
@@ -1377,21 +1359,24 @@ CUTOFF is the threshold above which we stop accumulating unresolved nodes."
     (build-accumulator store))
 
   (define-values (result rest)
-    (let loop ((lst lst)
-               (result '())
-               (unresolved 0))
-      (match lst
-        ((head . tail)
-         (match (with-build-handler accumulator
-                  (proc head))
-           ((? unresolved? obj)
-            (if (>= unresolved cutoff)
-                (values (reverse (cons obj result)) tail)
-                (loop tail (cons obj result) (+ 1 unresolved))))
-           (obj
-            (loop tail (cons obj result) unresolved))))
-        (()
-         (values (reverse result) lst)))))
+    ;; Have the default cutoff decay as we go deeper in the call stack to
+    ;; avoid pessimal behavior.
+    (parameterize ((default-cutoff (quotient cutoff 2)))
+      (let loop ((lst lst)
+                 (result '())
+                 (unresolved 0))
+        (match lst
+          ((head . tail)
+           (match (with-build-handler accumulator
+                    (proc head))
+             ((? unresolved? obj)
+              (if (>= unresolved cutoff)
+                  (values (reverse (cons obj result)) tail)
+                  (loop tail (cons obj result) (+ 1 unresolved))))
+             (obj
+              (loop tail (cons obj result) unresolved))))
+          (()
+           (values (reverse result) lst))))))
 
   (match (append-map (lambda (obj)
                        (if (unresolved? obj)
@@ -1793,6 +1778,14 @@ This makes sense only when the daemon was started with '--cache-failures'."
 ;; the 'caches' vector of <store-connection>.
 (define %store-connection-caches (make-atomic-box 0))
 
+(define %max-store-connection-caches
+  ;; Maximum number of caches returned by 'allocate-store-connection-cache'.
+  32)
+
+(define %store-connection-cache-names
+  ;; Mapping of cache ID to symbol.
+  (make-vector %max-store-connection-caches))
+
 (define (allocate-store-connection-cache name)
   "Allocate a new cache for store connections and return its identifier.  Said
 identifier can be passed as an argument to "
@@ -1800,7 +1793,9 @@ identifier can be passed as an argument to "
     (let ((previous (atomic-box-compare-and-swap! %store-connection-caches
                                                   current (+ current 1))))
       (if (= previous current)
-          current
+          (begin
+            (vector-set! %store-connection-cache-names current name)
+            current)
           (loop current)))))
 
 (define %object-cache-id
@@ -1926,16 +1921,37 @@ whether the cache lookup was a hit, and the actual cache (a vhash)."
       (lambda (x y)
         #t)))
 
-(define record-cache-lookup!
-  (cache-lookup-recorder "object-cache" "Store object cache"))
+(define recorder-for-cache
+  (let ((recorders (make-vector %max-store-connection-caches)))
+    (lambda (cache-id)
+      "Return a procedure to record lookup stats for CACHE-ID."
+      (match (vector-ref recorders cache-id)
+        ((? unspecified?)
+         (let* ((name (symbol->string
+                       (vector-ref %store-connection-cache-names cache-id)))
+                (description
+                 (string-titlecase
+                  (string-map (match-lambda
+                                (#\- #\space)
+                                (chr chr))
+                              name))))
+           (let ((proc (cache-lookup-recorder name description)))
+             (vector-set! recorders cache-id proc)
+             proc)))
+        (proc proc)))))
 
-(define-inlinable (lookup-cached-object object keys vhash-fold*)
-  "Return the cached object in the store connection corresponding to OBJECT
+(define (record-cache-lookup! cache-id value cache)
+  "Record the lookup of VALUE in CACHE-ID, whose current value is CACHE."
+  (let ((record! (recorder-for-cache cache-id)))
+    (record! value cache)))
+
+(define-inlinable (lookup-cached-object cache-id object keys vhash-fold*)
+  "Return the object in store cache CACHE-ID corresponding to OBJECT
 and KEYS; use VHASH-FOLD* to look for OBJECT in the cache.  KEYS is a list of
 additional keys to match against, and which are compared with 'equal?'.
 Return #f on failure and the cached result otherwise."
   (lambda (store)
-    (let* ((cache (store-connection-cache store %object-cache-id))
+    (let* ((cache (store-connection-cache store cache-id))
 
            ;; Escape as soon as we find the result.  This avoids traversing
            ;; the whole vlist chain and significantly reduces the number of
@@ -1949,40 +1965,50 @@ Return #f on failure and the cached result otherwise."
                                           result))))
                                  #f object
                                  cache))))
-      (record-cache-lookup! value cache)
+      (record-cache-lookup! cache-id value cache)
       (values value store))))
 
 (define* (%mcached mthunk object #:optional (keys '())
                    #:key
+                   (cache %object-cache-id)
                    (vhash-cons vhash-consq)
                    (vhash-fold* vhash-foldq*))
   "Bind the monadic value returned by MTHUNK, which supposedly corresponds to
 OBJECT/KEYS, or return its cached value.  Use VHASH-CONS to insert OBJECT into
 the cache, and VHASH-FOLD* to look it up."
-  (mlet %store-monad ((cached (lookup-cached-object object keys
+  (mlet %store-monad ((cached (lookup-cached-object cache object keys
                                                     vhash-fold*)))
     (if cached
         (return cached)
         (>>= (mthunk)
              (lambda (result)
                (cache-object-mapping object keys result
+                                     #:cache cache
                                      #:vhash-cons vhash-cons))))))
 
 (define-syntax mcached
-  (syntax-rules (eq? equal?)
+  (syntax-rules (eq? equal? =>)
     "Run MVALUE, which corresponds to OBJECT/KEYS, and cache it; or return the
 value associated with OBJECT/KEYS in the store's object cache if there is
 one."
-    ((_ eq? mvalue object keys ...)
+    ((_ eq? (=> cache) mvalue object keys ...)
      (%mcached (lambda () mvalue)
                object (list keys ...)
+               #:cache cache
                #:vhash-cons vhash-consq
                #:vhash-fold* vhash-foldq*))
-    ((_ equal? mvalue object keys ...)
+    ((_ equal? (=> cache) mvalue object keys ...)
      (%mcached (lambda () mvalue)
                object (list keys ...)
+               #:cache cache
                #:vhash-cons vhash-cons
                #:vhash-fold* vhash-fold*))
+    ((_ eq? mvalue object keys ...)
+     (mcached eq? (=> %object-cache-id)
+              mvalue object keys ...))
+    ((_ equal? mvalue object keys ...)
+     (mcached equal? (=> %object-cache-id)
+              mvalue object keys ...))
     ((_ mvalue object keys ...)
      (mcached eq? mvalue object keys ...))))
 

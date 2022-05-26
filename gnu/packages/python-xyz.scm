@@ -31,7 +31,7 @@
 ;;; Copyright © 2016, 2017, 2019 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2016, 2017, 2018, 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2016, 2017, 2018, 2020, 2021 Julien Lepiller <julien@lepiller.eu>
-;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016, 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017 Carlo Zancanaro <carlo@zancanaro.id.au>
 ;;; Copyright © 2017 Frederick M. Muriithi <fredmanglis@gmail.com>
@@ -121,6 +121,8 @@
 ;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
 ;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
+;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -178,6 +180,7 @@
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages inkscape)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages image-processing)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages jupyter)
   #:use-module (gnu packages kerberos)
@@ -3589,7 +3592,7 @@ files.")
 (define-public python-cli-helpers
   (package
     (name "python-cli-helpers")
-    (version "2.0.1")
+    (version "2.2.1")
     (source
      (origin
        ;; There's no source tarball on PyPI.
@@ -3599,13 +3602,12 @@ files.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bg2iw9l5dip0kbs00hajdk2v18wvhssbnq8hdf71278qf0wks5l"))))
+        (base32 "1hzavh9v9lkd1dn9f0nvg80f7v4banxvcrj10zy72przqz51k1sb"))))
     (build-system python-build-system)
     (native-inputs
      (list python-pytest))
     (propagated-inputs
-     (list python-wcwidth python-configobj python-tabulate
-           python-terminaltables))
+     (list python-wcwidth python-configobj python-tabulate))
     (home-page "https://github.com/dbcli/cli_helpers")
     (synopsis "Helpers for building command-line apps")
     (description
@@ -5641,13 +5643,13 @@ interested parties to subscribe to events, or \"signals\".")
 (define-public pelican
   (package
     (name "pelican")
-    (version "4.7.1")
+    (version "4.7.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pelican" version))
        (sha256
-        (base32 "1sfckd3fhgnj305002fi3fdhkynric1ck7a5i8qany7k3vdsbasv"))))
+        (base32 "0m1kndc98hhnlq0yl05f4lzccw555pkxnrajj6lks18yh491kw8w"))))
     (build-system python-build-system)
     (inputs
      (list python-blinker
@@ -7738,6 +7740,65 @@ write a wide range of image data, including animated images, video, volumetric
 data, and scientific formats.")
     (license license:bsd-2)))
 
+(define-public python-pyvips
+  (package
+    (name "python-pyvips")
+    (version "2.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyvips" version))
+       (sha256
+        (base32 "0lq71iiic4pc8qhxr60gi141w25pjnn4vsh05d5l0fjkgjsv137b"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               ;; Maybe switch to API mode (i.e., build the C extension)?
+               ;; It is advertised as faster to start up and run.
+               ;; However, even with ‘pkg-config’ and ‘python-pkgconfig’ in
+               ;; ‘native-inputs’, the API mode build fails with:
+               ;;
+               ;;   Falling back to ABI mode. Details: unable to find pkg-config package "vips"
+               ;;
+               ;; The build doesn't actually fail without the below
+               ;; substitution, it's just slower because ‘setup.py’ tries
+               ;; (unsuccessfully) to download the Python ‘pkgconfig’ module.
+               (add-after 'unpack 'fix-build
+                 (lambda _
+                   (substitute* "setup.py"
+                     (("^( +setup_)API\\(\\)\n" _ prefix)
+                      (string-append prefix "ABI()\n")))))
+               (add-after 'unpack 'fix-paths
+                 (lambda _
+                   (substitute* "pyvips/__init__.py"
+                     (("^( +_vips_libname) = '(libvips.so.42)'"
+                       _ var libname)
+                      (format #f "~a = '~a/lib/~a'"
+                              var #$(this-package-input "vips") libname))
+                     (("^( +_gobject_libname) = '(libgobject-2.0.so.0)'"
+                       _ var libname)
+                      (format #f "~a = '~a/lib/~a'"
+                              var #$(this-package-input "glib") libname)))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "python" "setup.py" "test")))))))
+    (native-inputs
+     (list python-pyperf
+           python-pytest
+           python-pytest-flake8
+           python-pytest-runner))
+    (inputs
+     (list glib vips))
+    (propagated-inputs
+     (list python-cffi))
+    (home-page "https://github.com/libvips/pyvips")
+    (synopsis "Python bindings for VIPS")
+    (description "The @code{pyvips} package provides Python bindings for VIPS,
+a multithreaded image-processing system with low memory needs.")
+    (license license:expat)))
+
 (define-public python-pycparser
   (package
     (name "python-pycparser")
@@ -9284,10 +9345,8 @@ installing @code{kernelspec}s for use with Jupyter frontends.")
          "1ikqvv335qfrhmlji0iclci6pnm2c3fvnxf031jr1d68j79g6ypd"))))
     (build-system python-build-system)
     (arguments '(#:tests? #f))          ;no test suite
-    (propagated-inputs
-     (list python-ipykernel))
     (inputs
-     (list pari-gp readline))
+     (list pari-gp readline python-ipykernel))
     (home-page "https://github.com/sagemath/pari-jupyter")
     (synopsis "Jupyter kernel for PARI/GP")
     (description "The package provides a PARI/GP kernel for Jupyter.")
@@ -10071,6 +10130,25 @@ generate MPS or LP files and call GLPK, COIN CLP/CBC, CPLEX, and GUROBI to
 solve linear problems.")
     (license license:expat)))
 
+(define-public python-py-tes
+  (package
+    (name "python-py-tes")
+    (version "0.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "py-tes" version))
+       (sha256
+        (base32 "0b272y392v0mnq0f3sm5kgcx8fn4qwfbym89hhvqxz3xkganr4pn"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-attrs python-dateutil python-future python-requests))
+    (home-page "https://github.com/ohsu-comp-bio/py-tes")
+    (synopsis "Library for communicating with the GA4GH Task Execution API")
+    (description "This package provides a library for communicating with the
+GA4GH Task Execution API.")
+    (license license:expat)))
+
 (define-public python-toposort
   (package
     (name "python-toposort")
@@ -10171,6 +10249,147 @@ approach.")
 providing a clean and modern domain specific specification language (DSL) in
 Python style, together with a fast and comfortable execution environment.")
     (license license:expat)))
+
+(define-public snakemake-6
+  (package
+    (inherit snakemake)
+    (name "snakemake")
+    (version "6.15.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/snakemake/snakemake")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09yrpi9f86r9yvcm2dfjs5zy87c4j31bxama77kfd6y8yfrrjlai"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         ;; For cluster execution Snakemake will call Python.  Since there is
+         ;; no suitable GUIX_PYTHONPATH set, cluster execution will fail.  We
+         ;; fix this by calling the snakemake wrapper instead.
+
+         ;; XXX: There is another instance of sys.executable on line 692, but
+         ;; it is not clear how to patch it.
+         (add-after 'unpack 'call-wrapper-not-wrapped-snakemake
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* "snakemake/executors/__init__.py"
+               (("\\{sys.executable\\} -m snakemake")
+                (string-append (assoc-ref outputs "out")
+                               "/bin/snakemake")))))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (setenv "HOME" "/tmp")
+               ;; This test attempts to change S3 buckets on AWS and fails
+               ;; because there are no AWS credentials.
+               (delete-file "tests/test_tibanna.py")
+               (invoke "pytest")))))))
+    (inputs
+     (list python-appdirs
+           python-configargparse
+           python-connection-pool
+           python-datrie
+           python-docutils
+           python-filelock
+           python-gitpython
+           python-jinja2
+           python-jsonschema
+           python-nbformat
+           python-networkx
+           python-psutil
+           python-pulp
+           python-pyyaml
+           python-py-tes
+           python-ratelimiter
+           python-requests
+           python-smart-open
+           python-stopit
+           python-tabulate
+           python-toposort
+           python-wrapt))
+    (native-inputs
+     (list git-minimal
+           python-wrapper
+           python-pytest
+           python-pandas
+           python-requests-mock))))
+
+(define-public snakemake-7
+  (package
+    (inherit snakemake-6)
+    (name "snakemake")
+    (version "7.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/snakemake/snakemake")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qrqbmx4cbis0wxr6dl2rdjv9v627sbirsz6v5c31vlbqwkvs04q"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         ;; For cluster execution Snakemake will call Python.  Since there is
+         ;; no suitable GUIX_PYTHONPATH set, cluster execution will fail.  We
+         ;; fix this by calling the snakemake wrapper instead.
+
+         ;; XXX: There is another instance of sys.executable on line 692, but
+         ;; it is not clear how to patch it.
+         (add-after 'unpack 'call-wrapper-not-wrapped-snakemake
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* "snakemake/executors/__init__.py"
+               (("\\{sys.executable\\} -m snakemake")
+                (string-append (assoc-ref outputs "out")
+                               "/bin/snakemake")))))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (setenv "HOME" "/tmp")
+               ;; This test attempts to change S3 buckets on AWS and fails
+               ;; because there are no AWS credentials.
+               (delete-file "tests/test_tibanna.py")
+               ;; It's a similar story with this test, which requires access
+               ;; to the Google Storage service.
+               (delete-file "tests/test_google_lifesciences.py")
+               (invoke "pytest")))))))
+    (inputs
+     (list python-appdirs
+           python-configargparse
+           python-connection-pool
+           python-datrie
+           python-docutils
+           python-filelock
+           python-gitpython
+           python-jinja2
+           python-jsonschema
+           python-nbformat
+           python-networkx
+           python-psutil
+           python-pulp
+           python-pyyaml
+           python-py-tes
+           python-ratelimiter
+           python-requests
+           python-retry
+           python-smart-open
+           python-stopit
+           python-tabulate
+           python-toposort
+           python-wrapt
+           python-yte))
+    (native-inputs
+     (list git-minimal
+           python-wrapper
+           python-pytest
+           python-pandas
+           python-requests-mock))))
 
 (define-public python-pyqrcode
   (package
@@ -13510,6 +13729,34 @@ Debian-related files, such as:
 JSON Reference and JSON Pointer.")
     (license license:bsd-3)))
 
+(define-public python-fastbencode
+  (package
+    (name "python-fastbencode")
+    (version "0.0.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "fastbencode" version))
+       (sha256
+        (base32 "1r66w3vpmvfmssshjpgqaj2m14c8p94nymr96mwn61idajz9mg5n"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/breezy-team/fastbencode")
+    (synopsis "Python Bencode (de)serializer with optional fast C extensions")
+    (description
+     "The fastbencode Python package implements the bencode serialization
+format for storing and transmitting loosely structured data, originally used
+by BitTorrent.
+
+The format can encode four different types of values: byte strings, integers,
+lists, and dictionaries (associative arrays).  It's simple and unaffected by
+endianness,
+
+This package includes both a pure-Python version and an optional C extension
+based on Cython.  Both provide the same functionality, but the C version has
+significantly better performance.")
+    (license (list license:expat        ; _bencode_py.py
+                   license:gpl2+))))    ; __init__.py
+
 (define-public python-fastjsonschema
   (package
     (name "python-fastjsonschema")
@@ -14014,7 +14261,7 @@ in the data.")
          "1iqrxhd8hvlyf8cqbc731ssnwm61wrycnbiczy5wsfahd3hlh8i4"))))
     (build-system python-build-system)
     (propagated-inputs
-     (list python-ipykernel python-jupyter-client python-prompt-toolkit-2
+     (list python-ipykernel python-jupyter-client python-prompt-toolkit
            python-pygments))
     (native-inputs
      (list python-nose python-pytest))
@@ -14046,9 +14293,8 @@ Jupyter kernels such as IJulia and IRKernel.")
                  (assoc-ref outputs "out") "/bin"))))))))
     ;; Remove the python-ipython propagated input, to avoid the cycle
     (propagated-inputs
-     (alist-delete
-      "python-ipython"
-      (package-propagated-inputs python-jupyter-console)))))
+     (modify-inputs (package-propagated-inputs python-jupyter-console)
+       (delete "python-ipython")))))
 
 (define-public python-qtconsole
   (package
@@ -14426,6 +14672,23 @@ config files.")
     (description "A drop-in replacement for argparse that allows options to also
 be set via config files and/or environment variables.")
     (home-page "https://github.com/bw2/ConfigArgParse")
+    (license license:expat)))
+
+(define-public python-connection-pool
+  (package
+    (name "python-connection-pool")
+    (version "0.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "connection_pool" version))
+       (sha256
+        (base32 "1p6hfkcl4n3hhhcgjbaxn21i7b1yipag6j7dnilir4k5xxx9whmz"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/zhouyl/ConnectionPool")
+    (synopsis "Thread-safe connection pool")
+    (description "This package provides a library implementing a thread-safe
+connection pool.")
     (license license:expat)))
 
 (define-public python-argparse-manpage
@@ -16546,13 +16809,13 @@ is made as zipfile like as possible.")
 (define-public python-rich
   (package
     (name "python-rich")
-    (version "10.2.2")
+    (version "12.4.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "rich" version))
               (sha256
                (base32
-                "1z5m5brcdf3vndpavcqj5nl35xby4x5rfj48klhwqycfqf3g9cqp"))))
+                "149vjb4cpf9mz14iig0b6d8065dm8aslp6pc45g9ipmp1wf00ffj"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -16581,7 +16844,7 @@ is made as zipfile like as possible.")
            (file-name (git-file-name name version))
            (sha256
             (base32
-             "19f4svb363sn5708qkpa6lakmiwzyb25h8kmh7bqrsbbrvi9hr70"))))))
+             "17c3gljn8zv32xnpsgd3fqgqn4r7cdfqri41hridcpbhssdgkyp9"))))))
     (home-page "https://github.com/willmcgugan/rich")
     (synopsis "Render rich text and more to the terminal")
     (description
@@ -18504,7 +18767,7 @@ for Kivy, the multitouch application platform.")
 (define-public python-kivy
   (package
     (name "python-kivy")
-    (version "1.10.1")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
@@ -18512,7 +18775,7 @@ for Kivy, the multitouch application platform.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1zzxjdp78hfjjiklzr82l4zwibwcq4j6kgicspqs6iyyfn5yisbw"))))
+         "1cq4djfn7h8560mvz94dydsldg2jpp5w9rby7nafgmbh7fxg65is"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f              ; Tests require many optional packages
@@ -18522,7 +18785,7 @@ for Kivy, the multitouch application platform.")
            (lambda* (#:key inputs #:allow-other-keys)
              (setenv "KIVY_SDL2_PATH"
                      (search-input-directory inputs "/include/SDL2"))))
-         (add-before 'sanity-check 'set-home
+         (add-before 'build 'set-home
            (lambda _
              ;; 'kivy/__init__.py' wants to create $HOME/.kivy.
              (setenv "HOME" (getcwd)))))))
@@ -18540,6 +18803,35 @@ for Kivy, the multitouch application platform.")
     (description
      "Kivy is a software library for rapid development of hardware-accelerated
 multitouch applications.")
+    (license license:expat)))
+
+(define-public python-kivymd
+  (package
+    (name "python-kivymd")
+    (version "0.104.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "kivymd" version))
+       (sha256
+        (base32 "04lwy6j0agrdwa4a6dl6qs97nx9ysmscmm8psvdzjpyj8aa1zg4p"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:tests? #f                                ;tests require network
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'sanity-check 'set-home
+           (lambda _
+             ;; 'kivy/__init__.py' wants to create $HOME/.kivy.
+             (setenv "HOME" (getcwd)))))))
+    (native-inputs (list python-docutils))
+    (propagated-inputs
+     (list python-kivy python-pillow python-pygments python-kivy-garden))
+    (home-page "https://github.com/kivymd/KivyMD")
+    (synopsis "Material Design compliant widgets for use with Kivy")
+    (description
+     "This package provides Kivy widgets that approximate Google's Material
+Design spec without sacrificing ease of use or application performance.")
     (license license:expat)))
 
 (define-public python2-kivy
@@ -23733,19 +24025,19 @@ identifying what the file is.")
 (define-public python-tldextract
   (package
     (name "python-tldextract")
-    (version "2.2.0")
+    (version "3.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "tldextract" version))
        (sha256
         (base32
-         "1d5s8v6kpsgazyahflhji1cfdcf89rv7l7z55v774bhzvcjp2y99"))))
+         "1wac4yvcpgqjvls770mfx165amvy7gr00nnd2w24bqqwyamj9kdd"))))
     (build-system python-build-system)
     (native-inputs
-     (list python-pytest python-responses))
+     (list python-pytest python-responses python-setuptools-scm))
     (propagated-inputs
-     (list python-idna python-requests python-requests-file))
+     (list python-filelock python-idna python-requests python-requests-file))
     (home-page
      "https://github.com/john-kurkowski/tldextract")
     (synopsis
@@ -23763,7 +24055,7 @@ Public Suffix List's private domains as well.")
 (define-public python-tldr
   (package
     (name "python-tldr")
-    (version "1.2.1")
+    (version "3.1.0")
     (source
      (origin
        ;; There's no test in PyPI.
@@ -23773,20 +24065,23 @@ Public Suffix List's private domains as well.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0n9wqvjxspm18vlxf9j9slrcydshk4rkv5nwkrqhfq606n6zvks4"))))
+        (base32 "1hxmprqg8c4cvs19n7f80f3y7jj74i8sc2dmq2gdjmsdrb54bbzc"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; This test fails. It tries to open a network socket.
-               (invoke "pytest" "-vv" "-k" "not test_error_message")))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'build 'build-doc
+                 (lambda _
+                   (invoke "make" "-C" "docs")))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     ;; This test fails. It tries to open a network socket.
+                     (invoke "pytest" "-vv" "-k" "not test_error_message")))))))
     (native-inputs
-     (list python-pytest python-pytest-runner))
+     (list python-pytest python-pytest-runner python-sphinx-argparse))
     (inputs
-     (list python-argcomplete python-colorama python-termcolor))
+     (list python-argcomplete python-colorama python-termcolor python-shtab))
     (home-page "https://github.com/tldr-pages/tldr-python-client")
     (synopsis "Python command-line client for tldr pages")
     (description "This package provides the @code{tldr} command allowing users
@@ -26233,13 +26528,13 @@ scripts to load entry points more quickly.")
 (define-public python-funcparserlib
   (package
     (name "python-funcparserlib")
-    (version "1.0.0a0")                 ; last stable release was in 2013
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "funcparserlib" version))
        (sha256
-        (base32 "0ama5w5lswxlp3l4qfqq3zlg7i6qkw45jfl1f7p8w1vnj8m47yz6"))))
+        (base32 "0swbqf53x7lfnczvi566s1g3nkf5mfrxz7sbpyymricz57a3vlvx"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f))              ; no tests in PyPI and no setup.py in GitHub
@@ -30986,6 +31281,53 @@ uses the parsed regular expression, so you get a much more accurate result
 than trying to just split strings.")
     (license license:asl2.0)))
 
+(define-public python-pyperf
+  (package
+    (name "python-pyperf")
+    (version "2.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyperf" version))
+       (sha256
+        (base32 "189qf9wdbig0fk4n3bavx8acgdbay5lllfvw48jvbfaafb7y5hja"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-tests
+           (lambda _
+             ;; Some of these tests fail with:
+             ;;
+             ;;   ModuleNotFoundError: No module named 'pyperf'
+             ;;
+             ;; even when calling ‘add-installed-pythonpath’ in the ‘check’
+             ;; phase.
+             (delete-file "pyperf/tests/test_examples.py")))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               ;; From tox.ini's ‘testenv.commands’.
+               (invoke "python" "-bb" "-Wd"
+                       "-m" "unittest" "discover"
+                       "-s" "pyperf/tests/" "-v")))))))
+    (native-inputs
+     (list python-psutil))
+    (home-page "https://github.com/psf/pyperf")
+    (synopsis "Toolkit for running Python benchmarks")
+    (description "The Python @code{pyperf} module is a toolkit for writing,
+running and analyzing benchmarks.  It features a simple API that can:
+
+@itemize
+@item automatically calibrate a benchmark for a time budget;
+@item spawn multiple worker processes;
+@item compute the mean and standard deviation;
+@item detect if a benchmark result seems unstable;
+@item store benchmark results in JSON format;
+@item support multiple units: seconds, bytes and integer.
+@end itemize")
+    (license license:expat)))
+
 (define-public python-pydispatcher
   (package
     (name "python-pydispatcher")
@@ -31225,4 +31567,224 @@ object, which can be useful if you want to force your objects into a table.")
     (description
      "The @code{deep-merge} Python library provides a toolset to deeply merge
 nested data structures in Python like lists and dictionaries.")
+    (license license:expat)))
+
+(define-public python-murmurhash3
+  (package
+    (name "python-murmurhash3")
+    (version "2.3.5")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "murmurhash3" version))
+              (sha256
+               (base32
+                "1gdzys1212dx70byz07ipknbw1awbqskh6aznlkm85js8b8qfczm"))))
+    (build-system python-build-system)
+    (native-inputs (list python-cython python-pytest))
+    (inputs (list python))
+    (arguments
+     (list #:modules
+           '((ice-9 ftw) (ice-9 match)
+             (guix build utils)
+             (guix build python-build-system))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'set-source-file-times-to-1980
+                 (lambda _
+                   (let ((circa-1980 (* 10 366 24 60 60)))
+                     (ftw "."
+                          (lambda (file stat flag)
+                            (utime file circa-1980 circa-1980) #t))))))))
+    (home-page "https://github.com/veegee/mmh3")
+    (synopsis "Python wrapper for MurmurHash (MurmurHash3)")
+    (description
+     "@code{murmurhash3} is a Python library for MurmurHash (MurmurHash3), a set
+of fast and robust hash functions.  This library is a Python extension module
+written in C.")
+    (license license:public-domain)))
+
+(define-public python-murmurhash
+  (package
+    (name "python-murmurhash")
+    (version "1.0.7")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "murmurhash" version))
+              (sha256
+               (base32
+                "0vwkn98c703nvsigl2nz99rax2pafkx3djjfkgc49jiipmp3j2k3"))))
+    (build-system python-build-system)
+    (native-inputs (list python-cython python-pytest))
+    (inputs (list python python-murmurhash3))
+    (arguments
+     (list #:modules
+           '((ice-9 ftw) (ice-9 match)
+             (guix build utils)
+             (guix build python-build-system))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'set-source-file-times-to-1980
+                 (lambda _
+                   (let ((circa-1980 (* 10 366 24 60 60)))
+                     (ftw "."
+                          (lambda (file stat flag)
+                            (utime file circa-1980 circa-1980) #t))))))))
+    (home-page "https://github.com/explosion/murmurhash")
+    (synopsis "Cython bindings for MurmurHash2")
+    (description "This package provides Cython bindings for MurmurHash2.")
+    (license license:expat)))
+
+;; Scooby requires for its test suite a ‘pyvips’ package that is missing its
+;; VIPS dependency.
+(define python-pyvips-for-python-scooby
+  (package
+    (inherit python-pyvips)
+    (name "python-pyvips-for-python-scooby")
+    (arguments
+     (substitute-keyword-arguments (package-arguments python-pyvips)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (delete 'fix-paths)
+            ;; The checks won't succeed without VIPS.
+            (delete 'check)
+            (delete 'sanity-check)))))
+    (inputs
+     (modify-inputs (package-inputs python-pyvips)
+       (delete "vips")))
+    (synopsis "pyvips for Scooby's test suite")))
+
+(define-public python-scooby
+  (package
+    (name "python-scooby")
+    (version "0.5.12")
+    (source
+     ;; The PyPI tarball does not contain the tests.
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/banesullivan/scooby")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gkpmz8wl3jg8ylf1na35308sznw2g9wx33zqlyq5i2gpy2ml9mw"))))
+    (build-system python-build-system)
+    (native-inputs
+     (list python-beautifulsoup4
+           python-numpy
+           python-pytest
+           python-pytest-cov
+           python-pyvips-for-python-scooby
+           python-scipy))
+    (propagated-inputs
+     (list python-psutil))
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-tests
+           (lambda _
+             (substitute* "tests/test_scooby.py"
+               ;; The test suite uses the no-version PyPI package
+               ;; (https://pypi.org/project/no-version/),
+               ;; but it doesn't seem worth packaging in Guix just for this.
+               (("scooby\\.report\\.VERSION_NOT_FOUND")
+                "scooby.report.MODULE_NOT_FOUND")
+               (("^ +import no_version  # noqa.*") ""))))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest")))))))
+    (home-page "https://github.com/banesullivan/scooby")
+    (synopsis "Report hardware information and Python package versions")
+    (description
+     "The Scooby package reports the following information about the currently
+running system:
+
+@itemize
+@item operating system name;
+@item hardware information including machine type (e.g., @samp{i386},
+@samp{x86_64}, etc.), CPU count and total RAM;
+@item Python environment (e.g., Python, IPython, etc.);
+@item file system name;
+@item Python version;
+@item versions of specified Python packages.
+@end itemize
+
+It can generate reports as HTML tables or plain text lists.
+
+Scooby has no required dependencies, and only few optional dependencies.")
+    (license license:expat)))
+
+(define-public python-cymem
+  (package
+    (name "python-cymem")
+    (version "2.0.6")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "cymem" version))
+              (sha256
+               (base32
+                "0pkyy60zk9654sj991w111p1l0m8wvz36nslw96x6nb9h6sjb5qn"))))
+    (build-system python-build-system)
+    (native-inputs
+     (list python-cython
+           python-pytest))
+    (inputs
+     (list python))
+    (arguments
+     (list
+      #:modules '((ice-9 ftw)
+                  (ice-9 match)
+                  (guix build utils)
+                  (guix build python-build-system))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-source-file-times-to-1980
+            ;; XXX One of the tests uses a ZIP library to pack up some of the
+            ;; source tree, and fails with "ZIP does not support timestamps
+            ;; before 1980".  Work around this by setting the file times in the
+            ;; source tree to sometime in early 1980.
+            (lambda _
+              (let ((circa-1980 (* 10 366 24 60 60)))
+                (ftw "." (lambda (file stat flag)
+                           (utime file circa-1980 circa-1980)
+                           #t))))))))
+    (home-page "https://github.com/explosion/cymem")
+    (synopsis "Cython memory pool for RAII-style memory management")
+    (description
+     "Cymem provides two small memory-management helpers for Cython.  They make it
+easy to tie memory to a Python object's life-cycle, so that the memory is freed
+when the object is garbage collected.")
+    (license license:expat)))
+
+(define-public python-preshed
+  (package
+    (name "python-preshed")
+    (version "3.0.6")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "preshed" version))
+              (sha256
+               (base32
+                "0akpydd23xqxx9d04drsnw9140rb3cv07r1zpzqz5wm0lf47afzv"))))
+    (build-system python-build-system)
+    (native-inputs (list python-cython python-cymem python-pytest))
+    (inputs (list python python-cymem python-murmurhash))
+    (arguments
+     (list #:modules
+           '((ice-9 ftw) (ice-9 match)
+             (guix build utils)
+             (guix build python-build-system))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'set-source-file-times-to-1980
+                 (lambda _
+                   (let ((circa-1980 (* 10 366 24 60 60)))
+                     (ftw "."
+                          (lambda (file stat flag)
+                            (utime file circa-1980 circa-1980) #t))))))))
+    (home-page "https://github.com/explosion/preshed")
+    (synopsis "Cython hash tables that assume keys are pre-hashed")
+    (description
+     "Simple but high performance Cython hash table mapping pre-randomized keys
+to void* values.")
     (license license:expat)))

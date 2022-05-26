@@ -424,35 +424,32 @@ combining, and so on, with a simple interface.")
 (define-public mlterm
   (package
     (name "mlterm")
-    (version "3.9.1")
+    (version "3.9.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/mlterm/01release/mlterm-"
                            version "/mlterm-" version ".tar.gz"))
        (sha256
-        (base32 "03fnynwv7d1aicwk2rp31sgncv5m65agvygqvsgn59v9di40gnnb"))))
+        (base32 "0br1sdpxw3r7qv814b3qjb8mpigljr9wd5c5422ah76f09zh0h5r"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
        #:configure-flags
-       (list (string-append "--prefix=" (assoc-ref %outputs "out"))
-             "--disable-static"
+       (list "--disable-static"
              "--enable-optimize-redrawing"
              "--with-imagelib=gdk-pixbuf")))
-    (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)))
+    (native-inputs (list gettext-minimal pkg-config))
     (inputs
-     `(("cairo" ,cairo)
-       ("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("fribidi" ,fribidi)
-       ("gdk-pixbuf" ,gdk-pixbuf)
-       ("gtk+" ,gtk+)
-       ("libx11" ,libx11)
-       ("libxext" ,libxext)
-       ("libxft" ,libxft)))
+     (list cairo
+           fontconfig
+           freetype
+           fribidi
+           gdk-pixbuf
+           gtk+
+           libx11
+           libxext
+           libxft))
     (home-page "http://mlterm.sourceforge.net/")
     (synopsis "Multi-Lingual TERMinal emulator")
     (description

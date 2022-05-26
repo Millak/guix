@@ -164,7 +164,14 @@
              ;; FIXME: this is propagated by "guile-git", but it needs to be among
              ;; the inputs to add it to GUILE_LOAD_PATH.
              guile-bytestructures
-             guix))
+
+             ;; FIXME: The 'cuirass evaluate' command is multithreaded, but it
+             ;; uses 'open-inferior', which calls 'primitive-fork', thus
+             ;; potentially creating child processes that deadlock.  To work
+             ;; around that, use the last revision of Guix where
+             ;; 'open-inferior' was using 'open-pipe*' rather than
+             ;; 'primitive-fork'.  See <https://issues.guix.gnu.org/55441>.
+             guix-for-cuirass))
       (native-inputs
        (list autoconf automake pkg-config texinfo ephemeralpg))
       (native-search-paths

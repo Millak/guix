@@ -4,7 +4,7 @@
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2016, 2017, 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2016 Raimon Grau <raimonster@gmail.com>
-;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2016-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
@@ -116,6 +116,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages kerberos)
+  #:use-module (gnu packages mpi)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages nettle)
   #:use-module (gnu packages openldap)
@@ -981,7 +982,7 @@ or server shell scripts with network connections.")
 (define-public mbuffer
   (package
     (name "mbuffer")
-    (version "20211018")
+    (version "20220418")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -989,7 +990,7 @@ or server shell scripts with network connections.")
                     version ".tgz"))
               (sha256
                (base32
-                "1qxnbpyly00kml3sjan9iqg6pqacsi3yqq66x25w455cwkjc2h72"))))
+                "1iq0lcl350r7qja7yyv911aay26d0dd8n0h33mfl84gzypwh2n3f"))))
     (build-system gnu-build-system)
     (native-inputs
      (list which))
@@ -1863,19 +1864,22 @@ live network and disk I/O bandwidth monitor.")
 (define-public aircrack-ng
   (package
     (name "aircrack-ng")
-    (version "1.6")
+    (version "1.7")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.aircrack-ng.org/aircrack-ng-"
                            version ".tar.gz"))
        (sha256
-        (base32 "0ix2k64qg7x3w0bzdsbk1m50kcpq1ws59g3zkwiafvpwdr4gs2sg"))))
+        (base32 "1hsq1gwmafka4bahs6rc8p98yi542h9a502h64bjlygpr3ih99q5"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list autoconf automake libtool pkg-config which))
+     (list autoconf automake libtool pkg-config which
+           ;; For tests.
+           expect))
     (inputs
-     (list libgcrypt
+     (list `(,hwloc "lib")              ; speed boost on SMP machines
+           libgcrypt
            libnl
            libpcap
            ethtool
@@ -1894,16 +1898,14 @@ live network and disk I/O bandwidth monitor.")
                       ;; ‘patch-shebangs’ phase has had a chance to run.
                       (substitute* "evalrev"
                         (("/bin/sh")
-                         (which "sh")))
-                      #t))
+                         (which "sh")))))
                   (add-after 'build 'absolutize-tools
                     (lambda* (#:key inputs #:allow-other-keys)
                       (let ((ethtool (search-input-file inputs
                                                         "/sbin/ethtool")))
                         (substitute* "scripts/airmon-ng"
                           (("ethtool ")
-                           (string-append ethtool " ")))
-                        #t))))))
+                           (string-append ethtool " ")))))))))
     (home-page "https://www.aircrack-ng.org")
     (synopsis "Assess WiFi network security")
     (description
@@ -2296,14 +2298,14 @@ libproxy only have to specify which proxy to use.")
 (define-public proxychains-ng
   (package
     (name "proxychains-ng")
-    (version "4.15")
+    (version "4.16")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "http://ftp.barfooze.de/pub/sabotage/tarballs/"
                            "proxychains-ng-" version ".tar.xz"))
        (sha256
-        (base32 "10ch6rmbw2lwrq1bc9w4glxkws7hvsy5ihasvzf3yg053xzsn1rj"))))
+        (base32 "04k80jbv1wcr7ccsa0qyly33syw275kvkvzyihwwqmsqk4yria9p"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; there are no tests

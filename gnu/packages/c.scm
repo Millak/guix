@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016, 2018 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018, 2020–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019, 2021 Guillaume Le Vaillant <glv@posteo.net>
@@ -13,6 +13,7 @@
 ;;; Copyright © 2020, 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 David Dashyan <mail@davie.li>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
+;;; Copyright © 2022 (unmatched parenthesis <paren@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -145,6 +146,46 @@ compiler while still keeping it small, simple, fast and understandable.")
     ;; preferred.  See http://pcc.ludd.ltu.se/licenses/ for more details.
     (license (list license:bsd-2 license:bsd-3))))
 
+(define-public qbe
+  (let ((commit "2caa26e388b1c904d2f12fb09f84df7e761d8331")
+        (revision "1"))
+    (package
+      (name "qbe")
+      (version (git-version "0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "git://c9x.me/qbe")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1gv03ym0gqrl4wkbhysa82025xwrkr1fg44z814b6vnggwlqgljc"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:make-flags
+             #~(list (string-append "CC=" #$(cc-for-target))
+                     (string-append "PREFIX=" #$output))
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'allow-cross-compilation
+                   (lambda _
+                     (substitute* "Makefile"
+                       (("`uname -m`") #$(or (%current-target-system)
+                                             (%current-system))))))
+                 (add-after 'allow-cross-compilation 'use-$CC-for-tests
+                   (lambda _
+                     (substitute* "tools/test.sh"
+                       (("cc=\"cc -no-pie\"") "cc=\"${CC} -no-pie\""))))
+                 (delete 'configure))))
+      (supported-systems (list "x86_64-linux" "aarch64-linux" "riscv64-linux"))
+      (synopsis "Simple compiler backend")
+      (description
+       "QBE is a small compiler backend using an SSA-based intermediate
+language as input.")
+      (home-page "https://c9x.me/compile/")
+      (license license:expat))))
+
 (define-public python-pcpp
   (package
     (name "python-pcpp")
@@ -179,7 +220,7 @@ Python.")
 (define-public libbytesize
   (package
     (name "libbytesize")
-    (version "2.2")
+    (version "2.6")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -187,14 +228,12 @@ Python.")
                     "download/" version "/libbytesize-" version ".tar.gz"))
               (sha256
                (base32
-                "1aivwypmnqcaj2230pifvf3jcgl5chja8rspkxf0j3480asm8g5r"))))
+                "0h87ryi0mp8msq43h1cna453cqaw5knx1xaggfzm4fxvn8sjpapg"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python)))
+     (list gettext-minimal pkg-config python))
     (inputs
      (list mpfr pcre2))
     (home-page "https://github.com/storaged-project/libbytesize")
@@ -281,14 +320,14 @@ whose behaviour is inconsistent across *NIX flavours.")
 (define-public libhx
   (package
     (name "libhx")
-    (version "4.2")
+    (version "4.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://inai.de/files/libhx/"
                            "libHX-" version ".tar.xz"))
        (sha256
-        (base32 "1ri3sxiw5a8br27j7f20s40kihfvq6mmxzcrx68zydiwyxjvf5jj"))))
+        (base32 "06zkzaya6j3vaafz80qcgn5qcri047003bhmjisv5sbikcw97jqy"))))
     (build-system gnu-build-system)
     (home-page "https://inai.de/projects/libhx/")
     (synopsis "C library with common data structures and functions")

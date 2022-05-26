@@ -2166,6 +2166,24 @@ Python objects.  It tries to use the objects available in the standard
 @code{unittest} module.")
     (license license:expat)))
 
+(define-public python-test-utils
+  (package
+    (name "python-test-utils")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "test-utils" version))
+       (sha256
+        (base32 "0cs0gyihnkj8ya4yg3ld3ly73mpxrkn2gq9acamclhqvhxsv7zd6"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/Kami/python-test-utils/")
+    (synopsis "Utilities for functional and integration tests")
+    (description
+     "This package provides a collection of utility functions and classes
+which make writing and running functional and integration tests easier.")
+    (license license:asl2.0)))
+
 (define-public python-sybil
   (package
     (name "python-sybil")

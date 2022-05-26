@@ -607,73 +607,73 @@ Unix-style DSV format and RFC 4180 format.")
     (propagated-inputs `(("guile-lib" ,guile2.2-lib)))))
 
 (define-public guile-fibers-1.1
-  (package
-    (name "guile-fibers")
-    (version "1.1.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/wingo/fibers/releases/download/v"
-                    version "/fibers-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1lqz39shlhif5fhpyv2wili0yzb0nhf5ciiv7mdqsq0vljirhrm0"))
-              (patches
-               (search-patches "guile-fibers-wait-for-io-readiness.patch"))))
-    (build-system gnu-build-system)
-    (arguments
-     '(#:phases (modify-phases %standard-phases
-                  ;; This is required to make
-                  ;; "guile-fibers-wait-for-io-readiness.patch" work.
-                  (add-after 'unpack 'regenerate-autotools
-                    (lambda _
-                      (delete-file "configure")))
-                  (add-after 'unpack 'support-cross-compilation
-                    (lambda* (#:key target #:allow-other-keys)
-                      ;; Support cross-compilation.  These issues are fixed in
-                      ;; Fibers commit c4756b9c336374546a41ac90a4431fcc8f7e98ee
-                      ;; and this phase can be removed for 1.1.1.
-                      (when target
-                        (substitute* "build-aux/guile.am"
-                          (("\\$\\(AM_V_GEN\\)" all)
-                           (string-append all " FIBERS_CROSS_COMPILING=yes "))
-                          (("compile")
-                           (string-append "compile --target=" target
-                                          " -L $(abs_top_srcdir)")))
-                        (substitute* "fibers/epoll.scm"
-                          (("\\(dynamic-call")
-                           "(unless (getenv \"FIBERS_CROSS_COMPILING\") (dynamic-call")
-                          (("\\(dynamic-link.*" all)
-                           (string-append all ")\n"))
-                          (("#,(%sizeof|%offsetof)" _ prefix)
-                           prefix)))))
-                  (add-after 'install 'mode-guile-objects
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      ;; .go files are installed to "lib/guile/X.Y/cache".
-                      ;; This phase moves them to "…/site-ccache".
-                      (let* ((out (assoc-ref outputs "out"))
-                             (lib (string-append out "/lib/guile"))
-                             (old (car (find-files lib "^ccache$"
-                                                   #:directories? #t)))
-                             (new (string-append (dirname old)
-                                                 "/site-ccache")))
-                        (rename-file old new)
-                        #t))))))
-    (native-inputs
-     (list texinfo pkg-config autoconf automake libtool
-           guile-3.0            ;for 'guild compile
-           ;; Gettext brings 'AC_LIB_LINKFLAGS_FROM_LIBS'
-           gettext-minimal))
-    (inputs
-     (list guile-3.0))                            ;for libguile-3.0.so
-    (supported-systems
-     ;; This version requires 'epoll' and is thus limited to Linux-based
-     ;; systems, but this may change soon:
-     ;; <https://github.com/wingo/fibers/pull/53>.
-     (filter (cut string-suffix? "-linux" <>) %supported-systems))
-    (synopsis "Lightweight concurrency facility for Guile")
-    (description
-     "Fibers is a Guile library that implements a a lightweight concurrency
+  ;; Pick one commit above 1.1.0, which fixes a bug that's critical for the
+  ;; Shepherd: <https://github.com/wingo/fibers/pull/57>.
+  (let ((commit "c25dcb9cc4b5b977474ffe555b40ce2f1d0d1edc")
+        (revision "0"))
+   (package
+     (name "guile-fibers")
+     (version (git-version "1.1.0" revision commit))
+     (source (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url "https://github.com/wingo/fibers")
+                     (commit commit)))
+               (file-name (git-file-name name version))
+               (sha256
+                (base32
+                 "1jwr0y5x8mv8fm4df2vc3ll38fwwbkrm2iwfsfxa8l783a1a6143"))
+               (patches
+                (search-patches "guile-fibers-wait-for-io-readiness.patch"))))
+     (build-system gnu-build-system)
+     (arguments
+      '(#:phases (modify-phases %standard-phases
+                   (add-after 'unpack 'support-cross-compilation
+                     (lambda* (#:key target #:allow-other-keys)
+                       ;; Support cross-compilation.  These issues are fixed in
+                       ;; Fibers commit c4756b9c336374546a41ac90a4431fcc8f7e98ee
+                       ;; and this phase can be removed for 1.1.1.
+                       (when target
+                         (substitute* "build-aux/guile.am"
+                           (("\\$\\(AM_V_GEN\\)" all)
+                            (string-append all " FIBERS_CROSS_COMPILING=yes "))
+                           (("compile")
+                            (string-append "compile --target=" target
+                                           " -L $(abs_top_srcdir)")))
+                         (substitute* "fibers/epoll.scm"
+                           (("\\(dynamic-call")
+                            "(unless (getenv \"FIBERS_CROSS_COMPILING\") (dynamic-call")
+                           (("\\(dynamic-link.*" all)
+                            (string-append all ")\n"))
+                           (("#,(%sizeof|%offsetof)" _ prefix)
+                            prefix)))))
+                   (add-after 'install 'mode-guile-objects
+                     (lambda* (#:key outputs #:allow-other-keys)
+                       ;; .go files are installed to "lib/guile/X.Y/cache".
+                       ;; This phase moves them to "…/site-ccache".
+                       (let* ((out (assoc-ref outputs "out"))
+                              (lib (string-append out "/lib/guile"))
+                              (old (car (find-files lib "^ccache$"
+                                                    #:directories? #t)))
+                              (new (string-append (dirname old)
+                                                  "/site-ccache")))
+                         (rename-file old new)
+                         #t))))))
+     (native-inputs
+      (list texinfo pkg-config autoconf automake libtool
+            guile-3.0           ;for 'guild compile
+            ;; Gettext brings 'AC_LIB_LINKFLAGS_FROM_LIBS'
+            gettext-minimal))
+     (inputs
+      (list guile-3.0))                           ;for libguile-3.0.so
+     (supported-systems
+      ;; This version requires 'epoll' and is thus limited to Linux-based
+      ;; systems, but this may change soon:
+      ;; <https://github.com/wingo/fibers/pull/53>.
+      (filter (cut string-suffix? "-linux" <>) %supported-systems))
+     (synopsis "Lightweight concurrency facility for Guile")
+     (description
+      "Fibers is a Guile library that implements a a lightweight concurrency
 facility, inspired by systems like Concurrent ML, Go, and Erlang.  A fiber is
 like a \"goroutine\" from the Go language: a lightweight thread-like
 abstraction.  Systems built with Fibers can scale up to millions of concurrent
@@ -683,8 +683,9 @@ communication between fibers.
 
 Note that Fibers makes use of some Guile 2.1/2.2-specific features and
 is not available for Guile 2.0.")
-    (home-page "https://github.com/wingo/fibers")
-    (license license:lgpl3+)))
+     (home-page "https://github.com/wingo/fibers")
+     (properties '((upstream-name . "fibers")))
+     (license license:lgpl3+))))
 
 (define-public guile-fibers
   (package
@@ -850,14 +851,14 @@ HTML (via SXML) or any other format for rendering.")
 (define-public guile-sjson
   (package
     (name "guile-sjson")
-    (version "0.2.1")
+    (version "0.2.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://dustycloud.org/misc/sjson-" version
                                   ".tar.gz"))
               (sha256
                (base32
-                "1mzmapln79vv10qxaggz9qwcdbag3jnrj19xx8bgkmxss8h03sv3"))
+                "08sr16fg5cqvik3wblav6k4b6djc5ydhgfvxa49bc5bh1irqvrcn"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -1444,7 +1445,9 @@ microblogging service.")
      '(#:make-flags
        '("GUILE_AUTO_COMPILE=0"))) ;to prevent guild warnings
     (inputs
-     (list guile-3.0 parted))
+     ;; XXX: Use Parted 3.4 to work around issues when using 3.5 in the Guix
+     ;; System installer: <https://issues.guix.gnu.org/55549>.
+     (list guile-3.0 parted-3.4))
     (propagated-inputs
      (list guile-bytestructures))
     (native-inputs
@@ -2571,7 +2574,7 @@ interface for reading articles in any format.")
 (define-public guile-redis
   (package
     (name "guile-redis")
-    (version "2.1.1")
+    (version "2.2.0")
     (home-page "https://github.com/aconchillo/guile-redis")
     (source (origin
               (method git-fetch)
@@ -2581,7 +2584,7 @@ interface for reading articles in any format.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0pvk4yadgx64wk81cpisdc7zqhk6ww58xi5fs5fs6s28wb6l5bfj"))))
+                "0cb31vj88f3hj93v1lzxcqjyz7ym2gmpk31gv5i2dqv721frnlyj"))))
     (build-system gnu-build-system)
     (arguments
      '(#:make-flags '("GUILE_AUTO_COMPILE=0")))

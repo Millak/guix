@@ -407,7 +407,7 @@ collector, 3M (``Moving Memory Manager'').")
     (synopsis "Racket CS implementation")
     (description "The Racket CS implementation, which uses ``Chez Scheme'' as
 its core compiler and runtime system, has been the default Racket VM
-implemetation since Racket 8.0.  It performs better than the Racket BC
+implementation since Racket 8.0.  It performs better than the Racket BC
 implementation for most programs.
 
 Using the Racket VM packages directly is not recommended: instead, install the

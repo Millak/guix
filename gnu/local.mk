@@ -89,7 +89,6 @@ GNU_SYSTEM_MODULES =				\
   %D%/home/services/utils.scm			\
   %D%/home/services/xdg.scm			\
   %D%/image.scm					\
-  %D%/platform.scm				\
   %D%/packages.scm				\
   %D%/packages/abduco.scm			\
   %D%/packages/abiword.scm			\
@@ -631,9 +630,6 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/zile.scm				\
   %D%/packages/zwave.scm			\
 						\
-  %D%/platforms/arm.scm		                \
-  %D%/platforms/hurd.scm	                \
-						\
   %D%/services.scm				\
   %D%/services/admin.scm			\
   %D%/services/audio.scm                        \
@@ -1024,16 +1020,18 @@ dist_patch_DATA =						\
   %D%/packages/patches/einstein-build.patch			\
   %D%/packages/patches/elfutils-tests-ptrace.patch		\
   %D%/packages/patches/elixir-path-length.patch			\
-  %D%/packages/patches/elm-compiler-disable-reactor.patch	\
-  %D%/packages/patches/elm-compiler-fix-map-key.patch		\
+  %D%/packages/patches/elm-offline-package-registry.patch	\
+  %D%/packages/patches/elm-reactor-static-files.patch		\
   %D%/packages/patches/elogind-revert-polkit-detection.patch	\
   %D%/packages/patches/emacs-exec-path.patch			\
+  %D%/packages/patches/emacs-ess-fix-obsolete-function-alias.patch	\
   %D%/packages/patches/emacs-git-email-missing-parens.patch	\
   %D%/packages/patches/emacs-fix-scheme-indent-function.patch	\
   %D%/packages/patches/emacs-json-reformat-fix-tests.patch	\
   %D%/packages/patches/emacs-highlight-stages-add-gexp.patch	\
   %D%/packages/patches/emacs-hyperbole-toggle-messaging.patch	\
   %D%/packages/patches/emacs-libgit-use-system-libgit2.patch    \
+  %D%/packages/patches/emacs-lispy-fix-thread-last-test.patch   \
   %D%/packages/patches/emacs-source-date-epoch.patch		\
   %D%/packages/patches/emacs-telega-path-placeholder.patch	\
   %D%/packages/patches/emacs-telega-test-env.patch		\
@@ -1130,7 +1128,9 @@ dist_patch_DATA =						\
   %D%/packages/patches/gcc-8-strmov-store-file-names.patch	\
   %D%/packages/patches/gcc-9-asan-fix-limits-include.patch	\
   %D%/packages/patches/gcc-9-strmov-store-file-names.patch	\
+  %D%/packages/patches/gcc-12-strmov-store-file-names.patch	\
   %D%/packages/patches/gcc-10-cross-environment-variables.patch \
+  %D%/packages/patches/gcolor3-update-libportal-usage.patch	\
   %D%/packages/patches/gd-fix-tests-on-i686.patch		\
   %D%/packages/patches/gd-brect-bounds.patch			\
   %D%/packages/patches/gd-Revert-fix-303-gdlib.pc.patch		\
@@ -1332,6 +1332,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/kdbusaddons-kinit-file-name.patch	\
   %D%/packages/patches/libffi-3.3-powerpc-fixes.patch		\
   %D%/packages/patches/libffi-float128-powerpc64le.patch	\
+  %D%/packages/patches/libobjc2-unbundle-robin-map.patch	\
   %D%/packages/patches/librime-fix-build-with-gcc10.patch	\
   %D%/packages/patches/libvirt-add-install-prefix.patch	\
   %D%/packages/patches/libziparchive-add-includes.patch		\
@@ -1606,8 +1607,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/sdl-pango-sans-serif.patch		\
   %D%/packages/patches/smalltalk-multiplication-overflow.patch	\
   %D%/packages/patches/sqlite-hurd.patch			\
-  %D%/packages/patches/sssd-collision-with-external-nss-symbol.patch	\
-  %D%/packages/patches/sssd-fix-samba-4.15.3.patch	\
   %D%/packages/patches/strace-readlink-tests.patch		\
   %D%/packages/patches/sunxi-tools-remove-sys-io.patch	\
   %D%/packages/patches/p11-kit-hurd.patch			\
@@ -1822,7 +1821,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/snappy-add-inline-for-GCC.patch		\
   %D%/packages/patches/sphinxbase-fix-doxygen.patch		\
   %D%/packages/patches/spice-vdagent-glib-2.68.patch		\
-  %D%/packages/patches/sssd-fix-samba.patch			\
+  %D%/packages/patches/sssd-optional-systemd.patch		\
   %D%/packages/patches/sssd-system-directories.patch		\
   %D%/packages/patches/steghide-fixes.patch			\
   %D%/packages/patches/suitesparse-mongoose-cmake.patch		\
@@ -1982,8 +1981,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/xterm-370-explicit-xcursor.patch		\
   %D%/packages/patches/xygrib-fix-finding-data.patch		\
   %D%/packages/patches/yggdrasil-extra-config.patch	\
-  %D%/packages/patches/ytnef-CVE-2021-3403.patch	\
-  %D%/packages/patches/ytnef-CVE-2021-3404.patch	\
   %D%/packages/patches/zig-use-system-paths.patch
 
 MISC_DISTRO_FILES =				\

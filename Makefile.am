@@ -132,6 +132,12 @@ MODULES =					\
   guix/workers.scm				\
   guix/least-authority.scm			\
   guix/ipfs.scm					\
+  guix/platform.scm                             \
+  guix/platforms/arm.scm                        \
+  guix/platforms/mips.scm                       \
+  guix/platforms/powerpc.scm                    \
+  guix/platforms/riscv.scm                      \
+  guix/platforms/x86.scm                        \
   guix/build-system.scm				\
   guix/build-system/android-ndk.scm		\
   guix/build-system/ant.scm			\
@@ -141,6 +147,7 @@ MODULES =					\
   guix/build-system/cmake.scm			\
   guix/build-system/dub.scm			\
   guix/build-system/dune.scm			\
+  guix/build-system/elm.scm			\
   guix/build-system/emacs.scm			\
   guix/build-system/font.scm			\
   guix/build-system/go.scm			\
@@ -192,6 +199,7 @@ MODULES =					\
   guix/build/cmake-build-system.scm		\
   guix/build/dub-build-system.scm		\
   guix/build/dune-build-system.scm		\
+  guix/build/elm-build-system.scm		\
   guix/build/emacs-build-system.scm		\
   guix/build/meson-build-system.scm		\
   guix/build/minify-build-system.scm		\
@@ -257,6 +265,7 @@ MODULES =					\
   guix/import/cran.scm				\
   guix/import/crate.scm				\
   guix/import/egg.scm   			\
+  guix/import/elm.scm				\
   guix/import/elpa.scm   			\
   guix/import/gem.scm				\
   guix/import/git.scm                           \
@@ -308,6 +317,7 @@ MODULES =					\
   guix/scripts/import/crate.scm			\
   guix/scripts/import/cran.scm			\
   guix/scripts/import/egg.scm   		\
+  guix/scripts/import/elm.scm			\
   guix/scripts/import/elpa.scm  		\
   guix/scripts/import/gem.scm			\
   guix/scripts/import/gnu.scm			\
@@ -472,6 +482,7 @@ SCM_TESTS =					\
   tests/derivations.scm			\
   tests/discovery.scm				\
   tests/egg.scm				\
+  tests/elm.scm				\
   tests/elpa.scm				\
   tests/file-systems.scm			\
   tests/gem.scm				\

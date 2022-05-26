@@ -1,0 +1,251 @@
+From 41d219a29b03f3114af7a0521c8b2dbbb487c3e1 Mon Sep 17 00:00:00 2001
+From: Philip McGrath <philip@philipmcgrath.com>
+Date: Wed, 13 Apr 2022 18:45:58 -0400
+Subject: [PATCH] reactor: look for static files relative to executable
+
+Must built with `-DGUIX_REACTOR_STATIC_REL_ROOT="../path/to/reactor"`.
+
+This lets us build a version of Elm without the `elm reactor` for
+bootstrapping, then simply put the files in place in the final package.
+---
+ elm.cabal                                 |  2 +-
+ terminal/src/Develop.hs                   | 32 +++++++++++----
+ terminal/src/Develop/StaticFiles.hs       | 37 ++++++++++-------
+ terminal/src/Develop/StaticFiles/Build.hs | 50 ++++++++++++++---------
+ 4 files changed, 79 insertions(+), 42 deletions(-)
+
+diff --git a/elm.cabal b/elm.cabal
+index bf1cfcf0..93161072 100644
+--- a/elm.cabal
++++ b/elm.cabal
+@@ -50,6 +50,7 @@ Executable elm
+ 
+     other-extensions:
+         TemplateHaskell
++        CPP
+ 
+     Main-Is:
+         Main.hs
+@@ -211,7 +212,6 @@ Executable elm
+         containers >= 0.5.8.2 && < 0.6,
+         directory >= 1.2.3.0 && < 2.0,
+         edit-distance >= 0.2 && < 0.3,
+-        file-embed,
+         filelock,
+         filepath >= 1 && < 2.0,
+         ghc-prim >= 0.5.2,
+diff --git a/terminal/src/Develop.hs b/terminal/src/Develop.hs
+index 00339364..6855b03e 100644
+--- a/terminal/src/Develop.hs
++++ b/terminal/src/Develop.hs
+@@ -33,6 +33,7 @@ import qualified Reporting.Exit as Exit
+ import qualified Reporting.Task as Task
+ import qualified Stuff
+ 
++import System.Exit as SysExit
+ 
+ 
+ -- RUN THE DEV SERVER
+@@ -45,13 +46,29 @@ data Flags =
+ 
+ 
+ run :: () -> Flags -> IO ()
+-run () (Flags maybePort) =
++run () flags = do
++  frontEnd <- StaticFiles.prepare
++  case frontEnd of
++    Right lookup ->
++      reallyRun lookup flags
++    Left missing ->
++      SysExit.die $ unlines
++      [ "The `reactor` command is not available."
++      , ""
++      , "On Guix, these files are needed for `elm reactor` to work,"
++      , "but they are missing:"
++      , ""
++      , unlines (map (\pth -> "    " ++ (show pth)) missing)
++      ]
++
++reallyRun :: StaticFiles.Lookup -> Flags -> IO ()
++reallyRun lookup (Flags maybePort) =
+   do  let port = maybe 8000 id maybePort
+       putStrLn $ "Go to http://localhost:" ++ show port ++ " to see your project dashboard."
+       httpServe (config port) $
+         serveFiles
+         <|> serveDirectoryWith directoryConfig "."
+-        <|> serveAssets
++        <|> serveAssets lookup
+         <|> error404
+ 
+ 
+@@ -169,16 +186,15 @@ compile path =
+ -- SERVE STATIC ASSETS
+ 
+ 
+-serveAssets :: Snap ()
+-serveAssets =
++serveAssets :: StaticFiles.Lookup -> Snap ()
++serveAssets lookup =
+   do  path <- getSafePath
+-      case StaticFiles.lookup path of
++      case lookup path of
+         Nothing ->
+           pass
+ 
+-        Just (content, mimeType) ->
+-          do  modifyResponse (setContentType (mimeType <> ";charset=utf-8"))
+-              writeBS content
++        Just (fsPath, mimeType) ->
++          serveFileAs (mimeType <> ";charset=utf-8") fsPath
+ 
+ 
+ 
+diff --git a/terminal/src/Develop/StaticFiles.hs b/terminal/src/Develop/StaticFiles.hs
+index 94ee72dc..3227d617 100644
+--- a/terminal/src/Develop/StaticFiles.hs
++++ b/terminal/src/Develop/StaticFiles.hs
+@@ -2,7 +2,8 @@
+ {-# LANGUAGE OverloadedStrings #-}
+ {-# LANGUAGE TemplateHaskell #-}
+ module Develop.StaticFiles
+-  ( lookup
++  ( prepare
++  , Lookup
+   , cssPath
+   , elmPath
+   , waitingPath
+@@ -11,9 +12,7 @@ module Develop.StaticFiles
+ 
+ import Prelude hiding (lookup)
+ import qualified Data.ByteString as BS
+-import Data.FileEmbed (bsToExp)
+ import qualified Data.HashMap.Strict as HM
+-import Language.Haskell.TH (runIO)
+ import System.FilePath ((</>))
+ 
+ import qualified Develop.StaticFiles.Build as Build
+@@ -26,20 +25,29 @@ import qualified Develop.StaticFiles.Build as Build
+ type MimeType =
+   BS.ByteString
+ 
++type Lookup = FilePath -> Maybe (FilePath, MimeType)
+ 
+-lookup :: FilePath -> Maybe (BS.ByteString, MimeType)
+-lookup path =
++prepare :: IO (Either [FilePath] Lookup)
++prepare = do
++  found <- Build.findReactorFrontEnd expectedFiles
++  return $ case found of
++    Left missing ->
++      Left missing
++    Right resolved ->
++      Right (mkLookup (HM.fromList resolved))
++
++mkLookup :: HM.HashMap FilePath (FilePath, MimeType) -> Lookup
++mkLookup dict path =
+   HM.lookup path dict
+ 
+ 
+-dict :: HM.HashMap FilePath (BS.ByteString, MimeType)
+-dict =
+-  HM.fromList
+-    [ faviconPath  ==> (favicon , "image/x-icon")
+-    , elmPath      ==> (elm     , "application/javascript")
+-    , cssPath      ==> (css     , "text/css")
+-    , codeFontPath ==> (codeFont, "font/ttf")
+-    , sansFontPath ==> (sansFont, "font/ttf")
++expectedFiles :: [(FilePath, MimeType)]
++expectedFiles =
++    [ faviconPath  ==> "image/x-icon"
++    , elmPath      ==> "application/javascript"
++    , cssPath      ==> "text/css"
++    , codeFontPath ==> "font/ttf"
++    , sansFontPath ==> "font/ttf"
+     ]
+ 
+ 
+@@ -82,7 +90,7 @@ sansFontPath =
+   "_elm" </> "source-sans-pro.ttf"
+ 
+ 
+-
++{-
+ -- ELM
+ 
+ 
+@@ -121,3 +129,4 @@ sansFont =
+ favicon :: BS.ByteString
+ favicon =
+   $(bsToExp =<< runIO (Build.readAsset "favicon.ico"))
++-}
+diff --git a/terminal/src/Develop/StaticFiles/Build.hs b/terminal/src/Develop/StaticFiles/Build.hs
+index c61fae57..c39b08b0 100644
+--- a/terminal/src/Develop/StaticFiles/Build.hs
++++ b/terminal/src/Develop/StaticFiles/Build.hs
+@@ -1,28 +1,39 @@
+ {-# LANGUAGE OverloadedStrings #-}
++{-# LANGUAGE CPP #-}
+ module Develop.StaticFiles.Build
+-  ( readAsset
+-  , buildReactorFrontEnd
++  ( findReactorFrontEnd
+   )
+   where
+ 
+-
+-import qualified Data.ByteString as BS
+-import qualified Data.ByteString.Builder as B
+-import qualified Data.ByteString.Lazy as LBS
+-import qualified Data.NonEmptyList as NE
+ import qualified System.Directory as Dir
+-import System.FilePath ((</>))
+-
+-import qualified BackgroundWriter as BW
+-import qualified Build
+-import qualified Elm.Details as Details
+-import qualified Generate
+-import qualified Reporting
+-import qualified Reporting.Exit as Exit
+-import qualified Reporting.Task as Task
+-
+-
+-
++import System.FilePath ((</>), takeDirectory)
++import System.Environment (getExecutablePath)
++import Data.Either as Either
++
++reactorStaticRelRoot :: FilePath
++reactorStaticRelRoot = GUIX_REACTOR_STATIC_REL_ROOT
++
++type Resolved a = (FilePath, (FilePath, a))
++
++findReactorFrontEnd :: [(FilePath, a)] -> IO (Either [FilePath] [Resolved a])
++findReactorFrontEnd specs = do
++  exe <- getExecutablePath
++  let dir = takeDirectory exe </> reactorStaticRelRoot
++  dirExists <- Dir.doesDirectoryExist dir
++  files <- sequence (map (findFile dir) specs)
++  return $ case Either.lefts files of
++           [] ->
++             Right (Either.rights files)
++           missing ->
++             Left $ if dirExists then missing else [dir]
++
++findFile :: FilePath -> (FilePath, a) -> IO (Either FilePath (Resolved a))
++findFile dir (rel, rhs) = do
++  let abs = dir </> rel
++  exists <- Dir.doesFileExist abs
++  return $ if not exists then Left abs else Right (rel, (abs, rhs))
++
++{-
+ -- ASSETS
+ 
+ 
+@@ -71,3 +82,4 @@ runTaskUnsafe task =
+                 \\nCompile with `elm make` directly to figure it out faster\
+                 \\n--------------------------------------------------------\
+                 \\n"
++-}
+-- 
+2.32.0
+

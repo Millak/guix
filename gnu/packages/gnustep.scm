@@ -3,6 +3,7 @@
 ;;; Copyright © 2016, 2017 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -21,15 +22,21 @@
 
 (define-module (gnu packages gnustep)
   #:use-module (guix download)
+  #:use-module (guix git-download)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix build-system gnu)
-  #:use-module (guix licenses)
+  #:use-module (guix build-system cmake)
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages datastructures)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages libffcall)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages llvm)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages glib)
@@ -62,7 +69,48 @@ to write makefiles for a GNUstep-based project.  It allows the user to write a
 project without having to deal with the complex issues associated with
 configuration, building, installation, and packaging.  It also allows the user
 to easily create cross-compiled binaries.")
-    (license gpl3+)))
+    (license license:gpl3+)))
+
+(define-public libobjc2
+  (package
+    (name "libobjc2")
+    (version "2.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/gnustep/libobjc2")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "1zjryzvy06gjf36gz6zrkg9icwz6wsf80mp94x6bq1109vkl40b5"))
+              (file-name (git-file-name name version))
+              (patches
+               (search-patches "libobjc2-unbundle-robin-map.patch"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      ;; XXX: Cannot use GCC to compile ObjC code due to
+      ;; https://issues.guix.gnu.org/29644.
+      #:configure-flags #~(list "-DCMAKE_C_COMPILER=clang"
+                                "-DCMAKE_CXX_COMPILER=clang++")))
+    (inputs
+     (list clang robin-map))
+    (home-page "http://www.gnustep.org/")
+    (synopsis "Objective-C runtime library for Clang")
+    (description "Libobjc2 is an Objective-C runtime library designed as a
+drop-in replacement for GCC runtime.  It supports following features beyond
+GCC runtime.
+
+@itemize
+@item Modern Objective-C runtime APIs.
+@item Blocks (Closures).
+@item Synthesised property accessors.
+@item Efficient support for @code{@@synchronized()}.
+@item Type-dependent dispatch.
+@item Associated reference API.
+@item Automatic Reference Counting.
+@end itemize")
+    (license license:expat)))
 
 (define-public windowmaker
   (package
@@ -153,7 +201,7 @@ possible, it reproduces the elegant look and feel of the NeXTSTEP user
 interface.  It is fast, feature rich, easy to configure, and easy to use.")
 
     ;; Artwork is distributed under the WTFPL.
-    (license gpl2+)))
+    (license license:gpl2+)))
 
 (define-public wmbattery
   (package
@@ -180,7 +228,7 @@ interface.  It is fast, feature rich, easy to configure, and easy to use.")
 This includes if it is plugged in, if the battery is charging, how many minutes
 of battery life remain, battery life remaining (with both a percentage and a
 graph), and battery status (high - green, low - yellow, or critical - red).")
-    (license gpl2)))
+    (license license:gpl2)))
 
 (define-public wmnd
   (package
@@ -204,7 +252,7 @@ graph), and battery status (high - green, low - yellow, or critical - red).")
     (description
      "WMND is a dockapp for monitoring network interfaces under WindowMaker and
 other compatible window managers.")
-    (license gpl2+)))
+    (license license:gpl2+)))
 
 (define-public wmcpuload
   (package
@@ -231,7 +279,7 @@ chart, and has an LCD look-alike user interface.  The back-light may be turned
 on and off by clicking the mouse button over the application.  If the CPU usage
 hits a certain threshold, an alarm-mode will alert you by turning back-light
 on.")
-    (license gpl2+)))
+    (license license:gpl2+)))
 
 (define-public wmclock
   (package
@@ -257,7 +305,7 @@ on.")
      "wmclock is an applet for Window Maker which displays the date and time in
 a dockable tile.  It features multiple language support, 24h or 12h time
 display, and can run a user-specified program on mouse click.")
-    (license gpl2+)))
+    (license license:gpl2+)))
 
 (define-public wmfire
   (package
@@ -286,4 +334,4 @@ memory, network load, a file or just be set to show a pretty flame.  On
 entering the dock a burning spot replaces the cursor, and after two seconds
 symbols to represent the current monitor are \"burnt\" onscreen.  The flame
 colour can also be changed.")
-    (license gpl2+)))
+    (license license:gpl2+)))

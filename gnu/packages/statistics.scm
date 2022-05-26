@@ -6347,7 +6347,9 @@ Java package that provides routines for various statistical distributions.")
                 "$(MAKE) -C lisp install; $(MAKE) -C doc install")
                (("\\$\\(INSTALL) -R \\./\\* \\$\\(ESSDESTDIR)/")
                 "$(MAKE) -C etc install"))
-             #t))))
+             #t))
+         (patches
+          (search-patches "emacs-ess-fix-obsolete-function-alias.patch"))))
       (build-system gnu-build-system)
       (arguments
        (let ((base-directory "/share/emacs/site-lisp"))

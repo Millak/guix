@@ -120,14 +120,14 @@ to finish tasks, not organize them.")
 (define-public taskwarrior
   (package
     (name "taskwarrior")
-    (version "2.6.1")
+    (version "2.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
-             "http://taskwarrior.org/download/task-" version ".tar.gz"))
+             "https://taskwarrior.org/download/task-" version ".tar.gz"))
        (sha256 (base32
-                "0kq8n2y4srax48yp7shz7ngac0q75dnvdbr9z9f9ldyqncr61ah0"))))
+                "1v6gca4cfrlh7adjn95j3jg3qq81w3h68037803dc3yd03qaglxi"))))
     (build-system cmake-build-system)
     (inputs
      (list gnutls

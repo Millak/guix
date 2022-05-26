@@ -1348,7 +1348,11 @@ descriptions maintained upstream."
                                  (formatted-message-arguments c))))
                  (make-warning package
                                (G_ "failed to create ~a derivation: ~a")
-                               (list system str)))))
+                               (list system str))))
+              (else
+               (make-warning package
+                             (G_ "failed to create ~a derivation: ~a")
+                             (list system c))))
       (parameterize ((%graft? #f))
         (package-derivation store package system #:graft? #f)
 

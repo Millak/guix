@@ -42,6 +42,7 @@
   #:use-module (gnu packages swig)
   #:use-module (gnu packages tbb)
   #:use-module (gnu packages xml)
+  #:use-module (guix platform)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
@@ -223,7 +224,7 @@ with the script @command{flamegraph.pl} and many stackcollapse scripts.")
 user space tracer.  It receives commands from a session daemon, for example to
 enable and disable specific instrumentation points, and writes event records
 to ring buffers shared with a consumer daemon.")
-    (license license:lgpl2.1+)))
+    (license (list license:lgpl2.1 license:expat))))
 
 (define-public lttng-tools
   (package
@@ -312,9 +313,10 @@ line for tracing control, a @code{lttng-ctl} library for tracing control and a
        (modify-phases %standard-phases
          (replace 'configure
            (lambda* (#:key outputs target #:allow-other-keys)
-             (let ((arch ,(system->linux-architecture
-                           (or (%current-target-system)
-                               (%current-system)))))
+             (let ((arch ,(platform-linux-architecture
+                           (lookup-platform-by-target-or-system
+                            (or (%current-target-system)
+                                (%current-system))))))
                (setenv "ARCH"
                        (cond
                         ((string=? arch "arm64") "aarch64")

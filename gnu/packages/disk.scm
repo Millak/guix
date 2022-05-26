@@ -22,7 +22,7 @@
 ;;; Copyright © 2021 Mathieu Othacehe <othacehe@gnu.org>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Justin Veilleux <terramorpha@cock.li>
-;;; Copyright © 2014 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -271,6 +271,18 @@ tmpfs/ramfs filesystems.")
      "GNU Parted is a package for creating and manipulating disk partition
 tables.  It includes a library and command-line utility.")
     (license license:gpl3+)))
+
+(define-public parted-3.4
+  (package
+    (inherit parted)
+    (version "3.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/parted/parted-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "0hjkv84x1bs2qqyx1fnzjqyyqrhv7kpdbq9bgydmi99d8wi80ag1"))))))
 
 (define-public fdisk
   (package

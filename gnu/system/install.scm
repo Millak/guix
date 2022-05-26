@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
@@ -252,7 +252,9 @@ the user's target storage device rather than on the RAM disk."
   (service-type (name 'configuration-template)
                 (extensions
                  (list (service-extension etc-service-type
-                                          /etc/configuration-files)))))
+                                          /etc/configuration-files)))
+                (description "Install the operating system configuration file
+templates under @file{/etc/configuration}.")))
 
 (define %configuration-template-service
   (service configuration-template-service-type #t))

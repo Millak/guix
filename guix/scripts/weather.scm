@@ -40,6 +40,7 @@
   #:use-module (guix ci)
   #:use-module (guix sets)
   #:use-module (guix graph)
+  #:use-module (guix scripts build)
   #:autoload   (guix scripts graph) (%bag-node-type)
   #:use-module (gnu packages)
   #:use-module (web uri)
@@ -339,18 +340,18 @@ Report the availability of substitutes.\n"))
                          COUNT dependents"))
   (display (G_ "
       --display-missing  display the list of missing substitutes"))
-  (display (G_ "
-  -s, --system=SYSTEM    consider substitutes for SYSTEM--e.g., \"i686-linux\""))
   (newline)
   (display (G_ "
   -h, --help             display this help and exit"))
   (display (G_ "
   -V, --version          display version information and exit"))
   (newline)
+  (show-native-build-options-help)
+  (newline)
   (show-bug-report-information))
 
 (define %options
-  (list  (option '(#\h "help") #f #f
+  (cons* (option '(#\h "help") #f #f
                  (lambda args
                    (show-help)
                    (exit 0)))
@@ -380,9 +381,7 @@ Report the availability of substitutes.\n"))
          (option '("display-missing") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'display-missing? #t result)))
-         (option '(#\s "system") #t #f
-                 (lambda (opt name arg result)
-                   (alist-cons 'system arg result)))))
+         %standard-native-build-options))
 
 (define %default-options
   `((substitute-urls . ,%default-substitute-urls)))

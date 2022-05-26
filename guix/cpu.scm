@@ -62,31 +62,51 @@
       (lambda (port)
         (let loop ((vendor #f)
                    (family #f)
-                   (model #f))
+                   (model #f)
+                   (flags (set)))
           (match (read-line port)
             ((? eof-object?)
-             #f)
+             (cpu (utsname:machine (uname))
+                  vendor family model flags))
+            ;; vendor for x86_64 and i686
             ((? (prefix? "vendor_id") str)
              (match (string-tokenize str)
                (("vendor_id" ":" vendor)
-                (loop vendor family model))))
+                (loop vendor family model flags))))
+            ;; vendor for aarch64 and armhf
+            ((? (prefix? "CPU implementer") str)
+             (match (string-tokenize str)
+               (("CPU" "implementer" ":" vendor)
+                (loop vendor family model flags))))
+            ;; family for x86_64 and i686
             ((? (prefix? "cpu family") str)
              (match (string-tokenize str)
                (("cpu" "family" ":" family)
-                (loop vendor (string->number family) model))))
+                (loop vendor (string->number family) model flags))))
+            ;; model for x86_64 and i686
             ((? (prefix? "model") str)
              (match (string-tokenize str)
                (("model" ":" model)
-                (loop vendor family (string->number model)))
+                (loop vendor family (string->number model) flags))
                (_
-                (loop vendor family model))))
+                (loop vendor family model flags))))
+            ;; model for aarch64 and armhf
+            ((? (prefix? "CPU part") str)
+             (match (string-tokenize str)
+               (("CPU" "part" ":" model)
+                (loop vendor family (string->number (string-drop model 2) 16) flags))))
+            ;; flags for x86_64 and i686
             ((? (prefix? "flags") str)
              (match (string-tokenize str)
                (("flags" ":" flags ...)
-                (cpu (utsname:machine (uname))
-                     vendor family model (list->set flags)))))
+                (loop vendor family model (list->set flags)))))
+            ;; flags for aarch64 and armhf
+            ((? (prefix? "Features") str)
+             (match (string-tokenize str)
+               (("Features" ":" flags ...)
+                (loop vendor family model (list->set flags)))))
             (_
-             (loop vendor family model))))))))
+             (loop vendor family model flags))))))))
 
 (define (cpu->gcc-architecture cpu)
   "Return the architecture name, suitable for GCC's '-march' flag, that
@@ -191,6 +211,57 @@ corresponds to CPU, a record as returned by 'current-cpu'."
          ;; TODO: Recognize CENTAUR/CYRIX/NSC?
 
          "x86_64"))
+    ("aarch64"
+     ;; Transcribed from GCC's list of aarch64 processors in aarch64-cores.def
+     ;; What to do with big.LITTLE cores?
+     (match (cpu-vendor cpu)
+       ("0x41"
+        (match (cpu-model cpu)
+          ((or #xd02 #xd04 #xd03 #xd07 #xd08 #xd09)
+           "armv8-a")
+          ((or #xd05 #xd0a #xd0b #xd0e #xd0d #xd41 #xd42 #xd4b #xd46 #xd43 #xd44 #xd41 #xd0c #xd4a)
+           "armv8.2-a")
+          (#xd40
+           "armv8.4-a")
+          (#xd15
+           "armv8-r")
+          ((or #xd46 #xd47 #xd48 #xd49 #xd4f)
+           "armv9-a")))
+       ("0x42"
+        "armv8.1-a")
+       ("0x43"
+        (match (cpu-model cpu)
+          ((or #x0a0 #x0a1 #x0a2 #x0a3)
+           "armv8-a")
+          (#x0af
+           "armv8.1-a")
+          ((or #x0b0 #x0b1 #x0b2 #x0b3 #x0b4 #x0b5)
+           "armv8.2-a")
+          (#x0b8
+           "armv8.3-a")))
+       ("0x46"
+        "armv8.2-a")
+       ("0x48"
+        "armv8.2-a")
+       ("0x50"
+        "armv8-a")
+       ("0x51"
+        (match (cpu-model cpu)
+          (#xC00
+           "armv8-a")
+          (#x516
+           "armv8.1-a")
+          (#xC01
+           "armv8.4-a")))
+       ("0x53"
+        "armv8-a")
+       ("0x68"
+        "armv8-a")
+       ("0xC0"
+        "armv8.6-a")
+       (_
+        "armv8-a"))
+     "armv8-a")
     (architecture
-     ;; TODO: AArch64.
+     ;; TODO: More architectures
      architecture)))

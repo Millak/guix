@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2021 Mathieu Othacehe <othacehe@gnu.org>
+;;; Copyright © 2022 Mathieu Othacehe <othacehe@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -16,21 +16,22 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (gnu platforms arm)
-  #:use-module (gnu platform)
-  #:use-module (gnu packages linux)
+(define-module (guix platforms powerpc)
+  #:use-module (guix platform)
   #:use-module (guix records)
-  #:export (armv7-linux
-            aarch64-linux))
+  #:export (powerpc-linux
+            powerpc64le-linux))
 
-(define armv7-linux
+(define powerpc-linux
   (platform
-   (target "arm-linux-gnueabihf")
-   (system "armhf-linux")
-   (linux-architecture "arm")))
+   (target "powerpc-linux-gnu")
+   (system "powerpc-linux")
+   (linux-architecture "powerpc")
+   (glibc-dynamic-linker "/lib/ld.so.1")))
 
-(define aarch64-linux
+(define powerpc64le-linux
   (platform
-   (target "aarch64-linux-gnu")
-   (system "aarch64-linux")
-   (linux-architecture "arm64")))
+   (target "powerpc64le-linux-gnu")
+   (system "powerpc64le-linux")
+   (linux-architecture "powerpc")
+   (glibc-dynamic-linker "/lib/ld64.so.2")))

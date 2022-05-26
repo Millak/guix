@@ -159,6 +159,7 @@
   #:use-module (gnu packages groff)
   #:use-module (gnu packages selinux)
   #:use-module (gnu packages swig)
+  #:use-module (guix platform)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
@@ -181,20 +182,6 @@
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 match)
   #:use-module (ice-9 regex))
-
-(define-public (system->linux-architecture arch)
-  "Return the Linux architecture name for ARCH, a Guix system name such as
-\"x86_64-linux\" or a target triplet such as \"arm-linux-gnueabihf\"."
-  (let ((arch (car (string-split arch #\-))))
-    (cond ((string=? arch "i686") "i386")
-          ((string-prefix? "mips" arch) "mips")
-          ((string-prefix? "arm" arch) "arm")
-          ((string-prefix? "aarch64" arch) "arm64")
-          ((string-prefix? "alpha" arch) "alpha")
-          ((string-prefix? "powerpc" arch) "powerpc") ;including "powerpc64le"
-          ((string-prefix? "s390" arch) "s390")
-          ((string-prefix? "riscv" arch) "riscv")
-          (else arch))))
 
 (define-public (system->defconfig system)
   "Some systems (notably powerpc-linux) require a special target for kernel
@@ -362,7 +349,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The current "stable" kernels. That is, the most recently released major
 ;; versions that are still supported upstream.
 
-(define-public linux-libre-5.17-version "5.17.7")
+(define-public linux-libre-5.17-version "5.17.9")
 (define-public linux-libre-5.17-gnu-revision "gnu")
 (define deblob-scripts-5.17
   (linux-libre-deblob-scripts
@@ -372,7 +359,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1zd4ds6ha4a2acqnalp234r2m9rz9p30qmy1aqri78i06aw7flwn")))
 (define-public linux-libre-5.17-pristine-source
   (let ((version linux-libre-5.17-version)
-        (hash (base32 "16ccf7n6fns9z93c65lchn5v3fgl9c5vkr1v6p0c1xifn7v7xxi2")))
+        (hash (base32 "0y2rmn86z3cvgv71b6sjjyafnlbanlib1kjpjjqzjbgg86y2890p")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.17)))
@@ -380,7 +367,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The "longterm" kernels — the older releases with long-term upstream support.
 ;; Here are the support timelines:
 ;; <https://www.kernel.org/category/releases.html>
-(define-public linux-libre-5.15-version "5.15.39")
+(define-public linux-libre-5.15-version "5.15.41")
 (define-public linux-libre-5.15-gnu-revision "gnu")
 (define deblob-scripts-5.15
   (linux-libre-deblob-scripts
@@ -390,12 +377,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "0gs92qbpvirwd02rpwwnja7771z2azbiy9ppy9ynpr14lxmzxnnh")))
 (define-public linux-libre-5.15-pristine-source
   (let ((version linux-libre-5.15-version)
-        (hash (base32 "1bfpiyccjggysd04flaana0x69n1lcpckzpw1v6kh3ly9xil31l8")))
+        (hash (base32 "07jrsr54rvhry3g401h58r1773zinq49dbrkb9v1p6q27gyb2z1w")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.15)))
 
-(define-public linux-libre-5.10-version "5.10.115")
+(define-public linux-libre-5.10-version "5.10.117")
 (define-public linux-libre-5.10-gnu-revision "gnu1")
 (define deblob-scripts-5.10
   (linux-libre-deblob-scripts
@@ -405,12 +392,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1xyhz0dyrkg2avz382ly3dzpa5v89x49gfzx80c1drpwsk7jg6gp")))
 (define-public linux-libre-5.10-pristine-source
   (let ((version linux-libre-5.10-version)
-        (hash (base32 "0w9gwizyqjgsj93dqqvlh6bqkmpzjajhj09319nqncc95yrigr7m")))
+        (hash (base32 "1iyw3nmsga2binmrhfnzsf1pvn2bs21a8jw6vm89k26z5h8zfgkh")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.10)))
 
-(define-public linux-libre-5.4-version "5.4.193")
+(define-public linux-libre-5.4-version "5.4.195")
 (define-public linux-libre-5.4-gnu-revision "gnu1")
 (define deblob-scripts-5.4
   (linux-libre-deblob-scripts
@@ -420,12 +407,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "05i286d98fm2pdf9724x1dsmfcm7gsd7yyyvxqlpisyj1kx14hda")))
 (define-public linux-libre-5.4-pristine-source
   (let ((version linux-libre-5.4-version)
-        (hash (base32 "187jfk9hf52n5z9yv56vq1knp3kdcbyk5w5k98ziwcbdjm1x65hd")))
+        (hash (base32 "078380qhds2jwfmrchna6p27wpfb74pvnj4xiyc5k38gysfmnbzj")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.4)))
 
-(define-public linux-libre-4.19-version "4.19.242")
+(define-public linux-libre-4.19-version "4.19.244")
 (define-public linux-libre-4.19-gnu-revision "gnu1")
 (define deblob-scripts-4.19
   (linux-libre-deblob-scripts
@@ -435,12 +422,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1dnjgx1nmawm9gm0yf15nl80nmg7hy7q2vl3jxjbwj6hlrfv5dmx")))
 (define-public linux-libre-4.19-pristine-source
   (let ((version linux-libre-4.19-version)
-        (hash (base32 "18k5fbzclk7g657bs8idwqjk7hakzx6256b1a3506sy29q4zvg2r")))
+        (hash (base32 "1g9562v6ny196rw2n3kj43nrz65qa7imwnmfasvj6x8fm8bdhz79")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.19)))
 
-(define-public linux-libre-4.14-version "4.14.278")
+(define-public linux-libre-4.14-version "4.14.280")
 (define-public linux-libre-4.14-gnu-revision "gnu1")
 (define deblob-scripts-4.14
   (linux-libre-deblob-scripts
@@ -450,12 +437,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1dnjgx1nmawm9gm0yf15nl80nmg7hy7q2vl3jxjbwj6hlrfv5dmx")))
 (define-public linux-libre-4.14-pristine-source
   (let ((version linux-libre-4.14-version)
-        (hash (base32 "1glb6z3nicd2lzhvwcqj54642agk0bbg022wnc3ckld5ngpd9miw")))
+        (hash (base32 "01jr0f7mq919s7xxvv8sc1mg6isc1ggij33l2s0n6jvykm23ghrr")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.14)))
 
-(define-public linux-libre-4.9-version "4.9.313")
+(define-public linux-libre-4.9-version "4.9.315")
 (define-public linux-libre-4.9-gnu-revision "gnu1")
 (define deblob-scripts-4.9
   (linux-libre-deblob-scripts
@@ -465,7 +452,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "14jyn2yrbm6ayp0bszs4f9jy3p1qkrj5p5gf5c42spr67aa2lv2v")))
 (define-public linux-libre-4.9-pristine-source
   (let ((version linux-libre-4.9-version)
-        (hash (base32 "1p3vr1h01ph6x0pxrr6y6k5c4nrhvq650dfngv5mkrgsc5w7ffz0")))
+        (hash (base32 "1171p90s00jxg1clyz8kp81ilmdzygg131mxysr6lpkaisahkjg6")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.9)))
@@ -568,9 +555,10 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
          (delete 'configure)
          (replace 'build
            (lambda _
-             (let ((arch ,(system->linux-architecture
-                          (or (%current-target-system)
-                              (%current-system))))
+             (let ((arch ,(platform-linux-architecture
+                           (lookup-platform-by-target-or-system
+                            (or (%current-target-system)
+                                (%current-system)))))
                    (defconfig ,(system->defconfig
                                 (or (%current-target-system)
                                     (%current-system))))
@@ -806,11 +794,14 @@ for ARCH and optionally VARIANT, or #f if there is no such configuration."
        ("mpfr" ,mpfr)
        ("mpc" ,mpc)
 
-       ,@(match (and configuration-file
-                     (configuration-file
-                      (system->linux-architecture
-                       (or (%current-target-system) (%current-system)))
-                      #:variant (version-major+minor version)))
+       ,@(match (let ((arch (platform-linux-architecture
+                             (lookup-platform-by-target-or-system
+                              (or (%current-target-system)
+                                  (%current-system))))))
+                  (and configuration-file arch
+                       (configuration-file
+                        arch
+                        #:variant (version-major+minor version))))
            (#f                                    ;no config for this platform
             '())
            ((? string? config)
@@ -840,9 +831,10 @@ for ARCH and optionally VARIANT, or #f if there is no such configuration."
                    (setenv "KBUILD_BUILD_HOST" "guix")
 
                    ;; Set ARCH and CROSS_COMPILE.
-                   (let ((arch #$(system->linux-architecture
-                                  (or (%current-target-system)
-                                      (%current-system)))))
+                   (let ((arch #$(platform-linux-architecture
+                                  (lookup-platform-by-target-or-system
+                                   (or (%current-target-system)
+                                       (%current-system))))))
                      (setenv "ARCH" arch)
                      (format #t "`ARCH' set to `~a'~%" (getenv "ARCH"))
 
@@ -1197,7 +1189,7 @@ It has been modified to remove all non-free binary blobs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1s7h9y3adyfhw7cjldlfmid79lrwz3vqlvziw9nwd6x5qdj4w9vp"))))
+        (base32 "09ljx0jl987753r2kjqj5kxms95bijw0xn14kf82ryn38ck5c8cf"))))
     (build-system linux-module-build-system)
     (arguments
      (list #:tests? #f                  ; no tests
@@ -1795,14 +1787,14 @@ deviation, and minimum and maximum values.  It can show a nice histogram too.")
 (define-public psmisc
   (package
     (name "psmisc")
-    (version "23.4")
+    (version "23.5")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "mirror://sourceforge/psmisc/psmisc/psmisc-"
                           version ".tar.xz"))
       (sha256
-       (base32 "0y8n1jd2dn4cvc5mh806d66qnq8xl0xmzczbycjwal10rvmcw33z"))))
+       (base32 "12z5786dnf37n8wvv73wdcqp3nvsqzhwdk3ajna0mag4yz1fqdyw"))))
     (build-system gnu-build-system)
     (arguments
      `(,@(if (%current-target-system)
@@ -2691,7 +2683,7 @@ Both commands are targeted at system administrators.")
 (define-public jitterentropy-rngd
   (package
     (name "jitterentropy-rngd")
-    (version "1.2.6")
+    (version "1.2.7")
     (source
      (origin
        (method git-fetch)
@@ -2700,7 +2692,7 @@ Both commands are targeted at system administrators.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03cbcxkscjcmn6ybkmssq7i39sn5cfsap9fv058pi0k2mr90djwq"))))
+        (base32 "098hx09bsizin9405gh1c4rzbs2fr7qknqlr3glgyjpm3nm7bx28"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no test suite
@@ -3194,35 +3186,77 @@ settings.")
 the command line or a script.")
     (license license:gpl2+)))
 
+(define-public iotop-python
+  ;; The last release is from 2013 and gives a misleading CONFIG_TASK_DELAY_ACCT
+  ;; error on ‘newer’ kernels.
+  (let ((revision "0")
+        (commit "a14256a3ff74eeee59493ac088561f1bafab85a7"))
+    (package
+      (name "iotop-python")
+      (version (git-version "0.6" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://repo.or.cz/iotop.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "00h5p8fk1zi237q8mqds8apqbis9iw0yih1hl0pr63dsnyzmmrpw"))))
+      (build-system python-build-system)
+      (arguments
+       '(#:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-build-with-python3
+             (lambda _
+               (substitute* "setup.py"
+                 (("itervalues") "values")))))
+         ;; There are currently no checks in the package.
+         #:tests? #f))
+      (native-inputs (list python))
+      (home-page "http://guichaz.free.fr/iotop/")
+      (synopsis
+       "Displays the IO activity of running processes")
+      (description
+       "Iotop is a Python program with a top like user interface to show the
+processes currently causing I/O.")
+      (license license:gpl2+))))
+
 (define-public iotop
   (package
     (name "iotop")
-    (version "0.6")
+    (version "1.21")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "http://guichaz.free.fr/iotop/files/iotop-"
-                           version ".tar.gz"))
-       (sha256 (base32
-                "1kp8mqg2pbxq4xzpianypadfxcsyfgwcaqgqia6h9fsq6zyh4z0s"))))
-    (build-system python-build-system)
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Tomas-M/iotop")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03wdnkfl51dapilg6r9vjga1xrl9lxlypfz07k50nscvbq8v8fb7"))))
+    (build-system gnu-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-build-with-python3
-           (lambda _
-             (substitute* "setup.py"
-               (("itervalues") "values"))
-             #t)))
-       ;; There are currently no checks in the package.
-       #:tests? #f))
-    (native-inputs (list python))
-    (home-page "http://guichaz.free.fr/iotop/")
-    (synopsis
-     "Displays the IO activity of running processes")
+     (list #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output))
+           #:tests? #f                  ; no tests
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)))) ; no configure script
+    (native-inputs (list pkg-config))
+    (inputs (list ncurses))
+    (home-page "https://github.com/Tomas-M/iotop")
+    (synopsis "Interactive @command{top}-like input/output activity monitor")
     (description
-     "Iotop is a Python program with a top like user interface to show the
-processes currently causing I/O.")
+     "iotop identifies which processes and threads are most responsible for
+@acronym{I/O, input/output} activity such as disc reads and writes.  It sorts
+them in a live, interactive table overview similar to that of the well-known
+@command{top}.
+
+This information makes it much easier for an administrator to see which tasks
+are blocking others and adjust their priority (using @command{ionice}) or stop
+or kill them altogether.")
     (license license:gpl2+)))
 
 (define-public fuse
@@ -4931,7 +4965,7 @@ capabilities of the Linux kernel.")
 (define-public libite
   (package
     (name "libite")
-    (version "2.5.1")
+    (version "2.5.2")
     (source
      (origin
        (method git-fetch)
@@ -4940,11 +4974,12 @@ capabilities of the Linux kernel.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "14i0q0nxns6g4zh86zdqy97dwljkqdr5l85ammljzccsrijg9m8v"))))
+        (base32 "0i27ppb557kdc1hm7nf0f5r7sxvqma31pr57h79whl6qcp28gy4a"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
+     `(#:configure-flags
+       (list "--disable-static")
+       #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-tests
            (lambda* (#:key inputs #:allow-other-keys)
@@ -5550,7 +5585,11 @@ and copy/paste text in the console and in xterm.")
     (outputs '("out"
                "static"))      ; static versions of the binaries in "out"
     (arguments
-     '(#:phases (modify-phases %standard-phases
+     '(#:configure-flags
+       ;; The ‘Python support’ was never actually installed by previous
+       ;; versions of this package, but did prevent cross-compilation.
+       (list "--disable-python")
+       #:phases (modify-phases %standard-phases
                   (add-after 'unpack 'patch-makefile
                     (lambda* (#:key outputs #:allow-other-keys)
                       (substitute* "Makefile"
@@ -5577,6 +5616,7 @@ and copy/paste text in the console and in xterm.")
        #:test-target "test"
        #:parallel-tests? #f)) ; tests fail when run in parallel
     (inputs `(("e2fsprogs" ,e2fsprogs)  ; for btrfs-convert
+              ("eudev" ,eudev)
               ("lzo" ,lzo)
               ("util-linux:lib" ,util-linux "lib")       ;for libblkid and libuuid
               ("util-linux:static" ,util-linux "static") ;ditto
@@ -5595,7 +5635,6 @@ and copy/paste text in the console and in xterm.")
                      ("acl" ,acl)
                      ("which" ,which)
                      ("dmsetup" ,lvm2)
-                     ("udevadm" ,eudev)
                      ;; The tests need 'grep' with perl regexp support.
                      ("grep" ,grep)))
     (home-page "https://btrfs.wiki.kernel.org/index.php/Main_Page")
@@ -6408,7 +6447,7 @@ cpufreq sub-system is enabled or not.")
 (define-public haveged
   (package
     (name "haveged")
-    (version "1.9.17")
+    (version "1.9.18")
     (source
      (origin
        (method git-fetch)
@@ -6417,7 +6456,7 @@ cpufreq sub-system is enabled or not.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "119iy8qrvdjkfwnzn1nfjzh2bbihb1vl44qhd6yzzcacjm6pwndr"))))
+        (base32 "1y1p3qhjzhpgd20xz5ffms3w1bdvpk883y38ydwsmp9mc0kzy8kz"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -7761,14 +7800,14 @@ available in the kernel Linux.")
 (define-public cpuid
   (package
     (name "cpuid")
-    (version "20211210")
+    (version "20220224")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://www.etallen.com/cpuid/cpuid-"
                                   version ".src.tar.gz"))
               (sha256
                (base32
-                "0i2z1r0zwsmvnx2azwsz3x6van6dj9480lh26s1ny6ny01bqjag0"))))
+                "178zv8jclzg3hqm3g5bpjnsp898rbbxfq6ydavw49vla24mdw6aa"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
@@ -8197,7 +8236,7 @@ introduced in Linux 2.6.31.")
 (define-public libnfnetlink
   (package
     (name "libnfnetlink")
-    (version "1.0.1")
+    (version "1.0.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -8205,7 +8244,7 @@ introduced in Linux 2.6.31.")
                     "libnfnetlink-" version ".tar.bz2"))
               (sha256
                (base32
-                "06mm2x4b01k3m7wnrxblk9j0mybyr4pfz28ml7944xhjx6fy2w7j"))))
+                "0xn3rcrzxr6g82kfxzs9bqn2zvl2kf2yda30drwb9vr6sk1wfr5h"))))
     (build-system gnu-build-system)
     (home-page "https://www.netfilter.org/projects/libnfnetlink/")
     (synopsis "Low-level netfilter netlink communication library")
@@ -8246,7 +8285,7 @@ IP addresses and routes, and configure IPsec.")
 (define-public libinih
   (package
     (name "libinih")
-    (version "53")
+    (version "55")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8255,7 +8294,7 @@ IP addresses and routes, and configure IPsec.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0dqf5j2sw4hq68rqvxbrsf44ygfzx9ypiyzipk4cvp9aimbvsbc6"))))
+                "0g6dkcphlzgxvh9zyf6rj82gigccca6x5acjxn01gz6rykfg0lnn"))))
     (build-system meson-build-system)
     ;; Install static libraries for use by the initrd's xfsprogs/static.
     (outputs (list "out" "static"))
@@ -8414,7 +8453,7 @@ the superuser to make device nodes.")
 (define-public fakeroot
   (package
     (name "fakeroot")
-    (version "1.26")
+    (version "1.28")
     (source
      (origin
        ;; There are no tags in the repository, so take this snapshot.
@@ -8423,8 +8462,7 @@ the superuser to make device nodes.")
                            "fakeroot/fakeroot_" version ".orig.tar.gz"))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1sg8inv1zzp4h9ncbbmxip3svd11sd86j22cvxrjwnf5zn7mf2j8"))
+        (base32 "1hlh77b6m2cfm42lcav372mbjni5akbgs25yg4wgi1gndzihbm2n"))
        (modules '((guix build utils)
                   (ice-9 ftw)))
        (snippet

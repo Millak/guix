@@ -72,6 +72,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils)
@@ -80,32 +81,31 @@
 (define-public hss
   (package
     (name "hss")
-    (version "1.8")
+    (version "1.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/six-ddc/hss")
-                    (commit (string-append "v" version))))
+                    (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1rpysj65j9ls30bf2c5k5hykzzjfknrihs58imp178bx1wqzw4jl"))))
+                "12578xhvkg70ma411yh8nbpcpnys420bnm9g0dzypb0vn3jxpz8q"))))
     (inputs
      (list readline))
     (arguments
-     `(#:make-flags
-       (list ,(string-append "CC=" (cc-for-target))
-             (string-append "INSTALL_BIN=" (assoc-ref %outputs "out") "/bin"))
-       #:tests? #f                      ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-file-names
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (substitute* "Makefile"
-               (("/usr/local/opt/readline")
-                (assoc-ref inputs "readline")))
-             #t))
-         (delete 'configure))))         ; no configure script
+     (list #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "INSTALL_BIN=" #$output "/bin"))
+           #:tests? #f                  ; no tests
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-file-names
+                 (lambda _
+                   (substitute* "Makefile"
+                     (("/usr/local/opt/readline")
+                      #$(this-package-input "readline")))))
+               (delete 'configure))))         ; no configure script
     (build-system gnu-build-system)
     (home-page "https://github.com/six-ddc/hss/")
     (synopsis "Interactive SSH client for multiple servers")

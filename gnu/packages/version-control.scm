@@ -7,11 +7,11 @@
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2016, 2019, 2021 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2015, 2018, 2020, 2021 Kyle Meyer <kyle@kyleam.com>
+;;; Copyright © 2015, 2018, 2020, 2021, 2022 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2015, 2017, 2018, 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2017, 2018 Nikita <nikita@n0.is>
-;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Vasile Dumitrascu <va511e@yahoo.com>
 ;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017, 2020 EuAndreh <eu@euandre.org>
@@ -180,7 +180,7 @@ as well as the classic centralized workflow.")
 (define-public breezy
   (package
     (name "breezy")
-    (version "3.2.1")
+    (version "3.2.2")
     (source
      (origin
        (method url-fetch)
@@ -188,14 +188,14 @@ as well as the classic centralized workflow.")
                            (version-major+minor version) "/" version
                            "/+download/breezy-" version ".tar.gz"))
        (sha256
-        (base32
-         "0p6q545xpmxa6fgvkjglfpqpybg33817vhw0a82az8i83bmnicp0"))))
+        (base32 "1md4b6ajawf5h50fqizmjj0g833ihc674dh7fn0mvl4d412nwyhq"))))
     (build-system python-build-system)
     ;; TODO: Maybe regenerate C files with Cython?
     (inputs
      `(("gettext" ,gettext-minimal)
        ("python-configobj" ,python-configobj)
        ("python-dulwich" ,python-dulwich)
+       ("python-fastbencode" ,python-fastbencode)
        ("python-fastimport" ,python-fastimport)
        ("python-paramiko" ,python-paramiko)
        ("python-patiencediff" ,python-patiencediff)
@@ -222,14 +222,14 @@ Python 3.3 and later, rather than on Python 2.")
 (define-public git
   (package
    (name "git")
-   (version "2.36.0")
+   (version "2.36.1")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://kernel.org/software/scm/git/git-"
                                 version ".tar.xz"))
             (sha256
              (base32
-              "1ly13j37h1y8bgcj3h0cl43vcpwk9j4gsasssk8gar44cp0vypmg"))))
+              "0w43a35mhc2qf2gjkxjlnkf2lq8g0snf34iy5gqx2678yq7llpa0"))))
    (build-system gnu-build-system)
    (native-inputs
     `(("native-perl" ,perl)
@@ -249,7 +249,7 @@ Python 3.3 and later, rather than on Python 2.")
                 version ".tar.xz"))
           (sha256
            (base32
-            "0p6vc6nyaibx2lxirjj2nm5spk5q6svz8l3w0pqnaa3i7l7c6qy0"))))
+            "0vsfjs6xg228yhqcpaiwkpncaqcghnm0pwdxmgibz0rj6d8ydrmi"))))
       ;; For subtree documentation.
       ("asciidoc" ,asciidoc)
       ("docbook-xsl" ,docbook-xsl)
@@ -2577,6 +2577,28 @@ collections efficiently.  Mirrors decide to clone and update repositories
 based on a manifest file published by servers.")
     (license license:gpl3+)))
 
+(define-public patatt
+  (package
+    (name "patatt")
+    (version "0.4.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "patatt" version))
+       (sha256
+        (base32 "0fpbkmdlnz9s1lakw11jlrzpz4mb6f4dksdiir9g1ppq0g34sy58"))))
+    (build-system python-build-system)
+    (arguments '(#:tests? #f))          ; No tests.
+    (propagated-inputs
+     (list python-pynacl))
+    (home-page "https://git.kernel.org/pub/scm/utils/patatt/patatt.git")
+    (synopsis "Tool for cryptographic patch attestation")
+    (description "This utility provides end-to-end cryptographic attestation
+of patches sent via mail.  It does so by adapting the DKIM email signature
+standard to include cryptographic signatures via the X-Developer-Signature
+email header.")
+    (license license:expat-0)))
+
 (define-public b4
   (package
     (name "b4")
@@ -2586,15 +2608,7 @@ based on a manifest file published by servers.")
        (method url-fetch)
        (uri (pypi-uri "b4" version))
        (sha256
-        (base32 "115ysciq15sxc8fd9hf7p0f4wnd5xapcfkmq8g33y1c8nbdxclbx"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; Fixes issue with dependency requirements being too strict. See upstream commit:
-           ;; https://git.kernel.org/pub/scm/utils/b4/b4.git/commit/?id=31348a14afdb1d39e7faf9576eaddea1ced76e19
-           (substitute* "setup.py"
-             (("~=") ">="))
-           #t))))
+        (base32 "115ysciq15sxc8fd9hf7p0f4wnd5xapcfkmq8g33y1c8nbdxclbx"))))
     (build-system python-build-system)
     (arguments
      (list #:tests? #f                  ;no tests
@@ -2606,6 +2620,8 @@ based on a manifest file published by servers.")
                (delete 'sanity-check))))
     (inputs
      (list python-dkimpy python-dnspython python-requests))
+    (propagated-inputs
+     (list patatt))
     (home-page "https://git.kernel.org/pub/scm/utils/b4/b4.git")
     (synopsis "Tool for working with patches in public-inbox archives")
     (description

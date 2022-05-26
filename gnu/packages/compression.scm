@@ -52,6 +52,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages compression)
+  #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix utils)
   #:use-module (guix packages)
@@ -980,31 +981,30 @@ byte-for-byte identical output.")
 (define-public pigz
   (package
     (name "pigz")
-    (version "2.6")
+    (version "2.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://zlib.net/pigz/"
                                   name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0z9avc4mifwcpj3qdsf9m2rjw9jx03b2r9pj0c4xgla9fh6ppv9f"))))
+                "01y7n7lafp6maqnp4jrmasawnv67najh1bd7gjrmv3d08h1ydjdl"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (replace 'install
-                  (lambda* (#:key outputs #:allow-other-keys)
-                    (let* ((out (assoc-ref outputs "out"))
-                           (bin (string-append out "/bin"))
-                           (man (string-append out "/share/man/man1")))
-                      (install-file "pigz" bin)
-                      (symlink "pigz" (string-append bin  "/unpigz"))
-                      (install-file "pigz.1" man)
-                      #t))))
-       #:make-flags
-       (list ,(string-append "CC=" (cc-for-target)))
-       #:test-target "tests"))
+     (list #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target)))
+           #:test-target "test"
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (replace 'install
+                 (lambda _
+                   (let* ((bin (string-append #$output "/bin"))
+                          (man (string-append #$output "/share/man/man1")))
+                     (install-file "pigz" bin)
+                     (symlink "pigz" (string-append bin  "/unpigz"))
+                     (install-file "pigz.1" man)))))))
+    (native-inputs (list which))
     (inputs (list zlib))
     (home-page "https://zlib.net/pigz/")
     (synopsis "Parallel implementation of gzip")
@@ -1088,7 +1088,7 @@ tarballs.")
 (define-public libjcat
   (package
     (name "libjcat")
-    (version "0.1.9")
+    (version "0.1.11")
     (source
      (origin
        (method git-fetch)
@@ -1098,13 +1098,12 @@ tarballs.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02cgznk6qdylqpcyks6qykmvhpz1pplvnxp72bjzji1y6yj3zpkj"))))
+        (base32 "08zywwhm9q8m8v17w2mp23w3w93p40ir1w4x18zrlbhs10xnhiys"))))
     (build-system meson-build-system)
     (native-inputs
      (list gobject-introspection help2man pkg-config))
     (inputs
-     (list git
-           glib
+     (list glib
            gnupg
            gnutls
            gpgme
@@ -2648,7 +2647,7 @@ to their original, binary CD format.")
 (define-public libdeflate
   (package
     (name "libdeflate")
-    (version "1.8")
+    (version "1.10")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2657,7 +2656,7 @@ to their original, binary CD format.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0nw1zhr2s6ffcc3s0n5wsshvjb6pmybwapagli135zzn2fx1pdiz"))))
+                "0v5qh1cz787xj86l15x6brkkaw0jbxhqj5f85275q0l945qazvwm"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
@@ -2665,6 +2664,10 @@ to their original, binary CD format.")
              (string-append "PREFIX=" (assoc-ref %outputs "out")))
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'skip-static-library-installation
+           (lambda _
+             (substitute* "Makefile"
+               (("install .*\\$\\(STATIC_LIB\\).*") ""))))
          (delete 'configure))))
     (inputs
      (list zlib))

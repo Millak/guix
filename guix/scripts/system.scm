@@ -66,7 +66,7 @@
                  (device-module-aliases matching-modules)
   #:use-module (gnu system linux-initrd)
   #:use-module (gnu image)
-  #:use-module (gnu platform)
+  #:use-module (guix platform)
   #:use-module (gnu system)
   #:use-module (gnu bootloader)
   #:use-module (gnu system file-systems)

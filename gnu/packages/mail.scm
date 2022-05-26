@@ -265,14 +265,14 @@ example, modify the message headers or body, or encrypt or sign the message.")
 (define-public mailutils
   (package
     (name "mailutils")
-    (version "3.14")
+    (version "3.15")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnu/mailutils/mailutils-"
                                  version ".tar.xz"))
              (sha256
               (base32
-               "0fbi2b144mgblq9qhdyhj9855mbglzr8fr23rnps8icbxa7v7if0"))
+               "1nrd9wsidxami3wa86l9z8hnnwv6rhbxdkvqg7dcgz2jqf3c5l5p"))
              (patches
               (search-patches "mailutils-variable-lookup.patch"))))
     (build-system gnu-build-system)
@@ -337,6 +337,7 @@ example, modify the message headers or body, or encrypt or sign the message.")
                       (string-append "\"" (which "sh") "\""))))))
            #:configure-flags
            #~(list "--sysconfdir=/etc"
+                   "--disable-static"
 
                    ;; Add "/X.Y" to the installation directory.
                    (string-append "--with-guile-site-dir="
@@ -2589,7 +2590,7 @@ Authentication-Results header seen in the wild.")
 (define-public perl-mail-dkim
   (package
     (name "perl-mail-dkim")
-    (version "1.20200907")
+    (version "1.20220520")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2598,7 +2599,7 @@ Authentication-Results header seen in the wild.")
                      ".tar.gz"))
               (sha256
                (base32
-                "1x8v4pa0447c1xqri1jn96i8vlyjpl6jmz63nb1vifbp16yi3zxb"))))
+                "0iiny8s1a60pksxzlpkk9b6x6z907m4pdxjbsaih1bdz9g4bii4a"))))
     (build-system perl-build-system)
     (propagated-inputs
      (list perl-crypt-openssl-rsa perl-mail-authenticationresults
@@ -4023,7 +4024,7 @@ It is a replacement for the @command{urlview} program.")
 (define-public ytnef
   (package
     (name "ytnef")
-    (version "1.9.3")
+    (version "2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4032,10 +4033,11 @@ It is a replacement for the @command{urlview} program.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "07h48s5qf08503pp9kafqbwipdqghiif22ghki7z8j67gyp04l6l"))
-              (patches (search-patches "ytnef-CVE-2021-3403.patch"
-                                       "ytnef-CVE-2021-3404.patch"))))
+                "0pk7jp8yc91nahcb7659khwdid0ibfi7n0135kwfnasak8gr75rz"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           '(list "--disable-static")))
     (native-inputs
      (list autoconf automake libtool))
     (home-page "https://github.com/Yeraze/ytnef/")

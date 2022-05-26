@@ -1415,16 +1415,18 @@ raw USB commands.")
 (define-public west
   (package
     (name "west")
-    (version "0.6.3")
+    (version "0.13.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "west" version))
        (sha256
         (base32
-         "0ql6ij1hrj2ir5wkxm96zgig5qwvfwa75w77wh2y13w6b9cqcr4b"))))
+         "1hw9qas8ry8prn24iqka8kw2nv7ndxr95mvwr5lww53w2sr7p807"))))
     (propagated-inputs
-     (list python-colorama python-configobj python-pykwalify
+     (list python-colorama
+           python-packaging
+           python-pykwalify
            python-pyyaml))
     (build-system python-build-system)
     (home-page "https://github.com/zephyrproject-rtos/west")

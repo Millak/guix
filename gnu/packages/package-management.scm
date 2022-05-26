@@ -4,7 +4,7 @@
 ;;; Copyright © 2017 Muriithi Frederick Muriuki <fredmanglis@gmail.com>
 ;;; Copyright © 2017, 2018 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2017 Roel Janssen <roel@gnu.org>
-;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018 Sou Bunnbu <iyzsong@member.fsf.org>
@@ -159,8 +159,8 @@
   ;; Note: the 'update-guix-package.scm' script expects this definition to
   ;; start precisely like this.
   (let ((version "1.3.0")
-        (commit "c1719a0adf3fa7611b56ca4d75b3ac8cf5c9c8ac")
-        (revision 25))
+        (commit "598f7289db9955584457ffc11c8504f3938a1618")
+        (revision 27))
     (package
       (name "guix")
 
@@ -176,7 +176,7 @@
                       (commit commit)))
                 (sha256
                  (base32
-                  "0yaphn5shvmxffi4qw66bpvl3q8gn5n168v61x9c2m3vksjygmrn"))
+                  "0i4rdmh74dws57i8cjsrcdxrb3r8lph3mnvwafdqlfripxvn7yry"))
                 (file-name (string-append "guix-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -488,6 +488,30 @@ upgrades and roll-backs, per-user profiles, and much more.  It is based on
 the Nix package manager.")
       (license license:gpl3+)
       (properties '((ftp-server . "alpha.gnu.org"))))))
+
+(define-public guix-for-cuirass
+  ;; Known-good revision before commit
+  ;; bd86bbd300474204878e927f6cd3f0defa1662a5, which introduced
+  ;; 'primitive-fork' in 'open-inferior'.
+  (let ((version "1.3.0")
+        (commit "a27e47f9d1e22dc32bb250cfeef88cfacb930e23")
+        (revision 23))
+    (package
+      (inherit guix)
+      (version (string-append version "-"
+                              (number->string revision)
+                              "." (string-take commit 7)))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://git.savannah.gnu.org/git/guix.git")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "12jmvagbw05hmmlrb82i0qazhlv7mcfnl4dmknwx3a9hd760g9y1"))
+                (file-name (string-append "guix-" version "-checkout"))))
+      (properties `((hidden? . #t)
+                    ,@(package-properties guix))))))
 
 (define-public guix-daemon
   ;; This package is for internal consumption: it allows us to quickly build
@@ -1318,8 +1342,8 @@ environments.")
     (license (list license:gpl3+ license:agpl3+ license:silofl1.1))))
 
 (define-public guix-build-coordinator
-  (let ((commit "fff7454f8f136e2d3b0650d99d9f6b0055fa2e1c")
-        (revision "51"))
+  (let ((commit "3de63f1f66d5f0eb157ee60bc864404f386ee2b0")
+        (revision "53"))
     (package
       (name "guix-build-coordinator")
       (version (git-version "0" revision commit))
@@ -1330,7 +1354,7 @@ environments.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1pc06wppgnj7zv6nb76agxhy23r1778ffsv82whckw6xdd08llqi"))
+                  "1ld761c48ad925p3kisnjvad50p6hyk77z0yjcr29681n73xzzz4"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1626,8 +1650,8 @@ in an isolated environment, in separate namespaces.")
     (license license:gpl3+)))
 
 (define-public nar-herder
-  (let ((commit "ea997c68515540e34bda267730b9c7c6f21ff6b4")
-        (revision "6"))
+  (let ((commit "a24fbd108f75c8f27d2f68f2d1a051e2f3f3e191")
+        (revision "7"))
     (package
       (name "nar-herder")
       (version (git-version "0" revision commit))
@@ -1638,7 +1662,7 @@ in an isolated environment, in separate namespaces.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "11clylk3aizwy0b5sx4xnwj62bzv20ysb5cjcjsx184f1g8lgbw6"))
+                  "1jm6ks2sjcwih7j4wnp252qd73n8pydg7sd000ismpvg5p21l7fg"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1796,7 +1820,7 @@ for packaging and deployment of cross-compiled Windows applications.")
 (define-public libostree
   (package
     (name "libostree")
-    (version "2022.1")
+    (version "2022.2")
     (source
      (origin
        (method url-fetch)
@@ -1804,7 +1828,7 @@ for packaging and deployment of cross-compiled Windows applications.")
              "https://github.com/ostreedev/ostree/releases/download/v"
              (version-major+minor version) "/libostree-" version ".tar.xz"))
        (sha256
-        (base32 "1mfakwm0sjvb1vvl3jhc451yyf723k7c4vv1yqs8law4arw0x823"))))
+        (base32 "0sv70dqmf2w2lshp80sfh9m6qv5mrg72zqqbx63bd32dg2szbqkn"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
@@ -1813,8 +1837,7 @@ for packaging and deployment of cross-compiled Windows applications.")
            (lambda _
              ;; Don't try to use the non-existing '/var/tmp' as test
              ;; directory.
-             (setenv "TEST_TMPDIR" (getenv "TMPDIR"))
-             #t)))
+             (setenv "TEST_TMPDIR" (getenv "TMPDIR")))))
        ;; XXX: fails with:
        ;;     tap-driver.sh: missing test plan
        ;;     tap-driver.sh: internal error getting exit status

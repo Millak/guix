@@ -2057,7 +2057,6 @@ void DerivationGoal::runChild()
                 Path source = i->second;
                 Path target = chrootRootDir + i->first;
                 if (source == "/proc") continue; // backwards compatibility
-                debug(format("bind mounting `%1%' to `%2%'") % source % target);
                 if (stat(source.c_str(), &st) == -1)
                     throw SysError(format("getting attributes of path `%1%'") % source);
                 if (S_ISDIR(st.st_mode))

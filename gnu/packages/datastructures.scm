@@ -155,7 +155,7 @@ synchronisation library.  It provides read-side access that scales linearly
 with the number of cores.  liburcu-cds provides efficient data structures
 based on RCU and lock-free algorithms.  These structures include hash tables,
 queues, stacks, and doubly-linked lists.")
-    (license license:lgpl2.1+)))
+    (license (list license:lgpl2.1 license:expat))))
 
 (define-public uthash
   (package

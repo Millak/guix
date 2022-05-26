@@ -776,37 +776,35 @@ river flooding.")
 (define-public python-meshio
   (package
     (name "python-meshio")
-    (version "4.4.6")
+    (version "5.3.4")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "meshio" version))
-        (sha256
-          (base32
-           "0kv832s2vyff30zz8yqypw5jifwdanvh5x56d2bzkvy94h4jlddy"))
-        (snippet
-         '(begin
-            (let ((file (open-file "setup.py" "a")))
-              (display "from setuptools import setup\nsetup()" file)
-              (close-port file))
-            #t))))
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "meshio" version))
+       (sha256
+        (base32
+         "1w39qcg0rw5kb04j7sa45fnqd6k20fsdgrf62cmw2ygjgwnnjh72"))
+       (snippet
+        '(let ((file (open-file "setup.py" "a")))
+           (display "from setuptools import setup\nsetup()" file)
+           (close-port file)))))
     (build-system python-build-system)
     (inputs
-     `(("h5py" ,python-h5py)
-       ("netcdf4" ,python-netcdf4)))
+     (list python-h5py
+           python-netcdf4))
     (native-inputs
-     `(("pytest" ,python-pytest)))
+     (list python-pytest))
     (propagated-inputs
-     `(("importlib-metadata" ,python-importlib-metadata)
-       ("numpy" ,python-numpy)))
+     (list python-importlib-metadata
+           python-numpy
+           python-rich))
     (arguments
-     `(#:phases
+     '(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (invoke "python" "-m" "pytest" "-v" "tests")
-             #t)))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "python" "-m" "pytest" "-v" "tests")))))))
     (home-page "https://github.com/nschloe/meshio")
     (synopsis "I/O for mesh files")
     (description "There are various file formats available for

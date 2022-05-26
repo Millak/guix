@@ -22,17 +22,20 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages backup)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages guile)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -200,62 +203,60 @@ contains the archive keys used for that.")
          (base32 "0hfx6k86kby4xf0xqskpllq00g159j4khh66hfi6dhcdb91dgyd7"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-after 'unpack 'patch-source
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out    (assoc-ref outputs "out"))
-                   (tzdata (assoc-ref inputs "tzdata"))
-                   (debian (assoc-ref inputs "debian-keyring"))
-                   (ubuntu (assoc-ref inputs "ubuntu-keyring")))
-               (substitute* "Makefile"
-                 (("/usr") "")
-                 (("-o root -g root") "")
-                 (("chown root.*") "\n"))
-               (substitute* '("scripts/etch"
-                              "scripts/potato"
-                              "scripts/sarge"
-                              "scripts/sid"
-                              "scripts/woody"
-                              "scripts/woody.buildd")
-                 (("/usr") debian))
-               (substitute* "scripts/gutsy"
-                 (("/usr") ubuntu))
-               (substitute* "debootstrap"
-                 (("=/usr") (string-append "=" out)))
-               ;; Ensure PATH works both in guix and within the debian chroot
-               ;; workaround for: https://bugs.debian.org/929889
-               (substitute* "functions"
-                 (("PATH=/sbin:/usr/sbin:/bin:/usr/bin")
-                  "PATH=$PATH:/sbin:/usr/sbin:/bin:/usr/bin"))
-               (substitute* (find-files "scripts" ".")
-                 (("/usr/share/zoneinfo") (string-append tzdata "/share/zoneinfo")))
-               #t)))
-         (add-after 'install 'install-man-file
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (delete 'configure)
+           (add-after 'unpack 'patch-source
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (let ((debian #$(this-package-input "debian-archive-keyring"))
+                     (ubuntu #$(this-package-input "ubuntu-keyring")))
+                 (substitute* "Makefile"
+                   (("/usr") "")
+                   (("-o root -g root") "")
+                   (("chown root.*") "\n"))
+                 (substitute* '("scripts/etch"
+                                "scripts/potato"
+                                "scripts/sarge"
+                                "scripts/sid"
+                                "scripts/woody"
+                                "scripts/woody.buildd")
+                   (("/usr") debian))
+                 (substitute* "scripts/gutsy"
+                   (("/usr") ubuntu))
+                 (substitute* "debootstrap"
+                   (("=/usr") (string-append "=" #$output))
+                   (("/usr/bin/dpkg") (search-input-file inputs "/bin/dpkg")))
+                 ;; Ensure PATH works both in guix and within the debian chroot
+                 ;; workaround for: https://bugs.debian.org/929889
+                 (substitute* "functions"
+                   (("PATH=/sbin:/usr/sbin:/bin:/usr/bin")
+                    "PATH=$PATH:/sbin:/usr/sbin:/bin:/usr/bin"))
+                 (substitute* (find-files "scripts")
+                   (("/usr/share/zoneinfo")
+                    (search-input-directory inputs "/share/zoneinfo"))))))
+           (add-after 'install 'install-man-file
+             (lambda* (#:key outputs #:allow-other-keys)
                (install-file "debootstrap.8"
-                             (string-append out "/share/man/man8"))
-               #t)))
-         (add-after 'install 'wrap-executable
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((debootstrap (string-append (assoc-ref outputs "out")
-                                               "/sbin/debootstrap"))
-                   (path        (getenv "PATH")))
-               (wrap-program debootstrap
-                             `("PATH" ":" prefix (,path)))
-               #t))))
-       #:make-flags (list (string-append "DESTDIR=" (assoc-ref %outputs "out")))
-       #:tests? #f)) ; no tests
+                             (string-append #$output "/share/man/man8"))))
+           (add-after 'install 'wrap-executable
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((debootstrap (string-append #$output "/sbin/debootstrap"))
+                     (path        (getenv "PATH")))
+                 (wrap-program debootstrap
+                               `("PATH" ":" prefix (,path)))))))
+         #:make-flags #~(list (string-append "DESTDIR=" #$output))
+         #:tests? #f))  ; no tests
     (inputs
-     `(("debian-keyring" ,debian-archive-keyring)
-       ("ubuntu-keyring" ,ubuntu-keyring)
-       ("tzdata" ,tzdata)
+     (list debian-archive-keyring
+           ubuntu-keyring
+           bash-minimal
+           dpkg
+           tzdata
 
-       ;; Called at run-time from various places, needs to be in PATH.
-       ("gnupg" ,gnupg)
-       ("wget" ,wget)))
+           ;; Called at run-time from various places, needs to be in PATH.
+           gnupg
+           wget))
     (native-inputs
      (list perl))
     (home-page "https://tracker.debian.org/pkg/debootstrap")
@@ -335,7 +336,7 @@ other apt sources typically provided by open source developers.")
 (define-public dpkg
   (package
     (name "dpkg")
-    (version "1.21.0")
+    (version "1.21.8")
     (source
       (origin
         (method git-fetch)
@@ -344,14 +345,14 @@ other apt sources typically provided by open source developers.")
                (commit version)))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0g33cyd0qbyfdrphcw8m8ikj2hxqpjbyxbhvnp751515c8hgc4rx"))))
+         (base32 "1whb78pywdlm4v1ablgvvplqjn15b6qrwqkj0pihw5j77aakyz2s"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (add-before 'bootstrap 'patch-version
            (lambda _
-             (patch-shebang "get-version")
+             (patch-shebang "build-aux/get-version")
              (with-output-to-file ".dist-version"
                (lambda () (display ,version)))))
          (add-after 'unpack 'set-perl-libdir
@@ -361,16 +362,51 @@ other apt sources typically provided by open source developers.")
                (setenv "PERL_LIBDIR"
                        (string-append out
                                       "/lib/perl5/site_perl/"
-                                      ,(package-version perl)))))))))
+                                      ,(package-version perl))))))
+         (add-after 'install 'wrap-scripts
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (with-directory-excursion (string-append out "/bin")
+                 (for-each
+                   (lambda (file)
+                     (wrap-script file
+                       ;; Make sure all perl scripts in "bin" find the
+                       ;; required Perl modules at runtime.
+                       `("PERL5LIB" ":" prefix
+                         (,(string-append out
+                                          "/lib/perl5/site_perl")
+                           ,(getenv "PERL5LIB")))
+                       ;; DPKG perl modules always expect dpkg to be installed.
+                       ;; Work around this by adding dpkg to the path of the scripts.
+                       `("PATH" ":" prefix (,(string-append out "/bin")))))
+                   (list "dpkg-architecture"
+                         "dpkg-buildflags"
+                         "dpkg-buildpackage"
+                         "dpkg-checkbuilddeps"
+                         "dpkg-distaddfile"
+                         "dpkg-genbuildinfo"
+                         "dpkg-genchanges"
+                         "dpkg-gencontrol"
+                         "dpkg-gensymbols"
+                         "dpkg-mergechangelogs"
+                         "dpkg-name"
+                         "dpkg-parsechangelog"
+                         "dpkg-scanpackages"
+                         "dpkg-scansources"
+                         "dpkg-shlibdeps"
+                         "dpkg-source"
+                         "dpkg-vendor")))))))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("gettext" ,gettext-minimal)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)
-       ("perl-io-string" ,perl-io-string)))
+     (list autoconf
+           automake
+           gettext-minimal
+           gnupg                        ; to run t/Dpkg_OpenPGP.t
+           libtool
+           pkg-config
+           perl-io-string))
     (inputs
      (list bzip2
+           guile-3.0                    ; for wrap-script
            libmd
            ncurses
            perl

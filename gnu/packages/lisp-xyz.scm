@@ -20,7 +20,7 @@
 ;;; Copyright © 2020 Dimakis Dimakakos <me@bendersteed.tech>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020, 2021, 2022 Adam Kandur <rndd@tuta.io>
-;;; Copyright © 2020, 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2020, 2021, 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021, 2022 Aurora <rind38@disroot.org>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2021, 2022 André A. Gomes <andremegafone@gmail.com>
@@ -34,6 +34,7 @@
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2022 Thomas Albers Raviola <thomas@thomaslabs.org>
+;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -57,6 +58,7 @@
 
 (define-module (gnu packages lisp-xyz)
   #:use-module (gnu packages)
+  #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
@@ -3399,7 +3401,7 @@ is a library for creating graphical user interfaces.")
 (define-public sbcl-cl-webkit
   (package
     (name "sbcl-cl-webkit")
-    (version "3.5.0")
+    (version "3.5.1")
     (source
      (origin
        (method git-fetch)
@@ -3409,7 +3411,7 @@ is a library for creating graphical user interfaces.")
        (file-name (git-file-name "cl-webkit" version))
        (sha256
         (base32
-         "1a16dka15lqzpli0f0qd3afmi14vgdxnfkn9z9d1r4cw9p11s71l"))))
+         "1zfqwr6vmdd9a2nx3j3ihf8y9sah354wi2rgpq7dy4dkc6wxxd48"))))
     (build-system asdf-build-system/sbcl)
     (inputs
      `(("cffi" ,sbcl-cffi)
@@ -4240,44 +4242,44 @@ sockets, SSL, continuable uploads, file uploads, cookies, and more.")
   (sbcl-package->ecl-package sbcl-drakma))
 
 (define-public sbcl-hunchentoot
-  (package
-    (name "sbcl-hunchentoot")
-    (version "1.3.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/edicl/hunchentoot")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name "hunchentoot" version))
-       (sha256
-        (base32 "1z0m45lp6rv59g69l44gj3q3d2bmjlhqzpii0vgkniam21dcimy9"))))
-    (build-system asdf-build-system/sbcl)
-    (native-inputs
-     (list sbcl-cl-who sbcl-drakma))
-    (inputs
-     (list sbcl-chunga
-           sbcl-cl-base64
-           sbcl-cl-fad
-           sbcl-cl-ppcre
-           sbcl-flexi-streams
-           sbcl-cl+ssl
-           sbcl-md5
-           sbcl-rfc2388
-           sbcl-trivial-backtrace
-           sbcl-usocket))
-    (arguments
-     `(;; FIXME: Tests fail because they fail to open the file
-       ;; "/proc/sys/kernel/osrelease"
-       #:tests? #f))
-    (home-page "https://edicl.github.io/hunchentoot/")
-    (synopsis "Web server written in Common Lisp")
-    (description
-     "Hunchentoot is a web server written in Common Lisp and at the same
+  ;; NOTE: (Sharlatan-20220520T213309+0100): The latest commit fixed tests,
+  ;; switch to the version tag when release is ready.
+  (let ((commit "76862391040c20255c7275e815c2175e46bfd080")
+        (revision "1"))
+    (package
+      (name "sbcl-hunchentoot")
+      (version (git-version "1.3.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/edicl/hunchentoot")
+               (commit commit)))
+         (file-name (git-file-name "cl-hunchentoot" version))
+         (sha256
+          (base32 "1h7ggmmzvgwr4p6j3ai0dqrw30q5309l13w4c03gqrapvwrb65l0"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-cl-who sbcl-drakma))
+      (inputs
+       (list sbcl-chunga
+             sbcl-cl-base64
+             sbcl-cl-fad
+             sbcl-cl-ppcre
+             sbcl-flexi-streams
+             sbcl-cl+ssl
+             sbcl-md5
+             sbcl-rfc2388
+             sbcl-trivial-backtrace
+             sbcl-usocket))
+      (home-page "https://edicl.github.io/hunchentoot/")
+      (synopsis "Web server written in Common Lisp")
+      (description
+       "Hunchentoot is a web server written in Common Lisp and at the same
 time a toolkit for building dynamic websites.  As a stand-alone web server,
 Hunchentoot is capable of HTTP/1.1 chunking (both directions), persistent
 connections (keep-alive), and SSL.")
-    (license license:bsd-2)))
+      (license license:bsd-2))))
 
 (define-public cl-hunchentoot
   (sbcl-package->cl-source-package sbcl-hunchentoot))
@@ -5493,7 +5495,7 @@ high-level way.  This library provides such operators.")
          (uri (git-reference
                (url "https://github.com/snmsts/burgled-batteries3")
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-burgled-batteries3" version))
          (sha256
           (base32
            "1nzn7jawrfajyzwfnzrg2cmn9xxadcqh4szbpg0jggkhdkdzz4wa"))
@@ -5517,21 +5519,21 @@ high-level way.  This library provides such operators.")
                  (setenv "BB_PYTHON3_DYLIB"
                          (string-append python "/lib/libpython3.so"))
                  #t)))
-           (add-after 'unpack 'adjust-for-python-3.8
+           (add-after 'unpack 'adjust-for-python-3.9
              (lambda _
-               ;; This method is no longer part of the public API.
+               ;; These methods are no longer part of the public API.
                (substitute* "ffi-interface.lisp"
-                 ((".*PyEval_ReInitThreads.*")
-                  ""))
-               #t)))))
+                 ((".*PyEval_ReInitThreads.*") "")
+                 ((".*\"PyErr_Warn\".*") "")
+                 ((".*\"PyFloat_ClearFreeList\".*") "")))))))
       (native-inputs
        (list sbcl-cl-fad sbcl-lift sbcl-cl-quickcheck))
       (inputs
-       `(("python" ,python)
-         ("sbcl-cffi" ,sbcl-cffi)
-         ("sbcl-alexandria" , sbcl-alexandria)
-         ("sbcl-parse-declarations-1.0" ,sbcl-parse-declarations)
-         ("sbcl-trivial-garbage" ,sbcl-trivial-garbage)))
+       (list python
+             sbcl-alexandria
+             sbcl-cffi
+             sbcl-parse-declarations
+             sbcl-trivial-garbage))
       (synopsis "Bridge between Python and Lisp (FFI bindings, etc.)")
       (description
        "This package provides a shim between Python3 (specifically, the
@@ -20818,7 +20820,7 @@ access lexicographic data from WordNet.")
 (define-public sbcl-nfiles
   (package
    (name "sbcl-nfiles")
-   (version "0.4.0")
+   (version "0.4.1")
    (source
     (origin
      (method git-fetch)
@@ -20828,7 +20830,7 @@ access lexicographic data from WordNet.")
      (file-name (git-file-name "cl-nfiles" version))
      (sha256
       (base32
-       "0qmyv4ajcz7mlihnslx55wr1n8aaisw4clmsijnjf1w6wxh7lh7w"))))
+       "05brlj99grcy2iz84dvl76inp10jxnvjyh2r262d1las112rlcrb"))))
    (build-system asdf-build-system/sbcl)
    (inputs
     (list gnupg
@@ -21269,3 +21271,132 @@ of the files and the line numbers where they were found.")
 
 (define-public ecl-formgrep
   (sbcl-package->ecl-package sbcl-formgrep))
+
+(define-public sbcl-lmdb
+  (let ((commit "f439b707939a52769dc9747838ff4a616fab14a3")
+        (revision "0"))
+    (package
+      (name "sbcl-lmdb")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/antimer/lmdb")
+               (commit commit)))
+         (file-name (git-file-name "cl-lmdb" version))
+         (sha256
+          (base32 "0akvimmvd4kcx6gh1j1dzvcclhc0jc4hc9vkh3ldgzb8wyf4vl8q"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'fix-paths
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "src/lmdb.lisp"
+                  (("\"liblmdb.so\"")
+                   (string-append
+                    "\"" (search-input-file inputs "/lib/liblmdb.so") "\""))))))))
+      (inputs
+       (list lmdb
+             sbcl-alexandria
+             sbcl-bordeaux-threads
+             sbcl-cl-reexport
+             sbcl-mgl-pax
+             sbcl-osicat
+             sbcl-trivial-features
+             sbcl-trivial-garbage
+             sbcl-trivial-utf-8))
+      (native-inputs
+       (list sbcl-try))
+      (home-page "https://github.com/antimer/lmdb")
+      (synopsis "LMDB bindings for Common Lisp")
+      (description
+       "LMDB, the Lightning Memory-mapped Database, is an ACID key-value
+database with multiversion concurrency control.  This package is a Common Lisp
+wrapper around the C LMDB library.  It covers most of C LMDB's functionality,
+has a simplified API, much needed safety checks, and comprehensive
+documentation.")
+      (license license:expat))))
+
+(define-public cl-lmdb
+  (sbcl-package->cl-source-package sbcl-lmdb))
+
+(define-public sbcl-listopia
+  (package
+    (name "sbcl-listopia")
+    (version "0.12.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Dimercel/listopia")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "07xa2s2s60h9f40az3zdacybl5pk1x8bhvga9phsra0czbv44lx2"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-prove))
+    (home-page "https://github.com/Dimercel/listopia")
+    (synopsis "List manipulation library for Common Lisp")
+    (description "This package is a list manipulation library for Common Lisp
+inspired by Haskell package @code{Data.List}.")
+    (license license:llgpl)))
+
+(define-public cl-listopia
+  (sbcl-package->cl-source-package sbcl-listopia))
+
+(define-public ecl-listopia
+  (sbcl-package->ecl-package sbcl-listopia))
+
+(define-public sbcl-clog
+  (package
+    (name "sbcl-clog")
+    (version "1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rabbibotton/clog")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-clog" version))
+       (sha256
+        (base32 "0f4i6571nm0j704zgnh60sc9slifs11byb2gs8gamqjcfh931dap"))))
+    (build-system asdf-build-system/sbcl)
+    (inputs
+     (list sbcl-3bmd
+           sbcl-alexandria
+           sbcl-bordeaux-threads
+           sbcl-cl-ppcre
+           sbcl-cl-sqlite
+           sbcl-cl-template
+           sbcl-clack
+           sbcl-closer-mop
+           sbcl-colorize
+           sbcl-dbi
+           sbcl-hunchentoot
+           sbcl-lack
+           sbcl-mgl-pax
+           sbcl-parse-float
+           sbcl-quri
+           sbcl-trivial-open-browser
+           sbcl-websocket-driver))
+    (arguments
+     '(#:asd-systems '("clog" "clog/docs" "clog/tools")))
+    (home-page "https://github.com/rabbibotton/clog")
+    (synopsis "Common Lisp Omnificent GUI")
+    (description
+     "This package provides a Common Lisp web framework for building GUI
+applications.  CLOG can take the place, or work along side, most cross platform
+GUI frameworks and website frameworks.  The CLOG package starts up the
+connectivity to the browser or other websocket client (often a browser embedded
+in a native template application).")
+    (license license:bsd-3)))
+
+(define-public cl-clog
+  (sbcl-package->cl-source-package sbcl-clog))
+
+(define-public ecl-clog
+  (sbcl-package->ecl-package sbcl-clog))

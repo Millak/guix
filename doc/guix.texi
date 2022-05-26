@@ -41,7 +41,7 @@ Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021 Julien Lepiller@*
 Copyright @copyright{} 2016 Alex ter Weele@*
 Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021 Christopher Baines@*
 Copyright @copyright{} 2017, 2018, 2019 Clément Lassieur@*
-Copyright @copyright{} 2017, 2018, 2020, 2021 Mathieu Othacehe@*
+Copyright @copyright{} 2017, 2018, 2020, 2021, 2022 Mathieu Othacehe@*
 Copyright @copyright{} 2017 Federico Beffa@*
 Copyright @copyright{} 2017, 2018 Carlo Zancanaro@*
 Copyright @copyright{} 2017 Thomas Danckaert@*
@@ -102,6 +102,7 @@ Copyright @copyright{} 2021 Sarah Morgensen@*
 Copyright @copyright{} 2021 Josselin Poiret@*
 Copyright @copyright{} 2022 Remco van 't Veer@*
 Copyright @copyright{} 2022 Aleksandr Vityazev@*
+Copyright @copyright{} 2022 Philip M@sup{c}Grath@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -173,6 +174,7 @@ Weblate} (@pxref{Translating Guix}).
 * Development::                 Guix-aided software development.
 * Programming Interface::       Using Guix in Scheme.
 * Utilities::                   Package management commands.
+* Foreign Architectures::       Build for foreign architectures.
 * System Configuration::        Configuring the operating system.
 * Home Configuration::          Configuring the home environment.
 * Documentation::               Browsing software user manuals.
@@ -320,6 +322,10 @@ Invoking @command{guix build}
 * Package Transformation Options::  Creating variants of packages.
 * Additional Build Options::    Options specific to 'guix build'.
 * Debugging Build Failures::    Real life packaging experience.
+
+Foreign Architectures
+* Using cross-compilation::  Build for foreign architecture using cross-compilation.
+* Using native builds::      Build for foreign architectures natively.
 
 System Configuration
 
@@ -5175,7 +5181,7 @@ write in @code{~/.config/guix/channels.scm} this specification:
 @noindent
 From there on, @command{guix pull} will fetch code from the @code{super-hacks}
 branch of the repository at @code{example.org}.  The authentication concern is
-addressed below ((@pxref{Channel  Authentication}).
+addressed below (@pxref{Channel Authentication}).
 
 @node Replicating Guix
 @section Replicating Guix
@@ -5202,7 +5208,7 @@ say, on another machine, by providing a channel specification in
 
 The @command{guix describe --format=channels} command can even generate this
 list of channels directly (@pxref{Invoking guix describe}).  The resulting
-file can be used with the -C options of @command{guix pull}
+file can be used with the @option{-C} option of @command{guix pull}
 (@pxref{Invoking guix pull}) or @command{guix time-machine}
 (@pxref{Invoking guix time-machine}).
 
@@ -5670,17 +5676,22 @@ before @command{guix shell} was invoked.  The next garbage collection
 (@pxref{Invoking guix gc}) may clean up packages that were installed in
 the environment and that are no longer used outside of it.
 
-As an added convenience, when running from a directory that contains a
-@file{manifest.scm} or a @file{guix.scm} file (in this order), possibly
-in a parent directory, @command{guix shell} automatically loads the
-file---provided the directory is listed in
-@file{~/.config/guix/shell-authorized-directories}, and only for
-interactive use:
+As an added convenience, @command{guix shell} will try to do what you
+mean when it is invoked interactively without any other arguments
+as in:
 
 @example
 guix shell
 @end example
 
+If it finds a @file{manifest.scm} in the current working directory or
+any of its parents, it uses this manifest as though it was given via @code{--manifest}.
+Likewise, if it finds a @file{guix.scm} in the same directories, it uses
+it to build a development profile as though both @code{--development}
+and @code{--file} were present.
+In either case, the file will only be loaded if the directory it
+resides in is listed in
+@file{~/.config/guix/shell-authorized-directories}.
 This provides an easy way to define, share, and enter development
 environments.
 
@@ -8710,6 +8721,60 @@ is useful when a package contains multiple packages and you want to build
 only one of them.  This is equivalent to passing the @code{-p} argument to
 @code{dune}.
 
+@end defvr
+
+@defvr {Scheme variable} elm-build-system
+This variable is exported by @code{(guix build-system elm)}.  It implements a
+build procedure for @url{https://elm-lang.org, Elm} packages similar to
+@samp{elm install}.
+
+The build system adds an Elm compiler package to the set of inputs.  The
+default compiler package (currently @code{elm-sans-reactor}) can be overridden
+using the @code{#:elm} argument.  Additionally, Elm packages needed by the
+build system itself are added as implicit inputs if they are not already
+present: to suppress this behavior, use the
+@code{#:implicit-elm-package-inputs?} argument, which is primarily useful for
+bootstrapping.
+
+The @code{"dependencies"} and @code{"test-dependencies"} in an Elm package's
+@file{elm.json} file correspond to @code{propagated-inputs} and @code{inputs},
+respectively.
+
+Elm requires a particular structure for package names: @pxref{Elm Packages}
+for more details, including utilities provided by @code{(guix build-system
+elm)}.
+
+There are currently a few noteworthy limitations to @code{elm-build-system}:
+
+@itemize
+@item
+The build system is focused on @dfn{packages} in the Elm sense of the word:
+Elm @dfn{projects} which declare @code{@{ "type": "package" @}} in their
+@file{elm.json} files.  Using @code{elm-build-system} to build Elm
+@dfn{applications} (which declare @code{@{ "type": "application" @}}) is
+possible, but requires ad-hoc modifications to the build phases.  For
+examples, see the definitions of the @code{elm-todomvc} example application and
+the @code{elm} package itself (because the front-end for the
+@samp{elm reactor} command is an Elm application).
+
+@item
+Elm supports multiple versions of a package coexisting simultaneously under
+@env{ELM_HOME}, but this does not yet work well with @code{elm-build-system}.
+This limitation primarily affects Elm applications, because they specify
+exact versions for their dependencies, whereas Elm packages specify supported
+version ranges.  As a workaround, the example applications mentioned above use
+the @code{patch-application-dependencies} procedure provided by
+@code{(guix build elm-build-system)} to rewrite their @file{elm.json} files to
+refer to the package versions actually present in the build environment.
+Alternatively, Guix package transformations (@pxref{Defining Package
+Variants}) could be used to rewrite an application's entire dependency graph.
+
+@item
+We are not yet able to run tests for Elm projects because neither
+@url{https://github.com/mpizenberg/elm-test-rs, @command{elm-test-rs}} nor the
+Node.js-based @url{https://github.com/rtfeldman/node-test-runner,
+@command{elm-test}} runner has been packaged for Guix yet.
+@end itemize
 @end defvr
 
 @defvr {Scheme Variable} go-build-system
@@ -12337,6 +12402,14 @@ Cross-build for @var{triplet}, which must be a valid GNU triplet, such
 as @code{"aarch64-linux-gnu"} (@pxref{Specifying Target Triplets, GNU
 configuration triplets,, autoconf, Autoconf}).
 
+@item --list-systems
+List all the supported systems, that can be passed as an argument to
+@option{--system}.
+
+@item --list-targets
+List all the supported targets, that can be passed as an argument to
+@option{--target}.
+
 @anchor{build-check}
 @item --check
 @cindex determinism, checking
@@ -13088,6 +13161,31 @@ The crate importer also allows you to specify a version string:
 
 @example
 guix import crate constant-time-eq@@0.1.0
+@end example
+
+Additional options include:
+
+@table @code
+@item --recursive
+@itemx -r
+Traverse the dependency graph of the given upstream package recursively
+and generate package expressions for all those packages that are not yet
+in Guix.
+@end table
+
+@item elm
+@cindex elm
+Import metadata from the Elm package repository
+@uref{https://package.elm-lang.org, package.elm-lang.org}, as in this example:
+
+@example
+guix import elm elm-explorations/webgl
+@end example
+
+The Elm importer also allows you to specify a version string:
+
+@example
+guix import elm elm-explorations/webgl@@1.1.3
 @end example
 
 Additional options include:
@@ -15117,6 +15215,168 @@ Session_PID: 4278
 @end example
 @end table
 @end table
+
+@node Foreign Architectures
+@chapter Foreign Architectures
+
+You can target computers of different CPU architectures when producing
+packages (@pxref{Invoking guix package}), packs (@pxref{Invoking guix
+pack}) or full systems (@pxref{Invoking guix system}).
+
+GNU Guix supports two distinct mechanisms to target foreign
+architectures:
+
+@enumerate
+@item
+The traditional
+@uref{https://en.wikipedia.org/wiki/Cross_compiler,cross-compilation}
+mechanism.
+@item
+The native building mechanism which consists in building using the CPU
+instruction set of the foreign system you are targeting.  It often
+requires emulation, using the QEMU program for instance.
+@end enumerate
+
+@menu
+* Using cross-compilation::  Build for foreign architecture using cross-compilation.
+* Using native builds::      Build for foreign architectures natively.
+@end menu
+
+@node Using cross-compilation
+@section Using cross-compilation
+
+@cindex foreign architectures
+The commands supporting cross-compilation are proposing the
+@option{--list-targets} and @option{--target} options.
+
+The @option{--list-targets} option lists all the supported targets that
+can be passed as an argument to @option{--target}.
+
+@example
+$ guix build --list-targets
+The available targets are:
+
+   - aarch64-linux-gnu
+   - arm-linux-gnueabihf
+   - i586-pc-gnu
+   - i686-linux-gnu
+   - i686-w64-mingw32
+   - mips64el-linux-gnu
+   - powerpc-linux-gnu
+   - powerpc64le-linux-gnu
+   - riscv64-linux-gnu
+   - x86_64-linux-gnu
+   - x86_64-w64-mingw32
+@end example
+
+Targets are specified as GNU triplets (@pxref{Specifying Target
+Triplets, GNU configuration triplets,, autoconf, Autoconf}).
+
+Those triplets are passed to GCC and the other underlying compilers
+possibly involved when building a package, a system image or any other
+GNU Guix output.
+
+@example
+$ guix build --target=aarch64-linux-gnu hello
+/gnu/store/9926by9qrxa91ijkhw9ndgwp4bn24g9h-hello-2.12
+
+$ file /gnu/store/9926by9qrxa91ijkhw9ndgwp4bn24g9h-hello-2.12/bin/hello
+/gnu/store/9926by9qrxa91ijkhw9ndgwp4bn24g9h-hello-2.12/bin/hello: ELF
+64-bit LSB executable, ARM aarch64 @dots{}
+@end example
+
+The major benefit of cross-compilation is that there are no performance
+penaly compared to emulation using QEMU.  There are however higher risks
+that some packages fail to cross-compile because few users are using
+this mechanism extensively.
+
+@node Using native builds
+@section Using native builds
+
+The commands that support impersonating a specific system have the
+@option{--list-systems} and @option{--system} options.
+
+The @option{--list-systems} option lists all the supported systems that
+can be passed as an argument to @option{--system}.
+
+@example
+$ guix build --list-systems
+The available systems are:
+
+   - x86_64-linux [current]
+   - aarch64-linux
+   - armhf-linux
+   - i586-gnu
+   - i686-linux
+   - mips64el-linux
+   - powerpc-linux
+   - powerpc64le-linux
+   - riscv64-linux
+
+$ guix build --system=i686-linux hello
+/gnu/store/cc0km35s8x2z4pmwkrqqjx46i8b1i3gm-hello-2.12
+
+$ file /gnu/store/cc0km35s8x2z4pmwkrqqjx46i8b1i3gm-hello-2.12/bin/hello
+/gnu/store/cc0km35s8x2z4pmwkrqqjx46i8b1i3gm-hello-2.12/bin/hello: ELF
+32-bit LSB executable, Intel 80386 @dots{}
+@end example
+
+In the above example, the current system is @var{x86_64-linux}.  The
+@var{hello} package is however built for the @var{i686-linux} system.
+
+This is possible because the @var{i686} CPU instruction set is a subset
+of the @var{x86_64}, hence @var{i686} targeting binaries can be run on
+@var{x86_64}.
+
+Still in the context of the previous example, if picking the
+@var{aarch64-linux} system and the @command{guix build
+--system=aarch64-linux hello} has to build some derivations, an extra
+step might be needed.
+
+The @var{aarch64-linux} targeting binaries cannot directly be run on a
+@var{x86_64-linux} system.  An emulation layer is requested.  The GNU
+Guix daemon can take advantage of the Linux kernel
+@uref{https://en.wikipedia.org/wiki/Binfmt_misc,binfmt_misc} mechanism
+for that.  In short, the Linux kernel can defer the execution of a
+binary targeting a foreign platform, here @var{aarch64-linux}, to a
+userspace program, usually an emulator.
+
+There is a service that registers QEMU as a backend for the
+@code{binfmt_misc} mechanism (@pxref{Virtualization Services,
+@code{qemu-binfmt-service-type}}).  On Debian based foreign
+distributions, the alternative would be the @code{qemu-user-static}
+package.
+
+If the @code{binfmt_misc} mechanism is not setup correctly, the building
+will fail this way:
+
+@example
+$ guix build --system=armhf-linux hello --check
+@dots{}
+@ unsupported-platform /gnu/store/jjn969pijv7hff62025yxpfmc8zy0aq0-hello-2.12.drv aarch64-linux
+while setting up the build environment: a `aarch64-linux' is required to
+build `/gnu/store/jjn969pijv7hff62025yxpfmc8zy0aq0-hello-2.12.drv', but
+I am a `x86_64-linux'@dots{}
+@end example
+
+whereas, with the @code{binfmt_misc} mechanism correctly linked with
+QEMU, one can expect to see:
+
+@example
+$ guix build --system=armhf-linux hello --check
+/gnu/store/13xz4nghg39wpymivlwghy08yzj97hlj-hello-2.12
+@end example
+
+The main advantage of native building compared to cross-compiling, is
+that more packages are likely to build correctly.  However it comes at a
+price: compilation backed by QEMU is @emph{way slower} than
+cross-compilation, because every instruction needs to be emulated.
+
+The availability of substitutes for the architecture targeted by the
+@code{--system} option can mitigate this problem.  An other way to work
+around it is to install GNU Guix on a machine which CPU is supporting
+the targeted instruction set, an set it up as an offload machine
+(@pxref{Daemon Offload Setup}).
 
 @node System Configuration
 @chapter System Configuration
@@ -20271,10 +20531,31 @@ The default SLiM theme and its name.
 @end defvr
 
 
+@cindex login manager
+@cindex X11 login
+@defvr {Scheme Variable} sddm-service-type
+This is the type of the service to run the
+@uref{https://github.com/sddm/sddm,SDDM display manager}.  Its value
+must be a @code{sddm-configuration} record (see below).
+
+Here's an example use:
+
+@lisp
+(service sddm-service-type
+         (sddm-configuration
+           (auto-login-user "alice")
+           (auto-login-session "xfce.desktop")))
+@end lisp
+@end defvr
+
 @deftp {Data Type} sddm-configuration
-This is the data type representing the SDDM service configuration.
+This data type represents the configuration of the SDDM login manager.
+The available fields are:
 
 @table @asis
+@item @code{sddm} (default: @code{sddm})
+The SDDM package to use.
+
 @item @code{display-server} (default: "x11")
 Select display server to use for the greeter.  Valid values are
 @samp{"x11"} or @samp{"wayland"}.
@@ -20350,10 +20631,11 @@ Directory to look for desktop files starting X sessions.
 Minimum VT to use.
 
 @item @code{auto-login-user} (default "")
-User to use for auto-login.
+User account that will be automatically logged in.
+Setting this to the empty string disables auto-login.
 
 @item @code{auto-login-session} (default "")
-Desktop file to use for auto-login.
+The @file{.desktop} file name to use as the auto-login session, or the empty string.
 
 @item @code{relogin?} (default #f)
 Relogin after logout.
@@ -20361,45 +20643,6 @@ Relogin after logout.
 @end table
 @end deftp
 
-@cindex login manager
-@cindex X11 login
-@defvr {Scheme Variable} sddm-service-type
-This is the type of the service to run the
-@uref{https://github.com/sddm/sddm,SDDM display manager}.  Its value
-must be a @code{sddm-configuration} record (see below).
-
-Here's an example use:
-
-@lisp
-(service sddm-service-type
-         (sddm-configuration
-           (auto-login-user "alice")
-           (auto-login-session "xfce.desktop")))
-@end lisp
-@end defvr
-
-@deftp {Data Type} sddm-configuration
-This data type represents the configuration of the SDDM login manager.
-The available fields are:
-
-@table @asis
-@item @code{sddm} (default: @code{sddm})
-The SDDM package to use.
-
-@item @code{display-server} (default: @code{"x11"})
-This must be either @code{"x11"} or @code{"wayland"}.
-
-@c FIXME: Add more fields.
-
-@item @code{auto-login-user} (default: @code{""})
-If non-empty, this is the user account under which to log in
-automatically.
-
-@item @code{auto-login-session} (default: @code{""})
-If non-empty, this is the @file{.desktop} file name to use as the
-auto-login session.
-@end table
-@end deftp
 
 @cindex Xorg, configuration
 @deftp {Data Type} xorg-configuration
@@ -22100,23 +22343,23 @@ LE scanning interval used for connection establishment.
 LE scanning window used for connection establishment.
 
 @item @code{min-connection-interval} (default: @code{#f})
-LE default minimum connection interval. This value is superceeded by any specific
+LE default minimum connection interval. This value is superseded by any specific
 value provided via the Load Connection Parameters interface.
 
 @item @code{max-connection-interval} (default: @code{#f})
-LE default maximum connection interval. This value is superceeded by any specific
+LE default maximum connection interval. This value is superseded by any specific
 value provided via the Load Connection Parameters interface.
 
 @item @code{connection-latency} (default: @code{#f})
-LE default connection latency. This value is superceeded by any specific
+LE default connection latency. This value is superseded by any specific
 value provided via the Load Connection Parameters interface.
 
 @item @code{connection-supervision-timeout} (default: @code{#f})
-LE default connection supervision timeout. This value is superceeded by any specific
+LE default connection supervision timeout. This value is superseded by any specific
 value provided via the Load Connection Parameters interface.
 
 @item @code{autoconnect-timeout} (default: @code{#f})
-LE default autoconnect timeout. This value is superceeded by any specific
+LE default autoconnect timeout. This value is superseded by any specific
 value provided via the Load Connection Parameters interface.
 
 @item @code{adv-mon-allowlist-scan-duration} (default: @code{300})
@@ -34600,6 +34843,12 @@ derivations to build.
 The Guix Data Service instance from which to query to find out about
 derivations to build.
 
+@item @code{guix-data-service-build-server-id} (default: @code{#f})
+The Guix Data Service build server ID corresponding to the builds being
+submitted.  Providing this speeds up the submitting of builds as
+derivations that have already been submitted can be skipped before
+asking the coordinator to build them.
+
 @item @code{processed-commits-file} (default: @code{"/var/cache/guix-build-coordinator-queue-builds/processed-commits"})
 A file to record which commits have been processed, to avoid needlessly
 processing them again if the service is restarted.
@@ -40200,20 +40449,22 @@ one:
 guix build --target=armv5tel-linux-gnueabi bootstrap-tarballs
 @end example
 
-For this to work, the @code{glibc-dynamic-linker} procedure in
-@code{(gnu packages bootstrap)} must be augmented to return the right
-file name for libc's dynamic linker on that platform; likewise,
-@code{system->linux-architecture} in @code{(gnu packages linux)} must be
-taught about the new platform.
+For this to work, it is first required to register a new platform as
+defined in the @code{(guix platform)} module.  A platform is making the
+connection between a GNU triplet (@pxref{Specifying Target Triplets, GNU
+configuration triplets,, autoconf, Autoconf}), the equivalent
+@var{system} in Nix notation, the name of the
+@var{glibc-dynamic-linker}, and the corresponding Linux architecture
+name if applicable.
 
-Once these are built, the @code{(gnu packages bootstrap)} module needs
-to be updated to refer to these binaries on the target platform.  That
-is, the hashes and URLs of the bootstrap tarballs for the new platform
-must be added alongside those of the currently supported platforms.  The
-bootstrap Guile tarball is treated specially: it is expected to be
-available locally, and @file{gnu/local.mk} has rules to download it for
-the supported architectures; a rule for the new platform must be added
-as well.
+Once the bootstrap tarball are built, the @code{(gnu packages
+bootstrap)} module needs to be updated to refer to these binaries on the
+target platform.  That is, the hashes and URLs of the bootstrap tarballs
+for the new platform must be added alongside those of the currently
+supported platforms.  The bootstrap Guile tarball is treated specially:
+it is expected to be available locally, and @file{gnu/local.mk} has
+rules to download it for the supported architectures; a rule for the new
+platform must be added as well.
 
 In practice, there may be some complications.  First, it may be that the
 extended GNU triplet that specifies an ABI (like the @code{eabi} suffix

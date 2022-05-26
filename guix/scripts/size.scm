@@ -235,8 +235,6 @@ Report the size of the PACKAGE or STORE-ITEM, with its dependencies.\n"))
   (display (G_ "
       --substitute-urls=URLS
                          fetch substitute from URLS if they are authorized"))
-  (display (G_ "
-  -s, --system=SYSTEM    consider packages for SYSTEM--e.g., \"i686-linux\""))
   ;; TRANSLATORS: "closure" and "self" must not be translated.
   (display (G_ "
       --sort=KEY         sort according to KEY--\"closure\" or \"self\""))
@@ -251,15 +249,13 @@ Report the size of the PACKAGE or STORE-ITEM, with its dependencies.\n"))
   (display (G_ "
   -V, --version          display version information and exit"))
   (newline)
+  (show-native-build-options-help)
+  (newline)
   (show-bug-report-information))
 
 (define %options
   ;; Specifications of the command-line options.
-  (list (option '(#\s "system") #t #f
-                (lambda (opt name arg result)
-                  (alist-cons 'system arg
-                              (alist-delete 'system result eq?))))
-        (option '("substitute-urls") #t #f
+  (cons* (option '("substitute-urls") #t #f
                 (lambda (opt name arg result . rest)
                   (apply values
                          (alist-cons 'substitute-urls
@@ -287,7 +283,8 @@ Report the size of the PACKAGE or STORE-ITEM, with its dependencies.\n"))
                   (exit 0)))
         (option '(#\V "version") #f #f
                 (lambda args
-                  (show-version-and-exit "guix size")))))
+                  (show-version-and-exit "guix size")))
+        %standard-native-build-options))
 
 (define %default-options
   `((system . ,(%current-system))
