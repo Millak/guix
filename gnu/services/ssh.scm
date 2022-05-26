@@ -394,7 +394,7 @@ The other options should be self-descriptive."
         ;; authorized-key directory to /etc.
         (catch 'system-error
           (lambda ()
-            (delete-file-recursively "/etc/authorized_keys.d"))
+            (delete-file-recursively "/etc/ssh/authorized_keys.d"))
           (lambda args
             (unless (= ENOENT (system-error-errno args))
               (apply throw args))))
