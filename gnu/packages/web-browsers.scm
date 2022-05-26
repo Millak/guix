@@ -466,7 +466,7 @@ interface.")
 (define-public qutebrowser
   (package
     (name "qutebrowser")
-    (version "2.4.0")
+    (version "2.5.1")
     (source
      (origin
        (method url-fetch)
@@ -474,18 +474,16 @@ interface.")
                            "qutebrowser/releases/download/v" version "/"
                            "qutebrowser-" version ".tar.gz"))
        (sha256
-        (base32 "1v4jhlmgfm8v9sbf7i3xg1vjh6dy8y2gpckk0mizkazb2jxrmkgj"))))
+        (base32 "1g7dfrnjgifvbmz1523iq9qxhrsciajr8dv3pak6dlacm235i276"))))
     (build-system python-build-system)
     (native-inputs
      (list python-attrs)) ; for tests
     (inputs
      (list bash-minimal
            python-colorama
-           python-cssutils
            python-jinja2
            python-markupsafe
            python-pygments
-           python-pypeg2
            python-pyyaml
            ;; FIXME: python-pyqtwebengine needs to come before python-pyqt so
            ;; that it's __init__.py is used first.
