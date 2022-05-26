@@ -26482,13 +26482,13 @@ scripts to load entry points more quickly.")
 (define-public python-funcparserlib
   (package
     (name "python-funcparserlib")
-    (version "1.0.0a0")                 ; last stable release was in 2013
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "funcparserlib" version))
        (sha256
-        (base32 "0ama5w5lswxlp3l4qfqq3zlg7i6qkw45jfl1f7p8w1vnj8m47yz6"))))
+        (base32 "0swbqf53x7lfnczvi566s1g3nkf5mfrxz7sbpyymricz57a3vlvx"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f))              ; no tests in PyPI and no setup.py in GitHub
