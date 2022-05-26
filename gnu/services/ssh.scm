@@ -571,7 +571,7 @@ of user-name/file-like tuples."
   (openssh-configuration
    (inherit config)
    (authorized-keys
-    (match (openssh-configuration-authorized-keys config)
+    (match (append (openssh-configuration-authorized-keys config) keys)
       (((users _ ...) ...)
        ;; Build a user/key-list mapping.
        (let ((user-keys (alist->vhash
