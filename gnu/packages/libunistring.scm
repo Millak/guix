@@ -27,6 +27,7 @@
   #:use-module (guix licenses)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages)
   #:use-module (gnu packages base))
@@ -50,17 +51,16 @@
     ;; Work around parallel build issue whereby C files may be compiled before
     ;; config.h is built: see <http://hydra.gnu.org/build/59381/nixlog/2/raw> and
     ;; <http://lists.openembedded.org/pipermail/openembedded-core/2012-April/059850.html>.
-    '(#:parallel-build? #f
-      #:phases (modify-phases %standard-phases
-                 (add-after 'install 'move-static-library
-                   (lambda* (#:key outputs #:allow-other-keys)
-                     (let ((out (assoc-ref outputs "out"))
-                           (static (assoc-ref outputs "static")))
-                       (with-directory-excursion (string-append out "/lib")
-                         (install-file "libunistring.a"
-                                       (string-append static "/lib"))
-                         (delete-file "libunistring.a")
-                         #t)))))))
+    (list
+      #:parallel-build? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'move-static-library
+            (lambda* (#:key outputs #:allow-other-keys)
+              (with-directory-excursion (string-append #$output "/lib")
+                (install-file "libunistring.a"
+                              (string-append #$output:static "/lib"))
+                (delete-file "libunistring.a")))))))
    (synopsis "C library for manipulating Unicode strings")
    (description
     "GNU libunistring is a library providing functions to manipulate
