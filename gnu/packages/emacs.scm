@@ -463,10 +463,8 @@ editor (with wide ints)" )
                  (base32
                   "0lvcvsz0f4mawj04db35p1dvkffdqkz8pkhc0jzh9j9x2i63kcz6"))))
       (native-inputs
-       `(("autoconf" ,autoconf)
-         ("automake" ,automake)
-         ("guile" ,guile-for-guile-emacs)
-         ,@(package-native-inputs emacs)))
+       (modify-inputs (package-native-inputs emacs)
+         (prepend autoconf automake guile-for-guile-emacs)))
       (arguments
        (substitute-keyword-arguments `(;; Build fails if we allow parallel build.
                                        #:parallel-build? #f
