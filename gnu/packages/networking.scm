@@ -275,6 +275,55 @@ strict standards compliance.  The code does, however, fairly closely follow
 the RFC.")
     (license (list license:gpl2 license:gpl3))))
 
+(define-public lcsync
+  (package
+    (name "lcsync")
+    (version "0.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://codeberg.org/librecast/lcsync")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0s038b4xg9nlzhrganzjyfvc6n6cgd6kilnpik4axp62j2n5q11q"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:parallel-tests? #f
+       #:make-flags (let ((target ,(%current-target-system)))
+                      (list ,(string-append "CC="
+                                            (cc-for-target))
+                            ;; avoid running setcap in the install process
+                            "SETCAP_PROGRAM=true"
+                            (string-append "prefix="
+                                           (assoc-ref %outputs "out"))))
+       #:phases (modify-phases %standard-phases
+                  (delete 'configure) ;no configure script
+                  (add-before 'check 'remove-network-tests
+                    (lambda _
+                      ;; these tests require networking
+                      (delete-file "./test/0000-0027.c")
+                      (delete-file "./test/0000-0049.c")
+                      (delete-file "./test/0000-0074.c")))
+                  (replace 'check
+                    (lambda _
+                      (invoke "make" "test" "CC=gcc")))
+                  (add-before 'build 'add-library-paths
+                    (lambda* (#:key inputs #:allow-other-keys)
+                      (let* ((librecast (assoc-ref inputs "librecast")))
+                        (substitute* (list "./src/Makefile" "./test/Makefile")
+                          (("-llibrecast")
+                           (string-append "-L" librecast "/lib -llibrecast")))))))))
+    (inputs (list librecast libsodium))
+    (home-page "https://librecast.net/lcsync.html")
+    (synopsis "librecast file and data syncing tool")
+    (description
+     "lcsync is a tool to sync files over IPv6 multicast or the
+local filesystem.  It splits the file into blocks, hashes them, and compares
+them in order to efficiently transfer a minimal amount of data.")
+    (license (list license:gpl2 license:gpl3))))
+
 ;; This package does not have a release yet.
 ;; But this is required to provide a feature in PipeWire.
 (define-public libcamera
