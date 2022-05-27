@@ -29614,9 +29614,9 @@ and BMI2).")
 
 (define-public python-peachpy
   ;; There is no tag in this repo.
-  (let ((commit "906d578266dc7188bf61e4cdbc9f8ea7d69edec0")
+  (let ((commit "913d74c35a6b1d330e90bfc055208ce5b06b35a0")
         (version "0.2.0")                         ;from 'peachpy/__init__.py'
-        (revision "1"))
+        (revision "2"))
     (package
       (name "python-peachpy")
       (version (git-version version revision commit))
@@ -29627,7 +29627,7 @@ and BMI2).")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1yy62k3cjr6556nbp651w6v4hzl7kz4y75wy2dfqgndgbnixskx2"))
+                  "1wnqxspxsacw4556q0b9fbw11nhrkgn6gs8g43jdnpa35f3z9kb6"))
                 (patches (search-patches "python-peachpy-determinism.patch"))))
       (build-system python-build-system)
       (arguments
