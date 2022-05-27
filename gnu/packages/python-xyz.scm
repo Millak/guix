@@ -13883,6 +13883,25 @@ to the Python ecosystem.")
      "Promises/A+ implementation for Python")
     (license license:expat)))
 
+(define-public python-progress
+  (package
+    (name "python-progress")
+    (version "1.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "progress" version))
+       (sha256
+        (base32 "1k9lpb7lqr6mywpnqcz71y6qny54xlgprdp327za2gy0nnc6xj69"))))
+    (build-system python-build-system)
+    (home-page "http://github.com/verigak/progress/")
+    (synopsis "Progress reporting bars for Python")
+    (description "This Python package provides progress reporting for visual
+of progress of long running operations.  There are multiple choices of
+progress bars and spinners, with customizable options, such as width, fill
+character, and suffix.")
+    (license license:isc)))
+
 (define-public python-progressbar2
   (package
     (name "python-progressbar2")
