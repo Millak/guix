@@ -300,7 +300,10 @@ structured data.")
        (uri (pypi-uri "protobuf" version))
        (sha256
         (base32
-         "04bqb12smlckzmgkj6vgmpbr3cby0n6726cmz33bqr7kn1vb728l"))))))
+         "04bqb12smlckzmgkj6vgmpbr3cby0n6726cmz33bqr7kn1vb728l"))))
+    (inputs
+     (cons python-six
+           (package-inputs python-protobuf)))))
 
 (define-public python-proto-plus
   (package
