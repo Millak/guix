@@ -2072,6 +2072,30 @@ abstractions to different hardware devices, and a suite of utilities for
 sending and receiving messages on a CAN bus.")
     (license license:lgpl3+)))
 
+(define-public python-canopen
+  (package
+    (name "python-canopen")
+    (version "2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "canopen" version))
+       (sha256
+        (base32 "1nb543wb37kj95v6bhh272lm5gkpi41q3pnsl1fxlyizm2gamj5w"))))
+    (build-system python-build-system)
+    (native-inputs (list python-packaging))
+    (propagated-inputs (list python-can))
+    (home-page "https://github.com/christiansandberg/canopen")
+    (synopsis "CANopen stack implementation")
+    (description
+     "This package provides a Python implementation of the
+@uref{https://www.can-cia.org/canopen/,CANopen standard} for
+@acronym{CANs, controller-area networks}.  The aim of the project is to
+support the most common parts of the CiA 301 standard in a simple
+Pythonic interface.  It is mainly targeted for testing and automation
+tasks rather than a standard compliant master implementation.")
+    (license license:expat)))
+
 (define-public python-caniusepython3
   (package
     (name "python-caniusepython3")
