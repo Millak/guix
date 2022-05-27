@@ -7,7 +7,7 @@
 ;;; Copyright © 2017 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2018–2022 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019 Rutger Helling <rhelling@mykolab.com>
@@ -353,8 +353,11 @@ given PATCHES.  When TOOLS-EXTRA is given, it must point to the
                                 (mkdir-p lib-share)
                                 ;; Symlink the ignorelist to where Clang expects
                                 ;; to find it.
-                                (symlink cfi-ignorelist
-                                         (string-append lib-share "/" file-name))))))
+                                ;; Not all architectures support CFI.
+                                ;; see: compiler-rt/cmake/config-ix.cmake
+                                (when (file-exists? cfi-ignorelist)
+                                  (symlink cfi-ignorelist
+                                           (string-append lib-share "/" file-name)))))))
                         '())
                   (add-after 'install 'install-clean-up-/share/clang
                     (lambda* (#:key outputs #:allow-other-keys)
