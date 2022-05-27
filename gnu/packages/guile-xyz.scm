@@ -3843,7 +3843,8 @@ and space linear in the size of the input text.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0rl809qimhgz6b0rixakb42r2l4g53jr09a2g0s1hxgab0blz0kb"))))
+                "0rl809qimhgz6b0rixakb42r2l4g53jr09a2g0s1hxgab0blz0kb"))
+              (patches (search-patches "guile-ac-d-bus-fix-tests.patch"))))
     (build-system guile-build-system)
     (arguments
      (list
@@ -3884,12 +3885,22 @@ and space linear in the size of the input text.")
             (lambda _
               (with-directory-excursion "docs"
                 (invoke "makeinfo" "ac-d-bus"))))
+          (add-after 'build-doc 'check
+            (lambda* (#:key (tests? #t) #:allow-other-keys)
+              (when tests?
+                ;; There is no locale for the ö character, which crashes
+                ;; substitute*; reset the conversion strategy to workaround it.
+                (with-fluids ((%default-port-conversion-strategy 'substitute))
+                  (substitute* (find-files "tests")
+                    (("#!/usr/bin/env scheme-script")
+                     (string-append "#!" (which "guile")))))
+                (invoke "./run-tests.sh"))))
           (add-after 'install 'install-doc
             (lambda _
               (install-file "docs/ac-d-bus.info"
                             (string-append #$output "/share/info")))))))
     (native-inputs
-     (list guile-3.0 texinfo))
+     (list bash-minimal guile-3.0 texinfo))
     (propagated-inputs
      (list guile-packrat))
     (synopsis "D-Bus protocol implementation in R6RS Scheme")
