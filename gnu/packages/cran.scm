@@ -402,6 +402,33 @@ Distance (EMD).")
     (description "This package lets you manage Google Drive files from R.")
     (license license:expat)))
 
+(define-public r-googlevis
+  (package
+    (name "r-googlevis")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "googleVis" version))
+       (sha256
+        (base32 "1s82xcs6zrlmnhay764bspzwvabfyi35nq6fwdrrk3v79q13c5jz"))))
+    (properties `((upstream-name . "googleVis")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-jsonlite))
+    (native-inputs (list r-knitr))
+    (home-page "https://mages.github.io/googleVis/")
+    (synopsis "R interface to Google Charts")
+    (description
+     "The @code{googleVis} package provides an interface between R and the Google
+Charts API.  Google Charts offer interactive charts which can be embedded into
+web pages.  The functions of the @code{googleVis} package allow the user to
+visualise data stored in R data frames with Google Charts without uploading
+the data to Google.  The output of a @code{googleVis} function is HTML code
+that contains the data and references to JavaScript functions hosted by
+Google.  @code{googleVis} makes use of the internal R HTTP server to display
+the output locally.")
+    (license license:gpl2+)))
+
 (define-public r-guix-install
   (package
     (name "r-guix-install")
