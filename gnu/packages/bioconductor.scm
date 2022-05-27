@@ -5049,6 +5049,48 @@ includes methods formerly found in the scran package, and the new fast and
 comprehensive scDblFinder method.")
     (license license:gpl3)))
 
+(define-public r-scmap
+  (package
+    (name "r-scmap")
+    (version "1.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "scmap" version))
+       (sha256
+        (base32 "0pfwaa9pgml11b84rpf7afdkmg8kxb4srgpc56571vaz388xrv7l"))))
+    (properties `((upstream-name . "scmap")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biobase
+           r-biocgenerics
+           r-dplyr
+           r-e1071
+           r-ggplot2
+           r-googlevis
+           r-matrixstats
+           r-proxy
+           r-randomforest
+           r-rcpp
+           r-rcpparmadillo
+           r-reshape2
+           r-s4vectors
+           r-singlecellexperiment
+           r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/hemberg-lab/scmap")
+    (synopsis "Tool for unsupervised projection of single cell RNA-seq data")
+    (description
+     "@dfn{Single-cell RNA-seq} (scRNA-seq) is widely used to investigate the
+composition of complex tissues since the technology allows researchers to
+define cell-types using unsupervised clustering of the transcriptome.
+However, due to differences in experimental methods and computational
+analyses, it is often challenging to directly compare the cells identified in
+two different experiments.  @code{scmap} is a method for projecting cells from
+a scRNA-seq experiment onto the cell-types or individual cells identified in a
+different experiment.")
+    (license license:gpl3)))
+
 (define-public r-seqlogo
   (package
     (name "r-seqlogo")
