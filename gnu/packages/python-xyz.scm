@@ -16067,25 +16067,14 @@ implementation has been adapted, improved, and fixed from Molten.")
 (define-public python-shellingham
   (package
     (name "python-shellingham")
-    (version "1.3.2")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "shellingham" version))
        (sha256
-        (base32 "07kmia2hvd2q7wik89m82hig9mqr2faynvy38vxq5fm0ps11jv2p"))))
+        (base32 "07hpndvcv9mf9hp54b4apzpwzmzfzl8ryaacsfdq4139im2w4ma8"))))
     (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'restore-setup.py
-           ;; setup.py will return in the next release.
-           ;; <https://github.com/sarugaku/shellingham/issues/33>
-           (lambda _
-             (with-output-to-file "setup.py"
-               (lambda _
-                 (display "from setuptools import setup\nsetup()\n")))
-             #t)))))
     (home-page "https://github.com/sarugaku/shellingham")
     (synopsis "Tool to detect surrounding shell")
     (description
