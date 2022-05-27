@@ -4,6 +4,7 @@
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016, 2017 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2016 Mathieu Lirzin <mthl@gnu.org>
+;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -65,6 +66,7 @@
             specification->package+output
             specification->location
             specifications->manifest
+            specifications->packages
 
             package-unique-version-prefix
 
@@ -554,13 +556,20 @@ output."
                   (package-full-name package)
                   sub-drv))))))
 
+(define (specifications->packages specs)
+  "Given SPECS, a list of specifications such as \"emacs@25.2\" or
+\"guile:debug\", return a list of package/output tuples."
+  ;; This procedure exists so users of 'guix home' don't have to write out the
+  ;; (map (compose list specification->package+output)... boilerplate.
+  (map (compose list specification->package+output) specs))
+
 (define (specifications->manifest specs)
   "Given SPECS, a list of specifications such as \"emacs@25.2\" or
 \"guile:debug\", return a profile manifest."
   ;; This procedure exists mostly so users of 'guix package -m' don't have to
   ;; fiddle with multiple-value returns.
   (packages->manifest
-   (map (compose list specification->package+output) specs)))
+   (specifications->packages specs)))
 
 (define (package-unique-version-prefix name version)
   "Search among all the versions of package NAME that are available, and
