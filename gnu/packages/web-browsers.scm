@@ -923,14 +923,14 @@ interface.")
 (define-public telescope
   (package
     (name "telescope")
-    (version "0.7.1")
+    (version "0.8.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/omar-polo/telescope/releases/download/"
                            version "/telescope-" version ".tar.gz"))
        (sha256
-        (base32 "055iqld99l4jshs10mhl2ml0p74wcyyv5kxjy8izzysw9lnkjjb5"))))
+        (base32 "1fblm3mjddhjmcj1c065n9440n72ld037bdjdlyk1fpwd240m1pa"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f))                    ;no tests
@@ -938,7 +938,7 @@ interface.")
      (list gettext-minimal pkg-config))
     (inputs
      (list libevent libressl ncurses))
-    (home-page "https://git.omarpolo.com/telescope/about/")
+    (home-page "https://telescope.omarpolo.com/")
     (synopsis "Gemini client with a terminal interface")
     (description "Telescope is a w3m-like browser for Gemini.")
     (license license:x11)))
