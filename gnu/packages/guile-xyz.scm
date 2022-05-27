@@ -3846,42 +3846,50 @@ and space linear in the size of the input text.")
                 "0rl809qimhgz6b0rixakb42r2l4g53jr09a2g0s1hxgab0blz0kb"))))
     (build-system guile-build-system)
     (arguments
-     `(#:implicit-inputs? #f                      ;needs nothing but Guile
-       #:compile-flags '("--r6rs" "-Wunbound-variable" "-Warity-mismatch")
-       #:phases (modify-phases %standard-phases
-                  (add-before 'build 'adjust-for-guile
-                    (lambda _
-                      ;; Adjust source file names for Guile.
-                      (define (guile-sls->sls file)
-                        (string-append (string-drop-right
-                                        file (string-length ".guile.sls"))
-                                       ".sls"))
+     (list
+      #:implicit-inputs? #f             ;needs nothing but Guile
+      #:compile-flags #~(list "--r6rs" "-Wunbound-variable" "-Warity-mismatch")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'adjust-for-guile
+            (lambda _
+              ;; Adjust source file names for Guile.
+              (define (guile-sls->sls file)
+                (string-append (string-drop-right
+                                file (string-length ".guile.sls"))
+                               ".sls"))
 
-                      ;; Remove files targeting other implementations:
-                      ;; *.mosh.sls, etc.
-                      (for-each delete-file
-                                (find-files
-                                 "compat"
-                                 (lambda (file stat)
-                                   (not (string-contains file ".guile.")))))
+              ;; Remove files targeting other implementations: *.mosh.sls,
+              ;; etc.
+              (for-each delete-file
+                        (find-files
+                         "compat"
+                         (lambda (file stat)
+                           (not (string-contains file ".guile.")))))
 
-                      ;; Rename *.guile.sls to *.sls so the ".guile" bit does
-                      ;; not appear in .go file names.
-                      (for-each (lambda (file)
-                                  (rename-file file (guile-sls->sls file)))
-                                (find-files "compat" "\\.guile\\.sls"))
+              ;; Rename *.guile.sls to *.sls so the ".guile" bit does not
+              ;; appear in .go file names.
+              (for-each (lambda (file)
+                          (rename-file file (guile-sls->sls file)))
+                        (find-files "compat" "\\.guile\\.sls"))
 
-                      ;; Move directories under d-bus/ to match module names.
-                      (mkdir "d-bus")
-                      (for-each (lambda (directory)
-                                  (rename-file directory
-                                               (string-append "d-bus/"
-                                                              directory)))
-                                '("compat" "protocol"))
-
-                      #t)))))
+              ;; Move directories under d-bus/ to match module names.
+              (mkdir "d-bus")
+              (for-each (lambda (directory)
+                          (rename-file directory
+                                       (string-append "d-bus/"
+                                                      directory)))
+                        '("compat" "protocol"))))
+          (add-after 'build 'build-doc
+            (lambda _
+              (with-directory-excursion "docs"
+                (invoke "makeinfo" "ac-d-bus"))))
+          (add-after 'install 'install-doc
+            (lambda _
+              (install-file "docs/ac-d-bus.info"
+                            (string-append #$output "/share/info")))))))
     (native-inputs
-     (list guile-3.0))
+     (list guile-3.0 texinfo))
     (propagated-inputs
      (list guile-packrat))
     (synopsis "D-Bus protocol implementation in R6RS Scheme")
