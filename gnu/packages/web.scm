@@ -793,11 +793,10 @@ programming language.")))
        ,@(package-inputs nginx)))
     (arguments
      (substitute-keyword-arguments
-         `(#:make-flags '("modules")
-           #:modules ((guix build utils)
-                      (guix build gnu-build-system))
-           ,@(package-arguments nginx)
-           #:configure-flags '("--add-dynamic-module=."))
+         `(#:make-flags '("modules") ;Only build this module not all of nginx.
+           ,@(package-arguments nginx))
+       ((#:configure-flags flags)
+        #~(cons "--add-dynamic-module=." #$flags))
        ((#:phases phases)
         #~(modify-phases #$phases
             (add-after 'unpack 'unpack-nginx-sources
