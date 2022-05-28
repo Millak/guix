@@ -2976,15 +2976,13 @@ engine (version 3.8.8.2) is included.")
 (define-public r-rcurl
   (package
     (name "r-rcurl")
-    (version "1.95-0.1.2")
+    (version "1.98-1.6")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://www.bioconductor.org/packages/"
-                                  "release/extra/src/"
-                                  "contrib/RCurl_" version ".tar.gz"))
+              (uri (cran-uri "RCurl" version))
               (sha256
                (base32
-                "0l7qi45jxlf898n0jazabnam1yyczvqfdknd00bdirhhiplpd1sc"))))
+                "18nif4phr5vfhri07mnchiym0qfm31ak9nxvb2v9ac84mij6idbc"))))
     (properties `((upstream-name . "RCurl")))
     (build-system r-build-system)
     (arguments
@@ -2997,10 +2995,11 @@ engine (version 3.8.8.2) is included.")
                 (string-append "\
 certs = Sys.getenv(\"CURL_CA_BUNDLE\")
 if (certs != \"\") { .opts = merge.list(.opts, list(cainfo=certs)) }
-" m)))
-             #t)))))
+" m))))))))
+    (native-inputs
+     (list libxml2))
     (inputs
-     `(("libcurl" ,curl)))
+     (list curl))
     (propagated-inputs
      (list r-bitops))
     (home-page "http://www.omegahat.net/RCurl")
