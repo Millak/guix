@@ -14832,14 +14832,14 @@ defining LD blocks.")
 (define-public r-ldheatmap
   (package
     (name "r-ldheatmap")
-    (version "1.0-4")
+    (version "1.0-6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "LDheatmap" version))
        (sha256
         (base32
-         "1jp578cf29qcgx95w10lpymlwx2pgjsf0nypwkl9b8g635gkisq7"))))
+         "0gr99kys1ahyl8s6cbj6rmh4vwid8kn92lcbjnwh0ahb73m2xjjc"))))
     (properties `((upstream-name . "LDheatmap")))
     (build-system r-build-system)
     (propagated-inputs
