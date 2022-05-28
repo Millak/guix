@@ -2345,13 +2345,13 @@ results.")
 (define-public r-bluster
   (package
    (name "r-bluster")
-   (version "1.4.0")
+   (version "1.6.0")
    (source (origin
             (method url-fetch)
             (uri (bioconductor-uri "bluster" version))
             (sha256
              (base32
-              "1j24l12i3aga4qd827sj8b160yvrhlznggb4piddkmhjc0sppbjm"))))
+              "1g496yc7mdhshf6r0n8xhj7ax936ia5z2cx72lqyk2vzzzl5c4v8"))))
    (properties `((upstream-name . "bluster")))
    (build-system r-build-system)
    (propagated-inputs
