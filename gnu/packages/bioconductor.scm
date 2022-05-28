@@ -4875,13 +4875,13 @@ HDF5 datasets.")
 (define-public r-rsamtools
   (package
     (name "r-rsamtools")
-    (version "2.10.0")
+    (version "2.12.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "Rsamtools" version))
               (sha256
                (base32
-                "0v6b3j45ivd9f04fpfs1vjwby5pi30mf5683bjxim01vi2krj9yh"))))
+                "1wll703if12qrn0d11ljwf7rqhs4lb27fzyyz1hqwvzn3v361s10"))))
     (properties
      `((upstream-name . "Rsamtools")))
     (build-system r-build-system)
