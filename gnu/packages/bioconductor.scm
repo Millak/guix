@@ -14187,13 +14187,13 @@ of other packages.")
 (define-public r-scater
   (package
     (name "r-scater")
-    (version "1.22.0")
+    (version "1.24.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "scater" version))
               (sha256
                (base32
-                "0k4i9pwmwxcr5a40ljl27wriccwn5vc52xy48yjjh8ppl5dbggdg"))))
+                "0dqirggw7my5nq4ln9q0ya18ciqplkz9gx318ffias9ag3yii5rw"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-beachmat
@@ -14209,6 +14209,7 @@ of other packages.")
            r-gridextra
            r-matrix
            r-rcolorbrewer
+           r-rcppml
            r-rlang
            r-rtsne
            r-s4vectors
