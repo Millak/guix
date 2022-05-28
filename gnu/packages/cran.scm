@@ -25293,18 +25293,20 @@ elimination, and a simulation module for various binary data matrices.")
 (define-public r-irtoys
   (package
     (name "r-irtoys")
-    (version "0.2.1")
+    (version "0.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "irtoys" version))
        (sha256
         (base32
-         "0h6iiaxikhbxhbyksbjnb09qdxinlkwr2v9yzs5wslbni14paq5q"))))
+         "1qshz6czykgf53mq6xiswzv5xsjwrkrinpfkf1yavql4v08hs82b"))))
     (properties `((upstream-name . "irtoys")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ltm r-sm))
+    (native-inputs
+     (list r-knitr))
     (home-page "https://cran.r-project.org/package=irtoys")
     (synopsis "Collection of functions related to Item Response Theory (IRT)")
     (description
