@@ -21737,14 +21737,14 @@ data.")
 (define-public r-mda
   (package
     (name "r-mda")
-    (version "0.5-2")
+    (version "0.5-3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mda" version))
        (sha256
         (base32
-         "1hq0zhhz9klmp4zcr1w8hyn7s1h9kfg57d2l2mfm7psx459j0krl"))))
+         "0qw4scc2w7jmnxssj5w2mdxb9rrl4dscqn54gplzm1gk2yf419mx"))))
     (properties `((upstream-name . "mda")))
     (build-system r-build-system)
     (propagated-inputs (list r-class))
