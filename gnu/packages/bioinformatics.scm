@@ -11094,6 +11094,15 @@ expression report comparing samples in an easily configurable manner.")
        (modify-phases %standard-phases
          (add-before 'bootstrap 'autoreconf
            (lambda _
+             ;; This was fixed in commit
+             ;; 0b1c9f7f2e4d0ff601f1de95ab8b2953f4d5dbc7, but there is no
+             ;; release with this fix.
+             (call-with-output-file "VERSION"
+               (lambda (port) (display ,version port)))
+             ;; See https://github.com/BIMSBbioinfo/pigx_chipseq/issues/176
+             (substitute* "m4/ax_r_package.m4"
+               (("if\\(is.na\\(packageDescription\\(\"PKG\"\\)\\)\\)")
+                "if(system.file(package=\"PKG\") == \"\")"))
              (invoke "autoreconf" "-vif")))
          (add-before 'configure 'set-PYTHONPATH
            (lambda _
