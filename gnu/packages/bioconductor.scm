@@ -5396,13 +5396,13 @@ that integrates the various evidences.")
 (define-public r-structuralvariantannotation
   (package
     (name "r-structuralvariantannotation")
-    (version "1.10.1")
+    (version "1.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "StructuralVariantAnnotation" version))
        (sha256
-        (base32 "009l27kb9gvwwf57dwxfribhfhvn4z5pw8yc847l6pkbzqggx678"))))
+        (base32 "0f3x74ic3blg8nm5xlv79k0n8j3fpl98mmhfanqfzmdl0g3j6wx6"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-assertthat
