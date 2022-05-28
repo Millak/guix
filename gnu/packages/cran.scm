@@ -29103,14 +29103,14 @@ phylogenetic relatedness) can also be conducted.")
 (define-public r-altmeta
   (package
     (name "r-altmeta")
-    (version "3.3")
+    (version "4.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "altmeta" version))
        (sha256
         (base32
-         "1xq12hnzxh7kgv2i36xprg4lkvqfmxwz3sq4a1jlq2d5g3narvcm"))))
+         "17cyiydf4n5j64izj7jph2v43h4x9kfd5b0x6m0ik5ci2aw8xzr5"))))
     (properties `((upstream-name . "altmeta")))
     (build-system r-build-system)
     (propagated-inputs
