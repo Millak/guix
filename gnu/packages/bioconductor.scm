@@ -1977,13 +1977,13 @@ objects are used so that other packages could be used as well.")
 (define-public r-aneufinder
   (package
     (name "r-aneufinder")
-    (version "1.22.0")
+    (version "1.24.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "AneuFinder" version))
               (sha256
                (base32
-                "0xn8952fkchhx7m8dam6gjy86j551xp1cs67510s1qrmfgzpkjp0"))))
+                "1acsp987jv2x4qwbgy3y7ff4r2qz7680b0nbr37m4lmncqfgh8yl"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
