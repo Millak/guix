@@ -32004,24 +32004,25 @@ with the dynamic plots from @code{dygraphs}.")
 (define-public r-rfigshare
   (package
     (name "r-rfigshare")
-    (version "0.3.7")
+    (version "0.3.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rfigshare" version))
        (sha256
         (base32
-         "1qgzn0mpjy4czy0pnbi395fxxx84arkg8r7rk8aidmd34584gjiq"))))
+         "10shwl1y9220m7ld5w9fjsjzy5yg8myrz9cz97ps9z2bw7bvka5j"))))
     (properties `((upstream-name . "rfigshare")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ggplot2
            r-httpuv
            r-httr
-           r-plyr
            r-rjsonio
            r-xml
            r-yaml))
+    (native-inputs
+     (list r-knitr))
     (home-page "https://github.com/ropensci/rfigshare")
     (synopsis "R Interface to figshare")
     (description
