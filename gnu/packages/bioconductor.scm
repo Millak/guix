@@ -2399,13 +2399,13 @@ arbitrary genomic intervals along chromosomal ideogram.")
 (define-public r-iranges
   (package
     (name "r-iranges")
-    (version "2.28.0")
+    (version "2.30.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "IRanges" version))
               (sha256
                (base32
-                "07zs231wbfwwc1c1165rhp711fbss40p9l8kyjjv9flzpr3hr1pg"))))
+                "0hfx5n0b4pqrrc1w2dik596803ly8ffnxfs768iy5l5kr8wwyc8k"))))
     (properties
      `((upstream-name . "IRanges")))
     (build-system r-build-system)
