@@ -4497,19 +4497,17 @@ specific parser.")
 (define-public r-mzr
   (package
     (name "r-mzr")
-    (version "2.28.0")
+    (version "2.30.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "mzR" version))
        (sha256
         (base32
-         "1azq0wjjy6n5xc721gjz6afm43ajz15b4p34vgsdjzwg9qn1vrs1"))
+         "1dqa03hb42kbqfg15ksijdkyf9pr54gcl3in4mzjkld5sdi8ncds"))
        (modules '((guix build utils)))
        (snippet
-        '(begin
-           (delete-file-recursively "src/boost")
-           #t))))
+        '(delete-file-recursively "src/boost"))))
     (properties `((upstream-name . "mzR")))
     (build-system r-build-system)
     (arguments
@@ -4523,12 +4521,9 @@ specific parser.")
                (("\\ARCH_OBJS=" line)
                 (string-append line
                                "\nBOOST_LIBS=-lboost_system -lboost_regex \
--lboost_iostreams -lboost_thread -lboost_filesystem -lboost_chrono\n")))
-             #t)))))
+-lboost_iostreams -lboost_thread -lboost_filesystem -lboost_chrono\n"))))))))
     (inputs
-     (list ;; Our default boost package won't work here, unfortunately, even with
-           ;; mzR version 2.28.0.
-           boost-for-mysql ; use this instead of the bundled boost sources
+     (list boost ; use this instead of the bundled boost sources
            zlib))
     (propagated-inputs
      (list r-biobase
@@ -4536,8 +4531,7 @@ specific parser.")
            r-ncdf4
            r-protgenerics
            r-rcpp
-           r-rhdf5lib
-           r-zlibbioc))
+           r-rhdf5lib))
     (native-inputs
      (list r-knitr))
     (home-page "https://github.com/sneumann/mzR/")
