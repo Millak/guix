@@ -1794,13 +1794,13 @@ expression values are known.")
 (define-public r-affyrnadegradation
   (package
     (name "r-affyrnadegradation")
-    (version "1.40.0")
+    (version "1.42.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "AffyRNADegradation" version))
               (sha256
                (base32
-                "00hzr62xn1i1w4g8krsxhivzwn8hd7hwhkdxyrpz6cs9vgr4x9kd"))))
+                "16akwmpzwxai7ks5bvc1yyb9sx2scv9b9gas5avb0sk5fk0h3nsf"))))
     (properties `((upstream-name . "AffyRNADegradation")))
     (build-system r-build-system)
     (propagated-inputs (list r-affy))
