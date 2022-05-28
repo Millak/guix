@@ -17922,13 +17922,13 @@ SELECT or UPDATE queries to an end-point.")
 (define-public r-bookdown
   (package
     (name "r-bookdown")
-    (version "0.25")
+    (version "0.26")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "bookdown" version))
               (sha256
                (base32
-                "0v5nlm3lbm0h5cvd9j2211yqk68rkm416aq8qp6r8klj69xm1bri"))))
+                "11din9h2sgzvg44627xc5is4psbq2b34km5sbiaprskjrf474866"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-htmltools
@@ -17943,7 +17943,7 @@ SELECT or UPDATE queries to an end-point.")
     ;; input to knitr.
     #;
     (native-inputs
-     `(("r-knitr" ,r-knitr)))
+     (list r-knitr))
     (home-page "https://github.com/rstudio/bookdown")
     (synopsis "Authoring books and technical documents with R markdown")
     (description "This package provides output formats and utilities for
