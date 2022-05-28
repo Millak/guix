@@ -14357,13 +14357,13 @@ methods, incorporating one or more trees and trait data.")
 (define-public r-rnexml
   (package
     (name "r-rnexml")
-    (version "2.4.6")
+    (version "2.4.7")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RNeXML" version))
               (sha256
                (base32
-                "0k56brcg80mvx35hgc5gj8arwba4k7q0075g38qp0qgq9d1b87cs"))))
+                "1zp6pijsc73jx8cmxb1hng36nvaf5wnhldnzlqhmba9kv9niscfb"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ape
