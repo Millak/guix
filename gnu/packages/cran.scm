@@ -18024,14 +18024,14 @@ variance components, using the likelihood-ratio statistics G.")
 (define-public r-hapassoc
   (package
     (name "r-hapassoc")
-    (version "1.2-8")
+    (version "1.2-9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "hapassoc" version))
        (sha256
         (base32
-         "0qs5jl0snzfchgpp6pabncwywxcmi743g91jvjiyyzw0lw85yv4s"))))
+         "09ijc4sbw743z74fzklmvig11ndkycg6j86k4214wfsj1yj6j9x6"))))
     (build-system r-build-system)
     (home-page "https://stat.sfu.ca/statgen/research/hapassoc.html")
     (synopsis "Inference of trait associations with SNP haplotypes")
