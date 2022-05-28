@@ -9380,14 +9380,14 @@ different identifieres using the Biocore Data Team data-packages (e.g.
 (define-public r-annotationtools
   (package
     (name "r-annotationtools")
-    (version "1.68.0")
+    (version "1.70.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "annotationTools" version))
        (sha256
         (base32
-         "0grdswbf8nj0qwl0n5pqsir9242dry85j6m688j81gwwjgmzidvh"))))
+         "122b424zida3j0vqkn8d06sg3jpc3ngsgidr8kgg00n4cjngkc51"))))
     (properties
      `((upstream-name . "annotationTools")))
     (build-system r-build-system)
