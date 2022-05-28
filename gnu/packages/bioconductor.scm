@@ -1766,13 +1766,13 @@ the supporting gene set is determined.")
 (define-public r-affixcan
   (package
     (name "r-affixcan")
-    (version "1.12.0")
+    (version "1.14.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "AffiXcan" version))
               (sha256
                (base32
-                "06yn87briv2141jqad934gg5rcd90w5nghrgmbhqnmwafn72gj9d"))))
+                "0wj9shzmlxpksbxny571xzfcmmqqzjlk1vq4mx1is2r6ma7jkblq"))))
     (properties `((upstream-name . "AffiXcan")))
     (build-system r-build-system)
     (propagated-inputs
