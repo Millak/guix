@@ -7846,14 +7846,14 @@ distributions.")
 (define-public r-scone
   (package
     (name "r-scone")
-    (version "1.18.0")
+    (version "1.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "scone" version))
        (sha256
         (base32
-         "1fqlwg195rzpwh35cj941vhmj2plzpn253skig6glr0z2sirr9r1"))))
+         "05id34n6min03ha1chg5mrvx399qm2mby9kxkaz5w8fbidp97851"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-aroma-light
