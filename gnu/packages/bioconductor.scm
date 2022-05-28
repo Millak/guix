@@ -7453,14 +7453,14 @@ independent of the p-value under the null hypothesis.")
 (define-public r-icobra
   (package
     (name "r-icobra")
-    (version "1.22.2")
+    (version "1.24.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "iCOBRA" version))
        (sha256
         (base32
-         "1ln8l2cp6dqg6zv7s0qnmw5ii93v5sgp0b1nwswl52zdd8mivwxy"))))
+         "1gvra5bgsf6lvs4f2md3xx7xxsx4j8079c2nr8vz9lvy2sfyl6s9"))))
     (properties `((upstream-name . "iCOBRA")))
     (build-system r-build-system)
     (propagated-inputs
@@ -7468,6 +7468,7 @@ independent of the p-value under the null hypothesis.")
            r-dt
            r-ggplot2
            r-limma
+           r-markdown
            r-reshape2
            r-rocr
            r-scales
