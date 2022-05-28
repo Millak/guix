@@ -134,42 +134,40 @@ online pastebin services.")
 
 (define-public wget2
   (package
-   (name "wget2")
-   (version "2.0.1")
-   (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://gnu/wget/wget2-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1caxhkwk08z3npzw8x2qhkmjc224cfw1aphvbv8bidbvd41zmdqb"))))
-   (build-system gnu-build-system)
-   (arguments
-    `(#:phases
-      (modify-phases %standard-phases
-        (add-after 'unpack 'skip-network-tests
-          (lambda _
-            (substitute* "tests/Makefile.in"
-              (("test-gpg-verify-no-file\\$\\(EXEEXT)") "")
-              (("test-gpg-valid\\$\\(EXEEXT)") "")
-              (("test-gpg-styles\\$\\(EXEEXT)") "")))))
-      #:configure-flags '("--enable-static=no")))
-   (inputs
-    (list bzip2
-          gnutls/dane
-          gpgme
-          libidn2
-          libmicrohttpd
-          libpsl
-          pcre2
-          zlib))
-   ;; TODO: Add libbrotlidec, libnghttp2.
-   (native-inputs
-    (list pkg-config))
-   (home-page "https://gitlab.com/gnuwget/wget2")
-   (synopsis "Successor of GNU Wget")
-   (description "GNU Wget2 is the successor of GNU Wget, a file and recursive
-website downloader.  Designed and written from scratch it wraps around libwget,
-that provides the basic functions needed by a web client.")
-   (properties '((ftp-directory . "/gnu/wget")))
-   (license (list license:gpl3+ license:lgpl3+))))
+    (name "wget2")
+    (version "2.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/wget/wget2-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1caxhkwk08z3npzw8x2qhkmjc224cfw1aphvbv8bidbvd41zmdqb"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'skip-network-tests
+                    (lambda _
+                      (substitute* "tests/Makefile.in"
+                        (("test-gpg-verify-no-file\\$\\(EXEEXT)") "")
+                        (("test-gpg-valid\\$\\(EXEEXT)") "")
+                        (("test-gpg-styles\\$\\(EXEEXT)") "")))))
+       #:configure-flags
+       '("--enable-static=no")))
+    (inputs (list bzip2
+                  gnutls/dane
+                  gpgme
+                  libidn2
+                  libmicrohttpd
+                  libpsl
+                  pcre2
+                  zlib))
+    ;; TODO: Add libbrotlidec, libnghttp2.
+    (native-inputs (list pkg-config))
+    (home-page "https://gitlab.com/gnuwget/wget2")
+    (synopsis "Successor of GNU Wget")
+    (description
+     "GNU Wget2 is the successor of GNU Wget, a file and recursive website
+downloader.  Designed and written from scratch it wraps around libwget, that
+provides the basic functions needed by a web client.")
+    (properties '((ftp-directory . "/gnu/wget")))
+    (license (list license:gpl3+ license:lgpl3+))))
