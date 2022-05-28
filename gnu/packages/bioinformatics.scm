@@ -11191,6 +11191,15 @@ in an easily configurable manner.")
        (modify-phases %standard-phases
          (add-before 'bootstrap 'autoreconf
            (lambda _
+             ;; This was fixed in commit
+             ;; d56ac732524da659afbbb0972f7a87fa178ae58e, but there is no
+             ;; release with this fix.
+             (call-with-output-file "VERSION"
+               (lambda (port) (display ,version port)))
+             ;; https://github.com/BIMSBbioinfo/pigx_bsseq/issues/181
+             (substitute* "m4/ax_r_package.m4"
+               (("if\\(is.na\\(packageDescription\\(\"PKG\"\\)\\)\\)")
+                "if(system.file(package=\"PKG\") == \"\")"))
              (invoke "autoreconf" "-vif")))
          (add-before 'configure 'set-PYTHONPATH
            (lambda _
