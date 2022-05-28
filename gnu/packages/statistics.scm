@@ -5017,14 +5017,14 @@ mixture models.")
 (define-public r-lars
   (package
     (name "r-lars")
-    (version "1.2")
+    (version "1.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lars" version))
        (sha256
         (base32
-         "0blj44wqrx6lmym1m9v6wkz8zxzbjax2zl6swgdczci0ixb5nx34"))))
+         "17al1g0pvfz9frs2kxicqr8dyp7ciz3x87yx2l4lqd53ls6nm7n6"))))
     (build-system r-build-system)
     (inputs
      (list gfortran))
