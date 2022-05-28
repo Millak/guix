@@ -26520,14 +26520,14 @@ estimation.")
 (define-public r-optimx
   (package
     (name "r-optimx")
-    (version "2021-10.12")
+    (version "2022-4.30")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "optimx" version))
        (sha256
         (base32
-         "0hvrpfya767vp3anmb8ih516v4zz1sv4h193rn93kyjydf2lqf1r"))))
+         "045ls1vl1392ihwln6mngz0zg2w93ym1m607vfrg8v1949x8isgb"))))
     (properties `((upstream-name . "optimx")))
     (build-system r-build-system)
     (propagated-inputs (list r-numderiv))
