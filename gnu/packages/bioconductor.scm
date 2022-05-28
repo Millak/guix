@@ -5340,13 +5340,13 @@ graph construction.")
 (define-public r-stager
   (package
     (name "r-stager")
-    (version "1.16.0")
+    (version "1.18.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "stageR" version))
        (sha256
-        (base32 "0vpx0v04hgkhzi0bm7ipnb9xr37n5wvnnr45lljgni8pwabfkf6y"))))
+        (base32 "0ns3ih6l4na6irshrc5iy4d9qf7hrnqq3ndnlcjb2i1cn38l2w9y"))))
     (properties `((upstream-name . "stageR")))
     (build-system r-build-system)
     (propagated-inputs (list r-summarizedexperiment))
