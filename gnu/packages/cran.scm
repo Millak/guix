@@ -25057,14 +25057,14 @@ fairly comprehensive overview.")
 (define-public r-lisreltor
   (package
     (name "r-lisreltor")
-    (version "0.1.4")
+    (version "0.1.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lisrelToR" version))
        (sha256
         (base32
-         "0zicq0z3hhixan1p1apybnf3v5s6v6ysll4pcz8ivygwr2swv3p5"))))
+         "0i51v0x87277ly0kggdd594w6q4zq62b4n7xs9r25j08bzs82nfk"))))
     (properties `((upstream-name . "lisrelToR")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/package=lisrelToR")
