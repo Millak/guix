@@ -5064,14 +5064,14 @@ perform @dfn{independent component analysis} (ICA) and projection pursuit.")
 (define-public r-randomforest
   (package
     (name "r-randomforest")
-    (version "4.7-1")
+    (version "4.7-1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "randomForest" version))
        (sha256
         (base32
-         "04q6gb917md4yw837cf9vlx1q8ljl06jw7yhykzb6nl47w55jnkq"))))
+         "1micz9794j7xmj755ln2692rzip8azndflxgdg6xn3j86issi7pm"))))
     (properties `((upstream-name . "randomForest")))
     (build-system r-build-system)
     (home-page "https://www.stat.berkeley.edu/~breiman/RandomForests/")
