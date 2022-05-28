@@ -6726,14 +6726,14 @@ features:
 (define-public r-network
   (package
     (name "r-network")
-    (version "1.17.1")
+    (version "1.17.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "network" version))
        (sha256
         (base32
-         "19q563v5xfkbmr0ws9nhqx4wrxkf9jsck51rqc8mm2gq2h03lg7w"))))
+         "1xrhzbci7ls4h05skdlirxl49jsvmylrqivz2kd6i33wh2ca324m"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-magrittr r-statnet-common r-tibble))
