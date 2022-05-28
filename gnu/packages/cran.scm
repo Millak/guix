@@ -11259,18 +11259,17 @@ genotypes as \"graphical genotypes\".")
 (define-public r-furrr
   (package
     (name "r-furrr")
-    (version "0.2.3")
+    (version "0.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "furrr" version))
        (sha256
         (base32
-         "001p2yhznrpnrjvdcmf2h3wpgdnw01wnqgid7wbq8bhavhi3888a"))))
+         "117xj66l14r08macwghgyibzm282ljv1afpa133h952gc70irs9z"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-ellipsis
-           r-future
+     (list r-future
            r-globals
            r-lifecycle
            r-purrr
