@@ -9352,14 +9352,14 @@ that account for the effects of ANSI text formatting control sequences.")
 (define-public r-nbclust
   (package
     (name "r-nbclust")
-    (version "3.0")
+    (version "3.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "NbClust" version))
        (sha256
         (base32
-         "1vwb48zy6ln1ddpqmfngii1i80n8qmqyxnzdp6gbaq96lakl3w3c"))))
+         "0k5hr4zgx4gp1n62xchgz2zvyl35ba2cnczhhvj8rfbg2n4hx6qs"))))
     (properties `((upstream-name . "NbClust")))
     (build-system r-build-system)
     (home-page "https://sites.google.com/site/malikacharrad/research/nbclust-package")
