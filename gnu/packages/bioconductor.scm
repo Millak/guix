@@ -1316,14 +1316,13 @@ GenomicRanges Bioconductor package.")
 (define-public r-genelendatabase
   (package
     (name "r-genelendatabase")
-    (version "1.18.0")
+    (version "1.32.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "geneLenDataBase" version 'experiment))
        (sha256
-        (base32
-         "03gm4pvsfascx7kjg0jycpf4f572mja68wwmwigs390vbmawyb4a"))))
+        (base32 "0p4rmd3qszsnyn47mfbk96zfa0bhpyyvsh4ma1ligjrsnmkicsaz"))))
     (properties
      `((upstream-name . "geneLenDataBase")))
     (build-system r-build-system)
