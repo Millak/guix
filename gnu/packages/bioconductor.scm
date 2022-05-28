@@ -4204,13 +4204,13 @@ Shiny-based display methods for Bioconductor objects.")
 (define-public r-lfa
   (package
     (name "r-lfa")
-    (version "1.24.0")
+    (version "1.26.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "lfa" version))
        (sha256
-        (base32 "02b90xjb2lfm86hbsdrvzpv20pijnq78ibz4dwjzqd9v4xhia3wr"))))
+        (base32 "044866h4fnxmzb3sh9vmrd2smgsbcqgvd19dgwxisi418cad577l"))))
     (properties `((upstream-name . "lfa")))
     (build-system r-build-system)
     (propagated-inputs (list r-corpcor))
