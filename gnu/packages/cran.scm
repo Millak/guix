@@ -1319,13 +1319,13 @@ with default R plot functions.")
 (define-public r-polychrome
   (package
     (name "r-polychrome")
-    (version "1.3.1")
+    (version "1.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Polychrome" version))
        (sha256
-        (base32 "044vbylgbqf0ccv4r15nmbw1vz0j95g67i6blw73hvbvbm6w5x4d"))))
+        (base32 "0hyi02m2jpdhk1ky6ihz6dv5pwqwjwk4csjim2qr8ywx8midmrvg"))))
     (properties `((upstream-name . "Polychrome")))
     (build-system r-build-system)
     (propagated-inputs
