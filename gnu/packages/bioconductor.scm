@@ -4741,14 +4741,14 @@ library implementing most of the pipeline's features.")
 (define-public r-regioner
   (package
     (name "r-regioner")
-    (version "1.26.1")
+    (version "1.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "regioneR" version))
        (sha256
         (base32
-         "0k500fdmv5l0v7b9pj73bjk3h9k261mfqi6vl52khlw0fafn9b6p"))))
+         "11whi2v211xiz9s7cjl14d8vavlry2fmhvx12rma25wkjmhrpa3f"))))
     (properties `((upstream-name . "regioneR")))
     (build-system r-build-system)
     (propagated-inputs
