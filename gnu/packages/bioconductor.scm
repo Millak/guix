@@ -7652,11 +7652,11 @@ qPCR data, but could be used with other types as well.")
     (license license:artistic2.0)))
 
 (define-public r-leidenbase
-  (let ((commit "430f22af6982cc7d2e6e77f6b0df47bc970dcbce")
+  (let ((commit "a11b8455fa3307d9e3ac4e3a5accddf3c83b9a96")
         (revision "1"))
     (package
       (name "r-leidenbase")
-      (version (git-version "0.1.3" revision commit))
+      (version (git-version "0.1.9" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -7666,7 +7666,7 @@ qPCR data, but could be used with other types as well.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0ylqsmdpv4xq6f6ldxvwkhk33a9i1jcgk60zvksk3iplykfzd6c0"))))
+           "1f54mycsffvzmblz5pzgs3v4jygnbvz0c9d3x710gw5mxkq2p84f"))))
       (properties `((upstream-name . "leidenbase")))
       (build-system r-build-system)
       (inputs
