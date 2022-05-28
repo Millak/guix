@@ -6930,7 +6930,7 @@ streaming audio server.")
     (native-inputs (list xvfb-run gettext-minimal))
     (inputs
      (list adwaita-icon-theme
-           gtk+
+           bash-minimal
            glib
            gsettings-desktop-schemas
            gst-plugins-bad
