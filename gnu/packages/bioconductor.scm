@@ -11400,14 +11400,14 @@ data, to only emphasize the data that actually matters.")
 (define-public r-rcistarget
   (package
     (name "r-rcistarget")
-    (version "1.14.0")
+    (version "1.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "RcisTarget" version))
        (sha256
         (base32
-         "1qarr7xd71kz1haccj65x7sc7pc4v6xpqcfa3rkyp2bk240gigi7"))))
+         "17fnjkg6rjqj33v7slg81skqag10y6dc14g5iv69gqshjal4w4im"))))
     (properties `((upstream-name . "RcisTarget")))
     (build-system r-build-system)
     (propagated-inputs
@@ -11416,11 +11416,11 @@ data, to only emphasize the data that actually matters.")
            r-biocgenerics
            r-data-table
            r-dplyr
-           r-feather
            r-genomeinfodb
            r-genomicranges
            r-gseabase
            r-r-utils
+           r-s4vectors
            r-summarizedexperiment
            r-tibble))
     (native-inputs
