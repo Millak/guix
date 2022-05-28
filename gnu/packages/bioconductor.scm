@@ -16125,27 +16125,29 @@ starburst plots) in order to easily develop complete analysis pipelines.")
 (define-public r-tricycle
   (package
     (name "r-tricycle")
-    (version "1.2.1")
+    (version "1.4.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "tricycle" version))
               (sha256
                (base32
-                "19yh7yif8630j845m9rddva2z0xy4jcw9j4hvyr076jqbyxz998r"))))
+                "0bjkajcz6xcfak6071d0ihakrvgf7s0pmkn6vqkjd6yxbfld7zln"))))
     (properties `((upstream-name . "tricycle")))
     (build-system r-build-system)
-    (propagated-inputs (list r-annotationdbi
-                             r-circular
-                             r-dplyr
-                             r-genomicranges
-                             r-ggplot2
-                             r-iranges
-                             r-rcolorbrewer
-                             r-s4vectors
-                             r-scater
-                             r-scattermore
-                             r-singlecellexperiment
-                             r-summarizedexperiment))
+    (propagated-inputs
+     (list r-annotationdbi
+           r-circular
+           r-dplyr
+           r-genomicranges
+           r-ggnewscale
+           r-ggplot2
+           r-iranges
+           r-rcolorbrewer
+           r-s4vectors
+           r-scater
+           r-scattermore
+           r-singlecellexperiment
+           r-summarizedexperiment))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/hansenlab/tricycle")
     (synopsis "Transferable representation and inference of cell cycle")
