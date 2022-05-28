@@ -2295,14 +2295,14 @@ rules and utility functions for adaptive GH quadrature.")
 (define-public r-rstpm2
   (package
     (name "r-rstpm2")
-    (version "1.5.2")
+    (version "1.5.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rstpm2" version))
        (sha256
         (base32
-         "0c6l3z250b2kn6mh2xyb0bd2y5nsbj11n9xfi51dac9s8xq3v7m4"))))
+         "17mhzfxh761vl64ar6pynpj3k2jkhjgbacxsjhkrfkbmy3aiv0d1"))))
     (properties `((upstream-name . "rstpm2")))
     (build-system r-build-system)
     (propagated-inputs
