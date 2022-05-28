@@ -11258,8 +11258,20 @@ methylation and segmentation.")
                 "1lc42hl8mz95kilh0z39s3wnv092mhm6vl2i394n0yfvdzk4f885"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases
+     `(#:phases
        (modify-phases %standard-phases
+         (add-before 'bootstrap 'autoreconf
+           (lambda _
+             ;; This was fixed in commit
+             ;; c4ac067438ae9312b5786a72e2bfb3d795e3ec8a, but there is no
+             ;; release with this fix.
+             (call-with-output-file "VERSION"
+               (lambda (port) (display ,version port)))
+             ;; https://github.com/BIMSBbioinfo/pigx_scrnaseq/issues/59
+             (substitute* "m4/ax_r_package.m4"
+               (("if\\(is.na\\(packageDescription\\(\"PKG\"\\)\\)\\)")
+                "if(system.file(package=\"PKG\") == \"\")"))
+             (invoke "autoreconf" "-vif")))
          (add-before 'configure 'set-additional-environment-variables
            (lambda _
              ;; Needed because of loompy
@@ -11308,6 +11320,8 @@ methylation and segmentation.")
            r-singlecellexperiment
            r-stringr
            r-yaml))
+    (native-inputs
+     (list autoconf automake))
     (home-page "https://bioinformatics.mdc-berlin.de/pigx/")
     (synopsis "Analysis pipeline for single-cell RNA sequencing experiments")
     (description
