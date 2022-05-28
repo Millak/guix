@@ -11014,14 +11014,14 @@ statistics to the plot.")
 (define-public r-flowclust
   (package
     (name "r-flowclust")
-    (version "3.32.0")
+    (version "3.34.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "flowClust" version))
        (sha256
         (base32
-         "0ch7mkq40qcnxwgzy51vjdlwyzx4bvp03vpdm6dwjc6qy8a6qfzi"))))
+         "055vm9s8aha92znhpjqkipzprw8bkrinwjaik4ygmhym7w6vbblk"))))
     (properties `((upstream-name . "flowClust")))
     (build-system r-build-system)
     (arguments
@@ -11030,13 +11030,8 @@ statistics to the plot.")
     (propagated-inputs
      (list r-biobase
            r-biocgenerics
-           r-clue
-           r-corpcor
-           r-ellipse
            r-flowcore
-           r-flowviz
-           r-graph
-           r-mnormt))
+           r-graph))
     (inputs
      (list gsl))
     (native-inputs
