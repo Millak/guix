@@ -14272,14 +14272,14 @@ variable and significantly correlated genes.")
 (define-public r-sparsematrixstats
   (package
     (name "r-sparsematrixstats")
-    (version "1.6.0")
+    (version "1.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "sparseMatrixStats" version))
        (sha256
         (base32
-         "0ifqj4a6mn4749sr62gq3dwd6mmbbzdx5mh5b5663vcgl1kw96x1"))))
+         "0p12kay7p5zbfm2589wdx0n9jhgpf5fb2fsmkhn3p4ck4xcy13x2"))))
     (properties
      `((upstream-name . "sparseMatrixStats")))
     (build-system r-build-system)
