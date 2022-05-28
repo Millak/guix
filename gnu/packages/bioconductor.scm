@@ -13392,14 +13392,14 @@ dimensional mass cytometry data.")
 (define-public r-rgreat
   (package
     (name "r-rgreat")
-    (version "1.26.0")
+    (version "1.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "rGREAT" version))
        (sha256
         (base32
-         "0kr61mhxp9phn1136fci450zwfhsipchmlm8d5rgib4lh0zbxrhl"))))
+         "0px72r8mjimf5mxfwb9qz46kqpgjw5gaqq41hy0212ymjd8whaky"))))
     (properties `((upstream-name . "rGREAT")))
     (build-system r-build-system)
     (propagated-inputs
