@@ -3854,6 +3854,27 @@ and Francois (2011, JSS), and the book by Eddelbuettel (2013, Springer); see
 @code{citation(\"Rcpp\")} for details on these last two.")
     (license license:gpl2+)))
 
+(define-public r-rcppml
+  (package
+    (name "r-rcppml")
+    (version "0.3.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "RcppML" version))
+       (sha256
+        (base32 "1ih8i7i6m221iw227mnl3rvnaw2l53h8fpnc4f8yn9sm10anap1j"))))
+    (properties `((upstream-name . "RcppML")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-matrix r-rcpp r-rcppeigen))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/zdebruine/RcppML")
+    (synopsis "Rcpp machine learning library")
+    (description
+     "This package provides fast machine learning algorithms including matrix
+factorization and divisive clustering for large sparse and dense matrices.")
+    (license license:gpl2+)))
+
 (define-public r-rcppthread
   (package
     (name "r-rcppthread")
