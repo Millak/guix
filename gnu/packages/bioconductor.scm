@@ -2116,24 +2116,32 @@ used visualizations.")
 (define-public r-dearseq
   (package
     (name "r-dearseq")
-    (version "1.6.0")
+    (version "1.8.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "dearseq" version))
        (sha256
         (base32
-         "07vr27rv3z86ajd62c0ilvfgz9z35qsiwwi5pv4sygbhnnjwh3rc"))))
+         "1f144k5gsclcmsnlsbisr2mivk91dbkci83wx1kznw6i15p4cpj1"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-ggplot2
+     (list r-compquadform
+           r-dplyr
+           r-ggplot2
            r-kernsmooth
+           r-magrittr
            r-matrixstats
            r-patchwork
            r-pbapply
+           r-reshape2
+           r-rlang
            r-statmod
            r-survey
-           r-kernsmooth))
+           r-tibble
+           r-viridislite))
+    (native-inputs
+     (list r-knitr))
     (home-page "https://github.com/borishejblum/dearseq")
     (synopsis "DEA for RNA-seq data through a robust variance component test")
     (description
