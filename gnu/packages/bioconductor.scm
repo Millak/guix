@@ -891,19 +891,18 @@ track.  The database is exposed as a @code{TxDb} object.")
 (define-public r-txdb-hsapiens-ucsc-hg38-knowngene
   (package
     (name "r-txdb-hsapiens-ucsc-hg38-knowngene")
-    (version "3.4.6")
+    (version "3.15.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "TxDb.Hsapiens.UCSC.hg38.knownGene"
                                      version 'annotation))
               (sha256
-               (base32
-                "12j7rri9r129v9w1yiqadg952dx462dh092sxif3r5kk8l7bxkn9"))))
+               (base32 "1y9fqhkk5wgny43bxc0j82afy49vz34rblcmcfmwavngdkpnj879"))))
     (properties
      `((upstream-name . "TxDb.Hsapiens.UCSC.hg38.knownGene")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-genomicfeatures))
+     (list r-annotationdbi r-genomicfeatures))
     (home-page
      "https://bioconductor.org/packages/TxDb.Hsapiens.UCSC.hg38.knownGene/")
     (synopsis "Annotation package for human genome in TxDb format")
