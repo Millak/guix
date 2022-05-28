@@ -1551,13 +1551,13 @@ TCGAbiolinksGUI package.")
 (define-public r-abarray
   (package
     (name "r-abarray")
-    (version "1.62.0")
+    (version "1.64.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ABarray" version))
               (sha256
                (base32
-                "0yh7jmkwdg3kmm98ii0cxbla3s5bwy84fpg6xcpggsrriwzwfb5k"))))
+                "0kjq00i2mb21xyjjs3jy09ps80f11cy37wywzjvmxyjxzbsk4d7r"))))
     (properties `((upstream-name . "ABarray")))
     (build-system r-build-system)
     (propagated-inputs (list r-biobase r-multtest))
