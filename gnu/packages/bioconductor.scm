@@ -2821,14 +2821,14 @@ structure.")
 (define-public r-annotate
   (package
     (name "r-annotate")
-    (version "1.72.0")
+    (version "1.74.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "annotate" version))
        (sha256
         (base32
-         "0p7q5hdk7003q72vg4hrgdzn463spybxhrkvcq3a6l6jkgy9sf84"))))
+         "0x6vddpiw2g713vicf70198x8dlrwf36p8jjygdsfnl56ls5bh2g"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotationdbi
