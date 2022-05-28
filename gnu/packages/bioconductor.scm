@@ -11048,14 +11048,14 @@ model with Box-Cox transformation.")
 (define-public r-rprotobuflib
   (package
     (name "r-rprotobuflib")
-    (version "2.6.0")
+    (version "2.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "RProtoBufLib" version))
        (sha256
         (base32
-         "04qlhbhdchpr35rdc6jc3y8fy6znnfrdlsb8am04agbrvpjgrx10"))))
+         "1mvqwrm1y0vij66gdwgpf5l1h660wsi9jzjfs4ihw3zm4cb0q5pp"))))
     (properties `((upstream-name . "RProtoBufLib")))
     (build-system r-build-system)
     (arguments
@@ -11064,7 +11064,7 @@ model with Box-Cox transformation.")
          (add-after 'unpack 'unpack-bundled-sources
            (lambda _
              (with-directory-excursion "src"
-               (invoke "tar" "xf" "protobuf-3.13.0.tar.gz")))))))
+               (invoke "tar" "xf" "protobuf-3.8.0.tar.gz")))))))
     (native-inputs
      (list r-knitr))
     (home-page "https://bioconductor.org/packages/RProtoBufLib/")
