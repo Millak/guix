@@ -9625,14 +9625,14 @@ decomposition algorithms.")
 (define-public r-yapsa
   (package
     (name "r-yapsa")
-    (version "1.20.1")
+    (version "1.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "YAPSA" version))
        (sha256
         (base32
-         "08r05fzpraggbxv15lx0b68kjlkysp0rcdlm6n9avzmlsdqplb2h"))))
+         "1klqfif4sadkxw7agywk2ncvcdqsnfb1d6adnacdfdasr8abvhid"))))
     (properties `((upstream-name . "YAPSA")))
     (build-system r-build-system)
     (propagated-inputs
