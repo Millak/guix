@@ -15037,14 +15037,14 @@ the earlier snpMatrix package, allowing for uncertainty in genotypes.")
 (define-public r-chromstar
   (package
     (name "r-chromstar")
-    (version "1.20.2")
+    (version "1.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "chromstaR" version))
        (sha256
         (base32
-         "1akcmxzn4j9ph4n3lsgfh8fh8hrb28jjamz037w59bsdkcv6wyjq"))))
+         "1xjwmnr4hk8v3nwvhqd6ixk5qr2dv0n4mb9wd6nl7cgjfhjsdgj7"))))
     (properties `((upstream-name . "chromstaR")))
     (build-system r-build-system)
     (propagated-inputs
