@@ -3387,14 +3387,14 @@ self-defined annotation graphics.")
 (define-public r-copywriter
   (package
     (name "r-copywriter")
-    (version "2.26.0")
+    (version "2.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "CopywriteR" version))
        (sha256
         (base32
-         "0xm5gjzi4r1xzyn7r669blqxhyhmbk9rh9k2gn696j14hbhc1hcy"))))
+         "1k11kvam96hpg71hz2n9cfzizmb7d1bmq5zfvm34s7fn09is60xb"))))
     (properties `((upstream-name . "CopywriteR")))
     (build-system r-build-system)
     (propagated-inputs
