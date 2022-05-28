@@ -7679,14 +7679,14 @@ Memorial-Sloan-Kettering Cancer Center (MSKCC).")
 (define-public r-import
   (package
     (name "r-import")
-    (version "1.2.0")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "import" version))
        (sha256
         (base32
-         "018s0x224gqnv4cjfh0fwliyfg6ma9vslmwybrlizfsmqcc5wp37"))))
+         "19g4jnfg9pkvvsncw62yc15xlb97hfbdqxivpjd9jqi36i6mdjrg"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
