@@ -16862,14 +16862,14 @@ network.")
 (define-public r-gmodels
   (package
     (name "r-gmodels")
-    (version "2.18.1")
+    (version "2.18.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gmodels" version))
        (sha256
         (base32
-         "0s8kd8krqk4kwv2zqxpsfy3w8qdwf5naf4b5l383vidq9sil0qb2"))))
+         "158y7yh4maawn9vki8cq4sil48xib2bbpl6qgj5gvlkw3c14hzfs"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-gdata r-mass))
