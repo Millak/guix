@@ -14011,14 +14011,14 @@ customizable visualzations with minimal effort.")
 (define-public r-motifmatchr
   (package
     (name "r-motifmatchr")
-    (version "1.16.0")
+    (version "1.18.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "motifmatchr" version))
        (sha256
         (base32
-         "0f7j54zdn51h1gcn81vqs8avmschjwqprjcfpvsi00q4fna3fg7z"))))
+         "1ssn00mxwk23zr5na0vcmxvm69i68f0ga0wqlv1nk2isg0wpv878"))))
     (properties `((upstream-name . "motifmatchr")))
     (build-system r-build-system)
     (propagated-inputs
