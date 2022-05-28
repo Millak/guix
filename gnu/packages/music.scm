@@ -45,6 +45,7 @@
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Thomas Albers Raviola <thomas@thomaslabs.org>
 ;;; Copyright © 2022 Sughosha <sughosha@disroot.org>
+;;; Copyright © 2022 Remco van 't Veer <remco@remworks.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -153,6 +154,7 @@
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages pulseaudio) ;libsndfile
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-compression)
   #:use-module (gnu packages python-web)
@@ -6878,3 +6880,84 @@ choice.")
 streaming audio server.")
     (home-page "https://musikcube.com/")
     (license license:bsd-3)))
+
+(define-public quodlibet
+  (package
+    (name "quodlibet")
+    (version "4.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/quodlibet/quodlibet")
+             (commit (string-append "release-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1i5k93k3bfp7hpcwkbr865mbj9jam3jv2a5k1bazcyp4f5vdrb0v"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:modules '((guix build python-build-system)
+                  ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
+                  (guix build utils))
+      #:imported-modules `((guix build python-build-system)
+                           ,@%glib-or-gtk-build-system-modules)
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" (getcwd))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests?
+                  (invoke "xvfb-run" "pytest"
+                          ;; needs network
+                          "--ignore=tests/test_browsers_iradio.py"
+                          ;; broken upstream
+                          "--disable-warnings"
+                          "--ignore=tests/quality")
+                  (format #t "test suite not run~%"))))
+          (add-after 'install 'glib-or-gtk-wrap ; ensure icons loaded
+            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
+          (add-after 'install 'wrap-gi-typelib ; GObject Introspection
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out"))
+                    (gi-typelib-path (getenv "GI_TYPELIB_PATH")))
+                (for-each (lambda (prog)
+                            (wrap-program (string-append out "/bin/" prog)
+                              `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))))
+                          '("exfalso" "quodlibet"))))))))
+    (native-inputs (list xvfb-run gettext-minimal))
+    (inputs
+     (list adwaita-icon-theme
+           gtk+
+           glib
+           gsettings-desktop-schemas
+           gst-plugins-bad
+           gst-plugins-base
+           gst-plugins-good
+           gst-plugins-ugly
+           gstreamer
+           gtk+
+           hicolor-icon-theme
+           librsvg
+           libsoup-minimal-2
+           python
+           python-cheetah
+           python-dbus
+           python-feedparser
+           python-gst
+           python-iniconfig
+           python-mutagen
+           python-pycairo
+           python-pygobject
+           python-pytest
+           python-sgmllib3k
+           python-toml))
+    (home-page "https://github.com/quodlibet/quodlibet")
+    (synopsis "Music manager and player")
+    (description "Quod Libet provides several ways to browse and view your
+local music library, along with flexible search capabilities.  It includes
+a tag editor, which can also be invoked as a standalone program, and further
+supports streaming audio and feeds (such as podcasts).")
+    (license license:gpl2+)))
