@@ -5101,14 +5101,14 @@ comprehensive scDblFinder method.")
 (define-public r-seqlogo
   (package
     (name "r-seqlogo")
-    (version "1.60.0")
+    (version "1.62.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "seqLogo" version))
        (sha256
         (base32
-         "013hwj2lp29nqa8mkvm25aliarg0k725crg4cpsbj0iiskyrs6rl"))))
+         "1lk3238m17acmd6lgjjbpscyxw8fm63wv34kbbr478wcih1wbwxr"))))
     (properties `((upstream-name . "seqLogo")))
     (build-system r-build-system)
     (native-inputs
