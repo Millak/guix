@@ -4254,17 +4254,17 @@ curve to a data matrix in arbitrary dimensions.")
 (define-public r-reshape
   (package
     (name "r-reshape")
-    (version "0.8.8")
+    (version "0.8.9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "reshape" version))
        (sha256
         (base32
-         "0s6i0sqxg1vldxs6miv8mi0zydxbqzgpmzfiwkj8y7jix3yrfmad"))))
+         "0j203qmc076x5lp6q2xi4dq4xdb73jmsa42rpxp1c37knnrph4br"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-plyr r-rcpp))
+     (list r-plyr))
     (home-page "http://had.co.nz/reshape")
     (synopsis "Flexibly reshape data")
     (description
