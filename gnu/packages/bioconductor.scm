@@ -2310,13 +2310,13 @@ calculation in parallel.")
 (define-public r-drimseq
   (package
     (name "r-drimseq")
-    (version "1.22.0")
+    (version "1.24.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "DRIMSeq" version))
        (sha256
-        (base32 "0y2jb0hb633id038zmwnfny6h4ai77fdyy02f77vha1z8xg5nl02"))))
+        (base32 "1dph483ij43ayw0z5dbnp6gwp53ka7k5si1hp3miac7z8dqzv94l"))))
     (properties `((upstream-name . "DRIMSeq")))
     (build-system r-build-system)
     (propagated-inputs
