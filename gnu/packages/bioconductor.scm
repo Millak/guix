@@ -2285,13 +2285,13 @@ array-like objects like @code{DataFrame} objects (typically with Rle columns),
 (define-public r-derfinderhelper
   (package
     (name "r-derfinderhelper")
-    (version "1.28.0")
+    (version "1.30.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "derfinderHelper" version))
        (sha256
-        (base32 "06x0wy2wzpngak1pnrj2p0xzlx1nbcz0hs3p9q5ic6ib2rgwrh35"))))
+        (base32 "0r7zbx5bfmh5cjs12y8d9qwz53nz340gdy3sx7zcn4rzn7rpslp5"))))
     (properties `((upstream-name . "derfinderHelper")))
     (build-system r-build-system)
     (propagated-inputs
