@@ -11166,13 +11166,13 @@ calls to the particular toolkits in use in function of the context.")
 (define-public r-svdialogs
   (package
     (name "r-svdialogs")
-    (version "1.0.3")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "svDialogs" version))
        (sha256
-        (base32 "0j00xjvkwv992ir48czhvyj29rb9vpd243vbyyj2binn0q0qa431"))))
+        (base32 "0z3a5glsi0ab43mdk2yvslxyzg12nbqqqc35jvgzj475mpkbgjif"))))
     (properties `((upstream-name . "svDialogs")))
     (build-system r-build-system)
     (inputs
