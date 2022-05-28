@@ -29804,13 +29804,13 @@ package also supersedes the package @code{BBmisc}.")
 (define-public r-mlr3pipelines
   (package
     (name "r-mlr3pipelines")
-    (version "0.4.0")
+    (version "0.4.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "mlr3pipelines" version))
               (sha256
                (base32
-                "0913f67c1r9bi68gxh1prsp0vch21bl6plahnvjrlbq8rrs1sr6p"))))
+                "1zz55i8c08znxpcs6gp5inaw96c6la9wnsla0972ankvj1hsrcr2"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-backports
