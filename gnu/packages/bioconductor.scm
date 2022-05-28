@@ -9894,19 +9894,19 @@ genes.")
 (define-public r-massspecwavelet
   (package
     (name "r-massspecwavelet")
-    (version "1.60.1")
+    (version "1.62.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MassSpecWavelet" version))
        (sha256
         (base32
-         "00irq3i5kfck7rnm8ll7rqhqfpp3bisv2h8is50a7wbd7480z7ij"))))
+         "0g9izdy3f7h1zmsfbq45ahdz0ak5013rp3vxc4ijb1mpqx8ldd39"))))
     (properties
      `((upstream-name . "MassSpecWavelet")))
     (build-system r-build-system)
-    (propagated-inputs
-     (list r-waveslim))
+    (native-inputs
+     (list r-knitr))
     (home-page "https://bioconductor.org/packages/MassSpecWavelet/")
     (synopsis "Mass spectrum processing by wavelet-based algorithms")
     (description
