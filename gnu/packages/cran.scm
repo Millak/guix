@@ -31564,13 +31564,13 @@ reading and writing arbitrary protocol-buffer data in R.")
 (define-public r-opencpu
   (package
     (name "r-opencpu")
-    (version "2.2.7")
+    (version "2.2.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "opencpu" version))
        (sha256
-        (base32 "06jpmk95hm39ib5c75xw0mdrdv9x9zz1qil3m8ysb6pp1xx47jz0"))))
+        (base32 "1h0s7fbifyf4h1296sdk3amij0m6s12wq32mbky7xg4nz8wj29ni"))))
     (properties `((upstream-name . "opencpu")))
     (build-system r-build-system)
     (inputs
