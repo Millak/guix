@@ -29282,18 +29282,26 @@ data to rasters.  It speeds up plotting of data with millions of points.")
 (define-public r-seuratobject
   (package
     (name "r-seuratobject")
-    (version "4.0.4")
+    (version "4.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "SeuratObject" version))
        (sha256
         (base32
-         "1308hjbs8br3gp9vwm65awgp6vimwgi2jyl1ryn96l84savn2ljq"))))
+         "018anas8a9m3kh9jn5370v64d93k64z3iic13a75hp6r7g5hd94w"))))
     (properties `((upstream-name . "SeuratObject")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-matrix r-rcpp r-rcppeigen r-rlang))
+     (list r-future
+           r-future-apply
+           r-matrix
+           r-progressr
+           r-rcpp
+           r-rcppeigen
+           r-rgeos
+           r-rlang
+           r-sp))
     (home-page "https://satijalab.org/seurat")
     (synopsis "Data structures for single cell data")
     (description
