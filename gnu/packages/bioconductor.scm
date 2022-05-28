@@ -1689,13 +1689,13 @@ the @code{GFAGpathUi} function.")
 (define-public r-adimpute
   (package
     (name "r-adimpute")
-    (version "1.4.0")
+    (version "1.6.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ADImpute" version))
               (sha256
                (base32
-                "1bkq1hd8sqg9r28r70a9vd3gb2nsmg6dybf002d621p88cdfjib2"))))
+                "0885kd8mpmwjpzpx14pi6l3mqcvsixk10vkf5h4sqb7di0nnna4w"))))
     (properties `((upstream-name . "ADImpute")))
     (build-system r-build-system)
     (propagated-inputs
