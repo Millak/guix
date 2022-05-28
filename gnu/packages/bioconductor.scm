@@ -9159,18 +9159,23 @@ Bioconductor.")
 (define-public r-motifstack
   (package
     (name "r-motifstack")
-    (version "1.38.0")
+    (version "1.40.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "motifStack" version))
        (sha256
         (base32
-         "1ck6bbnrab8mbf70alfdsrcv6lq0fkvcy3klhcwyxxir7r9sgbaz"))))
+         "0d2ihx73chczbv6f91n04qb372plrdv7k4qws8shyw1fmvb1rq0z"))))
     (properties `((upstream-name . "motifStack")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-ade4 r-biostrings r-ggplot2 r-htmlwidgets r-xml))
+     (list r-ade4
+           r-biostrings
+           r-ggplot2
+           r-htmlwidgets
+           r-tfbstools
+           r-xml))
     (native-inputs
      (list r-knitr))
     (home-page "https://bioconductor.org/packages/motifStack/")
