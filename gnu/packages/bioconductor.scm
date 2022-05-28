@@ -15801,23 +15801,23 @@ optimised for high performance.")
 (define-public r-biotip
   (package
     (name "r-biotip")
-    (version "1.8.0")
+    (version "1.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BioTIP" version))
        (sha256
         (base32
-         "0xmy5c4i9gf6d04gara6lbnnldqmzjaascb2pd2ih60jw2mvl4ys"))))
+         "1sihi5zy7mlabh3ix1wvdqz8ibfq1avl8bnxjhvxyzq40zbcklh6"))))
     (properties `((upstream-name . "BioTIP")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cluster
            r-genomicranges
-           r-hmisc
            r-igraph
            r-mass
            r-psych
+           r-scran
            r-stringr))
     (native-inputs
      (list r-knitr))
