@@ -15965,13 +15965,13 @@ interest on transformed methylation proportions.")
 (define-public r-omnipathr
   (package
     (name "r-omnipathr")
-    (version "3.2.8")
+    (version "3.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "OmnipathR" version))
        (sha256
-        (base32 "0vr16ar3rbjsfw4qz2g86lbhvmqwgq0vcahc6vrc4d9rdjxwg6sb"))))
+        (base32 "0vk0fv09j3ql78mzzhdxwxb2b83qqdz2qfd8wpp1vydmcx2vvgni"))))
     (properties `((upstream-name . "OmnipathR")))
     (build-system r-build-system)
     (arguments
@@ -16001,6 +16001,7 @@ interest on transformed methylation proportions.")
            r-tibble
            r-tidyr
            r-tidyselect
+           r-withr
            r-xml2
            r-yaml))
     (native-inputs (list r-knitr))
