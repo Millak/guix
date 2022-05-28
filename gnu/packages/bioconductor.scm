@@ -4318,14 +4318,14 @@ throughput genetic sequencing data sets using regression methods.")
 (define-public r-mutationalpatterns
   (package
     (name "r-mutationalpatterns")
-    (version "3.4.1")
+    (version "3.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MutationalPatterns" version))
        (sha256
         (base32
-         "0i6fq6736gvrqn45r7nrhl0ns45qwj1bl4yc6qlalw2g46mjxf6k"))))
+         "113b2hrc0n47qz144xhky93jcm6qh6flzadq5y0plga5jrz0rnwg"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
