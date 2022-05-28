@@ -5515,14 +5515,14 @@ models.")
 (define-public r-pdist
   (package
     (name "r-pdist")
-    (version "1.2")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pdist" version))
        (sha256
         (base32
-         "18nd3mgad11f2zmwcp0w3sxlch4a9y6wp8dfdyzvjn7y4b4bq0dd"))))
+         "0bvg8si81hs79v39d7svv4zbv2p0sk2r6m9vamibvkh9qvl4x406"))))
     (build-system r-build-system)
     (home-page "https://github.com/jeffwong/pdist")
     (synopsis "Partitioned distance function")
