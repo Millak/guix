@@ -3135,29 +3135,16 @@ objects.")
 (define-public r-biostrings
   (package
     (name "r-biostrings")
-    (version "2.62.0")
+    (version "2.64.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "Biostrings" version))
               (sha256
                (base32
-                "11qkw863mkfz3mc55v2gmfr4w3xziqfb5pq3hmjqpn8vpw8ax3xq"))))
+                "1sz52hz89l9w2y2bvyis7kczslk1xnskls9l2bn1s3dhnjzdzhg8"))))
     (properties
      `((upstream-name . "Biostrings")))
     (build-system r-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         ;; See commit c3340745870a88d1558e093a7f892c1aeac784ef in
-         ;; https://github.com/Bioconductor/Biostrings/
-         (add-after 'unpack 'patch-for-R-4.2.0
-           (lambda _
-             (substitute* '("src/BitMatrix.c"
-                            "src/RoSeqs_utils.c"
-                            "src/match_pdict_utils.c"
-                            "src/xscat.c")
-               (("#include <S.h>.*")
-                "#define Salloc(n,t) (t*)S_alloc(n, sizeof(t))  /* from old <S.h> */\n")))))))
     (propagated-inputs
      (list r-biocgenerics
            r-crayon
