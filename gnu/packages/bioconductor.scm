@@ -2167,6 +2167,47 @@ set analyses, and can deal with repeated or longitudinal data.")
 biological sequences.")
     (license license:gpl3)))
 
+(define-public r-decoupler
+  (package
+    (name "r-decoupler")
+    (version "2.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "decoupleR" version))
+       (sha256
+        (base32 "0q1w8yw3bwx8ai5z8rw8lz97w4cplxijq93634hza2vgkig1ck9m"))))
+    (properties `((upstream-name . "decoupleR")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-broom
+           r-dplyr
+           r-magrittr
+           r-matrix
+           r-purrr
+           r-rlang
+           r-stringr
+           r-tibble
+           r-tidyr
+           r-tidyselect
+           r-withr))
+    (native-inputs (list r-knitr))
+    (home-page "https://saezlab.github.io/decoupleR/")
+    (synopsis "Computational methods to infer biological activities from omics data")
+    (description
+     "Many methods allow us to extract biological activities from omics data using
+information from prior knowledge resources, reducing the dimensionality for
+increased statistical power and better interpretability.  decoupleR is a
+Bioconductor package containing different statistical methods to extract these
+signatures within a unified framework.  decoupleR allows the user to flexibly
+test any method with any resource.  It incorporates methods that take into
+account the sign and weight of network interactions.  decoupleR can be used
+with any omic, as long as its features can be linked to a biological process
+based on prior knowledge.  For example, in transcriptomics gene sets regulated
+by a transcription factor, or in phospho-proteomics phosphosites that are
+targeted by a kinase.")
+    (license license:gpl3)))
+
 (define-public r-deepsnv
   (package
     (name "r-deepsnv")
