@@ -4432,14 +4432,14 @@ a variety of different samplers.")
 (define-public r-rmtstat
   (package
     (name "r-rmtstat")
-    (version "0.3")
+    (version "0.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RMTstat" version))
        (sha256
         (base32
-         "1nn25q4kmh9kj975sxkrpa97vh5irqrlqhwsfinbck6h6ia4rsw1"))))
+         "1r1a2sdqv64m9cpm2pz6r8abf7l810126ayd8iq3gx86c7bjfj5v"))))
     (properties `((upstream-name . "RMTstat")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/RMTstat")
