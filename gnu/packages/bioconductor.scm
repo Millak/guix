@@ -4580,14 +4580,14 @@ the fact that each of these packages implements a select methods.")
 (define-public r-pcamethods
   (package
     (name "r-pcamethods")
-    (version "1.86.0")
+    (version "1.88.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "pcaMethods" version))
        (sha256
         (base32
-         "1fj2v6sna4lbw7ar9h93y2g4pzylqqp7760ih425gcai7s19xdrg"))))
+         "1087sl7y707zld7zpf3ly51gnmdp93vn90dwa5440v7qawvg2h9b"))))
     (properties `((upstream-name . "pcaMethods")))
     (build-system r-build-system)
     (propagated-inputs
