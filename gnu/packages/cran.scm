@@ -29640,14 +29640,14 @@ kernel estimators.")
 (define-public r-lpme
   (package
     (name "r-lpme")
-    (version "1.1.2")
+    (version "1.1.3")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "lpme" version))
         (sha256
           (base32
-            "1b0w5ji8hjayni1sh5id193cmanf6n11p16fijkxln4sv4lks4aw"))))
+            "1ch11cwjci98m7952p9wdsh9fj5y1mjya6ayq0q4wmbm824qfpzb"))))
     (properties `((upstream-name . "lpme")))
     (build-system r-build-system)
     (propagated-inputs
