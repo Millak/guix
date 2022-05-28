@@ -3814,13 +3814,13 @@ and visualize the results.")
 (define-public r-genomation
   (package
     (name "r-genomation")
-    (version "1.26.0")
+    (version "1.28.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "genomation" version))
               (sha256
                (base32
-                "0ynwsrlnp98iyz4bl2s7plin0k9iy9zix4jy4v38lcqg6n4iz00j"))))
+                "0rvay7gs4g2wi6h42kln8xwy9b05axj1x8mkfayl6pnnlva6xj79"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biostrings
