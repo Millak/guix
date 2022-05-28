@@ -16071,14 +16071,14 @@ several common set, element and attribute related tasks.")
 (define-public r-shinybs
   (package
     (name "r-shinybs")
-    (version "0.61")
+    (version "0.61.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "shinyBS" version))
        (sha256
         (base32
-         "0rhim4mbp4x9vvm7xkmpl7mhb9qd1gr96cr4dv330v863ra2kgji"))))
+         "0h51685a9qll4agayldjyryi60ih969219ibg071slv0613p5v8a"))))
     (properties `((upstream-name . "shinyBS")))
     (build-system r-build-system)
     ;; The tests spawn Shiny browser apps.  They cannot be run
