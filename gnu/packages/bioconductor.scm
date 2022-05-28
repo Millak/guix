@@ -1364,16 +1364,16 @@ downloaded from Encode.")
 (define-public r-pasilla
   (package
     (name "r-pasilla")
-    (version "1.14.0")
-    (source (origin
-              (method url-fetch)
-              (uri (bioconductor-uri "pasilla" version 'experiment))
-              (sha256
-               (base32
-                "0h124i2fb2lbj2k48zzf1n7ldqa471bs26fbd9vw50299aqx28x0"))))
+    (version "1.24.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "pasilla" version 'experiment))
+       (sha256
+        (base32 "1vsxh7mv2krkbdqs5gsgjsxarjbll0bpyk94syrwh56z67n7jyib"))))
     (build-system r-build-system)
-    (propagated-inputs
-     (list r-biocstyle r-dexseq r-knitr r-rmarkdown))
+    (propagated-inputs (list r-dexseq))
+    (native-inputs (list r-knitr))
     (home-page "https://www.bioconductor.org/packages/pasilla/")
     (synopsis "Data package with per-exon and per-gene read counts")
     (description "This package provides per-exon and per-gene read counts
