@@ -13782,22 +13782,21 @@ block processing.")
 (define-public r-rhdf5lib
   (package
     (name "r-rhdf5lib")
-    (version "1.16.0")
+    (version "1.18.2")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "Rhdf5lib" version))
        (sha256
         (base32
-         "0yly9s3wdnhd9ci2jxfkql38ibv35yzs38a6g6ashbg1m5kgwd9p"))
+         "1jpb8h7c724yz51zjfqs90bsqxgmy1rry2ra9qamsgqpr2j9764g"))
        (modules '((guix build utils)))
        (snippet
         '(begin
            ;; Delete bundled binaries
            (delete-file-recursively "src/wininclude/")
-           (delete-file-recursively "src/winlib-8.3.0/")
-           (delete-file "src/hdf5small_cxx_hl_1.10.7.tar.gz")
-           #t))))
+           (delete-file-recursively "src/winlib/")
+           (delete-file "src/hdf5small_cxx_hl_1.10.7.tar.gz")))))
     (properties `((upstream-name . "Rhdf5lib")))
     (build-system r-build-system)
     (arguments
@@ -13806,11 +13805,8 @@ block processing.")
          (add-after 'unpack 'do-not-use-bundled-hdf5
            (lambda* (#:key inputs #:allow-other-keys)
              (for-each delete-file '("configure" "configure.ac"))
-             ;; Do not make other packages link with the proprietary libsz.
              (substitute* "R/zzz.R"
-               ((" \"%s/libsz.a\"") "")
-               (("patharch, .getDynamicLinks")
-                ".getDynamicLinks"))
+               (("return\\(links\\)") "return(\" -lz\")"))
              (with-directory-excursion "src"
                (invoke "tar" "xvf" (assoc-ref inputs "hdf5-source"))
                (rename-file (string-append "hdf5-" ,(package-version hdf5-1.10))
@@ -13829,6 +13825,8 @@ block processing.")
                             "hdf5/src/libhdf5.settings")
                (rename-file "Makevars.in" "Makevars")
                (substitute* "Makevars"
+                 (("@BUILD_HDF5@") "")
+                 (("@COPY_SZIP@") "")
                  (("@ZLIB_LIB@") "-lz")
                  (("@ZLIB_INCLUDE@") "")
                  (("HDF5_CXX_LIB=.*")
