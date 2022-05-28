@@ -11359,6 +11359,13 @@ based methods.")
      `(#:tests? #f ;requires huge kraken database
        #:phases
        (modify-phases %standard-phases
+         (add-before 'bootstrap 'autoreconf
+           (lambda _
+             ;; https://github.com/BIMSBbioinfo/pigx_sars-cov-2/issues/123
+             (substitute* "m4/ax_r_package.m4"
+               (("if\\(is.na\\(packageDescription\\(\"PKG\"\\)\\)\\)")
+                "if(system.file(package=\"PKG\") == \"\")"))
+             (invoke "autoreconf" "-vif")))
          (add-before 'configure 'set-PYTHONPATH
            (lambda _
              (setenv "PYTHONPATH" (getenv "GUIX_PYTHONPATH")))))))
