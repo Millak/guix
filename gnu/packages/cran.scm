@@ -29014,14 +29014,14 @@ data structures of the tidyverse.")
 (define-public r-lsa
   (package
     (name "r-lsa")
-    (version "0.73.2")
+    (version "0.73.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lsa" version))
        (sha256
         (base32
-         "1a33irqa6qvbc02z12rgbgv8kxq2gmahy7j5bg8b23lvvaxif06b"))))
+         "16k1g0kh3yaw7azg76aqf3hn3b6jgqg92xx0syai8l0my9ci2zzh"))))
     (properties `((upstream-name . "lsa")))
     (build-system r-build-system)
     (propagated-inputs
