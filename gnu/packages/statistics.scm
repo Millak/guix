@@ -5558,14 +5558,14 @@ expected shortfall risk are also included.")
 (define-public r-nloptr
   (package
     (name "r-nloptr")
-    (version "2.0.0")
+    (version "2.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "nloptr" version))
        (sha256
         (base32
-         "16k124ll14p3ygny6i1zd7yza83bv2sk87x922n1bfn9rx4k3jk5"))))
+         "1mqnjswm0dl6vqc8b2s5k3n1mhanaha3l33vh68dh6zx8q9aq9kv"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr ; for building vignettes
