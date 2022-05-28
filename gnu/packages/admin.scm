@@ -48,6 +48,7 @@
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
+;;; Copyright © 2022 Roman Riabenko <roman@riabenko.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2036,10 +2037,16 @@ command.")
           (add-after 'install-documentation 'install-dbus-conf
             (lambda* (#:key outputs #:allow-other-keys)
               (let* ((out (assoc-ref outputs "out"))
-                     (dir (string-append out "/etc/dbus-1/system.d")))
-                (mkdir-p dir)
+                     (interfaces (string-append out "/etc/dbus-1/system.d"))
+                     (services (string-append out
+                                              "/share/dbus-1/system-services")))
+                (mkdir-p interfaces)
                 (copy-file "dbus/dbus-wpa_supplicant.conf"
-                           (string-append dir "/wpa_supplicant.conf")))
+                           (string-append interfaces "/wpa_supplicant.conf"))
+                (mkdir-p services)
+                (copy-file "dbus/fi.w1.wpa_supplicant1.service"
+                           (string-append services
+                                          "/fi.w1.wpa_supplicant1.service")))
               #t))))))))
 
 (define-public wpa-supplicant-gui
