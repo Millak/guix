@@ -4180,14 +4180,14 @@ Shiny-based display methods for Bioconductor objects.")
 (define-public r-keggrest
   (package
     (name "r-keggrest")
-    (version "1.34.0")
+    (version "1.36.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "KEGGREST" version))
        (sha256
         (base32
-         "1np3i1k7rki9akh70156ggmid52yy0is9q5vd3s45ra7an0ap279"))))
+         "0hzlm6nzmx0iyjh063512a3ghc1xqb58g5z2bnd2wl4y42iww7bg"))))
     (properties `((upstream-name . "KEGGREST")))
     (build-system r-build-system)
     (propagated-inputs
