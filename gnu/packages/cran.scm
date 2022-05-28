@@ -19701,14 +19701,14 @@ the functions can also be applied to other types of categorical data.")
 (define-public r-pbmcapply
   (package
     (name "r-pbmcapply")
-    (version "1.5.0")
+    (version "1.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pbmcapply" version))
        (sha256
         (base32
-         "0i58gcqpnbyvc448qfgm45b7rpbmrnagsvk1h1hsqchbbicfslnz"))))
+         "1p8jf7c4k45482w72sr0jw4jkz787krrxai3sl6jz5l4lda2iz3z"))))
     (build-system r-build-system)
     (home-page "https://github.com/kvnkuang/pbmcapply")
     (synopsis "Track the progress of apply procedures with a progress bar")
