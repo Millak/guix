@@ -8287,14 +8287,14 @@ goodness-of-fit.")
 (define-public r-abc
   (package
     (name "r-abc")
-    (version "2.1")
+    (version "2.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "abc" version))
        (sha256
         (base32
-         "0ngzaaz2y2s03fhngvwipmy4kq38xrmyddaz6a6l858rxvadrlhb"))))
+         "16753lyzk2dfwgdjfyanwacqw3bvrwby52inq4709804labs6lnv"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-abc-data r-locfit r-mass r-nnet r-quantreg))
