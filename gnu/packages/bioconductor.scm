@@ -6168,13 +6168,13 @@ processing to visualization and annotation.")
 (define-public r-mbkmeans
   (package
     (name "r-mbkmeans")
-    (version "1.10.0")
+    (version "1.12.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "mbkmeans" version))
               (sha256
                (base32
-                "03hpj218s8fynmk1s50s0rinhsljikxdrff06yc8ysbyc6hyfb4k"))))
+                "1f5krzlyqljz763vkp1a50danjn78xhn35s8qqdvzrmwyx0fzphg"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
