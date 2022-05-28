@@ -11131,20 +11131,21 @@ matches the flowJo analysis.")
 (define-public r-flowstats
   (package
     (name "r-flowstats")
-    (version "4.6.0")
+    (version "4.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "flowStats" version))
        (sha256
         (base32
-         "0jjfq66m4lbpkynwxaparkd05znhp3jl9ccj37gyghly294x3rm9"))))
+         "1jbc92ah2mlpnd7v3k0207v4qz3rg9g9yy6r6y0s0cc5nifdyhwj"))))
     (properties `((upstream-name . "flowStats")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biobase
            r-biocgenerics
            r-cluster
+           r-corpcor
            r-fda
            r-flowcore
            r-flowviz
@@ -11153,6 +11154,7 @@ matches the flowJo analysis.")
            r-ks
            r-lattice
            r-mass
+           r-mnormt
            r-ncdfflow
            r-rcolorbrewer
            r-rrcov))
