@@ -1274,14 +1274,13 @@ single-cell data or deconvolution of bulk RNA-seq.")
 (define-public r-chromstardata
   (package
     (name "r-chromstardata")
-    (version "1.16.0")
+    (version "1.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "chromstaRData" version 'experiment))
        (sha256
-        (base32
-         "0ph80d53598635bb8g61acg5rqwnj8644a0gh297r4hgbvwlflab"))))
+        (base32 "1ajwnkibpi01c93nrplxhy6grw8jj5219g4pii4rkan4k5815kv1"))))
     (properties `((upstream-name . "chromstaRData")))
     (build-system r-build-system)
     (home-page "https://bioconductor.org/packages/chromstaRData/")
