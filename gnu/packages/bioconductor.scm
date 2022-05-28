@@ -1245,13 +1245,13 @@ biscuiteer.")
 (define-public r-celldex
   (package
     (name "r-celldex")
-    (version "1.4.0")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "celldex" version 'experiment))
        (sha256
-        (base32 "04w60fx3s3wlirmr65nsz6d7ig48j9fzimdr8kbdqv1g80ivdcq1"))))
+        (base32 "1fjldmhb9yg6yr3aq5ldvc8xwqw71ix4cdlr53xxckgwljjq7x10"))))
     (properties `((upstream-name . "celldex")))
     (build-system r-build-system)
     (propagated-inputs
