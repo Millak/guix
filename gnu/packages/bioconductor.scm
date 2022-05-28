@@ -7808,14 +7808,14 @@ assumptions.")
 (define-public r-scdd
   (package
     (name "r-scdd")
-    (version "1.18.0")
+    (version "1.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "scDD" version))
        (sha256
         (base32
-         "0gjdjkpkm9zc9hzzb6r2mknl4zyg7s2lgqppmzzhgcnvlmgvm5b5"))))
+         "0bjww338z5qf2g97kbh85h9kpagjr59ff9f4alm33h16xz5mb7k0"))))
     (properties `((upstream-name . "scDD")))
     (build-system r-build-system)
     (propagated-inputs
