@@ -2154,13 +2154,13 @@ set analyses, and can deal with repeated or longitudinal data.")
 (define-public r-decipher
   (package
     (name "r-decipher")
-    (version "2.22.0")
+    (version "2.24.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "DECIPHER" version))
               (sha256
                (base32
-                "0a9k3f70jmd17kxf1zjmdzrfjs0dmwfad2zgz6wihxh5s1shc8qm"))))
+                "045q2bfzgq1yzhyrzvrhrnmlpka4gikrajxxwv05szksy5nvp7q5"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biostrings
