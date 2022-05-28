@@ -25077,18 +25077,20 @@ output in R.")
 (define-public r-bdgraph
   (package
     (name "r-bdgraph")
-    (version "2.65")
+    (version "2.67")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "BDgraph" version))
        (sha256
         (base32
-         "0rg3wi9xwsbj90gb60p3vzkfrf76hwh47nc6fwv6c21yzd3s7vm4"))))
+         "0s2j4462zlgyjnqvvvxg4lynhmwwnjaw1cr1chzmagfvaj94qhhz"))))
     (properties `((upstream-name . "BDgraph")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-igraph))
+    (native-inputs
+     (list r-knitr))
     (home-page "https://www.uva.nl/profile/a.mohammadi")
     (synopsis "Bayesian structure learning in graphical models")
     (description
