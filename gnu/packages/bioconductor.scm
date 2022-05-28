@@ -10196,21 +10196,23 @@ rapid adapter trimming, identification, and read merging.")
 (define-public r-progeny
   (package
     (name "r-progeny")
-    (version "1.16.0")
+    (version "1.18.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "progeny" version))
        (sha256
         (base32
-         "0zhr5i5v87akzqjb6wid67nhg2icrw6w0awdy87x848c6c1i6j9y"))))
+         "1rhy2l2yf9ndxlvff8756s6n8qyi42nz7a75lgygj5aqqckkj21b"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biobase
+           r-decoupler
            r-dplyr
            r-ggplot2
            r-ggrepel
            r-gridextra
+           r-reshape2
            r-tidyr))
     (native-inputs
      (list r-knitr))
