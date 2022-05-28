@@ -16509,14 +16509,14 @@ marginal histograms/boxplots/density plots to ggplot2 scatterplots.")
 (define-public r-minpack-lm
   (package
     (name "r-minpack-lm")
-    (version "1.2-1")
+    (version "1.2-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "minpack.lm" version))
        (sha256
         (base32
-         "18ym2pdql5vzngc7q5gn66d153hrfrnd8ilv8yh6vd7j7sx7vjql"))))
+         "11yz6hk2r33571d16kq01cb1x6sgdzi6jmksqlrm8mr84l95c2f7"))))
     (properties `((upstream-name . "minpack.lm")))
     (build-system r-build-system)
     (native-inputs (list gfortran))
