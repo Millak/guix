@@ -21565,18 +21565,18 @@ elicitation options based on Kass and Vaidyanathan (1992)
 (define-public r-reldist
   (package
     (name "r-reldist")
-    (version "1.7-0")
+    (version "1.7-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "reldist" version))
        (sha256
         (base32
-         "0i04d6w3r6fzm4bykz6lnnh6dngmd61v5wlpli70r3fzdzhi7fji"))))
+         "17kbqqapqmckghv7jizibmicv3bzbycfr3mz4xg3yjp3c2bap4r6"))))
     (properties `((upstream-name . "reldist")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-densestbayes r-hmisc r-mgcv))
+     (list r-densestbayes r-mgcv))
     (home-page "http://www.stat.ucla.edu/~handcock/RelDist")
     (synopsis "Relative distribution methods")
     (description
