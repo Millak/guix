@@ -28693,14 +28693,14 @@ models without involving a test set.")
 (define-public r-tidypredict
   (package
     (name "r-tidypredict")
-    (version "0.4.8")
+    (version "0.4.9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tidypredict" version))
        (sha256
         (base32
-         "0fff349pkksss8h1k2qza78l81ha6avx63pxziv6dfa8h62qmrdy"))))
+         "0x0r36zvny4rqgndx7iqh39yhr53gl4d8wd8wpvdcgg35q6z02z2"))))
     (properties `((upstream-name . "tidypredict")))
     (build-system r-build-system)
     (propagated-inputs
