@@ -31491,16 +31491,16 @@ asynchronously from formatting.")
 (define-public r-rmisc
   (package
     (name "r-rmisc")
-    (version "1.5")
+    (version "1.5.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "Rmisc" version))
               (sha256
                (base32
-                "1ijjhfy3v91fspid77rrkc5dkcb2lav37wc3f4k5lwrn24wzy5y8"))))
+                "1h6jb0xwkyhm9lwm7nj9bhrb5dhrsifvkpqkrd594j1lz74dar8x"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-plyr r-rcpp r-lattice))
+     (list r-plyr r-lattice))
     (home-page "https://cran.r-project.org/web/packages/Rmisc/")
     (synopsis "Ryan Miscellaneous")
     (description "The Rmisc library contains functions for data analysis and
