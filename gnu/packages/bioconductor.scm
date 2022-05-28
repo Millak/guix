@@ -1361,6 +1361,29 @@ genomation package.  Included are Chip Seq, Methylation and Cage data,
 downloaded from Encode.")
     (license license:gpl3+)))
 
+(define-public r-msdata
+  (package
+    (name "r-msdata")
+    (version "0.36.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "msdata" version 'experiment))
+       (sha256
+        (base32 "0nqb7d7fa9l15bxy3s9wmy2h79jb6ldwww0hzk5mifabacmzx691"))))
+    (properties `((upstream-name . "msdata")))
+    (build-system r-build-system)
+    (home-page "https://bioconductor.org/packages/msdata")
+    (synopsis "Various Mass Spectrometry raw data example files")
+    (description
+     "This package provides Ion Trap positive ionization mode data in mzML file
+format.  It includes a subset from 500-850 m/z and 1190-1310 seconds,
+including MS2 and MS3, intensity threshold 100.000; extracts from FTICR Apex
+III, m/z 400-450; a subset of UPLC - Bruker micrOTOFq data, both mzML and mz5;
+LC-MSMS and MRM files from proteomics experiments; and PSI mzIdentML example
+files for various search engines.")
+    (license license:gpl2+)))
+
 (define-public r-pasilla
   (package
     (name "r-pasilla")
