@@ -4593,14 +4593,14 @@ spreadsheet software.")
 (define-public r-extremes
   (package
     (name "r-extremes")
-    (version "2.1-1")
+    (version "2.1-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "extRemes" version))
        (sha256
         (base32
-         "00ps7yggp89sx1j0w6c8dk0la3k95rwjv1iz7rdfqy7i46xjf6as"))))
+         "19q560prq02h3bwk01jb68693qb5bhsv8wiqhia7v5knm34qv8x7"))))
     (properties `((upstream-name . "extRemes")))
     (build-system r-build-system)
     (propagated-inputs
