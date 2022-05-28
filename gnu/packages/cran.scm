@@ -19379,14 +19379,14 @@ regular expressions from human readable expressions")
 (define-public r-mlapi
   (package
     (name "r-mlapi")
-    (version "0.1.0")
+    (version "0.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mlapi" version))
        (sha256
         (base32
-         "023vk5bp8cjcq88sapkl87kdxr92bay1dyxl6xirnyj699pyj51k"))))
+         "1qyiii6x9b89i4pd4yi2zd23aabpmnpj18gqi5va0zy0l8r7kknr"))))
     (properties `((upstream-name . "mlapi")))
     (build-system r-build-system)
     (propagated-inputs
