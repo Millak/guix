@@ -5190,14 +5190,14 @@ ungapped alignment formats.")
 (define-public r-simplifyenrichment
   (package
     (name "r-simplifyenrichment")
-    (version "1.4.0")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "simplifyEnrichment" version))
        (sha256
         (base32
-         "05d9yjd8s7q1q78qmnx5xfrz9ppswc2cpfmjj47d338w783lwk98"))))
+         "1g3kfa17p60jkk4l34vc5hdq83w082qsxbjvpqw7r9rdd8d79z2q"))))
     (properties
      `((upstream-name . "simplifyEnrichment")))
     (build-system r-build-system)
@@ -5207,9 +5207,11 @@ ungapped alignment formats.")
            r-circlize
            r-clue
            r-cluster
+           r-colorspace
            r-complexheatmap
            r-digest
            r-getoptlong
+           r-globaloptions
            r-go-db
            r-gosemsim
            r-matrix
