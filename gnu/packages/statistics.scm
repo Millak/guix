@@ -7044,13 +7044,13 @@ the presence of variance components/nonparametric terms for models fit with
 (define-public r-binom
   (package
     (name "r-binom")
-    (version "1.1-1")
+    (version "1.1-1.1")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "binom" version))
         (sha256
-          (base32 "0mjj92dqf5q69jxzqya4izb1mly3mkydbnmlm4wb3zqqg82a324c"))))
+          (base32 "1yxyhsd0savwirlmgnq6973slfakqyfvjm0zz60cmc9v490my8gf"))))
     (properties `((upstream-name . "binom")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/package=binom")
