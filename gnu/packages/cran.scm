@@ -18229,14 +18229,14 @@ interaction search in high-dimensional data.")
 (define-public r-extrafont
   (package
     (name "r-extrafont")
-    (version "0.17")
+    (version "0.18")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "extrafont" version))
        (sha256
         (base32
-         "0b9k2n9sk23bh45hjgnkxpjyvpdrz1hx7kmxvmb4nhlhm1wpsv9g"))))
+         "0mx810mld67vb1w3wkl4fhpjmkq32lgpq5x1c0a9rf8li5wskrj4"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-extrafontdb r-rttf2pt1))
