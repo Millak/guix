@@ -696,14 +696,14 @@ annotations for the genome of the model mouse Mus musculus.")
 (define-public r-bsgenome-hsapiens-ucsc-hg19
   (package
     (name "r-bsgenome-hsapiens-ucsc-hg19")
-    (version "1.4.0")
+    (version "1.4.3")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BSgenome.Hsapiens.UCSC.hg19"
                                      version 'annotation))
               (sha256
                (base32
-                "1y0nqpk8cw5a34sd9hmin3z4v7iqm6hf6l22cl81vlbxqbjibxc8"))))
+                "06lx7q7i52lg3vkjkqy492z9ianzgi4nhs9m1jrxjjb4hgbnbyjv"))))
     (properties
      `((upstream-name . "BSgenome.Hsapiens.UCSC.hg19")))
     (build-system r-build-system)
