@@ -21906,20 +21906,18 @@ and prints vectorized images.")
 (define-public r-randtoolbox
   (package
     (name "r-randtoolbox")
-    (version "1.31.1")
+    (version "2.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "randtoolbox" version))
        (sha256
         (base32
-         "1b9vjzqg014hxp1vfb62m01d7xim5vmpbyxzlbll49bqas0jx69h"))))
+         "005x2igljc6vm0nsmkld9aqjqz1ccwapc8z3aw5c3ivh4n2bghf9"))))
     (properties `((upstream-name . "randtoolbox")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-rngwell))
-    (native-inputs
-     (list gfortran))
     (home-page "https://cran.r-project.org/web/packages/randtoolbox/")
     (synopsis "Toolbox for pseudo and quasi random number generation")
     (description
