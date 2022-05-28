@@ -720,14 +720,13 @@ by UCSC (hg19, February 2009) and stored in Biostrings objects.")
 (define-public r-bsgenome-hsapiens-ucsc-hg38
   (package
     (name "r-bsgenome-hsapiens-ucsc-hg38")
-    (version "1.4.1")
+    (version "1.4.4")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BSgenome.Hsapiens.UCSC.hg38"
                                      version 'annotation))
               (sha256
-               (base32
-                "1ql08pvi4vv0ynvg4qs9kysw1c7s3crkgin6zxvgzqk6fray9mvi"))))
+               (base32 "03xmh6q99nqjxz29m6j0ymxlk22jq0nlvpf4a2yhg3hgnxqkakh2"))))
     (properties
      `((upstream-name . "BSgenome.Hsapiens.UCSC.hg38")))
     (build-system r-build-system)
