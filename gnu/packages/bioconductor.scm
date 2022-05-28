@@ -13982,17 +13982,22 @@ provides a wrapper of de novo motif discovery software.")
 (define-public r-maftools
   (package
     (name "r-maftools")
-    (version "2.10.0")
+    (version "2.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "maftools" version))
        (sha256
-        (base32 "1s8w3xwwigz803l81bs9cb2dbvvw5r9z8jjcav1rmh9wm8909nfd"))))
+        (base32 "1gqfi95v4fs64n4walij0g2kds3fbbwp6lih5yakmgf6kj8fpkk6"))))
     (properties `((upstream-name . "maftools")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-data-table r-rcolorbrewer r-rhtslib r-survival r-zlibbioc))
+     (list r-data-table
+           r-dnacopy
+           r-rcolorbrewer
+           r-rhtslib
+           r-survival
+           r-zlibbioc))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/PoisonAlien/maftools")
     (synopsis "Summarize, analyze and visualize MAF files")
