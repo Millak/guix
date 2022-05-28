@@ -4244,13 +4244,13 @@ different technologies, including microarrays, RNA-seq, and quantitative PCR.")
 (define-public r-methylkit
   (package
     (name "r-methylkit")
-    (version "1.20.0")
+    (version "1.22.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "methylKit" version))
               (sha256
                (base32
-                "02px46h2ynprss7kwll3i0jz0clrdg0bys70jacd432xw34nm2sx"))))
+                "00asjzv05avfg0rrkmfbdqd6xx8d18zi72n3b1kf9wj81z2d2a35"))))
     (properties `((upstream-name . "methylKit")))
     (build-system r-build-system)
     (propagated-inputs
