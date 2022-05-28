@@ -14333,14 +14333,14 @@ memory usage and processing time is minimized.")
 (define-public r-mscoreutils
   (package
     (name "r-mscoreutils")
-    (version "1.6.2")
+    (version "1.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MsCoreUtils" version))
        (sha256
         (base32
-         "0614a830gf676ck8j5lkm04158pfvhjb61p3xfdd69gg3d44mk1d"))))
+         "077x1zcy27x8akmagjn75j97082cgnahrbfw0qx08q455m5x3xzh"))))
     (properties `((upstream-name . "MsCoreUtils")))
     (build-system r-build-system)
     (propagated-inputs
