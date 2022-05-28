@@ -5281,14 +5281,14 @@ able to deal also with novel and case specific events.")
 (define-public r-trajectoryutils
   (package
     (name "r-trajectoryutils")
-    (version "1.2.0")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "TrajectoryUtils" version))
        (sha256
         (base32
-         "0pzm1h69bg04a2v09r8c6pb3pix6f3n5dylvbv7wsp574qfaqyd1"))))
+         "07hcr3zplxlzlwc13wh9006m5kaqm57cm1b2x74bpp857f2q93dj"))))
     (properties
      `((upstream-name . "TrajectoryUtils")))
     (build-system r-build-system)
