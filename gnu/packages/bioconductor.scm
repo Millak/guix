@@ -13205,14 +13205,14 @@ gene selection, testing relationships, and so on.")
 (define-public r-biocpkgtools
   (package
     (name "r-biocpkgtools")
-    (version "1.12.2")
+    (version "1.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BiocPkgTools" version))
        (sha256
         (base32
-         "1yz2sgx4xrnw22k3d6q6hkj213bnbb4hbr5ymxnmjnsz551s75ny"))))
+         "1v0824vmg49q9lh0igdyniryyknw6vmh462rn25kmg9hdna0w99h"))))
     (properties `((upstream-name . "BiocPkgTools")))
     (build-system r-build-system)
     (propagated-inputs
