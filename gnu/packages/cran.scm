@@ -16533,14 +16533,14 @@ for lower and upper parameter bounds.  The implementation can be used via
 (define-public r-moments
   (package
     (name "r-moments")
-    (version "0.14")
+    (version "0.14.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "moments" version))
        (sha256
         (base32
-         "0f9y58w1hxcz4bqivirx25ywlmc80gbi6dfx5cnhkpdg1pk82fra"))))
+         "0r6qf3i1rzh2822bx1p0h8mh91gsbgg6asl2rzh2l4ys094bilif"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/moments")
     (synopsis "Moments, cumulants, skewness, kurtosis and related tests")
