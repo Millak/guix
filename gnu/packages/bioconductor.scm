@@ -6720,14 +6720,14 @@ trees and clusters to other programs.")
 (define-public r-goseq
   (package
     (name "r-goseq")
-    (version "1.46.0")
+    (version "1.48.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "goseq" version))
        (sha256
         (base32
-         "1psl9mqgx1d21kayaxvrxriw34fq30wnd57q5c1sk3p8iahg73g0"))))
+         "1w0rwzhqkvp2x7y5v0qcyjbss0p95gb1jrnx5sdkqginbvrmrd48"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotationdbi
