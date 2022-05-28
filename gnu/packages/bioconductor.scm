@@ -1519,13 +1519,13 @@ across the entire multi-'omics experiment.")
 (define-public r-tcgabiolinksgui-data
   (package
     (name "r-tcgabiolinksgui-data")
-    (version "1.14.0")
+    (version "1.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "TCGAbiolinksGUI.data" version 'experiment))
        (sha256
-        (base32 "08zmlvycq3jz1zy0715x9f21nf3465c51k7w2jq12sfbap36pmjm"))))
+        (base32 "1mb2z59acs1pi1gqvgjyh62wnmbxskc5l0p42gpjajsjip5x1x7g"))))
     (properties `((upstream-name . "TCGAbiolinksGUI.data")))
     (build-system r-build-system)
     (native-inputs (list r-knitr))
