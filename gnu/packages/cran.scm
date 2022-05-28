@@ -14167,18 +14167,20 @@ definiteness of a matrix.")
 (define-public r-rspectra
   (package
     (name "r-rspectra")
-    (version "0.16-0")
+    (version "0.16-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RSpectra" version))
        (sha256
         (base32
-         "1ab45as2ysjrvkhvmx7y3nbhd0y1w4j9k2a789lcd973zz4wzwda"))))
+         "16ij84wgpsmqmnxqiii8dgihy3bfxazry9znmckhwzba7m0d79fb"))))
     (properties `((upstream-name . "RSpectra")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-matrix r-rcpp r-rcppeigen))
+    (native-inputs
+     (list r-knitr))
     (home-page "https://github.com/yixuan/RSpectra")
     (synopsis "Solvers for large-scale Eigenvalue and SVD problems")
     (description
