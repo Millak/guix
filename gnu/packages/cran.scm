@@ -3875,13 +3875,13 @@ with @code{Rcpp}.")
 (define-public r-rcppxptrutils
   (package
     (name "r-rcppxptrutils")
-    (version "0.1.1")
+    (version "0.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RcppXPtrUtils" version))
        (sha256
-        (base32 "0jh64c46gp99d2nsih14vx34pamc8i7gkmiy2nj94rx3sxq62yh5"))))
+        (base32 "0hm57nf4dzgsmg4hjj6wikwjx93fgfwkmybw6ly4b58wi6qwml1l"))))
     (properties `((upstream-name . "RcppXPtrUtils")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
