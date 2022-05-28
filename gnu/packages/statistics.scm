@@ -2499,13 +2499,13 @@ integers.")
 (define-public r-httr
   (package
     (name "r-httr")
-    (version "1.4.2")
+    (version "1.4.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "httr" version))
               (sha256
                (base32
-                "1y8y1g1dkgv9jafrk1kj6pzxpw95c0rr9lplblfq2byrs1pfsas6"))))
+                "0skwi501rzndywn81704d68n1l6lrvqilf91q08cjfhpjvx171ls"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-curl r-jsonlite r-openssl r-mime r-r6))
