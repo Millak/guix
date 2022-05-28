@@ -9275,14 +9275,14 @@ footprints.")
 (define-public r-gofuncr
   (package
     (name "r-gofuncr")
-    (version "1.14.0")
+    (version "1.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "GOfuncR" version))
        (sha256
         (base32
-         "08n1d03i4l2dl47axmrziiypi83yffndf0ww1b32skyjm2r0x127"))))
+         "02vdfsjrqp0m06mfbspwkxjyqxfca0w1idgygpi1a9i5m4fqhwpk"))))
     (properties `((upstream-name . "GOfuncR")))
     (build-system r-build-system)
     (propagated-inputs
