@@ -15443,14 +15443,14 @@ Python environments in a single R session.")
 (define-public r-biocthis
   (package
     (name "r-biocthis")
-    (version "1.4.0")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "biocthis" version))
        (sha256
         (base32
-         "0kh5lmv992v4r5r58x29403cll0zxr9fx4ar81nrzvnch5668v39"))))
+         "1hdgjp00d2si3mr7m1d289i9wn7g927z6n8n27d5sm94lb91qln0"))))
     (properties `((upstream-name . "biocthis")))
     (build-system r-build-system)
     (arguments
