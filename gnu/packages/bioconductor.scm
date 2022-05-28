@@ -7597,14 +7597,14 @@ single cell assay data.")
 (define-public r-monocle
   (package
     (name "r-monocle")
-    (version "2.22.0")
+    (version "2.24.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "monocle" version))
        (sha256
         (base32
-         "0wb2c1jf502lrfx3d0amb09fvhalrwxvpsp99jsab162v4hddg85"))))
+         "1fyqd7qhij2iyx9vdmgnx2qf0w3kwbkmg805539zrmxry8cwfldb"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biobase
@@ -7613,13 +7613,13 @@ single cell assay data.")
            r-cluster
            r-combinat
            r-ddrtree
-           r-densityclust
            r-dplyr
            r-fastica
            r-ggplot2
            r-hsmmsinglecell
            r-igraph
            r-irlba
+           r-leidenbase
            r-limma
            r-mass
            r-matrix
