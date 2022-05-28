@@ -13058,14 +13058,14 @@ analysing multivariate abundance data in community ecology.")
 (define-public r-afex
   (package
     (name "r-afex")
-    (version "1.1-0")
+    (version "1.1-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "afex" version))
        (sha256
         (base32
-         "0h8zqv82dqll19l3p89a2csvgnx8ayb2bajq7b35a8svhj427zax"))))
+         "09q426s2zmzxx5ilxy0x5mflpb38pl075ss1s8xvpswkn6cia0b6"))))
     (build-system r-build-system)
     ;; This is needed for the vignette builder
     (arguments
