@@ -1606,13 +1606,13 @@ ranking by fold-change and visualization.")
 (define-public r-adam
   (package
     (name "r-adam")
-    (version "1.10.0")
+    (version "1.12.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ADAM" version))
               (sha256
                (base32
-                "18zwci0ab54q7rdwj0n63w0i14lfrb4cccp09bcrq10gl1ki07f5"))))
+                "1cgcjykik9hjrwlvvgaccprcrimgq5kwh9cj6367yk9m574a4gmn"))))
     (properties `((upstream-name . "ADAM")))
     (build-system r-build-system)
     (propagated-inputs (list r-dplyr
