@@ -15581,14 +15581,14 @@ as extensions of common core functions/methods.")
 (define-public r-mvcclass
   (package
     (name "r-mvcclass")
-    (version "1.68.0")
+    (version "1.70.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MVCClass" version))
        (sha256
         (base32
-         "088gzh33vjkjf78xczqfs89pyg0k7c3533yfvijqxl84ni2ky78z"))))
+         "0apcjlq4i2mg8mlfqgvlcsqkiy51whzid3nd0m830jff0ywgh47g"))))
     (properties `((upstream-name . "MVCClass")))
     (build-system r-build-system)
     (home-page "https://bioconductor.org/packages/MVCClass")
