@@ -25030,14 +25030,14 @@ importation and recoding.")
 (define-public r-rockchalk
   (package
     (name "r-rockchalk")
-    (version "1.8.151")
+    (version "1.8.152")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rockchalk" version))
        (sha256
         (base32
-         "17mfaxn3gj0vac5wdmsjj2z2668cszbpvan7hnxp7ic9bvsm1w2y"))))
+         "1d15jlgcy35pvaicaddd4zrhwm5ajb9yc3jk6dyxm99gc5wcn6h3"))))
     (properties `((upstream-name . "rockchalk")))
     (build-system r-build-system)
     (propagated-inputs
