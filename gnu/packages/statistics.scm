@@ -5527,18 +5527,24 @@ using modular prediction and response module classes.")
 (define-public r-quantreg
   (package
     (name "r-quantreg")
-    (version "5.88")
+    (version "5.93")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "quantreg" version))
        (sha256
-        (base32 "0grsha18zkiil0qnxc1d7kc3w26i6aaa4av9n9ahdm8yf59yah0r"))))
+        (base32 "0fg5x6sa8mz2hh9nak0wajh4l6h03x216462vs94rgq0ln24kafl"))))
     (build-system r-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list gfortran))
+     (list gfortran
+           r-r-rsp)) ;for vignettes
     (propagated-inputs
-     (list r-matrix r-matrixmodels r-sparsem))
+     (list r-mass r-matrix r-matrixmodels r-sparsem r-survival))
     (home-page "https://www.r-project.org")
     (synopsis "Quantile regression")
     (description
