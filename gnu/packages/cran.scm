@@ -24057,14 +24057,14 @@ automatically show a loader when the output is (re)calculating.")
 (define-public r-rsvg
   (package
     (name "r-rsvg")
-    (version "2.2.0")
+    (version "2.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rsvg" version))
        (sha256
         (base32
-         "05mvi1ijnxayyj1f4p8nb56pncmm7x0sbq0d87asv7c7kw765n1a"))))
+         "096w4d1gvfc65d4jg7ykp23k9f7cf7f8zvzfhvhd7qkfsbjpxqkj"))))
     (properties `((upstream-name . "rsvg")))
     (build-system r-build-system)
     (inputs
