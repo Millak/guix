@@ -1175,13 +1175,13 @@ available as companion packages.")
 (define-public r-scales
   (package
     (name "r-scales")
-    (version "1.1.1")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "scales" version))
        (sha256
-        (base32 "019ps0njjc0rzrjygqiyn8b9vp0c3c0jd56h1yi19wzi49jvdcj0"))))
+        (base32 "1pq2rrix6a5gsi8xw38viiydp1bsxxmcmyy7dv9q8gkb1qj50p8q"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-farver
@@ -1189,6 +1189,7 @@ available as companion packages.")
            r-lifecycle
            r-munsell
            r-rcolorbrewer
+           r-rlang
            r-r6
            r-viridislite))
     (home-page "https://github.com/hadley/scales")
