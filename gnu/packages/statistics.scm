@@ -2421,16 +2421,17 @@ tables, autolinks and strikethrough text.")
 (define-public r-roxygen2
   (package
     (name "r-roxygen2")
-    (version "7.1.2")
+    (version "7.2.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "roxygen2" version))
               (sha256
                (base32
-                "1zf55wywlpy7mk7zfyi3s9fhhg1m9kvafzj46iqw5cbvnlg3ssdk"))))
+                "12s436jn7aagjpc2lnlrhzwqgsdl8lbbwhkddih6rnxrczawzgrf"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-brew
+           r-cli
            r-commonmark
            r-cpp11
            r-desc
@@ -2442,6 +2443,7 @@ tables, autolinks and strikethrough text.")
            r-rlang
            r-stringi
            r-stringr
+           r-withr
            r-xml2))
     (native-inputs
      (list r-knitr))
