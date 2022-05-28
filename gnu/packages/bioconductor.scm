@@ -14858,14 +14858,14 @@ on the plot.")
 (define-public r-abn
   (package
     (name "r-abn")
-    (version "2.7-0")
+    (version "2.7-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "abn" version))
        (sha256
         (base32
-         "13i2f4lw1rzj89bp31sn03prq1bqj7bsxwdr8z2ql02yqks9phg0"))))
+         "1w3jns96m8b9scvaa4hcla3i88a0cfh9qis2l04yixvda5q91gpr"))))
     (build-system r-build-system)
     (inputs
      (list gsl))
