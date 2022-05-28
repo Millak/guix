@@ -32512,14 +32512,14 @@ zoom/navigate any plot when called with any active plot.")
 (define-public r-zoolog
   (package
     (name "r-zoolog")
-    (version "0.4.1")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "zoolog" version))
        (sha256
         (base32
-         "1wxxxscw4ji4p4599vdw6vcrkqm0g75x1gh13m4758lb51wav9ks"))))
+         "00fi7czfwr0ll9070w3ijskd0xvilj02gy8wkgqzzrlilij8ah7p"))))
     (properties `((upstream-name . "zoolog")))
     (build-system r-build-system)
     (propagated-inputs
