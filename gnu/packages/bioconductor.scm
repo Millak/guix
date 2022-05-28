@@ -3999,13 +3999,13 @@ provide added flexibility for data combination and manipulation.")
 (define-public r-genomicranges
   (package
     (name "r-genomicranges")
-    (version "1.46.1")
+    (version "1.48.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GenomicRanges" version))
               (sha256
                (base32
-                "133r27wsdyppjv9kq0d2xamx007lkf416nnlaygs4hs3a76p9xwx"))))
+                "088rv1aclwq265pdg4hmks73nl0125vk0vigyi44n3djkrdx48yn"))))
     (properties
      `((upstream-name . "GenomicRanges")))
     (build-system r-build-system)
