@@ -11213,14 +11213,14 @@ sequential way to mimic the manual gating strategy.")
 (define-public r-cytoml
   (package
     (name "r-cytoml")
-    (version "2.6.0")
+    (version "2.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "CytoML" version))
        (sha256
         (base32
-         "16rgsc2dz5b8lm3ma8nh9wiknrdnvfjcsij7809rmcfs0gn1arcz"))))
+         "0vp7advfh1d8596hjpzayasjhga4mx0l104sgz2asscbrjm4v7rr"))))
     (properties `((upstream-name . "CytoML")))
     (build-system r-build-system)
     (inputs
