@@ -12806,14 +12806,14 @@ available bioactivity data.")
 (define-public r-biobroom
   (package
     (name "r-biobroom")
-    (version "1.26.0")
+    (version "1.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "biobroom" version))
        (sha256
         (base32
-         "034gbywrscv23kk1qnk7sc7dxdckmf60wh29fz65v1n28mkf180r"))))
+         "04x1z9nchm4mbhqr31011zdprc4md156j4zf003s7xx0n278xsgh"))))
     (properties `((upstream-name . "biobroom")))
     (build-system r-build-system)
     (propagated-inputs
