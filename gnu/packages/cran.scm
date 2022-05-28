@@ -8952,14 +8952,14 @@ always locate the files relative to your project root.")
 (define-public r-reticulate
   (package
     (name "r-reticulate")
-    (version "1.24")
+    (version "1.25")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "reticulate" version))
        (sha256
         (base32
-         "1k0nv43fa9lx44pamxpprnvvmsp15adn5z6hg9siyq0n94hca65r"))))
+         "0b1szzsqyc8wcfpkn5517bb1ds064vs2hky71my3p74kfngay991"))))
     (build-system r-build-system)
     (inputs (list python))
     (propagated-inputs
