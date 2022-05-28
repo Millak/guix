@@ -347,6 +347,29 @@ visualization of their differences.")
     (description "This package implements Dirichlet regression models.")
     (license license:gpl2+)))
 
+(define-public r-dixontest
+  (package
+    (name "r-dixontest")
+    (version "1.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "dixonTest" version))
+       (sha256
+        (base32 "1a3yc30g5rbb0jhm2b0iir5i1dy4jyl67spkhx4yysg4snz131wv"))))
+    (properties `((upstream-name . "dixonTest")))
+    (build-system r-build-system)
+    (native-inputs (list gfortran))
+    (home-page "https://cran.r-project.org/package=dixonTest")
+    (synopsis "Dixon's ratio test for outlier detection")
+    (description
+     "For outlier detection in small and normally distributed samples the ratio
+test of Dixon (Q-test) can be used.  Density, distribution function, quantile
+function and random generation for Dixon's ratio statistics are provided as
+wrapper functions.  The core applies McBane's Fortran functions that use
+Gaussian quadrature for a numerical solution.")
+    (license license:gpl3)))
+
 (define-public r-emdist
   (package
     (name "r-emdist")
