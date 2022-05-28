@@ -1385,13 +1385,13 @@ by Brooks et al., Genome Research 2011.")
 (define-public r-hsmmsinglecell
   (package
     (name "r-hsmmsinglecell")
-    (version "1.2.0")
-    (source (origin
-              (method url-fetch)
-              (uri (bioconductor-uri "HSMMSingleCell" version 'experiment))
-              (sha256
-               (base32
-                "1vxnr8gr6md85g39csy7g2sqqajiqgyvznys2qa9yixd2b01yph9"))))
+    (version "1.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "HSMMSingleCell" version 'experiment))
+       (sha256
+        (base32 "12whx0pl9461xbak5r9zi6ggx5is8sk6mgrbjwlmx3mbr9am116v"))))
     (properties
      `((upstream-name . "HSMMSingleCell")))
     (build-system r-build-system)
