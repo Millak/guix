@@ -16644,14 +16644,14 @@ obtain confidence intervals associated with AIC and BIC.")
 (define-public r-penalized
   (package
     (name "r-penalized")
-    (version "0.9-51")
+    (version "0.9-52")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "penalized" version))
        (sha256
         (base32
-         "1zcrwa93mc27qj3g4ayc2k895r6g8q0g6qb2azmvj7wqk750va7a"))))
+         "08badmgygppbqzay20qijyww028yw6s8dyd8ijcp8g4r9rn8xqyq"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-rcpp r-rcpparmadillo r-survival))
