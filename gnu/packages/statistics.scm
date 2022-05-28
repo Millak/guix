@@ -2258,17 +2258,19 @@ R version.")
 (define-public r-checkmate
   (package
     (name "r-checkmate")
-    (version "2.0.0")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "checkmate" version))
        (sha256
         (base32
-         "193gkifr9spp0x0rwnjq1spdhjkfkh4mv27iklskcj604075phhd"))))
+         "1ii11lypfz8qwswaiagaxnfq6wqkg3cq4j7k9q40sdd0cd8xv15p"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-backports))
+    (native-inputs
+     (list r-knitr))
     (home-page "https://github.com/mllg/checkmate")
     (synopsis "Fast and versatile argument checks")
     (description
