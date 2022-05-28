@@ -14907,14 +14907,14 @@ want to include run-time testing features in their own packages.")
 (define-public r-assertive-properties
   (package
     (name "r-assertive-properties")
-    (version "0.0-4")
+    (version "0.0-5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "assertive.properties" version))
        (sha256
         (base32
-         "0sqs54acs9qk9kvm32rxzfbzxz1l8mjahpfnw7r30z2brgz661jw"))))
+         "1pgljbwwbvbl4kc5c8mcv0qbzq3k6fzi29k88811yml263sm92dn"))))
     (properties
      `((upstream-name . "assertive.properties")))
     (build-system r-build-system)
