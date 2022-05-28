@@ -2273,14 +2273,14 @@ data structures in C++.")
 (define-public r-fastghquad
   (package
     (name "r-fastghquad")
-    (version "1.0")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fastGHQuad" version))
        (sha256
         (base32
-         "1rjia8wggadr9xwxcmzmal0rc4g6pa3dr5888fbbnb6abl8b2lrj"))))
+         "1zj7nsbnx4g253m3dpz9vi3zk3jxwrixwjw1ks6n4shpb4dlkp2w"))))
     (properties `((upstream-name . "fastGHQuad")))
     (build-system r-build-system)
     (propagated-inputs
