@@ -906,17 +906,16 @@ libgit2 bindings for Emacs, intended to boost the performance of Magit.")
               ;; the root of the project for the emacs-build-system.
               (for-each (lambda (f)
                           (install-file f "lisp"))
-                        (find-files "Documentation" "\\.info$"))
-              (chdir "lisp")))
+                        (find-files "Documentation" "\\.info$"))))
           (add-after 'build-info-manual 'set-magit-version
             (lambda _
-              (make-file-writable "magit.el")
-              (emacs-substitute-variables "magit.el"
+              (make-file-writable "lisp/magit.el")
+              (emacs-substitute-variables "lisp/magit.el"
                 ("magit-version" #$version))))
           (add-after 'set-magit-version 'patch-exec-paths
             (lambda* (#:key inputs #:allow-other-keys)
-              (make-file-writable "magit-sequence.el")
-              (emacs-substitute-variables "magit-sequence.el"
+              (make-file-writable "lisp/magit-sequence.el")
+              (emacs-substitute-variables "lisp/magit-sequence.el"
                 ("magit-perl-executable"
                  (search-input-file inputs "/bin/perl")))))
           (add-before 'check 'configure-git
@@ -932,13 +931,17 @@ libgit2 bindings for Emacs, intended to boost the performance of Magit.")
               ;; There is an issue causing TRAMP to fail in the build
               ;; environment.  Setting the tramp-remote-shell parameter of
               ;; the sudo-method to the file name of the shell didn't help.
-              (chdir "..")
               (substitute* "t/magit-tests.el"
                 (("^\\(ert-deftest magit-toplevel:tramp.*" all)
                  (string-append all "  (skip-unless nil)")))))
-          (add-before 'install 'enter-lisp-directory
-            (lambda _
-              (chdir "lisp"))))))
+          (replace 'expand-load-path
+            (lambda args
+              (with-directory-excursion "lisp"
+                (apply (assoc-ref %standard-phases 'expand-load-path) args))))
+          (replace 'install
+            (lambda args
+              (with-directory-excursion "lisp"
+                (apply (assoc-ref %standard-phases 'install) args)))))))
     (native-inputs
      (list texinfo))
     (inputs
