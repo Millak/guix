@@ -371,8 +371,8 @@ and a variety of other stuff.")
 
 (define-public minetest-mesecons
   ;; The release on ContentDB does not have its own version number.
-  (let ((commit "db5879706d04d3480bc4863ce0c03fa73e5f10c7")
-        (revision "0"))
+  (let ((commit "27c3c515b49af91c1dbc427f31a820722854eb24")
+        (revision "63"))
     (package
       (name "minetest-mesecons")
       (version (git-version "1.2.1" revision commit))
@@ -383,7 +383,7 @@ and a variety of other stuff.")
                (url "https://github.com/minetest-mods/mesecons")
                (commit commit)))
          (sha256
-          (base32 "04m9s9l3frw1lgki41hgvjsw2zkrvfv0sy750b6j12arzb3lv645"))
+          (base32 "1l0kwjj8ns8hv6z520g6ph5swknar336dbi5qr3dfsy18ydk1j92"))
          (file-name (git-file-name name version))))
       (build-system minetest-mod-build-system)
       (home-page "https://mesecons.net")
@@ -398,11 +398,7 @@ pressure plates and note blocks.
 Mesecons has a similar goal to Redstone in Minecraft, but works in its own way,
 with different rules and mechanics.")
       ;; LGPL for code, CC-BY-SA for textures.
-      ;; The README.md and COPYING.txt disagree about the "+" in license:lgpl3+.
-      ;; For now, assume README.md is correct.  Upstream has been asked to
-      ;; correct the inconsistency:
-      ;; <https://github.com/minetest-mods/mesecons/issues/575>.
-      (license (list license:lgpl3+ license:cc-by-sa3.0))
+      (license (list license:lgpl3 license:cc-by-sa3.0))
       (properties `((upstream-name . "Jeija/mesecons"))))))
 
 (define-public minetest-mineclone
