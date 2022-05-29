@@ -525,7 +525,7 @@ services.")
         (base32 "0w4g0iyssyw7dd0061881z8s5czcl01mz6v00znax57zfxjqpvnm"))))
     (build-system gnu-build-system)
     (arguments '(#:tests? #f))          ; No tests available.
-    (home-page "http://software.clapper.org/daemonize/")
+    (home-page "https://software.clapper.org/daemonize/")
     (synopsis "Command line utility to run a program as a daemon")
     (description
      "daemonize runs a command as a Unix daemon.  It will close all open file
