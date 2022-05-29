@@ -213,6 +213,36 @@ as swords and tools made of different materials.  It also adds copper rails.")
     (license license:zlib)
     (properties `((upstream-name . "Calinou/moreores")))))
 
+(define-public minetest-sound-api-core
+  (package
+    (name "minetest-sound-api-core")
+    ;; No tags, no releases. The author intended to let users use it as a
+    ;; submodules for other projects.
+    ;; https://github.com/mt-mods/basic_materials/issues/4
+    (version "2022-02-27")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mt-mods/sound_api_core")
+             (commit "6956e49e775f325116f8e0c643899c089c691e1e")))
+       (sha256
+        (base32 "1ys6g2skhkksa4cx9agxhsibj5js8z4y2q1ngis9ddr38p756pcy"))
+       (file-name (git-file-name name version))
+       (snippet
+        '(begin
+           (call-with-output-file "mod.conf"
+             (lambda (port)
+               (format port "\
+name = sound_api_core")))))))
+    (build-system minetest-mod-build-system)
+    (propagated-inputs '())
+    (home-page "https://github.com/mt-mods/sound_api_core")
+    (synopsis "Core for game agnostic sounds")
+    (description
+     "This library can be used to get some specific sounds, whatever the game.")
+    (license license:expat)))
+
 (define-public minetest-basic-materials
   (package
     (name "minetest-basic-materials")
