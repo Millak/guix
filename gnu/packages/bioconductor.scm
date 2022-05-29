@@ -358,14 +358,14 @@ provided by NCBI (GRCh38, 2013-12-17) and stored in Biostrings objects.")
 (define-public r-bsgenome-hsapiens-ucsc-hg19-masked
   (package
     (name "r-bsgenome-hsapiens-ucsc-hg19-masked")
-    (version "1.3.99")
-    (source (origin
-              (method url-fetch)
-              (uri (bioconductor-uri "BSgenome.Hsapiens.UCSC.hg19.masked"
-                                     version 'annotation))
-              (sha256
-               (base32
-                "0452pyah0kv1vsrsjbrqw4k2rm8lc2vc771dzib45gnnfz86qxrr"))))
+    (version "1.3.993")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "BSgenome.Hsapiens.UCSC.hg19.masked"
+                              version 'annotation))
+       (sha256
+        (base32 "19533ihgad67bzhavycv6z708012ylz9cw1qdfmk2b7ikf3kiaz9"))))
     (properties
      `((upstream-name . "BSgenome.Hsapiens.UCSC.hg19.masked")))
     (build-system r-build-system)
