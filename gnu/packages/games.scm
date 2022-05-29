@@ -3601,6 +3601,25 @@ for common mesh file formats, and collision detection.")
     (home-page "https://irrlicht.sourceforge.io/")
     (license license:zlib)))
 
+(define-public irrlicht-for-minetest
+  (package
+    (inherit irrlicht)
+    (name "irrlicht-for-minetest")
+    (version "1.9.0mt5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/minetest/irrlicht")
+             (commit version)))
+       (sha256
+        (base32
+         "1jxk1x0f60n8lrz8a6x62aj2pqg0qnbajsld3lqncvwsfbi0xjx1"))))
+    (build-system cmake-build-system)
+    (arguments
+     ;; No check target.
+     (list #:tests? #f))))
+
 (define-public mars
   ;; The latest release on SourceForge relies on an unreleased version of SFML
   ;; with a different API, so we take the latest version from the official
