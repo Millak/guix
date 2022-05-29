@@ -3592,12 +3592,12 @@ are primarily in English, however some in other languages are provided.")
        (list (string-append "CC=" ,(cc-for-target))
              "sharedlib")))
     (inputs
-     `(("bzip2" ,bzip2)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libx11" ,libx11)
-       ("libxxf86vm" ,libxxf86vm)
-       ("mesa" ,mesa)))
+     (list bzip2
+           libjpeg-turbo
+           libpng
+           libx11
+           libxxf86vm
+           mesa))
     (synopsis "3D game engine written in C++")
     (description
      "The Irrlicht Engine is a high performance realtime 3D engine written in
