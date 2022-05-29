@@ -4976,14 +4976,14 @@ and other secrets.  It communicates with the \"Secret Service\" using DBus.")
              (substitute* "meson_post_install.py"
                (("gtk-update-icon-cache") (which "true"))))))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("appstream-glib" ,appstream-glib)
-       ("desktop-file-utils" ,desktop-file-utils)
-       ("glib:bin" ,glib "bin") ; for glib-compile-resources
-       ("intltool" ,intltool)
-       ("itstool" ,itstool)
-       ("vala" ,vala)
-       ("xmllint" ,libxml2)))
+     (list appstream-glib
+           desktop-file-utils
+           `(,glib "bin")               ; for glib-compile-resources
+           intltool
+           itstool
+           libxml2
+           pkg-config
+           vala))
     (inputs
      (list gtk+ libgnome-games-support librsvg))
     (home-page "https://wiki.gnome.org/Apps/Five%20or%20more")
