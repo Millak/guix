@@ -367,16 +367,13 @@ that implements both the msgpack and msgpack-rpc specifications.")
         (base32 "0gvf3h8r8300wdwfjgxw3nzlj7w14q63m67p8wdm5fvpha017n4y"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
+     `(#:test-target "test"
+       #:make-flags
        (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
-             (string-append "CC=gcc"))
+             (string-append "CC=" ,(cc-for-target)))
        #:phases
        (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (replace 'check
-           (lambda _
-             (setenv "CC" "gcc")
-             (invoke "make" "test"))))))
+         (delete 'configure))))         ; no configure script
     (inputs
      (list libyaml))
     (native-inputs
