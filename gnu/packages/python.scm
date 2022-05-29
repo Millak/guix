@@ -692,28 +692,30 @@ To function properly, this package should not be installed together with the
                       '("libffi" "lwip" "stm32lib" "nrfx")))))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'build-mpy-cross
-           (lambda* (#:key make-flags #:allow-other-keys)
-             (with-directory-excursion "mpy-cross"
-               (apply invoke "make" make-flags))))
-         (add-after 'build-mpy-cross 'prepare-build
-           (lambda _
-             (chdir "ports/unix")
-             ;; see: https://github.com/micropython/micropython/pull/4246
-             (substitute* "Makefile"
-               (("-Os") "-Os -ffp-contract=off"))))
-         (replace 'install-license-files
-           ;; We don't build in the root directory so the file isn't found.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out  (assoc-ref outputs "out"))
-                    (dest (string-append out "/share/doc/" ,name "-" ,version "/")))
-               (install-file "../../LICENSE" dest))))
-         (delete 'configure)) ; no configure
-       #:make-flags (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
-                          "V=1")
-       #:test-target "test"))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'build-mpy-cross
+                 (lambda* (#:key make-flags #:allow-other-keys)
+                   (with-directory-excursion "mpy-cross"
+                     (apply invoke "make" make-flags))))
+               (add-after 'build-mpy-cross 'prepare-build
+                 (lambda _
+                   (chdir "ports/unix")
+                   ;; see: https://github.com/micropython/micropython/pull/4246
+                   (substitute* "Makefile"
+                     (("-Os") "-Os -ffp-contract=off"))))
+               (replace 'install-license-files
+                 ;; We don't build in the root directory so the file isn't found.
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((out  (assoc-ref outputs "out"))
+                          (doc (string-append out "/share/doc/"
+                                              #$name "-" #$version "/")))
+                     (install-file "../../LICENSE" doc))))
+               (delete 'configure))       ; no configure
+           #:make-flags
+           #~(list (string-append "PREFIX=" #$output)
+                   "V=1")
+           #:test-target "test"))
     (native-inputs (list pkg-config python-wrapper))
     (inputs
      (list libffi))
