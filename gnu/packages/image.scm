@@ -522,7 +522,7 @@ official designation is ISO/IEC 29199-2). This library is an implementation of t
       (sha256
        (base32 "06f6d08xvmsiki4mc1qs985gsjqmsxx793a93b72y25q84wbg9x9"))))
    (build-system gnu-build-system)
-   (inputs `(("libjpeg" ,libjpeg-turbo)))
+   (inputs (list libjpeg-turbo))
    (arguments
     '(#:tests? #f))                     ; no tests
    (synopsis "Optimize JPEG images")
