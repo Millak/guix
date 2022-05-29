@@ -216,7 +216,15 @@ given PATCHES.  When TOOLS-EXTRA is given, it must point to the
              ;; Use a sane default include directory.
              (string-append "-DC_INCLUDE_DIRS="
                             (assoc-ref %build-inputs "libc")
-                            "/include"))
+                            "/include")
+       ,@(if (target-riscv64?)
+           (list "-DLIBOMP_LIBFLAGS=-latomic"
+                 "-DCMAKE_SHARED_LINKER_FLAGS=-latomic")
+           `()))
+
+       ,@(if (target-riscv64?)
+           `(#:make-flags '("LDFLAGS=-latomic"))
+           '())
 
        ;; Don't use '-g' during the build to save space.
        #:build-type "Release"
