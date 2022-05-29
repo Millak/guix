@@ -45,7 +45,7 @@
 (define-public wget
   (package
     (name "wget")
-    (version "1.21.1")
+    (version "1.21.3")
     (source
      (origin
       (method url-fetch)
@@ -53,7 +53,7 @@
                           version ".tar.lz"))
       (sha256
        (base32
-        "1bchzkacjsc5c0x01ngaana9fs5j12wfw1c8qxps1yp68x9vx6yv"))))
+        "19afmyr1i3zwdwr8wkyz8q6z5764ik3dm87as194g78l8xggplnv"))))
     (build-system gnu-build-system)
     (inputs
      (list gnutls libidn2 libpsl))
