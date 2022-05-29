@@ -4957,7 +4957,7 @@ and other secrets.  It communicates with the \"Secret Service\" using DBus.")
 (define-public five-or-more
   (package
     (name "five-or-more")
-    (version "3.32.2")
+    (version "3.32.3")
     (source
      (origin
        (method url-fetch)
@@ -4965,7 +4965,7 @@ and other secrets.  It communicates with the \"Secret Service\" using DBus.")
                            (version-major+minor version) "/"
                            "five-or-more-" version ".tar.xz"))
        (sha256
-        (base32 "19pf8wzbf3ciqf2k4bj9sddvyhckfd62x86pnqr6s8h4vn9jc6ii"))))
+        (base32 "1x4ys18rn37hsavivh532py2avj9686aycnn8ys29cyyxwpdf41d"))))
     (build-system meson-build-system)
     (arguments
      '(#:glib-or-gtk? #t
@@ -4974,8 +4974,7 @@ and other secrets.  It communicates with the \"Secret Service\" using DBus.")
          (add-after 'unpack 'skip-gtk-update-icon-cache
            (lambda _
              (substitute* "meson_post_install.py"
-               (("gtk-update-icon-cache") (which "true")))
-             #t)))))
+               (("gtk-update-icon-cache") (which "true"))))))))
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("appstream-glib" ,appstream-glib)
