@@ -9775,3 +9775,33 @@ Features:
      "@code{go-github-com-go-chi-chi-v5} is an HTTP router that lets the user
 decompose request handling into many smaller layers.")
     (license license:expat)))
+
+(define-public go-sigs-k8s-io-yaml
+  (package
+    (name "go-sigs-k8s-io-yaml")
+    (version "1.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/kubernetes-sigs/yaml")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0qxs0ppqwqrfqs4aywyn1h28xh1qlj5ds4drmygaz1plrxj02dqn"))))
+    (build-system go-build-system)
+    (arguments '(#:import-path "sigs.k8s.io/yaml"))
+    (propagated-inputs (list go-gopkg-in-yaml-v2 go-github-com-davecgh-go-spew))
+    (home-page "https://sigs.k8s.io/yaml")
+    (synopsis "YAML marshaling and unmarshaling support for Go")
+    (description
+     "This package provides a Go library that first converts YAML to JSON
+using @code{go-yaml} and then uses @code{json.Marshal} and
+@code{json.Unmarshal} to convert to or from the struct. This means that
+it effectively reuses the JSON struct tags as well as the custom JSON
+methods @code{MarshalJSON} and @code{UnmarshalJSON} unlike
+@code{go-yaml}.
+
+kubernetes-sigs/yaml is a permanent fork of
+@url{https://github.com/ghodss/yaml,ghodss/yaml}.")
+    (license (list license:expat license:bsd-3))))
