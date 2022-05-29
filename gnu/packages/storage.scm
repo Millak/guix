@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2018, 2019, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017 Rutger Helling <rhelling@mykolab.com>
-;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2020, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -59,14 +59,14 @@
 (define-public ceph
   (package
     (name "ceph")
-    (version "16.2.7")
+    (version "16.2.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.ceph.com/tarballs/ceph-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0n7vpdcxji49bqaa5b7zxif1r80rrkbh0dfacbibvf20kzzbn2fz"))
+                "1yf62k9wlx9pmggwa5c05wfqzy28sdm4b465y4iqrgc9dkrgin08"))
               (patches
                (search-patches
                 "ceph-disable-cpu-optimizations.patch"
