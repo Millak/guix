@@ -10,6 +10,7 @@
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1273,7 +1274,7 @@ resulting from command-line parsing."
                (export-shepherd-graph os (current-output-port)
                                       #:backend (graph-backend)))
               (else
-               (unless (memq action '(build init))
+               (unless (memq action '(build init reconfigure))
                  (warn-about-old-distro #:suggested-command
                                         "guix system reconfigure"))
 
