@@ -4981,11 +4981,10 @@ and other secrets.  It communicates with the \"Secret Service\" using DBus.")
            `(,glib "bin")               ; for glib-compile-resources
            intltool
            itstool
-           libxml2
            pkg-config
            vala))
     (inputs
-     (list gtk+ libgnome-games-support librsvg))
+     (list gtk+ libgnome-games-support librsvg libxml2))
     (home-page "https://wiki.gnome.org/Apps/Five%20or%20more")
     (synopsis "Logic puzzle game")
     (description "Five or More is a game where you try to align
