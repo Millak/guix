@@ -9776,14 +9776,14 @@ toolkit.  Use it to build trees of widgets.")
 (define-public python-user-agents
   (package
     (name "python-user-agents")
-    (version "1.1.0")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "user-agents" version))
        (sha256
         (base32
-         "0fc00cd3j8dahq1zzn8pkgfgd7lq37bp2scmdma2n1c049vicgb4"))))
+         "09mddriffm9rkwr30081fy9n3cn976ms8pwc8p8hhlxnilbjavfk"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f))                  ;missing devices.json test file in release
