@@ -1712,7 +1712,7 @@ software.")
 (define-public fprintd
   (package
     (name "fprintd")
-    (version "1.94.1")
+    (version "1.94.2")
     (source
      (origin
        (method git-fetch)
@@ -1721,7 +1721,7 @@ software.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "015j8ikyv48qz8vn6kfvkwwg5ydzppl1lzf7vkali9ymywywfxsw"))))
+        (base32 "015k3kc4fmas0vc2b21qzq7kvdc9x6lcqvjhbvy6m84pkhhmry3q"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags
