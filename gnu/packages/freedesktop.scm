@@ -12,7 +12,7 @@
 ;;; Copyright © 2017, 2018, 2019, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017, 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2017, 2020, 2021 Brendan Tildesley <mail@brendan.scot>
-;;; Copyright © 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018, 2020–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2018 Stefan Stefanović <stefanx2ovic@gmail.com>
 ;;; Copyright © 2019 Reza Alizadeh Majd <r.majd@pantherx.org>
@@ -1763,8 +1763,9 @@ software.")
      `(("gettext" ,gettext-minimal)
        ("glib:bin" ,glib "bin")         ; for glib-genmarshal
        ("perl" ,perl)                   ; for pod2man
-       ("pkg-config" ,pkg-config)))
+       ("pkg-config" ,pkg-config)
        ;; For tests.
+       ("python" ,python)))             ; needed unconditionally
        ;;("pam_wrapper" ,pam_wrapper)
        ;;("python-pycairo" ,python-pycairo)
        ;;("python-dbus" ,python-dbus)
