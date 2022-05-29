@@ -122,7 +122,7 @@ manage user, group and computer accounts for a domain.")
 (define-public ding-libs
   (package
     (name "ding-libs")
-    (version "0.6.1")
+    (version "0.6.2")
     (source
      (origin
        (method git-fetch)
@@ -131,9 +131,9 @@ manage user, group and computer accounts for a domain.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0127cpslqkapwx1rp4d1w13gw62m4cwf3hj8r0nnmvihs4199270"))))
+        (base32 "17x3gj2yrjb6h7ml97xlim310x8s54n238p3ns2bj3mxifqkx0mf"))))
     (build-system gnu-build-system)
-    (native-inputs (list autoconf automake libtool pkg-config))
+    (native-inputs (list autoconf automake gettext-minimal libtool pkg-config))
     (home-page "https://pagure.io/SSSD/ding-libs/")
     (synopsis "Libraries for SSSD")
     (description
