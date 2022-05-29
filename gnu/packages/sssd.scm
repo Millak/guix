@@ -133,6 +133,9 @@ manage user, group and computer accounts for a domain.")
        (sha256
         (base32 "17x3gj2yrjb6h7ml97xlim310x8s54n238p3ns2bj3mxifqkx0mf"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           '(list "--disable-static")))
     (native-inputs (list autoconf automake gettext-minimal libtool pkg-config))
     (home-page "https://pagure.io/SSSD/ding-libs/")
     (synopsis "Libraries for SSSD")
