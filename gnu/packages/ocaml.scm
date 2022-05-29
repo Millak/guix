@@ -4333,9 +4333,7 @@ long and size_t whose sizes depend on the host platform.")
                "0ilzq9qzvwv9rc08cc9wchsx636zp870i7qvqmbigaa2qb812m0z"))))
    (build-system ocaml-build-system)
    (arguments
-    `(#:make-flags
-      (list (string-append "INSTALL_HEADERS = $(wildcard $($(PROJECT).dir)/*.h)"))
-      #:phases
+    `(#:phases
       (modify-phases %standard-phases
         (add-after 'unpack 'make-writable
           (lambda _
