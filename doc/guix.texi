@@ -41732,7 +41732,7 @@ The list includes commands such as @command{passwd}, @command{ping},
 @end defvar
 
 Under the hood, the actual setuid programs are created in the
-@file{/run/setuid-programs} directory at system activation time.  The
+@file{/run/privileged/bin} directory at system activation time.  The
 files in this directory refer to the ``real'' binaries, which are in the
 store.
 

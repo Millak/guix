@@ -6,6 +6,7 @@
 ;;; Copyright © 2021 raid5atemyhomework <raid5atemyhomework@protonmail.com>
 ;;; Copyright © 2020 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2023 Brian Cully <bjc@spork.org>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
@@ -921,8 +922,12 @@ FILES must be a list of name/file-like object pairs."
                 (extend (lambda (config extensions)
                           (append config extensions)))
                 (description
-                 "Populate @file{/run/setuid-programs} with the specified
-executables, making them setuid and/or setgid.")))
+                 "Copy the specified executables to @file{/run/privileged/bin}
+and apply special privileges like setuid and/or setgid.
+
+The deprecated @file{/run/setuid-programs} directory is also populated with
+symbolic links to their @file{/run/privileged/bin} counterpart.  It will be
+removed in a future Guix release.")))
 
 (define (packages->profile-entry packages)
   "Return a system entry for the profile containing PACKAGES."

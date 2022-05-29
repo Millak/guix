@@ -8,6 +8,7 @@
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2020 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -279,14 +280,29 @@ they already exist."
                      string<?)))
 
 (define %setuid-directory
-  ;; Place where setuid programs are stored.
+  ;; Place where setuid programs used to be stored.  It exists for backwards
+  ;; compatibility & will be removed.  Use %PRIVILEGED-PROGRAM-DIRECTORY instead.
   "/run/setuid-programs")
 
+(define %privileged-program-directory
+  ;; Place where privileged copies of programs are stored.
+  "/run/privileged/bin")
+
 (define (activate-setuid-programs programs)
-  "Turn PROGRAMS, a list of file setuid-programs record, into setuid programs
-stored under %SETUID-DIRECTORY."
-  (define (make-setuid-program program setuid? setgid? uid gid)
-    (let ((target (string-append %setuid-directory
+  "Turn PROGRAMS, a list of file setuid-programs records, into privileged
+copies stored under %PRIVILEGED-PROGRAM-DIRECTORY."
+  (define (ensure-empty-directory directory)
+    (if (file-exists? directory)
+        (for-each (compose delete-file
+                           (cut string-append directory "/" <>))
+                  (scandir directory
+                           (lambda (file)
+                             (not (member file '("." ".."))))
+                           string<?))
+        (mkdir-p directory))    )
+
+  (define (make-privileged-program program setuid? setgid? uid gid)
+    (let ((target (string-append %privileged-program-directory
                                  "/" (basename program)))
           (mode (+ #o0555                   ; base permissions
                    (if setuid? #o4000 0)    ; setuid bit
@@ -295,16 +311,17 @@ stored under %SETUID-DIRECTORY."
       (chown target uid gid)
       (chmod target mode)))
 
-  (format #t "setting up setuid programs in '~a'...~%"
-          %setuid-directory)
-  (if (file-exists? %setuid-directory)
-      (for-each (compose delete-file
-                         (cut string-append %setuid-directory "/" <>))
-                (scandir %setuid-directory
-                         (lambda (file)
-                           (not (member file '("." ".."))))
-                         string<?))
-      (mkdir-p %setuid-directory))
+  (define (make-deprecated-wrapper program)
+    ;; This will eventually become a script that warns on usage, then vanish.
+    (symlink (string-append %privileged-program-directory
+                            "/" (basename program))
+             (string-append %setuid-directory
+                            "/" (basename program))))
+
+  (format #t "setting up privileged programs in '~a'...~%"
+          %privileged-program-directory)
+  (ensure-empty-directory %privileged-program-directory)
+  (ensure-empty-directory %setuid-directory)
 
   (for-each (lambda (program)
               (catch 'system-error
@@ -320,11 +337,12 @@ stored under %SETUID-DIRECTORY."
                          (gid (match group
                                 ((? string?) (group:gid (getgrnam group)))
                                 ((? integer?) group))))
-                    (make-setuid-program program-name setuid? setgid? uid gid)))
+                    (make-privileged-program program-name setuid? setgid? uid gid)
+                    (make-deprecated-wrapper program-name)))
                 (lambda args
                   ;; If we fail to create a setuid program, better keep going
-                  ;; so that we don't leave %SETUID-DIRECTORY empty or
-                  ;; half-populated.  This can happen if PROGRAMS contains
+                  ;; so that we don't leave %PRIVILEGED-PROGRAM-DIRECTORY empty
+                  ;; or half-populated.  This can happen if PROGRAMS contains
                   ;; incorrect file names: <https://bugs.gnu.org/38800>.
                   (format (current-error-port)
                           "warning: failed to make ~s setuid/setgid: ~a~%"
