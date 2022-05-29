@@ -3191,10 +3191,12 @@ rules is done with the @code{auditctl} utility.")
                    (,(python-path ndiff)))))))
          ;; These are the tests that do not require network access.
          (replace 'check
-           (lambda _ (invoke "make"
-                             "check-nse"
-                             "check-ndiff"
-                             "check-dns"))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "make"
+                       "check-nse"
+                       "check-ndiff"
+                       "check-dns")))))
        ;; Nmap can't cope with out-of-source building.
        #:out-of-source? #f))
     (home-page "https://nmap.org/")
