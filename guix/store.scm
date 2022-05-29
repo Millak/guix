@@ -1840,8 +1840,10 @@ This is a mutating version that should be avoided.  Prefer the functional
 
 (define (references/cached store item)
   "Like 'references', but cache results."
-  (let ((cache (store-connection-cache store %reference-cache-id)))
-    (match (vhash-assoc item cache)
+  (let* ((cache (store-connection-cache store %reference-cache-id))
+         (value (vhash-assoc item cache)))
+    (record-cache-lookup! %reference-cache-id value cache)
+    (match value
       ((_ . references)
        references)
       (#f
