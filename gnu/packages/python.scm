@@ -714,9 +714,7 @@ To function properly, this package should not be installed together with the
        #:make-flags (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
                           "V=1")
        #:test-target "test"))
-    (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)))
+    (native-inputs (list pkg-config python-wrapper))
     (inputs
      (list libffi))
     (home-page "https://micropython.org/")
