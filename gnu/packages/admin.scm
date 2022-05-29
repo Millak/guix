@@ -419,7 +419,11 @@ inspired by @command{vi}.")
          "0xxdi55lzw7j91zfajw7jhd2ilsqj2dy04i9brlk8j3pvb5ma8hk"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:make-flags
+     '(#:modules
+       ((guix build gnu-build-system)
+        (guix build utils)
+        (srfi srfi-26))
+       #:make-flags
        (let ((out (assoc-ref %outputs "out")))
          (list (string-append "BINDIR=" out "/bin")
                (string-append "MANDIR=" out "/share/man/man1")
@@ -433,10 +437,15 @@ inspired by @command{vi}.")
              (let ((growpart (string-append (assoc-ref outputs "out")
                                             "/bin/growpart")))
                (wrap-program growpart
-                 `("PATH" ":" prefix (,(dirname (which "sfdisk"))
-                                      ,(dirname (which "readlink")))))))))))
+                 `("PATH" ":" prefix
+                   ,(map dirname
+                         (map (cut search-input-file inputs <>)
+                              (list "bin/readlink"
+                                    "sbin/sfdisk")))))))))))
     (inputs
-     (list python util-linux)) ; contains sfdisk for growpart
+     (list coreutils                    ; for readlink
+           python
+           util-linux))                 ; sfdisk for growpart
     (home-page "https://launchpad.net/cloud-utils")
     (synopsis "Set of utilities for cloud computing environments")
     (description
