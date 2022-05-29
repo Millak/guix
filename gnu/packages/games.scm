@@ -3588,7 +3588,9 @@ are primarily in English, however some in other languages are provided.")
                (mkdir-p (string-append out "/include")))))
          (delete 'configure))           ; no configure script
        #:tests? #f                      ; no check target
-       #:make-flags '("CC=gcc" "sharedlib")))
+       #:make-flags
+       (list (string-append "CC=" ,(cc-for-target))
+             "sharedlib")))
     (inputs
      `(("bzip2" ,bzip2)
        ("libjpeg" ,libjpeg-turbo)
