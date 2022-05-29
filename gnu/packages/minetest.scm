@@ -692,7 +692,7 @@ track of important locations.")
 (define-public minetest-advtrains
   (package
     (name "minetest-advtrains")
-    (version "2.3.1")
+    (version "2.4.1")
     (source
      (origin
        (method git-fetch)
@@ -700,7 +700,7 @@ track of important locations.")
              (url "https://git.bananach.space/advtrains.git")
              (commit (string-append "release-" version))))
        (sha256
-        (base32 "1ijqlchh269jpvmgmdmdvy3nsnk0bszkvvcqk6vaysvxam695ggw"))
+        (base32 "1q2jj8181pjgsakl28xadv0z4sszq1lb5rpgj070wr0px6mp447p"))
        (file-name (git-file-name name version))))
     (build-system minetest-mod-build-system)
     (home-page "http://advtrains.de/")
