@@ -9751,14 +9751,14 @@ toolkit.  Use it to build trees of widgets.")
 (define-public python-ua-parser
   (package
     (name "python-ua-parser")
-    (version "0.8.0")
+    (version "0.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ua-parser" version))
        (sha256
         (base32
-         "1jwdf58rhchjzzrad405pviv0iq24xa2xmmmdgcm2c8s6b4wzfwp"))))
+         "0csh307zfz666kkk5idrw3crj1x8q8vsqgwqil0r1n1hs4p7ica7"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f))                    ;no test suite in release
