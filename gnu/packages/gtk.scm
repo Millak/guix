@@ -990,7 +990,7 @@ application suites.")
            cups
            graphene
            harfbuzz
-           iso-codes
+           iso-codes/official ;XXX TODO core-updates: use iso-codes
            json-glib-minimal
            libxml2
            rest))
