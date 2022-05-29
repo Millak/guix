@@ -339,7 +339,7 @@ System Configuration
 * Keyboard Layout::             How the system interprets key strokes.
 * Locales::                     Language and cultural convention settings.
 * Services::                    Specifying system services.
-* Setuid Programs::             Programs running with root privileges.
+* Setuid Programs::             Programs running with elevated privileges.
 * X.509 Certificates::          Authenticating HTTPS servers.
 * Name Service Switch::         Configuring libc's name service switch.
 * Initial RAM Disk::            Linux-Libre bootstrapping.
@@ -15414,7 +15414,7 @@ instance to support new system services.
 * Keyboard Layout::             How the system interprets key strokes.
 * Locales::                     Language and cultural convention settings.
 * Services::                    Specifying system services.
-* Setuid Programs::             Programs running with root privileges.
+* Setuid Programs::             Programs running with elevated privileges.
 * X.509 Certificates::          Authenticating HTTPS servers.
 * Name Service Switch::         Configuring libc's name service switch.
 * Initial RAM Disk::            Linux-Libre bootstrapping.
@@ -35755,22 +35755,23 @@ Extra command line options for @code{nix-service-type}.
 @section Setuid Programs
 
 @cindex setuid programs
-Some programs need to run with ``root'' privileges, even when they are
+@cindex setgid programs
+Some programs need to run with elevated privileges, even when they are
 launched by unprivileged users.  A notorious example is the
 @command{passwd} program, which users can run to change their
 password, and which needs to access the @file{/etc/passwd} and
 @file{/etc/shadow} files---something normally restricted to root, for
-obvious security reasons.  To address that, these executables are
-@dfn{setuid-root}, meaning that they always run with root privileges
+obvious security reasons.  To address that, @command{passwd} should be
+@dfn{setuid-root}, meaning that it always runs with root privileges
 (@pxref{How Change Persona,,, libc, The GNU C Library Reference Manual},
 for more info about the setuid mechanism).
 
 The store itself @emph{cannot} contain setuid programs: that would be a
 security issue since any user on the system can write derivations that
 populate the store (@pxref{The Store}).  Thus, a different mechanism is
-used: instead of changing the setuid bit directly on files that are in
-the store, we let the system administrator @emph{declare} which programs
-should be setuid root.
+used: instead of changing the setuid or setgid bits directly on files that
+are in the store, we let the system administrator @emph{declare} which
+programs should be entrusted with these additional privileges.
 
 The @code{setuid-programs} field of an @code{operating-system}
 declaration contains a list of @code{<setuid-program>} denoting the
@@ -38000,7 +38001,7 @@ pointing to the given file.
 @defvr {Scheme Variable} setuid-program-service-type
 Type for the ``setuid-program service''.  This service collects lists of
 executable file names, passed as gexps, and adds them to the set of
-setuid-root programs on the system (@pxref{Setuid Programs}).
+setuid and setgid programs on the system (@pxref{Setuid Programs}).
 @end defvr
 
 @defvr {Scheme Variable} profile-service-type
