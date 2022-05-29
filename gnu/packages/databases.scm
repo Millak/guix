@@ -727,22 +727,16 @@ autocompletion and syntax highlighting.")
 (define-public mycli
   (package
     (name "mycli")
-    (version "1.24.1")
+    (version "1.25.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "mycli" version))
        (sha256
-        (base32 "0rij9nw20zhqr7cqnkm8daw8b1wdc9zb6ny1ji9qz5557nz9i3bl"))))
+        (base32 "0231v7f6q84mjmi1h0ni3s55m2g8p5d7x5q49bgkxlaz2bc2xwgy"))))
     (build-system python-build-system)
     (arguments
-     '(#:tests? #f                      ; tests expect a running MySQL
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'loosen-requirements
-                    (lambda _
-                      ;; Permit newer versions of sqlparse.
-                      (substitute* "setup.py"
-                        (("<0\\.4\\.0") "<0.5.0")))))))
+     '(#:tests? #f))                    ; tests expect a running MySQL
     (propagated-inputs
      (list python-cli-helpers
            python-click
