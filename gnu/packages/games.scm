@@ -3532,7 +3532,7 @@ are primarily in English, however some in other languages are provided.")
 (define-public irrlicht
   (package
     (name "irrlicht")
-    (version "1.8.4")
+    (version "1.8.5")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3541,8 +3541,9 @@ are primarily in English, however some in other languages are provided.")
                     "/" version "/irrlicht-" version ".zip"))
               (sha256
                (base32
-                "0cz4z4dwrv5ypl19ll67wl6jjpy5k6ly4vr042w4br88qq5jhazl"))
-              (patches (search-patches "irrlicht-use-system-libs.patch"))
+                "0gagjh2l3a3m8hsixxhhhan3m5xl7735ka8m4g79jl4qsgp7pyzg"))
+              (patches (search-patches "irrlicht-use-system-libs.patch"
+                                       "irrlicht-link-against-needed-libs.patch"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -3556,8 +3557,7 @@ are primarily in English, however some in other languages are provided.")
                        "source/Irrlicht/zlib"))
                   (delete-file "source/Irrlicht/glext.h")
                   (delete-file "source/Irrlicht/glxext.h")
-                  (delete-file "source/Irrlicht/wglext.h")
-                  #t))))
+                  (delete-file "source/Irrlicht/wglext.h")))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -3565,19 +3565,23 @@ are primarily in English, however some in other languages are provided.")
          (add-after 'unpack 'chdir-to-source
            (lambda _
              ;; The actual source is buried a few directories deep.
-             (chdir "source/Irrlicht/")
-             #t))
+             (chdir "source/Irrlicht/")))
          (add-after 'chdir-to-source 'remove-<sys/sysctl.h>
            (lambda _
              (substitute* "COSOperator.cpp"
                (("#include <sys/sysctl.h>") ""))))
+         (add-after 'chdir-to-source 'delete-broken-install-rule
+           (lambda _
+             (substitute* "Makefile"
+               ;; We neither build nor want a static library.  Skip it.
+               ((".*\\bcp .*\\$\\(STATIC_LIB\\).*") ""))))
          (add-after 'chdir-to-source 'fix-build-env
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
                (substitute* "Makefile"
                  (("INSTALL_DIR = /usr/local/lib")
                   (string-append "INSTALL_DIR = " out "/lib"))
-                 ;; Add '-fpermissive' to the CXXFLAGS
+                 ;; Add '-fpermissive' to the CXXFLAGS.
                  (("-Wall") "-Wall -fpermissive")) ; CImageLoaderJPG.cpp
                ;; The Makefile assumes these directories exist.
                (mkdir-p (string-append out "/lib"))
