@@ -2320,16 +2320,16 @@ temperature of the screen.")
     (native-inputs
      (list pandoc pkg-config))
     (inputs
-     `(("fontconfig" ,fontconfig)
-       ("libX11" ,libx11)
-       ("libxcomposite" ,libxcomposite)
-       ("libxext" ,libxext)
-       ("libxfixes" ,libxfixes)
-       ("libxft" ,libxft)
-       ("libxmu" ,libxmu)
-       ("libxrandr" ,libxrandr)
-       ("libxscrnsaver" ,libxscrnsaver)
-       ("linux-pam" ,linux-pam)))
+     (list fontconfig
+           libx11
+           libxcomposite
+           libxext
+           libxfixes
+           libxft
+           libxmu
+           libxrandr
+           libxscrnsaver
+           linux-pam))
     (home-page "https://github.com/google/xsecurelock")
     (synopsis "X11 screen lock utility with the primary goal of security")
     (description "@code{xsecurelock} is an X11 screen locker which uses
