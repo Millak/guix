@@ -704,13 +704,10 @@ To function properly, this package should not be installed together with the
                    ;; see: https://github.com/micropython/micropython/pull/4246
                    (substitute* "Makefile"
                      (("-Os") "-Os -ffp-contract=off"))))
-               (replace 'install-license-files
+               (add-before 'install-license-files 'chdir-back
                  ;; We don't build in the root directory so the file isn't found.
-                 (lambda* (#:key outputs #:allow-other-keys)
-                   (let* ((out  (assoc-ref outputs "out"))
-                          (doc (string-append out "/share/doc/"
-                                              #$name "-" #$version "/")))
-                     (install-file "../../LICENSE" doc))))
+                 (lambda _
+                   (chdir "../..")))
                (delete 'configure))       ; no configure
            #:make-flags
            #~(list (string-append "PREFIX=" #$output)
