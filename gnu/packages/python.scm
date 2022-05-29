@@ -30,7 +30,7 @@
 ;;; Copyright © 2016, 2017 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2016, 2017 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2016, 2017, 2018 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2016–2018, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2016–2018, 2021, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016, 2017, 2018, 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2016, 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017 Carlo Zancanaro <carlo@zancanaro.id.au>
@@ -673,7 +673,7 @@ To function properly, this package should not be installed together with the
 (define-public micropython
   (package
     (name "micropython")
-    (version "1.15")
+    (version "1.18")
     (source
       (origin
         (method url-fetch)
@@ -681,7 +681,7 @@ To function properly, this package should not be installed together with the
                             "releases/download/v" version
                             "/micropython-" version ".tar.xz"))
         (sha256
-         (base32 "04sfrfcljhfps340l4wh5ffwkhw1ydraday8nv92nv7gmnrj1l2j"))
+         (base32 "1d1yza02pwq3kh8531ryq9sjk7zjqh786nnw397cccfk5ss73z4n"))
       (modules '((guix build utils)))
       (snippet
        '(begin
@@ -689,8 +689,7 @@ To function properly, this package should not be installed together with the
           (with-directory-excursion "lib"
             ;; TODO: Unbundle axtls and berkley-db-1.xx
             (for-each delete-file-recursively
-                      '("libffi" "lwip" "stm32lib" "nrfx")))
-          #t))))
+                      '("libffi" "lwip" "stm32lib" "nrfx")))))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -704,15 +703,13 @@ To function properly, this package should not be installed together with the
              (chdir "ports/unix")
              ;; see: https://github.com/micropython/micropython/pull/4246
              (substitute* "Makefile"
-               (("-Os") "-Os -ffp-contract=off"))
-             #t))
+               (("-Os") "-Os -ffp-contract=off"))))
          (replace 'install-license-files
            ;; We don't build in the root directory so the file isn't found.
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out  (assoc-ref outputs "out"))
                     (dest (string-append out "/share/doc/" ,name "-" ,version "/")))
-               (install-file "../../LICENSE" dest))
-             #t))
+               (install-file "../../LICENSE" dest))))
          (delete 'configure)) ; no configure
        #:make-flags (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
                           "V=1")
