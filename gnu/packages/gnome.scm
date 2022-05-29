@@ -4173,12 +4173,12 @@ Hints specification (EWMH).")
            python-pygobject
            zlib))
     (native-inputs
-     `(("bison" ,bison)
-       ("docbook-xml" ,docbook-xml)
-       ("intltool" ,intltool)
-       ("itstool" ,itstool)
-       ("glib:bin" ,glib "bin")
-       ("pkg-config" ,pkg-config)))
+     (list bison
+           docbook-xml
+           `(,glib "bin")
+           intltool
+           itstool
+           pkg-config))
     (home-page "http://www.gnumeric.org")
     (synopsis "Spreadsheet application")
     (description
