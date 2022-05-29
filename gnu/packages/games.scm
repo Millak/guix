@@ -3080,7 +3080,7 @@ that beneath its ruins lay buried an ancient evil.")
 (define-public angband
   (package
     (name "angband")
-    (version "4.2.3")
+    (version "4.2.4")
     (source
      (origin
        (method git-fetch)
@@ -3089,7 +3089,7 @@ that beneath its ruins lay buried an ancient evil.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1psrdbf90mb6dhq0b9z18pz1csnshz1kvwg82dvwa99apqdw0la8"))
+        (base32 "1x0qqsv7xa3figcl4v35sin64ffgz32652vk541d8qaq4qcc378n"))
        (modules '((guix build utils)))
        (snippet
         ;; So, some of the sounds/graphics/tilesets are under different
@@ -3105,14 +3105,12 @@ that beneath its ruins lay buried an ancient evil.")
            (substitute* "lib/Makefile"
              ;; And don't try to invoke makefiles in the directories we removed.
              (("gamedata customize help screens fonts tiles sounds icons user")
-              "gamedata customize help screens user"))
-           #t))))
+              "gamedata customize help screens user"))))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no check target
        #:configure-flags (list (string-append "--bindir=" %output "/bin"))))
-    (native-inputs
-     (list autoconf automake))
+    (native-inputs (list autoconf automake))
     (inputs (list ncurses))
     (home-page "https://rephial.org/")
     (synopsis "Dungeon exploration roguelike")
