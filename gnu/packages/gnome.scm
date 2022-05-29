@@ -12532,7 +12532,7 @@ world.")
 (define-public ocrfeeder
   (package
     (name "ocrfeeder")
-    (version "0.8.3")
+    (version "0.8.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/ocrfeeder/"
@@ -12540,7 +12540,7 @@ world.")
                                   "ocrfeeder-" version ".tar.xz"))
               (sha256
                (base32
-                "12f5gnq92ffnd5zaj04df7jrnsdz1zn4zcgpbf5p9qnd21i2y529"))))
+                "1vaaphzk6zn7pp2x9scphdzlbsma910wnbhd9xry50nx95cjlgdh"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -12557,8 +12557,7 @@ world.")
                                         "/site-packages")))
               (wrap-program prog
                 `("PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH") ,pylib))
-                `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))
-              #t))))))
+                `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))))))))
     (native-inputs
      `(("glib:bin" ,glib "bin")                   ; for glib-compile-resources
        ("gobject-introspection" ,gobject-introspection)
