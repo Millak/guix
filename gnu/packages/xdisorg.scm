@@ -2339,9 +2339,11 @@ As a consequence of the modular design, the usual screen locker service
 shouldn't be used with @code{xsecurelock}.  Instead, you need to add a helper
 binary to setuid-binaries:
 @example
-(setuid-programs (cons*
-                   (file-append xsecurelock \"/libexec/xsecurelock/authproto_pam\")
-                   %setuid-programs))
+(setuid-programs
+ (cons*
+  (setuid-program
+   (program (file-append xsecurelock \"/libexec/xsecurelock/authproto_pam\")))
+  %setuid-programs))
 @end example")
     (license license:asl2.0)))
 
