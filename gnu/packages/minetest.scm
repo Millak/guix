@@ -404,16 +404,16 @@ with different rules and mechanics.")
 (define-public minetest-mineclone
   (package
     (name "minetest-mineclone")
-    (version "0.71.0")
+    (version "0.75.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://git.minetest.land/Wuzzy/MineClone2")
+                    (url "https://git.minetest.land/MineClone2/MineClone2")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0qm809dqvxc7pa1cr9skmglq9vrbq5hhm4c4m5yi46ldh1v96dgf"))))
+                "10apja8bp8wmrbjlxg3gvrw5bdc8mizcngvnfi2ff790f6bsc5ip"))))
     (build-system copy-build-system)
     (arguments
      `(#:install-plan
