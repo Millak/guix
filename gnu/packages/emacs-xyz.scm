@@ -30464,9 +30464,9 @@ and allows for an arbitrary number of leader keys.")
       (home-page "https://github.com/mohkale/spaceleader")
       (synopsis "Emacs leader key implementation from Spacemacs")
       (description
-       "@code{emacs-spaceleader} replicates spacemacs' leader key features,
-without requiring all of spacemacs.  The @code{<Leader>} key, inspired by Vim,
-provides an easy way to bind keys under a configurable prefix key")
+       "@code{emacs-spaceleader} replicates Spacemacs' leader key features,
+without requiring all of Spacemacs.  The @code{<Leader>} key, inspired by Vim,
+provides an easy way to bind keys under a configurable prefix key.")
       (license license:gpl3+))))
 
 (define-public emacs-promise
