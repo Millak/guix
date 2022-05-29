@@ -1007,10 +1007,10 @@ to create devices with respective mappings for the ATARAID sets discovered.")
               (substitute* "src/lib/blockdev.c"
                (("/etc/libblockdev/conf.d/" path) (string-append out path)))))))))
     (native-inputs
-     `(("gobject-introspection" ,gobject-introspection)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
-       ("util-linux" ,util-linux)))
+     (list gobject-introspection
+           pkg-config
+           python-wrapper
+           util-linux))
     (inputs
      (list btrfs-progs
            cryptsetup
