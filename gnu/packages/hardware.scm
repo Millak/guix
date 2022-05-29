@@ -113,7 +113,7 @@ sets, and tools to deal with register databases.")
 (define-public hwinfo
   (package
     (name "hwinfo")
-    (version "21.80")
+    (version "21.81")
     (home-page "https://github.com/openSUSE/hwinfo")
     (source
      (origin
@@ -124,14 +124,14 @@ sets, and tools to deal with register databases.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07058vjqdcd3la8y4b92f7fvcqxvmw1p0q4lg5kcn85pvbbg52ag"))
+        (base32 "0iyx1fb66s6b5ai4agw91nvl9wwk7z8g6y475vry3wv80dngzc43"))
        (modules
         '((guix build utils)))
        (snippet
         `(begin
            ;; Remove git2log program file.
            (delete-file "git2log")
-           ;; Remove variables that depends on git2log.
+           ;; Remove variables that depend on git2log.
            (substitute* "Makefile"
              (("GIT2LOG.*\\:=.*$") "")
              (("GITDEPS.*\\:=.*$") "")
