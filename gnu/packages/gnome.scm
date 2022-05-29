@@ -5015,15 +5015,15 @@ and other secrets.  It communicates with the \"Secret Service\" using DBus.")
              (substitute* "build-aux/meson_post_install.py"
                (("gtk-update-icon-cache") (which "true"))))))))
     (native-inputs
-     `(("glib:bin" ,glib "bin")       ; for glib-compile-resources
-       ("pkg-config" ,pkg-config)
-       ("desktop-file-utils" ,desktop-file-utils)
-       ("intltool" ,intltool)
-       ("itstool" ,itstool)
-       ("python" ,python-wrapper)       ; for meson_post_install.py
-       ("vala" ,vala)
-       ("yelp" ,yelp)
-       ("appstream-glib" ,appstream-glib)))
+     (list appstream-glib
+           desktop-file-utils
+           `(,glib "bin")               ; for glib-compile-resources
+           intltool
+           itstool
+           pkg-config
+           python-wrapper               ; for meson_post_install.py
+           vala
+           yelp))
     (inputs
      (list gtk+ libgnome-games-support librsvg))
     (home-page "https://wiki.gnome.org/Apps/Mines")
