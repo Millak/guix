@@ -26,6 +26,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages games)
@@ -51,7 +52,7 @@
 (define-public minetest
   (package
     (name "minetest")
-    (version "5.4.1")
+    (version "5.5.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -60,11 +61,8 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "062ilb7s377q3hwfhl8q06vvcw2raydz5ljzlzwy2dmyzmdcndb8"))
+                "042v71gkk0xfixcsn82az2fri0n28fgf9d2zcz31bijqmg5q7imj"))
               (modules '((guix build utils)))
-              (patches
-               (search-patches
-                "minetest-add-MINETEST_MOD_PATH.patch"))
               (snippet
                '(begin
                   ;; Delete bundled libraries.
@@ -77,12 +75,18 @@
              "-DENABLE_FREETYPE=1"
              "-DENABLE_GETTEXT=1"
              "-DENABLE_SYSTEM_JSONCPP=TRUE"
-             (string-append "-DIRRLICHT_INCLUDE_DIR="
-                            (assoc-ref %build-inputs "irrlicht")
+             (string-append "-DIRRLICHTMT_INCLUDE_DIR="
+                            (assoc-ref %build-inputs "irrlicht-for-minetest")
                             "/include/irrlicht")
              (string-append "-DCURL_INCLUDE_DIR="
                             (assoc-ref %build-inputs "curl")
-                            "/include/curl"))
+                            "/include/curl")
+             (string-append "-DZSTD_INCLUDE_DIR="
+                            (assoc-ref %build-inputs "zstd")
+                            "/include/zstd")
+             (string-append "-DZSTD_LIBRARY="
+                            (assoc-ref %build-inputs "zstd")
+                            "/lib/libzstd.so"))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-sources
@@ -123,7 +127,7 @@
        ("freetype" ,freetype)
        ("gettext" ,gettext-minimal)
        ("gmp" ,gmp)
-       ("irrlicht" ,irrlicht)
+       ("irrlicht-for-minetest" ,irrlicht-for-minetest)
        ("jsoncpp" ,jsoncpp)
        ("libjpeg" ,libjpeg-turbo)
        ("libpng" ,libpng)
@@ -134,7 +138,8 @@
        ("mesa" ,mesa)
        ("ncurses" ,ncurses)
        ("openal" ,openal)
-       ("sqlite" ,sqlite)))
+       ("sqlite" ,sqlite)
+       ("zstd" ,zstd "lib")))
     (propagated-inputs
      (list minetest-data))
     (synopsis "Infinite-world block sandbox game")
@@ -159,7 +164,7 @@ in different ways.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0i45lbnikvgj9kxdp0yphpjjwjcgp4ibn49xkj78j5ic1s9n8jd4"))))
+                "12cpaiww148szvnrc8r8cffwvl33smnrl7k29sh401yv0pbqi3j8"))))
     (build-system trivial-build-system)
     (native-inputs
      `(("source" ,source)))
