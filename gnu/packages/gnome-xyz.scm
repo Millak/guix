@@ -210,7 +210,7 @@ simple and consistent.")
          (delete 'configure)
          (delete 'build))))
     (native-inputs
-     `(("gtk+:bin" ,gtk+ "bin")))
+     (list `(,gtk+ "bin")))
     (home-page "https://git.io/papirus-icon-theme")
     (synopsis "Fork of Paper icon theme with a lot of new icons and a few extras")
     (description "Papirus is a fork of the icon theme Paper with a lot of new icons
