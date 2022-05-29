@@ -1022,10 +1022,10 @@ the /etc directory."
           (plain-file "login.defs"
                       (string-append
                         "# Default paths for non-login shells started by su(1).\n"
-                        "ENV_PATH    /run/setuid-programs:"
+                        "ENV_PATH    /run/privileged/bin:"
                         "/run/current-system/profile/bin:"
                         "/run/current-system/profile/sbin\n"
-                        "ENV_SUPATH  /run/setuid-programs:"
+                        "ENV_SUPATH  /run/privileged/bin:"
                         "/run/current-system/profile/bin:"
                         "/run/current-system/profile/sbin\n"
 
@@ -1088,8 +1088,8 @@ do
   fi
 done
 
-# Prepend setuid programs.
-export PATH=/run/setuid-programs:$PATH
+# Prepend privileged programs.
+export PATH=/run/privileged/bin:$PATH
 
 # Arrange so that ~/.config/guix/current/share/info comes first.
 export INFOPATH=\"$HOME/.config/guix/current/share/info:$INFOPATH\"
