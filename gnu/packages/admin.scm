@@ -407,7 +407,7 @@ inspired by @command{vi}.")
 (define-public cloud-utils
   (package
     (name "cloud-utils")
-    (version "0.32")
+    (version "0.33")
     (source
      (origin
        (method url-fetch)
@@ -434,8 +434,7 @@ inspired by @command{vi}.")
                                             "/bin/growpart")))
                (wrap-program growpart
                  `("PATH" ":" prefix (,(dirname (which "sfdisk"))
-                                      ,(dirname (which "readlink"))))))
-             #t)))))
+                                      ,(dirname (which "readlink")))))))))))
     (inputs
      (list python util-linux)) ; contains sfdisk for growpart
     (home-page "https://launchpad.net/cloud-utils")
