@@ -4133,7 +4133,7 @@ Hints specification (EWMH).")
 (define-public gnumeric
   (package
     (name "gnumeric")
-    (version "1.12.50")
+    (version "1.12.52")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gnumeric/"
@@ -4141,7 +4141,7 @@ Hints specification (EWMH).")
                                   "gnumeric-" version ".tar.xz"))
               (sha256
                (base32
-                "1f0lrj5msg80pgjp38jj6rddf352gwddgip7z4lki66n3fx1k23m"))))
+                "0fw201j0sks95wgvns3vydgprhwf6z4v4xb2a0ldi892k8277kvk"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(;; The gnumeric developers don't worry much about failing tests.
