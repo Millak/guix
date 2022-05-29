@@ -707,7 +707,7 @@ is fully configurable and extensible in Common Lisp.")
 (define-public lagrange
   (package
     (name "lagrange")
-    (version "1.12.1")
+    (version "1.13.6")
     (source
      (origin
        (method url-fetch)
@@ -715,13 +715,14 @@ is fully configurable and extensible in Common Lisp.")
         (string-append "https://git.skyjake.fi/skyjake/lagrange/releases/"
                        "download/v" version "/lagrange-" version ".tar.gz"))
        (sha256
-        (base32 "10v4bp5h1qq24by61yw52rr13m23smfj2whxfzcxc34qgsdjsd4a"))
+        (base32 "19xaw6lspl4mjx1wls0s15l97dzfkv20gph652yzwk6ia3ly92bs"))
        (modules '((guix build utils)))
        (snippet
         '(begin
            ;; TODO: unbundle fonts.
            (delete-file-recursively "lib/fribidi")
-           (delete-file-recursively "lib/harfbuzz")))))
+           (delete-file-recursively "lib/harfbuzz")
+           (delete-file-recursively "lib/sealcurses")))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #false                  ;no tests
