@@ -3111,7 +3111,7 @@ of bibliographic references.")
 (define-public emacs-corfu
   (package
     (name "emacs-corfu")
-    (version "0.22")
+    (version "0.25")
     (source
      (origin
        (method git-fetch)
@@ -3120,13 +3120,13 @@ of bibliographic references.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "062lxyqh7nfaixmgfgmqfbkainxc8ypdkj6qjq38xigk55s7c5wk"))))
+        (base32 "1brq8dfn4mx5mxyqqikmhwpwlqdrfq1z0wprm6awxr89xk506g77"))))
     (build-system emacs-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         ;; Move the extensions source files to the top level, which is included in
-         ;; the EMACSLOADPATH.
+         ;; Move the extensions source files to the top level, which is included
+         ;; in the EMACSLOADPATH.
          (add-after 'unpack 'move-source-files
            (lambda _
              (let ((el-files (find-files "./extensions" ".*\\.el$")))
@@ -3135,9 +3135,10 @@ of bibliographic references.")
                          el-files)))))))
     (home-page "https://github.com/minad/corfu")
     (synopsis "Completion overlay region function")
-    (description "Corfu enhances the default completion in region function
-with a completion overlay.  The current candidates are shown in a popup
-overlay below or above the point.  Corfu can be considered the minimalistic
+    (description
+     "Corfu enhances the default completion in region function with a completion
+overlay.  The current candidates are shown in a popup overlay below or above
+the point.  Corfu can be considered the minimalistic
 @code{completion-in-region} counterpart of the Vertico minibuffer UI.")
     (license license:gpl3+)))
 
