@@ -1760,18 +1760,18 @@ software.")
                      ((".*pam_wrapper.*") "")))))
            #:tests? #f))                    ; XXX depend on unpackaged packages
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")         ; for glib-genmarshal
-       ("perl" ,perl)                   ; for pod2man
-       ("pkg-config" ,pkg-config)
-       ;; For tests.
-       ("python" ,python)))             ; needed unconditionally
-       ;;("pam_wrapper" ,pam_wrapper)
-       ;;("python-pycairo" ,python-pycairo)
-       ;;("python-dbus" ,python-dbus)
-       ;;("python-dbusmock" ,python-dbusmock)
-       ;;("python-pygobject" ,python-pygobject)
-       ;;("python-pypamtest" ,python-pypamtest)
+     (list gettext-minimal
+           `(,glib "bin")               ; for glib-genmarshal
+           perl                         ; for pod2man
+           pkg-config
+           ;; For tests.
+           python))                     ; needed unconditionally
+           ;; pam_wrapper
+           ;; python-pycairo
+           ;; python-dbus
+           ;; python-dbusmock
+           ;; python-pygobject
+           ;; python-pypamtest
     (inputs
      (list dbus-glib
            elogind
