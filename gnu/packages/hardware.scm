@@ -141,7 +141,7 @@ sets, and tools to deal with register databases.")
              (lambda (port)
                (format port ,version)))))))
     (build-system gnu-build-system)
-    (outputs '("out" "dev" "doc"))
+    (outputs '("out" "lib" "doc"))
     (arguments
      `(#:tests? #f                      ; no test-suite available
        #:phases
@@ -149,10 +149,10 @@ sets, and tools to deal with register databases.")
          (add-after 'unpack 'patch
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
-                    (dev (assoc-ref outputs "dev"))
+                    (lib (assoc-ref outputs "lib"))
                     (doc (assoc-ref outputs "doc"))
-                    (incl-dir (string-append dev "/include"))
-                    (lib-dir (string-append dev "/lib"))
+                    (incl-dir (string-append lib "/include"))
+                    (lib-dir (string-append lib "/lib"))
                     (sbin-dir (string-append out "/sbin"))
                     (share-dir (string-append out "/share"))
                     (doc-dir (string-append doc "/share/doc")))
@@ -172,16 +172,16 @@ sets, and tools to deal with register databases.")
                  (("/usr/sbin") sbin-dir)
                  (("/usr/share") share-dir)
                  (("\\$\\(DESTDIR\\)/sbin ") ""))
-               ;; Add output "dev" to the run-path.
+               ;; Add the "lib" output to the run-path.
                (substitute* "Makefile.common"
                  (("-Lsrc")
                   (string-append "-Lsrc " "-Wl,-rpath=" lib-dir)))
                ;; Correct program name of the lexical analyzer.
                (substitute* "src/isdn/cdb/Makefile"
                  (("lex isdn_cdb.lex") "flex isdn_cdb.lex"))
-               ;; Patch pkgconfig file to point to output "dev".
+               ;; Patch pkg-config file to point to the "lib" output.
                (substitute* "hwinfo.pc.in"
-                 (("/usr") dev)))))
+                 (("/usr") lib)))))
          (delete 'configure)
          (replace 'build
            (lambda _
