@@ -24,7 +24,7 @@
 ;;; Copyright © 2016 Steve Webber <webber.sl@gmail.com>
 ;;; Copyright © 2017 Adonay "adfeno" Felipe Nogueira <https://libreplanet.org/wiki/User:Adfeno> <adfeno@hyperbola.info>
 ;;; Copyright © 2017, 2018, 2020 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017, 2019 nee <nee-git@hidamari.blue>
 ;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017, 2019, 2020 Marius Bakke <mbakke@fastmail.com>
@@ -7658,7 +7658,13 @@ original.")
         (base32 "1f2zif3s6vddbhph4jr1cymdsn7gagg59grrxs0yap6myqmy8shg"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:test-target "check"
+     (list #:configure-flags
+           #~(let ((fortunes (string-append #$output "/share/fortunes")))
+               (list (string-append "-DLOCALDIR=" fortunes)
+                     (string-append "-DLOCALODIR=" fortunes "/off")
+                     (string-append "-DCOOKIEDIR=" fortunes)
+                     (string-append "-DOCOOKIEDIR=" fortunes "/off")))
+           #:test-target "check"
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'enter-build-directory
@@ -7683,16 +7689,13 @@ original.")
                    (with-output-to-file "tests/scripts/split-valgrind.pl"
                      (const #t))))
                (add-after 'install 'fix-install-directory
-                 (lambda* (#:key outputs #:allow-other-keys)
-                   ;; Move binary from "games/" to "bin/" and remove the
-                   ;; latter.  This is easier than patching CMakeLists.txt
-                   ;; since the tests hard-code the location as well.
-                   (let* ((out   (assoc-ref outputs "out"))
-                          (bin   (string-append out "/bin"))
-                          (games (string-append out "/games")))
-                     (rename-file (string-append games "/fortune")
-                                  (string-append bin "/fortune"))
-                     (rmdir games)))))))
+                 ;; Move fortune from "games/" to "bin/" and remove the
+                 ;; former.  This is easier than patching CMakeLists.txt
+                 ;; since the tests hard-code the location as well.
+                 (lambda _
+                   (with-directory-excursion #$output
+                     (rename-file "games/fortune" "bin/fortune")
+                     (rmdir "games")))))))
     (inputs (list recode))
     (native-inputs
      (list perl
