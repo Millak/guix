@@ -24,6 +24,7 @@
 (define-module (gnu packages wget)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages gnunet)
@@ -124,7 +125,7 @@ in downloaded documents to relative links.")
                #t))))
        #:tests? #f))                    ; no test target
     (inputs
-     (list wget xclip))
+     (list bash-minimal wget xclip))
     (home-page "https://wgetpaste.zlin.dk/")
     (synopsis "Script that automates pasting to a number of pastebin services")
     (description
