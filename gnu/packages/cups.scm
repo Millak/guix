@@ -716,8 +716,7 @@ should only be used as part of the Guix cups-pk-helper service.")
                (search-patches "foomatic-filters-CVE-2015-8327.patch"
                                "foomatic-filters-CVE-2015-8560.patch"))))
     (build-system gnu-build-system)
-    (home-page
-     "https://wiki.linuxfoundation.org/openprinting/database/foomatic")
+    (home-page "https://openprinting.github.io/projects/02-foomatic/")
     (native-inputs
      (list perl pkg-config))
     (inputs
