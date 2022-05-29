@@ -20802,13 +20802,13 @@ while only declaring the test-specific fields.")
 (define-public python-translate-toolkit
   (package
     (name "python-translate-toolkit")
-    (version "3.5.1")
+    (version "3.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "translate-toolkit" version ".tar.gz"))
        (sha256
-        (base32 "020pp7pbpnavxd41z90vyzzx06ci57mx9drkgbsb89wxxx4gal9v"))))
+        (base32 "0m4cpsp7x7h5m5agg4ybscf7y86wla46q2lvxpi2myplb6qlgcli"))))
     (build-system python-build-system)
     (native-inputs
      (list python-pytest python-sphinx))
