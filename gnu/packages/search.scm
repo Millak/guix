@@ -138,14 +138,14 @@ rich set of boolean query operators.")
 (define-public perl-search-xapian
   (package
     (name "perl-search-xapian")
-    (version "1.2.25.4")
+    (version "1.2.25.5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://cpan/authors/id/O/OL/OLLY/"
                            "Search-Xapian-" version ".tar.gz"))
        (sha256
-        (base32 "1pbl8pbgmbs3i8yik4p63g4pd9bhn0dp3d7l667dkvw0kccl66c7"))))
+        (base32 "12xs22li1z10rccpxbb4zflkkdh7q37z9hb8nvx1ywfn2b3vskr0"))))
     (build-system perl-build-system)
     (native-inputs
      (list perl-devel-leak))
