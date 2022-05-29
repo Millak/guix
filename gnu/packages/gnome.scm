@@ -4074,14 +4074,15 @@ Hints specification (EWMH).")
 (define-public goffice
   (package
     (name "goffice")
-    (version "0.10.50")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/goffice/"
-                                  (version-major+minor version)  "/"
-                                  "goffice-" version ".tar.xz"))
-              (sha256
-               (base32 "1p5zbj7cbcfcxd6l8pnph54p6ah1bwf146y810j4bcq8ggf3sp1c"))))
+    (version "0.10.52")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://gnome/sources/goffice/"
+                           (version-major+minor version)  "/"
+                           "goffice-" version ".tar.xz"))
+       (sha256
+        (base32 "0344k0ffndd79as3c4nfq3mia7mrds6aq2jg76drdw3h8gcyzfb0"))))
     (build-system gnu-build-system)
     (outputs '("out"
                "doc"))                  ; 4.0 MiB of gtk-doc
@@ -4092,8 +4093,7 @@ Hints specification (EWMH).")
     (inputs
      (list gtk+ libgsf librsvg libxslt libxml2))
     (native-inputs
-     (list intltool
-           `(,glib "bin") pkg-config))
+     (list intltool `(,glib "bin") pkg-config))
     (home-page "https://developer.gnome.org/goffice/")
     (synopsis "Document-centric objects and utilities")
     (description "A GLib/GTK+ set of document-centric objects and utilities.")
