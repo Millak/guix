@@ -5022,10 +5022,9 @@ and other secrets.  It communicates with the \"Secret Service\" using DBus.")
            itstool
            pkg-config
            python-wrapper               ; for meson_post_install.py
-           vala
-           yelp))
+           vala))
     (inputs
-     (list gtk+ libgnome-games-support librsvg))
+     (list gtk+ libgnome-games-support librsvg yelp))
     (home-page "https://wiki.gnome.org/Apps/Mines")
     (synopsis "Minesweeper game")
     (description
