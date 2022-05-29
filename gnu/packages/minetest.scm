@@ -247,21 +247,31 @@ name = sound_api_core")))))))
   (package
     (name "minetest-basic-materials")
     ;; Upstream uses dates as version numbers.
-    (version "2021-12-26")
+    (version "2022-03-28")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/mt-mods/basic_materials")
-             (commit "0893974b054a2191b5e2d5447ee4fc73f9c35f6a")))
+             (commit "9d55f9916d20779ecbf93c7e95dae8adebd2079b")))
        (sha256
-        (base32 "0p4nnfsjv7284zmgr781zkyjbp049wp1jy1l7n585zzj181ns57p"))
-       (file-name (git-file-name name version))))
+        (base32 "0nzx5mdw26mk2by14hxyvbqckgz8k67vlh2ch30skssvh4984bjw"))
+       (file-name (git-file-name name version))
+       (snippet
+        '(begin
+           (use-modules (guix build utils))
+           (substitute* "mod.conf"
+             (("optional_depends =")
+              "depends = sound_api_core
+optional_depends ="))
+           (substitute* "nodes.lua"
+             (("basic_materials.modpath \\.\\. \"/sound_api_core/init.lua\"")
+              "minetest.get_modpath(\"sound_api_core\") .. \"/init.lua\""))))))
     (build-system minetest-mod-build-system)
     (propagated-inputs
      ;; basic_materials:silver_wire cannot be crafted without
      ;; moreores:silver_ingot.
-     (list minetest-moreores))
+     (list minetest-moreores minetest-sound-api-core))
     (home-page (minetest-topic 21000))
     (synopsis "Some \"basic\" materials and items for other Minetest mods to use")
     (description
