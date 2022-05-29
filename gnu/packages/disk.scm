@@ -212,10 +212,10 @@ and write-back caching.")
         ;; udevil expects these programs to be run with uid set as root.
         ;; user has to manually add these programs to setuid-programs.
         ;; mount and umount are default setuid-programs in guix system.
-        "--with-mount-prog=/run/setuid-programs/mount"
-        "--with-umount-prog=/run/setuid-programs/umount"
-        "--with-losetup-prog=/run/setuid-programs/losetup"
-        "--with-setfacl-prog=/run/setuid-programs/setfacl")
+        "--with-mount-prog=/run/privileged/bin/mount"
+        "--with-umount-prog=/run/privileged/bin/umount"
+        "--with-losetup-prog=/run/privileged/bin/losetup"
+        "--with-setfacl-prog=/run/privileged/bin/setfacl")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'remove-root-reference
@@ -226,12 +226,12 @@ and write-back caching.")
          (add-after 'unpack 'patch-udevil-reference
            ;; udevil expects itself to be run with uid set as root.
            ;; devmon also expects udevil to be run with uid set as root.
-           ;; user has to manually add udevil to setuid-programs.
+           ;; user has to manually add udevil to privileged-programs.
            (lambda _
              (substitute* "src/udevil.c"
-               (("/usr/bin/udevil") "/run/setuid-programs/udevil"))
+               (("/usr/bin/udevil") "/run/privileged/bin/udevil"))
              (substitute* "src/devmon"
-               (("`which udevil 2>/dev/null`") "/run/setuid-programs/udevil"))
+               (("`which udevil 2>/dev/null`") "/run/privileged/bin/udevil"))
              #t)))))
     (native-inputs
      (list intltool pkg-config))

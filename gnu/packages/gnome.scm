@@ -8984,7 +8984,7 @@ library.")
 
          "--localstatedir=/var"
          (string-append "-Ddefault-path="
-                        (string-join '("/run/setuid-programs"
+                        (string-join '("/run/privileged/bin"
                                        "/run/current-system/profile/bin"
                                        "/run/current-system/profile/sbin")
                                      ":"))

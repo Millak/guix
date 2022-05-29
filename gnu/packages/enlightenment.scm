@@ -149,8 +149,8 @@
          "-Dbuild-examples=false"
          "-Decore-imf-loaders-disabler=scim"
          "-Dglib=true"
-         "-Dmount-path=/run/setuid-programs/mount"
-         "-Dunmount-path=/run/setuid-programs/umount"
+         "-Dmount-path=/run/privileged/bin/mount"
+         "-Dunmount-path=/run/privileged/bin/umount"
          "-Dnetwork-backend=connman"
          ,,@(if (member (%current-system)
                         (package-transitive-supported-systems luajit))
@@ -338,7 +338,7 @@ Libraries with some extra bells and whistles.")
                (substitute* '("src/bin/e_sys_main.c"
                               "src/bin/e_util_suid.h")
                  (("PATH=/bin:/usr/bin:/sbin:/usr/sbin")
-                  (string-append "PATH=/run/setuid-programs:"
+                  (string-append "PATH=/run/privileged/bin:"
                                  "/run/current-system/profile/bin:"
                                  "/run/current-system/profile/sbin")))
                (substitute* "src/modules/everything/evry_plug_calc.c"
@@ -347,8 +347,8 @@ Libraries with some extra bells and whistles.")
                  (("libddcutil\\.so\\.?" libddcutil)
                   (string-append ddcutil "/lib/" libddcutil)))
                (substitute* "data/etc/meson.build"
-                 (("/bin/mount") "/run/setuid-programs/mount")
-                 (("/bin/umount") "/run/setuid-programs/umount")
+                 (("/bin/mount") "/run/privileged/bin/mount")
+                 (("/bin/umount") "/run/privileged/bin/umount")
                  (("/usr/bin/eject") "/run/current-system/profile/bin/eject"))
                (substitute* "src/bin/system/e_system_power.c"
                  (("systemctl") "loginctl"))))))))

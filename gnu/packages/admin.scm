@@ -220,7 +220,7 @@
            (lambda _
              (substitute* "configure.ac"
                (("supath=`which su 2>/dev/null`")
-                "supath=/run/setuid-programs/su"))
+                "supath=/run/privileged/bin/su"))
              #t)))))
     (native-inputs
      (list autoconf automake libtool pkg-config))
@@ -2156,7 +2156,7 @@ commands and their arguments.")
              (substitute* "doas.c"
                (("safepath =" match)
                 (string-append match " \""
-                               "/run/setuid-programs:"
+                               "/run/privileged/bin:"
                                "/run/current-system/profile/bin:"
                                "/run/current-system/profile/sbin:"
                                "\" ")))))
@@ -5090,7 +5090,7 @@ text table representation to stdout.")
                                 ":" (assoc-ref %build-inputs "grep") "/bin"
                                 ":" (assoc-ref %build-inputs "ncurses") "/bin"
                                 ":" (assoc-ref %build-inputs "sed") "/bin"
-                                ":" "/run/setuid-programs"
+                                ":" "/run/privileged/bin"
                                 ":" (getenv "PATH")))
          (substitute* "hosts"
            (("#!/usr/bin/env bash")

@@ -189,11 +189,11 @@ cat ~a | sudo -u zabbix psql zabbix;
                 (start-service 'postgres))
              marionette))
 
-          ;; Add /run/setuid-programs to $PATH so that the scripts passed to
+          ;; Add privileged programs to $PATH so that the scripts passed to
           ;; 'system' can find 'sudo'.
           (marionette-eval
            '(setenv "PATH"
-                    "/run/setuid-programs:/run/current-system/profile/bin")
+                    "/run/privileged/bin:/run/current-system/profile/bin")
            marionette)
 
           (test-eq "postgres create zabbix user"

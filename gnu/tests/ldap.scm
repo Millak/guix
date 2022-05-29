@@ -144,7 +144,7 @@ suffix = dc=example,dc=com")))
 
           (test-assert "Can become LDAP user"
             (marionette-eval
-             '(zero? (system* "/run/setuid-programs/su" "eva" "-c"
+             '(zero? (system* "/run/privileged/bin/su" "eva" "-c"
                               #$(file-append coreutils "/bin/true")))
              marionette))
 

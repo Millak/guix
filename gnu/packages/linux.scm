@@ -5386,7 +5386,7 @@ thanks to the use of namespaces.")
                   (substitute* (find-files "libexec/cli" "\\.exec$")
                     (("\\$SINGULARITY_libexecdir/singularity/bin/([a-z]+)-suid"
                       _ program)
-                     (string-append "/run/setuid-programs/singularity-"
+                     (string-append "/run/privileged/bin/singularity-"
                                     program "-helper")))
 
                   ;; These squashfs mount options are apparently no longer

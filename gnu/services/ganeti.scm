@@ -182,7 +182,7 @@
 ;; Ceph, Gluster, etc, without having to add absolute references to everything.
 (define %default-ganeti-environment-variables
   (list (string-append "PATH="
-                       (string-join '("/run/setuid-programs"
+                       (string-join '("/run/privileged/bin"
                                       "/run/current-system/profile/sbin"
                                       "/run/current-system/profile/bin")
                                     ":"))))

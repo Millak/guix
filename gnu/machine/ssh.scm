@@ -178,6 +178,8 @@ shell command with escalated privileges for MACHINE's configuration."
   (if (string= "root" (machine-ssh-configuration-user
                        (machine-configuration machine)))
       '()
+      ;; Use the old setuid-programs location until the remote is likely to
+      ;; have the new /run/privileged one in place.
       '("/run/setuid-programs/sudo" "-n" "--")))
 
 (define (managed-host-remote-eval machine exp)

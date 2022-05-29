@@ -115,7 +115,7 @@ includes the @code{etc/dbus-1/system.d} directories of each package listed in
              ;; failures such as <https://issues.guix.gnu.org/52051> on slow
              ;; computers with slow I/O.
             (limit (@ (name "auth_timeout")) "300000")
-            (servicehelper "/run/setuid-programs/dbus-daemon-launch-helper")
+            (servicehelper "/run/privileged/bin/dbus-daemon-launch-helper")
 
             ;; First, the '.service' files of services subject to activation.
             ;; We use a fixed location under /etc because the setuid helper

@@ -725,8 +725,8 @@ handling the installation and removal of Debian software packages.")
                  (lambda ()
                    (format #t "# A couple of presets to make this work more smoothly.~@
                            MIRRORSITE=\"http://deb.debian.org/debian\"~@
-                           if [ -r /run/setuid-programs/sudo ]; then~@
-                               PBUILDERROOTCMD=\"/run/setuid-programs/sudo -E\"~@
+                           if [ -r /run/privileged/bin/sudo ]; then~@
+                               PBUILDERROOTCMD=\"/run/privileged/bin/sudo -E\"~@
                            fi~@
                            PBUILDERSATISFYDEPENDSCMD=\"~a/lib/pbuilder/pbuilder-satisfydepends-apt\"~%"
                            #$output)))))

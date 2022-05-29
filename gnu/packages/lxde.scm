@@ -372,26 +372,23 @@ with freedesktop.org standard.")
                  (substitute* '("mime-type/mime-type.c" "ptk/ptk-file-menu.c")
                    (("/usr(/local)?/share/mime") mime)))
                #t)))
-         (add-after 'patch-mime-dirs 'patch-setuid-progs
+         (add-after 'patch-mime-dirs 'patch-privileged-programs
            (lambda _
-             (let* ((su "/run/setuid-programs/su")
-                    (mount "/run/setuid-programs/mount")
-                    (umount "/run/setuid-programs/umount")
-                    (udevil "/run/setuid-programs/udevil"))
+             (let ((privileged (lambda (command)
+                                 (string-append "/run/privileged/bin/"
+                                                command))))
                (with-directory-excursion "src"
                  (substitute* '("settings.c" "settings.h" "vfs/vfs-file-task.c"
                                 "vfs/vfs-volume-hal.c" "../data/ui/prefdlg.ui"
                                 "../data/ui/prefdlg2.ui")
-                   (("(/usr)?/bin/su") su)
-                   (("/(bin|sbin)/mount") mount)
-                   (("/(bin|sbin)/umount") umount)
-                   (("/usr/bin/udevil") udevil)))
+                   (("(/usr)?/s?bin/(mount|umount|su|udevil)" _ _ command)
+                    (privileged command))))
                #t)))
-         (add-after 'patch-setuid-progs 'patch-spacefm-conf
+         (add-after 'patch-privileged-programs 'patch-spacefm.conf
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "etc/spacefm.conf"
                (("#terminal_su=/bin/su")
-                "terminal_su=/run/setuid-programs/su")
+                "terminal_su=/run/privileged/bin/su")
                (("#graphical_su=/usr/bin/gksu")
                 (string-append "graphical_su="
                                (search-input-file inputs "/bin/ktsuss")))))))

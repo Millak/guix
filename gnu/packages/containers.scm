@@ -274,7 +274,7 @@ containers or various tools.")
                   (add-after 'unpack 'fix-hardcoded-paths
                     (lambda _
                       (substitute* (find-files "tests" "\\.sh")
-                        (("ping") "/run/setuid-programs/ping")))))))
+                        (("ping") "/run/privileged/bin/ping")))))))
     (inputs
      (list glib
            libcap

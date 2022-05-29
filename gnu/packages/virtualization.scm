@@ -846,7 +846,7 @@ firmware blobs.  You can
              ;; hard coded PATH.  Patch so it works on Guix System.
              (substitute* "src/Ganeti/Constants.hs"
                (("/sbin:/bin:/usr/sbin:/usr/bin")
-                "/run/setuid-programs:/run/current-system/profile/sbin:\
+                "/run/privileged/bin:/run/current-system/profile/sbin:\
 /run/current-system/profile/bin"))))
          (add-after 'bootstrap 'patch-sphinx-version-detection
            (lambda _

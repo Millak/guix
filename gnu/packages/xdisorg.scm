@@ -2710,7 +2710,7 @@ temperature of the screen.")
      '(#:configure-flags
        '("--with-pam-service-name=login"
          "--with-xkb"
-         "--with-default-authproto-module=/run/setuid-programs/authproto_pam")))
+         "--with-default-authproto-module=/run/privileged/bin/authproto_pam")))
     (native-inputs
      (list pandoc pkg-config))
     (inputs
