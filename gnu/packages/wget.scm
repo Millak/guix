@@ -100,16 +100,14 @@ in downloaded documents to relative links.")
              (substitute* "wgetpaste"
                ;; dpaste blocks Tor users.  Use a better default.
                (("DEFAULT_SERVICE:-dpaste")
-                "DEFAULT_SERVICE-bpaste"))
-             #t))
+                "DEFAULT_SERVICE-bpaste"))))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
                     (bin (string-append out "/bin"))
                     (zsh (string-append out "/share/zsh/site-functions")))
                (install-file "wgetpaste" bin)
-               (install-file "_wgetpaste" zsh)
-               #t)))
+               (install-file "_wgetpaste" zsh))))
          (add-after 'install 'wrap-program
            ;; /bin/wgetpaste prides itself on relying only on the following
            ;; inputs, and doesn't need to execute arbitrary commands, so
@@ -121,8 +119,7 @@ in downloaded documents to relative links.")
                    ,(delete-duplicates
                      (map (lambda (command) (dirname (which command)))
                           (list "bash" "mktemp" "sed" "sort" "tee" "tr"
-                                "wget" "xclip")))))
-               #t))))
+                                "wget" "xclip")))))))))
        #:tests? #f))                    ; no test target
     (inputs
      (list bash-minimal wget xclip))
