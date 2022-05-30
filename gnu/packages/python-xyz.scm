@@ -10485,6 +10485,25 @@ and statistical routines from scipy and statsmodels.")
                  (base32
                   "1bjnshjz4d6z3vrwfwall1a3yh8h3a1h47c3fg7458x9426alcys")))))))
 
+(define-public python-session-info
+  (package
+    (name "python-session-info")
+    (version "1.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "session_info" version))
+              (sha256
+               (base32
+                "1dxnrgaxd2nb44n423mnrx119hmnh2yxdnzaw8mg60x7rh1mxniw"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-stdlib-list))
+    (home-page "https://gitlab.com/joelostblom/session_info")
+    (synopsis "Output version information for modules currently loaded")
+    (description
+     "This package outputs version information for modules loaded in the current
+session, Python, and the OS.")
+    (license license:bsd-3)))
+
 (define-public python-mpmath
   (package
     (name "python-mpmath")
