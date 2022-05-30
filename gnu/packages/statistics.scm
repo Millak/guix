@@ -6835,13 +6835,13 @@ Annealing\" @url{doi:10.1145/3025453.3025912}.")
 (define-public r-lmom
   (package
     (name "r-lmom")
-    (version "2.8")
+    (version "2.9")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "lmom" version))
         (sha256
-          (base32 "1lnj41gynaar5isyijg5nbll64qdxa12dnqvz7lxhaclqcjskqna"))))
+          (base32 "145va4dhl767mywk36xcmqilm21sfkqhcqi0s07qgq3k39sn4gin"))))
     (properties `((upstream-name . "lmom")))
     (build-system r-build-system)
     (native-inputs (list gfortran))
