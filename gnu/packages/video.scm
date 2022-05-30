@@ -2463,7 +2463,7 @@ YouTube.com and many more sites.")
 (define-public yt-dlp
   (package/inherit youtube-dl
     (name "yt-dlp")
-    (version "2022.02.04")
+    (version "2022.05.18")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/yt-dlp/yt-dlp/"
@@ -2471,7 +2471,7 @@ YouTube.com and many more sites.")
                                   version "/yt-dlp.tar.gz"))
               (sha256
                (base32
-                "1qx8sx47lzyrcl00r2657zjaq0mwfbzjyfnv5lr5dlm552f13pf8"))
+                "0wiiwqj8m4z6lladmrsp9354ddwlhn2gf0b39j271001g6fyi82r"))
               (snippet
                '(begin
                   ;; Delete the pre-generated files, except for the man page
@@ -2514,7 +2514,9 @@ YouTube.com and many more sites.")
                (when tests?
                  (invoke "pytest" "-k" "not download"))))))))
     (inputs
-     `(("python-mutagen" ,python-mutagen)
+     `(("python-brotli" ,python-brotli)
+       ("python-certifi" ,python-certifi)
+       ("python-mutagen" ,python-mutagen)
        ("python-pycryptodomex" ,python-pycryptodomex)
        ("python-websockets" ,python-websockets)
        ,@(package-inputs youtube-dl)))
