@@ -85,14 +85,14 @@
 (define-public hello
   (package
     (name "hello")
-    (version "2.12")
+    (version "2.12.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/hello/hello-" version
                                   ".tar.gz"))
               (sha256
                (base32
-                "1ayhp9v4m4rdhjmnl2bq3cibrbqqkgjbl3s7yk2nhlh8vj3ay16g"))))
+                "086vqwk2wl8zfs47sq2xpjc9k066ilmb8z6dn0q6ymwjzlm196cd"))))
     (build-system gnu-build-system)
     (synopsis "Hello, GNU world: An example GNU package")
     (description
