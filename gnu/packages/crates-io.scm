@@ -37361,7 +37361,7 @@ implementation (which is unstable / requires nightly).")
 (define-public rust-nom-7
   (package
     (name "rust-nom")
-    (version "7.0.0")
+    (version "7.1.1")
     (source
      (origin
        (method url-fetch)
@@ -37370,13 +37370,13 @@ implementation (which is unstable / requires nightly).")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1ha24yclw4m74gi9p5c3d68rhrrcb7qvkgicz153p5cahck9vzbz"))))
+         "0djc3lq5xihnwhrvkc4bj0fd58sjf632yh6hfiw545x355d3x458"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; Tests require example directory, not included in tarball.
        #:cargo-inputs
        (("rust-memchr" ,rust-memchr-2)
-        ("rust-minimal-lexical" ,rust-minimal-lexical-0.1)
+        ("rust-minimal-lexical" ,rust-minimal-lexical-0.2)
         ("rust-version-check" ,rust-version-check-0.9))
        #:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.3)
