@@ -100,6 +100,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages gperf)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages icu4c)
@@ -3229,14 +3230,30 @@ Memory-Mapped Database} (LMDB), a high-performance key-value store.")
 (define-public virtuoso-ose
   (package
     (name "virtuoso-ose")
-    (version "7.2.6")
+    (version "7.2.7")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/virtuoso/virtuoso/" version "/"
                            "virtuoso-opensource-" version ".tar.gz"))
        (sha256
-        (base32 "0ly7s7a3w2a2zhhi9rq9k2qlnzapqbbc1rcdqb3zqqpgg81krz9q"))))
+        (base32 "1853ln0smiilf3pni70gq6nmi9ps039cy44g6b5i9d2z1n9hnj02"))
+       (patches (search-patches "virtuoso-ose-remove-pre-built-jar-files.patch"))
+       (modules '((guix build utils)))
+       ;; This snippet removes pre-built Java archives.
+       (snippet
+        '(for-each delete-file-recursively
+                   (list "binsrc/hibernate"
+                         "binsrc/jena"
+                         "binsrc/jena2"
+                         "binsrc/jena3"
+                         "binsrc/jena4"
+                         "binsrc/rdf4j"
+                         "binsrc/sesame"
+                         "binsrc/sesame2"
+                         "binsrc/sesame3"
+                         "binsrc/sesame4"
+                         "libsrc/JDBCDriverType4")))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; Tests require a network connection.
@@ -3247,6 +3264,9 @@ Memory-Mapped Database} (LMDB), a high-performance key-value store.")
                            "--enable-static=no")
        #:phases
        (modify-phases %standard-phases
+         (replace 'bootstrap
+           (lambda _
+             (invoke "sh" "autogen.sh")))
          ;; Even with "--enable-static=no", "libvirtuoso-t.a" is left in
          ;; the build output.  The following phase removes it.
          (add-after 'install 'remove-static-libs
@@ -3256,6 +3276,8 @@ Memory-Mapped Database} (LMDB), a high-performance key-value store.")
                            (delete-file (string-append lib "/" file)))
                          '("libvirtuoso-t.a"
                            "libvirtuoso-t.la"))))))))
+    (native-inputs
+     (list autoconf automake bison flex gperf libtool))
     (inputs
      (list openssl net-tools readline zlib))
     (home-page "http://vos.openlinksw.com/owiki/wiki/VOS/")
