@@ -29293,3 +29293,24 @@ profile.  It supports:
 
 Currently, Linux is the only platform supported by this library.")
     (license license:expat)))
+
+(define-public python-musical-scales
+  (package
+    (name "python-musical-scales")
+    (version "1.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "musical-scales" version))
+              (sha256
+               (base32
+                "1ckn8n37i7b65h0i385ycn0w8sg9na0iabz0kmhxxc1wj0hddkw9"))))
+    (build-system python-build-system)
+    (native-inputs (list python-wheel))
+    (home-page "https://github.com/hmillerbakewell/musical-scale")
+    (synopsis "Retrieve a scale based on a given mode and starting note")
+    (description
+     "Retrieve a scale based on a given mode and starting note.
+Information about these scales can be
+@url{https://en.wikipedia.org/wiki/List_of_musical_scales_and_modes, found on
+Wikipedia}.")
+    (license license:expat)))
