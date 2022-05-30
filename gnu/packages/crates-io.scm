@@ -34708,8 +34708,28 @@ file's MIME type by its extension.")
     ;; No copyright headers in the source code.  LICENSE indicates gpl3.
     (license license:gpl3)))
 
+(define-public rust-minimal-lexical-0.2
+  (package
+    (name "rust-minimal-lexical")
+    (version "0.2.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "minimal-lexical" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32 "16ppc5g84aijpri4jzv14rvcnslvlpphbszc7zzp6vfkddf4qdb8"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/Alexhuszagh/minimal-lexical")
+    (synopsis "Float parsing conversion routines")
+    (description "This is a minimal version of rust-lexical, meant to allow
+efficient round-trip float parsing. Minimal-lexical implements a correct, fast
+float parser.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-minimal-lexical-0.1
   (package
+    (inherit rust-minimal-lexical-0.2)
     (name "rust-minimal-lexical")
     (version "0.1.4")
     (source
@@ -34718,12 +34738,7 @@ file's MIME type by its extension.")
         (uri (crate-uri "minimal-lexical" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "0xynhr97vyv5n5lls41dl7bfa3ba122lix9mqij1l7yprl6n6r4w"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/Alexhuszagh/minimal-lexical")
-    (synopsis "Fast float parsing conversion routines")
-    (description "Fast float parsing conversion routines.")
-    (license (list license:expat license:asl2.0))))
+         (base32 "0xynhr97vyv5n5lls41dl7bfa3ba122lix9mqij1l7yprl6n6r4w"))))))
 
 (define-public rust-miniz-oxide-0.4
   (package
