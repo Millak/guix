@@ -1337,7 +1337,17 @@ object, only for build requests on EXPECTED-STORE."
     (if (and (eq? (store-connection-socket store)
                   (store-connection-socket expected-store))
              (= mode (build-mode normal)))
-        (unresolved things continue)
+        (begin
+          ;; Preserve caches accumulated up to this handler invocation.
+          (set-store-connection-caches! expected-store
+                                        (store-connection-caches store))
+
+          (unresolved things
+                      (lambda (new-store value)
+                        ;; Borrow caches from NEW-STORE.
+                        (set-store-connection-caches!
+                         store (store-connection-caches new-store))
+                        (continue value))))
         (continue #t))))
 
 (define default-cutoff
@@ -1397,7 +1407,8 @@ CUTOFF is the threshold above which we stop accumulating unresolved nodes."
                                       (if (unresolved? obj)
                                           ;; Pass #f because 'build-things' is now
                                           ;; unnecessary.
-                                          ((unresolved-continuation obj) #f)
+                                          ((unresolved-continuation obj)
+                                           store #f)
                                           obj))
                                     result #:cutoff cutoff)
          (map/accumulate-builds store proc rest #:cutoff cutoff)))))
