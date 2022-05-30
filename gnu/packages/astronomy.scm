@@ -88,6 +88,7 @@
     (native-inputs
      (list gfortran))
     (home-page "https://www.imcce.fr/inpop/calceph")
+    (properties `((release-monitoring-url . ,home-page)))
     (synopsis "Astronomical library to access the binary planetary ephemeris files")
     (description
      "The CALCEPH Library is designed to access the binary planetary ephemeris files,
