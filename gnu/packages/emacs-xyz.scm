@@ -20130,7 +20130,7 @@ downloading manager for Emacs.")
 (define-public emacs-helpful
   (package
     (name "emacs-helpful")
-    (version "0.18")
+    (version "0.19")
     (source
      (origin
        (method git-fetch)
@@ -20139,7 +20139,9 @@ downloading manager for Emacs.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gdjxykqkal2x765mi51m99i5ql23i1fy909wy4mzj5ajhjfgqcc"))))
+        (base32 "0qwsifzsjw95l83m7z07fr9h1sqbhggwmcps1qgbddpan2a8ab8a"))
+       ;; Cherry-picked from upstream, remove when bumping to 0.20.
+       (patches (search-patches "emacs-helpful-fix-docstring-test.patch"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-elisp-refs emacs-dash emacs-s emacs-f emacs-shut-up))
