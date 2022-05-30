@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 Taylan Ulrich Bayirli/Kammer <taylanbayirli@gmail.com>
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
@@ -2155,18 +2155,17 @@ or unexpected behavior inside an elisp configuration file (typically
   ;; Emacs-w3m follows a "rolling release" model.
   (package
     (name "emacs-w3m")
-    (version "2018-11-11")
-    (source
-     (origin
-       (method cvs-fetch)
-       (uri (cvs-reference
-             (root-directory
-              ":pserver:anonymous@cvs.namazu.org:/storage/cvsroot")
-             (module "emacs-w3m")
-             (revision version)))
-       (file-name (string-append name "-" version "-checkout"))
-       (sha256
-        (base32 "0nvahdbjs12zg7zsk4gql02mvnv56cf1rwj2f5p42lwp3xvswiwp"))))
+    (version "20220508.2259")
+    (source (origin
+              ;; "Officially" this is still on cvs.namazu.org, but that repo
+              ;; seems to be unreachable.
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/emacs-w3m/emacs-w3m.git")
+                    (commit "bbcebbe20ebfa807a3e4beaadf40ce6f4be213e7")))
+              (sha256
+               (base32
+                "0y892n8jaxzyxi1fgyklc7zfh57ibp4yyywmif69dm28hykj6lmz"))))
     (build-system gnu-build-system)
     (native-inputs (list autoconf texinfo emacs-minimal))
     (inputs (list w3m imagemagick))
