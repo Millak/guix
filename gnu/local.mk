@@ -715,6 +715,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/build/bootloader.scm			\
   %D%/build/chromium-extension.scm		\
   %D%/build/cross-toolchain.scm			\
+  %D%/build/dbus-service.scm			\
   %D%/build/image.scm				\
   %D%/build/jami-service.scm			\
   %D%/build/file-systems.scm			\

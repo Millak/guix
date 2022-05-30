@@ -9,7 +9,7 @@
 ;;; Copyright © 2017 Petter <petter@mykolab.ch>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
-;;; Copyright © 2019, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2019, 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Nicolò Balzarotti <nicolo@nixo.xyz>
@@ -175,6 +175,23 @@ daemon).  Currently the communicating applications are on one computer,
 or through unencrypted TCP/IP suitable for use behind a firewall with
 shared NFS home directories.")
     (license license:gpl2+)))                     ; or Academic Free License 2.1
+
+;;; This variant is used for the Jami service: it provides an entry point to
+;;; further customize the configuration of the D-Bus instance run by the
+;;; jami-dbus-session service.
+(define-public dbus-for-jami
+  (hidden-package
+   (package/inherit dbus
+     (name "dbus-for-jami")
+     (arguments
+      (substitute-keyword-arguments (package-arguments dbus)
+        ((#:phases phases)
+         `(modify-phases ,phases
+            (add-after 'unpack 'customize-config
+              (lambda _
+                (substitute* "bus/session.conf.in"
+                  (("@SYSCONFDIR_FROM_PKGDATADIR@/dbus-1/session-local.conf")
+                   "/var/run/jami/session-local.conf")))))))))))
 
 (define glib
   (package

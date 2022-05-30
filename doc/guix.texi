@@ -25546,7 +25546,7 @@ Available @code{jami-configuration} fields are:
 @item @code{jamid} (default: @code{libjami}) (type: package)
 The Jami daemon package to use.
 
-@item @code{dbus} (default: @code{dbus}) (type: package)
+@item @code{dbus} (default: @code{dbus-for-jami}) (type: package)
 The D-Bus package to use to start the required D-Bus session.
 
 @item @code{nss-certs} (default: @code{nss-certs}) (type: package)
