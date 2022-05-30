@@ -1752,20 +1752,20 @@ music theorist Paul Nauert's quantization grids or Q-Grids, for short.")
 (define-public non-sequencer
   ;; The latest tagged release is three years old and uses a custom build
   ;; system, so we take the last commit.
-  (let ((commit "5ae43bb27c42387052a73e5ffc5d33efb9d946a9")
-        (revision "4"))
+  (let ((commit "257ec5951e7d4086344d98c99ebbe569f7c31211")
+        (revision "5"))
     (package
       (name "non-sequencer")
-      (version (string-append "1.9.5-" revision "." (string-take commit 7)))
+      (version (git-version "1.9.5" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url "git://git.tuxfamily.org/gitroot/non/non.git")
+                      (url "https://github.com/falkTX/non/")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1cljkkyi9dxqpqhx8y6l2ja4zjmlya26m26kqxml8gx08vyvddhx"))
-                (file-name (string-append name "-" version "-checkout"))))
+                  "0h6ycm3nbb5lvjvhymz5xlj8wqm3z3ggzn4ghmw6xyzd0l7c3m8b"))
+                (file-name (git-file-name name version))))
       (build-system waf-build-system)
       (arguments
        `(#:tests? #f ;no "check" target
@@ -1776,11 +1776,16 @@ music theorist Paul Nauert's quantization grids or Q-Grids, for short.")
                                                        (%current-system))))
                      '("--disable-sse")
                      '()))
-         #:python ,python-2))
+         #:phases
+         (modify-phases %standard-phases
+           (add-before 'configure 'setup-waf
+             (lambda* (#:key inputs #:allow-other-keys)
+               (let ((waf (assoc-ref inputs "python-waf")))
+                 (copy-file (string-append waf "/bin/waf") "waf")))))))
       (inputs
        (list jack-1 libsigc++-2 liblo ntk))
       (native-inputs
-       (list pkg-config))
+       (list python-waf pkg-config))
       (home-page "https://non.tuxfamily.org/wiki/Non%20Sequencer")
       (synopsis "Pattern-based MIDI sequencer")
       (description
@@ -1802,7 +1807,7 @@ transport is rolling.")
     (inputs
      (list jack-1 liblo ntk))
     (native-inputs
-     (list pkg-config))
+     (list python-waf pkg-config))
     (home-page "https://non.tuxfamily.org/nsm/")
     (synopsis "Audio session management")
     (description
@@ -1820,9 +1825,9 @@ communicate with the session management daemon.")
         `(cons "--project=mixer"
                (delete "--project=sequencer" ,flags)))))
     (inputs
-     (list jack-1 liblo ladspa lrdf ntk))
+     (list jack-1 liblo ladspa lrdf ntk lv2 lilv))
     (native-inputs
-     (list pkg-config))
+     (list python-waf pkg-config))
     (home-page "https://non.tuxfamily.org/wiki/Non%20Mixer")
     (synopsis "Modular digital audio mixer")
     (description
@@ -1844,7 +1849,7 @@ studio.")
     (inputs
      (list jack-1 liblo libsndfile ntk))
     (native-inputs
-     (list pkg-config))
+     (list python-waf pkg-config))
     (home-page "https://non.tuxfamily.org/wiki/Non%20Timeline")
     (synopsis "Modular digital audio timeline arranger")
     (description
