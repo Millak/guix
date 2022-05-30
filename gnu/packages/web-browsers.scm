@@ -158,14 +158,14 @@ management, extensions such as advertisement blocker and colorful tabs.")
 (define-public links
   (package
     (name "links")
-    (version "2.26")
+    (version "2.27")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://links.twibright.com/download/"
                                   "links-" version ".tar.bz2"))
               (sha256
                (base32
-                "1jy90k04kl7y3l8jzg5jx7fglyqzngng0964j7j67gjxy9vkanzh"))))
+                "1d7bz6bbis94jq82xydwnazaczzmb1ij62pbmf0dxkg7xpycppfq"))))
     (build-system gnu-build-system)
     (arguments
      (list
