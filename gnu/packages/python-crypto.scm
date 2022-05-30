@@ -629,13 +629,14 @@ message digests and key derivation functions.")
 (define-public python2-cryptography-vectors
   (package
     (inherit python-cryptography-vectors)
-    (version "3.3.1")
+    (name "python2-cryptography-vectors")
+    (version "3.3.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "cryptography_vectors" version))
               (sha256
                (base32
-                "192wix3sr678x21brav5hgc6j93l7ab1kh69p2scr3fsblq9qy03"))))
+                "1yhaps0f3h2yjb6lmz953z1l1d84y9swk4k3gj9nqyk4vbx5m7cc"))))
     (arguments
      (list #:python python-2))))
 
@@ -644,13 +645,13 @@ message digests and key derivation functions.")
                  (strip-python2-variant python-cryptography))))
     (package
       (inherit crypto)
-      (version "3.3.1")
+      (version "3.3.2")
       (source (origin
                 (method url-fetch)
                 (uri (pypi-uri "cryptography" version))
                 (sha256
                  (base32
-                  "1ribd1vxq9wwz564mg60dzcy699gng54admihjjkgs9dx95pw5vy"))))
+                  "1vcvw4lkw1spiq322pm1256kail8nck6bbgpdxx3pqa905wd6q2s"))))
       (arguments
        `(#:python ,python-2
          #:phases
