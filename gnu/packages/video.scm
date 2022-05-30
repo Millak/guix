@@ -2481,8 +2481,7 @@ YouTube.com and many more sites.")
                                           ;;"yt-dlp.1"
                                           "completions/bash/yt-dlp"
                                           "completions/fish/yt-dlp.fish"
-                                          "completions/zsh/_yt-dlp"))
-                  #t))))
+                                          "completions/zsh/_yt-dlp"))))))
     (arguments
      (substitute-keyword-arguments (package-arguments youtube-dl)
        ((#:tests? _) #t)
@@ -2493,8 +2492,7 @@ YouTube.com and many more sites.")
              (lambda _
                (substitute* "yt_dlp/postprocessor/ffmpeg.py"
                  (("\\.get_param\\('ffmpeg_location'\\)" match)
-                  (format #f "~a or '~a'" match (which "ffmpeg"))))
-               #t))
+                  (format #f "~a or '~a'" match (which "ffmpeg"))))))
            (replace 'build-generated-files
              (lambda _
                ;; Avoid the yt-dlp.1 target, which requires pandoc.
@@ -2506,8 +2504,7 @@ YouTube.com and many more sites.")
                    (("'etc/")
                     (string-append "'" prefix "/etc/"))
                    (("'share/")
-                    (string-append "'" prefix "/share/"))))
-               #t))
+                    (string-append "'" prefix "/share/"))))))
            (delete 'install-completion)
            (replace 'check
              (lambda* (#:key tests? #:allow-other-keys)
