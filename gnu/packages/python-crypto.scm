@@ -452,7 +452,7 @@ is used by the Requests library to verify HTTPS requests.")
 (define-public python2-certifi
   (package-with-python2 python-certifi))
 
-(define-public python-cryptography-vectors
+(define-public python-cryptography-vectors-next
   (package
     (name "python-cryptography-vectors")
     (version "36.0.1")
@@ -471,7 +471,17 @@ is used by the Requests library to verify HTTPS requests.")
     ;; Distributed under either BSD-3 or ASL2.0
     (license (list license:bsd-3 license:asl2.0))))
 
-(define-public python-cryptography
+(define-public python-cryptography-vectors
+  (package
+    (inherit python-cryptography-vectors-next)
+    (version "3.4.8")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "cryptography_vectors" version))
+              (sha256
+               (base32 "1wl0ynh3lzhc6q59g8mybvijmnp195x7fjxlb3h3sgcraw14312c"))))))
+
+(define-public python-cryptography-next
   (package
     (name "python-cryptography")
     (version "36.0.1")
@@ -571,7 +581,7 @@ is used by the Requests library to verify HTTPS requests.")
      (list python-asn1crypto python-cffi python-six python-idna
            python-iso8601))
     (native-inputs
-     (list python-cryptography-vectors
+     (list python-cryptography-vectors-next
            python-hypothesis
            python-pretend
            python-pytz
@@ -591,6 +601,30 @@ message digests and key derivation functions.")
     ;; Distributed under either BSD-3 or ASL2.0
     (license (list license:bsd-3 license:asl2.0))
     (properties `((python2-variant . ,(delay python2-cryptography))))))
+
+(define-public python-cryptography
+  (package
+    (inherit python-cryptography-next)
+    (version "3.4.8")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "cryptography" version))
+              (sha256
+               (base32 "072awar70cwfd2hnx0pvp1dkc7gw45mbm3wcyddvxz5frva5xk4l"))))
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'set-no-rust
+                 (lambda _
+                   (setenv "CRYPTOGRAPHY_DONT_BUILD_RUST" "1"))))))
+    (inputs (list openssl))
+    (native-inputs
+     (list python-cryptography-vectors
+           python-hypothesis
+           python-pretend
+           python-pytz
+           python-pytest
+           python-setuptools-rust))))
 
 (define-public python2-cryptography-vectors
   (package
