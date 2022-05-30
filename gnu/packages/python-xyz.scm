@@ -24821,14 +24821,14 @@ append on old values.  Partd excels at shuffling operations.")
 (define-public python-fsspec
   (package
     (name "python-fsspec")
-    (version "0.6.1")
+    (version "2022.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "fsspec" version))
        (sha256
         (base32
-         "1g9ba8v04s1nrh7pvzfm2md7ivl2mrz3hcq3y9d1a44gd62h17zj"))))
+         "1d43qiz8g395042a52yswz6j7q41gvrv3k53wvxn1rs4bk3mjm3s"))))
     (build-system python-build-system)
     (arguments '(#:tests? #f))          ; there are none
     (home-page "https://github.com/intake/filesystem_spec")
