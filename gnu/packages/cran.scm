@@ -11782,14 +11782,14 @@ analysis.")
 (define-public r-gee
   (package
     (name "r-gee")
-    (version "4.13-22")
+    (version "4.13-23")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gee" version))
        (sha256
         (base32
-         "1wbwn7bjqz09l6clh43dy3x5qgv9b9wwn7xnfw9fkkrhn6rvc3rw"))))
+         "0v0fam678pqqkxmj95f1pwsi08y1rbz1wxnp1ig81jvpn0xpq8gq"))))
     (properties `((upstream-name . "gee")))
     (build-system r-build-system)
     (native-inputs
