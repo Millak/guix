@@ -24844,16 +24844,16 @@ decisions with any given backend.")
 (define-public python-dask
   (package
     (name "python-dask")
-    (version "2021.11.2")
+    (version "2022.05.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/dask/dask/")
-             (commit "5a8275dd53193b47457cdfadc0e2356ea3eb6ccd")))
+             (commit "8db1597c9745543df3129399bead5fbc95a54571")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0h8w7c03mn6s2mmwbqd2sqay3k4vaqiwlsbvliziggw28042zfw2"))
+        (base32 "1xfk3wml972z502w5ii5mn03ls3rg5p4hqgl0hkicgpmzlyz9kph"))
        (snippet
         ;; Delete generated copy of python-versioneer.  We recreate it below.
         '(delete-file "versioneer.py"))))
