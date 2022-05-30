@@ -6919,14 +6919,17 @@ streaming audio server.")
                   (format #t "test suite not run~%"))))
           (add-after 'install 'glib-or-gtk-wrap ; ensure icons loaded
             (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
-          (add-after 'install 'wrap-gi-typelib ; GObject Introspection
+          (add-after 'install 'wrap-extra-paths
             (lambda* (#:key outputs #:allow-other-keys)
               (let ((out (assoc-ref outputs "out"))
-                    (gi-typelib-path (getenv "GI_TYPELIB_PATH")))
-                (for-each (lambda (prog)
-                            (wrap-program (string-append out "/bin/" prog)
-                              `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))))
-                          '("exfalso" "quodlibet"))))))))
+                    (gi-typelib-path (getenv "GI_TYPELIB_PATH"))
+                    (gst-plugins-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
+                (for-each
+                 (lambda (prog)
+                   (wrap-program (string-append out "/bin/" prog)
+                     `("GI_TYPELIB_PATH" ":" = (,gi-typelib-path))
+                     `("GST_PLUGIN_SYSTEM_PATH" ":" suffix (,gst-plugins-path))))
+                 '("exfalso" "quodlibet"))))))))
     (native-inputs (list xvfb-run gettext-minimal))
     (inputs
      (list adwaita-icon-theme
