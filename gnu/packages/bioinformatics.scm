@@ -1150,9 +1150,6 @@ into separate processes; and more.")
                (base32
                 "1q55jhf76z3k6is3psis0ckbki7df26x7dikpcc3vhk1vhkwribh"))))))
 
-(define-public python2-biopython
-  (package-with-python2 python-biopython))
-
 (define-public python-fastalite
   (package
     (name "python-fastalite")
