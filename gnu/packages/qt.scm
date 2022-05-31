@@ -86,6 +86,7 @@
   #:use-module (gnu packages maths)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages ninja)
+  #:use-module (gnu packages node)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages pciutils)
   #:use-module (gnu packages pcre)
@@ -279,28 +280,32 @@ system, and the core design of Django is reused in Grantlee.")
   ;; the layout differs between them.
   (list (string-append "https://download.qt.io/official_releases/qt/"
                        (version-major+minor version) "/" version
+                       "/submodules/" component "-everywhere-opensource-src-"
+                       version ".tar.xz")
+        (string-append "https://download.qt.io/official_releases/qt/"
+                       (version-major+minor version) "/" version
                        "/submodules/" component "-everywhere-src-"
                        version ".tar.xz")
         (string-append "https://download.qt.io/archive/qt/"
                        (version-major+minor version) "/" version
-                       "/submodules/" component "-everywhere-src-"
+                       "/submodules/" component "-everywhere-opensource-src-"
                        version ".tar.xz")
         (let ((directory (string-append "qt5" (string-drop component 2))))
           (string-append "http://sources.buildroot.net/" directory "/"
-                         component "-everywhere-src-" version ".tar.xz"))
+                         component "-everywhere-opensource-src-" version ".tar.xz"))
         (string-append "https://distfiles.macports.org/qt5/"
-                       component "-everywhere-src-" version ".tar.xz")))
+                       component "-everywhere-opensource-src-" version ".tar.xz")))
 
 (define-public qtbase-5
   (package
     (name "qtbase")
-    (version "5.15.2")
+    (version "5.15.4")
     (source (origin
               (method url-fetch)
               (uri (qt5-urls name version))
               (sha256
                (base32
-                "1y70libf2x52lpbqvhz10lpk7nyl1ajjwzjxly9pjdpfj4jsv7wh"))
+                "064amqblnik1zrlcffix2cf3qxacxcfwkyhnpmxbsqv6z2xhfcpr"))
               ;; Use TZDIR to avoid depending on package "tzdata".
               (patches (search-patches "qtbase-use-TZDIR.patch"
                                        "qtbase-moc-ignore-gcc-macro.patch"
@@ -696,13 +701,13 @@ developers using C++ or QML, a CSS & JavaScript like language.")
 (define-public qtsvg
   (package (inherit qtbase-5)
     (name "qtsvg")
-    (version "5.15.2")
+    (version "5.15.4")
     (source (origin
              (method url-fetch)
              (uri (qt5-urls name version))
              (sha256
               (base32
-               "0pjqrdmd1991x9h4rl8sf81pkd89hfd5h1a2gp3fjw96pk0w5hwb"))))
+               "0ghw0z8v3q8wls61x4618fgri1f05mnsb09p8dq2h7r20yih5c2q"))))
     (propagated-inputs `())
     (native-inputs (list perl))
     (inputs
@@ -747,8 +752,7 @@ HostLibraries=lib
 [EffectiveSourcePaths]
 HostPrefix=~a
 HostData=lib/qt5
-" out out qtbase)))
-               #t)))
+" out out qtbase))))))
          (replace 'configure
            (lambda* (#:key inputs outputs #:allow-other-keys)
              ;; Valid QT_BUILD_PARTS variables are:
@@ -757,8 +761,7 @@ HostData=lib/qt5
          (add-before 'check 'set-display
            (lambda _
              ;; make Qt render "offscreen", required for tests
-             (setenv "QT_QPA_PLATFORM" "offscreen")
-             #t)))))
+             (setenv "QT_QPA_PLATFORM" "offscreen"))))))
     (synopsis "Qt module for displaying SVGs")
     (description "The QtSvg module provides classes for displaying the
  contents of SVG files.")))
@@ -766,28 +769,17 @@ HostData=lib/qt5
 (define-public qtimageformats
   (package (inherit qtsvg)
     (name "qtimageformats")
-    (version "5.15.2")
+    (version "5.15.4")
     (source (origin
              (method url-fetch)
              (uri (qt5-urls name version))
              (sha256
               (base32
-               "1msk8a0z8rr16hkp2fnv668vf6wayiydqgc2mcklaa04rv3qb0mz"))
+               "17b1ghqqn54sj05naffy0b7fhg2iqxv7plck5lp1kh8j8rfyhn9s"))
              (modules '((guix build utils)))
              (snippet
               '(begin
-                 (delete-file-recursively "src/3rdparty")
-                 #t))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg)
-       ((#:phases phases)
-        `(modify-phases ,phases
-           (add-after 'unpack 'fix-build
-             (lambda _
-               (substitute* "src/plugins/imageformats/jp2/qjp2handler.cpp"
-                 (("^#include <jasper/jasper.h>")
-                  "#include <jasper/jasper.h>\n#include <QtCore/qmath.h>"))
-               #t))))))
+                 (delete-file-recursively "src/3rdparty")))))
     (native-inputs `())
     (inputs
      (list jasper
@@ -804,13 +796,13 @@ support for MNG, TGA, TIFF and WBMP image formats.")))
 (define-public qtx11extras
   (package (inherit qtsvg)
     (name "qtx11extras")
-    (version "5.15.2")
+    (version "5.15.4")
     (source (origin
              (method url-fetch)
              (uri (qt5-urls name version))
              (sha256
               (base32
-               "0gkfzj195v9flwljnqpdz3a532618yn4h2577nlsai56x4p7053h"))))
+               "08ip6z105maivvv8mrwfqaxb8hk67dxalj5i3yghzc34j4jvl2xi"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg)
        ((#:tests? _ #f) #f))) ; TODO: Enable the tests
@@ -824,23 +816,24 @@ from within Qt 5.")))
 (define-public qtxmlpatterns
   (package (inherit qtsvg)
     (name "qtxmlpatterns")
-    (version "5.15.2")
+    (version "5.15.4")
     (source (origin
              (method url-fetch)
              (uri (qt5-urls name version))
              (sha256
               (base32
-               "1ypj5jpa31rlx8yfw3y9jia212lfnxvnqkvygs6ihjf3lxi23skn"))))
+               "0ryrsn9v2van3bbkx4fq5g0fb19xs2lcfp513w1jqccwmv3x8871"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg)
-       ((#:tests? _ #f) #f) ; TODO: Enable the tests
        ((#:phases phases)
         `(modify-phases ,phases
            (add-after 'unpack 'disable-network-tests
              (lambda _ (substitute* "tests/auto/auto.pro"
                          (("qxmlquery") "# qxmlquery")
-                         (("xmlpatterns ") "# xmlpatterns"))
-               #t))))))
+                         (("xmlpatterns ") "# xmlpatterns"))))
+           (add-after 'unpack 'skip-qquickxmllistmodel-test
+             (lambda _ (substitute* "tests/auto/auto.pro"
+                         ((".*qquickxmllistmodel.*") ""))))))))
     (native-inputs (list perl qtdeclarative))
     (inputs (list qtbase-5))
     (synopsis "Qt XML patterns module")
@@ -851,13 +844,13 @@ xmlpatternsvalidator.")))
 (define-public qtdeclarative
   (package (inherit qtsvg)
     (name "qtdeclarative")
-    (version "5.15.2")
+    (version "5.15.4")
     (source (origin
              (method url-fetch)
              (uri (qt5-urls name version))
              (sha256
               (base32
-               "0lancdn7y0lrlmyn5cbdm0izd5yprvd5n77nhkb7a3wl2sbx0066"))))
+               "136m3bypbxbkqc1j4vr04i1q5q178i40dx5b3h51ji5p6mg31gxz"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg)
        ((#:tests? _ #f) #f)             ;TODO: Enable the tests
@@ -870,8 +863,7 @@ xmlpatternsvalidator.")))
                  ;; is provided by qtdeclarative.
                  (substitute*
                      "lib/cmake/Qt5QuickCompiler/Qt5QuickCompilerConfig.cmake"
-                   (("\\$\\{_qt5Core_install_prefix\\}") out)))
-               #t))))))
+                   (("\\$\\{_qt5Core_install_prefix\\}") out)))))))))
     (native-inputs
      (list perl
            pkg-config
@@ -891,13 +883,13 @@ with JavaScript and C++.")))
 (define-public qtconnectivity
   (package (inherit qtsvg)
     (name "qtconnectivity")
-    (version "5.15.2")
+    (version "5.15.4")
     (source (origin
              (method url-fetch)
              (uri (qt5-urls name version))
              (sha256
               (base32
-               "185zci61ip1wpjrygcw2m6v55lvninc0b8y2p3jh6qgpf5w35003"))))
+               "1avxj6wlqc244fq267p60vfa3w9rhbm6wzr8vp049m80x3kfbxbs"))))
     (native-inputs
      (list perl pkg-config qtdeclarative))
     (inputs
@@ -909,13 +901,13 @@ with Bluetooth and NFC.")))
 (define-public qtwebsockets
   (package (inherit qtsvg)
     (name "qtwebsockets")
-    (version "5.15.2")
+    (version "5.15.4")
     (source (origin
              (method url-fetch)
              (uri (qt5-urls name version))
              (sha256
               (base32
-               "0gr399fn5n8j3m9d3vv01vcbr1cb7pw043j04cnnxzrlvn2jvd50"))))
+               "05kvdlnkiyj8n8y62lfcln9y9jdc7lqy47xmdgwhl8aafk3sbph4"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg)
        ((#:tests? _ #f) #f))) ; TODO: Enable the tests
@@ -932,13 +924,13 @@ consume data received from the server, or both.")))
 (define-public qtsensors
   (package (inherit qtsvg)
     (name "qtsensors")
-    (version "5.15.2")
+    (version "5.15.4")
     (source (origin
              (method url-fetch)
              (uri (qt5-urls name version))
              (sha256
               (base32
-               "0fa81r7bn1mf9ynwsx524a55dx1q0jb4vda6j48ssb4lx7wi201z"))))
+               "1sz5mhhmmpqhxjibcr58vl7i6kyb4irsnrvrbxy1b14z9qk4563k"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg)
        ((#:parallel-tests? _ #f) #f) ; can lead to race condition
@@ -947,9 +939,8 @@ consume data received from the server, or both.")))
            (add-after 'unpack 'fix-tests
              (lambda _
                (substitute* "tests/auto/qsensorgestures_gestures/tst_sensorgestures_gestures.cpp"
-                 (("2000") "5000")      ;lengthen test timeout
-                 (("QTest::newRow(\"twist\") << \"twist\"") "")) ;failing test
-               #t))))))
+                 (("2000") "5000")                                      ;lengthen test timeout
+                 (("QTest::newRow(\"twist\") << \"twist\"") ""))))))))  ;failing test
     (native-inputs
      (list perl qtdeclarative))
     (inputs (list qtbase-5))
@@ -961,13 +952,13 @@ recognition API for devices.")))
 (define-public qtmultimedia
   (package (inherit qtsvg)
     (name "qtmultimedia")
-    (version "5.15.2")
+    (version "5.15.4")
     (source (origin
              (method url-fetch)
              (uri (qt5-urls name version))
              (sha256
               (base32
-               "1xbd6kc7i0iablqdkvfrajpi32cbq7j6ajbfyyyalcai1s0mhdqc"))
+               "1m132sag2kkdf1hdnj0rii5bs89hx6f7vhq72h3767sbrinasm92"))
              (modules '((guix build utils)))
              (snippet
               '(begin
@@ -975,8 +966,7 @@ recognition API for devices.")))
                    "examples/multimedia/spectrum/3rdparty")
                  ;; We also prevent the spectrum example from being built.
                  (substitute* "examples/multimedia/multimedia.pro"
-                   (("spectrum") "#"))
-                 #t))))
+                   (("spectrum") "#"))))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg)
        ((#:phases phases)
@@ -1006,13 +996,13 @@ set of plugins for interacting with pulseaudio and GStreamer.")))
 (define-public qtwayland
   (package (inherit qtsvg)
     (name "qtwayland")
-    (version "5.15.2")
+    (version "5.15.4")
     (source (origin
              (method url-fetch)
              (uri (qt5-urls name version))
              (sha256
               (base32
-               "1ddfx4nak16xx0zh1kl836zxvpbixmmjyplsmfmg65pqkwi34dqr"))))
+               "04qklfix0sadx3cckq88y83m6src809sy6gzih6gl43nmrrmg4br"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg)
        ((#:phases phases)
@@ -1026,13 +1016,11 @@ set of plugins for interacting with pulseaudio and GStreamer.")))
                                   "m_waitingFrameCallbacks\\.empty\\(\\)\\);"))
                   "")
                  (("QTRY_COMPARE\\(bufferSpy\\.count\\(\\), 1\\);")
-                  ""))
-               #t))
+                  ""))))
            (add-before 'check 'set-test-environment
              (lambda _
                ;; Do not fail just because /etc/machine-id is missing.
-               (setenv "DBUS_FATAL_WARNINGS" "0")
-               #t))))))
+               (setenv "DBUS_FATAL_WARNINGS" "0")))))))
     (native-inputs
      (list glib perl pkg-config qtdeclarative))
     (inputs
@@ -1055,13 +1043,13 @@ compositor libraries.")))
 (define-public qtserialport
   (package (inherit qtsvg)
     (name "qtserialport")
-    (version "5.15.2")
+    (version "5.15.4")
     (source (origin
              (method url-fetch)
              (uri (qt5-urls name version))
              (sha256
               (base32
-               "17gp5qzg4wdg8qlxk2p3mh8x1vk33rf33wic3fy0cws193bmkiar"))))
+               "107hv5bhbn6ry238lsgvijn87dwyb1zry32pbidpiymk9lby31p5"))))
     (native-inputs (list perl))
     (inputs
      (list qtbase-5 eudev))
@@ -1076,8 +1064,7 @@ compositor libraries.")))
                ;; otherwise the lib will be searched in LD_LIBRARY_PATH which
                ;; typically is not set in guix.
                (("^\\s*(udevLibrary->setFileNameAndVersion\\(QStringLiteral\\(\")(udev\"\\),\\s*[0-9]+\\);)" _ a b)
-                (string-append a (assoc-ref inputs "eudev") "/lib/lib" b)))
-             #t))))))
+                (string-append a (assoc-ref inputs "eudev") "/lib/lib" b)))))))))
     (synopsis "Qt Serial Port module")
     (description "The Qt Serial Port module provides the library for
 interacting with serial ports from within Qt.")))
@@ -1085,13 +1072,13 @@ interacting with serial ports from within Qt.")))
 (define-public qtserialbus
   (package (inherit qtsvg)
     (name "qtserialbus")
-    (version "5.15.2")
+    (version "5.15.4")
     (source (origin
              (method url-fetch)
              (uri (qt5-urls name version))
              (sha256
               (base32
-               "125x6756fjpldqy6wbw6cg7ngjh2016aiq92bchh719z1mf7xsxf"))))
+               "069say286c6yaii4xvw8ikg4zqfmsw2xh9gsg0fnip8qfbasfpfd"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg)
        ((#:phases phases '%standard-phases)
@@ -1103,8 +1090,7 @@ interacting with serial ports from within Qt.")))
                                                       "/lib/libsocketcan.so")))
                  (substitute* "src/plugins/canbus/socketcan/libsocketcan.cpp"
                    (("QStringLiteral\\(\"socketcan\"\\)")
-                    (format #f "QStringLiteral(~s)" libcansocket.so)))
-                 #t)))))))
+                    (format #f "QStringLiteral(~s)" libcansocket.so))))))))))
     (inputs
      (list libsocketcan qtbase-5 qtserialport))
     (synopsis "Qt Serial Bus module")
@@ -1115,13 +1101,13 @@ and others.")))
 (define-public qtwebchannel
   (package (inherit qtsvg)
     (name "qtwebchannel")
-    (version "5.15.2")
+    (version "5.15.4")
     (source (origin
              (method url-fetch)
              (uri (qt5-urls name version))
              (sha256
               (base32
-               "1h9y634phvvk557mhmf9z4lmxr41rl8x9mqy2lzp31mk8ffffzqj"))))
+               "1mykpxilsc6qqj3liza7z192lmy9xvnqih7x62v5b1pqbzan9lfs"))))
     (native-inputs
      (list perl qtdeclarative qtwebsockets))
     (inputs (list qtbase-5))
@@ -1134,21 +1120,20 @@ popular web engines, Qt WebKit 2 and Qt WebEngine.")))
 (define-public qtwebglplugin
   (package (inherit qtsvg)
     (name "qtwebglplugin")
-    (version "5.15.2")
+    (version "5.15.4")
     (source (origin
              (method url-fetch)
              (uri (qt5-urls name version))
              (sha256
               (base32
-               "0ihlnhv8ldkqz82v3j7j22lrhk17b6ghra8sx85y2agd2ysq5rw1"))))
+               "0xsjvzasy0ihbinnvrximi1qkiz2fazqksdf8mpj5kbnn2wbi470"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg)
        ((#:phases phases)
         `(modify-phases ,phases
            (add-after 'unpack 'disable-network-tests
              (lambda _ (substitute* "tests/plugins/platforms/platforms.pro"
-                         (("webgl") "# webgl"))
-               #t))))))
+                         (("webgl") "# webgl"))))))))
     (native-inputs '())
     (inputs
      (list mesa qtbase-5 qtdeclarative qtwebsockets zlib))
@@ -1163,13 +1148,13 @@ OpenGL ES 2.0 and can be used in HTML5 canvas elements")))
 (define-public qtwebview
   (package (inherit qtsvg)
     (name "qtwebview")
-    (version "5.15.2")
+    (version "5.15.4")
     (source (origin
              (method url-fetch)
              (uri (qt5-urls name version))
              (sha256
               (base32
-               "1rw1wibmbxlj6xc86qs3y8h42al1vczqiksyxzaylxs9gqb4d7xy"))))
+               "1djq8wmgjb2q60dw05spi5wbp4ipj9iqal41pq7j55qszrvawk30"))))
     (native-inputs
      (list perl))
     (inputs
@@ -1182,19 +1167,21 @@ native APIs where it makes sense.")))
 (define-public qtlocation
   (package (inherit qtsvg)
     (name "qtlocation")
-    (version "5.15.2")
+    (version "5.15.4")
     (source (origin
              (method url-fetch)
-             (uri (string-append "https://download.qt.io/official_releases/qt/"
-                                 (version-major+minor version) "/" version
-                                 "/submodules/" name "-everywhere-src-"
-                                 version ".tar.xz"))
+             (uri (qt5-urls name version))
              (sha256
               (base32
-               "184jychnlfhplpwc5cdcsapwljgwvzk5qpf3val4kpq8w44wnkwq"))))
+               "0b3r6d2m2spc5s6mzxz30ph4279rb0jcq2rvkackq15p17kv42v2"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg)
-       ((#:tests? _ #f) #f))) ; TODO: Enable the tests
+       ((#:tests? _ #f) #f)   ; TODO: Enable the tests
+       ((#:phases phases)
+        `(modify-phases ,phases
+           (add-before 'check 'pre-check
+             (lambda _
+               (setenv "HOME" "/tmp")))))))
     (native-inputs
      (list perl qtdeclarative qtquickcontrols qtserialport))
     (inputs
@@ -1206,13 +1193,13 @@ positioning and geolocation plugins.")))
 (define-public qttools
   (package (inherit qtsvg)
     (name "qttools")
-    (version "5.15.2")
+    (version "5.15.4")
     (source (origin
              (method url-fetch)
              (uri (qt5-urls name version))
              (sha256
               (base32
-               "1k618f7v6jaj0ygy8d7jvgb8zjr47sn55kiskbdkkizp3z7d12f1"))))
+               "0cxkc1gg11mnh5fk5kjgkw7ra0v28mgr668lfd63s3z7va7wyp2c"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg)
        ((#:tests? _ #f) #f))) ; TODO: Enable the tests
@@ -1228,13 +1215,13 @@ that helps in Qt development.")))
 (define-public qtscript
   (package (inherit qtsvg)
     (name "qtscript")
-    (version "5.15.2")
+    (version "5.15.4")
     (source (origin
              (method url-fetch)
              (uri (qt5-urls name version))
              (sha256
               (base32
-               "0gk74hk488k9ldacxbxcranr3arf8ifqg8kz9nm1rgdgd59p36d2"))
+               "1ivm71wvbyc7s78w2wag2r5byxwnrccj40q3l98890q328ffassq"))
              (patches (search-patches "qtscript-disable-tests.patch"))))
     (native-inputs
      (list perl qttools))
@@ -1248,13 +1235,13 @@ ECMAScript and Qt.")))
 (define-public qtquickcontrols
   (package (inherit qtsvg)
     (name "qtquickcontrols")
-    (version "5.15.2")
+    (version "5.15.4")
     (source (origin
              (method url-fetch)
              (uri (qt5-urls name version))
              (sha256
               (base32
-               "1dczakl868mg0lnwpf082jjc5976ycn879li1vqlgw5ihirzp4y3"))))
+               "0gipsaay2s1krqrvqq85d5p0bshf8vqb4px48qmvrlb8c8gqa2d9"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg)
        ((#:tests? _ #f) #f))) ; TODO: Enable the tests
@@ -1268,13 +1255,13 @@ can be used to build complete interfaces in Qt Quick.")))
 (define-public qtquickcontrols2
   (package (inherit qtsvg)
     (name "qtquickcontrols2")
-    (version "5.15.2")
+    (version "5.15.4")
     (source (origin
              (method url-fetch)
              (uri (qt5-urls name version))
              (sha256
               (base32
-               "06c9vrwvbjmzapmfa25y34lgjkzg57xxbm92nr6wkv5qykjnq6v7"))))
+               "116lgjx635knk0b9wn7qdigjls1wkyhzbcv1pp8c6hr6jlz4qa19"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg)
        ((#:tests? _ #f) #f))) ; TODO: Enable the tests
@@ -1289,13 +1276,13 @@ not available.")))
 (define-public qtgraphicaleffects
   (package (inherit qtsvg)
     (name "qtgraphicaleffects")
-    (version "5.15.2")
+    (version "5.15.4")
     (source (origin
              (method url-fetch)
              (uri (qt5-urls name version))
              (sha256
               (base32
-               "1r6zfc0qga2ax155js7c8y5rx6vgayf582s921j09mb797v6g3gc"))))
+               "0nv4a7j1q9pzh0zlb7bgfdrgs9vl6sp085zq63li05sw90kzrqdx"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg)
        ((#:tests? _ #f) #f))) ; TODO: Enable the tests
@@ -1312,13 +1299,13 @@ coloring, and many more.")))
 (define-public qtgamepad
   (package (inherit qtsvg)
     (name "qtgamepad")
-    (version "5.15.2")
+    (version "5.15.4")
     (source (origin
              (method url-fetch)
              (uri (qt5-urls name version))
              (sha256
               (base32
-               "0p07bg93fdfn4gr2kv38qgnws5znhswajrxdfs8xc9l3i7vi2xn7"))))
+               "0fv0cdhla1yqymxbr2x3v826881aw32ysnhqgyvi0n4j83knjik4"))))
     (native-inputs
      (list perl pkg-config))
     (inputs
@@ -1338,21 +1325,20 @@ and mobile applications targeting TV-like form factors.")))
 (define-public qtscxml
   (package (inherit qtsvg)
     (name "qtscxml")
-    (version "5.15.2")
+    (version "5.15.4")
     (source (origin
              (method url-fetch)
              (uri (qt5-urls name version))
              (sha256
               (base32
-               "1p5771b9hnpchfcdgy0zkhwg09a6xq88934aggp0rij1k85mkfb0"))
+               "0z2hzkvw3aa1kkg7axfq75qfcvlbd57f2n8n89xsl0s368g0cmhz"))
              (modules '((guix build utils)))
              (snippet
               '(begin
                  (delete-file-recursively "tests/3rdparty")
                  ;; the scion test refers to the bundled 3rd party test code.
                  (substitute* "tests/auto/auto.pro"
-                   (("scion") "#"))
-                 #t))))
+                   (("scion") "#"))))))
     (inputs
      (list qtbase-5 qtdeclarative))
     (synopsis "Qt SCXML module")
@@ -1365,13 +1351,13 @@ also contains functionality to support data models and executable content.")))
 (define-public qtpurchasing
   (package (inherit qtsvg)
     (name "qtpurchasing")
-    (version "5.15.2")
+    (version "5.15.4")
     (source (origin
              (method url-fetch)
              (uri (qt5-urls name version))
              (sha256
               (base32
-               "09rjx53519dfk4qj2gbn3vlxyriasyb747wpg1p11y7jkwqhs4l7"))))
+               "0aw23r9i3p6c812d0z82c80ynapjrq2w446ajw9rdxg63id25475"))))
     (inputs
      (list qtbase-5 qtdeclarative))
     (synopsis "Qt Purchasing module")
@@ -1381,16 +1367,22 @@ purchasing goods and services.")))
 (define-public qtcharts
   (package (inherit qtsvg)
     (name "qtcharts")
-    (version "5.15.2")
+    (version "5.15.4")
     (source (origin
              (method url-fetch)
              (uri (qt5-urls name version))
              (sha256
               (base32
-               "049x7z8zcp9jixmdv2fjscy2ggpd6za9hkdbb2bqp2mxjm0hwxg0"))))
+               "0f7f677yrnkw2yvkhg1zsb56w0yq8wmfq3irhachds0l79k3gj9k"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg)
-       ((#:tests? _ #f) #f))) ; TODO: Enable the tests
+       ((#:phases phases)
+        `(modify-phases ,phases
+           (add-after 'unpack 'remove-failing-test
+             (lambda _
+               (substitute* "tests/auto/auto.pro"
+                 (("qml") "# qml")
+                 (("qml-qtquicktest") "# qml-qtquicktest"))))))))
     (inputs
      (list qtbase-5 qtdeclarative))
     (synopsis "Qt Charts module")
@@ -1404,13 +1396,13 @@ selecting one of the charts themes.")
 (define-public qtdatavis3d
   (package (inherit qtsvg)
     (name "qtdatavis3d")
-    (version "5.15.2")
+    (version "5.15.4")
     (source (origin
              (method url-fetch)
              (uri (qt5-urls name version))
              (sha256
               (base32
-               "1zdn3vm0nfy9ny7c783aabp3mhlnqhi9fw2rljn7ibbksmsnasi2"))))
+               "0jizz4a5iss4bzy65jl2mwdjv63fh1xz3f0ipnrbs6r5qp1x9csd"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg)
        ((#:tests? _ #f) #f))) ; TODO: Enable the tests
@@ -1427,23 +1419,13 @@ customized by using themes or by adding custom items and labels to them.")
 (define-public qtnetworkauth
   (package (inherit qtsvg)
     (name "qtnetworkauth")
-    (version "5.15.2")
+    (version "5.15.4")
     (source (origin
              (method url-fetch)
              (uri (qt5-urls name version))
              (sha256
               (base32
-               "11fdgacv4syr8bff2vdw7rb0dg1gcqpdf37hm3pn31d6z91frhpw"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg)
-       ((#:phases phases)
-        `(modify-phases ,phases
-           (add-after 'unpack 'remove-failing-test
-             (lambda _
-               ;; These tests can't find their test data.
-               (substitute* "tests/auto/auto.pro"
-                 (("oauth1 ") "# oauth1 "))
-               #t))))))
+               "0714va9qda4qkrzb5zlin6v3wxh3ihhbh4nqqba5l1b152qwjhja"))))
     (inputs
      (list qtbase-5))
     (synopsis "Qt Network Authorization module")
@@ -1453,13 +1435,13 @@ implementation of OAuth and OAuth2 authenticathon methods for Qt.")))
 (define-public qtremoteobjects
   (package (inherit qtsvg)
     (name "qtremoteobjects")
-    (version "5.15.2")
+    (version "5.15.4")
     (source (origin
              (method url-fetch)
              (uri (qt5-urls name version))
              (sha256
               (base32
-               "1hngbp0vkr35rpsrac7b9vx6f360v8v2g0fffzm590l8j2ybd0b7"))))
+               "00f6n4byf129gh0l903dhrdpxm5zch5y7zrsrmm3nayhgvl1ii75"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg)
        ((#:phases phases)
@@ -1473,8 +1455,7 @@ implementation of OAuth and OAuth2 authenticathon methods for Qt.")))
                ;; disable failing tests: they need network
                (substitute* "tests/auto/auto.pro"
                  (("integration_multiprocess proxy_multiprocess integration_external restart")
-                   "integration_multiprocess"))
-               #t))))))
+                   "integration_multiprocess"))))))))
     (inputs
      (list qtbase-5 qtdeclarative))
     (synopsis "Qt Remote Objects module")
@@ -1486,14 +1467,13 @@ processes or computers.")))
 (define-public qtspeech
   (package (inherit qtsvg)
     (name "qtspeech")
-    (version "5.15.2")
+    (version "5.15.4")
     (source (origin
              (method url-fetch)
              (uri (qt5-urls name version))
              (sha256
               (base32
-               "1xc3x3ghnhgchsg1kgj156yg69wn4rwjx8r28i1jd05hxjggn468"))))
-
+               "16dg5y19qmyjzlyny34rcbl74h69b8c18ysf797x6gnsa3h8glzk"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg)
        ((#:tests? _ #f) #f))) ; TODO: Enable the tests
@@ -1542,14 +1522,14 @@ using the Enchant spell-checking library.")
   (package
     (inherit qtsvg)
     (name "qtwebengine")
-    (version (package-version qtbase-5))
+    (version "5.15.4")
     (source
      (origin
        (method url-fetch)
        (uri (qt5-urls name version))
        (sha256
         (base32
-         "1q4idxdm81sx102xc12ixj0xpfx52d6vwvs3jpapnkyq8c7cmby8"))
+         "1jhgv9mrn6m40z24a3jil37nyga1m6bgxzch3ycdhi9crwxr0ala"))
        (modules '((ice-9 ftw)
                   (ice-9 match)
                   (srfi srfi-1)
@@ -1585,6 +1565,13 @@ using the Enchant spell-checking library.")
                     "third_party/boringssl/src/third_party/fiat"
                     "third_party/breakpad"
                     "third_party/brotli"
+                    "third_party/catapult/common/py_vulcanize/py_vulcanize"
+                    "third_party/catapult/common/py_vulcanize/third_party"
+                    "third_party/catapult/third_party/beautifulsoup4"
+                    "third_party/catapult/third_party/html5lib-python"
+                    "third_party/catapult/third_party/polymer/components"
+                    "third_party/catapult/tracing"
+                    "third_party/catapult/tracing/third_party"
                     "third_party/ced"
                     "third_party/cld_3"
                     "third_party/closure_compiler"
@@ -1595,10 +1582,8 @@ using the Enchant spell-checking library.")
                     "third_party/dav1d"
                     "third_party/dawn"
                     "third_party/devtools-frontend"
-                    "third_party/devtools-frontend/src/front_end/third_party/fabricjs"
-                    "third_party/devtools-frontend/src/front_end/third_party/lighthouse"
-                    "third_party/devtools-frontend/src/front_end/third_party/wasmparser"
-                    "third_party/devtools-frontend/src/third_party/axe-core"
+                    "third_party/devtools-frontend/src/front_end/third_party"
+                    "third_party/devtools-frontend/src/third_party/typescript"
                     "third_party/emoji-segmenter"
                     "third_party/ffmpeg"
                     "third_party/googletest"
@@ -1613,6 +1598,7 @@ using the Enchant spell-checking library.")
                     "third_party/khronos"
                     "third_party/leveldatabase"
                     "third_party/libaddressinput"
+                    "third_party/libavif"
                     "third_party/libgifcodec"
                     "third_party/libjingle_xmpp"
                     "third_party/libjpeg_turbo"
@@ -1626,6 +1612,7 @@ using the Enchant spell-checking library.")
                     "third_party/libxml"
                     "third_party/libxslt"
                     "third_party/libyuv"
+                    "third_party/lottie"
                     "third_party/lss"
                     "third_party/mako"
                     "third_party/markupsafe"
@@ -1633,6 +1620,7 @@ using the Enchant spell-checking library.")
                     "third_party/metrics_proto"
                     "third_party/modp_b64"
                     "third_party/nasm"
+                    "third_party/node"
                     "third_party/one_euro_filter"
                     "third_party/openh264/src/codec/api/svc"
                     "third_party/opus"
@@ -1657,15 +1645,16 @@ using the Enchant spell-checking library.")
                     "third_party/skia/include/third_party/skcms/skcms.h"
                     "third_party/skia/include/third_party/vulkan"
                     "third_party/skia/third_party/skcms"
-                    "third_party/skia/third_party/vulkanmemoryallocator"
                     "third_party/smhasher"
                     "third_party/snappy"
                     "third_party/sqlite"
                     "third_party/usb_ids"
                     "third_party/usrsctp"
+                    "third_party/vulkan_memory_allocator"
                     "third_party/web-animations-js"
                     "third_party/webrtc"
-                    "third_party/webrtc/common_audio/third_party/fft4g"
+                    "third_party/webrtc/common_audio/third_party/ooura/fft_size_128"
+                    "third_party/webrtc/common_audio/third_party/ooura/fft_size_256"
                     "third_party/webrtc/common_audio/third_party/spl_sqrt_floor"
                     "third_party/webrtc/modules/third_party/fft"
                     "third_party/webrtc/modules/third_party/g711"
@@ -1676,7 +1665,7 @@ using the Enchant spell-checking library.")
                     "third_party/widevine/cdm/widevine_cdm_common.h"
                     "third_party/widevine/cdm/widevine_cdm_version.h"
                     "third_party/woff2"
-                    "third_party/yasm"
+                    "third_party/xcbproto"
                     "third_party/zlib"
                     "url/third_party/mozilla"
                     "v8/src/third_party/utf8-decoder"
@@ -1749,16 +1738,19 @@ using the Enchant spell-checking library.")
 
                  ;; Use relative header locations instead of hard coded ones.
                  (substitute*
-                     "base/third_party/dynamic_annotations/dynamic_annotations.c"
+                   "base/third_party/dynamic_annotations/dynamic_annotations.c"
                    (("base/third_party/valgrind") "valgrind"))
                  (substitute*
-                     "third_party/breakpad/breakpad/src/common/linux/libcurl_wrapper.h"
+                   '("third_party/breakpad/breakpad/src/common/linux/http_upload.cc"
+                     "third_party/breakpad/breakpad/src/common/linux/libcurl_wrapper.h")
                    (("third_party/curl") "curl"))
                  (substitute*
-                     '("components/viz/common/gpu/vulkan_context_provider.h"
-                       "components/viz/common/resources/resource_format_utils_vulkan.h"
-                       "gpu/config/gpu_util.cc")
-                   (("third_party/vulkan/include/")
+                   '("components/viz/common/gpu/vulkan_context_provider.h"
+                     "components/viz/common/resources/resource_format_utils.h"
+                     "gpu/config/gpu_info_collector_win.cc"
+                     "gpu/config/gpu_util.cc"
+                     "gpu/config/vulkan_info.h")
+                   (("third_party/vulkan_headers/include/")
                     ""))
 
                  ;; Replace Google Analytics bundle with an empty file and hope
@@ -1778,6 +1770,7 @@ using the Enchant spell-checking library.")
            flex
            gperf
            ninja
+           node
            perl
            pkg-config
            python2-six
