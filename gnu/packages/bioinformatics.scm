@@ -13245,45 +13245,6 @@ Additionally, the AdapterRemoval may be used to recover a consensus adapter
 sequence for paired-ended data, for which this information is not available.")
     (license license:gpl3+)))
 
-;; This package is installed alongside 'pplacer'.  It is a separate package so
-;; that it can use the python-build-system for the scripts that are
-;; distributed alongside the main OCaml binaries.
-(define pplacer-scripts
-  (package
-    (inherit pplacer)
-    (name "pplacer-scripts")
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'enter-scripts-dir
-           (lambda _ (chdir "scripts") #t))
-         (replace 'check
-           (lambda _ (invoke "python" "-m" "unittest" "discover" "-v") #t))
-         (add-after 'install 'wrap-executables
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin")))
-               (let ((path (string-append
-                            (assoc-ref inputs "hmmer") "/bin:"
-                            (assoc-ref inputs "infernal") "/bin")))
-                 (display path)
-                 (wrap-program (string-append bin "/refpkg_align.py")
-                   `("PATH" ":" prefix (,path))))
-               (let ((path (string-append
-                            (assoc-ref inputs "hmmer") "/bin")))
-                 (wrap-program (string-append bin "/hrefpkg_query.py")
-                   `("PATH" ":" prefix (,path)))))
-             #t)))))
-    (inputs
-     `(("infernal" ,infernal)
-       ("hmmer" ,hmmer)))
-    (propagated-inputs
-     `(("python-biopython" ,python2-biopython)
-       ("taxtastic" ,taxtastic)))
-    (synopsis "Pplacer Python scripts")))
-
 (define-public checkm
   (package
     (name "checkm")
