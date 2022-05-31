@@ -669,17 +669,19 @@ message digests and key derivation functions.")
                   python2-backport-ssl-match-hostname
                   python2-enum34))))))
 
+;; This is the last version which is compatable with python-cryptography < 35.
 (define-public python-pyopenssl
   (package
     (name "python-pyopenssl")
-    (version "22.0.0")
+    (version "21.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyOpenSSL" version))
        (sha256
         (base32
-         "1gzihw09sqi71lwx97c69hab7w4rbnl6hhfrl6za3i5a4la1n2v6"))))
+         "1cqcc20fwl521z3fxsc1c98gbnhb14q55vrvjfp6bn6h8rg8qbay"))
+       (patches (search-patches "python2-pyopenssl-openssl-compat.patch"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -714,22 +716,10 @@ message digests and key derivation functions.")
     (description
       "PyOpenSSL is a high-level wrapper around a subset of the OpenSSL
 library.")
-    (properties `((python2-variant . ,(delay python2-pyopenssl))))
     (license license:asl2.0)))
 
 (define-public python2-pyopenssl
-  (let ((base (package-with-python2 (strip-python2-variant python-pyopenssl))))
-    (package
-      (inherit base)
-      (version "21.0.0")
-      (source
-       (origin
-         (method url-fetch)
-         (uri (pypi-uri "pyOpenSSL" version))
-         (patches (search-patches "python2-pyopenssl-openssl-compat.patch"))
-         (sha256
-          (base32
-           "1cqcc20fwl521z3fxsc1c98gbnhb14q55vrvjfp6bn6h8rg8qbay")))))))
+  (package-with-python2 python-pyopenssl))
 
 (define-public python-ed25519
   (package
