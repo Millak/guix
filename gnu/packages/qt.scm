@@ -2000,7 +2000,7 @@ module provides support functions to the automatically generated code.")
   (package
     (inherit python-sip)
     (name "python-sip")
-    (version "4.19.24")
+    (version "4.19.25")
     (source
       (origin
         (method url-fetch)
@@ -2010,7 +2010,7 @@ module provides support functions to the automatically generated code.")
                                   "/sip-" version ".tar.gz")))
         (sha256
          (base32
-          "1ra15vb5i9gkg2vdvh16cq9x2mmzw1yi3xphxs8q34q1pf83gkgd"))))
+          "04a23cgsnx150xq86w1z44b6vr2zyazysy9mqax0fy346zlr77dk"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("python" ,python-wrapper)))
