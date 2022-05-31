@@ -3493,9 +3493,12 @@ including functions for geolocation and routing.")
        (modify-phases %standard-phases
          (add-after 'unpack 'unbundle-readstat
            (lambda _
-             ;; Not required, since we’re not building readstat.
-             (substitute* "src/Makevars"
-               (("-lz") "-lreadstat")))))))
+             ;; We’re not building readstat.
+             (substitute* "configure"
+               (("exit 1") "")) ;don't be so dramatic!
+             (substitute* '("src/Makevars.in"
+                            "configure")
+               (("^PKG_LIBS=.*") "PKG_LIBS=\"-lreadstat\"\n")))))))
     (inputs
      (list readstat))
     (native-inputs
