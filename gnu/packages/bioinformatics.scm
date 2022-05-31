@@ -13674,6 +13674,47 @@ some of the details of opening and jumping in tabix-indexed files.")
       ;; The licensing terms are unclear: https://github.com/ekg/smithwaterman/issues/9.
       (license (list license:gpl2 license:expat)))))
 
+(define-public sylamer
+  (package
+    (name "sylamer")
+    (version "18-131")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/micans/sylamer/")
+                    (commit "aa75c3584797c0c15f860addb645f7bc1dd7627d")))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1ddiwlrdghhb4574rvfw0brjp9gs5l6nfsy82h0m4mvz1dr3gkj5"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ; no test target
+      #:make-flags
+      #~(list (string-append "GSLPREFIX=" #$(this-package-input "gsl")))
+      #:phases
+      '(modify-phases %standard-phases
+         (replace 'configure
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* "Makefile"
+               (("cp sylamer \\$\\(HOME\\)/local/bin")
+                (string-append "install -D -t " (assoc-ref outputs "out")
+                               "/bin sylamer")))
+             (install-file "Makefile" "src")
+             (chdir "src"))))))
+    (inputs (list gsl zlib))
+    (home-page "https://www.ebi.ac.uk/research/enright/software/sylamer")
+    (synopsis "Asses microRNA binding and siRNA off-target effects")
+    (description "Sylamer is a system for finding significantly over or
+under-represented words in sequences according to a sorted gene list.
+Typically it is used to find significant enrichment or depletion of microRNA
+or siRNA seed sequences from microarray expression data.  Sylamer is extremely
+fast and can be applied to genome-wide datasets with ease.  Results are
+plotted in terms of a significance landscape plot.  These plots show
+significance profiles for each word studied across the sorted genelist.")
+    (license license:gpl3+)))
+
 (define-public multichoose
   (package
     (name "multichoose")
