@@ -454,32 +454,58 @@ denoting a specific output of a package."
 
 (define (manifest->gexp manifest)
   "Return a representation of MANIFEST as a gexp."
+  (define (optional name value)
+    (if (null? value)
+        #~()
+        #~((#$name #$value))))
+
   (define (entry->gexp entry)
-    (match entry
-      (($ <manifest-entry> name version output (? string? path)
-                           (deps ...) (search-paths ...) _ (properties ...))
-       #~(#$name #$version #$output #$path
-                 (propagated-inputs #$(map entry->gexp deps))
-                 (search-paths #$(map search-path-specification->sexp
-                                      search-paths))
-                 #$@(if (null? properties)
-                        #~()
-                        #~((properties . #$properties)))))
-      (($ <manifest-entry> name version output package
-                           (deps ...) (search-paths ...) _ (properties ...))
-       #~(#$name #$version #$output
-                 (ungexp package (or output "out"))
-                 (propagated-inputs #$(map entry->gexp deps))
-                 (search-paths #$(map search-path-specification->sexp
-                                      search-paths))
-                 #$@(if (null? properties)
-                        #~()
-                        #~((properties . #$properties)))))))
+    ;; Maintain in state monad a vhash of visited entries, indexed by their
+    ;; item, usually package objects (we cannot use the entry itself as an
+    ;; index since identical entries are usually not 'eq?').  Use that vhash
+    ;; to avoid repeating duplicate entries.  This is particularly useful in
+    ;; the presence of propagated inputs, where we could otherwise end up
+    ;; repeating large trees.
+    (mlet %state-monad ((visited (current-state)))
+      (if (match (vhash-assq (manifest-entry-item entry) visited)
+            ((_ . previous-entry)
+             (manifest-entry=? previous-entry entry))
+            (#f #f))
+          (return #~(repeated #$(manifest-entry-name entry)
+                              #$(manifest-entry-version entry)
+                              (ungexp (manifest-entry-item entry)
+                                      (manifest-entry-output entry))))
+          (mbegin %state-monad
+            (set-current-state (vhash-consq (manifest-entry-item entry)
+                                            entry visited))
+            (mlet %state-monad ((deps (mapm %state-monad entry->gexp
+                                            (manifest-entry-dependencies entry))))
+              (return
+               (match entry
+                 (($ <manifest-entry> name version output (? string? path)
+                                      (_ ...) (search-paths ...) _ (properties ...))
+                  #~(#$name #$version #$output #$path
+                            #$@(optional 'propagated-inputs deps)
+                            #$@(optional 'search-paths
+                                         (map search-path-specification->sexp
+                                              search-paths))
+                            #$@(optional 'properties properties)))
+                 (($ <manifest-entry> name version output package
+                                      (_deps ...) (search-paths ...) _ (properties ...))
+                  #~(#$name #$version #$output
+                            (ungexp package (or output "out"))
+                            #$@(optional 'propagated-inputs deps)
+                            #$@(optional 'search-paths
+                                         (map search-path-specification->sexp
+                                              search-paths))
+                            #$@(optional 'properties properties))))))))))
 
   (match manifest
     (($ <manifest> (entries ...))
-     #~(manifest (version 3)
-                 (packages #$(map entry->gexp entries))))))
+     #~(manifest (version 4)
+                 (packages #$(run-with-state
+                                 (mapm %state-monad entry->gexp entries)
+                               vlist-null))))))
 
 (define (find-package name version)
   "Return a package from the distro matching NAME and possibly VERSION.  This
@@ -520,14 +546,15 @@ procedure is here for backward-compatibility and will eventually vanish."
         (item item)
         (parent parent))))
 
-  (define* (sexp->manifest-entry sexp #:optional (parent (delay #f)))
+  (define* (sexp->manifest-entry/v3 sexp #:optional (parent (delay #f)))
+    ;; Read SEXP as a version 3 manifest entry.
     (match sexp
       ((name version output path
              ('propagated-inputs deps)
              ('search-paths search-paths)
              extra-stuff ...)
        ;; For each of DEPS, keep a promise pointing to ENTRY.
-       (letrec* ((deps* (map (cut sexp->manifest-entry <> (delay entry))
+       (letrec* ((deps* (map (cut sexp->manifest-entry/v3 <> (delay entry))
                              deps))
                  (entry (manifest-entry
                           (name name)
@@ -541,6 +568,56 @@ procedure is here for backward-compatibility and will eventually vanish."
                           (properties (or (assoc-ref extra-stuff 'properties)
                                           '())))))
          entry))))
+
+  (define-syntax let-fields
+    (syntax-rules ()
+      ;; Bind the fields NAME of LST to same-named variables in the lexical
+      ;; scope of BODY.
+      ((_ lst (name rest ...) body ...)
+       (let ((name (match (assq 'name lst)
+                     ((_ value) value)
+                     (#f '()))))
+         (let-fields lst (rest ...) body ...)))
+      ((_ lst () body ...)
+       (begin body ...))))
+
+  (define* (sexp->manifest-entry sexp #:optional (parent (delay #f)))
+    (match sexp
+      (('repeated name version path)
+       ;; This entry is the same as another one encountered earlier; look it
+       ;; up and return it.
+       (mlet %state-monad ((visited (current-state))
+                           (key -> (list name version path)))
+         (match (vhash-assoc key visited)
+           (#f
+            (raise (formatted-message
+                    (G_ "invalid repeated entry in profile: ~s")
+                    sexp)))
+           ((_ . entry)
+            (return entry)))))
+      ((name version output path fields ...)
+       (let-fields fields (propagated-inputs search-paths properties)
+         (mlet* %state-monad
+             ((entry -> #f)
+              (deps     (mapm %state-monad
+                              (cut sexp->manifest-entry <> (delay entry))
+                              propagated-inputs))
+              (visited  (current-state))
+              (key ->   (list name version path)))
+           (set! entry                             ;XXX: emulate 'letrec*'
+                 (manifest-entry
+                   (name name)
+                   (version version)
+                   (output output)
+                   (item path)
+                   (dependencies deps)
+                   (search-paths (map sexp->search-path-specification
+                                      search-paths))
+                   (parent parent)
+                   (properties properties)))
+           (mbegin %state-monad
+             (set-current-state (vhash-cons key entry visited))
+             (return entry)))))))
 
   (match sexp
     (('manifest ('version 0)
@@ -608,7 +685,15 @@ procedure is here for backward-compatibility and will eventually vanish."
     ;; Version 3 represents DEPS as full-blown manifest entries.
     (('manifest ('version 3 minor-version ...)
                 ('packages (entries ...)))
-     (manifest (map sexp->manifest-entry entries)))
+     (manifest (map sexp->manifest-entry/v3 entries)))
+
+    ;; Version 4 deduplicates repeated entries and makes manifest entry fields
+    ;; such as 'propagated-inputs' and 'search-paths' optional.
+    (('manifest ('version 4 minor-version ...)
+                ('packages (entries ...)))
+     (manifest (run-with-state
+                   (mapm %state-monad sexp->manifest-entry entries)
+                 vlist-null)))
     (_
      (raise (condition
              (&message (message "unsupported manifest format")))))))
@@ -2316,5 +2401,9 @@ PROFILE refers to, directly or indirectly, or PROFILE."
                      (and target (string=? target profile)))))
             %known-shorthand-profiles)
       profile))
+
+;;; Local Variables:
+;;; eval: (put 'let-fields 'scheme-indent-function 2)
+;;; End:
 
 ;;; profiles.scm ends here

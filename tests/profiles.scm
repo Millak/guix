@@ -586,6 +586,48 @@
                                                     #:locales? #f)))
         (return #f)))))
 
+(test-assertm "deduplication of repeated entries"
+  ;; Make sure the 'manifest' file does not duplicate identical entries.
+  ;; See <https://issues.guix.gnu.org/55499>.
+  (mlet* %store-monad ((p0 -> (dummy-package "p0"
+                                (build-system trivial-build-system)
+                                (arguments
+                                 `(#:guile ,%bootstrap-guile
+                                   #:builder (mkdir (assoc-ref %outputs "out"))))
+                                (propagated-inputs
+                                 `(("guile" ,%bootstrap-guile)))))
+                       (p1 -> (package
+                                (inherit p0)
+                                (name "p1")))
+                       (drv (profile-derivation (packages->manifest
+                                                 (list p0 p1))
+                                                #:hooks '()
+                                                #:locales? #f)))
+    (mbegin %store-monad
+      (built-derivations (list drv))
+      (let ((file     (string-append (derivation->output-path drv)
+                                     "/manifest"))
+            (manifest (profile-manifest (derivation->output-path drv))))
+        (define (contains-repeated? sexp)
+          (match sexp
+            (('repeated _ ...) #t)
+            ((lst ...) (any contains-repeated? sexp))
+            (_ #f)))
+
+        (return (and (contains-repeated? (call-with-input-file file read))
+
+                     ;; MANIFEST has two entries for %BOOTSTRAP-GUILE since
+                     ;; it's propagated both from P0 and from P1.  When
+                     ;; reading a 'repeated' node, 'read-manifest' should
+                     ;; reuse the previously-read entry so the two
+                     ;; %BOOTSTRAP-GUILE entries must be 'eq?'.
+                     (match (manifest-entries manifest)
+                       (((= manifest-entry-dependencies (dep0))
+                         (= manifest-entry-dependencies (dep1)))
+                        (and (string=? (manifest-entry-name dep0)
+                                       (package-name %bootstrap-guile))
+                             (eq? dep0 dep1))))))))))
+
 (test-assertm "no collision"
   ;; Here we have an entry that is "lowered" (its 'item' field is a store file
   ;; name) and another entry (its 'item' field is a package) that is
