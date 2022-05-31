@@ -2031,7 +2031,7 @@ module provides support functions to the automatically generated code.")
 (define-public python-pyqt
   (package
     (name "python-pyqt")
-    (version "5.15.2")
+    (version "5.15.4")
     (source
       (origin
         (method url-fetch)
@@ -2044,7 +2044,7 @@ module provides support functions to the automatically generated code.")
         (file-name (string-append "PyQt5-" version ".tar.gz"))
         (sha256
          (base32
-          "1z74295i69cha52llsqffzhb5zz7qnbjc64h8qg21l91jgf0harp"))
+          "1gp5jz71nmg58zsm1h4vzhcphf36rbz37qgsfnzal76i1mz5js9a"))
         (patches (search-patches "pyqt-configure.patch"))))
     (build-system gnu-build-system)
     (native-inputs
