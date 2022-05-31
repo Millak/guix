@@ -69,6 +69,11 @@ guix build -m "$manifest" -d | \
 guix build -m "$manifest" -d | \
     grep "$(guix build git -d)"
 
+guix shell --export-manifest -D guile -D python-itsdangerous > "$manifest"
+guix build -m "$manifest" -d | grep "$(guix build libffi -d)"
+guix build -m "$manifest" -d | \
+    grep "$(guix build -e '(@ (gnu packages python) python)' -d)"
+
 # Test various combinations to make sure generated code uses interfaces
 # correctly.
 for options in					\
