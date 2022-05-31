@@ -31347,6 +31347,25 @@ indicator, a quantitative variable or a survival time.")
     ;; Any version of the LGPL
     (license license:lgpl3+)))
 
+(define-public r-gsalib
+  (package
+    (name "r-gsalib")
+    (version "2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "gsalib" version))
+       (sha256
+        (base32
+         "1k3zjdydzb0dfh1ihih08d4cw6rdamgb97cdqna9mf0qdjc3pcp1"))))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/web/packages/gsalib")
+    (synopsis "Utility functions for GATK")
+    (description "This package contains utility functions used by the Genome
+Analysis Toolkit (GATK) to load tables and plot data.  The GATK is a toolkit
+for variant discovery in high-throughput sequencing data.")
+    (license license:expat)))
+
 (define-public r-randomforestsrc
   (package
     (name "r-randomforestsrc")
