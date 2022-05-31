@@ -556,14 +556,20 @@
         (return #f)))))
 
 (test-equal "collision of propagated inputs"
-  '(("guile-bootstrap" "2.0") ("guile-bootstrap" "42"))
+  '(("guile-bootstrap" "2.0") "p1"
+    <> ("guile-bootstrap" "42") "p2")
   (guard (c ((profile-collision-error? c)
              (let ((entry1 (profile-collision-error-entry c))
                    (entry2 (profile-collision-error-conflict c)))
                (list (list (manifest-entry-name entry1)
                            (manifest-entry-version entry1))
+                     (manifest-entry-name
+                      (force (manifest-entry-parent entry1)))
+                     '<>
                      (list (manifest-entry-name entry2)
-                           (manifest-entry-version entry2))))))
+                           (manifest-entry-version entry2))
+                     (manifest-entry-name
+                      (force (manifest-entry-parent entry2)))))))
     (run-with-store %store
       (mlet* %store-monad ((p0 -> (package
                                     (inherit %bootstrap-guile)
