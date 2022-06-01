@@ -36603,6 +36603,19 @@ As for @command{guix package --search}, the result is written in
 @code{recutils} format, which makes it easy to filter the output
 (@pxref{Top, GNU recutils databases,, recutils, GNU recutils manual}).
 
+@cindex service type definition, editing
+@cindex editing, service type definition
+@item edit
+Edit or view the definition of the given service types.
+
+For example, the command below opens your editor, as specified by the
+@env{EDITOR} environment variable, on the definition of the
+@code{openssh} service type:
+
+@example
+guix system edit openssh
+@end example
+
 @item reconfigure
 Build the operating system described in @var{file}, activate it, and
 switch to it@footnote{This action (and the related actions

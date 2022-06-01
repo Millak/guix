@@ -945,6 +945,8 @@ Some ACTIONS support additional ARGS.\n"))
   (display (G_ "\
    search           search for existing service types\n"))
   (display (G_ "\
+   edit             edit the definition of an existing service type\n"))
+  (display (G_ "\
    reconfigure      switch to a new operating system configuration\n"))
   (display (G_ "\
    roll-back        switch to the previous operating system configuration\n"))
@@ -1172,7 +1174,8 @@ Some ACTIONS support additional ARGS.\n"))
                   "extension-graph" "shepherd-graph"
                   "list-generations" "describe"
                   "delete-generations" "roll-back"
-                  "switch-generation" "search" "docker-image"))
+                  "switch-generation" "search" "edit"
+                  "docker-image"))
 
 (define (process-action action args opts)
   "Process ACTION, a sub-command, with the arguments are listed in ARGS.
@@ -1340,6 +1343,8 @@ argument list and OPTS is the option alist."
         (display-system-generation generation))))
     ((search)
      (apply (resolve-subcommand "search") args))
+    ((edit)
+     (apply (resolve-subcommand "edit") args))
     ;; The following commands need to use the store, but they do not need an
     ;; operating system configuration file.
     ((delete-generations)

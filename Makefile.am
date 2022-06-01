@@ -308,8 +308,9 @@ MODULES =					\
   guix/scripts/describe.scm			\
   guix/scripts/style.scm			\
   guix/scripts/system.scm			\
-  guix/scripts/system/search.scm		\
+  guix/scripts/system/edit.scm			\
   guix/scripts/system/reconfigure.scm		\
+  guix/scripts/system/search.scm		\
   guix/scripts/home.scm			\
   guix/scripts/home/import.scm			\
   guix/scripts/lint.scm				\
