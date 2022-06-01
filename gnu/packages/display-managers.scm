@@ -12,6 +12,7 @@
 ;;; Copyright © 2021 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -41,7 +42,9 @@
   #:use-module (guix utils)
   #:use-module (guix gexp)
   #:use-module (gnu packages)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages admin)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
@@ -252,70 +255,86 @@ experience for your users, your family and yourself")
     (license license:gpl3+)))
 
 (define-public lightdm
-  (package
-    (name "lightdm")
-    (version "1.30.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/CanonicalLtd/lightdm/releases/download/"
-                    version "/lightdm-" version ".tar.xz"))
-              (sha256
-               (base32
-                "158zb2d0v1309a8v19hh32y4yj3v6yg4yg6m0l7v59d3a2b7f651"))))
-    (build-system gnu-build-system)
-    (arguments
-     '(#:parallel-tests? #f ; fails when run in parallel
-       #:configure-flags
-       (list "--localstatedir=/var")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-paths
-           (lambda _
-             (substitute* "src/shared-data-manager.c"
-               (("/bin/rm") (which "rm")))
-             (substitute* '("data/users.conf"
-                            "common/user-list.c")
-               (("/bin/false") (which "false"))
-               (("/usr/sbin/nologin") (which "nologin")))
-             (substitute* "src/seat.c"
-               (("/bin/sh") (which "sh")))
-             #t))
-         (add-before 'check 'pre-check
-           ;; Run test-suite under a dbus session.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (wrap-program "tests/src/test-python-greeter"
-               `("GUIX_PYTHONPATH"      ":" prefix (,(getenv "GUIX_PYTHONPATH")))
-               `("GI_TYPELIB_PATH" ":" prefix (,(getenv "GI_TYPELIB_PATH"))))
+  ;; Use the latest commit, as the current official release doesn't build with
+  ;; glib >= 2.33.
+  (let ((revision "0")
+        (commit "b7fc3214cbaed09c73e963847443a0d648dfd896"))
+    (package
+      (name "lightdm")
+      (version (git-version "1.30.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/canonical/lightdm")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0378jacazpmdgdjkiilk3mbikz3iysb4s9q40hg9zv4yngwsix1m"))))
+      (build-system gnu-build-system)
+      (arguments
+       '(#:parallel-tests? #f           ; fails when run in parallel
+         #:configure-flags
+         (list "--localstatedir=/var"
+               ;; Otherwise the test suite fails on such a warning.
+               "CFLAGS=-Wno-error=missing-prototypes")
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-paths
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "src/shared-data-manager.c"
+                 (("/bin/rm")
+                  (search-input-file inputs "bin/rm")))
+               (substitute* '("data/users.conf"
+                              "common/user-list.c")
+                 (("/bin/false")
+                  (search-input-file inputs "bin/false"))
+                 (("/usr/sbin/nologin")
+                  (search-input-file inputs "sbin/nologin")))
+               (substitute* "src/seat.c"
+                 (("/bin/sh")
+                  (search-input-file inputs "bin/sh")))))
+           (add-before 'check 'pre-check
+             ;; Run test-suite under a dbus session.
+             (lambda _
+               (wrap-program "tests/src/test-python-greeter"
+                 `("GUIX_PYTHONPATH"      ":" prefix (,(getenv "GUIX_PYTHONPATH")))
+                 `("GI_TYPELIB_PATH" ":" prefix (,(getenv "GI_TYPELIB_PATH"))))
 
-             ;; Avoid printing locale warnings, which trip up the text
-             ;; matching tests.
-             (unsetenv "LC_ALL")
-             #t)))))
-    (inputs
-     (list audit
-           linux-pam
-           shadow ;for sbin/nologin
-           libgcrypt
-           libxcb))
-    (native-inputs
-     `(("gobject-introspection" ,gobject-introspection)
-       ("pkg-config" ,pkg-config)
-       ("itstool" ,itstool)
-       ("intltool" ,intltool)
-       ("vala" ,vala)                   ;for Vala bindings
-       ;; For tests
-       ("dbus" ,dbus)
-       ("python" ,python-2)
-       ("python-pygobject" ,python2-pygobject)))
-    ;; Required by liblightdm-gobject-1.pc.
-    (propagated-inputs
-     (list glib libx11 libxklavier))
-    (home-page "https://www.freedesktop.org/wiki/Software/LightDM/")
-    (synopsis "Lightweight display manager")
-    (description "The Light Display Manager (LightDM) is a cross-desktop
+               ;; Avoid printing locale warnings, which trip up the text
+               ;; matching tests.
+               (unsetenv "LC_ALL"))))))
+      (inputs
+       (list audit
+             coreutils                  ;for cross-compilation
+             linux-pam
+             shadow                     ;for sbin/nologin
+             libgcrypt
+             libxcb))
+      (native-inputs
+       (list autoconf
+             automake
+             gobject-introspection
+             gtk-doc
+             pkg-config
+             itstool
+             intltool
+             libtool
+             vala                       ;for Vala bindings
+             ;; For tests
+             dbus
+             ;; python-wrapper
+             ;; python-pygobject
+             which
+             yelp-tools))
+      ;; Required by liblightdm-gobject-1.pc.
+      (propagated-inputs
+       (list glib libx11 libxklavier))
+      (home-page "https://www.freedesktop.org/wiki/Software/LightDM/")
+      (synopsis "Lightweight display manager")
+      (description "The Light Display Manager (LightDM) is a cross-desktop
 display manager which supports different greeters.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public lightdm-gtk-greeter
   (package

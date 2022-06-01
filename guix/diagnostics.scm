@@ -232,7 +232,7 @@ macro-expansion time."
 by Guile's `source-properties', `frame-source', `current-source-location',
 etc."
   ;; In accordance with the GCS, start line and column numbers at 1.  Note
-  ;; that unlike LINE and `port-column', COL is actually 1-indexed here...
+  ;; that unlike LINE and `port-column', COL is actually 0-indexed here...
   (match loc
     ((('line . line) ('column . col) ('filename . file)) ;common case
      (and file line col

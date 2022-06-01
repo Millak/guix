@@ -399,9 +399,6 @@ powerful language for representing information.")
     ;; and this package is only transitional.
     (arguments '(#:tests? #f))))
 
-(define-public python2-rdflib
-  (package-with-python2 python-rdflib-5))
-
 ;; Note: This package is only needed for rdflib < 6.0; supersede when
 ;; the above are removed.
 (define-public python-rdflib-jsonld
@@ -470,6 +467,43 @@ parser and serializer.")
 RDF data that can also be queried for Triple Patterns.  This package provides a
 C++ library as well as various command-line tools to to work with HDT.")
 (license license:lgpl2.1+)))
+
+(define-public python-pyrdfa3
+  (package
+    (name "python-pyrdfa3")
+    (version "3.5.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyRdfa3" version))
+       (sha256
+        (base32 "1biif5lav3gswkhjzq882s4rgxzmvwsy5gb9dxdk9pw75fln6xhm"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no test suite
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-python-3-issues
+            (lambda _
+              ;; Delete files that appear to be versions for older Pythons;
+              ;; they fail to byte compile (see:
+              ;; https://github.com/RDFLib/pyrdfa3/issues/41).
+              (with-directory-excursion "pyRdfaExtras/serializers"
+                (for-each delete-file
+                          (list "prettyXMLserializer_3.py"
+                                "prettyXMLserializer_3_2.py")))
+              ;; See https://github.com/RDFLib/pyrdfa3/issues/42.
+              (substitute* "pyRdfaExtras/__init__.py"
+                (("from StringIO import StringIO")
+                 "from io import StringIO")))))))
+    (propagated-inputs (list python-html5lib python-rdflib))
+    (home-page "https://www.w3.org/2012/pyRdfa/")
+    (synopsis "RDFa Python distiller/parser library")
+    (description "This library can extract RDFa 1.1 from (X)HTML, SVG, or XML.
+It can produce serialized versions of the extracted graph, or an RDFLib
+Graph.")
+    (license license:bsd-3)))
 
 (define-public python-sparqlwrapper
   (package

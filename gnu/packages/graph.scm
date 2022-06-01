@@ -495,14 +495,14 @@ Faiss library.")))
 (define-public python-leidenalg
   (package
     (name "python-leidenalg")
-    (version "0.7.0")
+    (version "0.8.10")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "leidenalg" version))
        (sha256
         (base32
-         "15fwld9hdw357rd026mzcwpah5liy4f33vc9x9kwy37g71b2rjf1"))))
+         "1hbvagp1yyazvl7cid7mii5263qi48lpkq543n5w71qysgz1f0v7"))))
     (build-system python-build-system)
     (arguments
      '(#:tests? #f                      ;tests are not included
@@ -510,12 +510,14 @@ Faiss library.")))
                   (add-after 'unpack 'fix-requirements
                     (lambda _
                       (substitute* "setup.py"
+                        (("self.external = False")
+                         "self.external = True")
+                        (("self.use_pkgconfig = False")
+                         "self.use_pkgconfig = True")
                         (("python-igraph >=")
                          "igraph >=")))))))
     (native-inputs
-     ;; XXX: setuptools >= 58 as shipped with Python 3.9+ removes support
-     ;; for lib2to3, so use this older variant.
-     (list pkg-config python-setuptools))
+     (list pkg-config python-setuptools-scm))
     (inputs
      (list igraph))
     (propagated-inputs

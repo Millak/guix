@@ -950,9 +950,6 @@ settings.")
 of Bitcoin BIP-0039.")
     (license license:expat)))
 
-(define-public python2-mnemonic
-  (package-with-python2 python-mnemonic))
-
 (define-public python-ledgerblue
   (package
     (name "python-ledgerblue")
@@ -977,9 +974,6 @@ of Bitcoin BIP-0039.")
     (description "@code{ledgerblue} is a Python library to communicate with
 Ledger Blue/Nano S.")
     (license license:asl2.0)))
-
-(define-public python2-ledgerblue
-  (package-with-python2 python-ledgerblue))
 
 (define-public python-btchip-python
   (package
@@ -1087,9 +1081,6 @@ TREZOR Hardware Wallet.")
     (description "@code{keepkey} is a Python library for communicating with
 the KeepKey Hardware Wallet.")
     (license license:lgpl3)))
-
-(define-public python2-keepkey
-  (package-with-python2 python-keepkey))
 
 (define-public ledger-agent
   (package
@@ -1229,9 +1220,6 @@ and various other formats.
 The module also includes implementations of the Verhoeff,
 Luhn and family of ISO/IEC 7064 check digit algorithms.")
     (license license:lgpl2.1+)))
-
-(define-public python2-stdnum
-  (package-with-python2 python-stdnum))
 
 (define-public python-duniterpy
   (package
@@ -1689,14 +1677,13 @@ that allows you to run services and through them access the Bitcoin Cash network
 (define-public beancount
   (package
     (name "beancount")
-    (version "2.3.4")
+    (version "2.3.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "beancount" version))
        (sha256
-        (base32
-         "1h465zc7gb0bc5pagm9fsp083sqxrn2mjfbk9l7h162xm7k8rw1b"))
+        (base32 "0sn3x6c5vwvdfak1qm0y4vv284izrc4dly31mqyd9jz9l8jmdqql"))
        (patches (search-patches "beancount-disable-googleapis-fonts.patch"))))
     (build-system python-build-system)
     (arguments

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2017, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -48,7 +48,7 @@
 (define (bzr-package)
   "Return the default Bazaar package."
   (let ((distro (resolve-interface '(gnu packages version-control))))
-    (module-ref distro 'bazaar)))
+    (module-ref distro 'breezy)))
 
 (define* (bzr-fetch ref hash-algo hash
                        #:optional name
@@ -64,7 +64,7 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
           (use-modules (guix build bzr))
           (bzr-fetch
            (getenv "bzr url") (getenv "bzr reference") #$output
-           #:bzr-command (string-append #+bzr "/bin/bzr")))))
+           #:bzr-command (string-append #+bzr "/bin/brz")))))
 
   (mlet %store-monad ((guile (package->derivation guile system)))
     (gexp->derivation (or name "bzr-branch") build

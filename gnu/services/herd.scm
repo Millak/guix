@@ -58,7 +58,8 @@
             load-services/safe
             start-service
             stop-service
-            restart-service))
+            restart-service
+            wait-for-service))
 
 ;;; Commentary:
 ;;;
@@ -312,6 +313,39 @@ when passed a service with an already-registered name."
 (define (restart-service name)
   (with-shepherd-action name ('restart) result
     result))
+
+(define* (wait-for-service name #:key (timeout 20))
+  "Wait for the service providing NAME, a symbol, to be up and running, and
+return its \"running value\".  Give up after TIMEOUT seconds and raise a
+'&shepherd-error' exception.  Raise a '&service-not-found-error' exception
+when NAME is not found."
+  (define (relevant-service? service)
+    (memq name (live-service-provision service)))
+
+  (define start
+    (car (gettimeofday)))
+
+  ;; Note: As of Shepherd 0.9.1, we cannot just call the 'start' method and
+  ;; wait for it: it would spawn an additional elogind process.  Thus, poll.
+  (let loop ((attempts 0))
+    (define services
+      (current-services))
+
+    (define now
+      (car (gettimeofday)))
+
+    (when (>= (- now start) timeout)
+      (raise (condition (&shepherd-error))))      ;XXX: better exception?
+
+    (match (find relevant-service? services)
+      (#f
+       (raise (condition (&service-not-found-error
+                          (service name)))))
+      (service
+       (or (live-service-running service)
+           (begin
+             (sleep 1)
+             (loop (+ attempts 1))))))))
 
 ;; Local Variables:
 ;; eval: (put 'alist-let* 'scheme-indent-function 2)

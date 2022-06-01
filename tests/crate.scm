@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 David Thompson <davet@gnu.org>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
-;;; Copyright © 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019, 2020, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -572,7 +572,7 @@
   (string->license "Apache-2.0 WITH LLVM-exception"))
 
 (test-equal "licenses: MIT/Apache-2.0 AND BSD-2-Clause"
-  '(license:expat license:asl2.0 unknown-license!)
+  '(license:expat license:asl2.0 license:bsd-2)
   (string->license "MIT/Apache-2.0 AND BSD-2-Clause"))
 
 (test-equal "licenses: MIT/Apache-2.0"

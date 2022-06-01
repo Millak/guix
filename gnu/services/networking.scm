@@ -57,7 +57,6 @@
   #:use-module (gnu packages messaging)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages ntp)
-  #:use-module (gnu packages wicd)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages ipfs)
   #:use-module (gnu build linux-container)
@@ -129,9 +128,6 @@
             tor-configuration?
             tor-hidden-service
             tor-service-type
-
-            wicd-service-type
-            wicd-service
 
             network-manager-configuration
             network-manager-configuration?
@@ -1091,64 +1087,6 @@ See @uref{https://www.torproject.org/docs/tor-hidden-service.html.en, the Tor
 project's documentation} for more information."
   (service tor-hidden-service-type
            (hidden-service name mapping)))
-
-
-;;;
-;;; Wicd.
-;;;
-
-(define %wicd-activation
-  ;; Activation gexp for Wicd.
-  #~(begin
-      (use-modules (guix build utils))
-
-      (mkdir-p "/etc/wicd")
-      (let ((file-name "/etc/wicd/dhclient.conf.template.default"))
-        (unless (file-exists? file-name)
-          (copy-file (string-append #$wicd file-name)
-                     file-name)))
-
-      ;; Wicd invokes 'wpa_supplicant', which needs this directory for its
-      ;; named socket files.
-      (mkdir-p "/var/run/wpa_supplicant")
-      (chmod "/var/run/wpa_supplicant" #o750)))
-
-(define (wicd-shepherd-service wicd)
-  "Return a shepherd service for WICD."
-  (list (shepherd-service
-         (documentation "Run the Wicd network manager.")
-         (provision '(networking))
-         (requirement '(user-processes dbus-system loopback))
-         (start #~(make-forkexec-constructor
-                   (list (string-append #$wicd "/sbin/wicd")
-                         "--no-daemon")))
-         (stop #~(make-kill-destructor)))))
-
-(define wicd-service-type
-  (service-type (name 'wicd)
-                (extensions
-                 (list (service-extension shepherd-root-service-type
-                                          wicd-shepherd-service)
-                       (service-extension dbus-root-service-type
-                                          list)
-                       (service-extension activation-service-type
-                                          (const %wicd-activation))
-
-                       ;; Add Wicd to the global profile.
-                       (service-extension profile-service-type list)))
-                (description
-                 "Run @url{https://launchpad.net/wicd,Wicd}, a network
-management daemon that aims to simplify wired and wireless networking.")))
-
-(define* (wicd-service #:key (wicd wicd))
-  "Return a service that runs @url{https://launchpad.net/wicd,Wicd}, a network
-management daemon that aims to simplify wired and wireless networking.
-
-This service adds the @var{wicd} package to the global profile, providing
-several commands to interact with the daemon and configure networking:
-@command{wicd-client}, a graphical user interface, and the @command{wicd-cli}
-and @command{wicd-curses} user interfaces."
-  (service wicd-service-type wicd))
 
 
 ;;;

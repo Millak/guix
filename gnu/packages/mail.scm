@@ -32,7 +32,7 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Justus Winter <justus@sequoia-pgp.org>
 ;;; Copyright © 2020 Eric Brown <ecbrown@ericcbrown.com>
-;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020, 2021 Alexey Abramov <levenson@mmer.org>
 ;;; Copyright © 2020 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
@@ -40,7 +40,6 @@
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
 ;;; Copyright © 2020 divoplade <d@divoplade.fr>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Benoit Joly <benoit@benoitj.ca>
 ;;; Copyright © 2021 Morgan Smith <Morgan.J.Smith@outlook.com>
@@ -556,7 +555,7 @@ aliasing facilities to work just as they would on normal mail.")
 (define-public mutt
   (package
     (name "mutt")
-    (version "2.2.4")
+    (version "2.2.5")
     (source (origin
              (method url-fetch)
              (uri (list
@@ -566,7 +565,7 @@ aliasing facilities to work just as they would on normal mail.")
                                    version ".tar.gz")))
              (sha256
               (base32
-               "0q70qrsjvmkfns1qxc0il2rlmfjwzbmfg89zlch0iqghpyz7c9xq"))
+               "0ivyfld4a4sfzsdiaajqiarvfx4i85g1smbb2b5dqjkrb48pi2zz"))
              (patches (search-patches "mutt-store-references.patch"))))
     (build-system gnu-build-system)
     (inputs
@@ -1483,9 +1482,6 @@ useful for email address completion.")
 and search library.")
     (license license:gpl3+)))
 
-(define-public python2-notmuch
-  (package-with-python2 python-notmuch))
-
 (define-public python-notmuch2
   (package
     (inherit python-notmuch)
@@ -1551,31 +1547,33 @@ minimum information necessary to bring replicas up to date regardless of which
 pairs have previously synchronized.")
     (license license:gpl2+)))           ; with OpenSSL libcrypto exception
 
-(define-public getmail
+(define-public getmail6
   (package
-    (name "getmail")
-    (version "5.16")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://pyropus.ca/software/getmail/old-versions/"
-                           "getmail-" version ".tar.gz"))
-       (sha256
-        (base32 "1yk7lrndbfsrbdxikwzdqvadryqsldalxdn3a184dg4sxzmgis3a"))))
+    (name "getmail6")
+    (version "6.18.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/getmail6/getmail6")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "08a5yw6ll1kmd1ardj8rzhsw4wl48zzdc87g5lh4p5snv8w2m4ja"))))
     (build-system python-build-system)
-    (arguments
-     (list #:tests? #f                  ; no tests
-           #:python python-2))
-    (home-page "https://pyropus.ca/software/getmail/")
+    (arguments (list #:tests? #f))      ;tests require docker
+    (home-page "https://github.com/getmail6/getmail6")
     (synopsis "Mail retriever")
     (description
-     "A flexible, extensible mail retrieval system with support for
-POP3, IMAP4, SSL variants of both, maildirs, mboxrd files, external MDAs,
-arbitrary message filtering, single-user and domain-mailboxes, and many other
-useful features.")
+     "A flexible, extensible mail retrieval system with support for POP3,
+IMAP4, SSL variants of both, maildirs, mboxrd files, external MDAs, arbitrary
+message filtering, single-user and domain-mailboxes, and many other useful
+features.  This is a fork derived from getmali 5.14, aimed at Python 3
+compatibility.")
+    (license license:gpl2+)))           ;see docs/COPYING
 
-    ;; License is specified in file '__init__.py'.
-    (license license:gpl2)))
+(define-public getmail
+  (deprecated-package "getmail" getmail6))
 
 (define-public libetpan
   (package
@@ -3365,25 +3363,8 @@ filtering, digest delivery, and more.")
     (description
      "The mailmanclient library provides official Python bindings for
 the GNU Mailman 3 REST API.")
-    (properties `((python2-variant . ,(delay python2-mailmanclient))))
     (license license:lgpl3+)))
 
-;; This is the last version which supports Python-2.
-(define-public python2-mailmanclient
-  (let ((base (package-with-python2
-                (strip-python2-variant python-mailmanclient))))
-    (package
-      (inherit base)
-      (version "3.1.1")
-      (source
-        (origin
-          (method url-fetch)
-          (uri (pypi-uri "mailmanclient" version))
-          (sha256
-           (base32
-            "0fdfs5g3pf30v2i7w18pdkv9xnfxmfcv66mzv56dck0a1igq07m3"))))
-      (propagated-inputs
-       (list python2-six python2-httplib2)))))
 
 (define-public mlmmj
   (package
@@ -4365,7 +4346,7 @@ on RFC 3501 and original @code{imaplib} module.")
 (define-public rspamd
   (package
     (name "rspamd")
-    (version "2.7")
+    (version "3.2")
     (source
      (origin
        (method git-fetch)
@@ -4373,11 +4354,12 @@ on RFC 3501 and original @code{imaplib} module.")
              (url "https://github.com/rspamd/rspamd")
              (commit version)))
        (sha256
-        (base32 "0fw6nbfc3xqapzq5nydakwgpw6cz6vb3qby2aqlr06lzf87d3hic"))
+        (base32 "122d5m1nfxxz93bhsk8lm4dazvdknzphb0a1188m7bsa4iynbfv2"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
-     '(#:configure-flags '("-DENABLE_LUAJIT=ON")))
+     '(#:configure-flags '("-DENABLE_LUAJIT=ON"
+                           "-DLOCAL_CONFDIR=/etc/rspamd")))
     (inputs
      (list openssl
            glib
@@ -4386,7 +4368,7 @@ on RFC 3501 and original @code{imaplib} module.")
            sqlite
            file
            icu4c
-           pcre
+           pcre2
            zlib
            perl
            libsodium))

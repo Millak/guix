@@ -97,6 +97,7 @@
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages rdf)
   #:use-module (gnu packages rpc)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sphinx)
@@ -107,6 +108,78 @@
   #:use-module (gnu packages xml)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (srfi srfi-1))
+
+(define-public python-lazr-restfulclient
+  (package
+    (name "python-lazr-restfulclient")
+    (version "0.14.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "lazr.restfulclient" version))
+       (sha256
+        (base32 "11yhlqmdf2cqbdfzn8gdmzvmcivh4fflr18zf412sflvfjrdc3xz"))))
+    (build-system python-build-system)
+    ;; Disable the test suite to avoid the lazr.authentication requirement,
+    ;; which requires the ancient 'oauth', a Python 2 only library.
+    (arguments (list #:tests? #f))
+    (propagated-inputs
+     (list python-distro
+           python-httplib2
+           python-oauthlib
+           python-wadllib))
+    (home-page "https://launchpad.net/lazr.restfulclient")
+    (synopsis "Web client Python library extending wadlib")
+    (description "This package provides a programmable client library that
+adds functionality on top of @code{wadlib}.")
+    (license license:lgpl3+)))
+
+(define-public python-launchpadlib
+  (package
+    (name "python-launchpadlib")
+    (version "1.10.16")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "launchpadlib" version))
+       (sha256
+        (base32 "106aixwchwyb100wlf4cnj1vgsi2d7x40ps8xv8az27r6qwv3x0d"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-before 'check 'set-home
+                          (lambda _
+                            ;; Tests require a writable home.
+                            (setenv "HOME" "/tmp"))))))
+    (propagated-inputs
+     (list python-httplib2
+           python-keyring
+           python-lazr-restfulclient
+           python-lazr-uri))
+    (native-inputs (list python-mock python-testresources python-wadllib))
+    (home-page "https://help.launchpad.net/API/launchpadlib")
+    (synopsis "Python client library for Launchpad's web service")
+    (description "@code{launchpadlib} is a Python library that allows
+scripting Launchpad via its the web service API.")
+    (license license:lgpl3+)))
+
+(define-public python-lazr-uri
+  (package
+    (name "python-lazr-uri")
+    (version "1.0.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "lazr.uri" version))
+       (sha256
+        (base32 "0r44rw0bj5mayhqwfwj1dnrjgzj1lrh7ishiddd1vygnrczqa9jh"))))
+    (build-system python-build-system)
+    (native-inputs (list python-zope-testrunner))
+    (home-page "https://launchpad.net/lazr.uri")
+    (synopsis "Python URI manipulation library")
+    (description "This Python package provides a self-contained, easily
+reusable library for parsing, manipulating, and generating URIs.")
+    (license license:lgpl3)))
 
 (define-public python-prawcore
   (package
@@ -810,9 +883,6 @@ over a different origin than that of the web application.")
 other HTTP libraries.")
     (license license:expat)))
 
-(define-public python2-httplib2
-  (package-with-python2 python-httplib2))
-
 (define-public httpie
   (package
     (name "httpie")
@@ -1159,9 +1229,6 @@ SockJS provides a low-latency, full-duplex, cross-domain communication channel
 between a web browser and web server.")
     (license license:expat)))
 
-(define-public python2-sockjs-tornado
-  (package-with-python2 python-sockjs-tornado))
-
 (define-public python-flask-assets
   (package
     (name "python-flask-assets")
@@ -1326,25 +1393,6 @@ storage.")
 and written in Python.")
     (license license:expat)))
 
-(define-public python2-html5lib
-  (package-with-python2 python-html5lib))
-
-;; Needed for python-bleach, a dependency of python-notebook
-(define-public python-html5lib-0.9
-  (package
-    (inherit python-html5lib)
-    (version "0.999")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "html5lib" version))
-       (sha256
-        (base32
-         "17n4zfsj6ynmbwdwviywmj8r6nzr3xvfx2zs0xhndmvm51z7z263"))))))
-
-(define-public python2-html5lib-0.9
-  (package-with-python2 python-html5lib-0.9))
-
 (define-public python-html5-parser
   (package
     (name "python-html5-parser")
@@ -1438,9 +1486,6 @@ high-speed transfers via libcurl and frequently outperforms alternatives.")
     ;; under the terms of LGPLv2.1+ or Expat.
     (license (list license:lgpl2.1+ license:expat))))
 
-(define-public python2-pycurl
-  (package-with-python2 python-pycurl))
-
 (define-public python-webencodings
   (package
     (name "python-webencodings")
@@ -1478,9 +1523,6 @@ This module implements the Encoding standard and has encoding labels and
 BOM detection, but the actual implementation for encoders and decoders
 is Python’s.")
     (license license:bsd-3)))
-
-(define-public python2-webencodings
-  (package-with-python2 python-webencodings))
 
 (define-public python-openapi-schema-validator
   (package
@@ -2009,8 +2051,7 @@ originally developed at FriendFeed.  By using non-blocking network I/O,
 Tornado can scale to tens of thousands of open connections, making it ideal
 for long polling, WebSockets, and other applications that require a long-lived
 connection to each user.")
-    (license license:asl2.0)
-    (properties `((python2-variant . ,(delay python2-tornado))))))
+    (license license:asl2.0)))
 
 (define-public python-tornado-6
   (package
@@ -2042,16 +2083,6 @@ Tornado can scale to tens of thousands of open connections, making it ideal
 for long polling, WebSockets, and other applications that require a long-lived
 connection to each user.")
     (license license:asl2.0)))
-
-(define-public python2-tornado
-  (let ((tornado (package-with-python2 (strip-python2-variant python-tornado))))
-    (package/inherit tornado
-      (propagated-inputs
-       `(("python2-backport-ssl-match-hostname"
-          ,python2-backport-ssl-match-hostname)
-         ("python2-backports-abc" ,python2-backports-abc)
-         ("python2-singledispatch" ,python2-singledispatch)
-          ,@(package-propagated-inputs tornado))))))
 
 (define-public python-tornado-http-auth
   (package
@@ -2147,9 +2178,6 @@ your Web app.")
 object to help create WSGI responses.")
     (license license:expat)))
 
-(define-public python2-webob
-  (package-with-python2 python-webob))
-
 (define-public python-zope-event
   (package
     (name "python-zope-event")
@@ -2169,9 +2197,6 @@ use by applications which are unaware of any subscribers to their events.  It
 is a simple event-dispatching system on which more sophisticated event
 dispatching systems can be built.")
     (license license:zpl2.1)))
-
-(define-public python2-zope-event
-  (package-with-python2 python-zope-event))
 
 (define-public python-zope-interface
   (package
@@ -2196,9 +2221,6 @@ methodology")
 interfaces\" for Python.  Interfaces are a mechanism for labeling objects as
 conforming to a given API or contract.")
     (license license:zpl2.1)))
-
-(define-public python2-zope-interface
-  (package-with-python2 python-zope-interface))
 
 (define-public python-zope-exceptions
   (package
@@ -2251,9 +2273,6 @@ that have uses outside of the Zope framework.")
 (define-public python-zope-exceptions-bootstrap
   (python-zope-bootstrap-package python-zope-exceptions))
 
-(define-public python2-zope-exceptions
-  (package-with-python2 python-zope-exceptions))
-
 (define-public python-zope-testing
   (package
     (name "python-zope-testing")
@@ -2271,9 +2290,6 @@ that have uses outside of the Zope framework.")
     (description "Zope.testing provides a number of testing utilities for HTML
 forms, HTTP servers, regular expressions, and more.")
     (license license:zpl2.1)))
-
-(define-public python2-zope-testing
-  (package-with-python2 python-zope-testing))
 
 (define-public python-zope-testrunner
   (package
@@ -2315,9 +2331,6 @@ tests.")
        ("python-zope-exceptions" ,python-zope-exceptions-bootstrap)))
     (properties `((hidden? . #t)))))
 
-(define-public python2-zope-testrunner
-  (package-with-python2 python-zope-testrunner))
-
 (define-public python-zope-i18nmessageid
   (package
     (name "python-zope-i18nmessageid")
@@ -2339,9 +2352,6 @@ tests.")
     (description "Zope.i18nmessageid provides facilities for declaring
 internationalized messages within program source text.")
     (license license:zpl2.1)))
-
-(define-public python2-zope-i18nmessageid
-  (package-with-python2 python-zope-i18nmessageid))
 
 (define-public python-zope-schema
   (package
@@ -2375,9 +2385,6 @@ internationalized messages within program source text.")
 defining data schemas.")
     (license license:zpl2.1)))
 
-(define-public python2-zope-schema
-  (package-with-python2 python-zope-schema))
-
 (define-public python-zope-configuration
   (package
     (name "python-zope-configuration")
@@ -2402,9 +2409,6 @@ Markup Language.")
 
 (define-public python-zope-configuration-bootstrap
   (python-zope-bootstrap-package python-zope-configuration))
-
-(define-public python2-zope-configuration
-  (package-with-python2 python-zope-configuration))
 
 (define-public python-zope-copy
   (package
@@ -2465,9 +2469,6 @@ brokering, etc.) for which the proxy is responsible.")
 (define-public python-zope-proxy-bootstrap
   (python-zope-bootstrap-package python-zope-proxy))
 
-(define-public python2-zope-proxy
-  (package-with-python2 python-zope-proxy))
-
 (define-public python-zope-hookable
   (package
     (name "python-zope-hookable")
@@ -2519,9 +2520,6 @@ Zope3, which are are special objects that have a structural location.")
 (define-public python-zope-location-bootstrap
   (python-zope-bootstrap-package python-zope-location))
 
-(define-public python2-zope-location
-  (package-with-python2 python-zope-location))
-
 (define-public python-zope-security
   (package
     (name "python-zope-security")
@@ -2562,9 +2560,6 @@ security policies on Python objects.")
        ("python-zope-interface" ,python-zope-interface)
        ("python-zope-proxy" ,python-zope-proxy-bootstrap)
        ("python-zope-schema" ,python-zope-schema)))))
-
-(define-public python2-zope-security
-  (package-with-python2 python-zope-security))
 
 (define-public python-zope-component
   (package
@@ -2607,9 +2602,6 @@ facilities for defining, registering and looking up components.")
 
 (define-public python-zope-component-bootstrap
   (python-zope-bootstrap-package python-zope-component))
-
-(define-public python2-zope-component
-  (package-with-python2 python-zope-component))
 
 (define-public python-zope-deferredimport
   (package
@@ -2802,18 +2794,7 @@ APIs.")
     (description
      "Requests is a Python HTTP client library.  It aims to be easier to use
 than Python’s urllib2 library.")
-    (license license:asl2.0)
-    (properties `((python2-variant . ,(delay python2-requests))))))
-
-(define-public python2-requests
-  (let ((base (package-with-python2 (strip-python2-variant python-requests))))
-    (package
-      (inherit base)
-      ;; The python-charset-normalizer dependency is necessary on Python 3
-      ;; only.
-      (propagated-inputs (modify-inputs (package-propagated-inputs base)
-                           (append python2-chardet)
-                           (delete "python-charset-normalizer"))))))
+    (license license:asl2.0)))
 
 (define-public python-requests-unixsocket
   (package
@@ -2996,9 +2977,6 @@ adapter for use with the Requests library.")
 OAuth request-signing logic.")
     (license license:bsd-3)))
 
-(define-public python2-oauthlib
-  (package-with-python2 python-oauthlib))
-
 (define-public python-rauth
   (package
     (name "python-rauth")
@@ -3021,14 +2999,7 @@ OAuth request-signing logic.")
      "Rauth is a Python library for OAuth 1.0/a, 2.0, and Ofly.  It also
 provides service wrappers for convenient connection initialization and
 authenticated session objects providing things like keep-alive.")
-    (license license:expat)
-    (properties `((python2-variant . ,(delay python2-rauth))))))
-
-(define-public python2-rauth
-  (let ((base (package-with-python2 (strip-python2-variant python-rauth))))
-    (package/inherit base
-      (native-inputs `(("python2-unittest2" ,python2-unittest2)
-                       ,@(package-native-inputs base))))))
+    (license license:expat)))
 
 (define-public python-unalix
   (package
@@ -3086,16 +3057,7 @@ addon for removing tracking fields from URLs.")
      "Urllib3 supports features left out of urllib and urllib2 libraries.  It
 can reuse the same socket connection for multiple requests, it can POST files,
 supports url redirection and retries, and also gzip and deflate decoding.")
-    (properties `((python2-variant . ,(delay python2-urllib3))))
     (license license:expat)))
-
-(define-public python2-urllib3
-  (let ((base (package-with-python2 (strip-python2-variant python-urllib3))))
-    (package/inherit
-     base
-     (propagated-inputs
-      `(("python-ipaddress" ,python2-ipaddress)
-        ,@(package-propagated-inputs base))))))
 
 (define-public awscli
   (package
@@ -3191,9 +3153,6 @@ these URIs can refer to Python Eggs for INI-style configuration files.  Paste
 Script provides commands to serve applications based on this configuration
 file.")
     (license license:expat)))
-
-(define-public python2-pastedeploy
-  (package-with-python2 python-pastedeploy))
 
 (define-public python-webtest
   (package
@@ -3322,9 +3281,6 @@ Python.")
     (home-page "https://gitlab.com/sashahart/cookies")
     (license license:expat)))
 
-(define-public python2-cookies
-  (package-with-python2 python-cookies))
-
 (define-public python-responses
   (package
     (name "python-responses")
@@ -3349,9 +3305,6 @@ Python.")
     (description "A utility library for mocking out the `requests` Python
 library.")
     (license license:asl2.0)))
-
-(define-public python2-responses
-  (package-with-python2 python-responses))
 
 (define-public python-grequests
   (package
@@ -3557,9 +3510,6 @@ provide an easy-to-use Python interface for building OAuth1 and OAuth2 clients."
     (description "Betamax will record your test suite's HTTP interactions and
 replay them during future tests.  It is designed to work with python-requests.")
     (license license:expat)))
-
-(define-public python2-betamax
-  (package-with-python2 python-betamax))
 
 (define-public python-betamax-matchers
   (package
@@ -3901,9 +3851,6 @@ users' sessions over extended periods of time.")
 library for Python")
     (license license:asl2.0)))
 
-(define-public python2-oauth2client
-  (package-with-python2 python-oauth2client))
-
 (define-public python-flask-oidc
   (package
     (name "python-flask-oidc")
@@ -4074,9 +4021,6 @@ for Flask programs that are using @code{python-alembic}.")
 of components for parsing, generating, and processing HTML, XML or other
 textual content for output generation on the web.")
     (license license:bsd-3)))
-
-(define-public python2-genshi
-  (package-with-python2 python-genshi))
 
 (define-public python-flask-principal
   (package
@@ -4264,9 +4208,6 @@ addon modules.")
     (synopsis "WSGI framework for small web-applications")
     (description "@code{python-bottle} is a WSGI framework for small web-applications.")
     (license license:expat)))
-
-(define-public python2-bottle
-  (package-with-python2 python-bottle))
 
 (define-public python-wtforms
   (package
@@ -7390,3 +7331,140 @@ scraping framework, used to crawl websites and extract structured data
 from their pages.  It can be used for a wide range of purposes, from data
 mining to monitoring and automated testing.")
     (license license:bsd-3)))
+
+(define-public python-jstyleson
+  (package
+    (name "python-jstyleson")
+    (version "0.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jstyleson" version))
+       (sha256
+        (base32 "13ihw6jqwkg3ai4xb83kw39pvh73b2wg6ld3wvj5jaasn7rh6038"))))
+    (build-system python-build-system)
+    (arguments (list #:tests? #f))      ;no tests in pypi release
+    (home-page "https://github.com/linjackson78/jstyleson")
+    (synopsis "JSON parser supporting js-style comments")
+    (description "@code{jstyleson} is a Python library to parse JSON.
+Contrary to the standard Python @code{json} library, it understands js-style
+comments.  Trailing comma is also supported.")
+    (license license:expat)))
+
+(define-public python-html-text
+  (package
+    (name "python-html-text")
+    (version "0.5.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "html_text" version))
+       (sha256
+        (base32 "1v9x171l3bmyayc1144nrkn9410lp4lhlrrjii54j7b5f2xipmmg"))))
+    (build-system python-build-system)
+    (native-inputs (list python-pytest))
+    (propagated-inputs (list python-lxml))
+    (home-page "https://github.com/TeamHG-Memex/html-text")
+    (synopsis "Extract text from HTML")
+    (description "HTML to Text is a Python library for extract text from HTML.
+Contrary to other solution such as LXML or Beautiful Soup, the text extracted
+with @code{html_text} does not contain elements such as JavaScript or inline
+styles not normally visible to users.  It also normalizes white space
+characters in a smarter, more visually pleasing style.")
+    (license license:expat)))
+
+(define-public python-mf2py
+  (package
+    (name "python-mf2py")
+    (version "1.1.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/microformats/mf2py")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "00pzfc5sl6ywlcr6f2k37n3f2bb7w488p2k95ixzjwx6w3yh747n"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv" "test")))))))
+    (native-inputs (list python-pytest))
+    (propagated-inputs
+     (list python-beautifulsoup4 python-html5lib python-requests))
+    (home-page "https://github.com/microformats/mf2py")
+    (synopsis "Python Microformats2 parser")
+    (description "This Python library provides a Microformats2 parser
+implementing the full Microformats2 (mf2) specification, including backward
+compatibility with Microformats1 (mf1).")
+    (license license:expat)))
+
+(define-public python-extruct
+  (package
+    (name "python-extruct")
+    (version "0.13.0")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/scrapinghub/extruct")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "075zldf3dqcc429z1vk2ngbmv034bnlyk6arh3rh30jbsvz9pzl5"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv" "tests")))))))
+    (native-inputs (list python-pytest))
+    (propagated-inputs
+     (list python-html-text
+           python-jstyleson
+           python-lxml
+           python-mf2py
+           python-pyrdfa3
+           python-rdflib
+           python-rdflib-jsonld
+           python-w3lib))
+    (home-page "https://github.com/scrapinghub/extruct")
+    (synopsis "Extract embedded metadata from HTML markup")
+    (description "@code{extruct} is a Python library for extracting embedded
+metadata from HTML markup.  Currently, extruct supports:
+@itemize
+@item W3C's HTML Microdata
+@item embedded JSON-LD
+@item Microformat via mf2py
+@item Facebook's Open Graph
+@item (experimental) RDFa via rdflib
+@item Dublin Core Metadata (DC-HTML-2003)
+@end itemize")
+    (license license:bsd-3)))
+
+(define-public python-wadllib
+  (package
+    (name "python-wadllib")
+    (version "1.3.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "wadllib" version))
+       (sha256
+        (base32 "1z65crvdsjxh9nahz1g6q021ijmv85ixmq88l96d61qh5imavndc"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-lazr-uri))
+    (home-page "https://launchpad.net/wadllib")
+    (synopsis "Web Application Description Language (WADL) navigation library")
+    (description "The @code{wadllib} Python library allows navigating HTTP
+resources using Web Application Description Language (WADL) files as guides.")
+    (license license:lgpl3)))

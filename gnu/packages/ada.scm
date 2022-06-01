@@ -149,32 +149,3 @@ Ada system.  Being an interpreter, it does not implement most representation
 clauses, and thus does not support systems programming close to the machine
 level.")
     (license license:gpl2+)))
-
-(define-public python2-langkit
-  (let ((commit "fe0bc8bf60dbd2937759810df76ac420d99fc15f")
-        (revision "0"))
-    (package
-      (name "python2-langkit")
-      (version (git-version "0.0.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/AdaCore/langkit")
-                      (commit commit)))
-                (sha256
-                 (base32
-                  "1abqgw2p8pb1pm54my5kkbbixfhc6l0bwajdv1xlzyrh31xki3wx"))
-                (file-name (string-append name "-" version "-checkout"))))
-      (build-system python-build-system)
-      (propagated-inputs
-       (list python2-docutils python2-enum34 python2-funcy python2-mako))
-      (arguments
-       `(#:python ,python-2
-         #:tests? #f))           ; Tests would requite gprbuild (Ada).
-      (synopsis "Semantic analysis tool generator in Python")
-      (description "@code{Langkit} is a tool whose purpose is to make it easy
-to create syntactic and semantic analysis engines.  Write a language
-specification in our Python DSL and Langkit will generate for you an
-Ada library with bindings for the C and Python programming languages.")
-      (home-page "https://github.com/AdaCore/langkit/")
-      (license license:gpl3+))))   ; and gcc runtime library exception

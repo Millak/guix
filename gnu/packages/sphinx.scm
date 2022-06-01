@@ -146,54 +146,7 @@
     (description "Sphinx is a tool that makes it easy to create documentation
 for Python projects or other documents consisting of multiple reStructuredText
 sources.")
-    (license license:bsd-2)
-    (properties `((python2-variant . ,(delay python2-sphinx))))))
-
-;; Sphinx 2 does not support Python 2, so we stick with this older version here.
-(define-public python2-sphinx
-  (let ((base (package-with-python2 (strip-python2-variant python-sphinx))))
-    (package
-      (inherit base)
-      (version "1.7.7")
-      (source (origin
-                (method url-fetch)
-                (uri (pypi-uri "Sphinx" version))
-                (sha256
-                 (base32
-                  "0pkkbfj7cl157q550gcs45am5y78ps0h7q6455d64s1zmw01jlvi"))))
-      (arguments
-       (substitute-keyword-arguments (package-arguments base)
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-before 'check 'disable-broken-tests
-               (lambda _
-                 (for-each delete-file
-                           ;; These tests are broken when using Python2:
-                           ;; <https://github.com/sphinx-doc/sphinx/issues/4710>.
-                           '("tests/test_api_translator.py"
-                             "tests/test_setup_command.py"
-                             ;; Websupport is provided by a separate package
-                             "tests/test_websupport.py"
-                             ;; This one fails for unknown reasons.
-                             "tests/test_correct_year.py"))))))))
-      (native-inputs (modify-inputs (package-native-inputs base)
-                       (prepend python2-mock python2-enum34)))
-      ;; Sphinx 2 has some dependencies that do not support Python 2, so
-      ;; we keep our own propagated-inputs here instead of inheriting.
-      (propagated-inputs
-       (list python2-pytz
-             python2-typing
-             python2-imagesize
-             python2-sphinx-alabaster-theme
-             python2-babel
-             python2-snowballstemmer
-             python2-docutils-0.14
-             python2-jinja2
-             python2-packaging
-             python2-pygments
-             python2-requests
-             python2-six
-             python2-sphinxcontrib-websupport)))))
+    (license license:bsd-2)))
 
 (define-public python-sphinxcontrib-apidoc
   (package
@@ -517,32 +470,12 @@ builder does not support SVG images natively (e.g. LaTeX).")
      `(#:tests? #f))
     (home-page "https://sphinx-doc.org/")
     (synopsis "Sphinx API for web applications")
-    (description "This package provides a Python API to easily integrate
+    (description
+     "This package provides a Python API to easily integrate
 Sphinx documentation into your web application.  It provides tools to
 integrate Sphinx documents in web templates and to handle searches.")
-    (license license:bsd-3)
-    (properties `((python2-variant . ,(delay python2-sphinxcontrib-websupport))))))
+    (license license:bsd-3)))
 
-;; 1.1.2 is the last version to support Python 2.
-(define-public python2-sphinxcontrib-websupport
-  (package
-    (inherit (package-with-python2
-              (strip-python2-variant python-sphinxcontrib-websupport)))
-    (version "1.1.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "sphinxcontrib-websupport" version))
-              (sha256
-               (base32
-                "1z7fqra0xm1cdp8vvp80fcvnjlywym7bzz80m0liq7fz1zxvw08m"))))
-    (arguments
-     `(#:tests? #f
-       #:python ,python-2
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'sanity-check))))
-    (propagated-inputs
-     (list python2-six))))
 
 (define-public python-sphinx-gallery
   (package
@@ -677,9 +610,6 @@ introspection of @code{zope.interface} instances in code.")
     (description "Alabaster is a visually (c)lean, responsive, configurable
 theme for the Sphinx documentation system.  It's the default theme of Sphinx.")
     (license license:bsd-3)))
-
-(define-public python2-sphinx-alabaster-theme
-  (package-with-python2 python-sphinx-alabaster-theme))
 
 (define-public python-sphinx-argparse
   (package

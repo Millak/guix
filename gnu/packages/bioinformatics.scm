@@ -211,85 +211,6 @@ tRNA consensus sequences and RNA structure.  It also outputs the secondary
 structure of the predicted RNA.")
     (license license:gpl2)))
 
-(define-public bamm
-  (package
-    (name "bamm")
-    (version "1.7.3")
-    (source (origin
-              (method git-fetch)
-              ;; BamM is not available on pypi.
-              (uri (git-reference
-                    (url "https://github.com/Ecogenomics/BamM")
-                    (commit version)
-                    (recursive? #t)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1p83ahi984ipslxlg4yqy1gdnya9rkn1v71z8djgxkm9d2chw4c5"))
-              (modules '((guix build utils)))
-              (snippet
-               `(begin
-                  ;; Delete bundled htslib.
-                  (delete-file-recursively "c/htslib-1.3.1")))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2 ; BamM is Python 2 only.
-       ;; Do not use bundled libhts.  Do use the bundled libcfu because it has
-       ;; been modified from its original form.
-       #:configure-flags
-       ,#~(let ((htslib #$(this-package-input "htslib")))
-            (list "--with-libhts-lib" (string-append htslib "/lib")
-                  "--with-libhts-inc" (string-append htslib "/include/htslib")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'autogen
-           (lambda _
-             (with-directory-excursion "c"
-               (let ((sh (which "sh")))
-                 (for-each make-file-writable (find-files "." ".*"))
-                 ;; Use autogen so that 'configure' works.
-                 (substitute* "autogen.sh" (("/bin/sh") sh))
-                 (setenv "CONFIG_SHELL" sh)
-                 (invoke "./autogen.sh")))))
-         (delete 'build)                ;the build loops otherwise
-         (replace 'check
-           (lambda _
-             ;; There are 2 errors printed, but they are safe to ignore:
-             ;; 1) [E::hts_open_format] fail to open file ...
-             ;; 2) samtools view: failed to open ...
-             (invoke "nosetests")))
-         (add-after 'install 'wrap-executable
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out  (assoc-ref outputs "out"))
-                    (path (getenv "PATH"))
-                    (pythonpath (getenv "GUIX_PYTHONPATH")))
-               (wrap-program (string-append out "/bin/bamm")
-                 `("PATH" ":" prefix (,path))
-                 `("GUIX_PYTHONPATH" ":" prefix (,pythonpath)))))))))
-    (native-inputs
-     (list autoconf
-           automake
-           libtool
-           zlib
-           python2-nose
-           python2-pysam))
-    (inputs
-     (list htslib-1.3 ; At least one test fails on htslib-1.4+.
-           samtools
-           bwa
-           grep
-           sed
-           coreutils))
-    (propagated-inputs
-     (list python2-numpy))
-    (home-page "https://ecogenomics.github.io/BamM/")
-    (synopsis "Metagenomics-focused BAM file manipulator")
-    (description
-     "BamM is a C library, wrapped in python, to efficiently generate and
-parse BAM files, specifically for the analysis of metagenomic data.  For
-instance, it implements several methods to assess contig-wise read coverage.")
-    (license license:lgpl3+)))
-
 (define-public bamtools
   (package
     (name "bamtools")
@@ -840,52 +761,6 @@ frames} (ORFs) using ribosome profiling (ribo-seq) data.  This package
 provides the Ribotaper pipeline.")
     (license license:gpl3+)))
 
-(define-public ribodiff
-  (package
-    (name "ribodiff")
-    (version "0.2.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/ratschlab/RiboDiff")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0x75nlp7qnmm64jasbi6l21f2cy99r2cjyl6b4hr8zf2bq22drnz"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2
-       #:phases
-       (modify-phases %standard-phases
-         ;; This test fails because of the matplotlib plotting backend.
-         (add-after 'unpack 'disable-plot-test
-           (lambda _
-             (substitute* "src/ribodiff/functional_test_te.py"
-               (("pl\\.make_plots\\(data, opts\\)") "#"))))
-         ;; Generate an installable executable script wrapper.
-         (add-after 'unpack 'patch-setup.py
-           (lambda _
-             (substitute* "setup.py"
-               (("^(.*)packages=.*" line prefix)
-                (string-append line "\n"
-                               prefix "scripts=['scripts/TE.py'],\n"))))))))
-    (inputs
-     (list python2-numpy python2-matplotlib python2-scipy
-           python2-statsmodels))
-    (native-inputs
-     (list python2-mock python2-nose))
-    (home-page "https://public.bmi.inf.ethz.ch/user/zhongy/RiboDiff/")
-    (synopsis "Detect translation efficiency changes from ribosome footprints")
-    (description "RiboDiff is a statistical tool that detects the protein
-translational efficiency change from Ribo-Seq (ribosome footprinting) and
-RNA-Seq data.  It uses a generalized linear model to detect genes showing
-difference in translational profile taking mRNA abundance into account.  It
-facilitates us to decipher the translational regulation that behave
-independently with transcriptional regulation.")
-    (license license:gpl3+)))
-
 (define-public bioawk
   (package
     (name "bioawk")
@@ -1026,14 +901,6 @@ which are widely used for genomic interval manipulation or \"genome algebra\".
 pybedtools extends BEDTools by offering feature-level manipulations from with
 Python.")
     (license license:gpl2+)))
-
-(define-public python2-pybedtools
-  (let ((pybedtools (package-with-python2 python-pybedtools)))
-    (package
-      (inherit pybedtools)
-      (native-inputs
-       (modify-inputs (package-native-inputs pybedtools)
-         (prepend python2-pathlib))))))
 
 (define-public python-biom-format
   (package
@@ -1283,9 +1150,6 @@ into separate processes; and more.")
                (base32
                 "1q55jhf76z3k6is3psis0ckbki7df26x7dikpcc3vhk1vhkwribh"))))))
 
-(define-public python2-biopython
-  (package-with-python2 python-biopython))
-
 (define-public python-fastalite
   (package
     (name "python-fastalite")
@@ -1305,9 +1169,6 @@ into separate processes; and more.")
     (description "This library implements a FASTA and a FASTQ parser without
 relying on a complex dependency tree.")
     (license license:expat)))
-
-(define-public python2-fastalite
-  (package-with-python2 python-fastalite))
 
 (define-public biosoup
   (package
@@ -2377,9 +2238,6 @@ SAM/BAM format.  Pysam is a lightweight wrapper of the SAMtools C API.  It
 also includes an interface for tabix.")
     (license license:expat)))
 
-(define-public python2-pysam
-  (package-with-python2 python-pysam))
-
 (define-public python-twobitreader
   (package
     (name "python-twobitreader")
@@ -2440,59 +2298,60 @@ high-throughput sequencing data – with an emphasis on simplicity.")
 (define-public tetoolkit
   (package
     (name "tetoolkit")
-    (version "2.0.3")
+    (version "2.2.1b")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/mhammell-laboratory/tetoolkit")
+                    (url "https://github.com/mhammell-laboratory/TEtranscripts")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1yzi0kfpzip8zpjb82x1ik6h22yzfyjiz2dv85v6as2awwqvk807"))))
+                "1m3xsydakhdan9gp9mfdz7llka5g6ak91d0mbl1cmmxq9qs6an4y"))))
     (build-system python-build-system)
     (arguments
-     `(#:python ,python-2               ; not guaranteed to work with Python 3
-       #:phases
+     `(#:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'make-writable
+         (add-after 'unpack 'adjust-requirements
            (lambda _
-             (for-each make-file-writable (find-files "."))
-             #t))
+             (substitute* "setup.py"
+               ;; This defunct dependency isn't required for Python 3 (see:
+               ;; https://github.com/mhammell-laboratory/TEtranscripts/issues/111).
+               ((".*'argparse'.*") ""))))
          (add-after 'unpack 'patch-invocations
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* '("bin/TEtranscripts"
                             "bin/TEcount")
                (("'sort ")
-                (string-append "'" (which "sort") " "))
+                (string-append "'" (search-input-file inputs "bin/sort") " "))
                (("'rm -f ")
-                (string-append "'" (which "rm") " -f "))
-               (("'Rscript'") (string-append "'" (which "Rscript") "'")))
+                (string-append "'" (search-input-file inputs "bin/rm") " -f "))
+               (("'Rscript'")
+                (string-append "'" (search-input-file inputs "bin/Rscript")
+                               "'")))
              (substitute* "TEToolkit/IO/ReadInputs.py"
-               (("BamToBED") (which "bamToBed")))
+               (("BamToBED")
+                (search-input-file inputs "bin/bamToBed")))
              (substitute* "TEToolkit/Normalization.py"
                (("\"Rscript\"")
-                (string-append "\"" (which "Rscript") "\"")))
-             #t))
+                (string-append "\"" (search-input-file inputs "bin/Rscript")
+                               "\"")))))
          (add-after 'install 'wrap-program
            (lambda* (#:key outputs #:allow-other-keys)
              ;; Make sure the executables find R packages.
-             (let ((out (assoc-ref outputs "out")))
-               (for-each
-                (lambda (script)
-                  (wrap-program (string-append out "/bin/" script)
-                    `("R_LIBS_SITE" ":" = (,(getenv "R_LIBS_SITE")))))
-                '("TEtranscripts"
-                  "TEcount")))
-             #t)))))
+             (for-each (lambda (script)
+                         (wrap-program script
+                           `("R_LIBS_SITE" ":" = (,(getenv "R_LIBS_SITE")))))
+                       (list (search-input-file outputs "bin/TEtranscripts")
+                             (search-input-file outputs "bin/TEcount"))))))))
     (inputs
-     (list coreutils
+     (list bash-minimal
+           coreutils
            bedtools
-           python2-argparse
-           python2-pysam
+           python-pysam
            r-minimal
            r-deseq2))
-    (home-page "https://github.com/mhammell-laboratory/tetoolkit")
+    (home-page "https://github.com/mhammell-laboratory/TEtranscripts")
     (synopsis "Transposable elements in differential enrichment analysis")
     (description
      "This is package for including transposable elements in differential
@@ -2903,9 +2762,6 @@ files.")
 accessing bigWig files.")
     (license license:expat)))
 
-(define-public python2-pybigwig
-  (package-with-python2 python-pybigwig))
-
 (define-public python-schema-salad
   (package
     (name "python-schema-salad")
@@ -3092,22 +2948,6 @@ CWL descriptions.")
 writing, simulation, processing and manipulation of phylogenetic
 trees (phylogenies) and characters.")
     (license license:bsd-3)))
-
-(define-public python2-dendropy
-  (let ((base (package-with-python2 python-dendropy)))
-    (package/inherit base
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'remove-failing-test
-             (lambda _
-               ;; This test fails when the full test suite is run, as documented
-               ;; at https://github.com/jeetsukumaran/DendroPy/issues/74
-               (substitute* "tests/test_dataio_nexml_reader_tree_list.py"
-                 (("test_collection_comments_and_annotations")
-                  "do_not_test_collection_comments_and_annotations"))
-               #t)))
-         ,@(package-arguments base))))))
 
 (define-public python-py2bit
   (package
@@ -3817,96 +3657,6 @@ supports next-generation sequencing data in fasta/q and csfasta/q format from
 Illumina, Roche 454, and the SOLiD platform.")
     (license license:bsd-3)))
 
-(define-public fraggenescan
-  (package
-    (name "fraggenescan")
-    (version "1.30")
-    (source
-     (origin
-       (method url-fetch)
-       (uri
-        (string-append "mirror://sourceforge/fraggenescan/"
-                       "FragGeneScan" version ".tar.gz"))
-       (sha256
-        (base32 "158dcnwczgcyhwm4qlx19sanrwgdpzf6bn2y57mbpx55lkgz1mzj"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-before 'build 'patch-paths
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (string-append (assoc-ref outputs "out")))
-                    (share (string-append out "/share/fraggenescan/")))
-               (substitute* "run_FragGeneScan.pl"
-                 (("system\\(\"rm")
-                  (string-append "system(\"" (which "rm")))
-                 (("system\\(\"mv")
-                  (string-append "system(\"" (which "mv")))
-                 (("\\\"awk") (string-append "\"" (which "awk")))
-                 ;; This script and other programs expect the training files
-                 ;; to be in the non-standard location bin/train/XXX. Change
-                 ;; this to be share/fraggenescan/train/XXX instead.
-                 (("^\\$train.file = \\$dir.*")
-                  (string-append "$train_file = \""
-                                 share
-                                 "train/\".$FGS_train_file;")))
-               (substitute* "run_hmm.c"
-                 (("^  strcat\\(train_dir, \\\"train/\\\"\\);")
-                  (string-append "  strcpy(train_dir, \"" share "/train/\");"))))
-             #t))
-         (replace 'build
-           (lambda _
-             (invoke "make" "clean")
-             (invoke "make" "fgs")
-             #t))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (string-append (assoc-ref outputs "out")))
-                    (bin (string-append out "/bin/"))
-                    (share (string-append out "/share/fraggenescan/train")))
-               (install-file "run_FragGeneScan.pl" bin)
-               (install-file "FragGeneScan" bin)
-               (copy-recursively "train" share))
-             #t))
-         (delete 'check)
-         (add-after 'install 'post-install-check
-           ;; In lieu of 'make check', run one of the examples and check the
-           ;; output files gets created.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (string-append (assoc-ref outputs "out")))
-                    (bin (string-append out "/bin/"))
-                    (frag (string-append bin "run_FragGeneScan.pl")))
-               ;; Test complete genome.
-               (invoke frag
-                       "-genome=./example/NC_000913.fna"
-                       "-out=./test2"
-                       "-complete=1"
-                       "-train=complete")
-               (unless (and (file-exists? "test2.faa")
-                            (file-exists? "test2.ffn")
-                            (file-exists? "test2.gff")
-                            (file-exists? "test2.out"))
-                 (error "Expected files do not exist."))
-               ;; Test incomplete sequences.
-               (invoke frag
-                       "-genome=./example/NC_000913-fgs.ffn"
-                       "-out=out"
-                       "-complete=0"
-                       "-train=454_30")
-               #t))))))
-    (inputs
-     `(("perl" ,perl)
-       ("python" ,python-2))) ;not compatible with python 3.
-    (home-page "https://sourceforge.net/projects/fraggenescan/")
-    (synopsis "Finds potentially fragmented genes in short reads")
-    (description
-     "FragGeneScan is a program for predicting bacterial and archaeal genes in
-short and error-prone DNA sequencing reads.  It can also be applied to predict
-genes in incomplete assemblies or complete genomes.")
-    ;; GPL3+ according to private correspondense with the authors.
-    (license license:gpl3+)))
-
 (define-public fxtract
   (let ((util-commit "776ca85a18a47492af3794745efcb4a905113115"))
     (package
@@ -4027,48 +3777,6 @@ comment or quality sections.")
 standard linear mixed model resolver with application in @acronym{GWAS,
 genome-wide association studies}.")
     (license license:gpl3)))
-
-(define-public grit
-  (package
-    (name "grit")
-    (version "2.0.5")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/nboley/grit")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1l5v8vfvfbrpmgnrvbrbv40d0arhxcnmxgv2f1mlcqfa3q6bkqm9"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'generate-from-cython-sources
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; Delete these C files to force fresh generation from pyx sources.
-             (delete-file "grit/sparsify_support_fns.c")
-             (delete-file "grit/call_peaks_support_fns.c")
-             (substitute* "setup.py"
-               (("Cython.Setup") "Cython.Build"))
-             #t)))))
-    (inputs
-     (list python2-scipy python2-numpy python2-pysam python2-networkx))
-    (native-inputs
-     (list python2-cython))
-    ;; The canonical <http://grit-bio.org> home page times out as of 2020-01-21.
-    (home-page "https://github.com/nboley/grit")
-    (synopsis "Tool for integrative analysis of RNA-seq type assays")
-    (description
-     "GRIT is designed to use RNA-seq, TES, and TSS data to build and quantify
-full length transcript models.  When none of these data sources are available,
-GRIT can be run by providing a candidate set of TES or TSS sites.  In
-addition, GRIT can merge in reference junctions and gene boundaries.  GRIT can
-also be run in quantification mode, where it uses a provided GTF file and just
-estimates transcript expression.")
-    (license license:gpl3+)))
 
 (define-public hisat
   (package
@@ -4249,9 +3957,6 @@ HMMs).")
      "HTSeq is a Python package that provides infrastructure to process data
 from high-throughput sequencing assays.")
     (license license:gpl3+)))
-
-(define-public python2-htseq
-  (package-with-python2 htseq))
 
 (define-public java-htsjdk
   (package
@@ -5394,54 +5099,6 @@ unassembled metagenomic reads, but is mainly designed for full genomes and
 assembled metagenomic sequence.")
     (license license:gpl3+)))
 
-(define-public miso
-  (let ((commit "b71402188000465e3430736a11ea118fd5639a4a")
-        (revision "1"))
-    (package
-      (name "miso")
-      (version (git-version "0.5.4" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/yarden/MISO/")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0x37ipwwvpxbkrg17gmq3hp92c9cphch8acd6cj7fqgnrjwd47g5"))
-                (modules '((guix build utils)))
-                (snippet
-                 '(substitute* "setup.py"
-                    ;; Use "gcc" instead of "cc" for compilation.
-                    (("^defines")
-                     "cc.set_executables(
-compiler='gcc',
-compiler_so='gcc',
-linker_exe='gcc',
-linker_so='gcc -shared'); defines")))))
-      (build-system python-build-system)
-      (arguments
-       `(#:python ,python-2               ; only Python 2 is supported
-         #:tests? #f))                    ; no "test" target
-      (inputs
-       ;; Samtools must not be newer than 1.2.  See
-       ;; https://github.com/yarden/MISO/issues/135
-       (list samtools-1.2 python2-numpy python2-pysam python2-scipy
-             python2-matplotlib))
-      (native-inputs
-       (list python2-mock ; for tests
-             python2-pytz))  ; for tests
-      (home-page "https://miso.readthedocs.io/en/fastmiso/")
-      (synopsis "Mixture of Isoforms model for RNA-Seq isoform quantitation")
-      (description
-       "MISO (Mixture-of-Isoforms) is a probabilistic framework that quantitates
-the expression level of alternatively spliced genes from RNA-Seq data, and
-identifies differentially regulated isoforms or exons across samples.  By
-modeling the generative process by which reads are produced from isoforms in
-RNA-Seq, the MISO model uses Bayesian inference to compute the probability
-that a read originated from a particular isoform.")
-      (license license:gpl2))))
-
 (define-public muscle
   (package
     (name "muscle")
@@ -5531,80 +5188,6 @@ trimming, pruning, condensing, drawing (ASCII graphics or SVG).")
 interrupted by stop codons.  OrfM finds and prints these ORFs.")
     (home-page "https://github.com/wwood/OrfM")
     (license license:lgpl3+)))
-
-(define-public python2-pbcore
-  (package
-    (name "python2-pbcore")
-    (version "1.2.10")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pbcore" version))
-              (sha256
-               (base32
-                "1kjmv891d6qbpp4shhhvkl02ff4q5xlpnls2513sm2cjcrs52f1i"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2               ;pbcore < 2.0 requires Python 2.7
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'remove-sphinx-dependency
-                    (lambda _
-                      ;; Sphinx is only required for documentation tests, which
-                      ;; we do not run; furthermore it depends on python2-sphinx
-                      ;; which is no longer maintained.
-                      (substitute* "requirements-dev.txt"
-                        (("^sphinx") ""))
-                      #t)))))
-    (propagated-inputs
-     (list python2-cython python2-numpy python2-pysam python2-h5py))
-    (native-inputs
-     (list python2-nose python2-pyxb))
-    (home-page "https://pacificbiosciences.github.io/pbcore/")
-    (synopsis "Library for reading and writing PacBio data files")
-    (description
-     "The pbcore package provides Python APIs for interacting with PacBio data
-files and writing bioinformatics applications.")
-    (license license:bsd-3)))
-
-(define-public python2-warpedlmm
-  (package
-    (name "python2-warpedlmm")
-    (version "0.21")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "WarpedLMM" version ".zip"))
-       (sha256
-        (base32
-         "1agfz6zqa8nc6cw47yh0s3y14gkpa9wqazwcj7mwwj3ffnw39p3j"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2  ; requires Python 2.7
-       #:tests? #f ; test data are not included
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'use-weave
-           (lambda _
-             (substitute* "warpedlmm/util/linalg.py"
-               (("from scipy import linalg, weave")
-                "from scipy import linalg\nimport weave"))
-             #t)))))
-    (propagated-inputs
-     (list python2-scipy
-           python2-numpy
-           python2-matplotlib
-           python2-fastlmm
-           python2-pandas
-           python2-pysnptools
-           python2-weave))
-    (native-inputs
-     (list python2-mock python2-nose unzip))
-    (home-page "https://github.com/PMBio/warpedLMM")
-    (synopsis "Implementation of warped linear mixed models")
-    (description
-     "WarpedLMM is a Python implementation of the warped linear mixed model,
-which automatically learns an optimal warping function (or transformation) for
-the phenotype as it models the data.")
-    (license license:asl2.0)))
 
 (define-public prank
   (package
@@ -5725,45 +5308,6 @@ predicts the locations of structural units in the sequences.")
 species.  For doing so, it compares similarities of given gene sequences and
 clusters them to find significant groups.  The algorithm was designed to handle
 large-scale data and can be applied to hundreds of species at once.")
-    (license license:gpl3+)))
-
-(define-public pyicoteo
-  (package
-    (name "pyicoteo")
-    (version "2.0.7")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://bitbucket.org/regulatorygenomicsupf/pyicoteo.git")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0hz5g8d25lbjy1wpscr490l0lmyvaix893hhax4fxnh1h9w34w8p"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2 ; does not work with Python 3
-       #:tests? #f))      ; there are no tests
-    (inputs
-     (list python2-matplotlib))
-    (home-page "https://bitbucket.org/regulatorygenomicsupf/pyicoteo")
-    (synopsis "Analyze high-throughput genetic sequencing data")
-    (description
-     "Pyicoteo is a suite of tools for the analysis of high-throughput genetic
-sequencing data.  It works with genomic coordinates.  There are currently six
-different command-line tools:
-
-@enumerate
-@item pyicoregion: for generating exploratory regions automatically;
-@item pyicoenrich: for differential enrichment between two conditions;
-@item pyicoclip: for calling CLIP-Seq peaks without a control;
-@item pyicos: for genomic coordinates manipulation;
-@item pyicoller: for peak calling on punctuated ChIP-Seq;
-@item pyicount: to count how many reads from N experiment files overlap in a
-  region file;
-@item pyicotrocol: to combine operations from pyicoteo.
-@end enumerate\n")
     (license license:gpl3+)))
 
 (define-public prodigal
@@ -6834,9 +6378,6 @@ complexity samples.")
 Values such as sequence name, sequence description, sequence quality and the
 sequence itself can be retrieved from these databases.")
     (license license:bsd-3)))
-
-(define-public python2-screed
-  (package-with-python2 python-screed))
 
 (define-public sra-tools
   (package
@@ -8822,32 +8363,6 @@ regions of statistically significant read enrichment.  Additional covariates
 may optionally be provided to further inform the peak-calling process.")
       (license license:gpl3+))))
 
-(define-public pepr
-  (package
-    (name "pepr")
-    (version "1.0.9")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "PePr" version))
-              (sha256
-               (base32
-                "0qxjfdpl1b1y53nccws2d85f6k74zwmx8y8sd9rszcqhfayx6gdx"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2 ; python2 only
-       #:tests? #f)) ; no tests included
-    (propagated-inputs
-     (list python2-numpy python2-scipy python2-pysam))
-    (home-page "https://github.com/shawnzhangyx/PePr")
-    (synopsis "Peak-calling and prioritization pipeline for ChIP-Seq data")
-    (description
-     "PePr is a ChIP-Seq peak calling or differential binding analysis tool
-that is primarily designed for data with biological replicates.  It uses a
-negative binomial distribution to model the read counts among the samples in
-the same group, and look for consistent differences between ChIP and control
-group or two ChIP groups run under different conditions.")
-    (license license:gpl3+)))
-
 (define-public filevercmp
   (let ((commit "1a9b779b93d0b244040274794d402106907b71b7")
         (revision "1"))
@@ -9372,72 +8887,6 @@ with narrow binding events such as transcription factor ChIP-seq.")
 adapter trimming as well as quality control, with some added functionality to
 remove biased methylation positions for RRBS sequence files.")
     (license license:gpl3+)))
-
-(define-public gess
-  (package
-    (name "gess")
-    (version "1.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "http://compbio.uthscsa.edu/"
-                                  "GESS_Web/files/"
-                                  "gess-" version ".src.tar.gz"))
-              (sha256
-               (base32
-                "0hyk403kxscclzfs24pvdgiv0wm03kjcziqdrp5w46cb049gz0d7"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:tests? #f                      ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (delete 'build)
-         (replace 'install
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((python (assoc-ref inputs "python"))
-                    (out    (assoc-ref outputs "out"))
-                    (bin    (string-append out "/bin/"))
-                    (target (string-append
-                             out "/lib/python"
-                             ,(version-major+minor
-                                (package-version python))
-                             "/site-packages/gess/")))
-               (mkdir-p target)
-               (copy-recursively "." target)
-               ;; Make GESS.py executable
-               (chmod (string-append target "GESS.py") #o555)
-               ;; Add Python shebang to the top and make Matplotlib
-               ;; usable.
-               (substitute* (string-append target "GESS.py")
-                 (("\"\"\"Description:" line)
-                  (string-append "#!" (which "python") "
-import matplotlib
-matplotlib.use('Agg')
-" line)))
-               ;; Make sure GESS has all modules in its path
-               (wrap-script (string-append target "GESS.py")
-                 #:guile (search-input-file inputs "bin/guile")
-                 `("GUIX_PYTHONPATH" ":" = (,target ,(getenv "GUIX_PYTHONPATH"))))
-               (mkdir-p bin)
-               (symlink (string-append target "GESS.py")
-                        (string-append bin "GESS.py"))
-               #t))))))
-    (inputs
-     `(("python" ,python-2)
-       ("python2-pysam" ,python2-pysam)
-       ("python2-scipy" ,python2-scipy)
-       ("python2-numpy" ,python2-numpy)
-       ("python2-networkx" ,python2-networkx)
-       ("python2-biopython" ,python2-biopython)
-       ("guile" ,guile-3.0))) ; for the script wrapper
-    (home-page "https://compbio.uthscsa.edu/GESS_Web/")
-    (synopsis "Detect exon-skipping events from raw RNA-seq data")
-    (description
-     "GESS is an implementation of a novel computational method to detect de
-novo exon-skipping events directly from raw RNA-seq data without the prior
-knowledge of gene annotation information.  GESS stands for the graph-based
-exon-skipping scanner detection scheme.")
-    (license license:bsd-3)))
 
 (define-public phylip
   (package
@@ -10992,7 +10441,7 @@ once.  This package provides tools to perform Drop-seq analyses.")
 (define-public pigx-rnaseq
   (package
     (name "pigx-rnaseq")
-    (version "0.0.20")
+    (version "0.1.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/BIMSBbioinfo/pigx_rnaseq/"
@@ -11000,7 +10449,7 @@ once.  This package provides tools to perform Drop-seq analyses.")
                                   "/pigx_rnaseq-" version ".tar.gz"))
               (sha256
                (base32
-                "0bf65qqvlkc77vl7cmmzacq70f0qav4p6nf8pp3x1vdd0nvhr24f"))))
+                "0acdjimfb9ywba8zsv7lavv436pmcmp8ra683h11wr4s3681pqk8"))))
     (build-system gnu-build-system)
     (arguments
      `(#:parallel-tests? #f             ; not supported
@@ -11094,6 +10543,15 @@ expression report comparing samples in an easily configurable manner.")
        (modify-phases %standard-phases
          (add-before 'bootstrap 'autoreconf
            (lambda _
+             ;; This was fixed in commit
+             ;; 0b1c9f7f2e4d0ff601f1de95ab8b2953f4d5dbc7, but there is no
+             ;; release with this fix.
+             (call-with-output-file "VERSION"
+               (lambda (port) (display ,version port)))
+             ;; See https://github.com/BIMSBbioinfo/pigx_chipseq/issues/176
+             (substitute* "m4/ax_r_package.m4"
+               (("if\\(is.na\\(packageDescription\\(\"PKG\"\\)\\)\\)")
+                "if(system.file(package=\"PKG\") == \"\")"))
              (invoke "autoreconf" "-vif")))
          (add-before 'configure 'set-PYTHONPATH
            (lambda _
@@ -11182,6 +10640,15 @@ in an easily configurable manner.")
        (modify-phases %standard-phases
          (add-before 'bootstrap 'autoreconf
            (lambda _
+             ;; This was fixed in commit
+             ;; d56ac732524da659afbbb0972f7a87fa178ae58e, but there is no
+             ;; release with this fix.
+             (call-with-output-file "VERSION"
+               (lambda (port) (display ,version port)))
+             ;; https://github.com/BIMSBbioinfo/pigx_bsseq/issues/181
+             (substitute* "m4/ax_r_package.m4"
+               (("if\\(is.na\\(packageDescription\\(\"PKG\"\\)\\)\\)")
+                "if(system.file(package=\"PKG\") == \"\")"))
              (invoke "autoreconf" "-vif")))
          (add-before 'configure 'set-PYTHONPATH
            (lambda _
@@ -11249,8 +10716,20 @@ methylation and segmentation.")
                 "1lc42hl8mz95kilh0z39s3wnv092mhm6vl2i394n0yfvdzk4f885"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases
+     `(#:phases
        (modify-phases %standard-phases
+         (add-before 'bootstrap 'autoreconf
+           (lambda _
+             ;; This was fixed in commit
+             ;; c4ac067438ae9312b5786a72e2bfb3d795e3ec8a, but there is no
+             ;; release with this fix.
+             (call-with-output-file "VERSION"
+               (lambda (port) (display ,version port)))
+             ;; https://github.com/BIMSBbioinfo/pigx_scrnaseq/issues/59
+             (substitute* "m4/ax_r_package.m4"
+               (("if\\(is.na\\(packageDescription\\(\"PKG\"\\)\\)\\)")
+                "if(system.file(package=\"PKG\") == \"\")"))
+             (invoke "autoreconf" "-vif")))
          (add-before 'configure 'set-additional-environment-variables
            (lambda _
              ;; Needed because of loompy
@@ -11299,6 +10778,8 @@ methylation and segmentation.")
            r-singlecellexperiment
            r-stringr
            r-yaml))
+    (native-inputs
+     (list autoconf automake))
     (home-page "https://bioinformatics.mdc-berlin.de/pigx/")
     (synopsis "Analysis pipeline for single-cell RNA sequencing experiments")
     (description
@@ -11327,6 +10808,13 @@ based methods.")
      `(#:tests? #f ;requires huge kraken database
        #:phases
        (modify-phases %standard-phases
+         (add-before 'bootstrap 'autoreconf
+           (lambda _
+             ;; https://github.com/BIMSBbioinfo/pigx_sars-cov-2/issues/123
+             (substitute* "m4/ax_r_package.m4"
+               (("if\\(is.na\\(packageDescription\\(\"PKG\"\\)\\)\\)")
+                "if(system.file(package=\"PKG\") == \"\")"))
+             (invoke "autoreconf" "-vif")))
          (add-before 'configure 'set-PYTHONPATH
            (lambda _
              (setenv "PYTHONPATH" (getenv "GUIX_PYTHONPATH")))))))
@@ -12093,56 +11581,6 @@ conversions, region filtering, FASTA sequence extraction and more.")
       (license (list license:expat
                      license:artistic2.0)))))
 
-(define-public find-circ
-  ;; The last release was in 2015.  The license was clarified in 2017, so we
-  ;; take the latest commit.
-  (let ((commit "8655dca54970fcf7e92e22fbf57e1188724dda7d")
-        (revision "1"))
-    (package
-      (name "find-circ")
-      (version (git-version "1.2" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/marvin-jens/find_circ")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0p77pbqbclqr4srms34y1b9b4njybfpjiknc11ki84f3p8skb3cg"))))
-      (build-system gnu-build-system)
-      (arguments
-       `(#:tests? #f                    ; there are none
-         #:phases
-         ;; There is no actual build system.
-         (modify-phases %standard-phases
-           (delete 'configure)
-           (delete 'build)
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (bin (string-append out "/bin"))
-                      (path (getenv "GUIX_PYTHONPATH")))
-                 (for-each (lambda (script)
-                             (install-file script bin)
-                             (wrap-program (string-append bin "/" script)
-                               `("GUIX_PYTHONPATH" ":" prefix (,path))))
-                           '("cmp_bed.py"
-                             "find_circ.py"
-                             "maxlength.py"
-                             "merge_bed.py"
-                             "unmapped2anchors.py")))
-               #t)))))
-      (inputs
-       (list python-2 python2-pysam python2-numpy))
-      (home-page "https://github.com/marvin-jens/find_circ")
-      (synopsis "circRNA detection from RNA-seq reads")
-      (description "This package provides tools to detect head-to-tail
-spliced (back-spliced) sequencing reads, indicative of circular RNA (circRNA)
-in RNA-seq data.")
-      (license license:gpl3))))
-
 (define-public fit-sne
   (package
     (name "fit-sne")
@@ -12209,7 +11647,7 @@ implementation differs in these ways:
 (define-public python-scanpy
   (package
     (name "python-scanpy")
-    (version "1.8.2")
+    (version "1.9.1")
     (source
      (origin
        (method git-fetch)
@@ -12219,7 +11657,7 @@ implementation differs in these ways:
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "14zax23lqinv7xyv3491vpl3ydi38naiwaxg5mkfs5zk2406cqdr"))))
+         "0k524xnx3dvpz5yx65p316wghvi01zs17is8w2m3w2qywiswk0sl"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -12239,6 +11677,10 @@ implementation differs in these ways:
                            (invoke "python" "-m" "pip" "install"
                                    wheel (string-append "--prefix=" out)))
                          (find-files "dist" "\\.whl$")))))
+         ;; Numba needs a writable dir to cache functions.
+         (add-before 'check 'set-numba-cache-dir
+           (lambda _
+             (setenv "NUMBA_CACHE_DIR" "/tmp")))
          (replace 'check
            (lambda* (#:key tests? inputs #:allow-other-keys)
              (when tests?
@@ -12246,6 +11688,7 @@ implementation differs in these ways:
                (delete-file-recursively "scanpy/tests/notebooks")
                (delete-file "scanpy/tests/test_clustering.py")
                (delete-file "scanpy/tests/test_datasets.py")
+               (delete-file "scanpy/tests/test_normalization.py")
                (delete-file "scanpy/tests/test_score_genes.py")
                (delete-file "scanpy/tests/test_highly_variable_genes.py")
 
@@ -12253,6 +11696,9 @@ implementation differs in these ways:
                (delete-file "scanpy/tests/test_embedding_plots.py")
                (delete-file "scanpy/tests/test_preprocessing.py")
                (delete-file "scanpy/tests/test_read_10x.py")
+
+               ;; These two fail with "ValueError: I/O operation on closed file."
+               (delete-file "scanpy/tests/test_neighbors_key_added.py")
 
                ;; TODO: these fail with TypingError and "Use of unsupported
                ;; NumPy function 'numpy.split'".
@@ -12279,17 +11725,20 @@ implementation differs in these ways:
                                       " and not test_clustermap"
 
                                       ;; These try to connect to the network
+                                      " and not test_scrublet_plots"
                                       " and not test_plot_rank_genes_groups_gene_symbols"
+                                      " and not test_pca_n_pcs"
                                       " and not test_pca_chunked"
                                       " and not test_pca_sparse"
                                       " and not test_pca_reproducible"))))))))
     (propagated-inputs
      (list python-anndata
+           python-dask
            python-h5py
            python-igraph
            python-joblib
            python-legacy-api-wrap
-           python-louvain-0.7
+           python-louvain
            python-matplotlib
            python-natsort
            python-networkx
@@ -12300,6 +11749,7 @@ implementation differs in these ways:
            python-scikit-learn
            python-scipy
            python-seaborn
+           python-session-info
            python-sinfo
            python-statsmodels
            python-tables
@@ -12635,9 +12085,6 @@ bgzipped text file that contains a pair of genomic coordinates per line.")
      "This package provides procedures for efficient pythonic random access to
 fasta subsequences.")
     (license license:bsd-3)))
-
-(define-public python2-pyfaidx
-  (package-with-python2 python-pyfaidx))
 
 (define-public python-cooler
   (package
@@ -13082,42 +12529,6 @@ adapters, even at low sequence identity.  Porechop also supports demultiplexing
 of Nanopore reads that were barcoded with the Native Barcoding Kit, PCR
 Barcoding Kit or Rapid Barcoding Kit.")
       (license license:gpl3+))))
-
-(define-public poretools
-  ;; The latest release was in 2016 and the latest commit is from 2017
-  ;; the recommended way to install is to clone the git repository
-  ;; https://poretools.readthedocs.io/en/latest/content/installation.html
-  (let ((commit "e426b1f09e86ac259a00c261c79df91510777407")
-        (revision "1"))
-    (package
-      (name "poretools")
-      (version (git-version "0.6.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/arq5x/poretools")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0bglj833wxpp3cq430p1d3xp085ls221js2y90w7ir2x5ay8l7am"))))
-      (build-system python-build-system)
-      ;; requires python >=2.7, <3.0, and the same for python dependencies
-      (arguments `(#:python ,python-2))
-      (inputs
-       (list hdf5))
-      (propagated-inputs
-       (list python2-dateutil python2-h5py python2-matplotlib
-             python2-pandas python2-seaborn))
-      (home-page "https://poretools.readthedocs.io")
-      (synopsis "Toolkit for working with nanopore sequencing data")
-      (description
-       "The MinION from Oxford Nanopore Technologies is a nanopore sequencer.
-This @code{poretools} package is a flexible toolkit for exploring datasets
-generated by nanopore sequencing devices for the purposes of quality control and
-downstream analysis.  Poretools operates directly on the native FAST5, a variant
-of the Hierarchical Data Format (HDF5) standard.")
-      (license license:expat))))
 
 (define-public jamm
   (package
@@ -13831,162 +13242,6 @@ Additionally, the AdapterRemoval may be used to recover a consensus adapter
 sequence for paired-ended data, for which this information is not available.")
     (license license:gpl3+)))
 
-(define-public pplacer
-  (let ((commit "807f6f3"))
-    (package
-      (name "pplacer")
-      ;; The commit should be updated with each version change.
-      (version "1.1.alpha19")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/matsen/pplacer")
-               (commit (string-append "v" version))))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "11ppbbbx20p2g9wj3ff64dhnarb12q79v7qh4rk0gj6lkbz4n7cn"))))
-      (build-system ocaml-build-system)
-      (arguments
-       `(#:modules ((guix build ocaml-build-system)
-                    (guix build utils)
-                    (ice-9 ftw))
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure)
-           (add-after 'unpack 'fix-build-with-latest-ocaml
-             (lambda _
-               (substitute* "myocamlbuild.ml"
-                 (("dep \\[\"c_pam\"\\]" m)
-                  (string-append "flag [\"ocaml\"; \"compile\"] (A \"-unsafe-string\");\n"
-                                 m))
-                 (("let run_and_read" m)
-                  (string-append "
-let split s ch =
-  let x = ref [] in
-  let rec go s =
-    let pos = String.index s ch in
-    x := (String.before s pos)::!x;
-    go (String.after s (pos + 1))
-  in
-  try go s
-  with Not_found -> !x
-let split_nl s = split s '\\n'
-let before_space s =
-  try String.before s (String.index s ' ')
-  with Not_found -> s
-
-" m))
-                 (("run_and_read \"ocamlfind list \\| cut -d' ' -f1\"" m)
-                  (string-append "List.map before_space (split_nl & " m ")"))
-                 (("    blank_sep_strings &") "")
-                 (("      Lexing.from_string &") ""))
-               #t))
-           (add-after 'unpack 'replace-bundled-cddlib
-             (lambda* (#:key inputs #:allow-other-keys)
-               (let* ((cddlib-src (assoc-ref inputs "cddlib-src"))
-                      (local-dir "cddlib_guix"))
-                 (mkdir local-dir)
-                 (with-directory-excursion local-dir
-                   (invoke "tar" "xvf" cddlib-src))
-                 (let ((cddlib-src-folder
-                        (string-append local-dir "/"
-                                       (list-ref (scandir local-dir) 2)
-                                       "/lib-src")))
-                   (for-each make-file-writable (find-files "cdd_src" ".*"))
-                   (for-each
-                    (lambda (file)
-                      (copy-file file
-                                 (string-append "cdd_src/" (basename file))))
-                    (find-files cddlib-src-folder ".*[ch]$")))
-                 #t)))
-           (add-after 'unpack 'fix-makefile
-             (lambda _
-               ;; Remove system calls to 'git'.
-               (substitute* "Makefile"
-                 (("^DESCRIPT:=pplacer-.*")
-                  (string-append
-                   "DESCRIPT:=pplacer-$(shell uname)-v" ,version "\n")))
-               (substitute* "myocamlbuild.ml"
-                 (("git describe --tags --long .*\\\" with")
-                  (string-append
-                   "echo -n v" ,version "-" ,commit "\" with")))
-               #t))
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (bin (string-append out "/bin")))
-                 (copy-recursively "bin" bin))
-               #t)))
-       #:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib))
-      (inputs
-       `(("zlib" ,zlib "static")
-         ("gsl" ,gsl-static)
-         ("ocaml-ounit" ,(package-with-ocaml4.07 ocaml-ounit))
-         ("ocaml-batteries" ,(package-with-ocaml4.07 ocaml-batteries))
-         ("ocaml-camlzip" ,(package-with-ocaml4.07 camlzip))
-         ("ocaml-csv" ,(package-with-ocaml4.07 ocaml-csv))
-         ("ocaml-sqlite3" ,(package-with-ocaml4.07 ocaml-sqlite3))
-         ("ocaml-xmlm" ,(package-with-ocaml4.07 ocaml-xmlm))
-         ("ocaml-mcl" ,(package-with-ocaml4.07 ocaml-mcl))
-         ("ocaml-gsl" ,ocaml4.07-gsl-1)
-         ("sqlite:static" ,sqlite "static")))
-      (native-inputs
-       `(("cddlib-src" ,(package-source cddlib))
-         ("ocamlbuild" ,(package-with-ocaml4.07 ocamlbuild))
-         ("pkg-config" ,pkg-config)))
-      (propagated-inputs
-       (list pplacer-scripts))
-      (synopsis "Phylogenetic placement of biological sequences")
-      (description
-       "Pplacer places query sequences on a fixed reference phylogenetic tree
-to maximize phylogenetic likelihood or posterior probability according to a
-reference alignment.  Pplacer is designed to be fast, to give useful
-information about uncertainty, and to offer advanced visualization and
-downstream analysis.")
-      (home-page "https://matsen.fhcrc.org/pplacer/")
-      (license license:gpl3))))
-
-;; This package is installed alongside 'pplacer'.  It is a separate package so
-;; that it can use the python-build-system for the scripts that are
-;; distributed alongside the main OCaml binaries.
-(define pplacer-scripts
-  (package
-    (inherit pplacer)
-    (name "pplacer-scripts")
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'enter-scripts-dir
-           (lambda _ (chdir "scripts") #t))
-         (replace 'check
-           (lambda _ (invoke "python" "-m" "unittest" "discover" "-v") #t))
-         (add-after 'install 'wrap-executables
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin")))
-               (let ((path (string-append
-                            (assoc-ref inputs "hmmer") "/bin:"
-                            (assoc-ref inputs "infernal") "/bin")))
-                 (display path)
-                 (wrap-program (string-append bin "/refpkg_align.py")
-                   `("PATH" ":" prefix (,path))))
-               (let ((path (string-append
-                            (assoc-ref inputs "hmmer") "/bin")))
-                 (wrap-program (string-append bin "/hrefpkg_query.py")
-                   `("PATH" ":" prefix (,path)))))
-             #t)))))
-    (inputs
-     `(("infernal" ,infernal)
-       ("hmmer" ,hmmer)))
-    (propagated-inputs
-     `(("python-biopython" ,python2-biopython)
-       ("taxtastic" ,taxtastic)))
-    (synopsis "Pplacer Python scripts")))
-
 (define-public checkm
   (package
     (name "checkm")
@@ -14023,9 +13278,6 @@ tools for identifying genome bins that are likely candidates for merging based
 on marker set compatibility, similarity in genomic characteristics, and
 proximity within a reference genome.")
     (license license:gpl3+)))
-
-(define-public python2-checkm-genome
-  (deprecated-package "python2-checkm-genome" checkm))
 
 (define-public umi-tools
   (package
@@ -14421,6 +13673,47 @@ some of the details of opening and jumping in tabix-indexed files.")
       (description "Implementation of the Smith-Waterman algorithm.")
       ;; The licensing terms are unclear: https://github.com/ekg/smithwaterman/issues/9.
       (license (list license:gpl2 license:expat)))))
+
+(define-public sylamer
+  (package
+    (name "sylamer")
+    (version "18-131")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/micans/sylamer/")
+                    (commit "aa75c3584797c0c15f860addb645f7bc1dd7627d")))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1ddiwlrdghhb4574rvfw0brjp9gs5l6nfsy82h0m4mvz1dr3gkj5"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ; no test target
+      #:make-flags
+      #~(list (string-append "GSLPREFIX=" #$(this-package-input "gsl")))
+      #:phases
+      '(modify-phases %standard-phases
+         (replace 'configure
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* "Makefile"
+               (("cp sylamer \\$\\(HOME\\)/local/bin")
+                (string-append "install -D -t " (assoc-ref outputs "out")
+                               "/bin sylamer")))
+             (install-file "Makefile" "src")
+             (chdir "src"))))))
+    (inputs (list gsl zlib))
+    (home-page "https://www.ebi.ac.uk/research/enright/software/sylamer")
+    (synopsis "Asses microRNA binding and siRNA off-target effects")
+    (description "Sylamer is a system for finding significantly over or
+under-represented words in sequences according to a sorted gene list.
+Typically it is used to find significant enrichment or depletion of microRNA
+or siRNA seed sequences from microarray expression data.  Sylamer is extremely
+fast and can be applied to genome-wide datasets with ease.  Results are
+plotted in terms of a significance landscape plot.  These plots show
+significance profiles for each word studied across the sorted genelist.")
+    (license license:gpl3+)))
 
 (define-public multichoose
   (package

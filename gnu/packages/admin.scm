@@ -2567,42 +2567,6 @@ degradation and failure.")
 specified directories.")
     (license license:expat)))
 
-(define-public graphios
-  (package
-   (name "graphios")
-   (version "2.0.3")
-   (source
-    (origin
-      (method url-fetch)
-      (uri (pypi-uri "graphios" version))
-      (sha256
-       (base32
-        "1h87hvc315wg6lklbf4l7csd3n5pgljwrfli1p3nasdi0izgn66i"))))
-   (build-system python-build-system)
-   (arguments
-    ;; Be warned: Building with Python 3 succeeds, but the build process
-    ;; throws a syntax error that is ignored.
-    `(#:python ,python-2
-      #:phases
-      (modify-phases %standard-phases
-        (add-before 'build 'fix-setup.py
-          (lambda* (#:key outputs #:allow-other-keys)
-            ;; Fix hardcoded, unprefixed file names.
-            (let ((out (assoc-ref outputs "out")))
-              (substitute* '("setup.py")
-                (("/etc") (string-append out "/etc"))
-                (("/usr") out)
-                (("distro_ver = .*") "distro_ver = ''"))
-              #t))))))
-   (home-page "https://github.com/shawn-sterling/graphios")
-   (synopsis "Emit Nagios metrics to Graphite, Statsd, and Librato")
-   (description
-    "Graphios is a script to emit nagios perfdata to various upstream metrics
-processing and time-series systems.  It's currently compatible with Graphite,
-Statsd, Librato and InfluxDB.  Graphios can emit Nagios metrics to any number
-of supported upstream metrics systems simultaneously.")
-   (license license:gpl2+)))
-
 (define-public ansible-core
   (package
     (name "ansible-core")
@@ -3191,10 +3155,12 @@ rules is done with the @code{auditctl} utility.")
                    (,(python-path ndiff)))))))
          ;; These are the tests that do not require network access.
          (replace 'check
-           (lambda _ (invoke "make"
-                             "check-nse"
-                             "check-ndiff"
-                             "check-dns"))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "make"
+                       "check-nse"
+                       "check-ndiff"
+                       "check-dns")))))
        ;; Nmap can't cope with out-of-source building.
        #:out-of-source? #f))
     (home-page "https://nmap.org/")
@@ -4541,7 +4507,7 @@ supplied by the user when logging in.")
 (define-public jc
   (package
     (name "jc")
-    (version "1.13.4")
+    (version "1.19.0")
     (source
      (origin
        ;; The PyPI tarball lacks the test suite.
@@ -4551,8 +4517,16 @@ supplied by the user when logging in.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rwvyyrdnw43pixp8h51rncq2inc9pbbj1j2191y5si00pjw34zr"))))
+        (base32 "021zk0y8kb6v3qf3hwfg8qjzzmrca039nz3fjywiy2njmbhr8hyi"))))
     (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               ;; XXX Guix's America/Los_Angeles time zone is somehow broken.
+               (add-before 'check 'hack-time-zone
+                 (lambda _
+                   (substitute* (find-files "tests" "^test.*\\.py$")
+                     (("America/Los_Angeles") "PST8PDT")))))))
     (propagated-inputs
      (list python-pygments python-ruamel.yaml python-xmltodict))
     (home-page "https://github.com/kellyjonbrazil/jc")

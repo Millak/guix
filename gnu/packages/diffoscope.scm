@@ -74,7 +74,7 @@
 (define-public diffoscope
   (package
     (name "diffoscope")
-    (version "213")
+    (version "214")
     (source
      (origin
        (method git-fetch)
@@ -83,7 +83,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "075zrraj7pibwgi731pa506pkq5i06mpilqa03w3dd548b1jc9py"))
+        (base32 "05vzvs8yn963wzxmnqifj0zsa9scxcq3iqrq9msm0vqznb1xgp7q"))
        (patches
         (search-patches "diffoscope-fix-llvm-test.patch"))))
     (build-system python-build-system)
@@ -111,13 +111,6 @@
                          (string-append "['" (which "stat") "',"))
                         (("\\['getfacl',")
                          (string-append "['" (which "getfacl") "',")))))
-                  (add-after 'unpack 'xb-tool-external-tool
-                    ;; Fixed upstream, remove this phase when updating to
-                    ;; diffoscope 213
-                    (lambda _
-                      (substitute* "diffoscope/external_tools.py"
-                        ((".debian.: .libxmlb-dev.")
-                         "\"debian\": \"libxmlb-dev\", \"guix\": \"libxmlb\""))))
                   (add-after 'build 'build-man-page
                     (lambda* (#:key (make-flags '()) #:allow-other-keys)
                       (apply invoke "make" "-C" "doc" make-flags)))

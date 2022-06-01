@@ -1442,30 +1442,6 @@ other support classes.  Where useful and possible, ufoLib2 tries to be
 API-compatible with defcon.")
     (license license:asl2.0)))
 
-(define-public python2-ufolib
-  (package
-    (name "python2-ufolib")
-    (version "2.1.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "ufoLib" version ".zip"))
-       (sha256
-        (base32 "07qy6mx7z0wi9a30lc2hj5i9q1gnz1n8l40dmjz2c19mj9s6mz9l"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2))
-    (propagated-inputs
-     (list python2-fonttools))
-    (native-inputs
-     (list unzip python2-pytest python2-pytest-runner))
-    (home-page "https://github.com/unified-font-object/ufoLib")
-    (synopsis "Low-level UFO reader and writer")
-    (description
-     "UfoLib reads and writes Unified Font Object (UFO)
-files.  UFO is a file format that stores fonts source files.")
-    (license license:bsd-3)))
-
 ;;; A variant used to break a cycle between python-fontpens and
 ;;; python-fontparts.
 (define-public python-defcon-bootstrap
@@ -1504,48 +1480,34 @@ UFO3 as described by the UFO font format.")
       (modify-inputs (package-propagated-inputs python-defcon-bootstrap)
         (replace "python-fontpens-bootstrap" python-fontpens))))))
 
-(define-public python2-defcon
-  (package
-    (inherit python-defcon)
-    (name "python2-defcon")
-    (version "0.3.5")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "defcon" version ".zip"))
-              (sha256
-               (base32
-                "03jlm2gy9lvbwj68kfdm43yaddwd634jwkdg4wf0jxx2s8mwbg22"))))
-    (arguments
-     `(#:python ,python-2))
-    (native-inputs
-     (list unzip python2-pytest python2-pytest-runner))
-    (propagated-inputs
-     (list python2-fonttools python2-ufolib))))
-
 (define-public nototools
   (package
     (name "nototools")
-    (version "20170925")
+    (version "0.2.16")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url "https://github.com/googlei18n/nototools")
-              (commit "v2017-09-25-tooling-for-phase3-update")))
+             (url "https://github.com/googlefonts/nototools")
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "03nzvcvwmrhfrcjhg218q2f3hfrm3vlivp4rk19sc397kh3hisiz"))))
+         "14rrdamkmhrykff8ln07fq9cm8zwj3k113lzwjcy0lgz23g51jyl"))))
     (build-system python-build-system)
     (arguments
-     `(#:python ,python-2))
-    (propagated-inputs
-     (list python2-booleanoperations
-           python2-defcon
-           python2-fonttools
-           python2-pillow
-           python2-pyclipper
-           python2-ufolib))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'pretend-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (with-directory-excursion "tests"
+                (invoke "./run_tests")))))))
+    (native-inputs (list python-setuptools-scm))
+    (propagated-inputs (list python-afdko))
     (home-page "https://github.com/googlei18n/nototools")
     (synopsis "Noto fonts support tools and scripts")
     (description

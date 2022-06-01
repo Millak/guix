@@ -85,14 +85,14 @@
 (define-public hello
   (package
     (name "hello")
-    (version "2.12")
+    (version "2.12.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/hello/hello-" version
                                   ".tar.gz"))
               (sha256
                (base32
-                "1ayhp9v4m4rdhjmnl2bq3cibrbqqkgjbl3s7yk2nhlh8vj3ay16g"))))
+                "086vqwk2wl8zfs47sq2xpjc9k066ilmb8z6dn0q6ymwjzlm196cd"))))
     (build-system gnu-build-system)
     (synopsis "Hello, GNU world: An example GNU package")
     (description
@@ -930,6 +930,60 @@ with the Linux kernel.")
 
 ;; Below are old libc versions, which we use mostly to build locale data in
 ;; the old format (which the new libc cannot cope with.)
+(define-public glibc-2.32
+  (package
+    (inherit glibc)
+    (version "2.32")
+    (source (origin
+              (inherit (package-source glibc))
+              (uri (string-append "mirror://gnu/glibc/glibc-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0di848ibffrnwq7g2dvgqrnn4xqhj3h96csn69q4da51ymafl9qn"))
+              (patches (search-patches
+                        "glibc-skip-c++.patch"
+                        "glibc-ldd-powerpc.patch"
+                        "glibc-ldd-x86_64.patch"
+                        "glibc-dl-cache.patch"
+                        "glibc-hidden-visibility-ldconfig.patch"
+                        "glibc-versioned-locpath.patch"
+                        "glibc-allow-kernel-2.6.32.patch"
+                        "glibc-reinstate-prlimit64-fallback.patch"
+                        "glibc-supported-locales.patch"
+                        "glibc-hurd-clock_t_centiseconds.patch"
+                        "glibc-2.31-hurd-clock_gettime_monotonic.patch"
+                        "glibc-hurd-signal-sa-siginfo.patch"
+                        "glibc-hurd-mach-print.patch"
+                        "glibc-hurd-gettyent.patch"))
+              #;
+              (patches (search-patches "glibc-ldd-x86_64.patch"
+                                       "glibc-hidden-visibility-ldconfig.patch"
+                                       "glibc-versioned-locpath.patch"
+                                       "glibc-allow-kernel-2.6.32.patch"
+                                       "glibc-reinstate-prlimit64-fallback.patch"
+                                       "glibc-supported-locales.patch"
+                                       "glibc-hurd-clock_t_centiseconds.patch"
+                                       "glibc-hurd-clock_gettime_monotonic.patch"
+                                       "glibc-hurd-signal-sa-siginfo.patch"))))
+
+    (arguments
+     (substitute-keyword-arguments (package-arguments glibc)
+       ((#:make-flags flags '())
+        ;; Arrange so that /etc/rpc & co. go to $out/etc.
+        `(list (string-append "sysconfdir="
+                              (assoc-ref %outputs "out")
+                              "/etc")))
+       ((#:phases phases)
+        `(modify-phases ,phases
+           (add-before 'configure 'set-etc-rpc-installation-directory
+             (lambda* (#:key outputs #:allow-other-keys)
+               ;; Install the rpc data base file under `$out/etc/rpc'.
+               (let ((out (assoc-ref outputs "out")))
+                 (substitute* "sunrpc/Makefile"
+                   (("^\\$\\(inst_sysconfdir\\)/rpc(.*)$" _ suffix)
+                    (string-append out "/etc/rpc" suffix "\n"))
+                   (("^install-others =.*$")
+                    (string-append "install-others = " out "/etc/rpc\n"))))))))))))
 
 (define-public glibc-2.31
   (package
@@ -1175,6 +1229,15 @@ test environments.")
    (make-glibc-utf8-locales glibc)))
 
 ;; Packages provided to ease use of binaries linked against the previous libc.
+(define-public glibc-locales-2.32
+  (package (inherit (make-glibc-locales glibc-2.32))
+           (name "glibc-locales-2.32")))
+(define-public glibc-locales-2.31
+  (package (inherit (make-glibc-locales glibc-2.31))
+           (name "glibc-locales-2.31")))
+(define-public glibc-locales-2.30
+  (package (inherit (make-glibc-locales glibc-2.30))
+           (name "glibc-locales-2.30")))
 (define-public glibc-locales-2.29
   (package (inherit (make-glibc-locales glibc-2.29))
            (name "glibc-locales-2.29")))

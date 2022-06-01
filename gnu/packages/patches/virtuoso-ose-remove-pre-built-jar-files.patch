@@ -1,0 +1,117 @@
+This patch disables build targets that contain pre-built Java archives that
+would be copied to the build's output.
+
+Patch by Roel Janssen <roel@gnu.org>
+*** a-virtuoso-opensource-7.2.7/binsrc/Makefile.am	1970-01-01 01:00:01.000000000 +0100
+--- b-virtuoso-opensource-7.2.7/binsrc/Makefile.am	2022-05-27 12:20:52.909135774 +0200
+***************
+*** 19,25 ****
+  #  
+  #  
+  
+! SUBDIRS = dav mono virtuoso tests rdf_mappers driver maildrop sqldoc hosting bpel fct tutorial conductor samples vsp ws sync vspx vad cached_resources virtodbc virtoledb virtuoso_sink xddl VirtuosoClient.Net oat isparql jena jena2 jena3 jena4 sesame sesame2 sesame3 sesame4 redland hibernate dbpedia rdb2rdf rdf4j
+  
+  
+  # ----------------------------------------------------------------------
+--- 19,25 ----
+  #  
+  #  
+  
+! SUBDIRS = dav mono virtuoso tests rdf_mappers driver maildrop sqldoc hosting bpel fct tutorial conductor samples vsp ws sync vspx vad cached_resources virtodbc virtoledb virtuoso_sink xddl VirtuosoClient.Net oat isparql redland dbpedia rdb2rdf
+  
+  
+  # ----------------------------------------------------------------------
+*** a-virtuoso-opensource-7.2.7/configure.ac	1970-01-01 01:00:01.000000000 +0100
+--- b-virtuoso-opensource-7.2.7/configure.ac	2022-05-27 12:27:51.879208018 +0200
+***************
+*** 57,64 ****
+  dnl	AM_INIT_AUTOMAKE([1.8])
+  dnl	AM_INIT_AUTOMAKE([1.9 tar-ustar])
+  dnl
+! AM_INIT_AUTOMAKE([1.9 tar-ustar])
+! 
+  AM_MAINTAINER_MODE
+  
+  
+--- 57,63 ----
+  dnl	AM_INIT_AUTOMAKE([1.8])
+  dnl	AM_INIT_AUTOMAKE([1.9 tar-ustar])
+  dnl
+! AM_INIT_AUTOMAKE([1.9 tar-ustar subdir-objects])
+  AM_MAINTAINER_MODE
+  
+  
+***************
+*** 3157,3163 ****
+  	binsrc/dbpedia/Makefile
+  	binsrc/driver/Makefile
+  	binsrc/fct/Makefile
+- 	binsrc/hibernate/Makefile
+  	binsrc/hosting/Makefile
+  	binsrc/hosting/mono/Makefile
+  	binsrc/hosting/mono/tests/Makefile
+--- 3156,3161 ----
+***************
+*** 3169,3184 ****
+  	binsrc/hosting/ruby/Makefile
+  	binsrc/hosting/shapefileio/Makefile
+  	binsrc/isparql/Makefile
+- 	binsrc/jena/Makefile
+- 	binsrc/jena2/Makefile
+- 	binsrc/jena3/Makefile
+- 	binsrc/jena4/Makefile
+  	binsrc/maildrop/Makefile
+  	binsrc/mono/Makefile
+  	binsrc/oat/Makefile
+  	binsrc/rdf_mappers/Makefile
+  	binsrc/rdb2rdf/Makefile
+- 	binsrc/rdf4j/Makefile
+  	binsrc/redland/Makefile
+  	binsrc/samples/demo/Makefile
+  	binsrc/samples/hslookup/Makefile
+--- 3167,3177 ----
+***************
+*** 3191,3200 ****
+  	binsrc/samples/webapp/Makefile
+  	binsrc/samples/xpath/Makefile
+  	binsrc/samples/xquery/Makefile
+- 	binsrc/sesame/Makefile
+- 	binsrc/sesame2/Makefile
+- 	binsrc/sesame3/Makefile
+- 	binsrc/sesame4/Makefile
+  	binsrc/sqldoc/Makefile
+  	binsrc/sync/Makefile
+  	binsrc/tests/biftest/Makefile
+--- 3184,3189 ----
+***************
+*** 3236,3245 ****
+  	docsrc/stylesheets/Makefile
+  	docsrc/xmlsource/Makefile
+  	libsrc/Dk/Makefile
+- 	libsrc/JDBCDriverType4/Makefile
+- 	libsrc/JDBCDriverType4/testsuite_4.0/Makefile
+- 	libsrc/JDBCDriverType4/virtuoso/jdbc/Makefile
+- 	libsrc/JDBCDriverType4/virtuoso/Makefile
+  	libsrc/langfunc/Makefile
+  	libsrc/odbcsdk/Makefile
+  	libsrc/plugin/Makefile
+--- 3225,3230 ----
+*** a-virtuoso-opensource-7.2.7/libsrc/Makefile.am	1970-01-01 01:00:01.000000000 +0100
+--- b-virtuoso-opensource-7.2.7/libsrc/Makefile.am	2022-05-27 12:30:12.658593011 +0200
+***************
+*** 19,25 ****
+  #  
+  #  
+  
+! SUBDIRS = util zlib odbcsdk Dk Thread langfunc Wi plugin Tidy Xml.new JDBCDriverType4
+  
+  noinst_HEADERS = Dk.h libutil.h
+  
+--- 19,25 ----
+  #  
+  #  
+  
+! SUBDIRS = util zlib odbcsdk Dk Thread langfunc Wi plugin Tidy Xml.new
+  
+  noinst_HEADERS = Dk.h libutil.h
+  

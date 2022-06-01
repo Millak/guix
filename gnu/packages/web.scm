@@ -793,32 +793,29 @@ programming language.")))
        ,@(package-inputs nginx)))
     (arguments
      (substitute-keyword-arguments
-         `(#:make-flags '("modules")
-           #:modules ((guix build utils)
-                      (guix build gnu-build-system))
-           ,@(package-arguments nginx)
-           #:configure-flags '("--add-dynamic-module=."))
+         `(#:make-flags '("modules") ;Only build this module not all of nginx.
+           ,@(package-arguments nginx))
+       ((#:configure-flags flags)
+        #~(cons "--add-dynamic-module=." #$flags))
        ((#:phases phases)
         #~(modify-phases #$phases
             (add-after 'unpack 'unpack-nginx-sources
-              (lambda* (#:key inputs native-inputs #:allow-other-keys)
+              (lambda _
                 (begin
                   ;; The nginx source code is part of the module’s source.
                   (format #t "decompressing nginx source code~%")
-                  (invoke "tar" "xvf" (assoc-ref inputs "nginx-sources")
+                  (invoke "tar" "xvf" #$(this-package-input "nginx-sources")
                           ;; This package's LICENSE file would be
                           ;; overwritten with the one from nginx when
                           ;; unpacking the nginx source, so rename the nginx
                           ;; one when unpacking.
                           "--transform=s,/LICENSE$,/LICENSE.nginx,"
-                          "--strip-components=1")
-                  #t)))
+                          "--strip-components=1"))))
             (replace 'install
-              (lambda* (#:key outputs #:allow-other-keys)
-                (let ((modules-dir (string-append (assoc-ref outputs "out")
+              (lambda _
+                (let ((modules-dir (string-append #$output
                                                   "/etc/nginx/modules")))
-                  (install-file "objs/ngx_rtmp_module.so" modules-dir)
-                  #t)))
+                  (install-file "objs/ngx_rtmp_module.so" modules-dir))))
             (delete 'fix-root-dirs)
             (delete 'install-man-page)))))
     (home-page "https://github.com/arut/nginx-rtmp-module")
@@ -4655,30 +4652,6 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
     (license (list license:bsd-2           ; source code
                    license:freebsd-doc)))) ; documentation
 
-(define-public python2-feedparser
-  (package
-    (name "python2-feedparser")
-    (version "5.2.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "feedparser" version ".tar.bz2"))
-       (sha256
-        (base32
-         "00hb4qg2am06g81mygfi1jsbx8830024jm45g6qp9g8fr6am91yf"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f
-       #:python ,python-2))
-    (home-page
-     "https://github.com/kurtmckee/feedparser")
-    (synopsis "Parse feeds in Python")
-    (description
-     "Universal feed parser which handles RSS 0.9x, RSS 1.0, RSS 2.0,
-CDF, Atom 0.3, and Atom 1.0 feeds.")
-    (license (list license:bsd-2 ; source code
-                   license:freebsd-doc)))) ; documentation
-
 (define-public guix-data-service
   (let ((commit "198b6ef719745a48918e703990d1e846ffcd65b0")
         (revision "31"))
@@ -6256,14 +6229,14 @@ inspired by Ruby's @code{fakeweb}.")
 (define-public jo
   (package
     (name "jo")
-    (version "1.4")
+    (version "1.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/jpmens/jo/releases/download/"
                            version "/jo-" version ".tar.gz"))
        (sha256
-        (base32 "18jna9xlpxci3cak3z85c448zv2zr41baclgym3hk433p0p4vii4"))))
+        (base32 "18fizi0368jgajrmy13xpdiks76jwch8lhx1d1sagmd63cpmj5gb"))))
     (build-system gnu-build-system)
     (home-page "https://github.com/jpmens/jo")
     (synopsis "Output JSON from a shell")
@@ -6380,9 +6353,6 @@ internetarchive python module for programmatic access to archive.org.")
       (description "@code{clf} is a command line tool for searching code
 snippets on @url{https://commandlinefu.com}.")
       (license license:expat))))
-
-(define-public python2-clf
-  (package-with-python2 python-clf))
 
 (define-public rss-bridge
   (package

@@ -133,17 +133,4 @@ on just one button press.")
       (home-page "https://github.com/tompreston/python-lirc")
       (synopsis "Python bindings for LIRC")
       (description "@code{lirc} is a Python module which provides LIRC bindings.")
-      (license license:gpl3)
-      (properties `((python2-variant . ,(delay python2-lirc)))))))
-
-  (define-public python2-lirc
-    (let ((base (package-with-python2 (strip-python2-variant python-lirc))))
-      (package/inherit base
-        (arguments
-         `(#:tests? #f ; the only tests that exist are human-interactive
-           #:phases
-           (modify-phases %standard-phases
-             (add-before 'build 'build-from-cython-files
-               (lambda _ (invoke "make" "py2"))))))
-        (native-inputs
-         `(("python2-cython" ,python2-cython))))))
+      (license license:gpl3))))

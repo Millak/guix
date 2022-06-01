@@ -73,6 +73,16 @@
                    "--enable-zstd")
            #:phases
            #~(modify-phases %standard-phases
+               (add-before 'build 'adjust-torify
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   ;; Record in 'torify' the absolute file name of 'torsocks'.
+                   (let ((torsocks (search-input-file
+                                    inputs "/bin/torsocks")))
+                     (substitute* "contrib/client-tools/torify"
+                       (("pathfind torsocks")
+                        "true")
+                       (("exec torsocks")
+                        (string-append "exec " torsocks))))))
                (add-before 'check 'skip-practracker
                  ;; This is a style linter.  It doesn't get to throw fatal errors.
                  (lambda _
@@ -98,6 +108,7 @@
      (list libevent
            libseccomp
            openssl
+           torsocks
            xz
            zlib
            `(,zstd "lib")))

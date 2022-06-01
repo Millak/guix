@@ -11,6 +11,7 @@
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -342,7 +343,7 @@ package for the Game Boy and Game Boy Color.  It consists of:
 (define-public wla-dx
   (package
     (name "wla-dx")
-    (version "9.12")
+    (version "10.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -351,12 +352,20 @@ package for the Game Boy and Game Boy Color.  It consists of:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1wlbqv2rgk9q6m9an1mi0i29250zl8lw7zipki2bbi9mczpyczli"))))
+                "1nh2k2xn5fj389gq68f3fxgrxakgn8c6dw2ffqay86s3706hac9w"))))
     (build-system cmake-build-system)
-    (native-inputs
-     `(("sphinx" ,python-sphinx)))      ; to generate man pages
+    (native-inputs (list python-sphinx)) ; to generate man pages
     (arguments
-     `(#:tests? #f))                    ; no tests
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'copy-tests-to-build-directory
+           (lambda _
+             (copy-recursively "../source/tests" "tests")))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (let ((sh (which "sh")))
+               (when tests?
+                 (invoke sh "../source/run_tests.sh"))))))))
     (home-page "https://github.com/vhelin/wla-dx")
     (synopsis "Assemblers for various processors")
     (description "WLA DX is a set of tools to assemble assembly files to

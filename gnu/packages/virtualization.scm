@@ -15,7 +15,7 @@
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020, 2021 Marius Bakke <mbakke@fastmail.com>
-;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
@@ -1097,7 +1097,7 @@ all common programming languages.  Vala bindings are also provided.")
 (define-public lxc
   (package
     (name "lxc")
-    (version "4.0.11")
+    (version "4.0.12")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1105,7 +1105,7 @@ all common programming languages.  Vala bindings are also provided.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "0b7hv4n8b3lndhr0jf9j1gkbzxm8897a1myjsfgwzad9gkhq395g"))))
+                "1vyk2j5w9gfyh23w3ar09cycyws16mxh3clbb33yhqzwcs1jy96v"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config docbook2x))
@@ -1656,26 +1656,71 @@ mainly implemented in user space.")
     ;; LGPLv2.1.
     (license (list license:gpl2 license:lgpl2.1))))
 
+(define-public python-qemu-qmp
+  (package
+    (name "python-qemu-qmp")
+    (version "0.0.0a0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "qemu.qmp" version))
+       (sha256
+        (base32 "1rpsbiwvngij6fjcc5cx1azcc4dxmm080crr31wc7jrm7i61p7c2"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; The Avocado test runner insists on writing stuff to HOME.
+                (setenv "HOME" "/tmp")
+                ;; The mypy tests fail (see:
+                ;; https://gitlab.com/jsnow/qemu.qmp/-/issues/1).
+                (delete-file "tests/mypy.sh")
+                (invoke "avocado" "--show=all" "run" "tests")))))))
+    (native-inputs
+     (list python-avocado-framework
+           python-setuptools-scm
+           python-flake8
+           python-isort
+           python-pylint))
+    (propagated-inputs
+     (list python-pygments
+           python-urwid
+           python-urwid-readline))
+    (home-page "https://gitlab.com/jsnow/qemu.qmp")
+    (synopsis "QEMU Monitor Protocol Python library")
+    (description "@code{emu.qmp} is a
+@url{https://gitlab.com/qemu-project/qemu/-/blob/master/docs/interop/qmp-intro.txt,
+QEMU Monitor Protocol (QMP)} library written in Python.  It is used to send
+QMP messages to running QEMU emulators.  It can be used to communicate with
+QEMU emulators, the QEMU Guest Agent (QGA), the QEMU Storage Daemon (QSD), or
+any other utility or application that speaks QMP.")
+    (license license:gpl2+)))
+
 (define-public qmpbackup
   (package
     (name "qmpbackup")
-    (version "0.2")
+    (version "0.23")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/abbbi/qmpbackup")
-                     (commit version)))
+                    (url "https://github.com/abbbi/qmpbackup")
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0swhp5byz44brhyis1a39p11fyn9q84xz5q6v2fah29r7d71kmmx"))))
+                "0x9v81z0b2qr2y6m46rfnl4kl5jnixsdrl1c790iwl6pq9kzzvzg"))))
     (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2))
+    ;; The test suite requires to download a 241 MiB QEMU image; skip it.
+    (arguments (list #:tests? #f))
+    (inputs (list python-qemu-qmp))
     (home-page "https://github.com/abbbi/qmpbackup")
     (synopsis "Backup and restore QEMU machines")
-    (description "qmpbackup is designed to create and restore full and
-incremental backups of running QEMU virtual machines via QMP, the QEMU
+    (description "@command{qmpbackup} is designed to create and restore full
+and incremental backups of running QEMU virtual machines via QMP, the QEMU
 Machine Protocol.")
     (license license:gpl3+)))
 

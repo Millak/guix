@@ -48,6 +48,7 @@
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Simon South <simon@simonsouth.net>
+;;; Copyright © 2022 Pierre Langlois <pierre.langlois@gmx.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1655,7 +1656,7 @@ round-robin fashion.")
     (propagated-inputs
      (list openssh))           ; used by gandi/cli/modules/iass.py
     (inputs
-     (list openssl python-click python-ipy python-pyyaml python-requests))
+     (list openssl python-click-7 python-ipy python-pyyaml python-requests))
     (home-page "https://cli.gandi.net")
     (synopsis "Command-line interface to the Gandi.net Web API")
     (description
@@ -2620,9 +2621,6 @@ IPFIX, RSPAN, CLI, LACP, 802.1ag).")
 handling for most notations in use for IPv4 and IPv6 addresses and
 networks.")
     (license license:bsd-3)))
-
-(define-public python2-ipy
-  (package-with-python2 python-ipy))
 
 (define-public speedtest-cli
   (package

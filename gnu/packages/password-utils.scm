@@ -34,6 +34,7 @@
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2021 David Dashyan <mail@davie.li>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -952,13 +953,13 @@ between hosts and entries in the password store.")
       (native-inputs
        (list perl))
       (inputs
-       `(("gmp" ,gmp)
-         ("libpcap" ,libpcap)
-         ("nss" ,nss)
-         ("openssl" ,openssl)
-         ("python" ,python-2)           ; For "python" and "python2" shebangs
-         ("ruby" ,ruby)                 ; For genincstats.rb
-         ("zlib" ,zlib)))
+       (list gmp
+             libpcap
+             nss
+             openssl
+             python-wrapper
+             ruby                       ; For genincstats.rb
+             zlib))
       (arguments
        `(#:configure-flags
          (list "--with-systemwide"
@@ -1019,8 +1020,7 @@ between hosts and entries in the password store.")
                                      (find-files "." "(.*\\.chr|.*\\.lst)")
                                      (find-files "." ".*\\.conf")))
                    (copy-recursively "rules" (string-append datadir "/rules")))
-                 (copy-recursively "../doc" docdir)
-                 #t)))
+                 (copy-recursively "../doc" docdir))))
            (delete 'check) ; Tests need installed .conf files; move after install
            (add-after 'install 'check
              (lambda args
@@ -1035,33 +1035,6 @@ password hash types most commonly found on various Unix systems, supported out
 of the box are Windows LM hashes, plus lots of other hashes and ciphers.  This
 is the community-enhanced, \"jumbo\" version of John the Ripper.")
       (license license:gpl2+))))
-
-(define-public sala
-  (package
-    (name "sala")
-    (version "1.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "sala" version))
-       (sha256
-        (base32
-         "13qgmc3i2a0cqp8jqrfl93lnphfagb32pgfikc1gza2a14asxzi8"))))
-    (build-system python-build-system)
-    (arguments
-     ;; Sala is supposed to work with Python 3.2 or higher,
-     ;; but it doesn't work with Python 3.6. Better stick
-     ;; to Python 2, which works fine.
-     `(#:python ,python-2))
-    (propagated-inputs
-     (list gnupg pwgen))
-    (home-page "http://www.digip.org/sala/")
-    (synopsis "Encrypted plaintext password store")
-    (description
-     "Store passwords and other bits of sensitive plain-text information
-to encrypted files on a directory hierarchy.  The information is protected
-by GnuPG's symmetrical encryption.")
-    (license license:expat)))
 
 (define-public fpm2
   (package

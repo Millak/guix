@@ -102,6 +102,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages gperf)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages icu4c)
@@ -177,47 +178,6 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 match))
-
-(define-public 4store
-  (package
-    (name "4store")
-    (version "1.1.6")
-    (source (origin
-      (method git-fetch)
-      (uri (git-reference
-             (url "https://github.com/4store/4store")
-             (commit (string-append "v" version))))
-      (file-name (git-file-name name version))
-      (sha256
-       (base32 "1kzdfmwpzy64cgqlkcz5v4klwx99w0jk7afckyf7yqbqb4rydmpk"))
-      (patches (search-patches "4store-unset-preprocessor-directive.patch"
-                               "4store-fix-buildsystem.patch"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list perl
-           python-2
-           autoconf
-           automake
-           gettext-minimal
-           libtool
-           `(,pcre "bin") ;for 'pcre-config'
-           pkg-config))
-    (inputs
-     (list glib
-           rasqal
-           libxml2
-           raptor2
-           readline
-           avahi
-           cyrus-sasl
-           openssl
-           `(,util-linux "lib")))
-    ;; http://www.4store.org has been down for a while now.
-    (home-page "https://github.com/4store/4store")
-    (synopsis "Clustered RDF storage and query engine")
-    (description "4store is a RDF/SPARQL store written in C, supporting
-either single machines or networked clusters.")
-    (license license:gpl3+)))
 
 (define-public ephemeralpg
   (package
@@ -1511,9 +1471,6 @@ CSV, DB3, iXF, SQLite, MS-SQL or MySQL to PostgreSQL.")
 Most public APIs are compatible with @command{mysqlclient} and MySQLdb.")
     (license license:expat)))
 
-(define-public python2-pymysql
-  (package-with-python2 python-pymysql))
-
 (define-public qdbm
   (package
     (name "qdbm")
@@ -2776,29 +2733,20 @@ semantics.")
 (define-public libpqxx
   (package
     (name "libpqxx")
-    (version "4.0.1")
+    (version "7.7.3")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "http://pqxx.org/download/software/libpqxx/"
-                    name "-" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jtv/libpqxx")
+                    (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0f6wxspp6rx12fkasanb0z2g2gc8dhcfwnxagx8wwqbpg6ifsz09"))))
+                "1mrhsih5bhiin0l3c4vp22l9p7c5035m0vvqpx18c0407fkzc7hp"))))
     (build-system gnu-build-system)
-    (native-inputs
-     `(("python" ,python-2)))
+    (native-inputs (list gcc-11 python-wrapper))
     (inputs (list postgresql))
-    (arguments
-     `(#:tests? #f   ; # FAIL:  1
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'fix-sed-command
-           (lambda _
-             ;; Newer sed versions error out if double brackets are not used.
-             (substitute* "configure"
-               (("\\[:space:\\]") "[[:space:]]"))
-             #t)))))
+    (arguments '(#:tests? #f))      ;tests require a running PostgreSQL server
     (synopsis "C++ connector for PostgreSQL")
     (description
      "Libpqxx is a C++ library to enable user programs to communicate with the
@@ -2861,9 +2809,6 @@ can use Python types in your code without having to worry.  It has built-in
 support for sqlite, mysql and postgresql.  If you already have a database, you
 can autogenerate peewee models using @code{pwiz}, a model generator.")
     (license license:expat)))
-
-(define-public python2-peewee
-  (package-with-python2 python-peewee))
 
 (define-public python-pypika-tortoise
   (package
@@ -3080,9 +3025,6 @@ development.")
 for ODBC.")
     (license (license:x11-style "file://LICENSE.TXT"))))
 
-(define-public python2-pyodbc-c
-  (package-with-python2 python-pyodbc-c))
-
 (define-public python-pyodbc
   (package
     (name "python-pyodbc")
@@ -3104,9 +3046,6 @@ for ODBC.")
     (description "@code{python-pyodbc} provides a Python DB-API driver
 for ODBC.")
     (license (license:x11-style "file:///LICENSE.TXT"))))
-
-(define-public python2-pyodbc
-  (package-with-python2 python-pyodbc))
 
 (define-public mdbtools
   (package
@@ -3215,14 +3154,30 @@ Memory-Mapped Database} (LMDB), a high-performance key-value store.")
 (define-public virtuoso-ose
   (package
     (name "virtuoso-ose")
-    (version "7.2.6")
+    (version "7.2.7")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/virtuoso/virtuoso/" version "/"
                            "virtuoso-opensource-" version ".tar.gz"))
        (sha256
-        (base32 "0ly7s7a3w2a2zhhi9rq9k2qlnzapqbbc1rcdqb3zqqpgg81krz9q"))))
+        (base32 "1853ln0smiilf3pni70gq6nmi9ps039cy44g6b5i9d2z1n9hnj02"))
+       (patches (search-patches "virtuoso-ose-remove-pre-built-jar-files.patch"))
+       (modules '((guix build utils)))
+       ;; This snippet removes pre-built Java archives.
+       (snippet
+        '(for-each delete-file-recursively
+                   (list "binsrc/hibernate"
+                         "binsrc/jena"
+                         "binsrc/jena2"
+                         "binsrc/jena3"
+                         "binsrc/jena4"
+                         "binsrc/rdf4j"
+                         "binsrc/sesame"
+                         "binsrc/sesame2"
+                         "binsrc/sesame3"
+                         "binsrc/sesame4"
+                         "libsrc/JDBCDriverType4")))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; Tests require a network connection.
@@ -3233,6 +3188,9 @@ Memory-Mapped Database} (LMDB), a high-performance key-value store.")
                            "--enable-static=no")
        #:phases
        (modify-phases %standard-phases
+         (replace 'bootstrap
+           (lambda _
+             (invoke "sh" "autogen.sh")))
          ;; Even with "--enable-static=no", "libvirtuoso-t.a" is left in
          ;; the build output.  The following phase removes it.
          (add-after 'install 'remove-static-libs
@@ -3242,6 +3200,8 @@ Memory-Mapped Database} (LMDB), a high-performance key-value store.")
                            (delete-file (string-append lib "/" file)))
                          '("libvirtuoso-t.a"
                            "libvirtuoso-t.la"))))))))
+    (native-inputs
+     (list autoconf automake bison flex gperf libtool))
     (inputs
      (list openssl net-tools readline zlib))
     (home-page "http://vos.openlinksw.com/owiki/wiki/VOS/")
@@ -3277,33 +3237,6 @@ localhost")
 local Cassandra clusters. It creates, launches and removes Cassandra clusters
 on localhost.")
     (license license:asl2.0)))
-
-(define-public python2-ccm
-  (package-with-python2 python-ccm))
-
-(define-public python2-pysqlite
-  (package
-    (name "python2-pysqlite")
-    (version "2.8.3")
-    (source
-     (origin
-      (method url-fetch)
-      (uri (pypi-uri "pysqlite" version))
-      (sha256
-       (base32
-        "1424gwq9sil2ffmnizk60q36vydkv8rxs6m7xs987kz8cdc37lqp"))))
-    (build-system python-build-system)
-    (inputs
-     (list sqlite))
-    (arguments
-     `(#:python ,python-2 ; incompatible with Python 3
-       #:tests? #f)) ; no test target
-    (home-page "https://github.com/ghaering/pysqlite")
-    (synopsis "SQLite bindings for Python")
-    (description
-     "Pysqlite provides SQLite bindings for Python that comply to the
-Database API 2.0T.")
-    (license license:zlib)))
 
 (define-public python-sqlalchemy
   (package
@@ -3342,30 +3275,6 @@ provides a full suite of well known enterprise-level persistence patterns,
 designed for efficient and high-performing database access, adapted into a
 simple and Pythonic domain language.")
     (license license:x11)))
-
-(define-public python2-sqlalchemy
-  (let ((base (package-with-python2 python-sqlalchemy)))
-    (package
-      (inherit base)
-      (arguments
-       (substitute-keyword-arguments (package-arguments base)
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (replace 'check
-                (lambda* (#:key tests? #:allow-other-keys)
-                  (when tests?
-                    (invoke "pytest" "-vv"
-                            ;; The memory usage tests are very expensive and run in
-                            ;; sequence; skip them.
-                            "-k"
-                            (string-append
-                             "not test_memusage.py"
-                             ;; This test fails with "AssertionError: Warnings
-                             ;; were not seen [...]".
-                             " and not test_fixture_five")))))))))
-      ;; Do not use pytest-xdist, which is broken for Python 2.
-      (native-inputs (modify-inputs (package-native-inputs base)
-                       (delete "python-pytest-xdist"))))))
 
 (define-public python-sqlalchemy-stubs
   (package
@@ -3525,16 +3434,7 @@ value in database is immediately visible to other processes accessing the same
 database.  Concurrency is possible because the values are stored in separate
 files.  Hence the “database” is a directory where all files are governed by
 PickleShare.")
-    (properties `((python2-variant . ,(delay python2-pickleshare))))
     (license license:expat)))
-
-(define-public python2-pickleshare
-  (let ((pickleshare (package-with-python2
-                      (strip-python2-variant python-pickleshare))))
-    (package (inherit pickleshare)
-      (propagated-inputs (modify-inputs (package-propagated-inputs
-                                                        pickleshare)
-                           (prepend python2-pathlib2))))))
 
 (define-public python-apsw
   (package
@@ -3578,9 +3478,6 @@ embedded relational database engine.  In contrast to other wrappers such as
 pysqlite it focuses on being a minimal layer over SQLite attempting just to
 translate the complete SQLite API into Python.")
     (license license:zlib)))
-
-(define-public python2-apsw
-  (package-with-python2 python-apsw))
 
 (define-public python-aiosqlite
   (package
@@ -3637,48 +3534,6 @@ managers for automatically closing connections.")
     (synopsis "Async database support for Python.")
     (description "This package implements async database support for Python.")
     (license license:bsd-3)))
-
-(define-public python2-neo4j-driver
-  (package
-    (name "python2-neo4j-driver")
-    ;; NOTE: When upgrading to 1.5.0, please add a python3 variant.
-    (version "1.4.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "neo4j-driver" version))
-              (sha256
-               (base32
-                "011r1vh182p8mm83d8dz9rfnc3l7rf7fd00cyrbyfzi71jmc4g98"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2))
-    (home-page "https://neo4j.com/developer/python/")
-    (synopsis "Neo4j driver code written in Python")
-    (description "This package provides the Neo4j Python driver that connects
-to the database using Neo4j's binary protocol.  It aims to be minimal, while
-being idiomatic to Python.")
-    (license license:asl2.0)))
-
-(define-public python2-py2neo
-  (package
-    (name "python2-py2neo")
-    (version "3.1.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "py2neo" version))
-              (sha256
-               (base32
-                "1f1q95vqcvlc3nsc33p841swnjdcjazddlq2dzi3qfnjqjrajxw1"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2))
-    (home-page "https://py2neo.org")
-    (synopsis "Library and toolkit for working with Neo4j in Python")
-    (description "This package provides a client library and toolkit for
-working with Neo4j from within Python applications and from the command
-line.  The core library has no external dependencies and has been carefully
-designed to be easy and intuitive to use.")
-    (license license:asl2.0)))
 
 (define-public python-psycopg2
   (package
@@ -3916,9 +3771,6 @@ for Python.  The design goals are:
 parsing code in hiredis.  It primarily speeds up parsing of multi bulk replies.")
     (license license:bsd-3)))
 
-(define-public python2-hiredis
-  (package-with-python2 python-hiredis))
-
 (define-public python-aioredis
   (package
     (name "python-aioredis")
@@ -4004,9 +3856,6 @@ reasonable substitute.")
     (description
      "This package provides a Python interface to the Redis key-value store.")
     (license license:expat)))
-
-(define-public python2-redis
-  (package-with-python2 python-redis))
 
 (define-public python-rq
   (package
@@ -4105,9 +3954,6 @@ is designed to have a low barrier to entry.")
   Redis protocol.")
     (license license:bsd-2)))
 
-(define-public python2-trollius-redis
-  (package-with-python2 python-trollius-redis))
-
 (define-public python-sqlparse
   (package
     (name "python-sqlparse")
@@ -4193,7 +4039,7 @@ the SQL language using a syntax that reflects the resulting query.")
 (define-public apache-arrow
   (package
     (name "apache-arrow")
-    (version "7.0.0")
+    (version "8.0.0")
     (source
      (origin
        (method git-fetch)
@@ -4203,7 +4049,7 @@ the SQL language using a syntax that reflects the resulting query.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "19xx6mlddca79q6d3wga574m4y32ixmxx2rmk6j3f22i5c37mjzw"))))
+         "1gwiflk72pq1krc0sjzabypmh7slfyf7ak71fiypy3xgzw8a777c"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f

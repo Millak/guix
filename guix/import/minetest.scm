@@ -427,10 +427,10 @@ DEPENDENCIES as a list of AUTHOR/NAME strings."
                (match sort
                  ("score"
                   (warning
-                   (G_ "The implementation with the highest score will be choosen!~%")))
+                   (G_ "The implementation with the highest score will be chosen!~%")))
                  ("downloads"
                   (warning
-                   (G_ "The implementation that has been downloaded the most will be choosen!~%"))))
+                   (G_ "The implementation that has been downloaded the most will be chosen!~%"))))
                (package-full-name too))
               (()
                (warning

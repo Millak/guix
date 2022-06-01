@@ -2961,7 +2961,7 @@ This package is the fork of hsetroot by Hyriand.")
 (define-public jumpapp
   (package
     (name "jumpapp")
-    (version "1.1")
+    (version "1.2")
     (source
      (origin
        (method git-fetch)
@@ -2970,7 +2970,7 @@ This package is the fork of hsetroot by Hyriand.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jrk4mm42sz6ca2gkb6w3dad53d4im4shpgsq8s4vr6xpl3b43ry"))))
+        (base32 "05shgw4agkhgk5vbvc05s12q7m0djc0m4qrd328hmis37bxp9j7n"))))
     (build-system gnu-build-system)
     (arguments `(#:phases
                  (modify-phases %standard-phases
@@ -2981,8 +2981,7 @@ This package is the fork of hsetroot by Hyriand.")
                        (let ((out (assoc-ref outputs "out")))
                          (substitute* "Makefile"
                            (("PREFIX =.*")
-                            (string-append "PREFIX = " out "\n")))
-                         #true))))))
+                            (string-append "PREFIX = " out "\n")))))))))
     (propagated-inputs
      (list wmctrl xdotool xprop))
     (native-inputs

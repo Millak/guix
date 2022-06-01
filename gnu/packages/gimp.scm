@@ -8,6 +8,7 @@
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -27,6 +28,7 @@
 (define-module (gnu packages gimp)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module ((guix licenses) #:prefix license:)
@@ -297,71 +299,55 @@ buffers.")
         (base32 "1p375gaw2daip6aiv1icrlpws5m1my5kalxkxrvl4zgdfsm5v0c8"))))
     (build-system gnu-build-system)
     (outputs '("out"
-               "doc"))                            ; 9 MiB of gtk-doc HTML
+               "doc"))                  ; 9 MiB of gtk-doc HTML
     (arguments
-     '(#:configure-flags
-       (list (string-append "--with-html-dir="
-                            (assoc-ref %outputs "doc")
-                            "/share/gtk-doc/html")
+     (list
+      #:configure-flags
+      #~(list (string-append "--with-html-dir=" #$output "/share/gtk-doc/html")
 
-             ;; Prevent the build system from running 'gtk-update-icon-cache'
-             ;; which is not needed during the build because Guix runs it at
-             ;; profile creation time.
-             "ac_cv_path_GTK_UPDATE_ICON_CACHE=true"
+              ;; Prevent the build system from running 'gtk-update-icon-cache'
+              ;; which is not needed during the build because Guix runs it at
+              ;; profile creation time.
+              "ac_cv_path_GTK_UPDATE_ICON_CACHE=true"
 
-             ;; Disable automatic network request on startup to check for
-             ;; version updates.
-             "--disable-check-update"
+              ;; Disable automatic network request on startup to check for
+              ;; version updates.
+              "--disable-check-update"
 
-             ;; ./configure requests not to annoy upstream with packaging bugs.
-             "--with-bug-report-url=https://bugs.gnu.org/guix")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-sitecustomize.py
-           ;; Install 'sitecustomize.py' into gimp's python directory to
-           ;; add pygobject and pygtk to pygimp's search path.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((pythonpath (getenv "GUIX_PYTHONPATH"))
-                    (out        (assoc-ref outputs "out"))
-                    (sitecustomize.py
-                     (string-append
-                      out "/lib/gimp/2.0/python/sitecustomize.py")))
-               (call-with-output-file sitecustomize.py
-                 (lambda (port)
-                   (format port "import site~%")
-                   (format port "for dir in '~a'.split(':'):~%" pythonpath)
-                   (format port "    site.addsitedir(dir)~%")))))))))
+              ;; Only Python 2 is supported; disable it.
+              "--disable-python"
+
+              ;; ./configure requests not to annoy upstream with packaging bugs.
+              "--with-bug-report-url=https://bugs.gnu.org/guix")))
     (inputs
-     `(("atk" ,atk)
-       ("babl" ,babl)
-       ("gegl" ,gegl)
-       ("gexiv2" ,gexiv2)
-       ("glib" ,glib)
-       ("glib-networking" ,glib-networking)
-       ("gtk+" ,gtk+-2)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libmypaint" ,libmypaint)
-       ("libtiff" ,libtiff)
-       ("libwebp" ,libwebp)
-       ("mypaint-brushes" ,mypaint-brushes-1.3)
-       ("exif" ,libexif)                  ; optional, EXIF + XMP support
-       ("ghostscript" ,ghostscript)       ; optional, EPS + PS support
-       ("lcms" ,lcms)                     ; optional, color management
-       ("libheif" ,libheif)               ; optional, HEIF + AVIF support
-       ("libmng" ,libmng)                 ; optional, MNG support
-       ("librsvg" ,librsvg)               ; optional, SVG support
-       ("libxcursor" ,libxcursor)         ; optional, Mouse Cursor support
-       ("openexr" ,openexr-2)             ; optional, EXR support
-       ("openjpeg" ,openjpeg)             ; optional, JPEG 2000 support
-       ("poppler" ,poppler)               ; optional, PDF support
-       ("poppler-data" ,poppler-data)     ; optional, PDF support
-       ("python" ,python-2)               ; optional, Python support
-       ("python2-pygtk" ,python2-pygtk))) ; optional, Python support
+     (list atk
+           babl
+           gegl
+           gexiv2
+           glib
+           glib-networking
+           gtk+-2
+           libjpeg-turbo
+           libmypaint
+           libtiff
+           libwebp
+           mypaint-brushes-1.3
+           libexif                      ;optional, EXIF + XMP support
+           ghostscript                  ;optional, EPS + PS support
+           lcms                         ;optional, color management
+           libheif                      ;optional, HEIF + AVIF support
+           libmng                       ;optional, MNG support
+           librsvg                      ;optional, SVG support
+           libxcursor                   ;optional, Mouse Cursor support
+           openexr-2                    ;optional, EXR support
+           openjpeg                     ;optional, JPEG 2000 support
+           poppler                      ;optional, PDF support
+           poppler-data))               ;optional, PDF support
     (native-inputs
-     `(("desktop-file-utils" ,desktop-file-utils)
-       ("glib:bin" ,glib "bin") ; for glib-compile-resources and gdbus-codegen
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)))
+     (list desktop-file-utils
+           `(,glib "bin")        ;for glib-compile-resources and gdbus-codegen
+           intltool
+           pkg-config))
     (home-page "https://www.gimp.org")
     (synopsis "GNU Image Manipulation Program")
     (description
@@ -595,79 +581,61 @@ transferring the style of an image.")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/glimpse-editor/Glimpse")
-                     (commit (string-append "v" version))))
+                    (url "https://github.com/glimpse-editor/Glimpse")
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
                 "0drngj2xqzxfaag6pc4xjffiw003n4y43x5rb5bf4ziv1ac51dm9"))))
     (build-system gnu-build-system)
     (outputs '("out"
-               "doc"))                            ; 9 MiB of gtk-doc HTML
+               "doc"))                  ; 9 MiB of gtk-doc HTML
     (arguments
-     '(#:configure-flags
-       (list (string-append "--with-html-dir="
-                            (assoc-ref %outputs "doc")
-                            "/share/gtk-doc/html")
-             "--enable-gtk-doc"
+     (list
+      #:configure-flags
+      #~(list
+         (string-append "--with-html-dir=" #$output "/share/gtk-doc/html")
+         "--enable-gtk-doc"
 
-             ;; Prevent the build system from running 'gtk-update-icon-cache'
-             ;; which is not needed during the build because Guix runs it at
-             ;; profile creation time.
-             "ac_cv_path_GTK_UPDATE_ICON_CACHE=true"
+         ;; Prevent the build system from running 'gtk-update-icon-cache'
+         ;; which is not needed during the build because Guix runs it at
+         ;; profile creation time.
+         "ac_cv_path_GTK_UPDATE_ICON_CACHE=true"
 
-             ;; Disable automatic network request on startup to check for
-             ;; version updates.
-             "--disable-check-update"
+         ;; Disable automatic network request on startup to check for
+         ;; version updates.
+         "--disable-check-update"
 
-             ;; ./configure requests not to annoy upstream with packaging bugs.
-             "--with-bug-report-url=https://bugs.gnu.org/guix")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-sitecustomize.py
-           ;; Install 'sitecustomize.py' into glimpse's python directory to
-           ;; add pygobject and pygtk to pygimp's search path.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((pythonpath (getenv "GUIX_PYTHONPATH"))
-                    (out        (assoc-ref outputs "out"))
-                    (sitecustomize.py
-                     (string-append
-                      out "/lib/glimpse/2.0/python/sitecustomize.py")))
-               (call-with-output-file sitecustomize.py
-                 (lambda (port)
-                   (format port "import site~%")
-                   (format port "for dir in '~a'.split(':'):~%" pythonpath)
-                   (format port "    site.addsitedir(dir)~%")))))))))
+         ;; ./configure requests not to annoy upstream with packaging bugs.
+         "--with-bug-report-url=https://bugs.gnu.org/guix")))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("gtk-doc" ,gtk-doc)
-       ("intltool" ,intltool)
-       ("libtool" ,libtool)
-       ("libxslt" ,libxslt) ; for xsltproc
-       ("pkg-config" ,pkg-config)
-       ("glib:bin" ,glib "bin"))) ; for gdbus-codegen
+     (list autoconf
+           automake
+           gtk-doc
+           intltool
+           libtool
+           libxslt                      ;for xsltproc
+           pkg-config
+           `(,glib "bin")))             ;for gdbus-codegen
     (inputs
-     `(("babl" ,babl)
-       ("glib" ,glib)
-       ("glib-networking" ,glib-networking)
-       ("libtiff" ,libtiff)
-       ("libwebp" ,libwebp)
-       ("libjpeg" ,libjpeg-turbo)
-       ("atk" ,atk)
-       ("gexiv2" ,gexiv2)
-       ("gtk+" ,gtk+-2)
-       ("libmypaint" ,libmypaint)
-       ("mypaint-brushes" ,mypaint-brushes-1.3)
-       ("exif" ,libexif)                ; optional, EXIF + XMP support
-       ("lcms" ,lcms)                   ; optional, color management
-       ("librsvg" ,librsvg)             ; optional, SVG support
-       ("libxcursor" ,libxcursor)       ; optional, Mouse Cursor support
-       ("poppler" ,poppler)             ; optional, PDF support
-       ("poppler-data" ,poppler-data)
-       ("python" ,python-2)             ; optional, Python support
-       ("python2-pygtk" ,python2-pygtk) ; optional, Python support
-       ("gegl" ,gegl-for-glimpse)))     ; XXX see comment in gegl-for-glimpse
+     (list babl
+           glib
+           glib-networking
+           libtiff
+           libwebp
+           libjpeg-turbo
+           atk
+           gexiv2
+           gtk+-2
+           libmypaint
+           mypaint-brushes-1.3
+           libexif                      ;optional, EXIF + XMP support
+           lcms                         ;optional, color management
+           librsvg                      ;optional, SVG support
+           libxcursor                   ;optional, Mouse Cursor support
+           poppler                      ;optional, PDF support
+           poppler-data
+           gegl-for-glimpse))           ;XXX see comment in gegl-for-glimpse
     (home-page "https://glimpse-editor.github.io/")
     (synopsis "Glimpse Image Editor")
     (description "The Glimpse Image Editor is an application for image

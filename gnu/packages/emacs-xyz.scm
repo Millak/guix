@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 Taylan Ulrich Bayirli/Kammer <taylanbayirli@gmail.com>
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
@@ -891,57 +891,63 @@ libgit2 bindings for Emacs, intended to boost the performance of Magit.")
         (base32 "0cxyvp2aav27znc7mf6c83q5pddpdniaqkrxn1r8dbgr540qmnpn"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:emacs ,emacs-no-x             ;module support is required
-       #:tests? #t
-       #:test-command '("make" "test")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'build-info-manual
-           (lambda _
-             (invoke "make" "info")
-             ;; Copy info files to the lisp directory, which acts as
-             ;; the root of the project for the emacs-build-system.
-             (for-each (lambda (f)
-                         (install-file f "lisp"))
-                       (find-files "Documentation" "\\.info$"))
-             (chdir "lisp")))
-         (add-after 'build-info-manual 'set-magit-version
-           (lambda _
-             (make-file-writable "magit.el")
-             (emacs-substitute-variables "magit.el"
-               ("magit-version" ,version))))
-         (add-after 'set-magit-version 'patch-exec-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((perl (assoc-ref inputs "perl")))
-               (make-file-writable "magit-sequence.el")
-               (emacs-substitute-variables "magit-sequence.el"
-                 ("magit-perl-executable" (string-append perl "/bin/perl"))))))
-         (add-before 'check 'configure-git
-           (lambda _
-             ;; Otherwise some tests fail with error "unable to auto-detect
-             ;; email address".
-             (setenv "HOME" (getcwd))
-             (invoke "git" "config" "--global" "user.name" "toto")
-             (invoke "git" "config" "--global" "user.email"
-                     "toto@toto.com")))
-         (add-after 'configure-git 'disable-tramp-test
-           (lambda _
-             ;; There is an issue causing TRAMP to fail in the build
-             ;; environment.  Setting the tramp-remote-shell parameter of
-             ;; the sudo-method to the file name of the shell didn't help.
-             (chdir "..")
-             (substitute* "t/magit-tests.el"
-               (("^\\(ert-deftest magit-toplevel:tramp.*" all)
-                (string-append all "  (skip-unless nil)")))))
-         (add-before 'install 'enter-lisp-directory
-           (lambda _
-             (chdir "lisp"))))))
+     (list
+      #:tests? #t
+      #:test-command #~(list "make" "test")
+      #:exclude #~(cons* "magit-libgit.el"
+                         "magit-libgit-pkg.el"
+                         %default-exclude)
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'build-info-manual
+            (lambda _
+              (invoke "make" "info")
+              ;; Copy info files to the lisp directory, which acts as
+              ;; the root of the project for the emacs-build-system.
+              (for-each (lambda (f)
+                          (install-file f "lisp"))
+                        (find-files "Documentation" "\\.info$"))))
+          (add-after 'build-info-manual 'set-magit-version
+            (lambda _
+              (make-file-writable "lisp/magit.el")
+              (emacs-substitute-variables "lisp/magit.el"
+                ("magit-version" #$version))))
+          (add-after 'set-magit-version 'patch-exec-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (make-file-writable "lisp/magit-sequence.el")
+              (emacs-substitute-variables "lisp/magit-sequence.el"
+                ("magit-perl-executable"
+                 (search-input-file inputs "/bin/perl")))))
+          (add-before 'check 'configure-git
+            (lambda _
+              ;; Otherwise some tests fail with error "unable to auto-detect
+              ;; email address".
+              (setenv "HOME" (getcwd))
+              (invoke "git" "config" "--global" "user.name" "toto")
+              (invoke "git" "config" "--global" "user.email"
+                      "toto@toto.com")))
+          (add-after 'configure-git 'disable-tramp-test
+            (lambda _
+              ;; There is an issue causing TRAMP to fail in the build
+              ;; environment.  Setting the tramp-remote-shell parameter of
+              ;; the sudo-method to the file name of the shell didn't help.
+              (substitute* "t/magit-tests.el"
+                (("^\\(ert-deftest magit-toplevel:tramp.*" all)
+                 (string-append all "  (skip-unless nil)")))))
+          (replace 'expand-load-path
+            (lambda args
+              (with-directory-excursion "lisp"
+                (apply (assoc-ref %standard-phases 'expand-load-path) args))))
+          (replace 'install
+            (lambda args
+              (with-directory-excursion "lisp"
+                (apply (assoc-ref %standard-phases 'install) args)))))))
     (native-inputs
      (list texinfo))
     (inputs
      (list git perl))
     (propagated-inputs
-     (list emacs-dash emacs-libgit emacs-transient emacs-with-editor))
+     (list emacs-dash emacs-transient emacs-with-editor))
     (home-page "https://magit.vc/")
     (synopsis "Emacs interface for the Git version control system")
     (description
@@ -2149,18 +2155,17 @@ or unexpected behavior inside an elisp configuration file (typically
   ;; Emacs-w3m follows a "rolling release" model.
   (package
     (name "emacs-w3m")
-    (version "2018-11-11")
-    (source
-     (origin
-       (method cvs-fetch)
-       (uri (cvs-reference
-             (root-directory
-              ":pserver:anonymous@cvs.namazu.org:/storage/cvsroot")
-             (module "emacs-w3m")
-             (revision version)))
-       (file-name (string-append name "-" version "-checkout"))
-       (sha256
-        (base32 "0nvahdbjs12zg7zsk4gql02mvnv56cf1rwj2f5p42lwp3xvswiwp"))))
+    (version "20220508.2259")
+    (source (origin
+              ;; "Officially" this is still on cvs.namazu.org, but that repo
+              ;; seems to be unreachable.
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/emacs-w3m/emacs-w3m.git")
+                    (commit "bbcebbe20ebfa807a3e4beaadf40ce6f4be213e7")))
+              (sha256
+               (base32
+                "0y892n8jaxzyxi1fgyklc7zfh57ibp4yyywmif69dm28hykj6lmz"))))
     (build-system gnu-build-system)
     (native-inputs (list autoconf texinfo emacs-minimal))
     (inputs (list w3m imagemagick))
@@ -6552,7 +6557,9 @@ framework for Emacs Lisp to be used with @code{ert}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xy9zb6wwkgwhcxdnslqk52bq3z24chgk6prqi4ks0qcf2bwyh5h"))))
+        (base32 "0xy9zb6wwkgwhcxdnslqk52bq3z24chgk6prqi4ks0qcf2bwyh5h"))
+       (patches
+        (search-patches "emacs-deferred-fix-number-of-arguments.patch"))))
     (build-system emacs-build-system)
     (arguments
      `(#:phases
@@ -18731,31 +18738,27 @@ and @code{erc-send-modify-hook} to download and show images.")
     (license license:gpl3+)))
 
 (define-public emacs-list-utils
-  (package
-    (name "emacs-list-utils")
-    (version "0.4.6")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/rolandwalker/list-utils")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "07hbz2md52ccy95gv4d5n6szrfmpfqf3w4kwqdg2cf54c7kgf7hw"))))
-    (build-system emacs-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-require-cl
-           (lambda _
-             (substitute* "list-utils.el"
-               (("\\(require 'cl\\)") "(require 'cl-lib)"))
-             #t)))))
-    (home-page "https://github.com/rolandwalker/list-utils")
-    (synopsis "List-manipulation utility functions")
-    (description "This package provides a list manipulation library for Emacs.")
-    (license license:gpl3+)))
+  ;; Use a git snapshot until upstream fixes the build with emacs 28.1.
+  ;; See <http://issues.guix.gnu.org/55558>.
+  (let ((commit "0dec8c02962d2591766739e37c5714ba21133093") (revision "1"))
+    (package
+      (name "emacs-list-utils")
+      (version (git-version "0.4.6" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/rolandwalker/list-utils")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "11nm8649a131bn2kwj4fxkiijdx2d4f1byx7a985zlb3bzdwnaw8"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/rolandwalker/list-utils")
+      (synopsis "List-manipulation utility functions")
+      (description
+       "This package provides a list manipulation library for Emacs.")
+      (license license:gpl3+))))
 
 (define-public emacs-parsec
   (package
@@ -20127,7 +20130,7 @@ downloading manager for Emacs.")
 (define-public emacs-helpful
   (package
     (name "emacs-helpful")
-    (version "0.18")
+    (version "0.19")
     (source
      (origin
        (method git-fetch)
@@ -20136,7 +20139,9 @@ downloading manager for Emacs.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gdjxykqkal2x765mi51m99i5ql23i1fy909wy4mzj5ajhjfgqcc"))))
+        (base32 "0qwsifzsjw95l83m7z07fr9h1sqbhggwmcps1qgbddpan2a8ab8a"))
+       ;; Cherry-picked from upstream, remove when bumping to 0.20.
+       (patches (search-patches "emacs-helpful-fix-docstring-test.patch"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-elisp-refs emacs-dash emacs-s emacs-f emacs-shut-up))
@@ -21553,10 +21558,11 @@ provide an incremental search that moves all fake cursors in sync.")
       (license license:expat))))
 
 (define-public emacs-evil-org
-  (let ((commit "9d4be14118bf27094a30dbff349b815f098aacbf"))
+  (let ((commit "0d10ff7bb9a3a93d25cd91018b17f0a052b335f3")
+        (revision "2"))
     (package
       (name "emacs-evil-org")
-      (version (git-version "1.0.2" "1" commit))
+      (version (git-version "1.0.3" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -21566,7 +21572,7 @@ provide an incremental search that moves all fake cursors in sync.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1fxxfkinb0gq4p5b686r7z4jrkv98zfgh5z889zkjacncv8ibswn"))))
+           "15g47xgpswzc8lz7qdbbzfcq1n9m4474qa2jkg43l8d5ali8qa7z"))))
       (build-system emacs-build-system)
       (propagated-inputs (list emacs-evil))
       (home-page
@@ -24171,8 +24177,8 @@ stored playlists.")
 
 (define-public emacs-vterm
   (let ((version "0.0.1")
-        (revision "0")
-        (commit "a670b786539d3c8865d8f68fe0c67a2d4afbf1aa"))
+        (revision "1")
+        (commit "b44723552f86407d528c4a6c8057382c061b008e"))
     (package
       (name "emacs-vterm")
       (version (git-version version revision commit))
@@ -24184,7 +24190,7 @@ stored playlists.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0s244crjkbzl2jhp9m4sm1xdhbpxwph0m3jg18livirgajvdz6hn"))))
+                  "0rq2skwylvc7s4vfpbbsdykws4akyp9sc6xgrh2ql5yydhhnv2h3"))))
       (build-system emacs-build-system)
       (arguments
        `(#:modules ((guix build emacs-build-system)
@@ -24350,48 +24356,51 @@ indentation and a command to plot the file.")
 according to their use.")
       (license license:gpl3+))))
 
-(define-public emacs-dtache
+(define-public emacs-detached
   (package
-    (name "emacs-dtache")
-    (version "0.5")
+    (name "emacs-detached")
+    (version "0.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://gitlab.com/niklaseklund/dtache")
+                    (url "https://git.sr.ht/~niklaseklund/detached.el")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05gm5l533y8xr00w3c3i4fbhzhib6i7q2bbnpkm08w1n8a08iaj5"))))
+                "160h60vrpxslw6y290ndc065cc75dab58aq7kjqash94vkifnii2"))))
     (arguments
      (list
       #:tests? #t
       #:test-command #~(list "ert-runner")
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'install 'install-dtache-env
+          (add-before 'install 'install-detached-env
             (lambda _
-              (install-file "dtache-env" (string-append #$output "/bin"))))
+              (install-file "detached-env" (string-append #$output "/bin"))))
           (add-after 'unpack 'configure
             (lambda* (#:key inputs #:allow-other-keys)
-              (make-file-writable "dtache.el")
-              (emacs-substitute-variables "dtache.el"
-                ("dtache-env"
-                 (string-append #$output "/bin/dtache-env"))
-                ("dtache-dtach-program"
+              (make-file-writable "detached.el")
+              (emacs-substitute-variables "detached.el"
+                ("detached-env"
+                 (string-append #$output "/bin/detached-env"))
+                ("detached-dtach-program"
                  (search-input-file inputs "/bin/dtach"))
-                ("dtache-shell-program"
+                ("detached-shell-program"
                  (search-input-file inputs "/bin/bash"))))))))
     (build-system emacs-build-system)
     (native-inputs (list emacs-ert-runner))
     (inputs (list dtach))
-    (home-page "https://gitlab.com/niklaseklund/dtache")
-    (synopsis "Run and interact with detached shell commands")
+    (home-page "https://git.sr.ht/~niklaseklund/detached.el")
+    (synopsis "A package to launch, and manage, detached processes")
     (description
-     "The dtache package allows users to run shell commands
-detached from Emacs.  These commands are launched in sessions, using the
-program dtach.")
+     "The detached package allows users to run processes
+detached from Emacs.  It provides integration with multiple built-in modes, as
+well as providing an interface to attach and interact with the processes.")
     (license license:gpl3+)))
+
+(define-public emacs-dtache
+  (deprecated-package "emacs-dtache" emacs-detached))
 
 (define-public emacs-dtrt-indent
   (package

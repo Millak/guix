@@ -159,14 +159,14 @@ management, extensions such as advertisement blocker and colorful tabs.")
 (define-public links
   (package
     (name "links")
-    (version "2.26")
+    (version "2.27")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://links.twibright.com/download/"
                                   "links-" version ".tar.bz2"))
               (sha256
                (base32
-                "1jy90k04kl7y3l8jzg5jx7fglyqzngng0964j7j67gjxy9vkanzh"))))
+                "1d7bz6bbis94jq82xydwnazaczzmb1ij62pbmf0dxkg7xpycppfq"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -708,7 +708,7 @@ is fully configurable and extensible in Common Lisp.")
 (define-public lagrange
   (package
     (name "lagrange")
-    (version "1.12.1")
+    (version "1.13.6")
     (source
      (origin
        (method url-fetch)
@@ -716,13 +716,14 @@ is fully configurable and extensible in Common Lisp.")
         (string-append "https://git.skyjake.fi/skyjake/lagrange/releases/"
                        "download/v" version "/lagrange-" version ".tar.gz"))
        (sha256
-        (base32 "10v4bp5h1qq24by61yw52rr13m23smfj2whxfzcxc34qgsdjsd4a"))
+        (base32 "19xaw6lspl4mjx1wls0s15l97dzfkv20gph652yzwk6ia3ly92bs"))
        (modules '((guix build utils)))
        (snippet
         '(begin
            ;; TODO: unbundle fonts.
            (delete-file-recursively "lib/fribidi")
-           (delete-file-recursively "lib/harfbuzz")))))
+           (delete-file-recursively "lib/harfbuzz")
+           (delete-file-recursively "lib/sealcurses")))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #false                  ;no tests
@@ -924,14 +925,14 @@ interface.")
 (define-public telescope
   (package
     (name "telescope")
-    (version "0.7.1")
+    (version "0.8.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/omar-polo/telescope/releases/download/"
                            version "/telescope-" version ".tar.gz"))
        (sha256
-        (base32 "055iqld99l4jshs10mhl2ml0p74wcyyv5kxjy8izzysw9lnkjjb5"))))
+        (base32 "1fblm3mjddhjmcj1c065n9440n72ld037bdjdlyk1fpwd240m1pa"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f))                    ;no tests
@@ -939,7 +940,7 @@ interface.")
      (list gettext-minimal pkg-config))
     (inputs
      (list libevent libressl ncurses))
-    (home-page "https://git.omarpolo.com/telescope/about/")
+    (home-page "https://telescope.omarpolo.com/")
     (synopsis "Gemini client with a terminal interface")
     (description "Telescope is a w3m-like browser for Gemini.")
     (license license:x11)))

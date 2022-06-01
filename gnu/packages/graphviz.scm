@@ -208,9 +208,6 @@ interfaces for other technical domains.")
 visualization tool suite.")
     (license license:expat)))
 
-(define-public python2-graphviz
-  (package-with-python2 python-graphviz))
-
 (define-public python-pygraphviz
   (package
     (name "python-pygraphviz")
@@ -403,9 +400,6 @@ can be used either as a standalone application, or as a Python library.")
 graphs in Graphviz's DOT language, written in pure Python.")
     (license license:expat)))
 
-(define-public python2-pydot
-  (package-with-python2 python-pydot))
-
 (define-public dot2tex
   (package
     (name "dot2tex")
@@ -418,11 +412,33 @@ graphs in Graphviz's DOT language, written in pure Python.")
                 "1kp77wiv7b5qib82i3y3sn9r49rym43aaqm5aw1bwnzfbbq2m6i9"))))
     (build-system python-build-system)
     (arguments
-     `(#:python ,python-2))
-    (inputs
-     (list texlive-latex-preview graphviz))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv" "tests"
+                        ;; The test_semicolon test fails for unknown reason
+                        ;; (see:
+                        ;; https://github.com/kjellmf/dot2tex/issues/94).
+                        "-k" "not test_semicolon")))))))
+    (native-inputs (list python-pytest))
+    (inputs (list graphviz))
     (propagated-inputs
-     (list python2-pyparsing))
+     (list python-pyparsing
+           ;; These TeX dependencies are propagated to make it easier to build
+           ;; the resulting generated TeX files, which \usepackage them.
+           texlive-bin
+           texlive-amsmath
+           texlive-latex-geometry
+           texlive-latex-graphics
+           texlive-latex-base
+           texlive-latex-preview
+           texlive-latex-xkeyval
+           texlive-pgf
+           texlive-pstricks
+           texlive-xcolor))
     (home-page "https://github.com/kjellmf/dot2tex")
     (synopsis "Graphviz to LaTeX converter")
     (description

@@ -2321,7 +2321,7 @@ reading from and writing to ZIP archives.")
   (package
     (inherit quazip-0)
     (name "quazip")
-    (version "1.2")
+    (version "1.3")
     (source
      (origin
        (method git-fetch)
@@ -2330,7 +2330,7 @@ reading from and writing to ZIP archives.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dwld7jxhjz9l33lrqwvklazdy7ygi6n1m4ry1n1sk5dnschrhby"))))))
+        (base32 "0njgbdm3dm5p7xic5mhppbqsl36zn83zz0xfsfh624hlk0ff7n0a"))))))
 
 (define-public zchunk
   (package
@@ -2715,7 +2715,7 @@ can append files to the end of such compressed archives.")
 (define-public libcbor
   (package
     (name "libcbor")
-    (version "0.8.0")
+    (version "0.9.0")
     (source
      (origin
        (method git-fetch)
@@ -2723,7 +2723,7 @@ can append files to the end of such compressed archives.")
              (url "https://github.com/PJK/libcbor")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
-       (sha256 (base32 "01dv4vxcmbvpphqy16vqiwh25wx11x630js5wfnx7cryarsh9ld7"))))
+       (sha256 (base32 "1n9fx5i81wr9j18bhz74wclfkwqf1k3piq6lzngvkmq04krzi7ss"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
@@ -2737,8 +2737,8 @@ can append files to the end of such compressed archives.")
           (string-append "-DCMAKE_INSTALL_RPATH=" lib)))))
     (synopsis "The C library for parsing and generating CBOR")
     (description
-     "The Concise Binary Object Representation (CBOR) is a data format whose
-design goals include the possibility of extremely small code size, fairly
+     "@acronym{CBOR, The Concise Binary Object Representation} is a data format
+whose design goals include the possibility of extremely small code size, fairly
 small message size, and extensibility without the need for version
 negotiation.  These design goals make it different from earlier binary
 serializations such as ASN.1 and MessagePack.")

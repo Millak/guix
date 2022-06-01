@@ -89,7 +89,7 @@
                     "\"/run/setuid-programs/polkit-agent-helper-1\""))))))
     (build-system gnu-build-system)
     (inputs
-     (list expat linux-pam elogind mozjs-78 nspr))
+     (list expat linux-pam elogind mozjs nspr))
     (propagated-inputs
      (list glib)) ; required by polkit-gobject-1.pc
     (native-inputs

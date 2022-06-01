@@ -261,9 +261,6 @@ messages, and verify the signatures.  The keys and signatures are very short,
 making them easy to handle and incorporate into other protocols.")
     (license license:expat)))
 
-(define-public python2-ecdsa
-  (package-with-python2 python-ecdsa))
-
 ;;; Pycrypto is abandoned upstream:
 ;;;
 ;;; https://github.com/dlitz/pycrypto/issues/173
@@ -298,15 +295,6 @@ making them easy to handle and incorporate into other protocols.")
 and RIPEMD160), and various encryption algorithms (AES, DES, RSA, ElGamal,
 etc.).  The package is structured to make adding new modules easy.")
     (license license:public-domain)))
-
-(define-public python2-pycrypto
-  (let ((pycrypto (package-with-python2 python-pycrypto)))
-    (package/inherit pycrypto
-      (inputs
-       `(("python" ,python-2)
-         ,@(alist-delete
-            "python"
-            (package-inputs pycrypto)))))))
 
 (define-public python-kerberos
   (package
@@ -448,9 +436,6 @@ for example, for recording or replaying web content.")
      "Certifi is a Python library that contains a CA certificate bundle, which
 is used by the Requests library to verify HTTPS requests.")
     (license license:asl2.0)))
-
-(define-public python2-certifi
-  (package-with-python2 python-certifi))
 
 (define-public python-cryptography-vectors-next
   (package
@@ -599,8 +584,7 @@ library” for Python.  The package includes both high level recipes, and low
 level interfaces to common cryptographic algorithms such as symmetric ciphers,
 message digests and key derivation functions.")
     ;; Distributed under either BSD-3 or ASL2.0
-    (license (list license:bsd-3 license:asl2.0))
-    (properties `((python2-variant . ,(delay python2-cryptography))))))
+    (license (list license:bsd-3 license:asl2.0))))
 
 (define-public python-cryptography
   (package
@@ -625,49 +609,6 @@ message digests and key derivation functions.")
            python-pytz
            python-pytest
            python-setuptools-rust))))
-
-(define-public python2-cryptography-vectors
-  (package
-    (inherit python-cryptography-vectors)
-    (name "python2-cryptography-vectors")
-    (version "3.3.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "cryptography_vectors" version))
-              (sha256
-               (base32
-                "1yhaps0f3h2yjb6lmz953z1l1d84y9swk4k3gj9nqyk4vbx5m7cc"))))
-    (arguments
-     (list #:python python-2))))
-
-(define-public python2-cryptography
-  (let ((crypto (package-with-python2
-                 (strip-python2-variant python-cryptography))))
-    (package
-      (inherit crypto)
-      (version "3.3.2")
-      (source (origin
-                (method url-fetch)
-                (uri (pypi-uri "cryptography" version))
-                (sha256
-                 (base32
-                  "1vcvw4lkw1spiq322pm1256kail8nck6bbgpdxx3pqa905wd6q2s"))))
-      (arguments
-       `(#:python ,python-2
-         #:phases
-         (modify-phases %standard-phases
-           ;; The sanity-check attempts attempts to import the non-existent
-           ;; modules "_openssl" and "_padding".
-           (delete 'sanity-check))))
-      (native-inputs
-       (list python2-cryptography-vectors python2-hypothesis python2-pretend
-             python2-pytz python2-pytest))
-      (inputs (list openssl))
-      (propagated-inputs
-       (modify-inputs (package-propagated-inputs crypto)
-         (prepend python2-ipaddress
-                  python2-backport-ssl-match-hostname
-                  python2-enum34))))))
 
 ;; This is the last version which is compatable with python-cryptography < 35.
 (define-public python-pyopenssl
@@ -718,9 +659,6 @@ message digests and key derivation functions.")
 library.")
     (license license:asl2.0)))
 
-(define-public python2-pyopenssl
-  (package-with-python2 python-pyopenssl))
-
 (define-public python-ed25519
   (package
     (name "python-ed25519")
@@ -737,9 +675,6 @@ library.")
     (synopsis "Ed25519 public-key signatures")
     (description "Ed25519 public-key signatures")
     (license license:expat)))
-
-(define-public python2-ed25519
-  (package-with-python2 python-ed25519))
 
 (define-public python-axolotl-curve25519
   (package
@@ -761,9 +696,6 @@ libaxolotl-android.  At the moment this wrapper is meant for use by
 python-axolotl.")
     (license (list license:gpl3    ; Most files
                    license:bsd-3)))) ; curve/curve25519-donna.c
-
-(define-public python2-axolotl-curve25519
-  (package-with-python2 python-axolotl-curve25519))
 
 (define-public python-axolotl
   (package
@@ -795,29 +727,6 @@ is a ratcheting forward secrecy protocol that works in synchronous and
 asynchronous messaging environments.")
     (license license:gpl3)))
 
-(define-public python2-axolotl
-  (package-with-python2 python-axolotl))
-
-;; SlowAES isn't compatible with Python 3.
-(define-public python2-slowaes
-  (package
-    (name "python2-slowaes")
-    (version "0.1a1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "slowaes" version))
-       (sha256
-        (base32
-         "02dzajm83a7lqgxf6r3hgj64wfmcxz8gs4nvgxpvj5n19kjqlrc3"))))
-    (build-system python-build-system)
-    (arguments `(#:python ,python-2))
-    (home-page "http://code.google.com/p/slowaes/")
-    (synopsis "Implementation of AES in Python")
-    (description "This package contains an implementation of AES in Python.
-This implementation is slow (hence the project name) but still useful when
-faster ones are not available.")
-    (license license:asl2.0)))
 
 (define-public python-pyaes
   (package
@@ -837,9 +746,6 @@ faster ones are not available.")
 AES block cipher algorithm and the common modes of operation (CBC, CFB, CTR,
 ECB and OFB).")
     (license license:expat)))
-
-(define-public python2-pyaes
-  (package-with-python2 python-pyaes))
 
 (define-public python-asn1crypto
   (package
@@ -867,9 +773,6 @@ ECB and OFB).")
 for private keys, public keys, certificates, CRL, OCSP, CMS, PKCS#3, PKCS#7,
 PKCS#8, PKCS#12, PKCS#5, X.509 and TSP.")
     (license license:expat)))
-
-(define-public python2-asn1crypto
-  (package-with-python2 python-asn1crypto))
 
 (define-public python-pynacl
   (package
@@ -965,9 +868,6 @@ of improving usability, security and speed.")
 Python.")
     (license license:asl2.0)))
 
-(define-public python2-ecpy
-  (package-with-python2 python-ecpy))
-
 (define-public python-josepy
   (package
     (name "python-josepy")
@@ -999,9 +899,6 @@ Python.")
     (description "This package provides a Python implementation of the JOSE
 protocol (Javascript Object Signing and Encryption).")
     (license license:asl2.0)))
-
-(define-public python2-josepy
-  (package-with-python2 python-josepy))
 
 (define pycryptodome-unbundle-tomcrypt-snippet
   #~(begin
@@ -1074,9 +971,6 @@ This package provides drop-in compatibility with PyCrypto.  It is one of two
 PyCryptodome variants, the other being python-pycryptodomex.")
     (license (list license:bsd-2
                    license:public-domain)))) ; code inherited from PyCrypto
-
-(define-public python2-pycryptodome
-  (package-with-python2 python-pycryptodome))
 
 (define-public python-pycryptodomex
   (package (inherit python-pycryptodome)
@@ -1152,15 +1046,7 @@ extensions to Python's httplib, urllib, and xmlrpclib; unforgeable HMAC'ing
 AuthCookies for web session management; FTP/TLS client and server; S/MIME;
 M2Crypto can also be used to provide TLS for Twisted.  Smartcards supported
 through the Engine interface.")
-    (properties `((python2-variant . ,(delay python2-m2crypto))))
     (license license:expat)))
-
-(define-public python2-m2crypto
-  (let ((m2crypto (package-with-python2
-                   (strip-python2-variant python-m2crypto))))
-    (package/inherit m2crypto
-             (propagated-inputs
-              `(("python2-typing" ,python2-typing))))))
 
 (define-public python-pykeepass
   (package
@@ -1343,9 +1229,6 @@ In the simplest case, this means host name verification.  However,
 service_identity implements RFC 6125 fully and plans to add other
 relevant RFCs too.")
     (license license:expat)))
-
-(define-public python2-service-identity
-  (package-with-python2 python-service-identity))
 
 (define-public python-hkdf
   (package

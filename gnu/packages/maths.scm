@@ -5,7 +5,7 @@
 ;;; Copyright © 2014-2022 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2014 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2014 Mathieu Lirzin <mathieu.lirzin@openmailbox.org>
-;;; Copyright © 2015–2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015–2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
@@ -152,6 +152,7 @@
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages shells)
   #:use-module (gnu packages sphinx)
+  #:use-module (gnu packages swig)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tex)
@@ -1915,34 +1916,34 @@ with the provided training tools.")
 (define-public nlopt
   (package
     (name "nlopt")
-    (version "2.4.2")
+    (version "2.7.1")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "http://ab-initio.mit.edu/nlopt/nlopt-"
-                                  version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/stevengj/nlopt/")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
-               (base32 "12cfkkhcdf4zmb6h7y6qvvdvqjs2xf9sjpa3rl3bq76px4yn76c0"))))
-    (build-system gnu-build-system)
+               (base32 "1xpdza28i8w441fwv6a5f3qk4zi7ys6ws9fx6kr5ny27dfdz6rr1"))))
+    (build-system cmake-build-system)
     (arguments
-     `(;; Shared libraries are not built by default.  They are required to
-       ;; build the Guile, Octave, and Python bindings.
-       #:configure-flags '("--enable-shared")
-
-       #:phases
+     `(#:phases
        (modify-phases %standard-phases
          (add-before 'configure 'set-libnlopt-file-name
            (lambda* (#:key outputs #:allow-other-keys)
              ;; Make sure the Scheme module refers to the library by its
-             ;; absolute file name (we cannot do that from a snippet
-             ;; because the expansion of @libdir@ contains
-             ;; ${exec_prefix}.)
+             ;; absolute file name.
              (let ((out (assoc-ref outputs "out")))
-               (substitute* "swig/nlopt.scm.in"
-                 (("libnlopt")
-                  (string-append out "/lib/libnlopt")))
-               #t))))))
-    (inputs (list guile-2.0))
-    (native-inputs (list pkg-config))
+               (substitute* "src/swig/nlopt-guile.i"
+                 (("\"nlopt_guile\"")
+                  (format #f "~s"
+                          `(format #f "~anlopt_guile"
+                                   (if (getenv "NLOPT_UNINSTALLED")
+                                       ""
+                                       ,(format #f "~a/lib/guile/3.0/extensions/" out))))))
+               (setenv "NLOPT_UNINSTALLED" "1")))))))
+    (inputs (list guile-3.0 octave python))
+    (native-inputs (list pkg-config swig))
     (home-page "http://ab-initio.mit.edu/wiki/")
     (synopsis "Library for nonlinear optimization")
     (description "NLopt is a library for nonlinear optimization, providing a
@@ -3334,9 +3335,6 @@ lightweight and fast.  Kiwi ranges from 10x to 500x faster than the original
 Cassowary solver with typical use cases gaining a 40x improvement.  Memory
 savings are consistently > 5x.")
     (license license:bsd-3)))
-
-(define-public python2-kiwisolver
-  (package-with-python2 python-kiwisolver))
 
 (define-public slepc
   (package
@@ -5365,7 +5363,6 @@ in finite element programs.")
        ;; Disable it for now.
        ;;("octave" ,octave-cli)
        ("python" ,python-2) ; print syntax
-       ;; ("python2-numpy" ,python2-numpy) ; only required for the tests
        ("zlib" ,zlib)))
     (arguments
      `(;; The 'share/flann/octave' contains a .mex file, which is an ELF file

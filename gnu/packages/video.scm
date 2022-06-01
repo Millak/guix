@@ -2464,7 +2464,7 @@ YouTube.com and many more sites.")
 (define-public yt-dlp
   (package/inherit youtube-dl
     (name "yt-dlp")
-    (version "2022.02.04")
+    (version "2022.05.18")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/yt-dlp/yt-dlp/"
@@ -2472,7 +2472,7 @@ YouTube.com and many more sites.")
                                   version "/yt-dlp.tar.gz"))
               (sha256
                (base32
-                "1qx8sx47lzyrcl00r2657zjaq0mwfbzjyfnv5lr5dlm552f13pf8"))
+                "0wiiwqj8m4z6lladmrsp9354ddwlhn2gf0b39j271001g6fyi82r"))
               (snippet
                '(begin
                   ;; Delete the pre-generated files, except for the man page
@@ -2482,8 +2482,7 @@ YouTube.com and many more sites.")
                                           ;;"yt-dlp.1"
                                           "completions/bash/yt-dlp"
                                           "completions/fish/yt-dlp.fish"
-                                          "completions/zsh/_yt-dlp"))
-                  #t))))
+                                          "completions/zsh/_yt-dlp"))))))
     (arguments
      (substitute-keyword-arguments (package-arguments youtube-dl)
        ((#:tests? _) #t)
@@ -2494,8 +2493,7 @@ YouTube.com and many more sites.")
              (lambda _
                (substitute* "yt_dlp/postprocessor/ffmpeg.py"
                  (("\\.get_param\\('ffmpeg_location'\\)" match)
-                  (format #f "~a or '~a'" match (which "ffmpeg"))))
-               #t))
+                  (format #f "~a or '~a'" match (which "ffmpeg"))))))
            (replace 'build-generated-files
              (lambda _
                ;; Avoid the yt-dlp.1 target, which requires pandoc.
@@ -2507,15 +2505,16 @@ YouTube.com and many more sites.")
                    (("'etc/")
                     (string-append "'" prefix "/etc/"))
                    (("'share/")
-                    (string-append "'" prefix "/share/"))))
-               #t))
+                    (string-append "'" prefix "/share/"))))))
            (delete 'install-completion)
            (replace 'check
              (lambda* (#:key tests? #:allow-other-keys)
                (when tests?
                  (invoke "pytest" "-k" "not download"))))))))
     (inputs
-     `(("python-mutagen" ,python-mutagen)
+     `(("python-brotli" ,python-brotli)
+       ("python-certifi" ,python-certifi)
+       ("python-mutagen" ,python-mutagen)
        ("python-pycryptodomex" ,python-pycryptodomex)
        ("python-websockets" ,python-websockets)
        ,@(package-inputs youtube-dl)))
@@ -2529,103 +2528,6 @@ focus on adding new features while keeping up-to-date with the
 original project.")
     (properties '((release-monitoring-url . "https://pypi.org/project/yt-dlp/")))
     (home-page "https://github.com/yt-dlp/yt-dlp")))
-
-(define-public youtube-dl-gui
-  (package
-    (name "youtube-dl-gui")
-    (version "0.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "Youtube-DLG" version))
-       (sha256
-        (base32
-         "1bvq2wyn6az59vpdy04dh68fs8m2qzz948xhphibbcpwpcdk00cd"))))
-    (build-system python-build-system)
-    (arguments
-     ;; In Guix, wxpython has not yet been packaged for Python 3.
-     `(#:python ,python-2
-       ;; This package has no tests.
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'patch-source
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; The youtube-dl-gui program lets you configure options.  Some of
-             ;; them are problematic, so we change their defaults.
-             (substitute* "youtube_dl_gui/optionsmanager.py"
-               ;; When this is true, the builder process will try (and fail) to
-               ;; write logs to the builder user's home directory.
-               (("'enable_log': True") "'enable_log': False")
-               ;; This determines which youtube-dl program youtube-dl-gui will
-               ;; run.  If we don't set this, then youtube-dl-gui might download
-               ;; an arbitrary copy from the Internet into the user's home
-               ;; directory and run it, so let's make sure youtube-dl-gui uses
-               ;; the youtube-dl from the inputs by default.
-               (("'youtubedl_path': self.config_path")
-                (string-append "'youtubedl_path': '"
-                               (assoc-ref inputs "youtube-dl")
-                               "/bin'"))
-               ;; When this is True, when youtube-dl-gui is finished downloading
-               ;; a file, it will try (and possibly fail) to open the directory
-               ;; containing the downloaded file.  This can fail because it
-               ;; assumes that xdg-open is in PATH.  Unfortunately, simply
-               ;; adding xdg-utils to the propagated inputs is not enough to
-               ;; make this work, so for now we set the default to False.
-               (("'open_dl_dir': True") "'open_dl_dir': False"))
-             ;; The youtube-dl program from the inputs is actually a wrapper
-             ;; script written in bash, so attempting to invoke it as a python
-             ;; script will fail.
-             (substitute* "youtube_dl_gui/downloaders.py"
-               (("cmd = \\['python', self\\.youtubedl_path\\]")
-                "cmd = [self.youtubedl_path]"))
-             ;; Use relative paths for installing data files so youtube-dl-gui
-             ;; installs the files relative to its prefix in the store, rather
-             ;; than relative to /.  Also, instead of installing data files into
-             ;; $prefix/usr/share, install them into $prefix/share for
-             ;; consistency (see: (standards) Directory Variables).
-             (substitute* "setup.py"
-               (("= '/usr/share") "= 'share"))
-             ;; Update get_locale_file() so it finds the installed localization
-             ;; files.
-             (substitute* "youtube_dl_gui/utils.py"
-               (("os\\.path\\.join\\('/usr', 'share'")
-                (string-append "os.path.join('"
-                               (assoc-ref %outputs "out")
-                               "', 'share'")))
-             #t))
-         (add-after 'install 'create-desktop-file
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (applications (string-append out "/share/applications")))
-               (mkdir-p applications)
-               (call-with-output-file
-                   (string-append applications "/youtube-dl-gui.desktop")
-                 (lambda (file)
-                   (format
-                    file
-                    "[Desktop Entry]~@
-                     Name=Youtube-dl GUI~@
-                     Comment=Graphical interface to download video with youtube-dl~@
-                     Exec=youtube-dl-gui~@
-                     TryExec=youtube-dl-gui~@
-                     Terminal=false~@
-                     Icon=youtube-dl-gui~@
-                     Type=Application~@
-                     Categories=AudioVideo;Audio;Video;Network~%")))
-               #t))))))
-    (native-inputs
-     (list gettext-minimal))
-    (inputs
-     (list python2-twodict python2-wxpython youtube-dl))
-    (home-page "https://github.com/MrS0m30n3/youtube-dl-gui")
-    (synopsis
-     "GUI (Graphical User Interface) for @command{youtube-dl}")
-    (description
-     "Youtube-dlG is a GUI (Graphical User Interface) for
-@command{youtube-dl}.  You can use it to download videos from YouTube and any
-other site that youtube-dl supports.")
-    (license license:unlicense)))
 
 (define-public you-get
   (package
@@ -3500,7 +3402,7 @@ OBS audio sources.")
 (define-public obs-websocket
   (package
     (name "obs-websocket")
-    (version "4.9.0")
+    (version "4.9.1")
     (source
      (origin
        (method git-fetch)
@@ -3510,7 +3412,7 @@ OBS audio sources.")
              (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1r47861ma1s3998clahbnbc216wcf706b1ps514k5p28h511l5w0"))))
+        (base32 "0giwhm0rbc578qng4invqqma935zzjlf05msz1gx986aqk654s7k"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ;no tests
@@ -3520,10 +3422,10 @@ OBS audio sources.")
            (lambda* _
              (substitute* "CMakeLists.txt"
                ;; Remove lines that set writeable permissions on outputs.
+               (("PERMISSIONS [^)]*") "")
                (("set\\(CMAKE_INSTALL_DEFAULT_DIRECTORY_PERMISSIONS") "")
-               (("OWNER_READ.*\\)") "")
-               (("PERMISSIONS") ")"))
-             #t)))))
+               ;; Ug^WClever hack to comment out the next line, which is ‘)’.
+               (("(OWNER|GROUP|WORLD)_READ .*") "#")))))))
     (inputs
      (list obs qtbase-5))
     (home-page "https://github.com/Palakis/obs-websocket")

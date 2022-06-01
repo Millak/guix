@@ -312,7 +312,9 @@ used in the image."
         (cond
          ((member 'esp flags) "0xEF")
          ((string-prefix? "ext" file-system) "0x83")
-         ((string=? file-system "vfat") "0x0E")
+         ((or (string=? file-system "vfat")
+              (string=? file-system "fat16")) "0x0E")
+         ((string=? file-system "fat32") "0x0C")
          (else
           (raise (condition
                   (&message
@@ -329,7 +331,9 @@ used in the image."
         (cond
          ((member 'esp flags) "U")
          ((string-prefix? "ext" file-system) "L")
-         ((string=? file-system "vfat") "F")
+         ((or (string=? file-system "vfat")
+              (string=? file-system "fat16")
+              (string=? file-system "fat32")) "F")
          (else
           (raise (condition
                   (&message

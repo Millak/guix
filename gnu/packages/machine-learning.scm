@@ -1144,54 +1144,7 @@ computing environments.")
     (description
      "Scikit-learn provides simple and efficient tools for data mining and
 data analysis.")
-    (properties `((python2-variant . ,(delay python2-scikit-learn))))
     (license license:bsd-3)))
-
-;; scikit-learn 0.22 and later only supports Python 3, so we stick with
-;; an older version here.
-(define-public python2-scikit-learn
-  (let ((base (package-with-python2 (strip-python2-variant python-scikit-learn))))
-    (package
-      (inherit base)
-      (version "0.20.4")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/scikit-learn/scikit-learn")
-                      (commit version)))
-                (file-name (git-file-name "python-scikit-learn" version))
-                (sha256
-                 (base32
-                  "08zbzi8yx5wdlxfx9jap61vg1malc9ajf576w7a0liv6jvvrxlpj"))))
-      (arguments
-       `(#:python ,python-2
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'build 'build-ext
-             (lambda _ (invoke "python" "setup.py" "build_ext" "--inplace")))
-           (replace 'check
-             (lambda* (#:key tests? #:allow-other-keys)
-               (when tests?
-                 ;; Restrict OpenBLAS threads to prevent segfaults while testing!
-                 (setenv "OPENBLAS_NUM_THREADS" "1")
-
-                 ;; Some tests require write access to $HOME.
-                 (setenv "HOME" "/tmp")
-
-                 (invoke "pytest" "sklearn" "-m" "not network"
-                         "-k"
-                         (string-append
-                          ;; This test tries to access the internet.
-                          "not test_load_boston_alternative"
-                          ;; This test fails for unknown reasons
-                          " and not test_rank_deficient_design"))))))))
-      (inputs
-       (list openblas))
-      (native-inputs
-       (list python2-pytest python2-pandas ;for tests
-             python2-cython))
-      (propagated-inputs
-       (list python2-numpy python2-scipy python2-joblib)))))
 
 (define-public python-threadpoolctl
   (package
@@ -1389,9 +1342,6 @@ forward-mode differentiation, and the two can be composed arbitrarily.  The
 main intended application of Autograd is gradient-based optimization.")
       (license license:expat))))
 
-(define-public python2-autograd
-  (package-with-python2 python-autograd))
-
 (define-public lightgbm
   (package
     (name "lightgbm")
@@ -1477,38 +1427,6 @@ the following advantages:
 such as online, hashing, allreduce, reductions, learning2search, active, and
 interactive learning.")
     (license license:bsd-3)))
-
-(define-public python2-fastlmm
-  (package
-    (name "python2-fastlmm")
-    (version "0.2.21")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "fastlmm" version ".zip"))
-       (sha256
-        (base32
-         "1q8c34rpmwkfy3r4d5172pzdkpfryj561897z9r3x22gq7813x1m"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f ; some test files are missing
-       #:python ,python-2)) ; only Python 2.7 is supported
-    (propagated-inputs
-     (list python2-numpy
-           python2-scipy
-           python2-matplotlib
-           python2-pandas
-           python2-scikit-learn
-           python2-pysnptools))
-    (native-inputs
-     (list unzip python2-cython python2-mock python2-nose))
-    (home-page "http://research.microsoft.com/en-us/um/redmond/projects/mscompbio/fastlmm/")
-    (synopsis "Perform genome-wide association studies on large data sets")
-    (description
-     "FaST-LMM, which stands for Factored Spectrally Transformed Linear Mixed
-Models, is a program for performing both single-SNP and SNP-set genome-wide
-association studies (GWAS) on extremely large data sets.")
-    (license license:asl2.0)))
 
 (define-public python-hyperopt
   (package

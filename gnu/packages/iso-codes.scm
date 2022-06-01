@@ -96,9 +96,6 @@ that is concerned with representation of names for languages and language
 groups.")
     (license license:agpl3+)))
 
-(define-public python2-iso639
-  (package-with-python2 python-iso639))
-
 (define-public python-iso3166
   (package
     (name "python-iso3166")
@@ -115,6 +112,3 @@ groups.")
     (synopsis "Self-contained ISO 3166-1 country definitions")
     (description "This package provides the ISO 3166-1 country definitions.")
     (license license:expat)))
-
-(define-public python2-iso3166
-  (package-with-python2 python-iso3166))

@@ -816,44 +816,6 @@ useful for C++.")
       (modify-inputs (package-propagated-inputs glibmm)
         (replace "libsigc++" libsigc++-2)))))
 
-(define-public python2-pygobject-2
-  (package
-    (name "python2-pygobject")
-    ;; This was the last version to declare the 2.0 platform number, i.e. its
-    ;; pkg-config files were named pygobject-2.0.pc
-    (version "2.28.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://gnome/sources/pygobject/"
-                           (version-major+minor version)
-                           "/pygobject-" version ".tar.xz"))
-       (sha256
-        (base32
-         "0nkam61rsn7y3wik3vw46wk5q2cjfh2iph57hl9m39rc8jijb7dv"))
-       (patches (search-patches "python2-pygobject-2-deprecation.patch"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     `(("which" ,which)
-       ("glib-bin" ,glib "bin")         ;for tests: glib-compile-schemas
-       ("pkg-config" ,pkg-config)
-       ("dbus" ,dbus)))                 ;for tests
-    (inputs
-     `(("python" ,python-2)
-       ("glib"   ,glib)
-       ("python2-pycairo" ,python2-pycairo)
-       ("gobject-introspection" ,gobject-introspection)))
-    (propagated-inputs
-     (list libffi))             ;mentioned in pygobject-2.0.pc
-    (arguments
-     `(#:tests? #f                      ;segfaults during tests
-       #:configure-flags '("LIBS=-lcairo-gobject")))
-    (home-page "https://pypi.org/project/PyGObject/")
-    (synopsis "Python bindings for GObject")
-    (description
-     "Python bindings for GLib, GObject, and GIO.")
-    (license license:lgpl2.1+)))
-
 (define-public python-pygobject
   (package
     (name "python-pygobject")
@@ -902,37 +864,7 @@ useful for C++.")
     (synopsis "Python bindings for GObject")
     (description
      "Python bindings for GLib, GObject, and GIO.")
-    (license license:lgpl2.1+)
-    (properties `((python2-variant . ,(delay python2-pygobject))))))
-
-(define-public python2-pygobject
-  (let ((base (strip-python2-variant python-pygobject)))
-    (package/inherit base
-      (name "python2-pygobject")
-
-      ;; Note: We use python-build-system here, because Meson only supports
-      ;; Python 3, and needs PYTHONPATH etc set up correctly, which makes it
-      ;; difficult to use for Python 2 projects.
-      (build-system python-build-system)
-      (arguments
-       `(#:python ,python-2
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'delete-broken-tests
-             (lambda _
-               ;; FIXME: this test freezes and times out.
-               (delete-file "tests/test_mainloop.py")
-               ;; FIXME: this test fails with this kind of error:
-               ;; AssertionError: <Handlers.SIG_IGN: 1> != <built-in function default_int_handler
-               (delete-file "tests/test_ossig.py")
-               #t)))))
-      (inputs
-       `(("python-pycairo" ,python2-pycairo)
-         ("gobject-introspection" ,gobject-introspection)))
-      (native-inputs
-       `(("glib-bin" ,glib "bin")
-         ("pkg-config" ,pkg-config)
-         ("python-pytest" ,python2-pytest))))))
+    (license license:lgpl2.1+)))
 
 (define-public perl-glib
   (package

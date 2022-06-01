@@ -12,7 +12,7 @@
 ;;; Copyright © 2017, 2018, 2019, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017, 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2017, 2020, 2021 Brendan Tildesley <mail@brendan.scot>
-;;; Copyright © 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018, 2020–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2018 Stefan Stefanović <stefanx2ovic@gmail.com>
 ;;; Copyright © 2019 Reza Alizadeh Majd <r.majd@pantherx.org>
@@ -27,7 +27,7 @@
 ;;; Copyright © 2021 Robby Zambito <contact@robbyzambito.me>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -46,12 +46,13 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages freedesktop)
-  #:use-module ((guix licenses) #:prefix license:)
-  #:use-module (guix utils)
-  #:use-module (guix packages)
+  #:use-module (guix bzr-download)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
+  #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix packages)
+  #:use-module (guix utils)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
@@ -959,9 +960,6 @@ manager for the current system.")
 Python.")
     (license license:lgpl2.0)))
 
-(define-public python2-pyxdg
-  (package-with-python2 python-pyxdg))
-
 (define-public wayland
   (package
     (name "wayland")
@@ -1672,7 +1670,7 @@ wish to perform colour calibration.")
 (define-public libfprint
   (package
     (name "libfprint")
-    (version "1.94.2")
+    (version "1.94.4")
     (source
      (origin
        (method git-fetch)
@@ -1681,7 +1679,7 @@ wish to perform colour calibration.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0y3wz5hlxpnvqj67bihvzfi4dwx2m2nx9byppf4jjd80x0j2630m"))))
+        (base32 "1wfd2svsq26wizhsaifnr74havswbc1rlfm79b36yrhw9n7c3jqb"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags
@@ -1714,7 +1712,7 @@ software.")
 (define-public fprintd
   (package
     (name "fprintd")
-    (version "1.94.1")
+    (version "1.94.2")
     (source
      (origin
        (method git-fetch)
@@ -1723,7 +1721,7 @@ software.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "015j8ikyv48qz8vn6kfvkwwg5ydzppl1lzf7vkali9ymywywfxsw"))))
+        (base32 "015k3kc4fmas0vc2b21qzq7kvdc9x6lcqvjhbvy6m84pkhhmry3q"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags
@@ -1762,17 +1760,18 @@ software.")
                      ((".*pam_wrapper.*") "")))))
            #:tests? #f))                    ; XXX depend on unpackaged packages
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")         ; for glib-genmarshal
-       ("perl" ,perl)                   ; for pod2man
-       ("pkg-config" ,pkg-config)))
-       ;; For tests.
-       ;;("pam_wrapper" ,pam_wrapper)
-       ;;("python-pycairo" ,python-pycairo)
-       ;;("python-dbus" ,python-dbus)
-       ;;("python-dbusmock" ,python-dbusmock)
-       ;;("python-pygobject" ,python-pygobject)
-       ;;("python-pypamtest" ,python-pypamtest)
+     (list gettext-minimal
+           `(,glib "bin")               ; for glib-genmarshal
+           perl                         ; for pod2man
+           pkg-config
+           ;; For tests.
+           python))                     ; needed unconditionally
+           ;; pam_wrapper
+           ;; python-pycairo
+           ;; python-dbus
+           ;; python-dbusmock
+           ;; python-pygobject
+           ;; python-pypamtest
     (inputs
      (list dbus-glib
            elogind
@@ -2172,80 +2171,61 @@ useful with system integration.")
     (license license:gpl3)))
 
 (define-public libappindicator
-  (package
-    (name "libappindicator")
-    (version "12.10.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://launchpad.net/libappindicator/"
-             (version-major+minor version) "/" version
-             "/+download/libappindicator-" version ".tar.gz"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; Fix 'multiple definitions' error from GCC 10
-           (substitute* "bindings/python/appindicatormodule.c"
-             (("^#include <pygobject.h>" all)
-              (string-append "#define NO_IMPORT_PYGOBJECT\n" all)))))
-       (sha256
-        (base32
-         "17xlqd60v0zllrxp8bgq3k5a1jkj0svkqn8rzllcyjh8k0gpr46m"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     `(("dbus-test-runner" ,dbus-test-runner)
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("pkg-config" ,pkg-config)
-       ("xvfb" ,xorg-server-for-tests)))
-    (inputs
-     `(("dbus-glib" ,dbus-glib)
-       ("libindicator" ,libindicator)
-       ("python@2" ,python-2)
-       ("python2-pygtk" ,python2-pygtk)
-       ("python2-pygobject-2" ,python2-pygobject-2)
-       ;; ("mono" ,mono) ; requires non-packaged gapi
-       ("vala" ,vala)))
-    (propagated-inputs
-     (list gtk+ libdbusmenu))
-    (arguments
-     ;; FIXME: do not hardcode gtk version
-     `(#:configure-flags '("--with-gtk=3")
-       #:make-flags '("CFLAGS=-Wno-error")
-       #:tests? #f ; One test does not pass (it succeeds when it should fail).
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'fix-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "docs/reference/Makefile.in"
-               (("/bin/sh") (which "sh")))
-             (substitute* "tests/Makefile.in"
-               (("/bin/sh") (which "sh"))
-               (("#!/bin/bash") (string-append "#!" (which "bash")))
-               (("/usr") (string-append (assoc-ref inputs "dbus-test-runner"))))
-             (substitute* "bindings/python/Makefile.in"
-               (("-lappindicator") "-lappindicator3"))
-             #t))
-         (add-after 'unpack 'fix-codegen-path
-           (lambda _
-             (substitute* "configure"
-               (("PYGTK_CODEGEN=.*") "PYGTK_CODEGEN=pygtk-codegen-2.0\n"))
-             #t))
-         (add-after 'build 'build-bindings
-           (lambda _
-             (invoke "make" "-C" "bindings/python")
-             #t))
-         (add-after 'install 'install-bindings
-           (lambda _
-             (invoke "make" "-C" "bindings/python" "install")
-             #t)))))
-    (home-page "https://launchpad.net/libappindicator")
-    (synopsis "Allow applications to export a menu into the Unity menu bar")
-    (description "A library to allow applications to export a menu, originally
+  ;; Use the latest commit as the latest official release from 2012 uses
+  ;; Python 2.
+  (let ((revision "0")
+        ;; Corresponds to the 12.10.1+20.10.20200706.1-0ubuntu1 tag.
+        (bazaar-revision "298"))
+    (package
+      (name "libappindicator")
+      (version (string-append "12.10.1-" revision "-" bazaar-revision))
+      (source (origin
+                (method bzr-fetch)
+                (uri (bzr-reference
+                      (url "lp:libappindicator")
+                      (revision bazaar-revision)))
+                (file-name (string-append name "-" version "-checkout"))
+                (sha256
+                 (base32
+                  "0jkc1xdsa7r71vrr2l7wgkarvzvwrpwn0m8m4ipaqlzfa5d45n3a"))))
+      (build-system gnu-build-system)
+      (native-inputs
+       (list autoconf
+             automake
+             at-spi2-core
+             dbus-test-runner
+             `(,glib "bin")
+             gnome-common
+             gobject-introspection
+             gtk-doc
+             libtool
+             pkg-config
+             vala
+             which
+             xorg-server-for-tests))
+      (inputs
+       (list dbus-glib))
+      (propagated-inputs
+       (list gtk+ libdbusmenu))
+      (arguments
+       `(#:configure-flags '("--with-gtk=3")
+         #:make-flags '("CFLAGS=-Wno-error")
+         #:tests? #f ; One test does not pass (it succeeds when it should fail).
+         #:phases
+         (modify-phases %standard-phases
+           (add-before 'configure 'fix-paths
+             (lambda* (#:key native-inputs inputs #:allow-other-keys)
+               (substitute* "tests/Makefile.in"
+                 (("/bin/sh") (which "sh"))
+                 (("/bin/bash") (which "bash"))
+                 (("/usr/(share/dbus-test-runner/session.conf)" _ tail)
+                  (search-input-file (or native-inputs inputs) tail))))))))
+      (home-page "https://launchpad.net/libappindicator")
+      (synopsis "Allow applications to export a menu into the Unity menu bar")
+      (description "A library to allow applications to export a menu, originally
 into the Unity menu bar.  Based on KSNI, it also works in KDE and will
 fallback to generic Systray support if none of those are available.")
-    (license license:lgpl2.1+)))
+      (license license:lgpl2.1+))))
 
 (define-public libportal
   (package

@@ -846,7 +846,7 @@ FILES must be a list of name/file-like object pairs."
                           (append config extensions)))
                 (description
                  "Populate @file{/run/setuid-programs} with the specified
-executables, making them setuid-root.")))
+executables, making them setuid and/or setgid.")))
 
 (define (packages->profile-entry packages)
   "Return a system entry for the profile containing PACKAGES."

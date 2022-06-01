@@ -1,0 +1,18 @@
+This patch fixing a build failure has been cherry-picked from upstream.
+Originally submitted as pull request by Erik Šabič.
+See also <https://github.com/Wilfred/helpful/pull/296>.
+diff --git a/test/helpful-unit-test.el b/test/helpful-unit-test.el
+index a07aa8e..8a95129 100644
+--- a/test/helpful-unit-test.el
++++ b/test/helpful-unit-test.el
+@@ -119,7 +119,9 @@ bar")))
+   (should
+    (equal
+     (helpful--docstring #'test-foo-advised t)
+-    "Docstring here too.")))
++    (if (version< emacs-version "28")
++        "Docstring here too."
++    "Docstring here too.\n\nThis function has :around advice: `ad-Advice-test-foo-advised'."))))
+ 
+ (defun test-foo-no-docstring ()
+   nil)

@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016 John Darrington <jmd@gnu.org>
-;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 by Amar Singh <nly@disroot.org>
 ;;; Copyright © 2020 R Veera Kumar <vkor@vkten.in>
@@ -39,6 +39,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
@@ -70,6 +71,41 @@
   #:use-module (guix build-system python)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1))
+
+(define-public calceph
+  (package
+    (name "calceph")
+    (version  "3.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://www.imcce.fr/content/medias/recherche/equipes/asd/calceph/calceph-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "078wn773pwf4pg9m0h0l00g4aq744pq1rb6kz6plgdpzp3hhpk1k"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list gfortran))
+    (home-page "https://www.imcce.fr/inpop/calceph")
+    (properties `((release-monitoring-url . ,home-page)))
+    (synopsis "Astronomical library to access the binary planetary ephemeris files")
+    (description
+     "The CALCEPH Library is designed to access the binary planetary ephemeris files,
+such INPOPxx and JPL DExxx ephemeris files, (called @code{original JPL binary} or
+@code{INPOP 2.0 or 3.0 binary} ephemeris files in the next sections) and the SPICE
+kernel files (called @code{SPICE} ephemeris files in the next sections).  At the
+moment, supported SPICE files are:
+
+@itemize
+@item text Planetary Constants Kernel (KPL/PCK) files;
+@item binary PCK (DAF/PCK) files;
+@item binary SPK (DAF/SPK) files containing segments of type 1, 2, 3, 5, 8, 9,
+12, 13, 17, 18, 19, 20, 21, 102, 103 and 120;
+@item meta kernel (KPL/MK) files;
+@item frame kernel (KPL/FK) files (only basic support).
+@end itemize\n")
+    (license license:cecill)))
 
 (define-public cfitsio
   (package
@@ -107,21 +143,20 @@ in FITS files.")
 (define-public python-fitsio
   (package
     (name "python-fitsio")
-    (version "1.1.5")
+    (version "1.1.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "fitsio" version))
        (sha256
-        (base32 "1llql2i6xr9lkdl81jx5nvz80kspamvira90546y32ldy551hq1l"))
+        (base32 "0q8siijys9kmjnqvyipjgh6hkhf4fwvr1swhsf4if211i9b0m1xy"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove the bundled cfitsio
         `(begin
            (delete-file-recursively "cfitsio3490")
            (substitute* "MANIFEST.in"
-             (("recursive-include cfitsio3490.*$\n") ""))
-           #t))))
+             (("recursive-include cfitsio3490.*$\n") ""))))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -748,13 +783,13 @@ astronomy and astrophysics.")
 (define-public python-astroquery
   (package
     (name "python-astroquery")
-    (version "0.4.5")
+    (version "0.4.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astroquery" version))
        (sha256
-        (base32 "06xy0qzqmps6z5vwfkh5fkhr151p7g94r2j0mvp1rc8zns22y010"))))
+        (base32 "1vhkzsqlgn3ji5by2rdf2gwklhbyzvpzb1iglalhqjkkrdaaaz1h"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1366,13 +1401,13 @@ Moon position, etc.")
 (define-public python-jplephem
   (package
     (name "python-jplephem")
-    (version "2.16")
+    (version "2.17")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "jplephem" version))
        (sha256
-        (base32 "1xvivnsywjaf5lxn3kyg2jhhq393gcwkjrl634m8dn52ypidrcdb"))))
+        (base32 "09xaibxnwbzzs3x9g3ibqa2la17z3r6in93321glh02dbibfbip1"))))
     (build-system python-build-system)
     (arguments
      `(#:phases

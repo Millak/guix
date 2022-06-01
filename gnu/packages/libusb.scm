@@ -300,9 +300,6 @@ wrapper for accessing libusb-1.0.")
      "PyUSB aims to be an easy to use Python module to access USB devices.")
     (license license:bsd-3)))
 
-(define-public python2-pyusb
-  (package-with-python2 python-pyusb))
-
 (define-public python-capablerobot-usbhub
   (package
     (name "python-capablerobot-usbhub")
@@ -624,6 +621,3 @@ HID-Class devices.")
                    (license:non-copyleft
                     "https://github.com/trezor/cython-hidapi/blob/master/LICENSE-orig.txt"
                     "You are free to use cython-hidapi code for any purpose.")))))
-
-(define-public python2-hidapi
-  (package-with-python2 python-hidapi))

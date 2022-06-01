@@ -17,7 +17,7 @@
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Baptiste Strazzul <bstrazzull@hotmail.fr>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -96,356 +96,6 @@
 (define-public mozjs
   (package
     (name "mozjs")
-    (version "17.0.0")
-    (source (origin
-             (method url-fetch)
-             (uri (string-append
-                   "https://ftp.mozilla.org/pub/mozilla.org/js/"
-                   name version ".tar.gz"))
-             (sha256
-              (base32
-               "1fig2wf4f10v43mqx67y68z6h77sy900d1w0pz9qarrqx57rc7ij"))
-             (patches (search-patches "mozjs17-aarch64-support.patch"))
-             (modules '((guix build utils)))
-             (snippet
-              ;; Fix incompatibility with Perl 5.22+.
-              '(begin
-                 (substitute* '("js/src/config/milestone.pl")
-                   (("defined\\(@TEMPLATE_FILE)") "@TEMPLATE_FILE"))
-                 #t))))
-    (build-system gnu-build-system)
-    (native-inputs
-     `(("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-2)))
-    (propagated-inputs
-     (list nspr)) ; in the Requires.private field of mozjs-17.0.pc
-    (inputs
-     (list zlib))
-    (arguments
-     `(;; XXX: parallel build fails, lacking:
-       ;;   mkdir -p "system_wrapper_js/"
-       #:parallel-build? #f
-       #:make-flags '("CXXFLAGS=-fpermissive")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'delete-timedout-test
-           ;; This test times out on slower hardware.
-           (lambda _
-             (delete-file "js/src/jit-test/tests/basic/bug698584.js")
-             #t))
-         (add-before 'configure 'chdir
-           (lambda _
-             (chdir "js/src")
-             #t))
-         (replace 'configure
-           ;; configure fails if it is followed by SHELL and CONFIG_SHELL
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (setenv "SHELL" (which "sh"))
-               (setenv "CONFIG_SHELL" (which "sh"))
-               (invoke "./configure" (string-append "--prefix=" out)
-                       ,@(if (string=? "aarch64-linux"
-                                       (%current-system))
-                             '("--host=aarch64-unknown-linux-gnu")
-                             '()))))))))
-    (home-page
-     "https://developer.mozilla.org/en-US/docs/Mozilla/Projects/SpiderMonkey")
-    (synopsis "Mozilla javascript engine")
-    (description "SpiderMonkey is Mozilla's JavaScript engine written
-in C/C++.")
-    (license license:mpl2.0))) ; and others for some files
-
-(define-public mozjs-24
-  (package (inherit mozjs)
-    (name "mozjs")
-    (version "24.2.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://ftp.mozilla.org/pub/mozilla.org/js/"
-                    name "-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "1n1phk8r3l8icqrrap4czplnylawa0ddc2cc4cgdz46x3lrkybz6"))
-              (modules '((guix build utils)))
-              (patches (search-patches "mozjs24-aarch64-support.patch"))
-              (snippet
-               ;; Fix incompatibility with Perl 5.22+.
-               '(begin
-                  (substitute* '("js/src/config/milestone.pl")
-                    (("defined\\(@TEMPLATE_FILE)") "@TEMPLATE_FILE"))
-                  #t))))
-    (arguments
-      (substitute-keyword-arguments (package-arguments mozjs)
-        ((#:phases phases)
-         `(modify-phases ,phases
-            (replace 'configure
-              (lambda* (#:key outputs #:allow-other-keys)
-                (let ((out (assoc-ref outputs "out")))
-                  ;; configure fails if it is followed by SHELL and CONFIG_SHELL
-                  (setenv "SHELL" (which "sh"))
-                  (setenv "CONFIG_SHELL" (which "sh"))
-                  (invoke "./configure"
-                          (string-append "--prefix=" out)
-                          "--with-system-nspr"
-                          "--enable-system-ffi"
-                          "--enable-threadsafe"
-                          ,@(if (string=? "aarch64-linux"
-                                          (%current-system))
-                                '("--host=aarch64-unknown-linux-gnu")
-                                '())))))))))
-    (inputs
-     (list libffi zlib))))
-
-(define-public mozjs-38
-  (package
-    (inherit mozjs)
-    (name "mozjs")
-    (version "38.2.1.rc0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://anduin.linuxfromscratch.org/BLFS/mozjs/"
-                    name "-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "0p4bmbpgkfsj54xschcny0a118jdrdgg0q29rwxigg3lh5slr681"))
-              (patches
-               (search-patches
-                ;; See https://bugzilla.mozilla.org/show_bug.cgi?id=1269317 for
-                ;; GCC 6 compatibility.
-
-                "mozjs38-version-detection.patch" ; for 0ad
-                "mozjs38-tracelogger.patch"
-
-                ;; See https://bugzilla.mozilla.org/show_bug.cgi?id=1339931.
-                "mozjs38-pkg-config-version.patch"
-                "mozjs38-shell-version.patch"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; Fix incompatibility with sed 4.4.
-                  (substitute* "js/src/configure"
-                    (("\\^\\[:space:\\]") "^[[:space:]]"))
-
-                  ;; The headers are symlinks to files that are in /tmp, so they
-                  ;; end up broken.  Copy them instead.
-                  (substitute*
-                      "python/mozbuild/mozbuild/backend/recursivemake.py"
-                    (("\\['dist_include'\\].add_symlink")
-                     "['dist_include'].add_copy"))
-
-                  ;; Remove bundled libraries.
-                  (for-each delete-file-recursively
-                            '("intl"
-                              "js/src/ctypes/libffi"
-                              "js/src/ctypes/libffi-patches"
-                              "modules/zlib"))
-                  #t))))
-    (arguments
-     `(;; XXX: parallel build fails, lacking:
-       ;;   mkdir -p "system_wrapper_js/"
-       #:parallel-build? #f
-       ;; See https://bugzilla.mozilla.org/show_bug.cgi?id=1008470.
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (chdir "js/src")
-               (setenv "SHELL" (which "sh"))
-               (setenv "CONFIG_SHELL" (which "sh"))
-               (invoke "./configure"
-                       (string-append "--prefix=" out)
-                       "--enable-ctypes"
-                       "--enable-gcgenerational"
-                       "--enable-optimize"
-                       "--enable-pie"
-                       "--enable-readline"
-                       "--enable-shared-js"
-                       "--enable-system-ffi"
-                       "--enable-threadsafe"
-                       "--enable-xterm-updates"
-                       "--with-system-icu"
-                       "--with-system-nspr"
-                       "--with-system-zlib"
-
-                       ;; Intl API requires bundled ICU.
-                       "--without-intl-api")))))))
-    (native-inputs
-     `(("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python-2" ,python-2)))
-    (inputs
-     (list libffi readline icu4c zlib))))
-
-(define-public mozjs-52
-  ;; No releases yet at <https://archive.mozilla.org/pub/spidermonkey/releases/>.
-  ;; While we could take a snapshot of the complete mozilla-esr52 repository at
-  ;; <https://treeherder.mozilla.org/#/jobs?repo=mozilla-esr52&filter-searchStr=sm-tc>,
-  ;; we take the Debian version instead, because it is easier to work with.
-  (let ((commit "6507e63cc416fd7a3269e390efe712f8b56f374a")
-        (revision "1"))
-    (package (inherit mozjs-38)
-      (version (git-version "52.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://salsa.debian.org/gnome-team/mozjs52.git")
-                      (commit commit)))
-                (file-name (git-file-name "mozjs" version))
-                (sha256
-                 (base32
-                  "1ny0s53r8wn4byys87h784xrq1xg767akmfm6gqrbvrz57mlm3q2"))))
-      (arguments
-       `(#:tests? #f ; depends on repository metadata
-         #:configure-flags
-         '("--enable-ctypes"
-           "--enable-optimize"
-           "--enable-pie"
-           "--enable-readline"
-           "--enable-shared-js"
-           "--enable-system-ffi"
-           "--with-system-icu"
-           "--with-system-nspr"
-           "--with-system-zlib"
-
-           ;; Intl API requires bundled ICU.
-           "--without-intl-api"
-
-           ;; Without this gnome-shell will crash at runtime.
-           "--disable-jemalloc")
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'patch-and-chdir
-             (lambda* (#:key inputs #:allow-other-keys)
-               ;; This patch prevents a segfault when executing JS_Init().
-               ;; The build does not fail without this patch, but the
-               ;; configure phase of the gjs package would fail.
-               ;; See https://bugzilla.mozilla.org/show_bug.cgi?id=1176787
-               (make-file-writable "js/src/old-configure.in")
-               (make-file-writable "js/src/old-configure")
-               (make-file-writable "mozglue/build/moz.build")
-               (invoke "patch" "-p1" "--force"
-                       "--input" "debian/patches/disable-mozglue.patch")
-               (invoke "touch" "js/src/configure")
-               (chdir "js/src")
-               #t))
-           (replace 'configure
-             (lambda* (#:key inputs outputs configure-flags #:allow-other-keys)
-               ;; The configure script does not accept environment variables
-               ;; as arguments.
-               (let ((out (assoc-ref outputs "out")))
-                 (setenv "SHELL" (which "sh"))
-                 (setenv "CONFIG_SHELL" (which "sh"))
-                 (setenv "AUTOCONF" (which "autoconf"))
-                 (apply invoke "./configure"
-                        (cons (string-append "--prefix=" out)
-                              configure-flags))))))))
-      (native-inputs
-       (modify-inputs (package-native-inputs mozjs-38)
-         (prepend autoconf-2.13 automake))))))
-
-(define-public mozjs-60
-  ;; No releases yet at <https://archive.mozilla.org/pub/spidermonkey/releases/>.
-  ;; While we could take a snapshot of the complete mozilla-esr60 repository at
-  ;; <https://treeherder.mozilla.org/#/jobs?repo=mozilla-esr60&filter-searchStr=sm-tc>,
-  ;; we take the Debian version instead, because it is easier to work with.
-  (package
-    (inherit mozjs-38)
-    (version "60.2.3-4")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://salsa.debian.org/gnome-team/mozjs60.git")
-                    (commit (string-append "debian/" version))))
-              (file-name (git-file-name "mozjs" version))
-              (sha256
-               (base32
-                "1xl6avsj9gkgma71p56jzs7nasc767k3n1frnmri5pad4rj94bij"))
-              (patches (search-patches "mozjs60-riscv64-support.patch"))))
-    (arguments
-     `(#:tests? #f ; FIXME: all tests pass, but then the check phase fails anyway.
-       #:test-target "check-jstests"
-       #:configure-flags
-       ,#~(quasiquote
-           ("--enable-ctypes"
-            "--enable-optimize"
-            "--enable-pie"
-            "--enable-readline"
-            "--enable-shared-js"
-            "--enable-system-ffi"
-            "--with-system-nspr"
-            #$@(if (%current-target-system)
-                   #~(,(string-append "--with-nspr-prefix="
-                                      #$(this-package-input "nspr")))
-                   #~())
-            "--with-system-zlib"
-            "--with-system-icu"
-            "--with-intl-api"
-            ;; This is important because without it gjs will segfault during the
-            ;; configure phase.  With jemalloc only the standalone mozjs console
-            ;; will work.
-            "--disable-jemalloc"
-            ;; Mozilla deviates from Autotools conventions due to historical
-            ;; reasons.
-            #$@(if (%current-target-system)
-                   #~(#$(string-append
-                         "--host="
-                         (nix-system->gnu-triplet (%current-system)))
-                      #$(string-append "--target=" (%current-target-system)))
-                   #~())))
-       #:phases
-       (modify-phases %standard-phases
-         ;; Make sure pkg-config will be found.
-         ,@(if (%current-target-system)
-               `((add-before 'configure 'set-PKG-CONFIG
-                   (lambda _
-                     (setenv "PKG_CONFIG" ,(pkg-config-for-target)))))
-               '())
-         (replace 'configure
-           (lambda* (#:key inputs outputs configure-flags #:allow-other-keys)
-             ;; The configure script does not accept environment variables as
-             ;; arguments.  It also must be run from a different directory,
-             ;; but not the root directory either.
-             (let ((out (assoc-ref outputs "out")))
-               (mkdir "run-configure-from-here")
-               (chdir "run-configure-from-here")
-               (setenv "SHELL" (which "sh"))
-               (setenv "CONFIG_SHELL" (which "sh"))
-               (setenv "AUTOCONF" (which "autoconf"))
-               (apply invoke "../js/src/configure"
-                      (cons (string-append "--prefix=" out)
-                            configure-flags))
-               #t)))
-         (add-after 'unpack 'update-config-scripts
-           (lambda* (#:key native-inputs inputs #:allow-other-keys)
-             (for-each (lambda (file)
-                             (install-file
-                               (search-input-file
-                                 (or native-inputs inputs)
-                                 (string-append "/bin/" file)) "build/autoconf"))
-                           '("config.guess" "config.sub"))))
-         (add-after 'unpack 'disable-broken-tests
-           (lambda _
-             ;; This test assumes that /bin exists and contains certain
-             ;; executables.
-             (delete-file "js/src/tests/shell/os.js")
-             #t)))))
-    (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("config" ,config)
-       ("which" ,which)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-2)))))
-
-(define-public mozjs-78
-  (package
-    (inherit mozjs-60)
     (version "78.15.0")
     (source (origin
               (method url-fetch)
@@ -456,13 +106,16 @@ in C/C++.")
               (sha256
                (base32
                 "0l91cxdc5v9fps79ckb1kid4gw6v5qng1jd9zvaacwaiv628shx4"))))
+    (build-system gnu-build-system)
     (arguments
-     `(#:imported-modules ,%cargo-utils-modules ;for `generate-all-checksums'
-       #:modules ((guix build cargo-utils)
+     (list
+      #:imported-modules %cargo-utils-modules ;for `generate-all-checksums'
+      #:modules `((guix build cargo-utils)
                   ,@%gnu-build-system-modules)
-       #:test-target "check-jstests"
-       #:configure-flags
-       '(;; Disable debugging symbols to save space.
+      #:test-target "check-jstests"
+      #:configure-flags
+      #~(list
+         ;; Disable debugging symbols to save space.
          "--disable-debug"
          "--disable-debug-symbols"
          ;; This is important because without it gjs will segfault during the
@@ -483,109 +136,111 @@ in C/C++.")
          "--with-system-nspr"
          "--with-system-zlib"
          "--with-intl-api")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'patch-source-shebangs 'patch-cargo-checksums
-           (lambda _
-             (let ((null-hash
-                    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"))
-               (for-each (lambda (file)
-                           (format #t "patching checksums in ~a~%" file)
-                           (substitute* file
-                             (("^checksum = \".*\"")
-                              (string-append "checksum = \"" null-hash "\""))))
-                         (find-files "." "Cargo\\.lock$"))
-               (for-each generate-all-checksums
-                         '("js" "third_party/rust"))
-               #t)))
-         (replace 'configure
-           (lambda* (#:key inputs outputs configure-flags #:allow-other-keys)
-             ;; The configure script does not accept environment variables as
-             ;; arguments.  It also must be run from a different directory,
-             ;; but not the root directory either.
-             (let ((out (assoc-ref outputs "out")))
-               (mkdir "run-configure-from-here")
-               (chdir "run-configure-from-here")
-               (setenv "SHELL" (which "sh"))
-               (setenv "CONFIG_SHELL" (which "sh"))
-               (setenv "AUTOCONF" (which "autoconf"))
-               (apply invoke "../js/src/configure"
-                      (cons (string-append "--prefix=" out)
-                            configure-flags))
-               #t)))
-         (add-after 'unpack 'adjust-for-icu-68
-           (lambda _
-             (with-directory-excursion "js/src/tests"
-               ;; The test suite expects a lightly patched ICU 67.  Since
-               ;; Guix is about to switch to ICU 68, massage the tests to
-               ;; work with that instead of patching ICU.  Try removing this
-               ;; phase for newer versions of mozjs.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'patch-source-shebangs 'patch-cargo-checksums
+            (lambda _
+              (let ((null-hash
+                     "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"))
+                (for-each (lambda (file)
+                            (format #t "patching checksums in ~a~%" file)
+                            (substitute* file
+                              (("^checksum = \".*\"")
+                               (string-append "checksum = \"" null-hash "\""))))
+                          (find-files "." "Cargo\\.lock$"))
+                (for-each generate-all-checksums
+                          '("js" "third_party/rust")))))
+          (replace 'configure
+            (lambda* (#:key inputs configure-flags #:allow-other-keys)
+              ;; The configure script does not accept environment variables as
+              ;; arguments.  It also must be run from a different directory,
+              ;; but not the root directory either.
+              (mkdir "run-configure-from-here")
+              (chdir "run-configure-from-here")
+              (setenv "SHELL" (which "sh"))
+              (setenv "CONFIG_SHELL" (which "sh"))
+              (setenv "AUTOCONF" (which "autoconf"))
+              (apply invoke "../js/src/configure"
+                     (cons (string-append "--prefix=" #$output)
+                           configure-flags))))
+          (add-after 'unpack 'adjust-for-icu-68
+            (lambda _
+              (with-directory-excursion "js/src/tests"
+                ;; The test suite expects a lightly patched ICU 67.  Since
+                ;; Guix is about to switch to ICU 68, massage the tests to
+                ;; work with that instead of patching ICU.  Try removing this
+                ;; phase for newer versions of mozjs.
 
-               ;; These tests look up locale names and expects to get
-               ;; "GB" instead of "UK".
-               (substitute* "non262/Intl/DisplayNames/language.js"
-                 (("Traditionell, GB")
-                  "Traditionell, UK"))
-               (substitute* "non262/Intl/DisplayNames/region.js"
-                 (("\"GB\": \"GB\"")
-                  "\"GB\": \"UK\""))
+                ;; These tests look up locale names and expects to get
+                ;; "GB" instead of "UK".
+                (substitute* "non262/Intl/DisplayNames/language.js"
+                  (("Traditionell, GB")
+                   "Traditionell, UK"))
+                (substitute* "non262/Intl/DisplayNames/region.js"
+                  (("\"GB\": \"GB\"")
+                   "\"GB\": \"UK\""))
 
-               ;; XXX: Some localized time formats have changed, and
-               ;; substitution fails for accented characters, even though
-               ;; it works in the REPL(?).  Just delete these for now.
-               (delete-file "non262/Intl/Date/toLocaleString_timeZone.js")
-               (delete-file "non262/Intl/Date/toLocaleDateString_timeZone.js")
+                ;; XXX: Some localized time formats have changed, and
+                ;; substitution fails for accented characters, even though
+                ;; it works in the REPL(?).  Just delete these for now.
+                (delete-file "non262/Intl/Date/toLocaleString_timeZone.js")
+                (delete-file "non262/Intl/Date/toLocaleDateString_timeZone.js")
 
-               ;; Similarly, these get an unexpected "A" suffix when looking
-               ;; up a time in the "ar-MA-u-ca-islamicc" locale, which is
-               ;; tricky to substitute.
-               (delete-file "non262/Intl/DateTimeFormat/format_timeZone.js")
-               (delete-file "non262/Intl/DateTimeFormat/format.js")
+                ;; Similarly, these get an unexpected "A" suffix when looking
+                ;; up a time in the "ar-MA-u-ca-islamicc" locale, which is
+                ;; tricky to substitute.
+                (delete-file "non262/Intl/DateTimeFormat/format_timeZone.js")
+                (delete-file "non262/Intl/DateTimeFormat/format.js")
 
-               ;; This file compares a generated list of ICU locale names
-               ;; with actual lookups.  Some have changed slightly, i.e.
-               ;; daf-Latn-ZZ -> daf-Latn-CI, so drop it for simplicity.
-               (delete-file "non262/Intl/Locale/likely-subtags-generated.js"))
+                ;; This file compares a generated list of ICU locale names
+                ;; with actual lookups.  Some have changed slightly, i.e.
+                ;; daf-Latn-ZZ -> daf-Latn-CI, so drop it for simplicity.
+                (delete-file "non262/Intl/Locale/likely-subtags-generated.js"))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (with-directory-excursion "../js/src/tests"
+                (substitute* "shell/os.js"
+                  ;; FIXME: Why does the killed process have an exit status?
+                  ((".*killed process should not have exitStatus.*")
+                   ""))
 
-             #t))
-         (add-before 'check 'pre-check
-           (lambda _
-             (with-directory-excursion "../js/src/tests"
-               (substitute* "shell/os.js"
-                 ;; FIXME: Why does the killed process have an exit status?
-                 ((".*killed process should not have exitStatus.*")
-                  ""))
+                ;; XXX: Delete all tests that test time zone functionality,
+                ;; because the test suite uses /etc/localtime to figure out
+                ;; the offset from the hardware clock, which does not work
+                ;; in the build container.  See <tests/non262/Date/shell.js>.
+                (delete-file-recursively "non262/Date")
+                (delete-file "non262/Intl/DateTimeFormat/tz-environment-variable.js")
 
-               ;; XXX: Delete all tests that test time zone functionality,
-               ;; because the test suite uses /etc/localtime to figure out
-               ;; the offset from the hardware clock, which does not work
-               ;; in the build container.  See <tests/non262/Date/shell.js>.
-               (delete-file-recursively "non262/Date")
-               (delete-file "non262/Intl/DateTimeFormat/tz-environment-variable.js")
-
-               (setenv "JSTESTS_EXTRA_ARGS"
-                       (string-join
-                        (list
-                         ;; Do not run tests marked as "random".
-                         "--exclude-random"
-                         ;; Exclude web platform tests.
-                         "--wpt=disabled"
-                         ;; Respect the daemons configured number of jobs.
-                         (string-append "--worker-count="
-                                        (number->string (parallel-job-count)))))))
-             #t)))))
+                (setenv "JSTESTS_EXTRA_ARGS"
+                        (string-join
+                         (list
+                          ;; Do not run tests marked as "random".
+                          "--exclude-random"
+                          ;; Exclude web platform tests.
+                          "--wpt=disabled"
+                          ;; Respect the daemons configured number of jobs.
+                          (string-append "--worker-count="
+                                         (number->string (parallel-job-count))))))))))))
     (native-inputs
-     `(("autoconf" ,autoconf-2.13)
-       ("automake" ,automake)
-       ;; TODO(staging): Use the default LLVM in the next rebuild cycle.
-       ("llvm" ,llvm-9)                 ;for llvm-objdump
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-3)
-       ("rust" ,rust)
-       ("cargo" ,rust "cargo")))
+     (list autoconf-2.13
+           automake
+           ;; TODO(staging): Use the default LLVM in the next rebuild cycle.
+           llvm-9                       ;for llvm-objdump
+           perl
+           pkg-config
+           python-3
+           rust
+           `(,rust "cargo")))
     (inputs
-     (list icu4c readline zlib))))
+     (list icu4c readline zlib))
+    (propagated-inputs
+     (list nspr))                ; in the Requires.private field of mozjs-*.pc
+    (home-page
+     "https://developer.mozilla.org/en-US/docs/Mozilla/Projects/SpiderMonkey")
+    (synopsis "Mozilla javascript engine")
+    (description "SpiderMonkey is Mozilla's JavaScript engine written
+in C/C++.")
+    (license license:mpl2.0))) ; and others for some files
 
 (define mozilla-compare-locales
   (origin
@@ -716,8 +371,8 @@ in C/C++.")
 ;; XXXX: Workaround 'snippet' limitations.
 (define computed-origin-method (@@ (guix packages) computed-origin-method))
 
-(define %icecat-version "91.9.0-guix0-preview1")
-(define %icecat-build-id "20220503000000") ;must be of the form YYYYMMDDhhmmss
+(define %icecat-version "91.10.0-guix0-preview1")
+(define %icecat-build-id "20220531000000") ;must be of the form YYYYMMDDhhmmss
 
 ;; 'icecat-source' is a "computed" origin that generates an IceCat tarball
 ;; from the corresponding upstream Firefox ESR tarball, using the 'makeicecat'
@@ -739,11 +394,11 @@ in C/C++.")
                   "firefox-" upstream-firefox-version ".source.tar.xz"))
             (sha256
              (base32
-              "175sakp772hx5c45zc1isbibhpvw7xb4l2lwaf9pvxig9j9ymgml"))))
+              "1fz11rmbb0qjcp84wz7hmq7wy1zh9bk6vk47xwhrinmmifrqqnl2"))))
 
-         (upstream-icecat-base-version "91.9.0") ; maybe older than base-version
+         (upstream-icecat-base-version "91.10.0") ; maybe older than base-version
          ;;(gnuzilla-commit (string-append "v" upstream-icecat-base-version))
-         (gnuzilla-commit "d7d3e9a33d2b3b78a6e08060684580c72c0d6e93")
+         (gnuzilla-commit "4c39c619daf344f36962d958d809f6d42d3fce4e")
          (gnuzilla-source
           (origin
             (method git-fetch)
@@ -755,7 +410,7 @@ in C/C++.")
                                       (string-take gnuzilla-commit 8)))
             (sha256
              (base32
-              "0mp6mknnhha88932v6pmfadjbnnvkcrsi1ljmcrcz7pb9y81gxn0"))))
+              "1fizsq0dphm40nj6vnvjp87v34iyg78gllv3jp5ssn43ln4jiyb7"))))
 
          ;; 'search-patch' returns either a valid file name or #f, so wrap it
          ;; in 'assume-valid-file-name' to avoid 'local-file' warnings.
@@ -904,162 +559,156 @@ in C/C++.")
     (source icecat-source)
     (build-system gnu-build-system)
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("bzip2" ,bzip2)
-       ("cups" ,cups)
-       ("dbus-glib" ,dbus-glib)
-       ("gdk-pixbuf" ,gdk-pixbuf)
-       ("glib" ,glib)
-       ("gtk+" ,gtk+)
-       ("gtk+-2" ,gtk+-2)
-       ;; UNBUNDLE-ME! ("graphite2" ,graphite2)
-       ("cairo" ,cairo)
-       ("pango" ,pango)
-       ("freetype" ,freetype)
-       ("font-dejavu" ,font-dejavu)
-       ;; UNBUNDLE-ME! ("harfbuzz" ,harfbuzz)
-       ("libcanberra" ,libcanberra)
-       ("libgnome" ,libgnome)
-       ("libjpeg-turbo" ,libjpeg-turbo)
-       ("libpng-apng" ,libpng-apng)
-       ;; UNBUNDLE-ME! ("libogg" ,libogg)
-       ;; UNBUNDLE-ME! ("libtheora" ,libtheora) ; wants theora-1.2, not yet released
-       ;; UNBUNDLE-ME! ("libvorbis" ,libvorbis)
-       ("libxft" ,libxft)
-       ("libevent" ,libevent)
-       ("libxinerama" ,libxinerama)
-       ("libxscrnsaver" ,libxscrnsaver)
-       ("libxcomposite" ,libxcomposite)
-       ("libxt" ,libxt)
-       ("libffi" ,libffi)
-       ("ffmpeg" ,ffmpeg)
-       ("libvpx" ,libvpx)
-       ("icu4c" ,icu4c)
-       ("pixman" ,pixman)
-       ("pulseaudio" ,pulseaudio)
-       ("mesa" ,mesa)
-       ("pciutils" ,pciutils)
-       ("mit-krb5" ,mit-krb5)
-       ("hunspell" ,hunspell)
-       ("libnotify" ,libnotify)
-       ;; See <https://bugs.gnu.org/32833>
-       ;;   and related comments in the 'remove-bundled-libraries' phase.
-       ;; UNBUNDLE-ME! ("nspr" ,nspr)
-       ;; UNBUNDLE-ME! ("nss" ,nss)
-       ("shared-mime-info" ,shared-mime-info)
-       ("sqlite" ,sqlite)
-       ("eudev" ,eudev)
-       ("unzip" ,unzip)
-       ("zip" ,zip)
-       ("zlib" ,zlib)))
+     (list alsa-lib
+           bzip2
+           cups
+           dbus-glib
+           gdk-pixbuf
+           glib
+           gtk+
+           gtk+-2
+           ;; UNBUNDLE-ME! graphite2
+           cairo
+           pango
+           freetype
+           font-dejavu
+           ;; UNBUNDLE-ME! harfbuzz
+           libcanberra
+           libgnome
+           libjpeg-turbo
+           libpng-apng
+           ;; UNBUNDLE-ME! libogg
+           ;; UNBUNDLE-ME! libtheora ; wants theora-1.2, not yet released
+           ;; UNBUNDLE-ME! libvorbis
+           libxft
+           libevent
+           libxinerama
+           libxscrnsaver
+           libxcomposite
+           libxt
+           libffi
+           ffmpeg
+           libvpx
+           icu4c
+           pixman
+           pulseaudio
+           mesa
+           pciutils
+           mit-krb5
+           hunspell
+           libnotify
+           ;; See <https://bugs.gnu.org/32833>
+           ;;   and related comments in the 'remove-bundled-libraries' phase.
+           ;; UNBUNDLE-ME! nspr
+           ;; UNBUNDLE-ME! nss
+           shared-mime-info
+           sqlite
+           eudev
+           unzip
+           zip
+           zlib))
     (native-inputs
      ;; The following patches are specific to the Guix packaging of IceCat,
      ;; and therefore we prefer to leave them out of 'source', which should be
      ;; a tarball suitable for compilation on any system that IceCat supports.
      ;; (Bug fixes and security fixes, however, should go in 'source').
-     `(;; XXX TODO: Adapt these patches to IceCat 91.
-       ;; ("icecat-avoid-bundled-libraries.patch"
-       ;;  ,(search-patch "icecat-avoid-bundled-libraries.patch"))
-       ;; ("icecat-use-system-graphite2+harfbuzz.patch"
-       ;;  ,(search-patch "icecat-use-system-graphite2+harfbuzz.patch"))
-       ;; ("icecat-use-system-media-libs.patch"
-       ;;  ,(search-patch "icecat-use-system-media-libs.patch"))
-
-       ("patch" ,(canonical-package patch))
-
-       ("rust" ,rust)
-       ("cargo" ,rust "cargo")
-       ("rust-cbindgen" ,rust-cbindgen-0.19)
-       ("llvm" ,llvm-11)
-       ("clang" ,clang-11)
-       ("perl" ,perl)
-       ("node" ,node)
-       ("python" ,python)
-       ("python-2" ,python-2)
-       ("python2-pysqlite" ,python2-pysqlite)
-       ("yasm" ,yasm)
-       ("nasm" ,nasm)  ; XXX FIXME: only needed on x86_64 and i686
-       ("pkg-config" ,pkg-config)
-       ("m4" ,m4)
-       ("which" ,which)))
+     (list
+      ;; XXX TODO: Adapt these patches to IceCat 91.
+      ;; ("icecat-avoid-bundled-libraries.patch"
+      ;;  ,(search-patch "icecat-avoid-bundled-libraries.patch"))
+      ;; ("icecat-use-system-graphite2+harfbuzz.patch"
+      ;;  ,(search-patch "icecat-use-system-graphite2+harfbuzz.patch"))
+      ;; ("icecat-use-system-media-libs.patch"
+      ;;  ,(search-patch "icecat-use-system-media-libs.patch"))
+      rust
+      `(,rust "cargo")
+      rust-cbindgen-0.19
+      llvm-11
+      clang-11
+      perl
+      node
+      python-wrapper
+      yasm
+      nasm                         ; XXX FIXME: only needed on x86_64 and i686
+      pkg-config
+      m4
+      which))
     (arguments
-     `(#:tests? #f  ;not worth the cost
+     (list
+      #:tests? #f                       ;not worth the cost
 
-       ;; Some dynamic lib was determined at runtime, so rpath check may fail.
-       #:validate-runpath? #f
+      ;; Some dynamic lib was determined at runtime, so rpath check may fail.
+      #:validate-runpath? #f
 
-       #:configure-flags `("--enable-application=browser"
-                           "--with-distribution-id=org.gnu"
-                           "--enable-geckodriver"
-                           ;; Do not require addons in the global app or
-                           ;; system directories to be signed by Mozilla.
-                           "--with-unsigned-addon-scopes=app,system"
-                           "--allow-addon-sideload"
+      #:configure-flags
+      #~(list
+         "--enable-application=browser"
+         "--with-distribution-id=org.gnu"
+         "--enable-geckodriver"
+         ;; Do not require addons in the global app or system directories to
+         ;; be signed by Mozilla.
+         "--with-unsigned-addon-scopes=app,system"
+         "--allow-addon-sideload"
 
-                           "--enable-pulseaudio"
+         "--enable-pulseaudio"
 
-                           "--disable-tests"
-                           "--disable-updater"
-                           "--disable-crashreporter"
-                           "--disable-eme"
+         "--disable-tests"
+         "--disable-updater"
+         "--disable-crashreporter"
+         "--disable-eme"
 
-                           ;; Building with debugging symbols takes ~5GiB, so
-                           ;; disable it.
-                           "--disable-debug"
-                           "--disable-debug-symbols"
+         ;; Building with debugging symbols takes ~5GiB, so disable it.
+         "--disable-debug"
+         "--disable-debug-symbols"
 
-                           "--enable-rust-simd"
-                           "--enable-release"
-                           "--enable-optimize"
-                           "--enable-strip"
-                           "--disable-elf-hack"
+         "--enable-rust-simd"
+         "--enable-release"
+         "--enable-optimize"
+         "--enable-strip"
+         "--disable-elf-hack"
 
-                           ;; Clang is needed to build Stylo, Mozilla's new
-                           ;; CSS engine.  We must specify the clang paths
-                           ;; manually, because otherwise the Mozilla build
-                           ;; system looks in the directories returned by
-                           ;; llvm-config --bindir and llvm-config --libdir,
-                           ;; which return paths in the llvm package where
-                           ;; clang is not found.
-                           ,(string-append "--with-clang-path="
-                                           (assoc-ref %build-inputs "clang")
-                                           "/bin/clang")
-                           ,(string-append "--with-libclang-path="
-                                           (assoc-ref %build-inputs "clang")
-                                           "/lib")
+         ;; Clang is needed to build Stylo, Mozilla's new CSS engine.  We must
+         ;; specify the clang paths manually, because otherwise the Mozilla
+         ;; build system looks in the directories returned by llvm-config
+         ;; --bindir and llvm-config --libdir, which return paths in the llvm
+         ;; package where clang is not found.
+         (string-append "--with-clang-path="
+                        (search-input-file %build-inputs "bin/clang"))
+         (string-append "--with-libclang-path="
+                        (dirname (search-input-file %build-inputs
+                                                    "lib/libclang.so")))
 
-                           ;; Hack to work around missing
-                           ;; "unofficial" branding in icecat.
-                           "--enable-official-branding"
+         ;; Hack to work around missing "unofficial" branding in icecat.
+         "--enable-official-branding"
 
-                           ;; Avoid bundled libraries.
-                           "--with-system-jpeg"        ; must be libjpeg-turbo
-                           "--with-system-png"         ; must be libpng-apng
-                           "--with-system-zlib"
-                           ;; UNBUNDLE-ME! "--with-system-bz2"
-                           ;; UNBUNDLE-ME! "--with-system-libevent"
-                           ;; UNBUNDLE-ME! "--with-system-ogg"
-                           ;; UNBUNDLE-ME! "--with-system-vorbis"
-                           ;; UNBUNDLE-ME! "--with-system-theora" ; wants theora-1.2, not yet released
-                           ;; UNBUNDLE-ME! "--with-system-libvpx"
-                           "--with-system-icu"
+         ;; Avoid bundled libraries.
+         "--with-system-jpeg"           ;must be libjpeg-turbo
+         "--with-system-png"            ;must be libpng-apng
+         "--with-system-zlib"
+         ;; UNBUNDLE-ME! "--with-system-bz2"
+         ;; UNBUNDLE-ME! "--with-system-libevent"
+         ;; UNBUNDLE-ME! "--with-system-ogg"
+         ;; UNBUNDLE-ME! "--with-system-vorbis"
+         ;; UNBUNDLE-ME! "--with-system-theora" ; wants theora-1.2, not yet released
+         ;; UNBUNDLE-ME! "--with-system-libvpx"
+         "--with-system-icu"
 
-                           ;; See <https://bugs.gnu.org/32833>
-                           ;;   and related comments in the
-                           ;;   'remove-bundled-libraries' phase below.
-                           ;; UNBUNDLE-ME! "--with-system-nspr"
-                           ;; UNBUNDLE-ME! "--with-system-nss"
+         ;; See <https://bugs.gnu.org/32833>
+         ;;   and related comments in the
+         ;;   'remove-bundled-libraries' phase below.
+         ;; UNBUNDLE-ME! "--with-system-nspr"
+         ;; UNBUNDLE-ME! "--with-system-nss"
 
-                           ;; UNBUNDLE-ME! "--with-system-harfbuzz"
-                           ;; UNBUNDLE-ME! "--with-system-graphite2"
-                           "--enable-system-pixman"
-                           "--enable-system-ffi"
-                           ;; UNBUNDLE-ME! "--enable-system-sqlite"
-                           )
+         ;; UNBUNDLE-ME! "--with-system-harfbuzz"
+         ;; UNBUNDLE-ME! "--with-system-graphite2"
+         "--enable-system-pixman"
+         "--enable-system-ffi"
+         ;; UNBUNDLE-ME! "--enable-system-sqlite"
+         )
 
-       #:imported-modules ,%cargo-utils-modules ;for `generate-all-checksums'
+      #:imported-modules %cargo-utils-modules ;for `generate-all-checksums'
 
-       #:modules ((ice-9 ftw)
+      #:modules `((ice-9 ftw)
                   (ice-9 match)
                   (srfi srfi-1)
                   (srfi srfi-26)
@@ -1068,257 +717,247 @@ in C/C++.")
                   (guix elf)
                   (guix build gremlin)
                   ,@%gnu-build-system-modules)
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'apply-guix-specific-patches
-           (lambda* (#:key inputs native-inputs #:allow-other-keys)
-             (let ((patch (string-append (assoc-ref (or native-inputs inputs)
-                                                    "patch")
-                                         "/bin/patch")))
-               (for-each (match-lambda
-                           ((label . file)
-                            (when (and (string-prefix? "icecat-" label)
-                                       (string-suffix? ".patch" label))
-                              (format #t "applying '~a'...~%" file)
-                              (invoke patch "--force" "--no-backup-if-mismatch"
-                                      "-p1" "--input" file))))
-                         (or native-inputs inputs)))))
-         (add-after 'apply-guix-specific-patches 'remove-bundled-libraries
-           (lambda _
-             ;; Remove bundled libraries that we don't use, since they may
-             ;; contain unpatched security flaws, they waste disk space and
-             ;; memory, and may cause confusion.
-             (for-each (lambda (file)
-                         (format #t "deleting '~a'...~%" file)
-                         (delete-file-recursively file))
-                       '(;; FIXME: Removing the bundled icu breaks configure.
-                         ;;   * The bundled icu headers are used in some places.
-                         ;;   * The version number is taken from the bundled copy.
-                         ;;"intl/icu"
-                         ;;
-                         ;; FIXME: A script from the bundled nspr is used.
-                         ;;"nsprpub"
-                         ;;
-                         ;; FIXME: With the update to IceCat 60, using system NSS
-                         ;;        broke certificate validation.  See
-                         ;;        <https://bugs.gnu.org/32833>.  For now, we use
-                         ;;        the bundled NSPR and NSS.  TODO: Investigate,
-                         ;;        and try to unbundle these libraries again.
-                         ;; UNBUNDLE-ME! "security/nss"
-                         ;;
-                         ;; TODO: Use more system media libraries.  See:
-                         ;; <https://bugzilla.mozilla.org/show_bug.cgi?id=517422>
-                         ;;   * libtheora: esr60 wants v1.2, not yet released.
-                         ;;   * soundtouch: avoiding the bundled library would
-                         ;;     result in some loss of functionality.  There's
-                         ;;     also an issue with exception handling
-                         ;;     configuration.  It seems that this is needed in
-                         ;;     some moz.build:
-                         ;;       DEFINES['ST_NO_EXCEPTION_HANDLING'] = 1
-                         ;;   * libopus
-                         ;;   * speex
-                         ;;
-                         "modules/freetype2"
-                         ;; "media/libjpeg"  ; needed for now, because media/libjpeg/moz.build is referenced from config/external/moz.build
-                         ;; UNBUNDLE-ME! "modules/zlib"
-                         ;; UNBUNDLE-ME! "ipc/chromium/src/third_party/libevent"
-                         ;; UNBUNDLE-ME! "media/libvpx"
-                         ;; UNBUNDLE-ME! "media/libogg"
-                         ;; UNBUNDLE-ME! "media/libvorbis"
-                         ;; UNBUNDLE-ME! "media/libtheora" ; wants theora-1.2, not yet released
-                         ;; UNBUNDLE-ME! "media/libtremor"
-                         ;; UNBUNDLE-ME! "gfx/harfbuzz"
-                         ;; UNBUNDLE-ME! "gfx/graphite2"
-                         "js/src/ctypes/libffi"
-                         ;; UNBUNDLE-ME! "db/sqlite3"
-                         ))))
-         (add-after 'remove-bundled-libraries 'fix-ffmpeg-runtime-linker
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let* ((ffmpeg (assoc-ref inputs "ffmpeg"))
-                    (libavcodec (string-append ffmpeg "/lib/libavcodec.so")))
-               ;; Arrange to load libavcodec.so by its absolute file name.
-               (substitute* "dom/media/platforms/ffmpeg/FFmpegRuntimeLinker.cpp"
-                 (("libavcodec\\.so")
-                  libavcodec)))))
-         (add-after 'fix-ffmpeg-runtime-linker 'build-sandbox-whitelist
-           (lambda* (#:key inputs #:allow-other-keys)
-             (define (runpath-of lib)
-               (call-with-input-file lib
-                 (compose elf-dynamic-info-runpath
-                          elf-dynamic-info
-                          parse-elf
-                          get-bytevector-all)))
-             (define (runpaths-of-input label)
-               (let* ((dir (string-append (assoc-ref inputs label) "/lib"))
-                      (libs (find-files dir "\\.so$")))
-                 (append-map runpath-of libs)))
-             ;; Populate the sandbox read-path whitelist as needed by ffmpeg.
-             (let* ((whitelist
-                     (map (cut string-append <> "/")
-                          (delete-duplicates
-                           `(,(string-append (assoc-ref inputs "shared-mime-info")
-                                             "/share/mime")
-                             ,(string-append (assoc-ref inputs "font-dejavu")
-                                             "/share/fonts")
-                             "/run/current-system/profile/share/fonts"
-                             ,@(append-map runpaths-of-input
-                                           '("mesa" "ffmpeg"))))))
-                    (whitelist-string (string-join whitelist ","))
-                    (port (open-file "browser/app/profile/icecat.js" "a")))
-               (format #t "setting 'security.sandbox.content.read_path_whitelist' to '~a'~%"
-                       whitelist-string)
-               (format port "~%pref(\"security.sandbox.content.read_path_whitelist\", ~S);~%"
-                       whitelist-string)
-               (close-output-port port))))
-         (add-after 'patch-source-shebangs 'patch-cargo-checksums
-           (lambda _
-             (use-modules (guix build cargo-utils))
-             (let ((null-hash "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"))
-               (for-each (lambda (file)
-                           (format #t "patching checksums in ~a~%" file)
-                           (substitute* file
-                             (("^checksum = \".*\"")
-                              (string-append "checksum = \"" null-hash "\""))))
-                         (find-files "." "Cargo.lock$"))
-               (for-each generate-all-checksums
-                         '("services"
-                           "js"
-                           "third_party/rust"
-                           "dom/media"
-                           "dom/webauthn"
-                           "toolkit"
-                           "gfx"
-                           "storage"
-                           "modules"
-                           "xpcom/rust"
-                           "media"
-                           "mozglue/static/rust"
-                           "netwerk"
-                           "remote"
-                           "intl"
-                           "servo"
-                           "security/manager/ssl"
-                           "build")))))
-         (delete 'bootstrap)
-         (replace 'configure
-           ;; configure does not work followed by both "SHELL=..." and
-           ;; "CONFIG_SHELL=..."; set environment variables instead
-           (lambda* (#:key outputs configure-flags #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bash (which "bash"))
-                    (abs-srcdir (getcwd))
-                    (flags `(,(string-append "--prefix=" out)
-                             ,(string-append "--with-l10n-base="
-                                             abs-srcdir "/l10n")
-                             ,@configure-flags)))
-               (setenv "SHELL" bash)
-               (setenv "CONFIG_SHELL" bash)
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'apply-guix-specific-patches
+            (lambda* (#:key inputs native-inputs #:allow-other-keys)
+              (let ((patch (search-input-file inputs "bin/patch")))
+                (for-each (match-lambda
+                            ((label . file)
+                             (when (and (string-prefix? "icecat-" label)
+                                        (string-suffix? ".patch" label))
+                               (format #t "applying '~a'...~%" file)
+                               (invoke patch "--force" "--no-backup-if-mismatch"
+                                       "-p1" "--input" file))))
+                          (or native-inputs inputs)))))
+          (add-after 'apply-guix-specific-patches 'remove-bundled-libraries
+            (lambda _
+              ;; Remove bundled libraries that we don't use, since they may
+              ;; contain unpatched security flaws, they waste disk space and
+              ;; memory, and may cause confusion.
+              (for-each (lambda (file)
+                          (format #t "deleting '~a'...~%" file)
+                          (delete-file-recursively file))
+                        '( ;; FIXME: Removing the bundled icu breaks configure.
+                          ;;   * The bundled icu headers are used in some places.
+                          ;;   * The version number is taken from the bundled copy.
+                          ;;"intl/icu"
+                          ;;
+                          ;; FIXME: A script from the bundled nspr is used.
+                          ;;"nsprpub"
+                          ;;
+                          ;; FIXME: With the update to IceCat 60, using system NSS
+                          ;;        broke certificate validation.  See
+                          ;;        <https://bugs.gnu.org/32833>.  For now, we use
+                          ;;        the bundled NSPR and NSS.  TODO: Investigate,
+                          ;;        and try to unbundle these libraries again.
+                          ;; UNBUNDLE-ME! "security/nss"
+                          ;;
+                          ;; TODO: Use more system media libraries.  See:
+                          ;; <https://bugzilla.mozilla.org/show_bug.cgi?id=517422>
+                          ;;   * libtheora: esr60 wants v1.2, not yet released.
+                          ;;   * soundtouch: avoiding the bundled library would
+                          ;;     result in some loss of functionality.  There's
+                          ;;     also an issue with exception handling
+                          ;;     configuration.  It seems that this is needed in
+                          ;;     some moz.build:
+                          ;;       DEFINES['ST_NO_EXCEPTION_HANDLING'] = 1
+                          ;;   * libopus
+                          ;;   * speex
+                          ;;
+                          "modules/freetype2"
+                          ;; "media/libjpeg"  ; needed for now, because media/libjpeg/moz.build is referenced from config/external/moz.build
+                          ;; UNBUNDLE-ME! "modules/zlib"
+                          ;; UNBUNDLE-ME! "ipc/chromium/src/third_party/libevent"
+                          ;; UNBUNDLE-ME! "media/libvpx"
+                          ;; UNBUNDLE-ME! "media/libogg"
+                          ;; UNBUNDLE-ME! "media/libvorbis"
+                          ;; UNBUNDLE-ME! "media/libtheora" ; wants theora-1.2, not yet released
+                          ;; UNBUNDLE-ME! "media/libtremor"
+                          ;; UNBUNDLE-ME! "gfx/harfbuzz"
+                          ;; UNBUNDLE-ME! "gfx/graphite2"
+                          "js/src/ctypes/libffi"
+                          ;; UNBUNDLE-ME! "db/sqlite3"
+                          ))))
+          (add-after 'remove-bundled-libraries 'fix-ffmpeg-runtime-linker
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Arrange to load libavcodec.so by its absolute file name.
+              (substitute* "dom/media/platforms/ffmpeg/FFmpegRuntimeLinker.cpp"
+                (("libavcodec\\.so")
+                 (search-input-file inputs "lib/libavcodec.so")))))
+          (add-after 'fix-ffmpeg-runtime-linker 'build-sandbox-whitelist
+            (lambda* (#:key inputs #:allow-other-keys)
+              (define (runpath-of lib)
+                (call-with-input-file lib
+                  (compose elf-dynamic-info-runpath
+                           elf-dynamic-info
+                           parse-elf
+                           get-bytevector-all)))
+              (define (runpaths-of-input label)
+                (let* ((dir (string-append (assoc-ref inputs label) "/lib"))
+                       (libs (find-files dir "\\.so$")))
+                  (append-map runpath-of libs)))
+              ;; Populate the sandbox read-path whitelist as needed by ffmpeg.
+              (let* ((whitelist
+                      (map (cut string-append <> "/")
+                           (delete-duplicates
+                            `(,(string-append (assoc-ref inputs "shared-mime-info")
+                                              "/share/mime")
+                              ,(string-append (assoc-ref inputs "font-dejavu")
+                                              "/share/fonts")
+                              "/run/current-system/profile/share/fonts"
+                              ,@(append-map runpaths-of-input
+                                            '("mesa" "ffmpeg"))))))
+                     (whitelist-string (string-join whitelist ","))
+                     (port (open-file "browser/app/profile/icecat.js" "a")))
+                (format #t "setting 'security.sandbox.content.read_path_whitelist' to '~a'~%"
+                        whitelist-string)
+                (format port "~%pref(\"security.sandbox.content.read_path_whitelist\", ~S);~%"
+                        whitelist-string)
+                (close-output-port port))))
+          (add-after 'patch-source-shebangs 'patch-cargo-checksums
+            (lambda _
+              (use-modules (guix build cargo-utils))
+              (let ((null-hash "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"))
+                (for-each (lambda (file)
+                            (format #t "patching checksums in ~a~%" file)
+                            (substitute* file
+                              (("^checksum = \".*\"")
+                               (string-append "checksum = \"" null-hash "\""))))
+                          (find-files "." "Cargo.lock$"))
+                (for-each generate-all-checksums
+                          '("services"
+                            "js"
+                            "third_party/rust"
+                            "dom/media"
+                            "dom/webauthn"
+                            "toolkit"
+                            "gfx"
+                            "storage"
+                            "modules"
+                            "xpcom/rust"
+                            "media"
+                            "mozglue/static/rust"
+                            "netwerk"
+                            "remote"
+                            "intl"
+                            "servo"
+                            "security/manager/ssl"
+                            "build")))))
+          (delete 'bootstrap)
+          (replace 'configure
+            ;; configure does not work followed by both "SHELL=..." and
+            ;; "CONFIG_SHELL=..."; set environment variables instead
+            (lambda* (#:key outputs configure-flags #:allow-other-keys)
+              (let* ((bash (which "bash"))
+                     (abs-srcdir (getcwd))
+                     (flags `(,(string-append "--prefix=" #$output)
+                              ,(string-append "--with-l10n-base="
+                                              abs-srcdir "/l10n")
+                              ,@configure-flags)))
+                (setenv "SHELL" bash)
+                (setenv "CONFIG_SHELL" bash)
 
-               (setenv "AR" "llvm-ar")
-               (setenv "NM" "llvm-nm")
-               (setenv "CC" "clang")
-               (setenv "CXX" "clang++")
-               (setenv "LDFLAGS" (string-append "-Wl,-rpath="
-                                                (assoc-ref outputs "out")
-                                                "/lib/icecat"))
+                (setenv "AR" "llvm-ar")
+                (setenv "NM" "llvm-nm")
+                (setenv "CC" "clang")
+                (setenv "CXX" "clang++")
+                (setenv "LDFLAGS" (string-append "-Wl,-rpath="
+                                                 #$output "/lib/icecat"))
 
-               (setenv "MACH_USE_SYSTEM_PYTHON" "1")
-               (setenv "MOZ_NOSPAM" "1")
-               (setenv "MOZ_BUILD_DATE" ,%icecat-build-id) ; avoid timestamp
+                (setenv "MACH_USE_SYSTEM_PYTHON" "1")
+                (setenv "MOZ_NOSPAM" "1")
+                (setenv "MOZ_BUILD_DATE" #$%icecat-build-id) ; avoid timestamp
 
-               (format #t "build directory: ~s~%" (getcwd))
-               (format #t "configure flags: ~s~%" flags)
+                (format #t "build directory: ~s~%" (getcwd))
+                (format #t "configure flags: ~s~%" flags)
 
-               (call-with-output-file "mozconfig"
-                 (lambda (out)
-                   (for-each (lambda (flag)
-                               (format out "ac_add_options ~a\n" flag))
-                             flags)))
+                (call-with-output-file "mozconfig"
+                  (lambda (port)
+                    (for-each (lambda (flag)
+                                (format port "ac_add_options ~a\n" flag))
+                              flags)))
 
-               (invoke "./mach" "configure"))))
-         (replace 'build
-           (lambda* (#:key (make-flags '()) (parallel-build? #t)
-                     #:allow-other-keys)
-             (apply invoke "./mach" "build"
-                    ;; mach will use parallel build if possible by default
-                    `(,@(if parallel-build?
-                            '()
-                            '("-j1"))
-                      ,@make-flags))))
-         (add-after 'build 'neutralise-store-references
-           (lambda _
-             ;; Mangle the store references to compilers & other build tools in
-             ;; about:buildconfig, reducing IceCat's closure by 1 GiB on x86-64.
-             (let* ((obj-dir (match (scandir "." (cut string-prefix? "obj-" <>))
-                               ((dir) dir)))
-                    (file (string-append
-                           obj-dir
-                           "/dist/bin/chrome/toolkit/content/global/buildconfig.html")))
-               (substitute* file
-                 (("[0-9a-df-np-sv-z]{32}" hash)
-                  (string-append (string-take hash 8)
-                                 "<!-- Guix: not a runtime dependency -->"
-                                 (string-drop hash 8)))))))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (invoke "./mach" "install")
-             ;; The geckodriver binary is not installed by the above, for some
-             ;; reason.  Use 'find-files' to avoid having to deal with the
-             ;; system/architecture-specific file name.
-             (install-file (first (find-files "." "geckodriver"))
-                           (string-append (assoc-ref outputs "out") "/bin"))))
-         (add-after 'install 'wrap-program
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (lib (string-append out "/lib"))
-                    (gtk (assoc-ref inputs "gtk+"))
-                    (gtk-share (string-append gtk "/share"))
-                    (ld-libs (map (lambda (label)
-                                    (string-append (assoc-ref inputs label)
-                                                   "/lib"))
-                              '("libpng-apng"
-                                "libxscrnsaver"
-                                "mesa"
-                                "pciutils"
-                                "mit-krb5"
-                                "eudev"
-                                "pulseaudio"
-                                ;; For the integration of native notifications
-                                "libnotify"))))
-               (wrap-program (car (find-files lib "^icecat$"))
-                 `("XDG_DATA_DIRS" prefix (,gtk-share))
-                 ;; The following line is commented out because the icecat
-                 ;; package on guix has been observed to be unstable when
-                 ;; using wayland, and the bundled extensions stop working.
-                 ;;   `("MOZ_ENABLE_WAYLAND" = ("1"))
-                 `("LD_LIBRARY_PATH" prefix ,ld-libs)))))
-         (add-after 'wrap-program 'install-desktop-entry
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Install the '.desktop' file.
-             (let* ((desktop-file "taskcluster/docker/icecat-snap/icecat.desktop")
-                    (out          (assoc-ref outputs "out"))
-                    (applications (string-append out "/share/applications")))
-               (substitute* desktop-file
-                 (("^Exec=icecat")     (string-append "Exec=" out "/bin/icecat"))
-                 (("IceCat")           "GNU IceCat")
-                 (("Icon=.*")          "Icon=icecat\n")
-                 (("NewWindow")        "new-window")
-                 (("NewPrivateWindow") "new-private-window"))
-               (install-file desktop-file applications))))
-         (add-after 'install-desktop-entry 'install-icons
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (with-directory-excursion "browser/branding/official"
-                 (for-each
-                  (lambda (file)
-                    (let* ((size (string-filter char-numeric? file))
-                           (icons (string-append out "/share/icons/hicolor/"
-                                                 size "x" size "/apps")))
-                      (mkdir-p icons)
-                      (copy-file file (string-append icons "/icecat.png"))))
-                  '("default16.png" "default22.png" "default24.png"
-                    "default32.png" "default48.png" "content/icon64.png"
-                    "mozicon128.png" "default256.png")))))))))
+                (invoke "./mach" "configure"))))
+          (replace 'build
+            (lambda* (#:key (make-flags '()) (parallel-build? #t)
+                      #:allow-other-keys)
+              (apply invoke "./mach" "build"
+                     ;; mach will use parallel build if possible by default
+                     `(,@(if parallel-build?
+                             '()
+                             '("-j1"))
+                       ,@make-flags))))
+          (add-after 'build 'neutralise-store-references
+            (lambda _
+              ;; Mangle the store references to compilers & other build tools in
+              ;; about:buildconfig, reducing IceCat's closure by 1 GiB on x86-64.
+              (let* ((obj-dir (match (scandir "." (cut string-prefix? "obj-" <>))
+                                ((dir) dir)))
+                     (file (string-append
+                            obj-dir
+                            "/dist/bin/chrome/toolkit/content/global/buildconfig.html")))
+                (substitute* file
+                  (("[0-9a-df-np-sv-z]{32}" hash)
+                   (string-append (string-take hash 8)
+                                  "<!-- Guix: not a runtime dependency -->"
+                                  (string-drop hash 8)))))))
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (invoke "./mach" "install")
+              ;; The geckodriver binary is not installed by the above, for some
+              ;; reason.  Use 'find-files' to avoid having to deal with the
+              ;; system/architecture-specific file name.
+              (install-file (first (find-files "." "geckodriver"))
+                            (string-append #$output "/bin"))))
+          (add-after 'install 'wrap-program
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((lib (string-append #$output "/lib"))
+                     (gtk #$(this-package-input "gtk+"))
+                     (gtk-share (string-append gtk "/share"))
+                     (ld-libs '#$(map (lambda (label)
+                                        (file-append (this-package-input label) "/lib"))
+                                      '("libpng-apng"
+                                        "libxscrnsaver"
+                                        "mesa"
+                                        "pciutils"
+                                        "mit-krb5"
+                                        "eudev"
+                                        "pulseaudio"
+                                        ;; For the integration of native notifications
+                                        "libnotify"))))
+                (wrap-program (car (find-files lib "^icecat$"))
+                  `("XDG_DATA_DIRS" prefix (,gtk-share))
+                  ;; The following line is commented out because the icecat
+                  ;; package on guix has been observed to be unstable when
+                  ;; using wayland, and the bundled extensions stop working.
+                  ;;   `("MOZ_ENABLE_WAYLAND" = ("1"))
+                  `("LD_LIBRARY_PATH" prefix ,ld-libs)))))
+          (add-after 'wrap-program 'install-desktop-entry
+            (lambda _
+              ;; Install the '.desktop' file.
+              (let* ((desktop-file "taskcluster/docker/icecat-snap/icecat.desktop")
+                     (applications (string-append #$output "/share/applications")))
+                (substitute* desktop-file
+                  (("^Exec=icecat")     (string-append "Exec=" #$output "/bin/icecat"))
+                  (("IceCat")           "GNU IceCat")
+                  (("Icon=.*")          "Icon=icecat\n")
+                  (("NewWindow")        "new-window")
+                  (("NewPrivateWindow") "new-private-window"))
+                (install-file desktop-file applications))))
+          (add-after 'install-desktop-entry 'install-icons
+            (lambda _
+              (with-directory-excursion "browser/branding/official"
+                (for-each
+                 (lambda (file)
+                   (let* ((size (string-filter char-numeric? file))
+                          (icons (string-append #$output "/share/icons/hicolor/"
+                                                size "x" size "/apps")))
+                     (mkdir-p icons)
+                     (copy-file file (string-append icons "/icecat.png"))))
+                 '("default16.png" "default22.png" "default24.png"
+                   "default32.png" "default48.png" "content/icon64.png"
+                   "mozicon128.png" "default256.png"))))))))
     (home-page "https://www.gnu.org/software/gnuzilla/")
     (synopsis "Entirely free browser derived from Mozilla Firefox")
     (description
@@ -1350,7 +989,7 @@ standards of the IceCat project.")
     (arguments
      `(#:tests? #f                              ; no check target
        #:imported-modules ,%cargo-utils-modules ;for `generate-all-checksums'
-       #:modules ((guix build utils)    ;find-files
+       #:modules ((guix build utils)            ;find-files
                   (sxml simple)
                   (ice-9 regex)
                   ,@%gnu-build-system-modules)
@@ -1361,8 +1000,7 @@ standards of the IceCat project.")
              (mkdir "comm")
              (copy-recursively (assoc-ref inputs "thunderbird-sources")
                                "comm")
-             (delete-file "sourcestamp.txt")
-             #t))
+             (delete-file "sourcestamp.txt")))
          (add-after 'patch-source-shebangs 'patch-cargo-checksums
            (lambda _
              (use-modules (guix build cargo-utils))
@@ -1375,16 +1013,14 @@ standards of the IceCat project.")
                          (find-files "." "Cargo.lock$"))
                (for-each generate-all-checksums
                          '("third_party/rust"
-                           "toolkit/library/rust")))
-             #t))
+                           "toolkit/library/rust")))))
          ;; Fixes issue where each installation directory generates its own profile.
          ;; See e.g. https://trac.torproject.org/projects/tor/ticket/31457
          (add-after 'patch-source-shebangs 'fix-profile-setting
            (lambda _
              (substitute* "comm/mail/moz.configure"
                (("MOZ_DEDICATED_PROFILES, True")
-                "MOZ_DEDICATED_PROFILES, False"))
-             #t))
+                "MOZ_DEDICATED_PROFILES, False"))))
          (add-after 'prepare-thunderbird-sources 'rename-to-icedove
            (lambda _
              (substitute* "comm/mail/confvars.sh"
@@ -1447,8 +1083,7 @@ standards of the IceCat project.")
                (("(pref\\(\"extensions.systemAddon.update.enabled\").*" _ m)
                 (string-append m ", false);"))
                (("(pref\\(\"lightweightThemes.update.enabled\").*" _ m)
-                (string-append m ", false);")))
-             #t))
+                (string-append m ", false);")))))
          (add-after 'build 'neutralize-store-references
            (lambda _
              ;; Mangle the store references to compilers & other build tools in
@@ -1464,8 +1099,7 @@ standards of the IceCat project.")
                 (string-append store
                                (string-take hash 8)
                                "<!-- Guix: not a runtime dependency -->"
-                               (string-drop hash 8))))
-             #t))
+                               (string-drop hash 8))))))
          (delete 'bootstrap)
          (replace 'configure
            (lambda* (#:key inputs outputs configure-flags #:allow-other-keys)
@@ -1567,8 +1201,7 @@ standards of the IceCat project.")
                             [Desktop Action ComposeMessage]~@
                             Name=Write new message~@
                             Exec=~@*~a/bin/icedove -compose~%"
-                           out))))
-             #t))
+                           out))))))
          (add-after 'install 'wrap-program
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -1581,47 +1214,46 @@ standards of the IceCat project.")
                     (eudev-lib (string-append eudev "/lib")))
                (wrap-program (car (find-files lib "^icedove$"))
                  `("XDG_DATA_DIRS" prefix (,gtk-share))
-                 `("LD_LIBRARY_PATH" prefix (,pulseaudio-lib ,eudev-lib)))
-               #t))))))
+                 `("LD_LIBRARY_PATH" prefix (,pulseaudio-lib ,eudev-lib)))))))))
     (inputs
-     `(("bzip2" ,bzip2)
-       ("cairo" ,cairo)
-       ("cups" ,cups)
-       ("dbus-glib" ,dbus-glib)
-       ("ffmpeg" ,ffmpeg)
-       ("freetype" ,freetype)
-       ("gdk-pixbuf" ,gdk-pixbuf)
-       ("glib" ,glib)
-       ("gtk+" ,gtk+)
-       ("gtk+-2" ,gtk+-2)
-       ("hunspell" ,hunspell)
-       ("icu4c" ,icu4c)
-       ("libcanberra" ,libcanberra)
-       ("libevent" ,libevent)
-       ("libffi" ,libffi)
-       ("libgnome" ,libgnome)
-       ("libjpeg-turbo" ,libjpeg-turbo)
-       ("libpng-apng" ,libpng-apng)
-       ("libvpx" ,libvpx)
-       ("libxcomposite" ,libxcomposite)
-       ("libxft" ,libxft)
-       ("libxinerama" ,libxinerama)
-       ("libxscrnsaver" ,libxscrnsaver)
-       ("libxt" ,libxt)
-       ("mesa" ,mesa)
-       ("mit-krb5" ,mit-krb5)
-       ("nspr" ,nspr-4.32)
-       ; FIXME: create nss >= 3.68 after core-updates merge
-       ;("nss" ,nss)
-       ("pango" ,pango)
-       ("pixman" ,pixman)
-       ("pulseaudio" ,pulseaudio)
-       ("sqlite" ,sqlite)
-       ("startup-notification" ,startup-notification)
-       ("eudev" ,eudev)
-       ("unzip" ,unzip)
-       ("zip" ,zip)
-       ("zlib" ,zlib)))
+     (list bzip2
+           cairo
+           cups
+           dbus-glib
+           ffmpeg
+           freetype
+           gdk-pixbuf
+           glib
+           gtk+
+           gtk+-2
+           hunspell
+           icu4c
+           libcanberra
+           libevent
+           libffi
+           libgnome
+           libjpeg-turbo
+           libpng-apng
+           libvpx
+           libxcomposite
+           libxft
+           libxinerama
+           libxscrnsaver
+           libxt
+           mesa
+           mit-krb5
+           nspr-4.32
+           ;; FIXME: create nss >= 3.68 after core-updates merge
+           ;;nss
+           pango
+           pixman
+           pulseaudio
+           sqlite
+           startup-notification
+           eudev
+           unzip
+           zip
+           zlib))
     (native-inputs
      `(("thunderbird-sources"
         ;; The changeset identifier is taken from the file "sourcestamp.txt"
@@ -1646,8 +1278,7 @@ standards of the IceCat project.")
        ("node" ,node)
        ("perl" ,perl)
        ("pkg-config" ,pkg-config)
-       ("python" ,python)
-       ("python2" ,python-2.7)
+       ("python" ,python-wrapper)
        ("rust" ,rust)
        ("rust-cbindgen" ,rust-cbindgen-0.19)
        ("which" ,which)

@@ -313,7 +313,7 @@
   '("third_party/blink/perf_tests"))
 
 (define %chromium-version "102.0.5005.61")
-(define %ungoogled-revision (string-append %chromium-version "-1"))
+(define %ungoogled-revision (string-append %chromium-version "-3"))
 (define %debian-revision "debian/102.0.5005.61-1")
 
 (define %ungoogled-origin
@@ -324,7 +324,7 @@
     (file-name (git-file-name "ungoogled-chromium" %ungoogled-revision))
     (sha256
      (base32
-      "1hlyi6k894blkkqmqsizx72bag2vj6wlpza0fvi8db5wp6i5b58g"))))
+      "19i4ygxjm503dmck3bdqv3fcpda3dp9wr7z306pi6i1k989rbs8l"))))
 
 (define %debian-origin
   (origin

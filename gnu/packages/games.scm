@@ -3080,7 +3080,7 @@ that beneath its ruins lay buried an ancient evil.")
 (define-public angband
   (package
     (name "angband")
-    (version "4.2.3")
+    (version "4.2.4")
     (source
      (origin
        (method git-fetch)
@@ -3089,7 +3089,7 @@ that beneath its ruins lay buried an ancient evil.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1psrdbf90mb6dhq0b9z18pz1csnshz1kvwg82dvwa99apqdw0la8"))
+        (base32 "1x0qqsv7xa3figcl4v35sin64ffgz32652vk541d8qaq4qcc378n"))
        (modules '((guix build utils)))
        (snippet
         ;; So, some of the sounds/graphics/tilesets are under different
@@ -3105,14 +3105,12 @@ that beneath its ruins lay buried an ancient evil.")
            (substitute* "lib/Makefile"
              ;; And don't try to invoke makefiles in the directories we removed.
              (("gamedata customize help screens fonts tiles sounds icons user")
-              "gamedata customize help screens user"))
-           #t))))
+              "gamedata customize help screens user"))))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no check target
        #:configure-flags (list (string-append "--bindir=" %output "/bin"))))
-    (native-inputs
-     (list autoconf automake))
+    (native-inputs (list autoconf automake))
     (inputs (list ncurses))
     (home-page "https://rephial.org/")
     (synopsis "Dungeon exploration roguelike")
@@ -6690,7 +6688,7 @@ fight against their plot and save his fellow rabbits from slavery.")
            libxcursor
            libxml2
            miniupnpc
-           mozjs-78
+           mozjs
            openal
            sdl2
            wxwidgets
@@ -8681,33 +8679,6 @@ This happens when the one ball touches the floor on the other side of
 the net.  There can be 1 to 8 balls in game.  Once one ball touches
 the ground, the set ends and all balls are served again.")
     (license license:gpl3+)))
-
-(define-public slingshot
-  (package
-    (name "slingshot")
-    (version "0.9")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/ryanakca/slingshot")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "19m8b6nsi786bc6gmkp185mwri3r5y249gjmqd5qsc23nnfhgrs1"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2))
-    (inputs
-     (list python2-pygame))
-    (home-page "https://github.com/ryanakca/slingshot")
-    (synopsis "Simple 2D shooting strategy game set in space")
-    (description "Slingshot is a two-dimensional strategy game where two
-players attempt to shoot one another through a section of space populated by
-planets.  The main feature of the game is that the shots, once fired, are
-affected by the gravity of the planets.")
-    (license license:gpl2+)))
 
 (define-public 4dtris
   (package

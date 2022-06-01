@@ -296,12 +296,9 @@ also known as DXTn or DXTC) for Mesa.")
                    libxvmc
                    wayland
                    wayland-protocols)
-             (if (member (%current-system)
-                         '("x86_64-linux" "i686-linux" "powerpc64le-linux"
-                           "aarch64-linux" "powerpc-linux" "riscv64-linux"))
-                 ;; Note: update the 'clang' input of mesa-opencl when bumping this.
-                 (list llvm-11)
-                 '())))
+             ;; TODO: Resort alphabetically.
+             ;; Note: update the 'clang' input of mesa-opencl when bumping this.
+             (list llvm-11)))
     (native-inputs
      (append (list bison
                    flex
@@ -311,18 +308,18 @@ also known as DXTn or DXTC) for Mesa.")
                    python-libxml2                  ;for OpenGL ES 1.1 and 2.0 support
                    python-mako
                    (@ (gnu packages base) which))
-             (if (member (%current-system)
-                         '("x86_64-linux" "i686-linux" "powerpc64le-linux"
-                           "aarch64-linux" "powerpc-linux" "riscv64-linux"))
-                 (list glslang)
-                 '())))
+             ;; TODO: Resort alphabetically.
+             (list glslang)))
     (outputs '("out" "bin"))
     (arguments
      `(#:configure-flags
        '(,@(match (%current-system)
-             ((or "armhf-linux" "aarch64-linux")
+             ("aarch64-linux"
               ;; TODO: Fix svga driver for non-Intel architectures.
               '("-Dgallium-drivers=etnaviv,freedreno,kmsro,lima,nouveau,panfrost,r300,r600,swrast,tegra,v3d,vc4,virgl"))
+             ("armhf-linux"
+              ;; Freedreno FTBFS when built on a 64-bit machine.
+              '("-Dgallium-drivers=etnaviv,kmsro,lima,nouveau,panfrost,r300,r600,swrast,tegra,v3d,vc4,virgl"))
              ((or "powerpc64le-linux" "powerpc-linux" "riscv64-linux")
               '("-Dgallium-drivers=nouveau,r300,r600,radeonsi,swrast,virgl"))
              (_
@@ -354,13 +351,8 @@ also known as DXTn or DXTC) for Mesa.")
              (_
               '("-Dvulkan-drivers=auto")))
 
-         ;; Enable the Vulkan overlay layer on architectures using llvm.
-         ,@(match (%current-system)
-             ((or "x86_64-linux" "i686-linux" "powerpc64le-linux" "aarch64-linux"
-                  "powerpc-linux" "riscv64-linux")
-              '("-Dvulkan-layers=device-select,overlay"))
-             (_
-              '()))
+         ;; Enable the Vulkan overlay layer on all architectures.
+         "-Dvulkan-layers=device-select,overlay"
 
          ;; Also enable the tests.
          "-Dbuild-tests=true"
@@ -369,13 +361,11 @@ also known as DXTn or DXTC) for Mesa.")
          ;; from the default dri drivers
          ,@(match (%current-system)
              ((or "x86_64-linux" "i686-linux")
-              '("-Ddri-drivers=i915,i965,nouveau,r200,r100"
-                "-Dllvm=enabled"))      ; default is x86/x86_64 only
-             ((or "powerpc64le-linux" "aarch64-linux" "powerpc-linux" "riscv64-linux")
-              '("-Ddri-drivers=nouveau,r200,r100"
-                "-Dllvm=enabled"))
+              '("-Ddri-drivers=i915,i965,nouveau,r200,r100"))
              (_
-              '("-Ddri-drivers=nouveau,r200,r100"))))
+              '("-Ddri-drivers=nouveau,r200,r100")))
+
+                "-Dllvm=enabled")       ; default is x86/x86_64 only
 
        ;; XXX: 'debugoptimized' causes LTO link failures on some drivers.  The
        ;; documentation recommends using 'release' for performance anyway.
@@ -433,6 +423,10 @@ also known as DXTn or DXTC) for Mesa.")
                   ;; The simplest way to skip it is to run a different test instead.
                   `((substitute* "src/freedreno/ir3/meson.build"
                       (("disasm\\.c'") "delay.c',\n    link_args: ld_args_build_id"))))
+                 ("armhf-linux"
+                  ;; Disable some of the llvmpipe tests.
+                  `((substitute* "src/gallium/drivers/llvmpipe/meson.build"
+                      (("'lp_test_arit', ") ""))))
                  (_
                   '((display "No tests to disable on this architecture.\n"))))))
          (add-before 'configure 'fix-dlopen-libnames

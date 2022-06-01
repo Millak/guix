@@ -239,25 +239,6 @@ APNG patch provides APNG support to libpng.")
     (home-page "https://sourceforge.net/projects/libpng-apng/")
     (license license:zlib)))
 
-(define-public libpng-1.2
-  (package
-    (inherit libpng)
-    (version "1.2.59")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (list (string-append "mirror://sourceforge/libpng/libpng12/"
-                                 version "/libpng-" version ".tar.xz")
-                  (string-append
-                   "ftp://ftp.simplesystems.org/pub/libpng/png/src"
-                   "/libpng12/libpng-" version ".tar.xz")
-                  (string-append
-                   "ftp://ftp.simplesystems.org/pub/libpng/png/src/history"
-                   "/libpng12/libpng-" version ".tar.xz")))
-       (sha256
-        (base32
-         "1izw9ybm27llk8531w6h4jp4rk2rxy2s9vil16nwik5dp0amyqxl"))))))
-
 (define-public pngcrush
   (package
    (name "pngcrush")

@@ -332,7 +332,6 @@
     (inputs
      (list dvd+rw-tools
            glib
-           gnome-doc-utils
            gstreamer
            gst-plugins-base
            gtk+
@@ -1850,7 +1849,7 @@ either on a local, or remote machine via a number of methods.")
 (define-public gnome-commander
   (package
     (name "gnome-commander")
-    (version "1.14.0")
+    (version "1.14.2")
     (source
      (origin
        (method url-fetch)
@@ -1858,7 +1857,7 @@ either on a local, or remote machine via a number of methods.")
                            (version-major+minor version)  "/"
                            "gnome-commander-" version ".tar.xz"))
        (sha256
-        (base32 "1zdz82j7vpxiqa188zmsxliqk60g331ycaxfbhx5bzyqfjgrh7gd"))))
+        (base32 "1s8fdwp0z1smzkwrsvssp9g3yak6z4cdk0qx0c4qmwca9z9fyy0k"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list desktop-file-utils
@@ -2227,37 +2226,6 @@ The gnome-about program helps find which version of GNOME is installed.")
     ; Some bits under the LGPL.
     (license license:gpl2+)))
 
-(define-public gnome-doc-utils
-  (package
-    (name "gnome-doc-utils")
-    (version "0.20.10")
-    (source
-     (origin
-      (method url-fetch)
-      (uri (string-append "mirror://gnome/sources/" name "/"
-                          (version-major+minor version)  "/"
-                          name "-" version ".tar.xz"))
-      (sha256
-       (base32
-        "19n4x25ndzngaciiyd8dd6s2mf9gv6nv3wv27ggns2smm7zkj1nb"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list intltool
-           docbook-xml-4.4
-           python2-libxml2
-           libxml2
-           libxslt
-           pkg-config
-           python-2))
-    (home-page "https://wiki.gnome.org/GnomeDocUtils")
-    (synopsis
-     "Documentation utilities for the Gnome project")
-    (description
-     "Gnome-doc-utils is a collection of documentation utilities for the
-Gnome project.  It includes xml2po tool which makes it easier to translate
-and keep up to date translations of documentation.")
-    (license license:gpl2+))) ; xslt under lgpl
-
 (define-public gnome-disk-utility
   (package
     (name "gnome-disk-utility")
@@ -2509,61 +2477,44 @@ GNOME Desktop.")
     (name "gnome-keyring")
     (version "40.0")
     (source (origin
-             (method url-fetch)
-             (uri (string-append "mirror://gnome/sources/" name "/"
-                                 (version-major version)  "/"
-                                 name "-" version ".tar.xz"))
-             (sha256
-              (base32
-               "0cdrlcw814zayhvlaxqs1sm9bqlfijlp22dzzd0g5zg2isq4vlm3"))))
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/" name "/"
+                                  (version-major version)  "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0cdrlcw814zayhvlaxqs1sm9bqlfijlp22dzzd0g5zg2isq4vlm3"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ;48 of 603 tests fail because /var/lib/dbus/machine-id does
-                   ;not exist
-       #:configure-flags
-       (list
-        (string-append "--with-pkcs11-config="
-                       (assoc-ref %outputs "out") "/share/p11-kit/modules/")
-        (string-append "--with-pkcs11-modules="
-                       (assoc-ref %outputs "out") "/share/p11-kit/modules/"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-/bin/sh-reference
-           (lambda _
-             (substitute* "po/Makefile.in.in"
-               (("/bin/sh") (which "sh")))
-             #t))
-         (add-after 'unpack 'fix-docbook
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "docs/Makefile.am"
-               (("http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl")
-                (string-append (assoc-ref inputs "docbook-xsl")
-                               "/xml/xsl/docbook-xsl-"
-                               ,(package-version docbook-xsl)
-                               "/manpages/docbook.xsl")))
-             (setenv "XML_CATALOG_FILES"
-                     (string-append (assoc-ref inputs "docbook-xml")
-                                    "/xml/dtd/docbook/catalog.xml"))
-             ;; Rerun the whole thing to avoid version mismatch ("This is
-             ;; Automake 1.15.1, but the definition used by this
-             ;; AM_INIT_AUTOMAKE comes from Automake 1.15.").  Note: we don't
-             ;; use 'autoreconf' because it insists on running 'libtoolize'.
-             (invoke "autoconf")
-             (invoke "aclocal")
-             (invoke "automake" "-ac"))))))
+     (list
+      #:tests? #f  ;48 of 603 tests fail because /var/lib/dbus/machine-id does
+                                        ;not exist
+      #:configure-flags
+      #~(list
+         (string-append "--with-pkcs11-config="
+                        #$output "/share/p11-kit/modules/")
+         (string-append "--with-pkcs11-modules="
+                        #$output "/share/p11-kit/modules/"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-/bin/sh-reference
+            (lambda _
+              (substitute* "po/Makefile.in.in"
+                (("/bin/sh") (which "sh"))))))))
     (inputs
      (list libgcrypt linux-pam openssh dbus gcr))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("glib" ,glib "bin")
-       ("glib" ,glib) ; for m4 macros
-       ("python" ,python-2) ;for tests
-       ("intltool" ,intltool)
-       ("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libxslt" ,libxslt) ;for documentation
-       ("docbook-xml" ,docbook-xml-4.3)
-       ("docbook-xsl" ,docbook-xsl)))
+     (list pkg-config
+           `(,glib "bin")
+           glib                         ;for m4 macros
+           python-wrapper               ;for tests
+           intltool
+           autoconf
+           automake
+           libxml2                      ;for XML_CATALOG_FILES
+           libxslt                      ;for documentation
+           docbook-xml
+           docbook-xsl))
     (propagated-inputs
      (list gcr))
     (home-page "https://www.gnome.org")
@@ -4757,35 +4708,6 @@ commercial X servers.  It is useful for creating XKB-related software (layout
 indicators etc).")
     (license license:lgpl2.0+)))
 
-(define-public python2-rsvg
-  ;; XXX: This is actually a subset of gnome-python-desktop.
-  (package
-    (name "python2-rsvg")
-    (version "2.32.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append
-             "mirror://gnome/sources/gnome-python-desktop/2.32/gnome-python-desktop-"
-             version ".tar.bz2"))
-       (sha256
-        (base32
-         "1s8f9rns9v7qlwjv9qh9lr8crp88dpzfm45hj47zc3ivpy0dbnq9"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list python-2 python2-pygtk librsvg))
-    (home-page "https://www.gnome.org")
-    (synopsis "Python bindings to librsvg")
-    (description
-     "This package provides Python bindings to librsvg, the SVG rendering
-library.")
-
-    ;; This is the license of the rsvg bindings.  The license of each module
-    ;; of gnome-python-desktop is given in 'COPYING'.
-    (license license:lgpl2.1+)))
-
 (define-public glib-networking
   (package
     (name "glib-networking")
@@ -5010,13 +4932,6 @@ and the GLib main loop, to integrate well with GNOME applications.")
        ("pkg-config" ,pkg-config)
        ("vala" ,vala)
        ("xsltproc" ,libxslt)))
-       ;; These are needed for the tests.
-       ;; FIXME: Add gjs once available.
-       ;("dbus" ,dbus)
-       ;("python2" ,python-2)
-       ;("python2-dbus" ,python2-dbus)
-       ;("python2-pygobject" ,python2-pygobject)
-       ;("python2-pygobject-2" ,python2-pygobject-2)))
     (propagated-inputs
      (list glib)) ; required by libsecret-1.pc
     (inputs
@@ -7279,7 +7194,7 @@ configuration program to choose applications starting on login.")
        ("xvfb" ,xorg-server-for-tests)))
     (propagated-inputs
      ;; These are all in the Requires.private field of gjs-1.0.pc.
-     (list cairo gobject-introspection mozjs-78))
+     (list cairo gobject-introspection mozjs))
     (inputs
      (list gtk+ readline))
     (synopsis "Javascript bindings for GNOME")
@@ -10202,7 +10117,7 @@ is suitable as a default application in a Desktop environment.")
 (define-public xpad
   (package
     (name "xpad")
-    (version "5.1.0")
+    (version "5.8.0")
     (source
      (origin
        (method url-fetch)
@@ -10211,13 +10126,13 @@ is suitable as a default application in a Desktop environment.")
                            name "-" version ".tar.bz2"))
        (sha256
         (base32
-         "0l0g5x8g6dwhf5ksnqqrjjsycy57kcvdslkmsr6bl3vrsjd7qml3"))))
+         "1sc2dz4yxx6glnqpnhiby85g2blnsfn8d3fvbaqhdi2hi0q54q7j"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake
            `(,gtk+ "bin") intltool pkg-config))
     (inputs
-     (list gtksourceview-3 libsm))
+     (list gtksourceview libsm))
     (home-page "https://wiki.gnome.org/Apps/Xpad")
     (synopsis "Virtual sticky note")
     (description
@@ -10436,14 +10351,6 @@ from gi.repository import Atspi"))
 accessibility infrastructure.")
     (license license:lgpl2.0)
     (properties '((upstream-name . "pyatspi")))))
-
-(define-public python2-pyatspi
-  (package/inherit python-pyatspi
-    (name "python2-pyatspi")
-    (inputs
-     `(("python" ,python-2)))
-    (propagated-inputs
-     `(("python-pygobject" ,python2-pygobject)))))
 
 (define-public orca
   (package
@@ -12018,7 +11925,7 @@ GTK+.  It integrates well with the GNOME desktop environment.")
            python-pygobject
            python-pyenchant
            python-pypandoc
-           webkitgtk))
+           webkitgtk-with-libsoup2))
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")

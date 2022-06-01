@@ -27,7 +27,7 @@
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2021 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
@@ -344,9 +344,6 @@ formulas and hyperlinks to multiple worksheets in an Excel 2007+ XLSX file.")
                  (string-append glibc "/include")))))))))
     (inputs `(("libxml2" ,libxml2)))
     (synopsis "Python bindings for the libxml2 library")))
-
-(define-public python2-libxml2
-  (package-with-python2 python-libxml2))
 
 (define-public libxslt
   (package
@@ -1119,9 +1116,6 @@ code for classes that correspond to data structures defined by XMLSchema.")
                    license:gpl2      ; bundled jquery in doc is dual MIT/GPL2
                    license:psfl))))  ; pyxb/utils/activestate.py
 
-(define-public python2-pyxb
-  (package-with-python2 python-pyxb))
-
 (define-public xmlto
   (package
     (name "xmlto")
@@ -1424,7 +1418,7 @@ elements to their parents
 (define-public xlsx2csv
   (package
     (name "xlsx2csv")
-    (version "0.7.4")
+    (version "0.7.8")
     (source
      (origin
        (method git-fetch)
@@ -1433,17 +1427,17 @@ elements to their parents
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "168dm6p7w6pvgd87yb9hcxv9y0liv6mxgril202nfva68cp8y939"))))
+        (base32 "1p10571295f8zw1lsma8k5z07hrk9aspar0lsz8zpgjl7v35zcq7"))))
     (build-system python-build-system)
     (arguments
-     `(#:python ,python-2               ; use python-2 for the test script
-       #:phases
+     `(#:phases
        (modify-phases %standard-phases
          (replace 'check
            (lambda _
              (substitute* "test/run"
                ;; Run tests with `python' only.
-               (("^(PYTHON_VERSIONS = ).*" all m) (string-append m "['']")))
+               (("^(PYTHON_VERSIONS = ).*" all m)
+                (string-append m "['']")))
              (invoke "test/run"))))))
     (home-page "https://github.com/dilshod/xlsx2csv")
     (synopsis "XLSX to CSV converter")
@@ -2238,7 +2232,7 @@ implements @code{XMLStreamWriter} and @code{XMLStreamReader} and supports
 (define-public java-jdom2
   (package
     (name "java-jdom")
-    (version "2.0.6")
+    (version "2.0.6.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2247,7 +2241,7 @@ implements @code{XMLStreamWriter} and @code{XMLStreamReader} and supports
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "14vv1kxrsdvwi4cz3rx6r48w5y6fvk9cymil8qhvxwp56xxrgxiq"))))
+                "1r4pwl0z7hm45v9l2wbq3fjmqi13zmwzbrggyqizrwv31kghhx56"))))
     (build-system ant-build-system)
     (arguments
      `(#:build-target "package"
@@ -2543,9 +2537,6 @@ libxml2 and libxslt.")
        (sha256
         (base32
          "090viyanaki4q7w7i000xl0qh4in52bkl3qal55sz2bbm8w3hqd1"))))))
-
-(define-public python2-lxml
-  (package-with-python2 python-lxml))
 
 (define-public python-untangle
   ;; The latest tagged release is from 2014; use the latest commit.

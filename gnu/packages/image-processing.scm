@@ -19,6 +19,7 @@
 ;;; Copyright © 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -145,7 +146,7 @@ Magnetic Resonance Imaging.")
 (define-public dcmtk
   (package
     (name "dcmtk")
-    (version "3.6.6")
+    (version "3.6.7")
     (source
      (origin
        (method url-fetch)
@@ -154,8 +155,11 @@ Magnetic Resonance Imaging.")
                        "dcmtk" (string-join (string-split version #\.) "")
                        "/dcmtk-" version ".tar.gz"))
        (sha256
-        (base32 "13j5yf3p6qj3mr17d77r3kcqchf055hgvk1w15vmdr8f54mwcnb8"))))
+        (base32 "02kix73qhndgb56cmi5327666i6imp7hi17wwqp26q4d7s72jn3w"))))
     (build-system cmake-build-system)
+    (arguments
+     ;; By default, only static archives are built.
+     (list #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON")))
     (inputs
      (list icu4c
            libjpeg-turbo
@@ -181,7 +185,7 @@ licences similar to the Modified BSD licence."))))
 (define-public mia
   (package
     (name "mia")
-    (version "2.4.6")
+    (version "2.4.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/mia/mia/"
@@ -189,37 +193,41 @@ licences similar to the Modified BSD licence."))))
                                   "/mia-" version ".tar.xz"))
               (sha256
                (base32
-                "0j4nd5z7i3v199jh7hqqhwd4g7snchizkc7rhzanpvngqg91m1pb"))))
+                "0qpcd3n26q52dpyibm11f5l6cgscdr54p2jish39gc3p1f5h3ws1"))
+              (patches (search-patches "mia-fix-boost-headers.patch"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
-       (list "-DMIA_CREATE_NIPYPE_INTERFACES=0"
+       (list "-DMIA_CREATE_NIPYPE_INTERFACES=OFF"
              "-DCMAKE_CXX_FLAGS=-fpermissive")))
     (inputs
-     `(("boost" ,boost)
-       ("dcmtk" ,dcmtk)
-       ("doxygen" ,doxygen)
-       ("eigen" ,eigen)
-       ("fftw" ,fftw)
-       ("fftwf" ,fftwf)
-       ("gsl" ,gsl)
-       ("gts" ,gts)
-       ("hdf5" ,hdf5)
-       ("itpp" ,itpp)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libtiff" ,libtiff)
-       ("libxml" ,libxml2)
-       ("libxml++" ,libxml++)
-       ("maxflow" ,maxflow)
-       ("niftilib" ,niftilib)
-       ("nlopt" ,nlopt)
-       ("openexr" ,openexr-2)
-       ("python-lxml" ,python2-lxml)
-       ("vtk" ,vtk)))
+     (list boost
+           dcmtk
+           doxygen
+           eigen
+           fftw
+           fftwf
+           gsl
+           gts
+           hdf5
+           itpp
+           libjpeg-turbo
+           libpng
+           libtiff
+           libxml2
+           libxml++
+           maxflow
+           niftilib
+           nlopt
+           openexr-2
+           python-lxml
+           ;; The build fails when using the regular VTK (currently at version
+           ;; 9), with error "addons/vtk/vtkvf.cc:23:10: fatal error:
+           ;; vtkStructuredPointsReader.h: No such file or directory".
+           vtk-7))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("python" ,python-2)))
+     (list pkg-config
+           python-wrapper))
     (home-page "http://mia.sourceforge.net")
     (synopsis "Toolkit for gray scale medical image analysis")
     (description "MIA provides a combination of command line tools, plug-ins,
@@ -407,10 +415,10 @@ a suite of 3D interaction widgets, supports parallel processing, and
 integrates with various databases on GUI toolkits such as Qt and Tk.")
     (license license:bsd-3)))
 
-;; itksnap needs an older variant of VTK.
-(define-public vtk-6
-  (package (inherit vtk)
-    (version "6.3.0")
+(define-public vtk-7
+  (package
+    (inherit vtk)
+    (version "7.1.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://vtk.org/files/release/"
@@ -418,11 +426,16 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
                                   "/VTK-" version ".tar.gz"))
               (sha256
                (base32
-                "0pla1r5mvkgl4sl213gfdhzrypdgai0h3z5mfgm6p9jz9hsr794j"))))
-    (inputs
-     (modify-inputs (package-inputs vtk)
-       (replace "jsoncpp" jsoncpp-for-tensorflow)
-       (replace "python" python-2)))))         ;fails to build with Python 3.9
+                "0nm7xwwj7rnsxjdv2ssviys8nhci4n9iiiqm2y14s520hl2dsp1d"))
+              (patches (search-patches "vtk-7-python-compat.patch"
+                                       "vtk-7-hdf5-compat.patch"
+                                       "vtk-7-gcc-10-compat.patch"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments vtk)
+       ((#:configure-flags flags)
+        ;; Otherwise, the build would fail with: "error: invalid conversion
+        ;; from ‘const char*’ to ‘char*’ [-fpermissive]".
+        `(cons "-DCMAKE_CXX_FLAGS=-fpermissive" ,flags))))))
 
 (define-public opencv
   (package
@@ -1010,7 +1023,8 @@ combine the information contained in both.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15i5ixpryfrbf3vrrb5rici8fb585f25k0v1ljds16bp1f1msr4q"))))
+        (base32 "15i5ixpryfrbf3vrrb5rici8fb585f25k0v1ljds16bp1f1msr4q"))
+       (patches (search-patches "itk-snap-alt-glibc-compat.patch"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
@@ -1029,22 +1043,19 @@ combine the information contained in both.")
              (substitute* "CMakeLists.txt"
                (("install_qt5_executable\
 \\(\\$\\{SNAP_MAIN_INSTALL_DIR\\}/\\$\\{SNAP_EXE\\}\\)")
-                ""))
-             #t))
+                ""))))
          (add-after 'unpack 'disable-gui-tests
            (lambda _
              ;; The GUI tests just time out.
              (substitute* "CMakeLists.txt"
                (("  (Workspace|DiffSpace|ProbeIntensity|RegionCompetition\
 |RandomForest|RandomForestBailOut)")
-                ""))
-             #t))
+                ""))))
          (add-after 'unpack 'make-reproducible
            (lambda _
              (substitute* "CMakeLists.txt"
                (("TODAY\\(SNAP_VERSION_COMPILE_DATE\\)")
-                "SET(SNAP_VERSION_COMPILE_DATE \"(removed for reproducibility)\")"))
-             #t))
+                "SET(SNAP_VERSION_COMPILE_DATE \"(removed for reproducibility)\")"))))
          (add-after 'unpack 'prepare-submodules
            (lambda* (#:key inputs #:allow-other-keys)
              (rmdir "Submodules/c3d")
@@ -1055,19 +1066,16 @@ combine the information contained in both.")
                (("vcl_") "std::"))
              (rmdir "Submodules/greedy")
              (symlink (assoc-ref inputs "greedy-src")
-                      "Submodules/greedy")
-             #t))
+                      "Submodules/greedy")))
          (add-after 'unpack 'fix-includes
            (lambda _
              (substitute* "GUI/Model/RegistrationModel.cxx"
                (("<vnl_symmetric_eigensystem.h>")
-                "<vnl/algo/vnl_symmetric_eigensystem.h>"))
-             #t))
+                "<vnl/algo/vnl_symmetric_eigensystem.h>"))))
          (add-before 'check 'prepare-tests
            (lambda _
              ;; Needed by at least one test.
-             (setenv "HOME" "/tmp")
-             #t))
+             (setenv "HOME" "/tmp")))
          (add-after 'install 'wrap-executable
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
@@ -1076,23 +1084,22 @@ combine the information contained in both.")
                    ,(map (lambda (label)
                            (string-append (assoc-ref inputs label)
                                           "/lib/qt5/plugins"))
-                         '("qtbase" "qtdeclarative"))))
-               #t))))))
+                         '("qtbase" "qtdeclarative"))))))))))
     (inputs
-     `(("curl" ,curl)
-       ("fftw" ,fftw)
-       ("fftwf" ,fftwf)
-       ("glu" ,glu)
-       ("hdf5" ,hdf5)
-       ("mesa" ,mesa-opencl)
-       ;; This package does not build with either insight-toolkit 5.0.0 and
-       ;; not with 4.13.  It really needs to be 4.12.
-       ("itk" ,insight-toolkit-4.12)
-       ("vtk" ,vtk-6)
-       ("qtbase" ,qtbase-5)
-       ("qtdeclarative" ,qtdeclarative)
-       ("vxl" ,vxl-1)
-       ("zlib" ,zlib)))
+     (list curl
+           fftw
+           fftwf
+           glu
+           hdf5
+           mesa-opencl
+           ;; This package does not build with either insight-toolkit 5.0.0
+           ;; and not with 4.13.  It really needs to be 4.12.
+           insight-toolkit-4.12
+           vtk-7
+           qtbase-5
+           qtdeclarative
+           vxl-1
+           zlib))
     (native-inputs
      `(("googletest" ,googletest)
        ("qttools" ,qttools)

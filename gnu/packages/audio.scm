@@ -11,7 +11,7 @@
 ;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018 okapi <okapi@firemail.cc>
-;;; Copyright © 2018, 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2018, 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2018, 2019 Marius Bakke <mbakke@fastmail.com>
@@ -617,8 +617,7 @@ Filter) modules follow the convention of 1V / Octave.")
         "--enable-jack"
         "--enable-sndfile"
         "--enable-samplerate"
-        "--enable-avcodec")
-       #:python ,python-2))
+        "--enable-avcodec")))
     (inputs
      (list jack-1 libsndfile libsamplerate fftwf ffmpeg)) ; for libavcodec
     (native-inputs
@@ -2240,23 +2239,23 @@ synchronous execution of all clients, and low latency operation.")
 ;; jack-2 implement the same API.  JACK2 is provided primarily as a client
 ;; program for users who might benefit from the D-BUS features.
 (define-public jack-2
-  (package (inherit jack-1)
+  (package
+    (inherit jack-1)
     (name "jack2")
-    (version "1.9.14")
+    (version "1.9.21")
     (source (origin
-             (method url-fetch)
-             (uri (string-append "https://github.com/jackaudio/jack2/releases/"
-                                 "download/v" version "/jack2-"
-                                 version ".tar.gz"))
-             (file-name (string-append name "-" version ".tar.gz"))
-             (sha256
-              (base32
-               "0z11hf55a6mi8h50hfz5wry9pshlwl4mzfwgslghdh40cwv342m2"))))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jackaudio/jack2")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0sbrffmdbajvrk7iqvsvrnwnpvmicvbjyq3f52r6ashdsznsz03b"))))
     (build-system waf-build-system)
     (arguments
-     `(#:tests? #f  ; no check target
-       #:configure-flags '("--dbus"
-                           "--alsa")
+     `(#:tests? #f                      ; no check target
+       #:configure-flags '("--dbus" "--alsa")
        #:phases
        (modify-phases %standard-phases
          (add-before 'configure 'set-linkflags
@@ -2270,16 +2269,13 @@ synchronous execution of all clients, and low latency operation.")
                ((".*CFLAGS.*-Wall.*" m)
                 (string-append m
                                "    conf.env.append_unique('LINKFLAGS',"
-                               "'-Wl,-rpath=" %output "/lib')\n")))
-             #t))
+                               "'-Wl,-rpath=" %output "/lib')\n")))))
          (add-after 'install 'wrap-python-scripts
-           (lambda* (#:key inputs outputs #:allow-other-keys)
+           (lambda* (#:key outputs #:allow-other-keys)
              ;; Make sure 'jack_control' runs with the correct PYTHONPATH.
-             (let* ((out (assoc-ref outputs "out"))
-                    (path (getenv "GUIX_PYTHONPATH")))
-               (wrap-program (string-append out "/bin/jack_control")
-                 `("GUIX_PYTHONPATH" ":" prefix (,path))))
-             #t)))))
+             (wrap-program (search-input-file outputs "bin/jack_control")
+               `("GUIX_PYTHONPATH" ":"
+                 prefix (,(getenv "GUIX_PYTHONPATH")))))))))
     (inputs
      (list alsa-lib
            dbus
@@ -2306,17 +2302,15 @@ synchronous execution of all clients, and low latency operation.")
                 "05lycfq0f06zjp5xqvzjz9hx9kmqx72yng1lghh76hv63dw43lcj"))))
     (build-system waf-build-system)
     (arguments
-     `(#:tests? #f                      ; no check target
-       #:python ,python-2))
+     `(#:tests? #f))                    ; no check target
     (inputs
-     `(("lv2" ,lv2)
-       ("lilv" ,lilv)
-       ("suil" ,suil)
-       ("gtk2" ,gtk+-2)
-       ("gtk3" ,gtk+)
-       ("gtkmm" ,gtkmm-2)
-       ("qtbase" ,qtbase-5)
-       ("jack" ,jack-1)))
+     (list lv2
+           lilv
+           suil
+           gtk
+           gtkmm
+           qtbase-5
+           jack-1))
     (native-inputs
      (list pkg-config))
     (home-page "https://drobilla.net/software/jalv/")
@@ -2568,9 +2562,6 @@ compensation, (de)interleaving, and byte-swapping
 cross-platform audio input/output stream library.")
     (license license:expat)))
 
-(define-public python2-pyaudio
-  (package-with-python2 python-pyaudio))
-
 (define-public python-pyliblo
   (package
     (name "python-pyliblo")
@@ -2596,9 +2587,6 @@ library.  It supports almost the complete functionality of liblo, allowing you
 to send and receive OSC messages using a nice and simple Python API.  Also
 included are the command line utilities @code{send_osc} and @code{dump_osc}.")
     (license license:lgpl2.1+)))
-
-(define-public python2-pyliblo
-  (package-with-python2 python-pyliblo))
 
 (define-public python-soundfile
   (package
@@ -2807,37 +2795,33 @@ software.")
     (description "An LV2 port of the mda EPiano VSTi.")))
 
 (define-public lvtk
-  (package
-    (name "lvtk")
-    (version "1.2.0")
-    (source (origin
-             (method git-fetch)
-             (uri (git-reference
-                   (url "https://github.com/lvtk/lvtk")
-                   (commit version)))
-             (file-name (git-file-name name version))
-             (sha256
-              (base32
-               "1b01zvzl70ana6l1kn8fgyr7msnn3c7x61cgw7fdpp50322352p8"))))
-    (build-system waf-build-system)
-    (arguments
-     `(#:tests? #f  ; no check target
-       #:python ,python-2
-       #:configure-flags
-       (list (string-append "--boost-includes="
-                            (assoc-ref %build-inputs "boost")
-                            "/include"))))
-    (inputs
-     (list boost gtkmm-2 lv2))
-    (native-inputs
-     (list pkg-config))
-    (home-page "https://github.com/lvtk/lvtk")
-    (synopsis "C++ libraries for LV2 plugins")
-    (description
-     "The LV2 Toolkit (LVTK) contains libraries that wrap the LV2 C API and
+  ;; Use the latest commit, as the latest release was made in 2014 and depends
+  ;; on Python 2.
+  (let ((commit "a73feabe772f9650aa071e6a4df660e549ab7c48")
+        (revision "0"))
+    (package
+      (name "lvtk")
+      (version (git-version "1.2.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/lvtk/lvtk")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0scmv8b4jlm88d21dqqchjy98wb93zclc9x960h213gdi871vsaj"))))
+      (build-system waf-build-system)
+      (arguments (list #:tests? #f))    ;no check target
+      (inputs (list boost gtkmm lv2))
+      (native-inputs (list pkg-config))
+      (home-page "https://github.com/lvtk/lvtk")
+      (synopsis "C++ libraries for LV2 plugins")
+      (description
+       "The LV2 Toolkit (LVTK) contains libraries that wrap the LV2 C API and
 extensions into easy to use C++ classes.  It is the successor of
 lv2-c++-tools.")
-    (license license:gpl3+)))
+      (license license:isc))))
 
 (define-public openal
   (package
@@ -3162,49 +3146,6 @@ using Guix System.")
     (description "This package provides libshout plus IDJC extensions.")
     ;; GNU Library (not Lesser) General Public License.
     (license license:lgpl2.0+)))
-
-(define-public raul
-  (package
-    (name "raul")
-    (version "0.8.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://download.drobilla.net/raul-"
-                                  version ".tar.bz2"))
-              (sha256
-               (base32
-                "09ms40xc1x6qli6lxkwn5ibqh62nl9w7dq0b6jh1q2zvnrxwsd8b"))))
-    (build-system waf-build-system)
-    (arguments
-     `(#:python ,python-2
-       #:tests? #f)) ; no check target
-    (inputs
-     (list glib boost))
-    (native-inputs
-     (list pkg-config))
-    (home-page "https://drobilla.net/software/raul/")
-    (synopsis "Real-time audio utility library")
-    (description
-     "Raul (Real-time Audio Utility Library) is a C++ utility library primarily
-aimed at audio/musical applications.")
-    (license license:gpl2+)))
-
-(define-public raul-devel
-  (let ((commit "4db870b2b20b0a608ec0283139056b836c5b1624")
-        (revision "1"))
-    (package (inherit raul)
-      (name "raul")
-      (version (string-append "0.8.9-" revision "."
-                              (string-take commit 9)))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://git.drobilla.net/raul.git")
-                      (commit commit)))
-                (file-name (string-append name "-" version "-checkout"))
-                (sha256
-                 (base32
-                  "04fajrass3ymr72flx5js5vxc601ccrmx8ny8scp0rw7j0igyjdr")))))))
 
 (define-public resample
   (package
@@ -4346,9 +4287,6 @@ code, used in @code{libtoxcore}.")
 It is currently fairly complete for PCM devices, and has some support for
 mixers.")
     (license license:psfl)))
-
-(define-public python2-pyalsaaudio
-  (package-with-python2 python-pyalsaaudio))
 
 (define-public ldacbt
   (package

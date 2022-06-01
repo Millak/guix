@@ -641,14 +641,14 @@ It also includes runtime support libraries for these languages.")
 (define-public gcc-9
   (package
    (inherit gcc-8)
-   (version "9.4.0")
+   (version "9.5.0")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnu/gcc/gcc-"
                                 version "/gcc-" version ".tar.xz"))
             (sha256
              (base32
-              "13l3p6g2krilaawbapmn9zmmrh3zdwc36mfr3msxfy038hps6pf9"))
+              "13ygjmd938m0wmy946pxdhz9i1wq7z4w10l6pvidak0xxxj9yxi7"))
             (patches (search-patches "gcc-9-strmov-store-file-names.patch"
                                      "gcc-9-asan-fix-limits-include.patch"
                                      "gcc-5.0-libvtv-runpath.patch"))

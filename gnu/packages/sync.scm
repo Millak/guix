@@ -451,35 +451,42 @@ written in @command{scsh}.  It makes use of @command{unison} and
       (license license:expat))))
 
 (define-public casync
-  (package
-    (name "casync")
-    (version "2")
-    (home-page "https://github.com/systemd/casync/")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url home-page)
-                    (commit (string-append "v" version))))
-              (sha256
-               (base32
-                "0znkp3fcksrykcsv06y2mjvf2lbwmin25snmvfa8i5qfm3f4rm88"))
-              (file-name (string-append name "-" version "-checkout"))
-              (patches (search-patches "casync-renameat2-declaration.patch"))))
-    (build-system meson-build-system)
-    (native-inputs
-     (list pkg-config python-sphinx rsync))                         ;for tests
-    (inputs
-     (list xz ;for liblzma
-           `(,zstd "lib")
-           curl
-           acl
-           libselinux
-           fuse
-           openssl
-           zlib))
-    (synopsis "File synchronization and backup system")
-    (description
-     "casync is a @dfn{content-addressable data synchronizer} that can be used
+  (let ((commit "99559cd1d8cea69b30022261b5ed0b8021415654")
+        (revision "0"))
+    (package
+      (name "casync")
+      (version (git-version "2" revision commit))
+      (home-page "https://github.com/systemd/casync/")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url home-page)
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "139g82rkwv1kzss6crfmw3p01xnyjzz66b1ckprpbfncxb24047w"))
+                (file-name (string-append name "-" version "-checkout"))))
+      (build-system meson-build-system)
+      (arguments
+       `(#:configure-flags
+         (let ((out (assoc-ref %outputs "out")))
+           (list (string-append "-Dudevrulesdir="
+                                out "/lib/udev/rules.d")))))
+      (native-inputs
+       (list pkg-config python python-sphinx rsync))                  ;for tests
+      (inputs
+       (list xz ;for liblzma
+             `(,zstd "lib")
+             curl
+             acl
+             libselinux
+             eudev
+             fuse
+             openssl
+             zlib))
+      (synopsis "File synchronization and backup system")
+      (description
+       "casync is a @dfn{content-addressable data synchronizer} that can be used
 as the basis of a backup system.  It is:
 
 @itemize
@@ -490,7 +497,7 @@ large file systems or directory trees;
 over the Internet in an HTTP and CDN friendly way;
 @item An efficient backup system.
 @end itemize\n")
-    (license license:lgpl2.1+)))
+      (license license:lgpl2.1+))))
 
 (define-public rclone
   (package

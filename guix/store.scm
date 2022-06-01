@@ -1337,7 +1337,17 @@ object, only for build requests on EXPECTED-STORE."
     (if (and (eq? (store-connection-socket store)
                   (store-connection-socket expected-store))
              (= mode (build-mode normal)))
-        (unresolved things continue)
+        (begin
+          ;; Preserve caches accumulated up to this handler invocation.
+          (set-store-connection-caches! expected-store
+                                        (store-connection-caches store))
+
+          (unresolved things
+                      (lambda (new-store value)
+                        ;; Borrow caches from NEW-STORE.
+                        (set-store-connection-caches!
+                         store (store-connection-caches new-store))
+                        (continue value))))
         (continue #t))))
 
 (define default-cutoff
@@ -1397,7 +1407,8 @@ CUTOFF is the threshold above which we stop accumulating unresolved nodes."
                                       (if (unresolved? obj)
                                           ;; Pass #f because 'build-things' is now
                                           ;; unnecessary.
-                                          ((unresolved-continuation obj) #f)
+                                          ((unresolved-continuation obj)
+                                           store #f)
                                           obj))
                                     result #:cutoff cutoff)
          (map/accumulate-builds store proc rest #:cutoff cutoff)))))
@@ -1840,8 +1851,10 @@ This is a mutating version that should be avoided.  Prefer the functional
 
 (define (references/cached store item)
   "Like 'references', but cache results."
-  (let ((cache (store-connection-cache store %reference-cache-id)))
-    (match (vhash-assoc item cache)
+  (let* ((cache (store-connection-cache store %reference-cache-id))
+         (value (vhash-assoc item cache)))
+    (record-cache-lookup! %reference-cache-id value cache)
+    (match value
       ((_ . references)
        references)
       (#f

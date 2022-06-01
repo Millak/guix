@@ -117,58 +117,59 @@ _guix_is_removing ()
     $result
 }
 
+_guix_is_short_option ()
+{
+    case "${COMP_WORDS[$COMP_CWORD - 1]}" in
+	--*)	false;;
+	-*$1)	true ;;
+	*)	false ;;
+    esac
+}
+
+_guix_is_long_option ()
+{
+    # Don't handle (non-GNU?) ‘--long-option VALUE’, as Guix doesn't either.
+    case "${COMP_WORDS[$COMP_CWORD]}" in
+	--$1=*)	true ;;
+	*)	false ;;
+    esac
+}
+
 _guix_is_dash_f ()
 {
-    [ "${COMP_WORDS[$COMP_CWORD - 1]}" = "-f" ] \
-	|| { case "${COMP_WORDS[$COMP_CWORD]}" in
-		 --file=*|--install-from-file=*) true;;
-		 *)                              false;;
-	     esac }
+    _guix_is_short_option f ||
+    _guix_is_long_option file ||
+    _guix_is_long_option install-from-file
 }
 
 _guix_is_dash_l ()
 {
-    [ "${COMP_WORDS[$COMP_CWORD - 1]}" = "-l" ] \
-	|| { case "${COMP_WORDS[$COMP_CWORD]}" in
-		 --load=*) true;;
-		 *)        false;;
-	     esac }
+    _guix_is_short_option l ||
+    _guix_is_long_option load
 }
 
 _guix_is_dash_L ()
 {
-    [ "${COMP_WORDS[$COMP_CWORD - 1]}" = "-L" ] \
-	|| { case "${COMP_WORDS[$COMP_CWORD]}" in
-		 --load-path=*) true;;
-		 *)             false;;
-	     esac }
+    _guix_is_short_option L ||
+    _guix_is_long_option load-path
 }
 
 _guix_is_dash_m ()
 {
-    [ "${COMP_WORDS[$COMP_CWORD - 1]}" = "-m" ] \
-	|| { case "${COMP_WORDS[$COMP_CWORD]}" in
-		 --manifest=*) true;;
-		 *)            false;;
-	     esac }
+    _guix_is_short_option m ||
+    _guix_is_long_option manifest
 }
 
 _guix_is_dash_C ()
 {
-    [ "${COMP_WORDS[$COMP_CWORD - 1]}" = "-C" ] \
-	|| { case "${COMP_WORDS[$COMP_CWORD]}" in
-		 --channels=*)  true;;
-		 *)             false;;
-	     esac }
+    _guix_is_short_option C ||
+    _guix_is_long_option channels
 }
 
 _guix_is_dash_p ()
 {
-    [ "${COMP_WORDS[$COMP_CWORD - 1]}" = "-p" ] \
-	|| { case "${COMP_WORDS[$COMP_CWORD]}" in
-		 --profile=*)   true;;
-		 *)             false;;
-	     esac }
+    _guix_is_short_option p ||
+    _guix_is_long_option profile
 }
 
 _guix_complete_file ()
