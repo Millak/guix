@@ -10455,6 +10455,13 @@ once.  This package provides tools to perform Drop-seq analyses.")
      `(#:parallel-tests? #f             ; not supported
        #:phases
        (modify-phases %standard-phases
+         ;; knitr 0.39 changes the default behavior of how graphics are
+         ;; included.
+         (add-after 'unpack 'patch-knitr
+           (lambda _
+             (substitute* "scripts/runDeseqReport.R"
+               (("outFile <- paste0" m)
+                (string-append "options(knitr.graphics.rel_path = FALSE)\n" m)))))
          ;; "test.sh" runs the whole pipeline, which takes a long time and
          ;; might fail due to OOM.  The MultiQC is also resource intensive.
          (add-after 'unpack 'disable-resource-intensive-test
