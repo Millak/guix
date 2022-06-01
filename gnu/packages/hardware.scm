@@ -13,6 +13,7 @@
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Marcel Kupiec <formbi@protonmail.com>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -374,6 +375,43 @@ through the Display Data Channel Command Interface (@dfn{DDC/CI}) protocol.")
       (description "edid-decode decodes @dfn{EDID} monitor description data in
 human-readable format and checks if it conforms to the standards.")
       (license license:expat))))
+
+(define-public h-client
+  (let ((commit "63ff4a3bf9c3c3b6297091e08192d34991465431")
+        (revision "0"))
+    (package
+      (name "h-client")
+      (version (git-version "0.0a0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               ;; Use this Python 3 fork until the changes have been reviewed
+               ;; and integrated into the official Savannah repository (in
+               ;; progress).
+               (url "https://git.sr.ht/~apteryx/h-client")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0c6s96a1zmsnn7bnfhm790c1fr8sid0zdyh9mwig4y6ffn83czh5"))))
+      (build-system python-build-system)
+      (inputs
+       (list gdk-pixbuf
+             gtk+
+             pciutils
+             python-pycurl
+             python-pygobject
+             usbutils))
+      (synopsis "Graphical client for the h-node hardware database project")
+      (description
+       "The h-node project (https://www.h-node.org) aims to build a database of
+hardware that works with fully free operating systems.  h-client is a GTK+
+graphical client that is able to retrieves information on the hardware inside
+the computer it's running on, and on peripherals connected to it, and helps
+you submit that information to the h-node project along with whether the
+hardware works with a fully free operating system or not.")
+      (home-page "https://savannah.nongnu.org/projects/h-source/")
+      (license license:gpl3+))))
 
 (define-public headsetcontrol
   (package
