@@ -39452,6 +39452,19 @@ guix home container config.scm -- herd status
 The command to run in the container must come after @code{--} (double
 hyphen).
 
+@cindex service type definition, editing
+@cindex editing, service type definition
+@item edit
+Edit or view the definition of the given Home service types.
+
+For example, the command below opens your editor, as specified by the
+@env{EDITOR} environment variable, on the definition of the
+@code{home-mcron} service type:
+
+@example
+guix home edit home-mcron
+@end example
+
 @item reconfigure
 Build the home environment described in @var{file}, and switch to it.
 Switching means that the activation script will be evaluated and (in

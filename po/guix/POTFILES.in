@@ -125,6 +125,7 @@ guix/scripts/archive.scm
 guix/scripts/build.scm
 guix/scripts/discover.scm
 guix/scripts/environment.scm
+guix/scripts/home/edit.scm
 guix/scripts/home/import.scm
 guix/scripts/home.scm
 guix/scripts/time-machine.scm

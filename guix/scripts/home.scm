@@ -60,6 +60,7 @@
   #:autoload   (guix scripts pull) (channel-commit-hyperlink)
   #:autoload   (guix scripts system) (service-node-type
                                       shepherd-service-node-type)
+  #:autoload   (guix scripts home edit) (guix-home-edit)
   #:autoload   (guix scripts home import) (import-manifest)
   #:use-module ((guix status) #:select (with-status-verbosity))
   #:use-module ((guix build utils) #:select (mkdir-p))
@@ -93,6 +94,8 @@ Some ACTIONS support additional ARGS.\n"))
   (newline)
   (display (G_ "\
    search             search for existing service types\n"))
+  (display (G_ "\
+   edit               edit the definition of an existing service type\n"))
   (display (G_ "
    container          run the home environment configuration in a container\n"))
   (display (G_ "\
@@ -539,6 +542,8 @@ argument list and OPTS is the option alist."
     ;; an home environment file.
     ((search)
      (apply search args))
+    ((edit)
+     (apply guix-home-edit args))
     ((import)
      (let* ((profiles (delete-duplicates
                        (match (filter-map (match-lambda
@@ -611,7 +616,7 @@ deploy the home environment described by these files.\n")
               extension-graph shepherd-graph
               list-generations describe
               delete-generations roll-back
-              switch-generation search
+              switch-generation search edit
               import container)
              (alist-cons 'action action result))
             (else (leave (G_ "~a: unknown action~%") action))))))
