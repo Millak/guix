@@ -3424,6 +3424,42 @@ compare, diff, and patch JSON and JSON-like structures in Python.")
      "Jsonschema is an implementation of JSON Schema for Python.")
     (license license:expat)))
 
+;;; TODO: Make the default python-jsonschema on core-updates
+(define-public python-jsonschema-next
+  (package
+    (inherit python-jsonschema)
+    (version "4.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jsonschema" version))
+       (sha256
+        (base32 "1z0x22691jva7lwfcfh377jdmlz68zhiawxzl53k631l34k8hvbw"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments python-jsonschema)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            ;; XXX: PEP 517 manual build/install procedures copied from
+            ;; python-isort.
+            (replace 'build
+              (lambda _
+                ;; ZIP does not support timestamps before 1980.
+                (setenv "SOURCE_DATE_EPOCH" "315532800")
+                (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+            (replace 'install
+              (lambda* (#:key outputs #:allow-other-keys)
+                (let ((whl (car (find-files "dist" "\\.whl$"))))
+                  (invoke "pip" "--no-cache-dir" "--no-input"
+                          "install" "--no-deps" "--prefix" #$output whl))))))))
+    (native-inputs (list python-pypa-build
+                         python-setuptools-scm
+                         python-twisted))
+    (propagated-inputs
+     (list python-attrs
+           python-importlib-metadata
+           python-pyrsistent
+           python-typing-extensions))))
+
 (define-public python-schema
   (package
     (name "python-schema")
