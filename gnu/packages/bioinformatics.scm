@@ -10608,7 +10608,7 @@ in an easily configurable manner.")
 (define-public pigx-bsseq
   (package
     (name "pigx-bsseq")
-    (version "0.1.6")
+    (version "0.1.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/BIMSBbioinfo/pigx_bsseq/"
@@ -10616,8 +10616,7 @@ in an easily configurable manner.")
                                   "/pigx_bsseq-" version ".tar.gz"))
               (sha256
                (base32
-                "1dipikph0xdr8fp0h1flpafcrg60y4aabljg8fl1v92j3gxdggmw"))
-              (patches (search-patches "pigx-bsseq-no-citeproc.patch"))))
+                "1hfiignq3410dbl6f67vc6zr69abknpcgxixx475dspky2jb5lyn"))))
     (build-system gnu-build-system)
     (arguments
      `(;; TODO: tests currently require 12+GB of RAM.  See
@@ -10625,18 +10624,6 @@ in an easily configurable manner.")
        #:tests? #f
        #:phases
        (modify-phases %standard-phases
-         (add-before 'bootstrap 'autoreconf
-           (lambda _
-             ;; This was fixed in commit
-             ;; d56ac732524da659afbbb0972f7a87fa178ae58e, but there is no
-             ;; release with this fix.
-             (call-with-output-file "VERSION"
-               (lambda (port) (display ,version port)))
-             ;; https://github.com/BIMSBbioinfo/pigx_bsseq/issues/181
-             (substitute* "m4/ax_r_package.m4"
-               (("if\\(is.na\\(packageDescription\\(\"PKG\"\\)\\)\\)")
-                "if(system.file(package=\"PKG\") == \"\")"))
-             (invoke "autoreconf" "-vif")))
          (add-before 'configure 'set-PYTHONPATH
            (lambda _
              (setenv "PYTHONPATH" (getenv "GUIX_PYTHONPATH"))))
@@ -10648,7 +10635,7 @@ in an easily configurable manner.")
                      (search-input-directory inputs
                                              "share/zoneinfo")))))))
     (native-inputs
-     (list tzdata automake autoconf))
+     (list tzdata))
     (inputs
      (list coreutils
            sed
