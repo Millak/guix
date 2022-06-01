@@ -10526,7 +10526,7 @@ expression report comparing samples in an easily configurable manner.")
 (define-public pigx-chipseq
   (package
     (name "pigx-chipseq")
-    (version "0.0.53")
+    (version "0.1.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/BIMSBbioinfo/pigx_chipseq/"
@@ -10534,25 +10534,12 @@ expression report comparing samples in an easily configurable manner.")
                                   "/pigx_chipseq-" version ".tar.gz"))
               (sha256
                (base32
-                "0c6npx35sszycf059w1x1k4k9hq1qqxny0i4p57q1188czr4561h"))
-              (patches (search-patches "pigx-chipseq-no-citeproc.patch"))))
+                "008n6drj9q5av86xihxlj4py2c9p3c5z5ld89c3bksrp77zxiy67"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; parts of the tests rely on access to the network
        #:phases
        (modify-phases %standard-phases
-         (add-before 'bootstrap 'autoreconf
-           (lambda _
-             ;; This was fixed in commit
-             ;; 0b1c9f7f2e4d0ff601f1de95ab8b2953f4d5dbc7, but there is no
-             ;; release with this fix.
-             (call-with-output-file "VERSION"
-               (lambda (port) (display ,version port)))
-             ;; See https://github.com/BIMSBbioinfo/pigx_chipseq/issues/176
-             (substitute* "m4/ax_r_package.m4"
-               (("if\\(is.na\\(packageDescription\\(\"PKG\"\\)\\)\\)")
-                "if(system.file(package=\"PKG\") == \"\")"))
-             (invoke "autoreconf" "-vif")))
          (add-before 'configure 'set-PYTHONPATH
            (lambda _
              (setenv "PYTHONPATH" (getenv "GUIX_PYTHONPATH")))))))
@@ -10606,7 +10593,7 @@ expression report comparing samples in an easily configurable manner.")
            bedtools
            kentutils))
     (native-inputs
-     (list autoconf automake python-pytest))
+     (list python-pytest))
     (home-page "https://bioinformatics.mdc-berlin.de/pigx/")
     (synopsis "Analysis pipeline for ChIP sequencing experiments")
     (description "PiGX ChIPseq is an analysis pipeline for preprocessing, peak
