@@ -77,7 +77,7 @@
 (define-public vim
   (package
     (name "vim")
-    (version "8.2.4912")
+    (version "8.2.5048")
     (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -86,7 +86,7 @@
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "0wcvwmybkw76ha58idrq6pf4gxk14wbw1f8cwqs0slvkfdc8jyya"))))
+               "0bwps6r7g2c3nkn97s5kccqh6pb3a0bc11cmyacydsgxiwzq8xz4"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -95,7 +95,8 @@
        (modify-phases %standard-phases
          (add-after 'configure 'patch-absolute-paths
            (lambda _
-             (substitute* '("src/testdir/Makefile"
+             (substitute* '("runtime/autoload/context.vim"
+                            "src/testdir/Makefile"
                             "src/testdir/test_filetype.vim"
                             "src/testdir/test_normal.vim"
                             "src/testdir/test_popupwin.vim"
