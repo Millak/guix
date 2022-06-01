@@ -497,6 +497,7 @@ SCM_TESTS =					\
   tests/gremlin.scm				\
   tests/hackage.scm				\
   tests/home-import.scm				\
+  tests/home-services.scm			\
   tests/http-client.scm				\
   tests/import-git.scm				\
   tests/import-github.scm			\
