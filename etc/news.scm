@@ -25,6 +25,47 @@
 (channel-news
  (version 0)
 
+ (entry (commit "35c1edb20ad07250728d3bdcd0296bd0cedaf6bb")
+        (title
+         (en "New @command{edit} sub-commands for services")
+         (fr "Nouvelles commandes @command{edit} pour les services")
+         (nl "Nieuwe deelopdracht @command{edit} voor diensten"))
+        (body
+         (en "The new @command{guix system edit} and @command{guix home edit} commands
+allow you to view or edit service types defined for Guix System or Guix Home.
+For example, here is how you would open the definition of the OpenSSH system
+service:
+
+@example
+guix system edit openssh
+@end example
+
+Run @command{info \"(guix) Invoking guix system\"} or @command{info \"(guix)
+Invoking guix home\"} for more info.")
+         (fr "Les nouvelles commandes @command{guix system edit} et
+@command{guix home edit} permettent de visualiser ou d'éditer les types de
+services définis pour Guix System ou Guix Home.  Par exemple, voici comment
+ouvrir la définition du service système OpenSSH :
+
+@example
+guix system edit openssh
+@end example
+
+Lancer @command{info \"(guix.fr) Invoquer guix system\"} ou @command{info
+\"(guix.fr) Invoquer guix home\"} pour plus d'informations.")
+         ;; TODO: pas verwijzingen naar de handleiding aan wanneer ze vertaald is
+         (nl "Met de nieuwe bewerkingen @command{guix system edit} en
+@command{guix home edit} kan je dienstsoorten van Guix System en Guix
+Home bekijken en bewerken.  Je kan bijvoorbeeld de definitie van de
+systeemdienst OpenSSH als volgt openen:
+
+@example
+guix system edit openssh
+@end example
+
+Voer @command{info \"(guix) Invoking guix system\"} of @command{info
+\"(guix)Invoking guix home\"} uit voor meer informatie.")))
+
  (entry (commit "903c82583e1cec4c9ff09d5895c5cc646c37b661")
         (title
          (en "New @command{guix import elm} command")
