@@ -10441,7 +10441,7 @@ once.  This package provides tools to perform Drop-seq analyses.")
 (define-public pigx-rnaseq
   (package
     (name "pigx-rnaseq")
-    (version "0.0.21")
+    (version "0.1.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/BIMSBbioinfo/pigx_rnaseq/"
@@ -10449,19 +10449,12 @@ once.  This package provides tools to perform Drop-seq analyses.")
                                   "/pigx_rnaseq-" version ".tar.gz"))
               (sha256
                (base32
-                "0367jn73vja94ch9fwgaiwy62rbxfzc85xz6blzbkjyzhph1r173"))))
+                "0acdjimfb9ywba8zsv7lavv436pmcmp8ra683h11wr4s3681pqk8"))))
     (build-system gnu-build-system)
     (arguments
      `(#:parallel-tests? #f             ; not supported
        #:phases
        (modify-phases %standard-phases
-         ;; knitr 0.39 changes the default behavior of how graphics are
-         ;; included.
-         (add-after 'unpack 'patch-knitr
-           (lambda _
-             (substitute* "scripts/runDeseqReport.R"
-               (("outFile <- paste0" m)
-                (string-append "options(knitr.graphics.rel_path = FALSE)\n" m)))))
          ;; "test.sh" runs the whole pipeline, which takes a long time and
          ;; might fail due to OOM.  The MultiQC is also resource intensive.
          (add-after 'unpack 'disable-resource-intensive-test
