@@ -300,7 +300,7 @@ VERSION is the target version of the boot-parameters record."
 (define* (operating-system-kernel-arguments
           os root-device #:key (version %boot-parameters-version))
   "Return all the kernel arguments, including the ones not specified directly
-by the user.  VERSION should match that of the target <boot-parameter> record
+by the user.  VERSION should match that of the target <boot-parameters> record
 object that will contain the kernel parameters."
   (append (bootable-kernel-arguments os root-device version)
           (operating-system-user-kernel-arguments os)))
@@ -515,6 +515,7 @@ The object has its kernel-arguments extended in order to make it bootable."
                                (boot-parameters-kernel-arguments params))))))
 
 (define (boot-parameters->menu-entry conf)
+  "Return a <menu-entry> instance given CONF, a <boot-parameters> instance."
   (let* ((kernel (boot-parameters-kernel conf))
          (multiboot-modules (boot-parameters-multiboot-modules conf))
          (multiboot? (pair? multiboot-modules)))
