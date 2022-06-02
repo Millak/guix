@@ -110,6 +110,7 @@
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2022 Dominic Martinez <dom@dominicm.dev>
+;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -8463,6 +8464,30 @@ If you load it from a terminal, you will be able to make use of the
 transparent background.  If you load it from a GUI, it will default to a
 dark background.")
     (license license:gpl3+)))
+
+(define-public emacs-color-theme-modern
+  ;; No release since October 2019
+  (let ((commit "74ad69bbca6fcfff3c0960d888c7c9c1f9f3e2e8")
+        (revision "1"))
+    (package
+      (name "emacs-color-theme-modern")
+      (version (git-version "0.0.3" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/emacs-jp/replace-colorthemes.git")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "13ff4s372wsl5x13vh4vywhi6qcc54gybhp6rxl0r1l4wxidanwn"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/emacs-jp/replace-colorthemes")
+      (synopsis "Emacs color themes implemented via built-in customization")
+      (description "This package contains several themes that were originally
+implemented with the venerable @code{color-themes} package, ported to Emacs'
+built-in custom themes.")
+      (license license:gpl3+))))
 
 (define-public emacs-gruvbox-theme
   (package
