@@ -13498,17 +13498,6 @@ for atomic file system operations.")
     (home-page "https://github.com/untitaker/python-atomicwrites")
     (license license:expat)))
 
-(define-public python-atomicwrites-1.4
-  (package
-    (inherit python-atomicwrites)
-    (version "1.4.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "atomicwrites" version))
-              (sha256
-               (base32
-                "0yla2svfhfqrcj8qbyqzx7wi4jy0dwcxvlkg0k3zjd54s5m3jw5f"))))))
-
 (define-public python-qstylizer
   (package
     (name "python-qstylizer")
