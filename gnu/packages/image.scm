@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2017, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013, 2017, 2019, 2021-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2015, 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014, 2015, 2016, 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2015 Alex Kost <alezost@gmail.com>
@@ -1023,6 +1023,19 @@ without sacrificing speed.
 This is a complete rewrite over the Imlib 1.x series.  The architecture is
 more modular, simple, and flexible.")
     (license license:imlib2)))
+
+(define-public imlib2-1.7
+  (package
+    (inherit imlib2)
+    (version "1.7.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://sourceforge/enlightenment/imlib2-src/" version
+                    "/imlib2-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "01y45cdml2dr9cqgybrgxr86sd77d1qfa1gzclzy1j6bkminlfh3"))))))
 
 (define-public giblib
   (package
