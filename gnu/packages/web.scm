@@ -5526,6 +5526,12 @@ w3c webidl files and a binding configuration file.")
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)
+         (add-after 'unpack 'remove-timestamps
+           ;; Avoid embedding timestamp for reproducible builds
+           (lambda _
+             (substitute* "utils/git-testament.pl"
+               (("WT_COMPILEDATE ..$compiledate")
+                "WT_COMPILEDATE \\\""))))
          (add-after 'build 'adjust-welcome
            (lambda _
              (substitute* "frontends/gtk/res/welcome.html"
