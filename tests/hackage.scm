@@ -368,7 +368,8 @@ executable cabal
 (test-assert "hackage->guix-package test without final newline"
   (eval-test-with-cabal test-cabal-no-final-newline match-ghc-foo))
 
-;; Make sure internal libraries will not be part of the dependencies.
+;; Make sure internal libraries will not be part of the dependencies,
+;; ignore case.
 (define test-cabal-internal-library-ignored
   "name: foo
 version: 1.0.0
@@ -379,8 +380,8 @@ license: BSD3
 executable cabal
   build-depends:
     HTTP       >= 4000.2.5 && < 4000.3,
-    internal
-library internal
+    internAl
+library internaL
   build-depends: mtl        >= 2.0      && < 3
 ")
 

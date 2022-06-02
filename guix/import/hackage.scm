@@ -227,9 +227,10 @@ object."
 list with the names of dependencies.  OWN-NAMES is the name of the Cabal
 package being processed and its internal libaries and is used to filter
 references to itself."
-  (filter (lambda (d) (not (member (string-downcase d)
+  (let ((ignored-dependencies (map string-downcase
                                    (append own-names ghc-standard-libraries))))
-          dependencies))
+    (filter (lambda (d) (not (member (string-downcase d) ignored-dependencies)))
+            dependencies)))
 
 (define* (hackage-module->sexp cabal cabal-hash
                                #:key (include-test-dependencies? #t))
@@ -250,7 +251,8 @@ the hash of the Cabal file."
     (hackage-source-url name version))
 
   (define own-names (cons (cabal-package-name cabal)
-                          (map cabal-library-name (cabal-package-library cabal))))
+                          (filter (lambda (x) (not (eqv? x #f)))
+                            (map cabal-library-name (cabal-package-library cabal)))))
 
   (define hackage-dependencies
     (filter-dependencies (cabal-dependencies->names cabal) own-names))
