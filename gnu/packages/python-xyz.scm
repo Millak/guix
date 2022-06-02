@@ -1515,14 +1515,14 @@ approximate nearest neighbor search with Python bindings.")
 (define-public python-sh
   (package
     (name "python-sh")
-    (version "1.12.14")
+    (version "1.14.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sh" version))
        (sha256
         (base32
-         "1z2hx357xp3v4cv44xmqp7lli3frndqpyfmpbxf7n76h7s1zaaxm"))))
+         "03gyss1rhj4in7pgysg4q0hxp3230whinlpy1532ljs99lrx0ywx"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
