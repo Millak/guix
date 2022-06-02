@@ -89,8 +89,8 @@ list.")
                     (string-append source "/maintain.texi"))
             (invoke "makeinfo" "--output" info-dir
                     (string-append source "/standards.texi"))
-            (invoke "gzip" (string-append info-dir "/maintain.info"))
-            (invoke "gzip" (string-append info-dir "/standards.info"))))))
+            (invoke "gzip" "-n" (string-append info-dir "/maintain.info"))
+            (invoke "gzip" "-n" (string-append info-dir "/standards.info"))))))
     (home-page "https://www.gnu.org/prep/standards/")
     (synopsis "GNU coding standards and maintainer information")
     (description "The GNU Coding Standards were written by Richard Stallman
