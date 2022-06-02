@@ -98,19 +98,19 @@
                   (add-after 'unpack 'embed-tool-references
                     (lambda* (#:key inputs #:allow-other-keys)
                       (substitute* "diffoscope/comparators/utils/compare.py"
-                        (("\\['xxd',")
-                         (string-append "['" (which "xxd") "',")))
-                      (substitute* "diffoscope/comparators/elf.py"
-                        (("@tool_required\\('readelf'\\)") "")
-                        (("get_tool_name\\('readelf'\\)")
-                         (string-append "'" (which "readelf") "'")))
+                        (("\\[\"xxd\",")
+                         (string-append "[\"" (which "xxd") "\",")))
+                      (substitute* "diffoscope/diff.py"
+                        (("@tool_required\\(\"diff\"\\)") "")
+                        (("get_tool_name\\(\"diff\"\\)")
+                         (string-append "get_tool_name(\"" (which "diff") "\")")))
                       (substitute* "diffoscope/comparators/directory.py"
-                        (("@tool_required\\('stat'\\)") "")
-                        (("@tool_required\\('getfacl'\\)") "")
-                        (("\\['stat',")
-                         (string-append "['" (which "stat") "',"))
-                        (("\\['getfacl',")
-                         (string-append "['" (which "getfacl") "',")))))
+                        (("@tool_required\\(\"stat\"\\)") "")
+                        (("@tool_required\\(\"getfacl\"\\)") "")
+                        (("\\[\"stat\",")
+                         (string-append "[\"" (which "stat") "\","))
+                        (("\\[\"getfacl\",")
+                         (string-append "[\"" (which "getfacl") "\",")))))
                   (add-after 'build 'build-man-page
                     (lambda* (#:key (make-flags '()) #:allow-other-keys)
                       (apply invoke "make" "-C" "doc" make-flags)))
@@ -147,7 +147,8 @@
                   python-magic
                   python-tlsh
                   acl ;for getfacl
-                  colordiff
+                  coreutils ;for stat
+                  diffutils ;for diff
                   xxd))
     (native-inputs
      (append
