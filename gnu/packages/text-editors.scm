@@ -18,6 +18,7 @@
 ;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2021 Calum Irwin <calumirwin1@gmail.com>
 ;;; Copyright © 2022 Luis Henrique Gomes Higino <luishenriquegh2701@gmail.com>
+;;; Copyright © 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1131,6 +1132,38 @@ files.  It was originally developed on the Amiga 3000T.")
 systems that displays its buffer(s) as a hex dump.  The user interface is kept
 similar to vi/ex.")
     (license license:bsd-3)))
+
+(define-public edlin
+  (package
+    (name "edlin")
+    (version "2.20")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/freedos-edlin/freedos-edlin/"
+                           version "/edlin-" version ".tar.bz2"))
+       (sha256
+        (base32 "0cdv42ffminncwj5ph9lw0j7zpbv8l35acppy90wj7x1qm4qk6x8"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'make-read-only
+           (lambda _
+             ;; Remove executable bits.
+             (chmod "COPYING" #o444)
+             (chmod "edlin.htm" #o444)))
+         (add-after 'install 'install-doc
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((doc-dir (string-append (assoc-ref outputs "out")
+                                           "/share/doc/edlin-" ,version)))
+               (mkdir-p doc-dir)
+               (install-file "edlin.htm" doc-dir)))))))
+    (home-page "https://sourceforge.net/projects/freedos-edlin/")
+    (synopsis "The line editor of the FreeDOS operating system")
+    (description "The @code{edlin} program is a small line editor, written for
+FreeDOS as a functional clone of the old MS-DOS program edlin.")
+    (license license:gpl2+)))
 
 (define-public tree-sitter
   (package
