@@ -8,7 +8,7 @@
 ;;; Copyright © 2016, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Al McElrath <hello@yrns.org>
 ;;; Copyright © 2016 Carlo Zancanaro <carlo@zancanaro.id.au>
-;;; Copyright © 2016, 2017, 2018, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016 2019, 2021-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2017, 2018, 2020 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 doncatnip <gnopap@gmail.com>
 ;;; Copyright © 2016 Ivan Vilata i Balaguer <ivan@selidor.net>
@@ -2441,7 +2441,7 @@ selected to stdout.  It can be controlled both via mouse and via keyboard.")
            libxpm
            libpng
            freetype
-           imlib2
+           imlib2-1.7
            sed))
     (native-inputs
      (list pkg-config))
