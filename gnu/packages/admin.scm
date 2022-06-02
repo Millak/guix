@@ -4152,7 +4152,7 @@ Python loading in HPC environments.")
                              (string-append dir "/lib/perl5/site_perl"))
                             (_ ""))
                           %build-inputs)))))
-             (invoke "gzip" "inxi.1")
+             (invoke "gzip" "-n" "inxi.1")
              (install-file "inxi.1.gz"
                            (string-append %output "/share/man/man1"))))))
       (home-page "https://smxi.org/docs/inxi.htm")
