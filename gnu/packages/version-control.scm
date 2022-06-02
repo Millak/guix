@@ -3370,3 +3370,40 @@ with more capabilities.  @command{git filter-repo} is now recommended by the
 Git project instead of @command{git filter-branch}.")
     (license (list license:expat ;; Main license.
                    license:gpl2)))) ;; For test harness.
+
+(define-public gitlint
+  (package
+    (name "gitlint")
+    (version "0.17.0")
+    (source (origin
+              (method url-fetch)
+              ;; the gitlint-core pypi package contains the actual gitlint
+              ;; code; the gitlint package only pulls in gitlint-core with
+              ;; stricter dependency versioning
+              (uri (pypi-uri "gitlint-core" version))
+              (sha256
+               (base32
+                "14cn89biys8r7mwcdgllv371k34km9k1941ylxf53a7sxwrzsbbp"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'loosen-requirements
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "gitlint/shell.py"
+                (("'git'") (string-append
+                            "'"
+                            (search-input-file inputs "bin/git")
+                            "'"))
+                ;; force using subprocess instead of sh so git does not need
+                ;; to be a propagated input
+                (("if USE_SH_LIB") "if False")))))))
+    (inputs
+     (list git python-arrow python-click python-sh))
+    (home-page "https://jorisroovers.com/gitlint/")
+    (synopsis "Linting Git commit messages")
+    (description
+     "Gitlint is a Git commit message linter written in Python: it checks your
+commit messages for style.")
+    (license license:expat)))
