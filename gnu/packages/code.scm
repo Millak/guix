@@ -120,6 +120,13 @@ a major mode for Emacs for examining the flowcharts that it produces.")
                (base32
                 "0lr0l9kj2w3jilz9h9y4np9pf9i9ccpy6331lanki2fnz4z8ldvd"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'set-man-page-date
+                 ;; Avoid embedding the current date for reproducible builds
+                 (lambda _
+                   (setenv "MAN_PAGE_DATE" "2012-04-18"))))))
     (native-inputs
      (list texinfo autogen))
     (home-page "https://www.gnu.org/software/complexity/")
