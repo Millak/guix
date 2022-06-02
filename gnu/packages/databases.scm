@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2018 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2016, 2018, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2012, 2013, 2014, 2015, 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2013, 2017 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014, 2016 David Thompson <davet@gnu.org>
@@ -1273,7 +1273,10 @@ pictures, sounds, or video.")
                                   version "/postgresql-" version ".tar.bz2"))
               (sha256
                (base32
-                "1qvrm0vhwnc5nijfbqybhwfjbq4r7vmk445sz7s6fiagpn78xxf8"))))))
+                "1qvrm0vhwnc5nijfbqybhwfjbq4r7vmk445sz7s6fiagpn78xxf8"))))
+    (native-inputs
+     (modify-inputs (package-native-inputs postgresql-13)
+       (replace "docbook-xml" docbook-xml-4.2)))))
 
 (define-public postgresql-10
   (package
