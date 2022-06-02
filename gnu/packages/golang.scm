@@ -53,6 +53,7 @@
 (define-module (gnu packages golang)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix utils)
+  #:use-module (guix memoization)
   #:use-module ((guix build utils) #:select (alist-replace))
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -840,35 +841,38 @@ in the style of communicating sequential processes (@dfn{CSP}).")
 
 (define-public go go-1.17)
 
-(define-public (make-go-std go)
-  "Return a package which builds the standard library for Go compiler GO."
-  (package
-    (name (string-append (package-name go) "-std"))
-    (version (package-version go))
-    (source #f)
-    (build-system go-build-system)
-    (arguments
-     `(#:import-path "std"
-       #:build-flags `("-pkgdir" "pkg") ; "Install" to build directory.
-       #:allow-go-reference? #t
-       #:substitutable? #f ; Faster to build than download.
-       #:tests? #f ; Already tested in the main Go build.
-       #:go ,go
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'unpack)
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (out-cache (string-append out "/var/cache/go/build")))
-               (copy-recursively (getenv "GOCACHE") out-cache)
-               (delete-file (string-append out-cache "/trim.txt"))
-               (delete-file (string-append out-cache "/README")))))
-         (delete 'install-license-files))))
-    (home-page (package-home-page go))
-    (synopsis "Cached standard library build for Go")
-    (description (package-description go))
-    (license (package-license go))))
+(define make-go-std
+  (mlambdaq (go)
+    "Return a package which builds the standard library for Go compiler GO."
+    (package
+      (name (string-append (package-name go) "-std"))
+      (version (package-version go))
+      (source #f)
+      (build-system go-build-system)
+      (arguments
+       `(#:import-path "std"
+         #:build-flags `("-pkgdir" "pkg")      ; "Install" to build directory.
+         #:allow-go-reference? #t
+         #:substitutable? #f            ; Faster to build than download.
+         #:tests? #f                    ; Already tested in the main Go build.
+         #:go ,go
+         #:phases
+         (modify-phases %standard-phases
+           (delete 'unpack)
+           (replace 'install
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let* ((out (assoc-ref outputs "out"))
+                      (out-cache (string-append out "/var/cache/go/build")))
+                 (copy-recursively (getenv "GOCACHE") out-cache)
+                 (delete-file (string-append out-cache "/trim.txt"))
+                 (delete-file (string-append out-cache "/README")))))
+           (delete 'install-license-files))))
+      (home-page (package-home-page go))
+      (synopsis "Cached standard library build for Go")
+      (description (package-description go))
+      (license (package-license go)))))
+
+(export make-go-std)
 
 ;; Make those public so they have a corresponding Cuirass job.
 (define-public go-std-1.14 (make-go-std go-1.14))
