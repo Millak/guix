@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016 Matthew Jordan <matthewjordandevops@yandex.com>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20,6 +20,7 @@
 
 (define-module (gnu packages rails)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix packages)
@@ -291,6 +292,13 @@ directly.")
        (base32
         "17vdh273cmmfpzy5m546dd13zqmimv54jjx0f7sl0zi5lwz0gnck"))))
    (build-system ruby-build-system)
+   (arguments
+    (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'delete-gemfile.lock
+            (lambda _
+              (delete-file "Gemfile.lock"))))))
    (native-inputs
     (list bundler))
    (propagated-inputs
