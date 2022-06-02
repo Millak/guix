@@ -870,6 +870,11 @@ in the style of communicating sequential processes (@dfn{CSP}).")
     (description (package-description go))
     (license (package-license go))))
 
+;; Make those public so they have a corresponding Cuirass job.
+(define-public go-std-1.14 (make-go-std go-1.14))
+(define-public go-std-1.16 (make-go-std go-1.16))
+(define-public go-std-1.17 (make-go-std go-1.17))
+
 (define-public go-0xacab-org-leap-shapeshifter
   (let ((commit "0aa6226582efb8e563540ec1d3c5cfcd19200474")
         (revision "12"))
