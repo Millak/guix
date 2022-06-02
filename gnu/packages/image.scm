@@ -1059,7 +1059,9 @@ more modular, simple, and flexible.")
                 "1b4bmbmj52glq0s898lppkpzxlprq9aav49r06j2wx4dv3212rhp"))))
     (build-system gnu-build-system)
     (inputs
-     (list libx11 imlib2))
+     (list libx11
+           ;; Needs an old imlib2 with the 'imlib2-config' program.
+           imlib2-1.7))
     (home-page
      ;; This vanished page is universally accepted as giblib's home despite not
      ;; mentioning the package once.
