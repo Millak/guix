@@ -3490,7 +3490,7 @@ build system and allows external tools to analyse your project easily.")
 (define-public ocaml-cppo
   (package
     (name "ocaml-cppo")
-    (version "1.6.8")
+    (version "1.6.9")
     (source
       (origin
         (method git-fetch)
@@ -3499,7 +3499,7 @@ build system and allows external tools to analyse your project easily.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256 (base32
-                 "0xjb1dnj8lvdcccskrhrakknd9q4vfy5330sjbqpf4h95dsz90k9"))))
+                 "1c8jlr2s0allw1h6czz5q24vn5jsnrrh44j7hjyilzaifm17dlrm"))))
     (build-system dune-build-system)
     (arguments
      `(#:tests? #f))
