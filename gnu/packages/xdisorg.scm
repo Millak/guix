@@ -54,6 +54,7 @@
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
+;;; Copyright © 2022 Derek Chuank <derekchuank@outlook.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1498,6 +1499,35 @@ color temperature should be set to match the lamps in your room.
 This is a fork with added support for Wayland using the wlr-gamma-control
 protocol.")
       (license license:gpl3+))))
+
+(define-public xwhite
+  (package
+    (name "xwhite")
+    (version "0.0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/derekchuank/xwhite/"
+                                  "releases/download/v" version
+                                  "/xwhite-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0jbnlj5a91ib4anprmylqqnbv9wa73cr7fsc1s54df0a0w5yq8sz"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:tests? #f)) ;No test suite.
+    (native-inputs (list pkg-config))
+    (inputs (list libxrandr))
+    (home-page "https://github.com/derekchuank/xwhite")
+    (synopsis "Adjust the color balance")
+    (description
+     "@command{xwhite} is a command line tool for adjusting the colour
+balance of screen.  It is based on xrandr's gamma correction and brightness adjustment.
+As such, it can only be used for X displays and not Wayland displays.  It is typically
+used for tuning the color balance and color temperature.  It has a similar function as
+@command{redshift -P -g R:G:B -O temperature}, but @command{xwhite} is more flexible
+in that it does not keep the white color fixed, suitable for setting the white color
+to an arbitrary balanced color.")
+    (license license:gpl2)))
 
 (define-public gammastep
   (package
