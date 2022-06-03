@@ -30413,6 +30413,32 @@ built-in generator package.  It provides @code{iter2-defun} and
 original package.")
     (license license:gpl3+)))
 
+(define-public emacs-bind-map
+  (let ((commit "510a24138d8de3b8df0783f1ac493a551fc9bd74")
+        (revision "0"))
+    (package
+      (name "emacs-bind-map")
+      (version (git-version "1.1.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/justbur/emacs-bind-map")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0crxjy1ykgb429z8ikjv5iy8vg5i0qn8n86p2lgri4glx45sxxx0"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/justbur/emacs-bind-map")
+      (synopsis "Bind personal keymaps in multiple locations")
+      (description
+"@code{emacs-bind-map} provides a macro bind-map which can be used to
+make a keymap available across different leader keys including ones
+tied to evil states.  It is essentially a generalization of the idea
+of a leader key as used in Vim or the @code{emacs-evil-leader} package,
+and allows for an arbitrary number of leader keys.")
+      (license license:gpl3+))))
+
 (define-public emacs-promise
   (package
     (name "emacs-promise")
