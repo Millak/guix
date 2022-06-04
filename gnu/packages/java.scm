@@ -4537,6 +4537,14 @@ from source tags and class annotations.")))
              (copy-recursively "src/main/resources"
                                "build/classes/")
              #t))
+         (add-before 'build 'fix-jdom
+           (lambda _
+             ;; The newer version of jdom now sets multiple features by default
+             ;; that are not supported.
+             ;; Skip these features
+             (substitute* "src/main/java/org/codehaus/plexus/metadata/merge/MXParser.java"
+               (("throw new XmlPullParserException\\(\"unsupporte feature \"\\+name\\);")
+                "// skip"))))
          (add-before 'check 'fix-test-location
            (lambda _
              (substitute* '("src/test/java/org/codehaus/plexus/metadata/DefaultComponentDescriptorWriterTest.java"
