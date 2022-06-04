@@ -735,14 +735,14 @@ source files.")
 (define-public node-lts
   (package
     (inherit node)
-    (version "14.18.3")
+    (version "14.19.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://nodejs.org/dist/v" version
                                   "/node-v" version ".tar.xz"))
               (sha256
                (base32
-                "026nd6vihjdqz4jn0slg89m8m5vvkvjzgg1aip3dcg9lrm1w8fkq"))
+                "15691j5zhiikyamiwwd7f282g6d9acfhq91nrwx54xya38gmpx2w"))
               (modules '((guix build utils)))
               (snippet
                `(begin
@@ -814,7 +814,9 @@ source files.")
                            "test/parallel/test-dns-lookupService-promises.js"))
 
                ;; These tests require networking.
-               (delete-file "test/parallel/test-https-agent-unref-socket.js")
+               (for-each delete-file
+                         '("test/parallel/test-https-agent-unref-socket.js"
+                           "test/parallel/test-corepack-yarn-install.js"))
 
                ;; This test is timing-sensitive, and fails sporadically on
                ;; slow, busy, or even very fast machines.
@@ -861,7 +863,7 @@ source files.")
      (list ;; Runtime dependencies for binaries used as a bootstrap.
            c-ares-for-node
            brotli
-           icu4c-67
+           icu4c-70
            libuv-for-node
            `(,nghttp2 "lib")
            openssl
@@ -876,7 +878,7 @@ source files.")
      (list bash-minimal
            coreutils
            c-ares-for-node
-           icu4c-67
+           icu4c-70
            libuv-for-node
            llhttp-bootstrap
            brotli
