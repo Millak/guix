@@ -324,8 +324,8 @@ Invoking @command{guix build}
 * Debugging Build Failures::    Real life packaging experience.
 
 Foreign Architectures
-* Using cross-compilation::  Build for foreign architecture using cross-compilation.
-* Using native builds::      Build for foreign architectures natively.
+* Cross-Compilation::   Cross-compiling for another architecture.
+* Native Builds::       Targeting another architecture through native builds.
 
 System Configuration
 
@@ -15238,12 +15238,12 @@ requires emulation, using the QEMU program for instance.
 @end enumerate
 
 @menu
-* Using cross-compilation::  Build for foreign architecture using cross-compilation.
-* Using native builds::      Build for foreign architectures natively.
+* Cross-Compilation::   Cross-compiling for another architecture.
+* Native Builds::       Targeting another architecture through native builds.
 @end menu
 
-@node Using cross-compilation
-@section Using cross-compilation
+@node Cross-Compilation
+@section Cross-Compilation
 
 @cindex foreign architectures
 The commands supporting cross-compilation are proposing the
@@ -15290,8 +15290,8 @@ penaly compared to emulation using QEMU.  There are however higher risks
 that some packages fail to cross-compile because few users are using
 this mechanism extensively.
 
-@node Using native builds
-@section Using native builds
+@node Native Builds
+@section Native Builds
 
 The commands that support impersonating a specific system have the
 @option{--list-systems} and @option{--system} options.
