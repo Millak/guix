@@ -31184,6 +31184,28 @@ extended by the user via @code{setup-define}.  A list of currently known
 local macros are documented in the docstring for @code{setup}.")
     (license license:gpl3+)))
 
+(define-public emacs-tomelr
+  (package
+    (name "emacs-tomelr")
+    (version "0.4.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kaushalmodi/tomelr/")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "03iih7arjlfg8gdp4v2xglas9z519q1s11l28igr8l0m5y0pdrnk"))
+       (file-name (git-file-name name version))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-map emacs-seq))
+    (home-page "https://github.com/kaushalmodi/tomelr/")
+    (synopsis "Emacs-Lisp library for converting S-expressions to TOML")
+    (description
+     "This package provides the @code{tomelr-encode} function to convert a Lisp
+data expression in Alist or Plist format to a TOML string.")
+    (license license:gpl3+)))
+
 (define-public emacs-ed-mode
   ;; XXX: Upstream did not tag any commits yet.
   (let ((commit "69f4fb34eca8df6a3bfe24bd8d8075551f0264ac")
