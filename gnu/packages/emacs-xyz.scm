@@ -31142,6 +31142,25 @@ wraps GNU Global calls and integration to editor using this API with
 project.el and xref.el.")
       (license license:gpl3+))))
 
+(define-public emacs-seq
+  (package
+    (name "emacs-seq")
+    (version "2.23")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://elpa.gnu.org/packages/seq-" version ".tar"))
+       (sha256
+        (base32 "1lbxnrzq88z8k9dyylg2636pg9vc8bzfprs1hxwp9ah0zkvsn52p"))))
+    (build-system emacs-build-system)
+    (home-page "https://elpa.gnu.org/packages/seq.html")
+    (synopsis "Sequence manipulation functions")
+    (description
+     "This Emacs package provides sequence manipulation functions that
+complement basic functions provided by @file{subr.el}.  All its functions
+are prefixed with @code{seq-} and work on lists, strings, and vectors.")
+    (license license:gpl3+)))
+
 (define-public emacs-setup
   (package
     (name "emacs-setup")
