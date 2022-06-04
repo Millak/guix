@@ -27234,7 +27234,7 @@ producing output appropriate for Haunt's @code{html-reader}.")
 (define-public emacs-ox-hugo
   (package
     (name "emacs-ox-hugo")
-    (version "0.8")
+    (version "0.12.1")
     (source
      (origin
        (method git-fetch)
@@ -27244,8 +27244,10 @@ producing output appropriate for Haunt's @code{html-reader}.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "11h464cyc28ld0b0zridgm4drydc1qjxbm1y24zrwlkyqqjk6yr7"))))
+         "0q4gyjzvxzw6a0phw2x2v9n43i28n3g9m7szwbhzch4j6ggxzcw4"))))
     (build-system emacs-build-system)
+    (propagated-inputs
+     (list emacs-tomelr))
     (home-page "https://ox-hugo.scripter.co")
     (synopsis "Hugo markdown back-end for Org export engine")
     (description
