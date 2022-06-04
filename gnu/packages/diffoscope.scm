@@ -53,7 +53,6 @@
   #:use-module (gnu packages pascal)
   #:use-module (gnu packages patchutils)
   #:use-module (gnu packages pdf)
-  #:use-module (gnu packages python)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages sqlite)
@@ -75,7 +74,7 @@
 (define-public diffoscope
   (package
     (name "diffoscope")
-    (version "214")
+    (version "215")
     (source
      (origin
        (method git-fetch)
@@ -84,7 +83,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05vzvs8yn963wzxmnqifj0zsa9scxcq3iqrq9msm0vqznb1xgp7q"))
+        (base32 "16pyqbyrfsxjnpmr9913x2brz3mxplhz62rxwix1c0p7afwjw835"))
        (patches
         (search-patches "diffoscope-fix-llvm-test.patch"))))
     (build-system python-build-system)
@@ -137,25 +136,12 @@
                     (lambda _
                       ;; This requires /sbin to be in $PATH.
                       (delete-file "tests/test_tools.py")))
-                  (add-after 'install 'install-extract-vmlinux
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      ;; Work around bug comparing vmlinux files
-                      ;; https://salsa.debian.org/reproducible-builds/diffoscope/-/issues/305
-                      (let* ((scriptdir (string-append (assoc-ref outputs "out")
-                                                       "/lib/python"
-                                                       ,(version-major+minor
-                                                         (package-version python))
-                                                       "/site-packages/scripts/")))
-                        (mkdir-p scriptdir)
-                        (copy-file "scripts/extract-vmlinux"
-                                   (string-append scriptdir "/extract-vmlinux")))))
                   (add-after 'install 'install-man-page
                     (lambda* (#:key outputs #:allow-other-keys)
                       (let* ((out (assoc-ref outputs "out"))
                              (man (string-append out "/share/man/man1")))
                         (install-file "doc/diffoscope.1" man)))))))
     (inputs (list rpm ;for rpm-python
-                  python
                   python-debian
                   python-libarchive-c
                   python-magic
