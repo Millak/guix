@@ -4189,16 +4189,16 @@ in the center.")
 (define-public emacs-undo-tree
   (package
     (name "emacs-undo-tree")
-    (version "0.8.1")
+    (version "0.8.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://gitlab.com/tsc25/undo-tree")
-             (commit (string-append "release/" version))))
+             (commit "42aab056e37e033816b2d192f9121b89410b958e"))) ; no 0.8.2 tag
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1khkwrrbwaimspc013n4k9mpv8g302r0zkrsqnza2x1d3qznn08y"))))
+        (base32 "1xvkxc078b4z5zqwndz6jcv4ga8yd2ci32v7l8pdvqjmz7fq7bfz"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-queue))
