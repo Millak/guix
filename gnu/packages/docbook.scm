@@ -362,17 +362,18 @@ for DocBook.")
     (description "Documentation for the DocBook DSSSL style sheets.")
     (license (license:non-copyleft "file://doc/LEGALNOTICE.htm"))))
 
-(define-public docbook-sgml
+(define-public docbook-sgml-4.2
   (package
     (name "docbook-sgml")
-    (version "4.1")
+    (version "4.2")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://www.oasis-open.org/docbook/sgml/"
-                                  version "/docbk41.zip"))
+              (uri (string-append
+                    "https://www.oasis-open.org/docbook/sgml/4.2/docbook-"
+                    version ".zip"))
               (sha256
                (base32
-                "04b3gp4zkh9c5g9kvnywdkdfkcqx3kjc04j4mpkr4xk7lgqgrany"))))
+                "1hrm4qmmzi285bkxkc74lxvjvw2gbl7ycbaxhv31h9rl9g4x5sv7"))))
     (build-system trivial-build-system)
     (arguments
      '(#:modules ((guix build utils))
@@ -393,8 +394,8 @@ for DocBook.")
            ;; Reference the ISO 8879 character entities.
            ;; e.g. "iso-lat1.gml" --> "<iso-entities-dir>/ISOlat1"
            (substitute* "docbook.cat"
-             (("(.*ISO 8879.*)\"iso-(.*)\\.gml\"" _ head name)
-              (string-append head "\"" iso-entities-dir "/ISO" name "\"")))))))
+             (("\"iso-(.*)\\.gml\"" _ name)
+              (string-append "\"" iso-entities-dir "/ISO" name "\"")))))))
     (native-inputs
      (list unzip))
     (inputs
@@ -403,6 +404,20 @@ for DocBook.")
     (synopsis "DocBook SGML style sheets for document authoring")
     (description "This package provides SGML style sheets for DocBook.")
     (license (license:x11-style "" "See file headers."))))
+
+(define-public docbook-sgml-4.1
+  (package
+    (inherit docbook-sgml-4.2)
+    (version "4.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://www.oasis-open.org/docbook/sgml/"
+                                  version "/docbk41.zip"))
+              (sha256
+               (base32
+                "04b3gp4zkh9c5g9kvnywdkdfkcqx3kjc04j4mpkr4xk7lgqgrany"))))))
+
+(define-public docbook-sgml docbook-sgml-4.1)
 
 (define-public docbook-sgml-3.1
   (package
