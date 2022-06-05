@@ -38,6 +38,7 @@
 
             emacs-generate-autoloads
             emacs-byte-compile-directory
+            emacs-header-parse
 
             as-display
             emacs-substitute-sexps
@@ -113,6 +114,14 @@ true, evaluate using dynamic scoping."
                 (setq byte-compile-debug t) ; for proper exit status
                 (byte-recompile-directory (file-name-as-directory ,dir) 0 1))))
     (emacs-batch-eval expr)))
+
+(define (emacs-header-parse section file)
+  "Parse the header SECTION in FILE and return it as a string."
+  (emacs-batch-script
+   `(progn
+     (require 'lisp-mnt)
+     (find-file ,file)
+     (princ (lm-header ,section)))))
 
 (define as-display         ;syntactic keyword for 'emacs-substitute-sexps'
   '(as display))

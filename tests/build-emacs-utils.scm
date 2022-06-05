@@ -28,7 +28,7 @@
 
 (test-begin "build-emacs-utils")
 ;; Only run the following tests if emacs is present.
-(test-skip (if (which "emacs") 0 2))
+(test-skip (if (which "emacs") 0 5))
 
 (test-equal "emacs-batch-script: print foo from emacs"
   "foo"
@@ -39,5 +39,30 @@
              (string-contains (emacs-batch-error-message c)
                               "Lisp error: (wrong-type-argument numberp \"three\")")))
     (emacs-batch-script '(mapcar 'number-to-string (list 1 2 "three")))))
+
+(call-with-temporary-directory
+ (lambda (directory)
+   (let ((mock-elisp-file (string-append directory "/foo.el")))
+     (call-with-output-file mock-elisp-file
+       (lambda (port)
+         (display ";;; foo --- mock emacs package -*- lexical-binding: t -*-
+
+;; Created: 4 Jun 2022
+;; Keywords: lisp test
+;; Version: 1.0.0
+;;; Commentary:
+;;; Code:
+;;; foo.el ends here
+"
+                  port)))
+     (test-equal "emacs-header-parse: fetch version"
+       "1.0.0"
+       (emacs-header-parse "version" mock-elisp-file))
+     (test-equal "emacs-header-parse: fetch keywords"
+       "lisp test"
+       (emacs-header-parse "keywords" mock-elisp-file))
+     (test-equal "emacs-header-parse: fetch nonexistent author"
+       "nil"
+       (emacs-header-parse "author" mock-elisp-file)))))
 
 (test-end "build-emacs-utils")
