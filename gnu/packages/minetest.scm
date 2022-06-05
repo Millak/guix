@@ -6,7 +6,7 @@
 ;;; Copyright © 2019 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2019–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Trevor Hass <thass@okstate.edu>
-;;; Copyright © 2020, 2021 Liliana Marie Prikler <liliana.prikler@gmail.com>
+;;; Copyright © 2020, 2021, 2022 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; This file is part of GNU Guix.
 ;;;
@@ -42,6 +42,7 @@
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages xorg)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
@@ -70,48 +71,49 @@
                   #t))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       (list "-DRUN_IN_PLACE=0"
-             "-DENABLE_FREETYPE=1"
-             "-DENABLE_GETTEXT=1"
-             "-DENABLE_SYSTEM_JSONCPP=TRUE"
-             (string-append "-DIRRLICHTMT_INCLUDE_DIR="
-                            (assoc-ref %build-inputs "irrlicht-for-minetest")
-                            "/include/irrlicht")
-             (string-append "-DCURL_INCLUDE_DIR="
-                            (assoc-ref %build-inputs "curl")
-                            "/include/curl")
-             (string-append "-DZSTD_INCLUDE_DIR="
-                            (assoc-ref %build-inputs "zstd")
-                            "/include/zstd")
-             (string-append "-DZSTD_LIBRARY="
-                            (assoc-ref %build-inputs "zstd")
-                            "/lib/libzstd.so"))
+     (list
+      #:configure-flags
+      #~(list "-DRUN_IN_PLACE=0"
+              "-DENABLE_FREETYPE=1"
+              "-DENABLE_GETTEXT=1"
+              "-DENABLE_SYSTEM_JSONCPP=TRUE"
+              (string-append "-DIRRLICHTMT_INCLUDE_DIR="
+                             (search-input-directory %build-inputs
+                                                     "include/irrlichtmt"))
+              (string-append "-DCURL_INCLUDE_DIR="
+                             (search-input-directory %build-inputs
+                                                     "include/curl"))
+              (string-append "-DZSTD_INCLUDE_DIR="
+                             (dirname
+                              (search-input-file %build-inputs
+                                                 "include/zstd.h")))
+              (string-append "-DZSTD_LIBRARY="
+                             (search-input-file %build-inputs
+                                                "lib/libzstd.so")))
        #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-sources
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "src/filesys.cpp"
-               ;; Use store-path for "rm" instead of non-existing FHS path.
-               (("\"/bin/rm\"")
-                (string-append "\"" (assoc-ref inputs "coreutils") "/bin/rm\"")))
-             (substitute* "src/CMakeLists.txt"
-               ;; Let minetest binary remain in build directory.
-               (("set\\(EXECUTABLE_OUTPUT_PATH .*\\)") ""))
-             (substitute* "src/unittest/test_servermodmanager.cpp"
-               ;; do no override MINETEST_SUBGAME_PATH
-               (("(un)?setenv\\(\"MINETEST_SUBGAME_PATH\".*\\);")
-                "(void)0;"))
-             (setenv "MINETEST_SUBGAME_PATH"
-                     (string-append (getcwd) "/games")) ; for check
-             #t))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             ;; Thanks to our substitutions, the tests should also run
-             ;; when invoked on the target outside of `guix build'.
-             (when tests?
-               (setenv "HOME" "/tmp")
-               (invoke "src/minetest" "--run-unittests")))))))
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'patch-sources
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "src/filesys.cpp"
+                 ;; Use store-path for "rm" instead of non-existing FHS path.
+                 (("\"/bin/rm\"")
+                  (format #f "~s" (search-input-file inputs "bin/rm"))))
+               (substitute* "src/CMakeLists.txt"
+                 ;; Let minetest binary remain in build directory.
+                 (("set\\(EXECUTABLE_OUTPUT_PATH .*\\)") ""))
+               (substitute* "src/unittest/test_servermodmanager.cpp"
+                 ;; do no override MINETEST_SUBGAME_PATH
+                 (("(un)?setenv\\(\"MINETEST_SUBGAME_PATH\".*\\);")
+                  "(void)0;"))
+               (setenv "MINETEST_SUBGAME_PATH" ; for check
+                       (string-append (getcwd) "/games"))))
+           (replace 'check
+             (lambda* (#:key tests? #:allow-other-keys)
+               ;; Thanks to our substitutions, the tests should also run
+               ;; when invoked on the target outside of `guix build'.
+               (when tests?
+                 (setenv "HOME" "/tmp")
+                 (invoke "src/minetest" "--run-unittests")))))))
     (native-search-paths
      (list (search-path-specification
             (variable "MINETEST_SUBGAME_PATH")
@@ -122,24 +124,24 @@
     (native-inputs
      (list pkg-config))
     (inputs
-     `(("coreutils" ,coreutils)
-       ("curl" ,curl)
-       ("freetype" ,freetype)
-       ("gettext" ,gettext-minimal)
-       ("gmp" ,gmp)
-       ("irrlicht-for-minetest" ,irrlicht-for-minetest)
-       ("jsoncpp" ,jsoncpp)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libogg" ,libogg)
-       ("libvorbis" ,libvorbis)
-       ("libxxf86vm" ,libxxf86vm)
-       ("luajit" ,luajit)
-       ("mesa" ,mesa)
-       ("ncurses" ,ncurses)
-       ("openal" ,openal)
-       ("sqlite" ,sqlite)
-       ("zstd" ,zstd "lib")))
+     (list coreutils
+           curl
+           freetype
+           gettext-minimal
+           gmp
+           irrlicht-for-minetest
+           jsoncpp
+           libjpeg-turbo
+           libpng
+           libogg
+           libvorbis
+           libxxf86vm
+           luajit
+           mesa
+           ncurses
+           openal
+           sqlite
+           `(,zstd "lib")))
     (propagated-inputs
      (list minetest-data))
     (synopsis "Infinite-world block sandbox game")
