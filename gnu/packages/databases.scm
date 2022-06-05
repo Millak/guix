@@ -3206,6 +3206,37 @@ Memory-Mapped Database} (LMDB), a high-performance key-value store.")
          (replace 'bootstrap
            (lambda _
              (invoke "sh" "autogen.sh")))
+         (add-after 'unpack 'avoid-embedding-kernel-and-timestamps
+           ;; For a reproducible build, avoid embedding the kernel version and
+           ;; timestamps.
+           (lambda _
+             (substitute*
+                 (list "bin/makever"
+                       "appsrc/ODS-Polls/make_vad.sh"
+                       "appsrc/ODS-Blog/make_vad.sh"
+                       "appsrc/ODS-Community/make_vad.sh"
+                       "appsrc/ODS-Framework/make_vad.sh"
+                       "appsrc/ODS-Framework/oauth/make_vad.sh"
+                       "appsrc/ODS-WebMail/make_vad.sh"
+                       "appsrc/ODS-Calendar/make_vad.sh"
+                       "appsrc/ODS-Gallery/make_vad.sh"
+                       "appsrc/ODS-Briefcase/make_vad.sh"
+                       "appsrc/ODS-FeedManager/make_vad.sh"
+                       "appsrc/ODS-Bookmark/make_vad.sh"
+                       "appsrc/ODS-Addressbook/make_vad.sh"
+                       "binsrc/dbpedia/make_vad.sh"
+                       "binsrc/samples/demo/make_vad.sh"
+                       "binsrc/samples/demo/mkdoc.sh"
+                       "binsrc/samples/sparql_demo/make_vad.sh"
+                       "binsrc/bpel/make_vad.sh"
+                       "binsrc/fct/make_vad.sh"
+                       "binsrc/rdf_mappers/make_vad.sh"
+                       "binsrc/isparql/make_vad.sh"
+                       "binsrc/conductor/mkvad.sh")
+               (("^UNAME_SYSTEM=.*") "UNAME_SYSTEM=unknown\n")
+               (("^UNAME_RELEASE=.*") "UNAME_RELEASE=unknown\n")
+               (("^PACKDATE=.*") "PACKDATE=2012-04-18\n")
+               (("^DATE=.*") "DATE=2012-04-18\n"))))
          ;; Even with "--enable-static=no", "libvirtuoso-t.a" is left in
          ;; the build output.  The following phase removes it.
          (add-after 'install 'remove-static-libs
