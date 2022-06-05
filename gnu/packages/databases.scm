@@ -1288,7 +1288,11 @@ pictures, sounds, or video.")
                                   version "/postgresql-" version ".tar.bz2"))
               (sha256
                (base32
-                "17v51a9vnz6lgbfmbdmcwsiyi572wndwa4n30nk2zr6gkgaidpl7"))))))
+                "17v51a9vnz6lgbfmbdmcwsiyi572wndwa4n30nk2zr6gkgaidpl7"))))
+    (native-inputs
+     (modify-inputs (package-native-inputs postgresql-11)
+       (append opensp docbook-sgml-4.2)
+       (delete "docbook-xml")))))
 
 (define-public postgresql postgresql-13)
 
