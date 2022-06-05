@@ -3003,21 +3003,20 @@ memoized as a function of '%current-system'."
 
 (define gnumach-headers-boot0
   (with-boot0
-   (package-with-bootstrap-guile
-    (package
-      (inherit gnumach-headers)
-      (version "1.8-116-g28b53508")
-      (source (bootstrap-origin
-               (origin
-                 (method url-fetch)
-                 (uri (list (string-append "mirror://gnu/guix/mirror/gnumach-"
-                                           version ".tar.gz")
-                            (string-append "https://lilypond.org/janneke/hurd/"
-                                           "gnumach-" version ".tar.gz")))
-                 (sha256
-                  (base32
-                   "006i0zgwy81vxarpfm12vip4q6i5mgmi5mmy5ldvxp5hx9h3l0zg")))))
-      (native-inputs '())))))
+   (package
+     (inherit gnumach-headers)
+     (version "1.8-116-g28b53508")
+     (source (bootstrap-origin
+              (origin
+                (method url-fetch)
+                (uri (list (string-append "mirror://gnu/guix/mirror/gnumach-"
+                                          version ".tar.gz")
+                           (string-append "https://lilypond.org/janneke/hurd/"
+                                          "gnumach-" version ".tar.gz")))
+                (sha256
+                 (base32
+                  "006i0zgwy81vxarpfm12vip4q6i5mgmi5mmy5ldvxp5hx9h3l0zg")))))
+     (native-inputs '()))))
 
 (define mig-boot0
   (let* ((mig (package
@@ -3034,16 +3033,15 @@ memoized as a function of '%current-system'."
 (define hurd-version-boot0 "0.9-229-ga1efcee8")
 (define hurd-source-boot0
   (let ((version hurd-version-boot0))
-    (bootstrap-origin
-     (origin
-       (method url-fetch)
-       (uri (list (string-append "mirror://gnu/guix/mirror/hurd-v"
-                                 version ".tar.gz")
-                  (string-append "https://lilypond.org/janneke/hurd/"
-                                 "hurd-v" version ".tar.gz")))
-       (sha256
-        (base32
-         "0bq2q2jisxcy0kgcm6rz0z2fddwxxm7azsama7li28a2m08kdpzy"))))))
+    (origin
+      (method url-fetch)
+      (uri (list (string-append "mirror://gnu/guix/mirror/hurd-v"
+                                version ".tar.gz")
+                 (string-append "https://lilypond.org/janneke/hurd/"
+                                "hurd-v" version ".tar.gz")))
+      (sha256
+       (base32
+        "0bq2q2jisxcy0kgcm6rz0z2fddwxxm7azsama7li28a2m08kdpzy")))))
 
 (define hurd-headers-boot0
   (let ((hurd-headers (package (inherit hurd-headers)
