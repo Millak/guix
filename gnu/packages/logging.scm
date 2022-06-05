@@ -252,9 +252,8 @@ library.")
       ;; them for a full-featured build.
       '(list "--enable-kmsg"
              "--enable-liblogging_stdlog"
-             "--enable-mmanon"
-             "--enable-mmcount"
              "--enable-unlimited_select"
+             "--enable-usertools"
          
              ;; Input plugins
              "--enable-imbatchreport"
@@ -296,7 +295,9 @@ library.")
              "--enable-pmsnare"
 
              ;; Message Modification Modules
+             "--enable-mmanon"
              "--enable-mmaudit"
+             "--enable-mmcount"
              "--enable-mmdarwin"
              "--enable-mmdblookup"
              "--enable-mmfields"
@@ -323,9 +324,18 @@ library.")
              "--enable-snmp"
 
              ;; Function modules
-             "--enable-fmhash_xxhash")))
+             "--enable-fmhash_xxhash"
+
+             ;; Needed to build rscryutil.1.gz.
+             "--enable-generate-man-pages")))
     (native-inputs
-     (list autoconf automake bison flex libtool pkg-config))
+     (list autoconf
+           automake
+           bison
+           flex
+           libtool
+           pkg-config
+           python-docutils))            ; rst2man for man pages
     (inputs
      (list curl
            cyrus-sasl
