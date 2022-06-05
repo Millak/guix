@@ -3,7 +3,7 @@
 ;;; Copyright © 2016, 2017, 2018 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2017 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Gábor Boskovits <boskovits@gmail.com>
 ;;; Copyright © 2019 Meiyo Peng <meiyo@riseup.net>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
@@ -229,7 +229,7 @@ library.")
 (define-public rsyslog
   (package
     (name "rsyslog")
-    (version "8.2112.0")
+    (version "8.2204.1")
     (source
      (origin
        (method git-fetch)
@@ -238,8 +238,7 @@ library.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0bp124w2qv8hix5i0p04d8yvsipy18dhqm7zw8i6cwdgnhdadq96"))))
+        (base32 "0bsd1n3n4hvlkwf4g85g3fg37mnvkdmxsfdmg273gcachhyl5hbx"))))
     (build-system gnu-build-system)
     (arguments
      (list
