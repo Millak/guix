@@ -12474,8 +12474,8 @@ If a log is unavailable locally, and unless @option{--no-substitutes} is
 passed, the command looks for a corresponding log on one of the
 substitute servers (as specified with @option{--substitute-urls}).
 
-So for instance, imagine you want to see the build log of GDB on MIPS,
-but you are actually on an @code{x86_64} machine:
+So for instance, imagine you want to see the build log of GDB on
+@code{aarch64}, but you are actually on an @code{x86_64} machine:
 
 @example
 $ guix build --log-file gdb -s aarch64-linux
