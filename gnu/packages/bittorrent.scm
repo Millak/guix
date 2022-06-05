@@ -105,6 +105,11 @@
        #:glib-or-gtk-wrap-excluded-outputs '("out")
        #:phases
        (modify-phases %standard-phases
+         ;; Avoid embedding kernel version for reproducible build
+         (add-after 'unpack 'remove-kernel-version
+           (lambda _
+             (substitute* "third-party/miniupnpc/updateminiupnpcstrings.sh"
+               (("OS_VERSION=`uname -r`") "OS_VERSION=Guix"))))
          (add-after 'install 'move-gui
            (lambda* (#:key outputs #:allow-other-keys)
              ;; Move the GUI to its own output, so that "out" doesn't
