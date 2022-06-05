@@ -3032,7 +3032,7 @@ development.")
     (inputs
      (list unixodbc))
     (arguments
-     `(;; No unit tests exist.
+     `(;; The tests require a running SQL server that they don't help set up.
        #:tests? #f))
     (home-page "https://gitlab.com/daym/pyodbc-c")
     (synopsis "Python ODBC Library written in C")
