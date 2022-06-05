@@ -2281,7 +2281,7 @@ perform creative live mixes with digital music files.")
 (define-public synthv1
   (package
     (name "synthv1")
-    (version "0.9.25")
+    (version "0.9.26")
     (source (origin
               (method url-fetch)
               (uri
@@ -2289,7 +2289,7 @@ perform creative live mixes with digital music files.")
                               "/synthv1-" version ".tar.gz"))
               (sha256
                (base32
-                "1i16036f9wm52c5pxkllq7ir749jcknbh35i9wcxd5n88p6mzw02"))))
+                "1asikh341f3vblrl8l07yakza80ybs8sid3n2qpsrvigaz3iymcd"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests
@@ -2299,7 +2299,8 @@ perform creative live mixes with digital music files.")
            alsa-lib
            new-session-manager
            liblo
-           qtbase-5))
+           qtbase-5
+           qtsvg))
     (native-inputs
      (list pkg-config qttools))
     (home-page "https://synthv1.sourceforge.io")
