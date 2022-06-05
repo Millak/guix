@@ -3034,10 +3034,13 @@ development.")
     (arguments
      `(;; No unit tests exist.
        #:tests? #f))
-    (home-page "https://github.com/mkleehammer/pyodbc")
-    (synopsis "Python ODBC Library")
+    (home-page "https://gitlab.com/daym/pyodbc-c")
+    (synopsis "Python ODBC Library written in C")
     (description "@code{python-pyodbc-c} provides a Python DB-API driver
-for ODBC.")
+for ODBC, similar to python-pyodbc but written in C.
+
+It's designed to stand alone and not have other dependencies on other packages
+or languages.  It uses only Python's built-in data types.")
     (license (license:x11-style "file://LICENSE.TXT"))))
 
 (define-public python-pyodbc
