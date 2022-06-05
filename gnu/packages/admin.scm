@@ -1769,7 +1769,7 @@ system administrator.")
 (define-public sudo
   (package
     (name "sudo")
-    (version "1.9.11")
+    (version "1.9.11p1")
     (source (origin
               (method url-fetch)
               (uri
@@ -1779,8 +1779,7 @@ system administrator.")
                                     version ".tar.gz")))
               (sha256
                (base32
-                "1gjingc1h7d6p17m0nn87yiwh8gbdchg4w4kv8s4g89wv0q6wixm"))
-              (patches (search-patches "sudo-missing-sudo_pt_regs-aarch64.patch"))
+                "0jr52rmig9h367j0n6h3lp5xf54jsycnvdih42wg9bd9d4d6r2zb"))
               (modules '((guix build utils)))
               (snippet
                '(begin
