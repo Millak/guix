@@ -6409,7 +6409,7 @@ files, including Rmarkdown files.")
 (define-public readstat
   (package
     (name "readstat")
-    (version "1.1.5")
+    (version "1.1.8")
     (source
      (origin
        (method git-fetch)
@@ -6418,7 +6418,7 @@ files, including Rmarkdown files.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00sdmaq0qzp6kyv53fpfi6jf3iv4pd0ap0gmw3mbfip52bbnl55w"))))
+        (base32 "1r04lq45h1yn34v1mgfiqjfzyaqv4axqlby0nkandamcsqyhc7y4"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake gnu-gettext libtool))
