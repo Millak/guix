@@ -13,7 +13,7 @@
 ;; Copyright © 2021 Leo Famulari <leo@famulari.name>
 ;; Copyright © 2021 Zhu Zihao <all_but_last@163.com>
 ;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
-;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;; Copyright © 2021, 2022 Maxime Devos <maximedevos@telenet.be>
 ;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
 ;; Copyright © 2021 Jonathan Brielmaier <jonathan.brielmaier@web.de>
