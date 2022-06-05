@@ -1631,7 +1631,7 @@ compresses it.")
 (define-public claws-mail
   (package
     (name "claws-mail")
-    (version "4.0.0")
+    (version "4.1.0")
     (source
      (origin
        (method url-fetch)
@@ -1639,7 +1639,7 @@ compresses it.")
         (string-append "https://www.claws-mail.org/releases/claws-mail-"
                        version ".tar.xz"))
        (sha256
-        (base32 "0xg41rxxq2q5vhjzbh8p12s248kcljk6g7y0m6raq7nrllkbvwja"))))
+        (base32 "13ksh4iwr23zi86fwmiwxha94xqrr5zxq373i82rwaldvfh9q6hf"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:configure-flags
@@ -1669,7 +1669,7 @@ compresses it.")
                 (search-input-file inputs "/share/mime/globs"))))))))
     (native-inputs
      (list bison
-           ;;("docbook-utils" ,docbook-utils)
+           ;;docbook-utils
            flex
            gettext-minimal
            gobject-introspection
