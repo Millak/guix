@@ -2346,7 +2346,7 @@ effects.")
 (define-public samplv1
   (package
     (name "samplv1")
-    (version "0.9.25")
+    (version "0.9.26")
     (source (origin
               (method url-fetch)
               (uri
@@ -2354,7 +2354,7 @@ effects.")
                               "/samplv1-" version ".tar.gz"))
               (sha256
                (base32
-                "0d05b03knrwh1zr4p0kcyn58scy6a392f0xxm78cqf0gikd3bw5c"))))
+                "1rqz3hf39hk2m15ihrkn8f5cqgbkvz3rq6r2k35rvn7sgvcq1dli"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests
@@ -2365,7 +2365,8 @@ effects.")
            alsa-lib
            new-session-manager
            liblo
-           qtbase-5))
+           qtbase-5
+           qtsvg))
     (native-inputs
      (list pkg-config qttools))
     (home-page "https://samplv1.sourceforge.io")
