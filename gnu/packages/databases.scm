@@ -3021,13 +3021,13 @@ development.")
     (version "3.1.4")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://gitlab.com/daym/pyodbc-c/repository/"
-                           "archive.tar.gz?ref=v" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/daym/pyodbc-c/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "05aq2297k779xidmxcwkrrxjvj1bh2q7d9a1rcjv6zr15y764ga9"))
-       (file-name (string-append name "-" version ".tar.gz"))))
+        (base32 "1mm2vif3b5yq0j6x3idl748w37n2i6j0clah3h967jyrl4p2c7vi"))))
     (build-system python-build-system)
     (inputs
      (list unixodbc))
