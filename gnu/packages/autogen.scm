@@ -62,6 +62,10 @@
 
        #:phases
        (modify-phases %standard-phases
+         (add-before 'build 'set-man-page-date
+           ;; Avoid embedding the current date for reproducible builds
+           (lambda _
+             (setenv "MAN_PAGE_DATE" "2012-04-18")))
          (add-before 'patch-source-shebangs 'patch-test-scripts
            (lambda _
              (let ((sh (which "sh")))
