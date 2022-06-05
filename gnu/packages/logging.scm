@@ -164,29 +164,40 @@ commands, displaying the results via a web interface.")
 (define-public multitail
   (package
     (name "multitail")
-    (version "6.5.0")
+    (version "6.5.2")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "https://vanheusden.com/multitail/multitail-"
-                          version ".tgz"))
+      (method git-fetch)
+      (uri (git-reference
+            (url "https://github.com/halturin/multitail")
+            (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
       (sha256
-       (base32 "1vd9vdxyxsccl64ilx542ya5vlw2bpg6gnkq1x8cfqy6vxvmx7dj"))))
+       (base32 "17hg5qpangyx4m7hp2x4h56mp6w3wsaslg1il39qcpwsffh1rihc"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
        (list (string-append "CC=" ,(cc-for-target))
-             (string-append "PREFIX="
-                            (assoc-ref %outputs "out")))
+             (string-append "PREFIX=" (assoc-ref %outputs "out"))
+             "SYSCONFDIR=$(PREFIX)/etc")
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'patch-curses-lib
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (substitute* "mt.h"
-                 (("ncursesw\\/panel.h") "panel.h")
-                 (("ncursesw\\/ncurses.h") "ncurses.h")))
-             #t))
+         (add-after 'unpack 'fix-broken-build
+           ;; With some luck, you might be able to remove this when updating…
+           (lambda _
+             (substitute* "Makefile"
+               ((" \\*\\.txt") "")
+               ((".*CONFIG_DIR.*") "")
+               (("^install: .*" match)
+                (string-append match
+                               "\t$(INSTALL_DIR) $(DESTDIR)$(SYSCONFDIR)\n")))
+             (substitute* "version"
+               (("(VERSION=).*" _ assign)
+                (string-append assign ,version)))))
+         (add-after 'unpack 'patch-curses-headers
+           (lambda _
+             (substitute* "mt.h"
+               (("ncursesw/") ""))))
          (delete 'configure))           ; no configure script
        #:tests? #f)) ; no test suite (make check just runs cppcheck)
     (inputs (list ncurses))
