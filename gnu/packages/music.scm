@@ -2313,7 +2313,7 @@ oscillators and stereo effects.")
 (define-public drumkv1
   (package
     (name "drumkv1")
-    (version "0.9.25")
+    (version "0.9.26")
     (source (origin
               (method url-fetch)
               (uri
@@ -2321,7 +2321,7 @@ oscillators and stereo effects.")
                               "/drumkv1-" version ".tar.gz"))
               (sha256
                (base32
-                "0p50b4k4zldagiwxs0micmdbqib46ysipdj8lkxqdv0pysmd72fc"))))
+                "0j05xqgcb7kwnnsgl6i7vbdsfq26chzs4zyq6pl0ipcmw4d82j8i"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests
@@ -2332,7 +2332,8 @@ oscillators and stereo effects.")
            alsa-lib
            new-session-manager
            liblo
-           qtbase-5))
+           qtbase-5
+           qtsvg))
     (native-inputs
      (list pkg-config qttools))
     (home-page "https://drumkv1.sourceforge.io")
