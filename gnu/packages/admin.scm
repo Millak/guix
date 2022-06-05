@@ -1780,6 +1780,7 @@ system administrator.")
               (sha256
                (base32
                 "1gjingc1h7d6p17m0nn87yiwh8gbdchg4w4kv8s4g89wv0q6wixm"))
+              (patches (search-patches "sudo-missing-sudo_pt_regs-aarch64.patch"))
               (modules '((guix build utils)))
               (snippet
                '(begin

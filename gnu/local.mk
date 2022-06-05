@@ -1806,6 +1806,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/slim-reset.patch				\
   %D%/packages/patches/slim-login.patch				\
   %D%/packages/patches/slim-display.patch			\
+  %D%/packages/patches/sudo-missing-sudo_pt_regs-aarch64.patch	\
   %D%/packages/patches/syslinux-gcc10.patch			\
   %D%/packages/patches/syslinux-strip-gnu-property.patch	\
   %D%/packages/patches/snappy-add-O2-flag-in-CmakeLists.txt.patch	\
