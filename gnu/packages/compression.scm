@@ -2588,7 +2588,8 @@ chunks.")
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
-       '("-DDEACTIVATE_AVX2=ON"
+       '("-DBUILD_STATIC=OFF"
+         "-DDEACTIVATE_AVX2=ON"
          "-DPREFER_EXTERNAL_LZ4=ON"
          "-DPREFER_EXTERNAL_ZLIB=ON"
          "-DPREFER_EXTERNAL_ZSTD=ON")))
