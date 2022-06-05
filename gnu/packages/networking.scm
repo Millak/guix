@@ -3359,7 +3359,7 @@ communication over HTTP.")
 (define-public restinio
   (package
     (name "restinio")
-    (version "0.6.14")
+    (version "0.6.15")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3368,7 +3368,7 @@ communication over HTTP.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0j44mglsljwkw49583hcsrl5ck2g56n9srnm10kpbsz2dx5apx98"))))
+                "1f8d5nfm8jqhspzsslwb1b7j4glipz31i9vszrcnkx3clc39nj2n"))))
     (build-system cmake-build-system)
     (inputs                             ; TODO: Need to force-keep references on some inputs, e.g. boost.
      (list zlib
