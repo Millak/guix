@@ -1377,7 +1377,7 @@ pictures, sounds, or video.")
     (home-page "https://www.timescale.com/")
     (synopsis "Time-series extension for PostgreSQL")
     (description
-     "TimescaleDB is an database designed to make SQL scalable for
+     "TimescaleDB is a database designed to make SQL scalable for
 time-series data.  It is engineered up from PostgreSQL and packaged as a
 PostgreSQL extension, providing automatic partitioning across time and space
 (partitioning key), as well as full SQL support.")
@@ -1882,7 +1882,7 @@ extremely small.")
                 "1yinx39960y241vf2sknxj0dfz82a5m9gvklq5rw78k0nlyrjawa"))))
     (build-system perl-build-system)
     (synopsis "Database independent interface for Perl")
-    (description "This package provides an database interface for Perl.")
+    (description "This package provides a database interface for Perl.")
     (home-page "https://metacpan.org/release/DBI")
     (license license:perl-license)))
 
