@@ -3018,7 +3018,7 @@ development.")
 (define-public python-pyodbc-c
   (package
     (name "python-pyodbc-c")
-    (version "3.1.4")
+    (version "3.1.5")
     (source
      (origin
        (method git-fetch)
@@ -3027,7 +3027,7 @@ development.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mm2vif3b5yq0j6x3idl748w37n2i6j0clah3h967jyrl4p2c7vi"))))
+        (base32 "08y60c5sx0k953zfx0s2a155l8py968sb17ap9a9fg8bjnj783k8"))))
     (build-system python-build-system)
     (inputs
      (list unixodbc))
