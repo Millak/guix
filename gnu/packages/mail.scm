@@ -2888,6 +2888,14 @@ powerful user customization features.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'remove-build-timestamps
+           ;; Avoid embedding timestamps for reproducible build
+           (lambda _
+                  (substitute*
+                      (list
+                       "devtools/bin/configure.sh"
+                       "cf/sh/makeinfo.sh")
+                    (("on `date`") ""))))
          (add-before 'build 'replace-/bin/sh
            (lambda _
              (substitute*
