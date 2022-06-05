@@ -1253,7 +1253,7 @@ that support this feature).")
 (define-public memkind
   (package
     (name "memkind")
-    (version "1.12.0")
+    (version "1.13.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1261,7 +1261,7 @@ that support this feature).")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1s52vl2jlrdc8nxnvf993x9mcag56qxcaniiijhmsv42a26hvjk4"))))
+               (base32 "0zbil6xqmsrnh773ihxyfna6pvvxv3kczdb3g863ssflwwvv7h4w"))))
     (build-system gnu-build-system)
     (inputs
      (list ;; memkind patched jemalloc to add je_arenalookupx,
