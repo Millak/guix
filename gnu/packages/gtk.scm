@@ -1590,15 +1590,15 @@ guile-gnome-platform (GNOME developer libraries), and guile-gtksourceview.")
                 (string-append out "/share/doc")
                 (string-append doc "/share/doc"))))))))
     (native-inputs
-     `(("boost" ,boost)
-       ("dot" ,graphviz)
-       ("doxygen" ,doxygen)
-       ("mm-common" ,mm-common)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("xsltproc" ,libxslt)))
+     (list boost
+           doxygen
+           graphviz
+           mm-common
+           perl
+           pkg-config
+           libxslt))
     (inputs
-     `(("fontconfig" ,fontconfig)))
+     (list fontconfig))
     (propagated-inputs
      (list libsigc++ cairo))
     (home-page "https://cairographics.org/")
