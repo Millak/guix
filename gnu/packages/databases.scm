@@ -3058,7 +3058,15 @@ for ODBC.")
     (inputs
      (list unixodbc))
     (arguments
-     `(#:tests? #f))                    ; no unit tests exist
+     ;; XXX Tests fail with ‘Can't open lib 'SQL Server Native Client 10.0' :
+     ;; file not found (0) (SQLDriverConnect)")’.
+     (list #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "python3" "tests3/test.py")))))))
     (home-page "https://github.com/mkleehammer/pyodbc")
     (synopsis "Python ODBC Library")
     (description "@code{python-pyodbc} provides a Python DB-API driver
