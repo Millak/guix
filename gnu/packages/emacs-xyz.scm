@@ -27989,28 +27989,30 @@ and it should work well with 256 color terminals.")
     (license license:gpl3+)))
 
 (define-public emacs-dimmer
-  (package
-    (name "emacs-dimmer")
-    (version "0.4.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/gonewest818/dimmer.el")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0dw0qh5hm1x76s5cqxvylvmjgy0jwy11xm258g6kmx6w1k6r1d2l"))))
-    (build-system emacs-build-system)
-    (home-page "https://github.com/gonewest818/dimmer.el")
-    (synopsis "Visually highlights the selected buffer in Emacs")
-    (description "Dimmer provides a minor mode that indicates which buffer is
+  (let ((commit "2f915b100044e09dd647b22085e1696249c4b115")
+        (revision "1"))
+    (package
+      (name "emacs-dimmer")
+      (version (git-version "0.4.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/gonewest818/dimmer.el")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "00y6645zjary1sz7517qy5pjwfm5ipsc46sypmdygin65hbbc8wg"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/gonewest818/dimmer.el")
+      (synopsis "Visually highlights the selected buffer in Emacs")
+      (description "Dimmer provides a minor mode that indicates which buffer is
 currently active by dimming the faces in the other buffers.  It does this
 nondestructively, and computes the dimmed faces dynamically such that your
 overall color scheme is shown in a muted form without requiring you to define
 what is a \"dim\" version of every face.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-minibuffer-line
   (package
