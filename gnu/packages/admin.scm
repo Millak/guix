@@ -1127,6 +1127,77 @@ IPv6, proxies, and Unix sockets.")
     (license (list license:bsd-3
                    license:bsd-2))))  ; atomicio.*, socks.c
 
+(define-public nmon
+  (package
+    (name "nmon")
+    (version "16n")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/nmon/lmon" version ".c"))
+       (sha256
+        (base32 "1wpm2f30414b87kpbr9hbidblr5cmfby5skwqd0fkpi5v712q0f0"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f                  ; no test suite
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'unpack
+                 (lambda _
+                   (copy-file #$(package-source this-package) "lmon.c")))
+               (delete 'configure)      ; no build system
+               (replace 'build
+                 ;; There is an example ‘Makefile’ in the .c file.
+                 (lambda _
+                   ;; These #defines aren't well-documented and, e.g., POWER was
+                   ;; not actually tested on every possible TARGET-POWERPC?.
+                   (let* ((system #$(cond ((target-x86-32?) "X86")
+                                          ((target-x86-64?) "X86")
+                                          ((target-arm?) "ARM")
+                                          ((target-powerpc?) "POWER")
+                                          (else "CROSS_FINGERS"))))
+                     (format #t "Building for ~a~%" system)
+                     (invoke #$(cc-for-target) "-o" "nmon" "lmon.c"
+                             "-g" "-Wall" "-D" system
+                             "-lncurses" "-lm"))))
+               (replace 'install
+                 (lambda _
+                   (let ((bin (string-append #$output "/bin"))
+                         (man1 (string-append #$output "/share/man/man1")))
+                     (install-file "nmon" bin)
+                     (mkdir-p man1)
+                     (copy-file #$(this-package-native-input "man-page")
+                                (string-append man1 "/nmon.1"))))))))
+    (native-inputs
+     (list `("man-page"
+             ,(origin
+                ;; There is no man page upstream, so install Debian's.
+                (method url-fetch)
+                (uri (string-append "https://salsa.debian.org/carnil/nmon/"
+                                    "-/raw/debian/" version "+debian-1/"
+                                    "debian/nmon.1"))
+                (sha256
+                 (base32
+                  "1gpvd2kjyhs18sh6sga5bk9wj8s78blfd4c0m38r0wl92jx2yv1b"))))))
+    (inputs
+     (list ncurses))
+    (home-page "http://nmon.sourceforge.net/")
+    (synopsis
+     "Monitor system performance in a terminal or to a @file{.csv} log file")
+    (description
+     "@acronym{Nmon, Nigel's performance monitor} is yet another system monitor
+useful in systems administration, debugging, tuning, and benchmarking.
+
+The configurable ncurses interface displays all the classic resource usage
+statistics (CPU, memory, network, disk, ...) as real-time graphs or numbers.
+It can also list the processes responsible in a @command{top}-like table.
+
+A less common nmon feature is its ability to create highly detailed log files
+in @acronym{CSV, comma-separated values} format.  These can be imported into
+spreadsheets or fed straight into an @acronym{RRD, round-robin database} using
+@command{rrdtool} for further analyisis, or to create colourful graphs.")
+    (license license:gpl3+)))
+
 (define-public sipcalc
   (package
     (name "sipcalc")
