@@ -2598,10 +2598,7 @@ chunks.")
          "-DPREFER_EXTERNAL_ZLIB=ON"
          "-DPREFER_EXTERNAL_ZSTD=ON")))
     (inputs
-     `(("lz4" ,lz4)
-       ("snappy" ,snappy)
-       ("zlib" ,zlib)
-       ("zstd:lib" ,zstd "lib")))
+     (list lz4 snappy zlib `(,zstd "lib")))
     (home-page "https://blosc.org")
     (synopsis "Blocking, shuffling and lossless compression library")
     (description
