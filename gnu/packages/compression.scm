@@ -2576,15 +2576,19 @@ chunks.")
   (package
     (name "c-blosc")
     (version "1.21.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/Blosc/c-blosc")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0gy9a7wp7x71x5l3rprx8wpb3c5cn7wqc77gdiffq35hr34q88p9"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Blosc/c-blosc")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gy9a7wp7x71x5l3rprx8wpb3c5cn7wqc77gdiffq35hr34q88p9"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; In a rare victory, we may delete all bundled libs to no ill effect.
+        '(delete-file-recursively "internal-complibs"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
