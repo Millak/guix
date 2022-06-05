@@ -120,6 +120,7 @@
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crates-graphics)
   #:use-module (gnu packages curl)
+  #:use-module (gnu packages dbm)
   #:use-module (gnu packages dejagnu)
   #:use-module (gnu packages dns)
   #:use-module (gnu packages docbook)
@@ -5336,14 +5337,14 @@ wlroots-based compositors.  More specifically, those that support
 (define-public guvcview
   (package
     (name "guvcview")
-    (version "2.0.6")
+    (version "2.0.8")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/guvcview/source/guvcview-"
-                                  "src-" version ".tar.gz"))
+                                  "src-" version ".tar.bz2"))
               (sha256
                (base32
-                "11byyfpkcik7wvf2qic77zjamfr2rhji97dpj1gy2fg1bvpiqf4m"))))
+                "108c4g0ns9i1wnxyalmpjqbhlflmrj855vxgggr6qrl6h924w7x2"))))
     (build-system gnu-build-system)
     (arguments
      ;; There are no tests and "make check" would fail on an intltool error.
@@ -5351,11 +5352,13 @@ wlroots-based compositors.  More specifically, those that support
     (native-inputs
      (list pkg-config intltool))
     (inputs
-     (list gtk+
+     (list bdb
+           gtk+
            eudev
+           libjpeg-turbo
            libusb
-           v4l-utils ;libv4l2
-           ffmpeg ;libavcodec, libavutil
+           v4l-utils                    ;libv4l2
+           ffmpeg                       ;libavcodec, libavutil
            sdl2
            gsl
            portaudio
