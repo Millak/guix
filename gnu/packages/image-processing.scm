@@ -443,7 +443,7 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
               (lambda _
                 (substitute*
                     "ThirdParty/hdf5/vtkhdf5/config/cmake/libhdf5.settings.cmake.in"
-                  (("Host system: .CMAKE_HOST_SYSTEM.")
+                  (("Host system: \\@CMAKE_HOST_SYSTEM\\@")
                    "Host system: @CMAKE_SYSTEM_NAME@"))))))))))
 
 (define-public opencv
