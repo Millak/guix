@@ -3,6 +3,7 @@
 ;;; Copyright © 2014 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2018, 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Liliana Marie Prikler <liliana.prikler@gmail.com>
+;;; Copyright © 2022 Fredrik Salomonsson <plattfot@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -22,10 +23,19 @@
 (define-module (guix build emacs-utils)
   #:use-module (guix build utils)
   #:use-module (ice-9 format)
+  #:use-module (ice-9 popen)
+  #:use-module (ice-9 rdelim)
+  #:use-module (srfi srfi-34)
+  #:use-module (srfi srfi-35)
   #:export (%emacs
             emacs-batch-eval
             emacs-batch-edit-file
             emacs-batch-disable-compilation
+            emacs-batch-script
+
+            emacs-batch-error?
+            emacs-batch-error-message
+
             emacs-generate-autoloads
             emacs-byte-compile-directory
 
@@ -68,6 +78,26 @@ true, evaluate using dynamic scoping."
     '(progn
       (add-file-local-variable 'no-byte-compile t)
       (basic-save-buffer))))
+
+(define-condition-type &emacs-batch-error &error
+  emacs-batch-error?
+  (message emacs-batch-error-message))
+
+(define (emacs-batch-script expr)
+  "Execute the Elisp code EXPR in Emacs batch mode and return output."
+  (let* ((error-pipe (pipe))
+         (port (parameterize ((current-error-port (cdr error-pipe)))
+                 (open-pipe*
+                  OPEN_READ
+                  (%emacs) "--quick" "--batch"
+                  (string-append "--eval=" (expr->string expr)))))
+         (output (read-string port))
+         (status (close-pipe port)))
+    (close-port (cdr error-pipe))
+    (unless (zero? status)
+      (raise (condition (&emacs-batch-error
+                         (message (read-string (car error-pipe)))))))
+    output))
 
 (define (emacs-generate-autoloads name directory)
   "Generate autoloads for Emacs package NAME placed in DIRECTORY."

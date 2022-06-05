@@ -472,6 +472,7 @@ SCM_TESTS =					\
   tests/boot-parameters.scm			\
   tests/bournish.scm				\
   tests/builders.scm				\
+  tests/build-emacs-utils.scm			\
   tests/build-utils.scm			\
   tests/cache.scm				\
   tests/challenge.scm				\
