@@ -3050,7 +3050,10 @@ for ODBC.")
        (uri (pypi-uri "pyodbc" version))
        (sha256
         (base32 "0skjpraar6hcwsy82612bpj8nw016ncyvvq88j5syrikxgp5saw5"))
-       (file-name (string-append name "-" version ".tar.gz"))))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Delete precompiled binaries.  The corresponding source is included.
+        #~(for-each delete-file (find-files "." "\\.pyc$")))))
     (build-system python-build-system)
     (inputs
      (list unixodbc))
