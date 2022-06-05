@@ -2575,7 +2575,7 @@ chunks.")
 (define-public c-blosc
   (package
     (name "c-blosc")
-    (version "1.18.1")
+    (version "1.21.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2584,13 +2584,12 @@ chunks.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ywq8j70149859vvs19wgjq89d6xsvvmvm2n1dmkzpchxgrvnw70"))))
+                "0gy9a7wp7x71x5l3rprx8wpb3c5cn7wqc77gdiffq35hr34q88p9"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
        '("-DDEACTIVATE_AVX2=ON"
          "-DPREFER_EXTERNAL_LZ4=ON"
-         "-DPREFER_EXTERNAL_SNAPPY=ON"
          "-DPREFER_EXTERNAL_ZLIB=ON"
          "-DPREFER_EXTERNAL_ZSTD=ON")))
     (inputs
