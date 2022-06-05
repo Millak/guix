@@ -2422,7 +2422,7 @@ void DerivationGoal::registerOutputs()
                     if (pathExists(dst)) deletePath(dst);
                     if (rename(actualPath.c_str(), dst.c_str()))
                         throw SysError(format("renaming `%1%' to `%2%'") % actualPath % dst);
-                    throw Error(format("derivation `%1%' may not be deterministic: output `%2%' differs from ‘%3%’")
+                    throw Error(format("derivation `%1%' may not be deterministic: output `%2%' differs from `%3%'")
                         % drvPath % path % dst);
                 } else
                     throw Error(format("derivation `%1%' may not be deterministic: output `%2%' differs")
