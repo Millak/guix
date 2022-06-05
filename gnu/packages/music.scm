@@ -2379,7 +2379,7 @@ effects.")
 (define-public padthv1
   (package
     (name "padthv1")
-    (version "0.9.25")
+    (version "0.9.26")
     (source (origin
               (method url-fetch)
               (uri
@@ -2387,7 +2387,7 @@ effects.")
                               "/padthv1-" version ".tar.gz"))
               (sha256
                (base32
-                "11fa2794g7dqsiw674wr2m4k0xdw89imqwa8mgms0igskxxbvjka"))))
+                "02pg0g4i65j46hirkc3xn7m2clm8krrafrkwjc1v8rkcdj6q2gw1"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests
@@ -2398,7 +2398,8 @@ effects.")
            new-session-manager
            liblo
            fftwf
-           qtbase-5))
+           qtbase-5
+           qtsvg))
     (native-inputs
      (list pkg-config qttools))
     (home-page "https://padthv1.sourceforge.io")
