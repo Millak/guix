@@ -93,6 +93,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system go)
+  #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
   #:use-module (guix build-system scons)
@@ -883,7 +884,7 @@ passphrases.")
 (define-public ndctl
   (package
     (name "ndctl")
-    (version "72.1")
+    (version "73")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -892,12 +893,16 @@ passphrases.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1lvrhlad5n43bal053ihgbwr1k4ka2kscrjwr9rs5xnf2vy7204v"))))
-    (build-system gnu-build-system)
+                "19kp1ly74bj7gavs03q7caci0lqr0rsi5y45zx5m8in4h19xk1kb"))))
+    (build-system meson-build-system)
     (arguments
      (list #:configure-flags
-           #~(list "--disable-asciidoctor" ; use docbook-xsl instead
-                   "--without-systemd")
+           #~(list (string-append "-Drootprefix=" #$output)
+                   (string-append "-Dbashcompletiondir=" #$output
+                                  "/share/bash-completion/completions")
+                   (string-append "-Dsysconfdir=" #$output "/etc")
+                   "-Dasciidoctor=disabled" ; use docbook-xsl instead
+                   "-Dsystemd=disabled")
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'fix-version
@@ -910,17 +915,11 @@ passphrases.")
                    (substitute* "git-version-gen"
                      (("/bin/sh") (which "sh")))
                    (substitute* "git-version"
-                     (("/bin/bash") (which "bash"))))))
-           #:make-flags
-           #~(list (string-append "BASH_COMPLETION_DIR=" #$output
-                                  "/share/bash-completion/completions"))))
+                     (("/bin/bash") (which "bash"))))))))
     (native-inputs
      (list asciidoc
-           automake
-           autoconf
            bash-completion
            docbook-xsl
-           libtool
            libxml2
            pkg-config
            xmlto
@@ -940,7 +939,7 @@ passphrases.")
 libnvdimm (non-volatile memory device) sub-system in the Linux kernel.")
     ;; COPYING says LGPL2.1, but many source files are GPL2 so that's
     ;; the effective license.  Note that some files under ccan/ are
-    ;; covered by BSD-3 or public domain, see the individual folders.
+    ;; covered by BSD-3 or public domain, see the individual directories.
     (license license:gpl2)))
 
 (define-public dmraid
