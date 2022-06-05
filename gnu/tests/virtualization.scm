@@ -31,8 +31,8 @@
   #:use-module (gnu services dbus)
   #:use-module (gnu services networking)
   #:use-module (gnu services virtualization)
-  #:use-module (gnu packages virtualization)
   #:use-module (gnu packages ssh)
+  #:use-module (gnu packages virtualization)
   #:use-module (guix gexp)
   #:use-module (guix records)
   #:use-module (guix store)
@@ -244,6 +244,24 @@
                 (get-string-all
                  (open-input-pipe #$(run-command-over-ssh "uname" "-on"))))
              marionette))
+
+          (test-assert "guix-daemon up and running"
+            (let ((drv (marionette-eval
+                        '(begin
+                           (use-modules (ice-9 popen))
+
+                           (get-string-all
+                            (open-input-pipe
+                             #$(run-command-over-ssh "guix" "build" "coreutils"
+                                                     "--no-grafts" "-d"))))
+                        marionette)))
+              ;; We cannot compare the .drv with (raw-derivation-file
+              ;; coreutils) on the host: they may differ due to fixed-output
+              ;; derivations and changes introduced compared to the 'guix'
+              ;; package snapshot.
+              (and (string-suffix? ".drv"
+                                   (pk 'drv (string-trim-right drv)))
+                   drv)))
 
           (test-end))))
 
