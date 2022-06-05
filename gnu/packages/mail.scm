@@ -1474,8 +1474,7 @@ useful for email address completion.")
              (let ((notmuch (assoc-ref inputs "notmuch")))
                (substitute* "notmuch/globals.py"
                  (("libnotmuch\\.so\\.")
-                  (string-append notmuch "/lib/libnotmuch.so.")))
-               #t))))))
+                  (string-append notmuch "/lib/libnotmuch.so.")))))))))
     (home-page (package-home-page notmuch))
     (synopsis "Python bindings of the Notmuch mail indexing library")
     (description
