@@ -128,7 +128,7 @@
                        (cons sigxfsz common)
                        common))
                (("'/bin/sh'")
-                (string-append "'" (assoc-ref inputs "bash") "/bin/sh'")))
+                (string-append "'"  (search-input-file inputs "/bin/sh") "'")))
 
              ;; Fix hardcoded /usr/bin/env references.
              (substitute* '("test/parallel/test-child-process-default-options.js"
@@ -245,7 +245,8 @@
                                   (search-input-file inpts "/bin/python3")
                                   (raise-exception e)))
                           (lambda ()
-                            (search-input-file inpts "/bin/python"))))
+                            (search-input-file inpts "/bin/python"))
+                          #:unwind? #t))
                       "configure"
                       flags))))
          (add-after 'patch-shebangs 'patch-nested-shebangs
