@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017, 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017, 2018, 2020–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Jesse Gibbons <jgibbons2357+guix@gmail.com>
 ;;; Copyright © 2019, 2020, 2021 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
@@ -90,8 +90,11 @@
                          (find-files "." "README.*"))))))))
     (home-page "http://www.daidouji.com/oneko/")
     (synopsis "Cute cat chasing your mouse pointer")
-    (description "Displays a cat or another animated character that chases the
-mouse pointer around the screen while you work.")
+    (description
+     "Oneko displays an animated cat or dog that chases the mouse pointer---now
+an actual mouse or a bone---around the screen while you work.
+
+It was written for the X Window system and does not work well on Wayland.")
     (license license:public-domain))) ; see https://directory.fsf.org/wiki/Oneko
 
 (define-public sl
