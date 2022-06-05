@@ -2267,17 +2267,17 @@ instance of a component on each request.")
 (define-public perl-catalyst-devel
   (package
     (name "perl-catalyst-devel")
-    (version "1.41")
+    (version "1.42")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://cpan/authors/id/H/HA/HAARG/"
                            "Catalyst-Devel-" version ".tar.gz"))
        (sha256
-        (base32 "1r8arq7sw37d0mjyfzkc3pg1a9plgydqbscryc8qpvba4swpljls"))))
+        (base32 "1gcaqivyxwsdq87v9za1ijjibh6llirzqsbpwjbw1f5mravg1iky"))))
     (build-system perl-build-system)
     (native-inputs
-     (list perl-test-fatal))
+     (list perl-file-sharedir-install perl-test-fatal))
     (propagated-inputs
      (list perl-catalyst-action-renderview
            perl-catalyst-plugin-configloader
