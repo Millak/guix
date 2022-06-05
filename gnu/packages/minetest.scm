@@ -167,21 +167,10 @@ in different ways.")
               (sha256
                (base32
                 "12cpaiww148szvnrc8r8cffwvl33smnrl7k29sh401yv0pbqi3j8"))))
-    (build-system trivial-build-system)
-    (native-inputs
-     `(("source" ,source)))
+    (build-system copy-build-system)
     (arguments
-     `(#:modules ((guix build utils))
-       #:builder (begin
-                   (use-modules (guix build utils))
-                   (let ((install-dir (string-append
-                                       %output
-                                       "/share/minetest/games/minetest_game")))
-                     (mkdir-p install-dir)
-                     (copy-recursively
-                      (assoc-ref %build-inputs "source")
-                      install-dir)
-                     #t))))
+     (list #:install-plan
+           #~'(("." "/share/minetest/games/minetest_game"))))
     (synopsis "Main game data for the Minetest game engine")
     (description
      "Game data for the Minetest infinite-world block sandbox game.")
