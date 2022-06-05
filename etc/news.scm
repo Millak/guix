@@ -28,6 +28,7 @@
  (entry (commit "35c1edb20ad07250728d3bdcd0296bd0cedaf6bb")
         (title
          (en "New @command{edit} sub-commands for services")
+         (de "Neue @command{edit}-Unterbefehle für Dienste")
          (fr "Nouvelles commandes @command{edit} pour les services")
          (nl "Nieuwe deelopdracht @command{edit} voor diensten"))
         (body
@@ -42,6 +43,17 @@ guix system edit openssh
 
 Run @command{info \"(guix) Invoking guix system\"} or @command{info \"(guix)
 Invoking guix home\"} for more info.")
+         (de "Mit den neuen Befehlen @command{guix system edit} und
+@command{guix home edit} können Sie Diensttypen für Guix System oder Guix Home
+betrachten und bearbeiten.  Zum Beispiel würden Sie die Definition des
+OpenSSH-Systemdienstes wie folgt öffnen:
+
+@example
+guix system edit openssh
+@end example
+
+Führen Sie @command{info \"(guix.de) Aufruf von guix system\"} oder
+@command{info \"(guix.de) Aufruf von guix home\"} aus, um mehr zu erfahren.")
          (fr "Les nouvelles commandes @command{guix system edit} et
 @command{guix home edit} permettent de visualiser ou d'éditer les types de
 services définis pour Guix System ou Guix Home.  Par exemple, voici comment
