@@ -181,10 +181,14 @@ irssi, but graphical.")
     (native-inputs
      (list pkg-config))
     (home-page "https://irssi.org/")
-    (synopsis "Terminal-based IRC client")
+    (synopsis "Extensible terminal-based IRC client")
     (description
-     "Irssi is a terminal based IRC client for UNIX systems.  It also supports
-SILC and ICB protocols via plugins.")
+     "Irssi is a text terminal-based @acronym{IRC, Internet relay chat} client.
+It is completely themable and extensible through Perl scripts, of which many
+have already been written by the community.
+
+Plug-ins add support for other protocols like @acronym{SILC, Secure Internet Live
+Conferencing} and @acronym{ICB, Internet Citizen's Band}.")
     (license license:gpl2+)))
 
 (define-public weechat
