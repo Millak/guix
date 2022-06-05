@@ -57,8 +57,7 @@
            (for-each delete-file-recursively
                      (cons* "bitmaps/bsd" "bitmaps/sakura" "bitmaps/tomoyo"
                             "bitmasks/bsd" "bitmasks/sakura" "bitmasks/tomoyo"
-                            (find-files "cursors" "(bsd|card|petal).*\\.xbm")))
-           #t))))
+                            (find-files "cursors" "(bsd|card|petal).*\\.xbm")))))))
     (build-system gnu-build-system)
     (native-inputs
      (list imake))
@@ -73,8 +72,7 @@
              (invoke "xmkmf")
              ;; Fix incorrectly generated compiler flags.
              (substitute* "Makefile"
-               (("(CDEBUGFLAGS = ).*" _ front) (string-append front "-O2\n")))
-             #t))
+               (("(CDEBUGFLAGS = ).*" _ front) (string-append front "-O2\n")))))
          (replace 'install
            (lambda* (#:key outputs make-flags #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -89,8 +87,7 @@
                (copy-file "oneko.man" (string-append man6 "/oneko.6"))
                (copy-file "oneko.man.jp" (string-append man6-ja "/oneko.6"))
                (for-each (lambda (file) (install-file file doc))
-                         (find-files "." "README.*")))
-             #t)))))
+                         (find-files "." "README.*"))))))))
     (home-page "http://www.daidouji.com/oneko/")
     (synopsis "Cute cat chasing your mouse pointer")
     (description "Displays a cat or another animated character that chases the
