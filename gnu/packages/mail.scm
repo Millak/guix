@@ -3670,7 +3670,7 @@ operators and scripters.")
 (define-public alpine
   (package
     (name "alpine")
-    (version "2.25")
+    (version "2.26")
     (source
      (origin
        (method git-fetch)
@@ -3683,14 +3683,12 @@ operators and scripters.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0z6dp3cpz1dmbxw41ravsx1bxychafp0ij8gvj96mzz7rm9pdnq3"))
+        (base32 "1padh9kgn9blzjf0016i2f15c615fk17m8vg8kx301jhmc2r973h"))
        (modules '((guix build utils)))
        (snippet
         '(begin
            ;; Remove pre-built binaries scattered across the source repository.
-           (for-each delete-file (find-files "." "\\.(dll|exe)"))))
-       (patches
-        (search-patches "alpine-fix-privacy-policy-crash.patch"))))
+           (for-each delete-file (find-files "." "\\.(dll|exe)"))))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
