@@ -19877,22 +19877,14 @@ design and layout.")
 (define-public python-pkginfo
   (package
     (name "python-pkginfo")
-    (version "1.8.2")
+    (version "1.8.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pkginfo" version))
        (sha256
-        (base32 "1zrbn2gblb1q1rx0jlbd0vc9h1dm1bj0760p40ff5qjhcw5hsbjl"))))
+        (base32 "0z46w559hrl79gf7navgzimj21ma821wka27jh58fvyqilqs8kd8"))))
     (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'patch-tests
-           (lambda _
-             (substitute* "pkginfo/tests/test_installed.py"
-               (("test_ctor_w_package_no_PKG_INFO")
-                "_test_ctor_w_package_no_PKG_INFO")))))))
     (native-inputs
      (list python-wheel))
     (home-page "https://code.launchpad.net/~tseaver/pkginfo/trunk")
