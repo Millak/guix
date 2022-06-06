@@ -2224,13 +2224,13 @@ eliminate flaky failures.")
 (define-public python-xunitparser
   (package
     (name "python-xunitparser")
-    (version "1.3.3")
+    (version "1.3.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "xunitparser" version))
        (sha256
-        (base32 "05amn9yik0mxg89iiprkb6lrmc7rlccgvwajrpyfi6zbp8mjdsgn"))))
+        (base32 "00lapxi770mg7jkw16zy3a91hbdfz4a9h43ryczdsgd3z4cl6vyf"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
