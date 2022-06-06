@@ -31,6 +31,7 @@
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022 Tobias Kortkamp <tobias.kortkamp@gmail.com>
+;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2173,3 +2174,73 @@ Features include:
 @end itemize
 ")
     (license license:gpl3+)))
+
+(define-public f3d
+  ;; There have been many improvements since the last tagged version (1.2.1,
+  ;; released in December 2021), including support for the Alembic file
+  ;; format.
+  (let ((commit "9cc79b65ed750b178f58012dbba091aa24722dab")
+        (revision "0"))
+    (package
+      (name "f3d")
+      (version (git-version "1.2.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/f3d-app/f3d")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "041gqi2wfny2br4j68vhifg0bd18kbl0qsaallkz7yywk47njxfi"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        ;; Many tests require files supplied by git-lfs.
+        ;; Also, some tests segfault (after an exception?) but the tested
+        ;; behavior, i.e., when the program is run manually, does not (for
+        ;; example, TestNonExistentConfigFile and TestInvalidConfigFile).
+        ;; Upstream is aware of occasionally flaky tests (see
+        ;; https://github.com/f3d-app/f3d/issues/92) but the tests run in CI
+        ;; seem to be passing.
+        ;; Anyway, the program runs and is able to open at least STL files
+        ;; without issue.
+        #:tests? #f
+        #:configure-flags
+        #~(list "-DBUILD_TESTING=OFF"
+                "-DF3D_MODULE_ALEMBIC=ON"
+                "-DF3D_MODULE_ASSIMP=ON"
+                "-DF3D_MODULE_OCCT=ON"
+                ;; Prefer Guix's versioned documentation directory to F3D's
+                ;; unversioned one.
+                (string-append "-DCMAKE_INSTALL_DOCDIR=" #$output
+                               "/share/doc/" #$name "-" #$version))))
+      (inputs
+       (list alembic
+             assimp
+             double-conversion
+             eigen
+             expat
+             fontconfig
+             freetype
+             glew
+             hdf5
+             imath
+             jsoncpp
+             libjpeg-turbo
+             libpng
+             libtiff
+             libx11
+             lz4
+             netcdf
+             opencascade-occt
+             vtk
+             zlib))
+      (home-page "https://f3d-app.github.io/f3d/")
+      (synopsis "VTK based 3D viewer")
+      (description "F3D (pronounced @samp{/fɛd/}) is a VTK-based 3D viewer, it
+has simple interaction mechanisms and is fully controllable using arguments on
+the command line.  It supports a range of file formats (including animated
+glTF, STL, STEP, PLY, OBJ, FBX), and provides numerous rendering and texturing
+options.")
+      (license license:bsd-3))))
