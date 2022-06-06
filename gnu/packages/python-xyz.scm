@@ -10348,42 +10348,6 @@ the same line (which can be introduced by the code formatting tool Black), or
 unnecessary plus operators for explicit string literal concatenation.")
     (license license:expat)))
 
-(define-public python-flake8-polyfill
-  (package
-    (name "python-flake8-polyfill")
-    (version "1.0.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "flake8-polyfill" version))
-       (sha256
-        (base32
-         "1nlf1mkqw856vi6782qcglqhaacb23khk9wkcgn55npnjxshhjz4"))
-       (patches (search-patches "python-flake8-polyfill-flake8-4-compat.patch"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             ;; Be compatible with Pytest 4:
-             ;; https://gitlab.com/pycqa/flake8-polyfill/merge_requests/7
-             (substitute* "setup.cfg"
-               (("\\[pytest\\]")
-                "[tool:pytest]"))
-             (when tests?
-               (invoke "py.test" "-v")))))))
-    (propagated-inputs
-     (list python-flake8))
-    (native-inputs
-     (list python-mock python-pep8 python-pycodestyle python-pytest))
-    (home-page "https://github.com/pycqa/flake8-polyfill")
-    (synopsis "Polyfill package for Flake8 plugins")
-    (description
-     "This package that provides some compatibility helpers for Flake8
-plugins that intend to support Flake8 2.x and 3.x simultaneously.")
-    (license license:expat)))
-
 (define-public python-flake8-print
   (package
     (name "python-flake8-print")
