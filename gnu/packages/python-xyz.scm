@@ -187,6 +187,7 @@
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages libidn)
+  #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages man)
@@ -16965,6 +16966,59 @@ as well.")
      @item a number of backing contexts (database, redis, sqlite, a slave device).
      @end itemize")
     (license license:bsd-3)))
+
+(define-public python-exodriver
+  (package
+    (name "python-exodriver")
+    (version "2.6.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/labjack/exodriver")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1ikjz8147p14s814yabdq821y691klnr2yg54zgsymcc97kvwp2q"))))
+    (outputs (list "out"
+                   "doc"))              ;544 KiB of examples
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no test suite
+      #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                           (string-append "PREFIX=" #$output)
+                           "RUN_LDCONFIG=0"
+                           "LINK_SO=1")
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'build
+            (lambda* (#:key make-flags #:allow-other-keys #:rest args)
+              (with-directory-excursion "liblabjackusb"
+                (apply (assoc-ref %standard-phases 'build)
+                       `(,@args #:make-flags ,make-flags)))))
+          (replace 'install
+            (lambda* (#:key make-flags #:allow-other-keys #:rest args)
+              (with-directory-excursion "liblabjackusb"
+                (apply (assoc-ref %standard-phases 'install)
+                       `(,@args #:make-flags ,make-flags)))
+              ;; Install udev rules.
+              (install-file "90-labjack.rules"
+                            (string-append #$output "/lib/udev/rules.d"))
+              ;; Install examples.
+              (let ((doc (string-append #$output:doc "/share/doc/" #$name)))
+                (mkdir-p doc)
+                (copy-recursively "examples"
+                                  (string-append doc "/examples"))))))))
+    (inputs (list libusb))
+    (home-page "https://github.com/labjack/exodriver")
+    (synopsis "USB driver for LabJack data acquisition instruments")
+    (description "This package provides @code{liblabjackusb}, a USB library for low-level
+communication with the U3, U6, UE9, Digit, T4 and T7 LabJack data acquisition
+instruments.  A udev rule is also included to allow unprivileged users to
+communicate with the instruments via USB.")
+    (license license:expat)))           ;see README
 
 (define-public python-kivy-garden
   (package
