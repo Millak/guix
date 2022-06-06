@@ -28263,13 +28263,13 @@ to:
 (define-public nikola
   (package
     (name "nikola")
-    (version "8.1.3")
+    (version "8.2.2")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "Nikola" version))
         (sha256
-          (base32 "1vspzvi4039zgjc93bspqjb384r6c9ksvmidbp8csws2pdbc7sh5"))))
+          (base32 "1h96y4sfypp2fbqxa8xrqch5f7r3srm2ly222k9w2n143h2spx4m"))))
     (build-system python-build-system)
     (propagated-inputs
       (list python-babel
@@ -28305,7 +28305,6 @@ to:
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
-                ;;(add-installed-pythonpath inputs outputs)
                 (invoke "pytest" "tests" "--no-cov"
                         "-k" "not test_compiling_markdown[hilite]")))))))
     (home-page "https://getnikola.com/")
