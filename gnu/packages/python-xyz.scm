@@ -17020,6 +17020,38 @@ instruments.  A udev rule is also included to allow unprivileged users to
 communicate with the instruments via USB.")
     (license license:expat)))           ;see README
 
+(define-public python-labjack
+  (package
+    (name "python-labjack")
+    (version "2.0.4")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "LabJackPython" version))
+              (sha256
+               (base32
+                "013bjqdi05vlbdqprr6kqi8gs4qhqc7rnyp1klw8k6fng77rpdzz"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no test suite
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-liblabjackusb.so
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* (find-files "." "\\.py$")
+                (("ctypes.CDLL\\(\"liblabjackusb.so\"")
+                 (format #f "ctypes.CDLL(~s"
+                         (search-input-file inputs
+                                            "lib/liblabjackusb.so")))))))))
+    ;; exodriver is provided as a regular input, as only its shared object is
+    ;; used, not its Python API.
+    (inputs (list python-exodriver))
+    (home-page "https://labjack.com/support/software/examples/ud/labjackpython")
+    (synopsis "Python library for LabJack U3, U6, UE9 and U12")
+    (description "This Python library allows communicating with the U3, U6,
+UE9 and U12 LabJack data acquisition (DAQ) modules.")
+    (license license:expat)))          ;see setup.py
+
 (define-public python-kivy-garden
   (package
     (name "python-kivy-garden")
