@@ -11069,13 +11069,13 @@ third-party code.")
 (define-public python-msgpack
   (package
     (name "python-msgpack")
-    (version "1.0.3")
+    (version "1.0.4")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "msgpack" version))
               (sha256
                (base32
-                "07m84yisf8m6gr68ip9v6vzxax7kqbn8qxg7ir18clk1jgxwgzai"))))
+                "0pqzy1zclyhd42gfibhkcqymbspy5a6v421g87mh40h3iz0nkn7m"))))
     (build-system python-build-system)
     (arguments
      `(#:modules ((guix build utils)
