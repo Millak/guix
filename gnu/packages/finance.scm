@@ -875,14 +875,12 @@ the Monero GUI client.")
            ;; a built-in implementation supported in python-trezor-agent.
            (lambda _
              (substitute* "setup.py"
-               (("'backports.shutil_which>=3.5.1',") ""))
-             #t))
+               (("'backports.shutil_which>=3.5.1',") ""))))
          (delete 'check)
          (add-after 'install 'check
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             ;; Make installed package available for running the tests.
-             (add-installed-pythonpath inputs outputs)
-             (invoke "py.test"))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-v")))))))
     (propagated-inputs
      (list python-configargparse
            python-daemon
