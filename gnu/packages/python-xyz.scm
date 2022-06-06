@@ -10200,7 +10200,14 @@ cyclomatic complexity of Python source code.")
               (uri (pypi-uri "flake8" version))
               (sha256
                (base32
-                "0sspgh2ph7bb5fmf49mrdhi7n5m421kfkxk1n0vn4akgg20q6lh7"))))
+                "0sspgh2ph7bb5fmf49mrdhi7n5m421kfkxk1n0vn4akgg20q6lh7"))
+              (snippet
+               #~(begin
+                   (use-modules (guix build utils))
+                   (substitute* "setup.cfg"
+                     ;; Remove upper bound on pyflakes version.
+                     (("(pyflakes >=.*), .*" _ pyflakes)
+                      (string-append pyflakes "\n")))))))
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
