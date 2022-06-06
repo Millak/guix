@@ -6485,6 +6485,8 @@ X11 servers, Windows, or macOS.")
                   (guix build emacs-utils))
        #:imported-modules (,@%gnu-build-system-modules
                            (guix build emacs-utils))
+       #:parallel-build? #f ; for reproducible generation of
+                            ; share/uim/installed-modules.scm
        #:configure-flags
        (list "--with-anthy-utf8"
              (string-append "--with-lispdir=" %output "/share/emacs")
