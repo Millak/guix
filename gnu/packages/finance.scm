@@ -1110,7 +1110,7 @@ the KeepKey Hardware Wallet.")
 (define-public trezor-agent
   (package
     (name "trezor-agent")
-    (version "0.11.0-1")
+    (version "0.14.4")
     (source
      (origin
        (method git-fetch)
@@ -1150,6 +1150,11 @@ the KeepKey Hardware Wallet.")
          ;; This package only has a Python script, not a Python module, so the
          ;; sanity-check phase can't work.
          (delete 'sanity-check)
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "setup.py"
+               (("'trezor\\[hidapi]>=0.12.0,<0.13'")
+                "'trezor[hidapi]>=0.13'"))))
          (add-after 'wrap 'fixup-agent-py
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out")))
