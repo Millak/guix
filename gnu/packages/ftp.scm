@@ -103,6 +103,9 @@ reliability in mind.")
               (sha256
                (base32
                 "1389657cwgw5a3kljnqmhvfh4vr2gcr71dwz1mlhf22xq23hc82z"))
+              (patches
+               (search-patches
+                "ncftp-reproducible.patch"))
               (modules '((guix build utils)))
               (snippet
                '(begin
