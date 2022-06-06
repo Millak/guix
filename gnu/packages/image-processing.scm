@@ -358,6 +358,7 @@ many popular formats.")
                            "-DVTK_MODULE_USE_EXTERNAL_VTK_theora=ON"
                            "-DVTK_MODULE_USE_EXTERNAL_VTK_tiff=ON"
                            "-DVTK_MODULE_USE_EXTERNAL_VTK_zlib=ON"
+                           "-DVTK_MODULE_ENABLE_VTK_RenderingExternal=YES" ; For F3D
                            "-DVTK_WRAP_PYTHON=ON"
                            "-DVTK_PYTHON_VERSION:STRING=3"
                            )
