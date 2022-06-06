@@ -28,6 +28,7 @@
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -598,66 +599,66 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
        (sha256
         (base32 "0axpypq9byda61rp3sznrq24b24qxbfwk56j75qp06s1ackg0pcv"))))
     (build-system python-build-system)
-    (inputs
-     `(("libevent" ,libevent)
-       ("libsecp256k1" ,libsecp256k1-bitcoin-cash)
-       ("openssl" ,openssl)
-       ("python-cython" ,python-cython)
-       ("python-dateutil" ,python-dateutil)
-       ("python-dnspython" ,python-dnspython)
-       ("python-ecdsa" ,python-ecdsa)
-       ("python-hidapi" ,python-hidapi)
-       ("python-jsonrpclib-pelix" ,python-jsonrpclib-pelix)
-       ("python-keepkey" ,python-keepkey)
-       ("python-pathvalidate" ,python-pathvalidate)
-       ("python-protobuf" ,python-protobuf)
-       ("python-pyaes" ,python-pyaes)
-       ("python-pyqt" ,python-pyqt)
-       ("python-pysocks" ,python-pysocks)
-       ("python-qdarkstyle" ,python-qdarkstyle)
-       ("python-qrcode" ,python-qrcode)
-       ("python-requests" ,python-requests)
-       ("python-stem" ,python-stem)
-       ("python-trezor" ,python-trezor)
-       ("qtsvg" ,qtsvg)
-       ("zlib" ,zlib)))
     (arguments
-     `(#:tests? #f                      ; no tests
-       #:modules ((guix build python-build-system)
+     (list
+      #:tests? #f                       ; no tests
+      #:modules '((guix build python-build-system)
                   (guix build qt-utils)
                   (guix build utils))
-       #:imported-modules (,@%python-build-system-modules
+      #:imported-modules `(,@%python-build-system-modules
                            (guix build qt-utils))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'create-output-directories
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; setup.py installs to ~/.local/share if this doesn't exist.
-             (mkdir-p (string-append (assoc-ref outputs "out") "/share"))))
-         (add-after 'unpack 'use-libsecp256k1-input
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "electroncash/secp256k1.py"
-               (("library_paths = .* 'libsecp256k1.so.0'.")
-                (string-append "library_paths = ('"
-                               (assoc-ref inputs "libsecp256k1")
-                               "/lib/libsecp256k1.so.0'")))))
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "contrib/requirements/requirements.txt"
-               (("qdarkstyle==2\\.6\\.8")
-                "qdarkstyle"))))
-         (add-after 'install 'wrap-qt
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (wrap-qt-program "electron-cash" #:output out #:inputs inputs))
-             #t)))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'create-output-directories
+            (lambda _
+              ;; setup.py installs to ~/.local/share if this doesn't exist.
+              (mkdir-p (string-append #$output "/share"))))
+          (add-after 'unpack 'use-libsecp256k1-input
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "electroncash/secp256k1.py"
+                (("libsecp256k1.so.0")
+                 (search-input-file inputs "lib/libsecp256k1.so.0")))))
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "contrib/requirements/requirements.txt"
+                (("qdarkstyle==2\\.6\\.8")
+                 "qdarkstyle"))))
+          (add-after 'install 'wrap-qt
+            (lambda* (#:key outputs inputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out")))
+                (wrap-qt-program "electron-cash"
+                                 #:output out #:inputs inputs)))))))
+    (inputs
+     (list libevent
+           libsecp256k1-bitcoin-cash
+           openssl
+           python-cython
+           python-dateutil
+           python-dnspython
+           python-ecdsa
+           python-hidapi
+           python-jsonrpclib-pelix
+           python-keepkey
+           python-pathvalidate
+           python-protobuf
+           python-pyaes
+           python-pyqt
+           python-pysocks
+           python-qdarkstyle
+           python-qrcode
+           python-requests
+           python-stem
+           python-trezor
+           qtsvg
+           zlib))
     (home-page "https://electroncash.org/")
     (synopsis "Bitcoin Cash wallet")
     (description
      "Electroncash is a lightweight Bitcoin Cash client, based on a client-server
 protocol.  It supports Simple Payment Verification (SPV) and deterministic key
 generation from a seed.  Your secret keys are encrypted and are never sent to
-other machines/servers.  Electroncash does not download the Bitcoin Cash blockchain.")
+other machines/servers.  Electroncash does not download the Bitcoin Cash
+blockchain.")
     (license license:expat)))
 
 (define-public monero
