@@ -1397,23 +1397,24 @@ responsible for logging system messages.")))
      # level notice or higher and anything of level err or
      # higher to the console.
      # Don't log private authentication messages!
-     *.alert;auth.notice;authpriv.none       /dev/console
+     *.alert;auth.notice;authpriv.none      -/dev/console
 
      # Log anything (except mail) of level info or higher.
      # Don't log private authentication messages!
-     *.info;mail.none;authpriv.none          /var/log/messages
+     *.info;mail.none;authpriv.none         -/var/log/messages
 
-     # Like /var/log/messages, but also including \"debug\"-level logs.
-     *.debug;mail.none;authpriv.none         /var/log/debug
+     # Log \"debug\"-level entries and nothing else.
+     *.=debug                               -/var/log/debug
 
      # Same, in a different place.
-     *.info;mail.none;authpriv.none          /dev/tty12
+     *.info;mail.none;authpriv.none         -/dev/tty12
 
      # The authpriv file has restricted access.
+     # 'fsync' the file after each line (hence the lack of a leading dash).
      authpriv.*                              /var/log/secure
 
      # Log all the mail messages in one place.
-     mail.*                                  /var/log/maillog
+     mail.*                                 -/var/log/maillog
 "))
 
 (define* (syslog-service #:optional (config (syslog-configuration)))
