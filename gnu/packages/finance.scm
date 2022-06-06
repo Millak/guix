@@ -1001,7 +1001,7 @@ Nano dongle.")
 (define-public python-trezor
   (package
     (name "python-trezor")
-    (version "0.12.4")
+    (version "0.13.0")
     (source
      (origin
        (method git-fetch)
@@ -1010,7 +1010,7 @@ Nano dongle.")
              (commit (string-append "python/v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1k0zk94jnkhr4iyngjfhfvff5mibx265q81v8jhvhd3m4clzgc45"))
+        (base32 "1wy584bxx5p2av4lv1bx9hl1q0b5n7hqz0hnqb9shjriarvl5ckd"))
        (modules
         '((guix build utils)
           (srfi srfi-26)
@@ -1028,11 +1028,18 @@ Nano dongle.")
                                     (string-append "./" file-name)))
                      (scandir "./python/"
                               (negate (cut member <> '("." "..") string=))))
-           (delete-file-recursively "./python")))))
+           (delete-file-recursively "./python")
+           ;; Delete now broken symbolic links.
+           (for-each delete-file
+                     (append (find-files "." "^CHANGELOG.unreleased$")
+                             (find-files "." "^.towncrier.template.md$")))))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-attrs
-           python-click
+           ;; TOOD: Use the latest click version after release 0.13.1 or later
+           ;; is made (see:
+           ;; https://github.com/trezor/trezor-firmware/issues/2199).
+           python-click-7
            python-construct
            python-ecdsa
            python-libusb1
@@ -1043,8 +1050,8 @@ Nano dongle.")
      ;; For tests.
      (list protobuf
            python-black
-           python-protobuf
            python-isort
+           python-protobuf
            python-pyqt
            python-pytest))
     (home-page "https://github.com/trezor/python-trezor")
