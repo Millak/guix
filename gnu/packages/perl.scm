@@ -10020,6 +10020,13 @@ the job on behalf of @code{Term::Size::Any}.")
                            "Term-Size-Perl-" version ".tar.gz"))
        (sha256
         (base32 "17i05y186l977bhp32b24c8rqasmg1la934dizf5sc0vrd36g6mf"))))
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'remove-timestamps
+                    ;; Remove timestamp in comment for reproducible builds
+                    (lambda _
+                      (substitute* "inc/Probe.pm"
+                        ((". created ...scalar localtime..") "")))))))
     (build-system perl-build-system)
     (home-page "https://metacpan.org/release/Term-Size-Perl")
     (synopsis "Perl extension for retrieving terminal size (Perl version)")
