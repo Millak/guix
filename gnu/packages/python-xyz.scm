@@ -15484,20 +15484,33 @@ respectively.")
 (define-public python-rope
   (package
     (name "python-rope")
-    (version "0.19.0")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "rope" version))
        (sha256
         (base32
-         "1nlhkmsfvn2p1msrmwqnypnvr993alzawnpc1605q7rfad3xgrk4"))))
+         "0bkzwkllxxdxd3w70xiy137lqvnlmmaplsc2ya3s23ss4kq8y10k"))))
     (build-system python-build-system)
+    (arguments
+     (list #:phases
+           `(modify-phases %standard-phases
+              (add-after 'unpack 'disable-broken-test
+                (lambda _
+                  (substitute* "ropetest/contrib/autoimporttest.py"
+                    (("def test_search_module")
+                     "def __notest_search_module")
+                    (("def test_search_submodule")
+                     "def __notest_search_submodule")))))))
+    (native-inputs
+     (list python-pytest-timeout
+           python-pytest))
     (home-page "https://github.com/python-rope/rope")
     (synopsis "Refactoring library for Python")
     (description "Rope is a refactoring library for Python.  It facilitates
 the renaming, moving and extracting of attributes, functions, modules, fields
-and parameters in Python 2 source code.  These refactorings can also be applied
+and parameters in Python source code.  These refactorings can also be applied
 to occurrences in strings and comments.")
     (license license:lgpl3+)))
 
