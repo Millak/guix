@@ -6,6 +6,7 @@
 ;;; Copyright © 2017, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2022 Josselin Poiret <dev@jpoiret.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -31,8 +32,10 @@
   #:use-module (guix store)
   #:use-module (guix monads)
   #:use-module (guix modules)
-  #:use-module ((guix packages) #:select (package-version))
+  #:use-module ((guix packages) #:select (package-version supported-package?))
+  #:use-module (guix platform)
   #:use-module ((guix store) #:select (%store-prefix))
+  #:use-module (guix utils)
   #:use-module (gnu installer)
   #:use-module (gnu system locale)
   #:use-module (gnu services avahi)
@@ -283,11 +286,7 @@ templates under @file{/etc/configuration}.")))
          (provision '(maybe-uvesafb))
          (requirement '(file-systems))
          (start #~(lambda ()
-                    ;; uvesafb is only supported on x86 and x86_64.
-                    (or (not (and (string-suffix? "linux-gnu" %host-type)
-                                  (or (string-prefix? "x86_64" %host-type)
-                                      (string-prefix? "i686" %host-type))))
-                        (file-exists? "/dev/fb0")
+                    (or (file-exists? "/dev/fb0")
                         (invoke #+(file-append kmod "/bin/modprobe")
                                 "uvesafb"
                                 (string-append "v86d=" #$v86d "/sbin/v86d")
@@ -305,7 +304,10 @@ templates under @file{/etc/configuration}.")))
     "Load the @code{uvesafb} kernel module with the right options.")
    (default-value #t)))
 
-(define %installation-services
+(define* (%installation-services #:key (system (or (and=>
+                                                    (%current-target-system)
+                                                    platform-target->system)
+                                                   (%current-system))))
   ;; List of services of the installation system.
   (let ((motd (plain-file "motd" "
 \x1b[1;37mWelcome to the installation of GNU Guix!\x1b[0m
@@ -322,119 +324,125 @@ Access documentation at any time by pressing Alt-F2.\x1b[0m
     (define bare-bones-os
       (load "examples/bare-bones.tmpl"))
 
-    (list (service virtual-terminal-service-type)
+    (append
+     ;; Generic services
+     (list (service virtual-terminal-service-type)
 
-          (service kmscon-service-type
-                   (kmscon-configuration
-                    (virtual-terminal "tty1")
-                    (login-program (installer-program))))
+           (service kmscon-service-type
+                    (kmscon-configuration
+                     (virtual-terminal "tty1")
+                     (login-program (installer-program))))
 
-          (login-service (login-configuration
-                          (motd motd)))
+           (login-service (login-configuration
+                           (motd motd)))
 
-          ;; Documentation.  The manual is in UTF-8, but
-          ;; 'console-font-service' sets up Unicode support and loads a font
-          ;; with all the useful glyphs like em dash and quotation marks.
-          (service documentation-service-type "tty2")
+           ;; Documentation.  The manual is in UTF-8, but
+           ;; 'console-font-service' sets up Unicode support and loads a font
+           ;; with all the useful glyphs like em dash and quotation marks.
+           (service documentation-service-type "tty2")
 
-          ;; Documentation add-on.
-          %configuration-template-service
+           ;; Documentation add-on.
+           %configuration-template-service
 
-          ;; A bunch of 'root' ttys.
-          (normal-tty "tty3")
-          (normal-tty "tty4")
-          (normal-tty "tty5")
-          (normal-tty "tty6")
+           ;; A bunch of 'root' ttys.
+           (normal-tty "tty3")
+           (normal-tty "tty4")
+           (normal-tty "tty5")
+           (normal-tty "tty6")
 
-          ;; The usual services.
-          (syslog-service)
+           ;; The usual services.
+           (syslog-service)
 
-          ;; Use the Avahi daemon to discover substitute servers on the local
-          ;; network.  It can be faster than fetching from remote servers.
-          (service avahi-service-type)
+           ;; Use the Avahi daemon to discover substitute servers on the local
+           ;; network.  It can be faster than fetching from remote servers.
+           (service avahi-service-type)
 
-          ;; The build daemon.  Register the default substitute server key(s)
-          ;; as trusted to allow the installation process to use substitutes by
-          ;; default.
-          (service guix-service-type
-                   (guix-configuration (authorize-key? #t)))
+           ;; The build daemon.  Register the default substitute server key(s)
+           ;; as trusted to allow the installation process to use substitutes by
+           ;; default.
+           (service guix-service-type
+                    (guix-configuration (authorize-key? #t)))
 
-          ;; Start udev so that useful device nodes are available.
-          ;; Use device-mapper rules for cryptsetup & co; enable the CRDA for
-          ;; regulations-compliant WiFi access.
-          (udev-service #:rules (list lvm2 crda))
+           ;; Start udev so that useful device nodes are available.
+           ;; Use device-mapper rules for cryptsetup & co; enable the CRDA for
+           ;; regulations-compliant WiFi access.
+           (udev-service #:rules (list lvm2 crda))
 
-          ;; Add the 'cow-store' service, which users have to start manually
-          ;; since it takes the installation directory as an argument.
-          (cow-store-service)
+           ;; Add the 'cow-store' service, which users have to start manually
+           ;; since it takes the installation directory as an argument.
+           (cow-store-service)
 
-          ;; Install Unicode support and a suitable font.
-          (service console-font-service-type
-                   (map (match-lambda
-                          ("tty2"
-                           ;; Use a font that contains characters such as
-                           ;; curly quotes as found in the manual.
-                           '("tty2" . "LatGrkCyr-8x16"))
-                          (tty
-                           ;; Use a font that doesn't have more than 256
-                           ;; glyphs so that we can use colors with varying
-                           ;; brightness levels (see note in setfont(8)).
-                           `(,tty . "lat9u-16")))
-                        '("tty1" "tty2" "tty3" "tty4" "tty5" "tty6")))
+           ;; Install Unicode support and a suitable font.
+           (service console-font-service-type
+                    (map (match-lambda
+                           ("tty2"
+                            ;; Use a font that contains characters such as
+                            ;; curly quotes as found in the manual.
+                            '("tty2" . "LatGrkCyr-8x16"))
+                           (tty
+                            ;; Use a font that doesn't have more than 256
+                            ;; glyphs so that we can use colors with varying
+                            ;; brightness levels (see note in setfont(8)).
+                            `(,tty . "lat9u-16")))
+                         '("tty1" "tty2" "tty3" "tty4" "tty5" "tty6")))
 
-          ;; To facilitate copy/paste.
-          (service gpm-service-type)
+           ;; To facilitate copy/paste.
+           (service gpm-service-type)
 
-          ;; Add an SSH server to facilitate remote installs.
-          (service openssh-service-type
-                   (openssh-configuration
-                    (port-number 22)
-                    (permit-root-login #t)
-                    ;; The root account is passwordless, so make sure
-                    ;; a password is set before allowing logins.
-                    (allow-empty-passwords? #f)
-                    (password-authentication? #t)
+           ;; Add an SSH server to facilitate remote installs.
+           (service openssh-service-type
+                    (openssh-configuration
+                     (port-number 22)
+                     (permit-root-login #t)
+                     ;; The root account is passwordless, so make sure
+                     ;; a password is set before allowing logins.
+                     (allow-empty-passwords? #f)
+                     (password-authentication? #t)
 
-                    ;; Don't start it upfront.
-                    (%auto-start? #f)))
+                     ;; Don't start it upfront.
+                     (%auto-start? #f)))
 
-          ;; Since this is running on a USB stick with a overlayfs as the root
-          ;; file system, use an appropriate cache configuration.
-          (nscd-service (nscd-configuration
-                         (caches %nscd-minimal-caches)))
+           ;; Since this is running on a USB stick with a overlayfs as the root
+           ;; file system, use an appropriate cache configuration.
+           (nscd-service (nscd-configuration
+                          (caches %nscd-minimal-caches)))
 
-          ;; Having /bin/sh is a good idea.  In particular it allows Tramp
-          ;; connections to this system to work.
-          (service special-files-service-type
-                   `(("/bin/sh" ,(file-append bash "/bin/sh"))))
+           ;; Having /bin/sh is a good idea.  In particular it allows Tramp
+           ;; connections to this system to work.
+           (service special-files-service-type
+                    `(("/bin/sh" ,(file-append bash "/bin/sh"))))
 
-          ;; Loopback device, needed by OpenSSH notably.
-          (service static-networking-service-type
-                   (list %loopback-static-networking))
+           ;; Loopback device, needed by OpenSSH notably.
+           (service static-networking-service-type
+                    (list %loopback-static-networking))
 
-          (service wpa-supplicant-service-type)
-          (dbus-service)
-          (service connman-service-type
-                   (connman-configuration
-                    (disable-vpn? #t)))
+           (service wpa-supplicant-service-type)
+           (dbus-service)
+           (service connman-service-type
+                    (connman-configuration
+                     (disable-vpn? #t)))
 
-          ;; Keep a reference to BARE-BONES-OS to make sure it can be
-          ;; installed without downloading/building anything.  Also keep the
-          ;; things needed by 'profile-derivation' to minimize the amount of
-          ;; download.
-          (service gc-root-service-type
-                   (append
-                    (list bare-bones-os
-                          glibc-utf8-locales
-                          texinfo
-                          guile-3.0)
-                    %default-locale-libcs))
+           ;; Keep a reference to BARE-BONES-OS to make sure it can be
+           ;; installed without downloading/building anything.  Also keep the
+           ;; things needed by 'profile-derivation' to minimize the amount of
+           ;; download.
+           (service gc-root-service-type
+                    (append
+                     (list bare-bones-os
+                           glibc-utf8-locales
+                           texinfo
+                           guile-3.0)
+                     %default-locale-libcs)))
 
-          ;; Machines without Kernel Mode Setting (those with many old and
-          ;; current AMD GPUs, SiS GPUs, ...) need uvesafb to show the GUI
-          ;; installer.  Some may also need a kernel parameter like nomodeset
-          ;; or vga=793, but we leave that for the user to specify in GRUB.
-          (service uvesafb-service-type))))
+     ;; Specific system services
+
+     ;; Machines without Kernel Mode Setting (those with many old and
+     ;; current AMD GPUs, SiS GPUs, ...) need uvesafb to show the GUI
+     ;; installer.  Some may also need a kernel parameter like nomodeset
+     ;; or vga=793, but we leave that for the user to specify in GRUB.
+     `(,@(if (supported-package? v86d system)
+             (list (service uvesafb-service-type))
+             '())))))
 
 (define %issue
   ;; Greeting.
@@ -498,7 +506,7 @@ Access documentation at any time by pressing Alt-F2.\x1b[0m
                   (comment "Guest of GNU"))))
 
     (issue %issue)
-    (services %installation-services)
+    (services (%installation-services))
 
     ;; We don't need setuid programs, except for 'passwd', which can be handy
     ;; if one is to allow remote SSH login to the machine being installed.
