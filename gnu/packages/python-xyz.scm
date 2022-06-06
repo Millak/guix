@@ -10219,27 +10219,21 @@ cyclomatic complexity of Python source code.")
 (define-public python-flake8
   (package
     (name "python-flake8")
-    (version "3.9.2")
+    (version "4.0.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "flake8" version))
               (sha256
                (base32
-                "0sspgh2ph7bb5fmf49mrdhi7n5m421kfkxk1n0vn4akgg20q6lh7"))
-              (snippet
-               #~(begin
-                   (use-modules (guix build utils))
-                   (substitute* "setup.cfg"
-                     ;; Remove upper bound on pyflakes version.
-                     (("(pyflakes >=.*), .*" _ pyflakes)
-                      (string-append pyflakes "\n")))))))
+                "03c7mnk34wfz7a0m5zq0273y94awz69fy5iww8alh4a4v96h6vl0"))))
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
                   (replace 'check
-                    (lambda* (#:key inputs outputs #:allow-other-keys)
-                      (add-installed-pythonpath inputs outputs)
-                      (invoke "pytest" "-v"))))))
+                    (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+                      (when tests?
+                        (add-installed-pythonpath inputs outputs)
+                        (invoke "pytest" "-v")))))))
     (propagated-inputs (list python-pycodestyle python-entrypoints
                              python-pyflakes python-mccabe))
     (native-inputs (list python-mock python-pytest))
