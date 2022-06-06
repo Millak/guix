@@ -1040,6 +1040,7 @@ Nano dongle.")
            python-click-7
            python-construct
            python-ecdsa
+           python-hidapi
            python-libusb1
            python-mnemonic
            python-requests
