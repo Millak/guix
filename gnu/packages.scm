@@ -40,11 +40,11 @@
   #:use-module (ice-9 binary-ports)
   #:autoload   (system base compile) (compile)
   #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
   #:use-module (srfi srfi-39)
+  #:use-module (srfi srfi-71)
   #:export (search-patch
             search-patches
             search-auxiliary-file
@@ -143,13 +143,10 @@ flags."
   ;; Search path for package modules.  Each item must be either a directory
   ;; name or a pair whose car is a directory and whose cdr is a sub-directory
   ;; to narrow the search.
-  (let*-values (((not-colon)
-                 (char-set-complement (char-set #\:)))
-                ((environment)
-                 (string-tokenize (or (getenv "GUIX_PACKAGE_PATH") "")
-                                  not-colon))
-                ((channels-scm channels-go)
-                 (package-path-entries)))
+  (let* ((not-colon   (char-set-complement (char-set #\:)))
+         (environment (string-tokenize (or (getenv "GUIX_PACKAGE_PATH") "")
+                                       not-colon))
+         (channels-scm channels-go (package-path-entries)))
     ;; Automatically add channels and items from $GUIX_PACKAGE_PATH to Guile's
     ;; search path.  For historical reasons, $GUIX_PACKAGE_PATH goes to the
     ;; front; channels go to the back so that they don't override Guix' own
@@ -502,13 +499,13 @@ return its return value."
   "Return a package matching SPEC.  SPEC may be a package name, or a package
 name followed by an at-sign and a version number.  If the version number is not
 present, return the preferred newest version."
-  (let-values (((name version) (package-name->name+version spec)))
+  (let ((name version (package-name->name+version spec)))
     (%find-package spec name version)))
 
 (define (specification->location spec)
   "Return the location of the highest-numbered package matching SPEC, a
 specification such as \"guile@2\" or \"emacs\"."
-  (let-values (((name version) (package-name->name+version spec)))
+  (let ((name version (package-name->name+version spec)))
     (match (find-package-locations name version)
       (()
        (if version
@@ -543,8 +540,8 @@ version; if SPEC does not specify an output, return OUTPUT.
 
 When OUTPUT is false and SPEC does not specify any output, return #f as the
 output."
-  (let-values (((name version sub-drv)
-                (package-specification->name+version+output spec output)))
+  (let ((name version sub-drv
+              (package-specification->name+version+output spec output)))
     (match (%find-package spec name version)
       (#f
        (values #f #f))
