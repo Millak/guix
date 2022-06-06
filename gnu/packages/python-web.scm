@@ -5869,8 +5869,10 @@ based on filters.")
            (lambda _
              (invoke "pytest" "--benchmark-skip" "-k"
                      ;; Those tests need internet access
-                     "not test_check and not test_valid_value_check \
-and not test_override_app_level"))))))
+                     (string-join
+                      '("not test_check and not test_valid_value_check \
+and not test_override_app_level"
+                        "not test_redirect") " and ")))))))
     (home-page "https://github.com/python-restx/flask-restx")
     (synopsis
      "Framework for fast, easy and documented API development with Flask")
