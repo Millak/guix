@@ -1345,6 +1345,13 @@ pictures, sounds, or video.")
                                   "src/loader/CMakeLists.txt")
                      (("\\$\\{PG_PKGLIBDIR\\}")
                       (string-append #$output "/lib")))))
+               (add-after 'unpack 'remove-kernel-version
+                 ;; Do not embed the running kernel version for reproducible
+                 ;; builds
+                 (lambda _
+                   (substitute* "src/config.h.in"
+                     (("BUILD_OS_VERSION ..CMAKE_SYSTEM_VERSION.")
+                      "BUILD_OS_VERSION \""))))
                ;; Run the tests after install to make it easier to create the
                ;; required PostgreSQL+TimescaleDB filesystem union.
                (delete 'check)
