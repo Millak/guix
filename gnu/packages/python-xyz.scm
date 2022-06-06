@@ -19033,14 +19033,14 @@ while only declaring the test-specific fields.")
 (define-public python-radon
   (package
     (name "python-radon")
-    (version "4.1.0")
+    (version "5.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "radon" version))
        (sha256
         (base32
-         "0vfxxzbnz5lxfvp0yxp35g6c8qqnnbhi4dm7shkm1d3d4192q22n"))))
+         "1vmf56zsf3paa1jadjcjghiv2kxwiismyayq42ggnqpqwm98f7fb"))))
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -19054,10 +19054,8 @@ while only declaring the test-specific fields.")
                   (replace 'check
                     (lambda _
                       (invoke "python" "radon/tests/run.py"))))))
-    (propagated-inputs
-     (list python-colorama python-flake8-polyfill python-mando))
-    (native-inputs
-     (list python-pytest python-pytest-mock))
+    (propagated-inputs (list python-colorama python-mando))
+    (native-inputs (list python-pytest python-pytest-mock))
     (home-page "https://radon.readthedocs.org/")
     (synopsis "Code Metrics in Python")
     (description "Radon is a Python tool which computes various code metrics.
