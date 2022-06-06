@@ -3145,6 +3145,11 @@ data and settings.")
      `(#:tests? #f                      ; there are no tests
        #:phases
        (modify-phases %standard-phases
+         (add-before 'build 'set-force-source-date
+           ;; for reproducible dates, texlive needs this to respect respect
+           ;; SOURCE_DATE_EPOCH
+           (lambda _
+             (setenv "FORCE_SOURCE_DATE" "1")))
          (add-after 'unpack 'fix-latex-errors
            (lambda _
              (with-fluids ((%default-port-encoding #f))
