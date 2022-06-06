@@ -10229,13 +10229,15 @@ cyclomatic complexity of Python source code.")
     (arguments
      `(#:phases (modify-phases %standard-phases
                   (replace 'check
-                    (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+                    (lambda* (#:key tests? #:allow-other-keys)
                       (when tests?
-                        (add-installed-pythonpath inputs outputs)
                         (invoke "pytest" "-v")))))))
-    (propagated-inputs (list python-pycodestyle python-entrypoints
-                             python-pyflakes python-mccabe))
-    (native-inputs (list python-mock python-pytest))
+    (propagated-inputs
+     (list python-entrypoints
+           python-mccabe
+           python-pycodestyle
+           python-pyflakes))
+    (native-inputs (list python-pytest))
     (home-page "https://gitlab.com/pycqa/flake8")
     (synopsis "The modular source code checker: pep8, pyflakes and co")
     (description
