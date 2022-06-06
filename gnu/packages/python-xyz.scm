@@ -19746,41 +19746,6 @@ complete rewrite in Cython to attempt to increase the performance over the
 pure Python module.")
    (license license:bsd-3)))
 
-(define-public python-xenon
-  (package
-    (name "python-xenon")
-    (version "0.7.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "xenon" version))
-       (sha256
-        (base32
-         "0nv207ql2wmh9q62503np056c4vf1c1hlsi5cvv5p5kx574k6r2y"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-pyyaml python-radon python-requests python-flake8
-           python-tox))
-    (arguments
-     `(#:tests? #f                      ;test suite not shipped with the PyPI archive
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'patch-test-requirements
-           (lambda _
-             ;; Remove httpretty dependency for tests.
-             (substitute* "setup.py"
-               (("httpretty") ""))
-             #t)))))
-    (home-page "https://xenon.readthedocs.org/")
-    (synopsis "Monitor code metrics for Python on your CI server")
-    (description
-     "Xenon is a monitoring tool based on Radon.  It monitors code complexity.
-Ideally, @code{xenon} is run every time code is committed.  Through command
-line options, various thresholds can be set for the complexity of code.  It
-will fail (i.e.  it will exit with a non-zero exit code) when any of these
-requirements is not met.")
-    (license license:expat)))
-
 (define-public python-pysocks
   (package
     (name "python-pysocks")

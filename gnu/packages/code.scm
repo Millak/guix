@@ -11,7 +11,7 @@
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2014 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2019 Hartmut Goebel <h.goebel@goebel-consult.de>
-;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2021 lu hui <luhuins@163.com>
@@ -67,6 +67,7 @@
   #:use-module (gnu packages perl-compression)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages serialization)
@@ -1045,3 +1046,30 @@ also be used for C++ code.
 
 Using cscope, you can easily search for where symbols are used and defined.")
     (license license:bsd-3)))
+
+(define-public xenon
+  (package
+    (name "xenon")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "xenon" version))
+       (sha256
+        (base32
+         "1f4gynjzfckm3rjfywwgz1c7icfx3zjqirf16aj73xv0c9ncpffj"))))
+    (build-system python-build-system)
+    (arguments (list #:tests? #f)) ;test suite not shipped with the PyPI archive
+    (inputs (list python-pyyaml python-radon python-requests))
+    (home-page "https://xenon.readthedocs.org/")
+    (synopsis "Monitor code metrics for Python on your CI server")
+    (description
+     "Xenon is a monitoring tool based on Radon.  It monitors code complexity.
+Ideally, @code{xenon} is run every time code is committed.  Through command
+line options, various thresholds can be set for the complexity of code.  It
+will fail (i.e.  it will exit with a non-zero exit code) when any of these
+requirements is not met.")
+    (license license:expat)))
+
+(define-public python-xenon
+  (deprecated-package "python-xenon" xenon))
