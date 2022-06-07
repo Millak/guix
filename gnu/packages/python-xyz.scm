@@ -10359,7 +10359,8 @@ unnecessary plus operators for explicit string literal concatenation.")
        (uri (pypi-uri "flake8-polyfill" version))
        (sha256
         (base32
-         "1nlf1mkqw856vi6782qcglqhaacb23khk9wkcgn55npnjxshhjz4"))))
+         "1nlf1mkqw856vi6782qcglqhaacb23khk9wkcgn55npnjxshhjz4"))
+       (patches (search-patches "python-flake8-polyfill-flake8-4-compat.patch"))))
     (build-system python-build-system)
     (arguments
      '(#:phases

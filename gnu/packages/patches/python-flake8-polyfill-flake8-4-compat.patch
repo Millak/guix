@@ -1,0 +1,32 @@
+https://github.com/PyCQA/flake8-polyfill/commit/3cf414350e82ceb835ca2edbd5d5967d33e9ff35.patch
+
+
+From 3cf414350e82ceb835ca2edbd5d5967d33e9ff35 Mon Sep 17 00:00:00 2001
+From: Ian Stapleton Cordasco <graffatcolmingov@gmail.com>
+Date: Mon, 1 Nov 2021 19:18:04 -0500
+Subject: [PATCH] Skip unnecessary tests on Flake8 4.x+
+
+---
+ tests/test_stdin.py | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/tests/test_stdin.py b/tests/test_stdin.py
+index 4350967..212b309 100644
+--- a/tests/test_stdin.py
++++ b/tests/test_stdin.py
+@@ -1,4 +1,5 @@
+ """Tests for polyfill's stdin monkey patching."""
++import flake8
+ import pep8
+ import pycodestyle
+ import pytest
+@@ -6,6 +7,9 @@
+ from flake8_polyfill import stdin
+ from flake8_polyfill import version
+ 
++if (4, 0, 0) <= flake8.__version_info__:
++    pytestmark = pytest.mark.skip
++
+ 
+ def test_modules_dict():
+     """Verify that it works the way we expect."""
