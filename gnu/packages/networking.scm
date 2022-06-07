@@ -3278,7 +3278,7 @@ Ethernet and TAP interfaces is supported.  Packet capture is also supported.")
 (define-public hcxtools
   (package
     (name "hcxtools")
-    (version "5.2.0")
+    (version "6.2.7")
     (source
      (origin
        (method git-fetch)
@@ -3286,7 +3286,7 @@ Ethernet and TAP interfaces is supported.  Packet capture is also supported.")
              (url "https://github.com/ZerBea/hcxtools")
              (commit version)))
        (sha256
-        (base32 "0k2qlq9hz5zc21nyc6yrnfqzga7hydn5mm0x3rpl2fhkwl81lxcn"))
+        (base32 "0460dxbc04w60l3g06rk007yyb6qprgyii59y2zdki0vy7q63m8b"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config))
