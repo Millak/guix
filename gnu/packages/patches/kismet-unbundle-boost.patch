@@ -1,0 +1,104 @@
+From 170ed96fe53531f93cdbca184faeda4bdf457169 Mon Sep 17 00:00:00 2001
+From: Petr Hodina <phodina@protonmail.com>
+Date: Tue, 7 Jun 2022 11:34:29 +0200
+Subject: [PATCH] Unbundle boost.
+
+
+diff --git a/globalregistry.h b/globalregistry.h
+index 1974f54..3d97364 100644
+--- a/globalregistry.h
++++ b/globalregistry.h
+@@ -34,7 +34,7 @@
+ #include "util.h"
+ #include "uuid.h"
+ 
+-#include "boost/asio.hpp"
++#include <boost/asio.hpp>
+ 
+ class global_registry;
+ 
+diff --git a/gpsgpsd_v3.h b/gpsgpsd_v3.h
+index 77acb14..8cb3cd4 100644
+--- a/gpsgpsd_v3.h
++++ b/gpsgpsd_v3.h
+@@ -25,7 +25,7 @@
+ #include "kis_gps.h"
+ #include "timetracker.h"
+ 
+-#include "boost/asio.hpp"
++#include <boost/asio.hpp>
+ 
+ using boost::asio::ip::tcp;
+ 
+diff --git a/gpsnmea_v2.h b/gpsnmea_v2.h
+index d761fd3..7518b94 100644
+--- a/gpsnmea_v2.h
++++ b/gpsnmea_v2.h
+@@ -28,7 +28,7 @@
+ #define ASIO_HAS_STD_CHRONO
+ #define ASIO_HAS_MOVE
+ 
+-#include "boost/asio.hpp"
++#include <boost/asio.hpp>
+ 
+ // Generic NMEA parser for GPS
+ 
+diff --git a/gpsserial_v3.h b/gpsserial_v3.h
+index c9f633f..2fa9acb 100644
+--- a/gpsserial_v3.h
++++ b/gpsserial_v3.h
+@@ -29,7 +29,7 @@
+ #define ASIO_HAS_STD_CHRONO
+ #define ASIO_HAS_MOVE
+ 
+-#include "boost/asio.hpp"
++#include <boost/asio.hpp>
+ 
+ // NMEA serial-attached GPS
+ // Implemented using ASIO serial
+diff --git a/gpstcp_v2.h b/gpstcp_v2.h
+index 75ec2e9..ab46216 100644
+--- a/gpstcp_v2.h
++++ b/gpstcp_v2.h
+@@ -29,7 +29,7 @@
+ #define ASIO_HAS_STD_CHRONO
+ #define ASIO_HAS_MOVE
+ 
+-#include "boost/asio.hpp"
++#include <boost/asio.hpp>
+ 
+ using boost::asio::ip::tcp;
+ 
+diff --git a/kis_external.h b/kis_external.h
+index 217f18a..af397b5 100644
+--- a/kis_external.h
++++ b/kis_external.h
+@@ -42,7 +42,7 @@
+ #include "kis_external_packet.h"
+ #include "kis_net_beast_httpd.h"
+ 
+-#include "boost/asio.hpp"
++#include <boost/asio.hpp>
+ using boost::asio::ip::tcp;
+ 
+ #include <google/protobuf/message_lite.h>
+diff --git a/kis_net_beast_httpd.h b/kis_net_beast_httpd.h
+index 355996c..989745e 100644
+--- a/kis_net_beast_httpd.h
++++ b/kis_net_beast_httpd.h
+@@ -28,9 +28,9 @@
+ #include <thread>
+ #include <unordered_map>
+ 
+-#include "boost/asio.hpp"
+-#include "boost/beast.hpp"
+-#include "boost/optional.hpp"
++#include <boost/asio.hpp>
++#include <boost/beast.hpp>
++#include <boost/optional.hpp>
+ 
+ #include "entrytracker.h"
+ #include "future_chainbuf.h"
+-- 
+2.35.1
+

@@ -49,6 +49,7 @@
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Simon South <simon@simonsouth.net>
 ;;; Copyright © 2022 Pierre Langlois <pierre.langlois@gmx.com>
+;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -114,6 +115,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libidn)
+  #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages kerberos)
@@ -129,6 +131,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages polkit)
   #:use-module (gnu packages pretty-print)
+  #:use-module (gnu packages protobuf)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-crypto)
@@ -546,6 +549,54 @@ It also includes some SCTP-related helper utilities.")
     (description "@code{pysctp} implements the SCTP socket API.  You need a
 SCTP-aware kernel (most are).")
     (license license:lgpl2.1+)))
+
+(define-public kismet
+  (package
+    (name "kismet")
+    (version "2022-02")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://www.kismetwireless.net/git/kismet.git")
+                    (commit (string-append "kismet-" version "-R1"))))
+              (file-name (git-file-name name version))
+              (patches (search-patches "kismet-unbundle-boost.patch"))
+              (modules '((guix build utils)))
+              (snippet '(begin
+                          ;; Drop bundled libraries.
+                          (delete-file-recursively "boost")))
+              (sha256
+               (base32
+                "01q86hrgpai433sc65dlnqy91qd26w5dwyp37adszqxfb6d2an1r"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f ;no test suite
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-install
+                 (lambda* _
+                   (substitute* "Makefile.in"
+                     (("-o \\$\\(INSTUSR\\) -g \\$\\(SUIDGROUP\\)") "")
+                     (("-o \\$\\(INSTUSR\\) -g \\$\\(INSTGRP\\)") "")))))))
+    (home-page "https://www.kismetwireless.net/")
+    (native-inputs (list perl pkg-config python python-2))
+    (inputs (list boost
+                  libusb
+                  libpcap
+                  libwebsockets
+                  openssl
+                  protobuf
+                  protobuf-c
+                  sqlite
+                  zlib))
+    (synopsis "Wireless network and device detector")
+    (description
+     "This package provides a wireless network and device detector, sniffer,
+wardriving tool, and WIDS (wireless intrusion detection) framework.  Kismet
+works with Wi-Fi interfaces, Bluetooth interfaces, some SDR
+(software defined radio) hardware like the RTLSDR, and other specialized
+capture hardware")
+    (license license:gpl2+)))
 
 (define-public knockd
   (package
