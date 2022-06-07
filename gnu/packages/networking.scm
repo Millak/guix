@@ -3289,16 +3289,19 @@ Ethernet and TAP interfaces is supported.  Packet capture is also supported.")
         (base32 "0k2qlq9hz5zc21nyc6yrnfqzga7hydn5mm0x3rpl2fhkwl81lxcn"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
-    (inputs
-     (list curl libpcap openssl zlib))
+    (native-inputs (list pkg-config))
+    (inputs (list curl libpcap openssl zlib))
     (arguments
-     `(#:make-flags
-       (list ,(string-append "CC=" (cc-for-target))
-             (string-append "INSTALLDIR=" (assoc-ref %outputs "out") "/bin"))
-       #:tests? #f                      ; no test suite
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))
+     (list #:make-flags
+           #~(list (string-append "CC="
+                                  #$(cc-for-target)) "LDFLAGS+=-lcrypto"
+                   "LDFLAGS+=-lcurl" "LDFLAGS+=-lz"
+                   (string-append "PREFIX="
+                                  #$output))
+           #:tests? #f                            ;no test suite
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))))
     (home-page "https://github.com/ZerBea/hcxtools")
     (synopsis "Capture wlan traffic to hashcat and John the Ripper")
     (description
