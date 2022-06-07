@@ -10378,7 +10378,7 @@ unnecessary plus operators for explicit string literal concatenation.")
      (list python-flake8))
     (native-inputs
      (list python-mock python-pep8 python-pycodestyle python-pytest))
-    (home-page "https://gitlab.com/pycqa/flake8-polyfill")
+    (home-page "https://github.com/pycqa/flake8-polyfill")
     (synopsis "Polyfill package for Flake8 plugins")
     (description
      "This package that provides some compatibility helpers for Flake8
