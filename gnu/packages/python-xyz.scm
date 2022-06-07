@@ -10366,13 +10366,14 @@ unnecessary plus operators for explicit string literal concatenation.")
      '(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda _
+           (lambda* (#:key tests? #:allow-other-keys)
              ;; Be compatible with Pytest 4:
              ;; https://gitlab.com/pycqa/flake8-polyfill/merge_requests/7
              (substitute* "setup.cfg"
                (("\\[pytest\\]")
                 "[tool:pytest]"))
-             (invoke "py.test" "-v"))))))
+             (when tests?
+               (invoke "py.test" "-v")))))))
     (propagated-inputs
      (list python-flake8))
     (native-inputs
