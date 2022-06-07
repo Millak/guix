@@ -112,6 +112,7 @@
 ;;; Copyright © 2022 Dominic Martinez <dom@dominicm.dev>
 ;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
 ;;; Copyright © 2022 Luis Felipe López Acevedo <luis.felipe.la@protonmail.com>
+;;; Copyright © 2022 Thomas Albers Raviola <thomas@thomaslabs.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -15803,6 +15804,30 @@ of commands is displayed in a handy popup.")
      "This Emacs package automatically and unobtrusively trims whitespace
 characters from end of lines.")
     (license license:gpl3+)))
+
+(define-public emacs-opencl-mode
+  ;; Upstream never makes any formal releases, there is only v1.0.
+  ;; Use the latest commit instead.
+  (let ((commit "15091eff92c33ee0d1ece40eb99299ef79fee92d")
+        (revision "1"))
+    (package
+      (name "emacs-opencl-mode")
+      (version (git-version "1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/salmanebah/opencl-mode")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32 "1zn6rr48w0ai0sn51zzyp546va6flfgf9lm12vfrdb6kkiiiq403"))))
+      (build-system emacs-build-system)
+      (synopsis "Emacs major mode for editing OpenCL kernels")
+      (description "This Emacs package provides the @code{opencl-mode} major
+mode for editing OpenCL kernels.  It supports syntax highlighting and online
+access to the OpenCL documentation through the @code{opencl-lookup} function.")
+      (home-page "https://github.com/salmanebah/opencl-mode")
+      (license license:gpl3+))))
 
 (define-public emacs-openwith
   ;; There is no release tag. Version is extracted from main file.
