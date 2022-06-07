@@ -12465,6 +12465,13 @@ Python.")
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'set-version
+                    ;; for reproducible builds, otherwise python-debian
+                    ;; generates a _version.py including the date
+                    (lambda _
+                      (copy-file "lib/debian/_version.py.in" "lib/debian/_version.py")
+                      (substitute* "lib/debian/_version.py"
+                        (("__CHANGELOG_VERSION__") ,version))))
                   (add-after 'unpack 'remove-debian-specific-tests
                     ;; python-apt, apt and dpkg are not yet available in guix,
                     ;; and these tests heavily depend on them.
