@@ -24334,7 +24334,13 @@ with features similar to the @command{wget} utility.")
     (build-system python-build-system)
     (arguments
      ;; No tests
-     `(#:tests? #f))
+     `(#:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'patch-for-pygit2
+                    (lambda _
+                      (substitute* "offlate/systems/git.py"
+                        (("pygit2.remote.RemoteCallbacks")
+                         "pygit2.RemoteCallbacks")))))))
     (propagated-inputs
       (list python-android-stringslib
             python-dateutil
