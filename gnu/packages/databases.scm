@@ -1353,12 +1353,26 @@ pictures, sounds, or video.")
                          (pg-union (string-append (getcwd) "/../pg-union")))
                      (match inputs
                        (((names . directories) ...)
-                        (union-build pg-union (cons #$output directories))))
+                        ;; PG will only load extensions from its own $libdir,
+                        ;; which it calculates based on argv[0].  As of
+                        ;; PostgreSQL 13.6, it calls 'canonicalize_path' on
+                        ;; argv[0] so a merge symlink is not enough to trick
+                        ;; it; thus, the code below makes a full copy of PG
+                        ;; and friends such that 'pg_config --libdir', for
+                        ;; instance, points to PG-UNION, allowing it to load
+                        ;; the timescaledb extension.
+                        (union-build pg-union (cons #$output directories)
+                                     #:symlink
+                                     (lambda (old new)
+                                       (if (file-is-directory? old)
+                                           (copy-recursively old new)
+                                           (copy-file old new))))))
                      (setenv "PATH" (string-append pg-union "/bin:"
                                                    (getenv "PATH")))
                      (invoke "initdb" "-D" pg-data)
                      (copy-file "test/postgresql.conf"
                                 (string-append pg-data "/postgresql.conf"))
+
                      (invoke "pg_ctl" "-D" pg-data
                              "-o" (string-append "-k " pg-data)
                              "-l" (string-append pg-data "/db.log")
