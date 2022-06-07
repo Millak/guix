@@ -1939,6 +1939,28 @@ can be referred to during the expression.  This technique can improve clarity
 in certain cases.  It also enables recursion for anonymous functions.")
     (license license:public-domain)))
 
+(define-public emacs-xah-fly-keys
+  (package
+    (name "emacs-xah-fly-keys")
+    (version "17.13.20220526011611")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/xahlee/xah-fly-keys")
+                    (commit "b1b1ea62c3f1a329376d9125592175cf2027ebc7")))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1gv8d9zgmhzjg6zk2a7y76dz30a3l91xb1p15vldka95faz197wn"))))
+    (build-system emacs-build-system)
+    (home-page "http://xahlee.info/emacs/misc/ergoemacs_vi_mode.html")
+    (synopsis "Modal keybinding system for Emacs, based on command frequency and
+ergonomics")
+    (description "xah-fly-keys.el is a modal editing mode for Emacs, like Vi,
+but the design of key/command choice is based on command frequency statistics
+and ease-of-key score.  Most frequently used commands have most easy keys.")
+    (license license:gpl3)))
+
 (define-public emacs-xr
   (package
     (name "emacs-xr")
