@@ -6,9 +6,9 @@
      (sentence-end-double-space . t)
 
      ;; For use with 'bug-reference-prog-mode'.
-     (bug-reference-url-format . "http://bugs.gnu.org/%s")
      (bug-reference-bug-regexp
-      . "<https?://\\(debbugs\\|bugs\\)\\.gnu\\.org/\\([0-9]+\\)>")
+      . "\\(<https?://\\bugs\\.gnu\\.org/\\([0-9]+\\)>\\)")
+     (bug-reference-url-format . "https://bugs.gnu.org/%s")
 
      ;; Emacs-Guix
      (eval . (setq-local guix-directory
