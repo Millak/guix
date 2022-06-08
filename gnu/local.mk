@@ -1039,7 +1039,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/enjarify-setup-py.patch			\
   %D%/packages/patches/enlightenment-fix-setuid-path.patch	\
   %D%/packages/patches/eog-update-libportal-usage.patch		\
-  %D%/packages/patches/epiphany-update-libportal-usage.patch	\
   %D%/packages/patches/erlang-man-path.patch			\
   %D%/packages/patches/esmtp-add-lesmtp.patch		\
   %D%/packages/patches/eudev-rules-directory.patch		\

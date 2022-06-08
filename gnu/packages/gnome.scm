@@ -6703,7 +6703,7 @@ a secret password store, an adblocker, and a modern UI.")
 (define-public epiphany
   (package
     (name "epiphany")
-    (version "41.2")
+    (version "42.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/epiphany/"
@@ -6711,9 +6711,7 @@ a secret password store, an adblocker, and a modern UI.")
                                   "epiphany-" version ".tar.xz"))
               (sha256
                (base32
-                "0k7b22zq3z1kllzqxgwsvwb1lp0j6rjb3k1hvhna3i573wc4mpji"))
-              (patches
-               (search-patches "epiphany-update-libportal-usage.patch"))))
+                "0b8rhns3b58f8dnp83mm1g933aqf88d8wrfyyp7jq3fihvw2rh4j"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
