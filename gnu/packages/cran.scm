@@ -33580,3 +33580,28 @@ universal point or block (co)kriging; spatio-temporal kriging; and sequential
 Gaussian or indicator (co)simulation.  It includes variogram and variogram map
 plotting utility functions, and supports @command{sf} and @command{stars}.")
     (license license:gpl2+)))
+
+(define-public r-automap
+  (package
+    (name "r-automap")
+    (version "1.0-16")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "automap" version))
+              (sha256
+               (base32
+                "0jz0p28gmx9cpzv4cz0xhbml3w1inf2nsd2ynbhmfxg5rm2f7dca"))))
+    (properties `((upstream-name . "automap")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ggplot2
+                             r-gstat
+                             r-lattice
+                             r-maptools
+                             r-reshape
+                             r-sp))
+    (home-page "https://cran.r-project.org/package=automap")
+    (synopsis "Automatic interpolation package")
+    (description
+     "@command{automap} performs an automatic interpolation by automatically
+estimating the variogram and then calling @command{gstat}.")
+    (license (list license:gpl2+ license:gpl3+))))
