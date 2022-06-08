@@ -13,6 +13,7 @@
 ;;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2018 Steve Sprang <scs@stevesprang.com>
+;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -158,6 +159,8 @@
     (dynamic-wind
       (lambda ()
         (for-each (match-lambda
+                    ((variable #false)
+                     (unsetenv variable))
                     ((variable value)
                      (setenv variable value)))
                   variables))

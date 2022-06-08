@@ -17,6 +17,7 @@
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2018 Steve Sprang <scs@stevesprang.com>
+;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1672,11 +1673,18 @@ return the underlying port.  Otherwise return #f."
     (_
      #f)))
 
+(define (find-available-pager)
+  "Return the program name of an available pager or the empty string if none is
+available."
+  (or (getenv "GUIX_PAGER")
+      (getenv "PAGER")
+      (which "less")
+      (which "more")
+      ""))
+
 (define* (call-with-paginated-output-port proc
                                           #:key (less-options "FrX"))
-  (let ((pager-command-line (or (getenv "GUIX_PAGER")
-                                (getenv "PAGER")
-                                "less")))
+  (let ((pager-command-line (find-available-pager)))
     ;; Setting PAGER to the empty string conventionally disables paging.
     (if (and (not (string-null? pager-command-line))
              (isatty?* (current-output-port)))
