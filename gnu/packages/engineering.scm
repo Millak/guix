@@ -1840,7 +1840,8 @@ an embedded event driven algorithm.")
     (arguments
      (substitute-keyword-arguments (package-arguments libngspice)
        ((#:configure-flags flags)
-        `(delete "--with-ngshared" ,flags))
+        `(cons "--with-readline=yes"
+               (delete "--with-ngshared" ,flags)))
        ((#:phases phases)
         `(modify-phases ,phases
            (add-after 'unpack 'delete-include-files
