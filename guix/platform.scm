@@ -121,7 +121,7 @@ otherwise."
 (define (platform-target->system target)
   "Return the system matching the given TARGET if it exists or false
 otherwise."
-  (let ((platform (lookup-platform-by-target system)))
+  (let ((platform (lookup-platform-by-target target)))
     (and=> platform platform-system)))
 
 
