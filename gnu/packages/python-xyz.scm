@@ -3,7 +3,7 @@
 ;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2014, 2015, 2016, 2019 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014, 2015 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2014, 2017, 2021 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2014, 2017, 2021, 2022 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2014, 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2015 Omar Radwan <toxemicsquire4@gmail.com>
 ;;; Copyright © 2015 Pierre-Antoine Rault <par@rigelk.eu>
@@ -24699,6 +24699,38 @@ HTML-containing files.")
 usable as a configuration language.  This Python package implements parsing and
 dumping of JSON5 data structures.")
     (license license:asl2.0)))
+
+(define-public python-freetype-py
+  (package
+    (name "python-freetype-py")
+    (version "2.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "freetype-py" version ".zip"))
+       (sha256
+        (base32 "1l55wzy21jmdayjna29ahzxrf2fp68580978rs6kap1a4zilrdpr"))))
+    (build-system python-build-system)
+    (native-inputs
+     (list python-setuptools-scm
+           unzip))
+    (inputs (list freetype))
+    (arguments
+     `(#:phases
+       ;; Note: the pypi archive does not contain tests, but running the check
+       ;; phase will at least test whether the module loads correctly.
+       (modify-phases %standard-phases
+         (add-before 'build 'embed-library-reference
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "freetype/raw.py"
+               (("^(filename = ).*" _ >)
+                (string-append > "\"" (search-input-file inputs "/lib/libfreetype.so")
+                               "\"\n"))))))))
+    (home-page "https://github.com/rougier/freetype-py")
+    (synopsis "Freetype python bindings")
+    (description "Freetype Python provides bindings for the FreeType
+library.  Only the high-level API is bound.")
+    (license license:bsd-3)))
 
 (define-public python-frozendict
   (package
