@@ -33557,3 +33557,26 @@ and trajectories; utility functions for plotting data as map sequences (lattice
 or animation) or multiple time series; methods for spatial and temporal
 matching or aggregation, retrieving coordinates, print, summary, etc.")
     (license license:gpl2+)))
+
+(define-public r-gstat
+  (package
+    (name "r-gstat")
+    (version "2.0-9")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "gstat" version))
+              (sha256
+               (base32
+                "19m4zcj1qvg6gs8yjr5ijvd6rrv4av5yp5rmhnb88f0m5qn06b0j"))))
+    (properties `((upstream-name . "gstat")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-lattice r-sp r-zoo r-spacetime r-fnn))
+    (home-page "https://github.com/r-spatial/gstat/")
+    (synopsis "Spatial and spatio-temporal geostatistical modelling,
+prediction and simulation")
+    (description
+     "This package enables variogram modelling, including: simple, ordinary and
+universal point or block (co)kriging; spatio-temporal kriging; and sequential
+Gaussian or indicator (co)simulation.  It includes variogram and variogram map
+plotting utility functions, and supports @command{sf} and @command{stars}.")
+    (license license:gpl2+)))
