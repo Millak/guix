@@ -33534,3 +33534,26 @@ analyses.")
      "This package provides MathJax and macros to enable its use within Rd files
 for rendering equations in the HTML help files.")
     (license (list license:asl2.0 license:gpl3))))
+
+(define-public r-spacetime
+  (package
+    (name "r-spacetime")
+    (version "1.2-7")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "spacetime" version))
+              (sha256
+               (base32
+                "0zpaib69dbdvgj36x807ci3m5jkyc0hp2j5722xkwvl1faynjlhf"))))
+    (properties `((upstream-name . "spacetime")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-lattice r-sp r-zoo r-xts r-intervals))
+    (home-page "https://github.com/edzer/spacetime/")
+    (synopsis "Classes and methods for spatio-temporal data")
+    (description
+     "@command{spacetime} provides classes and methods for spatio-temporal
+data, including space-time regular lattices, sparse lattices, irregular data,
+and trajectories; utility functions for plotting data as map sequences (lattice
+or animation) or multiple time series; methods for spatial and temporal
+matching or aggregation, retrieving coordinates, print, summary, etc.")
+    (license license:gpl2+)))
