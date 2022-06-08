@@ -33605,3 +33605,22 @@ plotting utility functions, and supports @command{sf} and @command{stars}.")
      "@command{automap} performs an automatic interpolation by automatically
 estimating the variogram and then calling @command{gstat}.")
     (license (list license:gpl2+ license:gpl3+))))
+
+(define-public r-cartogram
+  (package
+    (name "r-cartogram")
+    (version "0.2.2")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "cartogram" version))
+              (sha256
+               (base32
+                "0kz8hwdr5n8llkylwaixnb66f4pzaxxniz57spxhqizmi6qay7yd"))))
+    (properties `((upstream-name . "cartogram")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-packcircles r-sf))
+    (home-page "https://github.com/sjewo/cartogram/")
+    (synopsis "Create cartograms with R")
+    (description "This package enables construction of continuous and
+non-contiguous area cartograms.")
+    (license license:gpl3)))
