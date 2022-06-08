@@ -766,6 +766,42 @@ a convention of suggesting best recommended practices for using
 @code{python-pandas}.")
     (license license:bsd-3)))
 
+(define-public python-pandarallel
+  (package
+    (name "python-pandarallel")
+    (version "1.6.5")
+    (source
+     (origin
+       (method git-fetch)        ; no tests in PyPI
+       (uri (git-reference
+             (url "https://github.com/nalepae/pandarallel/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0r2wlxlwp4wia0vm15k4cp421mwa20k4k5g2ml01inprj8bl1p0p"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "-n" (number->string (parallel-job-count)))))
+    (propagated-inputs
+     (list python-dill
+           python-pandas
+           python-psutil))
+    (native-inputs
+     (list python-mkdocs-material
+           python-numpy
+           python-pytest
+           python-pytest-cov
+           python-pytest-xdist))
+    (home-page "https://nalepae.github.io/pandarallel/")
+    (synopsis "Tool to parallelize Pandas operations across CPUs")
+    (description
+     "@code{pandarallel} allows any Pandas user to take advantage of their
+multi-core computer, while Pandas uses only one core.  @code{pandarallel} also
+offers nice progress bars (available on Notebook and terminal) to get an rough
+idea of the remaining amount of computation to be done.")
+    (license license:bsd-3)))
+
 (define-public python-pandera
   (package
     (name "python-pandera")
