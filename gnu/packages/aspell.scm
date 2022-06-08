@@ -490,14 +490,14 @@ under permissive licensing terms.  See the 'Copyright' file."))))
 (define-public ispell
   (package
     (name "ispell")
-    (version "3.4.04")
+    (version "3.4.05")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.cs.hmc.edu/~geoff/tars/ispell-"
                            version ".tar.gz"))
        (sha256
-        (base32 "0gp1rwn8grkvz28wgisc2j9w9svldnaiahl3lyis118xabqddg47"))))
+        (base32 "00jni7gvdswjd9sdwip5ixnvjg2qzv56mn3m8gdgl9gxwgnns36g"))))
     (build-system gnu-build-system)
     (arguments
      `(#:parallel-build? #f
@@ -520,8 +520,7 @@ under permissive licensing terms.  See the 'Copyright' file."))))
                    (format port "#define BINDIR \"~a/bin\"~%" out)
                    (format port "#define LIBDIR \"~a/lib/ispell\"~%" out)
                    (format port "#define MAN1DIR \"~a/share/man/man1\"~%" out)
-                   (format port "#define MAN45DIR \"~a/share/man/man5\"~%" out))))
-             #t)))))
+                   (format port "#define MAN45DIR \"~a/share/man/man5\"~%" out)))))))))
     (inputs
      (list grep ncurses))
     (native-inputs

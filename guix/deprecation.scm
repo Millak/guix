@@ -25,6 +25,7 @@
 
             define-deprecated/public
             define-deprecated/alias
+            define-deprecated/public-alias
 
             warn-about-old-daemon
             warn-about-deprecation))
@@ -124,3 +125,10 @@ This will write a deprecation warning to GUIX-WARNING-PORT."
         (id
          (identifier? #'id)
          #'replacement)))))
+
+(define-syntax-rule (define-deprecated/public-alias deprecated replacement)
+  "Like define-deprecated/alias, but exporting DEPRECATED.
+It is assumed, that REPLACEMENT is already public."
+  (begin
+    (define-deprecated/alias deprecated replacement)
+    (export deprecated)))

@@ -464,6 +464,18 @@ an interpreter, a compiler, a debugger, and much more.")
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)
+         (add-after 'unpack 'fix-build-id
+           ;; One of the build scripts makes a build id using the current date.
+           ;; Replace it with a reproducible id using a part of the output hash.
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((hash (substring (assoc-ref outputs "out")
+                                    (+ (string-length (%store-directory)) 1)
+                                    (+ (string-length (%store-directory)) 9))))
+               (substitute* "make-config.sh"
+                 (("echo .* > output/build-id.inc")
+                  (string-append "echo '\"'guix-sbcl-"
+                                 hash
+                                 "'\"' > output/build-id.inc"))))))
          (add-after 'unpack 'replace-asdf
            ;; SBCL developers have not committed to keeping ASDF up to date
            ;; due to breaking changes [1]. Guix can handle this situation
@@ -911,7 +923,7 @@ the HTML documentation of TXR.")
 (define-public txr
   (package
     (name "txr")
-    (version "273")
+    (version "274")
     (source
      (origin
        (method git-fetch)
@@ -920,7 +932,7 @@ the HTML documentation of TXR.")
              (commit (string-append "txr-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1m4akw64458qcrfbqv71z9y8q9dszj26d7jfqblcn6nn8akx2jyb"))))
+        (base32 "0sz5wqqhmj2b9h9q95s8x4gb4cia6qddqp2mg29a5dpdh6jh3qyp"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -1152,7 +1164,7 @@ including a built-in database engine and a GUI system.")
 (define-public janet
   (package
     (name "janet")
-    (version "1.20.0")
+    (version "1.21.1")
     (source
      (origin
        (method git-fetch)
@@ -1161,7 +1173,7 @@ including a built-in database engine and a GUI system.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0983jp22nnfpsc77nhsjgp7zp7m2n47pxg9nagwfhhff6rlqw9wq"))))
+        (base32 "1c8lrwg518182rnz47mahv5r9jd3haj6ysigk0bkv8lpb0d2b760"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags

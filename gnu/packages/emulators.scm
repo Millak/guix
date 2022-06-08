@@ -1358,7 +1358,7 @@ towards a working Mupen64Plus for casual users.")
      (list autoconf autoconf-archive automake pkg-config))
     (inputs
      `(("fltk" ,fltk)
-       ("fontconfig", fontconfig)
+       ("fontconfig" ,fontconfig)
        ("libarchive" ,libarchive)
        ("libepoxy" ,libepoxy)
        ("libxft" ,libxft)

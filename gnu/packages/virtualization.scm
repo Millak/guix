@@ -15,7 +15,7 @@
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020, 2021 Marius Bakke <mbakke@fastmail.com>
-;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
@@ -26,6 +26,7 @@
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2022 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2022 Ekaitz Zarraga <ekaitz@elenq.tech>
+;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -99,8 +100,9 @@
   #:use-module (gnu packages ninja)
   #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages package-management)
-  #:use-module (gnu packages perl)
+  #:use-module (gnu packages pciutils)
   #:use-module (gnu packages pcre)
+  #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages polkit)
   #:use-module (gnu packages protobuf)
@@ -545,20 +547,19 @@ firmware blobs.  You can
 (define-public ganeti
   (package
     (name "ganeti")
-    (version "3.0.1")
+    (version "3.0.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/ganeti/ganeti")
                     (commit (string-append "v" version))))
               (sha256
-               (base32 "1i7gx0sdx9316fnldbv738s0ihym1370nhc1chk0biandkl8vvq0"))
+               (base32 "1xw7rm0k411aj0a4hrxz9drn7827bihp6bwizbapfx8k4c3125k4"))
               (file-name (git-file-name name version))
               (patches (search-patches "ganeti-shepherd-support.patch"
                                        "ganeti-shepherd-master-failover.patch"
-                                       "ganeti-sphinx-compat.patch"
-                                       "ganeti-haskell-compat.patch"
                                        "ganeti-haskell-pythondir.patch"
+                                       "ganeti-pyyaml-compat.patch"
                                        "ganeti-disable-version-symlinks.patch"))))
     (build-system gnu-build-system)
     (arguments
@@ -609,20 +610,6 @@ firmware blobs.  You can
                             ,(system->qemu-target (%current-system))))
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'patch-version-constraints
-           (lambda _
-             ;; Loosen version constraints for compatibility with Stackage 18.10.
-             (substitute* "cabal/ganeti.template.cabal"
-               (("(.*base64-bytestring.*) < 1\\.1" _ match)
-                (string-append match " < 1.2"))
-               (("(.*QuickCheck.*) < 2\\.14" _ match)
-                (string-append match " < 2.15")))))
-         (add-after 'unpack 'pyparsing-compat
-           (lambda _
-             ;; Adjust for Pyparsing 3.0.  Remove for Ganeti 3.0.2+.
-             (substitute* "lib/qlang.py"
-               (("operatorPrecedence")
-                "infixNotation"))))
          (add-after 'unpack 'create-vcs-version
            (lambda _
              ;; If we are building from a git checkout, we need to create a
@@ -714,6 +701,7 @@ firmware blobs.  You can
                (("test/py/ganeti\\.asyncnotifier_unittest\\.py") "")
                (("test/py/ganeti\\.backend_unittest\\.py") "")
                (("test/py/ganeti\\.daemon_unittest\\.py") "")
+               (("test/py/ganeti\\.hypervisor\\.hv_kvm_unittest\\.py") "")
                (("test/py/ganeti\\.tools\\.ensure_dirs_unittest\\.py") "")
                (("test/py/ganeti\\.utils\\.io_unittest-runasroot\\.py") "")
                ;; Disable the bash_completion test, as it requires the full
@@ -1032,8 +1020,18 @@ Debian or a derivative using @command{debootstrap}.")
               (sha256
                (base32 "0cik2m0byfp9ppq0hpg3xyrlp5ag1i4dww7a7872mlm36xxqagg0"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-before 'configure 'configure-dtc-path
+             (lambda* (#:key inputs #:allow-other-keys)
+               ;; Reference dtc by its absolute store path.
+               (substitute* "riscv/dts.cc"
+                 (("DTC")
+                  (string-append "\"" (search-input-file inputs "/bin/dtc") "\""))))))))
     (inputs
-     (list dtc))
+     (list bash-minimal dtc))
     (native-inputs
      (list python-wrapper))
     (home-page "https://github.com/riscv-software-src/riscv-isa-sim")
@@ -1045,7 +1043,7 @@ of one or more RISC-V harts.")
 (define-public libosinfo
   (package
     (name "libosinfo")
-    (version "1.9.0")
+    (version "1.10.0")
     (source
      (origin
        (method url-fetch)
@@ -1053,49 +1051,36 @@ of one or more RISC-V harts.")
                            version ".tar.xz"))
        (sha256
         (base32
-         "0nd360c9ampw8hb6xh5g45q858df2r4jj9q88bcl6gzgaj0l3wxl"))))
+         "0193sdvv9yj3h6wwhj441d2fhccc7fh0m36sl0fv5pl0ql7y0lm2"))))
     (build-system meson-build-system)
     (arguments
-     `(#:configure-flags
-       (list (string-append "-Dwith-usb-ids-path="
-                            (assoc-ref %build-inputs "usb.ids"))
-             (string-append "-Dwith-pci-ids-path="
-                            (assoc-ref %build-inputs "pci.ids")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-osinfo-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "osinfo/osinfo_loader.c"
-               (("path = DATA_DIR.*")
-                (string-append "path = \"" (assoc-ref inputs "osinfo-db")
-                               "/share/osinfo\";"))))))))
-    (inputs
-     `(("libsoup" ,libsoup-minimal-2)
-       ("libxml2" ,libxml2)
-       ("libxslt" ,libxslt)
-       ("osinfo-db" ,osinfo-db)))
+     (list
+      #:configure-flags
+      #~(list (string-append "-Dwith-usb-ids-path="
+                             (search-input-file %build-inputs
+                                                "share/hwdata/usb.ids"))
+              (string-append "-Dwith-pci-ids-path="
+                             (search-input-file %build-inputs
+                                                "share/hwdata/pci.ids")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-osinfo-path
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              (substitute* "osinfo/osinfo_loader.c"
+                (("path = DATA_DIR.*")
+                 (format #f "path = ~s;"
+                         (search-input-directory (or native-inputs inputs)
+                                                 "share/osinfo")))))))))
+    (inputs (list libsoup-minimal-2 libxml2 libxslt osinfo-db))
     (native-inputs
-     `(("glib" ,glib "bin")  ; glib-mkenums, etc.
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk-doc" ,gtk-doc/stable)
-       ("vala" ,vala)
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)
-       ("pci.ids"
-        ,(origin
-           (method url-fetch)
-           (uri "https://github.com/pciutils/pciids/raw/ad02084f0bc143e3c15e31a6152a3dfb1d7a3156/pci.ids")
-           (sha256
-            (base32
-             "0kfhpj5rnh24hz2714qhfmxk281vwc2w50sm73ggw5d15af7zfsw"))))
-       ("usb.ids"
-        ,(origin
-           (method url-fetch)
-           (uri "https://svn.code.sf.net/p/linux-usb/repo/trunk/htdocs/usb.ids?r=2681")
-           (file-name "usb.ids")
-           (sha256
-            (base32
-             "1m6yhvz5k8aqzxgk7xj3jkk8frl1hbv0h3vgj4wbnvnx79qnvz3r"))))))
+     (list `(,glib "bin")                ;glib-mkenums, etc.
+           gobject-introspection
+           gtk-doc/stable
+           `(,hwdata "pci")
+           `(,hwdata "usb")
+           vala
+           intltool
+           pkg-config))
     (home-page "https://libosinfo.org/")
     (synopsis "Operating system information database")
     (description "libosinfo is a GObject based library API for managing
@@ -1111,7 +1096,7 @@ all common programming languages.  Vala bindings are also provided.")
 (define-public lxc
   (package
     (name "lxc")
-    (version "4.0.11")
+    (version "4.0.12")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1119,7 +1104,7 @@ all common programming languages.  Vala bindings are also provided.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "0b7hv4n8b3lndhr0jf9j1gkbzxm8897a1myjsfgwzad9gkhq395g"))))
+                "1vyk2j5w9gfyh23w3ar09cycyws16mxh3clbb33yhqzwcs1jy96v"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config docbook2x))
@@ -1562,7 +1547,7 @@ domains, their live performance and resource utilization statistics.")
 (define-public criu
   (package
     (name "criu")
-    (version "3.16.1")
+    (version "3.17")
     (source
      (origin
        (method git-fetch)
@@ -1571,15 +1556,17 @@ domains, their live performance and resource utilization statistics.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1riw15197fnrs254jl7wks9x8bdml76kf1vnqkkgyypr13dnq55g"))))
+        (base32 "1qql1xp2zkkd7z50vp0nylx3rqrp8xa3c6x25c886d5i1j9pak5x"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
        #:tests? #f ; tests require mounting as root
        #:make-flags
        (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
-             (string-append "LIBDIR=" (assoc-ref %outputs "out")
-                            "/lib")
+             (string-append "LIBDIR=$(PREFIX)/lib")
+             ;; Upstream mistakenly puts binaries in /var.  Now, in practice no
+             ;; plugins are built, but the build system still fails otherwise.
+             (string-append "PLUGINDIR=$(LIBDIR)/criu")
              (string-append "ASCIIDOC="
                             (search-input-file %build-inputs
                                                "/bin/asciidoc"))
@@ -1601,10 +1588,14 @@ domains, their live performance and resource utilization statistics.")
                  ,(package-version docbook-xsl)
                  "/manpages/docbook.xsl")))))
          (add-after 'unpack 'hardcode-variables
-           (lambda* (#:key inputs #:allow-other-keys)
+           (lambda* (#:key inputs outputs #:allow-other-keys)
              ;; Hardcode arm version detection
              (substitute* "Makefile"
-               (("ARMV.*:=.*") "ARMV := 7\n"))))
+               (("ARMV.*:=.*") "ARMV := 7\n"))
+             ;; Hard-code the correct PLUGINDIR above.
+             (substitute* "criu/include/plugin.h"
+               (("/var") (string-append (assoc-ref outputs "out"))))
+             ))
          (add-before 'build 'fix-symlink
            (lambda* (#:key inputs #:allow-other-keys)
              ;; The file 'images/google/protobuf/descriptor.proto' points to
@@ -1664,26 +1655,71 @@ mainly implemented in user space.")
     ;; LGPLv2.1.
     (license (list license:gpl2 license:lgpl2.1))))
 
+(define-public python-qemu-qmp
+  (package
+    (name "python-qemu-qmp")
+    (version "0.0.0a0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "qemu.qmp" version))
+       (sha256
+        (base32 "1rpsbiwvngij6fjcc5cx1azcc4dxmm080crr31wc7jrm7i61p7c2"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; The Avocado test runner insists on writing stuff to HOME.
+                (setenv "HOME" "/tmp")
+                ;; The mypy tests fail (see:
+                ;; https://gitlab.com/jsnow/qemu.qmp/-/issues/1).
+                (delete-file "tests/mypy.sh")
+                (invoke "avocado" "--show=all" "run" "tests")))))))
+    (native-inputs
+     (list python-avocado-framework
+           python-setuptools-scm
+           python-flake8
+           python-isort
+           python-pylint))
+    (propagated-inputs
+     (list python-pygments
+           python-urwid
+           python-urwid-readline))
+    (home-page "https://gitlab.com/jsnow/qemu.qmp")
+    (synopsis "QEMU Monitor Protocol Python library")
+    (description "@code{emu.qmp} is a
+@url{https://gitlab.com/qemu-project/qemu/-/blob/master/docs/interop/qmp-intro.txt,
+QEMU Monitor Protocol (QMP)} library written in Python.  It is used to send
+QMP messages to running QEMU emulators.  It can be used to communicate with
+QEMU emulators, the QEMU Guest Agent (QGA), the QEMU Storage Daemon (QSD), or
+any other utility or application that speaks QMP.")
+    (license license:gpl2+)))
+
 (define-public qmpbackup
   (package
     (name "qmpbackup")
-    (version "0.2")
+    (version "0.23")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/abbbi/qmpbackup")
-                     (commit version)))
+                    (url "https://github.com/abbbi/qmpbackup")
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0swhp5byz44brhyis1a39p11fyn9q84xz5q6v2fah29r7d71kmmx"))))
+                "0x9v81z0b2qr2y6m46rfnl4kl5jnixsdrl1c790iwl6pq9kzzvzg"))))
     (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2))
+    ;; The test suite requires to download a 241 MiB QEMU image; skip it.
+    (arguments (list #:tests? #f))
+    (inputs (list python-qemu-qmp))
     (home-page "https://github.com/abbbi/qmpbackup")
     (synopsis "Backup and restore QEMU machines")
-    (description "qmpbackup is designed to create and restore full and
-incremental backups of running QEMU virtual machines via QMP, the QEMU
+    (description "@command{qmpbackup} is designed to create and restore full
+and incremental backups of running QEMU virtual machines via QMP, the QEMU
 Machine Protocol.")
     (license license:gpl3+)))
 
@@ -2151,7 +2187,12 @@ override CC = " (assoc-ref inputs "cross-gcc") "/bin/i686-linux-gnu-gcc"))
               (string-append "runtime_library_dirs = ['"
                              (assoc-ref outputs "out")
                              "/lib'],\nlibrary_dirs =")))
-            #t))
+
+            ;; This needs to be quoted:
+            ;; <https://lists.gnu.org/archive/html/guix-devel/2022-03/msg00113.html>.
+            (substitute* "xen/arch/x86/xen.lds.S"
+              ((".note.gnu.build-id")
+               "\".note.gnu.build-id\""))))
         (add-before 'configure 'patch-xen-script-directory
           (lambda* (#:key outputs #:allow-other-keys)
             (substitute* '("configure"
@@ -2361,3 +2402,42 @@ use with virtualization provisioning tools")
      "@code{transient} is a wrapper for QEMU allowing the creation of virtual
 machines with shared folder, ssh, and disk creation support.")
     (license license:expat)))
+
+(define-public riscv-pk
+  (package
+    (name "riscv-pk")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/riscv-software-src/riscv-pk")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1cc0rz4q3a1zw8756b8yysw8lb5g4xbjajh5lvqbjix41hbdx6xz"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:out-of-source? #t
+           ;; riscv-pk can only be built for riscv64.
+           #:target "riscv64-linux-gnu"
+           #:make-flags #~(list (string-append "INSTALLDIR=" #$output))
+           ;; Add flags to keep symbols fromhost and tohost. These symbols are
+           ;; required for the correct functioning of pk.
+           #:strip-flags #~(list "--strip-unneeded"
+                                 "--keep-symbol=fromhost"
+                                 "--keep-symbol=tohost"
+                                 "--enable-deterministic-archives")))
+    (home-page "https://github.com/riscv-software-src/riscv-pk")
+    (synopsis "RISC-V Proxy Kernel")
+    (description "The RISC-V Proxy Kernel, @command{pk}, is a lightweight
+application execution environment that can host statically-linked RISC-V ELF
+binaries.  It is designed to support tethered RISC-V implementations with
+limited I/O capability and thus handles I/O-related system calls by proxying
+them to a host computer.
+
+This package also contains the Berkeley Boot Loader, @command{bbl}, which is a
+supervisor execution environment for tethered RISC-V systems.  It is designed
+to host the RISC-V Linux port.")
+    (license license:bsd-3)))

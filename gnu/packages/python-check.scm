@@ -1,8 +1,8 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2019, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2019, 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019, 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019, 2021 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
@@ -11,8 +11,10 @@
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
-;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Bonface Munyoki Kilyungi <me@bonfacemunyoki.com>
+;;; Copyright © 2022 Malte Frank Gerdes <malte.f.gerdes@gmail.com>
+;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -31,9 +33,14 @@
 
 (define-module (gnu packages python-check)
   #:use-module (gnu packages)
+  #:use-module (gnu packages admin)
+  #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages docker)
   #:use-module (gnu packages django)
   #:use-module (gnu packages openstack)
+  #:use-module (gnu packages perl)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -67,6 +74,38 @@
 Protocol (TAP) in Python.  TAP is a line based test protocol for recording test
 data in a standard way.")
     (license license:bsd-3)))
+
+(define-public python-beartype
+  (package
+    (name "python-beartype")
+    (version "0.10.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "beartype" version))
+       (sha256
+        (base32 "0amzckgw9c93bl4jf0q6322j9wyyf3i8vl03yixfkrpllzv6kv14"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "pytest" "-vv" "beartype_test"
+                             ;; These tests rely on git through the
+                             ;; "get_main_readme_file" helper.
+                             "-k"
+                             (string-append "not test_doc_readme "
+                                            "and not test_sphinx "
+                                            "and not test_pep561_mypy"))))))))
+    (native-inputs
+     (list python-pytest))
+    (home-page "https://github.com/beartype/beartype")
+    (synopsis "Fast runtime type checking for Python")
+    (description "Beartype aims to be a very fast runtime type checking tool
+written in pure Python.")
+    (license license:expat)))
 
 (define-public python-pytest-click
   (package
@@ -243,6 +282,36 @@ nosetests, etc...) in Python projects.")
        "This package provides a Python module for creating JUnit XML test
 result documents that can be read by tools such as Jenkins or Bamboo.")
       (license license:expat))))
+
+(define-public python-pyinstrument
+  (package
+    (name "python-pyinstrument")
+    (version "4.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyinstrument" version))
+       (sha256
+        (base32 "18n3waxsxcd48pmcp8158s5rlancll2000amrdck9zfj5hfpkhhx"))))
+    (build-system python-build-system)
+    (native-inputs
+     (list python-flaky
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-trio))
+    (arguments
+     `(;; TODO: Get tests to work.
+       #:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (invoke "pytest" "-vv")))))))
+    (home-page "https://github.com/joerick/pyinstrument")
+    (synopsis "Call stack profiler for Python")
+    (description
+     "Pyinstrument is a Python profiler to help you optimize your code.")
+    (license license:bsd-3)))
 
 (define-public python-vcrpy
   (package
@@ -889,18 +958,21 @@ doctest to render the object representations.")
 (define-public python-pytest-checkdocs
   (package
     (name "python-pytest-checkdocs")
-    (version "1.2.5")
+    (version "2.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-checkdocs" version))
        (sha256
-        (base32 "0m4kn7141i6k8qr8ak3lbmk9vim11xsrlnrggcfwczfrglc6jmia"))))
+        (base32 "1bn1wr3yz8avkwacffyh26za7mg20f9pajpakfk4cn7yvmgbhcrb"))))
     (build-system python-build-system)
+    (arguments (list #:tests? #f))      ;no tests in pypi archive
     (propagated-inputs
-     (list python-docutils python-importlib-metadata python-more-itertools))
-    (native-inputs
-     (list python-setuptools-scm python-pytest))
+     (list python-docutils
+           python-importlib-metadata
+           python-pep517
+           python-pytest))
+    (native-inputs (list python-setuptools-scm))
     (home-page "https://github.com/jaraco/pytest-checkdocs")
     (synopsis "Check the README when running tests")
     (description
@@ -1045,6 +1117,12 @@ isort.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'use-path-instead-of-path.py
+           ;; path.py is obsolete.
+           (lambda _
+             (substitute* "setup.py"
+               (("'path.py'")
+                "'path'"))))
          (add-after 'unpack 'patch-tests
            (lambda _
              (mkdir "/tmp/bin")
@@ -1052,11 +1130,9 @@ isort.")
                (("dirname = '/bin'")
                 "dirname = '/tmp/bin'")
                (("bindir = os.path.realpath\\('/bin'\\)")
-                "bindir = os.path.realpath('/tmp/bin')"))
-             #t)))))
+                "bindir = os.path.realpath('/tmp/bin')")))))))
     (propagated-inputs
-     (list python-contextlib2 python-execnet python-pathpy
-           python-termcolor))
+     (list python-contextlib2 python-execnet python-path python-termcolor))
     (native-inputs
      (list python-mock python-pytest python-setuptools-git))
     (home-page "https://github.com/manahl/pytest-plugins")
@@ -1303,17 +1379,21 @@ new fixtures, new methods and new comparison objects.")
            (lambda _
              ;; This test fails because of a mismatch in the output of LaTeX
              ;; equation environments.  Seems OK to skip.
-             (delete-file "tests/ipynb-test-samples/test-latex-pass-correctouput.ipynb")
-             #t))
+             (delete-file
+              "tests/ipynb-test-samples/test-latex-pass-correctouput.ipynb")))
          (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (invoke "pytest" "-vv" "-k"
-                     (string-append
-                     ;; This only works with Pytest < 5.
-                      "not nbdime_reporter"
-                     ;; https://github.com/computationalmodelling/nbval/pull/148.
-                      " and not test_timeouts")))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-vv" "-k"
+                       (string-append
+                        ;; This only works with Pytest < 5.
+                        "not nbdime_reporter"
+                        ;; https://github.com/computationalmodelling/nbval/pull/148.
+                        " and not test_timeouts"
+                        ;; It seems the output format has changed; the following
+                        ;; test fails with "Unexpected output fields from
+                        ;; running code: {'text/plain'}".
+                        " and not test_conf_ignore_stderr "))))))))
     (native-inputs
      (list python-pytest python-pytest-cov python-sympy))
     (propagated-inputs
@@ -1380,6 +1460,36 @@ also ensuring that the notebooks are running without errors.")
     (description
      "This package provides a pytest plugin for testing console scripts.")
     (license license:expat)))
+
+(define-public python-pytest-tornado
+  (package
+    (name "python-pytest-tornado")
+    (version "0.8.1")
+    (source (origin
+              (method git-fetch)        ;no tests in pypi archive
+              (uri (git-reference
+                    (url "https://github.com/eugeniy/pytest-tornado")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "05hgq1m9g35kpc01im7ci1wd85xi1rdxnyms9izjg65c9976zn6x"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv")))))))
+    (propagated-inputs (list python-pytest python-setuptools python-tornado))
+    (home-page "https://github.com/eugeniy/pytest-tornado")
+    (synopsis "Pytest plugin to ease testing tornado applications")
+    (description
+     "This package provides a py.test plugin providing fixtures and markers to
+simplify testing of asynchronous tornado applications.")
+    (license license:asl2.0)))
 
 (define-public python-pytest-tornasync
   (package
@@ -1641,7 +1751,7 @@ supported by the MyPy typechecker.")
 (define-public python-mypy
   (package
     (name "python-mypy")
-    (version "0.931")
+    (version "0.942")
     (source
      (origin
        ;; Because of https://github.com/python/mypy/issues/9584, the
@@ -1658,9 +1768,10 @@ supported by the MyPy typechecker.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1v83flrdxh8grcp40qw04q4hzjflih9xwib64078vsxv2w36f817"))
+         "0hxnrqhvskiclwfj2s4gyfclzjas1dvpfxhyng8v7mq38rqps1j5"))
        (patches
-        (search-patches "python-mypy-12332.patch"))))
+        (search-patches "python-mypy-12332.patch"
+                        "python-mypy-use-sys-path.patch"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1682,10 +1793,10 @@ supported by the MyPy typechecker.")
     (home-page "http://www.mypy-lang.org/")
     (synopsis "Static type checker for Python")
     (description "Mypy is an optional static type checker for Python that aims
-to combine the benefits of dynamic (or 'duck') typing and static typing.  Mypy combines
+to combine the benefits of dynamic typing and static typing.  Mypy combines
 the expressive power and convenience of Python with a powerful type system and
-compile-time type checking.  Mypy type checks standard Python programs; run them using
-any Python VM with basically no runtime overhead.")
+compile-time type checking.  Mypy type checks standard Python programs; run
+them using any Python VM with basically no runtime overhead.")
     ;; Most of the code is under MIT license; Some files are under Python Software
     ;; Foundation License version 2: stdlib-samples/*, mypyc/lib-rt/pythonsupport.h and
     ;; mypyc/lib-rt/getargs.c
@@ -1704,6 +1815,40 @@ any Python VM with basically no runtime overhead.")
                    ;; directory".
                    (delete 'ensure-no-mtimes-pre-1980))))
      (native-inputs '()))))
+
+(define-public python-nptyping
+  (package
+    (name "python-nptyping")
+    (version "2.0.0")
+    (source (origin
+              (method git-fetch)        ;pypi only contains a binary wheel
+              (uri (git-reference
+                    (url "https://github.com/ramonhagenaars/nptyping")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0839mcrv5jljq9k9124ssnl1hc1inbxwlwjk72imabsbqssjy9rb"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'set-source-date-epoch
+           (lambda _
+             ;; Otherwise the wheel building test would fail with "ZIP does
+             ;; not support timestamps before 1980".
+             (setenv "SOURCE_DATE_EPOCH" "315532800"))))))
+    (native-inputs
+     (list python-beartype
+           python-mypy
+           python-typeguard
+           python-wheel))
+    (propagated-inputs (list python-numpy python-typing-extensions))
+    (home-page "https://github.com/ramonhagenaars/nptyping")
+    (synopsis "Type hints for Numpy")
+    (description "This package provides extensive dynamic type checks for
+dtypes and shapes of arrays for NumPy, extending @code{numpy.typing}.")
+    (license license:expat)))
 
 (define-public python-pylama
   (package
@@ -1845,13 +1990,13 @@ help in debugging failures and optimizing the scheduler to improve speed.")
 (define-public python-pytest-sanic
   (package
     (name "python-pytest-sanic")
-    (version "1.7.0")
+    (version "1.9.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pytest-sanic" version))
               (sha256
                 (base32
-                  "0hm7im77dgqfk8k34qbbfhimg8hifl4zwpa2s3mgbknrjvyw5qpx"))))
+                  "0shq1bqnydj0l3ipb73j1qh5kqcjvzkps30zk8grq3dwmh3wmnkr"))))
     (build-system python-build-system)
     (arguments
      ;; Tests depend on python-sanic.
@@ -1962,6 +2107,102 @@ The purpose of this package is to provide an easy way to test asynchronous
 HTTP requests.")
     (license license:expat)))
 
+(define-public python-avocado-framework
+  (package
+    (name "python-avocado-framework")
+    (version "96.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "avocado-framework" version))
+       (sha256
+        (base32 "0zhz6423p0b5gqx2mvg7dmq8m9gbsay7wqjdwzirlwcg2v3rcz0m"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      ;; The test suite hangs, due to a serious bug in Python/Avocado (see:
+      ;; https://github.com/avocado-framework/avocado/issues/4935).
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              ;; These are runtime dependencies (inputs).
+              (substitute* "avocado/plugins/spawners/podman.py"
+                (("default='/usr/bin/podman'")
+                 "default='podman'"))
+              (substitute* "avocado/utils/podman.py"
+                (("\"/usr/bin/env\", \"python3\"")
+                 (format #f "~s" (search-input-file inputs "bin/python"))))
+              (substitute* "avocado/utils/memory.py"
+                (("\"sync\"")
+                 (format #f "~s" (search-input-file inputs "bin/sync")))
+                (("/bin/sh")
+                 (search-input-file inputs "bin/sh")))
+              ;; Batch process the tests modules with less care; if something
+              ;; is wrong, the test suite will fail.  These are tests
+              ;; dependencies (native inputs).
+              (substitute* (find-files "selftests" "\\.py$")
+                (("#!/usr/bin/env")
+                 (string-append "#!" (search-input-file (or native-inputs inputs)
+                                                        "bin/env")))
+                (("/bin/(false|true|sh|sleep|sudo)" _ name)
+                 (search-input-file (or native-inputs inputs)
+                                    (string-append "bin/" name))))))
+          (add-after 'unpack 'remove-broken-entrypoints
+            ;; The avocado-external-runner entry point fails to load, the
+            ;; 'scripts' top level package not being found (see:
+            ;; https://github.com/avocado-framework/avocado/issues/5370).
+            (lambda _
+              (substitute* "setup.py"
+                (("'avocado-external-runner = scripts.external_runner:main'.*")
+                 ""))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" "/tmp")
+                (setenv "PYTHONPATH" (getcwd))
+                (invoke "./selftests/check.py" "--skip" "static-checks")))))))
+    (native-inputs (list bash-minimal coreutils-minimal perl sudo))
+    (inputs (list bash-minimal coreutils-minimal))
+    (home-page "https://avocado-framework.github.io/")
+    (synopsis "Tools and libraries to help with automated testing")
+    (description "Avocado is a set of tools and libraries to help with
+automated testing, i.e. a test framework.  Native tests are written in Python
+and they follow the unittest pattern, but any executable can serve as a
+test.  The following output formats are supported:
+@table @asis
+@item xUnit
+an XML format that contains test results in a structured form, and are used by
+other test automation projects, such as Jenkins.
+@item JSON
+a widely used data exchange format.  The JSON Avocado plugin outputs job
+information, similarly to the xunit output plugin.
+@item TAP
+Provides the basic TAP (Test Anything Protocol) results.  Unlike most existing
+Avocado machine readable outputs this one is streamlined (per test results).
+@end table")
+    (license license:gpl2)))            ;some files are under GPLv2 only
+
+(define-public python-parameterizedtestcase
+  (package
+    (name "python-parameterizedtestcase")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "parameterizedtestcase" version))
+       (sha256
+        (base32 "0zhjmsd16xacg4vd7zb75kw8q9khn52wvad634v1bvz7swaivk2c"))))
+    (build-system python-build-system)
+    (native-inputs (list python-setuptools)) ;for use_2to3
+    (home-page
+     "https://github.com/msabramo/python_unittest_parameterized_test_case")
+    (synopsis "Parameterized tests for Python's unittest module")
+    (description "This package provides parameterized tests for Python's
+@code{unittest} module taking inspiration from pytest.")
+    (license license:expat)))
+
 (define-public python-pytest-rerunfailures
   (package
     (name "python-pytest-rerunfailures")
@@ -1983,13 +2224,13 @@ eliminate flaky failures.")
 (define-public python-xunitparser
   (package
     (name "python-xunitparser")
-    (version "1.3.3")
+    (version "1.3.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "xunitparser" version))
        (sha256
-        (base32 "05amn9yik0mxg89iiprkb6lrmc7rlccgvwajrpyfi6zbp8mjdsgn"))))
+        (base32 "00lapxi770mg7jkw16zy3a91hbdfz4a9h43ryczdsgd3z4cl6vyf"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -2005,4 +2246,50 @@ eliminate flaky failures.")
     (description "xunitparser reads a JUnit/XUnit XML file and maps it to
 Python objects.  It tries to use the objects available in the standard
 @code{unittest} module.")
+    (license license:expat)))
+
+(define-public python-test-utils
+  (package
+    (name "python-test-utils")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "test-utils" version))
+       (sha256
+        (base32 "0cs0gyihnkj8ya4yg3ld3ly73mpxrkn2gq9acamclhqvhxsv7zd6"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/Kami/python-test-utils/")
+    (synopsis "Utilities for functional and integration tests")
+    (description
+     "This package provides a collection of utility functions and classes
+which make writing and running functional and integration tests easier.")
+    (license license:asl2.0)))
+
+(define-public python-sybil
+  (package
+    (name "python-sybil")
+    (version "3.0.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "sybil" version))
+        (sha256
+          (base32 "03ak1w93linfqx6c9lwgq5niyy3j9yblv4ip40hmlzmg0hidq0kg"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+        (modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest")))))))
+    (native-inputs (list python-pytest python-pytest-cov))
+    (home-page "https://github.com/simplistix/sybil")
+    (synopsis "Automated testing for examples in code and documentation")
+    (description
+      "This library provides a way to check examples in your code and
+documentation by parsing them from their source and evaluating the
+parsed examples as part of your normal test run.  Integration is
+provided for the main Python test runners.")
     (license license:expat)))

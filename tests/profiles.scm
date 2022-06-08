@@ -471,7 +471,7 @@
 
 (test-assert "package->manifest-entry, search paths"
   ;; See <http://bugs.gnu.org/22073>.
-  (let ((mpl (@ (gnu packages python-xyz) python2-matplotlib)))
+  (let ((mpl (@ (gnu packages python-xyz) python-matplotlib)))
     (lset= eq?
            (package-transitive-native-search-paths mpl)
            (manifest-entry-search-paths

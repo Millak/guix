@@ -26,28 +26,3 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages gnome)
   #:use-module (guix build-system python))
-
-(define-public key-mon
-  (package
-    (name "key-mon")
-    (version "1.17")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "http://key-mon.googlecode.com/files/key-mon-"
-                    version ".tar.gz"))
-              (sha256
-               (base32
-                "1liz0dxcqmchbnl1xhlxkqm3gh76wz9jxdxn9pa7dy77fnrjkl5q"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2                    ;uses the Python 2 'print' syntax
-       #:tests? #f))                         ;no tests
-    (inputs
-     (list python2-xlib python2-pygtk python2-rsvg))
-    (home-page "https://code.google.com/p/key-mon")
-    (synopsis "Show keyboard and mouse status")
-    (description
-     "The key-mon utility displays the current keyboard and mouse status.
-This is useful for teaching and screencasts.")
-    (license asl2.0)))

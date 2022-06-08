@@ -57,6 +57,7 @@
   #:use-module (gnu packages inkscape)
   #:use-module (gnu packages image)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages tls)
@@ -189,7 +190,7 @@ simple and consistent.")
 (define-public papirus-icon-theme
   (package
     (name "papirus-icon-theme")
-    (version "20210101")
+    (version "20220508")
     (source
      (origin
        (method git-fetch)
@@ -197,12 +198,11 @@ simple and consistent.")
              (url "https://github.com/PapirusDevelopmentTeam/papirus-icon-theme")
              (commit version)))
        (sha256
-        (base32
-         "0w6qg3zjhfvjg1gg5inranf8ianb4mrp0jm9qgi6hg87ig1rashs"))
+        (base32 "0rpcniaw8xbn23q67m26vgx3fynn4v056azrfp63lxdh46gfsvmc"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
-     '(#:tests? #f
+     '(#:tests? #f                      ; no test suite
        #:make-flags (list (string-append "PREFIX=" (assoc-ref %outputs "out")))
        #:phases
        (modify-phases %standard-phases
@@ -210,7 +210,7 @@ simple and consistent.")
          (delete 'configure)
          (delete 'build))))
     (native-inputs
-     `(("gtk+:bin" ,gtk+ "bin")))
+     (list `(,gtk+ "bin")))
     (home-page "https://git.io/papirus-icon-theme")
     (synopsis "Fork of Paper icon theme with a lot of new icons and a few extras")
     (description "Papirus is a fork of the icon theme Paper with a lot of new icons
@@ -543,7 +543,7 @@ currently focused application in the top panel of the GNOME shell.")
 (define-public gnome-shell-extension-just-perfection
   (package
     (name "gnome-shell-extension-just-perfection")
-    (version "16.0")
+    (version "20.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -552,7 +552,7 @@ currently focused application in the top panel of the GNOME shell.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05zbzgs92zqlmjq4h2q2gggrf1qiz8l6739zzg1x5090gvk4iak3"))))
+                "1b1hzibgryn861av2bjnfh5bmzs2bxfcsyl0ardkaj97228xsjzy"))))
     (build-system copy-build-system)
     (arguments
      `(#:install-plan
@@ -825,7 +825,7 @@ position when the mouse is moved rapidly.")
 (define-public gnome-shell-extension-burn-my-windows
   (package
     (name "gnome-shell-extension-burn-my-windows")
-    (version "7")
+    (version "15")
     (source
      (origin
        (method git-fetch)
@@ -834,7 +834,7 @@ position when the mouse is moved rapidly.")
              (commit (string-append "v" version))))
        (sha256
         (base32
-         "1513kh6dfvnaj5jq2mm7rv1k54v91hjckgim1dpqlxwnv4gi9krd"))
+         "1gabnqdk11n6345jzv9sc4yjmfrdgg0lsz6zc29gc5afzgirkhm5"))
        (file-name (git-file-name name version))))
     (build-system copy-build-system)
     (arguments
@@ -864,7 +864,7 @@ animation of closing windowed applications.")
 (define-public gnome-shell-extension-blur-my-shell
   (package
     (name "gnome-shell-extension-blur-my-shell")
-    (version "27")
+    (version "29")
     (source
      (origin
        (method git-fetch)
@@ -874,7 +874,7 @@ animation of closing windowed applications.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0l318lgc2zrp8fskabiv28knwp3b5i2y8bd3164da4pkf1jsl468"))
+         "13x7zgaj3dz7lypdv1bgmpmh0f2w53q567zxmhmqimi1gy5mjrvk"))
        (snippet
         '(begin (delete-file "src/schemas/gschemas.compiled")))))
     (build-system copy-build-system)
@@ -1207,6 +1207,7 @@ extended file attributes.  It also functions as a standalone command.")
            vala))
     (native-inputs
      (list pkg-config
+           python-wrapper
            `(,glib "bin"))) ; for 'glib-compile-resources'
     (home-page "https://github.com/bitstower/markets")
     (synopsis "Stock, currency and cryptocurrency tracker")

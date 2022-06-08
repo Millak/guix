@@ -367,58 +367,6 @@ sinks.")
 curses-style interfaces.")
     (license l:expat)))
 
-(define-public pulseaudio-dlna
-  ;; The last release was in 2016; use a more recent commit.
-  (let ((commit "4472928dd23f274193f14289f59daec411023ab0")
-        (revision "1"))
-    (package
-      (name "pulseaudio-dlna")
-      (version (git-version "0.5.2" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/masmu/pulseaudio-dlna")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "1dfn7036vrq49kxv4an7rayypnm5dlawsf02pfsldw877hzdamqk"))))
-      (build-system python-build-system)
-      (arguments `(#:python ,python-2))
-      (inputs
-       (list python2-chardet
-             python2-dbus
-             python2-docopt
-             python2-futures
-             python2-pygobject
-             python2-lxml
-             python2-netifaces
-             python2-notify2
-             python2-protobuf
-             python2-psutil
-             python2-requests
-             python2-pyroute2
-             python2-setproctitle
-             python2-zeroconf))
-      (home-page "https://github.com/masmu/pulseaudio-dlna")
-      (synopsis "Stream audio to DLNA/UPnP and Chromecast devices")
-      (description "This lightweight streaming server brings DLNA/UPnP and
-Chromecast support to PulseAudio.  It can stream your current PulseAudio
-playback to different UPnP devices (UPnP Media Renderers, including Sonos
-devices and some Smart TVs) or Chromecasts in your network.  You should also
-install one or more of the following packages alongside pulseaudio-dlna:
-
-@itemize
-@item ffmpeg - transcoding support for multiple codecs
-@item flac - FLAC transcoding support
-@item lame - MP3 transcoding support
-@item opus-tools - Opus transcoding support
-@item sox - WAV transcoding support
-@item vorbis-tools - Vorbis transcoding support
-@end itemize")
-      (license l:gpl3+))))
-
 (define-public pamixer
   (package
     (name "pamixer")

@@ -2,7 +2,7 @@
 ;;; Copyright © 2014 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Daniel Pimentel <d4n1@d4n1.org>
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2017, 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2018, 2019, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
@@ -233,19 +233,15 @@ encoder in C++.  The developer using protozero has to manually translate the
 (define-public python-protobuf
   (package
     (name "python-protobuf")
-    (version "3.12.4")
+    (version "3.20.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "protobuf" version))
        (sha256
         (base32
-         "0mj6z58aiw532s1mq48m9xdrm3gdyp2vv9cdinfb5wmnfpm5m7n9"))))
+         "1ja2vpk9nklllmsirmil2s4l7ni9yfqvbvj47zz5xx17s1k1bhxd"))))
     (build-system python-build-system)
-    (native-inputs
-     (list python-wheel))
-    (propagated-inputs
-     (list python-six))
     (home-page "https://github.com/google/protobuf")
     (synopsis "Protocol buffers is a data interchange format")
     (description
@@ -289,9 +285,6 @@ language-neutral, platform-neutral extensible mechanism for serializing
 structured data.")
     (license license:expat)))
 
-(define-public python2-protobuf
-  (package-with-python2 python-protobuf))
-
 ;; For tensorflow.
 (define-public python-protobuf-3.6
   (package
@@ -304,7 +297,30 @@ structured data.")
        (uri (pypi-uri "protobuf" version))
        (sha256
         (base32
-         "04bqb12smlckzmgkj6vgmpbr3cby0n6726cmz33bqr7kn1vb728l"))))))
+         "04bqb12smlckzmgkj6vgmpbr3cby0n6726cmz33bqr7kn1vb728l"))))
+    (inputs
+     (cons python-six
+           (package-inputs python-protobuf)))))
+
+(define-public python-proto-plus
+  (package
+    (name "python-proto-plus")
+    (version "1.20.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "proto-plus" version))
+       (sha256
+        (base32 "1raad9qnmfva94nm33k40bcwrckgljbfky5pdwh4xhg6r5dj52zj"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-protobuf))
+    (home-page "https://github.com/googleapis/proto-plus-python.git")
+    (synopsis "Pythonic protocol buffers")
+    (description "This is a wrapper around protocol buffers.  Protocol buffers
+is a specification format for APIs, such as those inside Google.  This library
+provides protocol buffer message classes and objects that largely behave like
+native Python types.")
+    (license license:asl2.0)))
 
 (define-public emacs-protobuf-mode
   (package

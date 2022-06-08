@@ -5,6 +5,7 @@
 ;;; Copyright © 2019 Amin Bandali <bandali@gnu.org>
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Andrew Miloradovsky <andrew@interpretmath.pw>
+;;; Copyright © 2022 Christian Gelinek <cgelinek@radlogic.com.au>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -111,7 +112,7 @@ formal verification.")
     (arguments
      `(#:make-flags (list (string-append "CC=" ,(cc-for-target)))))
     (native-inputs
-     (list flex bison ghostscript))   ; ps2pdf
+     (list flex bison ghostscript zlib))   ; ps2pdf
     (home-page "http://iverilog.icarus.com/")
     (synopsis "FPGA Verilog simulation and synthesis tool")
     (description "Icarus Verilog is a Verilog simulation and synthesis tool.

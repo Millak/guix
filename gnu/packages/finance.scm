@@ -11,7 +11,7 @@
 ;;; Copyright © 2018 Adriano Peluso <catonano@gmail.com>
 ;;; Copyright © 2018, 2019, 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2019, 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019, 2020, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2019, 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2019 Sebastian Schott <sschott@mailbox.org>
@@ -19,13 +19,16 @@
 ;;; Copyright © 2020 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2020 Tom Zander <tomz@freedommail.ch>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
-;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Carlo Holl <carloholl@gmail.com>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2021 ZmnSCPxj jxPCSnmZ <ZmnSCPxj@protonmail.com>
 ;;; Copyright © 2021 François J <francois-oss@avalenn.eu>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022 Kyle Meyer <kyle@kyleam.com>
+;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -273,14 +276,14 @@ Accounting.")
 (define-public homebank
   (package
     (name "homebank")
-    (version "5.5.4")
+    (version "5.5.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://homebank.free.fr/public/homebank-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0rapdqv2j61cj2jzfk0fiby3na4k5g5i7shkqbjhld4rl2y6j1hd"))))
+                "0rwykjpv4w7bffyvx2j6py17nxw9jcbml7ma4is194i3npn0bkmy"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list pkg-config intltool))
@@ -395,51 +398,53 @@ in ability, and easy to use.")
                     "See src/wcwidth.cc in the distribution.")))))
 
 (define-public emacs-ledger-mode
-  (package
-    (name "emacs-ledger-mode")
-    (version "4.0.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/ledger/ledger-mode")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1r5rcyxd6d1rqwamzpvqdbkbdf1zbj75aaciqijrklnm59ps244y"))))
-    (build-system emacs-build-system)
-    (arguments
-     `(;; ledger-test.el is needed at runtime (but probably not for a good reason).
-       #:exclude '()
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((ledger (assoc-ref inputs "ledger")))
-               (make-file-writable "ledger-exec.el")
-               (emacs-substitute-variables "ledger-exec.el"
-                 ("ledger-binary-path" (string-append ledger "/bin/ledger"))))
-             #t))
-         (add-after 'build 'build-doc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((target (string-append (assoc-ref outputs "out")
-                                          "/share/info")))
-               (mkdir-p target)
-               (invoke "makeinfo" "-o" target
-                       "../source/doc/ledger-mode.texi"))
-             #t))
-         (replace 'check
-           (lambda _
-             (with-directory-excursion "../source/test"
-               (invoke "make" "test-batch")))))))
-    (inputs
-     (list ledger))
-    (native-inputs
-     (list texinfo))
-    (home-page "https://ledger-cli.org/")
-    (synopsis "Command-line double-entry accounting program")
-    (description
-     "Ledger is a powerful, double-entry accounting system that is
+  ;; The last release was on Nov 8, 2019 and doesn't build with Emacs 28.
+  (let ((commit "11e850395448ee7012dba16bd6df103f5552ebfb")
+        (revision "0"))
+    (package
+      (name "emacs-ledger-mode")
+      (version (git-version "4.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/ledger/ledger-mode")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0hzky36vrlb7kvpyz4gy3zn01zdlmlx0s58w6ggk5djbcvjc2rfx"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        ;; ledger-test.el is needed at runtime (but probably not for a good reason).
+        #:exclude #~'()
+        #:tests? #t
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-path
+              (lambda* (#:key inputs #:allow-other-keys)
+                (make-file-writable "ledger-exec.el")
+                (emacs-substitute-variables "ledger-exec.el"
+                  ("ledger-binary-path" (search-input-file inputs "/bin/ledger")))))
+            (add-after 'build 'build-doc
+              (lambda _
+                (let ((target (string-append #$output "/share/info")))
+                  (mkdir-p target)
+                  (invoke "makeinfo" "-o" target
+                          "../source/doc/ledger-mode.texi"))))
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (with-directory-excursion "../source/test"
+                    (invoke "make" "test-batch"))))))))
+      (inputs
+       (list ledger))
+      (native-inputs
+       (list texinfo))
+      (home-page "https://ledger-cli.org/")
+      (synopsis "Command-line double-entry accounting program")
+      (description
+       "Ledger is a powerful, double-entry accounting system that is
 accessed from the UNIX command-line.  This may put off some users, since
 there is no flashy UI, but for those who want unparalleled reporting
 access to their data there are few alternatives.
@@ -453,7 +458,7 @@ a graph or html instead.  Ledger is simple in concept, surprisingly rich
 in ability, and easy to use.
 
 This package provides the Emacs mode.")
-    (license license:gpl2+)))
+      (license license:gpl2+))))
 
 (define-public geierlein
   (package
@@ -508,7 +513,7 @@ do so.")
 (define-public electrum
   (package
     (name "electrum")
-    (version "4.1.5")
+    (version "4.2.1")
     (source
      (origin
        (method url-fetch)
@@ -516,7 +521,7 @@ do so.")
                            version "/Electrum-"
                            version ".tar.gz"))
        (sha256
-        (base32 "188r4zji985z8pm9b942xhmvv174yndk6jxagxl7ljk03wl2wiwi"))
+        (base32 "0w41411zq07kx0351wxkmpn0wr42wd2nx0m6v0iwvpsggx654b6r"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -525,22 +530,23 @@ do so.")
            #t))))
     (build-system python-build-system)
     (inputs
-     (list python-pyqt
-           python-qrcode
-           python-protobuf
+     (list libsecp256k1
            python-aiohttp
            python-aiohttp-socks
-           python-aiorpcx-0.18
-           python-certifi
-           python-bitstring
+           python-aiorpcx
            python-attrs
+           python-bitstring
+           python-btchip-python
+           python-certifi
            python-cryptography
-           python-qdarkstyle
            python-dnspython
            python-hidapi
            python-ledgerblue
-           python-btchip-python
-           libsecp256k1))
+           python-protobuf
+           python-pyqt
+           python-qdarkstyle
+           python-qrcode
+           zbar))
     (arguments
      `(#:tests? #f                      ; no tests
        #:phases
@@ -582,7 +588,7 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
 (define-public electron-cash
   (package
     (name "electron-cash")
-    (version "4.2.6")
+    (version "4.2.10")
     (source
      (origin
        (method git-fetch)
@@ -591,68 +597,68 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "193krlnski9wjyfjkxfp4gcs7dgmqkwxgsy2m8x1515vb5bzv5pz"))))
+        (base32 "0axpypq9byda61rp3sznrq24b24qxbfwk56j75qp06s1ackg0pcv"))))
     (build-system python-build-system)
-    (inputs
-     `(("libevent" ,libevent)
-       ("libsecp256k1" ,libsecp256k1-bitcoin-cash)
-       ("openssl" ,openssl)
-       ("python-cython" ,python-cython)
-       ("python-dateutil" ,python-dateutil)
-       ("python-dnspython" ,python-dnspython)
-       ("python-ecdsa" ,python-ecdsa)
-       ("python-hidapi" ,python-hidapi)
-       ("python-jsonrpclib-pelix" ,python-jsonrpclib-pelix)
-       ("python-keepkey" ,python-keepkey)
-       ("python-pathvalidate" ,python-pathvalidate)
-       ("python-protobuf" ,python-protobuf)
-       ("python-pyaes" ,python-pyaes)
-       ("python-pyqt" ,python-pyqt)
-       ("python-pysocks" ,python-pysocks)
-       ("python-qdarkstyle" ,python-qdarkstyle)
-       ("python-qrcode" ,python-qrcode)
-       ("python-requests" ,python-requests)
-       ("python-stem" ,python-stem)
-       ("python-trezor" ,python-trezor)
-       ("qtsvg" ,qtsvg)
-       ("zlib" ,zlib)))
     (arguments
-     `(#:tests? #f                      ; no tests
-       #:modules ((guix build python-build-system)
+     (list
+      #:tests? #f                       ; no tests
+      #:modules '((guix build python-build-system)
                   (guix build qt-utils)
                   (guix build utils))
-       #:imported-modules (,@%python-build-system-modules
+      #:imported-modules `(,@%python-build-system-modules
                            (guix build qt-utils))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'create-output-directories
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; setup.py installs to ~/.local/share if this doesn't exist.
-             (mkdir-p (string-append (assoc-ref outputs "out") "/share"))))
-         (add-after 'unpack 'use-libsecp256k1-input
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "electroncash/secp256k1.py"
-               (("library_paths = .* 'libsecp256k1.so.0'.")
-                (string-append "library_paths = ('"
-                               (assoc-ref inputs "libsecp256k1")
-                               "/lib/libsecp256k1.so.0'")))))
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "contrib/requirements/requirements.txt"
-               (("qdarkstyle==2\\.6\\.8")
-                "qdarkstyle"))))
-         (add-after 'install 'wrap-qt
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (wrap-qt-program "electron-cash" #:output out #:inputs inputs))
-             #t)))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'create-output-directories
+            (lambda _
+              ;; setup.py installs to ~/.local/share if this doesn't exist.
+              (mkdir-p (string-append #$output "/share"))))
+          (add-after 'unpack 'use-libsecp256k1-input
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "electroncash/secp256k1.py"
+                (("libsecp256k1.so.0")
+                 (search-input-file inputs "lib/libsecp256k1.so.0")))))
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "contrib/requirements/requirements.txt"
+                (("qdarkstyle==2\\.6\\.8")
+                 "qdarkstyle"))))
+          (add-after 'install 'wrap-qt
+            (lambda* (#:key outputs inputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out")))
+                (wrap-qt-program "electron-cash"
+                                 #:output out #:inputs inputs)))))))
+    (inputs
+     (list libevent
+           libsecp256k1-bitcoin-cash
+           openssl
+           python-cython
+           python-dateutil
+           python-dnspython
+           python-ecdsa
+           python-hidapi
+           python-jsonrpclib-pelix
+           python-keepkey
+           python-pathvalidate
+           python-protobuf
+           python-pyaes
+           python-pyqt
+           python-pysocks
+           python-qdarkstyle
+           python-qrcode
+           python-requests
+           python-stem
+           python-trezor
+           qtsvg
+           zlib))
     (home-page "https://electroncash.org/")
     (synopsis "Bitcoin Cash wallet")
     (description
      "Electroncash is a lightweight Bitcoin Cash client, based on a client-server
 protocol.  It supports Simple Payment Verification (SPV) and deterministic key
 generation from a seed.  Your secret keys are encrypted and are never sent to
-other machines/servers.  Electroncash does not download the Bitcoin Cash blockchain.")
+other machines/servers.  Electroncash does not download the Bitcoin Cash
+blockchain.")
     (license license:expat)))
 
 (define-public monero
@@ -663,7 +669,7 @@ other machines/servers.  Electroncash does not download the Bitcoin Cash blockch
   ;; the system's dynamically linked library.
   (package
     (name "monero")
-    (version "0.17.3.0")
+    (version "0.17.3.2")
     (source
      (origin
        (method git-fetch)
@@ -680,15 +686,9 @@ other machines/servers.  Electroncash does not download the Bitcoin Cash blockch
            (for-each
             delete-file-recursively
             '("external/miniupnp" "external/rapidjson"
-              "external/unbound"))
-           ;; TODO: Remove the following when upgrading to a newer tagged
-           ;; version as it will already contain the fix for Boost 1.76.
-           (substitute* "contrib/epee/include/storages/portable_storage.h"
-             (("#include \"int-util.h\"" all)
-              (string-append all "\n#include <boost/mpl/contains.hpp>")))
-           #t))
+              "external/unbound"))))
        (sha256
-        (base32 "1spsf7m3x4psp9s7mivr6x4886jnbq4i8ll2dl8bv5bsdhcd3pjm"))))
+        (base32 "19sgcbli7fc1l6ms7ma6hcz1mmpbnd296lc8a19rl410acpv45zy"))))
     (build-system cmake-build-system)
     (native-inputs
      (list doxygen
@@ -725,21 +725,18 @@ other machines/servers.  Electroncash does not download the Bitcoin Cash blockch
          ;; tests/core_tests need a valid HOME
          (add-before 'configure 'set-home
            (lambda _
-             (setenv "HOME" (getcwd))
-             #t))
+             (setenv "HOME" (getcwd))))
          (add-after 'set-home 'change-log-path
            (lambda _
              (substitute* "contrib/epee/src/mlog.cpp"
                (("epee::string_tools::get_current_module_folder\\(\\)")
                 "\".bitmonero\"")
                (("return \\(")
-                "return ((std::string(getenv(\"HOME\"))) / "))
-             #t))
+                "return ((std::string(getenv(\"HOME\"))) / "))))
          (add-after 'change-log-path 'fix-file-permissions-for-tests
            (lambda _
              (for-each make-file-writable
-                       (find-files "tests/data/" "wallet_9svHk1.*"))
-             #t))
+                       (find-files "tests/data/" "wallet_9svHk1.*"))))
          ;; Only try tests that don't need access to network or system
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
@@ -767,8 +764,7 @@ other machines/servers.  Electroncash does not download the Bitcoin Cash blockch
          (add-after 'install 'delete-unused-files
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
-               (delete-file-recursively (string-append out "/include")))
-             #t)))))
+               (delete-file-recursively (string-append out "/include"))))))))
     (home-page "https://web.getmonero.org/")
     (synopsis "Command-line interface to the Monero currency")
     (description
@@ -779,7 +775,7 @@ the Monero command line client and daemon.")
 (define-public monero-gui
   (package
     (name "monero-gui")
-    (version "0.17.3.1")
+    (version "0.17.3.2")
     (source
      (origin
        (method git-fetch)
@@ -793,10 +789,9 @@ the Monero command line client and daemon.")
         '(begin
            ;; Delete bundled monero sources, we already have them.
            ;; See the 'extract-monero-sources' phase.
-           (delete-file-recursively "monero")
-           #t))
+           (delete-file-recursively "monero")))
        (sha256
-        (base32 "0mzxbi16zvpfgwykg0c7gm5dmjxr2a47kjwih36g53a7pnf04zl1"))))
+        (base32 "12x0d981fkb43inx7zqjr3ny53dih9g8k03cmaflxqwviinb1k4b"))))
     (build-system qt-build-system)
     (native-inputs
      `(,@(package-native-inputs monero)
@@ -881,14 +876,12 @@ the Monero GUI client.")
            ;; a built-in implementation supported in python-trezor-agent.
            (lambda _
              (substitute* "setup.py"
-               (("'backports.shutil_which>=3.5.1',") ""))
-             #t))
+               (("'backports.shutil_which>=3.5.1',") ""))))
          (delete 'check)
          (add-after 'install 'check
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             ;; Make installed package available for running the tests.
-             (add-installed-pythonpath inputs outputs)
-             (invoke "py.test"))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-v")))))))
     (propagated-inputs
      (list python-configargparse
            python-daemon
@@ -956,9 +949,6 @@ settings.")
 of Bitcoin BIP-0039.")
     (license license:expat)))
 
-(define-public python2-mnemonic
-  (package-with-python2 python-mnemonic))
-
 (define-public python-ledgerblue
   (package
     (name "python-ledgerblue")
@@ -983,9 +973,6 @@ of Bitcoin BIP-0039.")
     (description "@code{ledgerblue} is a Python library to communicate with
 Ledger Blue/Nano S.")
     (license license:asl2.0)))
-
-(define-public python2-ledgerblue
-  (package-with-python2 python-ledgerblue))
 
 (define-public python-btchip-python
   (package
@@ -1013,7 +1000,7 @@ Nano dongle.")
 (define-public python-trezor
   (package
     (name "python-trezor")
-    (version "0.12.4")
+    (version "0.13.0")
     (source
      (origin
        (method git-fetch)
@@ -1022,7 +1009,7 @@ Nano dongle.")
              (commit (string-append "python/v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1k0zk94jnkhr4iyngjfhfvff5mibx265q81v8jhvhd3m4clzgc45"))
+        (base32 "1wy584bxx5p2av4lv1bx9hl1q0b5n7hqz0hnqb9shjriarvl5ckd"))
        (modules
         '((guix build utils)
           (srfi srfi-26)
@@ -1040,13 +1027,21 @@ Nano dongle.")
                                     (string-append "./" file-name)))
                      (scandir "./python/"
                               (negate (cut member <> '("." "..") string=))))
-           (delete-file-recursively "./python")))))
+           (delete-file-recursively "./python")
+           ;; Delete now broken symbolic links.
+           (for-each delete-file
+                     (append (find-files "." "^CHANGELOG.unreleased$")
+                             (find-files "." "^.towncrier.template.md$")))))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-attrs
-           python-click
+           ;; TOOD: Use the latest click version after release 0.13.1 or later
+           ;; is made (see:
+           ;; https://github.com/trezor/trezor-firmware/issues/2199).
+           python-click-7
            python-construct
            python-ecdsa
+           python-hidapi
            python-libusb1
            python-mnemonic
            python-requests
@@ -1055,8 +1050,8 @@ Nano dongle.")
      ;; For tests.
      (list protobuf
            python-black
-           python-protobuf
            python-isort
+           python-protobuf
            python-pyqt
            python-pytest))
     (home-page "https://github.com/trezor/python-trezor")
@@ -1094,9 +1089,6 @@ TREZOR Hardware Wallet.")
 the KeepKey Hardware Wallet.")
     (license license:lgpl3)))
 
-(define-public python2-keepkey
-  (package-with-python2 python-keepkey))
-
 (define-public ledger-agent
   (package
     (name "ledger-agent")
@@ -1119,7 +1111,7 @@ the KeepKey Hardware Wallet.")
 (define-public trezor-agent
   (package
     (name "trezor-agent")
-    (version "0.11.0-1")
+    (version "0.14.4")
     (source
      (origin
        (method git-fetch)
@@ -1156,6 +1148,14 @@ the KeepKey Hardware Wallet.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         ;; This package only has a Python script, not a Python module, so the
+         ;; sanity-check phase can't work.
+         (delete 'sanity-check)
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "setup.py"
+               (("'trezor\\[hidapi]>=0.12.0,<0.13'")
+                "'trezor[hidapi]>=0.13'"))))
          (add-after 'wrap 'fixup-agent-py
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out")))
@@ -1232,9 +1232,6 @@ and various other formats.
 The module also includes implementations of the Verhoeff,
 Luhn and family of ISO/IEC 7064 check digit algorithms.")
     (license license:lgpl2.1+)))
-
-(define-public python2-stdnum
-  (package-with-python2 python-stdnum))
 
 (define-public python-duniterpy
   (package
@@ -1520,7 +1517,7 @@ following three utilities are included with the library:
 (define-public bitcoin-unlimited
   (package
     (name "bitcoin-unlimited")
-    (version "1.9.2.0")
+    (version "1.10.0.0")
     (source
      (origin
        (method git-fetch)
@@ -1529,7 +1526,7 @@ following three utilities are included with the library:
              (commit (string-append "BCHunlimited" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1cmrvh7azz0g89rsx6i8apd1li6r1lb3jrmbbf8fic1918lwv62m"))))
+        (base32 "12yb2rbd6hsns43qyxc5dm7h5k4sph9sb64q7kkbqi3xhgrrsjdq"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
@@ -1570,30 +1567,17 @@ following three utilities are included with the library:
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-tests
            (lambda _
-             ;; Fix data specific test failure
-             ;; https://reviews.bitcoinabc.org/rABC67bbd3d0aaee2952ff1cb5da51d1fd0b50c2b63a
-             (substitute* "src/test/rpc_tests.cpp"
-               (("1607731200") "9907731200"))
-
              ;; Disable utilprocess_tests because it never ends.
              ;; It looks like it tries to start /bin/sleep and waits until it
              ;; is in the list of running processes, but /bin/sleep doesn't
              ;; exist.
              (substitute* "src/Makefile.test.include"
                (("test/utilprocess_tests.cpp")
-                ""))
-
-             ;; Some transaction validation rules have changed (see upstream
-             ;; commit f208400825d4641b9310a1fba023d56e0862e3b0), which makes
-             ;; a test fail. Disable it for now.
-             ;; TODO: Remove this when the next version is released.
-             (substitute* "src/Makefile.test.include"
-               (("test/txvalidationcache_tests.cpp")
                 ""))))
          (add-before 'check 'set-home
            (lambda _
-             (setenv "HOME" (getenv "TMPDIR")) ; tests write to $HOME
-             #t)))))
+             ;; Tests write to $HOME
+             (setenv "HOME" (getenv "TMPDIR")))))))
     (home-page "https://www.bitcoinunlimited.info/")
     (synopsis "Client for the Bitcoin Cash protocol")
     (description
@@ -1705,14 +1689,13 @@ that allows you to run services and through them access the Bitcoin Cash network
 (define-public beancount
   (package
     (name "beancount")
-    (version "2.3.4")
+    (version "2.3.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "beancount" version))
        (sha256
-        (base32
-         "1h465zc7gb0bc5pagm9fsp083sqxrn2mjfbk9l7h162xm7k8rw1b"))
+        (base32 "0sn3x6c5vwvdfak1qm0y4vv284izrc4dly31mqyd9jz9l8jmdqql"))
        (patches (search-patches "beancount-disable-googleapis-fonts.patch"))))
     (build-system python-build-system)
     (arguments
@@ -1835,7 +1818,7 @@ editing on the Web.")
 (define-public quantlib
   (package
     (name "quantlib")
-    (version "1.24")
+    (version "1.26")
     (source
      (origin
        (method url-fetch)
@@ -1843,7 +1826,7 @@ editing on the Web.")
              "https://github.com/lballabio/QuantLib/releases/download/QuantLib-v"
              version "/QuantLib-" version ".tar.gz"))
        (sha256
-        (base32 "1rxjhkc32a8z0g5gmh0iw5nx0fr31cjsrfgq7c8g6nib003kgnnx"))))
+        (base32 "1sbk6rg51x5xpa93xmqmrj32a1l9vba51xck0017cxzblg0nrzh4"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags

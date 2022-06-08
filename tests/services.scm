@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2017, 2018, 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2019, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -30,8 +30,10 @@
 
 (test-equal "services, default value"
   '(42 123 234 error)
-  (let* ((t1 (service-type (name 't1) (extensions '())))
+  (let* ((t1 (service-type (name 't1) (extensions '())
+                           (description "")))
          (t2 (service-type (name 't2) (extensions '())
+                           (description "")
                            (default-value 42))))
     (list (service-value (service t2))
           (service-value (service t2 123))
@@ -40,13 +42,13 @@
             (service t1)))))
 
 (test-assert "service-back-edges"
-  (let* ((t1 (service-type (name 't1) (extensions '())
+  (let* ((t1 (service-type (name 't1) (extensions '()) (description "")
                            (compose +) (extend *)))
-         (t2 (service-type (name 't2)
+         (t2 (service-type (name 't2) (description "")
                            (extensions
                             (list (service-extension t1 (const '()))))
                            (compose +) (extend *)))
-         (t3 (service-type (name 't3)
+         (t3 (service-type (name 't3) (description "")
                            (extensions
                             (list (service-extension t2 identity)
                                   (service-extension t1 list)))))
@@ -63,16 +65,16 @@
   ;; from services of type T3; 'xyz 60' comes from the service of type T2,
   ;; where 60 = 15 × 4 = (1 + 2 + 3 + 4 + 5) × 4.
   '(initial-value 5 4 3 2 1 xyz 60)
-  (let* ((t1 (service-type (name 't1) (extensions '())
+  (let* ((t1 (service-type (name 't1) (extensions '()) (description "")
                            (compose concatenate)
                            (extend cons)))
-         (t2 (service-type (name 't2)
+         (t2 (service-type (name 't2) (description "")
                            (extensions
                             (list (service-extension t1
                                                      (cut list 'xyz <>))))
                            (compose (cut reduce + 0 <>))
                            (extend *)))
-         (t3 (service-type (name 't3)
+         (t3 (service-type (name 't3) (description "")
                            (extensions
                             (list (service-extension t2 identity)
                                   (service-extension t1 list)))))
@@ -86,10 +88,10 @@
          (service-value r))))
 
 (test-assert "fold-services, ambiguity"
-  (let* ((t1 (service-type (name 't1) (extensions '())
+  (let* ((t1 (service-type (name 't1) (extensions '()) (description "")
                            (compose concatenate)
                            (extend cons)))
-         (t2 (service-type (name 't2)
+         (t2 (service-type (name 't2) (description "")
                            (extensions
                             (list (service-extension t1 list)))))
          (s  (service t2 42)))
@@ -105,8 +107,8 @@
       #f)))
 
 (test-assert "fold-services, missing target"
-  (let* ((t1 (service-type (name 't1) (extensions '())))
-         (t2 (service-type (name 't2)
+  (let* ((t1 (service-type (name 't1) (extensions '()) (description "")))
+         (t2 (service-type (name 't2) (description "")
                            (extensions
                             (list (service-extension t1 list)))))
          (s  (service t2 42)))
@@ -119,11 +121,11 @@
       #f)))
 
 (test-assert "instantiate-missing-services"
-  (let* ((t1 (service-type (name 't1) (extensions '())
+  (let* ((t1 (service-type (name 't1) (extensions '()) (description "")
                            (default-value 'dflt)
                            (compose concatenate)
                            (extend cons)))
-         (t2 (service-type (name 't2)
+         (t2 (service-type (name 't2) (description "")
                            (extensions
                             (list (service-extension t1 list)))))
          (s1 (service t1 'hey!))
@@ -135,17 +137,17 @@
                  (instantiate-missing-services (list s1 s2))))))
 
 (test-assert "instantiate-missing-services, indirect"
-  (let* ((t1 (service-type (name 't1) (extensions '())
+  (let* ((t1 (service-type (name 't1) (extensions '()) (description "")
                            (default-value 'dflt)
                            (compose concatenate)
                            (extend cons)))
-         (t2 (service-type (name 't2)
+         (t2 (service-type (name 't2) (description "")
                            (default-value 'dflt2)
                            (compose concatenate)
                            (extend cons)
                            (extensions
                             (list (service-extension t1 list)))))
-         (t3 (service-type (name 't3)
+         (t3 (service-type (name 't3) (description "")
                            (extensions
                             (list (service-extension t2 list)))))
          (s1 (service t1))
@@ -160,8 +162,8 @@
              (instantiate-missing-services (list s2 s3))))))
 
 (test-assert "instantiate-missing-services, no default value"
-  (let* ((t1 (service-type (name 't1) (extensions '())))
-         (t2 (service-type (name 't2)
+  (let* ((t1 (service-type (name 't1) (extensions '()) (description "")))
+         (t2 (service-type (name 't2) (description "")
                            (extensions
                             (list (service-extension t1 list)))))
          (s  (service t2 42)))
@@ -212,9 +214,9 @@
         ;; because it is not currently running.  'baz' is loaded because it's
         ;; a new service.
         (shepherd-service-upgrade
-         (list (live-service '(foo) '() #t)
-               (live-service '(bar) '() #f)
-               (live-service '(root) '() #t))     ;essential!
+         (list (live-service '(foo) '() #f #t)
+               (live-service '(bar) '() #f #f)
+               (live-service '(root) '() #f #t))     ;essential!
          (list (shepherd-service (provision '(foo))
                                  (start #t))
                (shepherd-service (provision '(bar))
@@ -234,9 +236,9 @@
         ;; unloaded because 'foo' depends on it.  'foo' gets replaced but it
         ;; must be restarted manually.
         (shepherd-service-upgrade
-         (list (live-service '(foo) '(bar) #t)
-               (live-service '(bar) '() #t)       ;still used!
-               (live-service '(baz) '() #t))
+         (list (live-service '(foo) '(bar) #f #t)
+               (live-service '(bar) '() #f #t)    ;still used!
+               (live-service '(baz) '() #f #t))
          (list (shepherd-service (provision '(foo))
                                  (start #t)))))
     (lambda (unload restart)
@@ -251,9 +253,26 @@
         ;; 'foo', 'bar', and 'baz' depend on each other, but all of them are
         ;; obsolete, and thus should be unloaded.
         (shepherd-service-upgrade
-         (list (live-service '(foo) '(bar) #t)    ;obsolete
-               (live-service '(bar) '(baz) #t)    ;obsolete
-               (live-service '(baz) '() #t))      ;obsolete
+         (list (live-service '(foo) '(bar) #f #t) ;obsolete
+               (live-service '(bar) '(baz) #f #t) ;obsolete
+               (live-service '(baz) '() #f #t))   ;obsolete
+         (list (shepherd-service (provision '(qux))
+                                 (start #t)))))
+    (lambda (unload restart)
+      (list (map live-service-provision unload)
+            (map shepherd-service-provision restart)))))
+
+(test-equal "shepherd-service-upgrade: transient service"
+  ;; Transient service must not be unloaded:
+  ;; <https://issues.guix.gnu.org/54812>.
+  '(((foo))                                       ;unload
+    ((qux)))                                      ;restart
+  (call-with-values
+      (lambda ()
+        (shepherd-service-upgrade
+         (list (live-service '(sshd-42) '() #t 42) ;transient
+               (live-service '(foo) '() #f #t)     ;obsolete
+               (live-service '(qux) '() #f #t))    ;running
          (list (shepherd-service (provision '(qux))
                                  (start #t)))))
     (lambda (unload restart)

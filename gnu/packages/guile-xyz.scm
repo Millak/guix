@@ -16,7 +16,7 @@
 ;;; Copyright © 2017 Theodoros Foradis <theodoros@foradis.org>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017, 2018, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2018, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2018, 2019, 2020, 2021, 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2018 Eric Bavier <bavier@member.fsf.org>
@@ -129,19 +129,20 @@
   #:use-module (guix utils)
   #:use-module ((guix build utils) #:select (alist-replace))
   #:use-module (ice-9 match)
-  #:use-module ((srfi srfi-1) #:select (alist-delete)))
+  #:use-module ((srfi srfi-1) #:select (alist-delete))
+  #:use-module (srfi srfi-26))
 
 (define-public artanis
   (package
     (name "artanis")
-    (version "0.5")
+    (version "0.5.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/artanis/artanis-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1vk1kp2xhz35xa5n27cxlq9c88wk6qm7fqaac8rb0pb6k9pvsv7v"))
+                "1zfg49s7wp37px7k22qcr06rxfwyn3gv1c3jmma346xw0m8jr63w"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -152,7 +153,8 @@
                   (delete-file-recursively "artanis/third-party/redis")
                   (substitute* '("artanis/artanis.scm"
                                  "artanis/lpc.scm"
-                                 "artanis/oht.scm")
+                                 "artanis/oht.scm"
+                                 "artanis/tpl/parser.scm")
                     (("(#:use-module \\()artanis third-party (json\\))" _
                       use-module json)
                      (string-append use-module json)))
@@ -181,9 +183,9 @@
     (propagated-inputs
      (list guile-json-3 guile-readline guile-redis))
     (native-inputs
-     `(("bash"       ,bash)         ;for the `source' builtin
-       ("pkgconfig"  ,pkg-config)
-       ("util-linux" ,util-linux))) ;for the `script' command
+     (list bash-minimal                           ;for the `source' builtin
+           pkg-config
+           util-linux))                           ;for the `script' command
     (arguments
      `(#:modules (((guix build guile-build-system)
                    #:select (target-guile-effective-version))
@@ -607,43 +609,31 @@ Unix-style DSV format and RFC 4180 format.")
 (define-public guile-fibers-1.1
   (package
     (name "guile-fibers")
-    (version "1.1.0")
+    (version "1.1.1")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/wingo/fibers/releases/download/v"
-                    version "/fibers-" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/wingo/fibers")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1lqz39shlhif5fhpyv2wili0yzb0nhf5ciiv7mdqsq0vljirhrm0"))
+                "0ll63d7202clapg1k4bilbnlmfa4qvpjnsd7chbkka4kxf5klilc"))
               (patches
                (search-patches "guile-fibers-wait-for-io-readiness.patch"))))
     (build-system gnu-build-system)
-    (arguments
-     '(#:phases (modify-phases %standard-phases
-                  ;; This is required to make
-                  ;; "guile-fibers-wait-for-io-readiness.patch" work.
-                  (add-after 'unpack 'regenerate-autotools
-                    (lambda _
-                      (delete-file "configure")))
-                  (add-after 'install 'mode-guile-objects
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      ;; .go files are installed to "lib/guile/X.Y/cache".
-                      ;; This phase moves them to "…/site-ccache".
-                      (let* ((out (assoc-ref outputs "out"))
-                             (lib (string-append out "/lib/guile"))
-                             (old (car (find-files lib "^ccache$"
-                                                   #:directories? #t)))
-                             (new (string-append (dirname old)
-                                                 "/site-ccache")))
-                        (rename-file old new)
-                        #t))))))
     (native-inputs
      (list texinfo pkg-config autoconf automake libtool
+           guile-3.0            ;for 'guild compile
            ;; Gettext brings 'AC_LIB_LINKFLAGS_FROM_LIBS'
            gettext-minimal))
     (inputs
-     (list guile-3.0))
+     (list guile-3.0))                            ;for libguile-3.0.so
+    (supported-systems
+     ;; This version requires 'epoll' and is thus limited to Linux-based
+     ;; systems, but this may change soon:
+     ;; <https://github.com/wingo/fibers/pull/53>.
+     (filter (cut string-suffix? "-linux" <>) %supported-systems))
     (synopsis "Lightweight concurrency facility for Guile")
     (description
      "Fibers is a Guile library that implements a a lightweight concurrency
@@ -657,6 +647,7 @@ communication between fibers.
 Note that Fibers makes use of some Guile 2.1/2.2-specific features and
 is not available for Guile 2.0.")
     (home-page "https://github.com/wingo/fibers")
+    (properties '((upstream-name . "fibers")))
     (license license:lgpl3+)))
 
 (define-public guile-fibers
@@ -716,7 +707,12 @@ is not available for Guile 2.0.")
   (package
     (inherit guile-fibers-1.1)
     (name "guile2.2-fibers")
-    (inputs (list guile-2.2))))
+    (inputs
+     (modify-inputs (package-inputs guile-fibers-1.1)
+       (replace "guile" guile-2.2)))
+    (native-inputs
+     (modify-inputs (package-native-inputs guile-fibers-1.1)
+       (replace "guile" guile-2.2)))))
 
 (define-public guile-filesystem
   (package
@@ -818,14 +814,14 @@ HTML (via SXML) or any other format for rendering.")
 (define-public guile-sjson
   (package
     (name "guile-sjson")
-    (version "0.2.1")
+    (version "0.2.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://dustycloud.org/misc/sjson-" version
                                   ".tar.gz"))
               (sha256
                (base32
-                "1mzmapln79vv10qxaggz9qwcdbag3jnrj19xx8bgkmxss8h03sv3"))
+                "08sr16fg5cqvik3wblav6k4b6djc5ydhgfvxa49bc5bh1irqvrcn"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -1412,7 +1408,9 @@ microblogging service.")
      '(#:make-flags
        '("GUILE_AUTO_COMPILE=0"))) ;to prevent guild warnings
     (inputs
-     (list guile-3.0 parted))
+     ;; XXX: Use Parted 3.4 to work around issues when using 3.5 in the Guix
+     ;; System installer: <https://issues.guix.gnu.org/55549>.
+     (list guile-3.0 parted-3.4))
     (propagated-inputs
      (list guile-bytestructures))
     (native-inputs
@@ -1741,7 +1739,7 @@ provides tight coupling to Guix.")
 (define-public guile-ics
   (package
     (name "guile-ics")
-    (version "0.2.0")
+    (version "0.2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1750,26 +1748,17 @@ provides tight coupling to Guix.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0qjjvadr7gibdq9jvwkmlkb4afsw9n2shfj9phpiadinxk3p4m2g"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; Allow builds with Guile 3.0.
-                  (substitute* "configure.ac"
-                    (("^GUILE_PKG.*")
-                     "GUILE_PKG([3.0 2.2 2.0])\n"))
-                  #t))))
+                "11wv6qk8xd4sd8s97mnw383p098ffivk0na4jii76r5wbmg1wd7q"))
+              (modules '((guix build utils)))))
     (build-system gnu-build-system)
-    ;; XXX: Tests expect 'test-runner-current' to not return #f after
-    ;; 'test-end', which is no longer the case in Guile 3.0.7.
-    (arguments '(#:tests? #f))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("texinfo" ,texinfo)
-       ;; Gettext brings 'AC_LIB_LINKFLAGS_FROM_LIBS'.
-       ("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf
+           automake
+           texinfo
+           ;; Gettext brings 'AC_LIB_LINKFLAGS_FROM_LIBS'.
+           gettext-minimal
+           help2man
+           pkg-config))
     (inputs (list guile-3.0 which))
     (propagated-inputs (list guile-lib))
     (home-page "https://github.com/artyom-poptsov/guile-ics")
@@ -2548,7 +2537,7 @@ interface for reading articles in any format.")
 (define-public guile-redis
   (package
     (name "guile-redis")
-    (version "2.1.1")
+    (version "2.2.0")
     (home-page "https://github.com/aconchillo/guile-redis")
     (source (origin
               (method git-fetch)
@@ -2558,7 +2547,7 @@ interface for reading articles in any format.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0pvk4yadgx64wk81cpisdc7zqhk6ww58xi5fs5fs6s28wb6l5bfj"))))
+                "0cb31vj88f3hj93v1lzxcqjyz7ym2gmpk31gv5i2dqv721frnlyj"))))
     (build-system gnu-build-system)
     (arguments
      '(#:make-flags '("GUILE_AUTO_COMPILE=0")))
@@ -3225,21 +3214,17 @@ API.")
       (license license:expat))))
 
 (define-public guile-srfi-189
-  (let ((commit "a0e3786702956c9e510d92746474ac988c2010ec")
-        (revision "0"))
+  (let ((commit "659e3cd0fc2bfca9085424eda8cad804ead2a9ea")
+        (revision "1"))
     (package
       (name "guile-srfi-189")
-      (version (git-version "0" revision commit))
+      ;; 'final' is the name of the latest git tag.
+      (version (git-version "final" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
-               ;; This is a fork of:
-               ;; (url "https://github.com/scheme-requests-for-implementation/srfi-189")
-               ;; Upstream merge requested at:
-               ;; https://github.com/scheme-requests-for-implementation/srfi-189/pull/21
-               ;; TODO switch over to the official repo when the PR gets merged
-               (url "https://github.com/attila-lendvai-patches/srfi-189")
+               (url "https://github.com/scheme-requests-for-implementation/srfi-189")
                (commit commit)))
          (sha256
           (base32
@@ -3316,7 +3301,7 @@ or errors (Left).")
            guile-lib
            guile-readline
            freeglut
-           webkitgtk))
+           webkitgtk-with-libsoup2))
     (propagated-inputs
      `(("glib-networking" ,glib-networking)
        ("gssettings-desktop-schemas" ,gsettings-desktop-schemas)))
@@ -3332,8 +3317,7 @@ or errors (Left).")
        (modify-phases %standard-phases
          (add-before 'configure 'setenv
            (lambda _
-             (setenv "GUILE_AUTO_COMPILE" "0")
-             #t))
+             (setenv "GUILE_AUTO_COMPILE" "0")))
          (add-after 'install 'wrap-binaries
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -3354,8 +3338,7 @@ or errors (Left).")
                (map (cut wrap-program <>
                          `("GUILE_LOAD_PATH" ":" prefix ,scm-path)
                          `("GUILE_LOAD_COMPILED_PATH" ":" prefix ,go-path))
-                    progs)
-               #t))))))
+                    progs)))))))
     (home-page "https://savannah.nongnu.org/projects/emacsy")
     (synopsis "Embeddable GNU Emacs-like library using Guile")
     (description
@@ -3823,45 +3806,64 @@ and space linear in the size of the input text.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0rl809qimhgz6b0rixakb42r2l4g53jr09a2g0s1hxgab0blz0kb"))))
+                "0rl809qimhgz6b0rixakb42r2l4g53jr09a2g0s1hxgab0blz0kb"))
+              (patches (search-patches "guile-ac-d-bus-fix-tests.patch"))))
     (build-system guile-build-system)
     (arguments
-     `(#:implicit-inputs? #f                      ;needs nothing but Guile
-       #:compile-flags '("--r6rs" "-Wunbound-variable" "-Warity-mismatch")
-       #:phases (modify-phases %standard-phases
-                  (add-before 'build 'adjust-for-guile
-                    (lambda _
-                      ;; Adjust source file names for Guile.
-                      (define (guile-sls->sls file)
-                        (string-append (string-drop-right
-                                        file (string-length ".guile.sls"))
-                                       ".sls"))
+     (list
+      #:implicit-inputs? #f             ;needs nothing but Guile
+      #:compile-flags #~(list "--r6rs" "-Wunbound-variable" "-Warity-mismatch")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'adjust-for-guile
+            (lambda _
+              ;; Adjust source file names for Guile.
+              (define (guile-sls->sls file)
+                (string-append (string-drop-right
+                                file (string-length ".guile.sls"))
+                               ".sls"))
 
-                      ;; Remove files targeting other implementations:
-                      ;; *.mosh.sls, etc.
-                      (for-each delete-file
-                                (find-files
-                                 "compat"
-                                 (lambda (file stat)
-                                   (not (string-contains file ".guile.")))))
+              ;; Remove files targeting other implementations: *.mosh.sls,
+              ;; etc.
+              (for-each delete-file
+                        (find-files
+                         "compat"
+                         (lambda (file stat)
+                           (not (string-contains file ".guile.")))))
 
-                      ;; Rename *.guile.sls to *.sls so the ".guile" bit does
-                      ;; not appear in .go file names.
-                      (for-each (lambda (file)
-                                  (rename-file file (guile-sls->sls file)))
-                                (find-files "compat" "\\.guile\\.sls"))
+              ;; Rename *.guile.sls to *.sls so the ".guile" bit does not
+              ;; appear in .go file names.
+              (for-each (lambda (file)
+                          (rename-file file (guile-sls->sls file)))
+                        (find-files "compat" "\\.guile\\.sls"))
 
-                      ;; Move directories under d-bus/ to match module names.
-                      (mkdir "d-bus")
-                      (for-each (lambda (directory)
-                                  (rename-file directory
-                                               (string-append "d-bus/"
-                                                              directory)))
-                                '("compat" "protocol"))
-
-                      #t)))))
+              ;; Move directories under d-bus/ to match module names.
+              (mkdir "d-bus")
+              (for-each (lambda (directory)
+                          (rename-file directory
+                                       (string-append "d-bus/"
+                                                      directory)))
+                        '("compat" "protocol"))))
+          (add-after 'build 'build-doc
+            (lambda _
+              (with-directory-excursion "docs"
+                (invoke "makeinfo" "ac-d-bus"))))
+          (add-after 'build-doc 'check
+            (lambda* (#:key (tests? #t) #:allow-other-keys)
+              (when tests?
+                ;; There is no locale for the ö character, which crashes
+                ;; substitute*; reset the conversion strategy to workaround it.
+                (with-fluids ((%default-port-conversion-strategy 'substitute))
+                  (substitute* (find-files "tests")
+                    (("#!/usr/bin/env scheme-script")
+                     (string-append "#!" (which "guile")))))
+                (invoke "./run-tests.sh"))))
+          (add-after 'install 'install-doc
+            (lambda _
+              (install-file "docs/ac-d-bus.info"
+                            (string-append #$output "/share/info")))))))
     (native-inputs
-     (list guile-3.0))
+     (list bash-minimal guile-3.0 texinfo))
     (propagated-inputs
      (list guile-packrat))
     (synopsis "D-Bus protocol implementation in R6RS Scheme")
@@ -3970,7 +3972,7 @@ over, or update a value in arbitrary data structures.")
 (define-public guile-xapian
   (package
     (name "guile-xapian")
-    (version "0.1.0")
+    (version "0.2.0")
     (home-page "https://git.systemreboot.net/guile-xapian")
     (source
      (origin
@@ -3980,14 +3982,7 @@ over, or update a value in arbitrary data structures.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "16k61f1jn3g48jaf3730b9l0izr5j933jzyri73nmcnjd09gm35i"))
-       (modules '((guix build utils)))
-       (snippet
-        ;; Guile >= 3.0.7 no longer uses libltdl so we need to explicitly add
-        ;; ".libs" so that 'load-extension' finds the '.so' file.
-        '(substitute* "pre-inst-env.in"
-           (("^LD_LIBRARY_PATH=.*$")
-            "LD_LIBRARY_PATH=\"$abs_top_builddir/.libs\"\n")))))
+         "140cwzpzk4y16ajxrg5zd2d7q60f5ivx5jk8w1h0qfjq2mp14sh7"))))
     (build-system gnu-build-system)
     (arguments
      '(#:make-flags '("GUILE_AUTO_COMPILE=0"))) ; to prevent guild warnings

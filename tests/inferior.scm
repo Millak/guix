@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018-2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -61,6 +61,20 @@
                                  inferior)))
            (close-inferior inferior)
            (list a (inferior-object? b))))))
+
+(test-equal "close-inferior"
+  '((hello) (world))
+  (let* ((inferior1 (open-inferior %top-builddir #:command "scripts/guix"))
+         (lst1      (inferior-eval '(list 'hello) inferior1))
+         (inferior2 (open-inferior %top-builddir #:command "scripts/guix"))
+         (lst2      (inferior-eval '(list 'world) inferior2)))
+    ;; This call succeeds if and only if INFERIOR2 does not also hold a file
+    ;; descriptor to the socketpair beneath INFERIOR1; otherwise it blocks.
+    ;; See <https://issues.guix.gnu.org/55441#10>.
+    (close-inferior inferior1)
+
+    (close-inferior inferior2)
+    (list lst1 lst2)))
 
 (test-equal "&inferior-exception"
   '(a b c d)

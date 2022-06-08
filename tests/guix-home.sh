@@ -69,7 +69,7 @@ trap 'chmod -Rf +w "$test_directory"; rm -rf "$test_directory"' EXIT
   (list
    (simple-service 'test-config
                    home-files-service-type
-                   (list `("config/test.conf"
+                   (list `(".config/test.conf"
                            ,(plain-file
                              "tmp-file.txt"
                              "the content of ~/.config/test.conf"))))

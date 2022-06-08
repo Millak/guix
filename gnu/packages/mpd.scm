@@ -47,6 +47,7 @@
   #:use-module (gnu packages boost)
   #:use-module (gnu packages cdrom)
   #:use-module (gnu packages cmake) ;for MPD
+  #:use-module (gnu packages freedesktop) ;elogind
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
@@ -107,7 +108,7 @@ interfacing MPD in the C, C++ & Objective C languages.")
 (define-public mpd
   (package
     (name "mpd")
-    (version "0.23.6")
+    (version "0.23.7")
     (source (origin
               (method url-fetch)
               (uri
@@ -116,15 +117,31 @@ interfacing MPD in the C, C++ & Objective C languages.")
                               "/mpd-" version ".tar.xz"))
               (sha256
                (base32
-                "1v969w7h3660ph3h2bdlkrzc05pfz95bmxjqdbzzf7pfwf795ifb"))))
+                "04c2fr4akiylafb7wdjzn7r7d90rmzilbnagrifqyf3wf6ncn3cn"))))
     (build-system meson-build-system)
     (arguments
-     `(#:configure-flags '("-Ddocumentation=enabled")))
+     (list
+      #:configure-flags #~(list "-Ddocumentation=enabled"
+                                "-Dsystemd=enabled")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'enable-elogind
+            (lambda _
+              (substitute* "src/lib/systemd/meson.build"
+                (("libsystemd") "libelogind"))
+              ;; XXX: systemd dependency overwritten internally, leads to bad
+              ;;      errors
+              (substitute* "src/lib/systemd/meson.build"
+                (("systemd_dep = declare_dependency" all)
+                 (string-append "_" all)))
+              (substitute* "meson.build"
+                (("systemd_dep,") "systemd_dep, _systemd_dep,")))))))
     (inputs (list ao
                   alsa-lib
                   avahi
                   boost
                   curl
+                  elogind
                   ffmpeg
                   flac
                   fmt
@@ -267,14 +284,14 @@ sort playlists, and a local file system browser.")
 (define-public mpdscribble
   (package
     (name "mpdscribble")
-    (version "0.23")
+    (version "0.24")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://www.musicpd.org/download/mpdscribble/"
                                   version "/mpdscribble-" version ".tar.xz"))
               (sha256
                (base32
-                "0s66zqscb44p88cl3kcv5jkjcqsskcnrv7xgrjhzrchf2kcpwf53"))))
+                "1rx8n8pvx3a6n6z51pgy00p4rs93iqy95d3ha9q7xf5k92kwpd7n"))))
     (build-system meson-build-system)
     (inputs (list boost curl libgcrypt libmpdclient))
     (native-inputs (list pkg-config))

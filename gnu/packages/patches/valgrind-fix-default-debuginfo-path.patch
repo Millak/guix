@@ -1,0 +1,100 @@
+From a7f17b57a94e9cde6d7fa96ac86be5c4fc4f9211 Mon Sep 17 00:00:00 2001
+From: Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
+Date: Sun, 24 Apr 2022 22:20:50 +0200
+Subject: [PATCH] valgrind: fix default debuginfo path
+
+Description: Workaround for missing symbol in Guix's ld.so. The
+ correct fix (not stripping all the ld.so symbols) will be done in the
+ next Guix release as it requires to recompile a lot of packages.
+
+Forwarded: not-needed
+Bug-Guix: https://issues.guix.gnu.org/54728
+Author: Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
+---
+ coregrind/m_debuginfo/readelf.c | 11 ++++++-----
+ docs/xml/manual-core-adv.xml    |  4 ++--
+ docs/xml/manual-core.xml        |  2 +-
+ 3 files changed, 9 insertions(+), 8 deletions(-)
+
+diff --git a/coregrind/m_debuginfo/readelf.c b/coregrind/m_debuginfo/readelf.c
+index c586e3f33..947fcc500 100644
+--- a/coregrind/m_debuginfo/readelf.c
++++ b/coregrind/m_debuginfo/readelf.c
+@@ -1509,9 +1509,9 @@ DiImage* find_debug_file( struct _DebugInfo* di,
+ 
+    if (buildid != NULL) {
+       debugpath = ML_(dinfo_zalloc)("di.fdf.1",
+-                                    VG_(strlen)(buildid) + 33);
++                                    VG_(strlen)(buildid) + DEBUGPATH_EXTRA_BYTES_1);
+ 
+-      VG_(sprintf)(debugpath, "/usr/lib/debug/.build-id/%c%c/%s.debug",
++      VG_(sprintf)(debugpath, "DEFAULT_DEBUGINFO_PATH/.build-id/%c%c/%s.debug",
+                    buildid[0], buildid[1], buildid + 2);
+ 
+       dimg = open_debug_file(debugpath, buildid, 0, rel_ok, NULL);
+@@ -1536,7 +1536,8 @@ DiImage* find_debug_file( struct _DebugInfo* di,
+ 
+       debugpath = ML_(dinfo_zalloc)(
+                      "di.fdf.3",
+-                     VG_(strlen)(objdir) + VG_(strlen)(debugname) + 64
++                     VG_(strlen)(objdir) + VG_(strlen)(debugname)
++                     + VG_(strlen)("DEFAULT_DEBUGINFO_PATH/") + 1
+                      + (extrapath ? VG_(strlen)(extrapath) : 0)
+                      + (serverpath ? VG_(strlen)(serverpath) : 0));
+ 
+@@ -1561,7 +1562,7 @@ DiImage* find_debug_file( struct _DebugInfo* di,
+ 
+       TRY_OBJDIR_USRMERGE_OBJDIR("%s/%s");
+       TRY_OBJDIR_USRMERGE_OBJDIR("%s/.debug/%s");
+-      TRY_OBJDIR_USRMERGE_OBJDIR("/usr/lib/debug%s/%s");
++      TRY_OBJDIR_USRMERGE_OBJDIR("DEFAULT_DEBUGINFO_PATH%s/%s");
+ 
+       if (extrapath) {
+          TRY_OBJDIR("%s%s/%s", extrapath, objdir, debugname);
+@@ -1631,7 +1632,7 @@ DiImage* find_debug_file_ad_hoc( const DebugInfo* di,
+ 
+    debugpath = ML_(dinfo_zalloc)(
+                   "di.fdfah.3",
+-                  VG_(strlen)(objdir) + 64
++                  VG_(strlen)(objdir) + DEBUGPATH_EXTRA_BYTES_2
+                   + (extrapath ? VG_(strlen)(extrapath) : 0)
+                   + (serverpath ? VG_(strlen)(serverpath) : 0));
+ 
+diff --git a/docs/xml/manual-core-adv.xml b/docs/xml/manual-core-adv.xml
+index 1fa801edc..a7c01d5e6 100644
+--- a/docs/xml/manual-core-adv.xml
++++ b/docs/xml/manual-core-adv.xml
+@@ -447,7 +447,7 @@ Valgrind embedded gdbserver:</para>
+ Remote debugging using | vgdb
+ relaying data between gdb and process 2418
+ Reading symbols from /lib/ld-linux.so.2...done.
+-Reading symbols from /usr/lib/debug/lib/ld-2.11.2.so.debug...done.
++Reading symbols from DEFAULT_DEBUGINFO_PATH/lib/ld-2.11.2.so.debug...done.
+ Loaded symbols for /lib/ld-linux.so.2
+ [Switching to Thread 2418]
+ 0x001f2850 in _start () from /lib/ld-linux.so.2
+@@ -475,7 +475,7 @@ Remote communication error: Resource temporarily unavailable.
+ Remote debugging using | vgdb --pid=2479
+ relaying data between gdb and process 2479
+ Reading symbols from /lib/ld-linux.so.2...done.
+-Reading symbols from /usr/lib/debug/lib/ld-2.11.2.so.debug...done.
++Reading symbols from DEFAULT_DEBUGINFO_PATH/lib/ld-2.11.2.so.debug...done.
+ Loaded symbols for /lib/ld-linux.so.2
+ [Switching to Thread 2479]
+ 0x001f2850 in _start () from /lib/ld-linux.so.2
+diff --git a/docs/xml/manual-core.xml b/docs/xml/manual-core.xml
+index dc33e1269..f6eb60086 100644
+--- a/docs/xml/manual-core.xml
++++ b/docs/xml/manual-core.xml
+@@ -1409,7 +1409,7 @@ that can report errors, e.g. Memcheck, but not Cachegrind.</para>
+     <listitem>
+       <para>By default Valgrind searches in several well-known paths
+       for debug objects, such
+-      as <computeroutput>/usr/lib/debug/</computeroutput>.</para>
++      as <computeroutput>DEFAULT_DEBUGINFO_PATH/</computeroutput>.</para>
+ 
+       <para>However, there may be scenarios where you may wish to put
+       debug objects at an arbitrary location, such as external storage
+-- 
+2.35.1
+

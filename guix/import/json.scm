@@ -35,13 +35,16 @@
             json->scheme-file))
 
 (define* (json-fetch url
+                     #:key
+                     (http-fetch http-fetch)
                      ;; Note: many websites returns 403 if we omit a
                      ;; 'User-Agent' header.
-                     #:key (headers `((user-agent . "GNU Guile")
-                                      (Accept . "application/json"))))
+                     (headers `((user-agent . "GNU Guile")
+                                (Accept . "application/json"))))
   "Return a representation of the JSON resource URL (a list or hash table), or
 #f if URL returns 403 or 404.  HEADERS is a list of HTTP headers to pass in
-the query."
+the query.  HTTP-FETCH is called to perform the request: for example, to
+enable caching, supply 'http-fetch/cached'."
   (guard (c ((and (http-get-error? c)
                   (let ((error (http-get-error-code c)))
                     (or (= 403 error)

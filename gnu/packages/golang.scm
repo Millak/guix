@@ -33,6 +33,7 @@
 ;;; Copyright © 2021 Chadwain Holness <chadwainholness@gmail.com>
 ;;; Copyright © 2021 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2021 Lu Hui <luhux76@gmail.com>
+;;; Copyright © 2022 Pier-Hugues Pellerin <phpellerin@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -466,7 +467,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
   (package
     (inherit go-1.14)
     (name "go")
-    (version "1.16.14")
+    (version "1.16.15")
     (source
      (origin
        (method git-fetch)
@@ -476,7 +477,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "16pn7avzmlw28sldx6yv38a1afdwj7jz3x7kjvlagysqrsh5lwwl"))))
+         "0vlk0r4600ah9fg5apdd93g7i369k0rkzcgn7cs8h6qq2k6hpxjl"))))
     (arguments
      (substitute-keyword-arguments
          (strip-keyword-arguments '(#:tests?) (package-arguments go-1.14))
@@ -625,7 +626,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
   (package
     (inherit go-1.16)
     (name "go")
-    (version "1.17.7")
+    (version "1.17.8")
     (source
      (origin
        (method git-fetch)
@@ -635,7 +636,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0d0xybn7sy4za3f0s2ffb6yfv6pjabnk4jyvz7dn3hjqhd5lks7m"))))
+         "05qfs17wddxmmi349g9ci12w9fjb5vbss6qpjc4qzgqzznqf0ycy"))))
     (outputs '("out" "tests")) ; 'tests' contains distribution tests.
     (arguments
      `(#:modules ((ice-9 match)
@@ -3509,7 +3510,7 @@ middleware for Go web applications and services.")
 (define-public go-github-com-spf13-cobra
   (package
     (name "go-github-com-spf13-cobra")
-    (version "1.0.0")
+    (version "1.4.0")
     (source
      (origin
        (method git-fetch)
@@ -3519,7 +3520,7 @@ middleware for Go web applications and services.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0vbppqqhby302a5ayn0296jqr71qkcd4c9am7wzsk6z71fwdsa7h"))))
+         "0ijhnk9pcks1v1cxri4kf6v1h26ym3jikmkgv4fdfrmm7sqgva13"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/spf13/cobra"))

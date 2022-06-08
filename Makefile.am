@@ -130,7 +130,14 @@ MODULES =					\
   guix/cache.scm				\
   guix/cve.scm					\
   guix/workers.scm				\
+  guix/least-authority.scm			\
   guix/ipfs.scm					\
+  guix/platform.scm                             \
+  guix/platforms/arm.scm                        \
+  guix/platforms/mips.scm                       \
+  guix/platforms/powerpc.scm                    \
+  guix/platforms/riscv.scm                      \
+  guix/platforms/x86.scm                        \
   guix/build-system.scm				\
   guix/build-system/android-ndk.scm		\
   guix/build-system/ant.scm			\
@@ -140,6 +147,7 @@ MODULES =					\
   guix/build-system/cmake.scm			\
   guix/build-system/dub.scm			\
   guix/build-system/dune.scm			\
+  guix/build-system/elm.scm			\
   guix/build-system/emacs.scm			\
   guix/build-system/font.scm			\
   guix/build-system/go.scm			\
@@ -192,6 +200,7 @@ MODULES =					\
   guix/build/cmake-build-system.scm		\
   guix/build/dub-build-system.scm		\
   guix/build/dune-build-system.scm		\
+  guix/build/elm-build-system.scm		\
   guix/build/emacs-build-system.scm		\
   guix/build/meson-build-system.scm		\
   guix/build/minify-build-system.scm		\
@@ -257,6 +266,7 @@ MODULES =					\
   guix/import/cran.scm				\
   guix/import/crate.scm				\
   guix/import/egg.scm   			\
+  guix/import/elm.scm				\
   guix/import/elpa.scm   			\
   guix/import/gem.scm				\
   guix/import/git.scm                           \
@@ -299,15 +309,18 @@ MODULES =					\
   guix/scripts/describe.scm			\
   guix/scripts/style.scm			\
   guix/scripts/system.scm			\
-  guix/scripts/system/search.scm		\
+  guix/scripts/system/edit.scm			\
   guix/scripts/system/reconfigure.scm		\
+  guix/scripts/system/search.scm		\
   guix/scripts/home.scm			\
+  guix/scripts/home/edit.scm			\
   guix/scripts/home/import.scm			\
   guix/scripts/lint.scm				\
   guix/scripts/challenge.scm			\
   guix/scripts/import/crate.scm			\
   guix/scripts/import/cran.scm			\
   guix/scripts/import/egg.scm   		\
+  guix/scripts/import/elm.scm			\
   guix/scripts/import/elpa.scm  		\
   guix/scripts/import/gem.scm			\
   guix/scripts/import/gnu.scm			\
@@ -380,10 +393,10 @@ AUX_FILES =						\
   gnu/packages/aux-files/chromium/master-preferences.json		\
   gnu/packages/aux-files/emacs/guix-emacs.el		\
   gnu/packages/aux-files/guix.vim			\
-  gnu/packages/aux-files/linux-libre/5.16-arm.conf	\
-  gnu/packages/aux-files/linux-libre/5.16-arm64.conf	\
-  gnu/packages/aux-files/linux-libre/5.16-i686.conf	\
-  gnu/packages/aux-files/linux-libre/5.16-x86_64.conf	\
+  gnu/packages/aux-files/linux-libre/5.17-arm.conf	\
+  gnu/packages/aux-files/linux-libre/5.17-arm64.conf	\
+  gnu/packages/aux-files/linux-libre/5.17-i686.conf	\
+  gnu/packages/aux-files/linux-libre/5.17-x86_64.conf	\
   gnu/packages/aux-files/linux-libre/5.15-arm.conf	\
   gnu/packages/aux-files/linux-libre/5.15-arm64.conf	\
   gnu/packages/aux-files/linux-libre/5.15-i686.conf	\
@@ -405,8 +418,6 @@ AUX_FILES =						\
   gnu/packages/aux-files/linux-libre/4.14-x86_64.conf	\
   gnu/packages/aux-files/linux-libre/4.9-i686.conf	\
   gnu/packages/aux-files/linux-libre/4.9-x86_64.conf	\
-  gnu/packages/aux-files/linux-libre/4.4-i686.conf	\
-  gnu/packages/aux-files/linux-libre/4.4-x86_64.conf	\
   gnu/packages/aux-files/pack-audit.c			\
   gnu/packages/aux-files/python/sanity-check.py		\
   gnu/packages/aux-files/python/sitecustomize.py	\
@@ -474,6 +485,7 @@ SCM_TESTS =					\
   tests/derivations.scm			\
   tests/discovery.scm				\
   tests/egg.scm				\
+  tests/elm.scm				\
   tests/elpa.scm				\
   tests/file-systems.scm			\
   tests/gem.scm				\
@@ -487,6 +499,7 @@ SCM_TESTS =					\
   tests/gremlin.scm				\
   tests/hackage.scm				\
   tests/home-import.scm				\
+  tests/home-services.scm			\
   tests/http-client.scm				\
   tests/import-git.scm				\
   tests/import-github.scm			\
@@ -569,6 +582,7 @@ SH_TESTS =					\
   tests/guix-environment.sh			\
   tests/guix-environment-container.sh		\
   tests/guix-shell.sh				\
+  tests/guix-shell-export-manifest.sh		\
   tests/guix-graph.sh				\
   tests/guix-describe.sh			\
   tests/guix-repl.sh     			\
@@ -1069,20 +1083,34 @@ WEBLATE_REPO = https://framagit.org/tyreunom/guix-translations
 # form.
 download-po:
 	dir=$$(mktemp -d); \
-	git clone --depth 1 "$(WEBLATE_REPO)" "$$dir/translations"; \
+	git clone --depth 1 "$(WEBLATE_REPO)" "$$dir/translations" && \
 	for domain in po/doc po/guix po/packages; do \
 	    for po in "$$dir/translations/$$domain"/*.po; do \
 	        translated=$$(LANG=en_US.UTF-8 msgfmt --statistics "$$po" 2>&1 | cut -f1 -d' '); \
+	        untranslated=$$(LANG=en_US.UTF-8 msgfmt --statistics "$$po" 2>&1 | rev | cut -f3 -d' ' | rev); \
+	        untranslated=$${untranslated:-0}; \
+	        total=$$(($$translated+$$untranslated)); \
 	        target=$$(basename "$$po"); \
 	        target="$$domain/$$target"; \
-	        if msgfmt -c "$$po" && [ "$$translated" != "0" ]; then \
+	        msgfmt -c "$$po"; \
+	        if msgfmt -c "$$po" && [ "$$translated" != "0" ] && ([ "$$domain" != "po/doc" ] || [ "$$translated" -gt $$(($$total/10)) ] || [ -f $$target ]); then \
 	            msgfilter --no-wrap -i "$$po" cat > "$$po".tmp; \
 	            mv "$$po".tmp "$$target"; \
 	            echo "copied $$target."; \
 	        else \
-	            echo "WARN: $$target ($$translated translated messages) was not added/updated."; \
+	            echo "WARN: $$target ($$translated translated messages ($$((translated/total*100))%)) was not added/updated."; \
 	        fi; \
 	    done; \
+	done; \
+	for po in po/doc/*.po; do \
+	    translated=$$(LANG=en_US.UTF-8 msgfmt --statistics "$$po" 2>&1 | cut -f1 -d' '); \
+	    untranslated=$$(LANG=en_US.UTF-8 msgfmt --statistics "$$po" 2>&1 | rev | cut -f3 -d' ' | rev); \
+	    untranslated=$${untranslated:-0}; \
+	    total=$$(($$translated + $$untranslated)); \
+	    if [ "$$translated" -lt "$$(($$total/20))" ]; then \
+	        echo "WARN: $$po was removed because it is below the 5% threshold: $$((translated/total*100))%"; \
+	        rm $$po; \
+	    fi; \
 	done; \
 	rm -rf "$$dir"
 .PHONY: download-po

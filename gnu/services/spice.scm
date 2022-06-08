@@ -69,7 +69,10 @@
     (list (service-extension shepherd-root-service-type
                              spice-vdagent-shepherd-service)
           (service-extension profile-service-type
-                             spice-vdagent-profile)))))
+                             spice-vdagent-profile)))
+   (description "Start the @command{vdagentd} and @command{vdagent} daemons
+from the @code{spice-vdagent} package to enable window resizing and clipboard
+sharing for @acronym{VM, virtual machine} guests.")))
 
 (define* (spice-vdagent-service
           #:optional (config (spice-vdagent-configuration)))

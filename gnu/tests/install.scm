@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017, 2019, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
@@ -66,6 +66,7 @@
             %test-separate-home-os
             %test-raid-root-os
             %test-encrypted-root-os
+            %test-encrypted-home-os
             %test-encrypted-root-not-boot-os
             %test-btrfs-root-os
             %test-btrfs-root-on-subvolume-os
@@ -920,6 +921,117 @@ reboot\n")
                          (command (qemu-command* images)))
       (run-basic-test %lvm-separate-home-os
                       `(,@command) "lvm-separate-home-os")))))
+
+
+;;;
+;;; LUKS-encrypted /home, unencrypted root.
+;;;
+
+(define-os-with-source (%encrypted-home-os %encrypted-home-os-source)
+  (use-modules (gnu) (gnu tests))
+
+  (operating-system
+    (host-name "cipherhome")
+    (timezone "Europe/Paris")
+    (locale "en_US.utf8")
+
+    (bootloader (bootloader-configuration
+                 (bootloader grub-bootloader)
+                 (targets (list "/dev/vdb"))))
+
+    ;; Note: Do not pass "console=ttyS0" so we can use our passphrase prompt
+    ;; detection logic in 'enter-luks-passphrase'.
+
+    (mapped-devices (list (mapped-device
+                           (source (uuid "12345678-1234-1234-1234-123456789abc"))
+                           (target "the-home-device")
+                           (type luks-device-mapping))))
+    (file-systems (cons* (file-system
+                           (device (file-system-label "root-fs"))
+                           (mount-point "/")
+                           (type "ext4"))
+                         (file-system
+                           (device (file-system-label "home-fs"))
+                           (mount-point "/home")
+                           (type "ext4")
+                           (dependencies mapped-devices))
+                        %base-file-systems))
+    (users %base-user-accounts)
+    (services (cons (service marionette-service-type
+                             (marionette-configuration
+                              (imported-modules '((gnu services herd)
+                                                  (guix combinators)))))
+                    %base-services))))
+
+(define %encrypted-home-installation-script
+  (string-append "\
+. /etc/profile
+set -e -x
+guix --version
+
+export GUIX_BUILD_OPTIONS=--no-grafts
+parted --script /dev/vdb mklabel gpt \\
+  mkpart primary ext2 1M 3M \\
+  mkpart primary ext2 3M 1.6G \\
+  mkpart primary 1.6G 2.0G \\
+  set 1 boot on \\
+  set 1 bios_grub on
+
+echo -n " %luks-passphrase " | \\
+  cryptsetup luksFormat --uuid=12345678-1234-1234-1234-123456789abc -q /dev/vdb3 -
+echo -n " %luks-passphrase " | \\
+  cryptsetup open --type luks --key-file - /dev/vdb3 the-home-device
+
+mkfs.ext4 -L root-fs /dev/vdb2
+mkfs.ext4 -L home-fs /dev/mapper/the-home-device
+mount /dev/vdb2 /mnt
+mkdir /mnt/home
+mount /dev/mapper/the-home-device /mnt/home
+df -h /mnt /mnt/home
+herd start cow-store /mnt
+mkdir /mnt/etc
+cp /etc/target-config.scm /mnt/etc/config.scm
+guix system init /mnt/etc/config.scm /mnt --no-substitutes
+sync
+reboot\n"))
+
+(define (enter-luks-passphrase-for-home marionette)
+  "Return a gexp to be inserted in the basic system test running on MARIONETTE
+to enter the LUKS passphrase.  Note that 'cryptsetup open' in this case is
+launched as a shepherd service."
+  (let ((ocrad (file-append ocrad "/bin/ocrad")))
+    #~(begin
+        (define (passphrase-prompt? text)
+          (string-contains (pk 'screen-text text) "Enter pass"))
+
+        (test-assert "enter LUKS passphrase for the shepherd service"
+          (begin
+            ;; XXX: Here we use OCR as well but we could instead use QEMU
+            ;; '-serial stdio' and run it in an input pipe,
+            (wait-for-screen-text #$marionette passphrase-prompt?
+                                  #:ocrad #$ocrad
+                                  #:timeout 120)
+            (marionette-type #$(string-append %luks-passphrase "\n")
+                             #$marionette)
+
+            ;; Take a screenshot for debugging purposes.
+            (marionette-control (string-append "screendump " #$output
+                                               "/shepherd-passphrase.ppm")
+                                #$marionette))))))
+
+(define %test-encrypted-home-os
+  (system-test
+   (name "encrypted-home-os")
+   (description
+    "Test functionality of an OS installed with a LUKS /home partition")
+   (value
+    (mlet* %store-monad ((images (run-install %encrypted-home-os
+                                              %encrypted-home-os-source
+                                              #:script
+                                              %encrypted-home-installation-script))
+                         (command (qemu-command* images)))
+      (run-basic-test %encrypted-home-os command "encrypted-home-os"
+                      #:initialization enter-luks-passphrase-for-home)))))
 
 
 ;;;

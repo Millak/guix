@@ -1,0 +1,28 @@
+Submitted upstream: https://gitlab.com/weinholt/ac-d-bus/-/merge_requests/3
+
+diff --git a/tests/test-signature.sps b/tests/test-signature.sps
+index 278401b..cc5574f 100755
+--- a/tests/test-signature.sps
++++ b/tests/test-signature.sps
+@@ -43,6 +43,7 @@
+             (format-type-signature '(message BYTE BYTE BYTE BYTE UINT32 UINT32
+                                              (ARRAY (STRUCT BYTE VARIANT)))))
+ 
++(define fail-count (test-runner-fail-count (test-runner-get)))
+ (test-end)
+ 
+-(exit (if (zero? (test-runner-fail-count (test-runner-get))) 0 1))
++(exit (if (zero? fail-count) 0 1))
+diff --git a/tests/test-wire.sps b/tests/test-wire.sps
+index c3354bf..06ae73b 100755
+--- a/tests/test-wire.sps
++++ b/tests/test-wire.sps
+@@ -147,6 +147,7 @@
+                   #x08 #x01 #x67 #x00  #x00 #x00 #x00 #x00  #x05 #x01 #x75 #x00  #x04 #x00 #x00 #x00
+                   #x07 #x01 #x73 #x00  #x06 #x00 #x00 #x00  #x3A #x31 #x2E #x32  #x39 #x38 #x00 #x00)))
+ 
++(define fail-count (test-runner-fail-count (test-runner-get)))
+ (test-end)
+ 
+-(exit (if (zero? (test-runner-fail-count (test-runner-get))) 0 1))
++(exit (if (zero? fail-count) 0 1))

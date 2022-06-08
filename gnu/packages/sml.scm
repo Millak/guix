@@ -3,7 +3,7 @@
 ;;; Copyright © 2017, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019, 2020 Brett Gilio <brettg@gnu.org>
-;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
+;;; Copyright © 2021, 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -35,7 +35,7 @@
 (define-public polyml
   (package
     (name "polyml")
-    (version "5.8.2")
+    (version "5.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -44,16 +44,14 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1y3i919kzylvhwfsi6adnc0ah0xahl6ncna0g5bcjyhxsq2416rn"))))
+                "0hhij8y0kvchg9rarzrcr9i0f629s2chbg258b0jscicjv9ghi6w"))))
     (build-system gnu-build-system)
     (inputs
      (list gmp lesstif libffi libx11 libxt))
     (arguments
      '(#:configure-flags
-       (list "--with-system-libffi=yes"
-             "--with-x=yes"
-             "--with-threads=yes"
-             "--with-gmp=yes")
+       (list "--with-gmp"
+             "--with-x")
        #:phases
        (modify-phases %standard-phases
          (add-after 'build 'build-compiler
@@ -177,10 +175,22 @@ function interface, and a symbolic debugger.")
                        "sml.boot.amd64-unix/SMLNJ-BASIS/.cm/amd64-unix/basis-common.cm"))
 
              ;; Build.
-             (invoke "./config/install.sh" "-default"
-                     (if (string=? "i686-linux" ,(%current-system))
-                       "32"
-                       "64"))
+             ;; The `sml` executable built by this package somehow inherits the
+             ;; signal dispositions of the shell where it was built. If SIGINT
+             ;; is ignored in the shell, the resulting `sml` will also ignore
+             ;; SIGINT. This will break the use of Ctrl-c for interrupting
+             ;; execution in the SML/NJ REPL.
+             ;; Here, we use Guile's `system` procedure instead of Guix's
+             ;; `invoke` because `invoke` uses Guile's `system*`, which causes
+             ;; SIGINT and SIGQUIT to be ignored.
+             (let ((exit-code
+                     (system (string-append "./config/install.sh -default "
+                                            (if (string=? "i686-linux"
+                                                          ,(%current-system))
+                                              "32"
+                                              "64")))))
+               (unless (zero? exit-code)
+                 (error (format #f "Exit code: ~a" exit-code))))
 
              ;; Undo the binary patch.
              (for-each
@@ -319,7 +329,7 @@ function interface, and a symbolic debugger.")
         ,(smlnj-file version
                      "asdl.tgz"
                      "0mad2df5pmkdsb69gflxma6m6i3gla6hdmjjnkzk76pagpr8zb0m"))))
-    (home-page "http://www.smlnj.org")
+    (home-page "https://www.smlnj.org")
     (synopsis "Standard ML of New Jersey interactive compiler")
     (description
       "SML/NJ is an implementation of the Standard ML programming language.

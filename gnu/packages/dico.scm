@@ -3,6 +3,7 @@
 ;;; Copyright © 2016, 2018 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -41,12 +42,12 @@
     (name "dico")
     (version "2.11")
     (source (origin
-             (method url-fetch)
-             (uri (string-append "mirror://gnu/dico/dico-"
-                                 version ".tar.xz"))
-             (sha256
-              (base32
-               "0nic4mggc0yhms130k7x4qp5k9c42fwg6n8hmk5cmynh6gi9h7xc"))))
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/dico/dico-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "0nic4mggc0yhms130k7x4qp5k9c42fwg6n8hmk5cmynh6gi9h7xc"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags (list (string-append "--with-guile-site-dir=" %output
@@ -59,23 +60,22 @@
                       ;; Guile is too talkative, which disturbs the test
                       ;; infrastructure.  Gag it.
                       (setenv "GUILE_AUTO_COMPILE" "0")
-                      (setenv "GUILE_WARN_DEPRECATED" "no")
-                      #t))
+                      (setenv "GUILE_WARN_DEPRECATED" "no")))
                   (replace 'check
                     (lambda _
                       ;; Test '71: append + dooffs + env' fails if $V is not 2.
                       (invoke "make" "check" "V=2"))))))
     (native-inputs (list groff))
     (inputs
-     `(("m4" ,m4)                                 ;used at run time
-       ("pcre" ,pcre)
-       ("python" ,python-2)
-       ("guile" ,guile-2.2)
-       ("gsasl" ,gsasl)
-       ("readline" ,readline)
-       ("zlib" ,zlib)
-       ("wordnet" ,wordnet)
-       ("libltdl" ,libltdl)))
+     (list m4                           ;used at run time
+           pcre
+           python-wrapper
+           guile-2.2
+           gsasl
+           readline
+           zlib
+           wordnet
+           libltdl))
     (home-page "https://www.gnu.org/software/dico/")
     (synopsis "Implementation of DICT server (RFC 2229)")
     (description
@@ -84,4 +84,4 @@ RFC 2229 (DICT Server).  It is able to access any database available,
 regardless of format, thanks to its modular structure.  New modules may be
 written in C, Guile or Python.  Dico also includes a command-line client,
 which may be used to query remote dictionary databases.")
-   (license gpl3+)))
+    (license gpl3+)))

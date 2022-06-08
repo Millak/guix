@@ -4,6 +4,7 @@
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Tanguy Le Carrour <tanguy@bioneland.org>
+;;; Copyright © 2022 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -40,18 +41,23 @@
 (define-public radicale
   (package
     (name "radicale")
-    (version "3.0.6")
+    (version "3.1.5")
     (source
      (origin
        ;; There are no tests in the PyPI tarball.
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/Kozea/Radicale")
-             (commit version)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xlsvrmx6jhi71j6j8z9sli5vwxasivzjyqf8zq8r0l5p7350clf"))))
+        (base32 "0wg0dg5bq221c6mj6fq53x82w0hb5hyyi8dqxkf6qnhf99bx8qrw"))))
     (build-system python-build-system)
+    (arguments
+      (list
+       ;; TODO: enable again when https://github.com/Kozea/Radicale/issues/1184
+       ;; is fixed
+       #:tests? #f))
     (native-inputs
      (list python-pytest
            python-pytest-cov

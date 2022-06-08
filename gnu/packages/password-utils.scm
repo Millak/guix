@@ -12,7 +12,7 @@
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Jelle Licht <jlicht@fsfe.org>
 ;;; Copyright © 2017, 2019 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2017, 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2017, 2020-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2017 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
 ;;; Copyright © 2017 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018, 2022 Marius Bakke <marius@gnu.org>
@@ -34,6 +34,7 @@
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2021 David Dashyan <mail@davie.li>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -82,6 +83,7 @@
   #:use-module (gnu packages guile)
   #:use-module (gnu packages kerberos)
   #:use-module (gnu packages libffi)
+  #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages man)
   #:use-module (gnu packages multiprecision)
@@ -130,7 +132,7 @@ human.")
 (define-public keepassxc
   (package
     (name "keepassxc")
-    (version "2.6.6")
+    (version "2.7.1")
     (source
      (origin
        (method url-fetch)
@@ -138,39 +140,50 @@ human.")
                            "/releases/download/" version "/keepassxc-"
                            version "-src.tar.xz"))
        (sha256
-        (base32 "1qm4a1k11vy35mrzbzcc7lwlpmjzw18a2zy7z93rqa4vqcdb20rn"))))
+        (base32 "1ryk2ndv93jb155cp7qkjm7jd8hjy0v5gqvdvbdidhrmdiibl0b0"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:modules ((guix build cmake-build-system)
+     (list
+      #:modules '((guix build cmake-build-system)
                   (guix build qt-utils)
                   (guix build utils))
-       #:imported-modules (,@%cmake-build-system-modules
-                            (guix build qt-utils))
-       #:configure-flags '("-DWITH_XC_ALL=YES"
-                           "-DWITH_XC_UPDATECHECK=NO")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-qt
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (wrap-qt-program "keepassxc" #:output out #:inputs inputs)))))))
+      #:imported-modules `(,@%cmake-build-system-modules
+                           (guix build qt-utils))
+      #:configure-flags
+      #~(list "-DWITH_XC_ALL=YES"
+              "-DWITH_XC_UPDATECHECK=NO")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; Fails with "TestCli::testClip() Compared values are not the
+                ;; same".  That test also requires a phase with (setenv
+                ;; "QT_QPA_PLATFORM" "offscreen") in order to work.
+                (invoke "ctest" "--exclude-regex" "testcli"))))
+          (add-after 'install 'wrap-qt
+            (lambda* (#:key inputs #:allow-other-keys)
+              (wrap-qt-program "keepassxc" #:output #$output #:inputs inputs))))))
     (native-inputs
-     `(("asciidoctor" ,ruby-asciidoctor)
-       ("qttools" ,qttools)))
+     (list qttools ruby-asciidoctor))
     (inputs
      (list argon2
+           botan
            libgcrypt
-           libsodium ; XC_BROWSER
-           libyubikey ; XC_YUBIKEY
+           libsodium                    ; XC_BROWSER
+           libusb
+           libyubikey                   ; XC_YUBIKEY
            libxi
            libxtst
+           minizip
+           pcsc-lite
            qrencode
            qtbase-5
            qtsvg
            qtx11extras
-           quazip-0 ; XC_KEESHARE
+           quazip-0                     ; XC_KEESHARE
            readline
-           yubikey-personalization ; XC_YUBIKEY
+           yubikey-personalization      ; XC_YUBIKEY
            zlib))
     (home-page "https://www.keepassxc.org")
     (synopsis "Password manager")
@@ -940,13 +953,13 @@ between hosts and entries in the password store.")
       (native-inputs
        (list perl))
       (inputs
-       `(("gmp" ,gmp)
-         ("libpcap" ,libpcap)
-         ("nss" ,nss)
-         ("openssl" ,openssl)
-         ("python" ,python-2)           ; For "python" and "python2" shebangs
-         ("ruby" ,ruby)                 ; For genincstats.rb
-         ("zlib" ,zlib)))
+       (list gmp
+             libpcap
+             nss
+             openssl
+             python-wrapper
+             ruby                       ; For genincstats.rb
+             zlib))
       (arguments
        `(#:configure-flags
          (list "--with-systemwide"
@@ -1007,8 +1020,7 @@ between hosts and entries in the password store.")
                                      (find-files "." "(.*\\.chr|.*\\.lst)")
                                      (find-files "." ".*\\.conf")))
                    (copy-recursively "rules" (string-append datadir "/rules")))
-                 (copy-recursively "../doc" docdir)
-                 #t)))
+                 (copy-recursively "../doc" docdir))))
            (delete 'check) ; Tests need installed .conf files; move after install
            (add-after 'install 'check
              (lambda args
@@ -1023,33 +1035,6 @@ password hash types most commonly found on various Unix systems, supported out
 of the box are Windows LM hashes, plus lots of other hashes and ciphers.  This
 is the community-enhanced, \"jumbo\" version of John the Ripper.")
       (license license:gpl2+))))
-
-(define-public sala
-  (package
-    (name "sala")
-    (version "1.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "sala" version))
-       (sha256
-        (base32
-         "13qgmc3i2a0cqp8jqrfl93lnphfagb32pgfikc1gza2a14asxzi8"))))
-    (build-system python-build-system)
-    (arguments
-     ;; Sala is supposed to work with Python 3.2 or higher,
-     ;; but it doesn't work with Python 3.6. Better stick
-     ;; to Python 2, which works fine.
-     `(#:python ,python-2))
-    (propagated-inputs
-     (list gnupg pwgen))
-    (home-page "http://www.digip.org/sala/")
-    (synopsis "Encrypted plaintext password store")
-    (description
-     "Store passwords and other bits of sensitive plain-text information
-to encrypted files on a directory hierarchy.  The information is protected
-by GnuPG's symmetrical encryption.")
-    (license license:expat)))
 
 (define-public fpm2
   (package

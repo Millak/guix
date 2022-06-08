@@ -54,6 +54,10 @@
            (or (getenv "XDG_CONFIG_HOME")
                (string-append (getenv "HOME") "/.config")))
 
+         (define xdg-data-home
+           (or (getenv "XDG_DATA_HOME")
+               (string-append (getenv "HOME") "/.local/share")))
+
          (define backup-directory
            (string-append home-directory "/" (number->string (current-time))
                           "-guix-home-legacy-configs-backup"))
@@ -61,18 +65,29 @@
          (define (preprocess-file file)
            "If file is in XDG-CONFIGURATION-FILES-DIRECTORY use
 subdirectory from XDG_CONFIG_HOME to generate a target path."
-           (if (string-prefix? #$xdg-configuration-files-directory file)
-               (string-append
-                (substring xdg-config-home
-                           (1+ (string-length home-directory)))
-                (substring file
-                           (string-length #$xdg-configuration-files-directory)))
-               (string-append "." file)))
+           (cond
+            ((string-prefix? #$xdg-configuration-files-directory file)
+             (string-append
+              (substring xdg-config-home
+                         (1+ (string-length home-directory)))
+              (substring file
+                         (string-length #$xdg-configuration-files-directory))))
+            ((string-prefix? #$xdg-data-files-directory file)
+             (string-append
+              (substring xdg-data-home
+                         (1+ (string-length home-directory)))
+              (substring file
+                         (string-length #$xdg-data-files-directory))))
+            (else file)))
 
          (define (target-file file)
            ;; Return the target of FILE, a config file name sans leading dot
            ;; such as "config/fontconfig/fonts.conf" or "bashrc".
            (string-append home-directory "/" (preprocess-file file)))
+
+         (define (no-follow-file-exists? file)
+           "Return #t if file exists, even if it's a dangling symlink."
+           (->bool (false-if-exception (lstat file))))
 
          (define (symlink-to-store? file)
            (catch 'system-error
@@ -112,7 +127,7 @@ subdirectory from XDG_CONFIG_HOME to generate a target path."
             (const #t)
             (lambda (file stat _)                 ;leaf
               (let ((file (target-file (strip file))))
-                (when (file-exists? file)
+                (when (no-follow-file-exists? file)
                   ;; DO NOT remove the file if it is no longer a symlink to
                   ;; the store, it will be backed up later during
                   ;; create-symlinks phase.
@@ -142,6 +157,7 @@ subdirectory from XDG_CONFIG_HOME to generate a target path."
                            #t
                            (G_ "Skipping ~a (not an empty directory)... done\n")
                            directory))
+                         ((= ENOENT errno) #t)
                          ((= ENOTDIR errno) #t)
                          (else
                           (apply throw args)))))))))
@@ -171,7 +187,7 @@ subdirectory from XDG_CONFIG_HOME to generate a target path."
             (lambda (file stat result)            ;leaf
               (let ((source (source-file (strip file)))
                     (target (target-file (strip file))))
-                (when (file-exists? target)
+                (when (no-follow-file-exists? target)
                   (backup-file (strip file)))
                 (format #t (G_ "Symlinking ~a -> ~a...")
                         target source)
@@ -180,7 +196,7 @@ subdirectory from XDG_CONFIG_HOME to generate a target path."
             (lambda (directory stat result)       ;down
               (unless (string=? directory config-file-directory)
                 (let ((target (target-file (strip directory))))
-                  (when (and (file-exists? target)
+                  (when (and (no-follow-file-exists? target)
                              (not (file-is-directory? target)))
                     (backup-file (strip directory)))
 

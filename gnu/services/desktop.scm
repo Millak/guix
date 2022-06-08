@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Andy Wingo <wingo@igalia.com>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Sou Bunnbu <iyzsong@gmail.com>
@@ -366,7 +366,11 @@ users are allowed."
                  (list (service-extension dbus-root-service-type
                                           geoclue-dbus-service)
                        (service-extension account-service-type
-                                          (const %geoclue-accounts))))))
+                                          (const %geoclue-accounts))))
+                (description "Run the @command{geoclue} location service.
+This service provides a D-Bus interface to allow applications to request
+access to a user's physical location, and optionally to add information to
+online location databases.")))
 
 (define* (geoclue-service #:key (geoclue geoclue)
                           (whitelist '())
@@ -914,7 +918,11 @@ screens and scanners.")))
 
                          ;; Profile 'udisksctl' & co. in the system profile.
                          (service-extension profile-service-type
-                                            udisks-package))))))
+                                            udisks-package)))
+                  (description "Run UDisks, a @dfn{disk management} daemon
+that provides user interfaces with notifications and ways to mount/unmount
+disks.  Programs that talk to UDisks include the @command{udisksctl} command,
+part of UDisks, and GNOME Disks."))))
 
 (define* (udisks-service #:key (udisks udisks))
   "Return a service for @uref{http://udisks.freedesktop.org/docs/latest/,
@@ -1067,10 +1075,60 @@ include the @command{udisksctl} command, part of UDisks, and GNOME Disks."
    ("HybridSleepMode" (sleep-list elogind-hybrid-sleep-mode))))
 
 (define (elogind-dbus-service config)
-  (list (wrapped-dbus-service (elogind-package config)
-                              "libexec/elogind/elogind"
-                              `(("ELOGIND_CONF_FILE"
-                                 ,(elogind-configuration-file config))))))
+  "Return a @file{org.freedesktop.login1.service} file that tells D-Bus how to
+\"start\" elogind.  In practice though, our elogind is started when booting by
+shepherd.  Thus, the @code{Exec} line of this @file{.service} file does not
+explain how to start elogind; instead, it spawns a wrapper that waits for the
+@code{elogind} shepherd service.  This avoids a race condition where both
+@command{shepherd} and @command{dbus-daemon} would attempt to start elogind."
+  ;; For more info on the elogind startup race, see
+  ;; <https://issues.guix.gnu.org/55444>.
+
+  (define elogind
+    (elogind-package config))
+
+  (define wrapper
+    (program-file "elogind-dbus-shepherd-sync"
+                  (with-imported-modules '((gnu services herd))
+                    #~(begin
+                        (use-modules (gnu services herd)
+                                     (srfi srfi-34))
+
+                        (guard (c ((service-not-found-error? c)
+                                   (format (current-error-port)
+                                           "no elogind shepherd service~%")
+                                   (exit 1))
+                                  ((shepherd-error? c)
+                                   (format (current-error-port)
+                                           "elogind shepherd service not \
+started~%")
+                                   (exit 2)))
+                          (wait-for-service 'elogind))))))
+
+  (define build
+    (with-imported-modules '((guix build utils))
+      #~(begin
+          (use-modules (guix build utils)
+                       (ice-9 match))
+
+          (define service-directory
+            "/share/dbus-1/system-services")
+
+          (mkdir-p (dirname (string-append #$output service-directory)))
+          (copy-recursively (string-append #$elogind service-directory)
+                            (string-append #$output service-directory))
+          (symlink (string-append #$elogind "/etc") ;for etc/dbus-1
+                   (string-append #$output "/etc"))
+
+          ;; Replace the "Exec=" line of the 'org.freedesktop.login1.service'
+          ;; file with one that refers to WRAPPER instead of elogind.
+          (match (find-files #$output "\\.service$")
+            ((file)
+             (substitute* file
+               (("Exec[[:blank:]]*=.*" _)
+                (string-append "Exec=" #$wrapper "\n"))))))))
+
+  (list (computed-file "elogind-dbus-service-wrapper" build)))
 
 (define (pam-extension-procedure config)
   "Return an extension for PAM-ROOT-SERVICE-TYPE that ensures that all the PAM
@@ -1129,7 +1187,12 @@ seats.)"
                        ;; We need /run/user, /run/systemd, etc.
                        (service-extension file-system-service-type
                                           (const %elogind-file-systems))))
-                (default-value (elogind-configuration))))
+                (default-value (elogind-configuration))
+                (description "Run the @command{elogind} login and seat
+management service.  The @command{elogind} service integrates with PAM to
+allow other system components to know the set of logged-in users as well as
+their session types (graphical, console, remote, etc.).  It can also clean up
+after users when they log out.")))
 
 (define* (elogind-service #:key (config (elogind-configuration)))
   "Return a service that runs the @command{elogind} login and seat management
@@ -1177,7 +1240,11 @@ when they log out."
                                           (const %accountsservice-activation))
                        (service-extension dbus-root-service-type list)
                        (service-extension polkit-service-type list)))
-                (default-value accountsservice)))
+                (default-value accountsservice)
+                (description "Run AccountsService, a system service available
+over D-Bus that can list available accounts, change their passwords, and so
+on.  AccountsService integrates with PolicyKit to enable unprivileged users to
+acquire the capability to modify their system configuration.")))
 
 (define* (accountsservice-service #:key (accountsservice accountsservice))
   "Return a service that runs AccountsService, a system service that

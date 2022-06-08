@@ -7,7 +7,7 @@
 ;;; Copyright © 2016, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2017, 2018 Rutger Helling <rhelling@mykolab.com>
-;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2019-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Roel Janssen <roel@gnu.org>
@@ -62,14 +62,14 @@
 (define-public parallel
   (package
     (name "parallel")
-    (version "20220222")
+    (version "20220522")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "mirror://gnu/parallel/parallel-"
                           version ".tar.bz2"))
       (sha256
-       (base32 "0id4lr3q0fh0r4vcz8sp19am9yc6j8g00m2726dgpmzacfw845pq"))))
+       (base32 "07wczb3ra65xn8xar4lsfmdvqscbqk9n99r6vcxqzrk4v7w9aqxv"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -166,7 +166,7 @@ when jobs finish.")
 (define-public slurm
   (package
     (name "slurm")
-    (version "20.11.7")
+    (version "21.08.8")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -174,7 +174,7 @@ when jobs finish.")
                     version ".tar.bz2"))
               (sha256
                (base32
-                "1fdjihg1x7ks5l77yjv14a4mg6r0v8c3zk1dcxkhrhq3n4dc9nbs"))
+                "1sjln54idc9rhg8f2nvm38sgs6fncncyzslas8ixy65pqz2hphbf"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -182,19 +182,20 @@ when jobs finish.")
                   ;; <https://lists.gnu.org/archive/html/guix-devel/2016-02/msg00534.html>
                   ;; there are non-free bits under contribs/, though it's not
                   ;; clear which ones.  libpmi is clearly free (it used to be
-                  ;; under src/api/), so remove all of contribs/ except
-                  ;; contribs/pmi/.
+                  ;; under src/api/) and so is pmi2 (lax non-copyleft
+                  ;; license), so remove all of contribs/ except pmi and pmi2.
                   (substitute* "configure.ac"
                     (("^[[:space:]]+contribs/(.*)$" all directory)
-                     (if (and (string-prefix? "pmi" directory)
-                              (not (string-prefix? "pmi2" directory)))
+                     (if (string-prefix? "pmi" directory)
                          all
                          "")))
 
                   (rename-file "contribs/pmi" "tmp-pmi")
+                  (rename-file "contribs/pmi2" "tmp-pmi2")
                   (delete-file-recursively "contribs")
                   (mkdir "contribs")
-                  (rename-file "tmp-pmi" "contribs/pmi")))))
+                  (rename-file "tmp-pmi" "contribs/pmi")
+                  (rename-file "tmp-pmi2" "contribs/pmi2")))))
     ;; FIXME: More optional inputs could be added,
     ;; in particular mysql and gtk+.
     (inputs (list freeipmi
@@ -212,7 +213,8 @@ when jobs finish.")
            #~(list "--enable-pam" "--sysconfdir=/etc/slurm"
                    "--disable-static"
                    (string-append "--with-freeipmi=" #$(this-package-input "freeipmi"))
-                   (string-append "--with-hwloc=" #$(this-package-input "hwloc"))
+                   (string-append "--with-hwloc="
+                                  (ungexp (this-package-input "hwloc") "lib"))
                    (string-append "--with-json=" #$(this-package-input "json-c"))
                    (string-append "--with-munge=" #$(this-package-input "munge"))
 
@@ -231,7 +233,10 @@ when jobs finish.")
                (add-after 'install 'install-libpmi
                  (lambda _
                    ;; Open MPI expects libpmi to be provided by Slurm so install it.
-                   (invoke "make" "install" "-C" "contribs/pmi"))))))
+                   (invoke "make" "install" "-C" "contribs/pmi")
+
+                   ;; Others expect pmi2.
+                   (invoke "make" "install" "-C" "contribs/pmi2"))))))
     (home-page "https://slurm.schedmd.com/")
     (synopsis "Workload manager for cluster computing")
     (description
@@ -246,6 +251,8 @@ by managing a queue of pending work.")
                    license:isc        ; src/common/strlcpy.c
                    license:lgpl2.1+   ; hilbert.[ch], src/common/slurm_time.h
                    license:zlib       ; src/common/strnatcmp.c
+                   (license:non-copyleft    ;contribs/pmi2, Argonne Natl. Lab.
+                    "https://github.com/SchedMD/slurm/blob/master/contribs/pmi2/COPYRIGHT")
                    license:gpl2+))))   ; the rest, often with OpenSSL exception
 
 ;; The SLURM client/daemon protocol and file format changes from time to time
@@ -254,6 +261,20 @@ by managing a queue of pending work.")
 ;; releases here.  See also <https://issues.guix.gnu.org/44387>.
 ;; As noted in the link, YY.MM is the release scheme, and the 'maintenance'
 ;; digit does not introduce incompatibilities.
+
+(define-public slurm-20.11
+  (package
+    (inherit slurm)
+    (version "20.11.9")
+    (source (origin
+              (inherit (package-source slurm))
+              (method url-fetch)
+              (uri (string-append
+                    "https://download.schedmd.com/slurm/slurm-"
+                    version ".tar.bz2"))
+              (sha256
+               (base32
+                "0xq2d6dm285y541dyg1h66z7svsisrq8c81ag0f601xz1cn3mq9m"))))))
 
 (define-public slurm-20.02
   (package

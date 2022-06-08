@@ -28,6 +28,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages jami)
   #:use-module (gnu packages telephony)
+  #:use-module (guix deprecation)
   #:use-module (guix records)
   #:use-module (guix modules)
   #:use-module (guix packages)
@@ -56,53 +57,53 @@
 
             jami-service-type
 
-            murmur-configuration
-            make-murmur-configuration
-            murmur-configuration?
-            murmur-configuration-package
-            murmur-configuration-user
-            murmur-configuration-group
-            murmur-configuration-port
-            murmur-configuration-welcome-text
-            murmur-configuration-server-password
-            murmur-configuration-max-users
-            murmur-configuration-max-user-bandwidth
-            murmur-configuration-database-file
-            murmur-configuration-log-file
-            murmur-configuration-pid-file
-            murmur-configuration-autoban-attempts
-            murmur-configuration-autoban-timeframe
-            murmur-configuration-autoban-time
-            murmur-configuration-opus-threshold
-            murmur-configuration-channel-nesting-limit
-            murmur-configuration-channelname-regex
-            murmur-configuration-username-regex
-            murmur-configuration-text-message-length
-            murmur-configuration-image-message-length
-            murmur-configuration-cert-required?
-            murmur-configuration-remember-channel?
-            murmur-configuration-allow-html?
-            murmur-configuration-allow-ping?
-            murmur-configuration-bonjour?
-            murmur-configuration-send-version?
-            murmur-configuration-log-days
-            murmur-configuration-obfuscate-ips?
-            murmur-configuration-ssl-cert
-            murmur-configuration-ssl-key
-            murmur-configuration-ssl-dh-params
-            murmur-configuration-ssl-ciphers
-            murmur-configuration-public-registration
-            murmur-configuration-file
+            mumble-server-configuration
+            make-mumble-server-configuration
+            mumble-server-configuration?
+            mumble-server-configuration-package
+            mumble-server-configuration-user
+            mumble-server-configuration-group
+            mumble-server-configuration-port
+            mumble-server-configuration-welcome-text
+            mumble-server-configuration-server-password
+            mumble-server-configuration-max-users
+            mumble-server-configuration-max-user-bandwidth
+            mumble-server-configuration-database-file
+            mumble-server-configuration-log-file
+            mumble-server-configuration-pid-file
+            mumble-server-configuration-autoban-attempts
+            mumble-server-configuration-autoban-timeframe
+            mumble-server-configuration-autoban-time
+            mumble-server-configuration-opus-threshold
+            mumble-server-configuration-channel-nesting-limit
+            mumble-server-configuration-channelname-regex
+            mumble-server-configuration-username-regex
+            mumble-server-configuration-text-message-length
+            mumble-server-configuration-image-message-length
+            mumble-server-configuration-cert-required?
+            mumble-server-configuration-remember-channel?
+            mumble-server-configuration-allow-html?
+            mumble-server-configuration-allow-ping?
+            mumble-server-configuration-bonjour?
+            mumble-server-configuration-send-version?
+            mumble-server-configuration-log-days
+            mumble-server-configuration-obfuscate-ips?
+            mumble-server-configuration-ssl-cert
+            mumble-server-configuration-ssl-key
+            mumble-server-configuration-ssl-dh-params
+            mumble-server-configuration-ssl-ciphers
+            mumble-server-configuration-public-registration
+            mumble-server-configuration-file
 
-            murmur-public-registration-configuration
-            make-murmur-public-registration-configuration
-            murmur-public-registration-configuration?
-            murmur-public-registration-configuration-name
-            murmur-public-registration-configuration-url
-            murmur-public-registration-configuration-password
-            murmur-public-registration-configuration-hostname
+            mumble-server-public-registration-configuration
+            make-mumble-server-public-registration-configuration
+            mumble-server-public-registration-configuration?
+            mumble-server-public-registration-configuration-name
+            mumble-server-public-registration-configuration-url
+            mumble-server-public-registration-configuration-password
+            mumble-server-public-registration-configuration-hostname
 
-            murmur-service-type))
+            mumble-server-service-type))
 
 
 ;;;
@@ -747,91 +748,91 @@ normal user D-Bus session bus.")))
 
 
 ;;;
-;;; Murmur.
+;;; Mumble server.
 ;;;
 
 ;; https://github.com/mumble-voip/mumble/blob/master/scripts/murmur.ini
 
-(define-record-type* <murmur-configuration> murmur-configuration
-  make-murmur-configuration
-  murmur-configuration?
-  (package               murmur-configuration-package ;file-like
+(define-record-type* <mumble-server-configuration> mumble-server-configuration
+  make-mumble-server-configuration
+  mumble-server-configuration?
+  (package               mumble-server-configuration-package ;file-like
                          (default mumble))
-  (user                  murmur-configuration-user
-                         (default "murmur"))
-  (group                 murmur-configuration-group
-                         (default "murmur"))
-  (port                  murmur-configuration-port
+  (user                  mumble-server-configuration-user
+                         (default "mumble-server"))
+  (group                 mumble-server-configuration-group
+                         (default "mumble-server"))
+  (port                  mumble-server-configuration-port
                          (default 64738))
-  (welcome-text          murmur-configuration-welcome-text
+  (welcome-text          mumble-server-configuration-welcome-text
                          (default ""))
-  (server-password       murmur-configuration-server-password
+  (server-password       mumble-server-configuration-server-password
                          (default ""))
-  (max-users             murmur-configuration-max-users
+  (max-users             mumble-server-configuration-max-users
                          (default 100))
-  (max-user-bandwidth    murmur-configuration-max-user-bandwidth
+  (max-user-bandwidth    mumble-server-configuration-max-user-bandwidth
                          (default #f))
-  (database-file         murmur-configuration-database-file
-                         (default "/var/lib/murmur/db.sqlite"))
-  (log-file              murmur-configuration-log-file
-                         (default "/var/log/murmur/murmur.log"))
-  (pid-file              murmur-configuration-pid-file
-                         (default "/var/run/murmur/murmur.pid"))
-  (autoban-attempts      murmur-configuration-autoban-attempts
+  (database-file         mumble-server-configuration-database-file
+                         (default "/var/lib/mumble-server/db.sqlite"))
+  (log-file              mumble-server-configuration-log-file
+                         (default "/var/log/mumble-server/mumble-server.log"))
+  (pid-file              mumble-server-configuration-pid-file
+                         (default "/var/run/mumble-server/mumble-server.pid"))
+  (autoban-attempts      mumble-server-configuration-autoban-attempts
                          (default 10))
-  (autoban-timeframe     murmur-configuration-autoban-timeframe
+  (autoban-timeframe     mumble-server-configuration-autoban-timeframe
                          (default 120))
-  (autoban-time          murmur-configuration-autoban-time
+  (autoban-time          mumble-server-configuration-autoban-time
                          (default 300))
-  (opus-threshold        murmur-configuration-opus-threshold
+  (opus-threshold        mumble-server-configuration-opus-threshold
                          (default 100)) ; integer percent
-  (channel-nesting-limit murmur-configuration-channel-nesting-limit
+  (channel-nesting-limit mumble-server-configuration-channel-nesting-limit
                          (default 10))
-  (channelname-regex     murmur-configuration-channelname-regex
+  (channelname-regex     mumble-server-configuration-channelname-regex
                          (default #f))
-  (username-regex        murmur-configuration-username-regex
+  (username-regex        mumble-server-configuration-username-regex
                          (default #f))
-  (text-message-length   murmur-configuration-text-message-length
+  (text-message-length   mumble-server-configuration-text-message-length
                          (default 5000))
-  (image-message-length  murmur-configuration-image-message-length
+  (image-message-length  mumble-server-configuration-image-message-length
                          (default (* 128 1024))) ; 128 Kilobytes
-  (cert-required?         murmur-configuration-cert-required?
+  (cert-required?         mumble-server-configuration-cert-required?
                           (default #f))
-  (remember-channel?     murmur-configuration-remember-channel?
+  (remember-channel?     mumble-server-configuration-remember-channel?
                          (default #f))
-  (allow-html?           murmur-configuration-allow-html?
+  (allow-html?           mumble-server-configuration-allow-html?
                          (default #f))
-  (allow-ping?           murmur-configuration-allow-ping?
+  (allow-ping?           mumble-server-configuration-allow-ping?
                          (default #f))
-  (bonjour?              murmur-configuration-bonjour?
+  (bonjour?              mumble-server-configuration-bonjour?
                          (default #f))
-  (send-version?         murmur-configuration-send-version?
+  (send-version?         mumble-server-configuration-send-version?
                          (default #f))
-  (log-days              murmur-configuration-log-days
+  (log-days              mumble-server-configuration-log-days
                          (default 31))
-  (obfuscate-ips?        murmur-obfuscate-ips?
+  (obfuscate-ips?        mumble-server-obfuscate-ips?
                          (default #t))
-  (ssl-cert              murmur-configuration-ssl-cert
+  (ssl-cert              mumble-server-configuration-ssl-cert
                          (default #f))
-  (ssl-key               murmur-configuration-ssl-key
+  (ssl-key               mumble-server-configuration-ssl-key
                          (default #f))
-  (ssl-dh-params         murmur-configuration-ssl-dh-params
+  (ssl-dh-params         mumble-server-configuration-ssl-dh-params
                          (default #f))
-  (ssl-ciphers           murmur-configuration-ssl-ciphers
+  (ssl-ciphers           mumble-server-configuration-ssl-ciphers
                          (default #f))
-  (public-registration   murmur-configuration-public-registration
-                         (default #f))  ; <murmur-public-registration-configuration>
-  (file                  murmur-configuration-file
+  (public-registration   mumble-server-configuration-public-registration
+                         (default #f))  ; <mumble-server-public-registration-configuration>
+  (file                  mumble-server-configuration-file
                          (default #f)))
 
-(define-record-type* <murmur-public-registration-configuration>
-  murmur-public-registration-configuration
-  make-murmur-public-registration-configuration
-  murmur-public-registration-configuration?
-  (name         murmur-public-registration-configuration-name)
-  (password     murmur-public-registration-configuration-password)
-  (url          murmur-public-registration-configuration-url)
-  (hostname     murmur-public-registration-configuration-hostname
+(define-record-type* <mumble-server-public-registration-configuration>
+  mumble-server-public-registration-configuration
+  make-mumble-server-public-registration-configuration
+  mumble-server-public-registration-configuration?
+  (name         mumble-server-public-registration-configuration-name)
+  (password     mumble-server-public-registration-configuration-password)
+  (url          mumble-server-public-registration-configuration-url)
+  (hostname     mumble-server-public-registration-configuration-hostname
                 (default #f)))
 
 (define (flatten . lst)
@@ -842,10 +843,10 @@ normal user D-Bus session bus.")))
         (cons head out)))
   (fold-right flatten1 '() lst))
 
-(define (default-murmur-config config)
+(define (default-mumble-server-config config)
   (match-record
    config
-   <murmur-configuration>
+   <mumble-server-configuration>
    (user port welcome-text server-password max-users max-user-bandwidth
     database-file log-file pid-file autoban-attempts autoban-timeframe
     autoban-time opus-threshold channel-nesting-limit channelname-regex
@@ -853,7 +854,7 @@ normal user D-Bus session bus.")))
     remember-channel? allow-html? allow-ping? bonjour? send-version?
     log-days obfuscate-ips? ssl-cert ssl-key ssl-dh-params ssl-ciphers
     public-registration)
-   (apply mixed-text-file "murmur.ini"
+   (apply mixed-text-file "mumble-server.ini"
           (flatten
            "welcometext=" welcome-text "\n"
            "port=" (number->string port) "\n"
@@ -896,7 +897,7 @@ normal user D-Bus session bus.")))
 
            (match public-registration
              (#f '())
-             (($ <murmur-public-registration-configuration>
+             (($ <mumble-server-public-registration-configuration>
                  name password url hostname)
               (if (and (or (not server-password) (string-null? server-password))
                        allow-ping?)
@@ -907,41 +908,41 @@ normal user D-Bus session bus.")))
                    (if hostname
                        (string-append "registerHostname=" hostname "\n")
                        ""))
-                  (error "To publicly register your murmur server your server must be publicy visible
+                  (error "To publicly register your mumble-server server your server must be publicy visible
 and users must be able to join without a password. To fix this set:
 (allow-ping? #t)
 (server-password \"\")
 Or set public-registration to #f"))))))))
 
-(define (murmur-activation config)
+(define (mumble-server-activation config)
   #~(begin
       (use-modules (guix build utils))
-      (let* ((log-dir (dirname #$(murmur-configuration-log-file config)))
-             (pid-dir (dirname #$(murmur-configuration-pid-file config)))
-             (db-dir (dirname #$(murmur-configuration-database-file config)))
-             (user (getpwnam #$(murmur-configuration-user config)))
+      (let* ((log-dir (dirname #$(mumble-server-configuration-log-file config)))
+             (pid-dir (dirname #$(mumble-server-configuration-pid-file config)))
+             (db-dir (dirname #$(mumble-server-configuration-database-file config)))
+             (user (getpwnam #$(mumble-server-configuration-user config)))
              (init-dir
               (lambda (name dir)
-                (format #t "creating murmur ~a directory '~a'\n" name dir)
+                (format #t "creating mumble-server ~a directory '~a'\n" name dir)
                 (mkdir-p dir)
                 (chown dir (passwd:uid user) (passwd:gid user))
                 (chmod dir #o700)))
-             (ini #$(or (murmur-configuration-file config)
-                        (default-murmur-config config))))
+             (ini #$(or (mumble-server-configuration-file config)
+                        (default-mumble-server-config config))))
         (init-dir "log" log-dir)
         (init-dir "pid" pid-dir)
         (init-dir "database" db-dir)
 
-        (format #t "murmur: use config file: ~a~%\n" ini)
-        (format #t "murmur: to set the SuperUser password run:
+        (format #t "mumble-server: use config file: ~a~%\n" ini)
+        (format #t "mumble-server: to set the SuperUser password run:
     `~a -ini ~a -readsupw`\n"
-                #$(file-append (murmur-configuration-package config)
-                               "/bin/murmurd") ini)
+                #$(file-append (mumble-server-configuration-package config)
+                               "/bin/mumble-server") ini)
         #t)))
 
-(define murmur-accounts
+(define mumble-server-accounts
   (match-lambda
-    (($ <murmur-configuration> _ user group)
+    (($ <mumble-server-configuration> _ user group)
      (list
       (user-group
        (name group)
@@ -950,37 +951,174 @@ Or set public-registration to #f"))))))))
        (name user)
        (group group)
        (system? #t)
-       (comment "Murmur Daemon")
+       (comment "Mumble server daemon")
        (home-directory "/var/empty")
        (shell (file-append shadow "/sbin/nologin")))))))
 
-(define (murmur-shepherd-service config)
+(define (mumble-server-shepherd-service config)
   (list (shepherd-service
-         (provision '(murmur))
-         (documentation "Run the Murmur Mumble server.")
+         (provision '(mumble-server))
+         (documentation "Run the Mumble server.")
          (requirement '(networking))
          (start #~(make-forkexec-constructor
-                   '(#$(file-append (murmur-configuration-package config)
-                                    "/bin/murmurd")
+                   '(#$(file-append (mumble-server-configuration-package config)
+                                    "/bin/mumble-server")
                      "-ini"
-                     #$(or (murmur-configuration-file config)
-                           (default-murmur-config config)))
-                   #:pid-file #$(murmur-configuration-pid-file config)))
+                     #$(or (mumble-server-configuration-file config)
+                           (default-mumble-server-config config)))
+                   #:pid-file #$(mumble-server-configuration-pid-file config)))
          (stop #~(make-kill-destructor)))))
 
-(define murmur-service-type
-  (service-type (name 'murmur)
+(define mumble-server-service-type
+  (service-type (name 'mumble-server)
                 (description
-                 "Run the Murmur voice-over-IP (VoIP) server of the Mumble
-suite.")
+                 "Run the Mumble voice-over-IP (VoIP) server.")
                 (extensions
                  (list (service-extension shepherd-root-service-type
-                                          murmur-shepherd-service)
+                                          mumble-server-shepherd-service)
                        (service-extension activation-service-type
-                                          murmur-activation)
+                                          mumble-server-activation)
                        (service-extension account-service-type
-                                          murmur-accounts)))
-                (default-value (murmur-configuration))))
+                                          mumble-server-accounts)))
+                (default-value (mumble-server-configuration))))
+
+(define-deprecated/public-alias
+  murmur-configuration
+  mumble-server-configuration)
+(define-deprecated/public-alias
+  make-murmur-configuration
+  make-mumble-server-configuration)
+(define-deprecated/public-alias
+  murmur-configuration?
+  mumble-server-configuration?)
+(define-deprecated/public-alias
+  murmur-configuration-package
+  mumble-server-configuration-package)
+(define-deprecated/public-alias
+  murmur-configuration-user
+  mumble-server-configuration-user)
+(define-deprecated/public-alias
+  murmur-configuration-group
+  mumble-server-configuration-group)
+(define-deprecated/public-alias
+  murmur-configuration-port
+  mumble-server-configuration-port)
+(define-deprecated/public-alias
+  murmur-configuration-welcome-text
+  mumble-server-configuration-welcome-text)
+(define-deprecated/public-alias
+  murmur-configuration-server-password
+  mumble-server-configuration-server-password)
+(define-deprecated/public-alias
+  murmur-configuration-max-users
+  mumble-server-configuration-max-users)
+(define-deprecated/public-alias
+  murmur-configuration-max-user-bandwidth
+  mumble-server-configuration-max-user-bandwidth)
+(define-deprecated/public-alias
+  murmur-configuration-database-file
+  mumble-server-configuration-database-file)
+(define-deprecated/public-alias
+  murmur-configuration-log-file
+  mumble-server-configuration-log-file)
+(define-deprecated/public-alias
+  murmur-configuration-pid-file
+  mumble-server-configuration-pid-file)
+(define-deprecated/public-alias
+  murmur-configuration-autoban-attempts
+  mumble-server-configuration-autoban-attempts)
+(define-deprecated/public-alias
+  murmur-configuration-autoban-timeframe
+  mumble-server-configuration-autoban-timeframe)
+(define-deprecated/public-alias
+  murmur-configuration-autoban-time
+  mumble-server-configuration-autoban-time)
+(define-deprecated/public-alias
+  murmur-configuration-opus-threshold
+  mumble-server-configuration-opus-threshold)
+(define-deprecated/public-alias
+  murmur-configuration-channel-nesting-limit
+  mumble-server-configuration-channel-nesting-limit)
+(define-deprecated/public-alias
+  murmur-configuration-channelname-regex
+  mumble-server-configuration-channelname-regex)
+(define-deprecated/public-alias
+  murmur-configuration-username-regex
+  mumble-server-configuration-username-regex)
+(define-deprecated/public-alias
+  murmur-configuration-text-message-length
+  mumble-server-configuration-text-message-length)
+(define-deprecated/public-alias
+  murmur-configuration-image-message-length
+  mumble-server-configuration-image-message-length)
+(define-deprecated/public-alias
+  murmur-configuration-cert-required?
+  mumble-server-configuration-cert-required?)
+(define-deprecated/public-alias
+  murmur-configuration-remember-channel?
+  mumble-server-configuration-remember-channel?)
+(define-deprecated/public-alias
+  murmur-configuration-allow-html?
+  mumble-server-configuration-allow-html?)
+(define-deprecated/public-alias
+  murmur-configuration-allow-ping?
+  mumble-server-configuration-allow-ping?)
+(define-deprecated/public-alias
+  murmur-configuration-bonjour?
+  mumble-server-configuration-bonjour?)
+(define-deprecated/public-alias
+  murmur-configuration-send-version?
+  mumble-server-configuration-send-version?)
+(define-deprecated/public-alias
+  murmur-configuration-log-days
+  mumble-server-configuration-log-days)
+(define-deprecated/public-alias
+  murmur-configuration-obfuscate-ips?
+  mumble-server-configuration-obfuscate-ips?)
+(define-deprecated/public-alias
+  murmur-configuration-ssl-cert
+  mumble-server-configuration-ssl-cert)
+(define-deprecated/public-alias
+  murmur-configuration-ssl-key
+  mumble-server-configuration-ssl-key)
+(define-deprecated/public-alias
+  murmur-configuration-ssl-dh-params
+  mumble-server-configuration-ssl-dh-params)
+(define-deprecated/public-alias
+  murmur-configuration-ssl-ciphers
+  mumble-server-configuration-ssl-ciphers)
+(define-deprecated/public-alias
+  murmur-configuration-public-registration
+  mumble-server-configuration-public-registration)
+(define-deprecated/public-alias
+  murmur-configuration-file
+  mumble-server-configuration-file)
+
+(define-deprecated/public-alias
+  murmur-public-registration-configuration
+  mumble-server-public-registration-configuration)
+(define-deprecated/public-alias
+  make-murmur-public-registration-configuration
+  make-mumble-server-public-registration-configuration)
+(define-deprecated/public-alias
+  murmur-public-registration-configuration?
+  mumble-server-public-registration-configuration?)
+(define-deprecated/public-alias
+  murmur-public-registration-configuration-name
+  mumble-server-public-registration-configuration-name)
+(define-deprecated/public-alias
+  murmur-public-registration-configuration-url
+  mumble-server-public-registration-configuration-url)
+(define-deprecated/public-alias
+  murmur-public-registration-configuration-password
+  mumble-server-public-registration-configuration-password)
+(define-deprecated/public-alias
+  murmur-public-registration-configuration-hostname
+  mumble-server-public-registration-configuration-hostname)
+
+(define-deprecated/public-alias
+  murmur-service-type
+  mumble-server-service-type)
 
 ;; Local Variables:
 ;; eval: (put 'with-retries 'scheme-indent-function 2)

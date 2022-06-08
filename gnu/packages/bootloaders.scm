@@ -517,7 +517,7 @@ tree binary files.  These are board description files used by Linux and BSD.")
 (define u-boot
   (package
     (name "u-boot")
-    (version "2021.10")
+    (version "2022.04")
     (source (origin
 	      (patches
                (list %u-boot-rockchip-inno-usb-patch
@@ -530,19 +530,22 @@ tree binary files.  These are board description files used by Linux and BSD.")
                     "u-boot-" version ".tar.bz2"))
               (sha256
                (base32
-                "1m0bvwv8r62s4wk4w3cmvs888dhv9gnfa98dczr4drk2jbhj7ryd"))))
+                "1l5w13dznj0z1ibqv2d6ljx2ma1gnf5x5ay3dqkqwxr6750nbq38"))))
     (native-inputs
      `(("bc" ,bc)
        ("bison" ,bison)
        ("dtc" ,dtc)
+       ("gnutls" ,gnutls)
        ("flex" ,flex)
        ("lz4" ,lz4)
+       ("tinfo" ,ncurses/tinfo)
        ("perl" ,perl)
        ("python" ,python)
        ("python-coverage" ,python-coverage)
        ("python-pycryptodomex" ,python-pycryptodomex)
        ("python-pytest" ,python-pytest)
-       ("swig" ,swig)))
+       ("swig" ,swig)
+       ("libuuid" ,util-linux "lib")))
     (build-system  gnu-build-system)
     (home-page "https://www.denx.de/wiki/U-Boot/")
     (synopsis "ARM bootloader")
@@ -911,14 +914,7 @@ to Novena upstream, does not load u-boot.img from the first partition.")
   (make-u-boot-package "qemu-riscv64" "riscv64-linux-gnu"))
 
 (define-public u-boot-qemu-riscv64-smode
-  (let ((base (make-u-boot-package "qemu-riscv64_smode" "riscv64-linux-gnu")))
-    (package
-      (inherit base)
-      (source (origin
-                (inherit (package-source u-boot))
-                (patches
-                 (search-patches "u-boot-riscv64-fix-extlinux.patch"
-                                 %u-boot-allow-disabling-openssl-patch)))))))
+  (make-u-boot-package "qemu-riscv64_smode" "riscv64-linux-gnu"))
 
 (define-public u-boot-sifive-unleashed
   (make-u-boot-package "sifive_unleashed" "riscv64-linux-gnu"))
@@ -986,6 +982,37 @@ to Novena upstream, does not load u-boot.img from the first partition.")
                 (lambda* (#:key inputs #:allow-other-keys)
                   (setenv "BL31"
                           (search-input-file inputs "/bl31.elf"))))
+              (add-after 'unpack 'patch-config
+                (lambda _
+                  (substitute* "configs/rockpro64-rk3399_defconfig"
+                    (("CONFIG_USB=y") "\
+CONFIG_USB=y
+CONFIG_AHCI=y
+CONFIG_AHCI_PCI=y
+CONFIG_SATA=y
+CONFIG_SATA_SIL=y
+CONFIG_SCSI=y
+CONFIG_SCSI_AHCI=y
+CONFIG_DM_SCSI=y
+"))
+                  (substitute* "include/config_distro_bootcmd.h"
+                    (("\"scsi_need_init=false")
+                     "\"setenv scsi_need_init false")
+                    (("#define BOOTENV_SET_SCSI_NEED_INIT \"scsi_need_init=;")
+                     "#define BOOTENV_SET_SCSI_NEED_INIT \"setenv scsi_need_init;"))
+                  (substitute* "include/configs/rockchip-common.h"
+                    (("#define BOOT_TARGET_DEVICES\\(func\\)")
+                     "
+#if CONFIG_IS_ENABLED(CMD_SCSI)
+       #define BOOT_TARGET_SCSI(func) func(SCSI, scsi, 0)
+#else
+       #define BOOT_TARGET_SCSI(func)
+#endif
+#define BOOT_TARGET_DEVICES(func)")
+                    (("BOOT_TARGET_NVME\\(func\\) \\\\")
+                     "\
+BOOT_TARGET_NVME(func) \\
+       BOOT_TARGET_SCSI(func) \\"))))
               ;; Phases do not succeed on the bl31 ELF.
               (delete 'strip)
               (delete 'validate-runpath)))))
@@ -1104,14 +1131,14 @@ tools, and more.")
 (define-public os-prober
   (package
     (name "os-prober")
-    (version "1.79")
+    (version "1.80")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://debian/pool/main/o/os-prober/os-prober_"
                            version ".tar.xz"))
        (sha256
-        (base32 "1vhhk0bl2j4910513gn5h3z8nsaavyv3c8764bim2klc0xyk3rmb"))))
+        (base32 "13z3rshgz5xj0328a80wavdimjw925yha9s1ks398sq0kn5w6qw0"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((guix build gnu-build-system)
@@ -1128,8 +1155,7 @@ tools, and more.")
              (substitute* (find-files ".")
                (("/usr") (assoc-ref outputs "out")))
              (substitute* (find-files "." "50mounted-tests$")
-               (("mkdir") "mkdir -p"))
-             #t))
+               (("mkdir") "mkdir -p"))))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (define (find-files-non-recursive directory)
@@ -1160,8 +1186,7 @@ tools, and more.")
                    (append (find-files-non-recursive (string-append directory "/common"))
                            (find-files-non-recursive (string-append directory "/x86")))))
                 (list "os-probes" "os-probes/mounted" "os-probes/init"
-                      "linux-boot-probes" "linux-boot-probes/mounted"))
-               #t))))))
+                      "linux-boot-probes" "linux-boot-probes/mounted"))))))))
     (home-page "https://joeyh.name/code/os-prober")
     (synopsis "Detect other operating systems")
     (description "os-prober probes disks on the system for other operating

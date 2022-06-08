@@ -3,9 +3,9 @@
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
-;;; Copyright © 2018, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2018, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -67,9 +67,6 @@ unpacked archive preserves enough information to @code{Spread} (copy data and
 scripts to their final locations) at any later time.  Wheel files can be
 installed with a newer @code{pip} or with wheel's own command line utility.")
     (license license:expat)))
-
-(define-public python2-wheel
-  (package-with-python2 python-wheel))
 
 ;;; XXX: Not really at home, but this seems the best place to prevent circular
 ;;; module dependencies.
@@ -164,9 +161,6 @@ the goal of writing Python code that is compatible on both Python versions.
 Six supports every Python version since 2.5.  It is contained in only one
 Python file, so it can be easily copied into your project.")
     (license license:x11)))
-
-(define-public python2-six-bootstrap
-  (package-with-python2 python-six-bootstrap))
 
 (define-public python-tomli
   (package
@@ -267,8 +261,7 @@ Python file, so it can be easily copied into your project.")
 executing simple grammars, vs. the traditional lex/yacc approach, or the use
 of regular expressions.  The pyparsing module provides a library of classes
 that client code uses to construct the grammar directly in Python code.")
-    (license license:expat)
-    (properties `((python2-variant . ,(delay python2-pyparsing))))))
+    (license license:expat)))
 
 ;;; This is the last release compatible with Python 2.
 (define-public python-pyparsing-2.4.7
@@ -281,9 +274,6 @@ that client code uses to construct the grammar directly in Python code.")
        (uri (pypi-uri "pyparsing" version))
        (sha256
         (base32 "1hgc8qrbq1ymxbwfbjghv01fm3fbpjwpjwi0bcailxxzhf3yq0y2"))))))
-
-(define-public python2-pyparsing
-  (package-with-python2 (strip-python2-variant python-pyparsing-2.4.7)))
 
 (define-public python-packaging-bootstrap
   (package
@@ -310,21 +300,6 @@ information.")
     ;; Contributions to this software is made under the terms of *both* these
     ;; licenses.
     (license (list license:asl2.0 license:bsd-2))))
-
-(define-public python2-packaging-bootstrap
-  (let ((base (package-with-python2 python-packaging-bootstrap)))
-    (package/inherit base
-      (version "20.0")                  ;last version with Python 2 support
-      (source
-       (origin
-         (method url-fetch)
-         (uri (pypi-uri "packaging" version))
-         ;; XXX: The URL in the patch file is wrong, it should be
-         ;; <https://github.com/pypa/packaging/pull/256>.
-         (patches (search-patches "python-packaging-test-arch.patch"))
-         (sha256
-          (base32
-           "1y2ip3a4ykkpgnwgn85j6hkspcl0cg3mzms97f40mk57vwqq67gy")))))))
 
 ;;; The name 'python-pypa-build' is chosen rather than 'python-build' to avoid
 ;;; a name clash with python-build from (guix build-system python).

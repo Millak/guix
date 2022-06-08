@@ -1,0 +1,254 @@
+Allow using pydevd as a regular dependency.
+Submitted upstream at: https://github.com/microsoft/debugpy/pull/902
+
+diff --git a/setup.py b/setup.py
+index 5fc40070..3a530a29 100644
+--- a/setup.py
++++ b/setup.py
+@@ -11,6 +11,9 @@ import subprocess
+ import sys
+ 
+ 
++DEBUGPY_BUNDLING_DISABLED = bool(os.getenv('DEBUGPY_BUNDLING_DISABLED'))
++
++
+ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+ import versioneer  # noqa
+ 
+@@ -18,12 +21,15 @@ del sys.path[0]
+ 
+ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "src"))
+ import debugpy
+-import debugpy._vendored
++
++if not DEBUGPY_BUNDLING_DISABLED:
++    import debugpy._vendored
+ 
+ del sys.path[0]
+ 
+ 
+-PYDEVD_ROOT = debugpy._vendored.project_root("pydevd")
++PYDEVD_ROOT = (None if DEBUGPY_BUNDLING_DISABLED else
++               debugpy._vendored.project_root("pydevd"))
+ DEBUGBY_ROOT = os.path.dirname(os.path.abspath(debugpy.__file__))
+ 
+ 
+@@ -67,7 +73,7 @@ def iter_vendored_files():
+ # relevant setuptools versions.
+ class ExtModules(list):
+     def __bool__(self):
+-        return True
++        return not DEBUGPY_BUNDLING_DISABLED
+ 
+ 
+ def override_build(cmds):
+@@ -133,9 +139,24 @@ with open("DESCRIPTION.md", "r") as fh:
+ 
+ 
+ if __name__ == "__main__":
+-    if not os.getenv("SKIP_CYTHON_BUILD"):
++    if not (os.getenv("SKIP_CYTHON_BUILD") or DEBUGPY_BUNDLING_DISABLED):
+         cython_build()
+ 
++    # Etch bundling status in the source.
++    if debugpy.__bundling_disabled__ != DEBUGPY_BUNDLING_DISABLED:
++
++        with open(os.path.join(DEBUGBY_ROOT, '__init__.py'), 'r') as f:
++            lines = f.readlines()
++        with open(os.path.join(DEBUGBY_ROOT, '__init__.py'), 'w') as f:
++            edited = []
++            for line in lines:
++                if line.startswith('__bundling_disabled__'):
++                    edited.append(
++                        f'__bundling_disabled__ = {DEBUGPY_BUNDLING_DISABLED}\n')
++                else:
++                    edited.append(line)
++            f.writelines(edited)
++
+     extras = {}
+     platforms = get_buildplatform()
+     if platforms is not None:
+@@ -145,6 +166,18 @@ if __name__ == "__main__":
+     override_build(cmds)
+     override_build_py(cmds)
+ 
++    data = {"debugpy": ["ThirdPartyNotices.txt"]}
++    packages = [
++            "debugpy",
++            "debugpy.adapter",
++            "debugpy.common",
++            "debugpy.launcher",
++            "debugpy.server",
++        ]
++    if not DEBUGPY_BUNDLING_DISABLED:
++        data.update({"debugpy._vendored": list(iter_vendored_files())})
++        packages.append("debugpy._vendored")
++
+     setuptools.setup(
+         name="debugpy",
+         version=versioneer.get_version(),
+@@ -173,20 +206,10 @@ if __name__ == "__main__":
+             "License :: OSI Approved :: MIT License",
+         ],
+         package_dir={"": "src"},
+-        packages=[
+-            "debugpy",
+-            "debugpy.adapter",
+-            "debugpy.common",
+-            "debugpy.launcher",
+-            "debugpy.server",
+-            "debugpy._vendored",
+-        ],
+-        package_data={
+-            "debugpy": ["ThirdPartyNotices.txt"],
+-            "debugpy._vendored": list(iter_vendored_files()),
+-        },
++        packages=packages,
++        package_data=data,
+         ext_modules=ExtModules(),
+-        has_ext_modules=lambda: True,
++        has_ext_modules=lambda: not DEBUGPY_BUNDLING_DISABLED,
+         cmdclass=cmds,
+         **extras
+     )
+diff --git a/src/debugpy/__init__.py b/src/debugpy/__init__.py
+index baa5a7c5..7b7a29aa 100644
+--- a/src/debugpy/__init__.py
++++ b/src/debugpy/__init__.py
+@@ -206,6 +206,8 @@ def trace_this_thread(should_trace):
+ 
+ __version__ = _version.get_versions()["version"]
+ 
++__bundling_disabled__ = False
++
+ # Force absolute path on Python 2.
+ __file__ = os.path.abspath(__file__)
+ 
+diff --git a/src/debugpy/server/__init__.py b/src/debugpy/server/__init__.py
+index e6a1ad66..5f29a87a 100644
+--- a/src/debugpy/server/__init__.py
++++ b/src/debugpy/server/__init__.py
+@@ -4,6 +4,50 @@
+ 
+ from __future__ import absolute_import, division, print_function, unicode_literals
+ 
++from importlib import import_module
++import os
++
+ # "force_pydevd" must be imported first to ensure (via side effects)
+ # that the debugpy-vendored copy of pydevd gets used.
+-import debugpy._vendored.force_pydevd  # noqa
++import debugpy
++if debugpy.__bundling_disabled__:
++    # Do what force_pydevd.py does, but using the system-provided
++    # pydevd.
++
++    # XXX: This is copied here so that the whole '_vendored' directory
++    # can be deleted when DEBUGPY_BUNDLING_DISABLED is set.
++
++    # If debugpy logging is enabled, enable it for pydevd as well
++    if "DEBUGPY_LOG_DIR" in os.environ:
++        os.environ[str("PYDEVD_DEBUG")] = str("True")
++        os.environ[str("PYDEVD_DEBUG_FILE")] = \
++            os.environ["DEBUGPY_LOG_DIR"] + str("/debugpy.pydevd.log")
++
++    # Work around https://github.com/microsoft/debugpy/issues/346.
++    # Disable pydevd frame-eval optimizations only if unset, to allow opt-in.
++    if "PYDEVD_USE_FRAME_EVAL" not in os.environ:
++        os.environ[str("PYDEVD_USE_FRAME_EVAL")] = str("NO")
++
++    # Constants must be set before importing any other pydevd module
++    # due to heavy use of "from" in them.
++    pydevd_constants = import_module('_pydevd_bundle.pydevd_constants')
++    # The default pydevd value is 1000.
++    pydevd_constants.MAXIMUM_VARIABLE_REPRESENTATION_SIZE = 2 ** 32
++
++    # When pydevd is imported it sets the breakpoint behavior, but it needs to be
++    # overridden because by default pydevd will connect to the remote debugger using
++    # its own custom protocol rather than DAP.
++    import pydevd   # noqa
++    import debugpy  # noqa
++
++    def debugpy_breakpointhook():
++        debugpy.breakpoint()
++
++    pydevd.install_breakpointhook(debugpy_breakpointhook)
++
++    # Ensure that pydevd uses JSON protocol
++    from _pydevd_bundle import pydevd_constants
++    from _pydevd_bundle import pydevd_defaults
++    pydevd_defaults.PydevdCustomization.DEFAULT_PROTOCOL = pydevd_constants.HTTP_JSON_PROTOCOL
++else:
++    import debugpy._vendored.force_pydevd  # noqa
+diff --git a/src/debugpy/server/attach_pid_injected.py b/src/debugpy/server/attach_pid_injected.py
+index e6345996..87cfdd53 100644
+--- a/src/debugpy/server/attach_pid_injected.py
++++ b/src/debugpy/server/attach_pid_injected.py
+@@ -8,6 +8,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
+ 
+ import os
+ 
++import debugpy
+ 
+ __file__ = os.path.abspath(__file__)
+ _debugpy_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+@@ -30,25 +31,29 @@ def attach(setup):
+                 def on_critical(msg):
+                     print(msg, file=sys.stderr)
+ 
+-                pydevd_attach_to_process_path = os.path.join(
+-                    _debugpy_dir,
+-                    "debugpy",
+-                    "_vendored",
+-                    "pydevd",
+-                    "pydevd_attach_to_process",
+-                )
+-                assert os.path.exists(pydevd_attach_to_process_path)
+-                sys.path.insert(0, pydevd_attach_to_process_path)
+-
+-                # NOTE: that it's not a part of the pydevd PYTHONPATH
+-                import attach_script
++                if debugpy.__bundling_disabled__:
++                    from pydevd_attach_to_process import attach_script
++                else:
++                    pydevd_attach_to_process_path = os.path.join(
++                        _debugpy_dir,
++                        "debugpy",
++                        "_vendored",
++                        "pydevd",
++                        "pydevd_attach_to_process",
++                    )
++                    assert os.path.exists(pydevd_attach_to_process_path)
++                    sys.path.insert(0, pydevd_attach_to_process_path)
++
++                    # NOTE: that it's not a part of the pydevd PYTHONPATH
++                    import attach_script
+ 
+                 attach_script.fix_main_thread_id(
+                     on_warn=on_warn, on_exception=on_exception, on_critical=on_critical
+                 )
+ 
+-                # NOTE: At this point it should be safe to remove this.
+-                sys.path.remove(pydevd_attach_to_process_path)
++                if not debugpy.__bundling_disabled__:
++                    # NOTE: At this point it should be safe to remove this.
++                    sys.path.remove(pydevd_attach_to_process_path)
+             except:
+                 import traceback
+ 
+diff --git a/tests/tests/test_vendoring.py b/tests/tests/test_vendoring.py
+index dd6c4269..28c03702 100644
+--- a/tests/tests/test_vendoring.py
++++ b/tests/tests/test_vendoring.py
+@@ -1,3 +1,8 @@
++import pytest
++
++import debugpy
++
++@pytest.mark.skipif(debugpy.__bundling_disabled__, reason='Bundling disabled')
+ def test_vendoring(pyfile):
+     @pyfile
+     def import_debugpy():
+-- 
+2.34.0
+

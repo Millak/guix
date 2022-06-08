@@ -1,10 +1,10 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2017, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Muriithi Frederick Muriuki <fredmanglis@gmail.com>
 ;;; Copyright © 2017, 2018 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2017 Roel Janssen <roel@gnu.org>
-;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018 Sou Bunnbu <iyzsong@member.fsf.org>
@@ -18,7 +18,7 @@
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;;
@@ -80,6 +80,7 @@
   #:use-module (gnu packages libedit)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lisp)
+  #:use-module (gnu packages lua)
   #:use-module (gnu packages man)
   #:use-module (gnu packages markup)
   #:use-module (gnu packages nettle)
@@ -111,6 +112,7 @@
   #:use-module (gnu packages version-control)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system guile)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
@@ -120,6 +122,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils)
+  #:use-module ((guix search-paths) #:select ($SSL_CERT_DIR $SSL_CERT_FILE))
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1))
 
@@ -156,8 +159,8 @@
   ;; Note: the 'update-guix-package.scm' script expects this definition to
   ;; start precisely like this.
   (let ((version "1.3.0")
-        (commit "2fb4304ee7eb7d17d48bee345677ef1f288a0b86")
-        (revision 24))
+        (commit "598f7289db9955584457ffc11c8504f3938a1618")
+        (revision 27))
     (package
       (name "guix")
 
@@ -173,7 +176,7 @@
                       (commit commit)))
                 (sha256
                  (base32
-                  "0pwizj76n9wpzcb4a631gj8yfxfpzq11p5kmmvmv6j4cqhn61dr0"))
+                  "0i4rdmh74dws57i8cjsrcdxrb3r8lph3mnvwafdqlfripxvn7yry"))
                 (file-name (string-append "guix-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -472,14 +475,9 @@ $(prefix)/etc/openrc\n")))
        (list (search-path-specification
               (variable "GUIX_EXTENSIONS_PATH")
               (files '("share/guix/extensions")))
-
              ;; (guix git) and (guix build download) honor this variable whose
              ;; name comes from OpenSSL.
-             (search-path-specification
-              (variable "SSL_CERT_DIR")
-              (separator #f)                      ;single entry
-              (files '("etc/ssl/certs")))))
-
+             $SSL_CERT_DIR))
       (home-page "https://www.gnu.org/software/guix/")
       (synopsis "Functional package manager for installed software packages and versions")
       (description
@@ -490,6 +488,30 @@ upgrades and roll-backs, per-user profiles, and much more.  It is based on
 the Nix package manager.")
       (license license:gpl3+)
       (properties '((ftp-server . "alpha.gnu.org"))))))
+
+(define-public guix-for-cuirass
+  ;; Known-good revision before commit
+  ;; bd86bbd300474204878e927f6cd3f0defa1662a5, which introduced
+  ;; 'primitive-fork' in 'open-inferior'.
+  (let ((version "1.3.0")
+        (commit "a27e47f9d1e22dc32bb250cfeef88cfacb930e23")
+        (revision 23))
+    (package
+      (inherit guix)
+      (version (string-append version "-"
+                              (number->string revision)
+                              "." (string-take commit 7)))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://git.savannah.gnu.org/git/guix.git")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "12jmvagbw05hmmlrb82i0qazhlv7mcfnl4dmknwx3a9hd760g9y1"))
+                (file-name (string-append "guix-" version "-checkout"))))
+      (properties `((hidden? . #t)
+                    ,@(package-properties guix))))))
 
 (define-public guix-daemon
   ;; This package is for internal consumption: it allows us to quickly build
@@ -660,6 +682,50 @@ out) and returning a package that uses that as its 'source'."
 the Icon Theme Specification.  They can be used by applications querying the
 GTK icon cache for instance.")))
 
+(define-public guix-modules
+  (package
+    (name "guix-modules")
+    (version "0.1.0")
+    (home-page "https://gitlab.inria.fr/guix-hpc/guix-modules")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference (url home-page)
+                                  (commit (string-append "v" version))))
+              (file-name (string-append "guix-modules-" version "-checkout"))
+              (sha256
+               (base32
+                "1ckvrrmkgzz93i35sj1372wxs7ln4gzszpri1pcdf473z0p7nh7w"))))
+    (build-system guile-build-system)
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (add-after 'install 'move-to-extension-directory
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out"))
+                             (target (string-append
+                                      out
+                                      "/share/guix/extensions/module.scm")))
+                        (mkdir-p (dirname target))
+                        (rename-file (car (find-files out "module.scm"))
+                                     target)))))))
+    (native-inputs (list (lookup-package-input guix "guile") guix))
+    (synopsis "Generate environment modules from Guix packages")
+    (description
+     "Guix-Modules is an extension of Guix that provides a new @command{guix
+module} command.  The @command{guix module create} sub-command creates
+@dfn{environment modules}, allowing you to manipulate software environments
+with the @command{module} command commonly found on @acronym{HPC,
+high-performance computing} clusters.
+
+To use this extension, set the @env{GUIX_EXTENSIONS_PATH} environment
+variable, along these lines:
+
+@example
+export GUIX_EXTENSIONS_PATH=\"$HOME/.guix-profile/share/guix/extensions\"
+@end example
+
+Replace @code{$HOME/.guix-profile} with the appropriate profile.")
+    (license license:gpl3+)))
+
 
 ;;;
 ;;; Other tools.
@@ -784,7 +850,7 @@ features of Stow with some extensions.")
 (define-public rpm
   (package
     (name "rpm")
-    (version "4.16.1.3")
+    (version "4.17.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://ftp.rpm.org/releases/rpm-"
@@ -792,35 +858,40 @@ features of Stow with some extensions.")
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "07g2g0adgjm29wqy94iqhpp5dk0hacfw1yf7kzycrrxnfbwwfgai"))))
+                "0sjyqs6hc57k46f45b68dfxnp985s0gar0fi1s0ig6vl4h5j439f"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags '("--with-external-db"   ;use the system's bdb
-                           "--enable-python"
-                           "--without-lua")
+     '(#:configure-flags '("--with-external-db" ;use the system's bdb
+                           "--enable-python")
        #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'fix-lua-check
+                    (lambda _
+                      (substitute* "configure"
+                        (("lua >= 5.3")
+                         "lua-5.3 >= 5.3"))))
                   (add-before 'configure 'set-nss-library-path
                     (lambda* (#:key inputs #:allow-other-keys)
                       (let ((nss (assoc-ref inputs "nss")))
                         (setenv "LIBRARY_PATH"
                                 (string-append (getenv "LIBRARY_PATH") ":"
-                                               nss "/lib/nss"))
-                        #t))))))
+                                               nss "/lib/nss"))))))))
     (native-inputs
      (list pkg-config))
     (inputs
-     (list python
-           xz
-           bdb
-           popt
-           nss
-           nspr
+     (list bdb
+           bzip2
+           cpio
+           file
            libarchive
            libgcrypt
-           file
-           bzip2
-           zlib
-           cpio))
+           lua
+           nspr
+           nss
+           popt
+           python
+           sqlite
+           xz
+           zlib))
     (home-page "https://rpm.org/")
     (synopsis "The RPM Package Manager")
     (description
@@ -1067,7 +1138,7 @@ written entirely in Python.")
 (define-public conan
   (package
     (name "conan")
-    (version "1.42.0")
+    (version "1.47.0")
     (source
      (origin
        (method git-fetch)               ;no tests in PyPI archive
@@ -1077,7 +1148,7 @@ written entirely in Python.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "153npvj81m1c33gfcv2nry7xhyikxnhjns7lvs525f1x20ck6asg"))))
+         "1zs2xb22rsy5fsc0fd7c95vrx1mfz7vasyg1lqkzyfimvn5zah6n"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1088,7 +1159,9 @@ written entirely in Python.")
                (("node-semver==0.6.1")
                 "node-semver>=0.6.1")
                (("Jinja2>=2.9, <3")
-                "Jinja2>=2.9"))))
+                "Jinja2>=2.9")
+               (("PyYAML>=3.11, <6.0")
+                "PyYAML"))))
          (add-after 'unpack 'patch-paths
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((coreutils (assoc-ref inputs "coreutils")))
@@ -1144,6 +1217,8 @@ written entirely in Python.")
                         ;; This one fails for unknown reasons (see:
                         ;; https://github.com/conan-io/conan/issues/9671).
                         "and not test_build "
+                        ;; This test expects the 'apt' command to be available.
+                        "and not test_apt_check "
                         (if (not (string-prefix? "x86_64" system))
                             ;; These tests either assume the machine is
                             ;; x86_64, or require a cross-compiler to target
@@ -1183,7 +1258,7 @@ written entirely in Python.")
            python-pluginbase
            python-pygments
            python-pyjwt
-           python-pyyaml
+           python-pyyaml-5
            python-requests
            python-six
            python-tqdm
@@ -1267,8 +1342,8 @@ environments.")
     (license (list license:gpl3+ license:agpl3+ license:silofl1.1))))
 
 (define-public guix-build-coordinator
-  (let ((commit "f1223225144b866951f13ece7f0583fd826a5705")
-        (revision "50"))
+  (let ((commit "3de63f1f66d5f0eb157ee60bc864404f386ee2b0")
+        (revision "53"))
     (package
       (name "guix-build-coordinator")
       (version (git-version "0" revision commit))
@@ -1279,7 +1354,7 @@ environments.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1yw5hzmkhgb2s29wv7bsi3w50ps9zi0zd1n0faxbcfyglsryvgbs"))
+                  "1ld761c48ad925p3kisnjvad50p6hyk77z0yjcr29681n73xzzz4"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1575,8 +1650,8 @@ in an isolated environment, in separate namespaces.")
     (license license:gpl3+)))
 
 (define-public nar-herder
-  (let ((commit "f69da3686583d53974e720a9e66103126631cb69")
-        (revision "4"))
+  (let ((commit "a24fbd108f75c8f27d2f68f2d1a051e2f3f3e191")
+        (revision "7"))
     (package
       (name "nar-herder")
       (version (git-version "0" revision commit))
@@ -1587,7 +1662,7 @@ in an isolated environment, in separate namespaces.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "0glcmma6gkxna45bv0yki3l13r34ha7v0jrli3vmh4ysnhsnc4ii"))
+                  "1jm6ks2sjcwih7j4wnp252qd73n8pydg7sd000ismpvg5p21l7fg"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1618,6 +1693,7 @@ in an isolated environment, in separate namespaces.")
                                          "guile-gcrypt"
                                          "guix"
                                          "guile-lib"
+                                         "guile-prometheus"
                                          "guile-sqlite3"
                                          "gnutls"
                                          "guile-fibers")))
@@ -1654,6 +1730,7 @@ in an isolated environment, in separate namespaces.")
              guile-gcrypt
              guix
              guile-fibers-1.1
+             guile-prometheus
              guile-lib
              guile-sqlite3))
       (inputs
@@ -1664,6 +1741,7 @@ in an isolated environment, in separate namespaces.")
              guile-gcrypt
              guix
              guile-fibers-1.1
+             guile-prometheus
              guile-lib
              guile-sqlite3
              gnutls))
@@ -1742,7 +1820,7 @@ for packaging and deployment of cross-compiled Windows applications.")
 (define-public libostree
   (package
     (name "libostree")
-    (version "2022.1")
+    (version "2022.3")
     (source
      (origin
        (method url-fetch)
@@ -1750,7 +1828,7 @@ for packaging and deployment of cross-compiled Windows applications.")
              "https://github.com/ostreedev/ostree/releases/download/v"
              (version-major+minor version) "/libostree-" version ".tar.xz"))
        (sha256
-        (base32 "1mfakwm0sjvb1vvl3jhc451yyf723k7c4vv1yqs8law4arw0x823"))))
+        (base32 "04pn4ibak8k7qlm0722im5ng8gyn1r5y5ggyz75ca0smrnfzs8xq"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
@@ -1759,8 +1837,7 @@ for packaging and deployment of cross-compiled Windows applications.")
            (lambda _
              ;; Don't try to use the non-existing '/var/tmp' as test
              ;; directory.
-             (setenv "TEST_TMPDIR" (getenv "TMPDIR"))
-             #t)))
+             (setenv "TEST_TMPDIR" (getenv "TMPDIR")))))
        ;; XXX: fails with:
        ;;     tap-driver.sh: missing test plan
        ;;     tap-driver.sh: internal error getting exit status
@@ -1795,115 +1872,118 @@ the boot loader configuration.")
 
 (define-public flatpak
   (package
-   (name "flatpak")
-   (version "1.12.7")
-   (source
-    (origin
-     (method url-fetch)
-     (uri (string-append "https://github.com/flatpak/flatpak/releases/download/"
-                         version "/flatpak-" version ".tar.xz"))
-     (sha256
-      (base32 "05lkpbjiwp69q924i1jfyk5frcqbdbv9kyzbqwm2hy723i9jmdbd"))
-     (patches (search-patches "flatpak-fix-path.patch"))))
+    (name "flatpak")
+    (version "1.12.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/flatpak/flatpak/releases/download/"
+                           version "/flatpak-" version ".tar.xz"))
+       (sha256
+        (base32 "05lkpbjiwp69q924i1jfyk5frcqbdbv9kyzbqwm2hy723i9jmdbd"))
+       (patches
+        (search-patches "flatpak-fix-path.patch"
+                        "flatpak-unset-gdk-pixbuf-for-sandbox.patch"))))
 
-   ;; Wrap 'flatpak' so that GIO_EXTRA_MODULES is set, thereby allowing GIO to
-   ;; find the TLS backend in glib-networking.
-   (build-system glib-or-gtk-build-system)
+    ;; Wrap 'flatpak' so that GIO_EXTRA_MODULES is set, thereby allowing GIO to
+    ;; find the TLS backend in glib-networking.
+    (build-system glib-or-gtk-build-system)
 
-   (arguments
-    '(#:configure-flags
-      (list
-       "--enable-documentation=no" ;; FIXME
-       "--enable-system-helper=no"
-       "--localstatedir=/var"
-       (string-append "--with-system-bubblewrap="
-                      (assoc-ref %build-inputs "bubblewrap")
-                      "/bin/bwrap")
-       (string-append "--with-system-dbus-proxy="
-                      (assoc-ref %build-inputs "xdg-dbus-proxy")
-                      "/bin/xdg-dbus-proxy"))
+    (arguments
+     (list
+      #:configure-flags
+      #~(list
+         "--enable-documentation=no" ;; FIXME
+         "--enable-system-helper=no"
+         "--localstatedir=/var"
+         (string-append "--with-system-bubblewrap="
+                        (assoc-ref %build-inputs "bubblewrap")
+                        "/bin/bwrap")
+         (string-append "--with-system-dbus-proxy="
+                        (assoc-ref %build-inputs "xdg-dbus-proxy")
+                        "/bin/xdg-dbus-proxy"))
       #:phases
-      (modify-phases %standard-phases
-        (add-after 'unpack 'fix-tests
-          (lambda* (#:key inputs #:allow-other-keys)
-            (copy-recursively
-             (search-input-directory inputs "lib/locale")
-             "/tmp/locale")
-            (for-each make-file-writable (find-files "/tmp"))
-            (substitute* "tests/make-test-runtime.sh"
-              (("cp `which.*") "echo guix\n")
-              (("cp -r /usr/lib/locale/C\\.\\*")
-               (string-append "mkdir ${DIR}/usr/lib/locale/en_US; \
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-tests
+            (lambda* (#:key inputs #:allow-other-keys)
+              (copy-recursively
+               (search-input-directory inputs "lib/locale")
+               "/tmp/locale")
+              (for-each make-file-writable (find-files "/tmp"))
+              (substitute* "tests/make-test-runtime.sh"
+                (("cp `which.*") "echo guix\n")
+                (("cp -r /usr/lib/locale/C\\.\\*")
+                 (string-append "mkdir ${DIR}/usr/lib/locale/en_US; \
 cp -r /tmp/locale/*/en_US.*")))
-            (substitute* "tests/libtest.sh"
-              (("/bin/kill") (which "kill"))
-              (("/usr/bin/python3") (which "python3")))
-            #t))
-        (add-after 'unpack 'p11-kit-fix
-          (lambda* (#:key inputs #:allow-other-keys)
-            (let ((p11-path (search-input-file inputs "/bin/p11-kit")))
-              (substitute* "session-helper/flatpak-session-helper.c"
-                (("\"p11-kit\",")
-                 (string-append "\"" p11-path "\","))
-                (("if \\(g_find_program_in_path \\(\"p11-kit\"\\)\\)")
-                 (string-append "if (g_find_program_in_path (\""
-                                p11-path "\"))"))))))
-        ;; Many tests fail for unknown reasons, so we just run a few basic
-        ;; tests.
-        (replace 'check
-          (lambda _
-            (setenv "HOME" "/tmp")
-            (invoke "make" "check"
-                    "TESTS=tests/test-basic.sh tests/test-config.sh testcommon"))))))
-   (native-inputs
-    (list bison
-          dbus ; for dbus-daemon
-          gettext-minimal
-          `(,glib "bin") ; for glib-mkenums + gdbus-codegen
-          glibc-utf8-locales
-          gobject-introspection
-          libcap
-          pkg-config
-          python
-          python-pyparsing
-          socat
-          which))
-   (inputs
-    (list appstream-glib
-          bubblewrap
-          dconf
-          fuse
-          gdk-pixbuf
-          gpgme
-          json-glib
-          libarchive
-          libostree
-          libseccomp
-          libsoup-minimal-2
-          libxau
-          libxml2
-          p11-kit-next
-          util-linux
-          xdg-dbus-proxy))
-   (propagated-inputs (list glib-networking gnupg gsettings-desktop-schemas))
-   (home-page "https://flatpak.org")
-   (synopsis "System for building, distributing, and running sandboxed desktop
+              (substitute* "tests/libtest.sh"
+                (("/bin/kill") (which "kill"))
+                (("/usr/bin/python3") (which "python3")))
+              #t))
+          (add-after 'unpack 'p11-kit-fix
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((p11-path (search-input-file inputs "/bin/p11-kit")))
+                (substitute* "session-helper/flatpak-session-helper.c"
+                  (("\"p11-kit\",")
+                   (string-append "\"" p11-path "\","))
+                  (("if \\(g_find_program_in_path \\(\"p11-kit\"\\)\\)")
+                   (string-append "if (g_find_program_in_path (\""
+                                  p11-path "\"))"))))))
+          ;; Many tests fail for unknown reasons, so we just run a few basic
+          ;; tests.
+          (replace 'check
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (invoke "make" "check"
+                      "TESTS=tests/test-basic.sh tests/test-config.sh testcommon"))))))
+    (native-inputs
+     (list bison
+           dbus ; for dbus-daemon
+           gettext-minimal
+           `(,glib "bin") ; for glib-mkenums + gdbus-codegen
+           glibc-utf8-locales
+           gobject-introspection
+           libcap
+           pkg-config
+           python
+           python-pyparsing
+           socat
+           which))
+    (inputs
+     (list appstream-glib
+           bubblewrap
+           dconf
+           fuse
+           gdk-pixbuf
+           gpgme
+           json-glib
+           libarchive
+           libostree
+           libseccomp
+           libsoup-minimal-2
+           libxau
+           libxml2
+           p11-kit-next
+           util-linux
+           xdg-dbus-proxy))
+    (propagated-inputs (list glib-networking gnupg gsettings-desktop-schemas))
+    (home-page "https://flatpak.org")
+    (synopsis "System for building, distributing, and running sandboxed desktop
 applications")
-   (description "Flatpak is a system for building, distributing, and running
+    (description "Flatpak is a system for building, distributing, and running
 sandboxed desktop applications on GNU/Linux.")
-   (license license:lgpl2.1+)))
+    (license license:lgpl2.1+)))
 
 (define-public akku
   (package
     (name "akku")
-    (version "1.0.1")
+    (version "1.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://gitlab.com/akkuscm/akku.git")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
-              (sha256 (base32 "1dm32ws3nshnnscd7k75zswxxs1pp25y2q4k8j5ms241hz47by3c"))))
+              (sha256 (base32 "1pi18aamg1fd6f9ynfl7zx92052xzf0zwmhi2pwcwjs1kbah19f5"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases

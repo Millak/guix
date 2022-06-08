@@ -5,7 +5,7 @@
 ;;; Copyright © 2015, 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2017 Alex Kost <alezost@gmail.com>
-;;; Copyright © 2017 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2019 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020 Timothy Sample <samplet@ngyro.com>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -1098,6 +1098,15 @@
   (let ((source (origin
                   (method url-fetch)
                   (uri "http://ftp.gnu.org/pub/gnu/foo/foo.tar.gz")
+                  (sha256 %null-sha256))))
+    (single-lint-warning-message
+     (check-mirror-url (dummy-package "x" (source source))))))
+
+(test-equal "mirror-url: kde suggestion"
+  "URL should be 'mirror://kde/stable/gcompris/qt/src/gcompris-qt-2.3.tar.xz'"
+  (let ((source (origin
+                  (method url-fetch)
+                  (uri "https://download.kde.org/stable/gcompris/qt/src/gcompris-qt-2.3.tar.xz")
                   (sha256 %null-sha256))))
     (single-lint-warning-message
      (check-mirror-url (dummy-package "x" (source source))))))

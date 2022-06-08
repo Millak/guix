@@ -54,6 +54,7 @@
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
+;;; Copyright © 2022 Derek Chuank <derekchuank@outlook.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -386,6 +387,30 @@ layers (evdev and uinput), making remapping work in almost all the places.")
      "xkb-switch is a C++ program that queries and changes the XKB layout
 state.")
     (license license:gpl3+)))
+
+(define-public xkblayout
+  ;; Upstream doesn't have any version numbers
+  (let ((version "0.0.0")
+        (revision "0")
+        (commit "c0851b0f4bc9bc1a07240605baac8e50abe63fa8"))
+    (package
+      (name "xkblayout")
+      (version (git-version version revision commit))
+      (home-page "https://gitlab.freedesktop.org/whot/xkblayout")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url home-page)
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0057988l5l7pmwg7dp6cqvj5l4lr0g5z3wq189g6kz36l9rmh675"))))
+      (build-system python-build-system)
+      (synopsis "XKB layout template generator")
+      (description "xkblayout is a CLI application to generate templates for
+a new XKB layout, either in the user's home directory or the system directory.")
+      (license license:gpl3+))))
 
 (define-public xclip
   (package
@@ -1475,6 +1500,35 @@ This is a fork with added support for Wayland using the wlr-gamma-control
 protocol.")
       (license license:gpl3+))))
 
+(define-public xwhite
+  (package
+    (name "xwhite")
+    (version "0.0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/derekchuank/xwhite/"
+                                  "releases/download/v" version
+                                  "/xwhite-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0jbnlj5a91ib4anprmylqqnbv9wa73cr7fsc1s54df0a0w5yq8sz"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:tests? #f)) ;No test suite.
+    (native-inputs (list pkg-config))
+    (inputs (list libxrandr))
+    (home-page "https://github.com/derekchuank/xwhite")
+    (synopsis "Adjust the color balance")
+    (description
+     "@command{xwhite} is a command line tool for adjusting the colour
+balance of screen.  It is based on xrandr's gamma correction and brightness adjustment.
+As such, it can only be used for X displays and not Wayland displays.  It is typically
+used for tuning the color balance and color temperature.  It has a similar function as
+@command{redshift -P -g R:G:B -O temperature}, but @command{xwhite} is more flexible
+in that it does not keep the white color fixed, suitable for setting the white color
+to an arbitrary balanced color.")
+    (license license:gpl2)))
+
 (define-public gammastep
   (package
     (name "gammastep")
@@ -2296,16 +2350,16 @@ temperature of the screen.")
     (native-inputs
      (list pandoc pkg-config))
     (inputs
-     `(("fontconfig" ,fontconfig)
-       ("libX11" ,libx11)
-       ("libxcomposite" ,libxcomposite)
-       ("libxext" ,libxext)
-       ("libxfixes" ,libxfixes)
-       ("libxft" ,libxft)
-       ("libxmu" ,libxmu)
-       ("libxrandr" ,libxrandr)
-       ("libxscrnsaver" ,libxscrnsaver)
-       ("linux-pam" ,linux-pam)))
+     (list fontconfig
+           libx11
+           libxcomposite
+           libxext
+           libxfixes
+           libxft
+           libxmu
+           libxrandr
+           libxscrnsaver
+           linux-pam))
     (home-page "https://github.com/google/xsecurelock")
     (synopsis "X11 screen lock utility with the primary goal of security")
     (description "@code{xsecurelock} is an X11 screen locker which uses
@@ -2315,9 +2369,11 @@ As a consequence of the modular design, the usual screen locker service
 shouldn't be used with @code{xsecurelock}.  Instead, you need to add a helper
 binary to setuid-binaries:
 @example
-(setuid-programs (cons*
-                   (file-append xsecurelock \"/libexec/xsecurelock/authproto_pam\")
-                   %setuid-programs))
+(setuid-programs
+ (cons*
+  (setuid-program
+   (program (file-append xsecurelock \"/libexec/xsecurelock/authproto_pam\")))
+  %setuid-programs))
 @end example")
     (license license:asl2.0)))
 
@@ -2937,7 +2993,7 @@ This package is the fork of hsetroot by Hyriand.")
 (define-public jumpapp
   (package
     (name "jumpapp")
-    (version "1.1")
+    (version "1.2")
     (source
      (origin
        (method git-fetch)
@@ -2946,7 +3002,7 @@ This package is the fork of hsetroot by Hyriand.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jrk4mm42sz6ca2gkb6w3dad53d4im4shpgsq8s4vr6xpl3b43ry"))))
+        (base32 "05shgw4agkhgk5vbvc05s12q7m0djc0m4qrd328hmis37bxp9j7n"))))
     (build-system gnu-build-system)
     (arguments `(#:phases
                  (modify-phases %standard-phases
@@ -2957,8 +3013,7 @@ This package is the fork of hsetroot by Hyriand.")
                        (let ((out (assoc-ref outputs "out")))
                          (substitute* "Makefile"
                            (("PREFIX =.*")
-                            (string-append "PREFIX = " out "\n")))
-                         #true))))))
+                            (string-append "PREFIX = " out "\n")))))))))
     (propagated-inputs
      (list wmctrl xdotool xprop))
     (native-inputs
@@ -3050,3 +3105,4 @@ MouseKeys-acceleration management.")
 that support @samp{wlr-gamma-control-unstable-v1}.  It is also known as a blue
 light filter or night light.")
     (license license:expat)))
+

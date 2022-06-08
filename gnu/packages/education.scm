@@ -37,6 +37,7 @@
   #:use-module (gnu packages databases)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fonts)
+  #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages game-development)
   #:use-module (gnu packages gettext)
@@ -48,8 +49,10 @@
   #:use-module (gnu packages javascript)
   #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks) ; extra-cmake-modules
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
@@ -62,8 +65,10 @@
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages video)
+  #:use-module (gnu packages xiph)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages xml)
+  #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
@@ -147,7 +152,7 @@ of categories with some of the activities available in that category.
      (origin
        (method url-fetch)
        (uri (string-append
-             "https://download.kde.org/stable/gcompris/qt/src/gcompris-qt-"
+             "mirror://kde/stable/gcompris/qt/src/gcompris-qt-"
              version ".tar.xz"))
        (sha256
         (base32 "0qncknaaf168anh4cjp7dqz6qzgx948kvgr32j2vga8mjakqn1aj"))))
@@ -440,208 +445,136 @@ specialized device.")
     (home-page "https://bipede.fr/contrib/")
     (license license:gpl3)))
 
-(define-public childsplay
-  (package
-    (name "childsplay")
-    (version "3.4")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "mirror://sourceforge/schoolsplay/"
-                    "childsplay-" version ".tgz"))
-              (sha256
-               (base32
-                "0z7yp2swjnbz51vn2zyfnjn40jq38l5mbh15yafmx1z3vn2z1m77"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'unbundle-dejavu-font
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let* ((dejavu-dir
-                     (string-append (assoc-ref inputs "font-dejavu")
-                                    "/share/fonts/truetype"))
-                    (dejavu-font
-                     (string-append dejavu-dir
-                                    "/DejaVuSansCondensed-Bold.ttf")))
-               (substitute* "SPConstants.py"
-                 (("^(TTF(BOLD)? = ).*" _ prefix)
-                  (string-append prefix "'" dejavu-font "'\n")))
-               (for-each (lambda (f) (delete-file f))
-                         (find-files "lib/SPData" "DejaVu"))
-               #t)))
-         (delete 'build)
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (pixmaps (string-append out "/share/pixmaps"))
-                    (share (string-append out "/share/childsplay"))
-                    (doc (string-append out "/share/doc/" ,name "-",version)))
-               ;; Install icon.
-               (install-file "lib/SPData/themes/childsplay/logo_cp.svg" pixmaps)
-               ;; Install data.
-               (mkdir-p share)
-               (for-each (lambda (f)
-                           (copy-recursively f (string-append share "/" f)))
-                         '("alphabet-sounds" "lib" "locale" "SPWidgets"))
-               (for-each (lambda (f) (install-file f share))
-                         (find-files "." "\\.(py|dev|db)$"))
-               ;; Install documentation.
-               (mkdir-p doc)
-               (copy-recursively "docs" doc)
-               #t)))
-         (add-after 'install 'create-executable
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             (let* ((python (search-input-file inputs "/bin/python"))
-                    (out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (executable (string-append bin "/childsplay")))
-               (mkdir-p bin)
-               (call-with-output-file executable
-                 (lambda (file)
-                   (format file
-                           "~a ~a"
-                           python
-                           (string-append out "/share/childsplay/childsplay.py"))))
-               (chmod executable #o555)
-               #t)))
-         (add-after 'install 'create-desktop-file
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (applications (string-append out "/share/applications")))
-               (mkdir-p applications)
-               (call-with-output-file
-                   (string-append applications "/childsplay.desktop")
-                 (lambda (file)
-                   (format file
-                           "[Desktop Entry]~@
-                            Name=Childsplay~@
-                            Comment=Suite of educational games for young children~@
-                            Comment[ca]=Conjunt de jocs educatius per a xiquets~@
-                            Comment[es]=Conjunto de juegos educativos para niños~@
-                            Comment[de]=Sammlung mit lehrreichen Spielen für kleine Kinder~@
-                            Exec=~a/bin/childsplay~@
-                            Terminal=false~@
-                            Icon=logo_cp.svg~@
-                            Type=Application~@
-                            Categories=Application;Game;Education;KidsGame;~@
-                            Keywords=suite;children;games;young;educational;~%"
-                           out)))
-               #t))))))
-    (inputs
-     `(("font-dejavu" ,font-dejavu)
-       ("pygame" ,python2-pygame)
-       ("sqlalchemy" ,python2-sqlalchemy)))
-    (synopsis "Suite of educational games for young children")
-    (description "Childsplay is a collection of educational activities
-for young children.  Childsplay can be used at home, kindergartens and
-pre-schools.  Childsplay is a fun and safe way to let young children
-use the computer and at the same time teach them a little math,
-letters of the alphabet, spelling, eye-hand coordination, etc.")
-    (home-page "http://www.schoolsplay.org")
-    (license license:gpl3+)))
-
-(define-public omnitux
-  (package
-    (name "omnitux")
-    (version "1.2.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://sourceforge/omnitux/omnitux/"
-                           "v" version "/omnitux-" version ".tar.bz2"))
-       (sha256
-        (base32 "1wmmmbzmxd0blhn00d4g91xwavnab143a31ca3i8hrqgzh6qz9w6"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; Remove pre-compiled .pyc files from source.
-           (for-each delete-file (find-files "bin" "\\.pyc$"))
-           #t))))
-    (build-system python-build-system)
-    (inputs
-     (list python2-pygame python2-pygtk))
-    (arguments
-     `(#:tests? #f                      ;no test
-       #:python ,python-2
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'build)                ;no setup.py
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (share (string-append out "/share"))
-                    (data (string-append share "/omnitux")))
-               ;; Install documentation.
-               (let ((doc (string-append share "/doc/" ,name "-" ,version)))
-                 (for-each (lambda (f) (install-file f doc))
-                           '("LICENSE.txt" "README.txt")))
-               ;; Install data.
-               (install-file "omnitux.sh" data)
-               (for-each (lambda (d)
-                           (copy-recursively d (string-append data "/" d)))
-                         '("bin" "data"))
-               ;; Install the launcher.
-               (let* ((bin (string-append out "/bin"))
-                      (script (string-append bin "/omnitux"))
-                      (bash (search-input-file %build-inputs "/bin/bash"))
-                      (python (search-input-file %build-inputs
-                                                 "/bin/python2")))
-                 (mkdir-p bin)
-                 (with-output-to-file script
-                   (lambda ()
-                     (format #t "#!~a~%" bash)
-                     (format #t
-                             "cd ~a; ~a menu.py~%"
-                             (string-append data "/bin")
-                             python)))
-                 (chmod script #o755))
-               ;; Install icon and desktop file.
-               (let ((pixmaps (string-append share "/pixmaps")))
-                 (install-file "data/default/icons/Omnitux_logo.svg" pixmaps))
-               (let ((apps (string-append out "/share/applications")))
-                 (mkdir-p apps)
-                 (with-output-to-file (string-append apps "/omnitux.desktop")
-                   (lambda _
-                     (format #t
-                             "[Desktop Entry]~@
-                              Name=Omnitux~@
-                              GenericName=Omnitux
-                              Comment=An educational game based on multimedia elements.~@
-                              Comment[fr]=Un jeu ludo-éducatif basé sur des éléments multimédias.~@
-                              Exec=~a/bin/omnitux~@
-                              Type=Application~@
-                              Categories=Game;Education;~@
-                              Terminal=false~@
-                              Icon=Omnitux_logo.svg~@"
-                             out))))
-               #t))))))
-    (home-page "http://omnitux.sourceforge.net/")
-    (synopsis "Educational activities based on multimedia elements")
-    (description "The project aims to provide various educational
-activities around multimedia elements (images, sounds, texts).  Types
-of activities include:
-@itemize
-@item associations,
-@item items to place on a map or a schema,
-@item counting activities,
-@item puzzles,
-@item card faces to remember,
-@item find differences between two pictures,
-@item ...
-@end itemize
-
-Activities are available in English, French, German, Polish,
-Portuguese, Spanish and Italian.")
-    ;; Project's license is GPL3+, but multimedia elements are
-    ;; released under various licenses.
-    (license (list license:gpl3+
-                   license:gpl2+
-                   license:cc-by-sa2.0
-                   license:cc-by-sa3.0
-                   license:public-domain))))
+(define-public openboard
+  ;; The last release builds from qtwebkit, which is planned for removal in
+  ;; Guix, so use the latest commit of the 1.7-dev branch, which builds with
+  ;; qtwebengine.
+  (let ((commit "39e914f600d26565706f0e5b6ea2482b8b4038c7") ;1.6.2-rc0311
+        (revision "1"))
+    (package
+      (name "openboard")
+      (version (git-version "1.6.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/OpenBoard-org/OpenBoard")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1763l5dywirzidzc93726dggf9819p47hh6a7p7dwzd1bfq1wb2q"))))
+      (build-system qt-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ;no tests
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'set-initial-values
+              ;; Remove useless "Check for updates" action from menu.
+              ;; Also prevent pop-up window about importing Open Sankore
+              ;; documents since we don't package OpenBoard-Importer.
+              (lambda _
+                (substitute* "src/core/UBSettings.cpp"
+                  (("(appHideCheckForSoftwareUpdate = .*?)false(\\);)" _ beg end)
+                   (string-append beg "true" end))
+                  (("(appLookForOpenSankoreInstall = .*?)true(\\);)" _ beg end)
+                   (string-append beg "false" end)))))
+            (add-after 'unpack 'fix-build-error
+              ;; XXX: `errorOpeningVirtualKeyboard' variable is only
+              ;; defined when building for OSX.  Yet,
+              ;; "UBBoardController.cpp" relies on it unconditionally,
+              ;; resulting in a build failure.  Here, we get rid of
+              ;; that variable, assuming it is always false (its
+              ;; default value when building for OSX).
+              (lambda _
+                (substitute* "src/board/UBBoardController.cpp"
+                  (("if \\(!UBPlatformUtils::errorOpeningVirtualKeyboard\\)")
+                   ""))))
+            (add-after 'unpack 'fix-hard-coded-env
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "src/frameworks/UBPlatformUtils_linux.cpp"
+                  (("/usr/bin/env") (search-input-file inputs "/bin/env")))))
+            (add-after 'unpack 'fix-library-path
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "OpenBoard.pro"
+                  (("/usr/include/quazip")
+                   (search-input-directory inputs "/include/quazip5"))
+                  (("/usr/include/poppler")
+                   (search-input-directory inputs "/include/poppler")))))
+            (replace 'configure
+              (lambda _
+                (invoke "qmake" "OpenBoard.pro")))
+            (replace 'install
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let* ((share (string-append #$output "/share"))
+                       (openboard (string-append share "/openboard"))
+                       (i18n (string-append openboard "/i18n")))
+                  ;; Install data.
+                  (with-directory-excursion "resources"
+                    (for-each (lambda (directory)
+                                (let ((target
+                                       (string-append openboard "/" directory)))
+                                  (mkdir-p target)
+                                  (copy-recursively directory target)))
+                              '("customizations" "etc" "library"))
+                    (mkdir-p i18n)
+                    (for-each (lambda (f)
+                                (install-file f i18n))
+                              (find-files "i18n" "\\.qm$")))
+                  ;; Install desktop file an icon.
+                  (install-file "resources/images/OpenBoard.png"
+                                (string-append share
+                                               "/icons/hicolor/64x64/apps/"))
+                  (make-desktop-entry-file
+                   (string-append share "/applications/" #$name ".desktop")
+                   #:name "OpenBoard"
+                   #:comment "Interactive whiteboard application"
+                   #:exec "openboard %f"
+                   #:icon "OpenBoard"
+                   #:mime-type "application/ubz"
+                   #:categories '("Education"))
+                  ;; Install executable.
+                  (install-file "build/linux/release/product/OpenBoard" openboard)
+                  (let ((bin (string-append #$output "/bin")))
+                    (mkdir-p bin)
+                    (symlink (string-append openboard "/OpenBoard")
+                             (string-append bin "/openboard")))))))))
+      (native-inputs
+       (list qttools))
+      (inputs
+       (list alsa-lib
+             coreutils-minimal          ;for patched 'env' shebang
+             ffmpeg
+             freetype
+             lame
+             libass
+             libfdk
+             libressl
+             libtheora
+             libva
+             libvorbis
+             libvpx
+             libx264
+             opus
+             poppler
+             qtbase-5
+             qtdeclarative
+             qtmultimedia
+             qtsvg
+             qtwebchannel
+             qtwebengine
+             qtxmlpatterns
+             quazip-0
+             sdl
+             zlib))
+      (home-page "https://openboard.ch/")
+      (synopsis "Interactive whiteboard for schools and universities")
+      (description
+       "OpenBoard is a teaching software for interactive whiteboard
+designed primarily for use in schools and universities.  It can be
+used both with interactive whiteboards or in a dual-screen setup with
+a pen-tablet display and a beamer.")
+      (license license:gpl3))))
 
 (define-public fet
   (package

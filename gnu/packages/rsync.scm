@@ -39,14 +39,14 @@
 (define-public rsync
   (package
    (name "rsync")
-   (version "3.2.3")
+   (version "3.2.4")
    (source (origin
             (method url-fetch)
             (uri (string-append "https://rsync.samba.org/ftp/rsync/src/rsync-"
                                 version ".tar.gz"))
             (sha256
              (base32
-              "03p5dha9g9krq61mdbcrjkpz5nglri0009ks2vs9k97f9i83rk5y"))))
+              "1lgslprbfirl9p9ca16syh0pzr4kgmrzdxwwayvb0ll0s0w1hxkg"))))
    (build-system gnu-build-system)
    (arguments
     `(#:configure-flags

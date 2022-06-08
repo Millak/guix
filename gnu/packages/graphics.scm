@@ -55,6 +55,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages cdrom)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
@@ -88,6 +89,7 @@
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages multiprecision)
+  #:use-module (gnu packages ninja)
   #:use-module (gnu packages pciutils)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)
@@ -98,6 +100,7 @@
   #:use-module (gnu packages pth)
   #:use-module (gnu packages pulseaudio)  ; libsndfile, libsamplerate
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
@@ -806,6 +809,31 @@ basic geometries.")
     ;; https://gitlab.com/inkscape/inkscape/issues/784).
     (license license:gpl3+)))
 
+(define-public python-booleanoperations
+  (package
+    (name "python-booleanoperations")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "booleanOperations" version ".zip"))
+       (sha256
+        (base32 "1f41lb19m8azchl1aqz6j5ycbspb8jsf1cnn42hlydxd68f85ylc"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-fonttools python-pyclipper))
+    (native-inputs
+     (list python-defcon-bootstrap
+           python-fontpens-bootstrap
+           python-pytest
+           python-wheel
+           unzip))
+    (home-page "https://github.com/typemytype/booleanOperations")
+    (synopsis "Boolean operations on paths")
+    (description "Boolean operations on paths which uses a super fast
+@url{http://www.angusj.com/delphi/clipper.php, polygon clipper library by
+Angus Johnson}.")
+    (license license:expat)))
+
 (define-public pstoedit
   (package
     (name "pstoedit")
@@ -872,7 +900,7 @@ distills complex, animated scenes into a set of baked geometric results.")
 (define-public mangohud
   (package
     (name "mangohud")
-    (version "0.6.6-1")
+    (version "0.6.7")
     (source
      (origin
        (method git-fetch)
@@ -881,7 +909,7 @@ distills complex, animated scenes into a set of baked geometric results.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ka004wxkajmvs5vy60r4ckm7f169c61rrd46w6gywkaqf5yp1ab"))))
+        (base32 "0n2x6agv2j8nd6h1998dqsphb7k57zx8vsayv47dqix28kg5kixz"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -912,11 +940,6 @@ distills complex, animated scenes into a set of baked geometric results.")
               (substitute* "src/meson.build"
                 (("\\\\\\$LIB")
                  "lib"))
-              (substitute* "src/loaders/loader_libdrm.cpp"
-                (("libdrm.so.2")
-                 (search-input-file inputs "lib/libdrm.so.2"))
-                (("libdrm_amdgpu.so.1")
-                 (search-input-file inputs "lib/libdrm_amdgpu.so.1")))
               (substitute* "src/overlay.cpp"
                 (("glxinfo")
                  (search-input-file inputs "bin/glxinfo")))
@@ -934,7 +957,6 @@ distills complex, animated scenes into a set of baked geometric results.")
            glslang
            `(,hwdata "pci")
            imgui-1.86
-           libdrm
            libx11
            mesa
            mesa-utils
@@ -1339,73 +1361,6 @@ realistic reflections, shading, perspective and other effects.")
     (home-page "http://www.povray.org/")
     (license license:agpl3+)))
 
-(define-public rapicorn
-  (package
-    (name "rapicorn")
-    (version "16.0.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://testbit.eu/pub/dists/rapicorn/"
-                                  "rapicorn-" version ".tar.xz"))
-              (sha256
-               (base32
-                "1y51yjrpsihas1jy905m9p3r8iiyhq6bwi2690c564i5dnix1f9d"))
-              (patches (search-patches "rapicorn-isnan.patch"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-tests
-           (lambda _
-             ;; Our grep does not support perl regular expressions.
-             (substitute* "taptool.sh"
-               (("grep -P") "grep -E"))
-             ;; Disable path tests because we cannot access /bin or /sbin.
-             (substitute* "rcore/tests/multitest.cc"
-               (("TCMP \\(Path::equals \\(\"/bin\"") "//"))
-             #t))
-         (add-before 'check 'pre-check
-           (lambda _
-             ;; The test suite requires a running X server (with DISPLAY
-             ;; number 99 or higher).
-             (system "Xvfb :99 &")
-             (setenv "DISPLAY" ":99")
-             #t))
-         (add-after 'unpack 'replace-fhs-paths
-           (lambda _
-             (substitute* (cons "Makefile.decl"
-                                (find-files "." "^Makefile\\.in$"))
-               (("/bin/ls") (which "ls"))
-               (("/usr/bin/env") (which "env")))
-             #t)))))
-    ;; These libraries are listed in the "Required" section of the pkg-config
-    ;; file.
-    (propagated-inputs
-     (list librsvg cairo pango libxml2 python2-enum34))
-    (inputs
-     `(("gdk-pixbuf" ,gdk-pixbuf)
-       ("libpng" ,libpng-1.2)
-       ("readline" ,readline)
-       ("libcroco" ,libcroco)
-       ("python" ,python-2)
-       ("cython" ,python2-cython)))
-    (native-inputs
-     `(("pandoc" ,pandoc)
-       ("bison" ,bison)
-       ("flex" ,flex)
-       ("doxygen" ,doxygen)
-       ("graphviz" ,graphviz)
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)
-       ("xvfb" ,xorg-server-for-tests)))
-    (home-page "https://rapicorn.testbit.org/")
-    (synopsis "Toolkit for rapid development of user interfaces")
-    (description
-     "Rapicorn is a toolkit for rapid development of user interfaces in C++
-and Python.  The user interface is designed in a declarative markup language
-and is connected to the programming logic using data bindings and commands.")
-    (license license:mpl2.0)))
-
 (define-public ctl
   (package
     (name "ctl")
@@ -1570,9 +1525,6 @@ rendering @acronym{SVG, Scalable Vector Graphics}.")
     (description "Pastel is a simple library to help you colorize strings in
 your terminal.")
     (license license:expat)))
-
-(define-public python2-pastel
-  (package-with-python2 python-pastel))
 
 (define-public fgallery
   (package
@@ -1837,6 +1789,113 @@ library, written in C++, which has become the de facto standard graphics
 library for 3D visualization and visual simulation software in the scientific
 and engineering community.")
       (license license:bsd-3)))
+
+(define-public skia
+  ;; Releases follow those of Chromium, about every 6 weeks.  The release
+  ;; version can be found on this page:
+  ;; https://skia.org/docs/user/release/release_notes/.  The commit used
+  ;; should be the last commit, as recommended at
+  ;; https://skia.org/docs/user/release/.
+  (let ((version "98")
+        (revision "0")
+        (commit "55c56abac381e1ae3f0116c410bed81b05e0a38a"))
+    (package
+      (name "skia")
+      (version (git-version version revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://skia.googlesource.com/skia.git")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1ldns2j1g2wj2phlxr9zqkdgs5g64pisxhwxcrq9ijn8a3jhafr2"))))
+      (build-system gnu-build-system)   ;actually GN + Ninja
+      (arguments
+       (list
+        ;; Running the test suite would require 'dm'; unfortunately the tool
+        ;; can only be built for debug builds, which require fetching third
+        ;; party sources.
+        #:tests? #f
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'configure
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "BUILD.gn"
+                  ;; Workaround a bug in the zlib third_party definition, that
+                  ;; fails the build even when zlib is found from the system.
+                  (("deps = \\[ \"//third_party/zlib\" ]")
+                   "deps = []"))
+                (invoke "gn" "gen" "build"
+                        (string-append
+                         ;;
+                         "--args="
+                         "cc=\"gcc\" "              ;defaults to 'cc'
+                         "is_official_build=true "  ;to use system libraries
+                         "is_component_build=true " ;build as a shared library
+                         ;; Specify where locate the harfbuzz and freetype
+                         ;; includes.
+                         (format #f "extra_cflags=[\"-I~a\",\"-I~a\"] "
+                                 (search-input-directory inputs
+                                                         "include/harfbuzz")
+                                 (search-input-directory inputs
+                                                         "include/freetype2"))
+                         ;; Otherwise the validate-runpath phase fails.
+                         "extra_ldflags=[\"-Wl,-rpath=" #$output "/lib\"] "
+                         ;; Disabled, otherwise the build system attempts to
+                         ;; download the SDK at build time.
+                         "skia_use_dng_sdk=false "))))
+            (replace 'build
+              (lambda* (#:key parallel-build? #:allow-other-keys)
+                (let ((job-count (if parallel-build?
+                                     (number->string (parallel-job-count))
+                                     "1")))
+                  (invoke "ninja" "-j" job-count "-C" "build"))))
+            (replace 'install
+              (lambda _
+                ;; Install headers.
+                (for-each (lambda (h)
+                            (install-file h (string-append
+                                             #$output "/include/skia/"
+                                             (dirname h))))
+                          (find-files "." "\\.h$"))
+                ;; Install libraries.
+                (for-each (lambda (lib)
+                            (install-file lib (string-append #$output "/lib")))
+                          (find-files "build" "^lib.*\\.(a|so)"))
+                ;; This pkgconfig file is useful at least to the
+                ;; python-skia-pathops package.
+                (define skia.pc (string-append #$output
+                                               "/lib/pkgconfig/skia.pc"))
+                (mkdir-p (dirname skia.pc))
+                (call-with-output-file skia.pc
+                  (lambda (port)
+                    (format port "\
+prefix=~a
+exec_prefix=${prefix}
+libdir=${prefix}/lib
+includedir=${prefix}/include/skia
+
+Name: skia
+Description: 2D graphic library for drawing text, geometries and images.
+URL: https://skia.org/
+Version: ~a
+Libs: -L${libdir} -lskia
+Cflags: -I${includedir}~%" #$output #$version))))))))
+      (native-inputs (list gn libjpeg-turbo ninja pkg-config python-wrapper))
+      (inputs (list expat fontconfig freetype harfbuzz mesa libwebp zlib))
+      (home-page "https://skia.org/")
+      (synopsis "2D graphics library")
+      (description "Skia is an open source 2D graphics library.  It can be
+used for drawing text, geometries, and images and has support for:
+@itemize
+@item 3x3 matrices with perspective
+@item antialiasing, transparency, filters
+@item shaders, xfermodes, maskfilters, patheffects
+@item subpixel text
+@end itemize")
+      (license license:bsd-3))))
 
 (define-public superfamiconv
   (package

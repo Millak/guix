@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017, 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
 ;;;
@@ -120,22 +120,34 @@ root with an empty password."
                marionette))
 
             ;; Check sshd's PID file.
-            (test-equal "sshd PID"
-              (wait-for-file #$pid-file marionette)
-              (marionette-eval
-               '(begin
-                  (use-modules (gnu services herd)
-                               (srfi srfi-1))
+            (test-assert "sshd PID"
+              (let ((pid (marionette-eval
+                          '(begin
+                             (use-modules (gnu services herd)
+                                          (srfi srfi-1))
 
-                  (live-service-running
-                   (find (lambda (live)
-                           (memq 'ssh-daemon
-                                 (live-service-provision live)))
-                         (current-services))))
-               marionette))
+                             (live-service-running
+                              (find (lambda (live)
+                                      (memq 'ssh-daemon
+                                            (live-service-provision live)))
+                                    (current-services))))
+                          marionette)))
+                (if #$pid-file
+                    (= pid (wait-for-file #$pid-file marionette))
+                    pid)))
 
-            (test-assert "wait for port 22"
+            (test-assert "wait for port 22, IPv4"
               (wait-for-tcp-port 22 marionette))
+
+            (test-assert "wait for port 22, IPv6"
+              ;; Make sure it's also available as IPv6.
+              ;; See <https://issues.guix.gnu.org/55335>.
+              (wait-for-tcp-port 22 marionette
+                                 #:address
+                                 `(make-socket-address
+                                   AF_INET6
+                                   (inet-pton AF_INET6 "::1")
+                                   22)))
 
             ;; Connect to the guest over SSH.  Make sure we can run a shell
             ;; command there.
@@ -222,7 +234,7 @@ root with an empty password."
                                  (openssh-configuration
                                   (permit-root-login #t)
                                   (allow-empty-passwords? #t)))
-                        "/var/run/sshd.pid"
+                        #f                        ;inetd-style, no PID file
                         #:sftp? #t))))
 
 (define %test-dropbear

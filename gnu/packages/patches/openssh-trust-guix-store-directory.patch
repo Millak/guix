@@ -1,0 +1,40 @@
+From 0d85bbd42ddcd442864a9ba4719aca8b70d68048 Mon Sep 17 00:00:00 2001
+From: Alexey Abramov <levenson@mmer.org>
+Date: Fri, 22 Apr 2022 11:32:15 +0200
+Subject: [PATCH] Trust guix store directory
+
+To be able to execute binaries defined in OpenSSH configuration, we
+need to tell OpenSSH that we can trust Guix store objects. safe_path
+procedure takes a canonical path and for each component, walking
+upwards, checks ownership and permissions constrains which are: must
+be owned by root, not writable by group or others.
+---
+ misc.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/misc.c b/misc.c
+index 0134d69..7131d5e 100644
+--- a/misc.c
++++ b/misc.c
+@@ -2146,6 +2146,7 @@ int
+ safe_path(const char *name, struct stat *stp, const char *pw_dir,
+     uid_t uid, char *err, size_t errlen)
+ {
++        static const char guix_store[] = @STORE_DIRECTORY@;
+ 	char buf[PATH_MAX], homedir[PATH_MAX];
+ 	char *cp;
+ 	int comparehome = 0;
+@@ -2178,6 +2179,10 @@ safe_path(const char *name, struct stat *stp, const char *pw_dir,
+ 		}
+ 		strlcpy(buf, cp, sizeof(buf));
+ 
++		/* If we are past the Guix store then we can stop */
++		if (strcmp(guix_store, buf) == 0)
++			break;
++
+ 		if (stat(buf, &st) == -1 ||
+ 		    (!platform_sys_dir_uid(st.st_uid) && st.st_uid != uid) ||
+ 		    (st.st_mode & 022) != 0) {
+-- 
+2.34.0
+

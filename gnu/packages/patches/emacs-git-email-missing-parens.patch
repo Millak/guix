@@ -1,0 +1,27 @@
+From 820ad7eb2e919e3f880bec22bd4f737fa55c4d22 Mon Sep 17 00:00:00 2001
+From: Niklas Eklund <niklas.eklund@posteo.net>
+Date: Thu, 5 May 2022 12:43:49 +0200
+Subject: [PATCH] Fix missing parens in git-email-mu4e.el
+
+The incorrect number of parens in this file lead to Emacs failing to
+parse the file.
+---
+ git-email-mu4e.el | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/git-email-mu4e.el b/git-email-mu4e.el
+index d5b8770..9220bf9 100644
+--- a/git-email-mu4e.el
++++ b/git-email-mu4e.el
+@@ -51,7 +51,7 @@ from Lisp, enable the mode if ARG is omitted or nil."
+                ;; built in context feature.
+                (seq-filter (lambda (header)
+                              (not (eq (car header) 'from)))
+-                           headers)
++                           headers))))
+     (setq git-email-compose-email-function 'message-mail)))
+ 
+ (provide 'git-email-mu4e)
+-- 
+2.34.0
+

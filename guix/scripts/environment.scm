@@ -56,6 +56,7 @@
   #:use-module (srfi srfi-37)
   #:use-module (srfi srfi-98)
   #:export (assert-container-features
+            load-manifest
             guix-environment
             guix-environment*
             show-environment-options-help
@@ -94,8 +95,6 @@ shell'."
   -E, --preserve=REGEXP  preserve environment variables that match REGEXP"))
   (display (G_ "
       --search-paths     display needed environment variable definitions"))
-  (display (G_ "
-  -s, --system=SYSTEM    attempt to build for SYSTEM--e.g., \"i686-linux\""))
   (display (G_ "
   -r, --root=FILE        make FILE a symlink to the result, and register it
                          as a garbage collector root"))
@@ -143,6 +142,8 @@ COMMAND or an interactive shell in that environment.\n"))
   (show-environment-options-help)
   (newline)
   (show-build-options-help)
+  (newline)
+  (show-native-build-options-help)
   (newline)
   (show-transformation-options-help)
   (newline)
@@ -225,10 +226,6 @@ use '--preserve' instead~%"))
          (option '(#\n "dry-run") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'dry-run? #t result)))
-         (option '(#\s "system") #t #f
-                 (lambda (opt name arg result)
-                   (alist-cons 'system arg
-                               (alist-delete 'system result eq?))))
          (option '(#\C "container") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'container? #t result)))
@@ -272,7 +269,8 @@ use '--preserve' instead~%"))
                    (alist-cons 'bootstrap? #t result)))
 
          (append %transformation-options
-                 %standard-build-options)))
+                 %standard-build-options
+                 %standard-native-build-options)))
 
 (define (pick-all alist key)
   "Return a list of values in ALIST associated with KEY."
@@ -284,6 +282,11 @@ use '--preserve' instead~%"))
              (cons v memo))
             (_ memo)))
         '() alist))
+
+(define (load-manifest file)                      ;TODO: factorize
+  "Load the user-profile manifest (Scheme code) from FILE and return it."
+  (let ((user-module (make-user-module '((guix profiles) (gnu)))))
+    (load* file user-module)))
 
 (define (options/resolve-packages store opts)
   "Return OPTS with package specification strings replaced by manifest entries
@@ -331,8 +334,7 @@ for the corresponding packages."
                    (let ((module (make-user-module '())))
                      (packages->outputs (load* file module) mode)))
                   (('manifest . file)
-                   (let ((module (make-user-module '((guix profiles) (gnu)))))
-                     (manifest-entries (load* file module))))
+                   (manifest-entries (load-manifest file)))
                   (_ '()))
                 opts)
     manifest-entry=?)))

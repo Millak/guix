@@ -12,6 +12,7 @@
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Tissevert <tissevert+guix@marvid.fr>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
+;;; Copyright © 2022 Luis Henrique Gomes Higino <luishenriquegh2701@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -76,7 +77,7 @@
 (define-public vim
   (package
     (name "vim")
-    (version "8.2.4564")
+    (version "8.2.5048")
     (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -85,7 +86,7 @@
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "1ggvmvd6xsj9xvknjcvpj52na2km2wxvxfj8l29mqp03g4wwyzrr"))))
+               "0bwps6r7g2c3nkn97s5kccqh6pb3a0bc11cmyacydsgxiwzq8xz4"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -94,12 +95,12 @@
        (modify-phases %standard-phases
          (add-after 'configure 'patch-absolute-paths
            (lambda _
-             (substitute* "runtime/tools/mve.awk"
-               (("/usr/bin/nawk") (which "gawk")))
-             (substitute* '("src/testdir/Makefile"
+             (substitute* '("runtime/autoload/context.vim"
+                            "src/testdir/Makefile"
                             "src/testdir/test_filetype.vim"
                             "src/testdir/test_normal.vim"
                             "src/testdir/test_popupwin.vim"
+                            "src/testdir/test_prompt_buffer.vim"
                             "src/testdir/test_shell.vim"
                             "src/testdir/test_suspend.vim"
                             "src/testdir/test_terminal.vim"
@@ -117,14 +118,10 @@
              (setenv "TERM" "xterm")))
          (add-before 'check 'skip-or-fix-failing-tests
            (lambda _
-             ;; This test assumes that PID 1 is run as root and that the user
-             ;; running the test suite does not have permission to kill(1, 0)
-             ;; it.  This is not true in the build container, where both PID 1
-             ;; and the test suite are run as the same user.  Skip the test.
-             ;; An alternative fix would be to patch the PID used to a random
-             ;; 32-bit value and hope it never shows up in the test environment.
-             (substitute* "src/testdir/test_swap.vim"
-               (("if !IsRoot\\(\\)") "if 0"))
+             ;; This test failure is shared between BSD and Guix.
+             (with-fluids ((%default-port-encoding #f))
+               (substitute* "src/testdir/test_writefile.vim"
+                 (("!has\\('bsd'\\)") "0")))
 
              ;; These tests check how the terminal looks after executing some
              ;; actions.  The path of the bash binary is shown, which results in
@@ -662,73 +659,90 @@ are detected, the user is notified.")))
 (define-public neovim
   (package
     (name "neovim")
-    (version "0.4.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/neovim/neovim")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "11zyj6jvkwas3n6w1ckj3pk6jf81z1g7ngg4smmwm7c27y2a6f2m"))))
+    (version "0.7.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/neovim/neovim")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1m7xmry66pn27gvk7qj9di83xa1h7zjp4c6ygnf218pqhr08x06g"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:modules ((srfi srfi-26)
-                  (guix build cmake-build-system)
-                  (guix build utils))
-       #:configure-flags '("-DPREFER_LUA:BOOL=YES")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'set-lua-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let* ((lua-version "5.1")
-                    (lua-cpath-spec
-                     (lambda (prefix)
-                       (let ((path (string-append prefix "/lib/lua/" lua-version)))
-                         (string-append path "/?.so;" path "/?/?.so"))))
-                    (lua-path-spec
-                     (lambda (prefix)
-                       (let ((path (string-append prefix "/share/lua/" lua-version)))
-                         (string-append path "/?.lua;" path "/?/?.lua"))))
-                    (lua-inputs (map (cute assoc-ref inputs <>)
-                                     '("lua"
-                                       "lua-luv"
-                                       "lua-lpeg"
-                                       "lua-bitop"
-                                       "lua-libmpack"))))
-               (setenv "LUA_PATH"
-                       (string-join (map lua-path-spec lua-inputs) ";"))
-               (setenv "LUA_CPATH"
-                       (string-join (map lua-cpath-spec lua-inputs) ";"))
-               #t)))
-         (add-after 'unpack 'prevent-embedding-gcc-store-path
-           (lambda _
-             ;; nvim remembers its build options, including the compiler with
-             ;; its complete path.  This adds gcc to the closure of nvim, which
-             ;; doubles its size.  We remove the refirence here.
-             (substitute* "cmake/GetCompileFlags.cmake"
-               (("\\$\\{CMAKE_C_COMPILER\\}") "/gnu/store/.../bin/gcc"))
-             #t)))))
-    (inputs
-     `(("libuv" ,libuv)
-       ("msgpack" ,msgpack)
-       ("libtermkey" ,libtermkey)
-       ("libvterm" ,libvterm)
-       ("unibilium" ,unibilium)
-       ("jemalloc" ,jemalloc)
-       ("lua" ,lua-5.1)
-       ("lua-luv" ,lua5.1-luv)
-       ("lua-lpeg" ,lua5.1-lpeg)
-       ("lua-bitop" ,lua5.1-bitop)
-       ("lua-libmpack" ,lua5.1-libmpack)))
-    (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("gettext" ,gettext-minimal)
-       ("gperf" ,gperf)))
+     (list #:modules
+           '((srfi srfi-26) (guix build cmake-build-system)
+             (guix build utils))
+           #:configure-flags
+           #~(list #$@(if (member (if (%current-target-system)
+                                      (gnu-triplet->nix-system (%current-target-system))
+                                      (%current-system))
+                                  (package-supported-systems luajit))
+                          '()
+                          '("-DPREFER_LUA:BOOL=YES")))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'set-lua-paths
+                 (lambda* _
+                   (let* ((lua-version "5.1")
+                          (lua-cpath-spec (lambda (prefix)
+                                            (let ((path (string-append
+                                                         prefix
+                                                         "/lib/lua/"
+                                                         lua-version)))
+                                              (string-append
+                                               path
+                                               "/?.so;"
+                                               path
+                                               "/?/?.so"))))
+                          (lua-path-spec (lambda (prefix)
+                                           (let ((path (string-append prefix
+                                                        "/share/lua/"
+                                                        lua-version)))
+                                             (string-append path "/?.lua;"
+                                                            path "/?/?.lua"))))
+                          (lua-inputs (list (or #$(this-package-input "lua")
+                                                #$(this-package-input "luajit"))
+                                            #$lua5.1-luv
+                                            #$lua5.1-lpeg
+                                            #$lua5.1-bitop
+                                            #$lua5.1-libmpack)))
+                     (setenv "LUA_PATH"
+                             (string-join (map lua-path-spec lua-inputs) ";"))
+                     (setenv "LUA_CPATH"
+                             (string-join (map lua-cpath-spec lua-inputs) ";"))
+                     #t)))
+               (add-after 'unpack 'prevent-embedding-gcc-store-path
+                 (lambda _
+                   ;; nvim remembers its build options, including the compiler with
+                   ;; its complete path.  This adds gcc to the closure of nvim, which
+                   ;; doubles its size.  We remove the refirence here.
+                   (substitute* "cmake/GetCompileFlags.cmake"
+                     (("\\$\\{CMAKE_C_COMPILER\\}") "/gnu/store/.../bin/gcc"))
+                   #t)))))
+    (inputs (list libuv-for-luv
+                  msgpack
+                  libtermkey
+                  libvterm
+                  unibilium
+                  jemalloc
+                  (if (member (if (%current-target-system)
+                                  (gnu-triplet->nix-system (%current-target-system))
+                                  (%current-system))
+                              (package-supported-systems luajit))
+                      luajit
+                      lua-5.1)
+                  lua5.1-luv
+                  lua5.1-lpeg
+                  lua5.1-bitop
+                  lua5.1-libmpack
+                  tree-sitter))
+    (native-inputs (list pkg-config gettext-minimal gperf))
     (home-page "https://neovim.io")
     (synopsis "Fork of vim focused on extensibility and agility")
-    (description "Neovim is a project that seeks to aggressively
+    (description
+     "Neovim is a project that seeks to aggressively
 refactor Vim in order to:
 
 @itemize
@@ -736,7 +750,8 @@ refactor Vim in order to:
 @item Split the work between multiple developers
 @item Enable advanced external UIs without modifications to the core
 @item Improve extensibility with a new plugin architecture
-@end itemize\n")
+@end itemize
+")
     ;; Neovim is licensed under the terms of the Apache 2.0 license,
     ;; except for parts that were contributed under the Vim license.
     (license (list license:asl2.0 license:vim))))
@@ -1287,7 +1302,7 @@ additions:
          ("syntax" "share/vim/vimfiles/"))
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'link-univerisal-ctags
+         (add-after 'unpack 'link-universal-ctags
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((ctags (assoc-ref inputs "universal-ctags")))
                (substitute* "autoload/tagbar.vim"

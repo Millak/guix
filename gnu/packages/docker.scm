@@ -122,7 +122,7 @@ client.")
            python-docopt
            python-dotenv
            python-jsonschema
-           python-pyyaml
+           python-pyyaml-5
            python-requests
            python-six
            python-texttable

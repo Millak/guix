@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2021 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016, 2017, 2018, 2019 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
@@ -136,6 +136,11 @@ in the Mozilla clients.")
          (list "-C" "nss" (string-append "PREFIX=" out)
                "NSDISTMODE=copy"
                "NSS_USE_SYSTEM_SQLITE=1"
+               ;; The gtests fail to compile on riscv64.
+               ;; Skipping them doesn't affect the test suite.
+               ,@(if (target-riscv64?)
+                   `("NSS_DISABLE_GTESTS=1")
+                   '())
                (string-append "NSPR_INCLUDE_DIR=" nspr "/include/nspr")
                ;; Add $out/lib/nss to RPATH.
                (string-append "RPATH=" rpath)
@@ -145,6 +150,9 @@ in the Mozilla clients.")
                   (ice-9 ftw)
                   (ice-9 match)
                   (srfi srfi-26))
+       #:tests? ,(not (or (%current-target-system)
+                          ;; Tests take more than 30 hours on riscv64-linux.
+                          (target-riscv64?)))
        #:phases
        (modify-phases %standard-phases
          (replace 'configure

@@ -13,7 +13,7 @@
 ;; Copyright © 2021 Leo Famulari <leo@famulari.name>
 ;; Copyright © 2021 Zhu Zihao <all_but_last@163.com>
 ;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
-;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;; Copyright © 2021, 2022 Maxime Devos <maximedevos@telenet.be>
 ;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
 ;; Copyright © 2021 Jonathan Brielmaier <jonathan.brielmaier@web.de>
@@ -24,6 +24,167 @@
 
 (channel-news
  (version 0)
+
+ (entry (commit "35c1edb20ad07250728d3bdcd0296bd0cedaf6bb")
+        (title
+         (en "New @command{edit} sub-commands for services")
+         (de "Neue @command{edit}-Unterbefehle für Dienste")
+         (fr "Nouvelles commandes @command{edit} pour les services")
+         (nl "Nieuwe deelopdracht @command{edit} voor diensten"))
+        (body
+         (en "The new @command{guix system edit} and @command{guix home edit} commands
+allow you to view or edit service types defined for Guix System or Guix Home.
+For example, here is how you would open the definition of the OpenSSH system
+service:
+
+@example
+guix system edit openssh
+@end example
+
+Run @command{info \"(guix) Invoking guix system\"} or @command{info \"(guix)
+Invoking guix home\"} for more info.")
+         (de "Mit den neuen Befehlen @command{guix system edit} und
+@command{guix home edit} können Sie Diensttypen für Guix System oder Guix Home
+betrachten und bearbeiten.  Zum Beispiel würden Sie die Definition des
+OpenSSH-Systemdienstes wie folgt öffnen:
+
+@example
+guix system edit openssh
+@end example
+
+Führen Sie @command{info \"(guix.de) Aufruf von guix system\"} oder
+@command{info \"(guix.de) Aufruf von guix home\"} aus, um mehr zu erfahren.")
+         (fr "Les nouvelles commandes @command{guix system edit} et
+@command{guix home edit} permettent de visualiser ou d'éditer les types de
+services définis pour Guix System ou Guix Home.  Par exemple, voici comment
+ouvrir la définition du service système OpenSSH :
+
+@example
+guix system edit openssh
+@end example
+
+Lancer @command{info \"(guix.fr) Invoquer guix system\"} ou @command{info
+\"(guix.fr) Invoquer guix home\"} pour plus d'informations.")
+         ;; TODO: pas verwijzingen naar de handleiding aan wanneer ze vertaald is
+         (nl "Met de nieuwe bewerkingen @command{guix system edit} en
+@command{guix home edit} kan je dienstsoorten van Guix System en Guix
+Home bekijken en bewerken.  Je kan bijvoorbeeld de definitie van de
+systeemdienst OpenSSH als volgt openen:
+
+@example
+guix system edit openssh
+@end example
+
+Voer @command{info \"(guix) Invoking guix system\"} of @command{info
+\"(guix)Invoking guix home\"} uit voor meer informatie.")))
+
+ (entry (commit "903c82583e1cec4c9ff09d5895c5cc646c37b661")
+        (title
+         (en "New @command{guix import elm} command")
+         (de "Neuer Befehl @command{guix import elm}")
+         (fr "Nouvelle commande @command{guix import elm}"))
+        (body
+         (en "The new @command{guix import elm} command allows packagers to
+generate a package definition or given the name of a package for Elm, a
+functional programming language for the Web:
+
+@example
+guix import elm elm/bytes
+@end example
+
+Run @command{info \"(guix) Invoking guix import\"} for more info.
+
+This comes with a new build system for Elm packages---run @command{info
+\"(guix) Build Systems\"} for details.")
+         (de "Mit dem neuen Befehl @command{guix import elm} können Paketautoren
+eine Paketdefinition anhand des Namens eines Pakets für Elm, einer funktionalen
+Programmiersprache für das Web, erzeugen:
+
+@example
+guix import elm elm/bytes
+@end example
+
+Führen Sie @command{info \"(guix.de) Aufruf von guix import\"} aus, um mehr
+Informationen zu bekommen.
+
+Dazu kommt ein neues Erstellungssystem für Elm-Pakete.  Führen Sie
+@command{info \"(guix.de) Erstellungssysteme\"} aus, um mehr zu erfahren.")
+         (fr "La nouvelle commande @command{guix import elm} permet de générer
+une définition de paquet reposant sur Elm, un langage de programmation
+fonctionnelle pour le Web:
+
+@example
+guix import elm elm/bytes
+@end example
+
+Lancer @command{info \"(guix.fr) Invoquer guix import\"} pour plus
+d'informations.
+
+Cela vient avec un nouveau système de construction pour paquets Elm---lancer
+@command{info \"(guix.fr) Systèmes de construction\"} pour plus de détails.")))
+
+ (entry (commit "b6b2de2a0d52530bc1ee128c61580bed662ee15c")
+        (title (en "Linux-libre kernel updated to 5.17")
+               (de "Linux-libre-Kernel wird auf 5.17 aktualisiert"))
+        (body
+          (en "The default version of the linux-libre kernel has been
+              updated to the 5.17 release series.")
+          (de "Der standardmäßig verwendete @code{linux-libre}-Kernel basiert
+jetzt auf der 5.17-Versionsreihe.")))
+
+ (entry (commit "c42b7baf13c7633b4512e94da7445299c57b247d")
+        (title
+         (en "New @option{--export-manifest} option for @command{guix shell}")
+         (de "Neue Option @option{--export-manifest} für @command{guix shell}")
+         (fr "Nouvelle option @option{--export-manifest} de @command{guix shell}"))
+        (body
+         (en "If you use @command{guix shell}, you might wonder how to
+``translate'' a command line into a manifest file that you can keep under
+version control, share with others, and pass to @command{guix shell -m} and in
+fact to most @command{guix} commands.  This is what the new
+@option{--export-manifest} option does.
+
+For example, the command below prints a manifest for the given packages:
+
+@lisp
+guix shell --export-manifest \\
+   -D guile git emacs emacs-geiser emacs-geiser-guile
+@end lisp
+
+Run @code{info \"(guix) Invoking guix shell\"} for more information.")
+         (de "Wenn Sie @command{guix shell} benutzen, haben Sie sich vielleicht
+einmal gefragt, wie Sie eine Befehlszeile in eine Manifest-Datei „übersetzen“
+können, die Sie unter Versionskontrolle stellen können, mit anderen teilen
+können und an @command{guix shell -m} oder tatsächlich die meisten anderen
+@command{guix}-Befehle übergeben können.  Die Antwort ist die neue
+Befehlszeilenoption @option{--export-manifest}.
+
+Zum Beispiel gibt der folgende Befehl ein Manifest mit den genannten Paketen
+aus:
+
+@lisp
+guix shell --export-manifest \\
+   -D guile git emacs emacs-geiser emacs-geiser-guile
+@end lisp
+
+Führen Sie @command{info \"(guix.de) Aufruf von guix shell\"} aus, um mehr
+zu erfahren.")
+         (fr "Si tu utilises @command{guix shell}, tu t'es peut-être déjà
+demandé comment « traduire » une ligne de commande en un fichier manifeste que
+tu puisse garder en gestion de version, partager et passer à @command{guix
+shell -m} et autres commandes @command{guix}.  C'est ce que la nouvelle option
+@option{--export-manifest} fait.
+
+Par exemple, la commande ci-dessous affiche un manifeste pour les paquets
+donnés :
+
+@lisp
+guix shell --export-manifest \\
+   -D guile git emacs emacs-geiser emacs-geiser-guile
+@end lisp
+
+Lancer @code{info \"(guix.fr) Invoquer guix shell\"} pour plus
+d'informations.")))
 
  (entry (commit "094a2cfbe45c104d0da30ff9d975d052ca0c118c")
         (title

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2017, 2018 Mark H Weaver <mhw@netris.org>
 ;;;
@@ -202,7 +202,8 @@ option of @command{guix system}.\n")
            ;; XXX: 'use-modules' should be at the top level.
            (use-modules (rnrs bytevectors) ;bytevector?
                         ((gnu build file-systems)
-                         #:select (find-partition-by-luks-uuid))
+                         #:select (find-partition-by-luks-uuid
+                                   system*/tty))
                         ((guix build utils) #:select (mkdir-p)))
 
            ;; Create '/run/cryptsetup/' if it does not exist, as device locking
@@ -211,28 +212,32 @@ option of @command{guix system}.\n")
 
            ;; Use 'cryptsetup-static', not 'cryptsetup', to avoid pulling the
            ;; whole world inside the initrd (for when we're in an initrd).
-           (zero? (system* #$(file-append cryptsetup-static "/sbin/cryptsetup")
-                           "open" "--type" "luks"
+           ;; 'cryptsetup open' requires standard input to be a tty to allow
+           ;; for interaction but shepherd sets standard input to /dev/null;
+           ;; thus, explicitly request a tty.
+           (zero? (system*/tty
+                   #$(file-append cryptsetup-static "/sbin/cryptsetup")
+                   "open" "--type" "luks"
 
-                           ;; Note: We cannot use the "UUID=source" syntax here
-                           ;; because 'cryptsetup' implements it by searching the
-                           ;; udev-populated /dev/disk/by-id directory but udev may
-                           ;; be unavailable at the time we run this.
-                           (if (bytevector? source)
-                               (or (let loop ((tries-left 10))
-                                     (and (positive? tries-left)
-                                          (or (find-partition-by-luks-uuid source)
-                                              ;; If the underlying partition is
-                                              ;; not found, try again after
-                                              ;; waiting a second, up to ten
-                                              ;; times.  FIXME: This should be
-                                              ;; dealt with in a more robust way.
-                                              (begin (sleep 1)
-                                                     (loop (- tries-left 1))))))
-                                   (error "LUKS partition not found" source))
-                               source)
+                   ;; Note: We cannot use the "UUID=source" syntax here
+                   ;; because 'cryptsetup' implements it by searching the
+                   ;; udev-populated /dev/disk/by-id directory but udev may
+                   ;; be unavailable at the time we run this.
+                   (if (bytevector? source)
+                       (or (let loop ((tries-left 10))
+                             (and (positive? tries-left)
+                                  (or (find-partition-by-luks-uuid source)
+                                      ;; If the underlying partition is
+                                      ;; not found, try again after
+                                      ;; waiting a second, up to ten
+                                      ;; times.  FIXME: This should be
+                                      ;; dealt with in a more robust way.
+                                      (begin (sleep 1)
+                                             (loop (- tries-left 1))))))
+                           (error "LUKS partition not found" source))
+                       source)
 
-                           #$target)))))))
+                   #$target)))))))
 
 (define (close-luks-device source targets)
   "Return a gexp that closes TARGET, a LUKS device."

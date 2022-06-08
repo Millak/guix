@@ -41,6 +41,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
+  #:use-module ((guix search-paths) #:select ($SSL_CERT_DIR $SSL_CERT_FILE))
   #:use-module (gnu packages)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
@@ -82,15 +83,8 @@
        ("python" ,python-minimal-wrapper)))
    (native-search-paths
     ;; These variables are introduced by curl-use-ssl-cert-env.patch.
-    (list (search-path-specification
-           (variable "SSL_CERT_DIR")
-           (separator #f)                        ;single entry
-           (files '("etc/ssl/certs")))
-          (search-path-specification
-           (variable "SSL_CERT_FILE")
-           (file-type 'regular)
-           (separator #f)                        ;single entry
-           (files '("etc/ssl/certs/ca-certificates.crt")))
+    (list $SSL_CERT_DIR
+          $SSL_CERT_FILE
           ;; Note: This search path is respected by the `curl` command-line
           ;; tool only.  Patching libcurl to read it too would bring no
           ;; advantages and require maintaining a more complex patch.
@@ -361,4 +355,32 @@ curl to obtain exactly that HTTP request.")
     (synopsis "Simple async wrapper around CURL for C++")
     (description "Coeurl is a simple library to do HTTP requests
 asynchronously via cURL in C++.")
+    (license license:expat)))
+
+(define-public curlie
+  (package
+    (name "curlie")
+    (version "1.6.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rs/curlie")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1b94wfliivfq06i5sf664nhmp3v1k0lpz33cv9lyk6s59awb2hnw"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/rs/curlie"))
+    (inputs
+     (list curl go-golang-org-x-crypto go-golang-org-x-sys))
+    (home-page "https://curlie.io")
+    (synopsis "The power of curl, the ease of use of httpie")
+    (description "If you like the interface of HTTPie but miss the features of
+curl, curlie is what you are searching for.  Curlie is a frontend to
+@code{curl} that adds the ease of use of @code{httpie}, without compromising
+on features and performance.  All @code{curl} options are exposed with syntax
+sugar and output formatting inspired from @code{httpie}.")
     (license license:expat)))

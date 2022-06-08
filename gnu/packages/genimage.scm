@@ -41,11 +41,11 @@
   #:use-module (gnu packages virtualization))
 
 (define-public genimage
-  (let ((commit "11bb04455eaf5434f0723c91a2224918ebd0a196")
+  (let ((commit "ec44ae086c705e6f0439e742c5a2e9b8f3d6ca82")
         (revision "1"))
     (package
       (name "genimage")
-      (version (git-version "14" revision commit))
+      (version (git-version "15" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -54,7 +54,7 @@
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1dq3lk0awk12v2aidry35gvrci5a3nr6rzcq0j9hyyf0w1z1rn0l"))
+                  "0amj2vjff58yna6kq959i2gqmbjywqr8j5kr5pjqsvbqam3vgg0r"))
                 (patches
                  (search-patches "genimage-mke2fs-test.patch"))))
       (build-system gnu-build-system)
@@ -93,9 +93,13 @@
                ;; We don't have /etc/passwd so uid 0 is not known as "root".
                ;; Thus patch it out.
                (substitute* '("test/ext2test.0.dump"
+                              "test/ext2test.1.dump"
                               "test/ext3test.0.dump"
+                              "test/ext3test.1.dump"
                               "test/ext4test.0.dump"
+                              "test/ext4test.1.dump"
                               "test/ext2test-percent.0.dump"
+                              "test/ext2test-percent.1.dump"
                               "test/mke2fs.0.dump")
                  (("root") "unknown"))))
            (add-before 'check 'setenv-check

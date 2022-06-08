@@ -979,7 +979,7 @@ void DerivationGoal::outputsSubstituted()
         return;
     }
     if (buildMode == bmCheck && nrInvalid > 0)
-        throw Error(format("some outputs of `%1%' are not valid, so checking is not possible") % drvPath);
+        throw Error(format("`%1%' is missing outputs; build it normally before using `--check'") % drvPath);
 
     /* Otherwise, at least one of the output paths could not be
        produced using a substitute.  So we have to build instead. */
@@ -2057,7 +2057,6 @@ void DerivationGoal::runChild()
                 Path source = i->second;
                 Path target = chrootRootDir + i->first;
                 if (source == "/proc") continue; // backwards compatibility
-                debug(format("bind mounting `%1%' to `%2%'") % source % target);
                 if (stat(source.c_str(), &st) == -1)
                     throw SysError(format("getting attributes of path `%1%'") % source);
                 if (S_ISDIR(st.st_mode))
@@ -2423,7 +2422,7 @@ void DerivationGoal::registerOutputs()
                     if (pathExists(dst)) deletePath(dst);
                     if (rename(actualPath.c_str(), dst.c_str()))
                         throw SysError(format("renaming `%1%' to `%2%'") % actualPath % dst);
-                    throw Error(format("derivation `%1%' may not be deterministic: output `%2%' differs from ‘%3%’")
+                    throw Error(format("derivation `%1%' may not be deterministic: output `%2%' differs from `%3%'")
                         % drvPath % path % dst);
                 } else
                     throw Error(format("derivation `%1%' may not be deterministic: output `%2%' differs")

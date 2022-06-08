@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2016, 2019-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2020, 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;;
@@ -27,6 +27,7 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-37)
   #:export (%editor
+            spawn-editor
             guix-edit))
 
 (define %options
@@ -77,6 +78,21 @@ line."
                         (location-line location)))
         (search-path* %load-path (location-file location))))
 
+(define (spawn-editor locations)
+  "Spawn (%editor) to edit the code at LOCATIONS, a list of <location>
+records, and exit."
+  (catch 'system-error
+    (lambda ()
+      (let ((file-names (append-map location->location-specification
+                                    locations)))
+        ;; Use `system' instead of `exec' in order to sanely handle
+        ;; possible command line arguments in %EDITOR.
+        (exit (system (string-join (cons (%editor) file-names))))))
+    (lambda args
+      (let ((errno (system-error-errno args)))
+        (leave (G_ "failed to launch '~a': ~a~%")
+               (%editor) (strerror errno))))))
+
 
 (define-command (guix-edit . args)
   (category packaging)
@@ -94,14 +110,4 @@ line."
       (when (null? specs)
         (leave (G_ "no packages specified, nothing to edit~%")))
 
-      (catch 'system-error
-        (lambda ()
-          (let ((file-names (append-map location->location-specification
-                                        locations)))
-            ;; Use `system' instead of `exec' in order to sanely handle
-            ;; possible command line arguments in %EDITOR.
-            (exit (system (string-join (cons (%editor) file-names))))))
-        (lambda args
-          (let ((errno (system-error-errno args)))
-            (leave (G_ "failed to launch '~a': ~a~%")
-                   (%editor) (strerror errno))))))))
+      (spawn-editor locations))))

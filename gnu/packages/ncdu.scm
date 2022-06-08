@@ -33,14 +33,14 @@
 (define-public ncdu
   (package
     (name "ncdu")
-    (version "1.16")
+    (version "1.17")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://dev.yorhel.nl/download/ncdu-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1m0gk09jaz114piidiw8fkg0id5l6nhz1cg5nlaf1yl3l595g49b"))))
+                "1wfvdajln0iy7364nxkg4bpgdv8l3b6a9bnkhy67icqsxnl4a1w1"))))
     (build-system gnu-build-system)
     (inputs (list ncurses))
     (synopsis "Ncurses-based disk usage analyzer")
@@ -59,14 +59,14 @@ ncurses installed.")
   (package
     (inherit ncdu)
     (name "ncdu2")      ; To destinguish it from the C based version.
-    (version "2.1")
+    (version "2.1.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://dev.yorhel.nl/download/ncdu-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1zlml62j57nb8k2simjy1bj2bp69zj517injy85c0p55ch5d5a2b"))))
+                "1p66691xgpljx1y92b4bfpn5rr7gnwbr5x3bf8bc78qq6vq6w3cy"))))
     (arguments
      (list
        #:make-flags
@@ -88,4 +88,5 @@ ncurses installed.")
                (when tests?
                  (invoke "zig" "test" "build.zig")))))))
     (native-inputs
-     (list perl zig))))
+     (list perl zig))
+    (properties `((upstream-name . "ncdu")))))

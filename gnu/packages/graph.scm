@@ -2,7 +2,7 @@
 ;;; Copyright © 2017, 2018, 2019, 2020, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2020 Alexander Krotov <krotov@iitp.ru>
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlos@gmx.com>
@@ -91,7 +91,7 @@ distributions in empirical data.  SIAM Review 51, 661-703 (2009)}).")
 (define-public igraph
   (package
     (name "igraph")
-    (version "0.9.6")
+    (version "0.9.8")
     (source
      (origin
        (method url-fetch)
@@ -116,7 +116,7 @@ distributions in empirical data.  SIAM Review 51, 661-703 (2009)}).")
                      ((".*_IS_VENDORED.*")
                       ""))))
        (sha256
-        (base32 "11zkj9bpqcadb0rc4ahvjp9047dp9hna8cn3b0vl3zpc9v2rwabw"))))
+        (base32 "15v3ydq95gahnas37cip637hvc2nwrmk76xp0nv3gq53rrrk9a7r"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags (list "-DBUILD_SHARED_LIBS=ON")))
@@ -143,7 +143,7 @@ more.")
   (package
     (inherit igraph)
     (name "python-igraph")
-    (version "0.9.9")
+    (version "0.9.10")
     (source (origin
               (method git-fetch)
               ;; The PyPI archive lacks tests.
@@ -153,7 +153,7 @@ more.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ravcww2jcr8fgi97gdxv00s5nkx59ljxy928nnniyd0231bqwlc"))))
+                "06qvwmiw2klk3bg8g5af0ppjwrm9kzy4595w5d06qh2v3gq0svbk"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -212,7 +212,7 @@ lines.")
 (define-public python-plotly
   (package
     (name "python-plotly")
-    (version "4.14.3")
+    (version "5.6.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -221,11 +221,15 @@ lines.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "02wlgy7gf3v5ckiq9ab3prm53cckxkavlghqgkk9xw2sfmmrn61q"))))
+                "0kc9v5ampq2paw6sls6zdchvqvis7b1z8xhdvlhz5xxdr1vj5xnn"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+          (add-before 'build 'skip-npm
+            ;; npm is not packaged so build without it
+            (lambda _
+              (setenv "SKIP_NPM" "T")))
          (add-after 'unpack 'chdir
            (lambda _
              (chdir "packages/python/plotly")
@@ -247,6 +251,7 @@ lines.")
            python-requests
            python-retrying
            python-six
+           python-tenacity
            python-statsmodels))
     (home-page "https://plotly.com/python/")
     (synopsis "Interactive plotting library for Python")
@@ -490,14 +495,14 @@ Faiss library.")))
 (define-public python-leidenalg
   (package
     (name "python-leidenalg")
-    (version "0.7.0")
+    (version "0.8.10")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "leidenalg" version))
        (sha256
         (base32
-         "15fwld9hdw357rd026mzcwpah5liy4f33vc9x9kwy37g71b2rjf1"))))
+         "1hbvagp1yyazvl7cid7mii5263qi48lpkq543n5w71qysgz1f0v7"))))
     (build-system python-build-system)
     (arguments
      '(#:tests? #f                      ;tests are not included
@@ -505,12 +510,14 @@ Faiss library.")))
                   (add-after 'unpack 'fix-requirements
                     (lambda _
                       (substitute* "setup.py"
+                        (("self.external = False")
+                         "self.external = True")
+                        (("self.use_pkgconfig = False")
+                         "self.use_pkgconfig = True")
                         (("python-igraph >=")
                          "igraph >=")))))))
     (native-inputs
-     ;; XXX: setuptools >= 58 as shipped with Python 3.9+ removes support
-     ;; for lib2to3, so use this older variant.
-     (list pkg-config python-setuptools))
+     (list pkg-config python-setuptools-scm))
     (inputs
      (list igraph))
     (propagated-inputs

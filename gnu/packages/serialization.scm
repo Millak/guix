@@ -8,7 +8,7 @@
 ;;; Copyright © 2017 Gregor Giesen <giesen@zaehlwerk.net>
 ;;; Copyright © 2017 Frederick M. Muriithi <fredmanglis@gmail.com>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
-;;; Copyright © 2017, 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2019, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2020 Alexandros Theodotou <alex@zrythm.org>
@@ -354,7 +354,7 @@ that implements both the msgpack and msgpack-rpc specifications.")
 (define-public libcyaml
   (package
     (name "libcyaml")
-    (version "1.1.0")
+    (version "1.3.1")
     (source
      (origin
        (method git-fetch)
@@ -364,19 +364,16 @@ that implements both the msgpack and msgpack-rpc specifications.")
        (file-name (git-file-name name version))
        (patches (search-patches "libcyaml-libyaml-compat.patch"))
        (sha256
-        (base32 "0428p0rwq71nhh5nzcbapsbrjxa0x5l6h6ns32nxv7j624f0zd93"))))
+        (base32 "0gvf3h8r8300wdwfjgxw3nzlj7w14q63m67p8wdm5fvpha017n4y"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
+     `(#:test-target "test"
+       #:make-flags
        (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
-             (string-append "CC=gcc"))
+             (string-append "CC=" ,(cc-for-target)))
        #:phases
        (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (replace 'check
-           (lambda _
-             (setenv "CC" "gcc")
-             (invoke "make" "test"))))))
+         (delete 'configure))))         ; no configure script
     (inputs
      (list libyaml))
     (native-inputs

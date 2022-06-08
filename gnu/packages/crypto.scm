@@ -1,9 +1,9 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 David Thompson <davet@gnu.org>
-;;; Copyright © 2015, 2017, 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2017, 2018, 2019, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016 Lukas Gradl <lgradl@openmailbox>
-;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2017, 2019, 2020 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2017 Pierre Langlois <pierre.langlois@gmx.com>
@@ -23,6 +23,7 @@
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021, 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2022 Allan Adair <allan@adair.no>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -397,6 +398,11 @@ the wrong hands.")
            #:phases
            #~(modify-phases %standard-phases
                (delete 'configure)      ; no configure script
+               (add-after 'unpack 'avoid-embedding-timestamp
+                 ;; Do not embed build timestamp
+                 (lambda _
+                   (substitute* "Makefile"
+                     (("shell date") "shell true"))))
                (add-after 'install 'install:static
                  (lambda _
                    (with-directory-excursion #$output
@@ -580,7 +586,7 @@ attacks than alternative functions such as @code{PBKDF2} or @code{bcrypt}.")
 (define-public libscrypt
   (package
     (name "libscrypt")
-    (version "1.21")
+    (version "1.22")
     (source
      (origin
        (method git-fetch)
@@ -589,22 +595,20 @@ attacks than alternative functions such as @code{PBKDF2} or @code{bcrypt}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1d76ys6cp7fi4ng1w3mz2l0p9dbr7ljbk33dcywyimzjz8bahdng"))))
+        (base32 "10dinz1zx8zfm81ra16s20izpm7f7j414n4i3fkdf40vbl5slra1"))))
     (build-system gnu-build-system)
     (outputs (list "out" "static"))
     (arguments
-     `(#:make-flags (list (string-append "PREFIX=" %output)
-                          ,(string-append "CC=" (cc-for-target)))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (add-after 'install 'install:static
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (lib (string-append out "/lib")))
-               (install-file "libscrypt.a" lib)
-               #t))))))
+     (list #:make-flags
+           #~(list (string-append "PREFIX=" #$output)
+                   (string-append "CC=" #$(cc-for-target)))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)      ; no configure script
+               (add-after 'install 'install:static
+                 (lambda _
+                   (install-file "libscrypt.a"
+                                 (string-append #$output:static "/lib")))))))
     (home-page "https://lolware.net/libscrypt.html")
     (synopsis "Password hashing library")
     (description "@code{libscrypt} implements @code{scrypt} key derivation
@@ -948,48 +952,44 @@ SHA256, SHA512, SHA3, AICH, ED2K, Tiger, DC++ TTH, BitTorrent BTIH, GOST R
 (define-public botan
   (package
     (name "botan")
-    (version "2.18.2")
+    (version "2.19.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://botan.randombit.net/releases/"
                                   "Botan-" version ".tar.xz"))
               (sha256
                (base32
-                "0zih8agygp39ff0dwi3fv8y7dnnzpz3y86kcgjbhzlxry49kn6jl"))))
+                "0q2mzzg0a40prp9gwjk7d9fn8kwj6z2x6h6mzlm0hr6sxz7h0vp2"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref %outputs "out"))
-                    (lib (string-append out "/lib")))
-               ;; Upstream tests and benchmarks with -O3.
-               (setenv "CXXFLAGS" "-O3")
-               (invoke "python" "./configure.py"
-                       (string-append "--prefix=" out)
-                       "--disable-static"
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              ;; Upstream tests and benchmarks with -O3.
+              (setenv "CXXFLAGS" "-O3")
+              (invoke "python" "./configure.py"
+                      (string-append "--prefix=" #$output)
+                      "--disable-static"
 
-                       ;; Otherwise, the `botan` executable cannot find
-                       ;; libbotan.
-                       (string-append "--ldflags=-Wl,-rpath=" lib)
+                      ;; Otherwise, the `botan` executable cannot find
+                      ;; libbotan.
+                      (string-append "--ldflags=-Wl,-rpath=" #$output "/lib")
 
-                       "--with-os-feature=getentropy"
-                       "--with-rst2man"
+                      "--with-os-feature=getentropy"
+                      "--with-rst2man"
 
-                       ;; Recommended by upstream
-                       "--with-zlib" "--with-bzip2" "--with-sqlite3"))))
-         (add-before 'check 'library-path-for-tests
-           (lambda _ (setenv "LD_LIBRARY_PATH" (getcwd))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (if tests?
-                 (invoke "./botan-test")))))))
-    (native-inputs
-     `(("python" ,python-wrapper)
-       ("python-docutils" ,python-docutils)))
-    (inputs
-     (list sqlite bzip2 zlib))
+                      ;; Recommended by upstream
+                      "--with-zlib" "--with-bzip2" "--with-sqlite3")))
+          (add-before 'check 'library-path-for-tests
+            (lambda _ (setenv "LD_LIBRARY_PATH" (getcwd))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "./botan-test")))))))
+    (native-inputs (list python-wrapper python-docutils))
+    (inputs (list sqlite bzip2 zlib))
     (synopsis "Cryptographic library in C++11")
     (description "Botan is a cryptography library, written in C++11, offering
 the tools necessary to implement a range of practical systems, such as TLS/DTLS,
@@ -1546,8 +1546,6 @@ structure.  However CryFS is not considered stable yet by the developers.")
 (define-public rust-blake3-0.3
   (package
     (name "rust-blake3")
-    ;; Version 1 requires Rust >= 1.51.
-    ;; <https://github.com/BLAKE3-team/BLAKE3/releases/tag/1.0.0>
     (version "0.3.8")
     (source
       (origin
@@ -1568,6 +1566,48 @@ structure.  However CryFS is not considered stable yet by the developers.")
          ("rust-crypto-mac" ,rust-crypto-mac-0.8)
          ("rust-digest" ,rust-digest-0.9)
          ("rust-rayon" ,rust-rayon-1))))
+    (home-page "https://github.com/BLAKE3-team/BLAKE3")
+    (synopsis "BLAKE3 hash function Rust implementation")
+    (description "This crate provides the official Rust implementation of the
+BLAKE3 cryptographic hash function.  BLAKE3 is faster than MD5, SHA-1, SHA-2,
+SHA-3, and BLAKE2.")
+    ;; Users may choose between these two licenses when redistributing the
+    ;; program provided by this package.
+    (license (list license:cc0 license:asl2.0))))
+
+(define-public rust-blake3-1
+  (package
+    (name "rust-blake3")
+    (version "1.0.0")
+    ;; The crate does not include the reference_impl directory.
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/BLAKE3-team/BLAKE3")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "09xi7rjyi5hgxyfpias485x5argwqygvfl9sggiw221qjdfxpbdn"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:cargo-inputs
+      `(("rust-arrayref" ,rust-arrayref-0.3)
+        ("rust-arrayvec" ,rust-arrayvec-0.7)
+        ("rust-cc" ,rust-cc-1)
+        ("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-constant-time-eq" ,rust-constant-time-eq-0.1)
+        ("rust-crypto-mac" ,rust-crypto-mac-0.11)
+        ("rust-digest" ,rust-digest-0.9)
+        ("rust-rayon" ,rust-rayon-1))
+      #:cargo-development-inputs
+      `(("rust-cc" ,rust-cc-1)
+        ("rust-hex" ,rust-hex-0.4)
+        ("rust-page-size" ,rust-page-size-0.4)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rand-chacha" ,rust-rand-chacha-0.3))))
     (home-page "https://github.com/BLAKE3-team/BLAKE3")
     (synopsis "BLAKE3 hash function Rust implementation")
     (description "This crate provides the official Rust implementation of the

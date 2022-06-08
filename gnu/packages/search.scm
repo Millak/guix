@@ -138,14 +138,14 @@ rich set of boolean query operators.")
 (define-public perl-search-xapian
   (package
     (name "perl-search-xapian")
-    (version "1.2.25.4")
+    (version "1.2.25.5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://cpan/authors/id/O/OL/OLLY/"
                            "Search-Xapian-" version ".tar.gz"))
        (sha256
-        (base32 "1pbl8pbgmbs3i8yik4p63g4pd9bhn0dp3d7l667dkvw0kccl66c7"))))
+        (base32 "12xs22li1z10rccpxbb4zflkkdh7q37z9hb8nvx1ywfn2b3vskr0"))))
     (build-system perl-build-system)
     (native-inputs
      (list perl-devel-leak))
@@ -487,8 +487,17 @@ conflict with slocate compatibility.")
     (arguments
      `(#:configure-flags
        (list
-        (string-append
-         "--sharedstatedir=" (assoc-ref %outputs "out") "/var"))))
+        ;; Put the database in /var/cache/plocate.db
+        "--sharedstatedir=/var"
+        "-Dinstall_systemd=false"
+        "-Ddbpath=cache/plocate.db")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'remove-cachedirtag
+           (lambda _
+             (substitute* "meson.build"
+               ;; Remove the script adding a "cachedirtag"
+               (("meson.add_install_script") "#")))))))
     (inputs
      (list liburing
            `(,zstd "lib")))
@@ -633,14 +642,14 @@ bibliographic data and simple document and bibtex retrieval.")
 (define-public ugrep
   (package
     (name "ugrep")
-    (version "3.1.12")
+    (version "3.7.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/Genivia/ugrep")
                     (commit (string-append "v" version))))
               (sha256
-               (base32 "06y61sf2ywjaix4nss11wwkxipj8cc9ccx6bsmdm31h8d8wd2s0j"))
+               (base32 "0mj4da91r81drfl2nbgzl1krka6ksk7srjjvwgp55r6l265fk3b5"))
               (file-name (git-file-name name version))
               (modules '((guix build utils)))
               (snippet

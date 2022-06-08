@@ -9,6 +9,7 @@
 ;;; Copyright © 2020, 2021, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Luis Felipe López Acevedo <luis.felipe.la@protonmail.com>
+;;; Copyright © 2022 Pradana Aumars <paumars@courrier.dev>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -53,13 +54,13 @@
 (define-public python-django-4.0
   (package
     (name "python-django")
-    (version "4.0.2")
+    (version "4.0.4")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Django" version))
               (sha256
                (base32
-                "0jlmxylag7dah9jl3wm2swnn9kbisx1gqnddfbh5kjifn67va3qi"))))
+                "1da0vy3nas2m2j50dc5c3s1nv529lagg4c04riipah94hn2pg0af"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -140,29 +141,45 @@ to the @dfn{don't repeat yourself} (DRY) principle.")
 (define-public python-django-3.2
   (package
     (inherit python-django-4.0)
-    (version "3.2.12")
+    (version "3.2.13")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Django" version))
               (sha256
                (base32
-                "1qj1kvb6mk2f4b33n4n5l4rh5kqllrk2v0v076crxr83ay9ycwlp"))))
+                "1dn4irl4m21skcqb2mbj55vgryqfqk6wqa8s1c7bmxlv19x4k4vd"))))
     (native-search-paths '())           ;no need for TZDIR
     (propagated-inputs
      (modify-inputs (package-propagated-inputs python-django-4.0)
        ;; Django 4.0 deprecated pytz in favor of Pythons built-in zoneinfo.
        (append python-pytz)))))
 
-(define-public python-django-2.2
+;; archivebox requires django>=3.1.3,<3.2
+(define-public python-django-3.1.14
   (package
     (inherit python-django-3.2)
-    (version "2.2.27")
+    (version "3.1.14")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Django" version))
               (sha256
                (base32
-                "04y9knxd8v9jn54ws5rbdwxyq5im69kx009s7gl62axzn1371qqy"))))
+                "0ix3v2wlnplv78zxjrlw8z3hiap2d5mxvk0ny2fc65526shsb93j"))))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs python-django-3.2)
+       ;; Django 4.0 deprecated pytz in favor of Pythons built-in zoneinfo.
+       (append python-pytz)))))
+
+(define-public python-django-2.2
+  (package
+    (inherit python-django-3.2)
+    (version "2.2.28")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "Django" version))
+              (sha256
+               (base32
+                "04vl7aivsshzsnn547lm4jdinr67afhdspc40f0c06xzmxbvc002"))))
     (native-inputs
      (modify-inputs (package-native-inputs python-django-3.2)
        (prepend ;; 2.2 requires Selenium for the test suite.

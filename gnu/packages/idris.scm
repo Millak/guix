@@ -2,7 +2,8 @@
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2016, 2017 David Craven <david@craven.ch>
 ;;; Copyright © 2018 Alex ter Weele <alex.ter.weele@gmail.com>
-;;; Copyright © 2019, 2021 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2019, 2021, 2022 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2022 Attila Lendvai <attila@lendvai.name>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,24 +33,24 @@
   #:use-module (guix build-system haskell)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix utils)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages))
 
 (define-public idris
   (package
     (name "idris")
-    (version "1.3.3")
+    (version "1.3.4")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://hackage.haskell.org/package/"
-                    "idris-" version "/idris-" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/idris-lang/Idris-dev.git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1pachwc6msw3n1mz2z1r1w6h518w9gbhdvbaa5vi1qp3cn3wm6q4"))
-              (patches (search-patches "idris-disable-test.patch"
-                                       "idris-build-with-haskeline-0.8.patch"
-                                       "idris-build-with-megaparsec-9.patch"))))
+                "0cd2a92323hb9a6wy8sc0cqwnisf4pv8y9y2rxvxcbyv8cs1q8g2"))
+              (patches (search-patches "idris-test-ffi008.patch"))))
     (build-system haskell-build-system)
     (native-inputs                      ;For tests
      (list perl ghc-cheapskate ghc-tasty ghc-tasty-golden
@@ -94,8 +95,7 @@
          ;; This allows us to call the 'idris' binary before installing.
          (add-after 'unpack 'set-ld-library-path
            (lambda _
-             (setenv "LD_LIBRARY_PATH" (string-append (getcwd) "/dist/build"))
-             #t))
+             (setenv "LD_LIBRARY_PATH" (string-append (getcwd) "/dist/build"))))
          (add-before 'configure 'update-constraints
            (lambda _
              (substitute* "idris.cabal"
@@ -103,8 +103,7 @@
                 dep))))
          (add-before 'configure 'set-cc-command
            (lambda _
-             (setenv "CC" "gcc")
-             #t))
+             (setenv "CC" ,(cc-for-target))))
          (add-after 'install 'fix-libs-install-location
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -121,7 +120,7 @@
              (let ((out (assoc-ref outputs "out")))
                (chmod "test/scripts/timeout" #o755) ;must be executable
                (setenv "TASTY_NUM_THREADS" (number->string (parallel-job-count)))
-               (setenv "IDRIS_CC" "gcc") ;Needed for creating executables
+               (setenv "IDRIS_CC" ,(cc-for-target)) ;Needed for creating executables
                (setenv "PATH" (string-append out "/bin:" (getenv "PATH")))
                (apply (assoc-ref %standard-phases 'check) args))))
          (add-before 'check 'restore-libidris_rts
@@ -133,8 +132,7 @@
                    (static (assoc-ref outputs "static"))
                    (filename "/lib/idris/rts/libidris_rts.a"))
                (rename-file (string-append static filename)
-                            (string-append out filename))
-               #t))))))
+                            (string-append out filename))))))))
     (native-search-paths
      (list (search-path-specification
             (variable "IDRIS_LIBRARY_PATH")
@@ -192,8 +190,7 @@ Epigram and Agda.")
                                                                 path))
                                                         idris-path-subdirs)))))
             ;; FIXME: Seems to be a bug in idris that causes a dubious failure.
-            (apply system* install-cmd)
-            #t))))))
+            (apply system* install-cmd)))))))
 
 (define-public idris-lightyear
   (let ((commit "6d65ad111b4bed2bc131396f8385528fc6b3678a"))

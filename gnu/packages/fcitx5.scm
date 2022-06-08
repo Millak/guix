@@ -205,7 +205,8 @@ editors.")
       #~(list (string-append "-DGOBJECT_INTROSPECTION_GIRDIR="
                              #$output "/share/gir-1.0")
               (string-append "-DGOBJECT_INTROSPECTION_TYPELIBDIR="
-                             #$output "/lib/girepository-1.0"))
+                             #$output "/lib/girepository-1.0")
+              "-DENABLE_GTK4_IM_MODULE=OFF")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'configure 'patch-install-prefix
@@ -218,11 +219,10 @@ editors.")
                    (string-append output "/lib"))))
 
               (let ((gtk2 #$output:gtk2)
-                    (gtk3 #$output:gtk3)
-                    (gtk4 #$output:gtk4))
+                    (gtk3 #$output:gtk3))
                 (for-each split-immodule
-                          '("gtk2" "gtk3" "gtk4")
-                          (list gtk2 gtk3 gtk4))))))))
+                          '("gtk2" "gtk3")
+                          (list gtk2 gtk3))))))))
     (inputs
      (list fcitx5
            fmt
@@ -232,12 +232,11 @@ editors.")
            gobject-introspection
            gtk+-2
            gtk+
-           gtk
            glib))
     (native-inputs
      (list extra-cmake-modules pkg-config
            `(,glib "bin")))           ;for glib-genmarshal
-    (outputs '("out" "gtk2" "gtk3" "gtk4"))
+    (outputs '("out" "gtk2" "gtk3"))
     (home-page "https://github.com/fcitx/fcitx5-gtk")
     (synopsis "GLib-based D-Bus client and GTK IM module for Fcitx 5")
     (description "Fcitx5-gtk provides the following functionality in the
@@ -250,10 +249,52 @@ GLib-based D-Bus client of Fcitx5.
 IM module for GTK+2 applications.
 @item gtk3
 IM module for GTK+3 applications.
-@item gtk4
-IM module for GTK4 applications.
 @end table")
     (license license:lgpl2.1+)))
+
+;; XXX: This package is separated from fcitx5-gtk for following reasons.
+;; 1. GTK4 has a lot more dependencies, some of which maybe unavailable on
+;;    platforms other than x86_64. See <https://issues.guix.gnu.org/53648>.
+;; 2. GTK4 now propagates pango@1.50, it will conflict with GTK3 and GTK2
+;;    (propagates pango@1.48) if they're all in the inputs of same package.
+;;    See <https://issues.guix.gnu.org/54261>.
+(define-public fcitx5-gtk4
+  (package
+    (inherit fcitx5-gtk)
+    (name "fcitx5-gtk4")
+    (arguments
+     (list
+      #:tests? #f                       ;No test
+      #:configure-flags
+      #~(list (string-append "-DCMAKE_CXX_FLAGS=-I"
+                             #$(this-package-input "fcitx5-gtk")
+                             "/include/Fcitx5/GClient")
+              "-DENABLE_GTK2_IM_MODULE=OFF"
+              "-DENABLE_GTK3_IM_MODULE=OFF")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'fix-gclient
+            (lambda* (#:key inputs #:allow-other-keys)
+              (define gclient
+                (search-input-file inputs "lib/libFcitx5GClient.so"))
+              ;; Force cmake search libFcitx5GClient.so in library search
+              ;; path instead of compiling again.
+              (substitute* "gtk4/CMakeLists.txt"
+                (("Fcitx5::GClient")
+                 gclient))))
+          (add-before 'build 'enter-gtk4-subdirectory
+            (lambda _
+              (chdir "gtk4")))
+          (add-after 'install 'leave-gtk4-subdirectory
+            (lambda _
+              (chdir ".."))))))
+    (inputs
+     (modify-inputs (package-inputs fcitx5-gtk)
+       (delete "gtk+")
+       (prepend fcitx5-gtk gtk)))
+    (outputs '("out"))
+    (synopsis "GTK4 IM module for Fcitx 5")
+    (description "Fcitx5-gtk4 provides IM module for GTK4 applications.")))
 
 (define-public fcitx5-qt
   (package

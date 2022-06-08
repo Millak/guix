@@ -14,7 +14,7 @@
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2016 Toni Reina <areina@riseup.net>
-;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 José Miguel Sánchez García <jmi2k@openmailbox.com>
 ;;; Copyright © 2017 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
@@ -47,6 +47,8 @@
 ;;; Copyright © 2022 Kitzman <kitzman@disroot.org>
 ;;; Copyright © 2021 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -69,11 +71,13 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system font)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system trivial)
+  #:use-module (gnu packages c)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
@@ -264,6 +268,29 @@ sans-serif designed for on-screen reading.  It is used by GNOME@tie{}3.")
      "Lato is a sanserif typeface family.  It covers over 3000 glyphs per style.
 The Lato 2.010 family supports more than 100 Latin-based languages, over
 50 Cyrillic-based languages as well as Greek and IPA phonetics.")
+    (license license:silofl1.1)))
+
+(define-public font-gfs-ambrosia
+  ;; Based on
+  ;; https://src.fedoraproject.org/rpms/gfs-ambrosia-fonts
+  ;; /blob/rawhide/f/gfs-ambrosia-fonts.spec.
+  (package
+    (name "font-gfs-ambrosia")
+    (version "20080624")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://www.greekfontsociety-gfs.gr/"
+                           "_assets/fonts/GFS_Ambrosia.zip"))
+       (sha256
+        (base32
+         "0vnnsal61slgj9r4q35wiznd4mbcv49dl18n91s3nvv6jzd4r8b4"))))
+    (build-system font-build-system)
+    (home-page "https://www.greekfontsociety-gfs.gr/")
+    (synopsis "GFS Ambrosia, a Greek majuscule font family")
+    (description "GFS Ambrosia is a Greek typeface that has the main
+characteristics of the majuscule forms of the early Christian tradition.  The
+font is provided in the OpenType font (OTF) format.")
     (license license:silofl1.1)))
 
 (define-public font-gnu-freefont
@@ -695,6 +722,49 @@ following fonts in the OpenType format: Adventor, Bonum, Chorus, Cursor,
 Heros, Pagella, Schola, Termes.")
     (license license:gfl1.0)))
 
+(define-public font-amiri
+  (package
+    (name "font-amiri")
+    (version "0.114")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/aliftype/amiri")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "01d54i68pmy37fhvxv8kld3iqlc1m0vr871zd66y5y4c7kn2v7as"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:imported-modules `(,@%gnu-build-system-modules
+                           (guix build font-build-system))
+      #:modules `(,@%gnu-build-system-modules
+                  ((guix build font-build-system) #:prefix font:))
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure)
+                   (replace 'install
+                     (assoc-ref font:%standard-phases 'install)))))
+    (native-inputs
+     (list python-fonttools
+           python-pcpp
+           python-opentype-sanitizer
+           python-sfdlib
+           python-ufolib2
+           python-ufo2ft
+           python-wrapper))
+    (home-page "https://www.amirifont.org/")
+    (synopsis "Body text Naskh typeface")
+    (description "Amiri (أميري) is a classical Arabic typeface in Naskh style
+for typesetting books and other running text.  Amiri is a revival of the
+typeface pioneered in early 20th century by Bulaq Press in Cairo, also known
+as Amiria Press, after which the font is named.  The uniqueness of this
+typeface comes from its balance between the beauty of Naskh calligraphy on one
+hand and the constraints and requirements of elegant typography on the
+other.")
+    (license license:silofl1.1)))
+
 (define-public font-anonymous-pro
   (package
     (name "font-anonymous-pro")
@@ -741,7 +811,7 @@ for use at smaller text sizes")))
 (define-public font-gnu-unifont
   (package
     (name "font-gnu-unifont")
-    (version "14.0.01")
+    (version "14.0.03")
     (source
      (origin
        (method url-fetch)
@@ -751,7 +821,7 @@ for use at smaller text sizes")))
              (string-append "mirror://gnu/unifont/unifont-"
                             version "/unifont-" version ".tar.gz")))
        (sha256
-        (base32 "0wkdn8h20pprna5a3hbny0qk2mgksrbxs2y6ng6qarj6rkpdmlbs"))))
+        (base32 "1swzwh355ipqhm3vvy7005fqawydlcdbkxm3h04vhicahp8hl06l"))))
     (build-system gnu-build-system)
     (outputs '("out"   ; TrueType version
                "pcf"   ; PCF (bitmap) version
@@ -1003,7 +1073,7 @@ designed to work well in user interface environments.")
 (define-public font-adobe-source-sans-pro
   (package
     (name "font-adobe-source-sans-pro")
-    (version "3.028R")
+    (version "3.046R")
     (source
      (origin
        (method git-fetch)
@@ -1012,7 +1082,7 @@ designed to work well in user interface environments.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0lgjqi4d5p1q1z00ad807v5qy4z54gmp7jpdaypc0rxk8czv6zq7"))))
+        (base32 "01dnhyfffnlyjzyh40x2z728qpc4i0jvrcxdcjfm17zrwhmw84lw"))))
     (build-system font-build-system)
     (home-page "https://github.com/adobe-fonts/source-sans-pro")
     (synopsis
@@ -1331,7 +1401,7 @@ guix repl <<EOF
              (ice-9 string-fun)
              (gnu packages fonts))
 
-(let ((new-version "11.2.0")
+(let ((new-version "15.2.0")
       (iosevka-hashes #nil)
       (iosevka-fails #nil))
   (for-each (lambda (font)
@@ -1356,16 +1426,16 @@ guix repl <<EOF
                   font-iosevka-etoile))
   (for-each (lambda (hash)
               (format #t "~a: ~a~%" (car hash) (cdr hash)))
-            iosevka-hashes)
+            (reverse iosevka-hashes))
   (for-each (lambda (fail)
               (format #t "~a: failed to download latest version~%" fail))
-            iosevka-fails))
+            (reverse iosevka-fails)))
 EOF
 |#
 (define-public font-iosevka
   (package
     (name "font-iosevka")
-    (version "11.2.0")
+    (version "15.2.0")
     (source
      (origin
        (method url-fetch/zipbomb)
@@ -1373,7 +1443,7 @@ EOF
                            "/releases/download/v" version
                            "/ttc-iosevka-" version ".zip"))
        (sha256
-        (base32 "16a5bbjy9kn62pbrmam6jvcki4xvbakxbqzv72kkpz7p10b10vz7"))))
+        (base32 "0yyz8vmpi8pww0p9na564lvbkwhdhpk4bcyrli91dn5gq0pc1pvv"))))
     (build-system font-build-system)
     (home-page "https://be5invis.github.io/Iosevka/")
     (synopsis "Coders' typeface, built from code")
@@ -1396,7 +1466,7 @@ programming.  Iosevka is completely generated from its source code.")
                            "/releases/download/v" version
                            "/ttc-iosevka-slab-" version ".zip"))
        (sha256
-        (base32 "068nd8wph44r9ka3fd7b5jhph505w08ibn3dmd7czdcp1fkr7dhi"))))))
+        (base32 "1qy86kdl6lgq5k1qb97adibpfjm4vg1wdnxbqizhqka5bc7avyzb"))))))
 
 (define-public font-iosevka-term
   (package
@@ -1410,7 +1480,7 @@ programming.  Iosevka is completely generated from its source code.")
                            "/releases/download/v" version
                            "/ttf-iosevka-term-" version ".zip"))
        (sha256
-        (base32 "0a22pnr74l87ajprcki3j3fc5cryfr5krpxang0b51grkdb9l724"))))
+        (base32 "15znvvkhldgbl9k04pwrrnvmjnanw2fr92c0zspg7bbw7id2v510"))))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -1431,7 +1501,7 @@ programming.  Iosevka is completely generated from its source code.")
                            "releases/download/v" version "/"
                            "ttf-iosevka-term-slab-" version ".zip"))
        (sha256
-        (base32 "00nsykwa1r198wrh85d42vbjwpxxsmzdn3i4fighdrd3c99fbv60"))))
+        (base32 "1rla7kcb94c7daklp4av27gix86cmwsrqg6884zmv5zfnhz0r700"))))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -1452,7 +1522,7 @@ programming.  Iosevka is completely generated from its source code.")
                            "/releases/download/v" version
                            "/ttc-iosevka-aile-" version ".zip"))
        (sha256
-        (base32 "11xajywv20ah6yg3a0sqv2lp5phg8yv268dw2myz3ciazwnvdpqq"))))))
+        (base32 "1lciycahvxgvmcniq4h3m1v3rc42nmv8ydb0fpbl9g4sc0qp81hq"))))))
 
 (define-public font-iosevka-curly
   (package
@@ -1466,7 +1536,7 @@ programming.  Iosevka is completely generated from its source code.")
                            "releases/download/v" version  "/"
                            "ttc-iosevka-curly-" version ".zip"))
        (sha256
-        (base32 "1ss11pdrk7k0kwbaklllz4mb961j6issjp53jpp7p9pvs4qad8xf"))))))
+        (base32 "02jvrj7kzd4bx3maj1bq2p9j746b8c5713d8lqkxx4fn9fm0zppq"))))))
 
 (define-public font-iosevka-curly-slab
   (package
@@ -1480,7 +1550,7 @@ programming.  Iosevka is completely generated from its source code.")
                            "releases/download/v" version  "/"
                            "ttc-iosevka-curly-slab-" version ".zip"))
        (sha256
-        (base32 "141jyarpmln5q3cjyq79nw9kfm55vaiy3cin3rlamghrhjw8wg9q"))))))
+        (base32 "1bhvf95xs74wm8srsvl4yxwvl36llk93mpl1y9acc5z9rdcpzjqq"))))))
 
 (define-public font-iosevka-etoile
   (package
@@ -1494,7 +1564,7 @@ programming.  Iosevka is completely generated from its source code.")
                            "/releases/download/v" version
                            "/ttc-iosevka-etoile-" version ".zip"))
        (sha256
-        (base32 "097b8acia49fqpsy3w6ldk73k4abn6z9mlkl1p4iw99k26ip1sy7"))))))
+        (base32 "1zmgfxfsbxv1k4fwnc7g2jlfhmlzp5kap8m3f10fqanpnkd0yf08"))))))
 
 (define-public font-sarasa-gothic
   (package
@@ -1995,6 +2065,28 @@ displays (7SEG, 14SEG).  DSEG includes the roman alphabet and symbol glyphs.
 This package provides the TrueType fonts.")
     (license license:silofl1.1)))
 
+(define-public font-sil-ezra
+  (package
+    (name "font-sil-ezra")
+    (version "2.51")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://software.sil.org/downloads/r/ezra/EzraSIL-"
+                           version ".zip"))
+       (sha256
+        (base32
+         "1h8cfrvjdwxk963bw359jdg86bycwyyhvviqy6lwcfj7qhzcnszi"))))
+    (build-system font-build-system)
+    (home-page "https://software.sil.org/ezra/")
+    (synopsis "Biblia Hebraica Stuttgartensia (BHS) typography inspired typeface")
+    (description "Ezra SIL is a typeface fashioned after the square letter
+forms of the typography of the Biblia Hebraica Stuttgartensia (BHS), a
+beautiful Old Testament volume familiar to Biblical Hebrew scholars.  This
+font package provides @code{Ezra SIL} as well as @code{Ezra SIL SR}, which has
+a different style of marking.")
+    (license license:expat)))
+
 (define-public font-jetbrains-mono
   (package
     (name "font-jetbrains-mono")
@@ -2158,6 +2250,53 @@ variation Arial.  Tamil characters are inherently vertically-elliptical.  The
 orthography of Roman glyphs of Meera Inimai are also based on this
 characteristic so that they sit smoothly with the Tamil glyphs.")
     (license license:silofl1.1)))
+
+(define-public font-ipa-ex
+  (package
+    (name "font-ipa-ex")
+    (version "004.01")
+    (source (origin
+              (method url-fetch/zipbomb)
+              (uri (string-append
+                    "https://moji.or.jp/wp-content/ipafont/IPAexfont/"
+                    "IPAexfont" (string-join (string-split version #\.) "")
+                    ".zip"))
+              (sha256
+               (base32
+                "0jwpszgisrls1lsgq1ngcm99zjaikb8hshr02512qrzrnd53gy5w"))))
+    (build-system font-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'make-read-only
+            (lambda _
+              ;; Otherwise the files have the executable bit set.
+              (for-each (lambda (file)
+                          (chmod file #o444))
+                        (find-files "." #:directories? #f))))
+          (add-after 'install 'install-doc
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((font+version
+                     #$(string-append
+                        "IPAexfont"
+                        (string-join (string-split version #\.) "")))
+                    (doc-dir (string-append #$output "/share/doc/" #$name)))
+                (with-directory-excursion font+version
+                  (mkdir-p doc-dir)
+                  (copy-file (string-append "Readme_" font+version ".txt")
+                             (string-append doc-dir "/README"))
+                  (copy-file "IPA_Font_License_Agreement_v1.0.txt"
+                             (string-append doc-dir "/LICENSE")))))))))
+    (home-page "https://moji.or.jp/ipafont/")
+    (synopsis "Japanese font from the Information-technology Promotion Agency")
+    (description "IPAex Fonts are suitable for both display and printing.
+This is a modernized version of IPA Fonts that aims to provide a good balance
+for authoring Japanese documents mixed with Western characters, while
+following Japanese printing tradition.  Japanese characters (Kanji, Kana and
+punctuation marks) are full width mono-space pitch, and Western characters are
+proportional pitch.")
+    (license license:ipa)))
 
 (define-public font-ipa-mj-mincho
   (package

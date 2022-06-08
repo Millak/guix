@@ -47,10 +47,10 @@
   #:use-module (gnu packages web))
 
 (define-public crun
-  (let ((commit "8e5757a4e68590326dafe8a8b1b4a584b10a1370"))
+  (let ((commit "c381048530aa750495cf502ddb7181f2ded5b400"))
     (package
       (name "crun")
-      (version "1.3")
+      (version "1.4.5")
       (source
        (origin
          (method git-fetch)
@@ -59,7 +59,7 @@
                (commit commit)
                (recursive? #t)))
          (sha256
-          (base32 "01yiss2d57kwlxb7zlqzjwlg9fyaf19yjngd1mw9n4hxls3dfj3k"))
+          (base32 "0x2xmr5sv9ivvcv5fl5jjk4kq9b3n97s5hsqiqfwl4rz8qcz4xk1"))
          (file-name (git-file-name name version))))
       (build-system gnu-build-system)
       (arguments

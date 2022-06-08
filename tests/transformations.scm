@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016, 2017, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2017, 2019-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -450,6 +450,18 @@
                         (and (local-file? input)
                              (string=? (local-file-file input) patch)))
                       inputs))))))))
+
+(test-equal "options->transformation, property order"
+  ;; See <https://issues.guix.gnu.org/54942>.
+  '((with-debug-info . "does-not-exist")
+    (with-commit . "does-not-exist=aaaaaaa")
+    (without-tests . "does-not-exist"))
+  (let* ((t (options->transformation
+             '((with-debug-info . "does-not-exist")
+               (with-commit . "does-not-exist=aaaaaaa")
+               (without-tests . "does-not-exist")))))
+    (let ((new (t coreutils)))
+      (assq-ref (package-properties new) 'transformations))))
 
 (test-equal "options->transformation, with-latest"
   "42.0"

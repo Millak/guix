@@ -252,13 +252,13 @@ implementation.
 (define-public python-cmarkgfm
   (package
     (name "python-cmarkgfm")
-    (version "0.7.0")
+    (version "0.8.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "cmarkgfm" version))
               (sha256
                (base32
-                "06cw49bzxl3k7m8993cyi5zqxvk817z8ghhr9xqq5gx8klpiap56"))
+                "1jxk9cdir4q1bpjla7b7y1qfjmr7mkd0f802b2sb88njk079p1gy"))
               (modules '((guix build utils)))
               (snippet
                '(begin

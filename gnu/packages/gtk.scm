@@ -24,11 +24,13 @@
 ;;; Copyright © 2019 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2020 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2020 Guillaume Le Vaillant <glv@posteo.net>
-;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2021 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Wamm K. D. <jaft.r@outlook.com>
+;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2022 Benjamin Slade <slade@lambda-y.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -51,6 +53,7 @@
   #:use-module (guix utils)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix bzr-download)
   #:use-module (guix git-download)
   #:use-module ((guix build utils) #:select (alist-replace))
   #:use-module (guix build-system cmake)
@@ -408,6 +411,22 @@ context of the GTK+ widget toolkit.  Pango forms the core of text and font
 handling for GTK+-2.x.")
     (home-page "https://pango.gnome.org/")
     (license license:lgpl2.0+)))
+
+;; TODO: Make this the default package in next release cycle.
+(define-public pango-next
+  (package
+    (inherit pango)
+    (name "pango")
+    (version "1.50.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/pango/"
+                                  (version-major+minor version) "/"
+                                  name "-" version ".tar.xz"))
+              (patches (search-patches "pango-skip-libthai-test.patch"))
+              (sha256
+               (base32
+                "0qn1a7ccs3p5vc6swbqm6hdzka879l0gp9220lq4bcf2gpl67bgl"))))))
 
 (define-public pango-1.42
   (package
@@ -970,7 +989,7 @@ application suites.")
            cups
            graphene
            harfbuzz
-           iso-codes
+           iso-codes/official ;XXX TODO core-updates: use iso-codes
            json-glib-minimal
            libxml2
            rest))
@@ -1058,7 +1077,7 @@ application suites.")
 (define-public gtk
   (package
     (name "gtk")
-    (version "4.4.1")
+    (version "4.6.1")
     (source
      (origin
        (method url-fetch)
@@ -1066,10 +1085,9 @@ application suites.")
                            (version-major+minor version)  "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "1x6xlc063nqp7cg6py4kq1kpw9pkq49ifk5kki0brc667ncdmahg"))
+        (base32 "0pzcs24j67f90kjcp6apgn6rffynxksjm1m7d3an7kdv3k90hmfq"))
        (patches
-        (search-patches "gtk4-respect-GUIX_GTK4_PATH.patch"
-                        "gtk-introspection-test.patch"))))
+        (search-patches "gtk4-respect-GUIX_GTK4_PATH.patch"))))
     (build-system meson-build-system)
     (outputs '("out" "bin" "doc"))
     (arguments
@@ -1099,6 +1117,10 @@ application suites.")
          (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
            (assoc-ref glib-or-gtk:%standard-phases
                       'generate-gdk-pixbuf-loaders-cache-file))
+         (add-after 'unpack 'patch-rst2man
+           (lambda _
+             (substitute* "docs/reference/gtk/meson.build"
+               (("find_program\\('rst2man'") "find_program('rst2man.py'"))))
          (add-after 'unpack 'patch
            (lambda* (#:key inputs native-inputs outputs #:allow-other-keys)
              ;; Correct DTD resources of docbook.
@@ -1176,6 +1198,7 @@ application suites.")
        ("pkg-config" ,pkg-config)
        ("python-pygobject" ,python-pygobject)
        ;; These python modules are required for building documentation.
+       ("python-docutils" ,python-docutils)
        ("python-jinja2" ,python-jinja2)
        ("python-markdown" ,python-markdown)
        ("python-markupsafe" ,python-markupsafe)
@@ -1198,7 +1221,10 @@ application suites.")
            iso-codes
            json-glib
            libcloudproviders ;for cloud-providers support
+           libjpeg-turbo
+           libpng
            librsvg
+           libtiff
            python
            rest
            tracker))          ;for filechooser search support
@@ -1221,7 +1247,7 @@ application suites.")
        ("libxkbcommon" ,libxkbcommon)
        ("libxrandr" ,libxrandr)
        ("libxrender" ,libxrender)
-       ("pango" ,pango)
+       ("pango" ,pango-next)
        ("vulkan-headers" ,vulkan-headers)
        ("vulkan-loader" ,vulkan-loader) ;for vulkan graphics API support
        ("wayland" ,wayland)             ;for wayland display-backend
@@ -1602,7 +1628,7 @@ library.")
 (define-public pangomm
   (package
     (name "pangomm")
-    (version "2.48.0")
+    (version "2.50.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -1610,7 +1636,7 @@ library.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0y2vyp6azvhrii6rzs89kr08wg8z1p562awyr812131zqdsd83ly"))))
+                "0nrvvf1fyzlimh7rvxcblnrvn2l9rz8mpn2iwzlzr6kv05zafym2"))))
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
@@ -1639,7 +1665,7 @@ library.")
        ("python" ,python)
        ("xsltproc" ,libxslt)))
     (propagated-inputs
-     (list cairo cairomm glibmm pango))
+     (list cairo cairomm glibmm pango-next))
     (home-page "https://pango.gnome.org//")
     (synopsis "C++ interface to the Pango text rendering library")
     (description
@@ -1735,7 +1761,7 @@ library.")
 (define-public gtkmm
   (package
     (name "gtkmm")
-    (version "4.4.0")
+    (version "4.6.1")
     (source
      (origin
        (method url-fetch)
@@ -1744,7 +1770,7 @@ library.")
                        (version-major+minor version)  "/"
                        name "-" version ".tar.xz"))
        (sha256
-        (base32 "1nhdf1s437k41af6frbqw2sky46qci0hgkg9h86a9rlnc0r69d1f"))))
+        (base32 "1q6iycd7jfbn6rp4sq6r7ndm96dc21inq8mq1d9xsky6kv5gwphd"))))
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
@@ -1784,7 +1810,7 @@ library.")
        ("xsltproc" ,libxslt)
        ("xorg-server" ,xorg-server-for-tests)))
     (propagated-inputs
-     (list atkmm cairomm glibmm gtk pangomm))
+     (list cairomm glibmm gtk pangomm))
     (synopsis "C++ Interfaces for GTK+ and GNOME")
     (description "GTKmm is the official C++ interface for the popular GUI
 library GTK+.  Highlights include typesafe callbacks, and a comprehensive set
@@ -1893,96 +1919,9 @@ printing and other features typical of a source code editor.")
     (synopsis "Python bindings for cairo")
     (description
      "Pycairo is a set of Python bindings for the Cairo graphics library.")
-    (license license:lgpl3+)
-    (properties `((python2-variant . ,(delay python2-pycairo))))))
+    (license license:lgpl3+)))
 
 ;; Pycairo no longer supports Python 2 since version 1.19.0, so we stick
-;; with this older version here.
-(define-public python2-pycairo
-  (let ((pycairo (package-with-python2
-                  (strip-python2-variant python-pycairo))))
-    (package
-      (inherit pycairo)
-      (version "1.18.2")
-      (source (origin
-                (method url-fetch)
-                (uri (string-append "https://github.com/pygobject/pycairo/releases"
-                                    "/download/v" version "/pycairo-" version ".tar.gz"))
-                (sha256
-                 (base32
-                  "0cb5n4r4nl0k1g90b1gz9iyk4lp7hi03db98i1p52a870bym7f6w"))))
-      ;; Dual-licensed under LGPL 2.1 or Mozilla Public License 1.1
-      (license (list license:lgpl2.1 license:mpl1.1)))))
-
-(define-public python2-pygtk
-  (package
-    (name "python2-pygtk")
-    (version "2.24.0")
-    (source
-     (origin
-      (method url-fetch)
-      (uri (string-append "mirror://gnome/sources"
-                          "/pygtk/" (version-major+minor version)
-                          "/pygtk-" version ".tar.bz2"))
-      (sha256
-       (base32
-        "04k942gn8vl95kwf0qskkv6npclfm31d78ljkrkgyqxxcni1w76d"))))
-    (build-system gnu-build-system)
-    (outputs '("out"
-               "doc"))                            ;13 MiB of gtk-doc HTML
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     `(("python" ,python-2)
-
-       ;; XXX: The package fails to build with the latest Pango (propagated
-       ;; from GTK+2), so we provide it with this older version.
-       ("pango" ,pango-1.42)
-
-       ("libglade" ,libglade)
-       ("glib"   ,glib)))
-    (propagated-inputs
-     `(("python-pycairo"   ,python2-pycairo)     ;loaded at runtime
-       ("python-pygobject" ,python2-pygobject-2) ;referenced in pc file
-       ("gtk+"             ,gtk+-2)))
-    (arguments
-     `(#:tests? #f
-       #:phases (modify-phases %standard-phases
-                  (add-before 'configure 'set-gtk-doc-directory
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      ;; Install documentation to "doc".
-                      (let ((doc (assoc-ref outputs "doc")))
-                        (substitute* "docs/Makefile.in"
-                          (("TARGET_DIR = \\$\\(datadir\\)")
-                           (string-append "TARGET_DIR = " doc))))))
-                  (add-after 'configure 'fix-codegen
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (substitute* "pygtk-codegen-2.0"
-                        (("^prefix=.*$")
-                         (string-append
-                          "prefix="
-                          (assoc-ref inputs "python-pygobject") "\n")))))
-                  (add-after 'install 'install-pth
-                    (lambda* (#:key inputs outputs #:allow-other-keys)
-                      ;; pygtk's modules are stored in a subdirectory of
-                      ;; python's site-packages directory.  Add a .pth file so
-                      ;; that python will add that subdirectory to its module
-                      ;; search path.
-                      (let* ((out    (assoc-ref outputs "out"))
-                             (site   (string-append out "/lib/python"
-                                                    ,(version-major+minor
-                                                      (package-version python-2))
-                                                    "/site-packages")))
-                        (call-with-output-file (string-append site "/pygtk.pth")
-                          (lambda (port)
-                            (format port "gtk-2.0~%")))))))))
-    (home-page "http://www.pygtk.org/")
-    (synopsis "Python bindings for GTK+")
-    (description
-     "PyGTK allows you to write full featured GTK programs in Python.  It is
-targeted at GTK 2.x, and can be used in conjunction with gnome-python to
-write GNOME applications.")
-    (license license:lgpl2.1+)))
 
 (define-public perl-cairo
   (package
@@ -2521,7 +2460,7 @@ independent of your desktop environment, and supports global key bindings.")
 (define-public yad
   (package
     (name "yad")
-    (version "5.0")
+    (version "12.0")
     (source
      (origin
        (method git-fetch)
@@ -2530,7 +2469,7 @@ independent of your desktop environment, and supports global key bindings.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07rd61hvilsxxrj7lf8c9k0a8glj07s48m7ya8d45030r90g3lvc"))))
+        (base32 "1nbbw4vwlxjlp83d35w54952b6rrn8qlr3d053lisqwl0hfcm7if"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:configure-flags
@@ -2605,64 +2544,85 @@ printed to standard output.")
    (license license:gpl3+)))
 
 (define-public libdbusmenu
-  (package
-    (name "libdbusmenu")
-    (version "16.04.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://launchpad.net/libdbusmenu/"
-                           (version-major+minor version) "/" version
-                           "/+download/libdbusmenu-" version ".tar.gz"))
-       (sha256
-        (base32 "12l7z8dhl917iy9h02sxmpclnhkdjryn08r8i4sr8l3lrlm4mk5r"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:configure-flags
-       '("--sysconfdir=/etc"
-         "--localstatedir=/var"
-         ;; The shebang of the generated test files should be patched before
-         ;; enabling tests.
-         "--disable-tests")
-       #:make-flags
-       `(,(string-append "typelibdir=" (assoc-ref %outputs "out")
-                         "/lib/girepository-1.0"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'do-not-treat-warnings-as-errors
-           (lambda _
-             ;; Prevent the build from failing due to deprecation warnings
-             ;; from newer GLib and GTK versions.
-             (substitute* (find-files "." "^Makefile.in$")
-               ((" -Werror")
-                ""))
-             #t))
-         (add-before 'configure 'set-environment
-           (lambda _
-             (setenv "HAVE_VALGRIND_TRUE" "")
-             (setenv "HAVE_VALGRIND_FALSE" "#")
-             #t)))))
-    (inputs
-     `(("glib" ,glib)
-       ("gtk+" ,gtk+)
-       ("gtk+-2" ,gtk+-2)))
-    (native-inputs
-     `(("glib:bin" ,glib "bin")
-       ("gnome-doc-utils" ,gnome-doc-utils)
-       ("gobject-introspection" ,gobject-introspection)
-       ("intltool" ,intltool)
-       ("json-glib" ,json-glib)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-2)
-       ("vala" ,vala)))
-    (home-page "https://launchpad.net/libdbusmenu")
-    (synopsis "Library for passing menus over DBus")
-    (description "@code{libdbusmenu} passes a menu structure across DBus so
+  (let ((bzr-revision "496"))
+    (package
+      (name "libdbusmenu")
+      (version (string-append "16.04.0" "-" bzr-revision))
+      (source
+       (origin
+         (method bzr-fetch)
+         (uri (bzr-reference
+               (url "lp:libdbusmenu")
+               (revision bzr-revision)))
+         (file-name (string-append name "-" version "-checkout"))
+         (sha256
+          (base32
+           "1rnp86r8f2xjcbk6jjl6np1qdhc3d7fj1c3ggn0gbv2kksc8r1bx"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:configure-flags
+        #~(list "--sysconfdir=/etc"
+                "--localstatedir=/var"
+                ;; The shebang of the generated test files should be patched
+                ;; before enabling tests.
+                "--disable-tests")
+        #:make-flags
+        #~(list (string-append "typelibdir=" #$output "/lib/girepository-1.0"))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'remove-deprecated-gnome-common-macros
+              (lambda _
+                ;; Adapted from a Debian patch to remove deprecated macros.
+                (substitute* "autogen.sh"
+                  (("^USE_GNOME2_MACROS.*") "")
+                  (("^USE_COMMON_DOC_BUILD.*") ""))))
+            (add-after 'unpack 'patch-paths
+              (lambda _
+                (substitute* "libdbusmenu-glib/Makefile.am"
+                  (("/bin/false")
+                   "false")
+                  ;; (("\\$\\(srcdir)/clean-namespaces.xslt")
+                  ;;  "clean-namespaces.xslt")
+                  )))
+            (add-before 'configure 'do-not-treat-warnings-as-errors
+              (lambda _
+                ;; Prevent the build from failing due to deprecation warnings
+                ;; from newer GLib and GTK versions.
+                (substitute* (find-files "." "^Makefile.in$")
+                  ((" -Werror")
+                   ""))))
+            (add-before 'configure 'set-environment
+              (lambda _
+                (setenv "HAVE_VALGRIND_TRUE" "")
+                (setenv "HAVE_VALGRIND_FALSE" "#"))))))
+      (inputs
+       (list glib
+             gtk+
+             gtk+-2))
+      (native-inputs
+       (list autoconf
+             automake
+             `(,glib "bin")
+             gobject-introspection
+             gnome-common
+             gtk-doc                    ;FIXME: propagate by gnome-common?
+             intltool
+             json-glib
+             libtool
+             libxslt
+             pkg-config
+             python-wrapper
+             which
+             vala))
+      (home-page "https://launchpad.net/libdbusmenupython")
+      (synopsis "Library for passing menus over DBus")
+      (description "@code{libdbusmenu} passes a menu structure across DBus so
 that a program can create a menu simply without worrying about how it is
 displayed on the other side of the bus.")
 
-    ;; Dual-licensed under either LGPLv2.1 or LGPLv3.
-    (license (list license:lgpl2.1 license:lgpl3))))
+      ;; Dual-licensed under either LGPLv2.1 or LGPLv3.
+      (license (list license:lgpl2.1 license:lgpl3)))))
 
 (define-public gtk-layer-shell
   (package

@@ -58,7 +58,6 @@
   #:use-module (guix download)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
-  #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix memoization)
   #:use-module (guix utils)
@@ -2502,19 +2501,20 @@ memoized as a function of '%current-system'."
 
 (define gnumach-headers-boot0
   (with-boot0
-   (package-with-bootstrap-guile
-    (package
-      (inherit gnumach-headers)
-      (version "1.8-116-g28b53508")
-      (source (bootstrap-origin
-               (origin
-                 (method url-fetch)
-                 (uri (string-append "https://lilypond.org/janneke/hurd/"
-                                     "gnumach-" version ".tar.gz"))
-                 (sha256
-                  (base32
-                   "006i0zgwy81vxarpfm12vip4q6i5mgmi5mmy5ldvxp5hx9h3l0zg")))))
-      (native-inputs '())))))
+   (package
+     (inherit gnumach-headers)
+     (version "1.8-116-g28b53508")
+     (source (bootstrap-origin
+              (origin
+                (method url-fetch)
+                (uri (list (string-append "mirror://gnu/guix/mirror/gnumach-"
+                                          version ".tar.gz")
+                           (string-append "https://lilypond.org/janneke/hurd/"
+                                          "gnumach-" version ".tar.gz")))
+                (sha256
+                 (base32
+                  "006i0zgwy81vxarpfm12vip4q6i5mgmi5mmy5ldvxp5hx9h3l0zg")))))
+     (native-inputs '()))))
 
 (define mig-boot0
   (let* ((mig (package
@@ -2531,14 +2531,15 @@ memoized as a function of '%current-system'."
 (define hurd-version-boot0 "0.9-229-ga1efcee8")
 (define hurd-source-boot0
   (let ((version hurd-version-boot0))
-    (bootstrap-origin
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://lilypond.org/janneke/hurd/"
-                           "hurd-v" version ".tar.gz"))
-       (sha256
-        (base32
-         "0bq2q2jisxcy0kgcm6rz0z2fddwxxm7azsama7li28a2m08kdpzy"))))))
+    (origin
+      (method url-fetch)
+      (uri (list (string-append "mirror://gnu/guix/mirror/hurd-v"
+                                version ".tar.gz")
+                 (string-append "https://lilypond.org/janneke/hurd/"
+                                "hurd-v" version ".tar.gz")))
+      (sha256
+       (base32
+        "0bq2q2jisxcy0kgcm6rz0z2fddwxxm7azsama7li28a2m08kdpzy")))))
 
 (define hurd-headers-boot0
   (let ((hurd-headers (package (inherit hurd-headers)
@@ -3122,7 +3123,7 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
   (with-boot4 (hidden-package
                (package-with-bootstrap-guile guile-3.0/fixed))))
 
-(define glibc-utf8-locales-final
+(define-public glibc-utf8-locales-final
   ;; Now that we have GUILE-FINAL, build the UTF-8 locales.  They are needed
   ;; by the build processes afterwards so their 'scm_to_locale_string' works
   ;; with the full range of Unicode codepoints (remember
@@ -3130,6 +3131,8 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
   ;; function.)
   (package
     (inherit glibc-utf8-locales)
+    (properties `((hidden? . #t)
+                  ,@(package-properties glibc-utf8-locales)))
     (native-inputs
      `(("glibc" ,glibc-final)
        ("gzip" ,(with-boot4 gzip))))))
@@ -3378,6 +3381,9 @@ is the GNU Compiler Collection.")
 
 (define-public gcc-toolchain-11
   (make-gcc-toolchain gcc-11))
+
+(define-public gcc-toolchain-12
+  (make-gcc-toolchain gcc-12))
 
 (define-public gcc-toolchain-aka-gcc
   ;; It's natural for users to try "guix install gcc".  This package

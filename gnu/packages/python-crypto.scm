@@ -11,7 +11,7 @@
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2014, 2015 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2015, 2016, 2017, 2019 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2017, 2019, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2016, 2017, 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017 Carlo Zancanaro <carlo@zancanaro.id.au>
@@ -24,7 +24,7 @@
 ;;; Copyright © 2020 Alexandros Theodotou <alex@zrythm.org>
 ;;; Copyright © 2020 Justus Winter <justus@sequoia-pgp.org>
 ;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -261,9 +261,6 @@ messages, and verify the signatures.  The keys and signatures are very short,
 making them easy to handle and incorporate into other protocols.")
     (license license:expat)))
 
-(define-public python2-ecdsa
-  (package-with-python2 python-ecdsa))
-
 ;;; Pycrypto is abandoned upstream:
 ;;;
 ;;; https://github.com/dlitz/pycrypto/issues/173
@@ -298,15 +295,6 @@ making them easy to handle and incorporate into other protocols.")
 and RIPEMD160), and various encryption algorithms (AES, DES, RSA, ElGamal,
 etc.).  The package is structured to make adding new modules easy.")
     (license license:public-domain)))
-
-(define-public python2-pycrypto
-  (let ((pycrypto (package-with-python2 python-pycrypto)))
-    (package/inherit pycrypto
-      (inputs
-       `(("python" ,python-2)
-         ,@(alist-delete
-            "python"
-            (package-inputs pycrypto)))))))
 
 (define-public python-kerberos
   (package
@@ -351,14 +339,10 @@ do what is needed for client/server Kerberos authentication based on
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "pytest"))
-             #t)))))
+               (invoke "pytest" "-vv" "-c" "/dev/null" "tests")))))))
     (native-inputs
      (list python-toml
            python-pytest
-           python-pytest-checkdocs
-           python-pytest-cov
-           python-pytest-flake8
            python-setuptools
            python-setuptools-scm))
     (propagated-inputs
@@ -370,29 +354,7 @@ do what is needed for client/server Kerberos authentication based on
 service from python.  It can be used in any application that needs safe
 password storage.")
     ;; "MIT" and PSF dual license
-    (properties `((python2-variant . ,(delay python2-keyring))))
     (license license:x11)))
-
-(define-public python2-keyring
-  (let ((keyring (package-with-python2
-                   (strip-python2-variant python-keyring))))
-    (package
-      (inherit keyring)
-      (name "python2-keyring")
-      (version "8.7")
-      (source
-        (origin
-          (method url-fetch)
-          (uri (pypi-uri "keyring" version))
-          (sha256
-           (base32
-            "0482rmi2x6p78wl2kz8qzyq21xz1sbbfwnv5x7dggar4vkwxhzfx"))))
-      (arguments
-       `(#:python ,python-2))
-      (native-inputs
-       (list python2-pytest python2-pytest-runner python2-setuptools-scm))
-      (propagated-inputs
-       (list python2-pycrypto)))))
 
 (define-public python-keyrings.alt
   (package
@@ -475,9 +437,6 @@ for example, for recording or replaying web content.")
 is used by the Requests library to verify HTTPS requests.")
     (license license:asl2.0)))
 
-(define-public python2-certifi
-  (package-with-python2 python-certifi))
-
 (define-public python-cryptography-vectors
   (package
     (name "python-cryptography-vectors")
@@ -500,6 +459,50 @@ is used by the Requests library to verify HTTPS requests.")
 (define-public python-cryptography
   (package
     (name "python-cryptography")
+    (version "3.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "cryptography" version))
+       (sha256
+        (base32
+         "1ribd1vxq9wwz564mg60dzcy699gng54admihjjkgs9dx95pw5vy"))))
+    (build-system python-build-system)
+    (inputs
+     (list openssl))
+    (propagated-inputs
+     (list python-asn1crypto python-cffi python-six python-idna
+           python-iso8601))
+    (native-inputs
+     (list python-cryptography-vectors python-hypothesis python-pretend
+           python-pytz python-pytest))
+    (home-page "https://github.com/pyca/cryptography")
+    (synopsis "Cryptographic recipes and primitives for Python")
+    (description
+      "cryptography is a package which provides cryptographic recipes and
+primitives to Python developers.  It aims to be the “cryptographic standard
+library” for Python.  The package includes both high level recipes, and low
+level interfaces to common cryptographic algorithms such as symmetric ciphers,
+message digests and key derivation functions.")
+    ;; Distributed under either BSD-3 or ASL2.0
+    (license (list license:bsd-3 license:asl2.0))))
+
+;; TODO: Make this the default in the next staging cycle.
+(define-public python-cryptography-vectors-next
+  (package
+    (inherit python-cryptography-vectors)
+    (version "36.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "cryptography_vectors" version))
+       (sha256
+        (base32
+         "166mvhhmgglqai1sjkkb76mpdkad2yykam11d2w44hs2snpr117w"))))))
+
+(define-public python-cryptography-next
+  (package
+    (inherit python-cryptography)
     (version "36.0.1")
     (source
      (origin
@@ -584,7 +587,7 @@ is used by the Requests library to verify HTTPS requests.")
            rust-pyo3-macros-0.15
            rust-pyo3-macros-backend-0.15
            rust-quote-1
-           rust-redox-syscall-0.1
+           rust-redox-syscall-0.2
            rust-scopeguard-1
            rust-smallvec-1
            rust-stable-deref-trait-1
@@ -708,20 +711,6 @@ library.")
     (properties `((python2-variant . ,(delay python2-pyopenssl))))
     (license license:asl2.0)))
 
-(define-public python2-pyopenssl
-  (let ((base (package-with-python2 (strip-python2-variant python-pyopenssl))))
-    (package
-      (inherit base)
-      (version "21.0.0")
-      (source
-       (origin
-         (method url-fetch)
-         (uri (pypi-uri "pyOpenSSL" version))
-         (patches (search-patches "python2-pyopenssl-openssl-compat.patch"))
-         (sha256
-          (base32
-           "1cqcc20fwl521z3fxsc1c98gbnhb14q55vrvjfp6bn6h8rg8qbay")))))))
-
 (define-public python-ed25519
   (package
     (name "python-ed25519")
@@ -738,9 +727,6 @@ library.")
     (synopsis "Ed25519 public-key signatures")
     (description "Ed25519 public-key signatures")
     (license license:expat)))
-
-(define-public python2-ed25519
-  (package-with-python2 python-ed25519))
 
 (define-public python-axolotl-curve25519
   (package
@@ -762,9 +748,6 @@ libaxolotl-android.  At the moment this wrapper is meant for use by
 python-axolotl.")
     (license (list license:gpl3    ; Most files
                    license:bsd-3)))) ; curve/curve25519-donna.c
-
-(define-public python2-axolotl-curve25519
-  (package-with-python2 python-axolotl-curve25519))
 
 (define-public python-axolotl
   (package
@@ -796,29 +779,6 @@ is a ratcheting forward secrecy protocol that works in synchronous and
 asynchronous messaging environments.")
     (license license:gpl3)))
 
-(define-public python2-axolotl
-  (package-with-python2 python-axolotl))
-
-;; SlowAES isn't compatible with Python 3.
-(define-public python2-slowaes
-  (package
-    (name "python2-slowaes")
-    (version "0.1a1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "slowaes" version))
-       (sha256
-        (base32
-         "02dzajm83a7lqgxf6r3hgj64wfmcxz8gs4nvgxpvj5n19kjqlrc3"))))
-    (build-system python-build-system)
-    (arguments `(#:python ,python-2))
-    (home-page "http://code.google.com/p/slowaes/")
-    (synopsis "Implementation of AES in Python")
-    (description "This package contains an implementation of AES in Python.
-This implementation is slow (hence the project name) but still useful when
-faster ones are not available.")
-    (license license:asl2.0)))
 
 (define-public python-pyaes
   (package
@@ -838,9 +798,6 @@ faster ones are not available.")
 AES block cipher algorithm and the common modes of operation (CBC, CFB, CTR,
 ECB and OFB).")
     (license license:expat)))
-
-(define-public python2-pyaes
-  (package-with-python2 python-pyaes))
 
 (define-public python-asn1crypto
   (package
@@ -868,9 +825,6 @@ ECB and OFB).")
 for private keys, public keys, certificates, CRL, OCSP, CMS, PKCS#3, PKCS#7,
 PKCS#8, PKCS#12, PKCS#5, X.509 and TSP.")
     (license license:expat)))
-
-(define-public python2-asn1crypto
-  (package-with-python2 python-asn1crypto))
 
 (define-public python-pynacl
   (package
@@ -966,9 +920,6 @@ of improving usability, security and speed.")
 Python.")
     (license license:asl2.0)))
 
-(define-public python2-ecpy
-  (package-with-python2 python-ecpy))
-
 (define-public python-josepy
   (package
     (name "python-josepy")
@@ -1000,9 +951,6 @@ Python.")
     (description "This package provides a Python implementation of the JOSE
 protocol (Javascript Object Signing and Encryption).")
     (license license:asl2.0)))
-
-(define-public python2-josepy
-  (package-with-python2 python-josepy))
 
 (define pycryptodome-unbundle-tomcrypt-snippet
   #~(begin
@@ -1075,9 +1023,6 @@ This package provides drop-in compatibility with PyCrypto.  It is one of two
 PyCryptodome variants, the other being python-pycryptodomex.")
     (license (list license:bsd-2
                    license:public-domain)))) ; code inherited from PyCrypto
-
-(define-public python2-pycryptodome
-  (package-with-python2 python-pycryptodome))
 
 (define-public python-pycryptodomex
   (package (inherit python-pycryptodome)
@@ -1153,15 +1098,7 @@ extensions to Python's httplib, urllib, and xmlrpclib; unforgeable HMAC'ing
 AuthCookies for web session management; FTP/TLS client and server; S/MIME;
 M2Crypto can also be used to provide TLS for Twisted.  Smartcards supported
 through the Engine interface.")
-    (properties `((python2-variant . ,(delay python2-m2crypto))))
     (license license:expat)))
-
-(define-public python2-m2crypto
-  (let ((m2crypto (package-with-python2
-                   (strip-python2-variant python-m2crypto))))
-    (package/inherit m2crypto
-             (propagated-inputs
-              `(("python2-typing" ,python2-typing))))))
 
 (define-public python-pykeepass
   (package
@@ -1344,9 +1281,6 @@ In the simplest case, this means host name verification.  However,
 service_identity implements RFC 6125 fully and plans to add other
 relevant RFCs too.")
     (license license:expat)))
-
-(define-public python2-service-identity
-  (package-with-python2 python-service-identity))
 
 (define-public python-hkdf
   (package
@@ -1723,6 +1657,31 @@ armored and binary formats.
 It can create and verify RSA, DSA, and ECDSA signatures, at the moment.  It
 can also encrypt and decrypt messages using RSA and ECDH.")
     (license license:bsd-3)))
+
+(define-public python-pyu2f
+  (package
+    (name "python-pyu2f")
+    (version "0.1.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyu2f" version))
+       (sha256
+        (base32 "0srhzdbgdsqwpcw7awqm19yg3xbabqckfvrp8rbpvz2232hs7jm3"))))
+    (build-system python-build-system)
+    (arguments '(#:tests? #f))          ;none included
+    (propagated-inputs (list python-six))
+    (native-inputs
+     (list python-mock
+           python-pyfakefs
+           python-pytest
+           python-unittest2))
+    (home-page "https://github.com/google/pyu2f/")
+    (synopsis "U2F host library for interacting with a U2F device over USB")
+    (description
+     "Pyu2f is a Python-based U2F host library.  It provides functionality for
+interacting with a U2F device over USB.")
+    (license license:asl2.0)))
 
 (define-public python-sop
   (package

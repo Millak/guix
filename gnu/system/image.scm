@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020, 2021 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2022 Pavel Shlyak <p.shlyak@pantherx.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -31,7 +32,7 @@
   #:use-module (gnu bootloader)
   #:use-module (gnu bootloader grub)
   #:use-module (gnu image)
-  #:use-module (gnu platform)
+  #:use-module (guix platform)
   #:use-module (gnu services)
   #:use-module (gnu services base)
   #:use-module (gnu system)
@@ -218,7 +219,8 @@ set to the given OS."
       #$(partition-file-system-options partition)
       #$(partition-label partition)
       #$(and=> (partition-uuid partition)
-               uuid-bytevector)))
+               uuid-bytevector)
+      #$(partition-flags partition)))
 
 (define gcrypt-sqlite3&co
   ;; Guile-Gcrypt, Guile-SQLite3, and their propagated inputs.
@@ -295,27 +297,49 @@ used in the image."
       ;; the hdimage format (raw disk-image) is supported.
       (cond
        ((memq format '(disk-image compressed-qcow2)) "hdimage")
-        (else
-         (raise (condition
-                 (&message
-                  (message
-                   (format #f (G_ "Unsupported image type ~a~%.") format))))))))
+       (else
+        (raise (condition
+                (&message
+                 (message
+                  (format #f (G_ "unsupported image type: ~a")
+                          format))))))))
 
     (define (partition->dos-type partition)
       ;; Return the MBR partition type corresponding to the given PARTITION.
       ;; See: https://en.wikipedia.org/wiki/Partition_type.
-      (let ((flags (partition-flags partition)))
+      (let ((flags (partition-flags partition))
+            (file-system (partition-file-system partition)))
         (cond
          ((member 'esp flags) "0xEF")
-         (else "0x83"))))
+         ((string-prefix? "ext" file-system) "0x83")
+         ((or (string=? file-system "vfat")
+              (string=? file-system "fat16")) "0x0E")
+         ((string=? file-system "fat32") "0x0C")
+         (else
+          (raise (condition
+                  (&message
+                   (message
+                    (format #f (G_ "unsupported partition type: ~a")
+                            file-system)))))))))
 
     (define (partition->gpt-type partition)
-      ;; Return the genimage GPT partition type code corresponding to PARTITION.
-      ;; See https://github.com/pengutronix/genimage/blob/master/README.rst
-      (let ((flags (partition-flags partition)))
+      ;; Return the genimage GPT partition type code corresponding to the
+      ;; given PARTITION.  See:
+      ;; https://github.com/pengutronix/genimage/blob/master/README.rst
+      (let ((flags (partition-flags partition))
+            (file-system (partition-file-system partition)))
         (cond
-          ((member 'esp flags) "U")
-          (else "L"))))
+         ((member 'esp flags) "U")
+         ((string-prefix? "ext" file-system) "L")
+         ((or (string=? file-system "vfat")
+              (string=? file-system "fat16")
+              (string=? file-system "fat32")) "F")
+         (else
+          (raise (condition
+                  (&message
+                   (message
+                    (format #f (G_ "unsupported partition type: ~a")
+                            file-system)))))))))
 
     (define (partition-image partition)
       ;; Return as a file-like object, an image of the given PARTITION.  A
@@ -382,24 +406,28 @@ used in the image."
                     (partition-type-values image partition)))
         (let ((label (partition-label partition))
               (image (partition-image partition))
-              (offset (partition-offset partition)))
+              (offset (partition-offset partition))
+              (bootable (if (memq 'boot (partition-flags partition))
+                            "true" "false" )))
           #~(format #f "~/partition ~a {
   ~/~/~a = ~a
   ~/~/image = \"~a\"
   ~/~/offset = \"~a\"
+  ~/~/bootable = \"~a\"
   ~/}"
                     #$label
                     #$partition-type-attribute
                     #$partition-type-value
                     #$image
-                    #$offset))))
+                    #$offset
+                    #$bootable))))
 
     (define (genimage-type-options image-type image)
       (cond
-        ((equal? image-type "hdimage")
-         (format #f "~%~/~/gpt = ~a~%~/"
-                 (if (gpt-image? image) "true" "false")))
-        (else "")))
+       ((equal? image-type "hdimage")
+        (format #f "~%~/~/gpt = ~a~%~/"
+                (if (gpt-image? image) "true" "false")))
+       (else "")))
 
     (let* ((format (image-format image))
            (image-type (format->image-type format))

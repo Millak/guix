@@ -13,7 +13,7 @@
 ;;; Copyright © 2016 Peter Feigl <peter.feigl@nexoid.at>
 ;;; Copyright © 2016 John J. Foerch <jjfoerch@earthlink.net>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
-;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2017 Ben Sturmfels <ben@sturm.com.au>
 ;;; Copyright © 2017 Ethan R. Jones <doubleplusgood23@gmail.com>
@@ -47,6 +47,8 @@
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
+;;; Copyright © 2022 Roman Riabenko <roman@riabenko.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -109,6 +111,7 @@
   #:use-module (gnu packages groff)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
+  #:use-module (gnu packages guile-xyz)
   #:use-module (gnu packages hurd)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
@@ -266,7 +269,7 @@ the percentage of copied data.  It can also show estimated time and throughput,
 and provides a \"top-like\" mode (monitoring).")
     (license license:gpl3+)))
 
-(define-public shepherd
+(define-public shepherd-0.8
   (package
     (name "shepherd")
     (version "0.8.1")
@@ -307,14 +310,49 @@ interface and is based on GNU Guile.")
     (license license:gpl3+)
     (home-page "https://www.gnu.org/software/shepherd/")))
 
-(define-public guile2.2-shepherd
+;; Update on the next rebuild cycle.
+(define-public shepherd shepherd-0.8)
+
+(define-public shepherd-0.9
   (package
     (inherit shepherd)
+    (version "0.9.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/shepherd/shepherd-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "0l2arn6gsyw88xk9phxnyplvv1mn8sqp3ipgyyb0nszdzvxlgd36"))))
+    (arguments
+     (list #:configure-flags #~'("--localstatedir=/var")
+           #:make-flags #~'("GUILE_AUTO_COMPILE=0")
+           #:phases (if (%current-target-system)
+                        #~(modify-phases %standard-phases
+                            (add-before 'configure 'set-fibers-directory
+                              (lambda _
+                                ;; When cross-compiling, refer to the target
+                                ;; Fibers, not the native one.
+                                (substitute* '("herd.in" "shepherd.in")
+                                  (("%FIBERS_SOURCE_DIRECTORY%")
+                                   #$(file-append
+                                      (this-package-input "guile-fibers")
+                                      "/share/guile/site/3.0"))
+                                  (("%FIBERS_OBJECT_DIRECTORY%")
+                                   #$(file-append
+                                      (this-package-input "guile-fibers")
+                                      "/lib/guile/3.0/site-ccache"))))))
+                        #~%standard-phases)))
+    (native-inputs (list pkg-config guile-3.0
+                         guile-fibers-1.1))       ;for cross-compilation
+    (inputs (list guile-3.0 guile-fibers-1.1))))
+
+(define-public guile2.2-shepherd
+  (package
+    (inherit shepherd-0.9)
     (name "guile2.2-shepherd")
-    (native-inputs
-     (list pkg-config guile-2.2))
-    (inputs
-     (list guile-2.2 guile2.2-readline))))
+    (native-inputs (list pkg-config guile-2.2))
+    (inputs (list guile-2.2 guile2.2-fibers))))
 
 (define-public guile2.0-shepherd
   (package
@@ -370,7 +408,7 @@ inspired by @command{vi}.")
 (define-public cloud-utils
   (package
     (name "cloud-utils")
-    (version "0.32")
+    (version "0.33")
     (source
      (origin
        (method url-fetch)
@@ -382,7 +420,11 @@ inspired by @command{vi}.")
          "0xxdi55lzw7j91zfajw7jhd2ilsqj2dy04i9brlk8j3pvb5ma8hk"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:make-flags
+     '(#:modules
+       ((guix build gnu-build-system)
+        (guix build utils)
+        (srfi srfi-26))
+       #:make-flags
        (let ((out (assoc-ref %outputs "out")))
          (list (string-append "BINDIR=" out "/bin")
                (string-append "MANDIR=" out "/share/man/man1")
@@ -396,11 +438,15 @@ inspired by @command{vi}.")
              (let ((growpart (string-append (assoc-ref outputs "out")
                                             "/bin/growpart")))
                (wrap-program growpart
-                 `("PATH" ":" prefix (,(dirname (which "sfdisk"))
-                                      ,(dirname (which "readlink"))))))
-             #t)))))
+                 `("PATH" ":" prefix
+                   ,(map dirname
+                         (map (cut search-input-file inputs <>)
+                              (list "bin/readlink"
+                                    "sbin/sfdisk")))))))))))
     (inputs
-     (list python util-linux)) ; contains sfdisk for growpart
+     (list coreutils                    ; for readlink
+           python
+           util-linux))                 ; sfdisk for growpart
     (home-page "https://launchpad.net/cloud-utils")
     (synopsis "Set of utilities for cloud computing environments")
     (description
@@ -488,7 +534,7 @@ services.")
         (base32 "0w4g0iyssyw7dd0061881z8s5czcl01mz6v00znax57zfxjqpvnm"))))
     (build-system gnu-build-system)
     (arguments '(#:tests? #f))          ; No tests available.
-    (home-page "http://software.clapper.org/daemonize/")
+    (home-page "https://software.clapper.org/daemonize/")
     (synopsis "Command line utility to run a program as a daemon")
     (description
      "daemonize runs a command as a Unix daemon.  It will close all open file
@@ -634,7 +680,7 @@ console.")
 (define-public htop
   (package
     (name "htop")
-    (version "3.1.2")
+    (version "3.2.0")
     (source
      (origin
        (method git-fetch)
@@ -642,7 +688,7 @@ console.")
              (url "https://github.com/htop-dev/htop")
              (commit version)))
        (sha256
-        (base32 "024qhrlmqgwmn6bwb5yiff9bhhdabryiphzx8y654k8r8vqi59j4"))
+        (base32 "16l1r2ixzs640ybqp2x8bfyvk98kiywy7k3sjmp5j5npdzn5ryd7"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (inputs
@@ -1031,7 +1077,7 @@ would need and has several interesting built-in capabilities.")
 (define-public netcat-openbsd
   (package
     (name "netcat-openbsd")
-    (version "1.218-2")
+    (version "1.218-5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1040,7 +1086,7 @@ would need and has several interesting built-in capabilities.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1rj4nx0jdism1idc4fghahqbafhv72cpk7zlyq9czgvbps10d1kh"))))
+                "0hpbmz9m2q22a6qgbn9590z2x96xgffim8g0m1v47mariz3pqhlc"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no test suite
@@ -1195,15 +1241,14 @@ connection alive.")
                                       bind-release-version)))
     (package
       (name "isc-dhcp")
-      (version "4.4.2-P1")
+      (version "4.4.3")
       (source (origin
                 (method url-fetch)
                 (uri (string-append "https://ftp.isc.org/isc/dhcp/"
                                     version "/dhcp-" version ".tar.gz"))
-                (patches (search-patches "isc-dhcp-gcc-compat.patch"))
                 (sha256
                  (base32
-                  "06jsr0cg5rsmyibshrpcb9za0qgwvqccashdma7mlm1rflrh8pmh"))))
+                  "062q2g8cj2zv0zv22x6pg21m21bdlscxkg3li0ac0pm0qasccghf"))))
       (build-system gnu-build-system)
       (arguments
        `(#:parallel-build? #f
@@ -1724,7 +1769,7 @@ system administrator.")
 (define-public sudo
   (package
     (name "sudo")
-    (version "1.9.10")
+    (version "1.9.11")
     (source (origin
               (method url-fetch)
               (uri
@@ -1734,7 +1779,7 @@ system administrator.")
                                     version ".tar.gz")))
               (sha256
                (base32
-                "1x34k8sd2msfjjsahff1q143gr5j9z19jx2rmkkbiiz7k084d8a4"))
+                "1gjingc1h7d6p17m0nn87yiwh8gbdchg4w4kv8s4g89wv0q6wixm"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -1992,10 +2037,16 @@ command.")
           (add-after 'install-documentation 'install-dbus-conf
             (lambda* (#:key outputs #:allow-other-keys)
               (let* ((out (assoc-ref outputs "out"))
-                     (dir (string-append out "/etc/dbus-1/system.d")))
-                (mkdir-p dir)
+                     (interfaces (string-append out "/etc/dbus-1/system.d"))
+                     (services (string-append out
+                                              "/share/dbus-1/system-services")))
+                (mkdir-p interfaces)
                 (copy-file "dbus/dbus-wpa_supplicant.conf"
-                           (string-append dir "/wpa_supplicant.conf")))
+                           (string-append interfaces "/wpa_supplicant.conf"))
+                (mkdir-p services)
+                (copy-file "dbus/fi.w1.wpa_supplicant1.service"
+                           (string-append services
+                                          "/fi.w1.wpa_supplicant1.service")))
               #t))))))))
 
 (define-public wpa-supplicant-gui
@@ -2174,7 +2225,7 @@ module slots, and the list of I/O ports (e.g. serial, parallel, USB).")
 (define-public acpica
   (package
     (name "acpica")
-    (version "20211217")
+    (version "20220331")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2182,7 +2233,7 @@ module slots, and the list of I/O ports (e.g. serial, parallel, USB).")
                     version ".tar.gz"))
               (sha256
                (base32
-                "0521hmaw2zhi0mpgnaf2i83dykfgql4bx98cg7xqy8wmj649z194"))))
+                "0yjcl00nnnlw01sz6a1i5d3v75gr17mkbxkxfx2v344al33abk8w"))))
     (build-system gnu-build-system)
     (native-inputs (list flex bison))
     (arguments
@@ -2459,7 +2510,7 @@ track changes in important system configuration files.")
 (define-public libcap-ng
   (package
     (name "libcap-ng")
-    (version "0.8.2")
+    (version "0.8.3")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2467,11 +2518,12 @@ track changes in important system configuration files.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "1sasp1n154aqy9fz0knlb966svm7xg1zjhg1vr4q839bgjvq7h2j"))))
+                "0ba9dfga7chwf6lf7a03x1a30fgdy2pb4r7pnn1jzfr2is2gdmmy"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
-       (list "--without-python")))
+       (list "--disable-static"
+             "--without-python")))
     (home-page "https://people.redhat.com/sgrubb/libcap-ng/")
     (synopsis "Library for more easily working with POSIX capabilities")
     (description
@@ -2529,42 +2581,6 @@ degradation and failure.")
      "fdupes is a program for identifying duplicate files residing within
 specified directories.")
     (license license:expat)))
-
-(define-public graphios
-  (package
-   (name "graphios")
-   (version "2.0.3")
-   (source
-    (origin
-      (method url-fetch)
-      (uri (pypi-uri "graphios" version))
-      (sha256
-       (base32
-        "1h87hvc315wg6lklbf4l7csd3n5pgljwrfli1p3nasdi0izgn66i"))))
-   (build-system python-build-system)
-   (arguments
-    ;; Be warned: Building with Python 3 succeeds, but the build process
-    ;; throws a syntax error that is ignored.
-    `(#:python ,python-2
-      #:phases
-      (modify-phases %standard-phases
-        (add-before 'build 'fix-setup.py
-          (lambda* (#:key outputs #:allow-other-keys)
-            ;; Fix hardcoded, unprefixed file names.
-            (let ((out (assoc-ref outputs "out")))
-              (substitute* '("setup.py")
-                (("/etc") (string-append out "/etc"))
-                (("/usr") out)
-                (("distro_ver = .*") "distro_ver = ''"))
-              #t))))))
-   (home-page "https://github.com/shawn-sterling/graphios")
-   (synopsis "Emit Nagios metrics to Graphite, Statsd, and Librato")
-   (description
-    "Graphios is a script to emit nagios perfdata to various upstream metrics
-processing and time-series systems.  It's currently compatible with Graphite,
-Statsd, Librato and InfluxDB.  Graphios can emit Nagios metrics to any number
-of supported upstream metrics systems simultaneously.")
-   (license license:gpl2+)))
 
 (define-public ansible-core
   (package
@@ -2706,15 +2722,15 @@ provides the following commands:
     (build-system python-build-system)
     (propagated-inputs
      (list ansible-core))
-    ;; The Ansible collections are found by ansible-core via PYTHONPATH; the
-    ;; following search path ensures that they are found even when Python is
-    ;; not present in the profile.
+    ;; The Ansible collections are found by ansible-core via the Python search
+    ;; path; the following search path ensures that they are found even when
+    ;; Python is not present in the profile.
     (native-search-paths
      ;; XXX: Attempting to use (package-native-search-paths python)
      ;; here would cause an error about python being an unbound
      ;; variable in the tests/cpan.scm test.
      (list (search-path-specification
-            (variable "PYTHONPATH")
+            (variable "GUIX_PYTHONPATH")
             (files (list "lib/python3.9/site-packages")))))
     (home-page "https://www.ansible.com/")
     (synopsis "Radically simple IT automation")
@@ -3017,10 +3033,17 @@ displays a table of current bandwidth usage by pairs of hosts.")
      (list openssl libgcrypt))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags
+     `(#:configure-flags
        (list "--localstatedir=/var"
              (string-append "--with-pkgconfigdir="
-                            (assoc-ref %outputs "out") "/lib/pkgconfig"))
+                            (assoc-ref %outputs "out") "/lib/pkgconfig")
+             (string-append "--with-libgcrypt-prefix="
+                            (assoc-ref %build-inputs "libgcrypt"))
+             ,@(if (%current-target-system)
+                 ;; Assume yes on pipes when cross compiling.
+                 `("ac_cv_file__dev_spx=yes"
+                   "x_ac_cv_check_fifo_recvfd=yes")
+                 '()))
        #:phases
        (modify-phases %standard-phases
          ;; XXX Many test series fail.  Some might be fixable, others do no-no
@@ -3056,13 +3079,13 @@ platform-specific methods.")
   (package
     (name "audit")
     (home-page "https://people.redhat.com/sgrubb/audit/")
-    (version "3.0.7")
+    (version "3.0.8")
     (source (origin
               (method url-fetch)
               (uri (string-append home-page "audit-" version ".tar.gz"))
               (sha256
                (base32
-                "15r5lrrkv2zj3dvpqssd46w61hmrq27y7c2rz33s20ck59iphk4b"))))
+                "04w9m9ffvi58z11i344wa1hji9ba68cdklrkizhiwf39mnwxkx5m"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags (list "--with-python=no"
@@ -3147,10 +3170,12 @@ rules is done with the @code{auditctl} utility.")
                    (,(python-path ndiff)))))))
          ;; These are the tests that do not require network access.
          (replace 'check
-           (lambda _ (invoke "make"
-                             "check-nse"
-                             "check-ndiff"
-                             "check-dns"))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "make"
+                       "check-nse"
+                       "check-ndiff"
+                       "check-dns")))))
        ;; Nmap can't cope with out-of-source building.
        #:out-of-source? #f))
     (home-page "https://nmap.org/")
@@ -3690,6 +3715,32 @@ used in screenshots to show other users what operating system or distribution
 you are running, what theme or icon set you are using, etc.")
     (license license:expat)))
 
+(define-public hyfetch
+  (package
+    (name "hyfetch")
+    (version "1.0.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "HyFetch" version))
+        (sha256
+          (base32 "1bfkycdhsyzkk6q24gdy1xwvyz0rvkr7xk2khbn74b3nk6kp83r2"))))
+    (build-system python-build-system)
+    (inputs (list python-hypy-utils python-typing-extensions))
+    (arguments `(#:phases (modify-phases %standard-phases
+                            (add-before 'build 'set-HOME
+                              (lambda _  ;; Tries to set files in .config
+                                (setenv "HOME" "/tmp"))))))
+    (home-page "https://github.com/hykilpikonna/HyFetch")
+    (synopsis "@code{neofetch} with pride flags <3")
+    (description "HyFetch is a command-line system information tool fork of
+@code{neofetch}.  HyFetch displays information about your system next to your
+OS logo in ASCII representation.  The ASCII representation is then colored in
+the pattern of the pride flag of your choice.  The main purpose of HyFetch is to
+be used in screenshots to show other users what operating system or distribution
+you are running, what theme or icon set you are using, etc.")
+    (license license:expat)))
+
 (define-public screenfetch
   (package
     (name "screenfetch")
@@ -3833,30 +3884,29 @@ information tool.")
 (define-public nnn
   (package
     (name "nnn")
-    (version "4.4")
+    (version "4.5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/jarun/nnn/releases/download/v"
                            version "/nnn-v" version ".tar.gz"))
        (sha256
-        (base32 "0lqn7pyy8c1vy29vn8ad4x23cw67cy1d21ghns6f3w9a1h7kyjp0"))))
+        (base32 "1aj9hzhpwxl2v1dlf3jpd3rp81z689dq8iycbipc0024dnyibp7s"))))
     (build-system gnu-build-system)
     (inputs
      (list ncurses readline))
     (native-inputs
      (list pkg-config))
     (arguments
-     `(#:tests? #f                      ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))           ; no configure script
-       #:make-flags
-       (list
-        (string-append "PREFIX="
-                       (assoc-ref %outputs "out"))
-        (string-append "CC=" ,(cc-for-target))
-        (string-append "PKG_CONFIG=" ,(pkg-config-for-target)))))
+     (list #:tests? #f                  ; no tests
+           #:make-flags
+           #~(list
+              (string-append "PREFIX=" #$output)
+              (string-append "CC=" #$(cc-for-target))
+              (string-append "PKG_CONFIG=" #$(pkg-config-for-target)))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))))       ; no configure script
     (home-page "https://github.com/jarun/nnn")
     (synopsis "Terminal file browser")
     (description
@@ -4058,7 +4108,7 @@ Python loading in HPC environments.")
   (let ((real-name "inxi"))
     (package
       (name "inxi-minimal")
-      (version "3.3.11-1")
+      (version "3.3.15-1")
       (source
        (origin
          (method git-fetch)
@@ -4067,7 +4117,7 @@ Python loading in HPC environments.")
                (commit version)))
          (file-name (git-file-name real-name version))
          (sha256
-          (base32 "1nk3q2xg0myykq1myasxhvhhr0vk8qv3m7pb3icw81r3ydasnls0"))))
+          (base32 "02zy94bd6ayfl9y7ka6gk32q254k49cbq3a6wgi31r2fcvybyrf7"))))
       (build-system trivial-build-system)
       (inputs
        `(("bash" ,bash-minimal)
@@ -4117,7 +4167,7 @@ Python loading in HPC environments.")
                              (string-append dir "/lib/perl5/site_perl"))
                             (_ ""))
                           %build-inputs)))))
-             (invoke "gzip" "inxi.1")
+             (invoke "gzip" "-n" "inxi.1")
              (install-file "inxi.1.gz"
                            (string-append %output "/share/man/man1"))))))
       (home-page "https://smxi.org/docs/inxi.htm")
@@ -4298,7 +4348,7 @@ Logitech Unifying Receiver.")
   (package
     (name "lynis")
     ;; Also update the ‘lynis-sdk’ input to the commit matching this release.
-    (version "3.0.6")
+    (version "3.0.8")
     (source
      (origin
        (method git-fetch)
@@ -4307,7 +4357,7 @@ Logitech Unifying Receiver.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1a1n8alcq6zil1rwk9940cg3x2nz3igcxfad99505pdh7ccz9324"))
+        (base32 "19kz1ffbbd431cdfw7fjcl5hjkks3gfkwk3w2zkwsxgyiky1gx3w"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -4323,13 +4373,20 @@ Logitech Unifying Receiver.")
            (method git-fetch)
            (uri (git-reference
                  (url "https://github.com/CISOfy/lynis-sdk")
-                 (commit "1c4e5f60a03e29a1525ca9ec17c793461058253d")))
+                 (commit "dffe5d352e4d6029ea95a84d50604ccd97cb8999")))
            (file-name (git-file-name "lynis-sdk" version))
            (sha256
-            (base32 "060k8k1q4c7nvrv3cwscxq8md2v75q3nrwwim1hgfw20divw3npy"))))))
+            (base32 "05qq4395x8f0kyl1ppm74npsf8sb3hhgz0ck4fya91sy6a26b4ja"))))))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (replace 'unpack
+           ;; XXX Remove after fixing <https://issues.guix.gnu.org/55287>.
+           (lambda* (#:key source #:allow-other-keys)
+             (mkdir "source")
+             (chdir "source")
+             (copy-recursively source "."
+                               #:keep-mtime? #t)))
          (replace 'configure
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (substitute* "lynis"
@@ -4465,7 +4522,7 @@ supplied by the user when logging in.")
 (define-public jc
   (package
     (name "jc")
-    (version "1.13.4")
+    (version "1.19.0")
     (source
      (origin
        ;; The PyPI tarball lacks the test suite.
@@ -4475,8 +4532,16 @@ supplied by the user when logging in.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rwvyyrdnw43pixp8h51rncq2inc9pbbj1j2191y5si00pjw34zr"))))
+        (base32 "021zk0y8kb6v3qf3hwfg8qjzzmrca039nz3fjywiy2njmbhr8hyi"))))
     (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               ;; XXX Guix's America/Los_Angeles time zone is somehow broken.
+               (add-before 'check 'hack-time-zone
+                 (lambda _
+                   (substitute* (find-files "tests" "^test.*\\.py$")
+                     (("America/Los_Angeles") "PST8PDT")))))))
     (propagated-inputs
      (list python-pygments python-ruamel.yaml python-xmltodict))
     (home-page "https://github.com/kellyjonbrazil/jc")
@@ -4624,49 +4689,40 @@ Netgear devices.")
 (define-public atop
   (package
     (name "atop")
-    (version "2.6.0")
+    (version "2.7.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.atoptool.nl/download/atop-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0wlg0n0h9vwpjp2dcb623jvvqck422jrjpq9mbpzg4hnawxcmhly"))))
+                "0kjwgf94skbrndv1krlmsrq34smzi3iwk73fbsnyw787gvqx4j6a"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; no test suite
+     (list
+       #:tests? #f              ; no test suite
        #:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             ;; The installer requires a choice between systemd or SysV.
-             "systemdinstall"
-             (string-append "DESTDIR=" (assoc-ref %outputs "out"))
-             (string-append "BINPATH=/bin")
-             (string-append "SBINPATH=/sbin")
-             (string-append "SYSDPATH=/etc/systemd/system")
-             (string-append "PMPATHD=/etc/systemd/system-sleep")
-             (string-append "MAN1PATH=/share/man/man1")
-             (string-append "MAN5PATH=/share/man/man5")
-             (string-append "MAN8PATH=/share/man/man8")
-             ;; Or else it tries to create /var/log/atop...
-             (string-append "LOGPATH="))
+       #~(list (string-append "CC=" #$(cc-for-target))
+               (string-append "DESTDIR=" #$output)
+               (string-append "SYSDPATH=/etc/systemd/system")
+               (string-append "PMPATHD=/etc/systemd/system-sleep")
+               ;; Or else it tries to create /var/log/atop...
+               (string-append "LOGPATH="))
        #:phases
-       (modify-phases %standard-phases
-         (delete 'configure) ; No ./configure script
-         (add-before 'build 'patch-build
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "Makefile"
-               ;; We don't need to chown things in the build environment.
-               (("chown.*$") "")
-               ;; We can't toggle the setuid bit in the build environment.
-               (("chmod 04711") "chmod 0711")
-               ;; Otherwise, it creates a blank configuration file as a "default".
-               (("touch.*DEFPATH)/atop") "")
-               (("chmod.*DEFPATH)/atop") ""))
-             #t)))))
+       #~(modify-phases %standard-phases
+           (delete 'configure)  ; No ./configure script
+           (add-before 'build 'patch-build
+             (lambda _
+               (substitute* "Makefile"
+                 ;; Don't use /usr as a prefix.
+                 (("/usr") "")
+                 ;; Otherwise, it creates a blank configuration file as a "default".
+                 (("touch.*DEFPATH)/atop") "")
+                 (("chmod.*DEFPATH)/atop") "")))))))
     (inputs
-     `(("ncurses" ,ncurses)
-       ("python" ,python-wrapper) ; for `atopgpud`
-       ("zlib" ,zlib)))
+     (list ncurses
+           python-wrapper       ; for `atopgpud`
+           zlib))
     (home-page "https://www.atoptool.nl/")
     (synopsis "Linux performance monitoring console")
     (description "Atop is an ASCII full-screen performance monitor for Linux
@@ -4677,6 +4733,8 @@ using colors, etc.  At regular intervals, it shows system-level activity related
 to the CPU, memory, swap, disks (including LVM) and network layers, and for
 every process (and thread) it shows e.g. the CPU utilization, memory growth,
 disk utilization, priority, username, state, and exit code.")
+    (properties
+     `((release-monitoring-url . "https://www.atoptool.nl/downloadatop.php")))
     (license license:gpl2+)))
 
 ;; TODO: Unvendor u-root (pkg: forth, golang, testutil).
@@ -4798,7 +4856,7 @@ the XMODEM/YMODEM/ZMODEM file transfer protocols.")
 (define-public nq
   (package
     (name "nq")
-    (version "0.4")
+    (version "0.5")
     (source
      (origin
        (method git-fetch)
@@ -4807,16 +4865,17 @@ the XMODEM/YMODEM/ZMODEM file transfer protocols.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0sdamjzvmf6cxhjmd1rjvn7zm6k10fp5n6vabyxd3yl30cgrxw2i"))))
+        (base32 "0szbndvwl6ghwjzb165s09977s0r1yq8h0ziknm0h6xndkcjspl3"))))
     (build-system gnu-build-system)
     (native-inputs
      (list perl))
     (arguments
-     `(#:make-flags (list (string-append "CC=" ,(cc-for-target))
-                          (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))
+     (list #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))))
     (synopsis "Unix command line queue utility")
     (description
      "@code{nq} can create very lightweight job queue systems which require no

@@ -11,11 +11,11 @@
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2014 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2019 Hartmut Goebel <h.goebel@goebel-consult.de>
-;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2021 lu hui <luhuins@163.com>
-;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
+;;; Copyright © 2021, 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -48,12 +48,14 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages bison)
   #:use-module (gnu packages c)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages emacs)
+  #:use-module (gnu packages flex)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages llvm)
@@ -65,7 +67,9 @@
   #:use-module (gnu packages perl-compression)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages readline)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages texinfo)
@@ -117,6 +121,13 @@ a major mode for Emacs for examining the flowcharts that it produces.")
                (base32
                 "0lr0l9kj2w3jilz9h9y4np9pf9i9ccpy6331lanki2fnz4z8ldvd"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'set-man-page-date
+                 ;; Avoid embedding the current date for reproducible builds
+                 (lambda _
+                   (setenv "MAN_PAGE_DATE" "2012-04-18"))))))
     (native-inputs
      (list texinfo autogen))
     (home-page "https://www.gnu.org/software/complexity/")
@@ -925,6 +936,88 @@ extensions over the standard utility.")
 source and header amalgamation in projects.")
       (license license:bsd-3))))
 
+(define-public cdecl
+  (package
+    (name "cdecl")
+    (version "2.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://www.ibiblio.org/pub/linux/devel/lang/c/cdecl-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "0dm98bp186r4cihli6fmcwzjaadgwl1z3b0zdxfik8h7hkqawk5p"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:make-flags
+       ,#~(list "LIBS=-lreadline"
+                (string-append "BINDIR=" #$output "/bin")
+                (string-append "MANDIR=" #$output "/share/man/man1"))
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure)  ; No configure script.
+         (add-after 'unpack 'fix-build
+           (lambda _
+             (substitute* "Makefile"
+               (("lex cdlex.l")
+                "flex cdlex.l"))
+             (substitute* "cdecl.c"
+               ;; Fix "error: conflicting types for ‘getline’".
+               (("char \\* getline\\(\\)")
+                "char * our_getline(void)")
+               (("char \\* getline \\(\\)")
+                "char * our_getline(void)")
+               (("line = getline\\(\\)")
+                "line = our_getline()")
+               ;; Fix "error: conflicting types for ‘getopt’".
+               (("int getopt\\(int,char \\*\\*,char \\*\\);")
+                "")
+               ;; Fix invalid use of "restrict" as a variable name.
+               (("i, j, restrict")
+                "i, j, restriction")
+               (("restrict =")
+                "restriction =")
+               ;; Fix "warning: implicit declaration of function ‘add_history’".
+               (("# include <readline/readline.h>" all)
+                (string-append all "\n# include <readline/history.h>"))
+               ;; Fix "warning: implicit declaration of function ‘dotmpfile_from_string’".
+               (("void setprogname\\(char \\*\\);" all)
+                (string-append all "\nint dotmpfile_from_string(char *);"))
+               ;; Fix "warning: implicit declaration of function ‘completion_matches’".
+               (("matches = completion_matches\\(text, command_completion\\);")
+                "matches = rl_completion_matches(text, command_completion);")
+               (("char \\* command_completion\\(char \\*, int\\);")
+                "char * command_completion(const char *, int);")
+               (("char \\* command_completion\\(char \\*text, int flag\\)")
+                "char * command_completion(const char *text, int flag)")
+               ;; Fix "warning: ‘CPPFunction’ is deprecated".
+               (("rl_attempted_completion_function = \\(CPPFunction \\*\\)attempt_completion;")
+                "rl_attempted_completion_function = (rl_completion_func_t *)attempt_completion;")
+               ;; Fix "warning: ‘Function’ is deprecated".
+               (("rl_completion_entry_function = \\(Function \\*\\)keyword_completion;")
+                "rl_completion_entry_function = (rl_compentry_func_t *)keyword_completion;"))
+             ;; Fix typo in man page.
+             (substitute* "cdecl.1"
+               (("<storage>\t::= auto \\| extern \\| register \\| auto")
+                "<storage>\t::= auto | extern | register | static"))))
+         (add-before 'install 'create-directories
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bin (string-append out "/bin"))
+                    (man (string-append out "/share/man/man1")))
+               (mkdir-p bin)
+               (mkdir-p man)))))
+       #:tests? #f))  ; No "check" target.
+    (native-inputs (list bison flex))
+    (inputs (list readline))
+    (home-page "https://www.ibiblio.org/pub/linux/devel/lang/c/")
+    (synopsis "Turn English phrases into C or C++ declarations and vice versa")
+    (description "@code{cdecl} is a program that turns English-like phrases into C
+declarations.  It can also translate C into pseudo-English.  It also handles
+type casts and C++.  It has command-line editing and history with the GNU
+Readline library.")
+    (license license:public-domain)))
+
 (define-public cscope
   (package
     (name "cscope")
@@ -953,3 +1046,30 @@ also be used for C++ code.
 
 Using cscope, you can easily search for where symbols are used and defined.")
     (license license:bsd-3)))
+
+(define-public xenon
+  (package
+    (name "xenon")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "xenon" version))
+       (sha256
+        (base32
+         "1f4gynjzfckm3rjfywwgz1c7icfx3zjqirf16aj73xv0c9ncpffj"))))
+    (build-system python-build-system)
+    (arguments (list #:tests? #f)) ;test suite not shipped with the PyPI archive
+    (inputs (list python-pyyaml python-radon python-requests))
+    (home-page "https://xenon.readthedocs.org/")
+    (synopsis "Monitor code metrics for Python on your CI server")
+    (description
+     "Xenon is a monitoring tool based on Radon.  It monitors code complexity.
+Ideally, @code{xenon} is run every time code is committed.  Through command
+line options, various thresholds can be set for the complexity of code.  It
+will fail (i.e.  it will exit with a non-zero exit code) when any of these
+requirements is not met.")
+    (license license:expat)))
+
+(define-public python-xenon
+  (deprecated-package "python-xenon" xenon))

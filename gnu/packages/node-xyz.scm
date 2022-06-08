@@ -391,7 +391,7 @@ if desired.")
     (home-page "https://github.com/isaacs/inherits")
     (synopsis "Browser-friendly object inheritance")
     (description "This package provides an alternative implementation of
-Node's @code{inherits} constructer that can be used in browsers, while
+Node's @code{inherits} constructor that can be used in browsers, while
 defaulting to Node's implementation otherwise.")
     (license license:isc)))
 

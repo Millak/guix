@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -34,7 +34,7 @@
 (define-public busybox
   (package
     (name "busybox")
-    (version "1.33.1")
+    (version "1.34.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -42,22 +42,20 @@
                     version ".tar.bz2"))
               (sha256
                (base32
-                "0a0dcvsh7nxnhxc5y73fky0z30i9p7r30qfidm2akn0n5fywdkhj"))))
+                "0jfm9fik7nv4w21zqdg830pddgkdjmplmna9yjn9ck1lwn4vsps1"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
          (add-before 'configure 'disable-timestamps
            (lambda _
-             (setenv "KCONFIG_NOTIMESTAMP" "1")
-             #t))
+             (setenv "KCONFIG_NOTIMESTAMP" "1")))
          (add-before 'configure 'disable-taskset
            ;; This feature fails its tests in the build environment,
            ;; was default 'n' until after 1.26.2.
            (lambda _
              (substitute* "util-linux/taskset.c"
-               (("default y") "default n"))
-             #t))
+               (("default y") "default n"))))
          (replace 'configure
            (lambda* (#:key make-flags #:allow-other-keys)
              (apply invoke "make" "defconfig" make-flags)))
@@ -65,8 +63,7 @@
            (lambda _
              (substitute* ".config"
                (("# CONFIG_INSTALL_NO_USR is not set")
-                "CONFIG_INSTALL_NO_USR=y"))
-             #t))
+                "CONFIG_INSTALL_NO_USR=y"))))
          (replace 'check
            (lambda* (#:key make-flags #:allow-other-keys)
              (substitute* '("testsuite/du/du-s-works"
@@ -123,7 +120,7 @@ any small or embedded system.")
 (define-public toybox
   (package
     (name "toybox")
-    (version "0.8.6")
+    (version "0.8.7")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -131,17 +128,18 @@ any small or embedded system.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "0jq3368jps6jg717ikzhlc6whml3k2s9xy69zpj4i0r35c5ck622"))))
+                "150lvp7hf9ndafvmr42kb8xi86hxjd2zj4binwwhgjw2dwrvy25m"))))
     (build-system gnu-build-system)
     (arguments
-     (list #:phases
+     (list #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "HOSTCC=gcc")
+                   (string-append "PREFIX=" #$output))
+           #:phases
            #~(modify-phases %standard-phases
-               (add-before 'configure 'set-environment-variables
-                 (lambda _
-                   (setenv "CC" #$(cc-for-target))
-                   (setenv "HOSTCC" (which "gcc"))))
                (replace 'configure
-                 (lambda _ (invoke "make" "defconfig")))
+                 (lambda* (#:key make-flags #:allow-other-keys)
+                   (apply invoke "make" "defconfig" make-flags)))
                (add-before 'check 'fix-or-skip-broken-tests
                  (lambda _
                    ;; Some tests expect $USER to magically be the current user.
@@ -151,11 +149,6 @@ any small or embedded system.")
                    ;; Delete tests that expect a root or 0 user to exist.
                    (substitute* "tests/id.test"
                      (("^testing .*[ \\(]root.*") ""))))
-               (replace 'install
-                 (lambda* (#:key outputs #:allow-other-keys)
-                   (invoke "make"
-                           (string-append "PREFIX=" #$output)
-                           "install")))
                (add-after 'install 'remove-usr-directory
                  (lambda* (#:key outputs #:allow-other-keys)
                    (delete-file-recursively (string-append #$output "/usr")))))

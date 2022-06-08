@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2017, 2019-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2021 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014 Ian Denhardt <ian@zenhack.net>
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
@@ -21,6 +21,7 @@
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -50,6 +51,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system trivial)
+  #:use-module ((guix search-paths) #:select ($SSL_CERT_DIR $SSL_CERT_FILE))
   #:use-module (gnu packages compression)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
@@ -494,15 +496,7 @@ OpenSSL for TARGET."
                                                      #$(package-version this-package)
                                                      "/misc")))))))
     (native-search-paths
-     (list (search-path-specification
-            (variable "SSL_CERT_DIR")
-            (separator #f)              ;single entry
-            (files '("etc/ssl/certs")))
-           (search-path-specification
-            (variable "SSL_CERT_FILE")
-            (file-type 'regular)
-            (separator #f)              ;single entry
-            (files '("etc/ssl/certs/ca-certificates.crt")))))
+     (list $SSL_CERT_DIR $SSL_CERT_FILE))
     (synopsis "SSL/TLS implementation")
     (description
      "OpenSSL is an implementation of SSL/TLS.")
@@ -531,7 +525,7 @@ OpenSSL for TARGET."
 (define-public openssl-3.0
   (package
     (inherit openssl)
-    (version "3.0.2")
+    (version "3.0.3")
     (source (origin
               (method url-fetch)
               (uri (list (string-append "https://www.openssl.org/source/openssl-"
@@ -544,7 +538,7 @@ OpenSSL for TARGET."
               (patches (search-patches "openssl-3.0-c-rehash-in.patch"))
               (sha256
                (base32
-                "0qyvvw8n97f0gs786l2dkxnmi3hs344mxplw7jp5cisdmp71rscq"))))
+                "02wcan5izwsxg6vl5fzkqq4icwi7cp4hrj327h05zppirsnph07f"))))
     (arguments
      (substitute-keyword-arguments (package-arguments openssl)
        ((#:phases phases '%standard-phases)
@@ -610,14 +604,14 @@ kilobytes of RAM.")
 (define-public libressl
   (package
     (name "libressl")
-    (version "3.3.3")
+    (version "3.3.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://openbsd/LibreSSL/"
                                   "libressl-" version ".tar.gz"))
               (sha256
                (base32
-                "0rihprcgxsydsbcqgd1952k2cfn4jmp7rlyp1c6sglfc6rdmcwd4"))))
+                "16jbzqj9wy2z10x8ppx63idw44k0d3wly0grpar0s6g1cn9q8a1z"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -633,6 +627,8 @@ kilobytes of RAM.")
                        ,(package-version this-package))
         ;; Provide a TLS-enabled netcat.
         "--enable-nc")))
+    (properties
+     `((release-monitoring-url . "https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/")))
     (home-page "https://www.libressl.org/")
     (synopsis "SSL/TLS implementation")
     (description "LibreSSL is a version of the TLS/crypto stack, forked from
@@ -1127,8 +1123,8 @@ derived from Mozilla's collection.")
 (define-public s2n
   (package
     (name "s2n")
-    ; Update only when updating aws-crt-cpp.
-    (version "1.1.0")
+    ;; Update only when updating aws-crt-cpp.
+    (version "1.3.10")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1137,14 +1133,17 @@ derived from Mozilla's collection.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "14dhdddlph36nshdkh0v33718hxjx5vxqxmkw7707393q0qrgipw"))))
+                "15fr6zwglw74x5qd090752kqn7n3cyi4gmz94ip45g3hflschxd3"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
-       '("-DBUILD_SHARED_LIBS=ON")))
-    (propagated-inputs
-     `(("openssl" ,openssl)
-       ("openssl:static" ,openssl "static")))
+       '("-DBUILD_SHARED_LIBS=ON"
+         ;; Remove in next update; see https://github.com/aws/s2n-tls/pull/3108
+         ;; Building with 'Werror' results in compilation error (even building
+         ;; with gcc) when replacing the aws-lc input with openssl.
+         "-DUNSAFE_TREAT_WARNINGS_AS_ERRORS=OFF")))
+    (propagated-inputs (list aws-lc))
+    (supported-systems '("x86_64-linux"))
     (synopsis "SSL/TLS implementation in C99")
     (description
      "This library provides a C99 implementation of SSL/TLS.  It is designed to
@@ -1188,28 +1187,27 @@ ciphers such as ChaCha20, Curve25519, NTRU, and Blake2b.")
     (license license:gpl2+))) ; Audit
 
 (define-public aws-lc
-  (let ((commit "d0a5455417d80e68581e197d95720c3fb25e3926")
-        (revision "0"))
-    (package
-      (name "aws-lc")
-      (version (git-version "0.0.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url (string-append "https://github.com/awslabs/" name))
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1ysj3x1f2lcdvwzyb9x3waykz1j7r21viv5z5vgc0ja9xv7znm9g"))))
-      (build-system cmake-build-system)
-      (arguments
-       '(#:tests? #f ; re-enable but with go and perl dependencies
-         #:configure-flags
-         '("-DBUILD_SHARED_LIBS=ON")))
-      (synopsis "General purpose cryptographic library")
-      (description "AWS libcrypto (aws-lc) contains portable C implementations
+  (package
+    (name "aws-lc")
+    ;; Update only when updating aws-crt-cpp.
+    (version "1.0.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url (string-append "https://github.com/awslabs/" name))
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "16y4iy2rqrmb7b1c394wyq7a5vbjb41599524my6b6q1vk1pi307"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:test-target "run_minimal_tests"
+       #:configure-flags
+       '("-DBUILD_SHARED_LIBS=ON")))
+    (synopsis "General purpose cryptographic library")
+    (description "AWS libcrypto (aws-lc) contains portable C implementations
 of algorithms needed for TLS and common applications, and includes optimized
 assembly versions for x86 and ARM.")
-      (home-page "https://github.com/awslabs/aws-lc")
-      (license license:asl2.0))))
+    (home-page "https://github.com/awslabs/aws-lc")
+    (license license:asl2.0)))

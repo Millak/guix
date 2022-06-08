@@ -27,6 +27,7 @@
   #:use-module (guix scripts)
   #:use-module (guix describe)
   #:use-module (guix profiles)
+  #:autoload   (guix colors) (supports-hyperlinks? hyperlink)
   #:autoload   (guix openpgp) (openpgp-format-fingerprint)
   #:use-module (git)
   #:autoload   (json builder) (scm->json-string)

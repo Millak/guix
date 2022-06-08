@@ -17,6 +17,8 @@
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2021 Calum Irwin <calumirwin1@gmail.com>
+;;; Copyright © 2022 Luis Henrique Gomes Higino <luishenriquegh2701@gmail.com>
+;;; Copyright © 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -62,6 +64,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages haskell-xyz)
+  #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
   #:use-module (gnu packages libbsd)
   #:use-module (gnu packages libreoffice)
@@ -1130,38 +1133,85 @@ systems that displays its buffer(s) as a hex dump.  The user interface is kept
 similar to vi/ex.")
     (license license:bsd-3)))
 
-(define-public virtaal
+(define-public edlin
   (package
-    (name "virtaal")
-    (version "0.7.1")
+    (name "edlin")
+    (version "2.20")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/freedos-edlin/freedos-edlin/"
+                           version "/edlin-" version ".tar.bz2"))
+       (sha256
+        (base32 "0cdv42ffminncwj5ph9lw0j7zpbv8l35acppy90wj7x1qm4qk6x8"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'make-read-only
+           (lambda _
+             ;; Remove executable bits.
+             (chmod "COPYING" #o444)
+             (chmod "edlin.htm" #o444)))
+         (add-after 'install 'install-doc
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((doc-dir (string-append (assoc-ref outputs "out")
+                                           "/share/doc/edlin-" ,version)))
+               (mkdir-p doc-dir)
+               (install-file "edlin.htm" doc-dir)))))))
+    (home-page "https://sourceforge.net/projects/freedos-edlin/")
+    (synopsis "The line editor of the FreeDOS operating system")
+    (description "The @code{edlin} program is a small line editor, written for
+FreeDOS as a functional clone of the old MS-DOS program edlin.")
+    (license license:gpl2+)))
+
+(define-public tree-sitter
+  (package
+    (name "tree-sitter")
+    (version "0.20.6")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://sourceforge/translate/Virtaal/"
-                                  version "/virtaal-" version ".tar.bz2"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/tree-sitter/tree-sitter")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0cyimjp3191qlmw6n0ipqdr9xr0cq4f6dqvz4rl9q31h6l3kywf9"))))
-    (build-system python-build-system)
+                "1z20518snyg0zp75qgs5bxmzjqws4dd19vnp6sya494za3qp5b6d"))
+              (modules '((guix build utils)))
+              (snippet '(begin
+                          ;; Remove bundled ICU parts
+                          (delete-file-recursively "lib/src/unicode")
+                          #t))))
+    (build-system gnu-build-system)
+    (inputs (list icu4c))
     (arguments
-     `(#:python ,python-2
-       #:use-setuptools? #f
-       #:tests? #f ;; Failing tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Set data file path to absolute store path.
-             (substitute* "virtaal/common/pan_app.py"
-               (("file_discovery\\.get_abs_data_filename.*")
-                (string-append "os.path.join('"
-                               (assoc-ref outputs "out")
-                               "/share', *path_parts)"))))))))
-    (inputs
-     (list python2-lxml python2-pygtk python2-simplejson
-           python2-translate-toolkit python2-pycurl))
-    (synopsis "Graphical translation tool")
-    (description "Virtaal is a powerful yet simple translation tool with an
-uncluttered user interface.  It supports a multitude of translation formats
-provided by the Translate Toolkit, including XLIFF and PO.")
-    (home-page "https://virtaal.translatehouse.org/")
-    (license license:gpl2+)))
+     (list #:phases
+           '(modify-phases %standard-phases
+              (delete 'configure))
+           #:tests? #f ; there are no tests for the runtime library
+           #:make-flags
+           #~(list (string-append "PREFIX="
+                                  #$output)
+                   (string-append "CC="
+                                  #$(cc-for-target)))))
+    (home-page "https://tree-sitter.github.io/tree-sitter/")
+    (synopsis "Incremental parsing system for programming tools")
+    (description
+     "Tree-sitter is a parser generator tool and an incremental parsing
+library.  It can build a concrete syntax tree for a source file and efficiently
+update the syntax tree as the source file is edited.
+
+Tree-sitter aims to be:
+
+@itemize
+@item General enough to parse any programming language
+@item Fast enough to parse on every keystroke in a text editor
+@item Robust enough to provide useful results even in the presence of syntax errors
+@item Dependency-free so that the runtime library (which is written in pure C)
+can be embedded in any application
+@end itemize
+
+This package includes the @code{libtree-sitter} runtime library.
+")
+    (license license:expat)))

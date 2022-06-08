@@ -227,9 +227,6 @@ the LZO library from your Python scripts thereby compressing ordinary
 Python strings.")
     (license license:gpl2+)))
 
-(define-public python2-lzo
-  (package-with-python2 python-lzo))
-
 (define-public python-lz4
   (package
     (name "python-lz4")
@@ -260,9 +257,6 @@ by Yann Collet.  The project contains bindings for the LZ4 block format and
 the LZ4 frame format.")
     (license license:bsd-3)))
 
-(define-public python2-lz4
-  (package-with-python2 python-lz4))
-
 (define-public python-lzstring
   (package
     (name "python-lzstring")
@@ -281,9 +275,6 @@ the LZ4 frame format.")
     (synopsis "String compression")
     (description "Lz-string is a string compressor library for Python.")
     (license license:expat)))
-
-(define-public python2-lzstring
-  (package-with-python2 python-lzstring))
 
 (define-public bitshuffle
   (package
@@ -392,30 +383,7 @@ install: libbitshuffle.so
     (description
      "This package provides a @code{pathlib}-compatible @code{Zipfile} object
 wrapper.  It provides a backport of the @code{Path} object.")
-    (properties `((python2-variant . ,(delay python2-zipp))))
     (license license:expat)))
-
-(define-public python2-zipp
-  (let ((base (package-with-python2 (strip-python2-variant python-zipp))))
-    (package/inherit
-     base
-     (native-inputs
-      `(("python-contextlib2" ,python2-contextlib2)
-        ("python-pathlib2" ,python2-pathlib2)
-        ("python-unittest2" ,python2-unittest2)
-        ,@(package-native-inputs base))))))
-
-;; This package is used to bootstrap pytest, via importlib-metadata.
-(define-public python2-zipp-bootstrap
-  (hidden-package
-   (package/inherit
-    python2-zipp
-    (name "python2-zipp-bootstrap")
-    (arguments
-     `(#:tests? #f
-       ,@(package-arguments python2-zipp)))
-    (native-inputs
-     `(("python-setuptools-scm" ,python2-setuptools-scm))))))
 
 (define-public python-zopfli
   (package

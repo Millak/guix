@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2018 Oleg Pykhalov <go.wigust@gmail.com>
-;;; Copyright © 2017, 2018, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2017-2018, 2020-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017, 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018 Christopher Baines <mail@cbaines.net>
 ;;;
@@ -154,19 +154,11 @@ HTTP-PORT."
 
           ;; Wait for nginx to be up and running.
           (test-assert "nginx running"
-            (marionette-eval
-             '(begin
-                (use-modules (gnu services herd))
-                (start-service 'nginx))
-             marionette))
+            (wait-for-file "/var/run/nginx/pid" marionette))
 
           ;; Wait for fcgiwrap to be up and running.
           (test-assert "fcgiwrap running"
-            (marionette-eval
-             '(begin
-                (use-modules (gnu services herd))
-                (start-service 'fcgiwrap))
-             marionette))
+            (wait-for-tcp-port 9000 marionette))
 
           ;; Make sure the PID file is created.
           (test-assert "PID file"
@@ -272,11 +264,7 @@ HTTP-PORT."
 
           ;; Wait for nginx to be up and running.
           (test-assert "nginx running"
-            (marionette-eval
-             '(begin
-                (use-modules (gnu services herd))
-                (start-service 'nginx))
-             marionette))
+            (wait-for-file "/var/run/nginx/pid" marionette))
 
           ;; Make sure Git test repository is created.
           (test-assert "Git test repository"
@@ -486,17 +474,7 @@ HTTP-PORT."
 
           ;; Wait for nginx to be up and running.
           (test-assert "nginx running"
-            (marionette-eval
-             '(begin
-                (use-modules (gnu services herd))
-                (start-service 'nginx))
-             marionette))
-
-          ;; Make sure the PID file is created.
-          (test-assert "PID file"
-            (marionette-eval
-             '(file-exists? "/var/run/nginx/pid")
-             marionette))
+            (wait-for-file "/var/run/nginx/pid" marionette))
 
           ;; Make sure Git test repository is created.
           (test-assert "Git test repository"

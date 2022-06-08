@@ -1,5 +1,5 @@
 /* GNU Guix --- Functional package management for GNU
-   Copyright (C) 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
+   Copyright (C) 2012-2019, 2021-2022 Ludovic Courtès <ludo@gnu.org>
    Copyright (C) 2006, 2010, 2012, 2014 Eelco Dolstra <e.dolstra@tudelft.nl>
 
    This file is part of GNU Guix.
@@ -434,6 +434,31 @@ listening_sockets (const std::list<std::string> &options)
   return result;
 }
 
+/* First file descriptor provided at startup using systemd-style socket
+   activation.  */
+#define SD_LISTEN_FDS_START 3
+
+/* Return a list of file descriptors of listening sockets provided following
+   the systemd "socket activation" protocol.  Return the empty list if we are
+   not being socket-activated.  */
+static std::vector<int>
+systemd_activation_sockets ()
+{
+  std::vector<int> result;
+
+  if (getEnv ("LISTEN_PID") == std::to_string (getpid ()))
+    {
+      unsigned int fdCount;
+      if (string2Int (getEnv ("LISTEN_FDS"), fdCount))
+	{
+	  for (unsigned int i = 0; i < fdCount; i++)
+	    result.push_back (SD_LISTEN_FDS_START + i);
+	}
+    }
+
+  return result;
+}
+
 
 int
 main (int argc, char *argv[])
@@ -494,7 +519,17 @@ main (int argc, char *argv[])
 
       argp_parse (&argp, argc, argv, 0, 0, 0);
 
-      auto sockets = listening_sockets (listen_options);
+      auto sockets = systemd_activation_sockets ();
+      if (sockets.empty ())
+	/* We were not "socket-activated" so open the sockets specified by
+	   LISTEN_OPTIONS.  */
+	sockets = listening_sockets (listen_options);
+      else
+	printMsg (lvlInfo,
+		  format (ngettext ("socket-activated with %1% socket",
+				    "socket-activated with %1% sockets",
+				    sockets.size ()))
+		  % sockets.size ());
 
       /* Effect all the changes made via 'settings.set'.  */
       settings.update ();
@@ -530,9 +565,6 @@ using `--build-users-group' is highly recommended\n"));
       printMsg (lvlDebug,
 		format ("automatic deduplication set to %1%")
 		% settings.autoOptimiseStore);
-
-      printMsg (lvlDebug,
-		format ("listening on `%1%'") % settings.nixDaemonSocketFile);
 
       run (sockets);
     }

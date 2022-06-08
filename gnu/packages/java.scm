@@ -9,11 +9,11 @@
 ;;; Copyright © 2017, 2019, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2019 Gábor Boskovits <boskovits@gmail.com>
 ;;; Copyright © 2018 Chris Marusich <cmmarusich@gmail.com>
-;;; Copyright © 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019, 2020, 2021 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Raghav Gururajan <raghavgururajan@disroot.org>
-;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Mike Gerwitz <mtg@gnu.org>
 ;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
@@ -45,6 +45,7 @@
   #:use-module (guix utils)
   #:use-module (guix gexp)
   #:use-module (guix build-system ant)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system maven)
   #:use-module (guix build-system trivial)
@@ -1768,7 +1769,7 @@ new Date();"))
 (define-public openjdk11
   (package
     (name "openjdk")
-    (version "11.0.13")
+    (version "11.0.15")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://openjdk-sources.osci.io/openjdk11/openjdk-"
@@ -1776,7 +1777,7 @@ new Date();"))
               (file-name (string-append name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "0xavz7msaadprq65p5bhp6sxcyp12p0zlbhb3aaz0cvp21c9pdm9"))
+                "0di91nnms2iq1svgq72r5y17am17r4vh2lq43k0bkcwpc84d6nd8"))
               (modules '((guix build utils)))
               (snippet
                `(begin
@@ -1819,8 +1820,8 @@ new Date();"))
            (lambda _
              ;; This file was "fixed" by patch-source-shebangs, but it requires
              ;; this exact first line.
-             (substitute* "make/data/blacklistedcertsconverter/blacklisted.certs.pem"
-               (("^#!.*") "#! java BlacklistedCertsConverter SHA-256\n"))
+             (substitute* "make/data/blockedcertsconverter/blocked.certs.pem"
+               (("^#!.*") "#! java BlockedCertsConverter SHA-256\n"))
              #t))
          (add-after 'unpack 'patch-jni-libs
            ;; Hardcode dynamically loaded libraries.
@@ -2054,6 +2055,16 @@ new Date();"))
                `(begin
                   (for-each delete-file (find-files "." ".*.(bin|exe|jar)$"))
                   #t))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments openjdk11)
+       ((#:phases phases)
+        `(modify-phases ,phases
+           (replace 'fix-java-shebangs
+             (lambda _
+               ;; This file was "fixed" by patch-source-shebangs, but it requires
+               ;; this exact first line.
+               (substitute* "make/data/blacklistedcertsconverter/blacklisted.certs.pem"
+                 (("^#!.*") "#! java BlacklistedCertsConverter SHA-256\n"))))))))
     (inputs
      `(("alsa-lib" ,alsa-lib)
        ("cups" ,cups)
@@ -2185,7 +2196,12 @@ new Date();"))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "168cr08nywp0q3vyj8njkhsmmnyd8rz9r58hk4xhzdzc6bdfkl1i"))))
+                "168cr08nywp0q3vyj8njkhsmmnyd8rz9r58hk4xhzdzc6bdfkl1i"))
+              (patches
+                (search-patches "openjdk-15-xcursor-no-dynamic.patch"))))
+    (inputs
+     (cons `("libxcursor" ,libxcursor) ; for our patch to work
+           (package-inputs openjdk14)))
     (native-inputs
      `(("autoconf" ,autoconf)
        ("openjdk14:jdk" ,openjdk14 "jdk")
@@ -2208,7 +2224,9 @@ new Date();"))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ggddsbsar4dj2fycfqqqagqil7prhb30afvq6933rz7pa9apm2f"))))
+                "1ggddsbsar4dj2fycfqqqagqil7prhb30afvq6933rz7pa9apm2f"))
+              (patches
+                (search-patches "openjdk-15-xcursor-no-dynamic.patch"))))
     (native-inputs
      `(("autoconf" ,autoconf)
        ("openjdk15:jdk" ,openjdk15 "jdk")
@@ -2234,7 +2252,7 @@ new Date();"))
   (package
     (inherit openjdk16)
     (name "openjdk")
-    (version "17.0.1")
+    (version "17.0.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2243,7 +2261,9 @@ new Date();"))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1l1jgbz8q7zq66npfg88r0l5xga427vrz35iys09j44b6qllrldd"))))
+                "0slmd6ww947gxpp4yr2wmr5z975bg86qh7zqfp2radf2q77ql65b"))
+              (patches
+                (search-patches "openjdk-15-xcursor-no-dynamic.patch"))))
     (native-inputs
      `(("autoconf" ,autoconf)
        ("openjdk16:jdk" ,openjdk16 "jdk")
@@ -8609,6 +8629,38 @@ actual rendering.")
     (description "This package contains the runtime library used with generated
 sources by ANTLR.")
     (license license:bsd-3)))
+
+(define-public java-antlr4-runtime-cpp
+  (package
+    (inherit java-antlr4-runtime)
+    (name "java-antlr4-runtime-cpp")
+    (outputs '("out" "static"))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      ;; TODO: try to run the tests under
+      ;; runtime-testsuite/test/org/antlr/v4/test/runtime/cpp with antlr4.
+      #:tests? #f                       ;no CMake test target
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "runtime/Cpp")))
+          (add-after 'install 'move-static-library
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((static (assoc-ref outputs "static"))
+                    (libantlr4-runtime.a (search-input-file
+                                          outputs "lib/libantlr4-runtime.a")))
+                (mkdir-p (string-append static "/lib"))
+                (rename-file
+                 libantlr4-runtime.a
+                 (string-append static "/lib/"
+                                (basename libantlr4-runtime.a)))))))))
+    (native-inputs (list pkg-config))
+    (inputs (list `(,util-linux "lib"))) ;libuuid
+    (synopsis "ANTL C++ runtime library")
+    (description "This package contains the C++ runtime library used with C++
+generated sources by ANTLR.")))
 
 (define-public antlr4
   (package

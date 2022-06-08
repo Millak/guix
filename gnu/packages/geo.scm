@@ -13,7 +13,7 @@
 ;;; Copyright © 2019, 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Christopher Baines <mail@cbaines.net>
-;;; Copyright © 2020, 2021 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2020, 2021, 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Clément Lassieur <clement@lassieur.org>
@@ -715,9 +715,14 @@ pyproj, Rtree, and Shapely.")
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
                (invoke "pytest"
-                       ; Disable test that fails with
-                       ; NotImplementedError in pandas.
-                       "-k" "not test_fillna_no_op_returns_copy"
+                       ; Disable tests that fail due to incompatibilities
+                       ; with our pandas version.
+                       "-k"
+                       (string-append
+                         "not test_getitem_invalid"
+                         " and not test_value_counts"
+                         " and not test_setitem_invalid"
+                         " and not test_insert_invalid")
                        ; Disable tests that require internet access.
                        "-m" "not web")))))))
     (propagated-inputs
@@ -733,6 +738,71 @@ high-level interface to multiple geometries to Shapely.  GeoPandas
 enables you to easily do operations in Python that would otherwise
 require a spatial database such as PostGIS.")
     (license license:bsd-3)))
+
+(define-public python-osmnx
+  (package
+    (name "python-osmnx")
+    (version "1.1.2")
+    (source
+     (origin
+       ; Fetch from github as the pypi package is missing the tests dir.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gboeing/osmnx")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1n8qjn184p5a2s3j6x6iyc1i7p3l3xnbqqxm6ajwgwv6j5fw1d5a"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               ; TODO: Disable network tests
+               (invoke "pytest" "tests"
+                       "-k"
+                       (string-append
+                         ;; The following tests require network access.
+                         "not test_geocode_to_gdf"
+                         " and not test_stats"
+                         " and not test_osm_xml"
+                         " and not test_elevation"
+                         " and not test_routing"
+                         " and not test_plots"
+                         " and not test_find_nearest"
+                         " and not test_api_endpoints"
+                         " and not test_graph_save_load"
+                         " and not test_graph_from_functions"
+                         " and not test_geometries"))))))))
+    (propagated-inputs
+      (list python-folium
+            python-geopandas
+            python-matplotlib
+            python-networkx
+            python-numpy
+            python-pandas
+            python-pyproj
+            python-requests
+            python-rtree
+            python-shapely))
+    (native-inputs
+      (list python-numpy python-pytest))
+    (home-page "https://github.com/gboeing/osmnx")
+    (synopsis
+      "Retrieve, model, analyze, and visualize OpenStreetMap street networks")
+    (description
+      "OSMnx is a Python library that lets you download geospatial data
+from OpenStreetMap and model, project, visualize, and analyze real-world
+street networks and any other geospatial geometries.  You can download
+and model walkable, drivable, or bikeable urban networks with a single
+line of Python code then easily analyze and visualize them.  You can
+just as easily download and work with other infrastructure types,
+amenities/points of interest, building footprints, elevation data,
+street bearings/orientations, and speed/travel time.")
+    (license license:expat)))
 
 (define-public mapnik
   (package
@@ -1047,14 +1117,14 @@ Shapely capabilities
 (define-public postgis
   (package
     (name "postgis")
-    (version "3.2.0")
+    (version "3.2.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.osgeo.org/postgis/source/postgis-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1zbwa15rsvr05rmcidk21q3amndd0q4df4psp3zhqz4lqraf3fbs"))))
+                "0gl9d6xy2an82ldb9sixz5blyngjryq8m3509fr38ffawvfniazv"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f
@@ -1481,27 +1551,28 @@ persisted.
 (define-public python-rtree
   (package
     (name "python-rtree")
-    (version "0.9.7")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Rtree" version))
        (sha256
-        (base32 "0gna530vy6rh76035cqh7i2lx199cvxjrzjczg9rm6k96k5751xy"))))
+        (base32 "10lnhf67c9pb0yisxdqmb52dy6lj1za1h9d4p69v0ihk2a138j6h"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'find-libspatialindex
            (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "SPATIALINDEX_C_LIBRARY"
-                     (string-append (assoc-ref inputs "libspatialindex")
-                                    "/lib/libspatialindex.so"))))
+             (let ((libspatialindex (assoc-ref inputs "libspatialindex")))
+               (substitute* "rtree/finder.py"
+                 (("find_library\\(\"spatialindex_c\"\\)")
+                  (string-append  "\"" libspatialindex
+                                  "/lib/libspatialindex_c.so\""))))))
          (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+           (lambda* (#:key outputs tests? #:allow-other-keys)
              (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest")))))))
+                 (invoke "pytest")))))))
     (native-inputs
      (list python-numpy python-pytest python-wheel))
     (inputs

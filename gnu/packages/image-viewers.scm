@@ -23,6 +23,7 @@
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 dissent <disseminatedissent@protonmail.com>
+;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -97,7 +98,7 @@
 (define-public ytfzf
   (package
     (name "ytfzf")
-    (version "1.2.0")
+    (version "2.3")
     (home-page "https://github.com/pystardust/ytfzf")
     (source
      (origin
@@ -108,128 +109,32 @@
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00d416qb4109pm77ikhnmds8qng90ni2jan9kdnxz7b6sh5f61nz"))
-       (patches
-        (search-patches
-         ;; Pre-requisite for 'patch-script' phase.
-         "ytfzf-programs.patch"
-         ;; Disables self-update.
-         "ytfzf-updates.patch"))))
+        (base32 "01prcg6gfwy1r49v92pkzxay9iadqqhpaxvn8jmij2jm5l50iynd"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ;no test suite
-       #:modules
-       ((guix build gnu-build-system)
-        (guix build utils)
-        (srfi srfi-26))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-script
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bash (assoc-ref inputs "bash"))
-                    (catimg (assoc-ref inputs "catimg"))
-                    (chafa (assoc-ref inputs "chafa"))
-                    (coreutils (assoc-ref inputs "coreutils"))
-                    (curl (assoc-ref inputs "curl"))
-                    (dmenu (assoc-ref inputs "dmenu"))
-                    (fzf (assoc-ref inputs "fzf"))
-                    (gawk (assoc-ref inputs "gawk"))
-                    (grep (assoc-ref inputs "grep"))
-                    (jp2a (assoc-ref inputs "jp2a"))
-                    (jq (assoc-ref inputs "jq"))
-                    (libnotify (assoc-ref inputs "libnotify"))
-                    (mpv (assoc-ref inputs "mpv"))
-                    (ncurses (assoc-ref inputs "ncurses"))
-                    (python-ueberzug (assoc-ref inputs "python-ueberzug"))
-                    (sed (assoc-ref inputs "sed"))
-                    (util-linux (assoc-ref inputs "util-linux"))
-                    (youtube-dl (assoc-ref inputs "youtube-dl")))
-               ;; Use correct $PREFIX path.
-               (substitute* "Makefile"
-                 (("/usr/bin")
-                  (string-append out "/bin")))
-               ;; Use absolute path for referenced programs.
-               (substitute* "ytfzf"
-                 (("@awk@")
-                  (string-append gawk "/bin/awk"))
-                 (("@cat@")
-                  (string-append coreutils "/bin/cat"))
-                 (("@catimg@")
-                  (string-append catimg "/bin/catimg"))
-                 (("@chafa@")
-                  (string-append chafa "/bin/chafa"))
-                 (("@chmod@")
-                  (string-append coreutils "/bin/chmod"))
-                 (("@column@")
-                  (string-append util-linux "/bin/column"))
-                 (("@cp@")
-                  (string-append coreutils "/bin/cp"))
-                 (("@cut@")
-                  (string-append coreutils "/bin/cut"))
-                 (("@curl@")
-                  (string-append curl "/bin/curl"))
-                 (("@date@")
-                  (string-append coreutils "/bin/date"))
-                 (("@dmenu@")
-                  (string-append dmenu "/bin/dmenu"))
-                 (("@fzf@")
-                  (string-append fzf "/bin/fzf"))
-                 (("@grep@")
-                  (string-append grep "/bin/grep"))
-                 (("@head@")
-                  (string-append coreutils "/bin/head"))
-                 (("@jp2a@")
-                  (string-append jp2a "/bin/jp2a"))
-                 (("@jq@")
-                  (string-append jq "/bin/jq"))
-                 (("@mkdir@")
-                  (string-append coreutils "/bin/mkdir"))
-                 (("@mkfifo@")
-                  (string-append coreutils "/bin/mkfifo"))
-                 (("@mpv@")
-                  (string-append mpv "/bin/mpv"))
-                 (("@nohup@")
-                  (string-append coreutils "/bin/nohup"))
-                 (("@notify-send@")
-                  (string-append libnotify "/bin/notify-send"))
-                 (("@rm@")
-                  (string-append coreutils "/bin/rm"))
-                 (("@sed@")
-                  (string-append sed "/bin/sed"))
-                 (("@seq@")
-                  (string-append coreutils "/bin/seq"))
-                 (("@setsid@")
-                  (string-append util-linux "/bin/setsid"))
-                 (("@sh@")
-                  (string-append bash "/bin/sh"))
-                 (("@sleep@")
-                  (string-append coreutils "/bin/sleep"))
-                 (("@sort@")
-                  (string-append coreutils "/bin/sort"))
-                 (("@tput@")
-                  (string-append ncurses "/bin/tput"))
-                 (("@tr@")
-                  (string-append coreutils "/bin/tr"))
-                 (("@ueberzug@")
-                  (string-append python-ueberzug "/bin/ueberzug"))
-                 (("@uname@")
-                  (string-append coreutils "/bin/uname"))
-                 (("@uniq@")
-                  (string-append coreutils "/bin/uniq"))
-                 (("@wc@")
-                  (string-append coreutils "/bin/wc"))
-                 (("@youtube-dl@")
-                  (string-append youtube-dl "/bin/youtube-dl"))))
-             (substitute* "ytfzf"
-               ;; Generate temporary files in the user-specific path,
-               ;; to avoid issues in multi-user systems.
-               (("/tmp/ytfzf")
-                "$HOME/.cache/ytfzf")
-               ;; Report errors to Guix.
-               (("report at: https://github.com/pystardust/ytfzf")
-                "report at: https://issues.guix.gnu.org"))))
-         (delete 'configure))))         ;no configure script
+     (list
+      #:tests? #f                       ;no test suite
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'install 'install-addons
+            (lambda _
+              (invoke "make" "addons"
+                      (string-append "PREFIX=" #$output))))
+          (add-after 'install 'wrap-program
+            (lambda* (#:key inputs #:allow-other-keys)
+              (wrap-program (string-append #$output "/bin/ytfzf")
+                `("PATH" ":" prefix
+                  ,(map (lambda (input)
+                          (string-append (assoc-ref inputs input) "/bin"))
+                        '("bash" "catimg" "chafa" "coreutils" "curl"
+                          "dmenu" "fzf" "gawk" "grep" "jp2a" "jq"
+                          "libnotify" "mpv" "ncurses" "python-ueberzug"
+                          "sed" "util-linux" "youtube-dl")))
+                `("YTFZF_SYSTEM_ADDON_DIR" ":" =
+                  ,(list (string-append #$output "/share/ytfzf/addons")))))))))
     (inputs
      (list bash
            catimg
@@ -662,91 +567,71 @@ imaging.  It supports several HDR and LDR image formats, and it can:
 
 ;; CBR and RAR are currently unsupported, due to non-free dependencies.
 (define-public mcomix
-  ;; Official mcomix hasn't been updated since 2016, it's broken with
-  ;; python-pillow 6+ and only supports Python 2.  We use fork instead.
-  (let ((commit "fea55a7a9369569eefed72209eed830409c4af98"))
-    (package
-      (name "mcomix")
-      (version (git-version "1.2.1" "1" commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/multiSnow/mcomix3")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "05zl0dkjwbdcm2zlk4nz9w33amlqj8pbf32a8ymshc2356fqhhi5"))))
-      (build-system python-build-system)
-      (inputs
-       (list p7zip python-pillow python-pygobject python-pycairo))
-      (arguments
-       `(#:tests? #f                    ; FIXME: How do we run tests?
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'configure
-             (lambda* (#:key inputs #:allow-other-keys)
-               (let ((p7zip (assoc-ref inputs "p7zip")))
-                 ;; insert absolute path to 7z executable
-                 (substitute* "mcomix/mcomix/archive/sevenzip_external.py"
-                   (("_7z_executable = -1")
-                    (string-append "_7z_executable = u'" p7zip "/bin/7z'"))))
-               #t))
-           (replace 'build
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (pyver ,(version-major+minor (package-version python)))
-                      (lib (string-append out "/lib/python" pyver)))
-                 (invoke (which "python") "installer.py" "--srcdir=mcomix"
-                         (string-append "--target=" lib))
-                 (rename-file (string-append lib "/mcomix")
-                              (string-append lib "/site-packages"))
-                 #t)))
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (share (string-append out "/share"))
-                      (bin (string-append out "/bin"))
-                      (pyver ,(version-major+minor (package-version python)))
-                      (lib (string-append out "/lib/python" pyver "/site-packages")))
-                 (mkdir-p bin)
-                 (rename-file (string-append lib "/mcomixstarter.py")
-                              (string-append bin "/mcomix"))
-                 (rename-file (string-append lib "/comicthumb.py")
-                              (string-append bin "/comicthumb"))
-                 (install-file "mime/mcomix.desktop"
-                               (string-append share "/applications"))
-                 (install-file "mime/mcomix.appdata.xml"
-                               (string-append share "/metainfo"))
-                 (install-file "mime/mcomix.xml"
-                               (string-append share "/mime/packages"))
-                 (install-file "mime/comicthumb.thumbnailer"
-                               (string-append share "/thumbnailers"))
-                 (install-file "man/mcomix.1" (string-append share "/man/man1"))
-                 (install-file "man/comicthumb.1" (string-append share "/man/man1"))
-                 (for-each
-                  (lambda (size)
-                    (install-file
-                     (format #f "mcomix/mcomix/images/~sx~s/mcomix.png" size size)
-                     (format #f "~a/icons/hicolor/~sx~s/apps/" share size size))
-                    (for-each
-                     (lambda (ext)
-                       (install-file
-                        (format #f "mime/icons/~sx~s/application-x-~a.png" size size ext)
-                        (format #f "~a/icons/hicolor/~sx~s/mimetypes/"
-                                share size size)))
-                     '("cb7" "cbr" "cbt" "cbz")))
-                  '(16 22 24 32 48))
-                 #t))))))
-      (home-page "https://sourceforge.net/p/mcomix/wiki/Home/")
-      (synopsis "Image viewer for comics")
-      (description "MComix is a customizable image viewer that specializes as
+  (package
+    (name "mcomix")
+    (version "2.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/mcomix/MComix-" version "/"
+                           "mcomix-" version ".tar.gz"))
+       (sha256
+        (base32
+         "187ca815vxb2in1ryvfiaf1zapi0bc9jxdac3c1bky0kr6x7xyap"))))
+    (build-system python-build-system)
+    (inputs
+     (list p7zip python python-pillow python-pygobject python-pycairo gtk+))
+    (arguments
+     (list
+      #:imported-modules `(,@%python-build-system-modules
+                           (guix build glib-or-gtk-build-system))
+      #:modules '((guix build python-build-system)
+                  ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-source
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "mcomix/archive/sevenzip_external.py"
+                ;; Ensure that 7z is found by hardcoding its absolute path.
+                (("_7z_executable = -1")
+                 (format #f "_7z_executable = ~s"
+                         (search-input-file inputs "/bin/7z"))))
+              (substitute* "mcomix/image_tools.py"
+                (("assert name not in supported_formats_gdk")
+                 "if name in supported_formats_gdk: continue"))))
+         (add-after 'install 'install-data
+           (lambda* (#:key outputs #:allow-other-keys)
+             (with-directory-excursion "mcomix"
+               (for-each
+                (lambda (subdir)
+                  (copy-recursively
+                   subdir
+                   (string-append
+                    (assoc-ref outputs "out")
+                    "/lib/python"
+                    #$(version-major+minor
+                       (package-version (this-package-input "python")))
+                    "/site-packages/mcomix/" subdir)))
+                '("images" "messages")))))
+         (add-after 'glib-or-gtk-compile-schemas 'glib-or-gtk-wrap
+           (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
+         (add-after 'wrap 'gi-wrap
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
+               (for-each
+                (lambda (prog)
+                  (wrap-program prog
+                    `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))
+                (list (string-append bin "/mcomix")))))))))
+    (home-page "https://sourceforge.net/p/mcomix/wiki/Home/")
+    (synopsis "Image viewer for comics")
+    (description "MComix is a customizable image viewer that specializes as
 a comic and manga reader.  It supports a variety of container formats
 including CBZ, CB7, CBT, LHA.
 
 For PDF support, install the @emph{mupdf} package.")
-      (license license:gpl2+))))
+    (license license:gpl2+)))
 
 (define-public qview
   (package

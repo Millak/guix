@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -45,6 +45,13 @@
             rottlog-configuration?
             rottlog-service
             rottlog-service-type
+
+            log-cleanup-service-type
+            log-cleanup-configuration
+            log-cleanup-configuration?
+            log-cleanup-configuration-directory
+            log-cleanup-configuration-expiry
+            log-cleanup-configuration-schedule
 
             unattended-upgrade-service-type
             unattended-upgrade-configuration
@@ -95,7 +102,9 @@
                                      read)))
                           (kill pid SIGHUP))))
         (log-rotation
-         (files '("/var/log/guix-daemon.log")))))
+         (files '("/var/log/guix-daemon.log"))
+         (options '("rotate 4"                    ;don't keep too many of them
+                    "storefile @FILENAME.@COMP_EXT")))))
 
 (define (log-rotation->config rotation)
   "Return a string-valued gexp representing the rottlog configuration snippet
@@ -190,6 +199,50 @@ Old log files are removed or compressed according to the configuration.")
               (rotations (append (rottlog-rotations config)
                                  rotations)))))
    (default-value (rottlog-configuration))))
+
+
+;;;
+;;; Build log removal.
+;;;
+
+(define-record-type* <log-cleanup-configuration>
+  log-cleanup-configuration make-log-cleanup-configuration
+  log-cleanup-configuration?
+  (directory log-cleanup-configuration-directory) ;string
+  (expiry    log-cleanup-configuration-expiry     ;integer (seconds)
+             (default (* 6 30 24 3600)))
+  (schedule  log-cleanup-configuration-schedule   ;string or gexp
+             (default "30 12 01,08,15,22 * *")))
+
+(define (log-cleanup-program directory expiry)
+  (program-file "delete-old-logs"
+                (with-imported-modules '((guix build utils))
+                  #~(begin
+                      (use-modules (guix build utils))
+
+                      (let* ((now  (car (gettimeofday)))
+                             (logs (find-files #$directory
+					       (lambda (file stat)
+					         (> (- now (stat:mtime stat))
+						    #$expiry)))))
+                        (format #t "deleting ~a log files from '~a'...~%"
+                                (length logs) #$directory)
+                        (for-each delete-file logs))))))
+
+(define (log-cleanup-mcron-jobs configuration)
+  (match-record configuration <log-cleanup-configuration>
+    (directory expiry schedule)
+    (list #~(job #$schedule
+                 #$(log-cleanup-program directory expiry)))))
+
+(define log-cleanup-service-type
+  (service-type
+   (name 'log-cleanup)
+   (extensions
+    (list (service-extension mcron-service-type
+                             log-cleanup-mcron-jobs)))
+   (description
+    "Periodically delete old log files.")))
 
 
 ;;;

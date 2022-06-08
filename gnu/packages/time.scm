@@ -119,9 +119,6 @@ expressions.")
      "This library provides a timezone database for Python.")
     (license expat)))
 
-(define-public python2-tzdata
-  (package-with-python2 python-pytzdata))
-
 (define-public python-pytz
   (package
     (name "python-pytz")
@@ -142,9 +139,6 @@ allows accurate and cross platform timezone calculations using Python 2.4 or
 higher.  It also solves the issue of ambiguous times at the end of daylight
 saving time.  Almost all of the Olson timezones are supported.")
     (license expat)))
-
-(define-public python2-pytz
-  (package-with-python2 python-pytz))
 
 (define-public python-pendulum
   (package
@@ -232,9 +226,6 @@ datetime module, available in Python 2.3+.")
     ;; BSD-3 still; but all new code is dual licensed (the user can choose).
     (license (list bsd-3 asl2.0))))
 
-(define-public python2-dateutil
-  (package-with-python2 python-dateutil))
-
 (define-public python-parsedatetime
   (package
     (name "python-parsedatetime")
@@ -256,9 +247,6 @@ datetime module, available in Python 2.3+.")
     (description
      "Parse human-readable date/time text.")
     (license asl2.0)))
-
-(define-public python2-parsedatetime
-  (package-with-python2 python-parsedatetime))
 
 (define-public python-ciso8601
   (package
@@ -347,9 +335,6 @@ under several distributions that's hard or impossible to figure out.")
 ISO 8601 dates, time and duration.")
     (license bsd-3)))
 
-(define-public python2-isodate
-  (package-with-python2 python-isodate))
-
 (define-public python-iso8601
   (package
     (name "python-iso8601")
@@ -377,19 +362,6 @@ ISO 8601 dates, time and duration.")
     (properties `((python2-variant . ,(delay python2-iso8601))))
     (license expat)))
 
-(define-public python2-iso8601
-  (let ((base (package-with-python2 (strip-python2-variant python-iso8601))))
-    (package
-      (inherit base)
-      (version "0.1.16")
-      (source
-       (origin
-         (method url-fetch)
-         (uri (pypi-uri "iso8601" version))
-         (sha256
-          (base32
-           "0ny8dlycapxr8n2m13jxy0r7kbqvgypfshb6y7l981c0rivjylrn")))))))
-
 (define-public python-monotonic
   (package
     (name "python-monotonic")
@@ -409,9 +381,6 @@ ISO 8601 dates, time and duration.")
      "This module provides a @code{monotonic()} function which returns the
 value (in fractional seconds) of a clock which never goes backwards.")
     (license asl2.0)))
-
-(define-public python2-monotonic
-  (package-with-python2 python-monotonic))
 
 (define-public python-pyrfc3339
   (package
@@ -434,9 +403,6 @@ value (in fractional seconds) of a clock which never goes backwards.")
     (description "Python library for generating and parsing RFC 3339-compliant
 timestamps.")
     (license expat)))
-
-(define-public python2-pyrfc3339
-  (package-with-python2 python-pyrfc3339))
 
 (define-public python-arrow
   (package
@@ -494,9 +460,6 @@ datetime type.")
     (description
      "This package contains a library for parsing ISO 8601 datetime strings.")
     (license bsd-3)))
-
-(define-public python2-aniso8601
-  (package-with-python2 python-aniso8601))
 
 (define-public datefudge
   (package

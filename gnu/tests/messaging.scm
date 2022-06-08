@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2018 Clément Lassieur <clement@lassieur.org>
-;;; Copyright © 2017, 2018, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2017-2018, 2021-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -196,25 +196,6 @@
              '(begin
                 (use-modules (gnu services herd))
                 (start-service 'bitlbee))
-             marionette))
-
-          (test-equal "valid PID"
-            #$(file-append bitlbee "/sbin/bitlbee")
-            (marionette-eval
-             '(begin
-                (use-modules (srfi srfi-1)
-                             (gnu services herd))
-
-                (let ((bitlbee
-                       (find (lambda (service)
-                               (equal? '(bitlbee)
-                                       (live-service-provision service)))
-                             (current-services))))
-                  (and (pk 'bitlbee-service bitlbee)
-                       (let ((pid (live-service-running bitlbee)))
-                         (readlink (string-append "/proc/"
-                                                  (number->string pid)
-                                                  "/exe"))))))
              marionette))
 
           (test-assert "connect"

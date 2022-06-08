@@ -2,7 +2,7 @@
 ;;; Copyright © 2012, 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2015 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016, 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2016, 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2016 Roel Janssen <roel@gnu.org>
@@ -22,7 +22,7 @@
 ;;; Copyright © 2021 Mathieu Othacehe <othacehe@gnu.org>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Justin Veilleux <terramorpha@cock.li>
-;;; Copyright © 2014 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -236,6 +236,45 @@ tmpfs/ramfs filesystems.")
 (define-public parted
   (package
     (name "parted")
+    (version "3.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/parted/parted-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "18h51i3x5cbqhlj5rm23m9sfw63gaaby5czln5w6qpqj3ifdsf29"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'fix-locales-and-python
+             (lambda _
+               (substitute* "tests/t0251-gpt-unicode.sh"
+                 (("C.UTF-8") "en_US.utf8")) ;not in Glibc locales
+               (substitute* "tests/msdos-overlap"
+                 (("/usr/bin/python") (which "python"))))))))
+    (inputs
+     (list lvm2 readline
+           `(,util-linux "lib")))
+    (native-inputs
+     (list gettext-minimal
+
+           ;; For the tests.
+           e2fsprogs
+           perl
+           python-wrapper
+           util-linux))
+    (home-page "https://www.gnu.org/software/parted/")
+    (synopsis "Disk partition editor")
+    (description
+     "GNU Parted is a package for creating and manipulating disk partition
+tables.  It includes a library and command-line utility.")
+    (license license:gpl3+)))
+
+(define-public parted-3.4
+  (package
+    (inherit parted)
     (version "3.4")
     (source (origin
               (method url-fetch)
@@ -243,35 +282,7 @@ tmpfs/ramfs filesystems.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0hjkv84x1bs2qqyx1fnzjqyyqrhv7kpdbq9bgydmi99d8wi80ag1"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-locales-and-python
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "tests/t0251-gpt-unicode.sh"
-               (("C.UTF-8") "en_US.utf8")) ;not in Glibc locales
-             (substitute* "tests/msdos-overlap"
-               (("/usr/bin/python") (which "python")))
-             #t)))))
-    (inputs
-     (list lvm2 readline
-           `(,util-linux "lib")))
-    (native-inputs
-     `(("gettext" ,gettext-minimal)
-
-       ;; For the tests.
-       ("e2fsprogs" ,e2fsprogs)
-       ("perl" ,perl)
-       ("python-wrapper" ,python-wrapper)
-       ("util-linux" ,util-linux)))
-    (home-page "https://www.gnu.org/software/parted/")
-    (synopsis "Disk partition editor")
-    (description
-     "GNU Parted is a package for creating and manipulating disk partition
-tables.  It includes a library and command-line utility.")
-    (license license:gpl3+)))
+                "0hjkv84x1bs2qqyx1fnzjqyyqrhv7kpdbq9bgydmi99d8wi80ag1"))))))
 
 (define-public fdisk
   (package
@@ -367,20 +378,15 @@ output without any plausibility checks.")
 (define-public gptfdisk
   (package
     (name "gptfdisk")
-    (version "1.0.8")
+    (version "1.0.9")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "mirror://sourceforge/gptfdisk/gptfdisk/"
                           version "/gptfdisk-" version ".tar.gz"))
       (sha256
-       (base32 "1py6klp1b7rni1qjj110snyyxafhx092carlii5vrnh4y1b9ilcm"))))
+       (base32 "1hjh5m77fmfq5m44yy61kchv7mbfgx026aw3jy5qxszsjckavzns"))))
     (build-system gnu-build-system)
-    (inputs
-     `(("gettext" ,gettext-minimal)
-       ("ncurses" ,ncurses)
-       ("popt" ,popt)
-       ("util-linux" ,util-linux "lib"))) ;libuuid
     (arguments
      `(#:test-target "test"
        #:phases
@@ -388,8 +394,7 @@ output without any plausibility checks.")
          (add-after 'unpack 'fix-include-directory
            (lambda _
              (substitute* "gptcurses.cc"
-               (("ncursesw/ncurses.h") "ncurses.h"))
-             #t))
+               (("ncursesw/ncurses.h") "ncurses.h"))))
          (delete 'configure)            ; no configure script
          (replace 'install
            ;; There's no ‘make install’ target.
@@ -405,6 +410,12 @@ output without any plausibility checks.")
                (install-file "fixparts.8" man)
                (install-file "gdisk.8" man)
                (install-file "sgdisk.8" man)))))))
+    (native-inputs
+     (list gettext-minimal))
+    (inputs
+     (list ncurses
+           popt
+           `(,util-linux "lib"))) ;libuuid
     (home-page "https://www.rodsbooks.com/gdisk/")
     (synopsis "Low-level GPT disk partitioning and formatting")
     (description "GPT fdisk (aka gdisk) is a text-mode partitioning tool that
@@ -416,14 +427,14 @@ scheme.")
 (define-public ddrescue
   (package
     (name "ddrescue")
-    (version "1.25")
+    (version "1.26")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "mirror://gnu/ddrescue/ddrescue-"
                           version ".tar.lz"))
       (sha256
-       (base32 "0qqh38izl5ppap9a5izf3hijh94k65s3zbfkczd4b7x04syqwlyf"))))
+       (base32 "07smgh9f2p90zgyyrddzjwaz0v8glh5d95qiv7yhv0frj0xcs4z5"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags (list (string-append "CXX=" ,(cxx-for-target)))))
@@ -977,7 +988,7 @@ to create devices with respective mappings for the ATARAID sets discovered.")
 (define-public libblockdev
   (package
     (name "libblockdev")
-    (version "2.26")
+    (version "2.27")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/storaged-project/"
@@ -985,7 +996,7 @@ to create devices with respective mappings for the ATARAID sets discovered.")
                                   version "-1/libblockdev-" version ".tar.gz"))
               (sha256
                (base32
-                "0sg068jb87ljhn8yazrqxi6ri10ic2sh1lp6ikd2nqxc6l5y3h64"))))
+                "05rm9h8v30rahr245jcw6if6b5g16mb5hnz7wl1shzip0wky3k3d"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -996,10 +1007,10 @@ to create devices with respective mappings for the ATARAID sets discovered.")
               (substitute* "src/lib/blockdev.c"
                (("/etc/libblockdev/conf.d/" path) (string-append out path)))))))))
     (native-inputs
-     `(("gobject-introspection" ,gobject-introspection)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
-       ("util-linux" ,util-linux)))
+     (list gobject-introspection
+           pkg-config
+           python-wrapper
+           util-linux))
     (inputs
      (list btrfs-progs
            cryptsetup
@@ -1098,7 +1109,7 @@ on your file system and offers to remove it.  @command{rmlint} can find:
 (define-public lf
   (package
     (name "lf")
-    (version "25")
+    (version "27")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1107,14 +1118,11 @@ on your file system and offers to remove it.  @command{rmlint} can find:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "014cybng6hc9y3ma74hpc1ac3rkz4ydflx8jbmvx81rdd08rzwz7"))))
+                "1piym8za0iw2s8yryh39y072f90mzisv89ffvn1jzb71f71mbfqa"))))
     (build-system go-build-system)
     (native-inputs
-     `(("go-github.com-mattn-go-runewidth" ,go-github.com-mattn-go-runewidth)
-       ("go-github.com-nsf-termbox-go" ,go-github.com-nsf-termbox-go)
-       ("go-golang-org-x-term" ,go-golang-org-x-term)
-       ("go-gopkg-in-djherbis-times-v1" ,go-gopkg-in-djherbis-times-v1)
-       ("go-github-com-gdamore-tcell-v2" ,go-github-com-gdamore-tcell-v2)))
+     (list go-github.com-mattn-go-runewidth go-golang-org-x-term
+           go-gopkg-in-djherbis-times-v1 go-github-com-gdamore-tcell-v2))
     (arguments
      `(#:import-path "github.com/gokcehan/lf"))
     (home-page "https://github.com/gokcehan/lf")

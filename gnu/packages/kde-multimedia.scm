@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2019 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020 Timotej Lazar <timotej.lazar@araneo.si>
-;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 Vinicius Monego <monego@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -658,7 +658,7 @@ Some features:
         (base32 "0ysa873pc2gip95cxr8yv7ifd9qql5zg6h67i9n9q3iqa6v58iyw"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules librsvg pkg-config kdoctools))
+     (list extra-cmake-modules (librsvg-for-system) pkg-config kdoctools))
     (inputs
      (list alsa-lib
            audiofile

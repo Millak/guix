@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017, 2018, 2019, 2020 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2017, 2018, 2019, 2020, 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2019, 2020 Christopher Howard <christopher@librehacker.com>
 ;;; Copyright © 2019, 2020 Evan Straw <evan.straw99@gmail.com>
 ;;; Copyright © 2020, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
@@ -329,6 +329,59 @@ defined radio hardware devices with a common API.")
 SoapySDR library.")
     (license license:expat)))
 
+(define-public soapyaudio
+  ;; Use commit directly because fixes for recent hamlib are not in the latest
+  ;; release (0.1.1).
+  (let ((commit "79129c9bb98deca3294c05108fdc545579af6418")
+        (revision "0"))
+    (package
+      (name "soapyaudio")
+      (version (git-version "0.1.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/pothosware/SoapyAudio")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0mrcnd3k0j599x3k93dkpi5zgr0l7nblz8am9f0s6zs3dikfncvb"))
+         (modules '((guix build utils)))
+         (snippet
+          '(begin
+             ;; Delete bundled rtaudio.
+             (delete-file-recursively "RtAudio")))))
+      (build-system cmake-build-system)
+      (native-inputs
+       (list pkg-config))
+      (inputs
+       (list alsa-lib
+             hamlib
+             jack-1
+             libusb
+             pulseaudio
+             rtaudio
+             soapysdr))
+      (arguments
+       `(#:configure-flags '("-DUSE_HAMLIB=ON")
+         #:tests? #f  ; No test suite
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-rtaudio-detection
+             ;; CMake only finds rtaudio if it looks for it before looking
+             ;; for hamlib, not sure why...
+             (lambda _
+               (substitute* "CMakeLists.txt"
+                 (("option\\(USE_HAMLIB OFF" all)
+                  (string-append "find_package(RtAudio)\n" all))))))))
+      (home-page "https://github.com/pothosware/SoapyAudio/wiki")
+      (synopsis "SoapySDR module for audio devices")
+      (description
+       "This package provides support for sound card devices to the SoapySDR
+library.  It also adds hamlib support, which provides basic gain and frequency
+controls for certain tuners which may be paired with an audio device.")
+      (license license:expat))))
+
 (define-public soapyhackrf
   (package
     (name "soapyhackrf")
@@ -376,30 +429,6 @@ SoapySDR library.")
     (description
      "This package provides RTL-SDR devices support to the SoapySDR library.")
     (license license:expat)))
-
-(define-public chirp
-  (package
-    (name "chirp")
-    (version "20220118")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://trac.chirp.danplanet.com/chirp_daily/daily-"
-                           version "/chirp-daily-" version ".tar.gz"))
-       (sha256
-        (base32 "0q2ifmprxqqxnww8fx8fjmm2lv9vdv6xzsk1ysa27fb290vgyawn"))))
-    (build-system python-build-system)
-    (inputs
-     (list python2-libxml2 python2-pygtk python2-pyserial))
-    (arguments
-     `(#:python ,python-2))
-    (home-page "https://chirp.danplanet.com")
-    (synopsis "Cross-radio programming tool")
-    (description "Chirp is a cross-radio programming tool.  It supports a
-growing list of radios across several manufacturers and allows transferring of
-memory contents between them.")
-    (license (list license:gpl3+
-                   license:lgpl3+)))) ; chirp/elib_intl.py
 
 (define-public aptdec
   ;; No release since 2013, use commit directly.
@@ -868,7 +897,7 @@ using GNU Radio and the Qt GUI toolkit.")
 (define-public fldigi
   (package
     (name "fldigi")
-    (version "4.1.20")
+    (version "4.1.22")
     (source
      (origin
        (method git-fetch)
@@ -877,7 +906,7 @@ using GNU Radio and the Qt GUI toolkit.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0y43241s3p8qzn7x6x28v5v2bf934riznj14bb7m6k6vgd849qzl"))))
+        (base32 "1n1ljqsqar9s8yh8hn9yc1clabkhv4jidym3ibg25yb5svckscli"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake gettext-minimal pkg-config))
@@ -907,7 +936,7 @@ hardware.")
 (define-public flrig
   (package
     (name "flrig")
-    (version "1.4.04")
+    (version "1.4.05")
     (source
      (origin
        (method git-fetch)
@@ -916,7 +945,7 @@ hardware.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06alzln46x08110v1ghasphr2mmznzk0x5h59vl9g2w1z12i9zsm"))))
+        (base32 "0pgkfzxqr2ybpbnf1y9nsr25k0zimdwr98mpvd7nazrv5l0y8kci"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake pkg-config))
@@ -2370,6 +2399,68 @@ this package.  E.g.: @code{(udev-rules-service 'rfcat rfcat)}")
 vendor-neutral SDR support library instead, intended to support a wider range
 of devices than RTL-SDR.")
       (license license:gpl2+))))
+
+(define-public urh
+  (package
+    (name "urh")
+    (version "2.9.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jopohl/urh")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17r9fkw0icph7fayibp6qbdh4nxi8wy3mmd3djmh0c2jr8yz5fsf"))))
+    (build-system python-build-system)
+    (native-inputs
+     (list python-cython
+           python-pytest
+           xorg-server-for-tests))
+    (inputs
+     (list gnuradio
+           gr-osmosdr
+           hackrf
+           python-numpy
+           python-psutil
+           python-pyaudio
+           python-pyqt
+           rtl-sdr))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'configure-compiler
+           (lambda _
+             ;; Use gcc as compiler
+             (substitute* "src/urh/dev/native/ExtensionHelper.py"
+               (("compiler = ccompiler\\.new_compiler\\(\\)\n" all)
+                (string-append
+                 all "    compiler.set_executables(compiler='gcc',"
+                 " compiler_so='gcc', linker_exe='gcc', linker_so='gcc -shared')\n")))))
+         (add-after 'unpack 'disable-some-tests
+           (lambda _
+             (for-each delete-file
+                       '(;; FIXME: This test causes a segmentation fault
+                         "tests/test_send_recv_dialog_gui.py"))))
+         (add-after 'build 'build-cythonext
+           (lambda _
+             (invoke "python" "src/urh/cythonext/build.py")))
+         (replace 'check
+           (lambda* (#:key inputs tests? #:allow-other-keys)
+             (when tests?
+               (setenv "HOME" "/tmp")
+               (system (string-append (search-input-file inputs "/bin/Xvfb")
+                                     " :1 &"))
+               (setenv "DISPLAY" ":1")
+               (invoke "pytest")))))))
+    (home-page "https://github.com/jopohl/urh")
+    (synopsis "Wireless protocol investigation program")
+    (description
+     "The Universal Radio Hacker (URH) is a complete suite for wireless
+protocol investigation with native support for many common Software Defined
+Radios.")
+    (license license:gpl3+)))
 
 (define-public gnss-sdr
   (package

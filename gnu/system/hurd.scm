@@ -119,7 +119,7 @@
                  (bootloader grub-minimal-bootloader)
                  (targets '("/dev/vda"))))
     (initrd #f)
-    (initrd-modules (lambda _ '()))
+    (initrd-modules '())
     (firmware '())
     (host-name "guixygnu")
     (file-systems '())

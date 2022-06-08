@@ -25,7 +25,6 @@
   #:use-module ((system repl server) #:prefix repl:)
   #:use-module (ice-9 binary-ports)
   #:use-module (ice-9 format)
-  #:use-module (ice-9 iconv)
   #:use-module (ice-9 match)
   #:use-module (ice-9 poll)
   #:use-module (ice-9 regex)
@@ -36,11 +35,11 @@
   #:use-module (srfi srfi-2)
   #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-9 gnu)
-  #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-19)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-37)
+  #:use-module (srfi srfi-71)
   #:use-module (web http)
   #:use-module (web request)
   #:use-module (web response)
@@ -406,18 +405,15 @@ appropriate duration.  NAR-PATH specifies the prefix for nar URLs."
   (let ((store-path (hash-part->path store hash)))
     (if (string-null? store-path)
         (not-found request #:phrase "" #:ttl negative-ttl)
-        (values `((content-type . (application/x-nix-narinfo
-                                   (charset . "UTF-8")))
-                  (x-nar-path . ,nar-path)
-                  (x-narinfo-compressions . ,compressions)
+        (values `((content-type . (application/x-nix-narinfo))
                   ,@(if ttl
                         `((cache-control (max-age . ,ttl)))
                         '()))
-                ;; Do not call narinfo-string directly here as it is an
-                ;; expensive call that could potentially block the main
-                ;; thread.  Instead, create the narinfo string in the
-                ;; http-write procedure.
-                store-path))))
+                (cut display
+                  (narinfo-string store store-path
+                                  #:nar-path nar-path
+                                  #:compressions compressions)
+                  <>)))))
 
 (define* (nar-cache-file directory item
                              #:key (compression %no-compression))
@@ -672,38 +668,19 @@ requested using POOL."
                        (link narinfo other)))
                    others))))))
 
-(define (compression->sexp compression)
-  "Return the SEXP representation of COMPRESSION."
-  (match compression
-    (($ <compression> type level)
-     `(compression ,type ,level))))
-
-(define (sexp->compression sexp)
-  "Turn the given SEXP into a <compression> record and return it."
-  (match sexp
-    (('compression type level)
-     (compression type level))))
-
 ;; XXX: Declare the 'X-Nar-Compression' HTTP header, which is in fact for
 ;; internal consumption: it allows us to pass the compression info to
 ;; 'http-write', as part of the workaround to <http://bugs.gnu.org/21093>.
 (declare-header! "X-Nar-Compression"
                  (lambda (str)
-                   (sexp->compression
-                    (call-with-input-string str read)))
+                   (match (call-with-input-string str read)
+                     (('compression type level)
+                      (compression type level))))
                  compression?
                  (lambda (compression port)
-                   (write (compression->sexp compression) port)))
-
-;; This header is used to pass the supported compressions to http-write in
-;; order to format on-the-fly narinfo responses.
-(declare-header! "X-Narinfo-Compressions"
-                 (lambda (str)
-                   (map sexp->compression
-                        (call-with-input-string str read)))
-                 (cut every compression? <>)
-                 (lambda (compressions port)
-                   (write (map compression->sexp compressions) port)))
+                   (match compression
+                     (($ <compression> type level)
+                      (write `(compression ,type ,level) port)))))
 
 (define* (render-nar store request store-item
                      #:key (compression %no-compression))
@@ -858,8 +835,7 @@ example: \"/foo/bar\" yields '(\"foo\" \"bar\")."
   "Return RESPONSE's headers minus 'Content-Length' and our internal headers."
   (fold alist-delete
         (response-headers response)
-        '(content-length x-raw-file x-nar-compression
-                         x-narinfo-compressions x-nar-path)))
+        '(content-length x-raw-file x-nar-compression)))
 
 (define (sans-content-length response)
   "Return RESPONSE without its 'content-length' header."
@@ -993,38 +969,6 @@ blocking."
              (unless keep-alive?
                (close-port client)))
             (values))))))
-    (('application/x-nix-narinfo . _)
-     (let ((compressions (assoc-ref (response-headers response)
-                                    'x-narinfo-compressions))
-           (nar-path (assoc-ref (response-headers response)
-                                'x-nar-path)))
-       (if nar-path
-           (begin
-             (when (keep-alive? response)
-               (keep-alive client))
-             (call-with-new-thread
-              (lambda ()
-                (set-thread-name "publish narinfo")
-                (let* ((narinfo
-                        (with-store store
-                          (narinfo-string store (utf8->string body)
-                                          #:nar-path nar-path
-                                          #:compressions compressions)))
-                       (narinfo-bv (string->bytevector narinfo "UTF-8"))
-                       (narinfo-length
-                        (bytevector-length narinfo-bv))
-                       (response (write-response
-                                  (with-content-length response
-                                                       narinfo-length)
-                                  client))
-                       (output (response-port response)))
-                  (configure-socket client)
-                  (put-bytevector output narinfo-bv)
-                  (force-output output)
-                  (unless (keep-alive? response)
-                    (close-port output))
-                  (values)))))
-           (%http-write server client response body))))
     (_
      (match (assoc-ref (response-headers response) 'x-raw-file)
        ((? string? file)
@@ -1190,8 +1134,7 @@ headers."
   ;; Preserve the request's 'connection' header in the response, so that the
   ;; server can close the connection if this is requested by the client.
   (lambda (request body)
-    (let-values (((response response-body)
-                  (handle request body)))
+    (let ((response response-body (handle request body)))
       (values (preserve-connection-headers request response)
               response-body))))
 
@@ -1235,6 +1178,23 @@ headers."
                                            %default-socket-options))
     (bind sock address)
     sock))
+
+(define (systemd-socket)
+  "If this program is being spawned through systemd-style \"socket
+activation\", whereby the listening socket is passed as file descriptor 3,
+return the corresponding socket.  Otherwise return #f."
+  (and (equal? (and=> (getenv "LISTEN_PID") string->number)
+               (getpid))
+       (match (getenv "LISTEN_FDS")
+         ((= string->number 1)
+          (let ((sock (fdopen 3 "r+0")))
+            (configure-socket sock)
+            sock))
+         ((= string->number (? integer? n))
+          (leave (G_ "~a: unexpected number of startup file descriptors")
+                 n))
+         (_
+          #f))))
 
 (define (gather-user-privileges user)
   "Switch to the identity of USER, a user name."
@@ -1281,7 +1241,12 @@ headers."
                       (make-socket-address (sockaddr:fam addr)
                                            (sockaddr:addr addr)
                                            port)))
-           (socket  (open-server-socket address))
+           (socket style (match (systemd-socket)
+                           (#f
+                            (values (open-server-socket address)
+                                    'normal))
+                           (socket
+                            (values socket 'systemd))))
            (nar-path  (assoc-ref opts 'nar-path))
            (repl-port (assoc-ref opts 'repl))
            (cache     (assoc-ref opts 'cache))
@@ -1306,10 +1271,12 @@ consider using the '--user' option!~%")))
                      (cache-bypass-threshold
                       (or (assoc-ref opts 'cache-bypass-threshold)
                           (cache-bypass-threshold))))
-        (info (G_ "publishing ~a on ~a, port ~d~%")
-              %store-directory
-              (inet-ntop (sockaddr:fam address) (sockaddr:addr address))
-              (sockaddr:port address))
+        (if (eq? style 'systemd)
+            (info (G_ "publishing (started via socket activation)~%"))
+            (info (G_ "publishing ~a on ~a, port ~d~%")
+                  %store-directory
+                  (inet-ntop (sockaddr:fam address) (sockaddr:addr address))
+                  (sockaddr:port address)))
 
         (for-each (lambda (compression)
                     (info (G_ "using '~a' compression method, level ~a~%")

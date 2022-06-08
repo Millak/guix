@@ -11,6 +11,7 @@
 ;;; Copyright © 2020, 2021, 2022 Simon South <simon@simonsouth.net>
 ;;; Copyright © 2021 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2022 Mathieu Othacehe <othacehe@gnu.org>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1143,36 +1144,6 @@ MPSSE (Multi-Protocol Synchronous Serial Engine) adapter by FTDI that can do
 SPI, I2C, JTAG.")
     (license license:gpl2+)))
 
-(define-public python2-libmpsse
-  (package
-    (inherit python-libmpsse)
-    (name "python2-libmpsse")
-    (arguments
-     (substitute-keyword-arguments (package-arguments python-libmpsse)
-      ((#:phases phases)
-       `(modify-phases ,phases
-         (replace 'set-environment-up
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((python (assoc-ref inputs "python")))
-               (chdir "src")
-               (setenv "PYDEV" (string-append python
-                               "/include/python"
-                               ,(version-major+minor (package-version python-2))))
-               #t)))
-         (replace 'install
-           (lambda* (#:key inputs outputs make-flags #:allow-other-keys #:rest args)
-             (let* ((out (assoc-ref outputs "out"))
-                    (out-python (string-append out
-                                               "/lib/python"
-                                               ,(version-major+minor (package-version python-2))
-                                               "/site-packages"))
-                    (install (assoc-ref %standard-phases 'install)))
-               (install #:make-flags (cons (string-append "PYLIB=" out-python)
-                                           make-flags)))))))))
-    (inputs
-     (alist-replace "python" (list python-2)
-                    (package-inputs python-libmpsse)))))
-
 (define-public picprog
   (package
     (name "picprog")
@@ -1414,16 +1385,18 @@ raw USB commands.")
 (define-public west
   (package
     (name "west")
-    (version "0.6.3")
+    (version "0.13.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "west" version))
        (sha256
         (base32
-         "0ql6ij1hrj2ir5wkxm96zgig5qwvfwa75w77wh2y13w6b9cqcr4b"))))
+         "1hw9qas8ry8prn24iqka8kw2nv7ndxr95mvwr5lww53w2sr7p807"))))
     (propagated-inputs
-     (list python-colorama python-configobj python-pykwalify
+     (list python-colorama
+           python-packaging
+           python-pykwalify
            python-pyyaml))
     (build-system python-build-system)
     (home-page "https://github.com/zephyrproject-rtos/west")
@@ -1647,17 +1620,22 @@ whereas kdmx creates pseudo-ttys.")
 (define-public mbed-tools
   (package
     (name "mbed-tools")
-    (version "7.49.1")
+    (version "7.53.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "mbed-tools" version))
        (sha256
         (base32
-         "07w1h1093xzpg8agw9hjhki5856mam2c6f3q7jb2866n82cihkg9"))))
+         "0gdmyxy97bqr9bmkg90v3axmrr2db734nwzq2l05z84x9qiarc9i"))))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "setup.py"
+               (("\"Click>=7.1,<8\"")
+                "\"Click>=7.1\""))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?

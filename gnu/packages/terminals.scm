@@ -5,7 +5,7 @@
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2016, 2017, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2017 José Miguel Sánchez García <jmi2k@openmailbox.org>
-;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2017, 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Petter <petter@mykolab.ch>
@@ -25,7 +25,7 @@
 ;;; Copyright © 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright @ 2020 luhux <luhux@outlook.com>
 ;;; Copyright © 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
-;;; Copyright © 2021 Raphaël Mélotte <raphael.melotte@mind.be>
+;;; Copyright © 2021, 2022 Raphaël Mélotte <raphael.melotte@mind.be>
 ;;; Copyright © 2021 ikasero <ahmed@ikasero.com>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
@@ -58,11 +58,13 @@
   #:use-module (guix build-system python)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
@@ -422,35 +424,32 @@ combining, and so on, with a simple interface.")
 (define-public mlterm
   (package
     (name "mlterm")
-    (version "3.9.1")
+    (version "3.9.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/mlterm/01release/mlterm-"
                            version "/mlterm-" version ".tar.gz"))
        (sha256
-        (base32 "03fnynwv7d1aicwk2rp31sgncv5m65agvygqvsgn59v9di40gnnb"))))
+        (base32 "0br1sdpxw3r7qv814b3qjb8mpigljr9wd5c5422ah76f09zh0h5r"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
        #:configure-flags
-       (list (string-append "--prefix=" (assoc-ref %outputs "out"))
-             "--disable-static"
+       (list "--disable-static"
              "--enable-optimize-redrawing"
              "--with-imagelib=gdk-pixbuf")))
-    (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)))
+    (native-inputs (list gettext-minimal pkg-config))
     (inputs
-     `(("cairo" ,cairo)
-       ("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("fribidi" ,fribidi)
-       ("gdk-pixbuf" ,gdk-pixbuf)
-       ("gtk+" ,gtk+)
-       ("libx11" ,libx11)
-       ("libxext" ,libxext)
-       ("libxft" ,libxft)))
+     (list cairo
+           fontconfig
+           freetype
+           fribidi
+           gdk-pixbuf
+           gtk+
+           libx11
+           libxext
+           libxft))
     (home-page "http://mlterm.sourceforge.net/")
     (synopsis "Multi-Lingual TERMinal emulator")
     (description
@@ -558,7 +557,7 @@ to all types of devices that provide serial consoles.")
 (define-public beep
   (package
     (name "beep")
-    (version "1.4.10")
+    (version "1.4.12")
     (source
      (origin
        (method git-fetch)
@@ -571,24 +570,29 @@ to all types of devices that provide serial consoles.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05c2gxfqc12rgp88c65q7f5ha9gzh222vdh0qpdq1zmyhqj43pq1"))))
+        (base32 "0dgrb5yg4ys1fa4hs95iz3m2yhryfzzw0j6g6yf6vhbys4ihcf40"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       (list (string-append "prefix=" (assoc-ref %outputs "out"))
-             (string-append "pkgdocdir=$(docdir)/" ,name "-" ,version))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (add-before 'check 'patch-tests
-           (lambda _
-             (substitute* "GNUmakefile"
-               (("/bin/bash")
-                (which "bash")))
-             (substitute* (find-files "tests" "\\.expected")
-               ;; The build environment lacks /dev/{console,tty*}.
-               ((": Permission denied")
-                ": No such file or directory")))))))
+     (list #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "prefix=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)      ; no configure script
+               (add-before 'check 'patch-tests
+                 (lambda _
+                   (substitute* "GNUmakefile"
+                     (("/bin/bash")
+                      (which "bash"))
+                     ;; XXX In the build environment, $(PWD) is the *parent* directory
+                     ;; /tmp/guix-build-beep-x.y.drv-0!  A pure guix shell works fine.
+                     (("\\$\\(PWD\\)" pwd)
+                      (string-append pwd "/source")))
+                   (substitute* (find-files "tests" "\\.expected")
+                     ;; The build environment lacks /dev/{console,tty*}.
+                     ;; In fact, even nckx's regular Guix System lacks ttyS1…
+                     ((": Permission denied")
+                      ": No such file or directory")))))))
     (synopsis "Linux command-line utility to control the PC speaker")
     (description "beep allows the user to control the PC speaker with precision,
 allowing different sounds to indicate different events.  While it can be run
@@ -666,20 +670,18 @@ embedded kernel situations.")
     (license license:expat)))
 
 (define-public cool-retro-term
-  (let ((commit "1.1.1")
-        (revision "0"))                 ;not used currently
     (package
       (name "cool-retro-term")
-      (version "1.1.1")
+      (version "1.2.0")
       (source (origin
                 (method git-fetch)
                 (file-name (string-append name "-" version "-checkout"))
                 (uri (git-reference
                       (url (string-append "https://github.com/Swordfish90/" name))
-                      (commit commit)
+                      (commit version)
                       (recursive? #t)))
                 (sha256
-                 (base32 "0wb6anchxa5jpn9c73kr4byrf2xlj8x8qzc5x7ny6saj7kbbvp75"))
+                 (base32 "02mj70gcpx9fvrhsy6iqwp399dya9iyakx940b6ws952d23xn337"))
                 (modules '((guix build utils)
                            (srfi srfi-1)
                            (srfi srfi-26)
@@ -778,11 +780,10 @@ embedded kernel situations.")
                        "app/qml/ApplicationSettings.qml"))
                     ;; Final substitution for default scanline and pixel fonts
                     (substitute* "app/qml/ApplicationSettings.qml"
-                      (("COMMODORE_PET") "PROGGY_TINY"))
-                    #t))))
+                      (("COMMODORE_PET") "PROGGY_TINY"))))))
       (build-system gnu-build-system)
       (inputs
-       (list qtbase-5 qtdeclarative qtgraphicaleffects qtquickcontrols))
+       (list qtbase-5 qtdeclarative qtgraphicaleffects qtquickcontrols2 bash-minimal))
       (arguments
        `(#:phases
          (modify-phases %standard-phases
@@ -806,20 +807,17 @@ embedded kernel situations.")
                                (string-append (assoc-ref inputs i) qml))
                              '("qtdeclarative"
                                "qtgraphicaleffects"
-                               "qtquickcontrols")))))
-                 #t)))
+                               "qtquickcontrols2"))))))))
            (add-after 'install 'add-alternate-name
              (lambda* (#:key outputs #:allow-other-keys)
                (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
                  (symlink (string-append bin "/cool-retro-term")
-                          (string-append bin "/crt"))
-                 #t)))
+                          (string-append bin "/crt")))))
            (add-after 'install 'install-man
              (lambda* (#:key outputs #:allow-other-keys)
                (let ((mandir (string-append (assoc-ref outputs "out")
                                             "/share/man/man1")))
-                 (install-file "packaging/debian/cool-retro-term.1" mandir)
-                 #t))))))
+                 (install-file "packaging/debian/cool-retro-term.1" mandir)))))))
       (synopsis "Terminal emulator")
       (description
        "Cool-retro-term (crt) is a terminal emulator which mimics the look and
@@ -832,7 +830,7 @@ eye-candy, customizable, and reasonably lightweight.")
                 ;; Fonts
                 license:silofl1.1
                 license:x11
-                license:bsd-3)))))
+                license:bsd-3))))
 
 (define-public foot
   (package
@@ -1065,9 +1063,6 @@ pyte is a fork of vt102, which was an incomplete pure Python implementation
 of VT100 terminal.")
     (license license:lgpl3+)))
 
-(define-public python2-pyte
-  (package-with-python2 python-pyte))
-
 (define-public python-blessings
   (package
     (name "python-blessings")
@@ -1095,9 +1090,6 @@ for little changes, provides a scroll-back buffer after the program exits, and
 avoids styling altogether when the output is redirected to something other
 than a terminal.")
     (license license:expat)))
-
-(define-public python2-blessings
-  (package-with-python2 python-blessings))
 
 (define-public python-curtsies
   (package
@@ -1367,7 +1359,7 @@ made by suckless.")
 (define-public tio
   (package
     (name "tio")
-    (version "1.35")
+    (version "1.36")
     (source
      (origin
        (method url-fetch)
@@ -1375,8 +1367,10 @@ made by suckless.")
              "https://github.com/tio/tio/releases/download/v"
              version "/tio-" version ".tar.xz"))
        (sha256
-        (base32 "02cx3hjk2rv2dmds2xi17ymi93k6zybapa33ydyfkx3mfvgfq28k"))))
+        (base32 "0z27ghxjiw7y587l49jsb0anylm08m7imqjiwr21k1frxvydswsa"))))
     (build-system meson-build-system)
+    (native-inputs (list pkg-config))
+    (inputs (list libinih))
     (home-page "https://tio.github.io/")
     (synopsis "Simple TTY terminal I/O application")
     (description "tio is a simple TTY terminal application which features a

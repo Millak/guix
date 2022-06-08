@@ -14,7 +14,7 @@
 ;;; Copyright © 2017, 2018, 2019, 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017, 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2017, 2020 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2018, 2020, 2022 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018 Benjamin Slade <slade@jnanam.net>
@@ -417,17 +417,16 @@ provided.")
 (define-public editres
   (package
     (name "editres")
-    (version "1.0.7")
+    (version "1.0.8")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/app/" name "-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
-         (base32
-          "04awfwmy3f9f0bchidc4ssbgrbicn5gzasg3jydpfnp5513d76h8"))))
+         (base32 "1ydn32x9qh2zkn90w6nfv33gcq75z67w93bakkykadl8n7zmvkw3"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -955,7 +954,7 @@ rendering commands to the X server.")
 (define-public iceauth
   (package
     (name "iceauth")
-    (version "1.0.8")
+    (version "1.0.9")
     (source
       (origin
         (method url-fetch)
@@ -964,8 +963,7 @@ rendering commands to the X server.")
                version
                ".tar.bz2"))
         (sha256
-          (base32
-            "1ik0mdidmyvy48hn8p2hwvf3535rf3m96hhf0mvcqrbj44x23vp6"))))
+         (base32 "1ik0mdidmyvy48hn8p2hwvf3535rf3m96hhf0mvcqrbj44x23vp6"))))
     (build-system gnu-build-system)
     (inputs
       (list libice))
@@ -6142,12 +6140,15 @@ to answer a question.  Xmessage can also exit after a specified time.")
              (string-append "ftp://ftp.invisible-island.net/xterm/"
                             "xterm-" version ".tgz")))
        (sha256
-        (base32 "10lc72spa69n9d7zg9nwhgwz70qzidp5i17jgw3lq3qg1a25sg4n"))))
+        (base32 "10lc72spa69n9d7zg9nwhgwz70qzidp5i17jgw3lq3qg1a25sg4n"))
+       (patches
+         (search-patches "xterm-370-explicit-xcursor.patch"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--enable-wide-chars" "--enable-load-vt-fonts"
                            "--enable-i18n" "--enable-doublechars"
-                           "--enable-luit" "--enable-mini-luit")
+                           "--enable-luit" "--enable-mini-luit"
+                           "X_EXTRA_LIBS=-lXcursor")
        #:tests? #f                      ; no test suite
        #:phases
        (modify-phases %standard-phases
@@ -6482,6 +6483,8 @@ X11 servers, Windows, or macOS.")
                   (guix build emacs-utils))
        #:imported-modules (,@%gnu-build-system-modules
                            (guix build emacs-utils))
+       #:parallel-build? #f ; for reproducible generation of
+                            ; share/uim/installed-modules.scm
        #:configure-flags
        (list "--with-anthy-utf8"
              (string-append "--with-lispdir=" %output "/share/emacs")

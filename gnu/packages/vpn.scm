@@ -20,6 +20,7 @@
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2022 Josselin Poiret <josselin.poiret@protonmail.ch>
 ;;; Copyright © 2022 Lu hui <luhux76@gmail.com>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -747,15 +748,15 @@ this process.  It is compatible with Fortinet VPNs.")
 (define-public openvpn
   (package
     (name "openvpn")
-    (version "2.5.5")
+    (version "2.5.6")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "https://swupdate.openvpn.org/community/releases/openvpn-"
-                    version ".tar.xz"))
+                    version ".tar.gz"))
               (sha256
                (base32
-                "0fq0nvgpbyvdxc8vwka51whgm3kkvjb3c9xarpv3h211l2gxd6qi"))))
+                "0gdd88rcan9vfiwkzsqn6fxxdim7kb1bsxrcra59c5xksprpwfik"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--enable-iproute2=yes")))
@@ -907,14 +908,14 @@ DNS domain name queries.")
 (define-public sshoot
   (package
     (name "sshoot")
-    (version "1.2.6")
+    (version "1.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri name version))
        (sha256
         (base32
-         "1ccgh0hjyxrwkgy3hnxz3hgbjbs0lmfs25d5l5jam0xbpcpj63h0"))))
+         "05i54nga4vy660yy9yf6dl376yj0jc51303yr295qk3k9w0k96yd"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -922,13 +923,20 @@ DNS domain name queries.")
          (add-after 'unpack 'patch-paths
            (lambda _
              (substitute* "sshoot/tests/test_manager.py"
-               (("/bin/sh") (which "sh")))
-             #t)))))
+               (("/bin/sh") (which "sh")))))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-vv" "--pyargs" "sshoot")))))))
     (inputs
-     (list python-argcomplete python-prettytable python-pyyaml))
+     (list python-argcomplete
+           python-prettytable
+           python-pyyaml
+           python-pyxdg
+           python-toolrack))
     ;; For tests only.
     (native-inputs
-     (list python-fixtures python-pbr python-testtools))
+     (list python-pytest python-pytest-mock))
     (home-page "https://github.com/albertodonato/sshoot")
     (synopsis "sshuttle VPN session manager")
     (description "sshoot provides a command-line interface to manage multiple

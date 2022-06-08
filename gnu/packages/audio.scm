@@ -11,7 +11,7 @@
 ;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018 okapi <okapi@firemail.cc>
-;;; Copyright © 2018, 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2018, 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2018, 2019 Marius Bakke <mbakke@fastmail.com>
@@ -110,6 +110,7 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages rdf)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages samba)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
@@ -616,8 +617,7 @@ Filter) modules follow the convention of 1V / Octave.")
         "--enable-jack"
         "--enable-sndfile"
         "--enable-samplerate"
-        "--enable-avcodec")
-       #:python ,python-2))
+        "--enable-avcodec")))
     (inputs
      (list jack-1 libsndfile libsamplerate fftwf ffmpeg)) ; for libavcodec
     (native-inputs
@@ -1980,6 +1980,51 @@ patches that can be used with softsynths such as Timidity and WildMidi.")
     ;; GPLv2+ with exception for compositions using these patches.
     (license license:gpl2+)))
 
+(define-public freepats-gm
+  (package
+    (name "freepats-gm")
+    (version "20210329")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://freepats.zenvoid.org/SoundSets/"
+                                  "FreePats-GeneralMIDI/FreePatsGM-SF2-"  version ".7z"))
+              (sha256
+               (base32
+                "19a1mp9yi33j2zff4mjvhrjz97dwwgjwzfdlf84j9xyydhx0crhc"))))
+    (build-system trivial-build-system)
+    (native-inputs
+     `(("p7zip" ,p7zip)))
+    (arguments
+     `(#:modules ((guix build utils))
+       #:builder
+       (let ((dir (string-append "FreePatsGM-SF2-" ,version))
+             (file (string-append "FreePatsGM-" ,version ".sf2"))
+             (out (string-append %output "/share/soundfonts"))
+             (doc (string-append %output "/share/doc/freepats-gm-" ,version)))
+         (use-modules (guix build utils))
+         (invoke (string-append (assoc-ref %build-inputs "p7zip") "/bin/7z")
+                 "e" (assoc-ref %build-inputs "source")
+                 (string-append dir "/" file)
+                 (string-append dir "/gpl.txt")
+                 (string-append dir "/cc0.txt")
+                 (string-append dir "/readme.txt"))
+         (mkdir-p out)
+         (copy-file file (string-append out "/FreePatsGM.sf2"))
+         (mkdir-p doc)
+         (for-each
+          (lambda (file)
+            (copy-file file (string-append doc "/" file)))
+          (find-files "." "\\.txt$"))
+         #t)))
+    (home-page "https://freepats.zenvoid.org/SoundSets/general-midi.html")
+    (synopsis "General MIDI sound set")
+    (description "FreePats is a project to create a free (as in free software)
+collection of digital instruments for music production.  This sound bank is a
+partial release of the General MIDI sound set.")
+    (license (list
+              license:gpl3+ ; with sampling exception
+              license:cc0))))
+
 (define-public guitarix
   (package
     (name "guitarix")
@@ -2194,23 +2239,23 @@ synchronous execution of all clients, and low latency operation.")
 ;; jack-2 implement the same API.  JACK2 is provided primarily as a client
 ;; program for users who might benefit from the D-BUS features.
 (define-public jack-2
-  (package (inherit jack-1)
+  (package
+    (inherit jack-1)
     (name "jack2")
-    (version "1.9.14")
+    (version "1.9.21")
     (source (origin
-             (method url-fetch)
-             (uri (string-append "https://github.com/jackaudio/jack2/releases/"
-                                 "download/v" version "/jack2-"
-                                 version ".tar.gz"))
-             (file-name (string-append name "-" version ".tar.gz"))
-             (sha256
-              (base32
-               "0z11hf55a6mi8h50hfz5wry9pshlwl4mzfwgslghdh40cwv342m2"))))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jackaudio/jack2")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0sbrffmdbajvrk7iqvsvrnwnpvmicvbjyq3f52r6ashdsznsz03b"))))
     (build-system waf-build-system)
     (arguments
-     `(#:tests? #f  ; no check target
-       #:configure-flags '("--dbus"
-                           "--alsa")
+     `(#:tests? #f                      ; no check target
+       #:configure-flags '("--dbus" "--alsa")
        #:phases
        (modify-phases %standard-phases
          (add-before 'configure 'set-linkflags
@@ -2224,16 +2269,13 @@ synchronous execution of all clients, and low latency operation.")
                ((".*CFLAGS.*-Wall.*" m)
                 (string-append m
                                "    conf.env.append_unique('LINKFLAGS',"
-                               "'-Wl,-rpath=" %output "/lib')\n")))
-             #t))
+                               "'-Wl,-rpath=" %output "/lib')\n")))))
          (add-after 'install 'wrap-python-scripts
-           (lambda* (#:key inputs outputs #:allow-other-keys)
+           (lambda* (#:key outputs #:allow-other-keys)
              ;; Make sure 'jack_control' runs with the correct PYTHONPATH.
-             (let* ((out (assoc-ref outputs "out"))
-                    (path (getenv "GUIX_PYTHONPATH")))
-               (wrap-program (string-append out "/bin/jack_control")
-                 `("GUIX_PYTHONPATH" ":" prefix (,path))))
-             #t)))))
+             (wrap-program (search-input-file outputs "bin/jack_control")
+               `("GUIX_PYTHONPATH" ":"
+                 prefix (,(getenv "GUIX_PYTHONPATH")))))))))
     (inputs
      (list alsa-lib
            dbus
@@ -2260,17 +2302,15 @@ synchronous execution of all clients, and low latency operation.")
                 "05lycfq0f06zjp5xqvzjz9hx9kmqx72yng1lghh76hv63dw43lcj"))))
     (build-system waf-build-system)
     (arguments
-     `(#:tests? #f                      ; no check target
-       #:python ,python-2))
+     `(#:tests? #f))                    ; no check target
     (inputs
-     `(("lv2" ,lv2)
-       ("lilv" ,lilv)
-       ("suil" ,suil)
-       ("gtk2" ,gtk+-2)
-       ("gtk3" ,gtk+)
-       ("gtkmm" ,gtkmm-2)
-       ("qtbase" ,qtbase-5)
-       ("jack" ,jack-1)))
+     (list lv2
+           lilv
+           suil
+           gtk
+           gtkmm
+           qtbase-5
+           jack-1))
     (native-inputs
      (list pkg-config))
     (home-page "https://drobilla.net/software/jalv/")
@@ -2522,9 +2562,6 @@ compensation, (de)interleaving, and byte-swapping
 cross-platform audio input/output stream library.")
     (license license:expat)))
 
-(define-public python2-pyaudio
-  (package-with-python2 python-pyaudio))
-
 (define-public python-pyliblo
   (package
     (name "python-pyliblo")
@@ -2550,9 +2587,6 @@ library.  It supports almost the complete functionality of liblo, allowing you
 to send and receive OSC messages using a nice and simple Python API.  Also
 included are the command line utilities @code{send_osc} and @code{dump_osc}.")
     (license license:lgpl2.1+)))
-
-(define-public python2-pyliblo
-  (package-with-python2 python-pyliblo))
 
 (define-public python-soundfile
   (package
@@ -2761,37 +2795,33 @@ software.")
     (description "An LV2 port of the mda EPiano VSTi.")))
 
 (define-public lvtk
-  (package
-    (name "lvtk")
-    (version "1.2.0")
-    (source (origin
-             (method git-fetch)
-             (uri (git-reference
-                   (url "https://github.com/lvtk/lvtk")
-                   (commit version)))
-             (file-name (git-file-name name version))
-             (sha256
-              (base32
-               "1b01zvzl70ana6l1kn8fgyr7msnn3c7x61cgw7fdpp50322352p8"))))
-    (build-system waf-build-system)
-    (arguments
-     `(#:tests? #f  ; no check target
-       #:python ,python-2
-       #:configure-flags
-       (list (string-append "--boost-includes="
-                            (assoc-ref %build-inputs "boost")
-                            "/include"))))
-    (inputs
-     (list boost gtkmm-2 lv2))
-    (native-inputs
-     (list pkg-config))
-    (home-page "https://github.com/lvtk/lvtk")
-    (synopsis "C++ libraries for LV2 plugins")
-    (description
-     "The LV2 Toolkit (LVTK) contains libraries that wrap the LV2 C API and
+  ;; Use the latest commit, as the latest release was made in 2014 and depends
+  ;; on Python 2.
+  (let ((commit "a73feabe772f9650aa071e6a4df660e549ab7c48")
+        (revision "0"))
+    (package
+      (name "lvtk")
+      (version (git-version "1.2.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/lvtk/lvtk")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0scmv8b4jlm88d21dqqchjy98wb93zclc9x960h213gdi871vsaj"))))
+      (build-system waf-build-system)
+      (arguments (list #:tests? #f))    ;no check target
+      (inputs (list boost gtkmm lv2))
+      (native-inputs (list pkg-config))
+      (home-page "https://github.com/lvtk/lvtk")
+      (synopsis "C++ libraries for LV2 plugins")
+      (description
+       "The LV2 Toolkit (LVTK) contains libraries that wrap the LV2 C API and
 extensions into easy to use C++ classes.  It is the successor of
 lv2-c++-tools.")
-    (license license:gpl3+)))
+      (license license:isc))))
 
 (define-public openal
   (package
@@ -2928,14 +2958,14 @@ different audio devices such as ALSA or PulseAudio.")
 (define-public qjackctl
   (package
     (name "qjackctl")
-    (version "0.9.6")
+    (version "0.9.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/qjackctl/qjackctl/"
                                   version "/qjackctl-" version ".tar.gz"))
               (sha256
                (base32
-                "0sqni9ppwadc01fnyqj6lkwy30ql1vccqglv9imd3zdchffjpjir"))))
+                "104hfvr15v8cbkzil8slrqj48y3fl7lx060alj80q1sjh5hl6j2j"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f))                    ; no check target
@@ -3116,49 +3146,6 @@ using Guix System.")
     (description "This package provides libshout plus IDJC extensions.")
     ;; GNU Library (not Lesser) General Public License.
     (license license:lgpl2.0+)))
-
-(define-public raul
-  (package
-    (name "raul")
-    (version "0.8.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://download.drobilla.net/raul-"
-                                  version ".tar.bz2"))
-              (sha256
-               (base32
-                "09ms40xc1x6qli6lxkwn5ibqh62nl9w7dq0b6jh1q2zvnrxwsd8b"))))
-    (build-system waf-build-system)
-    (arguments
-     `(#:python ,python-2
-       #:tests? #f)) ; no check target
-    (inputs
-     (list glib boost))
-    (native-inputs
-     (list pkg-config))
-    (home-page "https://drobilla.net/software/raul/")
-    (synopsis "Real-time audio utility library")
-    (description
-     "Raul (Real-time Audio Utility Library) is a C++ utility library primarily
-aimed at audio/musical applications.")
-    (license license:gpl2+)))
-
-(define-public raul-devel
-  (let ((commit "4db870b2b20b0a608ec0283139056b836c5b1624")
-        (revision "1"))
-    (package (inherit raul)
-      (name "raul")
-      (version (string-append "0.8.9-" revision "."
-                              (string-take commit 9)))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://git.drobilla.net/raul.git")
-                      (commit commit)))
-                (file-name (string-append name "-" version "-checkout"))
-                (sha256
-                 (base32
-                  "04fajrass3ymr72flx5js5vxc601ccrmx8ny8scp0rw7j0igyjdr")))))))
 
 (define-public resample
   (package
@@ -4301,9 +4288,6 @@ It is currently fairly complete for PCM devices, and has some support for
 mixers.")
     (license license:psfl)))
 
-(define-public python2-pyalsaaudio
-  (package-with-python2 python-pyalsaaudio))
-
 (define-public ldacbt
   (package
     (name "ldacbt")
@@ -4587,37 +4571,44 @@ representations.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1mziklmqifhnb4kg9ia2r56r8wjn6xp40bkpf484hsgqvnrccl86"))))
+                "1mziklmqifhnb4kg9ia2r56r8wjn6xp40bkpf484hsgqvnrccl86"))
+              (modules '((guix build utils)))
+              (snippet
+               #~(begin
+                   (delete-file-recursively "iniparser")
+                   (substitute* "configure.ac"
+                     (("AC_CONFIG_FILES\\(iniparser/Makefile\\)") ""))
+                   (substitute* "Makefile.am"
+                     (("SUBDIRS = iniparser") ""))))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list autoconf automake libtool))
-    (inputs
-     (list fftw ncurses pulseaudio))
+    (native-inputs (list autoconf automake libtool))
+    (inputs (list fftw ncurses pulseaudio iniparser))
     (arguments
-     `(#:configure-flags
-       (list (string-append "PREFIX=" %output)
-             (string-append "FONT_DIR=" %output "/share/consolefonts"))
-       #:make-flags
-       (let ((lib (string-append %output "/lib")))
-         (list (string-append "cava_LDFLAGS = -L" lib " -Wl,-rpath " lib)))
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'bootstrap
-           (lambda* (#:key outputs #:allow-other-keys)
-             (setenv "HOME" (getcwd))
-             (invoke "sh" "autogen.sh")))
-         (add-before 'build 'make-cava-ldflags
-           (lambda* (#:key outputs #:allow-other-keys)
-             (mkdir-p (string-append (assoc-ref outputs "out") "/lib"))
-             #t))
-         (add-after 'install 'data
-           (lambda* (#:key outputs #:allow-other-keys)
-             (for-each (lambda (file)
-                         (install-file file
-                                       (string-append (assoc-ref outputs "out")
-                                                      "/share/doc/examples")))
-                       (find-files "example_files"))
-             #t)))))
+     (list #:configure-flags
+           #~(list (string-append "PREFIX="
+                                  #$output)
+                   (string-append "FONT_DIR="
+                                  #$output "/share/consolefonts"))
+           #:make-flags
+           #~(let ((lib (string-append #$output "/lib")))
+               (list (string-append "cava_LDFLAGS = -L" lib " -Wl,-rpath " lib " -lrt")))
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'bootstrap
+                 (lambda _
+                   (setenv "HOME"
+                           (getcwd))
+                   (invoke "sh" "autogen.sh")))
+               (add-before 'build 'make-cava-ldflags
+                 (lambda _
+                   (mkdir-p (string-append #$output "/lib"))))
+               (add-after 'install 'data
+                 (lambda _
+                   (for-each (lambda (file)
+                               (install-file file
+                                             (string-append #$output
+                                              "/share/doc/examples")))
+                             (find-files "example_files")))))))
     (home-page "https://karlstav.github.io/cava/")
     (synopsis "Console audio visualizer for ALSA, MPD, and PulseAudio")
     (description "C.A.V.A. is a bar audio spectrum visualizer for the terminal
@@ -4945,50 +4936,47 @@ as is the case with audio plugins.")
         (base32 "01ngkmfcxyg1bb4qmfvlkkjbx4lx62akxqhizl8zmqnhfcy4p9bx"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no "check" target
-       #:make-flags
-       (list (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (add-before 'build 'set-CC-variable-and-show-features
-           (lambda _
-             (setenv "CC" "gcc")
-             (invoke "make" "features")))
-         (add-after 'install 'make-carla-executable
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (chmod (string-append out "/share/carla/carla") #o555)
-               #t)))
-         (add-after 'install 'wrap-executables
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (wrap-script (string-append out "/bin/carla")
-                            #:guile (search-input-file inputs "bin/guile")
-                            `("GUIX_PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH"))))
-               #t))))))
+     (list #:tests? #f                  ; no "check" target
+           #:make-flags
+           #~(list (string-append "PREFIX=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)      ; no configure script
+               (add-before 'build 'set-CC-variable-and-show-features
+                 (lambda _
+                   (setenv "CC" #$(cc-for-target))
+                   (invoke "make" "features")))
+               (add-after 'install 'make-carla-executable
+                 (lambda _
+                   (chmod (string-append #$output "/share/carla/carla") #o555)))
+               (add-after 'install 'wrap-executables
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (wrap-script (string-append #$output "/bin/carla")
+                                #:guile (search-input-file inputs "bin/guile")
+                                `("GUIX_PYTHONPATH" ":" prefix
+                                  (,(getenv "GUIX_PYTHONPATH")))))))))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("ffmpeg" ,ffmpeg)
-       ("fluidsynth" ,fluidsynth)
-       ("file" ,file)
-       ("liblo" ,liblo)
-       ("libsndfile" ,libsndfile)
-       ("gtk2" ,gtk+-2)   ;needed for bridging GTK2 plugins in GTK3 hosts
-       ("gtk+" ,gtk+)
-       ("python-pyliblo" ,python-pyliblo)
-       ("python-pyqt" ,python-pyqt)
-       ("python-rdflib" ,python-rdflib)
-       ;; python-pyqt shows the following error without python-wrapper:
-       ;; Error while finding module specification for 'PyQt5.uic.pyuic'
-       ;; (ModuleNotFoundError: No module named 'PyQt5')
-       ("python-wrapper" ,python-wrapper)
-       ("libx11" ,libx11)
-       ("qtbase" ,qtbase-5)
-       ("zlib" ,zlib)
+     (list alsa-lib
+           ffmpeg
+           fluidsynth
+           file
+           liblo
+           libsndfile
+           libx11
+           gtk+-2              ;needed for bridging GTK2 plugins in GTK3 hosts
+           gtk+
+           python-pyliblo
+           python-pyqt
+           python-rdflib
+           ;; python-pyqt shows the following error without python-wrapper:
+           ;; Error while finding module specification for 'PyQt5.uic.pyuic'
+           ;; (ModuleNotFoundError: No module named 'PyQt5')
+           python-wrapper
+           qtbase-5
+           zlib
 
-       ;; For WRAP-SCRIPT above.
-       ("guile" ,guile-2.2)))
+           ;; For WRAP-SCRIPT above.
+           guile-2.2))
     (native-inputs
      (list pkg-config))
     (home-page "https://kx.studio/Applications:Carla")
@@ -5399,55 +5387,54 @@ while still staying in time.")
 (define-public butt
   (package
     (name "butt")
-    (version "0.1.32")
+    (version "0.1.34")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/butt/butt/butt-"
                                   version "/butt-" version ".tar.gz"))
               (sha256
                (base32
-                "1qwllkx9p1gb3syhbbck3agrk375m82l18fb81aqygi4g3dg3s9r"))
+                "0zd1g1673pv8z437y34fllxska8dzpd7mygpham35pzwpdyc5c1p"))
               (modules '((guix build utils)))
               (snippet
                '(substitute* "src/butt.cpp"
                   ((".*zica.*") "")))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-documentation
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (manual (assoc-ref inputs "manual"))
-                    (doc (string-append out "/share/doc/" ,name "-" ,version)))
-               (install-file "README" doc)
-               (copy-file manual (string-append doc "/butt-manual.pdf"))))))))
-    (inputs
-     `(("dbus" ,dbus)
-       ("flac" ,flac)
-       ("fltk" ,fltk)
-       ("lame" ,lame)
-       ("libfdk" ,libfdk)
-       ("libsamplerate" ,libsamplerate)
-       ("libvorbis" ,libvorbis)
-       ("libx11" ,libx11)
-       ("libxext" ,libxext)
-       ("libxfixes" ,libxfixes)
-       ("libxft" ,libxft)
-       ("libxrender" ,libxrender)
-       ("ogg" ,libogg)
-       ("openssl" ,openssl)
-       ("opus" ,opus)
-       ("portaudio" ,portaudio)))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'install-documentation
+                 (lambda _
+                   (let ((doc (string-append #$output "/share/doc/" #$name)))
+                     (install-file "README" doc)
+                     (copy-file #$(this-package-native-input "manual")
+                                (string-append doc "/butt-manual.pdf"))))))))
     (native-inputs
      `(("pkg-config" ,pkg-config)
-       ("manual" ,(origin
-                    (method url-fetch)
-                    (uri (string-append "https://danielnoethen.de/butt/butt-"
-                                        version "_manual.pdf"))
-                    (sha256
-                     (base32
-                      "0g70jyyxbx5nin3xs9q9zf878b2kyy7rn8gn9w91x1ychbjd6dhh"))))))
+       ("manual"
+        ,(origin
+           (method url-fetch)
+           (uri (string-append "https://danielnoethen.de/butt/butt-"
+                               version "_manual.pdf"))
+           (sha256
+            (base32 "0kadqzzbk25n0aqxgbqhg4mq4hsbjq44phzcx5qj1b8847yzz8si"))))))
+    (inputs
+     (list dbus
+           flac
+           fltk
+           lame
+           libfdk
+           libsamplerate
+           libvorbis
+           libx11
+           libxext
+           libxfixes
+           libxft
+           libxrender
+           libogg
+           openssl
+           opus
+           portaudio))
     (home-page "https://danielnoethen.de/butt/")
     (synopsis "Audio streaming tool")
     (description "Butt is a tool to stream audio to a ShoutCast or

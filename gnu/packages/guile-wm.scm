@@ -4,6 +4,7 @@
 ;;; Copyright © 2017, 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2019 Pierre-Moana Levesque <pierre.moana.levesque@gmail.com>
+;;; Copyright © 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -30,7 +31,8 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
-  #:use-module (guix build-system gnu))
+  #:use-module (guix build-system gnu)
+  #:use-module (guix utils))
 
 (define-public guile-xcb
   (let ((commit "db7d5a393cc37a56f66541b3f33938b40c6f35b3")
@@ -48,19 +50,19 @@
                  (base32
                   "16w4vgzbmnwih4bgfn8rw85ryfvzhc6hyly6bic9sd7hhc82rcnd"))))
       (build-system gnu-build-system)
-      (arguments '(;; Parallel builds fail.
-                   #:parallel-build? #f
-                   #:configure-flags (list (string-append
-                                            "--with-guile-site-dir="
-                                            (assoc-ref %outputs "out")
-                                            "/share/guile/site/2.2")
-                                           (string-append
-                                            "--with-guile-site-ccache-dir="
-                                            (assoc-ref %outputs "out")
-                                            "/lib/guile/2.2/site-ccache"))))
+      (arguments
+       `( ;; Parallel builds fail.
+         #:parallel-build? #f
+         #:configure-flags
+         (let ((out (assoc-ref %outputs "out"))
+               (effective ,(version-major+minor
+                            (package-version (this-package-input "guile")))))
+           (list (string-append "--with-guile-site-dir=" out
+                                "/share/guile/site/" effective)
+                 (string-append "--with-guile-site-ccache-dir=" out
+                                "/lib/guile/" effective "/site-ccache")))))
       (native-inputs (list guile-2.2 pkg-config texinfo))
-      (inputs `(("guile" ,guile-2.2)
-                ("xcb" ,xcb-proto)))
+      (inputs (list guile-2.2 xcb-proto))
       (home-page "https://github.com/mwitmer/guile-xcb")
       (synopsis "XCB bindings for Guile")
       (description
@@ -93,14 +95,17 @@ dependencies.")
                     (ice-9 popen))
          ;; The '.scm' files go to $(datadir), so set that to the
          ;; standard value.
-         #:configure-flags (list (string-append "--datadir="
-                                                (assoc-ref %outputs "out")
-                                                "/share/guile/site/2.2"))
+         #:configure-flags
+         (let ((out (assoc-ref %outputs "out"))
+               (effective ,(version-major+minor
+                            (package-version (this-package-input "guile")))))
+           (list (string-append "--datadir=" out
+                                "/share/guile/site/" effective)))
          #:phases
          (modify-phases %standard-phases
            (add-before 'configure 'set-module-directory
              (lambda* (#:key outputs #:allow-other-keys)
-               ;; Install .scm files to $out/share/guile/site/2.2.
+               ;; Install .scm files to $out/share/guile/site/x.y.
                (let ((out (assoc-ref outputs "out"))
                      (effective (read-line
                                  (open-pipe* OPEN_READ
@@ -110,8 +115,7 @@ dependencies.")
                    (("^wmdir = .*$")
                     (string-append "wmdir = " out
                                    "/share/guile/site/"
-                                   effective "\n"))))
-               #t))
+                                   effective "\n"))))))
            (add-after 'install 'set-load-path
              (lambda* (#:key inputs outputs #:allow-other-keys)
                ;; Put Guile-XCB's and Guile-WM's modules in the
@@ -131,8 +135,7 @@ dependencies.")
                      (,mods ,(string-append xcb "/share/guile/site/" effective)))
                    `("GUILE_LOAD_COMPILED_PATH" ":" prefix
                      (,gos ,(string-append xcb "/lib/guile/"
-                                           effective "/site-ccache")))))
-               #t))
+                                           effective "/site-ccache")))))))
            (add-after 'install 'install-go-files
              (lambda* (#:key outputs inputs #:allow-other-keys)
                (let* ((out (assoc-ref outputs "out"))
@@ -153,8 +156,7 @@ dependencies.")
                                     (go   (string-append object-dir base ".go")))
                                (invoke "guild" "compile" "-L" module-dir
                                        file "-o" go)))
-                           (find-files module-dir "\\.scm$"))
-                 #t)))
+                           (find-files module-dir "\\.scm$")))))
            (add-after 'install 'install-xsession
              (lambda* (#:key outputs #:allow-other-keys)
                ;; add a .desktop file to xsessions
@@ -170,8 +172,7 @@ dependencies.")
                                     Comment=~a~@
                                     Exec=~a/bin/guile-wm~@
                                     Type=Application~%"
-                             ,name ,synopsis %output))))
-               #t)))))
+                             ,name ,synopsis %output)))))))))
       (native-inputs (list guile-2.2 guile-xcb pkg-config texinfo))
       (inputs (list guile-2.2 guile-xcb))
       (home-page "https://github.com/mwitmer/guile-wm/releases")

@@ -9,7 +9,7 @@
 ;;; Copyright © 2014, 2017 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2016, 2017, 2018, 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016, 2017, 2020, 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2016, 2017 Kei Kebreau <kkebreau@posteo.net>
@@ -238,25 +238,6 @@ extension of the APNG (Portable Network Graphics) format.
 APNG patch provides APNG support to libpng.")
     (home-page "https://sourceforge.net/projects/libpng-apng/")
     (license license:zlib)))
-
-(define-public libpng-1.2
-  (package
-    (inherit libpng)
-    (version "1.2.59")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (list (string-append "mirror://sourceforge/libpng/libpng12/"
-                                 version "/libpng-" version ".tar.xz")
-                  (string-append
-                   "ftp://ftp.simplesystems.org/pub/libpng/png/src"
-                   "/libpng12/libpng-" version ".tar.xz")
-                  (string-append
-                   "ftp://ftp.simplesystems.org/pub/libpng/png/src/history"
-                   "/libpng12/libpng-" version ".tar.xz")))
-       (sha256
-        (base32
-         "1izw9ybm27llk8531w6h4jp4rk2rxy2s9vil16nwik5dp0amyqxl"))))))
 
 (define-public pngcrush
   (package
@@ -530,15 +511,18 @@ official designation is ISO/IEC 29199-2). This library is an implementation of t
 (define-public jpegoptim
   (package
    (name "jpegoptim")
-   (version "1.4.6")
-   (source (origin
-            (method url-fetch)
-            (uri (string-append "http://www.kokkonen.net/tjko/src/jpegoptim-"
-                                version ".tar.gz"))
-            (sha256 (base32
-                     "1dss7907fclfl8zsw0bl4qcw0hhz6fqgi3867w0jyfm3q9jfpcc8"))))
+   (version "1.4.7")
+   (source
+    (origin
+      (method git-fetch)
+      (uri (git-reference
+            (url "https://github.com/tjko/jpegoptim")
+            (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256
+       (base32 "06f6d08xvmsiki4mc1qs985gsjqmsxx793a93b72y25q84wbg9x9"))))
    (build-system gnu-build-system)
-   (inputs `(("libjpeg" ,libjpeg-turbo)))
+   (inputs (list libjpeg-turbo))
    (arguments
     '(#:tests? #f))                     ; no tests
    (synopsis "Optimize JPEG images")

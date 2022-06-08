@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019 Josh Holland <josh@inv.alid.pw>
-;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2021, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,13 +28,13 @@
 (define-public rcm
   (package
     (name "rcm")
-    (version "1.3.4")
+    (version "1.3.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://thoughtbot.github.io/rcm/dist/rcm-"
                                   version ".tar.gz"))
               (sha256
-               (base32 "0jn2crdqcna0fyg7w7x1mcyjblzykd3lh4vdxhsd5x4w8hvsw4cv"))))
+               (base32 "0bdyksrd9i3lkmr9kq6dwa0l4g2403vnma5s4j9h8spi4rziwx14"))))
     (build-system gnu-build-system)
     (arguments '(#:phases
                  (modify-phases %standard-phases
@@ -45,8 +45,7 @@
                                       "test/rcup-hooks-run-in-order.t")
                          (("/bin/sh") (which "sh")))
                        (substitute* "test/rcup-hooks.t"
-                         (("/usr/bin/env") (which "env")))
-                       #t)))
+                         (("/usr/bin/env") (which "env"))))))
                   #:parallel-tests? #f))
     (native-inputs (list perl python-cram))
     (synopsis "Management suite for dotfiles")

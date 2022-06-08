@@ -1,0 +1,41 @@
+Add Loader argument to 'yaml.load' invocations as required by PyYAML 6.0.
+
+Submitted upstream:
+
+  https://github.com/ganeti/ganeti/pull/1668
+
+diff --git a/qa/qa_utils.py b/qa/qa_utils.py
+index da485df48..27428e685 100644
+--- a/qa/qa_utils.py
++++ b/qa/qa_utils.py
+@@ -450,7 +450,7 @@ def GetObjectInfo(infocmd):
+   master = qa_config.GetMasterNode()
+   cmdline = utils.ShellQuoteArgs(infocmd)
+   info_out = GetCommandOutput(master.primary, cmdline)
+-  return yaml.load(info_out)
++  return yaml.load(info_out, Loader=yaml.SafeLoader)
+ 
+ 
+ def UploadFile(node, src):
+diff --git a/test/py/ganeti.cli_unittest.py b/test/py/ganeti.cli_unittest.py
+index 9cc980afa..242aac9fd 100755
+--- a/test/py/ganeti.cli_unittest.py
++++ b/test/py/ganeti.cli_unittest.py
+@@ -1141,14 +1141,15 @@ class TestFormatPolicyInfo(unittest.TestCase):
+           self._RenameDictItem(minmax, key, keyparts[0])
+     self.assertTrue(constants.IPOLICY_DTS in parsed)
+     parsed[constants.IPOLICY_DTS] = yaml.load("[%s]" %
+-                                              parsed[constants.IPOLICY_DTS])
++                                              parsed[constants.IPOLICY_DTS],
++                                              Loader=yaml.SafeLoader)
+ 
+   @staticmethod
+   def _PrintAndParsePolicy(custom, effective, iscluster):
+     formatted = cli.FormatPolicyInfo(custom, effective, iscluster)
+     buf = StringIO()
+     cli._SerializeGenericInfo(buf, formatted, 0)
+-    return yaml.load(buf.getvalue())
++    return yaml.load(buf.getvalue(), Loader=yaml.SafeLoader)
+ 
+   def _PrintAndCheckParsed(self, policy):
+     parsed = self._PrintAndParsePolicy(policy, NotImplemented, True)

@@ -66,8 +66,23 @@
 (define (read-with-comments port)
   "Like 'read', but include <comment> objects when they're encountered."
   ;; Note: Instead of implementing this functionality in 'read' proper, which
-  ;; is the best approach long-term, this code is a later on top of 'read',
+  ;; is the best approach long-term, this code is a layer on top of 'read',
   ;; such that we don't have to rely on a specific Guile version.
+  (define dot (list 'dot))
+  (define (dot? x) (eq? x dot))
+
+  (define (reverse/dot lst)
+    ;; Reverse LST and make it an improper list if it contains DOT.
+    (let loop ((result '())
+               (lst lst))
+      (match lst
+        (() result)
+        (((? dot?) . rest)
+         (let ((dotted (reverse rest)))
+           (set-cdr! (last-pair dotted) (car result))
+           dotted))
+        ((x . rest) (loop (cons x result) rest)))))
+
   (let loop ((blank-line? #t)
              (return (const 'unbalanced)))
     (match (read-char port)
@@ -85,7 +100,7 @@
                                       (((? comment?) . _) #t)
                                       (_ #f))
                                     (lambda ()
-                                      (return (reverse lst))))
+                                      (return (reverse/dot lst))))
                               lst)))))
              ((memv chr '(#\) #\]))
               (return))
@@ -107,8 +122,10 @@
                        (not blank-line?)))
              (else
               (unread-char chr port)
-              (read port)))))))
-
+              (match (read port)
+                ((and token '#{.}#)
+                 (if (eq? chr #\.) dot token))
+                (token token))))))))
 
 ;;;
 ;;; Comment-preserving pretty-printer.

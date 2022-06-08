@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2017-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2020 Simon Tournier <zimon.toutoune@gmail.com>
@@ -31,6 +31,7 @@
   #:use-module (guix store)
   #:use-module (guix grafts)
   #:use-module (guix gexp)
+  #:use-module (guix colors)
   #:use-module ((guix build syscalls) #:select (terminal-columns))
   #:use-module ((guix build utils) #:select (every*))
   #:use-module (guix substitutes)
@@ -39,6 +40,7 @@
   #:use-module (guix ci)
   #:use-module (guix sets)
   #:use-module (guix graph)
+  #:use-module (guix scripts build)
   #:autoload   (guix scripts graph) (%bag-node-type)
   #:use-module (gnu packages)
   #:use-module (web uri)
@@ -203,7 +205,7 @@ In case ITEMS is an empty list, return 1 instead."
                     #:make-progress-reporter
                     (lambda* (total #:key url #:allow-other-keys)
                       (progress-reporter/bar total)))))
-    (format #t "~a~%" server)
+    (format #t (highlight "~a~%") server)
     (let ((obtained  (length narinfos))
           (requested (length items))
           (missing   (lset-difference string=?
@@ -215,9 +217,17 @@ In case ITEMS is an empty list, return 1 instead."
           (time      (+ (time-second time)
                         (/ (time-nanosecond time) 1e9))))
       (when (> requested 0)
-        (format #t (G_ "  ~,1f% substitutes available (~h out of ~h)~%")
-                (* 100. (/ obtained requested 1.))
-                obtained requested))
+        (let* ((ratio    (/ obtained requested 1.))
+               (colorize (cond ((> ratio 0.80)
+                                (coloring-procedure (color BOLD GREEN)))
+                               ((< ratio 0.50)
+                                (coloring-procedure (color BOLD RED)))
+                               (else
+                                highlight))))
+          (format #t
+                  (colorize (G_ "  ~,1f% substitutes available (~h out of ~h)~%"))
+                  (* 100. ratio)
+                  obtained requested)))
       (let ((total (/ (reduce + 0 sizes) MiB)))
         (match (length sizes)
           ((? zero?)
@@ -330,18 +340,18 @@ Report the availability of substitutes.\n"))
                          COUNT dependents"))
   (display (G_ "
       --display-missing  display the list of missing substitutes"))
-  (display (G_ "
-  -s, --system=SYSTEM    consider substitutes for SYSTEM--e.g., \"i686-linux\""))
   (newline)
   (display (G_ "
   -h, --help             display this help and exit"))
   (display (G_ "
   -V, --version          display version information and exit"))
   (newline)
+  (show-native-build-options-help)
+  (newline)
   (show-bug-report-information))
 
 (define %options
-  (list  (option '(#\h "help") #f #f
+  (cons* (option '(#\h "help") #f #f
                  (lambda args
                    (show-help)
                    (exit 0)))
@@ -371,9 +381,7 @@ Report the availability of substitutes.\n"))
          (option '("display-missing") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'display-missing? #t result)))
-         (option '(#\s "system") #t #f
-                 (lambda (opt name arg result)
-                   (alist-cons 'system arg result)))))
+         %standard-native-build-options))
 
 (define %default-options
   `((substitute-urls . ,%default-substitute-urls)))

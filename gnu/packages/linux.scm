@@ -7,7 +7,7 @@
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
-;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016, 2017 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2016 Raymond Nicholson <rain1@openmailbox.org>
 ;;; Copyright © 2016 Mathieu Lirzin <mthl@gnu.org>
@@ -62,6 +62,7 @@
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2022 Rene Saavedra <nanuui@protonmail.com>
 
 ;;;
 ;;; This file is part of GNU Guix.
@@ -98,8 +99,9 @@
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages cryptsetup)
   #:use-module (gnu packages compression)
-  #:use-module (gnu packages dbm)
+  #:use-module (gnu packages databases)
   #:use-module (gnu packages datastructures)
+  #:use-module (gnu packages dbm)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages elf)
@@ -110,6 +112,7 @@
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages gperf)
@@ -129,6 +132,7 @@
   #:use-module (gnu packages networking)
   #:use-module (gnu packages ninja)
   #:use-module (gnu packages nss)
+  #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pciutils)
   #:use-module (gnu packages pkg-config)
@@ -157,6 +161,7 @@
   #:use-module (gnu packages groff)
   #:use-module (gnu packages selinux)
   #:use-module (gnu packages swig)
+  #:use-module (guix platform)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
@@ -179,20 +184,6 @@
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 match)
   #:use-module (ice-9 regex))
-
-(define-public (system->linux-architecture arch)
-  "Return the Linux architecture name for ARCH, a Guix system name such as
-\"x86_64-linux\" or a target triplet such as \"arm-linux-gnueabihf\"."
-  (let ((arch (car (string-split arch #\-))))
-    (cond ((string=? arch "i686") "i386")
-          ((string-prefix? "mips" arch) "mips")
-          ((string-prefix? "arm" arch) "arm")
-          ((string-prefix? "aarch64" arch) "arm64")
-          ((string-prefix? "alpha" arch) "alpha")
-          ((string-prefix? "powerpc" arch) "powerpc") ;including "powerpc64le"
-          ((string-prefix? "s390" arch) "s390")
-          ((string-prefix? "riscv" arch) "riscv")
-          (else arch))))
 
 (define-public (system->defconfig system)
   "Some systems (notably powerpc-linux) require a special target for kernel
@@ -360,110 +351,110 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The current "stable" kernels. That is, the most recently released major
 ;; versions that are still supported upstream.
 
-(define-public linux-libre-5.16-version "5.16.16")
-(define-public linux-libre-5.16-gnu-revision "gnu")
-(define deblob-scripts-5.16
+(define-public linux-libre-5.17-version "5.17.12")
+(define-public linux-libre-5.17-gnu-revision "gnu")
+(define deblob-scripts-5.17
   (linux-libre-deblob-scripts
-   linux-libre-5.16-version
-   linux-libre-5.16-gnu-revision
-   (base32 "0c9c8zd85p84r8k4xhys8xw15pds71v0ca2b6hm1pr4f6lpzck0g")
-   (base32 "0hpr1qr68xh52gzzw5jbwq4i8qd2a5mfbn8s2jj378550kfsn3c0")))
-(define-public linux-libre-5.16-pristine-source
-  (let ((version linux-libre-5.16-version)
-        (hash (base32 "13qk6cjnjwgnxj25mphyv08pjf1sqz7bxxrr3fpl8gz3aghdd9yc")))
+   linux-libre-5.17-version
+   linux-libre-5.17-gnu-revision
+   (base32 "08ip5g827f30qzb3j2l19zkbdqv00sij46nbrjg75h5kkasdbfgr")
+   (base32 "1zd4ds6ha4a2acqnalp234r2m9rz9p30qmy1aqri78i06aw7flwn")))
+(define-public linux-libre-5.17-pristine-source
+  (let ((version linux-libre-5.17-version)
+        (hash (base32 "0yr8xfds5l1s3lk8qk67mgy0l4yh2jfvjc7xwrfws3ci020ss9a2")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
-                            deblob-scripts-5.16)))
+                            deblob-scripts-5.17)))
 
 ;; The "longterm" kernels — the older releases with long-term upstream support.
 ;; Here are the support timelines:
 ;; <https://www.kernel.org/category/releases.html>
-(define-public linux-libre-5.15-version "5.15.30")
+(define-public linux-libre-5.15-version "5.15.44")
 (define-public linux-libre-5.15-gnu-revision "gnu")
 (define deblob-scripts-5.15
   (linux-libre-deblob-scripts
    linux-libre-5.15-version
    linux-libre-5.15-gnu-revision
-   (base32 "1rfhwfzifmbpnrhmrn3srm736nkm1v6affw915d0fgqzqgi8qfai")
-   (base32 "0mwzr1ffrr02pyy4rhwrv8msm9l59mg1d164j6qif7kkax2mdg66")))
+   (base32 "1n57mz5agvf1d0ggbg080d7hvx8p9y0iqxkq4ypg10a7n96zy7y5")
+   (base32 "0gs92qbpvirwd02rpwwnja7771z2azbiy9ppy9ynpr14lxmzxnnh")))
 (define-public linux-libre-5.15-pristine-source
   (let ((version linux-libre-5.15-version)
-        (hash (base32 "0ckiz985x88x68psg6wazyk7zpv34k8rbzpzyzj0gaph13za4ki5")))
+        (hash (base32 "1p1jz0lxmzyj0c51afqghylg9kblk8zmlw92zq6bsn37wlwbrylv")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.15)))
 
-(define-public linux-libre-5.10-version "5.10.107")
+(define-public linux-libre-5.10-version "5.10.119")
 (define-public linux-libre-5.10-gnu-revision "gnu1")
 (define deblob-scripts-5.10
   (linux-libre-deblob-scripts
    linux-libre-5.10-version
    linux-libre-5.10-gnu-revision
-   (base32 "1swy3y851jnnmk3hc0khllpsifb98camlwyskpn1dyvjsgjljd8x")
-   (base32 "051ig1nn45jmm3nk7cxnqabcq3nn62d4dq4ggycsbnx24ckkzfrr")))
+   (base32 "0mw7qn77y9c6wrnw4rjvf75cpm1w6n1aqqhf8cnghcb97p2yxxrf")
+   (base32 "1xyhz0dyrkg2avz382ly3dzpa5v89x49gfzx80c1drpwsk7jg6gp")))
 (define-public linux-libre-5.10-pristine-source
   (let ((version linux-libre-5.10-version)
-        (hash (base32 "1snzzhkzdjlj92gqig3sanxlhv0xc0xk2xwjdjr0yds6g43w6ry4")))
+        (hash (base32 "04952zaz2kfwf7agy4laz50f9sl3mrnpqlbwbj84q1xpl9akwd9y")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.10)))
 
-(define-public linux-libre-5.4-version "5.4.186")
+(define-public linux-libre-5.4-version "5.4.196")
 (define-public linux-libre-5.4-gnu-revision "gnu1")
 (define deblob-scripts-5.4
   (linux-libre-deblob-scripts
    linux-libre-5.4-version
    linux-libre-5.4-gnu-revision
    (base32 "1nlgk8ajb5wl3aa96h9a0pb9j5a5wmrbpk63varn557x1d00r7wj")
-   (base32 "1mp9d0b7mqw7cl65k0a18265cvn4qwcpnvna8r6n5m3y4pz3rik9")))
+   (base32 "05i286d98fm2pdf9724x1dsmfcm7gsd7yyyvxqlpisyj1kx14hda")))
 (define-public linux-libre-5.4-pristine-source
   (let ((version linux-libre-5.4-version)
-        (hash (base32 "1f9rigm58miq5s98bx7pvylqi9hlzlfnq1nrj4cd8f4arcjcvxv1")))
+        (hash (base32 "1x5irgki792f21hm5146xary0260cl9r475kvw8vm9w32vyx18ig")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.4)))
 
-(define-public linux-libre-4.19-version "4.19.235")
+(define-public linux-libre-4.19-version "4.19.245")
 (define-public linux-libre-4.19-gnu-revision "gnu1")
 (define deblob-scripts-4.19
   (linux-libre-deblob-scripts
    linux-libre-4.19-version
    linux-libre-4.19-gnu-revision
    (base32 "06pqv050bkii0hc2v7ymny5264w1bca8db0dp1pw9mfmjg865am5")
-   (base32 "1mp9d0b7mqw7cl65k0a18265cvn4qwcpnvna8r6n5m3y4pz3rik9")))
+   (base32 "1dnjgx1nmawm9gm0yf15nl80nmg7hy7q2vl3jxjbwj6hlrfv5dmx")))
 (define-public linux-libre-4.19-pristine-source
   (let ((version linux-libre-4.19-version)
-        (hash (base32 "1615y3ma9icmqqr7lisl8nd8zvvkh77a81yl39yvy6qi9345l32k")))
+        (hash (base32 "1s58qci6xhmss12glzkqk41kp60pqmzh4d84kyz4m4nf4xhdvzcr")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.19)))
 
-(define-public linux-libre-4.14-version "4.14.272")
+(define-public linux-libre-4.14-version "4.14.281")
 (define-public linux-libre-4.14-gnu-revision "gnu1")
 (define deblob-scripts-4.14
   (linux-libre-deblob-scripts
    linux-libre-4.14-version
    linux-libre-4.14-gnu-revision
    (base32 "02rxvr0gmxb3zfsyyzdmzgfq04gkdkv1cc38md0xfl0mxzdzdfyk")
-   (base32 "1mp9d0b7mqw7cl65k0a18265cvn4qwcpnvna8r6n5m3y4pz3rik9")))
+   (base32 "1dnjgx1nmawm9gm0yf15nl80nmg7hy7q2vl3jxjbwj6hlrfv5dmx")))
 (define-public linux-libre-4.14-pristine-source
   (let ((version linux-libre-4.14-version)
-        (hash (base32 "0scx13pc5y5jmm5xa17my242gsgb1mf0cgqzjx656g7kkh4phqcv")))
+        (hash (base32 "0pivb1m2cwqnlm8bhd4ccnlq9pwp2r5lmn77gp91k6vbjv3gkqis")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.14)))
 
-(define-public linux-libre-4.9-version "4.9.307")
+(define-public linux-libre-4.9-version "4.9.316")
 (define-public linux-libre-4.9-gnu-revision "gnu1")
 (define deblob-scripts-4.9
   (linux-libre-deblob-scripts
    linux-libre-4.9-version
    linux-libre-4.9-gnu-revision
    (base32 "0nai5m4rbh37qaj1xf2qj7656l2gacfh0847q5d07y22b048fq5n")
-   (base32 "0wdaj40pcq9wg5xnz2zj3jj8bawhfgqxcwp6dnavbf9lq0gca48p")))
+   (base32 "14jyn2yrbm6ayp0bszs4f9jy3p1qkrj5p5gf5c42spr67aa2lv2v")))
 (define-public linux-libre-4.9-pristine-source
   (let ((version linux-libre-4.9-version)
-        (hash (base32 "1xyhz7hq8yyclxyavzk36sbl41vlb74pccd56240kq34ma1hyis7")))
+        (hash (base32 "05yd7djm6dcxv3vaylhmj3p0yml421azv8qabmhv4ric1f99idjp")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.9)))
@@ -496,8 +487,8 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
     (patches (append (origin-patches source)
                      patches))))
 
-(define-public linux-libre-5.16-source
-  (source-with-patches linux-libre-5.16-pristine-source
+(define-public linux-libre-5.17-source
+  (source-with-patches linux-libre-5.17-pristine-source
                        (list %boot-logo-patch
                              %linux-libre-arm-export-__sync_icache_dcache-patch)))
 
@@ -566,9 +557,10 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
          (delete 'configure)
          (replace 'build
            (lambda _
-             (let ((arch ,(system->linux-architecture
-                          (or (%current-target-system)
-                              (%current-system))))
+             (let ((arch ,(platform-linux-architecture
+                           (lookup-platform-by-target-or-system
+                            (or (%current-target-system)
+                                (%current-system)))))
                    (defconfig ,(system->defconfig
                                 (or (%current-target-system)
                                     (%current-system))))
@@ -609,10 +601,10 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
     (description "Headers of the Linux-Libre kernel.")
     (license license:gpl2)))
 
-(define-public linux-libre-headers-5.16
-  (make-linux-libre-headers* linux-libre-5.16-version
-                             linux-libre-5.16-gnu-revision
-                             linux-libre-5.16-source))
+(define-public linux-libre-headers-5.17
+  (make-linux-libre-headers* linux-libre-5.17-version
+                             linux-libre-5.17-gnu-revision
+                             linux-libre-5.17-source))
 
 (define-public linux-libre-headers-5.15
   (make-linux-libre-headers* linux-libre-5.15-version
@@ -743,7 +735,9 @@ for ARCH and optionally VARIANT, or #f if there is no such configuration."
                       ((option . #t)
                        (string-append option "=y"))
                       ((option . #f)
-                       (string-append option "=n")))
+                       (string-append option "=n"))
+                      ((option . string)
+                       (string-append option "=\"" string "\"")))
                     options)
                "\n"))
 
@@ -802,11 +796,14 @@ for ARCH and optionally VARIANT, or #f if there is no such configuration."
        ("mpfr" ,mpfr)
        ("mpc" ,mpc)
 
-       ,@(match (and configuration-file
-                     (configuration-file
-                      (system->linux-architecture
-                       (or (%current-target-system) (%current-system)))
-                      #:variant (version-major+minor version)))
+       ,@(match (let ((arch (platform-linux-architecture
+                             (lookup-platform-by-target-or-system
+                              (or (%current-target-system)
+                                  (%current-system))))))
+                  (and configuration-file arch
+                       (configuration-file
+                        arch
+                        #:variant (version-major+minor version))))
            (#f                                    ;no config for this platform
             '())
            ((? string? config)
@@ -836,9 +833,10 @@ for ARCH and optionally VARIANT, or #f if there is no such configuration."
                    (setenv "KBUILD_BUILD_HOST" "guix")
 
                    ;; Set ARCH and CROSS_COMPILE.
-                   (let ((arch #$(system->linux-architecture
-                                  (or (%current-target-system)
-                                      (%current-system)))))
+                   (let ((arch #$(platform-linux-architecture
+                                  (lookup-platform-by-target-or-system
+                                   (or (%current-target-system)
+                                       (%current-system))))))
                      (setenv "ARCH" arch)
                      (format #t "`ARCH' set to `~a'~%" (getenv "ARCH"))
 
@@ -924,18 +922,18 @@ It has been modified to remove all non-free binary blobs.")
 ;;; Generic kernel packages.
 ;;;
 
-(define-public linux-libre-5.16
-  (make-linux-libre* linux-libre-5.16-version
-                     linux-libre-5.16-gnu-revision
-                     linux-libre-5.16-source
+(define-public linux-libre-5.17
+  (make-linux-libre* linux-libre-5.17-version
+                     linux-libre-5.17-gnu-revision
+                     linux-libre-5.17-source
                      '("x86_64-linux" "i686-linux" "armhf-linux" "aarch64-linux" "riscv64-linux")
                      #:configuration-file kernel-config))
 
-(define-public linux-libre-version         linux-libre-5.16-version)
-(define-public linux-libre-gnu-revision    linux-libre-5.16-gnu-revision)
-(define-public linux-libre-pristine-source linux-libre-5.16-pristine-source)
-(define-public linux-libre-source          linux-libre-5.16-source)
-(define-public linux-libre                 linux-libre-5.16)
+(define-public linux-libre-version         linux-libre-5.17-version)
+(define-public linux-libre-gnu-revision    linux-libre-5.17-gnu-revision)
+(define-public linux-libre-pristine-source linux-libre-5.17-pristine-source)
+(define-public linux-libre-source          linux-libre-5.17-source)
+(define-public linux-libre                 linux-libre-5.17)
 
 (define-public linux-libre-5.15
   (make-linux-libre* linux-libre-5.15-version
@@ -1160,9 +1158,9 @@ It has been modified to remove all non-free binary blobs.")
 (define-public linux-libre-with-bpf
   (let ((base-linux-libre
          (make-linux-libre*
-          linux-libre-5.16-version
-          linux-libre-5.16-gnu-revision
-          linux-libre-5.16-source
+          linux-libre-5.17-version
+          linux-libre-5.17-gnu-revision
+          linux-libre-5.17-source
           '("x86_64-linux" "i686-linux" "armhf-linux"
             "aarch64-linux" "riscv64-linux")
           #:extra-version "bpf"
@@ -1193,7 +1191,7 @@ It has been modified to remove all non-free binary blobs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1s7h9y3adyfhw7cjldlfmid79lrwz3vqlvziw9nwd6x5qdj4w9vp"))))
+        (base32 "09ljx0jl987753r2kjqj5kxms95bijw0xn14kf82ryn38ck5c8cf"))))
     (build-system linux-module-build-system)
     (arguments
      (list #:tests? #f                  ; no tests
@@ -1231,7 +1229,7 @@ and should be used with caution, especially on untested models.")
 (define-public corefreq
   (package
     (name "corefreq")
-    (version "1.87.4")
+    (version "1.90.1")
     (source
      (origin
        (method git-fetch)
@@ -1240,7 +1238,7 @@ and should be used with caution, especially on untested models.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01g1smhfzb02gmfjm8c7rchc79dan9jc9pv9c0f8f7fly2hy5zvs"))))
+        (base32 "1fpmrqjwxvjbs23r73agjs322fbi4v1013cncbfyk6lcjghxab76"))))
     (build-system linux-module-build-system)
     (outputs (list "out" "linux-module"))
     (arguments
@@ -1343,8 +1341,8 @@ and the notification, WiFi, and Bluetooth LED.")
     (license license:gpl2)))
 
 (define-public rtl8821ce-linux-module
-  (let ((commit "ca204c60724d23ab10244f920d4e50759ed1affb")
-        (revision "4"))
+  (let ((commit "dce62b9bbb7c76339b514153fcebb3a19bafdcc7")
+        (revision "5"))
     (package
       (name "rtl8821ce-linux-module")
       (version (git-version "0.0.0" revision commit))
@@ -1357,7 +1355,7 @@ and the notification, WiFi, and Bluetooth LED.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "18ma8a8h1l90dss0k6al7q6plwr57jc9g67p22g9917k1jfbhm97"))))
+           "0s5v6z4x7xdgr5qm4q7dr9nd5c8qy28jaw0p78hxji3m8if56vka"))))
       (build-system linux-module-build-system)
       (arguments
        (list #:make-flags
@@ -1792,14 +1790,14 @@ deviation, and minimum and maximum values.  It can show a nice histogram too.")
 (define-public psmisc
   (package
     (name "psmisc")
-    (version "23.4")
+    (version "23.5")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "mirror://sourceforge/psmisc/psmisc/psmisc-"
                           version ".tar.xz"))
       (sha256
-       (base32 "0y8n1jd2dn4cvc5mh806d66qnq8xl0xmzczbycjwal10rvmcw33z"))))
+       (base32 "12z5786dnf37n8wvv73wdcqp3nvsqzhwdk3ajna0mag4yz1fqdyw"))))
     (build-system gnu-build-system)
     (arguments
      `(,@(if (%current-target-system)
@@ -2688,7 +2686,7 @@ Both commands are targeted at system administrators.")
 (define-public jitterentropy-rngd
   (package
     (name "jitterentropy-rngd")
-    (version "1.2.6")
+    (version "1.2.7")
     (source
      (origin
        (method git-fetch)
@@ -2697,7 +2695,7 @@ Both commands are targeted at system administrators.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03cbcxkscjcmn6ybkmssq7i39sn5cfsap9fv058pi0k2mr90djwq"))))
+        (base32 "098hx09bsizin9405gh1c4rzbs2fr7qknqlr3glgyjpm3nm7bx28"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no test suite
@@ -3191,35 +3189,77 @@ settings.")
 the command line or a script.")
     (license license:gpl2+)))
 
+(define-public iotop-python
+  ;; The last release is from 2013 and gives a misleading CONFIG_TASK_DELAY_ACCT
+  ;; error on ‘newer’ kernels.
+  (let ((revision "0")
+        (commit "a14256a3ff74eeee59493ac088561f1bafab85a7"))
+    (package
+      (name "iotop-python")
+      (version (git-version "0.6" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://repo.or.cz/iotop.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "00h5p8fk1zi237q8mqds8apqbis9iw0yih1hl0pr63dsnyzmmrpw"))))
+      (build-system python-build-system)
+      (arguments
+       '(#:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-build-with-python3
+             (lambda _
+               (substitute* "setup.py"
+                 (("itervalues") "values")))))
+         ;; There are currently no checks in the package.
+         #:tests? #f))
+      (native-inputs (list python))
+      (home-page "http://guichaz.free.fr/iotop/")
+      (synopsis
+       "Displays the IO activity of running processes")
+      (description
+       "Iotop is a Python program with a top like user interface to show the
+processes currently causing I/O.")
+      (license license:gpl2+))))
+
 (define-public iotop
   (package
     (name "iotop")
-    (version "0.6")
+    (version "1.21")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "http://guichaz.free.fr/iotop/files/iotop-"
-                           version ".tar.gz"))
-       (sha256 (base32
-                "1kp8mqg2pbxq4xzpianypadfxcsyfgwcaqgqia6h9fsq6zyh4z0s"))))
-    (build-system python-build-system)
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Tomas-M/iotop")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03wdnkfl51dapilg6r9vjga1xrl9lxlypfz07k50nscvbq8v8fb7"))))
+    (build-system gnu-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-build-with-python3
-           (lambda _
-             (substitute* "setup.py"
-               (("itervalues") "values"))
-             #t)))
-       ;; There are currently no checks in the package.
-       #:tests? #f))
-    (native-inputs (list python))
-    (home-page "http://guichaz.free.fr/iotop/")
-    (synopsis
-     "Displays the IO activity of running processes")
+     (list #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output))
+           #:tests? #f                  ; no tests
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)))) ; no configure script
+    (native-inputs (list pkg-config))
+    (inputs (list ncurses))
+    (home-page "https://github.com/Tomas-M/iotop")
+    (synopsis "Interactive @command{top}-like input/output activity monitor")
     (description
-     "Iotop is a Python program with a top like user interface to show the
-processes currently causing I/O.")
+     "iotop identifies which processes and threads are most responsible for
+@acronym{I/O, input/output} activity such as disc reads and writes.  It sorts
+them in a live, interactive table overview similar to that of the well-known
+@command{top}.
+
+This information makes it much easier for an administrator to see which tasks
+are blocking others and adjust their priority (using @command{ionice}) or stop
+or kill them altogether.")
     (license license:gpl2+)))
 
 (define-public fuse
@@ -4880,50 +4920,55 @@ also contains the libsysfs library.")
     (license (list license:gpl2 license:gpl2+ license:lgpl2.1+))))
 
 (define-public cpufrequtils
-  (package
-    (name "cpufrequtils")
-    (version "008")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://kernel.org/linux/utils/kernel/cpufreq/"
-                           "cpufrequtils-" version ".tar.gz"))
-       (sha256
-        (base32 "0xjs8j44hh0cz6qpig1n0iw8xjpr6s5qmcmwh965ngapxgarr7af"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:tests? #f                      ; no test suite
-       #:make-flags
-       (let ((out (assoc-ref %outputs "out")))
-         (list "PROC=false"             ; obsoleted by sysfs in Linux 2.6(!)
-               (string-append "CC=" ,(cc-for-target))
-               (string-append "LDFLAGS=-Wl,-rpath=" out "/lib")
-               "INSTALL=install"
-               (string-append "bindir=" out "/bin")
-               (string-append "sbindir=" out "/sbin")
-               (string-append "mandir=" out "/share/man")
-               (string-append "includedir=" out "/include")
-               (string-append "libdir=" out "/lib")
-               (string-append "localedir=" out "/share/locale")
-               (string-append "docdir=" out "/share/doc/" ,name)))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))         ; no configure script
-    (native-inputs
-     `(("gettext" ,gettext-minimal)))
-    (home-page
-     "http://ftp.be.debian.org/pub/linux/utils/kernel/cpufreq/cpufrequtils.html")
-    (synopsis "Utilities to get and set CPU frequency on Linux")
-    (description
-     "The cpufrequtils suite contains utilities to retrieve CPU frequency
+  (let ((commit "a2f0c39d5f21596bb9f5223e895c0ff210b265d0")
+        (revision "1"))
+    (package
+      (name "cpufrequtils")
+      (version (git-version "008" revision commit ))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://git.kernel.org/pub/scm/linux/kernel/git/brodo/cpufrequtils.git")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "01n2hp6v89cilqqvqvlcprphyhnljsjclh4h1zf3b1l7ypz29lbp"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:tests? #f                      ; no test suite
+         #:make-flags
+         (let ((out (assoc-ref %outputs "out")))
+           (list "PROC=false"             ; obsoleted by sysfs in Linux 2.6(!)
+                 (string-append "CC=" ,(cc-for-target))
+                 (string-append "LDFLAGS=-Wl,-rpath=" out "/lib")
+                 "INSTALL=install"
+                 (string-append "bindir=" out "/bin")
+                 (string-append "sbindir=" out "/sbin")
+                 (string-append "mandir=" out "/share/man")
+                 (string-append "includedir=" out "/include")
+                 (string-append "libdir=" out "/lib")
+                 (string-append "localedir=" out "/share/locale")
+                 (string-append "docdir=" out "/share/doc/" ,name)))
+         #:phases
+         (modify-phases %standard-phases
+           (delete 'configure))))         ; no configure script
+      (native-inputs
+       `(("gettext" ,gettext-minimal)))
+      (home-page
+       "http://ftp.be.debian.org/pub/linux/utils/kernel/cpufreq/cpufrequtils.html")
+      (synopsis "Utilities to get and set CPU frequency on Linux")
+      (description
+       "The cpufrequtils suite contains utilities to retrieve CPU frequency
 information, and set the CPU frequency if supported, using the cpufreq
 capabilities of the Linux kernel.")
-    (license license:gpl2)))
+      (license license:gpl2))))
 
 (define-public libite
   (package
     (name "libite")
-    (version "2.5.1")
+    (version "2.5.2")
     (source
      (origin
        (method git-fetch)
@@ -4932,11 +4977,12 @@ capabilities of the Linux kernel.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "14i0q0nxns6g4zh86zdqy97dwljkqdr5l85ammljzccsrijg9m8v"))))
+        (base32 "0i27ppb557kdc1hm7nf0f5r7sxvqma31pr57h79whl6qcp28gy4a"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
+     `(#:configure-flags
+       (list "--disable-static")
+       #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-tests
            (lambda* (#:key inputs #:allow-other-keys)
@@ -5542,7 +5588,11 @@ and copy/paste text in the console and in xterm.")
     (outputs '("out"
                "static"))      ; static versions of the binaries in "out"
     (arguments
-     '(#:phases (modify-phases %standard-phases
+     '(#:configure-flags
+       ;; The ‘Python support’ was never actually installed by previous
+       ;; versions of this package, but did prevent cross-compilation.
+       (list "--disable-python")
+       #:phases (modify-phases %standard-phases
                   (add-after 'unpack 'patch-makefile
                     (lambda* (#:key outputs #:allow-other-keys)
                       (substitute* "Makefile"
@@ -5569,6 +5619,7 @@ and copy/paste text in the console and in xterm.")
        #:test-target "test"
        #:parallel-tests? #f)) ; tests fail when run in parallel
     (inputs `(("e2fsprogs" ,e2fsprogs)  ; for btrfs-convert
+              ("eudev" ,eudev)
               ("lzo" ,lzo)
               ("util-linux:lib" ,util-linux "lib")       ;for libblkid and libuuid
               ("util-linux:static" ,util-linux "static") ;ditto
@@ -5587,7 +5638,6 @@ and copy/paste text in the console and in xterm.")
                      ("acl" ,acl)
                      ("which" ,which)
                      ("dmsetup" ,lvm2)
-                     ("udevadm" ,eudev)
                      ;; The tests need 'grep' with perl regexp support.
                      ("grep" ,grep)))
     (home-page "https://btrfs.wiki.kernel.org/index.php/Main_Page")
@@ -6189,6 +6239,14 @@ from the ntfs-3g package.  It is meant to be used in initrds.")
        ;; to do the same for consistency.
        #:configure-flags (list "-GNinja"
 
+                               ,@(if (%current-target-system)
+                                   `((string-append
+                                       "-DPKG_CONFIG_EXECUTABLE="
+                                       (search-input-file
+                                         %build-inputs
+                                         (string-append "/bin/"
+                                                        ,(pkg-config-for-target)))))
+                                   '())
                                (string-append "-DRST2MAN_EXECUTABLE="
                                               (assoc-ref %build-inputs
                                                          "python-docutils")
@@ -6392,7 +6450,7 @@ cpufreq sub-system is enabled or not.")
 (define-public haveged
   (package
     (name "haveged")
-    (version "1.9.17")
+    (version "1.9.18")
     (source
      (origin
        (method git-fetch)
@@ -6401,7 +6459,7 @@ cpufreq sub-system is enabled or not.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "119iy8qrvdjkfwnzn1nfjzh2bbihb1vl44qhd6yzzcacjm6pwndr"))))
+        (base32 "1y1p3qhjzhpgd20xz5ffms3w1bdvpk883y38ydwsmp9mc0kzy8kz"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -6570,7 +6628,7 @@ the default @code{nsswitch} and the experimental @code{umich_ldap}.")
 (define-public mcelog
   (package
     (name "mcelog")
-    (version "180")
+    (version "181")
     (source
      (origin
        (method git-fetch)
@@ -6579,7 +6637,7 @@ the default @code{nsswitch} and the experimental @code{umich_ldap}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xy1082c67yd48idg5vwvrw7yx74gn6jj2d9c67d0rh6yji091ki"))
+        (base32 "0c9zdivv86xd8dmwia0k9fbr52zrafbyzn7ss53mh17sry5gm716"))
        (modules '((guix build utils)))
        (snippet
         `(begin
@@ -6707,8 +6765,7 @@ developers.")
                           (string-append "PREFIX=" %output))
        #:tests? #f))                    ; no tests
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)))
+     (list gettext-minimal pkg-config))
     (inputs
      (list libdrm libpciaccess libxcb ncurses))
     (home-page "https://github.com/clbr/radeontop/")
@@ -6732,7 +6789,10 @@ under OpenGL graphics workloads.")
                                   "-" version ".tar.bz2"))
               (sha256
                (base32
-                "0jaka7b4lccswjqiv4liclkj6w78gildg7vd6dnw3wf595pfs67h"))))
+                "0jaka7b4lccswjqiv4liclkj6w78gildg7vd6dnw3wf595pfs67h"))
+              (patches
+               (search-patches "efivar-211.patch"))))
+
     (build-system gnu-build-system)
     (arguments
      (list
@@ -6741,7 +6801,7 @@ under OpenGL graphics workloads.")
        #:make-flags
        #~(list (string-append "prefix=" #$output)
                (string-append "libdir=" #$output "/lib")
-               (string-append "CC_FOR_BUILD=" #$(cc-for-target))
+               (string-append "CC=" #$(cc-for-target))
                (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib"))
        #:phases
        #~(modify-phases %standard-phases
@@ -6770,7 +6830,7 @@ interface to the variable facility of UEFI boot firmware.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/rhinstaller/efibootmgr")
+             (url "https://github.com/rhboot/efibootmgr")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
@@ -6788,20 +6848,28 @@ interface to the variable facility of UEFI boot firmware.")
     (arguments
      (list
       #:tests? #f                       ;no tests
-      #:make-flags #~(list (string-append "prefix=" #$output)
-                           (string-append "libdir=" #$output "/lib")
-                           ;; EFIDIR denotes a subdirectory relative to the
-                           ;; EFI System Partition where the loader will be
-                           ;; installed (known as OS_VENDOR in the code).
-                           ;; GRUB overrides this, as such it's only used if
-                           ;; nothing else is specified on the command line.
-                           "EFIDIR=gnu")
+      #:make-flags
+      #~(append (list (string-append "prefix=" #$output)
+                      (string-append "libdir=" #$output "/lib")
+                      ;; EFIDIR denotes a subdirectory relative to the
+                      ;; EFI System Partition where the loader will be
+                      ;; installed (known as OS_VENDOR in the code).
+                      ;; GRUB overrides this, as such it's only used if
+                      ;; nothing else is specified on the command line.
+                      "EFIDIR=gnu")
+                #$(if (%current-target-system)
+                    #~(list
+                        (string-append "CC=" #$(cc-for-target))
+                        (string-append "PKG_CONFIG=" #$(pkg-config-for-target))
+                        (string-append "EXTRAINCDIRS="
+                                       #$(this-package-input "efivar") "/include"))
+                    #~'()))
       #:phases #~(modify-phases %standard-phases (delete 'configure))))
     (native-inputs
      (list pkg-config))
     (inputs
      (list efivar popt))
-    (home-page "https://github.com/rhinstaller/efibootmgr")
+    (home-page "https://github.com/rhboot/efibootmgr")
     (synopsis "Modify the Extensible Firmware Interface (EFI) boot manager")
     (description
      "@code{efibootmgr} is a user-space application to modify the Intel
@@ -7221,7 +7289,7 @@ used by nftables.")
 (define-public nftables
   (package
     (name "nftables")
-    (version "1.0.1")
+    (version "1.0.2")
     (source
      (origin
        (method url-fetch)
@@ -7230,14 +7298,27 @@ used by nftables.")
                   (string-append "https://www.nftables.org/projects/nftables"
                                  "/files/nftables-" version ".tar.bz2")))
        (sha256
-        (base32 "08x4xw0s5sap3q7jfr91v7mrkxrydi4dvsckw85ims0qb1ibmviw"))))
+        (base32 "00jcjn1pl7qyqpg8pd4yhlkys7wbj4vkzgg73n27nmplzips6a0b"))
+       (patches
+        (search-patches "nftables-fix-makefile.patch"))))
     (build-system gnu-build-system)
     (arguments `(#:configure-flags
-                 '("--disable-man-doc"  ; FIXME: needs docbook2x
-                   "--disable-static"
-                   "--with-cli=readline")))
-    (inputs (list gmp libmnl libnftnl readline))
-    (native-inputs (list pkg-config bison flex))
+                 '("--disable-static"
+                   "--with-cli=readline"
+                   "--with-json")
+                 #:phases
+                  (modify-phases %standard-phases
+                    (add-before 'configure 'autoreconf
+                      (lambda _
+                        (invoke "autoreconf" "-fi"))))))
+    (inputs (list gmp libmnl libnftnl readline jansson))
+    (native-inputs (list pkg-config
+                         bison
+                         flex
+                         docbook2x
+                         autoconf
+                         automake
+                         libtool))
     (home-page "https://www.nftables.org")
     (synopsis "Userspace utility for Linux packet filtering")
     (description "nftables is the project that aims to replace the existing
@@ -7246,6 +7327,336 @@ filtering framework, a new userspace utility and also a compatibility layer for
 {ip,ip6}tables.  nftables is built upon the building blocks of the Netfilter
 infrastructure such as the existing hooks, the connection tracking system, the
 userspace queueing component and the logging subsystem.")
+    (license license:gpl2)))
+
+(define-public libnetfilter-conntrack
+  (package
+    (name "libnetfilter-conntrack")
+    (version "1.0.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://netfilter.org/projects/"
+                           "libnetfilter_conntrack/files/"
+                           "libnetfilter_conntrack-"
+                           version ".tar.bz2"))
+       (sha256
+        (base32
+         "1ky1mqgnplw2h9jf0kn0a69d94jkydhbiipng9l2hdcj13h3pl8c"))))
+    (build-system gnu-build-system)
+    (native-inputs (list pkg-config))
+    (inputs (list libnfnetlink libmnl))
+    (synopsis "Library for kernel connection tracking state table")
+    (description "libnetfilter_conntrack is a userspace library providing a
+programming interface (API) to the in-kernel connection tracking state table.
+The library libnetfilter_conntrack has been previously known as
+libnfnetlink_conntrack and libctnetlink.  This library is currently used by
+conntrack-tools among many other applications.")
+    (home-page "https://netfilter.org/projects/libnetfilter_conntrack/index.html")
+    (supported-systems (filter target-linux? %supported-systems))
+    (properties '((upstream-name . "libnetfilter_conntrack")))
+    (license license:gpl2+)))
+
+(define-public libnetfilter-cttimeout
+  (package
+    (name "libnetfilter-cttimeout")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://netfilter.org/projects/"
+                           "libnetfilter_cttimeout/files/"
+                           "libnetfilter_cttimeout-" version ".tar.bz2"))
+       (sha256
+        (base32
+         "1fpyz1zlvcq80244knvyvy87909xjqlj02lmw8yblz2m9xsi5axf"))))
+    (build-system gnu-build-system)
+    (native-inputs (list pkg-config))
+    (inputs (list libmnl))
+    (synopsis "Library for kernel connection tracking timeout infrastructure")
+    (description "libnetfilter_cttimeout is the userspace library that
+provides the programming interface to the fine-grain connection tracking
+timeout infrastructure.  With this library, you can create, update and delete
+timeout policies that can be attached to traffic flows.  This library is used
+by conntrack-tools.")
+    (home-page "https://netfilter.org/projects/libnetfilter_cttimeout/index.html")
+    (supported-systems (filter target-linux? %supported-systems))
+    (properties '((upstream-name . "libnetfilter_cttimeout")))
+    (license license:gpl2)))
+
+(define-public libnetfilter-cthelper
+  (package
+    (name "libnetfilter-cthelper")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://netfilter.org/projects/"
+                           "libnetfilter_cthelper/files/"
+                           "libnetfilter_cthelper-" version ".tar.bz2"))
+       (sha256
+        (base32
+         "0gfgzkc1fjniqwk4jxds72c0lcgfhq2591hrvjrvd9nrqiqqwq87"))))
+    (build-system gnu-build-system)
+    (native-inputs (list pkg-config))
+    (inputs (list libmnl))
+    (synopsis "Library for user-space connection tracking helpers")
+    (description "libnetfilter_cthelper is a userspace library that provides a
+programming interface to user-space connection tracking helpers.
+@enumerate
+@item
+register new user-space connection tracking helpers
+@item
+unregister user-space connection tracking helpers
+@item
+list existing registered user-space connection tracking helpers
+@end enumerate")
+    (home-page "https://netfilter.org/projects/libnetfilter_cthelper/index.html")
+    (supported-systems (filter target-linux? %supported-systems))
+    (properties '((upstream-name . "libnetfilter_cthelper")))
+    (license license:gpl2+)))
+
+(define-public libnetfilter-queue
+  (package
+    (name "libnetfilter-queue")
+    (version "1.0.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://netfilter.org/projects/"
+                           "libnetfilter_queue/files/"
+                           "libnetfilter_queue-" version ".tar.bz2"))
+       (sha256
+        (base32
+         "1xdra6i4p8jkv943ygjw646qx8df27f7p5852kc06vjx608krzzr"))))
+    (build-system gnu-build-system)
+    (native-inputs (list pkg-config))
+    (inputs (list libmnl libnfnetlink))
+    (synopsis "Library for kernel netfilter infrastructure and state")
+    (description "libnetfilter_queue is a userspace library providing an API
+to packets that have been queued by the kernel packet filter.  It is is part
+of a system that deprecates the old ip_queue/libipq mechanism.")
+    (home-page "https://netfilter.org/projects/libnetfilter_queue/index.html")
+    (supported-systems (filter target-linux? %supported-systems))
+    (properties '((upstream-name . "libnetfilter_queue")))
+    (license license:gpl2+)))
+
+(define-public conntrack-tools
+  (package
+    (name "conntrack-tools")
+    (version "1.4.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://netfilter.org/projects/"
+                           "conntrack-tools/files/"
+                           "conntrack-tools-" version ".tar.bz2"))
+       (sha256
+        (base32
+         "0psx41bclqrh4514yzq03rvs3cq3scfpd1v4kkyxnic2hk65j22r"))))
+    (build-system gnu-build-system)
+    (native-inputs (list bison flex pkg-config))
+    (inputs (list libtirpc
+                  libnetfilter-conntrack
+                  libnetfilter-cttimeout
+                  libnetfilter-cthelper
+                  libnetfilter-queue
+                  libnfnetlink
+                  libmnl))
+    (synopsis "Set of tools targeting the conntrack kernel subsystem")
+    (description "The tool conntrack provides a full featured interface that
+is intended to replace the old @file{/proc/net/ip_conntrack} interface.  Using
+conntrack, you can view and manage the in-kernel connection tracking state
+table from userspace.  On the other hand, conntrackd covers the specific
+aspects of stateful firewalls to enable highly available scenarios, and can be
+used as statistics collector as well.
+
+Since 1.2.0, the conntrack-tools includes the @command{nfct} command line
+utility.  This utility only supports the nfnetlink_cttimeout by now.  In the
+long run, we expect that it will replace conntrack by providing a syntax
+similar to nftables.")
+    (home-page "https://netfilter.org/projects/conntrack-tools/index.html")
+    (supported-systems (filter target-linux? %supported-systems))
+    (license license:gpl2+)))
+
+(define-public libnetfilter-acct
+  (package
+    (name "libnetfilter-acct")
+    (version "1.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://netfilter.org/projects/"
+                           "libnetfilter_acct/files/"
+                           "libnetfilter_acct-" version ".tar.bz2"))
+       (sha256
+        (base32
+         "06lsjndgfjsgfjr43px2n2wk3nr7whz6r405mks3887y7vpwwl22"))))
+    (build-system gnu-build-system)
+    (native-inputs (list pkg-config))
+    (inputs (list libmnl))
+    (synopsis "Library providing interface to extended accounting infrastructure")
+    (description "libnetfilter_acct is the userspace library providing interface
+to extended accounting infrastructure.
+
+@enumerate
+@item
+creating accounting objects
+@item
+retrieving accounting objects (and atomically set to zero)
+@item
+deleting accounting objects
+@end enumerate
+For the nfnetlink_acct subsystem.")
+    (home-page "https://netfilter.org/projects/libnetfilter_acct/index.html")
+    (supported-systems (filter target-linux? %supported-systems))
+    (properties '((upstream-name . "libnetfilter_acct")))
+    (license license:lgpl2.1+)))
+
+(define-public nfacct
+  (package
+    (name "nfacct")
+    (version "1.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://netfilter.org/projects/" name
+                           "/files/nfacct-" version ".tar.bz2"))
+       (sha256
+        (base32
+         "0sdxbxjyapbqcp2ami5jd10vz4xbbdvx39f3wfy1iqsbflc25zzc"))))
+    (build-system gnu-build-system)
+    (native-inputs (list pkg-config))
+    (inputs (list libmnl libnetfilter-acct))
+    (synopsis "Command line tool to create/retrieve/delete accounting objects")
+    (description "nfacct is the command line tool to create/retrieve/delete
+accounting objects
+@enumerate
+@item
+listing the objects of the nfacct table in plain text/XML
+@item
+atomically get and reset objects of the nfacct table
+@item
+adding new objects to the nfacct table
+@item
+deleting objects from the nfacct table
+@end enumerate")
+    (home-page "https://netfilter.org/projects/nfacct/index.html")
+    (supported-systems (filter target-linux? %supported-systems))
+    (license license:gpl2+)))
+
+(define-public libnetfilter-log
+  (package
+    (name "libnetfilter-log")
+    (version "1.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://netfilter.org/projects/"
+                           "libnetfilter_log/files/"
+                           "libnetfilter_log-" version ".tar.bz2"))
+       (sha256
+        (base32
+         "1spy9xs41v76kid5ana8n126f3mvgq6fjibbfbj4kn0larbhix73"))))
+    (build-system gnu-build-system)
+    (native-inputs (list pkg-config))
+    (inputs (list libnfnetlink libmnl))
+    (synopsis "Library providing interface to packets logged by netfilter")
+    (description "libnetfilter_log is a userspace library providing interface to
+packets that have been logged by the kernel packet filter.  It is is part of a
+system that deprecates the old syslog/dmesg based packet logging.  This library
+has been previously known as libnfnetlink_log.
+
+@enumerate
+@item
+receiving to-be-logged packets from the kernel nfnetlink_log subsystem
+@end enumerate")
+    (home-page "https://netfilter.org/projects/libnetfilter_log/index.html")
+    (supported-systems (filter target-linux? %supported-systems))
+    (properties '((upstream-name . "libnetfilter_log")))
+    (license license:gpl2+)))
+
+(define-public ulogd
+  (package
+    (name "ulogd")
+    (version "2.0.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://netfilter.org/projects/" name
+                           "/files/ulogd-" version ".tar.bz2"))
+       (sha256
+        (base32
+         "0ax9959c4bapq78n13bbaibcf1gwjir3ngx8l2dh45lw9m4ha2lr"))))
+    (build-system gnu-build-system)
+    (outputs '("out"
+               ;; additonal non-default output plugins
+               "json" "pcap" "sqlite3" "pgsql" "mysql"))
+    (native-inputs (list pkg-config))
+    (inputs (list libnfnetlink
+                  libmnl
+                  libnetfilter-log
+                  libnetfilter-conntrack
+                  libnetfilter-acct
+                  sqlite
+                  libpcap
+                  jansson
+                  postgresql
+                  mysql
+                  zlib
+                  openssl))
+    (arguments
+     (list #:configure-flags
+           #~(list (string-append "--with-pgsql="
+                                  (assoc-ref %build-inputs "postgresql"))
+                   (string-append "--with-mysql="
+                                  (assoc-ref %build-inputs "mysql")))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'install-doc
+                 (lambda _
+                   (let ((out-etc (string-append #$output "/etc"))
+                         (ulogd.conf "ulogd.conf"))
+                     (mkdir-p out-etc)
+                     (copy-file ulogd.conf (string-append out-etc "/"
+                                                          ulogd.conf)))))
+               (add-after 'install 'setup-plugin-outputs
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (with-directory-excursion
+                       (string-append #$output "/lib/ulogd/")
+                     (for-each
+                      (lambda (output-name)
+                        (let ((output-dir (string-append
+                                           (assoc-ref outputs output-name)
+                                           "/lib/ulogd/")))
+                          (mkdir-p output-dir)
+                          (for-each
+                           (lambda (plugin)
+                             (copy-file plugin (string-append output-dir plugin))
+                             (delete-file plugin))
+                           (find-files "."
+                                       (string-append "ulogd_output_"
+                                                      (string-upcase output-name)
+                                                      ".*$")))))
+                      (list "json" "pcap" "sqlite3" "pgsql" "mysql"))))))))
+    (synopsis "Logging daemon for netfilter and iptables")
+    (description "ulogd is a userspace logging daemon for netfilter/iptables
+related logging.  This includes per-packet logging of security violations,
+per-packet logging for accounting, per-flow logging and flexible user-defined
+accounting.
+
+@enumerate
+@item
+Packet and flow-based traffic accounting
+@item
+Flexible user-defined traffic accounting via nfacct infrastructure
+@item
+SQL database back-end support: SQLite3, PostgreSQL, MySQL
+@item
+Text-based output formats: CSV, XML, Netfilter's LOG, Netfilter's conntrack
+@end enumerate")
+    (home-page "https://netfilter.org/projects/nfacct/index.html")
+    (supported-systems (filter target-linux? %supported-systems))
     (license license:gpl2)))
 
 (define-public proot
@@ -7392,14 +7803,14 @@ available in the kernel Linux.")
 (define-public cpuid
   (package
     (name "cpuid")
-    (version "20211210")
+    (version "20220224")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://www.etallen.com/cpuid/cpuid-"
                                   version ".src.tar.gz"))
               (sha256
                (base32
-                "0i2z1r0zwsmvnx2azwsz3x6van6dj9480lh26s1ny6ny01bqjag0"))))
+                "178zv8jclzg3hqm3g5bpjnsp898rbbxfq6ydavw49vla24mdw6aa"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
@@ -7828,7 +8239,7 @@ introduced in Linux 2.6.31.")
 (define-public libnfnetlink
   (package
     (name "libnfnetlink")
-    (version "1.0.1")
+    (version "1.0.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -7836,7 +8247,7 @@ introduced in Linux 2.6.31.")
                     "libnfnetlink-" version ".tar.bz2"))
               (sha256
                (base32
-                "06mm2x4b01k3m7wnrxblk9j0mybyr4pfz28ml7944xhjx6fy2w7j"))))
+                "0xn3rcrzxr6g82kfxzs9bqn2zvl2kf2yda30drwb9vr6sk1wfr5h"))))
     (build-system gnu-build-system)
     (home-page "https://www.netfilter.org/projects/libnfnetlink/")
     (synopsis "Low-level netfilter netlink communication library")
@@ -7877,7 +8288,7 @@ IP addresses and routes, and configure IPsec.")
 (define-public libinih
   (package
     (name "libinih")
-    (version "53")
+    (version "55")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7886,7 +8297,7 @@ IP addresses and routes, and configure IPsec.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0dqf5j2sw4hq68rqvxbrsf44ygfzx9ypiyzipk4cvp9aimbvsbc6"))))
+                "0g6dkcphlzgxvh9zyf6rj82gigccca6x5acjxn01gz6rykfg0lnn"))))
     (build-system meson-build-system)
     ;; Install static libraries for use by the initrd's xfsprogs/static.
     (outputs (list "out" "static"))
@@ -8022,34 +8433,19 @@ from the xfsprogs package.  It is meant to be used in initrds.")
 (define-public genext2fs
   (package
     (name "genext2fs")
-    (version "1.4.1-4")
+    (version "1.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/jeremie-koenig/genext2fs")
-                    ;; 1.4.1-3 had a VCS tag but 1.4.1-4 doesn't.
-                    (commit "9ee43894634998b0b2b309d636f25c64314c9421")))
+                    (url "https://github.com/bestouff/genext2fs")
+                    (commit "474111097321f03de9e009aa9f7d4a8948e310b2")))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "0ib5icn78ciz00zhc1bgdlrwaxvsdz7wnplwblng0jirwi9ml7sq"))))
+               (base32 "14lgvml5zz99845ja47jpf4iirjzfqv36ffzachh3hw2ggji9c7l"))))
     (build-system gnu-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'apply-debian-patches
-           ;; Debian changes (the revision after ‘-’ in VERSION) are
-           ;; maintained as separate patches.  Apply those relevant to us.
-           (lambda _
-             (for-each
-              (lambda (file-name)
-                (invoke "patch" "-p1" "-i"
-                        (string-append "debian/patches/" file-name)))
-              (list "blocksize+creator.diff" ; add -B/-o options
-                    "byteswap_fix.diff"))
-             #t)))))
     (native-inputs
      (list autoconf automake))
-    (home-page "https://github.com/jeremie-koenig/genext2fs")
+    (home-page "https://github.com/bestouff/genext2fs")
     (synopsis "Generate ext2 file system as a normal user")
     (description "This package provides a program to generate an ext2
 file system as a normal (non-root) user.  It does not require you to mount
@@ -8060,7 +8456,7 @@ the superuser to make device nodes.")
 (define-public fakeroot
   (package
     (name "fakeroot")
-    (version "1.26")
+    (version "1.28")
     (source
      (origin
        ;; There are no tags in the repository, so take this snapshot.
@@ -8069,8 +8465,7 @@ the superuser to make device nodes.")
                            "fakeroot/fakeroot_" version ".orig.tar.gz"))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1sg8inv1zzp4h9ncbbmxip3svd11sd86j22cvxrjwnf5zn7mf2j8"))
+        (base32 "1hlh77b6m2cfm42lcav372mbjni5akbgs25yg4wgi1gndzihbm2n"))
        (modules '((guix build utils)
                   (ice-9 ftw)))
        (snippet
@@ -8727,7 +9122,7 @@ provides user-space tools for creating EROFS file systems.")
 (define-public rasdaemon
   (package
     (name "rasdaemon")
-    (version "0.6.7")
+    (version "0.6.8")
     (source
      (origin
        (method git-fetch)
@@ -8736,7 +9131,7 @@ provides user-space tools for creating EROFS file systems.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12ih96jwmr7imp9zyckf9zjqqm5ra1kv5fj6kbw71y6yl31069dz"))))
+        (base32 "0r0339mg4rc12p63iiq2kwdqn1zjakyiv014i2a2l9s8v5rjik41"))))
     (native-inputs (list autoconf automake libtool))
     (inputs (list sqlite))
     (arguments
@@ -8834,3 +9229,41 @@ older system-wide @file{/sys} interface.")
      "This tool turns @command{ldd} into a tree and explains how shared
 libraries are found or why they cannot be located.")
     (license license:expat)))
+
+(define-public touchegg
+  (package
+    (name "touchegg")
+    (version "2.0.14")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JoseExposito/touchegg")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0shvslz0c8nqx5f988z55qjc9xw0in9rb7b19r6vr1f7cdkqb6yr"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f ; No tests exist
+       #:configure-flags
+       (list "-DUSE_SYSTEMD=OFF"))) ; No systemd
+    (native-inputs
+     (list
+      pkg-config))
+    (inputs
+     (list
+      cairo
+      gtk+
+      libgudev
+      libinput
+      libxrandr
+      libxtst
+      pugixml))
+    (home-page "https://github.com/JoseExposito/touchegg")
+    (synopsis "Multitouch gesture recognizer")
+    (description
+     "Touchégg is an application that runs in the background and transform the
+gestures you make on your touchpad or touchscreen into visible actions in your
+desktop.")
+    (license license:gpl3+)))

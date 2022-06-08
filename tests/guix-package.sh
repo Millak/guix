@@ -1,6 +1,7 @@
 # GNU Guix --- Functional package management for GNU
 # Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
 # Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
+# Copyright © 2022 Josselin Poiret <dev@jpoiret.xyz>
 #
 # This file is part of GNU Guix.
 #
@@ -209,6 +210,35 @@ test "$(readlink -f "$profile/bin/guile")" \
      = "$(guix build guile-bootstrap)/bin/guile"
 test ! -f "$profile/bin/sed"
 rm "$profile" "$profile"-[0-9]-link
+
+# Make sure transformations apply to propagated inputs and don't lead to
+# conflicts when installing them alongside, see
+# <https://issues.guix.gnu.org/55316>.
+mkdir "$module_dir"
+cat > "$module_dir/test.scm" <<EOF
+(define-module (test)
+  #:use-module (guix packages)
+  #:use-module (gnu packages base)
+  #:use-module (guix build-system trivial))
+
+(define-public dummy-package
+  (package
+    (name "dummy-package")
+    (version "1")
+    (source #f)
+    (build-system trivial-build-system)
+    (propagated-inputs
+     (list hello))
+    (synopsis "dummy")
+    (description "dummy")
+    (home-page "dummy")
+    (license #f)))
+EOF
+guix package -p "$profile" -L "$module_dir"\
+     -i hello dummy-package \
+     --without-tests=hello -n
+rm "$module_dir/test.scm"
+rmdir "$module_dir"
 
 # Profiles with a relative file name.  Make sure we don't create dangling
 # symlinks--see bug report at

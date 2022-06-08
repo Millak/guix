@@ -129,10 +129,14 @@
     "third_party/cros_system_api" ;BSD-3
     "third_party/dav1d" ;BSD-2
     "third_party/dawn" ;ASL2.0
-    "third_party/dawn/third_party/tint"
+    ;; TODO: can likely be unbundled when Vulkan is updated.
+    "third_party/dawn/third_party/khronos" ;ASL2.0
+    "third_party/dawn/third_party/gn/webgpu-cts" ;BSD-3
     "third_party/depot_tools/owners.py" ;BSD-3
     "third_party/devtools-frontend" ;BSD-3
     "third_party/devtools-frontend/src/front_end/third_party/acorn" ;Expat
+    "third_party/devtools-frontend/src/front_end/third_party\
+/additional_readme_paths.json" ;no explicit license; trivial
     "third_party/devtools-frontend/src/front_end/third_party/axe-core" ;MPL2.0
     "third_party/devtools-frontend/src/front_end/third_party/chromium" ;BSD-3
     "third_party/devtools-frontend/src/front_end/third_party/codemirror" ;Expat
@@ -171,7 +175,6 @@
     "third_party/khronos" ;Expat, SGI
     "third_party/leveldatabase" ;BSD-3
     "third_party/libavif" ;BSD-2
-    "third_party/libXNVCtrl" ;Expat
     "third_party/libaddressinput" ;ASL2.0
     "third_party/libaom" ;BSD-2 or "Alliance for Open Media Patent License 1.0"
     "third_party/libaom/source/libaom/third_party/fastfeat" ;BSD-3
@@ -256,14 +259,13 @@
     "third_party/swiftshader/third_party/marl" ;ASL2.0
     "third_party/swiftshader/third_party/subzero" ;NCSA
     "third_party/swiftshader/third_party/SPIRV-Headers" ;X11-style
-    "third_party/tcmalloc/chromium" ;BSD-3
+    "third_party/swiftshader/third_party/SPIRV-Tools" ;ASL2.0
     "third_party/tensorflow-text" ;ASL2.0
     "third_party/tflite" ;ASL2.0
     "third_party/tflite/src/third_party/eigen3" ;MPL2.0
     "third_party/tflite/src/third_party/fft2d" ;ASL2.0
     "third_party/ukey2" ;ASL2.0
     "third_party/usb_ids" ;BSD-3
-    "third_party/usrsctp" ;BSD-2
     "third_party/utf" ;Expat
     "third_party/vulkan-deps" ;ASL2.0, BSD-3, Expat
     "third_party/vulkan_memory_allocator" ;Expat
@@ -310,9 +312,9 @@
   ;; run the Blink performance tests, just remove everything to save ~70MiB.
   '("third_party/blink/perf_tests"))
 
-(define %chromium-version "98.0.4758.102")
-(define %ungoogled-revision (string-append %chromium-version "-1"))
-(define %debian-revision "debian/90.0.4430.85-1")
+(define %chromium-version "102.0.5005.61")
+(define %ungoogled-revision (string-append %chromium-version "-3"))
+(define %debian-revision "debian/102.0.5005.61-1")
 
 (define %ungoogled-origin
   (origin
@@ -322,27 +324,48 @@
     (file-name (git-file-name "ungoogled-chromium" %ungoogled-revision))
     (sha256
      (base32
-      "0baz90fnzpldw0wwibhmh4pmki7vlpci9b9vvifa0rj5cwckl8a0"))))
+      "19i4ygxjm503dmck3bdqv3fcpda3dp9wr7z306pi6i1k989rbs8l"))))
 
-(define* (debian-patch name hash #:optional (revision %debian-revision))
+(define %debian-origin
   (origin
-    (method url-fetch)
-    (uri (string-append "https://salsa.debian.org/chromium-team/chromium/-/raw/"
-                        revision "/debian/patches/" name))
-    (file-name (match (string-split name #\/)
-                 ((category name)
-                  (string-append "ungoogled-chromium-" category "-" name))))
-    (sha256 (base32 hash))))
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://salsa.debian.org/chromium-team/chromium.git")
+          (commit %debian-revision)))
+    (file-name (git-file-name "debian-chromium-patches"
+                              (match (string-split %debian-revision #\/)
+                                ((_ version) version))))
+    (sha256
+     (base32
+      "1ln6r1qzlr7dsgvcbssvvc34my4mpkwv9hmvlb2dhjncs7isp65j"))))
+
+(define (debian-patch name)
+  (computed-file
+   (basename name)
+   #~(symlink (string-append #$%debian-origin "/debian/patches/" #$name)
+              #$output)))
 
 (define %debian-patches
-  (list (debian-patch "fixes/nomerge.patch"
-                      "0lybs2b5gk08j8cr6vjrs9d3drd7qfw013z2r0y00by8dnpm74i3")
-        (debian-patch "system/jsoncpp.patch"
-                      "16lvhci10hz0q9axc6p921b95a76kbzcla5cl81czxzfwnynr1w5")
-        (debian-patch "system/zlib.patch"
-                      "0j313bd3q8qc065j60x97dckrfgbwl4qxc8jhz33iihvv4lwziwv")
-        (debian-patch "system/openjpeg.patch"
-                      "048405xh84pys0kky81vlqhaxjyxvcql4py217z01qxiv991zxaj")))
+  (map debian-patch
+       '("upstream/libxml.patch"
+         "upstream/dawn-version-fix.patch"
+         "upstream/blink-ftbfs.patch"
+         "upstream/nested-nested-nested-nested-nested-nested-regex-patterns.patch"
+         "system/jsoncpp.patch"
+         "system/zlib.patch"
+         "system/openjpeg.patch")))
+
+;; Take a patch from Arch that reverts a change which requires an unreleased
+;; version of ffmpeg.
+(define %ungoogled-chromium-unroll-ffmpeg.patch
+  (origin
+    (method url-fetch)
+    (uri "https://raw.githubusercontent.com/archlinux/svntogit-packages\
+/f3225f99b900e11ac900725992ea883142d7309c/trunk/roll-src-third_party-ffmpeg.patch")
+    (file-name "ungoogled-chromium-unroll-ffmpeg.patch")
+    (sha256
+     (base32
+      "0i7crn6fcwq09kd6a4smqnffaldyv61lmv2p0drcnpfrwalmkprh"))))
 
 (define %guix-patches
   (list (local-file
@@ -383,6 +406,9 @@
                       (invoke "patch" "-p1" "--force" "--input"
                               patch "--no-backup-if-mismatch"))
                     (append '#+%debian-patches '#+%guix-patches))
+
+          (invoke "patch" "-Rp1" "--force" "--input" "--no-backup-if-mismatch"
+                  "--input" #$%ungoogled-chromium-unroll-ffmpeg.patch)
 
           (with-directory-excursion #+%ungoogled-origin
             (format #t "Ungooglifying...~%")
@@ -451,7 +477,7 @@
                                   %chromium-version ".tar.xz"))
               (sha256
                (base32
-                "0gpk13k8pfk65vinlmkg3p7mm0qb8z35psajkxzx0v3n2bllfns1"))
+                "07vbi3gn9g4n04b2qi2hm34r122snrqaifa46yk3pyh1d79rfdqs"))
               (modules '((guix build utils)))
               (snippet (force ungoogled-chromium-snippet))))
     (build-system gnu-build-system)
@@ -497,6 +523,8 @@
               "build_with_tflite_lib=false"
               ;; Avoid dependency on code formatting tools.
               "blink_enable_generated_code_formatting=false"
+              ;; Don't bother building Dawn tests.
+              "build_dawn_tests=false"
 
               ;; Define a custom toolchain that simply looks up CC, AR and
               ;; friends from the environment.
@@ -557,7 +585,6 @@
               "rtc_build_libvpx=true"
               "rtc_build_opus=false"
               "rtc_build_libsrtp=true"  ;FIXME: fails to find headers
-              "rtc_build_usrsctp=true"  ;TODO: package this
               "rtc_build_ssl=true")     ;XXX: requires BoringSSL
       #:phases
       #~(modify-phases %standard-phases
@@ -595,15 +622,13 @@
                                "#include \"opus/opus_types.h\"")))
                           (find-files (string-append "third_party/webrtc/modules"
                                                      "/audio_coding/codecs/opus")))
+                (substitute* "media/audio/audio_opus_encoder.h"
+                  (("\"third_party/opus/src/include/opus.h\"")
+                   "<opus/opus.h>"))
 
                 (substitute* "third_party/webrtc/rtc_base/strings/json.h"
                   (("#include \"third_party/jsoncpp/")
                    "#include \"json/"))
-
-                ;; This can be removed for M99.
-                (substitute* "media/gpu/chromeos/video_decoder_pipeline.cc"
-                  (("third_party/libdrm/src/include/drm/drm_fourcc\\.h")
-                   "libdrm/drm_fourcc.h"))
 
                 ;; Many files try to include ICU headers from "third_party/icu/...".
                 ;; Remove the "third_party/" prefix to use system headers instead.
@@ -636,8 +661,18 @@
                     (libudev.so.1 (search-input-file inputs "/lib/libudev.so.1"))
                     (libvulkan.so.1 (search-input-file inputs
                                                        "/lib/libvulkan.so.1"))
+                    (icd.d (search-input-directory inputs "share/vulkan/icd.d"))
                     (mesa-lib (dirname (search-input-file inputs
-                                                          "/lib/libGL.so.1"))))
+                                                          "/lib/libGL.so.1")))
+                    (gtk-libs '("libgio-2.0.so.0"
+                                "libgdk_pixbuf-2.0.so.0"
+                                "libgdk-3.so.0"
+                                "libgtk-3.so.0")))
+                (for-each (lambda (lib)
+                            (substitute* "ui/gtk/gtk_compat.cc"
+                              ((lib) (search-input-file
+                                      inputs (string-append "lib/" lib)))))
+                          gtk-libs)
                 (substitute* "printing/cups_config_helper.py"
                   (("cups_config =.*")
                    (string-append "cups_config = '" cups-config "'\n")))
@@ -645,8 +680,31 @@
                   (("libnssckbi\\.so") libnssckbi.so))
                 (substitute* "device/udev_linux/udev1_loader.cc"
                   (("libudev\\.so\\.1") libudev.so.1))
-                (substitute* "third_party/dawn/src/dawn_native/vulkan/BackendVk.cpp"
+
+                ;; Patch libvulkan.so everywhere.
+                (substitute*
+                    '("third_party/swiftshader/include/vulkan/vulkan.hpp"
+                      "third_party/vulkan-deps/vulkan-tools\
+/src/vulkaninfo/vulkaninfo.h"
+                      "third_party/vulkan-deps/vulkan-headers\
+/src/include/vulkan/vulkan.hpp"
+                      "content/gpu/gpu_sandbox_hook_linux.cc"
+                      "ui/ozone/platform/wayland/gpu/vulkan_implementation_wayland.cc"
+                      "ui/ozone/platform/drm/gpu/vulkan_implementation_gbm.cc"
+                      "ui/ozone/platform/x11/vulkan_implementation_x11.cc"
+                      "third_party/skia/tools/sk_app/unix\
+/DawnVulkanWindowContext_unix.cpp")
                   (("libvulkan\\.so\\.1") libvulkan.so.1))
+                (substitute* "content/gpu/gpu_sandbox_hook_linux.cc"
+                  (("/usr/share/vulkan/icd\\.d") icd.d))
+
+                ;; Add the libvulkan directory to dawn built-in search paths.
+                (substitute* "third_party/dawn/src/dawn/native/Instance.cpp"
+                  (("^([[:blank:]]+)mRuntimeSearchPaths\\.push_back\\(\"\"\\);"
+                    all indent)
+                   (string-append indent "mRuntimeSearchPaths.push_back(\""
+                                  (dirname libvulkan.so.1) "/\");\n" all)))
+
                 (substitute*
                     '("ui/ozone/platform/x11/gl_ozone_glx.cc"
                       "ui/ozone/common/egl_util.cc"
@@ -667,6 +725,15 @@
                 ;; Define the GN toolchain.
                 (setenv "AR" "llvm-ar") (setenv "NM" "llvm-nm")
                 (setenv "CC" "clang") (setenv "CXX" "clang++")
+
+                ;; Disable compiler flags that require Clang 15.
+                (substitute* "build/config/compiler/BUILD.gn"
+                  (("\"-no-opaque-pointers\",")
+                   "")
+                  (("\"-Wno-unqualified-std-cast-call\"")
+                   "")
+                  (("\"-Wno-deprecated-non-prototype\"")
+                   ""))
 
                 ;; TODO: pre-compile instead. Avoids a race condition.
                 (setenv "PYTHONDONTWRITEBYTECODE" "1")
@@ -738,8 +805,9 @@
                       #$(local-file
                          (search-auxiliary-file
                           "chromium/master-preferences.json")))
-                     (gtk+           (assoc-ref inputs "gtk+"))
-                     (xdg-utils      (assoc-ref inputs "xdg-utils")))
+                     (gtk (dirname (dirname
+                                    (search-input-file inputs "lib/libgtk-3.so"))))
+                     (xdg-utils (dirname (search-input-file inputs "bin/xdg-open"))))
 
                 (substitute* '("chrome/app/resources/manpage.1.in"
                                "chrome/installer/linux/common/desktop.template")
@@ -775,8 +843,8 @@
 
                   (wrap-program exe
                     ;; Avoid file manager crash.  See <https://bugs.gnu.org/26593>.
-                    `("XDG_DATA_DIRS" ":" prefix (,(string-append gtk+ "/share")))
-                    `("PATH" ":" prefix (,(string-append xdg-utils "/bin")))))
+                    `("XDG_DATA_DIRS" ":" prefix (,(string-append gtk "/share")))
+                    `("PATH" ":" prefix (,xdg-utils))))
 
                 (with-directory-excursion "chrome/app/theme/chromium"
                   (for-each
@@ -789,7 +857,7 @@
                    '("24" "48" "64" "128" "256")))))))))
     (native-inputs
      (list bison
-           clang-13
+           clang-14
            gn
            gperf
            lld-as-ld-wrapper
@@ -804,6 +872,7 @@
     (inputs
      (list alsa-lib
            atk
+           at-spi2-atk
            cups
            curl
            dbus

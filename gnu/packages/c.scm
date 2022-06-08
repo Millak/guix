@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016, 2018 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018, 2020–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019, 2021 Guillaume Le Vaillant <glv@posteo.net>
@@ -12,6 +12,8 @@
 ;;; Copyright © 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020, 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 David Dashyan <mail@davie.li>
+;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
+;;; Copyright © 2022 (unmatched parenthesis <paren@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -37,6 +39,7 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
   #:use-module (guix store)
   #:use-module (gnu packages)
@@ -143,10 +146,81 @@ compiler while still keeping it small, simple, fast and understandable.")
     ;; preferred.  See http://pcc.ludd.ltu.se/licenses/ for more details.
     (license (list license:bsd-2 license:bsd-3))))
 
+(define-public qbe
+  (let ((commit "2caa26e388b1c904d2f12fb09f84df7e761d8331")
+        (revision "1"))
+    (package
+      (name "qbe")
+      (version (git-version "0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "git://c9x.me/qbe")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1gv03ym0gqrl4wkbhysa82025xwrkr1fg44z814b6vnggwlqgljc"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:make-flags
+             #~(list (string-append "CC=" #$(cc-for-target))
+                     (string-append "PREFIX=" #$output))
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'allow-cross-compilation
+                   (lambda _
+                     (substitute* "Makefile"
+                       (("`uname -m`") #$(or (%current-target-system)
+                                             (%current-system))))))
+                 (add-after 'allow-cross-compilation 'use-$CC-for-tests
+                   (lambda _
+                     (substitute* "tools/test.sh"
+                       (("cc=\"cc -no-pie\"") "cc=\"${CC} -no-pie\""))))
+                 (delete 'configure))))
+      (supported-systems (list "x86_64-linux" "aarch64-linux" "riscv64-linux"))
+      (synopsis "Simple compiler backend")
+      (description
+       "QBE is a small compiler backend using an SSA-based intermediate
+language as input.")
+      (home-page "https://c9x.me/compile/")
+      (license license:expat))))
+
+(define-public python-pcpp
+  (package
+    (name "python-pcpp")
+    (version "1.30")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ned14/pcpp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1rihvlg11nzk70kfzz4i3gi5izcy46w05ismcx04p5j1hlim0brb"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'unbundle-ply
+                     (lambda _
+                       (rmdir "pcpp/ply")
+                       (substitute* "setup.py"
+                         (("'pcpp/ply/ply'") "")))))))
+    (native-inputs (list python-pytest))
+    (propagated-inputs (list python-ply))
+    (home-page "https://github.com/ned14/pcpp")
+    (synopsis "C99 preprocessor written in Python")
+    (description "This package provides a C99 preprocessor written in pure
+Python.")
+    (license license:bsd-3)))
+
 (define-public libbytesize
   (package
     (name "libbytesize")
-    (version "2.2")
+    (version "2.6")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -154,14 +228,12 @@ compiler while still keeping it small, simple, fast and understandable.")
                     "download/" version "/libbytesize-" version ".tar.gz"))
               (sha256
                (base32
-                "1aivwypmnqcaj2230pifvf3jcgl5chja8rspkxf0j3480asm8g5r"))))
+                "0h87ryi0mp8msq43h1cna453cqaw5knx1xaggfzm4fxvn8sjpapg"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python)))
+     (list gettext-minimal pkg-config python))
     (inputs
      (list mpfr pcre2))
     (home-page "https://github.com/storaged-project/libbytesize")
@@ -248,14 +320,14 @@ whose behaviour is inconsistent across *NIX flavours.")
 (define-public libhx
   (package
     (name "libhx")
-    (version "4.2")
+    (version "4.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://inai.de/files/libhx/"
                            "libHX-" version ".tar.xz"))
        (sha256
-        (base32 "1ri3sxiw5a8br27j7f20s40kihfvq6mmxzcrx68zydiwyxjvf5jj"))))
+        (base32 "06zkzaya6j3vaafz80qcgn5qcri047003bhmjisv5sbikcw97jqy"))))
     (build-system gnu-build-system)
     (home-page "https://inai.de/projects/libhx/")
     (synopsis "C library with common data structures and functions")
@@ -581,11 +653,33 @@ portability.")
     (license (list license:bsd-2        ;all files except...
                    license:bsd-3))))    ;...the unidef.1 manual page
 
+(define-public byacc
+  (package
+    (name "byacc")
+    (version "20220128")
+    (source (origin
+             (method url-fetch)
+             (uri (string-append
+                   "https://invisible-mirror.net/archives/byacc/byacc-"
+                   version ".tgz"))
+             (sha256
+              (base32
+               "173l5pdzgqk2ld6lf0ablii0iiw07sry2vrjfrm4wc99qmf81ha2"))))
+    (build-system gnu-build-system)
+    (home-page "https://invisible-island.net/byacc/byacc.html")
+    (synopsis "Berkeley Yacc LALR parser generator")
+    (description
+     "Berkeley Yacc is an LALR(1) parser generator.  Yacc reads the grammar
+specification from a file and generates an LALR(1) parser for it.  The parsers
+consist of a set of LALR(1) parsing tables and a driver routine written in the
+C programming language.")
+    (license license:public-domain)))
+
 (define-public aws-c-common
   (package
     (name "aws-c-common")
-    ; Update only when updating aws-crt-cpp.
-    (version "0.6.11")
+    ;; Update only when updating aws-crt-cpp.
+    (version "0.6.20")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -594,12 +688,13 @@ portability.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1v4dhygiynl75y3702lbp9j8kph88j4f2sq39s4lkhn6lmbz5f0f"))))
+                "089grcj58n4xs41kmnpaqpwsalcisjbqqb5yqahxxyfx2lf1j9c9"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
        '("-DBUILD_SHARED_LIBS=ON")))
     (synopsis "Amazon Web Services core C library")
+    (supported-systems '("i686-linux" "x86_64-linux"))
     (description
      "This library provides common C99 primitives, configuration, data
  structures, and error handling for the @acronym{AWS,Amazon Web Services} SDK.")
@@ -609,7 +704,7 @@ portability.")
 (define-public aws-checksums
   (package
     (name "aws-checksums")
-    ; Update only when updating aws-crt-cpp.
+    ;; Update only when updating aws-crt-cpp.
     (version "0.1.12")
     (source (origin
               (method git-fetch)
@@ -638,7 +733,7 @@ with fallback to efficient C99 software implementations.")
 (define-public aws-c-event-stream
   (package
     (name "aws-c-event-stream")
-    ; Update only when updating aws-crt-cpp.
+    ;; Update only when updating aws-crt-cpp.
     (version "0.2.7")
     (source (origin
               (method git-fetch)
@@ -670,8 +765,8 @@ communication.")
 (define-public aws-c-io
   (package
     (name "aws-c-io")
-    ; Update only when updating aws-crt-cpp.
-    (version "0.10.9")
+    ;; Update only when updating aws-crt-cpp.
+    (version "0.10.20")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -680,7 +775,7 @@ communication.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "14rxa3k842fgk43702nz7z9y3clfhvax8j0k93i0c5vg14wj38yp"))))
+                "07l5rfbm1irkigfv51sfygs992af8rxicmay97frbx6z21khdjnr"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
@@ -699,8 +794,8 @@ event-driven, asynchronous network application protocols.")
 (define-public aws-c-cal
   (package
     (name "aws-c-cal")
-    ; Update only when updating aws-crt-cpp.
-    (version "0.5.12")
+    ;; Update only when updating aws-crt-cpp.
+    (version "0.5.17")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -709,7 +804,7 @@ event-driven, asynchronous network application protocols.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "09zqf610x4g2mcjcaf9nh88k6dkw14pi721yr8hxb5rmsx7rlfrb"))))
+                "0gd7xfzv509vcysifzfa8j2rykkc1prhiry7953snblkzm7airm5"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
@@ -725,6 +820,34 @@ event-driven, asynchronous network application protocols.")
     (description "This library provides a C99 wrapper for hash, HMAC, and ECC
 cryptographic primitives for the @acronym{AWS,Amazon Web Services} SDK.")
     (home-page "https://github.com/awslabs/aws-c-cal")
+    (license license:asl2.0)))
+
+(define-public aws-c-sdkutils
+  (package
+    (name "aws-c-sdkutils")
+    ;; Update only when updating aws-crt-cpp.
+    (version "0.1.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url (string-append "https://github.com/awslabs/" name))
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "14wpl3dxwjbbzas44v6m6m3ll89rgz34x9gb140qz624gwzs9v0v"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:configure-flags
+       (list "-DBUILD_SHARED_LIBS=ON"
+             (string-append "-DCMAKE_PREFIX_PATH="
+                            (assoc-ref %build-inputs "aws-c-common")))))
+    (propagated-inputs
+     (list aws-c-common))
+    (synopsis "Amazon Web Service utility library")
+    (description "This library provides for parsing and management of profiles
+for the @acronym{AWS,Amazon Web Services} SDK.")
+    (home-page "https://github.com/awslabs/aws-c-sdkutils")
     (license license:asl2.0)))
 
 (define-public pcl
@@ -749,8 +872,8 @@ low level functionality for coroutines.")
 (define-public aws-c-http
   (package
     (name "aws-c-http")
-    ; Update only when updating aws-crt-cpp.
-    (version "0.6.7")
+    ;; Update only when updating aws-crt-cpp.
+    (version "0.6.13")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -759,7 +882,7 @@ low level functionality for coroutines.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1s06bz6w7355ldyhwjidcpbff7591ch4lwwjcj47a6k2kczdmiz4"))))
+                "125glc9b3906r95519zqfbzzz6wj5ib4im2n45yxrigwkkpffbq9"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
@@ -779,7 +902,7 @@ specifications.")
 (define-public aws-c-compression
   (package
     (name "aws-c-compression")
-    ; Update only when updating aws-crt-cpp.
+    ;; Update only when updating aws-crt-cpp.
     (version "0.2.14")
     (source (origin
               (method git-fetch)
@@ -808,8 +931,8 @@ currently limited to Huffman encoding and decoding.")
 (define-public aws-c-auth
   (package
     (name "aws-c-auth")
-    ; Update only when updating aws-crt-cpp.
-    (version "0.6.4")
+    ;; Update only when updating aws-crt-cpp.
+    (version "0.6.11")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -818,7 +941,7 @@ currently limited to Huffman encoding and decoding.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "120p69lj279yq3d2b81f45kgfrvf32j6m7s03m8hh27w8yd4vbfp"))
+                "0frfnbifkrib9l68mj92a3g1x8xc8hpdlzbga2a801zgf2flx4fy"))
               (patches
                (search-patches
                 "aws-c-auth-install-private-headers.patch"))))
@@ -830,7 +953,7 @@ currently limited to Huffman encoding and decoding.")
                             (assoc-ref %build-inputs "aws-c-common"))
              "-DENABLE_NET_TESTS=OFF")))
     (propagated-inputs
-     (list aws-c-cal aws-c-common aws-c-http aws-c-io))
+     (list aws-c-cal aws-c-common aws-c-http aws-c-io aws-c-sdkutils))
     (synopsis "Amazon Web Services client-side authentication library")
     (description
      "This library provides a C99 implementation for AWS client-side
@@ -841,8 +964,8 @@ authentication.")
 (define-public aws-c-s3
   (package
     (name "aws-c-s3")
-    ; Update only when updating aws-crt-cpp.
-    (version "0.1.26")
+    ;; Update only when updating aws-crt-cpp.
+    (version "0.1.38")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -851,7 +974,7 @@ authentication.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0gaxnwwk0jbvkgjnxcgchq13xmn7jk5vjvjsps6b0vaz6bf12wv8"))))
+                "0n2y8hzb1bx3vnzlpb5hsav18dg33pwav0mpji6krz98y2l8msya"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
@@ -860,7 +983,7 @@ authentication.")
                             (assoc-ref %build-inputs "aws-c-common"))
              "-DENABLE_NET_TESTS=OFF")))
     (propagated-inputs
-     (list aws-c-auth aws-c-http))
+     (list aws-c-auth aws-c-http aws-checksums))
     (synopsis "Amazon Web Services client library for Amazon S3")
     (description
      "This library provides a C99 client implementation of the Simple Storage
@@ -871,8 +994,8 @@ Service (S3) protocol for object storage.")
 (define-public aws-c-mqtt
   (package
     (name "aws-c-mqtt")
-    ; Update only when updating aws-crt-cpp.
-    (version "0.7.8")
+    ;; Update only when updating aws-crt-cpp.
+    (version "0.7.10")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -881,7 +1004,7 @@ Service (S3) protocol for object storage.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "19j6nw2v36c4yff4p0fbf0748s06fd5r9cp2yakry9ybn1ada99c"))))
+                "0qmzx8b4wcsq9s99q2zrhx1s3jdmfy8zs16qys9bqv45gspi3ybr"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags

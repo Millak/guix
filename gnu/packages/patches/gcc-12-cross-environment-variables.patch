@@ -1,0 +1,54 @@
+Search path environment variables for cross-compilers.  See the discussion
+at <http://gcc.gnu.org/ml/gcc/2013-02/msg00124.html>.
+
+Note: Touch 'C_INCLUDE_PATH' et al. rather than 'CPATH', as discussed
+at <http://bugs.gnu.org/22186>.
+
+diff --git a/gcc/gcc.cc b/gcc/gcc.cc
+--- a/gcc/gcc.cc
++++ b/gcc/gcc.cc
+@@ -4832,7 +4832,7 @@ process_command (unsigned int decoded_options_count,
+     }
+ 
+   temp = env.get (LIBRARY_PATH_ENV);
+-  if (temp && *cross_compile == '0')
++  if (temp)
+     {
+       const char *startp, *endp;
+       char *nstore = (char *) alloca (strlen (temp) + 3);
+diff --git a/gcc/incpath.cc b/gcc/incpath.cc
+--- a/gcc/incpath.cc
++++ b/gcc/incpath.cc
+@@ -480,8 +480,8 @@ register_include_chains (cpp_reader *pfile, const char *sysroot,
+ 			 int stdinc, int cxx_stdinc, int verbose)
+ {
+   static const char *const lang_env_vars[] =
+-    { "C_INCLUDE_PATH", "CPLUS_INCLUDE_PATH",
+-      "OBJC_INCLUDE_PATH", "OBJCPLUS_INCLUDE_PATH" };
++    { "CROSS_C_INCLUDE_PATH", "CROSS_CPLUS_INCLUDE_PATH",
++      "CROSS_OBJC_INCLUDE_PATH", "CROSS_OBJCPLUS_INCLUDE_PATH" };
+   cpp_options *cpp_opts = cpp_get_options (pfile);
+   size_t idx = (cpp_opts->objc ? 2: 0);
+ 
+@@ -492,7 +492,7 @@ register_include_chains (cpp_reader *pfile, const char *sysroot,
+ 
+   /* CPATH and language-dependent environment variables may add to the
+      include chain.  */
+-  add_env_var_paths ("CPATH", INC_BRACKET);
++  add_env_var_paths ("CROSS_CPATH", INC_BRACKET);
+   add_env_var_paths (lang_env_vars[idx], INC_SYSTEM);
+ 
+   target_c_incpath.extra_pre_includes (sysroot, iprefix, stdinc);
+diff --git a/gcc/system.h b/gcc/system.h
+--- a/gcc/system.h
++++ b/gcc/system.h
+@@ -1317,4 +1317,6 @@ endswith (const char *str, const char *suffix)
+   return memcmp (str + str_len - suffix_len, suffix, suffix_len) == 0;
+ }
+ 
++#define LIBRARY_PATH_ENV "CROSS_LIBRARY_PATH"
++
+ #endif /* ! GCC_SYSTEM_H */
+-- 
+2.36.1
+

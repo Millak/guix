@@ -1923,6 +1923,19 @@
   (package-location (specification->package "guile@2"))
   (specification->location "guile@2"))
 
+(test-equal "package-unique-version-prefix, gcc@8"
+  "8"
+  (let ((gcc (specification->package "gcc-toolchain@8")))
+    (package-unique-version-prefix (package-name gcc)
+                                   (package-version gcc))))
+
+(test-equal "package-unique-version-prefix, grep"
+  ""
+  (let ((grep (specification->package "grep")))
+    (package-unique-version-prefix (package-name grep)
+                                   (package-version grep))))
+
+
 (test-eq "this-package-input, exists"
   hello
   (package-arguments

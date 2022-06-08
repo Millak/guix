@@ -105,6 +105,11 @@
        #:glib-or-gtk-wrap-excluded-outputs '("out")
        #:phases
        (modify-phases %standard-phases
+         ;; Avoid embedding kernel version for reproducible build
+         (add-after 'unpack 'remove-kernel-version
+           (lambda _
+             (substitute* "third-party/miniupnpc/updateminiupnpcstrings.sh"
+               (("OS_VERSION=`uname -r`") "OS_VERSION=Guix"))))
          (add-after 'install 'move-gui
            (lambda* (#:key outputs #:allow-other-keys)
              ;; Move the GUI to its own output, so that "out" doesn't
@@ -226,7 +231,7 @@ XML-RPC over SCGI.")
 (define-public tremc
   (package
     (name "tremc")
-    (version "0.9.2")
+    (version "0.9.3")
     (source
      (origin
        (method git-fetch)
@@ -236,8 +241,7 @@ XML-RPC over SCGI.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1fqspp2ckafplahgba54xmx0sjidx1pdzyjaqjhz0ivh98dkx2n5"))
-       (patches (search-patches "tremc-fix-decodestring.patch"))))
+         "11izsgwj435skkgvw96an6ddcm1hk3ff1gji4ksnidlyv6g6npyv"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no test suite
@@ -255,49 +259,6 @@ XML-RPC over SCGI.")
 Transmission BitTorrent daemon.")
     (home-page "https://github.com/tremc/tremc")
     (license l:gpl3+)))
-
-(define-public transmission-remote-cli
-  (package
-    (name "transmission-remote-cli")
-    (version "1.7.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/fagga/transmission-remote-cli")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "09w9f8vrm61lapin8fmq4rgahr95y3c6wss10g0fgd0kl16f895v"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2 ; only supports Python 2
-       #:tests? #f ; no test suite
-       #:phases (modify-phases %standard-phases
-                  ;; The software is just a Python script that must be
-                  ;; copied into place.
-                  (delete 'build)
-                  (replace 'install
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let* ((out (assoc-ref outputs "out"))
-                             (bin (string-append out "/bin"))
-                             (man (string-append out "/share/man/man1"))
-                             ;; FIXME install zsh completions
-                             (completions (string-append out "/etc/bash_completion.d")))
-                        (install-file "transmission-remote-cli" bin)
-                        (install-file "transmission-remote-cli.1" man)
-                        (install-file
-                          (string-append
-                            "completion/bash/"
-                            "transmission-remote-cli-bash-completion.sh")
-                          completions)))))))
-    (synopsis "Console client for the Transmission BitTorrent daemon")
-    (description "Transmission-remote-cli is a console client, with a curses
-interface, for the Transmission BitTorrent daemon.  This package is no longer
-maintained upstream.")
-    (home-page "https://github.com/fagga/transmission-remote-cli")
-    (license l:gpl3+)
-    (properties `((superseded . ,tremc)))))
 
 (define-public aria2
   (package

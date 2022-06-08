@@ -92,6 +92,7 @@
             guix-build-coordinator-queue-builds-configuration-systems
             guix-build-coordinator-queue-builds-configuration-system-and-targets
             guix-build-coordinator-queue-builds-configuration-guix-data-service
+            guix-build-coordinator-queue-builds-configuration-guix-data-service-build-server-id
             guix-build-coordinator-queue-builds-configuration-processed-commits-file
 
             guix-build-coordinator-queue-builds-service-type
@@ -122,7 +123,8 @@
             nar-herder-configuration-port
             nar-herder-configuration-storage
             nar-herder-configuration-storage-limit
-            nar-herder-configuration-storage-nar-removal-criteria))
+            nar-herder-configuration-storage-nar-removal-criteria
+            nar-herder-configuration-log-level))
 
 ;;;; Commentary:
 ;;;
@@ -229,6 +231,9 @@
   (guix-data-service
    guix-build-coordinator-queue-builds-configuration-guix-data-service
    (default "https://data.guix.gnu.org"))
+  (guix-data-service-build-server-id
+   guix-build-coordinator-queue-builds-configuration-guix-data-service-build-server-id
+   (default #f))
   (processed-commits-file
    guix-build-coordinator-queue-builds-configuration-processed-commits-file
    (default "/var/cache/guix-build-coordinator-queue-builds/processed-commits")))
@@ -493,7 +498,9 @@
 (define (guix-build-coordinator-queue-builds-shepherd-services config)
   (match-record config <guix-build-coordinator-queue-builds-configuration>
     (package user coordinator systems systems-and-targets
-             guix-data-service processed-commits-file)
+             guix-data-service
+             guix-data-service-build-server-id
+             processed-commits-file)
     (list
      (shepherd-service
       (documentation "Guix Build Coordinator queue builds from Guix Data Service")
@@ -515,6 +522,12 @@
                    (or systems-and-targets '()))
            #$@(if guix-data-service
                   #~(#$(string-append "--guix-data-service=" guix-data-service))
+                  #~())
+           #$@(if guix-data-service-build-server-id
+                  #~(#$(simple-format
+                        #f
+                        "--guix-data-service-build-server-id=~A"
+                        guix-data-service-build-server-id))
                   #~())
            #$@(if processed-commits-file
                   #~(#$(string-append "--processed-commits-file="
@@ -630,7 +643,7 @@ ca-certificates.crt file in the system profile."
                 #:group #$group
                 #:pid-file "/var/run/guix-data-service/pid"
                 ;; Allow time for migrations to run
-                #:pid-file-timeout 60
+                #:pid-file-timeout 120
                 #:environment-variables
                 `(,(string-append
                     "GUIX_LOCPATH=" #$glibc-utf8-locales "/lib/locale")
@@ -778,7 +791,9 @@ ca-certificates.crt file in the system profile."
   (ttl           nar-herder-configuration-ttl
                  (default #f))
   (negative-ttl  nar-herder-configuration-negative-ttl
-                 (default #f)))
+                 (default #f))
+  (log-level     nar-herder-configuration-log-level
+                 (default 'DEBUG)))
 
 
 (define (nar-herder-shepherd-services config)
@@ -788,7 +803,7 @@ ca-certificates.crt file in the system profile."
              database database-dump
              host port
              storage storage-limit storage-nar-removal-criteria
-             ttl negative-ttl)
+             ttl negative-ttl log-level)
 
     (unless (or mirror storage)
       (error "nar-herder: mirror or storage must be set"))
@@ -829,6 +844,9 @@ ca-certificates.crt file in the system profile."
                              '())
                       #$@(if negative-ttl
                              (list (string-append "--negative-ttl=" negative-ttl))
+                             '())
+                      #$@(if log-level
+                             (list (simple-format #f "--log-level=~A" log-level))
                              '()))
                 #:user #$user
                 #:group #$group

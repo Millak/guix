@@ -501,7 +501,10 @@ potential infinite waits blocking libvirt."))
                                      libvirt-shepherd-service)
                   (service-extension account-service-type
                                      (const %libvirt-accounts))))
-                (default-value (libvirt-configuration))))
+                (default-value (libvirt-configuration))
+                (description "Run @command{libvirtd}, a daemon of the libvirt
+virtualization management system.  This daemon runs on host servers and
+performs required management tasks for virtualized guests.")))
 
 
 (define-record-type* <virtlog-configuration>
@@ -550,7 +553,9 @@ potential infinite waits blocking libvirt."))
                  (list
                   (service-extension shepherd-root-service-type
                                      virtlogd-shepherd-service)))
-                (default-value (virtlog-configuration))))
+                (default-value (virtlog-configuration))
+                (description "Run @command{virtlogd}, a daemon libvirt that is
+used to manage logs from @acronym{VM, virtual machine} consoles.")))
 
 (define (generate-libvirt-documentation)
   (generate-documentation

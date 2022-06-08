@@ -61,26 +61,32 @@ identified by unique ID codes).")
     (license license:gpl3)))
 
 (define-public lolcode-lci
-  (package
-    (name "lolcode-lci")
-    (version "0.11.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/justinmeza/lci")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0syw60b93iajgh91ffchirwwhm2kix2753ibx845kyrhzggmdh2l"))))
-    (build-system cmake-build-system)
-    (inputs
-     (list readline))
-    (native-inputs
-     (list python-2))         ; for the tests
-    (synopsis "LOLCODE interpreter written in C")
-    (description
-     "@code{lci} is a LOLCODE interpreter written in C and is designed to be
+  ;; Use the latest commit as the last release is from 2014 with Python 2.
+  (let ((commit "6762b724361a4fb471345961b4750657783aeb3b")
+        (revision "0"))
+    (package
+      (name "lolcode-lci")
+      (version (git-version "0.11.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/justinmeza/lci")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0phqnqp7qvkn0kxkk5qsc76b9gxs932w4dy3jm96pmknh1q7h6kk"))))
+      (build-system cmake-build-system)
+      ;; The test suite is currently failing with Python 3 (see:
+      ;; https://github.com/justinmeza/lci/issues/75).
+      (arguments (list #:tests? #f))
+      (inputs
+       (list readline))
+      (native-inputs
+       (list python-wrapper))           ; for the tests
+      (synopsis "LOLCODE interpreter written in C")
+      (description
+       "@code{lci} is a LOLCODE interpreter written in C and is designed to be
 correct, portable, fast, and precisely documented.
 @enumerate
 @item correct: Every effort has been made to test lci's conformance to the
@@ -90,8 +96,8 @@ to compile on a broad range of systems.
 @item fast: Much effort has gone into producing simple and efficient code
 whenever possible to the extent that the above points are not compromized.
 @end enumerate")
-    (home-page "http://lolcode.org/")
-    (license license:gpl3+)))
+      (home-page "http://lolcode.org/")
+      (license license:gpl3+))))
 
 (define-public shakespeare-spl
   (package

@@ -19,6 +19,7 @@
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Noisytoot <noisytoot@disroot.org>
+;;; Copyright © 2021 Kyle Meyer <kyle@kyleam.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -57,7 +58,7 @@
             epl1.0
             epl2.0
             eupl1.2
-            expat
+            expat expat-0
             freetype
             freebsd-doc
             giftware
@@ -314,6 +315,13 @@ at URI, which may be a file:// URI pointing the package's tree."
   (license "Expat"
            "http://directory.fsf.org/wiki/License:Expat"
            "https://www.gnu.org/licenses/license-list.html#Expat"))
+
+(define expat-0
+  (license "Expat No Attribution"
+           ;; Note: There is a later formulation of the same license at
+           ;; <https://github.com/aws/mit-0>.
+           "https://romanrm.net/mit-zero"
+           "Expat license with the attribution paragraph removed."))
 
 (define freetype
   (license "Freetype"

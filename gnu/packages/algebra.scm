@@ -127,7 +127,7 @@ greatest common divisor operations.")
 (define-public cm
   (package
    (name "cm")
-   (version "0.3.1")
+   (version "0.4.0")
    (source (origin
             (method url-fetch)
             (uri (string-append
@@ -135,7 +135,7 @@ greatest common divisor operations.")
                   version ".tar.gz"))
             (sha256
              (base32
-              "0qq6b1kwb1byj8ws33ya5awq0ilkpm32037pi1l4cf2737fg9m42"))))
+              "04l3inafql40n0r5rq8rmp21zplgdrzblil2kgkpx5s0jbs9i8rr"))))
    (build-system gnu-build-system)
    (propagated-inputs
      (list mpfrcx zlib)) ; Header files included from cm_common.h.
@@ -226,7 +226,7 @@ the real span of the lattice.")
 (define-public pari-gp
   (package
     (name "pari-gp")
-    (version "2.13.3")
+    (version "2.13.4")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -234,7 +234,7 @@ the real span of the lattice.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "1jm1cz1687cz8pl8lgvmyk3l33cms1xbayv38ca4z1f60qb7zfnc"))))
+                "11g1pkrj12dmggj1n6r00ijpnmk3f3dpqsf1h51q34hmmv79xpmw"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("texlive" ,(texlive-updmap.cfg
@@ -470,7 +470,7 @@ fast arithmetic.")
 (define-public arb
   (package
     (name "arb")
-    (version "2.21.1")
+    (version "2.22.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -479,7 +479,7 @@ fast arithmetic.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1lmcl122qy6mr1g1y65bm7dk9fj0sym7gzmvar5vdgk7ln03c5iq"))))
+                "0qcyf8a7w95yxap0r3sb7xibk53nbs5kkidja3ljvqpbpk5xvpax"))))
     (build-system gnu-build-system)
     (propagated-inputs
      (list flint))               ; flint.h is included by arf.h

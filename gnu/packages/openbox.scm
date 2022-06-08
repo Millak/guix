@@ -2,6 +2,7 @@
 ;;; Copyright © 2014 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,6 +25,9 @@
   #:use-module (guix download)
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
+  #:use-module (guix gexp)
+  #:use-module (gnu packages)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gnome)
@@ -46,10 +50,18 @@
                     version ".tar.xz"))
               (sha256
                (base32
-                "0vg2y1qddsdxkjv806mzpvmkgzliab8ll4s7zm7ma5jnriamirxb"))))
+                "0vg2y1qddsdxkjv806mzpvmkgzliab8ll4s7zm7ma5jnriamirxb"))
+              (patches (search-patches "openbox-python3.patch"))))
     (build-system gnu-build-system)
-    (native-inputs (list pkg-config))
-    (propagated-inputs (list python2-pyxdg))
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'force-reconfigure
+                 ;; This is made necessary by the openbox-python3 patch.
+                 (lambda _
+                   (delete-file "configure"))))))
+    (native-inputs (list autoconf automake gettext-minimal libtool pkg-config))
+    (propagated-inputs (list python-pyxdg))
     (inputs (list imlib2
                   libxml2
                   (librsvg-for-system)
@@ -60,7 +72,7 @@
                   libxrandr
                   libxft
                   pango
-                  python-2))
+                  python-wrapper))
     (synopsis "Box style window manager")
     (description
      "Openbox is a highly configurable, next generation window manager with

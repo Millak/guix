@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016, 2017, 2018, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2018, 2020, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Mathieu Othacehe <othacehe@gnu.org>
 ;;;
@@ -78,28 +78,35 @@
            ;; up the evaluation speed as the evaluations can be performed
            ;; concurrently.  It also decreases the amount of memory needed per
            ;; evaluation process.
-           (n-par-for-each
-            (/ (current-processor-count) 2)
-            (lambda (system)
-              (with-store store
-                (let ((inferior
-                       (open-inferior (derivation->output-path derivation)))
-                      (channels (map channel-instance->sexp instances)))
-                  (inferior-eval '(use-modules (gnu ci)) inferior)
-                  (let ((jobs
-                         (inferior-eval-with-store
-                          inferior store
-                          `(lambda (store)
-                             (cuirass-jobs store
-                                           '((subset . all)
-                                             (systems . ,(list system))
-                                             (channels . ,channels))))))
-                        (file
-                         (string-append directory "/jobs-" system ".scm")))
-                    (call-with-output-file file
-                      (lambda (port)
-                        (write jobs port)))))))
-            %cuirass-supported-systems))))))
+           ;;
+           ;; Fork inferior processes upfront before we have created any
+           ;; threads.
+           (let ((inferiors (map (lambda _
+                                   (open-inferior (derivation->output-path derivation)))
+                                 %cuirass-supported-systems)))
+             (n-par-for-each
+              (min (length %cuirass-supported-systems)
+                   (current-processor-count))
+              (lambda (system inferior)
+                (with-store store
+                  (let ((channels (map channel-instance->sexp instances)))
+                    (inferior-eval '(use-modules (gnu ci)) inferior)
+                    (let ((jobs
+                           (inferior-eval-with-store
+                            inferior store
+                            `(lambda (store)
+                               (cuirass-jobs store
+                                             '((subset . all)
+                                               (systems . ,(list system))
+                                               (channels . ,channels))))))
+                          (file
+                           (string-append directory "/jobs-" system ".scm")))
+                      (close-inferior inferior)
+                      (call-with-output-file file
+                        (lambda (port)
+                          (write jobs port)))))))
+              %cuirass-supported-systems
+              inferiors)))))))
   (x
    (format (current-error-port) "Wrong command: ~a~%." x)
    (exit 1)))

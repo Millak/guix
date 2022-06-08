@@ -2,7 +2,7 @@
 ;;; Copyright © 2014, 2015, 2016, 2018 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016, 2017 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2021, 2022 Greg Hogan <code@greghogan.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,14 +32,14 @@
 (define-public ccache
   (package
     (name "ccache")
-    (version "4.5.1")
+    (version "4.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/ccache/ccache/releases/download/v"
                            version "/ccache-" version ".tar.xz"))
        (sha256
-        (base32 "05wmflxdc8h3d00gr3kilr5dmrqxj6lcmq9ic575ydi60fz6w62i"))))
+        (base32 "1sa576ff8hc1swq55mdfp5gsnpys276gf37n83k6k49myihbharx"))))
     (build-system cmake-build-system)
     (native-inputs (list perl ; for test/run
                          (@ (gnu packages base) which)))

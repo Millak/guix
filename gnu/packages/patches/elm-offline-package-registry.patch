@@ -1,0 +1,71 @@
+From 06563409e6f2b1cca7bc1b27e31efd07a7569da8 Mon Sep 17 00:00:00 2001
+From: Philip McGrath <philip@philipmcgrath.com>
+Date: Thu, 14 Apr 2022 22:41:04 -0400
+Subject: [PATCH] minimal support for offline builds
+
+Normally, Elm performs HTTP requests before building to obtain or
+update its list of all registed packages and their versions.
+This is problematic in the Guix build environment.
+
+This patch causes Elm to check if the `GUIX_ELM_OFFLINE_REGISTRY_FILE`
+is set and, if so, to use the contents of the file it specifies as
+though it were the response from
+https://package.elm-lang.org/all-packages.
+
+This patch does not attempt to add more general support for offline
+builds. In particular, it does not attempt to support incremental
+updates to the package registry cache file. See also discussion at
+https://discourse.elm-lang.org/t/private-package-tool-spec/6779/25.
+---
+ builder/src/Deps/Registry.hs | 25 +++++++++++++++++++++----
+ 1 file changed, 21 insertions(+), 4 deletions(-)
+
+diff --git a/builder/src/Deps/Registry.hs b/builder/src/Deps/Registry.hs
+index 8d7def98..70cf3622 100644
+--- a/builder/src/Deps/Registry.hs
++++ b/builder/src/Deps/Registry.hs
+@@ -18,6 +18,8 @@ import Control.Monad (liftM2)
+ import Data.Binary (Binary, get, put)
+ import qualified Data.List as List
+ import qualified Data.Map.Strict as Map
++import System.Environment as Env
++import qualified Data.ByteString as BS
+ 
+ import qualified Deps.Website as Website
+ import qualified Elm.Package as Pkg
+@@ -190,13 +192,28 @@ getVersions' name (Registry _ versions) =
+ post :: Http.Manager -> String -> D.Decoder x a -> (a -> IO b) -> IO (Either Exit.RegistryProblem b)
+ post manager path decoder callback =
+   let
+-    url = Website.route path []
+-  in
+-  Http.post manager url [] Exit.RP_Http $
+-    \body ->
++    mkBodyCallback url body =
+       case D.fromByteString decoder body of
+         Right a -> Right <$> callback a
+         Left _ -> return $ Left $ Exit.RP_Data url body
++    postOnline url cb =
++      Http.post manager url [] Exit.RP_Http cb
++    performPost f url =
++      f url (mkBodyCallback url)
++  in
++    do
++      maybeFile <- Env.lookupEnv "GUIX_ELM_OFFLINE_REGISTRY_FILE"
++      case (path, maybeFile) of
++        ( "/all-packages", Just file ) ->
++          performPost postOffline file
++        ( _, _ ) ->
++          -- don't know how to handle other endpoints yet
++          performPost postOnline (Website.route path [])
++
++postOffline :: String -> (BS.ByteString -> IO a) -> IO a
++postOffline file callback = do
++  body <- BS.readFile file
++  callback body
+ 
+ 
+ 
+-- 
+2.32.0
+

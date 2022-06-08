@@ -3,6 +3,7 @@
 ;;; Copyright © 2018, 2019, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2022 Luis Felipe López Acevedo <luis.felipe.la@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -490,31 +491,6 @@ a simple interface that makes it easy to organize and browse feeds.")
     (license (list license:expat
                    license:gpl3+))))    ; tuir/packages/praw
 
-(define-public rawdog
-  (package
-    (name "rawdog")
-    (version "2.23")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://offog.org/files/rawdog-"
-                           version ".tar.gz"))
-       (sha256
-        (base32
-         "18nyg19mwxyqdnykplkqmzb4n27vvrhvp639zai8f81gg9vdbsjp"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2.7))
-    (inputs
-     (list python2-feedparser python2-pytidylib))
-    (home-page "https://offog.org/code/rawdog/")
-    (synopsis "RSS Aggregator Without Delusions Of Grandeur")
-    (description
-     "@command{rawdog} is a feed aggregator, capable of producing a personal
-\"river of news\" or a public \"planet\" page.  It supports all common feed
-formats, including all versions of RSS and Atom.")
-    (license license:gpl2+)))
-
 (define-public gfeeds
   (package
     (name "gfeeds")
@@ -537,6 +513,11 @@ formats, including all versions of RSS and Atom.")
              (substitute* "gfeeds/confManager.py"
                (("mpv") (search-input-file inputs "/bin/mpv")))
              #t))
+         (add-after 'unpack 'patch-webkit2-version
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "bin/gfeeds.in"
+               (("gi\\.require_version\\('WebKit2', '4\\.0'\\)")
+                "gi.require_version('WebKit2', '4.1')"))))
          (add-after 'install 'wrap-gfeeds
            (lambda* (#:key outputs #:allow-other-keys)
              (wrap-program (string-append

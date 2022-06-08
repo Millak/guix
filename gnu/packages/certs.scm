@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016, 2017, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2017, 2021-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017, 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -169,7 +169,12 @@ that was originally contributed to Debian.")
                 '(set-paths install-locale unpack))
          (add-after 'unpack 'install
            (lambda _
-             (let ((certsdir (string-append %output "/etc/ssl/certs/")))
+             ;; TODO: On the next rebuild cycle, remove references to
+             ;; '%output' and '%outputs'.
+             (let ((certsdir (string-append ,(if (%current-target-system)
+                                                 '(assoc-ref %outputs "out")
+                                                 '%output)
+                                            "/etc/ssl/certs/")))
                (with-directory-excursion "nss/lib/ckfw/builtins/"
                  (unless (file-exists? "blacklist.txt")
                    (call-with-output-file "blacklist.txt" (const #t)))

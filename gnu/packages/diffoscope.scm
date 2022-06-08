@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017, 2021 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2019 Vagrant Cascadian <vagrant@reproducible-builds.org>
@@ -73,7 +73,7 @@
 (define-public diffoscope
   (package
     (name "diffoscope")
-    (version "207")
+    (version "215")
     (source
      (origin
        (method git-fetch)
@@ -82,7 +82,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0djpkq9fpw8dpiqaghbbg5dshl27xgkqrifalx9nq87dix5c1y6d"))
+        (base32 "16pyqbyrfsxjnpmr9913x2brz3mxplhz62rxwix1c0p7afwjw835"))
        (patches
         (search-patches "diffoscope-fix-llvm-test.patch"))))
     (build-system python-build-system)
@@ -97,19 +97,19 @@
                   (add-after 'unpack 'embed-tool-references
                     (lambda* (#:key inputs #:allow-other-keys)
                       (substitute* "diffoscope/comparators/utils/compare.py"
-                        (("\\['xxd',")
-                         (string-append "['" (which "xxd") "',")))
-                      (substitute* "diffoscope/comparators/elf.py"
-                        (("@tool_required\\('readelf'\\)") "")
-                        (("get_tool_name\\('readelf'\\)")
-                         (string-append "'" (which "readelf") "'")))
+                        (("\\[\"xxd\",")
+                         (string-append "[\"" (which "xxd") "\",")))
+                      (substitute* "diffoscope/diff.py"
+                        (("@tool_required\\(\"diff\"\\)") "")
+                        (("get_tool_name\\(\"diff\"\\)")
+                         (string-append "get_tool_name(\"" (which "diff") "\")")))
                       (substitute* "diffoscope/comparators/directory.py"
-                        (("@tool_required\\('stat'\\)") "")
-                        (("@tool_required\\('getfacl'\\)") "")
-                        (("\\['stat',")
-                         (string-append "['" (which "stat") "',"))
-                        (("\\['getfacl',")
-                         (string-append "['" (which "getfacl") "',")))))
+                        (("@tool_required\\(\"stat\"\\)") "")
+                        (("@tool_required\\(\"getfacl\"\\)") "")
+                        (("\\[\"stat\",")
+                         (string-append "[\"" (which "stat") "\","))
+                        (("\\[\"getfacl\",")
+                         (string-append "[\"" (which "getfacl") "\",")))))
                   (add-after 'build 'build-man-page
                     (lambda* (#:key (make-flags '()) #:allow-other-keys)
                       (apply invoke "make" "-C" "doc" make-flags)))
@@ -146,7 +146,8 @@
                   python-magic
                   python-tlsh
                   acl ;for getfacl
-                  colordiff
+                  coreutils ;for stat
+                  diffutils ;for diff
                   xxd))
     (native-inputs
      (append
@@ -233,7 +234,7 @@ install.")
 (define-public reprotest
   (package
     (name "reprotest")
-    (version "0.7.18")
+    (version "0.7.20")
     (source
      (origin
        (method git-fetch)
@@ -243,7 +244,7 @@ install.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "19lwsxq53isgfkvlxvxqqmbjfcim3lhcxwk7m9ddfjiynhq74949"))))
+         "0c3nyiha9gh1xzl0dn9ji2yqa8y06d83v84pz0dqanihm40ljjsm"))))
     (inputs
      (list python-debian python-distro python-libarchive-c python-rstr))
     (native-inputs

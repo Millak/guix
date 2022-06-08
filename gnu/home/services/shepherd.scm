@@ -51,7 +51,7 @@
   home-shepherd-configuration make-home-shepherd-configuration
   home-shepherd-configuration?
   (shepherd home-shepherd-configuration-shepherd
-            (default shepherd)) ; package
+            (default shepherd-0.9)) ; package
   (auto-start? home-shepherd-configuration-auto-start?
                (default #t))
   (services home-shepherd-configuration-services
@@ -78,12 +78,16 @@ as shepherd package."
             '#$files))
           (action 'root 'daemonize)
           (format #t "Starting services...~%")
-          (for-each
-           (lambda (service) (start service))
-           '#$(append-map shepherd-service-provision
-                          (filter shepherd-service-auto-start?
-                                  services)))
-          (newline)))
+          (let ((services-to-start
+                 '#$(append-map shepherd-service-provision
+                                (filter shepherd-service-auto-start?
+                                        services))))
+            (if (defined? 'start-in-the-background)
+                (start-in-the-background services-to-start)
+                (for-each start services-to-start))
+
+            (redirect-port (open-input-file "/dev/null")
+                           (current-input-port)))))
 
     (scheme-file "shepherd.conf" config)))
 
@@ -92,17 +96,21 @@ as shepherd package."
          (services (home-shepherd-configuration-services config)))
     (if (home-shepherd-configuration-auto-start? config)
         (with-imported-modules '((guix build utils))
-          #~(let ((log-dir (or (getenv "XDG_LOG_HOME")
-                               (format #f "~a/.local/var/log" (getenv "HOME")))))
-              ((@ (guix build utils) mkdir-p) log-dir)
-              (system*
-               #$(file-append shepherd "/bin/shepherd")
-               "--logfile"
-               (string-append
-                log-dir
-                "/shepherd.log")
-               "--config"
-               #$(home-shepherd-configuration-file services shepherd))))
+          #~(unless (file-exists?
+                     (string-append
+                      (or (getenv "XDG_RUNTIME_DIR")
+                          (format #f "/run/user/~a" (getuid)))
+                      "/shepherd/socket"))
+              (let ((log-dir (or (getenv "XDG_LOG_HOME")
+                                 (format #f "~a/.local/var/log"
+                                         (getenv "HOME")))))
+                ((@ (guix build utils) mkdir-p) log-dir)
+                (system*
+                 #$(file-append shepherd "/bin/shepherd")
+                 "--logfile"
+                 (string-append log-dir "/shepherd.log")
+                 "--config"
+                 #$(home-shepherd-configuration-file services shepherd)))))
         #~"")))
 
 (define (reload-configuration-gexp config)

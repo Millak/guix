@@ -16,6 +16,7 @@
 ;;; Copyright © 2020 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -293,25 +294,15 @@ also known as DXTn or DXTC) for Mesa.")
         ("libxml2" ,libxml2)
         ("libxrandr" ,libxrandr)
         ("libxvmc" ,libxvmc)
-        ,@(match (%current-system)
-            ((or "x86_64-linux" "i686-linux" "powerpc64le-linux" "aarch64-linux"
-                 "powerpc-linux" "riscv64-linux")
-             ;; Note: update the 'clang' input of mesa-opencl when bumping this.
-             `(("llvm" ,llvm-11)))
-            (_
-             `()))
+        ;; Note: update the 'clang' input of mesa-opencl when bumping this.
+        ("llvm" ,llvm-11)
         ("wayland" ,wayland)
         ("wayland-protocols" ,wayland-protocols)))
     (native-inputs
       `(("bison" ,bison)
         ("flex" ,flex)
         ("gettext" ,gettext-minimal)
-        ,@(match (%current-system)
-            ((or "x86_64-linux" "i686-linux" "powerpc64le-linux" "aarch64-linux"
-                 "powerpc-linux" "riscv64-linux")
-             `(("glslang" ,glslang)))
-            (_
-             `()))
+        ("glslang" ,glslang)
         ("pkg-config" ,pkg-config)
         ("python" ,python-wrapper)
         ("python-libxml2", python-libxml2) ;for OpenGL ES 1.1 and 2.0 support
@@ -321,9 +312,12 @@ also known as DXTn or DXTC) for Mesa.")
     (arguments
      `(#:configure-flags
        '(,@(match (%current-system)
-             ((or "armhf-linux" "aarch64-linux")
+             ("aarch64-linux"
               ;; TODO: Fix svga driver for non-Intel architectures.
               '("-Dgallium-drivers=etnaviv,freedreno,kmsro,lima,nouveau,panfrost,r300,r600,swrast,tegra,v3d,vc4,virgl"))
+             ("armhf-linux"
+              ;; Freedreno FTBFS when built on a 64-bit machine.
+              '("-Dgallium-drivers=etnaviv,kmsro,lima,nouveau,panfrost,r300,r600,swrast,tegra,v3d,vc4,virgl"))
              ((or "powerpc64le-linux" "powerpc-linux" "riscv64-linux")
               '("-Dgallium-drivers=nouveau,r300,r600,radeonsi,swrast,virgl"))
              (_
@@ -355,13 +349,8 @@ also known as DXTn or DXTC) for Mesa.")
              (_
               '("-Dvulkan-drivers=auto")))
 
-         ;; Enable the Vulkan overlay layer on architectures using llvm.
-         ,@(match (%current-system)
-             ((or "x86_64-linux" "i686-linux" "powerpc64le-linux" "aarch64-linux"
-                  "powerpc-linux" "riscv64-linux")
-              '("-Dvulkan-layers=device-select,overlay"))
-             (_
-              '()))
+         ;; Enable the Vulkan overlay layer on all architectures.
+         "-Dvulkan-layers=device-select,overlay"
 
          ;; Also enable the tests.
          "-Dbuild-tests=true"
@@ -370,13 +359,11 @@ also known as DXTn or DXTC) for Mesa.")
          ;; from the default dri drivers
          ,@(match (%current-system)
              ((or "x86_64-linux" "i686-linux")
-              '("-Ddri-drivers=i915,i965,nouveau,r200,r100"
-                "-Dllvm=enabled"))      ; default is x86/x86_64 only
-             ((or "powerpc64le-linux" "aarch64-linux" "powerpc-linux" "riscv64-linux")
-              '("-Ddri-drivers=nouveau,r200,r100"
-                "-Dllvm=enabled"))
+              '("-Ddri-drivers=i915,i965,nouveau,r200,r100"))
              (_
-              '("-Ddri-drivers=nouveau,r200,r100"))))
+              '("-Ddri-drivers=nouveau,r200,r100")))
+
+                "-Dllvm=enabled")       ; default is x86/x86_64 only
 
        ;; XXX: 'debugoptimized' causes LTO link failures on some drivers.  The
        ;; documentation recommends using 'release' for performance anyway.
@@ -434,6 +421,10 @@ also known as DXTn or DXTC) for Mesa.")
                   ;; The simplest way to skip it is to run a different test instead.
                   `((substitute* "src/freedreno/ir3/meson.build"
                       (("disasm\\.c'") "delay.c',\n    link_args: ld_args_build_id"))))
+                 ("armhf-linux"
+                  ;; Disable some of the llvmpipe tests.
+                  `((substitute* "src/gallium/drivers/llvmpipe/meson.build"
+                      (("'lp_test_arit', ") ""))))
                  (_
                   '((display "No tests to disable on this architecture.\n"))))))
          (add-before 'configure 'fix-dlopen-libnames
@@ -1091,7 +1082,7 @@ is written in a way that can be used for any general C# application.")
 (define-public glmark2
   (package
     (name "glmark2")
-    (version "2020.04")
+    (version "2021.12")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1100,20 +1091,12 @@ is written in a way that can be used for any general C# application.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ywpzp0imi3f8iyp7d1739576zx2nsr3db5hp2as4yhflfyq1as2"))
-              (modules '((guix build utils)))
-              ;; Fix Python 3 incompatibility.
-              (snippet
-               '(begin
-                  (substitute* "wscript"
-                    (("(sorted\\()FLAVORS\\.keys\\(\\)(.*)" _ beginning end)
-                     (string-append beginning "list(FLAVORS)" end)))
-                  #t))))
-    (build-system waf-build-system)
+                "1aydqbrg9i74s19rrdrsscx94m885yvc43v3sdqlgyh675ms98jb"))))
+    (build-system meson-build-system)
     (arguments
      '(#:tests? #f                      ; no check target
        #:configure-flags
-       (list (string-append "--with-flavors="
+       (list (string-append "-Dflavors="
                             (string-join '("x11-gl" "x11-glesv2"
                                            "drm-gl" "drm-glesv2"
                                            "wayland-gl" "wayland-glesv2")

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2018, 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2016, 2018-2019, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
@@ -12,7 +12,7 @@
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
-;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017 Adriano Peluso <catonano@gmail.com>
 ;;; Copyright © 2017 Gregor Giesen <giesen@zaehlwerk.net>
@@ -27,7 +27,7 @@
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2021 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
@@ -72,6 +72,7 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -88,7 +89,7 @@
 (define-public libxmlb
   (package
     (name "libxmlb")
-    (version "0.1.15")
+    (version "0.3.8")
     (source
      (origin
        (method git-fetch)
@@ -98,7 +99,9 @@
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mb73pnfwqc4mm0lm16yfn0lj495h8hcciprb2v6wgy3ifnnjxib"))))
+        (base32 "0znz2y1ig2kvlda44a3kxa8x7f222nbg50rjz6nlngzka0ccsgxx"))
+       ;; Drop xb-tool patch after libxmlb 0.3.8, merged upstream
+       (patches (search-patches "libxmlb-install-xb-tool-into-bindir.patch"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t))
@@ -341,9 +344,6 @@ formulas and hyperlinks to multiple worksheets in an Excel 2007+ XLSX file.")
                  (string-append glibc "/include")))))))))
     (inputs `(("libxml2" ,libxml2)))
     (synopsis "Python bindings for the libxml2 library")))
-
-(define-public python2-libxml2
-  (package-with-python2 python-libxml2))
 
 (define-public libxslt
   (package
@@ -955,17 +955,17 @@ a schema.")
 (define-public perl-xml-compile-soap
   (package
     (name "perl-xml-compile-soap")
-    (version "3.24")
+    (version "3.27")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://cpan/authors/id/M/MA/MARKOV/"
                                   "XML-Compile-SOAP-" version ".tar.gz"))
               (sha256
                (base32
-                "0pkcph562l2ij7rlwlvm58v6y062qsbydfpaz2qnph2ixqy0xfd1"))))
+                "1a3650al287x781i3flylwbik1ss3xfw7sgdcaz5qrjqvhpn6mnn"))))
     (build-system perl-build-system)
     (propagated-inputs
-     (list perl-file-slurp-tiny
+     (list perl-file-slurper
            perl-libwww
            perl-log-report
            perl-xml-compile
@@ -1115,9 +1115,6 @@ code for classes that correspond to data structures defined by XMLSchema.")
                    license:expat     ; pyxb/utils/six.py
                    license:gpl2      ; bundled jquery in doc is dual MIT/GPL2
                    license:psfl))))  ; pyxb/utils/activestate.py
-
-(define-public python2-pyxb
-  (package-with-python2 python-pyxb))
 
 (define-public xmlto
   (package
@@ -1421,7 +1418,7 @@ elements to their parents
 (define-public xlsx2csv
   (package
     (name "xlsx2csv")
-    (version "0.7.4")
+    (version "0.7.8")
     (source
      (origin
        (method git-fetch)
@@ -1430,17 +1427,17 @@ elements to their parents
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "168dm6p7w6pvgd87yb9hcxv9y0liv6mxgril202nfva68cp8y939"))))
+        (base32 "1p10571295f8zw1lsma8k5z07hrk9aspar0lsz8zpgjl7v35zcq7"))))
     (build-system python-build-system)
     (arguments
-     `(#:python ,python-2               ; use python-2 for the test script
-       #:phases
+     `(#:phases
        (modify-phases %standard-phases
          (replace 'check
            (lambda _
              (substitute* "test/run"
                ;; Run tests with `python' only.
-               (("^(PYTHON_VERSIONS = ).*" all m) (string-append m "['']")))
+               (("^(PYTHON_VERSIONS = ).*" all m)
+                (string-append m "['']")))
              (invoke "test/run"))))))
     (home-page "https://github.com/dilshod/xlsx2csv")
     (synopsis "XLSX to CSV converter")
@@ -2235,7 +2232,7 @@ implements @code{XMLStreamWriter} and @code{XMLStreamReader} and supports
 (define-public java-jdom2
   (package
     (name "java-jdom")
-    (version "2.0.6")
+    (version "2.0.6.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2244,7 +2241,7 @@ implements @code{XMLStreamWriter} and @code{XMLStreamReader} and supports
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "14vv1kxrsdvwi4cz3rx6r48w5y6fvk9cymil8qhvxwp56xxrgxiq"))))
+                "1r4pwl0z7hm45v9l2wbq3fjmqi13zmwzbrggyqizrwv31kghhx56"))))
     (build-system ant-build-system)
     (arguments
      `(#:build-target "package"
@@ -2529,8 +2526,46 @@ because lxml.etree already has its own implementation of XPath 1.0.")
 libxml2 and libxslt.")
     (license license:bsd-3))) ; and a few more, see LICENSES.txt
 
-(define-public python2-lxml
-  (package-with-python2 python-lxml))
+(define-public python-lxml-4.7
+  (package
+    (inherit python-lxml)
+    (version "4.7.1")
+    (source
+     (origin
+       (inherit (package-source python-lxml))
+       (uri (pypi-uri "lxml" version))
+       (sha256
+        (base32
+         "090viyanaki4q7w7i000xl0qh4in52bkl3qal55sz2bbm8w3hqd1"))))))
+
+(define-public python-untangle
+  ;; The latest tagged release is from 2014; use the latest commit.
+  (let ((revision "1")
+        (commit "fb916a9621175d000a3b0ca9322d3b3ebf8570c0"))
+    (package
+      (name "python-untangle")
+      ;; PyPI currently offers some untagged 1.1.1 version.
+      (version (git-version "1.1.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)             ;no tests in pypi archive
+         (uri (git-reference
+               (url "https://github.com/stchris/untangle")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0dn2jz9ajncbqx3pdlgqaxmngl6pdiaz03nj8mkddasckdq9lbrh"))))
+      (build-system python-build-system)
+      (arguments (list #:phases #~(modify-phases %standard-phases
+                                    (replace 'check
+                                      (lambda* (#:key tests? #:allow-other-keys)
+                                        (when tests?
+                                          (invoke "python" "tests/tests.py")))))))
+      (home-page "http://0chris.com/untangle")
+      (synopsis "XML to Python objects conversion library")
+      (description "@code{untangle} is a tiny Python library which converts an
+XML document to a Python object.")
+      (license license:expat))))
 
 (define-public python-xmlschema
   (package

@@ -5,6 +5,7 @@
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
+;;; Copyright © 2022 Pavel Shlyak <p.shlyak@pantherx.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -48,12 +49,13 @@
   "Take SEXP, a tuple as returned by 'partition->gexp', and turn it into a
 <partition> record."
   (match sexp
-    ((size file-system file-system-options label uuid)
+    ((size file-system file-system-options label uuid flags)
      (partition (size size)
                 (file-system file-system)
                 (file-system-options file-system-options)
                 (label label)
-                (uuid uuid)))))
+                (uuid uuid)
+                (flags flags)))))
 
 (define (size-in-kib size)
   "Convert SIZE expressed in bytes, to kilobytes and return it as a string."
@@ -78,6 +80,7 @@ turn doesn't take any constant overhead into account, force a 1-MiB minimum."
         (fs-options (partition-file-system-options partition))
         (label (partition-label partition))
         (uuid (partition-uuid partition))
+        (flags (partition-flags partition))
         (journal-options "lazy_itable_init=1,lazy_journal_init=1"))
     (apply invoke
            `("fakeroot" "mke2fs" "-t" ,fs "-d" ,root
@@ -92,16 +95,18 @@ turn doesn't take any constant overhead into account, force a 1-MiB minimum."
                            (estimate-partition-size root)
                            size)))))))
 
-(define* (make-vfat-image partition target root)
+(define* (make-vfat-image partition target root fs-bits)
   "Handle the creation of VFAT partition images.  See 'make-partition-image'."
   (let ((size (partition-size partition))
-        (label (partition-label partition)))
-    (invoke "fakeroot" "mkdosfs" "-n" label "-C" target
-            "-F" "16" "-S" "1024"
-            (size-in-kib
-             (if (eq? size 'guess)
-                 (estimate-partition-size root)
-                 size)))
+        (label (partition-label partition))
+        (flags (partition-flags partition)))
+    (apply invoke "fakeroot" "mkdosfs" "-n" label "-C" target
+                          "-F" (number->string fs-bits)
+                          (size-in-kib
+                           (if (eq? size 'guess)
+                               (estimate-partition-size root)
+                               size))
+                    (if (member 'esp flags) (list "-S" "1024") '()))
     (for-each (lambda (file)
                 (unless (member file '("." ".."))
                   (invoke "mcopy" "-bsp" "-i" target
@@ -117,8 +122,10 @@ ROOT directory to populate the image."
     (cond
      ((string-prefix? "ext" type)
       (make-ext-image partition target root))
-     ((string=? type "vfat")
-      (make-vfat-image partition target root))
+     ((or (string=? type "vfat") (string=? type "fat16"))
+      (make-vfat-image partition target root 16))
+     ((string=? type "fat32")
+      (make-vfat-image partition target root 32))
      (else
       (raise (condition
               (&message

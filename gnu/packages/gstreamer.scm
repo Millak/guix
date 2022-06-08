@@ -892,7 +892,7 @@ model to base your own plug-in on, here it is.")
        ("transcode" ,transcode)
        ("usrsctp" ,usrsctp)
        ("v4l" ,v4l-utils)
-       ("voaacenc", vo-aacenc)
+       ("voaacenc" ,vo-aacenc)
        ("voamrwbenc" ,vo-amrwbenc)
        ("vulkan-headers" ,vulkan-headers)
        ("vulkan-loader" ,vulkan-loader)
@@ -1076,7 +1076,7 @@ given, also pass them to the build system instead of the ones used by PKG."
        #:configure-flags
        (list (string-append
               "-Dpygi-overrides-dir="
-              (python:site-packages %build-inputs %outputs) "gi/overrides"))))
+              (python:site-packages %build-inputs %outputs) "/gi/overrides"))))
     (native-inputs
      (list pkg-config python))
     (propagated-inputs

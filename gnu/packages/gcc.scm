@@ -12,6 +12,7 @@
 ;;; Copyright © 2020 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
+;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -582,6 +583,20 @@ Go.  It also includes runtime support libraries for these languages.")
 
         "znver2" "znver3")))
 
+(define %gcc-11-aarch64-micro-architectures
+  ;; Suitable '-march' values for GCC 11.
+  %gcc-10-aarch64-micro-architectures)            ;unchanged
+
+(define %gcc-11-armhf-micro-architectures
+  %gcc-10-armhf-micro-architectures)
+
+(define %gcc-11-x86_64-micro-architectures
+  ;; Suitable '-march' values for GCC 11.
+  (append %gcc-10-x86_64-micro-architectures
+          '("sapphirerapids" "alterlake" "rocketlake" ;Intel
+
+            "btver1" "btver2")))                  ;AMD
+
 (define-public gcc-7
   (package
     (inherit gcc-6)
@@ -626,14 +641,14 @@ It also includes runtime support libraries for these languages.")
 (define-public gcc-9
   (package
    (inherit gcc-8)
-   (version "9.4.0")
+   (version "9.5.0")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnu/gcc/gcc-"
                                 version "/gcc-" version ".tar.xz"))
             (sha256
              (base32
-              "13l3p6g2krilaawbapmn9zmmrh3zdwc36mfr3msxfy038hps6pf9"))
+              "13ygjmd938m0wmy946pxdhz9i1wq7z4w10l6pvidak0xxxj9yxi7"))
             (patches (search-patches "gcc-9-strmov-store-file-names.patch"
                                      "gcc-9-asan-fix-limits-include.patch"
                                      "gcc-5.0-libvtv-runpath.patch"))
@@ -664,21 +679,42 @@ It also includes runtime support libraries for these languages.")
 (define-public gcc-11
   (package
    (inherit gcc-8)
-   (version "11.2.0")
+   (version "11.3.0")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnu/gcc/gcc-"
                                 version "/gcc-" version ".tar.xz"))
             (sha256
              (base32
-              "12zs6vd2rapp42x154m479hg3h3lsafn3xhg06hp5hsldd9xr3nh"))
+              "0fdclcwf728wbq52vphfcjywzhpsjp3kifzj3pib3xcihs0z4z5l"))
             (patches (search-patches "gcc-9-strmov-store-file-names.patch"
                                      "gcc-5.0-libvtv-runpath.patch"))
             (modules '((guix build utils)))
             (snippet gcc-canadian-cross-objdump-snippet)))
 
-   ;; TODO: Add newly supported micro-architectures.
-   (properties (package-properties gcc-10))))
+   (properties
+    `((compiler-cpu-architectures
+       ("aarch64" ,@%gcc-11-aarch64-micro-architectures)
+       ("armhf" ,@%gcc-11-armhf-micro-architectures)
+       ("x86_64" ,@%gcc-11-x86_64-micro-architectures))))))
+
+(define-public gcc-12
+  (package
+    (inherit gcc-11)
+    ;; Note: 'compiler-cpu-architectures' is unchanged compared to GCC 11.
+    (version "12.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/gcc/gcc-"
+                                  version "/gcc-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0ywws66myjxcwsmla721g35d2ymlckq6ii7j9av0477ki5467zb2"))
+              (patches (search-patches "gcc-12-strmov-store-file-names.patch"
+                                       "gcc-5.0-libvtv-runpath.patch"))
+              (modules '((guix build utils)))
+              (snippet gcc-canadian-cross-objdump-snippet)))))
+
 
 ;; Note: When changing the default gcc version, update
 ;;       the gcc-toolchain-* definitions.

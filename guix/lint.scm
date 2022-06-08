@@ -494,16 +494,16 @@ of a package, and INPUT-NAMES, a list of package specifications such as
             "m4"
             "qttools"
             "yasm" "nasm" "fasm"
-            "python-coverage" "python2-coverage"
-            "python-cython" "python2-cython"
-            "python-docutils" "python2-docutils"
-            "python-mock" "python2-mock"
-            "python-nose" "python2-nose"
-            "python-pbr" "python2-pbr"
-            "python-pytest" "python2-pytest"
-            "python-pytest-cov" "python2-pytest-cov"
-            "python-setuptools-scm" "python2-setuptools-scm"
-            "python-sphinx" "python2-sphinx"
+            "python-coverage"
+            "python-cython"
+            "python-docutils"
+            "python-mock"
+            "python-nose"
+            "python-pbr"
+            "python-pytest"
+            "python-pytest-cov"
+            "python-setuptools-scm"
+            "python-sphinx"
             "scdoc"
             "swig"
             "qmake"
@@ -523,9 +523,7 @@ of a package, and INPUT-NAMES, a list of package specifications such as
   ;; Emit a warning if some inputs of PACKAGE are likely to should not be
   ;; an input at all.
   (let ((input-names '("python-setuptools"
-                       "python2-setuptools"
-                       "python-pip"
-                       "python2-pip")))
+                       "python-pip")))
     (map (lambda (input)
            (make-warning
             package
@@ -1347,7 +1345,11 @@ descriptions maintained upstream."
                                  (formatted-message-arguments c))))
                  (make-warning package
                                (G_ "failed to create ~a derivation: ~a")
-                               (list system str)))))
+                               (list system str))))
+              (else
+               (make-warning package
+                             (G_ "failed to create ~a derivation: ~a")
+                             (list system c))))
       (parameterize ((%graft? #f))
         (package-derivation store package system #:graft? #f)
 

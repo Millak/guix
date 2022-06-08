@@ -2,9 +2,10 @@
 ;;; Copyright © 2012, 2013, 2014, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 David Thompson <davet@gnu.org>
 ;;; Copyright © 2018 Kyle Meyer <kyle@kyleam.com>
-;;; Copyright © 2019 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2019, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
+;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,6 +25,7 @@
 (define-module (guix scripts import)
   #:use-module (guix ui)
   #:use-module (guix scripts)
+  #:use-module (guix scripts style)
   #:use-module (guix utils)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-11)
@@ -31,40 +33,8 @@
   #:use-module (srfi srfi-37)
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
-  #:use-module (ice-9 pretty-print)
   #:export (%standard-import-options
             guix-import))
-
-
-;;;
-;;; Helper.
-;;;
-
-(define (newline-rewriting-port output)
-  "Return an output port that rewrites strings containing the \\n escape
-to an actual newline.  This works around the behavior of `pretty-print'
-and `write', which output these as \\n instead of actual newlines,
-whereas we want the `description' field to contain actual newlines
-rather than \\n."
-  (define (write-string str)
-    (let loop ((chars (string->list str)))
-      (match chars
-        (()
-         #t)
-        ((#\\ #\n rest ...)
-         (newline output)
-         (loop rest))
-        ((chr rest ...)
-         (write-char chr output)
-         (loop rest)))))
-
-  (make-soft-port (vector (cut write-char <>)
-                          write-string
-                          (lambda _ #t)           ; flush
-                          #f
-                          (lambda _ #t)           ; close
-                          #f)
-                  "w"))
 
 
 ;;;
@@ -80,7 +50,7 @@ rather than \\n."
 
 (define importers '("gnu" "pypi" "cpan" "hackage" "stackage" "egg" "elpa"
                     "gem" "go" "cran" "crate" "texlive" "json" "opam"
-                    "minetest"))
+                    "minetest" "elm"))
 
 (define (resolve-importer name)
   (let ((module (resolve-interface
@@ -118,9 +88,7 @@ Run IMPORTER with ARGS.\n"))
     ((importer args ...)
      (if (member importer importers)
          (let ((print (lambda (expr)
-                        (pretty-print expr (newline-rewriting-port
-                                            (current-output-port))
-                                      #:max-expr-width 80))))
+                        (pretty-print-with-comments (current-output-port) expr))))
            (match (apply (resolve-importer importer) args)
              ((and expr (or ('package _ ...)
                             ('let _ ...)

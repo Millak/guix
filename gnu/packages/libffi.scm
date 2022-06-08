@@ -152,9 +152,6 @@ conversions for values passed between the two languages.")
       (sha256
        (base32 "0m3rz2pqfmyfagx0bhj2jlbr2h58j3wr3cyv1agxkhlnm1k0s3wj"))))))
 
-(define-public python2-cffi
-  (package-with-python2 python-cffi))
-
 (define-public python-cffi-documentation
   (package
     (name "python-cffi-documentation")

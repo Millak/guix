@@ -51,6 +51,9 @@
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Gabriel Wicki <gabriel@erlikon.ch>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
+;;; Copyright © 2022 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
+;;; Copyright © 2022 Pier-Hugues Pellerin <ph@heykimo.com>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -102,6 +105,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages gnome)
   #:use-module (gnu packages haskell-check)
   #:use-module (gnu packages haskell-web)
   #:use-module (gnu packages haskell-xyz)
@@ -542,9 +546,6 @@ kinds of messages to i3, select the affected containers, filter results and
 subscribe to events.")
     (license license:gpl3+)))
 
-(define-public python2-i3-py
-  (package-with-python2 python-i3-py))
-
 (define-public qtile
   (package
     (name "qtile")
@@ -758,22 +759,21 @@ desktop environment.")
     (inputs (list ghc-data-default-class ghc-setlocale ghc-x11))
     (native-inputs (list ghc-quickcheck ghc-quickcheck-classes))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after
-          'install 'install-xsession
-          (lambda _
-            (let* ((xsessions (string-append %output "/share/xsessions")))
-              (mkdir-p xsessions)
-              (call-with-output-file
-                  (string-append xsessions "/xmonad.desktop")
-                (lambda (port)
-                  (format port "~
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'install-xsession
+                 (lambda _
+                   (let ((xsessions (string-append #$output "/share/xsessions")))
+                     (mkdir-p xsessions)
+                     (call-with-output-file (string-append xsessions
+                                                           "/xmonad.desktop")
+                       (lambda (port)
+                         (format port "~
                     [Desktop Entry]~@
                     Name=~a~@
                     Comment=~a~@
                     Exec=~a/bin/xmonad~@
-                    Type=Application~%" ,name ,synopsis %output)))))))))
+                    Type=Application~%" #$name #$synopsis #$output)))))))))
     (home-page "https://xmonad.org")
     (description
      "Xmonad is a tiling window manager for X.  Windows are arranged
@@ -1241,39 +1241,13 @@ all of them.  Currently supported window managers include:
 (define-public keybinder
   (package
     (name "keybinder")
-    (version "0.3.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/kupferlauncher/keybinder"
-                           "/releases/download/v" version "/keybinder-"
-                           version ".tar.gz"))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0h52hj3ay8mfhwvmfxbxlfyq74hifdk8wxgxp7fr4iy6189hg7w7"))))
-    (build-system gnu-build-system)
-    (inputs
-     (list python-2 gtk+-2))
-    (native-inputs
-     (list python2-pygtk gtk-doc pkg-config))
-    (synopsis "Library for registering global keyboard shortcuts")
-    (description
-     "Keybinder is a library for registering global keyboard shortcuts.
-Keybinder works with GTK-based applications using the X Window System.")
-    (home-page "https://github.com/kupferlauncher/keybinder")
-    (license license:gpl2+)))
-
-(define-public keybinder-3.0
-  (package
-    (name "keybinder-3.0")
     (version "0.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/kupferlauncher/keybinder"
-                           "/releases/download/" name "-v" version "/" name "-"
-                           version ".tar.gz"))
+                           "/releases/download/" name "-3.0-v" version "/"
+                           name "-3.0-" version ".tar.gz"))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
@@ -1289,6 +1263,9 @@ Keybinder works with GTK-based applications using the X Window System.")
 Keybinder works with GTK-based applications using the X Window System.")
     (home-page "https://github.com/kupferlauncher/keybinder")
     (license license:x11)))
+
+(define-public keybinder-3.0
+  (deprecated-package "keybinder-3.0" keybinder))
 
 (define-public spectrwm
   (package
@@ -2714,3 +2691,31 @@ which do not support it.")
     (synopsis "Logout menu for Wayland")
     (description "wlogout is a logout menu for Wayland environments.")
     (license license:expat)))
+
+(define-public avizo
+  (package
+    (name "avizo")
+    (version "1.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/misterdanb/avizo")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "02h2jbgrbl2hyq6bzwryc1r47mipgdqrdh7zi44skc25w045s6q5"))))
+    (build-system meson-build-system)
+    (inputs (list gtk+))
+    (native-inputs
+     (list vala
+           `(,glib "bin")
+           gobject-introspection
+           gtk-layer-shell
+           pkg-config))
+    (home-page "https://github.com/misterdanb/avizo")
+    (synopsis "Notification daemon for Sway")
+    (description
+     "Avizo is a simple notification daemon for Sway, mainly intended to be
+used for multimedia keys.")
+    (license license:gpl3+)))

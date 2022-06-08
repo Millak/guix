@@ -1,12 +1,12 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2016, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016-2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2019, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
@@ -15,6 +15,10 @@
 ;;; Copyright © 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
 ;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2022 Malte Frank Gerdes <malte.f.gerdes@gmail.com>
+;;; Copyright © 2022 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
+;;; Copyright © 2022 Wiktor Żelazny <wzelazny@vurv.cz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -70,163 +74,86 @@
 (define-public python-scipy
   (package
     (name "python-scipy")
-    (version "1.7.3")
+    (version "1.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "scipy" version))
        (sha256
-        (base32 "1gxsnw6viz2j3sm8ak2a8l7fcn4b2zm3kzfm8w57xxyyrzx7an5b"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-numpy python-matplotlib python-pyparsing))
-    (inputs
-     (list openblas pybind11))
-    (native-inputs
-     (list python-cython
-           python-pydata-sphinx-theme
-           python-pytest
-           python-sphinx
-           python-sphinx-panels
-           python-numpydoc
-           gfortran
-           perl
-           which))
+        (base32 "1gghkwn93niyasm36333xbqrnn3yiadq9d97wnc9mg14nzbg5m1i"))))
     (outputs '("out" "doc"))
+    (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-pythran
-           (lambda _
-             (setenv "SCIPY_USE_PYTHRAN" "0")))
-         (add-before 'build 'change-home-dir
-           (lambda _
-             ;; Change from /homeless-shelter to /tmp for write permission.
-             (setenv "HOME" "/tmp")))
-         (add-after 'unpack 'disable-broken-tests
-           (lambda _
-             (substitute* "scipy/sparse/linalg/dsolve/tests/test_linsolve.py"
-               (("^( +)def test_threads_parallel\\(self\\):" m indent)
-                (string-append indent
-                               "@pytest.mark.skip(reason=\"Disabled by Guix\")\n"
-                               m)))
-             (substitute* "scipy/sparse/linalg/eigen/arpack/tests/test_arpack.py"
-               (("^def test_parallel_threads\\(\\):" m)
-                (string-append "@pytest.mark.skip(reason=\"Disabled by Guix\")\n"
-                               m)))))
-         (add-before 'build 'configure-openblas
-           (lambda* (#:key inputs #:allow-other-keys)
-             (call-with-output-file "site.cfg"
-               (lambda (port)
-                 (format port
-                         "[blas]
+     (list
+      #:modules '((guix build utils)
+                  (guix build python-build-system)
+                  (ice-9 format))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-pythran
+            (lambda _
+              (setenv "SCIPY_USE_PYTHRAN" "0")))
+          (add-before 'build 'change-home-dir
+            (lambda _
+              ;; Change from /homeless-shelter to /tmp for write permission.
+              (setenv "HOME" "/tmp")))
+          (add-before 'build 'configure-openblas
+            (lambda _
+              (call-with-output-file "site.cfg"
+                (lambda (port)
+                  (format port
+                          "\
+[blas]
 libraries = openblas
 library_dirs = ~a/lib
-include_dirs = ~a/include
+include_dirs = ~:*~a/include
 
-# backslash-n to make emacs happy
-\n[atlas]
-library_dirs = ~a/lib
-atlas_libs = openblas
-"
-                         (assoc-ref inputs "openblas")
-                         (assoc-ref inputs "openblas")
-                         (assoc-ref inputs "openblas"))))))
-         (add-after 'install 'install-doc
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((data (string-append (assoc-ref outputs "doc") "/share"))
-                    (doc (string-append data "/doc/" ,name "-" ,version))
-                    (html (string-append doc "/html"))
-                    (pyver ,(string-append "PYVER=" (version-major+minor
-                                                     (package-version python))))
-                    ;; By default it tries to run sphinx-build through the Python
-                    ;; interpreter which won't work with our shell wrapper.
-                    (sphinxbuild "SPHINXBUILD=LANG=C sphinx-build"))
-               ;; Make installed package available for building the
-               ;; documentation
-               (add-installed-pythonpath inputs outputs)
-               (with-directory-excursion "doc"
-                 ;; Fix generation of images for mathematical expressions.
-                 (substitute* (find-files "source" "conf\\.py")
-                   (("pngmath_use_preview = True")
-                    "pngmath_use_preview = False"))
-                 (mkdir-p html)
-                 (invoke "make" "html" pyver sphinxbuild)
-                 (with-directory-excursion "build/html"
-                   (for-each (lambda (file)
-                               (let* ((dir (dirname file))
-                                      (tgt-dir (string-append html "/" dir)))
-                                 (install-file file html)))
-                             (find-files ".")))))))
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (with-directory-excursion "/tmp"
-                 (invoke "python" "-c"
-                         "import scipy; scipy.test(verbose=2)"))))))))
-    (home-page "https://www.scipy.org/")
+[atlas]
+library_dirs = ~:*~a/lib
+atlas_libs = openblas~%"  #$(this-package-input "openblas"))))))
+          (add-before 'build 'parallelize-build
+            (lambda _
+              (setenv "NPY_NUM_BUILD_JOBS"
+                      (number->string (parallel-job-count)))))
+          (add-before 'check 'install-doc
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((data (string-append (assoc-ref outputs "doc") "/share"))
+                     (doc (string-append data "/doc/" #$name "-" #$version))
+                     (html (string-append doc "/html")))
+                (with-directory-excursion "doc"
+                  ;; Build doc.
+                  (invoke "make" "html"
+                          ;; Building the documentation takes a very long time.
+                          ;; Parallelize it.
+                          (string-append "SPHINXOPTS=-j"
+                                         (number->string (parallel-job-count))))
+                  ;; Install doc.
+                  (mkdir-p html)
+                  (copy-recursively "build/html" html)))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "./runtests.py" "-vv" "--no-build" "--mode=fast"
+                        "-j" (number->string (parallel-job-count)))))))))
+    (propagated-inputs (list python-numpy python-matplotlib python-pyparsing))
+    (inputs (list openblas pybind11))
+    (native-inputs
+     (list gfortran
+           perl
+           python-cython
+           python-numpydoc
+           python-pydata-sphinx-theme
+           python-pytest
+           python-pytest-xdist
+           python-sphinx
+           python-sphinx-panels
+           python-threadpoolctl
+           which))
+    (home-page "https://scipy.org/")
     (synopsis "The Scipy library provides efficient numerical routines")
     (description "The SciPy library is one of the core packages that make up
 the SciPy stack.  It provides many user-friendly and efficient numerical
 routines such as routines for numerical integration and optimization.")
-    (properties `((python2-variant . ,(delay python2-scipy))))
-    (license license:bsd-3)))
-
-;; Version 1.2.2 is the last version to support Python 2
-(define-public python2-scipy
-  (package
-    (inherit (package-with-python2
-              (strip-python2-variant python-scipy)))
-    (version "1.2.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "scipy" version))
-       (sha256
-        (base32
-         "1cgvgin8fvckv96hjh3ikmwkra5rif51bdb75ifzf7xbil5iwcx4"))))
-    (native-inputs
-     (list python2-cython
-           python2-pytest
-           python2-sphinx
-           python2-numpydoc
-           gfortran-7
-           gcc-7
-           perl
-           which))))
-
-(define-public python2-weave
-  (package
-    (name "python2-weave")
-    (version "0.16.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "weave" version))
-       (sha256
-        (base32 "0jnm3584mfichgwgrd1gk5i42ll9c08nkw9716n947n4338f6ghs"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "nosetests" "-v"
-                     "--exclude"
-                     "test_(user|incorrect_ownership|char_fail|obj_fail)"))))))
-    (propagated-inputs
-     (list python2-numpy))
-    (native-inputs
-     (list python2-nose))
-    (home-page "https://www.scipy.org/")
-    (synopsis "Tools for including C/C++ code within Python code")
-    (description "Weave is the stand-alone version of the obsolete Scipy
-submodule @code{scipy.weave}.  It is Python 2.x only, and is provided for
-users that need new versions of Scipy but have existing code that still
-depends on @code{scipy.weave}.  For new code, users are recommended to use
-Cython.")
     (license license:bsd-3)))
 
 (define-public python-scikit-fuzzy
@@ -373,16 +300,54 @@ genetic variation data.")
 of the SGP4 satellite tracking algorithm.")
     (license license:expat)))
 
+(define-public python-trimesh
+  (package
+    (name "python-trimesh")
+    (version "3.10.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trimesh" version))
+       (sha256
+        (base32 "0bw55cwxlxds0j54naijh64sdb0rkscx4i1fy0ql94h96kw2p2ir"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-numpy))
+    (native-inputs
+     (list python-coveralls
+           python-pyinstrument
+           python-pytest
+           python-pytest-cov))
+    (arguments
+     `(;; TODO: Get tests to work.
+       #:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-build
+           (lambda _
+             (substitute* "trimesh/resources/templates/blender_boolean.py"
+               (("\\$MESH_PRE")
+                "'$MESH_PRE'")))))))
+    (home-page "https://github.com/mikedh/trimesh")
+    (synopsis "Python library for loading and using triangular meshes")
+    (description
+     "Trimesh is a pure Python library for loading and using triangular meshes
+with an emphasis on watertight surfaces.  The goal of the library is to provide
+a full featured and well tested Trimesh object which allows for easy
+manipulation and analysis, in the style of the Polygon object in the Shapely
+library.")
+    (license license:expat)))
+
 (define-public python-pandas
   (package
     (name "python-pandas")
-    (version "1.3.5")
+    (version "1.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pandas" version))
        (sha256
-        (base32 "1wd92ra8xcjgigbypid53gvby89myg68ica6r8hdw4hhvvsqahhy"))))
+        (base32 "04lsak3j5hq2hk0vfjf532rdxdqmg2akamdl4yl3qipihp2izg4j"))))
     (build-system python-build-system)
     (arguments
      `(#:modules ((guix build utils)
@@ -392,6 +357,12 @@ of the SGP4 satellite tracking algorithm.")
                   (srfi srfi-26))
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'enable-parallel-build
+           (lambda _
+             (substitute* "setup.py"
+               (("\"-j\", type=int, default=1")
+                (format #f "\"-j\", type=int, default=~a"
+                        (parallel-job-count))))))
          (add-after 'unpack 'patch-which
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((which (assoc-ref inputs "which")))
@@ -418,6 +389,7 @@ of the SGP4 satellite tracking algorithm.")
                  (when tests?
                    (invoke "pytest" "-vv" "pandas" "--skip-slow"
                            "--skip-network"
+                           "-n" (number->string (parallel-job-count))
                            "-k"
                            (string-append
                             ;; These test access the internet (see:
@@ -427,7 +399,11 @@ of the SGP4 satellite tracking algorithm.")
                             "not test_wrong_url"
                             ;; TODO: Missing input
                             " and not TestS3"
-                            " and not s3"))))))))))
+                            " and not s3"
+                            ;; This test fails when run with pytest-xdist
+                            ;; (see:
+                            ;; https://github.com/pandas-dev/pandas/issues/39096).
+                            " and not test_memory_usage"))))))))))
     (propagated-inputs
      (list python-jinja2
            python-numpy
@@ -445,6 +421,7 @@ of the SGP4 satellite tracking algorithm.")
            python-html5lib
            python-pytest
            python-pytest-mock
+           python-pytest-xdist
            ;; Needed to test clipboard support.
            xorg-server-for-tests))
     (home-page "https://pandas.pydata.org")
@@ -455,105 +432,7 @@ structures designed to make working with structured (tabular,
 multidimensional, potentially heterogeneous) and time series data both easy
 and intuitive.  It aims to be the fundamental high-level building block for
 doing practical, real world data analysis in Python.")
-    (properties `((python2-variant . ,(delay python2-pandas))))
     (license license:bsd-3)))
-
-;; Pandas 0.24.x are the last versions that support Python 2.
-(define-public python2-pandas
-  (let ((pandas (package-with-python2
-                 (strip-python2-variant python-pandas))))
-    (package
-      (inherit pandas)
-      (version "0.24.2")
-      (source (origin
-                (method url-fetch)
-                (uri (pypi-uri "pandas" version))
-                (sha256
-                 (base32
-                  "18imlm8xbhcbwy4wa957a1fkamrcb0z988z006jpfda3ki09z4ag"))
-                (modules '((guix build utils)))
-                (snippet
-                 '(begin
-                    ;; Adjust for renamed error message in Python 2.7.17.  Taken
-                    ;; from <https://github.com/pandas-dev/pandas/pull/29294>.
-                    (substitute* "pandas/io/parsers.py"
-                      (("if 'NULL byte' in msg:")
-                       "if 'NULL byte' in msg or 'line contains NUL' in msg:"))))))
-      (arguments
-       `(#:modules ((guix build utils)
-                    (guix build python-build-system)
-                    (ice-9 ftw)
-                    (srfi srfi-26))
-         #:python ,python-2
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'patch-which
-             (lambda* (#:key inputs #:allow-other-keys)
-               (let ((which (assoc-ref inputs "which")))
-                 (substitute* "pandas/io/clipboard/__init__.py"
-                   (("^CHECK_CMD = .*")
-                    (string-append "CHECK_CMD = \"" which "\"\n"))))))
-           (replace 'check
-             (lambda _
-               (let ((build-directory
-                      (string-append
-                       (getcwd) "/build/"
-                       (car (scandir "build"
-                                     (cut string-prefix? "lib." <>))))))
-                 ;; Disable the "strict data files" option which causes
-                 ;; the build to error out if required data files are
-                 ;; not available (as is the case with PyPI archives).
-                 (substitute* "setup.cfg"
-                   (("addopts = --strict-data-files") "addopts = "))
-                 (with-directory-excursion build-directory
-                   ;; Delete tests that require "moto" which is not yet
-                   ;; in Guix.
-                   (for-each delete-file
-                             '("pandas/tests/io/conftest.py"
-                               "pandas/tests/io/json/test_compression.py"
-                               "pandas/tests/io/parser/test_network.py"
-                               "pandas/tests/io/test_parquet.py"))
-                   (invoke "pytest" "-vv" "pandas" "--skip-slow"
-                           "--skip-network" "-k"
-                           ;; XXX: Due to the deleted tests above.
-                           "not test_read_s3_jsonl"))))))))
-      (propagated-inputs
-       (list python2-numpy python2-openpyxl python2-pytz python2-dateutil
-             python2-xlrd))
-      (inputs
-       (list which))
-      (native-inputs
-       (list python2-cython
-             python2-beautifulsoup4
-             python2-lxml
-             python2-html5lib
-             python2-nose
-             python2-pytest
-             python2-pytest-mock)))))
-
-(define-public python2-pyflow
-  (package
-    (name "python2-pyflow")
-    (version "1.1.20")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/Illumina/pyflow/releases/download/v"
-                    version "/pyflow-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1bvfvviw58cndyn862qnv9nj3d9cd3a0dm4vc4sd9vwq8a6z1riv"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f ; There is no test suite.
-       ;; There is no official Python 3-compatible version and upstream is
-       ;; dead. See https://github.com/Illumina/pyflow/issues/20.
-       #:python ,python-2))
-    (home-page "https://illumina.github.io/pyflow/")
-    (synopsis "Tool to manage tasks in a task dependency graph")
-    (description "This package is a Python module to manage tasks in the
-context of a task dependency graph.  It has some similarities to make.")
-    (license license:bsd-2)))
 
 (define-public python-pythran
   (package
@@ -818,42 +697,53 @@ readable.")
 (define-public python-vedo
   (package
     (name "python-vedo")
-    (version "2021.0.3")
+    (version "2022.2.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/marcomusy/vedo")
-             (commit version)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "18i3ajh5jzhpc86di15lwh4jv97jhm627ii877sa4yhv6abzjfpn"))))
+         "1hhv4xc4bphhd1zrnf7r6fpf65xvkdqmb1lh51qg1xpv91h2az0h"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'fix-tests
+           ;; These tests require online data.
+           (lambda _
+             (substitute* "tests/common/test_actors.py"
+               (("^st = .*") "")
+               (("^assert isinstance\\(st\\.GetTexture\\(\\), .*") ""))
+             (delete-file "tests/common/test_pyplot.py")))
          (add-after 'build 'mpi-setup
            ,%openmpi-setup)
          (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (setenv "HOME" (getcwd))
-             (add-installed-pythonpath inputs outputs)
-             (with-directory-excursion "tests"
-               (for-each (lambda (dir)
-                           (with-directory-excursion dir
-                             (invoke "./run_all.sh")))
-                         '("common" "dolfin")))
-             #t)))))
-    (inputs        ; for the check phase
-     `(("dolfin" ,fenics)
-       ("pkgconfig" ,python-pkgconfig)
-       ("matplotlib" ,python-matplotlib)))
-    (native-inputs ; for python-pkgconfig
-     (list pkg-config))
+           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+             (when tests?
+               (setenv "HOME" (getcwd))
+               (add-installed-pythonpath inputs outputs)
+               (with-directory-excursion "tests"
+                 (for-each (lambda (dir)
+                             (with-directory-excursion dir
+                               (invoke "./run_all.sh")))
+                           '("common" "dolfin"))))))
+         ;; Disable the sanity check, which fails with the following error:
+         ;;
+         ;;   ...checking requirements: ERROR: vedo==2022.2.0 DistributionNotFound(Requirement.parse('vtk<9.1.0'), {'vedo'})
+         (delete 'sanity-check))))
+    (native-inputs
+     (list pkg-config
+           python-pkgconfig))
     (propagated-inputs
-     `(("numpy" ,python-numpy)
-       ("vtk" ,vtk)))
+     (list fenics
+           python-deprecated
+           python-matplotlib
+           python-numpy
+           vtk))
     (home-page "https://github.com/marcomusy/vedo")
     (synopsis
      "Analysis and visualization of 3D objects and point clouds")
@@ -863,8 +753,7 @@ scientific analysis and visualization.  The package provides a wide
 range of functionalities for working with three-dimensional meshes and
 point clouds.  It can also be used to generate high quality
 two-dimensional renderings such as scatter plots and histograms.
-@code{vedo} is based on @code{vtk} and @code{numpy}, with no other
-dependencies.")
+@code{vedo} is based on @code{vtk} and @code{numpy}.")
     ;; vedo is released under the Expat license.  Included fonts are
     ;; covered by the OFL license and textures by the CC0 license.
     ;; The earth images are in the public domain.
@@ -902,7 +791,7 @@ of Pandas
 (define-public python-pingouin
   (package
     (name "python-pingouin")
-    (version "0.5.0")
+    (version "0.5.1")
     (source
      ;; The PyPI tarball does not contain the tests.
      (origin
@@ -913,7 +802,7 @@ of Pandas
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "01aaq023q4bymffrc2wm56af87da32wcvy5d5156i4g7qgvh346r"))))
+         "10v3mwcmyc7rd2957cbmfcw66yw2y0fz7zcfyx46q8slbmd1d8d4"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -972,7 +861,7 @@ and more
 (define-public python-distributed
   (package
     (name "python-distributed")
-    (version "2021.11.2")
+    (version "2022.05.2")
     (source
      (origin
        ;; The test files are not included in the archive on pypi
@@ -983,7 +872,7 @@ and more
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1p20cbyabzl7rs8y3ydzszsskh4kw088m252ghgairhs0p2f95hl"))
+         "009jrlk7kmazrd3nkl217cl3x5ddg7kw9mqdgq1z9knv5h1rm8qv"))
        ;; Delete bundled copy of python-versioneer.
        (snippet '(delete-file "versioneer.py"))))
     (build-system python-build-system)
@@ -1009,23 +898,139 @@ and more
                (("\"dask-worker\"")
                 (format #false "\"~a/bin/dask-worker\""
                         (assoc-ref outputs "out"))))))
+         ;; ERROR: distributed==2022.5.2
+         ;; ContextualVersionConflict (locket 0.2.0
+         ;; (/gnu/store/...-python-locket-0.2.0/lib/python3.9/site-packages),
+         ;; Requirement.parse('locket>=1.0.0'), {'distributed'})
+         (delete 'sanity-check)
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
                (setenv "DISABLE_IPV6" "1")
-               (invoke "pytest" "-vv" "distributed"
-                       "-m" "not slow and not gpu and not ipython and not avoid_ci"
+               ;; The integration tests are all problematic to some
+               ;; degree.  They either require network access or some
+               ;; other setup.  We only run the tests in
+               ;; distributed/tests.
+               (for-each (lambda (dir)
+                           (delete-file-recursively
+                            (string-append "distributed/" dir "/tests")))
+                         (list "cli" "comm" "dashboard" "deploy" "diagnostics"
+                               "http" "http/scheduler" "http/worker"
+                               "protocol" "shuffle"))
+               (invoke "python" "-m" "pytest" "-vv" "distributed"
+                       "-m"
+                       (string-append "not slow"
+                                      " and not flaky"
+                                      " and not gpu"
+                                      " and not ipython"
+                                      " and not avoid_ci")
                        "-k"
-                       ;; TODO: These tests fail for unknown reasons:
                        (string-append
-                        ;; TimeoutExpired
-                        "not test_text"
-                        ;; AssertionError
-                        " and not test_version_option"
-                        ;; "The 'distributed' distribution was not found"
-                        " and not test_register_backend_entrypoint"
-                        ;; "AttributeError: module 'distributed.dashboard' has no attribute 'scheduler'"
-                        " and not test_get_client_functions_spawn_clusters"))))))))
+                        ;; These fail because they require network access,
+                        ;; specifically access to 8.8.8.8.
+                        "not "
+                        (string-join
+                         (list
+                          "TestClientSecurityLoader.test_security_loader"
+                          "test_BatchedSend"
+                          "test_allowed_failures_config"
+                          "test_async_context_manager"
+                          "test_async_with"
+                          "test_client_repr_closed_sync"
+                          "test_close_closed"
+                          "test_close_fast_without_active_handlers"
+                          "test_close_grace_period_for_handlers"
+                          "test_close_loop_sync"
+                          "test_close_properly"
+                          "test_close_twice"
+                          "test_compression"
+                          "test_connection_pool"
+                          "test_connection_pool_close_while_connecting"
+                          "test_connection_pool_detects_remote_close"
+                          "test_connection_pool_outside_cancellation"
+                          "test_connection_pool_remove"
+                          "test_connection_pool_respects_limit"
+                          "test_connection_pool_tls"
+                          "test_counters"
+                          "test_dashboard_host"
+                          "test_dashboard_link_cluster"
+                          "test_dashboard_link_inproc"
+                          "test_deserialize_error"
+                          "test_dont_override_default_get"
+                          "test_errors"
+                          "test_fail_to_pickle_target_2"
+                          "test_file_descriptors_dont_leak"
+                          "test_finished"
+                          "test_get_client_functions_spawn_clusters"
+                          "test_host_uses_scheduler_protocol"
+                          "test_identity_inproc"
+                          "test_identity_tcp"
+                          "test_large_packets_inproc"
+                          "test_locked_comm_drop_in_replacement"
+                          "test_locked_comm_intercept_read"
+                          "test_locked_comm_intercept_write"
+                          "test_multiple_listeners"
+                          "test_no_dangling_asyncio_tasks"
+                          "test_plugin_exception"
+                          "test_plugin_internal_exception"
+                          "test_plugin_multiple_exceptions"
+                          "test_ports"
+                          "test_preload_import_time"
+                          "test_queue_in_task"
+                          "test_quiet_client_close"
+                          "test_rebalance_sync"
+                          "test_repr_localcluster"
+                          "test_require_encryption"
+                          "test_rpc_default"
+                          "test_rpc_inproc"
+                          "test_rpc_message_lifetime_default"
+                          "test_rpc_message_lifetime_inproc"
+                          "test_rpc_message_lifetime_tcp"
+                          "test_rpc_serialization"
+                          "test_rpc_tcp"
+                          "test_rpc_tls"
+                          "test_rpc_with_many_connections_inproc"
+                          "test_rpc_with_many_connections_tcp"
+                          "test_scheduler_file"
+                          "test_security_dict_input_no_security"
+                          "test_security_loader"
+                          "test_security_loader_ignored_if_explicit_security_provided"
+                          "test_security_loader_ignored_if_returns_none"
+                          "test_send_after_stream_start"
+                          "test_send_before_close"
+                          "test_send_before_start"
+                          "test_send_recv_args"
+                          "test_send_recv_cancelled"
+                          "test_sending_traffic_jam"
+                          "test_serializers"
+                          "test_server"
+                          "test_server_comms_mark_active_handlers"
+                          "test_shutdown"
+                          "test_shutdown_localcluster"
+                          "test_teardown_failure_doesnt_crash_scheduler"
+                          "test_threadpoolworkers_pick_correct_ioloop"
+                          "test_tls_listen_connect"
+                          "test_tls_temporary_credentials_functional"
+                          "test_variable_in_task"
+                          "test_worker_preload_text"
+                          "test_worker_uses_same_host_as_nanny")
+                         " and not ")
+
+                        ;; These fail because it doesn't find dask[distributed]
+                        " and not test_quiet_close_process"
+
+                        ;; This one fails because of a silly assert failure:
+                        ;; '2022.05.2' == '2022.5.2'
+                        " and not test_version"
+                        " and not test_git_revision"
+
+                        ;; Recursion stack failure.  No idea what they
+                        ;; expected to happen.
+                        " and not test_stack_overflow"
+
+                        ;; These tests are rather flaky
+                        " and not test_quiet_quit_when_cluster_leaves"
+                        " and not multiple_clients_restart"))))))))
     (propagated-inputs
      (list python-click
            python-cloudpickle
@@ -1039,9 +1044,13 @@ and more
            python-tblib
            python-toolz
            python-tornado-6
+           python-urllib3
            python-zict))
     (native-inputs
-     (list python-pytest python-versioneer))
+     (list python-pytest
+           python-pytest-timeout
+           python-flaky
+           python-versioneer))
     (home-page "https://distributed.dask.org")
     (synopsis "Distributed scheduler for Dask")
     (description "Dask.distributed is a lightweight library for distributed
@@ -1120,3 +1129,214 @@ pandas notebooks, scripts, and libraries.  Unlike other distributed DataFrame
 libraries, Modin provides seamless integration and compatibility with existing
 pandas code.")
     (license license:asl2.0)))
+
+(define-public python-numpy-groupies
+  (package
+    (name "python-numpy-groupies")
+    (version "0.9.14")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "numpy_groupies" version))
+       (sha256
+        (base32 "000qz0z78rs3l6y0dd2vzvd2lx3mczm2762whwsdnhz6c35axdq1"))))
+    (build-system python-build-system)
+    (native-inputs
+     (list python-pytest
+           python-pytest-runner
+           python-numba
+           python-numpy))
+    (home-page "https://github.com/ml31415/numpy-groupies")
+    (synopsis "Tools for group-indexing operations: aggregated sum and more")
+    (description
+     "This package provides optimized tools for group-indexing operations:
+aggregated sum and more.")
+    (license license:bsd-3)))
+
+(define-public python-pyvista
+  (package
+    (name "python-pyvista")
+    (version "0.34.0")
+    (source
+     ;; The PyPI tarball does not contain the tests.
+     ;; (However, we don't yet actually run the tests.)
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pyvista/pyvista")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0f2x2wvi5pkpv5h3jrnx8zxnaj51navfqp2fdna1l9rpjgjjf94g"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-appdirs
+           python-imageio
+           python-matplotlib
+           python-meshio
+           python-numpy
+           python-pillow
+           python-scooby
+           vtk))
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         ;; Disable tests for now because they require several modules
+         ;; currently unpackaged in Guix.
+         (delete 'check)
+         ;; Disable the sanity check, which fails with the following error:
+         ;;
+         ;;   ...checking requirements: ERROR: pyvista==0.34.0 DistributionNotFound(Requirement.parse('vtk'), {'pyvista'})
+         (delete 'sanity-check))))
+    (home-page "https://docs.pyvista.org/")
+    (synopsis "3D plotting and mesh analysis through VTK")
+    (description
+     "PyVista is...
+
+@itemize
+@item @emph{Pythonic VTK}: a high-level API to the Visualization
+Toolkit (VTK);
+@item mesh data structures and filtering methods for spatial datasets;
+@item 3D plotting made simple and built for large/complex data geometries.
+@end itemize
+
+This package provides a Pythonic, well-documented interface exposing VTK's
+powerful visualization backend to facilitate rapid prototyping, analysis, and
+visual integration of spatially referenced datasets.")
+    (license license:expat)))
+
+(define-public python-traittypes
+  (package
+    (name "python-traittypes")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "traittypes" version))
+       (sha256
+        (base32 "1mlv93irdrgxrhnhq3ksi9585d55bpi4mv9dha4p8gkkjiia4vxy"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               ;; This one test fails because it doesn't raise an expected
+               ;; exception.
+               (invoke "pytest" "-vv" "-k" "not test_bad_values")))))))
+    (propagated-inputs (list python-traitlets))
+    (native-inputs
+     (list python-numpy
+           python-pandas
+           python-nose
+           python-pytest
+           python-xarray))
+    (home-page "https://github.com/jupyter-widgets/traittypes")
+    (synopsis "Trait types for NumPy, SciPy and friends")
+    (description "The goal of this package is to provide a reference
+implementation of trait types for common data structures used in the scipy
+stack such as numpy arrays or pandas and xarray data structures.  These are
+out of the scope of the main traitlets project but are a common requirement to
+build applications with traitlets in combination with the scipy stack.")
+    (license license:bsd-3)))
+
+(define-public python-aplus
+  (package
+    (name "python-aplus")
+    (version "0.11.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "aplus" version))
+       (sha256
+        (base32 "1rznc26nlp641rn8gpdngfp79a3fji38yavqakxi35mx2da04msg"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/xogeny/aplus")
+    (synopsis "Promises/A+ for Python")
+    (description "This package is an implementation of the Promises/A+
+specification and test suite in Python.")
+    (license license:expat)))
+
+(define-public python-climin
+  (package
+    (name "python-climin")
+    (version "0.1a1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "climin" version))
+              (sha256
+               (base32
+                "1wpjisd5zzi5yvjff02hnxn84822k8sdxvvd33lil2x79wdb36rv"))))
+    (build-system python-build-system)
+    (native-inputs (list python-nose))
+    (propagated-inputs (list python-numpydoc python-numpy python-scipy))
+    (home-page "https://github.com/BRML/climin")
+    (synopsis "Optimization for machine learning")
+    (description
+     "@command{climin} is a Python package for optimization,
+heavily biased to machine learning scenarios.  It works on top of
+@command{numpy} and (partially) @command{gnumpy}.")
+    (license license:bsd-3)))
+
+(define-public python-paramz
+  (package
+    (name "python-paramz")
+    (version "0.9.5")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "paramz" version))
+              (sha256
+               (base32
+                "16hbh97kj6b1c2gw22rqnr3w3nqkszh9gj8vgx738gq81wf225q9"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-decorator python-numpy python-scipy
+                             python-six))
+    (home-page "https://github.com/sods/paramz")
+    (synopsis "The Parameterization Framework")
+    (description
+     "@command{paramz} is a lightweight parameterization framework
+for parameterized model creation and handling.  Its features include:
+
+@itemize
+ @item Easy model creation with parameters.
+ @item Fast optimized access of parameters for optimization routines.
+ @item Memory efficient storage of parameters (only one copy in memory).
+ @item Renaming of parameters.
+ @item Intuitive printing of models and parameters.
+ @item Gradient saving directly inside parameters.
+ @item Gradient checking of parameters.
+ @item Optimization of parameters.
+ @item Jupyter notebook integration.
+ @item Efficient storage of models, for reloading.
+ @item Efficient caching.
+@end itemize")
+    (license license:bsd-3)))
+
+(define-public python-gpy
+  (package
+    (name "python-gpy")
+    (version "1.10.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "GPy" version))
+              (sha256
+               (base32
+                "1yx65ajrmqp02ykclhlb0n8s3bx5r0xj075swwwigiqaippr7dx2"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                  (add-before 'check 'remove-plotting-tests
+                    ;; These fail
+                    (lambda _
+                      (delete-file "GPy/testing/plotting_tests.py"))))))
+    (native-inputs (list python-cython python-nose python-climin))
+    (propagated-inputs (list python-numpy python-paramz python-scipy
+                             python-six))
+    (home-page "https://sheffieldml.github.io/GPy/")
+    (synopsis "The Gaussian Process Toolbox")
+    (description
+     "@command{GPy} is a Gaussian Process (GP) framework written in
+Python, from the Sheffield machine learning group.  GPy implements a range of
+machine learning algorithms based on GPs.")
+    (license license:bsd-3)))

@@ -23,7 +23,7 @@
 ;;; Copyright © 2017 Jelle Licht <jlicht@fsfe.org>
 ;;; Copyright © 2017 Adriano Peluso <catonano@gmail.com>
 ;;; Copyright © 2017, 2021 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017, 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2017, 2018 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2017 Rutger Helling <rhelling@mykolab.com>
@@ -102,6 +102,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages gperf)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages icu4c)
@@ -177,47 +178,6 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 match))
-
-(define-public 4store
-  (package
-    (name "4store")
-    (version "1.1.6")
-    (source (origin
-      (method git-fetch)
-      (uri (git-reference
-             (url "https://github.com/4store/4store")
-             (commit (string-append "v" version))))
-      (file-name (git-file-name name version))
-      (sha256
-       (base32 "1kzdfmwpzy64cgqlkcz5v4klwx99w0jk7afckyf7yqbqb4rydmpk"))
-      (patches (search-patches "4store-unset-preprocessor-directive.patch"
-                               "4store-fix-buildsystem.patch"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list perl
-           python-2
-           autoconf
-           automake
-           gettext-minimal
-           libtool
-           `(,pcre "bin") ;for 'pcre-config'
-           pkg-config))
-    (inputs
-     (list glib
-           rasqal
-           libxml2
-           raptor2
-           readline
-           avahi
-           cyrus-sasl
-           openssl
-           `(,util-linux "lib")))
-    ;; http://www.4store.org has been down for a while now.
-    (home-page "https://github.com/4store/4store")
-    (synopsis "Clustered RDF storage and query engine")
-    (description "4store is a RDF/SPARQL store written in C, supporting
-either single machines or networked clusters.")
-    (license license:gpl3+)))
 
 (define-public ephemeralpg
   (package
@@ -517,14 +477,14 @@ mapping from string keys to string values.")
 (define-public memcached
   (package
     (name "memcached")
-    (version "1.6.13")
+    (version "1.6.15")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "https://memcached.org/files/memcached-" version ".tar.gz"))
        (sha256
-        (base32 "1m5mhw9ybb8qcyi6hb5kwpqanqmlnz27r54ccabc4y7nhpfvl6mx"))))
+        (base32 "05fmds73hr71bha9gszjfp02lgyacqfyyhkgl6xysy4kchyvwyld"))))
     (build-system gnu-build-system)
     (inputs
      (list libevent cyrus-sasl))
@@ -690,13 +650,13 @@ replacement for the code@{python-memcached} library.")
 (define-public litecli
  (package
   (name "litecli")
-  (version "1.6.0")
+  (version "1.8.0")
   (source
    (origin
      (method url-fetch)
      (uri (pypi-uri "litecli" version))
      (sha256
-      (base32 "1yb706mgzizzijm1k0fbny98jf58qh5q6f2870rbplxlfla4w9sd"))))
+      (base32 "0ghh8hq5bw3y2ybiy4ibbdfz55jxvilg1s6zmhxmqikhg5s95xh2"))))
   (build-system python-build-system)
   (propagated-inputs
    (list python-cli-helpers
@@ -769,22 +729,16 @@ autocompletion and syntax highlighting.")
 (define-public mycli
   (package
     (name "mycli")
-    (version "1.24.1")
+    (version "1.25.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "mycli" version))
        (sha256
-        (base32 "0rij9nw20zhqr7cqnkm8daw8b1wdc9zb6ny1ji9qz5557nz9i3bl"))))
+        (base32 "0231v7f6q84mjmi1h0ni3s55m2g8p5d7x5q49bgkxlaz2bc2xwgy"))))
     (build-system python-build-system)
     (arguments
-     '(#:tests? #f                      ; tests expect a running MySQL
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'loosen-requirements
-                    (lambda _
-                      ;; Permit newer versions of sqlparse.
-                      (substitute* "setup.py"
-                        (("<0\\.4\\.0") "<0.5.0")))))))
+     '(#:tests? #f))                    ; tests expect a running MySQL
     (propagated-inputs
      (list python-cli-helpers
            python-click
@@ -1377,6 +1331,13 @@ pictures, sounds, or video.")
                                   "src/loader/CMakeLists.txt")
                      (("\\$\\{PG_PKGLIBDIR\\}")
                       (string-append #$output "/lib")))))
+               (add-after 'unpack 'remove-kernel-version
+                 ;; Do not embed the running kernel version for reproducible
+                 ;; builds
+                 (lambda _
+                   (substitute* "src/config.h.in"
+                     (("BUILD_OS_VERSION ..CMAKE_SYSTEM_VERSION.")
+                      "BUILD_OS_VERSION \""))))
                ;; Run the tests after install to make it easier to create the
                ;; required PostgreSQL+TimescaleDB filesystem union.
                (delete 'check)
@@ -1511,9 +1472,6 @@ CSV, DB3, iXF, SQLite, MS-SQL or MySQL to PostgreSQL.")
 Most public APIs are compatible with @command{mysqlclient} and MySQLdb.")
     (license license:expat)))
 
-(define-public python2-pymysql
-  (package-with-python2 python-pymysql))
-
 (define-public qdbm
   (package
     (name "qdbm")
@@ -1545,30 +1503,33 @@ organized in a hash table or B+ tree.")
 (define-public recutils
   (package
     (name "recutils")
-    (version "1.8")
+    (version "1.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/recutils/recutils-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "14xiln4immfsw8isnvwvq0h23f6z0wilpgsc4qzabnrzb5lsx3nz"))))
+                "03kf91f20brn2ffljfjzirxh5xj99m1mvvspcx2lph9000mmj0b3"))))
     (build-system gnu-build-system)
-
-    (arguments '(#:configure-flags
-                 (list (string-append "--with-bash-headers="
-                                      (assoc-ref %build-inputs "bash:include")
-                                      "/include/bash"))))
-
-    (native-inputs `(("bc" ,bc)
-                     ("bash:include" ,bash "include")
-                     ("check" ,check-0.14)
-                     ("pkg-config" ,pkg-config)))
-
-    ;; TODO: Add more optional inputs.
-    (inputs `(("curl" ,curl)
-              ("libgcrypt" ,libgcrypt)
-              ("libuuid" ,util-linux "lib")))
+    (arguments
+     (list #:configure-flags
+           '(list "--disable-static"
+                  (string-append "--with-bash-headers="
+                                 (dirname (search-input-directory
+                                           %build-inputs
+                                           "include/bash"))))))
+    (native-inputs
+     ;; XXX Without labels, the default 'configure phase picks the wrong "bash".
+     `(("bc" ,bc)
+       ("bash:include" ,bash "include")
+       ("check" ,check-0.14)
+       ("pkg-config" ,pkg-config)))
+    (inputs
+     ;; TODO: Add more optional inputs.
+     (list curl
+           libgcrypt
+           `(,util-linux "lib")))
     (synopsis "Manipulate plain text files as databases")
     (description
      "GNU Recutils is a set of tools and libraries for creating and
@@ -1582,14 +1543,14 @@ types are supported, as is encryption.")
 (define-public emacs-rec-mode
   (package
     (name "emacs-rec-mode")
-    (version "1.8.2")
+    (version "1.8.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://elpa.gnu.org/packages/"
                                   "rec-mode-" version ".tar"))
               (sha256
                (base32
-                "06mjj1la2v8zdhsflj3mwcp7qnkj7gxzm8wbk2pli1h8vnq2zvd0"))
+                "0lkmvvdj4xx3qhxqggizrcdawav0accyrza2wmhfdq88g2zh5575"))
               (snippet '(begin (delete-file "rec-mode.info")))))
     (build-system emacs-build-system)
     (arguments
@@ -1600,7 +1561,7 @@ types are supported, as is encryption.")
              (invoke "makeinfo" "--no-split"
                      "-o" "rec-mode.info" "rec-mode.texi"))))))
     (native-inputs
-     `(("texinfo" ,texinfo)))
+     (list texinfo))
     (home-page "https://www.gnu.org/software/recutils/")
     (synopsis "Emacs mode for working with recutils database files")
     (description "This package provides an Emacs major mode @code{rec-mode}
@@ -2773,29 +2734,20 @@ semantics.")
 (define-public libpqxx
   (package
     (name "libpqxx")
-    (version "4.0.1")
+    (version "7.7.3")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "http://pqxx.org/download/software/libpqxx/"
-                    name "-" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jtv/libpqxx")
+                    (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0f6wxspp6rx12fkasanb0z2g2gc8dhcfwnxagx8wwqbpg6ifsz09"))))
+                "1mrhsih5bhiin0l3c4vp22l9p7c5035m0vvqpx18c0407fkzc7hp"))))
     (build-system gnu-build-system)
-    (native-inputs
-     `(("python" ,python-2)))
+    (native-inputs (list gcc-11 python-wrapper))
     (inputs (list postgresql))
-    (arguments
-     `(#:tests? #f   ; # FAIL:  1
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'fix-sed-command
-           (lambda _
-             ;; Newer sed versions error out if double brackets are not used.
-             (substitute* "configure"
-               (("\\[:space:\\]") "[[:space:]]"))
-             #t)))))
+    (arguments '(#:tests? #f))      ;tests require a running PostgreSQL server
     (synopsis "C++ connector for PostgreSQL")
     (description
      "Libpqxx is a C++ library to enable user programs to communicate with the
@@ -2858,9 +2810,6 @@ can use Python types in your code without having to worry.  It has built-in
 support for sqlite, mysql and postgresql.  If you already have a database, you
 can autogenerate peewee models using @code{pwiz}, a model generator.")
     (license license:expat)))
-
-(define-public python2-peewee
-  (package-with-python2 python-peewee))
 
 (define-public python-pypika-tortoise
   (package
@@ -3077,9 +3026,6 @@ development.")
 for ODBC.")
     (license (license:x11-style "file://LICENSE.TXT"))))
 
-(define-public python2-pyodbc-c
-  (package-with-python2 python-pyodbc-c))
-
 (define-public python-pyodbc
   (package
     (name "python-pyodbc")
@@ -3101,9 +3047,6 @@ for ODBC.")
     (description "@code{python-pyodbc} provides a Python DB-API driver
 for ODBC.")
     (license (license:x11-style "file:///LICENSE.TXT"))))
-
-(define-public python2-pyodbc
-  (package-with-python2 python-pyodbc))
 
 (define-public mdbtools
   (package
@@ -3209,52 +3152,33 @@ Memory-Mapped Database} (LMDB), a high-performance key-value store.")
            ;; but not actually needed on platforms currently supported by Guix.
            license:bsd-3))))
 
-(define-public python-orator
-  (package
-    (name "python-orator")
-    (version "0.9.9")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "orator" version))
-              (sha256
-               (base32
-                "0mbgybz63ryhr9p1f4glnls5c57jp6il3dw0kf97f3pj80687rvg"))))
-    (build-system python-build-system)
-    ;; FIXME: Tests are not distributed with PyPI, and the repository
-    ;; does not contain setup.py.  How to test?
-    (arguments '(#:tests? #f))
-    (propagated-inputs
-     (list python-backpack
-           python-blinker
-           python-cleo
-           python-faker
-           python-inflection
-           python-lazy-object-proxy
-           python-pendulum
-           python-pyaml
-           python-pygments
-           python-pyyaml
-           python-simplejson
-           python-six
-           python-wrapt))
-    (home-page "https://orator-orm.com/")
-    (synopsis "ActiveRecord ORM for Python")
-    (description
-     "Orator provides a simple ActiveRecord-like Object Relational Mapping
-implementation for Python.")
-    (license license:expat)))
-
 (define-public virtuoso-ose
   (package
     (name "virtuoso-ose")
-    (version "7.2.6")
+    (version "7.2.7")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/virtuoso/virtuoso/" version "/"
                            "virtuoso-opensource-" version ".tar.gz"))
        (sha256
-        (base32 "0ly7s7a3w2a2zhhi9rq9k2qlnzapqbbc1rcdqb3zqqpgg81krz9q"))))
+        (base32 "1853ln0smiilf3pni70gq6nmi9ps039cy44g6b5i9d2z1n9hnj02"))
+       (patches (search-patches "virtuoso-ose-remove-pre-built-jar-files.patch"))
+       (modules '((guix build utils)))
+       ;; This snippet removes pre-built Java archives.
+       (snippet
+        '(for-each delete-file-recursively
+                   (list "binsrc/hibernate"
+                         "binsrc/jena"
+                         "binsrc/jena2"
+                         "binsrc/jena3"
+                         "binsrc/jena4"
+                         "binsrc/rdf4j"
+                         "binsrc/sesame"
+                         "binsrc/sesame2"
+                         "binsrc/sesame3"
+                         "binsrc/sesame4"
+                         "libsrc/JDBCDriverType4")))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; Tests require a network connection.
@@ -3265,6 +3189,40 @@ implementation for Python.")
                            "--enable-static=no")
        #:phases
        (modify-phases %standard-phases
+         (replace 'bootstrap
+           (lambda _
+             (invoke "sh" "autogen.sh")))
+         (add-after 'unpack 'avoid-embedding-kernel-and-timestamps
+           ;; For a reproducible build, avoid embedding the kernel version and
+           ;; timestamps.
+           (lambda _
+             (substitute*
+                 (list "bin/makever"
+                       "appsrc/ODS-Polls/make_vad.sh"
+                       "appsrc/ODS-Blog/make_vad.sh"
+                       "appsrc/ODS-Community/make_vad.sh"
+                       "appsrc/ODS-Framework/make_vad.sh"
+                       "appsrc/ODS-Framework/oauth/make_vad.sh"
+                       "appsrc/ODS-WebMail/make_vad.sh"
+                       "appsrc/ODS-Calendar/make_vad.sh"
+                       "appsrc/ODS-Gallery/make_vad.sh"
+                       "appsrc/ODS-Briefcase/make_vad.sh"
+                       "appsrc/ODS-FeedManager/make_vad.sh"
+                       "appsrc/ODS-Bookmark/make_vad.sh"
+                       "appsrc/ODS-Addressbook/make_vad.sh"
+                       "binsrc/dbpedia/make_vad.sh"
+                       "binsrc/samples/demo/make_vad.sh"
+                       "binsrc/samples/demo/mkdoc.sh"
+                       "binsrc/samples/sparql_demo/make_vad.sh"
+                       "binsrc/bpel/make_vad.sh"
+                       "binsrc/fct/make_vad.sh"
+                       "binsrc/rdf_mappers/make_vad.sh"
+                       "binsrc/isparql/make_vad.sh"
+                       "binsrc/conductor/mkvad.sh")
+               (("^UNAME_SYSTEM=.*") "UNAME_SYSTEM=unknown\n")
+               (("^UNAME_RELEASE=.*") "UNAME_RELEASE=unknown\n")
+               (("^PACKDATE=.*") "PACKDATE=2012-04-18\n")
+               (("^DATE=.*") "DATE=2012-04-18\n"))))
          ;; Even with "--enable-static=no", "libvirtuoso-t.a" is left in
          ;; the build output.  The following phase removes it.
          (add-after 'install 'remove-static-libs
@@ -3274,6 +3232,8 @@ implementation for Python.")
                            (delete-file (string-append lib "/" file)))
                          '("libvirtuoso-t.a"
                            "libvirtuoso-t.la"))))))))
+    (native-inputs
+     (list autoconf automake bison flex gperf libtool))
     (inputs
      (list openssl net-tools readline zlib))
     (home-page "http://vos.openlinksw.com/owiki/wiki/VOS/")
@@ -3310,56 +3270,34 @@ local Cassandra clusters. It creates, launches and removes Cassandra clusters
 on localhost.")
     (license license:asl2.0)))
 
-(define-public python2-ccm
-  (package-with-python2 python-ccm))
-
-(define-public python2-pysqlite
-  (package
-    (name "python2-pysqlite")
-    (version "2.8.3")
-    (source
-     (origin
-      (method url-fetch)
-      (uri (pypi-uri "pysqlite" version))
-      (sha256
-       (base32
-        "1424gwq9sil2ffmnizk60q36vydkv8rxs6m7xs987kz8cdc37lqp"))))
-    (build-system python-build-system)
-    (inputs
-     (list sqlite))
-    (arguments
-     `(#:python ,python-2 ; incompatible with Python 3
-       #:tests? #f)) ; no test target
-    (home-page "https://github.com/ghaering/pysqlite")
-    (synopsis "SQLite bindings for Python")
-    (description
-     "Pysqlite provides SQLite bindings for Python that comply to the
-Database API 2.0T.")
-    (license license:zlib)))
-
 (define-public python-sqlalchemy
   (package
     (name "python-sqlalchemy")
-    (version "1.4.31")
+    (version "1.4.35")
     (source
      (origin
       (method url-fetch)
       (uri (pypi-uri "SQLAlchemy" version))
       (sha256
-       (base32 "06448s883bb8fgca33bn0pfaj15la0g4cax2mmx482kqwp8mjasq"))))
+       (base32 "1ddab00d5mpzg25r1qxccma2zb551hhmymsy1ycp6r6w04xq3z1g"))))
     (build-system python-build-system)
     (native-inputs
      (list python-cython ; for C extensions
-           python-pytest python-mock)) ; for tests
+           python-pytest python-mock python-pytest-xdist)) ; for tests
     (propagated-inputs
      (list python-greenlet))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "py.test")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv"
+                        "-n" (number->string (parallel-job-count))
+                        ;; The memory usage tests are very expensive and run in
+                        ;; sequence; skip them.
+                        "-k" "not test_memusage.py")))))))
     (home-page "https://www.sqlalchemy.org")
     (synopsis "Database abstraction library")
     (description
@@ -3369,9 +3307,6 @@ provides a full suite of well known enterprise-level persistence patterns,
 designed for efficient and high-performing database access, adapted into a
 simple and Pythonic domain language.")
     (license license:x11)))
-
-(define-public python2-sqlalchemy
-  (package-with-python2 python-sqlalchemy))
 
 (define-public python-sqlalchemy-stubs
   (package
@@ -3531,16 +3466,7 @@ value in database is immediately visible to other processes accessing the same
 database.  Concurrency is possible because the values are stored in separate
 files.  Hence the “database” is a directory where all files are governed by
 PickleShare.")
-    (properties `((python2-variant . ,(delay python2-pickleshare))))
     (license license:expat)))
-
-(define-public python2-pickleshare
-  (let ((pickleshare (package-with-python2
-                      (strip-python2-variant python-pickleshare))))
-    (package (inherit pickleshare)
-      (propagated-inputs (modify-inputs (package-propagated-inputs
-                                                        pickleshare)
-                           (prepend python2-pathlib2))))))
 
 (define-public python-apsw
   (package
@@ -3585,9 +3511,6 @@ pysqlite it focuses on being a minimal layer over SQLite attempting just to
 translate the complete SQLite API into Python.")
     (license license:zlib)))
 
-(define-public python2-apsw
-  (package-with-python2 python-apsw))
-
 (define-public python-aiosqlite
   (package
     (name "python-aiosqlite")
@@ -3621,47 +3544,28 @@ async versions of all the standard connection and cursor methods, and context
 managers for automatically closing connections.")
     (license license:expat)))
 
-(define-public python2-neo4j-driver
+(define-public python-databases
   (package
-    (name "python2-neo4j-driver")
-    ;; NOTE: When upgrading to 1.5.0, please add a python3 variant.
-    (version "1.4.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "neo4j-driver" version))
-              (sha256
-               (base32
-                "011r1vh182p8mm83d8dz9rfnc3l7rf7fd00cyrbyfzi71jmc4g98"))))
+    (name "python-databases")
+    (version "0.5.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "databases" version))
+       (sha256
+        (base32 "0dzb998kg35xmd50ih168320vih2w3ich798r8fc4lf9q4bb1ih2"))))
     (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2))
-    (home-page "https://neo4j.com/developer/python/")
-    (synopsis "Neo4j driver code written in Python")
-    (description "This package provides the Neo4j Python driver that connects
-to the database using Neo4j's binary protocol.  It aims to be minimal, while
-being idiomatic to Python.")
-    (license license:asl2.0)))
-
-(define-public python2-py2neo
-  (package
-    (name "python2-py2neo")
-    (version "3.1.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "py2neo" version))
-              (sha256
-               (base32
-                "1f1q95vqcvlc3nsc33p841swnjdcjazddlq2dzi3qfnjqjrajxw1"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2))
-    (home-page "https://py2neo.org")
-    (synopsis "Library and toolkit for working with Neo4j in Python")
-    (description "This package provides a client library and toolkit for
-working with Neo4j from within Python applications and from the command
-line.  The core library has no external dependencies and has been carefully
-designed to be easy and intuitive to use.")
-    (license license:asl2.0)))
+    (propagated-inputs
+     (list python-aiosqlite
+           python-aiopg
+           python-aiomysql
+           python-asyncpg
+           python-asyncmy
+           python-sqlalchemy))
+    (home-page "https://github.com/encode/databases")
+    (synopsis "Async database support for Python.")
+    (description "This package implements async database support for Python.")
+    (license license:bsd-3)))
 
 (define-public python-psycopg2
   (package
@@ -3899,26 +3803,58 @@ for Python.  The design goals are:
 parsing code in hiredis.  It primarily speeds up parsing of multi bulk replies.")
     (license license:bsd-3)))
 
-(define-public python2-hiredis
-  (package-with-python2 python-hiredis))
+(define-public python-aioredis
+  (package
+    (name "python-aioredis")
+    (version "2.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "aioredis" version))
+       (sha256
+        (base32 "13nrkk45az6qdiwfpbw80ls6bfip0i27qlkh9gsp2b9zk6pim9ga"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-before 'check 'start-redis
+                          (lambda _
+                            (invoke "redis-server" "--daemonize" "yes")))
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "pytest" "-vv")))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-asyncio
+           python-uvloop
+           redis))
+    (propagated-inputs
+     (list python-async-timeout
+           python-hiredis
+           python-typing-extensions))
+    (home-page "https://github.com/aio-libs/aioredis-py")
+    (synopsis "Redis support for Python's @code{asyncio} module")
+    (description "This package provides Redis support for the Python
+@code{asyncio} (PEP 3156) module.")
+    (license license:expat)))
 
 (define-public python-fakeredis
   (package
     (name "python-fakeredis")
-    (version "1.7.0")
+    (version "1.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "fakeredis" version))
        (sha256
         (base32
-         "0wacd3f558vzsrpdvgvdwy9pp6crxf8hxblz30zbsv1k63j15gf9"))))
+         "1v68my2v7fg44zwky3k5d52nn1bi0szpgdslghrpa2ifnjhlnb3w"))))
     (build-system python-build-system)
     (arguments
      ;; no tests
      `(#:tests? #f))
     (propagated-inputs
-     (list python-packaging python-redis python-sortedcontainers))
+     (list python-aioredis python-packaging python-redis python-sortedcontainers))
     (home-page "https://github.com/jamesls/fakeredis")
     (synopsis "Fake implementation of redis API for testing purposes")
     (description
@@ -3952,9 +3888,6 @@ reasonable substitute.")
     (description
      "This package provides a Python interface to the Redis key-value store.")
     (license license:expat)))
-
-(define-public python2-redis
-  (package-with-python2 python-redis))
 
 (define-public python-rq
   (package
@@ -4053,9 +3986,6 @@ is designed to have a low barrier to entry.")
   Redis protocol.")
     (license license:bsd-2)))
 
-(define-public python2-trollius-redis
-  (package-with-python2 python-trollius-redis))
-
 (define-public python-sqlparse
   (package
     (name "python-sqlparse")
@@ -4141,7 +4071,7 @@ the SQL language using a syntax that reflects the resulting query.")
 (define-public apache-arrow
   (package
     (name "apache-arrow")
-    (version "7.0.0")
+    (version "8.0.0")
     (source
      (origin
        (method git-fetch)
@@ -4151,7 +4081,7 @@ the SQL language using a syntax that reflects the resulting query.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "19xx6mlddca79q6d3wga574m4y32ixmxx2rmk6j3f22i5c37mjzw"))))
+         "1gwiflk72pq1krc0sjzabypmh7slfyf7ak71fiypy3xgzw8a777c"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f

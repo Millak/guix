@@ -10,6 +10,7 @@
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29,6 +30,7 @@
 (define-module (guix scripts system)
   #:use-module (guix config)
   #:use-module (guix ui)
+  #:autoload   (guix colors) (supports-hyperlinks? file-hyperlink)
   #:use-module ((guix status) #:select (with-status-verbosity))
   #:use-module (guix store)
   #:autoload   (guix base16) (bytevector->base16-string)
@@ -65,7 +67,7 @@
                  (device-module-aliases matching-modules)
   #:use-module (gnu system linux-initrd)
   #:use-module (gnu image)
-  #:use-module (gnu platform)
+  #:use-module (guix platform)
   #:use-module (gnu system)
   #:use-module (gnu bootloader)
   #:use-module (gnu system file-systems)
@@ -944,6 +946,8 @@ Some ACTIONS support additional ARGS.\n"))
   (display (G_ "\
    search           search for existing service types\n"))
   (display (G_ "\
+   edit             edit the definition of an existing service type\n"))
+  (display (G_ "\
    reconfigure      switch to a new operating system configuration\n"))
   (display (G_ "\
    roll-back        switch to the previous operating system configuration\n"))
@@ -1171,7 +1175,8 @@ Some ACTIONS support additional ARGS.\n"))
                   "extension-graph" "shepherd-graph"
                   "list-generations" "describe"
                   "delete-generations" "roll-back"
-                  "switch-generation" "search" "docker-image"))
+                  "switch-generation" "search" "edit"
+                  "docker-image"))
 
 (define (process-action action args opts)
   "Process ACTION, a sub-command, with the arguments are listed in ARGS.
@@ -1269,7 +1274,7 @@ resulting from command-line parsing."
                (export-shepherd-graph os (current-output-port)
                                       #:backend (graph-backend)))
               (else
-               (unless (memq action '(build init))
+               (unless (memq action '(build init reconfigure))
                  (warn-about-old-distro #:suggested-command
                                         "guix system reconfigure"))
 
@@ -1339,6 +1344,8 @@ argument list and OPTS is the option alist."
         (display-system-generation generation))))
     ((search)
      (apply (resolve-subcommand "search") args))
+    ((edit)
+     (apply (resolve-subcommand "edit") args))
     ;; The following commands need to use the store, but they do not need an
     ;; operating system configuration file.
     ((delete-generations)

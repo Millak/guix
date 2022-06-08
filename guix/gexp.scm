@@ -118,6 +118,7 @@
             mixed-text-file
             file-union
             directory-union
+            references-file
 
             imported-files
             imported-modules
@@ -2172,6 +2173,49 @@ is true, the derivation will not print anything."
                                            #:symlink (ungexp symlink)
                                            #:resolve-collision
                                            (ungexp resolve-collision)))))))))
+
+(define* (references-file item #:optional (name "references")
+                          #:key guile)
+  "Return a file that contains the list of direct and indirect references (the
+closure) of ITEM."
+  (if (struct? item)                              ;lowerable object
+      (computed-file name
+                     (gexp (begin
+                             (use-modules (srfi srfi-1)
+                                          (ice-9 rdelim)
+                                          (ice-9 match))
+
+                             (define (drop-lines port n)
+                               ;; Drop N lines read from PORT.
+                               (let loop ((n n))
+                                 (unless (zero? n)
+                                   (read-line port)
+                                   (loop (- n 1)))))
+
+                             (define (read-graph port)
+                               ;; Return the list of references read from
+                               ;; PORT.  This is a stripped-down version of
+                               ;; 'read-reference-graph'.
+                               (let loop ((items '()))
+                                 (match (read-line port)
+                                   ((? eof-object?)
+                                    (delete-duplicates items))
+                                   ((? string? item)
+                                    (let ((deriver (read-line port))
+                                          (count
+                                           (string->number (read-line port))))
+                                      (drop-lines port count)
+                                      (loop (cons item items)))))))
+
+                             (call-with-output-file (ungexp output)
+                               (lambda (port)
+                                 (write (call-with-input-file "graph"
+                                          read-graph)
+                                        port)))))
+                     #:guile guile
+                     #:options `(#:local-build? #t
+                                 #:references-graphs (("graph" ,item))))
+      (plain-file name "()")))
 
 
 ;;;

@@ -30,6 +30,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages hurd)
   #:use-module (gnu packages mingw)
+  #:use-module (guix platform)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix utils)
@@ -241,6 +242,9 @@ target that libc."
         (append
          (origin-patches (package-source xgcc))
          (append (cond
+                  ((version>=? (package-version xgcc) "12.0")
+                   (search-patches "gcc-12-cross-environment-variables.patch"
+                                   "gcc-cross-gxx-include-dir.patch"))
                   ((version>=? (package-version xgcc) "10.0")
                    (search-patches "gcc-10-cross-environment-variables.patch"
                                    "gcc-cross-gxx-include-dir.patch"))
@@ -345,7 +349,8 @@ target that libc."
           `(modify-phases ,phases
              (replace 'build
                (lambda _
-                 (setenv "ARCH" ,(system->linux-architecture target))
+                 (setenv "ARCH" ,(platform-linux-architecture
+                                  (lookup-platform-by-target target)))
                  (format #t "`ARCH' set to `~a' (cross compiling)~%"
                          (getenv "ARCH"))
 

@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2018, 2019, 2020, 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Eric Bavier <bavier@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -52,6 +52,7 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix svn-download)
   #:use-module (guix build-system cmake)
@@ -448,8 +449,7 @@ FFC is part of the FEniCS Project.")
               ;; Specify directory to find the header file.
               (("(^set\\(CATCH_INCLUDE_DIR ).*(/catch\\))" _ front back)
                (string-append front
-                              "$ENV{CATCH_DIR}/include" back "\n")))
-            #t))))
+                              "$ENV{CATCH_DIR}/include" back "\n")))))))
     (build-system cmake-build-system)
     (inputs
      `(("blas" ,openblas)
@@ -494,8 +494,7 @@ FFC is part of the FEniCS Project.")
              (setenv "SLEPC_DIR" (assoc-ref %build-inputs "slepc"))
              (setenv "SCOTCH_DIR" (assoc-ref %build-inputs "scotch"))
              (setenv "SUNDIALS_DIR" (assoc-ref %build-inputs "sundials"))
-             (setenv "UMFPACK_DIR" (assoc-ref %build-inputs "suitesparse"))
-             #t))
+             (setenv "UMFPACK_DIR" (assoc-ref %build-inputs "suitesparse"))))
          (add-before 'check 'pre-check
            (lambda _
              ;; The Dolfin repository uses git-lfs, whereby web links are
@@ -546,15 +545,15 @@ FFC is part of the FEniCS Project.")
                     "demo_mesh-quality_serial "
                     "demo_mesh-quality_mpi "
                     "demo_multimesh-stokes_serial "
-                    ")\n") port)))
-             #t))
+                    ")\n") port)))))
          (replace 'check
-           (lambda _
-             (and (invoke "make" "unittests")
-                  (invoke "make" "demos")
-                  (invoke "ctest" "-R" "unittests")
-                  (invoke "ctest" "-R" "demo" "-R" "serial")
-                  (invoke "ctest" "-R" "demo" "-R" "mpi")))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "make" "unittests")
+               (invoke "make" "demos")
+               (invoke "ctest" "-R" "unittests")
+               (invoke "ctest" "-R" "demo" "-R" "serial")
+               (invoke "ctest" "-R" "demo" "-R" "mpi")))))))
     (home-page "https://bitbucket.org/fenics-project/dolfin/")
     (synopsis "Problem solving environment for differential equations")
     (description
@@ -609,6 +608,10 @@ user interface to the FEniCS core components and external libraries.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "python/setup.py"
+               (("pybind11==") "pybind11>="))))
          (add-after 'patch-source-shebangs 'set-paths
            (lambda _
              ;; Define paths to store locations.
@@ -659,17 +662,18 @@ user interface to the FEniCS core components and external libraries.")
              ;; Restrict OpenBLAS to MPI-only in preference to MPI+OpenMP.
              (setenv "OPENBLAS_NUM_THREADS" "1")))
          (replace 'check
-           (lambda _
-             (with-directory-excursion "test"
-               ;; Note: The test test_snes_set_from_options() in the file
-               ;; unit/nls/test_PETScSNES_solver.py fails and is ignored.
-               ;; Limit the number of jobs to 3 as 500 MiB of memory is used
-               ;; per process.
-               (invoke "mpirun" "-np" (number->string
-                                       (min 3 (parallel-job-count)))
-                       "python" "-B" "-m"
-                       "pytest" "unit" "--ignore"
-                       "unit/nls/test_PETScSNES_solver.py"))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (with-directory-excursion "test"
+                 ;; Note: The test test_snes_set_from_options() in the file
+                 ;; unit/nls/test_PETScSNES_solver.py fails and is ignored.
+                 ;; Limit the number of jobs to 3 as 500 MiB of memory is used
+                 ;; per process.
+                 (invoke "mpirun" "-np" (number->string
+                                         (min 3 (parallel-job-count)))
+                         "python" "-B" "-m"
+                         "pytest" "unit" "--ignore"
+                         "unit/nls/test_PETScSNES_solver.py")))))
          (add-after 'install 'install-demo-files
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((demos (string-append
@@ -773,37 +777,35 @@ river flooding.")
 (define-public python-meshio
   (package
     (name "python-meshio")
-    (version "4.4.6")
+    (version "5.3.4")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "meshio" version))
-        (sha256
-          (base32
-           "0kv832s2vyff30zz8yqypw5jifwdanvh5x56d2bzkvy94h4jlddy"))
-        (snippet
-         '(begin
-            (let ((file (open-file "setup.py" "a")))
-              (display "from setuptools import setup\nsetup()" file)
-              (close-port file))
-            #t))))
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "meshio" version))
+       (sha256
+        (base32
+         "1w39qcg0rw5kb04j7sa45fnqd6k20fsdgrf62cmw2ygjgwnnjh72"))
+       (snippet
+        '(let ((file (open-file "setup.py" "a")))
+           (display "from setuptools import setup\nsetup()" file)
+           (close-port file)))))
     (build-system python-build-system)
     (inputs
-     `(("h5py" ,python-h5py)
-       ("netcdf4" ,python-netcdf4)))
+     (list python-h5py
+           python-netcdf4))
     (native-inputs
-     `(("pytest" ,python-pytest)))
+     (list python-pytest))
     (propagated-inputs
-     `(("importlib-metadata" ,python-importlib-metadata)
-       ("numpy" ,python-numpy)))
+     (list python-importlib-metadata
+           python-numpy
+           python-rich))
     (arguments
-     `(#:phases
+     '(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (invoke "python" "-m" "pytest" "-v" "tests")
-             #t)))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "python" "-m" "pytest" "-v" "tests")))))))
     (home-page "https://github.com/nschloe/meshio")
     (synopsis "I/O for mesh files")
     (description "There are various file formats available for
@@ -817,48 +819,43 @@ tools and a collection of Python modules for programmatic use.")
 (define-public python-pygmsh
   (package
     (name "python-pygmsh")
-    (version "7.1.11")
+    (version "7.1.17")
     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-              (url "https://github.com/nschloe/pygmsh")
-              (commit version)))
-        (file-name (git-file-name name version))
-        (sha256
-          (base32
-           "0g4yllmxks7yb50vild5xi1cma0yl16vsq6rfvdwmqaj4hwxcabk"))
-        (modules '((guix build utils)))
-        (snippet
-         '(begin
-            (let ((file (open-file "setup.py" "a")))
-              (display "from setuptools import setup\nsetup()" file)
-              (close-port file))
-            ;; A reference to setuptools in the configuration file
-            ;; triggers an attempt to download the package from pypi.
-            ;; The reference is not needed since the package is
-            ;; provided by the build system.
-            (substitute* "setup.cfg"
-              (("^[[:blank:]]+setuptools>=42\n") ""))
-            #t))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nschloe/pygmsh")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "11flp2c4ynk1fhanf4mqyzrpd0gjbnv6afrwwc7xi3mb6ms69lr0"))))
     (build-system python-build-system)
-    (native-inputs
-     `(("pytest" ,python-pytest)
-       ("wheel" ,python-wheel)))
-    (propagated-inputs
-     `(("importlib-metadata" ,python-importlib-metadata)
-       ("gmsh" ,gmsh)
-       ("meshio" ,python-meshio)
-       ("numpy" ,python-numpy)))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest" "-v" "tests"))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'workaround-gmsh-detection-failure
+            (lambda _
+              ;; Due to lack of metadata, the gmsh Python package is not
+              ;; detected although importable.
+              (substitute* "pyproject.toml"
+                (("\"gmsh\",") ""))))
+          ;; XXX: PEP 517 manual build copied from python-isort.
+          (replace 'build
+            (lambda _
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-v" "tests"))))
+          (replace 'install
+            (lambda _
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl)))))))
+    (native-inputs (list python-pypa-build python-flit-core python-pytest))
+    (propagated-inputs (list gmsh python-meshio python-numpy))
     (home-page "https://github.com/nschloe/pygmsh")
     (synopsis "Python frontend for Gmsh")
     (description "The goal of @code{pygmsh} is to combine the power of
@@ -867,7 +864,7 @@ the methods and functions that comprise the Gmsh Python API.  In this
 way the meshing of complex geometries using high-level abstractions is
 made possible.  The package provides a Python library together with a
 command-line utility for mesh optimisation.")
-    (license license:lgpl3)))
+    (license license:gpl3+)))
 
 (define-public python-dolfin-adjoint
   (package

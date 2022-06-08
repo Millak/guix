@@ -13,7 +13,7 @@
 ;;; Copyright © 2017–2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2017, 2018, 2019, 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2017 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 nee <nee.git@hidamari.blue>
 ;;; Copyright © 2018, 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
@@ -45,6 +45,9 @@
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Thomas Albers Raviola <thomas@thomaslabs.org>
 ;;; Copyright © 2022 Sughosha <sughosha@disroot.org>
+;;; Copyright © 2022 Remco van 't Veer <remco@remworks.net>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -153,6 +156,7 @@
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages pulseaudio) ;libsndfile
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-compression)
   #:use-module (gnu packages python-web)
@@ -176,6 +180,7 @@
   #:use-module (gnu packages vim)       ;for 'xxd'
   #:use-module (gnu packages web)
   #:use-module (gnu packages webkit)
+  #:use-module (gnu packages wm)
   #:use-module (gnu packages wxwidgets)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml)
@@ -470,7 +475,7 @@ playing your music.")
 (define-public strawberry
   (package
     (name "strawberry")
-    (version "1.0.1")
+    (version "1.0.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -479,7 +484,7 @@ playing your music.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "077dlj0kjcrj4g1h4w8finzykizaar67ik6yng6c8zjp2i5bam1j"))
+                "14fr2bm51k4n5byc9pwh3ba6v15s9jmqxigl1y9h00l7cvmfpbn1"))
               (modules '((guix build utils)
                          (ice-9 regex)))
               (snippet
@@ -705,7 +710,8 @@ background while you work.")
     (arguments
      '(#:tests? #f ; no check target
        #:configure-flags
-       (list "-DBUILD_SHARED_LIBS=ON"
+       (list "-DBUILD_ALLEGRO4=OFF"
+             "-DBUILD_SHARED_LIBS=ON"
              "-DBUILD_EXAMPLES=OFF")))
     (home-page "https://github.com/kode54/dumb")
     (synopsis "Module audio renderer library")
@@ -729,7 +735,7 @@ settings (aliasing, linear interpolation and cubic interpolation).")
     (arguments
      (substitute-keyword-arguments (package-arguments dumb)
        ((#:configure-flags flags)
-        `(cons "-DBUILD_ALLEGRO4=ON" ,flags))))
+        `(cons "-DBUILD_ALLEGRO4=ON" ,(delete "-DBUILD_ALLEGRO4=OFF" flags)))))
     (inputs
      (list allegro-4))))
 
@@ -1271,52 +1277,6 @@ standalone program which is able to download cover art, lyrics, photos,
 biographies, reviews and more.")
     (license license:lgpl3+)))
 
-(define-public gtklick
-  (package
-    (name "gtklick")
-    (version "0.6.4")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "http://das.nasophon.de/download/gtklick-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "0dq1km6njnzsqdqyf6wzir9g733z0mc9vmxfg2383k3c2a2di6bp"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f ; no tests
-       #:python ,python-2
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'add-sitedirs
-           ;; .pth files are not automatically interpreted unless the
-           ;; directories containing them are added as "sites".  The directories
-           ;; are then added to those in the PYTHONPATH.  This is required for
-           ;; the operation of pygtk.
-           (lambda _
-             (substitute* "gtklick/gtklick.py"
-               (("import pygtk")
-                "import pygtk, site, sys
-for path in [path for path in sys.path if 'site-packages' in path]: site.addsitedir(path)"))))
-         (add-after 'unpack 'inject-store-path-to-klick
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "gtklick/klick_backend.py"
-               (("KLICK_PATH = 'klick'")
-                (string-append "KLICK_PATH = '"
-                               (assoc-ref inputs "klick")
-                               "/bin/klick'")))
-             #t)))))
-    (inputs
-     (list klick python2-pyliblo python2-pygtk))
-    (native-inputs
-     `(("gettext" ,gettext-minimal)))
-    (home-page "http://das.nasophon.de/gtklick/")
-    (synopsis "Simple metronome with an easy-to-use graphical interface")
-    (description
-     "Gtklick is a simple metronome with an easy-to-use graphical user
-interface.  It is implemented as a frontend to @code{klick}.")
-    (license license:gpl2+)))
-
 (define-public lingot
   (package
     (name "lingot")
@@ -1749,20 +1709,20 @@ music theorist Paul Nauert's quantization grids or Q-Grids, for short.")
 (define-public non-sequencer
   ;; The latest tagged release is three years old and uses a custom build
   ;; system, so we take the last commit.
-  (let ((commit "5ae43bb27c42387052a73e5ffc5d33efb9d946a9")
-        (revision "4"))
+  (let ((commit "257ec5951e7d4086344d98c99ebbe569f7c31211")
+        (revision "5"))
     (package
       (name "non-sequencer")
-      (version (string-append "1.9.5-" revision "." (string-take commit 7)))
+      (version (git-version "1.9.5" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url "git://git.tuxfamily.org/gitroot/non/non.git")
+                      (url "https://github.com/falkTX/non/")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1cljkkyi9dxqpqhx8y6l2ja4zjmlya26m26kqxml8gx08vyvddhx"))
-                (file-name (string-append name "-" version "-checkout"))))
+                  "0h6ycm3nbb5lvjvhymz5xlj8wqm3z3ggzn4ghmw6xyzd0l7c3m8b"))
+                (file-name (git-file-name name version))))
       (build-system waf-build-system)
       (arguments
        `(#:tests? #f ;no "check" target
@@ -1773,11 +1733,16 @@ music theorist Paul Nauert's quantization grids or Q-Grids, for short.")
                                                        (%current-system))))
                      '("--disable-sse")
                      '()))
-         #:python ,python-2))
+         #:phases
+         (modify-phases %standard-phases
+           (add-before 'configure 'setup-waf
+             (lambda* (#:key inputs #:allow-other-keys)
+               (let ((waf (assoc-ref inputs "python-waf")))
+                 (copy-file (string-append waf "/bin/waf") "waf")))))))
       (inputs
        (list jack-1 libsigc++-2 liblo ntk))
       (native-inputs
-       (list pkg-config))
+       (list python-waf pkg-config))
       (home-page "https://non.tuxfamily.org/wiki/Non%20Sequencer")
       (synopsis "Pattern-based MIDI sequencer")
       (description
@@ -1787,6 +1752,31 @@ MIDI I/O and the NTK GUI toolkit for its user interface.  Everything in Non
 Sequencer happens on-line, in real-time.  Music can be composed live, while the
 transport is rolling.")
       (license license:gpl2+))))
+
+(define-public new-session-manager
+  (package
+    (name "new-session-manager")
+    (version "1.6.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jackaudio/new-session-manager")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ihngqbnc50izfy6x7nhgaah00byk8nl6n5smxbyb8fkhm2s8p21"))))
+    (build-system meson-build-system)
+    (native-inputs (list pkg-config))
+    (inputs (list fltk jack-2 liblo libx11))
+    (home-page "https://new-session-manager.jackaudio.org/")
+    (synopsis "Music production session management tool")
+    (description "New Session Manager (NSM) is a tool to assist music
+production by grouping standalone programs into sessions.  It can be used
+create a session, or project, and add programs to it and then use commands to
+save, start/stop, hide/show all programs at once, or individually.  The
+session can be interrupted and easily resumed at a later time.")
+    (license license:gpl3+)))
 
 (define-public non-session-manager
   (package (inherit non-sequencer)
@@ -1799,14 +1789,15 @@ transport is rolling.")
     (inputs
      (list jack-1 liblo ntk))
     (native-inputs
-     (list pkg-config))
+     (list python-waf pkg-config))
     (home-page "https://non.tuxfamily.org/nsm/")
     (synopsis "Audio session management")
     (description
      "The Non Session Manager is an API and an implementation for audio
 session management.  NSM clients use a well-specified OSC protocol to
 communicate with the session management daemon.")
-    (license license:gpl2+)))
+    (license license:gpl2+)
+    (properties `((superseded . ,new-session-manager)))))
 
 (define-public non-mixer
   (package (inherit non-sequencer)
@@ -1817,9 +1808,9 @@ communicate with the session management daemon.")
         `(cons "--project=mixer"
                (delete "--project=sequencer" ,flags)))))
     (inputs
-     (list jack-1 liblo ladspa lrdf ntk))
+     (list jack-1 liblo ladspa lrdf ntk lv2 lilv))
     (native-inputs
-     (list pkg-config))
+     (list python-waf pkg-config))
     (home-page "https://non.tuxfamily.org/wiki/Non%20Mixer")
     (synopsis "Modular digital audio mixer")
     (description
@@ -1841,7 +1832,7 @@ studio.")
     (inputs
      (list jack-1 liblo libsndfile ntk))
     (native-inputs
-     (list pkg-config))
+     (list python-waf pkg-config))
     (home-page "https://non.tuxfamily.org/wiki/Non%20Timeline")
     (synopsis "Modular digital audio timeline arranger")
     (description
@@ -2019,74 +2010,85 @@ Key features include:
 (define-public solfege
   (package
     (name "solfege")
-    (version "3.22.2")
+    (version "3.23.5pre2")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "mirror://gnu/solfege/solfege-"
-                    version ".tar.xz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.savannah.gnu.org/git/solfege.git")
+                    (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1w25rxdbj907nsx285k9nm480pvy12w3yknfh4n1dfv17cwy072i"))))
+                "1lmzp4kn0xh58yc8gzriz1i34g5qaa2xxrxzpmr7v9jyk19dqmcm"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; xmllint attempts to download DTD
-       #:test-target "test"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-configuration
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "default.config"
-               (("/usr/bin/aplay") "aplay")
-               (("/usr/bin/timidity") "timidity")
-               (("/usr/bin/mpg123") "mpg123")
-               (("/usr/bin/ogg123") "ogg123"))
-             #t))
-         (add-before 'build 'patch-python-shebangs
-           (lambda _
-             ;; Two python scripts begin with a Unicode BOM, so patch-shebang
-             ;; has no effect.
-             (substitute* '("solfege/parsetree.py"
-                            "solfege/presetup.py")
-               (("#!/usr/bin/python") (string-append "#!" (which "python"))))
-             #t))
-         (add-before 'build 'add-sitedirs
-           ;; .pth files are not automatically interpreted unless the
-           ;; directories containing them are added as "sites".  The directories
-           ;; are then added to those in the PYTHONPATH.  This is required for
-           ;; the operation of pygtk and pygobject.
-           (lambda _
-             (substitute* "run-solfege.py"
-               (("import os")
-                "import os, site
-for path in [path for path in sys.path if 'site-packages' in path]: site.addsitedir(path)"))
-             #t))
-         (add-before 'build 'adjust-config-file-prefix
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "run-solfege.py"
-               (("prefix = os.path.*$")
-                (string-append "prefix = " (assoc-ref outputs "out"))))
-             #t))
-         (add-after 'install 'wrap-program
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; Make sure 'solfege' runs with the correct PYTHONPATH.
-             (let* ((out (assoc-ref outputs "out"))
-                    (path (getenv "GUIX_PYTHONPATH")))
-               (wrap-program (string-append out "/bin/solfege")
-                 `("GUIX_PYTHONPATH" ":" prefix (,path))))
-             #t)))))
+     (list
+      #:tests? #f                       ;xmllint attempts to download DTD
+      #:test-target "test"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (substitute* "autogen.sh"
+                (("python3 -c \"import tools.*create_versions_file.*")
+                 (string-append "echo \"version_info = '"
+                                #$version "' > solfege/_version.py\"\n")))
+              (substitute* "Makefile.in"
+                (("\\$\\(PYTHON) -c \"import tools.*create_versions_file.*")
+                 "true\n"))
+              (substitute* "solfege/buildinfo.py.in"
+                (("from solfege._version import version_info")
+                 "version_info = {'git_sha': 'N/A'}"))))
+          (add-after 'unpack 'fix-configuration
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "default.config"
+                (("/usr/bin/aplay") "aplay")
+                (("/usr/bin/timidity") "timidity")
+                (("/usr/bin/mpg123") "mpg123")
+                (("/usr/bin/ogg123") "ogg123"))))
+          (add-before 'build 'patch-python-shebangs
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Two python scripts begin with a Unicode BOM, so patch-shebang
+              ;; has no effect.
+              (substitute* '("solfege/parsetree.py"
+                             "solfege/presetup.py")
+                (("#!/usr/bin/python")
+                 (string-append "#!" search-input-file inputs "bin/python")))))
+          (add-before 'build 'add-sitedirs
+            ;; .pth files are not automatically interpreted unless the
+            ;; directories containing them are added as "sites".  The
+            ;; directories are then added to those in the PYTHONPATH.  This is
+            ;; required for the operation of pygtk and pygobject.
+            (lambda _
+              (substitute* "run-solfege.py"
+                (("import os")
+                 "import os, site
+for path in [path for path in sys.path if 'site-packages' in path]: site.addsitedir(path)"))))
+          (add-before 'build 'adjust-config-file-prefix
+            (lambda _
+              (substitute* "run-solfege.py"
+                (("prefix = os.path.*$")
+                 (string-append "prefix = " #$output)))))
+          (add-after 'install 'wrap-program
+            (lambda* (#:key outputs #:allow-other-keys)
+              ;; Make sure 'solfege' runs with the correct PYTHONPATH.
+              (let ((path (getenv "GUIX_PYTHONPATH")))
+                (wrap-program (search-input-file outputs "bin/solfege")
+                  `("GUIX_PYTHONPATH" ":" prefix (,path)))))))))
     (inputs
-     `(("python" ,python-2)
-       ("pygtk" ,python2-pygtk)
-       ("gettext" ,gettext-minimal)
-       ("gtk" ,gtk+)
-       ("lilypond" ,lilypond)))
+     (list python-wrapper
+           python-pygobject
+           gettext-minimal
+           gtk+
+           lilypond))
     (native-inputs
-     (list pkg-config
+     (list autoconf
+           automake
+           pkg-config
            txt2man
-           libxml2 ; for tests
+           libxml2                      ; for tests
            ghostscript
-           texinfo-5))
+           texinfo))
     (home-page "https://www.gnu.org/software/solfege/")
     (synopsis "Ear training")
     (description
@@ -2279,7 +2281,7 @@ perform creative live mixes with digital music files.")
 (define-public synthv1
   (package
     (name "synthv1")
-    (version "0.9.24")
+    (version "0.9.25")
     (source (origin
               (method url-fetch)
               (uri
@@ -2287,7 +2289,7 @@ perform creative live mixes with digital music files.")
                               "/synthv1-" version ".tar.gz"))
               (sha256
                (base32
-                "0m9xpl7kq0zlain8598q5cqrh1c7ima2w8jrpq7ds8vh97r7p1bl"))))
+                "1i16036f9wm52c5pxkllq7ir749jcknbh35i9wcxd5n88p6mzw02"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests
@@ -2295,7 +2297,7 @@ perform creative live mixes with digital music files.")
      (list jack-1
            lv2
            alsa-lib
-           non-session-manager
+           new-session-manager
            liblo
            qtbase-5))
     (native-inputs
@@ -2310,7 +2312,7 @@ oscillators and stereo effects.")
 (define-public drumkv1
   (package
     (name "drumkv1")
-    (version "0.9.24")
+    (version "0.9.25")
     (source (origin
               (method url-fetch)
               (uri
@@ -2318,7 +2320,7 @@ oscillators and stereo effects.")
                               "/drumkv1-" version ".tar.gz"))
               (sha256
                (base32
-                "04k0mkvlz9ka0mlck4g7c86s1rhb9pkhml6j6n9b5hwlbq8a9mxk"))))
+                "0p50b4k4zldagiwxs0micmdbqib46ysipdj8lkxqdv0pysmd72fc"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests
@@ -2327,7 +2329,7 @@ oscillators and stereo effects.")
            lv2
            libsndfile
            alsa-lib
-           non-session-manager
+           new-session-manager
            liblo
            qtbase-5))
     (native-inputs
@@ -2342,7 +2344,7 @@ effects.")
 (define-public samplv1
   (package
     (name "samplv1")
-    (version "0.9.24")
+    (version "0.9.25")
     (source (origin
               (method url-fetch)
               (uri
@@ -2350,7 +2352,7 @@ effects.")
                               "/samplv1-" version ".tar.gz"))
               (sha256
                (base32
-                "1c3ksd02dfqvzc3zk4x282b6gxr1l4ya9c4l04dcn55mrymgn2zz"))))
+                "0d05b03knrwh1zr4p0kcyn58scy6a392f0xxm78cqf0gikd3bw5c"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests
@@ -2359,7 +2361,7 @@ effects.")
            lv2
            libsndfile
            alsa-lib
-           non-session-manager
+           new-session-manager
            liblo
            qtbase-5))
     (native-inputs
@@ -2374,7 +2376,7 @@ effects.")
 (define-public padthv1
   (package
     (name "padthv1")
-    (version "0.9.24")
+    (version "0.9.25")
     (source (origin
               (method url-fetch)
               (uri
@@ -2382,7 +2384,7 @@ effects.")
                               "/padthv1-" version ".tar.gz"))
               (sha256
                (base32
-                "0p3qp2lzhmj8i17bcqzsi0782nz7s90hx3s8vax6bxl4mqxsvnxb"))))
+                "11fa2794g7dqsiw674wr2m4k0xdw89imqwa8mgms0igskxxbvjka"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests
@@ -2390,7 +2392,7 @@ effects.")
      (list jack-1
            lv2
            alsa-lib
-           non-session-manager
+           new-session-manager
            liblo
            fftwf
            qtbase-5))
@@ -2507,48 +2509,6 @@ modification devices that brought world-wide fame to the names and products of
 Laurens Hammond and Don Leslie.")
     (license license:gpl2+)))
 
-(define-public beast
-  (package
-    (name "beast")
-    (version "0.10.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://testbit.eu/pub/dists/beast/beast-"
-                                  version ".tar.xz"))
-              (sha256
-               (base32
-                "1jzzmfwssklzw8fvvil04n8csc0zm99fnd9p2xa7c0xchg37lvhn"))))
-    (build-system gnu-build-system)
-    (arguments
-     '(#:parallel-build? #f)) ; Race conditions cause build failures
-    (inputs
-     `(("rapicorn" ,rapicorn)
-       ("guile" ,guile-1.8)
-       ("python" ,python-2)
-       ("libgnomecanvas" ,libgnomecanvas)
-       ("libogg" ,libogg)
-       ("libmad" ,libmad)
-       ("flac" ,flac)
-       ("alsa-lib" ,alsa-lib)
-       ("libvorbis" ,libvorbis)
-       ("gettext" ,gettext-minimal)))
-    (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("glib:bin" ,glib "bin")
-       ("cython" ,python2-cython)
-       ("perl" ,perl)
-       ("perl-xml-parser" ,perl-xml-parser)))
-    (home-page "https://testbit.eu/wiki/Beast_Home")
-    (synopsis "Music composition and modular synthesis environment")
-    (description
-     "Beast is a music composition and modular synthesis application.  It
-supports a wide range of standards in the field, such as MIDI, various audio
-file formats and LADSPA modules.  It allows for multitrack editing, real-time
-synthesis, 32bit audio rendering, precise timing down to sample granularity,
-on-demand and partial loading of wave files, on the fly decoding, stereo
-mixing, FFT scopes, MIDI automation and full scriptability in Scheme.")
-    (license license:gpl3+)))
-
 (define-public bristol
   (package
     (name "bristol")
@@ -2605,7 +2565,7 @@ is subjective.")
 (define-public tuxguitar
   (package
     (name "tuxguitar")
-    (version "1.5.4")
+    (version "1.5.5")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2613,7 +2573,7 @@ is subjective.")
                     version "/tuxguitar-" version "-src.tar.gz"))
               (sha256
                (base32
-                "0fjhf56lhlhm84v08917xp4yw8y6d0qajm4qiy1gfp8dm74whwwg"))))
+                "1613aiq3x48l2nx1zxqh1cif6i5izkixfld8c9wri9nfv405b19f"))))
     (build-system ant-build-system)
     (arguments
      `(#:build-target "build"
@@ -2651,8 +2611,7 @@ is subjective.")
                                 "TuxGuitar-gm-utils"
                                 "TuxGuitar-alsa"
                                 "TuxGuitar-midi"
-                                "TuxGuitar-midi-ui"))
-               #t)))
+                                "TuxGuitar-midi-ui")))))
          (add-after 'build 'build-jni
            (lambda _
              (setenv "CC" "gcc")
@@ -2711,8 +2670,7 @@ is subjective.")
                                      " -Djava.library.path=" out "/lib"
                                      " org.herac.tuxguitar.app.TGMainSingleton"
                                      " \"$1\" \"$2\"")))))
-               (chmod (string-append bin "/tuxguitar") #o555)
-               #t))))))
+               (chmod (string-append bin "/tuxguitar") #o555)))))))
     (inputs
      (list alsa-lib java-swt))
     (home-page "http://tuxguitar.com.ar/")
@@ -3324,14 +3282,14 @@ from the command line.")
 (define-public qtractor
   (package
     (name "qtractor")
-    (version "0.9.25")
+    (version "0.9.26")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://downloads.sourceforge.net/qtractor/"
                                   "qtractor-" version ".tar.gz"))
               (sha256
                (base32
-                "0x99yjabznr2pl867j3h9zdsjzkxzxm2c0xk1xwk50gfp8gwg9bh"))))
+                "02r4dhhbn3dzhqi5cnm2vwimqk10bdlpy233n4a3590qg4krnqkd"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; no "check" target
@@ -3445,11 +3403,11 @@ analogue-like user interface.")
 (define-public mod-host
   ;; The last release was in 2014 but since then hundreds of commits have
   ;; been made.
-  (let ((commit "1726ad06b11323da7e1aaed690ff8aef91f702b5")
-        (revision "3"))
+  (let ((commit "cdd30ddbd2cc916be8a0364275071c3d8335b3a7")
+        (revision "4"))
     (package
       (name "mod-host")
-      (version (string-append "0.10.6-" revision "." (string-take commit 9)))
+      (version (git-version "0.10.6" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -3457,34 +3415,33 @@ analogue-like user interface.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1nrd37c35w6z6ldczgrwmmd9hx1n3zyvcjcgb3mi4cygqdanvspv"))
-                (file-name (string-append name "-" version "-checkout"))))
+                  "1xnflvcyj071gn9nhv5dynd0v85nq99sz1wn3adlj43l5m4fbx3a"))
+                (file-name (git-file-name name version))))
       (build-system gnu-build-system)
       (arguments
-       `(#:tests? #f ; no tests included
-         #:make-flags
-         (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
-               "CC=gcc")
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure)
-           (add-after 'unpack 'fix-jack-installation-directory
-             (lambda _
-               ;; Do not attempt to install files to output of "jack" package.
-               (substitute* "Makefile"
-                 (("\\$\\(shell pkg-config --variable=libdir jack\\)")
-                  "lib"))
-               #t)))))
+       (list
+        #:tests? #f                     ; no tests included
+        #:make-flags
+        #~(list (string-append "PREFIX=" #$output) "CC=gcc")
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            (add-after 'unpack 'fix-jack-installation-directory
+              (lambda _
+                ;; Do not attempt to install files to output of "jack" package.
+                (substitute* "Makefile"
+                  (("\\$\\(shell pkg-config --variable=libdir jack\\)")
+                   "lib")))))))
       (inputs
        (list lilv
              fftw
              fftwf
              lv2
-             jack-1
+             jack-2
              readline))
       (native-inputs
-       `(("pkg-config" ,pkg-config)
-         ("python" ,python-2)))
+       (list pkg-config
+             python-wrapper))
       (home-page "https://github.com/moddevices/mod-host")
       (synopsis "LV2 host for Jack controllable via socket or command line")
       (description "mod-host is an LV2 plugin host for JACK, controllable via
@@ -3675,9 +3632,6 @@ MusicBrainz database.")
     ;; 'musicbrainzngs/compat.py' is ISC licensed.
     (license (list license:bsd-2 license:isc))))
 
-(define-public python2-musicbrainzngs
-  (package-with-python2 python-musicbrainzngs))
-
 (define-public python-isrcsubmit
   (package
     (name "python-isrcsubmit")
@@ -3698,39 +3652,6 @@ MusicBrainz database.")
 Standard Recording Code} (ISRCs) from audio CDs and submit them to
 @url{https://musicbrainz.org/, MusicBrainz}.")
     (license license:gpl3+)))
-
-(define-public python2-pyechonest
-  (package
-    (name "python2-pyechonest")
-    (version "9.0.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pyechonest" version))
-              (sha256
-               (base32
-                "1584nira3rkiman9dm81kdshihmkj21s8navndz2l8spnjwb790x"))))
-    (build-system python-build-system)
-    (arguments
-     `(;; Python 3 is not supported:
-       ;; https://github.com/echonest/pyechonest/issues/42
-       #:python ,python-2))
-    (home-page "https://github.com/echonest/pyechonest")
-    (synopsis "Python interface to The Echo Nest APIs")
-    (description "Pyechonest is a Python library for the Echo Nest API.  With
-Pyechonest you have Python access to the entire set of API methods including:
-
-@enumerate
-@item artist - search for artists by name, description, or attribute, and get
-back detailed information about any artist including audio, similar artists,
-blogs, familiarity, hotttnesss, news, reviews, urls and video.
-@item song - search songs by artist, title, description, or attribute (tempo,
-duration, etc) and get detailed information back about each song, such as
-hotttnesss, audio_summary, or tracks.
-@item track - upload a track to the Echo Nest and receive summary information
-about the track including key, duration, mode, tempo, time signature along with
-detailed track info including timbre, pitch, rhythm and loudness information.
-@end enumerate\n")
-    (license license:bsd-3)))
 
 (define-public python-pylast
   (package
@@ -4478,91 +4399,6 @@ filters, crossovers, simple gain plugins without zipper noise, switch box
 plugins, a switch trigger, a toggle switch, and a peakmeter.")
       (license license:gpl2+))))
 
-(define-public ingen
-  (let ((commit "cc4a4db33f4d126a07a4a498e053c5fb9a883be3")
-        (revision "2"))
-    (package
-      (name "ingen")
-      (version (string-append "0.0.0-" revision "."
-                              (string-take commit 9)))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://git.drobilla.net/ingen.git")
-               (commit commit)))
-         (file-name (string-append name "-" version "-checkout"))
-         (sha256
-          (base32
-           "1wg47vjw9djn99gbnsl2bcwj4xhdid61m4wrbn2nlp797flj91ic"))))
-      (build-system waf-build-system)
-      (arguments
-       `(#:python ,python-2
-         #:tests? #f ; no "check" target
-         #:configure-flags (list "--no-webkit")
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'patch-wscript
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out")))
-                 (substitute* "wscript"
-                   ;; FIXME: Our version of lv2specgen.py does not behave as
-                   ;; expected.  Maybe this requires a development version of
-                   ;; LV2.
-                   (("lv2specgen.py") "touch ingen.lv2/ingen.html; echo")
-                   ;; Add libraries to RUNPATH.
-                   (("^(.+)target.*= 'src/ingen/ingen'," line prefix)
-                    (string-append prefix
-                                   "linkflags=[\"-Wl,-rpath="
-                                   out "/lib" "\"]," line)))
-                 (substitute* '("src/wscript"
-                                "src/server/wscript")
-                   ;; Add libraries to RUNPATH.
-                   (("bld.env.PTHREAD_LINKFLAGS" line)
-                    (string-append line
-                                   " + [\"-Wl,-rpath=" out "/lib" "\"]")))
-                 (substitute* "src/client/wscript"
-                   ;; Add libraries to RUNPATH.
-                   (("^(.+)target.*= 'ingen_client'," line prefix)
-                    (string-append prefix
-                                   "linkflags=[\"-Wl,-rpath="
-                                   out "/lib" "\"]," line)))
-                 (substitute* "src/gui/wscript"
-                   ;; Add libraries to RUNPATH.
-                   (("^(.+)target.* = 'ingen_gui.*" line prefix)
-                    (string-append prefix
-                                   "linkflags=[\"-Wl,-rpath="
-                                   out "/lib" "\"]," line))))
-               #t)))))
-      (inputs
-       (list boost
-             python-rdflib
-             python
-             jack-1
-             lv2
-             lilv
-             raul-devel
-             ganv
-             suil
-             serd
-             sord
-             sratom
-             gtkmm-2))
-      (native-inputs
-       (list pkg-config python-pygments))
-      (home-page "https://drobilla.net/software/ingen")
-      (synopsis "Modular audio processing system")
-      (description "Ingen is a modular audio processing system for JACK and
-LV2 based systems.  Ingen is built around LV2 technology and a strict
-separation of engine from user interface.  The engine is controlled
-exclusively through a protocol, and can execute as a headless process, with an
-in-process GUI, or as an LV2 plugin.  The GUI can run as a program which
-communicates over a Unix or TCP/IP socket, or as an embeddable LV2 GUI which
-communicates via LV2 ports.  Any saved Ingen graph can be loaded as an LV2
-plugin on any system where Ingen is installed.  This allows users to visually
-develop custom plugins for use in other applications without programming.")
-      (license license:agpl3+))))
-
 (define-public qmidiarp
   (package
     (name "qmidiarp")
@@ -5008,7 +4844,7 @@ studio.")
 (define-public gsequencer
   (package
     (name "gsequencer")
-    (version "3.14.5")
+    (version "3.18.2")
     (source
      (origin
        (method git-fetch)
@@ -5017,7 +4853,7 @@ studio.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18pfv4w30nng1p0vgmrnkfm38522iq1x1bj8iz4qfiffiv56dsnz"))))
+        (base32 "1lkn7rfrjvmds62i69igcgmic2snscgb9f6gdg5nzyfkis1fq5iz"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:phases
@@ -5671,45 +5507,6 @@ with error and volume history, and advanced features.")
     ;; Most of the code is under GPL2+, but some abstract or helper classes
     ;; are under LGPL2.1.
     (license (list license:gpl2+ license:lgpl2.1))))
-
-(define-public mloop
-  (let ((commit "adebff98b0b4dc5872a03acb82e89c77cb29c127")
-        (revision "0"))
-    (package
-      (name "mloop")
-      (version (git-version "0.0.1" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "http://git.fuzzle.org/mloop")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "175gxvg5slq0bllcx1c381rjlq3xpxww8c3kpiw5i2kfr4m52myz"))))
-      (build-system waf-build-system)
-      (arguments
-       `(#:python ,python-2
-         #:tests? #f))                     ; no "check" target
-      (inputs
-       (list jack-1 ncurses))
-      (native-inputs
-       (list pkg-config))
-      (home-page "https://fuzzle.org/~petern/mloop.html")
-      (synopsis "Live MIDI looper")
-      (description "mloop is a live MIDI looping system, using jack-midi.
-Loops are recorded, optionally with beat quantization, and can then be played
-back, either once or looping.  A 'note cache' system is implemented to
-remember which notes are pressed and their velocities.  This allows for a loop
-to start off with the currently pressed notes, making seamless loops much
-easier to perform.  Features include:
-
-@itemize
-@item Quantisation; end a loop on a beat exactly.
-@item Delayed recording; wait for a MIDI event before starting a loop record.
-@item Adjust tempo; Playback speed of loops can be adjusted on the fly.
-@end itemize\n")
-      (license license:gpl2))))
 
 (define-public pragha
   (package
@@ -6881,3 +6678,91 @@ choice.")
 streaming audio server.")
     (home-page "https://musikcube.com/")
     (license license:bsd-3)))
+
+(define-public quodlibet
+  (package
+    (name "quodlibet")
+    (version "4.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/quodlibet/quodlibet")
+             (commit (string-append "release-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1i5k93k3bfp7hpcwkbr865mbj9jam3jv2a5k1bazcyp4f5vdrb0v"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:modules '((guix build python-build-system)
+                  ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
+                  (guix build utils))
+      #:imported-modules `((guix build python-build-system)
+                           ,@%glib-or-gtk-build-system-modules)
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" (getcwd))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests?
+                  (invoke "xvfb-run" "pytest"
+                          ;; needs network
+                          "--ignore=tests/test_browsers_iradio.py"
+                          ;; broken upstream
+                          "--disable-warnings"
+                          "--ignore=tests/quality")
+                  (format #t "test suite not run~%"))))
+          (add-after 'install 'glib-or-gtk-wrap ; ensure icons loaded
+            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
+          (add-after 'install 'wrap-extra-paths
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out"))
+                    (gi-typelib-path (getenv "GI_TYPELIB_PATH"))
+                    (gst-plugins-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
+                (for-each
+                 (lambda (prog)
+                   (wrap-program (string-append out "/bin/" prog)
+                     `("GI_TYPELIB_PATH" ":" = (,gi-typelib-path))
+                     `("GST_PLUGIN_SYSTEM_PATH" ":" suffix (,gst-plugins-path))))
+                 '("exfalso" "quodlibet"))))))))
+    (native-inputs (list xvfb-run gettext-minimal))
+    (inputs
+     (list adwaita-icon-theme
+           bash-minimal
+           glib
+           gsettings-desktop-schemas
+           gst-plugins-bad
+           gst-plugins-base
+           gst-plugins-good
+           gst-plugins-ugly
+           gstreamer
+           gtk+
+           gtksourceview ; undo, redo, multiline text fields
+           hicolor-icon-theme
+           keybinder-3.0 ; keybindings outside of GNOME
+           librsvg
+           libsoup-minimal-2
+           python
+           python-cheetah
+           python-dbus
+           python-feedparser
+           python-gst
+           python-iniconfig
+           python-musicbrainzngs
+           python-mutagen
+           python-pycairo
+           python-pygobject
+           python-pyinotify
+           python-pytest
+           python-sgmllib3k
+           python-toml))
+    (home-page "https://github.com/quodlibet/quodlibet")
+    (synopsis "Music manager and player")
+    (description "Quod Libet provides several ways to browse and view your
+local music library, along with flexible search capabilities.  It includes
+a tag editor, which can also be invoked as a standalone program, and further
+supports streaming audio and feeds (such as podcasts).")
+    (license license:gpl2+)))

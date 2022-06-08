@@ -462,7 +462,9 @@ denoting a specific output of a package."
                  (propagated-inputs #$(map entry->gexp deps))
                  (search-paths #$(map search-path-specification->sexp
                                       search-paths))
-                 (properties . #$properties)))
+                 #$@(if (null? properties)
+                        #~()
+                        #~((properties . #$properties)))))
       (($ <manifest-entry> name version output package
                            (deps ...) (search-paths ...) _ (properties ...))
        #~(#$name #$version #$output
@@ -470,7 +472,9 @@ denoting a specific output of a package."
                  (propagated-inputs #$(map entry->gexp deps))
                  (search-paths #$(map search-path-specification->sexp
                                       search-paths))
-                 (properties . #$properties)))))
+                 #$@(if (null? properties)
+                        #~()
+                        #~((properties . #$properties)))))))
 
   (match manifest
     (($ <manifest> (entries ...))

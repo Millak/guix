@@ -33,12 +33,14 @@
   #:use-module (guix modules)
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 match)
+  #:use-module (ice-9 vlist)
 
   #:export (home-service-type
             home-profile-service-type
             home-environment-variables-service-type
             home-files-service-type
             home-xdg-configuration-files-service-type
+            home-xdg-data-files-service-type
             home-run-on-first-login-service-type
             home-activation-service-type
             home-run-on-change-service-type
@@ -46,8 +48,10 @@
 
             home-files-directory
             xdg-configuration-files-directory
+            xdg-data-files-directory
 
             fold-home-service-types
+            lookup-home-service-types
             home-provenance
 
             %initialize-gettext)
@@ -285,10 +289,10 @@ directory containing FILES."
                 (description "Files that will be put in
 @file{~~/.guix-home/files}, and further processed during activation.")))
 
-(define xdg-configuration-files-directory "config")
+(define xdg-configuration-files-directory ".config")
 
 (define (xdg-configuration-files files)
-  "Add config/ prefix to each file-path in FILES."
+  "Add .config/ prefix to each file-path in FILES."
   (map (match-lambda
          ((file-path . rest)
           (cons (string-append xdg-configuration-files-directory "/" file-path)
@@ -296,7 +300,7 @@ directory containing FILES."
          files))
 
 (define home-xdg-configuration-files-service-type
-  (service-type (name 'home-files)
+  (service-type (name 'home-xdg-configuration)
                 (extensions
                  (list (service-extension home-files-service-type
                                           xdg-configuration-files)))
@@ -304,7 +308,30 @@ directory containing FILES."
                 (extend append)
                 (default-value '())
                 (description "Files that will be put in
-@file{~~/.guix-home/files/config}, and further processed during activation.")))
+@file{~~/.guix-home/files/.config}, and further processed during activation.")))
+
+(define xdg-data-files-directory ".local/share")
+
+(define (xdg-data-files files)
+  "Add .local/share prefix to each file-path in FILES."
+  (map (match-lambda
+         ((file-path . rest)
+          (cons (string-append xdg-data-files-directory "/" file-path)
+                rest)))
+         files))
+
+(define home-xdg-data-files-service-type
+  (service-type (name 'home-xdg-data)
+                (extensions
+                 (list (service-extension home-files-service-type
+                                          xdg-data-files)))
+                (compose concatenate)
+                (extend append)
+                (default-value '())
+                (description "Files that will be put in
+@file{~~/.guix-home/files/.local/share}, and further processed during
+activation.")))
+
 
 (define %initialize-gettext
   #~(begin
@@ -580,3 +607,13 @@ environment, and its configuration file, when available.")))
 
 (define* (fold-home-service-types proc seed)
   (fold-service-types proc seed (all-home-service-modules)))
+
+(define lookup-home-service-types
+  (let ((table
+         (delay (fold-home-service-types (lambda (type result)
+                                           (vhash-consq (service-type-name type)
+                                                        type result))
+                                         vlist-null))))
+    (lambda (name)
+      "Return the list of services with the given NAME (a symbol)."
+      (vhash-foldq* cons '() name (force table)))))
