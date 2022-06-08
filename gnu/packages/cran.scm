@@ -33624,3 +33624,23 @@ estimating the variogram and then calling @command{gstat}.")
     (description "This package enables construction of continuous and
 non-contiguous area cartograms.")
     (license license:gpl3)))
+
+(define-public r-measurements
+  (package
+    (name "r-measurements")
+    (version "1.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "measurements" version))
+              (sha256
+               (base32
+                "1kihavs9vgxwqjm9z1zjjngkmcwfsv8dg7nn9nrv5r06k5hv8bz6"))))
+    (properties `((upstream-name . "measurements")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/web/packages/measurements/")
+    (synopsis "Tools for units of measurement")
+    (description
+     "This package provides a collection of tools to make working with physical
+measurements easier.  One can convert between metric and imperial units, or
+calculate a dimension's unknown value from other dimensions' measurements.")
+    (license license:gpl3)))
