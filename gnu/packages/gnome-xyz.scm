@@ -16,6 +16,7 @@
 ;;; Copyright © 2021, 2022 Justin Veilleux <terramorpha@cock.li>
 ;;; Copyright © 2021 Attila Lendvai <attila@lendvai.name>
 ;;; Copyright © 2021 Charles Jackson <charles.b.jackson@protonmail.com>
+;;; Copyright © 2022 Eric Bavier <bavier@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -37,6 +38,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system python)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix packages)
@@ -50,6 +52,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages build-tools)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
@@ -58,6 +61,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages tls)
@@ -216,6 +220,86 @@ simple and consistent.")
     (description "Papirus is a fork of the icon theme Paper with a lot of new icons
 and a few extra features.")
     (license license:gpl3)))
+
+(define-public gnome-plots
+  (package
+    (name "gnome-plots")
+    (version "0.6.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/alexhuntley/Plots")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "168wcsrkmvq79xmwvbq615msd4q0rg7f57xqicidnr78jx4x37rd"))))
+    (build-system python-build-system)
+    (inputs
+     (list bash-minimal                 ; for wrap-program
+           gtk+
+           pango
+           python-freetype-py
+           python-jinja2
+           python-lark-parser
+           python-numpy
+           python-pycairo
+           python-pyglm
+           python-pygobject
+           python-pyopengl))
+    (native-inputs
+     (list python-pytest))
+    (arguments
+     (list
+      #:imported-modules `((guix build glib-or-gtk-build-system)
+                           ,@%python-build-system-modules)
+      #:modules '((guix build python-build-system)
+                  ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
+                  (guix build utils)
+                  (ice-9 match))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'adjust-lark-requirement
+            (lambda _
+              (substitute* "setup.py"
+                (("lark") "lark-parser"))))
+          (add-after 'install 'install-more
+            (lambda _
+              (let* ((datadir (string-append #$output "/share"))
+                     (help (string-append datadir "/help"))
+                     (icons (string-append datadir "/icons/hicolor")))
+                (map (lambda (filename)
+                       (match (string-split filename #\/)
+                         ((_ lang dir ... name)
+                          (install-file filename
+                                        (string-join (cons* help lang "plots" dir)
+                                                     "/")))))
+                     (find-files "help"))
+                (install-file "res/com.github.alexhuntley.Plots.desktop"
+                              (string-append datadir "/applications/"))
+                (install-file "res/com.github.alexhuntley.Plots.svg"
+                              (string-append icons "/scalable/apps/"))
+                (install-file "res/com.github.alexhuntley.Plots-symbolic.svg"
+                              (string-append icons "/symbolic/apps/")))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv"))))
+          (add-after 'wrap 'gi-wrap
+            (lambda _
+              (let ((prog (string-append #$output "/bin/plots")))
+                (wrap-program prog
+                  `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))
+          (add-after 'wrap 'glib-or-gtk-wrap
+            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
+    (home-page "https://apps.gnome.org/app/com.github.alexhuntley.Plots/")
+    (synopsis "Simple graph plotting")
+    (description "Plots makes it easy to visualise mathematical formulae.  In
+addition to basic arithmetic operations, it supports trigonometric,
+hyperbolic, exponential, and logarithmic functions, as well as arbitrary sums
+and products.  Plots is designed to integrate well with the GNOME desktop and
+takes advantage of modern hardware using OpenGL.")
+    (license license:gpl3+)))
 
 (define-public gnome-shell-extension-appindicator
   (package
