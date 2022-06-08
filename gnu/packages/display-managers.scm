@@ -323,8 +323,8 @@ experience for your users, your family and yourself")
              vala                       ;for Vala bindings
              ;; For tests
              dbus
-             ;; python-wrapper
-             ;; python-pygobject
+             python-wrapper
+             python-pygobject
              which
              yelp-tools))
       ;; Required by liblightdm-gobject-1.pc.
