@@ -33644,3 +33644,52 @@ non-contiguous area cartograms.")
 measurements easier.  One can convert between metric and imperial units, or
 calculate a dimension's unknown value from other dimensions' measurements.")
     (license license:gpl3)))
+
+(define-public r-sungeo
+  (package
+    (name "r-sungeo")
+    (version "0.2.288")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "SUNGEO" version))
+              (sha256
+               (base32
+                "0c8y0ngx1020rw2v00rxmq8syd72f41ckik5sg7gigg7d80gi31w"))
+              (modules '((guix build utils)))
+              (snippet '(begin
+                          ;; Fortunately, the package does not actually use
+                          ;; rmapshaper, which has got a js/node dependency.
+                          ;; The only occurrence is in R/point2poly_tess.R,
+                          ;; where it is commented out.
+                          (substitute* "DESCRIPTION"
+                            (("rmapshaper,") ""))
+                          (substitute* "NAMESPACE"
+                            (("importFrom\\(rmapshaper,ms_dissolve\\)
+") ""))
+                          #t))))
+    (properties `((upstream-name . "SUNGEO")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-automap
+                             r-cartogram
+                             r-data-table
+                             r-dplyr
+                             r-fasterize
+                             r-httr
+                             r-jsonlite
+                             r-measurements
+                             r-packcircles
+                             r-purrr
+                             r-rann
+                             r-raster
+                             r-rcpp
+                             r-rcurl
+                             r-rlang
+                             r-sf
+                             r-sp
+                             r-spdep))
+    (home-page "https://github.com/zhukovyuri/SUNGEO/")
+    (synopsis "Sub-National Geospatial Data Archive: Geoprocessing Toolkit")
+    (description
+     "Tools for integrating spatially-misaligned GIS datasets.  Part of the
+Sub-National Geospatial Data Archive System.")
+    (license license:gpl2)))
