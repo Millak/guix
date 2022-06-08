@@ -2100,7 +2100,7 @@ emulate a TI-30 or an HP-10C.")
 (define-public xcb-proto
   (package
     (name "xcb-proto")
-    (version "1.14")
+    (version "1.15")
     (source
       (origin
         (method url-fetch)
@@ -2109,7 +2109,7 @@ emulate a TI-30 or an HP-10C.")
                version ".tar.xz"))
         (sha256
          (base32
-          "01d62r286yfc3rpz714nqdgkl0wk9j0wqkd4ylas1d7r4vmkqshq"))
+          "0pwmcmmrc4zll3fvlxcjmyx5569yzaf1fjfvm5px2rc39qk3nk6k"))
         (modules '((guix build utils)))
         (snippet
          '(begin
