@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016, 2017 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2017, 2018 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017, 2018, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2021, 2022 Remco van 't Veer <remco@remworks.net>
@@ -122,15 +122,21 @@ manage user, group and computer accounts for a domain.")
 (define-public ding-libs
   (package
     (name "ding-libs")
-    (version "0.6.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://releases.pagure.org/SSSD/ding-libs/"
-                                  "ding-libs-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1h97mx2jdv4caiz4r7y8rxfsq78fx0k4jjnfp7x2s7xqvqks66d3"))))
+    (version "0.6.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/SSSD/ding-libs")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17x3gj2yrjb6h7ml97xlim310x8s54n238p3ns2bj3mxifqkx0mf"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           '(list "--disable-static")))
+    (native-inputs (list autoconf automake gettext-minimal libtool pkg-config))
     (home-page "https://pagure.io/SSSD/ding-libs/")
     (synopsis "Libraries for SSSD")
     (description

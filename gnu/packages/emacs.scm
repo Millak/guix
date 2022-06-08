@@ -323,8 +323,8 @@ languages.")
     (license license:gpl3+)))
 
 (define-public emacs-next
-  (let ((commit "38d87c43c2ad727406dcfe316aac5e24e202c251")
-        (revision "0"))
+  (let ((commit "0a5477b448e6b62bcedc1803e531ec7686eea48d")
+        (revision "1"))
     (package
       (inherit emacs)
       (name "emacs-next")
@@ -339,7 +339,7 @@ languages.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0h206asgaqfzhz36p78n23yj4p7kbr6a1f0j0njzxf0ypqrmw9yr"))))
+           "0dqmrawkvbypxp8gcnspnhhmfamzp3l62gfgp1pw2l6svz58v991"))))
       (native-inputs
        (modify-inputs (package-native-inputs emacs)
          (prepend autoconf))))))

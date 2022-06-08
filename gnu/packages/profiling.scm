@@ -50,14 +50,14 @@
 (define-public papi
   (package
     (name "papi")
-    (version "6.0.0")
+    (version "6.0.0.1")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "http://icl.utk.edu/projects/papi/downloads/papi-"
+       (uri (string-append "https://icl.utk.edu/projects/papi/downloads/papi-"
                            version ".tar.gz"))
-       (sha256 (base32
-                "0pq5nhy105fpnk78k6l9ygsfr5akn6l0ck1hbf2c419lmsfp0hil"))
+       (sha256
+        (base32 "0zr83v51lp4ijgk997dz9fpph48prlsbml26dvb223avqr8fvmrw"))
        (modules '((guix build utils)))
        (snippet
         '(begin

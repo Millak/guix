@@ -62,6 +62,7 @@
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2022 Rene Saavedra <nanuui@protonmail.com>
 
 ;;;
 ;;; This file is part of GNU Guix.
@@ -111,6 +112,7 @@
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages gperf)
@@ -9226,3 +9228,41 @@ older system-wide @file{/sys} interface.")
      "This tool turns @command{ldd} into a tree and explains how shared
 libraries are found or why they cannot be located.")
     (license license:expat)))
+
+(define-public touchegg
+  (package
+    (name "touchegg")
+    (version "2.0.14")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JoseExposito/touchegg")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0shvslz0c8nqx5f988z55qjc9xw0in9rb7b19r6vr1f7cdkqb6yr"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f ; No tests exist
+       #:configure-flags
+       (list "-DUSE_SYSTEMD=OFF"))) ; No systemd
+    (native-inputs
+     (list
+      pkg-config))
+    (inputs
+     (list
+      cairo
+      gtk+
+      libgudev
+      libinput
+      libxrandr
+      libxtst
+      pugixml))
+    (home-page "https://github.com/JoseExposito/touchegg")
+    (synopsis "Multitouch gesture recognizer")
+    (description
+     "Touchégg is an application that runs in the background and transform the
+gestures you make on your touchpad or touchscreen into visible actions in your
+desktop.")
+    (license license:gpl3+)))

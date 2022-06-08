@@ -20,9 +20,10 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu services messaging)
-  #:use-module (gnu packages messaging)
   #:use-module (gnu packages admin)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages irc)
+  #:use-module (gnu packages messaging)
   #:use-module (gnu packages tls)
   #:use-module (gnu services)
   #:use-module (gnu services shepherd)
@@ -829,11 +830,14 @@ string, you could instantiate a prosody service like this:
                        (file-append bitlbee "/sbin/bitlbee")
                        #:name "bitlbee"
                        #:preserved-environment-variables
-                       '("PURPLE_PLUGIN_PATH")
+                       '("PURPLE_PLUGIN_PATH" "GUIX_LOCPATH" "LC_ALL")
                        #:mappings (list (file-system-mapping
                                          (source "/var/lib/bitlbee")
                                          (target source)
                                          (writable? #t))
+                                        (file-system-mapping
+                                         (source "/run/current-system/locale")
+                                         (target source))
                                         (file-system-mapping
                                          (source conf)
                                          (target conf)))
@@ -867,7 +871,8 @@ string, you could instantiate a prosody service like this:
                               ;; Allow 'bitlbee-purple' to use libpurple plugins.
                               #:environment-variables
                               (list (string-append "PURPLE_PLUGIN_PATH="
-                                                   #$plugins "/lib/purple-2")))
+                                                   #$plugins "/lib/purple-2")
+                                    "GUIX_LOCPATH=/run/current-system/locale"))
 
                              (make-forkexec-constructor/container
                               (list #$(file-append bitlbee "/sbin/bitlbee")

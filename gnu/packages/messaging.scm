@@ -34,6 +34,7 @@
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
+;;; Copyright © 2022 Jack Hill <jackhill@jackhill.us>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2063,45 +2064,10 @@ is also scriptable and extensible via Guile.")
     (home-page "https://www.gnu.org/software/freetalk/")
     (license license:gpl3+)))
 
-(define-public libmesode
-  (package
-    (name "libmesode")
-    (version "0.10.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/profanity-im/libmesode")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1bxnkhrypgv41qyy1n545kcggmlw1hvxnhwihijhhcf2pxd2s654"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:configure-flags (list "--disable-static")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-make
-           (lambda _
-             (substitute* "Makefile.am"
-               (("'\\^xmpp_'") "'.'"))
-             #t)))))
-    (inputs
-     (list expat openssl))
-    (native-inputs
-     (list autoconf automake libtool pkg-config))
-    (synopsis "C library for writing XMPP clients")
-    (description "Libmesode is a fork of libstrophe for use with Profanity
-XMPP Client.  In particular, libmesode provides extra TLS functionality such as
-manual SSL certificate verification.")
-    (home-page "https://github.com/profanity/libmesode")
-    ;; Dual-licensed.
-    (license (list license:gpl3+ license:x11))))
-
 (define-public libstrophe
   (package
     (name "libstrophe")
-    (version "0.10.1")
+    (version "0.12.0")
     (source
      (origin
        (method git-fetch)
@@ -2110,17 +2076,23 @@ manual SSL certificate verification.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11d341avsfr0z4lq15cy5dkmff6qpy91wkgzdpfdy31l27pa1g79"))))
+        (base32 "1apply301lxyjax2677bd5mc0a3233nm5qb7fiqpawq2n7vh17v0"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags (list "--disable-static")
+     (list #:configure-flags '(list "--disable-static")
        #:phases
-       (modify-phases %standard-phases
+       #~(modify-phases %standard-phases
          (add-after 'unpack 'patch-make
            (lambda _
              (substitute* "Makefile.am"
                (("'\\^xmpp_'") "'.'"))
-             #t)))))
+             #t))
+         (add-after 'install-licence-files 'install-extra-licence-files
+           (lambda _
+            (let ((license-directory (string-append #$output
+                                                    "/share/doc/"
+                                                    #$name "-" #$version "/")))
+              (install-file "MIT-LICENSE.txt" license-directory)))))))
     (inputs
      (list expat openssl))
     (native-inputs
@@ -2129,23 +2101,23 @@ manual SSL certificate verification.")
     (description "Libstrophe is a minimal XMPP library written in C.  It has
 almost no external dependencies, only an XML parsing library (expat or libxml
 are both supported).")
-    (home-page "http://strophe.im/libstrophe")
+    (home-page "https://strophe.im/libstrophe/")
     ;; Dual-licensed.
     (license (list license:gpl3+ license:x11))))
 
 (define-public profanity
   (package
     (name "profanity")
-    (version "0.11.1")
+    (version "0.12.1")
     (source
      (origin
        (method url-fetch)
        (uri
-        (string-append "https://profanity-im.github.io/profanity-"
+        (string-append "https://profanity-im.github.io/tarballs/profanity-"
                        version ".tar.gz"))
        (sha256
         (base32
-         "0idx0a5g077a57q462w01m0h8i4vyvabzlj87p8527wpqbv4s6vg"))))
+         "0vihmlzxr6n3y6v0vdzzxh5p1i09p0hx6sd1b2pnpcgkgcg4hi73"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:configure-flags
@@ -2167,26 +2139,26 @@ are both supported).")
            libtool
            pkg-config))
     (inputs
-     `(("curl" ,curl)
-       ("expat" ,expat)
-       ("glib" ,glib)
-       ("gpgme" ,gpgme)
-       ("gtk+" ,gtk+-2)
-       ("libgcrypt" ,libgcrypt)
-       ("libmesode" ,libmesode)
-       ("libnotify" ,libnotify)
-       ("libotr" ,libotr)
-       ("libsignal-protocol-c" ,libsignal-protocol-c)
-       ;; ("libxss" ,libxss)
-       ("ncurses" ,ncurses)
-       ("openssl" ,openssl)
-       ("python" ,python-wrapper)
-       ("readline" ,readline)
-       ("sqlite" ,sqlite)))
+     (list curl
+           expat
+           glib
+           gpgme
+           gtk+-2
+           libgcrypt
+           libnotify
+           libotr
+           libsignal-protocol-c
+           libstrophe
+           ncurses
+           openssl
+           python-wrapper
+           readline
+           sqlite))
     (synopsis "Console-based XMPP client")
     (description "Profanity is a console based XMPP client written in C
 using ncurses and libmesode, inspired by Irssi.")
     (home-page "https://profanity-im.github.io")
+    (properties `((release-monitoring-url . ,home-page)))
     (license license:gpl3+)))
 
 (define-public libircclient

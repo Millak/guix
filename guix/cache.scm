@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2022 Simon Tournier <zimon.toutoune@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -17,9 +18,11 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (guix cache)
+  #:use-module ((guix utils) #:select (with-atomic-file-output))
   #:use-module (srfi srfi-19)
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 match)
+  #:use-module ((ice-9 textual-ports) #:select (get-string-all))
   #:export (obsolete?
             delete-file*
             file-expiration-time
@@ -93,7 +96,9 @@ CLEANUP-PERIOD denotes the minimum time between two cache cleanups."
   (define last-expiry-date
     (catch 'system-error
       (lambda ()
-        (call-with-input-file expiry-file read))
+        (or (string->number
+             (call-with-input-file expiry-file get-string-all))
+            0))
       (const 0)))
 
   (when (obsolete? last-expiry-date now cleanup-period)
@@ -103,7 +108,7 @@ CLEANUP-PERIOD denotes the minimum time between two cache cleanups."
                                   #:delete-entry delete-entry)
     (catch 'system-error
       (lambda ()
-        (call-with-output-file expiry-file
+        (with-atomic-file-output expiry-file
           (cute write (time-second now) <>)))
       (lambda args
         ;; ENOENT means CACHE does not exist.

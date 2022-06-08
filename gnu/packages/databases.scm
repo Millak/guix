@@ -729,22 +729,16 @@ autocompletion and syntax highlighting.")
 (define-public mycli
   (package
     (name "mycli")
-    (version "1.24.1")
+    (version "1.25.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "mycli" version))
        (sha256
-        (base32 "0rij9nw20zhqr7cqnkm8daw8b1wdc9zb6ny1ji9qz5557nz9i3bl"))))
+        (base32 "0231v7f6q84mjmi1h0ni3s55m2g8p5d7x5q49bgkxlaz2bc2xwgy"))))
     (build-system python-build-system)
     (arguments
-     '(#:tests? #f                      ; tests expect a running MySQL
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'loosen-requirements
-                    (lambda _
-                      ;; Permit newer versions of sqlparse.
-                      (substitute* "setup.py"
-                        (("<0\\.4\\.0") "<0.5.0")))))))
+     '(#:tests? #f))                    ; tests expect a running MySQL
     (propagated-inputs
      (list python-cli-helpers
            python-click
@@ -1344,6 +1338,13 @@ pictures, sounds, or video.")
                                   "src/loader/CMakeLists.txt")
                      (("\\$\\{PG_PKGLIBDIR\\}")
                       (string-append #$output "/lib")))))
+               (add-after 'unpack 'remove-kernel-version
+                 ;; Do not embed the running kernel version for reproducible
+                 ;; builds
+                 (lambda _
+                   (substitute* "src/config.h.in"
+                     (("BUILD_OS_VERSION ..CMAKE_SYSTEM_VERSION.")
+                      "BUILD_OS_VERSION \""))))
                ;; Run the tests after install to make it easier to create the
                ;; required PostgreSQL+TimescaleDB filesystem union.
                (delete 'check)
@@ -3212,6 +3213,37 @@ Memory-Mapped Database} (LMDB), a high-performance key-value store.")
          (replace 'bootstrap
            (lambda _
              (invoke "sh" "autogen.sh")))
+         (add-after 'unpack 'avoid-embedding-kernel-and-timestamps
+           ;; For a reproducible build, avoid embedding the kernel version and
+           ;; timestamps.
+           (lambda _
+             (substitute*
+                 (list "bin/makever"
+                       "appsrc/ODS-Polls/make_vad.sh"
+                       "appsrc/ODS-Blog/make_vad.sh"
+                       "appsrc/ODS-Community/make_vad.sh"
+                       "appsrc/ODS-Framework/make_vad.sh"
+                       "appsrc/ODS-Framework/oauth/make_vad.sh"
+                       "appsrc/ODS-WebMail/make_vad.sh"
+                       "appsrc/ODS-Calendar/make_vad.sh"
+                       "appsrc/ODS-Gallery/make_vad.sh"
+                       "appsrc/ODS-Briefcase/make_vad.sh"
+                       "appsrc/ODS-FeedManager/make_vad.sh"
+                       "appsrc/ODS-Bookmark/make_vad.sh"
+                       "appsrc/ODS-Addressbook/make_vad.sh"
+                       "binsrc/dbpedia/make_vad.sh"
+                       "binsrc/samples/demo/make_vad.sh"
+                       "binsrc/samples/demo/mkdoc.sh"
+                       "binsrc/samples/sparql_demo/make_vad.sh"
+                       "binsrc/bpel/make_vad.sh"
+                       "binsrc/fct/make_vad.sh"
+                       "binsrc/rdf_mappers/make_vad.sh"
+                       "binsrc/isparql/make_vad.sh"
+                       "binsrc/conductor/mkvad.sh")
+               (("^UNAME_SYSTEM=.*") "UNAME_SYSTEM=unknown\n")
+               (("^UNAME_RELEASE=.*") "UNAME_RELEASE=unknown\n")
+               (("^PACKDATE=.*") "PACKDATE=2012-04-18\n")
+               (("^DATE=.*") "DATE=2012-04-18\n"))))
          ;; Even with "--enable-static=no", "libvirtuoso-t.a" is left in
          ;; the build output.  The following phase removes it.
          (add-after 'install 'remove-static-libs

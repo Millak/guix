@@ -46,6 +46,7 @@
 ;;; Copyright © 2021 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2022 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2022 Justin Veilleux <terramorpha@cock.li>
+;;; Copyright © 2022 Thiago Jung Bauermann <bauermann@kolabnow.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -555,7 +556,7 @@ aliasing facilities to work just as they would on normal mail.")
 (define-public mutt
   (package
     (name "mutt")
-    (version "2.2.5")
+    (version "2.2.6")
     (source (origin
              (method url-fetch)
              (uri (list
@@ -565,7 +566,7 @@ aliasing facilities to work just as they would on normal mail.")
                                    version ".tar.gz")))
              (sha256
               (base32
-               "0ivyfld4a4sfzsdiaajqiarvfx4i85g1smbb2b5dqjkrb48pi2zz"))
+               "1lw8111wbsw4hkvrlfsd2cf2l1j25vqwbzys07z0ding2wsxk8pz"))
              (patches (search-patches "mutt-store-references.patch"))))
     (build-system gnu-build-system)
     (inputs
@@ -1157,7 +1158,7 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
 (define-public mu
   (package
     (name "mu")
-    (version "1.6.10")
+    (version "1.6.11")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/djcb/mu/releases/"
@@ -1165,7 +1166,7 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
                                   "mu-" version ".tar.xz"))
               (sha256
                (base32
-                "1dh0x4lqnjflb0k8fybr5clqjxv35scf055g1590pr5znam29hhb"))))
+                "13gchks9znyw0axw1wlks7f7h4442rfagmj7kx0jm3qhvi0b5sk0"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)
@@ -2887,6 +2888,14 @@ powerful user customization features.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'remove-build-timestamps
+           ;; Avoid embedding timestamps for reproducible build
+           (lambda _
+                  (substitute*
+                      (list
+                       "devtools/bin/configure.sh"
+                       "cf/sh/makeinfo.sh")
+                    (("on `date`") ""))))
          (add-before 'build 'replace-/bin/sh
            (lambda _
              (substitute*
@@ -3943,8 +3952,8 @@ It is a replacement for the @command{urlview} program.")
     (license license:gpl2+)))
 
 (define-public mumi
-  (let ((commit "f5232c49fe8a3b127c96f7b502775f16aebf3033")
-        (revision "7"))
+  (let ((commit "9b28ec7d152623692877bcb767e5c654e59e57ed")
+        (revision "8"))
     (package
       (name "mumi")
       (version (git-version "0.0.1" revision commit))
@@ -3956,7 +3965,7 @@ It is a replacement for the @command{urlview} program.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1dc4m7l9mmi7lm0cfmyf5yg6bkpirsvmfq347sf1ch1svg5r7y9n"))))
+                  "1njnzqv4h2msfa86qfbvm54vfdwlikwzs4134fcffcf4l86bs9fl"))))
       (build-system gnu-build-system)
       (arguments
        `(#:modules ((guix build gnu-build-system)
@@ -4069,7 +4078,7 @@ Git and exports them in maildir format or to an MDA through a pipe.")
 (define-public public-inbox
   (package
     (name "public-inbox")
-    (version "1.6.1")
+    (version "1.8.0")
     (source
      (origin (method git-fetch)
              (uri (git-reference
@@ -4077,19 +4086,20 @@ Git and exports them in maildir format or to an MDA through a pipe.")
                    (commit (string-append "v" version))))
              (sha256
               (base32
-               "0mlwnp5knr7rk9kv8grlh342wsq2193m22zs83cjn9p7x9r2x5f9"))
+               "0xni1l54v1z3p0zb52807maay0yqabp8jgf5iras5zmhgjyk3swz"))
              (file-name (git-file-name name version))))
     (build-system perl-build-system)
     (arguments
-     '(#:phases
+     '(#:tests? #f
+       #:phases
        (modify-phases %standard-phases
          (add-before 'configure 'qualify-paths
-           (lambda _
+           (lambda* (#:key inputs #:allow-other-keys)
              ;; Use absolute paths for 'xapian-compact'.
-             (let ((xapian-compact (which "xapian-compact")))
-               (substitute* "script/public-inbox-compact"
-                 (("xapian-compact") xapian-compact)))
-             #t))
+             (substitute* "lib/PublicInbox/Xapcmd.pm"
+               (("'xapian-compact'")
+                (format #f "'~a'" (search-input-file inputs
+                                                     "/bin/xapian-compact"))))))
          (add-before 'check 'pre-check
            (lambda _
              (substitute* "t/spawn.t"
@@ -4100,8 +4110,7 @@ Git and exports them in maildir format or to an MDA through a pipe.")
              ;; XXX: This test fails due to zombie process is not reaped by
              ;; the builder.
              (substitute* "t/httpd-unix.t"
-               (("^SKIP: \\{") "SKIP: { skip('Guix');"))
-             #t))
+               (("^SKIP: \\{") "SKIP: { skip('Guix');"))))
          (add-after 'install 'wrap-programs
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
@@ -4115,15 +4124,16 @@ Git and exports them in maildir format or to an MDA through a pipe.")
                     ;; 'git' is invoked in various files of the PublicInbox
                     ;; perl module.
                     `("PATH" ":" prefix
-                      (,(dirname (search-input-file inputs "/bin/git"))))))
-                (find-files (string-append out "/bin"))))
-             #t)))))
+                      (,(dirname (search-input-file inputs "/bin/git"))
+                       ,(dirname (search-input-file inputs "/bin/curl"))))))
+                (find-files (string-append out "/bin")))))))))
     (native-inputs
-     (list xapian
-           ;; For testing.
+     (list ;; For testing.
            lsof openssl))
     (inputs
-     (list git
+     (list bash-minimal
+           curl
+           git
            perl-dbd-sqlite
            perl-dbi
            perl-email-address-xs
@@ -4135,6 +4145,7 @@ Git and exports them in maildir format or to an MDA through a pipe.")
            perl-plack-middleware-reverseproxy
            perl-plack
            perl-search-xapian
+           perl-socket-msghdr
            perl-timedate
            perl-uri-escape
            perl-inline-c
@@ -4145,7 +4156,8 @@ Git and exports them in maildir format or to an MDA through a pipe.")
            ;; ("highlight" ,highlight)
            ;; For testing.
            perl-ipc-run
-           perl-xml-feed))
+           perl-xml-feed
+           xapian))
     (home-page "https://public-inbox.org/README.html")
     (synopsis "Archive mailing lists in Git repositories")
     (description

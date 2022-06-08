@@ -7,6 +7,7 @@ the distro-specific stuff and removes the hard-coded FHS directory names
 to make sure Clang also works on foreign distros.
 
 diff --git a/clang/lib/Driver/Distro.cpp b/clang/lib/Driver/Distro.cpp
+index 5ac38c34d112..2a704b418fdc 100644
 --- a/clang/lib/Driver/Distro.cpp
 +++ b/clang/lib/Driver/Distro.cpp
 @@ -96,6 +96,10 @@ static Distro::DistroType DetectLsbRelease(llvm::vfs::FileSystem &VFS) {
@@ -21,6 +22,7 @@ diff --git a/clang/lib/Driver/Distro.cpp b/clang/lib/Driver/Distro.cpp
  
    // Newer freedesktop.org's compilant systemd-based systems
 diff --git a/clang/lib/Driver/ToolChains/Cuda.cpp b/clang/lib/Driver/ToolChains/Cuda.cpp
+index 4a9f6d4c4e3e..0ae13ebebd27 100644
 --- a/clang/lib/Driver/ToolChains/Cuda.cpp
 +++ b/clang/lib/Driver/ToolChains/Cuda.cpp
 @@ -117,6 +117,9 @@ CudaInstallationDetector::CudaInstallationDetector(
@@ -34,6 +36,7 @@ diff --git a/clang/lib/Driver/ToolChains/Cuda.cpp b/clang/lib/Driver/ToolChains/
      std::string Path;
      bool StrictChecking;
 diff --git a/clang/lib/Driver/ToolChains/Linux.cpp b/clang/lib/Driver/ToolChains/Linux.cpp
+index 83cb41159de7..6b920e33d1ef 100644
 --- a/clang/lib/Driver/ToolChains/Linux.cpp
 +++ b/clang/lib/Driver/ToolChains/Linux.cpp
 @@ -186,6 +186,10 @@ Linux::Linux(const Driver &D, const llvm::Triple &Triple, const ArgList &Args)
@@ -72,21 +75,19 @@ diff --git a/clang/lib/Driver/ToolChains/Linux.cpp b/clang/lib/Driver/ToolChains
    Generic_GCC::AddMultiarchPaths(D, SysRoot, OSLibDir, Paths);
  
 +#if 0
-   // Similar to the logic for GCC above, if we are currently running Clang
-   // inside of the requested system root, add its parent library path to those
-   // searched.
-@@ -313,9 +321,14 @@ Linux::Linux(const Driver &D, const llvm::Triple &Triple, const ArgList &Args)
-     if (OSLibDir != "lib")
-       addPathIfExists(D, D.Dir + "/../" + OSLibDir, Paths);
-   }
+   // The deprecated -DLLVM_ENABLE_PROJECTS=libcxx configuration installs
+   // libc++.so in D.Dir+"/../lib/". Detect this path.
+   // TODO Remove once LLVM_ENABLE_PROJECTS=libcxx is unsupported.
+@@ -310,6 +318,14 @@ Linux::Linux(const Driver &D, const llvm::Triple &Triple, const ArgList &Args)
+ 
+   addPathIfExists(D, SysRoot + "/lib", Paths);
+   addPathIfExists(D, SysRoot + "/usr/lib", Paths);
 +#endif
 +
 +  // Add libc's lib/ directory to the search path, so that crt1.o, crti.o,
 +  // and friends can be found.
 +  addPathIfExists(D, "@GLIBC_LIBDIR@", Paths);
- 
--  addPathIfExists(D, SysRoot + "/lib", Paths);
--  addPathIfExists(D, SysRoot + "/usr/lib", Paths);
++
 +  // Add GCC's lib/ directory so libstdc++.so can be found.
 +  addPathIfExists(D, GCCInstallation.getParentLibPath(), Paths);
  }

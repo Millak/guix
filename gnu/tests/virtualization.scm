@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 Christopher Baines <mail@cbaines.net>
-;;; Copyright © 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2020-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;;
@@ -31,8 +31,8 @@
   #:use-module (gnu services dbus)
   #:use-module (gnu services networking)
   #:use-module (gnu services virtualization)
-  #:use-module (gnu packages virtualization)
   #:use-module (gnu packages ssh)
+  #:use-module (gnu packages virtualization)
   #:use-module (guix gexp)
   #:use-module (guix records)
   #:use-module (guix store)
@@ -151,8 +151,8 @@
      (operating-system os)
      (memory-size (* 1024 3))))
 
-  (define run-uname-over-ssh
-    ;; Program that runs 'uname' over SSH and prints the result on standard
+  (define (run-command-over-ssh . command)
+    ;; Program that runs COMMAND over SSH and prints the result on standard
     ;; output.
     (let ()
       (define run
@@ -173,12 +173,12 @@
                    (userauth-password! session "")
                    (display
                     (get-string-all
-                     (open-remote-input-pipe* session "uname" "-on"))))
+                     (open-remote-input-pipe* session #$@command))))
                   (status
                    (error "could not connect to childhurd over SSH"
                           session status)))))))
 
-      (program-file "run-uname-over-ssh" run)))
+      (program-file "run-command-over-ssh" run)))
 
   (define test
     (with-imported-modules '((gnu build marionette))
@@ -242,8 +242,26 @@
                 (use-modules (ice-9 popen))
 
                 (get-string-all
-                 (open-input-pipe #$run-uname-over-ssh)))
+                 (open-input-pipe #$(run-command-over-ssh "uname" "-on"))))
              marionette))
+
+          (test-assert "guix-daemon up and running"
+            (let ((drv (marionette-eval
+                        '(begin
+                           (use-modules (ice-9 popen))
+
+                           (get-string-all
+                            (open-input-pipe
+                             #$(run-command-over-ssh "guix" "build" "coreutils"
+                                                     "--no-grafts" "-d"))))
+                        marionette)))
+              ;; We cannot compare the .drv with (raw-derivation-file
+              ;; coreutils) on the host: they may differ due to fixed-output
+              ;; derivations and changes introduced compared to the 'guix'
+              ;; package snapshot.
+              (and (string-suffix? ".drv"
+                                   (pk 'drv (string-trim-right drv)))
+                   drv)))
 
           (test-end))))
 

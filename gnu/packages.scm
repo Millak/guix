@@ -4,6 +4,7 @@
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016, 2017 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2016 Mathieu Lirzin <mthl@gnu.org>
+;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -39,11 +40,11 @@
   #:use-module (ice-9 binary-ports)
   #:autoload   (system base compile) (compile)
   #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
   #:use-module (srfi srfi-39)
+  #:use-module (srfi srfi-71)
   #:export (search-patch
             search-patches
             search-auxiliary-file
@@ -65,6 +66,7 @@
             specification->package+output
             specification->location
             specifications->manifest
+            specifications->packages
 
             package-unique-version-prefix
 
@@ -141,13 +143,10 @@ flags."
   ;; Search path for package modules.  Each item must be either a directory
   ;; name or a pair whose car is a directory and whose cdr is a sub-directory
   ;; to narrow the search.
-  (let*-values (((not-colon)
-                 (char-set-complement (char-set #\:)))
-                ((environment)
-                 (string-tokenize (or (getenv "GUIX_PACKAGE_PATH") "")
-                                  not-colon))
-                ((channels-scm channels-go)
-                 (package-path-entries)))
+  (let* ((not-colon   (char-set-complement (char-set #\:)))
+         (environment (string-tokenize (or (getenv "GUIX_PACKAGE_PATH") "")
+                                       not-colon))
+         (channels-scm channels-go (package-path-entries)))
     ;; Automatically add channels and items from $GUIX_PACKAGE_PATH to Guile's
     ;; search path.  For historical reasons, $GUIX_PACKAGE_PATH goes to the
     ;; front; channels go to the back so that they don't override Guix' own
@@ -500,13 +499,13 @@ return its return value."
   "Return a package matching SPEC.  SPEC may be a package name, or a package
 name followed by an at-sign and a version number.  If the version number is not
 present, return the preferred newest version."
-  (let-values (((name version) (package-name->name+version spec)))
+  (let ((name version (package-name->name+version spec)))
     (%find-package spec name version)))
 
 (define (specification->location spec)
   "Return the location of the highest-numbered package matching SPEC, a
 specification such as \"guile@2\" or \"emacs\"."
-  (let-values (((name version) (package-name->name+version spec)))
+  (let ((name version (package-name->name+version spec)))
     (match (find-package-locations name version)
       (()
        (if version
@@ -541,8 +540,8 @@ version; if SPEC does not specify an output, return OUTPUT.
 
 When OUTPUT is false and SPEC does not specify any output, return #f as the
 output."
-  (let-values (((name version sub-drv)
-                (package-specification->name+version+output spec output)))
+  (let ((name version sub-drv
+              (package-specification->name+version+output spec output)))
     (match (%find-package spec name version)
       (#f
        (values #f #f))
@@ -554,13 +553,20 @@ output."
                   (package-full-name package)
                   sub-drv))))))
 
+(define (specifications->packages specs)
+  "Given SPECS, a list of specifications such as \"emacs@25.2\" or
+\"guile:debug\", return a list of package/output tuples."
+  ;; This procedure exists so users of 'guix home' don't have to write out the
+  ;; (map (compose list specification->package+output)... boilerplate.
+  (map (compose list specification->package+output) specs))
+
 (define (specifications->manifest specs)
   "Given SPECS, a list of specifications such as \"emacs@25.2\" or
 \"guile:debug\", return a profile manifest."
   ;; This procedure exists mostly so users of 'guix package -m' don't have to
   ;; fiddle with multiple-value returns.
   (packages->manifest
-   (map (compose list specification->package+output) specs)))
+   (specifications->packages specs)))
 
 (define (package-unique-version-prefix name version)
   "Search among all the versions of package NAME that are available, and

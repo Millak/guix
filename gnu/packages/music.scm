@@ -47,6 +47,7 @@
 ;;; Copyright © 2022 Sughosha <sughosha@disroot.org>
 ;;; Copyright © 2022 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -179,6 +180,7 @@
   #:use-module (gnu packages vim)       ;for 'xxd'
   #:use-module (gnu packages web)
   #:use-module (gnu packages webkit)
+  #:use-module (gnu packages wm)
   #:use-module (gnu packages wxwidgets)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml)
@@ -6738,7 +6740,9 @@ streaming audio server.")
            gst-plugins-ugly
            gstreamer
            gtk+
+           gtksourceview ; undo, redo, multiline text fields
            hicolor-icon-theme
+           keybinder-3.0 ; keybindings outside of GNOME
            librsvg
            libsoup-minimal-2
            python
@@ -6747,9 +6751,11 @@ streaming audio server.")
            python-feedparser
            python-gst
            python-iniconfig
+           python-musicbrainzngs
            python-mutagen
            python-pycairo
            python-pygobject
+           python-pyinotify
            python-pytest
            python-sgmllib3k
            python-toml))

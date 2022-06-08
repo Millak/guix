@@ -1131,14 +1131,14 @@ tools, and more.")
 (define-public os-prober
   (package
     (name "os-prober")
-    (version "1.79")
+    (version "1.80")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://debian/pool/main/o/os-prober/os-prober_"
                            version ".tar.xz"))
        (sha256
-        (base32 "1vhhk0bl2j4910513gn5h3z8nsaavyv3c8764bim2klc0xyk3rmb"))))
+        (base32 "13z3rshgz5xj0328a80wavdimjw925yha9s1ks398sq0kn5w6qw0"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((guix build gnu-build-system)
@@ -1155,8 +1155,7 @@ tools, and more.")
              (substitute* (find-files ".")
                (("/usr") (assoc-ref outputs "out")))
              (substitute* (find-files "." "50mounted-tests$")
-               (("mkdir") "mkdir -p"))
-             #t))
+               (("mkdir") "mkdir -p"))))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (define (find-files-non-recursive directory)
@@ -1187,8 +1186,7 @@ tools, and more.")
                    (append (find-files-non-recursive (string-append directory "/common"))
                            (find-files-non-recursive (string-append directory "/x86")))))
                 (list "os-probes" "os-probes/mounted" "os-probes/init"
-                      "linux-boot-probes" "linux-boot-probes/mounted"))
-               #t))))))
+                      "linux-boot-probes" "linux-boot-probes/mounted"))))))))
     (home-page "https://joeyh.name/code/os-prober")
     (synopsis "Detect other operating systems")
     (description "os-prober probes disks on the system for other operating

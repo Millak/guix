@@ -4161,7 +4161,7 @@ on hub/switched networks.  It is based on @acronym{ARP} packets, it will send
 (define-public putty
   (package
     (name "putty")
-    (version "0.76")
+    (version "0.77")
     (source
      (origin
        (method url-fetch)
@@ -4170,18 +4170,26 @@ on hub/switched networks.  It is based on @acronym{ARP} packets, it will send
                   (string-append "http://www.putty.be/" version
                                  "/putty-" version ".tar.gz")))
        (sha256
-        (base32 "0gvi8phabszqksj2by5jrjmshm7bpirhgavz0dqyz1xaimxdjz2l"))))
-    (build-system gnu-build-system)
+        (base32 "1rgabc447a5aa9h16krpg3x78vh5jf4l6hkbqzr4bz9qabs7d6j1"))))
+    (build-system cmake-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (add-before 'configure 'chdir
-           (lambda _
-             (chdir "unix"))))))
+         (replace 'check
+           ;; As ‘documented’ in ./Buildscr and the 0.76 Makefile.in.
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (setenv "PUTTY_TESTCRYPT" "./testcrypt")
+               (invoke (string-append "../putty-" ,version
+                                      "/test/cryptsuite.py"))))))))
     (inputs
      (list gtk+))
     (native-inputs
-     (list pkg-config python)) ; for tests
+     (list perl
+           pkg-config
+
+           ;; For tests.
+           python))
     (synopsis "Graphical @acronym{SSH, Secure SHell} and telnet client")
     (description "PuTTY is a graphical text terminal client.  It supports
 @acronym{SSH, Secure SHell}, telnet, and raw socket connections with good

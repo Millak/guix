@@ -187,6 +187,7 @@
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages libidn)
+  #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages man)
@@ -1515,14 +1516,14 @@ approximate nearest neighbor search with Python bindings.")
 (define-public python-sh
   (package
     (name "python-sh")
-    (version "1.12.14")
+    (version "1.14.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sh" version))
        (sha256
         (base32
-         "1z2hx357xp3v4cv44xmqp7lli3frndqpyfmpbxf7n76h7s1zaaxm"))))
+         "03gyss1rhj4in7pgysg4q0hxp3230whinlpy1532ljs99lrx0ywx"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -2070,6 +2071,30 @@ controller area network (CAN) support for Python developers; providing common
 abstractions to different hardware devices, and a suite of utilities for
 sending and receiving messages on a CAN bus.")
     (license license:lgpl3+)))
+
+(define-public python-canopen
+  (package
+    (name "python-canopen")
+    (version "2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "canopen" version))
+       (sha256
+        (base32 "1nb543wb37kj95v6bhh272lm5gkpi41q3pnsl1fxlyizm2gamj5w"))))
+    (build-system python-build-system)
+    (native-inputs (list python-packaging))
+    (propagated-inputs (list python-can))
+    (home-page "https://github.com/christiansandberg/canopen")
+    (synopsis "CANopen stack implementation")
+    (description
+     "This package provides a Python implementation of the
+@uref{https://www.can-cia.org/canopen/,CANopen standard} for
+@acronym{CANs, controller-area networks}.  The aim of the project is to
+support the most common parts of the CiA 301 standard in a simple
+Pythonic interface.  It is mainly targeted for testing and automation
+tasks rather than a standard compliant master implementation.")
+    (license license:expat)))
 
 (define-public python-caniusepython3
   (package
@@ -3423,6 +3448,42 @@ compare, diff, and patch JSON and JSON-like structures in Python.")
     (description
      "Jsonschema is an implementation of JSON Schema for Python.")
     (license license:expat)))
+
+;;; TODO: Make the default python-jsonschema on core-updates
+(define-public python-jsonschema-next
+  (package
+    (inherit python-jsonschema)
+    (version "4.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jsonschema" version))
+       (sha256
+        (base32 "1z0x22691jva7lwfcfh377jdmlz68zhiawxzl53k631l34k8hvbw"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments python-jsonschema)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            ;; XXX: PEP 517 manual build/install procedures copied from
+            ;; python-isort.
+            (replace 'build
+              (lambda _
+                ;; ZIP does not support timestamps before 1980.
+                (setenv "SOURCE_DATE_EPOCH" "315532800")
+                (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+            (replace 'install
+              (lambda* (#:key outputs #:allow-other-keys)
+                (let ((whl (car (find-files "dist" "\\.whl$"))))
+                  (invoke "pip" "--no-cache-dir" "--no-input"
+                          "install" "--no-deps" "--prefix" #$output whl))))))))
+    (native-inputs (list python-pypa-build
+                         python-setuptools-scm
+                         python-twisted))
+    (propagated-inputs
+     (list python-attrs
+           python-importlib-metadata
+           python-pyrsistent
+           python-typing-extensions))))
 
 (define-public python-schema
   (package
@@ -5601,24 +5662,27 @@ readable format.")
 (define-public python-pygit2
   (package
     (name "python-pygit2")
-    (version "1.9.1")
+    (version "1.9.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pygit2" version))
        (sha256
-        (base32 "1jdr6z1il03nifwgpcdf95w6xzzbfzdkcqq5dcqjaa0rnv1pjr7g"))))
+        (base32 "068bwhirigbh2435abyv4shdxgxvyfqf4dxfmhd4hihivwrl9290"))))
     (build-system python-build-system)
     (arguments
-     '(#:tests? #f))            ; tests don't run correctly in our environment
+     `(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (invoke "pytest" "-v")))))))
     (propagated-inputs
      (list python-cached-property python-cffi libgit2))
     (native-inputs
      (list python-pytest))
     (home-page "https://github.com/libgit2/pygit2")
     (synopsis "Python bindings for libgit2")
-    (description "Pygit2 is a set of Python bindings to the libgit2 shared
-library, libgit2 implements Git plumbing.")
+    (description "Pygit2 is a set of Python bindings to the libgit2 shared library.")
     ;; GPL2.0 only, with linking exception.
     (license license:gpl2)))
 
@@ -6407,21 +6471,22 @@ a simple netcat replacement with chaining support.")
 (define-public python-pycodestyle
   (package
     (name "python-pycodestyle")
-    (version "2.7.0")
+    (version "2.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pycodestyle" version))
        (sha256
         (base32
-         "1vqwmzmjdv331kmfq3q9j3as2x7r2r49lf83r9w4147pdg8c32f3"))))
+         "0zxyrg8029lzjhima6l5nk6y0z6lm5wfp9qchz3s33j3xx3mipgd"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda _
-             (invoke "pytest" "-vv"))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-vv")))))))
     (native-inputs
      (list python-pytest))
     (home-page "https://pycodestyle.readthedocs.io/")
@@ -10015,17 +10080,16 @@ PEP 8.")
 (define-public python-pep8-naming
   (package
     (name "python-pep8-naming")
-    (version "0.12.0")
+    (version "0.13.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pep8-naming" version))
        (sha256
         (base32
-         "04kyh9hkpyc8jzj16d1kkk29b5n8miqdvbs0zm035n1z5z5kx6hz"))))
+         "1dc0b6xw1cxp01v9zsv4ryk49rfs1lngfpvzsixgp8b7z3ffcf4z"))))
     (build-system python-build-system)
-    (propagated-inputs
-     (list python-flake8 python-flake8-polyfill))
+    (propagated-inputs (list python-flake8))
     (home-page "https://github.com/PyCQA/pep8-naming")
     (synopsis "Check PEP-8 naming conventions")
     (description
@@ -10101,14 +10165,14 @@ file (e.g. @file{PKG-INFO}).")
 (define-public python-pyflakes
   (package
     (name "python-pyflakes")
-    (version "2.3.1")
+    (version "2.4.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "pyflakes" version))
         (sha256
          (base32
-          "1ny10364ciqh4ripasj4zzv4145l21l3s85m3qlrvfq5pk58xg7m"))))
+          "0k5jn8jpxni264wxf6cc3xcd1qckc0pww30bsd77mwzdf8l5ra05"))))
     (build-system python-build-system)
     (home-page "https://github.com/PyCQA/pyflakes")
     (synopsis "Passive checker of Python programs")
@@ -10152,23 +10216,26 @@ cyclomatic complexity of Python source code.")
 (define-public python-flake8
   (package
     (name "python-flake8")
-    (version "3.9.1")
+    (version "4.0.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "flake8" version))
               (sha256
                (base32
-                "0y732h02n2aih8gzyfj4bbhg4jgahyv84mjwfindk2g6w45rka0s"))))
+                "03c7mnk34wfz7a0m5zq0273y94awz69fy5iww8alh4a4v96h6vl0"))))
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
                   (replace 'check
-                    (lambda* (#:key inputs outputs #:allow-other-keys)
-                      (add-installed-pythonpath inputs outputs)
-                      (invoke "pytest" "-v"))))))
-    (propagated-inputs (list python-pycodestyle python-entrypoints
-                             python-pyflakes python-mccabe))
-    (native-inputs (list python-mock python-pytest))
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (invoke "pytest" "-v")))))))
+    (propagated-inputs
+     (list python-entrypoints
+           python-mccabe
+           python-pycodestyle
+           python-pyflakes))
+    (native-inputs (list python-pytest))
     (home-page "https://gitlab.com/pycqa/flake8")
     (synopsis "The modular source code checker: pep8, pyflakes and co")
     (description
@@ -10279,40 +10346,6 @@ correct string literal concatenation.
 It looks for style problems like implicitly concatenated string literals on
 the same line (which can be introduced by the code formatting tool Black), or
 unnecessary plus operators for explicit string literal concatenation.")
-    (license license:expat)))
-
-(define-public python-flake8-polyfill
-  (package
-    (name "python-flake8-polyfill")
-    (version "1.0.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "flake8-polyfill" version))
-       (sha256
-        (base32
-         "1nlf1mkqw856vi6782qcglqhaacb23khk9wkcgn55npnjxshhjz4"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             ;; Be compatible with Pytest 4:
-             ;; https://gitlab.com/pycqa/flake8-polyfill/merge_requests/7
-             (substitute* "setup.cfg"
-               (("\\[pytest\\]")
-                "[tool:pytest]"))
-             (invoke "py.test" "-v"))))))
-    (propagated-inputs
-     (list python-flake8))
-    (native-inputs
-     (list python-mock python-pep8 python-pycodestyle python-pytest))
-    (home-page "https://gitlab.com/pycqa/flake8-polyfill")
-    (synopsis "Polyfill package for Flake8 plugins")
-    (description
-     "This package that provides some compatibility helpers for Flake8
-plugins that intend to support Flake8 2.x and 3.x simultaneously.")
     (license license:expat)))
 
 (define-public python-flake8-print
@@ -10996,13 +11029,13 @@ third-party code.")
 (define-public python-msgpack
   (package
     (name "python-msgpack")
-    (version "1.0.3")
+    (version "1.0.4")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "msgpack" version))
               (sha256
                (base32
-                "07m84yisf8m6gr68ip9v6vzxax7kqbn8qxg7ir18clk1jgxwgzai"))))
+                "0pqzy1zclyhd42gfibhkcqymbspy5a6v421g87mh40h3iz0nkn7m"))))
     (build-system python-build-system)
     (arguments
      `(#:modules ((guix build utils)
@@ -12427,6 +12460,13 @@ Python.")
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'set-version
+                    ;; for reproducible builds, otherwise python-debian
+                    ;; generates a _version.py including the date
+                    (lambda _
+                      (copy-file "lib/debian/_version.py.in" "lib/debian/_version.py")
+                      (substitute* "lib/debian/_version.py"
+                        (("__CHANGELOG_VERSION__") ,version))))
                   (add-after 'unpack 'remove-debian-specific-tests
                     ;; python-apt, apt and dpkg are not yet available in guix,
                     ;; and these tests heavily depend on them.
@@ -13498,17 +13538,6 @@ for atomic file system operations.")
     (home-page "https://github.com/untitaker/python-atomicwrites")
     (license license:expat)))
 
-(define-public python-atomicwrites-1.4
-  (package
-    (inherit python-atomicwrites)
-    (version "1.4.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "atomicwrites" version))
-              (sha256
-               (base32
-                "0yla2svfhfqrcj8qbyqzx7wi4jy0dwcxvlkg0k3zjd54s5m3jw5f"))))))
-
 (define-public python-qstylizer
   (package
     (name "python-qstylizer")
@@ -13861,6 +13890,25 @@ to the Python ecosystem.")
     (description
      "Promises/A+ implementation for Python")
     (license license:expat)))
+
+(define-public python-progress
+  (package
+    (name "python-progress")
+    (version "1.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "progress" version))
+       (sha256
+        (base32 "1k9lpb7lqr6mywpnqcz71y6qny54xlgprdp327za2gy0nnc6xj69"))))
+    (build-system python-build-system)
+    (home-page "http://github.com/verigak/progress/")
+    (synopsis "Progress reporting bars for Python")
+    (description "This Python package provides progress reporting for visual
+of progress of long running operations.  There are multiple choices of
+progress bars and spinners, with customizable options, such as width, fill
+character, and suffix.")
+    (license license:isc)))
 
 (define-public python-progressbar2
   (package
@@ -15495,20 +15543,33 @@ respectively.")
 (define-public python-rope
   (package
     (name "python-rope")
-    (version "0.19.0")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "rope" version))
        (sha256
         (base32
-         "1nlhkmsfvn2p1msrmwqnypnvr993alzawnpc1605q7rfad3xgrk4"))))
+         "0bkzwkllxxdxd3w70xiy137lqvnlmmaplsc2ya3s23ss4kq8y10k"))))
     (build-system python-build-system)
+    (arguments
+     (list #:phases
+           `(modify-phases %standard-phases
+              (add-after 'unpack 'disable-broken-test
+                (lambda _
+                  (substitute* "ropetest/contrib/autoimporttest.py"
+                    (("def test_search_module")
+                     "def __notest_search_module")
+                    (("def test_search_submodule")
+                     "def __notest_search_submodule")))))))
+    (native-inputs
+     (list python-pytest-timeout
+           python-pytest))
     (home-page "https://github.com/python-rope/rope")
     (synopsis "Refactoring library for Python")
     (description "Rope is a refactoring library for Python.  It facilitates
 the renaming, moving and extracting of attributes, functions, modules, fields
-and parameters in Python 2 source code.  These refactorings can also be applied
+and parameters in Python source code.  These refactorings can also be applied
 to occurrences in strings and comments.")
     (license license:lgpl3+)))
 
@@ -16078,25 +16139,14 @@ implementation has been adapted, improved, and fixed from Molten.")
 (define-public python-shellingham
   (package
     (name "python-shellingham")
-    (version "1.3.2")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "shellingham" version))
        (sha256
-        (base32 "07kmia2hvd2q7wik89m82hig9mqr2faynvy38vxq5fm0ps11jv2p"))))
+        (base32 "07hpndvcv9mf9hp54b4apzpwzmzfzl8ryaacsfdq4139im2w4ma8"))))
     (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'restore-setup.py
-           ;; setup.py will return in the next release.
-           ;; <https://github.com/sarugaku/shellingham/issues/33>
-           (lambda _
-             (with-output-to-file "setup.py"
-               (lambda _
-                 (display "from setuptools import setup\nsetup()\n")))
-             #t)))))
     (home-page "https://github.com/sarugaku/shellingham")
     (synopsis "Tool to detect surrounding shell")
     (description
@@ -16974,6 +17024,91 @@ as well.")
      @item a number of backing contexts (database, redis, sqlite, a slave device).
      @end itemize")
     (license license:bsd-3)))
+
+(define-public python-exodriver
+  (package
+    (name "python-exodriver")
+    (version "2.6.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/labjack/exodriver")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1ikjz8147p14s814yabdq821y691klnr2yg54zgsymcc97kvwp2q"))))
+    (outputs (list "out"
+                   "doc"))              ;544 KiB of examples
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no test suite
+      #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                           (string-append "PREFIX=" #$output)
+                           "RUN_LDCONFIG=0"
+                           "LINK_SO=1")
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'build
+            (lambda* (#:key make-flags #:allow-other-keys #:rest args)
+              (with-directory-excursion "liblabjackusb"
+                (apply (assoc-ref %standard-phases 'build)
+                       `(,@args #:make-flags ,make-flags)))))
+          (replace 'install
+            (lambda* (#:key make-flags #:allow-other-keys #:rest args)
+              (with-directory-excursion "liblabjackusb"
+                (apply (assoc-ref %standard-phases 'install)
+                       `(,@args #:make-flags ,make-flags)))
+              ;; Install udev rules.
+              (install-file "90-labjack.rules"
+                            (string-append #$output "/lib/udev/rules.d"))
+              ;; Install examples.
+              (let ((doc (string-append #$output:doc "/share/doc/" #$name)))
+                (mkdir-p doc)
+                (copy-recursively "examples"
+                                  (string-append doc "/examples"))))))))
+    (inputs (list libusb))
+    (home-page "https://github.com/labjack/exodriver")
+    (synopsis "USB driver for LabJack data acquisition instruments")
+    (description "This package provides @code{liblabjackusb}, a USB library for low-level
+communication with the U3, U6, UE9, Digit, T4 and T7 LabJack data acquisition
+instruments.  A udev rule is also included to allow unprivileged users to
+communicate with the instruments via USB.")
+    (license license:expat)))           ;see README
+
+(define-public python-labjack
+  (package
+    (name "python-labjack")
+    (version "2.0.4")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "LabJackPython" version))
+              (sha256
+               (base32
+                "013bjqdi05vlbdqprr6kqi8gs4qhqc7rnyp1klw8k6fng77rpdzz"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no test suite
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-liblabjackusb.so
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* (find-files "." "\\.py$")
+                (("ctypes.CDLL\\(\"liblabjackusb.so\"")
+                 (format #f "ctypes.CDLL(~s"
+                         (search-input-file inputs
+                                            "lib/liblabjackusb.so")))))))))
+    ;; exodriver is provided as a regular input, as only its shared object is
+    ;; used, not its Python API.
+    (inputs (list python-exodriver))
+    (home-page "https://labjack.com/support/software/examples/ud/labjackpython")
+    (synopsis "Python library for LabJack U3, U6, UE9 and U12")
+    (description "This Python library allows communicating with the U3, U6,
+UE9 and U12 LabJack data acquisition (DAQ) modules.")
+    (license license:expat)))          ;see setup.py
 
 (define-public python-kivy-garden
   (package
@@ -18909,14 +19044,14 @@ while only declaring the test-specific fields.")
 (define-public python-radon
   (package
     (name "python-radon")
-    (version "4.1.0")
+    (version "5.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "radon" version))
        (sha256
         (base32
-         "0vfxxzbnz5lxfvp0yxp35g6c8qqnnbhi4dm7shkm1d3d4192q22n"))))
+         "1vmf56zsf3paa1jadjcjghiv2kxwiismyayq42ggnqpqwm98f7fb"))))
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -18930,10 +19065,8 @@ while only declaring the test-specific fields.")
                   (replace 'check
                     (lambda _
                       (invoke "python" "radon/tests/run.py"))))))
-    (propagated-inputs
-     (list python-colorama python-flake8-polyfill python-mando))
-    (native-inputs
-     (list python-pytest python-pytest-mock))
+    (propagated-inputs (list python-colorama python-mando))
+    (native-inputs (list python-pytest python-pytest-mock))
     (home-page "https://radon.readthedocs.org/")
     (synopsis "Code Metrics in Python")
     (description "Radon is a Python tool which computes various code metrics.
@@ -19658,41 +19791,6 @@ significantly less space than b-encodings.  This version of rencode is a
 complete rewrite in Cython to attempt to increase the performance over the
 pure Python module.")
    (license license:bsd-3)))
-
-(define-public python-xenon
-  (package
-    (name "python-xenon")
-    (version "0.7.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "xenon" version))
-       (sha256
-        (base32
-         "0nv207ql2wmh9q62503np056c4vf1c1hlsi5cvv5p5kx574k6r2y"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-pyyaml python-radon python-requests python-flake8
-           python-tox))
-    (arguments
-     `(#:tests? #f                      ;test suite not shipped with the PyPI archive
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'patch-test-requirements
-           (lambda _
-             ;; Remove httpretty dependency for tests.
-             (substitute* "setup.py"
-               (("httpretty") ""))
-             #t)))))
-    (home-page "https://xenon.readthedocs.org/")
-    (synopsis "Monitor code metrics for Python on your CI server")
-    (description
-     "Xenon is a monitoring tool based on Radon.  It monitors code complexity.
-Ideally, @code{xenon} is run every time code is committed.  Through command
-line options, various thresholds can be set for the complexity of code.  It
-will fail (i.e.  it will exit with a non-zero exit code) when any of these
-requirements is not met.")
-    (license license:expat)))
 
 (define-public python-pysocks
   (package
@@ -24279,7 +24377,13 @@ with features similar to the @command{wget} utility.")
     (build-system python-build-system)
     (arguments
      ;; No tests
-     `(#:tests? #f))
+     `(#:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'patch-for-pygit2
+                    (lambda _
+                      (substitute* "offlate/systems/git.py"
+                        (("pygit2.remote.RemoteCallbacks")
+                         "pygit2.RemoteCallbacks")))))))
     (propagated-inputs
       (list python-android-stringslib
             python-dateutil
@@ -28211,13 +28315,13 @@ to:
 (define-public nikola
   (package
     (name "nikola")
-    (version "8.1.3")
+    (version "8.2.2")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "Nikola" version))
         (sha256
-          (base32 "1vspzvi4039zgjc93bspqjb384r6c9ksvmidbp8csws2pdbc7sh5"))))
+          (base32 "1h96y4sfypp2fbqxa8xrqch5f7r3srm2ly222k9w2n143h2spx4m"))))
     (build-system python-build-system)
     (propagated-inputs
       (list python-babel
@@ -28253,7 +28357,6 @@ to:
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
-                ;;(add-installed-pythonpath inputs outputs)
                 (invoke "pytest" "tests" "--no-cov"
                         "-k" "not test_compiling_markdown[hilite]")))))))
     (home-page "https://getnikola.com/")
@@ -29314,4 +29417,25 @@ profile.  It supports:
 @end itemize
 
 Currently, Linux is the only platform supported by this library.")
+    (license license:expat)))
+
+(define-public python-musical-scales
+  (package
+    (name "python-musical-scales")
+    (version "1.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "musical-scales" version))
+              (sha256
+               (base32
+                "1ckn8n37i7b65h0i385ycn0w8sg9na0iabz0kmhxxc1wj0hddkw9"))))
+    (build-system python-build-system)
+    (native-inputs (list python-wheel))
+    (home-page "https://github.com/hmillerbakewell/musical-scale")
+    (synopsis "Retrieve a scale based on a given mode and starting note")
+    (description
+     "Retrieve a scale based on a given mode and starting note.
+Information about these scales can be
+@url{https://en.wikipedia.org/wiki/List_of_musical_scales_and_modes, found on
+Wikipedia}.")
     (license license:expat)))

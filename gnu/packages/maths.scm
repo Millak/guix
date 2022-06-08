@@ -1724,7 +1724,18 @@ HDF5 file is encoded according to the HDF File Format Specification.")
         (base32
          "14ddy2xnb6sgp4hiax9v5sv4pr4l4dd4ps76nfha3nrpr1ikhcqm"))))
     (build-system cmake-build-system)
-    (arguments `(#:tests? #f)) ; Tests require googletest *sources*
+    (arguments `(#:tests? #f ; Tests require googletest *sources*
+                 #:phases
+                 (modify-phases %standard-phases
+                   (add-after 'unpack 'set-man-page-date
+                     (lambda _
+                       (substitute* "itpp-config.1.cmake.in"
+                         ((".PACKAGE_DATE.") "2012-04-18"))))
+                   (add-before 'build 'set-force-source-date
+                     ;; for reproducible dates, texlive needs this to respect respect
+                     ;; SOURCE_DATE_EPOCH
+                     (lambda _
+                       (setenv "FORCE_SOURCE_DATE" "1"))))))
     (inputs (list lapack fftw))
     ;; FIXME: Even though the fonts are available dvips complains:
     ;; "Font cmmi10 not found; characters will be left blank."
@@ -3822,14 +3833,14 @@ sparse system of linear equations A x = b using Gaussian elimination.")
 (define-public ruby-asciimath
   (package
     (name "ruby-asciimath")
-    (version "2.0.1")
+    (version "2.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "asciimath" version))
        (sha256
         (base32
-         "1aapydwwkydbwgz07n7ma3a5jy9n3v0shy6q6j8mi4wr3crhx45a"))))
+         "1fy2jrn3gr7cl33qydp3pwyfilcmb4m4z6hfhnvydzg8r3srp36j"))))
     (build-system ruby-build-system)
     (native-inputs
      (list ruby-nokogiri ruby-rspec))

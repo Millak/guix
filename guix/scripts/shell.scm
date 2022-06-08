@@ -410,7 +410,7 @@ concatenates MANIFESTS, a list of expressions."
   (if (null? (manifest-entries manifest))
       (match extra-manifests
         ((one) one)
-        (lst   `(concatenate-manifests ,@extra-manifests)))
+        (lst   `(concatenate-manifests (list ,@extra-manifests))))
       (match (manifest->code manifest
                              #:entry-package-version
                              manifest-entry-version-prefix)

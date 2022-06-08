@@ -837,6 +837,12 @@ and vice versa.")
        `(#:phases
          (modify-phases
              %standard-phases
+           (add-after 'unpack 'remove-build-dates
+             ;; Avoid embedding build date for reproducible builds
+             (lambda _
+               (substitute*
+                   "build.properties"
+                 (("..implementation.date.") ""))))
            (replace 'check
              (lambda* (#:key tests? inputs native-inputs
                        #:allow-other-keys)

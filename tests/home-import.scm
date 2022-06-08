@@ -103,8 +103,8 @@ corresponding file."
      ('gnu 'services))
     ('home-environment
      ('packages
-      ('map ('compose 'list 'specification->package+output)
-            ('list "guile@2.0.9" "gcc:lib" "glibc@2.19")))
+      ('specifications->packages
+       ('list "guile@2.0.9" "gcc:lib" "glibc@2.19")))
      ('services
       ('list)))))
 
@@ -132,8 +132,7 @@ corresponding file."
      ('gnu 'services))
     ('home-environment
      ('packages
-      ('map ('compose 'list 'specification->package+output)
-            ('list)))
+      ('specifications->packages ('list)))
      ('services
       ('list)))))
 
@@ -147,8 +146,7 @@ corresponding file."
      ('gnu 'home 'services 'shells))
     ('home-environment
      ('packages
-      ('map ('compose 'list 'specification->package+output)
-            ('list)))
+      ('specifications->packages ('list)))
      ('services
       ('list ('service
               'home-bash-service-type
@@ -168,8 +166,7 @@ corresponding file."
      ('gnu 'home 'services 'shells))
     ('home-environment
      ('packages
-      ('map ('compose 'list 'specification->package+output)
-            ('list)))
+      ('specifications->packages ('list)))
      ('services
       ('list ('service
               'home-bash-service-type

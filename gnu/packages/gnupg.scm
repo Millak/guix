@@ -13,7 +13,7 @@
 ;;; Copyright © 2016 Troy Sankey <sankeytms@gmail.com>
 ;;; Copyright © 2017, 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017 Petter <petter@mykolab.ch>
-;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2019 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2018 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -992,14 +992,14 @@ them to transform your existing public key into a secret key.")
 (define-public pgpdump
   (package
     (name "pgpdump")
-    (version "0.34")
+    (version "0.35")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.mew.org/~kazu/proj/pgpdump/pgpdump-"
                            version ".tar.gz"))
        (sha256
-        (base32 "080ayqqxb13ngpg6zvaipszwnjadafw3ni7w7gg189cmh3lab7cq"))))
+        (base32 "0kslr62h3wazg4x0l38lsmswvh2dizpnwcrdsmqz62b3plnr40jf"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f                  ; no make check

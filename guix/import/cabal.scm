@@ -74,6 +74,7 @@
             cabal-executable-dependencies
 
             cabal-library?
+            cabal-library-name
             cabal-library-dependencies
 
             cabal-test-suite?
@@ -149,7 +150,7 @@ to the stack."
            (right: IF FLAG EXEC TEST-SUITE CUSTOM-SETUP SOURCE-REPO BENCHMARK LIB COMMON OCURLY)
            (left: OR)
            (left: PROPERTY AND)
-           (right: ELSE NOT))
+           (right: ELIF ELSE NOT))
    ;; --- rules
    (body        (properties sections)   : (append $1 $2))
    (sections    (sections flags)        : (append $1 $2)
@@ -189,36 +190,36 @@ to the stack."
                 (bm-sec)                : (list $1))
    (bm-sec      (BENCHMARK OCURLY exprs CCURLY) : `(section benchmark ,$1 ,$3)
                 (BENCHMARK open exprs close)    : `(section benchmark ,$1 ,$3))
-   (lib-sec     (LIB OCURLY exprs CCURLY) : `(section library ,$3)
-                (LIB open exprs close)    : `(section library ,$3))
+   (lib-sec     (LIB OCURLY exprs CCURLY) : `(section library ,$1 ,$3)
+                (LIB open exprs close)    : `(section library ,$1 ,$3))
    (exprs       (exprs PROPERTY)         : (append $1 (list $2))
                 (PROPERTY)               : (list $1)
-                (exprs if-then-else)     : (append $1 (list $2))
-                (if-then-else)           : (list $1)
-                (exprs if-then)          : (append $1 (list $2))
-                (if-then)                : (list $1))
-   (if-then-else (IF tests OCURLY exprs CCURLY ELSE OCURLY exprs CCURLY)
-                 : `(if ,$2 ,$4 ,$8)
-                 (IF tests open exprs close ELSE OCURLY exprs CCURLY)
-                 : `(if ,$2 ,$4 ,$8)
-                 ;; The 'open' token after 'tests' is shifted after an 'exprs'
-                 ;; is found.  This is because, instead of 'exprs' a 'OCURLY'
-                 ;; token is a valid alternative.  For this reason, 'open'
-                 ;; pushes a <parse-context> with a line indentation equal to
-                 ;; the indentation of 'exprs'.
-                 ;;
-                 ;; Differently from this, without the rule above this
-                 ;; comment, when an 'ELSE' token is found, the 'open' token
-                 ;; following the 'ELSE' would be shifted immediately, before
-                 ;; the 'exprs' is found (because there are no other valid
-                 ;; tokens).  The 'open' would therefore create a
-                 ;; <parse-context> with the indentation of 'ELSE' and not
-                 ;; 'exprs', creating an inconsistency.  We therefore allow
-                 ;; mixed style conditionals.
-                 (IF tests open exprs close ELSE open exprs close)
-                 : `(if ,$2 ,$4 ,$8))
-   (if-then     (IF tests OCURLY exprs CCURLY) : `(if ,$2 ,$4 ())
-                (IF tests open exprs close)    : `(if ,$2 ,$4 ()))
+                (exprs elif-else)          : (append $1 (list ($2 '(()))))
+                (elif-else)                : (list ($1 '(()))))
+   ;; LALR(1) parsers prefer to be left-recursive, which make if-statements slightly involved.
+   ;; XXX: This technically allows multiple else statements.
+   (elif-else   (elif-else ELIF tests OCURLY exprs CCURLY) : (lambda (y) ($1 (list (append (list 'if $3 $5) y))))
+                (elif-else ELIF tests open exprs close) : (lambda (y) ($1 (list (append (list 'if $3 $5) y))))
+                (elif-else ELSE OCURLY exprs CCURLY) : (lambda (y) ($1 (list $4)))
+                ;; The 'open' token after 'tests' is shifted after an 'exprs'
+                ;; is found.  This is because, instead of 'exprs' a 'OCURLY'
+                ;; token is a valid alternative.  For this reason, 'open'
+                ;; pushes a <parse-context> with a line indentation equal to
+                ;; the indentation of 'exprs'.
+                ;;
+                ;; Differently from this, without the rule above this
+                ;; comment, when an 'ELSE' token is found, the 'open' token
+                ;; following the 'ELSE' would be shifted immediately, before
+                ;; the 'exprs' is found (because there are no other valid
+                ;; tokens).  The 'open' would therefore create a
+                ;; <parse-context> with the indentation of 'ELSE' and not
+                ;; 'exprs', creating an inconsistency.  We therefore allow
+                ;; mixed style conditionals.
+                (elif-else ELSE open exprs close) : (lambda (y) ($1 (list $4)))
+                ;; Terminating rule.
+                (if-then) : (lambda (y) (append $1 y)))
+   (if-then     (IF tests OCURLY exprs CCURLY) : (list 'if $2 $4)
+                (IF tests open exprs close)    : (list 'if $2 $4))
    (tests       (TEST OPAREN ID CPAREN)        : `(,$1 ,$3)
                 (TRUE)                         : 'true
                 (FALSE)                        : 'false
@@ -354,7 +355,7 @@ matching a string against the created regexp."
                 (make-regexp pat))))
     (cut regexp-exec rx <>)))
 
-(define is-layout-property (make-rx-matcher "([a-z0-9-]+)[ \t]*:[ \t]*(\\w?[^{}]*)$"
+(define is-layout-property (make-rx-matcher "([a-z0-9-]+)[ \t]*:[ \t]*(\\w?[^{}]*)"
                                             regexp/icase))
 
 (define is-braced-property (make-rx-matcher "([a-z0-9-]+)[ \t]*:[ \t]*\\{[ \t]*$"
@@ -382,9 +383,12 @@ matching a string against the created regexp."
 (define is-benchmark (make-rx-matcher "^benchmark +([a-z0-9_-]+)"
                                       regexp/icase))
 
-(define is-lib (make-rx-matcher "^library *" regexp/icase))
+;; Libraries can have optional names since Cabal 2.0.
+(define is-lib (make-rx-matcher "^library(\\s+([a-z0-9_-]+))?\\s*" regexp/icase))
 
-(define is-else (make-rx-matcher "^else" regexp/icase))
+(define (is-else s) (string-ci=? s "else"))
+
+(define (is-elif s) (string-ci=? s "elif"))
 
 (define (is-if s) (string-ci=? s "if"))
 
@@ -402,8 +406,8 @@ matching a string against the created regexp."
 
 (define (is-id s port loc)
   (let ((cabal-reserved-words
-         '("if" "else" "library" "flag" "executable" "test-suite" "custom-setup"
-           "source-repository" "benchmark" "common"))
+         '("if" "else" "elif" "library" "flag" "executable" "test-suite"
+           "custom-setup" "source-repository" "benchmark" "common"))
         (spaces (read-while (cut char-set-contains? char-set:blank <>) port))
         (c (peek-char port)))
     (unread-string spaces port)
@@ -463,7 +467,10 @@ string with the read characters."
         (value (match:substring k-v-rx-res 2)))
     (make-lexical-token
      'PROPERTY loc
-     (list key `(,(read-value port value (current-indentation)))))))
+     (list key `(,(if (eqv? (peek-char port) #\newline) ; The next character
+                      ; is not necessarily a newline if a bracket follows the property.
+                      (read-value port value (current-indentation))
+                      value))))))
 
 (define (lex-braced-property k-rx-res loc port)
   (let ((key (string-downcase (match:substring k-rx-res 1))))
@@ -471,8 +478,9 @@ string with the read characters."
      'PROPERTY loc
      (list key `(,(read-braced-value port))))))
 
-(define (lex-rx-res rx-res token loc)
-  (let ((name (string-downcase (match:substring rx-res 1))))
+(define* (lex-rx-res rx-res token loc #:optional (substring-id 1))
+  (let* ((match (match:substring rx-res substring-id))
+         (name (if match (string-downcase match) match)))
     (make-lexical-token token loc name)))
 
 (define (lex-flag flag-rx-res loc) (lex-rx-res flag-rx-res 'FLAG loc))
@@ -490,9 +498,11 @@ string with the read characters."
 
 (define (lex-benchmark bm-rx-res loc) (lex-rx-res bm-rx-res 'BENCHMARK loc))
 
-(define (lex-lib loc) (make-lexical-token 'LIB loc #f))
+(define (lex-lib lib-rx-res loc) (lex-rx-res lib-rx-res 'LIB loc 2))
 
 (define (lex-else loc) (make-lexical-token 'ELSE loc #f))
+
+(define (lex-elif loc) (make-lexical-token 'ELIF loc #f))
 
 (define (lex-if loc) (make-lexical-token 'IF loc #f))
 
@@ -566,8 +576,10 @@ location."
 (define (lex-word port loc)
   "Process tokens which can be recognized by reading the next word form PORT.
 LOC is the current port location."
-  (let* ((w (read-delimited " <>=()\t\n" port 'peek)))
+  (let* ((w (read-delimited " <>=():\t\n" port 'peek)))
     (cond ((is-if w) (lex-if loc))
+          ((is-elif w) (lex-elif loc))
+          ((is-else w) (lex-else loc))
           ((is-test w port) (lex-test w loc))
           ((is-true w) (lex-true loc))
           ((is-false w) (lex-false loc))
@@ -590,12 +602,13 @@ the current port location."
      ((is-common s) => (cut lex-common <> loc))
      ((is-custom-setup s) => (cut lex-custom-setup <> loc))
      ((is-benchmark s) => (cut lex-benchmark <> loc))
-     ((is-lib s) (lex-lib loc))
-     ((is-else s) (lex-else loc))
+     ((is-lib s) => (cut lex-lib <> loc))
      (else (unread-string s port) #f))))
 
 (define (lex-property port loc)
-  (let* ((s (read-delimited "\n" port 'peek)))
+  ;; Stop reading on a }, so closing brackets (for example during
+  ;; if-clauses) work properly.
+  (let* ((s (read-delimited "\n}" port 'peek)))
     (cond
       ((is-braced-property s) => (cut lex-braced-property <> loc port))
       ((is-layout-property s) => (cut lex-layout-property <> loc port))
@@ -719,8 +732,9 @@ If #f use the function 'port-filename' to obtain it."
   (dependencies cabal-executable-dependencies)) ; list of <cabal-dependency>
 
 (define-record-type <cabal-library>
-  (make-cabal-library dependencies)
+  (make-cabal-library name dependencies)
   cabal-library?
+  (name cabal-library-name)
   (dependencies cabal-library-dependencies)) ; list of <cabal-dependency>
 
 (define-record-type <cabal-test-suite>
@@ -851,9 +865,6 @@ the ordering operation and the version."
        (list 'section 'flag name parameters))
       (('section 'custom-setup parameters)
        (list 'section 'custom-setup parameters))
-      ;; library does not have a name parameter
-      (('section 'library parameters)
-       (list 'section 'library (eval parameters)))
       (('section type name parameters)
        (list 'section type name (eval parameters)))
       (((? string? name) values)
@@ -913,6 +924,8 @@ pertaining to SECTION-TYPE sections.  SECTION-TYPE must be one of:
                                             name
                                             (lookup-join parameters "type")
                                             (lookup-join parameters "location")))
+                      ((library) (make-cabal-library name
+                                                     (dependencies parameters)))
                       ((flag)
                        (let* ((default (lookup-join parameters "default"))
                               (default-true-or-false
@@ -929,8 +942,6 @@ pertaining to SECTION-TYPE sections.  SECTION-TYPE must be one of:
                                           default-true-or-false
                                           manual-true-or-false)))
                       (else #f)))
-                   (('section (? (cut equal? <> section-type) lib) parameters)
-                    (make-cabal-library (dependencies parameters)))
                    (_ #f))
               sexp))
 

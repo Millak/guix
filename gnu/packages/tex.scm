@@ -20,6 +20,7 @@
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2021 Thiago Jung Bauermann <bauermann@kolabnow.com>
+;;; Copyright © 2022 Jack Hill <jackhill@jackhill.us>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -10394,6 +10395,59 @@ The main feature is the general @code{\\adjustbox} macro which extends the
 provided box macros are @code{\\lapbox}, @code{\\marginbox},
 @code{\\minsizebox}, @code{\\maxsizebox} and @code{\\phantombox}.")
       (license license:lppl1.3))))
+
+(define-public texlive-qrcode
+  (package
+    (inherit (simple-texlive-package
+              "texlive-qrcode"
+              (list "doc/latex/qrcode/README"
+                    "source/latex/qrcode/qrcode.dtx"
+                    "source/latex/qrcode/qrcode.ins")
+              (base32
+               "1xfv0imrrbxjqwjapcf2silg19rwz2jinawy1x65c1krg919vn02")))
+    (outputs '("out" "doc"))
+    (arguments
+     (list
+      #:tex-directory "latex/qrcode"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'chdir
+            (lambda _
+              (setenv "ROOT_DIR" (getcwd))
+              (chdir "source/latex/qrcode")))
+          (add-after 'build 'build-doc
+            (lambda _
+              (copy-file "qrcode.dtx" "build/qrcode.dtx")
+              (chdir "build")
+              (invoke "xelatex" "qrcode.dtx")
+              (invoke "xelatex" "qrcode.dtx"))) ;generate qrcode.pdf
+          (replace 'install
+            (lambda* (#:key tex-directory #:allow-other-keys)
+              (let ((doc (string-append #$output:doc "/share/doc/"
+                                        tex-directory))
+                    (out (string-append #$output "/share/texmf-dist/tex/"
+                                        tex-directory)))
+                (install-file "qrcode.pdf" doc)
+                (install-file (car (find-files (getenv "ROOT_DIR") "README"))
+                              doc)
+                (install-file "qrcode.sty" out)))))))
+    (propagated-inputs
+     (list texlive-lm
+           texlive-latex-xkeyval
+           texlive-xcolor))
+    (native-inputs
+     (list (texlive-updmap.cfg (list texlive-lm texlive-zapfding))
+           texlive-hyperref
+           texlive-latex-xkeyval
+           texlive-stringenc
+           texlive-xcolor))
+    (home-page "https://www.ctan.org/pkg/qrcode")
+    (synopsis "QR codes without external tools")
+    (description "This package creates @acronym{QR,Quick Response} codes for
+LaTeX documents without depending on external graphics packages.  It supports
+generating codes of different sizes and with different error correction
+levels.  All functionality is provided by the single @code{\\qrcode} command.")
+    (license license:lppl1.3c+)))
 
 (define-public texlive-tcolorbox
   (let ((template (simple-texlive-package

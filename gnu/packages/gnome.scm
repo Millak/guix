@@ -4065,14 +4065,15 @@ Hints specification (EWMH).")
 (define-public goffice
   (package
     (name "goffice")
-    (version "0.10.50")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/goffice/"
-                                  (version-major+minor version)  "/"
-                                  "goffice-" version ".tar.xz"))
-              (sha256
-               (base32 "1p5zbj7cbcfcxd6l8pnph54p6ah1bwf146y810j4bcq8ggf3sp1c"))))
+    (version "0.10.52")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://gnome/sources/goffice/"
+                           (version-major+minor version)  "/"
+                           "goffice-" version ".tar.xz"))
+       (sha256
+        (base32 "0344k0ffndd79as3c4nfq3mia7mrds6aq2jg76drdw3h8gcyzfb0"))))
     (build-system gnu-build-system)
     (outputs '("out"
                "doc"))                  ; 4.0 MiB of gtk-doc
@@ -4083,8 +4084,7 @@ Hints specification (EWMH).")
     (inputs
      (list gtk+ libgsf librsvg libxslt libxml2))
     (native-inputs
-     (list intltool
-           `(,glib "bin") pkg-config))
+     (list intltool `(,glib "bin") pkg-config))
     (home-page "https://developer.gnome.org/goffice/")
     (synopsis "Document-centric objects and utilities")
     (description "A GLib/GTK+ set of document-centric objects and utilities.")
@@ -4124,7 +4124,7 @@ Hints specification (EWMH).")
 (define-public gnumeric
   (package
     (name "gnumeric")
-    (version "1.12.50")
+    (version "1.12.52")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gnumeric/"
@@ -4132,7 +4132,7 @@ Hints specification (EWMH).")
                                   "gnumeric-" version ".tar.xz"))
               (sha256
                (base32
-                "1f0lrj5msg80pgjp38jj6rddf352gwddgip7z4lki66n3fx1k23m"))))
+                "0fw201j0sks95wgvns3vydgprhwf6z4v4xb2a0ldi892k8277kvk"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(;; The gnumeric developers don't worry much about failing tests.
@@ -4164,12 +4164,12 @@ Hints specification (EWMH).")
            python-pygobject
            zlib))
     (native-inputs
-     `(("bison" ,bison)
-       ("docbook-xml" ,docbook-xml)
-       ("intltool" ,intltool)
-       ("itstool" ,itstool)
-       ("glib:bin" ,glib "bin")
-       ("pkg-config" ,pkg-config)))
+     (list bison
+           docbook-xml
+           `(,glib "bin")
+           intltool
+           itstool
+           pkg-config))
     (home-page "http://www.gnumeric.org")
     (synopsis "Spreadsheet application")
     (description
@@ -4948,7 +4948,7 @@ and other secrets.  It communicates with the \"Secret Service\" using DBus.")
 (define-public five-or-more
   (package
     (name "five-or-more")
-    (version "3.32.2")
+    (version "3.32.3")
     (source
      (origin
        (method url-fetch)
@@ -4956,7 +4956,7 @@ and other secrets.  It communicates with the \"Secret Service\" using DBus.")
                            (version-major+minor version) "/"
                            "five-or-more-" version ".tar.xz"))
        (sha256
-        (base32 "19pf8wzbf3ciqf2k4bj9sddvyhckfd62x86pnqr6s8h4vn9jc6ii"))))
+        (base32 "1x4ys18rn37hsavivh532py2avj9686aycnn8ys29cyyxwpdf41d"))))
     (build-system meson-build-system)
     (arguments
      '(#:glib-or-gtk? #t
@@ -4965,19 +4965,17 @@ and other secrets.  It communicates with the \"Secret Service\" using DBus.")
          (add-after 'unpack 'skip-gtk-update-icon-cache
            (lambda _
              (substitute* "meson_post_install.py"
-               (("gtk-update-icon-cache") (which "true")))
-             #t)))))
+               (("gtk-update-icon-cache") (which "true"))))))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("appstream-glib" ,appstream-glib)
-       ("desktop-file-utils" ,desktop-file-utils)
-       ("glib:bin" ,glib "bin") ; for glib-compile-resources
-       ("intltool" ,intltool)
-       ("itstool" ,itstool)
-       ("vala" ,vala)
-       ("xmllint" ,libxml2)))
+     (list appstream-glib
+           desktop-file-utils
+           `(,glib "bin")               ; for glib-compile-resources
+           intltool
+           itstool
+           pkg-config
+           vala))
     (inputs
-     (list gtk+ libgnome-games-support librsvg))
+     (list gtk+ libgnome-games-support librsvg libxml2))
     (home-page "https://wiki.gnome.org/Apps/Five%20or%20more")
     (synopsis "Logic puzzle game")
     (description "Five or More is a game where you try to align
@@ -4989,7 +4987,7 @@ and other secrets.  It communicates with the \"Secret Service\" using DBus.")
 (define-public gnome-mines
   (package
     (name "gnome-mines")
-    (version "40.0")
+    (version "40.1")
     (source
      (origin
        (method url-fetch)
@@ -4997,7 +4995,7 @@ and other secrets.  It communicates with the \"Secret Service\" using DBus.")
                            (version-major version) "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "0sf6kdvhr4pr3hddnj6ql9larz2wy108sri31id6x9g459nbly8z"))))
+        (base32 "0whjwdxhyw5bvibd9qvpm2yc5g7yhy8h3rn027kv5cqwyyryj0im"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -5008,17 +5006,16 @@ and other secrets.  It communicates with the \"Secret Service\" using DBus.")
              (substitute* "build-aux/meson_post_install.py"
                (("gtk-update-icon-cache") (which "true"))))))))
     (native-inputs
-     `(("glib:bin" ,glib "bin")       ; for glib-compile-resources
-       ("pkg-config" ,pkg-config)
-       ("desktop-file-utils" ,desktop-file-utils)
-       ("intltool" ,intltool)
-       ("itstool" ,itstool)
-       ("python" ,python-wrapper)       ; for meson_post_install.py
-       ("vala" ,vala)
-       ("yelp" ,yelp)
-       ("appstream-glib" ,appstream-glib)))
+     (list appstream-glib
+           desktop-file-utils
+           `(,glib "bin")               ; for glib-compile-resources
+           intltool
+           itstool
+           pkg-config
+           python-wrapper               ; for meson_post_install.py
+           vala))
     (inputs
-     (list gtk+ libgnome-games-support librsvg))
+     (list gtk+ libgnome-games-support librsvg yelp))
     (home-page "https://wiki.gnome.org/Apps/Mines")
     (synopsis "Minesweeper game")
     (description
@@ -8788,7 +8785,7 @@ core C library, and bindings for Python (PyGTK).")
 (define-public gnome-autoar
   (package
     (name "gnome-autoar")
-    (version "0.4.1")
+    (version "0.4.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -8796,11 +8793,10 @@ core C library, and bindings for Python (PyGTK).")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "03hmm7cjgjvyxlflghfa89s1amj16qapl2c9pv0r2bfrp87dasv4"))))
+                "124y4j3wgb6axgfzw9f00865r033fg7b0qy9qgfsp5ilan4hgpvv"))))
     (build-system meson-build-system)
     (native-inputs
-     (list gobject-introspection
-           `(,glib "bin") pkg-config))
+     (list gobject-introspection `(,glib "bin") pkg-config))
     (propagated-inputs
      (list libarchive))  ; Required by gnome-autoar-0.pc
     (inputs
@@ -12523,7 +12519,7 @@ world.")
 (define-public ocrfeeder
   (package
     (name "ocrfeeder")
-    (version "0.8.3")
+    (version "0.8.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/ocrfeeder/"
@@ -12531,7 +12527,7 @@ world.")
                                   "ocrfeeder-" version ".tar.xz"))
               (sha256
                (base32
-                "12f5gnq92ffnd5zaj04df7jrnsdz1zn4zcgpbf5p9qnd21i2y529"))))
+                "1vaaphzk6zn7pp2x9scphdzlbsma910wnbhd9xry50nx95cjlgdh"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -12548,8 +12544,7 @@ world.")
                                         "/site-packages")))
               (wrap-program prog
                 `("PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH") ,pylib))
-                `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))
-              #t))))))
+                `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))))))))
     (native-inputs
      `(("glib:bin" ,glib "bin")                   ; for glib-compile-resources
        ("gobject-introspection" ,gobject-introspection)

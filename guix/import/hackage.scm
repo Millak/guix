@@ -222,13 +222,15 @@ object."
                                         '())))
     (map cabal-dependency-name custom-setup-dependencies)))
 
-(define (filter-dependencies dependencies own-name)
+(define (filter-dependencies dependencies own-names)
   "Filter the dependencies included with the GHC compiler from DEPENDENCIES, a
-list with the names of dependencies.  OWN-NAME is the name of the Cabal
-package being processed and is used to filter references to itself."
-  (filter (lambda (d) (not (member (string-downcase d)
-                                   (cons own-name ghc-standard-libraries))))
-          dependencies))
+list with the names of dependencies.  OWN-NAMES is the name of the Cabal
+package being processed and its internal libaries and is used to filter
+references to itself."
+  (let ((ignored-dependencies (map string-downcase
+                                   (append own-names ghc-standard-libraries))))
+    (filter (lambda (d) (not (member (string-downcase d) ignored-dependencies)))
+            dependencies)))
 
 (define* (hackage-module->sexp cabal cabal-hash
                                #:key (include-test-dependencies? #t))
@@ -248,9 +250,12 @@ the hash of the Cabal file."
   (define source-url
     (hackage-source-url name version))
 
+  (define own-names (cons (cabal-package-name cabal)
+                          (filter (lambda (x) (not (eqv? x #f)))
+                            (map cabal-library-name (cabal-package-library cabal)))))
+
   (define hackage-dependencies
-    (filter-dependencies (cabal-dependencies->names cabal)
-                         (cabal-package-name cabal)))
+    (filter-dependencies (cabal-dependencies->names cabal) own-names))
 
   (define hackage-native-dependencies
     (lset-difference
@@ -260,7 +265,7 @@ the hash of the Cabal file."
                   (cabal-test-dependencies->names cabal)
                   '())
               (cabal-custom-setup-dependencies->names cabal))
-      (cabal-package-name cabal))
+      own-names)
      hackage-dependencies))
 
   (define dependencies

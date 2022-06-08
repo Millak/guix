@@ -28,6 +28,7 @@
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -587,7 +588,7 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
 (define-public electron-cash
   (package
     (name "electron-cash")
-    (version "4.2.7")
+    (version "4.2.10")
     (source
      (origin
        (method git-fetch)
@@ -596,68 +597,68 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1qiql2svjyxlgbg4c5b7grgsv8nx2cx33x3x13mvjjngjz3vgilv"))))
+        (base32 "0axpypq9byda61rp3sznrq24b24qxbfwk56j75qp06s1ackg0pcv"))))
     (build-system python-build-system)
-    (inputs
-     `(("libevent" ,libevent)
-       ("libsecp256k1" ,libsecp256k1-bitcoin-cash)
-       ("openssl" ,openssl)
-       ("python-cython" ,python-cython)
-       ("python-dateutil" ,python-dateutil)
-       ("python-dnspython" ,python-dnspython)
-       ("python-ecdsa" ,python-ecdsa)
-       ("python-hidapi" ,python-hidapi)
-       ("python-jsonrpclib-pelix" ,python-jsonrpclib-pelix)
-       ("python-keepkey" ,python-keepkey)
-       ("python-pathvalidate" ,python-pathvalidate)
-       ("python-protobuf" ,python-protobuf)
-       ("python-pyaes" ,python-pyaes)
-       ("python-pyqt" ,python-pyqt)
-       ("python-pysocks" ,python-pysocks)
-       ("python-qdarkstyle" ,python-qdarkstyle)
-       ("python-qrcode" ,python-qrcode)
-       ("python-requests" ,python-requests)
-       ("python-stem" ,python-stem)
-       ("python-trezor" ,python-trezor)
-       ("qtsvg" ,qtsvg)
-       ("zlib" ,zlib)))
     (arguments
-     `(#:tests? #f                      ; no tests
-       #:modules ((guix build python-build-system)
+     (list
+      #:tests? #f                       ; no tests
+      #:modules '((guix build python-build-system)
                   (guix build qt-utils)
                   (guix build utils))
-       #:imported-modules (,@%python-build-system-modules
+      #:imported-modules `(,@%python-build-system-modules
                            (guix build qt-utils))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'create-output-directories
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; setup.py installs to ~/.local/share if this doesn't exist.
-             (mkdir-p (string-append (assoc-ref outputs "out") "/share"))))
-         (add-after 'unpack 'use-libsecp256k1-input
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "electroncash/secp256k1.py"
-               (("library_paths = .* 'libsecp256k1.so.0'.")
-                (string-append "library_paths = ('"
-                               (assoc-ref inputs "libsecp256k1")
-                               "/lib/libsecp256k1.so.0'")))))
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "contrib/requirements/requirements.txt"
-               (("qdarkstyle==2\\.6\\.8")
-                "qdarkstyle"))))
-         (add-after 'install 'wrap-qt
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (wrap-qt-program "electron-cash" #:output out #:inputs inputs))
-             #t)))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'create-output-directories
+            (lambda _
+              ;; setup.py installs to ~/.local/share if this doesn't exist.
+              (mkdir-p (string-append #$output "/share"))))
+          (add-after 'unpack 'use-libsecp256k1-input
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "electroncash/secp256k1.py"
+                (("libsecp256k1.so.0")
+                 (search-input-file inputs "lib/libsecp256k1.so.0")))))
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "contrib/requirements/requirements.txt"
+                (("qdarkstyle==2\\.6\\.8")
+                 "qdarkstyle"))))
+          (add-after 'install 'wrap-qt
+            (lambda* (#:key outputs inputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out")))
+                (wrap-qt-program "electron-cash"
+                                 #:output out #:inputs inputs)))))))
+    (inputs
+     (list libevent
+           libsecp256k1-bitcoin-cash
+           openssl
+           python-cython
+           python-dateutil
+           python-dnspython
+           python-ecdsa
+           python-hidapi
+           python-jsonrpclib-pelix
+           python-keepkey
+           python-pathvalidate
+           python-protobuf
+           python-pyaes
+           python-pyqt
+           python-pysocks
+           python-qdarkstyle
+           python-qrcode
+           python-requests
+           python-stem
+           python-trezor
+           qtsvg
+           zlib))
     (home-page "https://electroncash.org/")
     (synopsis "Bitcoin Cash wallet")
     (description
      "Electroncash is a lightweight Bitcoin Cash client, based on a client-server
 protocol.  It supports Simple Payment Verification (SPV) and deterministic key
 generation from a seed.  Your secret keys are encrypted and are never sent to
-other machines/servers.  Electroncash does not download the Bitcoin Cash blockchain.")
+other machines/servers.  Electroncash does not download the Bitcoin Cash
+blockchain.")
     (license license:expat)))
 
 (define-public monero
@@ -875,14 +876,12 @@ the Monero GUI client.")
            ;; a built-in implementation supported in python-trezor-agent.
            (lambda _
              (substitute* "setup.py"
-               (("'backports.shutil_which>=3.5.1',") ""))
-             #t))
+               (("'backports.shutil_which>=3.5.1',") ""))))
          (delete 'check)
          (add-after 'install 'check
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             ;; Make installed package available for running the tests.
-             (add-installed-pythonpath inputs outputs)
-             (invoke "py.test"))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-v")))))))
     (propagated-inputs
      (list python-configargparse
            python-daemon
@@ -1001,7 +1000,7 @@ Nano dongle.")
 (define-public python-trezor
   (package
     (name "python-trezor")
-    (version "0.12.4")
+    (version "0.13.0")
     (source
      (origin
        (method git-fetch)
@@ -1010,7 +1009,7 @@ Nano dongle.")
              (commit (string-append "python/v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1k0zk94jnkhr4iyngjfhfvff5mibx265q81v8jhvhd3m4clzgc45"))
+        (base32 "1wy584bxx5p2av4lv1bx9hl1q0b5n7hqz0hnqb9shjriarvl5ckd"))
        (modules
         '((guix build utils)
           (srfi srfi-26)
@@ -1028,13 +1027,21 @@ Nano dongle.")
                                     (string-append "./" file-name)))
                      (scandir "./python/"
                               (negate (cut member <> '("." "..") string=))))
-           (delete-file-recursively "./python")))))
+           (delete-file-recursively "./python")
+           ;; Delete now broken symbolic links.
+           (for-each delete-file
+                     (append (find-files "." "^CHANGELOG.unreleased$")
+                             (find-files "." "^.towncrier.template.md$")))))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-attrs
-           python-click
+           ;; TOOD: Use the latest click version after release 0.13.1 or later
+           ;; is made (see:
+           ;; https://github.com/trezor/trezor-firmware/issues/2199).
+           python-click-7
            python-construct
            python-ecdsa
+           python-hidapi
            python-libusb1
            python-mnemonic
            python-requests
@@ -1043,8 +1050,8 @@ Nano dongle.")
      ;; For tests.
      (list protobuf
            python-black
-           python-protobuf
            python-isort
+           python-protobuf
            python-pyqt
            python-pytest))
     (home-page "https://github.com/trezor/python-trezor")
@@ -1104,7 +1111,7 @@ the KeepKey Hardware Wallet.")
 (define-public trezor-agent
   (package
     (name "trezor-agent")
-    (version "0.11.0-1")
+    (version "0.14.4")
     (source
      (origin
        (method git-fetch)
@@ -1144,6 +1151,11 @@ the KeepKey Hardware Wallet.")
          ;; This package only has a Python script, not a Python module, so the
          ;; sanity-check phase can't work.
          (delete 'sanity-check)
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "setup.py"
+               (("'trezor\\[hidapi]>=0.12.0,<0.13'")
+                "'trezor[hidapi]>=0.13'"))))
          (add-after 'wrap 'fixup-agent-py
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out")))
@@ -1806,7 +1818,7 @@ editing on the Web.")
 (define-public quantlib
   (package
     (name "quantlib")
-    (version "1.24")
+    (version "1.26")
     (source
      (origin
        (method url-fetch)
@@ -1814,7 +1826,7 @@ editing on the Web.")
              "https://github.com/lballabio/QuantLib/releases/download/QuantLib-v"
              version "/QuantLib-" version ".tar.gz"))
        (sha256
-        (base32 "1rxjhkc32a8z0g5gmh0iw5nx0fr31cjsrfgq7c8g6nib003kgnnx"))))
+        (base32 "1sbk6rg51x5xpa93xmqmrj32a1l9vba51xck0017cxzblg0nrzh4"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags

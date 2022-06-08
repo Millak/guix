@@ -33,6 +33,7 @@
   #:use-module (guix modules)
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 match)
+  #:use-module (ice-9 vlist)
 
   #:export (home-service-type
             home-profile-service-type
@@ -50,6 +51,7 @@
             xdg-data-files-directory
 
             fold-home-service-types
+            lookup-home-service-types
             home-provenance
 
             %initialize-gettext)
@@ -605,3 +607,13 @@ environment, and its configuration file, when available.")))
 
 (define* (fold-home-service-types proc seed)
   (fold-service-types proc seed (all-home-service-modules)))
+
+(define lookup-home-service-types
+  (let ((table
+         (delay (fold-home-service-types (lambda (type result)
+                                           (vhash-consq (service-type-name type)
+                                                        type result))
+                                         vlist-null))))
+    (lambda (name)
+      "Return the list of services with the given NAME (a symbol)."
+      (vhash-foldq* cons '() name (force table)))))

@@ -979,7 +979,7 @@ void DerivationGoal::outputsSubstituted()
         return;
     }
     if (buildMode == bmCheck && nrInvalid > 0)
-        throw Error(format("some outputs of `%1%' are not valid, so checking is not possible") % drvPath);
+        throw Error(format("`%1%' is missing outputs; build it normally before using `--check'") % drvPath);
 
     /* Otherwise, at least one of the output paths could not be
        produced using a substitute.  So we have to build instead. */
@@ -2422,7 +2422,7 @@ void DerivationGoal::registerOutputs()
                     if (pathExists(dst)) deletePath(dst);
                     if (rename(actualPath.c_str(), dst.c_str()))
                         throw SysError(format("renaming `%1%' to `%2%'") % actualPath % dst);
-                    throw Error(format("derivation `%1%' may not be deterministic: output `%2%' differs from ‘%3%’")
+                    throw Error(format("derivation `%1%' may not be deterministic: output `%2%' differs from `%3%'")
                         % drvPath % path % dst);
                 } else
                     throw Error(format("derivation `%1%' may not be deterministic: output `%2%' differs")

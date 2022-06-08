@@ -621,7 +621,7 @@ Software distribution.")
 (define-public ocaml-mccs
   (package
     (name "ocaml-mccs")
-    (version "1.1+13")
+    (version "1.1+14")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -630,7 +630,7 @@ Software distribution.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "15slv97jlvbaxj221wp4sjxk4lbdfyj9vcig0jwd4n54v89ksvib"))))
+                "17bvm0jhhs8h3p5sbb65asj53a8sxl634cc0kvcivpams74837zq"))))
     (build-system dune-build-system)
     (propagated-inputs (list ocaml-cudf))
     (home-page "https://www.i3s.unice.fr/~cpjm/misc/")
@@ -1704,7 +1704,7 @@ full_split, cut, rcut, etc..")
 (define dune-bootstrap
   (package
     (name "dune")
-    (version "3.1.1")
+    (version "3.2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1713,7 +1713,7 @@ full_split, cut, rcut, etc..")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ljv4gnalxq77byic23c8hrjmsqvn87gqj0ijm7rdx4xr1pff1jg"))))
+                "0fa8fkj2piis8b56phl6p77pl1na81krdnmmvyw16hq45zbmm9rk"))))
     (build-system ocaml-build-system)
     (arguments
      `(#:tests? #f; require odoc
@@ -3490,7 +3490,7 @@ build system and allows external tools to analyse your project easily.")
 (define-public ocaml-cppo
   (package
     (name "ocaml-cppo")
-    (version "1.6.8")
+    (version "1.6.9")
     (source
       (origin
         (method git-fetch)
@@ -3499,7 +3499,7 @@ build system and allows external tools to analyse your project easily.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256 (base32
-                 "0xjb1dnj8lvdcccskrhrakknd9q4vfy5330sjbqpf4h95dsz90k9"))))
+                 "1c8jlr2s0allw1h6czz5q24vn5jsnrrh44j7hjyilzaifm17dlrm"))))
     (build-system dune-build-system)
     (arguments
      `(#:tests? #f))
@@ -4333,9 +4333,7 @@ long and size_t whose sizes depend on the host platform.")
                "0ilzq9qzvwv9rc08cc9wchsx636zp870i7qvqmbigaa2qb812m0z"))))
    (build-system ocaml-build-system)
    (arguments
-    `(#:make-flags
-      (list (string-append "INSTALL_HEADERS = $(wildcard $($(PROJECT).dir)/*.h)"))
-      #:phases
+    `(#:phases
       (modify-phases %standard-phases
         (add-after 'unpack 'make-writable
           (lambda _
@@ -7593,7 +7591,7 @@ convenience functions for vectors and matrices.")
 (define-public ocaml-cairo2
   (package
     (name "ocaml-cairo2")
-    (version "0.6.2")
+    (version "0.6.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7602,7 +7600,7 @@ convenience functions for vectors and matrices.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "04rp5y1rlq1pw592yywhvqd5x7csmyi9ad4f32g99nakb10s4nhx"))))
+                "1m0wh0s0sqjfa3mgq99lwk0dsg0bwxipaz93hq18m0lz5fqxib1m"))))
     (build-system dune-build-system)
     (arguments
      `(#:test-target "tests"))

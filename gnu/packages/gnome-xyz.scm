@@ -190,7 +190,7 @@ simple and consistent.")
 (define-public papirus-icon-theme
   (package
     (name "papirus-icon-theme")
-    (version "20210101")
+    (version "20220508")
     (source
      (origin
        (method git-fetch)
@@ -198,12 +198,11 @@ simple and consistent.")
              (url "https://github.com/PapirusDevelopmentTeam/papirus-icon-theme")
              (commit version)))
        (sha256
-        (base32
-         "0w6qg3zjhfvjg1gg5inranf8ianb4mrp0jm9qgi6hg87ig1rashs"))
+        (base32 "0rpcniaw8xbn23q67m26vgx3fynn4v056azrfp63lxdh46gfsvmc"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
-     '(#:tests? #f
+     '(#:tests? #f                      ; no test suite
        #:make-flags (list (string-append "PREFIX=" (assoc-ref %outputs "out")))
        #:phases
        (modify-phases %standard-phases
@@ -211,7 +210,7 @@ simple and consistent.")
          (delete 'configure)
          (delete 'build))))
     (native-inputs
-     `(("gtk+:bin" ,gtk+ "bin")))
+     (list `(,gtk+ "bin")))
     (home-page "https://git.io/papirus-icon-theme")
     (synopsis "Fork of Paper icon theme with a lot of new icons and a few extras")
     (description "Papirus is a fork of the icon theme Paper with a lot of new icons

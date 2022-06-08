@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2018, 2019, 2020, 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Eric Bavier <bavier@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -52,6 +52,7 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix svn-download)
   #:use-module (guix build-system cmake)
@@ -818,48 +819,43 @@ tools and a collection of Python modules for programmatic use.")
 (define-public python-pygmsh
   (package
     (name "python-pygmsh")
-    (version "7.1.11")
+    (version "7.1.17")
     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-              (url "https://github.com/nschloe/pygmsh")
-              (commit version)))
-        (file-name (git-file-name name version))
-        (sha256
-          (base32
-           "0g4yllmxks7yb50vild5xi1cma0yl16vsq6rfvdwmqaj4hwxcabk"))
-        (modules '((guix build utils)))
-        (snippet
-         '(begin
-            (let ((file (open-file "setup.py" "a")))
-              (display "from setuptools import setup\nsetup()" file)
-              (close-port file))
-            ;; A reference to setuptools in the configuration file
-            ;; triggers an attempt to download the package from pypi.
-            ;; The reference is not needed since the package is
-            ;; provided by the build system.
-            (substitute* "setup.cfg"
-              (("^[[:blank:]]+setuptools>=42\n") ""))
-            #t))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nschloe/pygmsh")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "11flp2c4ynk1fhanf4mqyzrpd0gjbnv6afrwwc7xi3mb6ms69lr0"))))
     (build-system python-build-system)
-    (native-inputs
-     `(("pytest" ,python-pytest)
-       ("wheel" ,python-wheel)))
-    (propagated-inputs
-     `(("importlib-metadata" ,python-importlib-metadata)
-       ("gmsh" ,gmsh)
-       ("meshio" ,python-meshio)
-       ("numpy" ,python-numpy)))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest" "-v" "tests"))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'workaround-gmsh-detection-failure
+            (lambda _
+              ;; Due to lack of metadata, the gmsh Python package is not
+              ;; detected although importable.
+              (substitute* "pyproject.toml"
+                (("\"gmsh\",") ""))))
+          ;; XXX: PEP 517 manual build copied from python-isort.
+          (replace 'build
+            (lambda _
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-v" "tests"))))
+          (replace 'install
+            (lambda _
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl)))))))
+    (native-inputs (list python-pypa-build python-flit-core python-pytest))
+    (propagated-inputs (list gmsh python-meshio python-numpy))
     (home-page "https://github.com/nschloe/pygmsh")
     (synopsis "Python frontend for Gmsh")
     (description "The goal of @code{pygmsh} is to combine the power of
@@ -868,7 +864,7 @@ the methods and functions that comprise the Gmsh Python API.  In this
 way the meshing of complex geometries using high-level abstractions is
 made possible.  The package provides a Python library together with a
 command-line utility for mesh optimisation.")
-    (license license:lgpl3)))
+    (license license:gpl3+)))
 
 (define-public python-dolfin-adjoint
   (package

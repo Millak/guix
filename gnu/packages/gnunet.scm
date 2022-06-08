@@ -6,7 +6,7 @@
 ;;; Copyright © 2016 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020 Nikita <nikita@n0.is>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2016–2020, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
@@ -69,6 +69,7 @@
   #:use-module (gnu packages web)
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages backup)
+  #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
@@ -161,16 +162,18 @@ tool to extract metadata from a file and print the results.")
 (define-public libmicrohttpd
   (package
    (name "libmicrohttpd")
-   (version "0.9.73")
+   (version "0.9.75")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnu/libmicrohttpd/libmicrohttpd-"
                                 version ".tar.gz"))
             (sha256
              (base32
-              "0bh39irwzkv48fkw43skfgkk8ka3793bx1lm21sgw6zxi0djyyx3"))
-            (patches (search-patches "libmicrohttpd-0.9.73-test-ssl3.patch"))))
+              "1fz3ljqfvfyfb5inzihy66bys22id9jgsi4nmcd3j6spdxx90y4j"))))
    (build-system gnu-build-system)
+   (arguments
+    (list #:configure-flags
+          #~(list "--disable-static")))
    (inputs
     (list curl gnutls/dane libgcrypt openssl zlib))
    (synopsis "C library implementing an HTTP 1.1 server")

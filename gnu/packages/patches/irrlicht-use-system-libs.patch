@@ -1,40 +1,13 @@
-This patch is a combination of the two following patches with minor
-changes to the install code
-https://sources.debian.org/src/irrlicht/1.8.4+dfsg1-1/debian/patches/debian/link-against-needed-libs.diff/
-https://sources.debian.org/src/irrlicht/1.8.4+dfsg1-1/debian/patches/debian/use-system-libs.diff/
+Subject: [PATCH] debian/use-system-libs
 
+Path to build irrlicht using the system libraries for png,zlib and
+jpeg as well as the glext family of header files.
 
----
- include/IrrCompileConfig.h                  | 26 +++++++++------------
- source/Irrlicht/CIrrDeviceLinux.h           |  2 +-
- source/Irrlicht/COpenGLExtensionHandler.h   |  8 +++----
- source/Irrlicht/COpenGLSLMaterialRenderer.h |  2 +-
- source/Irrlicht/Makefile                    | 15 ++++++------
- 5 files changed, 25 insertions(+), 28 deletions(-)
+Signed-off-by: Christoph Egger <debian@christoph-egger.org
 
-diff --git a/include/IrrCompileConfig.h b/include/IrrCompileConfig.h
-index 6bb0589..2216353 100644
---- a/include/IrrCompileConfig.h
-+++ b/include/IrrCompileConfig.h
-@@ -238,6 +238,17 @@ for Windows based systems. You also have to set #define UNICODE for this to comp
- #undef _IRR_WCHAR_FILESYSTEM
- #endif
- 
-+//! Define _IRR_COMPILE_WITH_ZLIB_ to enable compiling the engine using zlib.
-+/** This enables the engine to read from compressed .zip archives. If you
-+disable this feature, the engine can still read archives, but only uncompressed
-+ones. */
-+#define _IRR_COMPILE_WITH_ZLIB_
-+
-+//! Define _IRR_USE_NON_SYSTEM_ZLIB_ to let irrlicht use the zlib which comes with irrlicht.
-+/** If this is commented out, Irrlicht will try to compile using the zlib installed in the system.
-+	This is only used when _IRR_COMPILE_WITH_ZLIB_ is defined. */
-+#undef _IRR_USE_NON_SYSTEM_ZLIB_
-+
- //! Define _IRR_COMPILE_WITH_JPEGLIB_ to enable compiling the engine using libjpeg.
- /** This enables the engine to read jpeg images. If you comment this out,
- the engine will no longer read .jpeg images. */
-@@ -249,10 +260,7 @@ the engine will no longer read .jpeg images. */
+--- irrlicht.orig/include/IrrCompileConfig.h
++++ irrlicht/include/IrrCompileConfig.h
+@@ -253,10 +253,7 @@
  //! Define _IRR_USE_NON_SYSTEM_JPEG_LIB_ to let irrlicht use the jpeglib which comes with irrlicht.
  /** If this is commented out, Irrlicht will try to compile using the jpeg lib installed in the system.
  	This is only used when _IRR_COMPILE_WITH_LIBJPEG_ is defined. */
@@ -45,7 +18,7 @@ index 6bb0589..2216353 100644
  
  //! Define _IRR_COMPILE_WITH_LIBPNG_ to enable compiling the engine using libpng.
  /** This enables the engine to read png images. If you comment this out,
-@@ -265,10 +273,7 @@ the engine will no longer read .png images. */
+@@ -269,10 +266,7 @@
  //! Define _IRR_USE_NON_SYSTEM_LIBPNG_ to let irrlicht use the libpng which comes with irrlicht.
  /** If this is commented out, Irrlicht will try to compile using the libpng installed in the system.
  	This is only used when _IRR_COMPILE_WITH_LIBPNG_ is defined. */
@@ -56,7 +29,7 @@ index 6bb0589..2216353 100644
  
  //! Define _IRR_D3D_NO_SHADER_DEBUGGING to disable shader debugging in D3D9
  /** If _IRR_D3D_NO_SHADER_DEBUGGING is undefined in IrrCompileConfig.h,
-@@ -602,10 +607,7 @@ ones. */
+@@ -606,10 +600,7 @@
  /** If this is commented out, Irrlicht will try to compile using the zlib
  installed on the system. This is only used when _IRR_COMPILE_WITH_ZLIB_ is
  defined. */
@@ -67,7 +40,7 @@ index 6bb0589..2216353 100644
  //! Define _IRR_COMPILE_WITH_ZIP_ENCRYPTION_ if you want to read AES-encrypted ZIP archives
  #define _IRR_COMPILE_WITH_ZIP_ENCRYPTION_
  #ifdef NO_IRR_COMPILE_WITH_ZIP_ENCRYPTION_
-@@ -623,18 +625,12 @@ library. */
+@@ -627,18 +618,12 @@
  /** If this is commented out, Irrlicht will try to compile using the bzlib
  installed on the system. This is only used when _IRR_COMPILE_WITH_BZLIB_ is
  defined. */
@@ -86,10 +59,8 @@ index 6bb0589..2216353 100644
  
  //! Define __IRR_COMPILE_WITH_MOUNT_ARCHIVE_LOADER_ if you want to mount folders as archives
  #define __IRR_COMPILE_WITH_MOUNT_ARCHIVE_LOADER_
-diff --git a/source/Irrlicht/CIrrDeviceLinux.h b/source/Irrlicht/CIrrDeviceLinux.h
-index 4d2a2c6..8cf24ba 100644
---- a/source/Irrlicht/CIrrDeviceLinux.h
-+++ b/source/Irrlicht/CIrrDeviceLinux.h
+--- irrlicht.orig/source/Irrlicht/CIrrDeviceLinux.h
++++ irrlicht/source/Irrlicht/CIrrDeviceLinux.h
 @@ -22,7 +22,7 @@
  #define GLX_GLXEXT_LEGACY 1
  #include <GL/glx.h>
@@ -99,10 +70,8 @@ index 4d2a2c6..8cf24ba 100644
  #endif
  #endif
  
-diff --git a/source/Irrlicht/COpenGLExtensionHandler.h b/source/Irrlicht/COpenGLExtensionHandler.h
-index 1b77bad..3886a0e 100644
---- a/source/Irrlicht/COpenGLExtensionHandler.h
-+++ b/source/Irrlicht/COpenGLExtensionHandler.h
+--- irrlicht.orig/source/Irrlicht/COpenGLExtensionHandler.h
++++ irrlicht/source/Irrlicht/COpenGLExtensionHandler.h
 @@ -35,7 +35,7 @@
  	#endif
  	#include <OpenGL/gl.h>
@@ -133,10 +102,8 @@ index 1b77bad..3886a0e 100644
  	#endif
  #endif
  
-diff --git a/source/Irrlicht/COpenGLSLMaterialRenderer.h b/source/Irrlicht/COpenGLSLMaterialRenderer.h
-index ff71150..f8a6007 100644
---- a/source/Irrlicht/COpenGLSLMaterialRenderer.h
-+++ b/source/Irrlicht/COpenGLSLMaterialRenderer.h
+--- irrlicht.orig/source/Irrlicht/COpenGLSLMaterialRenderer.h
++++ irrlicht/source/Irrlicht/COpenGLSLMaterialRenderer.h
 @@ -25,7 +25,7 @@
  	#include <GL/gl.h>
  #endif
@@ -146,11 +113,9 @@ index ff71150..f8a6007 100644
  #endif
  #endif
  
-diff --git a/source/Irrlicht/Makefile b/source/Irrlicht/Makefile
-index 67a3899..d9ea7f3 100644
---- a/source/Irrlicht/Makefile
-+++ b/source/Irrlicht/Makefile
-@@ -43,7 +43,7 @@ IRRIMAGEOBJ = CColorConverter.o CImage.o CImageLoaderBMP.o CImageLoaderDDS.o CIm
+--- irrlicht.orig/source/Irrlicht/Makefile
++++ irrlicht/source/Irrlicht/Makefile
+@@ -45,7 +45,7 @@
  	CImageWriterBMP.o CImageWriterJPG.o CImageWriterPCX.o CImageWriterPNG.o CImageWriterPPM.o CImageWriterPSD.o CImageWriterTGA.o
  IRRVIDEOOBJ = CVideoModeList.o CFPSCounter.o $(IRRDRVROBJ) $(IRRIMAGEOBJ)
  IRRSWRENDEROBJ = CSoftwareDriver.o CSoftwareTexture.o CTRFlat.o CTRFlatWire.o CTRGouraud.o CTRGouraudWire.o CTRNormalMap.o CTRStencilShadow.o CTRTextureFlat.o CTRTextureFlatWire.o CTRTextureGouraud.o CTRTextureGouraudAdd.o CTRTextureGouraudNoZ.o CTRTextureGouraudWire.o CZBuffer.o CTRTextureGouraudVertexAlpha2.o CTRTextureGouraudNoZ2.o CTRTextureLightMap2_M2.o CTRTextureLightMap2_M4.o CTRTextureLightMap2_M1.o CSoftwareDriver2.o CSoftwareTexture2.o CTRTextureGouraud2.o CTRGouraud2.o CTRGouraudAlpha2.o CTRGouraudAlphaNoZ2.o CTRTextureDetailMap2.o CTRTextureGouraudAdd2.o CTRTextureGouraudAddNoZ2.o CTRTextureWire2.o CTRTextureLightMap2_Add.o CTRTextureLightMapGouraud2_M4.o IBurningShader.o CTRTextureBlend.o CTRTextureGouraudAlpha.o CTRTextureGouraudAlphaNoZ.o CDepthBuffer.o CBurningShader_Raster_Reference.o
@@ -159,7 +124,7 @@ index 67a3899..d9ea7f3 100644
  IRROTHEROBJ = CIrrDeviceSDL.o CIrrDeviceLinux.o CIrrDeviceConsole.o CIrrDeviceStub.o CIrrDeviceWin32.o CIrrDeviceFB.o CLogger.o COSOperator.o Irrlicht.o os.o
  IRRGUIOBJ = CGUIButton.o CGUICheckBox.o CGUIComboBox.o CGUIContextMenu.o CGUIEditBox.o CGUIEnvironment.o CGUIFileOpenDialog.o CGUIFont.o CGUIImage.o CGUIInOutFader.o CGUIListBox.o CGUIMenu.o CGUIMeshViewer.o CGUIMessageBox.o CGUIModalScreen.o CGUIScrollBar.o CGUISpinBox.o CGUISkin.o CGUIStaticText.o CGUITabControl.o CGUITable.o CGUIToolBar.o CGUIWindow.o CGUIColorSelectDialog.o CDefaultGUIElementFactory.o CGUISpriteBank.o CGUIImageList.o CGUITreeView.o
  ZLIBOBJ = zlib/adler32.o zlib/compress.o zlib/crc32.o zlib/deflate.o zlib/inffast.o zlib/inflate.o zlib/inftrees.o zlib/trees.o zlib/uncompr.o zlib/zutil.o
-@@ -56,14 +56,14 @@ BZIP2OBJ = bzip2/blocksort.o bzip2/huffman.o bzip2/crctable.o bzip2/randtable.o
+@@ -58,14 +58,14 @@
  EXTRAOBJ =
  LINKOBJ = $(IRRMESHOBJ) $(IRROBJ) $(IRRPARTICLEOBJ) $(IRRANIMOBJ) \
  	$(IRRVIDEOOBJ) $(IRRSWRENDEROBJ) $(IRRIOOBJ) $(IRROTHEROBJ) \
@@ -178,25 +143,11 @@ index 67a3899..d9ea7f3 100644
  ifndef NDEBUG
  CXXFLAGS += -g -D_DEBUG
  else
-@@ -88,7 +88,7 @@ STATIC_LIB = libIrrlicht.a
- LIB_PATH = ../../lib/$(SYSTEM)
- INSTALL_DIR = /usr/local/lib
- sharedlib install: SHARED_LIB = libIrrlicht.so
--sharedlib: LDFLAGS += -L/usr/X11R6/lib$(LIBSELECT) -lGL -lXxf86vm
-+staticlib sharedlib: LDFLAGS += -L/usr/X11R6/lib$(LIBSELECT) -lGL -lXxf86vm -lX11 -lz -lpng -ljpeg -lbz2
- staticlib sharedlib: CXXINCS += -I/usr/X11R6/include
- 
- #OSX specific options
-@@ -153,7 +153,8 @@ install install_osx:
- 	$(RM) -r $(INSTALL_DIR)/../include/irrlicht
+@@ -156,6 +156,7 @@
  	mkdir -p $(INSTALL_DIR)/../include/irrlicht
  	cp ../../include/*.h $(INSTALL_DIR)/../include/irrlicht/
--	cp $(LIB_PATH)/$(SHARED_FULLNAME) $(INSTALL_DIR)
-+	cp $(LIB_PATH)/$(SHARED_FULLNAME) $(INSTALL_DIR) || true
-+	cp $(LIB_PATH)/$(STATIC_LIB) $(INSTALL_DIR) || true
+ 	cp $(LIB_PATH)/$(SHARED_FULLNAME) $(INSTALL_DIR)
++	cp $(LIB_PATH)/$(STATIC_LIB) $(INSTALL_DIR)
  	cd $(INSTALL_DIR) && ln -s -f $(SHARED_FULLNAME) $(SONAME)
  	cd $(INSTALL_DIR) && ln -s -f $(SONAME) $(SHARED_LIB)
  #	ldconfig -n $(INSTALL_DIR)
--- 
-2.18.0
-

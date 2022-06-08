@@ -24,7 +24,7 @@
 ;;; Copyright © 2016 Steve Webber <webber.sl@gmail.com>
 ;;; Copyright © 2017 Adonay "adfeno" Felipe Nogueira <https://libreplanet.org/wiki/User:Adfeno> <adfeno@hyperbola.info>
 ;;; Copyright © 2017, 2018, 2020 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017, 2019 nee <nee-git@hidamari.blue>
 ;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017, 2019, 2020 Marius Bakke <mbakke@fastmail.com>
@@ -71,6 +71,7 @@
 ;;; Copyright © 2022 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2022 Roman Riabenko <roman@riabenko.com>
 ;;; Copyright © 2022 zamfofex <zamfofex@twdb.moe>
+;;; Copyright © 2022 Gabriel Arazas <foo.dogsquared@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3531,7 +3532,7 @@ are primarily in English, however some in other languages are provided.")
 (define-public irrlicht
   (package
     (name "irrlicht")
-    (version "1.8.4")
+    (version "1.8.5")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3540,8 +3541,9 @@ are primarily in English, however some in other languages are provided.")
                     "/" version "/irrlicht-" version ".zip"))
               (sha256
                (base32
-                "0cz4z4dwrv5ypl19ll67wl6jjpy5k6ly4vr042w4br88qq5jhazl"))
-              (patches (search-patches "irrlicht-use-system-libs.patch"))
+                "0gagjh2l3a3m8hsixxhhhan3m5xl7735ka8m4g79jl4qsgp7pyzg"))
+              (patches (search-patches "irrlicht-use-system-libs.patch"
+                                       "irrlicht-link-against-needed-libs.patch"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -3555,8 +3557,7 @@ are primarily in English, however some in other languages are provided.")
                        "source/Irrlicht/zlib"))
                   (delete-file "source/Irrlicht/glext.h")
                   (delete-file "source/Irrlicht/glxext.h")
-                  (delete-file "source/Irrlicht/wglext.h")
-                  #t))))
+                  (delete-file "source/Irrlicht/wglext.h")))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -3564,33 +3565,39 @@ are primarily in English, however some in other languages are provided.")
          (add-after 'unpack 'chdir-to-source
            (lambda _
              ;; The actual source is buried a few directories deep.
-             (chdir "source/Irrlicht/")
-             #t))
+             (chdir "source/Irrlicht/")))
          (add-after 'chdir-to-source 'remove-<sys/sysctl.h>
            (lambda _
              (substitute* "COSOperator.cpp"
                (("#include <sys/sysctl.h>") ""))))
+         (add-after 'chdir-to-source 'delete-broken-install-rule
+           (lambda _
+             (substitute* "Makefile"
+               ;; We neither build nor want a static library.  Skip it.
+               ((".*\\bcp .*\\$\\(STATIC_LIB\\).*") ""))))
          (add-after 'chdir-to-source 'fix-build-env
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
                (substitute* "Makefile"
                  (("INSTALL_DIR = /usr/local/lib")
                   (string-append "INSTALL_DIR = " out "/lib"))
-                 ;; Add '-fpermissive' to the CXXFLAGS
+                 ;; Add '-fpermissive' to the CXXFLAGS.
                  (("-Wall") "-Wall -fpermissive")) ; CImageLoaderJPG.cpp
                ;; The Makefile assumes these directories exist.
                (mkdir-p (string-append out "/lib"))
                (mkdir-p (string-append out "/include")))))
          (delete 'configure))           ; no configure script
        #:tests? #f                      ; no check target
-       #:make-flags '("CC=gcc" "sharedlib")))
+       #:make-flags
+       (list (string-append "CC=" ,(cc-for-target))
+             "sharedlib")))
     (inputs
-     `(("bzip2" ,bzip2)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libx11" ,libx11)
-       ("libxxf86vm" ,libxxf86vm)
-       ("mesa" ,mesa)))
+     (list bzip2
+           libjpeg-turbo
+           libpng
+           libx11
+           libxxf86vm
+           mesa))
     (synopsis "3D game engine written in C++")
     (description
      "The Irrlicht Engine is a high performance realtime 3D engine written in
@@ -3599,6 +3606,25 @@ management, character animation, particle and other special effects, support
 for common mesh file formats, and collision detection.")
     (home-page "https://irrlicht.sourceforge.io/")
     (license license:zlib)))
+
+(define-public irrlicht-for-minetest
+  (package
+    (inherit irrlicht)
+    (name "irrlicht-for-minetest")
+    (version "1.9.0mt5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/minetest/irrlicht")
+             (commit version)))
+       (sha256
+        (base32
+         "1jxk1x0f60n8lrz8a6x62aj2pqg0qnbajsld3lqncvwsfbi0xjx1"))))
+    (build-system cmake-build-system)
+    (arguments
+     ;; No check target.
+     (list #:tests? #f))))
 
 (define-public mars
   ;; The latest release on SourceForge relies on an unreleased version of SFML
@@ -7658,7 +7684,13 @@ original.")
         (base32 "1f2zif3s6vddbhph4jr1cymdsn7gagg59grrxs0yap6myqmy8shg"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:test-target "check"
+     (list #:configure-flags
+           #~(let ((fortunes (string-append #$output "/share/fortunes")))
+               (list (string-append "-DLOCALDIR=" fortunes)
+                     (string-append "-DLOCALODIR=" fortunes "/off")
+                     (string-append "-DCOOKIEDIR=" fortunes)
+                     (string-append "-DOCOOKIEDIR=" fortunes "/off")))
+           #:test-target "check"
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'enter-build-directory
@@ -7683,16 +7715,13 @@ original.")
                    (with-output-to-file "tests/scripts/split-valgrind.pl"
                      (const #t))))
                (add-after 'install 'fix-install-directory
-                 (lambda* (#:key outputs #:allow-other-keys)
-                   ;; Move binary from "games/" to "bin/" and remove the
-                   ;; latter.  This is easier than patching CMakeLists.txt
-                   ;; since the tests hard-code the location as well.
-                   (let* ((out   (assoc-ref outputs "out"))
-                          (bin   (string-append out "/bin"))
-                          (games (string-append out "/games")))
-                     (rename-file (string-append games "/fortune")
-                                  (string-append bin "/fortune"))
-                     (rmdir games)))))))
+                 ;; Move fortune from "games/" to "bin/" and remove the
+                 ;; former.  This is easier than patching CMakeLists.txt
+                 ;; since the tests hard-code the location as well.
+                 (lambda _
+                   (with-directory-excursion #$output
+                     (rename-file "games/fortune" "bin/fortune")
+                     (rmdir "games")))))))
     (inputs (list recode))
     (native-inputs
      (list perl
@@ -12059,7 +12088,7 @@ protect you.")
 (define-public 7kaa
   (package
     (name "7kaa")
-    (version "2.15.4p1")
+    (version "2.15.5")
     (source
      (origin
        (method url-fetch)
@@ -12067,7 +12096,7 @@ protect you.")
                            "releases/download/v" version "/"
                            "7kaa-" version ".tar.xz"))
        (sha256
-        (base32 "1y7v0jhp3apb619p7asikqr1dnwb2yxbh40wbx1ppmr5f03mq9ph"))))
+        (base32 "0axbv14fh87hwjabrb3zv7ivj88rs6kd2xq6s9qlpsszk20jc2im"))))
     (build-system gnu-build-system)
     (native-inputs
      (list gettext-minimal pkg-config))
@@ -12650,6 +12679,31 @@ Magic II (aka HOMM2) game engine.  It requires assets and game resources to
 play; it will look for them at @file{~/.local/share/fheroes2} folder.")
     (license license:gpl2)))
 
+(define-public apricots
+  (package
+    (name "apricots")
+    (version "0.2.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/moggers87/apricots")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "0vis217hhnb9fbs9sf8mmcm71qp44kr3xqmffc1gdiixvi90c781"))
+       (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (native-inputs (list autoconf  ; autom4te used in ./bootstrap
+                         automake  ; aclocal used in ./bootstrap
+                         cppcheck))
+    (inputs (list freealut openal sdl2))
+    (home-page "https://github.com/moggers87/apricots")
+    (synopsis "Arcade airplane game")
+    (description "@code{apricots} is a game where you fly a little plane
+around the screen and shoot things and drop bombs on enemy targets.  It's
+meant to be quick and fun.")
+    (license license:gpl2+)))
+
 (define-public liquidwar6
   (package
     (name "liquidwar6")
@@ -12690,3 +12744,35 @@ liquid and you have to try and eat your opponents.  Rules are very simple yet
 original, they have been invented by Thomas Colcombet.")
     (home-page "https://www.gnu.org/software/liquidwar6/")
     (license license:gpl3+)))
+
+(define-public freerct
+  (package
+    (name "freerct")
+    (version "0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/FreeRCT/FreeRCT")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1szwy2cq4ffp4yxm9pp9vdyia0i5nz0wnppdd1xb9w7v3wa4mywi"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f))
+    (native-inputs (list flex bison))
+    (inputs (list libpng sdl2 sdl2-ttf))
+    (home-page "https://freerct.net/")
+    (synopsis "Theme park management simulation game")
+    (description
+     "FreeRCT is a game that captures the look and feel of the popular games
+RollerCoaster Tycoon 1 and 2, graphics- and gameplay-wise.
+
+In this game, you play as a manager of a theme park, allowing you to make a
+park of your dreams.  The list of responsiblities includes managing staff,
+finances, landscaping, and most importantly: rides.  Good managers follow the
+principle of prioritizing the guests' happiness with a well-maintained park.
+Should they go unwise, a theme park plunge into chaos with vandalizing guests
+and unsafe rides.  Which path will you take?")
+    (license license:gpl2)))

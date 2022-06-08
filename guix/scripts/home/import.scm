@@ -3,6 +3,7 @@
 ;;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2021-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2022 Arjan Adriaanse <arjan@adriaan.se>
+;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -170,8 +171,7 @@ user's files to CONFIGURATION-DIRECTORY; the generated sexp refers to them."
                         ,@(delete-duplicates (concatenate modules)))
 
            (home-environment
-            (packages (map (compose list specification->package+output)
-                           ,packages))
+            (packages (specifications->packages ,packages))
             (services (list ,@services)))))))))
 
 (define* (import-manifest

@@ -308,9 +308,11 @@ MODULES =					\
   guix/scripts/describe.scm			\
   guix/scripts/style.scm			\
   guix/scripts/system.scm			\
-  guix/scripts/system/search.scm		\
+  guix/scripts/system/edit.scm			\
   guix/scripts/system/reconfigure.scm		\
+  guix/scripts/system/search.scm		\
   guix/scripts/home.scm			\
+  guix/scripts/home/edit.scm			\
   guix/scripts/home/import.scm			\
   guix/scripts/lint.scm				\
   guix/scripts/challenge.scm			\
@@ -496,6 +498,7 @@ SCM_TESTS =					\
   tests/gremlin.scm				\
   tests/hackage.scm				\
   tests/home-import.scm				\
+  tests/home-services.scm			\
   tests/http-client.scm				\
   tests/import-git.scm				\
   tests/import-github.scm			\

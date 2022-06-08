@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Evgeny Pisemsky <evgeny@pisemsky.com>
@@ -13,6 +13,7 @@
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Marcel Kupiec <formbi@protonmail.com>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -113,7 +114,7 @@ sets, and tools to deal with register databases.")
 (define-public hwinfo
   (package
     (name "hwinfo")
-    (version "21.80")
+    (version "21.81")
     (home-page "https://github.com/openSUSE/hwinfo")
     (source
      (origin
@@ -124,14 +125,14 @@ sets, and tools to deal with register databases.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07058vjqdcd3la8y4b92f7fvcqxvmw1p0q4lg5kcn85pvbbg52ag"))
+        (base32 "0iyx1fb66s6b5ai4agw91nvl9wwk7z8g6y475vry3wv80dngzc43"))
        (modules
         '((guix build utils)))
        (snippet
         `(begin
            ;; Remove git2log program file.
            (delete-file "git2log")
-           ;; Remove variables that depends on git2log.
+           ;; Remove variables that depend on git2log.
            (substitute* "Makefile"
              (("GIT2LOG.*\\:=.*$") "")
              (("GITDEPS.*\\:=.*$") "")
@@ -141,7 +142,7 @@ sets, and tools to deal with register databases.")
              (lambda (port)
                (format port ,version)))))))
     (build-system gnu-build-system)
-    (outputs '("out" "dev" "doc"))
+    (outputs '("out" "lib" "doc"))
     (arguments
      `(#:tests? #f                      ; no test-suite available
        #:phases
@@ -149,10 +150,10 @@ sets, and tools to deal with register databases.")
          (add-after 'unpack 'patch
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
-                    (dev (assoc-ref outputs "dev"))
+                    (lib (assoc-ref outputs "lib"))
                     (doc (assoc-ref outputs "doc"))
-                    (incl-dir (string-append dev "/include"))
-                    (lib-dir (string-append dev "/lib"))
+                    (incl-dir (string-append lib "/include"))
+                    (lib-dir (string-append lib "/lib"))
                     (sbin-dir (string-append out "/sbin"))
                     (share-dir (string-append out "/share"))
                     (doc-dir (string-append doc "/share/doc")))
@@ -172,16 +173,16 @@ sets, and tools to deal with register databases.")
                  (("/usr/sbin") sbin-dir)
                  (("/usr/share") share-dir)
                  (("\\$\\(DESTDIR\\)/sbin ") ""))
-               ;; Add output "dev" to the run-path.
+               ;; Add the "lib" output to the run-path.
                (substitute* "Makefile.common"
                  (("-Lsrc")
                   (string-append "-Lsrc " "-Wl,-rpath=" lib-dir)))
                ;; Correct program name of the lexical analyzer.
                (substitute* "src/isdn/cdb/Makefile"
                  (("lex isdn_cdb.lex") "flex isdn_cdb.lex"))
-               ;; Patch pkgconfig file to point to output "dev".
+               ;; Patch pkg-config file to point to the "lib" output.
                (substitute* "hwinfo.pc.in"
-                 (("/usr") dev)))))
+                 (("/usr") lib)))))
          (delete 'configure)
          (replace 'build
            (lambda _
@@ -270,14 +271,14 @@ RGB animations.")
 (define-public ddcutil
   (package
     (name "ddcutil")
-    (version "1.2.1")
+    (version "1.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.ddcutil.com/tarballs/"
                            "ddcutil-" version ".tar.gz"))
        (sha256
-        (base32 "0fp7ffjn21p0bsc5b1ipf3dbpzwn9g6j5dpnwdnca052ifzk2w7i"))))
+        (base32 "18fbd45h2r3r702dvmlmyrwgs3ymr4mhm4f12lgv9jqb5csalbw2"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
@@ -314,7 +315,7 @@ calibrated, and restored when the calibration is applied.")
 (define-public ddcui
   (package
     (name "ddcui")
-    (version "0.1.2")
+    (version "0.2.1")
     (source
      (origin
        (method git-fetch)
@@ -323,7 +324,7 @@ calibrated, and restored when the calibration is applied.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0myma1zw6dlygv3xbin662d91zcnwss10syf12q2fppkrd8qdgqf"))))
+        (base32 "0a9xfv80dpimx9wi9igjbbfydyfsgnbk6dv1plhjzyp2a9shdibb"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f))                    ; No test suite
@@ -374,6 +375,43 @@ through the Display Data Channel Command Interface (@dfn{DDC/CI}) protocol.")
       (description "edid-decode decodes @dfn{EDID} monitor description data in
 human-readable format and checks if it conforms to the standards.")
       (license license:expat))))
+
+(define-public h-client
+  (let ((commit "63ff4a3bf9c3c3b6297091e08192d34991465431")
+        (revision "0"))
+    (package
+      (name "h-client")
+      (version (git-version "0.0a0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               ;; Use this Python 3 fork until the changes have been reviewed
+               ;; and integrated into the official Savannah repository (in
+               ;; progress).
+               (url "https://git.sr.ht/~apteryx/h-client")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0c6s96a1zmsnn7bnfhm790c1fr8sid0zdyh9mwig4y6ffn83czh5"))))
+      (build-system python-build-system)
+      (inputs
+       (list gdk-pixbuf
+             gtk+
+             pciutils
+             python-pycurl
+             python-pygobject
+             usbutils))
+      (synopsis "Graphical client for the h-node hardware database project")
+      (description
+       "The h-node project (https://www.h-node.org) aims to build a database of
+hardware that works with fully free operating systems.  h-client is a GTK+
+graphical client that is able to retrieves information on the hardware inside
+the computer it's running on, and on peripherals connected to it, and helps
+you submit that information to the h-node project along with whether the
+hardware works with a fully free operating system or not.")
+      (home-page "https://savannah.nongnu.org/projects/h-source/")
+      (license license:gpl3+))))
 
 (define-public headsetcontrol
   (package

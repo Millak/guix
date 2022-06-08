@@ -31,14 +31,14 @@
 (define-public dezyne
   (package
     (name "dezyne")
-    (version "2.15.0")
+    (version "2.15.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://dezyne.org/download/dezyne/"
                            name "-" version ".tar.gz"))
        (sha256
-        (base32 "1sh9chg5q10c3bzsmgl1pb7pmdf04j2lqszhw8jk5qlxr9y8ybcq"))))
+        (base32 "0yid2a9xvp4hc7fry07zp0q2hva89czri6i1m2d1n22srh7r0my6"))))
     (inputs (list bash-minimal
                   guile-3.0-latest
                   guile-json-4
@@ -53,15 +53,6 @@
                   ,@%gnu-build-system-modules)
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-tests
-            (lambda _
-              ;; The mCRL2 output for these tests is unstable, i.e., varies
-              ;; between different builds.
-              (substitute* "Makefile.in"
-                (("test/all/compliance_blocking_double_release ") " ")
-                (("test/all/illegal_external_nonsynchronous ") " ")
-                (("test/all/livelock_synchronous_illegal ") " ")
-                (("test/all/queuefull_external_sync ") " "))))
           (add-before 'configure 'setenv
             (lambda _
               (setenv "GUILE_AUTO_COMPILE" "0")))

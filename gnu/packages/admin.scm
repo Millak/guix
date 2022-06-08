@@ -48,6 +48,7 @@
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
+;;; Copyright © 2022 Roman Riabenko <roman@riabenko.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -407,7 +408,7 @@ inspired by @command{vi}.")
 (define-public cloud-utils
   (package
     (name "cloud-utils")
-    (version "0.32")
+    (version "0.33")
     (source
      (origin
        (method url-fetch)
@@ -419,7 +420,11 @@ inspired by @command{vi}.")
          "0xxdi55lzw7j91zfajw7jhd2ilsqj2dy04i9brlk8j3pvb5ma8hk"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:make-flags
+     '(#:modules
+       ((guix build gnu-build-system)
+        (guix build utils)
+        (srfi srfi-26))
+       #:make-flags
        (let ((out (assoc-ref %outputs "out")))
          (list (string-append "BINDIR=" out "/bin")
                (string-append "MANDIR=" out "/share/man/man1")
@@ -433,11 +438,15 @@ inspired by @command{vi}.")
              (let ((growpart (string-append (assoc-ref outputs "out")
                                             "/bin/growpart")))
                (wrap-program growpart
-                 `("PATH" ":" prefix (,(dirname (which "sfdisk"))
-                                      ,(dirname (which "readlink"))))))
-             #t)))))
+                 `("PATH" ":" prefix
+                   ,(map dirname
+                         (map (cut search-input-file inputs <>)
+                              (list "bin/readlink"
+                                    "sbin/sfdisk")))))))))))
     (inputs
-     (list python util-linux)) ; contains sfdisk for growpart
+     (list coreutils                    ; for readlink
+           python
+           util-linux))                 ; sfdisk for growpart
     (home-page "https://launchpad.net/cloud-utils")
     (synopsis "Set of utilities for cloud computing environments")
     (description
@@ -525,7 +534,7 @@ services.")
         (base32 "0w4g0iyssyw7dd0061881z8s5czcl01mz6v00znax57zfxjqpvnm"))))
     (build-system gnu-build-system)
     (arguments '(#:tests? #f))          ; No tests available.
-    (home-page "http://software.clapper.org/daemonize/")
+    (home-page "https://software.clapper.org/daemonize/")
     (synopsis "Command line utility to run a program as a daemon")
     (description
      "daemonize runs a command as a Unix daemon.  It will close all open file
@@ -1760,7 +1769,7 @@ system administrator.")
 (define-public sudo
   (package
     (name "sudo")
-    (version "1.9.10")
+    (version "1.9.11")
     (source (origin
               (method url-fetch)
               (uri
@@ -1770,7 +1779,7 @@ system administrator.")
                                     version ".tar.gz")))
               (sha256
                (base32
-                "1x34k8sd2msfjjsahff1q143gr5j9z19jx2rmkkbiiz7k084d8a4"))
+                "1gjingc1h7d6p17m0nn87yiwh8gbdchg4w4kv8s4g89wv0q6wixm"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -2028,10 +2037,16 @@ command.")
           (add-after 'install-documentation 'install-dbus-conf
             (lambda* (#:key outputs #:allow-other-keys)
               (let* ((out (assoc-ref outputs "out"))
-                     (dir (string-append out "/etc/dbus-1/system.d")))
-                (mkdir-p dir)
+                     (interfaces (string-append out "/etc/dbus-1/system.d"))
+                     (services (string-append out
+                                              "/share/dbus-1/system-services")))
+                (mkdir-p interfaces)
                 (copy-file "dbus/dbus-wpa_supplicant.conf"
-                           (string-append dir "/wpa_supplicant.conf")))
+                           (string-append interfaces "/wpa_supplicant.conf"))
+                (mkdir-p services)
+                (copy-file "dbus/fi.w1.wpa_supplicant1.service"
+                           (string-append services
+                                          "/fi.w1.wpa_supplicant1.service")))
               #t))))))))
 
 (define-public wpa-supplicant-gui
@@ -4152,7 +4167,7 @@ Python loading in HPC environments.")
                              (string-append dir "/lib/perl5/site_perl"))
                             (_ ""))
                           %build-inputs)))))
-             (invoke "gzip" "inxi.1")
+             (invoke "gzip" "-n" "inxi.1")
              (install-file "inxi.1.gz"
                            (string-append %output "/share/man/man1"))))))
       (home-page "https://smxi.org/docs/inxi.htm")

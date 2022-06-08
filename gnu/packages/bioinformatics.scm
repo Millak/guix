@@ -3145,6 +3145,11 @@ data and settings.")
      `(#:tests? #f                      ; there are no tests
        #:phases
        (modify-phases %standard-phases
+         (add-before 'build 'set-force-source-date
+           ;; for reproducible dates, texlive needs this to respect respect
+           ;; SOURCE_DATE_EPOCH
+           (lambda _
+             (setenv "FORCE_SOURCE_DATE" "1")))
          (add-after 'unpack 'fix-latex-errors
            (lambda _
              (with-fluids ((%default-port-encoding #f))
@@ -10526,7 +10531,7 @@ expression report comparing samples in an easily configurable manner.")
 (define-public pigx-chipseq
   (package
     (name "pigx-chipseq")
-    (version "0.0.53")
+    (version "0.1.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/BIMSBbioinfo/pigx_chipseq/"
@@ -10534,25 +10539,12 @@ expression report comparing samples in an easily configurable manner.")
                                   "/pigx_chipseq-" version ".tar.gz"))
               (sha256
                (base32
-                "0c6npx35sszycf059w1x1k4k9hq1qqxny0i4p57q1188czr4561h"))
-              (patches (search-patches "pigx-chipseq-no-citeproc.patch"))))
+                "008n6drj9q5av86xihxlj4py2c9p3c5z5ld89c3bksrp77zxiy67"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; parts of the tests rely on access to the network
        #:phases
        (modify-phases %standard-phases
-         (add-before 'bootstrap 'autoreconf
-           (lambda _
-             ;; This was fixed in commit
-             ;; 0b1c9f7f2e4d0ff601f1de95ab8b2953f4d5dbc7, but there is no
-             ;; release with this fix.
-             (call-with-output-file "VERSION"
-               (lambda (port) (display ,version port)))
-             ;; See https://github.com/BIMSBbioinfo/pigx_chipseq/issues/176
-             (substitute* "m4/ax_r_package.m4"
-               (("if\\(is.na\\(packageDescription\\(\"PKG\"\\)\\)\\)")
-                "if(system.file(package=\"PKG\") == \"\")"))
-             (invoke "autoreconf" "-vif")))
          (add-before 'configure 'set-PYTHONPATH
            (lambda _
              (setenv "PYTHONPATH" (getenv "GUIX_PYTHONPATH")))))))
@@ -10606,7 +10598,7 @@ expression report comparing samples in an easily configurable manner.")
            bedtools
            kentutils))
     (native-inputs
-     (list autoconf automake python-pytest))
+     (list python-pytest))
     (home-page "https://bioinformatics.mdc-berlin.de/pigx/")
     (synopsis "Analysis pipeline for ChIP sequencing experiments")
     (description "PiGX ChIPseq is an analysis pipeline for preprocessing, peak
@@ -10621,7 +10613,7 @@ in an easily configurable manner.")
 (define-public pigx-bsseq
   (package
     (name "pigx-bsseq")
-    (version "0.1.6")
+    (version "0.1.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/BIMSBbioinfo/pigx_bsseq/"
@@ -10629,8 +10621,7 @@ in an easily configurable manner.")
                                   "/pigx_bsseq-" version ".tar.gz"))
               (sha256
                (base32
-                "1dipikph0xdr8fp0h1flpafcrg60y4aabljg8fl1v92j3gxdggmw"))
-              (patches (search-patches "pigx-bsseq-no-citeproc.patch"))))
+                "1hfiignq3410dbl6f67vc6zr69abknpcgxixx475dspky2jb5lyn"))))
     (build-system gnu-build-system)
     (arguments
      `(;; TODO: tests currently require 12+GB of RAM.  See
@@ -10638,18 +10629,6 @@ in an easily configurable manner.")
        #:tests? #f
        #:phases
        (modify-phases %standard-phases
-         (add-before 'bootstrap 'autoreconf
-           (lambda _
-             ;; This was fixed in commit
-             ;; d56ac732524da659afbbb0972f7a87fa178ae58e, but there is no
-             ;; release with this fix.
-             (call-with-output-file "VERSION"
-               (lambda (port) (display ,version port)))
-             ;; https://github.com/BIMSBbioinfo/pigx_bsseq/issues/181
-             (substitute* "m4/ax_r_package.m4"
-               (("if\\(is.na\\(packageDescription\\(\"PKG\"\\)\\)\\)")
-                "if(system.file(package=\"PKG\") == \"\")"))
-             (invoke "autoreconf" "-vif")))
          (add-before 'configure 'set-PYTHONPATH
            (lambda _
              (setenv "PYTHONPATH" (getenv "GUIX_PYTHONPATH"))))
@@ -10661,7 +10640,7 @@ in an easily configurable manner.")
                      (search-input-directory inputs
                                              "share/zoneinfo")))))))
     (native-inputs
-     (list tzdata automake autoconf))
+     (list tzdata))
     (inputs
      (list coreutils
            sed
@@ -10705,7 +10684,7 @@ methylation and segmentation.")
 (define-public pigx-scrnaseq
   (package
     (name "pigx-scrnaseq")
-    (version "1.1.8")
+    (version "1.1.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/BIMSBbioinfo/pigx_scrnaseq/"
@@ -10713,23 +10692,11 @@ methylation and segmentation.")
                                   "/pigx_scrnaseq-" version ".tar.gz"))
               (sha256
                (base32
-                "1lc42hl8mz95kilh0z39s3wnv092mhm6vl2i394n0yfvdzk4f885"))))
+                "0adx7877c3lhlrzfid76i8bc829wcmzvrm0jx47gyid8mxqb7vqs"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (add-before 'bootstrap 'autoreconf
-           (lambda _
-             ;; This was fixed in commit
-             ;; c4ac067438ae9312b5786a72e2bfb3d795e3ec8a, but there is no
-             ;; release with this fix.
-             (call-with-output-file "VERSION"
-               (lambda (port) (display ,version port)))
-             ;; https://github.com/BIMSBbioinfo/pigx_scrnaseq/issues/59
-             (substitute* "m4/ax_r_package.m4"
-               (("if\\(is.na\\(packageDescription\\(\"PKG\"\\)\\)\\)")
-                "if(system.file(package=\"PKG\") == \"\")"))
-             (invoke "autoreconf" "-vif")))
          (add-before 'configure 'set-additional-environment-variables
            (lambda _
              ;; Needed because of loompy
@@ -10778,8 +10745,6 @@ methylation and segmentation.")
            r-singlecellexperiment
            r-stringr
            r-yaml))
-    (native-inputs
-     (list autoconf automake))
     (home-page "https://bioinformatics.mdc-berlin.de/pigx/")
     (synopsis "Analysis pipeline for single-cell RNA sequencing experiments")
     (description

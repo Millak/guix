@@ -398,6 +398,11 @@ the wrong hands.")
            #:phases
            #~(modify-phases %standard-phases
                (delete 'configure)      ; no configure script
+               (add-after 'unpack 'avoid-embedding-timestamp
+                 ;; Do not embed build timestamp
+                 (lambda _
+                   (substitute* "Makefile"
+                     (("shell date") "shell true"))))
                (add-after 'install 'install:static
                  (lambda _
                    (with-directory-excursion #$output

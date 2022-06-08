@@ -5871,8 +5871,10 @@ based on filters.")
            (lambda _
              (invoke "pytest" "--benchmark-skip" "-k"
                      ;; Those tests need internet access
-                     "not test_check and not test_valid_value_check \
-and not test_override_app_level"))))))
+                     (string-join
+                      '("not test_check and not test_valid_value_check \
+and not test_override_app_level"
+                        "not test_redirect") " and ")))))))
     (home-page "https://github.com/python-restx/flask-restx")
     (synopsis
      "Framework for fast, easy and documented API development with Flask")
@@ -7069,17 +7071,22 @@ provides well-defined APIs to talk to websites lacking one.")
         (base32 "07fhcjiyif80z1vyh35za29sqx1mmqh568jrbrrs675j4a797sj1"))))
     (build-system python-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'loosen-requirements
-                    (lambda _
-                      ;; Don't pin specific versions of dependencies.
-                      (substitute* "requirements.txt"
-                        (("^sqlalchemy[=<>].*") "sqlalchemy\n")
-                        (("^marshmallow[=<>].*") "marshmallow\n")
-                        (("^Flask[=<>].*") "Flask\n"))))
-                  (replace 'check
-                    (lambda _
-                      (invoke "pytest" "-vv"))))))
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'loosen-requirements
+           (lambda _
+             ;; Don't pin specific versions of dependencies.
+             (substitute* "requirements.txt"
+               (("^sqlalchemy[=<>].*") "sqlalchemy\n")
+               (("^marshmallow[=<>].*") "marshmallow\n")
+               (("^Flask[=<>].*") "Flask\n"))))
+         (replace 'check
+           (lambda _
+             (invoke "pytest" "-vv" "-k"
+                     ;; The following test fails for unknown reasons (see:
+                     ;; https://github.com/AdCombo/flask-combo-jsonapi/issues/66).
+                     "not test_get_list_with_simple_filter_\
+relationship_custom_qs_api"))))))
     (propagated-inputs
      (list python-flask
            python-marshmallow
@@ -7090,7 +7097,9 @@ provides well-defined APIs to talk to websites lacking one.")
            python-simplejson
            python-six))
     (native-inputs
-     (list python-coverage python-coveralls python-pytest
+     (list python-coverage
+           python-coveralls
+           python-pytest
            python-pytest-runner))
     (home-page "https://github.com/AdCombo/flask-combo-jsonapi")
     (synopsis "Flask extension to quickly create JSON:API 1.0 REST Web APIs")

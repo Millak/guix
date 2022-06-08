@@ -303,7 +303,15 @@ applications and libraries.  It is used by AqBanking.")
     (arguments
      `(;; Parallel building fails because aqhbci is required before it's
        ;; built.
-       #:parallel-build? #f))
+       #:parallel-build? #f
+       #:phases
+       (modify-phases %standard-phases
+         ;; Embed the package version instead of the build date
+         (add-after 'unpack 'use-version-instead-of-date
+           (lambda _
+             (substitute*
+                 "src/libs/plugins/backends/aqhbci/header.xml.in"
+               (("@DATETIME@") ,version)))))))
     (propagated-inputs
      (list gwenhywfar))
     (inputs

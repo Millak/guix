@@ -156,6 +156,31 @@ library
   Exposed-Modules:
     Test.QuickCheck.Exception")
 
+(define test-read-cabal-2
+  "name: test-me
+common defaults
+    if os(foobar) { cc-options: -DBARBAZ }
+") ; Intentional newline.
+
+;; Test opening bracket on new line.
+(define test-read-cabal-brackets-newline
+  "name: test-me
+common defaults
+    build-depends:
+    {  foobar
+    ,  barbaz
+    }
+")
+
+;; Test library with (since Cabal 2.0) and without names.
+(define test-read-cabal-library-name
+  "name: test-me
+library foobar
+    build-depends: foo, bar
+library
+    build-depends: bar, baz
+")
+
 (test-begin "hackage")
 
 (define-syntax-rule (define-package-matcher name pattern)
@@ -309,6 +334,165 @@ executable cabal
 (test-assert "hackage->guix-package test flag executable"
   (eval-test-with-cabal test-cabal-flag-executable match-ghc-foo))
 
+;; There is no mandatory space between property name and value.
+(define test-cabal-property-no-space
+  "name:foo
+version:1.0.0
+homepage:http://test.org
+synopsis:synopsis
+description:description
+license:BSD3
+common bench-defaults
+  ghc-options:-Wall
+executable cabal
+  build-depends:
+    HTTP       >= 4000.2.5 && < 4000.3,
+    mtl        >= 2.0      && < 3
+")
+
+(test-assert "hackage->guix-package test properties without space"
+  (eval-test-with-cabal test-cabal-property-no-space match-ghc-foo))
+
+;; There may be no final newline terminating a property.
+(define test-cabal-no-final-newline
+"name: foo
+version: 1.0.0
+homepage: http://test.org
+synopsis: synopsis
+description: description
+license: BSD3
+executable cabal
+  build-depends: HTTP       >= 4000.2.5 && < 4000.3, mtl        >= 2.0      && < 3")
+
+(test-expect-fail 1)
+(test-assert "hackage->guix-package test without final newline"
+  (eval-test-with-cabal test-cabal-no-final-newline match-ghc-foo))
+
+;; Make sure internal libraries will not be part of the dependencies,
+;; ignore case.
+(define test-cabal-internal-library-ignored
+  "name: foo
+version: 1.0.0
+homepage: http://test.org
+synopsis: synopsis
+description: description
+license: BSD3
+executable cabal
+  build-depends:
+    HTTP       >= 4000.2.5 && < 4000.3,
+    internAl
+library internaL
+  build-depends: mtl        >= 2.0      && < 3
+")
+
+(test-assert "hackage->guix-package test internal libraries are ignored"
+  (eval-test-with-cabal test-cabal-internal-library-ignored match-ghc-foo))
+
+;; Check if-elif-else statements
+(define test-cabal-if
+  "name: foo
+version: 1.0.0
+homepage: http://test.org
+synopsis: synopsis
+description: description
+license: BSD3
+library
+  if os(first)
+    Build-depends: ghc-c
+")
+
+(define test-cabal-else
+  "name: foo
+version: 1.0.0
+homepage: http://test.org
+synopsis: synopsis
+description: description
+license: BSD3
+library
+  if os(first)
+    Build-depends: ghc-a
+  else
+    Build-depends: ghc-c
+")
+
+(define test-cabal-elif
+  "name: foo
+version: 1.0.0
+homepage: http://test.org
+synopsis: synopsis
+description: description
+license: BSD3
+library
+  if os(first)
+    Build-depends: ghc-a
+  elif os(second)
+    Build-depends: ghc-b
+  elif os(guix)
+    Build-depends: ghc-c
+  elif os(third)
+    Build-depends: ghc-d
+  else
+    Build-depends: ghc-e
+")
+
+;; Try the same with different bracket styles
+(define test-cabal-elif-brackets
+  "name: foo
+version: 1.0.0
+homepage: http://test.org
+synopsis: synopsis
+description: description
+license: BSD3
+library
+  if os(first) {
+    Build-depends: ghc-a
+  }
+  elif os(second)
+    Build-depends: ghc-b
+  elif os(guix) { Build-depends: ghc-c }
+  elif os(third) {
+    Build-depends: ghc-d }
+  elif os(fourth)
+  {
+    Build-depends: ghc-d
+  } else
+    Build-depends: ghc-e
+")
+
+(define-package-matcher match-ghc-elif
+  ('package
+    ('name "ghc-foo")
+    ('version "1.0.0")
+    ('source
+     ('origin
+       ('method 'url-fetch)
+       ('uri ('hackage-uri "foo" 'version))
+       ('sha256
+        ('base32
+         (? string? hash)))))
+    ('build-system 'haskell-build-system)
+    ('inputs ('list 'ghc-c))
+    ('home-page "http://test.org")
+    ('synopsis (? string?))
+    ('description (? string?))
+    ('license 'license:bsd-3)))
+
+(test-assert "hackage->guix-package test lonely if statement"
+  (eval-test-with-cabal test-cabal-else match-ghc-elif
+                        #:cabal-environment '(("os" . "guix"))))
+
+(test-assert "hackage->guix-package test else statement"
+  (eval-test-with-cabal test-cabal-else match-ghc-elif
+                        #:cabal-environment '(("os" . "guix"))))
+
+(test-assert "hackage->guix-package test elif statement"
+  (eval-test-with-cabal test-cabal-elif match-ghc-elif
+                        #:cabal-environment '(("os" . "guix"))))
+
+(test-assert "hackage->guix-package test elif statement with brackets"
+  (eval-test-with-cabal test-cabal-elif-brackets match-ghc-elif
+                        #:cabal-environment '(("os" . "guix"))))
+
 ;; Check Hackage Cabal revisions.
 (define test-cabal-revision
   "name: foo
@@ -352,7 +536,7 @@ executable cabal
 (test-assert "read-cabal test 1"
   (match (call-with-input-string test-read-cabal-1 read-cabal)
     ((("name" ("test-me"))
-      ('section 'library
+      ('section 'library #f
                 (('if ('flag "base4point8")
                       (("build-depends" ("base >= 4.8 && < 5")))
                       (('if ('flag "base4")
@@ -366,6 +550,35 @@ executable cabal
                       ())
                  ("build-depends" ("containers"))
                  ("exposed-modules" ("Test.QuickCheck.Exception")))))
+     #t)
+    (x (pk 'fail x #f))))
+
+(test-assert "read-cabal test: if brackets on the same line"
+  (match (call-with-input-string test-read-cabal-2 read-cabal)
+    ((("name" ("test-me"))
+        ('section 'common "defaults"
+          (('if ('os "foobar")
+               (("cc-options" ("-DBARBAZ ")))
+               ()))))
+     #t)
+    (x (pk 'fail x #f))))
+
+(test-expect-fail 1)
+(test-assert "read-cabal test: property brackets on new line"
+  (match (call-with-input-string test-read-cabal-brackets-newline read-cabal)
+    ((("name" ("test-me"))
+        ('section 'common "defaults"
+          (("build-depends" ("foobar ,  barbaz")))))
+     #t)
+    (x (pk 'fail x #f))))
+
+(test-assert "read-cabal test: library name"
+  (match (call-with-input-string test-read-cabal-library-name read-cabal)
+    ((("name" ("test-me"))
+        ('section 'library "foobar"
+          (("build-depends" ("foo, bar"))))
+        ('section 'library #f
+          (("build-depends" ("bar, baz")))))
      #t)
     (x (pk 'fail x #f))))
 

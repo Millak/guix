@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2022 Simon Tournier <zimon.toutoune@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -73,6 +74,20 @@
     (call-with-output-file (string-append cache "/last-expiry-cleanup")
       (lambda (port)
         (display 0 port)))))
+
+(test-equal "maybe-remove-expired-cache-entries, empty cache"
+  '("a" "b" "c")
+  (test-cache-cleanup cache
+    (call-with-output-file (string-append cache "/last-expiry-cleanup")
+      (lambda (port)
+        (display "" port)))))
+
+(test-equal "maybe-remove-expired-cache-entries, corrupted cache"
+  '("a" "b" "c")
+  (test-cache-cleanup cache
+    (call-with-output-file (string-append cache "/last-expiry-cleanup")
+      (lambda (port)
+        (display "1\"34657890" port)))))
 
 (test-end "cache")
 

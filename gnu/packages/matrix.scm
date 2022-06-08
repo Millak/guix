@@ -211,7 +211,7 @@ homeserver and generally help bootstrap the ecosystem.")
      (list python-aiofiles
            python-aiohttp
            python-aiohttp-socks
-           python-atomicwrites-1.4
+           python-atomicwrites
            python-cachetools
            python-future
            python-h11
