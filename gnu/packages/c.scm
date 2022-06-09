@@ -3,7 +3,7 @@
 ;;; Copyright © 2016, 2017, 2018, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018, 2020–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2019 Pierre Neidhardt <mail@ambrevar.xyz>
-;;; Copyright © 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019, 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
@@ -399,7 +399,7 @@ as dictionaries, skip lists, and memory pools.")
 (define-public packcc
   (package
     (name "packcc")
-    (version "1.5.0")
+    (version "1.7.2")
     (home-page "https://github.com/arithy/packcc")
     (source (origin
               (method git-fetch)
@@ -409,7 +409,7 @@ as dictionaries, skip lists, and memory pools.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1n9ivsa6b9ps2jbh34bycjqjpbwbk85l4jjg46pfhqxzz96793wy"))))
+                "1mb6ys5ylvjz0xpq6769ir98s80p98s9ahd0c9k8p2ra1w20vz33"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
@@ -433,8 +433,7 @@ as dictionaries, skip lists, and memory pools.")
                         (install-file "release/bin/packcc"
                                       (string-append out "/bin"))
                         (install-file "../../README.md"
-                                      (string-append out "/share/doc/packcc"))
-                        #t))))))
+                                      (string-append out "/share/doc/packcc"))))))))
     (native-inputs
      (list bats))
     (synopsis "Packrat parser generator for C")
