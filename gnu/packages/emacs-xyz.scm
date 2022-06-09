@@ -296,7 +296,7 @@ e.g. emacs-geiser-guile for Guile.")
 (define-public emacs-geiser-guile
   (package
     (name "emacs-geiser-guile")
-    (version "0.23")
+    (version "0.23.2")
     (source
      (origin
        (method git-fetch)
@@ -305,13 +305,19 @@ e.g. emacs-geiser-guile for Guile.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1v9f90smnk41nz1pjy5mwz199y8p4qar3llgaryzxr7s4wg2v9wi"))))
+        (base32 "18m5ldj4r4c2hxgvv5b4azl90r8az1kn5f3s913h971asyv4wx06"))))
     (build-system emacs-build-system)
     (arguments
      (list
       #:include #~(cons "^src/" %default-include)
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-geiser-guile-binary
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "geiser-guile.el"
+                (("\\(t \"guile\")")
+                 (format #f "(t ~s)"
+                         (search-input-file inputs "bin/guile"))))))
           (add-after 'make-autoloads 'patch-autoloads
             (lambda _
               (substitute* (string-append (elpa-directory #$output)
@@ -321,11 +327,9 @@ e.g. emacs-geiser-guile for Guile.")
                 (("\\(geiser-activate-implementation .*\\)" all)
                  (string-append
                   "(eval-after-load 'geiser-impl '" all ")"))))))))
-    (inputs
-     (list guile-3.0))
-    (propagated-inputs
-     (list emacs-geiser))
-    (home-page "https://nongnu.org/geiser/")
+    (inputs (list guile-3.0))
+    (propagated-inputs (list emacs-geiser))
+    (home-page "https://www.nongnu.org/geiser/")
     (synopsis "Guile Scheme support for Geiser")
     (description
      "This package adds support for the Guile Scheme implementation to Geiser,
