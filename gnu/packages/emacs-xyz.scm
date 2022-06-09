@@ -358,29 +358,52 @@ using geiser.")
       (home-page "https://github.com/xiaohanyu/ac-geiser"))))
 
 (define-public emacs-geiser-gauche
-  (package
-    (name "emacs-geiser-gauche")
-    (version "0.0.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitlab.com/emacs-geiser/gauche.git")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0rxncnzx7qgcpvc8nz0sd8r0hwrplazzraahdwhbpq0q6z8ywqgg"))))
-    (build-system emacs-build-system)
-    (arguments
-     `(#:include (cons "^geiser-gauche\\.scm$" %default-include)))
-    (native-inputs
-     (list emacs-geiser))
-    (home-page "https://gitlab.com/emacs-geiser/gauche")
-    (synopsis "Gauche Scheme support for Geiser")
-    (description
-     "This package adds support for the Gauche Scheme implementation to Geiser,
+  ;; The latest 0.14 release has an unbound variable (geiser-scheme-dir).
+  (let ((commit "96fa06aaeef18cc1b3b519e83dbb7be09eeb0d07")
+        (revision "0"))
+    (package
+      (name "emacs-geiser-gauche")
+      (version (git-version "0.14" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.com/emacs-geiser/gauche.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1ppracwfl1snq0ifdlyxpdlv7fbn3pbxm1hd1ihgqivii5nbya9r"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:include '(cons "^geiser-gauche\\.scm$" %default-include)
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-geiser-gauche-binary
+              (lambda* (#:key inputs #:allow-other-keys)
+                (emacs-substitute-sexps "geiser-gauche.el"
+                  ("geiser-custom--defcustom geiser-gauche-binary"
+                   (search-input-file inputs "bin/gosh")))))
+            (add-after 'make-autoloads 'patch-autoloads
+              (lambda _
+                (substitute* (string-append (elpa-directory #$output)
+                                            "/geiser-gauche-autoloads.el")
+                  ;; Activating implementations fails when Geiser is not yet
+                  ;; loaded, so let's defer that until it is.
+                  (("\\(geiser-activate-implementation .*\\)" all)
+                   (string-append
+                    "(eval-after-load 'geiser-impl '" all ")"))
+                  (("\\(geiser-implementation-extension .*\\)" all)
+                   (string-append
+                    "(eval-after-load 'geiser-impl '" all ")"))))))))
+      (inputs (list gauche))
+      (propagated-inputs (list emacs-geiser))
+      (home-page "https://gitlab.com/emacs-geiser/gauche")
+      (synopsis "Gauche Scheme support for Geiser")
+      (description
+       "This package adds support for the Gauche Scheme implementation to Geiser,
 a generic Scheme interaction mode for the GNU Emacs editor.")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public emacs-geiser-racket
   (package
