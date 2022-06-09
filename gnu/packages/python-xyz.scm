@@ -12357,7 +12357,11 @@ libmagic.")))
                            ;; This test validates that 'pydevd' is not in the
                            ;; exception message, but it is due to being part
                            ;; of the build file name present in the message.
-                           "and not test_evaluate_exception_trace")))))
+                           "and not test_evaluate_exception_trace "
+                           ;; These fail on systems with YAMA LSM’s ptrace
+                           ;; scope > 0. Upstream issue:
+                           ;; https://github.com/fabioz/PyDev.Debugger/issues/218
+                           "and not test_attach_to_pid")))))
             (add-after 'install 'install-attach-binary
               (lambda _
                 (install-file "attach.so"
