@@ -568,6 +568,27 @@ editing @file{.hgignore} files used by the Mercurial version control
 system.")
       (license license:gpl3+))))
 
+(define-public emacs-platformio-mode
+  (package
+    (name "emacs-platformio-mode")
+    (version "0.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ZachMassia/PlatformIO-Mode")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ian50v9vaz7kqzn20bhqadq50h0l3zhjkmniinpz4q9klh7drh9"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-async emacs-projectile))
+    (home-page "https://github.com/zachmassia/platformio-mode")
+    (synopsis "Minor mode for building and uploading PlatformIO projects")
+    (description "This package provices an Emacs minor mode for building and
+uploading PlatformIO projects.")
+    (license license:gpl3+)))
+
 (define-public emacs-hyperbole
   (package
     (name "emacs-hyperbole")
