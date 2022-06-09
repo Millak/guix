@@ -390,7 +390,7 @@ features that are not supported by the standard @code{stdio} implementation.")
 (define-public universal-ctags
   (package
     (name "universal-ctags")
-    (version "5.9.20210509.0")
+    (version "5.9.20220605.0")
     (source
      (origin
        (method git-fetch)
@@ -400,14 +400,14 @@ features that are not supported by the standard @code{stdio} implementation.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1sq94bnbzr40zwihfnsna759bbak0lw27j0yn12iwpg4xgb4hhwp"))
+         "0mri7m2qsw5pyq1ajapawvxn2cdrzg1vi4w2bdq0z4ws4q03lj7k"))
        (modules '((guix build utils)))
        (snippet
         '(begin
            ;; Remove the bundled PackCC and associated build rules.
            (substitute* "Makefile.am"
              (("^PACKCC = .*")
-              "PACKCC = packcc")
+              "PACKCC = packcc\n")
              (("\\$\\(PACKCC_FILES\\)")
               "")
              (("\\$\\(PEG_SRCS\\) \\$\\(PEG_HEADS\\): \\$\\(PACKCC\\)")
@@ -437,7 +437,7 @@ features that are not supported by the standard @code{stdio} implementation.")
     (native-inputs
      (list autoconf automake packcc perl pkg-config))
     (inputs
-     (list jansson libseccomp libxml2 libyaml))
+     (list jansson libseccomp libxml2 libyaml pcre2))
     (home-page "https://ctags.io/")
     (synopsis "Generate tag files for source code")
     (description
