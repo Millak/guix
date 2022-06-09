@@ -247,7 +247,7 @@
 (define-public emacs-geiser
   (package
     (name "emacs-geiser")
-    (version "0.23.1")
+    (version "0.23.2")
     (source
      (origin
        (method git-fetch)
@@ -256,7 +256,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lvnk71fb4qkh8a7h7spsdhmc9nnj1lwgp9wr3c2fgzjqsl62kgr"))))
+        (base32 "0p5cwx0xwva4ajgj8hnrk8bx6n3hv1z7aqs4zivp81crnq4077yw"))))
     (build-system emacs-build-system)
     (arguments
      '(#:phases
@@ -278,7 +278,7 @@
      (list texinfo))
     (propagated-inputs
      (list emacs-project emacs-transient))
-    (home-page "https://nongnu.org/geiser/")
+    (home-page "https://www.nongnu.org/geiser/")
     (synopsis "Collection of Emacs modes for Scheme hacking")
     (description
      "Geiser is a collection of Emacs major and minor modes that conspire with
