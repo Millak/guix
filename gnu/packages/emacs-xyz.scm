@@ -385,7 +385,7 @@ a generic Scheme interaction mode for the GNU Emacs editor.")
 (define-public emacs-geiser-racket
   (package
     (name "emacs-geiser-racket")
-    (version "0.16")
+    (version "1.0")
     (source
      (origin
        (method git-fetch)
@@ -394,13 +394,19 @@ a generic Scheme interaction mode for the GNU Emacs editor.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1aqsvmk1hi7kc3j4h8xlza7c6rwm71v98fv5wpw8kmyj9vsp49wx"))))
+        (base32 "04gwd9qa0785zfr6m9a5443ilgvyz05l06cb1waicf83sgp8xl32"))))
     (build-system emacs-build-system)
     (arguments
      (list
       #:include #~(cons "^src/" %default-include)
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-geiser-racket-binary
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "geiser-racket.el"
+                (("\\(t \"racket\")")
+                 (format #f "(t ~s)"
+                         (search-input-file inputs "bin/racket"))))))
           (add-after 'make-autoloads 'patch-autoloads
             (lambda _
               (substitute* (string-append (elpa-directory #$output)
@@ -410,14 +416,12 @@ a generic Scheme interaction mode for the GNU Emacs editor.")
                 (("\\(geiser-activate-implementation .*\\)" all)
                  (string-append
                   "(eval-after-load 'geiser-impl '" all ")"))
-	        (("\\(geiser-implementation-extension .*\\)" all)
+                (("\\(geiser-implementation-extension .*\\)" all)
                  (string-append
                   "(eval-after-load 'geiser-impl '" all ")"))))))))
-    (inputs
-     (list racket))
-    (propagated-inputs
-     (list emacs-geiser))
-    (home-page "https://nongnu.org/geiser/")
+    (inputs (list racket))
+    (propagated-inputs (list emacs-geiser))
+    (home-page "https://www.nongnu.org/geiser/")
     (synopsis "Racket support for Geiser")
     (description
      "This package adds support for the Racket implementation to Geiser,
