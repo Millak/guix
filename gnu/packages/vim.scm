@@ -461,7 +461,7 @@ trouble using them, because you do not have to remember each snippet name.")
 (define-public vim-fugitive
   (package
     (name "vim-fugitive")
-    (version "3.6")
+    (version "3.7")
     (source
       (origin
         (method git-fetch)
@@ -470,7 +470,7 @@ trouble using them, because you do not have to remember each snippet name.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "17c3wzqkbzbf0nmlxpgk90yyv3d09209fqxqysand8bzb1cbfwzn"))))
+         (base32 "138290g2aph1jjhaza6biky5qi4ka6435s01bwxivllgb53g3irc"))))
     (build-system copy-build-system)
     (arguments
      '(#:install-plan
