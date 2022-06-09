@@ -104,6 +104,7 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages tcl)
+  #:use-module (gnu packages tex)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages uglifyjs)
@@ -30466,7 +30467,26 @@ package online.")
     (properties `((upstream-name . "prereg")))
     (build-system r-build-system)
     (propagated-inputs
-      (list r-rmarkdown))
+      (list r-rmarkdown
+            ;; The package provides a custom LaTex template in
+            ;; inst/rmd/prereg_form.tex, which depends on these packages:
+            texlive-amsmath
+            texlive-booktabs
+            texlive-etoolbox
+            texlive-generic-iftex
+            texlive-latex-fancyhdr
+            texlive-latex-fancyvrb
+            texlive-latex-geometry
+            texlive-latex-graphics
+            texlive-latex-threeparttable
+            texlive-latex-titlesec
+            texlive-latex-upquote
+            texlive-listings
+            texlive-polyglossia
+            texlive-titling
+            texlive-tools
+            texlive-ulem
+            (texlive-updmap.cfg (list texlive-amsfonts texlive-lm))))
     (home-page "https://github.com/crsh/prereg")
     (synopsis
       "R Markdown Templates to preregister Scientific Studies")
