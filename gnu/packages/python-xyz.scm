@@ -12406,6 +12406,7 @@ and other @acronym{IDEs, Integrated Development Environments}.")
     (build-system python-build-system)
     (arguments
      (list
+      #:tests? #f ; Fail on systems with YAMA LSM’s ptrace scope > 0.
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-sh-in-tests
@@ -12426,17 +12427,18 @@ and other @acronym{IDEs, Integrated Development Environments}.")
               (setenv "DEBUGPY_BUNDLING_DISABLED" "1")))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
-              (invoke "pytest" "-vv"
-                      "-n" (number->string (parallel-job-count))
-                      "-k"
-                      (string-append
-                       ;; These tests cannot be run in parallel because their
-                       ;; test data would not be copied by xdist and lead to
-                       ;; import errors. (see:
-                       ;; https://github.com/microsoft/debugpy/issues/342 and
-                       ;; https://github.com/microsoft/debugpy/issues/880).
-                       "not test_custom_python_args "
-                       "and not test_autokill ")))))))
+              (when tests?
+                (invoke "pytest" "-vv"
+                        "-n" (number->string (parallel-job-count))
+                        "-k"
+                        (string-append
+                         ;; These tests cannot be run in parallel because their
+                         ;; test data would not be copied by xdist and lead to
+                         ;; import errors. (see:
+                         ;; https://github.com/microsoft/debugpy/issues/342 and
+                         ;; https://github.com/microsoft/debugpy/issues/880).
+                         "not test_custom_python_args "
+                         "and not test_autokill "))))))))
     (native-inputs
      ;; See: https://raw.githubusercontent.com/microsoft/debugpy/
      ;;      main/tests/requirements.txt.
