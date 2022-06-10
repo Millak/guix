@@ -830,13 +830,13 @@ servers supporting the protocol.")
 (define-public python-pybedtools
   (package
     (name "python-pybedtools")
-    (version "0.8.2")
+    (version "0.9.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pybedtools" version))
               (sha256
                (base32
-                "0wc7z8g8prgdx7n5chjva2fdq03wiwhqisjjxzkjg1j5k5ha7151"))))
+                "18rhzk08d3rpxhi5xh6pqg64x6v5q3daw6y3v54k85v4swncjrwj"))))
     (build-system python-build-system)
     (arguments
      `(#:modules ((srfi srfi-26)
@@ -896,11 +896,16 @@ servers supporting the protocol.")
     (home-page "https://pythonhosted.org/pybedtools/")
     (synopsis "Python wrapper for BEDtools programs")
     (description
-     "pybedtools is a Python wrapper for Aaron Quinlan's BEDtools programs,
+     "This package is a Python wrapper for Aaron Quinlan's BEDtools programs,
 which are widely used for genomic interval manipulation or \"genome algebra\".
 pybedtools extends BEDTools by offering feature-level manipulations from with
 Python.")
-    (license license:gpl2+)))
+    ;; pypi lists GPLv2 in the PKG-INFO and website, but was relicensed in
+    ;; version 0.9.0 and the LICENSE.txt is consistant with the source code.
+    ;;
+    ;; pybedtools/include/gzstream.cpp and pybedtools/include/gzstream.h are
+    ;; licensed lgpl2.1+
+    (license (list license:expat license:lgpl2.1+))))
 
 (define-public python-biom-format
   (package
