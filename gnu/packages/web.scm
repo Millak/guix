@@ -57,6 +57,7 @@
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2022 cage <cage-dev@twistfold.it>
 ;;; Copyright © 2022 Pradana Aumars <paumars@courrier.dev>
+;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1451,9 +1452,7 @@ parser written in ANSI C and a small validating JSON generator.")
 and server WebSockets connections---a protocol layered above HTTP that allows
 for efficient socket-like bidirectional reliable communication channels.")
     (home-page "https://libwebsockets.org")
-
-    ;; This is LGPLv2.1-only with extra exceptions specified in 'LICENSE'.
-    (license license:lgpl2.1)))
+    (license license:expat)))
 
 (define-public wabt
   (package
