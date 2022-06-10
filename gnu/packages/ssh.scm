@@ -35,9 +35,11 @@
 
 (define-module (gnu packages ssh)
   #:use-module (gnu packages)
+  #:use-module (gnu packages admin)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages elf)
@@ -785,31 +787,38 @@ shell services and remote host selection.")
 (define-public python-asyncssh
   (package
     (name "python-asyncssh")
-    (version "2.7.1")
+    (version "2.11.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asyncssh" version))
        (sha256
         (base32
-         "0lnhh2h1mj79j66ni883s9f3xldnbjb10vh80g24b7m003mm524c"))))
+         "0mkvyv2fmbdfnfdh7g2im0gxnp8hwxv5g1xdazfsipd9ggknrhsr"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-cryptography python-pyopenssl python-gssapi
-           python-bcrypt))
+           python-bcrypt python-typing-extensions))
     (native-inputs
-     (list openssh openssl))
+     (list openssh openssl python-fido2 python-aiofiles netcat
+           python-pytest))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'disable-tests
            (lambda* _
+             (substitute* "tests/test_connection.py"
+               ;; nc is always available.
+               (("which nc") "true"))
              (substitute* "tests/test_agent.py"
                ;; TODO Test fails for unknown reason
                (("(.+)async def test_confirm" all indent)
                 (string-append indent "@unittest.skip('disabled by guix')\n"
-                               indent "async def test_confirm")))
-             #t)))))
+                               indent "async def test_confirm")))))
+         (replace 'check
+           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-vv")))))))
     (home-page "https://asyncssh.readthedocs.io/")
     (synopsis "Asynchronous SSHv2 client and server library for Python")
     (description
