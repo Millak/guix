@@ -3086,7 +3086,13 @@ server.")
               (chdir "miniupnpc")
               (setenv "CC" #$(cc-for-target))
               (substitute* "Makefile"
-                (("/bin/sh") (search-input-file inputs "/bin/sh"))))))))
+                (("/bin/sh") (search-input-file inputs "/bin/sh")))))
+          (add-before 'subdir 'remove-kernel-version
+            ;; Avoid embedding the running kernel version for reproducible builds
+            (lambda _
+              (substitute*
+                  "miniupnpc/updateminiupnpcstrings.sh"
+                (("^OS_VERSION=`uname -r`") "OS_VERSION=Guix")))))))
     (inputs (list python))              ;we are building a Python extension
     (synopsis "UPnP client for Python")
     (description "Miniupnpc is a client library for Python programs to set up
