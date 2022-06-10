@@ -113,6 +113,7 @@
 ;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
 ;;; Copyright © 2022 Luis Felipe López Acevedo <luis.felipe.la@protonmail.com>
 ;;; Copyright © 2022 Thomas Albers Raviola <thomas@thomaslabs.org>
+;;; Copyright © 2022 Haider Mirza <haider@haider.gq>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -18638,6 +18639,28 @@ files, allowing for actions to be performed based on search criteria.")
 @uref{http://www.bing.com/dict}.  It supports English to Chinese, and
 Chinese to English.")
     (license license:gpl3+)))
+
+(define-public emacs-org-auto-tangle
+  (package
+    (name "emacs-org-auto-tangle")
+    (version "0.4.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/yilkalargaw/org-auto-tangle")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1zb7vcmhmjiqpbbhqrqci689rnpn10p985cs5jk9sgg66xsbrgs3"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-async))
+    (home-page "https://github.com/yilkalargaw/org-auto-tangle")
+    (synopsis "Automatically tangle code blocks on save")
+    (description
+     "@code{org-auto-tangle} allows you to automatically tangle code blocks
+whenever saving an @code{org-mode} file.")
+    (license license:bsd-2)))
 
 (define-public emacs-org-auto-expand
   (let ((commit "4938d5f6460e2f8f051ba9ac000b291bfa43ef62")
