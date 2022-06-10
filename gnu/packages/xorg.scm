@@ -2776,14 +2776,14 @@ X server.")
 (define-public xf86-video-dummy
   (package
     (name "xf86-video-dummy")
-    (version "0.3.8")
+    (version "0.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://xorg/individual/driver/"
-                           "xf86-video-dummy-" version ".tar.bz2"))
+                           "xf86-video-dummy-" version ".tar.xz"))
        (sha256
-        (base32 "1fcm9vwgv8wnffbvkzddk4yxrh3kc0np6w65wj8k88q7jf3bn4ip"))))
+        (base32 "0nhy9sd49ig9z00mp9sjbdkfzjgsm71szwjqnry8qn60r3jym377"))))
     (build-system gnu-build-system)
     (inputs (list xorg-server))
     (native-inputs (list pkg-config))
