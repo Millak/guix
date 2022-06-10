@@ -2298,17 +2298,17 @@ left-handed version of the cursors is also included.")
 (define-public xdpyinfo
   (package
     (name "xdpyinfo")
-    (version "1.3.2")
+    (version "1.3.3")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/app/xdpyinfo-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "0ldgrj4w2fa8jng4b3f3biaj0wyn8zvya88pnk70d7k12pcqw8rh"))))
+            "01n21ygbvzycjasv97rk33b14qdbshr1pkxysqvfx61y5zb5yv9m"))))
     (build-system gnu-build-system)
     (inputs
       (list xorgproto
