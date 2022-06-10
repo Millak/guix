@@ -25543,7 +25543,7 @@ The complete set of available configuration options is detailed below.
 Available @code{jami-configuration} fields are:
 
 @table @asis
-@item @code{jamid} (default: @code{libjami}) (type: package)
+@item @code{libjami} (default: @code{libjami}) (type: package)
 The Jami daemon package to use.
 
 @item @code{dbus} (default: @code{dbus-for-jami}) (type: package)

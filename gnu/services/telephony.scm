@@ -49,7 +49,7 @@
             jami-account-name-server-uri
 
             jami-configuration
-            jami-configuration-jamid
+            jami-configuration-libjami
             jami-configuration-dbus
             jami-configuration-enable-logging?
             jami-configuration-debug?
@@ -228,7 +228,7 @@ SET-ACCOUNT-DETAILS."
 (define-maybe/no-serialization jami-account-list)
 
 (define-configuration/no-serialization jami-configuration
-  (jamid
+  (libjami
    (file-like libjami)
    "The Jami daemon package to use.")
   (dbus
@@ -266,8 +266,8 @@ consistent state."))
   "Derive the command line arguments to used to launch the Jami daemon from
 CONFIG, a <jami-configuration> object."
   (match-record config <jami-configuration>
-    (jamid dbus enable-logging? debug? auto-answer?)
-    `(,(file-append jamid "/libexec/jamid")
+    (libjami dbus enable-logging? debug? auto-answer?)
+    `(,(file-append libjami "/libexec/jamid")
       "--persistent"                    ;stay alive after client quits
       ,@(if enable-logging?
             '()                         ;logs go to syslog by default
@@ -302,7 +302,7 @@ CONFIG, a <jami-configuration> object."
 
 (define (jami-shepherd-services config)
   "Return a <shepherd-service> running the Jami daemon."
-  (let* ((jamid (jami-configuration-jamid config))
+  (let* ((libjami (jami-configuration-libjami config))
          (nss-certs (jami-configuration-nss-certs config))
          (dbus (jami-configuration-dbus config))
          (dbus-daemon (file-append dbus "/bin/dbus-daemon"))
@@ -524,7 +524,7 @@ argument, either a registered username or the fingerprint of the account.")
                    #:environment-variables
                    ;; This is so that the cx.ring.Ring service D-Bus
                    ;; definition is found by dbus-daemon.
-                   (list (string-append "XDG_DATA_DIRS=" #$jamid "/share"))))
+                   (list (string-append "XDG_DATA_DIRS=" #$libjami "/share"))))
                (stop #~(make-kill-destructor)))
 
               (shepherd-service
