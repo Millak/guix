@@ -2066,14 +2066,14 @@ legacy X clients.")
 (define-public xcalc
   (package
     (name "xcalc")
-    (version "1.1.0")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://xorg/individual/app/"
                            "xcalc-" version ".tar.gz"))
        (sha256
-        (base32 "0c768lh0nh28ram9ldldhaf51024fngc589v4pjmf3lxmzcihr58"))))
+        (base32 "0fwgnva716ymnrf8f4lvnqlyikf5c837054sxxlf3l5jpy4wh6cj"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -2083,8 +2083,7 @@ legacy X clients.")
                      (substitute* "Makefile"
                        (("^appdefaultdir = .*$")
                         (string-append "appdefaultdir = " %output
-                                       ,%app-defaults-dir "\n")))
-                     #t)))))
+                                       ,%app-defaults-dir "\n"))))))))
     (inputs
      (list libxaw))
     (native-inputs
