@@ -2772,6 +2772,12 @@ updates to the zebra daemon.")
          #:tests? #f ; No test suite.
          #:phases
          (modify-phases %standard-phases
+           (add-after 'unpack 'use-source-date-epoch-in-manpages
+             ;; For reproducible builds
+             (lambda _
+               (substitute* "Makefile"
+                 (("date --iso-8601")
+                  "date --iso-8601 --utc --date=@$(SOURCE_DATE_EPOCH)"))))
            (delete 'configure) ; No ./configure script.
            (add-before 'build 'patch-paths
              (lambda _
