@@ -2485,15 +2485,15 @@ including most mice, keyboards, tablets and touchscreens.")
 (define-public xf86-input-libinput
   (package
     (name "xf86-input-libinput")
-    (version "1.1.0")
+    (version "1.2.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "mirror://xorg/individual/driver/"
-                    name "-" version ".tar.bz2"))
+                    name "-" version ".tar.xz"))
               (sha256
                (base32
-                "05ldqr10f2rrnshyk3lc773rz0gp3ccdzwa8n7lsc94i850jl7g1"))))
+                "06wpgqga4kc5ph5bd5cabfg0gdcdkbd65jrdx467qcfvkmdxnlc1"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags
