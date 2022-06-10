@@ -13,12 +13,13 @@
    (service home-bash-service-type
             (home-bash-configuration
              (guix-defaults? #t)
-             (bash-profile '("\
-export HISTFILE=$XDG_CACHE_HOME/.bash_history"))))
+             (bash-profile (list (plain-file "bash-profile" "\
+export HISTFILE=$XDG_CACHE_HOME/.bash_history")))))
 
    (simple-service 'test-config
-                   home-files-service-type
-                   (list `("config/test.conf"
+                   home-xdg-configuration-files-service-type
+                   (list `("test.conf"
                            ,(plain-file "tmp-file.txt"
-                                        "the content of ~/.config/test.conf")))))))
+                                        "the content of
+                                          ~/.config/test.conf")))))))
 
