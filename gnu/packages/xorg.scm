@@ -5680,7 +5680,7 @@ Intrinsics (Xt) Library.")
 (define-public twm
   (package
     (name "twm")
-    (version "1.0.11")
+    (version "1.0.12")
     (source
      (origin
        (method url-fetch)
@@ -5688,7 +5688,7 @@ Intrinsics (Xt) Library.")
                            version ".tar.xz"))
        (sha256
         (base32
-         "1iv8kdb18n9vk3is5fyh6l40ipq9mkgx8ppj86byf464vr1ais7l"))))
+         "1r5gfv1gvcjn39v7n6znpnvifwhlw2zf8gfrxq8vph84vva03wma"))))
     (build-system gnu-build-system)
     (inputs
      (list libxt libxmu libxext xorgproto))
