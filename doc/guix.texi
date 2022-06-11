@@ -39296,6 +39296,7 @@ services)}.
 * Shells: Shells Home Services.          POSIX shells, Bash, Zsh.
 * Mcron: Mcron Home Service.             Scheduled User's Job Execution.
 * Shepherd: Shepherd Home Service.       Managing User's Daemons.
+* SSH: Secure Shell.                     Setting up the secure shell client.
 * Desktop: Desktop Home Services.        Services for graphical environments.
 @end menu
 @c In addition to that Home Services can provide
@@ -39616,7 +39617,7 @@ GNU@tie{}mcron, a daemon to run jobs at scheduled times (@pxref{Top,,,
 mcron, GNU@tie{}mcron}).  The information about system's mcron is
 applicable here (@pxref{Scheduled Job Execution}), the only difference
 for home services is that they have to be declared in a
-@code{home-envirnoment} record instead of an @code{operating-system}
+@code{home-environment} record instead of an @code{operating-system}
 record.
 
 @defvr {Scheme Variable} home-mcron-service-type
@@ -39683,6 +39684,179 @@ You should probably use the service extension
 mechanism instead (@pxref{Shepherd Services}).
 @end table
 @end deftp
+
+@node Secure Shell
+@subsection Secure Shell
+
+@cindex secure shell client, configuration
+@cindex SSH client, configuration
+The @uref{https://www.openssh.com, OpenSSH package} includes a client,
+the @command{ssh} command, that allows you to connect to remote machines
+using the @acronym{SSH, secure shell} protocol.  With the @code{(gnu
+home services ssh)} module, you can set up OpenSSH so that it works in a
+predictable fashion, almost independently of state on the local machine.
+To do that, you instantiate @code{home-openssh-service-type} in your
+Home configuration, as explained below.
+
+@defvr {Scheme Variable} home-openssh-service-type
+This is the type of the service to set up the OpenSSH client.  It takes
+care of several things:
+
+@itemize
+@item
+providing a @file{~/.ssh/config} file based on your configuration so
+that @command{ssh} knows about hosts you regularly connect to and their
+associated parameters;
+
+@item
+providing a @file{~/.ssh/authorized_keys}, which lists public keys that
+the local SSH server, @command{sshd}, may accept to connect to this user
+account;
+
+@item
+optionally providing a @file{~/.ssh/known_hosts} file so that @file{ssh}
+can authenticate hosts you connect to.
+@end itemize
+
+Here is a sample configuration you could add to the @code{services}
+field of your @code{home-environment}:
+
+@lisp
+(home-openssh-configuration
+ (hosts (list (openssh-host (name "ci.guix.gnu.org")
+                            (user "charlie"))
+              (openssh-host (name "chbouib")
+                            (host-name "chbouib.example.org")
+                            (user "supercharlie")
+                            (port 10022))))
+ (authorized-keys (list (local-file "alice.pub"))))
+@end lisp
+
+The example above lists two hosts and their parameters.  For instance,
+running @command{ssh chbouib} will automatically connect to
+@code{chbouib.example.org} on port 10022, logging in as user
+@samp{supercharlie}.  Further, it marks the public key in
+@file{alice.pub} as authorized for incoming connections.
+
+The value associated with a @code{home-openssh-service-type} instance
+must be a @code{home-openssh-configuration} record, as describe below.
+@end defvr
+
+@deftp {Data Type} home-openssh-configuration
+This is the datatype representing the OpenSSH client and server
+configuration in one's home environment.  It contains the following
+fields:
+
+@table @asis
+@item @code{hosts} (default: @code{'()})
+A list of @code{openssh-host} records specifying host names and
+associated connection parameters (see below).  This host list goes into
+@file{~/.ssh/config}, which @command{ssh} reads at startup.
+
+@item @code{known-hosts} (default: @code{*unspecified*})
+This must be either:
+
+@itemize
+@item
+@code{*unspecified*}, in which case @code{home-openssh-service-type}
+leaves it up to @command{ssh} and to the user to maintain the list of
+known hosts at @file{~/.ssh/known_hosts}, or
+
+@item
+a list of file-like objects, in which case those are concatenated and
+emitted as @file{~/.ssh/known_hosts}.
+@end itemize
+
+The @file{~/.ssh/known_hosts} contains a list of host name/host key
+pairs that allow @command{ssh} to authenticate hosts you connect to and
+to detect possible impersonation attacks.  By default, @command{ssh}
+updates it in a @dfn{TOFU, trust-on-first-use} fashion, meaning that it
+records the host's key in that file the first time you connect to it.
+This behavior is preserved when @code{known-hosts} is set to
+@code{*unspecified*}.
+
+If you instead provide a list of host keys upfront in the
+@code{known-hosts} field, your configuration becomes self-contained and
+stateless: it can be replicated elsewhere or at another point in time.
+Preparing this list can be relatively tedious though, which is why
+@code{*unspecified*} is kept as a default.
+
+@item @code{authorized-keys} (default: @code{'()})
+This must be a list of file-like objects, each of which containing an
+SSH public key that should be authorized to connect to this machine.
+
+Concretely, these files are concatenated and made available as
+@file{~/.ssh/authorized_keys}.  If an OpenSSH server, @command{sshd}, is
+running on this machine, then it @emph{may} take this file into account:
+this is what @command{sshd} does by default, but be aware that it can
+also be configured to ignore it.
+@end table
+@end deftp
+
+@c %start of fragment
+
+@deftp {Data Type} openssh-host
+Available @code{openssh-host} fields are:
+
+@table @asis
+@item @code{name} (type: string)
+Name of this host declaration.
+
+@item @code{host-name} (type: maybe-string)
+Host name---e.g., @code{"foo.example.org"} or @code{"192.168.1.2"}.
+
+@item @code{address-family} (type: address-family)
+Address family to use when connecting to this host: one of
+@code{AF_INET} (for IPv4 only), @code{AF_INET6} (for IPv6 only), or
+@code{*unspecified*} (allowing any address family).
+
+@item @code{identity-file} (type: maybe-string)
+The identity file to use---e.g., @code{"/home/charlie/.ssh/id_ed25519"}.
+
+@item @code{port} (type: maybe-natural-number)
+TCP port number to connect to.
+
+@item @code{user} (type: maybe-string)
+User name on the remote host.
+
+@item @code{forward-x11?} (default: @code{#f}) (type: boolean)
+Whether to forward remote client connections to the local X11 graphical
+display.
+
+@item @code{forward-x11-trusted?} (default: @code{#f}) (type: boolean)
+Whether remote X11 clients have full access to the original X11
+graphical display.
+
+@item @code{forward-agent?} (default: @code{#f}) (type: boolean)
+Whether the authentication agent (if any) is forwarded to the remote
+machine.
+
+@item @code{compression?} (default: @code{#f}) (type: boolean)
+Whether to compress data in transit.
+
+@item @code{proxy-command} (type: maybe-string)
+The command to use to connect to the server.  As an example, a command
+to connect via an HTTP proxy at 192.0.2.0 would be: @code{"nc -X connect
+-x 192.0.2.0:8080 %h %p"}.
+
+@item @code{host-key-algorithms} (type: maybe-string-list)
+The list of accepted host key algorithms---e.g.,
+@code{'("ssh-ed25519")}.
+
+@item @code{accepted-key-types} (type: maybe-string-list)
+The list of accepted user public key types.
+
+@item @code{extra-content} (default: @code{""}) (type: raw-configuration-string)
+Extra content appended as-is to this @code{Host} block in
+@file{~/.ssh/config}.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+
 
 @node Desktop Home Services
 @subsection Desktop Home Services

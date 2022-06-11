@@ -85,6 +85,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/home/services/fontutils.scm		\
   %D%/home/services/shells.scm			\
   %D%/home/services/shepherd.scm		\
+  %D%/home/services/ssh.scm			\
   %D%/home/services/mcron.scm			\
   %D%/home/services/utils.scm			\
   %D%/home/services/xdg.scm			\
