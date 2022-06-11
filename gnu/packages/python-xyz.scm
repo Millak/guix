@@ -24331,7 +24331,7 @@ with features similar to the @command{wget} utility.")
 (define-public offlate
   (package
     (name "offlate")
-    (version "0.5")
+    (version "0.6.1")
     (source
       (origin
         (method git-fetch)
@@ -24341,33 +24341,37 @@ with features similar to the @command{wget} utility.")
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "13pqnbl05wcyldfvl75fp89vjgwsvxyc69vhnb17kkha2rc2k1h7"))))
+          "1sx5cv8pamyw1m089b6x8ykaxdkx26jk9cblhbzlf0m3ckz52jik"))))
     (build-system python-build-system)
     (arguments
      ;; No tests
      `(#:tests? #f
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'patch-for-pygit2
-                    (lambda _
-                      (substitute* "offlate/systems/git.py"
-                        (("pygit2.remote.RemoteCallbacks")
-                         "pygit2.RemoteCallbacks")))))))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'generate-fonts
+           (lambda _
+             (invoke "make" "fonts")))
+         (add-before 'build 'generate-translations
+           (lambda _
+             (invoke "make" "update-langs"))))))
     (propagated-inputs
       (list python-android-stringslib
             python-dateutil
             python-gitlab
             python-lxml
             python-polib
+            python-pycountry
             python-pyenchant
             python-pygit2
             python-pygithub
             python-pyqt
             python-requests
             python-ruamel.yaml
+            python-translate-toolkit
             python-translation-finder
             python-watchdog))
     (native-inputs
-     (list qttools))
+     (list qttools fontforge))
     (home-page "https://framagit.org/tyreunom/offlate")
     (synopsis "Offline translation interface for online translation tools")
     (description "Offlate offers a unified interface for different translation
