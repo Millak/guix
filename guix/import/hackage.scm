@@ -378,7 +378,10 @@ respectively."
                "warning: failed to parse ~a~%"
                (hackage-cabal-url hackage-name))
        #f)
-      ((_ *** ("version" (version)))
+      ;; Cabal files have no particular order and while usually the version
+      ;; as somewhere in the middle it can also be at the beginning,
+      ;; requiring two pattern.
+      ((or (_ *** ("version" (version))) (("version" (version)) _ ...))
        (let ((url (hackage-uri hackage-name version)))
          (upstream-source
           (package (package-name package))
