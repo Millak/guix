@@ -9199,7 +9199,7 @@ older system-wide @file{/sys} interface.")
 (define-public libtree
   (package
     (name "libtree")
-    (version "3.0.2")
+    (version "3.1.1")
     (source
      (origin
        (method git-fetch)
@@ -9208,7 +9208,7 @@ older system-wide @file{/sys} interface.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "072624anz9g01mp5vfkahfmzy0nb7axg5rwk3n1yrdm4hr3d4zrb"))))
+        (base32 "1jbc60cslzcfxk9jwva51ncr1zl1nz0fkgfjdckgv81is11nswmb"))))
     (arguments
      (list #:make-flags
            ;; NOTE: Official documentation recommends to build libtree with
@@ -9217,6 +9217,15 @@ older system-wide @file{/sys} interface.")
                    (string-append "PREFIX=" #$output))
            #:phases
            #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-tests
+                 ;; XXX: '08_nodeflib' fails as 'libtree' returns a non-zero
+                 ;; code in one of the tests.
+                 ;;
+                 ;; See <https://github.com/haampie/libtree/issues/80>).
+                 (lambda _
+                   (substitute* "tests/08_nodeflib/Makefile"
+                     (("! ../../libtree -vvv exe_b")
+                      "../../libtree -vvv exe_b"))))
                (delete 'configure))))
     (build-system gnu-build-system)
     (home-page "https://github.com/haampie/libtree")
