@@ -907,7 +907,14 @@ be used as a profile hook."
                 (format (current-error-port)
                         "Generating package cache for '~a'...~%"
                         #$profile)
-                (generate-package-cache #$output))
+                ;; This script runs through (primitive-load), which by default
+                ;; doesn't print backtraces when it encounters an exception,
+                ;; so manually do it.  Use with-throw-handler because it is
+                ;; supported by all Guile versions.
+                (with-throw-handler #t
+                  (lambda () (generate-package-cache #$output))
+                  (lambda (key . args)
+                      (backtrace))))
               (mkdir #$output))))
 
     (gexp->derivation-in-inferior "guix-package-cache" build
