@@ -1198,6 +1198,45 @@ problems in numerical linear algebra.")
                                 "See LICENSE in the distribution."))
     (properties '((tunable? . #t)))))
 
+(define-public lis
+  (package
+   (name "lis")
+   (version "2.1.8")
+   (source (origin
+            (method url-fetch)
+            (uri (string-append "https://www.ssisc.org/lis/dl/lis-"
+                                version ".zip"))
+            (sha256
+             (base32 "0nh2593xkcdv1c3gmj7i64ca393nn0ngqfl522yiwbidh9dvd1nl"))))
+   (build-system gnu-build-system)
+   (arguments
+    (list
+     #:configure-flags #~(list "--enable-fortran"
+                               "--enable-f90"
+                               "--enable-openmp"
+                               "--enable-complex"
+                               "--disable-sse2" ;; XXX: tuning
+                               "--enable-shared")
+     #:phases
+     #~(modify-phases %standard-phases
+         (add-after 'install 'install-doc
+           (lambda _
+             (let* ((share (string-append #$output "/share"))
+                    (docdir (string-append share "/doc/lis-" #$version))
+                    (mandir (string-append share "/man")))
+               (copy-recursively "doc/man" mandir)
+               ;; TODO: Build the manuals ourselves
+               (install-file "doc/lis-ug-en.pdf" docdir)
+               (install-file "doc/lis-ug-ja.pdf" docdir)))))))
+   (inputs (list openmpi))
+   (native-inputs (list gfortran unzip))
+   (home-page "https://www.ssisc.org/lis")
+   (synopsis "Solve discretized linear equations and eigenvalue problems")
+   (description "Lis is a parallel software library for solving discretized
+linear equations and eigenvalue problems that arise in the numerical solution
+of partial differential equations using iterative methods.")
+   (license license:bsd-3)))
+
 (define-public clapack
   (package
     (name "clapack")
