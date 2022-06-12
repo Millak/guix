@@ -5632,10 +5632,12 @@ and copy/paste text in the console and in xterm.")
                      ("python-sphinx" ,python-sphinx)
                      ;; For tests.
                      ("acl" ,acl)
-                     ("which" ,which)
                      ("dmsetup" ,lvm2)
-                     ;; The tests need 'grep' with perl regexp support.
-                     ("grep" ,grep)))
+                     ("grep" ,grep)     ; need Perl regexp support
+                     ("libaio" ,libaio)
+                     ("liburing" ,liburing)
+                     ("util-linux" ,util-linux) ; for fallocate
+                     ("which" ,which)))
     (home-page "https://btrfs.wiki.kernel.org/index.php/Main_Page")
     (synopsis "Create and manage btrfs copy-on-write file systems")
     (description "Btrfs is a @dfn{copy-on-write} (CoW) file system for Linux
