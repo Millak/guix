@@ -160,6 +160,7 @@
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages groff)
   #:use-module (gnu packages selinux)
+  #:use-module (gnu packages sphinx)
   #:use-module (gnu packages swig)
   #:use-module (guix platform)
   #:use-module (guix build-system cmake)
@@ -5574,7 +5575,7 @@ and copy/paste text in the console and in xterm.")
 (define-public btrfs-progs
   (package
     (name "btrfs-progs")
-    (version "5.15.1")
+    (version "5.18.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kernel.org/linux/kernel/"
@@ -5582,7 +5583,7 @@ and copy/paste text in the console and in xterm.")
                                   "btrfs-progs-v" version ".tar.xz"))
               (sha256
                (base32
-                "085rg9p7kifhh8kjyyhs38y86srwk820s6v07min5gb177rzhc32"))))
+                "0mbj3j2fpjds9i9gm8kk8a20yjacc562ibd1v9a96bpmrxfag63f"))))
     (build-system gnu-build-system)
     (outputs '("out"
                "static"))      ; static versions of the binaries in "out"
@@ -5627,12 +5628,8 @@ and copy/paste text in the console and in xterm.")
               ("zstd" ,zstd "lib")
               ("zstd:static" ,zstd "static")))
     (native-inputs `(("pkg-config" ,pkg-config)
-                     ("asciidoc" ,asciidoc)
-                     ("python" ,python)
-                     ("xmlto" ,xmlto)
                      ;; For building documentation.
-                     ("libxml2" ,libxml2)
-                     ("docbook-xsl" ,docbook-xsl)
+                     ("python-sphinx" ,python-sphinx)
                      ;; For tests.
                      ("acl" ,acl)
                      ("which" ,which)
