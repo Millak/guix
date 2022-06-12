@@ -832,7 +832,7 @@ Use '~/.config/guix/channels.scm' instead."))
                    (&message
                     (message
                      (format #f (G_ "directory ‘~a’ is not owned by user ~a")
-                             dir dir:user)))
+                             dir our:user)))
                    (&fix-hint
                     (hint
                      (format #f (G_ "You should run this command as ~a; use ‘sudo -i’ or equivalent if you really want to pull as ~a.")
