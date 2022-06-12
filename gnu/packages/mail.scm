@@ -2435,10 +2435,18 @@ compatibility shims for the @command{sendmail}, @command{mailq}, and
     (inputs
      (list tdb openssl zlib))
     (home-page "https://github.com/nicm/fdm")
-    (synopsis "Mail Retrieval Agent (MRA) and Mail Delivery Agent (MDA)")
-    (description "fdm is a program designed to fetch mail from POP3
-or IMAP servers, or receive local mail from stdin, and
-deliver it in various ways.")
+    (synopsis
+     "@acronym{MRA, Mail Retrieval Agent} and @acronym{MDA, Mail Delivery Agent}")
+    (description "fdm fetches and delivers mail in various ways.
+
+Mail may be fetched from IMAP or POP3 servers, from local maildirs, or read
+from standard input.  It is then filtered based on regular expressions, its
+size or age, or the output of a (shell) command.  It can be rewritten by an
+external process, dropped, left on the server or delivered into maildirs,
+mboxes, to a file or pipe, or any combination.
+
+fdm is primarily designed for use by a single user, but can use privilege
+separation to safely deliver mail in multi-user setups.")
     (license
      ;; Why point to a source file?  Well, all the individual files have a
      ;; copy of this license in their headers, but there's no seprate file
