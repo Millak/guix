@@ -3103,13 +3103,13 @@ powerful online queries from gene annotation to database mining.")
 (define-public r-biocparallel
   (package
     (name "r-biocparallel")
-    (version "1.30.2")
+    (version "1.30.3")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BiocParallel" version))
               (sha256
                (base32
-                "0rqvwhs6d8ls1rq7j5ywl5k0qgblxpzimilyw335bi1yad5s10h3"))))
+                "1rs3wmasl9mx7f399iclvm0bnvggvjj2a88zbi294r5m8wxqlc92"))))
     (properties
      `((upstream-name . "BiocParallel")))
     (build-system r-build-system)
@@ -3142,7 +3142,7 @@ powerful online queries from gene annotation to database mining.")
                 (string-append
                  m "; if (!is.na(Sys.getenv(\"SOURCE_DATE_EPOCH\"))) {set.seed(100)}\n"))))))))
     (propagated-inputs
-     (list r-futile-logger r-snow r-bh))
+     (list r-bh r-codetools r-futile-logger r-snow))
     (native-inputs
      (list r-knitr))
     (home-page "https://bioconductor.org/packages/BiocParallel")
