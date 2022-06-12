@@ -26,18 +26,15 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages astronomy)
-  #:use-module (guix packages)
   #:use-module ((guix licenses) #:prefix license:)
-  #:use-module (guix download)
-  #:use-module (guix git-download)
-  #:use-module (guix utils)
-  #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
+  #:use-module (gnu packages flex)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
@@ -49,16 +46,19 @@
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages ncurses)
   #:use-module (gnu packages netpbm)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pretty-print)
+  #:use-module (gnu packages python)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages readline)
   #:use-module (gnu packages time)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages video)
@@ -66,9 +66,15 @@
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
+  #:use-module (gnu packages)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
+  #:use-module (guix download)
+  #:use-module (guix gexp)
+  #:use-module (guix git-download)
+  #:use-module (guix packages)
+  #:use-module (guix utils)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1))
 
@@ -106,6 +112,93 @@ moment, supported SPICE files are:
 @item frame kernel (KPL/FK) files (only basic support).
 @end itemize\n")
     (license license:cecill)))
+
+(define-public casacore
+  (package
+    (name "casacore")
+    (version "3.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/casacore/casacore")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32
+         "05ar5gykgh4dm826xplj5ri5rw7znhxrvin2l67a3mjwfys7r2a0"))
+       (file-name (git-file-name name version))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      ;; Note: There are multiple failures in
+      ;; tests which require additional measures data. They are
+      ;; distributed via FTP without any license:
+      ;; ftp://ftp.astron.nl/outgoing/Measures/
+      ;; TODO: Check how to fix tests.
+      #:tests? #f
+      #:parallel-build? #t
+      #:configure-flags
+      #~(list "-DBUILD_PYTHON3=ON"
+              "-DBUILD_PYTHON=OFF"
+              "-DBUILD_TESTING=TRUE"
+              "-DUSE_HDF5=ON"
+              "-DUSE_OPENMP=OFF"
+              "-DUSE_THREADS=ON"
+              (string-append "-DDATA_DIR=" #$output "/data")
+              (string-append "-DPYTHON3_EXECUTABLE="
+                             #$(this-package-input "python") "/bin")
+              (string-append "-DPYTHON3_INCLUDE_DIR="
+                             #$(this-package-input "python") "/include")
+              (string-append "-DPYTHON3_LIBRARY="
+                             #$(this-package-input "python") "/lib"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-env
+            (lambda _
+              (setenv "HOME" "/tmp")))
+          (add-after 'unpack 'use-absolute-rm
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "casa/OS/test/tFile.run"
+                (("/bin/rm")
+                 (search-input-file inputs "/bin/rm")))))
+          (add-after 'unpack 'use-absolute-python3
+            (lambda _
+              (substitute* "build-tools/casacore_floatcheck"
+                (("#!/usr/bin/env python")
+                 (string-append "#!" (which "python3"))))))
+          ;; NOTE: (Sharlatan-20220611T200837+0100): Workaround for casacore
+          ;; tests stuck with missing "qsub" issue.
+          ;; https://github.com/casacore/casacore/issues/1122
+          (add-after 'unpack 'patch-pre-test-checks
+            (lambda _
+              (substitute* "build-tools/casacore_assay"
+                (("QSUBP=.*$") "QSUBP=\n")
+                (("YODP=.*$") "YODP=\n")))))))
+    (native-inputs
+     (list bison
+           boost
+           flex
+           readline))
+    (inputs
+     (list cfitsio
+           fftw
+           fftwf
+           gfortran
+           hdf5
+           lapack
+           ncurses
+           openblas
+           python
+           python-numpy
+           wcslib))
+    (home-page "http://casacore.github.io/casacore/")
+    (synopsis "Suite of C++ libraries for radio astronomy data processing")
+    (description
+     "The casacore package contains the core libraries of the old
+AIPS++/CASA (Common Astronomy Software Application) package.  This split was
+made to get a better separation of core libraries and applications.
+@url{https://casa.nrao.edu/, CASA} is now built on top of Casacore.")
+    (license license:gpl2+)))
 
 (define-public cfitsio
   (package
