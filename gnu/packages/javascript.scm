@@ -828,22 +828,27 @@ Javascript and a small built-in standard library with C library wrappers.")
                 "19szwxzvl2g65fw95ggvb8h0ma5bd9vvnnccn59hwnc4dida1x4n"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; No tests.
-       #:make-flags (list "-f" "Makefile.sharedlibrary"
-                          (string-append "INSTALL_PREFIX=" %output))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         ;; At least another major GNU/Linux distribution carries their own
-         ;; .pc file with this package.
-         (add-after 'install 'install-pkg-config
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (pkg-config-dir (string-append out "/lib/pkgconfig")))
-               (mkdir-p pkg-config-dir)
-               (with-output-to-file (string-append pkg-config-dir "/duktape.pc")
-                 (lambda _
-                   (format #t "prefix=~@*~a~@
+     (list #:tests? #f                  ; No tests.
+           #:make-flags
+           #~(list "-f" "Makefile.sharedlibrary"
+                   (string-append "INSTALL_PREFIX="
+                                  ;; XXX Replace with #$output on core-updates.
+                                  #$(if (%current-target-system)
+                                        #~#$output
+                                        #~%output)))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               ;; At least another major GNU/Linux distribution carries their own
+               ;; .pc file with this package.
+               (add-after 'install 'install-pkg-config
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out"))
+                          (pkg-config-dir (string-append out "/lib/pkgconfig")))
+                     (mkdir-p pkg-config-dir)
+                     (with-output-to-file (string-append pkg-config-dir "/duktape.pc")
+                       (lambda _
+                         (format #t "prefix=~@*~a~@
                                libdir=${prefix}/lib~@
                                includedir=${prefix}/include~@
 
@@ -852,7 +857,7 @@ Javascript and a small built-in standard library with C library wrappers.")
                                Version: ~a~@
                                Libs: -L${libdir} -lduktape~@
                                Cflags: -I${includedir}~%"
-                           out ,version)))))))))
+                                 out #$version)))))))))
     (home-page "https://duktape.org/")
     (synopsis "Small embeddable Javascript engine")
     (description "Duktape is an embeddable Javascript engine, with a focus on
