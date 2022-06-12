@@ -282,10 +282,10 @@ or musca).
            alsa-lib
            pulseaudio
            libnl
-           libcap
-           asciidoc))
+           libcap))
     (native-inputs
-     (list pkg-config docbook-xsl libxml2 ;for XML_CATALOG_FILES
+     (list asciidoc
+           pkg-config docbook-xsl libxml2 ;for XML_CATALOG_FILES
            xmlto))
     (home-page "https://i3wm.org/i3status/")
     (synopsis "Status bar for i3bar, dzen2, xmobar or similar programs")
