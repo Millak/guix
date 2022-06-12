@@ -18,6 +18,7 @@
 ;;; Copyright © 2021 Mike Gerwitz <mtg@gnu.org>
 ;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -6206,14 +6207,16 @@ included:
 (define-public java-commons-lang3
   (package
     (name "java-commons-lang3")
-    (version "3.9")
+    (version "3.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://apache/commons/lang/source/"
                            "commons-lang3-" version "-src.tar.gz"))
        (sha256
-        (base32 "0s4ffbvsyl16c90l45ximsg4dwd8hmz7wsza3p308fw43h6mwhb6"))))
+        (base32 "09dcv1pkdx3hpf06py8p9511f1wkin6jpacdll0c8vxpbi3yfwzv"))
+       (patches
+        (search-patches "java-commons-lang-fix-dependency.patch"))))
     (build-system ant-build-system)
     (arguments
      `(#:jar-name "commons-lang3.jar"
