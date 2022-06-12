@@ -6341,7 +6341,7 @@ The collection contains a set of bandwidth and latency benchmark such as:
   (package
     (name "rng-tools")
     (home-page "https://github.com/nhorman/rng-tools")
-    (version "6.14")
+    (version "6.15")
     (source (origin
               (method git-fetch)
               (uri (git-reference (url home-page)
@@ -6349,7 +6349,7 @@ The collection contains a set of bandwidth and latency benchmark such as:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1hrbm4y7fbzkg5j2f7vpj19ri2ff2lp77al17fhi4mv0bvdfjd9m"))))
+                "0i00if7xknpm0dhkrm60rxzyyvq0vdibq7dvsd2ncm9pg098qvwj"))))
     (build-system gnu-build-system)
     (arguments
      `(;; Disable support for various hardware entropy sources as they need
@@ -6357,7 +6357,15 @@ The collection contains a set of bandwidth and latency benchmark such as:
        ;; increase closure size.
        #:configure-flags '("--without-nistbeacon"
                            "--without-pkcs11"
-                           "--without-rtlsdr")))
+                           "--without-rtlsdr")
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'disable-failing-test
+           (lambda _
+             (substitute* "tests/Makefile"
+               ;; This test requires a hwrng, rdrand, or tpm device.
+               ;; Worse, it appears to fail if that isn't sufficiently random.
+               (("\\brngtestjitter\\.sh\\b") " ")))))))
     (native-inputs
      (list autoconf automake pkg-config))
     (inputs
