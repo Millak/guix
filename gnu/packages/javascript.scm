@@ -835,7 +835,11 @@ Javascript and a small built-in standard library with C library wrappers.")
                                   ;; XXX Replace with #$output on core-updates.
                                   #$(if (%current-target-system)
                                         #~#$output
-                                        #~%output)))
+                                        #~%output))
+                   ;; XXX Unconditionally set to CC-FOR-TARGET on core-updates.
+                   #$@(if (%current-target-system)
+                          #~((string-append "CC=" #$(cc-for-target)))
+                          #~()))
            #:phases
            #~(modify-phases %standard-phases
                (delete 'configure)
