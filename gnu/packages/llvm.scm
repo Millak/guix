@@ -541,10 +541,10 @@ output), and Binutils.")
               ("libc-static" ,glibc "static")))))
 
 (define %llvm-monorepo-hashes
-  '(("14.0.4" . "1y4yvx749cn3gkpc9kf48xbd2wc2lry8x5zdpk3sbrkqs8vrji4q")))
+  '(("14.0.5" . "1hdv020x4k5fp38hik3bxz8k2sr3gnyj9iym3yhjhwygzgwgxjh9")))
 
 (define %llvm-patches
-  '(("14.0.4" . ("clang-14.0-libc-search-path.patch"))))
+  '(("14.0.5" . ("clang-14.0-libc-search-path.patch"))))
 
 (define (llvm-monorepo version)
   (origin
@@ -559,7 +559,7 @@ output), and Binutils.")
 (define-public llvm-14
   (package
     (name "llvm")
-    (version "14.0.4")
+    (version "14.0.5")
     (source (llvm-monorepo version))
     (build-system cmake-build-system)
     (outputs '("out" "opt-viewer"))
@@ -647,7 +647,7 @@ of programming tools as well as libraries with equivalent functionality.")
                                            (package-version llvm-14)))
                             (sha256
                              (base32
-                              "1vcgmvh0r28a1z87p3y4h2326zi8liq7l9mcfvmx22x9bmbcpfn8"))))))
+                              "1p9y5fbcw3ynb79nzyadirwdla03bq38k6d9nhv9x8z2q4ypsga4"))))))
     (package
       (inherit template)
       (arguments
@@ -1176,7 +1176,7 @@ of programming tools as well as libraries with equivalent functionality.")
 (define-public lld-14
   (package
     (name "lld")
-    (version "14.0.4")
+    (version "14.0.5")
     (source (llvm-monorepo version))
     (build-system cmake-build-system)
     (inputs
