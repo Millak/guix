@@ -2424,13 +2424,13 @@ compatibility shims for the @command{sendmail}, @command{mailq}, and
 (define-public fdm
   (package
     (name "fdm")
-    (version "2.0")
+    (version "2.1")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://github.com/nicm/fdm/releases/download/"
                                  version "/fdm-" version ".tar.gz"))
              (sha256
-               (base32 "196fs1z8y7p12wmqn1bylzz94szl58yv2aby3p30nmwjnyv8rch6"))))
+               (base32 "1zxd5j5x2gp6m62j83xsjyfglw1p6gn4zk5qx10djdh8xzkg53c5"))))
     (build-system gnu-build-system)
     (inputs
      (list tdb openssl zlib))
