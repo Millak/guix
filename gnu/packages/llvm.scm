@@ -23,6 +23,7 @@
 ;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1109,10 +1110,10 @@ of programming tools as well as libraries with equivalent functionality.")
 
 (define-public llvm-for-rocm
   (package
-    ;; Actually based on LLVM 13 as of v4.3, but llvm-12 works just fine.
-    (inherit llvm-12)
+    ;; Based on LLVM 14 as of v5.0.0
+    (inherit llvm-14)
     (name "llvm-for-rocm")
-    (version "4.3.0")                         ;this must match '%rocm-version'
+    (version "5.1.3")                         ;this must match '%rocm-version'
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1121,10 +1122,9 @@ of programming tools as well as libraries with equivalent functionality.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0p75nr1qpmy6crymdax5hm40wkimman4lnglz4x5cnbiqindya7s"))
+                "0j6ydfkwrxwskgnhxc3cmry42n5faqbnwf2747qgf7lz5id8h8g5"))
               (patches
-               (search-patches "llvm-roc-4.2.0-add_Object.patch"
-                               "llvm-roc-3.0.0-add_libraries.patch"
+               (search-patches "llvm-roc-5.0.0-linkdl.patch"
                                "llvm-roc-4.0.0-remove-isystem-usr-include.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments llvm-12)
@@ -1141,7 +1141,7 @@ of programming tools as well as libraries with equivalent functionality.")
            "-DBUILD_SHARED_LIBS:BOOL=TRUE"
            "-DLLVM_VERSION_SUFFIX="))))
     (properties `((hidden? . #t)
-                  ,@(package-properties llvm-12)))))
+                  ,@(package-properties llvm-14)))))
 
 
 
