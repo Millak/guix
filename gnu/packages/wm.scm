@@ -261,31 +261,33 @@ or musca).
 (define-public i3status
   (package
     (name "i3status")
-    (version "2.13")
+    (version "2.14")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://i3wm.org/i3status/i3status-"
-                                  version ".tar.bz2"))
+                                  version ".tar.xz"))
               (sha256
                (base32
-                "0rhlzb96mw64z2jnhwz9nibc7pxg549626lz5642xxk5hpzwk2ff"))))
-    (build-system gnu-build-system)
+                "0929chhvyq9hg4scpcz8r9zn3s9jvbg6a86k3wqa77qg85rh4kaw"))
+              (snippet
+               ;; Delete the pregenerated man page, to be rebuilt from source.
+               '(delete-file "man/i3status.1"))))
+    (build-system meson-build-system)
     (arguments
-     `(;; XXX: Do an "out of source" build to work around
-       ;; <https://github.com/i3/i3status/issues/339>.
-       #:out-of-source? #t
-       #:tests? #f)) ; no test suite
+     (list #:configure-flags
+           '(list "-Dmans=True")
+           #:tests? #f))                ; no test suite
     (inputs
-     (list openlibm
+     (list alsa-lib
            libconfuse
-           libyajl
-           alsa-lib
-           pulseaudio
            libnl
-           libcap))
+           libyajl
+           pulseaudio))
     (native-inputs
      (list asciidoc
-           pkg-config docbook-xsl libxml2 ;for XML_CATALOG_FILES
+           perl
+           pkg-config
+           docbook-xsl libxml2          ; for XML_CATALOG_FILES
            xmlto))
     (home-page "https://i3wm.org/i3status/")
     (synopsis "Status bar for i3bar, dzen2, xmobar or similar programs")
