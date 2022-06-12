@@ -577,9 +577,9 @@ output), and Binutils.")
          ;; These options are required for cross-compiling LLVM according
          ;; to <https://llvm.org/docs/HowToCrossCompileLLVM.html>.
          #$@(if (%current-target-system)
-                #~(,(string-append "-DLLVM_TABLEGEN="
-                                   #+(file-append this-package
-                                                  "/bin/llvm-tblgen"))
+                #~((string-append "-DLLVM_TABLEGEN="
+                                  #+(file-append this-package
+                                                 "/bin/llvm-tblgen"))
                    #$(string-append "-DLLVM_DEFAULT_TARGET_TRIPLE="
                                     (%current-target-system))
                    #$(string-append "-DLLVM_TARGET_ARCH="
