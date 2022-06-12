@@ -3,7 +3,7 @@
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2017 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2017, 2019, 2021 Carlo Zancanaro <carlo@zancanaro.id.au>
-;;; Copyright © 2017-2021 Julien Lepiller <julien@lepiller.eu>
+;;; Copyright © 2017-2022 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2016, 2017, 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2017, 2019, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -4371,6 +4371,14 @@ from source tags and class annotations.")))
              (copy-recursively "src/main/resources"
                                "build/classes/")
              #t))
+         (add-before 'build 'fix-jdom
+           (lambda _
+             ;; The newer version of jdom now sets multiple features by default
+             ;; that are not supported.
+             ;; Skip these features
+             (substitute* "src/main/java/org/codehaus/plexus/metadata/merge/MXParser.java"
+               (("throw new XmlPullParserException\\(\"unsupporte feature \"\\+name\\);")
+                "// skip"))))
          (add-before 'build 'reinstate-cli
            ;; The CLI was removed in 2.1.0, but we still need it to build some
            ;; maven dependencies, and some parts of maven itself. We can't use
