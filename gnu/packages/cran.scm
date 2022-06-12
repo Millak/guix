@@ -31617,6 +31617,32 @@ asynchronously from formatting.")
 utility operations.")
     (license license:gpl3)))
 
+(define-public r-rsq
+  (package
+    (name "r-rsq")
+    (version "2.5")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "rsq" version))
+              (sha256
+               (base32
+                "1r628srxhhf7b51lnj4qrzgbqajkm0ls47a9rzjkvmfq4ax5i73f"))))
+    (properties `((upstream-name . "rsq")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-deriv
+           r-lme4
+           r-mass
+           r-matrix
+           r-nlme))
+    (home-page "https://cran.r-project.org/package=rsq")
+    (synopsis "R-squared and related measures")
+    (description
+     "Calculate generalized R-squared, partial R-squared, and partial correlation
+coefficients for generalized linear (mixed) models (including quasi models
+with well defined variance functions).")
+    (license license:gpl2)))
+
 (define-public r-webutils
   (package
     (name "r-webutils")
