@@ -2188,6 +2188,50 @@ set analyses, and can deal with repeated or longitudinal data.")
 biological sequences.")
     (license license:gpl3)))
 
+(define-public r-deconvr
+  (package
+    (name "r-deconvr")
+    (version "1.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "deconvR" version))
+              (sha256
+               (base32
+                "091z3lncamscsvzj63zzbw7dr7vnkn0jwfkm5ljq4112w4rxgrm3"))))
+    (properties `((upstream-name . "deconvR")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-assertthat
+           r-biocgenerics
+           r-data-table
+           r-dplyr
+           r-e1071
+           r-foreach
+           r-genomicranges
+           r-iranges
+           r-magrittr
+           r-mass
+           r-matrixstats
+           r-methylkit
+           r-nnls
+           r-quadprog
+           r-rsq
+           r-s4vectors
+           r-tidyr))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/BIMSBbioinfo/deconvR")
+    (synopsis "Simulation and deconvolution of omic profiles")
+    (description
+     "This package provides a collection of functions designed for analyzing
+deconvolution of the bulk sample(s) using an atlas of reference omic signature
+profiles and a user-selected model.  Users are given the option to create or
+extend a reference atlas and,also simulate the desired size of the bulk
+signature profile of the reference cell types.  The package includes the
+cell-type-specific methylation atlas and, Illumina Epic B5 probe ids that can
+be used in deconvolution.  Additionally, we included @code{BSmeth2Probe}, to
+make mapping WGBS data to their probe IDs easier.")
+    (license license:artistic2.0)))
+
 (define-public r-decoupler
   (package
     (name "r-decoupler")
