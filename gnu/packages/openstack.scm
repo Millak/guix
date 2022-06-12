@@ -49,14 +49,14 @@
 (define-public python-bandit
   (package
     (name "python-bandit")
-    (version "1.6.2")
+    (version "1.7.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "bandit" version))
        (sha256
         (base32
-         "0rb034c99pyhb4a60z7f2kz40cjydhm8m9v2blaal1rmhlam7rs1"))))
+         "1lkvf5ffdqa9504mm5fd9vvq0q5wdyqbkm32i4rswys1fg2shqrd"))))
     (build-system python-build-system)
     (arguments
      ;; The tests are disabled to avoid a circular dependency with
