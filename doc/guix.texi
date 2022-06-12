@@ -1152,12 +1152,12 @@ using @code{-G guixbuild,kvm} instead of @code{-G guixbuild}
 
 The @code{guix-daemon} program may then be run as @code{root} with the
 following command@footnote{If your machine uses the systemd init system,
-dropping the @file{@var{prefix}/lib/systemd/system/guix-daemon.service}
-file in @file{/etc/systemd/system} will ensure that
+copying the @file{@var{prefix}/lib/systemd/system/guix-daemon.service}
+file to @file{/etc/systemd/system} will ensure that
 @command{guix-daemon} is automatically started.  Similarly, if your
-machine uses the Upstart init system, drop the
+machine uses the Upstart init system, copy the
 @file{@var{prefix}/lib/upstart/system/guix-daemon.conf}
-file in @file{/etc/init}.}:
+file to @file{/etc/init}.}:
 
 @example
 # guix-daemon --build-users-group=guixbuild
