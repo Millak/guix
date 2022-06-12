@@ -715,9 +715,9 @@ the card and then checks if can read it.  It will assure you haven't been sold
 a card with a smaller capacity than stated.")
     (license license:gpl3+)))
 
-(define-public python-parted
+(define-public python-pyparted
   (package
-    (name "python-parted")
+    (name "python-pyparted")
     (version "3.12.0")
     (source
      (origin
@@ -739,6 +739,9 @@ a card with a smaller capacity than stated.")
     (synopsis "Parted bindings for Python")
     (description "This package provides @code{parted} bindings for Python.")
     (license license:gpl2+)))
+
+(define-public python-parted
+  (deprecated-package "python-parted" python-pyparted))
 
 (define-public duperemove
   (package
