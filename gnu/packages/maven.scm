@@ -3,6 +3,7 @@
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3887,3 +3888,53 @@ reports in two different file formats, plain text and xml.")))
     (description "This plugin provides the capability to build jars.  If you
 would like to sign jars please use the Maven Jarsigner Plugin instead.")
     (license license:asl2.0)))
+
+(define-public maven-doxia-sink-api
+  (package
+    (name "maven-doxia-sink-api")
+    (version "2.0.0-M2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitbox.apache.org/repos/asf/maven-doxia.git")
+                    (commit (string-append "doxia-" version))))
+              (file-name (git-file-name "doxia" version))
+              (sha256
+               (base32
+                "0jx96lg0hgjsrm8mynhac4hwh2hmgiwjpwpx2k03yr14040zcr48"))))
+    (build-system ant-build-system)
+    (propagated-inputs
+     (list maven-doxia-parent-pom))
+    (arguments
+     `(#:jar-name "doxia-sink-api.jar"
+       #:source-dir "doxia-sink-api/src/main/java"
+       #:tests? #f ; no tests
+       #:phases (modify-phases %standard-phases
+                  (replace 'install
+                    (install-from-pom "doxia-sink-api/pom.xml")))))
+    (home-page "https://maven.apache.org/doxia/index.html")
+    (synopsis "Generic markup language interface")
+    (description
+     "The @code{Sink} interface is a generic markup language
+interface provided as a Java API.  It contains several methods that
+encapsulate common text syntax.  A start tag is denoted by @code{xxxx()}
+method and a end of tag by @code{xxxx_()} method.")
+    (license license:asl2.0)))
+
+(define maven-doxia-parent-pom
+  (package
+    (inherit maven-doxia-sink-api)
+    (name "maven-doxia-parent-pom")
+    (arguments
+     `(#:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (delete 'configure)
+                  (delete 'build)
+                  (replace 'install
+                    (install-pom-file "pom.xml")))))
+    (propagated-inputs
+     (list maven-parent-pom-34))
+    (synopsis "Content generation framework")
+    (description "@samp{Doxia} is a content generation framework that provides
+powerful techniques for generating static and dynamic content, supporting a
+variety of markup languages.")))
