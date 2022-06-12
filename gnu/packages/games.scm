@@ -2200,7 +2200,7 @@ Every puzzle has a complete solution, although there may be more than one.")
    (license license:gpl2+)))
 
 (define-public retux
-  (let ((release "1.5")
+  (let ((release "1.6.1")
         (revision 0))
     (package
       (name "retux")
@@ -2216,7 +2216,7 @@ Every puzzle has a complete solution, although there may be more than one.")
                                     release "-src.zip"))
                 (sha256
                  (base32
-                  "1yima7s36hn2kh5h08lczc5iid8jbdxk7x1g5ms6knaznzj7rll3"))))
+                  "1bkyfm0h4kys0x7c1340fnkhgnmcrf4j2xjm250r5w8q6l7v2wj4"))))
       (build-system python-build-system)
       (arguments
        `(#:tests? #f                    ; no check target
@@ -2237,12 +2237,11 @@ Every puzzle has a complete solution, although there may be more than one.")
                     (string-append "\"" data "\",")))
 
                  (copy-file "retux.py" (string-append bin "/retux"))
-                 (copy-recursively "data" data)
-                 #t))))))
+                 (copy-recursively "data" data)))))))
       (native-inputs
        (list unzip))
       (inputs
-       (list python-sge python-six python-xsge))
+       (list python-sge python-xsge))
       (home-page "https://retux-game.github.io/")
       (synopsis "Action platformer game")
       (description

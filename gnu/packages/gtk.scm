@@ -15,7 +15,7 @@
 ;;; Copyright © 2016 Patrick Hetu <patrick.hetu@auf.org>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2017 Roel Janssen <roel@gnu.org>
-;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017, 2019, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2018, 2020 Arun Isaac <arunisaac@systemreboot.net>
@@ -1563,14 +1563,14 @@ guile-gnome-platform (GNOME developer libraries), and guile-gtksourceview.")
 (define-public cairomm
   (package
     (name "cairomm")
-    (version "1.16.0")
+    (version "1.16.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.cairographics.org/releases/"
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1ya4y7qa000cjawqwswbqv26y5icfkmhs5iiiil4dxgrqn91923y"))))
+                "1im2yjzvjfx8s7cal9kwq23z936kppfmyag2zsnbim4dx7c60q3g"))))
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
@@ -1588,18 +1588,17 @@ guile-gnome-platform (GNOME developer libraries), and guile-gtksourceview.")
                (mkdir-p (string-append doc "/share"))
                (rename-file
                 (string-append out "/share/doc")
-                (string-append doc "/share/doc"))
-               #t))))))
+                (string-append doc "/share/doc"))))))))
     (native-inputs
-     `(("boost" ,boost)
-       ("dot" ,graphviz)
-       ("doxygen" ,doxygen)
-       ("mm-common" ,mm-common)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("xsltproc" ,libxslt)))
+     (list boost
+           doxygen
+           graphviz
+           mm-common
+           perl
+           pkg-config
+           libxslt))
     (inputs
-     `(("fontconfig" ,fontconfig)))
+     (list fontconfig))
     (propagated-inputs
      (list libsigc++ cairo))
     (home-page "https://cairographics.org/")

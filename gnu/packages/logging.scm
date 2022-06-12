@@ -3,7 +3,7 @@
 ;;; Copyright © 2016, 2017, 2018 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2017 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Gábor Boskovits <boskovits@gmail.com>
 ;;; Copyright © 2019 Meiyo Peng <meiyo@riseup.net>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
@@ -164,29 +164,40 @@ commands, displaying the results via a web interface.")
 (define-public multitail
   (package
     (name "multitail")
-    (version "6.5.0")
+    (version "6.5.2")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "https://vanheusden.com/multitail/multitail-"
-                          version ".tgz"))
+      (method git-fetch)
+      (uri (git-reference
+            (url "https://github.com/halturin/multitail")
+            (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
       (sha256
-       (base32 "1vd9vdxyxsccl64ilx542ya5vlw2bpg6gnkq1x8cfqy6vxvmx7dj"))))
+       (base32 "17hg5qpangyx4m7hp2x4h56mp6w3wsaslg1il39qcpwsffh1rihc"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
        (list (string-append "CC=" ,(cc-for-target))
-             (string-append "PREFIX="
-                            (assoc-ref %outputs "out")))
+             (string-append "PREFIX=" (assoc-ref %outputs "out"))
+             "SYSCONFDIR=$(PREFIX)/etc")
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'patch-curses-lib
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (substitute* "mt.h"
-                 (("ncursesw\\/panel.h") "panel.h")
-                 (("ncursesw\\/ncurses.h") "ncurses.h")))
-             #t))
+         (add-after 'unpack 'fix-broken-build
+           ;; With some luck, you might be able to remove this when updating…
+           (lambda _
+             (substitute* "Makefile"
+               ((" \\*\\.txt") "")
+               ((".*CONFIG_DIR.*") "")
+               (("^install: .*" match)
+                (string-append match
+                               "\t$(INSTALL_DIR) $(DESTDIR)$(SYSCONFDIR)\n")))
+             (substitute* "version"
+               (("(VERSION=).*" _ assign)
+                (string-append assign ,version)))))
+         (add-after 'unpack 'patch-curses-headers
+           (lambda _
+             (substitute* "mt.h"
+               (("ncursesw/") ""))))
          (delete 'configure))           ; no configure script
        #:tests? #f)) ; no test suite (make check just runs cppcheck)
     (inputs (list ncurses))
@@ -229,7 +240,7 @@ library.")
 (define-public rsyslog
   (package
     (name "rsyslog")
-    (version "8.2112.0")
+    (version "8.2204.1")
     (source
      (origin
        (method git-fetch)
@@ -238,8 +249,7 @@ library.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0bp124w2qv8hix5i0p04d8yvsipy18dhqm7zw8i6cwdgnhdadq96"))))
+        (base32 "0bsd1n3n4hvlkwf4g85g3fg37mnvkdmxsfdmg273gcachhyl5hbx"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -253,9 +263,8 @@ library.")
       ;; them for a full-featured build.
       '(list "--enable-kmsg"
              "--enable-liblogging_stdlog"
-             "--enable-mmanon"
-             "--enable-mmcount"
              "--enable-unlimited_select"
+             "--enable-usertools"
          
              ;; Input plugins
              "--enable-imbatchreport"
@@ -297,7 +306,9 @@ library.")
              "--enable-pmsnare"
 
              ;; Message Modification Modules
+             "--enable-mmanon"
              "--enable-mmaudit"
+             "--enable-mmcount"
              "--enable-mmdarwin"
              "--enable-mmdblookup"
              "--enable-mmfields"
@@ -324,9 +335,18 @@ library.")
              "--enable-snmp"
 
              ;; Function modules
-             "--enable-fmhash_xxhash")))
+             "--enable-fmhash_xxhash"
+
+             ;; Needed to build rscryutil.1.gz.
+             "--enable-generate-man-pages")))
     (native-inputs
-     (list autoconf automake bison flex libtool pkg-config))
+     (list autoconf
+           automake
+           bison
+           flex
+           libtool
+           pkg-config
+           python-docutils))            ; rst2man for man pages
     (inputs
      (list curl
            cyrus-sasl

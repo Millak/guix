@@ -1333,14 +1333,14 @@ invoking @command{notifymuch} from the post-new hook.")
 (define-public notmuch
   (package
     (name "notmuch")
-    (version "0.35")
+    (version "0.36")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://notmuchmail.org/releases/notmuch-"
                            version ".tar.xz"))
        (sha256
-        (base32 "0fdc81m24xrbhfrhw00g12ak4b8hap4961sq7ap6q2pjqhac8cd8"))))
+        (base32 "0h6f6mh9m9vrijm638x5sbsl321b74a25cdasbxhx67x62w320hk"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -1474,8 +1474,7 @@ useful for email address completion.")
              (let ((notmuch (assoc-ref inputs "notmuch")))
                (substitute* "notmuch/globals.py"
                  (("libnotmuch\\.so\\.")
-                  (string-append notmuch "/lib/libnotmuch.so.")))
-               #t))))))
+                  (string-append notmuch "/lib/libnotmuch.so.")))))))))
     (home-page (package-home-page notmuch))
     (synopsis "Python bindings of the Notmuch mail indexing library")
     (description
@@ -1632,7 +1631,7 @@ compresses it.")
 (define-public claws-mail
   (package
     (name "claws-mail")
-    (version "4.0.0")
+    (version "4.1.0")
     (source
      (origin
        (method url-fetch)
@@ -1640,7 +1639,7 @@ compresses it.")
         (string-append "https://www.claws-mail.org/releases/claws-mail-"
                        version ".tar.xz"))
        (sha256
-        (base32 "0xg41rxxq2q5vhjzbh8p12s248kcljk6g7y0m6raq7nrllkbvwja"))))
+        (base32 "13ksh4iwr23zi86fwmiwxha94xqrr5zxq373i82rwaldvfh9q6hf"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:configure-flags
@@ -1670,7 +1669,7 @@ compresses it.")
                 (search-input-file inputs "/share/mime/globs"))))))))
     (native-inputs
      (list bison
-           ;;("docbook-utils" ,docbook-utils)
+           ;;docbook-utils
            flex
            gettext-minimal
            gobject-introspection
@@ -3671,7 +3670,7 @@ operators and scripters.")
 (define-public alpine
   (package
     (name "alpine")
-    (version "2.25")
+    (version "2.26")
     (source
      (origin
        (method git-fetch)
@@ -3684,14 +3683,12 @@ operators and scripters.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0z6dp3cpz1dmbxw41ravsx1bxychafp0ij8gvj96mzz7rm9pdnq3"))
+        (base32 "1padh9kgn9blzjf0016i2f15c615fk17m8vg8kx301jhmc2r973h"))
        (modules '((guix build utils)))
        (snippet
         '(begin
            ;; Remove pre-built binaries scattered across the source repository.
-           (for-each delete-file (find-files "." "\\.(dll|exe)"))))
-       (patches
-        (search-patches "alpine-fix-privacy-policy-crash.patch"))))
+           (for-each delete-file (find-files "." "\\.(dll|exe)"))))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags

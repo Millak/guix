@@ -1590,16 +1590,16 @@ input from UTF-8 into the locale's encoding.")
 (define-public mkfontscale
   (package
     (name "mkfontscale")
-    (version "1.2.1")
+    (version "1.2.2")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/app/mkfontscale-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
-          (base32 "1ixsnsm2mn0zy9ksdid0lj6irnhvasfik9mz8bbrs5sajzmra16a"))))
+          (base32 "1i6mw97r2s1rb6spjj8fbdsgw6197smaqq2haqgnwhz73xdzpqwa"))))
     (build-system gnu-build-system)
     (inputs
       (list zlib xorgproto freetype libfontenc))
@@ -1991,14 +1991,14 @@ server.")
 (define-public xauth
   (package
     (name "xauth")
-    (version "1.1")
+    (version "1.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://xorg/individual/app/xauth-" version
-                           ".tar.bz2"))
+                           ".tar.xz"))
        (sha256
-        (base32 "032klzzw8r09z36x1272ssd79bcisz8j5p8gbdy111fiknvx27bd"))))
+        (base32 "0072ivzn4z59ysanz838nh8s4mcmdsx6q9xkvlfysv2k37ynmfkq"))))
     (build-system gnu-build-system)
     (inputs
      (list libxmu libxext libxau libx11))
@@ -2067,14 +2067,14 @@ legacy X clients.")
 (define-public xcalc
   (package
     (name "xcalc")
-    (version "1.1.0")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://xorg/individual/app/"
                            "xcalc-" version ".tar.gz"))
        (sha256
-        (base32 "0c768lh0nh28ram9ldldhaf51024fngc589v4pjmf3lxmzcihr58"))))
+        (base32 "0fwgnva716ymnrf8f4lvnqlyikf5c837054sxxlf3l5jpy4wh6cj"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -2084,8 +2084,7 @@ legacy X clients.")
                      (substitute* "Makefile"
                        (("^appdefaultdir = .*$")
                         (string-append "appdefaultdir = " %output
-                                       ,%app-defaults-dir "\n")))
-                     #t)))))
+                                       ,%app-defaults-dir "\n"))))))))
     (inputs
      (list libxaw))
     (native-inputs
@@ -2299,17 +2298,17 @@ left-handed version of the cursors is also included.")
 (define-public xdpyinfo
   (package
     (name "xdpyinfo")
-    (version "1.3.2")
+    (version "1.3.3")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/app/xdpyinfo-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "0ldgrj4w2fa8jng4b3f3biaj0wyn8zvya88pnk70d7k12pcqw8rh"))))
+            "01n21ygbvzycjasv97rk33b14qdbshr1pkxysqvfx61y5zb5yv9m"))))
     (build-system gnu-build-system)
     (inputs
       (list xorgproto
@@ -2486,15 +2485,15 @@ including most mice, keyboards, tablets and touchscreens.")
 (define-public xf86-input-libinput
   (package
     (name "xf86-input-libinput")
-    (version "1.1.0")
+    (version "1.2.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "mirror://xorg/individual/driver/"
-                    name "-" version ".tar.bz2"))
+                    name "-" version ".tar.xz"))
               (sha256
                (base32
-                "05ldqr10f2rrnshyk3lc773rz0gp3ccdzwa8n7lsc94i850jl7g1"))))
+                "06wpgqga4kc5ph5bd5cabfg0gdcdkbd65jrdx467qcfvkmdxnlc1"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags
@@ -2658,14 +2657,14 @@ as USB mice.")
 (define-public xf86-video-amdgpu
   (package
     (name "xf86-video-amdgpu")
-    (version "21.0.0")
+    (version "22.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://xorg/individual/driver/"
-                           "xf86-video-amdgpu-" version ".tar.bz2"))
+                           "xf86-video-amdgpu-" version ".tar.xz"))
        (sha256
-        (base32 "125dq85n46yqmnmr2hknxwcqicwlvz2b2phf0m963fpg9l1j6y30"))))
+        (base32 "0rl2fxhhgcjywn2z8h9gmvm58zjy93lx391ax76krp0m55hgn8wx"))))
     (build-system gnu-build-system)
     (inputs (list xorg-server))
     (native-inputs (list pkg-config))
@@ -2777,14 +2776,14 @@ X server.")
 (define-public xf86-video-dummy
   (package
     (name "xf86-video-dummy")
-    (version "0.3.8")
+    (version "0.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://xorg/individual/driver/"
-                           "xf86-video-dummy-" version ".tar.bz2"))
+                           "xf86-video-dummy-" version ".tar.xz"))
        (sha256
-        (base32 "1fcm9vwgv8wnffbvkzddk4yxrh3kc0np6w65wj8k88q7jf3bn4ip"))))
+        (base32 "0nhy9sd49ig9z00mp9sjbdkfzjgsm71szwjqnry8qn60r3jym377"))))
     (build-system gnu-build-system)
     (inputs (list xorg-server))
     (native-inputs (list pkg-config))
@@ -4091,17 +4090,17 @@ running on X server.")
 (define-public xlsfonts
   (package
     (name "xlsfonts")
-    (version "1.0.6")
+    (version "1.0.7")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "mirror://xorg/individual/app/xlsfonts-"
              version
-             ".tar.bz2"))
+             ".tar.xz"))
        (sha256
         (base32
-         "0s6kxgv78chkwsqmhw929f4pf91gq63f4yvixxnan1h00cx0pf49"))))
+         "0r84wp4352hbfcaybqp2khipm40293byvrfyrlslrd37m52njwkv"))))
     (build-system gnu-build-system)
     (inputs
      (list xorgproto libx11))
@@ -4217,7 +4216,7 @@ tastes.")
 (define-public xorg-sgml-doctools
   (package
     (name "xorg-sgml-doctools")
-    (version "1.11")
+    (version "1.12")
     (source
       (origin
         (method url-fetch)
@@ -4227,7 +4226,7 @@ tastes.")
                ".tar.bz2"))
         (sha256
           (base32
-            "0k5pffyi5bx8dmfn033cyhgd3gf6viqj3x769fqixifwhbgy2777"))))
+            "01n8zqlkqjcxk1c59pk279y08gzhc14r03dhq3lxayy1xpfzvab5"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config))
     (home-page "https://www.x.org/wiki/")
@@ -5681,7 +5680,7 @@ Intrinsics (Xt) Library.")
 (define-public twm
   (package
     (name "twm")
-    (version "1.0.11")
+    (version "1.0.12")
     (source
      (origin
        (method url-fetch)
@@ -5689,7 +5688,7 @@ Intrinsics (Xt) Library.")
                            version ".tar.xz"))
        (sha256
         (base32
-         "1iv8kdb18n9vk3is5fyh6l40ipq9mkgx8ppj86byf464vr1ais7l"))))
+         "1r5gfv1gvcjn39v7n6znpnvifwhlw2zf8gfrxq8vph84vva03wma"))))
     (build-system gnu-build-system)
     (inputs
      (list libxt libxmu libxext xorgproto))
@@ -6486,8 +6485,6 @@ X11 servers, Windows, or macOS.")
                   (guix build emacs-utils))
        #:imported-modules (,@%gnu-build-system-modules
                            (guix build emacs-utils))
-       #:parallel-build? #f ; for reproducible generation of
-                            ; share/uim/installed-modules.scm
        #:configure-flags
        (list "--with-anthy-utf8"
              (string-append "--with-lispdir=" %output "/share/emacs")

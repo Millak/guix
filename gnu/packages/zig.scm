@@ -2,6 +2,7 @@
 ;;; Copyright © 2021 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Calum Irwin <calumirwin1@gmail.com>
+;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -99,4 +100,7 @@ toolchain.  Among other features it provides
 @item concurrency via async functions.
 @end itemize")
     (home-page "https://github.com/ziglang/zig")
+    ;; Currently building zig can take up to 10GB of RAM for linking stage1:
+    ;; https://github.com/ziglang/zig/issues/6485
+    (supported-systems %64bit-supported-systems)
     (license license:expat)))

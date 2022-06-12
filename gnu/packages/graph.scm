@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2018, 2019, 2020, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
-;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018, 2020, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2020 Alexander Krotov <krotov@iitp.ru>
@@ -143,7 +143,7 @@ more.")
   (package
     (inherit igraph)
     (name "python-igraph")
-    (version "0.9.10")
+    (version "0.9.11")
     (source (origin
               (method git-fetch)
               ;; The PyPI archive lacks tests.
@@ -153,7 +153,7 @@ more.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "06qvwmiw2klk3bg8g5af0ppjwrm9kzy4595w5d06qh2v3gq0svbk"))))
+                "1xlr0cnf3a1vs9n2psvgrmjhld4n1xr79kkjqzby4pxxyzk1bydn"))))
     (build-system python-build-system)
     (arguments
      (list

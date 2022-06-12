@@ -6694,7 +6694,7 @@ a secret password store, an adblocker, and a modern UI.")
 (define-public epiphany
   (package
     (name "epiphany")
-    (version "41.2")
+    (version "42.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/epiphany/"
@@ -6702,65 +6702,61 @@ a secret password store, an adblocker, and a modern UI.")
                                   "epiphany-" version ".tar.xz"))
               (sha256
                (base32
-                "0k7b22zq3z1kllzqxgwsvwb1lp0j6rjb3k1hvhna3i573wc4mpji"))
-              (patches
-               (search-patches "epiphany-update-libportal-usage.patch"))))
+                "0b8rhns3b58f8dnp83mm1g933aqf88d8wrfyyp7jq3fihvw2rh4j"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-gtk-update-icon-cache
-           ;; Don't create 'icon-theme.cache'.
-           (lambda _
-             (substitute* "post_install.py"
-               (("gtk-update-icon-cache") "true"))))
-         (add-after 'unpack 'disable-failing-tests
-           (lambda _
-             (substitute* "tests/meson.build"
-               ;; embed_shell fails, because webkitgtk apparently no longer
-               ;; supports overriding the ftp schema web_app_utils fails due
-               ;; to missing network access.
-               (("(embed_shell|web_app_utils)_test,")
-                "find_program('sh'), args: ['-c', 'exit 77'],"))))
-         (add-before 'check 'pre-check
-           (lambda _
-             ;; Tests require a running X server.
-             (system "Xvfb :1 &")
-             (setenv "DISPLAY" ":1"))))
-       #:configure-flags
-       ;; Otherwise, the RUNPATH will lack the final 'epiphany' path component.
-       (list (string-append "-Dc_link_args=-Wl,-rpath="
-                            (assoc-ref %outputs "out") "/lib/epiphany"))))
-    (propagated-inputs
-     (list dconf))
-    (native-inputs
-     `(("desktop-file-utils" ,desktop-file-utils) ; for update-desktop-database
-       ("glib:bin" ,glib "bin") ; for glib-mkenums
-       ("intltool" ,intltool)
-       ("itstool" ,itstool)
-       ("pkg-config" ,pkg-config)
-       ("xmllint" ,libxml2)
-       ("xorg-server" ,xorg-server-for-tests)))
-    (inputs
-     `(("avahi" ,avahi)
-       ("gcr" ,gcr)
-       ("librsvg" ,librsvg) ; for loading SVG files
-       ("glib-networking" ,glib-networking)
-       ("gnome-desktop" ,gnome-desktop)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("json-glib" ,json-glib)
-       ("iso-codes" ,iso-codes)
-       ("libarchive" ,libarchive)
-       ("libdazzle" ,libdazzle)
-       ("libhandy" ,libhandy)
-       ("libnotify" ,libnotify)
-       ("libportal" ,libportal)
-       ("libsecret" ,libsecret)
-       ("libxslt" ,libxslt)
-       ("nettle" ,nettle) ; for hogweed
-       ("sqlite" ,sqlite)
-       ("webkitgtk" ,webkitgtk-with-libsoup2)))
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            ;; Don't create 'icon-theme.cache'.
+            (lambda _
+              (substitute* "post_install.py"
+                (("gtk-update-icon-cache") "true"))))
+          (add-after 'unpack 'disable-failing-tests
+            (lambda _
+              (substitute* "tests/meson.build"
+                ;; embed_shell fails, because webkitgtk apparently no longer
+                ;; supports overriding the ftp schema web_app_utils fails due
+                ;; to missing network access.
+                (("(embed_shell|web_app_utils)_test,")
+                 "find_program('sh'), args: ['-c', 'exit 77'],"))))
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; Tests require a running X server.
+              (system "Xvfb :1 &")
+              (setenv "DISPLAY" ":1"))))
+      #:configure-flags
+      ;; Otherwise, the RUNPATH will lack the final 'epiphany' path component.
+      #~(list (string-append "-Dc_link_args=-Wl,-rpath="
+                             #$output "/lib/epiphany"))))
+    (propagated-inputs (list dconf))
+    (native-inputs (list desktop-file-utils ; for update-desktop-database
+                         `(,glib "bin") ; for glib-mkenums
+                         intltool
+                         itstool
+                         pkg-config
+                         libxml2
+                         xorg-server-for-tests))
+    (inputs (list avahi
+                  gcr
+                  librsvg ; for loading SVG files
+                  glib-networking
+                  gnome-desktop
+                  gsettings-desktop-schemas
+                  json-glib
+                  iso-codes
+                  libarchive
+                  libdazzle
+                  libhandy
+                  libnotify
+                  libportal
+                  libsecret
+                  libxslt
+                  nettle ; for hogweed
+                  sqlite
+                  webkitgtk-with-libsoup2))
     (home-page "https://wiki.gnome.org/Apps/Web")
     (synopsis "GNOME web browser")
     (description

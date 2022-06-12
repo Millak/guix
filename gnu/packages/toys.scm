@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017, 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017, 2018, 2020–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Jesse Gibbons <jgibbons2357+guix@gmail.com>
 ;;; Copyright © 2019, 2020, 2021 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
@@ -57,8 +57,7 @@
            (for-each delete-file-recursively
                      (cons* "bitmaps/bsd" "bitmaps/sakura" "bitmaps/tomoyo"
                             "bitmasks/bsd" "bitmasks/sakura" "bitmasks/tomoyo"
-                            (find-files "cursors" "(bsd|card|petal).*\\.xbm")))
-           #t))))
+                            (find-files "cursors" "(bsd|card|petal).*\\.xbm")))))))
     (build-system gnu-build-system)
     (native-inputs
      (list imake))
@@ -73,8 +72,7 @@
              (invoke "xmkmf")
              ;; Fix incorrectly generated compiler flags.
              (substitute* "Makefile"
-               (("(CDEBUGFLAGS = ).*" _ front) (string-append front "-O2\n")))
-             #t))
+               (("(CDEBUGFLAGS = ).*" _ front) (string-append front "-O2\n")))))
          (replace 'install
            (lambda* (#:key outputs make-flags #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -89,12 +87,14 @@
                (copy-file "oneko.man" (string-append man6 "/oneko.6"))
                (copy-file "oneko.man.jp" (string-append man6-ja "/oneko.6"))
                (for-each (lambda (file) (install-file file doc))
-                         (find-files "." "README.*")))
-             #t)))))
+                         (find-files "." "README.*"))))))))
     (home-page "http://www.daidouji.com/oneko/")
     (synopsis "Cute cat chasing your mouse pointer")
-    (description "Displays a cat or another animated character that chases the
-mouse pointer around the screen while you work.")
+    (description
+     "Oneko displays an animated cat or dog that chases the mouse pointer---now
+an actual mouse or a bone---around the screen while you work.
+
+It was written for the X Window system and does not work well on Wayland.")
     (license license:public-domain))) ; see https://directory.fsf.org/wiki/Oneko
 
 (define-public sl

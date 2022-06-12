@@ -151,7 +151,7 @@ irssi, but graphical.")
 (define-public irssi
   (package
     (name "irssi")
-    (version "1.2.3")
+    (version "1.4.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/irssi/irssi/"
@@ -159,7 +159,7 @@ irssi, but graphical.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "17vninwcdfxw39xl2q55qircckckjk2xlvkvlwgj5lhlxppvyix6"))))
+                "00bmwkpzhqqnsajakk7dviap1i8s89375kwpdyxg65ms3ds94xka"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -172,8 +172,7 @@ irssi, but graphical.")
                        (string-append "--prefix=" out)
                        (string-append "--enable-true-color")
                        (string-append "--with-proxy")
-                       (string-append "--with-socks")
-                       (string-append "--with-bot")))))
+                       (string-append "--with-socks")))))
          (add-before 'check 'set-home
            (lambda _
              (setenv "HOME" (getcwd)))))))
@@ -182,10 +181,14 @@ irssi, but graphical.")
     (native-inputs
      (list pkg-config))
     (home-page "https://irssi.org/")
-    (synopsis "Terminal-based IRC client")
+    (synopsis "Extensible terminal-based IRC client")
     (description
-     "Irssi is a terminal based IRC client for UNIX systems.  It also supports
-SILC and ICB protocols via plugins.")
+     "Irssi is a text terminal-based @acronym{IRC, Internet relay chat} client.
+It is completely themable and extensible through Perl scripts, of which many
+have already been written by the community.
+
+Plug-ins add support for other protocols like @acronym{SILC, Secure Internet Live
+Conferencing} and @acronym{ICB, Internet Citizen's Band}.")
     (license license:gpl2+)))
 
 (define-public weechat

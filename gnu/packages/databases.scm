@@ -1160,7 +1160,7 @@ developed in C/C++ to MariaDB and MySQL databases.")
 (define-public galera
   (package
     (name "galera")
-    (version "26.4.10")
+    (version "26.4.12")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1169,7 +1169,7 @@ developed in C/C++ to MariaDB and MySQL databases.")
                     (recursive? #t)))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1n6zhzwj713ixyqvcjn4ldlq0y9fxqgvmqv3cj3h4207v9lwlxxz"))))
+               (base32 "0n4272mvr8a6h5prbhvl376asdp89ipix5yx5n6i1iiw9bs3v76l"))))
     (build-system cmake-build-system)
     (inputs
      (list check boost openssl))
@@ -1384,7 +1384,7 @@ pictures, sounds, or video.")
     (home-page "https://www.timescale.com/")
     (synopsis "Time-series extension for PostgreSQL")
     (description
-     "TimescaleDB is an database designed to make SQL scalable for
+     "TimescaleDB is a database designed to make SQL scalable for
 time-series data.  It is engineered up from PostgreSQL and packaged as a
 PostgreSQL extension, providing automatic partitioning across time and space
 (partitioning key), as well as full SQL support.")
@@ -1889,7 +1889,7 @@ extremely small.")
                 "1yinx39960y241vf2sknxj0dfz82a5m9gvklq5rw78k0nlyrjawa"))))
     (build-system perl-build-system)
     (synopsis "Database independent interface for Perl")
-    (description "This package provides an database interface for Perl.")
+    (description "This package provides a database interface for Perl.")
     (home-page "https://metacpan.org/release/DBI")
     (license license:perl-license)))
 
@@ -3025,44 +3025,58 @@ development.")
 (define-public python-pyodbc-c
   (package
     (name "python-pyodbc-c")
-    (version "3.1.4")
+    (version "3.1.5")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://gitlab.com/daym/pyodbc-c/repository/"
-                           "archive.tar.gz?ref=v" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/daym/pyodbc-c/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "05aq2297k779xidmxcwkrrxjvj1bh2q7d9a1rcjv6zr15y764ga9"))
-       (file-name (string-append name "-" version ".tar.gz"))))
+        (base32 "08y60c5sx0k953zfx0s2a155l8py968sb17ap9a9fg8bjnj783k8"))))
     (build-system python-build-system)
     (inputs
      (list unixodbc))
     (arguments
-     `(;; No unit tests exist.
+     `(;; The tests require a running SQL server that they don't help set up.
        #:tests? #f))
-    (home-page "https://github.com/mkleehammer/pyodbc")
-    (synopsis "Python ODBC Library")
+    (home-page "https://gitlab.com/daym/pyodbc-c")
+    (synopsis "Python ODBC Library written in C")
     (description "@code{python-pyodbc-c} provides a Python DB-API driver
-for ODBC.")
+for ODBC, similar to python-pyodbc but written in C.
+
+It's designed to stand alone and not have other dependencies on other packages
+or languages.  It uses only Python's built-in data types.")
     (license (license:x11-style "file://LICENSE.TXT"))))
 
 (define-public python-pyodbc
   (package
     (name "python-pyodbc")
-    (version "4.0.30")
+    (version "4.0.32")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyodbc" version))
        (sha256
-        (base32 "0skjpraar6hcwsy82612bpj8nw016ncyvvq88j5syrikxgp5saw5"))
-       (file-name (string-append name "-" version ".tar.gz"))))
+        (base32 "0sqs0x2l5mk3yv0wwz3ya8yh5f4babihyhc8hjbf2m86b71z1rcv"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Delete precompiled binaries.  The corresponding source is included.
+        #~(for-each delete-file (find-files "." "\\.pyc$")))))
     (build-system python-build-system)
     (inputs
      (list unixodbc))
     (arguments
-     `(#:tests? #f))                    ; no unit tests exist
+     ;; XXX Tests fail with ‘Can't open lib 'SQL Server Native Client 10.0' :
+     ;; file not found (0) (SQLDriverConnect)")’.
+     (list #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "python3" "tests3/test.py")))))))
     (home-page "https://github.com/mkleehammer/pyodbc")
     (synopsis "Python ODBC Library")
     (description "@code{python-pyodbc} provides a Python DB-API driver

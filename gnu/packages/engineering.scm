@@ -1840,7 +1840,8 @@ an embedded event driven algorithm.")
     (arguments
      (substitute-keyword-arguments (package-arguments libngspice)
        ((#:configure-flags flags)
-        `(delete "--with-ngshared" ,flags))
+        `(cons "--with-readline=yes"
+               (delete "--with-ngshared" ,flags)))
        ((#:phases phases)
         `(modify-phases ,phases
            (add-after 'unpack 'delete-include-files
@@ -2740,21 +2741,19 @@ export filters.")
 (define-public meshlab
   (package
     (name "meshlab")
-    (version "2020.06")
+    (version "2022.02")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/cnr-isti-vclab/meshlab")
-                    (commit (string-append "Meshlab-" version))
+                    (commit (string-append "MeshLab-" version))
                     (recursive? #t)))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1cgx24wxh2ah5pff51rcrk6x8qcdjpkxcdak7s4cfzmxvjlshydd"))))
+               (base32 "0dkh9qw9z2160s6gjiv0a601kp6hvl66cplvi8rfc892zcykgiwd"))))
     (build-system cmake-build-system)
     (inputs
      (list qtbase-5
-           qtscript
-           qtxmlpatterns
            mesa
            glu
            glew
@@ -2764,34 +2763,29 @@ export filters.")
            libfreenect
            lib3ds
            openctm
-           ;; FIXME: Compilation fails with system qhull:
-           ;; https://github.com/cnr-isti-vclab/meshlab/issues/678
-           ;; ("qhull" ,qhull)
-           ))
+           qhull))
     (arguments
-     `(#:tests? #f                                ; Has no tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'go-to-source-dir
-           (lambda _ (chdir "src") #t))
-         (add-after 'install 'move-files
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((lib (string-append (assoc-ref outputs "out")
-                                       "/lib")))
-               (rename-file
-                (string-append lib "/meshlab/libmeshlab-common.so")
-                (string-append lib "/libmeshlab-common.so"))
-               #t))))))
+     (list #:tests? #f                  ; Has no tests
+           #:configure-flags
+           #~(list (string-append "-DCMAKE_MODULE_LINKER_FLAGS=-Wl,-rpath="
+                                  #$output "/lib/meshlab")
+                   (string-append "-DCMAKE_SHARED_LINKER_FLAGS=-Wl,-rpath="
+                                  #$output "/lib/meshlab")
+                   (string-append "-DCMAKE_EXE_LINKER_FLAGS=-Wl,-rpath="
+                                  #$output "/lib/meshlab"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'go-to-source-dir
+                 (lambda _ (chdir "src"))))))
     (synopsis "3D triangular mesh processing and editing software")
     (home-page "https://www.meshlab.net/")
-    (description "MeshLab is a system for the processing and
-editing of unstructured large 3D triangular meshes.  It is aimed to help the
-processing of the typical not-so-small unstructured models arising in 3D
-scanning, providing a set of tools for editing, cleaning, healing, inspecting,
-rendering and converting this kind of meshes.  These tools include MeshLab
-proper, a versatile program with a graphical user interface, and meshlabserver,
-a program that can perform mesh processing tasks in batch mode, without a
-GUI.")
+    (description "MeshLab is a system for the processing and editing of large,
+unstructured, 3D triangular meshes.  It is aimed to help the processing of the
+typical, not-so-small unstructured models arising in 3D scanning, providing a
+set of tools for editing, cleaning, healing, inspecting, rendering and
+converting this kind of meshes.  These tools include MeshLab proper, a
+versatile program with a graphical user interface, and @samp{meshlabserver}, a
+program that can perform mesh processing tasks in batch mode, without a GUI.")
     (license license:gpl3+)))
 
 (define-public poke

@@ -4457,7 +4457,7 @@ addition, removal, and random selection.")
 (define-public sbcl-quri
   (package
     (name "sbcl-quri")
-    (version "0.4.0")
+    (version "0.5.0")
     (source
      (origin
        (method git-fetch)
@@ -4466,7 +4466,7 @@ addition, removal, and random selection.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ka5haq3g72hvaz4hdv7y1d6df9ncmx029wwixn4r413gll5yxy7"))))
+        (base32 "0zpwjhs2zz9832wsjs00kbkjjl4bcs96krlnq9y75gi4f34fxj1x"))))
     (build-system asdf-build-system/sbcl)
     (arguments
      ;; Test system must be loaded before, otherwise tests fail with:
@@ -4481,7 +4481,7 @@ addition, removal, and random selection.")
     (synopsis "Yet another URI library for Common Lisp")
     (description
      "QURI (pronounced \"Q-ree\") is yet another URI library for Common
-Lisp. It is intended to be a replacement of PURI.")
+Lisp.  It is intended to be a replacement of PURI.")
     (license license:bsd-3)))
 
 (define-public cl-quri

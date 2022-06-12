@@ -3,7 +3,7 @@
 ;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2014, 2015, 2016, 2019 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014, 2015 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2014, 2017, 2021 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2014, 2017, 2021, 2022 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2014, 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2015 Omar Radwan <toxemicsquire4@gmail.com>
 ;;; Copyright © 2015 Pierre-Antoine Rault <par@rigelk.eu>
@@ -3086,7 +3086,13 @@ server.")
               (chdir "miniupnpc")
               (setenv "CC" #$(cc-for-target))
               (substitute* "Makefile"
-                (("/bin/sh") (search-input-file inputs "/bin/sh"))))))))
+                (("/bin/sh") (search-input-file inputs "/bin/sh")))))
+          (add-before 'subdir 'remove-kernel-version
+            ;; Avoid embedding the running kernel version for reproducible builds
+            (lambda _
+              (substitute*
+                  "miniupnpc/updateminiupnpcstrings.sh"
+                (("^OS_VERSION=`uname -r`") "OS_VERSION=Guix")))))))
     (inputs (list python))              ;we are building a Python extension
     (synopsis "UPnP client for Python")
     (description "Miniupnpc is a client library for Python programs to set up
@@ -12346,7 +12352,11 @@ libmagic.")))
                            ;; This test validates that 'pydevd' is not in the
                            ;; exception message, but it is due to being part
                            ;; of the build file name present in the message.
-                           "and not test_evaluate_exception_trace")))))
+                           "and not test_evaluate_exception_trace "
+                           ;; These fail on systems with YAMA LSM’s ptrace
+                           ;; scope > 0. Upstream issue:
+                           ;; https://github.com/fabioz/PyDev.Debugger/issues/218
+                           "and not test_attach_to_pid")))))
             (add-after 'install 'install-attach-binary
               (lambda _
                 (install-file "attach.so"
@@ -12391,6 +12401,7 @@ and other @acronym{IDEs, Integrated Development Environments}.")
     (build-system python-build-system)
     (arguments
      (list
+      #:tests? #f ; Fail on systems with YAMA LSM’s ptrace scope > 0.
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-sh-in-tests
@@ -12411,17 +12422,18 @@ and other @acronym{IDEs, Integrated Development Environments}.")
               (setenv "DEBUGPY_BUNDLING_DISABLED" "1")))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
-              (invoke "pytest" "-vv"
-                      "-n" (number->string (parallel-job-count))
-                      "-k"
-                      (string-append
-                       ;; These tests cannot be run in parallel because their
-                       ;; test data would not be copied by xdist and lead to
-                       ;; import errors. (see:
-                       ;; https://github.com/microsoft/debugpy/issues/342 and
-                       ;; https://github.com/microsoft/debugpy/issues/880).
-                       "not test_custom_python_args "
-                       "and not test_autokill ")))))))
+              (when tests?
+                (invoke "pytest" "-vv"
+                        "-n" (number->string (parallel-job-count))
+                        "-k"
+                        (string-append
+                         ;; These tests cannot be run in parallel because their
+                         ;; test data would not be copied by xdist and lead to
+                         ;; import errors. (see:
+                         ;; https://github.com/microsoft/debugpy/issues/342 and
+                         ;; https://github.com/microsoft/debugpy/issues/880).
+                         "not test_custom_python_args "
+                         "and not test_autokill "))))))))
     (native-inputs
      ;; See: https://raw.githubusercontent.com/microsoft/debugpy/
      ;;      main/tests/requirements.txt.
@@ -19901,22 +19913,14 @@ design and layout.")
 (define-public python-pkginfo
   (package
     (name "python-pkginfo")
-    (version "1.8.2")
+    (version "1.8.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pkginfo" version))
        (sha256
-        (base32 "1zrbn2gblb1q1rx0jlbd0vc9h1dm1bj0760p40ff5qjhcw5hsbjl"))))
+        (base32 "0z46w559hrl79gf7navgzimj21ma821wka27jh58fvyqilqs8kd8"))))
     (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'patch-tests
-           (lambda _
-             (substitute* "pkginfo/tests/test_installed.py"
-               (("test_ctor_w_package_no_PKG_INFO")
-                "_test_ctor_w_package_no_PKG_INFO")))))))
     (native-inputs
      (list python-wheel))
     (home-page "https://code.launchpad.net/~tseaver/pkginfo/trunk")
@@ -24363,7 +24367,7 @@ with features similar to the @command{wget} utility.")
 (define-public offlate
   (package
     (name "offlate")
-    (version "0.5")
+    (version "0.6.1")
     (source
       (origin
         (method git-fetch)
@@ -24373,33 +24377,37 @@ with features similar to the @command{wget} utility.")
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "13pqnbl05wcyldfvl75fp89vjgwsvxyc69vhnb17kkha2rc2k1h7"))))
+          "1sx5cv8pamyw1m089b6x8ykaxdkx26jk9cblhbzlf0m3ckz52jik"))))
     (build-system python-build-system)
     (arguments
      ;; No tests
      `(#:tests? #f
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'patch-for-pygit2
-                    (lambda _
-                      (substitute* "offlate/systems/git.py"
-                        (("pygit2.remote.RemoteCallbacks")
-                         "pygit2.RemoteCallbacks")))))))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'generate-fonts
+           (lambda _
+             (invoke "make" "fonts")))
+         (add-before 'build 'generate-translations
+           (lambda _
+             (invoke "make" "update-langs"))))))
     (propagated-inputs
       (list python-android-stringslib
             python-dateutil
             python-gitlab
             python-lxml
             python-polib
+            python-pycountry
             python-pyenchant
             python-pygit2
             python-pygithub
             python-pyqt
             python-requests
             python-ruamel.yaml
+            python-translate-toolkit
             python-translation-finder
             python-watchdog))
     (native-inputs
-     (list qttools))
+     (list qttools fontforge))
     (home-page "https://framagit.org/tyreunom/offlate")
     (synopsis "Offline translation interface for online translation tools")
     (description "Offlate offers a unified interface for different translation
@@ -24735,6 +24743,38 @@ HTML-containing files.")
 usable as a configuration language.  This Python package implements parsing and
 dumping of JSON5 data structures.")
     (license license:asl2.0)))
+
+(define-public python-freetype-py
+  (package
+    (name "python-freetype-py")
+    (version "2.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "freetype-py" version ".zip"))
+       (sha256
+        (base32 "1l55wzy21jmdayjna29ahzxrf2fp68580978rs6kap1a4zilrdpr"))))
+    (build-system python-build-system)
+    (native-inputs
+     (list python-setuptools-scm
+           unzip))
+    (inputs (list freetype))
+    (arguments
+     `(#:phases
+       ;; Note: the pypi archive does not contain tests, but running the check
+       ;; phase will at least test whether the module loads correctly.
+       (modify-phases %standard-phases
+         (add-before 'build 'embed-library-reference
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "freetype/raw.py"
+               (("^(filename = ).*" _ >)
+                (string-append > "\"" (search-input-file inputs "/lib/libfreetype.so")
+                               "\"\n"))))))))
+    (home-page "https://github.com/rougier/freetype-py")
+    (synopsis "Freetype python bindings")
+    (description "Freetype Python provides bindings for the FreeType
+library.  Only the high-level API is bound.")
+    (license license:bsd-3)))
 
 (define-public python-frozendict
   (package

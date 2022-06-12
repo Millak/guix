@@ -2575,29 +2575,30 @@ chunks.")
 (define-public c-blosc
   (package
     (name "c-blosc")
-    (version "1.18.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/Blosc/c-blosc")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1ywq8j70149859vvs19wgjq89d6xsvvmvm2n1dmkzpchxgrvnw70"))))
+    (version "1.21.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Blosc/c-blosc")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gy9a7wp7x71x5l3rprx8wpb3c5cn7wqc77gdiffq35hr34q88p9"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; In a rare victory, we may delete all bundled libs to no ill effect.
+        '(delete-file-recursively "internal-complibs"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
-       '("-DDEACTIVATE_AVX2=ON"
+       '("-DBUILD_STATIC=OFF"
+         "-DDEACTIVATE_AVX2=ON"
          "-DPREFER_EXTERNAL_LZ4=ON"
-         "-DPREFER_EXTERNAL_SNAPPY=ON"
          "-DPREFER_EXTERNAL_ZLIB=ON"
          "-DPREFER_EXTERNAL_ZSTD=ON")))
     (inputs
-     `(("lz4" ,lz4)
-       ("snappy" ,snappy)
-       ("zlib" ,zlib)
-       ("zstd:lib" ,zstd "lib")))
+     (list lz4 snappy zlib `(,zstd "lib")))
     (home-page "https://blosc.org")
     (synopsis "Blocking, shuffling and lossless compression library")
     (description

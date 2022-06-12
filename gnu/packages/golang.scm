@@ -9784,3 +9784,62 @@ Features:
      "@code{go-github-com-go-chi-chi-v5} is an HTTP router that lets the user
 decompose request handling into many smaller layers.")
     (license license:expat)))
+
+(define-public go-sigs-k8s-io-yaml
+  (package
+    (name "go-sigs-k8s-io-yaml")
+    (version "1.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/kubernetes-sigs/yaml")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0qxs0ppqwqrfqs4aywyn1h28xh1qlj5ds4drmygaz1plrxj02dqn"))))
+    (build-system go-build-system)
+    (arguments '(#:import-path "sigs.k8s.io/yaml"))
+    (propagated-inputs (list go-gopkg-in-yaml-v2 go-github-com-davecgh-go-spew))
+    (home-page "https://sigs.k8s.io/yaml")
+    (synopsis "YAML marshaling and unmarshaling support for Go")
+    (description
+     "This package provides a Go library that first converts YAML to JSON
+using @code{go-yaml} and then uses @code{json.Marshal} and
+@code{json.Unmarshal} to convert to or from the struct. This means that
+it effectively reuses the JSON struct tags as well as the custom JSON
+methods @code{MarshalJSON} and @code{UnmarshalJSON} unlike
+@code{go-yaml}.
+
+kubernetes-sigs/yaml is a permanent fork of
+@url{https://github.com/ghodss/yaml,ghodss/yaml}.")
+    (license (list license:expat license:bsd-3))))
+
+(define-public go-github-com-google-go-jsonnet
+  (package
+    (name "go-github-com-google-go-jsonnet")
+    (version "0.18.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/google/go-jsonnet")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1dghqygag123zkgh2vrnq82cdag5z0p03v3489pwhs06r5g27wm3"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/google/go-jsonnet/cmd/jsonnet"
+       #:unpack-path "github.com/google/go-jsonnet"))
+    (propagated-inputs (list go-sigs-k8s-io-yaml go-gopkg-in-yaml-v2
+                             go-github-com-sergi-go-diff
+                             go-github-com-fatih-color))
+    (home-page "https://github.com/google/go-jsonnet")
+    (synopsis "Go implementation of Jsonnet")
+    (description
+     "This package provides an implementation of the @url{http://jsonnet.org/,
+Jsonnet} data templating language in Go.  It is a feature-complete,
+production-ready implementation, compatible with the original Jsonnet C++
+implementation.")
+    (license license:asl2.0)))

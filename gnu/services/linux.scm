@@ -4,6 +4,7 @@
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 raid5atemyhomework <raid5atemyhomework@protonmail.com>
 ;;; Copyright © 2021 B. Wilson <elaexuotee@wilsonb.com>
+;;; Copyright © 2022 Josselin Poiret <dev@jpoiret.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -21,9 +22,12 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu services linux)
+  #:use-module (guix diagnostics)
   #:use-module (guix gexp)
   #:use-module (guix records)
   #:use-module (guix modules)
+  #:use-module (guix i18n)
+  #:use-module (guix ui)
   #:use-module (gnu services)
   #:use-module (gnu services base)
   #:use-module (gnu services shepherd)
@@ -252,7 +256,21 @@ representation."
   (memory-limit             zram-device-configuration-memory-limit
                             (default 0))        ; string or integer
   (priority                 zram-device-configuration-priority
-                            (default -1)))      ; integer
+                            (default #f)        ; integer | #f
+                            (delayed) ; to avoid printing the deprecation
+                                      ; warning multiple times
+                            (sanitize warn-zram-priority-change)))
+
+(define-with-syntax-properties
+  (warn-zram-priority-change (priority properties))
+  (if (eqv? priority -1)
+      (begin
+        (warning (source-properties->location properties)
+                 (G_ "using -1 for zram priority is deprecated~%"))
+        (display-hint (G_ "Use #f or leave as default instead (@pxref{Linux \
+Services})."))
+        #f)
+      priority))
 
 (define (zram-device-configuration->udev-string config)
   "Translate a <zram-device-configuration> into a string which can be
@@ -278,9 +296,12 @@ placed in a udev rules file."
          "")
        "RUN+=\"/run/current-system/profile/sbin/mkswap /dev/zram0\" "
        "RUN+=\"/run/current-system/profile/sbin/swapon "
-       (if (not (equal? -1 priority))
-         (string-append "--priority " (number->string priority) " ")
-         "")
+       ;; TODO: Revert to simply use 'priority' after removing the deprecation
+       ;; warning and the delayed property of the field.
+       (let ((priority* (force priority)))
+         (if priority*
+             (format #f "--priority ~a " priority*)
+             ""))
        "/dev/zram0\"\n"))))
 
 (define %zram-device-config

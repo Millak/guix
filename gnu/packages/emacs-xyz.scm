@@ -113,6 +113,7 @@
 ;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
 ;;; Copyright © 2022 Luis Felipe López Acevedo <luis.felipe.la@protonmail.com>
 ;;; Copyright © 2022 Thomas Albers Raviola <thomas@thomaslabs.org>
+;;; Copyright © 2022 Haider Mirza <haider@haider.gq>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -247,7 +248,7 @@
 (define-public emacs-geiser
   (package
     (name "emacs-geiser")
-    (version "0.23.1")
+    (version "0.23.2")
     (source
      (origin
        (method git-fetch)
@@ -256,7 +257,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lvnk71fb4qkh8a7h7spsdhmc9nnj1lwgp9wr3c2fgzjqsl62kgr"))))
+        (base32 "0p5cwx0xwva4ajgj8hnrk8bx6n3hv1z7aqs4zivp81crnq4077yw"))))
     (build-system emacs-build-system)
     (arguments
      '(#:phases
@@ -278,7 +279,7 @@
      (list texinfo))
     (propagated-inputs
      (list emacs-project emacs-transient))
-    (home-page "https://nongnu.org/geiser/")
+    (home-page "https://www.nongnu.org/geiser/")
     (synopsis "Collection of Emacs modes for Scheme hacking")
     (description
      "Geiser is a collection of Emacs major and minor modes that conspire with
@@ -296,7 +297,7 @@ e.g. emacs-geiser-guile for Guile.")
 (define-public emacs-geiser-guile
   (package
     (name "emacs-geiser-guile")
-    (version "0.23")
+    (version "0.23.2")
     (source
      (origin
        (method git-fetch)
@@ -305,13 +306,19 @@ e.g. emacs-geiser-guile for Guile.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1v9f90smnk41nz1pjy5mwz199y8p4qar3llgaryzxr7s4wg2v9wi"))))
+        (base32 "18m5ldj4r4c2hxgvv5b4azl90r8az1kn5f3s913h971asyv4wx06"))))
     (build-system emacs-build-system)
     (arguments
      (list
       #:include #~(cons "^src/" %default-include)
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-geiser-guile-binary
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "geiser-guile.el"
+                (("\\(t \"guile\")")
+                 (format #f "(t ~s)"
+                         (search-input-file inputs "bin/guile"))))))
           (add-after 'make-autoloads 'patch-autoloads
             (lambda _
               (substitute* (string-append (elpa-directory #$output)
@@ -321,11 +328,9 @@ e.g. emacs-geiser-guile for Guile.")
                 (("\\(geiser-activate-implementation .*\\)" all)
                  (string-append
                   "(eval-after-load 'geiser-impl '" all ")"))))))))
-    (inputs
-     (list guile-3.0))
-    (propagated-inputs
-     (list emacs-geiser))
-    (home-page "https://nongnu.org/geiser/")
+    (inputs (list guile-3.0))
+    (propagated-inputs (list emacs-geiser))
+    (home-page "https://www.nongnu.org/geiser/")
     (synopsis "Guile Scheme support for Geiser")
     (description
      "This package adds support for the Guile Scheme implementation to Geiser,
@@ -358,34 +363,57 @@ using geiser.")
       (home-page "https://github.com/xiaohanyu/ac-geiser"))))
 
 (define-public emacs-geiser-gauche
-  (package
-    (name "emacs-geiser-gauche")
-    (version "0.0.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitlab.com/emacs-geiser/gauche.git")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0rxncnzx7qgcpvc8nz0sd8r0hwrplazzraahdwhbpq0q6z8ywqgg"))))
-    (build-system emacs-build-system)
-    (arguments
-     `(#:include (cons "^geiser-gauche\\.scm$" %default-include)))
-    (native-inputs
-     (list emacs-geiser))
-    (home-page "https://gitlab.com/emacs-geiser/gauche")
-    (synopsis "Gauche Scheme support for Geiser")
-    (description
-     "This package adds support for the Gauche Scheme implementation to Geiser,
+  ;; The latest 0.14 release has an unbound variable (geiser-scheme-dir).
+  (let ((commit "96fa06aaeef18cc1b3b519e83dbb7be09eeb0d07")
+        (revision "0"))
+    (package
+      (name "emacs-geiser-gauche")
+      (version (git-version "0.14" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.com/emacs-geiser/gauche.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1ppracwfl1snq0ifdlyxpdlv7fbn3pbxm1hd1ihgqivii5nbya9r"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:include '(cons "^geiser-gauche\\.scm$" %default-include)
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-geiser-gauche-binary
+              (lambda* (#:key inputs #:allow-other-keys)
+                (emacs-substitute-sexps "geiser-gauche.el"
+                  ("geiser-custom--defcustom geiser-gauche-binary"
+                   (search-input-file inputs "bin/gosh")))))
+            (add-after 'make-autoloads 'patch-autoloads
+              (lambda _
+                (substitute* (string-append (elpa-directory #$output)
+                                            "/geiser-gauche-autoloads.el")
+                  ;; Activating implementations fails when Geiser is not yet
+                  ;; loaded, so let's defer that until it is.
+                  (("\\(geiser-activate-implementation .*\\)" all)
+                   (string-append
+                    "(eval-after-load 'geiser-impl '" all ")"))
+                  (("\\(geiser-implementation-extension .*\\)" all)
+                   (string-append
+                    "(eval-after-load 'geiser-impl '" all ")"))))))))
+      (inputs (list gauche))
+      (propagated-inputs (list emacs-geiser))
+      (home-page "https://gitlab.com/emacs-geiser/gauche")
+      (synopsis "Gauche Scheme support for Geiser")
+      (description
+       "This package adds support for the Gauche Scheme implementation to Geiser,
 a generic Scheme interaction mode for the GNU Emacs editor.")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public emacs-geiser-racket
   (package
     (name "emacs-geiser-racket")
-    (version "0.16")
+    (version "1.0")
     (source
      (origin
        (method git-fetch)
@@ -394,13 +422,19 @@ a generic Scheme interaction mode for the GNU Emacs editor.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1aqsvmk1hi7kc3j4h8xlza7c6rwm71v98fv5wpw8kmyj9vsp49wx"))))
+        (base32 "04gwd9qa0785zfr6m9a5443ilgvyz05l06cb1waicf83sgp8xl32"))))
     (build-system emacs-build-system)
     (arguments
      (list
       #:include #~(cons "^src/" %default-include)
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-geiser-racket-binary
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "geiser-racket.el"
+                (("\\(t \"racket\")")
+                 (format #f "(t ~s)"
+                         (search-input-file inputs "bin/racket"))))))
           (add-after 'make-autoloads 'patch-autoloads
             (lambda _
               (substitute* (string-append (elpa-directory #$output)
@@ -410,14 +444,12 @@ a generic Scheme interaction mode for the GNU Emacs editor.")
                 (("\\(geiser-activate-implementation .*\\)" all)
                  (string-append
                   "(eval-after-load 'geiser-impl '" all ")"))
-	        (("\\(geiser-implementation-extension .*\\)" all)
+                (("\\(geiser-implementation-extension .*\\)" all)
                  (string-append
                   "(eval-after-load 'geiser-impl '" all ")"))))))))
-    (inputs
-     (list racket))
-    (propagated-inputs
-     (list emacs-geiser))
-    (home-page "https://nongnu.org/geiser/")
+    (inputs (list racket))
+    (propagated-inputs (list emacs-geiser))
+    (home-page "https://www.nongnu.org/geiser/")
     (synopsis "Racket support for Geiser")
     (description
      "This package adds support for the Racket implementation to Geiser,
@@ -536,6 +568,27 @@ current buffer.")
 editing @file{.hgignore} files used by the Mercurial version control
 system.")
       (license license:gpl3+))))
+
+(define-public emacs-platformio-mode
+  (package
+    (name "emacs-platformio-mode")
+    (version "0.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ZachMassia/PlatformIO-Mode")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ian50v9vaz7kqzn20bhqadq50h0l3zhjkmniinpz4q9klh7drh9"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-async emacs-projectile))
+    (home-page "https://github.com/zachmassia/platformio-mode")
+    (synopsis "Minor mode for building and uploading PlatformIO projects")
+    (description "This package provices an Emacs minor mode for building and
+uploading PlatformIO projects.")
+    (license license:gpl3+)))
 
 (define-public emacs-hyperbole
   (package
@@ -1377,7 +1430,7 @@ organizing remote Go repository clones.")
 (define-public emacs-ghub
   (package
     (name "emacs-ghub")
-    (version "3.5.5")
+    (version "3.5.6")
     (source
      (origin
        (method git-fetch)
@@ -1386,7 +1439,7 @@ organizing remote Go repository clones.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1px27nh4cr3r16qmvig72jdirjzllvm2m4dzm59kfznhg3rf7vj0"))))
+        (base32 "1pw1rjrvvanlcxv3rb64s2p646zfaipp7h7v8djlrrnlgy6mwbqd"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -3916,7 +3969,7 @@ evaluations.  The entry point is @code{M-x build-farm} command.")
 (define-public emacs-d-mode
   (package
     (name "emacs-d-mode")
-    (version "2.0.11")
+    (version "2.0.12")
     (source
      (origin
        (method git-fetch)
@@ -3925,7 +3978,7 @@ evaluations.  The entry point is @code{M-x build-farm} command.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vkl470vvmxap8ca773a0jvjvalmvdbbax3qvgjdclp54ml75al4"))))
+        (base32 "0mwd412d2kha8avkyhvvkh8r7an859xk18f7phgx7kj989pr3xkr"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-undercover))
@@ -4136,16 +4189,16 @@ in the center.")
 (define-public emacs-undo-tree
   (package
     (name "emacs-undo-tree")
-    (version "0.8.1")
+    (version "0.8.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://gitlab.com/tsc25/undo-tree")
-             (commit (string-append "release/" version))))
+             (commit "42aab056e37e033816b2d192f9121b89410b958e"))) ; no 0.8.2 tag
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1khkwrrbwaimspc013n4k9mpv8g302r0zkrsqnza2x1d3qznn08y"))))
+        (base32 "1xvkxc078b4z5zqwndz6jcv4ga8yd2ci32v7l8pdvqjmz7fq7bfz"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-queue))
@@ -11233,14 +11286,14 @@ of its name.")
 (define-public emacs-rainbow-mode
   (package
     (name "emacs-rainbow-mode")
-    (version "1.0.5")
+    (version "1.0.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
-                           "rainbow-mode-" version ".el"))
+                           "rainbow-mode-" version ".tar"))
        (sha256
-        (base32 "159fps843k5pap9k04a7ll1k3gw6d9c6w08lq4bbc3lqg78aa2l9"))))
+        (base32 "04v73cm1cap19vwc8lqsw0rmfr9v7r3swc4wgxnk9dnzxi9j2527"))))
     (build-system emacs-build-system)
     (home-page "https://elpa.gnu.org/packages/rainbow-mode.html")
     (synopsis "Colorize color names in buffers")
@@ -12826,7 +12879,7 @@ passive voice.")
 (define-public emacs-org
   (package
     (name "emacs-org")
-    (version "9.5.3")
+    (version "9.5.4")
     (source
      (origin
        (method git-fetch)
@@ -12835,7 +12888,7 @@ passive voice.")
              (commit (string-append "release_" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0h1n6gqxv3kj3y98n5547rhpw4qnp03lfar79npb4paqgpxf76wb"))))
+        (base32 "1an866kkn5r84933s04agm1c3197kza2pvk8lqp2xzpjd09ba394"))))
     (build-system emacs-build-system)
     (arguments
      `(#:tests? #t
@@ -18587,6 +18640,28 @@ files, allowing for actions to be performed based on search criteria.")
 Chinese to English.")
     (license license:gpl3+)))
 
+(define-public emacs-org-auto-tangle
+  (package
+    (name "emacs-org-auto-tangle")
+    (version "0.4.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/yilkalargaw/org-auto-tangle")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1zb7vcmhmjiqpbbhqrqci689rnpn10p985cs5jk9sgg66xsbrgs3"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-async))
+    (home-page "https://github.com/yilkalargaw/org-auto-tangle")
+    (synopsis "Automatically tangle code blocks on save")
+    (description
+     "@code{org-auto-tangle} allows you to automatically tangle code blocks
+whenever saving an @code{org-mode} file.")
+    (license license:bsd-2)))
+
 (define-public emacs-org-auto-expand
   (let ((commit "4938d5f6460e2f8f051ba9ac000b291bfa43ef62")
         (revision "1"))
@@ -19494,16 +19569,14 @@ or expressions with SVG rounded box labels that are fully customizable.")
 (define-public emacs-kind-icon
   (package
     (name "emacs-kind-icon")
-    (version "0.1.4")
+    (version "0.1.5")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://elpa.gnu.org/packages/kind-icon-"
-             version
-             ".tar"))
+       (uri (string-append "https://elpa.gnu.org/packages/kind-icon-"
+                           version ".tar"))
        (sha256
-        (base32 "00pyvnq4dx51l2wbhvm6k6cx5xmy32j4h1lkr5kr8s3j5w83ip25"))))
+        (base32 "0qajj89vkgc9gbgff6akzll53jy0kgkv6c9jvwpl32rbg8v0wp63"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-svg-lib))
     (home-page "https://github.com/jdtsmith/kind-icon")
@@ -27826,7 +27899,7 @@ Emacs that integrate with major modes like Org-mode.")
 (define-public emacs-modus-themes
   (package
     (name "emacs-modus-themes")
-    (version "2.4.0")
+    (version "2.4.1")
     (source
      (origin
        (method git-fetch)
@@ -27835,7 +27908,7 @@ Emacs that integrate with major modes like Org-mode.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ia6r68fqbv64r9jm92vmqypq15nl8yy07n18hqrfbp1fy47zds1"))))
+        (base32 "0b4y8dzyc9qwwaf2ngqiwyfcnhwlr49kxhc96laqk20lvjlfsrnx"))))
     (native-inputs (list texinfo))
     (build-system emacs-build-system)
     (arguments
@@ -27937,28 +28010,30 @@ and it should work well with 256 color terminals.")
     (license license:gpl3+)))
 
 (define-public emacs-dimmer
-  (package
-    (name "emacs-dimmer")
-    (version "0.4.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/gonewest818/dimmer.el")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0dw0qh5hm1x76s5cqxvylvmjgy0jwy11xm258g6kmx6w1k6r1d2l"))))
-    (build-system emacs-build-system)
-    (home-page "https://github.com/gonewest818/dimmer.el")
-    (synopsis "Visually highlights the selected buffer in Emacs")
-    (description "Dimmer provides a minor mode that indicates which buffer is
+  (let ((commit "2f915b100044e09dd647b22085e1696249c4b115")
+        (revision "1"))
+    (package
+      (name "emacs-dimmer")
+      (version (git-version "0.4.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/gonewest818/dimmer.el")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "00y6645zjary1sz7517qy5pjwfm5ipsc46sypmdygin65hbbc8wg"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/gonewest818/dimmer.el")
+      (synopsis "Visually highlights the selected buffer in Emacs")
+      (description "Dimmer provides a minor mode that indicates which buffer is
 currently active by dimming the faces in the other buffers.  It does this
 nondestructively, and computes the dimmed faces dynamically such that your
 overall color scheme is shown in a muted form without requiring you to define
 what is a \"dim\" version of every face.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-minibuffer-line
   (package
@@ -31511,6 +31586,59 @@ headlines, keywords, tables and source blocks.")
 zoomable and moveable map display, display of tracks and POIs from GPX files,
 parallel fetching of tiles with cURL, and more.")
     (license license:gpl3+)))
+
+(define-public emacs-corfu-terminal
+  ;; Upstream does not tag releases, version taken from package header.
+  (let ((commit "7c5a8a1c07b6c1a41b358b083d5bf7773701d26b")
+        (revision "0"))
+    (package
+      (name "emacs-corfu-terminal")
+      (version (git-version "0.4" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://codeberg.org/akib/emacs-corfu-terminal")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0pk5vfcz8w4hiqrwzwpxdjzlbhla0bw7a1h6v0mqxad0j9y7v3nw"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-corfu emacs-popon))
+      (home-page "https://codeberg.org/akib/emacs-corfu-terminal/")
+      (synopsis "Replace corfu child frames with popups")
+      (description
+       "This package replaces the child frames @code{emacs-corfu} uses
+with popups, which also work in the terminal.")
+      (license license:gpl3+))))
+
+(define-public emacs-corfu-doc-terminal
+  ;; Upstream does not tag releases, version taken from package header.
+  (let ((commit "d8945c64b52d76e864b767b3048674f222daf80b")
+        (revision "0"))
+    (package
+      (name "emacs-corfu-doc-terminal")
+      (version (git-version "0.5" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://codeberg.org/akib/emacs-corfu-doc-terminal")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0j0dd8np5x93wic22bc5i9h7bq2gj700n4fh11dzzgsj14lv2r5k"))))
+      (build-system emacs-build-system)
+      (propagated-inputs
+       (list emacs-corfu emacs-corfu-doc emacs-corfu-terminal emacs-popon))
+      (home-page "https://codeberg.org/akib/emacs-corfu-doc-terminal/")
+      (synopsis "Replace corfu docmentation child frames with popups")
+      (description
+       "This package replaces the child frames @code{emacs-corfu-doc} uses
+with popups, which also work in the terminal.")
+      (license license:gpl3+))))
 
 (define-public emacs-popon
   ;; Upstream does not tag releases.  The commit below matches the version

@@ -26,6 +26,7 @@
   #:use-module (gnu packages admin)
   #:use-module (gnu packages certs)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages guile-xyz)
   #:use-module (gnu packages jami)
   #:use-module (gnu packages telephony)
   #:use-module (guix deprecation)
@@ -48,7 +49,7 @@
             jami-account-name-server-uri
 
             jami-configuration
-            jami-configuration-jamid
+            jami-configuration-libjami
             jami-configuration-dbus
             jami-configuration-enable-logging?
             jami-configuration-debug?
@@ -227,11 +228,11 @@ SET-ACCOUNT-DETAILS."
 (define-maybe/no-serialization jami-account-list)
 
 (define-configuration/no-serialization jami-configuration
-  (jamid
+  (libjami
    (file-like libjami)
    "The Jami daemon package to use.")
   (dbus
-   (file-like dbus)
+   (file-like dbus-for-jami)
    "The D-Bus package to use to start the required D-Bus session.")
   (nss-certs
    (file-like nss-certs)
@@ -265,8 +266,8 @@ consistent state."))
   "Derive the command line arguments to used to launch the Jami daemon from
 CONFIG, a <jami-configuration> object."
   (match-record config <jami-configuration>
-    (jamid dbus enable-logging? debug? auto-answer?)
-    `(,(file-append jamid "/libexec/jamid")
+    (libjami dbus enable-logging? debug? auto-answer?)
+    `(,(file-append libjami "/libexec/jamid")
       "--persistent"                    ;stay alive after client quits
       ,@(if enable-logging?
             '()                         ;logs go to syslog by default
@@ -284,34 +285,48 @@ CONFIG, a <jami-configuration> object."
     #~(begin
         (use-modules (gnu build activation))
         (let ((user (getpwnam "jami")))
-          (mkdir-p/perms "/var/run/jami" user #o700)))))
+          (mkdir-p/perms "/var/run/jami" user #o700)
+          ;; Customize the D-Bus policy to allow 'root' to access other users'
+          ;; session bus.  Also modify the location of the written PID file,
+          ;; from the default '/var/run/dbus/pid' location.  This file is only
+          ;; honored by the 'dbus-for-jami' package variant.
+          (call-with-output-file "/var/run/jami/session-local.conf"
+            (lambda (port)
+              (format port "\
+<busconfig>
+  <pidfile>/var/run/jami/pid</pidfile>
+  <policy context=\"mandatory\">
+    <allow user=\"root\"/>
+  </policy>
+</busconfig>~%")))))))
 
 (define (jami-shepherd-services config)
   "Return a <shepherd-service> running the Jami daemon."
-  (let* ((jamid (jami-configuration-jamid config))
+  (let* ((libjami (jami-configuration-libjami config))
          (nss-certs (jami-configuration-nss-certs config))
          (dbus (jami-configuration-dbus config))
          (dbus-daemon (file-append dbus "/bin/dbus-daemon"))
-         (dbus-send (file-append dbus "/bin/dbus-send"))
          (accounts (jami-configuration-accounts config))
          (declarative-mode? (not (eq? 'disabled accounts))))
 
-    (with-imported-modules (source-module-closure
-                            '((gnu build jami-service)
-                              (gnu build shepherd)
-                              (gnu system file-systems)))
+    (with-extensions (list guile-packrat ;used by guile-ac-d-bus
+                           guile-ac-d-bus
+                           ;; Fibers is needed to provide the non-blocking
+                           ;; variant of the 'sleep' procedure.
+                           guile-fibers)
+      (with-imported-modules (source-module-closure
+                              '((gnu build dbus-service)
+                                (gnu build jami-service)
+                                (gnu build shepherd)
+                                (gnu system file-systems)))
 
-      (define list-accounts-action
-        (shepherd-action
-         (name 'list-accounts)
-         (documentation "List the available Jami accounts.  Return the account
+        (define list-accounts-action
+          (shepherd-action
+           (name 'list-accounts)
+           (documentation "List the available Jami accounts.  Return the account
 details alists keyed by their account username.")
-         (procedure
-          #~(lambda _
-              (parameterize ((%send-dbus-binary #$dbus-send)
-                             (%send-dbus-bus    "unix:path=/var/run/jami/bus")
-                             (%send-dbus-user   "jami")
-                             (%send-dbus-group  "jami"))
+           (procedure
+            #~(lambda _
                 ;; Print the accounts summary or long listing, according to
                 ;; user-provided option.
                 (let* ((usernames (get-usernames))
@@ -341,39 +356,31 @@ details alists keyed by their account username.")
                       accounts)
                      (display "\n")))
                   ;; Return the account-details-list alist.
-                  (map cons usernames accounts)))))))
+                  (map cons usernames accounts))))))
 
-      (define list-account-details-action
-        (shepherd-action
-         (name 'list-account-details)
-         (documentation "Display the account details of the available Jami
+        (define list-account-details-action
+          (shepherd-action
+           (name 'list-account-details)
+           (documentation "Display the account details of the available Jami
 accounts in the @code{recutils} format.  Return the account details alists
 keyed by their account username.")
-         (procedure
-          #~(lambda _
-              (parameterize ((%send-dbus-binary #$dbus-send)
-                             (%send-dbus-bus    "unix:path=/var/run/jami/bus")
-                             (%send-dbus-user   "jami")
-                             (%send-dbus-group  "jami"))
+           (procedure
+            #~(lambda _
                 (let* ((usernames (get-usernames))
                        (accounts (map-in-order username->account usernames)))
                   (for-each (lambda (account)
                               (display (account-details->recutil account))
                               (display "\n\n"))
                             accounts)
-                  (map cons usernames accounts)))))))
+                  (map cons usernames accounts))))))
 
-      (define list-contacts-action
-        (shepherd-action
-         (name 'list-contacts)
-         (documentation "Display the contacts for each Jami account.  Return
+        (define list-contacts-action
+          (shepherd-action
+           (name 'list-contacts)
+           (documentation "Display the contacts for each Jami account.  Return
 an alist containing the contacts keyed by the account usernames.")
-         (procedure
-          #~(lambda _
-              (parameterize ((%send-dbus-binary #$dbus-send)
-                             (%send-dbus-bus    "unix:path=/var/run/jami/bus")
-                             (%send-dbus-user   "jami")
-                             (%send-dbus-group  "jami"))
+           (procedure
+            #~(lambda _
                 (let* ((usernames (get-usernames))
                        (contacts (map-in-order username->contacts usernames)))
                   (for-each (lambda (username contacts)
@@ -381,19 +388,15 @@ an alist containing the contacts keyed by the account usernames.")
                                       username)
                               (format #t "~{  - ~a~%~}~%" contacts))
                             usernames contacts)
-                  (map cons usernames contacts)))))))
+                  (map cons usernames contacts))))))
 
-      (define list-moderators-action
-        (shepherd-action
-         (name 'list-moderators)
-         (documentation "Display the moderators for each Jami account.  Return
+        (define list-moderators-action
+          (shepherd-action
+           (name 'list-moderators)
+           (documentation "Display the moderators for each Jami account.  Return
 an alist containing the moderators keyed by the account usernames.")
-         (procedure
-          #~(lambda _
-              (parameterize ((%send-dbus-binary #$dbus-send)
-                             (%send-dbus-bus    "unix:path=/var/run/jami/bus")
-                             (%send-dbus-user   "jami")
-                             (%send-dbus-group  "jami"))
+           (procedure
+            #~(lambda _
                 (let* ((usernames (get-usernames))
                        (moderators (map-in-order username->moderators
                                                  usernames)))
@@ -406,12 +409,12 @@ an alist containing the moderators keyed by the account usernames.")
                            (format #t "Moderators for account ~a:~%" username)
                            (format #t "~{  - ~a~%~}~%" moderators))))
                    usernames moderators)
-                  (map cons usernames moderators)))))))
+                  (map cons usernames moderators))))))
 
-      (define add-moderator-action
-        (shepherd-action
-         (name 'add-moderator)
-         (documentation "Add a moderator for a given Jami account.  The
+        (define add-moderator-action
+          (shepherd-action
+           (name 'add-moderator)
+           (documentation "Add a moderator for a given Jami account.  The
 MODERATOR contact must be given as its 40 characters fingerprint, while the
 Jami account can be provided as its registered USERNAME or fingerprint.
 
@@ -420,21 +423,17 @@ herd add-moderator jami 1dbcb0f5f37324228235564b79f2b9737e9a008f username
 @end example
 
 Return the moderators for the account known by USERNAME.")
-         (procedure
-          #~(lambda (_ moderator username)
-              (parameterize ((%send-dbus-binary #$dbus-send)
-                             (%send-dbus-bus    "unix:path=/var/run/jami/bus")
-                             (%send-dbus-user   "jami")
-                             (%send-dbus-group  "jami"))
+           (procedure
+            #~(lambda (_ moderator username)
                 (set-all-moderators #f username)
                 (add-contact moderator username)
                 (set-moderator moderator #t username)
-                (username->moderators username))))))
+                (username->moderators username)))))
 
-      (define ban-contact-action
-        (shepherd-action
-         (name 'ban-contact)
-         (documentation "Ban a contact for a given or all Jami accounts, and
+        (define ban-contact-action
+          (shepherd-action
+           (name 'ban-contact)
+           (documentation "Ban a contact for a given or all Jami accounts, and
 clear their moderator flag.  The CONTACT must be given as its 40 characters
 fingerprint, while the Jami account can be provided as its registered USERNAME
 or fingerprint, or omitted.  When the account is omitted, CONTACT is banned
@@ -443,31 +442,22 @@ from all accounts.
 @example
 herd ban-contact jami 1dbcb0f5f37324228235564b79f2b9737e9a008f [username]
 @end example")
-         (procedure
-          #~(lambda* (_ contact #:optional username)
-              (parameterize ((%send-dbus-binary #$dbus-send)
-                             (%send-dbus-bus    "unix:path=/var/run/jami/bus")
-                             (%send-dbus-user   "jami")
-                             (%send-dbus-group  "jami"))
+           (procedure
+            #~(lambda* (_ contact #:optional username)
                 (let ((usernames (or (and=> username list)
                                      (get-usernames))))
                   (for-each (lambda (username)
                               (set-moderator contact #f username)
                               (remove-contact contact username #:ban? #t))
-                            usernames)))))))
+                            usernames))))))
 
-      (define list-banned-contacts-action
-        (shepherd-action
-         (name 'list-banned-contacts)
-         (documentation "List the banned contacts for each accounts.  Return
+        (define list-banned-contacts-action
+          (shepherd-action
+           (name 'list-banned-contacts)
+           (documentation "List the banned contacts for each accounts.  Return
 an alist of the banned contacts, keyed by the account usernames.")
-         (procedure
-          #~(lambda _
-              (parameterize ((%send-dbus-binary #$dbus-send)
-                             (%send-dbus-bus    "unix:path=/var/run/jami/bus")
-                             (%send-dbus-user   "jami")
-                             (%send-dbus-group  "jami"))
-
+           (procedure
+            #~(lambda _
                 (define banned-contacts
                   (let ((usernames (get-usernames)))
                     (map cons usernames
@@ -484,183 +474,157 @@ an alist of the banned contacts, keyed by the account usernames.")
                                        username)
                                (format #t "~{  - ~a~%~}~%" banned))))
                           banned-contacts)
-                banned-contacts)))))
+                banned-contacts))))
 
-      (define enable-account-action
-        (shepherd-action
-         (name 'enable-account)
-         (documentation "Enable an account.  It takes USERNAME as an argument,
+        (define enable-account-action
+          (shepherd-action
+           (name 'enable-account)
+           (documentation "Enable an account.  It takes USERNAME as an argument,
 either a registered username or the fingerprint of the account.")
-         (procedure
-          #~(lambda (_ username)
-              (parameterize ((%send-dbus-binary #$dbus-send)
-                             (%send-dbus-bus    "unix:path=/var/run/jami/bus")
-                             (%send-dbus-user   "jami")
-                             (%send-dbus-group  "jami"))
-                (enable-account username))))))
+           (procedure
+            #~(lambda (_ username)
+                (enable-account username)))))
 
-      (define disable-account-action
-        (shepherd-action
-         (name 'disable-account)
-         (documentation "Disable an account.  It takes USERNAME as an
+        (define disable-account-action
+          (shepherd-action
+           (name 'disable-account)
+           (documentation "Disable an account.  It takes USERNAME as an
 argument, either a registered username or the fingerprint of the account.")
-         (procedure
-          #~(lambda (_ username)
-              (parameterize ((%send-dbus-binary #$dbus-send)
-                             (%send-dbus-bus    "unix:path=/var/run/jami/bus")
-                             (%send-dbus-user   "jami")
-                             (%send-dbus-group  "jami"))
-                (disable-account username))))))
+           (procedure
+            #~(lambda (_ username)
+                (disable-account username)))))
 
-      (list (shepherd-service
-             (documentation "Run a D-Bus session for the Jami daemon.")
-             (provision '(jami-dbus-session))
-             (modules `((gnu build shepherd)
-                        (gnu build jami-service)
-                        (gnu system file-systems)
-                        ,@%default-modules))
-             ;; The requirement on dbus-system is to ensure other required
-             ;; activation for D-Bus, such as a /etc/machine-id file.
-             (requirement '(dbus-system syslogd))
-             (start
-              #~(lambda args
-                  (define pid
-                    ((make-forkexec-constructor/container
-                      (list #$dbus-daemon "--session"
-                            "--address=unix:path=/var/run/jami/bus"
-                            "--nofork" "--syslog-only" "--nopidfile")
-                      #:mappings (list (file-system-mapping
-                                        (source "/dev/log") ;for syslog
-                                        (target source))
-                                       (file-system-mapping
-                                        (source "/var/run/jami")
-                                        (target source)
-                                        (writable? #t)))
-                      #:user "jami"
-                      #:group "jami"
-                      #:environment-variables
-                      ;; This is so that the cx.ring.Ring service D-Bus
-                      ;; definition is found by dbus-send.
-                      (list (string-append "XDG_DATA_DIRS="
-                                           #$jamid "/share")))))
+        (list (shepherd-service
+               (documentation "Run a D-Bus session for the Jami daemon.")
+               (provision '(jami-dbus-session))
+               (modules `((gnu build shepherd)
+                          (gnu build dbus-service)
+                          (gnu build jami-service)
+                          (gnu system file-systems)
+                          ,@%default-modules))
+               ;; The requirement on dbus-system is to ensure other required
+               ;; activation for D-Bus, such as a /etc/machine-id file.
+               (requirement '(dbus-system syslogd))
+               (start
+                #~(make-forkexec-constructor/container
+                   (list #$dbus-daemon "--session"
+                         "--address=unix:path=/var/run/jami/bus"
+                         "--syslog-only")
+                   #:pid-file "/var/run/jami/pid"
+                   #:mappings
+                   (list (file-system-mapping
+                          (source "/dev/log") ;for syslog
+                          (target source))
+                         (file-system-mapping
+                          (source "/var/run/jami")
+                          (target source)
+                          (writable? #t)))
+                   #:user "jami"
+                   #:group "jami"
+                   #:environment-variables
+                   ;; This is so that the cx.ring.Ring service D-Bus
+                   ;; definition is found by dbus-daemon.
+                   (list (string-append "XDG_DATA_DIRS=" #$libjami "/share"))))
+               (stop #~(make-kill-destructor)))
 
-                  ;; XXX: This manual synchronization probably wouldn't be
-                  ;; needed if we were using a PID file, but providing it via a
-                  ;; customized config file with <pidfile> would not override
-                  ;; the one inherited from the base config of D-Bus.
-                  (let ((sock (socket PF_UNIX SOCK_STREAM 0)))
-                    (with-retries 20 1 (catch 'system-error
-                                         (lambda ()
-                                           (connect sock AF_UNIX
-                                                    "/var/run/jami/bus")
-                                           (close-port sock)
-                                           #t)
-                                         (lambda args
-                                           #f))))
+              (shepherd-service
+               (documentation "Run the Jami daemon.")
+               (provision '(jami))
+               (actions (list list-accounts-action
+                              list-account-details-action
+                              list-contacts-action
+                              list-moderators-action
+                              add-moderator-action
+                              ban-contact-action
+                              list-banned-contacts-action
+                              enable-account-action
+                              disable-account-action))
+               (requirement '(jami-dbus-session))
+               (modules `((ice-9 format)
+                          (ice-9 ftw)
+                          (ice-9 match)
+                          (ice-9 receive)
+                          (srfi srfi-1)
+                          (srfi srfi-26)
+                          (gnu build dbus-service)
+                          (gnu build jami-service)
+                          (gnu build shepherd)
+                          (gnu system file-systems)
+                          ,@%default-modules))
+               (start
+                #~(lambda args
+                    (define (delete-file-recursively/safe file)
+                      ;; Ensure we're not deleting things outside of
+                      ;; /var/lib/jami.  This prevents a possible attack in case
+                      ;; the daemon is compromised and an attacker gains write
+                      ;; access to /var/lib/jami.
+                      (let ((parent-directory (dirname file)))
+                        (if (eq? 'symlink (stat:type (stat parent-directory)))
+                            (error "abnormality detected; unexpected symlink found at"
+                                   parent-directory)
+                            (delete-file-recursively file))))
 
-                  pid))
-             (stop #~(make-kill-destructor)))
+                    (when #$declarative-mode?
+                      ;; Clear the Jami configuration and accounts, to enforce the
+                      ;; declared state.
+                      (catch #t
+                        (lambda ()
+                          (for-each (cut delete-file-recursively/safe <>)
+                                    '("/var/lib/jami/.cache/jami"
+                                      "/var/lib/jami/.config/jami"
+                                      "/var/lib/jami/.local/share/jami"
+                                      "/var/lib/jami/accounts")))
+                        (lambda args
+                          #t))
+                      ;; Copy the Jami account archives from somewhere readable
+                      ;; by root to a place only the jami user can read.
+                      (let* ((accounts-dir "/var/lib/jami/accounts/")
+                             (pwd (getpwnam "jami"))
+                             (user (passwd:uid pwd))
+                             (group (passwd:gid pwd)))
+                        (mkdir-p accounts-dir)
+                        (chown accounts-dir user group)
+                        (for-each (lambda (f)
+                                    (let ((dest (string-append accounts-dir
+                                                               (basename f))))
+                                      (copy-file f dest)
+                                      (chown dest user group)))
+                                  '#$(and declarative-mode?
+                                          (map jami-account-archive accounts)))))
 
-            (shepherd-service
-             (documentation "Run the Jami daemon.")
-             (provision '(jami))
-             (actions (list list-accounts-action
-                            list-account-details-action
-                            list-contacts-action
-                            list-moderators-action
-                            add-moderator-action
-                            ban-contact-action
-                            list-banned-contacts-action
-                            enable-account-action
-                            disable-account-action))
-             (requirement '(jami-dbus-session))
-             (modules `((ice-9 format)
-                        (ice-9 ftw)
-                        (ice-9 match)
-                        (ice-9 receive)
-                        (srfi srfi-1)
-                        (srfi srfi-26)
-                        (gnu build jami-service)
-                        (gnu build shepherd)
-                        (gnu system file-systems)
-                        ,@%default-modules))
-             (start
-              #~(lambda args
-                  (define (delete-file-recursively/safe file)
-                    ;; Ensure we're not deleting things outside of
-                    ;; /var/lib/jami.  This prevents a possible attack in case
-                    ;; the daemon is compromised and an attacker gains write
-                    ;; access to /var/lib/jami.
-                    (let ((parent-directory (dirname file)))
-                      (if (eq? 'symlink (stat:type (stat parent-directory)))
-                          (error "abnormality detected; unexpected symlink found at"
-                                 parent-directory)
-                          (delete-file-recursively file))))
+                    ;; Start the daemon.
+                    (define daemon-pid
+                      ((make-forkexec-constructor/container
+                        '#$(jami-configuration->command-line-arguments config)
+                        #:mappings
+                        (list (file-system-mapping
+                               (source "/dev/log") ;for syslog
+                               (target source))
+                              (file-system-mapping
+                               (source "/var/lib/jami")
+                               (target source)
+                               (writable? #t))
+                              (file-system-mapping
+                               (source "/var/run/jami")
+                               (target source)
+                               (writable? #t))
+                              ;; Expose TLS certificates for GnuTLS.
+                              (file-system-mapping
+                               (source #$(file-append nss-certs "/etc/ssl/certs"))
+                               (target "/etc/ssl/certs")))
+                        #:user "jami"
+                        #:group "jami"
+                        #:environment-variables
+                        (list (string-append "DBUS_SESSION_BUS_ADDRESS="
+                                             "unix:path=/var/run/jami/bus")
+                              ;; Expose TLS certificates for OpenSSL.
+                              "SSL_CERT_DIR=/etc/ssl/certs"))))
 
-                  (when #$declarative-mode?
-                    ;; Clear the Jami configuration and accounts, to enforce the
-                    ;; declared state.
-                    (catch #t
-                      (lambda ()
-                        (for-each (cut delete-file-recursively/safe <>)
-                                  '("/var/lib/jami/.cache/jami"
-                                    "/var/lib/jami/.config/jami"
-                                    "/var/lib/jami/.local/share/jami"
-                                    "/var/lib/jami/accounts")))
-                      (lambda args
-                        #t))
-                    ;; Copy the Jami account archives from somewhere readable
-                    ;; by root to a place only the jami user can read.
-                    (let* ((accounts-dir "/var/lib/jami/accounts/")
-                           (pwd (getpwnam "jami"))
-                           (user (passwd:uid pwd))
-                           (group (passwd:gid pwd)))
-                      (mkdir-p accounts-dir)
-                      (chown accounts-dir user group)
-                      (for-each (lambda (f)
-                                  (let ((dest (string-append accounts-dir
-                                                             (basename f))))
-                                    (copy-file f dest)
-                                    (chown dest user group)))
-                                '#$(and declarative-mode?
-                                        (map jami-account-archive accounts)))))
-
-                  ;; Start the daemon.
-                  (define daemon-pid
-                    ((make-forkexec-constructor/container
-                      '#$(jami-configuration->command-line-arguments config)
-                      #:mappings
-                      (list (file-system-mapping
-                             (source "/dev/log") ;for syslog
-                             (target source))
-                            (file-system-mapping
-                             (source "/var/lib/jami")
-                             (target source)
-                             (writable? #t))
-                            (file-system-mapping
-                             (source "/var/run/jami")
-                             (target source)
-                             (writable? #t))
-                            ;; Expose TLS certificates for GnuTLS.
-                            (file-system-mapping
-                             (source #$(file-append nss-certs "/etc/ssl/certs"))
-                             (target "/etc/ssl/certs")))
-                      #:user "jami"
-                      #:group "jami"
-                      #:environment-variables
-                      (list (string-append "DBUS_SESSION_BUS_ADDRESS="
-                                           "unix:path=/var/run/jami/bus")
-                            ;; Expose TLS certificates for OpenSSL.
-                            "SSL_CERT_DIR=/etc/ssl/certs"))))
-
-                  (parameterize ((%send-dbus-binary #$dbus-send)
-                                 (%send-dbus-bus    "unix:path=/var/run/jami/bus")
-                                 (%send-dbus-user   "jami")
-                                 (%send-dbus-group  "jami"))
+                    (setenv "DBUS_SESSION_BUS_ADDRESS"
+                            "unix:path=/var/run/jami/bus")
 
                     ;; Wait until the service name has been acquired by D-Bus.
-                    (with-retries 20 1
-                      (dbus-service-available? "cx.ring.Ring"))
+                    (with-retries 20 1 (jami-service-available?))
 
                     (when #$declarative-mode?
                       ;; Provision the accounts via the D-Bus API of the daemon.
@@ -717,17 +681,17 @@ argument, either a registered username or the fingerprint of the account.")
                                  (map-in-order (cut jami-account-moderators <>)
                                                accounts))
                          '#$(and declarative-mode?
-                                 (map-in-order jami-account->alist accounts))))))
+                                 (map-in-order jami-account->alist accounts)))))
 
-                  ;; Finally, return the PID of the daemon process.
-                  daemon-pid))
-             (stop
-              #~(lambda (pid . args)
-                  (kill pid SIGKILL)
-                  ;; Wait for the process to exit; this prevents overlapping
-                  ;; processes when issuing 'herd restart'.
-                  (waitpid pid)
-                  #f)))))))
+                    ;; Finally, return the PID of the daemon process.
+                    daemon-pid))
+               (stop
+                #~(lambda (pid . args)
+                    (kill pid SIGKILL)
+                    ;; Wait for the process to exit; this prevents overlapping
+                    ;; processes when issuing 'herd restart'.
+                    (waitpid pid)
+                    #f))))))))
 
 (define jami-service-type
   (service-type
