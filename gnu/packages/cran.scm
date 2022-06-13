@@ -636,13 +636,13 @@ benchmarks from running the @code{benchmarkme} package.")
 (define-public r-benchmarkme
   (package
     (name "r-benchmarkme")
-    (version "1.0.7")
+    (version "1.0.8")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "benchmarkme" version))
               (sha256
                (base32
-                "0ymgsxzrvnpyvs0cff09d3lrkl12qyqx5bwammsc4vgl5ng9p69p"))))
+                "0qaz8wy3n08k9lr8qljk5i8z8db18scbdc8m734aymd307h00w8x"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
@@ -653,6 +653,7 @@ benchmarks from running the @code{benchmarkme} package.")
            r-foreach
            r-httr
            r-matrix
+           r-stringr
            r-tibble))
     (home-page "https://csgillespie.github.io/benchmarkme/")
     (synopsis "Crowd-sourced system benchmarks")
