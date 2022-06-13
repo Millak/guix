@@ -27001,14 +27001,14 @@ counting and recursive k-means partitioning.")
 (define-public r-hardhat
   (package
     (name "r-hardhat")
-    (version "0.2.0")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "hardhat" version))
        (sha256
         (base32
-         "0a4nq93cmps5xy8h0qsv6xyzrbsz9ka4iwkrvb8m8v10wq7wm5wl"))))
+         "1cdl52lzv3wffq8fzrb6sk85i4i8lm8skgad1c8az3ifmzssjx03"))))
     (properties `((upstream-name . "hardhat")))
     (build-system r-build-system)
     (propagated-inputs
