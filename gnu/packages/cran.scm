@@ -21986,14 +21986,14 @@ and prints vectorized images.")
 (define-public r-randtoolbox
   (package
     (name "r-randtoolbox")
-    (version "2.0.0")
+    (version "2.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "randtoolbox" version))
        (sha256
         (base32
-         "005x2igljc6vm0nsmkld9aqjqz1ccwapc8z3aw5c3ivh4n2bghf9"))))
+         "1p2jsn0hpihc49zk605z82mhhvma0ji2f5b94wa85g2xzriqkwn4"))))
     (properties `((upstream-name . "randtoolbox")))
     (build-system r-build-system)
     (propagated-inputs
