@@ -6432,18 +6432,21 @@ popular stats packages like SAS, Stata and SPSS.")
 (define-public r-quantpsyc
   (package
     (name "r-quantpsyc")
-    (version "1.5")
+    (version "1.6")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "QuantPsyc" version))
         (sha256
           (base32
-            "1i9bh88r8zxndzjqsj14qw64gnvm5a9kvhjhzk3qsrvl3qzjgh93"))))
+            "1dbj830p5837fiwa800nzsaf19lf95vc3n7jmds2q9v06mrz6syq"))))
     (properties `((upstream-name . "QuantPsyc")))
     (build-system r-build-system)
     (propagated-inputs
-      (list r-boot r-mass))
+     (list r-boot
+           r-dplyr
+           r-mass
+           r-purrr))
     (home-page "https://cran.r-project.org/web/packages/QuantPsyc/")
     (synopsis "Quantitative Psychology Tools")
     (description
