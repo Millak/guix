@@ -3,11 +3,11 @@
 ;;; Copyright © 2013 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2015, 2018, 2021 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2018, 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2021, 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -245,7 +245,19 @@ introduce the version part."
   "Atomically switch LINK, a symbolic link, to point to TARGET.  Works
 both when LINK already exists and when it does not."
   (let ((pivot (string-append link ".new")))
-    (symlink target pivot)
+    ;; Create pivot link, deleting it if it already exists. This can
+    ;; happen if a previous switch-symlinks was interrupted.
+    (let symlink/remove-old ()
+      (catch 'system-error
+        (lambda ()
+          (symlink target pivot))
+        (lambda args
+          (if (= (system-error-errno args) EEXIST)
+              (begin
+                ;; Remove old link and retry.
+                (delete-file pivot)
+                (symlink/remove-old))
+              (apply throw args)))))
     (rename-file pivot link)))
 
 (define (call-with-temporary-output-file proc)
