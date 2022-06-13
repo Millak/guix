@@ -30417,14 +30417,14 @@ in output to the equivalent HTML.")
 (define-public r-pkgdown
   (package
     (name "r-pkgdown")
-    (version "2.0.3")
+    (version "2.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pkgdown" version))
        (sha256
         (base32
-         "0wqga9bcl7wmvkwpkkmf5hx1cl7rjq5ddvqmxhl4p1dczys3adnr"))))
+         "02lwr53xvxybcsg8md8qbq1wq833ap7ssn5v92cd4qqay5iya374"))))
     (properties `((upstream-name . "pkgdown")))
     (build-system r-build-system)
     (inputs (list pandoc))
