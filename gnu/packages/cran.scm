@@ -32635,14 +32635,14 @@ participants and their emotional expressions throughout the meeting.")
 (define-public r-zoom
   (package
     (name "r-zoom")
-    (version "2.0.4")
+    (version "2.0.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "zoom" version))
        (sha256
         (base32
-         "03f5rxfr6ncf1j6vpn7pip21q7ylj4bx0a5xphqb6x6i33lxf1g5"))))
+         "05ikad4j1qi5y8mn77n9bw7d6ic3api9d7mbcn855w8xcc69ja4q"))))
     (properties `((upstream-name . "zoom")))
     (build-system r-build-system)
     (home-page "https://github.com/cbarbu/R-package-zoom")
