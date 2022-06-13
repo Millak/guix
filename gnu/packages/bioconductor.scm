@@ -7412,14 +7412,14 @@ and summarizing a set of statistics using a weighted distance approach.")
 (define-public r-nbpseq
   (package
     (name "r-nbpseq")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "NBPSeq" version))
        (sha256
         (base32
-         "0l4ylxhs2k9ww21jjqs67fygk92avdchhx2y1ixzl7yr2yh1y9by"))))
+         "07mnnk4n0cyksp1mw36y6369is62kxsfg3wb8d3dwswycdmj8m14"))))
     (properties `((upstream-name . "NBPSeq")))
     (build-system r-build-system)
     (propagated-inputs
