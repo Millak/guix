@@ -7504,8 +7504,8 @@ implementation specific equivalent.")
   (sbcl-package->ecl-package sbcl-trivial-macroexpand-all))
 
 (define-public sbcl-serapeum
-  (let ((commit "c29a52ff0c5f6e60b09919c3a0daa8df7599ddb9")
-        (revision "6"))
+  (let ((commit "d2150c6fb75c16f2ee0abd145a1089d0019e7f7e")
+        (revision "7"))
     (package
       (name "sbcl-serapeum")
       (version (git-version "0.0.0" revision commit))
@@ -7518,7 +7518,7 @@ implementation specific equivalent.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0vij9jhji09way1rpd0r5sgjnh5amm3f2ymppnqkw0c6nnk2p0kd"))))
+          (base32 "1czs771nyqz45ndd09iiva2swvazy1b2z0k6h4qqdd839vnjcs06"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-alexandria
@@ -7528,14 +7528,15 @@ implementation specific equivalent.")
              sbcl-parse-number
              sbcl-trivial-garbage
              sbcl-bordeaux-threads
-             sbcl-named-readtables
-             sbcl-fare-quasiquote
              sbcl-parse-declarations
+             sbcl-introspect-environment
+             sbcl-trivial-cltl2
              sbcl-global-vars
              sbcl-trivial-file-size
              sbcl-trivial-macroexpand-all))
       (native-inputs
-       (list sbcl-fiveam
+       (list sbcl-atomics
+             sbcl-fiveam
              sbcl-local-time))
       (arguments
        (list #:phases
