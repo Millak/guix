@@ -198,19 +198,14 @@ the real span of the lattice.")
 (define-public python-fpylll
   (package
     (name "python-fpylll")
-    (version "0.5.2")
+    (version "0.5.7")
     (source
      (origin
-       ;; Pypi contains and older release, so we use a tagged release from
-       ;; Github instead.
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/fplll/fpylll")
-             (commit (string-append version "dev"))))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (pypi-uri "fpylll" version))
        (sha256
         (base32
-         "1a25iibihph626jl4wbs4b77xc4a2c4nfc2ypscf9wpani3dnhjf"))))
+         "1xjqcwq90blgzvnbkbzdys8mdhi2b4li6faywm6yi8shxvz8iz0s"))))
     (build-system python-build-system)
     (inputs
      (list fplll gmp mpfr pari-gp))
