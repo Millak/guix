@@ -60,6 +60,7 @@
             directory-exists?
             executable-file?
             symbolic-link?
+            switch-symlinks
             call-with-temporary-output-file
             call-with-ascii-input-file
             file-header-match
@@ -239,6 +240,13 @@ introduce the version part."
 (define (symbolic-link? file)
   "Return #t if FILE is a symbolic link (aka. \"symlink\".)"
   (eq? (stat:type (lstat file)) 'symlink))
+
+(define (switch-symlinks link target)
+  "Atomically switch LINK, a symbolic link, to point to TARGET.  Works
+both when LINK already exists and when it does not."
+  (let ((pivot (string-append link ".new")))
+    (symlink target pivot)
+    (rename-file pivot link)))
 
 (define (call-with-temporary-output-file proc)
   "Call PROC with a name of a temporary file and open output port to that

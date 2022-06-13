@@ -4,6 +4,7 @@
 ;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2021 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -63,7 +64,7 @@
   #:autoload   (guix scripts home edit) (guix-home-edit)
   #:autoload   (guix scripts home import) (import-manifest)
   #:use-module ((guix status) #:select (with-status-verbosity))
-  #:use-module ((guix build utils) #:select (mkdir-p))
+  #:use-module ((guix build utils) #:select (mkdir-p switch-symlinks))
   #:use-module (guix gexp)
   #:use-module (guix monads)
   #:use-module (srfi srfi-1)

@@ -12,6 +12,7 @@
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2014 David Thompson <davet@gnu.org>
+;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,7 +33,7 @@
   #:use-module ((guix config) #:select (%state-directory))
   #:use-module ((guix utils) #:hide (package-name->name+version))
   #:use-module ((guix build utils)
-                #:select (package-name->name+version mkdir-p))
+                #:select (package-name->name+version mkdir-p switch-symlinks))
   #:use-module ((guix diagnostics) #:select (&fix-hint formatted-message))
   #:use-module (guix i18n)
   #:use-module (guix records)

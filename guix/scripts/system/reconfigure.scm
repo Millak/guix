@@ -6,6 +6,7 @@
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2019 Jakob L. Kreuze <zerodaysfordays@sdf.org>
+;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -94,7 +95,8 @@ atomically, and run OS's activation script."
                                  #:select? not-config?)
                               ((guix config) => ,(make-config.scm)))
        #~(begin
-           (use-modules (guix config)
+           (use-modules (guix build utils)
+                        (guix config)
                         (guix profiles)
                         (guix utils))
 

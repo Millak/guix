@@ -11,6 +11,7 @@
 ;;; Copyright © 2020 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2018 Steve Sprang <scs@stevesprang.com>
 ;;; Copyright © 2022 Josselin Poiret <dev@jpoiret.xyz>
+;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -49,7 +50,7 @@
   #:autoload   (guix channels) (channel-name channel-commit channel->code)
   #:autoload   (guix store roots) (gc-roots user-owned?)
   #:use-module ((guix build utils)
-                #:select (directory-exists? mkdir-p))
+                #:select (directory-exists? mkdir-p switch-symlinks))
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:autoload   (ice-9 pretty-print) (pretty-print)

@@ -121,7 +121,6 @@
             file-sans-extension
             tarball-sans-extension
             compressed-file?
-            switch-symlinks
             call-with-temporary-directory
             with-atomic-file-output
 
@@ -894,13 +893,6 @@ VERSIONS.  For example:
   "Return true if FILE denotes a compressed file."
   (->bool (member (file-extension file)
                   '("gz" "bz2" "xz" "lz" "lzma" "tgz" "tbz2" "zip"))))
-
-(define (switch-symlinks link target)
-  "Atomically switch LINK, a symbolic link, to point to TARGET.  Works
-both when LINK already exists and when it does not."
-  (let ((pivot (string-append link ".new")))
-    (symlink target pivot)
-    (rename-file pivot link)))
 
 (define* (string-replace-substring str substr replacement
                                    #:optional
