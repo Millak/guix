@@ -5102,14 +5102,14 @@ to change in the future.")
 (define-public r-flexmix
   (package
     (name "r-flexmix")
-    (version "2.3-17")
+    (version "2.3-18")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "flexmix" version))
        (sha256
         (base32
-         "0jangf89174p0idh9afbicfiln2sz8jxc3bjc6n0j9036dw9n09n"))))
+         "0lcvsvmhkbwac50l109an6prl1ng4mkyvr436344b20897ph28j6"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-lattice r-modeltools r-nnet))
