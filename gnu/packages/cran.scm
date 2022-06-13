@@ -4444,14 +4444,14 @@ plot networks.")
 (define-public r-proxy
   (package
     (name "r-proxy")
-    (version "0.4-26")
+    (version "0.4-27")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "proxy" version))
        (sha256
         (base32
-         "0k8sr24mjfvxp12sf1j9228ah3ngy15nqmm0jw14x5s32f1assv7"))))
+         "0gsng2aggnljl4z82la9hpnd26hngzhj8fizx4wx22npqjj93694"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/proxy")
     (synopsis "Distance and similarity measures")
