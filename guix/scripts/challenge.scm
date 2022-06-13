@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2017, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2017, 2019-2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,6 +32,7 @@
   #:use-module (rnrs bytevectors)
   #:autoload   (guix http-client) (http-fetch)
   #:use-module ((guix build syscalls) #:select (terminal-columns))
+  #:autoload   (guix build utils) (make-file-writable)
   #:use-module (gcrypt hash)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
@@ -310,6 +311,22 @@ specified in COMPARISON-REPORT."
                     (length files)))
      (format #t     "~{    ~a~%~}" files))))
 
+(define (make-directory-writable directory)
+  "Recurse into DIRECTORY and make each entry writable, similar to
+'chmod -R +w DIRECTORY'."
+  (file-system-fold (const #t)
+                    (lambda (file stat _)         ;leaf
+                      (make-file-writable file))
+                    (lambda (directory stat _)    ;down
+                      (make-file-writable directory))
+                    (const #t)                    ;up
+                    (const #f)                    ;skip
+                    (lambda (file stat errno _)   ;error
+                      (leave (G_ "failed to delete '~a': ~a~%")
+                             file (strerror errno)))
+                    #t
+                    directory))
+
 (define (call-with-mismatches comparison-report proc)
   "Call PROC with two directories containing the mismatching store items."
   (define local-hash
@@ -317,6 +334,13 @@ specified in COMPARISON-REPORT."
 
   (define narinfos
     (comparison-report-narinfos comparison-report))
+
+  (define (restore-file* port directory)
+    ;; Since 'restore-file' sets "canonical" file permissions (read-only),
+    ;; make an extra traversal to make DIRECTORY writable so it can be deleted
+    ;; when the dynamic extent of 'call-with-temporary-directory' is left.
+    (restore-file port directory)
+    (make-directory-writable directory))
 
   (call-with-temporary-directory
    (lambda (directory1)
@@ -338,10 +362,10 @@ specified in COMPARISON-REPORT."
                      narinfos)))
 
         (rmdir directory1)
-        (call-with-nar narinfo1 (cut restore-file <> directory1))
+        (call-with-nar narinfo1 (cut restore-file* <> directory1))
         (when narinfo2
           (rmdir directory2)
-          (call-with-nar narinfo2 (cut restore-file <> directory2)))
+          (call-with-nar narinfo2 (cut restore-file* <> directory2)))
         (proc directory1
               (if local-hash
                   (comparison-report-item comparison-report)
