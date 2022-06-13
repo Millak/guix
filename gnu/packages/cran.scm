@@ -117,13 +117,13 @@
 (define-public r-afpt
   (package
     (name "r-afpt")
-    (version "1.1.0.1")
+    (version "1.1.0.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "afpt" version))
               (sha256
                (base32
-                "0cg5cdm9nl1hs6f3j0ljpw4bkqvh3ksyj615b9nnbqs5k28lyds9"))))
+                "1z0r4r7prxbhadmkdg6345g0b5vq9dqyyw9hh3fpad9zkc7k6xbc"))))
     (properties `((upstream-name . "afpt")))
     (build-system r-build-system)
     (native-inputs (list r-knitr))
