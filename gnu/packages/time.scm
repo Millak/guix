@@ -123,14 +123,14 @@ expressions.")
   (package
     (name "python-pytz")
     ;; This package should be kept in sync with tzdata in (gnu packages base).
-    (version "2021.1")
+    (version "2022.1")
     (source
      (origin
       (method url-fetch)
       (uri (pypi-uri "pytz" version))
       (sha256
        (base32
-        "1nn459q7zg20n75akxl3ljkykgw1ydc8nb05rx1y4f5zjh4ak943"))))
+        "19ya5sh7if819flgmszz585glailhi7rr8frng03n5m8wqphwxhy"))))
     (build-system python-build-system)
     (home-page "http://pythonhosted.org/pytz")
     (synopsis "Python timezone library")
@@ -338,14 +338,14 @@ ISO 8601 dates, time and duration.")
 (define-public python-iso8601
   (package
     (name "python-iso8601")
-    (version "0.1.13")
+    (version "1.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "iso8601" version))
        (sha256
         (base32
-         "1cgfj91khil4ii5gb8s6nxwm73vx7hqc2k79dd9d8990ylmc5ppp"))))
+         "1ccl6plks706hxm35cn1wsvxhqh3bfwi5cjgjpdxjib81qi07x97"))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
@@ -353,8 +353,8 @@ ISO 8601 dates, time and duration.")
                     (lambda _
                       (invoke "pytest" "-vv" "iso8601"))))))
     (native-inputs
-     (list python-pytest))
-    (home-page "https://bitbucket.org/micktwomey/pyiso8601")
+     (list python-pytest python-pytz))
+    (home-page "https://github.com/micktwomey/pyiso8601")
     (synopsis "Module to parse ISO 8601 dates")
     (description
      "This module parses the most common forms of ISO 8601 date strings (e.g.

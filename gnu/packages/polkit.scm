@@ -54,7 +54,6 @@
   (package
     (name "polkit")
     (version "0.120")
-    (replacement polkit-mozjs/fixed)
     (source (origin
              (method url-fetch)
              (uri (string-append
@@ -63,7 +62,8 @@
              (sha256
               (base32
                "00zfg9b9ivkcj2jcf5b92cpvvyljz8cmfwj86lkvy5rihnd5jypf"))
-             (patches (search-patches "polkit-configure-elogind.patch"))
+             (patches (search-patches "polkit-configure-elogind.patch"
+                                      "polkit-CVE-2021-4034.patch"))
              (modules '((guix build utils)))
              (snippet
               '(begin
@@ -93,12 +93,12 @@
     (propagated-inputs
      (list glib)) ; required by polkit-gobject-1.pc
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("glib:bin" ,glib "bin") ; for glib-mkenums
-       ("intltool" ,intltool)
-       ("gobject-introspection" ,gobject-introspection)
-       ("libxslt" ,libxslt) ; for man page generation
-       ("docbook-xsl" ,docbook-xsl))) ; for man page generation
+     (list pkg-config
+           `(,glib "bin")                         ;for glib-mkenums
+           intltool
+           gobject-introspection
+           libxslt                                ;for man page generation
+           docbook-xsl))                          ;for man page generation
     (arguments
      `(#:configure-flags '("--sysconfdir=/etc"
                            "--enable-man-pages"
@@ -147,16 +147,6 @@ making process with respect to granting access to privileged operations
 for unprivileged applications.")
     (license lgpl2.0+)))
 
-(define-public polkit-mozjs/fixed
-  (package
-    (inherit polkit-mozjs)
-    (version "0.121")
-    (source (origin
-              (inherit (package-source polkit-mozjs))
-              (patches (cons (search-patch "polkit-CVE-2021-4034.patch")
-                             (origin-patches
-                              (package-source polkit-mozjs))))))))
-
 ;;; Variant of polkit built with Duktape, a lighter JavaScript engine compared
 ;;; to mozjs.
 (define-public polkit-duktape
@@ -180,13 +170,11 @@ for unprivileged applications.")
                (lambda _
                  (delete-file "configure")))))))
       (native-inputs
-       (append `(("autoconf" ,autoconf)
-                 ("automake" ,automake)
-                 ("libtool" ,libtool)
-                 ("pkg-config" ,pkg-config))
-           (package-native-inputs base)))
-      (inputs (alist-replace "mozjs" `(,duktape)
-                             (package-inputs base))))))
+       (modify-inputs (package-native-inputs base)
+         (prepend autoconf automake libtool)))
+      (inputs
+       (modify-inputs (package-inputs base)
+         (replace "mozjs" duktape))))))
 
 (define polkit-for-system
   (mlambda (system)

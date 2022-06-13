@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2018 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2016, 2018, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2012, 2013, 2014, 2015, 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2013, 2017 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014, 2016 David Thompson <davet@gnu.org>
@@ -56,6 +56,7 @@
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -90,6 +91,7 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
   #:use-module (gnu packages dbm)
+  #:use-module (gnu packages docbook)
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages freedesktop)
@@ -1193,38 +1195,43 @@ and high-availability (HA).")
               (patches (search-patches "postgresql-disable-resolve_symlinks.patch"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags '("--with-uuid=e2fs" "--with-openssl"
-                           ;; PostgreSQL installs its own Makefile (should it?).
-                           ;; Prevent it from retaining needless references to
-                           ;; the build tools in order to save size.
-                           "MKDIR_P=mkdir -p" "INSTALL_BIN=install -c"
-                           "LD=ld" "TAR=tar")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'patch-/bin/sh
-                     (lambda _
-                       ;; Refer to the actual shell.
-                       (substitute* '("src/bin/pg_ctl/pg_ctl.c"
-                                      "src/bin/psql/command.c")
-                         (("/bin/sh") (which "sh")))
-                       #t))
-         (add-before 'configure 'set-socket-dir
-           (lambda _
-             (substitute* '("src/include/pg_config_manual.h")
-               (("DEFAULT_PGSOCKET_DIR[^\n]*")
-                "DEFAULT_PGSOCKET_DIR \"/var/run/postgresql\""))
-             #t))
-         (add-after 'build 'build-contrib
-           (lambda _
-             (invoke "make" "-C" "contrib")))
-         (add-after 'install 'install-contrib
-           (lambda _
-             (invoke "make" "-C" "contrib" "install"))))))
-    (inputs
-     `(("readline" ,readline)
-       ("libuuid" ,util-linux "lib")
-       ("openssl" ,openssl)
-       ("zlib" ,zlib)))
+     (list
+      #:configure-flags
+      #~(list "--with-uuid=e2fs" "--with-openssl"
+              (string-append "--mandir=" #$output "/share/man")
+              ;; PostgreSQL installs its own Makefile (should it?).
+              ;; Prevent it from retaining needless references to
+              ;; the build tools in order to save size.
+              "MKDIR_P=mkdir -p" "INSTALL_BIN=install -c"
+              "LD=ld" "TAR=tar")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'patch-/bin/sh
+            (lambda _
+              ;; Refer to the actual shell.
+              (substitute* '("src/bin/pg_ctl/pg_ctl.c"
+                             "src/bin/psql/command.c")
+                (("/bin/sh") (which "sh")))))
+          (add-before 'configure 'set-socket-dir
+            (lambda _
+              (substitute* '("src/include/pg_config_manual.h")
+                (("DEFAULT_PGSOCKET_DIR[^\n]*")
+                 "DEFAULT_PGSOCKET_DIR \"/var/run/postgresql\""))))
+          (add-after 'build 'build-contrib
+            (lambda _
+              (invoke "make" "-C" "contrib")))
+          (add-after 'install 'install-contrib
+            (lambda _
+              (invoke "make" "-C" "contrib" "install")))
+          (add-after 'install 'install-manuals
+            (lambda _
+              (with-directory-excursion "doc/src/sgml"
+                (invoke "make" "install-man")
+                (invoke "make" "postgres.info")
+                (install-file "postgres.info"
+                              (string-append #$output "/share/info"))))))))
+    (native-inputs (list docbook-xml docbook2x libxml2 perl texinfo))
+    (inputs (list readline `(,util-linux "lib") openssl zlib))
     (home-page "https://www.postgresql.org/")
     (synopsis "Powerful object-relational database system")
     (description
@@ -1239,36 +1246,15 @@ pictures, sounds, or video.")
 (define-public postgresql-13
   (package
     (inherit postgresql-14)
-    (version "13.4")
+    (version "13.6")
     (source (origin
               (inherit (package-source postgresql-14))
               (uri (string-append "https://ftp.postgresql.org/pub/source/v"
                                   version "/postgresql-" version ".tar.bz2"))
               (sha256
                (base32
-                "1kf0gcsrl5n25rjlvkh87aywmn28kbwvakm5c7j1qpr4j01y34za"))))
-    (arguments
-     (if (target-riscv64?)
-       `(,@(substitute-keyword-arguments (package-arguments postgresql-14)
-             ((#:phases phases)
-              #~(modify-phases #$phases
-                  (add-after 'unpack 'apply-riscv-spinlock-patch
-                    ;; The patch is applied in this custom phase and not via the
-                    ;; "origin" object above to avoid rebuilding a large number
-                    ;; of packages on other platforms.
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (let ((patch-file
-                              #$(local-file
-                                  (search-patch
-                                    "postgresql-riscv-spinlocks.patch"))))
-                        (invoke "patch" "-p1" "-i" patch-file))))))))
-       `(,@(package-arguments postgresql-14))))
-    (native-inputs
-     (if (target-riscv64?)
-       (list
-         (local-file (search-patch "postgresql-riscv-spinlocks.patch"))
-         patch)
-       '()))))
+                "1z37ix80hb2bqa2smh1hbj9r507ypnl3pil43gkqznnlv6ipzz5s"))
+              (patches (search-patches "postgresql-riscv-spinlocks.patch"))))))
 
 (define-public postgresql-11
   (package
@@ -1281,7 +1267,10 @@ pictures, sounds, or video.")
                                   version "/postgresql-" version ".tar.bz2"))
               (sha256
                (base32
-                "1qvrm0vhwnc5nijfbqybhwfjbq4r7vmk445sz7s6fiagpn78xxf8"))))))
+                "1qvrm0vhwnc5nijfbqybhwfjbq4r7vmk445sz7s6fiagpn78xxf8"))))
+    (native-inputs
+     (modify-inputs (package-native-inputs postgresql-13)
+       (replace "docbook-xml" docbook-xml-4.2)))))
 
 (define-public postgresql-10
   (package
@@ -1293,7 +1282,11 @@ pictures, sounds, or video.")
                                   version "/postgresql-" version ".tar.bz2"))
               (sha256
                (base32
-                "17v51a9vnz6lgbfmbdmcwsiyi572wndwa4n30nk2zr6gkgaidpl7"))))))
+                "17v51a9vnz6lgbfmbdmcwsiyi572wndwa4n30nk2zr6gkgaidpl7"))))
+    (native-inputs
+     (modify-inputs (package-native-inputs postgresql-11)
+       (append opensp docbook-sgml-4.2)
+       (delete "docbook-xml")))))
 
 (define-public postgresql postgresql-13)
 
@@ -1361,12 +1354,26 @@ pictures, sounds, or video.")
                          (pg-union (string-append (getcwd) "/../pg-union")))
                      (match inputs
                        (((names . directories) ...)
-                        (union-build pg-union (cons #$output directories))))
+                        ;; PG will only load extensions from its own $libdir,
+                        ;; which it calculates based on argv[0].  As of
+                        ;; PostgreSQL 13.6, it calls 'canonicalize_path' on
+                        ;; argv[0] so a merge symlink is not enough to trick
+                        ;; it; thus, the code below makes a full copy of PG
+                        ;; and friends such that 'pg_config --libdir', for
+                        ;; instance, points to PG-UNION, allowing it to load
+                        ;; the timescaledb extension.
+                        (union-build pg-union (cons #$output directories)
+                                     #:symlink
+                                     (lambda (old new)
+                                       (if (file-is-directory? old)
+                                           (copy-recursively old new)
+                                           (copy-file old new))))))
                      (setenv "PATH" (string-append pg-union "/bin:"
                                                    (getenv "PATH")))
                      (invoke "initdb" "-D" pg-data)
                      (copy-file "test/postgresql.conf"
                                 (string-append pg-data "/postgresql.conf"))
+
                      (invoke "pg_ctl" "-D" pg-data
                              "-o" (string-append "-k " pg-data)
                              "-l" (string-append pg-data "/db.log")

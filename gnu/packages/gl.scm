@@ -261,7 +261,7 @@ also known as DXTn or DXTC) for Mesa.")
 (define-public mesa
   (package
     (name "mesa")
-    (version "21.3.2")
+    (version "21.3.8")
     (source
       (origin
         (method url-fetch)
@@ -273,7 +273,7 @@ also known as DXTn or DXTC) for Mesa.")
                                   version "/mesa-" version ".tar.xz")))
         (sha256
          (base32
-          "1g96y59bw10ml8h4jl259g41jdmf5ww3jbwqpz1sprq7hgxvmrz2"))
+          "19wx5plk6z0hhi0zdzxjx8ynl3lhlc5mbd8vhwqyk92kvhxjf3g7"))
         (patches
          (search-patches "mesa-skip-tests.patch"))))
     (build-system meson-build-system)
@@ -288,26 +288,28 @@ also known as DXTn or DXTC) for Mesa.")
             libxxf86vm
             xorgproto))
     (inputs
-      `(("expat" ,expat)
-        ("libelf" ,elfutils)  ;required for r600 when using llvm
-        ("libva" ,(force libva-without-mesa))
-        ("libxml2" ,libxml2)
-        ("libxrandr" ,libxrandr)
-        ("libxvmc" ,libxvmc)
-        ;; Note: update the 'clang' input of mesa-opencl when bumping this.
-        ("llvm" ,llvm-11)
-        ("wayland" ,wayland)
-        ("wayland-protocols" ,wayland-protocols)))
+     (append (list expat
+                   elfutils                 ;libelf required for r600 when using llvm
+                   (force libva-without-mesa)
+                   libxml2
+                   libxrandr
+                   libxvmc
+                   wayland
+                   wayland-protocols)
+             ;; TODO: Resort alphabetically.
+             ;; Note: update the 'clang' input of mesa-opencl when bumping this.
+             (list llvm-11)))
     (native-inputs
-      `(("bison" ,bison)
-        ("flex" ,flex)
-        ("gettext" ,gettext-minimal)
-        ("glslang" ,glslang)
-        ("pkg-config" ,pkg-config)
-        ("python" ,python-wrapper)
-        ("python-libxml2", python-libxml2) ;for OpenGL ES 1.1 and 2.0 support
-        ("python-mako" ,python-mako)
-        ("which" ,(@ (gnu packages base) which))))
+     (append (list bison
+                   flex
+                   gettext-minimal
+                   pkg-config
+                   python-wrapper
+                   python-libxml2                  ;for OpenGL ES 1.1 and 2.0 support
+                   python-mako
+                   (@ (gnu packages base) which))
+             ;; TODO: Resort alphabetically.
+             (list glslang)))
     (outputs '("out" "bin"))
     (arguments
      `(#:configure-flags
@@ -510,11 +512,11 @@ from software emulation to complete hardware acceleration for modern GPUs.")
        ((#:configure-flags flags)
         `(cons "-Dgallium-opencl=standalone" ,flags))))
     (inputs
-     `(("libclc" ,libclc)
-       ,@(package-inputs mesa)))
+     (modify-inputs (package-inputs mesa)
+       (prepend libclc)))
     (native-inputs
-     `(("clang" ,clang-11)
-       ,@(package-native-inputs mesa)))))
+     (modify-inputs (package-native-inputs mesa)
+       (prepend clang-11)))))
 
 (define-public mesa-opencl-icd
   (package/inherit mesa-opencl

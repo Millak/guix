@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2017, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013, 2017, 2019, 2021-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2015, 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014, 2015, 2016, 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2015 Alex Kost <alezost@gmail.com>
@@ -987,31 +987,31 @@ Metafile}, and @acronym{EMF+, Enhanced Metafile Plus} files.")
 (define-public imlib2
   (package
     (name "imlib2")
-    (version "1.7.1")
+    (version "1.9.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "mirror://sourceforge/enlightenment/imlib2-src/" version
-                    "/imlib2-" version ".tar.bz2"))
+                    "/imlib2-" version ".tar.xz"))
               (sha256
                (base32
-                "01y45cdml2dr9cqgybrgxr86sd77d1qfa1gzclzy1j6bkminlfh3"))))
+                "0l662h74i3mzl5ligj1352rf8bf48drasj97wygr2037gk5fijas"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags (list "--disable-static")))
     (native-inputs
-     `(("pkgconfig" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("bzip2" ,bzip2)
-       ("freetype" ,freetype)
-       ("giflib" ,giflib)
-       ("libid3tag" ,libid3tag)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libtiff" ,libtiff)
-       ("libx11" ,libx11)
-       ("libxext" ,libxext)
-       ("libwebp" ,libwebp)))
+     (list bzip2
+           freetype
+           giflib
+           libid3tag
+           libjpeg-turbo
+           libpng
+           libtiff
+           libx11
+           libxext
+           libwebp))
     (home-page "https://sourceforge.net/projects/enlightenment/")
     (synopsis
      "Loading, saving, rendering and manipulating image files")
@@ -1026,6 +1026,19 @@ without sacrificing speed.
 This is a complete rewrite over the Imlib 1.x series.  The architecture is
 more modular, simple, and flexible.")
     (license license:imlib2)))
+
+(define-public imlib2-1.7
+  (package
+    (inherit imlib2)
+    (version "1.7.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://sourceforge/enlightenment/imlib2-src/" version
+                    "/imlib2-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "01y45cdml2dr9cqgybrgxr86sd77d1qfa1gzclzy1j6bkminlfh3"))))))
 
 (define-public giblib
   (package
@@ -1049,7 +1062,9 @@ more modular, simple, and flexible.")
                 "1b4bmbmj52glq0s898lppkpzxlprq9aav49r06j2wx4dv3212rhp"))))
     (build-system gnu-build-system)
     (inputs
-     (list libx11 imlib2))
+     (list libx11
+           ;; Needs an old imlib2 with the 'imlib2-config' program.
+           imlib2-1.7))
     (home-page
      ;; This vanished page is universally accepted as giblib's home despite not
      ;; mentioning the package once.
