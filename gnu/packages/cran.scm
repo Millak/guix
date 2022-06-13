@@ -18057,13 +18057,13 @@ that accept short and long options.")
 (define-public r-kernlab
   (package
     (name "r-kernlab")
-    (version "0.9-30")
+    (version "0.9-31")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "kernlab" version))
        (sha256
-        (base32 "10gfb542nbl1d5pfy6r7gcg3j1ikra9l18r6xjv8lzp5ka1kmz28"))))
+        (base32 "12i7ffc1aacyy7bpjc0w60wwivn88wri8jz43h77irn5q5jwcnbk"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/kernlab")
     (synopsis "Kernel-based machine learning tools")
