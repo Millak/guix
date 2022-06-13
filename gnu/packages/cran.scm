@@ -4351,13 +4351,13 @@ curve to a data matrix in arbitrary dimensions.")
 (define-public r-restrserve
   (package
     (name "r-restrserve")
-    (version "1.1.1")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RestRserve" version))
        (sha256
-        (base32 "1ydsdgy6mxl0zqk7xqf4v6if5nf2qv7k48q340fhaqyjk2gd60p7"))))
+        (base32 "03mlzhs2k728kwy6csp60m7qy8n9ma5dd37j87rzh07fcdlx8wim"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-checkmate
