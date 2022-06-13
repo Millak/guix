@@ -24821,18 +24821,20 @@ Models.")
 (define-public r-mi
   (package
     (name "r-mi")
-    (version "1.0")
+    (version "1.1")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "mi" version))
         (sha256
           (base32
-            "1h47k5mpbvhid83277dvvj2di493bgzz9iarpyv3r30y219l7x1l"))))
+            "11f75ivnax6p48mp2pasprws488cm2daym87sw2mcrywvf89fyjd"))))
     (properties `((upstream-name . "mi")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-arm r-matrix))
+    (native-inputs
+     (list r-knitr))
     (home-page "http://www.stat.columbia.edu/~gelman/")
     (synopsis "Missing data imputation and model checking")
     (description
