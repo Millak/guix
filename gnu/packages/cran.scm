@@ -23967,13 +23967,13 @@ from PLINK results.")
 (define-public r-gghighlight
   (package
     (name "r-gghighlight")
-    (version "0.3.2")
+    (version "0.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gghighlight" version))
        (sha256
-        (base32 "0bxgn4srxz1qhawqa8ck57p8hg5ikwfa9ll03zmnn8fb19akwm2v"))))
+        (base32 "0isfp5n0ijqpy3z5d7l75mlq15nbkjppv6812lcya6097ar2d381"))))
     (properties `((upstream-name . "gghighlight")))
     (build-system r-build-system)
     (propagated-inputs
