@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2018, 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;;
@@ -74,12 +74,7 @@
                              '((guix build utils)))
        #~(begin
            (use-modules (guix build utils))
-           ;; XXX: We can't use (guix utils) because it requires a
-           ;; dynamically-linked Guile, hence the duplicate switch-symlinks.
-           (define (switch-symlinks link target)
-             (let ((pivot (string-append link ".new")))
-               (symlink target pivot)
-               (rename-file pivot link)))
+
            (mkdir-p "/var/lib")
            (switch-symlinks "/var/lib/pcsc"
                             #$(directory-union
