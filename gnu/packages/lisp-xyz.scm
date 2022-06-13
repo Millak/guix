@@ -7538,14 +7538,13 @@ implementation specific equivalent.")
        (list sbcl-fiveam
              sbcl-local-time))
       (arguments
-       '(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'disable-failing-tests
-             (lambda* (#:key inputs #:allow-other-keys)
-               (substitute* "serapeum.asd"
-                 ;; Guix does not have Quicklisp, and probably never will.
-                 (("\\(:file \"quicklisp\"\\)") ""))
-               #t)))))
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'disable-failing-tests
+                   (lambda _
+                     (substitute* "serapeum.asd"
+                       ;; Guix does not have Quicklisp, and probably never will.
+                       (("\\(:file \"quicklisp\"\\)") "")))))))
       (synopsis "Common Lisp utility library beyond Alexandria")
       (description
        "Serapeum is a conservative library of Common Lisp utilities.  It is a
