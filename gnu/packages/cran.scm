@@ -13793,14 +13793,14 @@ the base function @code{with()}.")
 (define-public r-sodium
   (package
     (name "r-sodium")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sodium" version))
        (sha256
         (base32
-         "0x4jb3cf1nv1spz1jc9xp8hly2b4a7nj48xr4s33jnfcpdjkmn5q"))))
+         "1a03z2asvmalnmsn89lapzp8a4fr0qvzdv3xgin8pbqhjyb9hvpp"))))
     (properties `((upstream-name . "sodium")))
     (build-system r-build-system)
     (inputs
