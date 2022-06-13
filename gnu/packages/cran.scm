@@ -9289,14 +9289,14 @@ publication-ready plots.")
 (define-public r-ellipse
   (package
     (name "r-ellipse")
-    (version "0.4.2")
+    (version "0.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ellipse" version))
        (sha256
         (base32
-         "1wm5v7zdv2drgdba7z96jwsx74mqhlq80qgrvdb4vb5r02dcw68p"))))
+         "0im9d36dixpksms52v6nsb3l0z2c7wc25r9j0f08naj6qc8jpvq2"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/ellipse/")
     (synopsis "Functions for drawing ellipses and ellipse-like confidence regions")
