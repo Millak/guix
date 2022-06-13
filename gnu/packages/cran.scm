@@ -4464,13 +4464,13 @@ most popular ones.")
 (define-public r-sp
   (package
     (name "r-sp")
-    (version "1.4-7")
+    (version "1.5-0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sp" version))
        (sha256
-        (base32 "1bdi06n5zkjnnyh0rallf04s0vlcx9rg9p5q7s6vfqvkf19nk501"))))
+        (base32 "077q1wh9ihhcn1338xspnd90hy16ljxsav1xcrxdxj4fyynhd6lk"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-lattice))
