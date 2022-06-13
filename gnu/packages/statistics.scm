@@ -5725,17 +5725,15 @@ normals.")
 (define-public r-mnormt
   (package
     (name "r-mnormt")
-    (version "2.0.2")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
         (uri (cran-uri "mnormt" version))
         (sha256
           (base32
-           "0d7ka4l4fl1wi77r2r81dc91n6cbj2xrb3lsizz5y0ziscva0sjw"))))
+           "1f07ngi89px437az030anbh8afmf6n635ax1akxak2idwc2qaj9d"))))
     (build-system r-build-system)
-    (propagated-inputs
-     (list r-tmvnsim))
     (native-inputs
      (list gfortran))
     (home-page "http://azzalini.stat.unipd.it/SW/Pkg-mnormt")
