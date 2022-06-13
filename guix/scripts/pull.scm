@@ -20,6 +20,7 @@
 
 (define-module (guix scripts pull)
   #:use-module ((guix ui) #:hide (display-profile-content))
+  #:use-module (guix diagnostics)
   #:use-module (guix colors)
   #:use-module (guix utils)
   #:use-module ((guix status) #:select (with-status-verbosity))
@@ -49,7 +50,6 @@
   #:autoload   (gnu packages bootstrap) (%bootstrap-guile)
   #:autoload   (gnu packages certs) (le-certs)
   #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
@@ -787,6 +787,35 @@ Use '~/.config/guix/channels.scm' instead."))
            channels))
         channels)))
 
+(define (validate-cache-directory-ownership)
+  "Bail out if the cache directory is not owned by the current user."
+  (let ((stats dir
+               (let loop ((dir (cache-directory)))
+                 (let ((stats (stat dir #f)))
+                   (if stats
+                       (values stats dir)
+                       (loop (dirname dir)))))))
+    (let ((dir:uid (stat:uid stats))
+          (our:uid (getuid)))
+      (unless (= dir:uid our:uid)
+        (let* ((user (lambda (uid)         ;handle the unthinkable invalid UID
+                       (or (false-if-exception (passwd:name
+                                                (getpwuid uid)))
+                           uid)))
+               (our:user (user our:uid))
+               (dir:user (user dir:uid)))
+          (raise
+           (make-compound-condition
+            (formatted-message
+             (G_ "directory '~a' is not owned by user ~a")
+             dir our:user)
+            (condition
+             (&fix-hint
+              (hint
+               (format #f (G_ "You should run this command as ~a; use \
+@command{sudo -i} or equivalent if you really want to pull as ~a.")
+                       dir:user our:user)))))))))))
+
 
 (define-command (guix-pull . args)
   (synopsis "pull the latest revision of Guix")
@@ -813,30 +842,7 @@ Use '~/.config/guix/channels.scm' instead."))
         (else
          ;; Bail out early when users accidentally run, e.g., ’sudo guix pull’.
          ;; If CACHE-DIRECTORY doesn't yet exist, test where it would end up.
-         (let-values (((stats dir) (let loop ((dir (cache-directory)))
-                                     (let ((stats (stat dir #f)))
-                                       (if stats
-                                           (values stats dir)
-                                           (loop (dirname dir)))))))
-           (let ((dir:uid (stat:uid stats))
-                 (our:uid (getuid)))
-             (unless (= dir:uid our:uid)
-               (let* ((user (lambda (uid)    ; handle the unthinkable invalid UID
-                              (or (false-if-exception (passwd:name
-                                                       (getpwuid uid)))
-                                  uid)))
-                      (our:user (user our:uid))
-                      (dir:user (user dir:uid)))
-                 (raise
-                  (condition
-                   (&message
-                    (message
-                     (format #f (G_ "directory ‘~a’ is not owned by user ~a")
-                             dir our:user)))
-                   (&fix-hint
-                    (hint
-                     (format #f (G_ "You should run this command as ~a; use ‘sudo -i’ or equivalent if you really want to pull as ~a.")
-                             dir:user our:user)))))))))
+         (validate-cache-directory-ownership)
 
          (with-store store
            (with-status-verbosity (assoc-ref opts 'verbosity)
