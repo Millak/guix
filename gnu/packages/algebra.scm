@@ -1728,14 +1728,14 @@ no more than about 20 bits long).")
 (define-public sollya
   (package
    (name "sollya")
-   (version "7.0")
+   (version "8.0")
    (source (origin
             (method url-fetch)
             (uri (string-append "https://www.sollya.org/releases/"
                                 "sollya-" version "/sollya-" version ".tar.bz2"))
             (sha256
              (base32
-              "11290ivi9h665cxi8f1shlavhy10vzb8s28m57hrcgnxyxqmhx0m"))))
+              "1sf1cjcr6x035n97l64ppzb9pzq5568h7waz0zfc3120894gcnjz"))))
    (build-system gnu-build-system)
    (inputs
     (list fplll
