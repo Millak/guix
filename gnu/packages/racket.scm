@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2018, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2016, 2018, 2020-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2021, 2022 Philip McGrath <philip@philipmcgrath.com>
@@ -28,10 +28,12 @@
   #:use-module (guix gexp)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
+  #:use-module (guix diagnostics)
+  #:use-module (guix i18n)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
+  #:use-module (srfi srfi-34)
   #:use-module (ice-9 match)
-  #:use-module (ice-9 exceptions)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bash)
@@ -925,13 +927,10 @@ DrRacket IDE, are not included.")
                                   ((this-package-input name)
                                    => (cut file-append <> "/lib"))
                                   (else
-                                   (raise-exception
-                                    (make-exception
-                                     (make-assertion-failure)
-                                     (make-exception-with-message
-                                      "missing input to the 'racket' package")
-                                     (make-exception-with-irritants
-                                      (list name)))))))
+                                   (raise
+                                    (formatted-message
+                                     (G_ "missing input '~a' to the 'racket' package")
+                                     name)))))
                                '("cairo"
                                  "fontconfig-minimal" ;; aka fontconfig
                                  "glib"
