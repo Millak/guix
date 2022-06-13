@@ -7521,22 +7521,22 @@ implementation specific equivalent.")
           (base32 "0vij9jhji09way1rpd0r5sgjnh5amm3f2ymppnqkw0c6nnk2p0kd"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("trivia" ,sbcl-trivia)
-         ("split-sequence" ,sbcl-split-sequence)
-         ("string-case" ,sbcl-string-case)
-         ("parse-number" ,sbcl-parse-number)
-         ("trivial-garbage" ,sbcl-trivial-garbage)
-         ("bordeaux-threads" ,sbcl-bordeaux-threads)
-         ("named-readtables" ,sbcl-named-readtables)
-         ("fare-quasiquote" ,sbcl-fare-quasiquote)
-         ("parse-declarations-1.0" ,sbcl-parse-declarations)
-         ("global-vars" ,sbcl-global-vars)
-         ("trivial-file-size" ,sbcl-trivial-file-size)
-         ("trivial-macroexpand-all" ,sbcl-trivial-macroexpand-all)))
+       (list sbcl-alexandria
+             sbcl-trivia
+             sbcl-split-sequence
+             sbcl-string-case
+             sbcl-parse-number
+             sbcl-trivial-garbage
+             sbcl-bordeaux-threads
+             sbcl-named-readtables
+             sbcl-fare-quasiquote
+             sbcl-parse-declarations
+             sbcl-global-vars
+             sbcl-trivial-file-size
+             sbcl-trivial-macroexpand-all))
       (native-inputs
-       `(("fiveam" ,sbcl-fiveam)
-         ("local-time" ,sbcl-local-time)))
+       (list sbcl-fiveam
+             sbcl-local-time))
       (arguments
        '(#:phases
          (modify-phases %standard-phases
