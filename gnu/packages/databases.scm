@@ -1270,9 +1270,15 @@ pictures, sounds, or video.")
 (define postgresql-13/replacement
   (package
     (inherit postgresql-13)
+    (version "13.7")
     (source
      (origin
        (inherit (package-source postgresql-13))
+       (uri (string-append "https://ftp.postgresql.org/pub/source/v"
+                           version "/postgresql-" version ".tar.bz2"))
+       (sha256
+        (base32
+         "16b3ljid7zd1v5l4l4pmwihx43wi8p9izidkjfii8dnqygs5p40v"))
        (patches (search-patches "postgresql-disable-resolve_symlinks.patch"))))))
 
 (define-public postgresql-11
