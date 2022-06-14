@@ -7,7 +7,7 @@
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
-;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2021 WinterHound <winterhound@yandex.com>
@@ -264,7 +264,7 @@ using a mouse.  It is customizable and extensible with plugins and scripts.")
 (define-public srain
   (package
     (name "srain")
-    (version "1.3.2")
+    (version "1.4.0")
     (source
      (origin
        (method git-fetch)
@@ -273,7 +273,7 @@ using a mouse.  It is customizable and extensible with plugins and scripts.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16nsxicixp7194bkiiyj7zrg05lhcp0xblqsbv6dq1lxd5wd3i96"))))
+        (base32 "113nvai3nr2c8mrr5q56fb7smg5awgb2f243sib4k1zj437v9q51"))))
     (build-system meson-build-system)
     (arguments
      `(#:tests? #f ;there are no tests
