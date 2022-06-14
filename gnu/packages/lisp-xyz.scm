@@ -15404,20 +15404,25 @@ return the CPU count of the current system.")
              (substitute* "ffprobe.lisp"
                (("\\(defvar \\*ffprobe-command\\* \"ffprobe\"\\)")
                 (format #f "(defvar *ffprobe-command* \"~a/bin/ffprobe\")"
-                        (assoc-ref inputs "ffmpeg") )))
-             #t)))))
+                        (assoc-ref inputs "ffmpeg"))))))
+         (add-after 'unpack 'fix-build
+           (lambda _
+             (substitute* "file.lisp"
+               (("\\(:import-from #:magicffi\\)" all)
+                (string-append all  "(:import-from #:named-readtables)"))))))))
     (inputs
-     `(("alexandria" ,sbcl-alexandria)
-       ("hu.dwim.defclass-star" ,sbcl-hu.dwim.defclass-star)
-       ("local-time" ,sbcl-local-time)
-       ("magicffi" ,sbcl-magicffi)
-       ("osicat" ,sbcl-osicat)
-       ("serapeum" ,sbcl-serapeum)
-       ("str" ,sbcl-cl-str)
-       ("trivia" ,sbcl-trivia)
-       ("trivial-package-local-nicknames" ,sbcl-trivial-package-local-nicknames)
-       ;; Non-CL deps:
-       ("ffmpeg" ,ffmpeg)))
+     (list sbcl-alexandria
+           sbcl-hu.dwim.defclass-star
+           sbcl-local-time
+           sbcl-magicffi
+           sbcl-named-readtables
+           sbcl-osicat
+           sbcl-serapeum
+           sbcl-cl-str
+           sbcl-trivia
+           sbcl-trivial-package-local-nicknames
+           ;; Non-CL deps:
+           ffmpeg))
     (home-page "https://gitlab.com/ambrevar/fof")
     (synopsis "File object finder library for Common Lisp")
     (description
