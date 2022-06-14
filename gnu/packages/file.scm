@@ -1,9 +1,8 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014, 2015 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016, 2017, 2018 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2018, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
 ;;;
@@ -32,14 +31,14 @@
 (define-public file
   (package
     (name "file")
-    (version "5.41")
+    (version "5.42")
     (source (origin
               (method url-fetch)
-              (uri (string-append "ftp://ftp.astron.com/pub/file/file-"
+              (uri (string-append "http://ftp.astron.com/pub/file/file-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0gv027jgdr0hdkw7m9ck0nwhq583f4aa7vnz4dzdbxv4ng3k5r8k"))))
+                "1r5h74b3pbrlm05ijiyk0y28dyrcazpn2cy42lzhfx4w096znxn0"))))
    (build-system gnu-build-system)
 
    ;; When cross-compiling, this package depends upon a native install of
@@ -47,9 +46,6 @@
    (native-inputs (if (%current-target-system)
                       `(("self" ,this-package))
                       '()))
-
-   (properties
-    `((release-monitoring-url . "http://ftp.astron.com/pub/file/")))
    (synopsis "File type guesser")
    (description
     "The file command is a file type guesser, a command-line tool that tells
