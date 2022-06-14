@@ -15382,56 +15382,53 @@ return the CPU count of the current system.")
   (sbcl-package->cl-source-package sbcl-cl-cpus))
 
 (define-public sbcl-fof
-  (package
-    (name "sbcl-fof")
-    (version "0.2.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitlab.com/ambrevar/fof")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0j64b7p40h8bq33hqkpgakm3vs1607vyx6n48d7qg3287v1akk6m"))))
-    (build-system asdf-build-system/sbcl)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "ffprobe.lisp"
-               (("\\(defvar \\*ffprobe-command\\* \"ffprobe\"\\)")
-                (format #f "(defvar *ffprobe-command* \"~a/bin/ffprobe\")"
-                        (assoc-ref inputs "ffmpeg"))))))
-         (add-after 'unpack 'fix-build
-           (lambda _
-             (substitute* "file.lisp"
-               (("\\(:import-from #:magicffi\\)" all)
-                (string-append all  "(:import-from #:named-readtables)"))))))))
-    (inputs
-     (list sbcl-alexandria
-           sbcl-hu.dwim.defclass-star
-           sbcl-local-time
-           sbcl-magicffi
-           sbcl-named-readtables
-           sbcl-osicat
-           sbcl-serapeum
-           sbcl-cl-str
-           sbcl-trivia
-           sbcl-trivial-package-local-nicknames
-           ;; Non-CL deps:
-           ffmpeg))
-    (home-page "https://gitlab.com/ambrevar/fof")
-    (synopsis "File object finder library for Common Lisp")
-    (description
-     "This library enable rapid file search, inspection and manipulation
+  (let ((commit "522879e7da110ecf2e841998b197b34062c54b29")
+        (revision "1"))
+    (package
+      (name "sbcl-fof")
+      (version (git-version "0.2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.com/ambrevar/fof")
+               (commit commit)))
+         (file-name (git-file-name "cl-fof" version))
+         (sha256
+          (base32 "0ipy51q2fw03xk9rqcyzbq2b9c32npc1gl3c53rdjywpak7zwwg6"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-paths
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "ffprobe.lisp"
+                 (("\\(defvar \\*ffprobe-command\\* \"ffprobe\"\\)")
+                  (format #f "(defvar *ffprobe-command* \"~a/bin/ffprobe\")"
+                          (assoc-ref inputs "ffmpeg")))))))))
+      (inputs
+       (list sbcl-alexandria
+             sbcl-cl-str
+             sbcl-hu.dwim.defclass-star
+             sbcl-local-time
+             sbcl-magicffi
+             sbcl-named-readtables
+             sbcl-osicat
+             sbcl-serapeum
+             sbcl-trivia
+             sbcl-trivial-package-local-nicknames
+             ;; Non-CL deps:
+             ffmpeg))
+      (home-page "https://gitlab.com/ambrevar/fof")
+      (synopsis "File object finder library for Common Lisp")
+      (description
+       "This library enable rapid file search, inspection and manipulation
 straight from the REPL.
 It aims at replacing Unix tools such as @code{find} or @code{du}.
 It also offers a replacement to the @code{pathname} Common Lisp API.
 Slot writers which commit changes to disk, e.g. permissions, modification
 time, etc.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public ecl-fof
   (sbcl-package->ecl-package sbcl-fof))
