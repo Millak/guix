@@ -646,13 +646,13 @@ netcat implementation that supports TLS.")
   (package
     (name "python-acme")
     ;; Remember to update the hash of certbot when updating python-acme.
-    (version "1.18.0")
+    (version "1.28.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "acme" version))
               (sha256
                (base32
-                "1bv2swaqmzpcx2nq1nbhrc6b825d5sxkdv0al972sjfcpcqn1q4s"))))
+                "12fmw4g63pzbrmmrkk6hgg0k5px6jyx3scv9fmn60h21387jv0hz"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -666,8 +666,11 @@ netcat implementation that supports TLS.")
                     (man (string-append out "/share/man/man1"))
                     (info (string-append out "/info")))
                (install-file "docs/_build/texinfo/acme-python.info" info)
-               (install-file "docs/_build/man/acme-python.1" man)
-               #t))))))
+               (install-file "docs/_build/man/acme-python.1" man))))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-vv")))))))
     (native-inputs
      (list python-pytest
            ;; For documentation
@@ -700,7 +703,7 @@ netcat implementation that supports TLS.")
               (uri (pypi-uri "certbot" version))
               (sha256
                (base32
-                "0yr8sxfg5zspal04l9lpd9xis6gp8il20bhka54xr9bb4hc6xrgk"))))
+                "0p4cpakx1kc8lczlgxqryr2asnyrvw6p5wmkamkjqdsf3z7xhm2b"))))
     (build-system python-build-system)
     (arguments
      `(,@(substitute-keyword-arguments (package-arguments python-acme)
