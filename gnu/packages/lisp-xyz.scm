@@ -6073,31 +6073,31 @@ cookie headers, cookie creation, cookie jar creation and more.")
          (sha256
           (base32 "14cbykd9j8klm8sz3siq5zk78a0ljd6rdwfq12fi4h1ih50apyfi"))))
       (inputs
-       `(("trivial-gray-streams" ,sbcl-trivial-gray-streams)
-         ("babel" ,sbcl-babel)
-         ("usocket" ,sbcl-usocket)
-         ("fast-http" ,sbcl-fast-http)
-         ("quri" ,sbcl-quri)
-         ("fast-io" ,sbcl-fast-io)
-         ("chunga" ,sbcl-chunga)
-         ("cl-ppcre" ,sbcl-cl-ppcre)
-         ("cl-cookie" ,sbcl-cl-cookie)
-         ("trivial-mimes" ,sbcl-trivial-mimes)
-         ("chipz" ,sbcl-chipz)
-         ("cl-base64" ,sbcl-cl-base64)
-         ("cl-reexport" ,sbcl-cl-reexport)
-         ("cl+ssl" ,sbcl-cl+ssl)
-         ("bordeaux-threads" ,sbcl-bordeaux-threads)
-         ("alexandria" ,sbcl-alexandria)))
+       (list sbcl-alexandria
+             sbcl-babel
+             sbcl-bordeaux-threads
+             sbcl-chipz
+             sbcl-chunga
+             sbcl-cl+ssl
+             sbcl-cl-base64
+             sbcl-cl-cookie
+             sbcl-cl-ppcre
+             sbcl-cl-reexport
+             sbcl-fast-http
+             sbcl-fast-io
+             sbcl-quri
+             sbcl-trivial-gray-streams
+             sbcl-trivial-mimes
+             sbcl-usocket))
       (native-inputs
-       `(("prove" ,sbcl-prove)
-         ("lack" ,sbcl-lack)
-         ("clack" ,sbcl-clack)
-         ("babel" ,sbcl-babel)
-         ("alexandria" ,sbcl-alexandria)
-         ("cl-ppcre" ,sbcl-cl-ppcre)
-         ("local-time" ,sbcl-local-time)
-         ("trivial-features" ,sbcl-trivial-features)))
+       (list sbcl-alexandria
+             sbcl-babel
+             sbcl-cl-ppcre
+             sbcl-clack
+             sbcl-lack
+             sbcl-local-time
+             sbcl-prove
+             sbcl-trivial-features))
       (arguments
        ;; TODO: Circular dependency: tests depend on clack-test which depends on dexador.
        `(#:tests? #f
