@@ -73,6 +73,13 @@
                (("#elif GUILE_VERSION < 203000") "#elif GUILE_VERSION < 301000"))
              (substitute* "configure"
                (("2.2 2.0 1.8") "3.0 2.2 2.0 1.8"))))
+         (add-after 'unpack 'use-numeric-ids-in-tarball
+           ;; Pass arguments to tar to generate tarball with consistent uid
+           ;; and gid to ensure reproducible build
+           (lambda _
+             (substitute* "pkg/libopts/mklibsrc.sh"
+               (("--sort=name --format=gnu")
+                "--sort=name --format=gnu --owner=0 --group=0 --numeric-owner"))))
          (add-before 'build 'set-man-page-date
            ;; Avoid embedding the current date for reproducible builds
            (lambda _
