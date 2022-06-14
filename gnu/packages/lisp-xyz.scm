@@ -6056,12 +6056,12 @@ cookie headers, cookie creation, cookie jar creation and more.")
   (sbcl-package->ecl-package sbcl-cl-cookie))
 
 (define-public sbcl-dexador
-  (let ((commit "953090f04c4d1a9ee6632b90133cdc297b68badc")
+  (let ((commit "74a233edb0ebf2b8c696fb8db984ac568fbcc4e5")
         (revision "1"))
     (package
       (name "sbcl-dexador")
       (build-system asdf-build-system/sbcl)
-      (version "0.9.14" )
+      (version (git-version "0.9.15" revision commit))
       (home-page "https://github.com/fukamachi/dexador")
       (source
        (origin
@@ -6069,10 +6069,9 @@ cookie headers, cookie creation, cookie jar creation and more.")
          (uri (git-reference
                (url home-page)
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-dexador" version))
          (sha256
-          (base32
-           "0w18fz3301rpmwc3kwb810czcd24mbf7r1z8vdyc0v5crjfpw3mn"))))
+          (base32 "14cbykd9j8klm8sz3siq5zk78a0ljd6rdwfq12fi4h1ih50apyfi"))))
       (inputs
        `(("trivial-gray-streams" ,sbcl-trivial-gray-streams)
          ("babel" ,sbcl-babel)
