@@ -32,14 +32,14 @@
 (define-public ccache
   (package
     (name "ccache")
-    (version "4.6")
+    (version "4.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/ccache/ccache/releases/download/v"
                            version "/ccache-" version ".tar.xz"))
        (sha256
-        (base32 "1sa576ff8hc1swq55mdfp5gsnpys276gf37n83k6k49myihbharx"))))
+        (base32 "1lgk6fbfsnh2fscjmhpak8gwp3njq3kr0ihjcjlas15mrg9ppm75"))))
     (build-system cmake-build-system)
     (native-inputs (list perl ; for test/run
                          (@ (gnu packages base) which)))
