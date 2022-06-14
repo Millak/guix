@@ -11,7 +11,7 @@
 ;;; Copyright © 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019, 2021 Wiktor Żelazny <wzelazny@vurv.cz>
 ;;; Copyright © 2019, 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2020, 2021, 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
@@ -2715,35 +2715,40 @@ using third-party geocoders and other data sources.")
 (define-public gplates
   (package
     (name "gplates")
-    (version "2.3.0")
+    ;; Note: use a pre-release to cope with newer Boost, ref
+    ;; https://discourse.gplates.org/t/compilation-error-with-boost-1-77/452/3
+    (version "2.3.01-beta.3")
     (source (origin
               (method url-fetch)
-              (uri "https://www.earthbyte.org/download/8421/")
-              (file-name (string-append name "-" version ".tar.bz2"))
+              (uri "https://cloudstor.aarnet.edu.au/plus/s\
+/ojsYNOyUYE3evNp/download?path=%2F&files=gplates_2.3.1-beta.3_src.zip")
+              (file-name (string-append name "-" version ".zip"))
               (sha256
                (base32
-                "0lrcmcxc924ixddii8cyglqlwwxvk7f00g4yzbss5i3fgcbh8n96"))))
+                "06i87dfab0cq9gdi5mh6sf9wigawpp0d05zbyslv910443i26gwv"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DBoost_NO_BOOST_CMAKE=ON")
-       #:tests? #f)) ;no test target
+       #:tests? #f))                    ;no test target
+    (native-inputs
+     (list unzip))                      ;for the beta
     (inputs
-     `(("boost" ,boost)
-       ("cgal" ,cgal)
-       ("gdal" ,gdal)
-       ("glew" ,glew)
-       ("glu" ,glu)
-       ("gmp" ,gmp)
-       ("mesa" ,mesa)
-       ("mpfr" ,mpfr)
-       ("proj" ,proj)
-       ("python-3" ,python-3)
-       ("python-numpy" ,python-numpy)
-       ("qt" ,qtbase-5)
-       ("qtsvg" ,qtsvg)
-       ("qtxmlpatterns" ,qtxmlpatterns)
-       ("qwt" ,qwt)
-       ("zlib" ,zlib)))
+     (list boost
+           cgal
+           gdal
+           glew
+           glu
+           gmp
+           mesa
+           mpfr
+           proj
+           python-3
+           python-numpy
+           qtbase-5
+           qtsvg
+           qtxmlpatterns
+           qwt
+           zlib))
     (home-page "https://www.gplates.org")
     (synopsis "Plate tectonics simulation program")
     (description "GPlates is a plate tectonics program.  Manipulate
