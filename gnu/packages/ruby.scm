@@ -6,7 +6,7 @@
 ;;; Copyright © 2015, 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
-;;; Copyright © 2017, 2019, 2020, 2021 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2017, 2019-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
@@ -6500,17 +6500,49 @@ alternative to Marshal for Object serialization.")
 (define-public ruby-pg
   (package
     (name "ruby-pg")
-    (version "1.2.3")
+    (version "1.3.5")
+    (home-page "https://github.com/ged/ruby-pg")
     (source
      (origin
-       (method url-fetch)
-       (uri (rubygems-uri "pg" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "13mfrysrdrh8cka1d96zm0lnfs59i5x2g6ps49r2kz5p3q81xrzj"))))
+         "0c2k2cibd5wwdhva68j5hhfpybm3wmvn2ym4ppn5mqmddwkjkvnk"))))
     (build-system ruby-build-system)
     (arguments
-     '(#:test-target "spec"))
+     (list
+      #:test-target "spec"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            (lambda _
+              ;; These tests fail because DNS is unavailable, giving an
+              ;; unexpected fallback executable in the connection string.
+              (substitute* "spec/pg/connection_spec.rb"
+                (("it (\"accepts an URI and adds( proper)? hostaddr\")" test)
+                 (string-append "xit " test))
+                (("it \"can create a connection option string from an option\
+ string and a hash\"" test)
+                 (string-append "xit " test)))))
+               (add-before 'build 'compile
+                 (lambda _
+                   (invoke "rake" "compile")))
+               ;; Some tests rely on postgresql_lib_path.rb, but it is not
+               ;; available until the gem is installed.  Run tests after
+               ;; installing to work around it.
+               (delete 'check)
+               (add-after 'install 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (let ((new-gem (string-append #$output
+                                                 "/lib/ruby/vendor_ruby")))
+                     (setenv "GEM_PATH"
+                             (string-append (getenv "GEM_PATH") ":" new-gem))
+                     (when tests?
+                       (invoke "rspec"))))))))
     (native-inputs
      (list ruby-rake-compiler ruby-hoe ruby-rspec))
     (inputs
@@ -6518,7 +6550,6 @@ alternative to Marshal for Object serialization.")
     (synopsis "Ruby interface to PostgreSQL")
     (description "Pg is the Ruby interface to the PostgreSQL RDBMS.  It works
 with PostgreSQL 9.0 and later.")
-    (home-page "https://bitbucket.org/ged/ruby-pg")
     (license license:ruby)))
 
 (define-public ruby-byebug
