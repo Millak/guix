@@ -166,7 +166,7 @@ when jobs finish.")
 (define-public slurm
   (package
     (name "slurm")
-    (version "21.08.8")
+    (version "22.05.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -174,7 +174,7 @@ when jobs finish.")
                     version ".tar.bz2"))
               (sha256
                (base32
-                "1sjln54idc9rhg8f2nvm38sgs6fncncyzslas8ixy65pqz2hphbf"))
+                "0f3hhlki8g7slllsnyj1qikbsvr62i0hig85lcdcfnmsagzlhbyi"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -261,6 +261,20 @@ by managing a queue of pending work.")
 ;; releases here.  See also <https://issues.guix.gnu.org/44387>.
 ;; As noted in the link, YY.MM is the release scheme, and the 'maintenance'
 ;; digit does not introduce incompatibilities.
+
+(define-public slurm-21.08
+  (package
+    (inherit slurm)
+    (version "21.08.8")
+    (source (origin
+              (inherit (package-source slurm))
+              (method url-fetch)
+              (uri (string-append
+                    "https://download.schedmd.com/slurm/slurm-"
+                    version ".tar.bz2"))
+              (sha256
+               (base32
+                "1sjln54idc9rhg8f2nvm38sgs6fncncyzslas8ixy65pqz2hphbf"))))))
 
 (define-public slurm-20.11
   (package
