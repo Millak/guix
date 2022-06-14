@@ -10,7 +10,7 @@
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2020 Ellis Kenyo <me@elken.dev>
 ;;; Copyright © 2020 Stefan Reichör <stefan@xsteve.at>
-;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Songlin Jiang <hollowman@hollowman.ml>
 ;;; Copyright © 2021, 2022 Justin Veilleux <terramorpha@cock.li>
@@ -1254,7 +1254,7 @@ extended file attributes.  It also functions as a standalone command.")
 (define-public markets
   (package
     (name "markets")
-    (version "0.5.3")
+    (version "0.5.4")
     (source
       (origin
         (method git-fetch)
@@ -1264,7 +1264,7 @@ extended file attributes.  It also functions as a standalone command.")
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "0sfdmz7cp8i2bymippp8jyxsidxjn69v9cqm40q77j81kfm84bfv"))))
+          "0ch6dfmdcpw32r23s58riv8agnyw0f1cqd1y6j7zkx5sb3zyn3zy"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
