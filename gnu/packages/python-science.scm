@@ -183,13 +183,13 @@ logic, also known as grey logic.")
 (define-public python-scikit-image
   (package
     (name "python-scikit-image")
-    (version "0.19.2")
+    (version "0.19.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "scikit-image" version))
        (sha256
-        (base32 "0vc6c78780jivsg79ja0cncn1ma2wysy9fyz97kik0kg59jb8cyl"))))
+        (base32 "0l645smf7w1kail70z8d9r3xmvz7qh6g7n3d2bpacbbnw5ykdd94"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
