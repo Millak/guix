@@ -44,7 +44,7 @@
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Pradana Aumars <paumars@courrier.dev>
-;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2021, 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Alice Brenon <alice.brenon@ens-lyon.fr>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
@@ -5295,7 +5295,7 @@ and serve updated contents upon changes to the directory.")
 (define-public python-httpcore
   (package
     (name "python-httpcore")
-    (version "0.14.7")
+    (version "0.15.0")
     (source
      (origin
        ;; PyPI tarball does not contain tests.
@@ -5305,7 +5305,7 @@ and serve updated contents upon changes to the directory.")
              (commit  version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wdr28vf03l6yxhk8nrvhh7y7x18rqdcfzv1sb6jgzk9zmycrvc7"))))
+        (base32 "0skj8f85l52gl6x449wzaixcwsyayvn59iwn0df4b7ixlz6xhp8l"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -5313,7 +5313,8 @@ and serve updated contents upon changes to the directory.")
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "pytest" "-vv" "tests")))))))
+               (invoke "pytest" "-vv" "tests"
+                       "--override-ini=asyncio_mode=auto")))))))
     (native-inputs
      (list python-pytest
            python-pytest-asyncio
