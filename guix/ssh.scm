@@ -102,7 +102,8 @@ actual key does not match."
 (define* (open-ssh-session host #:key user port identity
                            host-key
                            (compression %compression)
-                           (timeout 3600))
+                           (timeout 3600)
+                           (connection-timeout 10))
   "Open an SSH session for HOST and return it.  IDENTITY specifies the file
 name of a private key to use for authenticating with the host.  When USER,
 PORT, or IDENTITY are #f, use default values or whatever '~/.ssh/config'
@@ -112,15 +113,16 @@ When HOST-KEY is true, it must be a string like \"ssh-ed25519 AAAAC3Nz…
 root@example.org\"; the server is authenticated and an error is raised if its
 host key is different from HOST-KEY.
 
-Install TIMEOUT as the maximum time in seconds after which a read or write
-operation on a channel of the returned session is considered as failing.
+Error out if connection establishment takes more than CONNECTION-TIMEOUT
+seconds.  Install TIMEOUT as the maximum time in seconds after which a read or
+write operation on a channel of the returned session is considered as failing.
 
 Throw an error on failure."
   (let ((session (make-session #:user user
                                #:identity identity
                                #:host host
                                #:port port
-                               #:timeout 10       ;seconds
+                               #:timeout connection-timeout
                                ;; #:log-verbosity 'protocol
 
                                ;; Prevent libssh from reading
