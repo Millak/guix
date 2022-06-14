@@ -1247,6 +1247,7 @@ pictures, sounds, or video.")
   (package
     (inherit postgresql-14)
     (version "13.6")
+    (replacement postgresql-13/replacement)
     (source (origin
               (inherit (package-source postgresql-14))
               (uri (string-append "https://ftp.postgresql.org/pub/source/v"
@@ -1255,6 +1256,24 @@ pictures, sounds, or video.")
                (base32
                 "1z37ix80hb2bqa2smh1hbj9r507ypnl3pil43gkqznnlv6ipzz5s"))
               (patches (search-patches "postgresql-riscv-spinlocks.patch"))))))
+
+;; The merge of commit ...
+;;  781dd2de230e3 gnu: postgresql-13: Fix building on riscv64-linux.
+;; ... in ...
+;;  49b350fafc2c3 Merge branch 'master' into staging.
+;; ... lost the inherited patch from postgresql-14, causing problems such as ...
+;;  05fef7bfc6005 gnu: timescaledb: Adjust test preparation to PostgreSQL 13.6.
+;;
+;; While at it, remove the RISC-V spinlock patch, which has been upstreamed
+;; in a different form (so the old patch still applies).
+;; TODO: Remove in the next rebuild cycle.
+(define postgresql-13/replacement
+  (package
+    (inherit postgresql-13)
+    (source
+     (origin
+       (inherit (package-source postgresql-13))
+       (patches (search-patches "postgresql-disable-resolve_symlinks.patch"))))))
 
 (define-public postgresql-11
   (package
@@ -1267,7 +1286,9 @@ pictures, sounds, or video.")
                                   version "/postgresql-" version ".tar.bz2"))
               (sha256
                (base32
-                "1qvrm0vhwnc5nijfbqybhwfjbq4r7vmk445sz7s6fiagpn78xxf8"))))
+                "1qvrm0vhwnc5nijfbqybhwfjbq4r7vmk445sz7s6fiagpn78xxf8"))
+              (patches (search-patches
+                        "postgresql-disable-resolve_symlinks.patch"))))
     (native-inputs
      (modify-inputs (package-native-inputs postgresql-13)
        (replace "docbook-xml" docbook-xml-4.2)))))
@@ -1362,6 +1383,8 @@ pictures, sounds, or video.")
                         ;; and friends such that 'pg_config --libdir', for
                         ;; instance, points to PG-UNION, allowing it to load
                         ;; the timescaledb extension.
+                        ;; TODO: The above comment and the #:symlink trick can
+                        ;; be removed in the next rebuild cycle.
                         (union-build pg-union (cons #$output directories)
                                      #:symlink
                                      (lambda (old new)
