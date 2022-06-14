@@ -1315,7 +1315,7 @@ pictures, sounds, or video.")
        (append opensp docbook-sgml-4.2)
        (delete "docbook-xml")))))
 
-(define-public postgresql postgresql-13)
+(define-public postgresql postgresql-14)
 
 (define-public timescaledb
   (package
