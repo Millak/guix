@@ -871,29 +871,19 @@ Python.")
 (define-public python-josepy
   (package
     (name "python-josepy")
-    (version "1.1.0")
+    (version "1.13.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "josepy" version))
               (sha256
                (base32
-                "11khz8malzrv375b27jjkv66z6z6khdx1v5mkkr4vq16gp3n4p7v"))))
+                "1jaxqyp53paks2z8zyzr50gqvzfxbar7r2qf98kqak4aizrxlcc9"))))
     (build-system python-build-system)
     (arguments
-     ;; The tests require flake8 >= 3.5, which is not yet packaged.
+     ;; TODO: some test dependencies are missing (see pyproject.toml).
      '(#:tests? #f))
     (propagated-inputs
-     (list python-cryptography python-pyopenssl python-six))
-;; TODO Enable when we have flake8 >= 3.5.
-;    (native-inputs
-;     `(("python-coverage" ,python-coverage)
-;       ("python-flake8" ,python-flake8)
-;       ("python-isort" ,python-isort)
-;       ("python-mock" ,python-mock)
-;       ("python-pytest" ,python-pytest)
-;       ("python-pytest-cov" ,python-pytest-cov)
-;       ("python-pytest-cache" ,python-pytest-cache)
-;       ("python-pytest-flake8" ,python-pytest-flake8)))
+     (list python-cryptography python-pyopenssl))
     (home-page "https://github.com/certbot/josepy")
     (synopsis "JOSE protocol implementation in Python")
     (description "This package provides a Python implementation of the JOSE
