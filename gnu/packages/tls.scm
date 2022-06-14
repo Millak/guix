@@ -679,7 +679,8 @@ netcat implementation that supports TLS.")
            python-sphinx-rtd-theme
            texinfo))
     (propagated-inputs
-     (list python-josepy
+     (list python-chardet
+           python-josepy
            python-requests
            python-requests-toolbelt
            python-pytz
