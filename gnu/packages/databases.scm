@@ -2975,13 +2975,13 @@ of PyMySQL.  @code{aiomysql} tries to preserve the same API as the
 (define-public python-tortoise-orm
   (package
     (name "python-tortoise-orm")
-    (version "0.17.8")
+    (version "0.19.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "tortoise-orm" version))
        (sha256
-        (base32 "1gzgiypln7lck3p95vk3i8rdx1bjbmmlcpb8xpba8cjdjvlj0l0z"))))
+        (base32 "17yk71dlx5ai98i6ivqgsplkwivdxackz9jfn6z42bpcdgbpiwhg"))))
     (build-system python-build-system)
     ;; The test suite relies on asynctest, which is abandoned and doesn't
     ;; support Python >= 3.8.
