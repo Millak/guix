@@ -1296,14 +1296,14 @@ pictures, sounds, or video.")
 (define-public postgresql-10
   (package
     (inherit postgresql-11)
-    (version "10.20")
+    (version "10.21")
     (source (origin
               (inherit (package-source postgresql-11))
               (uri (string-append "https://ftp.postgresql.org/pub/source/v"
                                   version "/postgresql-" version ".tar.bz2"))
               (sha256
                (base32
-                "17v51a9vnz6lgbfmbdmcwsiyi572wndwa4n30nk2zr6gkgaidpl7"))))
+                "1la5dx4hhy5yaznwk9gwdsymih3sd23fyhh6spssdaajdn2rh8fk"))))
     (native-inputs
      (modify-inputs (package-native-inputs postgresql-11)
        (append opensp docbook-sgml-4.2)
