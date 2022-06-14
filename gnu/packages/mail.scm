@@ -88,6 +88,7 @@
   #:use-module (gnu packages django)
   #:use-module (gnu packages dns)
   #:use-module (gnu packages docbook)
+  #:use-module (gnu packages docker)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages enchant)
@@ -4085,10 +4086,16 @@ Git and exports them in maildir format or to an MDA through a pipe.")
              (sha256
               (base32
                "0xni1l54v1z3p0zb52807maay0yqabp8jgf5iras5zmhgjyk3swz"))
-             (file-name (git-file-name name version))))
+             (file-name (git-file-name name version))
+             (patches (search-patches "public-inbox-fix-spawn-test.patch"))))
     (build-system perl-build-system)
     (arguments
-     '(#:tests? #f
+     `(#:imported-modules (,@%perl-build-system-modules
+                           (guix build syscalls))
+       #:modules ((guix build perl-build-system)
+                  (guix build syscalls)
+                  (guix build utils)
+                  (ice-9 match))
        #:phases
        (modify-phases %standard-phases
          (add-before 'configure 'qualify-paths
@@ -4097,18 +4104,45 @@ Git and exports them in maildir format or to an MDA through a pipe.")
              (substitute* "lib/PublicInbox/Xapcmd.pm"
                (("'xapian-compact'")
                 (format #f "'~a'" (search-input-file inputs
-                                                     "/bin/xapian-compact"))))))
+                                                     "/bin/xapian-compact"))))
+             (substitute* "lib/PublicInbox/TestCommon.pm"
+               ;; This is only used for tests, but get it from ‘inputs’ so
+               ;; that cross builds won't hold a reference to a package built
+               ;; for another architecture.
+               (("/bin/cp") (search-input-file inputs "/bin/cp")))))
          (add-before 'check 'pre-check
            (lambda _
-             (substitute* "t/spawn.t"
-               (("\\['env'\\]") (string-append "['" (which "env") "']")))
-             (substitute* "t/ds-leak.t"
-               (("/bin/sh") (which "sh")))
-             (invoke "./certs/create-certs.perl")
-             ;; XXX: This test fails due to zombie process is not reaped by
-             ;; the builder.
-             (substitute* "t/httpd-unix.t"
-               (("^SKIP: \\{") "SKIP: { skip('Guix');"))))
+             (invoke "./certs/create-certs.perl")))
+         (replace 'check
+           (lambda* (#:key target
+                     (tests? (not target)) (test-flags '())
+                     #:allow-other-keys)
+             (if tests?
+                 (match (primitive-fork)
+                   (0                     ;child process
+                    ;; lei tests build UNIX domain sockets in the temporary
+                    ;; directory, but the path of those sockets can be at most
+                    ;; 108 chars and Guix' default value for the variables
+                    ;; below already use 47 chars. Use the shortest temporary
+                    ;; path possible to avoid hitting the limit.
+                    (setenv "TEMP" "/tmp")
+                    (setenv "TEMPDIR" "/tmp")
+                    (setenv "TMP" "/tmp")
+                    (setenv "TMPDIR" "/tmp")
+
+                    ;; Use tini so that signals are properly handled and
+                    ;; doubly-forked processes get reaped; otherwise,
+                    ;; lei-daemon is kept as a zombie and the testsuite
+                    ;; fails thinking that it didn't quit as it should.
+                    (set-child-subreaper!)
+                    (apply execlp "tini" "--"
+                           "make" "check" test-flags))
+                   (pid
+                    (match (waitpid pid)
+                      ((_ . status)
+                       (unless (zero? status)
+                         (error "`make check' exited with status" status))))))
+                 (format #t "test suite not run~%"))))
          (add-after 'install 'wrap-programs
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
@@ -4127,7 +4161,7 @@ Git and exports them in maildir format or to an MDA through a pipe.")
                 (find-files (string-append out "/bin")))))))))
     (native-inputs
      (list ;; For testing.
-           lsof openssl))
+           lsof openssl tini))
     (inputs
      (list bash-minimal
            curl

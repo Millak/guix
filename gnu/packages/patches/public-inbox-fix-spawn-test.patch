@@ -1,0 +1,43 @@
+From 5593489d9c3ce22b1942f35c7ebb0e06fcf2bfa8 Mon Sep 17 00:00:00 2001
+From: Thiago Jung Bauermann <bauermann@kolabnow.com>
+Date: Fri, 10 Jun 2022 12:39:18 -0300
+Subject: [PATCH] t/spawn: Find invalid PID to try to join its process group
+
+In the container used to build packages of the GNU Guix distribution, PID 1
+runs as the same user as the test so this spawn that should fail actually
+succeeds.
+
+Fix the problem by going through different PIDs and picking one that
+either doesn't exist or we aren't allowed to signal.
+---
+
+This patch is taken from the public-inbox repository and will appear in the
+release after v1.8.
+
+ t/spawn.t | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
+
+diff --git a/t/spawn.t b/t/spawn.t
+index 6168c1f6171c..5fc99a2a101c 100644
+--- a/t/spawn.t
++++ b/t/spawn.t
+@@ -24,7 +24,18 @@ SKIP: {
+ 	is(waitpid($pid, 0), $pid, 'waitpid succeeds on spawned process');
+ 	is($?, 0, 'true exited successfully');
+ 	pipe(my ($r, $w)) or BAIL_OUT;
+-	$pid = eval { spawn(['true'], undef, { pgid => 1, 2 => $w }) };
++
++	# Find invalid PID to try to join its process group.
++	my $wrong_pgid = 1;
++	for (my $i=0x7fffffff; $i >= 2; $i--) {
++		if (kill(0, $i) == 0) {
++			$wrong_pgid = $i;
++			last;
++		}
++	}
++
++	# Test spawn behavior when it can't join the requested process group.
++	$pid = eval { spawn(['true'], undef, { pgid => $wrong_pgid, 2 => $w }) };
+ 	close $w;
+ 	my $err = do { local $/; <$r> };
+ 	# diag "$err ($@)";
