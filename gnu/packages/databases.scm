@@ -1279,14 +1279,14 @@ pictures, sounds, or video.")
   (package
     (inherit postgresql-13)
     (name "postgresql")
-    (version "11.15")
+    (version "11.16")
     (source (origin
               (inherit (package-source postgresql-13))
               (uri (string-append "https://ftp.postgresql.org/pub/source/v"
                                   version "/postgresql-" version ".tar.bz2"))
               (sha256
                (base32
-                "1qvrm0vhwnc5nijfbqybhwfjbq4r7vmk445sz7s6fiagpn78xxf8"))
+                "1983a7y4y6zhbgh0qcdfkf99445j1zm5q1ncrbkrx555y08y3n9d"))
               (patches (search-patches
                         "postgresql-disable-resolve_symlinks.patch"))))
     (native-inputs
