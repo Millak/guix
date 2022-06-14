@@ -1844,6 +1844,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/texi2html-i18n.patch			\
   %D%/packages/patches/thefuck-test-environ.patch		\
   %D%/packages/patches/tidy-CVE-2015-5522+5523.patch		\
+  %D%/packages/patches/timescaledb-flaky-test.patch		\
   %D%/packages/patches/tinyxml-use-stl.patch			\
   %D%/packages/patches/tipp10-disable-downloader.patch		\
   %D%/packages/patches/tipp10-fix-compiling.patch		\

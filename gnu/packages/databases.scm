@@ -1320,7 +1320,7 @@ pictures, sounds, or video.")
 (define-public timescaledb
   (package
     (name "timescaledb")
-    (version "2.5.1")
+    (version "2.7.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1329,14 +1329,18 @@ pictures, sounds, or video.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "174dm3higa0i7al9r2hdv5hk36pd0d5fnqj57w5a350kxshxyvyw"))
+                "18wszj8ia5rs4y4zkyfb0f5z4y1g7ac3jym748nbkbszhxmq7nc7"))
+              (patches (search-patches "timescaledb-flaky-test.patch"))
               (modules '((guix build utils)))
               (snippet
                ;; Remove files carrying the proprietary TIMESCALE license.
                '(begin
                   (delete-file-recursively "tsl")
                   (for-each delete-file
-                            '("test/perl/AccessNode.pm"
+                            '("scripts/c_license_header-timescale.h"
+                              "scripts/license_tsl.spec"
+                              "scripts/sql_license_tsl.sql"
+                              "test/perl/AccessNode.pm"
                               "test/perl/DataNode.pm"
                               "test/perl/TimescaleNode.pm"))))))
     (build-system cmake-build-system)
