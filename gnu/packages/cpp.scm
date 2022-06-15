@@ -32,6 +32,7 @@
 ;;; Copyright © 2022, 2023 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2022, 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2023 Sughosha <Sughosha@proton.me>
 ;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2023 Liliana Marie Prikler <liliana.prikler@gmail.com>
@@ -1981,6 +1982,16 @@ of reading and writing XML.")
     (description "Jsonnet is a templating language extending JSON
 syntax with variables, conditions, functions and more.")
     (license license:asl2.0)))
+
+(define-public python-jsonnet
+  (package
+    (inherit jsonnet)
+    (name "python-jsonnet")
+    (build-system python-build-system)
+    (arguments '())
+    (synopsis "Python bindings for Jsonnet, the data templating language")
+    (description "This package provides a Python library named @code{_jsonnet}
+which can evaluate Jsonnet files and expressions.")))
 
 (define-public simdjson
   (package
