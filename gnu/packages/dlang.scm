@@ -454,20 +454,20 @@ integration tests...\n")
         (base32 "06a4whsl1m600k096nwif83n7za3vr7pj1xwapncy5fcad1gmady"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; it would have tested itself by installing some packages (vibe etc)
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (replace 'build
-           (lambda _
-             (setenv "CC" ,(cc-for-target))
-             (setenv "LD" ,(ld-for-target))
-             (invoke "./build.d")))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin")))
-               (install-file "bin/dub" bin)))))))
+     (list #:tests? #f                  ; tests try to install packages
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)      ; no configure script
+               (replace 'build
+                 (lambda _
+                   (setenv "CC" #$(cc-for-target))
+                   (setenv "LD" #$(ld-for-target))
+                   (invoke "./build.d")))
+               (replace 'install
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out"))
+                          (bin (string-append out "/bin")))
+                     (install-file "bin/dub" bin)))))))
     (inputs
      (list curl))
     (native-inputs
