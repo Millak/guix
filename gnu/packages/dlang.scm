@@ -62,13 +62,15 @@
         "0c8w373rv6iz3xfid94w40ncv2lr2ncxi662qsr4lda4aghczmq7"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases
+     `(#:phases
        (modify-phases %standard-phases
          (delete 'configure)
          (delete 'check) ; There is no Makefile, so there's no 'make check'.
          (replace
           'build
           (lambda _
+            (setenv "CC" ,(cc-for-target))
+            (setenv "LD" ,(ld-for-target))
             (invoke "ldc2" "rdmd.d")))
          (replace
           'install
@@ -76,7 +78,10 @@
             (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
               (install-file "rdmd" bin)))))))
     (native-inputs
-     (list ldc))
+     (list ldc
+           (module-ref (resolve-interface
+                        '(gnu packages commencement))
+                       'ld-gold-wrapper)))
     (home-page "https://github.com/dlang/tools")
     (synopsis "Useful D-related tools")
     (description
