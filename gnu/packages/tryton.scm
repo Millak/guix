@@ -1747,6 +1747,26 @@ from the UNECE.  Supported formats are:
 @end itemize")
     (license license:gpl3+)))
 
+(define-public trytond-gis
+  (package
+    (name "trytond-gis")
+    (version "6.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trytond_gis" version))
+       (sha256
+        (base32 "1z6rvwyzisd62bmzhh1g56as7xyvchdsgj52w9q5x908k2jr4pl4"))))
+    (build-system python-build-system)
+    (arguments (tryton-arguments "trytond_gis"))
+    (native-inputs (%standard-trytond-native-inputs))
+    (propagated-inputs (list python-geomet  trytond))
+    (home-page "https://docs.tryton.org/projects/backend-gis")
+    (synopsis "Geographic Information System support from Tryton")
+    (description "The @emph{Trytond GIS} Tryton module adds GIS (Geographic
+information system) support to Tryton.")
+    (license license:gpl3+)))
+
 (define-public trytond-incoterm
   (package
     (name "trytond-incoterm")
