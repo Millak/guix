@@ -442,7 +442,7 @@ integration tests...\n")
 (define-public dub
   (package
     (name "dub")
-    (version "1.7.2")
+    (version "1.23.0")
     (source
      (origin
        (method git-fetch)
@@ -451,7 +451,7 @@ integration tests...\n")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "073ibvgm1gphcqs1yjrav9ryp677nh3b194nxmvicwgvdc0sb6w9"))))
+        (base32 "06a4whsl1m600k096nwif83n7za3vr7pj1xwapncy5fcad1gmady"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; it would have tested itself by installing some packages (vibe etc)
@@ -460,17 +460,22 @@ integration tests...\n")
          (delete 'configure)            ; no configure script
          (replace 'build
            (lambda _
-             (invoke "./build.sh")))
+             (setenv "CC" ,(cc-for-target))
+             (setenv "LD" ,(ld-for-target))
+             (invoke "./build.d")))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
                     (bin (string-append out "/bin")))
-               (install-file "bin/dub" bin)
-               #t))))))
+               (install-file "bin/dub" bin)))))))
     (inputs
      (list curl))
     (native-inputs
-     (list ldc))
+     (list d-tools
+           ldc
+           (module-ref (resolve-interface
+                        '(gnu packages commencement))
+                       'ld-gold-wrapper)))
     (home-page "https://code.dlang.org/getting_started")
     (synopsis "Package and build manager for D projects")
     (description
