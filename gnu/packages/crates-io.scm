@@ -19,6 +19,7 @@
 ;;; Copyright © 2021 Antero Mejr <antero@kodmin.com>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2021 muradm <mail@muradm.net>
 ;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Jacob Hrbek <kreyren@rixotstudio.cz>
@@ -73053,3 +73054,20 @@ including a line breaking iterator.")
 and automatically convert it to a windows batch file, this library provides a
 way to convert simple shell commands to windows batch commands.")
     (license license:asl2.0)))
+
+(define-public rust-enquote-1
+  (package
+    (name "rust-enquote")
+    (version "1.1.0")
+    (home-page "https://github.com/reujab/enquote")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "enquote" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0clrjghlfkkb7sndabs5wch0fz2nif6nj4b117s8kqxx3nqnrhq6"))))
+    (build-system cargo-build-system)
+    (synopsis "Rust library that quotes, unquotes, and unescapes strings")
+    (description "A Rust library quotes, unquotes, and unescapes strings")
+    (license license:unlicense)))
