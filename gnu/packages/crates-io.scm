@@ -73071,3 +73071,25 @@ way to convert simple shell commands to windows batch commands.")
     (synopsis "Rust library that quotes, unquotes, and unescapes strings")
     (description "A Rust library quotes, unquotes, and unescapes strings")
     (license license:unlicense)))
+
+(define-public rust-pam-sys-0.5
+  (package
+    (name "rust-pam-sys")
+    (version "0.5.6")
+    (home-page "https://github.com/1wilkens/pam-sys")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "pam-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0d14501d5vybjnzxfjf96321xa5wa36x1xvf02h02zq938qmhj6d"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2))))
+    (inputs `(("linux-pam" ,linux-pam)))
+    (synopsis
+     "Rust FFI wrappers for the Linux Pluggable Authentication Modules (PAM)")
+    (description
+     "This crate uses bindgen to generate the raw FFI definitions for PAM. For a rustified API consider using pam.")
+    (license (list license:expat license:asl2.0))))
