@@ -15464,6 +15464,36 @@ numbers in Common Lisp.")
 (define-public cl-computable-reals
   (sbcl-package->cl-source-package sbcl-computable-reals))
 
+(define-public sbcl-policy-cond
+  (let ((commit "eedb625520175bfdf44d385ff3b21039b7f75706")
+        (revision "0"))
+    (package
+      (name "sbcl-policy-cond")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/stylewarning/policy-cond")
+               (commit commit)))
+         (file-name (git-file-name "cl-policy-cond" version))
+         (sha256
+          (base32 "0xj2a6lcg7i7g4038sc4f641din6m8vdiha8c5afz9fik80bshxk"))))
+      (build-system asdf-build-system/sbcl)
+      (home-page "https://github.com/stylewarning/policy-cond")
+      (synopsis "Insert code based on compiler policy")
+      (description "POLICY-COND provides tools to insert and execute code
+based on a compiler's OPTIMIZE policy.  It also contains a contract-like notion
+of expectations, which allow dynamic checking or inclusion of various things
+that should happen depending on compiler policy.")
+      (license license:bsd-3))))
+
+(define-public cl-policy-cond
+  (sbcl-package->cl-source-package sbcl-policy-cond))
+
+(define-public ecl-policy-cond
+  (sbcl-package->ecl-package sbcl-policy-cond))
+
 (define-public sbcl-html-template
   (package
     (name "sbcl-html-template")
