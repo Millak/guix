@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2010-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2019, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
@@ -488,30 +488,36 @@ SOURCE, an <upstream-source>."
                          #:optional (updaters (force %updaters))
                          #:key (key-download 'interactive))
   "Return the new version, the file name of the new version tarball, and input
-changes for PACKAGE; return #f (three values) when PACKAGE is up-to-date.
+changes for PACKAGE; return #f (three values) when PACKAGE is up-to-date;
+raise an error when the updater could not determine available releases.
 KEY-DOWNLOAD specifies a download policy for missing OpenPGP keys; allowed
 values: 'always', 'never', and 'interactive' (default)."
-  (match (package-latest-release* package updaters)
+  (match (package-latest-release package updaters)
     ((? upstream-source? source)
-     (let ((method (match (package-source package)
-                     ((? origin? origin)
-                      (origin-method origin))
-                     (_
-                      #f))))
-       (match (assq method %method-updates)
-         (#f
-          (raise (make-compound-condition
-                  (formatted-message (G_ "cannot download for \
+     (if (version>? (upstream-source-version source)
+                    (package-version package))
+         (let ((method (match (package-source package)
+                         ((? origin? origin)
+                          (origin-method origin))
+                         (_
+                          #f))))
+           (match (assq method %method-updates)
+             (#f
+              (raise (make-compound-condition
+                      (formatted-message (G_ "cannot download for \
 this method: ~s")
-                                     method)
-                  (condition
-                   (&error-location
-                    (location (package-location package)))))))
-         ((_ . update)
-          (update store package source
-                  #:key-download key-download)))))
+                                         method)
+                      (condition
+                       (&error-location
+                        (location (package-location package)))))))
+             ((_ . update)
+              (update store package source
+                      #:key-download key-download))))
+         (values #f #f #f)))
     (#f
-     (values #f #f #f))))
+     (raise (formatted-message
+             (G_ "updater failed to determine available releases for ~a~%")
+             (package-name package))))))
 
 (define* (update-package-source package source hash)
   "Modify the source file that defines PACKAGE to refer to SOURCE, an
