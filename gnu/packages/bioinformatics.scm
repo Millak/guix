@@ -24,6 +24,7 @@
 ;;; Copyright © 2021, 2022 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2022 Navid Afkhami <navid.afkhami@mdc-berlin.de>
+;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -17766,6 +17767,42 @@ alignment algorithm.  It completes MashMap with a high-performance alignment
 module capable of computing base-level alignments for very large sequences.")
     (home-page "https://github.com/ekg/wfmash")
     (license license:expat)))
+
+(define-public gdcm
+  (package
+    (name "gdcm")
+    (version "2.8.9")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/malaterre/gdcm")
+                    (commit (string-append "v" version))
+                    (recursive? #t)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1j8mjnxcwn2xvzhf25lv4dbawxbgc4im1crh8081li7i4mbwswaj"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DGDCM_BUILD_TESTING=true"
+              (string-append "-DCMAKE_CTEST_ARGUMENTS=-E;"
+                             "'TestFileMetaInformation"
+                             "|TestElement2"
+                             "|TestSCUValidation"
+                             "|TestEcho"
+                             "|TestFind'"))))
+    (home-page "http://gdcm.sourceforge.net/wiki/index.php/Main_Page")
+    (synopsis "Grassroots DICOM library")
+    (description
+     "Grassroots DICOM (GDCM) is an implementation of the DICOM standard
+designed to be open source so that researchers may access clinical data
+directly.  GDCM includes a file format definition and a network communications
+protocol, both of which should be extended to provide a full set of tools for
+a researcher or small medical imaging vendor to interface with an existing
+medical database.")
+    (license license:bsd-2)))
 
 (define-public wiggletools
   (package
