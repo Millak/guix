@@ -16,6 +16,7 @@
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021 Hui Lu <luhuins@163.com>
 ;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021 muradm <mail@muradm.net>
 ;;; Copyright © 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022 Justin Veilleux <terramorpha@cock.li>
 ;;;
@@ -225,6 +226,11 @@
 
             pam-limits-service-type
             pam-limits-service
+
+            greetd-service-type
+            greetd-configuration
+            greetd-terminal-configuration
+            greetd-agreety-session
 
             %base-services))
 
@@ -1446,7 +1452,7 @@ information on the configuration file syntax."
                               (module "pam_limits.so")
                               (arguments '("conf=/etc/security/limits.conf")))))
              (if (member (pam-service-name pam)
-                         '("login" "su" "slim" "gdm-password" "sddm"
+                         '("login" "greetd" "su" "slim" "gdm-password" "sddm"
                            "sudo" "sshd"))
                  (pam-service
                   (inherit pam)
@@ -2805,6 +2811,221 @@ to handle."
    (requirement '())
    (provision '(networking))
    (name-servers '("10.0.2.3"))))
+
+
+;;;
+;;; greetd-service-type -- minimal and flexible login manager daemon
+;;;
+
+(define-record-type* <greetd-agreety-session>
+  greetd-agreety-session make-greetd-agreety-session
+  greetd-agreety-session?
+  (agreety greetd-agreety (default greetd))
+  (command greetd-agreety-command (default (file-append bash "/bin/bash")))
+  (command-args greetd-agreety-command-args (default '("-l")))
+  (extra-env greetd-agreety-extra-env (default '()))
+  (xdg-env? greetd-agreety-xdg-env? (default #t)))
+
+(define greetd-agreety-tty-session-command
+  (match-lambda
+    (($ <greetd-agreety-session> _ command args extra-env)
+     (program-file
+      "agreety-tty-session-command"
+      #~(begin
+          (use-modules (ice-9 match))
+          (for-each (match-lambda ((var . val) (setenv var val)))
+                    (quote (#$@extra-env)))
+          (apply execl #$command #$command (list #$@args)))))))
+
+(define greetd-agreety-tty-xdg-session-command
+  (match-lambda
+    (($ <greetd-agreety-session> _ command args extra-env)
+     (program-file
+      "agreety-tty-xdg-session-command"
+      #~(begin
+          (use-modules (ice-9 match))
+          (let*
+              ((username (getenv "USER"))
+               (useruid (passwd:uid (getpwuid username)))
+               (useruid (number->string useruid)))
+            (setenv "XDG_SESSION_TYPE" "tty")
+            (setenv "XDG_RUNTIME_DIR" (string-append "/run/user/" useruid)))
+          (for-each (match-lambda ((var . val) (setenv var val)))
+                    (quote (#$@extra-env)))
+          (apply execl #$command #$command (list #$@args)))))))
+
+(define (make-greetd-agreety-session-command config command)
+  (let ((agreety (file-append (greetd-agreety config) "/bin/agreety")))
+    (program-file
+     "agreety-command"
+     #~(execl #$agreety #$agreety "-c" #$command))))
+
+(define (make-greetd-default-session-command config-or-command)
+  (cond ((greetd-agreety-session? config-or-command)
+         (cond ((greetd-agreety-xdg-env? config-or-command)
+                (make-greetd-agreety-session-command
+                 config-or-command
+                 (greetd-agreety-tty-xdg-session-command config-or-command)))
+               (#t
+                (make-greetd-agreety-session-command
+                 config-or-command
+                 (greetd-agreety-tty-session-command config-or-command)))))
+        (#t config-or-command)))
+
+(define-record-type* <greetd-terminal-configuration>
+  greetd-terminal-configuration make-greetd-terminal-configuration
+  greetd-terminal-configuration?
+  (greetd greetd-package (default greetd))
+  (config-file-name greetd-config-file-name (thunked)
+                    (default (default-config-file-name this-record)))
+  (log-file-name greetd-log-file-name (thunked)
+                 (default (default-log-file-name this-record)))
+  (terminal-vt greetd-terminal-vt (default "7"))
+  (terminal-switch greetd-terminal-switch (default #f))
+  (default-session-user greetd-default-session-user (default "greeter"))
+  (default-session-command greetd-default-session-command
+    (default (greetd-agreety-session))
+    (sanitize make-greetd-default-session-command)))
+
+(define (default-config-file-name config)
+  (string-join (list "config-" (greetd-terminal-vt config) ".toml") ""))
+
+(define (default-log-file-name config)
+  (string-join (list "/var/log/greetd-" (greetd-terminal-vt config) ".log") ""))
+
+(define (make-greetd-terminal-configuration-file config)
+  (let*
+      ((config-file-name (greetd-config-file-name config))
+       (terminal-vt (greetd-terminal-vt config))
+       (terminal-switch (greetd-terminal-switch config))
+       (default-session-user (greetd-default-session-user config))
+       (default-session-command (greetd-default-session-command config)))
+    (mixed-text-file
+     config-file-name
+     "[terminal]\n"
+     "vt = " terminal-vt "\n"
+     "switch = " (if terminal-switch "true" "false") "\n"
+     "[default_session]\n"
+     "user = " default-session-user "\n"
+     "command = " default-session-command "\n")))
+
+(define %greetd-accounts
+  (list (user-account
+         (name "greeter")
+         (group "wheel")
+         (supplementary-groups '("users" "tty" "input" "video" "audio"))
+         (system? #t))))
+
+(define %greetd-file-systems
+  (list (file-system
+          (device "none")
+          (mount-point "/run/greetd/pam_mount")
+          (type "tmpfs")
+          (check? #f)
+          (flags '(no-suid no-dev no-exec))
+          (options "mode=0755")
+          (create-mount-point? #t))))
+
+(define %greetd-pam-mount-rules
+  `((debug (@ (enable "0")))
+    (volume (@ (sgrp "users")
+               (fstype "tmpfs")
+               (mountpoint "/run/user/%(USERUID)")
+               (options "noexec,nosuid,nodev,size=1g,mode=0700,uid=%(USERUID),gid=%(USERGID)")))
+    (logout (@ (wait "0")
+               (hup "0")
+               (term "yes")
+               (kill "no")))
+    (mkmountpoint (@ (enable "1") (remove "true")))))
+
+(define-record-type* <greetd-configuration>
+  greetd-configuration make-greetd-configuration
+  greetd-configuration?
+  (motd greetd-motd (default %default-motd))
+  (allow-empty-passwords? greetd-allow-empty-passwords? (default #t))
+  (terminals greetd-terminals (default '())))
+
+(define (make-greetd-pam-mount-conf-file config)
+  (computed-file
+   "greetd_pam_mount.conf.xml"
+   #~(begin
+       (use-modules (sxml simple))
+       (call-with-output-file #$output
+         (lambda (port)
+           (sxml->xml
+            '(*TOP*
+              (*PI* xml "version='1.0' encoding='utf-8'")
+              (pam_mount
+               #$@%greetd-pam-mount-rules
+               (pmvarrun
+                #$(file-append greetd-pam-mount
+                               "/sbin/pmvarrun -u '%(USER)' -o '%(OPERATION)'"))))
+            port))))))
+
+(define (greetd-etc-service config)
+  `(("security/greetd_pam_mount.conf.xml"
+     ,(make-greetd-pam-mount-conf-file config))))
+
+(define (greetd-pam-service config)
+  (define optional-pam-mount
+    (pam-entry
+     (control "optional")
+     (module #~(string-append #$greetd-pam-mount "/lib/security/pam_mount.so"))
+     (arguments '("disable_interactive"))))
+
+  (list
+   (unix-pam-service "greetd"
+                     #:login-uid? #t
+                     #:allow-empty-passwords?
+                     (greetd-allow-empty-passwords? config)
+                     #:motd
+                     (greetd-motd config))
+   (lambda (pam)
+     (if (member (pam-service-name pam)
+                 '("login" "greetd" "su" "slim" "gdm-password"))
+         (pam-service
+          (inherit pam)
+          (auth (append (pam-service-auth pam)
+                        (list optional-pam-mount)))
+          (session (append (pam-service-session pam)
+                           (list optional-pam-mount))))
+         pam))))
+
+(define (greetd-shepherd-services config)
+  (map
+   (lambda (tc)
+     (let*
+         ((greetd-bin (file-append (greetd-package tc) "/sbin/greetd"))
+          (greetd-conf (make-greetd-terminal-configuration-file tc))
+          (greetd-log (greetd-log-file-name tc))
+          (greetd-vt (greetd-terminal-vt tc)))
+       (shepherd-service
+        (documentation "Minimal and flexible login manager daemon")
+        (requirement '(user-processes host-name udev virtual-terminal))
+        (provision (list (symbol-append
+                          'term-tty
+                          (string->symbol (greetd-terminal-vt tc)))))
+        (start #~(make-forkexec-constructor
+                  (list #$greetd-bin "-c" #$greetd-conf)
+                  #:log-file #$greetd-log))
+        (stop #~(make-kill-destructor)))))
+   (greetd-terminals config)))
+
+(define greetd-service-type
+  (service-type
+   (name 'greetd)
+   (description "Provides necessary infrastructure for logging into the
+system including @code{greetd} PAM service, @code{pam-mount} module to
+mount/unmount /run/user/<uid> directory for user and @code{greetd}
+login manager daemon.")
+   (extensions
+    (list
+     (service-extension account-service-type (const %greetd-accounts))
+     (service-extension file-system-service-type (const %greetd-file-systems))
+     (service-extension etc-service-type greetd-etc-service)
+     (service-extension pam-root-service-type greetd-pam-service)
+     (service-extension shepherd-root-service-type greetd-shepherd-services)))
+   (default-value (greetd-configuration))))
 
 
 (define %base-services
