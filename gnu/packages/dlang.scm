@@ -29,6 +29,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module ((guix build utils) #:hide (delete which))
   #:use-module (guix build-system gnu)
@@ -62,21 +63,19 @@
         "0c8w373rv6iz3xfid94w40ncv2lr2ncxi662qsr4lda4aghczmq7"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (delete 'check) ; There is no Makefile, so there's no 'make check'.
-         (replace
-          'build
-          (lambda _
-            (setenv "CC" ,(cc-for-target))
-            (setenv "LD" ,(ld-for-target))
-            (invoke "ldc2" "rdmd.d")))
-         (replace
-          'install
-          (lambda* (#:key outputs #:allow-other-keys)
-            (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
-              (install-file "rdmd" bin)))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (delete 'check) ; There is no Makefile, so there's no 'make check'.
+               (replace 'build
+                 (lambda _
+                   (setenv "CC" #$(cc-for-target))
+                   (setenv "LD" #$(ld-for-target))
+                   (invoke "ldc2" "rdmd.d")))
+               (replace 'install
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
+                     (install-file "rdmd" bin)))))))
     (native-inputs
      (list ldc
            (module-ref (resolve-interface
