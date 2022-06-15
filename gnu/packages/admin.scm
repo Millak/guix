@@ -5136,3 +5136,35 @@ If you can run it from your shell in a TTY, greetd can start it.
 If it can be taught to speak a simple JSON-based IPC protocol,
 then it can be a greeter.")
     (license license:gpl3+)))
+
+(define-public greetd-pam-mount
+  (package
+    (inherit pam-mount)
+    (name "greetd-pam-mount")
+    (arguments
+     (substitute-keyword-arguments (package-arguments pam-mount)
+       ((#:configure-flags flags ''())
+        #~(cons* "--with-rundir=/run/greetd" #$flags))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+           (add-after 'unpack 'patch-config-file-name
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "src/pam_mount.c"
+                 ((".*define CONFIGFILE .*$")
+                  "#define CONFIGFILE \"/etc/security/greetd_pam_mount.conf.xml\"\n")
+                 (("pam_mount_config") "greetd_pam_mount_config")
+                 (("pam_mount_system_authtok") "greetd_pam_mount_system_authtok"))))))))
+    (synopsis "pam-mount specifically compiled for use with greetd")
+    (description
+     "Pam-mount is a PAM module that can mount volumes when a user logs in.
+It supports mounting local filesystems of any kind the normal mount utility
+supports.  It can also mount encrypted LUKS volumes using the password
+supplied by the user when logging in.
+
+This package inherits pam-mount in the way that it is compiled specifically
+for use with greetd daemon. It uses different configuration location and
+name space for storing data in PAM.
+
+greetd-pam-mount is used in configuration of greetd to provide
+auto-(mounting/unmounting) of XDG_RUNTIME_DIR in the way that it will not
+interfere with default pam-mount configuration.")))
