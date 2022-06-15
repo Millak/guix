@@ -30006,3 +30006,23 @@ with it, and it also implements recommendations from the
 and names, built from Unicode CLDR and the IANA subtag registry, if you
 install @code{python-language-data}.")
     (license license:expat)))
+
+(define-public python-geomet
+  (package
+    (name "python-geomet")
+    (version "0.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "geomet" version))
+              (sha256
+               (base32
+                "06rfvadx5dr5xrgsc5bsmqil9c9kff6i13xl988gy0gfg0cl2lnb"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-click python-six))
+    (home-page "https://github.com/geomet/geomet")
+    (synopsis "Convert GeoJSON to WKT/WKB (Well-Known Text/Binary) or
+GeoPackage Binary")
+    (description "This package provides utilities and functions for converting
+GeoJSON to WKT/WKB (Well-Known Text/Binary) or GeoPackage Binary, and vice
+versa.  Extended WKB/WKT are also supported.")
+    (license license:asl2.0)))
