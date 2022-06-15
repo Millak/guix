@@ -54,13 +54,15 @@
   (package
     (name "d-tools")
     (version "2.077.1")
-    (source (origin
-      (method url-fetch)
-      (uri (string-append "https://github.com/dlang/tools/archive/v" version ".tar.gz"))
-      (file-name (string-append name "-" version ".tar.gz"))
-      (sha256
-       (base32
-        "0c8w373rv6iz3xfid94w40ncv2lr2ncxi662qsr4lda4aghczmq7"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dlang/tools")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wqqw7h1bwpdfrr9vgqkwzh47aqkd6imac1d6nn8gjlqzdcblqdr"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases
