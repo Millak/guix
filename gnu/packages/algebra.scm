@@ -4,7 +4,7 @@
 ;;; Copyright © 2016-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2014, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016, 2018, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2017, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2020-2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017, 2019, 2021, 2022 Eric Bavier <bavier@posteo.net>
@@ -1015,17 +1015,18 @@ extends it by a set of algebraic capabilities.")
 
        #:phases (modify-phases %standard-phases
                   (replace 'check
-                    (lambda _
+                    (lambda* (#:key tests? #:allow-other-keys)
                       (let* ((cores  (parallel-job-count))
                              (dash-j (format #f "-j~a" cores)))
-			(setenv "EIGEN_SEED" "1") ;for reproducibility
-                        ;; First build the tests, in parallel.  See
-                        ;; <http://eigen.tuxfamily.org/index.php?title=Tests>.
-                        (invoke "make" "buildtests" dash-j)
+                        (when tests?
+                          (setenv "EIGEN_SEED" "1") ;for reproducibility
+                          ;; First build the tests, in parallel.  See
+                          ;; <http://eigen.tuxfamily.org/index.php?title=Tests>.
+                          (invoke "make" "buildtests" dash-j)
 
-                        ;; Then run 'CTest' with -V so we get more
-                        ;; details upon failure.
-                        (invoke "ctest" "-V" dash-j)))))))
+                          ;; Then run 'CTest' with -V so we get more
+                          ;; details upon failure.
+                          (invoke "ctest" "-V" dash-j))))))))
     (home-page "https://eigen.tuxfamily.org")
     (synopsis "C++ template library for linear algebra")
     (description
