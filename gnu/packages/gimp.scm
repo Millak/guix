@@ -7,7 +7,7 @@
 ;;; Copyright © 2018 Thorsten Wilms <t_w_@freenet.de>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -175,7 +175,7 @@ of a larger interface.")
 (define-public babl
   (package
     (name "babl")
-    (version "0.1.88")
+    (version "0.1.92")
     (source (origin
               (method url-fetch)
               (uri (list (string-append "https://download.gimp.org/pub/babl/"
@@ -189,7 +189,7 @@ of a larger interface.")
                                         "/babl-" version ".tar.xz")))
               (sha256
                (base32
-                "0fbh2ss1dy3sba4xjmfm4vxxjmx9a6rzgba9ycjygchbm957y3ag"))))
+                "1hd2i1s7fng33msxiafavk3zb4zb9jk61w8qmmsn6jwl51876rzn"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags
