@@ -316,7 +316,8 @@ specified in COMPARISON-REPORT."
 'chmod -R +w DIRECTORY'."
   (file-system-fold (const #t)
                     (lambda (file stat _)         ;leaf
-                      (make-file-writable file))
+                      (unless (eq? 'symlink (stat:type stat))
+                        (make-file-writable file)))
                     (lambda (directory stat _)    ;down
                       (make-file-writable directory))
                     (const #t)                    ;up
