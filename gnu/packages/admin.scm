@@ -46,6 +46,7 @@
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 muradm <mail@muradm.net>
+;;; Copyright © 2021 pineapples <guixuser6392@protonmail.com>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
@@ -104,6 +105,7 @@
   #:use-module (gnu packages elf)
   #:use-module (gnu packages file)
   #:use-module (gnu packages flex)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gl)
@@ -5168,3 +5170,54 @@ name space for storing data in PAM.
 greetd-pam-mount is used in configuration of greetd to provide
 auto-(mounting/unmounting) of XDG_RUNTIME_DIR in the way that it will not
 interfere with default pam-mount configuration.")))
+
+(define-public libseat
+  (package
+    (name "libseat")
+    (version "0.7.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~kennylevinsen/seatd")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "10f8387yy5as547xjjhl0cna6iywdgjmw0iq2nvcs8q6vlpnik4v"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:configure-flags '("-Dlibseat-logind=elogind"
+                           "-Dserver=disabled")))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)))
+    (propagated-inputs
+     `(("elogind" ,elogind)))
+    (home-page "https://sr.ht/~kennylevinsen/seatd")
+    (synopsis "Seat management library")
+    (description
+     "This package provides a universal seat management library that
+allows applications to use whatever seat management is available.")
+    (license license:expat)))
+
+(define-public seatd
+  (package
+    (inherit libseat)
+    (name "seatd")
+    (arguments
+     `(#:configure-flags '("-Dlibseat-logind=elogind")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'remove-libs
+           (lambda* (#:key outputs #:allow-other-keys)
+             (with-directory-excursion (assoc-ref outputs "out")
+               (for-each delete-file-recursively '("lib" "include"))))))))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)
+       ("scdoc" ,scdoc)))
+    (inputs '())
+    (synopsis "Seat management daemon")
+    (description
+     "This package provides a minimal seat management daemon whose task is to
+mediate access to shared devices, such as graphics and input, for applications
+that require it.")
+    (license license:expat)))
