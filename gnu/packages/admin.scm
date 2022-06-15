@@ -45,6 +45,7 @@
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2021 muradm <mail@muradm.net>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
@@ -66,6 +67,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages admin)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system glib-or-gtk)
@@ -93,6 +95,7 @@
   #:use-module (gnu packages c)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages crates-io)
   #:use-module (gnu packages cross-base)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages cryptsetup)
@@ -5058,4 +5061,78 @@ it won't take longer to install 15 machines than it would to install just 2.")
     (home-page "https://www.udpcast.linux.lu")
     (license license:gpl2+)))
 
+(define-public greetd
+  (package
+    (name "greetd")
+    (version "0.8.0")
+    (home-page "https://git.sr.ht/~kennylevinsen/greetd")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "0x5c3jkw09kvj2grcxm899y2n6ws8p990cyp9cs0fy6lm4fzlh6v"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-nix" ,rust-nix-0.19)
+        ("rust-pam-sys" ,rust-pam-sys-0.5)
+        ("rust-rpassword" ,rust-rpassword-5)
+        ("rust-users" ,rust-users-0.11)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-getopts" ,rust-getopts-0.2)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-async-trait" ,rust-async-trait-0.1)
+        ("rust-enquote" ,rust-enquote-1))
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'package)
+         (add-after 'build 'build-man-pages
+           (lambda* (#:key inputs #:allow-other-keys)
+             (define (scdoc-cmd doc lvl)
+               (system (string-append "scdoc < "
+                                      doc "-" lvl ".scd > "
+                                      doc "." lvl)))
+             (with-directory-excursion "man"
+               (scdoc-cmd "greetd" "1")
+               (scdoc-cmd "greetd" "5")
+               (scdoc-cmd "greetd-ipc" "7")
+               (scdoc-cmd "agreety" "1"))))
+         (replace 'install
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bin (string-append out "/bin"))
+                    (sbin (string-append out "/sbin"))
+                    (share (string-append out "/share"))
+                    (man (string-append share "/man"))
+                    (man1 (string-append man "/man1"))
+                    (man5 (string-append man "/man5"))
+                    (man7 (string-append man "/man7"))
+                    (release "target/release")
+                    (greetd-bin (string-append release "/greetd"))
+                    (agreety-bin (string-append release "/agreety")))
+               (install-file greetd-bin sbin)
+               (install-file agreety-bin bin)
+               (with-directory-excursion "man"
+                 (install-file "greetd.1" man1)
+                 (install-file "greetd.5" man5)
+                 (install-file "greetd-ipc.7" man7)
+                 (install-file "agreety.1" man1))))))))
+    (native-inputs
+     `(("linux-pam" ,linux-pam)
+       ("scdoc" ,scdoc)))
+    (synopsis "minimal and flexible login manager daemon")
+    (description
+     "greetd is a minimal and flexible login manager daemon
+that makes no assumptions about what you want to launch.
 
+If you can run it from your shell in a TTY, greetd can start it.
+
+If it can be taught to speak a simple JSON-based IPC protocol,
+then it can be a greeter.")
+    (license license:gpl3+)))
