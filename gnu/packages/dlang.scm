@@ -7,6 +7,7 @@
 ;;; Copyright © 2020 Guy Fleury Iteriteka <gfleury@disroot.org>
 ;;; Copyright © 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 ( <paren@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -48,9 +49,9 @@
   #:use-module (gnu packages xorg)
   #:use-module (srfi srfi-1))
 
-(define-public rdmd
+(define-public d-tools
   (package
-    (name "rdmd")
+    (name "d-tools")
     (version "2.077.1")
     (source (origin
       (method url-fetch)
@@ -76,14 +77,12 @@
               (install-file "rdmd" bin)))))))
     (native-inputs
      (list ldc))
-    (home-page "https://github.com/D-Programming-Language/tools/")
-    (synopsis "Specialized equivalent to 'make' for the D language")
+    (home-page "https://github.com/dlang/tools")
+    (synopsis "Useful D-related tools")
     (description
-     "rdmd is a companion to the dmd compiler that simplifies the typical
-edit-compile-link-run or edit-make-run cycle to a rapid edit-run cycle.  Like
-make and other tools, rdmd uses the relative dates of the files involved to
-minimize the amount of work necessary.  Unlike make, rdmd tracks dependencies
-and freshness without requiring additional information from the user.")
+     "@code{d-tools} provides two useful tools for the D language: @code{rdmd},
+which runs D source files as scripts, and @code{dustmite}, which reduces D code
+to a minimal test case.")
     (license license:boost1.0)))
 
 ;;; The 0.17.6 version is the last release to support being bootstrapped
