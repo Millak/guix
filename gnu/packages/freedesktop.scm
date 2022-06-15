@@ -2,7 +2,7 @@
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2015, 2017 Andy Wingo <wingo@pobox.com>
-;;; Copyright © 2015-2017, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2017, 2019, 2021-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2017, 2018, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 David Hashe <david.hashe@dhashe.com>
 ;;; Copyright © 2016, 2017, 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
@@ -1048,6 +1048,9 @@ functionality not available in the Wayland core protocol.  Such protocols either
 add completely new functionality, or extend the functionality of some other
 protocol either in Wayland core, or some other protocol in wayland-protocols.")
     (home-page "https://wayland.freedesktop.org")
+    (properties
+     '((release-monitoring-url
+        . "https://wayland.freedesktop.org/releases.html")))
     (license license:expat)))
 
 (define-public waylandpp
