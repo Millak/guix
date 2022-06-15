@@ -215,7 +215,7 @@ provided, as well as a framework to add new color models and data types.")
 (define-public gegl
   (package
     (name "gegl")
-    (version "0.4.34")
+    (version "0.4.36")
     (source
      (origin
        (method url-fetch)
@@ -229,7 +229,7 @@ provided, as well as a framework to add new color models and data types.")
                                  (version-major+minor version)
                                  "/gegl-" version ".tar.xz")))
        (sha256
-        (base32 "1amazk6g9dk76rxwaqa81j87ql5vgz539n6xk88wccdllnyg0qzg"))))
+        (base32 "19ic3fv0j8ysxxw7bx7gy3l8l8l9ldrvbzxfmmc24w67vh68mmbg"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags
