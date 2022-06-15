@@ -1767,6 +1767,27 @@ from the UNECE.  Supported formats are:
 information system) support to Tryton.")
     (license license:gpl3+)))
 
+(define-public trytond-google-maps
+  (package
+    (name "trytond-google-maps")
+    (version "6.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trytond_google_maps" version))
+       (sha256
+        (base32 "1wgcnl3r1017vicbf7rkcwv2ffrhaah90hcajn3i78bywjdag6nj"))))
+    (build-system python-build-system)
+    (arguments (tryton-arguments "trytond_google_maps"))
+    (native-inputs (%standard-trytond-native-inputs))
+    (propagated-inputs (list trytond trytond-party))
+    (home-page "https://docs.tryton.org/projects/modules-google-maps")
+    (synopsis "Tryton module to link addresses to Google Maps")
+    (description "The @emph{Trytond Google Maps} Tryton module adds a new URL
+field on the party addresses.  This link open the Google Maps page on the
+default browser with the map centered on the selected address.")
+    (license license:gpl3+)))
+
 (define-public trytond-incoterm
   (package
     (name "trytond-incoterm")
