@@ -23602,6 +23602,23 @@ several convenience Python scripts, including \"classic\" hex2bin and bin2hex
 converters and more, those based on the library itself.")
     (license license:bsd-3)))
 
+(define-public python-interlap
+  (package
+    (name "python-interlap")
+    (version "0.2.7")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "interlap" version))
+              (sha256
+               (base32
+                "1jbfh00bkrf0i5psa6n75rlgmqp5389xixa9j29w8rxhah6g7r1i"))))
+    (build-system python-build-system)
+    (home-page "https://brentp.github.io/interlap")
+    (synopsis "Fast, simple interval overlap testing")
+    (description "InterLap does fast interval overlap testing with a simple Python data
+structure.")
+    (license license:expat)))
+
 (define-public python-pykwalify
   (package
     (name "python-pykwalify")
