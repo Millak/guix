@@ -3,7 +3,7 @@
 ;;; Copyright © 2015 Andy Wingo <wingo@igalia.com>
 ;;; Copyright © 2015, 2021-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Huang Ying <huang.ying.caritas@gmail.com>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
@@ -195,15 +195,15 @@ regular polkit that requires mozjs or its duktape variant."
 (define-public polkit-qt
   (package
     (name "polkit-qt")
-    (version "1-0.112.0")
+    (version "1-0.114.0")
     (source (origin
              (method url-fetch)
              (uri (string-append
-                   "mirror://kde//stable/apps/KDE4.x/admin/"
-                   "polkit-qt-" version ".tar.bz2"))
+                   "mirror://kde/stable/polkit-qt-1/"
+                   "polkit-qt-" version ".tar.xz"))
              (sha256
               (base32
-               "1ip78x20hjqvm08kxhp6gb8hf6k5n6sxyx6kk2yvvq53djzh7yv7"))))
+               "0zlhwgkqn8g0rkjc7c5n7fbhyyl4jcv0rg5zlbzrb0l88ljg5c1f"))))
     (build-system cmake-build-system)
     (inputs
      (list polkit))
