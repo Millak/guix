@@ -530,7 +530,19 @@ responsive, especially over Wi-Fi, cellular, and long-distance links.")
       #:configure-flags #~(list "--disable-bundled-libtom")
       ;; The test suite runs an instance of dropbear, which requires a
       ;; resolver ("Error resolving: Servname not supported for ai_socktype").
-      #:tests? #f))
+      #:tests? #f
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'enable-x11-forwarding
+                     (lambda _
+                       ;; The following patch was retrieved from:
+                       ;; https://github.com/mkj/dropbear/commit/
+                       ;; 0292aacdf0aa57d03f2a3ab7e53cf650e6f29389.
+                       (substitute* "svr-x11fwd.c"
+                         (("DROPBEAR_CHANNEL_PRIO_INTERACTIVE")
+                          "DROPBEAR_PRIO_LOWDELAY"))
+                       (substitute* "default_options.h"
+                         (("#define DROPBEAR_X11FWD 0")
+                          "#define DROPBEAR_X11FWD 1")))))))
     (inputs (list libtomcrypt libtommath zlib))
     (synopsis "Small SSH server and client")
     (description "Dropbear is a relatively small SSH server and
