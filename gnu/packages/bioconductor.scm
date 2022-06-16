@@ -2301,6 +2301,45 @@ paired or unpaired study designs.")
     ;; package's LICENSE is specified as GPL-3.
     (license (list license:agpl3+ license:gpl2+ license:gpl3))))
 
+(define-public r-alphabeta
+  (package
+    (name "r-alphabeta")
+    (version "1.10.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "AlphaBeta" version))
+              (sha256
+               (base32
+                "1ikdrigma02gnl6ggrc89bjsiqmd7knpb9kw7nqyrdnv3qjd9iag"))))
+    (properties `((upstream-name . "AlphaBeta")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biocparallel
+           r-data-table
+           r-dplyr
+           r-expm
+           r-ggplot2
+           r-gtools
+           r-igraph
+           r-optimx
+           r-plotly
+           r-stringr))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/AlphaBeta")
+    (synopsis "Estimate epimutation rates and spectra from DNA methylations in plants")
+    (description
+     "The package @code{AlphaBeta} is a computational method for estimating
+epimutation rates and spectra from high-throughput DNA methylation data in
+plants.  The method has been specifically designed to:
+
+@itemize
+@item analyze @emph{germline} epimutations in the context of
+  multi-generational mutation accumulation lines;
+@item analyze @emph{somatic} epimutations in the context of plant development
+  and aging.
+@end itemize")
+    (license license:gpl3)))
+
 (define-public r-alpine
   (package
     (name "r-alpine")
