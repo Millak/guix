@@ -47,6 +47,7 @@
 ;;; Copyright © 2022 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2022 Justin Veilleux <terramorpha@cock.li>
 ;;; Copyright © 2022 Thiago Jung Bauermann <bauermann@kolabnow.com>
+;;; Copyright © 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1550,7 +1551,7 @@ pairs have previously synchronized.")
 (define-public getmail6
   (package
     (name "getmail6")
-    (version "6.18.6")
+    (version "6.18.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1559,7 +1560,7 @@ pairs have previously synchronized.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "08a5yw6ll1kmd1ardj8rzhsw4wl48zzdc87g5lh4p5snv8w2m4ja"))))
+                "1ch5hagkpybmkgg2wbb2mids3nbmjqgdqjhczzz7pvj4hx2m8fdb"))))
     (build-system python-build-system)
     (arguments (list #:tests? #f))      ;tests require docker
     (home-page "https://github.com/getmail6/getmail6")
@@ -1568,7 +1569,7 @@ pairs have previously synchronized.")
      "A flexible, extensible mail retrieval system with support for POP3,
 IMAP4, SSL variants of both, maildirs, mboxrd files, external MDAs, arbitrary
 message filtering, single-user and domain-mailboxes, and many other useful
-features.  This is a fork derived from getmali 5.14, aimed at Python 3
+features.  This is a fork derived from getmail 5.14, aimed at Python 3
 compatibility.")
     (license license:gpl2+)))           ;see docs/COPYING
 
