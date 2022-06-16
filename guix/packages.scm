@@ -414,7 +414,7 @@ from forcing GEXP-PROMISE."
 (define %supported-systems
   ;; This is the list of system types that are supported.  By default, we
   ;; expect all packages to build successfully here.
-  (append %32bit-supported-systems %64bit-supported-systems))
+  (append %64bit-supported-systems %32bit-supported-systems))
 
 (define %hurd-systems
   ;; The GNU/Hurd systems for which support is being developed.
