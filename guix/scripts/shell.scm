@@ -256,6 +256,7 @@ Return the modified OPTS."
       ((('package . _) . _) #t)
       ((('load . _) . _) #t)
       ((('manifest . _) . _) #t)
+      ((('profile . _) . _) #t)
       ((('expression . _) . _) #t)
       ((_ . rest) (options-contain-payload? rest))))
 
