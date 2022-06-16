@@ -8,6 +8,7 @@
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020, 2021, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -366,131 +367,125 @@ coreboot.")
                    ;; cpl with a linking exception.
                    license:cpl1.0))))
 
-;; OVMF is part of the edk2 source tree.
-(define edk2-commit "13a50a6fe1dcfa6600c38456ee24e0f9ecf51b5f")
-(define edk2-version (git-version "20170116" "1" edk2-commit))
-(define edk2-origin
-  (origin
-    (method git-fetch)
-    (uri (git-reference
-          (url "https://github.com/tianocore/edk2")
-          (commit edk2-commit)))
-    (file-name (git-file-name "edk2" edk2-version))
-    (sha256
-     (base32
-      "1gy2332kdqk8bjzpcsripx10896rbvgl0ic7r344kmpiwdgm948b"))))
-
 (define-public ovmf
-  (package
-    (name "ovmf")
-    (version edk2-version)
-    (source edk2-origin)
-    (build-system gnu-build-system)
-    (native-inputs
-     `(("acpica" ,acpica)
-       ("gcc@5" ,gcc-5)
-       ("nasm" ,nasm)
-       ("python-2" ,python-2)
-       ("util-linux" ,util-linux "lib")))
-    (arguments
-     `(#:tests? #f ; No check target.
-       #:phases
-       (modify-phases %standard-phases
-         ;; Hide the default GCC from CPLUS_INCLUDE_PATH to prevent it from
-         ;; shadowing the version of GCC provided in native-inputs.
-         (add-after 'set-paths 'hide-gcc7
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((gcc (assoc-ref inputs "gcc")))
-               (setenv "CPLUS_INCLUDE_PATH"
-                       (string-join
-                        (delete (string-append gcc "/include/c++")
-                                (string-split (getenv "CPLUS_INCLUDE_PATH")
-                                              #\:))
-                        ":"))
-               #t)))
-         (replace 'configure
-           (lambda _
-             (let* ((cwd (getcwd))
-                    (tools (string-append cwd "/BaseTools"))
-                    (bin (string-append tools "/BinWrappers/PosixLike")))
-               (setenv "WORKSPACE" cwd)
-               (setenv "EDK_TOOLS_PATH" tools)
-               (setenv "PATH" (string-append (getenv "PATH") ":" bin))
-               ; FIXME: The below script errors out. When using 'invoke' instead
-               ; of 'system*' this causes the build to fail.
-               (system* "bash" "edksetup.sh")
-               (substitute* "Conf/target.txt"
-                 (("^TARGET[ ]*=.*$") "TARGET = RELEASE\n")
-                 (("^MAX_CONCURRENT_THREAD_NUMBER[ ]*=.*$")
-                  (format #f "MAX_CONCURRENT_THREAD_NUMBER = ~a~%"
-                          (number->string (parallel-job-count)))))
-               ;; Build build support.
-               (setenv "BUILD_CC" "gcc")
-               (invoke "make" "-C" tools)
-               #t)))
-         (replace 'build
-           (lambda _
-             (invoke "build" "-a" "IA32" "-t" "GCC49"
-                     "-p" "OvmfPkg/OvmfPkgIa32.dsc")))
-         ,@(if (string=? "x86_64-linux" (%current-system))
-             '((add-after 'build 'build-x64
-                (lambda _
-                  (invoke "build" "-a" "X64" "-t" "GCC49"
-                          "-p" "OvmfPkg/OvmfPkgX64.dsc"))))
-             '())
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (fmw (string-append out "/share/firmware")))
-               (mkdir-p fmw)
-               (copy-file "Build/OvmfIa32/RELEASE_GCC49/FV/OVMF.fd"
-                          (string-append fmw "/ovmf_ia32.bin"))
-               ,@(if (string=? "x86_64-linux" (%current-system))
-                   '((copy-file "Build/OvmfX64/RELEASE_GCC49/FV/OVMF.fd"
-                                (string-append fmw "/ovmf_x64.bin")))
-                   '()))
-             #t)))))
-    (supported-systems '("x86_64-linux" "i686-linux"))
-    (home-page "https://www.tianocore.org")
-    (synopsis "UEFI firmware for QEMU")
-    (description "OVMF is an EDK II based project to enable UEFI support for
+  (let ((commit "13a50a6fe1dcfa6600c38456ee24e0f9ecf51b5f")
+        (revision "1"))
+    (package
+      (name "ovmf")
+      (version (git-version "20170116" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      ;; OVMF is part of the edk2 source tree.
+                      (url "https://github.com/tianocore/edk2")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1gy2332kdqk8bjzpcsripx10896rbvgl0ic7r344kmpiwdgm948b"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ; No check target.
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; Hide the default GCC from CPLUS_INCLUDE_PATH to prevent it from
+            ;; shadowing the version of GCC provided in native-inputs.
+            (add-after 'set-paths 'hide-implicit-gcc
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((gcc (assoc-ref inputs "gcc")))
+                  (setenv "CPLUS_INCLUDE_PATH"
+                          (string-join
+                           (delete (string-append gcc "/include/c++")
+                                   (string-split (getenv "CPLUS_INCLUDE_PATH")
+                                                 #\:))
+                           ":")))))
+            (add-after 'unpack 'patch-source
+              (lambda _
+                (substitute* "edksetup.sh"
+                  (("^return \\$\\?")
+                   "exit $?"))))
+            (replace 'configure
+              (lambda _
+                (let* ((cwd (getcwd))
+                       (tools (string-append cwd "/BaseTools"))
+                       (bin (string-append tools "/BinWrappers/PosixLike")))
+                  (setenv "WORKSPACE" cwd)
+                  (setenv "EDK_TOOLS_PATH" tools)
+                  (setenv "PATH" (string-append (getenv "PATH") ":" bin))
+                  (invoke "bash" "edksetup.sh")
+                  (substitute* "Conf/target.txt"
+                    (("^TARGET[ ]*=.*$") "TARGET = RELEASE\n")
+                    (("^MAX_CONCURRENT_THREAD_NUMBER[ ]*=.*$")
+                     (format #f "MAX_CONCURRENT_THREAD_NUMBER = ~a~%"
+                             (number->string (parallel-job-count)))))
+                  ;; Build build support.
+                  (setenv "BUILD_CC" "gcc")
+                  (invoke "make" "-C" tools))))
+            (replace 'build
+              (lambda _
+                (invoke "build" "-a" "IA32" "-t" "GCC49"
+                        "-p" "OvmfPkg/OvmfPkgIa32.dsc")))
+            #$@(if (string=? "x86_64-linux" (%current-system))
+                   #~((add-after 'build 'build-x64
+                        (lambda _
+                          (invoke "build" "-a" "X64" "-t" "GCC49"
+                                  "-p" "OvmfPkg/OvmfPkgX64.dsc"))))
+                   #~())
+            (replace 'install
+              (lambda _
+                (let ((fmw (string-append #$output "/share/firmware")))
+                  (mkdir-p fmw)
+                  (copy-file "Build/OvmfIa32/RELEASE_GCC49/FV/OVMF.fd"
+                             (string-append fmw "/ovmf_ia32.bin"))
+                  #$@(if (string=? "x86_64-linux" (%current-system))
+                         '((copy-file "Build/OvmfX64/RELEASE_GCC49/FV/OVMF.fd"
+                                      (string-append fmw "/ovmf_x64.bin")))
+                         '())))))))
+      (native-inputs
+       `(("acpica" ,acpica)
+         ("gcc@5" ,gcc-5)
+         ("nasm" ,nasm)
+         ("python-2" ,python-2)
+         ("util-linux" ,util-linux "lib")))
+      (supported-systems '("x86_64-linux" "i686-linux"))
+      (home-page "https://www.tianocore.org")
+      (synopsis "UEFI firmware for QEMU")
+      (description "OVMF is an EDK II based project to enable UEFI support for
 Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
-    (license (list license:expat
-                   license:bsd-2 license:bsd-3 license:bsd-4))))
+      (license (list license:expat
+                     license:bsd-2 license:bsd-3 license:bsd-4)))))
 
 (define-public ovmf-aarch64
   (package
     (inherit ovmf)
     (name "ovmf-aarch64")
     (native-inputs
-     `(,@(package-native-inputs ovmf)
-       ,@(if (not (string-prefix? "aarch64" (%current-system)))
-           `(("cross-gcc" ,(cross-gcc "aarch64-linux-gnu"))
-             ("cross-binutils" ,(cross-binutils "aarch64-linux-gnu")))
-           '())))
+     (append (package-native-inputs ovmf)
+             (if (not (string-prefix? "aarch64" (%current-system)))
+                 `(("cross-gcc" ,(cross-gcc "aarch64-linux-gnu"))
+                   ("cross-binutils" ,(cross-binutils "aarch64-linux-gnu")))
+                 '())))
     (arguments
      (substitute-keyword-arguments (package-arguments ovmf)
        ((#:phases phases)
-        `(modify-phases ,phases
-           (add-before 'configure 'set-env
-             (lambda _
-               ,@(if (not (string-prefix? "aarch64" (%current-system)))
-                     `((setenv "GCC49_AARCH64_PREFIX" "aarch64-linux-gnu-"))
-                     '())
-               #t))
-           (replace 'build
-             (lambda _
-               (invoke "build" "-a" "AARCH64" "-t" "GCC49"
-                       "-p" "ArmVirtPkg/ArmVirtQemu.dsc")))
-           (delete 'build-x64)
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (fmw (string-append out "/share/firmware")))
-                 (mkdir-p fmw)
-                 (copy-file "Build/ArmVirtQemu-AARCH64/RELEASE_GCC49/FV/QEMU_EFI.fd"
-                            (string-append fmw "/ovmf_aarch64.bin"))
-                 #t)))))))
+        #~(modify-phases #$phases
+            (add-before 'configure 'set-env
+              (lambda _
+                #$@(if (not (string-prefix? "aarch64" (%current-system)))
+                       #~((setenv "GCC49_AARCH64_PREFIX" "aarch64-linux-gnu-"))
+                       #~())))
+            (replace 'build
+              (lambda _
+                (invoke "build" "-a" "AARCH64" "-t" "GCC49"
+                        "-p" "ArmVirtPkg/ArmVirtQemu.dsc")))
+            (delete 'build-x64)
+            (replace 'install
+              (lambda _
+                (let ((fmw (string-append #$output "/share/firmware")))
+                  (mkdir-p fmw)
+                  (copy-file "Build/ArmVirtQemu-AARCH64/RELEASE_GCC49/FV/QEMU_EFI.fd"
+                             (string-append fmw "/ovmf_aarch64.bin")))))))))
     (supported-systems %supported-systems)))
 
 (define-public ovmf-arm
@@ -498,34 +493,31 @@ Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
     (inherit ovmf)
     (name "ovmf-arm")
     (native-inputs
-     `(,@(package-native-inputs ovmf)
-       ,@(if (not (string-prefix? "armhf" (%current-system)))
-           `(("cross-gcc" ,(cross-gcc "arm-linux-gnueabihf"))
-             ("cross-binutils" ,(cross-binutils "arm-linux-gnueabihf")))
-           '())))
+     (append (package-native-inputs ovmf)
+             (if (not (string-prefix? "armhf" (%current-system)))
+                 `(("cross-gcc" ,(cross-gcc "arm-linux-gnueabihf"))
+                   ("cross-binutils" ,(cross-binutils "arm-linux-gnueabihf")))
+                 '())))
     (arguments
      (substitute-keyword-arguments (package-arguments ovmf)
        ((#:phases phases)
-        `(modify-phases ,phases
-           (add-before 'configure 'set-env
-             (lambda _
-               ,@(if (not (string-prefix? "armhf" (%current-system)))
-                     `((setenv "GCC49_ARM_PREFIX" "arm-linux-gnueabihf-"))
-                     '())
-               #t))
-           (replace 'build
-             (lambda _
-               (invoke "build" "-a" "ARM" "-t" "GCC49"
-                       "-p" "ArmVirtPkg/ArmVirtQemu.dsc")))
-           (delete 'build-x64)
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (fmw (string-append out "/share/firmware")))
-                 (mkdir-p fmw)
-                 (copy-file "Build/ArmVirtQemu-ARM/RELEASE_GCC49/FV/QEMU_EFI.fd"
-                            (string-append fmw "/ovmf_arm.bin"))
-                 #t)))))))
+        #~(modify-phases #$phases
+            (add-before 'configure 'set-env
+              (lambda _
+                #$@(if (not (string-prefix? "armhf" (%current-system)))
+                       #~((setenv "GCC49_ARM_PREFIX" "arm-linux-gnueabihf-"))
+                       #~())))
+            (replace 'build
+              (lambda _
+                (invoke "build" "-a" "ARM" "-t" "GCC49"
+                        "-p" "ArmVirtPkg/ArmVirtQemu.dsc")))
+            (delete 'build-x64)
+            (replace 'install
+              (lambda _
+                (let ((fmw (string-append #$output "/share/firmware")))
+                  (mkdir-p fmw)
+                  (copy-file "Build/ArmVirtQemu-ARM/RELEASE_GCC49/FV/QEMU_EFI.fd"
+                             (string-append fmw "/ovmf_arm.bin")))))))))
     (supported-systems %supported-systems)))
 
 (define* (make-arm-trusted-firmware platform #:optional (arch "aarch64"))
