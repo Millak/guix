@@ -466,6 +466,8 @@ concatenates MANIFESTS, a list of expressions."
                            (filter-map (match-lambda
                                          (('manifest . file)
                                           (load-manifest file))
+                                         (('profile . file)
+                                          (profile-manifest file))
                                          (_ #f))
                                        opts)))))
     (display (G_ "\
