@@ -1070,6 +1070,38 @@ and smoothing, and Bayesian analysis of Normal linear State Space models, also
 known as Dynamic Linear Models.")
     (license license:gpl2+)))
 
+(define-public r-zcompositions
+  (package
+    (name "r-zcompositions")
+    (version "1.4.0-1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "zCompositions" version))
+              (sha256
+               (base32
+                "1rrhja9iaq123r2gqw1bzrn1ri0s3z4wzq8p0sfcr1yb6pv13vik"))))
+    (properties `((upstream-name . "zCompositions")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-mass
+           r-nada
+           r-truncnorm))
+    (home-page "https://github.com/Japal/zCompositions")
+    (synopsis
+     "Treatment of zeros, left-censored and missing values in compositional data")
+    (description
+     "This is an R package for the imputation of left-censored data
+under a compositional approach.  The implemented methods consider
+aspects of relevance for a compositional approach such as scale
+invariance, subcompositional coherence or preserving the multivariate
+relative structure of the data.  Based on solid statistical
+frameworks, it comprises the ability to deal with single and varying
+censoring thresholds, consistent treatment of closed and non-closed
+data, exploratory tools, multiple imputation, @dfn{Markov Chain Monte
+Carlo} (MCMC), robust and non-parametric alternatives, and recent
+proposals for count data.")
+    (license license:gpl2+)))
+
 (define-public r-zoo
   (package
     (name "r-zoo")
