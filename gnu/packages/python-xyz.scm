@@ -22403,14 +22403,14 @@ data.")
 (define-public python-locket
   (package
     (name "python-locket")
-    (version "0.2.0")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "locket" version))
        (sha256
         (base32
-         "1d4z2zngrpqkrfhnd4yhysh66kjn4mblys2l06sh5dix2p0n7vhz"))))
+         "0cm6290zm3ba62n2x2piy3s8d41hrmffda2nw18ggfwb582lq3aw"))))
     (build-system python-build-system)
     (home-page "https://github.com/mwilliamson/locket.py")
     (synopsis "File-based locks for Python")
