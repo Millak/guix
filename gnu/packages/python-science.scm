@@ -2600,6 +2600,32 @@ networking protocol.  It allows the easy creation of DICOM
 Providers}.")
     (license license:expat)))
 
+(define-public python-pynrrd
+  (package
+    (name "python-pynrrd")
+    (version "0.4.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mhe/pynrrd")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "12vlgx2k7jxbq9r9maiix4dbk8alixa0il420bqwhzln08s3chz1"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (delete 'ensure-no-mtimes-pre-1980))))
+    (propagated-inputs (list python-numpy))
+    (home-page "https://github.com/mhe/pynrrd")
+    (synopsis "Python module for reading and writing NRRD files")
+    (description
+     "@code{pynrrd} is a Python module for reading and writing NRRD
+files into and from numpy arrays.")
+    (license license:expat)))
+
 (define-public python-libneuroml
   (package
     (name "python-libneuroml")
