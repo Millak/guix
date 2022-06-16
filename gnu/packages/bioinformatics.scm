@@ -111,6 +111,7 @@
   #:use-module (gnu packages jupyter)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages llvm)
   #:use-module (gnu packages logging)
   #:use-module (gnu packages lsof)
   #:use-module (gnu packages machine-learning)
@@ -13379,6 +13380,49 @@ other data types e.g.: regulons (SCENIC), clusters from Seurat, trajectory
 information...  The package can also be used to extract data from @code{.loom}
 files.")
       (license license:expat))))
+
+(define-public python-ctxcore
+  (package
+    (name "python-ctxcore")
+    (version "0.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aertslab/ctxcore")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "16nlj7z8pirgjad7vlgm7226b3hpw4a7n967vyfg26dsf5n8k70d"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'pretend-version
+            ;; The version string is usually derived via setuptools-scm, but
+            ;; it doesn't work without the .git directory.
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+    (propagated-inputs
+     (list python-cytoolz
+           python-numba
+           python-frozendict
+           python-numpy
+           python-pandas
+           python-pyyaml
+           python-pyarrow-0.16
+           python-tqdm))
+    (native-inputs
+     (list python-pytest
+           python-setuptools-scm))
+    (home-page "https://github.com/aertslab/ctxcore")
+    (synopsis "Core functions for pycisTarget and the SCENIC tool suite")
+    (description
+     "ctxcore is part of the SCENIC suite of tools.  It provides core functions for
+pycisTarget and SCENIC.")
+    (license license:gpl3+)))
 
 (define-public vbz-compression
   (package
