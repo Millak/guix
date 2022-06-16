@@ -2301,6 +2301,40 @@ paired or unpaired study designs.")
     ;; package's LICENSE is specified as GPL-3.
     (license (list license:agpl3+ license:gpl2+ license:gpl3))))
 
+(define-public r-alevinqc
+  (package
+    (name "r-alevinqc")
+    (version "1.12.1")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "alevinQC" version))
+              (sha256
+               (base32
+                "0g75qnz7ah0widdjn99lhvnacz38vgl9j86n65wyswsf413hz3bb"))))
+    (properties `((upstream-name . "alevinQC")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-cowplot
+           r-dplyr
+           r-dt
+           r-ggally
+           r-ggplot2
+           r-rcpp
+           r-rjson
+           r-rlang
+           r-rmarkdown
+           r-shiny
+           r-shinydashboard
+           r-tximport))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/csoneson/alevinQC")
+    (synopsis "Quality control reports for @code{Alevin} output")
+    (description
+     "The package @code{r-alevinqc} generates quality control reports
+summarizing the output from an @code{alevin} run.  The reports can be
+generated as HTML or PDF files, or as Shiny applications.")
+    (license license:expat)))
+
 (define-public r-alphabeta
   (package
     (name "r-alphabeta")
