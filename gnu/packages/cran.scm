@@ -29223,6 +29223,27 @@ addition, objects which include the k-d tree search structure can be returned
 to speed up repeated queries of the same set of target points.")
     (license license:bsd-3)))
 
+(define-public r-nada
+  (package
+    (name "r-nada")
+    (version "1.6-1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "NADA" version))
+              (sha256
+               (base32
+                "0jp4mqr77cx7q5lff84s6wb0dwjy9mi0jyhbjc5fsx50bdczc3v7"))))
+    (properties `((upstream-name . "NADA")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-survival))
+    (home-page "https://cran.r-project.org/package=NADA")
+    (synopsis "Nondetects and data analysis for environmental data")
+    (description
+     "This package contains methods described by Dennis Helsel in his
+book @emph{Nondetects and Data Analysis: Statistics for Censored
+Environmental Data}.")
+    (license license:gpl2+)))
+
 (define-public r-naturalsort
   (package
    (name "r-naturalsort")
