@@ -2276,6 +2276,47 @@ paired or unpaired study designs.")
     ;; package's LICENSE is specified as GPL-3.
     (license (list license:agpl3+ license:gpl2+ license:gpl3))))
 
+(define-public r-alpine
+  (package
+    (name "r-alpine")
+    (version "1.22.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "alpine" version))
+              (sha256
+               (base32
+                "1nl1hxwakh5m9rqm3ksn2jzknsj9xnwl51bmc30knknm4q35wdv9"))))
+    (properties `((upstream-name . "alpine")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biostrings
+           r-genomeinfodb
+           r-genomicalignments
+           r-genomicfeatures
+           r-genomicranges
+           r-graph
+           r-iranges
+           r-rbgl
+           r-rsamtools
+           r-s4vectors
+           r-speedglm
+           r-stringr
+           r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/alpine")
+    (synopsis "Modeling and correcting fragment sequence bias")
+    (description
+     "The package @code{alpine} helps to model bias parameters and then using
+those parameters to estimate RNA-seq transcript abundance.  @code{Alpine} is a
+package for estimating and visualizing many forms of sample-specific biases that
+can arise in RNA-seq, including fragment length distribution, positional bias on
+the transcript, read start bias (random hexamer priming), and fragment GC-content
+(amplification).  It also offers bias-corrected estimates of transcript
+abundance in @dfn{FPKM}(Fragments Per Kilobase of transcript per Million
+mapped reads).  It is currently designed for un-stranded paired-end RNA-seq
+data.")
+    (license license:gpl2+)))
+
 (define-public r-aneufinder
   (package
     (name "r-aneufinder")
