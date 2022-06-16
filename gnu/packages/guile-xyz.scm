@@ -5061,3 +5061,45 @@ in two different guises.")
 specifying test cases that emit output that adheres to the Test Anything
 Protocol (TAP).  It comes with an experimental harness (tap-harness).")
     (license license:bsd-2)))
+
+(define-public guile-termios
+  (package
+    (name "guile-termios")
+    (version "0.6.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ft/guile-termios")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "020p3c84z09wyyb6gfzj2x6q2rfmvas7c92fcm2hhg8z1q60sqkg"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'configure
+                 (lambda _
+                   (substitute* "Makefile"
+                     (("CC = cc") (string-append "CC="
+                                                 #$(cc-for-target)))
+                     (("PREFIX = /usr/local") (string-append "PREFIX="
+                                                             #$output)))))
+               (replace 'build
+                 (lambda _
+                   (invoke "make")
+                   (invoke "make" "-C" "doc" "man")
+                   (invoke "make" "install")))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "make" "test")))))))
+    (native-inputs (list guile-3.0 guile-tap pandoc perl perl-io-tty))
+    (home-page "https://github.com/ft/guile-termios")
+    (synopsis "POSIX termios interface for GNU Guile")
+    (description
+     "To query and change settings of serial devices on POSIX systems, the
+termios API is used.  GNU Guile doesn't have an interface for that built in.
+This module implements this interface by use of Guile's dynamic FFI.")
+    (license license:bsd-2)))
