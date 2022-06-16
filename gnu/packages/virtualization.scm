@@ -1221,7 +1221,7 @@ It started as a side project of LXC but can be used by any run-time.")
                             '()
                             '("bash" "acl" "rsync" "tar" "xz" "btrfs-progs"
                               "gzip" "dnsmasq" "squashfs-tools" "iproute2"
-                              "criu" "iptables"))))
+                              "criu" "iptables" "attr"))))
                  ;; Remove unwanted binaries.
                  (for-each (lambda (prog)
                              (delete-file (string-append bin-dir prog)))
@@ -1247,6 +1247,7 @@ It started as a side project of LXC but can be used by any run-time.")
        ("libcap" ,libcap)
        ("lxc" ,lxc)
        ;; Run-time dependencies.
+       ("attr" ,attr)
        ("bash" ,bash-minimal)
        ("rsync" ,rsync)
        ("tar" ,tar)
