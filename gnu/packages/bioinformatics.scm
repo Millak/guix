@@ -13424,6 +13424,39 @@ files.")
 pycisTarget and SCENIC.")
     (license license:gpl3+)))
 
+(define-public python-arboreto
+  (package
+    (name "python-arboreto")
+    (version "0.1.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/aertslab/arboreto")
+                    (commit "2f475dca08f47a60acc2beb8dd897e77b7495ca4")))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0l0im8ay7l2d24f7vaha454vsaha9s36bfqhbijg3b8ir8apsd7l"))))
+    (build-system python-build-system)
+    ;; Lots of tests fail because python-distributed fails to start the
+    ;; "Nanny" process.
+    (arguments '(#:tests? #false))
+    (propagated-inputs
+     (list python-bokeh
+           python-dask
+           python-distributed
+           python-numpy
+           python-pandas
+           python-scikit-learn
+           python-scipy
+           python-tornado-6))
+    (home-page "https://github.com/aertslab/arboreto")
+    (synopsis "Gene regulatory network inference using tree-based ensemble regressors")
+    (description
+     "This package implements scalable gene regulatory network inference using
+tree-based ensemble regressors.")
+    (license license:bsd-3)))
+
 (define-public vbz-compression
   (package
     (name "vbz-compression")
