@@ -5524,7 +5524,9 @@ set.")
                                      texlive-capt-of
                                      texlive-caption
                                      texlive-cm
+                                     texlive-courier
                                      texlive-etoolbox
+                                     texlive-helvetic
                                      texlive-jknappen
                                      texlive-sectsty
                                      texlive-tex-gyre
