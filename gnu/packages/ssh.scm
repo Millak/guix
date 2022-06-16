@@ -15,7 +15,7 @@
 ;;; Copyright © 2019, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
-;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -508,7 +508,7 @@ responsive, especially over Wi-Fi, cellular, and long-distance links.")
 (define-public dropbear
   (package
     (name "dropbear")
-    (version "2020.81")
+    (version "2022.82")
     (source
      (origin
        (method url-fetch)
@@ -516,21 +516,22 @@ responsive, especially over Wi-Fi, cellular, and long-distance links.")
              "https://matt.ucc.asn.au/dropbear/releases/"
              "dropbear-" version ".tar.bz2"))
        (sha256
-        (base32 "0fy5ma4cfc2pk25mcccc67b2mf1rnb2c06ilb7ddnxbpnc85s8s8"))
+        (base32 "1lbmmmm8f56p24c6jq74rg2kw6kl3w4i5h10vnxjigq2phmqs0rs"))
        (modules '((guix build utils)))
        (snippet
         '(begin
            (delete-file-recursively "libtommath")
            (delete-file-recursively "libtomcrypt")
            (substitute* "configure"
-             (("-ltomcrypt") "-ltomcrypt -ltommath"))
-           #t))))
+             (("-ltomcrypt") "-ltomcrypt -ltommath"))))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags '("--disable-bundled-libtom")
-       #:tests? #f))    ; there is no "make check" or anything similar
-    (inputs
-     (list libtomcrypt libtommath zlib))
+     (list
+      #:configure-flags #~(list "--disable-bundled-libtom")
+      ;; The test suite runs an instance of dropbear, which requires a
+      ;; resolver ("Error resolving: Servname not supported for ai_socktype").
+      #:tests? #f))
+    (inputs (list libtomcrypt libtommath zlib))
     (synopsis "Small SSH server and client")
     (description "Dropbear is a relatively small SSH server and
 client.  It runs on a variety of POSIX-based platforms.  Dropbear is
