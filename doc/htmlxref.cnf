@@ -1,7 +1,7 @@
 # htmlxref.cnf - reference file for free Texinfo manuals on the web.
 # Modified by Ludovic Courtès <ludo@gnu.org> for the GNU Guix manual.
 
-htmlxrefversion=2022-04-08.17; # UTC
+htmlxrefversion=2022-06-16.15; # UTC
 
 # Copyright 2010-2020, 2022 Free Software Foundation, Inc.
 # 
@@ -291,8 +291,6 @@ gdbm		chapter	${GDBM}/html_chapter/
 gdbm		section ${GDBM}/html_section/
 gdbm		node	${GDBM}/html_node/
 
-# XXX: These are actually pages created by texi2html, so no quite following
-# the expected naming scheme.
 geiser		chapter	http://geiser.nongnu.org/
 
 gettext		mono	${GS}/gettext/manual/gettext.html
