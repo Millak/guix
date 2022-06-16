@@ -2235,6 +2235,47 @@ of Medical Research.  The goal is to provide a standard library for quantitative
 analysis, modelling, and visualization of spike-in controls.")
     (license license:bsd-3)))
 
+(define-public r-aldex2
+  (package
+    (name "r-aldex2")
+    (version "1.28.1")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "ALDEx2" version))
+              (sha256
+               (base32
+                "0xppx52sllbz4pli174422i4kkf37v0yl844088nbj3j9r6pfbj9"))))
+    (properties `((upstream-name . "ALDEx2")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biocparallel
+           r-genomicranges
+           r-iranges
+           r-multtest
+           r-rfast
+           r-s4vectors
+           r-summarizedexperiment
+           r-zcompositions))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/ggloor/ALDEx_bioc")
+    (synopsis "Analysis of differential abundance taking sample variation into account")
+    (description
+     "This package provides a differential abundance analysis for the
+comparison of two or more conditions.  Useful for analyzing data from standard
+RNA-seq or meta-RNA-seq assays as well as selected and unselected values from
+in-vitro sequence selections.  Uses a Dirichlet-multinomial model to infer
+abundance from counts, optimized for three or more experimental replicates.
+The method infers biological and sampling variation to calculate the expected
+false discovery rate, given the variation, based on a Wilcoxon Rank Sum test
+and Welch's t-test, a Kruskal-Wallis test, a generalized linear model, or a
+correlation test.  All tests report p-values and Benjamini-Hochberg corrected
+p-values.  ALDEx2 also calculates expected standardized effect sizes for
+paired or unpaired study designs.")
+    ;; The code for the function "rdirichlet" is from the R package
+    ;; "mc2d_0.1-14.tar.gz", which is denoted as GPL>=2, and where the
+    ;; package's LICENSE is specified as GPL-3.
+    (license (list license:agpl3+ license:gpl2+ license:gpl3))))
+
 (define-public r-aneufinder
   (package
     (name "r-aneufinder")
