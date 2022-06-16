@@ -22191,6 +22191,34 @@ which supports the spawning of processes using the API of the standard
 library's @code{threading} module.")
     (license license:bsd-3)))
 
+(define-public python-multiprocessing-on-dill
+  (package
+    (name "python-multiprocessing-on-dill")
+    (version "3.5.0a4")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "multiprocessing_on_dill" version))
+              (sha256
+               (base32
+                "1rs5a3hx1fcpfsxxkl5kx6g06c82wqjqgdqyny5l1ggl1wq0rmfn"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv")))))))
+    (propagated-inputs (list python-dill))
+    (native-inputs (list python-check-manifest python-pytest python-wheel))
+    (home-page "https://github.com/sixty-north/multiprocessing_on_dill")
+    (synopsis "Multiprocessing using dill instead of pickle")
+    (description
+     "This package provides a friendly fork of multiprocessing which uses dill
+instead of pickle.")
+    (license license:psfl)))
+
 (define-public python-toolrack
   (package
     (name "python-toolrack")
