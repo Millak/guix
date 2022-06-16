@@ -197,6 +197,7 @@
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages node)
   #:use-module (gnu packages ninja)
   #:use-module (gnu packages openstack)
   #:use-module (gnu packages pcre)
@@ -14385,6 +14386,97 @@ optimization methods of @code{scipy.optimize}.  Initially inspired by (and
 named for) extending the Levenberg-Marquardt method from
 @code{scipy.optimize.leastsq}, lmfit now provides a number of useful
 enhancements to optimization and data fitting problems.")
+    (license license:bsd-3)))
+
+(define-public python-bokeh
+  (package
+    (name "python-bokeh")
+    (version "2.4.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "bokeh" version))
+              (sha256
+               (base32
+                "00sbhya9vfdv3yi07j6mxwx1x1h9497nhd3smdjrcdxgc48q0czg"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               ;; These require selenium.
+               (delete-file "tests/unit/bokeh/io/test_export.py")
+               (delete-file "tests/unit/bokeh/io/test_webdriver.py")
+               (delete-file "tests/unit/bokeh/embed/test_standalone.py")
+
+               ;; Doesn't find ManagedServerLoop fixture
+               (delete-file "tests/unit/bokeh/test_client_server.py")
+
+               ;; This fails because of the Guix wrapper around pytest
+               (delete-file "tests/unit/bokeh/io/test_util__io.py")
+
+               ;; Fixture ipython not found.
+               (delete-file "tests/unit/bokeh/application/handlers/test_notebook__handlers.py")
+               (delete-file "tests/unit/bokeh/command/subcommands/test_info.py")
+
+               ;; pd fixture not found.
+               (delete-file "tests/unit/bokeh/models/test_mappers.py")
+               (delete-file "tests/unit/bokeh/models/util/test_structure.py")
+               (delete-file "tests/unit/bokeh/plotting/test__plot.py")
+               (delete-file "tests/unit/bokeh/plotting/test__graph.py")
+               (delete-file "tests/unit/bokeh/plotting/test_figure.py")
+               (delete-file "tests/unit/bokeh/core/test_json_encoder.py")
+               (delete-file "tests/unit/bokeh/core/property/test_bases.py")
+               (delete-file "tests/unit/bokeh/core/property/test_container.py")
+               (delete-file "tests/unit/bokeh/core/property/test_dataspec.py")
+               (delete-file "tests/unit/bokeh/core/property/test_datetime.py")
+               (delete-file "tests/unit/bokeh/core/property/test_pandas.py")
+
+               ;; nx fixture not found.
+               (delete-file "tests/unit/bokeh/plotting/test_graph.py")
+               (delete-file "tests/unit/bokeh/models/test_graphs.py")
+               (delete-file "tests/unit/bokeh/io/test_showing.py")
+               (delete-file "tests/unit/bokeh/document/test_events__document.py")
+
+               ;; These tests need external sample data
+               (delete-file-recursively "tests/unit/bokeh/sampledata/")
+
+               ;; Attempts to install something via npm.
+               (delete-file "tests/unit/bokeh/test_ext.py")
+
+               ;; More failures due to set up problems.
+               (delete-file "tests/unit/bokeh/server/test_server__server.py")
+               (delete-file "tests/unit/bokeh/server/test_tornado__server.py")
+               (delete-file "tests/unit/bokeh/util/test_serialization.py")
+               (delete-file "tests/unit/bokeh/util/test_hex.py")
+               (delete-file "tests/unit/bokeh/models/test_sources.py")
+               (delete-file "tests/unit/bokeh/embed/test_bundle.py")
+
+               (invoke "pytest" "-v")))))))
+    (propagated-inputs
+     (list node-lts
+           python-jinja2
+           python-numpy
+           python-packaging
+           python-pillow
+           python-pyyaml
+           python-tornado
+           python-typing-extensions))
+    (native-inputs
+     (list python-beautifulsoup4
+           python-dateutil
+           python-flaky
+           python-nbconvert
+           python-pandas
+           python-pytest
+           python-pytz
+           python-requests))
+    (home-page "https://github.com/bokeh/bokeh")
+    (synopsis "Interactive plots and applications in the browser from Python")
+    (description
+     "This package provides tools for interactive plots and applications in the
+browser from Python.")
     (license license:bsd-3)))
 
 (define-public python-boto
