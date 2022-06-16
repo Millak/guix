@@ -54,6 +54,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages bootstrap)           ;glibc-dynamic-linker
@@ -741,6 +742,14 @@ of programming tools as well as libraries with equivalent functionality.")
        #:build-type "Release"
        #:phases
        (modify-phases %standard-phases
+         ,@(if (assoc "config" (package-native-inputs this-package))
+            `((add-after 'unpack 'update-config
+                (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                  (let ((config.guess (search-input-file
+                                        (or inputs native-inputs)
+                                        "/bin/config.guess")))
+                    (copy-file config.guess "cmake/config.guess")))))
+            '())
          (add-before 'build 'shared-lib-workaround
            ;; Even with CMAKE_SKIP_BUILD_RPATH=FALSE, llvm-tblgen
            ;; doesn't seem to get the correct rpath to be able to run
@@ -825,7 +834,14 @@ of programming tools as well as libraries with equivalent functionality.")
       (uri (llvm-uri "llvm" version))
       (sha256
        (base32
-        "1wydhbp9kyjp5y0rc627imxgkgqiv3dfirbqil9dgpnbaw5y7n65"))))))
+        "1wydhbp9kyjp5y0rc627imxgkgqiv3dfirbqil9dgpnbaw5y7n65"))))
+    (native-inputs
+     `(("python" ,python-wrapper)
+       ("perl"   ,perl)
+       ;; In llvm-11 riscv64 support was added manually to config.guess.
+       ,@(if (target-riscv64?)
+           `(("config" ,config))
+           '())))))
 
 (define-public clang-runtime-10
   (clang-runtime-from-llvm
