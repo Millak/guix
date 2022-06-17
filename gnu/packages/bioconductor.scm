@@ -1987,6 +1987,30 @@ using the linear model features implemented in limma.  Standard Bioconductor
 objects are used so that other packages could be used as well.")
     (license license:gpl3)))
 
+(define-public r-amountain
+  (package
+    (name "r-amountain")
+    (version "1.22.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "AMOUNTAIN" version))
+              (sha256
+               (base32
+                "0vdfabsrisdd7qq28f5ivd0v8zz49szqn677i5lhwnlaix220c54"))))
+    (properties `((upstream-name . "AMOUNTAIN")))
+    (build-system r-build-system)
+    (inputs (list gsl))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/AMOUNTAIN")
+    (synopsis "Modules for multilayer weighted gene co-expression networks")
+    (description
+     "This package provides a pure data-driven gene network, @dfn{WGCN}(weighted
+gene co-expression network) could be constructed only from expression profile.
+Different layers in such networks may represent different time points, multiple
+conditions or various species.  @code{AMOUNTAIN} aims to search active modules
+in multi-layer WGCN using a continuous optimization approach.")
+    (license license:gpl2+)))
+
 (define-public r-aneufinder
   (package
     (name "r-aneufinder")
