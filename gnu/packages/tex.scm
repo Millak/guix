@@ -10768,6 +10768,36 @@ variants), German, Italian, Portuguese and Spanish documents are provided.  This
 package was originally provided as part of the author's datetime package, but is
 now distributed separately.")))
 
+(define-public texlive-inriafonts
+  (package
+    (inherit (simple-texlive-package
+              "texlive-inriafonts"
+              (list "doc/fonts/inriafonts/"
+                    "fonts/enc/dvips/inriafonts/"
+                    "fonts/map/dvips/inriafonts/"
+                    "fonts/opentype/public/inriafonts/"
+                    "fonts/tfm/public/inriafonts/"
+                    "fonts/truetype/public/inriafonts/"
+                    "fonts/type1/public/inriafonts/"
+                    "fonts/vf/public/inriafonts/"
+                    "tex/latex/inriafonts/")
+              (base32
+               "0ngbpr4pl7r82jmdhiksp32qvbvggf2nawwqq0pkb7cffp95ya49")
+              #:trivial? #t))
+    (propagated-inputs (list texlive-ly1))        ;requires LY1 font encoding
+    (home-page "https://ctan.org/fonts/inriafonts")
+    (synopsis "Inria fonts with LaTeX support")
+    (description
+     "Inria is a free font designed by Black[Foundry] for Inria, a French research
+institute.  It comes as Serif and Sans Serif, each with three weights and
+matching italics.  Using these fonts with XeLaTeX and LuaLaTeX is easy using
+the fontspec package; we refer to the documentation of fontspec for more
+information.  The present package provides a way of using them with LaTeX and
+pdfLaTeX: it provides two style files, @file{InriaSerif.sty} and
+@file{InriaSans.sty}, together with the PostScript version of the fonts and
+their associated files.  These were created using autoinst.")
+    (license (list license:lppl license:silofl1.1))))
+
 (define-public bibtool
   (package
     (name "bibtool")
