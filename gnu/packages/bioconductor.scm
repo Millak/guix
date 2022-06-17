@@ -2063,6 +2063,36 @@ This allows @code{AMARETTO} to identify novel cancer driver genes directing
 canonical cancer pathways.")
     (license license:asl2.0)))
 
+(define-public r-anaquin
+  (package
+    (name "r-anaquin")
+    (version "2.20.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "Anaquin" version))
+              (sha256
+               (base32
+                "1jgpnls2djl1yzvnk64qc83mljmlci7wflwkza3wr0sv6r47b0dd"))))
+    (properties `((upstream-name . "Anaquin")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-deseq2
+           r-ggplot2
+           r-knitr
+           r-locfit
+           r-plyr
+           r-qvalue
+           r-rocr))
+    (native-inputs (list r-knitr))
+    (home-page "https://www.sequinstandards.com/")
+    (synopsis "Statistical analysis of sequins")
+    (description
+     "The project is intended to support the use of @dfn{sequins}(synthetic
+sequencing spike-in controls) owned and made available by the Garvan Institute
+of Medical Research.  The goal is to provide a standard open source library for
+quantitative analysis, modelling and visualization of spike-in controls.")
+    (license license:bsd-3)))
+
 (define-public r-aneufinder
   (package
     (name "r-aneufinder")
