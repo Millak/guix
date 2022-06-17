@@ -2135,6 +2135,34 @@ calling, plotting, export and analysis from whole-genome single cell
 sequencing data.")
     (license license:artistic2.0)))
 
+(define-public r-anf
+  (package
+    (name "r-anf")
+    (version "1.18.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "ANF" version))
+              (sha256
+               (base32
+                "1fa2pbdapymrpz01ws0m2fbzf11d723x6rbsys29v06is57f5lpj"))))
+    (properties `((upstream-name . "ANF")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biobase
+           r-igraph
+           r-mass
+           r-rcolorbrewer
+           r-survival))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/ANF")
+    (synopsis "Affinity network fusion for complex patient clustering")
+    (description
+     "The package @dfn{ANF}(Affinity Network Fusion) provides methods for affinity
+matrix construction and fusion as well as spectral clustering.  This package is
+used for complex patient clustering by integrating multi-omic data through affinity
+network fusion.")
+    (license license:gpl3)))
+
 (define-public r-biocversion
   (package
     (name "r-biocversion")
