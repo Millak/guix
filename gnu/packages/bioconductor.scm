@@ -2163,6 +2163,40 @@ used for complex patient clustering by integrating multi-omic data through affin
 network fusion.")
     (license license:gpl3)))
 
+(define-public r-annmap
+  (package
+    (name "r-annmap")
+    (version "1.38.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "annmap" version))
+              (sha256
+               (base32
+                "0ywqbb8jia7rrkzcsf6a11kqf8dnx96z8n8xw7067mahycykbixv"))))
+    (properties `((upstream-name . "annmap")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biobase
+           r-biocgenerics
+           r-dbi
+           r-digest
+           r-genefilter
+           r-genomicranges
+           r-iranges
+           r-lattice
+           r-rmysql
+           r-rsamtools))
+    (home-page "https://github.com/cruk-mi/annmap")
+    (synopsis
+     "Genome annotation and visualisation for Affymetrix arrays and NGS analysis")
+    (description
+     "This package @code{annmap} provides annotation mappings for Affymetrix exon
+arrays and coordinate based queries to support deep sequencing data analysis.
+Database access is hidden behind the API which provides a set of functions such
+as @code{genesInRange()}, @code{geneToExon()}, @code{exonDetails()}, etc.
+Functions to plot gene architecture and BAM file data are also provided.")
+    (license license:gpl2)))
+
 (define-public r-biocversion
   (package
     (name "r-biocversion")
