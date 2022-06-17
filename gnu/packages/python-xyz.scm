@@ -17964,6 +17964,28 @@ JSON) codec.")
      Record Format (DWARF).")
     (license license:public-domain)))
 
+(define-public python-pefile
+  (package
+    (name "python-pefile")
+    (version "2022.5.30")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/erocarrera/pefile")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1qj90a0s2gd5hn2zggypqc1077inid5dcl1fp5973b04kf2b9z8a"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-future))
+    (home-page "https://github.com/erocarrera/pefile")
+    (synopsis "Portable Executable (PE) file parser")
+    (description "This python library provides interfaces for parsing and
+working with Portable Executable (PE) files.  It makes to most information
+from the header, as well as section details and data available.")
+    (license license:expat)))
+
 (define-public python-pyev
   (package
     (name "python-pyev")
