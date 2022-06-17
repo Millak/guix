@@ -2011,6 +2011,58 @@ conditions or various species.  @code{AMOUNTAIN} aims to search active modules
 in multi-layer WGCN using a continuous optimization approach.")
     (license license:gpl2+)))
 
+(define-public r-amaretto
+  (package
+    (name "r-amaretto")
+    (version "1.12.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "AMARETTO" version))
+              (sha256
+               (base32
+                "111dk19b9910icksyr592cvhc5gwvgknr5q4887j9yxbajd7hcmx"))))
+    (properties `((upstream-name . "AMARETTO")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biocfilecache
+           r-callr
+           r-circlize
+           r-complexheatmap
+           r-curatedtcgadata
+           r-doparallel
+           r-dplyr
+           r-dt
+           r-foreach
+           r-ggplot2
+           r-glmnet
+           r-gridextra
+           r-httr
+           r-impute
+           r-knitr
+           r-limma
+           r-matrix
+           r-matrixstats
+           r-multiassayexperiment
+           r-rcpp
+           r-readr
+           r-reshape2
+           r-rmarkdown
+           r-tibble))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/AMARETTO")
+    (synopsis "Regulatory network inference and driver gene evaluation")
+    (description
+     "This package @code{AMARETTO} represents an algorithm that integrates copy
+number, DNA methylation and gene expression data to identify a set of driver
+genes by analyzing cancer samples and connects them to clusters of co-expressed
+genes, which we define as modules.  @code{AMARETTO} can be applied in a pancancer
+setting to identify cancer driver genes and their modules on multiple cancer
+sites.  @code{AMARETTO} captures modules enriched in angiogenesis, cell cycle
+and EMT, and modules that accurately predict survival and molecular subtypes.
+This allows @code{AMARETTO} to identify novel cancer driver genes directing
+canonical cancer pathways.")
+    (license license:asl2.0)))
+
 (define-public r-aneufinder
   (package
     (name "r-aneufinder")
