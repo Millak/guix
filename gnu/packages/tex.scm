@@ -8871,6 +8871,27 @@ titles.")
     ;; No version of the GPL is specified.
     (license license:gpl3+)))
 
+(define-public texlive-xunicode
+  (package
+    (inherit
+     (simple-texlive-package "texlive-xunicode"
+                             (list "doc/xelatex/xunicode/"
+                                   "tex/xelatex/xunicode/")
+                             (base32
+                              "1d96i8kd2lhbykc3rxy2jjvws404f2vy1cvdcp5bdr6l9m72q1fa")
+                             #:trivial? #t))
+    (propagated-inputs (list texlive-tipa))
+    (home-page "https://ctan.org/macros/xetex/latex/xunicode")
+    (synopsis "Generate Unicode characters from accented glyphs")
+    (description
+     "The package supports XeTeX's (and other putative future similar engines')
+need for Unicode characters, in a similar way to what the fontenc does for
+8-bit (and the like) fonts: convert accent-glyph sequence to a single Unicode
+character for output.  The package also covers glyphs specified by
+packages (such as @code{tipa}) which define many commands for single text
+glyphs.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-xypic
   (let ((template (simple-texlive-package
                    "texlive-xypic"
