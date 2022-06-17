@@ -242,6 +242,7 @@ the real span of the lattice.")
          (replace 'configure
            (lambda* (#:key outputs #:allow-other-keys)
              (invoke "./Configure"
+                     "--mt=pthread"
                      (string-append "--prefix="
                                     (assoc-ref outputs "out"))))))))
     (synopsis "PARI/GP, a computer algebra system for number theory")
