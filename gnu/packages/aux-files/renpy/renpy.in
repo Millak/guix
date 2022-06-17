@@ -1,11 +1,28 @@
 #! @PYTHON@
 # -*- mode: python -*-
 
-from __future__ import print_function
-
+import glob
 import os
 import sys
 import warnings
+
+def __renpy_files(directory):
+    for pattern in ['*.rpa', '*.rpyc', '*.rpy']:
+        for file in glob.iglob(pattern, root_dir=directory):
+            yield file
+
+def path_to_gamedir(basedir, name):
+    candidates = [name, 'game', 'data', 'launcher/game']
+
+    if __renpy_files(basedir):
+        return basedir
+
+    for candidate in candidates:
+        gamedir = os.path.join(basedir, candidate)
+        if __renpy_files(gamedir):
+            return gamedir
+
+    return basedir
 
 def path_to_common(renpy_base):
     return renpy_base + "/common"

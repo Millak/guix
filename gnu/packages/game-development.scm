@@ -94,6 +94,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages qt)
@@ -1255,16 +1256,21 @@ While it aims to be used as a drop-in replacement, it appears to be
 developed mainly for Ren'py.")
       (license (list license:lgpl2.1 license:zlib)))))
 
+;; Using nightly from 2022-06-16.
+;; Revert back to URLs once renpy 8 is released!
+(define %renpy-commit "3e854bc7cb1642ca18b061a0c6e349f168965c43")
 (define-public python-renpy
   (package
     (name "python-renpy")
-    (version "7.4.11")
+    (version (git-version "7.99.99" "0" %renpy-commit))
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://www.renpy.org/dl/" version
-                           "/renpy-" version "-source.tar.bz2"))
-       (sha256 (base32 "0zkhg2sd2hglm9dkansf4h8sq7lm7iqslzl763ambp4kyfdvd07q"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/renpy/renpy")
+             (commit %renpy-commit)))
+       (file-name (git-file-name name version))
+       (sha256 (base32 "11g7hqhw4gbkx5ib2wsawrznmjbn8r9zkgf2sg39z56h96y8wfbn"))
        (modules '((guix build utils)))
        (patches
         (search-patches
@@ -1484,8 +1490,11 @@ are only used to bootstrap it.")
     (inputs
      `(("bash-minimal" ,bash-minimal)
        ("renpy.in" ,(search-auxiliary-file "renpy/renpy.in"))
+       ("python-pefile" ,python-pefile)
+       ("python-requests" ,python-requests)
        ("python-renpy" ,python-renpy)
        ("python:tk" ,python "tk")
+       ("python-six" ,python-six)
        ("python" ,python) ; for ‘fix-commands’ and ‘wrap’
        ("xdg-utils" ,xdg-utils)))
     (propagated-inputs '())
