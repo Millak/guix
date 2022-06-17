@@ -2197,6 +2197,32 @@ as @code{genesInRange()}, @code{geneToExon()}, @code{exonDetails()}, etc.
 Functions to plot gene architecture and BAM file data are also provided.")
     (license license:gpl2)))
 
+(define-public r-antiprofiles
+  (package
+    (name "r-antiprofiles")
+    (version "1.36.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "antiProfiles" version))
+              (sha256
+               (base32
+                "1277kg5xpyb2yriyjy18p437q5lj22h4al7z7pygkzxzywxv9g40"))))
+    (properties `((upstream-name . "antiProfiles")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-locfit
+           r-matrixstats))
+    (home-page "https://github.com/HCBravoLab/antiProfiles")
+    (synopsis "Implementation of gene expression anti-profiles")
+    (description
+     "This package implements the gene expression anti-profiles method.
+Anti-profiles are a new approach for developing cancer genomic signatures that
+specifically take advantage of gene expression heterogeneity.  They explicitly
+model increased gene expression variability in cancer to define robust and
+reproducible gene expression signatures capable of accurately distinguishing
+tumor samples from healthy controls.")
+    (license license:artistic2.0)))
+
 (define-public r-biocversion
   (package
     (name "r-biocversion")
