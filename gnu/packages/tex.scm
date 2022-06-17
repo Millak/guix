@@ -10746,6 +10746,28 @@ family and SGML-based languages.  Xindy is highly configurable, both in markup
 terms and in terms of the collating order of the text being processed.")
     (license license:gpl2+)))
 
+(define-public texlive-fmtcount
+  (package
+    (inherit (simple-texlive-package
+              "texlive-fmtcount"
+              (list "doc/latex/fmtcount/"
+                    "scripts/fmtcount/"
+                    "source/latex/fmtcount/"
+                    "tex/latex/fmtcount/")
+              (base32
+               "1biw0g6s2arq6kq52c1yfkl0vzafja2az65c3d0syq0vgjzj9763")
+              #:trivial? #t))
+    (home-page "https://ctan.org/macros/latex/contrib/fmtcount")
+    (synopsis "Display the value of a LaTeX counter in a variety of formats")
+    (description
+     "The package provides commands that display the value of a LaTeX counter in a
+variety of formats (ordinal, text, hexadecimal, decimal, octal, binary etc).
+The package offers some multilingual support; configurations for use in English
+(both British and American usage), French (including Belgian and Swiss
+variants), German, Italian, Portuguese and Spanish documents are provided.  This
+package was originally provided as part of the author's datetime package, but is
+now distributed separately.")))
+
 (define-public bibtool
   (package
     (name "bibtool")
