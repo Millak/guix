@@ -5024,11 +5024,17 @@ exclusion algorithms are typical examples of such systems.")
 (define-public ocaml-sexplib0
   (package
     (name "ocaml-sexplib0")
-    (version "0.15.0")
+    (version "0.15.1")
     (home-page "https://github.com/janestreet/sexplib0")
-    (source
-     (janestreet-origin "sexplib0" version
-                        "1fpg991n578m11r0ki4als4c76s3sp703b4khivx40v48402qill"))
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url home-page)
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "05m93g4m4jhj1v8pazg3s2ydcfymr3h4476yjhdca5fm4sn35bg8"))))
     (build-system dune-build-system)
     (arguments `(#:tests? #f)) ;no tests
     (properties `((ocaml4.07-variant . ,(delay ocaml4.07-sexplib0))))
