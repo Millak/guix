@@ -2016,6 +2016,22 @@ powerful.")
       (propagated-inputs
        `(("ocaml-ppx-tools-versioned" ,ocaml4.07-ppx-tools-versioned)))
       (properties '()))))
+
+(define-public ocaml-ppx-bitstring
+  (package
+    (inherit ocaml-bitstring)
+    (name "ocaml-ppx-bitstring")
+    (arguments
+     `(#:package "ppx_bitstring"
+       ;; No tests
+       #:tests? #f))
+    (propagated-inputs (list ocaml-bitstring ocaml-ppxlib))
+    (native-inputs (list ocaml-ounit))
+    (properties `((upstream-name . "ppx_bitstring")))
+    (synopsis "PPX extension for bitstrings and bitstring matching")
+    (description
+     "This package provides a way to write bitstrings and matching over
+bitsrings in Erlang style as primitives to the language.")))
  
 (define-public ocaml-result
   (package
