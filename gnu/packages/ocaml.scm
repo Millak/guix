@@ -3197,14 +3197,14 @@ OCaml code.")
 (define-public omake
   (package
     (name "omake")
-    (version "0.10.3")
+    (version "0.10.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://download.camlcity.org/download/"
                                   "omake-" version ".tar.gz"))
               (sha256
                (base32
-                "07bdg1h5i7qnlv9xq81ad5hfypl10hxm771h4rjyl5cn8plhfcgz"))
+                "1i7pcv53kqplrbdx9mllrhbv4j57zf87xwq18r16cvn1lbc6mqal"))
               (patches (search-patches "omake-fix-non-determinism.patch"))))
     (build-system ocaml-build-system)
     (arguments
