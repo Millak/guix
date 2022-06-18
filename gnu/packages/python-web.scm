@@ -52,6 +52,7 @@
 ;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
+;;; Copyright © 2022 Luis Henrique Gomes Higino <luishenriquegh2701@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5179,50 +5180,46 @@ interfaces, inferring which argument is the path, and which is the address.")
     (license license:expat)))
 
 (define-public grip
-  ;; No release by upstream for quite some time, some bugs fixed since. See:
-  ;; https://github.com/joeyespo/grip/issues/304
-  (let ((commit "27a4d6d87ea1d0ea7f7f120de55baabee3de73e3"))
-    (package
-      (name "grip")
-      (version (git-version "4.5.2" "1" commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/joeyespo/grip")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0kx5hgb3q19i4l18a4vqdq9af390xgpk88lp2ay75qi96k0dc68w"))))
-      (build-system python-build-system)
-      (propagated-inputs
-       (list python-docopt
-             python-flask
-             python-markdown
-             python-path-and-address
-             python-pygments
-             python-requests))
-      (native-inputs
-       (list python-pytest python-responses))
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (replace 'check
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (add-installed-pythonpath inputs outputs)
-               (setenv "PATH" (string-append
-                                (getenv "PATH") ":"
-                                (assoc-ref %outputs "out") "/bin"))
-               (invoke "py.test" "-m" "not assumption"))))))
-      (home-page "https://github.com/joeyespo/grip")
-      (synopsis "Preview Markdown files using the GitHub API")
-      (description "Grip is a command-line server application written in Python
+  (package
+    (name "grip")
+    (version "4.6.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/joeyespo/grip")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0vhimd99zw7s1fihwr6yfij6ywahv9gdrfcf5qljvzh75mvzcwh8"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-docopt
+                             python-flask
+                             python-markdown
+                             python-path-and-address
+                             python-pygments
+                             python-requests))
+    (native-inputs (list python-pytest python-responses))
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+                   (when tests?
+                     (add-installed-pythonpath inputs outputs)
+                     (setenv "PATH"
+                             (string-append (getenv "PATH") ":"
+                                            #$output "/bin"))
+                     (invoke "py.test" "-m" "not assumption")))))))
+    (home-page "https://github.com/joeyespo/grip")
+    (synopsis "Preview Markdown files using the GitHub API")
+    (description
+     "Grip is a command-line server application written in Python
 that uses the GitHub Markdown API to render a local Markdown file.  The styles
 and rendering come directly from GitHub, so you'll know exactly how it will
 appear.  Changes you make to the file will be instantly reflected in the browser
 without requiring a page refresh.")
-      (license license:expat))))
+    (license license:expat)))
 
 (define-public python-port-for
   (package
