@@ -1939,6 +1939,30 @@ functions to the next and/or previous version.")
 ocaml-migrate-parsetree")
       (license license:expat))))
 
+(define-public ocaml-linenoise
+  (package
+    (name "ocaml-linenoise")
+    (version "1.3.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/ocaml-community/ocaml-linenoise")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0s98695skz1wvrak0rdlh80w3cv6piic1dxqpn9rv1yymbklafg4"))))
+    (build-system dune-build-system)
+    (arguments
+     ;; No tests
+     `(#:tests? #f))
+    (propagated-inputs (list ocaml-result ocaml-odoc))
+    (home-page "https://github.com/ocaml-community/ocaml-linenoise")
+    (synopsis "Lightweight readline alternative")
+    (description "This package is a line-reading library for OCaml that aims
+to replace readline.")
+    (license license:bsd-2)))
+
 (define-public ocaml-bitstring
   (package
     (name "ocaml-bitstring")
