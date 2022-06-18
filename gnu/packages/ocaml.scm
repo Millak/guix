@@ -3956,9 +3956,9 @@ and 4 (random based) according to RFC 4122.")
     (description "OCamlgraph is a generic graph library for OCaml.")
     (license license:lgpl2.1)))
 
-(define-public ocaml4.07-piqi
+(define-public ocaml-piqi
   (package
-    (name "ocaml4.07-piqi")
+    (name "ocaml-piqi")
     (version "0.7.7")
     (source (origin
               (method git-fetch)
@@ -3982,15 +3982,13 @@ and 4 (random based) according to RFC 4122.")
            (lambda _
              (for-each make-file-writable (find-files "."))
              #t))
-         (delete 'configure))
-       #:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib))
+         (delete 'configure))))
     (native-inputs
      (list which protobuf)) ; for tests
     (propagated-inputs
-     `(("ocaml-num" ,(package-with-ocaml4.07 ocaml-num))
-       ("ocaml-piqilib" ,(package-with-ocaml4.07 ocaml-piqilib))
-       ("ocaml-stdlib-shims" ,(package-with-ocaml4.07 ocaml-stdlib-shims))))
+     `(("ocaml-num" ,ocaml-num)
+       ("ocaml-piqilib" ,ocaml-piqilib)
+       ("ocaml-stdlib-shims" ,ocaml-stdlib-shims)))
     (home-page "https://github.com/alavrik/piqi-ocaml")
     (synopsis "Protocol serialization system for OCaml")
     (description "Piqi is a multi-format data serialization system for OCaml.
@@ -4027,7 +4025,7 @@ XML and Protocol Buffers formats.")
       ("ocaml-frontc" ,(package-with-ocaml4.07 ocaml-frontc))
       ("ocaml-graph" ,(package-with-ocaml4.07 ocaml-graph))
       ("ocaml-ocurl" ,(package-with-ocaml4.07 ocaml-ocurl))
-      ("ocaml-piqi" ,ocaml4.07-piqi)
+      ("ocaml-piqi" ,(package-with-ocaml4.07 ocaml-piqi))
       ("ocaml-ppx-jane" ,ocaml4.07-ppx-jane)
       ("ocaml-utop" ,ocaml4.07-utop)
       ("ocaml-uuidm" ,(package-with-ocaml4.07 ocaml-uuidm))
