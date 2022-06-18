@@ -38917,12 +38917,6 @@ Return a G-expression that contains the values corresponding to the
 disk by using something like @code{mixed-text-file}.
 @end deffn
 
-@deffn {Scheme Procedure} validate-configuration @var{configuration}
-@var{fields}
-Type-check @var{fields}, a list of field names of @var{configuration}, a
-configuration record created by @code{define-configuration}.
-@end deffn
-
 @deffn {Scheme Procedure} empty-serializer @var{field-name} @var{value}
 A serializer that just returns an empty string.  The
 @code{serialize-package} procedure is an alias for this.

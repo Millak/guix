@@ -57,7 +57,6 @@
             serialize-configuration
             define-maybe
             define-maybe/no-serialization
-            validate-configuration
             generate-documentation
             configuration->documentation
             empty-serializer
@@ -124,14 +123,6 @@ does not have a default value" field kind)))
                 (configuration-field-name field)
                 ((configuration-field-getter field) config)))
              fields)))
-
-(define (validate-configuration config fields)
-  (for-each (lambda (field)
-              (let ((val ((configuration-field-getter field) config)))
-                (unless ((configuration-field-predicate field) val)
-                  (configuration-field-error
-                   (configuration-field-name field) val))))
-            fields))
 
 (define-syntax-rule (id ctx parts ...)
   "Assemble PARTS into a raw (unhygienic) identifier."

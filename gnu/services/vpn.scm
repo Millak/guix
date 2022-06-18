@@ -540,11 +540,9 @@ is truncated and rewritten every minute.")
 to an existing @acronym{VPN, virtual private network}.")))
 
 (define* (openvpn-client-service #:key (config (openvpn-client-configuration)))
-  (validate-configuration config openvpn-client-configuration-fields)
   (service openvpn-client-service-type config))
 
 (define* (openvpn-server-service #:key (config (openvpn-server-configuration)))
-  (validate-configuration config openvpn-server-configuration-fields)
   (service openvpn-server-service-type config))
 
 (define (generate-openvpn-server-documentation)

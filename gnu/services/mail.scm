@@ -1610,10 +1610,6 @@ POP3, IMAP, and LMTP.  @var{config} should be a configuration object created
 by @code{dovecot-configuration}.  @var{config} may also be created by
 @code{opaque-dovecot-configuration}, which allows specification of the
 @code{dovecot.conf} as a string."
-  (validate-configuration config
-                          (if (opaque-dovecot-configuration? config)
-                              opaque-dovecot-configuration-fields
-                              dovecot-configuration-fields))
   (service dovecot-service-type config))
 
 ;; A little helper to make it easier to document all those fields.
