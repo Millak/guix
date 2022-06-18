@@ -3700,7 +3700,7 @@ writing to these structures, and they are accessed via the Bigarray module.")
 (define-public ocaml-ezjsonm
   (package
     (name "ocaml-ezjsonm")
-    (version "1.1.0")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
@@ -3709,13 +3709,13 @@ writing to these structures, and they are accessed via the Bigarray module.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "064j9pzy01p3dv947khqyn7fkjbs3jmrqsg8limb4abnlaqxxs2s"))))
+        (base32 "004knljxqxn9zq0rnq7q7wxl4nwlzydm8p9f5cqkl8il5yl5zkjm"))))
     (build-system dune-build-system)
     (arguments
      `(#:package "ezjsonm"
        #:test-target "."))
-    (native-inputs (list ocaml-alcotest))
-    (propagated-inputs (list ocaml-hex ocaml-jsonm ocaml-sexplib))
+    (native-inputs (list ocaml-alcotest js-of-ocaml node))
+    (propagated-inputs (list ocaml-jsonm ocaml-uutf ocaml-sexplib0 ocaml-hex))
     (home-page "https://github.com/mirage/ezjsonm/")
     (synopsis "Read and write JSON data")
     (description "Ezjsonm provides more convenient (but far less flexible) input
