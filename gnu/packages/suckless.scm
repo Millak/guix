@@ -39,6 +39,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages libbsd)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages mpd)
@@ -1084,3 +1085,43 @@ There are formatting programs included to convert this TAB-separated format to
 various other formats.  There are also some programs and scripts included to
 import and export OPML and to fetch, filter, merge and order feed items.")
     (license license:isc)))
+
+(define-public farbfeld
+  (let ((commit "ab5e3dfc9cdb476218538c6687df9f44826d8f11") (revision "0"))
+    (package
+      (name "farbfeld")
+      (version (git-version "4" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "git://git.suckless.org/farbfeld")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0pkmkvv5ggpzqwqdchd19442x8gh152xy5z1z13ipfznhspsf870"))))
+      (build-system gnu-build-system)
+      (inputs (list libpng libjpeg-turbo imagemagick))
+      (arguments
+       (list #:tests?
+             #f ;no check target
+             #:make-flags
+             #~(list (string-append "PREFIX="
+                                    #$output)
+                     (string-append "CC="
+                                    #$(cc-for-target)))
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-before 'configure 'patch-2ff
+                   (lambda* (#:key inputs outputs #:allow-other-keys)
+                     (substitute* "2ff"
+                       (("png2ff") (string-append #$output "/bin/png2ff"))
+                       (("jpg2ff") (string-append #$output "/bin/jpg2ff"))
+                       (("convert") (search-input-file inputs "/bin/convert")))))
+                 (delete 'configure))))
+      (synopsis "Image format and conversion tools")
+      (description
+       "farbfeld is a lossless image format which is easy to parse,
+pipe and compress.")
+      (home-page "https://git.suckless.org/farbfeld/")
+      (license license:isc))))
