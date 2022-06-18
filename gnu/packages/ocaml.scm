@@ -7996,7 +7996,7 @@ defined in OCaml 4.12.0.")
 (define-public ocamlformat
   (package
     (name "ocamlformat")
-    (version "0.21.0")
+    (version "0.22.4")
     (source
       (origin
         (method git-fetch)
@@ -8006,12 +8006,16 @@ defined in OCaml 4.12.0.")
         (file-name (git-file-name name version))
         (sha256
           (base32
-            "10vy102a0isd8cg94y61pm4qfgy74d6003dw0qn0bdmbd19r5071"))))
+            "171lq3vx4y8xj4by5zy93isx8nhg6ysxg1hxmkqkq16fdaiz8mnc"))))
     (build-system dune-build-system)
     (arguments
      '(#:package "ocamlformat"
        #:phases
        (modify-phases %standard-phases
+         ;; Tests related to other packages
+         (add-after 'unpack 'remove-unrelated-tests
+           (lambda _
+             (delete-file-recursively "test/rpc")))
          (add-after 'unpack 'fix-test-format
            (lambda _
              (substitute* "test/cli/repl_file_errors.t/run.t"
