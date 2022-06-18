@@ -3697,9 +3697,9 @@ writing to these structures, and they are accessed via the Bigarray module.")
     (description "Hex is a minimal library providing hexadecimal converters.")
     (license license:isc)))
 
-(define-public ocaml4.07-ezjsonm
+(define-public ocaml-ezjsonm
   (package
-    (name "ocaml4.07-ezjsonm")
+    (name "ocaml-ezjsonm")
     (version "1.1.0")
     (source
      (origin
@@ -3713,16 +3713,9 @@ writing to these structures, and they are accessed via the Bigarray module.")
     (build-system dune-build-system)
     (arguments
      `(#:package "ezjsonm"
-       #:test-target "."
-       #:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
-    (native-inputs
-     `(("ocaml-alcotest" ,(package-with-ocaml4.07 ocaml-alcotest))))
-    (propagated-inputs
-     `(("ocaml-hex" ,(package-with-ocaml4.07 ocaml-hex))
-       ("ocaml-jsonm" ,(package-with-ocaml4.07 ocaml-jsonm))
-       ("ocaml-sexplib" ,(package-with-ocaml4.07 ocaml-sexplib))))
+       #:test-target "."))
+    (native-inputs (list ocaml-alcotest))
+    (propagated-inputs (list ocaml-hex ocaml-jsonm ocaml-sexplib))
     (home-page "https://github.com/mirage/ezjsonm/")
     (synopsis "Read and write JSON data")
     (description "Ezjsonm provides more convenient (but far less flexible) input
@@ -4020,7 +4013,7 @@ XML and Protocol Buffers formats.")
       ("ocaml-bitstring" ,(package-with-ocaml4.07 ocaml-bitstring))
       ("ocaml-cmdliner" ,(package-with-ocaml4.07 ocaml-cmdliner))
       ("ocaml-core-kernel" ,ocaml4.07-core-kernel)
-      ("ocaml-ezjsonm" ,ocaml4.07-ezjsonm)
+      ("ocaml-ezjsonm" ,(package-with-ocaml4.07 ocaml-ezjsonm))
       ("ocaml-fileutils" ,(package-with-ocaml4.07 ocaml-fileutils))
       ("ocaml-frontc" ,(package-with-ocaml4.07 ocaml-frontc))
       ("ocaml-graph" ,(package-with-ocaml4.07 ocaml-graph))
