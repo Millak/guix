@@ -4013,6 +4013,48 @@ It provides a uniform interface for serializing OCaml data structures to JSON,
 XML and Protocol Buffers formats.")
     (license license:asl2.0)))
 
+(define-public ocaml-ppx-bap
+  (package
+    (name "ocaml-ppx-bap")
+    (version "0.14.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/BinaryAnalysisPlatform/ppx_bap")
+                     (commit (string-append "v" (version-major+minor version)))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1c6rcdp8bicdiwqc2mb59cl9l2vxlp3y8hmnr9x924fq7acly248"))))
+    (build-system dune-build-system)
+    (arguments
+     ;; No tests
+     `(#:tests? #f))
+    (propagated-inputs (list ocaml-base-quickcheck
+                             ocaml-ppx-assert
+                             ocaml-ppx-bench
+                             ocaml-ppx-bin-prot
+                             ocaml-ppx-cold
+                             ocaml-ppx-compare
+                             ocaml-ppx-enumerate
+                             ocaml-ppx-fields-conv
+                             ocaml-ppx-hash
+                             ocaml-ppx-here
+                             ocaml-ppx-optcomp
+                             ocaml-ppx-sexp-conv
+                             ocaml-ppx-sexp-value
+                             ocaml-ppx-variants-conv
+                             ocaml-ppxlib))
+    (properties `((upstream-name . "ppx_bap")))
+    (home-page "https://github.com/BinaryAnalysisPlatform/ppx_bap")
+    (synopsis "The set of ppx rewriters for BAP")
+    (description
+     "@code{ppx_bap} is the set of blessed ppx rewriters used in BAP projects.
+It fills the same role as @code{ppx_base} or @code{ppx_jane} (from which it is
+derived), but doesn't impose any style requirements and has only the minimal
+necessary set of rewriters.")
+    (license license:expat)))
+
 (define-public bap
   (package
     (name "bap")
