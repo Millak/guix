@@ -3828,9 +3828,9 @@ JSON.")
 Format module of the OCaml standard library.")
     (license license:bsd-3)))
 
-(define-public ocaml4.07-piqilib
+(define-public ocaml-piqilib
   (package
-    (name "ocaml4.07-piqilib")
+    (name "ocaml-piqilib")
     (version "0.6.15")
     (source
      (origin
@@ -3848,24 +3848,20 @@ Format module of the OCaml standard library.")
          (add-before 'configure 'fix-ocamlpath
            (lambda _
              (substitute* '("Makefile" "make/Makefile.ocaml")
-               (("OCAMLPATH := ") "OCAMLPATH := $(OCAMLPATH):"))
-             #t))
+               (("OCAMLPATH := ") "OCAMLPATH := $(OCAMLPATH):"))))
          (replace 'configure
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
                (substitute* "make/OCamlMakefile"
                  (("/bin/sh") (which "bash")))
                (invoke "./configure" "--prefix" out "--ocaml-libdir"
-                       (string-append out "/lib/ocaml/site-lib")))
-             #t))
+                       (string-append out "/lib/ocaml/site-lib")))))
        (add-after 'build 'build-ocaml
          (lambda* (#:key outputs #:allow-other-keys)
-           (invoke "make" "ocaml")
-           #t))
+           (invoke "make" "ocaml")))
        (add-after 'install 'install-ocaml
          (lambda* (#:key outputs #:allow-other-keys)
-           (invoke "make" "ocaml-install")
-           #t))
+           (invoke "make" "ocaml-install")))
        (add-after 'install-ocaml 'link-stubs
          (lambda* (#:key outputs #:allow-other-keys)
            (let* ((out (assoc-ref outputs "out"))
@@ -3873,17 +3869,14 @@ Format module of the OCaml standard library.")
                   (lib (string-append out "/lib/ocaml/site-lib/piqilib")))
              (mkdir-p stubs)
              (symlink (string-append lib "/dllpiqilib_stubs.so")
-                      (string-append stubs "/dllpiqilib_stubs.so"))
-             #t))))
-       #:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib))
+                      (string-append stubs "/dllpiqilib_stubs.so"))))))))
     (native-inputs
      (list which))
     (propagated-inputs
-     `(("ocaml-xmlm" ,(package-with-ocaml4.07 ocaml-xmlm))
-       ("ocaml-sedlex" ,(package-with-ocaml4.07 ocaml-sedlex))
-       ("ocaml-easy-format" ,(package-with-ocaml4.07 ocaml-easy-format))
-       ("ocaml-base64" ,(package-with-ocaml4.07 ocaml-base64))))
+     `(("ocaml-xmlm" ,ocaml-xmlm)
+       ("ocaml-sedlex" ,ocaml-sedlex)
+       ("ocaml-easy-format" ,ocaml-easy-format)
+       ("ocaml-base64" ,ocaml-base64)))
     (home-page "http://piqi.org")
     (synopsis "Data serialization and conversion library")
     (description "Piqilib is the common library used by the piqi command-line
@@ -3996,7 +3989,7 @@ and 4 (random based) according to RFC 4122.")
      (list which protobuf)) ; for tests
     (propagated-inputs
      `(("ocaml-num" ,(package-with-ocaml4.07 ocaml-num))
-       ("ocaml-piqilib" ,ocaml4.07-piqilib)
+       ("ocaml-piqilib" ,(package-with-ocaml4.07 ocaml-piqilib))
        ("ocaml-stdlib-shims" ,(package-with-ocaml4.07 ocaml-stdlib-shims))))
     (home-page "https://github.com/alavrik/piqi-ocaml")
     (synopsis "Protocol serialization system for OCaml")
