@@ -520,7 +520,11 @@ point surf to another URI by setting its XProperties.")
     (build-system gnu-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
-                  (delete 'configure))  ; no configuration
+                  (delete 'configure)  ; no configuration
+                  (add-before 'build 'patch-farbfeld
+                    (lambda* (#:key inputs #:allow-other-keys)
+                      (substitute* "config.def.h"
+                        (("2ff") (search-input-file inputs "/bin/2ff"))))))
        #:tests? #f                      ; no test suite
        #:make-flags
        (let ((pkg-config (lambda (flag)
@@ -534,7 +538,8 @@ point surf to another URI by setting its XProperties.")
     (native-inputs
      (list pkg-config))
     (inputs
-     `(("libpng" ,libpng)
+     `(("farbfeld" ,farbfeld)
+       ("libpng" ,libpng)
        ("libx11" ,libx11)
        ("libxft" ,libxft)
        ("fontconfig" ,fontconfig)))
@@ -544,7 +549,7 @@ presentations.  Each paragraph represents a slide in the presentation.
 Especially for presentations using the Takahashi method this is very nice and
 allows you to write down the presentation for a quick lightning talk within a
 few minutes.")
-    (home-page "https://tools.suckless.org/sent")
+    (home-page "https://tools.suckless.org/sent/")
     (license license:x11)))
 
 (define-public wmname
