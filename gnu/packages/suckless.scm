@@ -1049,7 +1049,7 @@ support.")
 (define-public sfeed
   (package
     (name "sfeed")
-    (version "1.1")
+    (version "1.5")
     (source
      (origin
        (method git-fetch)
@@ -1059,7 +1059,7 @@ support.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1b0l6f9aymk54ncc2kxavhg4flcqv7d4mpkpw8ljx7mzg0g4ygyk"))))
+        (base32 "1w3xk00nv502q2nr23y1sig7bkqa7f431f4fcaybfcfk7dbv2piq"))))
     (build-system gnu-build-system)
     (arguments
      (list
