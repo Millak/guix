@@ -1885,6 +1885,7 @@ Cambridge for use on Unix systems connected to the Internet.  In style it is
 similar to Smail 3, but its facilities are more general.  There is a great
 deal of flexibility in the way mail can be routed, and there are extensive
 facilities for checking incoming mail.")
+    (properties '((lint-hidden-cve . ("CVE-2020-28017"))))
     (license license:gpl2+)))
 
 (define-public dovecot
