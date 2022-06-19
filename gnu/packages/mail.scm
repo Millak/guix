@@ -1798,18 +1798,6 @@ delivery.")
        (sha256
         (base32 "18ziihkpa23lybm7m2l9wp2farxw0bd5ng7xm9ylgcrfgf95d6i9"))))
     (build-system gnu-build-system)
-    (inputs
-     `(("bdb" ,bdb-5.3) ; ‘#error Version 6 and later BDB API is not supported’
-       ("gnutls" ,gnutls/dane)
-       ("gzip" ,gzip)
-       ("bzip2" ,bzip2)
-       ("xz" ,xz)
-       ("perl" ,perl)
-       ("libnsl" ,libnsl)
-       ("libxt" ,libxt)
-       ("libxaw" ,libxaw)))
-    (native-inputs
-     (list pcre2 perl pkg-config))
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
@@ -1874,6 +1862,18 @@ delivery.")
            ;; No ‘check’ target.  The ‘test/’ suite assumes that particular
            ;; build options were (not) used and that it can freely ‘sudo’.
            #:tests? #f))
+    (native-inputs
+     (list pcre2 perl pkg-config))
+    (inputs
+     (list bdb-5.3     ; ‘#error Version 6 and later BDB API is not supported’
+           bzip2
+           gnutls/dane
+           gzip
+           libnsl
+           libxaw
+           libxt
+           perl
+           xz))
     (home-page "https://www.exim.org/")
     (synopsis
      "Message Transfer Agent (MTA) developed at the University of Cambridge")
