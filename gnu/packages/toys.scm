@@ -2,6 +2,7 @@
 ;;; Copyright © 2017, 2018, 2020–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Jesse Gibbons <jgibbons2357+guix@gmail.com>
 ;;; Copyright © 2019, 2020, 2021 Timotej Lazar <timotej.lazar@araneo.si>
+;;; Copyright © 2019 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
 ;;;
@@ -37,6 +38,46 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils))
+
+(define-public lolcat
+  (let ((commit "35dca3d0a381496d7195cd78f5b24aa7b62f2154")
+        (revision "0"))
+    (package
+      (name "lolcat")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/jaseg/lolcat")
+               (commit commit)))
+         (sha256
+          (base32
+           "0jjbkqcc2ikjxd1xgdyv4rb0vsw218181h89f2ywg29ffs3ypd8g"))
+         (file-name (git-file-name name version))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:tests? #f                    ; no check target
+         #:make-flags
+         (list ,(string-append "CC=" (cc-for-target)))
+         #:phases
+         (modify-phases %standard-phases
+           (delete 'bootstrap)
+           (delete 'configure)
+           (replace 'install
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let* ((out  (assoc-ref outputs "out"))
+                      (dest (string-append out "/bin")))
+                 (mkdir-p dest)
+                 (install-file "lolcat" dest)
+                 (install-file "censor" dest)
+                 #t))))))
+      (home-page "https://github.com/jaseg/lolcat")
+      (synopsis "Rainbow coloring effect for text console display")
+      (description "@command{lolcat} concatenates files and streams like
+regular @command{cat}, but it also adds terminal escape codes between
+characters and lines resulting in a rainbow effect.")
+      (license license:wtfpl2))))
 
 (define-public oneko
   (package
