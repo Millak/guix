@@ -13993,6 +13993,10 @@ The @option{--input-simplification} option described below provides
 fine-grain control over when inputs should be simplified.
 @end table
 
+@item --list-stylings
+@itemx -l
+List and describe the available styling rules and exit.
+
 @item --load-path=@var{directory}
 @itemx -L @var{directory}
 Add @var{directory} to the front of the package module search path
