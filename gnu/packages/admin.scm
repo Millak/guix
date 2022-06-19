@@ -1156,8 +1156,7 @@ IPv6, proxies, and Unix sockets.")
                  (lambda _
                    ;; These #defines aren't well-documented and, e.g., POWER was
                    ;; not actually tested on every possible TARGET-POWERPC?.
-                   (let* ((system #$(cond ((target-x86-32?) "X86")
-                                          ((target-x86-64?) "X86")
+                   (let* ((system #$(cond ((target-x86?) "X86")
                                           ((target-arm?) "ARM")
                                           ((target-powerpc?) "POWER")
                                           (else "CROSS_FINGERS"))))
