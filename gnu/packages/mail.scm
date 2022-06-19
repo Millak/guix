@@ -1811,66 +1811,69 @@ delivery.")
     (native-inputs
      (list pcre2 perl pkg-config))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           ;; We'd use #:make-flags but the top-level Makefile calls others
-           ;; recursively, so just set all variables this way.
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             (substitute* '("Makefile" "OS/Makefile-Default")
-               (("(RM_COMMAND=).*" all var)
-                (string-append var "rm\n")))
-             (copy-file "src/EDITME" "Local/Makefile")
-             (copy-file "exim_monitor/EDITME" "Local/eximon.conf")
-             (let ((out (assoc-ref outputs "out")))
-               (substitute* '("Local/Makefile")
-                 (("(BIN_DIRECTORY=).*" all var)
-                  (string-append var out "/bin\n"))
-                 (("(CONFIGURE_FILE=).*" all var)
-                  (string-append var out "/etc/exim.conf\n"))
-                 (("(EXIM_USER=).*" all var)
-                  (string-append var "nobody\n"))
-                 (("(FIXED_NEVER_USERS=).*" all var)
-                  (string-append var "\n")) ; XXX no root in build environment
-                 (("(COMPRESS_COMMAND=).*" all var)
-                  (string-append var (search-input-file inputs "bin/gzip") "\n"))
-                 (("(ZCAT_COMMAND=).*" all var)
-                  (string-append var (search-input-file inputs "bin/zcat") "\n"))
-                 (("# (USE_GNUTLS(|_PC)=.*)" all line)
-                  (string-append line "\n"))
-                 (("# (AUTH_CRAM_MD5=yes)" all line) line)
-                 (("# (AUTH_DOVECOT=yes)" all line) line)
-                 (("# (AUTH_EXTERNAL=yes)" all line) line)
-                 (("# (AUTH_PLAINTEXT=yes)" all line) line)
-                 (("# (AUTH_SPA=yes)" all line) line)
-                 (("# (AUTH_TLS=yes)" all line) line))
-               ;; This file has hard-coded relative file names for tools despite
-               ;; the zcat configuration above.
-               (substitute* '("src/exigrep.src")
-                 (("'(bzcat|xzcat|zcat|lzma)'" _ command)
-                  (format #f "'~a'"
-                          (search-input-file
-                           inputs (string-append "bin/" command))))))))
-         (add-before 'build 'fix-sh-paths
-           (lambda _
-             (substitute* '("scripts/lookups-Makefile" "scripts/reversion")
-               (("SHELL=/bin/sh") "SHELL=sh"))
-             (substitute* '("scripts/Configure-config.h")
-               (("\\| /bin/sh") "| sh"))
-             (patch-shebang "scripts/Configure-eximon")))
-         (add-before 'build 'build-reproducibly
-           (lambda _
-             ;; The ‘compilation number’ is incremented for every build from the
-             ;; same source tree.  It appears to vary over different (parallel?)
-             ;; builds.  Make it a ‘constant number’ instead.
-             (substitute* "src/version.c"
-               (("#include \"cnumber.h\"") "1")))))
-       #:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             "INSTALL_ARG=-no_chown")
-       ;; No 'check' target.  There is a test suite in test/, which assumes that
-       ;; certain build options were (not) used and that it can freely ‘sudo’.
-       #:tests? #f))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'configure
+                 ;; We'd use #:make-flags but the top-level Makefile calls
+                 ;; others recursively, so just set all variables this way.
+                 (lambda* (#:key outputs inputs #:allow-other-keys)
+                   (substitute* (list "Makefile" "OS/Makefile-Default")
+                     (("(RM_COMMAND=).*" all var)
+                      (string-append var "rm\n")))
+                   (copy-file "src/EDITME" "Local/Makefile")
+                   (copy-file "exim_monitor/EDITME" "Local/eximon.conf")
+                   (let ((out (assoc-ref outputs "out")))
+                     (substitute* "Local/Makefile"
+                       (("(BIN_DIRECTORY=).*" all var)
+                        (string-append var out "/bin\n"))
+                       (("(CONFIGURE_FILE=).*" all var)
+                        (string-append var out "/etc/exim.conf\n"))
+                       (("(EXIM_USER=).*" all var)
+                        (string-append var "nobody\n"))
+                       (("(FIXED_NEVER_USERS=).*" all var)
+                        (string-append var "\n")) ; no root in build environment
+                       (("(COMPRESS_COMMAND=).*" all var)
+                        (string-append var (search-input-file inputs "bin/gzip")
+                                       "\n"))
+                       (("(ZCAT_COMMAND=).*" all var)
+                        (string-append var (search-input-file inputs "bin/zcat")
+                                       "\n"))
+                       (("# (USE_GNUTLS(|_PC)=.*)" all line)
+                        (string-append line "\n"))
+                       (("# (AUTH_CRAM_MD5=yes)" all line) line)
+                       (("# (AUTH_DOVECOT=yes)" all line) line)
+                       (("# (AUTH_EXTERNAL=yes)" all line) line)
+                       (("# (AUTH_PLAINTEXT=yes)" all line) line)
+                       (("# (AUTH_SPA=yes)" all line) line)
+                       (("# (AUTH_TLS=yes)" all line) line))
+                     ;; This file has hard-coded relative file names for tools
+                     ;; despite the zcat configuration above.
+                     (substitute* "src/exigrep.src"
+                       (("'(bzcat|xzcat|zcat|lzma)'" _ command)
+                        (format #f "'~a'"
+                                (search-input-file
+                                 inputs (string-append "bin/" command))))))))
+               (add-before 'build 'fix-sh-file-names
+                 (lambda _
+                   (substitute* (list "scripts/lookups-Makefile"
+                                      "scripts/reversion")
+                     (("SHELL=/bin/sh") "SHELL=sh"))
+                   (substitute* "scripts/Configure-config.h"
+                     (("\\| /bin/sh") "| sh"))
+                   (patch-shebang "scripts/Configure-eximon")))
+               (add-before 'build 'build-reproducibly
+                 (lambda _
+                   ;; The ‘compilation number’ increments on every build in the
+                   ;; same source tree and varies across different (parallel?)
+                   ;; builds.  Make it a ‘constant number’ instead.
+                   (substitute* "src/version.c"
+                     (("#include \"cnumber.h\"") "1")))))
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   "INSTALL_ARG=-no_chown")
+           ;; No ‘check’ target.  The ‘test/’ suite assumes that particular
+           ;; build options were (not) used and that it can freely ‘sudo’.
+           #:tests? #f))
     (home-page "https://www.exim.org/")
     (synopsis
      "Message Transfer Agent (MTA) developed at the University of Cambridge")
