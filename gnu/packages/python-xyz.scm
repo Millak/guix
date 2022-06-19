@@ -5457,7 +5457,14 @@ include_dirs = ~:*~a/include~%" #$(this-package-input "openblas"))))))
                               ;; These tests may fail on 32-bit systems (see:
                               ;; https://github.com/numpy/numpy/issues/18387).
                               "not test_float_remainder_overflow "
-                              "and not test_pareto"))))))))
+                              "and not test_pareto"
+                              ;; These tests seem to fail on machines without
+                              ;; an FPU is still under investigation upstream.
+                              ;; https://github.com/numpy/numpy/issues/20635
+                              #$@(if (target-riscv64?)
+                                   `(" and not test_float"
+                                     " and not test_fpclass")
+                                   '())))))))))
     (native-inputs
      (list python-cython
            python-hypothesis-next
