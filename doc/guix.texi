@@ -39718,18 +39718,20 @@ optionally providing a @file{~/.ssh/known_hosts} file so that @file{ssh}
 can authenticate hosts you connect to.
 @end itemize
 
-Here is a sample configuration you could add to the @code{services}
-field of your @code{home-environment}:
+Here is an example of a service and its configuration that you could add
+to the @code{services} field of your @code{home-environment}:
 
 @lisp
-(home-openssh-configuration
- (hosts (list (openssh-host (name "ci.guix.gnu.org")
-                            (user "charlie"))
-              (openssh-host (name "chbouib")
-                            (host-name "chbouib.example.org")
-                            (user "supercharlie")
-                            (port 10022))))
- (authorized-keys (list (local-file "alice.pub"))))
+(service home-openssh-service-type
+         (home-openssh-configuration
+          (hosts
+           (list (openssh-host (name "ci.guix.gnu.org")
+                               (user "charlie"))
+                 (openssh-host (name "chbouib")
+                               (host-name "chbouib.example.org")
+                               (user "supercharlie")
+                               (port 10022))))
+          (authorized-keys (list (local-file "alice.pub")))))
 @end lisp
 
 The example above lists two hosts and their parameters.  For instance,
