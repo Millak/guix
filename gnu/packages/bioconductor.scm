@@ -2284,6 +2284,52 @@ of Medical Research.  The goal is to provide a standard library for quantitative
 analysis, modelling, and visualization of spike-in controls.")
     (license license:bsd-3)))
 
+(define-public r-ancombc
+  (package
+    (name "r-ancombc")
+    (version "1.6.1")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "ANCOMBC" version))
+              (sha256
+               (base32
+                "1p9yryv85qk7m3hbflmpdffd3azpsifcw54x1rp8sb67yjmq3whq"))))
+    (properties `((upstream-name . "ANCOMBC")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-desctools
+           r-doparallel
+           r-dorng
+           r-dplyr
+           r-energy
+           r-foreach
+           r-hmisc
+           r-magrittr
+           r-mass
+           r-microbiome
+           r-nlme
+           r-nloptr
+           r-phyloseq
+           r-rdpack
+           r-rlang
+           r-tibble
+           r-tidyr))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/FrederickHuangLin/ANCOMBC")
+    (synopsis "Analysis of compositions of microbiomes with bias correction")
+    (description
+     "@code{ANCOMBC} is a package containing @dfn{differential abundance} (DA)
+and correlation analyses for microbiome data.  Specifically, the package
+includes @dfn{Analysis of Compositions of Microbiomes with Bias
+Correction}(ANCOM-BC) and @dfn{Analysis of Composition of Microbiomes} (ANCOM)
+for DA analysis, and @dfn{Sparse Estimation of Correlations among
+Microbiomes} (SECOM) for correlation analysis.  Microbiome data are typically
+subject to two sources of biases: unequal sampling fractions (sample-specific
+biases) and differential sequencing efficiencies (taxon-specific biases).
+Methodologies included in the @code{ANCOMBC} package were designed to correct
+these biases and construct statistically consistent estimators.")
+    (license license:artistic2.0)))
+
 (define-public r-aldex2
   (package
     (name "r-aldex2")
