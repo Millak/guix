@@ -2472,6 +2472,31 @@ reproducible gene expression signatures capable of accurately distinguishing
 tumor samples from healthy controls.")
     (license license:artistic2.0)))
 
+(define-public r-arrayexpress
+  (package
+    (name "r-arrayexpress")
+    (version "1.56.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "ArrayExpress" version))
+              (sha256
+               (base32
+                "0v2v7v0gim0bsg34ciplapz6mjih68yqhcgzdlhcyj2d6vrgiad5"))))
+    (properties `((upstream-name . "ArrayExpress")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biobase
+           r-limma
+           r-oligo
+           r-xml))
+    (home-page "https://bioconductor.org/packages/ArrayExpress")
+    (synopsis "Building R objects from ArrayExpress datasets")
+    (description
+     "This package offers the possibility to access the ArrayExpress repository
+at @dfn{EBI} (European Bioinformatics Institute) and build Bioconductor data
+structures: @code{ExpressionSet}, @code{AffyBatch}, @code{NChannelSet}.")
+    (license license:artistic2.0)))
+
 (define-public r-aseb
   (package
     (name "r-aseb")
