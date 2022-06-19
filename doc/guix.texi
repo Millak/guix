@@ -13715,7 +13715,6 @@ gnu/packages/emacs.scm:856:13: emacs-auctex would be upgraded from 11.88.6 to 11
 @end example
 
 @item --list-updaters
-@itemx -L
 List available updaters and exit (see @option{--type} above).
 
 For each updater, display the fraction of packages it covers; at the
@@ -13846,6 +13845,7 @@ the user whether to download it or not.  This is the default behavior.
 Use @var{host} as the OpenPGP key server when importing a public key.
 
 @item --load-path=@var{directory}
+@itemx -L @var{directory}
 Add @var{directory} to the front of the package module search path
 (@pxref{Package Modules}).
 
