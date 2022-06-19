@@ -1426,7 +1426,7 @@ PostgreSQL extension, providing automatic partitioning across time and space
 (define-public pgloader
   (package
     (name "pgloader")
-    (version "3.6.3")
+    (version "3.6.4")
     (source
      (origin
        (method git-fetch)
@@ -1434,7 +1434,7 @@ PostgreSQL extension, providing automatic partitioning across time and space
              (url "https://github.com/dimitri/pgloader")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "147dcf0rmi94p95dvifx8qy7602fvs041dv9wlg3q31ly13agwb5"))
+        (base32 "05lpa0r5l7pvx97ljfb0cryxz11krczbb86gi1i1ixp0h9bvqw2a"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
