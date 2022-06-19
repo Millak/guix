@@ -1625,6 +1625,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/perl-reproducible-build-date.patch	\
   %D%/packages/patches/perl-www-curl-fix-struct-void.patch	\
   %D%/packages/patches/perl-www-curl-remove-symbol.patch	\
+  %D%/packages/patches/phoronix-test-suite-fsdg.patch		\
   %D%/packages/patches/php-bug-74093-test.patch \
   %D%/packages/patches/php-openssl_x509_checkpurpose_basic.patch	\
   %D%/packages/patches/picard-fix-id3-rename-test.patch		\

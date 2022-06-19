@@ -39,18 +39,20 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages c)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
-  #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages docbook)
+  #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages opencl)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages php)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-science)
@@ -59,6 +61,11 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages xml)
   #:use-module (ice-9 match))
+
+;; Lazily resolve the gcc-toolchain to avoid a circular dependency.
+(define gcc-toolchain*
+  (delay (module-ref (resolve-interface '(gnu packages commencement))
+                     'gcc-toolchain)))
 
 (define-public fio
   (package
@@ -262,6 +269,59 @@ benchmark how your file systems perform with respect to data read and write
 speed, the number of seeks that can be performed per second, and the number of
 file metadata operations that can be performed per second.")
     (license license:gpl2)))   ;GPL 2 only, see copyright.txt
+
+(define-public phoronix-test-suite
+  (package
+    (name "phoronix-test-suite")
+    (version "10.8.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://phoronix-test-suite.com/releases/"
+                           name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "105shk78jy46nwj6vnlmgp3y3lv9klar3dmcgasy4bslm4l2wx2b"))
+       (patches (search-patches "phoronix-test-suite-fsdg.patch"))))
+    (arguments
+     (list
+      #:tests? #f                       ;no test suite
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (delete 'build)
+          (replace 'install
+            (lambda _
+              (invoke "./install-sh" #$output "--free-software-only")))
+          (add-after 'install 'wrap-binary
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((pts (string-append #$output "/bin/phoronix-test-suite")))
+                (wrap-program pts
+                  (list "PATH" 'prefix
+                        (map (lambda (binary)
+                               (dirname (search-input-file
+                                         inputs (string-append "bin/" binary))))
+                             '("bash" "cat" ;coreutils
+                               "gzip" "make" "php" "sed" "tar" "which"))))))))))
+    (build-system gnu-build-system)
+    (native-inputs (list python which))
+    ;; Wrap the most basic build tools needed by Phoronix Test Suite to build
+    ;; simple tests such as 'fio'.
+    (inputs (list bash coreutils gnu-make gzip php sed tar which))
+    ;; Phoronix Test Suite builds and caches the benchmarking tools itself;
+    ;; the user is required to manually install extra libraries depending on
+    ;; the selected test; but at least a working C/C++ toolchain is assumed to
+    ;; be available.
+    (propagated-inputs (list (force gcc-toolchain*)))
+    (home-page "https://www.phoronix-test-suite.com/")
+    (synopsis "Automated testing/benchmarking software")
+    (description
+     "The Phoronix Test Suite is a comprehensive testing and benchmarking platform
+that provides an extensible framework for which new tests can be easily added.
+It can carry out both qualitative and quantitative benchmarks in a clean,
+reproducible, and easy-to-use manner, making it easy to compare one particular
+setup against another one.")
+    (license license:gpl3+)))
 
 (define-public python-locust
   (package
