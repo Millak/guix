@@ -18,6 +18,7 @@
 
 (define-module (guix scripts challenge)
   #:use-module (guix ui)
+  #:use-module (guix colors)
   #:use-module (guix scripts)
   #:use-module (guix store)
   #:use-module (guix utils)
@@ -388,6 +389,11 @@ COMPARISON-REPORT."
                                  (append command
                                          (list directory1 directory2))))))
 
+(define good-news
+  (coloring-procedure (color BOLD GREEN)))
+(define bad-news
+  (coloring-procedure (color BOLD RED)))
+
 (define* (summarize-report comparison-report
                            #:key
                            (report-differences (const #f))
@@ -410,7 +416,7 @@ with COMPARISON-REPORT."
 
   (match comparison-report
     (($ <comparison-report> item 'mismatch local (narinfos ...))
-     (report (G_ "~a contents differ:~%") item)
+     (report (bad-news (G_ "~a contents differ:~%")) item)
      (report-hashes item local narinfos)
      (report-differences comparison-report))
     (($ <comparison-report> item 'inconclusive #f narinfos)
@@ -419,7 +425,7 @@ with COMPARISON-REPORT."
      (warning (G_ "could not challenge '~a': no substitutes~%") item))
     (($ <comparison-report> item 'match local (narinfos ...))
      (when verbose?
-       (report (G_ "~a contents match:~%") item)
+       (report (good-news (G_ "~a contents match:~%")) item)
        (report-hashes item local narinfos)))))
 
 (define (summarize-report-list reports)
@@ -428,10 +434,11 @@ with COMPARISON-REPORT."
         (inconclusive  (count comparison-report-inconclusive? reports))
         (matches       (count comparison-report-match? reports))
         (discrepancies (count comparison-report-mismatch? reports)))
-    (report (G_ "~h store items were analyzed:~%") total)
-    (report (G_ "  - ~h (~,1f%) were identical~%")
+    (report (highlight (G_ "~h store items were analyzed:~%")) total)
+    (report (highlight (G_ "  - ~h (~,1f%) were identical~%"))
             matches (* 100. (/ matches total)))
-    (report (G_ "  - ~h (~,1f%) differed~%")
+    (report ((if (zero? discrepancies) good-news bad-news)
+             (G_ "  - ~h (~,1f%) differed~%"))
             discrepancies (* 100. (/ discrepancies total)))
     (report (G_ "  - ~h (~,1f%) were inconclusive~%")
             inconclusive (* 100. (/ inconclusive total)))))
