@@ -20851,7 +20851,7 @@ access lexicographic data from WordNet.")
 (define-public sbcl-nfiles
   (package
    (name "sbcl-nfiles")
-   (version "0.4.1")
+   (version "0.4.2")
    (source
     (origin
      (method git-fetch)
@@ -20861,7 +20861,7 @@ access lexicographic data from WordNet.")
      (file-name (git-file-name "cl-nfiles" version))
      (sha256
       (base32
-       "05brlj99grcy2iz84dvl76inp10jxnvjyh2r262d1las112rlcrb"))))
+       "06cll4l5gbp98wrgdy04ar6z00sag0b46pr4dv4n6bs1ypfcgs01"))))
    (build-system asdf-build-system/sbcl)
    (inputs
     (list gnupg
