@@ -48,31 +48,29 @@
                 "06p379fqn6w38rdpqi98irxi2bf4llb0rja3dlgkqz7nqh7kp7pw"))
               (modules '((guix build utils)))
               (snippet
-               '(begin
-                  (substitute* "src/Makefile.in"
-                    (("/bin/ln") "ln"))
-                  #t))))
+               #~(begin
+                   (substitute* "src/Makefile.in"
+                     (("/bin/ln") "ln"))))))
     (build-system gnu-build-system)
     (arguments
-     '(#:parallel-tests? #f
-       #:parallel-build? #f  ; there's at least one race
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'reduce-array-test-size
-           ;; Reduce the size of the array, otherwise the array.sl/array.slc
-           ;; tests fails with "Unable to create a multi-dimensional array of
-           ;; the desired size" on 32 bit systems.
-           (lambda _
-             (substitute* "src/test/array.sl"
-               (("10000,10000,10000,10000,10000,10000")
-                "10,10,10,10,10,10"))))
-         (add-before 'configure 'substitute-before-config
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((ncurses (assoc-ref inputs "ncurses")))
-               (substitute* "configure"
-                 (("MISC_TERMINFO_DIRS=\"\"")
-                  (string-append "MISC_TERMINFO_DIRS="
-                                 "\"" ncurses "/share/terminfo" "\"")))))))))
+     (list #:parallel-tests? #f
+           #:parallel-build? #f         ; race to build/use elfobj
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'reduce-array-test-size
+                 ;; Fix array.sl/array.slc failure on 32-bit systems ("Unable to
+                 ;; to create a multi-dimensional array of the desired size").
+                 (lambda _
+                   (substitute* "src/test/array.sl"
+                     (("10000,10000,10000,10000,10000,10000")
+                      "10,10,10,10,10,10"))))
+               (add-before 'configure 'fix-configure-script
+                 ;; Don't try to link to the long-obsolete (and gone) -ltermcap.
+                 (lambda _
+                   (substitute* "configure"
+                     (("(MISC_TERMINFO_DIRS)=.*" _ variable)
+                      (format #f "~a=\"~a/share/terminfo\"\n" variable
+                              #$(this-package-input "ncurses")))))))))
     (inputs
      (list readline zlib libpng pcre ncurses))
     (home-page "https://www.jedsoft.org/slang/")
