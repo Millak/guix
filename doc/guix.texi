@@ -14941,7 +14941,9 @@ any given store item.
 The command output looks like this:
 
 @smallexample
-$ guix challenge --substitute-urls="https://@value{SUBSTITUTE-SERVER-1} https://guix.example.org"
+$ guix challenge \
+  --substitute-urls="https://@value{SUBSTITUTE-SERVER-1} https://guix.example.org" \
+  openssl git pius coreutils grep
 updating substitutes from 'https://@value{SUBSTITUTE-SERVER-1}'... 100.0%
 updating substitutes from 'https://guix.example.org'... 100.0%
 /gnu/store/@dots{}-openssl-1.0.2d contents differ:
@@ -14968,18 +14970,20 @@ updating substitutes from 'https://guix.example.org'... 100.0%
 
 @dots{}
 
-6,406 store items were analyzed:
-  - 4,749 (74.1%) were identical
-  - 525 (8.2%) differed
-  - 1,132 (17.7%) were inconclusive
+5 store items were analyzed:
+  - 2 (40.0%) were identical
+  - 3 (60.0%) differed
+  - 0 (0.0%) were inconclusive
 @end smallexample
 
 @noindent
-In this example, @command{guix challenge} first scans the store to
-determine the set of locally-built derivations---as opposed to store
-items that were downloaded from a substitute server---and then queries
-all the substitute servers.  It then reports those store items for which
-the servers obtained a result different from the local build.
+In this example, @command{guix challenge} queries all the substitute
+servers for each of the fives packages specified on the command line.
+It then reports those store items for which the servers obtained a
+result different from the local build (if it exists) and/or different
+from one another; here, the @samp{local hash} lines indicate that a
+local build result was available for each of these packages and shows
+its hash.
 
 @cindex non-determinism, in package builds
 As an example, @code{guix.example.org} always gets a different answer.
@@ -15035,18 +15039,20 @@ whether @code{@value{SUBSTITUTE-SERVER-1}} and other substitute servers obtain t
 same build result as you did with:
 
 @example
-$ guix challenge @var{package}
+guix challenge @var{package}
 @end example
-
-@noindent
-where @var{package} is a package specification such as
-@code{guile@@2.0} or @code{glibc:debug}.
 
 The general syntax is:
 
 @example
-guix challenge @var{options} [@var{packages}@dots{}]
+guix challenge @var{options} @var{argument}@dots{}
 @end example
+
+@noindent
+where @var{argument} is a package specification such as
+@code{guile@@2.0} or @code{glibc:debug} or, alternatively, a store file
+name as returned, for example, by @command{guix build} or @command{guix
+gc --list-live}.
 
 When a difference is found between the hash of a locally-built item and
 that of a server-provided substitute, or among substitutes provided by

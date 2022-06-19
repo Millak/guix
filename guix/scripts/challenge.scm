@@ -537,8 +537,9 @@ Challenge the substitutes for PACKAGE... provided by one or more servers.\n"))
                         (current-terminal-columns (terminal-columns)))
            (let ((files (match files
                           (()
-                           (filter (cut locally-built? store <>)
-                                   (live-paths store)))
+                           (warning
+                            (G_ "no arguments specified, nothing to do~%"))
+                           (exit 0))
                           (x
                            files))))
              (set-build-options store
