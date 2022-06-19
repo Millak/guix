@@ -9736,6 +9736,43 @@ to identify differentially methylated regions in epigenetic epidemiology
 studies.")
     (license license:artistic2.0)))
 
+(define-public r-microbiome
+  (package
+    (name "r-microbiome")
+    (version "1.18.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "microbiome" version))
+              (sha256
+               (base32
+                "1z9arkjp5xszlg07mzb4p163i74jfbd9p4gbwv5syivnpl040k12"))))
+    (properties `((upstream-name . "microbiome")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biostrings
+           r-compositions
+           r-dplyr
+           r-ggplot2
+           r-phyloseq
+           r-reshape2
+           r-rtsne
+           r-scales
+           r-tibble
+           r-tidyr
+           r-vegan))
+    (native-inputs (list r-knitr))
+    (home-page "https://microbiome.github.io/microbiome/")
+    (synopsis "Tools for microbiome analysis")
+    (description
+     "This package facilitates phyloseq exploration and analysis of taxonomic
+profiling data.  This package provides tools for the manipulation, statistical
+analysis, and visualization of taxonomic profiling data.  In addition to
+targeted case-control studies, microbiome facilitates scalable exploration of
+population cohorts.  This package supports the independent phyloseq data
+format and expands the available toolkit in order to facilitate the
+standardization of the analyses and the development of best practices.")
+    (license license:bsd-2)))
+
 (define-public r-milor
   (package
     (name "r-milor")
