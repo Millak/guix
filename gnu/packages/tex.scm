@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2013, 2014, 2015, 2016, 2022 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Roel Janssen <roel@gnu.org>
@@ -10818,6 +10818,24 @@ pdfLaTeX: it provides two style files, @file{InriaSerif.sty} and
 @file{InriaSans.sty}, together with the PostScript version of the fonts and
 their associated files.  These were created using autoinst.")
     (license (list license:lppl license:silofl1.1))))
+
+(define-public texlive-floatflt
+  (package
+    (inherit (simple-texlive-package
+              "texlive-floatflt"
+              (list "doc/latex/floatflt/"
+                    "source/latex/floatflt/"
+                    "tex/latex/floatflt/")
+              (base32
+               "1piy8ajbbcadsjwp0mhlgxm2ggggnb5sn75arfs5fxiaqrwd572j")
+              #:trivial? #t))
+    (home-page "https://ctan.org/macros/latex/contrib/floatflt")
+    (synopsis "Wrap text around floats")
+    (description
+     "The package can float text around figures and tables which do not
+span the full width of a page; it improves upon floatfig, and allows
+tables and figures to be set left/right or alternating on even/odd pages.")
+    (license license:lppl1.3+)))
 
 (define-public bibtool
   (package
