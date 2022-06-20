@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019, 2020 John Soo <jsoo1@asu.edu>
-;;; Copyright © 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019-2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Leo Famulari <leo@famulari.name>
@@ -1571,7 +1571,7 @@ support for Rust.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list curl libssh2 openssl zlib))
+     (list curl libgit2-1.3 libssh2 openssl zlib))
     (home-page "https://github.com/lu-zero/cargo-c")
     (synopsis "Build and install C-compatible libraries")
     (description
