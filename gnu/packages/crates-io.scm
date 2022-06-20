@@ -31353,7 +31353,10 @@ algorithm and related formats (ZLIB, GZIP).")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1axsdyb2i67pn85vh8sb2z037n88fiiwqghkzsr1jrcdy2g1cs4g"))))
+         "1axsdyb2i67pn85vh8sb2z037n88fiiwqghkzsr1jrcdy2g1cs4g"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (delete-file-recursively "libgit2")))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
