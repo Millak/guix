@@ -5829,8 +5829,8 @@ as equations, scalars, vectors, and matrices.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-    (build-system gnu-build-system)
                 "1vvb09q7w7zd29qc4qjysrrhyylszm1wf6azkff004ixwn026b05"))))
+    (build-system cmake-build-system)
     (arguments
      (list
       #:imported-modules `((guix build python-build-system)
@@ -5838,43 +5838,40 @@ as equations, scalars, vectors, and matrices.")
       #:modules '((guix build cmake-build-system)
                   (guix build utils)
                   ((guix build python-build-system) #:select (site-packages)))
+      #:configure-flags
+      #~(list "-DZ3_BUILD_PYTHON_BINDINGS=ON"
+              "-DZ3_LINK_TIME_OPTIMIZATION=ON"
+              (string-append
+               "-DCMAKE_INSTALL_PYTHON_PKG_DIR="
+               #$output "/lib/python"
+               #$(version-major+minor (package-version python-wrapper))
+               "/site-packages"))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'enable-bytecode-determinism
+          (replace 'check
+            (lambda* (#:key parallel-build? tests? #:allow-other-keys)
+              (when tests?
+                (invoke "make" "test-z3"
+                        (format #f "-j~a"
+                                (if parallel-build?
+                                    (parallel-job-count)
+                                    1)))
+                (invoke "./test-z3" "/a"))))
+          (add-after 'install 'compile-python-modules
             (lambda _
               (setenv "PYTHONHASHSEED" "0")
-              #t))
-          (add-after 'unpack 'fix-compatability
-            ;; Versions after 4.8.3 have immintrin.h IFDEFed for Windows only.
-            (lambda _
-              (substitute* "src/util/mpz.cpp"
-                (("#include <immintrin.h>") ""))
-              #t))
-          (add-before 'configure 'bootstrap
-            (lambda _
-              (invoke "python" "scripts/mk_make.py")))
-          ;; work around gnu-build-system's setting --enable-fast-install
-          ;; (z3's `configure' is a wrapper around the above python file,
-          ;; which fails when passed --enable-fast-install)
-          (replace 'configure
+
+              (invoke "python" "-m" "compileall"
+                      "--invalidation-mode=unchecked-hash"
+                      #$output)))
+          ;; This step is missing in the CMake build system, do it here.
+          (add-after 'compile-python-modules 'fix-z3-library-path
             (lambda* (#:key inputs outputs #:allow-other-keys)
-              (invoke "./configure"
-                      "--python"
-                      (string-append "--prefix=" (assoc-ref outputs "out"))
-                      (string-append "--pypkgdir=" (site-packages inputs outputs)))))
-          (add-after 'configure 'change-directory
-            (lambda _
-              (chdir "build")
-              #t))
-          (add-before 'check 'make-test-z3
-            (lambda _
-              ;; Build the test suite executable.
-              (invoke "make" "test-z3" "-j"
-                      (number->string (parallel-job-count)))))
-          (replace 'check
-            (lambda _
-              ;; Run all the tests that don't require arguments.
-              (invoke "./test-z3" "/a"))))))
+              (let* ((dest (string-append (site-packages inputs outputs)
+                                          "/z3/lib/libz3.so"))
+                     (z3-lib (string-append #$output "/lib/libz3.so")))
+                (mkdir-p (dirname dest))
+                (symlink z3-lib dest)))))))
     (native-inputs
      (list which python-wrapper))
     (synopsis "Theorem prover")
@@ -5886,6 +5883,7 @@ theories} (SMT) solver.  It provides a C/C++ API, as well as Python bindings.")
   (package
     (inherit z3)
     (name "ocaml-z3")
+    (build-system gnu-build-system)
     (arguments
      `(#:imported-modules ((guix build python-build-system)
                            ,@%gnu-build-system-modules)
