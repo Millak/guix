@@ -2243,7 +2243,7 @@ fallback to generic Systray support if none of those are available.")
 (define-public xdg-desktop-portal
   (package
     (name "xdg-desktop-portal")
-    (version "1.10.1")
+    (version "1.14.4")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2251,7 +2251,7 @@ fallback to generic Systray support if none of those are available.")
                     version "/xdg-desktop-portal-" version ".tar.xz"))
               (sha256
                (base32
-                "199lqr2plsy9qqnxx5a381ml8ygcbz4nkjla5pvljjcrwzlqsygd"))))
+                "0wqc9x3k7lf3mig53i4rjazi0xi8bcykwaaw7r7prvnscnd1k405"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)
@@ -2262,7 +2262,8 @@ fallback to generic Systray support if none of those are available.")
        ("which" ,which)
        ("gettext" ,gettext-minimal)))
     (inputs
-     `(("glib" ,glib)
+     `(("gdk-pixbuf" ,gdk-pixbuf)
+       ("glib" ,glib)
        ("flatpak" ,flatpak)
        ("fontconfig" ,fontconfig)
        ("json-glib" ,json-glib)
@@ -2270,17 +2271,20 @@ fallback to generic Systray support if none of those are available.")
        ("dbus" ,dbus)
        ("geoclue" ,geoclue)
        ("pipewire" ,pipewire-0.3)
-       ("fuse" ,fuse)))
+       ("fuse" ,fuse-3)))
     (arguments
-     `(#:phases
+     `(#:configure-flags
+       (list "--with-systemd=no")
+       #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'po-chmod
            (lambda _
              ;; Make sure 'msgmerge' can modify the PO files.
              (for-each (lambda (po)
                          (chmod po #o666))
-                       (find-files "po" "\\.po$"))
-             #t)))))
+                       (find-files "po" "\\.po$"))))
+         (add-after 'unpack 'set-home-directory
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (native-search-paths
      (list (search-path-specification
             (variable "XDG_DESKTOP_PORTAL_DIR")
