@@ -68,7 +68,7 @@
 ;; downloading the package source from PyPI (the Python Package Index).  Both
 ;; of them import setuptools and execute the "setup.py" file under their
 ;; control.  Thus the "setup.py" behaves as if the developer had imported
-;; setuptools within setup.py - even is still using only distutils.
+;; setuptools within setup.py - even if it is still using only distutils.
 ;;
 ;; Setuptools' "install" command (to be more precise: the "easy_install"
 ;; command which is called by "install") will put the path of the currently
