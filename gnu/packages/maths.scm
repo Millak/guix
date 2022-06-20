@@ -5820,7 +5820,7 @@ as equations, scalars, vectors, and matrices.")
 (define-public z3
   (package
     (name "z3")
-    (version "4.8.9")
+    (version "4.8.17")
     (home-page "https://github.com/Z3Prover/z3")
     (source (origin
               (method git-fetch)
@@ -5829,8 +5829,8 @@ as equations, scalars, vectors, and matrices.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1hnbzq10d23drd7ksm3c1n2611c3kd0q0yxgz8y78zaafwczvwxx"))))
     (build-system gnu-build-system)
+                "1vvb09q7w7zd29qc4qjysrrhyylszm1wf6azkff004ixwn026b05"))))
     (arguments
      (list
       #:imported-modules `((guix build python-build-system)
