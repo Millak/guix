@@ -814,7 +814,8 @@ PostUp = ~a set %i private-key ~a
              (start #~(lambda _
                        (invoke #$wg-quick "up" #$config)))
              (stop #~(lambda _
-                       (invoke #$wg-quick "down" #$config)))
+                       (invoke #$wg-quick "down" #$config)
+                       #f))                       ;stopped!
              (documentation "Run the Wireguard VPN tunnel"))))))
 
 (define wireguard-service-type
