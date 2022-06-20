@@ -57,6 +57,7 @@
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -147,6 +148,7 @@
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages syncthing)           ;for go-github-com-lib-pq
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages terminals)
   #:use-module (gnu packages texinfo)
@@ -4789,3 +4791,35 @@ create design, and edit database file compatible with SQLite.")
      ;; dual license
      (list license:gpl3+
            license:mpl2.0))))
+
+(define-public sqls
+  (package
+    (name "sqls")
+    (version "0.2.18")
+    (home-page "https://github.com/lighttiger2505/sqls")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "13837v27avdp2nls3vyy7ml12nj7rxragchwf92adn10ffp4aj6c"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/lighttiger2505/sqls"))
+    (inputs (list go-github-com-go-sql-driver-mysql
+                  go-github-com-lib-pq
+                  go-github-com-mattn-go-sqlite3
+                  go-github-com-olekukonko-tablewriter
+                  go-github-com-pkg-errors
+                  go-github-com-sourcegraph-jsonrpc2
+                  go-golang-org-x-crypto
+                  go-github.com-mattn-go-runewidth
+                  go-golang-org-x-xerrors
+                  go-gopkg-in-yaml-v2))
+    (synopsis "SQL language server written in Go")
+    (description
+     "This package implements the @acronym{LSP, Language Server Protocol} for SQL.")
+    (license license:expat)))
