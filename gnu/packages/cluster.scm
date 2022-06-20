@@ -2,7 +2,7 @@
 ;;; Copyright © 2018 Sou Bunnbu <iyzsong@member.fsf.org>
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Andrew Miloradovsky <andrew@interpretmath.pw>
-;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Dion Mendel <guix@dm9.info>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -22,6 +22,7 @@
 
 (define-module (gnu packages cluster)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix gexp)
   #:use-module (guix build-system gnu)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -65,62 +66,59 @@
                   (substitute* "configure"
                     ;; Use a sensible default udev rules directory.
                     (("default_udevdir=/lib/udev")
-                     "default_udevdir='${prefix}/lib/udev'"))
-                  #t))))
+                     "default_udevdir='${prefix}/lib/udev'"))))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags '(;; Do not install sysv or systemd init scripts.
-                           "--with-initscripttype=none"
-                           ;; Use the pre-built manual pages present in release
-                           ;; tarballs instead of generating them from scratch.
-                           "--with-prebuiltman"
-                           ;; Disable support for DRBD 8.3 as it is only for
-                           ;; Linux-Libre versions < 3.8.  8.4 is the latest
-                           ;; kernel driver as of Linux 5.7.
-                           "--without-83support"
-                           "--sysconfdir=/etc"
-                           "--localstatedir=/var")
-       #:test-target "test"
-       #:make-flags '("WANT_DRBD_REPRODUCIBLE_BUILD=yesplease")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'patch-generated-file-shebangs 'patch-documentation
-           (lambda _
-             ;; The preceding phase misses some Makefiles with unusual file
-             ;; names, so we handle those here.
-             (for-each patch-makefile-SHELL (find-files "documentation/common"
-                                                        "^Makefile"))
-             #t))
-         (add-before 'configure 'use-absolute-/lib/drbd
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               ;; Look for auxiliary executables below exec_prefix instead
-               ;; of assuming /lib/drbd (see TODO comment in the file).
-               (substitute* "user/v9/drbdtool_common.c"
-                 (("\"/lib/drbd\"")
-                  (string-append "\"" out "/lib/drbd\"")))
-               #t)))
-         (add-after 'configure 'adjust-installation-directories
-           (lambda _
-             ;; Do not attempt to create /etc or /var.
-             (substitute* "scripts/Makefile"
-               (("\\$\\(DESTDIR\\)\\$\\(sysconfdir\\)")
-                "$(DESTDIR)$(prefix)$(sysconfdir)"))
-             (substitute* "user/v84/Makefile"
-               (("\\$\\(DESTDIR\\)\\$\\(localstatedir\\)")
-                "$(DESTDIR)$(prefix)$(localstatedir)")
-               (("\\$\\(DESTDIR\\)/lib/drbd")
-                "$(DESTDIR)$(prefix)/lib/drbd"))
-             (substitute* "user/v9/Makefile"
-               (("\\$\\(DESTDIR\\)\\$\\(localstatedir\\)")
-                "$(DESTDIR)$(prefix)$(localstatedir)")
-               (("\\$\\(DESTDIR\\)\\$\\(DRBD_LIB_DIR\\)")
-                "$(DESTDIR)$(prefix)$(DRBD_LIB_DIR)"))
-             #t)))))
+     (list
+      #:configure-flags
+      #~(list "--sysconfdir=/etc"
+              "--localstatedir=/var"
+              ;; Do not install sysv or systemd init scripts.
+              "--with-initscripttype=none"
+              ;; Use the pre-built manual pages present in release
+              ;; tarballs instead of generating them from scratch.
+              "--with-prebuiltman"
+              ;; Disable support for DRBD 8.3 as it is only for
+              ;; Linux-Libre versions < 3.8.  8.4 is the latest
+              ;; kernel driver as of Linux 5.18.
+              "--without-83support")
+      #:test-target "test"
+      #:make-flags #~(list "WANT_DRBD_REPRODUCIBLE_BUILD=yesplease")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'patch-generated-file-shebangs 'patch-documentation
+            (lambda _
+              ;; The preceding phase misses some Makefiles with unusual file
+              ;; names, so we handle those here.
+              (for-each patch-makefile-SHELL (find-files "documentation/common"
+                                                         "^Makefile"))))
+          (add-before 'configure 'use-absolute-/lib/drbd
+            (lambda _
+              ;; Look for auxiliary executables below exec_prefix instead
+              ;; of assuming /lib/drbd (see TODO comment in the file).
+              (substitute* "user/v9/drbdtool_common.c"
+                (("\"/lib/drbd\"")
+                 (string-append "\"" #$output "/lib/drbd\"")))))
+          (add-after 'configure 'adjust-installation-directories
+            (lambda _
+              ;; Do not attempt to create /etc or /var.
+              (substitute* "scripts/Makefile"
+                (("\\$\\(DESTDIR\\)\\$\\(sysconfdir\\)")
+                 "$(DESTDIR)$(prefix)$(sysconfdir)"))
+              (substitute* "user/v84/Makefile"
+                (("\\$\\(DESTDIR\\)\\$\\(localstatedir\\)")
+                 "$(DESTDIR)$(prefix)$(localstatedir)")
+                (("\\$\\(DESTDIR\\)/lib/drbd")
+                 "$(DESTDIR)$(prefix)/lib/drbd"))
+              (substitute* "user/v9/Makefile"
+                (("\\$\\(DESTDIR\\)\\$\\(localstatedir\\)")
+                 "$(DESTDIR)$(prefix)$(localstatedir)")
+                (("\\$\\(DESTDIR\\)\\$\\(DRBD_LIB_DIR\\)")
+                 "$(DESTDIR)$(prefix)$(DRBD_LIB_DIR)")))))))
     (native-inputs
-     `(("clitest" ,clitest)
-       ("flex" ,flex)
-       ("udev" ,eudev)))          ;just to satisfy a configure check
+     (list clitest
+           eudev                        ;just to satisfy a configure check
+           flex))
     (home-page "https://www.linbit.com/drbd/")
     (synopsis "Replicate block devices between machines")
     (description
