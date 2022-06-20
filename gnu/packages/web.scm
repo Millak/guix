@@ -832,7 +832,7 @@ stream.  Remote control of the module is possible over HTTP.")
 (define-public lighttpd
   (package
     (name "lighttpd")
-    (version "1.4.64")
+    (version "1.4.65")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.lighttpd.net/lighttpd/"
@@ -840,7 +840,7 @@ stream.  Remote control of the module is possible over HTTP.")
                                   "lighttpd-" version ".tar.xz"))
               (sha256
                (base32
-                "09hf3cp4ivy9a9z9drgi4f6d60137dcqncqw0wpbyvs9lygrsj71"))))
+                "1gi84fsc7x4d7r5vpg4pcwfk6j80wxvv64m94d041g4zca5ac3xz"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
