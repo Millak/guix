@@ -50,6 +50,7 @@
 ;;; Copyright © 2021 Jean-Baptiste Volatier <jbv@pm.me>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Pierre-Antoine Bouttier <pierre-antoine.bouttier@univ-grenoble-alpes.fr>
+;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5831,51 +5832,51 @@ as equations, scalars, vectors, and matrices.")
                 "1hnbzq10d23drd7ksm3c1n2611c3kd0q0yxgz8y78zaafwczvwxx"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:imported-modules ((guix build python-build-system)
-                           ,@%gnu-build-system-modules)
-       #:modules (((guix build python-build-system) #:select (site-packages))
-                  (guix build gnu-build-system)
-                  (guix build utils))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'enable-bytecode-determinism
-           (lambda _
-             (setenv "PYTHONHASHSEED" "0")
-             #t))
-         (add-after 'unpack 'fix-compatability
-           ;; Versions after 4.8.3 have immintrin.h IFDEFed for Windows only.
-           (lambda _
-             (substitute* "src/util/mpz.cpp"
-               (("#include <immintrin.h>") ""))
-             #t))
-         (add-before 'configure 'bootstrap
-           (lambda _
-             (invoke "python" "scripts/mk_make.py")))
-         ;; work around gnu-build-system's setting --enable-fast-install
-         ;; (z3's `configure' is a wrapper around the above python file,
-         ;; which fails when passed --enable-fast-install)
-         (replace 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (invoke "./configure"
-                     "--python"
-                     (string-append "--prefix=" (assoc-ref outputs "out"))
-                     (string-append "--pypkgdir=" (site-packages inputs outputs)))))
-         (add-after 'configure 'change-directory
-           (lambda _
-             (chdir "build")
-             #t))
-         (add-before 'check 'make-test-z3
-           (lambda _
-             ;; Build the test suite executable.
-             (invoke "make" "test-z3" "-j"
-                     (number->string (parallel-job-count)))))
-         (replace 'check
-           (lambda _
-             ;; Run all the tests that don't require arguments.
-             (invoke "./test-z3" "/a"))))))
+     (list
+      #:imported-modules `((guix build python-build-system)
+                           ,@%cmake-build-system-modules)
+      #:modules '((guix build cmake-build-system)
+                  (guix build utils)
+                  ((guix build python-build-system) #:select (site-packages)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'enable-bytecode-determinism
+            (lambda _
+              (setenv "PYTHONHASHSEED" "0")
+              #t))
+          (add-after 'unpack 'fix-compatability
+            ;; Versions after 4.8.3 have immintrin.h IFDEFed for Windows only.
+            (lambda _
+              (substitute* "src/util/mpz.cpp"
+                (("#include <immintrin.h>") ""))
+              #t))
+          (add-before 'configure 'bootstrap
+            (lambda _
+              (invoke "python" "scripts/mk_make.py")))
+          ;; work around gnu-build-system's setting --enable-fast-install
+          ;; (z3's `configure' is a wrapper around the above python file,
+          ;; which fails when passed --enable-fast-install)
+          (replace 'configure
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (invoke "./configure"
+                      "--python"
+                      (string-append "--prefix=" (assoc-ref outputs "out"))
+                      (string-append "--pypkgdir=" (site-packages inputs outputs)))))
+          (add-after 'configure 'change-directory
+            (lambda _
+              (chdir "build")
+              #t))
+          (add-before 'check 'make-test-z3
+            (lambda _
+              ;; Build the test suite executable.
+              (invoke "make" "test-z3" "-j"
+                      (number->string (parallel-job-count)))))
+          (replace 'check
+            (lambda _
+              ;; Run all the tests that don't require arguments.
+              (invoke "./test-z3" "/a"))))))
     (native-inputs
-     `(("which" ,which)
-       ("python" ,python-wrapper)))
+     (list which python-wrapper))
     (synopsis "Theorem prover")
     (description "Z3 is a theorem prover and @dfn{satisfiability modulo
 theories} (SMT) solver.  It provides a C/C++ API, as well as Python bindings.")
