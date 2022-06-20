@@ -800,11 +800,6 @@ static checks."
   (define println
     (cut format #t "~a~%" <>))
 
-  (define menu-entries
-    (if (eq? 'init action)
-        '()
-        (map boot-parameters->menu-entry (profile-boot-parameters))))
-
   (define os
     (image-operating-system image))
 
@@ -813,7 +808,11 @@ static checks."
 
   (define bootcfg
     (and (memq action '(init reconfigure))
-         (operating-system-bootcfg os menu-entries)))
+         (operating-system-bootcfg
+          os
+          (if (eq? action 'init)
+              '()
+              (map boot-parameters->menu-entry (profile-boot-parameters))))))
 
   (when (eq? action 'reconfigure)
     (maybe-suggest-running-guix-pull)
