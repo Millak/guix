@@ -50,6 +50,7 @@
 ;;; Copyright © 2022 Simon South <simon@simonsouth.net>
 ;;; Copyright © 2022 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2022 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -183,6 +184,33 @@
 oriented, reliable transport protocol with direct support for multihoming that
 runs on top of IP or UDP, and supports both v4 and v6 versions.")
     (license license:bsd-3)))
+
+(define-public arp-scan
+  (package
+    (name "arp-scan")
+    (version "1.9.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/royhills/arp-scan/")
+         (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mf7a4f9vzvnkiavc87aqyciswggsb4fpy7j05jxnvjyyxv3l7gp"))))
+    (build-system gnu-build-system)
+    (inputs
+     (list libpcap))
+    (native-inputs
+     (list autoconf automake libtool pkg-config))
+    (propagated-inputs
+     (list perl-libwww))
+    (home-page "https://github.com/royhills/arp-scan")
+    (synopsis "Discover and fingerprint IP hosts on the local network using ARP")
+    (description "Arp-scan is a tool that uses ARP to discover and fingerprint
+IP hosts on the local network.")
+    (license license:gpl3+)))
 
 (define-public axel
   (package
