@@ -168,13 +168,13 @@ belonging to various licenses.")
 (define-public reuse
   (package
     (name "reuse")
-    (version "0.14.0")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "reuse" version))
        (sha256
-        (base32 "1q84qv982y67inqb67iy3r6z7339593w7zdaaxswjqxfrd1by7bp"))))
+        (base32 "1m78q5x19xvhywi1xl0prrag89ihvqiq14lba27rrxl75nz24c6v"))))
     (build-system python-build-system)
     (native-inputs
      (list python-pytest python-setuptools-scm))
