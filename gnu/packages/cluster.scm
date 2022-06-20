@@ -128,6 +128,9 @@
 shared-nothing, replicated storage solution mirroring the content of block
 devices (hard disks, partitions, logical volumes etc.) over any network
 connection.  This package contains the userland utilities.")
+    (properties
+     '((release-monitoring-url
+        . "https://www.linbit.com/en/drbd-community/drbd-download/")))
     (license license:gpl2+)))
 
 (define-public keepalived
