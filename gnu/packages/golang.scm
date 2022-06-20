@@ -34,6 +34,7 @@
 ;;; Copyright © 2021 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2021 Lu Hui <luhux76@gmail.com>
 ;;; Copyright © 2022 Pier-Hugues Pellerin <phpellerin@gmail.com>
+;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -9843,3 +9844,24 @@ Jsonnet} data templating language in Go.  It is a feature-complete,
 production-ready implementation, compatible with the original Jsonnet C++
 implementation.")
     (license license:asl2.0)))
+
+(define-public go-github-com-gorilla-websocket
+  (package
+    (name "go-github-com-gorilla-websocket")
+    (version "1.5.0")
+    (home-page "https://github.com/gorilla/websocket")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1xrr6snvs9g1nzxxg05w4i4pq6k1xjljl5mvavd838qc468n118i"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/gorilla/websocket"))
+    (synopsis "Fast WebSocket implementation for Go")
+    (description "Gorilla WebSocket is a Go implementation of the WebSocket protocol.")
+    (license license:bsd-2)))
