@@ -30,15 +30,18 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages docbook)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages ruby)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages texinfo)
-  #:use-module (gnu packages tls))
+  #:use-module (gnu packages tls)
+  #:use-module (gnu packages xml))
 
 (define-public drbd-utils
   (package
@@ -75,9 +78,6 @@
               "--localstatedir=/var"
               ;; Do not install sysv or systemd init scripts.
               "--with-initscripttype=none"
-              ;; Use the pre-built manual pages present in release
-              ;; tarballs instead of generating them from scratch.
-              "--with-prebuiltman"
               ;; Disable support for DRBD 8.3 as it is only for
               ;; Linux-Libre versions < 3.8.  8.4 is the latest
               ;; kernel driver as of Linux 5.18.
@@ -86,6 +86,16 @@
       #:make-flags #~(list "WANT_DRBD_REPRODUCIBLE_BUILD=yesplease")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-ja-translation
+            (lambda _
+              ;; XXX: The japanese documentation cannot be created due to
+              ;; several "Invalid po file" and "use of uninitialized variable"
+              ;; in po4a.
+              (substitute* "Makefile.in"
+                (("(DOC_DIRS.*)documentation/ja/v[[:digit:]]+" _ match)
+                 match)
+                (("[[:blank:]]+\\$\\(MAKE\\) -C documentation/ja/v[[:digit:]]+.*")
+                 ""))))
           (add-after 'patch-generated-file-shebangs 'patch-documentation
             (lambda _
               ;; The preceding phase misses some Makefiles with unusual file
@@ -118,7 +128,14 @@
     (native-inputs
      (list clitest
            eudev                        ;just to satisfy a configure check
-           flex))
+           flex
+           ;; For the documentation.
+           docbook-xml
+           docbook-xml-4.4              ;used by documentation/ra2refentry.xsl
+           docbook-xsl
+           libxml2                      ;for XML_CATALOG_FILES
+           libxslt                      ;for xsltproc
+           ruby-asciidoctor))
     (home-page "https://www.linbit.com/drbd/")
     (synopsis "Replicate block devices between machines")
     (description
