@@ -6778,6 +6778,37 @@ tupfiles, such as rule definitions, user-defined variables, macros, flags, bin
 variables, and so on.  The mode also allows you to execute Tup commands.")
     (license license:gpl3+)))
 
+(define-public emacs-compat
+  (package
+    (name "emacs-compat")
+    (version "28.1.1.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~pkal/compat")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "19abp29rnbkw91q0h2yqm2z7awzzjhci8h6v875g5ahvplrp6337"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-nadvice))
+    (home-page "https://git.sr.ht/~pkal/compat")
+    (synopsis "Emacs Lisp Compatibility Library")
+    (description
+     "To allow for the usage of Emacs functions and macros that are defined
+in newer versions of Emacs, @code{compat.el} provides definitions that
+are installed ONLY if necessary.  These reimplementations of functions
+and macros are at least subsets of the actual implementations.  Be
+sure to read the documentation string to make sure.
+
+Not every function provided in newer versions of Emacs is provided
+here.  Some depend on new features from the core, others cannot be
+implemented to a meaningful degree.  The main audience for this
+library are not regular users, but package maintainers.  Therefore
+commands and user options are usually not implemented here.")
+    (license license:gpl3+)))
+
 (define-public emacs-company
   (package
     (name "emacs-company")
