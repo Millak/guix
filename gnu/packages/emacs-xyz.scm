@@ -8983,7 +8983,7 @@ style, or as multiple word prefixes.")
 (define-public emacs-consult
   (package
     (name "emacs-consult")
-    (version "0.17")
+    (version "0.18")
     (source
      (origin
        (method git-fetch)
@@ -8991,9 +8991,10 @@ style, or as multiple word prefixes.")
              (url "https://github.com/minad/consult")
              (commit version)))
        (sha256
-        (base32 "08l3h7b5j1q9nwcq660667b245qspl20ikhfdvd9k3g3n2p6p5kz"))
+        (base32 "0sy4rn1vjk1g50r8z14hzj8lds6s7ij2zkjqfi6mfash5il75wnq"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
+    (propagated-inputs (list emacs-compat))
     (home-page "https://github.com/minad/consult")
     (synopsis "Consulting completing-read")
     (description "This package provides various handy commands based on the
