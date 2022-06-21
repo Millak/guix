@@ -16120,7 +16120,7 @@ focus on event-based network programming and multiprotocol integration.")
 (define-public python-pika
   (package
     (name "python-pika")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
       (origin
         (method git-fetch)
@@ -16130,27 +16130,29 @@ focus on event-based network programming and multiprotocol integration.")
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "0cm45xydk2jigydwszwik89qlbk6l3l18sxhzppzqmxw2rdkm22s"))))
+          "0sqj3bg6jwign8vwvn337fbwy69sm684ns1vh5kbfnskq4him9i2"))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
-                  (add-before 'check 'disable-live-tests
+                  (add-after 'unpack 'disable-live-tests
                     (lambda _
                       ;; Disable tests that require RabbitMQ, which is not
                       ;; yet available in Guix.
-                      (substitute* "setup.cfg"
-                        (("tests/unit,tests/acceptance")
-                         "tests/unit"))
+                      (substitute* "nose2.cfg"
+                        (("tests=tests/unit,tests/acceptance")
+                         "start-dir=tests/unit"))
                       (with-directory-excursion "tests"
                         (for-each delete-file
                                 '("unit/base_connection_tests.py"
                                   "unit/threaded_test_wrapper_test.py")))))
                   (replace 'check
-                    (lambda _
-                      (invoke "nosetests"))))))
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (setenv "PYTHONPATH" (getcwd))
+                        (invoke "nose2" "-v")))))))
     (native-inputs
      (list python-mock
-           python-nose
+           python-nose2
            ;; These are optional at runtime, and provided here for tests.
            python-gevent
            python-tornado
