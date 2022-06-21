@@ -284,24 +284,24 @@ protocols.")
                 (string-append out "/share/doc")
                 (string-append doc "/share/doc"))))))))
     (native-inputs
-     `(("dot" ,graphviz)
-       ("doxygen" ,doxygen)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
-       ("sphinx" ,python-sphinx)
-       ("yaml" ,python-pyyaml)))
+     (list graphviz                     ;for 'dot'
+           doxygen
+           pkg-config
+           python-wrapper
+           python-sphinx
+           python-pyyaml))
     (inputs
-     `(("boost" ,boost)
-       ("glib" ,glib)
-       ("gstreamer" ,gst-plugins-base)
-       ("gnutls" ,gnutls)
-       ("libtiff" ,libtiff)
-       ("openssl" ,openssl)
-       ("python-jinja2" ,python-jinja2)
-       ("python-ply" ,python-ply)
-       ("qt5" ,qtbase-5)
-       ("udev" ,eudev)
-       ("yaml" ,libyaml)))
+     (list boost
+           eudev
+           glib
+           gst-plugins-base
+           gnutls
+           libtiff
+           libyaml
+           openssl
+           python-jinja2
+           python-ply
+           qtbase-5))
     (synopsis "Camera stack and framework")
     (description "LibCamera is a complex camera support library for GNU+Linux,
 Android, and ChromeOS.")
