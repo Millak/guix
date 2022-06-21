@@ -717,14 +717,14 @@ and several other projects.")
 (define-public python-breathe
   (package
     (name "python-breathe")
-    (version "4.30.0")
+    (version "4.34.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "breathe" version))
        (sha256
         (base32
-         "055h95fkdld7s49878fqjx1nri1drj1czc184vrb7i60mf2yqg9n"))))
+         "18fvphs1cb2cns9q82195fx7lmlwfikzwa10cczavpaax2jnh1xc"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-docutils python-sphinx))
