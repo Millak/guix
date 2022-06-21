@@ -1200,13 +1200,13 @@ FileFields during tests.")
 (define-public python-django-auth-ldap
   (package
     (name "python-django-auth-ldap")
-    (version "4.0.0")
+    (version "4.1.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "django-auth-ldap" version))
               (sha256
                (base32
-                "0fajn4bk7m1hk0mjz97q7vlfzh7ibzv8f4qn7zhkq26f4kk7jvr7"))))
+                "0jd9jms9qpa92fk5n7gqcxjk3zs6ay79r73ann7cw1vqn79lkxvp"))))
     (build-system python-build-system)
     (arguments
      (list #:phases
