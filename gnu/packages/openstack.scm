@@ -77,25 +77,25 @@ scanning all the files it generates a report.")
 (define-public python-cliff
   (package
     (name "python-cliff")
-    (version "3.5.0")
+    (version "3.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cliff" version))
        (sha256
         (base32
-         "0n8pzr0mnn9lq2mykds69ij2xrn0fsirh4ndmkx0mzydbx5niysv"))))
+         "180059m5ky3hlw2m9fszh4h2ykja8zl7ql5dsxjijiv47hzywnh4"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f))
     (native-inputs
      (list python-pbr))
     (propagated-inputs
-     (list python-cmd2
+     (list python-autopage
+           python-cmd2
            python-prettytable
            python-pyparsing
            python-pyyaml
-           python-bandit
            python-stevedore))
     (home-page "https://opendev.org/openstack/cliff")
     (synopsis "Framework for building command line programs")
