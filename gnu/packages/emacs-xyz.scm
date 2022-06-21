@@ -11604,7 +11604,7 @@ Emacs.")
 (define-public emacs-web-mode
   (package
     (name "emacs-web-mode")
-    (version "17")
+    (version "17.2.1")
     (source
      (origin
        (method git-fetch)
@@ -11613,7 +11613,7 @@ Emacs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jr5a1nzp8nbdng0k2fcaymiiv9ngrbknbrqaswgqn3akvx793jk"))))
+        (base32 "0sd2ysysn8x4iwz2fhnvh8knr3pdqgkvhkhsl948smmfl0dwj42f"))))
     (build-system emacs-build-system)
     (synopsis "Major mode for editing web templates")
     (description "Web mode is an Emacs major mode for editing web templates
