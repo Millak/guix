@@ -422,15 +422,20 @@ OpenSSL for TARGET."
                                #$(target->openssl-target
                                   (%current-target-system))))))
                 #~())
-         ;; This test seems to be dependant on kernel features.
-         ;; https://github.com/openssl/openssl/issues/12242
-         #$@(if (or (target-arm?)
-                    (target-riscv64?))
-                #~((replace 'check
-                     (lambda* (#:key tests? test-target #:allow-other-keys)
-                       (when tests?
-                         (invoke "make" "TESTS=-test_afalg" test-target)))))
-                #~())
+         (replace 'check
+           (lambda* (#:key tests? test-target #:allow-other-keys)
+             (when tests?
+               ;; 'test_ssl_new.t' in 1.1.1n and 3.0.3 fails due to an expired
+               ;; certificate:
+               ;; <https://github.com/openssl/openssl/issues/18441>.
+               ;; Skip it.
+               ;;
+               ;; 'test_afalg' seems to be dependent on kernel features:
+               ;; <https://github.com/openssl/openssl/issues/12242>.
+               (invoke "make" test-target
+                       #$(if (or (target-arm?) (target-riscv64?))
+                             "TESTS=-test_afalg -tls_ssl_new"
+                             "TESTS=-test_ssl_new")))))
          (replace 'configure
            (lambda* (#:key configure-flags #:allow-other-keys)
              (let* ((out #$output)
