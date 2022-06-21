@@ -8298,25 +8298,16 @@ cluster down and deletes the throwaway profile.")
 (define-public python-ipython-sql
   (package
     (name "python-ipython-sql")
-    (version "0.4.0")
+    (version "0.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ipython-sql" version))
        (sha256
-        (base32 "0v74ayc6vw98f4jljmwy45qpqbcbhlrb4g1qdyypq9sppxcqx21y"))))
+        (base32 "1r6rz8jgrqzhkf2flwjw75d96g8l7kykmx5wli3q1988w96391ip"))))
     (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-build
-           (lambda _
-             ;; The "NEWS.rst" file is missing from the PyPI distribution.
-             ;; (see: https://github.com/catherinedevlin/ipython-sql/issues/164)
-             (substitute* "setup.py"
-               (("NEWS = [^\n]*") "")
-               (("long_description=README \\+ '\\\\n\\\\n' \\+ NEWS,")
-                "long_description=README,")))))))
+    ;; Tests must run under IPython.
+    (arguments '(#:tests? #f))
     (propagated-inputs
      (list python-ipython
            python-ipython-genutils
