@@ -5132,7 +5132,6 @@ Server (PLS).")
                      "not test_pyqt_completion"))))))
     (propagated-inputs
      (list python-autopep8
-           python-configparser
            python-pydocstyle
            python-flake8
            python-future
