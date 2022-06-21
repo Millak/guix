@@ -1808,7 +1808,7 @@ another XPath engine to find the matching elements in an XML or HTML document.")
 (define-public python-databricks-cli
   (package
     (name "python-databricks-cli")
-    (version "0.14.1")
+    (version "0.17.0")
     (home-page "https://github.com/databricks/databricks-cli")
     (source (origin
               (method git-fetch)
@@ -1816,21 +1816,25 @@ another XPath engine to find the matching elements in an XML or HTML document.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "03w19rzh72jll9phai23wp0c2mlv39qsrv50mhckziy39z60yxh8"))))
+                "1qwbxnx64kw7lrzlyx3hfbnjxpc19cqvvj0gcrkqpyjsgd08vja0"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
+     '(#:phases (modify-phases %standard-phases
                   (replace 'check
                     (lambda _
-                      (invoke "pytest" "tests" "-vv"
-                              ;; XXX: This fails with newer Pytest
-                              ;; (upstream uses Pytest 3..).
-                              "-k" "not test_get_request_with_list"))))))
+                      (invoke "pytest" "tests" "-vv"))))))
     (native-inputs
-     (list ;; For tests.
-           python-decorator python-mock python-pytest python-requests-mock))
+     ;; For tests.
+     (list python-decorator
+           python-mock
+           python-pytest
+           python-requests-mock))
     (propagated-inputs
-     (list python-click python-configparser python-requests python-six
+     (list python-click
+           python-oauthlib
+           python-pyjwt
+           python-requests
+           python-six
            python-tabulate))
     (synopsis "Command line interface for Databricks")
     (description
