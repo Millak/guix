@@ -8306,8 +8306,16 @@ cluster down and deletes the throwaway profile.")
        (sha256
         (base32 "1r6rz8jgrqzhkf2flwjw75d96g8l7kykmx5wli3q1988w96391ip"))))
     (build-system python-build-system)
-    ;; Tests must run under IPython.
-    (arguments '(#:tests? #f))
+    (arguments
+     (list #:tests? #f                  ;must run under IPython
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'permit-newer-prettytable
+                 ;; See https://github.com/catherinedevlin/ipython-sql/issues/202
+                 (lambda _
+                   (substitute* "setup.py"
+                     (("prettytable<1")
+                      "prettytable")))))))
     (propagated-inputs
      (list python-ipython
            python-ipython-genutils
