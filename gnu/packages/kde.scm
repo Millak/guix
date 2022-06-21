@@ -124,15 +124,14 @@ This package contains GUI widgets for baloo.")
 (define-public grantleetheme
   (package
     (name "grantleetheme")
-    (version "20.04.1")
+    (version "21.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/grantleetheme-" version ".tar.xz"))
        (sha256
-        (base32 "0gabc5cb0sf00s7m5v2jnq55qsrdbrq6nqd15y1i15p788zifsjx"))
-       (patches (search-patches "grantlee-merge-theme-dirs.patch"))))
+        (base32 "1w83slbkj2y1wk78srq2k95ybs66sb4mbaa0zm7fl9pkwhqxbnb7"))))
     (build-system qt-build-system)
     (arguments `(#:tests? #f))  ; unexpected error in the test suite.
     (native-inputs
