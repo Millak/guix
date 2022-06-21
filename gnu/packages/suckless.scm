@@ -520,31 +520,31 @@ point surf to another URI by setting its XProperties.")
     (build-system gnu-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
-                  (delete 'configure)  ; no configuration
+                  (delete 'configure) ;no configuration
                   (add-before 'build 'patch-farbfeld
                     (lambda* (#:key inputs #:allow-other-keys)
                       (substitute* "config.def.h"
                         (("2ff") (search-input-file inputs "/bin/2ff"))))))
-       #:tests? #f                      ; no test suite
+       #:tests? #f                                ;no test suite
        #:make-flags
        (let ((pkg-config (lambda (flag)
-                           (string-append
-                            "$(shell pkg-config " flag " "
-                            "xft fontconfig x11 libpng)"))))
-         (list (string-append "CC=" ,(cc-for-target))
+                           (string-append "$(shell pkg-config " flag " "
+                                          "xft fontconfig x11 libpng)"))))
+         (list (string-append "CC="
+                              ,(cc-for-target))
                (string-append "PREFIX=" %output)
-               (string-append "INCS=-I. " (pkg-config "--cflags"))
-               (string-append "LIBS=" (pkg-config "--libs") " -lm")))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     `(("farbfeld" ,farbfeld)
-       ("libpng" ,libpng)
-       ("libx11" ,libx11)
-       ("libxft" ,libxft)
-       ("fontconfig" ,fontconfig)))
+               (string-append "INCS=-I. "
+                              (pkg-config "--cflags"))
+               (string-append "LIBS="
+                              (pkg-config "--libs") " -lm")))))
+    (native-inputs (list pkg-config))
+    (inputs `(("farbfeld" ,farbfeld) ("libpng" ,libpng)
+              ("libx11" ,libx11)
+              ("libxft" ,libxft)
+              ("fontconfig" ,fontconfig)))
     (synopsis "Plain-text presentation tool")
-    (description "Sent uses plain-text files and PNG images to create slideshow
+    (description
+     "Sent uses plain-text files and PNG images to create slideshow
 presentations.  Each paragraph represents a slide in the presentation.
 Especially for presentations using the Takahashi method this is very nice and
 allows you to write down the presentation for a quick lightning talk within a
