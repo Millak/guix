@@ -48,6 +48,7 @@
 ;;; Copyright © 2022 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
+;;; Copyright © 2022 Jose G Perez Taveras <josegpt27@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5562,7 +5563,7 @@ complete without obstructing your daily work.")
 (define-public playerctl
   (package
     (name "playerctl")
-    (version "2.2.1")
+    (version "2.4.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5571,14 +5572,14 @@ complete without obstructing your daily work.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "17hi33sw3663qz5v54bqqil31sgkrlxkb2l5bgqk87pac6x2wnbz"))))
+                "0ij065blj3h5v6iivvpmgh1095vicj1nc7hp1nhlhpqagd98l89s"))))
     (build-system meson-build-system)
     (arguments
-     `(#:configure-flags '("-Dintrospection=false" "-Dgtk-doc=false")))
-    (inputs (list python-pygobject))
+     `(#:configure-flags '("-Dgtk-doc=false")))
     (native-inputs
      `(("glib:bin" ,glib "bin")
-       ("pkg-config" ,pkg-config)))
+       ("pkg-config" ,pkg-config)
+       ("gobject-introspection" ,gobject-introspection)))
     (synopsis "Control MPRIS-supporting media player applications")
     (description
      "Playerctl is a command-line utility and library for controlling media
