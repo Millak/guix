@@ -16389,8 +16389,8 @@ key.  Optionally, a mouse pop-up can be added by binding
     (license license:gpl3+)))
 
 (define-public emacs-idris-mode
-  (let ((commit "b77eadd8ac2048d5c882b4464bd9673e45dd6a59")
-        (revision "0"))
+  (let ((commit "9bc7697406f719258d93835df3c1761efbfecaa7")
+        (revision "1"))
     (package
       (name "emacs-idris-mode")
       (version (git-version "1.0" revision commit))
@@ -16403,7 +16403,7 @@ key.  Optionally, a mouse pop-up can be added by binding
          (file-name (git-file-name name commit))
          (sha256
           (base32
-           "1v8av6jza1j00ln75zjwaca0vmmv0fhhhi94p84rlfzgzykyb9g1"))))
+           "1d1f7kx0fw632js7qd1sra5wbpwyamcqs5wpzhyynmr5ybb0vyl7"))))
       (build-system emacs-build-system)
       (propagated-inputs
        (list emacs-prop-menu))
