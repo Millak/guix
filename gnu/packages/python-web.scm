@@ -1423,26 +1423,24 @@ C, yielding parse times that can be a thirtieth of the html5lib parse times.")
 (define-public python-minio
   (package
     (name "python-minio")
-    (version "6.0.0")
+    (version "7.1.9")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "minio" version))
               (sha256
                (base32
-                "1cxpa0m7mdvpdbc1g6wlihq6ja4g4paxkl6f3q84bbnx07zpbllp"))))
+                "02nh865xbf2glxvcy70ir6gkcwqxl119zryfc70q7w0yjvkg64d7"))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
                   (add-before 'check 'disable-failing-tests
                     (lambda _
                       ;; This test requires network access.
-                      (delete-file "tests/unit/credentials_test.py")
-                      #t)))))
+                      (delete-file "tests/unit/credentials_test.py"))))))
     (native-inputs
      (list python-faker python-mock python-nose))
     (propagated-inputs
-     (list python-certifi python-configparser python-dateutil python-pytz
-           python-urllib3))
+     (list python-certifi python-dateutil python-pytz python-urllib3))
     (home-page "https://github.com/minio/minio-py")
     (synopsis "Programmatically access Amazon S3 from Python")
     (description
