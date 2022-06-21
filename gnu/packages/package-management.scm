@@ -1693,6 +1693,7 @@ in an isolated environment, in separate namespaces.")
                                          "guile-gcrypt"
                                          "guix"
                                          "guile-lib"
+                                         "guile-lzlib"
                                          "guile-prometheus"
                                          "guile-sqlite3"
                                          "gnutls"
@@ -1732,6 +1733,7 @@ in an isolated environment, in separate namespaces.")
              guile-fibers-1.1
              guile-prometheus
              guile-lib
+             guile-lzlib
              guile-sqlite3))
       (inputs
        (list bash-minimal
@@ -1743,6 +1745,7 @@ in an isolated environment, in separate namespaces.")
              guile-fibers-1.1
              guile-prometheus
              guile-lib
+             guile-lzlib
              guile-sqlite3
              gnutls))
       (home-page "https://git.cbaines.net/guix/nar-herder")
