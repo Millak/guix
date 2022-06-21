@@ -1469,19 +1469,29 @@ its size
 (define-public polybar
   (package
     (name "polybar")
-    (version "3.5.7")
+    (version "3.6.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/polybar/polybar/releases/"
                            "download/" version "/polybar-" version ".tar.gz"))
        (sha256
-        (base32 "1nr386jdlm8qkbdf23w7lyvbfhr362s90f957fawnyi1finhw8bk"))))
+        (base32 "19azx5dpfyfh0pv4q2fcrf4p7a0pc5d13m7lnv3qy8376mbmhmzj"))))
     (build-system cmake-build-system)
     (arguments
      ;; Test is disabled because it requires downloading googletest from the
      ;; Internet.
-     '(#:tests? #f))
+     (list #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; Make polybar find its default configuration file in the
+               ;; store.
+               (add-after 'unpack 'patch-config-path
+                 (lambda _
+                   (substitute* "CMakeLists.txt"
+                     (("/etc") (string-append #$output "/etc")))
+                   (substitute* "src/utils/file.cpp"
+                     (("\"/etc\"") (string-append "\"" #$output "/etc\""))))))))
     (inputs
      (list alsa-lib
            cairo
@@ -1489,6 +1499,7 @@ its size
            jsoncpp
            libmpdclient
            libnl
+           libuv
            libxcb
            pulseaudio
            xcb-proto
@@ -1500,9 +1511,6 @@ its size
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("python-sphinx" ,python-sphinx) ; for the manual
-       ;; XXX: "python" input must be located after "python-2", or the package
-       ;; fails to build with "missing required python module: xcbgen".
-       ("python-2" ,python-2)           ; lib/xpp depends on python 2
        ("python" ,python)))             ; xcb-proto depends on python 3
     (home-page "https://polybar.github.io/")
     (synopsis "Fast and easy-to-use status bar")
