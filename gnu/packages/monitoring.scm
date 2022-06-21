@@ -266,18 +266,18 @@ solution (server-side)")))
     (arguments
      '(#:phases (modify-phases %standard-phases
                   (add-after 'unpack 'use-absolute-ncurses
-                    (lambda _
-                      (substitute* "bin/zabbix-cli"
-                        (("'clear'")
-                         (string-append "'" (which "clear") "'")))))
+                    (lambda* (#:key inputs #:allow-other-keys)
+                      (let ((clear (search-input-file inputs "bin/clear")))
+                        (substitute* "bin/zabbix-cli"
+                          (("'clear'")
+                           (string-append "'" clear "'"))))))
                   (add-after 'unpack 'patch-setup.py
                     (lambda _
                       ;; Install data_files to $out/share instead of /usr/share.
                       (substitute* "setup.py"
                         (("/usr/") "")))))))
     (inputs
-     `(("clear" ,ncurses)
-       ("python-requests" ,python-requests)))
+     (list ncurses python-requests))
     (home-page "https://github.com/unioslo/zabbix-cli")
     (synopsis "Command-line interface to Zabbix")
     (description
