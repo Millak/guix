@@ -302,7 +302,8 @@ GP2C, the GP to C compiler, translates GP scripts to PARI programs.")
                                 version ".tar.gz"))
             (sha256
              (base32
-              "1ws2yhzxmm2l5xqqqcjcimmg40f9qq5l9i6d4i5434an9v9s8531"))))
+              "1ws2yhzxmm2l5xqqqcjcimmg40f9qq5l9i6d4i5434an9v9s8531"))
+             (patches (search-patches "cmh-support-fplll.patch"))))
    (build-system gnu-build-system)
    (inputs
      (list gmp
