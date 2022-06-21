@@ -9956,7 +9956,25 @@ applications.")
        (method url-fetch)
        (uri (pypi-uri "pyzmq" version))
        (sha256
-        (base32 "0737kizh53n4rjq1xbm6nhr0bq65xflg04i1d8fcky0nwwrw1pcf"))))
+        (base32 "0737kizh53n4rjq1xbm6nhr0bq65xflg04i1d8fcky0nwwrw1pcf"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            ;; The bundled zeromq source code.
+            (delete-file-recursively "bundled")
+            ;; Delete cythonized files.
+            (for-each delete-file
+                      (list "zmq/backend/cython/constants.c"
+                            "zmq/backend/cython/context.c"
+                            "zmq/backend/cython/_device.c"
+                            "zmq/backend/cython/error.c"
+                            "zmq/backend/cython/message.c"
+                            "zmq/backend/cython/_poll.c"
+                            "zmq/backend/cython/_proxy_steerable.c"
+                            "zmq/backend/cython/socket.c"
+                            "zmq/backend/cython/utils.c"
+                            "zmq/backend/cython/_version.c"
+                            "zmq/devices/monitoredqueue.c"))))))
     (build-system python-build-system)
     (arguments
      `(#:configure-flags
