@@ -6668,6 +6668,58 @@ multivalue dictionary that retains the order of insertions and deletions.")
 run simple @code{argparse} parsers from function signatures.")
     (license license:lgpl3+)))
 
+(define-public python-autopage
+  (package
+    (name "python-autopage")
+    (version "0.5.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "autopage" version))
+              (sha256
+               (base32
+                "169ixll1ncm2a2pcc86665ikjv2lrzs10p6c1w4yj55p3gk3xgh1"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Do a manual PEP 517 style build/install procedure until the
+          ;; python-build-system overhaul is merged.
+          (replace 'build
+            (lambda _
+              ;; ZIP does not support timestamps before 1980.
+              (let ((circa-1980 (* 10 366 24 60 60)))
+                (setenv "SOURCE_DATE_EPOCH" (number->string circa-1980))
+                (invoke "python" "-m" "build" "--wheel" "--no-isolation" "."))))
+          (add-before 'check 'disable-e2e-tests
+            (lambda _
+              ;; These tests rely on KeyboardInterrupts which do not
+              ;; work in the build container.
+              (delete-file "autopage/tests/test_end_to_end.py")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv"))))
+          (replace 'install
+            (lambda _
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl)))))))
+    (native-inputs
+     (list python-pypa-build
+           python-setuptools
+           python-wheel
+           ;; For tests.
+           python-fixtures
+           python-pytest
+           python-testtools))
+    (home-page "https://github.com/zaneb/autopage")
+    (synopsis "Automatic paging for console output")
+    (description
+     "Autopage is a Python library to automatically display terminal output
+from a program in a @dfn{pager} such as @command{less}.")
+    (license license:asl2.0)))
+
 (define-public python-autopep8
   (package
     (name "python-autopep8")
