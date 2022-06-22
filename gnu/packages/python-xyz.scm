@@ -1233,14 +1233,14 @@ by @code{binstar}, @code{binstar-build}, and @code{chalmers}.")
 (define-public python-babel
   (package
     (name "python-babel")
-    (version "2.9.0")
+    (version "2.10.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Babel" version))
        (sha256
         (base32
-         "018yg7g2pa6vjixx1nx41cfispgfi0azzp0a1chlycbj8jsil0ys"))))
+         "0l9cvfmsz0hlvcinxaf6xf2f02ldgw3xq9i1fc7lk5zf24vma53n"))))
     (build-system python-build-system)
     (native-inputs
      (list python-freezegun python-pytest tzdata-for-tests))
