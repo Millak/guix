@@ -29,6 +29,7 @@
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2021, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
+;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -700,6 +701,32 @@ the freedesktop.org XDG Base Directory specification.")
 extracted out as a separate project.  Elogind integrates with PAM to provide
 the org.freedesktop.login1 interface over the system bus, allowing other parts
 of a the system to know what users are logged in, and where.")
+    (license license:lgpl2.1+)))
+
+(define-public basu
+  (package
+    (name "basu")
+    (version "0.2.0")
+    (home-page "https://git.sr.ht/~emersion/basu")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url home-page)
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0h23n7wg18xc7xwldca18wi00iajyliixwicqyvv38qx831d8q18"))))
+    (build-system meson-build-system)
+    (native-inputs
+     (list pkg-config python gperf))
+    (inputs
+     (list libcap))
+    (synopsis "The sd-bus library, extracted from systemd")
+    (description "Some projects rely on the sd-bus library for DBus support.
+However not all systems have systemd or elogind installed.
+This library provides just sd-bus (and the busctl utility).")
     (license license:lgpl2.1+)))
 
 (define-public localed
