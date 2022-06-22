@@ -44,7 +44,7 @@
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Pradana Aumars <paumars@courrier.dev>
-;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2021, 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Alice Brenon <alice.brenon@ens-lyon.fr>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
@@ -5295,7 +5295,7 @@ and serve updated contents upon changes to the directory.")
 (define-public python-httpcore
   (package
     (name "python-httpcore")
-    (version "0.14.7")
+    (version "0.15.0")
     (source
      (origin
        ;; PyPI tarball does not contain tests.
@@ -5305,7 +5305,7 @@ and serve updated contents upon changes to the directory.")
              (commit  version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wdr28vf03l6yxhk8nrvhh7y7x18rqdcfzv1sb6jgzk9zmycrvc7"))))
+        (base32 "0skj8f85l52gl6x449wzaixcwsyayvn59iwn0df4b7ixlz6xhp8l"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -5313,7 +5313,8 @@ and serve updated contents upon changes to the directory.")
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "pytest" "-vv" "tests")))))))
+               (invoke "pytest" "-vv" "tests"
+                       "--override-ini=asyncio_mode=auto")))))))
     (native-inputs
      (list python-pytest
            python-pytest-asyncio
@@ -5360,7 +5361,7 @@ Some things HTTP Core does do:
 (define-public python-httpx
   (package
     (name "python-httpx")
-    (version "0.22.0")
+    (version "0.23.0")
     (source
      (origin
        ;; PyPI tarball does not contain tests.
@@ -5370,7 +5371,7 @@ Some things HTTP Core does do:
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1awr56488b66zyl3cx1f03lq2n07xdg5kb4l46vnsm59s6hr02c5"))))
+        (base32 "0bihm7ylq9ajxz8qyba0xp9qkwm7n06hk01ywkq2vpz65ix5hpdk"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -7477,3 +7478,60 @@ metadata from HTML markup.  Currently, extruct supports:
     (description "The @code{wadllib} Python library allows navigating HTTP
 resources using Web Application Description Language (WADL) files as guides.")
     (license license:lgpl3)))
+
+(define-public python-zeep
+  (package
+    (name "python-zeep")
+    (version "4.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "zeep" version))
+       (patches
+        (search-patches "python-zeep-Fix-pytest_httpx-test-cases.patch"))
+       (sha256
+        (base32 "1ranr4hkjd2kbbhxa3is1qlgkankj3sml5gla6bqs0kbvpmg4rsq"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (setenv "HOME" (getcwd)) ; one test requires write access
+               (invoke "pytest" "-vv")))))))
+    (propagated-inputs
+     (list python-attrs
+           python-cached-property
+           python-isodate
+           python-lxml
+           python-platformdirs
+           python-pytz
+           python-requests
+           python-requests-file
+           python-requests-toolbelt))
+    (native-inputs
+     (list python-aiohttp
+           python-aioresponses
+           python-freezegun
+           python-mock
+           python-pretend
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-cov
+           python-pytest-httpx
+           python-requests-mock))
+    (home-page "https://docs.python-zeep.org/en/stable/")
+    (synopsis "Python SOAP client based on lxml / requests")
+    (description "Zeep is a Python SOAP client.  Highlights:
+
+@itemize
+@item Build on top of @code{lxml} and @code{requests}.
+@item Support for Soap 1.1, Soap 1.2 and HTTP bindings.
+@item Support for WS-Addressing headers.
+@item Support for WSSE (UserNameToken / x.509 signing).
+@item Support for @code{asyncio} via @code{httpx}.
+@item Experimental support for XOP messages.
+@end itemize")
+    (license license:expat)))
+

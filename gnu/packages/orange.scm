@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -102,13 +102,13 @@ GUI based workflow.  It is primarily used in the Orange framework.")
 (define-public orange
   (package
     (name "orange")
-    (version "3.31.1")
+    (version "3.32.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Orange3" version))
        (sha256
-        (base32 "0jqay46nysgfxldik7f6mfi8iylai2gwfpq60vklrfi1rhqf3pn6"))))
+        (base32 "0pxjwisc209cdgpqlqazc2vlmr0iqz8ry862w7jx95zic54d9p5l"))))
     (build-system python-build-system)
     (arguments
      `(#:phases

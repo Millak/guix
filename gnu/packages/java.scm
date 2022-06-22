@@ -3,7 +3,7 @@
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2017 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2017, 2019, 2021 Carlo Zancanaro <carlo@zancanaro.id.au>
-;;; Copyright © 2017-2021 Julien Lepiller <julien@lepiller.eu>
+;;; Copyright © 2017-2022 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2016, 2017, 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2017, 2019, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -18,6 +18,7 @@
 ;;; Copyright © 2021 Mike Gerwitz <mtg@gnu.org>
 ;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4371,6 +4372,14 @@ from source tags and class annotations.")))
              (copy-recursively "src/main/resources"
                                "build/classes/")
              #t))
+         (add-before 'build 'fix-jdom
+           (lambda _
+             ;; The newer version of jdom now sets multiple features by default
+             ;; that are not supported.
+             ;; Skip these features
+             (substitute* "src/main/java/org/codehaus/plexus/metadata/merge/MXParser.java"
+               (("throw new XmlPullParserException\\(\"unsupporte feature \"\\+name\\);")
+                "// skip"))))
          (add-before 'build 'reinstate-cli
            ;; The CLI was removed in 2.1.0, but we still need it to build some
            ;; maven dependencies, and some parts of maven itself. We can't use
@@ -4537,6 +4546,14 @@ from source tags and class annotations.")))
              (copy-recursively "src/main/resources"
                                "build/classes/")
              #t))
+         (add-before 'build 'fix-jdom
+           (lambda _
+             ;; The newer version of jdom now sets multiple features by default
+             ;; that are not supported.
+             ;; Skip these features
+             (substitute* "src/main/java/org/codehaus/plexus/metadata/merge/MXParser.java"
+               (("throw new XmlPullParserException\\(\"unsupporte feature \"\\+name\\);")
+                "// skip"))))
          (add-before 'check 'fix-test-location
            (lambda _
              (substitute* '("src/test/java/org/codehaus/plexus/metadata/DefaultComponentDescriptorWriterTest.java"
@@ -5452,6 +5469,18 @@ including java-asm.")
     (inputs
      (list java-asm-8 java-asm-analysis-8 java-asm-tree-8))))
 
+(define-public java-asm-commons-8
+  (package
+    (inherit java-asm-8)
+    (name "java-asm-commons")
+    (arguments
+     (list #:jar-name "asm-commons8.jar"
+           #:source-dir "asm-commons/src/main/java"
+           #:test-dir "asm-commons/src/test"
+           ;; tests depend on junit5
+           #:tests? #f))
+    (inputs (list java-asm-8 java-asm-analysis-8 java-asm-tree-8))))
+
 (define-public java-cglib
   (package
     (name "java-cglib")
@@ -6190,14 +6219,16 @@ included:
 (define-public java-commons-lang3
   (package
     (name "java-commons-lang3")
-    (version "3.9")
+    (version "3.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://apache/commons/lang/source/"
                            "commons-lang3-" version "-src.tar.gz"))
        (sha256
-        (base32 "0s4ffbvsyl16c90l45ximsg4dwd8hmz7wsza3p308fw43h6mwhb6"))))
+        (base32 "09dcv1pkdx3hpf06py8p9511f1wkin6jpacdll0c8vxpbi3yfwzv"))
+       (patches
+        (search-patches "java-commons-lang-fix-dependency.patch"))))
     (build-system ant-build-system)
     (arguments
      `(#:jar-name "commons-lang3.jar"

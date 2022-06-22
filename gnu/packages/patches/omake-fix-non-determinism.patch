@@ -1,6 +1,6 @@
-From 2e7e254160506dc00f1beabf170512a8e932934b Mon Sep 17 00:00:00 2001
+From 9f70bca2d823b93b334ecb0f92e940d20aafc1c6 Mon Sep 17 00:00:00 2001
 From: Julien Lepiller <julien@lepiller.eu>
-Date: Sat, 31 Dec 2016 15:43:38 +0100
+Date: Sat, 18 Jun 2022 12:02:49 +0200
 Subject: [PATCH] fix build date in binary
 
 ---
@@ -8,19 +8,19 @@ Subject: [PATCH] fix build date in binary
  1 file changed, 2 insertions(+), 10 deletions(-)
 
 diff --git a/src/magic/omake_gen_magic.ml b/src/magic/omake_gen_magic.ml
-index b2419ba..fad52f5 100644
+index c2b9329..3d36c0c 100644
 --- a/src/magic/omake_gen_magic.ml
 +++ b/src/magic/omake_gen_magic.ml
 @@ -150,7 +150,7 @@ let ir_magic = "%s"
  let obj_magic = "%s"
  let lib_dir = "%s"
  let version = "%s"
--let version_message = "OMake %s:\\n\\tbuild [%s %s %d %02d:%02d:%02d %d]\\n\\ton %s"
+-let version_message = "OMake %s:\n    build [%s %s %d %02d:%02d:%02d %d]\n    on %s"
 +let version_message = "OMake %s"
  |}
         default_save_interval
         digest_len
-@@ -160,15 +160,7 @@ let version_message = "OMake %s:\\n\\tbuild [%s %s %d %02d:%02d:%02d %d]\\n\\ton
+@@ -160,15 +160,7 @@ let version_message = "OMake %s:\n    build [%s %s %d %02d:%02d:%02d %d]\n    on
         (digest_files ".omo.magic" ".omo" omo_files)
         (String.escaped libdir)
         (String.escaped (shorten_version version))
@@ -37,5 +37,6 @@ index b2419ba..fad52f5 100644
    List.iter
      (fun (name,value) ->
         Printf.fprintf buf "let %s = %S\n" name value
---
-2.11.0
+-- 
+2.36.1
+

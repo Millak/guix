@@ -23,6 +23,7 @@
 ;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -53,6 +54,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages bootstrap)           ;glibc-dynamic-linker
@@ -541,10 +543,10 @@ output), and Binutils.")
               ("libc-static" ,glibc "static")))))
 
 (define %llvm-monorepo-hashes
-  '(("14.0.4" . "1y4yvx749cn3gkpc9kf48xbd2wc2lry8x5zdpk3sbrkqs8vrji4q")))
+  '(("14.0.5" . "1hdv020x4k5fp38hik3bxz8k2sr3gnyj9iym3yhjhwygzgwgxjh9")))
 
 (define %llvm-patches
-  '(("14.0.4" . ("clang-14.0-libc-search-path.patch"))))
+  '(("14.0.5" . ("clang-14.0-libc-search-path.patch"))))
 
 (define (llvm-monorepo version)
   (origin
@@ -559,7 +561,7 @@ output), and Binutils.")
 (define-public llvm-14
   (package
     (name "llvm")
-    (version "14.0.4")
+    (version "14.0.5")
     (source (llvm-monorepo version))
     (build-system cmake-build-system)
     (outputs '("out" "opt-viewer"))
@@ -577,9 +579,9 @@ output), and Binutils.")
          ;; These options are required for cross-compiling LLVM according
          ;; to <https://llvm.org/docs/HowToCrossCompileLLVM.html>.
          #$@(if (%current-target-system)
-                #~(,(string-append "-DLLVM_TABLEGEN="
-                                   #+(file-append this-package
-                                                  "/bin/llvm-tblgen"))
+                #~((string-append "-DLLVM_TABLEGEN="
+                                  #+(file-append this-package
+                                                 "/bin/llvm-tblgen"))
                    #$(string-append "-DLLVM_DEFAULT_TARGET_TRIPLE="
                                     (%current-target-system))
                    #$(string-append "-DLLVM_TARGET_ARCH="
@@ -647,7 +649,7 @@ of programming tools as well as libraries with equivalent functionality.")
                                            (package-version llvm-14)))
                             (sha256
                              (base32
-                              "1vcgmvh0r28a1z87p3y4h2326zi8liq7l9mcfvmx22x9bmbcpfn8"))))))
+                              "1p9y5fbcw3ynb79nzyadirwdla03bq38k6d9nhv9x8z2q4ypsga4"))))))
     (package
       (inherit template)
       (arguments
@@ -740,6 +742,14 @@ of programming tools as well as libraries with equivalent functionality.")
        #:build-type "Release"
        #:phases
        (modify-phases %standard-phases
+         ,@(if (assoc "config" (package-native-inputs this-package))
+            `((add-after 'unpack 'update-config
+                (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                  (let ((config.guess (search-input-file
+                                        (or inputs native-inputs)
+                                        "/bin/config.guess")))
+                    (copy-file config.guess "cmake/config.guess")))))
+            '())
          (add-before 'build 'shared-lib-workaround
            ;; Even with CMAKE_SKIP_BUILD_RPATH=FALSE, llvm-tblgen
            ;; doesn't seem to get the correct rpath to be able to run
@@ -824,7 +834,14 @@ of programming tools as well as libraries with equivalent functionality.")
       (uri (llvm-uri "llvm" version))
       (sha256
        (base32
-        "1wydhbp9kyjp5y0rc627imxgkgqiv3dfirbqil9dgpnbaw5y7n65"))))))
+        "1wydhbp9kyjp5y0rc627imxgkgqiv3dfirbqil9dgpnbaw5y7n65"))))
+    (native-inputs
+     `(("python" ,python-wrapper)
+       ("perl"   ,perl)
+       ;; In llvm-11 riscv64 support was added manually to config.guess.
+       ,@(if (target-riscv64?)
+           `(("config" ,config))
+           '())))))
 
 (define-public clang-runtime-10
   (clang-runtime-from-llvm
@@ -1109,10 +1126,10 @@ of programming tools as well as libraries with equivalent functionality.")
 
 (define-public llvm-for-rocm
   (package
-    ;; Actually based on LLVM 13 as of v4.3, but llvm-12 works just fine.
-    (inherit llvm-12)
+    ;; Based on LLVM 14 as of v5.0.0
+    (inherit llvm-14)
     (name "llvm-for-rocm")
-    (version "4.3.0")                         ;this must match '%rocm-version'
+    (version "5.1.3")                         ;this must match '%rocm-version'
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1121,10 +1138,9 @@ of programming tools as well as libraries with equivalent functionality.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0p75nr1qpmy6crymdax5hm40wkimman4lnglz4x5cnbiqindya7s"))
+                "0j6ydfkwrxwskgnhxc3cmry42n5faqbnwf2747qgf7lz5id8h8g5"))
               (patches
-               (search-patches "llvm-roc-4.2.0-add_Object.patch"
-                               "llvm-roc-3.0.0-add_libraries.patch"
+               (search-patches "llvm-roc-5.0.0-linkdl.patch"
                                "llvm-roc-4.0.0-remove-isystem-usr-include.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments llvm-12)
@@ -1141,7 +1157,7 @@ of programming tools as well as libraries with equivalent functionality.")
            "-DBUILD_SHARED_LIBS:BOOL=TRUE"
            "-DLLVM_VERSION_SUFFIX="))))
     (properties `((hidden? . #t)
-                  ,@(package-properties llvm-12)))))
+                  ,@(package-properties llvm-14)))))
 
 
 
@@ -1176,7 +1192,7 @@ of programming tools as well as libraries with equivalent functionality.")
 (define-public lld-14
   (package
     (name "lld")
-    (version "14.0.4")
+    (version "14.0.5")
     (source (llvm-monorepo version))
     (build-system cmake-build-system)
     (inputs

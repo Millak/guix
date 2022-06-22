@@ -1137,14 +1137,14 @@ designed by Cynthia Brewer as described at http://colorbrewer2.org")
 (define-public r-sendmailr
   (package
     (name "r-sendmailr")
-    (version "1.2-1")
+    (version "1.2-1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sendmailR" version))
        (sha256
         (base32
-         "0z7ipywnzgkhfvl4zb2fjwl1xq7b5wib296vn9c9qgbndj6b1zh4"))))
+         "1dgxl6wnadlw5b3m4has5zalpk3pd5j70hfps92b9lbx4i7xbmr0"))))
     (properties `((upstream-name . "sendmailR")))
     (build-system r-build-system)
     (propagated-inputs
@@ -1840,24 +1840,25 @@ database.")
 (define-public r-dbplyr
   (package
     (name "r-dbplyr")
-    (version "2.1.1")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dbplyr" version))
        (sha256
         (base32
-         "025wqpmxdhzblb0pf58m3qh5h6bf5x8qvkf47vyl1cjsp13wz95b"))))
+         "1qfwk8g8z5l9vbh4pj53pippsqsiqmn8qbvm1h1v7y29jcn0jvja"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-assertthat
            r-blob
+           r-cli
            r-dbi
            r-dplyr
-           r-ellipsis
            r-glue
            r-lifecycle
            r-magrittr
+           r-pillar
            r-purrr
            r-r6
            r-rlang
@@ -2952,13 +2953,13 @@ engine (version 3.8.8.2) is included.")
 (define-public r-rcurl
   (package
     (name "r-rcurl")
-    (version "1.98-1.6")
+    (version "1.98-1.7")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RCurl" version))
               (sha256
                (base32
-                "18nif4phr5vfhri07mnchiym0qfm31ak9nxvb2v9ac84mij6idbc"))))
+                "138qfkw03j0g5wby24811w9f3virz1fxlgkgnavf6gv3c00jvhia"))))
     (properties `((upstream-name . "RCurl")))
     (build-system r-build-system)
     (arguments
@@ -2994,13 +2995,13 @@ ldap, and also supports cookies, redirects, authentication, etc.")
 (define-public r-xml
   (package
     (name "r-xml")
-    (version "3.99-0.9")
+    (version "3.99-0.10")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "XML" version))
               (sha256
                (base32
-                "02ba407ddgil4jbjzrbw756hlxzy3mihc5dk1ngcbvsp67gxw5cw"))))
+                "0nzkgylnqnnvsh27007np8klwv2xi9wqxhw05mzczhxdxnsr2nf4"))))
     (properties
      `((upstream-name . "XML")))
     (build-system r-build-system)
@@ -3115,16 +3116,16 @@ statements.")
 (define-public r-segmented
   (package
     (name "r-segmented")
-    (version "1.5-0")
+    (version "1.6-0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "segmented" version))
        (sha256
         (base32
-         "1d8np6psnmqyq3bxxd17ivp6pq6p8rx5hal4bgz8ckc4d1i9lp6n"))))
+         "0sg59j59kz3zrwl3mi4ps1qw3hvwljygqa1d652vjdsx9w57zbvb"))))
     (build-system r-build-system)
-    (propagated-inputs (list r-mass))
+    (propagated-inputs (list r-mass r-nlme))
     (home-page "https://cran.r-project.org/web/packages/segmented")
     (synopsis "Regression models with breakpoints estimation")
     (description
@@ -3834,14 +3835,14 @@ Stochastic Neighbor Embedding using a Barnes-Hut implementation.")
 (define-public r-e1071
   (package
     (name "r-e1071")
-    (version "1.7-9")
+    (version "1.7-11")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "e1071" version))
        (sha256
         (base32
-         "09i2hmyf1bxansqp24p9n9djlzzarclqs173gjjv3fg0giga3ycv"))))
+         "0byr92csnydycdarxdkq4cghddnx5qp6fqxm6wnp9g6aww88xha8"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-class r-proxy))
@@ -3946,13 +3947,13 @@ want to migrate to S4.")
 (define-public r-r-oo
   (package
     (name "r-r-oo")
-    (version "1.24.0")
+    (version "1.25.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "R.oo" version))
               (sha256
                (base32
-                "1divisff26fmiqg6vmabnwlrx079c066r8qvkakfp336vnwdm89p"))))
+                "1vxy8yw4yblb3vgl64yh0b6zf1d51rnc2c23kmyyw629fxhr1cdq"))))
     (properties `((upstream-name . "R.oo")))
     (build-system r-build-system)
     (propagated-inputs
@@ -5101,14 +5102,14 @@ to change in the future.")
 (define-public r-flexmix
   (package
     (name "r-flexmix")
-    (version "2.3-17")
+    (version "2.3-18")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "flexmix" version))
        (sha256
         (base32
-         "0jangf89174p0idh9afbicfiln2sz8jxc3bjc6n0j9036dw9n09n"))))
+         "0lcvsvmhkbwac50l109an6prl1ng4mkyvr436344b20897ph28j6"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-lattice r-modeltools r-nnet))
@@ -5724,17 +5725,15 @@ normals.")
 (define-public r-mnormt
   (package
     (name "r-mnormt")
-    (version "2.0.2")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
         (uri (cran-uri "mnormt" version))
         (sha256
           (base32
-           "0d7ka4l4fl1wi77r2r81dc91n6cbj2xrb3lsizz5y0ziscva0sjw"))))
+           "1f07ngi89px437az030anbh8afmf6n635ax1akxak2idwc2qaj9d"))))
     (build-system r-build-system)
-    (propagated-inputs
-     (list r-tmvnsim))
     (native-inputs
      (list gfortran))
     (home-page "http://azzalini.stat.unipd.it/SW/Pkg-mnormt")
@@ -6409,7 +6408,7 @@ files, including Rmarkdown files.")
 (define-public readstat
   (package
     (name "readstat")
-    (version "1.1.5")
+    (version "1.1.8")
     (source
      (origin
        (method git-fetch)
@@ -6418,7 +6417,7 @@ files, including Rmarkdown files.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00sdmaq0qzp6kyv53fpfi6jf3iv4pd0ap0gmw3mbfip52bbnl55w"))))
+        (base32 "1r04lq45h1yn34v1mgfiqjfzyaqv4axqlby0nkandamcsqyhc7y4"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake gnu-gettext libtool))
@@ -6433,18 +6432,21 @@ popular stats packages like SAS, Stata and SPSS.")
 (define-public r-quantpsyc
   (package
     (name "r-quantpsyc")
-    (version "1.5")
+    (version "1.6")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "QuantPsyc" version))
         (sha256
           (base32
-            "1i9bh88r8zxndzjqsj14qw64gnvm5a9kvhjhzk3qsrvl3qzjgh93"))))
+            "1dbj830p5837fiwa800nzsaf19lf95vc3n7jmds2q9v06mrz6syq"))))
     (properties `((upstream-name . "QuantPsyc")))
     (build-system r-build-system)
     (propagated-inputs
-      (list r-boot r-mass))
+     (list r-boot
+           r-dplyr
+           r-mass
+           r-purrr))
     (home-page "https://cran.r-project.org/web/packages/QuantPsyc/")
     (synopsis "Quantitative Psychology Tools")
     (description

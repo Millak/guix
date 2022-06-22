@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016, 2018 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016, 2018, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -21,6 +21,10 @@
   #:use-module (gnu)
   #:use-module ((gnu services) #:select (service-value))
   #:use-module (guix store)
+  #:use-module (guix monads)
+  #:use-module ((guix gexp) #:select (lower-object))
+  #:use-module ((guix utils) #:select (%current-system))
+  #:use-module (guix grafts)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-64))
 
@@ -63,6 +67,8 @@
                           (dependencies (list %luks-device)))
                         %base-file-systems))
     (users %base-user-accounts)))
+
+(%graft? #f)
 
 
 (test-begin "system")
@@ -139,5 +145,18 @@
                            (mount-point "/")
                            (type "ext4")
                            (dependencies (list %luks-device))))))))))
+
+(test-assert "lower-object, %current-system sensitivity"
+  ;; Make sure that 'lower-object' returns the same derivation, no matter what
+  ;; '%current-system' is.  See <https://issues.guix.gnu.org/55951>.
+  (let ((drv1 (with-store store
+                (parameterize ((%current-system "x86_64-linux"))
+                  (run-with-store store
+                    (lower-object %os "aarch64-linux")))))
+        (drv2 (with-store store
+                (parameterize ((%current-system "aarch64-linux"))
+                  (run-with-store store
+                    (lower-object %os "aarch64-linux"))))))
+    (eq? drv1 drv2)))
 
 (test-end)

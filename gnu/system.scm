@@ -1582,8 +1582,13 @@ configurations."
     (lambda (store)
       ;; XXX: This is not super elegant but we can't pass SYSTEM and TARGET to
       ;; 'operating-system-derivation'.
-      (run-with-store store (operating-system-derivation os)
-                      #:system system
-                      #:target target)))))
+      (parameterize ((%current-system system)
+                     (%current-target-system target))
+        (run-with-store store
+          (mbegin %store-monad
+            (set-guile-for-build (default-guile))
+            (operating-system-derivation os))
+          #:system system
+          #:target target))))))
 
 ;;; system.scm ends here

@@ -1886,7 +1886,7 @@ videoformats depend on the configuration flags of ffmpeg.")
 (define-public vlc
   (package
     (name "vlc")
-    (version "3.0.17.3")
+    (version "3.0.17.4")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1895,7 +1895,7 @@ videoformats depend on the configuration flags of ffmpeg.")
                     "/vlc-" version ".tar.xz"))
               (sha256
                (base32
-                "0510vqf35f0v9c498yki5441aig3fdqq3nv4vsb1vlvki7pr0zkg"))))
+                "0cs1vnv91mg7p6253v6wms3zlz91xzphpwaw14dmrd2gibc64nlc"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("flex" ,flex)
@@ -2031,6 +2031,8 @@ videoformats depend on the configuration flags of ffmpeg.")
     (description "VLC is a cross-platform multimedia player and framework
 that plays most multimedia files as well as DVD, Audio CD, VCD, and various
 streaming protocols.")
+    (properties
+     '((release-monitoring-url . "https://download.videolan.org/pub/videolan/vlc/last")))
     (license license:gpl2+)))
 
 (define-public mplayer

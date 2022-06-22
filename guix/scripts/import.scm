@@ -50,7 +50,7 @@
 
 (define importers '("gnu" "pypi" "cpan" "hackage" "stackage" "egg" "elpa"
                     "gem" "go" "cran" "crate" "texlive" "json" "opam"
-                    "minetest" "elm"))
+                    "minetest" "elm" "hexpm"))
 
 (define (resolve-importer name)
   (let ((module (resolve-interface

@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -30,6 +31,7 @@
              (guix gexp)
              (guix git)
              (guix git-download)
+             (guix profiles)
              (guix utils)
              (git)
              (gnu packages base)
@@ -890,14 +892,22 @@ makeinfo OPTIONS."
                            #:languages languages
                            #:date date))
 
-  ;; FIXME: This union works, except for the table of contents of non-English
-  ;; manuals, which contains escape sequences like "^^ca^^fe" instead of
-  ;; accented letters.
-  ;;
-  ;; (define texlive
-  ;;   (texlive-updmap.cfg (list texlive-tex-texinfo
-  ;;                        texlive-generic-epsf
-  ;;                        texlive-fonts-ec)))
+  (define texinfo-profile
+    (profile
+     (content (packages->manifest
+               ;; texi2dvi requires various command line tools.
+               (list coreutils
+                     diffutils
+                     gawk
+                     grep
+                     sed
+                     tar
+                     texinfo
+                     texlive-base
+                     texlive-bin        ;for GUIX_TEXMF
+                     texlive-epsf
+                     texlive-fonts-ec
+                     texlive-tex-texinfo)))))
 
   (define build
     (with-imported-modules '((guix build utils))
@@ -914,21 +924,12 @@ makeinfo OPTIONS."
                         (string-downcase language)))
 
           ;; Install a UTF-8 locale so that 'makeinfo' is at ease.
-          (setenv "GUIX_LOCPATH"
-                  #+(file-append glibc-utf8-locales "/lib/locale"))
+          (setenv "GUIX_LOCPATH" #+(file-append glibc-utf8-locales
+                                                "/lib/locale"))
           (setenv "LC_ALL" "en_US.utf8")
-          (setenv "PATH"
-                  (string-append #+(file-append texlive "/bin") ":"
-                                 #+(file-append texinfo "/bin") ":"
-
-                                 ;; Below are command-line tools needed by
-                                 ;; 'texi2dvi' and friends.
-                                 #+(file-append sed "/bin") ":"
-                                 #+(file-append grep "/bin") ":"
-                                 #+(file-append coreutils "/bin") ":"
-                                 #+(file-append gawk "/bin") ":"
-                                 #+(file-append tar "/bin") ":"
-                                 #+(file-append diffutils "/bin")))
+          (setenv "PATH" #+(file-append texinfo-profile "/bin"))
+          (setenv "GUIX_TEXMF" #+(file-append texinfo-profile
+                                              "/share/texmf-dist"))
 
           (setvbuf (current-output-port) 'line)
           (setvbuf (current-error-port) 'line)

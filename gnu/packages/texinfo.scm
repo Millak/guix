@@ -9,6 +9,7 @@
 ;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2022 ( <paren@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -27,6 +28,7 @@
 
 (define-module (gnu packages texinfo)
   #:use-module (gnu packages autotools)
+  #:use-module (guix gexp)
   #:use-module (guix licenses)
   #:use-module (guix packages)
   #:use-module (guix utils)
@@ -254,49 +256,42 @@ Texi2HTML.")
         (base32 "1wdli2szkgm3l0vx8rf6lylw0b0m47dlz9iy004n928nqkzix76n"))))))
 
 (define-public pinfo
-  (package
-    (name "pinfo")
-    (version "0.6.13")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/baszoetekouw/pinfo")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "173d2p22irwiabvr4z6qvr6zpr6ysfkhmadjlyhyiwd7z62larvy"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'remove-Werror
-           (lambda _
-             (substitute* "configure.ac"
-               (("-Werror") ""))
-             #t))
-         (add-after 'unpack 'embed-reference-to-clear
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* '("src/manual.c"
-                            "src/mainfunction.c"
-                            "src/utils.c")
-               (("\"clear\"")
-                (string-append "\"" (which "clear") "\"")))
-             #t)))))
-    (inputs
-     (list ncurses readline))
-    (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("gettext" ,gettext-minimal)
-       ("libtool" ,libtool)
-       ("texinfo" ,texinfo)))
-    (home-page "https://github.com/baszoetekouw/pinfo")
-    (synopsis "Lynx-style Info file and man page reader")
-    (description
-     "Pinfo is an Info file viewer.  Pinfo is similar in use to the Lynx web
+  (let ((commit "3d76eecde211e41ccc28b04e229f159b3f924399")
+        (revision "0"))
+    (package
+      (name "pinfo")
+      ;; Latest tag is completely broken and does not build.
+      (version (git-version "0.6.13" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/baszoetekouw/pinfo")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32 "0qym323d9my5l4bhw9vry453hhlxhjjvy8mcdi38sk0bqqid0vd1"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'embed-reference-to-clear
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (let ((ncurses (assoc-ref inputs "ncurses")))
+                       (substitute* (list "src/manual.c"
+                                          "src/mainfunction.c"
+                                          "src/utils.c")
+                         (("\"clear\"")
+                          (string-append "\"" ncurses "/bin/clear\"")))))))))
+      (inputs
+       (list ncurses readline))
+      (native-inputs
+       (list autoconf automake gettext-minimal libtool texinfo))
+      (home-page "https://github.com/baszoetekouw/pinfo")
+      (synopsis "Lynx-style Info file and man page reader")
+      (description
+       "Pinfo is an Info file viewer.  Pinfo is similar in use to the Lynx web
 browser.  You just move across info nodes, and select links, follow them, etc.
 It supports many colors.  Pinfo also supports viewing of manual pages -- they
 are colorized like in the midnight commander's viewer, and additionally they
 are hypertextualized.")
-    (license gpl2+)))
+      (license gpl2+))))

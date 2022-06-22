@@ -51,7 +51,7 @@
   "Return a wrapper of PROGRAM that executes it with the least authority.
 
 PROGRAM is executed in separate namespaces according to NAMESPACES, a list of
-symbols; it turns with GUEST-UID and GUEST-GID.  MAPPINGS is a list of
+symbols; it runs with GUEST-UID and GUEST-GID.  MAPPINGS is a list of
 <file-system-mapping> records indicating directories mirrored inside the
 execution environment of PROGRAM.  DIRECTORY is the working directory of the
 wrapped process.  Each environment listed in PRESERVED-ENVIRONMENT-VARIABLES

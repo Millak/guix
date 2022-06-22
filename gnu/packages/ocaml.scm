@@ -3197,14 +3197,14 @@ OCaml code.")
 (define-public omake
   (package
     (name "omake")
-    (version "0.10.3")
+    (version "0.10.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://download.camlcity.org/download/"
                                   "omake-" version ".tar.gz"))
               (sha256
                (base32
-                "07bdg1h5i7qnlv9xq81ad5hfypl10hxm771h4rjyl5cn8plhfcgz"))
+                "1i7pcv53kqplrbdx9mllrhbv4j57zf87xwq18r16cvn1lbc6mqal"))
               (patches (search-patches "omake-fix-non-determinism.patch"))))
     (build-system ocaml-build-system)
     (arguments
@@ -3697,10 +3697,10 @@ writing to these structures, and they are accessed via the Bigarray module.")
     (description "Hex is a minimal library providing hexadecimal converters.")
     (license license:isc)))
 
-(define-public ocaml4.07-ezjsonm
+(define-public ocaml-ezjsonm
   (package
-    (name "ocaml4.07-ezjsonm")
-    (version "1.1.0")
+    (name "ocaml-ezjsonm")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
@@ -3709,20 +3709,13 @@ writing to these structures, and they are accessed via the Bigarray module.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "064j9pzy01p3dv947khqyn7fkjbs3jmrqsg8limb4abnlaqxxs2s"))))
+        (base32 "004knljxqxn9zq0rnq7q7wxl4nwlzydm8p9f5cqkl8il5yl5zkjm"))))
     (build-system dune-build-system)
     (arguments
      `(#:package "ezjsonm"
-       #:test-target "."
-       #:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
-    (native-inputs
-     `(("ocaml-alcotest" ,(package-with-ocaml4.07 ocaml-alcotest))))
-    (propagated-inputs
-     `(("ocaml-hex" ,(package-with-ocaml4.07 ocaml-hex))
-       ("ocaml-jsonm" ,(package-with-ocaml4.07 ocaml-jsonm))
-       ("ocaml-sexplib" ,(package-with-ocaml4.07 ocaml-sexplib))))
+       #:test-target "."))
+    (native-inputs (list ocaml-alcotest js-of-ocaml node))
+    (propagated-inputs (list ocaml-jsonm ocaml-uutf ocaml-sexplib0 ocaml-hex))
     (home-page "https://github.com/mirage/ezjsonm/")
     (synopsis "Read and write JSON data")
     (description "Ezjsonm provides more convenient (but far less flexible) input
@@ -3800,7 +3793,7 @@ JSON.")
 (define-public ocaml-easy-format
   (package
     (name "ocaml-easy-format")
-    (version "1.3.3")
+    (version "1.3.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3809,7 +3802,7 @@ JSON.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1dl5faibbb5nm3v70ix7k6208yib1954x20nmw3g56wff5vdlzid"))))
+                "0xap6az4yyb60vb1jfs640wl3cf4njv78p538x9ihhf9f6ij3nh8"))))
     (build-system dune-build-system)
     (arguments
      `(#:package "easy-format"
@@ -3828,9 +3821,9 @@ JSON.")
 Format module of the OCaml standard library.")
     (license license:bsd-3)))
 
-(define-public ocaml4.07-piqilib
+(define-public ocaml-piqilib
   (package
-    (name "ocaml4.07-piqilib")
+    (name "ocaml-piqilib")
     (version "0.6.15")
     (source
      (origin
@@ -3848,24 +3841,20 @@ Format module of the OCaml standard library.")
          (add-before 'configure 'fix-ocamlpath
            (lambda _
              (substitute* '("Makefile" "make/Makefile.ocaml")
-               (("OCAMLPATH := ") "OCAMLPATH := $(OCAMLPATH):"))
-             #t))
+               (("OCAMLPATH := ") "OCAMLPATH := $(OCAMLPATH):"))))
          (replace 'configure
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
                (substitute* "make/OCamlMakefile"
                  (("/bin/sh") (which "bash")))
                (invoke "./configure" "--prefix" out "--ocaml-libdir"
-                       (string-append out "/lib/ocaml/site-lib")))
-             #t))
+                       (string-append out "/lib/ocaml/site-lib")))))
        (add-after 'build 'build-ocaml
          (lambda* (#:key outputs #:allow-other-keys)
-           (invoke "make" "ocaml")
-           #t))
+           (invoke "make" "ocaml")))
        (add-after 'install 'install-ocaml
          (lambda* (#:key outputs #:allow-other-keys)
-           (invoke "make" "ocaml-install")
-           #t))
+           (invoke "make" "ocaml-install")))
        (add-after 'install-ocaml 'link-stubs
          (lambda* (#:key outputs #:allow-other-keys)
            (let* ((out (assoc-ref outputs "out"))
@@ -3873,17 +3862,14 @@ Format module of the OCaml standard library.")
                   (lib (string-append out "/lib/ocaml/site-lib/piqilib")))
              (mkdir-p stubs)
              (symlink (string-append lib "/dllpiqilib_stubs.so")
-                      (string-append stubs "/dllpiqilib_stubs.so"))
-             #t))))
-       #:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib))
+                      (string-append stubs "/dllpiqilib_stubs.so"))))))))
     (native-inputs
      (list which))
     (propagated-inputs
-     `(("ocaml-xmlm" ,(package-with-ocaml4.07 ocaml-xmlm))
-       ("ocaml-sedlex" ,(package-with-ocaml4.07 ocaml-sedlex))
-       ("ocaml-easy-format" ,(package-with-ocaml4.07 ocaml-easy-format))
-       ("ocaml-base64" ,(package-with-ocaml4.07 ocaml-base64))))
+     `(("ocaml-xmlm" ,ocaml-xmlm)
+       ("ocaml-sedlex" ,ocaml-sedlex)
+       ("ocaml-easy-format" ,ocaml-easy-format)
+       ("ocaml-base64" ,ocaml-base64)))
     (home-page "http://piqi.org")
     (synopsis "Data serialization and conversion library")
     (description "Piqilib is the common library used by the piqi command-line
@@ -3963,9 +3949,9 @@ and 4 (random based) according to RFC 4122.")
     (description "OCamlgraph is a generic graph library for OCaml.")
     (license license:lgpl2.1)))
 
-(define-public ocaml4.07-piqi
+(define-public ocaml-piqi
   (package
-    (name "ocaml4.07-piqi")
+    (name "ocaml-piqi")
     (version "0.7.7")
     (source (origin
               (method git-fetch)
@@ -3989,15 +3975,13 @@ and 4 (random based) according to RFC 4122.")
            (lambda _
              (for-each make-file-writable (find-files "."))
              #t))
-         (delete 'configure))
-       #:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib))
+         (delete 'configure))))
     (native-inputs
      (list which protobuf)) ; for tests
     (propagated-inputs
-     `(("ocaml-num" ,(package-with-ocaml4.07 ocaml-num))
-       ("ocaml-piqilib" ,ocaml4.07-piqilib)
-       ("ocaml-stdlib-shims" ,(package-with-ocaml4.07 ocaml-stdlib-shims))))
+     `(("ocaml-num" ,ocaml-num)
+       ("ocaml-piqilib" ,ocaml-piqilib)
+       ("ocaml-stdlib-shims" ,ocaml-stdlib-shims)))
     (home-page "https://github.com/alavrik/piqi-ocaml")
     (synopsis "Protocol serialization system for OCaml")
     (description "Piqi is a multi-format data serialization system for OCaml.
@@ -4029,12 +4013,12 @@ XML and Protocol Buffers formats.")
       ("ocaml-bitstring" ,(package-with-ocaml4.07 ocaml-bitstring))
       ("ocaml-cmdliner" ,(package-with-ocaml4.07 ocaml-cmdliner))
       ("ocaml-core-kernel" ,ocaml4.07-core-kernel)
-      ("ocaml-ezjsonm" ,ocaml4.07-ezjsonm)
+      ("ocaml-ezjsonm" ,(package-with-ocaml4.07 ocaml-ezjsonm))
       ("ocaml-fileutils" ,(package-with-ocaml4.07 ocaml-fileutils))
       ("ocaml-frontc" ,(package-with-ocaml4.07 ocaml-frontc))
       ("ocaml-graph" ,(package-with-ocaml4.07 ocaml-graph))
       ("ocaml-ocurl" ,(package-with-ocaml4.07 ocaml-ocurl))
-      ("ocaml-piqi" ,ocaml4.07-piqi)
+      ("ocaml-piqi" ,(package-with-ocaml4.07 ocaml-piqi))
       ("ocaml-ppx-jane" ,ocaml4.07-ppx-jane)
       ("ocaml-utop" ,ocaml4.07-utop)
       ("ocaml-uuidm" ,(package-with-ocaml4.07 ocaml-uuidm))
@@ -4244,7 +4228,7 @@ instead of bindings to a C library.")
 (define-public ocaml-utop
   (package
     (name "ocaml-utop")
-    (version "2.9.1")
+    (version "2.9.2")
     (source
      (origin
        (method git-fetch)
@@ -4253,7 +4237,7 @@ instead of bindings to a C library.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1pmsmi0j4gb1vsd69j0bppkv79wbwz5xcffq78n1i2ibhff6r4j0"))))
+        (base32 "0z5anakgbndhyzbi570pfs2fy69bnmgq9jflgfbly2rhbhwa7wgj"))))
     (build-system dune-build-system)
     (arguments
      `(#:test-target "."))
@@ -4402,7 +4386,7 @@ OCaml projects that contain C stubs.")
 (define-public ocaml-tsdl
   (package
     (name "ocaml-tsdl")
-    (version "0.9.7")
+    (version "0.9.9")
     (home-page "https://erratique.ch/software/tsdl")
     (source (origin
               (method url-fetch)
@@ -4411,7 +4395,7 @@ OCaml projects that contain C stubs.")
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1zwv0ixkigh1gzk5n49rwvz2f2m62jdkkqg40j7dclg4gri7691f"))))
+                "1m565jgfanijjzp64c1rylahkpmrrb03ywj202j49n06nvwp788s"))))
     (build-system ocaml-build-system)
     (arguments
      `(#:build-flags '("build")
@@ -5024,11 +5008,17 @@ exclusion algorithms are typical examples of such systems.")
 (define-public ocaml-sexplib0
   (package
     (name "ocaml-sexplib0")
-    (version "0.15.0")
+    (version "0.15.1")
     (home-page "https://github.com/janestreet/sexplib0")
-    (source
-     (janestreet-origin "sexplib0" version
-                        "1fpg991n578m11r0ki4als4c76s3sp703b4khivx40v48402qill"))
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url home-page)
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "05m93g4m4jhj1v8pazg3s2ydcfymr3h4476yjhdca5fm4sn35bg8"))))
     (build-system dune-build-system)
     (arguments `(#:tests? #f)) ;no tests
     (properties `((ocaml4.07-variant . ,(delay ocaml4.07-sexplib0))))
@@ -7996,7 +7986,7 @@ defined in OCaml 4.12.0.")
 (define-public ocamlformat
   (package
     (name "ocamlformat")
-    (version "0.21.0")
+    (version "0.22.4")
     (source
       (origin
         (method git-fetch)
@@ -8006,12 +7996,16 @@ defined in OCaml 4.12.0.")
         (file-name (git-file-name name version))
         (sha256
           (base32
-            "10vy102a0isd8cg94y61pm4qfgy74d6003dw0qn0bdmbd19r5071"))))
+            "171lq3vx4y8xj4by5zy93isx8nhg6ysxg1hxmkqkq16fdaiz8mnc"))))
     (build-system dune-build-system)
     (arguments
      '(#:package "ocamlformat"
        #:phases
        (modify-phases %standard-phases
+         ;; Tests related to other packages
+         (add-after 'unpack 'remove-unrelated-tests
+           (lambda _
+             (delete-file-recursively "test/rpc")))
          (add-after 'unpack 'fix-test-format
            (lambda _
              (substitute* "test/cli/repl_file_errors.t/run.t"

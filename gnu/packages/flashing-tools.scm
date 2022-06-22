@@ -9,6 +9,7 @@
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Mathieu Othacehe <othacehe@gnu.org>
+;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -217,56 +218,48 @@ firmware from it.")
     (license license:gpl2+)))
 
 (define-public teensy-loader-cli
-  ;; The repo does not tag versions nor does it use releases, but a commit
-  ;; message says "Importing 2.1", while the sourcce still says "2.0". So pin
-  ;; to a fixed commit.
-  (let ((commit "f289b7a2e5627464044249f0e5742830e052e360"))
-    (package
-      (name "teensy-loader-cli")
-      (version (git-version "2.1" "1" commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-                (url "https://github.com/PaulStoffregen/teensy_loader_cli")
-                (commit commit)))
-         (sha256 (base32 "0sssim56pwsxp5cp5dlf6mi9h5fx2592m6j1g7abnm0s09b0lpdx"))
-         (file-name (git-file-name name version))
-         (modules '((guix build utils)))
-         (snippet
-          `(begin
-             ;; Remove example flash files and teensy rebooter flash binaries.
-             (for-each delete-file (find-files "." "\\.(elf|hex)$"))
-             ;; Fix the version
-             (substitute* "teensy_loader_cli.c"
-               (("Teensy Loader, Command Line, Version 2.0\\\\n")
-                (string-append "Teensy Loader, Command Line, " ,version "\\n")))
-             #t))
+  (package
+    (name "teensy-loader-cli")
+    (version "2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/PaulStoffregen/teensy_loader_cli")
+             (commit version)))
+       (sha256 (base32 "12n8ifz4gph1anhwd8if3j1kw0wc3yxf48abbyxl8071l9vj3m0b"))
+       (file-name (git-file-name name version))
+       (modules '((guix build utils)))
+       (snippet
+        `(begin
+           ;; Remove example flash files and teensy rebooter flash binaries.
+           (for-each delete-file (find-files "." "\\.(elf|hex)$"))
+           #t))
        (patches (search-patches "teensy-loader-cli-help.patch"))))
-      (build-system gnu-build-system)
-      (arguments
-       '(#:tests? #f ;; Makefile has no test target
-         #:make-flags (list "CC=gcc" (string-append "PREFIX=" %output))
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure)
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (bin (string-append out "/bin")))
-                 (install-file "teensy_loader_cli" bin)
-                 #t))))))
-      (inputs
-       (list libusb-compat))
-      (synopsis "Command line firmware uploader for Teensy development boards")
-      (description
-       "The Teensy loader program communicates with your Teensy board when the
+    (build-system gnu-build-system)
+    (arguments
+     '(#:tests? #f ;; Makefile has no test target
+       #:make-flags (list "CC=gcc" (string-append "PREFIX=" %output))
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure)
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bin (string-append out "/bin")))
+               (install-file "teensy_loader_cli" bin)
+               #t))))))
+    (inputs
+     (list libusb-compat))
+    (synopsis "Command line firmware uploader for Teensy development boards")
+    (description
+     "The Teensy loader program communicates with your Teensy board when the
 HalfKay bootloader is running, so you can upload new programs and run them.
 
 You need to add the udev rules to make the Teensy update available for
 non-root users.")
-      (home-page "https://www.pjrc.com/teensy/loader_cli.html")
-      (license license:gpl3))))
+    (home-page "https://www.pjrc.com/teensy/loader_cli.html")
+    (license license:gpl3)))
 
 (define-public rkflashtool
   (let ((commit "8966c4e277de8148290554aaaa4146a3a84a3c53")

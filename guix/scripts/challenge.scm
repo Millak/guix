@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2017, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2017, 2019-2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -18,6 +18,7 @@
 
 (define-module (guix scripts challenge)
   #:use-module (guix ui)
+  #:use-module (guix colors)
   #:use-module (guix scripts)
   #:use-module (guix store)
   #:use-module (guix utils)
@@ -32,6 +33,7 @@
   #:use-module (rnrs bytevectors)
   #:autoload   (guix http-client) (http-fetch)
   #:use-module ((guix build syscalls) #:select (terminal-columns))
+  #:autoload   (guix build utils) (make-file-writable)
   #:use-module (gcrypt hash)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
@@ -310,6 +312,23 @@ specified in COMPARISON-REPORT."
                     (length files)))
      (format #t     "~{    ~a~%~}" files))))
 
+(define (make-directory-writable directory)
+  "Recurse into DIRECTORY and make each entry writable, similar to
+'chmod -R +w DIRECTORY'."
+  (file-system-fold (const #t)
+                    (lambda (file stat _)         ;leaf
+                      (unless (eq? 'symlink (stat:type stat))
+                        (make-file-writable file)))
+                    (lambda (directory stat _)    ;down
+                      (make-file-writable directory))
+                    (const #t)                    ;up
+                    (const #f)                    ;skip
+                    (lambda (file stat errno _)   ;error
+                      (leave (G_ "failed to delete '~a': ~a~%")
+                             file (strerror errno)))
+                    #t
+                    directory))
+
 (define (call-with-mismatches comparison-report proc)
   "Call PROC with two directories containing the mismatching store items."
   (define local-hash
@@ -317,6 +336,13 @@ specified in COMPARISON-REPORT."
 
   (define narinfos
     (comparison-report-narinfos comparison-report))
+
+  (define (restore-file* port directory)
+    ;; Since 'restore-file' sets "canonical" file permissions (read-only),
+    ;; make an extra traversal to make DIRECTORY writable so it can be deleted
+    ;; when the dynamic extent of 'call-with-temporary-directory' is left.
+    (restore-file port directory)
+    (make-directory-writable directory))
 
   (call-with-temporary-directory
    (lambda (directory1)
@@ -338,10 +364,10 @@ specified in COMPARISON-REPORT."
                      narinfos)))
 
         (rmdir directory1)
-        (call-with-nar narinfo1 (cut restore-file <> directory1))
+        (call-with-nar narinfo1 (cut restore-file* <> directory1))
         (when narinfo2
           (rmdir directory2)
-          (call-with-nar narinfo2 (cut restore-file <> directory2)))
+          (call-with-nar narinfo2 (cut restore-file* <> directory2)))
         (proc directory1
               (if local-hash
                   (comparison-report-item comparison-report)
@@ -362,6 +388,11 @@ COMPARISON-REPORT."
                           (apply system*
                                  (append command
                                          (list directory1 directory2))))))
+
+(define good-news
+  (coloring-procedure (color BOLD GREEN)))
+(define bad-news
+  (coloring-procedure (color BOLD RED)))
 
 (define* (summarize-report comparison-report
                            #:key
@@ -385,7 +416,7 @@ with COMPARISON-REPORT."
 
   (match comparison-report
     (($ <comparison-report> item 'mismatch local (narinfos ...))
-     (report (G_ "~a contents differ:~%") item)
+     (report (bad-news (G_ "~a contents differ:~%")) item)
      (report-hashes item local narinfos)
      (report-differences comparison-report))
     (($ <comparison-report> item 'inconclusive #f narinfos)
@@ -394,7 +425,7 @@ with COMPARISON-REPORT."
      (warning (G_ "could not challenge '~a': no substitutes~%") item))
     (($ <comparison-report> item 'match local (narinfos ...))
      (when verbose?
-       (report (G_ "~a contents match:~%") item)
+       (report (good-news (G_ "~a contents match:~%")) item)
        (report-hashes item local narinfos)))))
 
 (define (summarize-report-list reports)
@@ -403,10 +434,11 @@ with COMPARISON-REPORT."
         (inconclusive  (count comparison-report-inconclusive? reports))
         (matches       (count comparison-report-match? reports))
         (discrepancies (count comparison-report-mismatch? reports)))
-    (report (G_ "~h store items were analyzed:~%") total)
-    (report (G_ "  - ~h (~,1f%) were identical~%")
+    (report (highlight (G_ "~h store items were analyzed:~%")) total)
+    (report (highlight (G_ "  - ~h (~,1f%) were identical~%"))
             matches (* 100. (/ matches total)))
-    (report (G_ "  - ~h (~,1f%) differed~%")
+    (report ((if (zero? discrepancies) good-news bad-news)
+             (G_ "  - ~h (~,1f%) differed~%"))
             discrepancies (* 100. (/ discrepancies total)))
     (report (G_ "  - ~h (~,1f%) were inconclusive~%")
             inconclusive (* 100. (/ inconclusive total)))))

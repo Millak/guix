@@ -46,7 +46,7 @@
              (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10xk9szxxnqgfym53mcd9hqj1cw2ipncmiixw3i3ajlj1vn88qh1"))))
+        (base32 "19bwa9qidq2mxv1fkyxxc1xdmv3jx6bj35bkaaw70jzkblnfmlfs"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags

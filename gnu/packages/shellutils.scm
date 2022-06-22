@@ -368,7 +368,7 @@ are already there.")
 (define-public direnv
   (package
     (name "direnv")
-    (version "2.28.0")
+    (version "2.31.0")
     (source
      (origin (method git-fetch)
              (uri (git-reference
@@ -377,7 +377,7 @@ are already there.")
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "0yk53jn7wafklixclka17wyjjs2g5giigjr2bd0xzy10nrzwp7c9"))))
+               "1c52izjzkdhmyrfx1gmbp34n0qpxyxw0s94f0vy3ldlg8xr36wmk"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/direnv/direnv"
@@ -405,8 +405,7 @@ are already there.")
                  (invoke "go" "test" "./...")
                  ;; Clean up from the tests, especially so that the extra
                  ;; direnv executable that's generated is removed.
-                 (invoke "make" "clean")))
-             #t)))))
+                 (invoke "make" "clean"))))))))
     (native-inputs
      (list go-github-com-burntsushi-toml go-github-com-direnv-go-dotenv
            go-github-com-mattn-go-isatty go-golang-org-x-mod which))

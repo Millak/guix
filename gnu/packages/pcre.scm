@@ -5,7 +5,7 @@
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2017, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Jean-Baptiste Volatier <jbv@pm.me>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
@@ -42,8 +42,8 @@
    (version "8.45")
    (source (origin
             (method url-fetch)
-            (uri (string-append "https://ftp.pcre.org/pub/pcre/pcre-"
-                                version ".tar.bz2"))
+            (uri (string-append "mirror://sourceforge/pcre/pcre/"
+                                version "/pcre-" version ".tar.bz2"))
             (sha256
              (base32
               "1f7zichy6iimmkfrqdl575sdlm795cyc75szgg1vc2xvsbf6zbjd"))))

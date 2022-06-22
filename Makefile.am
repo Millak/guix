@@ -97,7 +97,6 @@ MODULES =					\
   guix/discovery.scm				\
   guix/android-repo-download.scm		\
   guix/bzr-download.scm            		\
-  guix/extracting-download.scm			\
   guix/git-download.scm				\
   guix/hg-download.scm				\
   guix/hash.scm					\
@@ -173,6 +172,7 @@ MODULES =					\
   guix/build-system/waf.scm			\
   guix/build-system/r.scm			\
   guix/build-system/rakudo.scm			\
+  guix/build-system/rebar.scm			\
   guix/build-system/ruby.scm			\
   guix/build-system/scons.scm			\
   guix/build-system/texlive.scm			\
@@ -227,6 +227,7 @@ MODULES =					\
   guix/build/r-build-system.scm			\
   guix/build/renpy-build-system.scm			\
   guix/build/rakudo-build-system.scm		\
+  guix/build/rebar-build-system.scm		\
   guix/build/ruby-build-system.scm		\
   guix/build/scons-build-system.scm		\
   guix/build/texlive-build-system.scm		\
@@ -275,6 +276,7 @@ MODULES =					\
   guix/import/gnu.scm				\
   guix/import/go.scm				\
   guix/import/hackage.scm			\
+  guix/import/hexpm.scm				\
   guix/import/json.scm				\
   guix/import/kde.scm				\
   guix/import/launchpad.scm   			\
@@ -326,6 +328,7 @@ MODULES =					\
   guix/scripts/import/gnu.scm			\
   guix/scripts/import/go.scm			\
   guix/scripts/import/hackage.scm		\
+  guix/scripts/import/hexpm.scm			\
   guix/scripts/import/json.scm  		\
   guix/scripts/import/minetest.scm  		\
   guix/scripts/import/opam.scm			\
@@ -470,6 +473,7 @@ SCM_TESTS =					\
   tests/boot-parameters.scm			\
   tests/bournish.scm				\
   tests/builders.scm				\
+  tests/build-emacs-utils.scm			\
   tests/build-utils.scm			\
   tests/cache.scm				\
   tests/challenge.scm				\

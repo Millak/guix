@@ -17,7 +17,7 @@
 ;;; Copyright © 2018 nee <nee.git@hidamari.blue>
 ;;; Copyright © 2018, 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
-;;; Copyright © 2018, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018-2019, 2021-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2019 Gabriel Hondet <gabrielhondet@gmail.com>
 ;;; Copyright © 2019 Timotej Lazar <timotej.lazar@araneo.si>
@@ -2281,7 +2281,7 @@ perform creative live mixes with digital music files.")
 (define-public synthv1
   (package
     (name "synthv1")
-    (version "0.9.25")
+    (version "0.9.26")
     (source (origin
               (method url-fetch)
               (uri
@@ -2289,7 +2289,7 @@ perform creative live mixes with digital music files.")
                               "/synthv1-" version ".tar.gz"))
               (sha256
                (base32
-                "1i16036f9wm52c5pxkllq7ir749jcknbh35i9wcxd5n88p6mzw02"))))
+                "1asikh341f3vblrl8l07yakza80ybs8sid3n2qpsrvigaz3iymcd"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests
@@ -2299,7 +2299,8 @@ perform creative live mixes with digital music files.")
            alsa-lib
            new-session-manager
            liblo
-           qtbase-5))
+           qtbase-5
+           qtsvg))
     (native-inputs
      (list pkg-config qttools))
     (home-page "https://synthv1.sourceforge.io")
@@ -2312,7 +2313,7 @@ oscillators and stereo effects.")
 (define-public drumkv1
   (package
     (name "drumkv1")
-    (version "0.9.25")
+    (version "0.9.26")
     (source (origin
               (method url-fetch)
               (uri
@@ -2320,7 +2321,7 @@ oscillators and stereo effects.")
                               "/drumkv1-" version ".tar.gz"))
               (sha256
                (base32
-                "0p50b4k4zldagiwxs0micmdbqib46ysipdj8lkxqdv0pysmd72fc"))))
+                "0j05xqgcb7kwnnsgl6i7vbdsfq26chzs4zyq6pl0ipcmw4d82j8i"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests
@@ -2331,7 +2332,8 @@ oscillators and stereo effects.")
            alsa-lib
            new-session-manager
            liblo
-           qtbase-5))
+           qtbase-5
+           qtsvg))
     (native-inputs
      (list pkg-config qttools))
     (home-page "https://drumkv1.sourceforge.io")
@@ -2344,7 +2346,7 @@ effects.")
 (define-public samplv1
   (package
     (name "samplv1")
-    (version "0.9.25")
+    (version "0.9.26")
     (source (origin
               (method url-fetch)
               (uri
@@ -2352,7 +2354,7 @@ effects.")
                               "/samplv1-" version ".tar.gz"))
               (sha256
                (base32
-                "0d05b03knrwh1zr4p0kcyn58scy6a392f0xxm78cqf0gikd3bw5c"))))
+                "1rqz3hf39hk2m15ihrkn8f5cqgbkvz3rq6r2k35rvn7sgvcq1dli"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests
@@ -2363,7 +2365,8 @@ effects.")
            alsa-lib
            new-session-manager
            liblo
-           qtbase-5))
+           qtbase-5
+           qtsvg))
     (native-inputs
      (list pkg-config qttools))
     (home-page "https://samplv1.sourceforge.io")
@@ -2376,7 +2379,7 @@ effects.")
 (define-public padthv1
   (package
     (name "padthv1")
-    (version "0.9.25")
+    (version "0.9.26")
     (source (origin
               (method url-fetch)
               (uri
@@ -2384,7 +2387,7 @@ effects.")
                               "/padthv1-" version ".tar.gz"))
               (sha256
                (base32
-                "11fa2794g7dqsiw674wr2m4k0xdw89imqwa8mgms0igskxxbvjka"))))
+                "02pg0g4i65j46hirkc3xn7m2clm8krrafrkwjc1v8rkcdj6q2gw1"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests
@@ -2395,7 +2398,8 @@ effects.")
            new-session-manager
            liblo
            fftwf
-           qtbase-5))
+           qtbase-5
+           qtsvg))
     (native-inputs
      (list pkg-config qttools))
     (home-page "https://padthv1.sourceforge.io")
@@ -3858,7 +3862,7 @@ using the beets FetchArt plugin.")
      `(("alsa-lib" ,alsa-lib)
        ("lhasa" ,lhasa)
        ("jack" ,jack-1)
-       ("rtmidi" ,rtmidi)
+       ("rtmidi" ,rtmidi-4.0)
        ("sdl" ,sdl2)
        ("zlib" ,zlib)
        ("zziplib" ,zziplib)))
@@ -4778,7 +4782,7 @@ sample library.")
 (define-public muse-sequencer
   (package
     (name "muse-sequencer")
-    (version "4.0.0")
+    (version "4.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4787,24 +4791,23 @@ sample library.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1gamr9ln10l26wwyin1a4grrqy6h05qzcgp28wsp85yczkpsh02c"))))
+                "1iihjivpkvmdfqf20kcl9k0s1iwlv9p5vpna7c58lbw3573fiyr4"))))
     (build-system qt-build-system)
     (arguments
-     `(#:tests? #f ; there is no test target
-       #:configure-flags
-       (list "-DENABLE_VST_NATIVE=OFF"
-             (string-append "-DCMAKE_EXE_LINKER_FLAGS="
-                            "-Wl,-rpath="
-                            (assoc-ref %outputs "out") "/lib/muse-"
-                            ,(version-major+minor version) "/modules")
-             (string-append "-DCMAKE_SHARED_LINKER_FLAGS="
-                            "-Wl,-rpath="
-                            (assoc-ref %outputs "out") "/lib/muse-"
-                            ,(version-major+minor version) "/modules"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'chdir
-           (lambda _ (chdir "src"))))))
+     (list
+      #:tests? #f                       ; there is no test target
+      #:configure-flags
+      #~(list "-DENABLE_VST_NATIVE=OFF"
+              (string-append "-DCMAKE_EXE_LINKER_FLAGS="
+                             "-Wl,-rpath=" #$output "/lib/muse-"
+                             #$(version-major+minor version) "/modules")
+              (string-append "-DCMAKE_SHARED_LINKER_FLAGS="
+                             "-Wl,-rpath=" #$output "/lib/muse-"
+                             #$(version-major+minor version) "/modules"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _ (chdir "src"))))))
     (inputs
      (list alsa-lib
            dssi
@@ -4821,7 +4824,7 @@ sample library.")
            lrdf
            lv2
            pcre
-           pulseaudio ; required by rtaudio
+           pulseaudio                   ; required by rtaudio
            qtbase-5
            qtsvg
            rtaudio
@@ -6137,7 +6140,7 @@ and as an LV2 plugin.")
       ("pulseaudio" ,pulseaudio)
       ("reproc" ,reproc)
       ("rubberband" ,rubberband)
-      ("rtmidi" ,rtmidi)
+      ("rtmidi" ,rtmidi-4.0)
       ("sdl2" ,sdl2)
       ("xdg-utils" ,xdg-utils)
       ("zstd" ,zstd "lib")))

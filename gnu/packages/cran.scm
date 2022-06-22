@@ -104,6 +104,7 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages tcl)
+  #:use-module (gnu packages tex)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages uglifyjs)
@@ -116,13 +117,13 @@
 (define-public r-afpt
   (package
     (name "r-afpt")
-    (version "1.1.0.1")
+    (version "1.1.0.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "afpt" version))
               (sha256
                (base32
-                "0cg5cdm9nl1hs6f3j0ljpw4bkqvh3ksyj615b9nnbqs5k28lyds9"))))
+                "1z0r4r7prxbhadmkdg6345g0b5vq9dqyyw9hh3fpad9zkc7k6xbc"))))
     (properties `((upstream-name . "afpt")))
     (build-system r-build-system)
     (native-inputs (list r-knitr))
@@ -635,13 +636,13 @@ benchmarks from running the @code{benchmarkme} package.")
 (define-public r-benchmarkme
   (package
     (name "r-benchmarkme")
-    (version "1.0.7")
+    (version "1.0.8")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "benchmarkme" version))
               (sha256
                (base32
-                "0ymgsxzrvnpyvs0cff09d3lrkl12qyqx5bwammsc4vgl5ng9p69p"))))
+                "0qaz8wy3n08k9lr8qljk5i8z8db18scbdc8m734aymd307h00w8x"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
@@ -652,6 +653,7 @@ benchmarks from running the @code{benchmarkme} package.")
            r-foreach
            r-httr
            r-matrix
+           r-stringr
            r-tibble))
     (home-page "https://csgillespie.github.io/benchmarkme/")
     (synopsis "Crowd-sourced system benchmarks")
@@ -4349,13 +4351,13 @@ curve to a data matrix in arbitrary dimensions.")
 (define-public r-restrserve
   (package
     (name "r-restrserve")
-    (version "1.1.1")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RestRserve" version))
        (sha256
-        (base32 "1ydsdgy6mxl0zqk7xqf4v6if5nf2qv7k48q340fhaqyjk2gd60p7"))))
+        (base32 "03mlzhs2k728kwy6csp60m7qy8n9ma5dd37j87rzh07fcdlx8wim"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-checkmate
@@ -4442,14 +4444,14 @@ plot networks.")
 (define-public r-proxy
   (package
     (name "r-proxy")
-    (version "0.4-26")
+    (version "0.4-27")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "proxy" version))
        (sha256
         (base32
-         "0k8sr24mjfvxp12sf1j9228ah3ngy15nqmm0jw14x5s32f1assv7"))))
+         "0gsng2aggnljl4z82la9hpnd26hngzhj8fizx4wx22npqjj93694"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/proxy")
     (synopsis "Distance and similarity measures")
@@ -4462,13 +4464,13 @@ most popular ones.")
 (define-public r-sp
   (package
     (name "r-sp")
-    (version "1.4-7")
+    (version "1.5-0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sp" version))
        (sha256
-        (base32 "1bdi06n5zkjnnyh0rallf04s0vlcx9rg9p5q7s6vfqvkf19nk501"))))
+        (base32 "077q1wh9ihhcn1338xspnd90hy16ljxsav1xcrxdxj4fyynhd6lk"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-lattice))
@@ -4794,14 +4796,14 @@ those for the gamma distribution in the @code{stats} package.")
 (define-public r-bdsmatrix
   (package
     (name "r-bdsmatrix")
-    (version "1.3-4")
+    (version "1.3-6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bdsmatrix" version))
        (sha256
         (base32
-         "1sh6pg43rgqvips4fx0k4vmp5i9lmniix0bqwj2yq5m06gs227i5"))))
+         "1g300x11rv56f826mbv7mbb67a5xz3dv74hpjc18jh3q8gap3j7r"))))
     (properties `((upstream-name . "bdsmatrix")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/bdsmatrix/")
@@ -5083,13 +5085,13 @@ available in a vignette.")
 (define-public r-progressr
   (package
     (name "r-progressr")
-    (version "0.10.0")
+    (version "0.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "progressr" version))
        (sha256
-        (base32 "1p5s35rzh28n2id2lipgyqmh3wzib66m7x0pz9028y8cql8xr5ac"))))
+        (base32 "1ldf7hqsz8vbjggz31990sqqyhrbiilzcnyla1krjlkg595h50wg"))))
     (properties `((upstream-name . "progressr")))
     (build-system r-build-system)
     (propagated-inputs
@@ -5425,14 +5427,14 @@ provided.")
 (define-public r-ipred
   (package
     (name "r-ipred")
-    (version "0.9-12")
+    (version "0.9-13")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ipred" version))
        (sha256
         (base32
-         "0hsq00382pfd9hzpcgphjxazbxm4zx0k2r6pk6kib56k0ibm7qfn"))))
+         "162ckhqn24l0l5ih7qi2k3lxw5iprm1g5a34q1ik0b9wv5ia0s31"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-class
@@ -6152,14 +6154,14 @@ modeling for empirical income distributions.")
 (define-public r-vcd
   (package
     (name "r-vcd")
-    (version "1.4-9")
+    (version "1.4-10")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "vcd" version))
        (sha256
         (base32
-         "13sn77qdcyll9lz7nab0bxzfvpgj8f5rl2cq5ylpz8pibynj1d55"))))
+         "0nxkl1x39xf8l0apgvlbr30i8lasix7hyyc93g6514r8z8m1k23i"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-colorspace r-lmtest r-mass))
@@ -6406,13 +6408,13 @@ constants, and control debugging of packages via environment variables.")
 (define-public r-processx
   (package
     (name "r-processx")
-    (version "3.5.3")
+    (version "3.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "processx" version))
        (sha256
-        (base32 "0ail3w8n5g1ibdamgpxcfpla18kqkilmppiasm7ms67cavx2k5k7"))))
+        (base32 "0kx6hvkkj6lh8lrdh819hvkx8nyq5aac53mkvpqyskwkmmlnf63m"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ps r-r6))
@@ -6913,14 +6915,14 @@ detect possible inconsistencies.")
 (define-public r-sna
   (package
     (name "r-sna")
-    (version "2.6")
+    (version "2.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sna" version))
        (sha256
         (base32
-         "0ai0v4538d30m4wks5s3lch1yfmx1ml0nnrz7ihs097lv586a09s"))))
+         "0ka319s1w857fj28ja1i1ljgv2h6ji4d69riqy9pwhvvghsa83s4"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-network r-statnet-common))
@@ -9287,14 +9289,14 @@ publication-ready plots.")
 (define-public r-ellipse
   (package
     (name "r-ellipse")
-    (version "0.4.2")
+    (version "0.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ellipse" version))
        (sha256
         (base32
-         "1wm5v7zdv2drgdba7z96jwsx74mqhlq80qgrvdb4vb5r02dcw68p"))))
+         "0im9d36dixpksms52v6nsb3l0z2c7wc25r9j0f08naj6qc8jpvq2"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/ellipse/")
     (synopsis "Functions for drawing ellipses and ellipse-like confidence regions")
@@ -9648,14 +9650,14 @@ implemented in bibutils.")
 (define-public r-rdpack
   (package
     (name "r-rdpack")
-    (version "2.3")
+    (version "2.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Rdpack" version))
        (sha256
         (base32
-         "1igpa4hnpiykbdnq57mglby5jsbind6izkkfy81wx4ib6nw1lpn4"))))
+         "12j45n4srs987s9mqvp3524cviqbl2pnpx7yw8agac9ynnfmwgmm"))))
     (properties `((upstream-name . "Rdpack")))
     (build-system r-build-system)
     (propagated-inputs
@@ -9674,14 +9676,14 @@ references and Rd files.")
 (define-public r-officer
   (package
     (name "r-officer")
-    (version "0.4.2")
+    (version "0.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "officer" version))
        (sha256
         (base32
-         "0qmn62srh9zicgizyblanirbdva7f09g967yb86kfrn05ckh5y10"))))
+         "1ksfmwqb91j8n8x4vchpqr848scvf817mgiknwac7n8lfz79synk"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-r6 r-uuid r-xml2 r-zip))
@@ -10026,14 +10028,14 @@ functions.")
 (define-public r-flextable
   (package
     (name "r-flextable")
-    (version "0.7.0")
+    (version "0.7.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "flextable" version))
        (sha256
         (base32
-         "15vr5lb87712mymsvv01kz9s1fb54sx5kybsa2x547k5g10dbrbm"))))
+         "03nxh9a9q0jgqz05i7kgp8zjncpq9m4f54dx3bvqgpds4hcqxli9"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-base64enc
@@ -13444,17 +13446,19 @@ Bioconductor packages.")
 (define-public r-rgl
   (package
     (name "r-rgl")
-    (version "0.108.3.2")
+    (version "0.109.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rgl" version))
        (sha256
         (base32
-         "0r9wzhjzl346i37ngs6hqzmizhi53kzqz582lv822v6yxang6fh3"))))
+         "15rckpi2vzjc45glqk1mibxw1vja9y08hj9id2qd1si2bb708x8i"))))
     (build-system r-build-system)
     (native-inputs
-     (list pkg-config r-knitr))
+     (list pkg-config
+           r-knitr
+           r-rmarkdown)) ;for vignettes
     (inputs
      (list freetype
            libpng
@@ -13463,11 +13467,13 @@ Bioconductor packages.")
            pandoc
            zlib))
     (propagated-inputs
-     (list r-htmltools
+     (list r-base64enc
+           r-htmltools
            r-htmlwidgets
            r-jsonlite
            r-knitr
            r-magrittr
+           r-mime
            r-r6))
     (home-page "https://r-forge.r-project.org/projects/rgl/")
     (synopsis "3D visualization using OpenGL")
@@ -13762,13 +13768,13 @@ Anderson-Darling Distribution\".")
 (define-public r-admisc
   (package
     (name "r-admisc")
-    (version "0.27")
+    (version "0.28")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "admisc" version))
        (sha256
-        (base32 "07hfrhv3pcldsffnyfzpa1q3x32gxr1386r8fik1nhql2w46mm13"))))
+        (base32 "0cfx4g64mybd69xm595zzv79j4fbzn7vihpvzcvicggs3immppha"))))
     (properties `((upstream-name . "admisc")))
     (build-system r-build-system)
     (home-page "https://github.com/dusadrian/admisc")
@@ -13787,14 +13793,14 @@ the base function @code{with()}.")
 (define-public r-sodium
   (package
     (name "r-sodium")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sodium" version))
        (sha256
         (base32
-         "0x4jb3cf1nv1spz1jc9xp8hly2b4a7nj48xr4s33jnfcpdjkmn5q"))))
+         "1a03z2asvmalnmsn89lapzp8a4fr0qvzdv3xgin8pbqhjyb9hvpp"))))
     (properties `((upstream-name . "sodium")))
     (build-system r-build-system)
     (inputs
@@ -14931,14 +14937,14 @@ limitations\" using the GNU Multiple Precision library.")
 (define-public r-rmpfr
   (package
     (name "r-rmpfr")
-    (version "0.8-7")
+    (version "0.8-9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Rmpfr" version))
        (sha256
         (base32
-         "1ljpbxvm4agbxnab5dfffbpw5k964hy3gw57dzydq1gpbxwdphlk"))))
+         "12mwvgyalzh4zf5d002fm1hpr3wwhiypy9ia6wy47ij9gns5mvng"))))
     (properties `((upstream-name . "Rmpfr")))
     (build-system r-build-system)
     (inputs
@@ -15899,14 +15905,14 @@ them in distributed compute environments.")
 (define-public r-parallelly
   (package
     (name "r-parallelly")
-    (version "1.31.1")
+    (version "1.32.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "parallelly" version))
        (sha256
         (base32
-         "1nhp66psk3m79is5qm4ppxkj7bdy46jr2h2pir22ia9ghhyzris0"))))
+         "0yg1hmgkp81ihgwqaynqh0jgki2mkdy78j4fgjmqvc1ig5ga774h"))))
     (properties `((upstream-name . "parallelly")))
     (build-system r-build-system)
     (home-page "https://github.com/HenrikBengtsson/parallelly")
@@ -16956,14 +16962,14 @@ network.")
 (define-public r-apcluster
   (package
     (name "r-apcluster")
-    (version "1.4.9")
+    (version "1.4.10")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "apcluster" version))
        (sha256
         (base32
-         "0wnbb3kj9m7rfq63xr43jjf6n8jxm1r2wvvx6g0qkss0wvipbb1s"))))
+         "1820j1xjlbmw6j2fwwv2g806dqpk5qrbbaqsrbrn6igql8pzf552"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-matrix r-rcpp))
@@ -17364,14 +17370,14 @@ classes.")
 (define-public r-classint
   (package
     (name "r-classint")
-    (version "0.4-3")
+    (version "0.4-7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "classInt" version))
        (sha256
         (base32
-         "1b1lqhpzxm6b8pza8l3s0cxy74mm9y45lcd3354i2v3bg8m7mply"))))
+         "0vk06k10mxcm6wn4b74njzc1kc1ividsn03ii523j4yfhy4kl3m3"))))
     (properties `((upstream-name . "classInt")))
     (build-system r-build-system)
     (propagated-inputs
@@ -17593,14 +17599,14 @@ spanning tree.")
 (define-public r-adegenet
   (package
     (name "r-adegenet")
-    (version "2.1.6")
+    (version "2.1.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "adegenet" version))
        (sha256
         (base32
-         "0sx25p7bgz0h9mc3jsdnnjhvmb7sy8nb3r0z923vhk336d4xw8vq"))))
+         "0zkbxw9w0fcb4s3zv2a8nxcsihzkfz49psaipxw99nwgm7l9jrh9"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ade4
@@ -17835,14 +17841,14 @@ include
 (define-public r-haplo-stats
   (package
     (name "r-haplo-stats")
-    (version "1.8.7")
+    (version "1.8.9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "haplo.stats" version))
        (sha256
         (base32
-         "1q2zn72j92bwhcdswk4qqfgzch56p9pcy2xhkd3safvqp3l9rzpw"))))
+         "0np9kw4f30xbvwr4f79g909ilis5n273ridmlwyzjxiskiry6mx0"))))
     (properties `((upstream-name . "haplo.stats")))
     (build-system r-build-system)
     (propagated-inputs
@@ -18051,13 +18057,13 @@ that accept short and long options.")
 (define-public r-kernlab
   (package
     (name "r-kernlab")
-    (version "0.9-30")
+    (version "0.9-31")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "kernlab" version))
        (sha256
-        (base32 "10gfb542nbl1d5pfy6r7gcg3j1ikra9l18r6xjv8lzp5ka1kmz28"))))
+        (base32 "12i7ffc1aacyy7bpjc0w60wwivn88wri8jz43h77irn5q5jwcnbk"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/kernlab")
     (synopsis "Kernel-based machine learning tools")
@@ -19317,14 +19323,14 @@ external dependencies.  This package has is implemented purely in R.")
 (define-public r-aplot
   (package
     (name "r-aplot")
-    (version "0.1.4")
+    (version "0.1.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "aplot" version))
        (sha256
         (base32
-         "1b4jjj05a602dgn6yr1bsmbzlzkj6wf6af3k3w63g3mkqv0xzsfd"))))
+         "0310z9db2r8vr4053vy6w4rbcqhg5cv56p60rk7dh4y6ifbd2sbx"))))
     (properties `((upstream-name . "aplot")))
     (build-system r-build-system)
     (propagated-inputs
@@ -20675,14 +20681,14 @@ emphasize hidden group structures in networks or focus on specific nodes.")
 (define-public r-terra
   (package
     (name "r-terra")
-    (version "1.5-21")
+    (version "1.5-34")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "terra" version))
        (sha256
         (base32
-         "0gzl0ka19jjw0dmaghjk2sgwi78kkz4w3rlfkym62rdarhlfj7h9"))))
+         "075azi23gi1b1jxm3s1f1hpc6in7qz4fp38shq9pflfnzbs8ib9w"))))
     (properties `((upstream-name . "terra")))
     (build-system r-build-system)
     (inputs
@@ -21980,14 +21986,14 @@ and prints vectorized images.")
 (define-public r-randtoolbox
   (package
     (name "r-randtoolbox")
-    (version "2.0.0")
+    (version "2.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "randtoolbox" version))
        (sha256
         (base32
-         "005x2igljc6vm0nsmkld9aqjqz1ccwapc8z3aw5c3ivh4n2bghf9"))))
+         "1p2jsn0hpihc49zk605z82mhhvma0ji2f5b94wa85g2xzriqkwn4"))))
     (properties `((upstream-name . "randtoolbox")))
     (build-system r-build-system)
     (propagated-inputs
@@ -23535,14 +23541,14 @@ functions.")
 (define-public r-univoutl
   (package
     (name "r-univoutl")
-    (version "0.3")
+    (version "0.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "univOutl" version))
        (sha256
         (base32
-         "1hhpxrpmp2wbrynx9xjndnp2sccirgky2x6ksd6yk6phmk0rbzjp"))))
+         "1kp014bhs8v02fp7misrj4fpfp2na9lg45p5zqvlfaypnm5imsr9"))))
     (properties `((upstream-name . "univOutl")))
     (build-system r-build-system)
     (propagated-inputs
@@ -23591,13 +23597,13 @@ Visualizations are also available for most of these settings.")
 (define-public r-torch
   (package
     (name "r-torch")
-    (version "0.7.2")
+    (version "0.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "torch" version))
        (sha256
-        (base32 "163pvl3gyz7l2fmqhgg4k6pw4dmvfir71yp9l5ra2k4zc32lz166"))))
+        (base32 "0n2rmv2mwfp4y002x46fd278kssmhi54zcyj37558k4r1kazzfxp"))))
     (properties `((upstream-name . "torch")))
     (build-system r-build-system)
     (arguments
@@ -23961,13 +23967,13 @@ from PLINK results.")
 (define-public r-gghighlight
   (package
     (name "r-gghighlight")
-    (version "0.3.2")
+    (version "0.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gghighlight" version))
        (sha256
-        (base32 "0bxgn4srxz1qhawqa8ck57p8hg5ikwfa9ll03zmnn8fb19akwm2v"))))
+        (base32 "0isfp5n0ijqpy3z5d7l75mlq15nbkjppv6812lcya6097ar2d381"))))
     (properties `((upstream-name . "gghighlight")))
     (build-system r-build-system)
     (propagated-inputs
@@ -24815,18 +24821,20 @@ Models.")
 (define-public r-mi
   (package
     (name "r-mi")
-    (version "1.0")
+    (version "1.1")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "mi" version))
         (sha256
           (base32
-            "1h47k5mpbvhid83277dvvj2di493bgzz9iarpyv3r30y219l7x1l"))))
+            "11f75ivnax6p48mp2pasprws488cm2daym87sw2mcrywvf89fyjd"))))
     (properties `((upstream-name . "mi")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-arm r-matrix))
+    (native-inputs
+     (list r-knitr))
     (home-page "http://www.stat.columbia.edu/~gelman/")
     (synopsis "Missing data imputation and model checking")
     (description
@@ -25457,14 +25465,14 @@ and reproducible way.")
 (define-public r-rsconnect
   (package
     (name "r-rsconnect")
-    (version "0.8.25")
+    (version "0.8.26")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rsconnect" version))
        (sha256
         (base32
-         "1kyr4v7vds2yw3xmkk2yr56ylz1h95944brylwvwmwj5yxvm419w"))))
+         "1vazdgpha7545h4riz11njbl8azg38i1y1a5nfckfx03v2zapbzs"))))
     (properties `((upstream-name . "rsconnect")))
     (build-system r-build-system)
     (propagated-inputs
@@ -26696,14 +26704,14 @@ including means, variances, intervals, and highest density regions.")
 (define-public r-posterior
   (package
     (name "r-posterior")
-    (version "1.2.1")
+    (version "1.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "posterior" version))
        (sha256
         (base32
-         "1qdg22l868daqg2axr36szl1m9z0rfpgx8zmv1x1xwm1hmlf0mxp"))))
+         "0frm7p6cjkjfl4gviixaa7448qaac8n9ilkr5c02fa9vnisys5fn"))))
     (properties `((upstream-name . "posterior")))
     (build-system r-build-system)
     (propagated-inputs
@@ -26993,14 +27001,14 @@ counting and recursive k-means partitioning.")
 (define-public r-hardhat
   (package
     (name "r-hardhat")
-    (version "0.2.0")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "hardhat" version))
        (sha256
         (base32
-         "0a4nq93cmps5xy8h0qsv6xyzrbsz9ka4iwkrvb8m8v10wq7wm5wl"))))
+         "1cdl52lzv3wffq8fzrb6sk85i4i8lm8skgad1c8az3ifmzssjx03"))))
     (properties `((upstream-name . "hardhat")))
     (build-system r-build-system)
     (propagated-inputs
@@ -28428,20 +28436,20 @@ object sizes.")
 (define-public r-yardstick
   (package
     (name "r-yardstick")
-    (version "0.0.9")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "yardstick" version))
        (sha256
         (base32
-         "00hv4gk1ba4dab8i3dcq7lim4bll7l572rgc8km9x4ja8by95j8h"))))
+         "0mnpvwbzybxp47w4yibmjb7xppwinbjcqcyqfn8qn38l5liwy8yd"))))
     (properties `((upstream-name . "yardstick")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-dplyr
            r-generics
-           r-proc
+           r-hardhat
            r-rlang
            r-tidyselect
            r-vctrs))
@@ -28963,14 +28971,14 @@ functions or computational engines (e.g. R, Spark, Stan, etc).")
 (define-public r-infer
   (package
     (name "r-infer")
-    (version "1.0.0")
+    (version "1.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "infer" version))
        (sha256
         (base32
-         "1qbpcn7jqbvgwnpiyylj021j8m33p58a204yd1pfkpzd3x2lbsm6"))))
+         "0qfrxljvwpa8d1k66ii80irarlv593wr6rmcsmi4flc7adgydrnp"))))
     (properties `((upstream-name . "infer")))
     (build-system r-build-system)
     (propagated-inputs
@@ -30409,14 +30417,14 @@ in output to the equivalent HTML.")
 (define-public r-pkgdown
   (package
     (name "r-pkgdown")
-    (version "2.0.3")
+    (version "2.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pkgdown" version))
        (sha256
         (base32
-         "0wqga9bcl7wmvkwpkkmf5hx1cl7rjq5ddvqmxhl4p1dczys3adnr"))))
+         "02lwr53xvxybcsg8md8qbq1wq833ap7ssn5v92cd4qqay5iya374"))))
     (properties `((upstream-name . "pkgdown")))
     (build-system r-build-system)
     (inputs (list pandoc))
@@ -30466,7 +30474,26 @@ package online.")
     (properties `((upstream-name . "prereg")))
     (build-system r-build-system)
     (propagated-inputs
-      (list r-rmarkdown))
+      (list r-rmarkdown
+            ;; The package provides a custom LaTex template in
+            ;; inst/rmd/prereg_form.tex, which depends on these packages:
+            texlive-amsmath
+            texlive-booktabs
+            texlive-etoolbox
+            texlive-generic-iftex
+            texlive-latex-fancyhdr
+            texlive-latex-fancyvrb
+            texlive-latex-geometry
+            texlive-latex-graphics
+            texlive-latex-threeparttable
+            texlive-latex-titlesec
+            texlive-latex-upquote
+            texlive-listings
+            texlive-polyglossia
+            texlive-titling
+            texlive-tools
+            texlive-ulem
+            (texlive-updmap.cfg (list texlive-amsfonts texlive-lm))))
     (home-page "https://github.com/crsh/prereg")
     (synopsis
       "R Markdown Templates to preregister Scientific Studies")
@@ -31597,6 +31624,32 @@ asynchronously from formatting.")
 utility operations.")
     (license license:gpl3)))
 
+(define-public r-rsq
+  (package
+    (name "r-rsq")
+    (version "2.5")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "rsq" version))
+              (sha256
+               (base32
+                "1r628srxhhf7b51lnj4qrzgbqajkm0ls47a9rzjkvmfq4ax5i73f"))))
+    (properties `((upstream-name . "rsq")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-deriv
+           r-lme4
+           r-mass
+           r-matrix
+           r-nlme))
+    (home-page "https://cran.r-project.org/package=rsq")
+    (synopsis "R-squared and related measures")
+    (description
+     "Calculate generalized R-squared, partial R-squared, and partial correlation
+coefficients for generalized linear (mixed) models (including quasi models
+with well defined variance functions).")
+    (license license:gpl2)))
+
 (define-public r-webutils
   (package
     (name "r-webutils")
@@ -32582,14 +32635,14 @@ participants and their emotional expressions throughout the meeting.")
 (define-public r-zoom
   (package
     (name "r-zoom")
-    (version "2.0.4")
+    (version "2.0.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "zoom" version))
        (sha256
         (base32
-         "03f5rxfr6ncf1j6vpn7pip21q7ylj4bx0a5xphqb6x6i33lxf1g5"))))
+         "05ikad4j1qi5y8mn77n9bw7d6ic3api9d7mbcn855w8xcc69ja4q"))))
     (properties `((upstream-name . "zoom")))
     (build-system r-build-system)
     (home-page "https://github.com/cbarbu/R-package-zoom")
@@ -33340,6 +33393,30 @@ concept.  The package extends @code{ggpplots} facets through customisation, by
 setting individual scales per panel, resizing panels and providing nested
 facets.  It also allows multiple colour, fill scales per plot and hosts a
 smaller collection of stats, geoms and axis guides.")
+    (license license:expat)))
+
+(define-public r-gghalves
+  (package
+    (name "r-gghalves")
+    (version "0.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "gghalves" version))
+       (sha256
+        (base32
+         "1lj4c38fzxwg8gy57ymf00lqjdplb7v2a0lnd262c1d5cavqiws4"))))
+    (properties `((upstream-name . "gghalves")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-ggplot2 r-gtable))
+    (native-inputs
+     (list r-knitr))
+    (home-page "https://github.com/erocoar/gghalves")
+    (synopsis "Compose half-half plots using your favourite geoms")
+    (description "This package provides a @code{ggplot2} extension for easy
+plotting of half-half geom combinations.  Think half boxplot and half
+jitterplot, or half violinplot and half dotplot.")
     (license license:expat)))
 
 (define-public r-zoeppritz

@@ -1713,7 +1713,7 @@ instant messenger with audio and video chat capabilities.")
 (define-public qtox
   (package
     (name "qtox")
-    (version "1.17.4")
+    (version "1.17.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/qTox/qTox/releases"
@@ -1721,7 +1721,7 @@ instant messenger with audio and video chat capabilities.")
                                   "/v" version ".tar.gz"))
               (sha256
                (base32
-                "086hvm0q2vl2lq8zlp8s9sivlic6sg7ga5ixz01hbsyrashvil63"))
+                "1ml8z1xpp3qhip4vkr375jf7y5kc18g0apm91n5am6ricx37c01r"))
               (file-name (string-append name "-" version ".tar.gz"))))
     (build-system cmake-build-system)
     (arguments

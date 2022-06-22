@@ -1,6 +1,6 @@
 # GNU Guix --- Functional package management for GNU
 # Copyright © 2012-2021, 2021-2022 Ludovic Courtès <ludo@gnu.org>
-# Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 Andreas Enge <andreas@enge.fr>
+# Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2022 Andreas Enge <andreas@enge.fr>
 # Copyright © 2016 Mathieu Lirzin <mthl@gnu.org>
 # Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Mark H Weaver <mhw@netris.org>
 # Copyright © 2016 Chris Marusich <cmmarusich@gmail.com>
@@ -85,6 +85,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/home/services/fontutils.scm		\
   %D%/home/services/shells.scm			\
   %D%/home/services/shepherd.scm		\
+  %D%/home/services/ssh.scm			\
   %D%/home/services/mcron.scm			\
   %D%/home/services/utils.scm			\
   %D%/home/services/xdg.scm			\
@@ -181,6 +182,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/cvassistant.scm			\
   %D%/packages/cybersecurity.scm		\
   %D%/packages/cyrus-sasl.scm			\
+  %D%/packages/darwin.scm			\
   %D%/packages/databases.scm			\
   %D%/packages/datamash.scm			\
   %D%/packages/datastructures.scm		\
@@ -715,6 +717,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/build/bootloader.scm			\
   %D%/build/chromium-extension.scm		\
   %D%/build/cross-toolchain.scm			\
+  %D%/build/dbus-service.scm			\
   %D%/build/image.scm				\
   %D%/build/jami-service.scm			\
   %D%/build/file-systems.scm			\
@@ -848,7 +851,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/akonadi-not-relocatable.patch		\
   %D%/packages/patches/akonadi-timestamps.patch		\
   %D%/packages/patches/allegro-mesa-18.2.5-and-later.patch	\
-  %D%/packages/patches/alpine-fix-privacy-policy-crash.patch	\
   %D%/packages/patches/anki-mpv-args.patch			\
   %D%/packages/patches/antiword-CVE-2014-8123.patch			\
   %D%/packages/patches/antlr3-3_1-fix-java8-compilation.patch	\
@@ -1039,7 +1041,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/enjarify-setup-py.patch			\
   %D%/packages/patches/enlightenment-fix-setuid-path.patch	\
   %D%/packages/patches/eog-update-libportal-usage.patch		\
-  %D%/packages/patches/epiphany-update-libportal-usage.patch	\
   %D%/packages/patches/erlang-man-path.patch			\
   %D%/packages/patches/esmtp-add-lesmtp.patch		\
   %D%/packages/patches/eudev-rules-directory.patch		\
@@ -1074,7 +1075,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/foomatic-filters-CVE-2015-8560.patch	\
   %D%/packages/patches/fp16-system-libraries.patch		\
   %D%/packages/patches/fpc-reproducibility.patch		\
-  %D%/packages/patches/fplll-std-fenv.patch     		\
   %D%/packages/patches/freedink-engine-fix-sdl-hints.patch	\
   %D%/packages/patches/freeglut-gcc-compat.patch		\
   %D%/packages/patches/freeimage-unbundle.patch		\
@@ -1319,6 +1319,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/java-tunnelvisionlabs-antlr-code-too-large.patch	\
   %D%/packages/patches/java-apache-ivy-port-to-latest-bouncycastle.patch	\
   %D%/packages/patches/java-commons-collections-fix-java8.patch \
+  %D%/packages/patches/java-commons-lang-fix-dependency.patch \
   %D%/packages/patches/java-jeromq-fix-tests.patch		\
   %D%/packages/patches/java-openjfx-build-jdk_version.patch     \
   %D%/packages/patches/java-powermock-fix-java-files.patch		\
@@ -1349,6 +1350,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/kinit-kdeinit-extra_libs.patch		\
   %D%/packages/patches/kinit-kdeinit-libpath.patch		\
   %D%/packages/patches/kio-search-smbd-on-PATH.patch		\
+  %D%/packages/patches/kismet-unbundle-boost.patch		\
   %D%/packages/patches/kmail-Fix-missing-link-libraries.patch \
   %D%/packages/patches/kmod-module-directory.patch		\
   %D%/packages/patches/kmscon-runtime-keymap-switch.patch	\
@@ -1453,9 +1455,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/llvm-9-fix-bitcast-miscompilation.patch	\
   %D%/packages/patches/llvm-9-fix-lpad-miscompilation.patch	\
   %D%/packages/patches/llvm-9-fix-scev-miscompilation.patch	\
-  %D%/packages/patches/llvm-roc-3.0.0-add_libraries.patch \
   %D%/packages/patches/llvm-roc-4.0.0-remove-isystem-usr-include.patch \
-  %D%/packages/patches/llvm-roc-4.2.0-add_Object.patch \
+  %D%/packages/patches/llvm-roc-5.0.0-linkdl.patch \
   %D%/packages/patches/lm-sensors-hwmon-attrs.patch		\
   %D%/packages/patches/lrcalc-includes.patch    		\
   %D%/packages/patches/lsh-fix-x11-forwarding.patch		\
@@ -1477,6 +1478,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/mars-sfml-2.3.patch			\
   %D%/packages/patches/mathjax-disable-webpack.patch			\
   %D%/packages/patches/mathjax-no-a11y.patch			\
+  %D%/packages/patches/mathjax-3.1.2-no-a11y.patch		\
   %D%/packages/patches/maxima-defsystem-mkdir.patch		\
   %D%/packages/patches/maven-generate-component-xml.patch		\
   %D%/packages/patches/maven-generate-javax-inject-named.patch		\
@@ -1528,7 +1530,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/netsurf-system-utf8proc.patch		\
   %D%/packages/patches/netsurf-y2038-tests.patch		\
   %D%/packages/patches/netsurf-longer-test-timeout.patch	\
-  %D%/packages/patches/nftables-fix-makefile.patch		\
   %D%/packages/patches/nhc98-c-update.patch			\
   %D%/packages/patches/nix-dont-build-html-doc.diff		\
   %D%/packages/patches/nfs4-acl-tools-0.3.7-fixpaths.patch	\
@@ -1653,6 +1654,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/psm-disable-memory-stats.patch		\
   %D%/packages/patches/psm-ldflags.patch			\
   %D%/packages/patches/psm-repro.patch				\
+  %D%/packages/patches/public-inbox-fix-spawn-test.patch	\
   %D%/packages/patches/pulseaudio-fix-mult-test.patch		\
   %D%/packages/patches/pulseaudio-longer-test-timeout.patch	\
   %D%/packages/patches/pulseview-qt515-compat.patch		\
@@ -1721,6 +1723,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-werkzeug-tests.patch		\
   %D%/packages/patches/python-mypy-12332.patch			\
   %D%/packages/patches/python-mypy-use-sys-path.patch		\
+  %D%/packages/patches/python-zeep-Fix-pytest_httpx-test-cases.patch	\
   %D%/packages/patches/qemu-build-info-manual.patch		\
   %D%/packages/patches/qemu-glibc-2.27.patch 			\
   %D%/packages/patches/qemu-glibc-2.30.patch 			\
@@ -1763,9 +1766,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/rnp-disable-ruby-rnp-tests.patch		\
   %D%/packages/patches/rnp-unbundle-googletest.patch		\
   %D%/packages/patches/rocm-comgr-3.1.0-dependencies.patch \
-  %D%/packages/patches/rocm-opencl-runtime-3.10.0-includes.patch \
   %D%/packages/patches/rocm-opencl-runtime-4.3-noclinfo.patch \
-  %D%/packages/patches/rocm-opencl-runtime-4.3-nocltrace.patch \
   %D%/packages/patches/rocm-opencl-runtime-4.3-noopencl.patch \
   %D%/packages/patches/ruby-mustache-1.1.1-fix-race-condition-tests.patch \
   %D%/packages/patches/ruby-sanitize-system-libxml.patch	\
@@ -1846,6 +1847,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/texi2html-i18n.patch			\
   %D%/packages/patches/thefuck-test-environ.patch		\
   %D%/packages/patches/tidy-CVE-2015-5522+5523.patch		\
+  %D%/packages/patches/timescaledb-flaky-test.patch		\
   %D%/packages/patches/tinyxml-use-stl.patch			\
   %D%/packages/patches/tipp10-disable-downloader.patch		\
   %D%/packages/patches/tipp10-fix-compiling.patch		\

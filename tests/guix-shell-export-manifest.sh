@@ -46,6 +46,17 @@ cat "$manifest.second"
 
 cmp "$manifest" "$manifest.second"
 
+# Manifest for a profile.
+guix shell --bootstrap guile-bootstrap -r "$tmpdir/profile" -- \
+     guile --version
+test -x "$tmpdir/profile/bin/guile"
+guix shell -p "$tmpdir/profile" --export-manifest > "$manifest.second"
+guix shell --export-manifest guile-bootstrap > "$manifest"
+cat "$manifest.second"
+cmp "$manifest" "$manifest.second"
+
+rm "$tmpdir/profile"
+
 # Combining manifests.
 guix shell --export-manifest -m "$manifest" gash gash-utils \
      > "$manifest.second"

@@ -76,6 +76,7 @@
       (lambda (field target)
         (and (memq (syntax->datum target) `(common ,arg)) field)))
     (syntax-case stx ()
+      ;; TODO Also handle (field-type) form, without a default.
       ((_ stem (field (field-type def) doc target) ...)
        (with-syntax (((new-field-type ...)
                       (map (lambda (field-type target)
@@ -89,7 +90,7 @@
                      ((new-def ...)
                       (map (lambda (def target)
                              (if (eq? 'common (syntax->datum target))
-                                 #''disabled def))
+                                 #'*unspecified* def))
                            #'(def ...) #'(target ...)))
                      ((new-doc ...)
                       (map (lambda (doc target)
@@ -199,7 +200,7 @@
 (define-maybe file-object-list)
 
 (define (raw-content? val)
-  (not (eq? val 'disabled)))
+  (not (unspecified? val)))
 (define (serialize-raw-content field-name val)
   val)
 (define-maybe raw-content)
@@ -227,15 +228,15 @@ just joined the room."))
 
 (define-configuration ssl-configuration
   (protocol
-   (maybe-string 'disabled)
+   maybe-string
    "This determines what handshake to use.")
 
   (key
-   (maybe-file-name 'disabled)
+   maybe-file-name
    "Path to your private key file.")
 
   (certificate
-   (maybe-file-name 'disabled)
+   maybe-file-name
    "Path to your certificate file.")
 
   (capath
@@ -244,48 +245,48 @@ just joined the room."))
 trust when verifying the certificates of remote servers.")
 
   (cafile
-   (maybe-file-object 'disabled)
+   maybe-file-object
    "Path to a file containing root certificates that you wish Prosody to trust.
 Similar to @code{capath} but with all certificates concatenated together.")
 
   (verify
-   (maybe-string-list 'disabled)
+   maybe-string-list
    "A list of verification options (these mostly map to OpenSSL's
 @code{set_verify()} flags).")
 
   (options
-   (maybe-string-list 'disabled)
+   maybe-string-list
    "A list of general options relating to SSL/TLS.  These map to OpenSSL's
 @code{set_options()}.  For a full list of options available in LuaSec, see the
 LuaSec source.")
 
   (depth
-   (maybe-non-negative-integer 'disabled)
+   maybe-non-negative-integer
    "How long a chain of certificate authorities to check when looking for a
 trusted root certificate.")
 
   (ciphers
-   (maybe-string 'disabled)
+   maybe-string
    "An OpenSSL cipher string.  This selects what ciphers Prosody will offer to
 clients, and in what order.")
 
   (dhparam
-   (maybe-file-name 'disabled)
+   maybe-file-name
    "A path to a file containing parameters for Diffie-Hellman key exchange.  You
 can create such a file with:
 @code{openssl dhparam -out /etc/prosody/certs/dh-2048.pem 2048}")
 
   (curve
-   (maybe-string 'disabled)
+   maybe-string
    "Curve for Elliptic curve Diffie-Hellman. Prosody's default is
 @samp{\"secp384r1\"}.")
 
   (verifyext
-   (maybe-string-list 'disabled)
+   maybe-string-list
    "A list of \"extra\" verification options.")
 
   (password
-   (maybe-string 'disabled)
+   maybe-string
    "Password for encrypted private keys."))
 (define (serialize-ssl-configuration field-name val)
   #~(format #f "ssl = {\n~a};\n"
@@ -473,12 +474,12 @@ by the Prosody service.  See @url{https://prosody.im/doc/logging}."
      global)
 
     (http-max-content-size
-     (maybe-non-negative-integer 'disabled)
+     (maybe-non-negative-integer *unspecified*)
      "Maximum allowed size of the HTTP body (in bytes)."
      common)
 
     (http-external-url
-     (maybe-string 'disabled)
+     (maybe-string *unspecified*)
      "Some modules expose their own URL in various ways.  This URL is built
 from the protocol, host and port used.  If Prosody sits behind a proxy, the
 public URL will be @code{http-external-url} instead.  See
@@ -555,7 +556,7 @@ support.  To add an external component, you simply fill the hostname field.  See
      int-component)
 
     (mod-muc
-     (maybe-mod-muc-configuration 'disabled)
+     (maybe-mod-muc-configuration *unspecified*)
      "Multi-user chat (MUC) is Prosody's module for allowing you to create
 hosted chatrooms/conferences for XMPP users.
 
@@ -572,7 +573,7 @@ See also @url{https://prosody.im/doc/modules/mod_muc}."
      ext-component)
 
     (raw-content
-     (maybe-raw-content 'disabled)
+     (maybe-raw-content *unspecified*)
      "Raw content that will be added to the configuration file."
      common)))
 

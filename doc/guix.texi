@@ -48,7 +48,7 @@ Copyright @copyright{} 2017 Thomas Danckaert@*
 Copyright @copyright{} 2017 humanitiesNerd@*
 Copyright @copyright{} 2017, 2021 Christine Lemmer-Webber@*
 Copyright @copyright{} 2017, 2018, 2019, 2020, 2021, 2022 Marius Bakke@*
-Copyright @copyright{} 2017, 2019, 2020 Hartmut Goebel@*
+Copyright @copyright{} 2017, 2019, 2020, 2022 Hartmut Goebel@*
 Copyright @copyright{} 2017, 2019, 2020, 2021 Maxim Cournoyer@*
 Copyright @copyright{} 2017–2022 Tobias Geerinckx-Rice@*
 Copyright @copyright{} 2017 George Clemmer@*
@@ -96,14 +96,15 @@ Copyright @copyright{} 2021 Domagoj Stolfa@*
 Copyright @copyright{} 2021 Hui Lu@*
 Copyright @copyright{} 2021 pukkamustard@*
 Copyright @copyright{} 2021 Alice Brenon@*
-Copyright @copyright{} 2021 Josselin Poiret@*
+Copyright @copyright{} 2021, 2022 Josselin Poiret@*
+Copyright @copyright{} 2021 muradm@*
 Copyright @copyright{} 2021 Andrew Tropin@*
 Copyright @copyright{} 2021 Sarah Morgensen@*
-Copyright @copyright{} 2021 Josselin Poiret@*
 Copyright @copyright{} 2022 Remco van 't Veer@*
 Copyright @copyright{} 2022 Aleksandr Vityazev@*
 Copyright @copyright{} 2022 Philip M@sup{c}Grath@*
 Copyright @copyright{} 2022 Karl Hallsby@*
+Copyright @copyright{} 2022 Justin Veilleux@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -169,6 +170,7 @@ Weblate} (@pxref{Translating Guix}).
 * Introduction::                What is Guix about?
 * Installation::                Installing Guix.
 * System Installation::         Installing the whole operating system.
+* System Troubleshooting Tips:: When things don't go as planned.
 * Getting Started::             Your first steps.
 * Package Management::          Package installation, upgrade, etc.
 * Channels::                    Customizing the package collection.
@@ -226,6 +228,10 @@ System Installation
 * After System Installation::   When installation succeeded.
 * Installing Guix in a VM::     Guix System playground.
 * Building the Installation Image::  How this comes to be.
+
+System Troubleshooting Tips
+
+* Chrooting into an existing system::  Fixing things from a chroot
 
 Manual Installation
 
@@ -339,7 +345,7 @@ System Configuration
 * Keyboard Layout::             How the system interprets key strokes.
 * Locales::                     Language and cultural convention settings.
 * Services::                    Specifying system services.
-* Setuid Programs::             Programs running with root privileges.
+* Setuid Programs::             Programs running with elevated privileges.
 * X.509 Certificates::          Authenticating HTTPS servers.
 * Name Service Switch::         Configuring libc's name service switch.
 * Initial RAM Disk::            Linux-Libre bootstrapping.
@@ -1147,12 +1153,12 @@ using @code{-G guixbuild,kvm} instead of @code{-G guixbuild}
 
 The @code{guix-daemon} program may then be run as @code{root} with the
 following command@footnote{If your machine uses the systemd init system,
-dropping the @file{@var{prefix}/lib/systemd/system/guix-daemon.service}
-file in @file{/etc/systemd/system} will ensure that
+copying the @file{@var{prefix}/lib/systemd/system/guix-daemon.service}
+file to @file{/etc/systemd/system} will ensure that
 @command{guix-daemon} is automatically started.  Similarly, if your
-machine uses the Upstart init system, drop the
+machine uses the Upstart init system, copy the
 @file{@var{prefix}/lib/upstart/system/guix-daemon.conf}
-file in @file{/etc/init}.}:
+file to @file{/etc/init}.}:
 
 @example
 # guix-daemon --build-users-group=guixbuild
@@ -2368,6 +2374,7 @@ See the files under @file{/run/current-system/profile/share/keymaps} for
 a list of available keyboard layouts.  Run @command{man loadkeys} for
 more information.
 
+@anchor{manual-installation-networking}
 @subsubsection Networking
 
 Run the following command to see what your network interfaces are called:
@@ -2820,6 +2827,119 @@ guix system image --system=armhf-linux -e '((@@ (gnu system install) os-with-u-b
 
 @code{A20-OLinuXino-Lime2} is the name of the board.  If you specify an invalid
 board, a list of possible boards will be printed.
+
+@c *********************************************************************
+@cindex troubleshooting, guix system
+@cindex guix system troubleshooting
+@node System Troubleshooting Tips
+@chapter System Troubleshooting Tips
+
+Guix System allows rebooting into a previous generation should the last
+one be malfunctioning, which makes it quite robust against being broken
+irreversibly.  This feature depends on GRUB being correctly functioning
+though, which means that if for whatever reasons your GRUB installation
+becomes corrupted during a system reconfiguration, you may not be able
+to easily boot into a previous generation.  A technique that can be used
+in this case is to @i{chroot} into your broken system and reconfigure it
+from there.  Such technique is explained below.
+
+@cindex chroot, guix system
+@cindex chrooting, guix system
+@cindex repairing GRUB, via chroot
+@node Chrooting into an existing system
+@section Chrooting into an existing system
+
+This section details how to @i{chroot} to an already installed Guix
+System with the aim of reconfiguring it, for example to fix a broken
+GRUB installation.  The process is similar to how it would be done on
+other GNU/Linux systems, but there are some Guix System particularities
+such as the daemon and profiles that make it worthy of explaining here.
+
+@enumerate
+@item
+Obtain a bootable image of Guix System.  It is recommended the latest
+development snapshot so the kernel and the tools used are at least as as
+new as those of your installed system; it can be retrieved from the
+@url{https://ci.guix.gnu.org/search/latest/ISO-9660?query=spec:images+status:success+system:x86_64-linux+image.iso,
+https://ci.guix.gnu.org} URL.  Follow the @pxref{USB Stick and DVD
+Installation} section for copying it to a bootable media.
+
+@item
+Boot the image, and proceed with the graphical text-based installer
+until your network is configured.  Alternatively, you could configure
+the network manually by following the
+@ref{manual-installation-networking} section.  If you get the error
+@samp{RTNETLINK answers: Operation not possible due to RF-kill}, try
+@samp{rfkill list} followed by @samp{rfkill unblock 0}, where @samp{0}
+is your device identifier (ID).
+
+@item
+Switch to a virtual console (tty) if you haven't already by pressing
+simultaneously the @kbd{Control + Alt + F4} keys.  Mount your file
+system at @file{/mnt}.  Assuming your root partition is
+@file{/dev/sda2}, you would do:
+
+@example sh
+mount /dev/sda2 /mnt
+@end example
+
+@item
+Mount special block devices and Linux-specific directories:
+
+@example sh
+mount --bind /proc /mnt/proc
+mount --bind /sys /mnt/sys
+mount --bind /dev /mnt/dev
+@end example
+
+If your system is EFI-based, you must also mount the ESP partition.
+Assuming it is @file{/dev/sda1}, you can do so with:
+
+@example sh
+mount /dev/sda1 /mnt/boot/efi
+@end example
+
+@item
+Enter your system via chroot:
+
+@example sh
+chroot /mnt /bin/sh
+@end example
+
+@item
+Source your @var{user} profile to setup the environment, where
+@var{user} is the user name used for the Guix System you are attempting
+to repair:
+
+@example sh
+source /home/@var{user}/.guix-profile/etc/profile
+@end example
+
+To ensure you are working with the Guix revision you normally would as
+your normal user, also source your current Guix profile:
+
+@example sh
+source /home/@var{user}/.config/guix/current/etc/profile
+@end example
+
+@item
+Start a minimal @command{guix-daemon} in the background:
+
+@example sh
+guix-daemon --build-users-group=guixbuild --disable-chroot &
+@end example
+
+@item
+Edit your Guix System configuration if needed, then reconfigure with:
+
+@example sh
+guix system reconfigure your-config.scm
+@end example
+
+@item
+Finally, you should be good to reboot the system to test your fix.
+
+@end enumerate
 
 @c *********************************************************************
 @node Getting Started
@@ -9148,6 +9268,49 @@ with @code{#:zef} or removed by passing @code{#f} to the
 @code{with-zef?} parameter.
 @end defvr
 
+@defvr {Scheme Variable} rebar-build-system
+This variable is exported by @code{(guix build-system rebar)}.  It
+implements a build procedure around @uref{https://rebar3.org,rebar3},
+a build system for programs written in the Erlang language.
+
+It adds both @code{rebar3} and the @code{erlang} to the set of inputs.
+Different packages can be specified with the @code{#:rebar} and
+@code{#:erlang} parameters, respectively.
+
+This build system is based on @code{gnu-build-system}, but with the
+following phases changed:
+
+@table @code
+
+@item unpack
+This phase, after unpacking the source like the @code{gnu-build-system}
+does, checks for a file @code{contents.tar.gz} at the top-level of the
+source.  If this file exists, it will be unpacked, too.  This eases
+handling of package hosted at @uref{https://hex.pm/},
+the Erlang and Elixir package repository.
+
+@item bootstrap
+@item configure
+There are no @code{bootstrap} and @code{configure} phase because erlang
+packages typically don’t need to be configured.
+
+@item build
+This phase runs @code{rebar3 compile}
+with the flags listed in @code{#:rebar-flags}.
+
+@item check
+Unless @code{#:tests? #f} is passed,
+this phase runs @code{rebar3 eunit},
+or some other target specified with @code{#:test-target},
+with the flags listed in @code{#:rebar-flags},
+
+@item install
+This installs the files created in the @i{default} profile, or some
+other profile specified with @code{#:install-profile}.
+
+@end table
+@end defvr
+
 @defvr {Scheme Variable} texlive-build-system
 This variable is exported by @code{(guix build-system texlive)}.  It is
 used to build TeX packages in batch mode with a specified engine.  The
@@ -13307,6 +13470,33 @@ Traverse the dependency graph of the given upstream package recursively
 and generate package expressions for all those packages that are not yet
 in Guix.
 @end table
+
+@item hexpm
+@cindex hexpm
+Import metadata from the hex.pm Erlang and Elixir package repository
+@uref{https://hex.pm, hex.pm}, as in this example:
+
+@example
+guix import hexpm stun
+@end example
+
+The importer tries to determine the build system used by the package.
+
+The hexpm importer also allows you to specify a version string:
+
+@example
+guix import hexpm cf@@0.3.0
+@end example
+
+Additional options include:
+
+@table @code
+@item --recursive
+@itemx -r
+Traverse the dependency graph of the given upstream package recursively
+and generate package expressions for all those packages that are not yet
+in Guix.
+@end table
 @end table
 
 The structure of the @command{guix import} code is modular.  It would be
@@ -15423,7 +15613,7 @@ instance to support new system services.
 * Keyboard Layout::             How the system interprets key strokes.
 * Locales::                     Language and cultural convention settings.
 * Services::                    Specifying system services.
-* Setuid Programs::             Programs running with root privileges.
+* Setuid Programs::             Programs running with elevated privileges.
 * X.509 Certificates::          Authenticating HTTPS servers.
 * Name Service Switch::         Configuring libc's name service switch.
 * Initial RAM Disk::            Linux-Libre bootstrapping.
@@ -17739,6 +17929,25 @@ A directory path where the @command{guix-daemon} will perform builds.
 @end table
 @end deftp
 
+@deftp {Data Type} guix-extension
+
+This data type represents the parameters of the Guix build daemon that
+are extendable. This is the type of the object that must be used within
+a guix service extension.
+@xref{Service Composition}, for more information.
+
+@table @asis
+@item @code{authorized-keys} (default: @code{'()})
+A list of file-like objects where each element contains a public key.
+
+@item @code{substitute-urls} (default: @code{'()})
+A list of strings where each element is a substitute URL.
+
+@item @code{chroot-directories} (default: @code{'()})
+A list of file-like objects or strings pointing to additional directories the build daemon can use.
+@end table
+@end deftp
+
 @deffn {Scheme Procedure} udev-service [#:udev @var{eudev} #:rules @code{'()}]
 Run @var{udev}, which populates the @file{/dev} directory dynamically.
 udev rules can be provided as a list of files through the @var{rules}
@@ -18027,6 +18236,142 @@ else the users would be prevented from login in.  For more information
 about the Pluggable Authentication Module (PAM) limits, refer to the
 @samp{pam_limits} man page from the @code{linux-pam} package.
 @end deffn
+
+@defvr {Scheme Variable} greetd-service-type
+@uref{https://git.sr.ht/~kennylevinsen/greetd, @code{greetd}} is a minimal and
+flexible login manager daemon, that makes no assumptions about what you
+want to launch.
+
+If you can run it from your shell in a TTY, greetd can start it. If it
+can be taught to speak a simple JSON-based IPC protocol, then it can be
+a geeter.
+
+@code{greetd-service-type} provides necessary infrastructure for logging
+in users, including:
+
+@itemize @bullet
+@item
+@code{greetd} PAM service
+
+@item
+Special variation of @code{pam-mount} to mount @code{XDG_RUNTIME_DIR}
+@end itemize
+
+Here is example of switching from @code{mingetty-service-type} to
+@code{greetd-service-type}, and how different terminals could be:
+
+@lisp
+  (append
+   (modify-services %base-services
+     ;; greetd-service-type provides "greetd" PAM service
+     (delete login-service-type)
+     ;; and can be used in place of mingetty-service-type
+     (delete mingetty-service-type))
+   (list
+    (service greetd-service-type
+             (greetd-configuration
+              (terminals
+               (list
+                ;; we can make any terminal active by default
+                (greetd-terminal-configuration (terminal-vt "1") (terminal-switch #t))
+                ;; we can make environment without XDG_RUNTIME_DIR set
+                ;; even provide our own environment variables
+                (greetd-terminal-configuration
+                 (terminal-vt "2")
+                 (default-session-command
+                   (greetd-agreety-session
+                    (extra-env '(("MY_VAR" . "1")))
+                    (xdg-env? #f))))
+                ;; we can use different shell instead of default bash
+                (greetd-terminal-configuration
+                 (terminal-vt "3")
+                 (default-session-command
+                   (greetd-agreety-session (command (file-append zsh "/bin/zsh")))))
+                ;; we can use any other executable command as greeter
+                (greetd-terminal-configuration
+                 (terminal-vt "4")
+                 (default-session-command (program-file "my-noop-greeter" #~(exit))))
+                (greetd-terminal-configuration (terminal-vt "5"))
+                (greetd-terminal-configuration (terminal-vt "6"))))))
+    ;; mingetty-service-type can be used in parallel
+    ;; if needed to do so, do not (delete login-service-type)
+    ;; as illustrated above
+    #| (service mingetty-service-type (mingetty-configuration (tty "tty8"))) |#))
+@end lisp
+@end defvr
+
+@deftp {Data Type} greetd-configuration
+Configuration record for the @code{greetd-service-type}.
+@table @asis
+
+@item @code{motd}
+A file-like object containing the ``message of the day''.
+
+@item @code{allow-empty-passwords?} (default: @code{#t})
+Allow empty passwords by default so that first-time users can log in when
+the 'root' account has just been created.
+
+@item @code{terminals} (default: @code{'()})
+List of @code{greetd-terminal-configuration} per terminal for which
+@code{greetd} should be started.
+@end table
+@end deftp
+
+@deftp {Data Type} greetd-terminal-configuration
+Configuration record for per terminal greetd daemon service.
+
+@table @asis
+@item @code{greetd} (default: @code{greetd})
+The greetd package to use.
+
+@item @code{config-file-name}
+Configuration file name to use for greetd daemon. Generally, autogenerated
+derivation based on @code{terminal-vt} value.
+
+@item @code{log-file-name}
+Log file name to use for greetd daemon. Generally, autogenerated
+name based on @code{terminal-vt} value.
+
+@item @code{terminal-vt} (default: @samp{"7"})
+The VT to run on. Use of a specific VT with appropriate conflict avoidance
+is recommended.
+
+@item @code{terminal-switch} (default: @code{#f})
+Make this terminal active on start of @code{greetd}.
+
+@item @code{default-session-user} (default: @samp{"greeter"})
+The user to use for running the greeter.
+
+@item @code{default-session-command} (default: @code{(greetd-agreety-session)})
+Can be either instance of @code{greetd-agreety-session} configuration or
+@code{gexp->script} like object to use as greeter.
+
+@end table
+@end deftp
+
+@deftp {Data Type} greetd-agreety-session
+Configuration record for the agreety greetd greeter.
+
+@table @asis
+@item @code{agreety} (default: @code{greetd})
+The package with @command{/bin/agreety} command.
+
+@item @code{command} (default: @code{(file-append bash "/bin/bash")})
+Command to be started by @command{/bin/agreety} on successful login.
+
+@item @code{command-args} (default: @code{'("-l")})
+Command arguments to pass to command.
+
+@item @code{extra-env} (default: @code{'()})
+Extra environment variables to set on login.
+
+@item @code{xdg-env?} (default: @code{#t})
+If true @code{XDG_RUNTIME_DIR} and @code{XDG_SESSION_TYPE} will be set
+before starting command. One should note that, @code{extra-env} variables
+are set right after mentioned variables, so that they can be overriden.
+
+@end table
+@end deftp
 
 @node Scheduled Job Execution
 @subsection Scheduled Job Execution
@@ -19200,15 +19545,16 @@ The node host name that is used to make the first connection to the
 network.  A specific port value can be provided by appending the
 @code{:PORT} suffix.  By default, it uses the Jami bootstrap nodes, but
 any host can be specified here.  It's also possible to disable
-bootsrapping by setting this to the @code{'disabled} symbol.
+bootsrapping by explicitly setting this to the @code{*unspecified*}
+value.
 
 Defaults to @samp{"bootstrap.jami.net:4222"}.
 
 @end deftypevr
 
 @deftypevr {@code{opendht-configuration} parameter} maybe-number port
-The UDP port to bind to.  When set to @code{'disabled}, an available
-port is automatically selected.
+The UDP port to bind to.  When explicitly set to @code{*unspecified*},
+an available port is automatically selected.
 
 Defaults to @samp{4222}.
 
@@ -21724,9 +22070,14 @@ The actual service definitions included in @code{%desktop-services} and
 provided by @code{(gnu services dbus)} and @code{(gnu services desktop)}
 are described below.
 
-@deffn {Scheme Procedure} dbus-service [#:dbus @var{dbus}] [#:services '()]
+@deffn {Scheme Procedure} dbus-service [#:dbus @var{dbus}] [#:services '()] @
+                                       [#:verbose?]
 Return a service that runs the ``system bus'', using @var{dbus}, with
-support for @var{services}.
+support for @var{services}.  When @var{verbose?} is true, it causes the
+@samp{DBUS_VERBOSE} environment variable to be set to @samp{1}; a
+verbose-enabled D-Bus package such as @code{dbus-verbose} should be
+provided as @var{dbus} in this scenario.  The verbose output is logged
+to @file{/var/log/dbus-daemon.log}.
 
 @uref{https://dbus.freedesktop.org/, D-Bus} is an inter-process communication
 facility.  Its system bus is used to allow system services to communicate
@@ -22499,6 +22850,52 @@ By default, this field contains ``gdm-password'' with the value @code{login}
 and ``passwd'' is with the value @code{passwd}.
 @end table
 @end deftp
+
+@defvr {Scheme Variable} seatd-service-type
+@uref{https://sr.ht/~kennylevinsen/seatd/, seatd} is a minimal seat
+management daemon.
+
+Seat management takes care of mediating access to shared devices (graphics,
+input), without requiring the applications needing access to be root.
+
+@lisp
+(append
+  (list
+   ;; make sure seatd is running
+   (service seatd-service-type))
+
+  ;; normally one would want %base-services
+  %base-services)
+
+@end lisp
+@end defvr
+
+@deftp {Data Type} seatd-configuration
+Configuration record for the seatd daemon service.
+
+@table @asis
+@item @code{seatd} (default: @code{seatd})
+The seatd package to use.
+
+@item @code{user} (default: @samp{"root"})
+User to own the seatd socket.
+
+@item @code{group} (default: @samp{"users"})
+Group to own the seatd socket.
+
+@item @code{socket} (default: @samp{"/run/seatd.sock"})
+Where to create the seatd socket.
+
+@item @code{logfile} (default: @samp{"/var/log/seatd.log"})
+Log file to write to.
+
+@item @code{loglevel} (default: @samp{"error"})
+Log level to output logs. Possible values: @samp{"silent"}, @samp{"error"},
+@samp{"info"} and @samp{"debug"}.
+
+@end table
+@end deftp
+
 
 @node Sound Services
 @subsection Sound Services
@@ -24923,7 +25320,7 @@ The available configuration parameters follow.  Each parameter
 definition is preceded by its type; for example, @samp{string-list foo}
 indicates that the @code{foo} parameter should be specified as a list of
 strings.  Types starting with @code{maybe-} denote parameters that won't
-show up in @code{prosody.cfg.lua} when their value is @code{'disabled}.
+show up in @code{prosody.cfg.lua} when their value is left unspecified.
 
 There is also a way to specify the configuration as a string, if you
 have an old @code{prosody.cfg.lua} file that you want to port over from
@@ -25519,10 +25916,10 @@ The complete set of available configuration options is detailed below.
 Available @code{jami-configuration} fields are:
 
 @table @asis
-@item @code{jamid} (default: @code{libjami}) (type: package)
+@item @code{libjami} (default: @code{libjami}) (type: package)
 The Jami daemon package to use.
 
-@item @code{dbus} (default: @code{dbus}) (type: package)
+@item @code{dbus} (default: @code{dbus-for-jami}) (type: package)
 The D-Bus package to use to start the required D-Bus session.
 
 @item @code{nss-certs} (default: @code{nss-certs}) (type: package)
@@ -25537,7 +25934,7 @@ Whether to enable debug level messages.
 @item @code{auto-answer?} (default: @code{#f}) (type: boolean)
 Whether to force automatic answer to incoming calls.
 
-@item @code{accounts} (default: @code{disabled}) (type: maybe-jami-account-list)
+@item @code{accounts} (type: maybe-jami-account-list)
 A list of Jami accounts to be (re-)provisioned every time the Jami
 daemon service starts.  When providing this field, the account
 directories under @file{/var/lib/jami/} are recreated every time the
@@ -25559,39 +25956,39 @@ should @emph{not} be encrypted.  It is highly recommended to make it
 readable only to the @samp{root} user (i.e., not in the store), to guard
 against leaking the secret key material of the Jami account it contains.
 
-@item @code{allowed-contacts} (default: @code{disabled}) (type: maybe-account-fingerprint-list)
+@item @code{allowed-contacts} (type: maybe-account-fingerprint-list)
 The list of allowed contacts for the account, entered as their 40
 characters long fingerprint.  Messages or calls from accounts not in
-that list will be rejected.  When unspecified, the configuration of the
-account archive is used as-is with respect to contacts and public
+that list will be rejected.  When left specified, the configuration of
+the account archive is used as-is with respect to contacts and public
 inbound calls/messaging allowance, which typically defaults to allow any
 contact to communicate with the account.
 
-@item @code{moderators} (default: @code{disabled}) (type: maybe-account-fingerprint-list)
+@item @code{moderators} (type: maybe-account-fingerprint-list)
 The list of contacts that should have moderation privileges (to ban,
 mute, etc.  other users) in rendezvous conferences, entered as their 40
-characters long fingerprint.  When unspecified, the configuration of the
-account archive is used as-is with respect to moderation, which
+characters long fingerprint.  When left unspecified, the configuration
+of the account archive is used as-is with respect to moderation, which
 typically defaults to allow anyone to moderate.
 
-@item @code{rendezvous-point?} (default: @code{disabled}) (type: maybe-boolean)
+@item @code{rendezvous-point?} (type: maybe-boolean)
 Whether the account should operate in the rendezvous mode.  In this
 mode, all the incoming audio/video calls are mixed into a conference.
 When left unspecified, the value from the account archive prevails.
 
-@item @code{peer-discovery?} (default: @code{disabled}) (type: maybe-boolean)
+@item @code{peer-discovery?} (type: maybe-boolean)
 Whether peer discovery should be enabled.  Peer discovery is used to
 discover other OpenDHT nodes on the local network, which can be useful
 to maintain communication between devices on such network even when the
 connection to the the Internet has been lost.  When left unspecified,
 the value from the account archive prevails.
 
-@item @code{bootstrap-hostnames} (default: @code{disabled}) (type: maybe-string-list)
+@item @code{bootstrap-hostnames} (type: maybe-string-list)
 A list of hostnames or IPs pointing to OpenDHT nodes, that should be
 used to initially join the OpenDHT network.  When left unspecified, the
 value from the account archive prevails.
 
-@item @code{name-server-uri} (default: @code{disabled}) (type: maybe-string)
+@item @code{name-server-uri} (type: maybe-string)
 The URI of the name server to use, that can be used to retrieve the
 account fingerprint for a registered username.
 
@@ -26225,8 +26622,8 @@ Defaults to @samp{prefer-encrypted-connections}.
 @deftypevr {@code{transmission-daemon-configuration} parameter} maybe-string peer-congestion-algorithm
 The TCP congestion-control algorithm to use for peer connections,
 specified using a string recognized by the operating system in calls to
-@code{setsockopt} (or set to @code{disabled}, in which case the
-operating-system default is used).
+@code{setsockopt}.  When left unspecified, the operating-system default
+is used.
 
 Note that on GNU/Linux systems, the kernel must be configured to allow
 processes to use a congestion-control algorithm not in the default set;
@@ -29854,7 +30251,7 @@ Defaults to @samp{tun}.
 
 If you do not have some of these files (eg.@: you use a username and
 password), you can disable any of the following three fields by setting
-it to @code{'disabled}.
+it to @code{*unspecified*}.
 
 @deftypevr {@code{openvpn-client-configuration} parameter} maybe-string ca
 The certificate authority to check connections against.
@@ -29928,7 +30325,6 @@ Authenticate with server using username/password.  The option is a file
 containing username/password on 2 lines.  Do not use a file-like object as it
 would be added to the store and readable by any user.
 
-Defaults to @samp{'disabled}.
 @end deftypevr
 
 @deftypevr {@code{openvpn-client-configuration} parameter} key-usage verify-key-usage?
@@ -30009,7 +30405,7 @@ Defaults to @samp{tun}.
 
 If you do not have some of these files (eg.@: you use a username and
 password), you can disable any of the following three fields by setting
-it to @code{'disabled}.
+it to @code{*unspecified*}.
 
 @deftypevr {@code{openvpn-server-configuration} parameter} maybe-string ca
 The certificate authority to check connections against.
@@ -30808,10 +31204,10 @@ content by adding a valid @code{tlp-configuration}:
 @end deffn
 
 Each parameter definition is preceded by its type; for example,
-@samp{boolean foo} indicates that the @code{foo} parameter
-should be specified as a boolean.  Types starting with
-@code{maybe-} denote parameters that won't show up in TLP config file
-when their value is @code{'disabled}.
+@samp{boolean foo} indicates that the @code{foo} parameter should be
+specified as a boolean.  Types starting with @code{maybe-} denote
+parameters that won't show up in TLP config file when their value is
+left unset, or is explicitly set to the @code{*unspecified*} value.
 
 @c The following documentation was initially generated by
 @c (generate-tlp-documentation) in (gnu services pm).  Manually maintained
@@ -35178,11 +35574,11 @@ that compression will be 2:1, it is possible that uncompressable data
 can be written to swap and this is a method to limit how much memory can
 be used.  It accepts a string and can be a number of bytes or use a
 suffix, eg.: @code{"2G"}.
-@item @code{priority} (default @code{-1})
+@item @code{priority} (default @code{#f})
 This is the priority of the swap device created from the zram device.
-@code{swapon} accepts values between -1 and 32767, with higher values
-indicating higher priority.  Higher priority swap will generally be used
-first.
+@xref{Swap Space} for a description of swap priorities.  You might want
+to set a specific priority for the zram device, otherwise it could end
+up not being used much for the reasons described there.
 @end table
 
 @end deftp
@@ -35731,22 +36127,23 @@ Extra command line options for @code{nix-service-type}.
 @section Setuid Programs
 
 @cindex setuid programs
-Some programs need to run with ``root'' privileges, even when they are
+@cindex setgid programs
+Some programs need to run with elevated privileges, even when they are
 launched by unprivileged users.  A notorious example is the
 @command{passwd} program, which users can run to change their
 password, and which needs to access the @file{/etc/passwd} and
 @file{/etc/shadow} files---something normally restricted to root, for
-obvious security reasons.  To address that, these executables are
-@dfn{setuid-root}, meaning that they always run with root privileges
+obvious security reasons.  To address that, @command{passwd} should be
+@dfn{setuid-root}, meaning that it always runs with root privileges
 (@pxref{How Change Persona,,, libc, The GNU C Library Reference Manual},
 for more info about the setuid mechanism).
 
 The store itself @emph{cannot} contain setuid programs: that would be a
 security issue since any user on the system can write derivations that
 populate the store (@pxref{The Store}).  Thus, a different mechanism is
-used: instead of changing the setuid bit directly on files that are in
-the store, we let the system administrator @emph{declare} which programs
-should be setuid root.
+used: instead of changing the setuid or setgid bits directly on files that
+are in the store, we let the system administrator @emph{declare} which
+programs should be entrusted with these additional privileges.
 
 The @code{setuid-programs} field of an @code{operating-system}
 declaration contains a list of @code{<setuid-program>} denoting the
@@ -37976,7 +38373,7 @@ pointing to the given file.
 @defvr {Scheme Variable} setuid-program-service-type
 Type for the ``setuid-program service''.  This service collects lists of
 executable file names, passed as gexps, and adds them to the set of
-setuid-root programs on the system (@pxref{Setuid Programs}).
+setuid and setgid programs on the system (@pxref{Setuid Programs}).
 @end defvr
 
 @defvr {Scheme Variable} profile-service-type
@@ -38405,15 +38802,16 @@ macro which is a shorthand of this.
 @deffn {Scheme Syntax} define-maybe @var{type}
 Sometimes a field should not be serialized if the user doesn’t specify a
 value.  To achieve this, you can use the @code{define-maybe} macro to
-define a ``maybe type''; if the value of a maybe type is set to the
-@code{disabled}, it will not be serialized.
+define a ``maybe type''; if the value of a maybe type is left unset, or
+is set to the @code{*unspecified*} value, then it will not be
+serialized.
 
 When defining a ``maybe type'', the corresponding serializer for the
 regular type will be used by default.  For example, a field of type
 @code{maybe-string} will be serialized using the @code{serialize-string}
 procedure by default, you can of course change this by specifying a
 custom serializer procedure.  Likewise, the type of the value would have
-to be a string, unless it is set to the @code{disabled} symbol.
+to be a string, or left unspecified.
 
 @lisp
 (define-maybe string)
@@ -38423,9 +38821,9 @@ to be a string, unless it is set to the @code{disabled} symbol.
 
 (define-configuration baz-configuration
   (name
-   ;; Nothing will be serialized by default.  If set to a string, the
-   ;; `serialize-string' procedure will be used to serialize the string.
-   (maybe-string 'disabled)
+   ;; If set to a string, the `serialize-string' procedure will be used
+   ;; to serialize the string.  Otherwise this field is not serialized.
+   maybe-string    ; equivalent to (maybe-string *unspecified*)
    "The name of this module."))
 @end lisp
 
@@ -38442,7 +38840,7 @@ serializer name by using the @code{prefix} literal.
 
 There is also the @code{no-serialization} literal, which when set means
 that no serializer will be defined for the ``maybe type'', regardless of
-its value is @code{disabled} or not.
+whether its value is set or not.
 @code{define-maybe/no-serialization} is a shorthand for specifying the
 @code{no-serialization} literal.
 
@@ -38451,7 +38849,7 @@ its value is @code{disabled} or not.
 
 (define-configuration/no-serialization test-configuration
   (mode
-   (maybe-symbol 'disabled)
+   maybe-symbol
    "Docstring."))
 @end lisp
 @end deffn
@@ -38583,10 +38981,10 @@ Below is an example of a record type created using
    "The name of the contact."
    serialize-contact-name)
   (phone-number
-   (maybe-integer 'disabled)
+   maybe-integer
    "The person's phone number.")
   (email
-   (maybe-string 'disabled)
+   maybe-string
    "The person's email address.")
   (married?
    (boolean)
@@ -38874,6 +39272,7 @@ services)}.
 * Shells: Shells Home Services.          POSIX shells, Bash, Zsh.
 * Mcron: Mcron Home Service.             Scheduled User's Job Execution.
 * Shepherd: Shepherd Home Service.       Managing User's Daemons.
+* SSH: Secure Shell.                     Setting up the secure shell client.
 * Desktop: Desktop Home Services.        Services for graphical environments.
 @end menu
 @c In addition to that Home Services can provide
@@ -39194,7 +39593,7 @@ GNU@tie{}mcron, a daemon to run jobs at scheduled times (@pxref{Top,,,
 mcron, GNU@tie{}mcron}).  The information about system's mcron is
 applicable here (@pxref{Scheduled Job Execution}), the only difference
 for home services is that they have to be declared in a
-@code{home-envirnoment} record instead of an @code{operating-system}
+@code{home-environment} record instead of an @code{operating-system}
 record.
 
 @defvr {Scheme Variable} home-mcron-service-type
@@ -39262,6 +39661,181 @@ mechanism instead (@pxref{Shepherd Services}).
 @end table
 @end deftp
 
+@node Secure Shell
+@subsection Secure Shell
+
+@cindex secure shell client, configuration
+@cindex SSH client, configuration
+The @uref{https://www.openssh.com, OpenSSH package} includes a client,
+the @command{ssh} command, that allows you to connect to remote machines
+using the @acronym{SSH, secure shell} protocol.  With the @code{(gnu
+home services ssh)} module, you can set up OpenSSH so that it works in a
+predictable fashion, almost independently of state on the local machine.
+To do that, you instantiate @code{home-openssh-service-type} in your
+Home configuration, as explained below.
+
+@defvr {Scheme Variable} home-openssh-service-type
+This is the type of the service to set up the OpenSSH client.  It takes
+care of several things:
+
+@itemize
+@item
+providing a @file{~/.ssh/config} file based on your configuration so
+that @command{ssh} knows about hosts you regularly connect to and their
+associated parameters;
+
+@item
+providing a @file{~/.ssh/authorized_keys}, which lists public keys that
+the local SSH server, @command{sshd}, may accept to connect to this user
+account;
+
+@item
+optionally providing a @file{~/.ssh/known_hosts} file so that @file{ssh}
+can authenticate hosts you connect to.
+@end itemize
+
+Here is an example of a service and its configuration that you could add
+to the @code{services} field of your @code{home-environment}:
+
+@lisp
+(service home-openssh-service-type
+         (home-openssh-configuration
+          (hosts
+           (list (openssh-host (name "ci.guix.gnu.org")
+                               (user "charlie"))
+                 (openssh-host (name "chbouib")
+                               (host-name "chbouib.example.org")
+                               (user "supercharlie")
+                               (port 10022))))
+          (authorized-keys (list (local-file "alice.pub")))))
+@end lisp
+
+The example above lists two hosts and their parameters.  For instance,
+running @command{ssh chbouib} will automatically connect to
+@code{chbouib.example.org} on port 10022, logging in as user
+@samp{supercharlie}.  Further, it marks the public key in
+@file{alice.pub} as authorized for incoming connections.
+
+The value associated with a @code{home-openssh-service-type} instance
+must be a @code{home-openssh-configuration} record, as describe below.
+@end defvr
+
+@deftp {Data Type} home-openssh-configuration
+This is the datatype representing the OpenSSH client and server
+configuration in one's home environment.  It contains the following
+fields:
+
+@table @asis
+@item @code{hosts} (default: @code{'()})
+A list of @code{openssh-host} records specifying host names and
+associated connection parameters (see below).  This host list goes into
+@file{~/.ssh/config}, which @command{ssh} reads at startup.
+
+@item @code{known-hosts} (default: @code{*unspecified*})
+This must be either:
+
+@itemize
+@item
+@code{*unspecified*}, in which case @code{home-openssh-service-type}
+leaves it up to @command{ssh} and to the user to maintain the list of
+known hosts at @file{~/.ssh/known_hosts}, or
+
+@item
+a list of file-like objects, in which case those are concatenated and
+emitted as @file{~/.ssh/known_hosts}.
+@end itemize
+
+The @file{~/.ssh/known_hosts} contains a list of host name/host key
+pairs that allow @command{ssh} to authenticate hosts you connect to and
+to detect possible impersonation attacks.  By default, @command{ssh}
+updates it in a @dfn{TOFU, trust-on-first-use} fashion, meaning that it
+records the host's key in that file the first time you connect to it.
+This behavior is preserved when @code{known-hosts} is set to
+@code{*unspecified*}.
+
+If you instead provide a list of host keys upfront in the
+@code{known-hosts} field, your configuration becomes self-contained and
+stateless: it can be replicated elsewhere or at another point in time.
+Preparing this list can be relatively tedious though, which is why
+@code{*unspecified*} is kept as a default.
+
+@item @code{authorized-keys} (default: @code{'()})
+This must be a list of file-like objects, each of which containing an
+SSH public key that should be authorized to connect to this machine.
+
+Concretely, these files are concatenated and made available as
+@file{~/.ssh/authorized_keys}.  If an OpenSSH server, @command{sshd}, is
+running on this machine, then it @emph{may} take this file into account:
+this is what @command{sshd} does by default, but be aware that it can
+also be configured to ignore it.
+@end table
+@end deftp
+
+@c %start of fragment
+
+@deftp {Data Type} openssh-host
+Available @code{openssh-host} fields are:
+
+@table @asis
+@item @code{name} (type: string)
+Name of this host declaration.
+
+@item @code{host-name} (type: maybe-string)
+Host name---e.g., @code{"foo.example.org"} or @code{"192.168.1.2"}.
+
+@item @code{address-family} (type: address-family)
+Address family to use when connecting to this host: one of
+@code{AF_INET} (for IPv4 only), @code{AF_INET6} (for IPv6 only), or
+@code{*unspecified*} (allowing any address family).
+
+@item @code{identity-file} (type: maybe-string)
+The identity file to use---e.g., @code{"/home/charlie/.ssh/id_ed25519"}.
+
+@item @code{port} (type: maybe-natural-number)
+TCP port number to connect to.
+
+@item @code{user} (type: maybe-string)
+User name on the remote host.
+
+@item @code{forward-x11?} (default: @code{#f}) (type: boolean)
+Whether to forward remote client connections to the local X11 graphical
+display.
+
+@item @code{forward-x11-trusted?} (default: @code{#f}) (type: boolean)
+Whether remote X11 clients have full access to the original X11
+graphical display.
+
+@item @code{forward-agent?} (default: @code{#f}) (type: boolean)
+Whether the authentication agent (if any) is forwarded to the remote
+machine.
+
+@item @code{compression?} (default: @code{#f}) (type: boolean)
+Whether to compress data in transit.
+
+@item @code{proxy-command} (type: maybe-string)
+The command to use to connect to the server.  As an example, a command
+to connect via an HTTP proxy at 192.0.2.0 would be: @code{"nc -X connect
+-x 192.0.2.0:8080 %h %p"}.
+
+@item @code{host-key-algorithms} (type: maybe-string-list)
+The list of accepted host key algorithms---e.g.,
+@code{'("ssh-ed25519")}.
+
+@item @code{accepted-key-types} (type: maybe-string-list)
+The list of accepted user public key types.
+
+@item @code{extra-content} (default: @code{""}) (type: raw-configuration-string)
+Extra content appended as-is to this @code{Host} block in
+@file{~/.ssh/config}.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+
+
 @node Desktop Home Services
 @subsection Desktop Home Services
 
@@ -39310,24 +39884,24 @@ Daytime color temperature (kelvins).
 @item @code{nighttime-temperature} (default: @code{4500}) (type: integer)
 Nighttime color temperature (kelvins).
 
-@item @code{daytime-brightness} (default: @code{disabled}) (type: maybe-inexact-number)
-Daytime screen brightness, between 0.1 and 1.0.
+@item @code{daytime-brightness} (type: maybe-inexact-number)
+Daytime screen brightness, between 0.1 and 1.0, or left unspecified.
 
-@item @code{nighttime-brightness} (default: @code{disabled}) (type: maybe-inexact-number)
-Nighttime screen brightness, between 0.1 and 1.0.
+@item @code{nighttime-brightness} (type: maybe-inexact-number)
+Nighttime screen brightness, between 0.1 and 1.0, or left unspecified.
 
-@item @code{latitude} (default: @code{disabled}) (type: maybe-inexact-number)
+@item @code{latitude} (type: maybe-inexact-number)
 Latitude, when @code{location-provider} is @code{'manual}.
 
-@item @code{longitude} (default: @code{disabled}) (type: maybe-inexact-number)
+@item @code{longitude} (type: maybe-inexact-number)
 Longitude, when @code{location-provider} is @code{'manual}.
 
-@item @code{dawn-time} (default: @code{disabled}) (type: maybe-string)
+@item @code{dawn-time} (type: maybe-string)
 Custom time for the transition from night to day in the
 morning---@code{"HH:MM"} format.  When specified, solar elevation is not
 used to determine the daytime/nighttime period.
 
-@item @code{dusk-time} (default: @code{disabled}) (type: maybe-string)
+@item @code{dusk-time} (type: maybe-string)
 Likewise, custom time for the transition from day to night in the
 evening.
 

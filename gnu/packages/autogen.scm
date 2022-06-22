@@ -49,7 +49,7 @@
             "def_bf[MAXNAMELEN + 10]")))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config which))
-    (inputs (list guile-2.2 perl))          ; for doc generator mdoc
+    (inputs (list guile-3.0 perl))          ; for doc generator mdoc
     (arguments
      '(#:configure-flags
        ;; XXX Needed to build 5.18.16.  ./configure fails without it:
@@ -62,6 +62,24 @@
 
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'support-guile-3.0
+           ;; Upstream bug:
+           ;; https://sourceforge.net/p/autogen/bugs/196/
+           ;;
+           ;; Supported in Debian and openSUSE:
+           ;; https://salsa.debian.org/debian/autogen/-/blob/master/debian/patches/40_suse_04-guile-version.patch
+           (lambda _
+             (substitute* "agen5/guile-iface.h"
+               (("#elif GUILE_VERSION < 203000") "#elif GUILE_VERSION < 301000"))
+             (substitute* "configure"
+               (("2.2 2.0 1.8") "3.0 2.2 2.0 1.8"))))
+         (add-after 'unpack 'use-numeric-ids-in-tarball
+           ;; Pass arguments to tar to generate tarball with consistent uid
+           ;; and gid to ensure reproducible build
+           (lambda _
+             (substitute* "pkg/libopts/mklibsrc.sh"
+               (("--sort=name --format=gnu")
+                "--sort=name --format=gnu --owner=0 --group=0 --numeric-owner"))))
          (add-before 'build 'set-man-page-date
            ;; Avoid embedding the current date for reproducible builds
            (lambda _

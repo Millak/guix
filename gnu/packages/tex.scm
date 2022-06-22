@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2013, 2014, 2015, 2016, 2022 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Roel Janssen <roel@gnu.org>
@@ -1456,139 +1456,6 @@ Taco Hoekwater.")
 (define-public texlive-amsfonts
   (let ((template (simple-texlive-package
                    "texlive-amsfonts"
-                   (list "/source/latex/amsfonts/"
-                         "/fonts/source/public/amsfonts/"
-                         "/fonts/type1/public/amsfonts/"
-                         "/fonts/afm/public/amsfonts/"
-                         "/fonts/map/dvips/amsfonts/"
-                         "/tex/plain/amsfonts/"
-                         "/doc/fonts/amsfonts/")
-                   (base32
-                    "15q70nkjf8wqzbd5ivcdx3i2sdgqxjb38q0qn9a2qw9i0qcnx6zw"))))
-    (package
-      (inherit template)
-      ;; TODO: This package is missing files.
-      (replacement texlive-amsfonts/fixed)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:build-targets _ #t)
-          '(list "amsfonts.ins"))
-         ((#:tex-directory _ #t)
-          "latex/amsfonts")
-         ((#:modules modules '())
-          `((guix build texlive-build-system)
-            (guix build utils)
-            (ice-9 match)
-            (srfi srfi-1)
-            (srfi srfi-26)))
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-before 'build 'build-fonts
-               (lambda* (#:key inputs #:allow-other-keys)
-                 ;; Allow self fonts sources and other resources to be
-                 ;; discovered.
-                 (setenv "GUIX_TEXMF" (string-append (getenv "GUIX_TEXMF")
-                                                     ":" (getcwd)))
-
-                 (let ((build (string-append (getcwd) "/build-fonts")))
-                   (mkdir-p build)
-                   (with-directory-excursion "fonts/source/public/amsfonts"
-                     (for-each (lambda (font)
-                                 (format #t "building font ~a\n" (basename font ".mf"))
-                                 (with-directory-excursion (dirname font)
-                                   (invoke "mf" "-progname=mf"
-                                           (string-append "-output-directory=" build)
-                                           (string-append "\\"
-                                                          "mode:=ljfour; "
-                                                          "mag:=1; "
-                                                          "nonstopmode; "
-                                                          "input "
-                                                          (getcwd) "/"
-                                                          (basename font ".mf")))))
-                               (find-files "." "[0-9]+\\.mf$"))))
-
-                 ;; There are no metafont sources for the Euler fonts, so we
-                 ;; convert the afm files instead.
-                 (let ((build (string-append (getcwd) "/build-fonts/euler")))
-                   (mkdir build)
-                   (with-directory-excursion "fonts/afm/public/amsfonts/euler"
-                     (for-each (lambda (font)
-                                 (format #t "converting afm font ~a\n" (basename font ".afm"))
-                                 (invoke "afm2tfm" font
-                                         (string-append build "/"
-                                                        (basename font ".tfm"))))
-                               (find-files "(cmextra|cyrillic|dummy|euler|symbols)"
-                                           "\\.afm$")))
-
-                   ;; Frustratingly, not all fonts can be created this way.  To
-                   ;; generate eufm8.tfm, for example, we first scale down
-                   ;; eufm10.afm to eufm8.pl, and then generate the tfm file from
-                   ;; the pl file.
-                   (setenv "TEXINPUTS"
-                           (string-append ":" build "//:"
-                                          (getcwd) "/fonts/afm/public/amsfonts//:"
-                                          (getcwd) "/source/latex/amsfonts//:"))
-                   (with-directory-excursion build
-                     (for-each (match-lambda
-                                 (((target-base target-size)
-                                   (source-base source-size))
-                                  (let ((factor (number->string
-                                                 (truncate/ (* 1000 target-size)
-                                                            source-size))))
-                                    (invoke "tex"
-                                            "-interaction=scrollmode"
-                                            (string-append "\\input fontinst.sty "
-                                                           "\\transformfont{" target-base "}"
-                                                           "{\\scalefont{" factor "}"
-                                                           "{\\fromafm{" source-base "}}} "
-                                                           "\\bye")))
-                                  (invoke "pltotf"
-                                          (string-append target-base ".pl")
-                                          (string-append target-base ".tfm"))
-                                  (delete-file (string-append target-base ".pl"))))
-
-                               '((("eufm8" 8) ("eufm10" 10))
-
-                                 (("eufb6" 6) ("eufb7" 7))
-                                 (("eufb8" 8) ("eufb10" 10))
-                                 (("eufb9" 9) ("eufb10" 10))
-
-                                 (("eufm6" 6) ("eufb7" 7))
-                                 (("eufm9" 9) ("eufb10" 10))
-
-                                 (("eurb6" 6) ("eurb7" 7))
-                                 (("eurb8" 8) ("eurb10" 10))
-                                 (("eurb9" 9) ("eurb10" 10))
-
-                                 (("eurm6" 6) ("eurm7" 7))
-                                 (("eurm8" 8) ("eurm10" 10))
-                                 (("eurm9" 9) ("eurm10" 10))))))))
-             (add-after 'install 'install-generated-fonts
-               (lambda* (#:key inputs outputs #:allow-other-keys)
-                 (copy-recursively "build-fonts"
-                                   (string-append
-                                    (assoc-ref outputs "out")
-                                    "/share/texmf-dist/fonts/tfm/public/amsfonts"))))))))
-      (native-inputs
-       (list (texlive-updmap.cfg (list texlive-fontinst))))
-      (home-page "https://www.ctan.org/pkg/amsfonts")
-      (synopsis "TeX fonts from the American Mathematical Society")
-      (description
-       "This package provides an extended set of fonts for use in mathematics,
-including: extra mathematical symbols; blackboard bold letters (uppercase
-only); fraktur letters; subscript sizes of bold math italic and bold Greek
-letters; subscript sizes of large symbols such as sum and product; added sizes
-of the Computer Modern small caps font; cyrillic fonts (from the University of
-Washington); Euler mathematical fonts.  All fonts are provided as Adobe Type 1
-files, and all except the Euler fonts are provided as Metafont source.  The
-distribution also includes the canonical Type 1 versions of the Computer
-Modern family of fonts.  The Euler fonts are supported by separate packages;
-details can be found in the documentation.")
-      (license license:silofl1.1))))
-
-(define-public texlive-amsfonts/fixed
-  (let ((template (simple-texlive-package
-                   "texlive-amsfonts-fixed"
                    (list "/source/latex/amsfonts/"
                          "/fonts/source/public/amsfonts/"
                          "/fonts/type1/public/amsfonts/"
@@ -4257,37 +4124,6 @@ loading fonts by their proper names instead of file names.")
 
 (define-deprecated-package texlive-luatex-luaotfload texlive-luaotfload)
 
-(define-public texlive-latex-amsmath
-  (package
-    (name "texlive-latex-amsmath")
-    (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "amsmath"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "172zybw7rp05jca8wl6x0mh6z6gncdyi1j9wdfyjnhbvqw0z4wi4"))))
-    ;; This package misses important files
-    (replacement texlive-amsmath)
-    (build-system texlive-build-system)
-    (arguments '(#:tex-directory "latex/amsmath"))
-    (home-page "https://www.ctan.org/pkg/amsmath")
-    (synopsis "AMS mathematical facilities for LaTeX")
-    (description
-     "This is the principal package in the AMS-LaTeX distribution.  It adapts
-for use in LaTeX most of the mathematical features found in AMS-TeX; it is
-highly recommended as an adjunct to serious mathematical typesetting in LaTeX.
-When amsmath is loaded, AMS-LaTeX packages @code{amsbsyamsbsy} (for bold
-symbols), @code{amsopnamsopn} (for operator names) and
-@code{amstextamstext} (for text embedded in mathematics) are also loaded.
-This package is part of the LaTeX required distribution; however, several
-contributed packages add still further to its appeal; examples are
-@code{empheqempheq}, which provides functions for decorating and highlighting
-mathematics, and @code{ntheoremntheorem}, for specifying theorem (and similar)
-definitions.")
-    (license license:lppl1.3c+)))
-
 (define-public texlive-amsmath
   (let ((template (simple-texlive-package
                    "texlive-amsmath"
@@ -4334,6 +4170,8 @@ mathematics, and @code{ntheoremntheorem}, for specifying theorem (and similar)
 definitions.")
       (license license:lppl1.3c+))))
 
+(define-deprecated-package texlive-latex-amsmath texlive-amsmath)
+
 (define-public texlive-amscls
   (let ((template (simple-texlive-package
                    "texlive-amscls"
@@ -4374,8 +4212,6 @@ distribution.")
                     "0qr5vjp79g1c1l6k173qhfdfabgbky73wymzhm56pazx4a8r08wz"))))
     (package
       (inherit template)
-      ;; TODO: This package is missing files.
-      (replacement texlive-babel/fixed)
       (arguments
        (substitute-keyword-arguments (package-arguments template)
          ((#:tex-directory _ #t)
@@ -4383,14 +4219,27 @@ distribution.")
          ((#:phases phases)
           `(modify-phases ,phases
              (add-after 'unpack 'chdir
-               (lambda _ (chdir "source/latex/babel/") #t))
+               (lambda _ (chdir "source/latex/babel/")))
              ;; This package tries to produce babel.aux twice but refuses to
              ;; overwrite the first one.
              (add-before 'build 'fix-ins
                (lambda _
                  (substitute* "babel.ins"
-                   (("askonceonly") "askforoverwritefalse"))
-                 #t))
+                   (("askonceonly") "askforoverwritefalse"))))
+           (add-before 'copy-files 'unchdir
+             (lambda _
+               (chdir "../../..")))
+           (add-after 'copy-files 'delete-extra-files
+             (lambda* (#:key outputs #:allow-other-keys)
+               (delete-file-recursively
+                (string-append (assoc-ref outputs "out")
+                               "/share/texmf-dist/source/latex/babel/build"))
+               (delete-file
+                (string-append (assoc-ref outputs "out")
+                               "/share/texmf-dist/tex/generic/babel/bbind.ist"))
+               (delete-file
+                (string-append (assoc-ref outputs "out")
+                               "/share/texmf-dist/tex/generic/babel/bbglo.ist"))))
              (add-after 'install 'install-locales
                (lambda* (#:key outputs #:allow-other-keys)
                  (let ((locale-directory
@@ -4412,29 +4261,6 @@ ways.  Babel uses contributed configuration files that provide the detail of
 what has to be done for each language.  Users of XeTeX are advised to use the
 polyglossia package rather than Babel.")
       (license license:lppl1.3+))))
-
-(define-public texlive-babel/fixed
-  (package
-    (inherit texlive-babel)
-    (name "texlive-babel-fixed")
-    (arguments
-     (substitute-keyword-arguments (package-arguments texlive-babel)
-       ((#:phases phases)
-        `(modify-phases ,phases
-           (add-before 'copy-files 'unchdir
-             (lambda _
-               (chdir "../../..")))
-           (add-after 'copy-files 'delete-extra-files
-             (lambda* (#:key outputs #:allow-other-keys)
-               (delete-file-recursively
-                (string-append (assoc-ref outputs "out")
-                               "/share/texmf-dist/source/latex/babel/build"))
-               (delete-file
-                (string-append (assoc-ref outputs "out")
-                               "/share/texmf-dist/tex/generic/babel/bbind.ist"))
-               (delete-file
-                (string-append (assoc-ref outputs "out")
-                               "/share/texmf-dist/tex/generic/babel/bbglo.ist"))))))))))
 
 (define-deprecated-package texlive-latex-babel texlive-babel)
 
@@ -4729,8 +4555,6 @@ language that is written in a Cyrillic alphabet.")
                     "11f14dzhwsy4pli21acccip43d36nf3pac33ihjffnps1i2mhqkd"))))
     (package
       (inherit template)
-      ;; TODO: This package is missing files.
-      (replacement texlive-psnfss/fixed)
       (arguments
        (substitute-keyword-arguments (package-arguments template)
          ((#:tex-directory _ #t)
@@ -4740,34 +4564,14 @@ language that is written in a Cyrillic alphabet.")
              (add-after 'unpack 'chdir
                (lambda _
                  (chdir "source/latex/psnfss")))
-             (add-after 'install 'chdir-back
-               (lambda _
-                 (chdir "../../..")))
-             (add-after 'chdir-back 'clean-installed-files
-               (lambda _
-                 ;; Remove the generated .sty files from the build area as
-                 ;; these were already copied to the default output in the
-                 ;; "install" phase.
-                 (delete-file-recursively "source/latex/psnfss/build")))
-             (add-after 'clean-installed-files 'move-doc-files
-               (lambda* (#:key outputs #:allow-other-keys)
-                 (let* ((doc (assoc-ref outputs "doc"))
-                        (doc-root (string-append doc "/share/texmf-dist"))
-                        (doc-path "doc/latex/psnfss")
-                        (source-path "source/latex/psnfss"))
-                   ;; Move the PDF documentation to the "doc" output.
-                   (let* ((file-name "psnfss2e.pdf")
-                          (source (string-append doc-path "/" file-name))
-                          (target-dir (string-append doc-root "/" doc-path)))
-                     (mkdir-p target-dir)
-                     (copy-file source
-                                (string-append target-dir "/" file-name))
-                     (delete-file source))
-
-                   ;; Keep the remaining files together with the package's
-                   ;; source, as per the installation instructions.
-                   (copy-recursively doc-path source-path)
-                   (delete-file-recursively "doc"))))))))
+           (add-before 'copy-files 'unchdir
+             (lambda _
+               (chdir "../../..")))
+           (add-after 'copy-files 'delete-extra-files
+             (lambda* (#:key outputs #:allow-other-keys)
+               (delete-file-recursively
+                (string-append (assoc-ref outputs "out")
+                               "/share/texmf-dist/source/latex/psnfss/build"))))))))
       (native-inputs
        (list texlive-cm))
       (home-page "https://www.ctan.org/pkg/psnfss")
@@ -4786,23 +4590,6 @@ means to select single glyphs from symbol fonts.  The bundle as a whole is
 part of the LaTeX required set of packages.")
       (license license:lppl1.2+))))
 
-(define-public texlive-psnfss/fixed
-  (package
-    (inherit texlive-psnfss)
-    (name "texlive-psnfss-fixed")
-    (arguments
-     (substitute-keyword-arguments (package-arguments texlive-psnfss)
-       ((#:phases phases)
-        `(modify-phases ,phases
-           (add-before 'copy-files 'unchdir
-             (lambda _
-               (chdir "../../..")))
-           (add-after 'copy-files 'delete-extra-files
-             (lambda* (#:key outputs #:allow-other-keys)
-               (delete-file-recursively
-                (string-append (assoc-ref outputs "out")
-                               "/share/texmf-dist/source/latex/psnfss/build"))))))))))
-
 (define-deprecated-package texlive-latex-psnfss texlive-psnfss)
 
 ;; For user profiles
@@ -4819,7 +4606,7 @@ part of the LaTeX required set of packages.")
                 texlive-latex-base
                 texlive-kpathsea       ;for mktex.opt
                 ;; LaTeX packages from the "required" set.
-                texlive-latex-amsmath
+                texlive-amsmath
                 texlive-amscls
                 texlive-babel
                 texlive-generic-babel-english
@@ -7408,8 +7195,6 @@ and alphabets with a set of text faces suitable for professional publishing.")
                     "0yn0yl6x1z9ab5gb56lhvkqabd2agz3ggxifwxkiysrj5780j29z"))))
     (package
       (inherit template)
-      ;; TODO: This package is missing files.
-      (replacement texlive-stmaryrd/fixed)
       (arguments (substitute-keyword-arguments (package-arguments template)
                    ((#:tex-directory _ #t)
                     "latex/stmaryrd")
@@ -7425,7 +7210,15 @@ and alphabets with a set of text faces suitable for professional publishing.")
                              (("^%% LaTeX2e.*") "\\input docstrip\n")
                              (("fontdef\\}\\}" line)
                               (string-append line "\n\\endbatchfile")))
-                           #t))))))
+                           #t))
+                       (add-before 'copy-files 'unchdir
+                         (lambda _
+                           (chdir "../../..")))
+                       (add-after 'copy-files 'delete-extra-files
+                         (lambda* (#:key outputs #:allow-other-keys)
+                           (delete-file-recursively
+                            (string-append (assoc-ref outputs "out")
+                                           "/share/texmf-dist/source/fonts/stmaryrd/build"))))))))
       (home-page "https://www.ctan.org/pkg/stmaryrd")
       (synopsis "St Mary Road symbols for theoretical computer science")
       (description
@@ -7435,25 +7228,6 @@ use under LaTeX; the package supports the @code{only} option (provided by the
 @code{somedefs} package) to restrict what is loaded, for those who don't need
 the whole font.")
       (license license:lppl))))
-
-(define-public texlive-stmaryrd/fixed
-  (package
-    (inherit texlive-stmaryrd)
-    (name "texlive-stmaryrd-fixed")
-    (arguments
-     (substitute-keyword-arguments (package-arguments texlive-stmaryrd)
-       ((#:tex-directory _ #t)
-        "latex/stmaryrd")
-       ((#:phases phases)
-        `(modify-phases ,phases
-           (add-before 'copy-files 'unchdir
-             (lambda _
-               (chdir "../../..")))
-           (add-after 'copy-files 'delete-extra-files
-             (lambda* (#:key outputs #:allow-other-keys)
-               (delete-file-recursively
-                (string-append (assoc-ref outputs "out")
-                               "/share/texmf-dist/source/fonts/stmaryrd/build"))))))))))
 
 (define-deprecated-package texlive-fonts-stmaryrd texlive-stmaryrd)
 
@@ -9754,6 +9528,27 @@ titles.")
     ;; No version of the GPL is specified.
     (license license:gpl3+)))
 
+(define-public texlive-xunicode
+  (package
+    (inherit
+     (simple-texlive-package "texlive-xunicode"
+                             (list "doc/xelatex/xunicode/"
+                                   "tex/xelatex/xunicode/")
+                             (base32
+                              "1d96i8kd2lhbykc3rxy2jjvws404f2vy1cvdcp5bdr6l9m72q1fa")
+                             #:trivial? #t))
+    (propagated-inputs (list texlive-tipa))
+    (home-page "https://ctan.org/macros/xetex/latex/xunicode")
+    (synopsis "Generate Unicode characters from accented glyphs")
+    (description
+     "The package supports XeTeX's (and other putative future similar engines')
+need for Unicode characters, in a similar way to what the fontenc does for
+8-bit (and the like) fonts: convert accent-glyph sequence to a single Unicode
+character for output.  The package also covers glyphs specified by
+packages (such as @code{tipa}) which define many commands for single text
+glyphs.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-xypic
   (let ((template (simple-texlive-package
                    "texlive-xypic"
@@ -11654,6 +11449,76 @@ can be used to process indexes for documents marked up using (La)TeX, Nroff
 family and SGML-based languages.  Xindy is highly configurable, both in markup
 terms and in terms of the collating order of the text being processed.")
     (license license:gpl2+)))
+
+(define-public texlive-fmtcount
+  (package
+    (inherit (simple-texlive-package
+              "texlive-fmtcount"
+              (list "doc/latex/fmtcount/"
+                    "scripts/fmtcount/"
+                    "source/latex/fmtcount/"
+                    "tex/latex/fmtcount/")
+              (base32
+               "1biw0g6s2arq6kq52c1yfkl0vzafja2az65c3d0syq0vgjzj9763")
+              #:trivial? #t))
+    (home-page "https://ctan.org/macros/latex/contrib/fmtcount")
+    (synopsis "Display the value of a LaTeX counter in a variety of formats")
+    (description
+     "The package provides commands that display the value of a LaTeX counter in a
+variety of formats (ordinal, text, hexadecimal, decimal, octal, binary etc).
+The package offers some multilingual support; configurations for use in English
+(both British and American usage), French (including Belgian and Swiss
+variants), German, Italian, Portuguese and Spanish documents are provided.  This
+package was originally provided as part of the author's datetime package, but is
+now distributed separately.")))
+
+(define-public texlive-inriafonts
+  (package
+    (inherit (simple-texlive-package
+              "texlive-inriafonts"
+              (list "doc/fonts/inriafonts/"
+                    "fonts/enc/dvips/inriafonts/"
+                    "fonts/map/dvips/inriafonts/"
+                    "fonts/opentype/public/inriafonts/"
+                    "fonts/tfm/public/inriafonts/"
+                    "fonts/truetype/public/inriafonts/"
+                    "fonts/type1/public/inriafonts/"
+                    "fonts/vf/public/inriafonts/"
+                    "tex/latex/inriafonts/")
+              (base32
+               "0ngbpr4pl7r82jmdhiksp32qvbvggf2nawwqq0pkb7cffp95ya49")
+              #:trivial? #t))
+    (propagated-inputs (list texlive-ly1))        ;requires LY1 font encoding
+    (home-page "https://ctan.org/fonts/inriafonts")
+    (synopsis "Inria fonts with LaTeX support")
+    (description
+     "Inria is a free font designed by Black[Foundry] for Inria, a French research
+institute.  It comes as Serif and Sans Serif, each with three weights and
+matching italics.  Using these fonts with XeLaTeX and LuaLaTeX is easy using
+the fontspec package; we refer to the documentation of fontspec for more
+information.  The present package provides a way of using them with LaTeX and
+pdfLaTeX: it provides two style files, @file{InriaSerif.sty} and
+@file{InriaSans.sty}, together with the PostScript version of the fonts and
+their associated files.  These were created using autoinst.")
+    (license (list license:lppl license:silofl1.1))))
+
+(define-public texlive-floatflt
+  (package
+    (inherit (simple-texlive-package
+              "texlive-floatflt"
+              (list "doc/latex/floatflt/"
+                    "source/latex/floatflt/"
+                    "tex/latex/floatflt/")
+              (base32
+               "1piy8ajbbcadsjwp0mhlgxm2ggggnb5sn75arfs5fxiaqrwd572j")
+              #:trivial? #t))
+    (home-page "https://ctan.org/macros/latex/contrib/floatflt")
+    (synopsis "Wrap text around floats")
+    (description
+     "The package can float text around figures and tables which do not
+span the full width of a page; it improves upon floatfig, and allows
+tables and figures to be set left/right or alternating on even/odd pages.")
+    (license license:lppl1.3+)))
 
 (define-public bibtool
   (package

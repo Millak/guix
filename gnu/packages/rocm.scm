@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021 Lars-Dominik Braun <lars@6xq.net>
+;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This program is free software; you can redistribute it and/or modify it
 ;;; under the terms of the GNU General Public License as published by
@@ -18,21 +19,25 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
   #:use-module (gnu packages)
   #:use-module (gnu packages elf)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages opencl)
+  #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages version-control)
-  #:use-module (gnu packages vim))
+  #:use-module (gnu packages vim)
+  #:use-module (gnu packages xdisorg))
 
 ;; The components are tightly integrated and can only be upgraded as a unit. If
 ;; you want to upgrade ROCm, bump this version number and update hashes below.
-(define %rocm-version "4.3.0")
+(define %rocm-version "5.1.3")
 
 (define-public rocm-cmake
   (package
@@ -46,7 +51,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0sic2zxmzl2pb2865vvq55mbpcr8pby8v19pjdlm08pypqw5h6h6"))))
+                "1bn3l04qnc1ls9abs15s1sgsrwmkfk0g8jgdjqshrcr3ab8ffcpf"))))
     (build-system cmake-build-system)
     (arguments `(#:tests? #f)) ; Tests try to use git commit
     (native-inputs (list git))
@@ -68,7 +73,7 @@ tasks needed for the ROCM software stack.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1f8xsylfajpxqjk6ayjnrry53y8b0a6lh9d72pd41nffxfyzvw3w"))))
+                "07vkrxxc49i72r0lcl6dap0qcw1bignsw920rj4h1mac3bwa8q4j"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
@@ -93,7 +98,7 @@ oclc, ocml, ockl, opencl, hip and hc.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0bakbm7shr0l67lph44b5cnc9psd6rivg1mp79qizaawkn380x60"))
+                "1achb3216cbm7x2d05xj7j7ivn24y11q2d2p5whw3v4ykgfqql6f"))
               (patches
                (search-patches "rocm-comgr-3.1.0-dependencies.patch"))))
     (build-system cmake-build-system)
@@ -125,10 +130,11 @@ AMDGPU code objects.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ffqhrrscmcydfqf61dk58d7nnxk6n2k68jhqfj7a4hvhlphb74f"))))
+                "0k5bchq1jhgraqrhj9q47b45n33wnd2ipwrrj39q51jzxmyyzxj2"))))
     (build-system cmake-build-system)
     (arguments `(#:tests? #f)) ; Not sure how to run tests.
-    (inputs (list numactl))
+    (inputs (list libdrm numactl))
+    (native-inputs (list `(,gcc "lib") pkg-config))
     (home-page "https://github.com/RadeonOpenCompute/ROCT-Thunk-Interface")
     (synopsis "Radeon Open Compute Thunk Interface")
     (description "User-mode API interfaces used to interact with the ROCk
@@ -147,7 +153,7 @@ driver.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0jqfqf5ymwlbpac065bhigmkgsk7mbyimdgvca7ymn38wpf80ka7"))))
+                "1j1cy64w13plgsy20mir4xm6x4xnwkyil3g03xnda6ynhd7bkhv7"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
@@ -174,10 +180,23 @@ driver.")
 applications to launch compute kernels to available HSA ROCm kernel agents.")
     (license license:ncsa)))
 
-(define-public rocclr
+;; This is the source only for ROCclr as from v4.5 it should only be built as
+;; part of a client.  A warning is output if attempting to build stand-alone
+;; and there is no install.  The previous version is kept as rocclr-4.
+(define rocclr-src
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://github.com/ROCm-Developer-Tools/ROCclr.git")
+          (commit (string-append "rocm-" %rocm-version))))
+    (sha256
+     (base32
+      "0x1frzpz9j1s516vscbdm9g5cqirvv5w7wmq2kyljcygnci7yqar"))))
+
+(define-public rocclr-4
   (package
-    (name "rocclr")
-    (version %rocm-version)
+    (name "rocclr-4")
+    (version "4.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -232,39 +251,41 @@ allows runtimes to work on Windows as well as on Linux without much effort.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1cglpiaj3ny1z74ssmy6j63vj92sfy4q38ix6qsga0mg3b2wvqz3"))
+                "1rirvc8h0ahicw1vw4js4jq5gw25x47gmg3gczmyz97c72wvgfiv"))
               (patches
                (search-patches
-                "rocm-opencl-runtime-3.10.0-includes.patch"
                 ;; Do not install libOpenCL, which ocl-icd provides.
                 "rocm-opencl-runtime-4.3-noopencl.patch"
                 ;; Guix includes a program clinfo already.
-                "rocm-opencl-runtime-4.3-noclinfo.patch"
-                ;; cltrace linking fails, remove it.
-                "rocm-opencl-runtime-4.3-nocltrace.patch"))))
+                "rocm-opencl-runtime-4.3-noclinfo.patch"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f ; Not sure how to run them.
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'create-icd
-           ;; Manually install ICD, which simply consists of dumping
-           ;; the path of the .so into the correct file.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (vendors (string-append out "/etc/OpenCL/vendors"))
-                    (sopath (string-append out "/lib/libamdocl64.so")))
-               (mkdir-p vendors)
-               (with-output-to-file (string-append vendors "/amdocl64.icd")
-                 (lambda _ (display sopath)))))))))
+     (list
+      #:tests? #f ; Not sure how to run them.
+      #:configure-flags
+      #~(list
+         (string-append "-DAMD_OPENCL_PATH=" #$(package-source this-package))
+         ;; The ROCclr source is needed to build the runtime.
+         (string-append "-DROCCLR_PATH=" #$rocclr-src)
+         (string-append "-DROCM_PATH=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'create-icd
+            ;; Manually install ICD, which simply consists of dumping
+            ;; the path of the .so into the correct file.
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((vendors (string-append #$output "/etc/OpenCL/vendors"))
+                     (sopath (string-append #$output "/lib/libamdocl64.so")))
+                (mkdir-p vendors)
+                (with-output-to-file (string-append vendors "/amdocl64.icd")
+                  (lambda _ (display sopath)))))))))
     (inputs
-     (list mesa
-           rocm-comgr
-           rocr-runtime
-           rocclr
+     (list glew
+           mesa
+           numactl
            opencl-icd-loader
-           glew))
-    (native-inputs `())
+           rocm-comgr
+           rocr-runtime))
     (synopsis "ROCm OpenCL Runtime")
     (description "OpenCL 2.0 compatible language runtime, supporting offline
 and in-process/in-memory compilation.")
@@ -282,7 +303,7 @@ and in-process/in-memory compilation.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0pcm308vwkjrwnrk507iya20mkil8j0vx699w9jk2gas4n4jvkcz"))))
+                "0hdfbvn55h5lk5s8vqlmri5r94vlas8v8yjxwd9d70igslk0kr67"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f ; No tests.
@@ -314,7 +335,7 @@ available to ROCm and show their properties.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0a14kwkjpiyljgzxblh031qibn6xgbxp6m12zdy1pmwb2c44jjmm"))))
+                "0rnn2ms68mvzpcp31dk304sfqnv352i7vb48k7rw3qjahhrjm48c"))))
     (build-system cmake-build-system)
     (arguments `(#:tests? #f)) ; No tests.
     (inputs (list rocr-runtime))

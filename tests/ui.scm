@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,6 +25,7 @@
   #:use-module (guix derivations)
   #:use-module ((gnu packages) #:select (specification->package))
   #:use-module (guix tests)
+  #:use-module (guix utils)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-19)
@@ -291,5 +293,71 @@ Second line" 24))
                                 (map rx '("go" "game"))))
          (>0 (package-relevance libb2
                                 (map rx '("crypto" "library")))))))
+
+(define (make-empty-file directory file)
+  ;; Create FILE in DIRECTORY.
+  (close-port (open-output-file (in-vicinity directory file))))
+
+(define (assert-equals-find-available-pager expected)
+  ;; Use 'with-paginated-output-port' and return true if it invoked EXPECTED.
+  (define used-command "")
+  (mock ((ice-9 popen) open-pipe*
+         (lambda (mode command . args)
+           (unless (string-null? used-command)
+             (error "open-pipe* should only be called once"))
+           (set! used-command command)
+           (%make-void-port "")))
+        (mock ((ice-9 popen) close-pipe (const 'ok))
+              (mock ((guix colors) isatty?* (const #t))
+                    (with-paginated-output-port port 'ok)
+                    (string=? expected used-command)))))
+
+
+(test-assert "find-available-pager, GUIX_PAGER takes precedence"
+  (call-with-temporary-directory
+   (lambda (dir)
+     (with-environment-variables `(("PATH" ,dir)
+                                   ("GUIX_PAGER" "guix-pager")
+                                   ("PAGER" "pager"))
+       (make-empty-file dir "less")
+       (make-empty-file dir "more")
+       (assert-equals-find-available-pager "guix-pager")))))
+
+(test-assert "find-available-pager, PAGER takes precedence"
+  (call-with-temporary-directory
+   (lambda (dir)
+     (with-environment-variables `(("PATH" ,dir)
+                                   ("GUIX_PAGER" #false)
+                                   ("PAGER" "pager"))
+       (make-empty-file dir "less")
+       (make-empty-file dir "more")
+       (assert-equals-find-available-pager "pager")))))
+
+(test-assert "find-available-pager, 'less' takes precedence"
+  (call-with-temporary-directory
+   (lambda (dir)
+     (with-environment-variables `(("PATH" ,dir)
+                                   ("GUIX_PAGER" #false)
+                                   ("PAGER" #false))
+       (make-empty-file dir "less")
+       (make-empty-file dir "more")
+       (assert-equals-find-available-pager (in-vicinity dir "less"))))))
+
+(test-assert "find-available-pager, 'more' takes precedence"
+  (call-with-temporary-directory
+   (lambda (dir)
+     (with-environment-variables `(("PATH" ,dir)
+                                   ("GUIX_PAGER" #false)
+                                   ("PAGER" #false))
+       (make-empty-file dir "more")
+       (assert-equals-find-available-pager (in-vicinity dir "more"))))))
+
+(test-assert "find-available-pager, no pager"
+  (call-with-temporary-directory
+   (lambda (dir)
+     (with-environment-variables `(("PATH" ,dir)
+                                   ("GUIX_PAGER" #false)
+                                   ("PAGER" #false))
+       (assert-equals-find-available-pager "")))))
 
 (test-end "ui")

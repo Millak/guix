@@ -313,6 +313,63 @@ be able to view it naturally and easily.")))
     (description (package-description js-mathjax))
     (license license:asl2.0)))
 
+(define-public js-mathjax-for-r-mathjaxr
+  (package
+    (inherit js-mathjax-3)
+    (name "js-mathjax")
+    (version "3.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mathjax/MathJax-src")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0kqcb6pl0zfs4hf8zqb4l50kkfq7isv35vpy05m0lg0yr9w0w4ai"))
+       (patches (search-patches "mathjax-disable-webpack.patch"
+                                "mathjax-3.1.2-no-a11y.patch"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments js-mathjax-3)
+       ((#:phases phases '%standard-phases)
+        `(modify-phases ,phases
+           (replace 'prepare-sources
+             (lambda* (#:key inputs #:allow-other-keys)
+               ;; All a11y components depend on speech-rule-engine, which cannot be
+               ;; built from source. Since this only affects accessibility, remove them.
+               (delete-file-recursively "ts/a11y")
+               (delete-file-recursively "components/src/a11y")
+               (delete-file-recursively "components/src/sre")
+               (delete-file-recursively "components/src/node-main")
+
+               ;; Copy sources of dependencies, so we can create symlinks.
+               (mkdir-p "node_modules")
+               (with-directory-excursion "node_modules"
+                 (for-each
+                  (lambda (p)
+                    (copy-recursively (assoc-ref inputs (string-append "node-" p)) p))
+                  '("mj-context-menu")))
+
+               ;; Make sure esbuild can find imports. This way we don’t have to rewrite files.
+               (symlink "ts" "js")
+               (symlink "ts" "node_modules/mj-context-menu/js")))))))
+    (native-inputs
+     `(("esbuild" ,esbuild)
+       ("node" ,node-lts)
+       ("node-mj-context-menu"
+        ,(let ((name "context-menu")
+               (version "0.6.1"))
+           (origin
+             (method git-fetch)
+             (uri (git-reference
+                    (url "https://github.com/zorkow/context-menu.git")
+                    (commit (string-append "v" version))))
+             (file-name (git-file-name name version))
+             (sha256
+              (base32
+               "1q063l6477z285j6h5wvccp6iswvlp0jmb96sgk32sh0lf7nhknh")))))))))
+
 (define-public js-commander
   (package
     (name "js-commander")
@@ -771,22 +828,31 @@ Javascript and a small built-in standard library with C library wrappers.")
                 "19szwxzvl2g65fw95ggvb8h0ma5bd9vvnnccn59hwnc4dida1x4n"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; No tests.
-       #:make-flags (list "-f" "Makefile.sharedlibrary"
-                          (string-append "INSTALL_PREFIX=" %output))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         ;; At least another major GNU/Linux distribution carries their own
-         ;; .pc file with this package.
-         (add-after 'install 'install-pkg-config
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (pkg-config-dir (string-append out "/lib/pkgconfig")))
-               (mkdir-p pkg-config-dir)
-               (with-output-to-file (string-append pkg-config-dir "/duktape.pc")
-                 (lambda _
-                   (format #t "prefix=~@*~a~@
+     (list #:tests? #f                  ; No tests.
+           #:make-flags
+           #~(list "-f" "Makefile.sharedlibrary"
+                   (string-append "INSTALL_PREFIX="
+                                  ;; XXX Replace with #$output on core-updates.
+                                  #$(if (%current-target-system)
+                                        #~#$output
+                                        #~%output))
+                   ;; XXX Unconditionally set to CC-FOR-TARGET on core-updates.
+                   #$@(if (%current-target-system)
+                          #~((string-append "CC=" #$(cc-for-target)))
+                          #~()))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               ;; At least another major GNU/Linux distribution carries their own
+               ;; .pc file with this package.
+               (add-after 'install 'install-pkg-config
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out"))
+                          (pkg-config-dir (string-append out "/lib/pkgconfig")))
+                     (mkdir-p pkg-config-dir)
+                     (with-output-to-file (string-append pkg-config-dir "/duktape.pc")
+                       (lambda _
+                         (format #t "prefix=~@*~a~@
                                libdir=${prefix}/lib~@
                                includedir=${prefix}/include~@
 
@@ -795,7 +861,7 @@ Javascript and a small built-in standard library with C library wrappers.")
                                Version: ~a~@
                                Libs: -L${libdir} -lduktape~@
                                Cflags: -I${includedir}~%"
-                           out ,version)))))))))
+                                 out #$version)))))))))
     (home-page "https://duktape.org/")
     (synopsis "Small embeddable Javascript engine")
     (description "Duktape is an embeddable Javascript engine, with a focus on

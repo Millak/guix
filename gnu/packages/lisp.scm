@@ -923,7 +923,7 @@ the HTML documentation of TXR.")
 (define-public txr
   (package
     (name "txr")
-    (version "274")
+    (version "277")
     (source
      (origin
        (method git-fetch)
@@ -932,7 +932,7 @@ the HTML documentation of TXR.")
              (commit (string-append "txr-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0sz5wqqhmj2b9h9q95s8x4gb4cia6qddqp2mg29a5dpdh6jh3qyp"))))
+        (base32 "1w6q5inydz0cf4g3y8954msxfb2clf4nj4aqiiayp0z2y96b7bhk"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -991,7 +991,8 @@ the HTML documentation of TXR.")
            man-for-txr))
     (inputs
      (list bash-minimal
-           libffi))
+           libffi
+           zlib))
     (synopsis "General-purpose, multi-paradigm programming language")
     (description
      "TXR is a general-purpose, multi-paradigm programming language.  It

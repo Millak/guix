@@ -53,6 +53,7 @@
 (define-module (gnu packages golang)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix utils)
+  #:use-module (guix memoization)
   #:use-module ((guix build utils) #:select (alist-replace))
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -626,7 +627,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
   (package
     (inherit go-1.16)
     (name "go")
-    (version "1.17.8")
+    (version "1.17.9")
     (source
      (origin
        (method git-fetch)
@@ -636,7 +637,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "05qfs17wddxmmi349g9ci12w9fjb5vbss6qpjc4qzgqzznqf0ycy"))))
+         "02l6gxn738kam1niy2nl2wpsbzl4x87h2wik6hd3py19kq4z2flw"))))
     (outputs '("out" "tests")) ; 'tests' contains distribution tests.
     (arguments
      `(#:modules ((ice-9 match)
@@ -840,35 +841,43 @@ in the style of communicating sequential processes (@dfn{CSP}).")
 
 (define-public go go-1.17)
 
-(define-public (make-go-std go)
-  "Return a package which builds the standard library for Go compiler GO."
-  (package
-    (name (string-append (package-name go) "-std"))
-    (version (package-version go))
-    (source #f)
-    (build-system go-build-system)
-    (arguments
-     `(#:import-path "std"
-       #:build-flags `("-pkgdir" "pkg") ; "Install" to build directory.
-       #:allow-go-reference? #t
-       #:substitutable? #f ; Faster to build than download.
-       #:tests? #f ; Already tested in the main Go build.
-       #:go ,go
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'unpack)
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (out-cache (string-append out "/var/cache/go/build")))
-               (copy-recursively (getenv "GOCACHE") out-cache)
-               (delete-file (string-append out-cache "/trim.txt"))
-               (delete-file (string-append out-cache "/README")))))
-         (delete 'install-license-files))))
-    (home-page (package-home-page go))
-    (synopsis "Cached standard library build for Go")
-    (description (package-description go))
-    (license (package-license go))))
+(define make-go-std
+  (mlambdaq (go)
+    "Return a package which builds the standard library for Go compiler GO."
+    (package
+      (name (string-append (package-name go) "-std"))
+      (version (package-version go))
+      (source #f)
+      (build-system go-build-system)
+      (arguments
+       `(#:import-path "std"
+         #:build-flags `("-pkgdir" "pkg")      ; "Install" to build directory.
+         #:allow-go-reference? #t
+         #:substitutable? #f            ; Faster to build than download.
+         #:tests? #f                    ; Already tested in the main Go build.
+         #:go ,go
+         #:phases
+         (modify-phases %standard-phases
+           (delete 'unpack)
+           (replace 'install
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let* ((out (assoc-ref outputs "out"))
+                      (out-cache (string-append out "/var/cache/go/build")))
+                 (copy-recursively (getenv "GOCACHE") out-cache)
+                 (delete-file (string-append out-cache "/trim.txt"))
+                 (delete-file (string-append out-cache "/README")))))
+           (delete 'install-license-files))))
+      (home-page (package-home-page go))
+      (synopsis "Cached standard library build for Go")
+      (description (package-description go))
+      (license (package-license go)))))
+
+(export make-go-std)
+
+;; Make those public so they have a corresponding Cuirass job.
+(define-public go-std-1.14 (make-go-std go-1.14))
+(define-public go-std-1.16 (make-go-std go-1.16))
+(define-public go-std-1.17 (make-go-std go-1.17))
 
 (define-public go-0xacab-org-leap-shapeshifter
   (let ((commit "0aa6226582efb8e563540ec1d3c5cfcd19200474")
@@ -9775,3 +9784,62 @@ Features:
      "@code{go-github-com-go-chi-chi-v5} is an HTTP router that lets the user
 decompose request handling into many smaller layers.")
     (license license:expat)))
+
+(define-public go-sigs-k8s-io-yaml
+  (package
+    (name "go-sigs-k8s-io-yaml")
+    (version "1.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/kubernetes-sigs/yaml")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0qxs0ppqwqrfqs4aywyn1h28xh1qlj5ds4drmygaz1plrxj02dqn"))))
+    (build-system go-build-system)
+    (arguments '(#:import-path "sigs.k8s.io/yaml"))
+    (propagated-inputs (list go-gopkg-in-yaml-v2 go-github-com-davecgh-go-spew))
+    (home-page "https://sigs.k8s.io/yaml")
+    (synopsis "YAML marshaling and unmarshaling support for Go")
+    (description
+     "This package provides a Go library that first converts YAML to JSON
+using @code{go-yaml} and then uses @code{json.Marshal} and
+@code{json.Unmarshal} to convert to or from the struct. This means that
+it effectively reuses the JSON struct tags as well as the custom JSON
+methods @code{MarshalJSON} and @code{UnmarshalJSON} unlike
+@code{go-yaml}.
+
+kubernetes-sigs/yaml is a permanent fork of
+@url{https://github.com/ghodss/yaml,ghodss/yaml}.")
+    (license (list license:expat license:bsd-3))))
+
+(define-public go-github-com-google-go-jsonnet
+  (package
+    (name "go-github-com-google-go-jsonnet")
+    (version "0.18.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/google/go-jsonnet")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1dghqygag123zkgh2vrnq82cdag5z0p03v3489pwhs06r5g27wm3"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/google/go-jsonnet/cmd/jsonnet"
+       #:unpack-path "github.com/google/go-jsonnet"))
+    (propagated-inputs (list go-sigs-k8s-io-yaml go-gopkg-in-yaml-v2
+                             go-github-com-sergi-go-diff
+                             go-github-com-fatih-color))
+    (home-page "https://github.com/google/go-jsonnet")
+    (synopsis "Go implementation of Jsonnet")
+    (description
+     "This package provides an implementation of the @url{http://jsonnet.org/,
+Jsonnet} data templating language in Go.  It is a feature-complete,
+production-ready implementation, compatible with the original Jsonnet C++
+implementation.")
+    (license license:asl2.0)))

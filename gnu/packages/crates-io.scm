@@ -19,6 +19,7 @@
 ;;; Copyright © 2021 Antero Mejr <antero@kodmin.com>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2021 muradm <mail@muradm.net>
 ;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Jacob Hrbek <kreyren@rixotstudio.cz>
@@ -31352,7 +31353,10 @@ algorithm and related formats (ZLIB, GZIP).")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1axsdyb2i67pn85vh8sb2z037n88fiiwqghkzsr1jrcdy2g1cs4g"))))
+         "1axsdyb2i67pn85vh8sb2z037n88fiiwqghkzsr1jrcdy2g1cs4g"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (delete-file-recursively "libgit2")))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -62496,13 +62500,13 @@ different for every thread.")
     (name "rust-thread-id")
     (version "3.3.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "thread-id" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1h90v19fjz3x9b25ywh68z5yf2zsmm6h5zb4rl302ckbsp4z9yy7"))))
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "thread-id" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1h90v19fjz3x9b25ywh68z5yf2zsmm6h5zb4rl302ckbsp4z9yy7"))))
     (arguments
      `(#:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
@@ -73053,3 +73057,42 @@ including a line breaking iterator.")
 and automatically convert it to a windows batch file, this library provides a
 way to convert simple shell commands to windows batch commands.")
     (license license:asl2.0)))
+
+(define-public rust-enquote-1
+  (package
+    (name "rust-enquote")
+    (version "1.1.0")
+    (home-page "https://github.com/reujab/enquote")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "enquote" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0clrjghlfkkb7sndabs5wch0fz2nif6nj4b117s8kqxx3nqnrhq6"))))
+    (build-system cargo-build-system)
+    (synopsis "Rust library that quotes, unquotes, and unescapes strings")
+    (description "A Rust library quotes, unquotes, and unescapes strings")
+    (license license:unlicense)))
+
+(define-public rust-pam-sys-0.5
+  (package
+    (name "rust-pam-sys")
+    (version "0.5.6")
+    (home-page "https://github.com/1wilkens/pam-sys")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "pam-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0d14501d5vybjnzxfjf96321xa5wa36x1xvf02h02zq938qmhj6d"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2))))
+    (inputs `(("linux-pam" ,linux-pam)))
+    (synopsis
+     "Rust FFI wrappers for the Linux Pluggable Authentication Modules (PAM)")
+    (description
+     "This crate uses bindgen to generate the raw FFI definitions for PAM. For a rustified API consider using pam.")
+    (license (list license:expat license:asl2.0))))

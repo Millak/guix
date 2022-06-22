@@ -435,7 +435,16 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
        ((#:configure-flags flags)
         ;; Otherwise, the build would fail with: "error: invalid conversion
         ;; from ‘const char*’ to ‘char*’ [-fpermissive]".
-        `(cons "-DCMAKE_CXX_FLAGS=-fpermissive" ,flags))))))
+        `(cons "-DCMAKE_CXX_FLAGS=-fpermissive" ,flags))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'remove-kernel-version
+              ;; Avoid embedding the kernel version for reproducible builds
+              (lambda _
+                (substitute*
+                    "ThirdParty/hdf5/vtkhdf5/config/cmake/libhdf5.settings.cmake.in"
+                  (("Host system: \\@CMAKE_HOST_SYSTEM\\@")
+                   "Host system: @CMAKE_SYSTEM_NAME@"))))))))))
 
 (define-public opencv
   (package

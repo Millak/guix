@@ -41,6 +41,7 @@
 ;;; Copyright © 2021, 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -83,6 +84,7 @@
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
+  #:use-module (gnu packages haskell-xyz)         ;pandoc
   #:use-module (gnu packages hurd)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
@@ -5019,3 +5021,85 @@ consists of a set of Guile modules providing some of Clojure's functionality
 in two different guises.")
       ;; Dual license: LGPLv2.1+ or EPLv1.0+ at the user's option.
       (license (list license:lgpl2.1+ license:epl1.0)))))
+
+(define-public guile-tap
+  (package
+    (name "guile-tap")
+    (version "0.4.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ft/guile-tap")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "04ip5cbvsjjcicsri813f4711yh7db6fvc2px4788rl8p1iqvi6x"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'configure
+                 (lambda _
+                   (substitute* "Makefile"
+                     (("PREFIX = /usr/local") (string-append "PREFIX="
+                                                             #$output)))))
+               (replace 'build
+                 (lambda _
+                   (invoke "make")
+                   (invoke "make" "-C" "doc" "man")
+                   (invoke "make" "install")))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "make" "test")))))))
+    (native-inputs (list guile-3.0 pandoc))
+    (home-page "https://github.com/ft/guile-tap")
+    (synopsis "Guile test framework that emits TAP output")
+    (description
+     "guile-tap is a library for GNU Guile that implements a framework for
+specifying test cases that emit output that adheres to the Test Anything
+Protocol (TAP).  It comes with an experimental harness (tap-harness).")
+    (license license:bsd-2)))
+
+(define-public guile-termios
+  (package
+    (name "guile-termios")
+    (version "0.6.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ft/guile-termios")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "020p3c84z09wyyb6gfzj2x6q2rfmvas7c92fcm2hhg8z1q60sqkg"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'configure
+                 (lambda _
+                   (substitute* "Makefile"
+                     (("CC = cc") (string-append "CC="
+                                                 #$(cc-for-target)))
+                     (("PREFIX = /usr/local") (string-append "PREFIX="
+                                                             #$output)))))
+               (replace 'build
+                 (lambda _
+                   (invoke "make")
+                   (invoke "make" "-C" "doc" "man")
+                   (invoke "make" "install")))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "make" "test")))))))
+    (native-inputs (list guile-3.0 guile-tap pandoc perl perl-io-tty))
+    (home-page "https://github.com/ft/guile-termios")
+    (synopsis "POSIX termios interface for GNU Guile")
+    (description
+     "To query and change settings of serial devices on POSIX systems, the
+termios API is used.  GNU Guile doesn't have an interface for that built in.
+This module implements this interface by use of Guile's dynamic FFI.")
+    (license license:bsd-2)))

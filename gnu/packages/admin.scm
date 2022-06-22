@@ -45,6 +45,8 @@
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2021 muradm <mail@muradm.net>
+;;; Copyright © 2021 pineapples <guixuser6392@protonmail.com>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
@@ -66,6 +68,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages admin)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system glib-or-gtk)
@@ -93,6 +96,7 @@
   #:use-module (gnu packages c)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages crates-io)
   #:use-module (gnu packages cross-base)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages cryptsetup)
@@ -101,6 +105,7 @@
   #:use-module (gnu packages elf)
   #:use-module (gnu packages file)
   #:use-module (gnu packages flex)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gl)
@@ -680,7 +685,7 @@ console.")
 (define-public htop
   (package
     (name "htop")
-    (version "3.2.0")
+    (version "3.2.1")
     (source
      (origin
        (method git-fetch)
@@ -688,7 +693,7 @@ console.")
              (url "https://github.com/htop-dev/htop")
              (commit version)))
        (sha256
-        (base32 "16l1r2ixzs640ybqp2x8bfyvk98kiywy7k3sjmp5j5npdzn5ryd7"))
+        (base32 "0yfmkw3y4qyd42svhpiijif7krvmnb8z88y6h9g4fwf7sfynq2rk"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (inputs
@@ -1126,6 +1131,77 @@ This package contains the OpenBSD rewrite of netcat, including support for
 IPv6, proxies, and Unix sockets.")
     (license (list license:bsd-3
                    license:bsd-2))))  ; atomicio.*, socks.c
+
+(define-public nmon
+  (package
+    (name "nmon")
+    (version "16n")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/nmon/lmon" version ".c"))
+       (sha256
+        (base32 "1wpm2f30414b87kpbr9hbidblr5cmfby5skwqd0fkpi5v712q0f0"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f                  ; no test suite
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'unpack
+                 (lambda _
+                   (copy-file #$(package-source this-package) "lmon.c")))
+               (delete 'configure)      ; no build system
+               (replace 'build
+                 ;; There is an example ‘Makefile’ in the .c file.
+                 (lambda _
+                   ;; These #defines aren't well-documented and, e.g., POWER was
+                   ;; not actually tested on every possible TARGET-POWERPC?.
+                   (let* ((system #$(cond ((target-x86-32?) "X86")
+                                          ((target-x86-64?) "X86")
+                                          ((target-arm?) "ARM")
+                                          ((target-powerpc?) "POWER")
+                                          (else "CROSS_FINGERS"))))
+                     (format #t "Building for ~a~%" system)
+                     (invoke #$(cc-for-target) "-o" "nmon" "lmon.c"
+                             "-g" "-Wall" "-D" system
+                             "-lncurses" "-lm"))))
+               (replace 'install
+                 (lambda _
+                   (let ((bin (string-append #$output "/bin"))
+                         (man1 (string-append #$output "/share/man/man1")))
+                     (install-file "nmon" bin)
+                     (mkdir-p man1)
+                     (copy-file #$(this-package-native-input "man-page")
+                                (string-append man1 "/nmon.1"))))))))
+    (native-inputs
+     (list `("man-page"
+             ,(origin
+                ;; There is no man page upstream, so install Debian's.
+                (method url-fetch)
+                (uri (string-append "https://salsa.debian.org/carnil/nmon/"
+                                    "-/raw/debian/" version "+debian-1/"
+                                    "debian/nmon.1"))
+                (sha256
+                 (base32
+                  "1gpvd2kjyhs18sh6sga5bk9wj8s78blfd4c0m38r0wl92jx2yv1b"))))))
+    (inputs
+     (list ncurses))
+    (home-page "http://nmon.sourceforge.net/")
+    (synopsis
+     "Monitor system performance in a terminal or to a @file{.csv} log file")
+    (description
+     "@acronym{Nmon, Nigel's performance monitor} is yet another system monitor
+useful in systems administration, debugging, tuning, and benchmarking.
+
+The configurable ncurses interface displays all the classic resource usage
+statistics (CPU, memory, network, disk, ...) as real-time graphs or numbers.
+It can also list the processes responsible in a @command{top}-like table.
+
+A less common nmon feature is its ability to create highly detailed log files
+in @acronym{CSV, comma-separated values} format.  These can be imported into
+spreadsheets or fed straight into an @acronym{RRD, round-robin database} using
+@command{rrdtool} for further analyisis, or to create colourful graphs.")
+    (license license:gpl3+)))
 
 (define-public sipcalc
   (package
@@ -1769,7 +1845,7 @@ system administrator.")
 (define-public sudo
   (package
     (name "sudo")
-    (version "1.9.11")
+    (version "1.9.11p2")
     (source (origin
               (method url-fetch)
               (uri
@@ -1779,7 +1855,7 @@ system administrator.")
                                     version ".tar.gz")))
               (sha256
                (base32
-                "1gjingc1h7d6p17m0nn87yiwh8gbdchg4w4kv8s4g89wv0q6wixm"))
+                "1lli4z10b5j238cn7471jb8vcjlj5px68x48ysa3f1n0kzmih6d2"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -4987,4 +5063,161 @@ it won't take longer to install 15 machines than it would to install just 2.")
     (home-page "https://www.udpcast.linux.lu")
     (license license:gpl2+)))
 
+(define-public greetd
+  (package
+    (name "greetd")
+    (version "0.8.0")
+    (home-page "https://git.sr.ht/~kennylevinsen/greetd")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "0x5c3jkw09kvj2grcxm899y2n6ws8p990cyp9cs0fy6lm4fzlh6v"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-nix" ,rust-nix-0.19)
+        ("rust-pam-sys" ,rust-pam-sys-0.5)
+        ("rust-rpassword" ,rust-rpassword-5)
+        ("rust-users" ,rust-users-0.11)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-getopts" ,rust-getopts-0.2)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-async-trait" ,rust-async-trait-0.1)
+        ("rust-enquote" ,rust-enquote-1))
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'package)
+         (add-after 'build 'build-man-pages
+           (lambda* (#:key inputs #:allow-other-keys)
+             (define (scdoc-cmd doc lvl)
+               (system (string-append "scdoc < "
+                                      doc "-" lvl ".scd > "
+                                      doc "." lvl)))
+             (with-directory-excursion "man"
+               (scdoc-cmd "greetd" "1")
+               (scdoc-cmd "greetd" "5")
+               (scdoc-cmd "greetd-ipc" "7")
+               (scdoc-cmd "agreety" "1"))))
+         (replace 'install
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bin (string-append out "/bin"))
+                    (sbin (string-append out "/sbin"))
+                    (share (string-append out "/share"))
+                    (man (string-append share "/man"))
+                    (man1 (string-append man "/man1"))
+                    (man5 (string-append man "/man5"))
+                    (man7 (string-append man "/man7"))
+                    (release "target/release")
+                    (greetd-bin (string-append release "/greetd"))
+                    (agreety-bin (string-append release "/agreety")))
+               (install-file greetd-bin sbin)
+               (install-file agreety-bin bin)
+               (with-directory-excursion "man"
+                 (install-file "greetd.1" man1)
+                 (install-file "greetd.5" man5)
+                 (install-file "greetd-ipc.7" man7)
+                 (install-file "agreety.1" man1))))))))
+    (native-inputs
+     `(("linux-pam" ,linux-pam)
+       ("scdoc" ,scdoc)))
+    (synopsis "minimal and flexible login manager daemon")
+    (description
+     "greetd is a minimal and flexible login manager daemon
+that makes no assumptions about what you want to launch.
 
+If you can run it from your shell in a TTY, greetd can start it.
+
+If it can be taught to speak a simple JSON-based IPC protocol,
+then it can be a greeter.")
+    (license license:gpl3+)))
+
+(define-public greetd-pam-mount
+  (package
+    (inherit pam-mount)
+    (name "greetd-pam-mount")
+    (arguments
+     (substitute-keyword-arguments (package-arguments pam-mount)
+       ((#:configure-flags flags ''())
+        #~(cons* "--with-rundir=/run/greetd" #$flags))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+           (add-after 'unpack 'patch-config-file-name
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "src/pam_mount.c"
+                 ((".*define CONFIGFILE .*$")
+                  "#define CONFIGFILE \"/etc/security/greetd_pam_mount.conf.xml\"\n")
+                 (("pam_mount_config") "greetd_pam_mount_config")
+                 (("pam_mount_system_authtok") "greetd_pam_mount_system_authtok"))))))))
+    (synopsis "pam-mount specifically compiled for use with greetd")
+    (description
+     "Pam-mount is a PAM module that can mount volumes when a user logs in.
+It supports mounting local filesystems of any kind the normal mount utility
+supports.  It can also mount encrypted LUKS volumes using the password
+supplied by the user when logging in.
+
+This package inherits pam-mount in the way that it is compiled specifically
+for use with greetd daemon. It uses different configuration location and
+name space for storing data in PAM.
+
+greetd-pam-mount is used in configuration of greetd to provide
+auto-(mounting/unmounting) of XDG_RUNTIME_DIR in the way that it will not
+interfere with default pam-mount configuration.")))
+
+(define-public libseat
+  (package
+    (name "libseat")
+    (version "0.7.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~kennylevinsen/seatd")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "10f8387yy5as547xjjhl0cna6iywdgjmw0iq2nvcs8q6vlpnik4v"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:configure-flags '("-Dlibseat-logind=elogind"
+                           "-Dserver=disabled")))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)))
+    (propagated-inputs
+     `(("elogind" ,elogind)))
+    (home-page "https://sr.ht/~kennylevinsen/seatd")
+    (synopsis "Seat management library")
+    (description
+     "This package provides a universal seat management library that
+allows applications to use whatever seat management is available.")
+    (license license:expat)))
+
+(define-public seatd
+  (package
+    (inherit libseat)
+    (name "seatd")
+    (arguments
+     `(#:configure-flags '("-Dlibseat-logind=elogind")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'remove-libs
+           (lambda* (#:key outputs #:allow-other-keys)
+             (with-directory-excursion (assoc-ref outputs "out")
+               (for-each delete-file-recursively '("lib" "include"))))))))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)
+       ("scdoc" ,scdoc)))
+    (inputs '())
+    (synopsis "Seat management daemon")
+    (description
+     "This package provides a minimal seat management daemon whose task is to
+mediate access to shared devices, such as graphics and input, for applications
+that require it.")
+    (license license:expat)))

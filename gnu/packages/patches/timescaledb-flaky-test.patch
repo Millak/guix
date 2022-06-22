@@ -1,0 +1,107 @@
+Use fixed dates in test for consistent results.
+
+Taken from upstream:
+
+  https://github.com/timescale/timescaledb/commit/1d0670e703862b284c241ab797404f851b25b5df
+
+diff --git a/test/expected/copy-12.out b/test/expected/copy-12.out
+index 5cb28a45a2..37abf6f6ff 100644
+--- a/test/expected/copy-12.out
++++ b/test/expected/copy-12.out
+@@ -324,13 +324,12 @@ INSERT INTO hyper_copy_large
+ SELECT time,
+ random() AS value
+ FROM
+-generate_series(now() - INTERVAL '1 months', now() - INTERVAL '1 day',
+-  INTERVAL '1 hour') AS g1(time)
++generate_series('2022-01-01', '2022-01-31', INTERVAL '1 hour') AS g1(time)
+ ORDER BY time;
+ SELECT COUNT(*) FROM hyper_copy_large;
+  count 
+ -------
+-   697
++   721
+ (1 row)
+ 
+ -- Migrate data to chunks by using copy
+@@ -345,7 +344,7 @@ NOTICE:  migrating data to chunks
+ SELECT COUNT(*) FROM hyper_copy_large;
+  count 
+ -------
+-   697
++   721
+ (1 row)
+ 
+ ----------------------------------------------------------------
+diff --git a/test/expected/copy-13.out b/test/expected/copy-13.out
+index 02bf913eff..89e16fe8e2 100644
+--- a/test/expected/copy-13.out
++++ b/test/expected/copy-13.out
+@@ -324,13 +324,12 @@ INSERT INTO hyper_copy_large
+ SELECT time,
+ random() AS value
+ FROM
+-generate_series(now() - INTERVAL '1 months', now() - INTERVAL '1 day',
+-  INTERVAL '1 hour') AS g1(time)
++generate_series('2022-01-01', '2022-01-31', INTERVAL '1 hour') AS g1(time)
+ ORDER BY time;
+ SELECT COUNT(*) FROM hyper_copy_large;
+  count 
+ -------
+-   697
++   721
+ (1 row)
+ 
+ -- Migrate data to chunks by using copy
+@@ -345,7 +344,7 @@ NOTICE:  migrating data to chunks
+ SELECT COUNT(*) FROM hyper_copy_large;
+  count 
+ -------
+-   697
++   721
+ (1 row)
+ 
+ ----------------------------------------------------------------
+diff --git a/test/expected/copy-14.out b/test/expected/copy-14.out
+index 02bf913eff..89e16fe8e2 100644
+--- a/test/expected/copy-14.out
++++ b/test/expected/copy-14.out
+@@ -324,13 +324,12 @@ INSERT INTO hyper_copy_large
+ SELECT time,
+ random() AS value
+ FROM
+-generate_series(now() - INTERVAL '1 months', now() - INTERVAL '1 day',
+-  INTERVAL '1 hour') AS g1(time)
++generate_series('2022-01-01', '2022-01-31', INTERVAL '1 hour') AS g1(time)
+ ORDER BY time;
+ SELECT COUNT(*) FROM hyper_copy_large;
+  count 
+ -------
+-   697
++   721
+ (1 row)
+ 
+ -- Migrate data to chunks by using copy
+@@ -345,7 +344,7 @@ NOTICE:  migrating data to chunks
+ SELECT COUNT(*) FROM hyper_copy_large;
+  count 
+ -------
+-   697
++   721
+ (1 row)
+ 
+ ----------------------------------------------------------------
+diff --git a/test/sql/copy.sql.in b/test/sql/copy.sql.in
+index 91402c2ab8..bba4265064 100644
+--- a/test/sql/copy.sql.in
++++ b/test/sql/copy.sql.in
+@@ -276,8 +276,7 @@ INSERT INTO hyper_copy_large
+ SELECT time,
+ random() AS value
+ FROM
+-generate_series(now() - INTERVAL '1 months', now() - INTERVAL '1 day',
+-  INTERVAL '1 hour') AS g1(time)
++generate_series('2022-01-01', '2022-01-31', INTERVAL '1 hour') AS g1(time)
+ ORDER BY time;
+ 
+ SELECT COUNT(*) FROM hyper_copy_large;

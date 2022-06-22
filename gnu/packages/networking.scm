@@ -49,6 +49,7 @@
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Simon South <simon@simonsouth.net>
 ;;; Copyright © 2022 Pierre Langlois <pierre.langlois@gmx.com>
+;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -114,6 +115,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libidn)
+  #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages kerberos)
@@ -129,6 +131,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages polkit)
   #:use-module (gnu packages pretty-print)
+  #:use-module (gnu packages protobuf)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-crypto)
@@ -546,6 +549,54 @@ It also includes some SCTP-related helper utilities.")
     (description "@code{pysctp} implements the SCTP socket API.  You need a
 SCTP-aware kernel (most are).")
     (license license:lgpl2.1+)))
+
+(define-public kismet
+  (package
+    (name "kismet")
+    (version "2022-02")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://www.kismetwireless.net/git/kismet.git")
+                    (commit (string-append "kismet-" version "-R1"))))
+              (file-name (git-file-name name version))
+              (patches (search-patches "kismet-unbundle-boost.patch"))
+              (modules '((guix build utils)))
+              (snippet '(begin
+                          ;; Drop bundled libraries.
+                          (delete-file-recursively "boost")))
+              (sha256
+               (base32
+                "01q86hrgpai433sc65dlnqy91qd26w5dwyp37adszqxfb6d2an1r"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f ;no test suite
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-install
+                 (lambda* _
+                   (substitute* "Makefile.in"
+                     (("-o \\$\\(INSTUSR\\) -g \\$\\(SUIDGROUP\\)") "")
+                     (("-o \\$\\(INSTUSR\\) -g \\$\\(INSTGRP\\)") "")))))))
+    (home-page "https://www.kismetwireless.net/")
+    (native-inputs (list perl pkg-config python python-2))
+    (inputs (list boost
+                  libusb
+                  libpcap
+                  libwebsockets
+                  openssl
+                  protobuf
+                  protobuf-c
+                  sqlite
+                  zlib))
+    (synopsis "Wireless network and device detector")
+    (description
+     "This package provides a wireless network and device detector, sniffer,
+wardriving tool, and WIDS (wireless intrusion detection) framework.  Kismet
+works with Wi-Fi interfaces, Bluetooth interfaces, some SDR
+(software defined radio) hardware like the RTLSDR, and other specialized
+capture hardware")
+    (license license:gpl2+)))
 
 (define-public knockd
   (package
@@ -2772,6 +2823,12 @@ updates to the zebra daemon.")
          #:tests? #f ; No test suite.
          #:phases
          (modify-phases %standard-phases
+           (add-after 'unpack 'use-source-date-epoch-in-manpages
+             ;; For reproducible builds
+             (lambda _
+               (substitute* "Makefile"
+                 (("date --iso-8601")
+                  "date --iso-8601 --utc --date=@$(SOURCE_DATE_EPOCH)"))))
            (delete 'configure) ; No ./configure script.
            (add-before 'build 'patch-paths
              (lambda _
@@ -3221,7 +3278,7 @@ Ethernet and TAP interfaces is supported.  Packet capture is also supported.")
 (define-public hcxtools
   (package
     (name "hcxtools")
-    (version "5.2.0")
+    (version "6.2.7")
     (source
      (origin
        (method git-fetch)
@@ -3229,19 +3286,22 @@ Ethernet and TAP interfaces is supported.  Packet capture is also supported.")
              (url "https://github.com/ZerBea/hcxtools")
              (commit version)))
        (sha256
-        (base32 "0k2qlq9hz5zc21nyc6yrnfqzga7hydn5mm0x3rpl2fhkwl81lxcn"))
+        (base32 "0460dxbc04w60l3g06rk007yyb6qprgyii59y2zdki0vy7q63m8b"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
-    (inputs
-     (list curl libpcap openssl zlib))
+    (native-inputs (list pkg-config))
+    (inputs (list curl libpcap openssl zlib))
     (arguments
-     `(#:make-flags
-       (list ,(string-append "CC=" (cc-for-target))
-             (string-append "INSTALLDIR=" (assoc-ref %outputs "out") "/bin"))
-       #:tests? #f                      ; no test suite
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))
+     (list #:make-flags
+           #~(list (string-append "CC="
+                                  #$(cc-for-target)) "LDFLAGS+=-lcrypto"
+                   "LDFLAGS+=-lcurl" "LDFLAGS+=-lz"
+                   (string-append "PREFIX="
+                                  #$output))
+           #:tests? #f                            ;no test suite
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))))
     (home-page "https://github.com/ZerBea/hcxtools")
     (synopsis "Capture wlan traffic to hashcat and John the Ripper")
     (description
@@ -3359,7 +3419,7 @@ communication over HTTP.")
 (define-public restinio
   (package
     (name "restinio")
-    (version "0.6.14")
+    (version "0.6.15")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3368,7 +3428,7 @@ communication over HTTP.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0j44mglsljwkw49583hcsrl5ck2g56n9srnm10kpbsz2dx5apx98"))))
+                "1f8d5nfm8jqhspzsslwb1b7j4glipz31i9vszrcnkx3clc39nj2n"))))
     (build-system cmake-build-system)
     (inputs                             ; TODO: Need to force-keep references on some inputs, e.g. boost.
      (list zlib

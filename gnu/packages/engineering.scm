@@ -1840,7 +1840,8 @@ an embedded event driven algorithm.")
     (arguments
      (substitute-keyword-arguments (package-arguments libngspice)
        ((#:configure-flags flags)
-        `(delete "--with-ngshared" ,flags))
+        `(cons "--with-readline=yes"
+               (delete "--with-ngshared" ,flags)))
        ((#:phases phases)
         `(modify-phases ,phases
            (add-after 'unpack 'delete-include-files
@@ -2430,111 +2431,106 @@ OpenSCAD code.  It supports syntax highlighting, indenting and refilling of
 comments.")))
 
 (define-public freecad
-  ;; FIXME: We use a commit directly because upstream has compatibility fixes
-  ;; that are not in a release yet for boost, opencascade-occt-7.6 and vtk-9.
-  ;; Switch back to a regular version (probably 0.20) when it is released.
-  (let ((commit "09a05a9cd0c4692a57a3e038268b4389b4657fc6")
-        (revision "0"))
-    (package
-      (name "freecad")
-      (version (git-version "0.19.3" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/FreeCAD/FreeCAD")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0818basym0n44dsgix0yv1l00xgv9igrr7wkszd8x74lh1rr591r"))))
-      (build-system qt-build-system)
-      (native-inputs
-       (list doxygen
-             graphviz
-             qttools
-             pkg-config
-             python-pyside-2-tools
-             swig))
-      (inputs
-       (list boost
-             coin3D
-             double-conversion
-             eigen
-             fontconfig
-             freetype
-             gl2ps
-             glew
-             hdf5-1.10
-             jsoncpp
-             libarea
-             libjpeg-turbo
-             libmedfile
-             libspnav
-             libtheora
-             libtiff
-             libxi
-             libxml++
-             libxmu
-             lz4
-             netcdf
-             opencascade-occt
-             openmpi
-             proj
-             python-gitpython
-             python-matplotlib
-             python-pivy
-             python-ply
-             python-pyside-2
-             python-pyyaml
-             python-shiboken-2
-             python-wrapper
-             qtbase-5
-             qtdeclarative
-             qtsvg
-             qtwebchannel
-             qtwebengine
-             qtx11extras
-             qtxmlpatterns
-             sqlite
-             tbb-2020 ; Same version as opencascade-occt
-             vtk
-             xerces-c
-             zlib))
-      (arguments
-       `(#:tests? #f          ; Project has no tests
-         #:configure-flags
-         ,#~(list
-             "-DBUILD_QT5=ON"
-             "-DBUILD_FLAT_MESH:BOOL=ON"
-             "-DBUILD_ENABLE_CXX_STD:STRING=C++17"
-             (string-append "-DCMAKE_INSTALL_LIBDIR=" #$output "/lib"))
-         #:phases
-         (modify-phases %standard-phases
-           (add-before 'configure 'restore-pythonpath
-             (lambda _
-               (substitute* "src/Main/MainGui.cpp"
-                 (("_?putenv\\(\"PYTHONPATH=\"\\);") ""))))
-           (add-after 'install 'wrap-pythonpath
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out")))
-                 (wrap-program (string-append out "/bin/FreeCAD")
-                   (list "GUIX_PYTHONPATH"
-                         'prefix (list (getenv "GUIX_PYTHONPATH"))))))))))
-      (home-page "https://www.freecadweb.org/")
-      (synopsis "Your Own 3D Parametric Modeler")
-      (description
-       "FreeCAD is a general purpose feature-based, parametric 3D modeler for
+  (package
+    (name "freecad")
+    (version "0.20")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/FreeCAD/FreeCAD")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14bn75bjh93f8k3hinqw913z1q0ywq7niklwbbd99hf5n342hsv4"))))
+    (build-system qt-build-system)
+    (native-inputs
+     (list doxygen
+           graphviz
+           qttools
+           pkg-config
+           python-pyside-2-tools
+           swig))
+    (inputs
+     (list boost
+           coin3D
+           double-conversion
+           eigen
+           fontconfig
+           freetype
+           gl2ps
+           glew
+           hdf5-1.10
+           jsoncpp
+           libarea
+           libjpeg-turbo
+           libmedfile
+           libspnav
+           libtheora
+           libtiff
+           libxi
+           libxml++
+           libxmu
+           lz4
+           netcdf
+           opencascade-occt
+           openmpi
+           proj
+           python-gitpython
+           python-matplotlib
+           python-pivy
+           python-ply
+           python-pyside-2
+           python-pyyaml
+           python-shiboken-2
+           python-wrapper
+           qtbase-5
+           qtdeclarative
+           qtsvg
+           qtwebchannel
+           qtwebengine
+           qtx11extras
+           qtxmlpatterns
+           sqlite
+           tbb-2020                     ; Same version as opencascade-occt
+           vtk
+           xerces-c
+           zlib))
+    (arguments
+     `(#:tests? #f                      ; Project has no tests
+       #:configure-flags
+       ,#~(list
+           "-DBUILD_QT5=ON"
+           "-DBUILD_FLAT_MESH:BOOL=ON"
+           "-DBUILD_ENABLE_CXX_STD:STRING=C++17"
+           (string-append "-DCMAKE_INSTALL_LIBDIR=" #$output "/lib"))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'restore-pythonpath
+           (lambda _
+             (substitute* "src/Main/MainGui.cpp"
+               (("_?putenv\\(\"PYTHONPATH=\"\\);") ""))))
+         (add-after 'install 'wrap-pythonpath
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (wrap-program (string-append out "/bin/FreeCAD")
+                 (list "GUIX_PYTHONPATH"
+                       'prefix (list (getenv "GUIX_PYTHONPATH"))))))))))
+    (home-page "https://www.freecadweb.org/")
+    (synopsis "Your Own 3D Parametric Modeler")
+    (description
+     "FreeCAD is a general purpose feature-based, parametric 3D modeler for
 CAD, MCAD, CAx, CAE and PLM, aimed directly at mechanical engineering and
 product design but also fits a wider range of uses in engineering, such as
 architecture or other engineering specialties.  It is 100% Open Source (LGPL2+
 license) and extremely modular, allowing for very advanced extension and
 customization.")
-      (license
-       (list
-        license:lgpl2.1+
-        license:lgpl2.0+
-        license:gpl3+
-        license:bsd-3)))))
+    (license
+     (list
+      license:lgpl2.1+
+      license:lgpl2.0+
+      license:gpl3+
+      license:bsd-3))))
 
 (define-public libmedfile
   (package
@@ -2740,21 +2736,19 @@ export filters.")
 (define-public meshlab
   (package
     (name "meshlab")
-    (version "2020.06")
+    (version "2022.02")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/cnr-isti-vclab/meshlab")
-                    (commit (string-append "Meshlab-" version))
+                    (commit (string-append "MeshLab-" version))
                     (recursive? #t)))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1cgx24wxh2ah5pff51rcrk6x8qcdjpkxcdak7s4cfzmxvjlshydd"))))
+               (base32 "0dkh9qw9z2160s6gjiv0a601kp6hvl66cplvi8rfc892zcykgiwd"))))
     (build-system cmake-build-system)
     (inputs
      (list qtbase-5
-           qtscript
-           qtxmlpatterns
            mesa
            glu
            glew
@@ -2764,34 +2758,29 @@ export filters.")
            libfreenect
            lib3ds
            openctm
-           ;; FIXME: Compilation fails with system qhull:
-           ;; https://github.com/cnr-isti-vclab/meshlab/issues/678
-           ;; ("qhull" ,qhull)
-           ))
+           qhull))
     (arguments
-     `(#:tests? #f                                ; Has no tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'go-to-source-dir
-           (lambda _ (chdir "src") #t))
-         (add-after 'install 'move-files
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((lib (string-append (assoc-ref outputs "out")
-                                       "/lib")))
-               (rename-file
-                (string-append lib "/meshlab/libmeshlab-common.so")
-                (string-append lib "/libmeshlab-common.so"))
-               #t))))))
+     (list #:tests? #f                  ; Has no tests
+           #:configure-flags
+           #~(list (string-append "-DCMAKE_MODULE_LINKER_FLAGS=-Wl,-rpath="
+                                  #$output "/lib/meshlab")
+                   (string-append "-DCMAKE_SHARED_LINKER_FLAGS=-Wl,-rpath="
+                                  #$output "/lib/meshlab")
+                   (string-append "-DCMAKE_EXE_LINKER_FLAGS=-Wl,-rpath="
+                                  #$output "/lib/meshlab"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'go-to-source-dir
+                 (lambda _ (chdir "src"))))))
     (synopsis "3D triangular mesh processing and editing software")
     (home-page "https://www.meshlab.net/")
-    (description "MeshLab is a system for the processing and
-editing of unstructured large 3D triangular meshes.  It is aimed to help the
-processing of the typical not-so-small unstructured models arising in 3D
-scanning, providing a set of tools for editing, cleaning, healing, inspecting,
-rendering and converting this kind of meshes.  These tools include MeshLab
-proper, a versatile program with a graphical user interface, and meshlabserver,
-a program that can perform mesh processing tasks in batch mode, without a
-GUI.")
+    (description "MeshLab is a system for the processing and editing of large,
+unstructured, 3D triangular meshes.  It is aimed to help the processing of the
+typical, not-so-small unstructured models arising in 3D scanning, providing a
+set of tools for editing, cleaning, healing, inspecting, rendering and
+converting this kind of meshes.  These tools include MeshLab proper, a
+versatile program with a graphical user interface, and @samp{meshlabserver}, a
+program that can perform mesh processing tasks in batch mode, without a GUI.")
     (license license:gpl3+)))
 
 (define-public poke

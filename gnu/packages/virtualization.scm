@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2017, 2020-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2016, 2017, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016, 2017, 2018. 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017 Ricardo Wurmus <rekado@elephly.net>
@@ -27,6 +27,7 @@
 ;;; Copyright © 2022 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2022 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1212,15 +1213,17 @@ It started as a side project of LXC but can be used by any run-time.")
                  (wrap-program (string-append bin-dir "lxd")
                    `("PATH" ":" prefix
                      ,(fold (lambda (input paths)
+                              ;; TODO: Use 'search-input-directory' rather
+                              ;; than look up inputs by name.
                               (let* ((in (assoc-ref inputs input))
                                      (bin (string-append in "/bin"))
                                      (sbin (string-append in "/sbin")))
                                 (append (filter file-exists?
                                                 (list bin sbin)) paths)))
                             '()
-                            '("bash" "acl" "rsync" "tar" "xz" "btrfs-progs"
+                            '("bash-minimal" "acl" "rsync" "tar" "xz" "btrfs-progs"
                               "gzip" "dnsmasq" "squashfs-tools" "iproute2"
-                              "criu" "iptables"))))
+                              "criu" "iptables" "attr"))))
                  ;; Remove unwanted binaries.
                  (for-each (lambda (prog)
                              (delete-file (string-append bin-dir prog)))
@@ -1239,24 +1242,25 @@ It started as a side project of LXC but can be used by any run-time.")
            ;; ("go-golang-org-x-lint" ,go-golang-org-x-lint)
            pkg-config))
     (inputs
-     `(("acl" ,acl)
-       ("eudev" ,eudev)
-       ("libdqlite" ,libdqlite)
-       ("libraft" ,libraft)
-       ("libcap" ,libcap)
-       ("lxc" ,lxc)
-       ;; Run-time dependencies.
-       ("bash" ,bash-minimal)
-       ("rsync" ,rsync)
-       ("tar" ,tar)
-       ("xz" ,xz)
-       ("btrfs-progs" ,btrfs-progs)
-       ("gzip" ,gzip)
-       ("dnsmasq" ,dnsmasq)
-       ("squashfs-tools" ,squashfs-tools)
-       ("iproute2" ,iproute)
-       ("criu" ,criu)
-       ("iptables" ,iptables)))
+     (list acl
+           eudev
+           libdqlite
+           libraft
+           libcap
+           lxc
+           ;; Run-time dependencies.
+           attr
+           bash-minimal
+           rsync
+           tar
+           xz
+           btrfs-progs
+           gzip
+           dnsmasq
+           squashfs-tools
+           iproute
+           criu
+           iptables))
     (synopsis "Daemon based on liblxc offering a REST API to manage containers")
     (home-page "https://linuxcontainers.org/lxd/")
     (description "LXD is a next generation system container manager.  It
@@ -2001,7 +2005,7 @@ virtual machines.")
 (define-public bubblewrap
   (package
     (name "bubblewrap")
-    (version "0.5.0")
+    (version "0.6.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/containers/bubblewrap/"
@@ -2009,7 +2013,7 @@ virtual machines.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0608l2sjwhnb1c0mslah1h6yjvqr17wk60by6i710qwxg4rszz8n"))
+                "10ij62jg7p2scwdx0pm141ss7p2gjdkbbymb56y8miib2vfcf2cn"))
                (patches (search-patches "bubblewrap-fix-locale-in-tests.patch"))))
     (build-system gnu-build-system)
     (arguments

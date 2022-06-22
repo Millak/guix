@@ -569,10 +569,12 @@ instead of 'C'."
                               (filter package? packages))))
                    ":"))
           (setenv "LIBRARY_PATH" #$(file-append gcc "/lib"))
+          (setenv "GUIX_LD_WRAPPER_DISABLE_RPATH" "1")
 
           (invoke "gcc" #$(local-file source) "-Wall" "-g0" "-O2"
                   "-I" #$(file-append guile "/include/guile/" effective)
                   "-L" #$(file-append guile "/lib")
+                  "-Wl,-rpath" #$(file-append guile "/lib")
                   #$(string-append "-lguile-" effective)
                   "-o" (string-append #$output "/bin/guile")))))
 

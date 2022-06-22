@@ -5,7 +5,7 @@
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2016, 2017, 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017, 2018 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
@@ -631,13 +631,13 @@ netcat implementation that supports TLS.")
   (package
     (name "python-acme")
     ;; Remember to update the hash of certbot when updating python-acme.
-    (version "1.18.0")
+    (version "1.28.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "acme" version))
               (sha256
                (base32
-                "1bv2swaqmzpcx2nq1nbhrc6b825d5sxkdv0al972sjfcpcqn1q4s"))))
+                "12fmw4g63pzbrmmrkk6hgg0k5px6jyx3scv9fmn60h21387jv0hz"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -651,8 +651,11 @@ netcat implementation that supports TLS.")
                     (man (string-append out "/share/man/man1"))
                     (info (string-append out "/info")))
                (install-file "docs/_build/texinfo/acme-python.info" info)
-               (install-file "docs/_build/man/acme-python.1" man)
-               #t))))))
+               (install-file "docs/_build/man/acme-python.1" man))))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-vv")))))))
     (native-inputs
      (list python-pytest
            ;; For documentation
@@ -661,7 +664,8 @@ netcat implementation that supports TLS.")
            python-sphinx-rtd-theme
            texinfo))
     (propagated-inputs
-     (list python-josepy
+     (list python-chardet
+           python-josepy
            python-requests
            python-requests-toolbelt
            python-pytz
@@ -685,7 +689,7 @@ netcat implementation that supports TLS.")
               (uri (pypi-uri "certbot" version))
               (sha256
                (base32
-                "0yr8sxfg5zspal04l9lpd9xis6gp8il20bhka54xr9bb4hc6xrgk"))))
+                "0p4cpakx1kc8lczlgxqryr2asnyrvw6p5wmkamkjqdsf3z7xhm2b"))))
     (build-system python-build-system)
     (arguments
      `(,@(substitute-keyword-arguments (package-arguments python-acme)
@@ -740,14 +744,14 @@ certificates for free.")
 (define-public perl-net-ssleay
   (package
     (name "perl-net-ssleay")
-    (version "1.88")
+    (version "1.92")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://cpan/authors/id/C/CH/CHRISN/"
                                   "Net-SSLeay-" version ".tar.gz"))
               (sha256
                (base32
-                "1pfgh4h3szcpvqlcimc60pjbk9zwls99x5863sva0wc47i4dl010"))))
+                "1acnjd5180dca26dmjq0b9ib0dbavlrzd6fnf4nidrzj02rz5hj7"))))
     (build-system perl-build-system)
     (inputs (list openssl))
     (arguments

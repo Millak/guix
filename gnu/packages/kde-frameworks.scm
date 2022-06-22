@@ -87,7 +87,7 @@
 (define-public extra-cmake-modules
   (package
     (name "extra-cmake-modules")
-    (version "5.70.0")
+    (version "5.91.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -96,7 +96,7 @@
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "10c5xs5shk0dcshpdxg564ay5y8hgmvfvmlhmhjf0dy79kcah3c3"))))
+                "0k65rvxh926ya6qahzk2ns7g1fya1429648mlx7iipxa61g8h5wp"))))
     (build-system cmake-build-system)
     (native-inputs
      ;; Add test dependency, except on armhf where building it is too
@@ -104,39 +104,55 @@
      (if (and (not (%current-target-system))
               (string=? (%current-system) "armhf-linux"))
          '()
-         `(("qtbase" ,qtbase-5))))                ;for tests (needs qmake)
+         (list qtbase-5)))               ;for tests (needs qmake)
     (arguments
-     `(#:tests? ,(and (not (%current-target-system))
-                      (not (null? (package-native-inputs this-package))))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-lib-path
-           (lambda _
-             ;; Always install into /lib and not into /lib64.
-             (substitute* "kde-modules/KDEInstallDirs.cmake"
-               (("\"lib64\"") "\"lib\"")
-               ;; TODO: Base the following on values taken from Qt
-               ;; Install plugins into lib/qt5/plugins
-               ;; TODO: Check if this is okay for Android, too
-               ;; (see comment in KDEInstallDirs.cmake)
-               (("_define_relative\\(QTPLUGINDIR \"\\$\\{_pluginsDirParent}\" \"plugins\"")
-                "_define_relative(QTPLUGINDIR \"${_pluginsDirParent}\" \"qt5/plugins\"")
-               ;; Install imports into lib/qt5/imports
-               (("_define_relative\\(QTQUICKIMPORTSDIR QTPLUGINDIR \"imports\"")
-                "_define_relative(QTQUICKIMPORTSDIR LIBDIR \"qt5/imports\"")
-               ;; Install qml-files into lib/qt5/qml
-               (("_define_relative\\(QMLDIR LIBDIR \"qml\"")
-                "_define_relative(QMLDIR LIBDIR \"qt5/qml\""))
-             (substitute* "modules/ECMGeneratePriFile.cmake"
-               ;; Install pri-files into lib/qt5/mkspecs
-               (("set\\(ECM_MKSPECS_INSTALL_DIR mkspecs/modules")
-                "set(ECM_MKSPECS_INSTALL_DIR lib/qt5/mkspecs/modules"))
-             #t))
-         ;; install and check phase are swapped to prevent install from failing
-         ;; after testsuire has run
-         (add-after 'install 'check-post-install
-           (assoc-ref %standard-phases 'check))
-         (delete 'check))))
+     (list
+      #:tests? (and (not (%current-target-system))
+                    (not (null? (package-native-inputs this-package))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-lib-path
+            (lambda _
+              ;; Always install into /lib and not into /lib64.
+              (substitute* "kde-modules/KDEInstallDirsCommon.cmake"
+                (("\"lib64\"") "\"lib\""))
+
+              ;; Determine the install path by the major version of Qt.
+              ;; TODO: Base the following on values taken from Qt
+              ;; Install plugins into lib/qt5/plugins
+              ;; TODO: Check if this is okay for Android, too
+              ;; (see comment in KDEInstallDirs.cmake)
+              (substitute* '("kde-modules/KDEInstallDirs5.cmake"
+                             "kde-modules/KDEInstallDirs6.cmake")
+                ;; Fix the installation path of Qt plugins.
+                (("_define_relative\\(QTPLUGINDIR \"\\$\\{_pluginsDirParent}\" \"plugins\"")
+                 "_define_relative(QTPLUGINDIR \"${_pluginsDirParent}\" \"qt${QT_MAJOR_VERSION}/plugins\"")
+                ;; Fix the installation path of QML files.
+                (("_define_relative\\(QMLDIR LIBDIR \"qml\"")
+                 "_define_relative(QMLDIR LIBDIR \"qt${QT_MAJOR_VERSION}/qml\""))
+
+              ;; Qt Quick Control 1 is no longer available in Qt 6.
+              (substitute* '("kde-modules/KDEInstallDirs5.cmake")
+                (("_define_relative\\(QTQUICKIMPORTSDIR QTPLUGINDIR \"imports\"")
+                 "_define_relative(QTQUICKIMPORTSDIR LIBDIR \"qt5/imports\""))
+
+              (substitute* "modules/ECMGeneratePriFile.cmake"
+                ;; Install pri-files into lib/qt${QT_MAJOR_VERSION}/mkspecs
+                (("set\\(ECM_MKSPECS_INSTALL_DIR mkspecs/modules")
+                 "set(ECM_MKSPECS_INSTALL_DIR lib/qt${QT_MAJOR_VERSION}/mkspecs/modules"))))
+          ;; Work around for the failed test KDEFetchTranslations.
+          ;; It complains that the cmake project name is not
+          ;; "frameworks/extra-cmake-modules".
+          ;; TODO: Fix it upstream.
+          (add-after 'unpack 'fix-test
+            (lambda _
+              (substitute* "tests/KDEFetchTranslations/CMakeLists.txt"
+                (("frameworks/extra-cmake-modules") "extra-cmake-modules"))))
+          ;; install and check phase are swapped to prevent install from failing
+          ;; after testsuire has run
+          (add-after 'install 'check-post-install
+            (assoc-ref %standard-phases 'check))
+          (delete 'check))))
     ;; optional dependencies - to save space, we do not add these inputs.
     ;; Sphinx > 1.2:
     ;;   Required to build Extra CMake Modules documentation in Qt Help format.

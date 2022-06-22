@@ -76,14 +76,14 @@
 (define-public dos2unix
   (package
     (name "dos2unix")
-    (version "7.4.2")
+    (version "7.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://waterlan.home.xs4all.nl/dos2unix/"
                            "dos2unix-" version ".tar.gz"))
        (sha256
-        (base32 "00dfsf4rfyjb5j12gan8xjiirm0asshdz6dmd3l34a7ays6wadb0"))))
+        (base32 "0wnacvz99rnlx0ayf5jrxwljvh801r8k1ai3hj137yfsaqcv93dn"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags

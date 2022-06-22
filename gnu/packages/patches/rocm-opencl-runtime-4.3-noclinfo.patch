@@ -4,25 +4,26 @@ diff --git a/CMakeLists.txt.orig b/CMakeLists.txt
 index 76847d3..3f62bfe 100644
 --- a/CMakeLists.txt.orig
 +++ b/CMakeLists.txt
-@@ -72,7 +72,7 @@ find_package(ROCclr REQUIRED CONFIG
+@@ -15,9 +15,9 @@ option(FILE_REORG_BACKWARD_COMPATIBILITY "Enable File Reorganization backward co
  
- add_subdirectory(khronos/icd)
+ 
+ set(OPENCL_ICD_LOADER_HEADERS_DIR "${CMAKE_CURRENT_LIST_DIR}/khronos/headers/opencl2.2" CACHE PATH "")
+ #add_subdirectory(khronos/icd)
  add_subdirectory(amdocl)
 -add_subdirectory(tools/clinfo)
 +#add_subdirectory(tools/clinfo)
  add_subdirectory(tools/cltrace)
  if(BUILD_TESTS)
    add_subdirectory(tests/ocltst)
-@@ -108,9 +108,9 @@ endif()
- ###--- Packaging ------------------------------------------------------------###
+diff --git a/packaging/CMakeLists.txt b/packaging/CMakeLists.txt
+index 48353eb..cd1e7c1 100644
+--- a/packaging/CMakeLists.txt
++++ b/packaging/CMakeLists.txt
+@@ -5,6 +5,6 @@ set(CPACK_COMPONENTS_ALL binary dev icd)
+ set(CPACK_DEB_COMPONENT_INSTALL ON)
+ set(CPACK_RPM_COMPONENT_INSTALL ON)
  
- # MAIN package
--install(PROGRAMS $<TARGET_FILE:clinfo>
--        DESTINATION bin
--        COMPONENT MAIN)
-+#install(PROGRAMS $<TARGET_FILE:clinfo>
-+#        DESTINATION bin
-+#        COMPONENT MAIN)
- install(PROGRAMS $<TARGET_FILE:cltrace>
-         DESTINATION lib
-         COMPONENT MAIN)
+-install(TARGETS clinfo DESTINATION bin COMPONENT binary)
++#install(TARGETS clinfo DESTINATION bin COMPONENT binary)
+ install(TARGETS amdocl DESTINATION lib COMPONENT binary)
+ install(FILES ${CMAKE_SOURCE_DIR}/LICENSE.txt DESTINATION share/doc/${CMAKE_PROJECT_NAME} COMPONENT binary)

@@ -15,7 +15,7 @@
 ;;; Copyright © 2019, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
-;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -35,9 +35,11 @@
 
 (define-module (gnu packages ssh)
   #:use-module (gnu packages)
+  #:use-module (gnu packages admin)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages elf)
@@ -506,7 +508,7 @@ responsive, especially over Wi-Fi, cellular, and long-distance links.")
 (define-public dropbear
   (package
     (name "dropbear")
-    (version "2020.81")
+    (version "2022.82")
     (source
      (origin
        (method url-fetch)
@@ -514,21 +516,34 @@ responsive, especially over Wi-Fi, cellular, and long-distance links.")
              "https://matt.ucc.asn.au/dropbear/releases/"
              "dropbear-" version ".tar.bz2"))
        (sha256
-        (base32 "0fy5ma4cfc2pk25mcccc67b2mf1rnb2c06ilb7ddnxbpnc85s8s8"))
+        (base32 "1lbmmmm8f56p24c6jq74rg2kw6kl3w4i5h10vnxjigq2phmqs0rs"))
        (modules '((guix build utils)))
        (snippet
         '(begin
            (delete-file-recursively "libtommath")
            (delete-file-recursively "libtomcrypt")
            (substitute* "configure"
-             (("-ltomcrypt") "-ltomcrypt -ltommath"))
-           #t))))
+             (("-ltomcrypt") "-ltomcrypt -ltommath"))))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags '("--disable-bundled-libtom")
-       #:tests? #f))    ; there is no "make check" or anything similar
-    (inputs
-     (list libtomcrypt libtommath zlib))
+     (list
+      #:configure-flags #~(list "--disable-bundled-libtom")
+      ;; The test suite runs an instance of dropbear, which requires a
+      ;; resolver ("Error resolving: Servname not supported for ai_socktype").
+      #:tests? #f
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'enable-x11-forwarding
+                     (lambda _
+                       ;; The following patch was retrieved from:
+                       ;; https://github.com/mkj/dropbear/commit/
+                       ;; 0292aacdf0aa57d03f2a3ab7e53cf650e6f29389.
+                       (substitute* "svr-x11fwd.c"
+                         (("DROPBEAR_CHANNEL_PRIO_INTERACTIVE")
+                          "DROPBEAR_PRIO_LOWDELAY"))
+                       (substitute* "default_options.h"
+                         (("#define DROPBEAR_X11FWD 0")
+                          "#define DROPBEAR_X11FWD 1")))))))
+    (inputs (list libtomcrypt libtommath zlib))
     (synopsis "Small SSH server and client")
     (description "Dropbear is a relatively small SSH server and
 client.  It runs on a variety of POSIX-based platforms.  Dropbear is
@@ -785,31 +800,38 @@ shell services and remote host selection.")
 (define-public python-asyncssh
   (package
     (name "python-asyncssh")
-    (version "2.7.1")
+    (version "2.11.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asyncssh" version))
        (sha256
         (base32
-         "0lnhh2h1mj79j66ni883s9f3xldnbjb10vh80g24b7m003mm524c"))))
+         "0mkvyv2fmbdfnfdh7g2im0gxnp8hwxv5g1xdazfsipd9ggknrhsr"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-cryptography python-pyopenssl python-gssapi
-           python-bcrypt))
+           python-bcrypt python-typing-extensions))
     (native-inputs
-     (list openssh openssl))
+     (list openssh openssl python-fido2 python-aiofiles netcat
+           python-pytest))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'disable-tests
            (lambda* _
+             (substitute* "tests/test_connection.py"
+               ;; nc is always available.
+               (("which nc") "true"))
              (substitute* "tests/test_agent.py"
                ;; TODO Test fails for unknown reason
                (("(.+)async def test_confirm" all indent)
                 (string-append indent "@unittest.skip('disabled by guix')\n"
-                               indent "async def test_confirm")))
-             #t)))))
+                               indent "async def test_confirm")))))
+         (replace 'check
+           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-vv")))))))
     (home-page "https://asyncssh.readthedocs.io/")
     (synopsis "Asynchronous SSHv2 client and server library for Python")
     (description

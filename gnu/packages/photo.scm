@@ -582,7 +582,7 @@ and enhance them.")
 (define-public photoflare
   (package
     (name "photoflare")
-    (version "1.6.9")
+    (version "1.6.10")
     (source
      (origin
        (method git-fetch)
@@ -591,7 +591,7 @@ and enhance them.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "121fhbggsh6jhrr7m41f27fd34ql7libdr2v0ig5bj6nc2ddwd40"))))
+        (base32 "1sm4m9nga1lyqycgqbh08cib5dg4fnrz9qkrliycr3dbisy360lm"))))
     (build-system gnu-build-system)
     (arguments
      '(#:tests? #f                      ;no tests

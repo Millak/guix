@@ -3401,7 +3401,7 @@ is a library for creating graphical user interfaces.")
 (define-public sbcl-cl-webkit
   (package
     (name "sbcl-cl-webkit")
-    (version "3.5.1")
+    (version "3.5.3")
     (source
      (origin
        (method git-fetch)
@@ -3411,7 +3411,7 @@ is a library for creating graphical user interfaces.")
        (file-name (git-file-name "cl-webkit" version))
        (sha256
         (base32
-         "1zfqwr6vmdd9a2nx3j3ihf8y9sah354wi2rgpq7dy4dkc6wxxd48"))))
+         "076lqj8ns9s7z980g3p2llw3k6hgsqnsvw8vjjslbpas2jzf26nr"))))
     (build-system asdf-build-system/sbcl)
     (inputs
      `(("cffi" ,sbcl-cffi)
@@ -4457,7 +4457,7 @@ addition, removal, and random selection.")
 (define-public sbcl-quri
   (package
     (name "sbcl-quri")
-    (version "0.4.0")
+    (version "0.5.0")
     (source
      (origin
        (method git-fetch)
@@ -4466,7 +4466,7 @@ addition, removal, and random selection.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ka5haq3g72hvaz4hdv7y1d6df9ncmx029wwixn4r413gll5yxy7"))))
+        (base32 "0zpwjhs2zz9832wsjs00kbkjjl4bcs96krlnq9y75gi4f34fxj1x"))))
     (build-system asdf-build-system/sbcl)
     (arguments
      ;; Test system must be loaded before, otherwise tests fail with:
@@ -4481,7 +4481,7 @@ addition, removal, and random selection.")
     (synopsis "Yet another URI library for Common Lisp")
     (description
      "QURI (pronounced \"Q-ree\") is yet another URI library for Common
-Lisp. It is intended to be a replacement of PURI.")
+Lisp.  It is intended to be a replacement of PURI.")
     (license license:bsd-3)))
 
 (define-public cl-quri
@@ -6056,12 +6056,12 @@ cookie headers, cookie creation, cookie jar creation and more.")
   (sbcl-package->ecl-package sbcl-cl-cookie))
 
 (define-public sbcl-dexador
-  (let ((commit "953090f04c4d1a9ee6632b90133cdc297b68badc")
+  (let ((commit "74a233edb0ebf2b8c696fb8db984ac568fbcc4e5")
         (revision "1"))
     (package
       (name "sbcl-dexador")
       (build-system asdf-build-system/sbcl)
-      (version "0.9.14" )
+      (version (git-version "0.9.15" revision commit))
       (home-page "https://github.com/fukamachi/dexador")
       (source
        (origin
@@ -6069,36 +6069,35 @@ cookie headers, cookie creation, cookie jar creation and more.")
          (uri (git-reference
                (url home-page)
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-dexador" version))
          (sha256
-          (base32
-           "0w18fz3301rpmwc3kwb810czcd24mbf7r1z8vdyc0v5crjfpw3mn"))))
+          (base32 "14cbykd9j8klm8sz3siq5zk78a0ljd6rdwfq12fi4h1ih50apyfi"))))
       (inputs
-       `(("trivial-gray-streams" ,sbcl-trivial-gray-streams)
-         ("babel" ,sbcl-babel)
-         ("usocket" ,sbcl-usocket)
-         ("fast-http" ,sbcl-fast-http)
-         ("quri" ,sbcl-quri)
-         ("fast-io" ,sbcl-fast-io)
-         ("chunga" ,sbcl-chunga)
-         ("cl-ppcre" ,sbcl-cl-ppcre)
-         ("cl-cookie" ,sbcl-cl-cookie)
-         ("trivial-mimes" ,sbcl-trivial-mimes)
-         ("chipz" ,sbcl-chipz)
-         ("cl-base64" ,sbcl-cl-base64)
-         ("cl-reexport" ,sbcl-cl-reexport)
-         ("cl+ssl" ,sbcl-cl+ssl)
-         ("bordeaux-threads" ,sbcl-bordeaux-threads)
-         ("alexandria" ,sbcl-alexandria)))
+       (list sbcl-alexandria
+             sbcl-babel
+             sbcl-bordeaux-threads
+             sbcl-chipz
+             sbcl-chunga
+             sbcl-cl+ssl
+             sbcl-cl-base64
+             sbcl-cl-cookie
+             sbcl-cl-ppcre
+             sbcl-cl-reexport
+             sbcl-fast-http
+             sbcl-fast-io
+             sbcl-quri
+             sbcl-trivial-gray-streams
+             sbcl-trivial-mimes
+             sbcl-usocket))
       (native-inputs
-       `(("prove" ,sbcl-prove)
-         ("lack" ,sbcl-lack)
-         ("clack" ,sbcl-clack)
-         ("babel" ,sbcl-babel)
-         ("alexandria" ,sbcl-alexandria)
-         ("cl-ppcre" ,sbcl-cl-ppcre)
-         ("local-time" ,sbcl-local-time)
-         ("trivial-features" ,sbcl-trivial-features)))
+       (list sbcl-alexandria
+             sbcl-babel
+             sbcl-cl-ppcre
+             sbcl-clack
+             sbcl-lack
+             sbcl-local-time
+             sbcl-prove
+             sbcl-trivial-features))
       (arguments
        ;; TODO: Circular dependency: tests depend on clack-test which depends on dexador.
        `(#:tests? #f
@@ -6241,6 +6240,42 @@ can and/or provide reasonable defaults.")
 
 (define-public ecl-introspect-environment
   (sbcl-package->ecl-package sbcl-introspect-environment))
+
+(define-public sbcl-compiler-macro
+  (let ((commit "7796bda64aec5af3ca175170ad3565167868789c")
+        (revision "0"))
+    (package
+      (name "sbcl-compiler-macro")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Bike/compiler-macro")
+               (commit commit)))
+         (file-name (git-file-name "cl-compiler-macro" version))
+         (sha256
+          (base32 "13sswps7s0qy6939mvj8q57hkx0qkga6rl6xjhjr7pk7by0xdsjq"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-fiveam))
+      (inputs
+       (list sbcl-introspect-environment))
+      (home-page "https://github.com/Bike/compiler-macro")
+      (synopsis "Common Lisp compiler macro utilities")
+      (description "This library is a collection of utilities for writing
+compiler macros.  It is intended to make it possible to make compiler macros
+much more useful, by granting them access to lexical type information, making
+the protocol for declining expansion more convenient, and establishing some
+information for signaling optimization advice to programmers.  Some utilities
+to support this, especially for reasoning on types, are also included.")
+      (license license:cc0))))
+
+(define-public cl-compiler-macro
+  (sbcl-package->cl-source-package sbcl-compiler-macro))
+
+(define-public ecl-compiler-macro
+  (sbcl-package->ecl-package sbcl-compiler-macro))
 
 (define-public sbcl-type-i
   (let ((commit "d34440ab4ebf5a46a58deccb35950b15670e3667")
@@ -7504,8 +7539,8 @@ implementation specific equivalent.")
   (sbcl-package->ecl-package sbcl-trivial-macroexpand-all))
 
 (define-public sbcl-serapeum
-  (let ((commit "c29a52ff0c5f6e60b09919c3a0daa8df7599ddb9")
-        (revision "6"))
+  (let ((commit "d2150c6fb75c16f2ee0abd145a1089d0019e7f7e")
+        (revision "7"))
     (package
       (name "sbcl-serapeum")
       (version (git-version "0.0.0" revision commit))
@@ -7518,34 +7553,34 @@ implementation specific equivalent.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0vij9jhji09way1rpd0r5sgjnh5amm3f2ymppnqkw0c6nnk2p0kd"))))
+          (base32 "1czs771nyqz45ndd09iiva2swvazy1b2z0k6h4qqdd839vnjcs06"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("trivia" ,sbcl-trivia)
-         ("split-sequence" ,sbcl-split-sequence)
-         ("string-case" ,sbcl-string-case)
-         ("parse-number" ,sbcl-parse-number)
-         ("trivial-garbage" ,sbcl-trivial-garbage)
-         ("bordeaux-threads" ,sbcl-bordeaux-threads)
-         ("named-readtables" ,sbcl-named-readtables)
-         ("fare-quasiquote" ,sbcl-fare-quasiquote)
-         ("parse-declarations-1.0" ,sbcl-parse-declarations)
-         ("global-vars" ,sbcl-global-vars)
-         ("trivial-file-size" ,sbcl-trivial-file-size)
-         ("trivial-macroexpand-all" ,sbcl-trivial-macroexpand-all)))
+       (list sbcl-alexandria
+             sbcl-trivia
+             sbcl-split-sequence
+             sbcl-string-case
+             sbcl-parse-number
+             sbcl-trivial-garbage
+             sbcl-bordeaux-threads
+             sbcl-parse-declarations
+             sbcl-introspect-environment
+             sbcl-trivial-cltl2
+             sbcl-global-vars
+             sbcl-trivial-file-size
+             sbcl-trivial-macroexpand-all))
       (native-inputs
-       `(("fiveam" ,sbcl-fiveam)
-         ("local-time" ,sbcl-local-time)))
+       (list sbcl-atomics
+             sbcl-fiveam
+             sbcl-local-time))
       (arguments
-       '(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'disable-failing-tests
-             (lambda* (#:key inputs #:allow-other-keys)
-               (substitute* "serapeum.asd"
-                 ;; Guix does not have Quicklisp, and probably never will.
-                 (("\\(:file \"quicklisp\"\\)") ""))
-               #t)))))
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'disable-failing-tests
+                   (lambda _
+                     (substitute* "serapeum.asd"
+                       ;; Guix does not have Quicklisp, and probably never will.
+                       (("\\(:file \"quicklisp\"\\)") "")))))))
       (synopsis "Common Lisp utility library beyond Alexandria")
       (description
        "Serapeum is a conservative library of Common Lisp utilities.  It is a
@@ -14329,10 +14364,10 @@ standard library.")
   (sbcl-package->cl-source-package sbcl-shlex))
 
 (define-public sbcl-cmd
-  (let ((commit "b0b79adf1214dbec082f3dd2274a72a0ff58efd7"))
+  (let ((commit "fda9e6bd9137ea806313151716fd87578cdbc882"))
     (package
       (name "sbcl-cmd")
-      (version (git-version "0.0.1" "5" commit))
+      (version (git-version "0.0.1" "6" commit))
       (source
        (origin
          (method git-fetch)
@@ -14341,7 +14376,7 @@ standard library.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0kk29vydmi1fyhpbwy3mrsg3bhvx0478r6r7jcsfkr3ci2h8w8a1"))))
+          (base32 "0j2yns565mp2rsiz8lc75psk7wws9qz8rh74n4vf9zdyrw16ckpf"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        `(("alexandria" ,sbcl-alexandria)
@@ -15383,51 +15418,53 @@ return the CPU count of the current system.")
   (sbcl-package->cl-source-package sbcl-cl-cpus))
 
 (define-public sbcl-fof
-  (package
-    (name "sbcl-fof")
-    (version "0.2.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitlab.com/ambrevar/fof")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0j64b7p40h8bq33hqkpgakm3vs1607vyx6n48d7qg3287v1akk6m"))))
-    (build-system asdf-build-system/sbcl)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "ffprobe.lisp"
-               (("\\(defvar \\*ffprobe-command\\* \"ffprobe\"\\)")
-                (format #f "(defvar *ffprobe-command* \"~a/bin/ffprobe\")"
-                        (assoc-ref inputs "ffmpeg") )))
-             #t)))))
-    (inputs
-     `(("alexandria" ,sbcl-alexandria)
-       ("hu.dwim.defclass-star" ,sbcl-hu.dwim.defclass-star)
-       ("local-time" ,sbcl-local-time)
-       ("magicffi" ,sbcl-magicffi)
-       ("osicat" ,sbcl-osicat)
-       ("serapeum" ,sbcl-serapeum)
-       ("str" ,sbcl-cl-str)
-       ("trivia" ,sbcl-trivia)
-       ("trivial-package-local-nicknames" ,sbcl-trivial-package-local-nicknames)
-       ;; Non-CL deps:
-       ("ffmpeg" ,ffmpeg)))
-    (home-page "https://gitlab.com/ambrevar/fof")
-    (synopsis "File object finder library for Common Lisp")
-    (description
-     "This library enable rapid file search, inspection and manipulation
+  (let ((commit "522879e7da110ecf2e841998b197b34062c54b29")
+        (revision "1"))
+    (package
+      (name "sbcl-fof")
+      (version (git-version "0.2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.com/ambrevar/fof")
+               (commit commit)))
+         (file-name (git-file-name "cl-fof" version))
+         (sha256
+          (base32 "0ipy51q2fw03xk9rqcyzbq2b9c32npc1gl3c53rdjywpak7zwwg6"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-paths
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "ffprobe.lisp"
+                 (("\\(defvar \\*ffprobe-command\\* \"ffprobe\"\\)")
+                  (format #f "(defvar *ffprobe-command* \"~a/bin/ffprobe\")"
+                          (assoc-ref inputs "ffmpeg")))))))))
+      (inputs
+       (list sbcl-alexandria
+             sbcl-cl-str
+             sbcl-hu.dwim.defclass-star
+             sbcl-local-time
+             sbcl-magicffi
+             sbcl-named-readtables
+             sbcl-osicat
+             sbcl-serapeum
+             sbcl-trivia
+             sbcl-trivial-package-local-nicknames
+             ;; Non-CL deps:
+             ffmpeg))
+      (home-page "https://gitlab.com/ambrevar/fof")
+      (synopsis "File object finder library for Common Lisp")
+      (description
+       "This library enable rapid file search, inspection and manipulation
 straight from the REPL.
 It aims at replacing Unix tools such as @code{find} or @code{du}.
 It also offers a replacement to the @code{pathname} Common Lisp API.
 Slot writers which commit changes to disk, e.g. permissions, modification
 time, etc.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public ecl-fof
   (sbcl-package->ecl-package sbcl-fof))
@@ -15462,6 +15499,36 @@ numbers in Common Lisp.")
 
 (define-public cl-computable-reals
   (sbcl-package->cl-source-package sbcl-computable-reals))
+
+(define-public sbcl-policy-cond
+  (let ((commit "eedb625520175bfdf44d385ff3b21039b7f75706")
+        (revision "0"))
+    (package
+      (name "sbcl-policy-cond")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/stylewarning/policy-cond")
+               (commit commit)))
+         (file-name (git-file-name "cl-policy-cond" version))
+         (sha256
+          (base32 "0xj2a6lcg7i7g4038sc4f641din6m8vdiha8c5afz9fik80bshxk"))))
+      (build-system asdf-build-system/sbcl)
+      (home-page "https://github.com/stylewarning/policy-cond")
+      (synopsis "Insert code based on compiler policy")
+      (description "POLICY-COND provides tools to insert and execute code
+based on a compiler's OPTIMIZE policy.  It also contains a contract-like notion
+of expectations, which allow dynamic checking or inclusion of various things
+that should happen depending on compiler policy.")
+      (license license:bsd-3))))
+
+(define-public cl-policy-cond
+  (sbcl-package->cl-source-package sbcl-policy-cond))
+
+(define-public ecl-policy-cond
+  (sbcl-package->ecl-package sbcl-policy-cond))
 
 (define-public sbcl-html-template
   (package
@@ -20820,7 +20887,7 @@ access lexicographic data from WordNet.")
 (define-public sbcl-nfiles
   (package
    (name "sbcl-nfiles")
-   (version "0.4.1")
+   (version "0.4.2")
    (source
     (origin
      (method git-fetch)
@@ -20830,7 +20897,7 @@ access lexicographic data from WordNet.")
      (file-name (git-file-name "cl-nfiles" version))
      (sha256
       (base32
-       "05brlj99grcy2iz84dvl76inp10jxnvjyh2r262d1las112rlcrb"))))
+       "06cll4l5gbp98wrgdy04ar6z00sag0b46pr4dv4n6bs1ypfcgs01"))))
    (build-system asdf-build-system/sbcl)
    (inputs
     (list gnupg

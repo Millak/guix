@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017 Stefan Reichör <stefan@xsteve.at>
-;;; Copyright © 2018, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018, 2021, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Andrew Miloradovsky <andrew@interpretmath.pw>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;;
@@ -89,14 +89,14 @@ terminals.")
 (define-public brltty
   (package
     (name "brltty")
-    (version "6.4")
+    (version "6.5")
     (source
      (origin
        (method url-fetch)
        (uri
         (string-append "https://brltty.app/archive/brltty-" version ".tar.gz"))
        (sha256
-        (base32 "0zybi9i9izv25g0wphl0snddrhb6xl5879y4pkpjpnxq61wm9gry"))))
+        (base32 "1h62xzd5k0aaq2k4v3w93rizxnb8psvkxrlx62wr08ybwpspgp7z"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:tests? #f                      ; No target

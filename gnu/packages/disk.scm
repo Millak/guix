@@ -93,6 +93,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system go)
+  #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
   #:use-module (guix build-system scons)
@@ -714,10 +715,10 @@ the card and then checks if can read it.  It will assure you haven't been sold
 a card with a smaller capacity than stated.")
     (license license:gpl3+)))
 
-(define-public python-parted
+(define-public python-pyparted
   (package
-    (name "python-parted")
-    (version "3.11.7")
+    (name "python-pyparted")
+    (version "3.12.0")
     (source
      (origin
        (method git-fetch)
@@ -726,20 +727,8 @@ a card with a smaller capacity than stated.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01193fmkss9icjvqpw85szpk8ld1pnha7p9kqm7mpwk6rc6gi2m3"))))
+        (base32 "0jxc1i1g3lz32wvqvdbb9ng2ypin783004kjnp0pghiz813lpw1d"))))
     (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'check)
-         (add-after 'install 'check
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             ;; See <https://github.com/dcantrell/pyparted/issues/47>.
-             (substitute* "tests/test__ped_ped.py"
-               (("\"/tmp/temp-device-\"") "self.path"))
-             (invoke "python" "-m" "unittest" "discover" "-v")
-             #t)))))
     (native-inputs
      (list e2fsprogs pkg-config))
     (propagated-inputs
@@ -750,6 +739,9 @@ a card with a smaller capacity than stated.")
     (synopsis "Parted bindings for Python")
     (description "This package provides @code{parted} bindings for Python.")
     (license license:gpl2+)))
+
+(define-public python-parted
+  (deprecated-package "python-parted" python-pyparted))
 
 (define-public duperemove
   (package
@@ -883,7 +875,7 @@ passphrases.")
 (define-public ndctl
   (package
     (name "ndctl")
-    (version "72.1")
+    (version "73")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -892,12 +884,16 @@ passphrases.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1lvrhlad5n43bal053ihgbwr1k4ka2kscrjwr9rs5xnf2vy7204v"))))
-    (build-system gnu-build-system)
+                "19kp1ly74bj7gavs03q7caci0lqr0rsi5y45zx5m8in4h19xk1kb"))))
+    (build-system meson-build-system)
     (arguments
      (list #:configure-flags
-           #~(list "--disable-asciidoctor" ; use docbook-xsl instead
-                   "--without-systemd")
+           #~(list (string-append "-Drootprefix=" #$output)
+                   (string-append "-Dbashcompletiondir=" #$output
+                                  "/share/bash-completion/completions")
+                   (string-append "-Dsysconfdir=" #$output "/etc")
+                   "-Dasciidoctor=disabled" ; use docbook-xsl instead
+                   "-Dsystemd=disabled")
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'fix-version
@@ -910,17 +906,11 @@ passphrases.")
                    (substitute* "git-version-gen"
                      (("/bin/sh") (which "sh")))
                    (substitute* "git-version"
-                     (("/bin/bash") (which "bash"))))))
-           #:make-flags
-           #~(list (string-append "BASH_COMPLETION_DIR=" #$output
-                                  "/share/bash-completion/completions"))))
+                     (("/bin/bash") (which "bash"))))))))
     (native-inputs
      (list asciidoc
-           automake
-           autoconf
            bash-completion
            docbook-xsl
-           libtool
            libxml2
            pkg-config
            xmlto
@@ -940,7 +930,7 @@ passphrases.")
 libnvdimm (non-volatile memory device) sub-system in the Linux kernel.")
     ;; COPYING says LGPL2.1, but many source files are GPL2 so that's
     ;; the effective license.  Note that some files under ccan/ are
-    ;; covered by BSD-3 or public domain, see the individual folders.
+    ;; covered by BSD-3 or public domain, see the individual directories.
     (license license:gpl2)))
 
 (define-public dmraid
@@ -1253,7 +1243,7 @@ that support this feature).")
 (define-public memkind
   (package
     (name "memkind")
-    (version "1.12.0")
+    (version "1.13.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1261,7 +1251,7 @@ that support this feature).")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1s52vl2jlrdc8nxnvf993x9mcag56qxcaniiijhmsv42a26hvjk4"))))
+               (base32 "0zbil6xqmsrnh773ihxyfna6pvvxv3kczdb3g863ssflwwvv7h4w"))))
     (build-system gnu-build-system)
     (inputs
      (list ;; memkind patched jemalloc to add je_arenalookupx,

@@ -1,10 +1,10 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2022 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2013, 2015, 2017, 2018, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2014, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016, 2018, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2017, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2020-2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017, 2019, 2021, 2022 Eric Bavier <bavier@posteo.net>
@@ -154,7 +154,7 @@ line applications.")
 (define-public fplll
   (package
     (name "fplll")
-    (version "5.3.3")
+    (version "5.4.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -163,8 +163,7 @@ line applications.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "06nyfidagp8pc2kfcw88ldgb2b1xm0a8z31n0sln7j72ihlmd8zj"))
-              (patches (search-patches "fplll-std-fenv.patch"))))
+                "0044nyfnwzgyfrsikbcbh00f54dd61hwn3fb6711rrskkfnw977a"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake libtool pkg-config))
@@ -199,19 +198,14 @@ the real span of the lattice.")
 (define-public python-fpylll
   (package
     (name "python-fpylll")
-    (version "0.5.2")
+    (version "0.5.7")
     (source
      (origin
-       ;; Pypi contains and older release, so we use a tagged release from
-       ;; Github instead.
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/fplll/fpylll")
-             (commit (string-append version "dev"))))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (pypi-uri "fpylll" version))
        (sha256
         (base32
-         "1a25iibihph626jl4wbs4b77xc4a2c4nfc2ypscf9wpani3dnhjf"))))
+         "1xjqcwq90blgzvnbkbzdys8mdhi2b4li6faywm6yi8shxvz8iz0s"))))
     (build-system python-build-system)
     (inputs
      (list fplll gmp mpfr pari-gp))
@@ -248,6 +242,7 @@ the real span of the lattice.")
          (replace 'configure
            (lambda* (#:key outputs #:allow-other-keys)
              (invoke "./Configure"
+                     "--mt=pthread"
                      (string-append "--prefix="
                                     (assoc-ref outputs "out"))))))))
     (synopsis "PARI/GP, a computer algebra system for number theory")
@@ -1021,17 +1016,18 @@ extends it by a set of algebraic capabilities.")
 
        #:phases (modify-phases %standard-phases
                   (replace 'check
-                    (lambda _
+                    (lambda* (#:key tests? #:allow-other-keys)
                       (let* ((cores  (parallel-job-count))
                              (dash-j (format #f "-j~a" cores)))
-			(setenv "EIGEN_SEED" "1") ;for reproducibility
-                        ;; First build the tests, in parallel.  See
-                        ;; <http://eigen.tuxfamily.org/index.php?title=Tests>.
-                        (invoke "make" "buildtests" dash-j)
+                        (when tests?
+                          (setenv "EIGEN_SEED" "1") ;for reproducibility
+                          ;; First build the tests, in parallel.  See
+                          ;; <http://eigen.tuxfamily.org/index.php?title=Tests>.
+                          (invoke "make" "buildtests" dash-j)
 
-                        ;; Then run 'CTest' with -V so we get more
-                        ;; details upon failure.
-                        (invoke "ctest" "-V" dash-j)))))))
+                          ;; Then run 'CTest' with -V so we get more
+                          ;; details upon failure.
+                          (invoke "ctest" "-V" dash-j))))))))
     (home-page "https://eigen.tuxfamily.org")
     (synopsis "C++ template library for linear algebra")
     (description
@@ -1734,14 +1730,14 @@ no more than about 20 bits long).")
 (define-public sollya
   (package
    (name "sollya")
-   (version "7.0")
+   (version "8.0")
    (source (origin
             (method url-fetch)
             (uri (string-append "https://www.sollya.org/releases/"
                                 "sollya-" version "/sollya-" version ".tar.bz2"))
             (sha256
              (base32
-              "11290ivi9h665cxi8f1shlavhy10vzb8s28m57hrcgnxyxqmhx0m"))))
+              "1sf1cjcr6x035n97l64ppzb9pzq5568h7waz0zfc3120894gcnjz"))))
    (build-system gnu-build-system)
    (inputs
     (list fplll

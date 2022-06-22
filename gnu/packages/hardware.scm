@@ -377,8 +377,10 @@ human-readable format and checks if it conforms to the standards.")
       (license license:expat))))
 
 (define-public h-client
-  (let ((commit "63ff4a3bf9c3c3b6297091e08192d34991465431")
-        (revision "0"))
+  ;; The Python 3 port hasn't yet been integrated into the main branch
+  ;; (currently lives in the 'python3-port' branch).
+  (let ((commit "e6c78b16e034ccf78ae9cb4c29268c2f57a30bfc")
+        (revision "1"))
     (package
       (name "h-client")
       (version (git-version "0.0a0" revision commit))
@@ -386,14 +388,11 @@ human-readable format and checks if it conforms to the standards.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               ;; Use this Python 3 fork until the changes have been reviewed
-               ;; and integrated into the official Savannah repository (in
-               ;; progress).
-               (url "https://git.sr.ht/~apteryx/h-client")
+               (url "https://git.savannah.gnu.org/git/h-client.git")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0c6s96a1zmsnn7bnfhm790c1fr8sid0zdyh9mwig4y6ffn83czh5"))))
+          (base32 "0hm86d51kj5r3yxq4c23aa57cs8igz3wrkbjn20z4frx75rpf46m"))))
       (build-system python-build-system)
       (inputs
        (list gdk-pixbuf

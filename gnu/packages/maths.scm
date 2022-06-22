@@ -4474,7 +4474,7 @@ parts of it.")
 (define-public openblas
   (package
     (name "openblas")
-    (version "0.3.18")
+    (version "0.3.20")
     (source
      (origin
        (method git-fetch)
@@ -4484,7 +4484,7 @@ parts of it.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "17zdd8asylz2w71hczrz5y344p6d5ds1jn4901maw7zcp3dbk63g"))))
+         "0r4sz3rn68fyc2paq0a04pgfi7iszpm95f6ggbzxpvjzx9qxbcql"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -4543,14 +4543,14 @@ parts of it.")
            (lambda* (#:key inputs #:allow-other-keys)
              ;; Get libgfortran found when building in utest.
              (setenv "FEXTRALIB"
-                     (string-append "-L" (assoc-ref inputs "fortran-lib")
-                                    "/lib")))))))
+                     (string-append
+                      "-L"
+                      (dirname
+                       (search-input-file inputs "/lib/libgfortran.so")))))))))
     (inputs
-     `(("fortran-lib" ,gfortran "lib")))
+     (list `(,gfortran "lib")))
     (native-inputs
-     `(("cunit" ,cunit)
-       ("fortran" ,gfortran)
-       ("perl" ,perl)))
+     (list cunit gfortran perl))
     (home-page "https://www.openblas.net/")
     (synopsis "Optimized BLAS library based on GotoBLAS")
     (description

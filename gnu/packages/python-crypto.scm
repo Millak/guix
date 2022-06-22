@@ -437,7 +437,7 @@ for example, for recording or replaying web content.")
 is used by the Requests library to verify HTTPS requests.")
     (license license:asl2.0)))
 
-(define-public python-cryptography-vectors
+(define-public python-cryptography-vectors-next
   (package
     (name "python-cryptography-vectors")
     (version "36.0.1")
@@ -456,53 +456,19 @@ is used by the Requests library to verify HTTPS requests.")
     ;; Distributed under either BSD-3 or ASL2.0
     (license (list license:bsd-3 license:asl2.0))))
 
-(define-public python-cryptography
+(define-public python-cryptography-vectors
   (package
-    (name "python-cryptography")
-    (version "3.3.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "cryptography" version))
-       (sha256
-        (base32
-         "1ribd1vxq9wwz564mg60dzcy699gng54admihjjkgs9dx95pw5vy"))))
-    (build-system python-build-system)
-    (inputs
-     (list openssl))
-    (propagated-inputs
-     (list python-asn1crypto python-cffi python-six python-idna
-           python-iso8601))
-    (native-inputs
-     (list python-cryptography-vectors python-hypothesis python-pretend
-           python-pytz python-pytest))
-    (home-page "https://github.com/pyca/cryptography")
-    (synopsis "Cryptographic recipes and primitives for Python")
-    (description
-      "cryptography is a package which provides cryptographic recipes and
-primitives to Python developers.  It aims to be the “cryptographic standard
-library” for Python.  The package includes both high level recipes, and low
-level interfaces to common cryptographic algorithms such as symmetric ciphers,
-message digests and key derivation functions.")
-    ;; Distributed under either BSD-3 or ASL2.0
-    (license (list license:bsd-3 license:asl2.0))))
-
-;; TODO: Make this the default in the next staging cycle.
-(define-public python-cryptography-vectors-next
-  (package
-    (inherit python-cryptography-vectors)
-    (version "36.0.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "cryptography_vectors" version))
-       (sha256
-        (base32
-         "166mvhhmgglqai1sjkkb76mpdkad2yykam11d2w44hs2snpr117w"))))))
+    (inherit python-cryptography-vectors-next)
+    (version "3.4.8")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "cryptography_vectors" version))
+              (sha256
+               (base32 "1wl0ynh3lzhc6q59g8mybvijmnp195x7fjxlb3h3sgcraw14312c"))))))
 
 (define-public python-cryptography-next
   (package
-    (inherit python-cryptography)
+    (name "python-cryptography")
     (version "36.0.1")
     (source
      (origin
@@ -600,7 +566,7 @@ message digests and key derivation functions.")
      (list python-asn1crypto python-cffi python-six python-idna
            python-iso8601))
     (native-inputs
-     (list python-cryptography-vectors
+     (list python-cryptography-vectors-next
            python-hypothesis
            python-pretend
            python-pytz
@@ -618,62 +584,45 @@ library” for Python.  The package includes both high level recipes, and low
 level interfaces to common cryptographic algorithms such as symmetric ciphers,
 message digests and key derivation functions.")
     ;; Distributed under either BSD-3 or ASL2.0
-    (license (list license:bsd-3 license:asl2.0))
-    (properties `((python2-variant . ,(delay python2-cryptography))))))
+    (license (list license:bsd-3 license:asl2.0))))
 
-(define-public python2-cryptography-vectors
+(define-public python-cryptography
   (package
-    (inherit python-cryptography-vectors)
-    (version "3.3.1")
+    (inherit python-cryptography-next)
+    (version "3.4.8")
     (source (origin
               (method url-fetch)
-              (uri (pypi-uri "cryptography_vectors" version))
+              (uri (pypi-uri "cryptography" version))
               (sha256
-               (base32
-                "192wix3sr678x21brav5hgc6j93l7ab1kh69p2scr3fsblq9qy03"))))
+               (base32 "072awar70cwfd2hnx0pvp1dkc7gw45mbm3wcyddvxz5frva5xk4l"))))
     (arguments
-     (list #:python python-2))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'set-no-rust
+                 (lambda _
+                   (setenv "CRYPTOGRAPHY_DONT_BUILD_RUST" "1"))))))
+    (inputs (list openssl))
+    (native-inputs
+     (list python-cryptography-vectors
+           python-hypothesis
+           python-pretend
+           python-pytz
+           python-pytest
+           python-setuptools-rust))))
 
-(define-public python2-cryptography
-  (let ((crypto (package-with-python2
-                 (strip-python2-variant python-cryptography))))
-    (package
-      (inherit crypto)
-      (version "3.3.1")
-      (source (origin
-                (method url-fetch)
-                (uri (pypi-uri "cryptography" version))
-                (sha256
-                 (base32
-                  "1ribd1vxq9wwz564mg60dzcy699gng54admihjjkgs9dx95pw5vy"))))
-      (arguments
-       `(#:python ,python-2
-         #:phases
-         (modify-phases %standard-phases
-           ;; The sanity-check attempts attempts to import the non-existent
-           ;; modules "_openssl" and "_padding".
-           (delete 'sanity-check))))
-      (native-inputs
-       (list python2-cryptography-vectors python2-hypothesis python2-pretend
-             python2-pytz python2-pytest))
-      (inputs (list openssl))
-      (propagated-inputs
-       (modify-inputs (package-propagated-inputs crypto)
-         (prepend python2-ipaddress
-                  python2-backport-ssl-match-hostname
-                  python2-enum34))))))
-
+;; This is the last version which is compatable with python-cryptography < 35.
 (define-public python-pyopenssl
   (package
     (name "python-pyopenssl")
-    (version "22.0.0")
+    (version "21.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyOpenSSL" version))
        (sha256
         (base32
-         "1gzihw09sqi71lwx97c69hab7w4rbnl6hhfrl6za3i5a4la1n2v6"))))
+         "1cqcc20fwl521z3fxsc1c98gbnhb14q55vrvjfp6bn6h8rg8qbay"))
+       (patches (search-patches "python2-pyopenssl-openssl-compat.patch"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -708,7 +657,6 @@ message digests and key derivation functions.")
     (description
       "PyOpenSSL is a high-level wrapper around a subset of the OpenSSL
 library.")
-    (properties `((python2-variant . ,(delay python2-pyopenssl))))
     (license license:asl2.0)))
 
 (define-public python-ed25519
@@ -923,29 +871,19 @@ Python.")
 (define-public python-josepy
   (package
     (name "python-josepy")
-    (version "1.1.0")
+    (version "1.13.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "josepy" version))
               (sha256
                (base32
-                "11khz8malzrv375b27jjkv66z6z6khdx1v5mkkr4vq16gp3n4p7v"))))
+                "1jaxqyp53paks2z8zyzr50gqvzfxbar7r2qf98kqak4aizrxlcc9"))))
     (build-system python-build-system)
     (arguments
-     ;; The tests require flake8 >= 3.5, which is not yet packaged.
+     ;; TODO: some test dependencies are missing (see pyproject.toml).
      '(#:tests? #f))
     (propagated-inputs
-     (list python-cryptography python-pyopenssl python-six))
-;; TODO Enable when we have flake8 >= 3.5.
-;    (native-inputs
-;     `(("python-coverage" ,python-coverage)
-;       ("python-flake8" ,python-flake8)
-;       ("python-isort" ,python-isort)
-;       ("python-mock" ,python-mock)
-;       ("python-pytest" ,python-pytest)
-;       ("python-pytest-cov" ,python-pytest-cov)
-;       ("python-pytest-cache" ,python-pytest-cache)
-;       ("python-pytest-flake8" ,python-pytest-flake8)))
+     (list python-cryptography python-pyopenssl))
     (home-page "https://github.com/certbot/josepy")
     (synopsis "JOSE protocol implementation in Python")
     (description "This package provides a Python implementation of the JOSE

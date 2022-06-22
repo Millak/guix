@@ -1,0 +1,15 @@
+Taken from the Gentoo patch:
+https://gitweb.gentoo.org/repo/gentoo.git/tree/sys-devel/llvm-roc/files/llvm-roc-5.0.0-linkdl.patch
+
+LLVMOffloadArch should link libdl to fix undefined symbol 'dlsym' when linking
+
+--- a/llvm/lib/OffloadArch/offload-arch/CMakeLists.txt
++++ b/llvm/lib/OffloadArch/offload-arch/CMakeLists.txt
+@@ -3,6 +3,7 @@ add_llvm_tool(offload-arch
+   ${CMAKE_CURRENT_SOURCE_DIR}/offload-arch.cpp
+   DEPENDS generated-table LLVMOffloadArch
+ )
++target_link_libraries(LLVMOffloadArch PRIVATE ${CMAKE_DL_LIBS})
+ target_link_libraries(offload-arch PRIVATE LLVMOffloadArch)
+ 
+ if(CMAKE_HOST_UNIX)

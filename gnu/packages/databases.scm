@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2018 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2016, 2018, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2012, 2013, 2014, 2015, 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2013, 2017 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014, 2016 David Thompson <davet@gnu.org>
@@ -1160,7 +1160,7 @@ developed in C/C++ to MariaDB and MySQL databases.")
 (define-public galera
   (package
     (name "galera")
-    (version "26.4.10")
+    (version "26.4.12")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1169,7 +1169,7 @@ developed in C/C++ to MariaDB and MySQL databases.")
                     (recursive? #t)))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1n6zhzwj713ixyqvcjn4ldlq0y9fxqgvmqv3cj3h4207v9lwlxxz"))))
+               (base32 "0n4272mvr8a6h5prbhvl376asdp89ipix5yx5n6i1iiw9bs3v76l"))))
     (build-system cmake-build-system)
     (inputs
      (list check boost openssl))
@@ -1184,14 +1184,14 @@ and high-availability (HA).")
 (define-public postgresql-14
   (package
     (name "postgresql")
-    (version "14.2")
+    (version "14.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://ftp.postgresql.org/pub/source/v"
                                   version "/postgresql-" version ".tar.bz2"))
               (sha256
                (base32
-                "0ylpka64wli72jvjyqcayvlw44zk1hsbapb93l8gh4l98qp8pxrc"))
+                "0f5gm43hx8j67nfad8mrfhzb9aq4brfgka5d0nf936pmicv5g417"))
               (patches (search-patches "postgresql-disable-resolve_symlinks.patch"))))
     (build-system gnu-build-system)
     (arguments
@@ -1247,6 +1247,7 @@ pictures, sounds, or video.")
   (package
     (inherit postgresql-14)
     (version "13.6")
+    (replacement postgresql-13/replacement)
     (source (origin
               (inherit (package-source postgresql-14))
               (uri (string-append "https://ftp.postgresql.org/pub/source/v"
@@ -1256,37 +1257,70 @@ pictures, sounds, or video.")
                 "1z37ix80hb2bqa2smh1hbj9r507ypnl3pil43gkqznnlv6ipzz5s"))
               (patches (search-patches "postgresql-riscv-spinlocks.patch"))))))
 
+;; The merge of commit ...
+;;  781dd2de230e3 gnu: postgresql-13: Fix building on riscv64-linux.
+;; ... in ...
+;;  49b350fafc2c3 Merge branch 'master' into staging.
+;; ... lost the inherited patch from postgresql-14, causing problems such as ...
+;;  05fef7bfc6005 gnu: timescaledb: Adjust test preparation to PostgreSQL 13.6.
+;;
+;; While at it, remove the RISC-V spinlock patch, which has been upstreamed
+;; in a different form (so the old patch still applies).
+;; TODO: Remove in the next rebuild cycle.
+(define postgresql-13/replacement
+  (package
+    (inherit postgresql-13)
+    (version "13.7")
+    (source
+     (origin
+       (inherit (package-source postgresql-13))
+       (uri (string-append "https://ftp.postgresql.org/pub/source/v"
+                           version "/postgresql-" version ".tar.bz2"))
+       (sha256
+        (base32
+         "16b3ljid7zd1v5l4l4pmwihx43wi8p9izidkjfii8dnqygs5p40v"))
+       (patches (search-patches "postgresql-disable-resolve_symlinks.patch"))))))
+
 (define-public postgresql-11
   (package
     (inherit postgresql-13)
     (name "postgresql")
-    (version "11.15")
+    (version "11.16")
     (source (origin
               (inherit (package-source postgresql-13))
               (uri (string-append "https://ftp.postgresql.org/pub/source/v"
                                   version "/postgresql-" version ".tar.bz2"))
               (sha256
                (base32
-                "1qvrm0vhwnc5nijfbqybhwfjbq4r7vmk445sz7s6fiagpn78xxf8"))))))
+                "1983a7y4y6zhbgh0qcdfkf99445j1zm5q1ncrbkrx555y08y3n9d"))
+              (patches (search-patches
+                        "postgresql-disable-resolve_symlinks.patch"))))
+    (native-inputs
+     (modify-inputs (package-native-inputs postgresql-13)
+       (replace "docbook-xml" docbook-xml-4.2)))))
 
 (define-public postgresql-10
   (package
     (inherit postgresql-11)
-    (version "10.20")
+    (version "10.21")
     (source (origin
               (inherit (package-source postgresql-11))
               (uri (string-append "https://ftp.postgresql.org/pub/source/v"
                                   version "/postgresql-" version ".tar.bz2"))
               (sha256
                (base32
-                "17v51a9vnz6lgbfmbdmcwsiyi572wndwa4n30nk2zr6gkgaidpl7"))))))
+                "1la5dx4hhy5yaznwk9gwdsymih3sd23fyhh6spssdaajdn2rh8fk"))))
+    (native-inputs
+     (modify-inputs (package-native-inputs postgresql-11)
+       (append opensp docbook-sgml-4.2)
+       (delete "docbook-xml")))))
 
-(define-public postgresql postgresql-13)
+(define-public postgresql postgresql-14)
 
 (define-public timescaledb
   (package
     (name "timescaledb")
-    (version "2.5.1")
+    (version "2.7.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1295,14 +1329,18 @@ pictures, sounds, or video.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "174dm3higa0i7al9r2hdv5hk36pd0d5fnqj57w5a350kxshxyvyw"))
+                "18wszj8ia5rs4y4zkyfb0f5z4y1g7ac3jym748nbkbszhxmq7nc7"))
+              (patches (search-patches "timescaledb-flaky-test.patch"))
               (modules '((guix build utils)))
               (snippet
                ;; Remove files carrying the proprietary TIMESCALE license.
                '(begin
                   (delete-file-recursively "tsl")
                   (for-each delete-file
-                            '("test/perl/AccessNode.pm"
+                            '("scripts/c_license_header-timescale.h"
+                              "scripts/license_tsl.spec"
+                              "scripts/sql_license_tsl.sql"
+                              "test/perl/AccessNode.pm"
                               "test/perl/DataNode.pm"
                               "test/perl/TimescaleNode.pm"))))))
     (build-system cmake-build-system)
@@ -1347,12 +1385,28 @@ pictures, sounds, or video.")
                          (pg-union (string-append (getcwd) "/../pg-union")))
                      (match inputs
                        (((names . directories) ...)
-                        (union-build pg-union (cons #$output directories))))
+                        ;; PG will only load extensions from its own $libdir,
+                        ;; which it calculates based on argv[0].  As of
+                        ;; PostgreSQL 13.6, it calls 'canonicalize_path' on
+                        ;; argv[0] so a merge symlink is not enough to trick
+                        ;; it; thus, the code below makes a full copy of PG
+                        ;; and friends such that 'pg_config --libdir', for
+                        ;; instance, points to PG-UNION, allowing it to load
+                        ;; the timescaledb extension.
+                        ;; TODO: The above comment and the #:symlink trick can
+                        ;; be removed in the next rebuild cycle.
+                        (union-build pg-union (cons #$output directories)
+                                     #:symlink
+                                     (lambda (old new)
+                                       (if (file-is-directory? old)
+                                           (copy-recursively old new)
+                                           (copy-file old new))))))
                      (setenv "PATH" (string-append pg-union "/bin:"
                                                    (getenv "PATH")))
                      (invoke "initdb" "-D" pg-data)
                      (copy-file "test/postgresql.conf"
                                 (string-append pg-data "/postgresql.conf"))
+
                      (invoke "pg_ctl" "-D" pg-data
                              "-o" (string-append "-k " pg-data)
                              "-l" (string-append pg-data "/db.log")
@@ -1363,7 +1417,7 @@ pictures, sounds, or video.")
     (home-page "https://www.timescale.com/")
     (synopsis "Time-series extension for PostgreSQL")
     (description
-     "TimescaleDB is an database designed to make SQL scalable for
+     "TimescaleDB is a database designed to make SQL scalable for
 time-series data.  It is engineered up from PostgreSQL and packaged as a
 PostgreSQL extension, providing automatic partitioning across time and space
 (partitioning key), as well as full SQL support.")
@@ -1868,7 +1922,7 @@ extremely small.")
                 "1yinx39960y241vf2sknxj0dfz82a5m9gvklq5rw78k0nlyrjawa"))))
     (build-system perl-build-system)
     (synopsis "Database independent interface for Perl")
-    (description "This package provides an database interface for Perl.")
+    (description "This package provides a database interface for Perl.")
     (home-page "https://metacpan.org/release/DBI")
     (license license:perl-license)))
 
@@ -2035,7 +2089,7 @@ columns, primary keys, unique constraints and relationships.")
 (define-public perl-dbd-pg
   (package
     (name "perl-dbd-pg")
-    (version "3.14.2")
+    (version "3.15.1")
     (source
      (origin
        (method url-fetch)
@@ -2043,7 +2097,7 @@ columns, primary keys, unique constraints and relationships.")
                            "DBD-Pg-" version ".tar.gz"))
        (sha256
         (base32
-         "0kcfqq7g3832wiix0sbyvlc885qghjrp2ah3akn7h2lnb22fjwy9"))))
+         "0zn17xb6bmixkmv53p576igzw1jd43cwql35r19m56jwahxm9iqk"))))
     (build-system perl-build-system)
     (native-inputs
      (list perl-dbi))
@@ -2814,13 +2868,13 @@ can autogenerate peewee models using @code{pwiz}, a model generator.")
 (define-public python-pypika-tortoise
   (package
     (name "python-pypika-tortoise")
-    (version "0.1.1")
+    (version "0.1.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pypika-tortoise" version))
        (sha256
-        (base32 "0g4z0lz739nk04b405ynqpd3y1z5nfyxjz9hqgxcw3jydsjx0cb8"))))
+        (base32 "0j20574s2yrq8d7fav3816vj1nfpihkm2mj8jzh2ank4zixp8brf"))))
     (build-system python-build-system)
     (home-page "https://github.com/tortoise/pypika-tortoise")
     (synopsis "Pypika fork for tortoise-orm")
@@ -2851,24 +2905,19 @@ coroutine-specific markup.")
 (define-public python-asyncpg
   (package
     (name "python-asyncpg")
-    (version "0.24.0")
+    (version "0.25.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asyncpg" version))
        (sha256
-        (base32 "1in0q6iffpl8ag6ady4bvwnn40igh10cpp4xgm426j1lqdis0byx"))))
+        (base32 "0h1573lp4607nppflnnjrhn7yrfy6i54cm98gi4qbcikjykfdy33"))))
     (build-system python-build-system)
     (propagated-inputs (list python-typing-extensions))
     (native-inputs
      (list postgresql
            python-cython
-           python-flake8
-           python-pycodestyle
            python-pytest
-           python-sphinx
-           python-sphinx-rtd-theme
-           python-sphinxcontrib-asyncio
            python-uvloop))
     (home-page "https://github.com/MagicStack/asyncpg")
     (synopsis "Fast PostgreSQL database client library for Python")
@@ -2921,13 +2970,13 @@ of PyMySQL.  @code{aiomysql} tries to preserve the same API as the
 (define-public python-tortoise-orm
   (package
     (name "python-tortoise-orm")
-    (version "0.17.8")
+    (version "0.19.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "tortoise-orm" version))
        (sha256
-        (base32 "1gzgiypln7lck3p95vk3i8rdx1bjbmmlcpb8xpba8cjdjvlj0l0z"))))
+        (base32 "17yk71dlx5ai98i6ivqgsplkwivdxackz9jfn6z42bpcdgbpiwhg"))))
     (build-system python-build-system)
     ;; The test suite relies on asynctest, which is abandoned and doesn't
     ;; support Python >= 3.8.
@@ -3004,44 +3053,58 @@ development.")
 (define-public python-pyodbc-c
   (package
     (name "python-pyodbc-c")
-    (version "3.1.4")
+    (version "3.1.5")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://gitlab.com/daym/pyodbc-c/repository/"
-                           "archive.tar.gz?ref=v" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/daym/pyodbc-c/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "05aq2297k779xidmxcwkrrxjvj1bh2q7d9a1rcjv6zr15y764ga9"))
-       (file-name (string-append name "-" version ".tar.gz"))))
+        (base32 "08y60c5sx0k953zfx0s2a155l8py968sb17ap9a9fg8bjnj783k8"))))
     (build-system python-build-system)
     (inputs
      (list unixodbc))
     (arguments
-     `(;; No unit tests exist.
+     `(;; The tests require a running SQL server that they don't help set up.
        #:tests? #f))
-    (home-page "https://github.com/mkleehammer/pyodbc")
-    (synopsis "Python ODBC Library")
+    (home-page "https://gitlab.com/daym/pyodbc-c")
+    (synopsis "Python ODBC Library written in C")
     (description "@code{python-pyodbc-c} provides a Python DB-API driver
-for ODBC.")
+for ODBC, similar to python-pyodbc but written in C.
+
+It's designed to stand alone and not have other dependencies on other packages
+or languages.  It uses only Python's built-in data types.")
     (license (license:x11-style "file://LICENSE.TXT"))))
 
 (define-public python-pyodbc
   (package
     (name "python-pyodbc")
-    (version "4.0.30")
+    (version "4.0.32")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyodbc" version))
        (sha256
-        (base32 "0skjpraar6hcwsy82612bpj8nw016ncyvvq88j5syrikxgp5saw5"))
-       (file-name (string-append name "-" version ".tar.gz"))))
+        (base32 "0sqs0x2l5mk3yv0wwz3ya8yh5f4babihyhc8hjbf2m86b71z1rcv"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Delete precompiled binaries.  The corresponding source is included.
+        #~(for-each delete-file (find-files "." "\\.pyc$")))))
     (build-system python-build-system)
     (inputs
      (list unixodbc))
     (arguments
-     `(#:tests? #f))                    ; no unit tests exist
+     ;; XXX Tests fail with ‘Can't open lib 'SQL Server Native Client 10.0' :
+     ;; file not found (0) (SQLDriverConnect)")’.
+     (list #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "python3" "tests3/test.py")))))))
     (home-page "https://github.com/mkleehammer/pyodbc")
     (synopsis "Python ODBC Library")
     (description "@code{python-pyodbc} provides a Python DB-API driver
@@ -4195,6 +4258,132 @@ language-bindings for structure manipulation.  It also provides IPC and common
 algorithm implementations.")
     (license license:asl2.0)))
 
+(define-public apache-arrow-0.16
+  (package
+    (name "apache-arrow")
+    (version "0.16.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/apache/arrow")
+             (commit (string-append "apache-arrow-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "15bplqy5708bxy1mynzjkd3d2g8v2wd36z8l0ap8yyyq54l3gdvy"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'enter-source-directory
+           (lambda _
+             (chdir "cpp")
+             (substitute* "src/parquet/CMakeLists.txt"
+               (("    parquet_constants.cpp") "")
+               (("set\\(THRIFT_OUTPUT_FILES \\$\\{THRIFT_OUTPUT_FILES\\}.*") "")
+               ((".*\"\\$\\{THRIFT_OUTPUT_DIR\\}/parquet_constants.cpp\"\\).*") ""))))
+         (add-after 'unpack 'set-env
+           (lambda _
+             (setenv "BOOST_ROOT" (assoc-ref %build-inputs "boost"))
+             (setenv "BROTLI_HOME" (assoc-ref %build-inputs "brotli"))
+             (setenv "FLATBUFFERS_HOME" (assoc-ref %build-inputs "flatbuffers"))
+             (setenv "RAPIDJSON_HOME" (assoc-ref %build-inputs "rapidjson")))))
+       #:build-type "Release"
+       #:configure-flags
+       (list "-DARROW_PYTHON=ON"
+             "-DARROW_GLOG=ON"
+             "-DARROW_SSE42=OFF"
+             "-DARROW_BOOST_USE_SHARED=ON"
+             ;; Parquet options
+             "-DARROW_PARQUET=ON"
+
+             ;; The maintainers disallow using system versions of
+             ;; jemalloc:
+             ;; https://issues.apache.org/jira/browse/ARROW-3507. This
+             ;; is unfortunate because jemalloc increases performance:
+             ;; https://arrow.apache.org/blog/2018/07/20/jemalloc/.
+             "-DARROW_JEMALLOC=OFF"
+
+             ;; The CMake option ARROW_DEPENDENCY_SOURCE is a global
+             ;; option that instructs the build system how to resolve
+             ;; each dependency. SYSTEM = Finding the dependency in
+             ;; system paths using CMake's built-in find_package
+             ;; function, or using pkg-config for packages that do not
+             ;; have this feature
+             "-DARROW_DEPENDENCY_SOURCE=SYSTEM"
+
+             ;; Split output into its component packages.
+             (string-append "-DCMAKE_INSTALL_PREFIX="
+                            (assoc-ref %outputs "out"))
+             (string-append "-DCMAKE_INSTALL_RPATH="
+                            (assoc-ref %outputs "out")
+                            "/lib")
+             (string-append "-DCMAKE_INSTALL_BINDIR="
+                            (assoc-ref %outputs "out")
+                            "/bin")
+             (string-append "-DCMAKE_INSTALL_INCLUDEDIR="
+                            (assoc-ref %outputs "include")
+                            "/share/include")
+
+
+             "-DARROW_WITH_SNAPPY=ON"
+             "-DARROW_WITH_ZLIB=ON"
+             "-DARROW_WITH_ZSTD=ON"
+             "-DARROW_WITH_LZ4=ON"
+             "-DARROW_COMPUTE=ON"
+             "-DARROW_CSV=ON"
+             "-DARROW_DATASET=ON"
+             "-DARROW_FILESYSTEM=ON"
+             "-DARROW_HDFS=ON"
+             "-DARROW_JSON=ON"
+             ;; Arrow Python C++ integration library (required for
+             ;; building pyarrow). This library must be built against
+             ;; the same Python version for which you are building
+             ;; pyarrow. NumPy must also be installed. Enabling this
+             ;; option also enables ARROW_COMPUTE, ARROW_CSV,
+             ;; ARROW_DATASET, ARROW_FILESYSTEM, ARROW_HDFS, and
+             ;; ARROW_JSON.
+             "-DARROW_PYTHON=ON"
+
+             ;; Building the tests forces on all the
+             ;; optional features and the use of static
+             ;; libraries.
+             "-DARROW_BUILD_TESTS=OFF"
+             "-DBENCHMARK_ENABLE_GTEST_TESTS=OFF"
+             ;;"-DBENCHMARK_ENABLE_TESTING=OFF"
+             "-DARROW_BUILD_STATIC=OFF")))
+    (inputs
+     `(("boost" ,boost)
+       ("brotli" ,google-brotli)
+       ("double-conversion" ,double-conversion)
+       ("snappy" ,snappy)
+       ("gflags" ,gflags)
+       ("glog" ,glog)
+       ("apache-thrift" ,apache-thrift "lib")
+       ("protobuf" ,protobuf)
+       ("rapidjson" ,rapidjson)
+       ("zlib" ,zlib)
+       ("bzip2" ,bzip2)
+       ("lz4" ,lz4)
+       ("zstd" ,zstd "lib")
+       ("re2" ,re2)
+       ("grpc" ,grpc)
+       ("python-3" ,python)
+       ("python-numpy" ,python-numpy)))
+    (native-inputs
+     (list pkg-config apache-thrift))
+    (outputs '("out" "include"))
+    (home-page "https://arrow.apache.org/")
+    (synopsis "Columnar in-memory analytics")
+    (description "Apache Arrow is a columnar in-memory analytics layer
+designed to accelerate big data.  It houses a set of canonical in-memory
+representations of flat and hierarchical data along with multiple
+language-bindings for structure manipulation.  It also provides IPC and common
+algorithm implementations.")
+    (license license:asl2.0)))
+
 (define-public python-pyarrow
   (package
     (inherit apache-arrow)
@@ -4244,6 +4433,64 @@ algorithm implementations.")
        ("python-pytest" ,python-pytest)
        ("python-pytest-runner" ,python-pytest-runner)
        ("python-setuptools-scm" ,python-setuptools-scm)))
+    (outputs '("out"))
+    (home-page "https://arrow.apache.org/docs/python/")
+    (synopsis "Python bindings for Apache Arrow")
+    (description
+     "This library provides a Pythonic API wrapper for the reference Arrow C++
+implementation, along with tools for interoperability with pandas, NumPy, and
+other traditional Python scientific computing packages.")
+    (license license:asl2.0)))
+
+(define-public python-pyarrow-0.16
+  (package
+    (inherit apache-arrow-0.16)
+    (name "python-pyarrow")
+    (build-system python-build-system)
+    (arguments
+     '(#:tests? #f          ; XXX There are no tests in the "python" directory
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'build) ; XXX the build is performed again during the install phase
+         (add-after 'unpack 'enter-source-directory
+           (lambda _ (chdir "python")))
+         (add-after 'unpack 'make-git-checkout-writable
+           (lambda _
+             (for-each make-file-writable (find-files "."))))
+         (add-before 'install 'patch-cmake-variables
+           (lambda* (#:key inputs #:allow-other-keys)
+             ;; Replace cmake locations with hardcoded guix links for the
+             ;; underlying C++ library and headers.  This is a pretty awful
+             ;; hack.
+             (substitute* "cmake_modules/FindParquet.cmake"
+               (("# Licensed to the Apache Software Foundation" m)
+                (string-append "set(PARQUET_INCLUDE_DIR \""
+                               (assoc-ref inputs "apache-arrow:include")
+                               "/share/include\")\n" m))
+               (("find_package_handle_standard_args" m)
+                (string-append "set(PARQUET_LIB_DIR \""
+                               (assoc-ref inputs "apache-arrow:lib")
+                               "/lib\")\n" m)))))
+         (add-before 'install 'patch-parquet-library
+           (lambda _
+             (substitute* "CMakeLists.txt"
+               (("parquet_shared") "parquet"))))
+         (add-before 'install 'set-PYARROW_WITH_PARQUET
+           (lambda _
+             (setenv "PYARROW_WITH_PARQUET" "1"))))))
+    (propagated-inputs
+     `(("apache-arrow:lib" ,apache-arrow-0.16)
+       ("apache-arrow:include" ,apache-arrow-0.16 "include")
+       ("python-numpy" ,python-numpy)
+       ("python-pandas" ,python-pandas)
+       ("python-six" ,python-six)))
+    (native-inputs
+     (list cmake-minimal
+           pkg-config
+           python-cython
+           python-pytest
+           python-pytest-runner
+           python-setuptools-scm))
     (outputs '("out"))
     (home-page "https://arrow.apache.org/docs/python/")
     (synopsis "Python bindings for Apache Arrow")

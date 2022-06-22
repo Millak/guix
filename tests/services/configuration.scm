@@ -27,6 +27,9 @@
 
 (test-begin "services-configuration")
 
+(define (serialize-number field value)
+  (format #f "~a=~a" field value))
+
 
 ;;;
 ;;; define-configuration macro.
@@ -47,7 +50,6 @@
   80
   (port-configuration-cs-port (port-configuration-cs)))
 
-(define serialize-number "")
 (define-configuration port-configuration-ndv
   (port (number) "The port number."))
 
@@ -101,14 +103,30 @@
 (define-maybe number)
 
 (define-configuration config-with-maybe-number
-  (port (maybe-number 80) "The port number."))
-
-(define (serialize-number field value)
-  (format #f "~a=~a" field value))
+  (port  (maybe-number 80) "")
+  (count maybe-number ""))
 
 (test-equal "maybe value serialization"
   "port=80"
   (serialize-maybe-number "port" 80))
+
+(define (config-with-maybe-number->string x)
+  (eval (gexp->approximate-sexp
+         (serialize-configuration x config-with-maybe-number-fields))
+        (current-module)))
+
+(test-equal "maybe value serialization of the instance"
+  "port=42count=43"
+  (config-with-maybe-number->string
+   (config-with-maybe-number
+    (port 42)
+    (count 43))))
+
+(test-equal "maybe value serialization of the instance, unspecified"
+  "port=42"
+  (config-with-maybe-number->string
+   (config-with-maybe-number
+    (port 42))))
 
 (define-maybe/no-serialization string)
 
@@ -118,3 +136,15 @@
 
 (test-assert "maybe value without serialization no procedure bound"
   (not (defined? 'serialize-maybe-string)))
+
+(test-assert "maybe type, no default"
+  (unspecified?
+   (config-with-maybe-string/no-serialization-name
+    (config-with-maybe-string/no-serialization))))
+
+(test-assert "maybe type, with default"
+  (equal?
+   "foo"
+   (config-with-maybe-string/no-serialization-name
+    (config-with-maybe-string/no-serialization
+     (name "foo")))))

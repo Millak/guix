@@ -363,7 +363,7 @@ poll/epoll/select prior to the write operation.")
 channel to protect against DoS attacks.")
 
    (auth-user-pass
-     (maybe-string 'disabled)
+    maybe-string
      "Authenticate with server using username/password.  The option is a file
 containing username/password on 2 lines.  Do not use a file-like object as it
 would be added to the store and readable by any user.")

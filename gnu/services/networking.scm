@@ -771,17 +771,17 @@ logging is disabled.")
    "The node host name that is used to make the first connection to the
 network.  A specific port value can be provided by appending the @code{:PORT}
 suffix.  By default, it uses the Jami bootstrap nodes, but any host can be
-specified here.  It's also possible to disable bootstrapping by setting this
-to the @code{'disabled} symbol.")
+specified here.  It's also possible to disable bootstrapping by explicitly
+setting this field to the @code{*unspecified*} value.")
   (port
    (maybe-number 4222)
-   "The UDP port to bind to.  When set to @code{'disabled}, an available port
-is automatically selected.")
+   "The UDP port to bind to.  When set to @code{*unspecified*}, an available
+port is automatically selected.")
   (proxy-server-port
-   (maybe-number 'disabled)
+   maybe-number
    "Spawn a proxy server listening on the specified port.")
   (proxy-server-port-tls
-   (maybe-number 'disabled)
+   maybe-number
    "Spawn a proxy server listening to TLS connections on the specified
 port."))
 

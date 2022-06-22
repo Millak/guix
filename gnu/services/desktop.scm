@@ -13,6 +13,7 @@
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Reza Alizadeh Majd <r.majd@pantherx.org>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2021 muradm <mail@muradm.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -39,7 +40,9 @@
   #:use-module (gnu services networking)
   #:use-module (gnu services sound)
   #:use-module ((gnu system file-systems)
-                #:select (%elogind-file-systems file-system))
+                #:select (%control-groups
+                          %elogind-file-systems
+                          file-system))
   #:autoload   (gnu services sddm) (sddm-service-type)
   #:use-module (gnu system)
   #:use-module (gnu system setuid)
@@ -156,6 +159,9 @@
             gnome-keyring-configuration
             gnome-keyring-configuration?
             gnome-keyring-service-type
+
+            seatd-configuration
+            seatd-service-type
 
             %desktop-services))
 
@@ -1629,6 +1635,60 @@ or setting its password with passwd.")))
 
 (define polkit-wheel-service
   (simple-service 'polkit-wheel polkit-service-type (list polkit-wheel)))
+
+
+;;;
+;;; seatd-service-type -- minimal seat management daemon
+;;;
+
+(define-record-type* <seatd-configuration> seatd-configuration
+  make-seatd-configuration
+  seatd-configuration?
+  (seatd seatd-package (default seatd))
+  (user seatd-user (default "root"))
+  (group seatd-group (default "users"))
+  (socket seatd-socket (default "/run/seatd.sock"))
+  (logfile seatd-logfile (default "/var/log/seatd.log"))
+  (loglevel seatd-loglevel (default "info")))
+
+(define (seatd-shepherd-service config)
+  (list (shepherd-service
+         (documentation "Minimal seat management daemon")
+         (requirement '())
+         ;; TODO: once cgroups is separate dependency
+         ;; here we should depend on it rather than elogind
+         (provision '(seatd elogind))
+         (start #~(make-forkexec-constructor
+                   (list #$(file-append (seatd-package config) "/bin/seatd")
+                         "-u" #$(seatd-user config)
+                         "-g" #$(seatd-group config))
+                   #:environment-variables
+                   (list (string-append "SEATD_LOGLEVEL="
+                                        #$(seatd-loglevel config))
+                         (string-append "SEATD_DEFAULTPATH="
+                                        #$(seatd-socket config)))
+                   #:log-file #$(seatd-logfile config)))
+         (stop #~(make-kill-destructor)))))
+
+(define seatd-environment
+  (match-lambda
+    (($ <seatd-configuration> _ _ _ socket)
+     `(("SEATD_SOCK" . ,socket)))))
+
+(define seatd-service-type
+  (service-type
+   (name 'seatd)
+   (description "Seat management takes care of mediating access
+to shared devices (graphics, input), without requiring the
+applications needing access to be root.")
+   (extensions
+    (list
+     (service-extension session-environment-service-type seatd-environment)
+     ;; TODO: once cgroups is separate dependency we should not mount it here
+     ;; for now it is mounted here, because elogind mounts it
+     (service-extension file-system-service-type (const %control-groups))
+     (service-extension shepherd-root-service-type seatd-shepherd-service)))
+   (default-value (seatd-configuration))))
 
 
 ;;;

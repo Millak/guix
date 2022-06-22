@@ -3,7 +3,7 @@
 ;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2014, 2015, 2016, 2019 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014, 2015 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2014, 2017, 2021 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2014, 2017, 2021, 2022 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2014, 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2015 Omar Radwan <toxemicsquire4@gmail.com>
 ;;; Copyright © 2015 Pierre-Antoine Rault <par@rigelk.eu>
@@ -123,6 +123,7 @@
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
+;;; Copyright © 2022 Jean-Pierre De Jesus DIAZ <me@jeandudey.tech>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -197,6 +198,7 @@
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages node)
   #:use-module (gnu packages ninja)
   #:use-module (gnu packages openstack)
   #:use-module (gnu packages pcre)
@@ -3086,7 +3088,13 @@ server.")
               (chdir "miniupnpc")
               (setenv "CC" #$(cc-for-target))
               (substitute* "Makefile"
-                (("/bin/sh") (search-input-file inputs "/bin/sh"))))))))
+                (("/bin/sh") (search-input-file inputs "/bin/sh")))))
+          (add-before 'subdir 'remove-kernel-version
+            ;; Avoid embedding the running kernel version for reproducible builds
+            (lambda _
+              (substitute*
+                  "miniupnpc/updateminiupnpcstrings.sh"
+                (("^OS_VERSION=`uname -r`") "OS_VERSION=Guix")))))))
     (inputs (list python))              ;we are building a Python extension
     (synopsis "UPnP client for Python")
     (description "Miniupnpc is a client library for Python programs to set up
@@ -3893,6 +3901,71 @@ written in pure Python.")
 adds a 'now' tag providing a convenient access to the arrow.now() API from
 templates.  A format string can be provided to control the output.")
     (license license:expat)))
+
+(define-public python-pysdl2
+  (package
+    (name "python-pysdl2")
+    (version "0.9.11")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "PySDL2" version))
+              (sha256
+               (base32
+                "19id1qswgcj4v4j5kn49shq1xxx3slhjpm0102w87mczsdbi1rck"))))
+    (build-system python-build-system)
+    (arguments
+      (list #:tests? #f ;; Requires /dev/dri, OpenGL module, etc.
+            #:phases
+            #~(modify-phases %standard-phases
+                (add-after 'unpack 'patch-paths
+                  (lambda* (#:key inputs #:allow-other-keys)
+                    (substitute* "sdl2/dll.py"
+                    ;; Disable pysdl2-dll. It can't be packaged on GNU Guix
+                    ;; as it duplicates an existing package (sdl2).
+                    (("prepath = os\\.getenv\\('PYSDL2_DLL_PATH'\\)")
+                     "prepath = \"system\"")
+                    (("^import sdl2dll$") "")
+                    (("postpath = os\\.getenv\\('PYSDL2_DLL_PATH'\\)")
+                     "postpath = \"system\"")
+                    (("DLL\\(.*, os\\.getenv\\(\"PYSDL2_DLL_PATH\"\\)\\)")
+                     (string-append
+                       "DLL(\"SDL2\", [\"SDL2\", \"SDL2-2.0\", \"SDL2-2.0.0\"], \""
+                       (dirname (search-input-file inputs "/lib/libSDL2.so"))
+                       "\")")))
+              (substitute* "sdl2/sdlimage.py"
+                (("os\\.getenv\\(\"PYSDL2_DLL_PATH\"\\)")
+                 (string-append
+                   "\""
+                   (dirname (search-input-file inputs "/lib/libSDL2_image.so"))
+                   "\"")))
+              (substitute* "sdl2/sdlgfx.py"
+                (("os\\.getenv\\(\"PYSDL2_DLL_PATH\"\\)")
+                 (string-append
+                   "\""
+                   (dirname (search-input-file inputs "/lib/libSDL2_gfx.so"))
+                   "\"")))
+              (substitute* "sdl2/sdlmixer.py"
+                (("os\\.getenv\\(\"PYSDL2_DLL_PATH\"\\)")
+                 (string-append
+                   "\""
+                   (dirname (search-input-file inputs "/lib/libSDL2_mixer.so"))
+                   "\"")))
+              (substitute* "sdl2/sdlttf.py"
+                (("os\\.getenv\\(\"PYSDL2_DLL_PATH\"\\)")
+                 (string-append
+                   "\""
+                   (dirname (search-input-file inputs "/lib/libSDL2_ttf.so"))
+                   "\""))))))))
+    (inputs
+      (list sdl2 sdl2-image sdl2-gfx sdl2-mixer sdl2-ttf))
+    (home-page "https://github.com/py-sdl/py-sdl2")
+    (synopsis "Python bindings around the SDL2 game development library")
+    (description "PySDL2 is a pure Python wrapper around the @code{SDL2},
+@code{SDL2_mixer}, @code{SDL2_image}, @code{SDL2_ttf}, and @code{SDL2_gfx}
+libraries.  Instead of relying on C code, it uses the built-in ctypes module
+to interface with SDL2, and provides simple Python classes and wrappers for
+common SDL2 functionality.")
+    (license license:cc0)))
 
 (define-public python-pystache
   (package
@@ -5384,7 +5457,14 @@ include_dirs = ~:*~a/include~%" #$(this-package-input "openblas"))))))
                               ;; These tests may fail on 32-bit systems (see:
                               ;; https://github.com/numpy/numpy/issues/18387).
                               "not test_float_remainder_overflow "
-                              "and not test_pareto"))))))))
+                              "and not test_pareto"
+                              ;; These tests seem to fail on machines without
+                              ;; an FPU is still under investigation upstream.
+                              ;; https://github.com/numpy/numpy/issues/20635
+                              #$@(if (target-riscv64?)
+                                   `(" and not test_float"
+                                     " and not test_fpclass")
+                                   '())))))))))
     (native-inputs
      (list python-cython
            python-hypothesis-next
@@ -10256,6 +10336,26 @@ cyclomatic complexity of Python source code.")
      (list python-pycodestyle-2.6 python-entrypoints python-pyflakes-2.2
            python-mccabe))))
 
+(define-public python-flake8-blind-except
+  (package
+    (name "python-flake8-blind-except")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "flake8-blind-except" version))
+       (sha256
+        (base32 "05nxsxfzfhwsm8gys90228imm2qbnqnw5y8bfqyfngnbkmd5fnpj"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:tests? #f))                    ; no tests
+    (native-inputs (list python-pycodestyle))
+    (home-page "https://github.com/elijahandrews/flake8-blind-except")
+    (synopsis "Check for blind @code{except:} statements")
+    (description "This package provides a flake8 extension that checks for
+blind @code{except:} statements.")
+    (license license:expat)))
+
 (define-public python-flake8-bugbear
   (package
     (name "python-flake8-bugbear")
@@ -10315,6 +10415,29 @@ can be broken over multiple lines by wrapping expressions in parentheses.
 These should be used in preference to using a backslash for line continuation.
 @end quotation")
     (license license:asl2.0)))
+
+(define-public python-flake8-debugger
+  (package
+    (name "python-flake8-debugger")
+    (version "4.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "flake8-debugger" version))
+       (sha256
+        (base32 "0h1qlzbxxhjsw6kg3mcml9h8byy77m9a5z06z2dnvqs115b05c2j"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:tests? #f))              ; no tests in PyPI and no setup.py in GitHub
+    (propagated-inputs
+     (list python-flake8 python-pycodestyle))
+    (home-page "https://github.com/jbkahn/flake8-debugger")
+    (synopsis "@code{ipdb} and @code{pdb} statement checker plugin for flake8")
+    (description "This package provides a Flake8 plugin that checks for
+@code{ipdb} and @code{pdb} imports and set traces, as well as
+@code{from IPython.terminal.embed}, @code{import InteractiveShellEmbed}
+and @code{InteractiveShellEmbed()()}.")
+    (license license:expat)))
 
 (define-public python-flake8-implicit-str-concat
   (package
@@ -11846,7 +11969,6 @@ from the earlier standard from 2003.  The library is also intended to act as a
 suitable drop-in replacement for the “encodings.idna” module that comes with
 the Python standard library but currently only supports the older 2003
 specification.")
-    (properties `((python2-variant . ,(delay python2-idna))))
     (license license:bsd-4)))
 
 (define-public python-libsass
@@ -12347,7 +12469,11 @@ libmagic.")))
                            ;; This test validates that 'pydevd' is not in the
                            ;; exception message, but it is due to being part
                            ;; of the build file name present in the message.
-                           "and not test_evaluate_exception_trace")))))
+                           "and not test_evaluate_exception_trace "
+                           ;; These fail on systems with YAMA LSM’s ptrace
+                           ;; scope > 0. Upstream issue:
+                           ;; https://github.com/fabioz/PyDev.Debugger/issues/218
+                           "and not test_attach_to_pid")))))
             (add-after 'install 'install-attach-binary
               (lambda _
                 (install-file "attach.so"
@@ -12392,6 +12518,7 @@ and other @acronym{IDEs, Integrated Development Environments}.")
     (build-system python-build-system)
     (arguments
      (list
+      #:tests? #f ; Fail on systems with YAMA LSM’s ptrace scope > 0.
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-sh-in-tests
@@ -12412,17 +12539,18 @@ and other @acronym{IDEs, Integrated Development Environments}.")
               (setenv "DEBUGPY_BUNDLING_DISABLED" "1")))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
-              (invoke "pytest" "-vv"
-                      "-n" (number->string (parallel-job-count))
-                      "-k"
-                      (string-append
-                       ;; These tests cannot be run in parallel because their
-                       ;; test data would not be copied by xdist and lead to
-                       ;; import errors. (see:
-                       ;; https://github.com/microsoft/debugpy/issues/342 and
-                       ;; https://github.com/microsoft/debugpy/issues/880).
-                       "not test_custom_python_args "
-                       "and not test_autokill ")))))))
+              (when tests?
+                (invoke "pytest" "-vv"
+                        "-n" (number->string (parallel-job-count))
+                        "-k"
+                        (string-append
+                         ;; These tests cannot be run in parallel because their
+                         ;; test data would not be copied by xdist and lead to
+                         ;; import errors. (see:
+                         ;; https://github.com/microsoft/debugpy/issues/342 and
+                         ;; https://github.com/microsoft/debugpy/issues/880).
+                         "not test_custom_python_args "
+                         "and not test_autokill "))))))))
     (native-inputs
      ;; See: https://raw.githubusercontent.com/microsoft/debugpy/
      ;;      main/tests/requirements.txt.
@@ -12923,10 +13051,10 @@ time.")
            texlive-unicode-math
            texlive-xcolor
            (texlive-updmap.cfg (list texlive-amsfonts
+                                     texlive-amsmath
                                      texlive-eurosym
                                      texlive-fonts-rsfs
                                      texlive-jknappen
-                                     texlive-latex-amsmath
                                      texlive-latex-ucs
                                      texlive-lm
                                      texlive-lm-math
@@ -14364,6 +14492,97 @@ optimization methods of @code{scipy.optimize}.  Initially inspired by (and
 named for) extending the Levenberg-Marquardt method from
 @code{scipy.optimize.leastsq}, lmfit now provides a number of useful
 enhancements to optimization and data fitting problems.")
+    (license license:bsd-3)))
+
+(define-public python-bokeh
+  (package
+    (name "python-bokeh")
+    (version "2.4.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "bokeh" version))
+              (sha256
+               (base32
+                "00sbhya9vfdv3yi07j6mxwx1x1h9497nhd3smdjrcdxgc48q0czg"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               ;; These require selenium.
+               (delete-file "tests/unit/bokeh/io/test_export.py")
+               (delete-file "tests/unit/bokeh/io/test_webdriver.py")
+               (delete-file "tests/unit/bokeh/embed/test_standalone.py")
+
+               ;; Doesn't find ManagedServerLoop fixture
+               (delete-file "tests/unit/bokeh/test_client_server.py")
+
+               ;; This fails because of the Guix wrapper around pytest
+               (delete-file "tests/unit/bokeh/io/test_util__io.py")
+
+               ;; Fixture ipython not found.
+               (delete-file "tests/unit/bokeh/application/handlers/test_notebook__handlers.py")
+               (delete-file "tests/unit/bokeh/command/subcommands/test_info.py")
+
+               ;; pd fixture not found.
+               (delete-file "tests/unit/bokeh/models/test_mappers.py")
+               (delete-file "tests/unit/bokeh/models/util/test_structure.py")
+               (delete-file "tests/unit/bokeh/plotting/test__plot.py")
+               (delete-file "tests/unit/bokeh/plotting/test__graph.py")
+               (delete-file "tests/unit/bokeh/plotting/test_figure.py")
+               (delete-file "tests/unit/bokeh/core/test_json_encoder.py")
+               (delete-file "tests/unit/bokeh/core/property/test_bases.py")
+               (delete-file "tests/unit/bokeh/core/property/test_container.py")
+               (delete-file "tests/unit/bokeh/core/property/test_dataspec.py")
+               (delete-file "tests/unit/bokeh/core/property/test_datetime.py")
+               (delete-file "tests/unit/bokeh/core/property/test_pandas.py")
+
+               ;; nx fixture not found.
+               (delete-file "tests/unit/bokeh/plotting/test_graph.py")
+               (delete-file "tests/unit/bokeh/models/test_graphs.py")
+               (delete-file "tests/unit/bokeh/io/test_showing.py")
+               (delete-file "tests/unit/bokeh/document/test_events__document.py")
+
+               ;; These tests need external sample data
+               (delete-file-recursively "tests/unit/bokeh/sampledata/")
+
+               ;; Attempts to install something via npm.
+               (delete-file "tests/unit/bokeh/test_ext.py")
+
+               ;; More failures due to set up problems.
+               (delete-file "tests/unit/bokeh/server/test_server__server.py")
+               (delete-file "tests/unit/bokeh/server/test_tornado__server.py")
+               (delete-file "tests/unit/bokeh/util/test_serialization.py")
+               (delete-file "tests/unit/bokeh/util/test_hex.py")
+               (delete-file "tests/unit/bokeh/models/test_sources.py")
+               (delete-file "tests/unit/bokeh/embed/test_bundle.py")
+
+               (invoke "pytest" "-v")))))))
+    (propagated-inputs
+     (list node-lts
+           python-jinja2
+           python-numpy
+           python-packaging
+           python-pillow
+           python-pyyaml
+           python-tornado
+           python-typing-extensions))
+    (native-inputs
+     (list python-beautifulsoup4
+           python-dateutil
+           python-flaky
+           python-nbconvert
+           python-pandas
+           python-pytest
+           python-pytz
+           python-requests))
+    (home-page "https://github.com/bokeh/bokeh")
+    (synopsis "Interactive plots and applications in the browser from Python")
+    (description
+     "This package provides tools for interactive plots and applications in the
+browser from Python.")
     (license license:bsd-3)))
 
 (define-public python-boto
@@ -17783,6 +18002,28 @@ JSON) codec.")
      Record Format (DWARF).")
     (license license:public-domain)))
 
+(define-public python-pefile
+  (package
+    (name "python-pefile")
+    (version "2022.5.30")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/erocarrera/pefile")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1qj90a0s2gd5hn2zggypqc1077inid5dcl1fp5973b04kf2b9z8a"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-future))
+    (home-page "https://github.com/erocarrera/pefile")
+    (synopsis "Portable Executable (PE) file parser")
+    (description "This python library provides interfaces for parsing and
+working with Portable Executable (PE) files.  It makes to most information
+from the header, as well as section details and data available.")
+    (license license:expat)))
+
 (define-public python-pyev
   (package
     (name "python-pyev")
@@ -19933,22 +20174,14 @@ design and layout.")
 (define-public python-pkginfo
   (package
     (name "python-pkginfo")
-    (version "1.8.2")
+    (version "1.8.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pkginfo" version))
        (sha256
-        (base32 "1zrbn2gblb1q1rx0jlbd0vc9h1dm1bj0760p40ff5qjhcw5hsbjl"))))
+        (base32 "0z46w559hrl79gf7navgzimj21ma821wka27jh58fvyqilqs8kd8"))))
     (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'patch-tests
-           (lambda _
-             (substitute* "pkginfo/tests/test_installed.py"
-               (("test_ctor_w_package_no_PKG_INFO")
-                "_test_ctor_w_package_no_PKG_INFO")))))))
     (native-inputs
      (list python-wheel))
     (home-page "https://code.launchpad.net/~tseaver/pkginfo/trunk")
@@ -21617,19 +21850,24 @@ and corruption checks.")
 (define-public python-requests-file
   (package
     (name "python-requests-file")
-    (version "1.4.3")
+    (version "1.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "requests-file" version))
        (sha256
-        (base32
-         "1yp2jaxg3v86pia0q512dg3hz6s9y5vzdivsgrba1kds05ial14g"))))
+        (base32 "13kx4k83i9zcv20h0fnmawwwdzhcmw1z97mqib1h379qsc445mq7"))))
     (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "python" "tests/test_requests_file.py")))))))
     (propagated-inputs
      (list python-requests python-six))
-    (home-page
-     "https://github.com/dashea/requests-file")
+    (home-page "https://github.com/dashea/requests-file")
     (synopsis "File transport adapter for Requests")
     (description
      "Requests-File is a transport adapter for use with the Requests Python
@@ -22171,6 +22409,34 @@ which supports the spawning of processes using the API of the standard
 library's @code{threading} module.")
     (license license:bsd-3)))
 
+(define-public python-multiprocessing-on-dill
+  (package
+    (name "python-multiprocessing-on-dill")
+    (version "3.5.0a4")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "multiprocessing_on_dill" version))
+              (sha256
+               (base32
+                "1rs5a3hx1fcpfsxxkl5kx6g06c82wqjqgdqyny5l1ggl1wq0rmfn"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv")))))))
+    (propagated-inputs (list python-dill))
+    (native-inputs (list python-check-manifest python-pytest python-wheel))
+    (home-page "https://github.com/sixty-north/multiprocessing_on_dill")
+    (synopsis "Multiprocessing using dill instead of pickle")
+    (description
+     "This package provides a friendly fork of multiprocessing which uses dill
+instead of pickle.")
+    (license license:psfl)))
+
 (define-public python-toolrack
   (package
     (name "python-toolrack")
@@ -22383,14 +22649,14 @@ data.")
 (define-public python-locket
   (package
     (name "python-locket")
-    (version "0.2.0")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "locket" version))
        (sha256
         (base32
-         "1d4z2zngrpqkrfhnd4yhysh66kjn4mblys2l06sh5dix2p0n7vhz"))))
+         "0cm6290zm3ba62n2x2piy3s8d41hrmffda2nw18ggfwb582lq3aw"))))
     (build-system python-build-system)
     (home-page "https://github.com/mwilliamson/locket.py")
     (synopsis "File-based locks for Python")
@@ -23582,6 +23848,23 @@ several convenience Python scripts, including \"classic\" hex2bin and bin2hex
 converters and more, those based on the library itself.")
     (license license:bsd-3)))
 
+(define-public python-interlap
+  (package
+    (name "python-interlap")
+    (version "0.2.7")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "interlap" version))
+              (sha256
+               (base32
+                "1jbfh00bkrf0i5psa6n75rlgmqp5389xixa9j29w8rxhah6g7r1i"))))
+    (build-system python-build-system)
+    (home-page "https://brentp.github.io/interlap")
+    (synopsis "Fast, simple interval overlap testing")
+    (description "InterLap does fast interval overlap testing with a simple Python data
+structure.")
+    (license license:expat)))
+
 (define-public python-pykwalify
   (package
     (name "python-pykwalify")
@@ -24395,7 +24678,7 @@ with features similar to the @command{wget} utility.")
 (define-public offlate
   (package
     (name "offlate")
-    (version "0.5")
+    (version "0.6.1")
     (source
       (origin
         (method git-fetch)
@@ -24405,33 +24688,37 @@ with features similar to the @command{wget} utility.")
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "13pqnbl05wcyldfvl75fp89vjgwsvxyc69vhnb17kkha2rc2k1h7"))))
+          "1sx5cv8pamyw1m089b6x8ykaxdkx26jk9cblhbzlf0m3ckz52jik"))))
     (build-system python-build-system)
     (arguments
      ;; No tests
      `(#:tests? #f
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'patch-for-pygit2
-                    (lambda _
-                      (substitute* "offlate/systems/git.py"
-                        (("pygit2.remote.RemoteCallbacks")
-                         "pygit2.RemoteCallbacks")))))))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'generate-fonts
+           (lambda _
+             (invoke "make" "fonts")))
+         (add-before 'build 'generate-translations
+           (lambda _
+             (invoke "make" "update-langs"))))))
     (propagated-inputs
       (list python-android-stringslib
             python-dateutil
             python-gitlab
             python-lxml
             python-polib
+            python-pycountry
             python-pyenchant
             python-pygit2
             python-pygithub
             python-pyqt
             python-requests
             python-ruamel.yaml
+            python-translate-toolkit
             python-translation-finder
             python-watchdog))
     (native-inputs
-     (list qttools))
+     (list qttools fontforge))
     (home-page "https://framagit.org/tyreunom/offlate")
     (synopsis "Offline translation interface for online translation tools")
     (description "Offlate offers a unified interface for different translation
@@ -24767,6 +25054,38 @@ HTML-containing files.")
 usable as a configuration language.  This Python package implements parsing and
 dumping of JSON5 data structures.")
     (license license:asl2.0)))
+
+(define-public python-freetype-py
+  (package
+    (name "python-freetype-py")
+    (version "2.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "freetype-py" version ".zip"))
+       (sha256
+        (base32 "1l55wzy21jmdayjna29ahzxrf2fp68580978rs6kap1a4zilrdpr"))))
+    (build-system python-build-system)
+    (native-inputs
+     (list python-setuptools-scm
+           unzip))
+    (inputs (list freetype))
+    (arguments
+     `(#:phases
+       ;; Note: the pypi archive does not contain tests, but running the check
+       ;; phase will at least test whether the module loads correctly.
+       (modify-phases %standard-phases
+         (add-before 'build 'embed-library-reference
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "freetype/raw.py"
+               (("^(filename = ).*" _ >)
+                (string-append > "\"" (search-input-file inputs "/lib/libfreetype.so")
+                               "\"\n"))))))))
+    (home-page "https://github.com/rougier/freetype-py")
+    (synopsis "Freetype python bindings")
+    (description "Freetype Python provides bindings for the FreeType
+library.  Only the high-level API is bound.")
+    (license license:bsd-3)))
 
 (define-public python-frozendict
   (package
@@ -29470,4 +29789,33 @@ Currently, Linux is the only platform supported by this library.")
 Information about these scales can be
 @url{https://en.wikipedia.org/wiki/List_of_musical_scales_and_modes, found on
 Wikipedia}.")
+    (license license:expat)))
+
+(define-public python-langcodes
+  (package
+    (name "python-langcodes")
+    (version "3.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "langcodes" version))
+              (sha256
+               (base32
+                "1xkyh3qdcigb18qiimbwl2669y22hhdmd89mqcd270c7lbahfkbr"))))
+    (build-system python-build-system)
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/rspeer/langcodes")
+    (synopsis "Python library for working with language codes")
+    (description
+     "This package provides a Python library for working with and comparing
+language codes.
+
+@code{python-langcodes} implements @url{http://tools.ietf.org/html/bcp47, BCP
+47}, the IETF Best Current Practices on Tags for Identifying Languages.  BCP
+47 is also known as RFC 5646.  It subsumes ISO 639 and is backward compatible
+with it, and it also implements recommendations from the
+@url{http://cldr.unicode.org/, Unicode CLDR}.
+
+@code{python-langcodes} can also refer to a database of language properties
+and names, built from Unicode CLDR and the IANA subtag registry, if you
+install @code{python-language-data}.")
     (license license:expat)))

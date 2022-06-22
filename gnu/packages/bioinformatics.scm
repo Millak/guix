@@ -111,6 +111,7 @@
   #:use-module (gnu packages jupyter)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages llvm)
   #:use-module (gnu packages logging)
   #:use-module (gnu packages lsof)
   #:use-module (gnu packages machine-learning)
@@ -830,13 +831,13 @@ servers supporting the protocol.")
 (define-public python-pybedtools
   (package
     (name "python-pybedtools")
-    (version "0.8.2")
+    (version "0.9.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pybedtools" version))
               (sha256
                (base32
-                "0wc7z8g8prgdx7n5chjva2fdq03wiwhqisjjxzkjg1j5k5ha7151"))))
+                "18rhzk08d3rpxhi5xh6pqg64x6v5q3daw6y3v54k85v4swncjrwj"))))
     (build-system python-build-system)
     (arguments
      `(#:modules ((srfi srfi-26)
@@ -896,11 +897,16 @@ servers supporting the protocol.")
     (home-page "https://pythonhosted.org/pybedtools/")
     (synopsis "Python wrapper for BEDtools programs")
     (description
-     "pybedtools is a Python wrapper for Aaron Quinlan's BEDtools programs,
+     "This package is a Python wrapper for Aaron Quinlan's BEDtools programs,
 which are widely used for genomic interval manipulation or \"genome algebra\".
 pybedtools extends BEDTools by offering feature-level manipulations from with
 Python.")
-    (license license:gpl2+)))
+    ;; pypi lists GPLv2 in the PKG-INFO and website, but was relicensed in
+    ;; version 0.9.0 and the LICENSE.txt is consistant with the source code.
+    ;;
+    ;; pybedtools/include/gzstream.cpp and pybedtools/include/gzstream.h are
+    ;; licensed lgpl2.1+
+    (license (list license:expat license:lgpl2.1+))))
 
 (define-public python-biom-format
   (package
@@ -13374,6 +13380,145 @@ other data types e.g.: regulons (SCENIC), clusters from Seurat, trajectory
 information...  The package can also be used to extract data from @code{.loom}
 files.")
       (license license:expat))))
+
+(define-public python-ctxcore
+  (package
+    (name "python-ctxcore")
+    (version "0.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aertslab/ctxcore")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "16nlj7z8pirgjad7vlgm7226b3hpw4a7n967vyfg26dsf5n8k70d"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'pretend-version
+            ;; The version string is usually derived via setuptools-scm, but
+            ;; it doesn't work without the .git directory.
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+    (propagated-inputs
+     (list python-cytoolz
+           python-numba
+           python-frozendict
+           python-numpy
+           python-pandas
+           python-pyyaml
+           python-pyarrow-0.16
+           python-tqdm))
+    (native-inputs
+     (list python-pytest
+           python-setuptools-scm))
+    (home-page "https://github.com/aertslab/ctxcore")
+    (synopsis "Core functions for pycisTarget and the SCENIC tool suite")
+    (description
+     "ctxcore is part of the SCENIC suite of tools.  It provides core functions for
+pycisTarget and SCENIC.")
+    (license license:gpl3+)))
+
+(define-public python-arboreto
+  (package
+    (name "python-arboreto")
+    (version "0.1.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/aertslab/arboreto")
+                    (commit "2f475dca08f47a60acc2beb8dd897e77b7495ca4")))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0l0im8ay7l2d24f7vaha454vsaha9s36bfqhbijg3b8ir8apsd7l"))))
+    (build-system python-build-system)
+    ;; Lots of tests fail because python-distributed fails to start the
+    ;; "Nanny" process.
+    (arguments '(#:tests? #false))
+    (propagated-inputs
+     (list python-bokeh
+           python-dask
+           python-distributed
+           python-numpy
+           python-pandas
+           python-scikit-learn
+           python-scipy
+           python-tornado-6))
+    (home-page "https://github.com/aertslab/arboreto")
+    (synopsis "Gene regulatory network inference using tree-based ensemble regressors")
+    (description
+     "This package implements scalable gene regulatory network inference using
+tree-based ensemble regressors.")
+    (license license:bsd-3)))
+
+(define-public pyscenic
+  (package
+    (name "pyscenic")
+    (version "0.11.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aertslab/pySCENIC")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0pbmmr1zdb1vbbs6wx357s59d13pna6x03wq8blj6ckjws8bbq73"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         ;; Numba needs a writable dir to cache functions.
+         (add-before 'check 'set-numba-cache-dir
+           (lambda _
+             (setenv "NUMBA_CACHE_DIR" "/tmp")))
+         (replace 'check
+           (lambda _
+             (invoke "pytest" "-v"))))))
+    (propagated-inputs
+     (list python-ctxcore
+           python-cytoolz
+           python-multiprocessing-on-dill
+           python-llvmlite
+           python-numba
+           python-attrs
+           python-frozendict
+           python-numpy
+           python-pandas
+           python-cloudpickle
+           python-dask
+           python-distributed
+           python-arboreto
+           python-boltons
+           python-setuptools
+           python-pyyaml
+           python-tqdm
+           python-interlap
+           python-umap-learn
+           python-loompy
+           python-networkx
+           python-scipy
+           python-fsspec
+           python-requests
+           python-aiohttp
+           python-scikit-learn))
+    (native-inputs
+     (list python-pytest))
+    (home-page "https://scenic.aertslab.org/")
+    (synopsis "Single-Cell regulatory network inference and clustering")
+    (description
+     "pySCENIC is a Python implementation of the SCENIC pipeline (Single-Cell
+rEgulatory Network Inference and Clustering) which enables biologists to infer
+transcription factors, gene regulatory networks and cell types from
+single-cell RNA-seq data.")
+    (license license:gpl3+)))
 
 (define-public vbz-compression
   (package

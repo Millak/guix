@@ -123,14 +123,14 @@ expressions.")
   (package
     (name "python-pytz")
     ;; This package should be kept in sync with tzdata in (gnu packages base).
-    (version "2021.1")
+    (version "2022.1")
     (source
      (origin
       (method url-fetch)
       (uri (pypi-uri "pytz" version))
       (sha256
        (base32
-        "1nn459q7zg20n75akxl3ljkykgw1ydc8nb05rx1y4f5zjh4ak943"))))
+        "19ya5sh7if819flgmszz585glailhi7rr8frng03n5m8wqphwxhy"))))
     (build-system python-build-system)
     (home-page "http://pythonhosted.org/pytz")
     (synopsis "Python timezone library")
@@ -359,7 +359,6 @@ ISO 8601 dates, time and duration.")
     (description
      "This module parses the most common forms of ISO 8601 date strings (e.g.
 @code{2007-01-14T20:34:22+00:00}) into @code{datetime} objects.")
-    (properties `((python2-variant . ,(delay python2-iso8601))))
     (license expat)))
 
 (define-public python-monotonic

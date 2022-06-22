@@ -37,10 +37,9 @@
           game
           ;; should be "compile", but renpy wants to compile itself really
           ;; badly if we do
-          "quit")
-  #t)
+          "quit"))
 
-(define* (install #:key outputs game (output "out") #:allow-other-keys)
+(define* (install #:key inputs outputs game (output "out") #:allow-other-keys)
   (let* ((out (assoc-ref outputs output))
          (json-dump (call-with-input-file (string-append game
                                                          "/renpy-build.json")
@@ -58,13 +57,12 @@
       (call-with-output-file launcher
         (lambda (port)
           (format port "#!~a~%~a ~s \"$@\""
-                  (which "bash")
-                  (which "renpy")
+                  (search-input-file inputs "/bin/sh")
+                  (search-input-file inputs "/bin/renpy")
                   data)))
-      (chmod launcher #o755)))
-  #t)
+      (chmod launcher #o755))))
 
-(define* (install-desktop-file #:key outputs game (output "out")
+(define* (install-desktop-file #:key inputs outputs game (output "out")
                                #:allow-other-keys)
   (let* ((out (assoc-ref outputs output))
          (json-dump (call-with-input-file (string-append game
@@ -78,10 +76,9 @@
      #:name (assoc-ref json-dump "name")
      #:generic-name (assoc-ref build "display_name")
      #:exec (format #f "~a ~s"
-                    (which "renpy")
+                    (search-input-file inputs "/bin/renpy")
                     (string-append out "/share/renpy/" directory-name))
-     #:categories '("Game" "Visual Novel")))
-  #t)
+     #:categories '("Game" "Visual Novel"))))
 
 (define %standard-phases
   (modify-phases gnu:%standard-phases

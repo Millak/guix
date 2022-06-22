@@ -4,7 +4,7 @@
 ;;; Copyright © 2015, 2016, 2017, 2018, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2016 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2016, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2017, 2018 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -166,7 +166,7 @@ when jobs finish.")
 (define-public slurm
   (package
     (name "slurm")
-    (version "21.08.8")
+    (version "22.05.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -174,7 +174,7 @@ when jobs finish.")
                     version ".tar.bz2"))
               (sha256
                (base32
-                "1sjln54idc9rhg8f2nvm38sgs6fncncyzslas8ixy65pqz2hphbf"))
+                "0f3hhlki8g7slllsnyj1qikbsvr62i0hig85lcdcfnmsagzlhbyi"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -262,6 +262,20 @@ by managing a queue of pending work.")
 ;; As noted in the link, YY.MM is the release scheme, and the 'maintenance'
 ;; digit does not introduce incompatibilities.
 
+(define-public slurm-21.08
+  (package
+    (inherit slurm)
+    (version "21.08.8")
+    (source (origin
+              (inherit (package-source slurm))
+              (method url-fetch)
+              (uri (string-append
+                    "https://download.schedmd.com/slurm/slurm-"
+                    version ".tar.bz2"))
+              (sha256
+               (base32
+                "1sjln54idc9rhg8f2nvm38sgs6fncncyzslas8ixy65pqz2hphbf"))))))
+
 (define-public slurm-20.11
   (package
     (inherit slurm)
@@ -327,7 +341,7 @@ by managing a queue of pending work.")
 (define-public slurm-drmaa
   (package
     (name "slurm-drmaa")
-    (version "1.1.2")
+    (version "1.1.3")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -335,7 +349,7 @@ by managing a queue of pending work.")
                     version "/slurm-drmaa-" version ".tar.gz"))
               (sha256
                (base32
-                "0dn8ypqxdaq3k4jqwwx7msckxnmr6n2z5j68yffp50yy07ajbzjv"))))
+                "1fn3p4wjj0sgvx0isy3hiwi35vhxa2n2ksq5cn9sq2hg7yyb2phl"))))
     (build-system gnu-build-system)
     (arguments `(#:tests? #f)) ; The tests require "bats".
     (inputs

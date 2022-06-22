@@ -886,7 +886,7 @@ and make @code{cpplint} usable in wider contexts.")
 (define-public reproc
   (package
     (name "reproc")
-    (version "14.1.0")
+    (version "14.2.4")
     (source
       (origin
         (method git-fetch)
@@ -895,13 +895,12 @@ and make @code{cpplint} usable in wider contexts.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-          (base32
-            "1n71wb50qv2dmhjgw7azx5gigbrp19l2n3d41g9p05l5l0y1qg0q"))))
+          (base32 "09xnf8hmld1fk8j33zwlz1qcxnjdx1ncbg62csic9va4m1wc2v1d"))))
    (build-system cmake-build-system)
    (arguments
       ;; No tests.
     `(#:tests? #f
-      ;; Enable building of shared library.
+      ;; Build the shared library instead of a static one.
       #:configure-flags `("-DBUILD_SHARED_LIBS=1")))
    (native-inputs
     (list pkg-config))

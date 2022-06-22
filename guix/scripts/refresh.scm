@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2015 Alex Kost <alezost@gmail.com>
@@ -46,9 +46,9 @@
   #:use-module (ice-9 vlist)
   #:use-module (ice-9 format)
   #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-37)
+  #:use-module (srfi srfi-71)
   #:use-module (ice-9 binary-ports)
   #:export (guix-refresh))
 
@@ -315,12 +315,11 @@ KEY-DOWNLOAD specifies a download policy for missing OpenPGP keys; allowed
 values: 'interactive' (default), 'always', and 'never'.  When WARN? is true,
 warn about packages that have no matching updater."
   (if (lookup-updater package updaters)
-      (let-values (((version output source)
-                    (package-update store package updaters
-                                    #:key-download key-download))
-                   ((loc)
-                    (or (package-field-location package 'version)
-                        (package-location package))))
+      (let ((version output source
+                     (package-update store package updaters
+                                     #:key-download key-download))
+            (loc (or (package-field-location package 'version)
+                     (package-location package))))
         (when version
           (if (and=> output file-exists?)
               (begin

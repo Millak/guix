@@ -7,7 +7,7 @@
 ;;; Copyright © 2018 Thorsten Wilms <t_w_@freenet.de>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -175,7 +175,7 @@ of a larger interface.")
 (define-public babl
   (package
     (name "babl")
-    (version "0.1.88")
+    (version "0.1.92")
     (source (origin
               (method url-fetch)
               (uri (list (string-append "https://download.gimp.org/pub/babl/"
@@ -189,7 +189,7 @@ of a larger interface.")
                                         "/babl-" version ".tar.xz")))
               (sha256
                (base32
-                "0fbh2ss1dy3sba4xjmfm4vxxjmx9a6rzgba9ycjygchbm957y3ag"))))
+                "1hd2i1s7fng33msxiafavk3zb4zb9jk61w8qmmsn6jwl51876rzn"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags
@@ -215,7 +215,7 @@ provided, as well as a framework to add new color models and data types.")
 (define-public gegl
   (package
     (name "gegl")
-    (version "0.4.34")
+    (version "0.4.36")
     (source
      (origin
        (method url-fetch)
@@ -229,7 +229,7 @@ provided, as well as a framework to add new color models and data types.")
                                  (version-major+minor version)
                                  "/gegl-" version ".tar.xz")))
        (sha256
-        (base32 "1amazk6g9dk76rxwaqa81j87ql5vgz539n6xk88wccdllnyg0qzg"))))
+        (base32 "19ic3fv0j8ysxxw7bx7gy3l8l8l9ldrvbzxfmmc24w67vh68mmbg"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags
@@ -288,7 +288,7 @@ buffers.")
 (define-public gimp
   (package
     (name "gimp")
-    (version "2.10.30")
+    (version "2.10.32")
     (source
      (origin
        (method url-fetch)
@@ -296,7 +296,7 @@ buffers.")
                            (version-major+minor version)
                            "/gimp-" version ".tar.bz2"))
        (sha256
-        (base32 "1p375gaw2daip6aiv1icrlpws5m1my5kalxkxrvl4zgdfsm5v0c8"))))
+        (base32 "09csp2d8bzf012n7hvbbwngwr9phv3rnip768qdwqpdgah2wf59z"))))
     (build-system gnu-build-system)
     (outputs '("out"
                "doc"))                  ; 9 MiB of gtk-doc HTML

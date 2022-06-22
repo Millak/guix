@@ -3,7 +3,7 @@
 ;;; Copyright © 2015 Andy Wingo <wingo@igalia.com>
 ;;; Copyright © 2015, 2021-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Huang Ying <huang.ying.caritas@gmail.com>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
@@ -54,7 +54,6 @@
   (package
     (name "polkit")
     (version "0.120")
-    (replacement polkit-mozjs/fixed)
     (source (origin
              (method url-fetch)
              (uri (string-append
@@ -63,7 +62,8 @@
              (sha256
               (base32
                "00zfg9b9ivkcj2jcf5b92cpvvyljz8cmfwj86lkvy5rihnd5jypf"))
-             (patches (search-patches "polkit-configure-elogind.patch"))
+             (patches (search-patches "polkit-configure-elogind.patch"
+                                      "polkit-CVE-2021-4034.patch"))
              (modules '((guix build utils)))
              (snippet
               '(begin
@@ -93,12 +93,12 @@
     (propagated-inputs
      (list glib)) ; required by polkit-gobject-1.pc
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("glib:bin" ,glib "bin") ; for glib-mkenums
-       ("intltool" ,intltool)
-       ("gobject-introspection" ,gobject-introspection)
-       ("libxslt" ,libxslt) ; for man page generation
-       ("docbook-xsl" ,docbook-xsl))) ; for man page generation
+     (list pkg-config
+           `(,glib "bin")                         ;for glib-mkenums
+           intltool
+           gobject-introspection
+           libxslt                                ;for man page generation
+           docbook-xsl))                          ;for man page generation
     (arguments
      `(#:configure-flags '("--sysconfdir=/etc"
                            "--enable-man-pages"
@@ -147,16 +147,6 @@ making process with respect to granting access to privileged operations
 for unprivileged applications.")
     (license lgpl2.0+)))
 
-(define-public polkit-mozjs/fixed
-  (package
-    (inherit polkit-mozjs)
-    (version "0.121")
-    (source (origin
-              (inherit (package-source polkit-mozjs))
-              (patches (cons (search-patch "polkit-CVE-2021-4034.patch")
-                             (origin-patches
-                              (package-source polkit-mozjs))))))))
-
 ;;; Variant of polkit built with Duktape, a lighter JavaScript engine compared
 ;;; to mozjs.
 (define-public polkit-duktape
@@ -180,13 +170,11 @@ for unprivileged applications.")
                (lambda _
                  (delete-file "configure")))))))
       (native-inputs
-       (append `(("autoconf" ,autoconf)
-                 ("automake" ,automake)
-                 ("libtool" ,libtool)
-                 ("pkg-config" ,pkg-config))
-           (package-native-inputs base)))
-      (inputs (alist-replace "mozjs" `(,duktape)
-                             (package-inputs base))))))
+       (modify-inputs (package-native-inputs base)
+         (prepend autoconf automake libtool)))
+      (inputs
+       (modify-inputs (package-inputs base)
+         (replace "mozjs" duktape))))))
 
 (define polkit-for-system
   (mlambda (system)
@@ -207,15 +195,15 @@ regular polkit that requires mozjs or its duktape variant."
 (define-public polkit-qt
   (package
     (name "polkit-qt")
-    (version "1-0.112.0")
+    (version "1-0.114.0")
     (source (origin
              (method url-fetch)
              (uri (string-append
-                   "mirror://kde//stable/apps/KDE4.x/admin/"
-                   "polkit-qt-" version ".tar.bz2"))
+                   "mirror://kde/stable/polkit-qt-1/"
+                   "polkit-qt-" version ".tar.xz"))
              (sha256
               (base32
-               "1ip78x20hjqvm08kxhp6gb8hf6k5n6sxyx6kk2yvvq53djzh7yv7"))))
+               "0zlhwgkqn8g0rkjc7c5n7fbhyyl4jcv0rg5zlbzrb0l88ljg5c1f"))))
     (build-system cmake-build-system)
     (inputs
      (list polkit))

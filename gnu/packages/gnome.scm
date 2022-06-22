@@ -71,6 +71,7 @@
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2022 Leo Nikkilä <hello@lnikki.la>
 ;;; Copyright © 2022 Rene Saavedra <nanuui@protonmail.com>
+;;; Copyright © 2022 Alexandros Theodotou <alex@zrythm.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -6694,7 +6695,7 @@ a secret password store, an adblocker, and a modern UI.")
 (define-public epiphany
   (package
     (name "epiphany")
-    (version "41.2")
+    (version "42.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/epiphany/"
@@ -6702,65 +6703,61 @@ a secret password store, an adblocker, and a modern UI.")
                                   "epiphany-" version ".tar.xz"))
               (sha256
                (base32
-                "0k7b22zq3z1kllzqxgwsvwb1lp0j6rjb3k1hvhna3i573wc4mpji"))
-              (patches
-               (search-patches "epiphany-update-libportal-usage.patch"))))
+                "0b8rhns3b58f8dnp83mm1g933aqf88d8wrfyyp7jq3fihvw2rh4j"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-gtk-update-icon-cache
-           ;; Don't create 'icon-theme.cache'.
-           (lambda _
-             (substitute* "post_install.py"
-               (("gtk-update-icon-cache") "true"))))
-         (add-after 'unpack 'disable-failing-tests
-           (lambda _
-             (substitute* "tests/meson.build"
-               ;; embed_shell fails, because webkitgtk apparently no longer
-               ;; supports overriding the ftp schema web_app_utils fails due
-               ;; to missing network access.
-               (("(embed_shell|web_app_utils)_test,")
-                "find_program('sh'), args: ['-c', 'exit 77'],"))))
-         (add-before 'check 'pre-check
-           (lambda _
-             ;; Tests require a running X server.
-             (system "Xvfb :1 &")
-             (setenv "DISPLAY" ":1"))))
-       #:configure-flags
-       ;; Otherwise, the RUNPATH will lack the final 'epiphany' path component.
-       (list (string-append "-Dc_link_args=-Wl,-rpath="
-                            (assoc-ref %outputs "out") "/lib/epiphany"))))
-    (propagated-inputs
-     (list dconf))
-    (native-inputs
-     `(("desktop-file-utils" ,desktop-file-utils) ; for update-desktop-database
-       ("glib:bin" ,glib "bin") ; for glib-mkenums
-       ("intltool" ,intltool)
-       ("itstool" ,itstool)
-       ("pkg-config" ,pkg-config)
-       ("xmllint" ,libxml2)
-       ("xorg-server" ,xorg-server-for-tests)))
-    (inputs
-     `(("avahi" ,avahi)
-       ("gcr" ,gcr)
-       ("librsvg" ,librsvg) ; for loading SVG files
-       ("glib-networking" ,glib-networking)
-       ("gnome-desktop" ,gnome-desktop)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("json-glib" ,json-glib)
-       ("iso-codes" ,iso-codes)
-       ("libarchive" ,libarchive)
-       ("libdazzle" ,libdazzle)
-       ("libhandy" ,libhandy)
-       ("libnotify" ,libnotify)
-       ("libportal" ,libportal)
-       ("libsecret" ,libsecret)
-       ("libxslt" ,libxslt)
-       ("nettle" ,nettle) ; for hogweed
-       ("sqlite" ,sqlite)
-       ("webkitgtk" ,webkitgtk-with-libsoup2)))
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            ;; Don't create 'icon-theme.cache'.
+            (lambda _
+              (substitute* "post_install.py"
+                (("gtk-update-icon-cache") "true"))))
+          (add-after 'unpack 'disable-failing-tests
+            (lambda _
+              (substitute* "tests/meson.build"
+                ;; embed_shell fails, because webkitgtk apparently no longer
+                ;; supports overriding the ftp schema web_app_utils fails due
+                ;; to missing network access.
+                (("(embed_shell|web_app_utils)_test,")
+                 "find_program('sh'), args: ['-c', 'exit 77'],"))))
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; Tests require a running X server.
+              (system "Xvfb :1 &")
+              (setenv "DISPLAY" ":1"))))
+      #:configure-flags
+      ;; Otherwise, the RUNPATH will lack the final 'epiphany' path component.
+      #~(list (string-append "-Dc_link_args=-Wl,-rpath="
+                             #$output "/lib/epiphany"))))
+    (propagated-inputs (list dconf))
+    (native-inputs (list desktop-file-utils ; for update-desktop-database
+                         `(,glib "bin") ; for glib-mkenums
+                         intltool
+                         itstool
+                         pkg-config
+                         libxml2
+                         xorg-server-for-tests))
+    (inputs (list avahi
+                  gcr
+                  librsvg ; for loading SVG files
+                  glib-networking
+                  gnome-desktop
+                  gsettings-desktop-schemas
+                  json-glib
+                  iso-codes
+                  libarchive
+                  libdazzle
+                  libhandy
+                  libnotify
+                  libportal
+                  libsecret
+                  libxslt
+                  nettle ; for hogweed
+                  sqlite
+                  webkitgtk-with-libsoup2))
     (home-page "https://wiki.gnome.org/Apps/Web")
     (synopsis "GNOME web browser")
     (description
@@ -11018,7 +11015,7 @@ functionality.")
 (define-public gthumb
   (package
     (name "gthumb")
-    (version "3.12.0")
+    (version "3.12.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gthumb/"
@@ -11026,7 +11023,7 @@ functionality.")
                                   "gthumb-" version ".tar.xz"))
               (sha256
                (base32
-                "0grqiq6v26z8avl7mj24xy4i9bl1niwpqhqw6rblprl40c1zrvrx"))))
+                "09flm8s6jrvfya2ypw5873mnnani8ssy7wdv3ra1cljk4bjszy4p"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -12310,7 +12307,7 @@ profiler via Sysprof, debugging support, and more.")
 (define-public komikku
   (package
     (name "komikku")
-    (version "0.38.0")
+    (version "0.39.0")
     (source
      (origin
        (method git-fetch)
@@ -12320,7 +12317,7 @@ profiler via Sysprof, debugging support, and more.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1khf51r8001j0cvjja5rkqi07v08nqyz97hx8fjyi7p3l5b5vkwc"))))
+         "1g765kbgimfpvma67j1gscj046n2q9a9nr2pczlw65qwlm0418c5"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -12579,45 +12576,43 @@ Document Analysis and Recognition program.")
     (license license:gpl3+)))
 
 (define-public libadwaita
-  (let ((commit "8d66b987a19979d9d7b85dacc6bad5ce0c8743fe")
-        (revision "1"))
-    (package
-      (name "libadwaita")
-      (version (git-version "0.0.1" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://gitlab.gnome.org/GNOME/libadwaita.git")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0i3wav6jsyi4w4i2r1rad769m5y5s9djj4zqb7dfyh0bad24ba3q"))))
-      (build-system meson-build-system)
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-before 'check 'pre-check
-             (lambda* (#:key inputs #:allow-other-keys)
-               ;; Tests require a running X server.
-               (system "Xvfb :1 &")
-               (setenv "DISPLAY" ":1"))))))
-      (native-inputs
-       `(("sassc" ,sassc)
-         ("glib:bin" ,glib "bin")
-         ("gtk-doc" ,gtk-doc/stable)
-         ("pkg-config" ,pkg-config)
-         ("vala" ,vala)
-         ("xvfb" ,xorg-server-for-tests)))
-      (inputs
-       (list gtk gobject-introspection libportal))
-      (home-page "https://gnome.pages.gitlab.gnome.org/libadwaita/")
-      (synopsis "Building blocks for GNOME applications")
-      (description
-       "@code{libadwaita} offers widgets and objects to build GNOME
+  (package
+    (name "libadwaita")
+    (version "1.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/libadwaita/"
+                                  (version-major+minor version) "/"
+                                  "libadwaita-" version ".tar.xz"))
+              (sha256
+               (base32
+                "03h14mrm453bn03f48rmpf85pvg5cnzzab27cs1c43417s09ixdg"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'pre-check
+           (lambda* (#:key inputs #:allow-other-keys)
+             ;; Tests require a running X server.
+             (system "Xvfb :1 &")
+             (setenv "DISPLAY" ":1"))))))
+    (native-inputs
+     `(("sassc" ,sassc)
+       ("glib:bin" ,glib "bin")
+       ("gtk-doc" ,gtk-doc/stable)
+       ("pkg-config" ,pkg-config)
+       ("vala" ,vala)
+       ("xvfb" ,xorg-server-for-tests)
+       ("gettext" ,gettext-minimal)))
+    (inputs
+     (list gtk gobject-introspection libportal))
+    (home-page "https://gnome.pages.gitlab.gnome.org/libadwaita/")
+    (synopsis "Building blocks for GNOME applications")
+    (description
+     "@code{libadwaita} offers widgets and objects to build GNOME
 applications scaling from desktop workstations to mobile phones.  It is the
 successor of @code{libhandy} for GTK4.")
-      (license license:lgpl2.1+))))
+    (license license:lgpl2.1+)))
 
 (define-public gnome-power-manager
   (package
