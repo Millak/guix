@@ -1538,7 +1538,7 @@ functionality to display information about the most commonly used services.")
     (propagated-inputs
      (list ;; As required by wlroots.pc.
            eudev
-           libinput
+           libinput-minimal
            libxkbcommon
            mesa
            pixman
