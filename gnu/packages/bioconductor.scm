@@ -2317,6 +2317,33 @@ reproducible gene expression signatures capable of accurately distinguishing
 tumor samples from healthy controls.")
     (license license:artistic2.0)))
 
+(define-public r-aseb
+  (package
+    (name "r-aseb")
+    (version "1.40.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "ASEB" version))
+              (sha256
+               (base32
+                "1i0r4vimk6is4j4rr14ajp8papznpmmr0bhwd96s8w53cqdqph7p"))))
+    (properties `((upstream-name . "ASEB")))
+    (build-system r-build-system)
+    (home-page "https://bioconductor.org/packages/ASEB")
+    (synopsis "Predict acetylated lysine sites")
+    (description
+     "ASEB is an R package to predict lysine sites that can be acetylated by a
+specific @dfn{KAT} (K-acetyl-transferases) family.  Lysine acetylation is a
+well-studied posttranslational modification on kinds of proteins.  About four
+thousand lysine acetylation sites and over 20 lysine KATs have been
+identified.  However, which KAT is responsible for a given protein or lysine
+site acetylation is mostly unknown.  In this package, we use a
+@dfn{GSEA}-like (Gene Set Enrichment Analysis) method to make predictions.
+GSEA method was developed and successfully used to detect coordinated
+expression changes and find the putative functions of the long non-coding
+RNAs.")
+    (license license:gpl3+)))
+
 (define-public r-asgsca
   (package
     (name "r-asgsca")
