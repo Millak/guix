@@ -325,13 +325,6 @@ required structures.")
     (properties '((ftp-server . "ftp.gnutls.org")
                   (ftp-directory . "/gcrypt/gnutls")))))
 
-(define-public gnutls/guile-2.0
-  ;; GnuTLS for Guile 2.0.
-  (package/inherit gnutls
-    (name "guile2.0-gnutls")
-    (inputs `(("guile" ,guile-2.0)
-              ,@(alist-delete "guile" (package-inputs gnutls))))))
-
 (define-public gnutls/dane
   ;; GnuTLS with build libgnutls-dane, implementing DNS-based
   ;; Authentication of Named Entities.  This is required for GNS functionality
