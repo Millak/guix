@@ -2564,7 +2564,7 @@ read and write, and compatible with JSON.")
      (list bmake pkg-config wayland-protocols))
     (inputs
      `(("cairo" ,cairo)
-       ("libinput" ,libinput)
+       ("libinput" ,libinput-minimal)
        ("libucl" ,libucl)
        ("libxkbcommon" ,libxkbcommon)
        ("pam" ,linux-pam)
