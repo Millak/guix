@@ -10016,37 +10016,6 @@ used in place of @code{tabular}, @code{tabular*} and @code{tabularx}
 environments, as well as the @code{array} environment in maths mode.")
       (license license:lppl1.3+))))
 
-(define-public texlive-tools
-  (let ((template (simple-texlive-package
-                   "texlive-tools"
-                   (list "/doc/latex/tools/"
-                         "/source/latex/tools/")
-                   (base32
-                    "1xas0b69r3d5x4zhcqysgybyqaikd9avv6r1bdckb947id3iaz58"))))
-    (package
-      (inherit template)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "latex/tools")
-         ((#:build-targets _ '())
-          ''("tools.ins"))
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'chdir
-               (lambda _ (chdir "source/latex/tools") #t))))))
-      (home-page "https://www.ctan.org/tex-archive/macros/latex/required/tools/")
-      (synopsis "LaTeX standard tools bundle")
-      (description "This package provides a collection of simple tools that
-are part of the LaTeX required tools distribution, comprising the packages:
-@code{afterpage}, @code{array}, @code{bm}, @code{calc}, @code{dcolumn},
-@code{delarray}, @code{enumerate}, @code{fileerr}, @code{fontsmpl},
-@code{ftnright}, @code{hhline}, @code{indentfirst}, @code{layout},
-@code{longtable}, @code{multicol}, @code{rawfonts}, @code{showkeys},
-@code{somedefs}, @code{tabularx}, @code{theorem}, @code{trace},
-@code{varioref}, @code{verbatim}, @code{xr}, and @code{xspace}.")
-      (license license:lppl1.3+))))
-
 (define-public texlive-latex-xkeyval
   (package
     (name "texlive-latex-xkeyval")
