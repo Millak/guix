@@ -140,49 +140,45 @@ in intelligent transportation networks.")
     (version "0.23.22")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "https://github.com/p11-glue/p11-kit/releases/"
-                          "download/" version "/p11-kit-" version ".tar.xz"))
-      (sha256
-       (base32 "1dn6br4v033d3gp2max9lsr3y4q0nj6iyr1yq3kzi8ym7lal13wa"))))
+       (method url-fetch)
+       (uri (string-append "https://github.com/p11-glue/p11-kit/releases/"
+                           "download/" version "/p11-kit-" version ".tar.xz"))
+       (sha256
+        (base32 "1dn6br4v033d3gp2max9lsr3y4q0nj6iyr1yq3kzi8ym7lal13wa"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(,@(if (hurd-target?)
-             `(("autoconf" ,autoconf)
-               ("automake" ,automake)
-               ("gettext" ,gettext-minimal) ;for autopoint
-               ("libtool" ,libtool))
-             '())
-       ("pkg-config" ,pkg-config)))
+     (append (list pkg-config)
+             (if (hurd-target?)
+                 (list autoconf automake gettext-minimal libtool)
+                 '())))
     (inputs
-     `(("libffi" ,libffi)
-       ,@(if (hurd-target?)
-             `(("libbsd" ,libbsd)
-               ("hurd-patch" ,(search-patch "p11-kit-hurd.patch")))
-             '())
-       ("libtasn1" ,libtasn1)))
+     (append (list libffi libtasn1)
+             (if (hurd-target?)
+                 (list libbsd)
+                 '())))
     (arguments
-     `(#:configure-flags '("--without-trust-paths")
-       #:phases (modify-phases %standard-phases
-                  ,@(if (hurd-target?)
-                        '((add-after 'unpack 'apply-hurd-patch
-                            (lambda* (#:key inputs #:allow-other-keys)
-                              (let ((patch (assoc-ref inputs "hurd-patch")))
-                                (invoke "patch" "-p1" "--batch" "-i"
-                                        patch))))
-                          (replace 'bootstrap
-                            (lambda _
-                              (invoke "autoreconf" "-fiv"))))
-                        '())
-                  (add-before 'check 'prepare-tests
-                    (lambda _
-                      ;; "test-runtime" expects XDG_RUNTIME_DIR to be set up
-                      ;; and looks for .cache and other directories (only).
-                      ;; For simplicity just drop it since it is irrelevant
-                      ;; in the build container.
-                      (substitute* "Makefile"
-                        (("test-runtime\\$\\(EXEEXT\\)") ""))
-                      #t)))))
+     (list #:configure-flags #~'("--without-trust-paths")
+           #:phases #~(modify-phases %standard-phases
+                        #$@(if (hurd-target?)
+                               #~((add-after 'unpack 'apply-hurd-patch
+                                    (lambda* (#:key inputs #:allow-other-keys)
+                                      (define patch
+                                        #$(local-file
+                                           (search-patch "p11-kit-hurd.patch")))
+                                      (invoke "patch" "-p1" "--batch" "-i"
+                                              patch)))
+                                  (replace 'bootstrap
+                                    (lambda _
+                                      (invoke "autoreconf" "-fiv"))))
+                               #~())
+                        (add-before 'check 'prepare-tests
+                          (lambda _
+                            ;; "test-runtime" expects XDG_RUNTIME_DIR to be set up
+                            ;; and looks for .cache and other directories (only).
+                            ;; For simplicity just drop it since it is irrelevant
+                            ;; in the build container.
+                            (substitute* "Makefile"
+                              (("test-runtime\\$\\(EXEEXT\\)") "")))))))
     (home-page "https://p11-glue.github.io/p11-glue/p11-kit.html")
     (synopsis "PKCS#11 library")
     (description
@@ -208,8 +204,8 @@ living in the same process.")
      ;; Use the default certificates so that users such as flatpak find them.
      ;; See <https://issues.guix.gnu.org/49957>.
      (substitute-keyword-arguments (package-arguments p11-kit)
-       ((#:configure-flags flags ''())
-        ''("--with-trust-paths=/etc/ssl/certs/ca-certificates.crt"))))))
+       ((#:configure-flags flags #~'())
+        #~'("--with-trust-paths=/etc/ssl/certs/ca-certificates.crt"))))))
 
 (define-public gnutls
   (package
