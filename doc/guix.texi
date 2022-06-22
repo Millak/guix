@@ -38368,8 +38368,8 @@ evaluated, they are sent to the local Guix daemon.  Cuirass then
 listens to the Guix daemon output to detect the various build events.
 
 @item Using the remote build mechanism.
-The build jobs are not submitted to the local Guix daemon.  Instead, a
-remote server dispatches build requests to the connect remote workers,
+The build jobs are not submitted to the local Guix daemon.  Instead, one
+``remote server'' dispatches build requests to the connected ``remote workers'',
 according to the build priorities.
 
 @end itemize
