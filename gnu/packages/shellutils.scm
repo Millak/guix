@@ -14,6 +14,7 @@
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2021 Wiktor Żelazny <wzelazny@vurv.cz>
+;;; Copyright © 2022 Jose G Perez Taveras <josegpt27@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -368,7 +369,7 @@ are already there.")
 (define-public direnv
   (package
     (name "direnv")
-    (version "2.31.0")
+    (version "2.32.1")
     (source
      (origin (method git-fetch)
              (uri (git-reference
@@ -377,7 +378,7 @@ are already there.")
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "1c52izjzkdhmyrfx1gmbp34n0qpxyxw0s94f0vy3ldlg8xr36wmk"))))
+               "1i473j7j4sx8p83zqlnakskqk0jyd3byajp7jmv2gym9s4k841y7"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/direnv/direnv"
