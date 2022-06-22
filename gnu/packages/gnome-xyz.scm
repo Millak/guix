@@ -17,6 +17,7 @@
 ;;; Copyright © 2021 Attila Lendvai <attila@lendvai.name>
 ;;; Copyright © 2021 Charles Jackson <charles.b.jackson@protonmail.com>
 ;;; Copyright © 2022 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2022 Sughosha <sughosha@proton.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -984,6 +985,38 @@ animation of closing windowed applications.")
     (description "Blur My Shell adds a blur look to different parts of the
 GNOME Shell, including the top panel, dash and overview.")
     (license license:gpl3)))
+
+(define-public gnome-shell-extension-radio
+  (package
+    (name "gnome-shell-extension-radio")
+    (version "19")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url
+                     "https://github.com/hslbck/gnome-shell-extension-radio")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1qsi6c57hxh4jqdw18knm06601lhag6jdbvzg0r79aa9572zy8a0"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan #~'(("radio@hslbck.gmail.com"
+                          "/share/gnome-shell/extensions/"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'glib-compile-schemas
+            (lambda _
+              (invoke "glib-compile-schemas"
+                      "radio@hslbck.gmail.com/schemas"))))))
+    (native-inputs (list `(,glib "bin")))
+    (home-page "https://github.com/hslbck/gnome-shell-extension-radio")
+    (synopsis "Internet radio for GNOME Shell")
+    (description "This extension implements an internet radio player
+directly inside GNOME Shell.  It can manage stations and play streams.")
+    (license license:gpl3+)))
 
 (define-public arc-theme
   (package
