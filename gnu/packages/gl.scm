@@ -15,7 +15,7 @@
 ;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
-;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2021, 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -320,10 +320,10 @@ also known as DXTn or DXTC) for Mesa.")
              ("armhf-linux"
               ;; Freedreno FTBFS when built on a 64-bit machine.
               '("-Dgallium-drivers=etnaviv,kmsro,lima,nouveau,panfrost,r300,r600,swrast,tegra,v3d,vc4,virgl"))
-             ((or "powerpc64le-linux" "powerpc-linux" "riscv64-linux")
+             ((or "powerpc64le-linux" "powerpc-linux")
               '("-Dgallium-drivers=nouveau,r300,r600,radeonsi,swrast,virgl"))
              (_
-              '("-Dgallium-drivers=iris,nouveau,r300,r600,radeonsi,svga,swrast,virgl")))
+              '("-Dgallium-drivers=auto")))
          ;; Enable various optional features.  TODO: opencl requires libclc,
          ;; omx requires libomxil-bellagio
          "-Dplatforms=x11,wayland"
@@ -340,14 +340,10 @@ also known as DXTn or DXTC) for Mesa.")
 
          ;; Explicitly enable Vulkan on some architectures.
          ,@(match (%current-system)
-             ((or "i686-linux" "x86_64-linux")
-              '("-Dvulkan-drivers=intel,amd"))
              ((or "powerpc64le-linux" "powerpc-linux")
               '("-Dvulkan-drivers=amd,swrast"))
              ("aarch64-linux"
               '("-Dvulkan-drivers=freedreno,amd,broadcom,swrast"))
-             ("riscv64-linux"
-              '("-Dvulkan-drivers=amd,swrast"))
              (_
               '("-Dvulkan-drivers=auto")))
 
