@@ -2317,6 +2317,54 @@ reproducible gene expression signatures capable of accurately distinguishing
 tumor samples from healthy controls.")
     (license license:artistic2.0)))
 
+(define-public r-aspli
+  (package
+    (name "r-aspli")
+    (version "2.6.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "ASpli" version))
+              (sha256
+               (base32
+                "1frlcwa8m4imfx6ncav8r8yskyaf4ibha177mfnp9y84w6mphynz"))))
+    (properties `((upstream-name . "ASpli")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-annotationdbi
+           r-biocgenerics
+           r-biocstyle
+           r-data-table
+           r-dt
+           r-edger
+           r-genomicalignments
+           r-genomicfeatures
+           r-genomicranges
+           r-gviz
+           r-htmltools
+           r-igraph
+           r-iranges
+           r-limma
+           r-mass
+           r-pbmcapply
+           r-rsamtools
+           r-s4vectors
+           r-tidyr
+           r-upsetr))
+    (home-page "https://bioconductor.org/packages/ASpli")
+    (synopsis "Analysis of alternative splicing using RNA-Seq")
+    (description
+     "@dfn{AS} (alternative splicing) is a common mechanism of
+post-transcriptional gene regulation in eukaryotic organisms that expands the
+functional and regulatory diversity of a single gene by generating multiple
+mRNA isoforms that encode structurally and functionally distinct proteins.
+ASpli is an integrative pipeline and user-friendly R package that facilitates
+the analysis of changes in both annotated and novel AS events.  ASpli
+integrates several independent signals in order to deal with the complexity
+that might arise in splicing patterns.")
+    ;; The authors didn't specify any GPL version in description or in the
+    ;; sources.
+    (license (list license:gpl2+ license:gpl3+))))
+
 (define-public r-assessorf
   (package
     (name "r-assessorf")
