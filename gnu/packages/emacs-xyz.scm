@@ -779,10 +779,10 @@ information in the mode line.")
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/project-" version ".tar"))
        (sha256
-        (base32 "1x3zkbjsi04v5ny3yxqrb75vcacrj9kxmpm9mvkp0n07j5g34f68"))))
+        (base32 "0q2js8qihlhchpx2mx0f992ygslsqri2q4iv8kcl4fx31lpp7c1k"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-xref))
-    (home-page "http://elpa.gnu.org/packages/project.html")
+    (home-page "https://elpa.gnu.org/packages/project.html")
     (synopsis "Operations on the current project")
     (description
      "This library contains generic infrastructure for dealing with projects,
