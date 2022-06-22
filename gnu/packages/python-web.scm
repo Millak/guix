@@ -6332,7 +6332,16 @@ the @code{BasicRouter}.")
     (arguments
      ;; PyPi sources does not contain tests, recursive dependency on
      ;; python-sanic.
-     (list #:tests? #f))
+     (list #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'loosen-requirements
+                 (lambda _
+                   ;; Don't place an upper boundary on httpx version.
+                   ;; https://github.com/sanic-org/sanic-testing/pull/39
+                   (substitute* "setup.py"
+                     (("httpx>=0\\.18,<0\\.23")
+                      "httpx>=0.18")))))))
     (propagated-inputs (list python-httpx python-sanic-bootstrap
                              python-websockets))
     (home-page "https://github.com/sanic-org/sanic-testing/")
