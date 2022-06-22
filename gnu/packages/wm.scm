@@ -1727,7 +1727,7 @@ display a clock or apply image manipulation techniques to the background image."
                   gtkmm-3
                   jsoncpp
                   libdbusmenu
-                  libinput
+                  libinput-minimal
                   libmpdclient
                   libnl
                   libxml2
