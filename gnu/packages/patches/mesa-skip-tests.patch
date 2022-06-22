@@ -5,15 +5,14 @@ completely with this patch:
 https://gitlab.freedesktop.org/mesa/mesa/-/issues/4091
 
 diff --git a/src/util/meson.build b/src/util/meson.build
-index 319b22d9bf7..93790c72675 100644
+index 2a1028f0d3a..0d31f38b671 100644
 --- a/src/util/meson.build
 +++ b/src/util/meson.build
-@@ -344,7 +344,7 @@ if with_tests
-     )
-   endif
- 
--  foreach t: ['bitset', 'register_allocate', 'u_debug_stack', 'u_qsort']
-+  foreach t: ['bitset', 'register_allocate', 'u_qsort']
-     test(
-       t,
-       executable(
+@@ -330,7 +330,6 @@ if with_tests
+     'tests/set_test.cpp',
+     'tests/sparse_array_test.cpp',
+     'tests/u_atomic_test.cpp',
+-    'tests/u_debug_stack_test.cpp',
+     'tests/u_printf_test.cpp',
+     'tests/u_qsort_test.cpp',
+     'tests/vector_test.cpp',

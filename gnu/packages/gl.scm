@@ -261,7 +261,7 @@ also known as DXTn or DXTC) for Mesa.")
 (define-public mesa
   (package
     (name "mesa")
-    (version "21.3.8")
+    (version "22.1.2")
     (source
       (origin
         (method url-fetch)
@@ -273,7 +273,7 @@ also known as DXTn or DXTC) for Mesa.")
                                   version "/mesa-" version ".tar.xz")))
         (sha256
          (base32
-          "19wx5plk6z0hhi0zdzxjx8ynl3lhlc5mbd8vhwqyk92kvhxjf3g7"))
+          "1smrvvh8l7xcccwfbccx9k0ihzh1whrnnwsmqb7i0gba99mj4w89"))
         (patches
          (search-patches "mesa-skip-tests.patch"))))
     (build-system meson-build-system)
@@ -357,15 +357,8 @@ also known as DXTn or DXTC) for Mesa.")
          ;; Also enable the tests.
          "-Dbuild-tests=true"
 
-         ;; on non-intel systems, drop i915 and i965
-         ;; from the default dri drivers
-         ,@(match (%current-system)
-             ((or "x86_64-linux" "i686-linux")
-              '("-Ddri-drivers=i915,i965,nouveau,r200,r100"))
-             (_
-              '("-Ddri-drivers=nouveau,r200,r100")))
-
-                "-Dllvm=enabled")       ; default is x86/x86_64 only
+         ;; Enable LLVM; default is x86/x86_64 only.
+         "-Dllvm=enabled")
 
        ;; XXX: 'debugoptimized' causes LTO link failures on some drivers.  The
        ;; documentation recommends using 'release' for performance anyway.
@@ -413,11 +406,6 @@ also known as DXTn or DXTC) for Mesa.")
                     ;; This test times out and receives SIGTERM.
                     (substitute* "src/amd/common/meson.build"
                       (("and not with_platform_windows") "and with_platform_windows"))))
-                 ("i686-linux"
-                  ;; Disable new test from Mesa 19 that fails on i686.  Upstream
-                  ;; report: <https://bugs.freedesktop.org/show_bug.cgi?id=110612>.
-                  `((substitute* "src/util/tests/format/meson.build"
-                      (("'u_format_test',") ""))))
                  ("aarch64-linux"
                   ;; The ir3_disasm test segfaults.
                   ;; The simplest way to skip it is to run a different test instead.
