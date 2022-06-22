@@ -11417,14 +11417,14 @@ files, using JSON::PP and/or CPAN::Meta::YAML.")
 (define-public perl-scalar-list-utils
   (package
     (name "perl-scalar-list-utils")
-    (version "1.60")
+    (version "1.62")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://cpan/authors/id/P/PE/PEVANS/"
                            "Scalar-List-Utils-" version ".tar.gz"))
        (sha256
-        (base32 "01szp3agmww6gj3hwqbpi8csn9675qcc7dw828r8y00z0bcbm1f6"))))
+        (base32 "17rk9n5fvyzdavdp8ja1s8l50vwmhvzbsjl7rc52rkzhgpnc8ybj"))))
     (build-system perl-build-system)
     (home-page "https://metacpan.org/release/Scalar-List-Utils")
     (synopsis "Common Scalar and List utility subroutines")
