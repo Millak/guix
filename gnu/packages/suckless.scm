@@ -538,10 +538,7 @@ point surf to another URI by setting its XProperties.")
                (string-append "LIBS="
                               (pkg-config "--libs") " -lm")))))
     (native-inputs (list pkg-config))
-    (inputs `(("farbfeld" ,farbfeld) ("libpng" ,libpng)
-              ("libx11" ,libx11)
-              ("libxft" ,libxft)
-              ("fontconfig" ,fontconfig)))
+    (inputs (list farbfeld libpng libx11 libxft fontconfig))
     (synopsis "Plain-text presentation tool")
     (description
      "Sent uses plain-text files and PNG images to create slideshow
