@@ -1595,7 +1595,7 @@ modules for building a Wayland compositor.")
                   gdk-pixbuf
                   json-c
                   libevdev
-                  libinput
+                  libinput-minimal
                   libxkbcommon
                   pango
                   swaybg
