@@ -10,6 +10,7 @@
 ;;; Copyright © 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Jean-Pierre De Jesus DIAZ <me@jeandudey.tech>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -469,23 +470,22 @@ key-value pair databases and a real LDAP database.")
                 "1bhhksdclsnkw54a517ndrw55q5zljjbh9pcqz1z4a2z2flxpsgk"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:tests? #f                    ; no check target
-       #:make-flags '("CC=gcc")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'patch-Makefile
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((libc    (assoc-ref inputs "libc"))
-                   (openssl (assoc-ref inputs "openssl"))
-                   (libpcap (assoc-ref inputs "libpcap")))
-               (substitute* "pppd/Makefile.linux"
-                 (("/usr/include/crypt\\.h")
-                  (string-append libc "/include/crypt.h"))
-                 (("/usr/include/openssl")
-                  (string-append openssl "/include/openssl"))
-                 (("/usr/include/pcap-bpf.h")
-                  (string-append libpcap "/include/pcap-bpf.h")))
-               #t))))))
+      (list #:tests? #f                    ;; No "check" target
+            #:make-flags #~(list (string-append "CC=" #$(cc-for-target)))
+            #:phases
+            #~(modify-phases %standard-phases
+                (add-before 'configure 'patch-Makefile
+                  (lambda* (#:key inputs #:allow-other-keys)
+                    (let ((openssl (assoc-ref inputs "openssl"))
+                          (libpcap (assoc-ref inputs "libpcap")))
+                      (substitute* "pppd/Makefile.linux"
+                        (("/usr/include/openssl")
+                         (string-append openssl "/include"))
+                        (("-DPPP_FILTER")
+                         (string-append "-DPPP_FILTER -I" libpcap "/include")))
+                      (substitute* "pppd/pppcrypt.h"
+                        (("des\\.h") "openssl/des.h")))
+                    #t)))))
     (inputs
      (list libpcap
            (@ (gnu packages tls) openssl)))
