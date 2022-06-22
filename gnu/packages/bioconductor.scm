@@ -2317,6 +2317,29 @@ reproducible gene expression signatures capable of accurately distinguishing
 tumor samples from healthy controls.")
     (license license:artistic2.0)))
 
+(define-public r-asgsca
+  (package
+    (name "r-asgsca")
+    (version "1.30.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "ASGSCA" version))
+              (sha256
+               (base32
+                "0mxrrkm2lg7gxjh8ynn6qmryn8wqda7b83sr51dpgblay83jcbaq"))))
+    (properties `((upstream-name . "ASGSCA")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-mass r-matrix))
+    (home-page "https://bioconductor.org/packages/ASGSCA")
+    (synopsis "Analysis of associations between multiple genotypes and traits")
+    (description
+     "The package @dfn{ASGSCA} (Association Study using Generalized Structured
+Component Analysis) provides tools to model and test the association between
+multiple genotypes and multiple traits, taking into account the prior
+biological knowledge.  Genes, and clinical pathways are incorporated in the
+model as latent variables.")
+    (license license:gpl3)))
+
 (define-public r-aspli
   (package
     (name "r-aspli")
