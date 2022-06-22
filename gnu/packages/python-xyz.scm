@@ -5038,7 +5038,7 @@ which can produce feeds in RSS 2.0, RSS 0.91, and Atom formats.")
 (define-public python-pydantic
   (package
     (name "python-pydantic")
-    (version "1.9.0")
+    (version "1.9.1")
     (source
      (origin
        (method git-fetch)
@@ -5047,32 +5047,11 @@ which can produce feeds in RSS 2.0, RSS 0.91, and Atom formats.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14wj3k9007fpbxk7593w6gdqrr68yzrsw4a41sj5ji4cv3r8z18b"))))
+        (base32 "1406kgppqa7524mxllsipj7gb8fn7pwf51l11lqik59xjhsfv94f"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
-         (add-before 'check 'disable-test
-           (lambda _
-             ;; Reported upstream:
-             ;; <https://github.com/samuelcolvin/pydantic/issues/1580>.
-             ;; Disable the faulty test as the fix is unclear.
-             (substitute* "tests/test_validators.py"
-               (("test_assert_raises_validation_error")
-                "_test_assert_raises_validation_error"))
-
-             ;; These fail because of <https://bugs.python.org/issue40398>.
-             ;; Remove after Python has been upgraded to >= 3.9.
-             (substitute* "tests/test_generics.py"
-               (("assert replace_types\\(Callable, \\{T: int\\}\\) == Callable")
-                ""))
-             (substitute* "tests/test_schema.py"
-               (("test_unenforced_constraints_schema")
-               "_test_unenforced_constraints_schema"))
-
-             ;; Disable tests for the Hypothesis plugin because it is tricky
-             ;; to configure in the build container.
-             (delete-file "tests/test_hypothesis_plugin.py")))
          (replace 'check
            (lambda _ (invoke "pytest" "-vv"))))))
     (native-inputs
