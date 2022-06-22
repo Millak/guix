@@ -600,8 +600,8 @@ This package contains the binaries.")
                          (mkdir-p doc)
                          (copy-recursively (string-append #$source "/doc")
                                            doc)))))))
-    (propagated-inputs (list texlive-generic-iftex
-                             texlive-generic-ltxcmds
+    (propagated-inputs (list texlive-iftex
+                             texlive-ltxcmds
                              texlive-hyperref
                              texlive-latex-xkeyval
                              texlive-zref))
@@ -5659,7 +5659,7 @@ BibLaTeX, and is considered experimental.")
     (arguments '(#:tex-directory "latex/geometry"))
     (propagated-inputs
      (list texlive-oberdiek             ;for ifpdf
-           texlive-latex-graphics))     ;for keyval
+           texlive-graphics))           ;for keyval
     (home-page "https://www.ctan.org/pkg/geometry")
     (synopsis "Flexible and complete interface to document dimensions")
     (description
@@ -5804,15 +5804,15 @@ always (re)defines a command.  There is also @code{\\makeenvironment} and
                          texlive-booktabs
                          texlive-cm
                          texlive-fontspec
-                         texlive-generic-iftex
+                         texlive-iftex
                          texlive-latex-base
                          texlive-latex-eukdate
-                         texlive-latex-graphics
+                         texlive-graphics
                          texlive-latex-multirow
                          texlive-lm     ;for lmroman10-regular
                          texlive-stix2-otf))
-    (propagated-inputs (list texlive-fontspec texlive-generic-iftex
-                             texlive-latex-graphics))
+    (propagated-inputs (list texlive-fontspec texlive-iftex
+                             texlive-graphics))
     (home-page "https://ctan.org/pkg/metalogo")
     (synopsis "Extended TeX logo macros")
     (description "This package exposes spacing parameters for various TeX
@@ -5928,7 +5928,7 @@ also provides compacted versions of enumerate and itemize.")
                          texlive-booktabs
                          texlive-caption
                          texlive-context
-                         texlive-latex-fancyvrb
+                         texlive-fancyvrb
                          texlive-etoolbox
                          texlive-fonts-latex
                          texlive-fontspec
@@ -5938,13 +5938,13 @@ also provides compacted versions of enumerate and itemize.")
                          ;; them.
                          texlive-stringenc
                          texlive-zapfding
-                         texlive-latex-graphics
+                         texlive-graphics
                          texlive-kpathsea ;for cp227.tcx & friends
                          texlive-makecmds
                          texlive-metalogo
                          texlive-microtype
                          texlive-paralist
-                         texlive-latex-tools
+                         texlive-tools
                          texlive-tex-ini-files)) ;for pdftexconfig
     ;; polyglossia.sty \RequirePackage or \\usepackage these other TexLive
     ;; packages.
@@ -5960,7 +5960,7 @@ also provides compacted versions of enumerate and itemize.")
            texlive-zapfding
            texlive-makecmds
            texlive-latex-l3packages     ;expl3, l3keys2e, xparse
-           texlive-latex-tools
+           texlive-tools
            texlive-latex-xkeyval))
     (home-page "https://www.ctan.org/pkg/polyglossia")
     (synopsis "Alternative to Babel for XeLaTeX and LuaLaTeX")
@@ -6784,12 +6784,12 @@ Adobe's basic set.")
               (mkdir-p doc)
               (copy-recursively (string-append (getenv "ROOT_DIR") "/doc")
                                 doc))))))
-    (propagated-inputs (list texlive-generic-atbegshi
-                             texlive-generic-gettitlestring
-                             texlive-generic-iftex
-                             texlive-latex-atveryend
-                             texlive-latex-kvoptions
-                             texlive-latex-pdftexcmds
+    (propagated-inputs (list texlive-atbegshi
+                             texlive-gettitlestring
+                             texlive-iftex
+                             texlive-atveryend
+                             texlive-kvoptions
+                             texlive-pdftexcmds
                              texlive-latex-xkeyval))
     (home-page "https://github.com/ho-tex/zref")
     (synopsis "Reference scheme for LaTeX")
