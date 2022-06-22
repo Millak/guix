@@ -1572,7 +1572,10 @@ modules for building a Wayland compositor.")
         (base32 "0j4sdbsrlvky1agacc0pcz9bwmaxjmrapjnzscbd2i0cria2fc5j"))))
     (build-system meson-build-system)
     (arguments
-     `(#:phases
+     `(;; elogind is propagated by wlroots -> libseat
+       ;; and would otherwise shadow basu.
+       #:configure-flags '("-Dsd-bus-provider=basu")
+       #:phases
        (modify-phases %standard-phases
          (add-before 'configure 'hardcode-paths
            (lambda* (#:key inputs #:allow-other-keys)
@@ -1587,8 +1590,8 @@ modules for building a Wayland compositor.")
                 (string-append "'" (assoc-ref inputs "scdoc")
                                "/bin/scdoc'")))
              #t)))))
-    (inputs (list cairo
-                  elogind
+    (inputs (list basu
+                  cairo
                   gdk-pixbuf
                   json-c
                   libevdev
