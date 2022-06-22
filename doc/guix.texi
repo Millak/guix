@@ -26500,7 +26500,7 @@ The Plasma package to use.
 @end deftp
 
 @defvar xfce-desktop-service-type
-This is the type of a service to run the @uref{Xfce, https://xfce.org/}
+This is the type of a service to run the @uref{https://xfce.org/, Xfce}
 desktop environment.  Its value is an @code{xfce-desktop-configuration} object
 (see below).
 
