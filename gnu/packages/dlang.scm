@@ -5,7 +5,7 @@
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Guy Fleury Iteriteka <gfleury@disroot.org>
-;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -103,13 +103,17 @@ and freshness without requiring additional information from the user.")
        (sha256
         (base32 "1q6hm4fkrcwys83x0p4kfg9xrc1b9g2qicqif2zy5z4nsfsb5vgs"))))
     (build-system cmake-build-system)
-    (supported-systems '("x86_64-linux" "i686-linux" "armhf-linux"))
+    (supported-systems '("x86_64-linux" "i686-linux"
+                         "armhf-linux" "aarch64-linux"))
     (properties
      ;; Some of the tests take a very long time on ARMv7.  See
      ;; <https://lists.gnu.org/archive/html/guix-devel/2018-02/msg00312.html>.
      `((max-silent-time . ,(* 3600 3))))
     (arguments
      `(#:tests? #f               ;requires obsolete python-lit test dependency
+       ,@(if (target-aarch64?)
+             '(#:system "armhf-linux")
+             '())
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'unpack-submodule-sources
