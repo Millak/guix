@@ -21413,20 +21413,23 @@ time-based (TOTP) passwords.")
 (define-public python-parso
   (package
     (name "python-parso")
-    (version "0.8.2")
+    (version "0.8.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "parso" version))
        (sha256
-        (base32 "161k8771m7w60qakyvrwf9q62lvakmix7mpfylpy7713qs939f0j"))))
+        (base32 "185gkxq92kqiw2h5zp1cmyn04055x0lix4hmi5c077xm1clvw1wc"))))
     (native-inputs
      (list python-pytest))
     (build-system python-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _ (invoke "pytest" "-vv"))))))
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-vv")))))))
     (home-page "https://github.com/davidhalter/parso")
     (synopsis "Python Parser")
     (description "Parso is a Python parser that supports error recovery and
