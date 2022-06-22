@@ -2497,6 +2497,29 @@ at @dfn{EBI} (European Bioinformatics Institute) and build Bioconductor data
 structures: @code{ExpressionSet}, @code{AffyBatch}, @code{NChannelSet}.")
     (license license:artistic2.0)))
 
+(define-public r-asafe
+  (package
+    (name "r-asafe")
+    (version "1.22.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "ASAFE" version))
+              (sha256
+               (base32
+                "1l9iqw2imr6w2gwqrmg05jp6lj2xc7hbyhd144d4q8vw8z7ga4ns"))))
+    (properties `((upstream-name . "ASAFE")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/ASAFE")
+    (synopsis "Ancestry Specific Allele Frequency Estimation")
+    (description
+     "The @code{ASAFE} package contains a collection of functions that can be
+used to carry out an @dfn{EM} (Expectation–maximization) algorithm to estimate
+ancestry-specific allele frequencies for a bi-allelic genetic marker, e.g. an
+@dfn{SNP} (single nucleotide polymorphism) from genotypes and ancestry
+pairs.")
+    (license license:artistic2.0)))
+
 (define-public r-aseb
   (package
     (name "r-aseb")
