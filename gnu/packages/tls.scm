@@ -226,94 +226,88 @@ living in the same process.")
                 "0li7mwjnm64mbxhacz0rpf6i9qd83f53fvbrx96alpqqk9d6qvk4"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? ,(not (or (%current-target-system)
-                          (hurd-target?)))
-       ;; Ensure we don't keep a reference to the tools used for testing.
-       #:disallowed-references ,(if (hurd-target?)
-                                    '()
-                                    (list net-tools iproute socat))
-       #:configure-flags
-       (cons*
-             ;; GnuTLS doesn't consult any environment variables to specify
-             ;; the location of the system-wide trust store.  Instead it has a
-             ;; configure-time option.  Unless specified, its configure script
-             ;; attempts to auto-detect the location by looking for common
-             ;; places in the file system, none of which are present in our
-             ;; chroot build environment.  If not found, then no default trust
-             ;; store is used, so each program has to provide its own
-             ;; fallback, and users have to configure each program
-             ;; independently.  This seems suboptimal.
-             "--with-default-trust-store-dir=/etc/ssl/certs"
+     (list #:tests? (not (or (%current-target-system)
+                             (hurd-target?)))
+           ;; Ensure we don't keep a reference to the tools used for testing.
+           #:disallowed-references (if (hurd-target?)
+                                       '()
+                                       (list net-tools iproute socat))
+           #:configure-flags
+           #~(cons*
+              ;; GnuTLS doesn't consult any environment variables to specify
+              ;; the location of the system-wide trust store.  Instead it has a
+              ;; configure-time option.  Unless specified, its configure script
+              ;; attempts to auto-detect the location by looking for common
+              ;; places in the file system, none of which are present in our
+              ;; chroot build environment.  If not found, then no default trust
+              ;; store is used, so each program has to provide its own
+              ;; fallback, and users have to configure each program
+              ;; independently.  This seems suboptimal.
+              "--with-default-trust-store-dir=/etc/ssl/certs"
 
-             ;; Tell the build system that we want Guile bindings installed to
-             ;; the output instead of Guiles own module directory.
-             (string-append "--with-guile-site-dir="
-                            "$(datarootdir)/guile/site/$(GUILE_EFFECTIVE_VERSION)")
-             (string-append "--with-guile-site-ccache-dir="
-                            "$(libdir)/guile/$(GUILE_EFFECTIVE_VERSION)/site-ccache")
-             (string-append "--with-guile-extension-dir="
-                            "$(libdir)/guile/$(GUILE_EFFECTIVE_VERSION)/extensions")
+              ;; Tell the build system that we want Guile bindings installed to
+              ;; the output instead of Guiles own module directory.
+              (string-append "--with-guile-site-dir="
+                             "$(datarootdir)/guile/site/$(GUILE_EFFECTIVE_VERSION)")
+              (string-append "--with-guile-site-ccache-dir="
+                             "$(libdir)/guile/$(GUILE_EFFECTIVE_VERSION)/site-ccache")
+              (string-append "--with-guile-extension-dir="
+                             "$(libdir)/guile/$(GUILE_EFFECTIVE_VERSION)/extensions")
 
-             (let ((system ,(or (%current-target-system)
-                                (%current-system))))
-               (if (string-prefix? "mips64el" system)
-                   (list
-                    ;; FIXME: Temporarily disable p11-kit support since it is
-                    ;; not working on mips64el.
-                    "--without-p11-kit")
-                   '())))
+              (let ((system #$(or (%current-target-system)
+                                  (%current-system))))
+                (if (string-prefix? "mips64el" system)
+                    (list
+                     ;; FIXME: Temporarily disable p11-kit support since it is
+                     ;; not working on mips64el.
+                     "--without-p11-kit")
+                    '())))
 
-       #:phases (modify-phases %standard-phases
-                  ;; fastopen.sh fails to connect to the server in the builder
-                  ;; environment (see:
-                  ;; https://gitlab.com/gnutls/gnutls/-/issues/1095).
-                  (add-after 'unpack 'disable-failing-tests
-                    (lambda _
-                      (substitute* "tests/fastopen.sh"
-                        (("^unset RETCODE")
-                         "exit 77\n")))) ;skip
-                  (add-after 'install 'move-doc
-                   (lambda* (#:key outputs #:allow-other-keys)
-                     ;; Copy the 4.1 MiB of section 3 man pages to "doc".
-                     (let* ((out    (assoc-ref outputs "out"))
-                            (doc    (assoc-ref outputs "doc"))
-                            (mandir (string-append doc "/share/man/man3"))
-                            (oldman (string-append out "/share/man/man3")))
-                       (mkdir-p mandir)
-                       (copy-recursively oldman mandir)
-                       (delete-file-recursively oldman)))))))
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; fastopen.sh fails to connect to the server in the builder
+               ;; environment (see:
+               ;; https://gitlab.com/gnutls/gnutls/-/issues/1095).
+               (add-after 'unpack 'disable-failing-tests
+                 (lambda _
+                   (substitute* "tests/fastopen.sh"
+                     (("^unset RETCODE")
+                      "exit 77\n"))))      ;skip
+               (add-after 'install 'move-doc
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   ;; Copy the 4.1 MiB of section 3 man pages to "doc".
+                   (let* ((out    (assoc-ref outputs "out"))
+                          (doc    (assoc-ref outputs "doc"))
+                          (mandir (string-append doc "/share/man/man3"))
+                          (oldman (string-append out "/share/man/man3")))
+                     (mkdir-p mandir)
+                     (copy-recursively oldman mandir)
+                     (delete-file-recursively oldman)))))))
     (outputs '("out"                              ;4.4 MiB
                "debug"
                "doc"))                            ;4.1 MiB of man pages
     (native-inputs
-     `(,@(if (%current-target-system)             ;for cross-build
-             `(("guile" ,guile-3.0))              ;to create .go files
-             '())
-       ,@(if (hurd-target?)
-             '()
-             `(("net-tools" ,net-tools)
-               ("iproute" ,iproute)               ;for 'ss'
-               ("socat" ,socat)))                 ;several tests rely on it
-       ("pkg-config" ,pkg-config)
-       ("texinfo" ,texinfo)
-       ("which" ,which)
-       ,@(if (hurd-target?)
-             '()
-             `(("datefudge" ,datefudge)))         ;tests rely on 'datefudge'
-       ("util-linux" ,util-linux)))               ;one test needs 'setsid'
+     (append (list pkg-config texinfo which
+                   util-linux)                    ;one test needs 'setsid'
+             (if (%current-target-system)         ;for cross-build
+                 (list guile-3.0)                 ;to create .go files
+                 '())
+             (if (hurd-target?)
+                 '()
+                 (list net-tools
+                       iproute                    ;for 'ss'
+                       socat                      ;several tests rely on it
+                       datefudge))))              ;tests rely on 'datefudge'
     (inputs
      (list guile-3.0))
     (propagated-inputs
      ;; These are all in the 'Requires.private' field of gnutls.pc.
-     `(("libtasn1" ,libtasn1)
-       ("libidn2" ,libidn2)
-       ("nettle" ,nettle)
-       ("zlib" ,zlib)
-       ,@(let ((system (or (%current-target-system)
-                           (%current-system))))
-           (if (string-prefix? "mips64el" system)
-               '()
-               `(("p11-kit" ,p11-kit))))))
+     (append (list libtasn1 libidn2 nettle zlib)
+             (let ((system (or (%current-target-system)
+                               (%current-system))))
+               (if (string-prefix? "mips64el" system)
+                   '()
+                   (list p11-kit)))))
     (home-page "https://www.gnu.org/software/gnutls/")
     (synopsis "Transport layer security library")
     (description
@@ -332,15 +326,14 @@ required structures.")
   ;; to have the choice between GnuTLS with Dane and without Dane.
   (package/inherit gnutls
     (name "gnutls-dane")
-    (inputs `(("unbound" ,unbound)
-              ,@(package-inputs gnutls)))))
+    (inputs (modify-inputs (package-inputs gnutls)
+              (prepend unbound)))))
 
 (define-public guile2.2-gnutls
   (package/inherit gnutls
     (name "guile2.2-gnutls")
-    (inputs `(("guile" ,guile-2.2)
-              ,@(alist-delete "guile"
-                              (package-inputs gnutls))))))
+    (inputs (modify-inputs (package-inputs gnutls)
+              (replace "guile" guile-2.2)))))
 
 (define (target->openssl-target target)
   "Return the value to set CONFIGURE_TARGET_ARCH to when cross-compiling
