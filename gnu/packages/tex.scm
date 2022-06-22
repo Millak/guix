@@ -4564,14 +4564,34 @@ language that is written in a Cyrillic alphabet.")
              (add-after 'unpack 'chdir
                (lambda _
                  (chdir "source/latex/psnfss")))
-           (add-before 'copy-files 'unchdir
-             (lambda _
-               (chdir "../../..")))
-           (add-after 'copy-files 'delete-extra-files
-             (lambda* (#:key outputs #:allow-other-keys)
-               (delete-file-recursively
-                (string-append (assoc-ref outputs "out")
-                               "/share/texmf-dist/source/latex/psnfss/build"))))))))
+             (add-after 'install 'chdir-back
+               (lambda _
+                 (chdir "../../..")))
+             (add-after 'chdir-back 'clean-installed-files
+               (lambda _
+                 ;; Remove the generated .sty files from the build area as
+                 ;; these were already copied to the default output in the
+                 ;; "install" phase.
+                 (delete-file-recursively "source/latex/psnfss/build")))
+             (add-after 'clean-installed-files 'move-doc-files
+               (lambda* (#:key outputs #:allow-other-keys)
+                 (let* ((doc (assoc-ref outputs "doc"))
+                        (doc-root (string-append doc "/share/texmf-dist"))
+                        (doc-path "doc/latex/psnfss")
+                        (source-path "source/latex/psnfss"))
+                   ;; Move the PDF documentation to the "doc" output.
+                   (let* ((file-name "psnfss2e.pdf")
+                          (source (string-append doc-path "/" file-name))
+                          (target-dir (string-append doc-root "/" doc-path)))
+                     (mkdir-p target-dir)
+                     (copy-file source
+                                (string-append target-dir "/" file-name))
+                     (delete-file source))
+
+                   ;; Keep the remaining files together with the package's
+                   ;; source, as per the installation instructions.
+                   (copy-recursively doc-path source-path)
+                   (delete-file-recursively "doc"))))))))
       (native-inputs
        (list texlive-cm))
       (home-page "https://www.ctan.org/pkg/psnfss")
