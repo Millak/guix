@@ -492,6 +492,18 @@ mnopqrstuvwxyz.\")"
    '(#:phases %standard-phases
      #:tests? #f)))")
 
+;; '#:key value' is kept on the same line.
+(test-pretty-print "\
+(package
+  (name \"keyword-value-same-line\")
+  (arguments
+   (list #:phases #~(modify-phases %standard-phases
+                      (add-before 'x 'y
+                        (lambda* (#:key inputs #:allow-other-keys)
+                          (foo bar baz))))
+         #:make-flags #~'(\"ANSWER=42\")
+         #:tests? #f)))")
+
 (test-equal "pretty-print-with-comments, canonicalize-comment"
   "\
 (list abc

@@ -303,7 +303,8 @@ FORMAT-COMMENT is 'canonicalize-comment'."
              (newline port)
              (display (make-string indent #\space) port))
            (let ((column (if newline? indent column)))
-             (print tail #f
+             (print tail
+                    (keyword? item)      ;keep #:key value next to one another
                     (comment? item)
                     (loop indent column
                           (or newline? delimited?)
