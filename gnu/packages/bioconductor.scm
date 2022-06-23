@@ -2317,6 +2317,37 @@ reproducible gene expression signatures capable of accurately distinguishing
 tumor samples from healthy controls.")
     (license license:artistic2.0)))
 
+(define-public r-attract
+  (package
+    (name "r-attract")
+    (version "1.48.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "attract" version))
+              (sha256
+               (base32
+                "0f1fsv278kpnxvqg9qa5rw2k3zr8zws0ab73ldl60h6pv9cy8x82"))))
+    (properties `((upstream-name . "attract")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-annotationdbi
+           r-biobase
+           r-cluster
+           r-gostats
+           r-keggrest
+           r-limma
+           r-org-hs-eg-db
+           r-reactome-db))
+    (home-page "https://bioconductor.org/packages/attract")
+    (synopsis "Finding drivers of Kauffman's attractor landscape")
+    (description
+     "This package contains the functions to find the gene expression modules
+that represent the drivers of Kauffman's attractor landscape.  The modules are
+the core attractor pathways that discriminate between different cell types of
+groups of interest.  Each pathway has a set of synexpression groups, which show
+transcriptionally-coordinated changes in gene expression.")
+    (license license:lgpl2.0+)))
+
 (define-public r-awfisher
   (package
     (name "r-awfisher")
