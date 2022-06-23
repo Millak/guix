@@ -332,7 +332,8 @@ bootstrapping more recent compilers written in D.")
      (fold alist-replace
            (package-native-inputs ldc-bootstrap-1.24)
            '("ldc" "llvm")
-           `((,ldc-bootstrap-1.24) (,llvm-11))))))
+           `((,gdmd) (,llvm-11))))
+    (supported-systems %supported-systems)))
 
 (define-public ldc
   (package
