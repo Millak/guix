@@ -659,21 +659,21 @@ rasterisation.")
                 "0dwpry9m5l27dlhq48j4bsiqwm0247cxdqwv3b7ddmkynk2f9kpf"))))
     (build-system meson-build-system)
     (arguments
-     `(#:configure-flags
-       '(,@(match (%current-system)
+     (list #:configure-flags
+           (match (%current-system)
              ((or "armhf-linux" "aarch64-linux")
-              '("-Dexynos=true"
-                "-Domap=true"
-                "-Detnaviv=true"
-                "-Dtegra=true"
-                "-Dfreedreno-kgsl=true"))
-             (_ '())))
-
-       #:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (invoke "meson" "test" "--timeout-multiplier" "5")))))))
+              #~(list "-Dexynos=true"
+                      "-Domap=true"
+                      "-Detnaviv=true"
+                      "-Dtegra=true"
+                      "-Dfreedreno-kgsl=true"))
+             (_ ''()))
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "meson" "test" "--timeout-multiplier" "5")))))))
     (propagated-inputs
      (list libpciaccess))
     (native-inputs
