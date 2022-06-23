@@ -9704,8 +9704,7 @@ phase before the @code{build} phase, called
                         (substitute* "Makefile"
                           (("PREFIX =.*")
                            (string-append "PREFIX = "
-                                          out "\n")))
-                        #true))))))))
+                                          out "\n")))))))))))
 @end lisp
 
 The new phase that is inserted is written as an anonymous procedure,
