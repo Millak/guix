@@ -45,6 +45,7 @@
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2022 Dhruvin Gandhi <contact@dhruvin.dev>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -104,6 +105,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages mail)
+  #:use-module (gnu packages man)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages nano)
   #:use-module (gnu packages ncurses)
@@ -3456,3 +3458,69 @@ Git project instead of @command{git filter-branch}.")
      "Gitlint is a Git commit message linter written in Python: it checks your
 commit messages for style.")
     (license license:expat)))
+
+(define-public hut
+  (package
+    (name "hut")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~emersion/hut")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15ag8fibnahcfgd0w2j4k813z10ymi39rx8d3c8b9955zc62p1fr"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "git.sr.ht/~emersion/hut"
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                ;; The flags are copied from (guix build go-build-system).
+                (setenv "CGO_LDFLAGS" "-s -w")
+                (invoke "make" "all" "GOFLAGS=-v -x"))))
+          (replace 'install
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (invoke "make" "install"
+                        (string-append "PREFIX=" #$output))))))))
+    (native-inputs
+     (list scdoc))
+    (inputs
+     (list go-git-sr-ht-emersion-go-scfg
+           go-git-sr-ht-emersion-gqlclient
+           go-github-com-juju-ansiterm
+           go-github-com-spf13-cobra
+           go-golang-org-x-oauth2
+           go-golang-org-x-term))
+    (home-page "https://git.sr.ht/~emersion/hut")
+    (synopsis "CLI tool for sr.ht")
+    (description "@command{hut} is a CLI tool for
+@uref{https://sr.ht/~sircmpwn/sourcehut/, sr.ht}.  It helps you interact with
+sr.ht's public services:
+@table @asis
+@item builds
+submit and manage build jobs
+@item git
+create, and manage git repositories and artifacts
+@item hg
+list Mercurial repositories
+@item lists
+manage mailing lists and patches
+@item meta
+manage PGP, and SSH keys
+@item pages
+publish and manage hosted websites
+@item paste
+create and manage pastes
+@item todo
+create and manage trackers, tickets
+@item graphql
+interact with GraphQL APIs directly
+@end table")
+    (license license:agpl3)))
