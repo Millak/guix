@@ -2317,6 +2317,35 @@ reproducible gene expression signatures capable of accurately distinguishing
 tumor samples from healthy controls.")
     (license license:artistic2.0)))
 
+(define-public r-assessorf
+  (package
+    (name "r-assessorf")
+    (version "1.14.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "AssessORF" version))
+              (sha256
+               (base32
+                "1l87bpny9k3jbzbzmb9h2ijvblrj471gqv26fyzbvb3vr6y406z7"))))
+    (properties `((upstream-name . "AssessORF")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biostrings
+           r-decipher
+           r-genomicranges
+           r-iranges))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/AssessORF")
+    (synopsis "Assess gene predictions using proteomics and evolutionary conservation")
+    (description
+     "In order to assess the quality of a set of predicted genes for a genome,
+evidence must first be mapped to that genome.  Next, each gene must be
+categorized based on how strong the evidence is for or against that gene.  The
+AssessORF package provides the functions and class structures necessary for
+accomplishing those tasks, using proteomics hits and evolutionarily conserved
+start codons as the forms of evidence.")
+    (license license:gpl3)))
+
 (define-public r-asset
   (package
     (name "r-asset")
