@@ -28,6 +28,7 @@
  (entry (commit "bdf422176739b473add66eb8cac9fdd8c654f794")
         (title
          (en "@option{-L} option of @command{guix refresh} repurposed")
+         (de "Option @option{-L} von @command{guix refresh} wechselt Bedeutung")
          (fr "Option @option{-L} de @command{guix refresh} réutilisée"))
         (body
          (en "The @option{-L} option of @command{guix refresh} has been
@@ -35,6 +36,13 @@ repurposed: it used to be synonymous with @option{--list-updaters}; it is now
 synonymous with @option{--load-path} as is the case with most other commands.
 
 Run @command{info \"(guix) Invoking guix refresh\"} for more info.")
+         (de "Die Befehlszeilenoption @option{-L} von @command{guix refresh} hat
+einen anderen Zweck bekommen: Früher war sie gleichbedeutend mit
+@option{--list-updaters}; jetzt ist sie gleichbedeutend mit
+@option{--load-path}, wie bereits beim Großteil der anderen Befehle.
+
+Führen Sie @command{info \"(guix.de) Aufruf von guix refresh\"} aus, wenn Sie
+mehr wissen möchten.")
          (fr "L'option @option{-L} de @command{guix refresh} a changé de
 signification : elle était auparavant synonyme de @option{--list-updaters} ;
 elle est maintenant synonyme de @option{--load-path} comme c'est le cas pour
