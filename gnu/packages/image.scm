@@ -1297,11 +1297,11 @@ language bindings to VIGRA.")
          "1khqkm5j9aiii9jfsbxzzyz3x33sifzcx537cyjyb3a2g2rl969k"))))
     (build-system gnu-build-system)
     (inputs
-     `(("freeglut" ,freeglut)
-       ("giflib" ,giflib)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libtiff" ,libtiff)))
+     (list freeglut
+           giflib
+           libjpeg-turbo
+           libpng
+           libtiff))
     (native-inputs
      (list autoconf automake libtool))
     (arguments
