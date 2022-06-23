@@ -1490,27 +1490,24 @@ quality and performance.")
            mesa
            wayland))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before
-          'build 'fix-dlopen-paths
-          (lambda* (#:key outputs #:allow-other-keys)
-            (let ((out (assoc-ref outputs "out")))
+     (list
+      ;; Most drivers are in mesa's $prefix/lib/dri, so use that.  (Can be
+      ;; overridden at run-time via LIBVA_DRIVERS_PATH.)
+      #:configure-flags
+      #~(list (string-append "--with-drivers-path="
+                             (search-input-directory %build-inputs "lib/dri")))
+      ;; However, we can't write to mesa's store directory, so override the
+      ;; following make variable to install the dummy driver to libva's
+      ;; $prefix/lib/dri directory.
+      #:make-flags
+      #~(list (string-append "dummy_drv_video_ladir=" #$output "/lib/dri"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'fix-dlopen-paths
+            (lambda _
               (substitute* "va/drm/va_drm_auth_x11.c"
                 (("\"libva-x11\\.so\\.%d\"")
-                 (string-append "\"" out "/lib/libva-x11.so.%d\"")))
-              #t))))
-       ;; Most drivers are in mesa's $prefix/lib/dri, so use that.  (Can be
-       ;; overridden at run-time via LIBVA_DRIVERS_PATH.)
-       #:configure-flags
-       (list (string-append "--with-drivers-path="
-                            (assoc-ref %build-inputs "mesa") "/lib/dri"))
-       ;; However, we can't write to mesa's store directory, so override the
-       ;; following make variable to install the dummy driver to libva's
-       ;; $prefix/lib/dri directory.
-       #:make-flags
-       (list (string-append "dummy_drv_video_ladir="
-                            (assoc-ref %outputs "out") "/lib/dri"))))
+                 (string-append "\"" #$output "/lib/libva-x11.so.%d\""))))))))
     (home-page "https://www.freedesktop.org/wiki/Software/vaapi/")
     (synopsis "Video acceleration library")
     (description "The main motivation for VA-API (Video Acceleration API) is
