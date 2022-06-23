@@ -31710,6 +31710,60 @@ headlines, keywords, tables and source blocks.")
 "@code{emacs-pyimport} manages python imports from Emacs via @code{python-pyflakes}.")
       (license license:gpl3+)))) ; License is in pyimport.el
 
+(define-public emacs-straight-el
+  (let ((commit "4517e118ee43f849f708025dbb2cf4f281793121")
+        (revision "0"))
+    (package
+      (name "emacs-straight-el")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/raxod502/straight.el")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0idhgh203rac9c046286gir9rq0lgnlllzj4b4hrjpd3idg9v0r8"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #t
+        #:test-command
+        #~(list "emacs" "-Q" "--batch"
+                "-L" "."
+                "--load" "ert"
+                "--load" "tests/straight-test.el"
+                "--eval" "(progn (require 'straight-ert-print-hack) (ert-run-tests-batch-and-exit))")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-git-executable
+              (lambda* (#:key inputs #:allow-other-keys)
+                (make-file-writable "straight.el")
+                (substitute* "straight.el"
+                  (("\"git\"")
+                   (string-append "\""
+                                  (search-input-file inputs "/bin/git")
+                                  "\"")))))
+            (add-after 'check 'delete-tests
+              ;; "tests" directory includes bogus ".el" files that can make
+              ;; `patch-el-files' phase fail.
+              (lambda _
+                (delete-file-recursively "tests"))))))
+      (native-inputs
+       (list texinfo))
+      (inputs
+       (list git))
+      (propagated-inputs
+       (list emacs-magit))
+      (home-page "https://github.com/raxod502/straight.el/")
+      (synopsis "Purely functional package manager for the Emacs hacker")
+      (description
+       "@code{emacs-straight-el} is a purely functional package manager for the Emacs
+hacker.")
+      (license license:expat))))
+
 (define-public emacs-osm
   (package
     (name "emacs-osm")
