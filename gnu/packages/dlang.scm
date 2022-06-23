@@ -5,9 +5,10 @@
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2019, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Guy Fleury Iteriteka <gfleury@disroot.org>
-;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 ( <paren@disroot.org>
+;;; Copyright © 2022 Esther Flashner <esther@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -34,15 +35,18 @@
   #:use-module ((guix build utils) #:hide (delete which))
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages gdb)
   #:use-module (gnu packages libedit)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages ninja)
+  #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
@@ -101,6 +105,44 @@
 which runs D source files as scripts, and @code{dustmite}, which reduces D code
 to a minimal test case.")
     (license license:boost1.0)))
+
+(define-public gdmd
+  (let ((commit "ff2c97a47408fb71c18a2d453294d18808a97cc5")
+        (revision "1"))
+    (package
+      (name "gdmd")
+      (version (git-version "0.1.0" revision commit))
+      (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                 (url "https://github.com/D-Programming-GDC/gdmd")
+                 (commit commit)))
+          (file-name (git-file-name name version))
+          (sha256
+           (base32 "0pd70clk70069xcjysaas7zszzmigrcw1zl2xxv8kzdg7y7xrzvm"))))
+      (build-system copy-build-system)
+      (arguments
+       (list
+         #:install-plan
+         #~'(("dmd-script" "bin/gdmd")
+             ("dmd-script.1" "share/man/man1/gdmd.1"))
+         #:phases
+         #~(modify-phases %standard-phases
+             (add-after 'unpack 'adjust-gdc-location
+               (lambda* (#:key inputs #:allow-other-keys)
+                 (substitute* "dmd-script"
+                   (("my \\$gdc_dir.*")
+                    (string-append "my $gdc_dir = \""
+                                   (dirname (search-input-file inputs "/bin/gdc"))
+                                   "\";\n"))))))))
+      (inputs
+       (list gdc-10 perl))
+      (home-page "https://github.com/D-Programming-GDC/gdmd")
+      (synopsis "DMD-like wrapper for GDC")
+      (description "This package provides a DMD-like wrapper for the
+@acronym{GNU D Compiler,GDC}.")
+      (license license:gpl3+))))
 
 ;;; The 0.17.6 version is the last release to support being bootstrapped
 ;;; without a D compiler (requiring only a C++ compiler).
