@@ -777,17 +777,17 @@ images of initially unknown height.")
 (define-public openjpeg-data
   (package
     (name "openjpeg-data")
-    (version "2020.11.30")
+    (version "2021.09.26")
     (source
      (origin
        (method git-fetch)
        (uri
         (git-reference
          (url "https://github.com/uclouvain/openjpeg-data")
-         (commit "cd724fb1f93e6af41ebc68c4904f4bf2a4cd1e60")))
+         (commit "1f3d093030f9a0b43353ec6b48500f65786ff57a")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1q2swh4g9r9haqs075fyk42aclqcs9q51lqqzfb57lisszminpwm"))))
+        (base32 "13jpdaqk7mngk0xw6xbh9zgipip6n25spvqd97hwpfna1zyh8lzh"))))
     (build-system copy-build-system)
     (synopsis "Test files for OpenJPEG")
     (description "OpenJPEG-Data contains all files required to run the openjpeg
