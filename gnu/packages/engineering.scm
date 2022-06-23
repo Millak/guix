@@ -3688,3 +3688,65 @@ hierarchical and parametric design.  It can generate VHDL, Verilog or Spice
 netlists from the drawn schematic, allowing the simulation of the circuit.")
       (home-page "https://xschem.sourceforge.io/stefan/index.html")
       (license license:gpl2+))))
+
+(define-public candle
+  ;; The latest tagged version 1.2b fails on the build stage due to
+  ;; non-supported g++ flags so we need to use the latest commit from the
+  ;; 'master' branch in the repository.
+  (let ((commit   "3f763bcde1195e23ba119a5b3c70d7c889881019")
+        (revision "1"))
+    (package
+      (name "candle")
+      (version (git-version "1.2b" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/Denvi/Candle")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "08rqhl6a5a8s67a8yl16944zgcsnnb08xfv4klzyqwlvaqgfp783"))))
+      (build-system gnu-build-system)
+      (native-inputs (list qttools))
+      (inputs (list qtbase-5 qtserialport))
+      (arguments
+       (list #:tests? #f                      ; no tests.
+             #:phases #~(modify-phases %standard-phases
+                          (add-after 'unpack 'fix-sources
+                            (lambda _
+                              (substitute* (find-files "." ".*\\.h")
+                                (("const char\\* what\\(\\) const override")
+                                 "const char* what() const noexcept override"))))
+                          (add-after 'unpack 'fix-application-settings-path
+                            (lambda _
+                              (substitute* "src/frmmain.cpp"
+                                (("\
+qApp->applicationDirPath\\(\\) \\+ \"\\/settings\\.ini\"")
+                                 "QDir::homePath() + \"/.config/candle.ini\""))))
+                          (replace 'configure
+                            (lambda _
+                              (chdir "src")
+                              (invoke "qmake"
+                                      (string-append "QMAKE_CC="
+                                                     #$(cc-for-target)))))
+                          (replace 'install
+                            (lambda _
+                              (install-file "Candle"
+                                            (string-append #$output "/bin")))))))
+      (home-page "https://github.com/Denvi/Candle")
+      (synopsis "GRBL controller with G-Code visualizer")
+      (description
+       "Candle is a GRBL controller application with a visualizer for G-Code,
+the @acronym{CNC, computer numerical control} programming language.
+
+Supported functions include:
+
+@itemize
+@item Controlling GRBL-based cnc-machine via console commands, buttons on
+form, numpad.
+@item Monitoring CNC-machine state.
+@item Loading, editing, saving and sending of G-code files to CNC-machine.
+@item Visualizing G-code files.
+@end itemize")
+      (license license:gpl3+))))
