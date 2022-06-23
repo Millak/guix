@@ -249,14 +249,14 @@ also known as DXTn or DXTC) for Mesa.")
     (package
       (inherit libva)
       (name "libva-without-mesa")
-      (inputs `(,@(fold alist-delete (package-inputs libva)
-                        '("mesa" "wayland"))))
+      (inputs (fold alist-delete (package-inputs libva)
+                    '("mesa" "wayland")))
       (arguments
        (strip-keyword-arguments
         '(#:make-flags)
         (substitute-keyword-arguments (package-arguments libva)
           ((#:configure-flags flags)
-           '(list "--disable-glx" "--disable-egl"))))))))
+           '(list "--disable-glx"))))))))
 
 (define-public mesa
   (package
