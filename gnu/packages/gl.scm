@@ -105,16 +105,15 @@ as ASCII text.")
 (define-public freeglut
   (package
     (name "freeglut")
-    (version "3.2.1")
+    (version "3.2.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                    "mirror://sourceforge/freeglut/freeglut/"
-                    version "/freeglut-" version ".tar.gz"))
-              (patches (search-patches "freeglut-gcc-compat.patch"))
+                    "https://github.com/FreeGLUTProject/freeglut/releases"
+                    "/download/v" version "/freeglut-" version ".tar.gz"))
               (sha256
                (base32
-                "0s6sk49q8ijgbsrrryb7dzqx2fa744jhx1wck5cz5jia2010w06l"))))
+                "0l3s57zw51fy3mn5qfdm4z775kfhflgxppanaxmskfzh5l44m565"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f                      ;no test target
