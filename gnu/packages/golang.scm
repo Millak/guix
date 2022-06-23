@@ -7849,6 +7849,33 @@ file system operations.")
 extensions.")
       (license license:expat))))
 
+(define-public go-github-com-juju-ansiterm
+  (package
+    (name "go-github-com-juju-ansiterm")
+    (version "0.0.0-20210929141451-8b71cc96ebdc")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/juju/ansiterm")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05mk7mlvg11dd6b0j0wlq547ghbmx2ywwrlbcb4kddpg7qaqp1va"))))
+    (build-system go-build-system)
+    (arguments (list #:import-path "github.com/juju/ansiterm"))
+    (propagated-inputs
+     (list go-gopkg-in-check-v1
+           go-github-com-mattn-go-isatty
+           go-github-com-mattn-go-colorable
+           go-github-com-lunixbochs-vtclean))
+    (home-page "https://github.com/juju/ansiterm")
+    (synopsis "Writer to output ANSI escape codes for color and styles")
+    (description
+     "The ansiterm package provides a writer to output the ANSI escape codes
+for color and styles.")
+    (license license:lgpl3)))
+
 (define-public go-github-com-kevinburke-ssh-config
   (package
     (name "go-github-com-kevinburke-ssh-config")
