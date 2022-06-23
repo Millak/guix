@@ -2317,6 +2317,33 @@ reproducible gene expression signatures capable of accurately distinguishing
 tumor samples from healthy controls.")
     (license license:artistic2.0)))
 
+(define-public r-awst
+  (package
+    (name "r-awst")
+    (version "1.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "awst" version))
+              (sha256
+               (base32
+                "0iw3zycmj95rmdx7f2w0j4yxkzd90y87lrzgdn9cyvvzi5avflav"))))
+    (properties `((upstream-name . "awst")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/drisso/awst")
+    (synopsis "Asymmetric within-sample transformation")
+    (description
+     "This package @dfn{awst} (Asymmetric Within-Sample Transformation) that
+regularizes RNA-seq read counts and reduces the effect of noise on the
+classification of samples.  AWST comprises two main steps: standardization and
+smoothing.  These steps transform gene expression data to reduce the noise of
+the lowly expressed features, which suffer from background effects and low
+signal-to-noise ratio, and the influence of the highly expressed features,
+which may be the result of amplification bias and other experimental
+artifacts.")
+    (license license:expat)))
+
 (define-public r-baalchip
   (package
     (name "r-baalchip")
