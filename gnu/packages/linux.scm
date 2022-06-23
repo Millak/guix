@@ -5458,9 +5458,7 @@ Bluetooth audio output devices like headphones or loudspeakers.")
                   (search-input-file inputs "/bin/udevadm")))
                #t))))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("rst2man" ,python-docutils)
-       ("gettext" ,gettext-minimal)))
+     (list pkg-config python-docutils gettext-minimal))
     (inputs
      (list glib dbus eudev libical readline))
     (home-page "http://www.bluez.org/")
