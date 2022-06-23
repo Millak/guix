@@ -18706,7 +18706,7 @@ starting with static network configuration.
 This is the type for statically-configured network interfaces.  Its
 value must be a list of @code{static-networking} records.  Each of them
 declares a set of @dfn{addresses}, @dfn{routes}, and @dfn{links}, as
-show below.
+shown below.
 
 @cindex network interface controller (NIC)
 @cindex NIC, networking interface controller
