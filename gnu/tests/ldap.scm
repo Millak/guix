@@ -58,7 +58,9 @@
                           (guix combinators))))
 
   (define vm
-    (virtual-machine os))
+    (virtual-machine
+     (operating-system os)
+     (memory-size 1024)))
 
   (define test
     (with-imported-modules '((gnu build marionette))
