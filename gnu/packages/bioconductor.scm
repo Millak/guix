@@ -2317,6 +2317,33 @@ reproducible gene expression signatures capable of accurately distinguishing
 tumor samples from healthy controls.")
     (license license:artistic2.0)))
 
+(define-public r-asset
+  (package
+    (name "r-asset")
+    (version "2.14.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "ASSET" version))
+              (sha256
+               (base32
+                "029acl5k9d4hnvy3jia9cr4rk6w31zn8b5s79i6lazq1cp236hbg"))))
+    (properties `((upstream-name . "ASSET")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-mass r-msm r-rmeta))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/ASSET")
+    (synopsis
+     "Subset-based association analysis of heterogeneous traits and subtypes")
+    (description
+     "This package is an R program for the subset-based analysis of
+heterogeneous traits and disease subtypes.  ASSET allows the user to search
+through all possible subsets of z-scores to identify the subset of traits
+giving the best meta-analyzed z-score.  Further, it returns a p-value
+adjusting for the multiple-testing involved in the search.  It also allows for
+searching for the best combination of disease subtypes associated with each
+variant.")
+    (license license:gpl2)))
+
 (define-public r-atena
   (package
     (name "r-atena")
