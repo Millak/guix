@@ -5417,46 +5417,44 @@ Bluetooth audio output devices like headphones or loudspeakers.")
                 "0d6yl7l5zrlx5w3y503k72m9xsydx6gi1c65icchq1xknrjpwhxf"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (let ((out (assoc-ref %outputs "out")))
-         (list "--sysconfdir=/etc"
-               "--localstatedir=/var"
-               "--enable-library"
-               "--disable-systemd"
-               ;; TODO: is this needed?  Not installed by default since 5.55.
-               "--enable-hid2hci"
-               ;; Install dbus/udev files to the correct location.
-               (string-append "--with-dbusconfdir=" out "/etc")
-               (string-append "--with-udevdir=" out "/lib/udev")))
-       #:phases
-       (modify-phases %standard-phases
-         ;; Test unit/test-gatt fails unpredictably. Seems to be a timing
-         ;; issue (discussion on upstream mailing list:
-         ;; https://marc.info/?t=149578476300002&r=1&w=2)
-         (add-before 'check 'skip-wonky-test
+     (list
+      #:configure-flags
+      #~(list "--sysconfdir=/etc"
+              "--localstatedir=/var"
+              "--enable-library"
+              "--disable-systemd"
+              ;; TODO: is this needed?  Not installed by default since 5.55.
+              "--enable-hid2hci"
+              ;; Install dbus/udev files to the correct location.
+              (string-append "--with-dbusconfdir=" #$output "/etc")
+              (string-append "--with-udevdir=" #$output "/lib/udev"))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Test unit/test-gatt fails unpredictably. Seems to be a timing
+          ;; issue (discussion on upstream mailing list:
+          ;; https://marc.info/?t=149578476300002&r=1&w=2)
+          (add-before 'check 'skip-wonky-test
             (lambda _
               (substitute* "unit/test-gatt.c"
-                (("tester_init\\(&argc, &argv\\);") "return 77;"))
-              #t))
-         (add-after 'install 'post-install
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out        (assoc-ref outputs "out"))
-                    (servicedir (string-append out "/share/dbus-1/services"))
-                    (service    "obexd/src/org.bluez.obex.service")
-                    (rule       (string-append
-                                 out "/lib/udev/rules.d/97-hid2hci.rules")))
-               ;; Install the obex dbus service file.
-               (substitute* service
-                 (("/bin/false")
-                  (string-append out "/libexec/bluetooth/obexd")))
-               (install-file service servicedir)
-               ;; Fix paths in the udev rule.
-               (substitute* rule
-                 (("hid2hci --method")
-                  (string-append out "/lib/udev/hid2hci --method"))
-                 (("/sbin/udevadm")
-                  (search-input-file inputs "/bin/udevadm")))
-               #t))))))
+                (("tester_init\\(&argc, &argv\\);") "return 77;"))))
+          (add-after 'install 'post-install
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((out        #$output)
+                     (servicedir (string-append out "/share/dbus-1/services"))
+                     (service    "obexd/src/org.bluez.obex.service")
+                     (rule       (string-append
+                                  out "/lib/udev/rules.d/97-hid2hci.rules")))
+                ;; Install the obex dbus service file.
+                (substitute* service
+                  (("/bin/false")
+                   (string-append out "/libexec/bluetooth/obexd")))
+                (install-file service servicedir)
+                ;; Fix paths in the udev rule.
+                (substitute* rule
+                  (("hid2hci --method")
+                   (string-append out "/lib/udev/hid2hci --method"))
+                  (("/sbin/udevadm")
+                   (search-input-file inputs "/bin/udevadm")))))))))
     (native-inputs
      (list pkg-config python-docutils gettext-minimal))
     (inputs
