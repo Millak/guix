@@ -6082,6 +6082,29 @@ network protocol.")
     (home-page "https://github.com/lucas-clemente/quic-go")
     (license license:expat)))
 
+(define-public go-github-com-lunixbochs-vtclean
+  (package
+    (name "go-github-com-lunixbochs-vtclean")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lunixbochs/vtclean")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jqn33l1kzy4dk66zbvxz7rlgkgg34s9mhc8z0lrz0i88466zhd8"))))
+    (build-system go-build-system)
+    (arguments (list #:import-path "github.com/lunixbochs/vtclean"))
+    (home-page "https://github.com/lunixbochs/vtclean")
+    (synopsis "Filter out terminal escape sequences")
+    (description
+     "The @code{vtclean} provides the @command{vtclean} command and a library
+designed to clean up raw terminal output by stripping escape sequences,
+optionally preserving color.")
+    (license license:expat)))
+
 (define-public go-github-com-francoispqt-gojay
   (package
     (name "go-github-com-francoispqt-gojay")
