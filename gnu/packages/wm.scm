@@ -1509,9 +1509,9 @@ its size
            xcb-util-wm
            xcb-util-xrm))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("python-sphinx" ,python-sphinx) ; for the manual
-       ("python" ,python)))             ; xcb-proto depends on python 3
+     (list pkg-config
+           python-sphinx ; for the manual
+           python))      ; xcb-proto depends on python 3
     (home-page "https://polybar.github.io/")
     (synopsis "Fast and easy-to-use status bar")
     (description "Polybar aims to help users build beautiful and highly
