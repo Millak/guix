@@ -76,15 +76,22 @@
 (define-public glu
   (package
     (name "glu")
-    (version "9.0.1")
+    (version "9.0.2")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "ftp://ftp.freedesktop.org/pub/mesa/glu/glu-"
-                                  version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.freedesktop.org/mesa/glu")
+                    (commit (string-append "glu-" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1xqhk9bn10nbvffw3r4p4rjslwz1l7gaycc0x2pqkr2irp7q9x7n"))))
+                "1khxfidyglpx4yd8f3xvrj05ah823cz1ygcszhcaa4w7h9kd1lbr"))))
     (build-system gnu-build-system)
+    (native-inputs
+     (list pkg-config
+           autoconf
+           automake
+           libtool))
     (propagated-inputs
      (list mesa)) ; according to glu.pc
     (home-page "http://www.opengl.org/archives/resources/faq/technical/glu.htm")
