@@ -717,21 +717,19 @@ OpenGL graphics API.")
 (define-public libepoxy
   (package
     (name "libepoxy")
-    (version "1.5.5")
+    (version "1.5.10")
+    (home-page "https://github.com/anholt/libepoxy")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/anholt/libepoxy/releases/download/"
-                    version "/libepoxy-" version ".tar.xz"))
+              (method git-fetch)
+              (uri (git-reference (url home-page) (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0mh5bdgqfd8m4wj6jlvn4ac94sgfa8r6ish75ciwrhdw47dn65i6"))))
+                "0jw02bzdwynyrwsn5rhcacv92h9xx928j3xp436f8gdnwlyb5641"))))
     (arguments
-     `(#:phases
+     '(#:phases
        (modify-phases %standard-phases
-         (delete 'bootstrap)
-         (add-before
-           'configure 'patch-paths
+         (add-before 'configure 'patch-paths
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((python (assoc-ref inputs "python"))
                    (mesa (assoc-ref inputs "mesa")))
@@ -739,15 +737,13 @@ OpenGL graphics API.")
                  (("/usr/bin/env python") python))
                (substitute* (find-files "." "\\.[ch]$")
                  (("libGL.so.1") (string-append mesa "/lib/libGL.so.1"))
-                 (("libEGL.so.1") (string-append mesa "/lib/libEGL.so.1")))
-               #t))))))
+                 (("libEGL.so.1") (string-append mesa "/lib/libEGL.so.1")))))))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config python))
     (propagated-inputs
      ;; epoxy.pc: 'Requires.private: gl egl'
      (list mesa))
-    (home-page "https://github.com/anholt/libepoxy/")
     (synopsis "Library for handling OpenGL function pointer management")
     (description
      "A library for handling OpenGL function pointer management.")
