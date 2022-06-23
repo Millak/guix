@@ -2317,6 +2317,47 @@ reproducible gene expression signatures capable of accurately distinguishing
 tumor samples from healthy controls.")
     (license license:artistic2.0)))
 
+(define-public r-atena
+  (package
+    (name "r-atena")
+    (version "1.2.2")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "atena" version))
+              (sha256
+               (base32
+                "0b89wb7cc44c8jd6868dn8pwgid768bprkncsi87qkdz0abbhzhp"))))
+    (properties `((upstream-name . "atena")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-annotationhub
+           r-biocgenerics
+           r-biocparallel
+           r-genomeinfodb
+           r-genomicalignments
+           r-genomicranges
+           r-iranges
+           r-matrix
+           r-rsamtools
+           r-s4vectors
+           r-scales
+           r-sparsematrixstats
+           r-squarem
+           r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/functionalgenomics/atena")
+    (synopsis "Analysis of transposable elements")
+    (description
+     "The atena package quantifies expression of @dfn{TEs} (transposable
+elements) from RNA-seq data through different methods, including ERVmap,
+TEtranscripts and Telescope.  A common interface is provided to use each of
+these methods, which consists of building a parameter object, calling the
+quantification function with this object and getting a
+@code{SummarizedExperiment} object as an output container of the quantified
+expression profiles.  The implementation allows quantifing TEs and gene
+transcripts in an integrated manner.")
+    (license license:artistic2.0)))
+
 (define-public r-atsnp
   (package
     (name "r-atsnp")
