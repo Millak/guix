@@ -2317,6 +2317,30 @@ reproducible gene expression signatures capable of accurately distinguishing
 tumor samples from healthy controls.")
     (license license:artistic2.0)))
 
+(define-public r-awfisher
+  (package
+    (name "r-awfisher")
+    (version "1.10.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "AWFisher" version))
+              (sha256
+               (base32
+                "050k7w0azsl7rqx2pxgccihzc2q8pmh6fyy4gib2d42sdyijr2n1"))))
+    (properties `((upstream-name . "AWFisher")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-edger
+           r-limma))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/AWFisher")
+    (synopsis  "Fast computing for adaptively weighted fisher's method")
+    (description
+     "This package is an implementation of the Adaptively Weighted Fisher's
+method, including fast p-value computing, variability index, and
+meta-pattern.")
+    (license license:gpl3)))
+
 (define-public r-awst
   (package
     (name "r-awst")
