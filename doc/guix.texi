@@ -7379,8 +7379,25 @@ The build system that should be used to build the package (@pxref{Build
 Systems}).
 
 @item @code{arguments} (default: @code{'()})
-The arguments that should be passed to the build system.  This is a
-list, typically containing sequential keyword-value pairs.
+The arguments that should be passed to the build system (@pxref{Build
+Systems}).  This is a list, typically containing sequential
+keyword-value pairs, as in this example:
+
+@lisp
+(package
+  (name "example")
+  ;; several fields omitted
+  (arguments
+    (list #:tests? #f                     ;skip tests
+          #:make-flags #~'("VERBOSE=1")   ;pass flags to 'make'
+          #:configure-flags #~'("--enable-frobbing"))))
+@end lisp
+
+The exact set of supported keywords depends on the build system
+(@pxref{Build Systems}), but you will find that almost all of them honor
+@code{#:configure-flags}, @code{#:make-flags}, @code{#:tests?}, and
+@code{#:phases}.  The @code{#:phases} keyword in particular lets you
+modify the set of build phases for your package (@pxref{Build Phases}).
 
 @item @code{inputs} (default: @code{'()})
 @itemx @code{native-inputs} (default: @code{'()})
