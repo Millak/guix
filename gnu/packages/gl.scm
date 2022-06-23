@@ -68,6 +68,7 @@
   #:use-module (guix build-system waf)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (ice-9 match)
   #:use-module ((srfi srfi-1) #:hide (zip)))
@@ -727,17 +728,15 @@ OpenGL graphics API.")
                (base32
                 "0jw02bzdwynyrwsn5rhcacv92h9xx928j3xp436f8gdnwlyb5641"))))
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'patch-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((python (assoc-ref inputs "python"))
-                   (mesa (assoc-ref inputs "mesa")))
-               (substitute* "src/gen_dispatch.py"
-                 (("/usr/bin/env python") python))
-               (substitute* (find-files "." "\\.[ch]$")
-                 (("libGL.so.1") (string-append mesa "/lib/libGL.so.1"))
-                 (("libEGL.so.1") (string-append mesa "/lib/libEGL.so.1")))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'patch-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((mesa (dirname (search-input-file inputs "lib/libGL.so"))))
+                (substitute* (find-files "." "\\.[ch]$")
+                  (("libGL.so.1") (string-append mesa "/libGL.so.1"))
+                  (("libEGL.so.1") (string-append mesa "/libEGL.so.1")))))))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config python))
