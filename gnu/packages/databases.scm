@@ -1247,39 +1247,13 @@ pictures, sounds, or video.")
   (package
     (inherit postgresql-14)
     (version "13.6")
-    (replacement postgresql-13/replacement)
     (source (origin
               (inherit (package-source postgresql-14))
               (uri (string-append "https://ftp.postgresql.org/pub/source/v"
                                   version "/postgresql-" version ".tar.bz2"))
               (sha256
                (base32
-                "1z37ix80hb2bqa2smh1hbj9r507ypnl3pil43gkqznnlv6ipzz5s"))
-              (patches (search-patches "postgresql-riscv-spinlocks.patch"))))))
-
-;; The merge of commit ...
-;;  781dd2de230e3 gnu: postgresql-13: Fix building on riscv64-linux.
-;; ... in ...
-;;  49b350fafc2c3 Merge branch 'master' into staging.
-;; ... lost the inherited patch from postgresql-14, causing problems such as ...
-;;  05fef7bfc6005 gnu: timescaledb: Adjust test preparation to PostgreSQL 13.6.
-;;
-;; While at it, remove the RISC-V spinlock patch, which has been upstreamed
-;; in a different form (so the old patch still applies).
-;; TODO: Remove in the next rebuild cycle.
-(define postgresql-13/replacement
-  (package
-    (inherit postgresql-13)
-    (version "13.7")
-    (source
-     (origin
-       (inherit (package-source postgresql-13))
-       (uri (string-append "https://ftp.postgresql.org/pub/source/v"
-                           version "/postgresql-" version ".tar.bz2"))
-       (sha256
-        (base32
-         "16b3ljid7zd1v5l4l4pmwihx43wi8p9izidkjfii8dnqygs5p40v"))
-       (patches (search-patches "postgresql-disable-resolve_symlinks.patch"))))))
+                "1z37ix80hb2bqa2smh1hbj9r507ypnl3pil43gkqznnlv6ipzz5s"))))))
 
 (define-public postgresql-11
   (package
@@ -1292,9 +1266,7 @@ pictures, sounds, or video.")
                                   version "/postgresql-" version ".tar.bz2"))
               (sha256
                (base32
-                "1983a7y4y6zhbgh0qcdfkf99445j1zm5q1ncrbkrx555y08y3n9d"))
-              (patches (search-patches
-                        "postgresql-disable-resolve_symlinks.patch"))))
+                "1983a7y4y6zhbgh0qcdfkf99445j1zm5q1ncrbkrx555y08y3n9d"))))
     (native-inputs
      (modify-inputs (package-native-inputs postgresql-13)
        (replace "docbook-xml" docbook-xml-4.2)))))
