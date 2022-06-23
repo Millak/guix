@@ -2317,6 +2317,39 @@ reproducible gene expression signatures capable of accurately distinguishing
 tumor samples from healthy controls.")
     (license license:artistic2.0)))
 
+(define-public r-atsnp
+  (package
+    (name "r-atsnp")
+    (version "1.12.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "atSNP" version))
+              (sha256
+               (base32
+                "0dmv34xqwr3l2rznapxmyrkyf1w78qzxdv88s5nn8s1m8qdkgwkz"))))
+    (properties `((upstream-name . "atSNP")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biocfilecache
+           r-biocparallel
+           r-bsgenome
+           r-data-table
+           r-ggplot2
+           r-lifecycle
+           r-motifstack
+           r-rappdirs
+           r-rcpp
+           r-testthat))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/sunyoungshin/atSNP")
+    (synopsis
+     "Affinity test for identifying regulatory single nucleotide polymorphisms")
+    (description
+     "The atSNP package performs affinity tests of motif matches with the
+@dfn{SNP} (single nucleotide polymorphism) or the reference genomes and
+SNP-led changes in motif matches.")
+    (license license:gpl2)))
+
 (define-public r-attract
   (package
     (name "r-attract")
