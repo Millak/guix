@@ -9985,6 +9985,27 @@ kubernetes-sigs/yaml is a permanent fork of
     (description "Package go-scfg parses scfg files.")
     (license license:expat)))
 
+(define-public go-git-sr-ht-emersion-gqlclient
+  (package
+    (name "go-git-sr-ht-emersion-gqlclient")
+    (version "0.0.0-20220202181617-4e6e9c763dd2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~emersion/gqlclient")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1d9hmaz7yy02bk455gmaav818xi49sw69jyx6dxzymv6ln7r1cv1"))))
+    (build-system go-build-system)
+    (arguments (list #:import-path "git.sr.ht/~emersion/gqlclient"))
+    (home-page "https://git.sr.ht/~emersion/gqlclient")
+    (synopsis "GraphQL client and code generator")
+    (description
+     "This package provides a GraphQL client and code generator for Go.")
+    (license license:expat)))
+
 (define-public go-github-com-google-go-jsonnet
   (package
     (name "go-github-com-google-go-jsonnet")
