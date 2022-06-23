@@ -16124,8 +16124,8 @@ which avoids some of the issues with using Emacs’s built-in Url library.")
     (license license:gpl3+)))
 
 (define-public emacs-ement
-  (let ((commit "c951737dc855604aba389166bb0e7366afadc533")
-        (revision "1"))
+  (let ((commit "45b7882c8a8f28eb59113f78db0e79918f2c58ee")
+        (revision "2"))
     (package
       (name "emacs-ement")
       (version (git-version "0.1-pre" revision commit))
@@ -16137,12 +16137,15 @@ which avoids some of the issues with using Emacs’s built-in Url library.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "00iwwz4hzg4g59wrb5df6snqz3ppvrsadhfp61w1pa8gvg2z9bvy"))))
+          (base32 "1f79h9l7chazan7kh2g73banqim5p4gz2nyx3cvp9jjfz32c4k46"))))
       (build-system emacs-build-system)
       (arguments
        `(#:emacs ,emacs))               ;need libxml support
       (propagated-inputs
-       (list emacs-plz emacs-ts))
+       (list emacs-plz
+             emacs-svg-lib
+             emacs-taxy
+             emacs-ts))
       (home-page "https://github.com/alphapapa/ement.el")
       (synopsis "Matrix client for Emacs")
       (description "Ement.el is a Matrix client for Emacs.")
