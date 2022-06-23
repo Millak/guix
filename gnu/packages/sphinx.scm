@@ -468,6 +468,8 @@ builder does not support SVG images natively (e.g. LaTeX).")
     (arguments
      ;; FIXME: Tests depend on Sphinx, which depends on this.
      `(#:tests? #f))
+    (propagated-inputs
+     (list python-sphinxcontrib-serializinghtml))
     (home-page "https://sphinx-doc.org/")
     (synopsis "Sphinx API for web applications")
     (description
