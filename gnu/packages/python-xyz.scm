@@ -13418,13 +13418,13 @@ automatically detect a wide range of file encodings.")
 (define-public python-charset-normalizer
   (package
     (name "python-charset-normalizer")
-    (version "2.0.11")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "charset-normalizer" version))
        (sha256
-        (base32 "071pi2kd222rjjrjdllffqv3iz4bfaj93a9bfs65907fd6fqlfcq"))))
+        (base32 "04zlajr77f6c7ai59l46as1idi0jjgbvj72lh4v5wfpz2s070pjp"))))
     (build-system python-build-system)
     (arguments
      (list #:phases
