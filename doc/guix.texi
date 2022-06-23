@@ -28531,6 +28531,9 @@ prefix @samp{unix:}.  For addresses using an IP address or domain name,
 the default port is 80, and a different port can be specified
 explicitly.
 
+@item @code{extra-content}
+A string or list of strings to add to the upstream block.
+
 @end table
 @end deftp
 

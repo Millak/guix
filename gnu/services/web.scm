@@ -120,6 +120,7 @@
             nginx-upstream-configuration?
             nginx-upstream-configuration-name
             nginx-upstream-configuration-servers
+            nginx-upstream-configuration-extra-content
 
             nginx-location-configuration
             nginx-location-configuration?
@@ -517,7 +518,9 @@
   nginx-upstream-configuration make-nginx-upstream-configuration
   nginx-upstream-configuration?
   (name                nginx-upstream-configuration-name)
-  (servers             nginx-upstream-configuration-servers))
+  (servers             nginx-upstream-configuration-servers)
+  (extra-content       nginx-upstream-configuration-extra-content
+                       (default '())))
 
 (define-record-type* <nginx-location-configuration>
   nginx-location-configuration make-nginx-location-configuration
@@ -643,6 +646,15 @@ of index files."
    (map (lambda (server)
           (simple-format #f "      server ~A;\n" server))
         (nginx-upstream-configuration-servers upstream))
+   (let ((extra-content
+          (nginx-upstream-configuration-extra-content upstream)))
+     (if (and extra-content (not (null? extra-content)))
+         (cons
+          "\n"
+          (map (lambda (line)
+                 (simple-format #f "      ~A\n" line))
+               (flatten extra-content)))
+         '()))
    "    }\n"))
 
 (define (flatten . lst)
