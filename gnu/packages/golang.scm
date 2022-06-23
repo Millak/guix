@@ -35,6 +35,7 @@
 ;;; Copyright © 2021 Lu Hui <luhux76@gmail.com>
 ;;; Copyright © 2022 Pier-Hugues Pellerin <phpellerin@gmail.com>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
+;;; Copyright © 2022 Dhruvin Gandhi <contact@dhruvin.dev>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -9988,6 +9989,28 @@ kubernetes-sigs/yaml is a permanent fork of
 Jsonnet} data templating language in Go.  It is a feature-complete,
 production-ready implementation, compatible with the original Jsonnet C++
 implementation.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-google-shlex
+  (package
+    (name "go-github-com-google-shlex")
+    (version "0.0.0-20191202100458-e7afc7fbc510")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/shlex")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14z8hqyik910wk2qwnzgz8mjsmiamxa0pj55ahbv0jx6j3dgvzfm"))))
+    (build-system go-build-system)
+    (arguments (list #:import-path "github.com/google/shlex"))
+    (home-page "https://github.com/google/shlex")
+    (synopsis "Simple lexer for Go")
+    (description
+     "@code{shlex} implements a simple lexer which splits input into tokens
+using shell-style rules for quoting and commenting.")
     (license license:asl2.0)))
 
 (define-public go-github-com-gorilla-websocket
