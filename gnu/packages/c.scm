@@ -14,6 +14,7 @@
 ;;; Copyright © 2021 David Dashyan <mail@davie.li>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 (unmatched parenthesis <paren@disroot.org>
+;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1127,4 +1128,42 @@ performance concurrent systems developed in C99+.")
       (description "A simple one header solution to supporting UTF-8 strings in
 C and C++.  The functions it provides are like those from the C header
 string.h, but with a utf8* prefix instead of the str* prefix.")
+      (license license:unlicense))))
+
+(define-public utest-h
+  ;; The latest commit is used as there is no release.
+  (let ((commit   "54458e248f875f1a51f0af8bec8ca6ae7761b9d1")
+        (revision "0"))
+    (package
+      (name "utest-h")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/sheredom/utest.h")
+                      (commit commit)))
+                (file-name (git-file-name "utest.h" version))
+                (sha256
+                 (base32
+                  "1ikl5jwmjdw1mblqyl2kvnqwkjgaz78c1h7mjcfmzjc0d3h8kh44"))))
+      (build-system cmake-build-system)
+      (arguments
+       `(#:phases (modify-phases %standard-phases
+                    (delete 'build)
+                    (delete 'configure)
+                    (replace 'check
+                      (lambda* (#:key tests? #:allow-other-keys)
+                        (when tests?
+                          (with-directory-excursion "test"
+                                                    (invoke "cmake" ".")
+                                                    (invoke "make")))))
+                    (replace 'install
+                      (lambda* (#:key outputs #:allow-other-keys)
+                        (let ((out (assoc-ref outputs "out")))
+                          (install-file "utest.h"
+                                        (string-append out "/include"))))))))
+      (home-page "https://www.duskborn.com/utest_h/")
+      (synopsis "Single-header unit testing framework for C and C++")
+      (description
+       "This package provides a header-only unit testing library for C/C++.")
       (license license:unlicense))))
