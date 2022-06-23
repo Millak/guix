@@ -799,7 +799,7 @@ test suite, including conformance tests (following Rec. ITU-T T.803 | ISO/IEC
 (define-public openjpeg
   (package
     (name "openjpeg")
-    (version "2.4.0")
+    (version "2.5.0")
     (source
      (origin
        (method git-fetch)
@@ -808,7 +808,7 @@ test suite, including conformance tests (following Rec. ITU-T T.803 | ISO/IEC
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "143dvy5g6v6129lzvl0r8mrgva2fppkn0zl099qmi9yi9l9h7yyf"))))
+        (base32 "0xvcxlzqlylnjsyl1j64d7rgzv68ihm4qy6fpdrix3xzbqb3fjpz"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
