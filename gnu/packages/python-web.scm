@@ -2775,13 +2775,13 @@ APIs.")
 (define-public python-requests
   (package
     (name "python-requests")
-    (version "2.27.1")
+    (version "2.28.0")
     (source (origin
              (method url-fetch)
              (uri (pypi-uri "requests" version))
              (sha256
               (base32
-               "0qcsbi919d689xqlgyhw9zkppp1fs6k09wwffa3ri6d8smpwbmv8"))))
+               "0szcvcc1kj7pn7bq7r5jjj0zrllc0vx5vbqyimfqf9dxgqx74s6m"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-certifi
@@ -2790,7 +2790,16 @@ APIs.")
            python-urllib3))
     (arguments
      ;; FIXME: Some tests require network access.
-     '(#:tests? #f))
+     (list #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'loosen-requirement
+                 (lambda _
+                   ;; Don't depend on exactly 2.0.0.
+                   ;; https://github.com/psf/requests/pull/6169
+                   (substitute* '("setup.py" "setup.cfg")
+                     (("charset_normalizer~=2\\.0\\.0")
+                      "charset_normalizer~=2.0")))))))
     (home-page "http://python-requests.org/")
     (synopsis "Python HTTP library")
     (description
