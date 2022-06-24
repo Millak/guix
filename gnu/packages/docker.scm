@@ -348,7 +348,8 @@ built-in registry server of Docker.")
                  (string-append "DefaultCommand = \""
                                 (search-input-file inputs "/sbin/runc")
                                 "\"\n")))
-              (substitute* "vendor/github.com/containerd/containerd/runtime/v1/linux/runtime.go"
+              (substitute* "vendor/github.com/containerd/containerd/\
+runtime/v1/linux/runtime.go"
                 (("defaultRuntime[ \t]*=.*")
                  (string-append "defaultRuntime = \""
                                 (search-input-file inputs "/sbin/runc")
@@ -385,7 +386,8 @@ built-in registry server of Docker.")
                  (string-append "expectedInitPath: \""
                                 (search-input-file inputs "/bin/tini-static")
                                 "\"")))
-              (substitute* "vendor/github.com/moby/buildkit/executor/runcexecutor/executor.go"
+              (substitute* "vendor/github.com/moby/buildkit/executor/\
+runcexecutor/executor.go"
                 (("var defaultCommandCandidates = .*")
                  (string-append "var defaultCommandCandidates = []string{\""
                                 (search-input-file inputs "/sbin/runc") "\"}")))
@@ -534,19 +536,20 @@ built-in registry server of Docker.")
               ;; dockerd instead.
               (invoke "hack/make.sh" "dynbinary")))
           (replace 'check
-            (lambda _
-              ;; The build process generated a file because the environment
-              ;; variable "AUTO_GOPATH" was set.  Use it.
-              (setenv "GOPATH" (string-append (getcwd) "/.gopath"))
-              ;; ".gopath/src/github.com/docker/docker" is a link to the current
-              ;; directory and chdir would canonicalize to that.
-              ;; But go needs to have the uncanonicalized directory name, so
-              ;; store that.
-              (setenv "PWD" (string-append (getcwd)
-                                           "/.gopath/src/github.com/docker/docker"))
-              (with-directory-excursion ".gopath/src/github.com/docker/docker"
-                (invoke "hack/test/unit"))
-              (setenv "PWD" #f)))
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; The build process generated a file because the environment
+                ;; variable "AUTO_GOPATH" was set.  Use it.
+                (setenv "GOPATH" (string-append (getcwd) "/.gopath"))
+                ;; ".gopath/src/github.com/docker/docker" is a link to the current
+                ;; directory and chdir would canonicalize to that.
+                ;; But go needs to have the uncanonicalized directory name, so
+                ;; store that.
+                (setenv "PWD" (string-append
+                               (getcwd) "/.gopath/src/github.com/docker/docker"))
+                (with-directory-excursion ".gopath/src/github.com/docker/docker"
+                  (invoke "hack/test/unit"))
+                (setenv "PWD" #f))))
           (replace 'install
             (lambda* (#:key outputs #:allow-other-keys)
               (let* ((out (assoc-ref outputs "out"))
@@ -580,7 +583,7 @@ built-in registry server of Docker.")
     (native-inputs
      (list eudev ; TODO: Should be propagated by lvm2 (.pc -> .pc)
            go gotestsum pkg-config))
-    (synopsis "Docker container component library, and daemon")
+    (synopsis "Container component library and daemon")
     (description "This package provides a framework to assemble specialized
 container systems.  It includes components for orchestration, image
 management, secret management, configuration management, networking,
