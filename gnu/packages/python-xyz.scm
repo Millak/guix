@@ -17033,7 +17033,14 @@ scans through a file and detects issues.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "07drmi3ai49jw5n23ibkambcgijqcw073ihypjgxfnks5lv4yqy1"))))
+         "07drmi3ai49jw5n23ibkambcgijqcw073ihypjgxfnks5lv4yqy1"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Adjust comprehension syntax for Python > 3.8.
+        ;; From <https://github.com/davidhalter/jedi/issues/1824>.
+        '(substitute* "test/completion/lambdas.py"
+           (("if lambda: 3")
+            "if (lambda: 3)")))))
     (build-system python-build-system)
     (arguments
      `(#:phases
