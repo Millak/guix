@@ -91,17 +91,11 @@ user's profile root."
   (unless (or (grep* "sourceLibrary" "package.json")
               (grep* "sourceLibrary" "dub.sdl") ; note: format is different!
               (grep* "sourceLibrary" "dub.json"))
-    (apply invoke `("dub" "build" ,@dub-build-flags))
-    (substitute* ".dub/dub.json"
-      (("\"lastUpgrade\": \"[^\"]*\"")
-       "\"lastUpgrade\": \"1970-01-01T00:00:00.0000000\""))))
+    (apply invoke `("dub" "build" ,@dub-build-flags))))
 
 (define* (check #:key tests? #:allow-other-keys)
   (when tests?
-    (invoke "dub" "test")
-    (substitute* ".dub/dub.json"
-      (("\"lastUpgrade\": \"[^\"]*\"")
-       "\"lastUpgrade\": \"1970-01-01T00:00:00.0000000\""))))
+    (invoke "dub" "test")))
 
 (define* (install #:key inputs outputs #:allow-other-keys)
   "Install a given DUB package."
