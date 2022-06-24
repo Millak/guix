@@ -17038,12 +17038,19 @@ scans through a file and detects issues.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'fix-completion-test
+           (lambda _
+             ;; This resolves a failure in the 'test_completion' test (see:
+             ;; https://github.com/davidhalter/jedi/issues/1824).
+             ;; TODO: Remove after a new release is made (currently: 0.18.1).
+             (substitute* "test/completion/lambdas.py"
+               (("\\[a for a in \\[1,2\\] if lambda: 3\\]\\[0\\]")
+                "[a for a in [1,2] if (lambda: 3)][0]"))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
                (setenv "HOME" "/tmp")
-               (invoke "python" "-m" "pytest" "-vv"))
-             #t)))))
+               (invoke "python" "-m" "pytest" "-vv")))))))
     (native-inputs
      (list python-colorama python-docopt python-pytest))
     (propagated-inputs
