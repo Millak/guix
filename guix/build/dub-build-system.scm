@@ -48,10 +48,10 @@
     (_ #f)))
 
 (define* (configure #:key inputs #:allow-other-keys)
-  "Prepare one new directory with all the required dependencies.
-   It's necessary to do this (instead of just using /gnu/store as the
-   directory) because we want to hide the libraries in subdirectories
-   lib/dub/... instead of polluting the user's profile root."
+  "Prepare one new directory with all the required dependencies. It's necessary
+to do this (instead of just using /gnu/store as the directory) because we want
+to hide the libraries in subdirectories lib/dub/... instead of polluting the
+user's profile root."
   (let* ((dir (mkdtemp! "/tmp/dub.XXXXXX"))
          (vendor-dir (string-append dir "/vendor")))
     (setenv "HOME" dir)
