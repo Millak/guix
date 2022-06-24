@@ -32,14 +32,14 @@
 (define-public libgc
   (package
    (name "libgc")
-   (version "8.0.4")
+   (version "8.0.6")
    (source (origin
             (method url-fetch)
             (uri (string-append "https://github.com/ivmai/bdwgc/releases"
                                 "/download/v" version "/gc-" version ".tar.gz"))
             (sha256
              (base32
-              "1798rp3mcfkgs38ynkbg2p47bq59pisrc6mn0l20pb5iczf0ssj3"))))
+              "04ga3c95w5az5sznzm73j19lvvfpf6k4sgkpjqsmjxpsr6mi8j9v"))))
    (build-system gnu-build-system)
    (arguments
     `(#:configure-flags
