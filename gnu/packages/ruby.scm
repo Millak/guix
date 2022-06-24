@@ -6740,8 +6740,7 @@ tree-like structures.  It is similar to Ruby's built-in @code{TSort} module.")
       (build-system ruby-build-system)
       (propagated-inputs
        (list ruby-tdiff
-             ;; Use a fixed version to prevent rebuilds; see ruby-nokogiri TODO.
-             ruby-nokogiri-1.10))
+             ruby-nokogiri))
       (native-inputs
        (list ruby-rspec ruby-yard ruby-rubygems-tasks))
       (synopsis "Calculate the differences between two XML/HTML documents")
