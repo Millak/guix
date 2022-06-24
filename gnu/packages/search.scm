@@ -10,6 +10,7 @@
 ;;; Copyright © 2021 Alexandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2021, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
+;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -73,14 +74,14 @@
 (define-public xapian
   (package
     (name "xapian")
-    (version "1.4.18")
+    (version "1.4.19")
     ;; Note: When updating Xapian, remember to update xapian-bindings below.
     (source (origin
               (method url-fetch)
               (uri (string-append "https://oligarchy.co.uk/xapian/" version
                                   "/xapian-core-" version ".tar.xz"))
               (sha256
-               (base32 "0xsb4ihf3p767f0zx9p4janwni6r9sg5j6lry0002i8hmnsdnv8r"))))
+               (base32 "1hx92kbqdl38gsrwzvbqgf2jc4wwzsad2gd99g62cdfclvy4ijhz"))))
     (build-system gnu-build-system)
     (inputs (list zlib
                   `(,util-linux "lib")))
@@ -118,7 +119,7 @@ rich set of boolean query operators.")
                                   "/xapian-bindings-" version ".tar.xz"))
               (sha256
                (base32
-                "13ziql8027glgihgvnbsa75vkcn82g83mbihj60zf0njj170clpy"))))
+                "0gc8l9cn8jdma0p73jl14z17yizp6dax5zsycvgprajii6j8bhwi"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--with-python3")
