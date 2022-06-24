@@ -3124,24 +3124,40 @@ two hashes.")
     (home-page "https://github.com/liufengyun/hashdiff")
     (license license:expat)))
 
-(define-public ruby-hydra
+(define-public ruby-hydra-minimal
   ;; No releases yet.
   (let ((commit "5abfa378743756ae4d9306cc134bcc482f5c9525")
         (revision "0"))
     (package
-      (name "ruby-hydra")
+      (name "ruby-hydra-minimal")
       (version (git-version "0.0" revision commit))
       (home-page "https://github.com/hyphenation/hydra")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference (url home-page) (commit commit)))
                 (file-name (git-file-name name version))
+                ;; byebug is a non-essential debugging utility that brings in
+                ;; many dependencies.
+                (patches (search-patches "ruby-hydra-minimal-no-byebug.patch"))
                 (sha256
                  (base32
                   "1cik398l2765y3d9sdhjzki3303hkry58ac6jlkiy7iy62nm529f"))))
       (build-system ruby-build-system)
       (arguments
-       '(#:phases (modify-phases %standard-phases
+       ;; Avoid rspec dependency.
+       '(#:tests? #f))
+      (synopsis "Ruby hyphenation patterns")
+      (description
+       "ruby-hydra-minimal is a Ruby library for working with hyphenation patterns.
+It is a low-dependency variant of ruby-hydra.")
+      (license license:expat))))
+
+(define-public ruby-hydra
+  (package
+    (inherit ruby-hydra-minimal)
+    (name "ruby-hydra")
+    (arguments
+        '(#:phases (modify-phases %standard-phases
                     (add-after 'unpack 'make-files-writable
                       (lambda _
                         (for-each make-file-writable (find-files "."))
@@ -3149,14 +3165,12 @@ two hashes.")
                     (replace 'check
                       (lambda _
                         (invoke "rspec"))))))
-      (native-inputs
-       (list ruby-rspec))
-      (propagated-inputs
-       (list ruby-byebug))
-      (synopsis "Ruby hyphenation patterns")
-      (description
-       "ruby-hydra is a Ruby library for working with hyphenation patterns.")
-      (license license:expat))))
+    (native-inputs
+     (list ruby-rspec))
+    (propagated-inputs
+     (list ruby-byebug))
+    (description
+     "ruby-hydra is a Ruby library for working with hyphenation patterns.")))
 
 (define-public ruby-shindo
   (package

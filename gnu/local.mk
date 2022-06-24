@@ -1772,6 +1772,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/rocm-comgr-3.1.0-dependencies.patch \
   %D%/packages/patches/rocm-opencl-runtime-4.3-noclinfo.patch \
   %D%/packages/patches/rocm-opencl-runtime-4.3-noopencl.patch \
+  %D%/packages/patches/ruby-hydra-minimal-no-byebug.patch		\
   %D%/packages/patches/ruby-mustache-1.1.1-fix-race-condition-tests.patch \
   %D%/packages/patches/ruby-sanitize-system-libxml.patch	\
   %D%/packages/patches/rustc-1.54.0-src.patch			\
