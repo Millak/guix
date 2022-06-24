@@ -21467,3 +21467,78 @@ in a native template application).")
 
 (define-public ecl-clog
   (sbcl-package->ecl-package sbcl-clog))
+
+(define-public sbcl-nkeymaps
+  (package
+    (name "sbcl-nkeymaps")
+    (version "0.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/atlas-engineer/nkeymaps")
+             (commit version)))
+       (file-name (git-file-name "cl-nkeymaps" version))
+       (sha256
+        (base32 "0shkklc3aiq44hyv1q6fahw4vjcr0iw4zsmxbhmxqh04r7185ddf"))))
+    (build-system asdf-build-system/sbcl)
+    (inputs
+     (list sbcl-alexandria
+           sbcl-cl-str
+           sbcl-fset
+           sbcl-trivial-package-local-nicknames))
+    (native-inputs
+     (list sbcl-prove))
+    (home-page "https://github.com/atlas-engineer/nkeymaps")
+    (synopsis "Keymap facility for Common Lisp")
+    (description
+     "This is a keymap facility for Common Lisp inspired by Emacsy
+(keymap.scm) which is inspired by Emacs.
+@itemize
+
+@item Support prefix keys to other keymaps.  For instance, if you prefix
+my-mode-map with C-c, then all bindings for my-mode will be accessible after
+pressing C-c.
+
+@item List all bindings matching a given prefix.  (Also known as which-key in
+Emacs.)
+
+@item List the bindings associated to a command.
+
+@item Support multiple inheritance.
+
+@item Support keycode.
+
+@item Validate keyspec at compile time.
+
+@item define-key can set multiple bindings in a single call.
+
+@item Support multiple scheme to make it easy to switch between, say,
+Emacs-style and VI-style bindings.  This orthogonality to keymaps composes
+better than having multiple keymaps: changing scheme applies to the entire
+program, which is easier than looping through all keymaps to change them.
+
+@item Translate keyspecs as a fallback.  For instance if shift-a is not bound,
+check A.
+
+@item Behaviour can be customized with global parameters such as
+*print-shortcut*.
+
+@item The compose function can merge multiple keymaps together.
+
+@item Support multiple arguments when that makes sense (e.g. multiple keymaps
+for lookup-key).
+
+@item Key remapping à-la Emacs.
+
+@item Typed keymaps, i.e. keymaps where bound values can only be of a given
+type.  This is convenient to catch typos, for instance when binding 'FOO
+instead of #'FOO.
+@end itemize")
+    (license license:bsd-3)))
+
+(define-public cl-nkeymaps
+  (sbcl-package->cl-source-package sbcl-nkeymaps))
+
+(define-public ecl-nkeymaps
+  (sbcl-package->ecl-package sbcl-nkeymaps))
