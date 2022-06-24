@@ -1166,7 +1166,7 @@ It started as a side project of LXC but can be used by any run-time.")
 (define-public lxd
   (package
     (name "lxd")
-    (version "4.22")
+    (version "4.24")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1174,7 +1174,7 @@ It started as a side project of LXC but can be used by any run-time.")
                     "lxd-" version "/lxd-" version ".tar.gz"))
               (sha256
                (base32
-                "119345936fcm1vv06k82k9hvj5yjf9jdrwqm9ccphhl5mswf8xq9"))))
+                "0lmjmvm98m6yjxcqlfw690i71nazfzgrm3mzbjj77g1631df3ylp"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/lxc/lxd"
