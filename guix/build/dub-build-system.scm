@@ -67,8 +67,7 @@
                 (symlink (string-append path "/lib/dub/" d-basename)
                          (string-append vendor-dir "/" d-basename))))))))
       inputs)
-    (invoke "dub" "add-path" vendor-dir)
-    #t))
+    (invoke "dub" "add-path" vendor-dir)))
 
 (define (grep string file-name)
   "Find the first occurrence of STRING in the file named FILE-NAME.
@@ -95,16 +94,14 @@
     (apply invoke `("dub" "build" ,@dub-build-flags))
     (substitute* ".dub/dub.json"
       (("\"lastUpgrade\": \"[^\"]*\"")
-       "\"lastUpgrade\": \"1970-01-01T00:00:00.0000000\"")))
-  #t)
+       "\"lastUpgrade\": \"1970-01-01T00:00:00.0000000\""))))
 
 (define* (check #:key tests? #:allow-other-keys)
   (when tests?
     (invoke "dub" "test")
     (substitute* ".dub/dub.json"
       (("\"lastUpgrade\": \"[^\"]*\"")
-       "\"lastUpgrade\": \"1970-01-01T00:00:00.0000000\"")))
-  #t)
+       "\"lastUpgrade\": \"1970-01-01T00:00:00.0000000\""))))
 
 (define* (install #:key inputs outputs #:allow-other-keys)
   "Install a given DUB package."
@@ -115,8 +112,7 @@
     ;; TODO remove "-test-application"
     (copy-recursively "bin" outbin)
     (mkdir-p outlib)
-    (copy-recursively "." (string-append outlib))
-    #t))
+    (copy-recursively "." (string-append outlib))))
 
 (define %standard-phases
   (modify-phases gnu:%standard-phases
