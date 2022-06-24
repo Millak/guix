@@ -157,6 +157,7 @@ copied to their outputs; otherwise the TEXLIVE-BUILD-SYSTEM is used."
     (file-name (string-append "hyph-utf8-scripts-"
                               (number->string %texlive-revision)
                               "-checkout"))
+    (patches (search-patches "texlive-hyph-utf8-no-byebug.patch"))
     (sha256
      (base32
       "04xzf5gr3ylyh3ls09imrx4mwq3qp1k97r9njzlan6hlff875rx2"))))
@@ -225,7 +226,7 @@ files from LOCATIONS with expected checksum HASH.  CODE is not currently in use.
                      (invoke "ruby" "generate-ptex-patterns.rb")))))))))
       (native-inputs
        `(("ruby" ,ruby)
-         ("ruby-hydra" ,ruby-hydra)
+         ("ruby-hydra-minimal" ,ruby-hydra-minimal)
          ("hyph-utf8-scripts" ,hyph-utf8-scripts)))
       (home-page "https://ctan.org/pkg/hyph-utf8"))))
 
