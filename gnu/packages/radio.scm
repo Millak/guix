@@ -132,6 +132,42 @@
 useful in modems implemented with @dfn{digital signal processing} (DSP).")
       (license license:lgpl2.1))))
 
+(define-public libcorrect
+  (let ((commit "f5a28c74fba7a99736fe49d3a5243eca29517ae9")
+        (revision "1"))
+    (package
+      (name "libcorrect")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/quiet/libcorrect")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0qc9k8x51k2xfvp6cx8vdiyb3g6fl1y657z4m201aw2m06hs1hzg"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:test-target "check"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'build 'build-libfec-compatibility-layer
+              (lambda _
+                (invoke "make" "shim")))
+            (add-after 'install 'delete-static-libraries
+              (lambda _
+                (delete-file (string-append #$output "/lib/libcorrect.a"))
+                (delete-file (string-append #$output "/lib/libfec.a")))))))
+      (home-page "https://github.com/quiet/libcorrect")
+      (synopsis "Forward error correction library")
+      (description
+       "This library provides convolutional and Reed-Solomon codes for forward
+error correction.  It also includes a compatibility layer so that it can be
+used as a drop-in substitute for @code{libfec}.")
+      (license license:bsd-3))))
+
 (define-public liquid-dsp
   (package
     (name "liquid-dsp")
