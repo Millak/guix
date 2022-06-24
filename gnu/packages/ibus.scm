@@ -329,7 +329,7 @@ Chinese pinyin input methods.")
        #:phases
        (modify-phases %standard-phases
          (add-after 'install 'wrap-programs
-           (lambda* (#:key outputs #:allow-other-keys)
+           (lambda* (#:key inputs outputs #:allow-other-keys)
              (for-each (lambda (prog)
                          (wrap-program (search-input-file
                                         outputs (string-append "libexec/" prog))
