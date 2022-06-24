@@ -5031,19 +5031,16 @@ to reproduce user environments.")
                (base32
                 "15zplpfw3knqifj9bpf604rb3wc1vhq6363pd6lvhayng8wql5vy"))))))
 
-;; TODO: In the next rebuild cycle, provide texlive a version of ruby-hydra
-;; that does not depend on byebug and rspec, so that their dependencies can
-;; be updated more freely.  For now pin this version to avoid rebuilds.
-(define-public ruby-nokogiri-1.10
+(define-public ruby-nokogiri
   (package
     (name "ruby-nokogiri")
-    (version "1.10.9")
+    (version "1.12.5")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "nokogiri" version))
               (sha256
                (base32
-                "12j76d0bp608932xkzmfi638c7aqah57l437q8494znzbj610qnm"))))
+                "1v02g7k7cxiwdcahvlxrmizn3avj2q6nsjccgilq1idc89cr081b"))))
     (build-system ruby-build-system)
     (arguments
      ;; Tests fail because Nokogiri can only test with an installed extension,
@@ -5052,28 +5049,13 @@ to reproduce user environments.")
        #:gem-flags (list "--" "--use-system-libraries"
                          (string-append "--with-xml2-include="
                                         (assoc-ref %build-inputs "libxml2")
-                                        "/include/libxml2" ))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'patch-extconf
-           ;; 'pkg-config' is not included in the GEM_PATH during
-           ;; installation, so we add it directly to the load path.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let* ((pkg-config (assoc-ref inputs "ruby-pkg-config")))
-               (substitute* "ext/nokogiri/extconf.rb"
-                 (("gem 'pkg-config'.*")
-                  (string-append "$:.unshift '"
-                                 pkg-config "/lib/ruby/vendor_ruby"
-                                 "/gems/pkg-config-"
-                                 ,(package-version ruby-pkg-config)
-                                 "/lib'\n"))))
-             #t)))))
+                                        "/include/libxml2" ))))
     (native-inputs
      (list ruby-hoe))
     (inputs
      (list zlib libxml2 libxslt))
     (propagated-inputs
-     (list ruby-mini-portile-2 ruby-pkg-config))
+     (list ruby-mini-portile-2.6.1 ruby-pkg-config))
     (synopsis "HTML, XML, SAX, and Reader parser for Ruby")
     (description "Nokogiri (鋸) parses and searches XML/HTML, and features
 both CSS3 selector and XPath 1.0 support.")
@@ -5091,26 +5073,6 @@ both CSS3 selector and XPath 1.0 support.")
               (sha256
                (base32
                 "1lvxm91hi0pabnkkg47wh1siv56s6slm2mdq1idfm86dyfidfprq"))))))
-
-(define-public ruby-nokogiri
-  (package
-    (inherit ruby-nokogiri-1.10)
-    (version "1.12.5")
-    (source (origin
-              (method url-fetch)
-              (uri (rubygems-uri "nokogiri" version))
-              (sha256
-               (base32
-                "1v02g7k7cxiwdcahvlxrmizn3avj2q6nsjccgilq1idc89cr081b"))))
-    (arguments
-     '(#:tests? #f                      ;XXX: no tests in rubygem
-       #:gem-flags (list "--" "--use-system-libraries"
-                         (string-append "--with-xml2-include="
-                                        (assoc-ref %build-inputs "libxml2")
-                                        "/include/libxml2"))))
-    (propagated-inputs
-     (modify-inputs (package-propagated-inputs ruby-nokogiri-1.10)
-       (replace "ruby-mini-portile" ruby-mini-portile-2.6.1)))))
 
 (define-public ruby-method-source
   (package
