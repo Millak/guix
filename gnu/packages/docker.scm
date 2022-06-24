@@ -54,7 +54,7 @@
 
 ;; Note - when changing Docker versions it is important to update the versions
 ;; of several associated packages (docker-libnetwork and go-sctp).
-(define %docker-version "19.03.15")
+(define %docker-version "20.10.17")
 
 (define-public python-docker
   (package
@@ -252,11 +252,10 @@ network attachments.")
 ;;; anyway, as it needs many dependencies that aren't being satisfied.
 (define docker-libnetwork
   ;; There are no recent release for libnetwork, so choose the last commit of
-  ;; the branch that Docker uses, as can be seen in the Docker source file
-  ;; 'hack/dockerfile/install/proxy.installer'. NOTE - It is important that
-  ;; this version is kept in sync with the version of Docker being used.
-  ;; This commit is the "bump_19.03" branch, as mentioned in Docker's vendor.conf.
-  (let ((commit "55e924b8a84231a065879156c0de95aefc5f5435")
+  ;; the branch that Docker uses, as can be seen in the 'vendor.conf' Docker
+  ;; source file.  NOTE - It is important that this version is kept in sync
+  ;; with the version of Docker being used.
+  (let ((commit "f6ccccb1c082a432c2a5814aaedaca56af33d9ea")
         (version (version-major+minor %docker-version))
         (revision "1"))
     (package
@@ -271,12 +270,10 @@ network attachments.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "19syb3scwiykn44gqfaqrgqv8a0df4ps0ykf3za9xkjc5cyi99mp"))
+                  "0nxpr0h0smv4n641g41vxibr5r85ixfcvs9cp3c4fc7zvrhjc49s"))
                 ;; Delete bundled ("vendored") free software source code.
                 (modules '((guix build utils)))
-                (snippet '(begin
-                            (delete-file-recursively "vendor")
-                            #t))))
+                (snippet '(delete-file-recursively "vendor"))))
       (build-system go-build-system)
       (arguments
        `(#:import-path "github.com/moby/libnetwork/"))
@@ -324,9 +321,7 @@ built-in registry server of Docker.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0419iha9zmwlhzhnbfxlsa13vgd04yifnsr8qqnj2ks5dxrcajl8"))
-       (patches
-        (search-patches "docker-fix-tests.patch"))))
+        (base32 "0hn7fg717rggwk6dbicrwa7aglqp7dp0jp5rvn6p9gfcnrp2w97d"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules
@@ -369,9 +364,10 @@ built-in registry server of Docker.")
                (("DefaultRuntimeBinary = .*")
                 (string-append "DefaultRuntimeBinary = \""
                                (assoc-ref inputs "runc")
-                               "/sbin/runc\"\n"))
-               (("DefaultRuntimeName = .*")
-                (string-append "DefaultRuntimeName = \""
+                               "/sbin/runc\"\n")))
+             (substitute* "daemon/runtime_unix.go"
+               (("defaultRuntimeName = .*")
+                (string-append "defaultRuntimeName = \""
                                (assoc-ref inputs "runc")
                                "/sbin/runc\"\n")))
              (substitute* "daemon/config/config.go"
@@ -400,16 +396,6 @@ built-in registry server of Docker.")
              (substitute* "pkg/archive/archive.go"
                (("string\\{\"xz")
                 (string-append "string{\"" (assoc-ref inputs "xz") "/bin/xz")))
-             ;; TODO: Remove when Docker proper uses v1.14.x to build
-             (substitute* "registry/resumable/resumablerequestreader_test.go"
-               (("I%27m%20not%20an%20url" all)
-                (string-append "\"" all "\"")))
-             ;; TODO: Remove when Docker proper uses v1.14.x to build
-             (substitute* "vendor/gotest.tools/x/subtest/context.go"
-               (("func \\(tc \\*testcase\\) Cleanup\\(" all)
-                (string-append all "func()"))
-               (("tc\\.Cleanup\\(" all)
-                (string-append all "nil")))
 
              (let ((source-files (filter (lambda (name)
                                            (not (string-contains name "test")))
@@ -446,6 +432,7 @@ built-in registry server of Docker.")
                   ("blkid" "util-linux" "sbin/blkid")
                   ("unpigz" "pigz" "bin/unpigz")
                   ("iptables" "iptables" "sbin/iptables")
+                  ("ip6tables" "iptables" "sbin/ip6tables")
                   ("iptables-legacy" "iptables" "sbin/iptables")
                   ("ip" "iproute2" "sbin/ip"))
 
@@ -494,10 +481,13 @@ built-in registry server of Docker.")
                   "exec.Command")
                  ;; Search for ZFS in PATH.
                  (("\\<LookPath\\(\"zfs\"\\)") "LooxPath(\"zfs\")")
+                 ;; Do not fail when buildkit-qemu-<target> isn't found.
+                 ;; FIXME: We might need to package buildkit and docker's
+                 ;; buildx plugin, to support qemu-based docker containers.
+                 (("\\<LookPath\\(\"buildkit-qemu-\"") "LooxPath(\"buildkit-qemu-\"")
                  ;; Fail on other unsubstituted LookPaths.
                  (("\\<LookPath\\(\"") "Guix_doesnt_want_LookPath\\(\"")
-                 (("\\<LooxPath") "LookPath")))
-             #t))
+                 (("\\<LooxPath") "LookPath")))))
          (add-after 'patch-paths 'delete-failing-tests
            (lambda _
              ;; Needs internet access.
@@ -522,8 +512,7 @@ built-in registry server of Docker.")
              ;; This file uses /var.
              (delete-file "daemon/oci_linux_test.go")
              ;; Signal tests fail in bizarre ways
-             (delete-file "pkg/signal/signal_linux_test.go")
-             #t))
+             (delete-file "pkg/signal/signal_linux_test.go")))
          (replace 'configure
            (lambda _
              (setenv "DOCKER_BUILDTAGS" "seccomp")
@@ -536,8 +525,7 @@ built-in registry server of Docker.")
              ;; information, and the DWARF symbol table.
              (setenv "LDFLAGS" "-s -w")
              ;; Make build faster
-             (setenv "GOCACHE" "/tmp")
-             #t))
+             (setenv "GOCACHE" "/tmp")))
          (add-before 'build 'setup-go-environment
            (assoc-ref go:%standard-phases 'setup-go-environment))
          (replace 'build
@@ -559,8 +547,7 @@ built-in registry server of Docker.")
                                           "/.gopath/src/github.com/docker/docker"))
              (with-directory-excursion ".gopath/src/github.com/docker/docker"
                (invoke "hack/test/unit"))
-             (setenv "PWD" #f)
-             #t))
+             (setenv "PWD" #f)))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -568,8 +555,7 @@ built-in registry server of Docker.")
                (install-file "bundles/dynbinary-daemon/dockerd" out-bin)
                (install-file (string-append "bundles/dynbinary-daemon/dockerd-"
                                             (getenv "VERSION"))
-                             out-bin)
-               #t)))
+                             out-bin))))
          (add-after 'install 'remove-go-references
            (assoc-ref go:%standard-phases 'remove-go-references)))))
     (inputs
@@ -594,7 +580,7 @@ built-in registry server of Docker.")
        ("xz" ,xz)))
     (native-inputs
      (list eudev ; TODO: Should be propagated by lvm2 (.pc -> .pc)
-           go-1.14 gotestsum pkg-config))
+           go gotestsum pkg-config))
     (synopsis "Docker container component library, and daemon")
     (description "This package provides a framework to assemble specialized
 container systems.  It includes components for orchestration, image
@@ -609,13 +595,13 @@ provisioning etc.")
     (version %docker-version)
     (source
      (origin
-      (method git-fetch)
-      (uri (git-reference
-            (url "https://github.com/docker/cli")
-            (commit (string-append "v" version))))
-      (file-name (git-file-name name version))
-      (sha256
-       (base32 "1asapjj8brvbkd5irgdq82fx1ihrc14qaq30jxvjwflfm5yb7lv0"))))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/docker/cli")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ksicj4iqvgp9jabd4xmhkf3vax6dwn4f5dsr73bdqj4mf3ahav0"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/docker/cli"
@@ -635,21 +621,20 @@ provisioning etc.")
              ;; Make build reproducible.
              (setenv "BUILDTIME" "1970-01-01 00:00:01.000000000+00:00")
              (symlink "src/github.com/docker/cli/scripts" "./scripts")
-             (symlink "src/github.com/docker/cli/docker.Makefile" "./docker.Makefile")
-             #t))
+             (symlink "src/github.com/docker/cli/docker.Makefile" "./docker.Makefile")))
          (replace 'build
            (lambda _
-             (invoke "./scripts/build/dynbinary")))
+             (setenv "GO_LINKMODE" "dynamic")
+             (invoke "./scripts/build/binary")))
          (replace 'check
            (lambda* (#:key make-flags tests? #:allow-other-keys)
              (setenv "PATH" (string-append (getcwd) "/build:" (getenv "PATH")))
-             (if tests?
-                 ;; Use the newly-built docker client for the tests.
-                 (with-directory-excursion "src/github.com/docker/cli"
-                   ;; TODO: Run test-e2e as well?
-                   (apply invoke "make" "-f" "docker.Makefile" "test-unit"
-                          (or make-flags '())))
-                 #t)))
+             (when tests?
+               ;; Use the newly-built docker client for the tests.
+               (with-directory-excursion "src/github.com/docker/cli"
+                 ;; TODO: Run test-e2e as well?
+                 (apply invoke "make" "-f" "docker.Makefile" "test-unit"
+                        (or make-flags '()))))))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -662,8 +647,7 @@ provisioning etc.")
                                (string-append etc "/fish/completions"))
                  (install-file "zsh/_docker"
                                (string-append etc "/zsh/site-functions")))
-               (install-file "build/docker" out-bin)
-               #t))))))
+               (install-file "build/docker" out-bin)))))))
     (native-inputs
      (list go libltdl pkg-config))
     (synopsis "Command line interface to Docker")

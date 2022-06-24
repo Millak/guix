@@ -1778,8 +1778,8 @@ handling network namespaces in Go.")
 (define-public go-sctp
   ;; docker-libnetwork-cmd-proxy requires this exact commit.
   ;; This commit is mentioned in docker-libnetwork-cmd-proxy's vendor.conf.
-  (let ((commit "6e2cb1366111dcf547c13531e3a263a067715847")
-        (revision "2"))
+  (let ((commit "f2269e66cdee387bd321445d5d300893449805be")
+        (revision "3"))
     (package
       (name "go-sctp")
       (version (git-version "0.0.0" revision commit))
@@ -1791,7 +1791,7 @@ handling network namespaces in Go.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1ba90fmpdwxa1ba4hrsjhi3gfy3pwmz7x8amw1p5dc9p5a7nnqrb"))))
+                  "04463rnn9y9psp11ac5di6wrwxlhymw5h9hfhhhnxqwla90ikp0g"))))
       (build-system go-build-system)
       (arguments
        `(#:tests? #f    ; Test suite is flakey.
