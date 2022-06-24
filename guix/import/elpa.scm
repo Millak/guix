@@ -7,6 +7,7 @@
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -35,6 +36,7 @@
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
+  #:use-module (guix diagnostics)
   #:use-module ((guix download) #:select (download-to-store))
   #:use-module (guix import utils)
   #:use-module (guix http-client)
@@ -400,11 +402,16 @@ type '<elpa-package>'."
           (string-drop (package-name package) 6)
           (package-name package))))
 
-(define (latest-release package)
+(define* (latest-release package #:key (version #f))
   "Return an <upstream-release> for the latest release of PACKAGE."
   (define name (guix-package->elpa-name package))
   (define repo (elpa-repository package))
 
+  (when version
+    (error
+     (formatted-message
+      (G_ "~a updater doesn't support updating to a specific version, sorry.")
+      "elpa")))
   (match (elpa-package-info name repo)
     (#f
      ;; No info, perhaps because PACKAGE is not truly an ELPA package.

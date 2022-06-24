@@ -5,6 +5,7 @@
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -693,8 +694,13 @@ s-expression corresponding to that package, or #f on failure."
              (_ #f)))
           (_ #f)))))
 
-(define (latest-cran-release pkg)
+(define* (latest-cran-release pkg #:key (version #f))
   "Return an <upstream-source> for the latest release of the package PKG."
+  (when version
+    (error
+     (formatted-message
+      (G_ "~a provides only the latest version of each package, sorry.")
+      "CRAN")))
 
   (define upstream-name
     (package->upstream-name pkg))
@@ -713,20 +719,25 @@ s-expression corresponding to that package, or #f on failure."
            (changed-inputs pkg
                            (description->package 'cran meta)))))))
 
-(define (latest-bioconductor-release pkg)
+(define* (latest-bioconductor-release pkg #:key (version #f))
   "Return an <upstream-source> for the latest release of the package PKG."
+  (when version
+    (error
+     (formatted-message
+      (G_ "~a provides only the latest version of each package, sorry.")
+      "bioconductor.org")))
 
   (define upstream-name
     (package->upstream-name pkg))
 
-  (define version
+  (define latest-version
     (latest-bioconductor-package-version upstream-name))
 
   (and version
        ;; Bioconductor does not provide signatures.
        (upstream-source
         (package (package-name pkg))
-        (version version)
+        (version latest-version)
         (urls (bioconductor-uri upstream-name version))
         (input-changes
          (changed-inputs

@@ -4,6 +4,7 @@
 ;;; Copyright © 2016 Alex Sassmannshausen <alex@pompo.co>
 ;;; Copyright © 2017, 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29,6 +30,7 @@
   #:use-module (srfi srfi-26)
   #:use-module (json)
   #:use-module (gcrypt hash)
+  #:use-module (guix diagnostics)
   #:use-module (guix store)
   #:use-module (guix utils)
   #:use-module (guix base32)
@@ -305,8 +307,13 @@ in RELEASE, a <cpan-release> record."
                                              ")"))))
     (url-predicate (cut regexp-exec cpan-rx <>))))
 
-(define (latest-release package)
+(define* (latest-release package #:key (version #f))
   "Return an <upstream-source> for the latest release of PACKAGE."
+  (when version
+    (error
+     (formatted-message
+      (G_ "~a updater doesn't support updating to a specific version, sorry.")
+      "cpan")))
   (match (cpan-fetch (package->upstream-name package))
     (#f #f)
     (release

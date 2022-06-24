@@ -4,6 +4,7 @@
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021, 2022 Alice Brenon <alice.brenon@ens-lyon.fr>
+;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -35,6 +36,7 @@
   #:use-module ((guix build utils) #:select (dump-port find-files mkdir-p))
   #:use-module (guix build-system)
   #:use-module (guix build-system ocaml)
+  #:use-module (guix diagnostics)
   #:use-module (guix http-client)
   #:use-module (guix ui)
   #:use-module (guix packages)
@@ -417,8 +419,13 @@ package in OPAM."
     (member (build-system-name (package-build-system package)) '(dune ocaml))
     (not (string-prefix? "ocaml4" (package-name package)))))
 
-(define (latest-release package)
+(define* (latest-release package #:key (version #f))
   "Return an <upstream-source> for the latest release of PACKAGE."
+  (when version
+    (error
+     (formatted-message
+      (G_ "~a updater doesn't support updating to a specific version, sorry.")
+      "opam")))
   (and-let* ((opam-name (guix-package->opam-name package))
              (opam-file (opam-fetch opam-name))
              (version (assoc-ref opam-file "version"))
