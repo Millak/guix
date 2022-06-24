@@ -1367,3 +1367,39 @@ for parameterized model creation and handling.  Its features include:
 Python, from the Sheffield machine learning group.  GPy implements a range of
 machine learning algorithms based on GPs.")
     (license license:bsd-3)))
+
+(define-public python-deepdish
+  (package
+    (name "python-deepdish")
+    (version "0.3.7")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "deepdish" version))
+              (sha256
+               (base32
+                "1wqzwh3y0mjdyba5kfbvlamn561d3afz50zi712c7klkysz3mzva"))))
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'dont-vendor-six
+                          (lambda _
+                            (delete-file "deepdish/six.py")
+                            (substitute* "deepdish/io/hdf5io.py"
+                              (("from deepdish import six") "import six"))
+                            (substitute* "deepdish/io/ls.py"
+                              (("from deepdish import io, six, __version__")
+                               "from deepdish import io, __version__
+import six
+")))))))
+    (build-system python-build-system)
+    (native-inputs (list python-pandas))
+    (propagated-inputs (list python-numpy python-scipy python-six
+                             python-tables))
+    (home-page "https://github.com/uchicago-cs/deepdish")
+    (synopsis "Python library for HDF5 file saving and loading")
+    (description
+     "Deepdish is a Python library to load and save HDF5 files.
+The primary feature of deepdish is its ability to save and load all kinds of
+data as HDF5.  It can save any Python data structure, offering the same ease
+of use as pickling or @code{numpy.save}, but with the language
+interoperability offered by HDF5.")
+    (license license:bsd-3)))
