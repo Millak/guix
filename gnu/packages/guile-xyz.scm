@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2018 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2015, 2017 Christine Lemmer-Webber <cwebber@dustycloud.org>
+;;; Copyright © 2015, 2017, 2022 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016 Alex Sassmannshausen <alex@pompo.co>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Erik Edrosa <erik.edrosa@gmail.com>
@@ -5100,3 +5100,46 @@ Protocol (TAP).  It comes with an experimental harness (tap-harness).")
 termios API is used.  GNU Guile doesn't have an interface for that built in.
 This module implements this interface by use of Guile's dynamic FFI.")
     (license license:bsd-2)))
+
+(define-public guile-goblins
+  (package
+    (name "guile-goblins")
+    (version "0.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/spritely/guile-goblins/")
+             (commit (string-append "v" version))))
+       (file-name (string-append name "-" version))
+       (sha256
+        (base32
+         "1mmyykh79jwhrfgnhhw94aw7a8m6qw249kj7k60ynj16mcfm5iyy"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:make-flags
+           #~(list "GUILE_AUTO_COMPILE=0")))
+    (native-inputs
+     (list autoconf automake pkg-config texinfo))
+    (inputs (list guile-3.0))
+    (propagated-inputs
+     (list guile-fibers guile-gcrypt))
+    (home-page "https://spritely.institute/goblins")
+    (synopsis "Distributed programming environment for Guile")
+    ;; In guile-goblins 0.9, OCapN support will be added (it already
+    ;; exists in racket-goblins).  At that point we should add the
+    ;; following to this description:
+    ;;
+    ;;   Goblins allows for cooperation between networked programs
+    ;;   in a mutually suspicious network through OCapN, the Object
+    ;;   Capability Network.  This includes collaboration across
+    ;;   runtimes; for instance, programs written in the Guile and Racket
+    ;;   versions of Goblins are able to speak to each other.
+    (description
+     "@code{guile-goblins} is the Guile version of
+@url{https://spritely.institute/goblins, Spritely Goblins},
+a transactional, distributed programming environment following object
+capability security designs.  Goblins is a general toolkit, and also
+the core layer of Spritely's work to support healthy distributed
+networked communities.")
+    (license license:asl2.0)))
