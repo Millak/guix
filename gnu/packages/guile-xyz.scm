@@ -496,34 +496,31 @@ and then run @command{scm example.scm}.")
        ,@(package-arguments guile2.0-bash)))))
 
 (define-public guile-8sync
-  (package
-    (name "guile-8sync")
-    (version "0.4.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnu/8sync/8sync-" version
-                                  ".tar.gz"))
-              (sha256
-               (base32
-                "031wm13srak3wsnll7j2mbbi29g1pcm4swdb71ds9yn567pn20qw"))))
-    (build-system gnu-build-system)
-    (native-inputs (list autoconf automake guile-2.2 pkg-config texinfo))
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-before 'configure 'setenv
-                    (lambda _
-                      ;; quiet warnings
-                      (setenv "GUILE_AUTO_COMPILE" "0")
-                      #t)))))
-    (home-page "https://gnu.org/s/8sync/")
-    (synopsis "Asynchronous actor model library for Guile")
-    (description
-     "GNU 8sync (pronounced \"eight-sync\") is an asynchronous programming
-library for GNU Guile based on the actor model.
-
-Note that 8sync is only available for Guile 2.2.")
-    (properties '((upstream-name . "8sync")))
-    (license license:lgpl3+)))
+  (let ((commit "183b4f02e68279d4984e79b79e06bfcf1861fcbf") (revision "0"))
+    (package
+      (name "guile-8sync")
+      (version (git-version "0.4.2" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (commit commit)
+                      (url "https://git.savannah.gnu.org/git/8sync.git")))
+                (sha256
+                 (base32
+                  "0r22kxasv1zqnf1ykzyx6c226qxn1wgjb1gc54526bid24x508ij"))
+                (file-name (git-file-name name version))))
+      (build-system gnu-build-system)
+      (native-inputs (list autoconf automake guile-3.0 pkg-config texinfo))
+      (arguments
+       (list #:make-flags
+             #~(list "GUILE_AUTO_COMPILE=0")))
+      (home-page "https://gnu.org/s/8sync/")
+      (synopsis "Asynchronous actor model library for Guile")
+      (description
+       "GNU 8sync (pronounced \"eight-sync\") is an asynchronous programming
+library for GNU Guile based on the actor model.")
+      (properties '((upstream-name . "8sync")))
+      (license license:lgpl3+))))
 
 (define-public guile-daemon
   (package
