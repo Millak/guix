@@ -367,21 +367,6 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.18)))
 
-(define-public linux-libre-5.17-version "5.17.15")
-(define-public linux-libre-5.17-gnu-revision "gnu")
-(define deblob-scripts-5.17
-  (linux-libre-deblob-scripts
-   linux-libre-5.17-version
-   linux-libre-5.17-gnu-revision
-   (base32 "08ip5g827f30qzb3j2l19zkbdqv00sij46nbrjg75h5kkasdbfgr")
-   (base32 "1654fibbwnbcgnikn1qqa5igd2j90kslbb3pshph5wpj052cvgjy")))
-(define-public linux-libre-5.17-pristine-source
-  (let ((version linux-libre-5.17-version)
-        (hash (base32 "0a5n1lb43nhnhwjwclkk3dqp2nxsx5ny7zfl8idvzshf94m9472a")))
-   (make-linux-libre-source version
-                            (%upstream-linux-source version hash)
-                            deblob-scripts-5.17)))
-
 ;; The "longterm" kernels — the older releases with long-term upstream support.
 ;; Here are the support timelines:
 ;; <https://www.kernel.org/category/releases.html>
@@ -508,11 +493,6 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
                        (list %boot-logo-patch
                              %linux-libre-arm-export-__sync_icache_dcache-patch)))
 
-(define-public linux-libre-5.17-source
-  (source-with-patches linux-libre-5.17-pristine-source
-                       (list %boot-logo-patch
-                             %linux-libre-arm-export-__sync_icache_dcache-patch)))
-
 (define-public linux-libre-5.15-source
   (source-with-patches linux-libre-5.15-pristine-source
                        (list %boot-logo-patch
@@ -626,11 +606,6 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
   (make-linux-libre-headers* linux-libre-5.18-version
                              linux-libre-5.18-gnu-revision
                              linux-libre-5.18-source))
-
-(define-public linux-libre-headers-5.17
-  (make-linux-libre-headers* linux-libre-5.17-version
-                             linux-libre-5.17-gnu-revision
-                             linux-libre-5.17-source))
 
 (define-public linux-libre-headers-5.15
   (make-linux-libre-headers* linux-libre-5.15-version
@@ -952,13 +927,6 @@ It has been modified to remove all non-free binary blobs.")
   (make-linux-libre* linux-libre-5.18-version
                      linux-libre-5.18-gnu-revision
                      linux-libre-5.18-source
-                     '("x86_64-linux" "i686-linux" "armhf-linux" "aarch64-linux" "riscv64-linux")
-                     #:configuration-file kernel-config))
-
-(define-public linux-libre-5.17
-  (make-linux-libre* linux-libre-5.17-version
-                     linux-libre-5.17-gnu-revision
-                     linux-libre-5.17-source
                      '("x86_64-linux" "i686-linux" "armhf-linux" "aarch64-linux" "riscv64-linux")
                      #:configuration-file kernel-config))
 
