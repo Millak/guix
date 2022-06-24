@@ -39,26 +39,7 @@
   #:use-module (guix packages)
   #:use-module (guix upstream)
   #:use-module (guix derivations)
-  #:export (cpan-dependency?
-            cpan-dependency-relationship
-            cpan-dependency-phase
-            cpan-dependency-module
-            cpan-dependency-version
-
-            cpan-release?
-            cpan-release-license
-            cpan-release-author
-            cpan-release-version
-            cpan-release-module
-            cpan-release-distribution
-            cpan-release-download-url
-            cpan-release-abstract
-            cpan-release-home-page
-            cpan-release-dependencies
-            json->cpan-release
-
-            cpan-fetch
-            cpan->guix-package
+  #:export (cpan->guix-package
             metacpan-url->mirror-url
             %cpan-updater
 
