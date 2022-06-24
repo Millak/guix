@@ -51,6 +51,13 @@
   (let ((pkg-config (resolve-interface '(gnu packages pkg-config))))
     (module-ref pkg-config 'pkg-config)))
 
+(define (default-ld-gold-wrapper)
+  "Return the default ld-gold-wrapper package."
+  ;; LDC doesn't work with Guix's default (BFD) linker.
+  ;; Lazily resolve the binding to avoid a circular dependency.
+  (let ((commencement (resolve-interface '(gnu packages commencement))))
+    (module-ref commencement 'ld-gold-wrapper)))
+
 (define %dub-build-system-modules
   ;; Build-side modules imported by default.
   `((guix build dub-build-system)
@@ -100,6 +107,7 @@
                 (ldc (default-ldc))
                 (dub (default-dub))
                 (pkg-config (default-pkg-config))
+                (ld-gold-wrapper (default-ld-gold-wrapper))
                 #:allow-other-keys
                 #:rest arguments)
   "Return a bag for NAME."
@@ -121,6 +129,7 @@
                         ,@(standard-packages)))
          (build-inputs `(("ldc" ,ldc)
                          ("dub" ,dub)
+                         ("ld-gold-wrapper" ,ld-gold-wrapper)
                          ,@native-inputs))
          (outputs outputs)
          (build dub-build)
