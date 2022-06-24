@@ -187,7 +187,8 @@ files from LOCATIONS with expected checksum HASH.  CODE is not currently in use.
                          (string-append root "/tex/generic/hyph-utf8/patterns/quote")))
                    (mkdir "scripts")
                    (copy-recursively
-                    (assoc-ref inputs "hyph-utf8-scripts") "scripts")
+                    (dirname (search-input-file inputs "hyph-utf8.rb"))
+                    "scripts")
 
                    ;; Prepare target directories
                    (mkdir-p patterns)
@@ -225,9 +226,7 @@ files from LOCATIONS with expected checksum HASH.  CODE is not currently in use.
                         (string-append "File.join(\"" ptex "\"")))
                      (invoke "ruby" "generate-ptex-patterns.rb")))))))))
       (native-inputs
-       `(("ruby" ,ruby)
-         ("ruby-hydra-minimal" ,ruby-hydra-minimal)
-         ("hyph-utf8-scripts" ,hyph-utf8-scripts)))
+       (list ruby ruby-hydra-minimal hyph-utf8-scripts))
       (home-page "https://ctan.org/pkg/hyph-utf8"))))
 
 (define texlive-extra-src
