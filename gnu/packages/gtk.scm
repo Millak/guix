@@ -279,10 +279,10 @@ output.  Experimental backends include OpenGL, BeOS, OS/2, and DirectFB.")
                        "See 'COPYING' in the distribution."))
    (home-page "https://www.freedesktop.org/wiki/Software/HarfBuzz/")))
 
-(define-public harfbuzz-3.0
+(define-public harfbuzz-3
   (package
     (inherit harfbuzz)
-    (version "3.0.0")
+    (version "3.4.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/harfbuzz/harfbuzz"
@@ -290,7 +290,7 @@ output.  Experimental backends include OpenGL, BeOS, OS/2, and DirectFB.")
                                   "/harfbuzz-" version ".tar.xz"))
               (sha256
                (base32
-                "1ngk8vn06rryx3s4v5pbl91bw1j1pd4431n77rw3j5a533hhwsq3"))))))
+                "0lprrl8iih8ji1n17xwm5llz05a1hv4g04b7a3y229dq9myahn3i"))))))
 
 (define-public libdatrie
   (package

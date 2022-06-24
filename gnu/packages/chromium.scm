@@ -886,7 +886,7 @@
            gdk-pixbuf
            glib
            gtk+
-           harfbuzz-3.0
+           harfbuzz-3
            icu4c-71
            jsoncpp
            lcms
