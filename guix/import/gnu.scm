@@ -117,7 +117,7 @@ details.)"
     (unless package
       (raise (formatted-message (G_ "no GNU package found for ~a") name)))
 
-    (match (latest-release name)
+    (match (import-release name)
       ((? upstream-source? release)
        (let ((version (upstream-source-version release)))
          (gnu-package->sexp package release #:key-download key-download)))
