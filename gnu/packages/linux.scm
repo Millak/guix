@@ -2648,16 +2648,14 @@ external rate conversion.")
 (define-public iptables
   (package
     (name "iptables")
-    (version "1.8.7")
+    (version "1.8.8")
     (source
      (origin
        (method url-fetch)
        (uri (list (string-append "mirror://netfilter.org/iptables/iptables-"
-                                 version ".tar.bz2")
-                  (string-append "https://www.netfilter.org/projects/iptables/"
-                                 "files/iptables-" version ".tar.bz2")))
+                                 version ".tar.bz2")))
        (sha256
-        (base32 "1w6qx3sxzkv80shk21f63rq41c84irpx68k62m2cv629n1mwj2f1"))))
+        (base32 "17w5a4znq8rdj5djcldmy6mbnxq1v88ibssk2mipc1kivj4miivi"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config flex bison))
