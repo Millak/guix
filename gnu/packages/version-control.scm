@@ -2698,7 +2698,7 @@ by rclone usable with git-annex.")
            which                        ;for tests only
            ed))                         ;ditto
     (inputs
-     (list openssl zlib sqlite-next))   ;SQLite 3.37 or later
+     (list openssl zlib sqlite))
     (arguments
      `(#:configure-flags (list "--with-openssl=auto"
                                "--disable-internal-sqlite")

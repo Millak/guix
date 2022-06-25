@@ -61,14 +61,14 @@
 (define-public sqlite
   (package
    (name "sqlite")
-   (version "3.36.0")
+   (version "3.39.0")
    (source (origin
             (method url-fetch)
-            (uri (sqlite-uri version 2021))
+            (uri (sqlite-uri version 2022))
             (patches (search-patches "sqlite-hurd.patch"))
             (sha256
              (base32
-              "1qxwkfvd185dfcqbakrzikrsw6ffr5jp1gl3dch9dsdyjvmw745x"))))
+              "1qh9xpjf3g1vkxzh3wf0mv8bzjgkcmmpz1jfxv6kz0fmdppwl2z9"))))
    (build-system gnu-build-system)
    (inputs (list readline))
    (outputs '("out" "static"))
@@ -108,15 +108,3 @@ zero-configuration, transactional SQL database engine.  SQLite is the most
 widely deployed SQL database engine in the world.  The source code for SQLite
 is in the public domain.")
    (license license:public-domain)))
-
-;; Newer version required for e.g. fossil.
-(define-public sqlite-next
-  (package
-    (inherit sqlite)
-    (version "3.37.0")
-    (source (origin
-              (method url-fetch)
-              (uri (sqlite-uri version 2021))
-              (sha256
-               (base32
-                "1xvrfh2r5x5pljlvakym3zrhml2dvsr8dd8xsb3nzcylsi8lc6kk"))))))
