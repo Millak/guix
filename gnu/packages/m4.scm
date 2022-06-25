@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012, 2013, 2015 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -27,34 +28,39 @@
 (define-public m4
   (package
    (name "m4")
-   (version "1.4.18")
+   (version "1.4.19")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnu/m4/m4-"
                                 version ".tar.xz"))
-            (patches (search-patches "m4-gnulib-libio.patch"))
             (sha256
              (base32
-              "01sfjd5a4waqw83bibvmn522g69qfqvwig9i2qlgy154l1nfihgj"))))
+              "15mghcksh11saylpm86h1zkz4in0rbi0pk8i6nqxkdikdmfdxbk3"))))
    (build-system gnu-build-system)
    (arguments
     `(;; Explicitly disable tests when cross-compiling, otherwise 'make check'
       ;; proceeds and fails, unsurprisingly.
       #:tests? ,(not (%current-target-system))
-
       #:phases
       (modify-phases %standard-phases
-        (add-before 'check 'pre-check
+        (add-after 'unpack 'disable-test
+          (lambda _
+            ;; Test 5 raises SIGINT from a child and immediately returns
+            ;; code 71, and tests whether the child was killed by a signal.
+            ;; Since there is no signal handler for SIGINT in the build
+            ;; container, the parent sees the return code, and fails.
+            ;; XXX: For some reason adding signal handlers in Guile before
+            ;; running tests has no effect.
+            (substitute* "tests/test-execute.sh"
+              (("4 5 6")
+               "4 6"))))
+        (add-after 'unpack 'configure-shell
           (lambda* (#:key inputs #:allow-other-keys)
-            ;; Fix references to /bin/sh.
-            (let ((bash (assoc-ref inputs "bash")))
-              (for-each patch-shebang
-                        (find-files "tests" "\\.sh$"))
-              (substitute* (find-files "tests"
-                                       "posix_spawn")
-                (("/bin/sh")
-                 (format #f "~a/bin/sh" bash)))
-              #t))))))
+            (let ((/bin/sh (search-input-file inputs "/bin/sh")))
+              ;; Adjust hard-coded /bin/sh for tests.
+              (substitute* "lib/config.hin"
+                (("\"/bin/sh\"")
+                 (format #f "\"~a\"" /bin/sh)))))))))
    (synopsis "Macro processor")
    (description
     "GNU M4 is an implementation of the M4 macro language, which features
