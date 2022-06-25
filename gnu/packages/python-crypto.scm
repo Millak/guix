@@ -26,6 +26,7 @@
 ;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1651,3 +1652,29 @@ It does not provide such an implementation itself -- this is just the
 scaffolding for the command line, which should make it relatively easy to
 supply a handful of python functions as methods to a class.")
     (license license:expat))) ; MIT license
+
+(define-public python-starkbank-ecdsa
+  (package
+    (name "python-starkbank-ecdsa")
+    (version "2.0.3")
+    (home-page "https://github.com/starkbank/ecdsa-python")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1k9h4p0frkgj76vrqfjim4mik98g09mivdxxcmxr6raa5jwr83sh"))))
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'remove-broken-test
+                          (lambda _
+                            (delete-file "tests/testOpenSSL.py"))))))
+    (build-system python-build-system)
+    (native-inputs (list python-pytest))
+    (synopsis "Python ECDSA library")
+    (description "This package provides a Python ECDSA library, optimized for
+speed but without C extensions.")
+    (license license:expat)))
