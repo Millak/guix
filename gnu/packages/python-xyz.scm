@@ -16545,6 +16545,73 @@ smaller.  Small integers are encoded into a single byte, and typical short
 strings require only one extra byte in addition to the strings themselves.")
     (license license:asl2.0)))
 
+(define-public python-cattrs
+  (package
+    (name "python-cattrs")
+    (version "22.1.0")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/python-attrs/cattrs")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1n0h25gj6zd02kqyl040xpdvg4hpy1j92716sz0rg019xjqqijqb"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: PEP 517 manual build copied from python-isort.
+          (add-after 'unpack 'adjust-for-older-attrs
+            ;; Our older attrs package is using the 'attr' rather than 'attrs'
+            ;; namespace.
+            ;; TODO: Remove after python-attrs is updated to >= 21.4.0.
+            (lambda _
+              (substitute* (find-files "." "\\.py$")
+                (("from attrs\\b")
+                 "from attr"))))
+          (replace 'build
+            (lambda _
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (replace 'install
+            (lambda _
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; Do not use the 'pytest' binary as it hard-codes an older
+                ;; python-hypothesis version near the beginning of its
+                ;; GUIX_PYTHONPATH.
+                (invoke "python" "-m" "pytest" "-vv" "-c" "/dev/null" "tests"
+                        "-n" (number->string (parallel-job-count))
+                        ;; This test requires orjson, which needs the maturin
+                        ;; build system and new Rust dependencies.
+                        "--ignore" "tests/test_preconf.py")))))))
+    (native-inputs
+     (list python-hypothesis-next
+           python-immutables
+           python-msgpack
+           python-poetry-core
+           python-pymongo               ;for the bson module
+           python-pypa-build
+           python-pytest
+           python-pytest-xdist))
+    (propagated-inputs
+     (list python-attrs
+           python-exceptiongroup
+           python-typing-extensions))
+    (home-page "https://github.com/python-attrs/cattrs")
+    (synopsis "Python library for structuring and unstructuring data")
+    (description "@code{cattrs} is an Python library for structuring and
+unstructuring data.  @code{cattrs} works best with @code{attrs} classes,
+@code{dataclasses} and the usual Python collections, but other kinds of
+classes can also be supported by manually registering converters.")
+    (license license:expat)))
+
 (define-public python-cachy
   (package
     (name "python-cachy")
