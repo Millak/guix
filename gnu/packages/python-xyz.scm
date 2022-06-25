@@ -2949,6 +2949,48 @@ software.")
     (inherit (package-with-python2 scons))
     (name "scons-python2")))
 
+(define-public python-exceptiongroup
+  (package
+    (name "python-exceptiongroup")
+    (version "1.0.0rc8")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/agronholm/exceptiongroup")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0xsbpv22n51p6yvyvz231mf8zhbi1i88b4zmacaxxx31zrq5ifv4"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: PEP 517 manual build/install procedures copied from
+          ;; python-isort.
+          (replace 'build
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)
+              ;; ZIP does not support timestamps before 1980.
+              (setenv "SOURCE_DATE_EPOCH" "315532800")
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv" "tests")))))))
+    (native-inputs (list python-flit-scm python-pypa-build python-pytest))
+    (home-page "https://github.com/agronholm/exceptiongroup")
+    (synopsis "PEP 654 backport from Python 3.11")
+    (description "This is a backport of the @code{BaseExceptionGroup} and
+@code{ExceptionGroup} classes from Python 3.11.")
+    (license license:expat)))
+
 (define-public python-extension-helpers
 (package
   (name "python-extension-helpers")
