@@ -2099,7 +2099,7 @@ emulate a TI-30 or an HP-10C.")
 (define-public xcb-proto
   (package
     (name "xcb-proto")
-    (version "1.15")
+    (version "1.15.2")
     (source
       (origin
         (method url-fetch)
@@ -2108,14 +2108,7 @@ emulate a TI-30 or an HP-10C.")
                version ".tar.xz"))
         (sha256
          (base32
-          "0pwmcmmrc4zll3fvlxcjmyx5569yzaf1fjfvm5px2rc39qk3nk6k"))
-        (modules '((guix build utils)))
-        (snippet
-         '(begin
-            ;; fractions.gcd has been deprecated since python-3.5.
-            (substitute* "xcbgen/align.py"
-              (("from fractions import gcd") "from math import gcd"))
-            #t))))
+          "1vak6q53abwxnkfn6by7j24m48kd2iy7jnskkqzzx8l0ysqvwwkh"))))
     (build-system gnu-build-system)
     (native-inputs
       `(("pkg-config" ,pkg-config) ("python" ,python-minimal-wrapper)))
