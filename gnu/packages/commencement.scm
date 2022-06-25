@@ -6,7 +6,7 @@
 ;;; Copyright © 2017, 2018, 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2019, 2020, 2021, 2022 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2019, 2020, 2021 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2019-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020, 2022 Timothy Sample <samplet@ngyro.com>
 ;;; Copyright © 2020 Guy Fleury Iteriteka <gfleury@disroot.org>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -2486,7 +2486,18 @@ memoized as a function of '%current-system'."
     (arguments
      `(#:guile ,%bootstrap-guile
        #:implicit-inputs? #f
-       ,@(package-arguments linux-libre-headers)))
+       ,@(substitute-keyword-arguments (package-arguments linux-libre-headers)
+           ((#:phases phases)
+            `(modify-phases ,phases
+               (add-after 'unpack 'lower-version-requirements
+                 (lambda _
+                   ;; Pacify version checks so it works with the bootstrap
+                   ;; toolchain, since we are not building the full kernel.
+                   (substitute* "scripts/min-tool-version.sh"
+                     (("echo 5\\.1\\.0")  ;GCC
+                      "echo 4.9.4")
+                     (("echo 2\\.23\\.0") ;binutils
+                      "echo 2.20.1")))))))))
     (native-inputs
      `(("perl" ,perl-boot0)
 
