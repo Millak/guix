@@ -7231,7 +7231,7 @@ machines (PowerMac G4 is known to work).")
 (define-public libmnl
   (package
     (name "libmnl")
-    (version "1.0.4")
+    (version "1.0.5")
     (source
       (origin
         (method url-fetch)
@@ -7239,7 +7239,7 @@ machines (PowerMac G4 is known to work).")
                             "libmnl-" version ".tar.bz2"))
         (sha256
          (base32
-          "108zampspaalv44zn0ar9h386dlfixpd149bnxa5hsi8kxlqj7qp"))))
+          "09851ns07399rbz0y8slrlmnw3fn1nakr8d37pxjn5gkks8rnjr7"))))
     (build-system gnu-build-system)
     (home-page "https://www.netfilter.org/projects/libmnl/")
     (synopsis "Netlink utility library")
