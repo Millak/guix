@@ -356,11 +356,12 @@ formulas and hyperlinks to multiple worksheets in an Excel 2007+ XLSX file.")
                          "$(info Python tests are disabled by Guix.)")))))))
     (home-page "http://xmlsoft.org/XSLT/index.html")
     (synopsis "C library for applying XSLT stylesheets to XML documents")
-    (inputs `(("libgcrypt" ,libgcrypt)
-              ("libxml2" ,libxml2)
-              ("python" ,python-minimal-wrapper)
-              ("zlib" ,zlib)
-              ("xz" ,xz)))
+    (inputs
+     (list libgcrypt
+           libxml2
+           python-minimal-wrapper
+           zlib
+           xz))
     (native-inputs
      (list pkg-config))
     (description
