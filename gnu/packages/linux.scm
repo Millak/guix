@@ -7280,14 +7280,14 @@ used by nftables.")
 ;; variant to avoid accidental rebuilds of rust.
 (define-public libnftnl/fixed
   (package (inherit libnftnl)
-    (version "1.2.0")
+    (version "1.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://netfilter.org/libnftnl/"
                            "libnftnl-" version ".tar.bz2"))
        (sha256
-        (base32 "1xblq1cbcxhr6qmjpy98i1qdza148idgz99vbhjc7s4vzvfizc4h"))))
+        (base32 "02kdxp4l1ds5lpkw6rxv6f7icc70am6ik3p9z5l8v48mkm7h1z4y"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
