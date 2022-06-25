@@ -34,14 +34,14 @@
 (define-public libidn
   (package
    (name "libidn")
-   (version "1.38")
+   (version "1.41")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnu/libidn/libidn-" version
                                 ".tar.gz"))
             (sha256
              (base32
-              "1xphpfw58il0vb14nvd0rgfkacj76rchv8nr9nqkpkapyx0bh06y"))))
+              "0ic9zlqqppwaqr3i0r8lb8f47rrazzc8d5pfgg8vs6mqciip0kc8"))))
    (build-system gnu-build-system)
    ;; FIXME: No Java and C# libraries are currently built.
    (arguments
