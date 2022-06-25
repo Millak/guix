@@ -5173,7 +5173,7 @@ protocol.")
 (define-public libxcb
   (package
     (name "libxcb")
-    (version "1.14")
+    (version "1.15")
     (source
       (origin
         (method url-fetch)
@@ -5181,7 +5181,7 @@ protocol.")
                             "libxcb-" version ".tar.xz"))
         (sha256
           (base32
-           "0d2chjgyn5lr9sfhacfvqgnj9l9faz11vn322a06jd6lk3dxcpm5"))))
+           "0nd035rf83xf531cnjzsf9ykb5w9rdzz6bbyhi683xkwh57p8f6c"))))
     (build-system gnu-build-system)
     (outputs '("out" "doc"))                      ;5.5 MiB of man pages
     (propagated-inputs
