@@ -1,4 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2015 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
@@ -403,3 +404,24 @@ specified by PEP 517, @code{flit_core.buildapi}.")
     (propagated-inputs
      (modify-inputs (package-propagated-inputs python-flit-core-bootstrap)
        (replace "python-toml" python-tomli)))))
+
+(define-public python-setuptools-scm
+  (package
+    (name "python-setuptools-scm")
+    (version "6.3.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "setuptools_scm" version))
+              (sha256
+               (base32 "1wm0i27siyy1yqr9rv7lqvb65agay9051yi8jzmi8dgb3q4ai6m4"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     `(("python-packaging",python-packaging-bootstrap)
+       ("python-tomli" ,python-tomli)))
+    (home-page "https://github.com/pypa/setuptools_scm/")
+    (synopsis "Manage Python package versions in SCM metadata")
+    (description
+     "Setuptools_scm handles managing your Python package versions in
+@dfn{software configuration management} (SCM) metadata instead of declaring
+them as the version argument or in a SCM managed file.")
+    (license license:expat)))
