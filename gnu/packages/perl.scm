@@ -96,14 +96,14 @@
   ;; Yeah, Perl...  It is required early in the bootstrap process by Linux.
   (package
     (name "perl")
-    (version "5.34.0")
+    (version "5.36.0")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://cpan/src/5.0/perl-"
                                  version ".tar.gz"))
              (sha256
               (base32
-               "16mywn5afpv1mczv9dlc1w84rbgjgrr0pyr4c0hhb2wnif0zq7jm"))
+               "02p0ljvxgay5g8s8j1kghdylkj581qx3qlwavlmgd5n3iapqaq72"))
              (patches (search-patches
                        "perl-no-sys-dirs.patch"
                        "perl-autosplit-default-time.patch"
@@ -242,10 +242,10 @@
                (method git-fetch)
                (uri (git-reference
                      (url "https://github.com/arsv/perl-cross")
-                     (commit "1.3.6")))
-               (file-name (git-file-name "perl-cross" "1.3.6"))
+                     (commit "1.4")))
+               (file-name (git-file-name "perl-cross" "1.4"))
                (sha256
-                (base32 "0k5vyj40czbkfl7r3dcwxpc7dvdlp2xliaav358bviq3dq9vq9bb")))))
+                (base32 "1ydjvlhrk06ccyj4bm8by7xk90krsll2k380mc3x1mhfrc7r9gzy")))))
          '()))
     (native-search-paths (list (search-path-specification
                                 (variable "PERL5LIB")
