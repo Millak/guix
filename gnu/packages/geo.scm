@@ -18,7 +18,7 @@
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2021 Nikolay Korotkiy <sikmir@disroot.org>
-;;; Copyright © 2021 Roman Scherer <roman.scherer@burningswell.com>
+;;; Copyright © 2022 Roman Scherer <roman.scherer@burningswell.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
