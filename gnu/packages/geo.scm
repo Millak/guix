@@ -1146,6 +1146,7 @@ Shapely capabilities
            json-c
            libjpeg-turbo
            libxml2
+           openssl
            pcre
            postgresql
            protobuf-c
