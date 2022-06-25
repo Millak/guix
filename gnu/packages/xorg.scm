@@ -5112,17 +5112,15 @@ new API's in libXft, or the legacy API's in libX11.")
 (define-public libxvmc
   (package
     (name "libxvmc")
-    (version "1.0.12")
+    (version "1.0.13")
     (source
-      (origin
-        (method url-fetch)
-        (uri (string-append
-               "mirror://xorg/individual/lib/libXvMC-"
-               version
-               ".tar.bz2"))
-        (sha256
-          (base32
-            "1kbdjsvkm5l7axv7g477qj18sab2wnqhliy6197syzizgfbsfgbb"))))
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://xorg/individual/lib/libXvMC-"
+                           version ".tar.xz"))
+       (sha256
+        (base32
+         "0z35xqna3dnrfxgn9aa1y6jx7mrwsn8vi8dcwm3sg23qx9nvx7ha"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '(,@(malloc0-flags) "--disable-static")))
