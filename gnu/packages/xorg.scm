@@ -11,7 +11,7 @@
 ;;; Copyright © 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2016, 2017 John Darrington <jmd@gnu.org>
-;;; Copyright © 2017, 2018, 2019, 2020, 2021 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2017-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017, 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2017, 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -1330,7 +1330,7 @@ with the Cygwin XWin server when running X11 in a rootless mode.")
 (define-public libxft
   (package
     (name "libxft")
-    (version "2.3.3")
+    (version "2.3.4")
     (source
       (origin
         (method url-fetch)
@@ -1340,7 +1340,7 @@ with the Cygwin XWin server when running X11 in a rootless mode.")
                ".tar.bz2"))
         (sha256
           (base32
-            "05lja9s54090xwh31r0bqms4v3pimng5xr09g2rdnafx2vk6hp12"))))
+            "1pdbr6gzfvixc791pjf42i9gg8wvfq6cpq6sdca04h4i42mxmpjp"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")))
