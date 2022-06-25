@@ -15,6 +15,7 @@
 ;;; Copyright © 2018 Steve Sprang <scs@stevesprang.com>
 ;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
+;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -103,6 +104,7 @@
             target-riscv64?
             target-64bit?
             ar-for-target
+            as-for-target
             cc-for-target
             cxx-for-target
             ld-for-target
@@ -741,6 +743,11 @@ architecture (x86_64)?"
   (if target
       (string-append target "-ar")
       "ar"))
+
+(define* (as-for-target #:optional (target (%current-target-system)))
+  (if target
+      (string-append target "-as")
+      "as"))
 
 (define* (cc-for-target #:optional (target (%current-target-system)))
   (if target
