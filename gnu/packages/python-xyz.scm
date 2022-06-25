@@ -17700,13 +17700,13 @@ JSON) codec.")
 (define-public python-pymongo
   (package
     (name "python-pymongo")
-    (version "3.7.2")
+    (version "4.1.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pymongo" version))
               (sha256
                (base32
-                "0zis4707r9hdg5qgkhp3wss9camr9h56ixyfc8n9dxwlnnly4x4c"))))
+                "1m9hc2a4kgg10xy3g5x00z4a7rrk9s0rbf5qfypwnhq0kdfg5f6p"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-certifi))
