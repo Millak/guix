@@ -184,17 +184,15 @@ hierarchical form with variable field lengths.")
 (define-public libxml2
   (package
     (name "libxml2")
-    (version "2.9.12")
+    (version "2.9.14")
     (source (origin
              (method url-fetch)
-             (uri (string-append "ftp://xmlsoft.org/libxml2/libxml2-"
-                                 version ".tar.gz"))
+             (uri (string-append "https://download.gnome.org/sources/libxml2/"
+                                 (version-major+minor version)"/libxml2-"
+                                 version ".tar.xz"))
              (sha256
               (base32
-               "14hxwzmf5xqppx77z7i0ni9lpzg1a84dqpf8j8l1fvy570g6imn8"))
-             (patches (search-patches "libxml2-parent-pointers.patch"
-                                      "libxml2-terminating-newline.patch"
-                                      "libxml2-xpath-recursion-limit.patch"))))
+               "1vnzk33wfms348lgz9pvkq9li7jm44pvm73lbr3w1khwgljlmmv0"))))
     (build-system gnu-build-system)
     (outputs '("out" "static" "doc"))
     (arguments
@@ -210,7 +208,7 @@ hierarchical form with variable field lengths.")
                         (for-each (lambda (dir)
                                     (rename-file (string-append src "/share/" dir)
                                                  (string-append doc "/" dir)))
-                                  '("doc" "gtk-doc"))
+                                  '("gtk-doc"))
                         (for-each (lambda (ar)
                                     (rename-file ar (string-append dst "/"
                                                                    (basename ar))))
