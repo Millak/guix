@@ -2682,6 +2682,8 @@ This package also includes @command{ip6tables}, which is used to configure the
 IPv6 packet filter.
 
 Both commands are targeted at system administrators.")
+    (properties
+     '((release-monitoring-url . "https://www.netfilter.org/pub/iptables/")))
     (license license:gpl2+)))
 
 (define-public jitterentropy-rngd
