@@ -5189,8 +5189,7 @@ protocol.")
     (inputs
       (list xcb-proto libxslt))
     (native-inputs
-      `(("pkg-config" ,pkg-config)
-        ("python" ,python-minimal-wrapper)))
+     (list pkg-config python-minimal-wrapper))
     (arguments
      `(#:configure-flags (list "--enable-xkb"
                                "--disable-static"
