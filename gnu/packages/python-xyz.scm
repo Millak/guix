@@ -11522,14 +11522,15 @@ distribution.  It is not intended as an end-user tool.")
 (define-public python-immutables
   (package
     (name "python-immutables")
-    (version "0.14")
+    (version "0.18")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "immutables" version))
        (sha256
-        (base32 "0y0aqw29g525frdnmv9paljzacpp4s21sadfbca5b137iciwr8d0"))))
+        (base32 "1x4cinh0xbl6p6p2yfm2s07mxxy3lf0zzai9gqpydk4482bwfdjk"))))
     (build-system python-build-system)
+    (native-inputs (list python-mypy python-pytest))
     (home-page "https://github.com/MagicStack/immutables")
     (synopsis "High-performance immutable mapping type for Python")
     (description
