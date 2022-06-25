@@ -1346,9 +1346,9 @@ with the Cygwin XWin server when running X11 in a rootless mode.")
      '(#:configure-flags '("--disable-static")))
     (propagated-inputs
      ;; xft.pc refers to all these.
-      `(("libxrender" ,libxrender)
-        ("freetype" ,freetype)
-        ("fontconfig" ,fontconfig)))
+     (list libxrender
+           freetype
+           fontconfig))
     (inputs
       (list libx11 xorgproto))
     (native-inputs
