@@ -1029,19 +1029,29 @@ libraries for working with JNLP applets.")
 (define-public jansson
   (package
     (name "jansson")
-    (version "2.13.1")
+    (version "2.14")
     (source (origin
              (method url-fetch)
-             (uri
-              (string-append "http://www.digip.org/jansson/releases/jansson-"
-                             version ".tar.bz2"))
+             (uri (string-append "https://github.com/akheron/jansson"
+                                 "/releases/download/v" version
+                                 "/jansson-" version ".tar.bz2"))
              (sha256
               (base32
-               "1g8h18vh8gyxlwfmvdivdp1siad26ywj5zr4j4avgdyjg7wa147f"))))
+               "1fdgji964mrrz19glx0zh91asji542fvybymvzk6rrbagkr5dagv"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags '("--disable-static")))
-    (home-page "http://www.digip.org/jansson/")
+     (list
+      #:configure-flags #~'("--disable-static")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-tests
+            (lambda _
+              ;; Take a fix from upstream for testing with symbol versioning:
+              ;; https://github.com/akheron/jansson/pull/593
+              (substitute* "test/suites/api/check-exports"
+                (("(grep ' \\[DT\\] ' \\$test_log/symbols.*) \\| sort" _ cmd)
+                 (string-append cmd "| sed 's/@@libjansson.*//' | sort"))))))))
+    (home-page "https://github.com/akheron/jansson")
     (synopsis "JSON C library")
     (description
      "Jansson is a C library for encoding, decoding and manipulating JSON
