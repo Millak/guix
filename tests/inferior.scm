@@ -30,7 +30,8 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-64)
-  #:use-module (ice-9 match))
+  #:use-module (ice-9 match)
+  #:use-module (ice-9 rdelim))
 
 (define %top-srcdir
   (dirname (search-path %load-path "guix.scm")))
@@ -314,5 +315,41 @@
          (manifest (packages->manifest (list guile))))
     (close-inferior inferior)
     (map manifest-entry->list (manifest-entries manifest))))
+
+(test-equal "#:error-port stderr"
+  42
+  ;; There's a special case in open-bidirectional-pipe for
+  ;; (current-error-port) being stderr, so this test just checks that
+  ;; open-inferior doesn't raise an exception
+  (let ((inferior (open-inferior %top-builddir
+                                 #:command "scripts/guix"
+                                 #:error-port (current-error-port))))
+    (and (inferior? inferior)
+         (inferior-eval '(display "test" (current-error-port)) inferior)
+         (let ((result (inferior-eval '(apply * '(6 7)) inferior)))
+           (close-inferior inferior)
+           result))))
+
+(test-equal "#:error-port pipe"
+  "42"
+  (match (pipe)
+    ((port-to-read-from . port-to-write-to)
+
+     (setvbuf port-to-read-from 'line)
+     (setvbuf port-to-write-to 'line)
+
+     (let ((inferior (open-inferior %top-builddir
+                                    #:command "scripts/guix"
+                                    #:error-port port-to-write-to)))
+       (and (inferior? inferior)
+            (begin
+              (inferior-eval '(display "42\n" (current-error-port)) inferior)
+
+              (let loop ((line (read-line port-to-read-from)))
+                (if (string=? line "42")
+                    (begin
+                      (close-inferior inferior)
+                      line)
+                    (loop (read-line port-to-read-from))))))))))
 
 (test-end "inferior")
