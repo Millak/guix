@@ -462,7 +462,7 @@ key-value pair databases and a real LDAP database.")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/paulusmack/ppp")
+                    (url "https://github.com/ppp-project/ppp")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
