@@ -121,8 +121,7 @@ the entire document.")
 (define-public expat
   (package
     (name "expat")
-    (version "2.4.1")
-    (replacement expat/fixed)
+    (version "2.4.8")
     (source (let ((dot->underscore (lambda (c) (if (char=? #\. c) #\_ c))))
               (origin
                 (method url-fetch)
@@ -134,7 +133,7 @@ the entire document.")
                             "/expat-" version ".tar.xz")))
                 (sha256
                  (base32
-                  "0spvyb9d3hijs4ys3x64cfmilsynl8kv6clfahv8d4lvp86js0yg")))))
+                  "09dgviwz939pms4v1syl68p5pia9hb7xxsmg406kx7kl9f88z6zp")))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
@@ -157,23 +156,6 @@ the entire document.")
 stream-oriented parser in which an application registers handlers for
 things the parser might find in the XML document (like start tags).")
     (license license:expat)))
-
-(define expat/fixed
-  (package
-    (inherit expat)
-    (version "2.4.7")
-    (source (let ((dot->underscore (lambda (c) (if (char=? #\. c) #\_ c))))
-              (origin
-                (method url-fetch)
-                (uri (list (string-append "mirror://sourceforge/expat/expat/"
-                                          version "/expat-" version ".tar.xz")
-                           (string-append
-                            "https://github.com/libexpat/libexpat/releases/download/R_"
-                            (string-map dot->underscore version)
-                            "/expat-" version ".tar.xz")))
-                (sha256
-                 (base32
-                  "0zbss0dssn17mjmvk17qfi5cmvm0lcyzs62cwvqr219hhl864xcq")))))))
 
 (define-public libebml
   (package
