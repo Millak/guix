@@ -2485,6 +2485,7 @@ growing set of geoscientific methods.")
                              "PyQgsProviderConnectionSpatialite"
                              "PyQgsPythonProvider"
                              "PyQgsRasterLayer"
+                             "PyQgsRasterResampler"
                              "PyQgsRulebasedRenderer"
                              "PyQgsSelectiveMasking"
                              "PyQgsSettings"
