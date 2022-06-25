@@ -7248,6 +7248,8 @@ Netlink developers.  There are a lot of common tasks in parsing, validating,
 constructing of both the Netlink header and TLVs that are repetitive and easy to
 get wrong.  This library aims to provide simple helpers that allows you to
 re-use code and to avoid re-inventing the wheel.")
+    (properties
+     '((release-monitoring-url . "https://www.netfilter.org/pub/libmnl/")))
     (license license:lgpl2.1+)))
 
 (define-public libnftnl
