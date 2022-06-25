@@ -13,7 +13,7 @@
 ;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2016-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017 Adriano Peluso <catonano@gmail.com>
 ;;; Copyright © 2017 Gregor Giesen <giesen@zaehlwerk.net>
 ;;; Copyright © 2017 Alex Vong <alexvong1995@gmail.com>
@@ -328,14 +328,15 @@ formulas and hyperlinks to multiple worksheets in an Excel 2007+ XLSX file.")
 (define-public libxslt
   (package
     (name "libxslt")
-    (version "1.1.34")
+    (version "1.1.35")
     (source (origin
              (method url-fetch)
-             (uri (string-append "ftp://xmlsoft.org/libxslt/libxslt-"
-                                 version ".tar.gz"))
+             (uri (string-append "https://download.gnome.org/sources"
+                                 "/libxslt/" (version-major+minor version)
+                                 "/libxslt-" version ".tar.xz"))
              (sha256
               (base32
-               "0zrzz6kjdyavspzik6fbkpvfpbd25r2qg6py5nnjaabrsr3bvccq"))
+               "0yfx6hgwx4qcq7mrxb7ywabhpl64qj5h2idab746lb47k8zg6iw2"))
              (patches (search-patches "libxslt-generated-ids.patch"))))
     (build-system gnu-build-system)
     (arguments
@@ -347,7 +348,12 @@ formulas and hyperlinks to multiple worksheets in an Excel 2007+ XLSX file.")
                       (substitute* "tests/Makefile"
                         (("exslt plugins fuzz")
                          "exslt plugins"))
-                      #t)))))
+                      ;; Also disable Python tests since they require
+                      ;; python-libxml2 which would introduce a
+                      ;; circular dependency.
+                      (substitute* "python/Makefile"
+                        (("cd tests && \\$\\(MAKE\\) tests")
+                         "$(info Python tests are disabled by Guix.)")))))))
     (home-page "http://xmlsoft.org/XSLT/index.html")
     (synopsis "C library for applying XSLT stylesheets to XML documents")
     (inputs `(("libgcrypt" ,libgcrypt)
