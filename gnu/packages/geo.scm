@@ -46,6 +46,7 @@
   #:use-module (guix build-system qt)
   #:use-module (guix build-system scons)
   #:use-module (guix build-system r)
+  #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix svn-download)
@@ -120,6 +121,35 @@
   #:use-module (gnu packages wxwidgets)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
+
+(define-public cdo
+  (package
+    (name "cdo")
+    (version "2.0.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://code.mpimet.mpg.de/attachments/download/26823/cdo-"
+                     version ".tar.gz"))
+              (sha256
+               (base32
+                "1khdbd5cmnn7qm6hcqg4md5wbq14fs6brrns8b3g18diqgqvpvpd"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list (string-append "--with-netcdf="
+                                  #$(this-package-input "netcdf")))))
+    (inputs
+     (list netcdf))
+    (native-inputs
+     (list pkg-config))
+    (home-page "https://code.mpimet.mpg.de/projects/cdo")
+    (synopsis "Climate data operators")
+    (description "@acronym{CDO, Climate Data Operators} is a collection of command-line
+operators to manipulate and analyse climate and NWP model data.  Supported
+data formats are GRIB 1/2, netCDF 3/4, SERVICE, EXTRA and IEG.  There are more
+than 600 operators available.")
+    (license license:bsd-3)))
 
 (define-public memphis
   (package
