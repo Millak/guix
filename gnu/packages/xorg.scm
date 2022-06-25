@@ -2111,7 +2111,7 @@ emulate a TI-30 or an HP-10C.")
           "1vak6q53abwxnkfn6by7j24m48kd2iy7jnskkqzzx8l0ysqvwwkh"))))
     (build-system gnu-build-system)
     (native-inputs
-      `(("pkg-config" ,pkg-config) ("python" ,python-minimal-wrapper)))
+     (list pkg-config python-minimal-wrapper))
     (home-page "https://xcb.freedesktop.org/")
     (synopsis "XML-XCB protocol descriptions")
     (description
