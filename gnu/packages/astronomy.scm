@@ -142,6 +142,69 @@ moment, supported SPICE files are:
 @end itemize\n")
     (license license:cecill)))
 
+(define-public aoflagger
+  (package
+    (name "aoflagger")
+    (version "3.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/aroffringa/aoflagger")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "1dcbfrbiybhpbypna2xhddx1wk7yifh38ha2r6p5rzsikzwlsin1"))
+       (patches
+        (search-patches "aoflagger-use-system-provided-pybind11.patch"))
+       (file-name (git-file-name name version))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      ;; XXX: Tests require external files download from
+      ;; https://www.astron.nl/citt/ci_data/aoflagger/
+      ;; FIXME: runtest is not found
+      #:tests? #f
+      #:configure-flags
+      #~(list (string-append "-DCASACORE_ROOT_DIR="
+                             #$(this-package-input "casacore")))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; aocommon and pybind11 are expected to be found as git submodules,
+          ;; link them before build.
+          (add-after 'unpack 'link-submodule-package
+            (lambda _
+              (rmdir "external/aocommon")
+              (symlink #$(this-package-native-input "aocommon")
+                       (string-append (getcwd) "/external/aocommon")))))))
+    (native-inputs
+     (list aocommon
+           boost
+           pkg-config
+           python
+           pybind11))
+    (inputs
+     (list casacore
+           cfitsio
+           fftw
+           gsl
+           gtkmm-3
+           hdf5
+           lapack
+           libpng
+           libsigc++
+           libxml2
+           lua
+           openblas
+           zlib))
+    (home-page "https://gitlab.com/aroffringa/aoflagger")
+    (synopsis "Astronomical tool that can find and remove radio-frequency interference")
+    (description
+     "AOFlagger is a tool that can find and remove radio-frequency
+interference (RFI) in radio astronomical observations.  It can make use of Lua
+scripts to make flagging strategies flexible, and the tools are applicable to a
+wide set of telescopes.")
+    (license license:gpl3+)))
+
 (define-public casacore
   (package
     (name "casacore")
