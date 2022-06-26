@@ -42,7 +42,7 @@
                (base32
                 "14wqccblr3nc2pjgv1a5fsjznp7iyp6z993jp1ddknz01dvhr765"))))
     (build-system gnu-build-system)
-    (inputs `(("python" ,python-wrapper)))
+    (inputs (list python-wrapper))
     (arguments
      '(#:phases
        (modify-phases %standard-phases
