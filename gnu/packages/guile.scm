@@ -8,7 +8,7 @@
 ;;; Copyright © 2016, 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Andy Wingo <wingo@igalia.com>
-;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2017, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017, 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017, 2018 Amirouche <amirouche@hypermove.net>
@@ -310,15 +310,15 @@ without requiring the source code to be rewritten.")
   (package
     (inherit guile-2.2)
     (name "guile")
-    (version "3.0.7")
+    (version "3.0.8")
     (source (origin
               (inherit (package-source guile-2.2))
-              (patches '())     ; We no longer need the patches.
               (uri (string-append "mirror://gnu/guile/guile-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1dwiwsrpm4f96alfnz6wibq378242z4f16vsxgy1n9r00v3qczgm"))
+                "04wagg0zr0sib0w9ly5jm91jplgfigzfgmy8fjdlx07jaq50d9ys"))
+              (patches (search-patches "guile-cross-compilation.patch"))
               ;; Replace the snippet because the oom-test still
               ;; fails on some 32-bit architectures.
               (snippet '(begin
@@ -334,6 +334,11 @@ without requiring the source code to be rewritten.")
        (delete "gmp" "libltdl")))
     (arguments
      (substitute-keyword-arguments (package-arguments guile-2.0)
+       ;; Guile 3.0.8 is bit-reproducible when built in parallel, thanks to
+       ;; its multi-stage build process for cross-module inlining, except when
+       ;; cross-compiling.
+       ((#:parallel-build? _ #f)
+        (not (%current-target-system)))
        ((#:configure-flags flags ''())
         ;; XXX: JIT-enabled Guile crashes in obscure ways on GNU/Hurd.
         `(cons* ,@(if (hurd-target?)
@@ -369,6 +374,16 @@ without requiring the source code to be rewritten.")
                          (("^GUILE_OPTIMIZATIONS.*")
                           "GUILE_OPTIMIZATIONS = -O1 -Oresolve-primitives -Ocps\n")))))
                  '())
+           ,@(if (target-ppc32?)
+               `((replace 'adjust-bootstrap-flags
+                   (lambda _
+                     ;; Upstream knows about suggested solution.
+                     ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=45214
+                     ;; https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=977223#46
+                     (substitute* "stage0/Makefile.in"
+                       (("^GUILE_OPTIMIZATIONS.*")
+                        "GUILE_OPTIMIZATIONS = -O1 -Oresolve-primitives -Ocps\n")))))
+               '())
            ,@(if (or (target-ppc32?)
                      (target-riscv64?))
                `((add-after 'unpack 'skip-failing-fdes-test
@@ -388,37 +403,7 @@ without requiring the source code to be rewritten.")
             (files '("lib/guile/3.0/site-ccache"
                      "share/guile/site/3.0")))))))
 
-(define-public guile-3.0-latest
-  (package
-    (inherit guile-3.0)
-    (version "3.0.8")
-    (source (origin
-              (inherit (package-source guile-3.0))
-              (uri (string-append "mirror://gnu/guile/guile-"
-                                  version ".tar.xz"))
-              (sha256
-               (base32
-                "04wagg0zr0sib0w9ly5jm91jplgfigzfgmy8fjdlx07jaq50d9ys"))
-              (patches (search-patches "guile-cross-compilation.patch"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments guile-3.0)
-       ;; Guile 3.0.8 is bit-reproducible when built in parallel, thanks to
-       ;; its multi-stage build process for cross-module inlining, except when
-       ;; cross-compiling.
-       ((#:parallel-build? _ #f)
-        (not (%current-target-system)))
-       ((#:phases phases)
-        `(modify-phases ,phases
-           ,@(if (target-ppc32?)
-               `((replace 'adjust-bootstrap-flags
-                   (lambda _
-                     ;; Upstream knows about suggested solution.
-                     ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=45214
-                     ;; https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=977223#46
-                     (substitute* "stage0/Makefile.in"
-                       (("^GUILE_OPTIMIZATIONS.*")
-                        "GUILE_OPTIMIZATIONS = -O1 -Oresolve-primitives -Ocps\n")))))
-               '())))))))
+(define-public guile-3.0-latest guile-3.0)
 
 (define-public guile-3.0/fixed
   ;; A package of Guile that's rarely changed.  It is the one used in the
