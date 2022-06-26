@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2018 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2020 Christopher Baines <mail@cbaines.net>
@@ -55,11 +55,11 @@
   #:use-module (ice-9 ftw)
   #:use-module (rnrs bytevectors)
   #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-19)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
+  #:use-module (srfi srfi-71)
   #:use-module (web uri)
   #:use-module (guix http-client)
   #:export (%allow-unauthenticated-substitutes?
@@ -293,10 +293,10 @@ daemon."
   (for-each (cute format port "~a/~a~%" (%store-prefix) <>)
             (narinfo-references narinfo))
 
-  (let-values (((uri compression file-size)
-                (narinfo-best-uri narinfo
-                                  #:fast-decompression?
-                                  %prefer-fast-decompression?)))
+  (let ((uri compression file-size
+             (narinfo-best-uri narinfo
+                               #:fast-decompression?
+                               %prefer-fast-decompression?)))
     (format port "~a\n~a\n"
             (or file-size 0)
             (or (narinfo-size narinfo) 0))))
@@ -378,13 +378,13 @@ server certificates."
              (#f
               ;; Open a new connection to URI and evict old entries from
               ;; CACHE, if any.
-              (let-values (((socket)
-                            (guix:open-connection-for-uri
-                             uri
-                             #:verify-certificate? verify-certificate?
-                             #:timeout timeout))
-                           ((new-cache evicted)
-                            (at-most (- %max-cached-connections 1) cache)))
+              (let ((socket
+                     (guix:open-connection-for-uri
+                      uri
+                      #:verify-certificate? verify-certificate?
+                      #:timeout timeout))
+                    (new-cache evicted
+                               (at-most (- %max-cached-connections 1) cache)))
                 (for-each (match-lambda
                             ((_ . port)
                              (false-if-exception (close-port port))))
@@ -494,49 +494,47 @@ PORT."
     (leave (G_ "no valid substitute for '~a'~%")
            store-item))
 
-  (let-values (((uri compression file-size)
-                (narinfo-best-uri narinfo
-                                  #:fast-decompression?
-                                  %prefer-fast-decompression?)))
+  (let ((uri compression file-size
+             (narinfo-best-uri narinfo
+                               #:fast-decompression?
+                               %prefer-fast-decompression?)))
     (unless print-build-trace?
       (format (current-error-port)
               (G_ "Downloading ~a...~%") (uri->string uri)))
 
-    (let*-values (((raw download-size)
-                   ;; 'guix publish' without '--cache' doesn't specify a
-                   ;; Content-Length, so DOWNLOAD-SIZE is #f in this case.
-                   (fetch uri))
-                  ((progress)
-                   (let* ((dl-size  (or download-size
-                                        (and (equal? compression "none")
-                                             (narinfo-size narinfo))))
-                          (reporter (if print-build-trace?
-                                        (progress-reporter/trace
-                                         destination
-                                         (uri->string uri) dl-size
-                                         (current-error-port))
-                                        (progress-reporter/file
-                                         (uri->string uri) dl-size
-                                         (current-error-port)
-                                         #:abbreviation nar-uri-abbreviation))))
-                     ;; Keep RAW open upon completion so we can later reuse
-                     ;; the underlying connection.  Pass the download size so
-                     ;; that this procedure won't block reading from RAW.
-                     (progress-report-port reporter raw
-                                           #:close? #f
-                                           #:download-size dl-size)))
-                  ((input pids)
-                   ;; NOTE: This 'progress' port of current process will be
-                   ;; closed here, while the child process doing the
-                   ;; reporting will close it upon exit.
-                   (decompressed-port (string->symbol compression)
-                                      progress))
+    (let* ((raw download-size
+                ;; 'guix publish' without '--cache' doesn't specify a
+                ;; Content-Length, so DOWNLOAD-SIZE is #f in this case.
+                (fetch uri))
+           (progress
+            (let* ((dl-size  (or download-size
+                                 (and (equal? compression "none")
+                                      (narinfo-size narinfo))))
+                   (reporter (if print-build-trace?
+                                 (progress-reporter/trace
+                                  destination
+                                  (uri->string uri) dl-size
+                                  (current-error-port))
+                                 (progress-reporter/file
+                                  (uri->string uri) dl-size
+                                  (current-error-port)
+                                  #:abbreviation nar-uri-abbreviation))))
+              ;; Keep RAW open upon completion so we can later reuse
+              ;; the underlying connection.  Pass the download size so
+              ;; that this procedure won't block reading from RAW.
+              (progress-report-port reporter raw
+                                    #:close? #f
+                                    #:download-size dl-size)))
+           (input pids
+                  ;; NOTE: This 'progress' port of current process will be
+                  ;; closed here, while the child process doing the
+                  ;; reporting will close it upon exit.
+                  (decompressed-port (string->symbol compression)
+                                     progress))
 
-                  ;; Compute the actual nar hash as we read it.
-                  ((algorithm expected)
-                   (narinfo-hash-algorithm+value narinfo))
-                  ((hashed get-hash)
-                   (open-hash-input-port algorithm input)))
+           ;; Compute the actual nar hash as we read it.
+           (algorithm expected (narinfo-hash-algorithm+value narinfo))
+           (hashed get-hash (open-hash-input-port algorithm input)))
       ;; Unpack the Nar at INPUT into DESTINATION.
       (define cpu-usage
         (with-cpu-usage-monitoring
