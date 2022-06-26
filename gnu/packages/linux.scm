@@ -2822,9 +2822,7 @@ that the Ethernet protocol is much simpler than the IP protocol.")
                               "pkg-config")))
                         #t))))))
     (inputs
-     `(("db4" ,bdb)
-       ("iptables" ,iptables)
-       ("libmnl" ,libmnl)))
+     (list bdb iptables libmnl))
     (native-inputs
      (list bison flex pkg-config))
     ;; For tests.
