@@ -159,7 +159,7 @@ applications.")
 (define-public libssh2
   (package
    (name "libssh2")
-   (version "1.9.0")
+   (version "1.10.0")
    (source (origin
             (method url-fetch)
             (uri (string-append
@@ -167,8 +167,7 @@ applications.")
                    version ".tar.gz"))
             (sha256
              (base32
-              "1zfsz9nldakfz61d2j70pk29zlmj7w2vv46s9l3x2prhcgaqpyym"))
-            (patches (search-patches "libssh2-CVE-2019-17498.patch"))))
+              "0l8xwhhscvss7q007vpbkbv7jh9s43579rx2sf8lnfgd7l7yjr1d"))))
    (build-system gnu-build-system)
    ;; The installed libssh2.pc file does not include paths to libgcrypt and
    ;; zlib libraries, so we need to propagate the inputs.
