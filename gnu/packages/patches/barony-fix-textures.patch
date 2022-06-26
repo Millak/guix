@@ -1,0 +1,237 @@
+From: Sylvain <sylvain.becker@gmail.com>
+Date: Sat, 10 Apr 2021 21:33:29 +0200
+Subject: [PATCH] Fixed bug 580 - Use 'userdata' instead of 'refcount'
+ 'refcount' is a private SDL_Surface field
+
+---
+ src/draw.cpp    | 22 +++++++++++-----------
+ src/files.cpp   |  2 +-
+ src/opengl.cpp  | 26 +++++++++++++-------------
+ src/savepng.cpp |  2 +-
+ 4 files changed, 26 insertions(+), 26 deletions(-)
+
+diff --git a/src/draw.cpp b/src/draw.cpp
+index 08f95343f..4e62c751a 100644
+--- a/src/draw.cpp
++++ b/src/draw.cpp
+@@ -443,7 +443,7 @@ void drawImageRotatedAlpha( SDL_Surface* image, SDL_Rect* src, SDL_Rect* pos, re
+ 	}
+ 
+ 	// draw a textured quad
+-	glBindTexture(GL_TEXTURE_2D, texid[image->refcount]);
++	glBindTexture(GL_TEXTURE_2D, texid[(long int)image->userdata]);
+ 	glColor4f(1, 1, 1, alpha / 255.1);
+ 	glBegin(GL_QUADS);
+ 	glTexCoord2f(1.0 * ((real_t)src->x / image->w), 1.0 * ((real_t)src->y / image->h));
+@@ -492,7 +492,7 @@ void drawImageColor( SDL_Surface* image, SDL_Rect* src, SDL_Rect* pos, Uint32 co
+ 	}
+ 
+ 	// draw a textured quad
+-	glBindTexture(GL_TEXTURE_2D, texid[image->refcount]);
++	glBindTexture(GL_TEXTURE_2D, texid[(long int)image->userdata]);
+ 	real_t r = ((Uint8)(color >> mainsurface->format->Rshift)) / 255.f;
+ 	real_t g = ((Uint8)(color >> mainsurface->format->Gshift)) / 255.f;
+ 	real_t b = ((Uint8)(color >> mainsurface->format->Bshift)) / 255.f;
+@@ -546,7 +546,7 @@ void drawImageAlpha( SDL_Surface* image, SDL_Rect* src, SDL_Rect* pos, Uint8 alp
+ 	}
+ 
+ 	// draw a textured quad
+-	glBindTexture(GL_TEXTURE_2D, texid[image->refcount]);
++	glBindTexture(GL_TEXTURE_2D, texid[(long int)image->userdata]);
+ 	glColor4f(1, 1, 1, alpha / 255.1);
+ 	glPushMatrix();
+ 	glBegin(GL_QUADS);
+@@ -596,7 +596,7 @@ void drawImage( SDL_Surface* image, SDL_Rect* src, SDL_Rect* pos )
+ 	}
+ 
+ 	// draw a textured quad
+-	glBindTexture(GL_TEXTURE_2D, texid[image->refcount]);
++	glBindTexture(GL_TEXTURE_2D, texid[(long int)image->userdata]);
+ 	glColor4f(1, 1, 1, 1);
+ 	glPushMatrix();
+ 	glBegin(GL_QUADS);
+@@ -646,7 +646,7 @@ void drawImageRing(SDL_Surface* image, SDL_Rect* src, int radius, int thickness,
+ 	}
+ 
+ 	// draw a textured quad
+-	glBindTexture(GL_TEXTURE_2D, texid[image->refcount]);
++	glBindTexture(GL_TEXTURE_2D, texid[(long int)image->userdata]);
+ 	glColor4f(1, 1, 1, alpha / 255.f);
+ 	glPushMatrix();
+ 
+@@ -771,7 +771,7 @@ void drawImageScaled( SDL_Surface* image, SDL_Rect* src, SDL_Rect* pos )
+ 	}
+ 
+ 	// draw a textured quad
+-	glBindTexture(GL_TEXTURE_2D, texid[image->refcount]);
++	glBindTexture(GL_TEXTURE_2D, texid[(long int)image->userdata]);
+ 	glColor4f(1, 1, 1, 1);
+ 	glPushMatrix();
+ 	glBegin(GL_QUADS);
+@@ -826,7 +826,7 @@ void drawImageScaledPartial(SDL_Surface* image, SDL_Rect* src, SDL_Rect* pos, fl
+ 	}
+ 
+ 	// draw a textured quad
+-	glBindTexture(GL_TEXTURE_2D, texid[image->refcount]);
++	glBindTexture(GL_TEXTURE_2D, texid[(long int)image->userdata]);
+ 	glColor4f(1, 1, 1, 1);
+ 	glPushMatrix();
+ 	glBegin(GL_QUADS);
+@@ -889,7 +889,7 @@ void drawImageScaledColor(SDL_Surface* image, SDL_Rect* src, SDL_Rect* pos, Uint
+ 	}
+ 
+ 	// draw a textured quad
+-	glBindTexture(GL_TEXTURE_2D, texid[image->refcount]);
++	glBindTexture(GL_TEXTURE_2D, texid[(long int)image->userdata]);
+ 	real_t r = ((Uint8)(color >> mainsurface->format->Rshift)) / 255.f;
+ 	real_t g = ((Uint8)(color >> mainsurface->format->Gshift)) / 255.f;
+ 	real_t b = ((Uint8)(color >> mainsurface->format->Bshift)) / 255.f;
+@@ -985,7 +985,7 @@ void drawImageFancy( SDL_Surface* image, Uint32 color, real_t angle, SDL_Rect* s
+ 	}
+ 
+ 	// draw a textured quad
+-	glBindTexture(GL_TEXTURE_2D, texid[image->refcount]);
++	glBindTexture(GL_TEXTURE_2D, texid[(long int)image->userdata]);
+ 	real_t r = ((Uint8)(color >> mainsurface->format->Rshift)) / 255.f;
+ 	real_t g = ((Uint8)(color >> mainsurface->format->Gshift)) / 255.f;
+ 	real_t b = ((Uint8)(color >> mainsurface->format->Bshift)) / 255.f;
+@@ -2186,7 +2186,7 @@ void drawWindowFancy(int x1, int y1, int x2, int y2)
+ 	glVertex2f(x2 - 1, yres - y1 - 1);
+ 	glEnd();
+ 	glColor3f(.75, .75, .75);
+-	glBindTexture(GL_TEXTURE_2D, texid[fancyWindow_bmp->refcount]); // wood texture
++	glBindTexture(GL_TEXTURE_2D, texid[(long int)fancyWindow_bmp->userdata]); // wood texture
+ 	glBegin(GL_QUADS);
+ 	glTexCoord2f(0, 0);
+ 	glVertex2f(x1 + 2, yres - y1 - 2);
+@@ -2322,7 +2322,7 @@ SDL_Rect ttfPrintTextColor( TTF_Font* font, int x, int y, Uint32 color, bool out
+ 		SDL_BlitSurface(textSurf, NULL, surf, &pos);
+ 		// load the text outline surface as a GL texture
+ 		allsurfaces[imgref] = surf;
+-		allsurfaces[imgref]->refcount = imgref;
++		allsurfaces[imgref]->userdata = (void*) imgref;
+ 		glLoadTexture(allsurfaces[imgref], imgref);
+ 		imgref++;
+ 		// store the surface in the text surface cache
+diff --git a/src/files.cpp b/src/files.cpp
+index 2beb9a6b9..389ade6d1 100644
+--- a/src/files.cpp
++++ b/src/files.cpp
+@@ -591,7 +591,7 @@ SDL_Surface* loadImage(char const * const filename)
+ 
+ 	// load the new surface as a GL texture
+ 	allsurfaces[imgref] = newSurface;
+-	allsurfaces[imgref]->refcount = imgref + 1;
++	allsurfaces[imgref]->userdata = (void *)(imgref);
+ 	glLoadTexture(allsurfaces[imgref], imgref);
+ 
+ 	// free the translated surface
+diff --git a/src/opengl.cpp b/src/opengl.cpp
+index f5b81e77a..3ac225825 100644
+--- a/src/opengl.cpp
++++ b/src/opengl.cpp
+@@ -500,7 +500,7 @@ void glDrawSprite(view_t* camera, Entity* entity, int mode)
+ 	}
+ 	if ( mode == REALCOLORS )
+ 	{
+-		glBindTexture(GL_TEXTURE_2D, texid[sprite->refcount]);
++		glBindTexture(GL_TEXTURE_2D, texid[(long int)sprite->userdata]);
+ 	}
+ 	else
+ 	{
+@@ -586,7 +586,7 @@ void glDrawSpriteFromImage(view_t* camera, Entity* entity, std::string text, int
+ 	//int x, y;
+ 	real_t s = 1;
+ 	SDL_Surface* image = sprites[0];
+-	GLuint textureId = texid[sprites[0]->refcount];
++	GLuint textureId = texid[(long int)sprites[0]->userdata];
+ 	char textToRetrieve[128];
+ 
+ 	if ( text.compare("") == 0 )
+@@ -603,7 +603,7 @@ void glDrawSpriteFromImage(view_t* camera, Entity* entity, std::string text, int
+ 	textToRetrieve[std::min(static_cast<int>(strlen(text.c_str())), 22)] = '\0';
+ 	if ( (image = ttfTextHashRetrieve(ttfTextHash, textToRetrieve, ttf12, true)) != NULL )
+ 	{
+-		textureId = texid[image->refcount];
++		textureId = texid[(long int)image->userdata];
+ 	}
+ 	else
+ 	{
+@@ -627,7 +627,7 @@ void glDrawSpriteFromImage(view_t* camera, Entity* entity, std::string text, int
+ 		SDL_BlitSurface(textSurf, NULL, image, &pos);
+ 		// load the text outline surface as a GL texture
+ 		allsurfaces[imgref] = image;
+-		allsurfaces[imgref]->refcount = imgref;
++		allsurfaces[imgref]->userdata = (void *)((long int)imgref);
+ 		glLoadTexture(allsurfaces[imgref], imgref);
+ 		imgref++;
+ 		// store the surface in the text surface cache
+@@ -635,7 +635,7 @@ void glDrawSpriteFromImage(view_t* camera, Entity* entity, std::string text, int
+ 		{
+ 			printlog("warning: failed to store text outline surface with imgref %d\n", imgref - 1);
+ 		}
+-		textureId = texid[image->refcount];
++		textureId = texid[(long int)image->userdata];
+ 	}
+ 	// setup projection
+ 	glMatrixMode(GL_PROJECTION);
+@@ -864,7 +864,7 @@ void glDrawWorld(view_t* camera, int mode)
+ 
+ 		// first (higher) sky layer
+ 		glColor4f(1.f, 1.f, 1.f, .5);
+-		glBindTexture(GL_TEXTURE_2D, texid[tiles[cloudtile]->refcount]); // sky tile
++		glBindTexture(GL_TEXTURE_2D, texid[(long int)tiles[cloudtile]->userdata]); // sky tile
+ 		glBegin( GL_QUADS );
+ 		glTexCoord2f((real_t)(ticks % 60) / 60, (real_t)(ticks % 60) / 60);
+ 		glVertex3f(-CLIPFAR * 16, 64, -CLIPFAR * 16);
+@@ -881,7 +881,7 @@ void glDrawWorld(view_t* camera, int mode)
+ 
+ 		// second (closer) sky layer
+ 		glColor4f(1.f, 1.f, 1.f, .5);
+-		glBindTexture(GL_TEXTURE_2D, texid[tiles[cloudtile]->refcount]); // sky tile
++		glBindTexture(GL_TEXTURE_2D, texid[(long int)tiles[cloudtile]->userdata]); // sky tile
+ 		glBegin( GL_QUADS );
+ 		glTexCoord2f((real_t)(ticks % 240) / 240, (real_t)(ticks % 240) / 240);
+ 		glVertex3f(-CLIPFAR * 16, 32, -CLIPFAR * 16);
+@@ -954,13 +954,13 @@ void glDrawWorld(view_t* camera, int mode)
+ 						{
+ 							if ( map.tiles[index] < 0 || map.tiles[index] >= numtiles )
+ 							{
+-								new_tex = texid[sprites[0]->refcount];
+-								//glBindTexture(GL_TEXTURE_2D, texid[sprites[0]->refcount]);
++								new_tex = texid[(long int)sprites[0]->userdata];
++								//glBindTexture(GL_TEXTURE_2D, texid[(long int)sprites[0]->userdata]);
+ 							}
+ 							else
+ 							{
+-								new_tex = texid[tiles[map.tiles[index]]->refcount];
+-								//glBindTexture(GL_TEXTURE_2D, texid[tiles[map.tiles[index]]->refcount]);
++								new_tex = texid[(long int)tiles[map.tiles[index]]->userdata];
++								//glBindTexture(GL_TEXTURE_2D, texid[(long int)tiles[map.tiles[index]]->userdata]);
+ 							}
+ 						}
+ 						else
+@@ -1282,8 +1282,8 @@ void glDrawWorld(view_t* camera, int mode)
+ 						// bind texture
+ 						if ( mode == REALCOLORS )
+ 						{
+-							new_tex = texid[tiles[mapceilingtile]->refcount];
+-							//glBindTexture(GL_TEXTURE_2D, texid[tiles[50]->refcount]); // rock tile
++							new_tex = texid[(long int)tiles[mapceilingtile]->userdata];
++							//glBindTexture(GL_TEXTURE_2D, texid[(long int)tiles[50]->userdata]); // rock tile
+ 							if (cur_tex!=new_tex)
+ 							{
+ 								glEnd();
+diff --git a/src/savepng.cpp b/src/savepng.cpp
+index fa7a5d4e2..59e052a5c 100644
+--- a/src/savepng.cpp
++++ b/src/savepng.cpp
+@@ -59,7 +59,7 @@ SDL_Surface* SDL_PNGFormatAlpha(SDL_Surface* src)
+ 	/* NO-OP for images < 32bpp and 32bpp images that already have Alpha channel */
+ 	if (src->format->BitsPerPixel <= 24 || src->format->Amask)
+ 	{
+-		src->refcount++;
++		src->userdata = (void *)((long int) src->userdata + 1);
+ 		return src;
+ 	}
+ 

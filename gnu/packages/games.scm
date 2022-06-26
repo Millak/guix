@@ -504,6 +504,60 @@ regret their insolence.")
     ;; BY-SA 4.0, and fonts to OFL1.1.
     (license (list license:gpl3+ license:cc-by-sa4.0 license:silofl1.1))))
 
+(define-public barony
+  (package
+    (name "barony")
+    (version "3.3.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/TurningWheel/Barony")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1y72k6zrqqhib3p05zkdklays2d218v51n87k7k68m0s7nnxa4vy"))
+       ;; Fix textures for SDL 2.0.14.
+       ;; See <https://github.com/TurningWheel/Barony/pull/582>.
+       (patches (search-patches "barony-fix-textures.patch"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:configure-flags
+       (list "-DOPENAL_ENABLED=ON" ; enable sound
+             "-DEDITOR_EXE_NAME=barony-editor") ; instead of generic "editor"
+       #:tests? #f ; there are no tests
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'fix-installation
+           (lambda _
+             (substitute* "CMakeLists.txt"
+               (("\\$\\{CMAKE_CURRENT_BINARY_DIR\\}/lang")
+                "${CMAKE_SOURCE_DIR}/lang")))))))
+    (inputs
+     (list glu
+           libpng
+           libvorbis
+           openal
+           physfs
+           rapidjson
+           sdl2
+           sdl2-image
+           sdl2-net
+           sdl2-ttf
+           zlib))
+    (native-inputs
+     (list pkg-config))
+    (home-page "http://baronygame.com")
+    (synopsis "3D first-person roguelike game")
+    (description
+     "Barony is a first-person roguelike role-playing game with cooperative
+play.  The player must descend a dark dungeon and destroy an undead lich while
+avoiding traps and fighting monsters.  The game features randomly generated
+dungeons, 13 character classes, hundreds of items and artifacts, and
+cooperative multiplayer for up to four players.  This package does @emph{not}
+provide the game assets.")
+    (license license:bsd-2)))
+
 (define-public bastet
   (package
     (name "bastet")
