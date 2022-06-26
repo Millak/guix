@@ -142,7 +142,7 @@
                              (_ #t)))
                           (#t #t)))))))
          '()))
-    (native-inputs `(("gettext" ,gettext-minimal)))
+    (native-inputs (list gettext-minimal))
     (home-page "https://gnupg.org")
     (synopsis "Library of error values for GnuPG components")
     (description
