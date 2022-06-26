@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20,22 +21,35 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix download)
   #:use-module (guix licenses)
-  #:use-module (guix packages))
+  #:use-module (guix packages)
+  #:use-module (guix gexp)
+  #:use-module (gnu packages crypto))
 
 (define-public libbsd
   (package
     (name "libbsd")
-    (version "0.10.0")
+    (version "0.11.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://libbsd.freedesktop.org/releases/"
                                   "libbsd-" version ".tar.xz"))
               (sha256
                (base32
-                "11x8q45jvjvf2dvgclds64mscyg10lva33qinf2hwgc84v3svf1l"))))
+                "1pxmk42brddk43bj8lp4a64f9iwhc5ii91y6w7k97xpaf8qqzcqr"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags '("--disable-static")))
+     (list #:configure-flags #~'("--disable-static")
+           #:phases #~(modify-phases %standard-phases
+                        (add-before 'check 'disable-pwcache-test
+                          (lambda _
+                            ;; This test expects the presence of a root
+                            ;; user and group, which do not exist in the
+                            ;; build container.
+                            (substitute* "test/Makefile"
+                              (("pwcache\\$\\(EXEEXT\\) ")
+                               "")))))))
+    (inputs
+     (list libmd))
     (synopsis "Utility functions from BSD systems")
     (description "This library provides useful functions commonly found on BSD
 systems, and lacking on others like GNU systems, thus making it easier to port
