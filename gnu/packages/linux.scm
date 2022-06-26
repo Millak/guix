@@ -2067,14 +2067,14 @@ parameters.")
 (define-public procps
   (package
     (name "procps")
-    (version "3.3.16")
+    (version "4.0.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/procps-ng/Production/"
                                   "procps-ng-" version ".tar.xz"))
               (sha256
                (base32
-                "1br0g93ysqhlv13i1k4lfbimsgxnpy5rgs4lxfc9rkzdbpbaqplj"))))
+                "04v5q5cshzyhbwaw4n9l0k8faaz67n11z31vpfaiqynv9rwr4k8g"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((guix build utils)
