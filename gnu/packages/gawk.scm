@@ -2,7 +2,7 @@
 ;;; Copyright © 2012, 2013, 2014, 2015, 2016 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2018 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2021, 2022 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -31,13 +31,13 @@
 (define-public gawk
   (package
    (name "gawk")
-   (version "5.1.0")
+   (version "5.1.1")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnu/gawk/gawk-" version
                                 ".tar.xz"))
             (sha256
-             (base32 "1gc2cccqy1x1bf6rhwlmd8q7dz7gnam6nwgl38bxapv6qm5flpyg"))))
+             (base32 "18kybw47fb1sdagav7aj95r9pp09r5gm202y3ahvwjw9dqw2jxnq"))))
    (build-system gnu-build-system)
    (arguments
     `(#:phases (modify-phases %standard-phases
@@ -64,16 +64,6 @@
                      ;; would needlessly complicate bootstrapping.
                      (substitute* "test/Makefile"
                        (("\\| more") ""))
-
-                     ;; Silence a warning from bash about not being able
-                     ;; to change to an ISO-8859-1 locale.  The test itself
-                     ;; works fine, but newer versions of bash give a
-                     ;; locale warning which mangles the test output.
-                     (substitute* "test/localenl.sh"
-                       (("for LC_ALL in")
-                        "for LC in")
-                       (("export LC_ALL\n")
-                        "export LC_ALL=$LC 2>/dev/null\n"))
 
                      ;; Adjust the shebang in that file since it is then diff'd
                      ;; against the actual test output.
