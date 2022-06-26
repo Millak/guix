@@ -227,7 +227,8 @@ bootstrapping more recent compilers written in D.")
                "ldc2-unittest" "all-test-runners"))
        ((#:configure-flags flags)
         `(,@flags "-DBUILD_SHARED_LIBS=ON"
-                  "-DLDC_LINK_MANUALLY=OFF"))
+                  "-DLDC_LINK_MANUALLY=OFF"
+                  "-DLDC_DYNAMIC_COMPILE=OFF"))
        ((#:tests? _) #t)
        ((#:phases phases)
         `(modify-phases ,phases
@@ -248,7 +249,8 @@ bootstrapping more recent compilers written in D.")
                                            system)))))
                      (matches ("x86_64"      => "x86_64")
                               ("i686"        => "i386")
-                              ("armhf"       => "armhf"))))
+                              ("armhf"       => "armhf")
+                              ("aarch64"     => "aarch64"))))
                  ;; Coax LLVM into agreeing with Clang about system target
                  ;; naming.
                  (substitute* "driver/linker-gcc.cpp"
@@ -313,6 +315,12 @@ bootstrapping more recent compilers written in D.")
                                  "sanitizers/msan_noerror.d"
                                  "sanitizers/msan_uninitialized.d"
                                  "d2/dmd-testsuite/runnable_cxx/cppa.d")))
+                   (,(target-aarch64?)
+                     (for-each delete-file
+                               '("d2/dmd-testsuite/runnable/ldc_cabi1.d"
+                                 "sanitizers/fuzz_basic.d"
+                                 "sanitizers/msan_noerror.d"
+                                 "sanitizers/msan_uninitialized.d")))
                    (#t '())))))
            (add-before 'configure 'set-cc-and-cxx-to-use-clang
              ;; The tests require to be built with Clang; build everything
