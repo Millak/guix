@@ -5,6 +5,7 @@
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -80,16 +81,15 @@ Each database is contained in a specific package output, such as the
 (define-public pciutils
   (package
     (name "pciutils")
-    (version "3.7.0")
+    (version "3.8.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "mirror://kernel.org/software/utils/pciutils/pciutils-"
                     version ".tar.xz"))
-              (patches (search-patches "pciutils-hurd-configure.patch"))
               (sha256
                (base32
-                "1ss0rnfsx8gvqjxaji4mvbhf9xyih4cadmgadbwwv8mnx1xvjh4x"))))
+                "01aglgw9ds9qiswcbi2lx90lswncikrlyv8mmp4haix8542bvvci"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -147,18 +147,14 @@ Each database is contained in a specific package output, such as the
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
              ;; Install the commands, library, and .pc files.
-             (invoke "make" "install" "install-lib")))
-
-         ,@(if (hurd-target?)
-               '((add-after 'unpack 'apply-hurd-patch
-                   (lambda* (#:key inputs #:allow-other-keys)
-                     (let ((patch (assoc-ref inputs "hurd-patch")))
-                       (invoke "patch" "-p1" "--batch" "-i"
-                               patch)))))
-               '()))
+             (invoke "make" "install" "install-lib"))))
 
        ;; Make sure programs have an RPATH so they can find libpciutils.so.
-       #:make-flags (list (string-append "LDFLAGS=-Wl,-rpath="
+       #:make-flags (list ,(string-append "CC="
+                                          (if (%current-target-system)
+                                              (cc-for-target)
+                                              "gcc"))
+                          (string-append "LDFLAGS=-Wl,-rpath="
                                          (assoc-ref %outputs "out") "/lib"))
 
        ;; No test suite.
@@ -168,9 +164,6 @@ Each database is contained in a specific package output, such as the
     (inputs
      `(,@(if (not (hurd-target?))
              `(("kmod" ,kmod))
-             '())
-       ,@(if (hurd-target?)
-             `(("hurd-patch" ,(search-patch "pciutils-hurd-fix.patch")))
              '())
        ("zlib" ,zlib)))
     (home-page "https://mj.ucw.cz/sw/pciutils/")
