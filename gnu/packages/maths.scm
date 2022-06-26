@@ -51,6 +51,7 @@
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Pierre-Antoine Bouttier <pierre-antoine.bouttier@univ-grenoble-alpes.fr>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1091,6 +1092,31 @@ from the command line, using @command{gnuplot}.  It can read data from
 a pipe or file, make a variety of transformations, and render the result
 in the terminal or with an external viewer.")
     (license license:gpl1+))) ;any version
+
+(define-public giza
+  (package
+    (name "giza")
+    (version "1.3.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/danieljprice/giza")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "1clklh3nzgwrwg80h3k5x65gdymbvcc84c44nql7m4bv9b8rqfsq"))
+       (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list perl pkg-config))
+    (inputs
+     (list cairo freetype gfortran))
+    (home-page "https://danieljprice.github.io/giza/")
+    (synopsis "Scientific plotting library for C/Fortran")
+    (description
+     "Giza is a lightweight scientific plotting library built on top of
+@code{cairo} that provides uniform output to multiple devices.")
+    (license license:gpl2+)))
 
 (define-public gnuplot
   (package
