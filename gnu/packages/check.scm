@@ -2797,7 +2797,7 @@ portable to just about any platform.")
 (define-public libfaketime
   (package
     (name "libfaketime")
-    (version "0.9.9")
+    (version "0.9.10")
     (home-page "https://github.com/wolfcw/libfaketime")
     (source (origin
               (method git-fetch)
@@ -2806,7 +2806,7 @@ portable to just about any platform.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "1gi1xciqga5hl2xlk7rc3j8wy47ag97pi7ngmdl6ny1d11b2wn1z"))
+                "112l7x2gv4f47hpffpb8djfwvgrs8w5h9s266h1fshi1c916x10d"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
