@@ -12687,3 +12687,28 @@ using published rates from open-exchange-rates.  Compatible with the money gem."
     (description "Roda is a routing tree web toolkit, designed for building fast
 and maintainable web applications in ruby.")
     (license license:expat)))
+
+(define-public ruby-nori
+  (package
+    (name "ruby-nori")
+    (version "2.6.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "nori" version))
+        (sha256
+          (base32 "066wc774a2zp4vrq3k7k8p0fhv30ymqmxma1jj7yg5735zls8agn"))))
+    (build-system ruby-build-system)
+    (arguments
+     ;; Tests require too old version of rspec
+     `(#:tests? #f))
+    (native-inputs
+     (list ruby-nokogiri
+            ruby-rake
+            ruby-rspec))
+    (home-page "https://github.com/savonrb/nori")
+    (synopsis "XML to Hash translator")
+    (description "Nori is a simple XML parsing ripped from Crack which in-turn
+ripped from Merb.  It supports pluggable parsers and ships with both REXML and
+Nokogiri implementations.")
+    (license license:expat)))
