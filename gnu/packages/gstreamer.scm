@@ -608,7 +608,7 @@ for the GStreamer multimedia library.")
 (define-public gst-plugins-good
   (package
     (name "gst-plugins-good")
-    (version "1.18.5")
+    (version "1.20.3")
     (source
      (origin
        (method url-fetch)
@@ -616,15 +616,28 @@ for the GStreamer multimedia library.")
         (string-append
          "https://gstreamer.freedesktop.org/src/" name "/"
          name "-" version ".tar.xz"))
-       (patches (search-patches "gst-plugins-good-fix-test.patch"))
        (sha256
-        (base32 "0svrapawych2s3lm4lx3x023zxq5kcx50jnfmh0qigszfskyxbis"))))
+        (base32 "1dv8b2md1xk6d45ir1wzbvqhxbvm6mxv881rjl0brnjwpw3c5wzq"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t     ; To wrap binaries and/or compile schemas
        #:phases
        (modify-phases %standard-phases
          ,@%common-gstreamer-phases
+         (add-after 'unpack 'absolutize-libsoup-library
+           (lambda* (#:key inputs #:allow-other-keys)
+             (define libsoup
+               (search-input-file inputs "lib/libsoup-3.0.so"))
+
+             (substitute* "ext/soup/gstsouploader.c"
+               (("(#define LIBSOUP_3_SONAME ).+$" _ prefix)
+                (string-append prefix "\"" libsoup "\"\n")))))
+         (add-after 'unpack 'skip-failing-tests
+           (lambda _
+             (substitute* "tests/check/meson.build"
+               ;; Reported as shaky upstream, see
+               ;; <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/785>
+               (("\\[ 'elements/flvmux' \\]") "[ 'elements/flvmux', true ]"))))
          (add-before 'check 'pre-check
            (lambda _
              ;; Tests require a running X server.
