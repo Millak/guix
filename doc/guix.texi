@@ -14942,8 +14942,8 @@ The command output looks like this:
 
 @smallexample
 $ guix challenge --substitute-urls="https://@value{SUBSTITUTE-SERVER-1} https://guix.example.org"
-updating list of substitutes from 'https://@value{SUBSTITUTE-SERVER-1}'... 100.0%
-updating list of substitutes from 'https://guix.example.org'... 100.0%
+updating substitutes from 'https://@value{SUBSTITUTE-SERVER-1}'... 100.0%
+updating substitutes from 'https://guix.example.org'... 100.0%
 /gnu/store/@dots{}-openssl-1.0.2d contents differ:
   local hash: 0725l22r5jnzazaacncwsvp9kgf42266ayyp814v7djxs7nk963q
   https://@value{SUBSTITUTE-SERVER-1}/nar/@dots{}-openssl-1.0.2d: 0725l22r5jnzazaacncwsvp9kgf42266ayyp814v7djxs7nk963q
@@ -15230,7 +15230,7 @@ Here's a sample run:
 $ guix weather --substitute-urls=https://guix.example.org
 computing 5,872 package derivations for x86_64-linux...
 looking for 6,128 store items on https://guix.example.org..
-updating list of substitutes from 'https://guix.example.org'... 100.0%
+updating substitutes from 'https://guix.example.org'... 100.0%
 https://guix.example.org
   43.4% substitutes available (2,658 out of 6,128)
   7,032.5 MiB of nars (compressed)
