@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018, 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018, 2019, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -19,8 +19,8 @@
 (define-module (test-status)
   #:use-module (guix status)
   #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-64)
+  #:use-module (srfi srfi-71)
   #:use-module (rnrs bytevectors)
   #:use-module (rnrs io ports)
   #:use-module (ice-9 match))
@@ -29,8 +29,7 @@
 
 (test-equal "compute-status, no-op"
   (build-status)
-  (let-values (((port get-status)
-                (build-event-output-port compute-status)))
+  (let ((port get-status (build-event-output-port compute-status)))
     (display "foo\nbar\n\baz\n" port)
     (get-status)))
 
@@ -53,11 +52,11 @@
                                               #:transferred 500
                                               #:start 'now
                                               #:end 'now)))))
-  (let-values (((port get-status)
-                (build-event-output-port (lambda (event status)
-                                           (compute-status event status
-                                                           #:current-time
-                                                           (const 'now))))))
+  (let ((port get-status
+              (build-event-output-port (lambda (event status)
+                                         (compute-status event status
+                                                         #:current-time
+                                                         (const 'now))))))
     (display "@ build-started foo.drv - x86_64-linux \n" port)
     (display "@ substituter-started bar\n" port)
     (display "@ download-started bar http://example.org/bar 500\n" port)
@@ -100,11 +99,11 @@
                                               #:start 'now
                                               #:end 'now)))))
   ;; Below we omit 'substituter-started' events and the like.
-  (let-values (((port get-status)
-                (build-event-output-port (lambda (event status)
-                                           (compute-status event status
-                                                           #:current-time
-                                                           (const 'now))))))
+  (let ((port get-status
+              (build-event-output-port (lambda (event status)
+                                         (compute-status event status
+                                                         #:current-time
+                                                         (const 'now))))))
     (display "@ build-started foo.drv - x86_64-linux foo.log\n" port)
     (display "@ download-started bar http://example.org/bar 999\n" port)
     (display "various\nthings\nget\nwritten\n" port)
@@ -119,8 +118,8 @@
 
 (test-equal "build-output-port, UTF-8"
   '((build-log #f "lambda is λ!\n"))
-  (let-values (((port get-status) (build-event-output-port cons '()))
-               ((bv)              (string->utf8 "lambda is λ!\n")))
+  (let ((port get-status (build-event-output-port cons '()))
+        (bv              (string->utf8 "lambda is λ!\n")))
     (put-bytevector port bv)
     (force-output port)
     (get-status)))
@@ -129,7 +128,7 @@
   ;; What about a mixture of UTF-8 + garbage?
   (let ((replacement "�"))
     `((build-log #f ,(string-append "garbage: " replacement "lambda: λ\n"))))
-  (let-values (((port get-status) (build-event-output-port cons '())))
+  (let ((port get-status (build-event-output-port cons '())))
     (display "garbage: " port)
     (put-bytevector port #vu8(128))
     (put-bytevector port (string->utf8 "lambda: λ\n"))
@@ -156,14 +155,14 @@
                                               #:transferred 999
                                               #:start 'now
                                               #:end 'now)))))
-  (let-values (((port get-status)
-                (build-event-output-port (lambda (event status)
-                                           (compute-status event status
-                                                           #:current-time
-                                                           (const 'now)
-                                                           #:derivation-path->output-path
-                                                           (match-lambda
-                                                             ("bar.drv" "bar")))))))
+  (let ((port get-status
+              (build-event-output-port (lambda (event status)
+                                         (compute-status event status
+                                                         #:current-time
+                                                         (const 'now)
+                                                         #:derivation-path->output-path
+                                                         (match-lambda
+                                                           ("bar.drv" "bar")))))))
     (display "@ build-started foo.drv - x86_64-linux  121\n" port)
     (display "@ build-started bar.drv - armhf-linux bar.log 144\n" port)
     (display "@ build-log 121 6\nHello!" port)
@@ -192,11 +191,11 @@
         (build-status
          (builds-completed (list (build "foo.drv" "x86_64-linux" #:id 121
                                         #:completion 100.)))))
-  (let-values (((port get-status)
-                (build-event-output-port (lambda (event status)
-                                           (compute-status event status
-                                                           #:current-time
-                                                           (const 'now))))))
+  (let ((port get-status
+              (build-event-output-port (lambda (event status)
+                                         (compute-status event status
+                                                         #:current-time
+                                                         (const 'now))))))
     (display "@ build-started foo.drv - x86_64-linux  121\n" port)
     (display "@ build-log 121 6\nHello!" port)
     (let ((first (get-status)))
@@ -225,11 +224,11 @@
         (build-status
          (builds-completed (list (build "foo.drv" "x86_64-linux" #:id 121
                                         #:phase 'install)))))
-  (let-values (((port get-status)
-                (build-event-output-port (lambda (event status)
-                                           (compute-status event status
-                                                           #:current-time
-                                                           (const 'now))))))
+  (let ((port get-status
+              (build-event-output-port (lambda (event status)
+                                         (compute-status event status
+                                                         #:current-time
+                                                         (const 'now))))))
     (display "@ build-started foo.drv - x86_64-linux  121\n" port)
     (display "@ build-log 121 27\nstarting phase `configure'\n" port)
     (display "@ build-log 121 6\nabcde!" port)
