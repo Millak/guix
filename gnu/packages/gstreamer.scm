@@ -521,7 +521,7 @@ This package provides the core library and elements.")
 (define-public gst-plugins-base
   (package
     (name "gst-plugins-base")
-    (version "1.18.5")
+    (version "1.20.3")
     (source
      (origin
       (method url-fetch)
@@ -529,7 +529,7 @@ This package provides the core library and elements.")
                           name "-" version ".tar.xz"))
       (sha256
        (base32
-        "18vg8kk7p2p8za8zaqg0v7z6898yw5a3b12vvl7xn02pb3s7l2wn"))))
+        "17rw8wj1x1bg153m9z76pdvgz5k93m3riyalfpzq00x7h7fv6c3y"))))
     (build-system meson-build-system)
     (propagated-inputs
      `(("glib" ,glib)              ;required by gstreamer-sdp-1.0.pc
