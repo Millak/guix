@@ -12,6 +12,7 @@
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -57,7 +58,7 @@
 (define-public mit-krb5
   (package
     (name "mit-krb5")
-    (version "1.19.2")
+    (version "1.20")
     (source (origin
               (method url-fetch)
               (uri (list
@@ -70,7 +71,7 @@
               (patches (search-patches "mit-krb5-hurd.patch"))
               (sha256
                (base32
-                "0snz1jm2w4dkk65zcz953jmmv9mqa30fanch2bk8r3rs9vp3yi8h"))))
+                "0bz16sh0vgzlpy2kx5acmpyy181hl83a1alz7wbk06457kfjn0ky"))))
     (build-system gnu-build-system)
     (native-inputs
      (list bison perl tcl))                   ;required for some tests
