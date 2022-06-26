@@ -172,7 +172,9 @@ applications.")
    ;; The installed libssh2.pc file does not include paths to libgcrypt and
    ;; zlib libraries, so we need to propagate the inputs.
    (propagated-inputs (list libgcrypt zlib))
-   (arguments `(#:configure-flags `("--with-libgcrypt")))
+   (arguments
+    (list #:configure-flags #~'("--with-libgcrypt"
+                                "--disable-static")))
    (synopsis "Client-side C library implementing the SSH2 protocol")
    (description
     "libssh2 is a library intended to allow software developers access to
