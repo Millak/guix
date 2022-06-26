@@ -59,7 +59,7 @@
      '(#:configure-flags '("--disable-libevent-regress"
                            "--disable-openssl")))
     (inputs
-     `(("python" ,python-wrapper)))     ;for 'event_rpcgen.py'
+     (list python-wrapper))             ;for 'event_rpcgen.py'
     (native-inputs
      (list which))
     (home-page "https://libevent.org/")
