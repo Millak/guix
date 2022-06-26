@@ -12734,3 +12734,32 @@ Nokogiri implementations.")
     (description "Faraday_Middleware is a collection of middleware for the
 Faraday-based API wrappers.")
     (license license:expat)))
+
+(define-public ruby-bandwidth-iris
+  (package
+    (name "ruby-bandwidth-iris")
+    (version "5.1.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "ruby-bandwidth-iris" version))
+        (sha256
+          (base32 "1hmrxs0dif6fw5npyzcshk4nq9qr2kbmnx7mdjr5v1nhzlfr0678"))))
+    (build-system ruby-build-system)
+    (arguments
+     ;; XXX: Tests don't require helper for some reason, so all fail.
+     `(#:tests? #f))
+    (native-inputs
+     (list ruby-rspec
+            ruby-yard))
+    (propagated-inputs
+     (list ruby-activesupport
+            ruby-builder
+            ruby-faraday
+            ruby-faraday-middleware
+            ruby-nori))
+    (home-page "https://github.com/Bandwidth/ruby-bandwidth-iris")
+    (synopsis "Gem for integrating to Bandwidth's Iris API")
+    (description "Bandwidth IRIS is a Ruby SDK for Bandwidth Phone Number
+Dashboard.  It is a Ruby Client library for IRIS / BBS API.")
+    (license license:expat)))
