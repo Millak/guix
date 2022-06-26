@@ -1146,14 +1146,14 @@ simultaneously and therefore appear under the same nickname on IRC.")
 (define-public python-nbxmpp
   (package
     (name "python-nbxmpp")
-    (version "2.0.4")
+    (version "3.1.0")
     (source
      (origin
        (method url-fetch)
        (uri
         (pypi-uri "nbxmpp" version))
        (sha256
-        (base32 "1s2phiipq7ks8vrd93p96dzd5wgmgg8q9h2rxsnh2gg7iy06gj9c"))))
+        (base32 "0c32090gr1fiy7hkn73dcj4ad9gfdpks8hivl1dl8bql01jsfdnj"))))
     (build-system python-build-system)
     (native-inputs
      (list `(,glib "bin")))
