@@ -1819,8 +1819,7 @@ providing the system administrator with some help in common tasks.")
 (define-public util-linux
   (package
     (name "util-linux")
-    (replacement util-linux/fixed)
-    (version "2.37.2")
+    (version "2.37.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kernel.org/linux/utils/"
@@ -1828,7 +1827,7 @@ providing the system administrator with some help in common tasks.")
                                   "util-linux-" version ".tar.xz"))
               (sha256
                (base32
-                "1ng9517c37mdp858425a4zyybma7dh7jrpd6z1z61yz7mb0n81va"))
+                "10svcnsqmrsd660bzcm7k6dm8sa7hkknhr3bag1nccwimlb6jkk3"))
               (patches (search-patches "util-linux-tests.patch"))
               (modules '((guix build utils)))
               (snippet
@@ -1971,21 +1970,6 @@ block devices, UUIDs, TTYs, and many other tools.")
    (inputs
     (modify-inputs (package-inputs util-linux)
       (prepend eudev)))))
-
-;; This is mostly equivalent to the upstream release version v2.37.3, except
-;; that the upstream tarball was generated improperly, which breaks the build.
-;; There will not be a v2.37.3-fixed release or anything like that to fix it:
-;; https://github.com/util-linux/util-linux/issues/1577
-(define-public util-linux/fixed
-  (hidden-package
-    (package
-      (inherit util-linux)
-      (source (origin
-                (inherit (package-source util-linux))
-                (patches (append (search-patches "util-linux-CVE-2021-3995.patch"
-                                                 "util-linux-CVE-2021-3996.patch")
-                                 (origin-patches (package-source util-linux)))))))))
-
 
 (define-public ddate
   (package

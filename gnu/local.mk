@@ -1903,8 +1903,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/upx-CVE-2021-20285.patch		\
   %D%/packages/patches/ustr-fix-build-with-gcc-5.patch		\
   %D%/packages/patches/util-linux-tests.patch			\
-  %D%/packages/patches/util-linux-CVE-2021-3995.patch		\
-  %D%/packages/patches/util-linux-CVE-2021-3996.patch		\
   %D%/packages/patches/valgrind-enable-arm.patch			\
   %D%/packages/patches/valgrind-fix-default-debuginfo-path.patch	\
   %D%/packages/patches/vboot-utils-fix-format-load-address.patch	\
