@@ -55,8 +55,9 @@
               (("4 5 6")
                "4 6"))))
         (add-after 'unpack 'configure-shell
-          (lambda* (#:key inputs #:allow-other-keys)
-            (let ((/bin/sh (search-input-file inputs "/bin/sh")))
+          (lambda* (#:key native-inputs inputs #:allow-other-keys)
+            (let ((/bin/sh (search-input-file (or native-inputs inputs)
+                                              "/bin/sh")))
               ;; Adjust hard-coded /bin/sh for tests.
               (substitute* "lib/config.hin"
                 (("\"/bin/sh\"")
