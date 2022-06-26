@@ -12666,3 +12666,24 @@ into Money objects.")
     (description "This package provides a gem that calculates the exchange rate
 using published rates from open-exchange-rates.  Compatible with the money gem.")
     (license license:expat)))
+
+(define-public ruby-roda
+  (package
+    (name "ruby-roda")
+    (version "3.57.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "roda" version))
+        (sha256
+          (base32 "0nkfxnbcfnriywvx9kpamp850cwjmqv8ssajc95d0aiyjr4kdrfy"))))
+    (build-system ruby-build-system)
+    (arguments
+     ;; No rakefile
+     `(#:tests? #f))
+    (propagated-inputs (list ruby-rack))
+    (home-page "http://roda.jeremyevans.net")
+    (synopsis "Routing Tree Web Toolkit")
+    (description "Roda is a routing tree web toolkit, designed for building fast
+and maintainable web applications in ruby.")
+    (license license:expat)))
