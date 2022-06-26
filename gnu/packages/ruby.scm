@@ -12712,3 +12712,25 @@ and maintainable web applications in ruby.")
 ripped from Merb.  It supports pluggable parsers and ships with both REXML and
 Nokogiri implementations.")
     (license license:expat)))
+
+(define-public ruby-faraday-middleware
+  (package
+    (name "ruby-faraday-middleware")
+    (version "1.2.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "faraday_middleware" version))
+        (sha256
+          (base32 "1bw8mfh4yin2xk7138rg3fhb2p5g2dlmdma88k82psah9mbmvlfy"))))
+    (build-system ruby-build-system)
+    (arguments
+     ;; No rakefile
+     `(#:tests? #f))
+    (propagated-inputs
+     (list ruby-faraday))
+    (home-page "https://github.com/lostisland/faraday_middleware")
+    (synopsis "Various middleware for Faraday")
+    (description "Faraday_Middleware is a collection of middleware for the
+Faraday-based API wrappers.")
+    (license license:expat)))
