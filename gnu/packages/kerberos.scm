@@ -103,11 +103,13 @@
              (chdir "src")))
          (add-before 'check 'pre-check
            (lambda* (#:key inputs native-inputs #:allow-other-keys)
-             (let ((perl (assoc-ref (or native-inputs inputs) "perl")))
+             (let ((perl (search-input-file (or native-inputs inputs)
+                                            "bin/perl")))
                (substitute* "plugins/kdb/db2/libdb2/test/run.test"
-                 (("/bin/cat") (string-append perl "/bin/perl"))
+                 (("/bin/cat") perl)
                  (("D/bin/sh") (string-append "D" (which "sh")))
-                 (("bindir=/bin/.") (string-append "bindir=" perl "/bin")))))))))
+                 (("bindir=/bin/.") (string-append "bindir="
+                                                   (dirname perl))))))))))
     (synopsis "MIT Kerberos 5")
     (description
      "Massachusetts Institute of Technology implementation of Kerberos.
