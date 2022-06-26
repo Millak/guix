@@ -1962,7 +1962,7 @@ cp -r /tmp/locale/*/en_US.*")))
            libsoup-minimal-2
            libxau
            libxml2
-           p11-kit-next
+           p11-kit
            util-linux
            xdg-dbus-proxy))
     (propagated-inputs (list glib-networking gnupg gsettings-desktop-schemas))
