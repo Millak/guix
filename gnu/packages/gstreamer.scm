@@ -1090,7 +1090,8 @@ given, also pass them to the build system instead of the ones used by PKG."
     (description
      "This package contains GObject Introspection overrides for Python that can
 be used by Python applications using GStreamer.")
-    (license license:lgpl2.1+)))
+    (license license:lgpl2.1+)
+    (properties `((upstream-name . "gst-python")))))
 
 (define-public gst123
   (package
