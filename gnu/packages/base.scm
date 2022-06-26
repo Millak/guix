@@ -10,7 +10,7 @@
 ;;; Copyright © 2016, 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2017 Rene Saavedra <rennes@openmailbox.org>
 ;;; Copyright © 2017, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2017, 2018, 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2017, 2018, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2019, 2022 Ricardo Wurmus <rekado@elephly.net>
@@ -511,17 +511,15 @@ change.  GNU make offers many powerful extensions over the standard utility.")
 (define-public binutils
   (package
    (name "binutils")
-   (version "2.37")
+   (version "2.38")
    (source
     (origin
       (method url-fetch)
       (uri (string-append "mirror://gnu/binutils/binutils-"
                           version ".tar.bz2"))
       (sha256
-       (base32 "1m3b2rdfv1dmdpd0bzg1hy7i8a2qng53szc6livyi3nh6101mz37"))
-      (patches (search-patches "binutils-loongson-workaround.patch"
-                               "binutils-2.37-file-descriptor-leak.patch"
-                               "binutils-CVE-2021-45078.patch"))))
+       (base32 "1y0fb4qgxaxfyf81x9fqq9w5609mkah0b7wm1f7ab9kpy0fcf3h7"))
+      (patches (search-patches "binutils-loongson-workaround.patch"))))
    (build-system gnu-build-system)
    (arguments
     `(#:out-of-source? #t   ;recommended in the README
@@ -550,7 +548,16 @@ change.  GNU make offers many powerful extensions over the standard utility.")
                           "--enable-compressed-debug-sections=all"
                           "--enable-lto"
                           "--enable-separate-code"
-                          "--enable-threads")))
+                          "--enable-threads")
+      ;; XXX: binutils 2.38 was released without generated manuals:
+      ;; <https://sourceware.org/bugzilla/show_bug.cgi?id=28909>.  To avoid
+      ;; a circular dependency on texinfo, prevent the build system from
+      ;; creating the manuals by calling "true" instead of "makeinfo" ...
+      #:make-flags '("MAKEINFO=true")))
+
+   ;; ... and "hide" this package such that users who install binutils get
+   ;; the version with documentation defined below.
+   (properties '((hidden? . #t)))
 
    (synopsis "Binary utilities: bfd gas gprof ld")
    (description
@@ -562,6 +569,16 @@ the strings in a binary file, and utilities for working with archives.  The
 included.")
    (license gpl3+)
    (home-page "https://www.gnu.org/software/binutils/")))
+
+(define-public binutils+documentation
+  (package/inherit binutils
+    (native-inputs
+     (list texinfo))
+    (arguments
+     (substitute-keyword-arguments (package-arguments binutils)
+       ((#:make-flags flags ''())
+        ''())))
+    (properties '())))
 
 ;; FIXME: ath9k-firmware-htc-binutils.patch do not apply on 2.34 because of a
 ;; big refactoring of xtensa-modules.c (commit 567607c11fbf7105 upstream).
@@ -584,7 +601,7 @@ included.")
    (properties '())))
 
 (define-public binutils-gold
-  (package/inherit binutils
+  (package/inherit binutils+documentation
     (name "binutils-gold")
     (arguments
      (substitute-keyword-arguments (package-arguments binutils)

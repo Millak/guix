@@ -4,7 +4,7 @@
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2019 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2018, 2019, 2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2019, 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;;
@@ -388,6 +388,10 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
                                              (package-arguments binutils))
                                   ((#:configure-flags flags _ ...)
                                    flags)))
+       #:make-flags ,(match (memq #:make-flags (package-arguments binutils))
+                       ((#:make-flags flags _ ...)
+                        flags)
+                       (_ ''()))
        #:strip-flags '("--strip-all")
        #:phases (modify-phases %standard-phases
                   (add-before 'configure 'all-static
