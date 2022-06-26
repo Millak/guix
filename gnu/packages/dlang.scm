@@ -298,30 +298,22 @@ bootstrapping more recent compilers written in D.")
                (substitute* "runtime/druntime/test/exceptions/Makefile"
                  ((".*TESTS\\+=rt_trap_exceptions_drt_gdb.*")
                   ""))
-               ;; The following tests fail on the supported 32 bit systems,
-               ;; which are not tested upstream.
+               ;; The following tests fail on some systems, not all of
+               ;; which are tested upstream.
                (with-directory-excursion "tests"
-                 (let ((system ,(or (%current-target-system)
-                                    (%current-system))))
-                   (when (or (string-prefix? "armhf" system )
-                             (string-prefix? "i686" system ))
+                 (cond
+                   (,(or (target-x86-32?)
+                         (target-arm32?))
                      (for-each delete-file
                                '("PGO/profile_rt_calls.d"
                                  "codegen/mangling.d"
-                                 "debuginfo/print_gdb.d"
-                                 "dynamiccompile/bind.d"
-                                 "dynamiccompile/bind_bool.d"
-                                 "dynamiccompile/bind_func_opt.d"
-                                 "dynamiccompile/bind_nested_opt.d"
-                                 "dynamiccompile/bind_opt.d"
-                                 "dynamiccompile/compiler_context.d"
-                                 "dynamiccompile/compiler_context_parallel.d"
                                  "instrument/xray_check_pipeline.d"
                                  "instrument/xray_link.d"
                                  "instrument/xray_simple_execution.d"
                                  "sanitizers/msan_noerror.d"
                                  "sanitizers/msan_uninitialized.d"
-                                 "d2/dmd-testsuite/runnable_cxx/cppa.d")))))))
+                                 "d2/dmd-testsuite/runnable_cxx/cppa.d")))
+                   (#t '())))))
            (add-before 'configure 'set-cc-and-cxx-to-use-clang
              ;; The tests require to be built with Clang; build everything
              ;; with it, for simplicity.
