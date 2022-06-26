@@ -1297,7 +1297,7 @@ and OpenPGP) and available in 29 languages.")
 (define-public gajim-omemo
   (package
     (name "gajim-omemo")
-    (version "2.7.14")
+    (version "2.8.13")
     (source
      (origin
        (method url-fetch/zipbomb)
@@ -1306,7 +1306,7 @@ and OpenPGP) and available in 29 languages.")
          "https://ftp.gajim.org/plugins_releases/omemo_"
          version ".zip"))
        (sha256
-        (base32 "0jmyjqfc4vimvq5vdqsvz25dsij6bh92alml8qnn59p5farnf86v"))))
+        (base32 "10ym9abvlfpi6llpsqc0691xdnqp9hrwnl361fnwb1nx2zw6bjbd"))))
     (build-system trivial-build-system)
     (arguments
      `(#:modules ((guix build utils))
