@@ -464,7 +464,7 @@ the GStreamer multimedia framework.")
 (define-public gstreamer
   (package
     (name "gstreamer")
-    (version "1.18.5")
+    (version "1.20.3")
     (source
      (origin
        (method url-fetch)
@@ -473,33 +473,12 @@ the GStreamer multimedia framework.")
              version ".tar.xz"))
        (sha256
         (base32
-         "02p8my6dzmm4rvd93s3qnh8w5bm9bh4f7gdydbsvnn9llqr251jm"))))
+         "0aisl8nazcfi4b5j6fz8zwpp0k9csb022zniz65b2pxxpdjayzb0"))))
     (build-system meson-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         ,@%common-gstreamer-phases
-         ;; FIXME: Since switching to the meson-build-system, two tests
-         ;; started failing on i686.  See
-         ;; <https://gitlab.freedesktop.org/gstreamer/gstreamer/issues/499>.
-         ,@(if (string-prefix? "i686" (or (%current-target-system)
-                                          (%current-system)))
-               `((add-after 'unpack 'disable-some-tests
-                   (lambda _
-                     (substitute* "tests/check/gst/gstsystemclock.c"
-                       (("tcase_add_test \\(tc_chain, test_stress_cleanup_unschedule.*")
-                        "")
-                       (("tcase_add_test \\(tc_chain, test_stress_reschedule.*")
-                        "")))))
-               '())
-         (add-after 'unpack 'disable-problematic-tests
-           (lambda _
-             ;; Disable the 'pipelines-seek' test, which appears to be load
-             ;; sensitive (see:
-             ;; https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/854).
-             (substitute* "tests/check/meson.build"
-               ((".*'pipelines/seek.c'.*")
-                "")))))))
+         ,@%common-gstreamer-phases)))
     (propagated-inputs
      ;; In gstreamer-1.0.pc:
      ;;   Requires: glib-2.0, gobject-2.0
