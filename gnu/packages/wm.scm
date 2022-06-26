@@ -37,7 +37,7 @@
 ;;; Copyright © 2020 Marcin Karpezo <sirmacik@wioo.waw.pl>
 ;;; Copyright © 2020 EuAndreh <eu@euandre.org>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2020 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2020, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
 ;;; Copyright © 2020 Niklas Eklund <niklas.eklund@posteo.net>
 ;;; Copyright © 2020 Robert Smith <robertsmith@posteo.net>
@@ -55,6 +55,7 @@
 ;;; Copyright © 2022 Pier-Hugues Pellerin <ph@heykimo.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
+;;; Copyright © 2022 Elais Player <elais@fastmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1820,7 +1821,7 @@ Wayland compositors supporting the wlr-output-management protocol.")
 (define-public stumpwm
   (package
     (name "stumpwm")
-    (version "20.11")
+    (version "22.05")
     (source
      (origin
        (method git-fetch)
@@ -1829,7 +1830,7 @@ Wayland compositors supporting the wlr-output-management protocol.")
              (commit version)))
        (file-name (git-file-name "stumpwm" version))
        (sha256
-        (base32 "1ghs6ihvmb3bz4q4ys1d3h6rdi96xyiw7l2ip7jh54c25049aymf"))))
+        (base32 "12hf70mpwy0ixiyvv8sf8pkwrzz8nb12a8ybvsdpibsxfjxgxnan"))))
     (build-system asdf-build-system/sbcl)
     (native-inputs `(("fiasco" ,sbcl-fiasco)
                      ("texinfo" ,texinfo)
@@ -1842,9 +1843,13 @@ Wayland compositors supporting the wlr-output-management protocol.")
               ("alexandria" ,sbcl-alexandria)))
     (outputs '("out" "lib"))
     (arguments
-     '(#:asd-systems '("stumpwm")
-       #:phases
+     '(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'fix-tests
+           (lambda _
+             (substitute* "stumpwm-tests.asd"
+               (("\"ALL-TESTS\"")
+                "\"RUN-PACKAGE-TESTS\" :package"))))
          (add-after 'create-asdf-configuration 'build-program
            (lambda* (#:key outputs #:allow-other-keys)
              (build-program
