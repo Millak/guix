@@ -124,6 +124,20 @@
     (force-output port)
     (get-status)))
 
+(test-equal "build-output-port, daemon messages with LF"
+  '((build-log #f "updating substitutes... 0%\r")
+    (build-log #f "updating substitutes... 50%\r")
+    (build-log #f "updating substitutes... 100%\r"))
+  (let ((port get-status (build-event-output-port cons '())))
+    (for-each (lambda (suffix)
+                (let ((bv (string->utf8
+                           (string-append "updating substitutes... "
+                                          suffix "\r"))))
+                  (put-bytevector port bv)
+                  (force-output port)))
+              '("0%" "50%" "100%"))
+    (reverse (get-status))))
+
 (test-equal "current-build-output-port, UTF-8 + garbage"
   ;; What about a mixture of UTF-8 + garbage?
   (let ((replacement "�"))
