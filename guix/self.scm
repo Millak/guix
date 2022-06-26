@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2017-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -699,7 +699,8 @@ Info manual."
                         (setenv "NIX_STORE_DIR" #$%storedir))
 
                       (apply execl #$(file-append daemon "/bin/guix-daemon")
-                             "guix-daemon" (cdr (command-line))))))
+                             "guix-daemon" (cdr (command-line))))
+                  #:guile guile))
 
   (computed-file name
                  (with-imported-modules '((guix build utils))
