@@ -39,7 +39,7 @@
 (define-public hwdata
   (package
     (name "hwdata")
-    (version "0.357")                   ;updated monthly
+    (version "0.360")                   ;updated monthly
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -48,7 +48,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0kvxpdx14w2myqm3dikjvr2mr4j6767y4v5j8v7kffwvcv0ga9gv"))))
+                "1jm0abqwcz02c3v6z7b4km4swk6yw6fpacip8cg8j7zipmwmhpbl"))))
     (build-system gnu-build-system)
     (outputs '("out" "iab" "oui" "pci" "pnp" "usb"))
     (arguments
