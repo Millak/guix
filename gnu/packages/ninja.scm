@@ -31,7 +31,7 @@
 (define-public ninja
   (package
     (name "ninja")
-    (version "1.10.2")
+    (version "1.11.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -40,7 +40,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0mspq4mvx41qri2v2zlg2y3znx5gfw6d8s3czbcfpr2218qbpz55"))))
+                "14wqccblr3nc2pjgv1a5fsjznp7iyp6z993jp1ddknz01dvhr765"))))
     (build-system gnu-build-system)
     (inputs `(("python" ,python-wrapper)))
     (arguments
