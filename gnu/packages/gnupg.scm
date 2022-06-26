@@ -14,7 +14,7 @@
 ;;; Copyright © 2017, 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017 Petter <petter@mykolab.ch>
 ;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018, 2019 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2018, 2019, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2018 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Fredrik Salomonsson <plattfot@posteo.net>
@@ -157,14 +157,14 @@ Daemon and possibly more in the future.")
 (define-public libgcrypt
   (package
     (name "libgcrypt")
-    (version "1.8.8")
+    (version "1.10.1")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnupg/libgcrypt/libgcrypt-"
                                  version ".tar.bz2"))
              (sha256
               (base32
-               "1xasrh9zxhgj2n5n8dvpzbwn1mzpmlzy270xhbq2gl8xk2xy4pc9"))))
+               "1pp9zyx02bzgzjzldxf0mx9kp3530xgaaqcz4n2cv100ddaaw57g"))))
     (build-system gnu-build-system)
     (propagated-inputs
      `(("libgpg-error-host" ,libgpg-error)))
@@ -176,10 +176,20 @@ Daemon and possibly more in the future.")
      ;; 'configure' uses 'gpg-error-config' to determine the '-L' flag, and
      ;; the 'gpg-error-config' it runs is the native one---i.e., the wrong one.
      `(#:configure-flags
-       (list (string-append "--with-gpg-error-prefix="
+       (list (string-append "--with-libgpg-error-prefix="
                             (assoc-ref %build-inputs "libgpg-error-host"))
-             ;; When cross-compiling, _gcry_mpih_lshift etc are undefined
-             ,@(if (%current-target-system) '("--disable-asm")
+             ,@(if (%current-target-system)
+                   ;; When cross-compiling, _gcry_mpih_lshift etc are undefined.
+                   `("--disable-asm"
+                     ;; libgcrypt is transitioning from gpg-error-config to
+                     ;; gpgrt-config, and in the process the
+                     ;; --with-libgpg-error-config prefix defined above is
+                     ;; not respected.  See <https://dev.gnupg.org/T5365>.
+                     ;; TODO: transition to pkg-config instead of these scripts.
+                     (string-append "ac_cv_path_GPGRT_CONFIG="
+                                    (assoc-ref %build-inputs
+                                               "libgpg-error-host")
+                                    "/bin/gpgrt-config"))
                    '()))))
     (outputs '("out" "debug"))
     (home-page "https://gnupg.org/")
