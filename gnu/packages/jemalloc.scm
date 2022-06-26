@@ -75,7 +75,7 @@ fragmentation avoidance and scalable concurrency support.")
 (define-public jemalloc
   (package
     (inherit jemalloc-4.5.0)
-    (version "5.2.1")
+    (version "5.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -83,7 +83,7 @@ fragmentation avoidance and scalable concurrency support.")
                     version "/jemalloc-" version ".tar.bz2"))
               (sha256
                (base32
-                "1xl7z0vwbn5iycg7amka9jd6hxd8nmfk7nahi4p9w2bnw9f0wcrl"))))
+                "1apyxjd1ixy4g8xkr61p0ny8jiz8vyv1j0k4nxqkxpqrf4g2vf1d"))))
     (arguments
       (substitute-keyword-arguments (package-arguments jemalloc-4.5.0)
         ;; Disable the thread local storage model in jemalloc 5 to prevent
