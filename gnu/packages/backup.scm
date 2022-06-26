@@ -13,7 +13,7 @@
 ;;; Copyright © 2018 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018, 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Alex Vong <alexvong1995@gmail.com>
-;;; Copyright © 2019 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2019, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Marcin Karpezo <sirmacik@wioo.waw.pl>
@@ -260,60 +260,59 @@ backups (called chunks) to allow easy burning to CD/DVD.")
            zlib
            `(,zstd "lib")))
     (arguments
-     `(#:configure-flags '("--disable-static")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'patch-pwd
-           (lambda _
-             (substitute* "Makefile"
-               (("/bin/pwd") (which "pwd")))
-             #t))
-         (replace 'check
-           (lambda* (#:key (tests? #t) #:allow-other-keys)
-             (if tests?
-		 ;; XXX: The test_owner_parse, test_read_disk, and
-		 ;; test_write_disk_lookup tests expect user 'root' to
-		 ;; exist, but the chroot's /etc/passwd doesn't have
-		 ;; it.  Turn off those tests.
-                 (begin
-		   ;; The tests allow one to disable tests matching a globbing pattern.
-		   (invoke "make"
-			   "libarchive_test"
-			   "bsdcpio_test"
-			   "bsdtar_test")
+     (list
+      #:configure-flags #~'("--disable-static")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'patch-pwd
+            (lambda _
+              (substitute* "Makefile"
+                (("/bin/pwd") (which "pwd")))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests?
+		  ;; XXX: The test_owner_parse, test_read_disk, and
+		  ;; test_write_disk_lookup tests expect user 'root' to
+		  ;; exist, but the chroot's /etc/passwd doesn't have
+		  ;; it.  Turn off those tests.
+                  (begin
+		    ;; The tests allow one to disable tests matching a globbing pattern.
+		    (invoke "make"
+			    "libarchive_test"
+			    "bsdcpio_test"
+			    "bsdtar_test")
 
-		   ;; XXX: This glob disables too much.
-		   (invoke "./libarchive_test" "^test_*_disk*")
-		   (invoke "./bsdcpio_test" "^test_owner_parse")
-		   (invoke "./bsdtar_test"))
-                 ;; Tests may be disabled if cross-compiling.
-                 (format #t "Test suite not run.~%"))))
-         (add-after 'install 'add--L-in-libarchive-pc
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out     (assoc-ref outputs "out"))
-                    (lib     (string-append out "/lib"))
-                    (nettle  (assoc-ref inputs "nettle"))
-                    (libxml2 (assoc-ref inputs "libxml2"))
-                    (xz      (assoc-ref inputs "xz"))
-                    (zlib    (assoc-ref inputs "zlib"))
-                    (zstd    (assoc-ref inputs "zstd"))
-                    (bzip2   (assoc-ref inputs "bzip2")))
-               ;; Embed absolute references to these inputs to avoid propagation.
-               (substitute* (list (string-append lib "/pkgconfig/libarchive.pc")
-                                  (string-append lib "/libarchive.la"))
-                 (("-lnettle")
-                  (string-append "-L" nettle "/lib -lnettle"))
-                 (("-lxml2")
-                  (string-append "-L" libxml2 "/lib -lxml2"))
-                 (("-llzma")
-                  (string-append "-L" xz "/lib -llzma"))
-                 (("-lz")
-                  (string-append "-L" zlib "/lib -lz"))
-                 (("-lzstd")
-                  (string-append "-L" zstd "/lib -lzstd"))
-                 (("-lbz2")
-                  (string-append "-L" bzip2 "/lib -lbz2")))
-               #t))))))
+		    ;; XXX: This glob disables too much.
+		    (invoke "./libarchive_test" "^test_*_disk*")
+		    (invoke "./bsdcpio_test" "^test_owner_parse")
+		    (invoke "./bsdtar_test"))
+                  ;; Tests may be disabled if cross-compiling.
+                  (format #t "Test suite not run.~%"))))
+          (add-after 'install 'add--L-in-libarchive-pc
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((out     #$output)
+                     (lib     (string-append out "/lib"))
+                     (nettle  (assoc-ref inputs "nettle"))
+                     (libxml2 (assoc-ref inputs "libxml2"))
+                     (xz      (assoc-ref inputs "xz"))
+                     (zlib    (assoc-ref inputs "zlib"))
+                     (zstd    (assoc-ref inputs "zstd"))
+                     (bzip2   (assoc-ref inputs "bzip2")))
+                ;; Embed absolute references to these inputs to avoid propagation.
+                (substitute* (list (string-append lib "/pkgconfig/libarchive.pc")
+                                   (string-append lib "/libarchive.la"))
+                  (("-lnettle")
+                   (string-append "-L" nettle "/lib -lnettle"))
+                  (("-lxml2")
+                   (string-append "-L" libxml2 "/lib -lxml2"))
+                  (("-llzma")
+                   (string-append "-L" xz "/lib -llzma"))
+                  (("-lz")
+                   (string-append "-L" zlib "/lib -lz"))
+                  (("-lzstd")
+                   (string-append "-L" zstd "/lib -lzstd"))
+                  (("-lbz2")
+                   (string-append "-L" bzip2 "/lib -lbz2")))))))))
     (home-page "https://libarchive.org/")
     (synopsis "Multi-format archive and compression library")
     (description
