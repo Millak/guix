@@ -7486,7 +7486,7 @@ derivation by David Revoy from the original MonsterID by Andreas Gohr.")
 (define-public nghttp2
   (package
     (name "nghttp2")
-    (version "1.44.0")
+    (version "1.48.0")
     (source
      (origin
        (method url-fetch)
@@ -7495,7 +7495,7 @@ derivation by David Revoy from the original MonsterID by Andreas Gohr.")
                            "nghttp2-" version ".tar.xz"))
        (sha256
         (base32
-         "0p9wvva4g8hwj55x19rbyvnq2dbsnf65rphhxnpqs7ll54xlg6an"))))
+         "1r0ns1r6g03wji273nk3bhrkmj1s3g5640yicqan5g7iwh7g7n27"))))
     (build-system gnu-build-system)
     (outputs (list "out"
                    "lib"))              ; only libnghttp2
