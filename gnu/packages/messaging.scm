@@ -1175,7 +1175,7 @@ of xmpppy.")
 (define-public gajim
   (package
     (name "gajim")
-    (version "1.3.3")
+    (version "1.4.5")
     (source
      (origin
        (method url-fetch)
@@ -1184,7 +1184,7 @@ of xmpppy.")
                        (version-major+minor version)
                        "/gajim-" version ".tar.gz"))
        (sha256
-        (base32 "1337qkpcv7j0fgws9scnk82mn2l7s17060vmrbh3ihinmxmbxg6x"))
+        (base32 "08a7kkc8vzjr5jxjkb96vs1bqnrgmmmcc5spy308z0zfxbpamsin"))
        (patches (search-patches "gajim-honour-GAJIM_PLUGIN_PATH.patch"))))
     (build-system python-build-system)
     (arguments
@@ -1198,13 +1198,6 @@ of xmpppy.")
         (guix build utils))
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'disable-failing-tests
-           (lambda _
-             ;; XXX Gajim builds fine on some (my) machines but fails elsewhere:
-             ;; ModuleNotFoundError: No module named 'gajim.gui.emoji_data'
-             ;; https://dev.gajim.org/gajim/gajim/-/issues/10478
-             (delete-file "test/lib/gajim_mocks.py")
-             (delete-file "test/unit/test_gui_interface.py")))
          (replace 'check
            (lambda _
              ;; Tests require a running X server.
@@ -1232,7 +1225,7 @@ of xmpppy.")
                     (wrap-program file
                       `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))
                       `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path)))))
-                '("gajim" "gajim-remote" "gajim-history-manager"))))))))
+                '("gajim" "gajim-remote"))))))))
     (native-search-paths
      (list
       (search-path-specification
@@ -1274,6 +1267,7 @@ of xmpppy.")
        ("gstreamer" ,gstreamer)
        ("gst-plugins-base" ,gst-plugins-base)
        ("gtk+" ,gtk+)
+       ("gtksourceview" ,gtksourceview)
        ("gupnp-igd" ,gupnp-igd)
        ("libnice" ,libnice)
        ("libsecret" ,libsecret)
@@ -1282,6 +1276,7 @@ of xmpppy.")
        ("network-manager" ,network-manager)
        ("python-css-parser" ,python-css-parser)
        ("python-dbus" ,python-dbus)
+       ("python-gssapi" ,python-gssapi)
        ("python-keyring" ,python-keyring)
        ("python-nbxmpp" ,python-nbxmpp)
        ("python-packaging" ,python-packaging)
