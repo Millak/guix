@@ -414,17 +414,15 @@ in which the loaded data is arranged in memory.")
 (define-public jsoncpp
   (package
     (name "jsoncpp")
-    (version "1.9.4")
+    (version "1.9.5")
     (home-page "https://github.com/open-source-parsers/jsoncpp")
     (source (origin
               (method git-fetch)
               (uri (git-reference (url home-page) (commit version)))
               (file-name (git-file-name name version))
-              (patches
-               (search-patches "jsoncpp-pkg-config-version.patch"))
               (sha256
                (base32
-                "0qnx5y6c90fphl9mj9d20j2dfgy6s5yr5l0xnzid0vh71zrp6jwv"))))
+                "06zss7z56ykzwcsfdxarmini63hkf8i8gx70q3yw9wb0bw7wj9rv"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags '("-DBUILD_SHARED_LIBS:BOOL=YES"
