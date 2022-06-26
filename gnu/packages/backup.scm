@@ -238,7 +238,7 @@ backups (called chunks) to allow easy burning to CD/DVD.")
 (define-public libarchive
   (package
     (name "libarchive")
-    (version "3.5.1")
+    (version "3.6.1")
     (source
      (origin
        (method url-fetch)
@@ -249,7 +249,7 @@ backups (called chunks) to allow easy burning to CD/DVD.")
                                  version ".tar.xz")))
        (sha256
         (base32
-         "16r95rlmikll1k8vbhh06vq6x3srkc10hzxjjf3021mjs2ld65qf"))))
+         "1rj8q5v26lxxr8x4b4nqbrj7p06qvl91hb8cdxi3xx3qp771lhas"))))
     (build-system gnu-build-system)
     (inputs
      (list bzip2
@@ -275,16 +275,7 @@ backups (called chunks) to allow easy burning to CD/DVD.")
 		 ;; test_write_disk_lookup tests expect user 'root' to
 		 ;; exist, but the chroot's /etc/passwd doesn't have
 		 ;; it.  Turn off those tests.
-		 ;;
-		 ;; XXX: Adjust test that fails with zstd 1.4.1
-		 ;; because the default options compresses two bytes
-		 ;; better than this test expects.
-		 ;; https://github.com/libarchive/libarchive/issues/1226
                  (begin
-                   (substitute* "libarchive/test/test_write_filter_zstd.c"
-		     (("compression-level\", \"6\"")
-		      "compression-level\", \"7\""))
-
 		   ;; The tests allow one to disable tests matching a globbing pattern.
 		   (invoke "make"
 			   "libarchive_test"
