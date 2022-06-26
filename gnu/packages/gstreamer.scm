@@ -1053,7 +1053,7 @@ given, also pass them to the build system instead of the ones used by PKG."
 (define-public python-gst
   (package
     (name "python-gst")
-    (version "1.18.5")
+    (version "1.20.3")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1061,7 +1061,7 @@ given, also pass them to the build system instead of the ones used by PKG."
                     "gst-python-" version ".tar.xz"))
               (sha256
                (base32
-                "0lmwwmr3wm56qlrdrb0d5cpmqxkcmarz61wmp1nrv5852f3qadjk"))))
+                "1p6g05k88nbbv5x9madsvphxcdkfl1z0lmp39p6bhmg9x8h82d6v"))))
     (build-system meson-build-system)
     (arguments
      `(#:modules ((guix build meson-build-system)
