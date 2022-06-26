@@ -2077,28 +2077,25 @@ parameters.")
                 "04v5q5cshzyhbwaw4n9l0k8faaz67n11z31vpfaiqynv9rwr4k8g"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:modules ((guix build utils)
-                  (guix build gnu-build-system)
-                  (srfi srfi-1)
-                  (srfi srfi-26))
-       ,@(if (%current-target-system)
-             '(#:configure-flags
-               (list
-                "ac_cv_func_malloc_0_nonnull=yes"
-                "ac_cv_func_realloc_0_nonnull=yes"))
-             '())
-       #:phases
-       (modify-phases %standard-phases
-         (add-after
-          'install 'post-install
-          ;; Remove commands and man pages redudant with
-          ;; Coreutils.
-          (lambda* (#:key outputs #:allow-other-keys)
-            (let* ((out (assoc-ref outputs "out"))
-                   (dup (append-map (cut find-files out <>)
-                                    '("^kill" "^uptime"))))
-              (for-each delete-file dup)
-              #t))))))
+     (list #:modules '((guix build utils)
+                       (guix build gnu-build-system)
+                       (srfi srfi-1)
+                       (srfi srfi-26))
+           #:configure-flags
+           (if (%current-target-system)
+               #~'("ac_cv_func_malloc_0_nonnull=yes"
+                   "ac_cv_func_realloc_0_nonnull=yes")
+               #~'())
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'post-install
+                 ;; Remove commands and man pages redudant with
+                 ;; Coreutils.
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((out #$output)
+                          (dup (append-map (cut find-files out <>)
+                                           '("^kill" "^uptime"))))
+                     (for-each delete-file dup)))))))
     (inputs (list ncurses))
     (home-page "https://gitlab.com/procps-ng/procps/")
     (synopsis "Utilities that give information about processes")
