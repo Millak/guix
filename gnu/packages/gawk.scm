@@ -25,6 +25,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages libsigsegv)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix build-system gnu))
 
@@ -40,36 +41,36 @@
              (base32 "18kybw47fb1sdagav7aj95r9pp09r5gm202y3ahvwjw9dqw2jxnq"))))
    (build-system gnu-build-system)
    (arguments
-    `(#:phases (modify-phases %standard-phases
-                 (add-before 'configure 'set-shell-file-name
-                   (lambda* (#:key inputs #:allow-other-keys)
-                     ;; Refer to the right shell.
-                     (let ((bash (assoc-ref inputs "bash")))
-                       (substitute* "io.c"
-                         (("/bin/sh")
-                          (string-append bash "/bin/sh")))
+    (list #:phases
+          #~(modify-phases %standard-phases
+              (add-before 'configure 'set-shell-file-name
+                (lambda* (#:key inputs #:allow-other-keys)
+                  ;; Refer to the right shell.
+                  (let ((/bin/sh (search-input-file inputs "bin/sh")))
+                    (substitute* "io.c"
+                      (("/bin/sh") /bin/sh))
 
-                       ;; When cross-compiling, remove dependencies on the
-                       ;; `check-for-shared-lib-support' target, which tries
-                       ;; to run the cross-built `gawk'.
-                       ,@(if (%current-target-system)
-                             '((substitute* "extension/Makefile.in"
+                    ;; When cross-compiling, remove dependencies on the
+                    ;; `check-for-shared-lib-support' target, which tries
+                    ;; to run the cross-built `gawk'.
+                    #$@(if (%current-target-system)
+                           '((substitute* "extension/Makefile.in"
                                  (("^.*: check-for-shared-lib-support" match)
                                   (string-append "### " match))))
-                             '()))))
+                           '()))))
 
-                 (add-before 'check 'adjust-test-infrastructure
-                   (lambda _
-                     ;; Remove dependency on 'more' (from util-linux), which
-                     ;; would needlessly complicate bootstrapping.
-                     (substitute* "test/Makefile"
-                       (("\\| more") ""))
+              (add-before 'check 'adjust-test-infrastructure
+                (lambda _
+                  ;; Remove dependency on 'more' (from util-linux), which
+                  ;; would needlessly complicate bootstrapping.
+                  (substitute* "test/Makefile"
+                    (("\\| more") ""))
 
-                     ;; Adjust the shebang in that file since it is then diff'd
-                     ;; against the actual test output.
-                     (substitute* "test/watchpoint1.ok"
-                       (("#! /usr/bin/gawk")
-                        (string-append "#!" (which "gawk")))))))))
+                  ;; Adjust the shebang in that file since it is then diff'd
+                  ;; against the actual test output.
+                  (substitute* "test/watchpoint1.ok"
+                    (("#! /usr/bin/gawk")
+                     (string-append "#!" (which "gawk")))))))))
 
    (inputs (list libsigsegv
                  ;; Use the full-fledged Bash package, otherwise the test suite
