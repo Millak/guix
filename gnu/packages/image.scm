@@ -1654,14 +1654,14 @@ is hereby granted."))))
 (define-public libjpeg-turbo
   (package
     (name "libjpeg-turbo")
-    (version "2.0.5")
+    (version "2.1.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/libjpeg-turbo/"
                                   version "/libjpeg-turbo-" version ".tar.gz"))
               (sha256
                (base32
-                "0pbv6pc97kbj7ib31qcwi7lnmm9xg5y3b11aasmkhfjvf7rgdy0n"))))
+                "1l3n9xgkh85ny1pvy78ps0xnlfmps4h7glvcwlzh6aw30c4k2ys6"))))
     (build-system cmake-build-system)
     (native-inputs
      (list nasm))
