@@ -1204,17 +1204,17 @@ provides the GNU compiler for the Go programming language."))
 (define-public isl
   (package
     (name "isl")
-    (version "0.23")
+    (version "0.24")
     (source (origin
              (method url-fetch)
              ;; Used to be at isl.gforge.inria.fr.
              (uri (list (string-append "mirror://sourceforge/libisl/isl-"
-                                       version ".tar.bz2")
+                                       version ".tar.xz")
                         (string-append %gcc-infrastructure
-                                       "isl-" version ".tar.bz2")))
+                                       "isl-" version ".tar.xz")))
              (sha256
               (base32
-               "0k91zck10zxs9sk3yrbb92y1j3w981w3fbwkfwd7kl779b0j52f5"))))
+               "1bgbk6n93qqn7w8v21kxf4x6dc3z0ypqrzvgfd46nhagak60ac84"))))
     (build-system gnu-build-system)
     (outputs '("out" "static"))
     (arguments
