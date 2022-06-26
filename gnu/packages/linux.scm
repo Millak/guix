@@ -1844,102 +1844,101 @@ providing the system administrator with some help in common tasks.")
                "lib"            ;8.8 MiB shared libraries, headers and locales
                "static"))       ;2.9 MiB static .a libraries
     (arguments
-     `(#:configure-flags (list "--disable-use-tty-group"
-                               (string-append
-                                "--enable-fs-paths-default="
-                                "/run/setuid-programs"
-                                ":/run/current-system/profile/sbin")
-                               ;; Don't try to chown root:root mount and umount
-                               "--disable-makeinstall-chown"
-                               "--localstatedir=/var"
-                               (string-append "--localedir="
-                                              (assoc-ref %outputs "lib")
-                                              "/share/locale")
-                               ;; Install completions where our
-                               ;; bash-completion package expects them.
-                               (string-append "--with-bashcompletiondir="
-                                              (assoc-ref %outputs "out")
-                                              "/etc/bash_completion.d"))
+     (list #:configure-flags
+           #~(list "--disable-use-tty-group"
+                   (string-append
+                    "--enable-fs-paths-default="
+                    "/run/setuid-programs"
+                    ":/run/current-system/profile/sbin")
+                   ;; Don't try to chown root:root mount and umount
+                   "--disable-makeinstall-chown"
+                   "--localstatedir=/var"
+                   (string-append "--localedir=" #$output:lib
+                                  "/share/locale")
+                   ;; Install completions where our bash-completion package
+                   ;; expects them.
+                   (string-append "--with-bashcompletiondir=" #$output
+                                  "/etc/bash_completion.d"))
 
-       ;; FIXME: For now we cannot reliably run tests on GNU/Hurd:
-       ;; <https://bugs.gnu.org/47791>.
-       #:tests? ,(and (not (%current-target-system))
-                      (not (string-suffix? "-gnu" (%current-system))))
+           ;; FIXME: For now we cannot reliably run tests on GNU/Hurd:
+           ;; <https://bugs.gnu.org/47791>.
+           #:tests? (and (not (%current-target-system))
+                         (not (string-suffix? "-gnu" (%current-system))))
 
-       #:phases (modify-phases %standard-phases
-                  (add-before 'configure 'patch-build-scripts
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (substitute* "configure"
-                        ;; The build system assumes that we want to install
-                        ;; libraries below $exec_prefix when $libdir does not
-                        ;; match any of the "usual" locations.  Fix that.
-                        (("usrlib_execdir='\\$\\{exec_prefix\\}'\\$libdir")
-                         "usrlib_execdir=$libdir"))))
-                  (add-before 'build 'set-umount-file-name
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      ;; Tell 'eject' the right file name of 'umount'.
-                      (let ((out (assoc-ref outputs "out")))
-                        (substitute* "sys-utils/eject.c"
-                          (("\"/bin/umount\"")
-                           (string-append "\"" out "/bin/umount\""))))))
-                  (add-before 'check 'pre-check
-                    (lambda* (#:key native-inputs inputs #:allow-other-keys)
-                      (let ((services (search-input-file (or native-inputs inputs)
-                                                         "etc/services")))
-                        ;; Change the test to refer to the right file.
-                        (substitute* "tests/ts/misc/mcookie"
-                          (("/etc/services")
-                           services))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'patch-build-scripts
+                 (lambda _
+                   (substitute* "configure"
+                     ;; The build system assumes that we want to install
+                     ;; libraries below $exec_prefix when $libdir does not
+                     ;; match any of the "usual" locations.  Fix that.
+                     (("usrlib_execdir='\\$\\{exec_prefix\\}'\\$libdir")
+                      "usrlib_execdir=$libdir"))))
+               (add-before 'build 'set-umount-file-name
+                 (lambda _
+                   ;; Tell 'eject' the right file name of 'umount'.
+                   (substitute* "sys-utils/eject.c"
+                     (("\"/bin/umount\"")
+                      (string-append "\"" #$output "/bin/umount\"")))))
+               (add-before 'check 'pre-check
+                 (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                   (let ((services (search-input-file (or native-inputs inputs)
+                                                      "etc/services")))
+                     ;; Change the test to refer to the right file.
+                     (substitute* "tests/ts/misc/mcookie"
+                       (("/etc/services")
+                        services))
 
-                        ;; The C.UTF-8 locale does not exist in our libc.
-                        (substitute* "tests/ts/column/invalid-multibyte"
-                          (("C\\.UTF-8") "en_US.utf8")))))
-                  (add-before 'check 'disable-setarch-test
-                    (lambda _
-                      ;; The setarch tests are unreliable in QEMU's user-mode
-                      ;; emulation, which is our primary method of building
-                      ;; ARMv7 packages.  See
-                      ;; <https://github.com/karelzak/util-linux/issues/601>.
-                      (substitute* "tests/ts/misc/setarch"
-                        (("ts_init_subtest.*" all)
-                         (string-append
-                          all "\n"
-                          "ts_skip \"setarch tests are unreliable under QEMU\"")))))
-                  (add-before 'check 'disable-lsns-test
-                    (lambda _
-                      ;; The lsns tests can fail due to ioctl(_, NS_GET_USERNS)
-                      ;; returning ENOTTY, indicating this kernel does not
-                      ;; support user namespaces.  Curiously, this test can fail
-                      ;; on i686 even if the same test passes on x86_64 on the
-                      ;; same machine.  See <https://issues.guix.gnu.org/49933>.
-                      (delete-file "tests/ts/lsns/ioctl_ns")))
-                  (add-after 'install 'move-static-libraries
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let ((lib    (assoc-ref outputs "lib"))
-                            (static (assoc-ref outputs "static")))
+                     ;; The C.UTF-8 locale does not exist in our libc.
+                     (substitute* "tests/ts/column/invalid-multibyte"
+                       (("C\\.UTF-8") "en_US.utf8")))))
+               (add-before 'check 'disable-setarch-test
+                 (lambda _
+                   ;; The setarch tests are unreliable in QEMU's user-mode
+                   ;; emulation, which is our primary method of building
+                   ;; ARMv7 packages.  See
+                   ;; <https://github.com/karelzak/util-linux/issues/601>.
+                   (substitute* "tests/ts/misc/setarch"
+                     (("ts_init_subtest.*" all)
+                      (string-append
+                       all "\n"
+                       "ts_skip \"setarch tests are unreliable under QEMU\"")))))
+               (add-before 'check 'disable-lsns-test
+                 (lambda _
+                   ;; The lsns tests can fail due to ioctl(_, NS_GET_USERNS)
+                   ;; returning ENOTTY, indicating this kernel does not
+                   ;; support user namespaces.  Curiously, this test can fail
+                   ;; on i686 even if the same test passes on x86_64 on the
+                   ;; same machine.  See <https://issues.guix.gnu.org/49933>.
+                   (delete-file "tests/ts/lsns/ioctl_ns")))
+               (add-after 'install 'move-static-libraries
+                 (lambda _
+                   (let ((lib    #$output:lib)
+                         (static #$output:static))
 
-                        ;; Move static libraries to the "static" output.
-                        (mkdir-p (string-append static "/lib"))
-                        (with-directory-excursion lib
-                          (for-each (lambda (file)
-                                      (rename-file file
-                                                   (string-append static "/"
-                                                                  file)))
-                                    (find-files "lib" "\\.a$"))
+                     ;; Move static libraries to the "static" output.
+                     (mkdir-p (string-append static "/lib"))
+                     (with-directory-excursion lib
+                       (for-each (lambda (file)
+                                   (rename-file file
+                                                (string-append static "/"
+                                                               file)))
+                                 (find-files "lib" "\\.a$"))
 
-                          ;; Remove references to the static library from the '.la'
-                          ;; files so that Libtool does the right thing when both
-                          ;; the shared and static library is available.
-                          (substitute* (find-files "lib" "\\.la$")
-                            (("old_library=.*") "old_library=''\n"))))))
-                  (add-after 'install 'adjust-pkg-config-files
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let ((lib (assoc-ref outputs "lib")))
-                        ;; Drop the unused "prefix=" and "exec_prefix=" variables from
-                        ;; the pkg-config files to avoid a cyclic reference on "out".
-                        (substitute* (find-files (string-append lib "/lib/pkgconfig")
-                                                 "\\.pc$")
-                          (("^(exec_)?prefix=.*") ""))))))))
+                       ;; Remove references to the static library from the '.la'
+                       ;; files so that Libtool does the right thing when both
+                       ;; the shared and static library is available.
+                       (substitute* (find-files "lib" "\\.la$")
+                         (("old_library=.*") "old_library=''\n"))))))
+               (add-after 'install 'adjust-pkg-config-files
+                 (lambda _
+                   ;; Drop the unused "prefix=" and "exec_prefix=" variables from
+                   ;; the pkg-config files to avoid a cyclic reference on "out".
+                   (substitute* (find-files (string-append #$output:lib
+                                                           "/lib/pkgconfig")
+                                            "\\.pc$")
+                     (("^(exec_)?prefix=.*") "")))))))
     (inputs
      (list file                         ;for libmagic
            ncurses
