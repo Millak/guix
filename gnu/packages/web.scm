@@ -7515,32 +7515,32 @@ derivation by David Revoy from the original MonsterID by Andreas Gohr.")
             libxml2                     ; for ‘nghttp -a’
             openssl)))
     (arguments
-     `(#:configure-flags
-       (list (string-append "--libdir=" (assoc-ref %outputs "lib") "/lib")
-             "--enable-app"             ; build all the tools
-             "--enable-hpack-tools"     ; ...all the tools
-             "--disable-examples"
-             "--disable-static"         ; don't bother building .a files
-             ,@(if (%current-target-system)
-                   '("--disable-python-bindings")
-                   '()))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'break-circular-reference
-           ;; libnghttp2.pc by default retains a reference to the ‘out’ output,
-           ;; which is not allowed.  Break this cycle.  While we could install
-           ;; only the library to ‘out’ and move everything else to a separate
-           ;; output, this would inconvenience the majority of (human) users.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "lib/libnghttp2.pc.in"
-               (("@prefix@")
-                (assoc-ref outputs "lib")))
-             #t))
-         (add-before 'check 'set-timezone-directory
-           (lambda* (#:key inputs native-inputs #:allow-other-keys)
-             (setenv "TZDIR" (search-input-directory
-                              (or native-inputs inputs)
-                              "share/zoneinfo")))))))
+     (list
+      #:configure-flags
+      #~(list (string-append "--libdir=" #$output:lib "/lib")
+              "--enable-app"            ; build all the tools
+              "--enable-hpack-tools"    ; ...all the tools
+              "--disable-examples"
+              "--disable-static"        ; don't bother building .a files
+              #$@(if (%current-target-system)
+                     '("--disable-python-bindings")
+                     '()))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'break-circular-reference
+            ;; libnghttp2.pc by default retains a reference to the ‘out’ output,
+            ;; which is not allowed.  Break this cycle.  While we could install
+            ;; only the library to ‘out’ and move everything else to a separate
+            ;; output, this would inconvenience the majority of (human) users.
+            (lambda _
+              (substitute* "lib/libnghttp2.pc.in"
+                (("@prefix@")
+                 #$output:lib))))
+          (add-before 'check 'set-timezone-directory
+            (lambda* (#:key inputs native-inputs #:allow-other-keys)
+              (setenv "TZDIR" (search-input-directory
+                               (or native-inputs inputs)
+                               "share/zoneinfo")))))))
     (home-page "https://nghttp2.org/")
     (synopsis "HTTP/2 protocol client, proxy, server, and library")
     (description
