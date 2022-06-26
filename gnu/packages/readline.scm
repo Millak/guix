@@ -51,7 +51,8 @@
 (define %patch-series-8.1
   (patch-series
    "8.1"
-   (1 "0i4ikdqgcjnb40y2ss3lm09rq56zih5rzma3bib50dk3d1d4cak8")))
+   (1 "0i4ikdqgcjnb40y2ss3lm09rq56zih5rzma3bib50dk3d1d4cak8")
+   (2 "1p15sfx5xg5k4lam12lyd0givk7dfjddqpnb1jdp3c4clray0nz5")))
 
 (define %patch-series-7.0
   (patch-series
