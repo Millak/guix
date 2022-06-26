@@ -711,14 +711,14 @@ model to base your own plug-in on, here it is.")
 (define-public gst-plugins-bad
   (package
     (name "gst-plugins-bad")
-    (version "1.18.5")
+    (version "1.20.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://gstreamer.freedesktop.org/src/"
                                   name "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "13k7mm2wmsbhd04a20v9lj4afpf0w33ambpwlrw8bl7hjhxr4r51"))
+                "0kys6m5hg5bc30wfg8qa3s7dmkdz3kj1j8lhvn3267fxalxw24bs"))
               (modules '((guix build utils)))
               (snippet
                '(begin
