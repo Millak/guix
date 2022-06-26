@@ -10,7 +10,8 @@ top_builddir = ../..
 # synopses and descriptions.
 XGETTEXT_OPTIONS =				\
   --language=Scheme --from-code=UTF-8		\
-  --keyword=synopsis --keyword=description
+  --keyword=synopsis --keyword=description      \
+  --keyword=output-synopsis:2
 
 COPYRIGHT_HOLDER = the authors of Guix (msgids)
 
