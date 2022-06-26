@@ -7505,16 +7505,15 @@ derivation by David Revoy from the original MonsterID by Andreas Gohr.")
            cunit python tzdata-for-tests))
     (inputs
      ;; Required to build the tools (i.e. without ‘--enable-lib-only’).
-     `(("c-ares" ,c-ares)
-       ("jansson" ,jansson)             ; for HPACK tools
-       ,@(if (hurd-target?) '()
-             `(("jemalloc" ,jemalloc))) ; fight nghttpd{,x} heap fragmentation
-       ("libev" ,libev)
-       ("libxml2" ,libxml2)             ; for ‘nghttp -a’
-       ("openssl" ,openssl)
-       ,@(if (hurd-target?)
-             `(("openssl-static" ,openssl "static"))
-             '())))
+     (append
+      (if (hurd-target?)
+          `(,openssl "static")
+          (list jemalloc))              ; fight nghttpd{,x} heap fragmentation
+      (list c-ares
+            jansson                     ; for HPACK tools
+            libev
+            libxml2                     ; for ‘nghttp -a’
+            openssl)))
     (arguments
      `(#:configure-flags
        (list (string-append "--libdir=" (assoc-ref %outputs "lib") "/lib")
@@ -7539,10 +7538,9 @@ derivation by David Revoy from the original MonsterID by Andreas Gohr.")
              #t))
          (add-before 'check 'set-timezone-directory
            (lambda* (#:key inputs native-inputs #:allow-other-keys)
-             (setenv "TZDIR" (string-append
-                               (assoc-ref (or native-inputs inputs) "tzdata")
-                               "/share/zoneinfo"))
-             #t)))))
+             (setenv "TZDIR" (search-input-directory
+                              (or native-inputs inputs)
+                              "share/zoneinfo")))))))
     (home-page "https://nghttp2.org/")
     (synopsis "HTTP/2 protocol client, proxy, server, and library")
     (description
