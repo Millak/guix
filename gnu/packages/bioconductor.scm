@@ -2380,6 +2380,30 @@ manipulating the data from BaseSpace, it also facilitates the access to R's
 rich environment of statistical and data analysis tools.")
     (license license:asl2.0)))
 
+(define-public r-bac
+  (package
+    (name "r-bac")
+    (version "1.56.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "BAC" version))
+              (sha256
+               (base32
+                "0dkw7438d2sf6nb577dnzija54qs0nhlr47lb73li60fhlnvqmh2"))))
+    (properties `((upstream-name . "BAC")))
+    (build-system r-build-system)
+    (home-page "https://bioconductor.org/packages/BAC")
+    (synopsis "Bayesian analysis of Chip-chip experiment")
+    (description
+     "This package uses a Bayesian hierarchical model to detect enriched
+regions from ChIP-chip experiments.  The common goal in analyzing this
+ChIP-chip data is to detect DNA-protein interactions from ChIP-chip
+experiments.  The BAC package has mainly been tested with Affymetrix tiling
+array data.  However, we expect it to work with other platforms (e.g. Agilent,
+Nimblegen, cDNA, etc.).  Note that BAC does not deal with normalization, so
+you will have to normalize your data beforehand.")
+    (license license:artistic2.0)))
+
 (define-public r-biocversion
   (package
     (name "r-biocversion")
