@@ -244,7 +244,7 @@ output.  Experimental backends include OpenGL, BeOS, OS/2, and DirectFB.")
 (define-public harfbuzz
   (package
    (name "harfbuzz")
-   (version "2.8.2")
+   (version "4.3.0")
    (source (origin
              (method url-fetch)
              (uri (string-append "https://github.com/harfbuzz/harfbuzz"
@@ -252,7 +252,7 @@ output.  Experimental backends include OpenGL, BeOS, OS/2, and DirectFB.")
                                  version ".tar.xz"))
              (sha256
               (base32
-               "1rvv86wpm3y04fqns1655268rhvhvms469837709v2z2bhwn316m"))))
+               "0c5mzwgz43d37h75p4b6cgjg4v24jdd96i7gjpgxirn8qks2i5m4"))))
    (build-system gnu-build-system)
    (outputs '("out"
               "bin")) ; 160K, only hb-view depend on cairo
@@ -278,19 +278,6 @@ output.  Experimental backends include OpenGL, BeOS, OS/2, and DirectFB.")
    (license (license:x11-style "file://COPYING"
                        "See 'COPYING' in the distribution."))
    (home-page "https://www.freedesktop.org/wiki/Software/HarfBuzz/")))
-
-(define-public harfbuzz-3.0
-  (package
-    (inherit harfbuzz)
-    (version "3.0.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/harfbuzz/harfbuzz"
-                                  "/releases/download/" version
-                                  "/harfbuzz-" version ".tar.xz"))
-              (sha256
-               (base32
-                "1ngk8vn06rryx3s4v5pbl91bw1j1pd4431n77rw3j5a533hhwsq3"))))))
 
 (define-public libdatrie
   (package
