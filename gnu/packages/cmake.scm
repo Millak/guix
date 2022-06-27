@@ -213,17 +213,18 @@ using the CMake build system.")
            (lambda* (#:key (configure-flags '()) #:allow-other-keys)
              (apply invoke "./configure" configure-flags))))))
     (inputs
-     `(("bzip2" ,bzip2)
-       ("curl" ,curl)
-       ("expat" ,expat)
-       ("file" ,file)
-       ("jsoncpp" ,jsoncpp)
-       ("libarchive" ,libarchive)
-       ,@(if (hurd-target?)
-             '()
-             `(("libuv" ,libuv)))       ;not supported on the Hurd
-       ("rhash" ,rhash)
-       ("zlib" ,zlib)))
+     (append
+      (if (hurd-target?)
+          '()
+          (list libuv))                 ;not supported on the Hurd
+      (list bzip2
+            curl
+            expat
+            file
+            jsoncpp
+            libarchive
+            rhash
+            zlib)))
     (native-search-paths
      (list (search-path-specification
             (variable "CMAKE_PREFIX_PATH")
@@ -369,9 +370,8 @@ and workspaces that can be used in the compiler environment of your choice.")
                 )))
     ;; Extra inputs required to build the documentation.
     (native-inputs
-     `(,@(package-native-inputs cmake-minimal)
-       ("python-sphinx" ,python-sphinx)
-       ("texinfo" ,texinfo)))
+     (modify-inputs (package-native-inputs cmake-minimal)
+       (append python-sphinx texinfo)))
     (outputs '("out" "doc"))
     (properties (alist-delete 'hidden? (package-properties cmake-minimal)))))
 
