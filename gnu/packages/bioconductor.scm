@@ -2536,6 +2536,34 @@ Carlo) techniques and a DTU test is performed via a multivariate Wald test on
 the posterior densities for the average relative abundance of transcripts.")
     (license license:gpl3+)))
 
+(define-public r-banocc
+  (package
+    (name "r-banocc")
+    (version "1.20.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "banocc" version))
+              (sha256
+               (base32
+                "10vaggq1w5jkxd8r2k1mhymzvb7x3h8afwn2pvmcpj022ka7xhbx"))))
+    (properties `((upstream-name . "banocc")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-coda
+           r-mvtnorm
+           r-rstan
+           r-stringr))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/banocc")
+    (synopsis "Bayesian analysis of compositional covariance")
+    (description
+     "BAnOCC is a package designed for compositional data, where each sample
+sums to one.  It infers the approximate covariance of the unconstrained data
+using a Bayesian model coded with @code{rstan}.  It provides as output the
+@code{stanfit} object as well as posterior median and credible interval
+estimates for each correlation element.")
+    (license license:expat)))
+
 (define-public r-biocversion
   (package
     (name "r-biocversion")
