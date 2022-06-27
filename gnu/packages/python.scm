@@ -150,6 +150,7 @@
                                 "python-2.7-adjust-tests.patch"
                                 "python-cross-compile.patch"
                                 "python-2.7-CVE-2021-3177.patch"
+                                "python-2.7-expat-compat.patch"
                                 "python-2.7-no-static-lib.patch"))
        (modules '((guix build utils)))
        (snippet

@@ -1,0 +1,59 @@
+Fix test failure with newer Expat:
+
+  https://bugs.python.org/issue46811
+
+This is a backport of this upstream commit:
+
+  https://github.com/python/cpython/commit/2cae93832f46b245847bdc252456ddf7742ef45e
+
+diff --git a/Lib/test/test_minidom.py b/Lib/test/test_minidom.py
+index 2eb642395b..1793f9365d 100644
+--- a/Lib/test/test_minidom.py
++++ b/Lib/test/test_minidom.py
+@@ -6,12 +6,14 @@ from StringIO import StringIO
+ from test import support
+ import unittest
+ 
++import pyexpat
+ import xml.dom
+ import xml.dom.minidom
+ import xml.parsers.expat
+ 
+ from xml.dom.minidom import parse, Node, Document, parseString
+ from xml.dom.minidom import getDOMImplementation
++from xml.parsers.expat import ExpatError
+ 
+ 
+ tstfile = support.findfile("test.xml", subdir="xmltestdata")
+@@ -1051,7 +1053,13 @@ class MinidomTest(unittest.TestCase):
+ 
+         # Verify that character decoding errors raise exceptions instead
+         # of crashing
+-        self.assertRaises(UnicodeDecodeError, parseString,
++        if pyexpat.version_info >= (2, 4, 5):
++            self.assertRaises(ExpatError, parseString,
++                    b'<fran\xe7ais></fran\xe7ais>')
++            self.assertRaises(ExpatError, parseString,
++                    b'<franais>Comment \xe7a va ? Tr\xe8s bien ?</franais>')
++        else:
++            self.assertRaises(UnicodeDecodeError, parseString,
+                 '<fran\xe7ais>Comment \xe7a va ? Tr\xe8s bien ?</fran\xe7ais>')
+ 
+         doc.unlink()
+diff --git a/Lib/test/test_xml_etree.py b/Lib/test/test_xml_etree.py
+index c75d55f05c..0855bc07ca 100644
+--- a/Lib/test/test_xml_etree.py
++++ b/Lib/test/test_xml_etree.py
+@@ -1482,12 +1482,6 @@ class BugsTest(unittest.TestCase):
+                 b"<?xml version='1.0' encoding='ascii'?>\n"
+                 b'<body>t&#227;g</body>')
+ 
+-    def test_issue3151(self):
+-        e = ET.XML('<prefix:localname xmlns:prefix="${stuff}"/>')
+-        self.assertEqual(e.tag, '{${stuff}}localname')
+-        t = ET.ElementTree(e)
+-        self.assertEqual(ET.tostring(e), b'<ns0:localname xmlns:ns0="${stuff}" />')
+-
+     def test_issue6565(self):
+         elem = ET.XML("<body><tag/></body>")
+         self.assertEqual(summarize_list(elem), ['tag'])
