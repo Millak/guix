@@ -10,7 +10,7 @@
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2021, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.counoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -190,45 +190,48 @@ markup) can be customized and extended by the user.")
     (version "1.9.4")
     (home-page "https://www.doxygen.nl/")
     (source (origin
-             (method url-fetch)
-             (uri (list (string-append home-page "files/doxygen-"
-                                       version ".src.tar.gz")
-                        (string-append "mirror://sourceforge/doxygen/rel-"
-                                       version "/doxygen-" version
-                                       ".src.tar.gz")))
-             (sha256
-              (base32
-               "0dqzgci82z950pzg6cpxvvqwybi2031flml3pj47hayhq3c9qpm1"))))
+              (method url-fetch)
+              (uri (list (string-append home-page "files/doxygen-"
+                                        version ".src.tar.gz")
+                         (string-append "mirror://sourceforge/doxygen/rel-"
+                                        version "/doxygen-" version
+                                        ".src.tar.gz")))
+              (sha256
+               (base32
+                "0dqzgci82z950pzg6cpxvvqwybi2031flml3pj47hayhq3c9qpm1"))))
     (build-system cmake-build-system)
     (native-inputs
-     (list bison flex libxml2 ;provides xmllint for the tests
-           python))             ;for creating the documentation
+     (list bison
+           flex
+           libxml2                      ;provides xmllint for the tests
+           python))                     ;for creating the documentation
     (inputs
-     `(("bash" ,bash-minimal)))
+     (list bash-minimal))
     (arguments
      ;; Force cmake to use iconv header from cross-libc instead of the one
      ;; from native libc.
-     `(,@(if (%current-target-system)
-             '(#:configure-flags
-               (list (string-append "-DICONV_INCLUDE_DIR="
-                                    (assoc-ref %build-inputs "cross-libc")
-                                    "/include")))
-             '())
-       #:test-target "tests"
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'disable-bibtex-test
-                    (lambda _
-                      ;; Disable test that requires bibtex to avoid a
-                      ;; circular dependency.
-                      (for-each delete-file-recursively
-                                '("testing/012" "testing/012_cite.dox"))))
-                  (add-before 'configure 'patch-sh
-                              (lambda* (#:key inputs #:allow-other-keys)
-                                (substitute* "src/portable.cpp"
-                                  (("/bin/sh")
-                                   (string-append
-                                    (assoc-ref inputs "bash") "/bin/sh")))
-                                #t)))))
+     (list
+      #:configure-flags
+      (if (%current-target-system)
+          #~(list (string-append "-DICONV_INCLUDE_DIR="
+                                 (assoc-ref %build-inputs "cross-libc")
+                                 "/include"))
+          #~'())
+      #:test-target "tests"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-bibtex-test
+            (lambda _
+              ;; Disable test that requires bibtex to avoid a
+              ;; circular dependency.
+              (for-each delete-file-recursively
+                        '("testing/012" "testing/012_cite.dox"))))
+          (add-before 'configure 'patch-sh
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((/bin/sh (search-input-file inputs "/bin/sh")))
+                (substitute* "src/portable.cpp"
+                  (("/bin/sh")
+                   /bin/sh))))))))
     (synopsis "Generate documentation from annotated sources")
     (description "Doxygen is the de facto standard tool for generating
 documentation from annotated C++ sources, but it also supports other popular
