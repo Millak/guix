@@ -887,7 +887,7 @@
            glib
            gtk+
            harfbuzz-3.0
-           icu4c-71
+           icu4c
            jsoncpp
            lcms
            libevent
