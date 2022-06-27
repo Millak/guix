@@ -370,26 +370,26 @@ applications.")
                         (("\\[ 'test-harfbuzz'.*") "")))))))
     (propagated-inputs
      ;; These are all in Requires or Requires.private of the '.pc' files.
-     `(("cairo" ,cairo)
-       ("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("fribidi" ,fribidi)
-       ("glib" ,glib)
-       ("harfbuzz" ,harfbuzz)
-       ("libthai" ,libthai)
-       ;; Some packages, such as Openbox, expect Pango to be built with the
-       ;; optional libxft support.
-       ("libxft" ,libxft)
-       ("libxrender" ,libxrender)))
+     (list cairo
+           fontconfig
+           freetype
+           fribidi
+           glib
+           harfbuzz
+           libthai
+           ;; Some packages, such as Openbox, expect Pango to be built with the
+           ;; optional libxft support.
+           libxft
+           libxrender))
     (inputs
      (list bash-minimal zlib))
     (native-inputs
-     `(("glib" ,glib "bin")                             ; glib-mkenums, etc.
-       ("gobject-introspection" ,gobject-introspection) ; g-ir-compiler, etc.
-       ("help2man" ,help2man)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)))
+     (list `(,glib "bin")               ;glib-mkenums, etc.
+           gobject-introspection        ;g-ir-compiler, etc.
+           help2man
+           perl
+           pkg-config
+           python-wrapper))
     (synopsis "Text and font handling library")
     (description "Pango is a library for laying out and rendering of text, with
 an emphasis on internationalization.  Pango can be used anywhere that text
