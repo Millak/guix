@@ -181,6 +181,7 @@ binary extension of XML for the purpose of storing and manipulating data in a
 hierarchical form with variable field lengths.")
     (license license:lgpl2.1)))
 
+;; Note: Remember to check python-libxml2 when updating this package.
 (define-public libxml2
   (package
     (name "libxml2")
@@ -251,6 +252,35 @@ project (but it is usable outside of the Gnome platform).")
 provides an @code{--xpath0} option to @command{xmllint} that enables it
 to output XPath results with a null delimiter.")))
 
+(define-public python-libxml2
+  (package/inherit libxml2
+    (name "python-libxml2")
+    (source (origin
+              (inherit (package-source libxml2))
+              (patches
+                (append (search-patches "python-libxml2-utf8.patch")
+                        (origin-patches (package-source libxml2))))))
+    (build-system python-build-system)
+    (outputs '("out"))
+    (arguments
+     `(;; XXX: Tests are specified in 'Makefile.am', but not in 'setup.py'.
+       #:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-before
+          'build 'configure
+          (lambda* (#:key inputs #:allow-other-keys)
+            (chdir "python")
+            (let ((glibc   (assoc-ref inputs ,(if (%current-target-system)
+                                                  "cross-libc" "libc")))
+                  (libxml2 (assoc-ref inputs "libxml2")))
+              (substitute* "setup.py"
+                ;; For libxml2 headers.
+                (("/opt/include")
+                 (string-append libxml2 "/include")))))))))
+    (inputs `(("libxml2" ,libxml2)))
+    (synopsis "Python bindings for the libxml2 library")))
+
 (define-public libxlsxwriter
   (package
     (name "libxlsxwriter")
@@ -292,35 +322,6 @@ to output XPath results with a null delimiter.")))
 formulas and hyperlinks to multiple worksheets in an Excel 2007+ XLSX file.")
     (license (list license:bsd-2
                    license:public-domain)))) ; third_party/md5
-
-(define-public python-libxml2
-  (package/inherit libxml2
-    (name "python-libxml2")
-    (source (origin
-              (inherit (package-source libxml2))
-              (patches
-                (append (search-patches "python-libxml2-utf8.patch")
-                        (origin-patches (package-source libxml2))))))
-    (build-system python-build-system)
-    (outputs '("out"))
-    (arguments
-     `(;; XXX: Tests are specified in 'Makefile.am', but not in 'setup.py'.
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-before
-          'build 'configure
-          (lambda* (#:key inputs #:allow-other-keys)
-            (chdir "python")
-            (let ((glibc   (assoc-ref inputs ,(if (%current-target-system)
-                                                  "cross-libc" "libc")))
-                  (libxml2 (assoc-ref inputs "libxml2")))
-              (substitute* "setup.py"
-                ;; For libxml2 headers.
-                (("/opt/include")
-                 (string-append libxml2 "/include")))))))))
-    (inputs `(("libxml2" ,libxml2)))
-    (synopsis "Python bindings for the libxml2 library")))
 
 (define-public libxslt
   (package
