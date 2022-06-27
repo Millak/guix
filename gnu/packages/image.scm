@@ -584,8 +584,8 @@ extracting icontainer icon files.")
                            "/share/doc/"
                            ,name "-" ,(package-version this-package))
             "--disable-static")))
-   (inputs `(("zlib" ,zlib)
-             ("libjpeg" ,libjpeg-turbo)))
+   (inputs
+    (list libjpeg-turbo zlib))
    (synopsis "Library for handling TIFF files")
    (description
     "Libtiff provides support for the Tag Image File Format (TIFF), a format
