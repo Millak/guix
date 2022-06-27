@@ -2498,6 +2498,44 @@ downstream analysis, such as differential gene expression or transcript
 usage.")
     (license license:gpl3)))
 
+(define-public r-bandits
+  (package
+    (name "r-bandits")
+    (version "1.12.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "BANDITS" version))
+              (sha256
+               (base32
+                "1423djb7cij68y0q2dcp8q7lrcn2fxjn6d25v4qy3w00b2w8ppg9"))))
+    (properties `((upstream-name . "BANDITS")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biocparallel
+           r-data-table
+           r-doparallel
+           r-dorng
+           r-drimseq
+           r-foreach
+           r-ggplot2
+           r-mass
+           r-r-utils
+           r-rcpp
+           r-rcpparmadillo))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/SimoneTiberi/BANDITS")
+    (synopsis "Bayesian analysis of differential splicing")
+    (description
+     "BANDITS is a Bayesian hierarchical model for detecting differential
+splicing of genes and transcripts, via @dfn{DTU} (differential transcript
+usage), between two or more conditions.  The method uses a Bayesian
+hierarchical framework, which allows for sample specific proportions in a
+Dirichlet-Multinomial model, and samples the allocation of fragments to the
+transcripts.  Parameters are inferred via @dfn{MCMC} (Markov chain Monte
+Carlo) techniques and a DTU test is performed via a multivariate Wald test on
+the posterior densities for the average relative abundance of transcripts.")
+    (license license:gpl3+)))
+
 (define-public r-biocversion
   (package
     (name "r-biocversion")
