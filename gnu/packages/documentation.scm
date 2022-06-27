@@ -187,7 +187,7 @@ markup) can be customized and extended by the user.")
 (define-public doxygen
   (package
     (name "doxygen")
-    (version "1.9.1")
+    (version "1.9.4")
     (home-page "https://www.doxygen.nl/")
     (source (origin
              (method url-fetch)
@@ -198,7 +198,7 @@ markup) can be customized and extended by the user.")
                                        ".src.tar.gz")))
              (sha256
               (base32
-               "1lcif1qi20gf04qyjrx7x367669g17vz2ilgi4cmamp1whdsxbk7"))))
+               "0dqzgci82z950pzg6cpxvvqwybi2031flml3pj47hayhq3c9qpm1"))))
     (build-system cmake-build-system)
     (native-inputs
      (list bison flex libxml2 ;provides xmllint for the tests
