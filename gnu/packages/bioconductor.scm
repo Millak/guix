@@ -2455,6 +2455,49 @@ files.  The whole genome may be considered as well as a set of target regions.
 Various visual and textual types of output are available.")
     (license license:lgpl3)))
 
+(define-public r-bambu
+  (package
+    (name "r-bambu")
+    (version "2.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "bambu" version))
+              (sha256
+               (base32
+                "0dc2hpnykr575jbrq9whmdabknl70s2hcs6gkmkl4kpv7xfqdq6w"))))
+    (properties `((upstream-name . "bambu")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biocgenerics
+           r-biocparallel
+           r-bsgenome
+           r-data-table
+           r-dplyr
+           r-genomeinfodb
+           r-genomicalignments
+           r-genomicfeatures
+           r-genomicranges
+           r-iranges
+           r-rcpp
+           r-rcpparmadillo
+           r-rsamtools
+           r-s4vectors
+           r-summarizedexperiment
+           r-tidyr
+           r-xgboost))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/GoekeLab/bambu")
+    (synopsis
+     "Isoform reconstruction and quantification for long read RNA-Seq data")
+    (description
+     "This R package is for multi-sample transcript discovery and
+quantification using long read RNA-Seq data.  You can use bambu after read
+alignment to obtain expression estimates for known and novel transcripts and
+genes.  The output from bambu can directly be used for visualisation and
+downstream analysis, such as differential gene expression or transcript
+usage.")
+    (license license:gpl3)))
+
 (define-public r-biocversion
   (package
     (name "r-biocversion")
