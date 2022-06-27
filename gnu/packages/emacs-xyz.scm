@@ -18887,7 +18887,7 @@ automatically fetched from well-curated sources, and formatted as BibTeX.")
 (define-public emacs-citar
   (package
     (name "emacs-citar")
-    (version "0.9")
+    (version "0.9.5")
     (source
      (origin
        (method git-fetch)
@@ -18896,7 +18896,7 @@ automatically fetched from well-curated sources, and formatted as BibTeX.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15jhpl2j4rm97cvvqzlfzxarvxvcsg64raz068psrsd2y7y2zh4c"))))
+        (base32 "04asi5gr4p1d8llra3qwly2jp1ll3zs0hjcysrrvdcax0jcr473b"))))
     (build-system emacs-build-system)
     (arguments
      `(#:phases
@@ -18904,7 +18904,7 @@ automatically fetched from well-curated sources, and formatted as BibTeX.")
          (add-before 'build 'set-home
            (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
-     (list emacs-auctex emacs-org emacs-parsebib emacs-s))
+     (list emacs-auctex emacs-citeproc-el emacs-org emacs-parsebib emacs-s))
     (home-page "https://github.com/bdarcus/citar")
     (synopsis "Emacs package to quickly find and act on bibliographic entries")
     (description
