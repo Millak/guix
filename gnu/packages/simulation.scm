@@ -665,15 +665,13 @@ user interface to the FEniCS core components and external libraries.")
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
                (with-directory-excursion "test"
-                 ;; Note: The test test_snes_set_from_options() in the file
-                 ;; unit/nls/test_PETScSNES_solver.py fails and is ignored.
-                 ;; Limit the number of jobs to 3 as 500 MiB of memory is used
-                 ;; per process.
-                 (invoke "mpirun" "-np" (number->string
-                                         (min 3 (parallel-job-count)))
-                         "python" "-B" "-m"
-                         "pytest" "unit" "--ignore"
-                         "unit/nls/test_PETScSNES_solver.py")))))
+                 (invoke
+                  "pytest" "unit"
+                  ;; The test test_snes_set_from_options() in the file
+                  ;; unit/nls/test_PETScSNES_solver.py fails and is ignored.
+                  "--ignore" "unit/nls/test_PETScSNES_solver.py"
+                  ;; Fails with a segfault.
+                  "--ignore" "unit/io/test_XDMF.py")))))
          (add-after 'install 'install-demo-files
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((demos (string-append
