@@ -564,15 +564,15 @@ extracting icontainer icon files.")
 (define-public libtiff
   (package
    (name "libtiff")
-   (version "4.3.0")
+   (version "4.4.0")
    (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.osgeo.org/libtiff/tiff-"
-                           version ".tar.gz"))
+                           version ".tar.xz"))
        (sha256
         (base32
-         "1j3snghqjbhwmnm5vz3dr1zm68dj15mgbx1wqld7vkl7n2nfaihf"))))
+         "1h8xrcpbyf9id2hw2ms0cmpgx0li8gladjzj82ycgk28018pnc29"))))
    (build-system gnu-build-system)
    (outputs '("out"
               "doc"))                           ;1.8 MiB of HTML documentation
