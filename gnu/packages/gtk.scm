@@ -345,7 +345,7 @@ applications.")
 (define-public pango
   (package
     (name "pango")
-    (version "1.48.10")
+    (version "1.50.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/pango/"
@@ -354,7 +354,7 @@ applications.")
               (patches (search-patches "pango-skip-libthai-test.patch"))
               (sha256
                (base32
-                "166wxhsjb6hb0dk7wkkdcmpvasl9n0a0aa64mdgagzfdidwzbq91"))))
+                "0cxdwfvr0rsw82nfqzp29mznlx84q2fri9lrfbgrbinlldlz6xq4"))))
     (build-system meson-build-system)
     (arguments
      '(#:glib-or-gtk? #t             ; To wrap binaries and/or compile schemas
@@ -398,22 +398,6 @@ context of the GTK+ widget toolkit.  Pango forms the core of text and font
 handling for GTK+-2.x.")
     (home-page "https://pango.gnome.org/")
     (license license:lgpl2.0+)))
-
-;; TODO: Make this the default package in next release cycle.
-(define-public pango-next
-  (package
-    (inherit pango)
-    (name "pango")
-    (version "1.50.4")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/pango/"
-                                  (version-major+minor version) "/"
-                                  name "-" version ".tar.xz"))
-              (patches (search-patches "pango-skip-libthai-test.patch"))
-              (sha256
-               (base32
-                "0qn1a7ccs3p5vc6swbqm6hdzka879l0gp9220lq4bcf2gpl67bgl"))))))
 
 (define-public pango-1.42
   (package
@@ -1234,7 +1218,7 @@ application suites.")
        ("libxkbcommon" ,libxkbcommon)
        ("libxrandr" ,libxrandr)
        ("libxrender" ,libxrender)
-       ("pango" ,pango-next)
+       ("pango" ,pango)
        ("vulkan-headers" ,vulkan-headers)
        ("vulkan-loader" ,vulkan-loader) ;for vulkan graphics API support
        ("wayland" ,wayland)             ;for wayland display-backend
@@ -1651,7 +1635,7 @@ library.")
        ("python" ,python)
        ("xsltproc" ,libxslt)))
     (propagated-inputs
-     (list cairo cairomm glibmm pango-next))
+     (list cairo cairomm glibmm pango))
     (home-page "https://pango.gnome.org//")
     (synopsis "C++ interface to the Pango text rendering library")
     (description
