@@ -594,6 +594,8 @@ Included are a library, libtiff, for reading and writing TIFF and a small
 collection of tools for doing simple manipulations of TIFF images.")
    (license (license:non-copyleft "file://COPYRIGHT"
                                   "See COPYRIGHT in the distribution."))
+   (properties
+    '((upstream-name . "tiff")))
    (home-page "http://www.simplesystems.org/libtiff/")))
 
 (define-public leptonica
