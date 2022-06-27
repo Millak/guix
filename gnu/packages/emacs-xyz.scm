@@ -2576,14 +2576,14 @@ directories or regex patterns.")
 (define-public emacs-bbdb
   (package
     (name "emacs-bbdb")
-    (version "3.2.1")
+    (version "3.2.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "bbdb-" version ".tar"))
        (sha256
-        (base32 "01vsnifs47krq1srgdkk9agbv3p2fykl9nydr4nrfjxbqpnyh3ij"))))
+        (base32 "0bf20r5xhxln6z4qp8zrlln0303dkci2ydsr74pxcj08aqgk5xxf"))))
     (build-system emacs-build-system)
     (arguments
      ;; XXX: The following file cannot be byte-compiled, because et requires
