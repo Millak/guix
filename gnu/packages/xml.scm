@@ -263,22 +263,22 @@ to output XPath results with a null delimiter.")))
     (build-system python-build-system)
     (outputs '("out"))
     (arguments
-     `(;; XXX: Tests are specified in 'Makefile.am', but not in 'setup.py'.
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-before
-          'build 'configure
-          (lambda* (#:key inputs #:allow-other-keys)
-            (chdir "python")
-            (let ((glibc   (assoc-ref inputs ,(if (%current-target-system)
-                                                  "cross-libc" "libc")))
-                  (libxml2 (assoc-ref inputs "libxml2")))
-              (substitute* "setup.py"
-                ;; For libxml2 headers.
-                (("/opt/include")
-                 (string-append libxml2 "/include")))))))))
-    (inputs `(("libxml2" ,libxml2)))
+     (list
+      ;; XXX: Tests are specified in 'Makefile.am', but not in 'setup.py'.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'configure
+            (lambda* (#:key inputs #:allow-other-keys)
+              (chdir "python")
+              (let ((libxml2-headers (search-input-directory
+                                      inputs "include/libxml2")))
+                (substitute* "setup.py"
+                  ;; The build system ignores C_INCLUDE_PATH & co, so
+                  ;; provide the absolute directory name.
+                  (("/opt/include")
+                   (dirname libxml2-headers)))))))))
+    (inputs (list libxml2))
     (synopsis "Python bindings for the libxml2 library")))
 
 (define-public libxlsxwriter
