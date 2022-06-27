@@ -22,7 +22,7 @@
 ;;; Copyright © 2017, 2019, 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Dave Love <me@fx@gnu.org>
-;;; Copyright © 2018, 2019, 2020, 2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2018, 2019, 2020, 2021, 2022 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018 Nadya Voronova <voronovank@gmail.com>
 ;;; Copyright © 2018 Adam Massmann <massmannak@gmail.com>
@@ -6089,15 +6089,17 @@ reduction.")
 (define-public mcrl2
   (package
     (name "mcrl2")
-    (version "202106.0")
+    (version "202206.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "https://www.mcrl2.org/download/release/mcrl2-"
                     version ".tar.gz"))
+              (patches (search-patches "mcrl2-fix-1687.patch"
+                                       "mcrl2-fix-counterexample.patch"))
               (sha256
                (base32
-                "1xgx3cd57vc7gbjic24j1q2za6j3ybz6nk4afvvpbwsf33xnlf4v"))))
+                "0alpck09pbvwk4axqmrvcjmsabsn20yayq5b3apq284n0hcbf01q"))))
     (inputs
      (list boost glu mesa qtbase-5))
     (build-system cmake-build-system)

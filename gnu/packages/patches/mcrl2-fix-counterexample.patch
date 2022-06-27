@@ -1,0 +1,32 @@
+Taken from upstream:
+    https://github.com/mCRL2org/mCRL2/commit/435421429dde9dcc5956e8a978597111a3947ec1
+
+Fixes bug in ltscompare:
+    https://listserver.tue.nl/pipermail/mcrl2-users/2022-June/000396.html
+
+From 435421429dde9dcc5956e8a978597111a3947ec1 Mon Sep 17 00:00:00 2001
+From: Maurice Laveaux <m.laveaux@tue.nl>
+Date: Wed, 29 Jun 2022 10:27:58 +0200
+Subject: [PATCH] Write counterexample's structured output trace on single
+ line.
+
+---
+ libraries/lts/include/mcrl2/lts/detail/counter_example.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/libraries/lts/include/mcrl2/lts/detail/counter_example.h b/libraries/lts/include/mcrl2/lts/detail/counter_example.h
+index c339cfde4..ca3967768 100644
+--- a/libraries/lts/include/mcrl2/lts/detail/counter_example.h
++++ b/libraries/lts/include/mcrl2/lts/detail/counter_example.h
+@@ -139,7 +139,7 @@ class counter_example_constructor
+       if (m_structured_output)
+       {
+         std::cout << m_name << ": ";
+-        result.save("", mcrl2::lts::trace::tfPlain);   // Write to stdout. 
++        result.save("", mcrl2::lts::trace::tfLine);   // Write to stdout.
+       }
+       else
+       {
+-- 
+2.35.1
+
