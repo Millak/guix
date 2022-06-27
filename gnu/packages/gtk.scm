@@ -243,41 +243,41 @@ output.  Experimental backends include OpenGL, BeOS, OS/2, and DirectFB.")
 
 (define-public harfbuzz
   (package
-   (name "harfbuzz")
-   (version "4.3.0")
-   (source (origin
-             (method url-fetch)
-             (uri (string-append "https://github.com/harfbuzz/harfbuzz"
-                                 "/releases/download/" version "/harfbuzz-"
-                                 version ".tar.xz"))
-             (sha256
-              (base32
-               "0c5mzwgz43d37h75p4b6cgjg4v24jdd96i7gjpgxirn8qks2i5m4"))))
-   (build-system gnu-build-system)
-   (outputs '("out"
-              "bin")) ; 160K, only hb-view depend on cairo
-   (inputs
-    (list cairo))
-   (propagated-inputs
-    ;; There are all in the Requires or Requires.private field of '.pc'.
-    (list glib graphite2 icu4c))
-   (native-inputs
-    `(("glib:bin" ,glib "bin")          ;for glib-mkenums
-      ("gobject-introspection" ,gobject-introspection)
-      ("pkg-config" ,pkg-config)
-      ("python" ,python-wrapper)
-      ("which" ,which)))
-   (arguments
-    `(#:configure-flags `("--with-graphite2"
-                          "--with-gobject"
-                          ,(string-append
-                            "--bindir=" (assoc-ref %outputs "bin") "/bin"))))
-   (synopsis "OpenType text shaping engine")
-   (description
-    "HarfBuzz is an OpenType text shaping engine.")
-   (license (license:x11-style "file://COPYING"
-                       "See 'COPYING' in the distribution."))
-   (home-page "https://www.freedesktop.org/wiki/Software/HarfBuzz/")))
+    (name "harfbuzz")
+    (version "4.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/harfbuzz/harfbuzz"
+                                  "/releases/download/" version "/harfbuzz-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "0c5mzwgz43d37h75p4b6cgjg4v24jdd96i7gjpgxirn8qks2i5m4"))))
+    (build-system gnu-build-system)
+    (outputs '("out"
+               "bin"))                  ;160K, only hb-view depend on cairo
+    (inputs
+     (list cairo))
+    (propagated-inputs
+     ;; There are all in the Requires or Requires.private field of '.pc'.
+     (list glib graphite2 icu4c))
+    (native-inputs
+     (list `(,glib "bin")               ;for glib-mkenums
+           gobject-introspection
+           pkg-config
+           python-wrapper
+           which))
+    (arguments
+     `(#:configure-flags `("--with-graphite2"
+                           "--with-gobject"
+                           ,(string-append
+                             "--bindir=" (assoc-ref %outputs "bin") "/bin"))))
+    (synopsis "OpenType text shaping engine")
+    (description
+     "HarfBuzz is an OpenType text shaping engine.")
+    (license (license:x11-style "file://COPYING"
+                                "See 'COPYING' in the distribution."))
+    (home-page "https://www.freedesktop.org/wiki/Software/HarfBuzz/")))
 
 (define-public libdatrie
   (package
