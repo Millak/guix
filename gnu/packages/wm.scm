@@ -1832,57 +1832,58 @@ Wayland compositors supporting the wlr-output-management protocol.")
        (sha256
         (base32 "12hf70mpwy0ixiyvv8sf8pkwrzz8nb12a8ybvsdpibsxfjxgxnan"))))
     (build-system asdf-build-system/sbcl)
-    (native-inputs `(("fiasco" ,sbcl-fiasco)
-                     ("texinfo" ,texinfo)
+    (native-inputs
+     (list sbcl-fiasco
+           texinfo
 
-                     ;; To build the manual.
-                     ("autoconf" ,autoconf)
-                     ("automake" ,automake)))
-    (inputs `(("cl-ppcre" ,sbcl-cl-ppcre)
-              ("clx" ,sbcl-clx)
-              ("alexandria" ,sbcl-alexandria)))
+           ;; To build the manual.
+           autoconf
+           automake))
+    (inputs
+     (list sbcl-alexandria
+           sbcl-cl-ppcre
+           sbcl-clx))
     (outputs '("out" "lib"))
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-tests
-           (lambda _
-             (substitute* "stumpwm-tests.asd"
-               (("\"ALL-TESTS\"")
-                "\"RUN-PACKAGE-TESTS\" :package"))))
-         (add-after 'create-asdf-configuration 'build-program
-           (lambda* (#:key outputs #:allow-other-keys)
-             (build-program
-              (string-append (assoc-ref outputs "out") "/bin/stumpwm")
-              outputs
-              #:entry-program '((stumpwm:stumpwm) 0))))
-         (add-after 'build-program 'create-desktop-file
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (xsessions (string-append out "/share/xsessions")))
-               (mkdir-p xsessions)
-               (call-with-output-file
-                   (string-append xsessions "/stumpwm.desktop")
-                 (lambda (file)
-                   (format file
-                    "[Desktop Entry]~@
-                     Name=stumpwm~@
-                     Comment=The Stump Window Manager~@
-                     Exec=~a/bin/stumpwm~@
-                     TryExec=~@*~a/bin/stumpwm~@
-                     Icon=~@
-                     Type=Application~%"
-                    out)))
-               #t)))
-         (add-after 'install 'install-manual
-           (lambda* (#:key (make-flags '()) outputs #:allow-other-keys)
-             (let* ((out  (assoc-ref outputs "out"))
-                    (info (string-append out "/share/info")))
-               (invoke "./autogen.sh")
-               (invoke "sh" "./configure" "SHELL=sh")
-               (apply invoke "make" "stumpwm.info" make-flags)
-               (install-file "stumpwm.info" info)
-               #t))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-tests
+            (lambda _
+              (substitute* "stumpwm-tests.asd"
+                (("\"ALL-TESTS\"")
+                 "\"RUN-PACKAGE-TESTS\" :package"))))
+          (add-after 'create-asdf-configuration 'build-program
+            (lambda* (#:key outputs #:allow-other-keys)
+              (build-program
+               (string-append (assoc-ref outputs "out") "/bin/stumpwm")
+               outputs
+               #:entry-program '((stumpwm:stumpwm) 0))))
+          (add-after 'build-program 'create-desktop-file
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (xsessions (string-append out "/share/xsessions")))
+                (mkdir-p xsessions)
+                (call-with-output-file
+                    (string-append xsessions "/stumpwm.desktop")
+                  (lambda (file)
+                    (format file
+                     "[Desktop Entry]~@
+                      Name=stumpwm~@
+                      Comment=The Stump Window Manager~@
+                      Exec=~a/bin/stumpwm~@
+                      TryExec=~@*~a/bin/stumpwm~@
+                      Icon=~@
+                      Type=Application~%"
+                     out))))))
+          (add-after 'install 'install-manual
+            (lambda* (#:key (make-flags '()) outputs #:allow-other-keys)
+              (let* ((out  (assoc-ref outputs "out"))
+                     (info (string-append out "/share/info")))
+                (invoke "./autogen.sh")
+                (invoke "sh" "./configure" "SHELL=sh")
+                (apply invoke "make" "stumpwm.info" make-flags)
+                (install-file "stumpwm.info" info)))))))
     (synopsis "Window manager written in Common Lisp")
     (description "Stumpwm is a window manager written entirely in Common Lisp.
 It attempts to be highly customizable while relying entirely on the keyboard
