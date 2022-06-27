@@ -38,6 +38,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
@@ -423,15 +424,7 @@ in which the loaded data is arranged in memory.")
               (sha256
                (base32
                 "06zss7z56ykzwcsfdxarmini63hkf8i8gx70q3yw9wb0bw7wj9rv"))))
-    (build-system cmake-build-system)
-    (arguments
-     `(#:configure-flags '("-DBUILD_SHARED_LIBS:BOOL=YES"
-                           ,@(if (%current-target-system)
-                                 `("-DJSONCPP_WITH_POST_BUILD_UNITTEST=OFF")
-                                 '()))
-       ,@(if (%current-target-system)
-             '()
-             `(#:cmake ,cmake-bootstrap))))
+    (build-system meson-build-system)
     (synopsis "C++ library for interacting with JSON")
     (description "JsonCpp is a C++ library that allows manipulating JSON values,
 including serialization and deserialization to and from strings.  It can also
