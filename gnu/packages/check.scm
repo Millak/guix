@@ -7,7 +7,7 @@
 ;;; Copyright © 2015, 2017 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2015, 2016, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015, 2016, 2018-2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016, 2017 Danny Milosavljevic <dannym+a@scratchpost.org>
@@ -2068,14 +2068,14 @@ programs, something like CSmith, a random generator of C programs.")
 (define-public python-lit
   (package
     (name "python-lit")
-    (version "12.0.1")
+    (version "14.0.3")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "lit" version))
         (sha256
          (base32
-          "01yggsb73s2gbq36xwifxl6k5ll5lkss5rwz59k9h3jnbnn7m5fj"))))
+          "162x7pddwl395c3mdb0mfn3f5z24x1jz6g27x303lfxpzidnn4m4"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
