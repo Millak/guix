@@ -2724,7 +2724,7 @@ is set.")
 (define-public emacs-ctrlf
   (package
     (name "emacs-ctrlf")
-    (version "1.4")
+    (version "1.5")
     (source
      (origin
        (method git-fetch)
@@ -2733,7 +2733,7 @@ is set.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04w708g7d1pnsc18h8fjyqkhk08jkq853alaidriamxyycvdwk0i"))))
+        (base32 "1nd1yk86s0dyf87q77dg724f6629p270q3ar85jgp8gclw5plvyz"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/raxod502/ctrlf/")
     (synopsis "Single-buffer text search in Emacs")
