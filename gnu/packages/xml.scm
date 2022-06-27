@@ -316,12 +316,9 @@ formulas and hyperlinks to multiple worksheets in an Excel 2007+ XLSX file.")
                                                   "cross-libc" "libc")))
                   (libxml2 (assoc-ref inputs "libxml2")))
               (substitute* "setup.py"
-                ;; For 'libxml2/libxml/tree.h'.
-                (("ROOT = r'/usr'")
-                 (format #f "ROOT = r'~a'" libxml2))
-                ;; For 'iconv.h'.
+                ;; For libxml2 headers.
                 (("/opt/include")
-                 (string-append glibc "/include")))))))))
+                 (string-append libxml2 "/include")))))))))
     (inputs `(("libxml2" ,libxml2)))
     (synopsis "Python bindings for the libxml2 library")))
 
