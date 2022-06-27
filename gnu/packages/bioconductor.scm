@@ -2428,6 +2428,33 @@ variables in the model can be returned in the form of posterior samples, which
 can be used for further down-stream analyses such as gene set enrichment.")
     (license license:gpl2)))
 
+(define-public r-badregionfinder
+  (package
+    (name "r-badregionfinder")
+    (version "1.24.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "BadRegionFinder" version))
+              (sha256
+               (base32
+                "1a1pqmh5ak9s3k1lxw6flanchk24zyznwm34ixi2b78wdc3hqgm9"))))
+    (properties `((upstream-name . "BadRegionFinder")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biomart
+           r-genomicranges
+           r-rsamtools
+           r-s4vectors
+           r-variantannotation))
+    (home-page "https://bioconductor.org/packages/BadRegionFinder")
+    (synopsis "Identifying regions with bad coverage in sequence alignment data")
+    (description
+     "BadRegionFinder is a package for identifying regions with a bad,
+acceptable and good coverage in sequence alignment data available as bam
+files.  The whole genome may be considered as well as a set of target regions.
+Various visual and textual types of output are available.")
+    (license license:lgpl3)))
+
 (define-public r-biocversion
   (package
     (name "r-biocversion")
