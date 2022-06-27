@@ -9,6 +9,7 @@
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Jean-Pierre De Jesus DIAZ <me@jeandudey.tech>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -119,10 +120,11 @@
                 (("@INTROSPECTION_TYPELIBDIR@")
                  (string-append out "/lib/girepository-1.0/"))))))
          (add-after 'unpack 'fix-manpage-generation
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((xsldoc (string-append (assoc-ref inputs "docbook-xsl")
-                                          "/xml/xsl/docbook-xsl-"
-                                          ,(package-version docbook-xsl))))
+           (lambda* (#:key inputs native-inputs #:allow-other-keys)
+             (let ((xsldoc (string-append
+                             (assoc-ref (or native-inputs inputs) "docbook-xsl")
+                             "/xml/xsl/docbook-xsl-"
+                             ,(package-version docbook-xsl))))
                (substitute* '("docs/man/Makefile.am" "docs/man/Makefile.in")
                  (("http://docbook.sourceforge.net/release/xsl/current")
                   xsldoc)))))
