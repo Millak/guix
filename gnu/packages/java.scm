@@ -7908,6 +7908,40 @@ Commons CLI supports different types of options:
 This is a part of the Apache Commons Project.")
     (license license:asl2.0)))
 
+(define-public java-commons-text
+  (package
+    (name "java-commons-text")
+    (version "1.9")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://apache/commons/text/source/"
+                                  "commons-text-" version "-src.tar.gz"))
+              (sha256
+               (base32
+                "1k99ib2dxlqxb5y94kpzf4ix8xgxz1j3n9kq3ddssqqcccsp5ik2"))))
+    (build-system ant-build-system)
+    (arguments
+     (list #:jar-name "java-commons-text.jar"
+           #:source-dir "src/main/java"
+           #:test-dir "src/test"
+           #:tests? #f                  ; Tests require JUnit5.
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'install
+                 (install-from-pom "pom.xml")))))
+    (inputs
+     (list java-commons-io))
+    (propagated-inputs
+     (list java-commons-lang3
+           apache-commons-parent-pom-51))
+    (home-page "https://commons.apache.org/text/")
+    (synopsis "Library focused on algorithms working on strings")
+    (description "Apache Commons Text is a library focused on algorithms
+working on strings.
+
+This is a part of the Apache Commons Project.")
+    (license license:asl2.0)))
+
 (define-public java-commons-codec
   (package
     (name "java-commons-codec")

@@ -81,7 +81,10 @@
                          (names (map string->symbol
                                      (string-tokenize arg not-comma))))
                     (alist-cons 'updaters names result))))
-        (option '(#\L "list-updaters") #f #f
+        (find (lambda (option)
+                (member "load-path" (option-names option)))
+              %standard-build-options)
+        (option '("list-updaters") #f #f
                 (lambda args
                   (list-updaters-and-exit)))
         (option '(#\m "manifest") #t #f
@@ -119,19 +122,6 @@
                      (leave (G_ "unsupported policy: ~a~%")
                             arg)))))
 
-        ;; The short option -L is already used by --list-updaters, therefore
-        ;; it needs to be removed from %standard-build-options.
-        (let ((load-path-option (find (lambda (option)
-                                         (member "load-path"
-                                                 (option-names option)))
-                                       %standard-build-options)))
-          (option
-           (filter (lambda (name) (not (equal? #\L name)))
-                   (option-names load-path-option))
-           (option-required-arg? load-path-option)
-           (option-optional-arg? load-path-option)
-           (option-processor     load-path-option)))
-
         (option '(#\h "help") #f #f
                 (lambda args
                   (show-help)
@@ -160,7 +150,7 @@ specified with `--select'.\n"))
   -t, --type=UPDATER,... restrict to updates from the specified updaters
                          (e.g., 'gnu')"))
   (display (G_ "
-  -L, --list-updaters    list available updaters and exit"))
+      --list-updaters    list available updaters and exit"))
   (display (G_ "
   -l, --list-dependent   list top-level dependent packages that would need to
                          be rebuilt as a result of upgrading PACKAGE..."))
@@ -182,7 +172,7 @@ specified with `--select'.\n"))
                          used when 'key-download' is not specified"))
   (newline)
   (display (G_ "
-      --load-path=DIR    prepend DIR to the package module search path"))
+  -L, --load-path=DIR    prepend DIR to the package module search path"))
   (newline)
   (display (G_ "
   -h, --help             display this help and exit"))

@@ -17,6 +17,7 @@
 ;;; Copyright © 2021 Attila Lendvai <attila@lendvai.name>
 ;;; Copyright © 2021 Charles Jackson <charles.b.jackson@protonmail.com>
 ;;; Copyright © 2022 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2022 Sughosha <sughosha@proton.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -984,6 +985,102 @@ animation of closing windowed applications.")
     (description "Blur My Shell adds a blur look to different parts of the
 GNOME Shell, including the top panel, dash and overview.")
     (license license:gpl3)))
+
+(define-public gnome-shell-extension-radio
+  (package
+    (name "gnome-shell-extension-radio")
+    (version "19")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url
+                     "https://github.com/hslbck/gnome-shell-extension-radio")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1qsi6c57hxh4jqdw18knm06601lhag6jdbvzg0r79aa9572zy8a0"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan #~'(("radio@hslbck.gmail.com"
+                          "/share/gnome-shell/extensions/"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'glib-compile-schemas
+            (lambda _
+              (invoke "glib-compile-schemas"
+                      "radio@hslbck.gmail.com/schemas"))))))
+    (native-inputs (list `(,glib "bin")))
+    (home-page "https://github.com/hslbck/gnome-shell-extension-radio")
+    (synopsis "Internet radio for GNOME Shell")
+    (description "This extension implements an internet radio player
+directly inside GNOME Shell.  It can manage stations and play streams.")
+    (license license:gpl3+)))
+
+(define-public gnome-shell-extension-sound-output-device-chooser
+  (package
+    (name "gnome-shell-extension-sound-output-device-chooser")
+    (version "43")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kgshank/gse-sound-output-device-chooser")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1qk6ypyqbv8zwwlky6cgk9hgp1zh32jmzw4wza200g4v94ifkwm9"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ; no check target
+      #:make-flags #~(list (string-append "INSTALL_DIR="
+                                          #$output
+                                          "/share/gnome-shell/extensions"))
+      #:phases
+      #~(modify-phases %standard-phases (delete 'configure))))
+    (native-inputs (list gettext-minimal `(,glib "bin")))
+    (inputs (list python))
+    (home-page
+     "https://extensions.gnome.org/extension/906/sound-output-device-chooser")
+    (synopsis "Sound output chooser for GNOME Shell")
+    (description "This extension shows a list of sound output and input devices
+in the status menu below the volume slider.  Various active ports like HDMI,
+Speakers etc. of the same device are also displayed for selection.")
+    (license license:gpl3+)))
+
+(define-public gnome-shell-extension-transparent-window
+  (let ((commit "cc9bc70c192dd565fa6f1d1b28d9a20f99684f2a")
+        (revision "45"))
+    (package
+      (name "gnome-shell-extension-transparent-window")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url (string-append "https://github.com/pbxqdown/"
+                                   "gnome-shell-extension-transparent-window"))
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1f9iqqjpmmylqz0ws8cy5rs475bwzi7jy44q9ip44ig2acz2wxzp"))))
+      (build-system copy-build-system)
+      (arguments
+       (list
+        #:install-plan
+        #~'(("."
+             #$(string-append "/share/gnome-shell/extensions"
+                              "/transparent-window@pbxqdown.github.com")))))
+      (home-page
+       "https://github.com/pbxqdown/gnome-shell-extension-transparent-window")
+      (synopsis "Change the opacity of windows in GNOME Shell")
+      (description "This extension adds keybindings to change the opacity
+of windows.")
+      (license license:expat))))
 
 (define-public arc-theme
   (package

@@ -12666,3 +12666,100 @@ into Money objects.")
     (description "This package provides a gem that calculates the exchange rate
 using published rates from open-exchange-rates.  Compatible with the money gem.")
     (license license:expat)))
+
+(define-public ruby-roda
+  (package
+    (name "ruby-roda")
+    (version "3.57.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "roda" version))
+        (sha256
+          (base32 "0nkfxnbcfnriywvx9kpamp850cwjmqv8ssajc95d0aiyjr4kdrfy"))))
+    (build-system ruby-build-system)
+    (arguments
+     ;; No rakefile
+     `(#:tests? #f))
+    (propagated-inputs (list ruby-rack))
+    (home-page "http://roda.jeremyevans.net")
+    (synopsis "Routing Tree Web Toolkit")
+    (description "Roda is a routing tree web toolkit, designed for building fast
+and maintainable web applications in ruby.")
+    (license license:expat)))
+
+(define-public ruby-nori
+  (package
+    (name "ruby-nori")
+    (version "2.6.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "nori" version))
+        (sha256
+          (base32 "066wc774a2zp4vrq3k7k8p0fhv30ymqmxma1jj7yg5735zls8agn"))))
+    (build-system ruby-build-system)
+    (arguments
+     ;; Tests require too old version of rspec
+     `(#:tests? #f))
+    (native-inputs
+     (list ruby-nokogiri
+            ruby-rake
+            ruby-rspec))
+    (home-page "https://github.com/savonrb/nori")
+    (synopsis "XML to Hash translator")
+    (description "Nori is a simple XML parsing ripped from Crack which in-turn
+ripped from Merb.  It supports pluggable parsers and ships with both REXML and
+Nokogiri implementations.")
+    (license license:expat)))
+
+(define-public ruby-faraday-middleware
+  (package
+    (name "ruby-faraday-middleware")
+    (version "1.2.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "faraday_middleware" version))
+        (sha256
+          (base32 "1bw8mfh4yin2xk7138rg3fhb2p5g2dlmdma88k82psah9mbmvlfy"))))
+    (build-system ruby-build-system)
+    (arguments
+     ;; No rakefile
+     `(#:tests? #f))
+    (propagated-inputs
+     (list ruby-faraday))
+    (home-page "https://github.com/lostisland/faraday_middleware")
+    (synopsis "Various middleware for Faraday")
+    (description "Faraday_Middleware is a collection of middleware for the
+Faraday-based API wrappers.")
+    (license license:expat)))
+
+(define-public ruby-bandwidth-iris
+  (package
+    (name "ruby-bandwidth-iris")
+    (version "5.1.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "ruby-bandwidth-iris" version))
+        (sha256
+          (base32 "1hmrxs0dif6fw5npyzcshk4nq9qr2kbmnx7mdjr5v1nhzlfr0678"))))
+    (build-system ruby-build-system)
+    (arguments
+     ;; XXX: Tests don't require helper for some reason, so all fail.
+     `(#:tests? #f))
+    (native-inputs
+     (list ruby-rspec
+            ruby-yard))
+    (propagated-inputs
+     (list ruby-activesupport
+            ruby-builder
+            ruby-faraday
+            ruby-faraday-middleware
+            ruby-nori))
+    (home-page "https://github.com/Bandwidth/ruby-bandwidth-iris")
+    (synopsis "Gem for integrating to Bandwidth's Iris API")
+    (description "Bandwidth IRIS is a Ruby SDK for Bandwidth Phone Number
+Dashboard.  It is a Ruby Client library for IRIS / BBS API.")
+    (license license:expat)))

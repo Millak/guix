@@ -468,6 +468,8 @@ builder does not support SVG images natively (e.g. LaTeX).")
     (arguments
      ;; FIXME: Tests depend on Sphinx, which depends on this.
      `(#:tests? #f))
+    (propagated-inputs
+     (list python-sphinxcontrib-serializinghtml))
     (home-page "https://sphinx-doc.org/")
     (synopsis "Sphinx API for web applications")
     (description
@@ -717,14 +719,14 @@ and several other projects.")
 (define-public python-breathe
   (package
     (name "python-breathe")
-    (version "4.30.0")
+    (version "4.34.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "breathe" version))
        (sha256
         (base32
-         "055h95fkdld7s49878fqjx1nri1drj1czc184vrb7i60mf2yqg9n"))))
+         "18fvphs1cb2cns9q82195fx7lmlwfikzwa10cczavpaax2jnh1xc"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-docutils python-sphinx))
@@ -817,7 +819,7 @@ enabled web server.")
 (define-public python-sphinx-autodoc-typehints
   (package
     (name "python-sphinx-autodoc-typehints")
-    (version "1.18.1")
+    (version "1.18.3")
     (source
      (origin
        (method git-fetch)               ;no tests in pypi archive
@@ -827,7 +829,7 @@ enabled web server.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "16yhpwfdmybir80a6892cnr98m58p19rklmjdlzhk3njx7di8jzp"))))
+         "049dlay21f4bccig31fkbzq2m8v0h6g63p1cn3dxay9q3h0mzgs0"))))
     (build-system python-build-system)
     (arguments
      (list

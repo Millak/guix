@@ -34,23 +34,34 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages avahi)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages crypto)
+  #:use-module (gnu packages cups)
   #:use-module (gnu packages curl)
+  #:use-module (gnu packages debian)
+  #:use-module (gnu packages disk)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages flex)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
+  #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages guile)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lxqt)
+  #:use-module (gnu packages package-management)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages networking)
   #:use-module (gnu packages openldap)
   #:use-module (gnu packages pciutils)
   #:use-module (gnu packages perl)
@@ -62,8 +73,12 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages scanner)
+  #:use-module (gnu packages security-token)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages video)
   #:use-module (gnu packages virtualization)
+  #:use-module (gnu packages vulkan)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml)
@@ -71,6 +86,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
   #:use-module (guix download)
   #:use-module (guix gexp)
@@ -83,7 +99,6 @@
 
 ;; This is a module for packages related to physical hardware that don't (yet)
 ;; have a more specific home like gps.scm, security-token.scm, &c.
-
 
 (define-public envytools
   (let ((commit "9014a51b1436461c7b3b005bdae72bf4912f4e72")
@@ -110,6 +125,195 @@
 drivers, including an assembler and a disassembler for several GPU instruction
 sets, and tools to deal with register databases.")
       (license license:expat))))
+
+(define-public hw-probe
+  (package
+    (name "hw-probe")
+    (version "1.6.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/linuxhw/hw-probe")
+         (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "028wnhrbn10lfxwmcpzdbz67ygldimv7z1k1bm64ggclykvg5aim"))))
+    (build-system perl-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no test suite
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-source
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              ;; Correct install prefix.
+              (substitute* "Makefile"
+                (("/usr") #$output))
+
+              (define preserve
+                ;; Either not available in Guix or better left untouched.
+                '("$HWInfoCmd" "$CurlCmd" "$NvidiaSmi_Path" ;perl variables
+                  "vblank_mode=0" "DRI_PRIME=1" ;environment variables
+                  "sha512"                      ;fall-back to sha512sum
+                  ;; hp-probe comes from the full 'hplib' package, which would
+                  ;; pull Qt and increase the size of the closure by 600 MiB.
+                  "hp-probe"
+
+                  ;; Android.
+                  "apk" "getprop"
+
+                  ;; BSD-related.
+                  "atactl" "acpiconf"
+                  "bsdhwmon" "camcontrol"
+                  "devinfo" "diskinfo" "disklabel"
+                  "freebsd-version" "ghostbsd-version"
+                  "hwstat" "kldstat" "mfiutil" "modstat" "mport"
+                  "ofwdump" "opnsense-version"
+                  "pcictl" "pcidump" "pciconf" "pkg" "pkg_info" "pkgin"
+                  "start-hello" "sysinfo" "usbconfig" "usbdevs"
+
+                  ;; Package managers.
+                  "eopkg" "pacman" "swupd"
+
+                  ;; Not packaged in Guix (TODO).
+                  "apm"                                      ;apmd
+                  "drm_info"                                 ;drm_info
+                  "megactl"                                  ;megactl
+                  "lspnp"                                    ;pnputils
+                  "lsb_release"                              ;lsb-release
+                  "lsinitrd"                                 ;dracut
+                  "optirun"                                  ;bumblebee
+                  "usbctl"                                   ;usbctl
+                  "monitor-get-edid"                         ;monitor-edid
+                  "journalctl" "systemctl" "systemd-analyze" ;systemd
+                  "superiotool"                              ;superiotool
+                  "x86info"                                  ;x86info
+
+                  ;; Other.
+                  "arcconf"               ;proprietary
+                  "config"                ;unknown origin (Linux-related)
+                  "dkms"                  ;unknown origin (Linux-related)
+                  "amdconfig" "fglrxinfo" ;proprietary/obsolete
+                  "geom"                  ;unknown origin
+                  "hciconfig" "hcitool"   ;deprecated from bluez
+                  "nm-tool"))           ;replaced by nmcli in network-manager
+
+              (substitute* "hw-probe.pl"
+                (("(check|find|run)Cmd\\(\"([^\" ]+)" _ prefix command)
+                 (string-append
+                  prefix "Cmd(\""
+                  (if (member command preserve)
+                      command
+                      (or (false-if-exception
+                           (search-input-file
+                            inputs (string-append "bin/" command)))
+                          (search-input-file
+                           inputs (string-append "sbin/" command))))))
+                (("(my \\$HWInfoCmd = \")hwinfo" _ head)
+                 (string-append head (search-input-file inputs "sbin/hwinfo")))
+                (("(my \\$CurlCmd = \")curl" _ head)
+                 (string-append head (search-input-file inputs "bin/curl")))
+                (("(\\$LsblkCmd = \")lsblk" _ head)
+                 (string-append head (search-input-file inputs "bin/lsblk")))
+                (("(\\$SmartctlCmd = \")smartctl" _ head)
+                 (string-append head (search-input-file inputs "sbin/smartctl")))
+                (("(my \\$FindmntCmd = \")findmnt" _ head)
+                 (string-append head (search-input-file inputs "bin/findmnt")))
+                (("(\\$DDCUtilCmd = \")ddcutil" _ head)
+                 (string-append head (search-input-file inputs "bin/ddcutil")))
+                (("(my \\$VaInfoCmd = \")vainfo" _ head)
+                 (string-append head (search-input-file inputs "bin/vainfo")))
+                (("(\\$CheckHddCmd = \")hdparm" _ head)
+                 (string-append head (search-input-file inputs "sbin/hdparm")))
+                (("(\\$USE_DIGEST_ALT = \")sha512sum" _ head)
+                 (string-append head (search-input-file inputs "bin/sha512sum"))))))
+          (delete 'configure)
+          (add-after 'install 'wrap
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (define hw-probe (search-input-file outputs "bin/hw-probe"))
+              ;; 'NeedProgs' core utilities are specially checked for
+              ;; availability.  It's easier to wrap them in PATH than patching
+              ;; their references.
+              ;; TODO: package edid-decode and add "bin/edid-decode" below:
+              (define need-progs (list "sbin/dmidecode" "sbin/smartctl"
+                                       "sbin/lspci" "bin/lsusb"))
+              (wrap-script hw-probe
+                (list "PERL5LIB" 'prefix (list (getenv "PERL5LIB")))
+                (list "PATH" 'prefix
+                      (map (lambda (command)
+                             (dirname (search-input-file inputs command)))
+                           need-progs))))))))
+    (inputs
+     (list acpi
+           acpica
+           alsa-utils
+           avahi
+           bash-minimal
+           coreutils
+           cpuid
+           cpupower
+           curl
+           ddcutil
+           dmidecode
+           dpkg
+           edid-decode
+           efibootmgr
+           efivar
+           ethtool
+           eudev
+           findutils
+           gpart
+           grep
+           guile-3.0                    ;for wrap-script
+           hddtemp
+           hdparm
+           i2c-tools
+           inxi
+           iproute
+           iw
+           libva-utils
+           lm-sensors
+           mcelog
+           memtester
+           mesa-utils
+           modem-manager
+           module-init-tools
+           neofetch
+           net-tools
+           network-manager
+           numactl
+           nvme-cli
+           opensc
+           openssl
+           p7zip
+           pciutils
+           perl-data-dumper
+           perl-digest-sha
+           perl-libwww
+           procps
+           psmisc                       ;for pstree
+           rpm
+           sane-backends
+           smartmontools
+           sysstat
+           upower
+           usbutils
+           util-linux
+           wireless-tools
+           vdpauinfo
+           vulkan-tools
+           xdpyinfo
+           xinput
+           xrandr
+           xvinfo))
+    (propagated-inputs (list hwinfo))
+    (home-page "https://linux-hardware.org")
+    (synopsis "Hardware Probe")
+    (description "Hardware Probe is a tool to probe for hardware, check its
+operability and find drivers.")
+    (license (list license:lgpl2.1+ license:bsd-4)))) ;dual-licensed
 
 (define-public hwinfo
   (package

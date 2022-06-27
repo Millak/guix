@@ -56,6 +56,7 @@
   #:use-module (gnu packages code)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages crates-io)
+  #:use-module (gnu packages datastructures)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
@@ -1215,3 +1216,53 @@ can be embedded in any application
 This package includes the @code{libtree-sitter} runtime library.
 ")
     (license license:expat)))
+
+(define-public mle
+  (package
+    (name "mle")
+    (version "1.5.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/adsr/mle")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1nhd00lsx9v12zdmps92magz76c2d8zzln3lxvzl4ng73gbvq3n0"))))
+    (build-system gnu-build-system)
+    (inputs (list lua pcre uthash))
+    (arguments
+     `(#:test-target "test"
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'fix-lua
+                    (lambda* (#:key inputs #:allow-other-keys)
+                      (substitute* "mle.h"
+                        (("<lua5.4/") "<"))
+                      (substitute* "Makefile"
+                        (("-llua5.4") "-llua")
+                        (("/bin/sh") (which "sh")))))
+                  (add-after 'unpack 'patch-test-shebangs
+                    (lambda _
+                      (substitute* (find-files "tests/func" "\\.sh$")
+                        (("/usr/bin/env bash") (which "bash")))))
+                  (delete 'configure) ;no configure script
+                  (add-after 'install 'install-man-pages
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out"))
+                             (man (string-append out
+                                                 "/share/man/man1")))
+                        (install-file "mle.1"
+                                      (string-append man))))))
+       #:make-flags (list (string-append "CC="
+                                         ,(cc-for-target))
+                          (string-append "prefix=" %output))))
+    (home-page "https://github.com/adsr/mle")
+    (synopsis "Small, flexible, terminal-based text editor")
+    (description
+     "mle is a small, flexible, terminal-based text editor written in C.
+Notable features include: full Unicode support, syntax highlighting,
+scriptable rc file, macros, search and replace (PCRE), window
+splitting, multiple cursors, and integration with various shell
+commands.")
+    (license license:asl2.0)))

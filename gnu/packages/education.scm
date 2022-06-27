@@ -579,7 +579,7 @@ a pen-tablet display and a beamer.")
 (define-public fet
   (package
     (name "fet")
-    (version "6.2.2")
+    (version "6.5.3")
     (source
      (origin
        (method url-fetch)
@@ -588,20 +588,21 @@ a pen-tablet display and a beamer.")
               (list (string-append directory base)
                     (string-append directory "old/" base))))
        (sha256
-        (base32 "1x8m543n88iqprh4zccx1zcfm20balmh0h6syrbv03cszmkvfw07"))))
+        (base32 "030njv53azzw6fn2d5mkxn7hyvyb45yss2y49wxb8bgj3ayv1rgp"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-hardcoded-directories
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* (list "fet.pro"
-                                "src/src.pro"
-                                "src/src-cl.pro"
-                                "src/interface/fet.cpp")
-               (("/usr") (assoc-ref outputs "out")))))
-         (replace 'configure
-           (lambda _ (invoke "qmake" "fet.pro"))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-hardcoded-directories
+            (lambda _
+              (substitute* (list "fet.pro"
+                                 "src/src.pro"
+                                 "src/src-cl.pro"
+                                 "src/interface/fet.cpp")
+                (("/usr") #$output))))
+          (replace 'configure
+            (lambda _ (invoke "qmake" "fet.pro"))))))
     (inputs
      (list qtbase))
     (home-page "https://www.lalescu.ro/liviu/fet/")

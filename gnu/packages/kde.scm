@@ -479,7 +479,7 @@ expression library, that is used in Krita.")
 (define-public krita
   (package
     (name "krita")
-    (version "5.0.2")
+    (version "5.0.8")
     (source
      (origin
        (method url-fetch)
@@ -487,7 +487,7 @@ expression library, that is used in Krita.")
              "mirror://kde/stable/krita/" version "/krita-" version
              ".tar.gz"))
        (sha256
-        (base32 "1gww95fyd5r3x2260j2ls7d8fp4rsfxnwdqai2j7fjahxg3iyxg6"))))
+        (base32 "0iaypyv21zxvhr989r9j9nlhx642jc89xphz1qaw9q1y0yjiy7gd"))))
     (build-system qt-build-system)
     (arguments
      `(#:tests? #f

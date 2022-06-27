@@ -51,6 +51,7 @@
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
+;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1423,26 +1424,24 @@ C, yielding parse times that can be a thirtieth of the html5lib parse times.")
 (define-public python-minio
   (package
     (name "python-minio")
-    (version "6.0.0")
+    (version "7.1.9")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "minio" version))
               (sha256
                (base32
-                "1cxpa0m7mdvpdbc1g6wlihq6ja4g4paxkl6f3q84bbnx07zpbllp"))))
+                "02nh865xbf2glxvcy70ir6gkcwqxl119zryfc70q7w0yjvkg64d7"))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
                   (add-before 'check 'disable-failing-tests
                     (lambda _
                       ;; This test requires network access.
-                      (delete-file "tests/unit/credentials_test.py")
-                      #t)))))
+                      (delete-file "tests/unit/credentials_test.py"))))))
     (native-inputs
      (list python-faker python-mock python-nose))
     (propagated-inputs
-     (list python-certifi python-configparser python-dateutil python-pytz
-           python-urllib3))
+     (list python-certifi python-dateutil python-pytz python-urllib3))
     (home-page "https://github.com/minio/minio-py")
     (synopsis "Programmatically access Amazon S3 from Python")
     (description
@@ -1808,7 +1807,7 @@ another XPath engine to find the matching elements in an XML or HTML document.")
 (define-public python-databricks-cli
   (package
     (name "python-databricks-cli")
-    (version "0.14.1")
+    (version "0.17.0")
     (home-page "https://github.com/databricks/databricks-cli")
     (source (origin
               (method git-fetch)
@@ -1816,21 +1815,25 @@ another XPath engine to find the matching elements in an XML or HTML document.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "03w19rzh72jll9phai23wp0c2mlv39qsrv50mhckziy39z60yxh8"))))
+                "1qwbxnx64kw7lrzlyx3hfbnjxpc19cqvvj0gcrkqpyjsgd08vja0"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
+     '(#:phases (modify-phases %standard-phases
                   (replace 'check
                     (lambda _
-                      (invoke "pytest" "tests" "-vv"
-                              ;; XXX: This fails with newer Pytest
-                              ;; (upstream uses Pytest 3..).
-                              "-k" "not test_get_request_with_list"))))))
+                      (invoke "pytest" "tests" "-vv"))))))
     (native-inputs
-     (list ;; For tests.
-           python-decorator python-mock python-pytest python-requests-mock))
+     ;; For tests.
+     (list python-decorator
+           python-mock
+           python-pytest
+           python-requests-mock))
     (propagated-inputs
-     (list python-click python-configparser python-requests python-six
+     (list python-click
+           python-oauthlib
+           python-pyjwt
+           python-requests
+           python-six
            python-tabulate))
     (synopsis "Command line interface for Databricks")
     (description
@@ -4196,13 +4199,13 @@ addon modules.")
 (define-public python-bottle
   (package
     (name "python-bottle")
-    (version "0.12.19")
+    (version "0.12.21")
     (source
      (origin
       (method url-fetch)
       (uri (pypi-uri "bottle" version))
       (sha256
-        (base32 "0b6s50vc4iad97b6bb3xnyrgajb3nj6n6jbr5p54a4vapky3zmx9"))))
+        (base32 "0zl8sy4dhafyxqpavy7pjz0qzpakmhgh2qr6pwlw5f82rjv62z3q"))))
     (build-system python-build-system)
     (home-page "https://bottlepy.org/")
     (synopsis "WSGI framework for small web-applications")
@@ -6328,7 +6331,16 @@ the @code{BasicRouter}.")
     (arguments
      ;; PyPi sources does not contain tests, recursive dependency on
      ;; python-sanic.
-     (list #:tests? #f))
+     (list #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'loosen-requirements
+                 (lambda _
+                   ;; Don't place an upper boundary on httpx version.
+                   ;; https://github.com/sanic-org/sanic-testing/pull/39
+                   (substitute* "setup.py"
+                     (("httpx>=0\\.18,<0\\.23")
+                      "httpx>=0.18")))))))
     (propagated-inputs (list python-httpx python-sanic-bootstrap
                              python-websockets))
     (home-page "https://github.com/sanic-org/sanic-testing/")
@@ -7535,3 +7547,50 @@ resources using Web Application Description Language (WADL) files as guides.")
 @end itemize")
     (license license:expat)))
 
+(define-public python-http-client
+  (package
+    (name "python-http-client")
+    (version "3.3.7")
+    (home-page "https://github.com/sendgrid/python-http-client")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0z0ziw3f4zw5fj4spiwhhs2x8qs3i5999ry2p6a5sc8b1lkkj2zi"))
+              (snippet #~(begin
+                           (use-modules (guix build utils))
+                           (delete-file "tests/profile.py")))))
+    (build-system python-build-system)
+    (synopsis "HTTP REST client for Python")
+    (description
+     "This package provides access to any RESTful or RESTful-like API.")
+    (license license:expat)))
+
+(define-public python-sendgrid
+  (package
+    (name "python-sendgrid")
+    (version "6.9.7")
+    (home-page "https://github.com/sendgrid/sendgrid-python/")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0kvp4gm3bpcsj2mkv05pgvlcv1jlsfhcljcv61wz5kq9d273h7rg"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:tests? #f))       ;241/340 tests fail due to attempted web access
+    (propagated-inputs (list python-http-client python-starkbank-ecdsa))
+    (synopsis "SendGrid API library for Python")
+    (description
+     "The @code{sendgrid} Python library allows access to the
+SendGrid Web API v3.  Version 3+ of the library provides full support for all
+SendGrid Web API v3 endpoints, including the new v3 /mail/send.")
+    (license license:expat)))

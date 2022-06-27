@@ -7,7 +7,7 @@
 ;;; Copyright © 2015, 2017 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2015, 2016, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015, 2016, 2018-2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016, 2017 Danny Milosavljevic <dannym+a@scratchpost.org>
@@ -892,18 +892,28 @@ available via the @code{unittest.mock} module.")
 (define-public python-nose2
   (package
     (name "python-nose2")
-    (version "0.9.2")
+    (version "0.11.0")
       (source
         (origin
           (method url-fetch)
           (uri (pypi-uri "nose2" version))
           (sha256
            (base32
-            "0pmbb6nk31yhgh4zkcblzxsznml7f7pf5q1ihgrwvbxv4mwzfql7"))))
+            "1scxwvwbgfdj41acma41xzdhcfdwjj9irj6sfifdbyf9dryqs83d"))))
     (build-system python-build-system)
-    (arguments `(#:tests? #f)) ; 'module' object has no attribute 'collector'
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     ;; Tests require nose2 itself.
+                     (setenv "PYTHONPATH" (getcwd))
+                     (invoke (string-append #$output "/bin/nose2") "-v")))))))
+    (native-inputs
+     (list python-coverage))
     (propagated-inputs
-     (list python-cov-core python-pytest-cov python-six))
+     (list python-six))
     (home-page "https://github.com/nose-devs/nose2")
     (synopsis "Next generation of nicer testing for Python")
     (description
@@ -2036,14 +2046,14 @@ programs, something like CSmith, a random generator of C programs.")
 (define-public python-lit
   (package
     (name "python-lit")
-    (version "12.0.1")
+    (version "14.0.3")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "lit" version))
         (sha256
          (base32
-          "01yggsb73s2gbq36xwifxl6k5ll5lkss5rwz59k9h3jnbnn7m5fj"))))
+          "162x7pddwl395c3mdb0mfn3f5z24x1jz6g27x303lfxpzidnn4m4"))))
     (build-system python-build-system)
     (arguments
      `(#:phases

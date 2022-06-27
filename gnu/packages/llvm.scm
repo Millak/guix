@@ -878,7 +878,22 @@ of programming tools as well as libraries with equivalent functionality.")
        (patches (search-patches
                  "llvm-9-fix-bitcast-miscompilation.patch"
                  "llvm-9-fix-scev-miscompilation.patch"
-                 "llvm-9-fix-lpad-miscompilation.patch"))))))
+                 "llvm-9-fix-lpad-miscompilation.patch"))))
+    (arguments
+     (if (target-riscv64?)
+       (substitute-keyword-arguments (package-arguments llvm-10)
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (add-after 'unpack 'patch-dsymutil-link
+               (lambda _
+                 (substitute* "tools/dsymutil/CMakeLists.txt"
+                   (("endif\\(APPLE\\)")
+                    (string-append
+                      "endif(APPLE)\n\n"
+                      "if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES \"riscv64\")\n"
+                      "  target_link_libraries(dsymutil PRIVATE atomic)\n"
+                      "endif()"))))))))
+       (package-arguments llvm-10)))))
 
 (define-public clang-runtime-9
   (clang-runtime-from-llvm

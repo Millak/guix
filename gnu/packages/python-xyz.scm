@@ -2949,6 +2949,48 @@ software.")
     (inherit (package-with-python2 scons))
     (name "scons-python2")))
 
+(define-public python-exceptiongroup
+  (package
+    (name "python-exceptiongroup")
+    (version "1.0.0rc8")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/agronholm/exceptiongroup")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0xsbpv22n51p6yvyvz231mf8zhbi1i88b4zmacaxxx31zrq5ifv4"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: PEP 517 manual build/install procedures copied from
+          ;; python-isort.
+          (replace 'build
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)
+              ;; ZIP does not support timestamps before 1980.
+              (setenv "SOURCE_DATE_EPOCH" "315532800")
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv" "tests")))))))
+    (native-inputs (list python-flit-scm python-pypa-build python-pytest))
+    (home-page "https://github.com/agronholm/exceptiongroup")
+    (synopsis "PEP 654 backport from Python 3.11")
+    (description "This is a backport of the @code{BaseExceptionGroup} and
+@code{ExceptionGroup} classes from Python 3.11.")
+    (license license:expat)))
+
 (define-public python-extension-helpers
 (package
   (name "python-extension-helpers")
@@ -5038,7 +5080,7 @@ which can produce feeds in RSS 2.0, RSS 0.91, and Atom formats.")
 (define-public python-pydantic
   (package
     (name "python-pydantic")
-    (version "1.9.0")
+    (version "1.9.1")
     (source
      (origin
        (method git-fetch)
@@ -5047,32 +5089,11 @@ which can produce feeds in RSS 2.0, RSS 0.91, and Atom formats.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14wj3k9007fpbxk7593w6gdqrr68yzrsw4a41sj5ji4cv3r8z18b"))))
+        (base32 "1406kgppqa7524mxllsipj7gb8fn7pwf51l11lqik59xjhsfv94f"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
-         (add-before 'check 'disable-test
-           (lambda _
-             ;; Reported upstream:
-             ;; <https://github.com/samuelcolvin/pydantic/issues/1580>.
-             ;; Disable the faulty test as the fix is unclear.
-             (substitute* "tests/test_validators.py"
-               (("test_assert_raises_validation_error")
-                "_test_assert_raises_validation_error"))
-
-             ;; These fail because of <https://bugs.python.org/issue40398>.
-             ;; Remove after Python has been upgraded to >= 3.9.
-             (substitute* "tests/test_generics.py"
-               (("assert replace_types\\(Callable, \\{T: int\\}\\) == Callable")
-                ""))
-             (substitute* "tests/test_schema.py"
-               (("test_unenforced_constraints_schema")
-               "_test_unenforced_constraints_schema"))
-
-             ;; Disable tests for the Hypothesis plugin because it is tricky
-             ;; to configure in the build container.
-             (delete-file "tests/test_hypothesis_plugin.py")))
          (replace 'check
            (lambda _ (invoke "pytest" "-vv"))))))
     (native-inputs
@@ -5132,7 +5153,6 @@ Server (PLS).")
                      "not test_pyqt_completion"))))))
     (propagated-inputs
      (list python-autopep8
-           python-configparser
            python-pydocstyle
            python-flake8
            python-future
@@ -6668,6 +6688,58 @@ multivalue dictionary that retains the order of insertions and deletions.")
 run simple @code{argparse} parsers from function signatures.")
     (license license:lgpl3+)))
 
+(define-public python-autopage
+  (package
+    (name "python-autopage")
+    (version "0.5.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "autopage" version))
+              (sha256
+               (base32
+                "169ixll1ncm2a2pcc86665ikjv2lrzs10p6c1w4yj55p3gk3xgh1"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Do a manual PEP 517 style build/install procedure until the
+          ;; python-build-system overhaul is merged.
+          (replace 'build
+            (lambda _
+              ;; ZIP does not support timestamps before 1980.
+              (let ((circa-1980 (* 10 366 24 60 60)))
+                (setenv "SOURCE_DATE_EPOCH" (number->string circa-1980))
+                (invoke "python" "-m" "build" "--wheel" "--no-isolation" "."))))
+          (add-before 'check 'disable-e2e-tests
+            (lambda _
+              ;; These tests rely on KeyboardInterrupts which do not
+              ;; work in the build container.
+              (delete-file "autopage/tests/test_end_to_end.py")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv"))))
+          (replace 'install
+            (lambda _
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl)))))))
+    (native-inputs
+     (list python-pypa-build
+           python-setuptools
+           python-wheel
+           ;; For tests.
+           python-fixtures
+           python-pytest
+           python-testtools))
+    (home-page "https://github.com/zaneb/autopage")
+    (synopsis "Automatic paging for console output")
+    (description
+     "Autopage is a Python library to automatically display terminal output
+from a program in a @dfn{pager} such as @command{less}.")
+    (license license:asl2.0)))
+
 (define-public python-autopep8
   (package
     (name "python-autopep8")
@@ -7783,27 +7855,6 @@ Pexpect works like Don Libes’ Expect.  Pexpect allows your script to spawn a
 child application and control it as if a human were typing commands.")
     (license license:isc)))
 
-(define-public python-setuptools-scm
-  (package
-    (name "python-setuptools-scm")
-    (version "6.3.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "setuptools_scm" version))
-              (sha256
-               (base32 "1wm0i27siyy1yqr9rv7lqvb65agay9051yi8jzmi8dgb3q4ai6m4"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     `(("python-packaging",python-packaging-bootstrap)
-       ("python-tomli" ,python-tomli)))
-    (home-page "https://github.com/pypa/setuptools_scm/")
-    (synopsis "Manage Python package versions in SCM metadata")
-    (description
-     "Setuptools_scm handles managing your Python package versions in
-@dfn{software configuration management} (SCM) metadata instead of declaring
-them as the version argument or in a SCM managed file.")
-    (license license:expat)))
-
 (define-public python-sexpdata
   (package
     (name "python-sexpdata")
@@ -8298,25 +8349,24 @@ cluster down and deletes the throwaway profile.")
 (define-public python-ipython-sql
   (package
     (name "python-ipython-sql")
-    (version "0.4.0")
+    (version "0.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ipython-sql" version))
        (sha256
-        (base32 "0v74ayc6vw98f4jljmwy45qpqbcbhlrb4g1qdyypq9sppxcqx21y"))))
+        (base32 "1r6rz8jgrqzhkf2flwjw75d96g8l7kykmx5wli3q1988w96391ip"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-build
-           (lambda _
-             ;; The "NEWS.rst" file is missing from the PyPI distribution.
-             ;; (see: https://github.com/catherinedevlin/ipython-sql/issues/164)
-             (substitute* "setup.py"
-               (("NEWS = [^\n]*") "")
-               (("long_description=README \\+ '\\\\n\\\\n' \\+ NEWS,")
-                "long_description=README,")))))))
+     (list #:tests? #f                  ;must run under IPython
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'permit-newer-prettytable
+                 ;; See https://github.com/catherinedevlin/ipython-sql/issues/202
+                 (lambda _
+                   (substitute* "setup.py"
+                     (("prettytable<1")
+                      "prettytable")))))))
     (propagated-inputs
      (list python-ipython
            python-ipython-genutils
@@ -9956,7 +10006,25 @@ applications.")
        (method url-fetch)
        (uri (pypi-uri "pyzmq" version))
        (sha256
-        (base32 "0737kizh53n4rjq1xbm6nhr0bq65xflg04i1d8fcky0nwwrw1pcf"))))
+        (base32 "0737kizh53n4rjq1xbm6nhr0bq65xflg04i1d8fcky0nwwrw1pcf"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            ;; The bundled zeromq source code.
+            (delete-file-recursively "bundled")
+            ;; Delete cythonized files.
+            (for-each delete-file
+                      (list "zmq/backend/cython/constants.c"
+                            "zmq/backend/cython/context.c"
+                            "zmq/backend/cython/_device.c"
+                            "zmq/backend/cython/error.c"
+                            "zmq/backend/cython/message.c"
+                            "zmq/backend/cython/_poll.c"
+                            "zmq/backend/cython/_proxy_steerable.c"
+                            "zmq/backend/cython/socket.c"
+                            "zmq/backend/cython/utils.c"
+                            "zmq/backend/cython/_version.c"
+                            "zmq/devices/monitoredqueue.c"))))))
     (build-system python-build-system)
     (arguments
      `(#:configure-flags
@@ -11454,14 +11522,15 @@ distribution.  It is not intended as an end-user tool.")
 (define-public python-immutables
   (package
     (name "python-immutables")
-    (version "0.14")
+    (version "0.18")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "immutables" version))
        (sha256
-        (base32 "0y0aqw29g525frdnmv9paljzacpp4s21sadfbca5b137iciwr8d0"))))
+        (base32 "1x4cinh0xbl6p6p2yfm2s07mxxy3lf0zzai9gqpydk4482bwfdjk"))))
     (build-system python-build-system)
+    (native-inputs (list python-mypy python-pytest))
     (home-page "https://github.com/MagicStack/immutables")
     (synopsis "High-performance immutable mapping type for Python")
     (description
@@ -11473,16 +11542,28 @@ functional languages.")
 (define-public python-prettytable
   (package
     (name "python-prettytable")
-    (version "0.7.2")
+    (version "3.3.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "prettytable" version ".tar.bz2"))
+       (uri (pypi-uri "prettytable" version))
        (sha256
         (base32
-         "0diwsicwmiq2cpzpxri7cyl5fmsvicafw6nfqf6p6p322dji2g45"))))
+         "1c599w31i2ndzbkn85xwsgv9sd2j16r56dl922w4jh3rs97vb3hi"))))
     (build-system python-build-system)
-    (home-page "https://code.google.com/archive/p/prettytable/")
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "pytest" "-vv")))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-lazy-fixture
+           python-setuptools-scm))
+    (propagated-inputs (list python-wcwidth))
+    (home-page "https://github.com/jazzband/prettytable")
     (synopsis "Display tabular data in an ASCII table format")
     (description
       "A library designed to represent tabular data in visually appealing ASCII
@@ -13063,7 +13144,7 @@ time.")
                                      texlive-zapfding))))
     (home-page "https://jupyter.org")
     (synopsis "Converting Jupyter Notebooks")
-    (description "The @code{nbconvert} tool, @{jupyter nbconvert}, converts
+    (description "The @code{nbconvert} tool, @code{jupyter nbconvert}, converts
 notebooks to various other formats via Jinja templates.  It allows you to
 convert an @code{.ipynb} notebook file into various static formats including:
 
@@ -16133,7 +16214,7 @@ focus on event-based network programming and multiprotocol integration.")
 (define-public python-pika
   (package
     (name "python-pika")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
       (origin
         (method git-fetch)
@@ -16143,27 +16224,29 @@ focus on event-based network programming and multiprotocol integration.")
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "0cm45xydk2jigydwszwik89qlbk6l3l18sxhzppzqmxw2rdkm22s"))))
+          "0sqj3bg6jwign8vwvn337fbwy69sm684ns1vh5kbfnskq4him9i2"))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
-                  (add-before 'check 'disable-live-tests
+                  (add-after 'unpack 'disable-live-tests
                     (lambda _
                       ;; Disable tests that require RabbitMQ, which is not
                       ;; yet available in Guix.
-                      (substitute* "setup.cfg"
-                        (("tests/unit,tests/acceptance")
-                         "tests/unit"))
+                      (substitute* "nose2.cfg"
+                        (("tests=tests/unit,tests/acceptance")
+                         "start-dir=tests/unit"))
                       (with-directory-excursion "tests"
                         (for-each delete-file
                                 '("unit/base_connection_tests.py"
                                   "unit/threaded_test_wrapper_test.py")))))
                   (replace 'check
-                    (lambda _
-                      (invoke "nosetests"))))))
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (setenv "PYTHONPATH" (getcwd))
+                        (invoke "nose2" "-v")))))))
     (native-inputs
      (list python-mock
-           python-nose
+           python-nose2
            ;; These are optional at runtime, and provided here for tests.
            python-gevent
            python-tornado
@@ -16492,6 +16575,73 @@ exchange data among multiple languages like JSON.  But it's faster and
 smaller.  Small integers are encoded into a single byte, and typical short
 strings require only one extra byte in addition to the strings themselves.")
     (license license:asl2.0)))
+
+(define-public python-cattrs
+  (package
+    (name "python-cattrs")
+    (version "22.1.0")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/python-attrs/cattrs")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1n0h25gj6zd02kqyl040xpdvg4hpy1j92716sz0rg019xjqqijqb"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: PEP 517 manual build copied from python-isort.
+          (add-after 'unpack 'adjust-for-older-attrs
+            ;; Our older attrs package is using the 'attr' rather than 'attrs'
+            ;; namespace.
+            ;; TODO: Remove after python-attrs is updated to >= 21.4.0.
+            (lambda _
+              (substitute* (find-files "." "\\.py$")
+                (("from attrs\\b")
+                 "from attr"))))
+          (replace 'build
+            (lambda _
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (replace 'install
+            (lambda _
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; Do not use the 'pytest' binary as it hard-codes an older
+                ;; python-hypothesis version near the beginning of its
+                ;; GUIX_PYTHONPATH.
+                (invoke "python" "-m" "pytest" "-vv" "-c" "/dev/null" "tests"
+                        "-n" (number->string (parallel-job-count))
+                        ;; This test requires orjson, which needs the maturin
+                        ;; build system and new Rust dependencies.
+                        "--ignore" "tests/test_preconf.py")))))))
+    (native-inputs
+     (list python-hypothesis-next
+           python-immutables
+           python-msgpack
+           python-poetry-core
+           python-pymongo               ;for the bson module
+           python-pypa-build
+           python-pytest
+           python-pytest-xdist))
+    (propagated-inputs
+     (list python-attrs
+           python-exceptiongroup
+           python-typing-extensions))
+    (home-page "https://github.com/python-attrs/cattrs")
+    (synopsis "Python library for structuring and unstructuring data")
+    (description "@code{cattrs} is an Python library for structuring and
+unstructuring data.  @code{cattrs} works best with @code{attrs} classes,
+@code{dataclasses} and the usual Python collections, but other kinds of
+classes can also be supported by manually registering converters.")
+    (license license:expat)))
 
 (define-public python-cachy
   (package
@@ -17003,17 +17153,31 @@ scans through a file and detects issues.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "07drmi3ai49jw5n23ibkambcgijqcw073ihypjgxfnks5lv4yqy1"))))
+         "07drmi3ai49jw5n23ibkambcgijqcw073ihypjgxfnks5lv4yqy1"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Adjust comprehension syntax for Python > 3.8.
+        ;; From <https://github.com/davidhalter/jedi/issues/1824>.
+        '(substitute* "test/completion/lambdas.py"
+           (("if lambda: 3")
+            "if (lambda: 3)")))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'fix-completion-test
+           (lambda _
+             ;; This resolves a failure in the 'test_completion' test (see:
+             ;; https://github.com/davidhalter/jedi/issues/1824).
+             ;; TODO: Remove after a new release is made (currently: 0.18.1).
+             (substitute* "test/completion/lambdas.py"
+               (("\\[a for a in \\[1,2\\] if lambda: 3\\]\\[0\\]")
+                "[a for a in [1,2] if (lambda: 3)][0]"))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
                (setenv "HOME" "/tmp")
-               (invoke "python" "-m" "pytest" "-vv"))
-             #t)))))
+               (invoke "python" "-m" "pytest" "-vv")))))))
     (native-inputs
      (list python-colorama python-docopt python-pytest))
     (propagated-inputs
@@ -17458,6 +17622,50 @@ multitouch applications.")
 Design spec without sacrificing ease of use or application performance.")
     (license license:expat)))
 
+(define-public python-asynckivy
+  (package
+    (name "python-asynckivy")
+    (version "0.5.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        (pypi-uri "asynckivy" version))
+       (sha256
+        (base32 "0ivjvch8yn3k1ybfp7c1nm8mhc0ymg7d04mq54lly7yjvg0jvcni"))))
+    (build-system python-build-system)
+    (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (add-before 'check 'set-home
+             (lambda _
+               ;; 'kivy/__init__.py' wants to create $HOME/.kivy.
+               (setenv "HOME" (getcwd)))))))
+    (propagated-inputs (list python-kivy python-asyncgui))
+    (home-page "https://github.com/gottadiveintopython/asynckivy")
+    (synopsis "Async library for Kivy")
+    (description
+     "This package provides async versions of Kivy functions to avoid the
+callback-heavy mode of interaction typical in some Kivy applications.")
+    (license license:expat)))
+
+(define-public python-asyncgui
+  (package
+    (name "python-asyncgui")
+    (version "0.5.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "asyncgui" version))
+              (sha256
+               (base32
+                "0614130afg2qc1qq4p82piskvvx6lpjl4nlsakbjzdyd78xywnb7"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/gottadiveintopython/asyncgui")
+    (synopsis "Enables async/await without an event loop")
+    (description "This package provides support for async/await applications
+without requiring an event loop, useful for creative responsive GUIs.")
+    (license license:expat)))
+
 (define-public python-binaryornot
   (package
     (name "python-binaryornot")
@@ -17591,13 +17799,13 @@ JSON) codec.")
 (define-public python-pymongo
   (package
     (name "python-pymongo")
-    (version "3.7.2")
+    (version "4.1.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pymongo" version))
               (sha256
                (base32
-                "0zis4707r9hdg5qgkhp3wss9camr9h56ixyfc8n9dxwlnnly4x4c"))))
+                "1m9hc2a4kgg10xy3g5x00z4a7rrk9s0rbf5qfypwnhq0kdfg5f6p"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-certifi))
@@ -21383,20 +21591,23 @@ time-based (TOTP) passwords.")
 (define-public python-parso
   (package
     (name "python-parso")
-    (version "0.8.2")
+    (version "0.8.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "parso" version))
        (sha256
-        (base32 "161k8771m7w60qakyvrwf9q62lvakmix7mpfylpy7713qs939f0j"))))
+        (base32 "185gkxq92kqiw2h5zp1cmyn04055x0lix4hmi5c077xm1clvw1wc"))))
     (native-inputs
      (list python-pytest))
     (build-system python-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _ (invoke "pytest" "-vv"))))))
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-vv")))))))
     (home-page "https://github.com/davidhalter/parso")
     (synopsis "Python Parser")
     (description "Parso is a Python parser that supports error recovery and
@@ -25151,23 +25362,30 @@ choose to use Base64 without the “=” padding.")
     (license license:asl2.0)))
 
 (define-public python-py-cpuinfo
-  (package
-    (name "python-py-cpuinfo")
-    (version "5.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "py-cpuinfo" version))
-       (sha256
-        (base32
-         "0045y6832gqjg63jmw0qj2jwyypgjwr7sfdq3lfv49b6fxpl5xic"))))
-    (build-system python-build-system)
-    (home-page "https://github.com/workhorsy/py-cpuinfo")
-    (synopsis "Get CPU info with Python")
-    (description
-     "This Python module returns the CPU info by using the best sources of
+  ;; This is the first commit where riscv64-linux support is available.
+  ;; We can move back to pypi releases with the next release.
+  (let ((commit "4d6987e5c30f2ebacb20781892c01329042cce60")
+        (revision "1"))
+    (package
+      (name "python-py-cpuinfo")
+      (version (git-version "8.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/workhorsy/py-cpuinfo")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0h5wi1bfcqqr1x3j1pa7dmkx7siprsyksbsy80fl2sdrrgpji0b0"))))
+      (build-system python-build-system)
+      (home-page "https://github.com/workhorsy/py-cpuinfo")
+      (synopsis "Get CPU info with Python")
+      (description
+       "This Python module returns the CPU info by using the best sources of
 information for your operating system.")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public python-canonicaljson
   (package

@@ -1156,8 +1156,7 @@ IPv6, proxies, and Unix sockets.")
                  (lambda _
                    ;; These #defines aren't well-documented and, e.g., POWER was
                    ;; not actually tested on every possible TARGET-POWERPC?.
-                   (let* ((system #$(cond ((target-x86-32?) "X86")
-                                          ((target-x86-64?) "X86")
+                   (let* ((system #$(cond ((target-x86?) "X86")
                                           ((target-arm?) "ARM")
                                           ((target-powerpc?) "POWER")
                                           (else "CROSS_FINGERS"))))
@@ -1845,7 +1844,7 @@ system administrator.")
 (define-public sudo
   (package
     (name "sudo")
-    (version "1.9.11p2")
+    (version "1.9.11p3")
     (source (origin
               (method url-fetch)
               (uri
@@ -1855,7 +1854,7 @@ system administrator.")
                                     version ".tar.gz")))
               (sha256
                (base32
-                "1lli4z10b5j238cn7471jb8vcjlj5px68x48ysa3f1n0kzmih6d2"))
+                "0w0z9w4vnhjsc4jjghi6wlyv4v055hsy38ncb67p08b7yp9fg1s6"))
               (modules '((guix build utils)))
               (snippet
                '(begin

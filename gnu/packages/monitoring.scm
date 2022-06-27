@@ -61,6 +61,7 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages rrdtool)
+  #:use-module (gnu packages sphinx)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web))
@@ -164,7 +165,7 @@ etc. via a Web interface.  Features include:
 (define-public zabbix-agentd
   (package
     (name "zabbix-agentd")
-    (version "6.0.3")
+    (version "6.0.5")
     (source
      (origin
        (method url-fetch)
@@ -172,7 +173,7 @@ etc. via a Web interface.  Features include:
              "https://cdn.zabbix.com/zabbix/sources/stable/"
              (version-major+minor version) "/zabbix-" version ".tar.gz"))
        (sha256
-        (base32 "0hihi94dk235cn4rwhrzm496dlihk0pv8785y2jyqi17jhl566g6"))
+        (base32 "1hmx6dgsag84dpv867p12bkln141nypgkp6zhipxbnn5xxip1sry"))
        (modules '((guix build utils)))
        (snippet
         '(substitute* '("src/zabbix_proxy/proxy.c"
@@ -252,7 +253,7 @@ solution (server-side)")))
 (define-public zabbix-cli
   (package
     (name "zabbix-cli")
-    (version "2.2.1")
+    (version "2.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -261,23 +262,40 @@ solution (server-side)")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0wzmrn8p09ksqhhgawr179c4az7p2liqr0l4q2dra62bxliawyqz"))))
+                "1p8xkq3mxg476srwrgqax76vjzji0rjx32njmgnpa409vaqrbj5p"))))
     (build-system python-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'use-absolute-ncurses
-                    (lambda _
-                      (substitute* "bin/zabbix-cli"
-                        (("'clear'")
-                         (string-append "'" (which "clear") "'")))))
-                  (add-after 'unpack 'patch-setup.py
-                    (lambda _
-                      ;; Install data_files to $out/share instead of /usr/share.
-                      (substitute* "setup.py"
-                        (("/usr/") "")))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'use-absolute-ncurses
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (let ((clear (search-input-file inputs "bin/clear")))
+                     (substitute* "bin/zabbix-cli"
+                       (("'clear'")
+                        (string-append "'" clear "'"))))))
+               (add-after 'unpack 'patch-setup.py
+                 (lambda _
+                   ;; Install data_files to $out/share instead of /usr/share.
+                   (substitute* "setup.py"
+                     (("/usr/") ""))))
+               (add-after 'build 'build-docs
+                 (lambda _
+                   (invoke "make" "-C" "docs" "manual")
+                   (invoke "make" "-C" "docs" "singlehtml")))
+               (add-after 'install 'install-docs
+                 (lambda _
+                   (install-file "docs/_build/man/zabbix-cli.1"
+                                 (string-append #$output "/share/man/man1"))
+                   (copy-recursively "docs/_build/singlehtml"
+                                     (string-append #$output "/share/doc/"
+                                                    #$name "/html"))))
+               (replace 'check
+                 (lambda _
+                   (invoke "pytest" "-vv"))))))
+    (native-inputs
+     (list python-pytest python-sphinx))
     (inputs
-     `(("clear" ,ncurses)
-       ("python-requests" ,python-requests)))
+     (list ncurses python-requests))
     (home-page "https://github.com/unioslo/zabbix-cli")
     (synopsis "Command-line interface to Zabbix")
     (description

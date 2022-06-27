@@ -1146,14 +1146,14 @@ simultaneously and therefore appear under the same nickname on IRC.")
 (define-public python-nbxmpp
   (package
     (name "python-nbxmpp")
-    (version "2.0.4")
+    (version "3.1.0")
     (source
      (origin
        (method url-fetch)
        (uri
         (pypi-uri "nbxmpp" version))
        (sha256
-        (base32 "1s2phiipq7ks8vrd93p96dzd5wgmgg8q9h2rxsnh2gg7iy06gj9c"))))
+        (base32 "0c32090gr1fiy7hkn73dcj4ad9gfdpks8hivl1dl8bql01jsfdnj"))))
     (build-system python-build-system)
     (native-inputs
      (list `(,glib "bin")))
@@ -1175,7 +1175,7 @@ of xmpppy.")
 (define-public gajim
   (package
     (name "gajim")
-    (version "1.3.3")
+    (version "1.4.5")
     (source
      (origin
        (method url-fetch)
@@ -1184,7 +1184,7 @@ of xmpppy.")
                        (version-major+minor version)
                        "/gajim-" version ".tar.gz"))
        (sha256
-        (base32 "1337qkpcv7j0fgws9scnk82mn2l7s17060vmrbh3ihinmxmbxg6x"))
+        (base32 "08a7kkc8vzjr5jxjkb96vs1bqnrgmmmcc5spy308z0zfxbpamsin"))
        (patches (search-patches "gajim-honour-GAJIM_PLUGIN_PATH.patch"))))
     (build-system python-build-system)
     (arguments
@@ -1198,13 +1198,6 @@ of xmpppy.")
         (guix build utils))
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'disable-failing-tests
-           (lambda _
-             ;; XXX Gajim builds fine on some (my) machines but fails elsewhere:
-             ;; ModuleNotFoundError: No module named 'gajim.gui.emoji_data'
-             ;; https://dev.gajim.org/gajim/gajim/-/issues/10478
-             (delete-file "test/lib/gajim_mocks.py")
-             (delete-file "test/unit/test_gui_interface.py")))
          (replace 'check
            (lambda _
              ;; Tests require a running X server.
@@ -1232,7 +1225,7 @@ of xmpppy.")
                     (wrap-program file
                       `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))
                       `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path)))))
-                '("gajim" "gajim-remote" "gajim-history-manager"))))))))
+                '("gajim" "gajim-remote"))))))))
     (native-search-paths
      (list
       (search-path-specification
@@ -1274,6 +1267,7 @@ of xmpppy.")
        ("gstreamer" ,gstreamer)
        ("gst-plugins-base" ,gst-plugins-base)
        ("gtk+" ,gtk+)
+       ("gtksourceview" ,gtksourceview)
        ("gupnp-igd" ,gupnp-igd)
        ("libnice" ,libnice)
        ("libsecret" ,libsecret)
@@ -1282,6 +1276,7 @@ of xmpppy.")
        ("network-manager" ,network-manager)
        ("python-css-parser" ,python-css-parser)
        ("python-dbus" ,python-dbus)
+       ("python-gssapi" ,python-gssapi)
        ("python-keyring" ,python-keyring)
        ("python-nbxmpp" ,python-nbxmpp)
        ("python-packaging" ,python-packaging)
@@ -1302,7 +1297,7 @@ and OpenPGP) and available in 29 languages.")
 (define-public gajim-omemo
   (package
     (name "gajim-omemo")
-    (version "2.7.14")
+    (version "2.8.13")
     (source
      (origin
        (method url-fetch/zipbomb)
@@ -1311,7 +1306,7 @@ and OpenPGP) and available in 29 languages.")
          "https://ftp.gajim.org/plugins_releases/omemo_"
          version ".zip"))
        (sha256
-        (base32 "0jmyjqfc4vimvq5vdqsvz25dsij6bh92alml8qnn59p5farnf86v"))))
+        (base32 "10ym9abvlfpi6llpsqc0691xdnqp9hrwnl361fnwb1nx2zw6bjbd"))))
     (build-system trivial-build-system)
     (arguments
      `(#:modules ((guix build utils))
@@ -1338,7 +1333,7 @@ multi-client end-to-end encryption.")
 (define-public gajim-openpgp
   (package
     (name "gajim-openpgp")
-    (version "1.3.9")
+    (version "1.4.8")
     (source
      (origin
        (method url-fetch/zipbomb)
@@ -1347,7 +1342,7 @@ multi-client end-to-end encryption.")
          "https://ftp.gajim.org/plugins_releases/openpgp_"
          version ".zip"))
        (sha256
-        (base32 "0fzvvrap1hmj4rbrcjs6cs5c9l9c0795bgw9vxxxk915n6j91m23"))))
+        (base32 "05kgcrxalxsc034kq1i6nriqjb6sdlgf3yb2mani8vk9p00v3j90"))))
     (build-system trivial-build-system)
     (arguments
      `(#:modules ((guix build utils))

@@ -44,7 +44,7 @@
 (define-public erlang
   (package
     (name "erlang")
-    (version "24.3.4")
+    (version "25.0.2")
     (source (origin
               (method git-fetch)
               ;; The tarball from http://erlang.org/download contains many
@@ -56,7 +56,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0rrnppglh261x81w9bzmh6wvxy8xjqiiw3nvv4q2214pmc1pxilr"))
+                "0xgp035vy0yy5m155rpmf22m6rq7pvw3m65s5mz22bcpj2rw4b0x"))
               (patches (search-patches "erlang-man-path.patch"))))
     (build-system gnu-build-system)
     (native-inputs
@@ -70,7 +70,7 @@
                                (version-major+minor version) ".tar.gz"))
            (sha256
             (base32
-             "057nrw8563nyd98l5zp9ffi3npw6h3jx06j1hv110wzpxqi25bb8"))))))
+             "17ap4kawlbqmcl13c543gh54p1ng8ivxmbn6lbbij07k81ry5p1y"))))))
     (inputs
      (list ncurses openssl wxwidgets))
     (propagated-inputs

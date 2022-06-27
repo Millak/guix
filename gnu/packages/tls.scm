@@ -351,6 +351,7 @@ OpenSSL for TARGET."
   (package
     (name "openssl")
     (version "1.1.1n")
+    (replacement openssl/fixed)
     (source (origin
               (method url-fetch)
               (uri (list (string-append "https://www.openssl.org/source/openssl-"
@@ -473,10 +474,29 @@ OpenSSL for TARGET."
     (license license:openssl)
     (home-page "https://www.openssl.org/")))
 
+(define openssl/fixed
+  (package
+    (inherit openssl)
+    (name "openssl")
+    (version "1.1.1p")
+    (source (origin
+              (method url-fetch)
+              (uri (list (string-append "https://www.openssl.org/source/openssl-"
+                                        version ".tar.gz")
+                         (string-append "ftp://ftp.openssl.org/source/"
+                                        "openssl-" version ".tar.gz")
+                         (string-append "ftp://ftp.openssl.org/source/old/"
+                                        (string-trim-right version char-set:letter)
+                                        "/openssl-" version ".tar.gz")))
+              (patches (search-patches "openssl-1.1-c-rehash-in.patch"))
+              (sha256
+               (base32
+                "0vyfibydji26wk1fmm0piz0810mfr7j4vaa2k5iwgiv6m8mbcqdz"))))))
+
 (define-public openssl-3.0
   (package
     (inherit openssl)
-    (version "3.0.3")
+    (version "3.0.4")
     (source (origin
               (method url-fetch)
               (uri (list (string-append "https://www.openssl.org/source/openssl-"
@@ -489,7 +509,7 @@ OpenSSL for TARGET."
               (patches (search-patches "openssl-3.0-c-rehash-in.patch"))
               (sha256
                (base32
-                "02wcan5izwsxg6vl5fzkqq4icwi7cp4hrj327h05zppirsnph07f"))))
+                "03y0q2pzpkpgfgf74x4pf8gyar9d7pb0l0p7g2s0m2k6k8z88c98"))))
     (arguments
      (substitute-keyword-arguments (package-arguments openssl)
        ((#:phases phases '%standard-phases)

@@ -18,6 +18,7 @@
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2021 Nikolay Korotkiy <sikmir@disroot.org>
+;;; Copyright © 2022 Roman Scherer <roman.scherer@burningswell.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -113,6 +114,7 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages time)
+  #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages wxwidgets)
@@ -914,7 +916,7 @@ development.")
 (define-public gdal
   (package
     (name "gdal")
-    (version "3.3.3")
+    (version "3.5.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -922,7 +924,7 @@ development.")
                      version ".tar.gz"))
               (sha256
                (base32
-                "0nk09lws1hk873yn5f4wzqfvr82gm4hw3gq8w9g1h0kvf6j5x4i8"))
+                "0h7dgjx8nk3dd17wwqm2yjnaqciyrd2mz9gcjswpcnmap09wbzrs"))
               (modules '((guix build utils)))
               (snippet
                 `(begin
@@ -946,27 +948,23 @@ development.")
                              (string-append option "="
                                             (assoc-ref %build-inputs input))))))
          (list
-           ;; TODO: --with-pcidsk, --with-pcraster
-           (with "--with-freexl" "freexl")
-           (with "--with-libjson-c" "json-c")
-           (with "--with-png" "libpng")
-           (with "--with-webp" "libwebp")
-           (with "--with-gif" "giflib")
-           (with "--with-jpeg" "libjpeg-turbo")
-           (with "--with-libtiff" "libtiff")
-           (with "--with-geotiff" "libgeotiff")
-           (with "--with-libz" "zlib")
-           (with "--with-expat" "expat")
-           (with "--with-sqlite3" "sqlite")
-           "--with-pcre"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'fix-path
-           (lambda _
-             (substitute* "frmts/mrf/mrf_band.cpp"
-               (("\"../zlib/zlib.h\"") "<zlib.h>")))))))
+          ;; TODO: --with-pcidsk, --with-pcraster
+          (with "--with-expat" "expat")
+          (with "--with-freexl" "freexl")
+          (with "--with-geotiff" "libgeotiff")
+          (with "--with-gif" "giflib")
+          (with "--with-jpeg" "libjpeg-turbo")
+          (with "--with-libjson-c" "json-c")
+          (with "--with-libtiff" "libtiff")
+          (with "--with-libz" "zlib")
+          (with "--with-png" "libpng")
+          (with "--with-sqlite3" "sqlite")
+          (with "--with-webp" "libwebp")
+          "--without-jpeg12"
+          "--with-pcre"))))
     (inputs
-     (list expat
+     (list curl
+           expat
            freexl
            geos
            giflib
@@ -977,6 +975,7 @@ development.")
            libtiff
            libwebp
            netcdf
+           openssl
            pcre
            postgresql ; libpq
            proj
@@ -1147,6 +1146,7 @@ Shapely capabilities
            json-c
            libjpeg-turbo
            libxml2
+           openssl
            pcre
            postgresql
            protobuf-c
@@ -2485,6 +2485,7 @@ growing set of geoscientific methods.")
                              "PyQgsProviderConnectionSpatialite"
                              "PyQgsPythonProvider"
                              "PyQgsRasterLayer"
+                             "PyQgsRasterResampler"
                              "PyQgsRulebasedRenderer"
                              "PyQgsSelectiveMasking"
                              "PyQgsSettings"

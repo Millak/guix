@@ -39,6 +39,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages libbsd)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages mpd)
@@ -519,31 +520,33 @@ point surf to another URI by setting its XProperties.")
     (build-system gnu-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
-                  (delete 'configure))  ; no configuration
-       #:tests? #f                      ; no test suite
+                  (delete 'configure) ;no configuration
+                  (add-before 'build 'patch-farbfeld
+                    (lambda* (#:key inputs #:allow-other-keys)
+                      (substitute* "config.def.h"
+                        (("2ff") (search-input-file inputs "/bin/2ff"))))))
+       #:tests? #f                                ;no test suite
        #:make-flags
        (let ((pkg-config (lambda (flag)
-                           (string-append
-                            "$(shell pkg-config " flag " "
-                            "xft fontconfig x11 libpng)"))))
-         (list (string-append "CC=" ,(cc-for-target))
+                           (string-append "$(shell pkg-config " flag " "
+                                          "xft fontconfig x11 libpng)"))))
+         (list (string-append "CC="
+                              ,(cc-for-target))
                (string-append "PREFIX=" %output)
-               (string-append "INCS=-I. " (pkg-config "--cflags"))
-               (string-append "LIBS=" (pkg-config "--libs") " -lm")))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     `(("libpng" ,libpng)
-       ("libx11" ,libx11)
-       ("libxft" ,libxft)
-       ("fontconfig" ,fontconfig)))
+               (string-append "INCS=-I. "
+                              (pkg-config "--cflags"))
+               (string-append "LIBS="
+                              (pkg-config "--libs") " -lm")))))
+    (native-inputs (list pkg-config))
+    (inputs (list farbfeld libpng libx11 libxft fontconfig))
     (synopsis "Plain-text presentation tool")
-    (description "Sent uses plain-text files and PNG images to create slideshow
+    (description
+     "Sent uses plain-text files and PNG images to create slideshow
 presentations.  Each paragraph represents a slide in the presentation.
 Especially for presentations using the Takahashi method this is very nice and
 allows you to write down the presentation for a quick lightning talk within a
 few minutes.")
-    (home-page "https://tools.suckless.org/sent")
+    (home-page "https://tools.suckless.org/sent/")
     (license license:x11)))
 
 (define-public wmname
@@ -1049,7 +1052,7 @@ support.")
 (define-public sfeed
   (package
     (name "sfeed")
-    (version "1.1")
+    (version "1.5")
     (source
      (origin
        (method git-fetch)
@@ -1059,7 +1062,7 @@ support.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1b0l6f9aymk54ncc2kxavhg4flcqv7d4mpkpw8ljx7mzg0g4ygyk"))))
+        (base32 "1w3xk00nv502q2nr23y1sig7bkqa7f431f4fcaybfcfk7dbv2piq"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -1084,3 +1087,43 @@ There are formatting programs included to convert this TAB-separated format to
 various other formats.  There are also some programs and scripts included to
 import and export OPML and to fetch, filter, merge and order feed items.")
     (license license:isc)))
+
+(define-public farbfeld
+  (let ((commit "ab5e3dfc9cdb476218538c6687df9f44826d8f11") (revision "0"))
+    (package
+      (name "farbfeld")
+      (version (git-version "4" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "git://git.suckless.org/farbfeld")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0pkmkvv5ggpzqwqdchd19442x8gh152xy5z1z13ipfznhspsf870"))))
+      (build-system gnu-build-system)
+      (inputs (list libpng libjpeg-turbo imagemagick))
+      (arguments
+       (list #:tests?
+             #f ;no check target
+             #:make-flags
+             #~(list (string-append "PREFIX="
+                                    #$output)
+                     (string-append "CC="
+                                    #$(cc-for-target)))
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-before 'configure 'patch-2ff
+                   (lambda* (#:key inputs outputs #:allow-other-keys)
+                     (substitute* "2ff"
+                       (("png2ff") (string-append #$output "/bin/png2ff"))
+                       (("jpg2ff") (string-append #$output "/bin/jpg2ff"))
+                       (("convert") (search-input-file inputs "/bin/convert")))))
+                 (delete 'configure))))
+      (synopsis "Image format and conversion tools")
+      (description
+       "farbfeld is a lossless image format which is easy to parse,
+pipe and compress.")
+      (home-page "https://git.suckless.org/farbfeld/")
+      (license license:isc))))

@@ -50,6 +50,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages kerberos)
+  #:use-module (gnu packages maths)
   #:use-module (gnu packages ninja)
   #:use-module (gnu packages node)
   #:use-module (gnu packages nss)
@@ -122,6 +123,7 @@
     "third_party/ced" ;BSD-3
     "third_party/cld_3" ;ASL2.0
     "third_party/closure_compiler" ;ASL2.0
+    "third_party/cpuinfo" ;BSD-2
     "third_party/crashpad" ;ASL2.0
     "third_party/crashpad/crashpad/third_party/lss" ;ASL2.0
     "third_party/crashpad/crashpad/third_party/zlib/zlib_crashpad.h" ;Zlib
@@ -233,6 +235,7 @@
     "third_party/private-join-and-compute" ;ASL2.0
     "third_party/protobuf" ;BSD-3
     "third_party/protobuf/third_party/six" ;Expat
+    "third_party/pthreadpool" ;BSD-2
     "third_party/pyjson5" ;ASL2.0
     "third_party/qcms" ;Expat
     "third_party/rnnoise" ;BSD-3
@@ -290,6 +293,7 @@
     "third_party/wuffs" ;ASL2.0
     "third_party/xcbproto" ;X11
     "third_party/xdg-utils" ;Expat
+    "third_party/xnnpack" ;BSD-3
 
     ;; These are forked components of the X11 keybinding code.
     "third_party/libxcb-keysyms" ;X11
@@ -312,7 +316,7 @@
   ;; run the Blink performance tests, just remove everything to save ~70MiB.
   '("third_party/blink/perf_tests"))
 
-(define %chromium-version "102.0.5005.115")
+(define %chromium-version "103.0.5060.53")
 (define %ungoogled-revision (string-append %chromium-version "-1"))
 (define %debian-revision "debian/102.0.5005.61-1")
 
@@ -324,7 +328,7 @@
     (file-name (git-file-name "ungoogled-chromium" %ungoogled-revision))
     (sha256
      (base32
-      "1z2xkxxviggyyksga74cqa4v73gynlgzi22ckg8yv84qxrklik6p"))))
+      "1g5ciwzrhg9g13gvhrwqf19djk9jhj1d6nx2f6a8d5ch1mhi2z8s"))))
 
 (define %debian-origin
   (origin
@@ -347,11 +351,7 @@
 
 (define %debian-patches
   (map debian-patch
-       '("upstream/libxml.patch"
-         "upstream/dawn-version-fix.patch"
-         "upstream/blink-ftbfs.patch"
-         "upstream/nested-nested-nested-nested-nested-nested-regex-patterns.patch"
-         "system/jsoncpp.patch"
+       '("system/jsoncpp.patch"
          "system/zlib.patch"
          "system/openjpeg.patch")))
 
@@ -477,7 +477,7 @@
                                   %chromium-version ".tar.xz"))
               (sha256
                (base32
-                "1rj7vy824vn513hiivc90lnxvxyi2s0qkdmfqsdssv9v6zjl079h"))
+                "00di0nw6h3kb0qp2wp3ny3zsar1ayn1lyx5zr28dl1h5cwaaxjqf"))
               (modules '((guix build utils)))
               (snippet (force ungoogled-chromium-snippet))))
     (build-system gnu-build-system)
@@ -880,12 +880,14 @@
            flac
            ffmpeg
            fontconfig
+           fp16
            freetype
+           fxdiv
            gdk-pixbuf
            glib
            gtk+
            harfbuzz-3.0
-           icu4c
+           icu4c-71
            jsoncpp
            lcms
            libevent

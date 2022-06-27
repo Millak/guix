@@ -15,6 +15,7 @@
 ;;; Copyright © 2020, 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2021 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -331,6 +332,18 @@ menu to select one of the installed operating systems.")
                         (string-append "\"" mtools
                                        "/bin/mcopy\"")))
                      #t))))))))))
+
+(define-public grub-efi32
+  (package
+    (inherit grub-efi)
+    (name "grub-efi32")
+    (synopsis "GRand Unified Boot loader (UEFI 32bit version)")
+    (arguments
+     `(,@(substitute-keyword-arguments (package-arguments grub-efi)
+           ((#:configure-flags flags
+             ''()) `(cons* ,(cond ((target-x86?) "--target=i386")
+                                  ((target-arm?) "--target=arm"))
+                           ,flags)))))))
 
 ;; Because grub searches hardcoded paths it's easiest to just build grub
 ;; again to make it find both grub-pc and grub-efi.  There is a command

@@ -1,4 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2015 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
@@ -403,3 +404,73 @@ specified by PEP 517, @code{flit_core.buildapi}.")
     (propagated-inputs
      (modify-inputs (package-propagated-inputs python-flit-core-bootstrap)
        (replace "python-toml" python-tomli)))))
+
+(define-public python-flit-scm
+  (package
+    (name "python-flit-scm")
+    (version "1.6.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "flit_scm" version))
+              (sha256
+               (base32
+                "0p3lj2g1643m2dm14kihvfb6gn6jviglhm3dzdpn2c8zpqs17svg"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no test suite
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-setuptools-scm-version
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("setuptools_scm~=6.4")
+                 "setuptools_scm>=6.3"))))
+          ;; XXX: PEP 517 manual build/install procedures copied from
+          ;; python-isort.
+          (replace 'build
+            (lambda _
+              ;; ZIP does not support timestamps before 1980.
+              (setenv "SOURCE_DATE_EPOCH" "315532800")
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl)))))))
+    (native-inputs
+     (list python-pypa-build
+           python-flit-core
+           python-setuptools-scm
+           python-tomli))
+    (propagated-inputs
+     (list python-flit-core
+           python-setuptools-scm
+           python-tomli))
+    (home-page "https://gitlab.com/WillDaSilva/flit_scm")
+    (synopsis "PEP 518 build backend combining flit_core and setuptools_scm")
+    (description "This package provides a PEP 518 build backend that uses
+@code{setuptools_scm} to generate a version file from your version control
+system, then @code{flit_core} to build the package.")
+    (license license:expat)))
+
+(define-public python-setuptools-scm
+  (package
+    (name "python-setuptools-scm")
+    (version "6.3.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "setuptools_scm" version))
+              (sha256
+               (base32 "1wm0i27siyy1yqr9rv7lqvb65agay9051yi8jzmi8dgb3q4ai6m4"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     `(("python-packaging",python-packaging-bootstrap)
+       ("python-tomli" ,python-tomli)))
+    (home-page "https://github.com/pypa/setuptools_scm/")
+    (synopsis "Manage Python package versions in SCM metadata")
+    (description
+     "Setuptools_scm handles managing your Python package versions in
+@dfn{software configuration management} (SCM) metadata instead of declaring
+them as the version argument or in a SCM managed file.")
+    (license license:expat)))

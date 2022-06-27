@@ -4,7 +4,7 @@
 ;;; Copyright © 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019, 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019, 2021 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2020 Julien Lepiller <julien@lepiller.eu>
+;;; Copyright © 2020, 2022 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
 ;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
@@ -2323,4 +2323,33 @@ provided for the main Python test runners.")
     (synopsis "Pytest plugin to mock httpx")
     (description "This package provides a pytest fixture to mock httpx
 requests to be replied to with user provided responses.")
+    (license license:expat)))
+
+(define-public python-pycotap
+  (package
+    (name "python-pycotap")
+    (version "1.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pycotap" version))
+       (sha256
+        (base32 "1v69fxial9i5wlap6wc4igq3hydvxbak7dlgb7cikk8wjgafqf7r"))))
+    (build-system python-build-system)
+    (home-page "https://el-tramo.be/pycotap")
+    (synopsis "Tiny Python TAP test runner")
+    (description "This package provides a simple Python test runner for
+unittest that outputs Test Anything Protocol (TAP) results to standard
+output.  Contrary to other TAP runners for Python, pycotap...
+@itemize
+@item
+prints TAP (and only TAP) to standard output instead of to a separate file,
+allowing you to pipe it directly to TAP pretty printers and processors;
+@item only contains a TAP reporter, so no parsers, no frameworks, no
+dependencies, etc;
+@item
+is configurable: you can choose how you want the test output and test result
+diagnostics to end up in your TAP output (as TAP diagnostics, YAML blocks, or
+attachments).
+@end itemize")
     (license license:expat)))

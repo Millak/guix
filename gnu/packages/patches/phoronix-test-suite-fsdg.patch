@@ -1,0 +1,308 @@
+Submitted upstream at https://github.com/phoronix-test-suite/phoronix-test-suite/pull/642.
+
+diff --git a/delete-nonfree-metadata b/delete-nonfree-metadata
+new file mode 100755
+index 000000000..e25e3b48c
+--- /dev/null
++++ b/delete-nonfree-metadata
+@@ -0,0 +1,195 @@
++#!/usr/bin/env python3
++
++# Copyright (C) 2022, Maxim Cournoyer
++
++# This program is free software; you can redistribute it and/or modify
++# it under the terms of the GNU General Public License as published by
++# the Free Software Foundation; either version 3 of the License, or
++# (at your option) any later version.
++
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
++# GNU General Public License for more details.
++
++# You should have received a copy of the GNU General Public License
++# along with this program. If not, see <http://www.gnu.org/licenses/>.
++
++# Commentary:
++#
++# This script prunes the 'ob-cache' test metadata cache from any
++# nonfree test.  This is useful for users who concerned with running
++# only free software or distributions complying with the Free Software
++# Distribution Guidelines (GNU FSDG,
++# https://www.gnu.org/distros/free-system-distribution-guidelines.html).
++import argparse
++import json
++import logging
++import pathlib
++import pprint
++import re
++import shutil
++import xml.etree.ElementTree as ET
++
++
++logger = logging.getLogger(__name__)
++logging.basicConfig(level='INFO', format='%(levelname)s: %(message)s')
++
++
++DEFAULT_ROOT_DIR = pathlib.Path(__file__).parent.resolve()
++# Global cache used to keep the test/suite definition licenses, keyed
++# by their test name key (e.g., 'caffe').
++TEST_DEFINITION_LICENSES = {}
++
++
++def get_test_definitions(root_dir=DEFAULT_ROOT_DIR):
++    """Return the list of all test definition XML files."""
++    return sorted(pathlib.Path(root_dir).glob('**/test-definition.xml'))
++
++
++def get_suite_definitions(root_dir=DEFAULT_ROOT_DIR):
++    return sorted(pathlib.Path(root_dir).glob('**/suite-definition.xml'))
++
++
++def get_index_files(root_dir=DEFAULT_ROOT_DIR):
++    return sorted(pathlib.Path(root_dir).glob('**/*.index'))
++
++
++def sanitize_index_files(index_files, nonfree_test_names):
++    """Remove non free test entries from `index_files`."""
++    for index_file in index_files:
++        with index_file.open() as f:
++            index = json.load(f)
++        filtered_tests = {k: v for k, v in index['tests'].items()
++                          if k not in nonfree_test_names}
++        index['tests'] = filtered_tests
++        if index['suites']:
++            filtered_suites = {k: v for k, v in index['suites'].items()
++                               if k not in nonfree_test_names}
++            index['suites'] = filtered_suites
++
++        with index_file.open('w') as f:
++            json.dump(index, f)
++
++
++def get_test_definition_license(test_definition_file,
++                                root_dir=DEFAULT_ROOT_DIR):
++    """Return the licenses from `test_definition_file`, or None."""
++    name = get_name_from_definition_file(test_definition_file)
++    if name in TEST_DEFINITION_LICENSES:
++        return TEST_DEFINITION_LICENSES[name]
++
++    root = ET.parse(test_definition_file)
++    try:
++        license = next(root.iter('License')).text
++    except StopIteration:
++        # No license field; check if it extends another test.
++        try:
++            extended_test = next(root.iter('Extends')).text  # e.g. 'pts/caffe'
++            extended_name = extended_test.split('/')[-1]
++            if extended_name in TEST_DEFINITION_LICENSES:
++                license = TEST_DEFINITION_LICENSES[extended_name]
++            else:
++                extended_definition_file = sorted(
++                    pathlib.Path(root_dir).glob(
++                        '**/test-profiles/' + extended_test
++                        + '-*/test-definition.xml'))[-1]
++                license = get_test_definition_license(extended_definition_file,
++                                                      root_dir)
++        except StopIteration:
++            logger.warning('could not find license for %s',
++                           test_definition_file)
++            return None
++
++    TEST_DEFINITION_LICENSES[name] = license
++    return license
++
++
++def is_test_definition_free(test_definition_file):
++    """True if `test_definition_file` has its license tag set to 'Free'."""
++    license = get_test_definition_license(test_definition_file)
++    return license == 'Free'
++
++
++def is_suite_definition_free(suite_definition_file, nonfree_test_names):
++    """True if `suite_definition_file` is free.
++
++    The suite definition is considered free when it doesn't reference
++    any test part of `nonfree_test_names`.
++    """
++    root = ET.parse(suite_definition_file)
++    for test in root.iter('Test'):
++        test_name = test.text
++        name = test_name.split('/')[-1]  # strip any prefix
++        if name in nonfree_test_names:
++            return False
++
++    return True
++
++
++def get_name_from_definition_file(definition_file):
++    """Return the parent directory name of a definition file.
++
++    The version information in stripped from the name."""
++    parent_dir_name = pathlib.Path(definition_file).parent.name
++    # Strip the version from the name.
++    return re.search(r'^(.*)-', parent_dir_name).group(1)
++
++
++def get_default_user_config_file(root_dir):
++    return next(pathlib.Path(root_dir).glob('**/user-config-defaults.xml'))
++
++
++def disallow_refreshing_repositories(user_config_file):
++    """Set the 'AllowRefreshingRepositoryLists' option to FALSE."""
++    config = ET.parse(user_config_file)
++    for option in config.iter('AllowRefreshingRepositoryLists'):
++        option.text = 'FALSE'
++    config.write(user_config_file)
++
++
++def main(root_dir):
++    # Gather data.
++    test_definitions = get_test_definitions(root_dir)
++    suite_definitions = get_suite_definitions(root_dir)
++    nonfree_test_definitions = [d for d in test_definitions
++                                if not is_test_definition_free(d)]
++    nonfree_test_names = [get_name_from_definition_file(t)
++                          for t in nonfree_test_definitions]
++    nonfree_suite_definitions = [
++        s for s in suite_definitions
++        if not is_suite_definition_free(s, nonfree_test_names)]
++    nonfree_suite_names = [get_name_from_definition_file(s)
++                           for s in nonfree_suite_definitions]
++    nonfree_definitions = nonfree_test_definitions + nonfree_suite_definitions
++    nonfree_definition_names = sorted(set(nonfree_test_names
++                                          + nonfree_suite_names))
++
++    # Delete nonfree definitions.
++    for nonfree_definition in nonfree_definitions:
++        shutil.rmtree(nonfree_definition.parent)
++
++    # Delete nonfree entries in index files.
++    indexes = get_index_files(root_dir)
++    sanitize_index_files(indexes, nonfree_definition_names)
++
++    logger.info('The following nonfree test suites were deleted:\n%s',
++                pprint.pformat([str(d) for d in nonfree_definitions]))
++
++    # This is necessary to avoid downloading the
++    # OpenBenchmarking-provided tests metadata which includes all the
++    # tests, including teh proprietary ones.
++    user_config_file = get_default_user_config_file(root_dir)
++    disallow_refreshing_repositories(user_config_file)
++    logger.info('Disabled test metadata updates in default user config')
++
++
++if __name__ == '__main__':
++    parser = argparse.ArgumentParser(
++        description='Remove nonfree cached metadata')
++    parser.add_argument('--root-dir', type=str,
++                        help='the Phoronix Test Suite root directory',
++                        default=DEFAULT_ROOT_DIR)
++    args = parser.parse_args()
++
++    main(args.root_dir)
+diff --git a/documentation/phoronix-test-suite.md b/documentation/phoronix-test-suite.md
+index c2e04ae4e..0c71ecf37 100644
+--- a/documentation/phoronix-test-suite.md
++++ b/documentation/phoronix-test-suite.md
+@@ -817,7 +817,18 @@ The Phoronix Test Suite can be simply extracted from the downloaded *.tar.gz* or
+ 
+ 
+ ### Generic Installation
+-Running *install-sh* from the root directory of the Phoronix Test Suite will install the software for system-wide access. By default the *phoronix-test-suite* executable is in */usr/bin/* , the Phoronix Test Suite files in */usr/share/phoronix-test-suite/* , and the documentation in / *usr/share/doc/phoronix-test-suite/* . Root access is required. The default installation prefix is /usr/ but can be adjusted as the first argument (example: *install-sh /home/user/* to install the Phoronix Test Suite in your home directory).
++Running *install-sh* from the root directory of the Phoronix Test
++Suite will install the software for system-wide access. By default the
++*phoronix-test-suite* executable is in */usr/bin/* , the Phoronix Test
++Suite files in */usr/share/phoronix-test-suite/* , and the
++documentation in / *usr/share/doc/phoronix-test-suite/* . Root access
++is required. The default installation prefix is /usr/ but can be
++adjusted as the first argument (example: *install-sh /home/user/* to
++install the Phoronix Test Suite in your home directory).  Use the
++`--free-software-only` option of the `install-sh` script if you'd like
++to be offered only test profiles and suites relying on free software
++only.  Note that this option disables the automatic fetching of new
++tests definitions from OpenBenchmarking.org.
+ 
+ 
+ ### Debian/Ubuntu Installation
+@@ -937,6 +948,11 @@ If this option is set to *TRUE* , the system logs (i.e. dmesg, lspci, lsusb, Xor
+ #### AllowResultUploadsToOpenBenchmarking
+ This option defines whether to allow/support result uploads to OpenBenchmarking.org. If set to *FALSE* , the user will not be prompted to allow uploading of test results to the public site.
+ 
++#### AllowRefreshingRepositoryLists
++This option defines whether to allow refreshing the test profiles
++(metadata) content from OpenBenchmarking.org.  If set to *FALSE* ,
++only the locally available test profiles will be used, and no updates
++will made to it.
+ 
+ ## General Options
+ #### DefaultBrowser
+diff --git a/install-sh b/install-sh
+index f6228cde9..ff9bf9bd7 100755
+--- a/install-sh
++++ b/install-sh
+@@ -1,4 +1,5 @@
+ #!/bin/sh
++set -e
+ 
+ # Phoronix Test Suite
+ # URLs: http://www.phoronix.com, http://www.phoronix-test-suite.com/
+@@ -28,6 +29,13 @@ else
+ 	INSTALL_PREFIX="$1"
+ fi
+ 
++# XXX: Perhaps this should be the default?
++for arg in "$@"; do
++    if [ "$arg" = "--free-software-only" ]; then
++        FREE_SOFTWARE_ONLY=yes
++    fi
++done
++
+ # Ensure the user is in the correct directory
+ if [ ! -f pts-core/phoronix-test-suite.php ]
+ then
+@@ -114,6 +122,11 @@ else
+ 
+ fi
+ 
++# Post-installation process.
++if [ -n FREE_SOFTWARE_ONLY ]; then
++    ./delete-nonfree-metadata --root-dir="$DESTDIR$INSTALL_PREFIX/share/phoronix-test-suite/"
++fi
++
+ echo -e "\nPhoronix Test Suite Installation Completed\n
+ Executable File: $INSTALL_PREFIX/bin/phoronix-test-suite
+ Documentation: $INSTALL_PREFIX/share/doc/phoronix-test-suite/
+@@ -124,4 +137,3 @@ then
+ 	echo "Installed to chroot: $DESTDIR"
+ 	echo "Please update your desktop and mime-database manually"
+ fi
+-
+diff --git a/pts-core/objects/pts_openbenchmarking.php b/pts-core/objects/pts_openbenchmarking.php
+index 081f55c31..e9396ea36 100644
+--- a/pts-core/objects/pts_openbenchmarking.php
++++ b/pts-core/objects/pts_openbenchmarking.php
+@@ -330,6 +330,11 @@ class pts_openbenchmarking
+ 	}
+ 	public static function refresh_repository_lists($repos = null, $force_refresh = false)
+ 	{
++        if(!pts_config::read_bool_config('PhoronixTestSuite/Options/OpenBenchmarking/AllowRefreshingRepositoryLists', true))
++        {
++            return true;
++        }
++
+ 		if($repos == null)
+ 		{
+ 			if($force_refresh == false)
+diff --git a/pts-core/static/user-config-defaults.xml b/pts-core/static/user-config-defaults.xml
+index 878c5137f..c9a67df5f 100644
+--- a/pts-core/static/user-config-defaults.xml
++++ b/pts-core/static/user-config-defaults.xml
+@@ -6,6 +6,7 @@
+ 			<IndexCacheTTL>3</IndexCacheTTL>
+ 			<AlwaysUploadSystemLogs>FALSE</AlwaysUploadSystemLogs>
+ 			<AllowResultUploadsToOpenBenchmarking>TRUE</AllowResultUploadsToOpenBenchmarking>
++                        <AllowRefreshingRepositoryLists>TRUE</AllowRefreshingRepositoryLists>
+ 		</OpenBenchmarking>
+ 		<General>
+ 			<DefaultBrowser></DefaultBrowser>

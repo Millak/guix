@@ -10,6 +10,8 @@
 ;;; Copyright © 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Jean-Pierre De Jesus DIAZ <me@jeandudey.tech>
+;;; Copyright © 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,7 +34,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
-  #:use-module (guix licenses)
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages acl)
@@ -116,7 +118,7 @@ mounting and managing @acronym{CIFS, Common Internet File System} shares using
 the Linux kernel CIFS client.")
     (home-page "https://wiki.samba.org/index.php/LinuxCIFS_utils")
     ;; cifs-utils is licensed as GPL3 or later, but 3 files contain LGPL code.
-    (license gpl3+)))
+    (license license:gpl3+)))
 
 (define-public iniparser
   (package
@@ -178,7 +180,7 @@ are easy to read, write, and modify.
 
 The library is small, thread safe, and written in portable ANSI C with no
 external dependencies.")
-    (license x11)))
+    (license license:x11)))
 
 (define-public samba
   (package
@@ -282,7 +284,7 @@ DOS and Windows, OS/2, GNU/Linux and many others.
 
 Samba is an important component to seamlessly integrate Linux/Unix Servers and
 Desktops into Active Directory environments using the winbind daemon.")
-    (license gpl3+)))
+    (license license:gpl3+)))
 
 (define-public samba/fixed
   ;; Version that rarely changes, depended on by libsoup.
@@ -329,7 +331,7 @@ Desktops into Active Directory environments using the winbind daemon.")
     (description
      "Talloc is a hierarchical, reference counted memory pool system with
 destructors.  It is the core memory allocator used in Samba.")
-    (license gpl3+))) ;; The bundled "replace" library uses LGPL3.
+    (license license:gpl3+))) ;; The bundled "replace" library uses LGPL3.
 
 (define-public talloc/static
   (package
@@ -396,7 +398,7 @@ destructors.  It is the core memory allocator used in Samba.")
      "Tevent is an event system based on the talloc memory management library.
 It is the core event system used in Samba.  The low level tevent has support for
 many event types, including timers, signals, and the classic file descriptor events.")
-    (license lgpl3+)))
+    (license license:lgpl3+)))
 
 (define-public ldb
   (package
@@ -452,7 +454,7 @@ many event types, including timers, signals, and the classic file descriptor eve
 is provide a fast database with an LDAP-like API designed to be used within an
 application.  In some ways it can be seen as a intermediate solution between
 key-value pair databases and a real LDAP database.")
-    (license lgpl3+)))
+    (license license:lgpl3+)))
 
 (define-public ppp
   (package
@@ -461,7 +463,7 @@ key-value pair databases and a real LDAP database.")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/paulusmack/ppp")
+                    (url "https://github.com/ppp-project/ppp")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
@@ -469,26 +471,24 @@ key-value pair databases and a real LDAP database.")
                 "1bhhksdclsnkw54a517ndrw55q5zljjbh9pcqz1z4a2z2flxpsgk"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:tests? #f                    ; no check target
-       #:make-flags '("CC=gcc")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'patch-Makefile
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((libc    (assoc-ref inputs "libc"))
-                   (openssl (assoc-ref inputs "openssl"))
-                   (libpcap (assoc-ref inputs "libpcap")))
-               (substitute* "pppd/Makefile.linux"
-                 (("/usr/include/crypt\\.h")
-                  (string-append libc "/include/crypt.h"))
-                 (("/usr/include/openssl")
-                  (string-append openssl "/include/openssl"))
-                 (("/usr/include/pcap-bpf.h")
-                  (string-append libpcap "/include/pcap-bpf.h")))
-               #t))))))
+      (list #:tests? #f                    ;; No "check" target
+            #:make-flags #~(list (string-append "CC=" #$(cc-for-target)))
+            #:phases
+            #~(modify-phases %standard-phases
+                (add-before 'configure 'patch-Makefile
+                  (lambda* (#:key inputs #:allow-other-keys)
+                    (let ((openssl (assoc-ref inputs "openssl"))
+                          (libpcap (assoc-ref inputs "libpcap")))
+                      (substitute* "pppd/Makefile.linux"
+                        (("/usr/include/openssl")
+                         (string-append openssl "/include"))
+                        (("-DPPP_FILTER")
+                         (string-append "-DPPP_FILTER -I" libpcap "/include")))
+                      (substitute* "pppd/pppcrypt.h"
+                        (("des\\.h") "openssl/des.h")))
+                    #t)))))
     (inputs
-     (list libpcap
-           (@ (gnu packages tls) openssl)))
+     (list libpcap openssl))
     (synopsis "Implementation of the Point-to-Point Protocol")
     (home-page "https://ppp.samba.org/")
     (description
@@ -498,5 +498,7 @@ and IPV6 and the protocols layered above them, such as TCP and UDP.")
     ;; pppd, pppstats and pppdump are under BSD-style notices.
     ;; some of the pppd plugins are GPL'd.
     ;; chat is public domain.
-    (license (list bsd-3 bsd-4 gpl2+ public-domain))))
-
+    (license (list license:bsd-3
+                   license:bsd-4
+                   license:gpl2+
+                   license:public-domain))))

@@ -1101,6 +1101,14 @@ provides the GNU compiler for the Go programming language."))
   (custom-gcc gcc-10 "gcc-objc" '("objc")
               %objc-search-paths))
 
+(define-public gcc-objc-11
+  (custom-gcc gcc-11 "gcc-objc" '("objc")
+              %objc-search-paths))
+
+(define-public gcc-objc-12
+  (custom-gcc gcc-12 "gcc-objc" '("objc")
+              %objc-search-paths))
+
 (define-public gcc-objc gcc-objc-10)
 
 (define %objc++-search-paths
@@ -1141,6 +1149,14 @@ provides the GNU compiler for the Go programming language."))
 
 (define-public gcc-objc++-10
   (custom-gcc gcc-10 "gcc-objc++" '("obj-c++")
+              %objc++-search-paths))
+
+(define-public gcc-objc++-11
+  (custom-gcc gcc-11 "gcc-objc++" '("obj-c++")
+              %objc++-search-paths))
+
+(define-public gcc-objc++-12
+  (custom-gcc gcc-12 "gcc-objc++" '("obj-c++")
               %objc++-search-paths))
 
 (define-public gcc-objc++ gcc-objc++-10)

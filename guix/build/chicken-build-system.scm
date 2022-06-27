@@ -112,6 +112,17 @@ unpacking."
   (when tests?
     (invoke "chicken-install" "-cached" "-test" "-no-install" egg-name)))
 
+(define* (stamp-egg-version #:key egg-name name #:allow-other-keys)
+  "Check if EGG-NAME.egg contains version information and add some if not."
+  (let* ((filename (string-append egg-name "/" egg-name ".egg"))
+         (egg-info (call-with-input-file filename read))
+         (ver? (find (lambda (i) (eqv? (car i) 'version)) egg-info))
+         (ver (substring name (1+ (string-rindex name #\-)))))
+    (when (not ver?)
+      (make-file-writable filename)
+      (call-with-output-file filename
+        (lambda (f) (write (cons `(version ,ver) egg-info) f))))))
+
 ;; It doesn't look like Chicken generates any unnecessary references.
 ;; So we don't have to remove them either. Nice.
 
@@ -122,6 +133,7 @@ unpacking."
     (delete 'configure)
     (delete 'patch-generated-file-shebangs)
     (add-before 'unpack 'setup-chicken-environment setup-chicken-environment)
+    (add-before 'build 'stamp-egg-version stamp-egg-version)
     (replace 'build build)
     (delete 'check)
     (replace 'install install)

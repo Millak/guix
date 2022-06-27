@@ -1088,7 +1088,7 @@ computing in Python.  It extends both the @code{concurrent.futures} and
 (define-public python-modin
   (package
     (name "python-modin")
-    (version "0.10.1")
+    (version "0.15.1")
     (source
      (origin
        ;; The archive on pypi does not include all required files.
@@ -1099,7 +1099,7 @@ computing in Python.  It extends both the @code{concurrent.futures} and
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "128ghfb9ncmnn8km409xjcdppvn9nr9jqw8rkvsfavh7wnwlk509"))))
+         "0nf2pdqna2vn7vq7q7b51f3cfbrxfn77pyif3clibjsxzvfm9k03"))))
     (build-system python-build-system)
     (arguments
      `(#:phases

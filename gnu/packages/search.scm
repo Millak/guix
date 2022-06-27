@@ -10,6 +10,7 @@
 ;;; Copyright © 2021 Alexandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2021, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
+;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -27,8 +28,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages search)
-  #:use-module ((guix licenses)
-                #:select (gpl2 gpl2+ gpl3+ agpl3+ lgpl2.1+ bsd-3 x11 perl-license))
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -73,14 +73,14 @@
 (define-public xapian
   (package
     (name "xapian")
-    (version "1.4.18")
+    (version "1.4.19")
     ;; Note: When updating Xapian, remember to update xapian-bindings below.
     (source (origin
               (method url-fetch)
               (uri (string-append "https://oligarchy.co.uk/xapian/" version
                                   "/xapian-core-" version ".tar.xz"))
               (sha256
-               (base32 "0xsb4ihf3p767f0zx9p4janwni6r9sg5j6lry0002i8hmnsdnv8r"))))
+               (base32 "1hx92kbqdl38gsrwzvbqgf2jc4wwzsad2gd99g62cdfclvy4ijhz"))))
     (build-system gnu-build-system)
     (inputs (list zlib
                   `(,util-linux "lib")))
@@ -106,7 +106,7 @@ add advanced indexing and search facilities to their own applications.  It
 supports the Probabilistic Information Retrieval model and also supports a
 rich set of boolean query operators.")
     (home-page "https://xapian.org/")
-    (license (list gpl2+ bsd-3 x11))))
+    (license (list license:gpl2+ license:bsd-3 license:x11))))
 
 (define-public python-xapian-bindings
   (package (inherit xapian)
@@ -118,7 +118,7 @@ rich set of boolean query operators.")
                                   "/xapian-bindings-" version ".tar.xz"))
               (sha256
                (base32
-                "13ziql8027glgihgvnbsa75vkcn82g83mbihj60zf0njj170clpy"))))
+                "0gc8l9cn8jdma0p73jl14z17yizp6dax5zsycvgprajii6j8bhwi"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--with-python3")
@@ -133,7 +133,7 @@ rich set of boolean query operators.")
     (inputs
      (list python xapian zlib))
     (synopsis "Python bindings for the Xapian search engine library")
-    (license gpl2+)))
+    (license license:gpl2+)))
 
 (define-public perl-search-xapian
   (package
@@ -157,7 +157,7 @@ rich set of boolean query operators.")
      "Search::Xapian wraps most methods of most Xapian classes.  The missing
 classes and methods should be added in the future.  It also provides a
 simplified, more 'perlish' interface to some common operations.")
-    (license perl-license)))
+    (license license:perl-license)))
 
 (define-public libtocc
   (package
@@ -201,7 +201,7 @@ simplified, more 'perlish' interface to some common operations.")
 system.  The goal of Tocc is to provide a better system for classifying files
 that is more flexible than classic file systems that are based on a tree of
 files and directories.")
-    (license gpl3+)))
+    (license license:gpl3+)))
 
 (define-public tocc
   (package
@@ -222,7 +222,7 @@ files and directories.")
     (description
      "Tocc is a tag-based file management system.  This package contains the
 command line tool for interacting with libtocc.")
-    (license gpl3+)))
+    (license license:gpl3+)))
 
 (define-public searx
   (package
@@ -269,7 +269,7 @@ command line tool for interacting with libtocc.")
     (home-page "https://searx.github.io/searx/")
     (synopsis "Privacy-respecting metasearch engine")
     (description "Searx is a privacy-respecting, hackable metasearch engine.")
-    (license agpl3+)))
+    (license license:agpl3+)))
 
 (define-public bool
   (package
@@ -294,7 +294,7 @@ statements, as well as the NEAR statement to search for the occurrence of
 words in close proximity to each other.  It handles context gracefully,
 accounting for new lines and paragraph changes.  It also has robust support
 for parsing HTML files.")
-    (license gpl3+)))
+    (license license:gpl3+)))
 
 (define-public fsearch
   (package
@@ -325,7 +325,7 @@ for parsing HTML files.")
     (description
      "FSearch is a fast file search utility, inspired by Everything
 Search Engine.  It is written in C and based on GTK3.")
-    (license gpl2+)))
+    (license license:gpl2+)))
 
 (define-public recoll
   (package
@@ -421,7 +421,7 @@ their file names.  It can search most document formats, but you may need
 external applications for text extraction.  It can reach any storage place:
 files, archive members, email attachments, transparently handling
 decompression.")
-    (license gpl2+)))
+    (license license:gpl2+)))
 
 (define-public hyperestraier
   (package
@@ -447,7 +447,7 @@ decompression.")
     (description "Hyper Estraier can be used to integrate full-text
 search into applications, using either the provided command line and CGI
 interfaces, or a C API.")
-    (license lgpl2.1+)))
+    (license license:lgpl2.1+)))
 
 (define-public mlocate
   (package
@@ -470,7 +470,7 @@ most of the file system, which makes it faster and does not trash the system
 caches as much.  The locate(1) utility is intended to be completely compatible
 with slocate, and attempts to be compatible to GNU locate when it does not
 conflict with slocate compatibility.")
-    (license gpl2)))
+    (license license:gpl2)))
 
 (define-public plocate
   (package
@@ -508,7 +508,7 @@ conflict with slocate compatibility.")
     (description "Plocate is a @code{locate} based on posting lists,
 completely replacing @command{mlocate} with a faster and smaller index.  It is
 suitable as a default locate on your system.")
-    (license gpl2)))
+    (license license:gpl2)))
 
 (define-public swish-e
   (package
@@ -569,7 +569,7 @@ suitable as a default locate on your system.")
      "Swish-e is Simple Web Indexing System for Humans - Enhanced.  Swish-e
 can quickly and easily index directories of files or remote web sites and
 search the generated indexes.")
-    (license gpl2+)))                   ;with exception
+    (license license:gpl2+)))           ; with exception
 
 (define-public xapers
   (package
@@ -637,7 +637,7 @@ geared towards academic journal articles build on the Xapian search engine.
 Think of it as your own personal document search engine, or a local cache of
 online libraries.  It provides fast search of document text and
 bibliographic data and simple document and bibtex retrieval.")
-    (license gpl3+)))
+    (license license:gpl3+)))
 
 (define-public ugrep
   (package
@@ -692,6 +692,6 @@ multi-threaded and other techniques to speed up search, pattern-matching and
 decompression.  Many pre-defined regexps ease searching e.g. C typdefs or XML
 attributes.  Results can be output in several structured or self-defined
 formats.")
-    (license bsd-3)))
+    (license license:bsd-3)))
 
 ;;; search.scm ends here

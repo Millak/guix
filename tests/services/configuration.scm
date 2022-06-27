@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
+;;; Copyright © 2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -19,6 +20,7 @@
 
 (define-module (tests services configuration)
   #:use-module (gnu services configuration)
+  #:use-module (guix diagnostics)
   #:use-module (guix gexp)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-64))
@@ -42,6 +44,17 @@
 (test-equal "default value, no serialization"
   80
   (port-configuration-port (port-configuration)))
+
+(test-equal "wrong type for a field"
+  '("configuration.scm" 57 11)                    ;error location
+  (guard (c ((configuration-error? c)
+             (let ((loc (error-location c)))
+               (list (basename (location-file loc))
+                     (location-line loc)
+                     (location-column loc)))))
+    (port-configuration
+     ;; This is line 56; the test relies on line/column numbers!
+     (port "This is not a number!"))))
 
 (define-configuration port-configuration-cs
   (port (number 80) "The port number." empty-serializer))

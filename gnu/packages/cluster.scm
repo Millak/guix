@@ -2,7 +2,7 @@
 ;;; Copyright © 2018 Sou Bunnbu <iyzsong@member.fsf.org>
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Andrew Miloradovsky <andrew@interpretmath.pw>
-;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Dion Mendel <guix@dm9.info>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -22,6 +22,7 @@
 
 (define-module (gnu packages cluster)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix gexp)
   #:use-module (guix build-system gnu)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -29,27 +30,30 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages docbook)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages ruby)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages texinfo)
-  #:use-module (gnu packages tls))
+  #:use-module (gnu packages tls)
+  #:use-module (gnu packages xml))
 
 (define-public drbd-utils
   (package
     (name "drbd-utils")
-    (version "9.19.1")
+    (version "9.21.2")
     (source (origin
               (method url-fetch)
               (uri (list (string-append "https://pkg.linbit.com/downloads/drbd"
                                         "/utils/drbd-utils-" version ".tar.gz")))
               (sha256
                (base32
-                "1l99kcrb0j85wxxmrdihpx9bk1a4sdi7wlp5m1x5l24k8ck1m5cf"))
+                "1zhinblhpfb7wq3wkaim4xzx1m89671djvnrf4vjabfzpclkz60h"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -65,62 +69,73 @@
                   (substitute* "configure"
                     ;; Use a sensible default udev rules directory.
                     (("default_udevdir=/lib/udev")
-                     "default_udevdir='${prefix}/lib/udev'"))
-                  #t))))
+                     "default_udevdir='${prefix}/lib/udev'"))))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags '(;; Do not install sysv or systemd init scripts.
-                           "--with-initscripttype=none"
-                           ;; Use the pre-built manual pages present in release
-                           ;; tarballs instead of generating them from scratch.
-                           "--with-prebuiltman"
-                           ;; Disable support for DRBD 8.3 as it is only for
-                           ;; Linux-Libre versions < 3.8.  8.4 is the latest
-                           ;; kernel driver as of Linux 5.7.
-                           "--without-83support"
-                           "--sysconfdir=/etc"
-                           "--localstatedir=/var")
-       #:test-target "test"
-       #:make-flags '("WANT_DRBD_REPRODUCIBLE_BUILD=yesplease")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'patch-generated-file-shebangs 'patch-documentation
-           (lambda _
-             ;; The preceding phase misses some Makefiles with unusual file
-             ;; names, so we handle those here.
-             (for-each patch-makefile-SHELL (find-files "documentation/common"
-                                                        "^Makefile"))
-             #t))
-         (add-before 'configure 'use-absolute-/lib/drbd
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               ;; Look for auxiliary executables below exec_prefix instead
-               ;; of assuming /lib/drbd (see TODO comment in the file).
-               (substitute* "user/v9/drbdtool_common.c"
-                 (("\"/lib/drbd\"")
-                  (string-append "\"" out "/lib/drbd\"")))
-               #t)))
-         (add-after 'configure 'adjust-installation-directories
-           (lambda _
-             ;; Do not attempt to create /etc or /var.
-             (substitute* "scripts/Makefile"
-               (("\\$\\(DESTDIR\\)\\$\\(sysconfdir\\)")
-                "$(DESTDIR)$(prefix)$(sysconfdir)"))
-             (substitute* "user/v84/Makefile"
-               (("\\$\\(DESTDIR\\)\\$\\(localstatedir\\)")
-                "$(DESTDIR)$(prefix)$(localstatedir)")
-               (("\\$\\(DESTDIR\\)/lib/drbd")
-                "$(DESTDIR)$(prefix)/lib/drbd"))
-             (substitute* "user/v9/Makefile"
-               (("\\$\\(DESTDIR\\)\\$\\(localstatedir\\)")
-                "$(DESTDIR)$(prefix)$(localstatedir)")
-               (("\\$\\(DESTDIR\\)\\$\\(DRBD_LIB_DIR\\)")
-                "$(DESTDIR)$(prefix)$(DRBD_LIB_DIR)"))
-             #t)))))
+     (list
+      #:configure-flags
+      #~(list "--sysconfdir=/etc"
+              "--localstatedir=/var"
+              ;; Do not install sysv or systemd init scripts.
+              "--with-initscripttype=none"
+              ;; Disable support for DRBD 8.3 as it is only for
+              ;; Linux-Libre versions < 3.8.  8.4 is the latest
+              ;; kernel driver as of Linux 5.18.
+              "--without-83support")
+      #:test-target "test"
+      #:make-flags #~(list "WANT_DRBD_REPRODUCIBLE_BUILD=yesplease")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-ja-translation
+            (lambda _
+              ;; XXX: The japanese documentation cannot be created due to
+              ;; several "Invalid po file" and "use of uninitialized variable"
+              ;; in po4a.
+              (substitute* "Makefile.in"
+                (("(DOC_DIRS.*)documentation/ja/v[[:digit:]]+" _ match)
+                 match)
+                (("[[:blank:]]+\\$\\(MAKE\\) -C documentation/ja/v[[:digit:]]+.*")
+                 ""))))
+          (add-after 'patch-generated-file-shebangs 'patch-documentation
+            (lambda _
+              ;; The preceding phase misses some Makefiles with unusual file
+              ;; names, so we handle those here.
+              (for-each patch-makefile-SHELL (find-files "documentation/common"
+                                                         "^Makefile"))))
+          (add-before 'configure 'use-absolute-/lib/drbd
+            (lambda _
+              ;; Look for auxiliary executables below exec_prefix instead
+              ;; of assuming /lib/drbd (see TODO comment in the file).
+              (substitute* "user/v9/drbdtool_common.c"
+                (("\"/lib/drbd\"")
+                 (string-append "\"" #$output "/lib/drbd\"")))))
+          (add-after 'configure 'adjust-installation-directories
+            (lambda _
+              ;; Do not attempt to create /etc or /var.
+              (substitute* "scripts/Makefile"
+                (("\\$\\(DESTDIR\\)\\$\\(sysconfdir\\)")
+                 "$(DESTDIR)$(prefix)$(sysconfdir)"))
+              (substitute* "user/v84/Makefile"
+                (("\\$\\(DESTDIR\\)\\$\\(localstatedir\\)")
+                 "$(DESTDIR)$(prefix)$(localstatedir)")
+                (("\\$\\(DESTDIR\\)/lib/drbd")
+                 "$(DESTDIR)$(prefix)/lib/drbd"))
+              (substitute* "user/v9/Makefile"
+                (("\\$\\(DESTDIR\\)\\$\\(localstatedir\\)")
+                 "$(DESTDIR)$(prefix)$(localstatedir)")
+                (("\\$\\(DESTDIR\\)\\$\\(DRBD_LIB_DIR\\)")
+                 "$(DESTDIR)$(prefix)$(DRBD_LIB_DIR)")))))))
     (native-inputs
-     `(("clitest" ,clitest)
-       ("flex" ,flex)
-       ("udev" ,eudev)))          ;just to satisfy a configure check
+     (list clitest
+           eudev                        ;just to satisfy a configure check
+           flex
+           ;; For the documentation.
+           docbook-xml
+           docbook-xml-4.4              ;used by documentation/ra2refentry.xsl
+           docbook-xsl
+           libxml2                      ;for XML_CATALOG_FILES
+           libxslt                      ;for xsltproc
+           ruby-asciidoctor))
     (home-page "https://www.linbit.com/drbd/")
     (synopsis "Replicate block devices between machines")
     (description
@@ -128,6 +143,9 @@
 shared-nothing, replicated storage solution mirroring the content of block
 devices (hard disks, partitions, logical volumes etc.) over any network
 connection.  This package contains the userland utilities.")
+    (properties
+     '((release-monitoring-url
+        . "https://www.linbit.com/en/drbd-community/drbd-download/")))
     (license license:gpl2+)))
 
 (define-public keepalived

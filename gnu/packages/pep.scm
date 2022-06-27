@@ -33,6 +33,7 @@
   #:use-module (gnu packages mail) ; for libetpan
   #:use-module (gnu packages nettle)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages sequoia)
   #:use-module (gnu packages sqlite)

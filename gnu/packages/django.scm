@@ -1198,13 +1198,13 @@ FileFields during tests.")
 (define-public python-django-auth-ldap
   (package
     (name "python-django-auth-ldap")
-    (version "4.0.0")
+    (version "4.1.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "django-auth-ldap" version))
               (sha256
                (base32
-                "0fajn4bk7m1hk0mjz97q7vlfzh7ibzv8f4qn7zhkq26f4kk7jvr7"))))
+                "0jd9jms9qpa92fk5n7gqcxjk3zs6ay79r73ann7cw1vqn79lkxvp"))))
     (build-system python-build-system)
     (arguments
      (list #:phases
@@ -1271,13 +1271,13 @@ to ElasticSearch.")
 (define-public python-django-netfields
   (package
     (name "python-django-netfields")
-    (version "1.2.4")
+    (version "1.3.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "django-netfields" version))
               (sha256
                (base32
-                "0jwlbyaxk91fq69g2y0zpfjgmjgh6l0lqm5mhys7m5968lkihvgp"))))
+                "122d0db1f420cwzrd7hynfbnnpqkjj2ridym5mrnj0l736nin5rr"))))
     (build-system python-build-system)
     (arguments '(#:tests? #f))      ;XXX: Requires a running PostgreSQL server
     (propagated-inputs

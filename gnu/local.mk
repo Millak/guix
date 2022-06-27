@@ -960,6 +960,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/cling-use-shared-library.patch		\
   %D%/packages/patches/clucene-pkgconfig.patch			\
   %D%/packages/patches/cmake-curl-certificates.patch		\
+  %D%/packages/patches/cmh-support-fplll.patch      		\
   %D%/packages/patches/coda-use-system-libs.patch		\
   %D%/packages/patches/collectd-5.11.0-noinstallvar.patch		\
   %D%/packages/patches/combinatorial-blas-awpm.patch		\
@@ -1000,7 +1001,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/docbook-xsl-support-old-url.patch	\
   %D%/packages/patches/doc++-include-directives.patch		\
   %D%/packages/patches/doc++-segfault-fix.patch			\
-  %D%/packages/patches/docker-fix-tests.patch			\
   %D%/packages/patches/dovecot-trees-support-dovecot-2.3.patch	\
   %D%/packages/patches/dstat-fix-crash-when-specifying-delay.patch	\
   %D%/packages/patches/dstat-skip-devices-without-io.patch	\
@@ -1611,6 +1611,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/perl-reproducible-build-date.patch	\
   %D%/packages/patches/perl-www-curl-fix-struct-void.patch	\
   %D%/packages/patches/perl-www-curl-remove-symbol.patch	\
+  %D%/packages/patches/phoronix-test-suite-fsdg.patch		\
   %D%/packages/patches/php-bug-74093-test.patch \
   %D%/packages/patches/php-openssl_x509_checkpurpose_basic.patch	\
   %D%/packages/patches/picard-fix-id3-rename-test.patch		\

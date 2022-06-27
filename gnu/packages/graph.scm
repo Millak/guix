@@ -461,8 +461,8 @@ contains supporting code for evaluation and parameter tuning.")
                (lambda ()
                  (let ((python-version ,(version-major+minor (package-version python))))
                    (format #t "\
-PYTHONCFLAGS =-I~a/include/python~am/ -I~a/lib/python~a/site-packages/numpy/core/include
-LIBS = -lpython~am -lfaiss
+PYTHONCFLAGS =-I~a/include/python~a/ -I~a/lib/python~a/site-packages/numpy/core/include
+LIBS = -lpython~a -lfaiss
 SHAREDFLAGS = -shared -fopenmp
 CXXFLAGS = -fpermissive -fopenmp -fPIC
 CPUFLAGS = ~{~a ~}~%"

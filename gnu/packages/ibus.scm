@@ -9,6 +9,8 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Songlin Jiang <hollowman@hollowman.ml>
+;;; Copyright © 2021 Taiju HIGASHI <higashi@taiju.info>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -307,7 +309,7 @@ Chinese pinyin input methods.")
 (define-public ibus-anthy
   (package
     (name "ibus-anthy")
-    (version "1.5.9")
+    (version "1.5.14")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -315,34 +317,41 @@ Chinese pinyin input methods.")
                     version "/ibus-anthy-" version ".tar.gz"))
               (sha256
                (base32
-                "1y8sf837rmp662bv6zakny0xcm7c9c5qda7f9kq9riv9ywpcbw6x"))))
+                "16vd0k8wm13s38869jqs3dnwmjvywgn0snnpyi41m28binhlssf8"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags
        ;; Use absolute exec path in the anthy.xml.
        (list (string-append "--libexecdir=" %output "/libexec"))
+       ;; The test suite fails (see:
+       ;; https://github.com/ibus/ibus-anthy/issues/28).
+       #:tests? #f
        #:phases
        (modify-phases %standard-phases
          (add-after 'install 'wrap-programs
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (for-each
-                (lambda (prog)
-                  (wrap-program (string-append out "/libexec/" prog)
-                    `("GUIX_PYTHONPATH" ":" prefix
-                      (,(getenv "GUIX_PYTHONPATH")))
-                    `("GI_TYPELIB_PATH" ":" prefix
-                      (,(getenv "GI_TYPELIB_PATH")
-                       ,(string-append out "/lib/girepository-1.0")))))
-                '("ibus-engine-anthy" "ibus-setup-anthy"))
-               #t))))))
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (for-each (lambda (prog)
+                         (wrap-program (search-input-file
+                                        outputs (string-append "libexec/" prog))
+                           `("GUIX_PYTHONPATH" ":" prefix
+                             (,(getenv "GUIX_PYTHONPATH")))
+                           `("GI_TYPELIB_PATH" ":" prefix
+                             (,(getenv "GI_TYPELIB_PATH")
+                              ,(search-input-directory
+                                inputs "lib/girepository-1.0")))))
+                       '("ibus-engine-anthy" "ibus-setup-anthy")))))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python)))
+     (list gettext-minimal
+           `(,glib "bin")
+           intltool
+           pkg-config
+           python))
     (inputs
-     (list anthy gtk+ ibus gobject-introspection python-pygobject))
+     (list anthy
+           gtk+
+           ibus
+           gobject-introspection
+           python-pygobject))
     (synopsis "Anthy Japanese language input method for IBus")
     (description "IBus-Anthy is an engine for the input bus \"IBus\").  It
 adds the Anthy Japanese language input method to IBus.  Because most graphical

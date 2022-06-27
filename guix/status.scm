@@ -667,13 +667,14 @@ case where BV does not contain only valid UTF-8."
           (close-port port)
           str)))))
 
-(define (bytevector-index bv number offset count)
-  "Search for NUMBER in BV starting from OFFSET and reading up to COUNT bytes;
-return the offset where NUMBER first occurs or #f if it could not be found."
+(define (bytevector-index bv numbers offset count)
+  "Search for NUMBERS in BV starting from OFFSET and reading up to COUNT bytes;
+return the offset where one of NUMBERS first occurs or #f if they could not be
+found."
   (let loop ((offset offset)
              (count count))
     (cond ((zero? count) #f)
-          ((= (bytevector-u8-ref bv offset) number) offset)
+          ((memv (bytevector-u8-ref bv offset) numbers) offset)
           (else (loop (+ 1 offset) (- count 1))))))
 
 (define (split-lines str)
@@ -774,7 +775,12 @@ The second return value is a thunk to retrieve the current state."
             (set! %build-output '())
             (set! %build-output-pid #f))
           keep)
-        (match (bytevector-index bv (char->integer #\newline)
+
+        ;; Search for both '\n' and '\r'; the latter is appears in progress
+        ;; messages sent by 'guix substitute' through the daemon.
+        (match (bytevector-index bv
+                                 (list (char->integer #\newline)
+                                       (char->integer #\return))
                                  offset count)
           ((? integer? cr)
            (let* ((tail (maybe-utf8->string

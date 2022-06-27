@@ -1396,6 +1396,79 @@ generate bitmaps.")
      `(("python" ,python-2)
        ,@(alist-delete "python" (package-inputs fontforge))))))
 
+(define-public python-statmake
+  (package
+    (name "python-statmake")
+    (version "0.5.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/daltonmaag/statmake")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0qavzspxhwnaayj5mxq6ncjjziggabxj157ls04h2rdrpq167706"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: PEP 517 manual build copied from python-isort.
+          (add-after 'unpack 'adjust-for-older-attrs
+            ;; Our older attrs package is using the 'attr' rather than 'attrs'
+            ;; namespace.
+            ;; TODO: Remove after python-attrs is updated to >= 21.4.0.
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("attrs = \">=21.3\"")
+                 "attrs = \">=21.2\""))
+              (substitute* (find-files "." "\\.py$")
+                (("from attrs\\b")
+                 "from attr")
+                (("import attrs")
+                 "import attr")
+                (("@attrs")
+                 "@attr")
+                (("\\battrs\\.")
+                 "attr."))))
+          (replace 'build
+            (lambda _
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (replace 'install
+            (lambda _
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv" "tests"
+                        ;;"-n" (number->string (parallel-job-count))
+                        ;; This test requires orjson, which needs the maturin
+                        ;; build system and new Rust dependencies.
+                        ;;"--ignore" "tests/test_preconf.py"
+                        )))))))
+    (native-inputs
+     (list python-poetry-core
+           python-pypa-build
+           python-pytest
+           python-ufo2ft))
+    (propagated-inputs
+     (list python-attrs
+           python-cattrs
+           python-fonttools))
+    (home-page "https://github.com/daltonmaag/statmake")
+    (synopsis "Apply OpenType STAT information to a variable font")
+    (description
+     "@command{statmake} takes a user-written Stylespace that defines
+@url{https://docs.microsoft.com/en-us/typography/opentype/spec/stat, OpenType
+STAT information} for an entire font family and then (potentially subsets and)
+applies it to a specific variable font.  This spares users from having to deal
+with @url{https://github.com/fonttools/fonttools/, raw TTX dumps} and juggling
+with @samp{nameIDs}.")
+    (license license:expat)))
+
 (define-public python-ufolib2
   (package
     (name "python-ufolib2")

@@ -106,7 +106,7 @@
                   ;; Make sure Tramp looks for binaries in the right places on
                   ;; remote Guix System machines, where 'getconf PATH' returns
                   ;; something bogus.
-                  (substitute* "net/tramp-sh.el"
+                  (substitute* "net/tramp.el"
                     ;; Patch the line after "(defcustom tramp-remote-path".
                     (("\\(tramp-default-remote-path")
                      (format #f "(tramp-default-remote-path ~s ~s ~s ~s "

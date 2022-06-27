@@ -131,6 +131,7 @@
   #:use-module (gnu packages popt)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-science)
@@ -650,13 +651,13 @@ replacement for the code@{python-memcached} library.")
 (define-public litecli
  (package
   (name "litecli")
-  (version "1.8.0")
+  (version "1.9.0")
   (source
    (origin
      (method url-fetch)
      (uri (pypi-uri "litecli" version))
      (sha256
-      (base32 "0ghh8hq5bw3y2ybiy4ibbdfz55jxvilg1s6zmhxmqikhg5s95xh2"))))
+      (base32 "1897divrdqlhl1p5jvvm29rg3d99f48s58na7hgdzm1x13x2rbr1"))))
   (build-system python-build-system)
   (propagated-inputs
    (list python-cli-helpers
@@ -1184,14 +1185,14 @@ and high-availability (HA).")
 (define-public postgresql-14
   (package
     (name "postgresql")
-    (version "14.3")
+    (version "14.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://ftp.postgresql.org/pub/source/v"
                                   version "/postgresql-" version ".tar.bz2"))
               (sha256
                (base32
-                "0f5gm43hx8j67nfad8mrfhzb9aq4brfgka5d0nf936pmicv5g417"))
+                "0slg7ld5mldmv3pn1wxxwglm4s3xc6c91ixx24apj713qlvn4fy2"))
               (patches (search-patches "postgresql-disable-resolve_symlinks.patch"))))
     (build-system gnu-build-system)
     (arguments
@@ -1426,7 +1427,7 @@ PostgreSQL extension, providing automatic partitioning across time and space
 (define-public pgloader
   (package
     (name "pgloader")
-    (version "3.6.3")
+    (version "3.6.4")
     (source
      (origin
        (method git-fetch)
@@ -1434,7 +1435,7 @@ PostgreSQL extension, providing automatic partitioning across time and space
              (url "https://github.com/dimitri/pgloader")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "147dcf0rmi94p95dvifx8qy7602fvs041dv9wlg3q31ly13agwb5"))
+        (base32 "05lpa0r5l7pvx97ljfb0cryxz11krczbb86gi1i1ixp0h9bvqw2a"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
