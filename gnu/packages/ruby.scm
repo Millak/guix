@@ -8761,14 +8761,14 @@ neither too verbose nor too minimal.")
 (define-public ruby-sqlite3
   (package
     (name "ruby-sqlite3")
-    (version "1.4.2")
+    (version "1.4.4")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "sqlite3" version))
        (sha256
         (base32
-         "0lja01cp9xd5m6vmx99zwn4r7s97r1w5cb76gqd8xhbm1wxyzf78"))))
+         "1z1wa639c278bsipczn6kv8b13fj85pi8gk7x462chqx6k0wm0ax"))))
     (build-system ruby-build-system)
     (arguments
      `(#:phases
@@ -8779,7 +8779,7 @@ neither too verbose nor too minimal.")
     (inputs
      (list sqlite))
     (native-inputs
-     (list ruby-hoe ruby-rake-compiler ruby-mini-portile))
+     (list ruby-hoe ruby-rake-compiler ruby-mini-portile-2))
     (synopsis "Interface with SQLite3 databases")
     (description
      "This module allows Ruby programs to interface with the SQLite3 database
