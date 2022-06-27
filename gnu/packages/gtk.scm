@@ -268,10 +268,10 @@ output.  Experimental backends include OpenGL, BeOS, OS/2, and DirectFB.")
            python-wrapper
            which))
     (arguments
-     `(#:configure-flags `("--with-graphite2"
-                           "--with-gobject"
-                           ,(string-append
-                             "--bindir=" (assoc-ref %outputs "bin") "/bin"))))
+     (list #:configure-flags
+           #~(list "--with-graphite2"
+                   "--with-gobject"
+                   (string-append "--bindir=" #$output:bin "/bin"))))
     (synopsis "OpenType text shaping engine")
     (description
      "HarfBuzz is an OpenType text shaping engine.")
