@@ -2404,6 +2404,30 @@ Nimblegen, cDNA, etc.).  Note that BAC does not deal with normalization, so
 you will have to normalize your data beforehand.")
     (license license:artistic2.0)))
 
+(define-public r-bader
+  (package
+    (name "r-bader")
+    (version "1.34.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "BADER" version))
+              (sha256
+               (base32
+                "0i5x1r2ns1hxhqk5jyfqird81hck1hllvvgx5bn0rb5vl99g8spm"))))
+    (properties `((upstream-name . "BADER")))
+    (build-system r-build-system)
+    (home-page "https://bioconductor.org/packages/BADER")
+    (synopsis
+     "Bayesian analysis of differential expression in RNA sequencing data")
+    (description
+     "The BADER package is intended for the analysis of RNA sequencing data.
+The algorithm fits a Bayesian hierarchical model for RNA sequencing count
+data.  BADER returns the posterior probability of differential expression for
+each gene between two groups A and B.  The joint posterior distribution of the
+variables in the model can be returned in the form of posterior samples, which
+can be used for further down-stream analyses such as gene set enrichment.")
+    (license license:gpl2)))
+
 (define-public r-biocversion
   (package
     (name "r-biocversion")
