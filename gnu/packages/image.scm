@@ -96,6 +96,7 @@
   #:use-module (gnu packages fonts)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix utils)
@@ -577,13 +578,11 @@ extracting icontainer icon files.")
    (outputs '("out"
               "doc"))                           ;1.8 MiB of HTML documentation
    (arguments
-    ;; Instead of using --docdir, this package has its own --with-docdir.
-    `(#:configure-flags
-      (list (string-append "--with-docdir="
-                           (assoc-ref %outputs "doc")
-                           "/share/doc/"
-                           ,name "-" ,(package-version this-package))
-            "--disable-static")))
+    (list #:configure-flags
+          ;; Instead of using --docdir, this package has its own --with-docdir.
+          #~(list (string-append "--with-docdir=" #$output:doc "/share/doc/"
+                                 #$name "-" #$(package-version this-package))
+                "--disable-static")))
    (inputs
     (list libjpeg-turbo zlib))
    (synopsis "Library for handling TIFF files")
