@@ -584,7 +584,7 @@ extracting icontainer icon files.")
                                  #$name "-" #$(package-version this-package))
                 "--disable-static")))
    (inputs
-    (list libjpeg-turbo zlib))
+    (list libjpeg-turbo xz zlib))
    (synopsis "Library for handling TIFF files")
    (description
     "Libtiff provides support for the Tag Image File Format (TIFF), a format
