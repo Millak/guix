@@ -171,7 +171,6 @@ using the CMake build system.")
                (string-append "--parallel=" parallel-job-count)
                (string-append "--prefix=" out)
                "--system-libs"
-               "--no-system-jsoncpp"
                ;; By default, the man pages and other docs land
                ;; in PREFIX/man and PREFIX/doc, but we want them
                ;; in share/{man,doc}.  Note that unlike
@@ -218,6 +217,7 @@ using the CMake build system.")
        ("curl" ,curl)
        ("expat" ,expat)
        ("file" ,file)
+       ("jsoncpp" ,jsoncpp)
        ("libarchive" ,libarchive)
        ,@(if (hurd-target?)
              '()
@@ -284,9 +284,6 @@ and workspaces that can be used in the compiler environment of your choice.")
                                     "Utilities"
                                     lstat)
                   #t))))
-    (inputs
-     (modify-inputs (package-inputs cmake-bootstrap)
-       (prepend jsoncpp)))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
