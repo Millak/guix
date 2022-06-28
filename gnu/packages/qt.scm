@@ -2803,7 +2803,7 @@ color-related widgets.")
 (define-public python-shiboken-2
   (package
     (name "python-shiboken-2")
-    (version "5.15.4")
+    (version "5.15.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.qt.io/official_releases"
@@ -2812,7 +2812,7 @@ color-related widgets.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "02s52hxdsg925zrflxrsk3l7l9wd6c306ds10rfyy4a1xw6yss1w"))))
+                "0cwvw6695215498rsbm2xzkwaxdr3w7zfvy4kc62c01k6pxs881r"))))
     (build-system cmake-build-system)
     (inputs
      (list clang-toolchain
