@@ -85,11 +85,6 @@
 (define %eggs-home-page
   (make-parameter "https://wiki.call-cc.org/egg"))
 
-(define (egg-source-url name version)
-  "Return the URL to the source tarball for version VERSION of the CHICKEN egg
-NAME."
-  `(egg-uri ,name version))
-
 (define (egg-name->guix-name name)
   "Return the package name for CHICKEN egg NAME."
   (string-append package-name-prefix name))
@@ -196,7 +191,7 @@ not work."
       (let* ((version* (or (assoc-ref egg-content 'version)
                            (find-latest-version name)))
              (version (if (list? version*) (first version*) version*))
-             (source-url (if source #f (egg-source-url name version)))
+             (source-url (if source #f `(egg-uri ,name version)))
              (tarball (if source
                           #f
                           (with-store store
@@ -342,7 +337,7 @@ not work."
   "Return an @code{<upstream-source>} for the latest release of PACKAGE."
   (let* ((egg-name (guix-package->egg-name package))
          (version (find-latest-version egg-name))
-         (source-url (egg-source-url egg-name version)))
+         (source-url (egg-uri egg-name version)))
     (upstream-source
      (package (package-name package))
      (version version)
