@@ -977,11 +977,11 @@ standards of the IceCat project.")
        (cpe-version . ,(first (string-split version #\-)))))))
 
 ;; Update this together with icecat!
-(define %icedove-build-id "20220531000000") ;must be of the form YYYYMMDDhhmmss
+(define %icedove-build-id "20220624000000") ;must be of the form YYYYMMDDhhmmss
 (define-public icedove
   (package
     (name "icedove")
-    (version "91.10.0")
+    (version "91.11.0")
     (source icecat-source)
     (properties
      `((cpe-name . "thunderbird_esr")))
@@ -1260,7 +1260,7 @@ standards of the IceCat project.")
         ;; in the Thunderbird release tarball.  We don't use the release
         ;; tarball because it duplicates the Icecat sources and only adds the
         ;; "comm" directory, which is provided by this repository.
-        ,(let ((changeset "4a4b901410a9055d078d0cdd7c62b2b5d56ffbad"))
+        ,(let ((changeset "da48e7ecf800ec7761a3b6e0ca81e0c90adc30f7"))
            (origin
              (method hg-fetch)
              (uri (hg-reference
@@ -1269,7 +1269,7 @@ standards of the IceCat project.")
              (file-name (string-append "thunderbird-" version "-checkout"))
              (sha256
               (base32
-               "0i2wpi08jfksqqc0j6q362nyk3zmlqd5ds2w7mm74infvrw6fzzq")))))
+               "0lg8z0zk05w8jah364lm7vkc95j1nkg93gf46byz0kd4nslg05nx")))))
        ("cargo" ,rust "cargo")
        ("clang" ,clang)
        ("llvm" ,llvm)
