@@ -29,6 +29,7 @@
 (define-module (gnu packages gstreamer)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
@@ -1035,20 +1036,19 @@ given, also pass them to the build system instead of the ones used by PKG."
     (package/inherit pkg
       (arguments
        (substitute-keyword-arguments (package-arguments pkg)
-         ((#:configure-flags flags `(,@(or configure-flags '())))
-          `(append
+         ((#:configure-flags flags #~'())
+         #~(append
             (list
-             ,@(map (lambda (plugin)
-                      (string-append "-D" plugin "=enabled"))
-                    plugins))
-            (list ,@(or configure-flags flags))))
-          ((#:phases phases)
-           `(modify-phases ,phases
-              (add-after 'unpack 'disable-auto-plugins
-                (lambda _
-                  (substitute* "meson_options.txt"
-                    (("'auto'") "'disabled'"))
-                  #t)))))))))
+             #$@(map (lambda (plugin)
+                       (string-append "-D" plugin "=enabled"))
+                     plugins))
+            #$(or configure-flags flags)))
+         ((#:phases phases)
+           #~(modify-phases #$phases
+               (add-after 'unpack 'disable-auto-plugins
+                 (lambda _
+                   (substitute* "meson_options.txt"
+                     (("'auto'") "'disabled'")))))))))))
 
 (define-public python-gst
   (package

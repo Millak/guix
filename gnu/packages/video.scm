@@ -4353,7 +4353,7 @@ tools for styling them, including a built-in real-time video preview.")
            (gst-plugins/selection gst-plugins-bad #:plugins
                                   '("debugutils" "transcode")
                                   #:configure-flags
-                                  '("-Dintrospection=enabled"))
+                                  #~'("-Dintrospection=enabled"))
            gst-libav
            gsound
            gtk+
