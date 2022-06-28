@@ -278,3 +278,34 @@ with integers.")
      "This package provides a simple testing utility for CHICKEN Scheme.")
     (license license:bsd-3)))
 
+(define-public chicken-crypto-tools
+  (package
+    (name "chicken-crypto-tools")
+    (version "1.4")
+    (source (origin
+              (method url-fetch)
+              (uri (egg-uri "crypto-tools" version))
+              (sha256
+               (base32
+                "0ajf0qfnhp99f4x1dll2fhlxrsxamgrrwyksc7rrym77xmv8f1pd"))))
+    (build-system chicken-build-system)
+    (arguments '(#:egg-name "crypto-tools"))
+    (home-page "https://wiki.call-cc.org/egg/crypto-tools")
+    (synopsis "Useful cryptographic primitives")
+    (description "The crypto-tools egg implements useful cryptographic
+primitives.  More specifically, provided are:
+
+@itemize
+@item binary blobs
+@itemize
+@item marshallers to and from hex strings
+@item blob xor
+@item blob padding using either PKCS#5 or ISO7816-4
+@end itemize
+@item Block cipher modes of operation
+@itemize
+@item CBC with or without incorporated encrypted IV in the ciphertext
+@item CTR with or without incorporated IV in the ciphertext
+@end itemize
+@end itemize")
+    (license license:bsd-3)))
