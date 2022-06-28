@@ -80,6 +80,7 @@
   #:use-module (gnu packages popt)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages protobuf)
+  #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
@@ -2507,7 +2508,7 @@ Radios.")
 (define-public gnss-sdr
   (package
     (name "gnss-sdr")
-    (version "0.0.15")
+    (version "0.0.17")
     (source
      (origin
        (method git-fetch)
@@ -2516,7 +2517,7 @@ Radios.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1m41rnlfr1nrzbg382jfsk5x0by2ym48v3innd2rbc6phd85q223"))))
+        (base32 "0kxn98vmrsd2a157cf3hsmivi6p4k4a3907j5w8hmcs0nn92786i"))))
     (build-system cmake-build-system)
     (native-inputs
      `(("gfortran" ,gfortran)
@@ -2528,6 +2529,7 @@ Radios.")
     (inputs
      (list armadillo
            boost
+           fmt
            gflags
            glog
            gmp
