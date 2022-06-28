@@ -717,6 +717,34 @@ scaled, composited, modified, saved, or rendered.")
     (home-page "https://wiki.gnome.org/Projects/GdkPixbuf")
     (license license:lgpl2.1+)))
 
+(define-public gdk-pixbuf-xlib
+  (package
+    (name "gdk-pixbuf-xlib")
+    (version "2.40.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url
+                     "https://gitlab.gnome.org/Archive/gdk-pixbuf-xlib.git")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1vwnvqxap3r9zw932jwasazy9sxw49j78x2g650xkn70iili90bg"))))
+    (build-system meson-build-system)
+    (arguments
+     '(#:configure-flags '("-Dgtk_doc=true")))
+    (native-inputs (list pkg-config gtk-doc/stable))
+    (inputs (list gdk-pixbuf libx11))
+    (synopsis "Deprecated Xlib integration for GdkPixbuf")
+    (description
+     "GdkPixbuf-Xlib contains the deprecated API for integrating GdkPixbuf with
+Xlib data types.  This library was originally shipped by gdk-pixbuf, and has
+since been moved out of the original repository.  No newly written code should
+ever use this library.")
+    (home-page "https://gitlab.gnome.org/Archive/gdk-pixbuf-xlib")
+    (license license:lgpl2.1+)))
+
 ;;; A minimal variant used to prevent a cycle with Inkscape.
 (define-public at-spi2-core-minimal
   (hidden-package
