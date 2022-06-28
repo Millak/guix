@@ -10962,3 +10962,21 @@ provided by Philipp Lehmann’s etoolbox.")
     (description "The package provides the functionality of the
 threeparttable package to tables created using the longtable package.")
     (license license:lppl1.3+)))
+
+(define-public texlive-lineno
+  (package
+    (inherit (simple-texlive-package
+              "texlive-lineno"
+              (list "doc/latex/lineno/"
+                    "source/latex/lineno/"
+                    "tex/latex/lineno/")
+              (base32
+               "1xf8ljgcj411yqmng89wc49rqfz19j95yqqpnb35dj3qc1chvm2a")
+              #:trivial? #t))
+    (home-page "https://www.ctan.org/pkg/lineno")
+    (synopsis "Line numbers on paragraphs")
+    (description "Adds line numbers to selected paragraphs with reference
+possible through the LaTeX @code{\\ref} and @code{\\pageref} cross reference
+mechanism.  Line numbering may be extended to footnote lines, using the
+fnlineno package.")
+    (license license:lppl1.3a+)))
