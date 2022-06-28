@@ -10947,3 +10947,18 @@ possible to register these float types with endfloat.")
     (description "The package generalises the macro patching commands
 provided by Philipp Lehmann’s etoolbox.")
     (license license:lppl1.3c+)))
+
+(define-public texlive-threeparttablex
+  (package
+    (inherit (simple-texlive-package
+              "texlive-threeparttablex"
+              (list "doc/latex/threeparttablex/"
+                    "tex/latex/threeparttablex/")
+              (base32
+               "19pvw2ifswxcf8dxw0mzjmqhl592477w5hcfh97f4wpya0dv2m9p")
+              #:trivial? #t))
+    (home-page "https://www.ctan.org/pkg/threeparttablex")
+    (synopsis "Notes in longtables")
+    (description "The package provides the functionality of the
+threeparttable package to tables created using the longtable package.")
+    (license license:lppl1.3+)))
