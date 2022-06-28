@@ -10866,3 +10866,26 @@ tables and figures to be set left/right or alternating on even/odd pages.")
 sorting and merging of BibTeX databases, generation of uniform reference keys,
 and selecting references used in a publication.")
     (license license:gpl2+)))
+
+(define-public texlive-apa6
+  (package
+    (inherit (simple-texlive-package
+              "texlive-apa6"
+              (list "doc/latex/apa6/"
+                    "source/latex/apa6/"
+                    "tex/latex/apa6/")
+              (base32
+               "08jn8piyaad4zln33c0gikyhdkcsk2s3ms9l992riq2hbpbm9lcf")
+              #:trivial? #t))
+    (home-page "https://www.ctan.org/pkg/apa6")
+    (synopsis "Format documents in APA style (6th edition)")
+    (description "The class formats documents in APA style (6th
+Edition).  It provides a full set of facilities in three different
+output modes (journal-like appearance, double-spaced manuscript,
+LaTeX-like document), in contrast to the earlier apa6e, which only formats
+double-spaced manuscripts in APA style.  The class can mask author identity
+for copies for use in masked peer review.
+
+The class is a development of the apa class (which is no longer
+maintained).")
+    (license license:lppl1.3c+)))
