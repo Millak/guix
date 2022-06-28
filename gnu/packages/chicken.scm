@@ -329,3 +329,23 @@ primitives.  More specifically, provided are:
 @end itemize
 @end itemize")
     (license license:bsd-3)))
+
+(define-public chicken-args
+  (package
+    (name "chicken-args")
+    (version "1.6.2")
+    (source (origin
+              (method url-fetch)
+              (uri (egg-uri "args" version))
+              (sha256
+               (base32
+                "0knkg31d4dq9a8rq9g3ycmj0z6j9l7zp93qa9cnqc8ixd6jsymkm"))))
+    (build-system chicken-build-system)
+    (arguments '(#:egg-name "args"))
+    (propagated-inputs (list chicken-srfi-1 chicken-srfi-13 chicken-srfi-37))
+    (home-page "https://wiki.call-cc.org/egg/args")
+    (synopsis "Command-line argument handling, on top of SRFI 37")
+    (description "This extension provides a wrapper around
+SRFI-37 (args-fold).  The main goal is to let the user parse command-line
+arguments without having to write a lot of similar support code every time.")
+    (license license:bsd-3)))
