@@ -848,7 +848,7 @@ to the fix block above.
 (define-public gr-satellites
   (package
     (name "gr-satellites")
-    (version "4.2.0")
+    (version "4.6.0")
     (source
      (origin
        (method git-fetch)
@@ -857,7 +857,7 @@ to the fix block above.
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01p9cnwjxas3pkqr9m5fnrgm45cji0sfdqqa51hzy7izx9vgzaf8"))))
+        (base32 "0mcrxwb27n2v8v8vmcmmm1pbmy3c02a22mz2wnpdsfb2163qpchw"))))
     (build-system cmake-build-system)
     (native-inputs
      (list pkg-config pybind11 python-six))
