@@ -33438,3 +33438,24 @@ jitterplot, or half violinplot and half dotplot.")
 coefficients or scattering amplitudes, for seismological P and S-waves at an
 interface.")
     (license license:gpl2+)))
+
+(define-public r-metadat
+  (package
+    (name "r-metadat")
+    (version "1.2-0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "metadat" version))
+              (sha256
+               (base32
+                "1f7mb3pw5d0akr09jjva06ay223izhpzbr21bapnw99x1kiybk7h"))))
+    (properties `((upstream-name . "metadat")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-mathjaxr))
+    (home-page "https://github.com/wviechtb/metadat")
+    (synopsis "Meta-Analysis Datasets")
+    (description
+     "This package provides a collection of meta-analysis datasets for teaching
+purposes, illustrating/testing meta-analytic methods, and validating published
+analyses.")
+    (license license:gpl2+)))
