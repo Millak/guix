@@ -2357,6 +2357,29 @@ BaalChIP is able to account for copy number differences between the two
 alleles, a known phenotypical feature of cancer samples.")
     (license license:artistic2.0)))
 
+(define-public r-basespacer
+  (package
+    (name "r-basespacer")
+    (version "1.40.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "BaseSpaceR" version))
+              (sha256
+               (base32
+                "0jyw4pnybsd6ywpaamk5ywkrcib2z48farsnszmwq97zlbmra7fj"))))
+    (properties `((upstream-name . "BaseSpaceR")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcurl r-rjsonio))
+    (home-page "https://bioconductor.org/packages/BaseSpaceR")
+    (synopsis "R SDK for BaseSpace RESTful API")
+    (description
+     "This package provides an R interface to Illumina's BaseSpace cloud
+computing environment, enabling the fast development of data analysis and
+visualization tools.  Besides providing an easy to use set of tools for
+manipulating the data from BaseSpace, it also facilitates the access to R's
+rich environment of statistical and data analysis tools.")
+    (license license:asl2.0)))
+
 (define-public r-biocversion
   (package
     (name "r-biocversion")
