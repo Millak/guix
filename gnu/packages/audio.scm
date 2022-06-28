@@ -1158,7 +1158,7 @@ envelope follower, distortion effects, tape effects and more.")
 (define-public snapcast
   (package
     (name "snapcast")
-    (version "0.24.0")
+    (version "0.26.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1167,7 +1167,7 @@ envelope follower, distortion effects, tape effects and more.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "13yz8alplnqwkcns3mcli01qbyy6l3h62xx0v71ygcrz371l4g9g"))))
+                "091gf3k1xv3k0m0kf2apr9bwiifw2czjcksd3vzwy544sfgrya08"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f))                    ; no included tests
