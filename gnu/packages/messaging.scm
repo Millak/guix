@@ -1314,7 +1314,7 @@ and OpenPGP) and available in 29 languages.")
        (begin
          (use-modules (guix build utils))
          (let* ((out (assoc-ref %outputs "out"))
-                (share (in-vicinity out "share/gajim/plugins"))
+                (share (in-vicinity out "share/gajim/plugins/omemo"))
                 (source (assoc-ref %build-inputs "source")))
            (mkdir-p share)
            (copy-recursively source share)
