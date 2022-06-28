@@ -10931,3 +10931,19 @@ possible to register these float types with endfloat.")
 @item upright Greek letters in maths
 @end itemize")
     (license license:lppl1.2+)))
+
+(define-public texlive-xpatch
+  (package
+    (inherit (simple-texlive-package
+              "texlive-xpatch"
+              (list "doc/latex/xpatch/"
+                    "source/latex/xpatch/"
+                    "tex/latex/xpatch/")
+              (base32
+               "0r08hadnwx9vyppzmbn1bj69b12i5fw1mhk49piw2rqbk01722zk")
+              #:trivial? #t))
+    (home-page "https://www.ctan.org/pkg/xpatch")
+    (synopsis "Extending etoolbox patching commands")
+    (description "The package generalises the macro patching commands
+provided by Philipp Lehmann’s etoolbox.")
+    (license license:lppl1.3c+)))
