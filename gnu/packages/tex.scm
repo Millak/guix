@@ -10889,3 +10889,23 @@ for copies for use in masked peer review.
 The class is a development of the apa class (which is no longer
 maintained).")
     (license license:lppl1.3c+)))
+
+(define-public texlive-endfloat
+  (package
+    (inherit (simple-texlive-package
+              "texlive-endfloat"
+              (list "doc/latex/endfloat/"
+                    "source/latex/endfloat/"
+                    "tex/latex/endfloat/")
+              (base32
+               "1zslmc5g28z6adfyd8bdlbw03jawxmgafq0mgwy811hrbcppb2kg")
+              #:trivial? #t))
+    (home-page "https://www.ctan.org/pkg/endfloat")
+    (synopsis "Move floats to the end, leaving markers where they belong")
+    (description "Place all floats on pages by themselves at the end of
+the document, optionally leaving markers like “[Figure 3 about here]”
+in the text near to where the figure (or table) would normally have
+occurred.  Float types figure and table are recognised by the package,
+unmodified.  Since several packages define other types of float, it is
+possible to register these float types with endfloat.")
+    (license license:gpl2+)))
