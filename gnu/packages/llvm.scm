@@ -1158,14 +1158,9 @@ of programming tools as well as libraries with equivalent functionality.")
                (search-patches "llvm-roc-5.0.0-linkdl.patch"
                                "llvm-roc-4.0.0-remove-isystem-usr-include.patch"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments llvm-12)
-       ((#:phases phases '%standard-phases)
-        `(modify-phases ,phases
-           (add-after 'unpack 'chdir
-             (lambda _
-               (chdir "llvm")))))
+     (substitute-keyword-arguments (package-arguments llvm-14)
        ((#:configure-flags flags)
-        ''("-DLLVM_ENABLE_PROJECTS=llvm;clang;lld"
+        #~(list"-DLLVM_ENABLE_PROJECTS=llvm;clang;lld"
            "-DLLVM_TARGETS_TO_BUILD=AMDGPU;X86"
            "-DCMAKE_SKIP_BUILD_RPATH=FALSE"
            "-DCMAKE_BUILD_WITH_INSTALL_RPATH=FALSE"
