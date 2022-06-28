@@ -10,6 +10,7 @@
 ;;; Copyright © 2021 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 Sheng Yang <styang@fastmail.com>
+;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -542,7 +543,7 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
 (define-public gnuradio
   (package
     (name "gnuradio")
-    (version "3.9.2.0")
+    (version "3.10.3.0")
     (source
      (origin
        (method git-fetch)
@@ -551,7 +552,7 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01wyqazrpphmb0fl69j93k0w4vm4d1l4177m1fyg7qx8hzia0aaq"))))
+        (base32 "0xdhb2blzajxpi0f2ch23hh6bzdwz5q7syi3bmiqzdjlj2yjfzd4"))))
     (build-system cmake-build-system)
     (native-inputs
      `(("doxygen" ,doxygen)
@@ -589,6 +590,7 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
        ("python" ,python)
        ("python-click" ,python-click)
        ("python-click-plugins" ,python-click-plugins)
+       ("python-jsonschema" ,python-jsonschema)
        ("python-lxml" ,python-lxml)
        ("python-matplotlib" ,python-matplotlib)
        ("python-numpy" ,python-numpy)
@@ -600,8 +602,11 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
        ("qtbase" ,qtbase-5)
        ("qwt" ,qwt)
        ("sdl" ,sdl)
+       ("soapysdr" ,soapysdr)
        ("volk" ,volk)
        ("zeromq" ,zeromq)))
+    (propagated-inputs
+     (list spdlog))
     (arguments
      `(#:modules ((guix build cmake-build-system)
                   ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
@@ -612,7 +617,8 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
                            (guix build glib-or-gtk-build-system)
                            (guix build python-build-system))
        #:configure-flags
-       (list (string-append "-DMATHJAX2_ROOT="
+       (list "-DENABLE_GRC=ON"
+             (string-append "-DMATHJAX2_ROOT="
                             (assoc-ref %build-inputs "js-mathjax")
                             "/share/javascript/mathjax"))
        #:phases
