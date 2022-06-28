@@ -2145,7 +2145,7 @@ contain over 620 classes.")
 (define-public python-pyqtwebengine
   (package
     (name "python-pyqtwebengine")
-    (version "5.15.4")
+    (version "5.15.5")
     (source
      (origin
        (method url-fetch)
@@ -2157,7 +2157,7 @@ contain over 620 classes.")
                                  "/PyQtWebEngine-" version ".tar.gz")))
        (sha256
         (base32
-         "06fc35hzg346a9c86dk7vzm1fakkgzn5l52jfq3bix3587sjip6f"))))
+         "0hdr0g0rzlhsnylhfk826pq1lw8p9dqcr8yma2wy9dgjrj6n0ixb"))))
     (build-system gnu-build-system)
     (native-inputs
      (list python python-sip
