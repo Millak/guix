@@ -1350,7 +1350,7 @@ multi-client end-to-end encryption.")
        (begin
          (use-modules (guix build utils))
          (let* ((out (assoc-ref %outputs "out"))
-                (share (in-vicinity out "share/gajim/plugins"))
+                (share (in-vicinity out "share/gajim/plugins/openpgp"))
                 (source (assoc-ref %build-inputs "source")))
            (mkdir-p share)
            (copy-recursively source share)
