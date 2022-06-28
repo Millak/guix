@@ -1050,6 +1050,14 @@ given, also pass them to the build system instead of the ones used by PKG."
                    (substitute* "meson_options.txt"
                      (("'auto'") "'disabled'")))))))))))
 
+(define-public gst-plugins-bad-minimal
+  (package
+    (inherit (gst-plugins/selection gst-plugins-bad #:plugins '()))
+    (name "gst-plugins-bad-minimal")
+    (description "This package provides the smallest selection of GStreamer's
+\"bad\" plugin set, essentially containing libraries and the gst-transcoder
+binary, but none of the actual plugins.")))
+
 (define-public python-gst
   (package
     (name "python-gst")
