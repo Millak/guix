@@ -2564,6 +2564,48 @@ using a Bayesian model coded with @code{rstan}.  It provides as output the
 estimates for each correlation element.")
     (license license:expat)))
 
+(define-public r-barcodetrackr
+  (package
+    (name "r-barcodetrackr")
+    (version "1.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "barcodetrackR" version))
+              (sha256
+               (base32
+                "0yxa15xkgqazw31vq4wm8v747bw4qb18m6i602pvynk0n5bgg3d3"))))
+    (properties `((upstream-name . "barcodetrackR")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-circlize
+           r-cowplot
+           r-dplyr
+           r-ggdendro
+           r-ggplot2
+           r-ggridges
+           r-magrittr
+           r-plyr
+           r-proxy
+           r-rcolorbrewer
+           r-rlang
+           r-s4vectors
+           r-scales
+           r-shiny
+           r-summarizedexperiment
+           r-tibble
+           r-tidyr
+           r-vegan
+           r-viridis))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/dunbarlabNIH/barcodetrackR")
+    (synopsis "Functions for analyzing cellular barcoding data")
+    (description
+     "This package is developed for the analysis and visualization of clonal
+tracking data.  The required data is formed by samples and tag abundances in
+matrix form, usually from cellular barcoding experiments, integration site
+retrieval analyses, or similar technologies.")
+    (license license:cc0)))
+
 (define-public r-biocversion
   (package
     (name "r-biocversion")
