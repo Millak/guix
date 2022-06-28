@@ -35,7 +35,8 @@
 ;;; Copyright © 2020 Aniket Patil <aniket112.patil@gmail.com>
 ;;; Copyright © 2021 Marcel Schilling <marcel.schilling@uni-luebeck.de>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
-;;; Copyright © 2022 Navid Afkhami  <navid.afkhami@mdc-berlin.de>
+;;; Copyright © 2022 Navid Afkhami <navid.afkhami@mdc-berlin.de>
+;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -33438,3 +33439,48 @@ jitterplot, or half violinplot and half dotplot.")
 coefficients or scattering amplitudes, for seismological P and S-waves at an
 interface.")
     (license license:gpl2+)))
+
+(define-public r-mathjaxr
+  (package
+    (name "r-mathjaxr")
+    (version "1.6-0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "mathjaxr" version))
+              (sha256
+               (base32
+                "0yf1sfkb2kjsplipl2v4k2gp20li9xzsynclg228sy0v243pdi7c"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  (delete-file-recursively "src/mathjax/es5/input")
+                  (delete-file-recursively "src/mathjax/es5/output")
+                  (delete-file "src/mathjax/es5/tex-chtml-full.js")))))
+    (properties `((upstream-name . "mathjaxr")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      `(modify-phases %standard-phases
+         (add-after 'unpack 'use-js-mathjax
+           (lambda* (#:key inputs #:allow-other-keys)
+             (symlink
+              (search-input-directory
+               inputs "/share/javascript/mathjax/es5/output")
+              "src/mathjax/es5/output")
+             (symlink
+              (search-input-directory
+               inputs "/share/javascript/mathjax/es5/input")
+              "src/mathjax/es5/input")
+             (symlink
+              (search-input-file
+               inputs "/share/javascript/mathjax/es5/tex-chtml-full.js")
+              "src/mathjax/es5/tex-chtml-full.js"))))))
+    (inputs
+     (list js-mathjax-for-r-mathjaxr))
+    (home-page "https://github.com/wviechtb/mathjaxr")
+    (synopsis "Use Mathjax in Rd Files")
+    (description
+     "This package provides MathJax and macros to enable its use within Rd files
+for rendering equations in the HTML help files.")
+    (license (list license:asl2.0 license:gpl3))))
