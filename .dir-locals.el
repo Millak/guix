@@ -121,6 +121,7 @@
    (eval . (put 'run-with-store 'scheme-indent-function 1))
    (eval . (put 'run-with-state 'scheme-indent-function 1))
    (eval . (put 'wrap-program 'scheme-indent-function 1))
+   (eval . (put 'wrap-script 'scheme-indent-function 1))
    (eval . (put 'with-imported-modules 'scheme-indent-function 1))
    (eval . (put 'with-extensions 'scheme-indent-function 1))
    (eval . (put 'with-parameters 'scheme-indent-function 1))
