@@ -2912,8 +2912,12 @@ to handle."
 (define %greetd-accounts
   (list (user-account
          (name "greeter")
-         (group "wheel")
-         (supplementary-groups '("users" "tty" "input" "video" "audio"))
+         (group "greeter")
+         ;; video group is required for graphical greeters.
+         (supplementary-groups '("video"))
+         (system? #t))
+        (user-group
+         (name "greeter")
          (system? #t))))
 
 (define %greetd-file-systems
