@@ -1070,15 +1070,16 @@ binary, but none of the actual plugins.")))
                 "1p6g05k88nbbv5x9madsvphxcdkfl1z0lmp39p6bhmg9x8h82d6v"))))
     (build-system meson-build-system)
     (arguments
-     `(#:modules ((guix build meson-build-system)
+     (list
+      #:modules `((guix build meson-build-system)
                   (guix build utils)
                   ((guix build python-build-system) #:prefix python:))
-       #:imported-modules (,@%meson-build-system-modules
+      #:imported-modules `(,@%meson-build-system-modules
                            (guix build python-build-system))
-       #:configure-flags
-       (list (string-append
-              "-Dpygi-overrides-dir="
-              (python:site-packages %build-inputs %outputs) "/gi/overrides"))))
+      #:configure-flags
+      #~(list (string-append
+               "-Dpygi-overrides-dir="
+               (python:site-packages %build-inputs %outputs) "/gi/overrides"))))
     (native-inputs
      (list pkg-config python))
     (propagated-inputs
