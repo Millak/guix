@@ -155,6 +155,7 @@ a focus on simplicity and productivity.")
   (package
     (inherit ruby-2.6)
     (version "2.7.4")
+    (replacement ruby-2.7-fixed) ; security fixes
     (source
      (origin
        (inherit (package-source ruby-2.6))
@@ -188,6 +189,20 @@ a focus on simplicity and productivity.")
              #t)))))
     (native-inputs
      (list autoconf))))
+
+(define ruby-2.7-fixed
+  (package
+    (inherit ruby-2.7)
+    (version "2.7.6")
+    (source
+     (origin
+       (inherit (package-source ruby-2.7))
+       (uri (string-append "https://cache.ruby-lang.org/pub/ruby/"
+                           (version-major+minor version)
+                           "/ruby-" version ".tar.gz"))
+       (sha256
+        (base32
+         "042xrdk7hsv4072bayz3f8ffqh61i8zlhvck10nfshllq063n877"))))))
 
 (define-public ruby-3.0
   (package
