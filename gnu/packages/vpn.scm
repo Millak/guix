@@ -21,6 +21,7 @@
 ;;; Copyright © 2022 Josselin Poiret <josselin.poiret@protonmail.ch>
 ;;; Copyright © 2022 Lu hui <luhux76@gmail.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Jean-Pierre De Jesus DIAZ <me@jeandudey.tech>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -479,25 +480,68 @@ file for more details.")
             (sha256 (base32
                      "1128860lis89g1s21hqxvap2nq426c9j4bvgghncc1zj0ays7kj6"))))
    (build-system gnu-build-system)
-   (inputs (list libgcrypt perl vpnc-scripts))
+   (native-inputs (append (list perl pkg-config vpnc-scripts)
+                          (if (%current-target-system)
+                            (list this-package)
+                            '())))
+   (inputs (list libgcrypt vpnc-scripts))
    (arguments
-    `(#:tests? #f ; there is no check target
-      #:phases
-      (modify-phases %standard-phases
-        (add-after 'unpack 'use-store-paths
-          (lambda* (#:key inputs outputs #:allow-other-keys)
-            (let ((out          (assoc-ref outputs "out"))
-                  (vpnc-scripts (assoc-ref inputs  "vpnc-scripts")))
-              (substitute* "config.c"
-                (("/etc/vpnc/vpnc-script")
-                 (string-append vpnc-scripts "/etc/vpnc/vpnc-script")))
-              (substitute* "Makefile"
-                (("ETCDIR=.*")
-                 (string-append "ETCDIR=" out "/etc/vpnc\n"))
-                (("PREFIX=.*")
-                 (string-append "PREFIX=" out "\n")))
-              #t)))
-        (delete 'configure))))          ; no configure script
+     (list #:tests? #f ;; There is no check target
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "ETCDIR=" #$output "/etc/vpnc")
+                   (string-append "PREFIX=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure) ;; No configure script.
+               (add-after 'unpack 'use-store-paths
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (let ((vpnc-scripts (assoc-ref inputs  "vpnc-scripts")))
+                     (substitute* "config.c"
+                       (("/etc/vpnc/vpnc-script")
+                        (string-append vpnc-scripts
+                                       "/etc/vpnc/vpnc-script"))))))
+               (add-after 'unpack 'patch-Makefile
+                 (lambda* (#:key target #:allow-other-keys)
+                   (let* ((pkg-config #$(pkg-config-for-target))
+                          (includedir (string-append pkg-config
+                                                     " --variable=includedir"
+                                                     " libgcrypt"))
+                          (cflags (string-append pkg-config
+                                                 " --cflags"
+                                                 " libgcrypt"))
+                          (libdir (string-append pkg-config
+                                                 " --variable=libdir"
+                                                 " libgcrypt"))
+                          (libs (string-append pkg-config
+                                               " --libs"
+                                               " libgcrypt")))
+                     (substitute* "Makefile"
+                       (("\\$\\(shell libgcrypt-config --cflags\\)")
+                        (string-append "-I$(shell " includedir ") "
+                                       "$(shell " cflags ")"))
+                       (("\\$\\(shell libgcrypt-config --libs\\)")
+                        (string-append
+                          "-L$(shell " libdir ") "
+                          "$(shell " libs ")")))
+                     ;; When cross-compiling the manpage can't be generated as the
+                     ;; Makefile needs to execute the resulting `vpnc' binary.
+                     (when target
+                       (substitute* "Makefile"
+                         (("all : \\$\\(BINS\\) vpnc\\.8 vpnc-script")
+                          "all : $(BINS) vpnc-script")
+                         (("install -m644 vpnc\\.8.*") ""))))))
+               (add-after 'unpack 'install-manpage
+                 (lambda* (#:key native-inputs inputs target
+                           #:allow-other-keys)
+                   ;; As the manpage is not generated. Instead install it from
+                   ;; the input vpnc package.
+                   (when target
+                     (let* ((vpnc (assoc-ref native-inputs "vpnc"))
+                            (man (string-append vpnc
+                                                "/share/man/man8/vpnc.8.gz"))
+                            (output (string-append #$output "/share/man/man8")))
+                       (install-file man output))))))))
    (synopsis "Client for Cisco VPN concentrators")
    (description
     "vpnc is a VPN client compatible with Cisco's EasyVPN equipment.
