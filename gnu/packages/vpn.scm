@@ -549,7 +549,7 @@ It supports IPSec (ESP) with Mode Configuration and Xauth.  It supports only
 shared-secret IPSec authentication with Xauth, AES (256, 192, 128), 3DES,
 1DES, MD5, SHA1, DH1/2/5 and IP tunneling.  It runs entirely in userspace.
 Only \"Universal TUN/TAP device driver support\" is needed in the kernel.")
-   (license license:gpl2+) ; some file are bsd-2, see COPYING
+   (license (list license:gpl2+ license:bsd-2))
    (home-page "https://www.unix-ag.uni-kl.de/~massar/vpnc/")))
 
 (define-public vpnc-scripts
