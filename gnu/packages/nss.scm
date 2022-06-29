@@ -112,7 +112,7 @@ in the Mozilla clients.")
     (name "nss")
     ;; Also update and test the nss-certs package, which duplicates version and
     ;; source to avoid a top-level variable reference & module cycle.
-    (version "3.72")
+    (version "3.80")
     (source (origin
               (method url-fetch)
               (uri (let ((version-with-underscores
@@ -123,7 +123,7 @@ in the Mozilla clients.")
                       "nss-" version ".tar.gz")))
               (sha256
                (base32
-                "0bnh683nij6s0gvjcgwhyw5d3yx9fpm42pxj5bm97r0ky6ghm9kf"))
+                "0sjbg248kfabv9av2jwkr28fqgj4zjm2nqh9nc16p6p2qz91zgy0"))
               ;; Create nss.pc and nss-config.
               (patches (search-patches "nss-3.56-pkgconfig.patch"
                                        "nss-getcwd-nonnull.patch"
@@ -184,7 +184,7 @@ in the Mozilla clients.")
                    ;; leading to test failures:
                    ;; <https://bugzilla.mozilla.org/show_bug.cgi?id=609734>.  To
                    ;; work around that, set the time to roughly the release date.
-                   (invoke "faketime" "2021-09-30" "./nss/tests/all.sh"))
+                   (invoke "faketime" "2022-06-01" "./nss/tests/all.sh"))
                  (format #t "test suite not run~%"))))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
