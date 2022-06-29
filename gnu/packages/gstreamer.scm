@@ -919,30 +919,30 @@ par compared to the rest.")
         (base32 "1zdfsq0zm1d3wj3w3z44bf3v28clr8yd6qzmkjs09hq9k9w21alc"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t     ; To wrap binaries and/or compile schemas
-       #:phases
-       (modify-phases %standard-phases
-         ,@%common-gstreamer-phases
-         (add-before 'check 'pre-check
-           (lambda _
-             ;; Tests require a running X server.
-             (system "Xvfb :1 +extension GLX &")
-             (setenv "DISPLAY" ":1")
-             ;; Tests write to $HOME.
-             (setenv "HOME" (getcwd))
-             ;; Tests look for $XDG_RUNTIME_DIR.
-             (setenv "XDG_RUNTIME_DIR" (getcwd))
-             ;; For missing '/etc/machine-id'.
-             (setenv "DBUS_FATAL_WARNINGS" "0"))))))
+     (list #:glib-or-gtk? #t         ; To wrap binaries and/or compile schemas
+           #:phases
+           #~(modify-phases %standard-phases
+               #$@%common-gstreamer-phases
+               (add-before 'check 'pre-check
+                 (lambda _
+                   ;; Tests require a running X server.
+                   (system "Xvfb :1 +extension GLX &")
+                   (setenv "DISPLAY" ":1")
+                   ;; Tests write to $HOME.
+                   (setenv "HOME" (getcwd))
+                   ;; Tests look for $XDG_RUNTIME_DIR.
+                   (setenv "XDG_RUNTIME_DIR" (getcwd))
+                   ;; For missing '/etc/machine-id'.
+                   (setenv "DBUS_FATAL_WARNINGS" "0"))))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python-wrapper" ,python-wrapper)
-       ("xorg-server" ,xorg-server-for-tests)))
+     (list gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           gsettings-desktop-schemas
+           perl
+           pkg-config
+           python-wrapper
+           xorg-server-for-tests))
     (inputs
      (list glib
            glib-networking
