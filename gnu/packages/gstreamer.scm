@@ -1002,24 +1002,24 @@ decoders, muxers, and demuxers provided by FFmpeg.")
                 "18msiadg6wi1636ylp02yfiwphxlz39gh3vbxchl9qpvd7g9dn2z"))))
     (build-system meson-build-system)
     (arguments
-     ;; FIXME: 16/22 failing tests.
-     `(#:tests? #f
-       #:glib-or-gtk? #t     ; To wrap binaries and/or compile schemas
-       #:phases (modify-phases %standard-phases
-                  ,@%common-gstreamer-phases)))
+     (list
+      #:tests? #f                    ; FIXME: 16/22 failing tests.
+      #:glib-or-gtk? #t              ; To wrap binaries and/or compile schemas
+      #:phases #~(modify-phases %standard-phases
+                   #$@%common-gstreamer-phases)))
     (propagated-inputs
      (list gstreamer gst-plugins-base))
     (inputs
      (list glib glib-networking gtk+ libxml2))
     (native-inputs
-     `(("flex" ,flex)
-       ("gobject-introspection" ,gobject-introspection)
-       ("glib:bin" ,glib "bin")
-       ("gst-plugins-bad" ,gst-plugins-bad)
-       ("gst-plugins-good" ,gst-plugins-good)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)))
+     (list flex
+           gobject-introspection
+           `(,glib "bin")
+           gst-plugins-bad
+           gst-plugins-good
+           perl
+           pkg-config
+           python-wrapper))
     (home-page "https://gstreamer.freedesktop.org/")
     (synopsis "GStreamer library for non-linear editors")
     (description
