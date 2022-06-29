@@ -105,6 +105,7 @@ Copyright @copyright{} 2022 Aleksandr Vityazev@*
 Copyright @copyright{} 2022 Philip M@sup{c}Grath@*
 Copyright @copyright{} 2022 Karl Hallsby@*
 Copyright @copyright{} 2022 Justin Veilleux@*
+Copyright @copyright{} 2022 Reily Siegel@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -39433,6 +39434,7 @@ services)}.
 * Shepherd: Shepherd Home Service.       Managing User's Daemons.
 * SSH: Secure Shell.                     Setting up the secure shell client.
 * Desktop: Desktop Home Services.        Services for graphical environments.
+* Guix: Guix Home Services.              Services for Guix.
 @end menu
 @c In addition to that Home Services can provide
 
@@ -40073,6 +40075,37 @@ format.
 
 @end deftp
 
+@node Guix Home Services
+@subsection Guix Home Services
+
+The @code{(gnu home services guix)} module provides services for
+user-specific Guix configuration.
+
+@defvr {Scheme Variable} home-channels-service-type
+This is the service type for managing
+@file{$XDG_CONFIG_HOME/guix/channels.scm}, the file that controls the
+channels received on @command{guix pull} (@pxref{Channels}).  Its
+associated value is a list of @code{channel} records, defined in the
+@code{(guix channels)} module.
+
+Generally, it is better to extend this service than to directly
+configure it, as its default value is the default guix channel(s)
+defined by @code{%default-channels}.  If you configure this service
+directly, be sure to include a guix channel.  @xref{Specifying
+Additional Channels} and @ref{Using a Custom Guix Channel} for more
+details.
+
+A typical extension for adding a channel might look like this:
+
+@lisp
+(simple-service 'variant-packages-service
+                home-channels-service-type
+                (list
+                 (channel
+                  (name 'variant-packages)
+                  (url "https://example.org/variant-packages.git")))
+@end lisp
+@end defvr
 
 @node Invoking guix home
 @section Invoking @code{guix home}
