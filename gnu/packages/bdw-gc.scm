@@ -3,7 +3,7 @@
 ;;; Copyright © 2014 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016, 2018 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017 Rene Saavedra <rennes@openmailbox.org>
-;;; Copyright © 2019, 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,6 +24,7 @@
   #:use-module (guix licenses)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages pkg-config)
@@ -42,30 +43,31 @@
               "04ga3c95w5az5sznzm73j19lvvfpf6k4sgkpjqsmjxpsr6mi8j9v"))))
    (build-system gnu-build-system)
    (arguments
-    `(#:configure-flags
-      (list
-       ;; Install gc_cpp.h et al.
-       "--enable-cplusplus"
+    (list
+     #:configure-flags
+     #~(list
+        ;; Install gc_cpp.h et al.
+        "--enable-cplusplus"
 
-       ;; Work around <https://github.com/ivmai/bdwgc/issues/353>.
-       "--disable-munmap"
+        ;; Work around <https://github.com/ivmai/bdwgc/issues/353>.
+        "--disable-munmap"
 
-       ;; In GNU/Hurd systems during the 'check' phase,
-       ;; there is a deadlock caused by the 'gctest' test.
-       ;; To disable the error set "--disable-gcj-support"
-       ;; to configure script. See bug report and discussion:
-       ;; <https://lists.opendylan.org/pipermail/bdwgc/2017-April/006275.html>
-       ;; <https://lists.gnu.org/archive/html/bug-hurd/2017-01/msg00008.html>
-       ,@(if (target-hurd? (or (%current-system)
-                               (%current-target-system)))
-             '("--disable-gcj-support")
-             '()))))
+        ;; In GNU/Hurd systems during the 'check' phase,
+        ;; there is a deadlock caused by the 'gctest' test.
+        ;; To disable the error set "--disable-gcj-support"
+        ;; to configure script. See bug report and discussion:
+        ;; <https://lists.opendylan.org/pipermail/bdwgc/2017-April/006275.html>
+        ;; <https://lists.gnu.org/archive/html/bug-hurd/2017-01/msg00008.html>
+        #$@(if (target-hurd? (or (%current-system)
+                                 (%current-target-system)))
+               #~("--disable-gcj-support")
+               #~()))))
    (native-inputs (list pkg-config))
    (propagated-inputs
     (if (%current-target-system)
         ;; The build system refuses to check for compiler intrinsics when
         ;; cross-compiling, and demands using libatomic-ops instead.
-        `(("libatomic-ops" ,libatomic-ops))
+        (list libatomic-ops)
         '()))
    (outputs '("out" "debug"))
    (synopsis "The Boehm-Demers-Weiser conservative garbage collector
@@ -93,9 +95,11 @@ C or C++ programs, though that is not its primary goal.")
 (define-public libgc/static-libs
   (package/inherit
    libgc
-   (arguments (substitute-keyword-arguments (package-arguments libgc)
-                ((#:configure-flags flags ''())
-                 `(cons "--enable-static" ,flags))))
+   (arguments
+    (substitute-keyword-arguments (package-arguments libgc)
+      ((#:configure-flags flags #~'())
+       #~(cons "--enable-static" #$flags))))
+
    (properties '((hidden? . #t)))))
 
 (define-public libgc-7
@@ -116,9 +120,9 @@ C or C++ programs, though that is not its primary goal.")
     libgc
     (name "libgc-back-pointers")
     (arguments
-     `(#:make-flags
-       (list "CPPFLAGS=-DKEEP_BACK_PTRS=1")
-       ,@(package-arguments libgc)))
+     (substitute-keyword-arguments (package-arguments libgc)
+       ((#:make-flags _ #~'())
+        #~(list "CPPFLAGS=-DKEEP_BACK_PTRS=1"))))
     (synopsis "The BDW garbage collector, with back-pointer tracking")))
 
 (define-public libatomic-ops
