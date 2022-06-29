@@ -555,9 +555,9 @@ with text blocks from other extensions and the base service."))
                ((key . #f)
                 "")
                ((key . #t)
-                #~(string-append "set " #$key "\n"))
+                #~(string-append "set -x " #$key "\n"))
                ((key . value)
-                #~(string-append "set " #$key " "  #$value "\n")))
+                #~(string-append "set -x " #$key " "  #$value "\n")))
              val)))
 
 (define-configuration home-fish-configuration
