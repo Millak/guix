@@ -42,50 +42,50 @@
     (name "nspr")
     (version "4.34")
     (source (origin
-             (method url-fetch)
-             (uri (string-append
-                   "https://ftp.mozilla.org/pub/mozilla.org/nspr/releases/v"
-                   version "/src/nspr-" version ".tar.gz"))
-             (sha256
-              (base32
-               "177rxcf3lglabs7sgwcvf72ww4v56qa71lc495wl13sxs4f03vxy"))))
+              (method url-fetch)
+              (uri (string-append
+                    "https://ftp.mozilla.org/pub/mozilla.org/nspr/releases/v"
+                    version "/src/nspr-" version ".tar.gz"))
+              (sha256
+               (base32
+                "177rxcf3lglabs7sgwcvf72ww4v56qa71lc495wl13sxs4f03vxy"))))
     (build-system gnu-build-system)
     (inputs
-     ;; For 'compile-et.pl' and 'nspr-config'.
-     (list perl ;for 'compile-et.pl'
-           bash-minimal)) ;for 'nspr-config'
+     (list perl                         ;for 'compile-et.pl'
+           bash-minimal))               ;for 'nspr-config'
     (native-inputs
      (list perl))
     (arguments
-     `(;; Prevent the 'native' perl from sneaking into the closure.
-       ;; XXX it would be nice to do the same for 'bash-minimal',
-       ;; but using 'canonical-package' causes loops.
-       ,@(if (%current-target-system)
-             `(#:disallowed-references
-               (,(gexp-input (this-package-native-input "perl") #:native? #t)))
-             '())
-       #:tests? #f ; no check target
-       #:configure-flags
-       (list "--disable-static"
-             "--enable-64bit"
-             (string-append "LDFLAGS=-Wl,-rpath="
-                            (assoc-ref %outputs "out") "/lib")
-             ;; Mozilla deviates from Autotools conventions
-             ;; due to historical reasons.  Adjust to Mozilla conventions,
-             ;; otherwise the Makefile will try to use TARGET-gcc
-             ;; as a ‘native’ compiler.
-             ,@(if (%current-target-system)
-                   `(,(string-append "--host="
-                                     (nix-system->gnu-triplet (%current-system)))
-                     ,(string-append "--target=" (%current-target-system)))
-                   '()))
-       ;; Use fixed timestamps for reproducibility.
-       #:make-flags '("SH_DATE='1970-01-01 00:00:01'"
-                      ;; This is epoch 1 in microseconds.
-                      "SH_NOW=100000")
-       #:phases (modify-phases %standard-phases
-                  (add-before 'configure 'chdir
-                    (lambda _ (chdir "nspr") #t)))))
+     (list
+      ;; Prevent the 'native' perl from sneaking into the closure.
+      ;; XXX it would be nice to do the same for 'bash-minimal',
+      ;; but using 'canonical-package' causes loops.
+      #:disallowed-references
+      (if (%current-target-system)
+          (list (gexp-input (this-package-native-input "perl") #:native? #t))
+          #f)
+      #:tests? #f                       ;no check target
+      #:configure-flags
+      #~(list "--disable-static"
+              "--enable-64bit"
+              (string-append "LDFLAGS=-Wl,-rpath="
+                             (assoc-ref %outputs "out") "/lib")
+              ;; Mozilla deviates from Autotools conventions
+              ;; due to historical reasons.  Adjust to Mozilla conventions,
+              ;; otherwise the Makefile will try to use TARGET-gcc
+              ;; as a ‘native’ compiler.
+              #$@(if (%current-target-system)
+                     #~((string-append "--host="
+                                       #$(nix-system->gnu-triplet (%current-system)))
+                        (string-append "--target=" #$(%current-target-system)))
+                     #~()))
+      ;; Use fixed timestamps for reproducibility.
+      #:make-flags #~'("SH_DATE='1970-01-01 00:00:01'"
+                       ;; This is epoch 1 in microseconds.
+                       "SH_NOW=100000")
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'configure 'chdir
+                     (lambda _ (chdir "nspr") #t)))))
     (home-page
      "https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSPR")
     (synopsis "Netscape API for system level and libc-like functions")
