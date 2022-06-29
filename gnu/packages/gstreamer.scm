@@ -477,9 +477,9 @@ the GStreamer multimedia framework.")
          "0aisl8nazcfi4b5j6fz8zwpp0k9csb022zniz65b2pxxpdjayzb0"))))
     (build-system meson-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ,@%common-gstreamer-phases)))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               #$@%common-gstreamer-phases)))
     (propagated-inputs
      ;; In gstreamer-1.0.pc:
      ;;   Requires: glib-2.0, gobject-2.0
@@ -487,15 +487,14 @@ the GStreamer multimedia framework.")
      (list elfutils ; libdw
            glib libunwind))
     (native-inputs
-     `(("bash-completion" ,bash-completion)
-       ("bison" ,bison)
-       ("flex" ,flex)
-       ("gettext" ,gettext-minimal)
-       ("glib" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python-wrapper" ,python-wrapper)))
+     (list bash-completion
+           bison flex
+           gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           perl
+           pkg-config
+           python-wrapper))
     (inputs
      (list gmp libcap
            ;; For tests.
