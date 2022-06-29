@@ -29,6 +29,7 @@
 ;;; Copyright © 2020 Tomás Ortín Fernández <tomasortin@mailbox.org>
 ;;; Copyright © 2021 Giovanni Biscuolo <g@xelera.eu>
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
+;;; Copyright © 2022 Remco van 't Veer <remco@remworks.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -100,7 +101,7 @@
 (define-public ruby-2.6
   (package
     (name "ruby")
-    (version "2.6.5")
+    (version "2.6.10")
     (source
      (origin
        (method url-fetch)
@@ -109,7 +110,7 @@
                            "/ruby-" version ".tar.xz"))
        (sha256
         (base32
-         "0qhsw2mr04f3lqinkh557msr35pb5rdaqy4vdxcj91flgxqxmmnm"))
+         "1wn12klc44hn2nh5v1lkqbdyvljip6qhwjqvkkf8zf112gaxxn2z"))
        (modules '((guix build utils)))
        (snippet `(begin
                    ;; Remove bundled libffi
