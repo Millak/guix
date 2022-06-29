@@ -658,14 +658,14 @@ It also includes runtime support libraries for these languages.")
 (define-public gcc-10
   (package
    (inherit gcc-8)
-   (version "10.3.0")
+   (version "10.4.0")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnu/gcc/gcc-"
                                 version "/gcc-" version ".tar.xz"))
             (sha256
              (base32
-              "0i6378ig6h397zkhd7m4ccwjx5alvzrf2hm27p1pzwjhlv0h9x34"))
+              "1wg4xdizkksmwi66mvv2v4pk3ja8x64m7v9gzhykzd3wrmdpsaf9"))
             (patches (search-patches "gcc-9-strmov-store-file-names.patch"
                                      "gcc-5.0-libvtv-runpath.patch"))
             (modules '((guix build utils)))
