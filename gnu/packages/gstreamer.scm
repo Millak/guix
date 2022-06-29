@@ -532,72 +532,73 @@ This package provides the core library and elements.")
         "17rw8wj1x1bg153m9z76pdvgz5k93m3riyalfpzq00x7h7fv6c3y"))))
     (build-system meson-build-system)
     (propagated-inputs
-     `(("glib" ,glib)              ;required by gstreamer-sdp-1.0.pc
-       ("gstreamer" ,gstreamer)    ;required by gstreamer-plugins-base-1.0.pc
-       ;; wayland-client.h is referred to in
-       ;; include/gstreamer-1.0/gst/gl/wayland/gstgldisplay_wayland.h
-       ("wayland" ,wayland)
-       ;; XXX: Do not enable Orc optimizations on ARM systems because
-       ;; it leads to two test failures.
-       ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-base/issues/683
-       ,@(if (string-prefix? "arm" (or (%current-target-system)
-                                       (%current-system)))
-             '()
-             `(("orc" ,orc)))))         ;required by gstreamer-audio-1.0.pc
+     (cons* glib                    ;required by gstreamer-sdp-1.0.pc
+            gstreamer               ;required by gstreamer-plugins-base-1.0.pc
+            ;; wayland-client.h is referred to in
+            ;; include/gstreamer-1.0/gst/gl/wayland/gstgldisplay_wayland.h
+            wayland
+            ;; XXX: Do not enable Orc optimizations on ARM systems because
+            ;; it leads to two test failures.
+            ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-base/issues/683
+            (if (string-prefix? "arm" (or (%current-target-system)
+                                          (%current-system)))
+                '()
+                (list orc))))           ;required by gstreamer-audio-1.0.pc
     (inputs
      ;; TODO: Add libvorbisidec
-     `(("cdparanoia" ,cdparanoia)
-       ("pango" ,pango)
-       ("libogg" ,libogg)
-       ("libtheora" ,libtheora)
-       ("libvorbis" ,libvorbis)
-       ("libx11" ,libx11)
-       ("zlib" ,zlib)
-       ("libXext" ,libxext)
-       ("libxv" ,libxv)
-       ("alsa-lib" ,alsa-lib)
-       ("opus" ,opus)
-       ("graphene" ,graphene)
-       ("iso-codes" ,iso-codes)
-       ("libgudev" ,libgudev)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libvisual" ,libvisual)
-       ("mesa" ,mesa)
-       ("wayland-protocols" ,wayland-protocols)))
+     (list alsa-lib
+           cdparanoia
+           graphene
+           iso-codes
+           libgudev
+           libjpeg-turbo
+           libogg
+           libpng
+           libtheora
+           libvisual
+           libvorbis
+           libx11
+           libxext
+           libxv
+           mesa
+           opus
+           pango
+           wayland-protocols
+           zlib))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("python-wrapper" ,python-wrapper)
-       ("gettext" ,gettext-minimal)
-       ("xorg-server" ,xorg-server-for-tests)))
+     (list pkg-config
+           `(,glib "bin")
+           gobject-introspection
+           python-wrapper
+           gettext-minimal
+           xorg-server-for-tests))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ,@%common-gstreamer-phases
-         (add-after 'unpack 'disable-problematic-tests
-           (lambda _
-             (substitute* "tests/check/meson.build"
-               ;; This test causes nondeterministic failures (see:
-               ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-base/-/issues/950).
-               ((".*'elements/appsrc.c'.*")
-                ""))))
-         (add-before 'configure 'patch
-           (lambda _
-             (substitute* "tests/check/libs/pbutils.c"
-               (("/bin/sh") (which "sh")))))
-         (add-before 'check 'pre-check
-           (lambda _
-             ;; Tests require a running X server.
-             (system "Xvfb :1 +extension GLX &")
-             (setenv "DISPLAY" ":1")
-             ;; Tests write to $HOME.
-             (setenv "HOME" (getcwd))
-             ;; Tests look for $XDG_RUNTIME_DIR.
-             (setenv "XDG_RUNTIME_DIR" (getcwd))
-             ;; For missing '/etc/machine-id'.
-             (setenv "DBUS_FATAL_WARNINGS" "0"))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          #$@%common-gstreamer-phases
+          (add-after 'unpack 'disable-problematic-tests
+            (lambda _
+              (substitute* "tests/check/meson.build"
+                ;; This test causes nondeterministic failures (see:
+                ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-base/-/issues/950).
+                ((".*'elements/appsrc.c'.*")
+                 ""))))
+          (add-before 'configure 'patch
+            (lambda _
+              (substitute* "tests/check/libs/pbutils.c"
+                (("/bin/sh") (which "sh")))))
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; Tests require a running X server.
+              (system "Xvfb :1 +extension GLX &")
+              (setenv "DISPLAY" ":1")
+              ;; Tests write to $HOME.
+              (setenv "HOME" (getcwd))
+              ;; Tests look for $XDG_RUNTIME_DIR.
+              (setenv "XDG_RUNTIME_DIR" (getcwd))
+              ;; For missing '/etc/machine-id'.
+              (setenv "DBUS_FATAL_WARNINGS" "0"))))))
     (home-page "https://gstreamer.freedesktop.org/")
     (synopsis
      "Plugins for the GStreamer multimedia library")
@@ -620,83 +621,83 @@ for the GStreamer multimedia library.")
         (base32 "1dv8b2md1xk6d45ir1wzbvqhxbvm6mxv881rjl0brnjwpw3c5wzq"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t     ; To wrap binaries and/or compile schemas
-       #:phases
-       (modify-phases %standard-phases
-         ,@%common-gstreamer-phases
-         (add-after 'unpack 'absolutize-libsoup-library
-           (lambda* (#:key inputs #:allow-other-keys)
-             (define libsoup
-               (search-input-file inputs "lib/libsoup-3.0.so"))
+     (list
+      #:glib-or-gtk? #t              ; To wrap binaries and/or compile schemas
+      #:phases
+      #~(modify-phases %standard-phases
+          #$@%common-gstreamer-phases
+          (add-after 'unpack 'absolutize-libsoup-library
+            (lambda* (#:key inputs #:allow-other-keys)
+              (define libsoup
+                (search-input-file inputs "lib/libsoup-3.0.so"))
 
-             (substitute* "ext/soup/gstsouploader.c"
-               (("(#define LIBSOUP_3_SONAME ).+$" _ prefix)
-                (string-append prefix "\"" libsoup "\"\n")))))
-         (add-after 'unpack 'skip-failing-tests
-           (lambda _
-             (substitute* "tests/check/meson.build"
-               ;; Reported as shaky upstream, see
-               ;; <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/785>
-               (("\\[ 'elements/flvmux' \\]") "[ 'elements/flvmux', true ]"))))
-         (add-before 'check 'pre-check
-           (lambda _
-             ;; Tests require a running X server.
-             (system "Xvfb :1 +extension GLX &")
-             (setenv "DISPLAY" ":1")
-             ;; Tests write to $HOME.
-             (setenv "HOME" (getcwd))
-             ;; Tests look for $XDG_RUNTIME_DIR.
-             (setenv "XDG_RUNTIME_DIR" (getcwd))
-             ;; For missing '/etc/machine-id'.
-             (setenv "DBUS_FATAL_WARNINGS" "0")
-             #t)))))
+              (substitute* "ext/soup/gstsouploader.c"
+                (("(#define LIBSOUP_3_SONAME ).+$" _ prefix)
+                 (string-append prefix "\"" libsoup "\"\n")))))
+          (add-after 'unpack 'skip-failing-tests
+            (lambda _
+              (substitute* "tests/check/meson.build"
+                ;; Reported as shaky upstream, see
+                ;; <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/785>
+                (("\\[ 'elements/flvmux' \\]") "[ 'elements/flvmux', true ]"))))
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; Tests require a running X server.
+              (system "Xvfb :1 +extension GLX &")
+              (setenv "DISPLAY" ":1")
+              ;; Tests write to $HOME.
+              (setenv "HOME" (getcwd))
+              ;; Tests look for $XDG_RUNTIME_DIR.
+              (setenv "XDG_RUNTIME_DIR" (getcwd))
+              ;; For missing '/etc/machine-id'.
+              (setenv "DBUS_FATAL_WARNINGS" "0"))))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python-wrapper" ,python-wrapper)
-       ("xmllint" ,libxml2)
-       ("xorg-server" ,xorg-server-for-tests)))
+     (list gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           gsettings-desktop-schemas
+           libxml2
+           perl
+           pkg-config
+           python-wrapper
+           xorg-server-for-tests))
     (inputs
-     `(("aalib" ,aalib)
-       ("bzip2" ,bzip2)
-       ("cairo" ,cairo)
-       ("flac" ,flac)
-       ("librsvg" ,(librsvg-for-system))
-       ("glib" ,glib)
-       ("glib-networking" ,glib-networking)
-       ("glu" ,glu)
-       ("gtk+" ,gtk+)
-       ("jack" ,jack-2)
-       ("lame" ,lame)
-       ("libavc1394" ,libavc1394)
-       ("libcaca" ,libcaca)
-       ("libdv" ,libdv)
-       ("libgudev" ,libgudev)
-       ("libiec61883" ,libiec61883)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libshout" ,libshout)
-       ("libsoup" ,libsoup)
-       ("libvpx" ,libvpx)
-       ("libx11" ,libx11)
-       ("libxdamage" ,libxdamage)
-       ("libxfixes" ,libxfixes)
-       ("libxext" ,libxext)
-       ("libxshm" ,libxshmfence)
-       ("mesa" ,mesa)
-       ("mpg123" ,mpg123)
-       ("orc" ,orc)
-       ("pulseaudio" ,pulseaudio)
-       ("speex" ,speex)
-       ("taglib" ,taglib)
-       ("twolame" ,twolame)
-       ("v4l-utils" ,v4l-utils)
-       ("wavpack" ,wavpack)
-       ("zlib" ,zlib)))
+     (list aalib
+           bzip2
+           cairo
+           flac
+           (librsvg-for-system)
+           glib
+           glib-networking
+           glu
+           gtk+
+           jack-2
+           lame
+           libavc1394
+           libcaca
+           libdv
+           libgudev
+           libiec61883
+           libjpeg-turbo
+           libpng
+           libshout
+           libsoup
+           libvpx
+           libx11
+           libxdamage
+           libxfixes
+           libxext
+           libxshmfence
+           mesa
+           mpg123
+           orc
+           pulseaudio
+           speex
+           taglib
+           twolame
+           v4l-utils
+           wavpack
+           zlib))
     (propagated-inputs
      (list gstreamer gst-plugins-base))
     (synopsis "GStreamer plugins and helper libraries")
