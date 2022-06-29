@@ -40,7 +40,7 @@
 (define-public nspr
   (package
     (name "nspr")
-    (version "4.31")
+    (version "4.34")
     (source (origin
              (method url-fetch)
              (uri (string-append
@@ -48,7 +48,7 @@
                    version "/src/nspr-" version ".tar.gz"))
              (sha256
               (base32
-               "1j5b2m8cjlhnnv8sq34587avaagkqvh521w4f95miwgvsn3xlaap"))))
+               "177rxcf3lglabs7sgwcvf72ww4v56qa71lc495wl13sxs4f03vxy"))))
     (build-system gnu-build-system)
     (inputs
      ;; For 'compile-et.pl' and 'nspr-config'.
