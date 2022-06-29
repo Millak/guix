@@ -2505,7 +2505,7 @@ memoized as a function of '%current-system'."
                    ;; toolchain, since we are not building the full kernel.
                    (substitute* "scripts/min-tool-version.sh"
                      (("echo 5\\.1\\.0")  ;GCC
-                      "echo 4.9.4")
+                      "echo 4.8.4")
                      (("echo 2\\.23\\.0") ;binutils
                       "echo 2.20.1")))))))))
     (native-inputs
