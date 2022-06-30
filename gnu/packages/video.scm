@@ -1223,9 +1223,6 @@ on the Invidious instances only as a fallback method.")
        #:configure-flags
          ;; Ensure position independent code for everyone.
          (list "-DENABLE_PIC=TRUE"
-               ,@(if (target-arm?)
-                     '("-DENABLE_ASSEMBLY=OFF")
-                     '())
                (string-append "-DCMAKE_INSTALL_PREFIX="
                               (assoc-ref %outputs "out")))
        #:phases
@@ -1246,6 +1243,9 @@ on the Invidious instances only as a fallback method.")
              (with-directory-excursion "../build-12bit"
                (apply invoke
                  "cmake" "../source"
+                 ,@(if (target-aarch64?)
+                     '("-DENABLE_ASSEMBLY=OFF")
+                     '())
                  "-DHIGH_BIT_DEPTH=ON"
                  "-DEXPORT_C_API=OFF"
                  "-DENABLE_CLI=OFF"
@@ -1263,6 +1263,9 @@ on the Invidious instances only as a fallback method.")
              (with-directory-excursion "../build-10bit"
                (apply invoke
                  "cmake" "../source"
+                 ,@(if (target-aarch64?)
+                     '("-DENABLE_ASSEMBLY=OFF")
+                     '())
                  "-DHIGH_BIT_DEPTH=ON"
                  "-DEXPORT_C_API=OFF"
                  "-DENABLE_CLI=OFF"
