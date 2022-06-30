@@ -21636,3 +21636,42 @@ operating on them.")
 
 (define-public ecl-algebraic-data-type
   (sbcl-package->ecl-package sbcl-cl-algebraic-data-type))
+
+(define-public sbcl-screamer
+  (let ((commit "ce50614024de090b376107668da5e53232540ec7"))
+    (package
+      (name "sbcl-screamer")
+      (version (git-version "0.0.1" "1" commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/nikodemus/screamer/")
+               (commit commit)))
+         (file-name (git-file-name "cl-screamer" version))
+         (sha256
+          (base32 "1jl42pl6kwkiq71d0naf3r1mn1qy89ndimfgiz58c4g66xbjb7kx"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-iterate
+             sbcl-hu.dwim.stefil))
+      (home-page "http://nikodemus.github.io/screamer/")
+      (synopsis "Nondeterministic programming and constraint propagation")
+      (description
+       "Screamer is an extension of Common Lisp that adds support for
+nondeterministic programming.  Screamer consists of two levels.  The basic
+nondeterministic level adds support for backtracking and undoable side
+effects.  On top of this nondeterministic substrate, Screamer provides a
+comprehensive constraint programming language in which one can formulate and
+solve mixed systems of numeric and symbolic constraints.  Together, these two
+levels augment Common Lisp with practically all of the functionality of both
+Prolog and constraint logic programming languages such as CHiP and CLP(R).
+Furthermore, Screamer is fully integrated with Common Lisp.  Screamer programs
+can coexist and interoperate with other extensions to as CLIM and Iterate.")
+      (license license:expat))))
+
+(define-public cl-screamer
+  (sbcl-package->cl-source-package sbcl-screamer))
+
+(define-public ecl-screamer
+  (sbcl-package->ecl-package sbcl-screamer))
