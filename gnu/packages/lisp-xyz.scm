@@ -22303,3 +22303,31 @@ functionality similar to what was originally found in @code{sdl2kit}.
 
 (define-public ecl-glkit
   (sbcl-package->ecl-package sbcl-glkit))
+
+(define-public sbcl-trees
+  (let ((commit "7b06048af0248c4302088c758208276f9faf2beb"))
+    (package
+      (name "sbcl-trees")
+      (version (git-version "0.11" "1" commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/froydnj/trees/")
+               (commit commit)))
+         (file-name (git-file-name "cl-trees" version))
+         (sha256
+          (base32 "1xvydf3qc17rd7ia8sffxcpclgm3l0iyhx8k72ddk59v3pg5is4k"))))
+      (build-system asdf-build-system/sbcl)
+      (home-page "https://github.com/froydnj/trees/")
+      (synopsis "Binary trees in normal and balanced flavors")
+      (description
+       "This package implements binary trees of various kinds, presenting a
+uniform interface to them all.")
+      (license license:bsd-3))))
+
+(define-public cl-trees
+  (sbcl-package->cl-source-package sbcl-trees))
+
+(define-public ecl-trees
+  (sbcl-package->ecl-package sbcl-trees))
