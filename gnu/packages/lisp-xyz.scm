@@ -17799,6 +17799,59 @@ C Library.")
 (define-public cl-sdl2-image
   (sbcl-package->cl-source-package sbcl-sdl2-image))
 
+(define-public sbcl-sdl2-ttf
+  (let ((commit "6dd2df2fb3a79ec4f835e3bc882e60e8da039878")
+        (revision "1"))
+    (package
+      (name "sbcl-sdl2-ttf")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/lispgames/cl-sdl2-ttf")
+               (commit commit)))
+         (file-name (git-file-name "cl-sdl2-ttf" version))
+         (sha256
+          (base32 "07c1bl66dix6ccnyl9mqd6lbk10f9s25985zmv6lss95491ng7my"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-paths
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (substitute* "src/library.lisp"
+                       (("libSDL2_ttf-2.0.so.0")
+                        (search-input-file inputs "/lib/libSDL2_ttf-2.0.so.0")))))
+                 (add-after 'unpack 'fix-critical-warning
+                   (lambda _
+                     (substitute* "src/helpers.lisp"
+                       (("nreverse") "reverse")))))))
+      (inputs
+       (list sdl2-ttf
+             sbcl-alexandria
+             sbcl-cffi
+             sbcl-cl-autowrap
+             sbcl-defpackage-plus
+             sbcl-sdl2
+             sbcl-trivial-garbage))
+      (home-page "https://github.com/lispgames/cl-sdl2-ttf")
+      (synopsis "SDL2_ttf wrapper for Common Lisp")
+      (description
+       "This is a wrapper for the SDL2_TTF library used for loading fonts and
+creating text assets.  The library, in it's current state, can load TTF and
+OTF fonts and render fonts with the three different rendering modes provided
+by the C library (solid, shaded, and blended).  While Latin text, UTF8,
+UNICODE, and Glyph text rendering is available only Latin text has been
+tested (as shown in the examples).")
+      (license license:expat))))
+
+(define-public ecl-sdl2-ttf
+  (sbcl-package->ecl-package sbcl-sdl2-ttf))
+
+(define-public cl-sdl2-ttf
+  (sbcl-package->cl-source-package sbcl-sdl2-ttf))
+
 (define-public sbcl-cl-gamepad
   (let ((commit "7e12137927b42db064ffbf9ea34bd4790ad4bb33")
         (revision "1"))
