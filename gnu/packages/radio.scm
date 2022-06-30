@@ -556,58 +556,57 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
         (base32 "0xdhb2blzajxpi0f2ch23hh6bzdwz5q7syi3bmiqzdjlj2yjfzd4"))))
     (build-system cmake-build-system)
     (native-inputs
-     `(("doxygen" ,doxygen)
-       ("ghostscript" ,ghostscript)
-       ("js-mathjax" ,js-mathjax)
-       ("orc" ,orc)
-       ("pkg-config" ,pkg-config)
-       ("pybind11" ,pybind11)
-       ("python-cheetah" ,python-cheetah)
-       ("python-mako" ,python-mako)
-       ("python-pyzmq" ,python-pyzmq)
-       ("python-scipy" ,python-scipy)
-       ("python-sphinx" ,python-sphinx)
-       ("texlive" ,(texlive-updmap.cfg (list texlive-amsfonts
-                                             texlive-amsmath
-                                             ;; TODO: Add newunicodechar.
-                                             texlive-latex-graphics)))
-       ("xorg-server" ,xorg-server-for-tests)))
+     (list doxygen
+           ghostscript
+           js-mathjax
+           orc
+           pkg-config
+           pybind11
+           python-cheetah
+           python-mako
+           python-pyzmq
+           python-scipy
+           python-sphinx
+           (texlive-updmap.cfg (list texlive-amsfonts
+                                     texlive-amsmath
+                                     ;; TODO: Add newunicodechar.
+                                     texlive-latex-graphics))
+           xorg-server-for-tests))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("boost" ,boost)
-       ("cairo" ,cairo)
-       ("codec2" ,codec2)
-       ("cppzmq" ,cppzmq)
-       ("fftwf" ,fftwf)
-       ("gmp" ,gmp)
-       ("gsl" ,gsl)
-       ("gsm" ,gsm)
-       ("gtk+" ,gtk+)
-       ("jack" ,jack-1)
-       ("libsndfile" ,libsndfile)
-       ("log4cpp" ,log4cpp)
-       ("pango" ,pango)
-       ("portaudio" ,portaudio)
-       ("python" ,python)
-       ("python-click" ,python-click)
-       ("python-click-plugins" ,python-click-plugins)
-       ("python-jsonschema" ,python-jsonschema)
-       ("python-lxml" ,python-lxml)
-       ("python-matplotlib" ,python-matplotlib)
-       ("python-numpy" ,python-numpy)
-       ("python-pycairo" ,python-pycairo)
-       ("python-pygobject" ,python-pygobject)
-       ("python-pyqt" ,python-pyqt-without-qtwebkit)
-       ("python-pyqtgraph" ,python-pyqtgraph)
-       ("python-pyyaml" ,python-pyyaml)
-       ("qtbase" ,qtbase-5)
-       ("qwt" ,qwt)
-       ("sdl" ,sdl)
-       ("soapysdr" ,soapysdr)
-       ("volk" ,volk)
-       ("zeromq" ,zeromq)))
-    (propagated-inputs
-     (list spdlog))
+     (list alsa-lib
+           boost
+           cairo
+           codec2
+           cppzmq
+           fftwf
+           gmp
+           gsl
+           gsm
+           gtk+
+           jack-1
+           libsndfile
+           log4cpp
+           pango
+           portaudio
+           python
+           python-click
+           python-click-plugins
+           python-jsonschema
+           python-lxml
+           python-matplotlib
+           python-numpy
+           python-pycairo
+           python-pygobject
+           python-pyqt-without-qtwebkit
+           python-pyqtgraph
+           python-pyyaml
+           qtbase-5
+           qwt
+           sdl
+           soapysdr
+           spdlog
+           volk
+           zeromq))
     (arguments
      `(#:modules ((guix build cmake-build-system)
                   ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
@@ -645,14 +644,12 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
              (substitute* '("gr-vocoder/include/gnuradio/vocoder/codec2.h"
                             "gr-vocoder/include/gnuradio/vocoder/freedv_api.h")
                (("<codec2/")
-                "<"))
-             #t))
+                "<"))))
          (add-before 'check 'set-test-environment
            (lambda* (#:key inputs #:allow-other-keys)
              (setenv "HOME" "/tmp")
              (system "Xvfb :1 &")
-             (setenv "DISPLAY" ":1")
-             #t))
+             (setenv "DISPLAY" ":1")))
          (replace 'check
            (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
              (invoke "ctest" "-j" (if parallel-tests?
@@ -686,8 +683,7 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
                                         #f))))
                                inputs)))
                (wrap-program (string-append out "/bin/gnuradio-companion")
-                 `("GI_TYPELIB_PATH" ":" prefix ,(filter identity paths))))
-             #t)))))
+                 `("GI_TYPELIB_PATH" ":" prefix ,(filter identity paths)))))))))
     (native-search-paths
      ;; Variables required to find third-party plugins at runtime.
      (list (search-path-specification
