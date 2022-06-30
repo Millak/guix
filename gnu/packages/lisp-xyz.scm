@@ -22461,3 +22461,46 @@ objects.")
 
 (define-public ecl-cl-geometry
   (sbcl-package->ecl-package sbcl-cl-geometry))
+
+(define-public sbcl-sketch
+  ;; No release in years.
+  (let ((commit "4cc00b08e202c7adda41391463096cf9df1705c3"))
+    (package
+      (name "sbcl-sketch")
+      (version (git-version "2017-11" "1" commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/vydd/sketch")
+               (commit commit)))
+         (file-name (git-file-name "cl-sketch" version))
+         (sha256
+          (base32 "1qrnma8yvmxps9rz3pvlzsir37namppsldijdlr4110pcwi9j9h6"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria
+             sbcl-cl-geometry
+             sbcl-glkit
+             sbcl-mathkit
+             sbcl-md5
+             sbcl-sdl2
+             sbcl-sdl2-image
+             sbcl-sdl2-ttf
+             sbcl-sdl2kit
+             sbcl-split-sequence
+             sbcl-static-vectors))
+      (home-page "https://github.com/vydd/sketch")
+      (synopsis "Creative framework for electronic art, visual design and more")
+      (description
+       "Sketch is a Common Lisp environment for the creation of electronic
+art, visual design, game prototyping, game making, computer graphics,
+exploration of human-computer interaction and more.  It is inspired by
+the Processing language and shares some of the API.")
+      (license license:expat))))
+
+(define-public cl-sketch
+  (sbcl-package->cl-source-package sbcl-sketch))
+
+(define-public ecl-sketch
+  (sbcl-package->ecl-package sbcl-sketch))
