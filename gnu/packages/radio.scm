@@ -737,6 +737,7 @@ environment.")
              python-pyqt
              rtl-sdr
              soapysdr
+             spdlog
              volk))
       (arguments
        `(#:modules ((guix build cmake-build-system)
