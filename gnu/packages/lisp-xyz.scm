@@ -22260,3 +22260,46 @@ games.")
 
 (define-public ecl-sdl2kit
   (sbcl-package->ecl-package sbcl-sdl2kit))
+
+(define-public sbcl-glkit
+  (let ((commit "0d8e7c5fed4231f2177afcf0f3ff66f196ed6a46"))
+    (package
+      (name "sbcl-glkit")
+      (version (git-version "0.0" "1" commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/lispgames/glkit/")
+               (commit commit)))
+         (file-name (git-file-name "cl-glkit" version))
+         (sha256
+          (base32 "1x3y5jcr1f0v9sgn3y5b7b8fhgd6vv37nz73016gdwh511idi8jn"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria
+             sbcl-cl-opengl
+             sbcl-defpackage-plus
+             sbcl-mathkit
+             sbcl-sb-cga
+             sbcl-sdl2
+             sbcl-static-vectors))
+      (home-page "https://github.com/lispgames/glkit/")
+      (synopsis "OpenGL utilities for math, shaders, and more")
+      (description
+       "This is a utility kit for functionality related to OpenGL.  It provides the following:
+
+@itemize
+@item @code{kit.glm}: This re-exports @code{sb-cga} and @code{mathkit} for
+convenience.
+@item @code{kit.gl.shader}: This provides shader dictionary and compilation
+functionality similar to what was originally found in @code{sdl2kit}.
+@item @code{kit.gl.vao}: This provides an interface for Vertex Array Objects.
+@end itemize\n")
+      (license license:expat))))
+
+(define-public cl-glkit
+  (sbcl-package->cl-source-package sbcl-glkit))
+
+(define-public ecl-glkit
+  (sbcl-package->ecl-package sbcl-glkit))
