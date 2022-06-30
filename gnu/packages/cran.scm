@@ -35,8 +35,7 @@
 ;;; Copyright © 2020 Aniket Patil <aniket112.patil@gmail.com>
 ;;; Copyright © 2021 Marcel Schilling <marcel.schilling@uni-luebeck.de>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
-;;; Copyright © 2022 Navid Afkhami <navid.afkhami@mdc-berlin.de>
-;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2022 Navid Afkhami  <navid.afkhami@mdc-berlin.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -33439,22 +33438,3 @@ jitterplot, or half violinplot and half dotplot.")
 coefficients or scattering amplitudes, for seismological P and S-waves at an
 interface.")
     (license license:gpl2+)))
-
-(define-public r-mathjaxr
-  (package
-    (name "r-mathjaxr")
-    (version "1.6-0")
-    (source (origin
-              (method url-fetch)
-              (uri (cran-uri "mathjaxr" version))
-              (sha256
-               (base32
-                "0yf1sfkb2kjsplipl2v4k2gp20li9xzsynclg228sy0v243pdi7c"))))
-    (properties `((upstream-name . "mathjaxr")))
-    (build-system r-build-system)
-    (home-page "https://github.com/wviechtb/mathjaxr")
-    (synopsis "Using 'Mathjax' in Rd Files")
-    (description
-     "This package provides 'MathJax' and macros to enable its use within Rd files for
-rendering equations in the HTML help files.")
-    (license (list license:asl2.0 license:gpl3))))
