@@ -3013,6 +3013,7 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
   ;; Zlib used by GCC-FINAL.
   (package
     (inherit zlib)
+    (source (bootstrap-origin (package-source zlib)))
     (arguments
      `(#:guile ,%bootstrap-guile
        #:implicit-inputs? #f

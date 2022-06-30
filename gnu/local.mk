@@ -1962,6 +1962,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/xterm-370-explicit-xcursor.patch		\
   %D%/packages/patches/xygrib-fix-finding-data.patch		\
   %D%/packages/patches/yggdrasil-extra-config.patch	\
+  %D%/packages/patches/zlib-cc.patch				\
+  %D%/packages/patches/zlib-correct-crc32-inputs.patch		\
   %D%/packages/patches/zig-use-system-paths.patch
 
 MISC_DISTRO_FILES =				\
