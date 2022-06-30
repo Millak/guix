@@ -869,6 +869,7 @@ to the fix block above.
            python-pyaml
            python-pyzmq
            python-requests
+           spdlog
            volk))
     (arguments
      `(#:modules ((guix build cmake-build-system)
