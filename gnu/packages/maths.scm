@@ -4487,66 +4487,67 @@ parts of it.")
          "0r4sz3rn68fyc2paq0a04pgfi7iszpm95f6ggbzxpvjzx9qxbcql"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:test-target "test"
-       ;; DYNAMIC_ARCH is only supported on x86.  When it is disabled and no
-       ;; TARGET is specified, OpenBLAS will tune itself to the build host, so
-       ;; we need to disable substitutions.
-       #:substitutable?
-        ,(let ((system (or (%current-target-system) (%current-system))))
-           (or (string-prefix? "x86_64" system)
-               (string-prefix? "i686" system)
-               (string-prefix? "mips" system)
-               (string-prefix? "aarch64" system)))
-       #:make-flags
-       (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
-             "SHELL=bash"
-             "MAKE_NB_JOBS=0"           ;use jobserver for submakes
-             "NO_STATIC=1"              ;avoid a 67 MiB static archive
+     (list
+      #:test-target "test"
+      ;; DYNAMIC_ARCH is only supported on x86.  When it is disabled and no
+      ;; TARGET is specified, OpenBLAS will tune itself to the build host, so
+      ;; we need to disable substitutions.
+      #:substitutable?
+      (let ((system (or (%current-target-system) (%current-system))))
+        (or (string-prefix? "x86_64" system)
+            (string-prefix? "i686" system)
+            (string-prefix? "mips" system)
+            (string-prefix? "aarch64" system)))
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output)
+              "SHELL=bash"
+              "MAKE_NB_JOBS=0"          ;use jobserver for submakes
+              "NO_STATIC=1"             ;avoid a 67 MiB static archive
 
-             ;; This is the maximum number of threads OpenBLAS will ever use (that
-             ;; is, if $OPENBLAS_NUM_THREADS is greater than that, then NUM_THREADS
-             ;; is used.)  If we don't set it, the makefile sets it to the number
-             ;; of cores of the build machine, which is obviously wrong.
-             "NUM_THREADS=128"
+              ;; This is the maximum number of threads OpenBLAS will ever use (that
+              ;; is, if $OPENBLAS_NUM_THREADS is greater than that, then NUM_THREADS
+              ;; is used.)  If we don't set it, the makefile sets it to the number
+              ;; of cores of the build machine, which is obviously wrong.
+              "NUM_THREADS=128"
 
-             ;; Build the library for all supported CPUs.  This allows
-             ;; switching CPU targets at runtime with the environment variable
-             ;; OPENBLAS_CORETYPE=<type>, where "type" is a supported CPU type.
-             ;; Unfortunately, this is not supported on all architectures,
-             ;; where it leads to failed builds.
-             ,@(let ((system (or (%current-target-system) (%current-system))))
-                 (cond
-                  ((or (string-prefix? "x86_64" system)
-                       (string-prefix? "i686" system)
-                       (string-prefix? "powerpc64le" system)
-                       (string-prefix? "aarch64" system))
-                   ;; Dynamic older enables a few extra CPU architectures that
-                   ;; were released before 2010.
-                   '("DYNAMIC_ARCH=1" "DYNAMIC_OLDER=1" "TARGET=GENERIC"))
-                  ;; On some of these architectures the CPU can't be detected.
-                  ;; On MIPS we force the "SICORTEX" TARGET, as for the other
-                  ;; two available MIPS targets special extended instructions
-                  ;; for Loongson cores are used.
-                  ((string-prefix? "mips" system)
-                   '("TARGET=SICORTEX"))
-                  ;; Failed to detect CPU.
-                  ((string-prefix? "armhf" system)
-                   '("TARGET=ARMV7"))
-                  ((string-prefix? "riscv64" system)
-                   '("TARGET=RISCV64_GENERIC"))
-                  (else '()))))
-       ;; no configure script
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-before 'build 'set-extralib
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Get libgfortran found when building in utest.
-             (setenv "FEXTRALIB"
-                     (string-append
-                      "-L"
-                      (dirname
-                       (search-input-file inputs "/lib/libgfortran.so")))))))))
+              ;; Build the library for all supported CPUs.  This allows
+              ;; switching CPU targets at runtime with the environment variable
+              ;; OPENBLAS_CORETYPE=<type>, where "type" is a supported CPU type.
+              ;; Unfortunately, this is not supported on all architectures,
+              ;; where it leads to failed builds.
+              #$@(let ((system (or (%current-target-system) (%current-system))))
+                   (cond
+                    ((or (string-prefix? "x86_64" system)
+                         (string-prefix? "i686" system)
+                         (string-prefix? "powerpc64le" system)
+                         (string-prefix? "aarch64" system))
+                     ;; Dynamic older enables a few extra CPU architectures that
+                     ;; were released before 2010.
+                     '("DYNAMIC_ARCH=1" "DYNAMIC_OLDER=1" "TARGET=GENERIC"))
+                    ;; On some of these architectures the CPU can't be detected.
+                    ;; On MIPS we force the "SICORTEX" TARGET, as for the other
+                    ;; two available MIPS targets special extended instructions
+                    ;; for Loongson cores are used.
+                    ((string-prefix? "mips" system)
+                     '("TARGET=SICORTEX"))
+                    ;; Failed to detect CPU.
+                    ((string-prefix? "armhf" system)
+                     '("TARGET=ARMV7"))
+                    ((string-prefix? "riscv64" system)
+                     '("TARGET=RISCV64_GENERIC"))
+                    (else '()))))
+      ;; no configure script
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-before 'build 'set-extralib
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Get libgfortran found when building in utest.
+              (setenv "FEXTRALIB"
+                      (string-append
+                       "-L"
+                       (dirname
+                        (search-input-file inputs "/lib/libgfortran.so")))))))))
     (inputs
      (list `(,gfortran "lib")))
     (native-inputs
@@ -4563,9 +4564,9 @@ parts of it.")
     (supported-systems '("x86_64-linux" "aarch64-linux" "mips64el-linux"))
     (arguments
      (substitute-keyword-arguments (package-arguments openblas)
-       ((#:make-flags flags '())
-        `(append (list "INTERFACE64=1" "LIBNAMESUFFIX=ilp64")
-                 ,flags))))
+       ((#:make-flags flags #~'())
+        #~(append (list "INTERFACE64=1" "LIBNAMESUFFIX=ilp64")
+                 #$flags))))
     (synopsis "Optimized BLAS library based on GotoBLAS (ILP64 version)")
     (license license:bsd-3)))
 
