@@ -1003,7 +1003,7 @@ decoders, muxers, and demuxers provided by FFmpeg.")
     (build-system meson-build-system)
     (arguments
      (list
-      #:tests? #f                    ; FIXME: 16/22 failing tests.
+      #:tests? #f                    ; FIXME: 16/23 failing tests.
       #:glib-or-gtk? #t              ; To wrap binaries and/or compile schemas
       #:phases #~(modify-phases %standard-phases
                    #$@%common-gstreamer-phases)))
