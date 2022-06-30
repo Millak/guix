@@ -21887,3 +21887,41 @@ conditions.")
 
 (define-public ecl-sealable-metaobjects
   (sbcl-package->ecl-package sbcl-sealable-metaobjects))
+
+(define-public sbcl-fast-generic-functions
+  (let ((commit "9c307cd28af6453e45038ac3510de3123ff23743"))
+    (package
+      (name "sbcl-fast-generic-functions")
+      (version (git-version "0.0.0" "1" commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/marcoheisig/fast-generic-functions/")
+               (commit commit)))
+         (file-name (git-file-name "cl-fast-generic-functions" version))
+         (sha256
+          (base32 "16hf9bi2p5s77p3m3aqsihcd9iicqjhhxxpsarjv93c41qs54yad"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-closer-mop
+             sbcl-sealable-metaobjects
+             sbcl-trivial-macroexpand-all))
+      (arguments
+       ;; Tests fail: https://github.com/marcoheisig/fast-generic-functions/issues/10
+       '(#:tests? #f))
+      (home-page "https://github.com/marcoheisig/fast-generic-functions/")
+      (synopsis "Seal generic functions to boost performance")
+      (description
+       "This library introduces @emph{fast generic functions}, i.e. functions
+that behave just like regular generic functions, except that the can be sealed
+on certain domains.  If the compiler can then statically detect that the
+arguments to a fast generic function fall within such a domain, it will
+perform a variety of optimizations.")
+      (license license:expat))))
+
+(define-public cl-fast-generic-functions
+  (sbcl-package->cl-source-package sbcl-fast-generic-functions))
+
+(define-public ecl-fast-generic-functions
+  (sbcl-package->ecl-package sbcl-fast-generic-functions))
