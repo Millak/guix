@@ -21966,3 +21966,31 @@ place outside with-notes.
 
 (define-public ecl-compiler-macro-notes
   (sbcl-package->ecl-package sbcl-compiler-macro-notes))
+
+(define-public sbcl-ctype
+  (let ((commit "4fc4c5ae44c435ed82556969f698005bee50101c"))
+    (package
+      (name "sbcl-ctype")
+      (version (git-version "0.0.0" "1" commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/s-expressionists/ctype")
+               (commit commit)))
+         (file-name (git-file-name "cl-ctype" version))
+         (sha256
+          (base32 "05smc81ml9rbcbzdhqg2mi9drnjsipq62r5q7f7qql8hbx01vl9i"))))
+      (build-system asdf-build-system/sbcl)
+      (home-page "https://github.com/s-expressionists/ctype")
+      (synopsis "Common Lisp type system implementation ")
+      (description
+       "This system is an implementation of the Common Lisp type system;
+particularly @code{cl:typep} and @code{cl:subtypep}.")
+      (license license:bsd-2))))
+
+(define-public cl-ctype
+  (sbcl-package->cl-source-package sbcl-ctype))
+
+(define-public ecl-ctype
+  (sbcl-package->ecl-package sbcl-ctype))
