@@ -457,7 +457,9 @@ an interpreter, a compiler, a debugger, and much more.")
            (texlive-updmap.cfg (list texlive-tex-texinfo))
            which))
     (inputs
-     (list (list zstd "lib")))
+     (list gmp                          ; for sb-gmp
+           mpfr                         ; for sb-mpfr
+           (list zstd "lib")))
     (arguments
      `(#:modules ((guix build gnu-build-system)
                   (guix build utils)
@@ -539,6 +541,20 @@ an interpreter, a compiler, a debugger, and much more.")
                  (("\\(deftest grent\\.[12]" all)
                   (string-append "#+nil ;disabled by Guix\n" all))))
              #t))
+         (add-before 'build 'fix-shared-library-makefile
+           (lambda _
+             (substitute* '("src/runtime/GNUmakefile")
+               (("	cc") "	$(CC)"))
+             #t))
+         (add-before 'build 'fix-contrib-library-path
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((gmp (assoc-ref inputs "gmp"))
+                   (mpfr (assoc-ref inputs "mpfr")))
+               (substitute* '("contrib/sb-gmp/gmp.lisp")
+                 (("\"libgmp\\.so") (string-append "\"" gmp "/lib/libgmp.so")))
+               (substitute* '("contrib/sb-mpfr/mpfr.lisp")
+                 (("\"libmpfr\\.so") (string-append "\"" mpfr "/lib/libmpfr.so"))))
+             #t))
          (replace 'build
            (lambda* (#:key outputs #:allow-other-keys)
              (setenv "CC" "gcc")
@@ -552,6 +568,10 @@ an interpreter, a compiler, a debugger, and much more.")
                      "--dynamic-space-size=3072"
                      "--with-sb-core-compression"
                      "--with-sb-xref-for-internals")))
+         (add-after 'build 'build-shared-library
+           (lambda* (#:key outputs #:allow-other-keys)
+             (setenv "CC" "gcc")
+             (invoke "sh" "make-shared-library.sh")))
          (replace 'install
            (lambda _
              (invoke "sh" "install.sh")))
@@ -583,6 +603,12 @@ an interpreter, a compiler, a debugger, and much more.")
                    (display
                     (string-append "(sb-ext:set-sbcl-source-location \""
                                    source-dir "\")") )))
+               #t)))
+         (add-after 'install 'install-shared-library
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (lib-dir (string-append out "/lib")))
+               (install-file "src/runtime/libsbcl.so" lib-dir)
                #t)))
          (add-after 'install 'install-doc
            (lambda* (#:key outputs #:allow-other-keys)
