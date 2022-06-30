@@ -12786,3 +12786,27 @@ Dashboard.  It is a Ruby Client library for IRIS / BBS API.")
     (description "Sentry-Core provides a gem that provides a client
 interface for the Sentry error logger.")
     (license license:expat)))
+
+(define-public ruby-sentry
+  (package
+    (name "ruby-sentry")
+    (version "5.3.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "sentry-ruby" version))
+        (sha256
+          (base32 "0by9mvw8rklzpyx59vfija8h3ssfvxvf5nbqxfmygfy6lm1vdngz"))))
+    (build-system ruby-build-system)
+    (arguments
+     ;; No rakefile in gem
+     `(#:tests? #f))
+    (propagated-inputs
+      (list ruby-concurrent
+             ruby-faraday
+             ruby-sentry-core))
+    (home-page "https://sentry.io/for/ruby/")
+    (synopsis "Client interface for the Sentry error logger")
+    (description "Sentry provides a gem that provides a client
+interface for the Sentry error logger.")
+    (license license:expat)))
