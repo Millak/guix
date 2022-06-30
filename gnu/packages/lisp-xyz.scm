@@ -21994,3 +21994,49 @@ particularly @code{cl:typep} and @code{cl:subtypep}.")
 
 (define-public ecl-ctype
   (sbcl-package->ecl-package sbcl-ctype))
+
+(define-public sbcl-polymorphic-functions
+  (package
+    (name "sbcl-polymorphic-functions")
+    (version "0.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/digikar99/polymorphic-functions/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-polymorphic-functions" version))
+       (sha256
+        (base32 "161ylp3avmkylgfddp7i1kscv3bqx734jk1i97xhsbl7x83nin0h"))))
+    (build-system asdf-build-system/sbcl)
+    (inputs
+     (list sbcl-alexandria
+           sbcl-closer-mop
+           sbcl-compiler-macro-notes
+           sbcl-ctype
+           sbcl-fiveam
+           sbcl-cl-form-types
+           sbcl-introspect-environment
+           sbcl-slime-swank))
+    (arguments
+     ;; Tests fail: https://github.com/digikar99/polymorphic-functions/issues/8
+     '(#:tests? #f))
+    (home-page "https://github.com/digikar99/polymorphic-functions/")
+    (synopsis "Function type to dispatch on types instead of classes")
+    (description
+     "This library provides all of
+
+@itemize
+@item ad hoc polymorphism and
+@item subtype polymorphism
+@item parametric polymorphism (in a very limited sense)
+@end itemize
+
+to dispatch on the basis of types rather than classes.")
+    (license license:expat)))
+
+(define-public cl-polymorphic-functions
+  (sbcl-package->cl-source-package sbcl-polymorphic-functions))
+
+(define-public ecl-polymorphic-functions
+  (sbcl-package->ecl-package sbcl-polymorphic-functions))
