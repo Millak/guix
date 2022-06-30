@@ -2,6 +2,7 @@
 ;;; Copyright © 2013 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2017, 2022 Efraim Flashner <efraim@flasher.co.il>
 ;;; Copyright © 2018 Mark H Weaver <mhw@netris.org>
+;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -23,6 +24,7 @@
   #:use-module (guix download)
   #:use-module (guix build-system gnu)
   #:use-module (guix licenses)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages tcl))
 
 (define-public dejagnu
@@ -38,10 +40,19 @@
        (base32
         "1qx2cv6qkxbiqg87jh217jb62hk3s7dmcs4cz1llm2wmsynfznl7"))))
     (build-system gnu-build-system)
-    (inputs (list expect))
+    (inputs (list bash-minimal expect))
     (arguments
      '(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'patch-/bin/sh
+           (lambda* (#:key inputs #:allow-other-keys)
+             ;; Patch embedded /bin/sh references.
+             (let ((/bin/sh (search-input-file inputs "/bin/sh")))
+               (substitute* "dejagnu"
+                 (("exec /bin/sh")
+                  (string-append "exec " /bin/sh)))
+               (substitute* (find-files "testsuite/report-card.all")
+               (("/bin/sh") /bin/sh)))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              ;; Note: The test-suite *requires* /dev/pts among the
