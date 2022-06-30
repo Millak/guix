@@ -413,14 +413,14 @@ an interpreter, a compiler, a debugger, and much more.")
 (define-public sbcl
   (package
     (name "sbcl")
-    (version "2.2.2")
+    (version "2.2.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/sbcl/sbcl/" version "/sbcl-"
                            version "-source.tar.bz2"))
        (sha256
-        (base32 "1xjhg473ibfiplvvyg1grxrh0nqqbg72acc2pcacw7bijyzdp447"))))
+        (base32 "18044dqx37mkipnrzs7jrp0cbnwp6snb5gi06a8zn9m8iy6088ry"))))
     (build-system gnu-build-system)
     (outputs '("out" "doc"))
     (native-inputs
@@ -445,18 +445,19 @@ an interpreter, a compiler, a debugger, and much more.")
      ;; to make it easier to change the host compiler for various
      ;; architectures.  Consider switching to ECL if it gets faster than CLISP
      ;; (maybe post 2020 release).
-     `(,@(match (%current-system)
-           ((or "x86_64-linux" "i686-linux")
-            `(("clisp" ,clisp)))
-           (_
-            `(("clisp" ,clisp))))
-       ("cl-asdf" ,cl-asdf)
-       ("ed" ,ed)
-       ("inetutils" ,inetutils)         ;for hostname(1)
-       ("texinfo" ,texinfo)
-       ("texlive" ,(texlive-updmap.cfg (list texlive-tex-texinfo)))
-       ("which" ,which)
-       ("zlib" ,zlib)))
+     (list (match (%current-system)
+             ((or "x86_64-linux" "i686-linux")
+              clisp)
+             (_
+              clisp))
+           cl-asdf
+           ed
+           inetutils         ;for hostname(1)
+           texinfo
+           (texlive-updmap.cfg (list texlive-tex-texinfo))
+           which))
+    (inputs
+     (list (list zstd "lib")))
     (arguments
      `(#:modules ((guix build gnu-build-system)
                   (guix build utils)
