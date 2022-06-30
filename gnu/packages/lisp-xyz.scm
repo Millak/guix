@@ -22331,3 +22331,38 @@ uniform interface to them all.")
 
 (define-public ecl-trees
   (sbcl-package->ecl-package sbcl-trees))
+
+(define-public sbcl-cl-geometry
+  (let ((commit "24eddedc47b931cec27361752736ef0b54fc9984"))
+    (package
+      (name "sbcl-cl-geometry")
+      (version (git-version "0.0.3" "1" commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/vydd/cl-geometry")
+               (commit commit)))
+         (file-name (git-file-name "cl-cl-geometry" version))
+         (sha256
+          (base32 "188xrd8plvc34gz7q01zmkdrzxbpwzln103l5dl78pa4a6vzz34h"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-iterate
+             sbcl-trees))
+      (home-page "https://github.com/lispgames/cl-geometry/")
+      (synopsis "Simple two dimensional computational geometry in Common Lisp")
+      (description
+       "This is a system for two dimensional computational geometry for Common Lisp.
+
+Note: the system assumes exact rational arithmetic, so no floating point
+coordinates are allowed. This is not checked when creating geometric
+objects.")
+      ;; The .asd says BSD-style but the LICENSE.txt is expat.
+      (license license:expat))))
+
+(define-public cl-cl-geometry
+  (sbcl-package->cl-source-package sbcl-cl-geometry))
+
+(define-public ecl-cl-geometry
+  (sbcl-package->ecl-package sbcl-cl-geometry))
