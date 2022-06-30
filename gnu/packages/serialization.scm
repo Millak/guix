@@ -2,7 +2,7 @@
 ;;; Copyright © 2015, 2017, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Lukas Gradl <lgradl@openmailbox.org>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
-;;; Copyright © 2016, 2019, 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2016, 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2016, 2018, 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Corentin Bocquillon <corentin@nybble.fr>
 ;;; Copyright © 2017 Gregor Giesen <giesen@zaehlwerk.net>
@@ -30,6 +30,7 @@
 
 (define-module (gnu packages serialization)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix hg-download)
@@ -447,7 +448,14 @@ it a convenient format to store user input files.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1180ln8blrb0mwzpcf78k49hlki6di65q77rsvglf83kfcyh4d7z"))))))
+                "1180ln8blrb0mwzpcf78k49hlki6di65q77rsvglf83kfcyh4d7z"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags
+           #~'("-DBUILD_SHARED_LIBS:BOOL=YES"
+               #$@(if (%current-target-system)
+                      #~("-DJSONCPP_WITH_POST_BUILD_UNITTEST=OFF")
+                      #~()))))))
 
 (define-public json.sh
   (let ((commit "0d5e5c77365f63809bf6e77ef44a1f34b0e05840") ;no releases
