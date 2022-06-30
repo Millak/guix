@@ -6,7 +6,7 @@
 ;;; Copyright © 2015, 2016, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2019 Rutger Helling <rhelling@mykolab.com>
-;;; Copyright © 2018, 2019 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2018, 2019, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
@@ -310,33 +310,33 @@ Linux kernel and C library interfaces employed by user-space programs.")
     (version "1.49.2")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "mirror://gnu/help2man/help2man-"
-                          version ".tar.xz"))
-      (sha256
-       (base32
-        "0dnxx96lbcb8ab8yrdkqll14cl5n0bch8qpd9qj3c2ky78hhwbly"))))
+       (method url-fetch)
+       (uri (string-append "mirror://gnu/help2man/help2man-"
+                           version ".tar.xz"))
+       (sha256
+        (base32
+         "0dnxx96lbcb8ab8yrdkqll14cl5n0bch8qpd9qj3c2ky78hhwbly"))))
     (build-system gnu-build-system)
-    (arguments `(;; There's no `check' target.
-                 #:tests? #f
-                 #:phases
-                 (modify-phases %standard-phases
-                   (add-after 'unpack 'patch-help2man-with-perl-gettext
-                     (lambda* (#:key inputs #:allow-other-keys)
-                       (let ((lib (assoc-ref inputs "perl-gettext"))
-                             (fmt "use lib '~a/lib/perl5/site_perl';~%~a"))
-                         (substitute* "help2man.PL"
-                           (("^use Locale::gettext.*$" load)
-                            (format #f fmt lib load))))
-                       #t)))))
+    (arguments
+     (list
+      #:tests? #f                       ;no `check' target
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-help2man-with-perl-gettext
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((lib #$(this-package-input "perl-gettext"))
+                    (fmt "use lib '~a/lib/perl5/site_perl';~%~a"))
+                (substitute* "help2man.PL"
+                  (("^use Locale::gettext.*$" load)
+                   (format #f fmt lib load)))))))))
     (inputs
-     `(("perl" ,perl)
-       ,@(if (%current-target-system)
-             '()
-             `(("perl-gettext" ,perl-gettext)))))
+     (append
+      (list perl)
+      (if (%current-target-system)
+          '()
+          (list perl-gettext))))
     (native-inputs
-     `(("perl" ,perl)
-       ("gettext" ,gettext-minimal)))
+     (list perl gettext-minimal))
     (home-page "https://www.gnu.org/software/help2man/")
     (synopsis "Automatically generate man pages from program --help")
     (description
