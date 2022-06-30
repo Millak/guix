@@ -17164,17 +17164,17 @@ customizable sets, and intervals.")
 (define-public r-partitions
   (package
     (name "r-partitions")
-    (version "1.9-22")
+    (version "1.10-4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "partitions" version))
        (sha256
         (base32
-         "1qqy4df28wy4q0g572azrj171jlhvrnzbh7x0wr2g7v6gr20y0ns"))))
+         "1ik7cj2yfybx4v847nvnjrbkd0k66pfqqv6lkygfnlrldi0r205i"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-gmp r-polynom r-sets))
+     (list r-gmp r-mathjaxr r-polynom r-sets))
     (home-page "https://cran.r-project.org/web/packages/partitions")
     (synopsis "Additive partitions of integers")
     (description
