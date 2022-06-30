@@ -20990,8 +20990,8 @@ taking inspiration from Ruby's ERb module.")
   (sbcl-package->ecl-package sbcl-cl-template))
 
 (define-public sbcl-fast-websocket
-  (let ((commit "24c0217e7c0d25b6ef6ab799452cba0b9fb58f44")
-        (revision "0"))
+  (let ((commit "baeeaddf1447015863d708f840ef9dfc5ff5b7a2")
+        (revision "1"))
     (package
      (name "sbcl-fast-websocket")
      (version (git-version "0.1" revision commit))
@@ -21004,8 +21004,7 @@ taking inspiration from Ruby's ERb module.")
              (commit commit)))
        (file-name (git-file-name "cl-fast-websoclet" version))
        (sha256
-        (base32
-         "04sacrhpdp3ixvp6wjwxls5mv47g0q6542pd16yn199xjg0drw8a"))))
+        (base32 "1j7v00gbkzx4mq2v8y44jm4jx321hgrv9igfw23cvzzlyd3dzp6y"))))
      (build-system asdf-build-system/sbcl)
      (arguments
       ;; Test system must be loaded before, otherwise tests fail with:
