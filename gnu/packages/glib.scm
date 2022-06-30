@@ -595,14 +595,14 @@ The intltool collection can be used to do these things:
 (define itstool
   (package
     (name "itstool")
-    (version "2.0.6")
+    (version "2.0.7")
     (source (origin
              (method url-fetch)
              (uri (string-append "http://files.itstool.org/itstool/itstool-"
                                  version ".tar.bz2"))
              (sha256
               (base32
-               "1acjgf8zlyk7qckdk19iqaca4jcmywd7vxjbcs1mm6kaf8icqcv2"))))
+               "1jl7gsr7aclb9nvqazr039m86y7f7ivfhl2pixcrbfqjkb97r6kb"))))
     (build-system gnu-build-system)
     (inputs
      (list libxml2 python-libxml2 python))
