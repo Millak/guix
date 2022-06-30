@@ -21726,3 +21726,36 @@ similar to the standard hash-table interface.")
 
 (define-public ecl-clache
   (sbcl-package->ecl-package sbcl-clache))
+
+(define-public sbcl-definitions
+  (let ((commit "1f4bd7a634a2299aea19cefb5da8041bbb27f2ec"))
+    (package
+      (name "sbcl-definitions")
+      (version (git-version "1.0.0" "1" commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shinmera/definitions/")
+               (commit commit)))
+         (file-name (git-file-name "cl-definitions" version))
+         (sha256
+          (base32 "16dh9iy3v344xj4qllsp47007px3yx26fxxh9gh2cvs8dqgk3kch"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-documentation-utils))
+      (home-page "https://shinmera.github.io/definitions")
+      (synopsis "General definitions reflection library")
+      (description
+       "This system implements a general definitions introspection library.
+It gives you the ability to retrieve definitions or bindings associated with
+designators such as symbols, packages, and names in general.  For instance, it
+allows you to retrieve all function, type, variable, method, etc. definitions
+of a symbol.")
+      (license license:zlib))))
+
+(define-public cl-definitions
+  (sbcl-package->cl-source-package sbcl-definitions))
+
+(define-public ecl-definitions
+  (sbcl-package->ecl-package sbcl-definitions))
