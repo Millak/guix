@@ -557,7 +557,15 @@ an interpreter, a compiler, a debugger, and much more.")
              (invoke "sh" "install.sh")))
          (add-after 'build 'build-doc
            (lambda _
-             ;; TODO: Doc is not deterministic, maybe there is a timespamp?
+             ;; Building the documentation for SB-SIMD only works when SB-SIMD
+             ;; is enabled, so far only on x86_64-linux.
+             ,@(match (%current-system)
+                 ("x86_64-linux"
+                  '())
+                 (_
+                  '((substitute* "doc/manual/generate-texinfo.lisp"
+                      (("exclude '\\(\"asdf\"\\)")
+                       "exclude '(\"asdf\" \"sb-simd\")")))))
              (with-directory-excursion "doc/manual"
                (and  (invoke "make" "info")
                      (invoke "make" "dist")))))
