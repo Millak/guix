@@ -21602,3 +21602,37 @@ formulas.")
 
 (define-public ecl-cells
   (sbcl-package->ecl-package sbcl-cells))
+
+(define-public sbcl-cl-algebraic-data-type
+  (let ((commit "b2568428193a512d141d6b615772d50ceb5f9bca"))
+    (package
+      (name "sbcl-cl-algebraic-data-type")
+      (version (git-version "1.2.0" "1" commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/stylewarning/cl-algebraic-data-type")
+               (commit commit)))
+         (file-name (git-file-name "cl-algebraic-data-type" version))
+         (sha256
+          (base32 "1lnqxcv8pd5z8n0g5p2l0dbljx9pqiv18hxl0vhsh7ldhkrjv2jx"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria
+             sbcl-global-vars))
+      (arguments
+       '(#:tests? #f))                  ; No tests.
+      (home-page "https://github.com/stylewarning/cl-algebraic-data-type")
+      (synopsis "Common Lisp library for algebraic data types")
+      (description
+       "CL-ALGEBRAIC-DATA-TYPE, or ADT, is a library for defining algebraic
+data types in a similar spirit to Haskell or Standard ML, as well as for
+operating on them.")
+      (license license:bsd-3))))
+
+(define-public cl-algebraic-data-type
+  (sbcl-package->cl-source-package sbcl-cl-algebraic-data-type))
+
+(define-public ecl-algebraic-data-type
+  (sbcl-package->ecl-package sbcl-cl-algebraic-data-type))
