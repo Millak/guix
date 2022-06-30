@@ -22040,3 +22040,45 @@ to dispatch on the basis of types rather than classes.")
 
 (define-public ecl-polymorphic-functions
   (sbcl-package->ecl-package sbcl-polymorphic-functions))
+
+(define-public sbcl-slot-extra-options
+  (let ((commit "29517d980325cd63744f1acf4cfe5c8ccec2b318"))
+    (package
+      (name "sbcl-slot-extra-options")
+      (version (git-version "1.1.1" "1" commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/some-mthfka/slot-extra-options/")
+               (commit commit)))
+         (file-name (git-file-name "cl-slot-extra-options" version))
+         (sha256
+          (base32 "1b2swhjjs0w1034cy045q8l3ndmci7rjawka39q23vncy6d90497"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria
+             sbcl-closer-mop
+             sbcl-serapeum
+             sbcl-iterate))
+      (native-inputs
+       (list sbcl-parachute))
+      (home-page "https://github.com/some-mthfka/slot-extra-options/")
+      (synopsis "Extra options for slots using MOP")
+      (description
+       "This library lets you build a metaclass which in turn lets you specify
+extra slot options in its classes.  Options may be easily inspected and custom
+inheritence may be set up.  The Meta-Object Protocol (MOP) is used for the
+implementation - through @code{closer-mop}.  Some convenience function for
+processing slot options are also available.
+
+Possible use case: you want to automatically set up some definitions based on
+some slots, but you want to have control over it right in the class
+definition.")
+      (license license:lgpl3+))))
+
+(define-public cl-slot-extra-options
+  (sbcl-package->cl-source-package sbcl-slot-extra-options))
+
+(define-public ecl-slot-extra-options
+  (sbcl-package->ecl-package sbcl-slot-extra-options))
