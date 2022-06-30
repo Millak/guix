@@ -5268,7 +5268,7 @@ Linux Device Mapper multipathing driver:
 (define-public libaio
   (package
     (name "libaio")
-    (version "0.3.112")
+    (version "0.3.113")
     (source (origin
               (method url-fetch)
               (uri (list
@@ -5276,37 +5276,16 @@ Linux Device Mapper multipathing driver:
                                    name "-" version ".tar.gz")))
               (sha256
                (base32
-                "14mlqdapjqq1dhpkdgy5z83mvsaz36fcxca7a4z6hinmr7r6415b"))))
+                "02r0g2vfv6kfljplm3ga93w4xw13q2wixbn9hwi7ahqdzp2x2i1c"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
-           #~(let ((target #$(%current-target-system)))
-               ;; XXX TODO: Replace with simply #$OUTPUT on core-updates.
-               (list (string-append "prefix=" #$(if (%current-target-system)
-                                                    #~#$output
-                                                    #~%output))
-                     (string-append
-                      "CC=" (if target
-                                (string-append (assoc-ref %build-inputs
-                                                          "cross-gcc")
-                                               "/bin/" target "-gcc")
-                                "gcc"))))
+           #~(list (string-append "prefix=" #$output)
+                   (string-append "CC=" #$(cc-for-target)))
            #:test-target "partcheck"    ; need root for a full 'check'
            #:phases
            #~(modify-phases %standard-phases
-               (delete 'configure)    ; no configure script
-               ;; TODO: Make this phase unconditional on core-updates.
-               #$@(if (target-riscv64?)
-                    '((add-before 'check 'patch-for-riscv-support
-                        (lambda _
-                          ;; Taken from the upstream repo:
-                          ;; https://pagure.io/libaio/c/f322f467c3cd2ac4d8d08a19bd281eabb65433b1?branch=master
-                          (substitute* "harness/cases/16.t"
-                            (("(elif defined\\(__aarch64__\\))" all)
-                             (string-append all " || defined(__riscv)"))
-                            (("(endif /* __aarch64__)" all)
-                             (string-append all " || __riscv "))))))
-                    '()))))
+               (delete 'configure))))   ; no configure script
     (home-page "https://pagure.io/libaio")
     (synopsis "Linux-native asynchronous I/O access library")
     (description
