@@ -394,17 +394,17 @@ written by Paul Haahr and Byron Rakitzis.")
 (define-public tcsh
   (package
     (name "tcsh")
-    (version "6.22.03")
+    (version "6.24.01")
     (source (origin
               (method url-fetch)
               ;; Old tarballs are moved to old/.
-              (uri (list (string-append "ftp://ftp.astron.com/pub/tcsh/"
+              (uri (list (string-append "https://astron.com/pub/tcsh/"
                                         "tcsh-" version ".tar.gz")
-                         (string-append "ftp://ftp.astron.com/pub/tcsh/"
+                         (string-append "https://astron.com/pub/tcsh/"
                                         "old/tcsh-" version ".tar.gz")))
               (sha256
                (base32
-                "1dv24bsp6faayinvwds092ylk9sb6894rl9ddm87y31a7mjzsb5y"))
+                "0zhxp4m1fxyd3a2qyvs97gzlrb0h0ah1gjrqcbilgydiffws2nan"))
               (patches (search-patches "tcsh-fix-autotest.patch"))
               (patch-flags '("-p0"))))
     (build-system gnu-build-system)
