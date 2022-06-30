@@ -21759,3 +21759,37 @@ of a symbol.")
 
 (define-public ecl-definitions
   (sbcl-package->ecl-package sbcl-definitions))
+
+(define-public sbcl-filtered-functions
+  (let ((commit "130f69e7b9e1051bf569ef63364b09a3873f0ced"))
+    (package
+      (name "sbcl-filtered-functions")
+      (version (git-version "0.2.0" "1" commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/pcostanza/filtered-functions")
+               (commit commit)))
+         (file-name (git-file-name "cl-filtered-functions" version))
+         (sha256
+          (base32 "0m13k8pl0gfll8ss83c0z3gax7zrrw2i4s26451jfbka1xr4fgy9"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-closer-mop))
+      (home-page "https://github.com/pcostanza/filtered-functions")
+      (synopsis "Extension of CLOS generic function invocation")
+      (description
+       "Filtered functions provide an extension of CLOS generic function
+invocation that add a simple preprocessing step before the actual method
+dispatch is performed and thus enable the use of arbitrary predicates for
+selecting and applying methods.  See
+@url{http://www.p-cos.net/documents/filtered-dispatch.pdf} for a paper that
+introduces and explains filtered functions in detail.")
+      (license license:expat))))
+
+(define-public cl-filtered-functions
+  (sbcl-package->cl-source-package sbcl-filtered-functions))
+
+(define-public ecl-filtered-functions
+  (sbcl-package->ecl-package sbcl-filtered-functions))
