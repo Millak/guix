@@ -29150,18 +29150,18 @@ package also provides functions to visualize the observed data and the MLE.")
 (define-public r-metafor
   (package
     (name "r-metafor")
-    (version "3.4-0")
+    (version "2.4-0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "metafor" version))
        (sha256
         (base32
-         "0vn244xfgq7yxwl6ykvadb305z360ssc9vzva7kbcdfiqhhvrqcj"))))
+         "1b599fxk7s0brkchmx698fr5k4g1kzkia2rnlvhg349ffs5nfjmn"))))
     (properties `((upstream-name . "metafor")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-mathjaxr r-matrix r-metadat r-nlme r-pbapply))
+     (list r-matrix r-nlme))
     (home-page "https://cran.r-project.org/web/packages/metafor/")
     (synopsis "Meta-analysis package for R")
     (description
