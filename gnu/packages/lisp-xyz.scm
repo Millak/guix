@@ -21825,3 +21825,34 @@ replacement, which is called @code{*let}).")
 
 (define-public ecl-defstar
   (sbcl-package->ecl-package sbcl-defstar))
+
+(define-public sbcl-dynamic-mixins
+  (let ((commit "7cc09bee7d68527f37406671fabe910e8235b746"))
+    (package
+      (name "sbcl-dynamic-mixins")
+      (version (git-version "0.0" "1" commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/rpav/dynamic-mixins")
+               (commit commit)))
+         (file-name (git-file-name "cl-dynamic-mixins" version))
+         (sha256
+          (base32 "00g3s509ysh2jp1qwsgb5bwl6qvhzcljwjz3z4mspbcak51484zj"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria
+             sbcl-closer-mop))
+      (home-page "https://github.com/rpav/dynamic-mixins")
+      (synopsis "Simple, dynamic class combination for CLOS")
+      (description
+       "Dynamic-mixins is for simple, dynamic class combination; it allows
+objects to be mixed and updated without manually defining many permutations.")
+      (license license:bsd-2))))
+
+(define-public cl-dynamic-mixins
+  (sbcl-package->cl-source-package sbcl-dynamic-mixins))
+
+(define-public ecl-dynamic-mixins
+  (sbcl-package->ecl-package sbcl-dynamic-mixins))
