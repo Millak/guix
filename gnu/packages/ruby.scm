@@ -12876,3 +12876,48 @@ exceptions as they are raised.")
     (description "Pry-Rescue allows you to wrap code, to open a pry session at
 any unhandled exceptions.")
     (license license:expat)))
+
+(define-public ruby-braintree
+  (package
+    (name "ruby-braintree")
+    (version "4.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       ;; Download from GitHub because the rubygems version does not contain
+       ;; Rakefile.
+       (uri (git-reference
+             (url "https://github.com/braintree/braintree_ruby")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gixqf9vsjsyrk45lf9xcz0ggdydpgsk8ahknd27bbigz1j4pdf6"))))
+    (build-system ruby-build-system)
+    (arguments
+     `(#:test-target "test:unit"
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'less-strict-dependencies
+           (lambda _
+             (substitute* "Gemfile"
+              (("gem \"libxml-ruby\", \"3.2.0\"")
+                "gem \"libxml-ruby\", \"~> 3.0.0\"")
+               (("gem \"rspec\", \"3.9.0\"")
+                 "gem \"rspec\", \"~> 3.8.0\"")
+               (("gem \"rubocop\", \"~>1.12.0\"")
+                 "gem \"rubocop\", \"~> 1.10.0\"")))))))
+    (native-inputs
+     (list ruby-libxml
+            ruby-pry
+            ruby-rake
+            ruby-rspec
+            ruby-rubocop
+            ruby-webrick))
+    (propagated-inputs
+     (list ruby-builder
+            ruby-rexml))
+    (home-page "https://www.braintreepayments.com/")
+    (synopsis "Integration access to the Braintree Gateway")
+    (description "Braintree provides resources and tools for developers to
+integrate Braintree's global payments platform.")
+    (license license:expat)))
