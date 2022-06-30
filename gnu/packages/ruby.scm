@@ -12827,3 +12827,21 @@ interface for the Sentry error logger.")
     (description "WEBrick is an HTTP server toolkit that can be configured as an
 HTTPS server, a proxy server, and a virtual-host server.")
     (license license:bsd-2)))
+
+(define-public ruby-interception
+  (package
+    (name "ruby-interception")
+    (version "0.5")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "interception" version))
+        (sha256
+          (base32 "01vrkn28psdx1ysh5js3hn17nfp1nvvv46wc1pwqsakm6vb1hf55"))))
+    (build-system ruby-build-system)
+    (native-inputs (list ruby-rspec))
+    (home-page "https://github.com/ConradIrwin/interception")
+    (synopsis "Listen to raise in Ruby")
+    (description "Interception provides a cross-platform ability to intercept all
+exceptions as they are raised.")
+    (license license:expat)))
