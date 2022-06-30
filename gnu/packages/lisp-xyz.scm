@@ -22195,3 +22195,34 @@ only.")
 
 (define-public ecl-sb-cga
   (sbcl-package->ecl-package sbcl-sb-cga))
+
+(define-public sbcl-mathkit
+  (let ((commit "fd884f94b36ef5e9bc19459ad0b3cda6303d2a2a"))
+    (package
+      (name "sbcl-mathkit")
+      (version (git-version "0.0" "1" commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/lispgames/mathkit/")
+               (commit commit)))
+         (file-name (git-file-name "cl-mathkit" version))
+         (sha256
+          (base32 "174y6ndmf52h8sml87qjfl48llmynvdizzk2h0mr85zbaysx73i3"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria
+             sbcl-sb-cga))
+      (home-page "https://github.com/lispgames/mathkit/")
+      (synopsis "Pure math functions useful for games, 3D, and GL in general")
+      (description
+       "This is a purely math-related utility kit, providing functions which
+can be useful for games, 3D, and GL in general.")
+      (license license:expat))))
+
+(define-public cl-mathkit
+  (sbcl-package->cl-source-package sbcl-mathkit))
+
+(define-public ecl-mathkit
+  (sbcl-package->ecl-package sbcl-mathkit))
