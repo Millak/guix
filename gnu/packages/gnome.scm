@@ -6845,7 +6845,6 @@ of running programs and invoke methods on those interfaces.")
     (native-inputs
      `(("ducktype" ,mallard-ducktype)
        ("gettext" ,gettext-minimal)
-       ("intltool" ,intltool)
        ("itstool" ,itstool)
        ("xmllint" ,libxml2)
        ("xsltproc" ,libxslt)))
