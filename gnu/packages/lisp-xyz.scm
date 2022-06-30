@@ -14136,11 +14136,11 @@ library are feedforward neural networks trained using backpropagation.")
   (sbcl-package->ecl-package sbcl-simple-neural-network))
 
 (define-public sbcl-zstd
-  (let ((commit "d144582c581aaa52bac24d6686af27fa3e781e06")
+  (let ((commit "134f058eee11512cf772a8d5b64364acf56a10b8")
         (revision "1"))
     (package
       (name "sbcl-zstd")
-      (version (git-version "1.0" revision commit))
+      (version (git-version "2.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -14149,22 +14149,22 @@ library are feedforward neural networks trained using backpropagation.")
                (commit commit)))
          (file-name (git-file-name "cl-zstd" version))
          (sha256
-          (base32 "1774jy8hzbi6nih3sq6vchk66f7g8w86dwgpbvljyfzcnkcaz6ql"))))
+          (base32 "1iqpi5v6fdm6xxc9l8zhk6kcgl8hgxiwk1ki2yx2j3j4kfvqv8j9"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-fiveam))
       (inputs
-       `(("cffi" ,sbcl-cffi)
-         ("cl-octet-streams" ,sbcl-cl-octet-streams)
-         ("zstd-lib" ,zstd "lib")))
+       (list sbcl-cffi
+             sbcl-cl-octet-streams
+             (list zstd "lib")))
       (arguments
-       '(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'fix-paths
-             (lambda* (#:key inputs #:allow-other-keys)
-               (substitute* "src/libzstd.lisp"
-                 (("libzstd\\.so")
-                  (search-input-file inputs "/lib/libzstd.so"))))))))
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-paths
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (substitute* "src/libzstd.lisp"
+                       (("libzstd\\.so")
+                        (search-input-file inputs "/lib/libzstd.so"))))))))
       (synopsis "Common Lisp library for Zstandard (de)compression")
       (description
        "This Common Lisp library provides functions for Zstandard
