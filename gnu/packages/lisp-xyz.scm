@@ -21568,3 +21568,37 @@ It was originally developped for the Cells library.")
 
 (define-public ecl-utils-kt
   (sbcl-package->ecl-package sbcl-utils-kt))
+
+(define-public sbcl-cells
+  (let ((commit "e8542b17fddd6340c1e237ce482a52327c8ead8e"))
+    (package
+      (name "sbcl-cells")
+      (version (git-version "3.0" "1" commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/kennytilton/cells")
+               (commit commit)))
+         (file-name (git-file-name "cl-cells" version))
+         (sha256
+          (base32 "0rkzvwq38lwb1045w54kw020pb9i63hxiawwhqkf8k1inhak3fdk"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-utils-kt))
+      (arguments
+       ;; Tests fail with #<TYPE-ERROR expected-type: STREAM datum: NIL>.
+       '(#:tests? #f))
+      (home-page "https://github.com/kennytilton/cells")
+      (synopsis "Common Lisp implementation of the dataflow programming paradigm")
+      (description
+       "Cells is a mature, stable extension to CLOS allowing one to create
+classes whose instances can have slot values determined by instance-specific
+formulas.")
+      (license license:llgpl))))
+
+(define-public cl-cells
+  (sbcl-package->cl-source-package sbcl-cells))
+
+(define-public ecl-cells
+  (sbcl-package->ecl-package sbcl-cells))
