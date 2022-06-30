@@ -21925,3 +21925,44 @@ perform a variety of optimizations.")
 
 (define-public ecl-fast-generic-functions
   (sbcl-package->ecl-package sbcl-fast-generic-functions))
+
+(define-public sbcl-compiler-macro-notes
+  (package
+    (name "sbcl-compiler-macro-notes")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/digikar99/compiler-macro-notes")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-compiler-macro-notes" version))
+       (sha256
+        (base32 "1jv8snj2wvim3k9qhl1vsx82n56nzdmwa3ms9c4ml2d58fwpfjzs"))))
+    (build-system asdf-build-system/sbcl)
+    (inputs
+     (list sbcl-alexandria
+           sbcl-cl-environments))
+    (home-page "https://github.com/digikar99/compiler-macro-notes")
+    (synopsis "Macros and conditions for use within macros and compiler-macros")
+    (description
+     "Alternative to the @code{compiler-macro} library:
+
+@itemize
+@item Here, we do not treat compiler notes as warnings, but instead these are
+a separate class of conditions.  These are also not errors.
+@item Two main condition classes are provided: compiler-macro-notes:note and
+compiler-macro-notes:optimization-failure-note.  While the latter is a subclass
+of the former, the latter notes are printed in a slightly different manner to
+the former.
+@item To be able to correctly print the expansion path that led to the
+condition, user code is expected to avoid performing a nonlocal exit to a
+place outside with-notes.
+@end itemize\n")
+    (license license:expat)))
+
+(define-public cl-compiler-macro-notes
+  (sbcl-package->cl-source-package sbcl-compiler-macro-notes))
+
+(define-public ecl-compiler-macro-notes
+  (sbcl-package->ecl-package sbcl-compiler-macro-notes))
