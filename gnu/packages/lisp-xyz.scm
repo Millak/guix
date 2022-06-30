@@ -5981,8 +5981,8 @@ XSD type library.")
 ;;   (sbcl-package->ecl-package sbcl-cxml-rng))
 
 (define-public sbcl-cl-reexport
-  (let ((commit "312f3661bbe187b5f28536cd7ec2956e91366c3b")
-        (revision "1"))
+  (let ((commit "03ad7a0e7307e510b3b25a622d3c5f8a077879b4")
+        (revision "2"))
     (package
       (name "sbcl-cl-reexport")
       (build-system asdf-build-system/sbcl)
@@ -5997,16 +5997,20 @@ XSD type library.")
          (file-name (git-file-name "cl-reexport" version))
          (sha256
           (base32
-           "1cwpn1m3wrl0fl9plznn7p464db646gnfc8zkyk97dyxski2aq0x"))))
+           "02la6z3ickhmh2m87ymm2ijh9nkn7l6slskj99l8a1rhps394qqc"))))
       (inputs
        (list sbcl-alexandria))
+      (native-inputs
+       (list sbcl-prove))
       (arguments
-       ;; TODO: Tests fail because cl-test-more is missing, but I can't find it online.
+       ;; FIXME: Test fails with the following, why?
+       ;; Component "cl-reexport-test" not found, required by
+       ;; #<SYSTEM "cl-reexport-test">
        `(#:tests? #f))
       (synopsis "Reexport external symbols in other Common Lisp packages")
       (description
        "Cl-reexport makes a package reexport symbols which are external
-symbols in other Common Lisp packages.  This fanctionality is intended to be
+symbols in other Common Lisp packages.  This functionality is intended to be
 used with (virtual) hierarchical packages.")
       (license license:llgpl))))
 
