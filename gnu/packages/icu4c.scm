@@ -4,7 +4,7 @@
 ;;; Copyright © 2016, 2017, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2019, 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2020 Julien Lepiller <julien@lepiller.eu>
@@ -40,71 +40,70 @@
 
 (define-public icu4c
   (package
-   (name "icu4c")
-   (version "71.1")
-   (source (origin
-            (method url-fetch)
-            (uri (string-append
-                  "https://github.com/unicode-org/icu/releases/download/release-"
-                  (string-map (lambda (x) (if (char=? x #\.) #\- x)) version)
-                  "/icu4c-"
-                  (string-map (lambda (x) (if (char=? x #\.) #\_ x)) version)
-                  "-src.tgz"))
-            (sha256
-             (base32 "1gqywaqj9jmdwrng9lm6inyqmi5j2cz36db9dcqg3yk13zjyd9v7"))))
-   (build-system gnu-build-system)
-   ;; When cross-compiling, this package needs a source directory of a
-   ;; native-build of itself.
-   (native-inputs
-    `(("python" ,python-minimal)
-      ,@(if (%current-target-system)
-            `(("icu4c-build-root" ,icu4c-build-root))
-            '())))
-   (inputs
-    (list perl))
-   (arguments
-    `(#:configure-flags
-      (list
-       "--enable-rpath"
-        ,@(if (%current-target-system)
-              '((string-append "--with-cross-build="
-                                (assoc-ref %build-inputs "icu4c-build-root")))
-              '()))
+    (name "icu4c")
+    (version "71.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/unicode-org/icu/releases/download/release-"
+                    (string-map (lambda (x) (if (char=? x #\.) #\- x)) version)
+                    "/icu4c-"
+                    (string-map (lambda (x) (if (char=? x #\.) #\_ x)) version)
+                    "-src.tgz"))
+              (sha256
+               (base32 "1gqywaqj9jmdwrng9lm6inyqmi5j2cz36db9dcqg3yk13zjyd9v7"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (append (list python-minimal)
+             (if (%current-target-system)
+                 ;; When cross-compiling, this package needs a source directory
+                 ;; of a native-build of itself.
+                 (list icu4c-build-root)
+                 '())))
+    (inputs
+     (list perl))
+    (arguments
+     (list
+      #:configure-flags
+      #~(list
+         "--enable-rpath"
+         #$@(if (%current-target-system)
+                #~((string-append "--with-cross-build="
+                                  #+(this-package-native-input
+                                     "icu4c-build-root")))
+                #~()))
       #:phases
-      (modify-phases %standard-phases
-        (add-after 'unpack 'chdir-to-source
-          (lambda _ (chdir "source") #t))
-        (add-after 'chdir-to-source 'update-LDFLAGS
-          (lambda _
-            ;; Do not create a "data-only" libicudata.so because it causes
-            ;; problems on some architectures (notably armhf and MIPS).
-            (substitute* "config/mh-linux"
-              (("LDFLAGSICUDT=-nodefaultlibs -nostdlib")
-               "LDFLAGSICUDT="))
-            #t))
-        ,@(if (target-riscv64?)
-            `((add-after 'unpack 'disable-failing-test
-                ;; It is unknown why this test is failing.
-                (lambda _
-                  (substitute* "source/test/intltest/numbertest_api.cpp"
-                    (("(TESTCASE_AUTO\\(unitUsage\\));" all)
-                     (string-append "//" all))))))
-            '())
-        (add-after 'install 'avoid-coreutils-reference
-          ;; Don't keep a reference to the build tools.
-          (lambda* (#:key outputs #:allow-other-keys)
-            (let ((out (assoc-ref outputs "out")))
-              (substitute* (find-files (string-append out "/lib/icu")
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir-to-source
+            (lambda _ (chdir "source")))
+          (add-after 'chdir-to-source 'update-LDFLAGS
+            (lambda _
+              ;; Do not create a "data-only" libicudata.so because it causes
+              ;; problems on some architectures (notably armhf and MIPS).
+              (substitute* "config/mh-linux"
+                (("LDFLAGSICUDT=-nodefaultlibs -nostdlib")
+                 "LDFLAGSICUDT="))))
+          #$@(if (target-riscv64?)
+                 #~((add-after 'unpack 'disable-failing-test
+                      ;; It is unknown why this test is failing.
+                      (lambda _
+                        (substitute* "source/test/intltest/numbertest_api.cpp"
+                          (("(TESTCASE_AUTO\\(unitUsage\\));" all)
+                           (string-append "//" all))))))
+                 #~())
+          (add-after 'install 'avoid-coreutils-reference
+            ;; Don't keep a reference to the build tools.
+            (lambda _
+              (substitute* (find-files (string-append #$output "/lib/icu")
                                        "\\.inc$")
-                (("INSTALL_CMD=.*/bin/install") "INSTALL_CMD=install"))
-              #t))))))
-   (synopsis "International Components for Unicode")
-   (description
-    "ICU is a set of C/C++ and Java libraries providing Unicode and
+                (("INSTALL_CMD=.*/bin/install") "INSTALL_CMD=install")))))))
+    (synopsis "International Components for Unicode")
+    (description
+     "ICU is a set of C/C++ and Java libraries providing Unicode and
 globalisation support for software applications.  This package contains the
 C/C++ part.")
-   (license x11)
-   (home-page "http://site.icu-project.org/")))
+    (license x11)
+    (home-page "http://site.icu-project.org/")))
 
 (define-public icu4c-70
   (package
@@ -160,17 +159,15 @@ C/C++ part.")
     (name "icu4c-build-root")
     (arguments
      (substitute-keyword-arguments (package-arguments icu4c)
-       ((#:tests? _ '())
-        #f)
-       ((#:out-of-source? _ '())
-        #t)
-       ((#:phases phases)
-        `(modify-phases ,phases
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out")))
-                 (copy-recursively "../build" out)
-                 #t)))))))
+       ((#:tests? _ #f)
+         #f)
+        ((#:out-of-source? _ #t)
+         #t)
+        ((#:phases phases)
+         #~(modify-phases #$phases
+             (replace 'install
+               (lambda _
+                 (copy-recursively "../build" #$output)))))))
     (native-inputs '())))
 
 (define-public java-icu4j
