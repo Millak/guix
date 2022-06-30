@@ -22226,3 +22226,37 @@ can be useful for games, 3D, and GL in general.")
 
 (define-public ecl-mathkit
   (sbcl-package->ecl-package sbcl-mathkit))
+
+(define-public sbcl-sdl2kit
+  (let ((commit "aae663224a10ece2b0c374aa5942a3f0bc1b3c2f"))
+    (package
+      (name "sbcl-sdl2kit")
+      (version (git-version "0.0.0" "1" commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/lispgames/sdl2kit/")
+               (commit commit)))
+         (file-name (git-file-name "cl-sdl2kit" version))
+         (sha256
+          (base32 "10ymmxqsvdn7ndda9k2qcixj75l7namgqdxc5y2w3v5r1313fy2d"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria
+             sbcl-cl-opengl
+             sbcl-defpackage-plus
+             sbcl-sdl2))
+      (home-page "https://github.com/lispgames/sdl2kit/")
+      (synopsis "Utility kit for CL-SDL2")
+      (description
+       "This is a utility kit for @code{cl-sdl2} that provides something similar to
+GLUT. However, it's also geared at being useful for \"real\" applications or
+games.")
+      (license license:expat))))
+
+(define-public cl-sdl2kit
+  (sbcl-package->cl-source-package sbcl-sdl2kit))
+
+(define-public ecl-sdl2kit
+  (sbcl-package->ecl-package sbcl-sdl2kit))
