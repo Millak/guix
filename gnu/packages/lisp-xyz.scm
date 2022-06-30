@@ -17757,6 +17757,48 @@ C Library.")
 (define-public cl-sdl2
   (sbcl-package->cl-source-package sbcl-sdl2))
 
+(define-public sbcl-sdl2-image
+  (let ((commit "9c05c806286b66a5d9861ef829cfe68c4f3da077")
+        (revision "1"))
+    (package
+      (name "sbcl-sdl2-image")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/lispgames/cl-sdl2-image")
+               (commit commit)))
+         (file-name (git-file-name "cl-sdl2-image" version))
+         (sha256
+          (base32 "1nr7mdl125q32m15m8rdlza5kwi7m0birh1cq846pyy6zl1sjms7"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-paths
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (substitute* "src/library.lisp"
+                       (("libSDL2_image-2.0.so.0")
+                        (search-input-file inputs "/lib/libSDL2_image-2.0.so.0"))))))))
+      (inputs
+       (list sdl2-image
+             sbcl-alexandria
+             sbcl-cl-autowrap
+             sbcl-defpackage-plus
+             sbcl-sdl2))
+      (home-page "https://github.com/lispgames/cl-sdl2-image")
+      (synopsis "SDL2_image wrapper for Common Lisp")
+      (description
+       "This is a (currently) brief but usable wrap for SDL2_image.")
+      (license license:expat))))
+
+(define-public ecl-sdl2-image
+  (sbcl-package->ecl-package sbcl-sdl2-image))
+
+(define-public cl-sdl2-image
+  (sbcl-package->cl-source-package sbcl-sdl2-image))
+
 (define-public sbcl-cl-gamepad
   (let ((commit "7e12137927b42db064ffbf9ea34bd4790ad4bb33")
         (revision "1"))
